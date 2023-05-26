@@ -3,9 +3,9 @@ import { HandlerType } from '@metamask/snaps-utils';
 
 import { Delineator, Editor, Icon, Window } from '../../../components';
 import { useSelector, useHandler } from '../../../hooks';
+import { getSnapId } from '../../configuration';
 import { Renderer } from '../../renderer';
 import { getSnapName } from '../../simulation';
-import { getSnapId } from '../../configuration';
 
 export const Response = () => {
   const handler = useHandler();
@@ -39,6 +39,7 @@ export const Response = () => {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
   const content = (response as any).result?.content;
 
   if (handler === HandlerType.OnTransaction && content) {

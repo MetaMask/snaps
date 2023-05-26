@@ -18,7 +18,7 @@ export const Notifications: FunctionComponent = () => {
 
       dispatch(removeNotification(notification.id));
     }
-  }, [notifications]);
+  }, [notifications, dispatch, toast]);
 
   return null;
 };

@@ -14,7 +14,7 @@ export const ResetTab: FunctionComponent = () => {
 
   useEffect(() => {
     tab.setSelectedIndex(0);
-  }, [handler]);
+  }, [handler, tab]);
 
   return null;
 };

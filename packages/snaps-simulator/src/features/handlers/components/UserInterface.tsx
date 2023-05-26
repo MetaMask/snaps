@@ -17,7 +17,7 @@ export const UserInterface: FunctionComponent = () => {
 
   useEffect(() => {
     tab.setSelectedIndex(1);
-  }, []);
+  }, [tab]);
 
   if (!ui) {
     return null;

@@ -1,15 +1,15 @@
 import { Flex, Spinner, Text } from '@chakra-ui/react';
+import {
+  SnapIdPrefixes,
+  getSnapPrefix,
+  stripSnapPrefix,
+} from '@metamask/snaps-utils';
 import { useEffect, useState } from 'react';
 
 import { Icon } from '../../components';
 import { useDispatch, useSelector } from '../../hooks';
 import { getSnapId, openConfigurationModal } from '../configuration';
 import { SnapStatus, getStatus } from '../simulation';
-import {
-  SnapIdPrefixes,
-  getSnapPrefix,
-  stripSnapPrefix,
-} from '@metamask/snaps-utils';
 
 export const StatusIndicator = () => {
   const snapId = useSelector(getSnapId);

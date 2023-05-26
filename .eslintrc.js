@@ -49,7 +49,7 @@ module.exports = {
     },
 
     {
-      files: ['**/*.ts'],
+      files: ['**/*.ts', '**/*.tsx'],
       extends: ['@metamask/eslint-config-typescript'],
       rules: {
         // This rule disallows the `private` modifier on class fields, but we

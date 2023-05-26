@@ -26,6 +26,7 @@ export const Copyable: FunctionComponent<CopyableProps> = ({ node, id }) => {
         setCopied(true);
       })
       .catch((error) => {
+        // eslint-disable-next-line no-console
         console.error(error);
       });
   };

@@ -19,6 +19,15 @@ import {
   InputGroup,
   Select,
 } from '@chakra-ui/react';
+import {
+  fetchNpmMetadata,
+  DEFAULT_NPM_REGISTRY,
+} from '@metamask/snaps-controllers/dist/snaps/location';
+import {
+  SnapIdPrefixes,
+  getSnapPrefix,
+  stripSnapPrefix,
+} from '@metamask/snaps-utils';
 import { FormEvent, useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from '../../hooks';
@@ -32,15 +41,6 @@ import {
   setSnapId,
   setSnapVersion,
 } from './slice';
-import {
-  SnapIdPrefixes,
-  getSnapPrefix,
-  stripSnapPrefix,
-} from '@metamask/snaps-utils';
-import {
-  fetchNpmMetadata,
-  DEFAULT_NPM_REGISTRY,
-} from '@metamask/snaps-controllers/dist/snaps/location';
 
 export const Configuration = () => {
   const dispatch = useDispatch();
@@ -79,6 +79,10 @@ export const Configuration = () => {
 
   useEffect(() => {
     let cancelled = false;
+
+    /**
+     * Fetches the versions of the NPM snap.
+     */
     async function fetchNpmVersions() {
       const metadata = await fetchNpmMetadata(
         snapIdInput,
@@ -97,7 +101,10 @@ export const Configuration = () => {
 
     // If input is an NPM snap, try to repopulate the version state
     if (isNPM) {
-      fetchNpmVersions();
+      fetchNpmVersions().catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      });
     }
 
     return () => {
@@ -151,7 +158,9 @@ export const Configuration = () => {
                     value={selectedNpmVersion}
                   >
                     {npmVersions.map((version) => (
-                      <option value={version}>{version}</option>
+                      <option key={`version-${version}`} value={version}>
+                        {version}
+                      </option>
                     ))}
                   </Select>
                 </InputRightAddon>

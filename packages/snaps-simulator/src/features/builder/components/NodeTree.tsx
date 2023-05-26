@@ -37,7 +37,7 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
         return {
           ...item,
           data: {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unnecessary-type-assertion
             type: item.data!.type,
             value,
           },

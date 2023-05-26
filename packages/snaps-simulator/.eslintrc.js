@@ -1,14 +1,8 @@
 module.exports = {
-  root: true,
-
   extends: ['../../.eslintrc.js'],
 
   parserOptions: {
     tsconfigRootDir: __dirname,
-  },
-
-  settings: {
-    'import/extensions': ['.ts', '.tsx'],
   },
 
   rules: {
@@ -19,7 +13,7 @@ module.exports = {
 
   overrides: [
     {
-      files: ['*.ts', '*.tsx'],
+      files: ['**/*.ts', '**/*.tsx'],
       extends: [
         'plugin:react/recommended',
         'plugin:react/jsx-runtime',
@@ -35,10 +29,6 @@ module.exports = {
 
         'react/display-name': 'off',
         'react/prop-types': 'off',
-
-        // TODO: Investigate why this is needed.
-        'node/no-unpublished-import': 'off',
-        'node/no-unpublished-require': 'off',
       },
       settings: {
         react: {
@@ -48,7 +38,7 @@ module.exports = {
     },
 
     {
-      files: ['*.test.ts', '*.test.js'],
+      files: ['**/*.test.ts', '**/*.test.tsx', '**/*.test.js'],
       extends: [
         '@metamask/eslint-config-jest',
         '@metamask/eslint-config-nodejs',

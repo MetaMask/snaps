@@ -5,10 +5,10 @@ import { FunctionComponent, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Delineator, Window } from '../../../components';
+import { getSnapId } from '../../configuration';
 import { Renderer } from '../../renderer';
 import { getSnapName } from '../../simulation';
 import { nodeModelsToComponent } from '../utils';
-import { getSnapId } from '../../configuration';
 
 export type NodeRendererProps = {
   items: NodeModel<Component>[];

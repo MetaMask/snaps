@@ -17,7 +17,7 @@ export const ResetUserInterfaceTab: FunctionComponent = () => {
     if (!userInterface) {
       tab.setSelectedIndex(0);
     }
-  }, [userInterface]);
+  }, [userInterface, tab]);
 
   return null;
 };
