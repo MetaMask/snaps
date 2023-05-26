@@ -62,6 +62,11 @@ import {
   unrestrictedMethods,
 } from './snap-permissions';
 
+// TODO: Get this from the current `package.json` version, once it's deployed
+// from the monorepo.
+const DEFAULT_ENVIRONMENT_URL =
+  'https://execution.metamask.io/0.15.1/index.html';
+
 /**
  * The initialization saga is run on when the snap ID is changed and initializes the snaps execution environment.
  * This saga also creates the JSON-RPC engine and middlewares used to process RPC requests from the executing snap.
@@ -147,8 +152,12 @@ export function* initSaga({ payload }: PayloadAction<string>) {
     }),
   );
 
+  const searchParams = new URLSearchParams(window.location.search);
+  const environmentUrl =
+    searchParams.get('environment') ?? DEFAULT_ENVIRONMENT_URL;
+
   const executionService = new IframeExecutionService({
-    iframeUrl: new URL('https://execution.metamask.io/0.15.1/index.html'),
+    iframeUrl: new URL(environmentUrl),
     messenger: controllerMessenger.getRestricted({
       name: 'ExecutionService',
     }),

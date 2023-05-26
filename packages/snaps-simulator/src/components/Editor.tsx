@@ -43,12 +43,14 @@ export const Editor: FunctionComponent<EditorProps> = ({
       borderColor="gray.muted"
       borderRadius="md"
       flex="1"
+      data-testid="editor-wrapper"
     >
       <MonacoEditor
         language="json"
         editorWillMount={handleMount}
         value={SAMPLE_JSON_RPC_REQUEST}
         theme="vs-light"
+        className="editor"
         {...props}
         options={{
           tabSize: 2,
@@ -68,6 +70,10 @@ export const Editor: FunctionComponent<EditorProps> = ({
           folding: false,
           lineDecorationsWidth: 0,
           lineNumbersMinChars: 0,
+
+          autoClosingBrackets: 'never',
+          autoIndent: 'none',
+
           ...props.options,
         }}
       />

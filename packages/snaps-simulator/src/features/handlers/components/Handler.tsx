@@ -56,6 +56,7 @@ export const Handler: FunctionComponent = () => {
                 flexDirection="column"
                 flex="1"
                 overflowY="auto"
+                data-testid="tab-request"
               >
                 <Outlet />
               </TabPanel>
@@ -103,11 +104,12 @@ export const Handler: FunctionComponent = () => {
                 flexDirection="column"
                 flex="1"
                 padding="0"
+                data-testid="tab-response"
               >
                 <Response />
               </TabPanel>
               {userInterface && (
-                <TabPanel overflowY="auto">
+                <TabPanel overflowY="auto" data-testid="tab-ui">
                   <UserInterface />
                 </TabPanel>
               )}

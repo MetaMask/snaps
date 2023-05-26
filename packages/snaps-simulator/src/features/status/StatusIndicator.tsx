@@ -59,10 +59,12 @@ export const StatusIndicator = () => {
         },
       }}
     >
-      {status === SnapStatus.Ok && <Icon icon="dot" width="8px" />}
+      {status === SnapStatus.Ok && (
+        <Icon icon="dot" width="8px" data-testid="status-ok" />
+      )}
       {status === SnapStatus.Loading && <Spinner color={color} size="xs" />}
       {status === SnapStatus.Error && (
-        <Icon icon="errorTriangle" width="16px" />
+        <Icon icon="errorTriangle" width="16px" data-testid="status-error" />
       )}
       <Text
         fontWeight="500"

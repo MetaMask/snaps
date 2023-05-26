@@ -1,0 +1,44 @@
+{
+  "name": "@metamask/snaps-jest-environment",
+  "version": "0.33.1-flask.1",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "public"
+  ],
+  "scripts": {
+    "copy": "mkdir -p ./public && yarn copy:simulator && yarn copy:environment",
+    "copy:simulator": "cp -r ../snaps-simulator/dist public/simulator",
+    "copy:environment": "cp -r ../snaps-execution-environments/dist/browserify/iframe public/environment",
+    "test": "jest && yarn posttest",
+    "posttest": "jest-it-up",
+    "test:ci": "yarn test",
+    "lint:eslint": "eslint . --cache --ext js,ts",
+    "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
+    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
+    "lint:changelog": "yarn auto-changelog validate",
+    "build:tsc": "tsc --project tsconfig.build.json",
+    "build": "yarn build:tsc",
+    "build:post-tsc": "yarn copy",
+    "build:clean": "yarn clean && yarn build",
+    "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
+    "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
+    "publish:preview": "yarn npm publish --tag preview"
+  },
+  "dependencies": {
+    "@jest/environment": "^29.5.0",
+    "@metamask/utils": "^5.0.0",
+    "@testing-library/webdriverio": "^3.2.1",
+    "jest-environment-node": "^29.5.0",
+    "serve-handler": "^6.1.5",
+    "superstruct": "^1.0.3",
+    "webdriverio": "^8.5.2"
+  },
+  "devDependencies": {
+    "@metamask/snaps-execution-environments": "workspace:^",
+    "@metamask/snaps-simulator": "workspace:^",
+    "jest": "^29.0.2"
+  },
+  "packageManager": "yarn@3.4.1"
+}

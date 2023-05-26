@@ -22,7 +22,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
       return await snap.request({
         method: 'snap_notify',
         params: {
-          type: 'inapp',
+          type: 'inApp',
           message: getMessage(origin),
         },
       });

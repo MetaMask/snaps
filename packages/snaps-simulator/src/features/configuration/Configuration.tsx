@@ -51,7 +51,9 @@ export const Configuration = () => {
   const isOpen = useSelector(getOpen);
 
   const [snapIdInput, setSnapIdInput] = useState(stripSnapPrefix(snapUrl));
-  const [snapIdPrefix, setSnapIdPrefix] = useState(getSnapPrefix(snapUrl));
+  const [snapIdPrefix, setSnapIdPrefix] = useState(
+    getSnapPrefix(snapUrl).slice(0, -1),
+  );
   const [npmVersions, setNpmVersions] = useState<string[]>([]);
   const [selectedNpmVersion, setSelectedNpmVersion] = useState<
     string | undefined
@@ -149,6 +151,7 @@ export const Configuration = () => {
                 type="text"
                 value={snapIdInput}
                 onChange={handleSnapUrlChange}
+                data-testid="snap-id-input"
               />
               {isNPM && npmVersions.length > 0 && (
                 <InputRightAddon px="0" bg="white" borderColor="border.default">

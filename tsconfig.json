@@ -6,6 +6,7 @@
     { "path": "./packages/snaps-browserify-plugin" },
     { "path": "./packages/snaps-cli" },
     { "path": "./packages/snaps-controllers" },
+    { "path": "./packages/snaps-jest-environment" },
     { "path": "./packages/snaps-execution-environments" },
     { "path": "./packages/snaps-rollup-plugin" },
     { "path": "./packages/snaps-types" },

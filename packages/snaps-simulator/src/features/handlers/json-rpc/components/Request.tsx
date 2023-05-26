@@ -63,6 +63,7 @@ export const Request: FunctionComponent = () => {
           id="origin"
           placeholder="metamask.io"
           fontFamily="code"
+          data-testid="request-origin"
           {...register('origin')}
         />
         <FormErrorMessage>{errors.origin?.message}</FormErrorMessage>
@@ -74,7 +75,9 @@ export const Request: FunctionComponent = () => {
         flexDirection="column"
         flex="1"
       >
-        <FormLabel htmlFor="request">Request</FormLabel>
+        <FormLabel htmlFor="request" data-testid="request-json">
+          Request
+        </FormLabel>
         <Controller
           control={control}
           name="request"
