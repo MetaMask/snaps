@@ -1,6 +1,6 @@
 # snaps
 
-Everything around [MetaMask Snaps](https://metamask.io/snaps/)
+Everything around [MetaMask Snaps](https://metamask.io/snaps/).
 
 ## Contributing
 
