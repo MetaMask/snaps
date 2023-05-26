@@ -53,10 +53,10 @@ import {
   TruncatedSnapFields,
   ValidatedSnapId,
   assertIsValidSnapId,
-  validateSnapShasum,
   VirtualFile,
   logError,
   logWarning,
+  validateFetchedSnap,
 } from '@metamask/snaps-utils';
 import {
   assert,
@@ -2015,7 +2015,6 @@ export class SnapController extends BaseController<
       runtime.installPromise = (async () => {
         const fetchedSnap = await this.#fetchSnap(snapId, location);
         const manifest = fetchedSnap.manifest.result;
-        assertIsSnapManifest(manifest);
         if (!satisfiesVersionRange(manifest.version, versionRange)) {
           throw new Error(
             `Version mismatch. Manifest for "${snapId}" specifies version "${manifest.version}" which doesn't satisfy requested version range "${versionRange}".`,
@@ -2251,7 +2250,7 @@ export class SnapController extends BaseController<
         files.push(svgIcon);
       }
 
-      validateSnapShasum({ manifest, sourceCode, svgIcon });
+      validateFetchedSnap({ manifest, sourceCode, svgIcon });
 
       return { manifest, files, location };
     } catch (error) {

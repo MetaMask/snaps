@@ -1,3 +1,4 @@
+import { assertIsSnapIcon } from './icon';
 import { validateNpmSnapManifest } from './manifest/manifest';
 import { assertIsSnapManifest } from './manifest/validation';
 import {
@@ -6,11 +7,6 @@ import {
   SnapFiles,
   UnvalidatedSnapFiles,
 } from './types';
-
-export const SVG_MAX_BYTE_SIZE = 100_000;
-export const SVG_MAX_BYTE_SIZE_TEXT = `${Math.floor(
-  SVG_MAX_BYTE_SIZE / 1000,
-)}kb`;
 
 export const EXPECTED_SNAP_FILES = [
   'manifest',
@@ -23,6 +19,8 @@ export const SnapFileNameFromKey = {
   packageJson: NpmSnapFileNames.PackageJson,
   sourceCode: 'source code bundle',
 } as const;
+
+// TODO: Refactor this to be more shared with other validation.
 
 /**
  * Validates the files extracted from an npm Snap package tarball by ensuring
@@ -75,12 +73,10 @@ export function validateNpmSnap(
   });
 
   if (svgIcon) {
-    if (Buffer.byteLength(svgIcon.value, 'utf8') > SVG_MAX_BYTE_SIZE) {
-      throw new Error(
-        `${
-          errorPrefix ?? ''
-        }The specified SVG icon exceeds the maximum size of ${SVG_MAX_BYTE_SIZE_TEXT}.`,
-      );
+    try {
+      assertIsSnapIcon(svgIcon);
+    } catch (error) {
+      throw new Error(`${errorPrefix ?? ''}${error.message}`);
     }
   }
 

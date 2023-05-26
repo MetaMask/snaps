@@ -69,6 +69,20 @@
         "Intl": true
       }
     },
+    "@metamask/snaps-utils>is-svg": {
+      "packages": {
+        "@metamask/snaps-utils>is-svg>fast-xml-parser": true
+      }
+    },
+    "@metamask/snaps-utils>is-svg>fast-xml-parser": {
+      "globals": {
+        "entityName": true,
+        "val": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>is-svg>fast-xml-parser>strnum": true
+      }
+    },
     "@metamask/snaps-utils>rfdc": {
       "packages": {
         "browserify>buffer": true
@@ -166,6 +180,16 @@
         "@metamask/snaps-utils>rfdc": true
       }
     },
+    "external:../snaps-utils/src/icon.ts": {
+      "builtin": {
+        "buffer": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>is-svg": true,
+        "@metamask/utils": true,
+        "browserify>buffer": true
+      }
+    },
     "external:../snaps-utils/src/index.browser.ts": {
       "packages": {
         "external:../snaps-utils/src/caveats.ts": true,
@@ -184,6 +208,7 @@
         "external:../snaps-utils/src/path.ts": true,
         "external:../snaps-utils/src/snaps.ts": true,
         "external:../snaps-utils/src/types.ts": true,
+        "external:../snaps-utils/src/validation.ts": true,
         "external:../snaps-utils/src/versions.ts": true,
         "external:../snaps-utils/src/virtual-file/index.browser.ts": true
       }
@@ -253,6 +278,13 @@
       "packages": {
         "@metamask/utils": true,
         "superstruct": true
+      }
+    },
+    "external:../snaps-utils/src/validation.ts": {
+      "packages": {
+        "external:../snaps-utils/src/icon.ts": true,
+        "external:../snaps-utils/src/manifest/validation.ts": true,
+        "external:../snaps-utils/src/snaps.ts": true
       }
     },
     "external:../snaps-utils/src/versions.ts": {

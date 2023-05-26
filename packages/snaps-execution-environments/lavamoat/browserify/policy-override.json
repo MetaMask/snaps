@@ -4,6 +4,11 @@
       "globals": {
         "console": true
       }
+    },
+    "external:../snaps-utils/src/icon.ts": {
+      "builtin": {
+        "buffer": true
+      }
     }
   }
 }

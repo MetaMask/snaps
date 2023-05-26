@@ -14,5 +14,6 @@ export * from './notification';
 export * from './path';
 export * from './snaps';
 export * from './types';
+export * from './validation';
 export * from './versions';
 export * from './virtual-file/index.browser';
