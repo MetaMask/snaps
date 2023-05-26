@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json.schemastore.org/swcrc",
+  "jsc": {
+    "parser": {
+      "syntax": "typescript"
+    },
+    "target": "es2020"
+  },
+  "module": {
+    "type": "es6"
+  },
+  "env": {
+    "targets": {
+      "chrome": "80",
+      "firefox": "74"
+    }
+  },
+  "exclude": [
+    "^.*\\.test.*?\\.[t|j]sx?$",
+    "^.*test-utils.*$",
+    "^.*__mocks__.*$",
+    "^.*__snapshots__.*$"
+  ],
+  "minify": true
+}

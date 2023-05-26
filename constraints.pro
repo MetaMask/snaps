@@ -119,3 +119,17 @@ gen_enforced_dependency(WorkspaceCwd, DependencyIdent, null, DependencyType) :-
   workspace_has_dependency(WorkspaceCwd, DependencyIdent, DependencyRange, 'dependencies'),
   workspace_has_dependency(WorkspaceCwd, DependencyIdent, DependencyRange, DependencyType),
   DependencyType == 'devDependencies'.
+
+% All published packages must have the same build scripts.
+gen_enforced_field(WorkspaceCwd, 'scripts.build', 'yarn build:cjs && yarn build:esm') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true).
+gen_enforced_field(WorkspaceCwd, 'scripts.build:cjs', 'swc --source-maps --config module.type=commonjs --out-dir dist/cjs src') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true).
+gen_enforced_field(WorkspaceCwd, 'scripts.build:esm', 'swc --source-maps --config module.type=es6 --out-dir dist/esm src') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true).
+
+% All published packages must have the same main and module fields.
+gen_enforced_field(WorkspaceCwd, 'main', 'dist/cjs/index.js') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true).
+gen_enforced_field(WorkspaceCwd, 'module', 'dist/esm/index.js') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true).

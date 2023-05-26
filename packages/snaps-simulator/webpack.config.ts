@@ -17,11 +17,7 @@ const config: Configuration & Record<'devServer', DevServerConfiguration> = {
       {
         test: /\.tsx?$/u,
         use: {
-          loader: 'ts-loader',
-          options: {
-            configFile: resolve(__dirname, 'tsconfig.build.json'),
-            projectReferences: true,
-          },
+          loader: 'swc-loader',
         },
       },
       {

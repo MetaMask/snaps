@@ -1,4 +1,4 @@
-import { detectSnapLocation } from '@metamask/snaps-controllers/dist/snaps/location';
+import { detectSnapLocation } from '@metamask/snaps-controllers/dist/esm/snaps/location';
 import {
   getSnapPrefix,
   logError,

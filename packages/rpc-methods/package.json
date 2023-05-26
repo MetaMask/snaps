@@ -6,7 +6,8 @@
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
-  "main": "dist/index.js",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist/"
@@ -20,11 +21,13 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
-    "build": "tsc --project tsconfig.build.json",
+    "build": "yarn build:cjs && yarn build:esm",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
     "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
-    "publish:preview": "yarn npm publish --tag preview"
+    "publish:preview": "yarn npm publish --tag preview",
+    "build:cjs": "swc --source-maps --config module.type=commonjs --out-dir dist/cjs src",
+    "build:esm": "swc --source-maps --config module.type=es6 --out-dir dist/esm src"
   },
   "dependencies": {
     "@metamask/key-tree": "^7.0.0",

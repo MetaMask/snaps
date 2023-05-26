@@ -6,7 +6,8 @@
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
-  "main": "dist/index.js",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist/"
@@ -26,13 +27,15 @@
     "build:clean": "yarn clean && yarn build",
     "build:post-tsc": "yarn build:lavamoat",
     "build:tsc": "tsc --project tsconfig.build.json",
-    "build": "yarn build:tsc && yarn build:post-tsc",
+    "build": "yarn build:cjs && yarn build:esm",
     "build:test": "yarn build:lavamoat",
     "build:lavamoat": "lavamoat scripts/build.js --policy lavamoat/build-system/policy.json  --policyOverride lavamoat/build-system/policy-override.json",
     "build:lavamoat:policy": "yarn build:lavamoat --writeAutoPolicy && node scripts/build.js --writeAutoPolicy",
     "auto-changelog-init": "auto-changelog init",
     "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
-    "publish:preview": "yarn npm publish --tag preview"
+    "publish:preview": "yarn npm publish --tag preview",
+    "build:cjs": "swc --source-maps --config module.type=commonjs --out-dir dist/cjs src",
+    "build:esm": "swc --source-maps --config module.type=es6 --out-dir dist/esm src"
   },
   "dependencies": {
     "@metamask/object-multiplex": "^1.2.0",

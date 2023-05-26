@@ -6,7 +6,8 @@
     "type": "git",
     "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
-  "main": "dist/index.js",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
   "browser": {
     "./dist/services": "./dist/services/browser.js"
   },
@@ -20,8 +21,9 @@
     "posttest": "ts-node scripts/coverage.ts && rimraf coverage/jest coverage/wdio",
     "test:browser": "wdio run wdio.config.ts",
     "test:ci": "yarn test",
-    "build:tsc": "tsc --project tsconfig.build.json",
-    "build": "yarn build:tsc",
+    "build:cjs": "swc --source-maps --config module.type=commonjs --out-dir dist/cjs src",
+    "build:esm": "swc --source-maps --config module.type=es6 --out-dir dist/esm src",
+    "build": "yarn build:cjs && yarn build:esm",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
     "lint:eslint": "eslint . --cache --ext js,ts",
@@ -67,6 +69,7 @@
     "@metamask/eslint-config-typescript": "^11.0.0",
     "@metamask/template-snap": "^0.7.0",
     "@peculiar/webcrypto": "^1.3.3",
+    "@swc/cli": "^0.1.62",
     "@types/concat-stream": "^2.0.0",
     "@types/gunzip-maybe": "^1.4.0",
     "@types/jest": "^27.5.1",
