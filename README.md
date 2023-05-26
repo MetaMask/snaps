@@ -1,6 +1,6 @@
 # MetaMask Snaps
 
-Everything around [MetaMask Snaps](https://metamask.io/snaps/).
+Extend the functionality of MetaMask using [Snaps](https://metamask.io/snaps/).
 
 ## Contributing
 
