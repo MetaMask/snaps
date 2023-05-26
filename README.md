@@ -1,4 +1,4 @@
-# snaps
+# MetaMask Snaps
 
 Everything around [MetaMask Snaps](https://metamask.io/snaps/).
 
