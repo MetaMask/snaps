@@ -43,13 +43,14 @@ type RpcSpecificationBuilderOptions = {
 /**
  * The specification builder for the JSON-RPC endowment permission.
  *
+ * @param _builderOptions - Optional specification builder options.
  * @returns The specification for the JSON-RPC endowment permission.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.Endowment,
   RpcSpecificationBuilderOptions,
   RpcSpecification
-> = (): RpcSpecification => {
+> = (_builderOptions?: any): RpcSpecification => {
   return {
     permissionType: PermissionType.Endowment,
     targetKey,

@@ -43,13 +43,14 @@ type KeyringSpecificationBuilderOptions = {
 /**
  * The specification builder for the keyring endowment permission.
  *
+ * @param _builderOptions - Optional specification builder options.
  * @returns The specification for the keyring endowment permission.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.Endowment,
   KeyringSpecificationBuilderOptions,
   KeyringSpecification
-> = (): KeyringSpecification => {
+> = (_builderOptions?: any): KeyringSpecification => {
   return {
     permissionType: PermissionType.Endowment,
     targetKey,

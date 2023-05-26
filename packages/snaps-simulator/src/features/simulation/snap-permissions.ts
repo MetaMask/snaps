@@ -1,39 +1,8 @@
 import { GenericPermissionController } from '@metamask/permission-controller';
-import {
-  restrictedMethodPermissionBuilders,
-  selectHooks,
-} from '@metamask/rpc-methods';
 import { endowmentPermissionBuilders } from '@metamask/snaps-controllers';
 import { DEFAULT_ENDOWMENTS } from '@metamask/snaps-utils';
 
 export const ExcludedSnapEndowments = Object.freeze(['endowment:keyring']);
-
-export const buildSnapEndowmentSpecifications = () =>
-  Object.values(endowmentPermissionBuilders).reduce(
-    (allSpecifications, { targetKey, specificationBuilder }) => {
-      if (!ExcludedSnapEndowments.includes(targetKey)) {
-        // @ts-expect-error Ignore for now
-        allSpecifications[targetKey] = specificationBuilder();
-      }
-      return allSpecifications;
-    },
-    {},
-  );
-
-export const buildSnapRestrictedMethodSpecifications = (
-  hooks: Record<string, unknown>,
-) =>
-  Object.values(restrictedMethodPermissionBuilders).reduce(
-    (specifications, { targetKey, specificationBuilder, methodHooks }) => {
-      // @ts-expect-error Ignore for now
-      specifications[targetKey] = specificationBuilder({
-        // @ts-expect-error Ignore for now
-        methodHooks: selectHooks(hooks, methodHooks),
-      });
-      return specifications;
-    },
-    {},
-  );
 
 // Copied from the extension
 /**

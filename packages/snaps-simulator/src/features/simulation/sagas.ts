@@ -14,6 +14,8 @@ import {
   setupMultiplex,
   endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications,
   processSnapPermissions,
+  buildSnapEndowmentSpecifications,
+  buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-controllers';
 import {
   logError,
@@ -53,8 +55,7 @@ import {
   getSubjectMetadataController,
 } from './slice';
 import {
-  buildSnapEndowmentSpecifications,
-  buildSnapRestrictedMethodSpecifications,
+  ExcludedSnapEndowments,
   getEndowments,
   unrestrictedMethods,
 } from './snap-permissions';
@@ -73,8 +74,8 @@ export function* initSaga({ payload }: PayloadAction<string>) {
   const srp: string = yield select(getSrp);
 
   const permissionSpecifications = {
-    ...buildSnapEndowmentSpecifications(),
-    ...buildSnapRestrictedMethodSpecifications({
+    ...buildSnapEndowmentSpecifications(Object.keys(ExcludedSnapEndowments)),
+    ...buildSnapRestrictedMethodSpecifications([], {
       // TODO: Add all the hooks required
       getUnlockPromise: async () => Promise.resolve(true),
       getMnemonic: async () => mnemonicPhraseToBytes(srp),
