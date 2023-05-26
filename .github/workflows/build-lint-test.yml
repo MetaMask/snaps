@@ -223,7 +223,7 @@ jobs:
   test-e2e:
     name: E2E Test
     runs-on: ubuntu-latest
-    needs: prepare
+    needs: build
     strategy:
       fail-fast: false
       matrix:
