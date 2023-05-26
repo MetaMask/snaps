@@ -2,8 +2,6 @@ import ReactRefreshPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 import FaviconsWebpackPlugin from 'favicons-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MonacoEditorWebpackPlugin from 'monaco-editor-webpack-plugin';
-import { resolve } from 'path';
-import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
 import { Configuration, ProvidePlugin } from 'webpack';
 import { Configuration as DevServerConfiguration } from 'webpack-dev-server';
 import WebpackBarPlugin from 'webpackbar';
@@ -68,10 +66,10 @@ const config: Configuration & Record<'devServer', DevServerConfiguration> = {
       zlib: false,
     },
     plugins: [
-      new TsconfigPathsPlugin({
-        configFile: resolve(__dirname, 'tsconfig.json'),
-        baseUrl: __dirname,
-      }),
+      // new TsconfigPathsPlugin({
+      //   configFile: resolve(__dirname, 'tsconfig.json'),
+      //   baseUrl: __dirname,
+      // }),
     ],
   },
   /* eslint-enable @typescript-eslint/naming-convention */

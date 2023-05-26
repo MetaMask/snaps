@@ -53,7 +53,7 @@ jobs:
         env:
           YARN_NPM_AUTH_TOKEN: ${{ secrets.PUBLISH_PREVIEW_NPM_TOKEN }}
       - name: Generate preview build message
-        run: yarn ts-node scripts/generate-preview-build-message.ts
+        run: yarn ts-node --swc scripts/generate-preview-build-message.ts
       - name: Post build preview in comment
         run: gh pr comment "${PR_NUMBER}" --body-file preview-build-message.txt
         env:

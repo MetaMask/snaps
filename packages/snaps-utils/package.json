@@ -8,10 +8,10 @@
   "exports": {
     ".": {
       "browser": {
-        "default": "./dist/index.browser.js"
+        "default": "./dist/esm/index.browser.js"
       },
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
     },
     "./test-utils": {
       "import": "./dist/test-utils/index.js",
