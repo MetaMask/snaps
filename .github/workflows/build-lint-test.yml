@@ -252,7 +252,7 @@ jobs:
         run: yarn install-chrome
       - name: Copy build files
         run: yarn workspace @metamask/snaps-jest-environment run copy
-      - run: yarn workspaces foreach run test:e2e:ci
+      - run: yarn test:e2e:ci
       - name: Require clean working directory
         shell: bash
         run: |
