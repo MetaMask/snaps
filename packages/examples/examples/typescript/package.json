@@ -15,7 +15,8 @@
     "snap.manifest.json"
   ],
   "scripts": {
-    "test:e2e": "jest --runInBand",
+    "test:e2e": "concurrently --kill-others --names server,jest \"yarn mm-snap serve\" \"yarn test\"",
+    "test:e2e:ci": "yarn build && yarn test:e2e",
     "build:clean": "yarn clean && yarn build",
     "build:website": "node ./scripts/build-website.js",
     "build": "mm-snap build",
@@ -23,6 +24,7 @@
     "clean": "rimraf 'dist/*'",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../../../.gitignore",
+    "test": "jest --runInBand",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:ci": "yarn lint"
@@ -40,6 +42,7 @@
     "@types/node": "^17.0.36",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
+    "concurrently": "^8.0.1",
     "deepmerge": "^4.2.2",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",

@@ -27,7 +27,7 @@ export async function installSnap(path: string): Promise<void> {
   const { browser } = getEnvironment();
 
   await browser.$(`[data-testid="status-ok"]`).waitForExist({
-    timeout: 50000,
+    timeout: 10000,
     timeoutMsg: 'Timed out waiting for snap to install.',
   });
 }

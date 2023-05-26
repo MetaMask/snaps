@@ -31,7 +31,9 @@
     "prepare-preview-builds": "yarn workspaces foreach --parallel run prepare-manifest:preview",
     "publish-previews": "yarn workspaces foreach --parallel run publish:preview",
     "install-chrome": "./scripts/install-chrome.sh",
-    "get-release-tag": "ts-node --swc scripts/get-release-tag.ts"
+    "get-release-tag": "ts-node --swc scripts/get-release-tag.ts",
+    "test:e2e": "yarn workspaces foreach --verbose --exclude root run test:e2e",
+    "test:e2e:ci": "yarn workspaces foreach --verbose --exclude root run test:e2e:ci"
   },
   "simple-git-hooks": {
     "pre-commit": "yarn lint-staged && yarn dedupe --check"
