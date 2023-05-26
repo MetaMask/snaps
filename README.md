@@ -1,6 +1,6 @@
-# snaps-monorepo
+# snaps
 
-Monorepo for experimental snaps dependencies.
+Everything around [MetaMask Snaps](https://metamask.io/snaps/)
 
 ## Contributing
 
