@@ -120,8 +120,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            packages/snaps-simulator/dist
-            packages/snaps-cli/dist
+            packages/*/dist
           key: e2e-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
       - name: Require clean working directory
         shell: bash
@@ -246,8 +245,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            packages/snaps-simulator/dist
-            packages/snaps-cli/dist
+            packages/*/dist
           key: e2e-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
       - run: yarn --immutable --immutable-cache
       - name: Install Google Chrome
