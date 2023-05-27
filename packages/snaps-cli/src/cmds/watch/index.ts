@@ -5,7 +5,7 @@ import { YargsArgs } from '../../types/yargs';
 import { processInvalidTranspilation } from '../build/utils';
 import { watch } from './watchHandler';
 
-export = {
+const command = {
   command: ['watch', 'w'],
   desc: 'Build Snap on change',
   builder: (yarg: yargs.Argv) => {
@@ -29,3 +29,5 @@ export = {
   },
   handler: async (argv: YargsArgs) => watch(argv),
 };
+
+export default command;

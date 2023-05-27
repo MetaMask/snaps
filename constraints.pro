@@ -127,9 +127,15 @@ gen_enforced_field(WorkspaceCwd, 'scripts.build:cjs', 'swc --source-maps --confi
   \+ workspace_field(WorkspaceCwd, 'private', true).
 gen_enforced_field(WorkspaceCwd, 'scripts.build:esm', 'swc --source-maps --config module.type=es6 --out-dir dist/esm src') :-
   \+ workspace_field(WorkspaceCwd, 'private', true).
+gen_enforced_field(WorkspaceCwd, 'scripts.build:clean', 'yarn clean && yarn build') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true).
 
 % All published packages must have the same main and module fields.
 gen_enforced_field(WorkspaceCwd, 'main', 'dist/cjs/index.js') :-
   \+ workspace_field(WorkspaceCwd, 'private', true).
 gen_enforced_field(WorkspaceCwd, 'module', 'dist/esm/index.js') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true).
+
+% All published packages must have the same clean script.
+gen_enforced_field(WorkspaceCwd, 'scripts.clean', 'rimraf coverage dist *.tsbuildinfo') :-
   \+ workspace_field(WorkspaceCwd, 'private', true).

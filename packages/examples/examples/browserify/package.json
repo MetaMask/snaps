@@ -14,10 +14,13 @@
     "snap.manifest.json"
   ],
   "scripts": {
+    "mm-snap": "ts-node --swc ../../../snaps-cli/src/main.ts",
+    "build:clean": "yarn clean && yarn build",
+    "clean": "rimraf dist",
     "build": "gulp build",
     "manifest": "mm-snap manifest --fix",
-    "eval": "mm-snap eval -b dist/snap.js",
-    "serve": "concurrently \"gulp watch\" \"mm-snap serve\""
+    "eval": "yarn mm-snap eval -b dist/snap.js",
+    "serve": "concurrently \"gulp watch\" \"yarn mm-snap serve\""
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",

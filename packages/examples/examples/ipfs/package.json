@@ -14,8 +14,11 @@
     "snap.manifest.json"
   ],
   "scripts": {
-    "build": "mm-snap build",
-    "clean": "rimraf 'dist/*'"
+    "mm-snap": "ts-node --swc ../../../snaps-cli/src/main.ts",
+    "build:clean": "yarn clean && yarn build",
+    "build": "yarn mm-snap build",
+    "serve": "yarn mm-snap serve",
+    "clean": "rimraf dist"
   },
   "dependencies": {
     "eth-json-rpc-errors": "^1.1.0",

@@ -4,7 +4,7 @@ import builders from '../../builders';
 import { YargsArgs } from '../../types/yargs';
 import { evalHandler } from './evalHandler';
 
-export = {
+const command = {
   command: ['eval', 'e'],
   desc: 'Attempt to evaluate Snap bundle in SES',
   builder: (yarg: yargs.Argv) => {
@@ -12,3 +12,5 @@ export = {
   },
   handler: async (argv: YargsArgs) => evalHandler(argv),
 };
+
+export default command;

@@ -1,0 +1,28 @@
+{
+  "extends": "../../tsconfig.packages.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "rootDir": "./src",
+    "outDir": "./dist"
+  },
+  "include": ["./src", "./src/openrpc.json"],
+  "exclude": [
+    "./src/**/*.test.ts",
+    "./src/**/*.test.*.ts",
+    "./src/**/*.test.tsx",
+    "./src/**/*.test.*.tsx",
+    "./src/**/test-utils/**",
+    "./src/**/__snapshots__/**",
+    "./src/**/__mocks__/**",
+    "wdio.config.ts",
+    "./scripts/**"
+  ],
+  "references": [
+    {
+      "path": "../rpc-methods/tsconfig.build.json"
+    },
+    {
+      "path": "../snaps-utils/tsconfig.build.json"
+    }
+  ]
+}

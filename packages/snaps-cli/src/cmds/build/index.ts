@@ -5,7 +5,7 @@ import { YargsArgs } from '../../types/yargs';
 import { build } from './buildHandler';
 import { processInvalidTranspilation } from './utils';
 
-export = {
+const command = {
   command: ['build', 'b'],
   desc: 'Build Snap from source',
   builder: (yarg: yargs.Argv) => {
@@ -26,3 +26,5 @@ export = {
   },
   handler: async (argv: YargsArgs) => build(argv),
 };
+
+export default command;

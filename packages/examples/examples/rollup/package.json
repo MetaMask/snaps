@@ -14,9 +14,11 @@
     "snap.manifest.json"
   ],
   "scripts": {
+    "mm-snap": "ts-node --swc ../../../snaps-cli/src/main.ts",
+    "build:clean": "yarn clean && yarn build",
+    "clean": "rimraf dist",
     "build": "rollup --config",
-    "clean": "rimraf 'dist/*'",
-    "serve": "concurrently \"rollup --config --watch\" \"mm-snap serve\""
+    "serve": "concurrently \"rollup --config --watch\" \"yarn mm-snap serve\""
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",

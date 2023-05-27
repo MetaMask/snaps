@@ -14,10 +14,11 @@
     "snap.manifest.json"
   ],
   "scripts": {
+    "mm-snap": "ts-node --swc ../../../snaps-cli/src/main.ts",
     "build:clean": "yarn clean && yarn build",
-    "build": "mm-snap build",
-    "serve": "mm-snap serve",
-    "clean": "rimraf 'dist/*'",
+    "build": "yarn mm-snap build",
+    "serve": "yarn mm-snap serve",
+    "clean": "rimraf dist",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '**/*.html' '!CHANGELOG.md' --ignore-path .gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",

@@ -5,7 +5,7 @@ import { YargsArgs } from '../../types/yargs';
 import { logError } from '../../utils';
 import { manifestHandler } from './manifestHandler';
 
-export = {
+const command = {
   command: ['manifest', 'm'],
   desc: 'Validate the snap.manifest.json file',
   builder: (yarg: yargs.Argv) => {
@@ -20,3 +20,5 @@ export = {
     }
   },
 };
+
+export default command;

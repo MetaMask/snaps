@@ -15,8 +15,10 @@
   ],
   "scripts": {
     "prebuild": "yarn run build:wasm",
-    "build": "yarn run prebuild && mm-snap build",
-    "clean": "rimraf 'dist/*' 'build/*'",
+    "build": "yarn run prebuild && yarn mm-snap build",
+    "mm-snap": "ts-node --swc ../../../snaps-cli/src/main.ts",
+    "build:clean": "yarn clean && yarn build",
+    "clean": "rimraf dist build",
     "build:wasm": "asc assembly/program.ts -o build/program.wasm",
     "serve": "mm-snap serve"
   },

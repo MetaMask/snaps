@@ -7,12 +7,18 @@
     "module": "CommonJS",
     "moduleResolution": "node",
     "paths": {
-      "@metamask/*/test-utils": ["../*/src/test-utils"],
-      "@metamask/*": ["../*/src"]
+      "@metamask/*/test-utils": [
+        "../../*/src/test-utils",
+        "../*/src/test-utils"
+      ],
+      "@metamask/*": ["../../*/src", "../*/src"]
     },
     "resolveJsonModule": true,
     "strict": true,
     "target": "ES2020",
-    "useUnknownInCatchVariables": false
+    "useUnknownInCatchVariables": false,
+    "skipLibCheck": true,
+    "emitDeclarationOnly": true,
+    "declarationMap": true
   }
 }
