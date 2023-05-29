@@ -33,7 +33,7 @@
     "publish:preview": "yarn npm publish --tag preview"
   },
   "dependencies": {
-    "@metamask/approval-controller": "^2.0.0",
+    "@metamask/approval-controller": "^3.0.0",
     "@metamask/base-controller": "^2.0.0",
     "@metamask/object-multiplex": "^1.2.0",
     "@metamask/permission-controller": "^3.2.0",
