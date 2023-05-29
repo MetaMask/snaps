@@ -35,7 +35,7 @@
     "@emotion/react": "^11.10.8",
     "@emotion/styled": "^11.10.8",
     "@ethersproject/units": "^5.7.0",
-    "@metamask/base-controller": "^2.0.0",
+    "@metamask/base-controller": "^3.0.0",
     "@metamask/eth-json-rpc-middleware": "^11.0.0",
     "@metamask/key-tree": "^7.0.0",
     "@metamask/permission-controller": "^3.2.0",
