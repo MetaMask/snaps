@@ -10,7 +10,7 @@ describe('endowment:eip1193', () => {
     );
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
-      targetKey: SnapEndowments.EthereumProvider,
+      targetName: SnapEndowments.EthereumProvider,
       endowmentGetter: expect.any(Function),
       allowedCaveats: null,
       subjectTypes: [SubjectType.Snap],

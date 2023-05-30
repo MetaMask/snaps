@@ -12,7 +12,7 @@ const permissionName = SnapEndowments.WebAssemblyAccess;
 
 type WebAssemblyEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
-  targetKey: typeof permissionName;
+  targetName: typeof permissionName;
   endowmentGetter: (_options?: any) => ['WebAssembly'];
   allowedCaveats: null;
 }>;
@@ -33,7 +33,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 > = (_builderOptions?: any) => {
   return {
     permissionType: PermissionType.Endowment,
-    targetKey: permissionName,
+    targetName: permissionName,
     allowedCaveats: null,
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => {
       return ['WebAssembly'];
@@ -43,6 +43,6 @@ const specificationBuilder: PermissionSpecificationBuilder<
 };
 
 export const webAssemblyEndowmentBuilder = Object.freeze({
-  targetKey: permissionName,
+  targetName: permissionName,
   specificationBuilder,
 } as const);

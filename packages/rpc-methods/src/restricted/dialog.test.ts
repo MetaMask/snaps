@@ -11,7 +11,7 @@ import {
 describe('builder', () => {
   it('has the expected shape', () => {
     expect(dialogBuilder).toMatchObject({
-      targetKey: 'snap_dialog',
+      targetName: 'snap_dialog',
       specificationBuilder: expect.any(Function),
       methodHooks: {
         showDialog: true,
@@ -28,7 +28,7 @@ describe('builder', () => {
       }),
     ).toStrictEqual({
       permissionType: PermissionType.RestrictedMethod,
-      targetKey: 'snap_dialog',
+      targetName: 'snap_dialog',
       allowedCaveats: null,
       methodImplementation: expect.any(Function),
       subjectTypes: [SubjectType.Snap],

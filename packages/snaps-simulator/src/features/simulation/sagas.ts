@@ -121,7 +121,6 @@ export function* initSaga({ payload }: PayloadAction<string>) {
       ...snapsEndowmentCaveatSpecifications,
     },
     permissionSpecifications,
-    // @ts-expect-error PermissionController expects a mutable string array here, but is not given it in the extension either.
     unrestrictedMethods,
   });
 

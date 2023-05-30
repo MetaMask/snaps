@@ -20,7 +20,7 @@ describe('specificationBuilder', () => {
   it('outputs expected specification', () => {
     expect(specification).toStrictEqual({
       permissionType: PermissionType.RestrictedMethod,
-      targetKey: 'snap_getBip32PublicKey',
+      targetName: 'snap_getBip32PublicKey',
       allowedCaveats: [SnapCaveatType.PermittedDerivationPaths],
       methodImplementation: expect.any(Function),
       subjectTypes: [SubjectType.Snap],

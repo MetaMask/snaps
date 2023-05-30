@@ -12,7 +12,7 @@ import { Infer, literal, object, optional, string } from 'superstruct';
 
 import { deriveEntropy, MethodHooksObject } from '../utils';
 
-const targetKey = 'snap_getEntropy';
+const targetName = 'snap_getEntropy';
 
 type GetEntropySpecificationBuilderOptions = {
   allowedCaveats?: Readonly<NonEmptyArray<string>> | null;
@@ -21,7 +21,7 @@ type GetEntropySpecificationBuilderOptions = {
 
 type GetEntropySpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.RestrictedMethod;
-  targetKey: typeof targetKey;
+  targetName: typeof targetName;
   methodImplementation: ReturnType<typeof getEntropyImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
 }>;
@@ -49,7 +49,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 }: GetEntropySpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
-    targetKey,
+    targetName,
     allowedCaveats,
     methodImplementation: getEntropyImplementation(methodHooks),
     subjectTypes: [SubjectType.Snap],
@@ -62,7 +62,7 @@ const methodHooks: MethodHooksObject<GetEntropyHooks> = {
 };
 
 export const getEntropyBuilder = Object.freeze({
-  targetKey,
+  targetName,
   specificationBuilder,
   methodHooks,
 } as const);
