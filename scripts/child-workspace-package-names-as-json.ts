@@ -2,6 +2,8 @@
 
 import execa from 'execa';
 
+const PRIVATE_WORKSPACES = ['@metamask/snaps-simulator'];
+
 /**
  * The entrypoint to this script.
  */
@@ -19,7 +21,7 @@ async function main() {
     .map((workspace) => workspace.name);
 
   // eslint-disable-next-line no-console
-  console.log(JSON.stringify(childWorkspaceNames));
+  console.log(JSON.stringify([...childWorkspaceNames, PRIVATE_WORKSPACES]));
 }
 
 main().catch((error) => {
