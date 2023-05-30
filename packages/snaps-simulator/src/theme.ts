@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { tagAnatomy, formAnatomy, tabsAnatomy } from '@chakra-ui/anatomy';
+import {
+  tagAnatomy,
+  formAnatomy,
+  tabsAnatomy,
+  modalAnatomy,
+} from '@chakra-ui/anatomy';
 import {
   ThemeConfig,
   createMultiStyleConfigHelpers,
@@ -25,6 +30,11 @@ const {
   definePartsStyle: defineTabsPartsStyle,
   defineMultiStyleConfig: defineTabsMultiStyleConfig,
 } = createMultiStyleConfigHelpers(tabsAnatomy.keys);
+
+const {
+  definePartsStyle: defineModalPartsStyle,
+  defineMultiStyleConfig: defineModalMultiStyleConfig,
+} = createMultiStyleConfigHelpers(modalAnatomy.keys);
 /* eslint-enable @typescript-eslint/unbound-method */
 
 const config: ThemeConfig = {
@@ -37,6 +47,7 @@ export const theme = extendTheme({
 
   semanticTokens: {
     colors: {
+      'chakra-body-bg': { _light: 'white', _dark: '#24272A' },
       text: {
         default: '#24272A',
         _dark: '#9FA6AE',
@@ -304,6 +315,14 @@ export const theme = extendTheme({
           'colors.background.alternative',
         [cssVar('skeleton-end-color').variable]: 'colors.border',
         borderRadius: 'lg',
+      }),
+    }),
+
+    Modal: defineModalMultiStyleConfig({
+      baseStyle: defineModalPartsStyle({
+        dialog: {
+          bg: 'chakra-body-bg',
+        },
       }),
     }),
   },

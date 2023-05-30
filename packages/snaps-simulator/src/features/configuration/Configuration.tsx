@@ -142,7 +142,7 @@ export const Configuration = () => {
           <FormControl>
             <FormLabel>Snap location</FormLabel>
             <InputGroup>
-              <InputLeftAddon px="0" bg="white" borderColor="border">
+              <InputLeftAddon px="0" bg="chakra-body-bg" borderColor="border">
                 <Select
                   border="none"
                   onChange={handleSnapPrefixChange}
@@ -158,7 +158,11 @@ export const Configuration = () => {
                 onChange={handleSnapUrlChange}
               />
               {isNPM && npmVersions.length > 0 && (
-                <InputRightAddon px="0" bg="white" borderColor="border">
+                <InputRightAddon
+                  px="0"
+                  bg="chakra-body-bg"
+                  borderColor="border"
+                >
                   <Select
                     border="none"
                     onChange={handleNpmVersionChange}
