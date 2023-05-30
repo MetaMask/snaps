@@ -15,12 +15,13 @@
   ],
   "scripts": {
     "mm-snap": "ts-node --swc ../../../snaps-cli/src/main.ts",
+    "webpack": "yarn ts-node --swc -r tsconfig-paths/register ../../../../node_modules/.bin/webpack",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf dist",
-    "build": "yarn ts-node --swc ../../../../node_modules/.bin/webpack",
-    "manifest": "mm-snap manifest --fix",
+    "build": "yarn webpack",
+    "manifest": "yarn mm-snap manifest --fix",
     "eval": "yarn mm-snap eval -b dist/snap.js",
-    "serve": "concurrently \"webpack --watch\" \"yarn mm-snap serve\""
+    "serve": "concurrently \"yarn webpack --watch\" \"yarn mm-snap serve\""
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",

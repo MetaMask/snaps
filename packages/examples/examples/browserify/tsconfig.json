@@ -3,5 +3,10 @@
   "compilerOptions": {
     "resolveJsonModule": true
   },
-  "include": ["src", "gulpfile.ts", "babel.config.json"]
+  "include": ["src", "gulpfile.ts", "babel.config.json"],
+  "references": [
+    {
+      "path": "../../../snaps-browserify-plugin"
+    }
+  ]
 }

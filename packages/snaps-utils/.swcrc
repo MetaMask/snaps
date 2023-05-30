@@ -19,7 +19,8 @@
     "^.*\\.test.*?\\.[t|j]sx?$",
     "^.*test-utils.*$",
     "^.*__mocks__.*$",
-    "^.*__snapshots__.*$"
+    "^.*__snapshots__.*$",
+    "eval-worker\\.ts$"
   ],
   "minify": true
 }

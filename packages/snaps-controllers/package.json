@@ -25,7 +25,7 @@
     "build:esm": "swc --source-maps --config module.type=es6 --out-dir dist/esm src",
     "build": "yarn build:cjs && yarn build:esm",
     "build:clean": "yarn clean && yarn build",
-    "clean": "rimraf coverage dist *.tsbuildinfo",
+    "clean": "rimraf \"coverage/**\" \"dist/**\" \"*.tsbuildinfo\"",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",

@@ -8,10 +8,11 @@
     "moduleResolution": "node",
     "paths": {
       "@metamask/*/test-utils": [
+        "../../../*/src/test-utils",
         "../../*/src/test-utils",
         "../*/src/test-utils"
       ],
-      "@metamask/*": ["../../*/src", "../*/src"]
+      "@metamask/*": ["../../../*/src", "../../*/src", "../*/src"]
     },
     "resolveJsonModule": true,
     "strict": true,

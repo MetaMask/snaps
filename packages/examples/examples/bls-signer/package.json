@@ -14,7 +14,7 @@
     "snap.manifest.json"
   ],
   "scripts": {
-    "mm-snap": "ts-node --swc ../../../snaps-cli/src/main.ts",
+    "mm-snap": "ts-node --swc -r tsconfig-paths/register ../../../snaps-cli/src/main.ts",
     "build:clean": "yarn clean && yarn build",
     "build": "yarn mm-snap build",
     "serve": "yarn mm-snap serve",

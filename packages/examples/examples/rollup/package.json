@@ -17,7 +17,7 @@
     "mm-snap": "ts-node --swc ../../../snaps-cli/src/main.ts",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf dist",
-    "build": "rollup --config",
+    "build": "ts-node --swc -r tsconfig-paths/register ../../../../node_modules/.bin/rollup --config",
     "serve": "concurrently \"rollup --config --watch\" \"yarn mm-snap serve\""
   },
   "devDependencies": {

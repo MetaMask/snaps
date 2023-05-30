@@ -137,5 +137,5 @@ gen_enforced_field(WorkspaceCwd, 'module', 'dist/esm/index.js') :-
   \+ workspace_field(WorkspaceCwd, 'private', true).
 
 % All published packages must have the same clean script.
-gen_enforced_field(WorkspaceCwd, 'scripts.clean', 'rimraf coverage dist *.tsbuildinfo') :-
+gen_enforced_field(WorkspaceCwd, 'scripts.clean', 'rimraf "coverage/**" "dist/**" "*.tsbuildinfo"') :-
   \+ workspace_field(WorkspaceCwd, 'private', true).

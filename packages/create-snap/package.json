@@ -15,11 +15,11 @@
   ],
   "scripts": {
     "build:chmod": "chmod +x ./dist/main.js",
-    "build": "yarn build:cjs && yarn build:esm && yarn build:post-tsc",
+    "build": "yarn build:cjs && yarn build:esm",
     "build:post-tsc": "yarn build:chmod",
     "build:clean": "yarn clean && yarn build",
     "build:watch": "tsc-watch --onSuccess 'yarn build:chmod'",
-    "clean": "rimraf coverage dist *.tsbuildinfo",
+    "clean": "rimraf \"coverage/**\" \"dist/**\" \"*.tsbuildinfo\"",
     "test": "jest && yarn posttest",
     "posttest": "jest-it-up",
     "test:watch": "yarn test --watch",

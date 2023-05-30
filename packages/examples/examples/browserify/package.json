@@ -14,13 +14,14 @@
     "snap.manifest.json"
   ],
   "scripts": {
-    "mm-snap": "ts-node --swc ../../../snaps-cli/src/main.ts",
+    "gulp": "ts-node --swc -r tsconfig-paths/register ../../../../node_modules/.bin/gulp",
+    "mm-snap": "ts-node --swc ../../../../snaps-cli/src/main.ts",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf dist",
-    "build": "gulp build",
-    "manifest": "mm-snap manifest --fix",
+    "build": "yarn gulp",
+    "manifest": "yarn mm-snap manifest --fix",
     "eval": "yarn mm-snap eval -b dist/snap.js",
-    "serve": "concurrently \"gulp watch\" \"yarn mm-snap serve\""
+    "serve": "concurrently \"yarn gulp watch\" \"yarn mm-snap serve\""
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
@@ -54,6 +55,7 @@
     "prettier": "^2.7.1",
     "prettier-plugin-packagejson": "^2.2.11",
     "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.1.2",
     "typescript": "~4.8.4",
     "vinyl-source-stream": "^2.0.0",
     "watchify": "^4.0.0"

@@ -1,3 +1,4 @@
+import plugin from '@metamask/snaps-browserify-plugin';
 import browserify from 'browserify';
 import { series, dest } from 'gulp';
 import source from 'vinyl-source-stream';
@@ -14,7 +15,7 @@ const bundler = browserify({
   packageCache: {},
 })
   .transform('babelify', { extensions: ['.ts'], ...babelConfig })
-  .plugin('@metamask/snaps-browserify-plugin');
+  .plugin(plugin);
 
 /**
  * Runs the Browserify bundler, writes the output to the `dist` folder, and runs
