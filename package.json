@@ -12,7 +12,7 @@
   "scripts": {
     "setup": "yarn install",
     "postinstall": "simple-git-hooks",
-    "lint:eslint": "yarn workspaces foreach --exclude root --parallel --verbose run eslint . --cache --ext js,jsx,ts,tsx",
+    "lint:eslint": "yarn workspaces foreach --parallel --verbose run eslint . --cache --ext js,jsx,ts,tsx",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!**/CHANGELOG.md' '**/*.yml' '**/*.html'",
     "lint:changelogs": "yarn workspaces foreach --parallel --verbose run lint:changelog",
     "lint:tsconfig": "node scripts/verify-tsconfig.mjs",
