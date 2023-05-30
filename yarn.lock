@@ -4297,6 +4297,7 @@ __metadata:
     "@peculiar/webcrypto": ^1.3.3
     "@swc/core": ^1.3.61
     "@swc/jest": ^0.2.26
+    "@types/chrome": ^0.0.237
     "@types/concat-stream": ^2.0.0
     "@types/gunzip-maybe": ^1.4.0
     "@types/jest": ^27.5.1
@@ -5704,6 +5705,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/chrome@npm:^0.0.237":
+  version: 0.0.237
+  resolution: "@types/chrome@npm:0.0.237"
+  dependencies:
+    "@types/filesystem": "*"
+    "@types/har-format": "*"
+  checksum: 9dfb0070065ca4667ef2fa9ec45af2f604b9ba98b6429d38607c6bfcc8dc2178e83eea4eeedbe88a8299dfe9dda029c9341e454c4eff7b715b90e9d5fc7b990d
+  languageName: node
+  linkType: hard
+
 "@types/concat-stream@npm:^2.0.0":
   version: 2.0.0
   resolution: "@types/concat-stream@npm:2.0.0"
@@ -5820,6 +5831,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/filesystem@npm:*":
+  version: 0.0.32
+  resolution: "@types/filesystem@npm:0.0.32"
+  dependencies:
+    "@types/filewriter": "*"
+  checksum: 4b9079d200a3b241722b90e1c5806c4b32c4dac87d42a1c7ef76a2c0dafdbe7d5f1a379b873ad5de73622b44de6599e1522908f67b938d54e785bd1c36e302a0
+  languageName: node
+  linkType: hard
+
+"@types/filewriter@npm:*":
+  version: 0.0.29
+  resolution: "@types/filewriter@npm:0.0.29"
+  checksum: 0c58aa875c2c245be7dbc42b20212f3203e13d11ec013a4a5cd0febf0e8b87214be5882c05ff9d7bdf0398f145a4fdbc24b7e6cf7b094e134a3b4c7a0598502f
+  languageName: node
+  linkType: hard
+
 "@types/glob-stream@npm:*":
   version: 6.1.1
   resolution: "@types/glob-stream@npm:6.1.1"
@@ -5866,6 +5893,13 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: 45c54bfe0e46ae03d54fa09db726f2d9a28cffc79cba276558039fcc69ed0081eb445871cdbdfe62d7eaaca9a29fc4b93941de66e501c24dfed25868064c6644
+  languageName: node
+  linkType: hard
+
+"@types/har-format@npm:*":
+  version: 1.2.10
+  resolution: "@types/har-format@npm:1.2.10"
+  checksum: 14c0118d809e77a0bac9deec0a87159c28beab21105cfce3aa291b51e28d4c07142851c4e6b93b7ecb4ea237fe07d39ba98a42bb2de2f5891144733411ac76b7
   languageName: node
   linkType: hard
 

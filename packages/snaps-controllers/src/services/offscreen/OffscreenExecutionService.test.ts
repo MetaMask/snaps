@@ -126,7 +126,9 @@ describe('OffscreenExecutionService', () => {
       frameUrl: FRAME_URL,
     });
 
-    const hasDocument = getMockedFunction(chrome.offscreen.hasDocument);
+    const hasDocument = getMockedFunction(
+      chrome.offscreen.hasDocument,
+    ) as unknown as jest.MockedFunction<() => Promise<boolean>>;
     const createDocument = getMockedFunction(chrome.offscreen.createDocument);
 
     hasDocument.mockResolvedValueOnce(false).mockResolvedValue(true);
