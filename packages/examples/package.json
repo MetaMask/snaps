@@ -16,10 +16,6 @@
   ],
   "scripts": {
     "lint:changelog": "yarn auto-changelog validate",
-    "lint:eslint": "eslint . --cache --ext js,ts",
-    "lint:misc": "prettier '**/*.json' '**/*.md' '**/*.html' '!CHANGELOG.md' --ignore-path ../../.gitignore",
-    "lint": "yarn lint:eslint && yarn lint:misc --check",
-    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "build": "yarn workspaces foreach --parallel --verbose run build",
     "build:post-tsc": "yarn build"
   },
