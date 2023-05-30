@@ -60,7 +60,7 @@ type DialogSpecificationBuilderOptions = {
 
 type DialogSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.RestrictedMethod;
-  targetKey: typeof methodName;
+  targetName: typeof methodName;
   methodImplementation: ReturnType<typeof getDialogImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
 }>;
@@ -89,7 +89,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 }: DialogSpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
-    targetKey: methodName,
+    targetName: methodName,
     allowedCaveats,
     methodImplementation: getDialogImplementation(methodHooks),
     subjectTypes: [SubjectType.Snap],
@@ -101,7 +101,7 @@ const methodHooks: MethodHooksObject<DialogMethodHooks> = {
 };
 
 export const dialogBuilder = Object.freeze({
-  targetKey: methodName,
+  targetName: methodName,
   specificationBuilder,
   methodHooks,
 } as const);

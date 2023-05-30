@@ -17,7 +17,7 @@ describe('buildSnapEndowmentSpecifications', () => {
           "subjectTypes": [
             "snap",
           ],
-          "targetKey": "endowment:cronjob",
+          "targetName": "endowment:cronjob",
         },
         "endowment:ethereum-provider": {
           "allowedCaveats": null,
@@ -26,7 +26,7 @@ describe('buildSnapEndowmentSpecifications', () => {
           "subjectTypes": [
             "snap",
           ],
-          "targetKey": "endowment:ethereum-provider",
+          "targetName": "endowment:ethereum-provider",
         },
         "endowment:keyring": {
           "allowedCaveats": [
@@ -37,7 +37,7 @@ describe('buildSnapEndowmentSpecifications', () => {
           "subjectTypes": [
             "snap",
           ],
-          "targetKey": "endowment:keyring",
+          "targetName": "endowment:keyring",
           "validator": [Function],
         },
         "endowment:long-running": {
@@ -47,7 +47,7 @@ describe('buildSnapEndowmentSpecifications', () => {
           "subjectTypes": [
             "snap",
           ],
-          "targetKey": "endowment:long-running",
+          "targetName": "endowment:long-running",
         },
         "endowment:network-access": {
           "allowedCaveats": null,
@@ -56,7 +56,7 @@ describe('buildSnapEndowmentSpecifications', () => {
           "subjectTypes": [
             "snap",
           ],
-          "targetKey": "endowment:network-access",
+          "targetName": "endowment:network-access",
         },
         "endowment:rpc": {
           "allowedCaveats": [
@@ -67,7 +67,7 @@ describe('buildSnapEndowmentSpecifications', () => {
           "subjectTypes": [
             "snap",
           ],
-          "targetKey": "endowment:rpc",
+          "targetName": "endowment:rpc",
           "validator": [Function],
         },
         "endowment:transaction-insight": {
@@ -79,7 +79,7 @@ describe('buildSnapEndowmentSpecifications', () => {
           "subjectTypes": [
             "snap",
           ],
-          "targetKey": "endowment:transaction-insight",
+          "targetName": "endowment:transaction-insight",
           "validator": [Function],
         },
         "endowment:webassembly": {
@@ -89,7 +89,7 @@ describe('buildSnapEndowmentSpecifications', () => {
           "subjectTypes": [
             "snap",
           ],
-          "targetKey": "endowment:webassembly",
+          "targetName": "endowment:webassembly",
         },
       }
     `);
@@ -108,7 +108,7 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
           "subjectTypes": [
             "snap",
           ],
-          "targetKey": "snap_dialog",
+          "targetName": "snap_dialog",
         },
         "snap_getBip32Entropy": {
           "allowedCaveats": [
@@ -119,7 +119,7 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
           "subjectTypes": [
             "snap",
           ],
-          "targetKey": "snap_getBip32Entropy",
+          "targetName": "snap_getBip32Entropy",
           "validator": [Function],
         },
         "snap_getBip32PublicKey": {
@@ -131,7 +131,7 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
           "subjectTypes": [
             "snap",
           ],
-          "targetKey": "snap_getBip32PublicKey",
+          "targetName": "snap_getBip32PublicKey",
           "validator": [Function],
         },
         "snap_getBip44Entropy": {
@@ -143,7 +143,7 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
           "subjectTypes": [
             "snap",
           ],
-          "targetKey": "snap_getBip44Entropy",
+          "targetName": "snap_getBip44Entropy",
           "validator": [Function],
         },
         "snap_getEntropy": {
@@ -153,7 +153,7 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
           "subjectTypes": [
             "snap",
           ],
-          "targetKey": "snap_getEntropy",
+          "targetName": "snap_getEntropy",
         },
         "snap_manageState": {
           "allowedCaveats": null,
@@ -162,7 +162,7 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
           "subjectTypes": [
             "snap",
           ],
-          "targetKey": "snap_manageState",
+          "targetName": "snap_manageState",
         },
         "snap_notify": {
           "allowedCaveats": null,
@@ -171,7 +171,7 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
           "subjectTypes": [
             "snap",
           ],
-          "targetKey": "snap_notify",
+          "targetName": "snap_notify",
         },
         "wallet_snap": {
           "allowedCaveats": [
@@ -182,7 +182,7 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
           "sideEffect": {
             "onPermitted": [Function],
           },
-          "targetKey": "wallet_snap",
+          "targetName": "wallet_snap",
           "validator": [Function],
         },
       }

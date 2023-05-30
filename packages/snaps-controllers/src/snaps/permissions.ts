@@ -54,9 +54,9 @@ export const buildSnapEndowmentSpecifications = (
 ) =>
   Object.values(endowmentPermissionBuilders).reduce<
     Record<string, PermissionSpecificationConstraint>
-  >((allSpecifications, { targetKey, specificationBuilder }) => {
-    if (!excludedEndowments.includes(targetKey)) {
-      allSpecifications[targetKey] = specificationBuilder({});
+  >((allSpecifications, { targetName, specificationBuilder }) => {
+    if (!excludedEndowments.includes(targetName)) {
+      allSpecifications[targetName] = specificationBuilder({});
     }
     return allSpecifications;
   }, {});
@@ -67,9 +67,9 @@ export const buildSnapRestrictedMethodSpecifications = (
 ) =>
   Object.values(restrictedMethodPermissionBuilders).reduce<
     Record<string, PermissionSpecificationConstraint>
-  >((specifications, { targetKey, specificationBuilder, methodHooks }) => {
-    if (!excludedPermissions.includes(targetKey)) {
-      specifications[targetKey] = specificationBuilder({
+  >((specifications, { targetName, specificationBuilder, methodHooks }) => {
+    if (!excludedPermissions.includes(targetName)) {
+      specifications[targetName] = specificationBuilder({
         // @ts-expect-error The selectHooks type is wonky
         methodHooks: selectHooks<typeof hooks, keyof typeof methodHooks>(
           hooks,
