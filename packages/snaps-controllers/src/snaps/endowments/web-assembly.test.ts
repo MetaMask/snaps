@@ -8,7 +8,7 @@ describe('endowment:webassembly', () => {
     const specification = webAssemblyEndowmentBuilder.specificationBuilder({});
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
-      targetKey: SnapEndowments.WebAssemblyAccess,
+      targetName: SnapEndowments.WebAssemblyAccess,
       endowmentGetter: expect.any(Function),
       allowedCaveats: null,
       subjectTypes: [SubjectType.Snap],

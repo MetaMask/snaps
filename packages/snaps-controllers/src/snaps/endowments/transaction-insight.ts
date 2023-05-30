@@ -26,7 +26,7 @@ const permissionName = SnapEndowments.TransactionInsight;
 
 type TransactionInsightEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
-  targetKey: typeof permissionName;
+  targetName: typeof permissionName;
   endowmentGetter: (_options?: EndowmentGetterParams) => undefined;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
@@ -46,7 +46,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 > = (_builderOptions?: unknown) => {
   return {
     permissionType: PermissionType.Endowment,
-    targetKey: permissionName,
+    targetName: permissionName,
     allowedCaveats: [SnapCaveatType.TransactionOrigin],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
     validator: ({ caveats }) => {
@@ -65,7 +65,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 };
 
 export const transactionInsightEndowmentBuilder = Object.freeze({
-  targetKey: permissionName,
+  targetName: permissionName,
   specificationBuilder,
 } as const);
 

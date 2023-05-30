@@ -64,7 +64,7 @@ type ManageStateSpecificationBuilderOptions = {
 
 type ManageStateSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.RestrictedMethod;
-  targetKey: typeof methodName;
+  targetName: typeof methodName;
   methodImplementation: ReturnType<typeof getManageStateImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
 }>;
@@ -89,7 +89,7 @@ export const specificationBuilder: PermissionSpecificationBuilder<
 }: ManageStateSpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
-    targetKey: methodName,
+    targetName: methodName,
     allowedCaveats,
     methodImplementation: getManageStateImplementation(methodHooks),
     subjectTypes: [SubjectType.Snap],
@@ -105,7 +105,7 @@ const methodHooks: MethodHooksObject<ManageStateMethodHooks> = {
 };
 
 export const manageStateBuilder = Object.freeze({
-  targetKey: methodName,
+  targetName: methodName,
   specificationBuilder,
   methodHooks,
 } as const);

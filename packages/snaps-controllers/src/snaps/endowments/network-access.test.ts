@@ -10,7 +10,7 @@ describe('endowment:network-access', () => {
     );
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
-      targetKey: SnapEndowments.NetworkAccess,
+      targetName: SnapEndowments.NetworkAccess,
       endowmentGetter: expect.any(Function),
       allowedCaveats: null,
       subjectTypes: [SubjectType.Snap],

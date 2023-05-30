@@ -20,7 +20,7 @@ describe('specificationBuilder', () => {
   it('outputs expected specification', () => {
     expect(specification).toStrictEqual({
       permissionType: PermissionType.RestrictedMethod,
-      targetKey: 'snap_getBip44Entropy',
+      targetName: 'snap_getBip44Entropy',
       allowedCaveats: [SnapCaveatType.PermittedCoinTypes],
       methodImplementation: expect.any(Function),
       subjectTypes: [SubjectType.Snap],

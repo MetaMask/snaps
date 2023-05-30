@@ -55,8 +55,8 @@
   "dependencies": {
     "@babel/core": "^7.18.6",
     "@babel/types": "^7.18.7",
-    "@metamask/base-controller": "^2.0.0",
-    "@metamask/permission-controller": "^3.2.0",
+    "@metamask/base-controller": "^3.0.0",
+    "@metamask/permission-controller": "^4.0.0",
     "@metamask/providers": "^10.2.1",
     "@metamask/snaps-registry": "^1.2.1",
     "@metamask/snaps-ui": "workspace:^",

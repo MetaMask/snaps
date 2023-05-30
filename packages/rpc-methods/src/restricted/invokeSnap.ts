@@ -56,7 +56,7 @@ type InvokeSnapSpecificationBuilderOptions = {
 
 type InvokeSnapSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.RestrictedMethod;
-  targetKey: typeof WALLET_SNAP_PERMISSION_KEY;
+  targetName: typeof WALLET_SNAP_PERMISSION_KEY;
   methodImplementation: ReturnType<typeof getInvokeSnapImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
@@ -124,7 +124,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 > = ({ methodHooks }: InvokeSnapSpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
-    targetKey: WALLET_SNAP_PERMISSION_KEY,
+    targetName: WALLET_SNAP_PERMISSION_KEY,
     allowedCaveats: [SnapCaveatType.SnapIds],
     methodImplementation: getInvokeSnapImplementation(methodHooks),
     validator: ({ caveats }) => {
@@ -146,7 +146,7 @@ const methodHooks: MethodHooksObject<InvokeSnapMethodHooks> = {
 };
 
 export const invokeSnapBuilder = Object.freeze({
-  targetKey: WALLET_SNAP_PERMISSION_KEY,
+  targetName: WALLET_SNAP_PERMISSION_KEY,
   specificationBuilder,
   methodHooks,
 } as const);
