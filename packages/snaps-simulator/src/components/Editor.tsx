@@ -1,4 +1,4 @@
-import { Box, BoxProps } from '@chakra-ui/react';
+import { Box, BoxProps, useColorMode } from '@chakra-ui/react';
 import { FunctionComponent } from 'react';
 import MonacoEditor, { monaco, MonacoEditorProps } from 'react-monaco-editor';
 
@@ -22,6 +22,8 @@ export const Editor: FunctionComponent<EditorProps> = ({
   border = '1px solid',
   ...props
 }) => {
+  const { colorMode } = useColorMode();
+
   const handleMount = (editor: typeof monaco) => {
     editor.languages.json?.jsonDefaults.setDiagnosticsOptions({
       validate: true,
@@ -48,7 +50,7 @@ export const Editor: FunctionComponent<EditorProps> = ({
         language="json"
         editorWillMount={handleMount}
         value={SAMPLE_JSON_RPC_REQUEST}
-        theme="vs-light"
+        theme={colorMode === 'light' ? 'vs-light' : 'vs-dark'}
         {...props}
         options={{
           tabSize: 2,

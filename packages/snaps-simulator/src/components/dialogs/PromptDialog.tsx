@@ -75,7 +75,7 @@ export const PromptDialog: FunctionComponent<PromptDialogProps> = ({
       </Box>
       <Flex
         borderTop="1px solid"
-        borderTopColor="border.default"
+        borderTopColor="border"
         paddingTop="4"
         paddingX="4"
         gap="4"

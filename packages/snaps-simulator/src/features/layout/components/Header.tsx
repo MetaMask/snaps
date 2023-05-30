@@ -14,10 +14,10 @@ export const Header: FunctionComponent = () => (
     flexDirection="row"
     justifyContent="space-between"
   >
-    <Stack direction="row" background="white" height="7" align="center">
+    <Stack direction="row" height="7" align="center">
       <Logo />
     </Stack>
-    <Stack direction="row" background="white" height="7" align="center">
+    <Stack direction="row" height="7" align="center">
       <StatusIndicator />
       <Configuration />
     </Stack>

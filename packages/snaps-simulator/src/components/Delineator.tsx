@@ -12,13 +12,13 @@ export const Delineator: FunctionComponent<DelineatorProps> = ({
   snapName,
   children,
 }) => (
-  <Box border="1px solid" borderColor="border.default" borderRadius="md">
+  <Box border="1px solid" borderColor="border" borderRadius="md">
     <Flex
       direction="row"
       alignItems="center"
       padding="1.5"
       borderBottom="1px solid"
-      borderColor="border.default"
+      borderColor="border"
     >
       <Icon icon="snap" width="15px" marginRight="1" />
       <Text fontFamily="custom" fontSize="xx-small">

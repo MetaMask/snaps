@@ -2,6 +2,7 @@
 
 import { tagAnatomy, formAnatomy, tabsAnatomy } from '@chakra-ui/anatomy';
 import {
+  ThemeConfig,
   createMultiStyleConfigHelpers,
   cssVar,
   defineStyle,
@@ -26,22 +27,65 @@ const {
 } = createMultiStyleConfigHelpers(tabsAnatomy.keys);
 /* eslint-enable @typescript-eslint/unbound-method */
 
+const config: ThemeConfig = {
+  initialColorMode: 'system',
+  useSystemColorMode: true,
+};
+
 export const theme = extendTheme({
-  borders: {
-    muted: '1px solid #D6D9DC',
+  config,
+
+  semanticTokens: {
+    colors: {
+      text: {
+        default: '#24272A',
+        _dark: '#9FA6AE',
+        tab: {
+          default: '#535A61',
+          _dark: '#FFFFFF',
+          selected: {
+            default: '#24272A',
+            _dark: '#FFFFFF',
+          },
+        },
+      },
+      background: {
+        alternative: { default: '#F5F5F5', _dark: '#141618' },
+      },
+      info: {
+        default: '#0376C9',
+        _dark: '#9FA6AE',
+        muted: {
+          default: 'rgba(3, 118, 201, 0.1)',
+          _dark: '#141618',
+        },
+      },
+      border: {
+        default: '#D6D9DC',
+        _dark: '#3B4046',
+      },
+      gray: {
+        muted: {
+          default: '#D6D9DC',
+          _dark: '#3B4046',
+        },
+      },
+    },
+    borders: {
+      muted: {
+        default: '1px solid #D6D9DC',
+        _dark: '1px solid #3B4046',
+      },
+    },
   },
 
   colors: {
     text: {
-      default: '#24272A',
+      white: '#FFFFFF',
       alternative: '#535A61',
       success: '#579F6E',
       error: '#D34C46',
       muted: '#BBC0C5',
-    },
-    info: {
-      default: '#0376C9',
-      muted: 'rgba(3, 118, 201, 0.1)',
     },
     error: {
       default: '#D34C46',
@@ -51,15 +95,12 @@ export const theme = extendTheme({
       default: '#579F6E',
     },
     background: {
-      alternative: '#F5F5F5',
       hover: '#FAFBFC',
     },
     gray: {
-      muted: '#D6D9DC',
       40: '#F2F4F6',
     },
     border: {
-      default: '#D6D9DC',
       active: '#24272A',
     },
   },
@@ -92,7 +133,7 @@ export const theme = extendTheme({
           },
           input: {
             marginBottom: 4,
-            borderColor: 'border.default',
+            borderColor: 'border',
             outline: 'none',
             fontSize: 'sm',
             _active: {
@@ -108,7 +149,7 @@ export const theme = extendTheme({
           },
           textarea: {
             marginBottom: 4,
-            borderColor: 'border.default',
+            borderColor: 'border',
             outline: 'none',
             fontSize: 'sm',
             _active: {
@@ -123,7 +164,7 @@ export const theme = extendTheme({
             },
           },
           select: {
-            borderColor: 'border.default',
+            borderColor: 'border',
             outline: 'none',
             fontSize: 'sm',
             _active: {
@@ -170,11 +211,11 @@ export const theme = extendTheme({
           tablist: {
             background: 'background.alternative',
             borderBottom: '1px solid',
-            borderColor: 'border.default',
+            borderColor: 'border',
             paddingX: '4',
           },
           tab: {
-            color: 'text.alternative',
+            color: 'text.tab',
             fontSize: 'xs',
             fontWeight: '600',
             textTransform: 'uppercase',
@@ -188,7 +229,7 @@ export const theme = extendTheme({
               marginLeft: '4',
             },
             _selected: {
-              color: 'text.default',
+              color: 'text.tab.selected',
               borderBottom: '2px solid',
               borderColor: 'border.active',
             },
@@ -199,7 +240,7 @@ export const theme = extendTheme({
 
     Text: defineStyleConfig({
       baseStyle: {
-        color: 'text.default',
+        color: 'text',
       },
     }),
 
@@ -207,7 +248,7 @@ export const theme = extendTheme({
       variants: {
         code: defineTagPartsStyle({
           container: {
-            color: 'info.default',
+            color: 'info',
             background: 'info.muted',
             borderRadius: '0px',
             fontWeight: 'normal',
@@ -233,12 +274,12 @@ export const theme = extendTheme({
         primary: defineStyle({
           height: '48px',
           borderRadius: '30px',
-          background: 'info.default',
+          background: 'info',
           fontSize: 'sm',
           fontWeight: 'normal',
           lineHeight: '157%',
           color: 'white',
-          borderColor: 'info.default',
+          borderColor: 'info',
           padding: '3',
           fontFamily: 'custom',
         }),
@@ -249,8 +290,8 @@ export const theme = extendTheme({
           fontSize: 'sm',
           fontWeight: 'normal',
           lineHeight: '157%',
-          color: 'info.default',
-          borderColor: 'info.default',
+          color: 'info',
+          borderColor: 'info',
           padding: '3',
           fontFamily: 'custom',
         }),
@@ -261,7 +302,7 @@ export const theme = extendTheme({
       baseStyle: defineStyle({
         [cssVar('skeleton-start-color').variable]:
           'colors.background.alternative',
-        [cssVar('skeleton-end-color').variable]: 'colors.border.default',
+        [cssVar('skeleton-end-color').variable]: 'colors.border',
         borderRadius: 'lg',
       }),
     }),

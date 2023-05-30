@@ -1,4 +1,4 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 import { getBackendOptions, MultiBackend } from '@minoru/react-dnd-treeview';
 import { FunctionComponent, ReactElement, StrictMode } from 'react';
 import { DndProvider } from 'react-dnd';
@@ -28,6 +28,7 @@ export const Root: FunctionComponent<RootProps> = ({ store, children }) => (
       <ChakraProvider theme={theme}>
         <DndProvider backend={MultiBackend} options={getBackendOptions()}>
           <Notifications />
+          <ColorModeScript initialColorMode={theme.config.initialColorMode} />
           {children}
         </DndProvider>
       </ChakraProvider>

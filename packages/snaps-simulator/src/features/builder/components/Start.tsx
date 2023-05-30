@@ -7,7 +7,7 @@ export const Start: FunctionComponent = () => (
   <Flex
     flexDirection="column"
     alignItems="center"
-    borderColor="border.default"
+    borderColor="border"
     padding="4"
     paddingTop="12"
     borderRadius="lg"

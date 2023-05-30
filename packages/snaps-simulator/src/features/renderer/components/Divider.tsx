@@ -11,7 +11,7 @@ export const Divider: FunctionComponent<DividerProps> = ({ id }) => (
     orientation="horizontal"
     marginTop="3"
     marginBottom="4"
-    borderColor="border.default"
+    borderColor="border"
     key={`${id}-divider`}
   />
 );
