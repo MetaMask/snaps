@@ -19,7 +19,7 @@ describe('endowment:cronjob', () => {
       const specification = cronjobEndowmentBuilder.specificationBuilder({});
       expect(specification).toStrictEqual({
         permissionType: PermissionType.Endowment,
-        targetKey: SnapEndowments.Cronjob,
+        targetName: SnapEndowments.Cronjob,
         endowmentGetter: expect.any(Function),
         allowedCaveats: [SnapCaveatType.SnapCronjob],
         subjectTypes: [SubjectType.Snap],

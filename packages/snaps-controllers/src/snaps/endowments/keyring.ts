@@ -25,11 +25,11 @@ import { ethErrors } from 'eth-rpc-errors';
 
 import { SnapEndowments } from './enum';
 
-const targetKey = SnapEndowments.Keyring;
+const targetName = SnapEndowments.Keyring;
 
 type KeyringSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
-  targetKey: typeof targetKey;
+  targetName: typeof targetName;
   endowmentGetter: (_options?: any) => undefined;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
@@ -52,7 +52,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 > = (): KeyringSpecification => {
   return {
     permissionType: PermissionType.Endowment,
-    targetKey,
+    targetName,
     allowedCaveats: [SnapCaveatType.SnapKeyring],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
     validator: ({ caveats }) => {
@@ -70,7 +70,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 };
 
 export const keyringEndowmentBuilder = Object.freeze({
-  targetKey,
+  targetName,
   specificationBuilder,
 } as const);
 

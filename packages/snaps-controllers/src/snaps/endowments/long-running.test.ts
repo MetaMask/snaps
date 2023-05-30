@@ -8,7 +8,7 @@ describe('endowment:long-running', () => {
     const specification = longRunningEndowmentBuilder.specificationBuilder({});
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
-      targetKey: SnapEndowments.LongRunning,
+      targetName: SnapEndowments.LongRunning,
       endowmentGetter: expect.any(Function),
       allowedCaveats: null,
       subjectTypes: [SubjectType.Snap],

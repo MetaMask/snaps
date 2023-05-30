@@ -32,14 +32,14 @@ export type RestrictedMethodHooks = DialogMethodHooks &
   NotifyMethodHooks;
 
 export const restrictedMethodPermissionBuilders = {
-  [dialogBuilder.targetKey]: dialogBuilder,
-  [getBip32EntropyBuilder.targetKey]: getBip32EntropyBuilder,
-  [getBip32PublicKeyBuilder.targetKey]: getBip32PublicKeyBuilder,
-  [getBip44EntropyBuilder.targetKey]: getBip44EntropyBuilder,
-  [getEntropyBuilder.targetKey]: getEntropyBuilder,
-  [invokeSnapBuilder.targetKey]: invokeSnapBuilder,
-  [manageStateBuilder.targetKey]: manageStateBuilder,
-  [notifyBuilder.targetKey]: notifyBuilder,
+  [dialogBuilder.targetName]: dialogBuilder,
+  [getBip32EntropyBuilder.targetName]: getBip32EntropyBuilder,
+  [getBip32PublicKeyBuilder.targetName]: getBip32PublicKeyBuilder,
+  [getBip44EntropyBuilder.targetName]: getBip44EntropyBuilder,
+  [getEntropyBuilder.targetName]: getEntropyBuilder,
+  [invokeSnapBuilder.targetName]: invokeSnapBuilder,
+  [manageStateBuilder.targetName]: manageStateBuilder,
+  [notifyBuilder.targetName]: notifyBuilder,
 } as const;
 
 export * from './caveats';

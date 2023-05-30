@@ -24,7 +24,7 @@ export const caveatMappers: Record<
   string,
   (value: Json) => Pick<PermissionConstraint, 'caveats'>
 > = {
-  [getBip32EntropyBuilder.targetKey]: permittedDerivationPathsCaveatMapper,
-  [getBip32PublicKeyBuilder.targetKey]: permittedDerivationPathsCaveatMapper,
-  [getBip44EntropyBuilder.targetKey]: permittedCoinTypesCaveatMapper,
+  [getBip32EntropyBuilder.targetName]: permittedDerivationPathsCaveatMapper,
+  [getBip32PublicKeyBuilder.targetName]: permittedDerivationPathsCaveatMapper,
+  [getBip44EntropyBuilder.targetName]: permittedCoinTypesCaveatMapper,
 };

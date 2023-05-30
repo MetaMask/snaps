@@ -19,7 +19,7 @@ describe('specificationBuilder', () => {
   it('builds the expected permission specification', () => {
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
-      targetKey: SnapEndowments.Keyring,
+      targetName: SnapEndowments.Keyring,
       allowedCaveats: [SnapCaveatType.SnapKeyring],
       endowmentGetter: expect.any(Function),
       validator: expect.any(Function),

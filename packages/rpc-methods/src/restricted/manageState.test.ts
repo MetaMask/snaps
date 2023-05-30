@@ -54,7 +54,7 @@ describe('snap_manageState', () => {
         allowedCaveats: null,
         methodImplementation: expect.anything(),
         permissionType: PermissionType.RestrictedMethod,
-        targetKey: 'snap_manageState',
+        targetName: 'snap_manageState',
         subjectTypes: [SubjectType.Snap],
       });
     });

@@ -14,7 +14,7 @@ describe('endowment:rpc', () => {
     const specification = rpcEndowmentBuilder.specificationBuilder({});
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
-      targetKey: SnapEndowments.Rpc,
+      targetName: SnapEndowments.Rpc,
       endowmentGetter: expect.any(Function),
       allowedCaveats: [SnapCaveatType.RpcOrigin],
       validator: expect.any(Function),
