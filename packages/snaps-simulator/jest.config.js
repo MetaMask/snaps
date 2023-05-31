@@ -16,10 +16,23 @@ module.exports = deepmerge(baseConfig, {
     // Mocks out all these file formats when tests are run
     '\\.(css|less|scss|sass|svg)$': '<rootDir>/src/assets/file-mock.ts',
   },
-  transform: {
-    '^.+\\.jsx?$': 'babel-jest',
-  },
   transformIgnorePatterns: [
     'node_modules/(?!(monaco-editor|react-monaco-editor|react-dnd|dnd-core|@react-dnd/*|@minoru/react-dnd-treeview|nanoid))',
   ],
+
+  // A map from regular expressions to paths to transformers
+  transform: {
+    '^.+\\.(t|j)sx?$': [
+      '@swc/jest',
+      {
+        jsc: {
+          transform: {
+            react: {
+              runtime: 'automatic',
+            },
+          },
+        },
+      },
+    ],
+  },
 });
