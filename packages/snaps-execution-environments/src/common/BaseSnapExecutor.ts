@@ -20,6 +20,7 @@ import {
   JsonRpcRequest,
   Json,
   hasProperty,
+  getSafeJson,
 } from '@metamask/utils';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
 import { createIdRemapMiddleware } from 'json-rpc-engine';
@@ -151,11 +152,17 @@ export class BaseSnapExecutor {
           result = null;
         }
 
-        assert(
-          isValidJson(result),
-          new TypeError('Received non-JSON-serializable value.'),
-        );
-        return result;
+        // /!\ Always return only sanitized JSON to prevent security flaws. /!\
+        try {
+          return getSafeJson(result);
+        } catch (error) {
+          throw new TypeError(
+            `Received non-JSON-serializable value: ${error.message.replace(
+              /^Assertion failed: /u,
+              '',
+            )}`,
+          );
+        }
       },
       this.onTerminate.bind(this),
     );
@@ -395,9 +402,13 @@ export class BaseSnapExecutor {
 
     const request = async (args: RequestArguments) => {
       assertSnapOutboundRequest(args);
+      const sanitizedArgs = getSafeJson(args);
       this.notify({ method: 'OutboundRequest' });
       try {
-        return await withTeardown(originalRequest(args), this as any);
+        return await withTeardown(
+          originalRequest(sanitizedArgs as unknown as RequestArguments),
+          this as any,
+        );
       } finally {
         this.notify({ method: 'OutboundResponse' });
       }
@@ -435,9 +446,13 @@ export class BaseSnapExecutor {
 
     const request = async (args: RequestArguments) => {
       assertEthereumOutboundRequest(args);
+      const sanitizedArgs = getSafeJson(args);
       this.notify({ method: 'OutboundRequest' });
       try {
-        return await withTeardown(originalRequest(args), this as any);
+        return await withTeardown(
+          originalRequest(sanitizedArgs as unknown as RequestArguments),
+          this as any,
+        );
       } finally {
         this.notify({ method: 'OutboundResponse' });
       }
