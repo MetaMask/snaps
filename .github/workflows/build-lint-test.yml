@@ -37,8 +37,8 @@ jobs:
           echo "child-workspace-package-names=$(yarn child-workspace-package-names-as-json)" >> "$GITHUB_OUTPUT"
         shell: bash
 
-  build-source:
-    name: Build source
+  build:
+    name: Build
     runs-on: ubuntu-latest
     needs: prepare
     strategy:
@@ -53,32 +53,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: yarn
       - run: yarn --immutable --immutable-cache
-      - run: yarn build:source
-      - name: Require clean working directory
-        shell: bash
-        run: |
-          if ! git diff --exit-code; then
-            echo "Working tree dirty at end of job"
-            exit 1
-          fi
-
-  build-types:
-    name: Build types
-    runs-on: ubuntu-latest
-    needs: prepare
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [16.x, 18.x]
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: yarn
-      - run: yarn --immutable --immutable-cache
-      - run: yarn build:types
+      - run: yarn build
       - name: Require clean working directory
         shell: bash
         run: |
