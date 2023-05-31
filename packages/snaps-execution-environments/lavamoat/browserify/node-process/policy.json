@@ -21,7 +21,6 @@
         "browser": true,
         "chrome": true,
         "location.origin": true,
-        "onmessage": "write",
         "postMessage": true,
         "process.on": true,
         "process.removeListener": true,
@@ -151,13 +150,8 @@
       }
     },
     "@metamask/rpc-methods>@noble/hashes": {
-      "builtin": {
-        "crypto": true
-      },
       "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
+        "TextEncoder": true,
         "crypto": true
       }
     },

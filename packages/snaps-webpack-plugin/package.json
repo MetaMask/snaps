@@ -31,8 +31,8 @@
     "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/snaps-utils": "^0.32.2",
-    "@metamask/utils": "^5.0.0",
+    "@metamask/snaps-utils": "workspace:^",
+    "@metamask/utils": "^6.0.0",
     "webpack-sources": "^3.2.3"
   },
   "devDependencies": {

@@ -11,13 +11,13 @@
     "start": "mm-snap serve"
   },
   "dependencies": {
-    "@metamask/utils": "^5.0.0",
+    "@metamask/utils": "^6.0.0",
     "async-mutex": "^0.4.0"
   },
   "devDependencies": {
     "@metamask/key-tree": "^7.0.0",
     "@metamask/snaps-cli": "workspace:^",
-    "@metamask/snaps-types": "^0.31.0"
+    "@metamask/snaps-types": "workspace:^"
   },
   "packageManager": "yarn@3.4.1"
 }
