@@ -1,6 +1,6 @@
 {
   "name": "@metamask/create-snap",
-  "version": "0.33.1-flask.1",
+  "version": "0.34.0-flask.1",
   "description": "A CLI for creating MetaMask Snaps.",
   "repository": {
     "type": "git",

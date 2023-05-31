@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-types",
-  "version": "0.33.1-flask.1",
+  "version": "0.34.0-flask.1",
   "description": "TypeScript types for developing MetaMask Snaps.",
   "repository": {
     "type": "git",
