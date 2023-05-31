@@ -26,11 +26,11 @@
         "@babel/core>@babel/types": true,
         "@babel/core>convert-source-map": true,
         "@babel/core>gensync": true,
+        "@babel/core>json5": true,
         "@babel/core>semver": true,
         "@babel/preset-typescript": true,
         "eslint>debug": true,
-        "lavamoat>@babel/code-frame": true,
-        "ts-jest>json5": true
+        "lavamoat>@babel/code-frame": true
       }
     },
     "@babel/core>@ampproject/remapping": {
@@ -234,6 +234,11 @@
         "atob": true,
         "btoa": true,
         "value": true
+      }
+    },
+    "@babel/core>json5": {
+      "globals": {
+        "console.warn": true
       }
     },
     "@babel/core>semver": {
@@ -2465,11 +2470,6 @@
         "browserify>inherits": true,
         "browserify>readable-stream>util-deprecate": true,
         "browserify>string_decoder": true
-      }
-    },
-    "ts-jest>json5": {
-      "globals": {
-        "console.warn": true
       }
     },
     "ts-node>@cspotcode/source-map-support>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
