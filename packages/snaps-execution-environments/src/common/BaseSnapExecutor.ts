@@ -157,7 +157,10 @@ export class BaseSnapExecutor {
           return getSafeJson(result);
         } catch (error) {
           throw new TypeError(
-            `Received non-JSON-serializable value: ${error.message}`,
+            `Received non-JSON-serializable value: ${error.message.replace(
+              /^Assertion failed: /u,
+              '',
+            )}`,
           );
         }
       },
