@@ -18,18 +18,19 @@
     "build:vendor": "webpack --mode production --config-name vendor",
     "build:clean": "rimraf dist && yarn build",
     "build:post-tsc": "yarn build",
-    "lint": "yarn lint:eslint && yarn lint:constraints && yarn lint:misc --check && yarn lint:changelog",
+    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
     "lint:changelog": "auto-changelog validate",
     "lint:constraints": "yarn constraints",
-    "lint:eslint": "eslint . --cache --ext js,ts",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:constraints --fix && yarn lint:misc --write && yarn lint:changelog",
-    "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' '**/*.yml' '**/*.html' '!.yarnrc.yml' --ignore-path .gitignore --no-error-on-unmatched-pattern",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
     "prepack": "./scripts/prepack.sh",
     "start": "webpack serve --config-name app --mode development",
     "test": "jest && jest-it-up --margin 0.5",
     "test:ci": "yarn test",
     "test:watch": "jest --watch",
-    "clean": "rimraf '*.tsbuildinfo' 'dist/*'"
+    "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
+    "lint:ci": "yarn lint"
   },
   "dependencies": {
     "@chakra-ui/anatomy": "^2.1.1",

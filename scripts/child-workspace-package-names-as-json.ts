@@ -8,16 +8,20 @@ const PRIVATE_WORKSPACES = ['@metamask/snaps-simulator'];
  * The entrypoint to this script.
  */
 async function main() {
+  const args = process.argv.slice(2);
+  const all = args.includes('--all');
+  const extraArgs = all ? [] : ['--no-private'];
+
   const { stdout } = await execa('yarn', [
     'workspaces',
     'list',
-    '--no-private',
     '--json',
+    ...extraArgs,
   ]);
 
   const workspaces = stdout.split('\n').map((line) => JSON.parse(line));
   const childWorkspaceNames = workspaces
-    .filter((workspace) => workspace.location !== '.')
+    .filter((workspace) => all || workspace.location !== '.')
     .map((workspace) => workspace.name);
 
   // eslint-disable-next-line no-console

@@ -8,7 +8,11 @@
   },
   "scripts": {
     "build": "mm-snap build",
-    "start": "mm-snap serve"
+    "start": "mm-snap serve",
+    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../../../../../.gitignore",
+    "lint:ci": "yarn lint"
   },
   "dependencies": {
     "@metamask/key-tree": "^7.0.0",

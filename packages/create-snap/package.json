@@ -24,11 +24,12 @@
     "test:watch": "yarn test --watch",
     "test:ci": "yarn test",
     "lint:changelog": "yarn auto-changelog validate",
-    "lint:eslint": "eslint . --cache --ext js,ts",
-    "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
-    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
+    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
-    "publish:package": "../../scripts/publish-package.sh"
+    "publish:package": "../../scripts/publish-package.sh",
+    "lint:ci": "yarn lint"
   },
   "dependencies": {
     "@babel/core": "^7.20.12",

@@ -18,7 +18,11 @@
     "build": "yarn run prebuild && mm-snap build",
     "clean": "rimraf 'dist/*' 'build/*'",
     "build:wasm": "asc assembly/program.ts -o build/program.wasm",
-    "serve": "mm-snap serve"
+    "serve": "mm-snap serve",
+    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../../../.gitignore",
+    "lint:ci": "yarn lint"
   },
   "dependencies": {
     "eth-rpc-errors": "^4.0.3"
