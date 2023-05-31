@@ -18,7 +18,6 @@
         "browser": true,
         "chrome": true,
         "location.origin": true,
-        "onmessage": "write",
         "postMessage": true,
         "removeEventListener": true
       },
