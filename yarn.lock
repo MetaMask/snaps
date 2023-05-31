@@ -8772,7 +8772,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.42.1
     babelify: ^10.0.0
     browserify: ^17.0.0
-    concurrently: ^7.1.0
+    concurrently: ^8.0.1
     eslint: ^8.27.0
     eslint-config-prettier: ^8.5.0
     eslint-plugin-import: ^2.26.0
@@ -9941,25 +9941,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"concurrently@npm:^7.1.0":
-  version: 7.2.0
-  resolution: "concurrently@npm:7.2.0"
-  dependencies:
-    chalk: ^4.1.0
-    date-fns: ^2.16.1
-    lodash: ^4.17.21
-    rxjs: ^6.6.3
-    shell-quote: ^1.7.3
-    spawn-command: ^0.0.2-1
-    supports-color: ^8.1.0
-    tree-kill: ^1.2.2
-    yargs: ^17.3.1
-  bin:
-    concurrently: dist/bin/concurrently.js
-  checksum: 363506e777c623f922b0cb370e80a776e1ee37a0970aae9862ed51cc613d74b224122ac66829115cc2ee876427e820ae0989a89f1f081575516b9a6739517b51
-  languageName: node
-  linkType: hard
-
 "concurrently@npm:^8.0.1":
   version: 8.0.1
   resolution: "concurrently@npm:8.0.1"
@@ -10402,7 +10383,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns@npm:^2.16.1, date-fns@npm:^2.29.3, date-fns@npm:^2.30.0":
+"date-fns@npm:^2.29.3, date-fns@npm:^2.30.0":
   version: 2.30.0
   resolution: "date-fns@npm:2.30.0"
   dependencies:
@@ -20911,7 +20892,7 @@ __metadata:
     "@types/node": ^17.0.36
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
-    concurrently: ^7.1.0
+    concurrently: ^8.0.1
     eslint: ^8.27.0
     eslint-config-prettier: ^8.5.0
     eslint-plugin-import: ^2.26.0
@@ -21007,15 +20988,6 @@ __metadata:
   version: 1.1.10
   resolution: "run-parallel@npm:1.1.10"
   checksum: 360996d8b7abe586320a01a42093df2edf41699bbb0d493a4191ec52dda4354d0b25954e0608162d3bb304faa5f73a194f85d6d0d4c016154b2a8132f757fa98
-  languageName: node
-  linkType: hard
-
-"rxjs@npm:^6.6.3":
-  version: 6.6.7
-  resolution: "rxjs@npm:6.6.7"
-  dependencies:
-    tslib: ^1.9.0
-  checksum: bc334edef1bb8bbf56590b0b25734ba0deaf8825b703256a93714308ea36dff8a11d25533671adf8e104e5e8f256aa6fdfe39b2e248cdbd7a5f90c260acbbd1b
   languageName: node
   linkType: hard
 
@@ -21847,13 +21819,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"spawn-command@npm:^0.0.2-1":
-  version: 0.0.2
-  resolution: "spawn-command@npm:0.0.2"
-  checksum: e35c5d28177b4d461d33c88cc11f6f3a5079e2b132c11e1746453bbb7a0c0b8a634f07541a2a234fa4758239d88203b758def509161b651e81958894c0b4b64b
-  languageName: node
-  linkType: hard
-
 "spdx-correct@npm:^3.0.0":
   version: 3.1.1
   resolution: "spdx-correct@npm:3.1.1"
@@ -22420,7 +22385,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"supports-color@npm:8.1.1, supports-color@npm:^8.0.0, supports-color@npm:^8.1.0, supports-color@npm:^8.1.1":
+"supports-color@npm:8.1.1, supports-color@npm:^8.0.0, supports-color@npm:^8.1.1":
   version: 8.1.1
   resolution: "supports-color@npm:8.1.1"
   dependencies:
@@ -23104,7 +23069,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^1.8.1, tslib@npm:^1.9.0":
+"tslib@npm:^1.8.1":
   version: 1.14.1
   resolution: "tslib@npm:1.14.1"
   checksum: dbe628ef87f66691d5d2959b3e41b9ca0045c3ee3c7c7b906cc1e328b39f199bb1ad9e671c39025bd56122ac57dfbf7385a94843b1cc07c60a4db74795829acd
@@ -24397,7 +24362,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
     babel-loader: ^8.2.5
-    concurrently: ^7.1.0
+    concurrently: ^8.0.1
     eslint: ^8.27.0
     eslint-config-prettier: ^8.5.0
     eslint-plugin-import: ^2.26.0
