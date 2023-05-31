@@ -43,6 +43,7 @@ const getYargsInstance = ({ keys = {}, aliases = {} } = {}) => {
 };
 
 jest.mock('fs');
+jest.mock('./misc');
 
 describe('snap-config', () => {
   beforeEach(() => {

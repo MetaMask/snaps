@@ -23,6 +23,11 @@ jest.mock('@metamask/snaps-utils', () => ({
   logError: jest.fn(),
 }));
 
+jest.mock('chokidar');
+jest.mock('../build/bundle');
+jest.mock('../eval/evalHandler');
+jest.mock('../manifest/manifestHandler');
+
 type MockWatcher = {
   add: () => void;
 } & EventEmitter;
