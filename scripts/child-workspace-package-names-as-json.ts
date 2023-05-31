@@ -21,7 +21,7 @@ async function main() {
     .map((workspace) => workspace.name);
 
   // eslint-disable-next-line no-console
-  console.log(JSON.stringify([...childWorkspaceNames, PRIVATE_WORKSPACES]));
+  console.log(JSON.stringify([...childWorkspaceNames, ...PRIVATE_WORKSPACES]));
 }
 
 main().catch((error) => {
