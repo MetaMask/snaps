@@ -2,9 +2,10 @@
   "extends": "../../tsconfig.packages.json",
   "compilerOptions": {
     "baseUrl": "./",
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "resolveJsonModule": true
   },
-  "include": ["./src", "webpack.config.ts"],
+  "include": ["./src", "webpack.config.ts", "package.json"],
   "references": [
     { "path": "../rpc-methods" },
     { "path": "../snaps-controllers" },

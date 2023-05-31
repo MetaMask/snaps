@@ -52,8 +52,21 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
+      - name: Cache Webpack vendor
+        id: cache-webpack-vendor
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/snaps-simulator/dist/vendor
+          key: webpack-vendor-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
       - run: yarn --immutable --immutable-cache
-      - run: yarn build
+      - name: Build TypeScript files
+        run: yarn build:tsc
+      - name: Build Webpack vendor
+        if: steps.cache-webpack-vendor.outputs.cache-hit != 'true'
+        run: yarn workspace @metamask/snaps-simulator run build:vendor
+      - name: Build other files
+        run: yarn build:post-tsc
       - name: Require clean working directory
         shell: bash
         run: |
