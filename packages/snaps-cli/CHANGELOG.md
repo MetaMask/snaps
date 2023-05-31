@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.34.0-flask.1]
 ### Removed
-- **BREAKING:** Removed `init` command ([#1268](https://github.com/MetaMask/snaps/pull/1268))
+- **BREAKING:** Remove `init` command ([#1268](https://github.com/MetaMask/snaps/pull/1268))
 
 ## [0.33.1-flask.1]
 ### Changed
