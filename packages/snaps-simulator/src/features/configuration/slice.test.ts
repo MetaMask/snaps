@@ -4,8 +4,8 @@ import {
   openConfigurationModal,
   setOpen,
   setSesEnabled,
-  setSnapUrl,
   setSrp,
+  setSnapId,
 } from './slice';
 
 describe('configuration slice', () => {
@@ -28,12 +28,12 @@ describe('configuration slice', () => {
     });
   });
 
-  describe('setSnapUrl', () => {
+  describe('setSnapId', () => {
     it('sets the snap URL', () => {
-      const url = 'http://localhost:9090';
-      const result = reducer(INITIAL_CONFIGURATION_STATE, setSnapUrl(url));
+      const id = 'local:http://localhost:9090';
+      const result = reducer(INITIAL_CONFIGURATION_STATE, setSnapId(id));
 
-      expect(result.snapUrl).toStrictEqual(url);
+      expect(result.snapId).toStrictEqual(id);
     });
   });
 

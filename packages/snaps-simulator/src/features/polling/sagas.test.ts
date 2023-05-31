@@ -17,11 +17,27 @@ import { fetchingSaga, pollingSaga } from './sagas';
 fetchMock.enableMocks();
 
 describe('pollingSaga', () => {
-  it('calls the fetching saga and delay', async () => {
+  it('calls the fetching saga and delay for local snaps', async () => {
     await expectSaga(pollingSaga)
-      .withState({})
+      .withState({
+        configuration: {
+          snapId: 'local:http://localhost:8080',
+        },
+      })
       .call(fetchingSaga)
       .delay(500)
+      .silentRun();
+  });
+
+  it('calls the fetching saga and not delay for npm snaps', async () => {
+    await expectSaga(pollingSaga)
+      .withState({
+        configuration: {
+          snapId: 'npm:@metamask/test-snap-bip32',
+        },
+      })
+      .call(fetchingSaga)
+      .not.delay(500)
       .silentRun();
   });
 });
@@ -40,7 +56,7 @@ describe('fetchingSaga', () => {
     await expectSaga(fetchingSaga)
       .withState({
         configuration: {
-          snapUrl: 'http://localhost:8080',
+          snapId: 'local:http://localhost:8080',
         },
         simulation: {
           manifest: null,
@@ -57,7 +73,7 @@ describe('fetchingSaga', () => {
     await expectSaga(fetchingSaga)
       .withState({
         configuration: {
-          snapUrl: 'http://localhost:8080',
+          snapId: 'local:http://localhost:8080',
         },
         simulation: {
           manifest: MOCK_MANIFEST_FILE,

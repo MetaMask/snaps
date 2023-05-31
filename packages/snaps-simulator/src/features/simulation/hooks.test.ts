@@ -10,7 +10,6 @@ import {
   showNativeNotification,
   updateSnapState,
 } from './hooks';
-import { DEFAULT_SNAP_ID } from './sagas';
 import {
   closeUserInterface,
   getSnapName,
@@ -29,9 +28,11 @@ Object.defineProperty(globalThis, 'Notification', {
   },
 });
 
+const snapId = 'local:http://localhost:8080';
+
 describe('showDialog', () => {
   it('shows a dialog', async () => {
-    await expectSaga(showDialog, DEFAULT_SNAP_ID, DialogType.Alert, text('foo'))
+    await expectSaga(showDialog, snapId, DialogType.Alert, text('foo'))
       .withState({
         simulation: {
           manifest: MOCK_MANIFEST_FILE,
@@ -40,7 +41,7 @@ describe('showDialog', () => {
       .select(getSnapName)
       .put(
         showUserInterface({
-          snapId: DEFAULT_SNAP_ID,
+          snapId,
           snapName: '@metamask/example-snap',
           type: DialogType.Alert,
           node: text('foo'),
@@ -55,7 +56,7 @@ describe('showDialog', () => {
 
 describe('showNativeNotification', () => {
   it('requests permissions', async () => {
-    await expectSaga(showNativeNotification, DEFAULT_SNAP_ID, {
+    await expectSaga(showNativeNotification, snapId, {
       type: 'native',
       message: 'foo',
     })
@@ -72,7 +73,7 @@ describe('showNativeNotification', () => {
   it('shows a notification if the user did not grant permissions', async () => {
     jest.spyOn(Notification, 'requestPermission').mockResolvedValue('denied');
 
-    await expectSaga(showNativeNotification, DEFAULT_SNAP_ID, {
+    await expectSaga(showNativeNotification, snapId, {
       type: 'native',
       message: 'foo',
     })
@@ -94,7 +95,7 @@ describe('showNativeNotification', () => {
 
 describe('showInAppNotification', () => {
   it('shows a notification', async () => {
-    await expectSaga(showInAppNotification, DEFAULT_SNAP_ID, {
+    await expectSaga(showInAppNotification, snapId, {
       type: 'inApp',
       message: 'foo',
     })
@@ -106,7 +107,7 @@ describe('showInAppNotification', () => {
 
 describe('updateSnapState', () => {
   it('puts the new snap state', async () => {
-    await expectSaga(updateSnapState, DEFAULT_SNAP_ID, 'foo')
+    await expectSaga(updateSnapState, snapId, 'foo')
       .withState({
         simulation: {
           snapState: null,
@@ -119,7 +120,7 @@ describe('updateSnapState', () => {
 
 describe('getSnapState', () => {
   it('returns the selected snap state', async () => {
-    await expectSaga(getSnapState, DEFAULT_SNAP_ID)
+    await expectSaga(getSnapState, snapId)
       .withState({
         simulation: {
           snapState: 'foo',
