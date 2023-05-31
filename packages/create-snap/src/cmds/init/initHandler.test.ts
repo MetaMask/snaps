@@ -23,6 +23,8 @@ jest.mock('@metamask/snaps-utils', () => ({
   logError: jest.fn(),
 }));
 
+jest.mock('./initUtils');
+
 const getMockArgv = () => {
   return {
     directory: 'foo',

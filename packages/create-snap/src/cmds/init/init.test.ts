@@ -1,6 +1,8 @@
 import { initCommand } from '.';
 import * as initHandlerModule from './initHandler';
 
+jest.mock('./initHandler');
+
 describe('init module', () => {
   it('console logs if successful', async () => {
     const mockArgv = { directory: 'foo', snapLocation: 'foo' };
