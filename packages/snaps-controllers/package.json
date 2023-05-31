@@ -40,7 +40,7 @@
     "@metamask/post-message-stream": "^6.1.2",
     "@metamask/rpc-methods": "workspace:^",
     "@metamask/snaps-execution-environments": "workspace:^",
-    "@metamask/snaps-registry": "^1.2.0",
+    "@metamask/snaps-registry": "^1.2.1",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/utils": "^6.0.0",
     "@xstate/fsm": "^2.0.0",
