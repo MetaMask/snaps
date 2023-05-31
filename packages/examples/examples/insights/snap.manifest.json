@@ -1,13 +1,13 @@
 {
-  "version": "0.33.1-flask.1",
+  "version": "0.34.0-flask.1",
   "description": "An example transaction insights Snap.",
   "proposedName": "Transaction Insights Example Snap",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "7AjxrnYyneWXstL3EPDKwlwK62LbeaULp64G7yy7uaY=",
+    "shasum": "ZaQBV6cch5XXEi5xJq4tD+dk3s51+IzUN7Zpbm5UJ7U=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

@@ -1,10 +1,10 @@
 {
   "name": "@metamask/snaps-cli",
-  "version": "0.33.1-flask.1",
+  "version": "0.34.0-flask.1",
   "description": "A CLI for developing MetaMask Snaps.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "license": "ISC",
   "main": "dist/index.js",

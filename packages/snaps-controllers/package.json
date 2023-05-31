@@ -1,10 +1,10 @@
 {
   "name": "@metamask/snaps-controllers",
-  "version": "0.33.1-flask.1",
+  "version": "0.34.0-flask.1",
   "description": "Controllers for MetaMask Snaps.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "main": "dist/index.js",
   "browser": {
