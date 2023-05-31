@@ -11,7 +11,7 @@ module.exports = {
 
   overrides: [
     {
-      files: ['examples/**/*.js', 'examples/**/*.ts'],
+      files: ['**/*.js', '**/*.ts'],
       // TODO: Replace this with the actual snap globals
       env: {
         browser: true,

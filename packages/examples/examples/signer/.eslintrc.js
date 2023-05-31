@@ -5,5 +5,5 @@ module.exports = {
     tsconfigRootDir: __dirname,
   },
 
-  ignorePatterns: ['!.eslintrc.js', '!.prettierrc.js', 'dist/'],
+  ignorePatterns: ['!.eslintrc.js', '!.prettierrc.js', 'dist/', 'packages/**'],
 };
