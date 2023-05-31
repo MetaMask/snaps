@@ -1,5 +1,5 @@
 {
-  "version": "0.33.1-flask.1",
+  "version": "0.34.0-flask.1",
   "description": "An example Snap that uses WebAssembly.",
   "proposedName": "wasm",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps-monorepo.git"
   },
   "source": {
-    "shasum": "9bwWiJWqExgbEKzBCBezSbbMsa0/kOoHKTJmenAjLQQ=",
+    "shasum": "UY/rvh6u1W9SZH5rYa1xUrTfY4gmZMAd3i6hgBGpeMs=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
