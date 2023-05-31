@@ -957,19 +957,6 @@
         "@babel/preset-env>@babel/helper-plugin-utils": true
       }
     },
-    "@browserify/uglifyify": {
-      "builtin": {
-        "path.basename": true,
-        "path.extname": true
-      },
-      "packages": {
-        "@babel/core>convert-source-map": true,
-        "@lavamoat/lavapack>through2": true,
-        "browserify>xtend": true,
-        "eslint>minimatch": true,
-        "vite>terser": true
-      }
-    },
     "@lavamoat/lavapack": {
       "builtin": {
         "assert": true,
@@ -1603,10 +1590,15 @@
     },
     "browserify>insert-module-globals>undeclared-identifiers": {
       "packages": {
+        "browserify>insert-module-globals>undeclared-identifiers>dash-ast": true,
         "browserify>insert-module-globals>undeclared-identifiers>get-assigned-identifiers": true,
         "browserify>syntax-error>acorn-node": true,
-        "browserify>xtend": true,
-        "common-shakeify>transform-ast>dash-ast": true
+        "browserify>xtend": true
+      }
+    },
+    "browserify>insert-module-globals>undeclared-identifiers>dash-ast": {
+      "builtin": {
+        "assert": true
       }
     },
     "browserify>insert-module-globals>undeclared-identifiers>get-assigned-identifiers": {
@@ -1960,192 +1952,6 @@
         "browserify>xtend": true
       }
     },
-    "common-shakeify": {
-      "builtin": {
-        "path.dirname": true,
-        "path.relative": true
-      },
-      "globals": {
-        "console.warn": true,
-        "process.cwd": true
-      },
-      "packages": {
-        "@babel/core>convert-source-map": true,
-        "common-shakeify>@goto-bus-stop/common-shake": true,
-        "common-shakeify>through2": true,
-        "common-shakeify>transform-ast": true,
-        "common-shakeify>wrap-comment": true
-      }
-    },
-    "common-shakeify>@goto-bus-stop/common-shake": {
-      "builtin": {
-        "path.relative": true
-      },
-      "packages": {
-        "common-shakeify>@goto-bus-stop/common-shake>acorn-walk": true,
-        "common-shakeify>@goto-bus-stop/common-shake>debug": true,
-        "common-shakeify>@goto-bus-stop/common-shake>escope": true
-      }
-    },
-    "common-shakeify>@goto-bus-stop/common-shake>acorn-walk": {
-      "globals": {
-        "define": true
-      }
-    },
-    "common-shakeify>@goto-bus-stop/common-shake>debug": {
-      "builtin": {
-        "tty.isatty": true,
-        "util": true
-      },
-      "globals": {
-        "console": true,
-        "document": true,
-        "localStorage": true,
-        "navigator": true,
-        "process": true
-      },
-      "packages": {
-        "@wdio/mocha-framework>mocha>ms": true,
-        "@wdio/mocha-framework>mocha>supports-color": true
-      }
-    },
-    "common-shakeify>@goto-bus-stop/common-shake>escope": {
-      "builtin": {
-        "assert": true
-      },
-      "packages": {
-        "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map": true,
-        "common-shakeify>@goto-bus-stop/common-shake>escope>es6-weak-map": true,
-        "common-shakeify>@goto-bus-stop/common-shake>escope>estraverse": true,
-        "eslint>eslint-scope>esrecurse": true
-      }
-    },
-    "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map": {
-      "packages": {
-        "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>d": true,
-        "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>es5-ext": true,
-        "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>es6-iterator": true,
-        "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>es6-symbol": true,
-        "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>event-emitter": true
-      }
-    },
-    "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>d": {
-      "packages": {
-        "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>d>type": true,
-        "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>es5-ext": true
-      }
-    },
-    "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>es5-ext": {
-      "packages": {
-        "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>es6-symbol": true
-      }
-    },
-    "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>es6-iterator": {
-      "packages": {
-        "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>d": true,
-        "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>es5-ext": true,
-        "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>es6-symbol": true
-      }
-    },
-    "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>es6-symbol": {
-      "packages": {
-        "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>d": true,
-        "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>es6-symbol>ext": true
-      }
-    },
-    "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>es6-symbol>ext": {
-      "globals": {
-        "__global__": true
-      }
-    },
-    "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>event-emitter": {
-      "packages": {
-        "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>d": true,
-        "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>es5-ext": true
-      }
-    },
-    "common-shakeify>@goto-bus-stop/common-shake>escope>es6-weak-map": {
-      "packages": {
-        "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>d": true,
-        "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>es5-ext": true,
-        "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>es6-iterator": true,
-        "common-shakeify>@goto-bus-stop/common-shake>escope>es6-map>es6-symbol": true
-      }
-    },
-    "common-shakeify>through2": {
-      "builtin": {
-        "util.inherits": true
-      },
-      "globals": {
-        "process.nextTick": true
-      },
-      "packages": {
-        "browserify>xtend": true,
-        "common-shakeify>through2>readable-stream": true
-      }
-    },
-    "common-shakeify>through2>readable-stream": {
-      "builtin": {
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.browser": true,
-        "process.env.READABLE_STREAM": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.version.slice": true,
-        "setImmediate": true
-      },
-      "packages": {
-        "browserify>inherits": true,
-        "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>isarray": true,
-        "browserify>readable-stream>process-nextick-args": true,
-        "browserify>readable-stream>util-deprecate": true,
-        "common-shakeify>through2>readable-stream>safe-buffer": true,
-        "common-shakeify>through2>readable-stream>string_decoder": true
-      }
-    },
-    "common-shakeify>through2>readable-stream>safe-buffer": {
-      "builtin": {
-        "buffer": true
-      }
-    },
-    "common-shakeify>through2>readable-stream>string_decoder": {
-      "packages": {
-        "common-shakeify>through2>readable-stream>safe-buffer": true
-      }
-    },
-    "common-shakeify>transform-ast": {
-      "packages": {
-        "@babel/core>convert-source-map": true,
-        "browserify>syntax-error>acorn-node": true,
-        "common-shakeify>transform-ast>dash-ast": true,
-        "common-shakeify>transform-ast>is-buffer": true,
-        "common-shakeify>transform-ast>magic-string": true,
-        "common-shakeify>transform-ast>merge-source-map": true
-      }
-    },
-    "common-shakeify>transform-ast>dash-ast": {
-      "builtin": {
-        "assert": true
-      }
-    },
-    "common-shakeify>transform-ast>magic-string": {
-      "globals": {
-        "Buffer": true,
-        "btoa": true,
-        "console.warn": true,
-        "process.hrtime": true
-      }
-    },
-    "common-shakeify>transform-ast>merge-source-map": {
-      "packages": {
-        "common-shakeify>transform-ast>merge-source-map>source-map": true
-      }
-    },
     "eslint-plugin-import>is-core-module": {
       "globals": {
         "process.versions": true
@@ -2181,11 +1987,6 @@
       "packages": {
         "@wdio/mocha-framework>mocha>supports-color": true,
         "eslint>debug>ms": true
-      }
-    },
-    "eslint>eslint-scope>esrecurse": {
-      "packages": {
-        "eslint>esquery>estraverse": true
       }
     },
     "eslint>minimatch": {
@@ -2235,24 +2036,12 @@
       "packages": {
         "@lavamoat/lavapack": true,
         "browserify>browser-resolve": true,
-        "lavamoat-browserify>concat-stream": true,
         "lavamoat-browserify>duplexify": true,
         "lavamoat-browserify>through2": true,
         "lavamoat>@lavamoat/aa": true,
         "lavamoat>json-stable-stringify": true,
         "lavamoat>lavamoat-core": true,
-        "stream-browserify>readable-stream": true
-      }
-    },
-    "lavamoat-browserify>concat-stream": {
-      "globals": {
-        "Buffer.concat": true,
-        "Buffer.isBuffer": true
-      },
-      "packages": {
-        "browserify>concat-stream>buffer-from": true,
-        "browserify>concat-stream>typedarray": true,
-        "browserify>inherits": true,
+        "minify-stream>concat-stream": true,
         "stream-browserify>readable-stream": true
       }
     },
@@ -2263,7 +2052,7 @@
       },
       "packages": {
         "browserify>inherits": true,
-        "lavamoat-browserify>duplexify>stream-shift": true,
+        "minify-stream>duplexify>stream-shift": true,
         "pump>end-of-stream": true,
         "stream-browserify>readable-stream": true
       }
@@ -2446,6 +2235,91 @@
       "packages": {
         "@babel/core>@babel/parser": true,
         "@babel/core>@babel/traverse": true
+      }
+    },
+    "minify-stream": {
+      "packages": {
+        "@babel/core>convert-source-map": true,
+        "browserify>xtend": true,
+        "minify-stream>concat-stream": true,
+        "minify-stream>duplexify": true,
+        "minify-stream>from2-string": true,
+        "vite>terser": true
+      }
+    },
+    "minify-stream>concat-stream": {
+      "globals": {
+        "Buffer.concat": true,
+        "Buffer.isBuffer": true
+      },
+      "packages": {
+        "browserify>concat-stream>buffer-from": true,
+        "browserify>concat-stream>typedarray": true,
+        "browserify>inherits": true,
+        "stream-browserify>readable-stream": true
+      }
+    },
+    "minify-stream>duplexify": {
+      "globals": {
+        "Buffer": true,
+        "process.nextTick": true
+      },
+      "packages": {
+        "browserify>inherits": true,
+        "minify-stream>duplexify>stream-shift": true,
+        "pump>end-of-stream": true,
+        "stream-browserify>readable-stream": true
+      }
+    },
+    "minify-stream>from2-string": {
+      "builtin": {
+        "assert.equal": true
+      },
+      "packages": {
+        "minify-stream>from2-string>from2": true
+      }
+    },
+    "minify-stream>from2-string>from2": {
+      "globals": {
+        "process.nextTick": true
+      },
+      "packages": {
+        "browserify>inherits": true,
+        "minify-stream>from2-string>from2>readable-stream": true
+      }
+    },
+    "minify-stream>from2-string>from2>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "browserify>inherits": true,
+        "browserify>readable-stream>core-util-is": true,
+        "browserify>readable-stream>isarray": true,
+        "browserify>readable-stream>process-nextick-args": true,
+        "browserify>readable-stream>util-deprecate": true,
+        "minify-stream>from2-string>from2>readable-stream>safe-buffer": true,
+        "minify-stream>from2-string>from2>readable-stream>string_decoder": true
+      }
+    },
+    "minify-stream>from2-string>from2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "minify-stream>from2-string>from2>readable-stream>string_decoder": {
+      "packages": {
+        "minify-stream>from2-string>from2>readable-stream>safe-buffer": true
       }
     },
     "pump>end-of-stream": {

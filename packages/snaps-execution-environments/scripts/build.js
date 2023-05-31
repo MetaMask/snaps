@@ -129,10 +129,6 @@ async function main() {
         ],
       });
 
-      // Tree shaking
-      bundler.transform(require('@browserify/uglifyify'), { global: true });
-      bundler.plugin(require('common-shakeify'), { ecmaVersion: 2020 });
-
       let lavamoatSecurityOptions = {};
 
       if (worker || html) {
@@ -165,6 +161,9 @@ async function main() {
         includePrelude: node || worker,
         ...lavamoatSecurityOptions,
       });
+
+      // Minification
+      bundler.pipeline.get('pack').push(require('minify-stream')());
 
       const buffer = await new Promise((resolve, reject) => {
         bundler.bundle((error, bundle) => {
