@@ -1604,7 +1604,7 @@ describe('BaseSnapExecutor', () => {
         code: -32603,
         data: expect.any(Object),
         message:
-          'Assertion failed: Expected the value to satisfy a union of `literal | boolean | finite number | string | array | record`, but received: 0.',
+          'Received non-JSON-serializable value: Assertion failed: Expected the value to satisfy a union of `literal | boolean | finite number | string | array | record`, but received: 0.',
       },
     });
   });
