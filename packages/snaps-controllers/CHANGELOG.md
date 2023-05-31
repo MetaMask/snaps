@@ -7,15 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.34.0-flask.1]
-### Uncategorized
-- Bump `@metamask/utils` and `@metamask/snaps-registry` ([#1457](https://github.com/MetaMask/snaps/pull/1457))
-- Update core monorepo libs ([#1450](https://github.com/MetaMask/snaps/pull/1450))
+### Changed
+- **BREAKING:** Rename `targetKey` to `targetName` as part of updating `PermissionController` ([#1450](https://github.com/MetaMask/snaps/pull/1450))
 - Add SVG validation ([#1401](https://github.com/MetaMask/snaps/pull/1401))
 - Export permissions specification builders ([#1432](https://github.com/MetaMask/snaps/pull/1432))
-- Add support for NPM snaps to simulator ([#1418](https://github.com/MetaMask/snaps/pull/1418))
-- Migrate `snaps-simulator` to `snaps-monorepo` ([#1408](https://github.com/MetaMask/snaps/pull/1408))
-- Clean up snap ID typing ([#1386](https://github.com/MetaMask/snaps/pull/1386))
-- Move `processSnapPermissions` to be an export ([#1402](https://github.com/MetaMask/snaps/pull/1402))
+- Export `processSnapPermissions` ([#1402](https://github.com/MetaMask/snaps/pull/1402))
 
 ## [0.33.1-flask.1]
 ### Fixed

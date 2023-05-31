@@ -7,11 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.34.0-flask.1]
-### Uncategorized
-- Add second part of a solution for secure JSON validation ([#1405](https://github.com/MetaMask/snaps/pull/1405))
-- Bump `@metamask/utils` and `@metamask/snaps-registry` ([#1457](https://github.com/MetaMask/snaps/pull/1457))
-- Add SVG validation ([#1401](https://github.com/MetaMask/snaps/pull/1401))
-- Migrate `snaps-simulator` to `snaps-monorepo` ([#1408](https://github.com/MetaMask/snaps/pull/1408))
+### Changed
+- Improve JSON sanitization ([#1405](https://github.com/MetaMask/snaps/pull/1405), [#1457](https://github.com/MetaMask/snaps/pull/1457))
 
 ## [0.33.1-flask.1]
 ### Changed

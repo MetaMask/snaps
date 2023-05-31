@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.34.0-flask.1]
-### Uncategorized
-- Bump `@metamask/utils` and `@metamask/snaps-registry` ([#1457](https://github.com/MetaMask/snaps/pull/1457))
-- Update core monorepo libs ([#1450](https://github.com/MetaMask/snaps/pull/1450))
+### Changed
+- **BREAKING:** Rename `targetKey` to `targetName` as part of updating `PermissionController` ([#1450](https://github.com/MetaMask/snaps/pull/1450))
 
 ## [0.33.1-flask.1]
 ### Fixed

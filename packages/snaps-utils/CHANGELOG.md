@@ -7,14 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.34.0-flask.1]
-### Uncategorized
-- Bump `@metamask/utils` and `@metamask/snaps-registry` ([#1457](https://github.com/MetaMask/snaps/pull/1457))
-- Update core monorepo libs ([#1450](https://github.com/MetaMask/snaps/pull/1450))
+### Changed
 - Add SVG validation ([#1401](https://github.com/MetaMask/snaps/pull/1401))
-- Add support for NPM snaps to simulator ([#1418](https://github.com/MetaMask/snaps/pull/1418))
-- Make snaps handlers' types generic, allowing them to be changed ([#1409](https://github.com/MetaMask/snaps/pull/1409))
-- Clean up snap ID typing ([#1386](https://github.com/MetaMask/snaps/pull/1386))
-- Allow use of $schema in manifest files ([#1389](https://github.com/MetaMask/snaps/pull/1389))
+- Make handler types generic, allowing them to be changed ([#1409](https://github.com/MetaMask/snaps/pull/1409))
+- Allow use of `$schema` in manifest files ([#1389](https://github.com/MetaMask/snaps/pull/1389))
 
 ## [0.33.1-flask.1]
 ### Changed
