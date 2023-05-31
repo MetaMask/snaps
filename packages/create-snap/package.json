@@ -40,7 +40,7 @@
     "@babel/preset-typescript": "^7.20.12",
     "@metamask/snaps-cli": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^5.0.0",
+    "@metamask/utils": "^6.0.0",
     "yargs": "^17.7.1"
   },
   "devDependencies": {

@@ -25,7 +25,7 @@
     "publish:preview": "yarn npm publish --tag preview"
   },
   "dependencies": {
-    "@metamask/utils": "^5.0.0",
+    "@metamask/utils": "^6.0.0",
     "superstruct": "^1.0.3"
   },
   "devDependencies": {
