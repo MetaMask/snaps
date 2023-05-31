@@ -4,10 +4,10 @@
   "proposedName": "signer-ethereum",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "QhCXxDcLAq3WvphChbqXk7pLtdorlg7bqWHoPLiAxYQ=",
+    "shasum": "anS2T67AmGcYcKUmb2SCmeyCCetmJxpp6CUSz/OESM8=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

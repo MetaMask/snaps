@@ -4,10 +4,10 @@
   "proposedName": "wasm",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "UY/rvh6u1W9SZH5rYa1xUrTfY4gmZMAd3i6hgBGpeMs=",
+    "shasum": "2AnBx3DdjEqRwSwblWKp+DKB5/F02TqERc1Jzl+bmRk=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

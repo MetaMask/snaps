@@ -4,10 +4,10 @@
   "proposedName": "ipfs-snap",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "H63WgpT8FRMX/VYl5whzyBXVzPdHhztk6elJtu9nyjY=",
+    "shasum": "h1FThLHBU1Dqcrj8TdaMkijQE99k/qG+BXVH7syE/24=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

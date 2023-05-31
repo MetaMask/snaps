@@ -4,10 +4,10 @@
   "proposedName": "bls-signer",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "ZELe6phOKCauRArUIfXNyiwRFUlTQ+G6SwH+CdqgkXU=",
+    "shasum": "GweCfwJNwNpp9KJhZFHYPfGycKtKgPmiJsvIhnetJKE=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

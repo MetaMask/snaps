@@ -4,10 +4,10 @@
   "proposedName": "browserify-snap",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "Rh+Ye780xz679vueqos6iowfBnCnSGNThkNmP2RU2mQ=",
+    "shasum": "QxKvP9iIF7HIDTiD+psQ8CL4cuMOVd6Jkw5mjrVYc8g=",
     "location": {
       "npm": {
         "filePath": "dist/snap.js",

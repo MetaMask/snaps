@@ -4,10 +4,10 @@
   "proposedName": "rollup-snap",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "VTOB2d+mccASIveRbc1VSkOL/yn9vQrIdpa297U25O0=",
+    "shasum": "LurQPRmkMIWPAOZe/AByX+c+6nGZz9xWi0viF+fIizA=",
     "location": {
       "npm": {
         "filePath": "dist/snap.js",
