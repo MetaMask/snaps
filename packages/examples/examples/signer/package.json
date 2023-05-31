@@ -7,7 +7,11 @@
   ],
   "scripts": {
     "build": "yarn workspaces foreach --parallel --verbose run build",
-    "start": "yarn workspaces foreach --parallel --verbose --interlaced run start"
+    "start": "yarn workspaces foreach --parallel --verbose --interlaced run start",
+    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../../../.gitignore",
+    "lint:ci": "yarn lint"
   },
   "packageManager": "yarn@3.4.1"
 }

@@ -16,12 +16,13 @@
   ],
   "scripts": {
     "lint:changelog": "yarn auto-changelog validate",
-    "lint:eslint": "eslint . --cache --ext js,ts",
-    "lint:misc": "prettier '**/*.json' '**/*.md' '**/*.html' '!CHANGELOG.md' --ignore-path ../../.gitignore",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "build": "yarn workspaces foreach --parallel --verbose run build",
-    "build:post-tsc": "yarn build"
+    "build:post-tsc": "yarn build",
+    "lint:ci": "yarn lint"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.3.1",

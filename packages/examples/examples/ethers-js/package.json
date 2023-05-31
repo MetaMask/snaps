@@ -18,10 +18,11 @@
     "build": "mm-snap build",
     "serve": "mm-snap serve",
     "clean": "rimraf 'dist/*'",
-    "lint:eslint": "eslint . --cache --ext js,ts",
-    "lint:misc": "prettier '**/*.json' '**/*.md' '**/*.html' '!CHANGELOG.md' --ignore-path .gitignore",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
-    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write"
+    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
+    "lint:ci": "yarn lint"
   },
   "dependencies": {
     "@metamask/snaps-ui": "workspace:^",

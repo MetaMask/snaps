@@ -24,13 +24,14 @@
     "build": "yarn build:tsc",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
-    "lint:eslint": "eslint . --cache --ext js,ts",
-    "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
-    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
+    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
     "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
-    "publish:preview": "yarn npm publish --tag preview"
+    "publish:preview": "yarn npm publish --tag preview",
+    "lint:ci": "yarn lint"
   },
   "dependencies": {
     "@metamask/approval-controller": "^3.0.0",

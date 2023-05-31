@@ -16,7 +16,11 @@
   "scripts": {
     "build": "rollup --config",
     "clean": "rimraf 'dist/*'",
-    "serve": "concurrently \"rollup --config --watch\" \"mm-snap serve\""
+    "serve": "concurrently \"rollup --config --watch\" \"mm-snap serve\"",
+    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../../../.gitignore",
+    "lint:ci": "yarn lint"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
