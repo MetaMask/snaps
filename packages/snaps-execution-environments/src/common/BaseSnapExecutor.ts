@@ -153,11 +153,7 @@ export class BaseSnapExecutor {
         }
 
         // /!\ Always return only sanitized JSON to prevent security flaws. /!\
-        try {
-          return getSafeJson(result);
-        } catch {
-          throw new TypeError('Received non-JSON-serializable value.');
-        }
+        return getSafeJson(result);
       },
       this.onTerminate.bind(this),
     );
