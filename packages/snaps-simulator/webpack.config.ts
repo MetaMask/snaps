@@ -17,7 +17,9 @@ import WebpackBarPlugin from 'webpackbar';
 
 import packageJson from './package.json';
 
-const vendor = Object.keys(packageJson.dependencies);
+const vendor = Object.entries(packageJson.dependencies)
+  .filter(([, version]) => !version.startsWith('workspace:'))
+  .map(([name]) => name);
 
 const vendorConfig: Configuration = {
   name: 'vendor',
@@ -26,6 +28,12 @@ const vendorConfig: Configuration = {
   },
   module: {
     rules: [
+      {
+        test: /\.tsx?$/u,
+        use: {
+          loader: 'swc-loader',
+        },
+      },
       {
         test: /\.css$/u,
         use: ['style-loader', 'css-loader'],
