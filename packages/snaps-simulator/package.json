@@ -27,6 +27,7 @@
     "prepack": "./scripts/prepack.sh",
     "start": "webpack serve --config-name app --mode development",
     "test": "jest && jest-it-up --margin 0.5",
+    "test:ci": "yarn test",
     "test:watch": "jest --watch",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'"
   },
