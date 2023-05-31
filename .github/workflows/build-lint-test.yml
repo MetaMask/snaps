@@ -56,7 +56,7 @@ jobs:
       - name: Build TypeScript files
         run: yarn build:tsc
       - name: Build other files
-        run: yarn build:post-tsc
+        run: yarn build:post-tsc:ci
       - name: Require clean working directory
         shell: bash
         run: |
