@@ -80,6 +80,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
+      - run: yarn --immutable --immutable-cache
       - name: Restore test build
         uses: actions/cache@v3
         with:
