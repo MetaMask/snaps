@@ -22,7 +22,7 @@ import {
 import {
   fetchNpmMetadata,
   DEFAULT_NPM_REGISTRY,
-} from '@metamask/snaps-controllers/dist/snaps/location';
+} from '@metamask/snaps-controllers';
 import {
   SnapIdPrefixes,
   getSnapPrefix,
