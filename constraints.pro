@@ -122,6 +122,10 @@ gen_enforced_dependency(WorkspaceCwd, DependencyIdent, null, DependencyType) :-
 
 % All dependencies must have a "lint" script.
 gen_enforced_field(WorkspaceCwd, 'scripts.lint', 'yarn lint:eslint && yarn lint:misc --check') :-
+  workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'scripts.lint', 'yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
 gen_enforced_field(WorkspaceCwd, 'scripts.lint:eslint', 'eslint . --cache --ext js,ts,jsx,tsx') :-
   WorkspaceCwd \= '.'.
