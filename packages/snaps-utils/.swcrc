@@ -20,7 +20,7 @@
     "^.*test-utils.*$",
     "^.*__mocks__.*$",
     "^.*__snapshots__.*$",
-    "eval-worker\\.ts$"
+    "eval-worker\\.js$"
   ],
   "minify": true
 }

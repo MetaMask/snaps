@@ -9,6 +9,7 @@
   "license": "ISC",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
   "bin": {
     "mm-snap": "./dist/main.js"
   },
@@ -23,7 +24,7 @@
     "build:post-tsc": "yarn build:chmod && yarn build:readme",
     "build:clean": "yarn clean && yarn build",
     "build:watch": "tsc-watch --onSuccess 'yarn build:chmod'",
-    "clean": "rimraf \"coverage/**\" \"dist/**\" \"*.tsbuildinfo\"",
+    "clean": "rimraf coverage && rimraf dist && rimraf \"*.tsbuildinfo\"",
     "test": "jest --runInBand && yarn posttest",
     "posttest": "jest-it-up",
     "test:watch": "yarn test --watch",

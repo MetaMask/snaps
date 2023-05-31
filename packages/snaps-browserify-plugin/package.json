@@ -10,6 +10,7 @@
   },
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist/"
   ],
@@ -24,7 +25,7 @@
     "lint:changelog": "yarn auto-changelog validate",
     "build": "yarn build:cjs && yarn build:esm",
     "build:clean": "yarn clean && yarn build",
-    "clean": "rimraf \"coverage/**\" \"dist/**\" \"*.tsbuildinfo\"",
+    "clean": "rimraf coverage && rimraf dist && rimraf \"*.tsbuildinfo\"",
     "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
     "publish:preview": "yarn npm publish --tag preview",
     "build:cjs": "swc --source-maps --config module.type=commonjs --out-dir dist/cjs src",
