@@ -7,8 +7,7 @@ import {
   BaseControllerV2 as BaseController,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
-import { Json } from '@metamask/utils';
-import { assert } from 'console';
+import { Json, assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
 import { Component } from '../../../snaps-ui/src/nodes';
