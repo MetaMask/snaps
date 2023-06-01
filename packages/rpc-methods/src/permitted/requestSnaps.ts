@@ -1,4 +1,8 @@
 import {
+  ApprovalFlowOptions,
+  ApprovalFlowStartResult,
+} from '@metamask/approval-controller';
+import {
   PermissionConstraint,
   RequestedPermissions,
   Caveat,
@@ -29,6 +33,9 @@ const hookNames: MethodHooksObject<RequestSnapsHooks> = {
   installSnaps: true,
   requestPermissions: true,
   getPermissions: true,
+  startApprovalFlow: true,
+  endApprovalFlow: true,
+  setApprovalFlowLoadingText: true,
 };
 
 /**
@@ -72,6 +79,12 @@ export type RequestSnapsHooks = {
   getPermissions: () => Promise<
     Record<string, PermissionConstraint> | undefined
   >;
+
+  startApprovalFlow: (opts?: ApprovalFlowOptions) => ApprovalFlowStartResult;
+
+  endApprovalFlow: (id: string) => void;
+
+  setApprovalFlowLoadingText: (loadingText: string | null) => void;
 };
 
 /**
@@ -163,6 +176,7 @@ export function getSnapPermissionsRequest(
  * @param hooks.requestPermissions - A function that requests permissions on
  * behalf of a subject.
  * @param hooks.getPermissions - A function that gets the current permissions.
+ * @param hooks.startApprovalFlow
  * @returns A promise that resolves once the JSON-RPC response has been modified.
  * @throws If the params are invalid.
  */
@@ -171,7 +185,14 @@ async function requestSnapsImplementation(
   res: PendingJsonRpcResponse<InstallSnapsResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { installSnaps, requestPermissions, getPermissions }: RequestSnapsHooks,
+  {
+    installSnaps,
+    requestPermissions,
+    getPermissions,
+    startApprovalFlow,
+    endApprovalFlow,
+    setApprovalFlowLoadingText,
+  }: RequestSnapsHooks,
 ): Promise<void> {
   const requestedSnaps = req.params;
   if (!isObject(requestedSnaps)) {
@@ -182,7 +203,11 @@ async function requestSnapsImplementation(
     );
   }
 
+  const { id: approvalFlowId } = startApprovalFlow();
+
   try {
+    setApprovalFlowLoadingText('Loading Snap');
+
     if (!Object.keys(requestedSnaps).length) {
       throw new Error('Request must have at least one requested snap.');
     }
@@ -214,6 +239,8 @@ async function requestSnapsImplementation(
     }
   } catch (error) {
     res.error = error;
+  } finally {
+    endApprovalFlow(approvalFlowId);
   }
 
   return end();
