@@ -21,7 +21,7 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
     "lint:changelog": "auto-changelog validate",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
-    "lint:fix": "yarn lint:eslint --fix && yarn lint:constraints --fix && yarn lint:misc --write && yarn lint:changelog",
+    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write && yarn lint:changelog",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
     "prepack": "./scripts/prepack.sh",
     "start": "webpack serve --config-name app --mode development",

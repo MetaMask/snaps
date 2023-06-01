@@ -87,6 +87,27 @@ npm_version_range_out_of_sync(VersionRange1, VersionRange2) :-
     )
   ).
 
+% Slice a list from From to To.
+slice(Left, From, To, Right):-
+  length(LeftFrom, From),
+  length([_|LeftTo], To),
+  append(LeftTo, _, Left),
+  append(LeftFrom, Right, LeftTo).
+
+% True if and only if the given workspace directory is an example.
+is_example(WorkspaceCwd) :-
+  atomic_list_concat(Parts, '/', WorkspaceCwd),
+  slice(Parts, 0, 4, RootParts),
+  atomic_list_concat(RootParts, '/', RootCwd),
+  RootCwd = 'packages/examples/examples'.
+
+% True if and only if the given workspace directory is a nested example.
+is_nested_example(WorkspaceCwd) :-
+  atomic_list_concat(Parts, '/', WorkspaceCwd),
+  slice(Parts, 0, 6, RootParts),
+  atomic_list_concat(RootParts, '/', RootCwd),
+  RootCwd = 'packages/examples/examples/signer/packages'.
+
 %===============================================================================
 % Constraints
 %===============================================================================
@@ -119,3 +140,33 @@ gen_enforced_dependency(WorkspaceCwd, DependencyIdent, null, DependencyType) :-
   workspace_has_dependency(WorkspaceCwd, DependencyIdent, DependencyRange, 'dependencies'),
   workspace_has_dependency(WorkspaceCwd, DependencyIdent, DependencyRange, DependencyType),
   DependencyType == 'devDependencies'.
+
+% All dependencies must have the same lint scripts.
+gen_enforced_field(WorkspaceCwd, 'scripts.lint', 'yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog') :-
+  \+ is_example(WorkspaceCwd),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:fix', 'yarn lint:eslint --fix && yarn lint:misc --write && yarn lint:changelog') :-
+  \+ is_example(WorkspaceCwd),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:changelog', 'auto-changelog validate') :-
+  \+ is_example(WorkspaceCwd),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:eslint', 'eslint . --cache --ext js,ts,jsx,tsx') :-
+  \+ is_example(WorkspaceCwd),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:misc', 'prettier --no-error-on-unmatched-pattern --loglevel warn "**/*.json" "**/*.md" "**/*.html" "!CHANGELOG.md" --ignore-path ../../.gitignore') :-
+  \+ is_example(WorkspaceCwd),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:ci', 'yarn lint') :-
+  WorkspaceCwd \= '.'.
+
+% All examples must have the same lint scripts.
+gen_enforced_field(WorkspaceCwd, 'scripts.lint', 'yarn lint:eslint && yarn lint:misc --check') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:eslint', 'eslint . --cache --ext js,ts,jsx,tsx') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:misc', 'prettier --no-error-on-unmatched-pattern --loglevel warn "**/*.json" "**/*.md" "**/*.html" "!CHANGELOG.md" --ignore-path ../../../../.gitignore') :-
+  is_example(WorkspaceCwd),
+  \+ is_nested_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:misc', 'prettier --no-error-on-unmatched-pattern --loglevel warn "**/*.json" "**/*.md" "**/*.html" "!CHANGELOG.md" --ignore-path ../../../../../../.gitignore') :-
+  is_nested_example(WorkspaceCwd).
