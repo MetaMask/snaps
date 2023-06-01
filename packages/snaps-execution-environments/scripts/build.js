@@ -164,7 +164,9 @@ async function main() {
       });
 
       // Minification
-      bundler.pipeline.get('pack').push(require('minify-stream')());
+      bundler.pipeline
+        .get('pack')
+        .push(require('minify-stream')({ sourceMap: false }));
 
       const buffer = await new Promise((resolve, reject) => {
         bundler.bundle((error, bundle) => {
