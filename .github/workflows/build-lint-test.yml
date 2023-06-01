@@ -28,7 +28,7 @@ jobs:
           path: |
             packages/snaps-execution-environments/dist/browserify
           key: test-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
-      - name: Prepare test build
+      - name: Prepare "@metamask/snaps-execution-environments" build
         if: steps.cache-test-build.outputs.cache-hit != 'true'
         run: yarn test:prepare
       - name: Fetch workspace package names
@@ -81,7 +81,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: yarn
       - run: yarn --immutable --immutable-cache
-      - name: Restore test build
+      - name: Restore "@metamask/snaps-execution-environments" build
         uses: actions/cache@v3
         with:
           path: |
@@ -202,7 +202,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
-      - name: Restore test build
+      - name: Restore "@metamask/snaps-execution-environments" build
         uses: actions/cache@v3
         with:
           path: |
