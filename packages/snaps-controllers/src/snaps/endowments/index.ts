@@ -36,6 +36,7 @@ import {
   transactionInsightCaveatSpecifications,
   transactionInsightEndowmentBuilder,
 } from './transaction-insight';
+import { userInputEndowmentBuilder } from './user-input';
 import { webAssemblyEndowmentBuilder } from './web-assembly';
 
 export const endowmentPermissionBuilders = {
@@ -53,6 +54,7 @@ export const endowmentPermissionBuilders = {
   [homePageEndowmentBuilder.targetName]: homePageEndowmentBuilder,
   [signatureInsightEndowmentBuilder.targetName]:
     signatureInsightEndowmentBuilder,
+  [userInputEndowmentBuilder.targetName]: userInputEndowmentBuilder,
 } as const;
 
 export const endowmentCaveatSpecifications = {
@@ -88,6 +90,7 @@ export const handlerEndowments: Record<HandlerType, string> = {
   [HandlerType.OnKeyringRequest]: keyringEndowmentBuilder.targetName,
   [HandlerType.OnHomePage]: homePageEndowmentBuilder.targetName,
   [HandlerType.OnSignature]: signatureInsightEndowmentBuilder.targetName,
+  [HandlerType.OnUserInput]: userInputEndowmentBuilder.targetName,
 };
 
 export * from './enum';

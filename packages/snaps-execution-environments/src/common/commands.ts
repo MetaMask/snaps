@@ -84,6 +84,12 @@ export function getHandlerArguments(
 
     case HandlerType.OnHomePage:
       return {};
+    case HandlerType.OnUserInput: {
+      assertIsOnUserInputRequestArguments(request.params);
+
+      const { id, event } = request.params;
+      return { id, event };
+    }
 
     default:
       return assertExhaustive(handler);

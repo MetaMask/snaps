@@ -108,6 +108,20 @@ export type HandlerFunction<Type extends SnapHandler> =
     ? Handler
     : never;
 
+export enum UserInputEventType {
+  ButtonClickEvent = 'ButtonClickEvent',
+}
+
+type UserInputEvent = {
+  type: UserInputEventType;
+  name?: string;
+};
+
+export type OnUserInputHandler = (args: {
+  id: string;
+  event: UserInputEvent;
+}) => Promise<void>;
+
 /**
  * All the function-based handlers that a snap can implement.
  */

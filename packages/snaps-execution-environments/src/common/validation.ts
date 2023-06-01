@@ -1,5 +1,9 @@
 import { rpcErrors } from '@metamask/rpc-errors';
-import { ChainIdStruct, HandlerType } from '@metamask/snaps-utils';
+import {
+  ChainIdStruct,
+  HandlerType,
+  UserInputEventType,
+} from '@metamask/snaps-utils';
 import type { Json, JsonRpcSuccess } from '@metamask/utils';
 import {
   assertStruct,
@@ -206,6 +210,27 @@ export function assertIsOnNameLookupRequestArguments(
     'Invalid request params',
     rpcErrors.invalidParams,
   );
+}
+
+export const OnUserInputArgumentsStruct = object({
+  id: string(),
+  event: enums([UserInputEventType.ButtonClickEvent]),
+});
+
+export type OnUserInputArguments = Infer<typeof OnUserInputArgumentsStruct>;
+
+/**
+ * Asserts that the given value is a valid {@link OnUserInputArguments}
+ * object.
+ *
+ * @param value - The value to validate.
+ * @throws If the value is not a valid {@link OnUserInputArguments}
+ * object.
+ */
+export function assertIsOnUserInputRequestArguments(
+  value: unknown,
+): asserts value is OnUserInputArguments {
+  assertStruct(value, OnUserInputArgumentsStruct, 'Invalid request params');
 }
 
 const OkResponseStruct = object({
