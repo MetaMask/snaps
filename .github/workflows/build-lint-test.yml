@@ -21,16 +21,16 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: yarn
       - run: yarn --immutable
-      - name: Cache test build
-        id: cache-test-build
+      - name: Cache "@metamask/snaps-execution-environments" build
+        id: cache-snaps-execution-environments-build
         uses: actions/cache@v3
         with:
           path: |
             packages/snaps-execution-environments/dist/browserify
-          key: test-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
-      - name: Prepare test build
-        if: steps.cache-test-build.outputs.cache-hit != 'true'
-        run: yarn test:prepare
+          key: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+      - name: Prepare "@metamask/snaps-execution-environments" build
+        if: steps.cache-snaps-execution-environments-build.outputs.cache-hit != 'true'
+        run: yarn workspace @metamask/snaps-execution-environments run build:lavamoat
       - name: Fetch workspace package names
         id: workspace-package-names
         run: |
@@ -53,7 +53,52 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: yarn
       - run: yarn --immutable --immutable-cache
-      - run: yarn build
+      - name: Build TypeScript files
+        run: yarn build:tsc
+      - name: Build other files
+        run: yarn build:post-tsc:ci
+      - name: Require clean working directory
+        shell: bash
+        run: |
+          if ! git diff --exit-code; then
+            echo "Working tree dirty at end of job"
+            exit 1
+          fi
+
+  build-simulator:
+    name: Build Snaps Simulator
+    runs-on: ubuntu-latest
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [16.x, 18.x]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
+      - run: yarn --immutable --immutable-cache
+      - name: Restore "@metamask/snaps-execution-environments" build
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/snaps-execution-environments/dist/browserify
+          key: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+      - name: Cache Webpack vendor
+        id: cache-webpack-vendor
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/snaps-simulator/dist/vendor
+          key: webpack-vendor-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
+      - name: Build Webpack vendor
+        if: steps.cache-webpack-vendor.outputs.cache-hit != 'true'
+        run: yarn workspace @metamask/snaps-simulator run build:vendor
+      - name: Build Webpack
+        run: yarn workspace @metamask/snaps-simulator run build
       - name: Require clean working directory
         shell: bash
         run: |
@@ -157,12 +202,12 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
-      - name: Restore test build
+      - name: Restore "@metamask/snaps-execution-environments" build
         uses: actions/cache@v3
         with:
           path: |
             packages/snaps-execution-environments/dist/browserify
-          key: test-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+          key: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
       - run: yarn --immutable --immutable-cache
       - name: Install Google Chrome
         run: yarn install-chrome
