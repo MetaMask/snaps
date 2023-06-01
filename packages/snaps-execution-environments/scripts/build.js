@@ -6,6 +6,7 @@ const browserify = require('browserify');
 const { promises: fs } = require('fs');
 const LavaMoatBrowserify = require('lavamoat-browserify');
 const path = require('path');
+const { minify } = require('terser');
 const yargs = require('yargs');
 
 const defaultResolvePath = createResolvePath();
@@ -120,7 +121,7 @@ async function main() {
                   sourcePath === '@metamask/snaps-utils' &&
                   result.includes('../snaps-utils/src')
                 ) {
-                  return `${result}/index.browser`;
+                  return `${result}/index.executionenv`;
                 }
                 return result;
               },
@@ -190,13 +191,15 @@ async function main() {
           JSON.stringify(lavamoatSecurityOptions),
         );
 
+        const minifiedLavaMoatRuntime = (await minify(lavaMoatRuntime)).code;
+
         const htmlFile = `
       <!DOCTYPE html>
       <html>
         <head>
           <meta charset="utf-8" />
           <title>MetaMask Snaps Iframe Execution Environment</title>
-          <script>${lavaMoatRuntime}</script>
+          <script>${minifiedLavaMoatRuntime}</script>
           <script src="bundle.js"></script>
         </head>
       </html>`;
