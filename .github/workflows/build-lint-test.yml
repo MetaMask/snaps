@@ -21,15 +21,15 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: yarn
       - run: yarn --immutable
-      - name: Cache test build
-        id: cache-test-build
+      - name: Cache "@metamask/snaps-execution-environments" build
+        id: cache-snaps-execution-environments-build
         uses: actions/cache@v3
         with:
           path: |
             packages/snaps-execution-environments/dist/browserify
-          key: test-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+          key: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
       - name: Prepare "@metamask/snaps-execution-environments" build
-        if: steps.cache-test-build.outputs.cache-hit != 'true'
+        if: steps.cache-snaps-execution-environments-build.outputs.cache-hit != 'true'
         run: yarn test:prepare
       - name: Fetch workspace package names
         id: workspace-package-names
@@ -86,7 +86,7 @@ jobs:
         with:
           path: |
             packages/snaps-execution-environments/dist/browserify
-          key: test-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+          key: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
       - name: Cache Webpack vendor
         id: cache-webpack-vendor
         uses: actions/cache@v3
@@ -207,7 +207,7 @@ jobs:
         with:
           path: |
             packages/snaps-execution-environments/dist/browserify
-          key: test-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+          key: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
       - run: yarn --immutable --immutable-cache
       - name: Install Google Chrome
         run: yarn install-chrome
