@@ -3,14 +3,8 @@ import { processSnapPermissions } from '@metamask/snaps-controllers';
 import { DEFAULT_ENDOWMENTS, HandlerType } from '@metamask/snaps-utils';
 import { expectSaga } from 'redux-saga-test-plan';
 
-import { DEFAULT_SRP } from '../configuration';
-import {
-  DEFAULT_SNAP_ID,
-  initSaga,
-  permissionsSaga,
-  rebootSaga,
-  requestSaga,
-} from './sagas';
+import { DEFAULT_SRP, setSnapId } from '../configuration';
+import { initSaga, permissionsSaga, rebootSaga, requestSaga } from './sagas';
 import {
   sendRequest,
   setExecutionService,
@@ -21,9 +15,11 @@ import { MockExecutionService } from './test/mockExecutionService';
 import { MOCK_MANIFEST, MOCK_MANIFEST_FILE } from './test/mockManifest';
 import { MOCK_SNAP_SOURCE, MOCK_SNAP_SOURCE_FILE } from './test/mockSnap';
 
+const snapId = 'local:http://localhost:8080';
+
 describe('initSaga', () => {
   it('initializes the execution environment', async () => {
-    await expectSaga(initSaga)
+    await expectSaga(initSaga, setSnapId(snapId))
       .withState({
         configuration: { srp: DEFAULT_SRP },
       })
@@ -41,11 +37,12 @@ describe('rebootSaga', () => {
     } as unknown as GenericPermissionController;
     await expectSaga(rebootSaga, setSourceCode(MOCK_SNAP_SOURCE_FILE))
       .withState({
+        configuration: { snapId },
         simulation: { executionService, permissionController },
       })
       .call([executionService, 'terminateAllSnaps'])
       .call([executionService, 'executeSnap'], {
-        snapId: DEFAULT_SNAP_ID,
+        snapId,
         sourceCode: MOCK_SNAP_SOURCE,
         endowments: DEFAULT_ENDOWMENTS,
       })
@@ -67,13 +64,14 @@ describe('requestSaga', () => {
     };
     await expectSaga(requestSaga, sendRequest(request))
       .withState({
+        configuration: { snapId },
         simulation: { sourceCode, executionService },
       })
       .put({
         type: `${HandlerType.OnRpcRequest}/setRequest`,
         payload: request,
       })
-      .call([executionService, 'handleRpcRequest'], DEFAULT_SNAP_ID, request)
+      .call([executionService, 'handleRpcRequest'], snapId, request)
       .put({
         type: `${HandlerType.OnRpcRequest}/setResponse`,
         payload: {
@@ -101,11 +99,12 @@ describe('permissionsSaga', () => {
 
     await expectSaga(permissionsSaga, setManifest(MOCK_MANIFEST_FILE))
       .withState({
+        configuration: { snapId },
         simulation: { subjectMetadataController, permissionController },
       })
       .call([permissionController, 'grantPermissions'], {
         approvedPermissions,
-        subject: { origin: DEFAULT_SNAP_ID },
+        subject: { origin: snapId },
         preserveExistingPermissions: false,
       })
       .silentRun();
