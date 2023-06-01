@@ -21,7 +21,17 @@ async function main() {
 
   const workspaces = stdout.split('\n').map((line) => JSON.parse(line));
   const childWorkspaceNames = workspaces
-    .filter((workspace) => all || workspace.location !== '.')
+    .filter((workspace) => {
+      if (PRIVATE_WORKSPACES.includes(workspace.name)) {
+        return false;
+      }
+
+      if (all) {
+        return true;
+      }
+
+      return workspace.location !== '.';
+    })
     .map((workspace) => workspace.name);
 
   // eslint-disable-next-line no-console
