@@ -5,6 +5,7 @@ const {
 const browserify = require('browserify');
 const { promises: fs } = require('fs');
 const LavaMoatBrowserify = require('lavamoat-browserify');
+const { builtinModules } = require('node:module');
 const path = require('path');
 const { minify } = require('terser');
 const yargs = require('yargs');
@@ -74,18 +75,9 @@ async function main() {
       });
 
       if (node) {
-        bundler.external([
-          'worker_threads',
-          'buffer',
-          'stream',
-          'tty',
-          'crypto',
-          'util',
-          'events',
-          'os',
-          'timers',
-          'fs',
-        ]);
+        bundler.external(builtinModules);
+      } else {
+        bundler.exclude(['crypto']);
       }
 
       bundler.transform(require('babelify'), {
