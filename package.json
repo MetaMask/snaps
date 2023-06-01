@@ -13,7 +13,7 @@
     "setup": "yarn install",
     "postinstall": "simple-git-hooks",
     "lint:eslint": "eslint . --cache --ext js,jsx,ts,tsx",
-    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn --loglevel warn '**/*.json' '**/*.md' '!**/CHANGELOG.md' '**/*.yml' '**/*.html'",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn '**/*.json' '**/*.md' '!**/CHANGELOG.md' '**/*.yml' '**/*.html'",
     "lint:changelogs": "yarn workspaces foreach --parallel --verbose run lint:changelog",
     "lint:tsconfig": "node scripts/verify-tsconfig.mjs",
     "lint": "yarn workspaces foreach --parallel run lint:eslint && yarn workspaces foreach --parallel run lint:misc --check && yarn lint:tsconfig && yarn constraints",

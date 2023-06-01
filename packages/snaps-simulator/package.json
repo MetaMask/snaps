@@ -20,7 +20,6 @@
     "build:post-tsc": "yarn build",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:changelog": "auto-changelog validate",
-    "lint:constraints": "yarn constraints",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:constraints --fix && yarn lint:misc --write && yarn lint:changelog",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
