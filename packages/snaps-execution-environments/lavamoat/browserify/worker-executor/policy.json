@@ -57,10 +57,10 @@
         "TextEncoder": true
       },
       "packages": {
+        "@metamask/utils>semver": true,
         "browserify>buffer": true,
         "eslint>debug": true,
-        "superstruct": true,
-        "ts-jest>semver": true
+        "superstruct": true
       }
     },
     "@metamask/post-message-stream>readable-stream": {
@@ -235,8 +235,8 @@
     },
     "@metamask/snaps-utils>validate-npm-package-name>builtins": {
       "packages": {
-        "process": true,
-        "ts-jest>semver": true
+        "@metamask/utils>semver": true,
+        "process": true
       }
     },
     "@metamask/utils": {
@@ -245,10 +245,24 @@
         "TextEncoder": true
       },
       "packages": {
+        "@metamask/utils>semver": true,
         "browserify>buffer": true,
         "eslint>debug": true,
-        "superstruct": true,
-        "ts-jest>semver": true
+        "superstruct": true
+      }
+    },
+    "@metamask/utils>semver": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@metamask/utils>semver>lru-cache": true,
+        "process": true
+      }
+    },
+    "@metamask/utils>semver>lru-cache": {
+      "packages": {
+        "@metamask/utils>semver>lru-cache>yallist": true
       }
     },
     "@wdio/cli>inquirer>external-editor>iconv-lite>safer-buffer": {
@@ -700,13 +714,13 @@
     "external:../snaps-utils/src/snaps.ts": {
       "packages": {
         "@metamask/snaps-utils>@scure/base": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "@metamask/snaps-utils>validate-npm-package-name": true,
         "@metamask/utils": true,
         "external:../snaps-utils/src/caveats.ts": true,
         "external:../snaps-utils/src/checksum.ts": true,
         "external:../snaps-utils/src/types.ts": true,
-        "superstruct": true,
-        "ts-jest>fast-json-stable-stringify": true
+        "superstruct": true
       }
     },
     "external:../snaps-utils/src/types.ts": {
@@ -725,8 +739,8 @@
     "external:../snaps-utils/src/versions.ts": {
       "packages": {
         "@metamask/utils": true,
-        "superstruct": true,
-        "ts-jest>semver": true
+        "@metamask/utils>semver": true,
+        "superstruct": true
       }
     },
     "external:../snaps-utils/src/virtual-file/VirtualFile.ts": {
@@ -795,20 +809,6 @@
         "browserify>readable-stream>util-deprecate": true,
         "browserify>string_decoder": true,
         "process": true
-      }
-    },
-    "ts-jest>semver": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "process": true,
-        "ts-jest>semver>lru-cache": true
-      }
-    },
-    "ts-jest>semver>lru-cache": {
-      "packages": {
-        "ts-jest>semver>lru-cache>yallist": true
       }
     }
   }
