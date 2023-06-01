@@ -30,7 +30,7 @@ jobs:
           key: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
       - name: Prepare "@metamask/snaps-execution-environments" build
         if: steps.cache-snaps-execution-environments-build.outputs.cache-hit != 'true'
-        run: yarn test:prepare
+        run: yarn workspace @metamask/snaps-execution-environments run build:lavamoat
       - name: Fetch workspace package names
         id: workspace-package-names
         run: |
