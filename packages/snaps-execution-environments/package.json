@@ -98,7 +98,6 @@
     "lavamoat": "^7.0.0",
     "lavamoat-browserify": "^15.6.0",
     "memfs": "^3.4.13",
-    "minify-stream": "^2.1.0",
     "prettier": "^2.7.1",
     "prettier-plugin-packagejson": "^2.2.11",
     "process": "^0.11.10",

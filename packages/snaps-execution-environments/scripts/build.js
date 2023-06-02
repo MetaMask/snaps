@@ -177,11 +177,6 @@ async function main() {
         ...lavamoatSecurityOptions,
       });
 
-      // Minification
-      bundler.pipeline
-        .get('pack')
-        .push(require('minify-stream')({ sourceMap: false }));
-
       const buffer = await new Promise((resolve, reject) => {
         bundler.bundle((error, bundle) => {
           if (error) {
@@ -192,9 +187,14 @@ async function main() {
         });
       });
 
+      // Minification
+      const minifiedBundle = (
+        await minify(buffer.toString(), { sourceMap: false })
+      ).code;
+
       const bundlePath = path.join(OUTPUT_PATH, key, OUTPUT_BUNDLE);
       await fs.mkdir(path.dirname(bundlePath), { recursive: true });
-      await fs.writeFile(bundlePath, buffer);
+      await fs.writeFile(bundlePath, minifiedBundle);
 
       if (html) {
         const htmlPath = path.join(OUTPUT_PATH, key, OUTPUT_HTML);

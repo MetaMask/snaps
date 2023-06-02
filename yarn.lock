@@ -3632,13 +3632,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jridgewell/source-map@npm:^0.3.2":
-  version: 0.3.2
-  resolution: "@jridgewell/source-map@npm:0.3.2"
+"@jridgewell/source-map@npm:^0.3.3":
+  version: 0.3.3
+  resolution: "@jridgewell/source-map@npm:0.3.3"
   dependencies:
     "@jridgewell/gen-mapping": ^0.3.0
     "@jridgewell/trace-mapping": ^0.3.9
-  checksum: 1b83f0eb944e77b70559a394d5d3b3f98a81fcc186946aceb3ef42d036762b52ef71493c6c0a3b7c1d2f08785f53ba2df1277fe629a06e6109588ff4cdcf7482
+  checksum: ae1302146339667da5cd6541260ecbef46ae06819a60f88da8f58b3e64682f787c09359933d050dea5d2173ea7fa40f40dd4d4e7a8d325c5892cccd99aaf8959
   languageName: node
   linkType: hard
 
@@ -4417,7 +4417,6 @@ __metadata:
     lavamoat: ^7.0.0
     lavamoat-browserify: ^15.6.0
     memfs: ^3.4.13
-    minify-stream: ^2.1.0
     nanoid: ^3.1.31
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
@@ -7275,7 +7274,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"acorn@npm:^8.1.0, acorn@npm:^8.4.1, acorn@npm:^8.5.0, acorn@npm:^8.8.0, acorn@npm:^8.8.1":
+"acorn@npm:^8.1.0, acorn@npm:^8.4.1, acorn@npm:^8.8.0, acorn@npm:^8.8.1, acorn@npm:^8.8.2":
   version: 8.8.2
   resolution: "acorn@npm:8.8.2"
   bin:
@@ -13197,25 +13196,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"from2-string@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "from2-string@npm:1.1.0"
-  dependencies:
-    from2: ^2.0.3
-  checksum: 7b62902368bf667fc672c02f5cdf4b74918d9a7883c5de957171da931a3e61e1f06404cdf69850a2b3ac688e184b11155d4ae2b0fa99fda377d8be59ad4b604e
-  languageName: node
-  linkType: hard
-
-"from2@npm:^2.0.3":
-  version: 2.3.0
-  resolution: "from2@npm:2.3.0"
-  dependencies:
-    inherits: ^2.0.1
-    readable-stream: ^2.0.0
-  checksum: 6080eba0793dce32f475141fb3d54cc15f84ee52e420ee22ac3ab0ad639dc95a1875bc6eb9c0e1140e94972a36a89dc5542491b85f1ab8df0c126241e0f1a61b
-  languageName: node
-  linkType: hard
-
 "from@npm:~0":
   version: 0.1.7
   resolution: "from@npm:0.1.7"
@@ -17239,20 +17219,6 @@ __metadata:
   version: 4.0.0
   resolution: "mimic-response@npm:4.0.0"
   checksum: 33b804cc961efe206efdb1fca6a22540decdcfce6c14eb5c0c50e5ae9022267ab22ce8f5568b1f7247ba67500fe20d523d81e0e9f009b321ccd9d472e78d1850
-  languageName: node
-  linkType: hard
-
-"minify-stream@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "minify-stream@npm:2.1.0"
-  dependencies:
-    concat-stream: ^2.0.0
-    convert-source-map: ^1.5.0
-    duplexify: ^4.1.1
-    from2-string: ^1.1.0
-    terser: ^4.7.0
-    xtend: ^4.0.1
-  checksum: ae2bb7cc87fc9b8b1f245d78ac97eff26a2e3c3e755cd1076aa6fcd3059299df6f33ca32330bd3faf78669519a38764831af26ca8e53e910c810f27a3783c8d1
   languageName: node
   linkType: hard
 
@@ -22282,17 +22248,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"terser@npm:^5.16.6":
-  version: 5.17.6
-  resolution: "terser@npm:5.17.6"
+"terser@npm:^5.10.0, terser@npm:^5.14.1, terser@npm:^5.17.7":
+  version: 5.17.7
+  resolution: "terser@npm:5.17.7"
   dependencies:
-    "@jridgewell/source-map": ^0.3.2
-    acorn: ^8.5.0
+    "@jridgewell/source-map": ^0.3.3
+    acorn: ^8.8.2
     commander: ^2.20.0
     source-map-support: ~0.5.20
   bin:
     terser: bin/terser
-  checksum: 9c0ab0261a99a61c5f53d05d4ecc7f68c552bae6af481464fdd596bc9d7e89ce8e21b1833cb3ce06ad5f658e2b226081d543e4fe6e324b2cdf03ee8b7eeec01a
+  checksum: b7b17b281febadf3bea9b9412d699fa24edf9b3e20fc7ad4e1a9cec276bdb65ddaa291c9663d5ab66b58834e433377477f73328574ccab2da1637a15b095811d
   languageName: node
   linkType: hard
 
