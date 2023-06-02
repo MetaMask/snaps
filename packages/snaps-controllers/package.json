@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-controllers",
-  "version": "0.34.0-flask.1",
+  "version": "0.34.1-flask.1",
   "description": "Controllers for MetaMask Snaps.",
   "repository": {
     "type": "git",
