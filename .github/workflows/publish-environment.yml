@@ -8,7 +8,7 @@ on:
         type: string
 
 jobs:
-  publish-site:
+  publish-environment:
     name: Publish execution environment
     runs-on: ubuntu-latest
     environment: deploy-prod
@@ -19,13 +19,14 @@ jobs:
       - name: Ensure `destination_dir` is not empty
         if: ${{ inputs.destination_dir == '' }}
         run: exit 1
-      - uses: actions/cache@v3
-        id: restore-build
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
         with:
-          path: |
-            ./packages/**/dist
-            ./node_modules
-          key: ${{ github.sha }}
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
+      - run: yarn --immutable
+      - run: yarn build:lavamoat
       - name: configure AWS credentials
         uses: aws-actions/configure-aws-credentials@e1e17a757e536f70e52b5a12b2e8d1d1c60e04ef
         with:
