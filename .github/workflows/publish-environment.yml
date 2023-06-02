@@ -24,7 +24,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
-          cache: yarn
       - run: yarn --immutable
       - run: yarn build:lavamoat
       - name: configure AWS credentials
