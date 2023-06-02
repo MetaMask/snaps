@@ -17,11 +17,11 @@
     "test:browser": "wdio run wdio.config.ts",
     "test:ci": "yarn test",
     "test:watch": "jest --watch",
-    "lint:eslint": "eslint . --cache --ext js,ts",
-    "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path .gitignore",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ./.prettierignore",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
-    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*' 'src/__GENERATED__/' 'coverage/*' '__test__/*'",
     "build:clean": "yarn clean && yarn build",
     "build:post-tsc": "yarn build:lavamoat",
@@ -31,7 +31,8 @@
     "build:lavamoat:policy": "yarn build:lavamoat --writeAutoPolicy && node scripts/build.js --writeAutoPolicy",
     "auto-changelog-init": "auto-changelog init",
     "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
-    "publish:preview": "yarn npm publish --tag preview"
+    "publish:preview": "yarn npm publish --tag preview",
+    "lint:ci": "yarn lint"
   },
   "dependencies": {
     "@metamask/object-multiplex": "^1.2.0",
