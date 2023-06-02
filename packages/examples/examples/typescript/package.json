@@ -1,6 +1,6 @@
 {
   "name": "typescript-snap",
-  "version": "0.34.0-flask.1",
+  "version": "0.34.1-flask.1",
   "private": true,
   "description": "The 'Hello, world!' of MetaMask Snaps, now written in TypeScript.",
   "repository": {
