@@ -71,8 +71,7 @@ jobs:
           key: ${{ github.sha }}
       - name: Get release tag
         id: get-release-tag
-        run: |
-          echo "tag=$(yarn get-release-tag)" >> "$GITHUB_OUTPUT"
+        run: echo "tag=$(yarn get-release-tag)" >> "$GITHUB_OUTPUT"
         shell: bash
       - run: npm config set ignore-scripts true
       - name: Publish ${{ steps.get-release-tag.outputs.tag }}
