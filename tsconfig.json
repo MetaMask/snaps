@@ -14,7 +14,8 @@
   ],
   "compilerOptions": {
     "esModuleInterop": true,
-    "noEmit": true
+    "noEmit": true,
+    "resolveJsonModule": true
   },
   "files": [],
   "include": ["scripts"]
