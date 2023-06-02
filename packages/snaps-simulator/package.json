@@ -17,7 +17,7 @@
     "build": "webpack --mode production --config-name app",
     "build:vendor": "webpack --mode production --config-name vendor",
     "build:clean": "rimraf dist && yarn build",
-    "build:post-tsc": "yarn build",
+    "build:post-tsc": "yarn build:vendor && yarn build",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
     "lint:changelog": "auto-changelog validate",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
