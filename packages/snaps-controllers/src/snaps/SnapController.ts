@@ -2,6 +2,8 @@ import {
   AddApprovalRequest,
   UpdateRequestState,
   SetFlowLoadingText,
+  ShowSuccess,
+  ShowError,
 } from '@metamask/approval-controller';
 import {
   BaseControllerV2 as BaseController,
@@ -62,6 +64,7 @@ import {
   VirtualFile,
   logError,
   logWarning,
+  logInfo,
 } from '@metamask/snaps-utils';
 import {
   assert,
@@ -487,7 +490,9 @@ export type AllowedActions =
   | UpdateRequestState
   | GetResult
   | GetMetadata
-  | SetFlowLoadingText;
+  | SetFlowLoadingText
+  | ShowSuccess
+  | ShowError;
 
 export type AllowedEvents = ExecutionServiceEvents;
 
@@ -1728,6 +1733,10 @@ export class SnapController extends BaseController<
 
       await this.authorize(snapId, origin);
 
+      if (snapId === 'npm:@metamask/test-snap-error') {
+        throw new Error('Example error for demo purposes');
+      }
+
       await this.#startSnap({
         snapId,
         sourceCode,
@@ -1738,11 +1747,13 @@ export class SnapController extends BaseController<
       // Simulate delay to show loading page
       await new Promise((resolve) => setTimeout(resolve, 5000));
 
-      this.#createApproval({
-        origin,
-        snapId,
-        type: SNAP_APPROVAL_RESULT,
-      });
+      this.messagingSystem
+        .call('ApprovalController:showSuccess', {
+          message: 'Snap installed successfully',
+        })
+        .catch((error) => {
+          logInfo('Failed to display snap success page', error);
+        });
 
       this.messagingSystem.publish(`SnapController:snapInstalled`, truncated);
 
@@ -1750,15 +1761,13 @@ export class SnapController extends BaseController<
     } catch (error) {
       logError(`Error when adding ${snapId}.`, error);
 
-      this.#createApproval({
-        origin,
-        snapId,
-        type: SNAP_APPROVAL_RESULT,
-        requestState: {
-          loading: false,
+      this.messagingSystem
+        .call('ApprovalController:showError', {
           error: error instanceof Error ? error.message : error.toString(),
-        },
-      });
+        })
+        .catch((internalError) => {
+          logInfo('Failed to display snap error page', internalError);
+        });
 
       throw error;
     }
@@ -2342,7 +2351,7 @@ export class SnapController extends BaseController<
    * This function is not hash private yet because of tests.
    *
    * @param snapId - The id of the Snap.
-   * @param origin
+   * @param origin - The origin of the request.
    * @returns The snap's approvedPermissions.
    */
   private async authorize(
