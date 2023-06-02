@@ -72,13 +72,7 @@ jobs:
       - name: Get release tag
         id: get-release-tag
         run: |
-          branch=${GITHUB_REF#refs/heads/}
-          if [ "$branch" = "main" ]
-          then
-            echo "tag=flask" >> "$GITHUB_OUTPUT"
-          else
-            echo "tag=latest" >> "$GITHUB_OUTPUT"
-          fi
+          echo "tag=$(yarn get-release-tag)" >> "$GITHUB_OUTPUT"
         shell: bash
       - run: npm config set ignore-scripts true
       - name: Publish ${{ steps.get-release-tag.outputs.tag }}
