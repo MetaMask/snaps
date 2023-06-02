@@ -81,6 +81,7 @@ async function main() {
 
   const minifiedLavaMoatRuntime = (await minify(lavaMoatRuntime)).code;
 
+  // This can be re-used for all browser bundles
   const htmlFile = `
 <!DOCTYPE html>
 <html>
@@ -110,6 +111,7 @@ async function main() {
       if (node) {
         bundler.external(builtinModules);
       } else {
+        // The crypto polyfills are erroneously included in the browser bundle, this prevents that.
         bundler.exclude(['crypto']);
       }
 
@@ -140,7 +142,7 @@ async function main() {
                 if (!result) {
                   return null;
                 }
-                // Force resolve `@metamask/snaps-utils` to browser bundle regardless of environment to reduce bundle size
+                // Force resolve `@metamask/snaps-utils` to execution env bundle regardless of environment to reduce bundle size
                 // Use default resolver for everything else
                 if (
                   sourcePath === '@metamask/snaps-utils' &&
