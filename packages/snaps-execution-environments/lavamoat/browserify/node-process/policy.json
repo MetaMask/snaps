@@ -358,6 +358,7 @@
       "packages": {
         "external:../snaps-utils/src/handlers.ts": true,
         "external:../snaps-utils/src/logging.ts": true,
+        "external:../snaps-utils/src/namespace.ts": true,
         "external:../snaps-utils/src/types.ts": true
       }
     },
@@ -369,6 +370,12 @@
       },
       "packages": {
         "@metamask/utils": true
+      }
+    },
+    "external:../snaps-utils/src/namespace.ts": {
+      "packages": {
+        "@metamask/utils": true,
+        "superstruct": true
       }
     },
     "external:../snaps-utils/src/types.ts": {
