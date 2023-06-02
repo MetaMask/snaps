@@ -49,14 +49,12 @@ jobs:
     needs: prepare
     strategy:
       fail-fast: false
-      matrix:
-        node-version: [16.x, 18.x]
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: '.nvmrc'
           cache: yarn
       - run: yarn --immutable --immutable-cache
       - name: Build TypeScript files
@@ -77,14 +75,12 @@ jobs:
     needs: prepare
     strategy:
       fail-fast: false
-      matrix:
-        node-version: [16.x, 18.x]
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: '.nvmrc'
           cache: yarn
       - run: yarn --immutable --immutable-cache
       - name: Restore "@metamask/snaps-execution-environments" build
@@ -119,14 +115,12 @@ jobs:
     needs: prepare
     strategy:
       fail-fast: false
-      matrix:
-        node-version: [16.x, 18.x]
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: '.nvmrc'
           cache: yarn
       - run: yarn --immutable --immutable-cache
       - name: Generate LavaMoat policy
@@ -146,14 +140,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16.x, 18.x]
         package-name: ${{ fromJson(needs.prepare.outputs.all-child-workspace-package-names) }}
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: '.nvmrc'
           cache: yarn
       - run: yarn --immutable --immutable-cache
       - run: yarn workspace ${{ matrix.package-name }} run lint:ci
