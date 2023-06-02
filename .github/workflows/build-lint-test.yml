@@ -88,14 +88,14 @@ jobs:
         with:
           path: |
             packages/snaps-execution-environments/dist/browserify
-          key: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+          key: snaps-execution-environments-build-${{ runner.os }}-${{ github.sha }}
       - name: Cache Webpack vendor
         id: cache-webpack-vendor
         uses: actions/cache@v3
         with:
           path: |
             packages/snaps-simulator/dist/vendor
-          key: webpack-vendor-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
+          key: webpack-vendor-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
       - name: Build Webpack vendor
         if: steps.cache-webpack-vendor.outputs.cache-hit != 'true'
         run: yarn workspace @metamask/snaps-simulator run build:vendor
