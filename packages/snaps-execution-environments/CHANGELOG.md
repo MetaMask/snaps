@@ -6,10 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.34.1-flask.1]
-### Changed
-- Deploy `iframe-execution-environment` from this repository ([#1406](https://github.com/MetaMask/snaps/pull/1406))
-
 ## [0.34.0-flask.1]
 ### Changed
 - Improve JSON sanitization ([#1405](https://github.com/MetaMask/snaps/pull/1405), [#1457](https://github.com/MetaMask/snaps/pull/1457))
@@ -264,8 +260,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Previously, default endowments were specified in the execution environment itself. Now, all endowments must be specified in the `executeSnap` RPC parameters, except for the `wallet` API object.
 - Add endowments to the global `self` in addition to `window` ([#263](https://github.com/MetaMask/snaps-monorepo/pull/263))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.34.1-flask.1...HEAD
-[0.34.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.34.0-flask.1...v0.34.1-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.34.0-flask.1...HEAD
 [0.34.0-flask.1]: https://github.com/MetaMask/snaps/compare/v0.33.1-flask.1...v0.34.0-flask.1
 [0.33.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.33.0-flask.1...v0.33.1-flask.1
 [0.33.0-flask.1]: https://github.com/MetaMask/snaps/compare/v0.32.2...v0.33.0-flask.1

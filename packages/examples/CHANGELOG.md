@@ -6,10 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.34.1-flask.1]
-### Changed
-- No changes this release.
-
 ## [0.34.0-flask.1]
 ### Changed
 - No changes this release.
@@ -273,8 +269,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - This package was previously a subset of [`snaps-cli`](https://github.com/MetaMask/snaps-cli/tree/main/examples), which has been renamed to [`@metamask/snaps-cli`](https://npmjs.com/package/@metamask/snaps-cli).
   - Some examples have been deleted because they were outdated.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.34.1-flask.1...HEAD
-[0.34.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.34.0-flask.1...v0.34.1-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.34.0-flask.1...HEAD
 [0.34.0-flask.1]: https://github.com/MetaMask/snaps/compare/v0.33.1-flask.1...v0.34.0-flask.1
 [0.33.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.33.0-flask.1...v0.33.1-flask.1
 [0.33.0-flask.1]: https://github.com/MetaMask/snaps/compare/v0.32.2...v0.33.0-flask.1

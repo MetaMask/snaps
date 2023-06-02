@@ -6,10 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.34.1-flask.1]
-### Changed
-- No changes this release.
-
 ## [0.34.0-flask.1]
 ### Removed
 - **BREAKING:** Remove `init` command ([#1268](https://github.com/MetaMask/snaps/pull/1268))
@@ -338,8 +334,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Example snaps ([#72](https://github.com/MetaMask/snaps-monorepo/pull/72))
   - The examples now live in their own package, [`@metamask/snap-examples`](https://npmjs.com/package/@metamask/snap-examples).
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.34.1-flask.1...HEAD
-[0.34.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.34.0-flask.1...v0.34.1-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.34.0-flask.1...HEAD
 [0.34.0-flask.1]: https://github.com/MetaMask/snaps/compare/v0.33.1-flask.1...v0.34.0-flask.1
 [0.33.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.33.0-flask.1...v0.33.1-flask.1
 [0.33.0-flask.1]: https://github.com/MetaMask/snaps/compare/v0.32.2...v0.33.0-flask.1
