@@ -7,14 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.34.1-flask.1]
-### Uncategorized
-- Build simulator vendor before main build ([#1471](https://github.com/MetaMask/snaps/pull/1471))
-- Revert "0.34.1-flask.1 (#1469)" ([#1469](https://github.com/MetaMask/snaps/pull/1469))
-- 0.34.1-flask.1 ([#1469](https://github.com/MetaMask/snaps/pull/1469))
-- Lint each package in a separate CI job ([#1463](https://github.com/MetaMask/snaps/pull/1463))
-- Run tests in CI for `snaps-simulator` ([#1454](https://github.com/MetaMask/snaps/pull/1454))
-- Run all Jest tests with SWC ([#1462](https://github.com/MetaMask/snaps/pull/1462))
-- Build vendor files separate from own files in Webpack ([#1459](https://github.com/MetaMask/snaps/pull/1459))
+### Changed
+- No changes this release.
 
 ## [0.34.0-flask.1]
 ### Added
