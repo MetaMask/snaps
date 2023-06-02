@@ -59,6 +59,39 @@ async function main() {
       }),
   );
 
+  const lavamoatSecurityOptionsBrowser = {
+    // Only enable for browser builds for now due to incompatibilities.
+    scuttleGlobalThis: true,
+    scuttleGlobalThisExceptions: [
+      'postMessage',
+      'removeEventListener',
+      'isSecureContext',
+    ],
+  };
+
+  const lavaMoatRuntimeString = await fs.readFile(
+    require.resolve('@lavamoat/lavapack/src/runtime.js'),
+    'utf-8',
+  );
+
+  const lavaMoatRuntime = lavaMoatRuntimeString.replace(
+    '__lavamoatSecurityOptions__',
+    JSON.stringify(lavamoatSecurityOptionsBrowser),
+  );
+
+  const minifiedLavaMoatRuntime = (await minify(lavaMoatRuntime)).code;
+
+  const htmlFile = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>MetaMask Snaps Iframe Execution Environment</title>
+    <script>${minifiedLavaMoatRuntime}</script>
+    <script src="bundle.js"></script>
+  </head>
+</html>`;
+
   await Promise.all(
     Object.entries(ENTRY_POINTS).map(async ([key, config]) => {
       console.log('Bundling', key);
@@ -122,19 +155,8 @@ async function main() {
         ],
       });
 
-      let lavamoatSecurityOptions = {};
-
-      if (worker || html) {
-        lavamoatSecurityOptions = {
-          // Only enable for browser builds for now due to incompatibilities.
-          scuttleGlobalThis: true,
-          scuttleGlobalThisExceptions: [
-            'postMessage',
-            'removeEventListener',
-            'isSecureContext',
-          ],
-        };
-      }
+      const lavamoatSecurityOptions =
+        worker || html ? lavamoatSecurityOptionsBrowser : {};
 
       // Add LavaMoat to wrap bundles in LavaPack
       // For Node.js builds, this also includes a prelude that contains SES and the LavaMoat runtime
@@ -175,29 +197,6 @@ async function main() {
       await fs.writeFile(bundlePath, buffer);
 
       if (html) {
-        const lavaMoatRuntimeString = await fs.readFile(
-          require.resolve('@lavamoat/lavapack/src/runtime.js'),
-          'utf-8',
-        );
-
-        const lavaMoatRuntime = lavaMoatRuntimeString.replace(
-          '__lavamoatSecurityOptions__',
-          JSON.stringify(lavamoatSecurityOptions),
-        );
-
-        const minifiedLavaMoatRuntime = (await minify(lavaMoatRuntime)).code;
-
-        const htmlFile = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="utf-8" />
-          <title>MetaMask Snaps Iframe Execution Environment</title>
-          <script>${minifiedLavaMoatRuntime}</script>
-          <script src="bundle.js"></script>
-        </head>
-      </html>`;
-
         const htmlPath = path.join(OUTPUT_PATH, key, OUTPUT_HTML);
         await fs.mkdir(path.dirname(htmlPath), { recursive: true });
         await fs.writeFile(htmlPath, htmlFile);
