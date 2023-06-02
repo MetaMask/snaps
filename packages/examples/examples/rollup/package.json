@@ -1,6 +1,6 @@
 {
   "name": "rollup-snap",
-  "version": "0.34.0-flask.1",
+  "version": "0.34.1-flask.1",
   "private": true,
   "description": "An example Snap built using TypeScript and Rollup",
   "repository": {

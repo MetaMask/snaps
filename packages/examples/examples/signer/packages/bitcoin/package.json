@@ -1,6 +1,6 @@
 {
   "name": "signer-bitcoin",
-  "version": "0.34.0-flask.1",
+  "version": "0.34.1-flask.1",
   "private": true,
   "repository": {
     "type": "git",
