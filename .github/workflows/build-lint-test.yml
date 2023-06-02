@@ -88,7 +88,7 @@ jobs:
         with:
           path: |
             packages/snaps-execution-environments/dist/browserify
-          key: snaps-execution-environments-build-${{ runner.os }}-${{ github.sha }}
+          key: snaps-execution-environments-build-${{ runner.os }}-16.x-${{ github.sha }}
       - name: Cache Webpack vendor
         id: cache-webpack-vendor
         uses: actions/cache@v3
