@@ -64,7 +64,7 @@ import {
   VirtualFile,
   logError,
   logWarning,
-  logInfo,
+  getSnapPrefix,
 } from '@metamask/snaps-utils';
 import {
   assert,
@@ -1747,13 +1747,12 @@ export class SnapController extends BaseController<
       // Simulate delay to show loading page
       await new Promise((resolve) => setTimeout(resolve, 5000));
 
-      this.messagingSystem
-        .call('ApprovalController:showSuccess', {
-          message: 'Snap installed successfully',
-        })
-        .catch((error) => {
-          logInfo('Failed to display snap success page', error);
-        });
+      const snapName = snapId?.replace(getSnapPrefix(snapId), '');
+
+      this.messagingSystem.call('ApprovalController:showSuccess', {
+        message: `**${snapName}** is now available to use.`,
+        header: [{ key: 'snap', element: 'SnapAuthorship', props: { snapId } }],
+      });
 
       this.messagingSystem.publish(`SnapController:snapInstalled`, truncated);
 
@@ -1761,13 +1760,10 @@ export class SnapController extends BaseController<
     } catch (error) {
       logError(`Error when adding ${snapId}.`, error);
 
-      this.messagingSystem
-        .call('ApprovalController:showError', {
-          error: error instanceof Error ? error.message : error.toString(),
-        })
-        .catch((internalError) => {
-          logInfo('Failed to display snap error page', internalError);
-        });
+      this.messagingSystem.call('ApprovalController:showError', {
+        error: error instanceof Error ? error.message : error.toString(),
+        header: [{ key: 'snap', element: 'SnapAuthorship', props: { snapId } }],
+      });
 
       throw error;
     }
