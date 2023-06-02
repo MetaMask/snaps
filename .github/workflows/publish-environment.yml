@@ -1,0 +1,37 @@
+name: Publish execution environment
+
+on:
+  workflow_call:
+    inputs:
+      destination_dir:
+        required: true
+        type: string
+
+jobs:
+  publish-environment:
+    name: Publish execution environment
+    runs-on: ubuntu-latest
+    environment: deploy-prod
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Ensure `destination_dir` is not empty
+        if: ${{ inputs.destination_dir == '' }}
+        run: exit 1
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+      - run: yarn --immutable
+      - run: yarn build:lavamoat
+      - name: configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@e1e17a757e536f70e52b5a12b2e8d1d1c60e04ef
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          role-session-name: ghactionssession
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Deploy to `${{ inputs.destination_dir }}` directory of remote storage
+        run: |
+          aws s3 cp ./packages/snaps-execution-environments/dist/browserify/iframe s3://${{ vars.AWS_BUCKET_NAME }}/${{ inputs.destination_dir }} --recursive --acl private
