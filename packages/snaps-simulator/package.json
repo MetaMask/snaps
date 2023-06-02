@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-simulator",
-  "version": "0.34.1-flask.1",
+  "version": "0.34.0-flask.1",
   "private": true,
   "description": "A simulator for MetaMask Snaps, to be used for testing and development",
   "homepage": "https://github.com/MetaMask/snaps-monorepo#readme",

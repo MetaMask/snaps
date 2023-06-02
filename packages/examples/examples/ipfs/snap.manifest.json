@@ -1,5 +1,5 @@
 {
-  "version": "0.34.1-flask.1",
+  "version": "0.34.0-flask.1",
   "description": "An example Snap that performs IPFS operations.",
   "proposedName": "ipfs-snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "3yLlwrHmnNHv1L8pT3o/pRpfg8vSy9jtkjcTMPgvYVY=",
+    "shasum": "h1FThLHBU1Dqcrj8TdaMkijQE99k/qG+BXVH7syE/24=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
