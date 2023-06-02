@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Download actionlint
         id: download-actionlint
-        run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/7fdc9630cc360ea1a469eed64ac6d78caeda1234/scripts/download-actionlint.bash) 1.6.22
+        run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/7fdc9630cc360ea1a469eed64ac6d78caeda1234/scripts/download-actionlint.bash) 1.6.23
         shell: bash
       - name: Check workflow files
         run: ${{ steps.download-actionlint.outputs.executable }} -color
@@ -43,6 +43,7 @@ jobs:
     needs: is-release
     if: needs.is-release.outputs.IS_RELEASE == 'true'
     permissions:
+      id-token: write
       contents: write
     uses: ./.github/workflows/publish-release.yml
     secrets:
