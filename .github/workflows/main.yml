@@ -43,6 +43,7 @@ jobs:
     needs: is-release
     if: needs.is-release.outputs.IS_RELEASE == 'true'
     permissions:
+      id-token: write
       contents: write
     uses: ./.github/workflows/publish-release.yml
     secrets:
