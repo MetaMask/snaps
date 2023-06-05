@@ -67,7 +67,7 @@ export const restrictedMethodPermissionBuilders = {
   [manageStateBuilder.targetName]: manageStateBuilder,
   [notifyBuilder.targetName]: notifyBuilder,
   [manageAccountsBuilder.targetName]: manageAccountsBuilder,
-  [readInterfaceBuilder.targetName]: resolveInterfaceBuilder,
+  [readInterfaceBuilder.targetName]: readInterfaceBuilder,
   [resolveInterfaceBuilder.targetName]: resolveInterfaceBuilder,
   [showInterfaceBuilder.targetName]: showInterfaceBuilder,
   [updateInterfaceBuilder.targetName]: updateInterfaceBuilder,
