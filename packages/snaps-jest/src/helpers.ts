@@ -1,4 +1,4 @@
-import type { HandlerType, SnapRpcHookArgs } from '@metamask/snaps-utils';
+import { HandlerType, SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { getDocument, queries } from 'pptr-testing-library';
 
 import {
