@@ -1,0 +1,22 @@
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+index 5f731414542eb6094224ee0f9ed8e592c01ee82d..621561e3f2a48cab4c49cc4dc347de0b302e3fce 100644
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
+@@ -1,4 +1,5 @@
+-import { ElementHandle, Page } from 'puppeteer';
++import { Page } from 'puppeteer-core/lib/esm/puppeteer/api/Page';
++import { ElementHandle } from 'puppeteer-core/lib/esm/puppeteer/api/ElementHandle';
+ import { IConfigureOptions, IQueryUtils, IScopedQueryUtils } from './typedefs';
+ declare type ContextFn = (...args: any[]) => ElementHandle;
+ export declare function getDocument(_page?: Page): Promise<ElementHandle>;
+diff --git a/dist/typedefs.d.ts b/dist/typedefs.d.ts
+index 9a4b8cac51c10eb06ad67f6367aeb7266491bf2a..481636884f29dafde045285846b5fde16fdafaa3 100644
+--- a/dist/typedefs.d.ts
++++ b/dist/typedefs.d.ts
+@@ -1,5 +1,5 @@
+ import { ByRoleOptions as ByRoleOptions_, Matcher, MatcherOptions as MatcherOptions_, SelectorMatcherOptions as SelectorMatcherOptions_, waitForOptions } from '@testing-library/dom';
+-import { ElementHandle } from 'puppeteer';
++import { ElementHandle } from 'puppeteer-core/lib/esm/puppeteer/api/ElementHandle';
+ declare type Element = ElementHandle;
+ declare type MatcherOptions = Omit<MatcherOptions_, 'normalizer'>;
+ declare type SelectorMatcherOptions = Omit<SelectorMatcherOptions_, 'normalizer'>;

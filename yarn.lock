@@ -19470,7 +19470,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pptr-testing-library@npm:^0.7.0":
+"pptr-testing-library@npm:0.7.0":
   version: 0.7.0
   resolution: "pptr-testing-library@npm:0.7.0"
   dependencies:
@@ -19479,6 +19479,18 @@ __metadata:
   peerDependencies:
     puppeteer: "*"
   checksum: ab97fa7e3aa3e0bfce73ef67a07cec215553586ff11bf969dee0978f3c69c2641814a8b477a49afd67bcced182acf8977bc69e9a58dc7277cad0d8a4bed4cf01
+  languageName: node
+  linkType: hard
+
+"pptr-testing-library@patch:pptr-testing-library@npm%3A0.7.0#./.yarn/patches/pptr-testing-library-npm-0.7.0-4f4ae8da9d.patch::locator=root%40workspace%3A.":
+  version: 0.7.0
+  resolution: "pptr-testing-library@patch:pptr-testing-library@npm%3A0.7.0#./.yarn/patches/pptr-testing-library-npm-0.7.0-4f4ae8da9d.patch::version=0.7.0&hash=2a49d5&locator=root%40workspace%3A."
+  dependencies:
+    "@testing-library/dom": ^7.31.0
+    wait-for-expect: ^3.0.2
+  peerDependencies:
+    puppeteer: "*"
+  checksum: 6a125ef39f473a599f36bc3027c16904fc17c4f475c7f04de74ea0a7320cb9c436eab8da334cb734f7398635990faa60a4134875c75c327937b3ba772e3a1d7f
   languageName: node
   linkType: hard
 
