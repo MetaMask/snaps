@@ -6,7 +6,7 @@ module.exports = deepmerge(baseConfig, {
   preset: '@metamask/snaps-jest',
   testEnvironmentOptions: {
     browserOptions: {
-      headless: false,
+      headless: true,
     },
   },
 
