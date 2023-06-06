@@ -224,6 +224,7 @@ export function* rebootSaga({ payload }: PayloadAction<VirtualFile<string>>) {
  */
 export function* requestSaga({ payload }: PayloadAction<SnapRpcHookArgs>) {
   yield put({ type: `${payload.handler}/setRequest`, payload });
+
   const snapId: string = yield select(getSnapId);
   const executionService: IframeExecutionService = yield select(
     getExecutionService,

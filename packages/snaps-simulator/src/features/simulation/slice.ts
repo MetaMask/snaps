@@ -14,6 +14,7 @@ import {
   createAction,
   createSelector,
   createSlice,
+  nanoid,
   PayloadAction,
 } from '@reduxjs/toolkit';
 
@@ -40,6 +41,7 @@ type SimulationState = {
   icon?: VirtualFile<string>;
   ui?: HandlerUserInterface | null;
   snapState: string | null;
+  requestId?: string;
 };
 
 export const INITIAL_STATE: SimulationState = {
@@ -93,12 +95,11 @@ const slice = createSlice({
     setSnapState: (state, action: PayloadAction<string | null>) => {
       state.snapState = action.payload;
     },
+    sendRequest: (state, _: PayloadAction<SnapRpcHookArgs>) => {
+      state.requestId = nanoid();
+    },
   },
 });
-
-export const sendRequest = createAction<SnapRpcHookArgs>(
-  `${slice.name}/sendRequest`,
-);
 
 export const resolveUserInterface = createAction<unknown>(
   `${slice.name}/resolveUserInterface`,
@@ -115,6 +116,7 @@ export const {
   showUserInterface,
   closeUserInterface,
   setSnapState,
+  sendRequest,
 } = slice.actions;
 
 export const simulation = slice.reducer;
@@ -167,4 +169,9 @@ export const getSnapManifest = createSelector(
 export const getSourceCode = createSelector(
   (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
   (state) => state.sourceCode,
+);
+
+export const getRequestId = createSelector(
+  (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
+  (state) => state.requestId,
 );

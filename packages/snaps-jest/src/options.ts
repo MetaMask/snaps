@@ -12,6 +12,7 @@ import {
 export const SnapsEnvironmentOptionsStruct = type({
   executionEnvironmentUrl: optional(string()),
   simulatorUrl: optional(string()),
+
   browserOptions: defaulted(
     object({
       headless: defaulted(boolean(), true),

@@ -13,7 +13,7 @@
       "path": "../../../snaps-types"
     },
     {
-      "path": "../../../snaps-jest-environment"
+      "path": "../../../snaps-jest"
     }
   ]
 }

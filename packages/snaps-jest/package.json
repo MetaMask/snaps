@@ -1,5 +1,5 @@
 {
-  "name": "@metamask/snaps-jest-environment",
+  "name": "@metamask/snaps-jest",
   "version": "0.33.1-flask.1",
   "main": "dist/index.js",
   "files": [
@@ -28,9 +28,16 @@
   },
   "dependencies": {
     "@jest/environment": "^29.5.0",
+    "@jest/expect": "^29.5.0",
+    "@jest/globals": "^29.5.0",
+    "@jest/types": "^29.5.0",
+    "@metamask/snaps-utils": "workspace:^",
     "@metamask/utils": "^5.0.0",
     "@testing-library/webdriverio": "^3.2.1",
     "jest-environment-node": "^29.5.0",
+    "jest-matcher-utils": "^29.5.0",
+    "pptr-testing-library": "^0.7.0",
+    "puppeteer": "20.3.0",
     "serve-handler": "^6.1.5",
     "superstruct": "^1.0.3",
     "webdriverio": "^8.5.2"

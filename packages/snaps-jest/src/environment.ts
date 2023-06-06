@@ -1,5 +1,5 @@
 import { EnvironmentContext, JestEnvironmentConfig } from '@jest/environment';
-import { createModuleLogger } from '@metamask/utils';
+import { assert, createModuleLogger } from '@metamask/utils';
 import { setupBrowser, WebdriverIOQueries } from '@testing-library/webdriverio';
 import { Server } from 'http';
 import NodeEnvironment from 'jest-environment-node';
@@ -47,14 +47,6 @@ export class SnapsEnvironment extends NodeEnvironment {
     await super.setup();
 
     this.#server = await startServer();
-    const { port } = this.#server.address() as AddressInfo;
-
-    const executionEnvironmentUrl =
-      this.#options.executionEnvironmentUrl ??
-      `http://localhost:${port}/environment/`;
-
-    const simulatorUrl =
-      this.#options.simulatorUrl ?? `http://localhost:${port}/simulator/`;
 
     const args = [];
     if (this.#options.browserOptions.headless) {
@@ -71,12 +63,6 @@ export class SnapsEnvironment extends NodeEnvironment {
         },
       },
     });
-
-    await this.browser.url(
-      `${simulatorUrl}?environment=${encodeURIComponent(
-        executionEnvironmentUrl,
-      )}`,
-    );
 
     const puppeteer = await this.browser.getPuppeteer();
     const pages = await puppeteer.pages();
@@ -103,6 +89,53 @@ export class SnapsEnvironment extends NodeEnvironment {
     this.#server?.close();
 
     await super.teardown();
+  }
+
+  /**
+   * Get the URL to the simulator, including the environment URL.
+   *
+   * @returns The simulator URL.
+   * @throws If the server is not running.
+   */
+  get url() {
+    assert(this.#server, 'Server is not running.');
+
+    const { port } = this.#server.address() as AddressInfo;
+    const simulatorUrl =
+      this.#options.simulatorUrl ?? `http://localhost:${port}/simulator/`;
+
+    const executionEnvironmentUrl =
+      this.#options.executionEnvironmentUrl ??
+      `http://localhost:${port}/environment/`;
+
+    return `${simulatorUrl}?environment=${encodeURIComponent(
+      executionEnvironmentUrl,
+    )}`;
+  }
+
+  /**
+   * Create a new page, and attach logging handlers.
+   *
+   * @param url - The page URL. Defaults to the specified Snaps Simulator URL,
+   * or the default simulator URL if none is specified.
+   * @returns The new page.
+   */
+  async createPage(url: string = this.url) {
+    const puppeteer = await this.browser.getPuppeteer();
+    const page = await puppeteer.newPage();
+    await page.goto(url, { waitUntil: 'networkidle0' });
+
+    const log = createModuleLogger(rootLogger, 'browser');
+
+    page
+      .on('console', (message) => {
+        log(`[${message.type()}] ${message.text()}`);
+      })
+      .on('pageerror', ({ message }) => {
+        log(`[page error] ${message}`);
+      });
+
+    return page;
   }
 }
 

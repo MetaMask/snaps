@@ -24,12 +24,13 @@
     "clean": "rimraf 'dist/*'",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../../../.gitignore",
-    "test": "jest --runInBand",
+    "test": "concurrently --kill-others --success last --names server,jest --hide server \"mm-snap serve\" \"jest\"",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:ci": "yarn lint"
   },
   "devDependencies": {
+    "@jest/globals": "^29.5.0",
     "@lavamoat/allow-scripts": "^2.3.1",
     "@metamask/auto-changelog": "^3.1.0",
     "@metamask/eslint-config": "^11.0.0",
@@ -37,7 +38,7 @@
     "@metamask/eslint-config-nodejs": "^11.0.1",
     "@metamask/eslint-config-typescript": "^11.0.0",
     "@metamask/snaps-cli": "workspace:^",
-    "@metamask/snaps-jest-environment": "workspace:^",
+    "@metamask/snaps-jest": "workspace:^",
     "@metamask/snaps-types": "workspace:^",
     "@types/node": "^17.0.36",
     "@typescript-eslint/eslint-plugin": "^5.42.1",

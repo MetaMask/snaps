@@ -1,45 +1,35 @@
-import {
-  getNotifications,
-  installSnap,
-  sendJsonRpcRequest,
-} from '@metamask/snaps-jest-environment';
+import { expect } from '@jest/globals';
+import { installSnap } from '@metamask/snaps-jest';
 
 jest.setTimeout(60000);
 
 describe('onRpcRequest', () => {
-  beforeAll(async () => {
-    await installSnap('http://localhost:8086');
-  });
-
   describe('hello', () => {
     it('sends a notification', async () => {
-      expect(
-        await sendJsonRpcRequest({
-          method: 'hello',
-          origin: 'foo',
-        }),
-      ).toStrictEqual({
-        result: null,
+      const { request } = await installSnap('local:http://localhost:8086');
+      const response = await request({
+        method: 'hello',
+        origin: 'foo',
       });
 
-      expect(await getNotifications()).toStrictEqual(['Hello, foo!']);
+      expect(response).toSendNotification('Hello, foo!');
+      expect(response).toRespondWith(null);
     });
   });
 
   it('throws an error for unknown request methods', async () => {
-    expect(
-      await sendJsonRpcRequest({
-        method: 'foo',
-      }),
-    ).toStrictEqual({
-      error: {
-        code: -32603,
-        message: 'Internal JSON-RPC error.',
-        data: {
-          cause: {
-            message: 'Method not found.',
-            stack: expect.any(String),
-          },
+    const { request } = await installSnap('local:http://localhost:8086');
+    const response = await request({
+      method: 'foo',
+    });
+
+    expect(response).toRespondWithError({
+      code: -32603,
+      message: 'Internal JSON-RPC error.',
+      data: {
+        cause: {
+          message: 'Method not found.',
+          stack: expect.any(String),
         },
       },
     });

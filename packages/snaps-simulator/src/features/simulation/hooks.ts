@@ -1,11 +1,13 @@
 import { DialogType, NotificationArgs } from '@metamask/rpc-methods';
 import { Component } from '@metamask/snaps-ui';
+import { nanoid } from '@reduxjs/toolkit';
 import { SagaIterator } from 'redux-saga';
 import { call, put, select, take } from 'redux-saga/effects';
 
-import { addNotification } from '../notifications/slice';
+import { addNotification } from '../notifications';
 import {
   closeUserInterface,
+  getRequestId,
   getSnapName,
   getSnapStateSelector,
   resolveUserInterface,
@@ -67,9 +69,11 @@ export function* showNativeNotification(
     if (permission === 'denied') {
       // Show notification permission denied error.
       yield put(
-        addNotification(
-          'Unable to show browser notification. Make sure notifications are enabled in your browser settings.',
-        ),
+        addNotification({
+          id: nanoid(),
+          message:
+            'Unable to show browser notification. Make sure notifications are enabled in your browser settings.',
+        }),
       );
     }
   }
@@ -77,9 +81,11 @@ export function* showNativeNotification(
   if (Notification.permission === 'denied') {
     // Show notification permission denied error.
     yield put(
-      addNotification(
-        'Unable to show browser notification. Make sure notifications are enabled in your browser settings.',
-      ),
+      addNotification({
+        id: nanoid(),
+        message:
+          'Unable to show browser notification. Make sure notifications are enabled in your browser settings.',
+      }),
     );
   }
 
@@ -104,7 +110,13 @@ export function* showInAppNotification(
   _snapId: string,
   { message }: NotificationArgs,
 ): SagaIterator {
-  yield put(addNotification(message));
+  const id = yield select(getRequestId);
+  yield put(
+    addNotification({
+      id,
+      message,
+    }),
+  );
 
   return null;
 }

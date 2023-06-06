@@ -1,21 +1,24 @@
-import {
-  createSelector,
-  createSlice,
-  nanoid,
-  PayloadAction,
-} from '@reduxjs/toolkit';
+import { JsonRpcId } from '@metamask/utils';
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type Notification = {
-  id: string;
+  id: JsonRpcId;
   message: string;
 };
 
 export type NotificationsState = {
   notifications: Notification[];
+
+  /**
+   * All notifications that have been added to the state. In contrast to
+   * `notifications`, this array is never cleared.
+   */
+  allNotifications: Notification[];
 };
 
 export const INITIAL_NOTIFICATIONS_STATE: NotificationsState = {
   notifications: [],
+  allNotifications: [],
 };
 
 const slice = createSlice({
@@ -28,11 +31,12 @@ const slice = createSlice({
      * @param state - The current state.
      * @param action - The action with the notification message as the payload.
      */
-    addNotification(state, action: PayloadAction<string>) {
-      state.notifications.push({
-        id: nanoid(),
-        message: action.payload,
-      });
+    addNotification(
+      state,
+      action: PayloadAction<{ id: JsonRpcId; message: string }>,
+    ) {
+      state.notifications.push(action.payload);
+      state.allNotifications.push(action.payload);
     },
 
     /**

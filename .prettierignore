@@ -76,4 +76,4 @@ typings/
 # Generated files
 packages/examples/examples/webpack/index.html
 packages/snaps-execution-environments/lavamoat/**/*.json
-packages/snaps-jest-environment/public
+packages/snaps-jest/public

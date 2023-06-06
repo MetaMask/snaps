@@ -7,7 +7,7 @@
     { "path": "./packages/snaps-browserify-plugin/tsconfig.build.json" },
     { "path": "./packages/snaps-cli/tsconfig.build.json" },
     { "path": "./packages/snaps-controllers/tsconfig.build.json" },
-    { "path": "./packages/snaps-jest-environment/tsconfig.build.json" },
+    { "path": "./packages/snaps-jest/tsconfig.build.json" },
     { "path": "./packages/snaps-execution-environments/tsconfig.build.json" },
     { "path": "./packages/snaps-rollup-plugin/tsconfig.build.json" },
     { "path": "./packages/snaps-types/tsconfig.build.json" },
