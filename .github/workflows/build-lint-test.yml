@@ -244,12 +244,12 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
-      - name: Restore environment build
+      - name: Restore "@metamask/snaps-execution-environments" build
         uses: actions/cache@v3
         with:
           path: |
             packages/snaps-execution-environments/dist/browserify
-          key: test-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+          key: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
       - name: Restore e2e build
         uses: actions/cache@v3
         with:
