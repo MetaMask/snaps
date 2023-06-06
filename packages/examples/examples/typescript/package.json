@@ -15,7 +15,7 @@
     "snap.manifest.json"
   ],
   "scripts": {
-    "test:e2e": "concurrently --kill-others --names server,jest \"yarn mm-snap serve\" \"yarn test\"",
+    "test:e2e": "yarn test",
     "test:e2e:ci": "yarn build && yarn test:e2e",
     "build:clean": "yarn clean && yarn build",
     "build:website": "node ./scripts/build-website.js",
