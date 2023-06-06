@@ -4485,6 +4485,7 @@ __metadata:
     "@jest/types": ^29.5.0
     "@metamask/snaps-execution-environments": "workspace:^"
     "@metamask/snaps-simulator": "workspace:^"
+    "@metamask/snaps-ui": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/utils": ^6.0.0
     "@testing-library/webdriverio": ^3.2.1
@@ -10666,7 +10667,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deepmerge@npm:^4.2.2":
+"deepmerge@npm:^4.2.2, deepmerge@npm:^4.3.1":
   version: 4.3.1
   resolution: "deepmerge@npm:4.3.1"
   checksum: 2024c6a980a1b7128084170c4cf56b0fd58a63f2da1660dcfe977415f27b17dbe5888668b59d0b063753f3220719d5e400b7f113609489c90160bb9a5518d052
@@ -19450,7 +19451,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pptr-testing-library@npm:0.7.0":
+"pptr-testing-library@npm:^0.7.0":
   version: 0.7.0
   resolution: "pptr-testing-library@npm:0.7.0"
   dependencies:
@@ -19459,18 +19460,6 @@ __metadata:
   peerDependencies:
     puppeteer: "*"
   checksum: ab97fa7e3aa3e0bfce73ef67a07cec215553586ff11bf969dee0978f3c69c2641814a8b477a49afd67bcced182acf8977bc69e9a58dc7277cad0d8a4bed4cf01
-  languageName: node
-  linkType: hard
-
-"pptr-testing-library@patch:pptr-testing-library@npm%3A0.7.0#./.yarn/patches/pptr-testing-library-npm-0.7.0-4f4ae8da9d.patch::locator=root%40workspace%3A.":
-  version: 0.7.0
-  resolution: "pptr-testing-library@patch:pptr-testing-library@npm%3A0.7.0#./.yarn/patches/pptr-testing-library-npm-0.7.0-4f4ae8da9d.patch::version=0.7.0&hash=2a49d5&locator=root%40workspace%3A."
-  dependencies:
-    "@testing-library/dom": ^7.31.0
-    wait-for-expect: ^3.0.2
-  peerDependencies:
-    puppeteer: "*"
-  checksum: 6a125ef39f473a599f36bc3027c16904fc17c4f475c7f04de74ea0a7320cb9c436eab8da334cb734f7398635990faa60a4134875c75c327937b3ba772e3a1d7f
   languageName: node
   linkType: hard
 
@@ -23007,11 +22996,13 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": "workspace:^"
+    "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
     "@metamask/snaps-ui": "workspace:^"
     "@metamask/utils": ^6.0.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
+    deepmerge: ^4.3.1
     eslint: ^8.27.0
     eslint-config-prettier: ^8.5.0
     eslint-plugin-import: ^2.26.0

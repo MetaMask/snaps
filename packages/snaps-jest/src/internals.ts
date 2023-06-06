@@ -1,3 +1,4 @@
+import { HandlerType } from '@metamask/snaps-utils';
 import {
   assert,
   createModuleLogger,
@@ -6,7 +7,7 @@ import {
 import { createServer, Server } from 'http';
 import { join } from 'path';
 import { waitFor as waitForPuppeteer } from 'pptr-testing-library';
-import type { Page } from 'puppeteer-core/lib/esm/puppeteer/api/Page';
+import { Page } from 'puppeteer';
 import serveHandler from 'serve-handler';
 
 import { SnapResponse } from './types';
@@ -78,7 +79,7 @@ export function getEnvironment() {
  * @param type - The type of response to wait for.
  * @returns The JSON-RPC response.
  */
-export async function waitForResponse(page: Page, type: 'onRpcRequest') {
+export async function waitForResponse(page: Page, type: HandlerType) {
   return await page.evaluate(async (_type) => {
     return new Promise<SnapResponse['response']>((resolve) => {
       const unsubscribe = window.__SIMULATOR_API__.subscribe(() => {

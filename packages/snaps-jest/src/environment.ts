@@ -4,6 +4,7 @@ import { setupBrowser, WebdriverIOQueries } from '@testing-library/webdriverio';
 import { Server } from 'http';
 import NodeEnvironment from 'jest-environment-node';
 import { AddressInfo } from 'net';
+import { Browser } from 'puppeteer';
 import { remote } from 'webdriverio';
 
 import { rootLogger, startServer } from './internals';
@@ -121,7 +122,7 @@ export class SnapsEnvironment extends NodeEnvironment {
    * @returns The new page.
    */
   async createPage(url: string = this.url) {
-    const puppeteer = await this.browser.getPuppeteer();
+    const puppeteer = (await this.browser.getPuppeteer()) as unknown as Browser;
     const page = await puppeteer.newPage();
     await page.goto(url, { waitUntil: 'networkidle0' });
 

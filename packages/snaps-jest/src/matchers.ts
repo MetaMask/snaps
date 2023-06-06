@@ -4,9 +4,11 @@
 // a Jest environment. This is why it's not exported from the index file.
 
 import { expect } from '@jest/globals';
+import { Component } from '@metamask/snaps-ui';
 import { hasProperty, Json } from '@metamask/utils';
 import type { MatcherFunction } from 'expect';
 import {
+  diff,
   matcherErrorMessage,
   matcherHint,
   MatcherHintOptions,
@@ -25,7 +27,7 @@ import { SnapResponse, SnapResponseStruct } from './types';
  * @param matcherName - The name of the matcher.
  * @param options - The matcher options.
  */
-export function assertActualIsSnapResponse(
+function assertActualIsSnapResponse(
   actual: unknown,
   matcherName: string,
   options?: MatcherHintOptions,
@@ -44,6 +46,32 @@ export function assertActualIsSnapResponse(
 }
 
 /**
+ * Ensure that the actual value is a response from the `request` function, and
+ * that it has a `ui` property.
+ *
+ * @param actual - The actual value.
+ * @param matcherName - The name of the matcher.
+ * @param options - The matcher options.
+ */
+function assertHasInterface(
+  actual: unknown,
+  matcherName: string,
+  options?: MatcherHintOptions,
+): asserts actual is SnapResponse & { ui: Component } {
+  assertActualIsSnapResponse(actual, matcherName, options);
+
+  if (!hasProperty(actual, 'ui') || !actual.ui) {
+    throw new Error(
+      matcherErrorMessage(
+        matcherHint(matcherName, undefined, undefined, options),
+        `${RECEIVED_COLOR('received')} value must have an \`ui\` property`,
+        printWithType('Received', actual, printReceived),
+      ),
+    );
+  }
+}
+
+/**
  * Check if a JSON-RPC response matches the expected value. This matcher is
  * intended to be used with the `expect` global.
  *
@@ -52,7 +80,7 @@ export function assertActualIsSnapResponse(
  * @returns The status and message.
  */
 export const toRespondWith: MatcherFunction<[expected: Json]> = function (
-  actual: unknown,
+  actual,
   expected,
 ) {
   assertActualIsSnapResponse(actual, 'toRespondWith');
@@ -82,7 +110,7 @@ export const toRespondWith: MatcherFunction<[expected: Json]> = function (
 };
 
 export const toRespondWithError: MatcherFunction<[expected: Json]> = function (
-  actual: unknown,
+  actual,
   expected,
 ) {
   assertActualIsSnapResponse(actual, 'toRespondWithError');
@@ -120,7 +148,7 @@ export const toRespondWithError: MatcherFunction<[expected: Json]> = function (
  * @returns The status and message.
  */
 export const toSendNotification: MatcherFunction<[expected: string]> =
-  async function (actual: unknown, expected) {
+  async function (actual, expected) {
     assertActualIsSnapResponse(actual, 'toSendNotification');
 
     const { notifications } = actual;
@@ -141,4 +169,33 @@ export const toSendNotification: MatcherFunction<[expected: string]> =
     return { message, pass };
   };
 
-expect.extend({ toRespondWith, toRespondWithError, toSendNotification });
+export const toShowInterface: MatcherFunction<[expected: Component]> =
+  function (actual, expected) {
+    assertHasInterface(actual, 'toShowInterface');
+
+    const { ui } = actual;
+    const pass = this.equals(ui, expected);
+
+    const difference = diff(expected, ui);
+
+    const message = pass
+      ? () =>
+          `${this.utils.matcherHint('.not.toShowInterface')}\n\n` +
+          `Expected: ${this.utils.printExpected(expected)}\n` +
+          `Received: ${this.utils.printReceived(ui)}` +
+          `${difference ? `\n\nDifference:\n\n${difference}` : ''}`
+      : () =>
+          `${this.utils.matcherHint('.toShowInterface')}\n\n` +
+          `Expected: ${this.utils.printExpected(expected)}\n` +
+          `Received: ${this.utils.printReceived(ui)}` +
+          `${difference ? `\n\nDifference:\n\n${difference}` : ''}`;
+
+    return { message, pass };
+  };
+
+expect.extend({
+  toRespondWith,
+  toRespondWithError,
+  toSendNotification,
+  toShowInterface,
+});
