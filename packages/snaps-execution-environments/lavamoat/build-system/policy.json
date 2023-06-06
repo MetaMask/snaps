@@ -982,12 +982,13 @@
       },
       "globals": {
         "__dirname": true,
+        "__filename.slice": true,
         "process.cwd": true,
         "setTimeout": true
       },
       "packages": {
-        "@babel/core>convert-source-map": true,
         "@lavamoat/lavapack>combine-source-map": true,
+        "@lavamoat/lavapack>convert-source-map": true,
         "@lavamoat/lavapack>through2": true,
         "@lavamoat/lavapack>umd": true,
         "browserify>JSONStream": true,
@@ -1026,6 +1027,14 @@
       },
       "packages": {
         "@lavamoat/lavapack>combine-source-map>inline-source-map>source-map": true
+      }
+    },
+    "@lavamoat/lavapack>convert-source-map": {
+      "globals": {
+        "Buffer": true,
+        "atob": true,
+        "btoa": true,
+        "value": true
       }
     },
     "@lavamoat/lavapack>through2": {
@@ -2362,7 +2371,6 @@
       },
       "packages": {
         "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-core>fromentries": true,
         "lavamoat>lavamoat-core>merge-deep": true,
         "lavamoat>lavamoat-tofu": true
       }
@@ -2560,6 +2568,7 @@
       },
       "globals": {
         "Error": true,
+        "__dirname": true,
         "console": true,
         "process": true
       },
@@ -2574,6 +2583,9 @@
       }
     },
     "yargs>cliui": {
+      "globals": {
+        "process": true
+      },
       "packages": {
         "eslint>strip-ansi": true,
         "yargs>cliui>wrap-ansi": true,
