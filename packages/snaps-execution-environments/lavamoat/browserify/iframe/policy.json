@@ -579,6 +579,12 @@
         "@metamask/snaps-utils>rfdc": true
       }
     },
+    "external:../snaps-utils/src/iframe.ts": {
+      "globals": {
+        "document.body.appendChild": true,
+        "document.createElement": true
+      }
+    },
     "external:../snaps-utils/src/index.browser.ts": {
       "packages": {
         "external:../snaps-utils/src/caveats.ts": true,
@@ -609,7 +615,9 @@
     },
     "external:../snaps-utils/src/logging.ts": {
       "globals": {
-        "console": true
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true
       },
       "packages": {
         "@metamask/utils": true
@@ -662,6 +670,9 @@
       }
     },
     "external:../snaps-utils/src/types.ts": {
+      "globals": {
+        "URL": true
+      },
       "packages": {
         "@metamask/utils": true,
         "superstruct": true
@@ -675,6 +686,9 @@
       }
     },
     "external:../snaps-utils/src/virtual-file/VirtualFile.ts": {
+      "globals": {
+        "TextDecoder": true
+      },
       "packages": {
         "@metamask/utils": true,
         "external:../snaps-utils/src/deep-clone.ts": true
@@ -740,6 +754,12 @@
         "browserify>readable-stream>util-deprecate": true,
         "browserify>string_decoder": true,
         "process": true
+      }
+    },
+    "superstruct": {
+      "globals": {
+        "console.warn": true,
+        "define": true
       }
     },
     "ts-jest>semver": {
