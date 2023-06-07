@@ -312,6 +312,15 @@ export type Snap = {
   sendTransaction(
     transaction?: Partial<TransactionOptions>,
   ): Promise<SnapResponse>;
+
+  /**
+   * Close the page running the snap. This is mainly useful for cleaning up
+   * the test environment, and calling it is not strictly necessary.
+   *
+   * @returns A promise that resolves when the page is closed.
+   */
+  // TODO: Find a way to do this automatically.
+  close(): Promise<void>;
 };
 
 export const InterfaceStruct = type({

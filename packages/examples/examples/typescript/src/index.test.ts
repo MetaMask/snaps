@@ -8,7 +8,7 @@ jest.setTimeout(60000);
 describe('onRpcRequest', () => {
   describe('hello', () => {
     it('sends a notification', async () => {
-      const { request } = await installSnap('local:http://localhost:8086');
+      const { request, close } = await installSnap();
       const response = request({
         method: 'hello',
         origin: 'foo',
@@ -18,12 +18,14 @@ describe('onRpcRequest', () => {
 
       expect(resolved).toSendNotification('Hello, foo!');
       expect(resolved).toRespondWith(null);
+
+      await close();
     });
   });
 
   describe('confirm', () => {
     it('shows a confirmation dialog', async () => {
-      const { request } = await installSnap('local:http://localhost:8086');
+      const { request, close } = await installSnap();
       const response = request({
         method: 'confirm',
       });
@@ -35,10 +37,12 @@ describe('onRpcRequest', () => {
       await ui.ok();
 
       expect(await response).toRespondWith(true);
+
+      await close();
     });
 
     it('returns false if the user cancels the confirmation', async () => {
-      const { request } = await installSnap('local:http://localhost:8086');
+      const { request, close } = await installSnap();
       const response = request({
         method: 'confirm',
       });
@@ -48,11 +52,13 @@ describe('onRpcRequest', () => {
       await ui.cancel();
 
       expect(await response).toRespondWith(false);
+
+      await close();
     });
   });
 
   it('throws an error for unknown request methods', async () => {
-    const { request } = await installSnap('local:http://localhost:8086');
+    const { request, close } = await installSnap();
     const response = await request({
       method: 'foo',
     });
@@ -67,5 +73,7 @@ describe('onRpcRequest', () => {
         },
       },
     });
+
+    await close();
   });
 });

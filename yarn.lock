@@ -4490,12 +4490,12 @@ __metadata:
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/utils": ^6.0.0
     "@testing-library/webdriverio": ^3.2.1
+    express: ^4.18.2
     jest: ^29.0.2
     jest-environment-node: ^29.5.0
     jest-matcher-utils: ^29.5.0
     pptr-testing-library: ^0.7.0
     puppeteer: 20.3.0
-    serve-handler: ^6.1.5
     superstruct: ^1.0.3
     webdriverio: ^8.5.2
   languageName: unknown
@@ -23003,7 +23003,6 @@ __metadata:
     "@metamask/utils": ^6.0.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
-    concurrently: ^7.1.0
     deepmerge: ^4.2.2
     eslint: ^8.27.0
     eslint-config-prettier: ^8.5.0
@@ -23350,7 +23349,6 @@ __metadata:
     "@types/node": ^17.0.36
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
-    concurrently: ^7.1.0
     deepmerge: ^4.2.2
     eslint: ^8.27.0
     eslint-config-prettier: ^8.5.0

@@ -15,7 +15,8 @@
     "snap.manifest.json"
   ],
   "scripts": {
-    "test:e2e": "yarn test",
+    "test": "yarn test:e2e",
+    "test:e2e": "jest",
     "test:e2e:ci": "yarn build && yarn test:e2e",
     "build:clean": "yarn clean && yarn build",
     "build:website": "node ./scripts/build-website.js",
@@ -26,8 +27,7 @@
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
-    "lint:ci": "yarn lint",
-    "test": "concurrently --kill-others --success first --names server,jest --hide server \"mm-snap serve\" \"jest\""
+    "lint:ci": "yarn lint"
   },
   "dependencies": {
     "@metamask/abi-utils": "^1.1.1",
@@ -46,7 +46,6 @@
     "@metamask/snaps-types": "workspace:^",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
-    "concurrently": "^7.1.0",
     "deepmerge": "^4.2.2",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",

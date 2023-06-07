@@ -37,10 +37,14 @@ const { getByTestId } = queries;
  *   });
  * });
  * ```
- * @param snapId - The ID of the snap, including the prefix (`local:`).
+ * @param snapId - The ID of the snap, including the prefix (`local:`). Defaults
+ * to the URL of the built-in server, if it is running.
  * @returns The snap.
+ * @throws If the built-in server is not running, and no snap ID is provided.
  */
-export async function installSnap(snapId: string): Promise<Snap> {
+export async function installSnap(
+  snapId: string = getEnvironment().snapId,
+): Promise<Snap> {
   const environment = getEnvironment();
 
   const page = await environment.createPage();
@@ -143,6 +147,10 @@ export async function installSnap(snapId: string): Promise<Snap> {
         notifications: [],
         content: response.result.content as Component,
       };
+    },
+
+    close: async () => {
+      await page.close();
     },
   };
 }

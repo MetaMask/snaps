@@ -47,10 +47,12 @@ export class SnapsEnvironment extends NodeEnvironment {
   async setup() {
     await super.setup();
 
-    this.#server = await startServer();
+    if (this.#options.server.enabled) {
+      this.#server = await startServer(this.#options.server);
+    }
 
     const args = [];
-    if (this.#options.browserOptions.headless) {
+    if (this.#options.browser.headless) {
       args.push('--headless');
     }
 
@@ -112,6 +114,23 @@ export class SnapsEnvironment extends NodeEnvironment {
     return `${simulatorUrl}?environment=${encodeURIComponent(
       executionEnvironmentUrl,
     )}`;
+  }
+
+  /**
+   * Get the snap ID for the current environment. This assumes that the built-in
+   * server is running.
+   *
+   * @returns The snap ID.
+   * @throws If the server is not running.
+   */
+  get snapId() {
+    assert(
+      this.#server,
+      'You must specify a snap ID, because the built-in server is not running.',
+    );
+
+    const { port } = this.#server.address() as AddressInfo;
+    return `local:http://localhost:${port}`;
   }
 
   /**

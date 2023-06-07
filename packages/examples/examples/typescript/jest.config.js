@@ -5,7 +5,7 @@ const baseConfig = require('../../../../jest.config.base');
 module.exports = deepmerge(baseConfig, {
   preset: '@metamask/snaps-jest',
   testEnvironmentOptions: {
-    browserOptions: {
+    browser: {
       headless: true,
     },
   },

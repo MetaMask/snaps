@@ -37,11 +37,11 @@
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/utils": "^6.0.0",
     "@testing-library/webdriverio": "^3.2.1",
+    "express": "^4.18.2",
     "jest-environment-node": "^29.5.0",
     "jest-matcher-utils": "^29.5.0",
     "pptr-testing-library": "^0.7.0",
     "puppeteer": "20.3.0",
-    "serve-handler": "^6.1.5",
     "superstruct": "^1.0.3",
     "webdriverio": "^8.5.2"
   },
