@@ -15,7 +15,7 @@ import {
   DllPlugin,
   DllReferencePlugin,
   EnvironmentPlugin,
-  IgnorePlugin,
+  NormalModuleReplacementPlugin,
 } from 'webpack';
 import { Configuration as DevServerConfiguration } from 'webpack-dev-server';
 
@@ -89,7 +89,7 @@ const vendorConfig: Configuration = {
 
 const config: Configuration & Record<'devServer', DevServerConfiguration> = {
   name: 'app',
-  entry: './src/index.tsx',
+  entry: './src/entry.tsx',
   stats: 'errors-only',
   devtool: 'source-map',
   output: {
@@ -155,6 +155,9 @@ const config: Configuration & Record<'devServer', DevServerConfiguration> = {
       util: false,
       worker_threads: false,
       zlib: false,
+
+      './NodeProcessExecutionService': false,
+      './NodeThreadExecutionService': false,
     },
     plugins: [
       new TsconfigPathsPlugin({
@@ -196,10 +199,10 @@ const config: Configuration & Record<'devServer', DevServerConfiguration> = {
     // Stop attempting to bundle the Node.js execution services. They are
     // not used in the browser, and attempting to bundle them causes
     // errors.
-    new IgnorePlugin({
-      resourceRegExp:
-        /^.*(?:NodeProcessExecutionService|NodeThreadExecutionService).*/u,
-    }),
+    new NormalModuleReplacementPlugin(
+      /.*services\/node.*/u,
+      resolve(__dirname, 'src', 'stub.ts'),
+    ),
   ],
   cache: {
     type: 'filesystem',

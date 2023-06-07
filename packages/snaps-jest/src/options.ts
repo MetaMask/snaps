@@ -13,6 +13,7 @@ import {
 const SnapsEnvironmentOptionsStruct = type({
   executionEnvironmentUrl: optional(string()),
   simulatorUrl: optional(string()),
+  keepAlive: defaulted(boolean(), false),
 
   server: defaulted(
     object({
@@ -53,6 +54,8 @@ const SnapsEnvironmentOptionsStruct = type({
  * built-in HTTP server.
  * @property simulatorUrl - The URL of the simulator. If this is not provided,
  * the simulator will be served from the built-in HTTP server.
+ * @property keepAlive - Whether to keep the browser open after the tests have
+ * finished. This is useful for debugging. Defaults to `false`.
  * @property server - The options for the built-in HTTP server.
  * @property server.enabled - Whether to run the built-in HTTP server. Defaults
  * to `true`.

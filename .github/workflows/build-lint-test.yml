@@ -61,7 +61,7 @@ jobs:
         with:
           path: |
             packages/*/dist
-          key: e2e-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+          key: e2e-build-${{ runner.os }}-${{ github.sha }}
       - name: Require clean working directory
         shell: bash
         run: |
@@ -93,7 +93,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            packages/snaps-simulator/dist/vendor
+            packages/snaps-simulator/vendor
           key: webpack-vendor-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
       - name: Build Webpack vendor
         if: steps.cache-webpack-vendor.outputs.cache-hit != 'true'
@@ -106,7 +106,7 @@ jobs:
         with:
           path: |
             packages/snaps-simulator/dist/webpack
-          key: e2e-simulator-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+          key: e2e-simulator-build-${{ runner.os }}-${{ github.sha }}
       - name: Require clean working directory
         shell: bash
         run: |
@@ -255,13 +255,13 @@ jobs:
         with:
           path: |
             packages/*/dist
-          key: e2e-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+          key: e2e-build-${{ runner.os }}-${{ github.sha }}
       - name: Restore simulator build
         uses: actions/cache@v3
         with:
           path: |
             packages/snaps-simulator/dist/webpack
-          key: e2e-simulator-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+          key: e2e-simulator-build-${{ runner.os }}-${{ github.sha }}
       - run: yarn --immutable --immutable-cache
       - name: Install Google Chrome
         run: yarn install-chrome

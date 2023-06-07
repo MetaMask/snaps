@@ -72,6 +72,10 @@ export class SnapsEnvironment extends NodeEnvironment {
    * HTTP server.
    */
   async teardown() {
+    if (this.#options.keepAlive) {
+      return;
+    }
+
     await this.browser?.deleteSession();
     this.#server?.close();
 
