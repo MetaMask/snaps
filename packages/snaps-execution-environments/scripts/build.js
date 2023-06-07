@@ -59,6 +59,8 @@ async function main() {
       }),
   );
 
+  const lavamoatSecurityOptionsNode = {};
+
   const lavamoatSecurityOptionsBrowser = {
     // Only enable for browser builds for now due to incompatibilities.
     scuttleGlobalThis: true,
@@ -74,21 +76,25 @@ async function main() {
     'utf-8',
   );
 
-  const lavaMoatRuntime = lavaMoatRuntimeString.replace(
+  // These can be re-used for all bundles
+
+  const lavaMoatRuntimeNode = lavaMoatRuntimeString.replace(
+    '__lavamoatSecurityOptions__',
+    JSON.stringify(lavamoatSecurityOptionsNode),
+  );
+
+  const lavaMoatRuntimeBrowser = lavaMoatRuntimeString.replace(
     '__lavamoatSecurityOptions__',
     JSON.stringify(lavamoatSecurityOptionsBrowser),
   );
 
-  const minifiedLavaMoatRuntime = (await minify(lavaMoatRuntime)).code;
-
-  // This can be re-used for all browser bundles
   const htmlFile = `
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8" />
     <title>MetaMask Snaps Iframe Execution Environment</title>
-    <script>${minifiedLavaMoatRuntime}</script>
+    <script>${lavaMoatRuntimeBrowser}</script>
     <script src="bundle.js"></script>
   </head>
 </html>`;
@@ -158,7 +164,9 @@ async function main() {
       });
 
       const lavamoatSecurityOptions =
-        worker || html ? lavamoatSecurityOptionsBrowser : {};
+        worker || html
+          ? lavamoatSecurityOptionsBrowser
+          : lavamoatSecurityOptionsNode;
 
       // Add LavaMoat to wrap bundles in LavaPack
       // For Node.js builds, this also includes a prelude that contains SES and the LavaMoat runtime
@@ -174,8 +182,8 @@ async function main() {
           __dirname,
           `../lavamoat/browserify/policy-override.json`,
         ),
-        // Prelude is included in Node, in the browser it is inlined.
-        includePrelude: node || worker,
+        // Prelude is not included, we will inline that ourselves to allow for minification.
+        includePrelude: false,
         ...lavamoatSecurityOptions,
       });
 
@@ -194,9 +202,17 @@ async function main() {
         await minify(buffer.toString(), { sourceMap: false })
       ).code;
 
+      let outputBundle = minifiedBundle;
+
+      // For non HTML bundles, we inline the runtime in the bundle.
+      if (!html) {
+        const runtime = node ? lavaMoatRuntimeNode : lavaMoatRuntimeBrowser;
+        outputBundle = `${runtime}\n${outputBundle}`;
+      }
+
       const bundlePath = path.join(OUTPUT_PATH, key, OUTPUT_BUNDLE);
       await fs.mkdir(path.dirname(bundlePath), { recursive: true });
-      await fs.writeFile(bundlePath, minifiedBundle);
+      await fs.writeFile(bundlePath, outputBundle);
 
       if (html) {
         const htmlPath = path.join(OUTPUT_PATH, key, OUTPUT_HTML);
