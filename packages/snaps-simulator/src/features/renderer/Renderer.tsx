@@ -22,6 +22,8 @@ export const components: Partial<
   [NodeType.Spinner]: Spinner,
   [NodeType.Text]: Text,
   [NodeType.Image]: Image,
+  // @todo: Create a button
+  [NodeType.Button]: Text,
 };
 
 type RendererProps = {
