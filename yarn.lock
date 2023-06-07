@@ -22,12 +22,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.16.7, @babel/code-frame@npm:^7.18.6":
-  version: 7.18.6
-  resolution: "@babel/code-frame@npm:7.18.6"
+"@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.18.6, @babel/code-frame@npm:^7.21.4":
+  version: 7.21.4
+  resolution: "@babel/code-frame@npm:7.21.4"
   dependencies:
     "@babel/highlight": ^7.18.6
-  checksum: 195e2be3172d7684bf95cff69ae3b7a15a9841ea9d27d3c843662d50cdd7d6470fd9c8e64be84d031117e4a4083486effba39f9aef6bbb2c89f7f21bcfba33ba
+  checksum: e5390e6ec1ac58dcef01d4f18eaf1fd2f1325528661ff6d4a5de8979588b9f5a8e852a54a91b923846f7a5c681b217f0a45c2524eb9560553160cd963b7d592c
   languageName: node
   linkType: hard
 
@@ -360,7 +360,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/highlight@npm:^7.10.4, @babel/highlight@npm:^7.18.6":
+"@babel/highlight@npm:^7.18.6":
   version: 7.18.6
   resolution: "@babel/highlight@npm:7.18.6"
   dependencies:
@@ -3733,35 +3733,35 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/lavapack@npm:3.3.0":
-  version: 3.3.0
-  resolution: "@lavamoat/lavapack@npm:3.3.0"
+"@lavamoat/lavapack@npm:5.1.2":
+  version: 5.1.2
+  resolution: "@lavamoat/lavapack@npm:5.1.2"
   dependencies:
     JSONStream: ^1.3.5
     combine-source-map: ^0.8.0
-    convert-source-map: ^1.7.0
-    json-stable-stringify: ^1.0.1
-    lavamoat-core: ^12.4.0
+    convert-source-map: ^2.0.0
+    json-stable-stringify: ^1.0.2
+    lavamoat-core: ^14.1.1
     readable-stream: ^3.6.0
     through2: ^4.0.2
     umd: ^3.0.3
-  checksum: 77f6588d38d53f0feba1856de409829969dc3592b9b4d1e722fd395a1eabae6a8983648e2929ef9243fd6ead6919683cb87e65433325601bafabcf8b46dc83be
+  checksum: 0499c8a5f42079f2e4538bc6c3569b21f054daab46e7dcf68daf7e29cc710fe397101b38484f174218216947c30758efe2040970e1aa4711ff8d8ae6ccd42c9d
   languageName: node
   linkType: hard
 
-"@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A3.3.0#./.yarn/patches/@lavamoat-lavapack-npm-3.3.0-5a61b5374d.patch::locator=root%40workspace%3A.":
-  version: 3.3.0
-  resolution: "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A3.3.0#./.yarn/patches/@lavamoat-lavapack-npm-3.3.0-5a61b5374d.patch::version=3.3.0&hash=413755&locator=root%40workspace%3A."
+"@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A5.1.2#./.yarn/patches/@lavamoat-lavapack-npm-5.1.2-67a55c51e2.patch::locator=root%40workspace%3A.":
+  version: 5.1.2
+  resolution: "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A5.1.2#./.yarn/patches/@lavamoat-lavapack-npm-5.1.2-67a55c51e2.patch::version=5.1.2&hash=cbcea4&locator=root%40workspace%3A."
   dependencies:
     JSONStream: ^1.3.5
     combine-source-map: ^0.8.0
-    convert-source-map: ^1.7.0
-    json-stable-stringify: ^1.0.1
-    lavamoat-core: ^12.4.0
+    convert-source-map: ^2.0.0
+    json-stable-stringify: ^1.0.2
+    lavamoat-core: ^14.1.1
     readable-stream: ^3.6.0
     through2: ^4.0.2
     umd: ^3.0.3
-  checksum: 95af0d750a497af6d3eb4698f6276a79654c6e0add92fd899b0224ca8cc684da98aa4920ba796b606075c5803ccf8ed4a72c6cb45c2d32831fdbc23384035f52
+  checksum: 195fa6e0717b85b30fcb47d93066f3ab4780446369bfe790590d81eb7a9af07668d71968469c5015db3191f82e49e66fc5edb7f59b0d1762fde64e1b56cdeb21
   languageName: node
   linkType: hard
 
@@ -4392,7 +4392,7 @@ __metadata:
     "@esbuild-plugins/node-globals-polyfill": ^0.2.3
     "@esbuild-plugins/node-modules-polyfill": ^0.2.2
     "@lavamoat/allow-scripts": ^2.3.1
-    "@lavamoat/lavapack": ^3.3.0
+    "@lavamoat/lavapack": ^5.1.2
     "@lavamoat/lavatube": ^0.0.1
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/eslint-config": ^11.0.0
@@ -4440,8 +4440,8 @@ __metadata:
     jest: ^29.0.2
     jest-fetch-mock: ^3.0.3
     json-rpc-engine: ^6.1.0
-    lavamoat: ^6.4.0
-    lavamoat-browserify: ^15.5.0
+    lavamoat: ^7.0.0
+    lavamoat-browserify: ^15.6.0
     memfs: ^3.4.13
     nanoid: ^3.1.31
     prettier: ^2.7.1
@@ -13260,13 +13260,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fromentries@npm:^1.2.0":
-  version: 1.3.2
-  resolution: "fromentries@npm:1.3.2"
-  checksum: 33729c529ce19f5494f846f0dd4945078f4e37f4e8955f4ae8cc7385c218f600e9d93a7d225d17636c20d1889106fd87061f911550861b7072f53bf891e6b341
-  languageName: node
-  linkType: hard
-
 "fs-constants@npm:^1.0.0":
   version: 1.0.0
   resolution: "fs-constants@npm:1.0.0"
@@ -16136,7 +16129,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-stable-stringify@npm:^1.0.1":
+"json-stable-stringify@npm:^1.0.1, json-stable-stringify@npm:^1.0.2":
   version: 1.0.2
   resolution: "json-stable-stringify@npm:1.0.2"
   dependencies:
@@ -16330,57 +16323,54 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-browserify@npm:15.5.0":
-  version: 15.5.0
-  resolution: "lavamoat-browserify@npm:15.5.0"
+"lavamoat-browserify@npm:15.6.0":
+  version: 15.6.0
+  resolution: "lavamoat-browserify@npm:15.6.0"
   dependencies:
-    "@babel/code-frame": ^7.16.7
     "@lavamoat/aa": ^3.1.0
-    "@lavamoat/lavapack": ^3.3.0
+    "@lavamoat/lavapack": ^5.1.2
     browser-resolve: ^2.0.0
     concat-stream: ^2.0.0
-    convert-source-map: ^1.8.0
+    convert-source-map: ^1.9.0
     duplexify: ^4.1.1
     json-stable-stringify: ^1.0.1
-    lavamoat-core: ^12.4.0
+    lavamoat-core: ^14.1.1
     pify: ^4.0.1
     readable-stream: ^3.6.0
-    source-map: ^0.7.3
+    source-map: ^0.7.4
     through2: ^3.0.0
-  checksum: b9d4ccbe6dd09aa63145f89f99f0b3ac269930a5e419cc836659f8c6a7e26b78d2dd3722e44055e6436d2334b044c348895f512d134ee8b5dc4ee87adc890b6f
+  checksum: ee348e6c1cf65ec0f0d7461efc970b1cb0c4b994963fdee705da6cc789b1f7940eee784b7f1e798c0e5410293aa2c163e3667da764845f3887545b05e8a795a1
   languageName: node
   linkType: hard
 
-"lavamoat-browserify@patch:lavamoat-browserify@npm%3A15.5.0#./.yarn/patches/lavamoat-browserify-npm-15.5.0-ce0bbe5e4c.patch::locator=root%40workspace%3A.":
-  version: 15.5.0
-  resolution: "lavamoat-browserify@patch:lavamoat-browserify@npm%3A15.5.0#./.yarn/patches/lavamoat-browserify-npm-15.5.0-ce0bbe5e4c.patch::version=15.5.0&hash=38f425&locator=root%40workspace%3A."
+"lavamoat-browserify@patch:lavamoat-browserify@npm%3A15.6.0#./.yarn/patches/lavamoat-browserify-npm-15.6.0-e22edafc36.patch::locator=root%40workspace%3A.":
+  version: 15.6.0
+  resolution: "lavamoat-browserify@patch:lavamoat-browserify@npm%3A15.6.0#./.yarn/patches/lavamoat-browserify-npm-15.6.0-e22edafc36.patch::version=15.6.0&hash=3f1d28&locator=root%40workspace%3A."
   dependencies:
-    "@babel/code-frame": ^7.16.7
     "@lavamoat/aa": ^3.1.0
-    "@lavamoat/lavapack": ^3.3.0
+    "@lavamoat/lavapack": ^5.1.2
     browser-resolve: ^2.0.0
     concat-stream: ^2.0.0
-    convert-source-map: ^1.8.0
+    convert-source-map: ^1.9.0
     duplexify: ^4.1.1
     json-stable-stringify: ^1.0.1
-    lavamoat-core: ^12.4.0
+    lavamoat-core: ^14.1.1
     pify: ^4.0.1
     readable-stream: ^3.6.0
-    source-map: ^0.7.3
+    source-map: ^0.7.4
     through2: ^3.0.0
-  checksum: c0f6a20f9ce2055f59be9864e6949f50a708005d84d4a33e8763cc60c893cc87d3a364bf37b4ba1f2d55aa05235ae88a2fe1618eb21f69c0fe43615edbfbc1cd
+  checksum: 8810aa56d5839b0c05ceee4064b66b478f953486157fc40e2c276a1753e33f976c836be58d75476395c191fe204bbd038a7a2b5758ff8bca89c86106844c7c88
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^12.3.0, lavamoat-core@npm:^12.4.0":
-  version: 12.4.0
-  resolution: "lavamoat-core@npm:12.4.0"
+"lavamoat-core@npm:^14.1.1":
+  version: 14.1.1
+  resolution: "lavamoat-core@npm:14.1.1"
   dependencies:
-    fromentries: ^1.2.0
-    json-stable-stringify: ^1.0.1
+    json-stable-stringify: ^1.0.2
     lavamoat-tofu: ^6.0.2
-    merge-deep: ^3.0.2
-  checksum: 432a8968035370feb51e50f35306e7f85015e3b56440dbd41b6d3eec7f4bc82c3d1f16c6a627549df2665499c49bcb6e55fa697bccc6839bac1de12804019c1d
+    merge-deep: ^3.0.3
+  checksum: e27bd68b2f5a220d40b02beb7cdcdcb6682ed418de197e38cd50e95a007c66d839b56cd4fc69e2d1e066a873bd1a575116305af4d9ac2040c61b0471fe686b98
   languageName: node
   linkType: hard
 
@@ -16394,26 +16384,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat@npm:^6.4.0":
-  version: 6.4.0
-  resolution: "lavamoat@npm:6.4.0"
+"lavamoat@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "lavamoat@npm:7.0.0"
   dependencies:
-    "@babel/code-frame": ^7.10.4
-    "@babel/highlight": ^7.10.4
+    "@babel/code-frame": ^7.21.4
+    "@babel/highlight": ^7.18.6
     "@lavamoat/aa": ^3.1.0
     bindings: ^1.5.0
     htmlescape: ^1.1.1
-    json-stable-stringify: ^1.0.1
-    lavamoat-core: ^12.3.0
+    json-stable-stringify: ^1.0.2
+    lavamoat-core: ^14.1.1
     lavamoat-tofu: ^6.0.2
-    node-gyp-build: ^4.2.3
-    object.fromentries: ^2.0.2
-    resolve: ^1.17.0
-    yargs: ^16.0.0
+    node-gyp-build: ^4.6.0
+    resolve: ^1.22.3
+    yargs: ^17.7.2
   bin:
     lavamoat: src/cli.js
     lavamoat-run-command: src/run-command.js
-  checksum: 5a058b0b62fa4d6baa477775dc03433c0064e7ab0f14f4a540aa033154c3484cd9b59ec66e2968e387087c24531b09cbd6a70a3a11f4b52e3b4519cd3672c54c
+  checksum: df79cd0df9db683bf5c2d7d863e81d21a3f46f9093abdda10b4691548781c6e132116654ee3aaf0adb0a58ec0291cd30ec216b75410e36d281ff25beb5156ecc
   languageName: node
   linkType: hard
 
@@ -17115,7 +17104,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"merge-deep@npm:^3.0.2":
+"merge-deep@npm:^3.0.3":
   version: 3.0.3
   resolution: "merge-deep@npm:3.0.3"
   dependencies:
@@ -17864,7 +17853,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-gyp-build@npm:^4.2.0, node-gyp-build@npm:^4.2.3":
+"node-gyp-build@npm:^4.2.0, node-gyp-build@npm:^4.6.0":
   version: 4.6.0
   resolution: "node-gyp-build@npm:4.6.0"
   bin:
@@ -18241,7 +18230,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"object.fromentries@npm:^2.0.2, object.fromentries@npm:^2.0.6":
+"object.fromentries@npm:^2.0.6":
   version: 2.0.6
   resolution: "object.fromentries@npm:2.0.6"
   dependencies:
@@ -20457,7 +20446,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:^1.1.4, resolve@npm:^1.1.5, resolve@npm:^1.1.6, resolve@npm:^1.1.7, resolve@npm:^1.10.0, resolve@npm:^1.10.1, resolve@npm:^1.13.1, resolve@npm:^1.14.2, resolve@npm:^1.17.0, resolve@npm:^1.19.0, resolve@npm:^1.20.0, resolve@npm:^1.22.0, resolve@npm:^1.22.1, resolve@npm:^1.4.0, resolve@npm:^1.9.0":
+"resolve@npm:^1.1.4, resolve@npm:^1.1.5, resolve@npm:^1.1.6, resolve@npm:^1.1.7, resolve@npm:^1.10.0, resolve@npm:^1.10.1, resolve@npm:^1.13.1, resolve@npm:^1.14.2, resolve@npm:^1.17.0, resolve@npm:^1.19.0, resolve@npm:^1.20.0, resolve@npm:^1.22.0, resolve@npm:^1.22.1, resolve@npm:^1.22.3, resolve@npm:^1.4.0, resolve@npm:^1.9.0":
   version: 1.22.3
   resolution: "resolve@npm:1.22.3"
   dependencies:
@@ -20483,7 +20472,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@^1.1.4#~builtin<compat/resolve>, resolve@patch:resolve@^1.1.5#~builtin<compat/resolve>, resolve@patch:resolve@^1.1.6#~builtin<compat/resolve>, resolve@patch:resolve@^1.1.7#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.13.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.17.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.19.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.4.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.9.0#~builtin<compat/resolve>":
+"resolve@patch:resolve@^1.1.4#~builtin<compat/resolve>, resolve@patch:resolve@^1.1.5#~builtin<compat/resolve>, resolve@patch:resolve@^1.1.6#~builtin<compat/resolve>, resolve@patch:resolve@^1.1.7#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.13.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.17.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.19.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.3#~builtin<compat/resolve>, resolve@patch:resolve@^1.4.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.9.0#~builtin<compat/resolve>":
   version: 1.22.3
   resolution: "resolve@patch:resolve@npm%3A1.22.3#~builtin<compat/resolve>::version=1.22.3&hash=c3c19d"
   dependencies:
@@ -21597,10 +21586,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map@npm:^0.7.3":
-  version: 0.7.3
-  resolution: "source-map@npm:0.7.3"
-  checksum: cd24efb3b8fa69b64bf28e3c1b1a500de77e84260c5b7f2b873f88284df17974157cc88d386ee9b6d081f08fdd8242f3fc05c953685a6ad81aad94c7393dedea
+"source-map@npm:^0.7.3, source-map@npm:^0.7.4":
+  version: 0.7.4
+  resolution: "source-map@npm:0.7.4"
+  checksum: 01cc5a74b1f0e1d626a58d36ad6898ea820567e87f18dfc9d24a9843a351aaa2ec09b87422589906d6ff1deed29693e176194dc88bcae7c9a852dc74b311dbf5
   languageName: node
   linkType: hard
 
@@ -24612,7 +24601,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:16.2.0, yargs@npm:^16.0.0, yargs@npm:^16.2.0":
+"yargs@npm:16.2.0, yargs@npm:^16.2.0":
   version: 16.2.0
   resolution: "yargs@npm:16.2.0"
   dependencies:
@@ -24627,9 +24616,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:^17.0.1, yargs@npm:^17.3.1, yargs@npm:^17.5.1, yargs@npm:^17.7.1":
-  version: 17.7.1
-  resolution: "yargs@npm:17.7.1"
+"yargs@npm:^17.0.1, yargs@npm:^17.3.1, yargs@npm:^17.5.1, yargs@npm:^17.7.1, yargs@npm:^17.7.2":
+  version: 17.7.2
+  resolution: "yargs@npm:17.7.2"
   dependencies:
     cliui: ^8.0.1
     escalade: ^3.1.1
@@ -24638,7 +24627,7 @@ __metadata:
     string-width: ^4.2.3
     y18n: ^5.0.5
     yargs-parser: ^21.1.1
-  checksum: 3d8a43c336a4942bc68080768664aca85c7bd406f018bad362fd255c41c8f4e650277f42fd65d543fce99e084124ddafee7bbfc1a5c6a8fda4cec78609dcf8d4
+  checksum: 73b572e863aa4a8cbef323dd911d79d193b772defd5a51aab0aca2d446655216f5002c42c5306033968193bdbf892a7a4c110b0d77954a7fdf563e653967b56a
   languageName: node
   linkType: hard
 
