@@ -32,7 +32,7 @@ export async function startServer(options: ServerOptions) {
 
   const server = createServer(app);
   return await new Promise<Server>((resolve, reject) => {
-    server.listen(0, () => {
+    server.listen(options.port, () => {
       resolve(server);
     });
 
