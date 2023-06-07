@@ -11,6 +11,9 @@ const config: Configuration = {
   output: {
     filename: 'bundle.js',
     path: resolve(__dirname, 'dist'),
+    library: {
+      type: 'commonjs',
+    },
   },
   module: {
     rules: [

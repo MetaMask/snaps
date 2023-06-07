@@ -3,12 +3,14 @@ const deepmerge = require('deepmerge');
 const baseConfig = require('../../../../jest.config.base');
 
 module.exports = deepmerge(baseConfig, {
-  preset: '@metamask/snaps-jest',
+  testEnvironment: require.resolve('@metamask/snaps-jest/src/index.ts'),
   testEnvironmentOptions: {
     browser: {
       headless: true,
     },
   },
+
+  setupFilesAfterEnv: [require.resolve('@metamask/snaps-jest/src/setup.ts')],
 
   collectCoverage: false,
 

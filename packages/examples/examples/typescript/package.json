@@ -15,8 +15,9 @@
     "snap.manifest.json"
   ],
   "scripts": {
+    "jest": "ts-node --swc -r tsconfig-paths/register ../../../../node_modules/.bin/jest",
     "test": "yarn test:e2e",
-    "test:e2e": "jest",
+    "test:e2e": "yarn jest",
     "test:e2e:ci": "yarn build && yarn test:e2e",
     "build:clean": "yarn clean && yarn build",
     "build:website": "node ./scripts/build-website.js",
