@@ -1,7 +1,4 @@
-import {
-  ApplicationState,
-  Dispatch,
-} from '@metamask/snaps-simulator/src/store';
+import { ApplicationState, Dispatch } from '@metamask/snaps-simulator';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

@@ -1,7 +1,9 @@
+import { assert } from '@metamask/utils';
 import type { Store } from 'redux';
 
 import type { Notification } from './features';
 import type { ApplicationState } from './store';
+import { isTestBuild } from './utils';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -23,6 +25,8 @@ declare global {
  * @param store - The store.
  */
 export function setWindowApi(store: Store<ApplicationState>) {
+  assert(isTestBuild(), 'This function should only be called in a test build.');
+
   window.__SIMULATOR_API__ = {
     dispatch: store.dispatch,
     subscribe: store.subscribe.bind(store),

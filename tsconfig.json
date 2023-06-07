@@ -9,6 +9,7 @@
     { "path": "./packages/snaps-jest" },
     { "path": "./packages/snaps-execution-environments" },
     { "path": "./packages/snaps-rollup-plugin" },
+    { "path": "./packages/snaps-simulator" },
     { "path": "./packages/snaps-types" },
     { "path": "./packages/snaps-ui" },
     { "path": "./packages/snaps-utils" },

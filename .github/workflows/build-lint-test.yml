@@ -99,13 +99,13 @@ jobs:
         if: steps.cache-webpack-vendor.outputs.cache-hit != 'true'
         run: yarn workspace @metamask/snaps-simulator run build:vendor
       - name: Build Webpack
-        run: yarn workspace @metamask/snaps-simulator run build
+        run: yarn workspace @metamask/snaps-simulator run build:webpack
       - name: Cache simulator build
         id: cache-e2e-simulator-build
         uses: actions/cache@v3
         with:
           path: |
-            packages/snaps-simulator/dist
+            packages/snaps-simulator/dist/webpack
           key: e2e-simulator-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
       - name: Require clean working directory
         shell: bash
@@ -260,13 +260,11 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            packages/snaps-simulator/dist
+            packages/snaps-simulator/dist/webpack
           key: e2e-simulator-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
       - run: yarn --immutable --immutable-cache
       - name: Install Google Chrome
         run: yarn install-chrome
-      - name: Copy build files
-        run: yarn workspace @metamask/snaps-jest run copy
       - run: yarn test:e2e:ci
       - name: Require clean working directory
         shell: bash

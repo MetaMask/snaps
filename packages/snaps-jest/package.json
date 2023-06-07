@@ -3,13 +3,9 @@
   "version": "0.34.1-flask.1",
   "main": "dist/index.js",
   "files": [
-    "dist",
-    "public"
+    "dist"
   ],
   "scripts": {
-    "copy": "mkdir -p ./public && yarn copy:simulator && yarn copy:environment",
-    "copy:simulator": "cp -r ../snaps-simulator/dist public/simulator",
-    "copy:environment": "cp -r ../snaps-execution-environments/dist/browserify/iframe public/environment",
     "test": "jest && yarn posttest",
     "posttest": "jest-it-up",
     "test:ci": "yarn test",
@@ -21,7 +17,6 @@
     "lint:changelog": "yarn auto-changelog validate",
     "build:tsc": "tsc --project tsconfig.build.json",
     "build": "yarn build:tsc",
-    "build:post-tsc": "yarn copy",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
     "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
@@ -33,6 +28,7 @@
     "@jest/globals": "^29.5.0",
     "@jest/types": "^29.5.0",
     "@metamask/rpc-methods": "workspace:^",
+    "@metamask/snaps-execution-environments": "workspace:^",
     "@metamask/snaps-simulator": "workspace:^",
     "@metamask/snaps-ui": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",

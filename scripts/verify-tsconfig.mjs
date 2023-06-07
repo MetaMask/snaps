@@ -5,10 +5,10 @@ import { fileURLToPath } from 'url';
 const cwd = pathUtils.dirname(fileURLToPath(import.meta.url))
 
 // These are the packages we expect to _not_ be referenced in the root tsconfig.
-const IGNORE_LIST = new Set(['examples', 'snaps-types', 'snaps-simulator']);
+const IGNORE_LIST = new Set(['examples', 'snaps-types']);
 
 // Get reference paths from root tsconfig.json
-const rootTsconfig = JSON.parse(await fs.readFile('./tsconfig.json', { encoding: 'utf8'}));
+const rootTsconfig = JSON.parse(await fs.readFile('./tsconfig.json', { encoding: 'utf8' }));
 const rootTsconfigReferences = new Set(rootTsconfig.references.map(
   ({ path }) => path.split('/').pop()
 ))

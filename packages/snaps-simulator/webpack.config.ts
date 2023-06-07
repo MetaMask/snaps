@@ -1,19 +1,23 @@
 import ReactRefreshPlugin from '@pmmmwh/react-refresh-webpack-plugin';
+// eslint-disable-next-line import/default
+import CopyPlugin from 'copy-webpack-plugin';
 import express from 'express';
 import FaviconsWebpackPlugin from 'favicons-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MonacoEditorWebpackPlugin from 'monaco-editor-webpack-plugin';
 import NodePolyfillPlugin from 'node-polyfill-webpack-plugin';
 import { resolve } from 'path';
+import TerserPlugin from 'terser-webpack-plugin';
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
 import {
   Configuration,
   ProvidePlugin,
   DllPlugin,
   DllReferencePlugin,
+  EnvironmentPlugin,
+  IgnorePlugin,
 } from 'webpack';
 import { Configuration as DevServerConfiguration } from 'webpack-dev-server';
-import WebpackBarPlugin from 'webpackbar';
 
 import packageJson from './package.json';
 
@@ -21,8 +25,16 @@ const vendor = Object.entries(packageJson.dependencies)
   .filter(([, version]) => !version.startsWith('workspace:'))
   .map(([name]) => name);
 
+// This is purposefully not in the `dist` folder, as it will be copied to the
+// `dist` folder by the `CopyPlugin` below. This avoids including it twice in
+// the final package.
+const VENDOR_PATH = resolve(__dirname, 'vendor');
+const VENDOR_MANIFEST_PATH = resolve(VENDOR_PATH, 'vendor-manifest.json');
+
 const vendorConfig: Configuration = {
   name: 'vendor',
+  stats: 'errors-only',
+  devtool: false,
   entry: {
     vendor,
   },
@@ -50,13 +62,13 @@ const vendorConfig: Configuration = {
     ],
   },
   output: {
-    path: resolve(__dirname, 'dist', 'vendor'),
+    path: VENDOR_PATH,
     filename: '[name].js',
     library: '[name]_[fullhash]',
   },
   plugins: [
     new DllPlugin({
-      path: resolve(__dirname, 'dist', 'vendor', '[name]-manifest.json'),
+      path: VENDOR_MANIFEST_PATH,
       name: '[name]_[fullhash]',
     }),
     new MonacoEditorWebpackPlugin({
@@ -65,13 +77,30 @@ const vendorConfig: Configuration = {
     }),
     new NodePolyfillPlugin(),
   ],
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        minify: TerserPlugin.swcMinify,
+      }),
+    ],
+  },
 };
 
 const config: Configuration & Record<'devServer', DevServerConfiguration> = {
   name: 'app',
   entry: './src/index.tsx',
-  stats: 'errors-warnings',
+  stats: 'errors-only',
   devtool: 'source-map',
+  output: {
+    path: resolve(
+      __dirname,
+      'dist',
+      'webpack',
+      // eslint-disable-next-line node/no-process-env
+      process.env.SNAPS_TEST ? 'test' : 'main',
+    ),
+  },
   module: {
     rules: [
       {
@@ -137,19 +166,40 @@ const config: Configuration & Record<'devServer', DevServerConfiguration> = {
   /* eslint-enable @typescript-eslint/naming-convention */
   plugins: [
     new DllReferencePlugin({
-      manifest: resolve(__dirname, 'dist', 'vendor', 'vendor-manifest.json'),
+      manifest: VENDOR_MANIFEST_PATH,
     }),
     new ProvidePlugin({
       // These Node.js modules are used in some of the stream libs used
       process: 'process/browser',
       Buffer: ['buffer', 'Buffer'],
     }),
+    new EnvironmentPlugin({
+      SNAPS_TEST: false,
+    }),
     new ReactRefreshPlugin(),
     new HtmlWebpackPlugin({
       template: './src/index.html',
     }),
-    new WebpackBarPlugin(),
     new FaviconsWebpackPlugin('./src/assets/favicon.svg'),
+
+    // Copy the Webpack vendor files to the output folder.
+    new CopyPlugin({
+      patterns: [
+        {
+          from: VENDOR_PATH,
+          to: 'vendor',
+          toType: 'dir',
+        },
+      ],
+    }),
+
+    // Stop attempting to bundle the Node.js execution services. They are
+    // not used in the browser, and attempting to bundle them causes
+    // errors.
+    new IgnorePlugin({
+      resourceRegExp:
+        /^.*(?:NodeProcessExecutionService|NodeThreadExecutionService).*/u,
+    }),
   ],
   cache: {
     type: 'filesystem',
@@ -161,9 +211,18 @@ const config: Configuration & Record<'devServer', DevServerConfiguration> = {
     port: 8000,
     historyApiFallback: true,
     setupMiddlewares: (middlewares, { app }) => {
-      app?.use('/vendor', express.static(resolve(__dirname, 'dist', 'vendor')));
+      app?.use('/vendor', express.static(VENDOR_PATH));
+
       return middlewares;
     },
+  },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        minify: TerserPlugin.swcMinify,
+      }),
+    ],
   },
 };
 

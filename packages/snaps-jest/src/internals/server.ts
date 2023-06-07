@@ -1,12 +1,26 @@
 import { createModuleLogger } from '@metamask/utils';
 import express from 'express';
 import { createServer, Server } from 'http';
-import { join, resolve as pathResolve } from 'path';
+import { resolve as pathResolve, dirname } from 'path';
 
 import { SnapsEnvironmentOptions } from '../options';
 import { rootLogger } from './logger';
 
-const PUBLIC_PATH = join(__dirname, '..', '..', 'public');
+const SNAPS_EXECUTION_ENVIRONMENTS_PATH = pathResolve(
+  dirname(
+    require.resolve('@metamask/snaps-execution-environments/package.json'),
+  ),
+  'dist',
+  'browserify',
+  'iframe',
+);
+
+const SNAPS_SIMULATOR_PATH = pathResolve(
+  dirname(require.resolve('@metamask/snaps-simulator/package.json')),
+  'dist',
+  'webpack',
+  'test',
+);
 
 export type ServerOptions = Required<
   // We need a double `Required` for the type to be inferred correctly.
@@ -27,7 +41,8 @@ export async function startServer(options: ServerOptions) {
 
   const app = express();
 
-  app.use(express.static(PUBLIC_PATH));
+  app.use('/environment', express.static(SNAPS_EXECUTION_ENVIRONMENTS_PATH));
+  app.use('/simulator', express.static(SNAPS_SIMULATOR_PATH));
   app.use(express.static(pathResolve(process.cwd(), options.root)));
 
   const server = createServer(app);
