@@ -28,6 +28,11 @@ Object.defineProperty(globalThis, 'Notification', {
   },
 });
 
+jest.mock('@reduxjs/toolkit', () => ({
+  ...jest.requireActual('@reduxjs/toolkit'),
+  nanoid: () => 'foo',
+}));
+
 const snapId = 'local:http://localhost:8080';
 
 describe('showDialog', () => {
@@ -84,9 +89,11 @@ describe('showNativeNotification', () => {
       })
       .call([Notification, 'requestPermission'])
       .put(
-        addNotification(
-          'Unable to show browser notification. Make sure notifications are enabled in your browser settings.',
-        ),
+        addNotification({
+          id: 'foo',
+          message:
+            'Unable to show browser notification. Make sure notifications are enabled in your browser settings.',
+        }),
       )
       .returns(null)
       .silentRun();
@@ -99,7 +106,17 @@ describe('showInAppNotification', () => {
       type: 'inApp',
       message: 'foo',
     })
-      .put(addNotification('foo'))
+      .withState({
+        simulation: {
+          requestId: 'bar',
+        },
+      })
+      .put(
+        addNotification({
+          id: 'bar',
+          message: 'foo',
+        }),
+      )
       .returns(null)
       .silentRun();
   });

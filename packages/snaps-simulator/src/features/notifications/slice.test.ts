@@ -10,7 +10,10 @@ describe('notifications slice', () => {
     it('adds a notification to the state', () => {
       const result = reducer(
         INITIAL_NOTIFICATIONS_STATE,
-        addNotification('Hello, world!'),
+        addNotification({
+          id: 'foo',
+          message: 'Hello, world!',
+        }),
       );
 
       expect(result.notifications).toHaveLength(1);
@@ -27,6 +30,12 @@ describe('notifications slice', () => {
     it('removes a notification from the state', () => {
       const result = reducer(
         {
+          allNotifications: [
+            {
+              id: '1',
+              message: 'Hello, world!',
+            },
+          ],
           notifications: [
             {
               id: '1',
@@ -38,6 +47,12 @@ describe('notifications slice', () => {
       );
 
       expect(result.notifications).toStrictEqual([]);
+      expect(result.allNotifications).toStrictEqual([
+        {
+          id: '1',
+          message: 'Hello, world!',
+        },
+      ]);
     });
   });
 });

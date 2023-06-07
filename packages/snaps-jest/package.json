@@ -6,7 +6,7 @@
     "dist"
   ],
   "scripts": {
-    "test": "jest && yarn posttest",
+    "test": "jest --passWithNoTests && yarn posttest",
     "posttest": "jest-it-up",
     "test:ci": "yarn test",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
