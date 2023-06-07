@@ -112,10 +112,12 @@ export enum UserInputEventType {
   ButtonClickEvent = 'ButtonClickEvent',
 }
 
-type UserInputEvent = {
-  type: UserInputEventType;
-  name?: string;
-};
+const UserInputEventStruct = object({
+  type: enums([UserInputEventType.ButtonClickEvent]),
+  name: string(),
+});
+
+type UserInputEvent = Infer<typeof UserInputEventStruct>;
 
 export type OnUserInputHandler = (args: {
   id: string;
