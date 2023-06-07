@@ -1,4 +1,5 @@
 import { OnRpcRequestHandler } from '@metamask/snaps-types';
+import { text } from '@metamask/snaps-ui';
 
 import { getMessage } from './message';
 
@@ -24,6 +25,14 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
         params: {
           type: 'inApp',
           message: getMessage(origin),
+        },
+      });
+    case 'confirm':
+      return await snap.request({
+        method: 'snap_dialog',
+        params: {
+          type: 'confirmation',
+          content: text('OK?'),
         },
       });
     default:

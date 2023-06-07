@@ -4483,6 +4483,7 @@ __metadata:
     "@jest/expect": ^29.5.0
     "@jest/globals": ^29.5.0
     "@jest/types": ^29.5.0
+    "@metamask/rpc-methods": "workspace:^"
     "@metamask/snaps-execution-environments": "workspace:^"
     "@metamask/snaps-simulator": "workspace:^"
     "@metamask/snaps-ui": "workspace:^"
@@ -23344,6 +23345,8 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
+    "@metamask/snaps-ui": "workspace:^"
+    "@metamask/utils": ^6.0.0
     "@types/node": ^17.0.36
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1

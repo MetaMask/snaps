@@ -18,7 +18,7 @@ import {
 } from 'jest-matcher-utils';
 import { is } from 'superstruct';
 
-import { SnapResponse, SnapResponseStruct } from './types';
+import { InterfaceStruct, SnapResponse, SnapResponseStruct } from './types';
 
 /**
  * Ensure that the actual value is a response from the `request` function.
@@ -57,14 +57,12 @@ function assertHasInterface(
   actual: unknown,
   matcherName: string,
   options?: MatcherHintOptions,
-): asserts actual is SnapResponse & { ui: Component } {
-  assertActualIsSnapResponse(actual, matcherName, options);
-
-  if (!hasProperty(actual, 'ui') || !actual.ui) {
+): asserts actual is { content: Component } {
+  if (!is(actual, InterfaceStruct) || !actual.content) {
     throw new Error(
       matcherErrorMessage(
         matcherHint(matcherName, undefined, undefined, options),
-        `${RECEIVED_COLOR('received')} value must have an \`ui\` property`,
+        `${RECEIVED_COLOR('received')} value must have a \`content\` property`,
         printWithType('Received', actual, printReceived),
       ),
     );
@@ -169,33 +167,35 @@ export const toSendNotification: MatcherFunction<[expected: string]> =
     return { message, pass };
   };
 
-export const toShowInterface: MatcherFunction<[expected: Component]> =
-  function (actual, expected) {
-    assertHasInterface(actual, 'toShowInterface');
+export const toRender: MatcherFunction<[expected: Component]> = function (
+  actual,
+  expected,
+) {
+  assertHasInterface(actual, 'toRender');
 
-    const { ui } = actual;
-    const pass = this.equals(ui, expected);
+  const { content } = actual;
+  const pass = this.equals(content, expected);
 
-    const difference = diff(expected, ui);
+  const difference = diff(expected, content);
 
-    const message = pass
-      ? () =>
-          `${this.utils.matcherHint('.not.toShowInterface')}\n\n` +
-          `Expected: ${this.utils.printExpected(expected)}\n` +
-          `Received: ${this.utils.printReceived(ui)}` +
-          `${difference ? `\n\nDifference:\n\n${difference}` : ''}`
-      : () =>
-          `${this.utils.matcherHint('.toShowInterface')}\n\n` +
-          `Expected: ${this.utils.printExpected(expected)}\n` +
-          `Received: ${this.utils.printReceived(ui)}` +
-          `${difference ? `\n\nDifference:\n\n${difference}` : ''}`;
+  const message = pass
+    ? () =>
+        `${this.utils.matcherHint('.not.toShowInterface')}\n\n` +
+        `Expected: ${this.utils.printExpected(expected)}\n` +
+        `Received: ${this.utils.printReceived(content)}` +
+        `${difference ? `\n\nDifference:\n\n${difference}` : ''}`
+    : () =>
+        `${this.utils.matcherHint('.toShowInterface')}\n\n` +
+        `Expected: ${this.utils.printExpected(expected)}\n` +
+        `Received: ${this.utils.printReceived(content)}` +
+        `${difference ? `\n\nDifference:\n\n${difference}` : ''}`;
 
-    return { message, pass };
-  };
+  return { message, pass };
+};
 
 expect.extend({
   toRespondWith,
   toRespondWithError,
   toSendNotification,
-  toShowInterface,
+  toRender,
 });

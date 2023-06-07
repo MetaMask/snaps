@@ -1,4 +1,4 @@
-import { Component } from '@metamask/snaps-ui';
+import { Component, ComponentStruct } from '@metamask/snaps-ui';
 import {
   bytesToHex,
   JsonRpcId,
@@ -10,6 +10,7 @@ import {
 import { randomBytes } from 'crypto';
 import {
   array,
+  assign,
   bigint,
   coerce,
   defaulted,
@@ -20,6 +21,7 @@ import {
   object,
   optional,
   string,
+  type,
   union,
 } from 'superstruct';
 
@@ -29,7 +31,7 @@ declare module 'expect' {
     toRespondWith(response: unknown): void;
     toRespondWithError(error: unknown): void;
     toSendNotification(message: string): void;
-    toShowInterface(component: Component): void;
+    toRender(component: Component): void;
   }
 
   // Ideally we would use `Matchers<Result>` instead of `Matchers<R>`, but
@@ -39,7 +41,7 @@ declare module 'expect' {
     toRespondWith(response: unknown): R;
     toRespondWithError(error: unknown): R;
     toSendNotification(message: string): R;
-    toShowInterface(component: Component): R;
+    toRender(component: Component): R;
   }
 }
 /* eslint-enable @typescript-eslint/consistent-type-definitions */
@@ -182,9 +184,112 @@ export const TransactionOptionsStruct = object({
 
 export type TransactionOptions = Infer<typeof TransactionOptionsStruct>;
 
-export type Mock = {
-  unmock(): void;
+export const SnapOptionsStruct = object({
+  /**
+   * The timeout in milliseconds to use for requests to the snap. Defaults to
+   * `1000`.
+   */
+  timeout: defaulted(optional(number()), 1000),
+});
+
+/**
+ * The options to use for requests to the snap.
+ *
+ * @property timeout - The timeout in milliseconds to use. Defaults to `1000`.
+ */
+export type SnapOptions = Infer<typeof SnapOptionsStruct>;
+
+/**
+ * A `snap_dialog` alert interface.
+ */
+export type SnapAlertInterface = {
+  /**
+   * The type of the interface. This is always `alert`.
+   */
+  type: 'alert';
+
+  /**
+   * The content to show in the alert.
+   */
+  content: Component;
+
+  /**
+   * Close the alert.
+   */
+  ok(): Promise<void>;
 };
+
+/**
+ * A `snap_dialog` confirmation interface.
+ */
+export type SnapConfirmationInterface = {
+  /**
+   * The type of the interface. This is always `confirmation`.
+   */
+  type: 'confirmation';
+
+  /**
+   * The content to show in the confirmation.
+   */
+  content: Component;
+
+  /**
+   * Close the confirmation.
+   */
+  ok(): Promise<void>;
+
+  /**
+   * Cancel the confirmation.
+   */
+  cancel(): Promise<void>;
+};
+
+/**
+ * A `snap_dialog` prompt interface.
+ */
+export type SnapPromptInterface = {
+  /**
+   * The type of the interface. This is always `prompt`.
+   */
+  type: 'prompt';
+
+  /**
+   * The content to show in the prompt.
+   */
+  content: Component;
+
+  /**
+   * Close the prompt.
+   *
+   * @param value - The value to close the prompt with.
+   */
+  ok(value?: string): Promise<void>;
+
+  /**
+   * Cancel the prompt.
+   */
+  cancel(): Promise<void>;
+};
+
+export type SnapInterface =
+  | SnapAlertInterface
+  | SnapConfirmationInterface
+  | SnapPromptInterface;
+
+export type SnapRequestObject = {
+  /**
+   * Get a user interface object from a snap. This will throw an error if the
+   * snap does not show a user interface within the timeout.
+   *
+   * @param options - The options to use.
+   * @param options.timeout - The timeout in milliseconds to use. Defaults to
+   * `1000`.
+   * @returns The user interface object.
+   */
+  getInterface(options?: SnapOptions): Promise<SnapInterface>;
+};
+
+export type SnapRequest = Promise<SnapResponse> & SnapRequestObject;
 
 export type Snap = {
   /**
@@ -192,9 +297,9 @@ export type Snap = {
    *
    * @param request - The request. This is similar to a JSON-RPC request, but
    * has an extra `origin` field.
-   * @returns The response.
+   * @returns The response promise, with extra {@link SnapRequestObject} fields.
    */
-  request(request: RequestOptions): Promise<SnapResponse>;
+  request(request: RequestOptions): SnapRequest;
 
   /**
    * Send a transaction to the snap.
@@ -209,26 +314,31 @@ export type Snap = {
   ): Promise<SnapResponse>;
 };
 
-export const SnapResponseStruct = object({
-  id: string(),
-
-  response: union([
-    object({
-      result: JsonStruct,
-    }),
-    object({
-      error: JsonStruct,
-    }),
-  ]),
-
-  notifications: array(
-    object({
-      id: string(),
-      message: string(),
-    }),
-  ),
-
-  ui: optional(JsonStruct),
+export const InterfaceStruct = type({
+  content: optional(ComponentStruct),
 });
+
+export const SnapResponseStruct = assign(
+  InterfaceStruct,
+  object({
+    id: string(),
+
+    response: union([
+      object({
+        result: JsonStruct,
+      }),
+      object({
+        error: JsonStruct,
+      }),
+    ]),
+
+    notifications: array(
+      object({
+        id: string(),
+        message: string(),
+      }),
+    ),
+  }),
+);
 
 export type SnapResponse = Infer<typeof SnapResponseStruct>;

@@ -1,3 +1,4 @@
+import { Component } from '@metamask/snaps-ui';
 import { HandlerType, SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { assert, hasProperty, isPlainObject } from '@metamask/utils';
 import { getDocument, queries } from 'pptr-testing-library';
@@ -5,11 +6,12 @@ import { create } from 'superstruct';
 
 import {
   getEnvironment,
+  getInterface,
   getNotifications,
   waitFor,
   waitForResponse,
 } from './internals';
-import type { Snap, SnapResponse } from './types';
+import type { Snap, SnapRequest, SnapResponse } from './types';
 import { TransactionOptionsStruct } from './types';
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -58,33 +60,42 @@ export async function installSnap(snapId: string): Promise<Snap> {
   });
 
   return {
-    request: async ({
-      origin = 'metamask.io',
-      ...options
-    }): Promise<SnapResponse> => {
-      const args: SnapRpcHookArgs = {
-        origin,
-        handler: HandlerType.OnRpcRequest,
-        request: {
-          jsonrpc: '2.0',
-          id: 1,
-          ...options,
-        },
+    request: ({ origin = 'metamask.io', ...options }): SnapRequest => {
+      const doRequest = async (): Promise<SnapResponse> => {
+        const args: SnapRpcHookArgs = {
+          origin,
+          handler: HandlerType.OnRpcRequest,
+          request: {
+            jsonrpc: '2.0',
+            id: 1,
+            ...options,
+          },
+        };
+
+        const id = await page.evaluate((payload) => {
+          window.__SIMULATOR_API__.dispatch({
+            type: 'simulation/sendRequest',
+            payload,
+          });
+
+          return window.__SIMULATOR_API__.getRequestId();
+        }, args);
+
+        const response = await waitForResponse(page, HandlerType.OnRpcRequest);
+        const notifications = await getNotifications(page, id);
+
+        return { id, response, notifications };
       };
 
-      const id = await page.evaluate((payload) => {
-        window.__SIMULATOR_API__.dispatch({
-          type: 'simulation/sendRequest',
-          payload,
-        });
+      // This is a bit hacky, but it allows us to add the `getInterface` method
+      // to the response promise.
+      const response = doRequest() as SnapRequest;
 
-        return window.__SIMULATOR_API__.getRequestId();
-      }, args);
+      response.getInterface = async (getInterfaceOptions) => {
+        return await getInterface(page, getInterfaceOptions);
+      };
 
-      const response = await waitForResponse(page, HandlerType.OnRpcRequest);
-      const notifications = await getNotifications(page, id);
-
-      return { id, response, notifications };
+      return response;
     },
 
     sendTransaction: async (_options = {}): Promise<SnapResponse> => {
@@ -126,7 +137,12 @@ export async function installSnap(snapId: string): Promise<Snap> {
       assert(isPlainObject(response.result));
       assert(hasProperty(response.result, 'content'));
 
-      return { id, response, notifications: [], ui: response.result.content };
+      return {
+        id,
+        response,
+        notifications: [],
+        content: response.result.content as Component,
+      };
     },
   };
 }

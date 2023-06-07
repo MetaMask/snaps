@@ -1,8 +1,7 @@
-import { JsonRpcId } from '@metamask/utils';
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type Notification = {
-  id: JsonRpcId;
+  id: string;
   message: string;
 };
 
@@ -33,7 +32,7 @@ const slice = createSlice({
      */
     addNotification(
       state,
-      action: PayloadAction<{ id: JsonRpcId; message: string }>,
+      action: PayloadAction<{ id: string; message: string }>,
     ) {
       state.notifications.push(action.payload);
       state.allNotifications.push(action.payload);

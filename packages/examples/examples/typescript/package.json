@@ -29,6 +29,10 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:ci": "yarn lint"
   },
+  "dependencies": {
+    "@metamask/snaps-ui": "workspace:^",
+    "@metamask/utils": "^6.0.0"
+  },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
     "@lavamoat/allow-scripts": "^2.3.1",

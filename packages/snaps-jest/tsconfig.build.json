@@ -3,7 +3,8 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "jsx": "preserve"
   },
   "include": ["./src"],
   "exclude": [
@@ -15,6 +16,9 @@
   "references": [
     {
       "path": "../snaps-utils/tsconfig.build.json"
+    },
+    {
+      "path": "../snaps-simulator/tsconfig.build.json"
     }
   ]
 }

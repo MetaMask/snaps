@@ -4,7 +4,9 @@
     "jsx": "react-jsx",
     "baseUrl": "./",
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "emitDeclarationOnly": true,
+    "skipLibCheck": true
   },
   "include": ["./src"],
   "exclude": [

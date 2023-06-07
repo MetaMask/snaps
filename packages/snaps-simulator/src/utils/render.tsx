@@ -1,4 +1,7 @@
-import { render as testingLibraryRender } from '@testing-library/react';
+import {
+  render as testingLibraryRender,
+  RenderResult,
+} from '@testing-library/react';
 import { ReactElement } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -14,7 +17,7 @@ import { createStore } from '../store';
  * @param route - The route to render the component at. Defaults to `/`.
  * @returns The rendered component.
  */
-export function render(component: ReactElement, route = '/') {
+export function render(component: ReactElement, route = '/'): RenderResult {
   const store = createStore();
   return testingLibraryRender(component, {
     wrapper: ({ children }) => (

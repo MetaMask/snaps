@@ -29,6 +29,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
+import { SagaIterator } from 'redux-saga';
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
 
 import { runSaga } from '../../store/middleware';
@@ -261,7 +262,7 @@ export function* requestSaga({ payload }: PayloadAction<SnapRpcHookArgs>) {
  */
 export function* permissionsSaga({
   payload,
-}: PayloadAction<VirtualFile<SnapManifest>>) {
+}: PayloadAction<VirtualFile<SnapManifest>>): SagaIterator {
   try {
     const snapId: string = yield select(getSnapId);
     const subjectMetadataController: SubjectMetadataController = yield select(
