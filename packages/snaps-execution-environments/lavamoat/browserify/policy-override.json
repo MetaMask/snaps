@@ -1,9 +1,3 @@
 {
-  "resources": {
-    "external:../snaps-utils/src/logging.ts": {
-      "globals": {
-        "console": true
-      }
-    }
-  }
+  "resources": {}
 }

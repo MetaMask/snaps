@@ -969,12 +969,13 @@
       },
       "globals": {
         "__dirname": true,
+        "__filename.slice": true,
         "process.cwd": true,
         "setTimeout": true
       },
       "packages": {
-        "@babel/core>convert-source-map": true,
         "@lavamoat/lavapack>combine-source-map": true,
+        "@lavamoat/lavapack>convert-source-map": true,
         "@lavamoat/lavapack>readable-stream": true,
         "@lavamoat/lavapack>through2": true,
         "@lavamoat/lavapack>umd": true,
@@ -1013,6 +1014,14 @@
       },
       "packages": {
         "@lavamoat/lavapack>combine-source-map>inline-source-map>source-map": true
+      }
+    },
+    "@lavamoat/lavapack>convert-source-map": {
+      "globals": {
+        "Buffer": true,
+        "atob": true,
+        "btoa": true,
+        "value": true
       }
     },
     "@lavamoat/lavapack>readable-stream": {
@@ -2109,7 +2118,6 @@
       },
       "packages": {
         "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-core>fromentries": true,
         "lavamoat>lavamoat-core>merge-deep": true,
         "lavamoat>lavamoat-tofu": true
       }
@@ -2250,7 +2258,7 @@
         "process.getuid": true,
         "process.nextTick": true,
         "process.platform": true,
-        "process.versions": true
+        "process.versions.pnp": true
       },
       "packages": {
         "eslint-plugin-import>is-core-module": true,
@@ -2286,14 +2294,17 @@
     },
     "yargs": {
       "builtin": {
-        "assert": true,
-        "fs": true,
+        "assert.notStrictEqual": true,
+        "assert.strictEqual": true,
+        "fs.readFileSync": true,
         "path": true,
-        "util": true
+        "util.inspect": true
       },
       "globals": {
-        "Error": true,
-        "console": true,
+        "__dirname": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
         "process": true
       },
       "packages": {
@@ -2307,6 +2318,9 @@
       }
     },
     "yargs>cliui": {
+      "globals": {
+        "process": true
+      },
       "packages": {
         "eslint>strip-ansi": true,
         "yargs>cliui>wrap-ansi": true,
@@ -2346,16 +2360,19 @@
     },
     "yargs>y18n": {
       "builtin": {
-        "fs": true,
-        "path": true,
-        "util": true
+        "fs.readFileSync": true,
+        "fs.statSync": true,
+        "fs.writeFile": true,
+        "path.resolve": true,
+        "util.format": true
       }
     },
     "yargs>yargs-parser": {
       "builtin": {
-        "fs": true,
-        "path": true,
-        "util": true
+        "fs.readFileSync": true,
+        "path.normalize": true,
+        "path.resolve": true,
+        "util.format": true
       },
       "globals": {
         "process": true
