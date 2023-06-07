@@ -62,7 +62,7 @@ const slice = createSlice({
       state.status = action.payload;
     },
     setExecutionService(state, action: PayloadAction<IframeExecutionService>) {
-      state.executionService = action.payload;
+      state.executionService = action.payload as any;
     },
     setPermissionController(
       state,

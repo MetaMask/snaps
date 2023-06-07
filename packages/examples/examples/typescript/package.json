@@ -44,7 +44,7 @@
     "@metamask/snaps-cli": "workspace:^",
     "@metamask/snaps-jest": "workspace:^",
     "@metamask/snaps-types": "workspace:^",
-    "@types/node": "^17.0.36",
+    "@types/node": "^20.2.5",
     "@types/webpack-env": "^1.18.1",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",

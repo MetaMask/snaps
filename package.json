@@ -67,7 +67,7 @@
     "@metamask/eslint-config-typescript": "^11.0.0",
     "@metamask/utils": "^6.0.1",
     "@types/jest": "^27.5.1",
-    "@types/node": "^17.0.36",
+    "@types/node": "^20.2.5",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "chromedriver": "^114.0.1",

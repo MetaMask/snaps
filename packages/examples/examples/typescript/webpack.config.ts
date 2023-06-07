@@ -25,7 +25,6 @@ const config: Configuration = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
     plugins: [
-      // @ts-expect-error - `TsconfigPathsPlugin` is typed incorrectly.
       new TsconfigPathsPlugin({
         configFile: resolve(__dirname, 'tsconfig.json'),
         baseUrl: __dirname,
