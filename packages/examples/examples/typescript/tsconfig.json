@@ -2,12 +2,11 @@
   "extends": "../../../../tsconfig.packages.json",
   "compilerOptions": {
     "baseUrl": "./",
-    "typeRoots": ["../../../../node_modules/@types"],
     "paths": {
       "@metamask/*": ["../../../*/src"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "webpack.config.ts"],
   "references": [
     {
       "path": "../../../snaps-types"
