@@ -1389,19 +1389,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@browserify/uglifyify@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@browserify/uglifyify@npm:6.0.0"
-  dependencies:
-    convert-source-map: ^1.9.0
-    minimatch: ^3.0.2
-    terser: ^5.15.1
-    through2: ^4.0.2
-    xtend: ^4.0.1
-  checksum: d0a797b7f550f5a28954a67cd65f4af6d77777cf30bf8aec06c328ac91fb94b77085de3d8218c721558224551a7e5117b794f83a672fa11104aefbf8eeb4f1c8
-  languageName: node
-  linkType: hard
-
 "@chainsafe/as-sha256@npm:^0.4.1":
   version: 0.4.1
   resolution: "@chainsafe/as-sha256@npm:0.4.1"
@@ -3274,17 +3261,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@goto-bus-stop/common-shake@npm:^2.3.0":
-  version: 2.4.0
-  resolution: "@goto-bus-stop/common-shake@npm:2.4.0"
-  dependencies:
-    acorn-walk: ^7.0.0
-    debug: ^3.2.6
-    escope: ^3.6.0
-  checksum: 3087588eea489814c10d704706762044e002711c31f613a748c47247e4b75328bc7cbe171247356d6468fa76945d44cdf591bbd5c882e39666132bea2b766ab5
-  languageName: node
-  linkType: hard
-
 "@humanwhocodes/config-array@npm:^0.11.6":
   version: 0.11.7
   resolution: "@humanwhocodes/config-array@npm:0.11.7"
@@ -3656,13 +3632,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jridgewell/source-map@npm:^0.3.2":
-  version: 0.3.2
-  resolution: "@jridgewell/source-map@npm:0.3.2"
+"@jridgewell/source-map@npm:^0.3.3":
+  version: 0.3.3
+  resolution: "@jridgewell/source-map@npm:0.3.3"
   dependencies:
     "@jridgewell/gen-mapping": ^0.3.0
     "@jridgewell/trace-mapping": ^0.3.9
-  checksum: 1b83f0eb944e77b70559a394d5d3b3f98a81fcc186946aceb3ef42d036762b52ef71493c6c0a3b7c1d2f08785f53ba2df1277fe629a06e6109588ff4cdcf7482
+  checksum: ae1302146339667da5cd6541260ecbef46ae06819a60f88da8f58b3e64682f787c09359933d050dea5d2173ea7fa40f40dd4d4e7a8d325c5892cccd99aaf8959
   languageName: node
   linkType: hard
 
@@ -4388,7 +4364,6 @@ __metadata:
     "@babel/core": ^7.20.12
     "@babel/preset-env": ^7.20.12
     "@babel/preset-typescript": ^7.20.12
-    "@browserify/uglifyify": ^6.0.0
     "@esbuild-plugins/node-globals-polyfill": ^0.2.3
     "@esbuild-plugins/node-modules-polyfill": ^0.2.2
     "@lavamoat/allow-scripts": ^2.3.1
@@ -4422,7 +4397,6 @@ __metadata:
     babelify: ^10.0.0
     browserify: ^17.0.0
     buffer: ^6.0.3
-    common-shakeify: ^1.1.2
     deepmerge: ^4.2.2
     esbuild: ^0.17.15
     eslint: ^8.27.0
@@ -4452,6 +4426,7 @@ __metadata:
     ses: ^0.18.1
     stream-browserify: ^3.0.0
     superstruct: ^1.0.3
+    terser: ^5.17.7
     ts-node: ^10.9.1
     tsconfig-paths: ^4.1.2
     typescript: ~4.8.4
@@ -7299,7 +7274,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"acorn@npm:^8.1.0, acorn@npm:^8.4.1, acorn@npm:^8.5.0, acorn@npm:^8.8.0, acorn@npm:^8.8.1":
+"acorn@npm:^8.1.0, acorn@npm:^8.4.1, acorn@npm:^8.8.0, acorn@npm:^8.8.1, acorn@npm:^8.8.2":
   version: 8.8.2
   resolution: "acorn@npm:8.8.2"
   bin:
@@ -8578,13 +8553,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browser-process-hrtime@npm:^0.1.2":
-  version: 0.1.3
-  resolution: "browser-process-hrtime@npm:0.1.3"
-  checksum: e052e0593339ba238eb2e2146b99d79555c195242a280c75a0627a39d938349859df21ea400a2d456b0d7614df8bf61ba34d110f7046e2a9ec69e70e64698e2f
-  languageName: node
-  linkType: hard
-
 "browser-resolve@npm:^2.0.0":
   version: 2.0.0
   resolution: "browser-resolve@npm:2.0.0"
@@ -9739,19 +9707,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"common-shakeify@npm:^1.1.2":
-  version: 1.1.2
-  resolution: "common-shakeify@npm:1.1.2"
-  dependencies:
-    "@goto-bus-stop/common-shake": ^2.3.0
-    convert-source-map: ^1.5.1
-    through2: ^2.0.3
-    transform-ast: ^2.4.3
-    wrap-comment: ^1.0.1
-  checksum: adf19a21c765a9ba4d8572b19dd16640aaf07e8f2711fc1b556cc3c971d5fb21afd3e9d0b36e8a179af668a42e5333e004af517b2c3089b1e5944ee3959a58ff
-  languageName: node
-  linkType: hard
-
 "commondir@npm:^1.0.1":
   version: 1.0.1
   resolution: "commondir@npm:1.0.1"
@@ -10326,7 +10281,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:^3.2.6, debug@npm:^3.2.7":
+"debug@npm:^3.2.7":
   version: 3.2.7
   resolution: "debug@npm:3.2.7"
   dependencies:
@@ -11287,7 +11242,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"es6-map@npm:^0.1.3, es6-map@npm:^0.1.5":
+"es6-map@npm:^0.1.5":
   version: 0.1.5
   resolution: "es6-map@npm:0.1.5"
   dependencies:
@@ -11801,18 +11756,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"escope@npm:^3.6.0":
-  version: 3.6.0
-  resolution: "escope@npm:3.6.0"
-  dependencies:
-    es6-map: ^0.1.3
-    es6-weak-map: ^2.0.1
-    esrecurse: ^4.1.0
-    estraverse: ^4.1.1
-  checksum: f11c006436bb15f7886160032ad222266ea1643e177b0bc57ec48f1e25920ef62d40511ca095c8733bbd6e8704bc431ce02557fc8229292427a079e62c896f66
-  languageName: node
-  linkType: hard
-
 "eslint-config-prettier@npm:^8.5.0":
   version: 8.5.0
   resolution: "eslint-config-prettier@npm:8.5.0"
@@ -12120,7 +12063,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esrecurse@npm:^4.1.0, esrecurse@npm:^4.3.0":
+"esrecurse@npm:^4.3.0":
   version: 4.3.0
   resolution: "esrecurse@npm:4.3.0"
   dependencies:
@@ -16900,15 +16843,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"magic-string@npm:^0.23.2":
-  version: 0.23.2
-  resolution: "magic-string@npm:0.23.2"
-  dependencies:
-    sourcemap-codec: ^1.4.1
-  checksum: 05167ff554f6a61d87080f34757339b503669fffe12a7cbe7f79c08283b7e33a497a24ea26b8cea5b36d7d6a737ad483e0599431ae443225f6e46b99e0332ba5
-  languageName: node
-  linkType: hard
-
 "magic-string@npm:^0.25.3, magic-string@npm:^0.25.7":
   version: 0.25.9
   resolution: "magic-string@npm:0.25.9"
@@ -17302,7 +17236,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:3.1.2, minimatch@npm:^3.0.2, minimatch@npm:^3.0.4, minimatch@npm:^3.0.5, minimatch@npm:^3.1.1, minimatch@npm:^3.1.2":
+"minimatch@npm:3.1.2, minimatch@npm:^3.0.4, minimatch@npm:^3.0.5, minimatch@npm:^3.1.1, minimatch@npm:^3.1.2":
   version: 3.1.2
   resolution: "minimatch@npm:3.1.2"
   dependencies:
@@ -17669,36 +17603,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mutexify@npm:^1.1.0":
-  version: 1.4.0
-  resolution: "mutexify@npm:1.4.0"
-  dependencies:
-    queue-tick: ^1.0.0
-  checksum: 2ad9712d4f2e75551a2dbfb1dc274dfa6c1dea7418ee48468a9bf252014d3480adc70c264bd93775b034d29b7dbfcfd26ecb2a4d83aa8d137456e617a01d3f76
-  languageName: node
-  linkType: hard
-
 "nan@npm:^2.12.1":
   version: 2.15.0
   resolution: "nan@npm:2.15.0"
   dependencies:
     node-gyp: latest
   checksum: 33e1bb4dfca447fe37d4bb5889be55de154828632c8d38646db67293a21afd61ed9909cdf1b886214a64707d935926c4e60e2b09de9edfc2ad58de31d6ce8f39
-  languageName: node
-  linkType: hard
-
-"nanobench@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "nanobench@npm:2.1.1"
-  dependencies:
-    browser-process-hrtime: ^0.1.2
-    chalk: ^1.1.3
-    mutexify: ^1.1.0
-    pretty-hrtime: ^1.0.2
-  bin:
-    nanobench: ./run.js
-    nanobench-compare: ./compare.js
-  checksum: ebae5d4a2fb5f6762abc981018b4099a7d3577ed74311a2e33b1bca8eb6a0d3c8cc20763c3aace7942455cebbf116500a1b28a7f7861b2edcb3bf3d1483a0ee0
   languageName: node
   linkType: hard
 
@@ -19226,7 +19136,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pretty-hrtime@npm:^1.0.0, pretty-hrtime@npm:^1.0.2":
+"pretty-hrtime@npm:^1.0.0":
   version: 1.0.3
   resolution: "pretty-hrtime@npm:1.0.3"
   checksum: bae0e6832fe13c3de43d1a3d43df52bf6090499d74dc65a17f5552cb1a94f1f8019a23284ddf988c3c408a09678d743901e1d8f5b7a71bec31eeeac445bef371
@@ -19536,13 +19446,6 @@ __metadata:
   version: 2.2.0
   resolution: "querystringify@npm:2.2.0"
   checksum: 5641ea231bad7ef6d64d9998faca95611ed4b11c2591a8cae741e178a974f6a8e0ebde008475259abe1621cb15e692404e6b6626e927f7b849d5c09392604b15
-  languageName: node
-  linkType: hard
-
-"queue-tick@npm:^1.0.0":
-  version: 1.0.1
-  resolution: "queue-tick@npm:1.0.1"
-  checksum: 57c3292814b297f87f792fbeb99ce982813e4e54d7a8bdff65cf53d5c084113913289d4a48ec8bbc964927a74b847554f9f4579df43c969a6c8e0f026457ad01
   languageName: node
   linkType: hard
 
@@ -22345,17 +22248,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"terser@npm:^5.10.0, terser@npm:^5.14.1, terser@npm:^5.15.1":
-  version: 5.16.6
-  resolution: "terser@npm:5.16.6"
+"terser@npm:^5.10.0, terser@npm:^5.14.1, terser@npm:^5.17.7":
+  version: 5.17.7
+  resolution: "terser@npm:5.17.7"
   dependencies:
-    "@jridgewell/source-map": ^0.3.2
-    acorn: ^8.5.0
+    "@jridgewell/source-map": ^0.3.3
+    acorn: ^8.8.2
     commander: ^2.20.0
     source-map-support: ~0.5.20
   bin:
     terser: bin/terser
-  checksum: f763a7bcc7b98cb2bfc41434f7b92bfe8a701a12c92ea6049377736c8e6de328240d654a20dfe15ce170fd783491b9873fad9f4cd8fee4f6c6fb8ca407859dee
+  checksum: b7b17b281febadf3bea9b9412d699fa24edf9b3e20fc7ad4e1a9cec276bdb65ddaa291c9663d5ab66b58834e433377477f73328574ccab2da1637a15b095811d
   languageName: node
   linkType: hard
 
@@ -22630,21 +22533,6 @@ __metadata:
     typescript: ~4.8.4
   languageName: unknown
   linkType: soft
-
-"transform-ast@npm:^2.4.3":
-  version: 2.4.4
-  resolution: "transform-ast@npm:2.4.4"
-  dependencies:
-    acorn-node: ^1.3.0
-    convert-source-map: ^1.5.1
-    dash-ast: ^1.0.0
-    is-buffer: ^2.0.0
-    magic-string: ^0.23.2
-    merge-source-map: 1.0.4
-    nanobench: ^2.1.1
-  checksum: 4ac71140073a7200af781f4d0b66e2ae6cdce50c1b604047eb30cad3a0cf9a3c784bb621e9eac2fa9c95ee0f440a5523b4e4dee3bc244c84ce9b891b17dd6fd9
-  languageName: node
-  linkType: hard
 
 "trash@npm:^8.1.0":
   version: 8.1.1
@@ -24377,13 +24265,6 @@ __metadata:
     string-width: ^5.0.1
     strip-ansi: ^7.0.1
   checksum: 371733296dc2d616900ce15a0049dca0ef67597d6394c57347ba334393599e800bab03c41d4d45221b6bc967b8c453ec3ae4749eff3894202d16800fdfe0e238
-  languageName: node
-  linkType: hard
-
-"wrap-comment@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "wrap-comment@npm:1.0.1"
-  checksum: 2529853209e646295329d5a654b7daacab00749e3e0dcb1a05dc161688ef33427fc826c6c1ffa313df34fbc286a4bfd38595e4fe79f03444e567324fc4419375
   languageName: node
   linkType: hard
 
