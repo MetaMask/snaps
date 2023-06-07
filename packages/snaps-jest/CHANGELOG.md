@@ -6,6 +6,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.34.1-flask.1...HEAD
-[0.34.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.34.0-flask.1...v0.34.1-flask.1
-[0.34.0-flask.1]: https://github.com/MetaMask/snaps/releases/tag/v0.34.0-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps/
