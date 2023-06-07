@@ -23357,7 +23357,6 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
-    "@metamask/snaps-ui": "workspace:^"
     "@metamask/utils": ^6.0.0
     "@types/node": ^17.0.36
     "@typescript-eslint/eslint-plugin": ^5.42.1

@@ -30,7 +30,6 @@
     "lint:ci": "yarn lint"
   },
   "dependencies": {
-    "@metamask/snaps-ui": "workspace:^",
     "@metamask/utils": "^6.0.0"
   },
   "devDependencies": {
