@@ -3,7 +3,8 @@ import { assert } from '@metamask/utils';
 import { Page } from 'puppeteer';
 import { create } from 'superstruct';
 
-import { SnapInterface, SnapOptions, SnapOptionsStruct } from '../types';
+import { SnapInterface, SnapOptions } from '../types';
+import { SnapOptionsStruct } from './structs';
 import { waitFor } from './wait-for';
 
 /**

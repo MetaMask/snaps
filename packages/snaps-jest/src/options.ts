@@ -10,7 +10,7 @@ import {
   type,
 } from 'superstruct';
 
-export const SnapsEnvironmentOptionsStruct = type({
+const SnapsEnvironmentOptionsStruct = type({
   executionEnvironmentUrl: optional(string()),
   simulatorUrl: optional(string()),
 
@@ -69,6 +69,7 @@ export const SnapsEnvironmentOptionsStruct = type({
 export type SnapsEnvironmentOptions = Infer<
   typeof SnapsEnvironmentOptionsStruct
 >;
+
 /**
  * Get the environment options. This validates the options, and returns the
  * default options if none are provided.

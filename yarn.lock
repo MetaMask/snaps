@@ -1343,7 +1343,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.4.3, @babel/runtime@npm:^7.6.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.6.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
   version: 7.22.3
   resolution: "@babel/runtime@npm:7.22.3"
   dependencies:
@@ -4483,21 +4483,46 @@ __metadata:
     "@jest/expect": ^29.5.0
     "@jest/globals": ^29.5.0
     "@jest/types": ^29.5.0
+    "@lavamoat/allow-scripts": ^2.3.1
+    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/eslint-config": ^11.0.0
+    "@metamask/eslint-config-jest": ^11.0.0
+    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/rpc-methods": "workspace:^"
-    "@metamask/snaps-execution-environments": "workspace:^"
     "@metamask/snaps-simulator": "workspace:^"
     "@metamask/snaps-ui": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/utils": ^6.0.0
-    "@testing-library/webdriverio": ^3.2.1
+    "@swc/core": ^1.3.61
+    "@swc/jest": ^0.2.26
+    "@types/jest": ^27.5.1
+    "@types/semver": ^7.3.10
+    "@typescript-eslint/eslint-plugin": ^5.42.1
+    "@typescript-eslint/parser": ^5.42.1
+    deepmerge: ^4.2.2
+    eslint: ^8.27.0
+    eslint-config-prettier: ^8.5.0
+    eslint-plugin-import: ^2.26.0
+    eslint-plugin-jest: ^27.1.5
+    eslint-plugin-jsdoc: ^39.6.2
+    eslint-plugin-node: ^11.1.0
+    eslint-plugin-prettier: ^4.2.1
     express: ^4.18.2
     jest: ^29.0.2
     jest-environment-node: ^29.5.0
+    jest-it-up: ^2.0.0
     jest-matcher-utils: ^29.5.0
     pptr-testing-library: ^0.7.0
+    prettier: ^2.7.1
+    prettier-plugin-packagejson: ^2.2.11
     puppeteer: 20.3.0
+    rimraf: ^4.1.2
     superstruct: ^1.0.3
+    typescript: ~4.8.4
     webdriverio: ^8.5.2
+  peerDependencies:
+    jest: ">=29.0.0"
   languageName: unknown
   linkType: soft
 
@@ -5652,22 +5677,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/dom@npm:^8.17.1":
-  version: 8.20.0
-  resolution: "@testing-library/dom@npm:8.20.0"
-  dependencies:
-    "@babel/code-frame": ^7.10.4
-    "@babel/runtime": ^7.12.5
-    "@types/aria-query": ^5.0.1
-    aria-query: ^5.0.0
-    chalk: ^4.1.0
-    dom-accessibility-api: ^0.5.9
-    lz-string: ^1.4.4
-    pretty-format: ^27.0.2
-  checksum: 1e599129a2fe91959ce80900a0a4897232b89e2a8e22c1f5950c36d39c97629ea86b4986b60b173b5525a05de33fde1e35836ea597b03de78cc51b122835c6f0
-  languageName: node
-  linkType: hard
-
 "@testing-library/dom@npm:^9.0.0":
   version: 9.3.0
   resolution: "@testing-library/dom@npm:9.3.0"
@@ -5695,19 +5704,6 @@ __metadata:
     react: ^18.0.0
     react-dom: ^18.0.0
   checksum: 4a54c8f56cc4a39b50803205f84f06280bb76521d6d5d4b3b36651d760c7c7752ef142d857d52aaf4fad4848ed7a8be49afc793a5dda105955d2f8bef24901ac
-  languageName: node
-  linkType: hard
-
-"@testing-library/webdriverio@npm:^3.2.1":
-  version: 3.2.1
-  resolution: "@testing-library/webdriverio@npm:3.2.1"
-  dependencies:
-    "@babel/runtime": ^7.4.3
-    "@testing-library/dom": ^8.17.1
-    simmerjs: ^0.5.6
-  peerDependencies:
-    webdriverio: "*"
-  checksum: 5310a8bca42f5d282ae5d6361ca89f63946ea8a440ad41e270a936b2405f1ee751cbb3d516810c9a064ae0cbd62ea779b9d2877da89d16ace22c754b4cbeb7f3
   languageName: node
   linkType: hard
 
@@ -16953,13 +16949,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.flatmap@npm:^4.5.0":
-  version: 4.5.0
-  resolution: "lodash.flatmap@npm:4.5.0"
-  checksum: c01a47d32e99f8fce75409f0a4a9bd12fbb2d3a46519a0dde14deedb1e527b5ddccc2bf997705c67bdecb915f47749e8a9ffefa7a91c41f0c448e06348ec81c7
-  languageName: node
-  linkType: hard
-
 "lodash.flatten@npm:^4.4.0":
   version: 4.4.0
   resolution: "lodash.flatten@npm:4.4.0"
@@ -16978,13 +16967,6 @@ __metadata:
   version: 4.5.0
   resolution: "lodash.isequal@npm:4.5.0"
   checksum: da27515dc5230eb1140ba65ff8de3613649620e8656b19a6270afe4866b7bd461d9ba2ac8a48dcc57f7adac4ee80e1de9f965d89d4d81a0ad52bb3eec2609644
-  languageName: node
-  linkType: hard
-
-"lodash.isfunction@npm:^3.0.8":
-  version: 3.0.9
-  resolution: "lodash.isfunction@npm:3.0.9"
-  checksum: 99e54c34b1e8a9ba75c034deb39cedbd2aca7af685815e67a2a8ec4f73ec9748cda6ebee5a07d7de4b938e90d421fd280e9c385cc190f903ac217ac8aff30314
   languageName: node
   linkType: hard
 
@@ -17027,20 +17009,6 @@ __metadata:
   version: 4.6.0
   resolution: "lodash.pickby@npm:4.6.0"
   checksum: a554d898c15bcd3218e4005b95b5146210bd862010c7d242d17106ee36aed9b9209a858ce974136ab1faadd86a82297761c206fda7f1886278bac827145c5536
-  languageName: node
-  linkType: hard
-
-"lodash.take@npm:^4.1.1":
-  version: 4.1.1
-  resolution: "lodash.take@npm:4.1.1"
-  checksum: 5786572bb5865ba9f82e1a80f5a2ee861b38570fe7440af33cba4707dc87138b2dec836936fe87534f3da89f6899dd6d0f7287c1c4c3f0117cbfdb1aa6981a63
-  languageName: node
-  linkType: hard
-
-"lodash.takeright@npm:^4.1.1":
-  version: 4.1.1
-  resolution: "lodash.takeright@npm:4.1.1"
-  checksum: 2d0282a58ad74d5247ea25bb6ecb17900a2f2883729a0cc048843d85c733176f946dc72bb9e836f1a97ae012496002ec58466bb057ee31b3d2643288fdac5491
   languageName: node
   linkType: hard
 
@@ -21729,19 +21697,6 @@ __metadata:
     prettier-plugin-packagejson: ^2.2.11
   languageName: unknown
   linkType: soft
-
-"simmerjs@npm:^0.5.6":
-  version: 0.5.6
-  resolution: "simmerjs@npm:0.5.6"
-  dependencies:
-    lodash.difference: ^4.5.0
-    lodash.flatmap: ^4.5.0
-    lodash.isfunction: ^3.0.8
-    lodash.take: ^4.1.1
-    lodash.takeright: ^4.1.1
-  checksum: 074814911406f9e3e94f57c31391d3f7ff11d41d109fb49417fcabc56e08c455818e109166ac515d0054814b0588c982f8bfa1c2d342f136ed9ed2be8136d7eb
-  languageName: node
-  linkType: hard
 
 "simple-concat@npm:^1.0.0":
   version: 1.0.1

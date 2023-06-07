@@ -1,6 +1,5 @@
 import { EnvironmentContext, JestEnvironmentConfig } from '@jest/environment';
 import { assert, createModuleLogger } from '@metamask/utils';
-import { setupBrowser, WebdriverIOQueries } from '@testing-library/webdriverio';
 import { Server } from 'http';
 import NodeEnvironment from 'jest-environment-node';
 import { AddressInfo } from 'net';
@@ -14,11 +13,6 @@ import { getOptions, SnapsEnvironmentOptions } from './options';
 declare global {
   const browser: WebdriverIO.Browser;
   const snapsEnvironment: SnapsEnvironment;
-
-  namespace WebdriverIO {
-    interface Browser extends WebdriverIOQueries {}
-    interface Element extends WebdriverIOQueries {}
-  }
 }
 /* eslint-enable */
 
@@ -26,8 +20,6 @@ export class SnapsEnvironment extends NodeEnvironment {
   // `browser` is always set in the environment setup function. To avoid needing
   // to check for `undefined` everywhere, we use a type assertion here.
   browser!: WebdriverIO.Browser;
-
-  queries!: WebdriverIOQueries;
 
   #options: SnapsEnvironmentOptions;
 
@@ -44,6 +36,10 @@ export class SnapsEnvironment extends NodeEnvironment {
     this.#options = getOptions(options.projectConfig.testEnvironmentOptions);
   }
 
+  /**
+   * Set up the environment. This starts the built-in HTTP server, and creates a
+   * new browser instance.
+   */
   async setup() {
     await super.setup();
 
@@ -67,26 +63,14 @@ export class SnapsEnvironment extends NodeEnvironment {
       },
     });
 
-    const puppeteer = await this.browser.getPuppeteer();
-    const pages = await puppeteer.pages();
-    const page = pages[0];
-
-    const browserLogger = createModuleLogger(rootLogger, 'browser');
-
-    page
-      .on('console', (message) => {
-        browserLogger(`[${message.type()}] ${message.text()}`);
-      })
-      .on('pageerror', ({ message }) => {
-        browserLogger(`[page error] ${message}`);
-      });
-
-    this.queries = setupBrowser(this.browser);
-
     this.global.browser = this.browser;
     this.global.snapsEnvironment = this;
   }
 
+  /**
+   * Tear down the environment. This closes the browser, and stops the built-in
+   * HTTP server.
+   */
   async teardown() {
     await this.browser?.deleteSession();
     this.#server?.close();
@@ -143,14 +127,21 @@ export class SnapsEnvironment extends NodeEnvironment {
   async createPage(url: string = this.url) {
     const puppeteer = (await this.browser.getPuppeteer()) as unknown as Browser;
     const page = await puppeteer.newPage();
+
+    // `networkidle0` is used to ensure that the page is fully loaded. This
+    // makes it wait for no requests to be made, which guarantees that the page
+    // is ready.
     await page.goto(url, { waitUntil: 'networkidle0' });
 
     const log = createModuleLogger(rootLogger, 'browser');
 
     page
+      // This is fired when the page calls `console.log` or similar.
       .on('console', (message) => {
         log(`[${message.type()}] ${message.text()}`);
       })
+
+      // This is fired when the page throws an error.
       .on('pageerror', ({ message }) => {
         log(`[page error] ${message}`);
       });

@@ -18,7 +18,8 @@ import {
 } from 'jest-matcher-utils';
 import { is } from 'superstruct';
 
-import { InterfaceStruct, SnapResponse, SnapResponseStruct } from './types';
+import { InterfaceStruct, SnapResponseStruct } from './internals';
+import { SnapResponse } from './types';
 
 /**
  * Ensure that the actual value is a response from the `request` function.

@@ -8,11 +8,11 @@ import {
   getEnvironment,
   getInterface,
   getNotifications,
+  TransactionOptionsStruct,
   waitFor,
   waitForResponse,
 } from './internals';
 import type { Snap, SnapRequest, SnapResponse } from './types';
-import { TransactionOptionsStruct } from './types';
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { getByTestId } = queries;
