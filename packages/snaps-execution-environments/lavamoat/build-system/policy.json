@@ -2561,15 +2561,17 @@
     },
     "yargs": {
       "builtin": {
-        "assert": true,
-        "fs": true,
+        "assert.notStrictEqual": true,
+        "assert.strictEqual": true,
+        "fs.readFileSync": true,
         "path": true,
-        "util": true
+        "util.inspect": true
       },
       "globals": {
-        "Error": true,
         "__dirname": true,
-        "console": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
         "process": true
       },
       "packages": {
@@ -2625,16 +2627,19 @@
     },
     "yargs>y18n": {
       "builtin": {
-        "fs": true,
-        "path": true,
-        "util": true
+        "fs.readFileSync": true,
+        "fs.statSync": true,
+        "fs.writeFile": true,
+        "path.resolve": true,
+        "util.format": true
       }
     },
     "yargs>yargs-parser": {
       "builtin": {
-        "fs": true,
-        "path": true,
-        "util": true
+        "fs.readFileSync": true,
+        "path.normalize": true,
+        "path.resolve": true,
+        "util.format": true
       },
       "globals": {
         "process": true

@@ -253,7 +253,9 @@
     },
     "external:../snaps-utils/src/logging.ts": {
       "globals": {
-        "console": true
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true
       },
       "packages": {
         "@metamask/utils": true
