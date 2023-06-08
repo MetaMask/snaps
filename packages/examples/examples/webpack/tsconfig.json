@@ -3,5 +3,10 @@
   "compilerOptions": {
     "typeRoots": ["../../../../node_modules/@types"]
   },
-  "include": ["src", "webpack.config.ts"]
+  "include": ["src", "webpack.config.ts"],
+  "references": [
+    {
+      "path": "../../../snaps-webpack-plugin"
+    }
+  ]
 }
