@@ -6,6 +6,7 @@ import {
   SubjectType,
 } from '@metamask/permission-controller';
 import { Component, ComponentStruct } from '@metamask/snaps-ui';
+import { EnumToUnion, enumValue } from '@metamask/snaps-utils';
 import { NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import {
@@ -22,7 +23,7 @@ import {
   union,
 } from 'superstruct';
 
-import { EnumToUnion, enumValue, MethodHooksObject } from '../utils';
+import { MethodHooksObject } from '../utils';
 
 const methodName = 'snap_dialog';
 

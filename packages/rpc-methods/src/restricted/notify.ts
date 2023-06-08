@@ -5,10 +5,11 @@ import {
   ValidPermissionSpecification,
   SubjectType,
 } from '@metamask/permission-controller';
+import { EnumToUnion } from '@metamask/snaps-utils';
 import { NonEmptyArray, isObject } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
-import { EnumToUnion, MethodHooksObject } from '../utils';
+import { MethodHooksObject } from '../utils';
 
 const methodName = 'snap_notify';
 

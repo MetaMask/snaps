@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { installSnap } from '@metamask/snaps-jest';
+import { installSnap, NotificationType } from '@metamask/snaps-jest';
 
 jest.setTimeout(60000);
 
@@ -14,7 +14,10 @@ describe('onRpcRequest', () => {
 
       const resolved = await response;
 
-      expect(resolved).toSendNotification('Hello, foo!');
+      expect(resolved).toSendNotification(
+        'Hello, foo!',
+        NotificationType.InApp,
+      );
       expect(resolved).toRespondWith(null);
 
       await close();

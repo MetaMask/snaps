@@ -1,4 +1,6 @@
+import { NotificationType } from '@metamask/rpc-methods';
 import { Component } from '@metamask/snaps-ui';
+import { EnumToUnion } from '@metamask/snaps-utils';
 import { JsonRpcId, JsonRpcParams } from '@metamask/utils';
 import { Infer } from 'superstruct';
 
@@ -15,7 +17,10 @@ declare module 'expect' {
   interface AsymmetricMatchers {
     toRespondWith(response: unknown): void;
     toRespondWithError(error: unknown): void;
-    toSendNotification(message: string): void;
+    toSendNotification(
+      message: string,
+      type?: EnumToUnion<NotificationType>,
+    ): void;
     toRender(component: Component): void;
   }
 
@@ -25,7 +30,10 @@ declare module 'expect' {
   interface Matchers<R> {
     toRespondWith(response: unknown): R;
     toRespondWithError(error: unknown): R;
-    toSendNotification(message: string): R;
+    toSendNotification(
+      message: string,
+      type?: EnumToUnion<NotificationType>,
+    ): R;
     toRender(component: Component): R;
   }
 }
@@ -274,3 +282,5 @@ export type Snap = {
 };
 
 export type SnapResponse = Infer<typeof SnapResponseStruct>;
+
+export { NotificationType } from '@metamask/rpc-methods';

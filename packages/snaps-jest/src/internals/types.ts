@@ -1,4 +1,6 @@
+import { NotificationType } from '@metamask/rpc-methods';
 import { ApplicationState, Dispatch } from '@metamask/snaps-simulator';
+import { EnumToUnion } from '@metamask/snaps-utils';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -12,9 +14,11 @@ declare global {
       subscribe: (listener: () => void) => () => void;
       getState: () => ApplicationState;
       getRequestId: () => string;
-      getNotifications: (
-        requestId: string,
-      ) => { id: string; message: string }[];
+      getNotifications: (requestId: string) => {
+        id: string;
+        message: string;
+        type: EnumToUnion<NotificationType>;
+      }[];
     };
   }
 }

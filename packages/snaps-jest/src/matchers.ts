@@ -4,7 +4,9 @@
 // a Jest environment. This is why it's not exported from the index file.
 
 import { expect } from '@jest/globals';
+import { NotificationType } from '@metamask/rpc-methods';
 import { Component } from '@metamask/snaps-ui';
+import { EnumToUnion } from '@metamask/snaps-utils';
 import { hasProperty, Json } from '@metamask/utils';
 import type { MatcherFunction } from 'expect';
 import {
@@ -144,29 +146,35 @@ export const toRespondWithError: MatcherFunction<[expected: Json]> = function (
  *
  * @param actual - The actual response.
  * @param expected - The expected notification message.
+ * @param type - The expected notification type.
  * @returns The status and message.
  */
-export const toSendNotification: MatcherFunction<[expected: string]> =
-  async function (actual, expected) {
-    assertActualIsSnapResponse(actual, 'toSendNotification');
+export const toSendNotification: MatcherFunction<
+  [expected: string, type?: EnumToUnion<NotificationType> | undefined]
+> = async function (actual, expected, type) {
+  assertActualIsSnapResponse(actual, 'toSendNotification');
 
-    const { notifications } = actual;
-    const pass = notifications.some((notification) =>
-      this.equals(notification.message, expected),
-    );
+  const { notifications } = actual;
+  const pass = notifications.some(
+    (notification) =>
+      this.equals(notification.message, expected) &&
+      (type === undefined || notification.type === type),
+  );
 
-    const message = pass
-      ? () =>
-          `${this.utils.matcherHint('.not.toSendNotification')}\n\n` +
-          `Expected: ${this.utils.printExpected(expected)}\n` +
-          `Received: ${this.utils.printReceived(notifications)}`
-      : () =>
-          `${this.utils.matcherHint('.toSendNotification')}\n\n` +
-          `Expected: ${this.utils.printExpected(expected)}\n` +
-          `Received: ${this.utils.printReceived(notifications)}`;
+  const message = pass
+    ? () =>
+        `${this.utils.matcherHint('.not.toSendNotification')}\n\n` +
+        `Expected: ${this.utils.printExpected(expected)}\n` +
+        `Expected type: ${this.utils.printExpected(type)}\n` +
+        `Received: ${this.utils.printReceived(notifications)}`
+    : () =>
+        `${this.utils.matcherHint('.toSendNotification')}\n\n` +
+        `Expected: ${this.utils.printExpected(expected)}\n` +
+        `Expected type: ${this.utils.printExpected(type)}\n` +
+        `Received: ${this.utils.printReceived(notifications)}`;
 
-    return { message, pass };
-  };
+  return { message, pass };
+};
 
 export const toRender: MatcherFunction<[expected: Component]> = function (
   actual,

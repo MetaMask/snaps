@@ -1,4 +1,6 @@
+import { NotificationType } from '@metamask/rpc-methods';
 import { ComponentStruct } from '@metamask/snaps-ui';
+import { enumValue } from '@metamask/snaps-utils';
 import {
   bytesToHex,
   JsonStruct,
@@ -166,6 +168,10 @@ export const SnapResponseStruct = assign(
       object({
         id: string(),
         message: string(),
+        type: union([
+          enumValue(NotificationType.InApp),
+          enumValue(NotificationType.Native),
+        ]),
       }),
     ),
   }),

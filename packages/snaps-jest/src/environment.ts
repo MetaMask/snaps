@@ -132,6 +132,10 @@ export class SnapsEnvironment extends NodeEnvironment {
     const puppeteer = (await this.browser.getPuppeteer()) as unknown as Browser;
     const page = await puppeteer.newPage();
 
+    // Give the page permission to show notifications. This is required for
+    // testing `snap_notify`.
+    await page.browserContext().overridePermissions(url, ['notifications']);
+
     // `networkidle0` is used to ensure that the page is fully loaded. This
     // makes it wait for no requests to be made, which guarantees that the page
     // is ready.

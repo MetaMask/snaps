@@ -5,6 +5,7 @@ export * from './checksum';
 export * from './deep-clone';
 export * from './default-endowments';
 export * from './entropy';
+export * from './enum';
 export * from './eval';
 export * from './fs';
 export * from './handlers';

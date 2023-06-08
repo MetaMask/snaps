@@ -4,7 +4,7 @@ import { nanoid } from '@reduxjs/toolkit';
 import { SagaIterator } from 'redux-saga';
 import { call, put, select, take } from 'redux-saga/effects';
 
-import { addNotification } from '../notifications';
+import { addNativeNotification, addNotification } from '../notifications';
 import {
   closeUserInterface,
   getRequestId,
@@ -62,6 +62,14 @@ export function* showNativeNotification(
   _snapId: string,
   { message }: NotificationArgs,
 ): SagaIterator {
+  const id = yield select(getRequestId);
+  yield put(
+    addNativeNotification({
+      id,
+      message,
+    }),
+  );
+
   const snapName = yield select(getSnapName);
 
   if (Notification.permission === 'default') {

@@ -1,8 +1,10 @@
+import { NotificationType } from '@metamask/rpc-methods';
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type Notification = {
   id: string;
   message: string;
+  type: NotificationType;
 };
 
 export type NotificationsState = {
@@ -34,8 +36,31 @@ const slice = createSlice({
       state,
       action: PayloadAction<{ id: string; message: string }>,
     ) {
-      state.notifications.push(action.payload);
-      state.allNotifications.push(action.payload);
+      const notification: Notification = {
+        ...action.payload,
+        type: NotificationType.InApp,
+      };
+
+      state.notifications.push(notification);
+      state.allNotifications.push(notification);
+    },
+
+    /**
+     * Add a native notification to the state.
+     *
+     * @param state - The current state.
+     * @param action - The action with the notification message as the payload.
+     */
+    addNativeNotification(
+      state,
+      action: PayloadAction<{ id: string; message: string }>,
+    ) {
+      const notification: Notification = {
+        ...action.payload,
+        type: NotificationType.Native,
+      };
+
+      state.allNotifications.push(notification);
     },
 
     /**
@@ -53,7 +78,8 @@ const slice = createSlice({
   },
 });
 
-export const { addNotification, removeNotification } = slice.actions;
+export const { addNotification, addNativeNotification, removeNotification } =
+  slice.actions;
 export const notifications = slice.reducer;
 
 export const getNotifications = createSelector(
