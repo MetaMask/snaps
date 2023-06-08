@@ -5,7 +5,6 @@ import express from 'express';
 import FaviconsWebpackPlugin from 'favicons-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MonacoEditorWebpackPlugin from 'monaco-editor-webpack-plugin';
-import NodePolyfillPlugin from 'node-polyfill-webpack-plugin';
 import { resolve } from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
@@ -18,6 +17,7 @@ import {
   NormalModuleReplacementPlugin,
 } from 'webpack';
 import { Configuration as DevServerConfiguration } from 'webpack-dev-server';
+import { merge } from 'webpack-merge';
 
 import packageJson from './package.json';
 
@@ -31,76 +31,8 @@ const vendor = Object.entries(packageJson.dependencies)
 const VENDOR_PATH = resolve(__dirname, 'vendor');
 const VENDOR_MANIFEST_PATH = resolve(VENDOR_PATH, 'vendor-manifest.json');
 
-const vendorConfig: Configuration = {
-  name: 'vendor',
+const baseConfig: Configuration = {
   stats: 'errors-only',
-  devtool: false,
-  entry: {
-    vendor,
-  },
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/u,
-        use: {
-          loader: 'swc-loader',
-        },
-      },
-      {
-        test: /\.css$/u,
-        use: ['style-loader', 'css-loader'],
-      },
-    ],
-  },
-  resolve: {
-    extensions: ['.js', '.jsx'],
-    plugins: [
-      new TsconfigPathsPlugin({
-        configFile: resolve(__dirname, 'tsconfig.json'),
-        baseUrl: __dirname,
-      }),
-    ],
-  },
-  output: {
-    path: VENDOR_PATH,
-    filename: '[name].js',
-    library: '[name]_[fullhash]',
-  },
-  plugins: [
-    new DllPlugin({
-      path: VENDOR_MANIFEST_PATH,
-      name: '[name]_[fullhash]',
-    }),
-    new MonacoEditorWebpackPlugin({
-      languages: ['json', 'typescript'],
-      features: ['bracketMatching', 'clipboard', 'hover'],
-    }),
-    new NodePolyfillPlugin(),
-  ],
-  optimization: {
-    minimize: true,
-    minimizer: [
-      new TerserPlugin({
-        minify: TerserPlugin.swcMinify,
-      }),
-    ],
-  },
-};
-
-const config: Configuration & Record<'devServer', DevServerConfiguration> = {
-  name: 'app',
-  entry: './src/entry.tsx',
-  stats: 'errors-only',
-  devtool: 'source-map',
-  output: {
-    path: resolve(
-      __dirname,
-      'dist',
-      'webpack',
-      // eslint-disable-next-line node/no-process-env
-      process.env.SNAPS_TEST ? 'test' : 'main',
-    ),
-  },
   module: {
     rules: [
       {
@@ -117,30 +49,21 @@ const config: Configuration & Record<'devServer', DevServerConfiguration> = {
           fullySpecified: false,
         },
       },
-      {
-        test: /\.(png|jpe?g|gif|svg)$/u,
-        type: 'asset',
-      },
-      {
-        test: /\.woff2?$/u,
-        type: 'asset/resource',
-      },
-      {
-        test: /\.css$/u,
-        use: ['style-loader', 'css-loader'],
-      },
     ],
   },
-  /* eslint-disable @typescript-eslint/naming-convention */
-  externals: {
-    'node:module': 'commonjs module',
-  },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    plugins: [
+      new TsconfigPathsPlugin({
+        configFile: resolve(__dirname, 'tsconfig.json'),
+        baseUrl: __dirname,
+      }),
+    ],
+    /* eslint-disable @typescript-eslint/naming-convention */
     fallback: {
-      assert: require.resolve('assert/'),
+      assert: false,
       child_process: false,
-      constants: require.resolve('constants-browserify'),
+      constants: false,
       crypto: false,
       fs: false,
       http: false,
@@ -155,70 +78,16 @@ const config: Configuration & Record<'devServer', DevServerConfiguration> = {
       util: false,
       worker_threads: false,
       zlib: false,
-
-      './NodeProcessExecutionService': false,
-      './NodeThreadExecutionService': false,
     },
-    plugins: [
-      new TsconfigPathsPlugin({
-        configFile: resolve(__dirname, 'tsconfig.json'),
-        baseUrl: __dirname,
-      }),
-    ],
+    /* eslint-enable @typescript-eslint/naming-convention */
   },
-  /* eslint-enable @typescript-eslint/naming-convention */
   plugins: [
-    new DllReferencePlugin({
-      manifest: VENDOR_MANIFEST_PATH,
-    }),
     new ProvidePlugin({
-      // These Node.js modules are used in some of the stream libs used
+      // These Node.js modules are used in some of the stream libs used.
       process: 'process/browser',
       Buffer: ['buffer', 'Buffer'],
     }),
-    new EnvironmentPlugin({
-      SNAPS_TEST: false,
-    }),
-    new ReactRefreshPlugin(),
-    new HtmlWebpackPlugin({
-      template: './src/index.html',
-    }),
-    new FaviconsWebpackPlugin('./src/assets/favicon.svg'),
-
-    // Copy the Webpack vendor files to the output folder.
-    new CopyPlugin({
-      patterns: [
-        {
-          from: VENDOR_PATH,
-          to: 'vendor',
-          toType: 'dir',
-        },
-      ],
-    }),
-
-    // Stop attempting to bundle the Node.js execution services. They are
-    // not used in the browser, and attempting to bundle them causes
-    // errors.
-    new NormalModuleReplacementPlugin(
-      /.*services\/node.*/u,
-      resolve(__dirname, 'src', 'stub.ts'),
-    ),
   ],
-  cache: {
-    type: 'filesystem',
-    buildDependencies: {
-      config: [__filename],
-    },
-  },
-  devServer: {
-    port: 8000,
-    historyApiFallback: true,
-    setupMiddlewares: (middlewares, { app }) => {
-      app?.use('/vendor', express.static(VENDOR_PATH));
-
-      return middlewares;
-    },
-  },
   optimization: {
     minimize: true,
     minimizer: [
@@ -229,5 +98,142 @@ const config: Configuration & Record<'devServer', DevServerConfiguration> = {
   },
 };
 
-const configs = [config, vendorConfig];
+const vendorConfig: Configuration = merge(baseConfig, {
+  name: 'vendor',
+  devtool: false,
+  entry: {
+    vendor,
+  },
+  output: {
+    path: VENDOR_PATH,
+    filename: '[name].js',
+    library: '[name]_[fullhash]',
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/u,
+        use: ['style-loader', 'css-loader'],
+      },
+    ],
+  },
+  resolve: {
+    extensions: ['.js', '.jsx'],
+  },
+  plugins: [
+    new DllPlugin({
+      path: VENDOR_MANIFEST_PATH,
+      name: '[name]_[fullhash]',
+    }),
+    new MonacoEditorWebpackPlugin({
+      languages: ['json', 'typescript'],
+      features: ['bracketMatching', 'clipboard', 'hover'],
+    }),
+  ],
+});
+
+const baseAppConfig = merge<Configuration & DevServerConfiguration>(
+  baseConfig,
+  {
+    entry: './src/entry.tsx',
+    module: {
+      rules: [
+        {
+          test: /\.(png|jpe?g|gif|svg)$/u,
+          type: 'asset',
+        },
+        {
+          test: /\.woff2?$/u,
+          type: 'asset/resource',
+        },
+        {
+          test: /\.css$/u,
+          use: ['style-loader', 'css-loader'],
+        },
+      ],
+    },
+    /* eslint-disable @typescript-eslint/naming-convention */
+    externals: {
+      'node:module': 'commonjs module',
+    },
+    resolve: {
+      fallback: {
+        assert: require.resolve('assert/'),
+        constants: require.resolve('constants-browserify'),
+      },
+    },
+    /* eslint-enable @typescript-eslint/naming-convention */
+    plugins: [
+      new DllReferencePlugin({
+        manifest: VENDOR_MANIFEST_PATH,
+      }),
+      new ReactRefreshPlugin(),
+      new HtmlWebpackPlugin({
+        template: './src/index.html',
+      }),
+      new FaviconsWebpackPlugin('./src/assets/favicon.svg'),
+
+      // Copy the Webpack vendor files to the output folder.
+      new CopyPlugin({
+        patterns: [
+          {
+            from: VENDOR_PATH,
+            to: 'vendor',
+            toType: 'dir',
+          },
+        ],
+      }),
+
+      // Stop attempting to bundle the Node.js execution services. They are
+      // not used in the browser, and attempting to bundle them causes
+      // errors.
+      new NormalModuleReplacementPlugin(
+        /.*services\/node.*/u,
+        resolve(__dirname, 'src', 'stub.ts'),
+      ),
+    ],
+    cache: {
+      type: 'filesystem',
+      buildDependencies: {
+        config: [__filename],
+      },
+    },
+    devServer: {
+      port: 8000,
+      historyApiFallback: true,
+      setupMiddlewares: (middlewares, { app }) => {
+        app?.use('/vendor', express.static(VENDOR_PATH));
+
+        return middlewares;
+      },
+    },
+  },
+);
+
+const mainConfig = merge(baseAppConfig, {
+  name: 'main',
+  output: {
+    path: resolve(__dirname, 'dist', 'webpack', 'main'),
+  },
+  plugins: [
+    new EnvironmentPlugin({
+      SNAPS_TEST: false,
+    }),
+  ],
+});
+
+const testConfig = merge(baseAppConfig, {
+  name: 'test',
+  devtool: false,
+  output: {
+    path: resolve(__dirname, 'dist', 'webpack', 'test'),
+  },
+  plugins: [
+    new EnvironmentPlugin({
+      SNAPS_TEST: true,
+    }),
+  ],
+});
+
+const configs = [mainConfig, testConfig, vendorConfig];
 export default configs;

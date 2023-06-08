@@ -4618,7 +4618,6 @@ __metadata:
     babel-jest: ^29.5.0
     constants-browserify: ^1.0.0
     copy-webpack-plugin: ^11.0.0
-    cross-env: ^7.0.3
     css-loader: ^6.7.3
     date-fns: ^2.30.0
     deepmerge: ^4.2.2
@@ -4646,7 +4645,6 @@ __metadata:
     lint-staged: ^12.4.1
     monaco-editor: ^0.38.0
     monaco-editor-webpack-plugin: ^7.0.1
-    node-polyfill-webpack-plugin: ^2.0.1
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     process: ^0.11.10
@@ -4676,6 +4674,7 @@ __metadata:
     webpack: ^5.86.0
     webpack-cli: ^5.1.4
     webpack-dev-server: ^4.13.3
+    webpack-merge: ^5.8.0
   languageName: unknown
   linkType: soft
 
@@ -7408,15 +7407,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"abort-controller@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "abort-controller@npm:3.0.0"
-  dependencies:
-    event-target-shim: ^5.0.0
-  checksum: 170bdba9b47b7e65906a28c8ce4f38a7a369d78e2271706f020849c1bfe0ee2067d4261df8bbb66eb84f79208fd5b710df759d64191db58cfba7ce8ef9c54b75
-  languageName: node
-  linkType: hard
-
 "accepts@npm:~1.3.4, accepts@npm:~1.3.5, accepts@npm:~1.3.8":
   version: 1.3.8
   resolution: "accepts@npm:1.3.8"
@@ -8908,7 +8898,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browserify-zlib@npm:^0.2.0, browserify-zlib@npm:~0.2.0":
+"browserify-zlib@npm:~0.2.0":
   version: 0.2.0
   resolution: "browserify-zlib@npm:0.2.0"
   dependencies:
@@ -10071,7 +10061,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"console-browserify@npm:^1.1.0, console-browserify@npm:^1.2.0":
+"console-browserify@npm:^1.1.0":
   version: 1.2.0
   resolution: "console-browserify@npm:1.2.0"
   checksum: 226591eeff8ed68e451dffb924c1fb750c654d54b9059b3b261d360f369d1f8f70650adecf2c7136656236a4bfeb55c39281b5d8a55d792ebbb99efd3d848d52
@@ -10312,18 +10302,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-env@npm:^7.0.3":
-  version: 7.0.3
-  resolution: "cross-env@npm:7.0.3"
-  dependencies:
-    cross-spawn: ^7.0.1
-  bin:
-    cross-env: src/bin/cross-env.js
-    cross-env-shell: src/bin/cross-env-shell.js
-  checksum: 26f2f3ea2ab32617f57effb70d329c2070d2f5630adc800985d8b30b56e8bf7f5f439dd3a0358b79cee6f930afc23cf8e23515f17ccfb30092c6b62c6b630a79
-  languageName: node
-  linkType: hard
-
 "cross-fetch@npm:3.1.5":
   version: 3.1.5
   resolution: "cross-fetch@npm:3.1.5"
@@ -10352,7 +10330,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.1, cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3":
+"cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3":
   version: 7.0.3
   resolution: "cross-spawn@npm:7.0.3"
   dependencies:
@@ -10363,7 +10341,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"crypto-browserify@npm:^3.0.0, crypto-browserify@npm:^3.12.0":
+"crypto-browserify@npm:^3.0.0":
   version: 3.12.0
   resolution: "crypto-browserify@npm:3.12.0"
   dependencies:
@@ -11162,13 +11140,6 @@ __metadata:
   version: 1.2.0
   resolution: "domain-browser@npm:1.2.0"
   checksum: 8f1235c7f49326fb762f4675795246a6295e7dd566b4697abec24afdba2460daa7dfbd1a73d31efbf5606b3b7deadb06ce47cf06f0a476e706153d62a4ff2b90
-  languageName: node
-  linkType: hard
-
-"domain-browser@npm:^4.22.0":
-  version: 4.22.0
-  resolution: "domain-browser@npm:4.22.0"
-  checksum: e7ce1c19073e17dec35cfde050a3ddaac437d3ba8b870adabf9d5682e665eab3084df05de432dedf25b34303f0a2c71ac30f1cdba61b1aea018047b10de3d988
   languageName: node
   linkType: hard
 
@@ -12626,13 +12597,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"event-target-shim@npm:^5.0.0":
-  version: 5.0.1
-  resolution: "event-target-shim@npm:5.0.1"
-  checksum: 1ffe3bb22a6d51bdeb6bf6f7cf97d2ff4a74b017ad12284cc9e6a279e727dc30a5de6bb613e5596ff4dc3e517841339ad09a7eec44266eccb1aa201a30448166
-  languageName: node
-  linkType: hard
-
 "eventemitter3@npm:^4.0.0":
   version: 4.0.7
   resolution: "eventemitter3@npm:4.0.7"
@@ -12640,7 +12604,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"events@npm:^3.0.0, events@npm:^3.2.0, events@npm:^3.3.0":
+"events@npm:^3.0.0, events@npm:^3.2.0":
   version: 3.3.0
   resolution: "events@npm:3.3.0"
   checksum: f6f487ad2198aa41d878fa31452f1a3c00958f46e9019286ff4787c84aac329332ab45c9cdc8c445928fc6d7ded294b9e005a7fce9426488518017831b272780
@@ -13174,13 +13138,6 @@ __metadata:
   dependencies:
     to-regex-range: ^5.0.1
   checksum: cc283f4e65b504259e64fd969bcf4def4eb08d85565e906b7d36516e87819db52029a76b6363d0f02d0d532f0033c9603b9e2d943d56ee3b0d4f7ad3328ff917
-  languageName: node
-  linkType: hard
-
-"filter-obj@npm:^2.0.2":
-  version: 2.0.2
-  resolution: "filter-obj@npm:2.0.2"
-  checksum: e0d71ebc89515a4305db5158aeb78c9f9a4bfef4bacf272e7de8cadf0d3b694191f6fdbd3b507ee330c266c4287f21804defa8c80693d8c6ad60f1cbfad4f477
   languageName: node
   linkType: hard
 
@@ -18237,41 +18194,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-polyfill-webpack-plugin@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "node-polyfill-webpack-plugin@npm:2.0.1"
-  dependencies:
-    assert: ^2.0.0
-    browserify-zlib: ^0.2.0
-    buffer: ^6.0.3
-    console-browserify: ^1.2.0
-    constants-browserify: ^1.0.0
-    crypto-browserify: ^3.12.0
-    domain-browser: ^4.22.0
-    events: ^3.3.0
-    filter-obj: ^2.0.2
-    https-browserify: ^1.0.0
-    os-browserify: ^0.3.0
-    path-browserify: ^1.0.1
-    process: ^0.11.10
-    punycode: ^2.1.1
-    querystring-es3: ^0.2.1
-    readable-stream: ^4.0.0
-    stream-browserify: ^3.0.0
-    stream-http: ^3.2.0
-    string_decoder: ^1.3.0
-    timers-browserify: ^2.0.12
-    tty-browserify: ^0.0.1
-    type-fest: ^2.14.0
-    url: ^0.11.0
-    util: ^0.12.4
-    vm-browserify: ^1.1.2
-  peerDependencies:
-    webpack: ">=5"
-  checksum: 0efb27ba224449d530d837bf7cd22f033ee5d0498e31898968896e2bb6844ffbfb26af976623268a052671f2b927df7561859faf5cbf3d646677ad0e914e1427
-  languageName: node
-  linkType: hard
-
 "node-releases@npm:^2.0.8":
   version: 2.0.10
   resolution: "node-releases@npm:2.0.10"
@@ -18741,7 +18663,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"os-browserify@npm:^0.3.0, os-browserify@npm:~0.3.0":
+"os-browserify@npm:~0.3.0":
   version: 0.3.0
   resolution: "os-browserify@npm:0.3.0"
   checksum: 16e37ba3c0e6a4c63443c7b55799ce4066d59104143cb637ecb9fce586d5da319cdca786ba1c867abbe3890d2cbf37953f2d51eea85e20dd6c4570d6c54bfebf
@@ -19086,7 +19008,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path-browserify@npm:^1.0.0, path-browserify@npm:^1.0.1":
+"path-browserify@npm:^1.0.0":
   version: 1.0.1
   resolution: "path-browserify@npm:1.0.1"
   checksum: c6d7fa376423fe35b95b2d67990060c3ee304fc815ff0a2dc1c6c3cfaff2bd0d572ee67e18f19d0ea3bbe32e8add2a05021132ac40509416459fffee35200699
@@ -19912,7 +19834,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"querystring-es3@npm:^0.2.1, querystring-es3@npm:~0.2.0":
+"querystring-es3@npm:~0.2.0":
   version: 0.2.1
   resolution: "querystring-es3@npm:0.2.1"
   checksum: 691e8d6b8b157e7cd49ae8e83fcf86de39ab3ba948c25abaa94fba84c0986c641aa2f597770848c64abce290ed17a39c9df6df737dfa7e87c3b63acc7d225d61
@@ -20417,18 +20339,6 @@ __metadata:
     string_decoder: ~1.1.1
     util-deprecate: ~1.0.1
   checksum: e4920cf7549a60f8aaf694d483a0e61b2a878b969d224f89b3bc788b8d920075132c4b55a7494ee944c7b6a9a0eada28a7f6220d80b0312ece70bbf08eeca755
-  languageName: node
-  linkType: hard
-
-"readable-stream@npm:^4.0.0":
-  version: 4.4.0
-  resolution: "readable-stream@npm:4.4.0"
-  dependencies:
-    abort-controller: ^3.0.0
-    buffer: ^6.0.3
-    events: ^3.3.0
-    process: ^0.11.10
-  checksum: cc1630c2de134aee92646e77b1770019633000c408fd48609babf2caa53f00ca794928023aa9ad3d435a1044cec87d2ce7e2b7389dd1caf948b65c175edb7f52
   languageName: node
   linkType: hard
 
@@ -21500,7 +21410,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"setimmediate@npm:^1.0.4, setimmediate@npm:^1.0.5":
+"setimmediate@npm:^1.0.5":
   version: 1.0.5
   resolution: "setimmediate@npm:1.0.5"
   checksum: c9a6f2c5b51a2dabdc0247db9c46460152ffc62ee139f3157440bd48e7c59425093f42719ac1d7931f054f153e2d26cf37dfeb8da17a794a58198a2705e527fd
@@ -22271,7 +22181,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"stream-http@npm:^3.0.0, stream-http@npm:^3.2.0":
+"stream-http@npm:^3.0.0":
   version: 3.2.0
   resolution: "stream-http@npm:3.2.0"
   dependencies:
@@ -22395,7 +22305,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"string_decoder@npm:^1.1.1, string_decoder@npm:^1.3.0":
+"string_decoder@npm:^1.1.1":
   version: 1.3.0
   resolution: "string_decoder@npm:1.3.0"
   dependencies:
@@ -22844,15 +22754,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"timers-browserify@npm:^2.0.12":
-  version: 2.0.12
-  resolution: "timers-browserify@npm:2.0.12"
-  dependencies:
-    setimmediate: ^1.0.4
-  checksum: ec37ae299066bef6c464dcac29c7adafba1999e7227a9bdc4e105a459bee0f0b27234a46bfd7ab4041da79619e06a58433472867a913d01c26f8a203f87cee70
-  languageName: node
-  linkType: hard
-
 "tiny-invariant@npm:^1.0.6":
   version: 1.3.1
   resolution: "tiny-invariant@npm:1.3.1"
@@ -23213,7 +23114,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tty-browserify@npm:0.0.1, tty-browserify@npm:^0.0.1":
+"tty-browserify@npm:0.0.1":
   version: 0.0.1
   resolution: "tty-browserify@npm:0.0.1"
   checksum: 93b745d43fa5a7d2b948fa23be8d313576d1d884b48acd957c07710bac1c0d8ac34c0556ad4c57c73d36e11741763ef66b3fb4fb97b06b7e4d525315a3cd45f5
@@ -23282,7 +23183,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-fest@npm:^2.0.0, type-fest@npm:^2.11.2, type-fest@npm:^2.12.2, type-fest@npm:^2.14.0, type-fest@npm:^2.5.0":
+"type-fest@npm:^2.0.0, type-fest@npm:^2.11.2, type-fest@npm:^2.12.2, type-fest@npm:^2.5.0":
   version: 2.19.0
   resolution: "type-fest@npm:2.19.0"
   checksum: a4ef07ece297c9fba78fc1bd6d85dff4472fe043ede98bd4710d2615d15776902b595abf62bd78339ed6278f021235fb28a96361f8be86ed754f778973a0d278
@@ -23720,7 +23621,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"url@npm:^0.11.0, url@npm:~0.11.0":
+"url@npm:~0.11.0":
   version: 0.11.0
   resolution: "url@npm:0.11.0"
   dependencies:
@@ -23802,7 +23703,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"util@npm:^0.12.0, util@npm:^0.12.4, util@npm:~0.12.0":
+"util@npm:^0.12.0, util@npm:~0.12.0":
   version: 0.12.5
   resolution: "util@npm:0.12.5"
   dependencies:
@@ -24069,7 +23970,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vm-browserify@npm:^1.0.0, vm-browserify@npm:^1.1.2":
+"vm-browserify@npm:^1.0.0":
   version: 1.1.2
   resolution: "vm-browserify@npm:1.1.2"
   checksum: 10a1c50aab54ff8b4c9042c15fc64aefccce8d2fb90c0640403242db0ee7fb269f9b102bdb69cfb435d7ef3180d61fd4fb004a043a12709abaf9056cfd7e039d
@@ -24521,12 +24422,12 @@ __metadata:
   linkType: hard
 
 "webpack-merge@npm:^5.7.3, webpack-merge@npm:^5.8.0":
-  version: 5.8.0
-  resolution: "webpack-merge@npm:5.8.0"
+  version: 5.9.0
+  resolution: "webpack-merge@npm:5.9.0"
   dependencies:
     clone-deep: ^4.0.1
     wildcard: ^2.0.0
-  checksum: 88786ab91013f1bd2a683834ff381be81c245a4b0f63304a5103e90f6653f44dab496a0768287f8531761f8ad957d1f9f3ccb2cb55df0de1bd9ee343e079da26
+  checksum: 64fe2c23aacc5f19684452a0e84ec02c46b990423aee6fcc5c18d7d471155bd14e9a6adb02bd3656eb3e0ac2532c8e97d69412ad14c97eeafe32fa6d10050872
   languageName: node
   linkType: hard
 
