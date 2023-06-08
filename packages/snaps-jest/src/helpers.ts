@@ -1,7 +1,13 @@
 import { getDocument, queries } from 'pptr-testing-library';
 
-import { getEnvironment, mock, waitFor } from './internals';
-import { request, sendTransaction } from './internals/request';
+import {
+  getEnvironment,
+  mock,
+  waitFor,
+  request,
+  sendTransaction,
+  runCronjob,
+} from './internals';
 import type { Snap, SnapResponse } from './types';
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -62,6 +68,12 @@ export async function installSnap(
 
     sendTransaction: async (options = {}): Promise<SnapResponse> => {
       return await sendTransaction(page, options);
+    },
+
+    runCronjob: (options) => {
+      // Note: This function is intentionally not async, so that we can access
+      // the `getInterface` method on the response.
+      return runCronjob(page, options);
     },
 
     close: async () => {

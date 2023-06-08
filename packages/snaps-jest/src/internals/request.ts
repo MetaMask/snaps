@@ -6,6 +6,7 @@ import { Page } from 'puppeteer';
 import { create } from 'superstruct';
 
 import {
+  CronjobOptions,
   RequestOptions,
   SnapRequest,
   SnapResponse,
@@ -48,16 +49,20 @@ async function sendRequest(page: Page, args: SnapRpcHookArgs) {
  * @param page - The page to send the request from.
  * @param options - The request options.
  * @param options.origin - The origin of the request. Defaults to `metamask.io`.
+ * @param handler - The handler to use. Defaults to `onRpcRequest`.
  * @returns The response.
  */
 export function request(
   page: Page,
   { origin = 'metamask.io', ...options }: RequestOptions,
+  handler:
+    | HandlerType.OnRpcRequest
+    | HandlerType.OnCronjob = HandlerType.OnRpcRequest,
 ) {
   const doRequest = async (): Promise<SnapResponse> => {
     const args: SnapRpcHookArgs = {
       origin,
-      handler: HandlerType.OnRpcRequest,
+      handler,
       request: {
         jsonrpc: '2.0',
         id: 1,
@@ -67,7 +72,7 @@ export function request(
 
     const id = await sendRequest(page, args);
 
-    const response = await waitForResponse(page, HandlerType.OnRpcRequest);
+    const response = await waitForResponse(page, handler);
     const notifications = await getNotifications(page, id);
 
     return { id, response, notifications };
@@ -131,4 +136,15 @@ export async function sendTransaction(
     notifications: [],
     content: response.result.content as Component,
   };
+}
+
+/**
+ * Run a cronjob.
+ *
+ * @param page - The page to run the cronjob from.
+ * @param options - The request options.
+ * @returns The response.
+ */
+export function runCronjob(page: Page, options: CronjobOptions) {
+  return request(page, options, HandlerType.OnCronjob);
 }

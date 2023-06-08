@@ -11,6 +11,7 @@ currently experimental, and the API may change in the future.
   - [Install a snap](#install-a-snap)
   - [`snap.request`](#snaprequest)
   - [`snap.sendTransaction`](#snapsendtransaction)
+  - [`snap.runCronjob`](#snapruncronjob)
   - [Jest matchers](#jest-matchers)
   - [Interacting with user interfaces](#interacting-with-user-interfaces)
   - [Network mocking](#network-mocking-snapmock)
@@ -185,6 +186,53 @@ describe('MySnap', () => {
     });
 
     expect(response).toRender(panel([text('Hello, world!')]));
+  });
+});
+```
+
+### `snap.runCronjob`
+
+The `runCronjob` function can be used to run a cronjob in the snap. It takes
+a single argument, which is similar to a JSON-RPC request object. It returns
+a promise that resolves to the response from the
+[onCronjob](https://docs.metamask.io/snaps/reference/exports/#oncronjob)
+function.
+
+The request would normally be specified in the snap manifest under the
+`endowment:cronjob` permission, but this function allows you to run cronjobs
+that are not specified in the manifest as well.
+
+```js
+import { installSnap } from '@metamask/snaps-jest';
+
+describe('MySnap', () => {
+  it('should do something', async () => {
+    const { runCronjob } = await installSnap(/* optional snap ID */);
+    const response = await runCronjob({
+      method: 'foo',
+      params: [],
+    });
+    // ...
+  });
+});
+```
+
+It returns an object with a response, and some additional metadata, which can be
+checked using the [Jest matchers](#jest-matchers):
+
+```js
+import { installSnap } from '@metamask/snaps-jest';
+
+describe('MySnap', () => {
+  it('should do something', async () => {
+    const { runCronjob } = await installSnap(/* optional snap ID */);
+    const response = await runCronjob({
+      method: 'foo',
+      params: [],
+    });
+
+    expect(response).toRespondWith('bar');
+    expect(response).not.toRespondWithError('baz');
   });
 });
 ```

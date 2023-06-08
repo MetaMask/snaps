@@ -78,6 +78,12 @@ export type RequestOptions = {
 };
 
 /**
+ * The `runCronjob` options. This is the same as {@link RequestOptions}, except
+ * that it does not have an `origin` property.
+ */
+export type CronjobOptions = Omit<RequestOptions, 'origin'>;
+
+/**
  * The options to use for transaction requests.
  *
  * @property chainId - The CAIP-2 chain ID to send the transaction on. Defaults
@@ -238,6 +244,17 @@ export type Snap = {
   sendTransaction(
     transaction?: Partial<TransactionOptions>,
   ): Promise<SnapResponse>;
+
+  /**
+   * Run a cronjob in the snap. This is similar to {@link request}, but the
+   * request will be sent to the `onCronjob` method of the snap.
+   *
+   * @param cronjob - The cronjob request. This is similar to a JSON-RPC
+   * request, and is normally specified in the snap manifest, under the
+   * `endowment:cronjob` permission.
+   * @returns The response promise, with extra {@link SnapRequestObject} fields.
+   */
+  runCronjob(cronjob: CronjobOptions): SnapRequest;
 
   /**
    * Close the page running the snap. This is mainly useful for cleaning up
