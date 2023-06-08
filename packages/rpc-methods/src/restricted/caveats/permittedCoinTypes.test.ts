@@ -156,6 +156,20 @@ describe('PermittedCoinTypesCaveatSpecification', () => {
         'The requested coin type is not permitted. Allowed coin types must be specified in the snap manifest.',
       );
     });
+
+    it('throws if the coin type is not allowed', async () => {
+      const fn = jest.fn().mockImplementation(() => 'foo');
+
+      await expect(
+        PermittedCoinTypesCaveatSpecification[
+          SnapCaveatType.PermittedCoinTypes
+        ].decorator(fn, {
+          type: SnapCaveatType.PermittedCoinTypes,
+          value: [{ coinType: 60 }],
+          // @ts-expect-error Missing other required properties.
+        })({ params: { coinType: 60 } }),
+      ).rejects.toThrow('Coin type 60 is forbidden.');
+    });
   });
 
   describe('validator', () => {

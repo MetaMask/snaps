@@ -2569,7 +2569,7 @@ describe('SnapController', () => {
         'endowment:rpc': { snaps: false, dapps: true },
         // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_getBip32Entropy: [
-          { path: ['m', "44'", "60'"], curve: 'secp256k1' as const },
+          { path: ['m', "44'", "1'"], curve: 'secp256k1' as const },
         ],
       };
 
@@ -2634,7 +2634,7 @@ describe('SnapController', () => {
                 caveats: [
                   {
                     type: SnapCaveatType.PermittedDerivationPaths,
-                    value: [{ path: ['m', "44'", "60'"], curve: 'secp256k1' }],
+                    value: [{ path: ['m', "44'", "1'"], curve: 'secp256k1' }],
                   },
                 ],
               },
@@ -2664,7 +2664,7 @@ describe('SnapController', () => {
               caveats: [
                 {
                   type: SnapCaveatType.PermittedDerivationPaths,
-                  value: [{ path: ['m', "44'", "60'"], curve: 'secp256k1' }],
+                  value: [{ path: ['m', "44'", "1'"], curve: 'secp256k1' }],
                 },
               ],
             },
@@ -2779,7 +2779,7 @@ describe('SnapController', () => {
         [handlerEndowments.onRpcRequest]: { snaps: false, dapps: true },
         // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_getBip32Entropy: [
-          { path: ['m', "44'", "60'"], curve: 'secp256k1' as const },
+          { path: ['m', "44'", "1'"], curve: 'secp256k1' as const },
         ],
       };
       const { manifest } = getSnapFiles({
@@ -2837,7 +2837,7 @@ describe('SnapController', () => {
               caveats: [
                 {
                   type: SnapCaveatType.PermittedDerivationPaths,
-                  value: [{ path: ['m', "44'", "60'"], curve: 'secp256k1' }],
+                  value: [{ path: ['m', "44'", "1'"], curve: 'secp256k1' }],
                 },
               ],
             },
