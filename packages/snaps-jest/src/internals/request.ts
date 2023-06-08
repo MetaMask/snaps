@@ -1,6 +1,7 @@
 import { Component } from '@metamask/snaps-ui';
 import { HandlerType, SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { assert, hasProperty, isPlainObject } from '@metamask/utils';
+import { getDocument, queries } from 'pptr-testing-library';
 import { Page } from 'puppeteer';
 import { create } from 'superstruct';
 
@@ -22,6 +23,15 @@ import { waitForResponse } from './wait-for';
  * @returns The request ID.
  */
 async function sendRequest(page: Page, args: SnapRpcHookArgs) {
+  const document = await getDocument(page);
+  const button = await queries.getByTestId(
+    document,
+    `navigation-${args.handler}`,
+  );
+
+  // Navigate to the request handler page.
+  await button.click();
+
   return await page.evaluate((payload) => {
     window.__SIMULATOR_API__.dispatch({
       type: 'simulation/sendRequest',
@@ -105,14 +115,7 @@ export async function sendTransaction(
     },
   };
 
-  const id = await page.evaluate((payload) => {
-    window.__SIMULATOR_API__.dispatch({
-      type: 'simulation/sendRequest',
-      payload,
-    });
-
-    return window.__SIMULATOR_API__.getRequestId();
-  }, args);
+  const id = await sendRequest(page, args);
 
   const response = await waitForResponse(page, HandlerType.OnTransaction);
   if (hasProperty(response, 'error')) {

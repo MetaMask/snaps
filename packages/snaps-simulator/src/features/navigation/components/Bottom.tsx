@@ -18,6 +18,7 @@ export const Bottom: FunctionComponent = () => {
       <Item
         path="https://github.com/MetaMask/snaps-simulator"
         isExternal={true}
+        tag="github"
       >
         <Icon icon="gitHub" width="24px" />
         <Box>
@@ -31,7 +32,7 @@ export const Bottom: FunctionComponent = () => {
           </Text>
         </Box>
       </Item>
-      <Item path="#" onClick={handleOpenConfiguration}>
+      <Item path="#" onClick={handleOpenConfiguration} tag="configuration">
         <Icon icon="configuration" width="24px" />
         <Box>
           <Text>
