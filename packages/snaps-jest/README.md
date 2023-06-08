@@ -40,6 +40,16 @@ module.exports = {
 This will automatically configure Jest to use the `@metamask/snaps-jest`
 environment, and to use the `@metamask/snaps-jest` matchers.
 
+Then you can just run `jest` as usual.
+
+> **Note**: `@metamask/snaps-jest` assumes that the snap is built in the
+> directory you're running Jest from. If you're using a different directory,
+> you can specify the path to the snap using the [`root`](#options) option, or
+> by running your own HTTP server.
+>
+> Right now it's not possible to use `@metamask/snaps-jest` with a snap that
+> isn't built.
+
 ### Without the preset
 
 If you don't want to use the preset, you can still use the environment and
