@@ -8,9 +8,6 @@ const { resolve } = require('path');
 const config = {
   testEnvironment: '@metamask/snaps-jest',
 
-  // `@metamask/snaps-jest` requires `jest-circus` to be the test runner.
-  testRunner: 'jest-circus/runner',
-
   setupFilesAfterEnv: [resolve(__dirname, 'dist', 'setup.js')],
 };
 
