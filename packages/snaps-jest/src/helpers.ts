@@ -1,19 +1,8 @@
-import { Component } from '@metamask/snaps-ui';
-import { HandlerType, SnapRpcHookArgs } from '@metamask/snaps-utils';
-import { assert, hasProperty, isPlainObject } from '@metamask/utils';
 import { getDocument, queries } from 'pptr-testing-library';
-import { create } from 'superstruct';
 
-import {
-  getEnvironment,
-  getInterface,
-  getNotifications,
-  mock,
-  TransactionOptionsStruct,
-  waitFor,
-  waitForResponse,
-} from './internals';
-import type { Snap, SnapRequest, SnapResponse } from './types';
+import { getEnvironment, mock, waitFor } from './internals';
+import { request, sendTransaction } from './internals/request';
+import type { Snap, SnapResponse } from './types';
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { getByTestId } = queries;
@@ -65,89 +54,14 @@ export async function installSnap(
   });
 
   return {
-    request: ({ origin = 'metamask.io', ...options }): SnapRequest => {
-      const doRequest = async (): Promise<SnapResponse> => {
-        const args: SnapRpcHookArgs = {
-          origin,
-          handler: HandlerType.OnRpcRequest,
-          request: {
-            jsonrpc: '2.0',
-            id: 1,
-            ...options,
-          },
-        };
-
-        const id = await page.evaluate((payload) => {
-          window.__SIMULATOR_API__.dispatch({
-            type: 'simulation/sendRequest',
-            payload,
-          });
-
-          return window.__SIMULATOR_API__.getRequestId();
-        }, args);
-
-        const response = await waitForResponse(page, HandlerType.OnRpcRequest);
-        const notifications = await getNotifications(page, id);
-
-        return { id, response, notifications };
-      };
-
-      // This is a bit hacky, but it allows us to add the `getInterface` method
-      // to the response promise.
-      const response = doRequest() as SnapRequest;
-
-      response.getInterface = async (getInterfaceOptions) => {
-        return await getInterface(page, getInterfaceOptions);
-      };
-
-      return response;
+    request: (options) => {
+      // Note: This function is intentionally not async, so that we can access
+      // the `getInterface` method on the response.
+      return request(page, options);
     },
 
-    sendTransaction: async (_options = {}): Promise<SnapResponse> => {
-      // This adds the default values to the options.
-      const {
-        origin: transactionOrigin,
-        chainId,
-        ...transaction
-      } = create(_options, TransactionOptionsStruct);
-
-      const args: SnapRpcHookArgs = {
-        origin: '',
-        handler: HandlerType.OnTransaction,
-        request: {
-          jsonrpc: '2.0',
-          method: '',
-          params: {
-            chainId,
-            transaction,
-            transactionOrigin,
-          },
-        },
-      };
-
-      const id = await page.evaluate((payload) => {
-        window.__SIMULATOR_API__.dispatch({
-          type: 'simulation/sendRequest',
-          payload,
-        });
-
-        return window.__SIMULATOR_API__.getRequestId();
-      }, args);
-
-      const response = await waitForResponse(page, HandlerType.OnTransaction);
-      if (hasProperty(response, 'error')) {
-        return { id, response, notifications: [] };
-      }
-
-      assert(isPlainObject(response.result));
-      assert(hasProperty(response.result, 'content'));
-
-      return {
-        id,
-        response,
-        notifications: [],
-        content: response.result.content as Component,
-      };
+    sendTransaction: async (options = {}): Promise<SnapResponse> => {
+      return await sendTransaction(page, options);
     },
 
     close: async () => {

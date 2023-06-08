@@ -5,8 +5,9 @@ const baseConfig = require('../../../../jest.config.base');
 module.exports = deepmerge(baseConfig, {
   testEnvironment: require.resolve('@metamask/snaps-jest/src/index.ts'),
   testEnvironmentOptions: {
+    keepAlive: true,
     browser: {
-      headless: true,
+      headless: false,
     },
   },
 
