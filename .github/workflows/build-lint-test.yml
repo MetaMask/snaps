@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16.x, 18.x]
+        node-version: [16.x, 18.x, 20.x]
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -47,8 +47,6 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     needs: prepare
-    strategy:
-      fail-fast: false
     steps:
       - uses: actions/checkout@v3
       - name: Setup Node
@@ -73,8 +71,6 @@ jobs:
     name: Build Snaps Simulator
     runs-on: ubuntu-latest
     needs: prepare
-    strategy:
-      fail-fast: false
     steps:
       - uses: actions/checkout@v3
       - name: Setup Node
@@ -88,7 +84,7 @@ jobs:
         with:
           path: |
             packages/snaps-execution-environments/dist/browserify
-          key: snaps-execution-environments-build-${{ runner.os }}-16.x-${{ github.sha }}
+          key: snaps-execution-environments-build-${{ runner.os }}-20.x-${{ github.sha }}
       - name: Cache Webpack vendor
         id: cache-webpack-vendor
         uses: actions/cache@v3
@@ -113,8 +109,6 @@ jobs:
     name: Generate LavaMoat policy
     runs-on: ubuntu-latest
     needs: prepare
-    strategy:
-      fail-fast: false
     steps:
       - uses: actions/checkout@v3
       - name: Setup Node
@@ -165,7 +159,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16.x, 18.x]
+        node-version: [16.x, 18.x, 20.x]
         package-name: ${{ fromJson(needs.prepare.outputs.child-workspace-package-names) }}
     steps:
       - uses: actions/checkout@v3
@@ -191,7 +185,7 @@ jobs:
           echo "coverage-folder=$(yarn workspaces list --json | grep ${{ matrix.package-name }} | jq -r '.location')/coverage" >> "$GITHUB_OUTPUT"
         shell: bash
       - name: Upload coverage artifact
-        if: ${{ matrix.node-version == '16.x' }}
+        if: ${{ matrix.node-version == '20.x' }}
         uses: actions/upload-artifact@v3
         with:
           name: coverage
