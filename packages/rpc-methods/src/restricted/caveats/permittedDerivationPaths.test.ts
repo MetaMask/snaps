@@ -54,7 +54,8 @@ describe('validateBIP32CaveatPaths', () => {
 
 describe('PermittedDerivationPathsCaveatSpecification', () => {
   describe('decorator', () => {
-    const params = { path: ['m', "44'", "60'"], curve: 'secp256k1' };
+    const params = { path: ['m', "44'", "1'"], curve: 'secp256k1' };
+
     it('returns the result of the method implementation', async () => {
       const fn = jest.fn().mockImplementation(() => 'foo');
       expect(
@@ -67,6 +68,7 @@ describe('PermittedDerivationPathsCaveatSpecification', () => {
         })({ params }),
       ).toBe('foo');
     });
+
     it('allows deriving child nodes', async () => {
       const fn = jest.fn().mockImplementation(() => 'foo');
       expect(
@@ -78,12 +80,13 @@ describe('PermittedDerivationPathsCaveatSpecification', () => {
           // @ts-expect-error Missing other required properties.
         })({
           params: {
-            path: ['m', "44'", "60'", "0'", '0', '1'],
+            path: ['m', "44'", "1'", "0'", '0', '1'],
             curve: 'secp256k1',
           },
         }),
       ).toBe('foo');
     });
+
     it('allows deriving deep nodes', async () => {
       const fn = jest.fn().mockImplementation(() => 'foo');
       expect(
@@ -98,7 +101,7 @@ describe('PermittedDerivationPathsCaveatSpecification', () => {
             path: [
               'm',
               "44'",
-              "60'",
+              "1'",
               "0'",
               '0',
               '1',
@@ -117,6 +120,7 @@ describe('PermittedDerivationPathsCaveatSpecification', () => {
         }),
       ).toBe('foo');
     });
+
     it('ignores unknown fields', async () => {
       const fn = jest.fn().mockImplementation(() => 'foo');
       expect(
@@ -128,13 +132,14 @@ describe('PermittedDerivationPathsCaveatSpecification', () => {
           // @ts-expect-error Missing other required properties.
         })({
           params: {
-            path: ['m', "44'", "60'", "0'", '0', '1'],
+            path: ['m', "44'", "1'", "0'", '0', '1'],
             curve: 'secp256k1',
             compressed: true,
           },
         }),
       ).toBe('foo');
     });
+
     it('throws if the path is invalid', async () => {
       const fn = jest.fn().mockImplementation(() => 'foo');
       await expect(
@@ -149,6 +154,7 @@ describe('PermittedDerivationPathsCaveatSpecification', () => {
         'At path: path -- Path must be a non-empty BIP-32 derivation path array',
       );
     });
+
     it('throws if the path is not specified in the caveats', async () => {
       const fn = jest.fn().mockImplementation(() => 'foo');
       await expect(
@@ -163,6 +169,7 @@ describe('PermittedDerivationPathsCaveatSpecification', () => {
         'The requested path is not permitted. Allowed paths must be specified in the snap manifest.',
       );
     });
+
     it('throws if the purpose is not allowed', async () => {
       const fn = jest.fn().mockImplementation(() => 'foo');
       await expect(
@@ -177,7 +184,23 @@ describe('PermittedDerivationPathsCaveatSpecification', () => {
         'Invalid BIP-32 entropy path definition: At path: path -- The purpose "1399742832\'" is not allowed for entropy derivation.',
       );
     });
+
+    it('throws if the path is not allowed', async () => {
+      const fn = jest.fn().mockImplementation(() => 'foo');
+      await expect(
+        PermittedDerivationPathsCaveatSpecification[
+          SnapCaveatType.PermittedDerivationPaths
+        ].decorator(fn, {
+          type: SnapCaveatType.PermittedDerivationPaths,
+          value: [{ path: ['m', "44'", "60'"], curve: 'secp256k1' }],
+          // @ts-expect-error Missing other required properties.
+        })({ params: { ...params, path: ['m', "44'", "60'"] } }),
+      ).rejects.toThrow(
+        'Invalid BIP-32 entropy path definition: At path: path -- The path "m/44\'/60\'" is not allowed for entropy derivation.',
+      );
+    });
   });
+
   describe('validator', () => {
     it('throws if the caveat values are invalid', () => {
       expect(() =>
@@ -189,6 +212,7 @@ describe('PermittedDerivationPathsCaveatSpecification', () => {
         }),
       ).toThrow('At path: value.0.path -- Path must start with "m".');
     });
+
     it('throws if the caveat values contain forbidden paths', () => {
       expect(() =>
         PermittedDerivationPathsCaveatSpecification[
