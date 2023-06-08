@@ -47,8 +47,6 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     needs: prepare
-    strategy:
-      fail-fast: false
     steps:
       - uses: actions/checkout@v3
       - name: Setup Node
@@ -73,8 +71,6 @@ jobs:
     name: Build Snaps Simulator
     runs-on: ubuntu-latest
     needs: prepare
-    strategy:
-      fail-fast: false
     steps:
       - uses: actions/checkout@v3
       - name: Setup Node
@@ -88,7 +84,7 @@ jobs:
         with:
           path: |
             packages/snaps-execution-environments/dist/browserify
-          key: snaps-execution-environments-build-${{ runner.os }}-16.x-${{ github.sha }}
+          key: snaps-execution-environments-build-${{ runner.os }}-18.x-${{ github.sha }}
       - name: Cache Webpack vendor
         id: cache-webpack-vendor
         uses: actions/cache@v3
@@ -113,8 +109,6 @@ jobs:
     name: Generate LavaMoat policy
     runs-on: ubuntu-latest
     needs: prepare
-    strategy:
-      fail-fast: false
     steps:
       - uses: actions/checkout@v3
       - name: Setup Node
