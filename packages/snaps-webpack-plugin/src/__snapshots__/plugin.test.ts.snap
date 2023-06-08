@@ -59,7 +59,7 @@ exports[`SnapsWebpackPlugin runs on the entire bundle 1`] = `
   var __webpack_modules__ = [, (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
     __webpack_require__.r(__webpack_exports__);
     __webpack_require__.d(__webpack_exports__, {
-      "bar": () => bar
+      bar: () => bar
     });
     const bar = 'baz';
   }];
