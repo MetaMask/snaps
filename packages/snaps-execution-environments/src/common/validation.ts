@@ -2,7 +2,7 @@ import { rpcErrors } from '@metamask/rpc-errors';
 import {
   ChainIdStruct,
   HandlerType,
-  UserInputEventType,
+  UserInputEventStruct,
 } from '@metamask/snaps-utils';
 import type { Json, JsonRpcSuccess } from '@metamask/utils';
 import {
@@ -214,7 +214,7 @@ export function assertIsOnNameLookupRequestArguments(
 
 export const OnUserInputArgumentsStruct = object({
   id: string(),
-  event: enums([UserInputEventType.ButtonClickEvent]),
+  event: UserInputEventStruct,
 });
 
 export type OnUserInputArguments = Infer<typeof OnUserInputArgumentsStruct>;
