@@ -11,6 +11,9 @@ currently experimental, and the API may change in the future.
   - [Install a snap](#install-a-snap)
   - [`snap.request`](#snaprequest)
   - [`snap.sendTransaction`](#snapsendtransaction)
+  - [Jest matchers](#jest-matchers)
+  - [Interacting with user interfaces](#interacting-with-user-interfaces)
+  - [Network mocking](#network-mocking-snapmock)
 - [Options](#options)
 
 ## Installation
