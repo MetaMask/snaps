@@ -47,16 +47,12 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     needs: prepare
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [16.x, 18.x]
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: '.nvmrc'
           cache: yarn
       - run: yarn --immutable --immutable-cache
       - name: Build TypeScript files
@@ -75,16 +71,12 @@ jobs:
     name: Build Snaps Simulator
     runs-on: ubuntu-latest
     needs: prepare
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [16.x, 18.x]
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: '.nvmrc'
           cache: yarn
       - run: yarn --immutable --immutable-cache
       - name: Restore "@metamask/snaps-execution-environments" build
@@ -92,14 +84,14 @@ jobs:
         with:
           path: |
             packages/snaps-execution-environments/dist/browserify
-          key: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+          key: snaps-execution-environments-build-${{ runner.os }}-18.x-${{ github.sha }}
       - name: Cache Webpack vendor
         id: cache-webpack-vendor
         uses: actions/cache@v3
         with:
           path: |
             packages/snaps-simulator/dist/vendor
-          key: webpack-vendor-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}
+          key: webpack-vendor-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
       - name: Build Webpack vendor
         if: steps.cache-webpack-vendor.outputs.cache-hit != 'true'
         run: yarn workspace @metamask/snaps-simulator run build:vendor
@@ -117,16 +109,12 @@ jobs:
     name: Generate LavaMoat policy
     runs-on: ubuntu-latest
     needs: prepare
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [16.x, 18.x]
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: '.nvmrc'
           cache: yarn
       - run: yarn --immutable --immutable-cache
       - name: Generate LavaMoat policy
@@ -146,14 +134,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16.x, 18.x]
         package-name: ${{ fromJson(needs.prepare.outputs.all-child-workspace-package-names) }}
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: '.nvmrc'
           cache: yarn
       - run: yarn --immutable --immutable-cache
       - run: yarn workspace ${{ matrix.package-name }} run lint:ci
