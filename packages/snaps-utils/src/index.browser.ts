@@ -1,3 +1,4 @@
+export * from './array';
 export * from './caveats';
 export * from './checksum';
 export * from './cronjob';
