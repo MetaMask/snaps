@@ -8,6 +8,7 @@ import {
   getEnvironment,
   getInterface,
   getNotifications,
+  mock,
   TransactionOptionsStruct,
   waitFor,
   waitForResponse,
@@ -151,6 +152,10 @@ export async function installSnap(
 
     close: async () => {
       await page.close();
+    },
+
+    mock: async (options) => {
+      return await mock(page, options);
     },
   };
 }

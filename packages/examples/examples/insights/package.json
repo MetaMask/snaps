@@ -37,6 +37,7 @@
     "@metamask/utils": "^6.0.1"
   },
   "devDependencies": {
+    "@jest/globals": "^29.5.0",
     "@lavamoat/allow-scripts": "^2.3.1",
     "@metamask/auto-changelog": "^3.1.0",
     "@metamask/eslint-config": "^11.0.0",
