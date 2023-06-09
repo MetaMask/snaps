@@ -43,7 +43,7 @@ module.exports = {
       });
 
       async execute() {
-        const { minimatch } = require('minimatch');
+        const { minimatch } = await import('minimatch');
 
         const configuration = await Configuration.find(
           this.context.cwd,
