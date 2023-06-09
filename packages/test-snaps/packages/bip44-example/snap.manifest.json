@@ -1,0 +1,31 @@
+{
+  "version": "0.34.1-flask.1",
+  "description": "This Snap tests deriving BIP-44 keys and signing transactions.",
+  "proposedName": "MetaMask BIP-44 Test Snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps.git"
+  },
+  "source": {
+    "shasum": "mCVkAHzR3ESKB/665QbDAs9GcBFWUDdHkkJKVmXDdwo=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "@metamask/bip44-example-snap",
+        "registry": "https://registry.npmjs.org"
+      }
+    }
+  },
+  "initialPermissions": {
+    "endowment:rpc": {
+      "dapps": true
+    },
+    "snap_dialog": {},
+    "snap_getBip44Entropy": [
+      {
+        "coinType": 1
+      }
+    ]
+  },
+  "manifestVersion": "0.1"
+}

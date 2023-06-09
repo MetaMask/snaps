@@ -111,7 +111,7 @@ is_nested_example(WorkspaceCwd) :-
 % True if and only if the given workspace directory is a nested example.
 is_test_snap(WorkspaceCwd) :-
   atomic_list_concat(Parts, '/', WorkspaceCwd),
-  slice(Parts, 0, 6, RootParts),
+  slice(Parts, 0, 4, RootParts),
   atomic_list_concat(RootParts, '/', RootCwd),
   RootCwd = 'packages/test-snaps/packages'.
 
@@ -154,11 +154,11 @@ gen_enforced_field(WorkspaceCwd, 'sideEffects', 'false') :-
   WorkspaceCwd \= '.'.
 
 % Ensure all test-snaps have the same scripts.
-gen_enforced_field(WorkspaceCwd, 'build', 'webpack') :-
+gen_enforced_field(WorkspaceCwd, 'scripts.build', 'webpack') :-
   is_test_snap(WorkspaceCwd).
-gen_enforced_field(WorkspaceCwd, 'build:clean', 'yarn clean && yarn build') :-
+gen_enforced_field(WorkspaceCwd, 'scripts.build:clean', 'yarn clean && yarn build') :-
   is_test_snap(WorkspaceCwd).
-gen_enforced_field(WorkspaceCwd, 'clean', 'rimraf 'dist/*') :-
+gen_enforced_field(WorkspaceCwd, 'scripts.clean', 'rimraf "dist/*"') :-
   is_test_snap(WorkspaceCwd).
-gen_enforced_field(WorkspaceCwd, 'start', 'webpack watch') :-
+gen_enforced_field(WorkspaceCwd, 'scripts.start', 'webpack watch') :-
   is_test_snap(WorkspaceCwd).

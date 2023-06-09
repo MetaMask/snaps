@@ -1,7 +1,7 @@
 {
-  "name": "@metamask/test-snap-bip32",
+  "name": "@metamask/bip32-example-snap",
   "version": "0.34.1-flask.1",
-  "description": "MetaMask Snaps Test Snap, testing the functionality of snap_getBip32Entropy",
+  "description": "MetaMask example snap demonstrating the use of `snap_getBip32Entropy`.",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
@@ -18,7 +18,7 @@
   "scripts": {
     "build": "webpack",
     "build:clean": "yarn clean && yarn build",
-    "clean": "rimraf 'dist/*'",
+    "clean": "rimraf \"dist/*\"",
     "start": "webpack watch",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
