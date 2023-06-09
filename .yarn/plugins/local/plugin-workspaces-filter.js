@@ -1,5 +1,3 @@
-const { minimatch } = require('minimatch');
-
 module.exports = {
   name: `plugin-workspaces-filter`,
   factory: (require) => {
@@ -45,6 +43,8 @@ module.exports = {
       });
 
       async execute() {
+        const { minimatch } = require('minimatch');
+
         const configuration = await Configuration.find(
           this.context.cwd,
           this.context.plugins,
