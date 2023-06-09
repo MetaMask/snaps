@@ -154,15 +154,11 @@ gen_enforced_field(WorkspaceCwd, 'sideEffects', 'false') :-
   WorkspaceCwd \= '.'.
 
 % Ensure all test-snaps have the same scripts.
-gen_enforced_field(WorkspaceCwd, 'build', 'yarn build:webpack && yarn build:manifest') :-
-  is_test_snap(WorkspaceCwd).
-gen_enforced_field(WorkspaceCwd, 'build:webpack', 'webpack --mode production --progress') :-
-  is_test_snap(WorkspaceCwd).
-gen_enforced_field(WorkspaceCwd, 'build:manifest', 'mm-snap manifest --fix') :-
+gen_enforced_field(WorkspaceCwd, 'build', 'webpack') :-
   is_test_snap(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'build:clean', 'yarn clean && yarn build') :-
   is_test_snap(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'clean', 'rimraf 'dist/*') :-
   is_test_snap(WorkspaceCwd).
-gen_enforced_field(WorkspaceCwd, 'start', 'mm-snap watch') :-
+gen_enforced_field(WorkspaceCwd, 'start', 'webpack watch') :-
   is_test_snap(WorkspaceCwd).

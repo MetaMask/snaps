@@ -2,7 +2,7 @@ import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
 import { resolve } from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
-import { Configuration } from 'webpack';
+import { Configuration, ProgressPlugin } from 'webpack';
 
 const config: Configuration = {
   entry: './src/index.ts',
@@ -70,10 +70,17 @@ const config: Configuration = {
     ],
   },
   plugins: [
+    new ProgressPlugin(),
     new SnapsWebpackPlugin({
       manifestPath: resolve(__dirname, 'snap.manifest.json'),
     }),
   ],
+  cache: {
+    type: 'filesystem',
+    buildDependencies: {
+      config: [__filename],
+    },
+  },
 };
 
 export default config;
