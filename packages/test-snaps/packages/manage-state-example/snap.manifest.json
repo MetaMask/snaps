@@ -1,0 +1,27 @@
+{
+  "version": "0.34.1-flask.1",
+  "description": "A MetaMask Test Snap that uses the manageState permission",
+  "proposedName": "MetaMask manageState Test Snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps.git"
+  },
+  "source": {
+    "shasum": "iEam5214W5EeYKmhh5AnPGBXnwd4gahW9BAhzH4Jh2s=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "iconPath": "images/icon.svg",
+        "packageName": "@metamask/manage-state-example-snap",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    "endowment:rpc": {
+      "dapps": true
+    },
+    "snap_manageState": {}
+  },
+  "manifestVersion": "0.1"
+}
