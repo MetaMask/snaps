@@ -21,9 +21,8 @@ currently experimental, and the API may change in the future.
 
 Use Node.js `16.0.0` or later. We recommend using [nvm](https://github.com/nvm-sh/nvm) for managing Node.js versions.
 
-Install a dependency in your snap project using `yarn` or `npm`:
+Install a dependency in your snap project using `yarn` (or `npm`):
 
-- `npm install --save-dev @metamask/snaps-jest`
 - `yarn add -D @metamask/snaps-jest`
 
 ## Usage
@@ -151,6 +150,26 @@ describe('MySnap', () => {
 
     expect(response.result).toBe('bar');
     expect(response.error).toBeUndefined();
+  });
+});
+```
+
+Since the response is a standard JSON-RPC response, you can use any Jest
+matchers to check it, including snapshot matchers:
+
+```js
+import { installSnap } from '@metamask/snaps-jest';
+
+describe('MySnap', () => {
+  it('should do something', async () => {
+    const { request } = await installSnap(/* optional snap ID */);
+    const { response } = await request({
+      origin: 'http://localhost:8080',
+      method: 'foo',
+      params: [],
+    });
+
+    expect(response).toMatchSnapshot();
   });
 });
 ```
@@ -350,9 +369,12 @@ following properties:
 
 Except for the `url` option, all options are optional.
 
-It returns an object with an `unmock` function that can be used to remove the
-mock. If the mock is not removed, it will remain active for the rest of the
-snap installation, so it does not affect other tests.
+#### Unmocking (`mock.unmock`)
+
+The mock function returns an object with an `unmock` function that can be
+used to remove the mock. Mocking happens on a per-snap-install basis. If the
+mock is not removed, it will remain active for the rest of the snap
+installation, so it does not affect other tests with a fresh snap installation.
 
 #### Example
 
@@ -392,48 +414,6 @@ module.exports = {
 
 All options are optional, and have sensible defaults.
 
-### `executionEnvironmentUrl`
-
-- Type: `string`
-
-The URL of the execution environment to use for testing. This is the URL that
-will be loaded by the Snaps Simulator in the tests. By default, it will use the
-URL of the built-in HTTP server that is included with this package.
-
-See also: [`@metamask/snaps-execution-environments`](../snaps-execution-environments/README.md).
-
-#### Example
-
-```js
-module.exports = {
-  preset: '@metamask/snaps-jest',
-  testEnvironmentOptions: {
-    executionEnvironmentUrl: 'http://localhost:8080',
-  },
-};
-```
-
-### `simulatorUrl`
-
-- Type: `string`
-
-The URL of the simulator to use for testing. This is the URL that will be
-loaded in the browser when running tests. By default, it will use the URL of
-the built-in HTTP server that is included with this package.
-
-See also: [`@metamask/snaps-simulator`](../snaps-simulator/README.md).
-
-#### Example
-
-```js
-module.exports = {
-  preset: '@metamask/snaps-jest',
-  testEnvironmentOptions: {
-    simulatorUrl: 'http://localhost:8081',
-  },
-};
-```
-
 ### `keepAlive`
 
 - Type: `boolean`
@@ -454,6 +434,23 @@ module.exports = {
   },
 };
 ```
+
+### `browser`
+
+- Type: `object`
+
+Options for the browser that is used to run the tests.
+
+#### `browser.headless`
+
+- Type: `boolean`
+- Default: `true`
+
+Whether to run the browser in headless mode. By default, it will be enabled. If
+you want to see the browser window while the tests are running, you can disable
+this option. Note that this will require you to have a graphical environment
+available, so it is not recommended for CI environments, but can be useful for
+debugging in conjunction with the `keepAlive` option.
 
 ### `server`
 
@@ -528,23 +525,6 @@ module.exports = {
 };
 ```
 
-### `browser`
-
-- Type: `object`
-
-Options for the browser that is used to run the tests.
-
-#### `browser.headless`
-
-- Type: `boolean`
-- Default: `true`
-
-Whether to run the browser in headless mode. By default, it will be enabled. If
-you want to see the browser window while the tests are running, you can disable
-this option. Note that this will require you to have a graphical environment
-available, so it is not recommended for CI environments, but can be useful for
-debugging in conjunction with the `keepAlive` option.
-
 ##### Example
 
 ```js
@@ -554,6 +534,54 @@ module.exports = {
     browser: {
       headless: false,
     },
+  },
+};
+```
+
+### `executionEnvironmentUrl`
+
+- Type: `string`
+
+The URL of the execution environment to use for testing. This is the URL that
+will be loaded by the Snaps Simulator in the tests. By default, it will use the
+URL of the built-in HTTP server that is included with this package.
+
+> **Note**: This option is intended for advanced use cases. In most cases, you
+> should not need to change this option.
+
+See also: [`@metamask/snaps-execution-environments`](../snaps-execution-environments/README.md).
+
+#### Example
+
+```js
+module.exports = {
+  preset: '@metamask/snaps-jest',
+  testEnvironmentOptions: {
+    executionEnvironmentUrl: 'http://localhost:8080',
+  },
+};
+```
+
+### `simulatorUrl`
+
+- Type: `string`
+
+The URL of the simulator to use for testing. This is the URL that will be
+loaded in the browser when running tests. By default, it will use the URL of
+the built-in HTTP server that is included with this package.
+
+> **Note**: This option is intended for advanced use cases. In most cases, you
+> should not need to change this option.
+
+See also: [`@metamask/snaps-simulator`](../snaps-simulator/README.md).
+
+#### Example
+
+```js
+module.exports = {
+  preset: '@metamask/snaps-jest',
+  testEnvironmentOptions: {
+    simulatorUrl: 'http://localhost:8081',
   },
 };
 ```
