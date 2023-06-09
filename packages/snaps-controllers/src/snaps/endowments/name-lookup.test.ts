@@ -8,7 +8,7 @@ describe('endowment:name-lookup', () => {
   it('builds the expected permission specification', () => {
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
-      targetKey: SnapEndowments.NameLookup,
+      targetName: SnapEndowments.NameLookup,
       endowmentGetter: expect.any(Function),
       allowedCaveats: null,
       subjectTypes: [SubjectType.Snap],
