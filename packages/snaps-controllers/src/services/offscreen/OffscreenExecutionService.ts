@@ -108,7 +108,7 @@ export class OffscreenExecutionService extends AbstractExecutionService<string> 
 
     await chrome.offscreen.createDocument({
       justification: 'MetaMask Snaps Execution Environment',
-      reasons: ['IFRAME_SCRIPTING'],
+      reasons: ['IFRAME_SCRIPTING' as chrome.offscreen.Reason],
       url: this.documentUrl.toString(),
     });
   }

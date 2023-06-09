@@ -78,7 +78,7 @@ export enum SnapStatusEvents {
   Update = 'UPDATE',
 }
 
-export type StatusContext = { snapId: string };
+export type StatusContext = { snapId: ValidatedSnapId };
 export type StatusEvents = { type: SnapStatusEvents };
 export type StatusStates = {
   value: SnapStatus;
@@ -112,7 +112,7 @@ export type Snap = {
   /**
    * The ID of the Snap.
    */
-  id: SnapId;
+  id: ValidatedSnapId;
 
   /**
    * The initial permissions of the Snap, which will be requested when it is
@@ -314,6 +314,16 @@ export function getSnapPrefix(snapId: string): SnapIdPrefixes {
     return prefix;
   }
   throw new Error(`Invalid or no prefix found for "${snapId}"`);
+}
+
+/**
+ * Strips snap prefix from a full snap ID.
+ *
+ * @param snapId - The snap ID to strip.
+ * @returns The stripped snap ID.
+ */
+export function stripSnapPrefix(snapId: string): string {
+  return snapId.replace(getSnapPrefix(snapId), '');
 }
 
 /**

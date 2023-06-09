@@ -13,7 +13,7 @@ const permissionName = SnapEndowments.NameLookup;
 
 type NameLookupEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
-  targetKey: typeof permissionName;
+  targetName: typeof permissionName;
   endowmentGetter: (_options?: EndowmentGetterParams) => undefined;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
 }>;
@@ -32,7 +32,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 > = (_builderOptions?: unknown) => {
   return {
     permissionType: PermissionType.Endowment,
-    targetKey: permissionName,
+    targetName: permissionName,
     allowedCaveats: null,
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
     subjectTypes: [SubjectType.Snap],
@@ -40,6 +40,6 @@ const specificationBuilder: PermissionSpecificationBuilder<
 };
 
 export const nameLookupEndowmentBuilder = Object.freeze({
-  targetKey: permissionName,
+  targetName: permissionName,
   specificationBuilder,
 } as const);

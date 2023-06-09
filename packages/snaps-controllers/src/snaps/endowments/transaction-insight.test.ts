@@ -20,7 +20,7 @@ describe('endowment:transaction-insight', () => {
   it('builds the expected permission specification', () => {
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
-      targetKey: SnapEndowments.TransactionInsight,
+      targetName: SnapEndowments.TransactionInsight,
       allowedCaveats: [SnapCaveatType.TransactionOrigin],
       endowmentGetter: expect.any(Function),
       validator: expect.any(Function),

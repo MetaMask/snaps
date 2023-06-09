@@ -3,7 +3,7 @@ import {
   RestrictedMethodCaveatSpecificationConstraint,
   Caveat,
 } from '@metamask/permission-controller';
-import { SnapCaveatType } from '@metamask/snaps-utils';
+import { FORBIDDEN_COIN_TYPES, SnapCaveatType } from '@metamask/snaps-utils';
 import { Json, hasProperty, isPlainObject } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
@@ -54,6 +54,12 @@ export function validateBIP44Params(
     throw ethErrors.rpc.invalidParams({
       message:
         'Invalid "coinType" parameter. Coin type must be a non-negative integer.',
+    });
+  }
+
+  if (FORBIDDEN_COIN_TYPES.includes(value.coinType)) {
+    throw ethErrors.rpc.invalidParams({
+      message: `Coin type ${value.coinType} is forbidden.`,
     });
   }
 }

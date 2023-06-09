@@ -8,7 +8,7 @@ import {
   SubjectType,
 } from '@metamask/permission-controller';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
-import { SnapCaveatType } from '@metamask/snaps-utils';
+import { SnapCaveatType, ValidatedSnapId } from '@metamask/snaps-utils';
 import {
   MockControllerMessenger,
   getPersistedSnapObject,
@@ -412,7 +412,7 @@ export const getSnapControllerWithEES = (
 };
 
 export const getPersistedSnapsState = (
-  ...snaps: PersistedSnapControllerState['snaps'][string][]
+  ...snaps: PersistedSnapControllerState['snaps'][ValidatedSnapId][]
 ): PersistedSnapControllerState['snaps'] => {
   return (snaps.length > 0 ? snaps : [getPersistedSnapObject()]).reduce<
     PersistedSnapControllerState['snaps']

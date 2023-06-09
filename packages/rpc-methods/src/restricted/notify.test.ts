@@ -29,7 +29,7 @@ describe('snap_notify', () => {
         allowedCaveats: null,
         methodImplementation: expect.anything(),
         permissionType: PermissionType.RestrictedMethod,
-        targetKey: 'snap_notify',
+        targetName: 'snap_notify',
         subjectTypes: [SubjectType.Snap],
       });
     });

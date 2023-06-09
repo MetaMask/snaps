@@ -1,11 +1,12 @@
 {
   "name": "@metamask/snaps-controllers",
-  "version": "0.33.0-flask.1",
+  "version": "0.34.1-flask.1",
   "description": "Controllers for MetaMask Snaps.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
+  "sideEffects": false,
   "main": "dist/index.js",
   "browser": {
     "./dist/services": "./dist/services/browser.js"
@@ -24,25 +25,26 @@
     "build": "yarn build:tsc",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
-    "lint:eslint": "eslint . --cache --ext js,ts",
-    "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
-    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
+    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
     "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
-    "publish:preview": "yarn npm publish --tag preview"
+    "publish:preview": "yarn npm publish --tag preview",
+    "lint:ci": "yarn lint"
   },
   "dependencies": {
-    "@metamask/approval-controller": "^2.0.0",
-    "@metamask/base-controller": "^2.0.0",
+    "@metamask/approval-controller": "^3.0.0",
+    "@metamask/base-controller": "^3.0.0",
     "@metamask/object-multiplex": "^1.2.0",
-    "@metamask/permission-controller": "^3.2.0",
+    "@metamask/permission-controller": "^4.0.0",
     "@metamask/post-message-stream": "^6.1.2",
     "@metamask/rpc-methods": "workspace:^",
     "@metamask/snaps-execution-environments": "workspace:^",
-    "@metamask/snaps-registry": "^1.2.0",
+    "@metamask/snaps-registry": "^1.2.1",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^5.0.0",
+    "@metamask/utils": "^6.0.0",
     "@xstate/fsm": "^2.0.0",
     "concat-stream": "^2.0.0",
     "cron-parser": "^4.5.0",
@@ -67,6 +69,9 @@
     "@metamask/eslint-config-typescript": "^11.0.0",
     "@metamask/template-snap": "^0.7.0",
     "@peculiar/webcrypto": "^1.3.3",
+    "@swc/core": "^1.3.61",
+    "@swc/jest": "^0.2.26",
+    "@types/chrome": "^0.0.237",
     "@types/concat-stream": "^2.0.0",
     "@types/gunzip-maybe": "^1.4.0",
     "@types/jest": "^27.5.1",
@@ -104,7 +109,6 @@
     "prettier-plugin-packagejson": "^2.2.11",
     "rimraf": "^4.1.2",
     "serve-handler": "^6.1.5",
-    "ts-jest": "^29.0.2",
     "ts-node": "^10.9.1",
     "typescript": "~4.8.4",
     "vite": "^4.1.4",

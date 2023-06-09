@@ -62,11 +62,20 @@ describe('Bip32PathStruct', () => {
     },
   );
 
-  it('throws for forbidden paths', () => {
+  it('throws for forbidden purposes', () => {
     expect(() => assert(['m', "1399742832'", '0'], Bip32PathStruct)).toThrow(
       'The purpose "1399742832\'" is not allowed for entropy derivation.',
     );
   });
+
+  it.each([`m/44'/60'/0'/0/0`, `m/44'/60'/0'/0`, `m/44'/60'/0'`, `m/44'/60'`])(
+    'throws for forbidden paths',
+    (path) => {
+      expect(() => assert(path.split('/'), Bip32PathStruct)).toThrow(
+        `The path "${path}" is not allowed for entropy derivation.`,
+      );
+    },
+  );
 });
 
 describe('Bip32EntropyStruct', () => {
@@ -143,6 +152,15 @@ describe('SnapIdsStruct', () => {
 describe('isSnapManifest', () => {
   it('returns true for a valid snap manifest', () => {
     expect(isSnapManifest(getSnapManifest())).toBe(true);
+  });
+
+  it('accepts $schema property', () => {
+    const manifest = {
+      ...getSnapManifest(),
+      $schema:
+        'https://raw.githubusercontent.com/MetaMask/SIPs/main/assets/sip-9/snap.manifest.schema.json',
+    };
+    expect(isSnapManifest(manifest)).toBe(true);
   });
 
   it.each([

@@ -25,6 +25,7 @@ import {
   union,
 } from 'superstruct';
 
+import { isEqual } from '../array';
 import { CronjobSpecificationArrayStruct } from '../cronjob';
 import { SIP_6_MAGIC_VALUE, STATE_ENCRYPTION_MAGIC_VALUE } from '../entropy';
 import { RpcOriginsStruct } from '../json-rpc';
@@ -38,6 +39,13 @@ const FORBIDDEN_PURPOSES: string[] = [
   SIP_6_MAGIC_VALUE,
   STATE_ENCRYPTION_MAGIC_VALUE,
 ];
+
+export const FORBIDDEN_COIN_TYPES: number[] = [60];
+const FORBIDDEN_PATHS: string[][] = FORBIDDEN_COIN_TYPES.map((coinType) => [
+  'm',
+  "44'",
+  `${coinType}'`,
+]);
 
 const BIP32_INDEX_REGEX = /^\d+'?$/u;
 export const Bip32PathStruct = refine(
@@ -62,6 +70,16 @@ export const Bip32PathStruct = refine(
 
     if (FORBIDDEN_PURPOSES.includes(path[1])) {
       return `The purpose "${path[1]}" is not allowed for entropy derivation.`;
+    }
+
+    if (
+      FORBIDDEN_PATHS.some((forbiddenPath) =>
+        isEqual(path.slice(0, forbiddenPath.length), forbiddenPath),
+      )
+    ) {
+      return `The path "${path.join(
+        '/',
+      )}" is not allowed for entropy derivation.`;
     }
 
     return true;
@@ -193,6 +211,7 @@ export const SnapManifestStruct = object({
   }),
   initialPermissions: PermissionsStruct,
   manifestVersion: literal('0.1'),
+  $schema: optional(string()), // enables JSON-Schema linting in VSC and other IDEs
 });
 
 export type SnapManifest = Infer<typeof SnapManifestStruct>;

@@ -9,7 +9,7 @@ import { getEntropyBuilder } from './getEntropy';
 describe('getEntropyBuilder', () => {
   it('has the expected shape', () => {
     expect(getEntropyBuilder).toStrictEqual({
-      targetKey: 'snap_getEntropy',
+      targetName: 'snap_getEntropy',
       specificationBuilder: expect.any(Function),
       methodHooks: {
         getMnemonic: true,
@@ -28,7 +28,7 @@ describe('getEntropyBuilder', () => {
       getEntropyBuilder.specificationBuilder({ methodHooks }),
     ).toStrictEqual({
       permissionType: PermissionType.RestrictedMethod,
-      targetKey: 'snap_getEntropy',
+      targetName: 'snap_getEntropy',
       allowedCaveats: null,
       methodImplementation: expect.any(Function),
       subjectTypes: [SubjectType.Snap],

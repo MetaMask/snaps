@@ -18,7 +18,7 @@ import { ethErrors } from 'eth-rpc-errors';
 
 import { MethodHooksObject } from '../utils';
 
-const targetKey = 'snap_getBip32Entropy';
+const targetName = 'snap_getBip32Entropy';
 
 export type GetBip32EntropyMethodHooks = {
   /**
@@ -40,7 +40,7 @@ type GetBip32EntropySpecificationBuilderOptions = {
 
 type GetBip32EntropySpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.RestrictedMethod;
-  targetKey: typeof targetKey;
+  targetName: typeof targetName;
   methodImplementation: ReturnType<typeof getBip32EntropyImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
@@ -62,7 +62,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 > = ({ methodHooks }: GetBip32EntropySpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
-    targetKey,
+    targetName,
     allowedCaveats: [SnapCaveatType.PermittedDerivationPaths],
     methodImplementation: getBip32EntropyImplementation(methodHooks),
     validator: ({ caveats }) => {
@@ -85,7 +85,7 @@ const methodHooks: MethodHooksObject<GetBip32EntropyMethodHooks> = {
 };
 
 export const getBip32EntropyBuilder = Object.freeze({
-  targetKey,
+  targetName,
   specificationBuilder,
   methodHooks,
 } as const);

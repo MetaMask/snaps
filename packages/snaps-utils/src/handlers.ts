@@ -19,9 +19,14 @@ import {
  * @param args.request - The JSON-RPC request sent to the snap.
  * @returns The JSON-RPC response. This must be a JSON-serializable value.
  */
-export type OnRpcRequestHandler = (args: {
+export type OnRpcRequestHandler<
+  Params extends Json[] | Record<string, Json> | undefined =
+    | Json[]
+    | Record<string, Json>
+    | undefined,
+> = (args: {
   origin: string;
-  request: JsonRpcRequest<Json[] | Record<string, Json>>;
+  request: JsonRpcRequest<Params>;
 }) => Promise<unknown>;
 
 /**
@@ -62,9 +67,12 @@ export type OnTransactionHandler = (args: {
  * @param args - The request arguments.
  * @param args.request - The JSON-RPC request sent to the snap.
  */
-export type OnCronjobHandler = (args: {
-  request: JsonRpcRequest<Json[] | Record<string, Json>>;
-}) => Promise<unknown>;
+export type OnCronjobHandler<
+  Params extends Json[] | Record<string, Json> | undefined =
+    | Json[]
+    | Record<string, Json>
+    | undefined,
+> = (args: { request: JsonRpcRequest<Params> }) => Promise<unknown>;
 
 /**
  * The response from a snap's `onNameLookup` handler.

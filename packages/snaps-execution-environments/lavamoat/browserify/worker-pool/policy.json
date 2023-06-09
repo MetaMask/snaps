@@ -12,8 +12,20 @@
         "removeEventListener": true
       },
       "packages": {
-        "@metamask/post-message-stream>readable-stream": true,
-        "@metamask/utils": true
+        "@metamask/post-message-stream>@metamask/utils": true,
+        "@metamask/post-message-stream>readable-stream": true
+      }
+    },
+    "@metamask/post-message-stream>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>semver": true,
+        "browserify>buffer": true,
+        "eslint>debug": true,
+        "superstruct": true
       }
     },
     "@metamask/post-message-stream>readable-stream": {
@@ -46,55 +58,30 @@
         "@metamask/post-message-stream>readable-stream>safe-buffer": true
       }
     },
-    "@metamask/rpc-methods>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "@metamask/snaps-utils>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/snaps-utils>cron-parser": {
-      "packages": {
-        "@metamask/snaps-utils>cron-parser>luxon": true,
-        "browserify>browser-resolve": true
-      }
-    },
-    "@metamask/snaps-utils>cron-parser>luxon": {
-      "globals": {
-        "Intl": true
-      }
-    },
-    "@metamask/snaps-utils>rfdc": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "@metamask/snaps-utils>validate-npm-package-name": {
-      "packages": {
-        "@metamask/snaps-utils>validate-npm-package-name>builtins": true
-      }
-    },
-    "@metamask/snaps-utils>validate-npm-package-name>builtins": {
-      "packages": {
-        "process": true,
-        "ts-jest>semver": true
-      }
-    },
     "@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
       },
       "packages": {
+        "@metamask/utils>semver": true,
         "browserify>buffer": true,
         "eslint>debug": true,
-        "superstruct": true,
-        "ts-jest>semver": true
+        "superstruct": true
+      }
+    },
+    "@metamask/utils>semver": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@metamask/utils>semver>lru-cache": true,
+        "process": true
+      }
+    },
+    "@metamask/utils>semver>lru-cache": {
+      "packages": {
+        "@metamask/utils>semver>lru-cache>yallist": true
       }
     },
     "browserify>buffer": {
@@ -147,76 +134,27 @@
         "process": true
       }
     },
-    "external:../snaps-utils/src/checksum.ts": {
-      "packages": {
-        "@metamask/rpc-methods>@noble/hashes": true,
-        "@metamask/utils": true,
-        "external:../snaps-utils/src/virtual-file/VirtualFile.ts": true
+    "external:../snaps-utils/src/icon.ts": {
+      "builtin": {
+        "buffer": true
       }
     },
-    "external:../snaps-utils/src/cronjob.ts": {
+    "external:../snaps-utils/src/index.executionenv.ts": {
       "packages": {
-        "@metamask/snaps-utils>cron-parser": true,
-        "@metamask/utils": true,
-        "superstruct": true
-      }
-    },
-    "external:../snaps-utils/src/deep-clone.ts": {
-      "packages": {
-        "@metamask/snaps-utils>rfdc": true
-      }
-    },
-    "external:../snaps-utils/src/index.browser.ts": {
-      "packages": {
-        "external:../snaps-utils/src/caveats.ts": true,
-        "external:../snaps-utils/src/checksum.ts": true,
-        "external:../snaps-utils/src/cronjob.ts": true,
-        "external:../snaps-utils/src/deep-clone.ts": true,
-        "external:../snaps-utils/src/default-endowments.ts": true,
-        "external:../snaps-utils/src/entropy.ts": true,
         "external:../snaps-utils/src/handlers.ts": true,
-        "external:../snaps-utils/src/iframe.ts": true,
-        "external:../snaps-utils/src/json-rpc.ts": true,
         "external:../snaps-utils/src/logging.ts": true,
-        "external:../snaps-utils/src/manifest/index.browser.ts": true,
         "external:../snaps-utils/src/namespace.ts": true,
-        "external:../snaps-utils/src/notification.ts": true,
-        "external:../snaps-utils/src/path.ts": true,
-        "external:../snaps-utils/src/snaps.ts": true,
-        "external:../snaps-utils/src/types.ts": true,
-        "external:../snaps-utils/src/versions.ts": true,
-        "external:../snaps-utils/src/virtual-file/index.browser.ts": true
-      }
-    },
-    "external:../snaps-utils/src/json-rpc.ts": {
-      "packages": {
-        "@metamask/utils": true,
-        "superstruct": true
+        "external:../snaps-utils/src/types.ts": true
       }
     },
     "external:../snaps-utils/src/logging.ts": {
       "globals": {
-        "console": true
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true
       },
       "packages": {
         "@metamask/utils": true
-      }
-    },
-    "external:../snaps-utils/src/manifest/index.browser.ts": {
-      "packages": {
-        "external:../snaps-utils/src/manifest/validation.ts": true
-      }
-    },
-    "external:../snaps-utils/src/manifest/validation.ts": {
-      "packages": {
-        "@metamask/utils": true,
-        "external:../snaps-utils/src/cronjob.ts": true,
-        "external:../snaps-utils/src/entropy.ts": true,
-        "external:../snaps-utils/src/json-rpc.ts": true,
-        "external:../snaps-utils/src/namespace.ts": true,
-        "external:../snaps-utils/src/snaps.ts": true,
-        "external:../snaps-utils/src/types.ts": true,
-        "superstruct": true
       }
     },
     "external:../snaps-utils/src/namespace.ts": {
@@ -225,52 +163,13 @@
         "superstruct": true
       }
     },
-    "external:../snaps-utils/src/notification.ts": {
-      "packages": {
-        "@metamask/utils": true,
-        "external:../snaps-utils/src/namespace.ts": true,
-        "superstruct": true
-      }
-    },
-    "external:../snaps-utils/src/path.ts": {
-      "packages": {
-        "@metamask/utils": true
-      }
-    },
-    "external:../snaps-utils/src/snaps.ts": {
-      "packages": {
-        "@metamask/snaps-utils>@scure/base": true,
-        "@metamask/snaps-utils>validate-npm-package-name": true,
-        "@metamask/utils": true,
-        "external:../snaps-utils/src/caveats.ts": true,
-        "external:../snaps-utils/src/checksum.ts": true,
-        "external:../snaps-utils/src/types.ts": true,
-        "superstruct": true,
-        "ts-jest>fast-json-stable-stringify": true
-      }
-    },
     "external:../snaps-utils/src/types.ts": {
+      "globals": {
+        "URL": true
+      },
       "packages": {
         "@metamask/utils": true,
         "superstruct": true
-      }
-    },
-    "external:../snaps-utils/src/versions.ts": {
-      "packages": {
-        "@metamask/utils": true,
-        "superstruct": true,
-        "ts-jest>semver": true
-      }
-    },
-    "external:../snaps-utils/src/virtual-file/VirtualFile.ts": {
-      "packages": {
-        "@metamask/utils": true,
-        "external:../snaps-utils/src/deep-clone.ts": true
-      }
-    },
-    "external:../snaps-utils/src/virtual-file/index.browser.ts": {
-      "packages": {
-        "external:../snaps-utils/src/virtual-file/VirtualFile.ts": true
       }
     },
     "process": {
@@ -279,18 +178,10 @@
         "setTimeout": true
       }
     },
-    "ts-jest>semver": {
+    "superstruct": {
       "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "process": true,
-        "ts-jest>semver>lru-cache": true
-      }
-    },
-    "ts-jest>semver>lru-cache": {
-      "packages": {
-        "ts-jest>semver>lru-cache>yallist": true
+        "console.warn": true,
+        "define": true
       }
     }
   }

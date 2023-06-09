@@ -1,3 +1,4 @@
+export * from './array';
 export * from './caveats';
 export * from './cronjob';
 export * from './checksum';
@@ -19,5 +20,6 @@ export * from './path';
 export * from './post-process';
 export * from './snaps';
 export * from './types';
+export * from './validation';
 export * from './versions';
 export * from './virtual-file';

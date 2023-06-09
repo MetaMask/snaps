@@ -25,7 +25,7 @@ import { extract as tarExtract } from 'tar-stream';
 
 import { DetectSnapLocationOptions, SnapLocation } from './location';
 
-const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
+export const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
 
 interface NpmMeta {
   registry: URL;
@@ -203,25 +203,27 @@ export class NpmLocation implements SnapLocation {
 // Safety limit for tarballs, 250 MB in bytes
 const TARBALL_SIZE_SAFETY_LIMIT = 262144000;
 
+// Incomplete type
+export type PartialNpmMetadata = {
+  versions: Record<string, { dist: { tarball: string } }>;
+};
+
 /**
- * Fetches the tarball (`.tgz` file) of the specified package and version from
- * the public npm registry. Throws an error if fetching fails.
+ * Fetches the NPM metadata of the specified package from
+ * the public npm registry.
  *
- * @param packageName - The name of the package whose tarball to fetch.
- * @param versionRange - The SemVer range of the package to fetch. The highest
- * version satisfying the range will be fetched.
- * @param registryUrl - The URL of the npm registry to fetch the tarball from.
+ * @param packageName - The name of the package whose metadata to fetch.
+ * @param registryUrl - The URL of the npm registry to fetch the metadata from.
  * @param fetchFunction - The fetch function to use. Defaults to the global
  * {@link fetch}. Useful for Node.js compatibility.
- * @returns A tuple of the {@link Response} for the package tarball and the
- * actual version of the package.
+ * @returns The NPM metadata object.
+ * @throws If fetching the metadata fails.
  */
-async function fetchNpmTarball(
+export async function fetchNpmMetadata(
   packageName: string,
-  versionRange: SemVerRange,
   registryUrl: URL | string,
   fetchFunction: typeof fetch,
-): Promise<[ReadableStream, SemVerVersion]> {
+): Promise<PartialNpmMetadata> {
   const packageResponse = await fetchFunction(
     new URL(packageName, registryUrl).toString(),
   );
@@ -238,7 +240,36 @@ async function fetchNpmTarball(
     );
   }
 
-  const versions = Object.keys((packageMetadata as any)?.versions ?? {}).map(
+  return packageMetadata as PartialNpmMetadata;
+}
+
+/**
+ * Fetches the tarball (`.tgz` file) of the specified package and version from
+ * the public npm registry.
+ *
+ * @param packageName - The name of the package whose tarball to fetch.
+ * @param versionRange - The SemVer range of the package to fetch. The highest
+ * version satisfying the range will be fetched.
+ * @param registryUrl - The URL of the npm registry to fetch the tarball from.
+ * @param fetchFunction - The fetch function to use. Defaults to the global
+ * {@link fetch}. Useful for Node.js compatibility.
+ * @returns A tuple of the {@link Response} for the package tarball and the
+ * actual version of the package.
+ * @throws If fetching the tarball fails.
+ */
+async function fetchNpmTarball(
+  packageName: string,
+  versionRange: SemVerRange,
+  registryUrl: URL | string,
+  fetchFunction: typeof fetch,
+): Promise<[ReadableStream, SemVerVersion]> {
+  const packageMetadata = await fetchNpmMetadata(
+    packageName,
+    registryUrl,
+    fetchFunction,
+  );
+
+  const versions = Object.keys(packageMetadata?.versions ?? {}).map(
     (version) => {
       assertIsSemVerVersion(version);
       return version;
@@ -253,8 +284,8 @@ async function fetchNpmTarball(
     );
   }
 
-  const tarballUrlString = (packageMetadata as any)?.versions?.[targetVersion]
-    ?.dist?.tarball;
+  const tarballUrlString =
+    packageMetadata?.versions?.[targetVersion]?.dist?.tarball;
 
   if (
     !isValidUrl(tarballUrlString) ||

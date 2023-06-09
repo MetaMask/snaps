@@ -1,11 +1,11 @@
 {
   "name": "browserify-snap",
-  "version": "0.33.0-flask.1",
+  "version": "0.34.1-flask.1",
   "private": true,
   "description": "An example Snap built using TypeScript and Browserify",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "license": "ISC",
   "main": "src/index.js",
@@ -17,7 +17,11 @@
     "build": "gulp build",
     "manifest": "mm-snap manifest --fix",
     "eval": "mm-snap eval -b dist/snap.js",
-    "serve": "concurrently \"gulp watch\" \"mm-snap serve\""
+    "serve": "concurrently \"gulp watch\" \"mm-snap serve\"",
+    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../../../.gitignore",
+    "lint:ci": "yarn lint"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",

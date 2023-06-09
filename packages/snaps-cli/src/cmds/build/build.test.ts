@@ -15,6 +15,10 @@ jest.mock('@metamask/snaps-utils', () => ({
   getOutfilePath: () => path.normalize('dist/bundle.js'),
 }));
 
+jest.mock('../eval/evalHandler');
+jest.mock('../manifest/manifestHandler');
+jest.mock('./bundle');
+
 describe('build', () => {
   describe('build', () => {
     global.snaps = {
