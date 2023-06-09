@@ -30,12 +30,12 @@
   },
   "dependencies": {
     "@metamask/key-tree": "^7.0.0",
+    "@metamask/rpc-errors": "^5.1.1",
     "@metamask/snaps-types": "workspace:^",
     "@metamask/snaps-ui": "workspace:^",
     "@metamask/utils": "^6.0.0",
     "@noble/ed25519": "^1.6.0",
-    "@noble/secp256k1": "^1.7.1",
-    "eth-rpc-errors": "^4.0.3"
+    "@noble/secp256k1": "^1.7.1"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.3.1",

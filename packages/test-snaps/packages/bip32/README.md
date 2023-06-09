@@ -1,3 +1,10 @@
-# BIP-32 Test Snap
+# `@metamask/bip32-example-snap`
 
-This Snap tests deriving BIP-32 keys and signing transactions.
+This snap demonstrates the use of `snap_getBip32Entropy` and
+`snap_getBip32PublicKey` to derive a BIP-32 public key and private key from the
+user's secret recovery phrase.
+
+> **Note**: Using `snap_getBip32Entropy` and `snap_getBip32PublicKey`
+> requires their respective `snap_getBip32Entropy` and `snap_getBip32PublicKey`
+> permissions. Refer to [the documentation](https://docs.metamask.io/snaps/reference/rpc-api/#snap_getbip32entropy)
+> for more information.

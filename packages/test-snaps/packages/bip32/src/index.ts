@@ -1,4 +1,4 @@
-import { SLIP10Node } from '@metamask/key-tree';
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import { DialogType, OnRpcRequestHandler } from '@metamask/snaps-types';
 import { panel, text, heading, copyable } from '@metamask/snaps-ui';
 import {
@@ -10,46 +10,25 @@ import {
 } from '@metamask/utils';
 import { sign as signEd25519 } from '@noble/ed25519';
 import { sign as signSecp256k1 } from '@noble/secp256k1';
-import { ethErrors } from 'eth-rpc-errors';
 
-type GetBip32EntropyParams = {
-  path: string[];
-  curve: 'secp256k1' | 'ed25519';
-  [key: string]: unknown;
-};
+import { GetBip32PublicKeyParams, SignMessageParams } from './types';
+import { getPrivateNode, getPublicKey } from './utils';
 
-type GetBip32PublicKeyParams = {
-  path: ['m', ...(`${number}` | `${number}'`)[]];
-  curve: 'secp256k1' | 'ed25519';
-  compressed?: boolean | undefined;
-  [key: string]: unknown;
-};
-
-type GetAccountParams = GetBip32EntropyParams | GetBip32PublicKeyParams;
-
-type SignMessageParams = GetAccountParams & { message: string };
-
-const getSLIP10Node = async (
-  params: GetBip32EntropyParams,
-): Promise<SLIP10Node> => {
-  const json = await snap.request({
-    method: 'snap_getBip32Entropy',
-    params,
-  });
-
-  return SLIP10Node.fromJSON(json);
-};
-
-const getPublicKey = async (
-  params: GetBip32PublicKeyParams,
-): Promise<string> => {
-  return await snap.request({
-    method: 'snap_getBip32PublicKey',
-    params,
-  });
-};
-
-// eslint-disable-next-line consistent-return
+/**
+ * Handle incoming JSON-RPC requests from the dapp, sent through the
+ * `wallet_invokeSnap` method. This handler handles two methods:
+ *
+ * - `getPublicKey`: Get a BIP-32 public key for a given BIP-32 path. The public
+ * key is returned in hex format.
+ * - `signMessage`: Derive a BIP-32 private key for a given BIP-32 path, and use
+ * it to sign a message. The signature is returned in hex format.
+ *
+ * @param params - The request parameters.
+ * @param params.request - The JSON-RPC request object.
+ * @returns The JSON-RPC response.
+ * @see https://docs.metamask.io/snaps/reference/exports/#onrpcrequest
+ * @see https://docs.metamask.io/snaps/reference/rpc-api/#wallet_invokesnap
+ */
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'getPublicKey':
@@ -61,12 +40,12 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       const { message, curve, ...params } = request.params as SignMessageParams;
 
       if (!message || typeof message !== 'string') {
-        throw ethErrors.rpc.invalidParams({
+        throw rpcErrors.invalidParams({
           message: `Invalid signature data: "${message}".`,
         });
       }
 
-      const node = await getSLIP10Node({ ...params, curve });
+      const node = await getPrivateNode({ ...params, curve });
 
       assert(node.privateKey);
       assert(curve === 'ed25519' || curve === 'secp256k1');
@@ -84,7 +63,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       });
 
       if (!approved) {
-        throw ethErrors.provider.userRejectedRequest();
+        throw providerErrors.userRejectedRequest();
       }
 
       if (curve === 'ed25519') {
@@ -103,12 +82,15 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         return bytesToHex(signed);
       }
 
-      break;
+      // This is guaranteed to never happen because of the `assert` above. But
+      // TypeScript doesn't know that, so we need to throw an error here.
+      throw new Error(`Unsupported curve: ${String(curve)}.`);
     }
 
-    default:
-      throw ethErrors.rpc.methodNotFound({
+    default: {
+      throw rpcErrors.methodNotFound({
         data: { method: request.method },
       });
+    }
   }
 };

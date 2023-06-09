@@ -1,13 +1,13 @@
 {
   "version": "0.34.1-flask.1",
-  "description": "This Snap tests deriving BIP-32 keys and signing transactions.",
-  "proposedName": "MetaMask BIP-32 Test Snap",
+  "description": "MetaMask example snap demonstrating the use of `snap_getBip32Entropy`.",
+  "proposedName": "MetaMask BIP-32 Example Snap",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "xAqxarg95rY3FyilIaLvCHkIhHFG/5/qhhGJfrfXWaI=",
+    "shasum": "Ct6gOS9DlSqMLWh/qGfQ/XUpqSKWWt9lMijYhB3WvIg=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
