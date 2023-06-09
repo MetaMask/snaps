@@ -155,7 +155,8 @@ gen_enforced_field(WorkspaceCwd, 'sideEffects', 'false') :-
 
 % Ensure all test-snaps have the same scripts.
 gen_enforced_field(WorkspaceCwd, 'scripts.build', 'webpack') :-
-  is_test_snap(WorkspaceCwd).
+  is_test_snap(WorkspaceCwd),
+  WorkspaceCwd \= 'packages/test-snaps/packages/wasm-example'.
 gen_enforced_field(WorkspaceCwd, 'scripts.build:clean', 'yarn clean && yarn build') :-
   is_test_snap(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'scripts.clean', 'rimraf "dist/*"') :-
