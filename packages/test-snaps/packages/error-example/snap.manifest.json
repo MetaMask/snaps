@@ -1,0 +1,26 @@
+{
+  "version": "0.34.1-flask.1",
+  "description": "A MetaMask Test Snap that throws an error",
+  "proposedName": "MetaMask Error Test Snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/test-snaps.git"
+  },
+  "source": {
+    "shasum": "QwJEfe3YAL97Honx0/qdtvG/m64mDxGZnN8eNW5rArY=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "iconPath": "images/icon.svg",
+        "packageName": "@metamask/error-example-snap",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    "endowment:rpc": {
+      "dapps": true
+    }
+  },
+  "manifestVersion": "0.1"
+}

@@ -1,7 +1,7 @@
 {
-  "name": "@metamask/dialog-example-snap",
+  "name": "@metamask/error-example-snap",
   "version": "0.34.1-flask.1",
-  "description": "MetaMask example snap demonstrating the use of `snap_dialog`.",
+  "description": "MetaMask example snap demonstrating the use of error handling in snaps.",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/test-snaps.git"
@@ -16,8 +16,8 @@
   ],
   "scripts": {
     "build": "webpack",
-    "build:dev": "yarn build",
     "build:clean": "yarn clean && yarn build",
+    "build:dev": "yarn build",
     "clean": "rimraf \"dist/*\"",
     "start": "webpack watch",
     "test": "jest --passWithNoTests",
@@ -29,9 +29,7 @@
     "lint:changelog": "yarn auto-changelog validate"
   },
   "dependencies": {
-    "@metamask/rpc-methods": "workspace:^",
-    "@metamask/snaps-types": "workspace:^",
-    "@metamask/snaps-ui": "workspace:^"
+    "@metamask/snaps-types": "workspace:^"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.3.1",
