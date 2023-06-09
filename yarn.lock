@@ -3684,9 +3684,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bip32-example-snap@workspace:packages/test-snaps/packages/bip32-example":
+"@metamask/bip32-example-snap@workspace:packages/test-snaps/packages/bip32":
   version: 0.0.0-use.local
-  resolution: "@metamask/bip32-example-snap@workspace:packages/test-snaps/packages/bip32-example"
+  resolution: "@metamask/bip32-example-snap@workspace:packages/test-snaps/packages/bip32"
   dependencies:
     "@lavamoat/allow-scripts": ^2.3.1
     "@metamask/auto-changelog": ^3.1.0
@@ -3729,9 +3729,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/bip44-example-snap@workspace:packages/test-snaps/packages/bip44-example":
+"@metamask/bip44-example-snap@workspace:packages/test-snaps/packages/bip44":
   version: 0.0.0-use.local
-  resolution: "@metamask/bip44-example-snap@workspace:packages/test-snaps/packages/bip44-example"
+  resolution: "@metamask/bip44-example-snap@workspace:packages/test-snaps/packages/bip44"
   dependencies:
     "@lavamoat/allow-scripts": ^2.3.1
     "@metamask/auto-changelog": ^3.1.0
@@ -3846,9 +3846,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/cronjob-example-snap@workspace:packages/test-snaps/packages/cronjob-example":
+"@metamask/cronjob-example-snap@workspace:packages/test-snaps/packages/cronjobs":
   version: 0.0.0-use.local
-  resolution: "@metamask/cronjob-example-snap@workspace:packages/test-snaps/packages/cronjob-example"
+  resolution: "@metamask/cronjob-example-snap@workspace:packages/test-snaps/packages/cronjobs"
   dependencies:
     "@lavamoat/allow-scripts": ^2.3.1
     "@metamask/auto-changelog": ^3.1.0
@@ -3886,9 +3886,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/dialog-example-snap@workspace:packages/test-snaps/packages/dialog-example":
+"@metamask/dialog-example-snap@workspace:packages/test-snaps/packages/dialogs":
   version: 0.0.0-use.local
-  resolution: "@metamask/dialog-example-snap@workspace:packages/test-snaps/packages/dialog-example"
+  resolution: "@metamask/dialog-example-snap@workspace:packages/test-snaps/packages/dialogs"
   dependencies:
     "@lavamoat/allow-scripts": ^2.3.1
     "@metamask/auto-changelog": ^3.1.0
@@ -3927,9 +3927,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/error-example-snap@workspace:packages/test-snaps/packages/error-example":
+"@metamask/error-example-snap@workspace:packages/test-snaps/packages/errors":
   version: 0.0.0-use.local
-  resolution: "@metamask/error-example-snap@workspace:packages/test-snaps/packages/error-example"
+  resolution: "@metamask/error-example-snap@workspace:packages/test-snaps/packages/errors"
   dependencies:
     "@lavamoat/allow-scripts": ^2.3.1
     "@metamask/auto-changelog": ^3.1.0
@@ -4066,9 +4066,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ethereum-provider-example-snap@workspace:packages/test-snaps/packages/ethereum-provider-example":
+"@metamask/ethereum-provider-example-snap@workspace:packages/test-snaps/packages/ethereum-provider":
   version: 0.0.0-use.local
-  resolution: "@metamask/ethereum-provider-example-snap@workspace:packages/test-snaps/packages/ethereum-provider-example"
+  resolution: "@metamask/ethereum-provider-example-snap@workspace:packages/test-snaps/packages/ethereum-provider"
   dependencies:
     "@lavamoat/allow-scripts": ^2.3.1
     "@metamask/auto-changelog": ^3.1.0
@@ -4106,9 +4106,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/ethers-js-example-snap@workspace:packages/test-snaps/packages/ethers-js-example":
+"@metamask/ethers-js-example-snap@workspace:packages/test-snaps/packages/ethers-js":
   version: 0.0.0-use.local
-  resolution: "@metamask/ethers-js-example-snap@workspace:packages/test-snaps/packages/ethers-js-example"
+  resolution: "@metamask/ethers-js-example-snap@workspace:packages/test-snaps/packages/ethers-js"
   dependencies:
     "@lavamoat/allow-scripts": ^2.3.1
     "@metamask/auto-changelog": ^3.1.0
@@ -4151,9 +4151,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/get-entropy-example-snap@workspace:packages/test-snaps/packages/get-entropy-example":
+"@metamask/get-entropy-example-snap@workspace:packages/test-snaps/packages/get-entropy":
   version: 0.0.0-use.local
-  resolution: "@metamask/get-entropy-example-snap@workspace:packages/test-snaps/packages/get-entropy-example"
+  resolution: "@metamask/get-entropy-example-snap@workspace:packages/test-snaps/packages/get-entropy"
   dependencies:
     "@lavamoat/allow-scripts": ^2.3.1
     "@metamask/auto-changelog": ^3.1.0
@@ -4194,9 +4194,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/insights-example-snap@workspace:packages/test-snaps/packages/insights-example":
+"@metamask/insights-example-snap@workspace:packages/test-snaps/packages/transaction-insights":
   version: 0.0.0-use.local
-  resolution: "@metamask/insights-example-snap@workspace:packages/test-snaps/packages/insights-example"
+  resolution: "@metamask/insights-example-snap@workspace:packages/test-snaps/packages/transaction-insights"
   dependencies:
     "@lavamoat/allow-scripts": ^2.3.1
     "@metamask/auto-changelog": ^3.1.0
@@ -4249,9 +4249,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/manage-state-example-snap@workspace:packages/test-snaps/packages/manage-state-example":
+"@metamask/manage-state-example-snap@workspace:packages/test-snaps/packages/manage-state":
   version: 0.0.0-use.local
-  resolution: "@metamask/manage-state-example-snap@workspace:packages/test-snaps/packages/manage-state-example"
+  resolution: "@metamask/manage-state-example-snap@workspace:packages/test-snaps/packages/manage-state"
   dependencies:
     "@lavamoat/allow-scripts": ^2.3.1
     "@metamask/auto-changelog": ^3.1.0
@@ -4325,9 +4325,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/network-example-snap@workspace:packages/test-snaps/packages/network-example":
+"@metamask/network-example-snap@workspace:packages/test-snaps/packages/network-access":
   version: 0.0.0-use.local
-  resolution: "@metamask/network-example-snap@workspace:packages/test-snaps/packages/network-example"
+  resolution: "@metamask/network-example-snap@workspace:packages/test-snaps/packages/network-access"
   dependencies:
     "@lavamoat/allow-scripts": ^2.3.1
     "@metamask/auto-changelog": ^3.1.0
@@ -4365,9 +4365,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/notification-example-snap@workspace:packages/test-snaps/packages/notification-example":
+"@metamask/notification-example-snap@workspace:packages/test-snaps/packages/notifications":
   version: 0.0.0-use.local
-  resolution: "@metamask/notification-example-snap@workspace:packages/test-snaps/packages/notification-example"
+  resolution: "@metamask/notification-example-snap@workspace:packages/test-snaps/packages/notifications"
   dependencies:
     "@lavamoat/allow-scripts": ^2.3.1
     "@metamask/auto-changelog": ^3.1.0
@@ -4464,7 +4464,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/rpc-errors@npm:^5.1.0, @metamask/rpc-errors@npm:^5.1.1":
+"@metamask/rpc-errors@npm:^5.1.0":
   version: 5.1.1
   resolution: "@metamask/rpc-errors@npm:5.1.1"
   dependencies:
@@ -4474,9 +4474,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/rpc-example-snap@workspace:packages/test-snaps/packages/rpc-example":
+"@metamask/rpc-example-snap@workspace:packages/test-snaps/packages/json-rpc":
   version: 0.0.0-use.local
-  resolution: "@metamask/rpc-example-snap@workspace:packages/test-snaps/packages/rpc-example"
+  resolution: "@metamask/rpc-example-snap@workspace:packages/test-snaps/packages/json-rpc"
   dependencies:
     "@lavamoat/allow-scripts": ^2.3.1
     "@metamask/auto-changelog": ^3.1.0
@@ -4975,7 +4975,7 @@ __metadata:
     "@metamask/eth-json-rpc-middleware": ^11.0.0
     "@metamask/key-tree": ^7.0.0
     "@metamask/permission-controller": ^4.0.0
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^5.1.0
     "@metamask/rpc-methods": "workspace:^"
     "@metamask/snaps-controllers": "workspace:^"
     "@metamask/snaps-ui": "workspace:^"
@@ -5327,9 +5327,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/wasm-example-snap@workspace:packages/test-snaps/packages/wasm-example":
+"@metamask/wasm-example-snap@workspace:packages/test-snaps/packages/wasm":
   version: 0.0.0-use.local
-  resolution: "@metamask/wasm-example-snap@workspace:packages/test-snaps/packages/wasm-example"
+  resolution: "@metamask/wasm-example-snap@workspace:packages/test-snaps/packages/wasm"
   dependencies:
     "@lavamoat/allow-scripts": ^2.3.1
     "@metamask/auto-changelog": ^3.1.0
