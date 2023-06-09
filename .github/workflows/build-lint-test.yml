@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       child-workspace-package-names: ${{ steps.workspace-package-names.outputs.child-workspace-package-names }}
-      all-child-workspace-package-names: ${{ steps.all-workspace-package-names.outputs.all-child-workspace-package-names }}
+      all-workspace-package-names: ${{ steps.workspace-package-names.outputs.all-workspace-package-names }}
     strategy:
       fail-fast: false
       matrix:
@@ -35,12 +35,8 @@ jobs:
       - name: Fetch workspace package names
         id: workspace-package-names
         run: |
-          echo "child-workspace-package-names=$(yarn child-workspace-package-names-as-json)" >> "$GITHUB_OUTPUT"
-        shell: bash
-      - name: Fetch all workspace package names
-        id: all-workspace-package-names
-        run: |
-          echo "all-child-workspace-package-names=$(yarn child-workspace-package-names-as-json --all)" >> "$GITHUB_OUTPUT"
+          echo "child-workspace-package-names=$(yarn workspaces filter --include '{.,packages/*}' --exclude 'packages/examples' --json)" >> "$GITHUB_OUTPUT"
+          echo "all-workspace-package-names=$(yarn workspaces filter --include '{.,packages/**}' --json)" >> "$GITHUB_OUTPUT"
         shell: bash
 
   build:
@@ -134,7 +130,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package-name: ${{ fromJson(needs.prepare.outputs.all-child-workspace-package-names) }}
+        package-name: ${{ fromJson(needs.prepare.outputs.all-workspace-package-names) }}
     steps:
       - uses: actions/checkout@v3
       - name: Setup Node
