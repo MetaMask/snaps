@@ -87,6 +87,34 @@ npm_version_range_out_of_sync(VersionRange1, VersionRange2) :-
     )
   ).
 
+% Slice a list from From to To.
+slice(Left, From, To, Right):-
+  length(LeftFrom, From),
+  length([_|LeftTo], To),
+  append(LeftTo, _, Left),
+  append(LeftFrom, Right, LeftTo).
+
+% True if and only if the given workspace directory is an example.
+is_example(WorkspaceCwd) :-
+  atomic_list_concat(Parts, '/', WorkspaceCwd),
+  slice(Parts, 0, 4, RootParts),
+  atomic_list_concat(RootParts, '/', RootCwd),
+  RootCwd = 'packages/examples/examples'.
+
+% True if and only if the given workspace directory is a nested example.
+is_nested_example(WorkspaceCwd) :-
+  atomic_list_concat(Parts, '/', WorkspaceCwd),
+  slice(Parts, 0, 6, RootParts),
+  atomic_list_concat(RootParts, '/', RootCwd),
+  RootCwd = 'packages/examples/examples/signer/packages'.
+
+% True if and only if the given workspace directory is a nested example.
+is_test_snap(WorkspaceCwd) :-
+  atomic_list_concat(Parts, '/', WorkspaceCwd),
+  slice(Parts, 0, 6, RootParts),
+  atomic_list_concat(RootParts, '/', RootCwd),
+  RootCwd = 'packages/test-snaps/packages'.
+
 %===============================================================================
 % Constraints
 %===============================================================================
@@ -124,3 +152,17 @@ gen_enforced_dependency(WorkspaceCwd, DependencyIdent, null, DependencyType) :-
 gen_enforced_field(WorkspaceCwd, 'sideEffects', 'false') :-
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
+
+% Ensure all test-snaps have the same scripts.
+gen_enforced_field(WorkspaceCwd, 'build', 'yarn build:webpack && yarn build:manifest') :-
+  is_test_snap(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'build:webpack', 'webpack --mode production --progress') :-
+  is_test_snap(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'build:manifest', 'mm-snap manifest --fix') :-
+  is_test_snap(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'build:clean', 'yarn clean && yarn build') :-
+  is_test_snap(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'clean', 'rimraf 'dist/*') :-
+  is_test_snap(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'start', 'mm-snap watch') :-
+  is_test_snap(WorkspaceCwd).
