@@ -1,0 +1,28 @@
+{
+  "version": "0.34.1-flask.1",
+  "description": "A test snap for ethers.js requirements.",
+  "proposedName": "@metamask/test-snap-ethersjs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/test-snaps.git"
+  },
+  "source": {
+    "shasum": "0QbKsnsPtPvf9ZAam18K5KbdcEqJeZcVObq9WaQCUxk=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "@metamask/ethers-js-example-snap",
+        "registry": "https://registry.npmjs.org"
+      }
+    }
+  },
+  "initialPermissions": {
+    "endowment:rpc": {
+      "dapps": true,
+      "snaps": true
+    },
+    "snap_dialog": {},
+    "snap_getEntropy": {}
+  },
+  "manifestVersion": "0.1"
+}
