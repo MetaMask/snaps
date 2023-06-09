@@ -55,7 +55,7 @@ type GetBip32PublicKeyParameters = {
 export const Bip32PublicKeyArgsStruct = bip32entropy(
   object({
     path: Bip32PathStruct,
-    curve: enums(['ed225519', 'secp256k1']),
+    curve: enums(['ed25519', 'secp256k1']),
     compressed: optional(boolean()),
   }),
 );

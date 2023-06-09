@@ -6,7 +6,6 @@
     }
   },
   "include": ["src", "webpack.config.ts"],
-  "exclude": ["./src/**/*.test.ts"],
   "references": [
     {
       "path": "../../../snaps-types"

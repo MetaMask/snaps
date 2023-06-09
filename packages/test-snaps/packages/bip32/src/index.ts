@@ -56,8 +56,10 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
           type: DialogType.Confirmation,
           content: panel([
             heading('Signature request'),
-            text(`Do you want to ${curve} sign ${message} with :`),
-            copyable(`${add0x(node.publicKey)}?`),
+            text(
+              `Do you want to ${curve} sign "${message}" with the following public key?`,
+            ),
+            copyable(add0x(node.publicKey)),
           ]),
         },
       });
