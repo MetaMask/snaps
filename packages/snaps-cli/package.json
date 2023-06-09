@@ -7,6 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "license": "ISC",
+  "sideEffects": false,
   "main": "dist/index.js",
   "bin": {
     "mm-snap": "./dist/main.js"
