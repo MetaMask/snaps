@@ -1,0 +1,27 @@
+{
+  "version": "0.34.1-flask.1",
+  "description": "An example Snap that requests entropy.",
+  "proposedName": "MetaMask getEntropy Test Snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/test-snaps.git"
+  },
+  "source": {
+    "shasum": "alL5O4GgRl/HZoaB53I5w67ZGRqqQ3AbifSdZbrAb8A=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "@metamask/get-entropy-example-snap",
+        "registry": "https://registry.npmjs.org"
+      }
+    }
+  },
+  "initialPermissions": {
+    "endowment:rpc": {
+      "dapps": true
+    },
+    "snap_dialog": {},
+    "snap_getEntropy": {}
+  },
+  "manifestVersion": "0.1"
+}
