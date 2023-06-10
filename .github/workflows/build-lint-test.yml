@@ -59,8 +59,6 @@ jobs:
           path: |
             packages/*/dist
           key: build-${{ runner.os }}-${{ github.sha }}
-      - name: Build other files
-        run: yarn build:post-tsc:ci
       - name: Require clean working directory
         shell: bash
         run: |
