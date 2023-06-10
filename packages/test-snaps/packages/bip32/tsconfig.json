@@ -13,6 +13,9 @@
     },
     {
       "path": "../../../snaps-ui"
+    },
+    {
+      "path": "../../../snaps-webpack-plugin"
     }
   ]
 }

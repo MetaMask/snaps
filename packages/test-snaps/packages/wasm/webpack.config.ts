@@ -1,8 +1,9 @@
 import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
 import { resolve } from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
-import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
 import { Configuration, ProgressPlugin } from 'webpack';
+
+const IS_CI = Boolean(process.env.CI);
 
 const config: Configuration = {
   entry: './src/index.ts',
@@ -25,25 +26,15 @@ const config: Configuration = {
           loader: 'swc-loader',
         },
       },
-      {
-        test: /\.wasm$/u,
-        type: 'asset/inline',
-      },
     ],
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
-    plugins: [
-      new TsconfigPathsPlugin({
-        configFile: resolve(__dirname, 'tsconfig.json'),
-        baseUrl: __dirname,
-      }),
-    ],
-    alias: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      '@metamask/permission-controller': false,
-    },
     /* eslint-disable @typescript-eslint/naming-convention */
+    alias: {
+      '@metamask/permission-controller': false,
+      'is-svg': false,
+    },
     fallback: {
       assert: false,
       child_process: false,
@@ -74,10 +65,10 @@ const config: Configuration = {
     ],
   },
   plugins: [
-    new ProgressPlugin(),
     new SnapsWebpackPlugin({
       manifestPath: resolve(__dirname, 'snap.manifest.json'),
     }),
+    ...(IS_CI ? [] : [new ProgressPlugin()]),
   ],
   cache: {
     type: 'filesystem',
