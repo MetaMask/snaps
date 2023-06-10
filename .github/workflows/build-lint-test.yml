@@ -53,6 +53,12 @@ jobs:
       - run: yarn --immutable --immutable-cache
       - name: Build TypeScript files
         run: yarn build:tsc
+      - name: Cache build files
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/*/dist
+          key: build-${{ runner.os }}-${{ github.sha }}
       - name: Build other files
         run: yarn build:post-tsc:ci
       - name: Require clean working directory
@@ -63,8 +69,29 @@ jobs:
             exit 1
           fi
 
+  post-build:
+    name: Post-build
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+      - run: yarn --immutable --immutable-cache
+      - name: Restore build files
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/*/dist
+          key: build-${{ runner.os }}-${{ github.sha }}
+      - name: Post-build
+        run: yarn build:post-tsc:ci
+
   build-simulator:
-    name: Build Snaps Simulator
+    name: Build "@metamask/snaps-simulator"
     runs-on: ubuntu-latest
     needs: prepare
     steps:
@@ -91,7 +118,7 @@ jobs:
       - name: Build Webpack vendor
         if: steps.cache-webpack-vendor.outputs.cache-hit != 'true'
         run: yarn workspace @metamask/snaps-simulator run build:vendor
-      - name: Build Webpack
+      - name: Build
         run: yarn workspace @metamask/snaps-simulator run build:webpack
       - name: Cache "@metamask/snaps-simulator" build
         id: cache-e2e-simulator-build
@@ -224,6 +251,7 @@ jobs:
     name: E2E Test
     runs-on: ubuntu-latest
     needs:
+      - build
       - build-simulator
     strategy:
       fail-fast: false
@@ -242,6 +270,12 @@ jobs:
           path: |
             packages/snaps-execution-environments/dist/browserify
           key: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+      - name: Restore build files
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/*/dist
+          key: build-${{ runner.os }}-${{ github.sha }}
       - name: Restore "@metamask/snaps-simulator" build
         uses: actions/cache@v3
         with:

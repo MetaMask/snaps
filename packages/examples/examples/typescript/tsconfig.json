@@ -13,6 +13,9 @@
     },
     {
       "path": "../../../snaps-jest"
+    },
+    {
+      "path": "../../../snaps-webpack-plugin"
     }
   ]
 }

@@ -1,7 +1,9 @@
 import { resolve } from 'path';
+import * as process from 'process';
 import TerserPlugin from 'terser-webpack-plugin';
-import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
-import { Configuration } from 'webpack';
+import { Configuration, ProgressPlugin } from 'webpack';
+
+const IS_CI = Boolean(process.env.CI);
 
 const config: Configuration = {
   entry: './src/index.ts',
@@ -27,12 +29,6 @@ const config: Configuration = {
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
-    plugins: [
-      new TsconfigPathsPlugin({
-        configFile: resolve(__dirname, 'tsconfig.json'),
-        baseUrl: __dirname,
-      }),
-    ],
   },
   optimization: {
     minimize: true,
@@ -42,6 +38,7 @@ const config: Configuration = {
       }),
     ],
   },
+  plugins: IS_CI ? [] : [new ProgressPlugin()],
 };
 
 export default config;
