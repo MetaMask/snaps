@@ -78,7 +78,7 @@ module.exports = {
               report.reportInfo(null, workspace.relativeCwd);
             }
 
-            const result = filteredWorkspaces.map((workspace) => workspace.manifest.name.name);
+            const result = filteredWorkspaces.map((workspace) => workspace.manifest.raw.name);
             report.reportJson(result);
           },
         );
