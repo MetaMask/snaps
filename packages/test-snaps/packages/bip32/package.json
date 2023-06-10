@@ -16,10 +16,11 @@
     "snap.manifest.json"
   ],
   "scripts": {
-    "build": "webpack",
+    "webpack": "ts-node --swc -r tsconfig-paths/register ../../../../node_modules/.bin/webpack",
+    "build": "yarn webpack",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf \"dist/*\"",
-    "start": "webpack watch",
+    "start": "yarn webpack watch",
     "jest": "ts-node --swc -r tsconfig-paths/register ../../../../node_modules/.bin/jest",
     "test": "yarn test:e2e",
     "test:e2e": "yarn jest",

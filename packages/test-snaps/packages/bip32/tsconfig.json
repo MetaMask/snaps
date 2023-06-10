@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "baseUrl": "./",
     "paths": {
       "@metamask/*": ["../../../*/src"]
     }

@@ -39,7 +39,8 @@ registry [here](https://github.com/satoshilabs/slips/blob/master/slip-0044.md).
 This snap exposes an `onRpcRequest` handler, which supports the following
 JSON-RPC methods:
 
-- `getAccount`: Get the public key for the given `coinType` and `addressIndex`.
+- `getPublicKey`: Get the public key for the given `coinType` and
+  `addressIndex`.
 - `signMessage`: Sign a `message` with the private key for the given `coinType`
   and `addressIndex`. For this particular example, we use the `BLS12-381`
   elliptic curve to sign the message.

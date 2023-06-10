@@ -245,6 +245,55 @@ jobs:
         with:
           files: packages/**/coverage-final.json
 
+  test-e2e:
+    name: E2E Test
+    runs-on: ubuntu-latest
+    needs:
+      - build
+      - build-simulator
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [16.x, 18.x]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
+      - name: Restore "@metamask/snaps-execution-environments" build
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/snaps-execution-environments/dist/browserify
+          key: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+      - name: Restore build files
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/*/dist
+          key: build-${{ runner.os }}-${{ github.sha }}
+      - name: Restore "@metamask/snaps-simulator" build
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/snaps-simulator/dist/webpack
+          key: e2e-simulator-build-${{ runner.os }}-${{ github.sha }}
+      - run: yarn --immutable --immutable-cache
+      - name: Install Google Chrome
+        run: yarn install-chrome
+      - run: yarn test:e2e:ci
+        env:
+          NODE_ENV: test
+      - name: Require clean working directory
+        shell: bash
+        run: |
+          if ! git diff --exit-code; then
+            echo "Working tree dirty at end of job"
+            exit 1
+          fi
+
   platform-compatibility-test:
     name: Test platform compatibility
     runs-on: ${{ matrix.os }}
