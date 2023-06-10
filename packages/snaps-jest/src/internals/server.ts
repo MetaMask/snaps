@@ -1,5 +1,7 @@
+import { assertIsSnapManifest, SnapManifest } from '@metamask/snaps-utils';
 import { createModuleLogger } from '@metamask/utils';
 import express from 'express';
+import { promises as fs } from 'fs';
 import { createServer, Server } from 'http';
 import { resolve as pathResolve, dirname } from 'path';
 
@@ -28,6 +30,82 @@ export type ServerOptions = Required<
 >;
 
 /**
+ * Check that the given path is a file. If the underlying `fs.stat` call throws
+ * an error, and the error code is `ENOENT`, then this function will return
+ * `false`. Otherwise, the error will be rethrown.
+ *
+ * @param path - The path to check.
+ * @returns Whether the path is a file.
+ */
+async function isFile(path: string): Promise<boolean> {
+  try {
+    const stat = await fs.stat(path);
+    return stat.isFile();
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      return false;
+    }
+
+    throw error;
+  }
+}
+
+/**
+ * Check that the given path is a directory. If the underlying `fs.stat` call
+ * throws an error, and the error code is `ENOENT`, then this function will
+ * return `false`. Otherwise, the error will be rethrown.
+ *
+ * @param path - The path to check.
+ * @returns Whether the path is a directory.
+ */
+async function isDirectory(path: string): Promise<boolean> {
+  try {
+    const stat = await fs.stat(path);
+    return stat.isDirectory();
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      return false;
+    }
+
+    throw error;
+  }
+}
+
+/**
+ * Check that:
+ *
+ * - The root directory exists.
+ * - The root directory contains a `snap.manifest.json` file.
+ * - The file path in the manifest exists.
+ *
+ * @param root - The root directory.
+ * @throws If any of the checks fail.
+ */
+async function assertRoot(root: string) {
+  if (!root) {
+    throw new Error('You must specify a root directory.');
+  }
+
+  if (!(await isDirectory(root))) {
+    throw new Error(`Root directory "${root}" is not a directory.`);
+  }
+
+  const manifestPath = pathResolve(root, 'snap.manifest.json');
+  const manifest: SnapManifest = await fs
+    .readFile(manifestPath, 'utf8')
+    .then(JSON.parse);
+
+  assertIsSnapManifest(manifest);
+  const filePath = pathResolve(root, manifest.source.location.npm.filePath);
+
+  if (!(await isFile(filePath))) {
+    throw new Error(
+      `File "${filePath}" does not exist, or is not a file. Did you forget to build your snap?`,
+    );
+  }
+}
+
+/**
  * Start an HTTP server on `localhost` with a random port. This is used to serve
  * the static files for the environment.
  *
@@ -37,8 +115,9 @@ export type ServerOptions = Required<
  * @returns The HTTP server.
  */
 export async function startServer(options: ServerOptions) {
-  const log = createModuleLogger(rootLogger, 'server');
+  await assertRoot(options.root);
 
+  const log = createModuleLogger(rootLogger, 'server');
   const app = express();
 
   app.use('/environment', express.static(SNAPS_EXECUTION_ENVIRONMENTS_PATH));

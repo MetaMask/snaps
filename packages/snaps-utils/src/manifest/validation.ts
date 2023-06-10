@@ -244,7 +244,6 @@ export function assertIsSnapManifest(
 /**
  * Creates a {@link SnapManifest} object from JSON.
  *
- *
  * @param value - The value to check.
  * @throws If the value cannot be coerced to a {@link SnapManifest} object.
  * @returns The created {@link SnapManifest} object.
