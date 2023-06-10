@@ -5857,13 +5857,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/glob@npm:*, @types/glob@npm:^7.1.1":
+"@types/glob@npm:7.1.4":
   version: 7.1.4
   resolution: "@types/glob@npm:7.1.4"
   dependencies:
     "@types/minimatch": "*"
     "@types/node": "*"
   checksum: 6911a956448f5eddea1e4371f814bf92072e8ceedba83de6ce2a6745938a6f0327376e1c0072fa0d7b3b73d84e255aafda53c1dff148225cfe542a8cc5d54b02
+  languageName: node
+  linkType: hard
+
+"@types/glob@patch:@types/glob@npm%3A7.1.4#./.yarn/patches/@types-glob-npm-7.1.4-d45247eaa2.patch::locator=root%40workspace%3A.":
+  version: 7.1.4
+  resolution: "@types/glob@patch:@types/glob@npm%3A7.1.4#./.yarn/patches/@types-glob-npm-7.1.4-d45247eaa2.patch::version=7.1.4&hash=5dccb7&locator=root%40workspace%3A."
+  dependencies:
+    "@types/minimatch": "*"
+    "@types/node": "*"
+  checksum: a7c3ddf075353c407ba3d9142b914756088f2b7ef213f2f5f10553151f8cfb7769cf9b9c513b75f2dcf67f1c66a05b39a6676f3fee40978b524c19795daf250e
   languageName: node
   linkType: hard
 
@@ -17263,12 +17273,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^7.0.0":
-  version: 7.4.1
-  resolution: "minimatch@npm:7.4.1"
+"minimatch@npm:^7.0.0, minimatch@npm:^7.4.1":
+  version: 7.4.6
+  resolution: "minimatch@npm:7.4.6"
   dependencies:
     brace-expansion: ^2.0.1
-  checksum: fd930530878ba08e5a57eacc0e69fbc980d4c1dfeb98c6c5eba3a05a10b1f6d8dd4ecca59442a1909107b7ef891b43c005720c1a8ed1a02db962fd0327bf9557
+  checksum: 1a6c8d22618df9d2a88aabeef1de5622eb7b558e9f8010be791cb6b0fa6e102d39b11c28d75b855a1e377b12edc7db8ff12a99c20353441caa6a05e78deb5da9
   languageName: node
   linkType: hard
 
@@ -17278,15 +17288,6 @@ __metadata:
   dependencies:
     brace-expansion: ^2.0.1
   checksum: 8957d8105be6729bf1d3af9c410b2a38ffcf3cd17d4ffaf715b2aa4841490aaa82f1ebff785e71b5b97747199ccc61027db597495941cf46243d9a64382e1560
-  languageName: node
-  linkType: hard
-
-"minimatch@npm:^9.0.1":
-  version: 9.0.1
-  resolution: "minimatch@npm:9.0.1"
-  dependencies:
-    brace-expansion: ^2.0.1
-  checksum: 97f5f5284bb57dc65b9415dec7f17a0f6531a33572193991c60ff18450dcfad5c2dad24ffeaf60b5261dccd63aae58cc3306e2209d57e7f88c51295a532d8ec3
   languageName: node
   linkType: hard
 
@@ -20661,7 +20662,7 @@ __metadata:
     geckodriver: ^3.2.0
     jest: ^29.0.2
     lint-staged: ^12.4.1
-    minimatch: ^9.0.1
+    minimatch: ^7.4.1
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^4.1.2

@@ -43,6 +43,9 @@ module.exports = {
       });
 
       async execute() {
+        // Note: We have to import `minimatch` here, because Yarn will always
+        // load the plugin, even if the command is not used, and `minimatch`
+        // may not be installed.
         const { minimatch } = await import('minimatch');
 
         const configuration = await Configuration.find(
