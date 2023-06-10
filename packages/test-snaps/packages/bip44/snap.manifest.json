@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "mCVkAHzR3ESKB/665QbDAs9GcBFWUDdHkkJKVmXDdwo=",
+    "shasum": "15WGpwSjTeGYKAUoVwllUxSJKClrR4nNfQdmKG/hMOE=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -24,6 +24,9 @@
     "snap_getBip44Entropy": [
       {
         "coinType": 1
+      },
+      {
+        "coinType": 3
       }
     ]
   },

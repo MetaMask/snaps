@@ -1,59 +1,41 @@
-import { deriveBIP44AddressKey } from '@metamask/key-tree';
+import { rpcErrors, providerErrors } from '@metamask/rpc-errors';
 import { DialogType, OnRpcRequestHandler } from '@metamask/snaps-types';
 import { panel, text, heading, copyable } from '@metamask/snaps-ui';
-import { bytesToHex, remove0x } from '@metamask/utils';
+import { bytesToHex, stringToBytes } from '@metamask/utils';
 import { getPublicKey, sign } from '@noble/bls12-381';
-import { ethErrors } from 'eth-rpc-errors';
 
-type GetAccountParams = {
-  coinType: number;
-  [key: string]: unknown;
-};
+import { GetAccountParams, SignMessageParams } from './types';
+import { getPrivateKey } from './utils';
 
 /**
- * Get a private key for the specified coin type.
+ * Handle incoming JSON-RPC requests from the dapp, sent through the
+ * `wallet_invokeSnap` method. This handler handles two methods:
  *
- * @param coinType - The coin type to get the private key for.
- * @returns The private key as Uint8Array.
+ * - `getPublicKey`: Get a BIP-44 public key for a given BIP-44 coin type and
+ * address index. The public key is returned in hex format.
+ * - `signMessage`: Derive a BIP-44 private key for a given BIP-44 coin type and
+ * address index, and use it to sign a message. The signature is returned in hex
+ * format.
+ *
+ * @param params - The request parameters.
+ * @param params.request - The JSON-RPC request object.
+ * @returns The JSON-RPC response.
+ * @see https://docs.metamask.io/snaps/reference/exports/#onrpcrequest
+ * @see https://docs.metamask.io/snaps/reference/rpc-api/#wallet_invokesnap
  */
-const getPrivateKey = async (coinType = 1) => {
-  const coinTypeNode = await snap.request({
-    method: 'snap_getBip44Entropy',
-    params: {
-      coinType,
-    },
-  });
-
-  return remove0x(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    (
-      await deriveBIP44AddressKey(coinTypeNode, {
-        account: 0,
-        change: 0,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        address_index: 0,
-      })
-    ).privateKey!,
-  );
-};
-
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
-    case 'getAccount': {
+    case 'getPublicKey': {
       const params = request.params as GetAccountParams;
-      return bytesToHex(getPublicKey(await getPrivateKey(params?.coinType)));
+      return bytesToHex(getPublicKey(await getPrivateKey(params)));
     }
 
     case 'signMessage': {
-      const privateKey = await getPrivateKey();
-      const pubKey = getPublicKey(privateKey);
-      const data = (request.params as string[])[0];
+      const params = request.params as SignMessageParams;
+      const privateKey = await getPrivateKey(params);
+      const publicKey = bytesToHex(getPublicKey(privateKey));
 
-      if (!data || typeof data !== 'string') {
-        throw ethErrors.rpc.invalidParams({
-          message: `Invalid signature data: "${data}".`,
-        });
-      }
+      const { message } = params;
 
       const approved = await snap.request({
         method: 'snap_dialog',
@@ -61,20 +43,24 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
           type: DialogType.Confirmation,
           content: panel([
             heading('Signature request'),
-            text(`Do you want to BLS sign ${data} with :`),
-            copyable(`${bytesToHex(pubKey)}?`),
+            text(
+              `Do you want to BLS sign "${message}" with the following public key?`,
+            ),
+            copyable(publicKey),
           ]),
         },
       });
+
       if (!approved) {
-        throw ethErrors.provider.userRejectedRequest();
+        throw providerErrors.userRejectedRequest();
       }
-      const newLocal = await sign(new TextEncoder().encode(data), privateKey);
+
+      const newLocal = await sign(stringToBytes(message), privateKey);
       return bytesToHex(newLocal);
     }
 
     default:
-      throw ethErrors.rpc.methodNotFound({
+      throw rpcErrors.methodNotFound({
         data: { method: request.method },
       });
   }

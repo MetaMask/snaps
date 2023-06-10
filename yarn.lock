@@ -3735,6 +3735,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/bip44-example-snap@workspace:packages/test-snaps/packages/bip44"
   dependencies:
+    "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.3.1
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/eslint-config": ^11.0.0
@@ -3742,7 +3743,9 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/key-tree": ^7.0.0
+    "@metamask/rpc-errors": ^5.1.1
     "@metamask/snaps-cli": "workspace:^"
+    "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
     "@metamask/snaps-ui": "workspace:^"
     "@metamask/snaps-webpack-plugin": "workspace:^"
@@ -3761,7 +3764,6 @@ __metadata:
     eslint-plugin-jsdoc: ^39.6.2
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^4.2.1
-    eth-rpc-errors: ^4.0.3
     jest: ^29.0.2
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11

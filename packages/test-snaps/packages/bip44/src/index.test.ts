@@ -26,51 +26,45 @@ describe('onRpcRequest', () => {
   });
 
   describe('getPublicKey', () => {
-    it('returns an secp256k1 public key for a given BIP-32 path', async () => {
+    it('returns a BIP-44 public key for a given coin type and address index', async () => {
       const { request, close } = await installSnap();
 
       const response = await request({
         method: 'getPublicKey',
         params: {
-          path: ['m', "44'", "0'"],
-          curve: 'secp256k1',
+          coinType: 3,
+          addressIndex: 5,
         },
       });
 
       expect(response).toRespondWith(
-        '0x0423a6a6f8800b2d0710595969f40148a28953c9eebc0c0da78a89be3b3935f59c0069dfe1cace1a083e9c962c9f2ef932e9346cd907e647d993d787c4e59d03d1',
+        '0x96e2b36a8af526928326683f6d8ddb82fbfcd1ba1cd3f0382a4f092a19fcb46b87e836dd34075514c9b1a3b8f7bdc4f0',
       );
 
       await close();
     });
 
-    it('returns a compressed secp256k1 public key for a given BIP-32 path', async () => {
+    it('returns a BIP-44 public key for the default coin type and address index if no parameters are provided', async () => {
       const { request, close } = await installSnap();
 
       const response = await request({
         method: 'getPublicKey',
-        params: {
-          path: ['m', "44'", "0'"],
-          curve: 'secp256k1',
-          compressed: true,
-        },
       });
 
       expect(response).toRespondWith(
-        '0x0323a6a6f8800b2d0710595969f40148a28953c9eebc0c0da78a89be3b3935f59c',
+        '0xa9ad546540fca1662bdf3de110a456f2d825271e6d960cc5028224d4dc37c0e7fdd806b22fe94d9325548933e9c1ee68',
       );
 
       await close();
     });
 
-    it('throws an error when trying to use an secp256k1 derivation path that is not in the snap manifest', async () => {
+    it('throws an error when trying to use a coin type that is not in the snap manifest', async () => {
       const { request, close } = await installSnap();
 
       const response = await request({
         method: 'getPublicKey',
         params: {
-          path: ['m', "44'", "1'"],
-          curve: 'secp256k1',
+          coinType: 2,
         },
       });
 
@@ -80,33 +74,7 @@ describe('onRpcRequest', () => {
         data: {
           cause: {
             message:
-              'The requested path is not permitted. Allowed paths must be specified in the snap manifest.',
-            stack: expect.any(String),
-          },
-        },
-      });
-
-      await close();
-    });
-
-    it('throws an error when trying to use an ed25519 derivation path', async () => {
-      const { request, close } = await installSnap();
-
-      const response = await request({
-        method: 'getPublicKey',
-        params: {
-          path: ['m', "44'", "0'"],
-          curve: 'ed25519',
-        },
-      });
-
-      expect(response).toRespondWithError({
-        code: -32603,
-        message: 'Internal JSON-RPC error.',
-        data: {
-          cause: {
-            message:
-              'The requested path is not permitted. Allowed paths must be specified in the snap manifest.',
+              'The requested coin type is not permitted. Allowed coin types must be specified in the snap manifest.',
             stack: expect.any(String),
           },
         },
@@ -117,14 +85,14 @@ describe('onRpcRequest', () => {
   });
 
   describe('signMessage', () => {
-    it('signs a message for the given BIP-32 path using secp256k1', async () => {
+    it('signs a message for the given coin type and address index', async () => {
       const { request, close } = await installSnap();
 
       const response = request({
         method: 'signMessage',
         params: {
-          path: ['m', "44'", "0'"],
-          curve: 'secp256k1',
+          coinType: 3,
+          addressIndex: 5,
           message: 'Hello, world!',
         },
       });
@@ -134,10 +102,10 @@ describe('onRpcRequest', () => {
         panel([
           heading('Signature request'),
           text(
-            `Do you want to secp256k1 sign "Hello, world!" with the following public key?`,
+            `Do you want to BLS sign "Hello, world!" with the following public key?`,
           ),
           copyable(
-            '0x0423a6a6f8800b2d0710595969f40148a28953c9eebc0c0da78a89be3b3935f59c0069dfe1cace1a083e9c962c9f2ef932e9346cd907e647d993d787c4e59d03d1',
+            '0x96e2b36a8af526928326683f6d8ddb82fbfcd1ba1cd3f0382a4f092a19fcb46b87e836dd34075514c9b1a3b8f7bdc4f0',
           ),
         ]),
       );
@@ -145,20 +113,18 @@ describe('onRpcRequest', () => {
       await ui.ok();
 
       expect(await response).toRespondWith(
-        '0x3045022100e311ecb220500bc845b772a8a07c2a7f8224ce6ca281c8c9a6e3fb35a80b994e0220184c787e4de8d51e3a697d7d3825e78e2606ab1a1b555d80185359233517dc1f',
+        '0xa02ae3c1ecb58e91a9a1ca9184f06a1df68ac19539147011f43717cc480489340e4a4f64b4fd2b64399ee68c1b0afddb18011d97998cd0c61baed0195710e77a949cc8a0f398319294ff6e3e0752c199bd5d553a17ce5b5e3e45015fc5acb16b',
       );
 
       await close();
     });
 
-    it('signs a message for the given BIP-32 path using ed25519', async () => {
+    it('signs a message using the default coin type and address index', async () => {
       const { request, close } = await installSnap();
 
       const response = request({
         method: 'signMessage',
         params: {
-          path: ['m', "44'", "0'"],
-          curve: 'ed25519',
           message: 'Hello, world!',
         },
       });
@@ -168,10 +134,10 @@ describe('onRpcRequest', () => {
         panel([
           heading('Signature request'),
           text(
-            `Do you want to ed25519 sign "Hello, world!" with the following public key?`,
+            `Do you want to BLS sign "Hello, world!" with the following public key?`,
           ),
           copyable(
-            '0x000b96ba23cae9597de51e0187d7ef1b2d1a782dc2d5ceac770a327de3844dd533',
+            '0xa9ad546540fca1662bdf3de110a456f2d825271e6d960cc5028224d4dc37c0e7fdd806b22fe94d9325548933e9c1ee68',
           ),
         ]),
       );
@@ -179,7 +145,7 @@ describe('onRpcRequest', () => {
       await ui.ok();
 
       expect(await response).toRespondWith(
-        '0xa89e650e61fa406c9cc62f13991ba3470304a794823d7e4b080cc4919843219963be8a5d18f092f5bccfa20259f66f26305a3af32fded4f7c91140bcd565a80b',
+        '0xb3e2957f99e32bd2c98905ba20ce8c12413163fe46004f4d327e77fb001497241fbaec67869890a52347b82260e1fbf815df5b446123e1c0389bf5f5322095520c5f847f941f97bb177a15bfd14b3fe4690c3a609d45cd3dfbafa6c834ef0eb4',
       );
 
       await close();
@@ -191,8 +157,6 @@ describe('onRpcRequest', () => {
       const response = request({
         method: 'signMessage',
         params: {
-          path: ['m', "44'", "0'"],
-          curve: 'secp256k1',
           message: 'Hello, world!',
         },
       });
