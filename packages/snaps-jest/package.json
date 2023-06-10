@@ -1,6 +1,7 @@
 {
   "name": "@metamask/snaps-jest",
   "version": "0.34.1-flask.1",
+  "sideEffects": false,
   "main": "dist/index.js",
   "files": [
     "dist"
