@@ -14,8 +14,6 @@ Along with other permissions, the manifest of this snap includes the
 
 ```json
 {
-  "name": "@metamask/bip44-example-snap",
-  "version": "1.0.0",
   "initialPermissions": {
     "snap_getBip44Entropy": [
       {

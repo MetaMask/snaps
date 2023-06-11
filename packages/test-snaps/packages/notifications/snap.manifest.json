@@ -1,10 +1,10 @@
 {
   "version": "0.34.1-flask.1",
-  "description": "A MetaMask Test Snap that uses the notification permission",
-  "proposedName": "MetaMask Notification Test Snap",
+  "description": "MetaMask example snap demonstrating the use of `snap_notify`.",
+  "proposedName": "Notifications Example Snap",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/test-snaps.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
     "shasum": "Ef9K0o6bbJ5VD3FI9oomIXj1L2gYAZAR+Qfiv8eTjeE=",

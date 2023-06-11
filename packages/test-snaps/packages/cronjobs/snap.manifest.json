@@ -1,13 +1,13 @@
 {
   "version": "0.34.1-flask.1",
-  "description": "A MetaMask Test Snap that uses the cronjob endowment",
-  "proposedName": "MetaMask Cronjob Test Snap",
+  "description": "MetaMask example snap demonstrating the use of cronjobs in snaps.",
+  "proposedName": "Cronjob Example Snap",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "SAvxbeKnAiQF5Km8R0aHDk8+OBCjnFsMpJGRfGkAle4=",
+    "shasum": "QyySTnv2f/1jGswyIIVaWhAF/8sTCnyHocF2/I6b8pA=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -23,7 +23,7 @@
         {
           "expression": "* * * * *",
           "request": {
-            "method": "fireCronjob"
+            "method": "execute"
           }
         }
       ]

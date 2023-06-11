@@ -1,10 +1,10 @@
 {
   "version": "0.34.1-flask.1",
-  "description": "An example Snap that requests entropy.",
-  "proposedName": "MetaMask getEntropy Test Snap",
+  "description": "MetaMask example snap demonstrating the use of `snap_getEntropy`.",
+  "proposedName": "Get Entropy Example Snap",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/test-snaps.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
     "shasum": "lyvbBniTJYDzGcrft6m1uKiT8zy675KRxLdnCdtyl8s=",

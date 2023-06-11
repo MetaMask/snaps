@@ -1,7 +1,7 @@
 {
   "version": "0.34.1-flask.1",
-  "description": "This Snap is used to test the network-access Endowment.",
-  "proposedName": "MetaMask network-access Test Snap",
+  "description": "MetaMask example snap demonstrating the use of the `endowment:network-access` permission in snaps.",
+  "proposedName": "Network Access Test Snap",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"

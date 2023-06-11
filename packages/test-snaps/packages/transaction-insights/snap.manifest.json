@@ -1,7 +1,7 @@
 {
   "version": "0.34.1-flask.1",
-  "description": "his Snap demonstrates how to use the transaction insights feature.",
-  "proposedName": "MetaMask txInsights Test Snap",
+  "description": "MetaMask example snap demonstrating the use of the Transaction Insights API.",
+  "proposedName": "Insights Example Snap",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
