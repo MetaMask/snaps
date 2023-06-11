@@ -8,46 +8,45 @@ the MetaMask Snaps platform.
 
 The following is a list of the snaps in this directory:
 
-- [**`packages/bip32`**](./packages/bip32/README.md): This snap demonstrates
-  how to use the `snap_getBip32Entropy` and `snap_getBip32PublicKey` methods to
-  derive a BIP-32 public key and private key from the user's secret recovery
-  phrase.
-- [**`packages/bip44`**](./packages/bip44/README.md): This snap demonstrates
-  how to use the `snap_getBip44Entropy` method to derive a BIP-44 account
-  private key from the user's secret recovery phrase.
-- [**`packages/cronjobs`**](./packages/cronjobs/README.md): This snap
-  demonstrates how to use the `endowment:cronjob` permission to schedule a
-  function to be called at a later time.
-- [**`packages/dialogs`**](./packages/dialogs/README.md): This snap
-  demonstrates how to use the `snap_dialog` method to display different types
-  of dialogs to the user.
-- [**`packages/errors`**](./packages/errors/README.md): This snap demonstrates
+- [**`packages/bip32`**](./packages/bip32): This snap demonstrates how to
+  use the `snap_getBip32Entropy` and `snap_getBip32PublicKey` methods to derive
+  a BIP-32 public key and private key from the user's secret recovery phrase.
+- [**`packages/bip44`**](./packages/bip44): This snap demonstrates how to use
+  the `snap_getBip44Entropy` method to derive a BIP-44 account private key from
+  the user's secret recovery phrase.
+- [**`packages/cronjobs`**](./packages/cronjobs): This snap demonstrates how to
+  use the `endowment:cronjob` permission to schedule a function to be called at
+  a later time.
+- [**`packages/dialogs`**](./packages/dialogs): This snap demonstrates how to
+  use the `snap_dialog` method to display different types of dialogs to the
+  user.
+- [**`packages/errors`**](./packages/errors): This snap demonstrates
   how the Snaps platform handles errors thrown by snaps.
-- [**`packages/ethereum-provider`**](./packages/ethereum-provider/README.md):
+- [**`packages/ethereum-provider`**](./packages/ethereum-provider):
   This snap demonstrates how to use the `endowment:ethereum-provider` permission
   and corresponding `ethereum` provider to interact with the Ethereum blockchain
   from a snap.
-- [**`packages/ethers-js`**](./packages/ethers-js/README.md): This snap
-  demonstrates how to use Ethers.js in a snap.
-- [**`packages/get-entropy`**](./packages/get-entropy/README.md): This snap
-  demonstrates how to use the `snap_getEntropy` method to derive deterministic
-  entropy based on the user's secret recovery phrase.
-- [**`packages/json-rpc`**](./packages/json-rpc/README.md): This snap
-  demonstrates how to use the `endowment:json-rpc` permission to make requests
-  from snaps and/or dapps.
-- [**`packages/manage-state`**](./packages/manage-state/README.md): This snap
+- [**`packages/ethers-js`**](./packages/ethers-js): This snap demonstrates how
+  to use Ethers.js in a snap.
+- [**`packages/get-entropy`**](./packages/get-entropy): This snap demonstrates
+  how to use the `snap_getEntropy` method to derive deterministic entropy based
+  on the user's secret recovery phrase.
+- [**`packages/json-rpc`**](./packages/json-rpc): This snap demonstrates how to
+  use the `endowment:json-rpc` permission to make requests from snaps and/or
+  dapps.
+- [**`packages/manage-state`**](./packages/manage-state): This snap
   demonstrates how to use the `snap_manageState` method to store and retrieve
   data in a snap.
-- [**`packages/network-access`**](./packages/network-access/README.md): This
+- [**`packages/network-access`**](./packages/network-access): This
   snap demonstrates how to use the `endowment:network-access` permission to
   make network requests from a snap.
-- [**`packages/notifications`**](./packages/notifications/README.md): This snap
+- [**`packages/notifications`**](./packages/notifications): This snap
   demonstrates how to use the `snap_notify` method to display notifications to
   the user, either as a MetaMask notification or as a desktop notification.
-- [**`packages/transaction-insights`**](./packages/transaction-insights/README.md):
+- [**`packages/transaction-insights`**](./packages/transaction-insights):
   This snap demonstrates how to use `endowment:transaction-insights` permission,
   and provide transaction insights to the user.
-- [**`packages/wasm`**](./packages/wasm/README.md): This snap demonstrates how
+- [**`packages/wasm`**](./packages/wasm): This snap demonstrates how
   to use WebAssembly in a snap.
 
 ## Contributing
