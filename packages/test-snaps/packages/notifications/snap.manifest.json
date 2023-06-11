@@ -4,10 +4,10 @@
   "proposedName": "Notifications Example Snap",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps.git"
+    "url": "https://github.com/MetaMask/test-snaps.git"
   },
   "source": {
-    "shasum": "Ef9K0o6bbJ5VD3FI9oomIXj1L2gYAZAR+Qfiv8eTjeE=",
+    "shasum": "KlG+g45tXHLVfUG4GOxcU4LRCpBUoy6scuTZjiBbcJs=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

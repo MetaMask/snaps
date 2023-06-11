@@ -4,10 +4,10 @@
   "proposedName": "Get Entropy Example Snap",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps.git"
+    "url": "https://github.com/MetaMask/test-snaps.git"
   },
   "source": {
-    "shasum": "lyvbBniTJYDzGcrft6m1uKiT8zy675KRxLdnCdtyl8s=",
+    "shasum": "LzZZinDC8IYoCW4xMoW1KQTDoicew8kU555XNIiVrvI=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

@@ -4,10 +4,10 @@
   "proposedName": "Dialog Example Snap",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps.git"
+    "url": "https://github.com/MetaMask/test-snaps.git"
   },
   "source": {
-    "shasum": "jKuen99AvH5Rsjhz3SifS5frAZN70iHWMXmbH1ktivw=",
+    "shasum": "6jtsYnLAhUZLm9M9X1D0o67tSY8h2esPpIzDlefhxgg=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
