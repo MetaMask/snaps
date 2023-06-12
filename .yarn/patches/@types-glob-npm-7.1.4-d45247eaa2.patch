@@ -1,0 +1,22 @@
+diff --git a/index.d.ts b/index.d.ts
+index 8213c43da1204e92db61cd9af6018362986f0ad9..d9fa158b4fa858c8b9cf9d5cc75f5e7b2c6bcbb8 100755
+--- a/index.d.ts
++++ b/index.d.ts
+@@ -25,7 +25,7 @@ declare namespace G {
+     let Glob: IGlobStatic;
+     let GlobSync: IGlobSyncStatic;
+ 
+-    interface IOptions extends minimatch.IOptions {
++    interface IOptions extends minimatch.MinimatchOptions {
+         cwd?: string | undefined;
+         root?: string | undefined;
+         dot?: boolean | undefined;
+@@ -69,7 +69,7 @@ declare namespace G {
+     }
+ 
+     interface IGlobBase {
+-        minimatch: minimatch.IMinimatch;
++        minimatch: minimatch.MinimatchOptions;
+         options: IOptions;
+         aborted: boolean;
+         cache: { [path: string]: boolean | 'DIR' | 'FILE' | ReadonlyArray<string> };

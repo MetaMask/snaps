@@ -1438,9 +1438,9 @@
       "packages": {
         "browserify>glob>fs.realpath": true,
         "browserify>glob>inflight": true,
+        "browserify>glob>minimatch": true,
         "browserify>glob>path-is-absolute": true,
         "browserify>inherits": true,
-        "eslint>minimatch": true,
         "pump>once": true
       }
     },
@@ -1476,6 +1476,23 @@
       "packages": {
         "pump>once": true,
         "pump>once>wrappy": true
+      }
+    },
+    "browserify>glob>minimatch": {
+      "builtin": {
+        "path": true
+      },
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "browserify>glob>minimatch>brace-expansion": true
+      }
+    },
+    "browserify>glob>minimatch>brace-expansion": {
+      "packages": {
+        "eslint>minimatch>brace-expansion>balanced-match": true,
+        "eslint>minimatch>brace-expansion>concat-map": true
       }
     },
     "browserify>glob>path-is-absolute": {
@@ -1958,23 +1975,6 @@
       "packages": {
         "@wdio/mocha-framework>mocha>supports-color": true,
         "eslint>debug>ms": true
-      }
-    },
-    "eslint>minimatch": {
-      "builtin": {
-        "path": true
-      },
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "eslint>minimatch>brace-expansion": true
-      }
-    },
-    "eslint>minimatch>brace-expansion": {
-      "packages": {
-        "eslint>minimatch>brace-expansion>balanced-match": true,
-        "eslint>minimatch>brace-expansion>concat-map": true
       }
     },
     "eslint>strip-ansi": {
