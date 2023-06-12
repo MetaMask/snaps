@@ -1,30 +1,17 @@
+import { rpcErrors, providerErrors } from '@metamask/rpc-errors';
 import { DialogType, OnRpcRequestHandler } from '@metamask/snaps-types';
-import { panel, text, heading } from '@metamask/snaps-ui';
-import { bytesToHex, remove0x } from '@metamask/utils';
+import { panel, text, heading, copyable } from '@metamask/snaps-ui';
+import { bytesToHex, stringToBytes } from '@metamask/utils';
 import { sign } from '@noble/bls12-381';
-import { ethErrors } from 'eth-rpc-errors';
 
-const getEntropy = async () => {
-  const entropy = await snap.request({
-    method: 'snap_getEntropy',
-    params: {
-      version: 1,
-    },
-  });
-  return remove0x(entropy);
-};
+import { SignMessageParams } from './types';
+import { getEntropy } from './utils';
 
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'signMessage': {
-      const privateKey = await getEntropy();
-      const data = (request.params as string[])[0];
-
-      if (!data || typeof data !== 'string') {
-        throw ethErrors.rpc.invalidParams({
-          message: `Invalid signature data: "${data}".`,
-        });
-      }
+      const { message, salt } = request.params as SignMessageParams;
+      const privateKey = await getEntropy(salt);
 
       const approved = await snap.request({
         method: 'snap_dialog',
@@ -32,19 +19,24 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
           type: DialogType.Confirmation,
           content: panel([
             heading('Signature request'),
-            text(`Do you want to BLS sign ${data} with snap entropy?`),
+            text(
+              'Do you want to sign the following message with snap entropy?',
+            ),
+            copyable(message),
           ]),
         },
       });
+
       if (!approved) {
-        throw ethErrors.provider.userRejectedRequest();
+        throw providerErrors.userRejectedRequest();
       }
-      const newLocal = await sign(new TextEncoder().encode(data), privateKey);
+
+      const newLocal = await sign(stringToBytes(message), privateKey);
       return bytesToHex(newLocal);
     }
 
     default:
-      throw ethErrors.rpc.methodNotFound({
+      throw rpcErrors.methodNotFound({
         data: { method: request.method },
       });
   }

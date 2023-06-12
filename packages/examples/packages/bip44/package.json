@@ -21,7 +21,7 @@
     "clean": "rimraf \"dist/*\"",
     "start": "webpack watch",
     "test": "yarn test:e2e",
-    "test:e2e": "yarn jest",
+    "test:e2e": "jest",
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' '**/*.yml' --single-quote --ignore-path ../../.prettierignore --no-error-on-unmatched-pattern",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
