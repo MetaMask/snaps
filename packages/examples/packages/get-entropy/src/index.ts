@@ -7,6 +7,20 @@ import { sign } from '@noble/bls12-381';
 import { SignMessageParams } from './types';
 import { getEntropy } from './utils';
 
+/**
+ * Handle incoming JSON-RPC requests from the dapp, sent through the
+ * `wallet_invokeSnap` method. This handler handles a single method:
+ *
+ * - `signMessage`: Derive a private key using the snap's own entropy, and sign
+ * a message using it. The signature is returned in hex format.
+ *
+ * @param params - The request parameters.
+ * @param params.request - The JSON-RPC request object.
+ * @returns The JSON-RPC response.
+ * @see https://docs.metamask.io/snaps/reference/exports/#onrpcrequest
+ * @see https://docs.metamask.io/snaps/reference/rpc-api/#wallet_invokesnap
+ * @see https://docs.metamask.io/snaps/reference/rpc-api/#snap_getentropy
+ */
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'signMessage': {

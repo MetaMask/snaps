@@ -1,13 +1,13 @@
 {
   "version": "0.34.1-flask.1",
   "description": "An example snap to test JSON-RPC permissions.",
-  "proposedName": "MetaMask RPC Test Snap",
+  "proposedName": "JSON-RPC Example Snap",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/test-snaps.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "+UgSZZtSqhHFlQhruCtxTFjw9qGSJVSOlK/a7i9V6HI=",
+    "shasum": "VZuqkrLudJHF3qp1GtNgtgkHh79JSuE+7sCN8zSdg+Y=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -21,8 +21,8 @@
       "dapps": true
     },
     "wallet_snap": {
-      "npm:@metamask/test-snap-bip32": {
-        "version": "5.1.0"
+      "npm:@metamask/bip32-example-snap": {
+        "version": "0.34.1-flask.1"
       }
     }
   },
