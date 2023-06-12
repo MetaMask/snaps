@@ -7,6 +7,7 @@ import {
   request,
   sendTransaction,
   runCronjob,
+  mockJsonRpc,
 } from './internals';
 import type { Snap, SnapResponse } from './types';
 
@@ -83,6 +84,10 @@ export async function installSnap(
 
     mock: async (options) => {
       return await mock(page, options);
+    },
+
+    mockJsonRpc: async (options) => {
+      return await mockJsonRpc(page, options);
     },
   };
 }

@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/test-snaps.git"
   },
   "source": {
-    "shasum": "rJwtSaRWuMugDsgGgbw514BsGdJU+ylvhoi50hQTU5w=",
+    "shasum": "SsZ8WAUF5xE/H/GbjQVquHSafFo/sGx67NoKkNUsfPY=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -19,8 +19,7 @@
   },
   "initialPermissions": {
     "endowment:rpc": {
-      "dapps": true,
-      "snaps": false
+      "dapps": true
     },
     "endowment:ethereum-provider": {}
   },
