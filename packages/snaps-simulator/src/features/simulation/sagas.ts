@@ -1,4 +1,5 @@
 import { ControllerMessenger } from '@metamask/base-controller';
+import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { createFetchMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { mnemonicPhraseToBytes } from '@metamask/key-tree/dist/utils';
 import {
@@ -77,6 +78,8 @@ export function* initSaga({ payload }: PayloadAction<string>) {
     ...buildSnapEndowmentSpecifications(Object.keys(ExcludedSnapEndowments)),
     ...buildSnapRestrictedMethodSpecifications([], {
       // TODO: Add all the hooks required
+      encrypt,
+      decrypt,
       getUnlockPromise: async () => Promise.resolve(true),
       getMnemonic: async () => mnemonicPhraseToBytes(srp),
       showDialog: async (...args: Parameters<typeof showDialog>) =>
