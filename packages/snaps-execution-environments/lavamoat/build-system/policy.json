@@ -1229,62 +1229,11 @@
         "@lavamoat/lavapack>umd": true,
         "browserify>JSONStream": true,
         "browserify>browser-pack>safe-buffer": true,
-        "browserify>browser-pack>through2": true,
-        "browserify>defined": true
+        "browserify>defined": true,
+        "browserify>through2": true
       }
     },
     "browserify>browser-pack>safe-buffer": {
-      "builtin": {
-        "buffer": true
-      }
-    },
-    "browserify>browser-pack>through2": {
-      "builtin": {
-        "util.inherits": true
-      },
-      "globals": {
-        "process.nextTick": true
-      },
-      "packages": {
-        "browserify>browser-pack>through2>readable-stream": true,
-        "browserify>xtend": true
-      }
-    },
-    "browserify>browser-pack>through2>readable-stream": {
-      "builtin": {
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.browser": true,
-        "process.env.READABLE_STREAM": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.version.slice": true,
-        "setImmediate": true
-      },
-      "packages": {
-        "browserify>browser-pack>through2>readable-stream>safe-buffer": true,
-        "browserify>browser-pack>through2>readable-stream>string_decoder": true,
-        "browserify>inherits": true,
-        "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>isarray": true,
-        "browserify>readable-stream>process-nextick-args": true,
-        "browserify>readable-stream>util-deprecate": true
-      }
-    },
-    "browserify>browser-pack>through2>readable-stream>safe-buffer": {
-      "builtin": {
-        "buffer": true
-      }
-    },
-    "browserify>browser-pack>through2>readable-stream>string_decoder": {
-      "packages": {
-        "browserify>browser-pack>through2>readable-stream>string_decoder>safe-buffer": true
-      }
-    },
-    "browserify>browser-pack>through2>readable-stream>string_decoder>safe-buffer": {
       "builtin": {
         "buffer": true
       }
@@ -1325,54 +1274,8 @@
     },
     "browserify>deps-sort": {
       "packages": {
-        "browserify>deps-sort>through2": true,
-        "browserify>shasum-object": true
-      }
-    },
-    "browserify>deps-sort>through2": {
-      "builtin": {
-        "util.inherits": true
-      },
-      "globals": {
-        "process.nextTick": true
-      },
-      "packages": {
-        "browserify>deps-sort>through2>readable-stream": true,
-        "browserify>xtend": true
-      }
-    },
-    "browserify>deps-sort>through2>readable-stream": {
-      "builtin": {
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.browser": true,
-        "process.env.READABLE_STREAM": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.version.slice": true,
-        "setImmediate": true
-      },
-      "packages": {
-        "browserify>deps-sort>through2>readable-stream>safe-buffer": true,
-        "browserify>deps-sort>through2>readable-stream>string_decoder": true,
-        "browserify>inherits": true,
-        "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>isarray": true,
-        "browserify>readable-stream>process-nextick-args": true,
-        "browserify>readable-stream>util-deprecate": true
-      }
-    },
-    "browserify>deps-sort>through2>readable-stream>safe-buffer": {
-      "builtin": {
-        "buffer": true
-      }
-    },
-    "browserify>deps-sort>through2>readable-stream>string_decoder": {
-      "packages": {
-        "browserify>deps-sort>through2>readable-stream>safe-buffer": true
+        "browserify>shasum-object": true,
+        "browserify>through2": true
       }
     },
     "browserify>duplexer2": {
@@ -1518,56 +1421,10 @@
       "packages": {
         "@lavamoat/lavapack>combine-source-map": true,
         "browserify>glob>path-is-absolute": true,
-        "browserify>insert-module-globals>through2": true,
         "browserify>insert-module-globals>undeclared-identifiers": true,
         "browserify>syntax-error>acorn-node": true,
+        "browserify>through2": true,
         "browserify>xtend": true
-      }
-    },
-    "browserify>insert-module-globals>through2": {
-      "builtin": {
-        "util.inherits": true
-      },
-      "globals": {
-        "process.nextTick": true
-      },
-      "packages": {
-        "browserify>insert-module-globals>through2>readable-stream": true,
-        "browserify>xtend": true
-      }
-    },
-    "browserify>insert-module-globals>through2>readable-stream": {
-      "builtin": {
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.browser": true,
-        "process.env.READABLE_STREAM": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.version.slice": true,
-        "setImmediate": true
-      },
-      "packages": {
-        "browserify>inherits": true,
-        "browserify>insert-module-globals>through2>readable-stream>safe-buffer": true,
-        "browserify>insert-module-globals>through2>readable-stream>string_decoder": true,
-        "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>isarray": true,
-        "browserify>readable-stream>process-nextick-args": true,
-        "browserify>readable-stream>util-deprecate": true
-      }
-    },
-    "browserify>insert-module-globals>through2>readable-stream>safe-buffer": {
-      "builtin": {
-        "buffer": true
-      }
-    },
-    "browserify>insert-module-globals>through2>readable-stream>string_decoder": {
-      "packages": {
-        "browserify>insert-module-globals>through2>readable-stream>safe-buffer": true
       }
     },
     "browserify>insert-module-globals>undeclared-identifiers": {
@@ -1665,8 +1522,8 @@
         "browserify>module-deps>detective": true,
         "browserify>module-deps>readable-stream": true,
         "browserify>module-deps>stream-combiner2": true,
-        "browserify>module-deps>through2": true,
         "browserify>parents": true,
+        "browserify>through2": true,
         "browserify>xtend": true,
         "lavamoat>resolve": true
       }
@@ -1761,18 +1618,6 @@
     "browserify>module-deps>stream-combiner2>readable-stream>string_decoder": {
       "packages": {
         "browserify>module-deps>stream-combiner2>readable-stream>safe-buffer": true
-      }
-    },
-    "browserify>module-deps>through2": {
-      "builtin": {
-        "util.inherits": true
-      },
-      "globals": {
-        "process.nextTick": true
-      },
-      "packages": {
-        "browserify>module-deps>readable-stream": true,
-        "browserify>xtend": true
       }
     },
     "browserify>parents": {
@@ -1930,8 +1775,42 @@
         "process.nextTick": true
       },
       "packages": {
-        "browserify>readable-stream": true,
+        "browserify>through2>readable-stream": true,
         "browserify>xtend": true
+      }
+    },
+    "browserify>through2>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "browserify>inherits": true,
+        "browserify>readable-stream>core-util-is": true,
+        "browserify>readable-stream>isarray": true,
+        "browserify>readable-stream>process-nextick-args": true,
+        "browserify>readable-stream>util-deprecate": true,
+        "browserify>through2>readable-stream>safe-buffer": true,
+        "browserify>through2>readable-stream>string_decoder": true
+      }
+    },
+    "browserify>through2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "browserify>through2>readable-stream>string_decoder": {
+      "packages": {
+        "browserify>through2>readable-stream>safe-buffer": true
       }
     },
     "eslint-plugin-import>is-core-module": {
