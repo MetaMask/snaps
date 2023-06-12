@@ -1,3 +1,11 @@
-# Error Test Snap
+# `@metamask/error-example-snap`
 
-A MetaMask Test Snap that throws an out-of-band error.
+This snap demonstrates how the Snaps platform handles out-of-band errors.
+
+> **Note**: This snap is primarily used for automated testing. It does not
+> provide any functionality to the user.
+
+## Snap usage
+
+This snap exposes an `onRpcRequest` handler. It does not support any particular
+JSON-RPC methods, but simply returns a message.

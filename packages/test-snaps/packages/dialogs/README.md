@@ -5,7 +5,7 @@ This snap demonstrates the use of `snap_dialog` to display a dialog to the user.
 ## Snap manifest
 
 > **Note**: Using `snap_dialog` requires the `snap_dialog` permission. Refer to
-> [the documentation](https://docs.metamask.io/snaps/reference/rpc-api/#snap_getbip44entropy)
+> [the documentation](https://docs.metamask.io/snaps/reference/rpc-api/#snap_dialog)
 > for more information.
 
 Along with other permissions, the manifest of this snap includes the
