@@ -36,9 +36,11 @@ jobs:
       - name: Fetch workspace package names
         id: workspace-package-names
         run: |
-          echo "test-workspace-package-names=$(yarn workspaces filter --include 'packages/*' --exclude 'packages/examples' --json)" >> "$GITHUB_OUTPUT"
-          echo "e2e-workspace-package-names=$(yarn workspaces filter --include 'packages/examples/packages/*' --json)" >> "$GITHUB_OUTPUT"
-          echo "all-workspace-package-names=$(yarn workspaces filter --include '{.,packages/**}' --json)" >> "$GITHUB_OUTPUT"
+          {
+            echo "test-workspace-package-names=$(yarn workspaces filter --include 'packages/*' --exclude 'packages/examples' --json)"
+            echo "e2e-workspace-package-names=$(yarn workspaces filter --include 'packages/examples/packages/*' --json)"
+            echo "all-workspace-package-names=$(yarn workspaces filter --include '{.,packages/**}' --json)"
+          } >> "$GITHUB_OUTPUT"
         shell: bash
 
   build:
