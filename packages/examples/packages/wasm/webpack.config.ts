@@ -26,6 +26,10 @@ const config: Configuration = {
           loader: 'swc-loader',
         },
       },
+      {
+        test: /\.wasm$/u,
+        type: 'asset/inline',
+      },
     ],
   },
   resolve: {
@@ -67,6 +71,7 @@ const config: Configuration = {
   plugins: [
     new SnapsWebpackPlugin({
       manifestPath: resolve(__dirname, 'snap.manifest.json'),
+      eval: false,
     }),
     ...(IS_CI ? [] : [new ProgressPlugin()]),
   ],

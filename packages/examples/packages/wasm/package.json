@@ -4,7 +4,7 @@
   "description": "MetaMask example snap demonstrating the use of WebAssembly and the `endowment:webassembly` permission.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/test-snaps.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "sideEffects": false,
   "main": "dist/index.js",
@@ -48,6 +48,7 @@
     "@types/webpack-env": "^1.18.1",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
+    "assemblyscript": "^0.27.5",
     "deepmerge": "^4.2.2",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",

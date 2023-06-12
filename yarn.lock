@@ -5321,6 +5321,7 @@ __metadata:
     "@types/webpack-env": ^1.18.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
+    assemblyscript: ^0.27.5
     deepmerge: ^4.2.2
     eslint: ^8.27.0
     eslint-config-prettier: ^8.5.0
@@ -8268,6 +8269,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"assemblyscript@npm:^0.27.5":
+  version: 0.27.5
+  resolution: "assemblyscript@npm:0.27.5"
+  dependencies:
+    binaryen: 112.0.0-nightly.20230411
+    long: ^5.2.1
+  bin:
+    asc: bin/asc.js
+    asinit: bin/asinit.js
+  checksum: a0ca5b5631e7a229de7f737925e2b10d7de4d642bd208cfd8e6df86f48707f13cd660967213299e0581d15d44473dd41d25dd6cd6e8b5067af1eda0e1fe90193
+  languageName: node
+  linkType: hard
+
 "assert@npm:^1.4.0":
   version: 1.5.0
   resolution: "assert@npm:1.5.0"
@@ -8608,6 +8622,16 @@ __metadata:
   version: 2.2.0
   resolution: "binary-extensions@npm:2.2.0"
   checksum: ccd267956c58d2315f5d3ea6757cf09863c5fc703e50fbeb13a7dc849b812ef76e3cf9ca8f35a0c48498776a7478d7b4a0418e1e2b8cb9cb9731f2922aaad7f8
+  languageName: node
+  linkType: hard
+
+"binaryen@npm:112.0.0-nightly.20230411":
+  version: 112.0.0-nightly.20230411
+  resolution: "binaryen@npm:112.0.0-nightly.20230411"
+  bin:
+    wasm-opt: bin/wasm-opt
+    wasm2js: bin/wasm2js
+  checksum: 2ff22208a10a8977254eae227de7ef7234affd3d8504f102d19a2c7e8c2108a1ba074bac1ce5f32cdecbefe12624cef016a491b4e7c4a9de91653a59540cf4e3
   languageName: node
   linkType: hard
 
@@ -15792,6 +15816,13 @@ __metadata:
   version: 1.8.1
   resolution: "loglevel@npm:1.8.1"
   checksum: a1a62db40291aaeaef2f612334c49e531bff71cc1d01a2acab689ab80d59e092f852ab164a5aedc1a752fdc46b7b162cb097d8a9eb2cf0b299511106c29af61d
+  languageName: node
+  linkType: hard
+
+"long@npm:^5.2.1":
+  version: 5.2.3
+  resolution: "long@npm:5.2.3"
+  checksum: 885ede7c3de4facccbd2cacc6168bae3a02c3e836159ea4252c87b6e34d40af819824b2d4edce330bfb5c4d6e8ce3ec5864bdcf9473fa1f53a4f8225860e5897
   languageName: node
   linkType: hard
 

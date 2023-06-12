@@ -13,12 +13,14 @@
   "scripts": {
     "build": "yarn workspaces foreach --parallel --verbose run build",
     "build:clean": "yarn clean && yarn build",
+    "build:post-tsc": "yarn build",
     "clean": "yarn workspaces foreach --parallel --verbose run clean",
     "start": "yarn workspaces foreach --parallel --verbose --interlaced --exclude root --jobs unlimited run start",
-    "lint:eslint": "eslint . --cache --ext js,ts,tsx",
-    "lint:misc": "prettier '**/*.json' '**/*.md' '!**/CHANGELOG.md' '**/*.yml' '!.yarnrc.yml' --ignore-path .prettierignore",
-    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn constraints",
-    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write && yarn constraints --fix",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
+    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
+    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
+    "lint:ci": "yarn lint",
     "lint:changelogs": "yarn workspaces foreach --parallel --verbose run lint:changelog",
     "test": "jest --passWithNoTests",
     "prepack": "yarn build"
