@@ -5,7 +5,7 @@ private key from the user's secret recovery phrase.
 
 ## Snap manifest
 
-> **Note**: Using `snap_getBip44Entropy` requires the`snap_getBip44Entropy`
+> **Note**: Using `snap_getBip44Entropy` requires the `snap_getBip44Entropy`
 > permissions. Refer to [the documentation](https://docs.metamask.io/snaps/reference/rpc-api/#snap_getbip44entropy)
 > for more information.
 
@@ -42,3 +42,6 @@ JSON-RPC methods:
 - `signMessage`: Sign a `message` with the private key for the given `coinType`
   and `addressIndex`. For this particular example, we use the `BLS12-381`
   elliptic curve to sign the message.
+
+For more information, you can refer to
+[the end-to-end tests](./src/index.test.ts).

@@ -30,3 +30,6 @@ JSON-RPC method:
 
 - `getGasPrice`: Get the current recommended gas price from an Ethereum
   provider.
+
+For more information, you can refer to
+[the end-to-end tests](./src/index.test.ts).

@@ -4,6 +4,16 @@ const baseConfig = require('../../../../jest.config.base');
 
 module.exports = deepmerge(baseConfig, {
   preset: '@metamask/snaps-jest',
+  testEnvironmentOptions: {
+    server: {
+      // For this particular example we have to configure a port, as the snap
+      // uses `snap_getEntropy`, which uses the snap ID
+      // (`local:http://localhost:PORT`) to derive entropy. If we were to use a
+      // random port every time, the derived entropy would be different for
+      // every test run, making our tests non-deterministic.
+      port: 48934,
+    },
+  },
 
   // End-to-end tests can take a while to run, so we need to increase the
   // default timeout.

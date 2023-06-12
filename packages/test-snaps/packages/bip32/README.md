@@ -8,3 +8,6 @@ user's secret recovery phrase.
 > requires their respective `snap_getBip32Entropy` and `snap_getBip32PublicKey`
 > permissions. Refer to [the documentation](https://docs.metamask.io/snaps/reference/rpc-api/#snap_getbip32entropy)
 > for more information.
+
+For more information, you can refer to
+[the end-to-end tests](./src/index.test.ts).

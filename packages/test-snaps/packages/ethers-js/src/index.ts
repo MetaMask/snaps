@@ -1,42 +1,63 @@
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import { OnRpcRequestHandler } from '@metamask/snaps-types';
-import { panel, heading, copyable } from '@metamask/snaps-ui';
-import { ethErrors } from 'eth-rpc-errors';
+import { panel, heading, copyable, text } from '@metamask/snaps-ui';
 import { Wallet } from 'ethers';
 
+import { SignMessageParams } from './types';
+import { getPrivateKey } from './utils';
+
+/**
+ * Handle incoming JSON-RPC requests from the dapp, sent through the
+ * `wallet_invokeSnap` method. This handler handles two methods:
+ *
+ * - `getAddress`: Derive a private key using the snap's own entropy, and return
+ * the public address for that private key.
+ * - `signMessage`: Derive a private key using the snap's own entropy, and sign
+ * a message using it. The signature is returned in hex format.
+ *
+ * @param params - The request parameters.
+ * @param params.request - The JSON-RPC request object.
+ * @returns The JSON-RPC response.
+ * @see https://docs.metamask.io/snaps/reference/exports/#onrpcrequest
+ * @see https://docs.metamask.io/snaps/reference/rpc-api/#wallet_invokesnap
+ * @see https://docs.metamask.io/snaps/reference/rpc-api/#snap_getentropy
+ */
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
-    case 'signMessage': {
-      const privKey = await snap.request({
-        method: 'snap_getEntropy',
-        params: { version: 1 },
-      });
-      const ethWallet = new Wallet(privKey);
-      const data = (request.params as string[])[0];
+    case 'getAddress': {
+      const privateKey = await getPrivateKey();
+      const wallet = new Wallet(privateKey);
 
-      if (!data || typeof data !== 'string') {
-        throw ethErrors.rpc.invalidParams({
-          message: `Invalid signature data: "${data}".`,
-        });
-      }
+      return await wallet.getAddress();
+    }
+
+    case 'signMessage': {
+      const params = request.params as SignMessageParams;
+
+      const privateKey = await getPrivateKey();
+      const wallet = new Wallet(privateKey);
 
       const result = await snap.request({
         method: 'snap_dialog',
         params: {
           type: 'confirmation',
           content: panel([
-            heading('Do you want to sign this message?'),
-            copyable(data),
+            heading('Signature request'),
+            text('Do you want to sign this message?'),
+            copyable(params.message),
           ]),
         },
       });
+
       if (!result) {
-        throw new Error('User rejected request');
+        throw providerErrors.userRejectedRequest();
       }
-      return ethWallet.signMessage(data);
+
+      return wallet.signMessage(params.message);
     }
 
     default:
-      throw ethErrors.rpc.methodNotFound({
+      throw rpcErrors.methodNotFound({
         data: { method: request.method },
       });
   }
