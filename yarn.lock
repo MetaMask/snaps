@@ -3802,7 +3802,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/browser-passworder@npm:^4.0.2":
+"@metamask/browser-passworder@npm:^4.1.0":
   version: 4.1.0
   resolution: "@metamask/browser-passworder@npm:4.1.0"
   checksum: f1edb3b75594b8e8d075b3134c9ce6c73573160eb48184ef722b9d96a5763db1e2e9acb166fc5c66c7c82936e134a02a3fb4c0022ca9a948857a30181cb84d7e
@@ -4102,7 +4102,7 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.3.1
     "@metamask/auto-changelog": ^3.1.0
-    "@metamask/browser-passworder": ^4.0.2
+    "@metamask/browser-passworder": ^4.1.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
     "@metamask/eslint-config-nodejs": ^11.0.1
@@ -4498,6 +4498,7 @@ __metadata:
     "@ethersproject/units": ^5.7.0
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/base-controller": ^3.0.0
+    "@metamask/browser-passworder": ^4.1.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-browser": ^11.1.0
     "@metamask/eslint-config-jest": ^11.0.0
