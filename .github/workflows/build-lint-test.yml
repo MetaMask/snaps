@@ -8,7 +8,8 @@ jobs:
     name: Prepare
     runs-on: ubuntu-latest
     outputs:
-      child-workspace-package-names: ${{ steps.workspace-package-names.outputs.child-workspace-package-names }}
+      test-workspace-package-names: ${{ steps.workspace-package-names.outputs.test-workspace-package-names }}
+      e2e-workspace-package-names: ${{ steps.workspace-package-names.outputs.e2e-workspace-package-names }}
       all-workspace-package-names: ${{ steps.workspace-package-names.outputs.all-workspace-package-names }}
     strategy:
       fail-fast: false
@@ -35,7 +36,8 @@ jobs:
       - name: Fetch workspace package names
         id: workspace-package-names
         run: |
-          echo "child-workspace-package-names=$(yarn workspaces filter --include 'packages/*' --exclude 'packages/examples' --json)" >> "$GITHUB_OUTPUT"
+          echo "test-workspace-package-names=$(yarn workspaces filter --include 'packages/*' --exclude 'packages/examples' --json)" >> "$GITHUB_OUTPUT"
+          echo "e2e-workspace-package-names=$(yarn workspaces filter --include 'packages/examples/packages/*' --json)" >> "$GITHUB_OUTPUT"
           echo "all-workspace-package-names=$(yarn workspaces filter --include '{.,packages/**}' --json)" >> "$GITHUB_OUTPUT"
         shell: bash
 
@@ -188,7 +190,7 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [16.x, 18.x]
-        package-name: ${{ fromJson(needs.prepare.outputs.child-workspace-package-names) }}
+        package-name: ${{ fromJson(needs.prepare.outputs.test-workspace-package-names) }}
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -249,12 +251,14 @@ jobs:
     name: E2E Test
     runs-on: ubuntu-latest
     needs:
+      - prepare
       - build
       - build-simulator
     strategy:
       fail-fast: false
       matrix:
         node-version: [16.x, 18.x]
+        package-name: ${{ fromJson(needs.prepare.outputs.e2e-workspace-package-names) }}
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -283,7 +287,10 @@ jobs:
       - run: yarn --immutable --immutable-cache
       - name: Install Google Chrome
         run: yarn install-chrome
-      - run: yarn test:e2e:ci
+      - name: Build snap
+        run: yarn workspace ${{ matrix.package-name }} run build
+      - name: Run E2E test
+        run: yarn workspace ${{ matrix.package-name }} run test:e2e
         env:
           NODE_ENV: test
       - name: Require clean working directory
