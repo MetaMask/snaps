@@ -1,24 +1,7 @@
 {
   "extends": "../../../../tsconfig.packages.json",
   "compilerOptions": {
-    "baseUrl": "./",
-    "paths": {
-      "@metamask/*": ["../../../*/src"]
-    }
+    "typeRoots": ["../../../../node_modules/@types"]
   },
-  "include": ["src", "webpack.config.ts"],
-  "references": [
-    {
-      "path": "../../../snaps-types"
-    },
-    {
-      "path": "../../../snaps-ui"
-    },
-    {
-      "path": "../../../snaps-jest"
-    },
-    {
-      "path": "../../../snaps-webpack-plugin"
-    }
-  ]
+  "include": ["src"]
 }

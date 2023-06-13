@@ -118,7 +118,7 @@ export const getInsights = async (transaction: Record<string, unknown>) => {
 
     // This is a function in the shape "functionName(arg1Type,arg2Type,...)", so
     // we do a simple slice to get the argument types.
-    const fn = functions.reverse()[0];
+    const fn = functions[0];
     const types = fn.slice(fn.indexOf('(') + 1, fn.indexOf(')')).split(',');
 
     // Decode the data using the ABI utils library.
