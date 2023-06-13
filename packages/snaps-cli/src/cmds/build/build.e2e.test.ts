@@ -18,7 +18,7 @@ describe('mm-snap build', () => {
       command: 'build',
       options: [
         '--src',
-        join(SNAP_DIR, 'src/index.js'),
+        join(SNAP_DIR, 'src/index.ts'),
         '--dist',
         join(SNAP_DIR, 'dist'),
         '--manifest',

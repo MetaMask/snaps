@@ -24,7 +24,7 @@ describe('mm-snap watch', () => {
     // Since this is an end-to-end test, and we're working with a "real" snap,
     // we have to make a copy of the original snap file, so we can modify it and
     // reset it after the test.
-    const filePath = join(SNAP_DIR, 'src/index.js');
+    const filePath = join(SNAP_DIR, 'src/index.ts');
     const originalFile = await fs.readFile(filePath, 'utf-8');
 
     await run({
