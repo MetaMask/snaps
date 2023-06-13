@@ -1,0 +1,39 @@
+diff --git a/lib/index.d.ts b/lib/index.d.ts
+index 721d6e980c9f3a79647a1e9b313571c7b8c91776..c20a6bd0719dce96408f014e266e3cf5b315d859 100644
+--- a/lib/index.d.ts
++++ b/lib/index.d.ts
+@@ -122,12 +122,7 @@ export interface TestRunnerContext {
+   },
+ }
+ 
+-export enum WaitType {
+-  message = 'message',
+-  stdout = 'stdout',
+-  stderr = 'stderr',
+-  close = 'close',
+-}
++export type WaitType = 'message' | 'stdout' | 'stderr' | 'close';
+ 
+ export type TestRunnerMiddleware = (ctx: TestRunnerContext, next: any) => Promise<void>;
+ 
+@@ -172,7 +167,7 @@ export class TestRunner extends EventEmitter {
+   kill(): this;
+ 
+   // Operation
+-  tap(fn: (ctx: TestRunnerContext) => void): this;
++  tap(fn: (ctx: TestRunnerContext) => Promise<void>): this;
+ 
+   log(format: string, ...args?: string[]): this;
+ 
+diff --git a/lib/validator.js b/lib/validator.js
+index 94c8f4f5c9657d88aa3097426b197193502972cc..ef56780ab973b9421e2f0b6d742e7e5b0979d79c 100644
+--- a/lib/validator.js
++++ b/lib/validator.js
+@@ -21,7 +21,6 @@ export function expect(fn) {
+ }
+ 
+ const extractPathRegex = /\s+at.*[(\s](.*):\d+:\d+\)?/;
+-const __filename = filename(import.meta);
+ 
+ function mergeError(buildError, runError) {
+   buildError.message = runError.message;

@@ -11,7 +11,7 @@ module.exports = {
 
   overrides: [
     {
-      files: ['examples/**/*.js', 'examples/**/*.ts'],
+      files: ['**/*.js', '**/*.ts'],
       // TODO: Replace this with the actual snap globals
       env: {
         browser: true,
@@ -30,5 +30,11 @@ module.exports = {
     },
   ],
 
-  ignorePatterns: ['!.eslintrc.js', '!.prettierrc.js', 'dist/', 'build/'],
+  ignorePatterns: [
+    '!.eslintrc.js',
+    '!.prettierrc.js',
+    'dist/',
+    'build/',
+    'examples/**',
+  ],
 };

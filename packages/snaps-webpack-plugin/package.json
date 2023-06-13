@@ -1,14 +1,15 @@
 {
   "name": "@metamask/snaps-webpack-plugin",
-  "version": "0.31.0",
+  "version": "0.34.1-flask.1",
   "keywords": [
     "webpack",
     "plugin"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
+  "sideEffects": false,
   "main": "dist/index.js",
   "files": [
     "dist/"
@@ -17,9 +18,9 @@
     "test": "jest && yarn posttest",
     "posttest": "jest-it-up",
     "test:ci": "yarn test",
-    "lint:eslint": "eslint . --cache --ext js,ts",
-    "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
-    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
+    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
     "build:tsc": "tsc --project tsconfig.build.json",
@@ -28,20 +29,22 @@
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
     "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
     "publish:preview": "yarn npm publish --tag preview",
-    "publish:package": "../../scripts/publish-package.sh"
+    "lint:ci": "yarn lint"
   },
   "dependencies": {
-    "@metamask/snaps-utils": "^0.31.0",
-    "@metamask/utils": "^5.0.0",
+    "@metamask/snaps-utils": "workspace:^",
+    "@metamask/utils": "^6.0.0",
     "webpack-sources": "^3.2.3"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "^2.0.3",
+    "@lavamoat/allow-scripts": "^2.3.1",
     "@metamask/auto-changelog": "^3.1.0",
     "@metamask/eslint-config": "^11.0.0",
     "@metamask/eslint-config-jest": "^11.0.0",
     "@metamask/eslint-config-nodejs": "^11.0.1",
     "@metamask/eslint-config-typescript": "^11.0.0",
+    "@swc/core": "^1.3.61",
+    "@swc/jest": "^0.2.26",
     "@types/jest": "^27.5.1",
     "@types/webpack-sources": "^3.2.0",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
@@ -56,11 +59,10 @@
     "eslint-plugin-prettier": "^4.2.1",
     "jest": "^29.0.2",
     "jest-it-up": "^2.0.0",
-    "memfs": "^3.4.1",
+    "memfs": "^3.4.13",
     "prettier": "^2.7.1",
     "prettier-plugin-packagejson": "^2.2.11",
-    "rimraf": "^3.0.2",
-    "ts-jest": "^29.0.0",
+    "rimraf": "^4.1.2",
     "typescript": "~4.8.4",
     "webpack": "^5.72.1"
   },

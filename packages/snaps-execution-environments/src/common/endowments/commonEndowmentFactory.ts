@@ -1,3 +1,7 @@
+import { SnapId } from '@metamask/snaps-utils';
+
+import { rootRealmGlobal } from '../globalObject';
+import consoleEndowment from './console';
 import crypto from './crypto';
 import date from './date';
 import interval from './interval';
@@ -7,14 +11,19 @@ import textDecoder from './textDecoder';
 import textEncoder from './textEncoder';
 import timeout from './timeout';
 
+export type EndowmentFactoryOptions = {
+  snapId?: SnapId;
+};
+
 export type EndowmentFactory = {
   names: readonly string[];
-  factory: () => { [key: string]: unknown };
+  factory: (options?: EndowmentFactoryOptions) => { [key: string]: unknown };
 };
 
 export type CommonEndowmentSpecification = {
   endowment: unknown;
   name: string;
+  bind?: boolean;
 };
 
 // Array of common endowments
@@ -22,11 +31,11 @@ const commonEndowments: CommonEndowmentSpecification[] = [
   { endowment: AbortController, name: 'AbortController' },
   { endowment: AbortSignal, name: 'AbortSignal' },
   { endowment: ArrayBuffer, name: 'ArrayBuffer' },
-  { endowment: atob, name: 'atob' },
+  { endowment: atob, name: 'atob', bind: true },
   { endowment: BigInt, name: 'BigInt' },
   { endowment: BigInt64Array, name: 'BigInt64Array' },
   { endowment: BigUint64Array, name: 'BigUint64Array' },
-  { endowment: btoa, name: 'btoa' },
+  { endowment: btoa, name: 'btoa', bind: true },
   { endowment: DataView, name: 'DataView' },
   { endowment: Float32Array, name: 'Float32Array' },
   { endowment: Float64Array, name: 'Float64Array' },
@@ -58,16 +67,20 @@ const buildCommonEndowments = (): EndowmentFactory[] => {
     textDecoder,
     textEncoder,
     date,
+    consoleEndowment,
   ];
 
   commonEndowments.forEach((endowmentSpecification) => {
     const endowment = {
       names: [endowmentSpecification.name] as const,
       factory: () => {
+        const boundEndowment =
+          typeof endowmentSpecification.endowment === 'function' &&
+          endowmentSpecification.bind
+            ? endowmentSpecification.endowment.bind(rootRealmGlobal)
+            : endowmentSpecification.endowment;
         return {
-          [endowmentSpecification.name]: harden(
-            endowmentSpecification.endowment,
-          ),
+          [endowmentSpecification.name]: harden(boundEndowment),
         } as const;
       },
     };

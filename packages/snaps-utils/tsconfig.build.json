@@ -11,6 +11,7 @@
     "./src/**/test-utils",
     "./src/**/__mocks__",
     "./src/**/__snapshots__",
+    "./src/eval-worker.js",
     "wdio.config.ts",
     "scripts"
   ],

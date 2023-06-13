@@ -1,85 +1,11 @@
+import { SubjectType, PermissionType } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import { TEST_SECRET_RECOVERY_PHRASE_BYTES } from '@metamask/snaps-utils/test-utils';
 
 import {
   getBip44EntropyBuilder,
-  getBip44EntropyCaveatMapper,
-  getBip44EntropyCaveatSpecifications,
   getBip44EntropyImplementation,
-  validateCaveat,
-  validateParams,
 } from './getBip44Entropy';
-
-describe('validateParams', () => {
-  it.each([true, false, null, undefined, 'foo', [], new (class {})()])(
-    'throws if the value is not a plain object',
-    (value) => {
-      expect(() => validateParams(value)).toThrow(
-        'Expected a plain object containing a coin type.',
-      );
-    },
-  );
-
-  it.each([
-    {},
-    [],
-    true,
-    false,
-    null,
-    undefined,
-    'foo',
-    -1,
-    1.1,
-    Infinity,
-    -Infinity,
-    NaN,
-    0x80000000,
-  ])('throws an error if the coin type is invalid', (value) => {
-    expect(() => {
-      validateParams({ coinType: value });
-    }).toThrow(
-      'Invalid "coinType" parameter. Coin type must be a non-negative integer.',
-    );
-  });
-});
-
-describe('validateCaveat', () => {
-  it.each([
-    { type: SnapCaveatType.PermittedCoinTypes },
-    { type: SnapCaveatType.PermittedCoinTypes, value: {} },
-    { type: SnapCaveatType.PermittedCoinTypes, value: [] },
-  ])('throws if the caveat is invalid', (caveat) => {
-    // @ts-expect-error Invalid caveat type.
-    expect(() => validateCaveat(caveat)).toThrow(
-      'Expected non-empty array of coin types.',
-    );
-  });
-
-  it.each([
-    {},
-    [],
-    true,
-    false,
-    null,
-    undefined,
-    'foo',
-    -1,
-    1.1,
-    Infinity,
-    -Infinity,
-    NaN,
-    0x80000000,
-  ])('throws if the caveat values are invalid', (value) => {
-    expect(() =>
-      validateCaveat({
-        type: SnapCaveatType.PermittedCoinTypes,
-        value: [{ coinType: value }],
-      }),
-    ).toThrow(
-      'Invalid "coinType" parameter. Coin type must be a non-negative integer.',
-    );
-  });
-});
 
 describe('specificationBuilder', () => {
   const methodHooks = {
@@ -89,6 +15,17 @@ describe('specificationBuilder', () => {
 
   const specification = getBip44EntropyBuilder.specificationBuilder({
     methodHooks,
+  });
+
+  it('outputs expected specification', () => {
+    expect(specification).toStrictEqual({
+      permissionType: PermissionType.RestrictedMethod,
+      targetName: 'snap_getBip44Entropy',
+      allowedCaveats: [SnapCaveatType.PermittedCoinTypes],
+      methodImplementation: expect.any(Function),
+      subjectTypes: [SubjectType.Snap],
+      validator: expect.any(Function),
+    });
   });
 
   describe('validator', () => {
@@ -114,102 +51,6 @@ describe('specificationBuilder', () => {
           ],
         }),
       ).toThrow('Expected a single "permittedCoinTypes" caveat.');
-    });
-  });
-});
-
-describe('getBip44EntropyCaveatMapper', () => {
-  it('returns a caveat value for an array of coin types', () => {
-    expect(
-      getBip44EntropyCaveatMapper([
-        {
-          coinType: 1,
-        },
-        {
-          coinType: 60,
-        },
-      ]),
-    ).toStrictEqual({
-      caveats: [
-        {
-          type: SnapCaveatType.PermittedCoinTypes,
-          value: [
-            {
-              coinType: 1,
-            },
-            {
-              coinType: 60,
-            },
-          ],
-        },
-      ],
-    });
-  });
-});
-
-describe('getBip44EntropyCaveatSpecifications', () => {
-  describe('decorator', () => {
-    const params = { coinType: 1 };
-
-    it('returns the result of the method implementation', async () => {
-      const fn = jest.fn().mockImplementation(() => 'foo');
-
-      expect(
-        await getBip44EntropyCaveatSpecifications[
-          SnapCaveatType.PermittedCoinTypes
-        ].decorator(fn, {
-          type: SnapCaveatType.PermittedCoinTypes,
-          value: [params],
-          // @ts-expect-error Missing other required properties.
-        })({ params }),
-      ).toBe('foo');
-    });
-
-    it('throws if the coin type is invalid', async () => {
-      const fn = jest.fn().mockImplementation(() => 'foo');
-
-      await expect(
-        getBip44EntropyCaveatSpecifications[
-          SnapCaveatType.PermittedCoinTypes
-        ].decorator(fn, {
-          type: SnapCaveatType.PermittedDerivationPaths,
-          value: [params],
-          // @ts-expect-error Missing other required properties.
-        })({ params: { coinType: -1 } }),
-      ).rejects.toThrow(
-        'Invalid "coinType" parameter. Coin type must be a non-negative integer.',
-      );
-    });
-
-    it('throws if the coin type is not specified in the caveats', async () => {
-      const fn = jest.fn().mockImplementation(() => 'foo');
-
-      await expect(
-        getBip44EntropyCaveatSpecifications[
-          SnapCaveatType.PermittedCoinTypes
-        ].decorator(fn, {
-          type: SnapCaveatType.PermittedCoinTypes,
-          value: [params],
-          // @ts-expect-error Missing other required properties.
-        })({ params: { coinType: 2 } }),
-      ).rejects.toThrow(
-        'The requested coin type is not permitted. Allowed coin types must be specified in the snap manifest.',
-      );
-    });
-  });
-
-  describe('validator', () => {
-    it('throws if the caveat values are invalid', () => {
-      expect(() =>
-        getBip44EntropyCaveatSpecifications[
-          SnapCaveatType.PermittedCoinTypes
-        ].validator?.({
-          type: SnapCaveatType.PermittedCoinTypes,
-          value: [{ coinType: -1 }],
-        }),
-      ).toThrow(
-        'Invalid "coinType" parameter. Coin type must be a non-negative integer.',
-      );
     });
   });
 });

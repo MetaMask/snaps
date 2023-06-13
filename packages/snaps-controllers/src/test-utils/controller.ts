@@ -1,29 +1,22 @@
 import { ApprovalRequest } from '@metamask/approval-controller';
 import {
-  ActionConstraint,
-  ActionHandler,
-  ControllerMessenger,
-  EventConstraint,
-} from '@metamask/base-controller';
-import {
   PermissionConstraint,
   SubjectPermissions,
   ValidPermission,
   Caveat,
+  SubjectMetadata,
+  SubjectType,
 } from '@metamask/permission-controller';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
-import { SnapCaveatType } from '@metamask/snaps-utils';
+import { SnapCaveatType, ValidatedSnapId } from '@metamask/snaps-utils';
 import {
+  MockControllerMessenger,
   getPersistedSnapObject,
   getTruncatedSnap,
   MOCK_LOCAL_SNAP_ID,
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
-import {
-  SubjectMetadata,
-  SubjectType,
-} from '@metamask/subject-metadata-controller';
 import { Json } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
@@ -36,6 +29,8 @@ import {
   SnapControllerActions,
   SnapControllerEvents,
   SnapEndowments,
+  SnapsRegistryActions,
+  SnapsRegistryEvents,
 } from '../snaps';
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
@@ -47,25 +42,6 @@ const asyncNoOp = async () => Promise.resolve();
  * A controller messenger, that allows overwriting the action handlers, without
  * the need to call `unregisterActionHandler` first.
  */
-export class MockControllerMessenger<
-  Action extends ActionConstraint,
-  Event extends EventConstraint,
-> extends ControllerMessenger<Action, Event> {
-  /**
-   * Registers an action handler for the given action type. If an action handler
-   * already exists for the given action type, it will be overwritten.
-   *
-   * @param actionType - The action type to register the handler for.
-   * @param handler - The action handler to register.
-   */
-  registerActionHandler<T extends Action['type']>(
-    actionType: T,
-    handler: ActionHandler<Action, T>,
-  ) {
-    super.unregisterActionHandler(actionType);
-    super.registerActionHandler(actionType, handler);
-  }
-}
 
 export class MockApprovalController {
   #approval?: {
@@ -192,7 +168,7 @@ export const MOCK_SNAP_PERMISSIONS: Record<string, PermissionConstraint> = {
   [snapConfirmPermissionKey]: MOCK_SNAP_CONFIRM_PERMISSION,
 };
 
-export const getControllerMessenger = () => {
+export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
   const messenger = new MockControllerMessenger<
     SnapControllerActions | AllowedActions,
     SnapControllerEvents | AllowedEvents
@@ -280,6 +256,15 @@ export const getControllerMessenger = () => {
   messenger.registerActionHandler('ExecutionService:executeSnap', asyncNoOp);
   messenger.registerActionHandler('ExecutionService:terminateSnap', asyncNoOp);
 
+  messenger.registerActionHandler(
+    'SnapsRegistry:get',
+    registry.get.bind(registry),
+  );
+  messenger.registerActionHandler(
+    'SnapsRegistry:getMetadata',
+    registry.getMetadata.bind(registry),
+  );
+
   jest.spyOn(messenger, 'call');
 
   return messenger;
@@ -344,6 +329,9 @@ export const getSnapControllerMessenger = (
       'SnapController:decrementActiveReferences',
       'SnapController:getRegistryMetadata',
       'SubjectMetadataController:getSubjectMetadata',
+      'SnapsRegistry:get',
+      'SnapsRegistry:getMetadata',
+      'SnapController:disconnectOrigin',
     ],
   });
 
@@ -365,13 +353,11 @@ export type PartialSnapControllerConstructorParams = Partial<
 export const getSnapControllerOptions = (
   opts?: PartialSnapControllerConstructorParams,
 ) => {
-  const registry = new MockSnapsRegistry();
   const options = {
     environmentEndowmentPermissions: [],
     closeAllConnections: jest.fn(),
     messenger: getSnapControllerMessenger(),
     featureFlags: { dappsCanUpdateSnaps: true },
-    registry,
     state: undefined,
     fetchFunction: jest.fn(),
     ...opts,
@@ -397,13 +383,10 @@ export const getSnapControllerWithEESOptions = ({
 }: GetSnapControllerWithEESOptionsParam = {}) => {
   const snapControllerMessenger = getSnapControllerMessenger(rootMessenger);
 
-  const registry = new MockSnapsRegistry();
-
   return {
     featureFlags: { dappsCanUpdateSnaps: true },
     environmentEndowmentPermissions: [],
     closeAllConnections: jest.fn(),
-    registry,
     messenger: snapControllerMessenger,
     rootMessenger,
     fetchFunction: jest.fn(),
@@ -429,7 +412,7 @@ export const getSnapControllerWithEES = (
 };
 
 export const getPersistedSnapsState = (
-  ...snaps: PersistedSnapControllerState['snaps'][string][]
+  ...snaps: PersistedSnapControllerState['snaps'][ValidatedSnapId][]
 ): PersistedSnapControllerState['snaps'] => {
   return (snaps.length > 0 ? snaps : [getPersistedSnapObject()]).reduce<
     PersistedSnapControllerState['snaps']
@@ -499,4 +482,34 @@ export const getRestrictedCronjobControllerMessenger = (
   }
 
   return cronjobControllerMessenger;
+};
+
+// Mock controller messenger for registry
+export const getRootSnapsRegistryControllerMessenger = () => {
+  const messenger = new MockControllerMessenger<
+    SnapsRegistryActions,
+    SnapsRegistryEvents
+  >();
+
+  jest.spyOn(messenger, 'call');
+
+  return messenger;
+};
+
+export const getRestrictedSnapsRegistryControllerMessenger = (
+  messenger: ReturnType<
+    typeof getRootSnapsRegistryControllerMessenger
+  > = getRootSnapsRegistryControllerMessenger(),
+) => {
+  const controllerMessenger = messenger.getRestricted<
+    'SnapsRegistry',
+    SnapsRegistryActions['type'],
+    SnapsRegistryEvents['type']
+  >({
+    name: 'SnapsRegistry',
+    allowedEvents: [],
+    allowedActions: ['SnapsRegistry:get', 'SnapsRegistry:getMetadata'],
+  });
+
+  return controllerMessenger;
 };

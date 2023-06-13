@@ -1,4 +1,4 @@
-import { PermissionType } from '@metamask/permission-controller';
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
 
 import { SnapEndowments } from './enum';
 import { networkAccessEndowmentBuilder } from './network-access';
@@ -10,9 +10,10 @@ describe('endowment:network-access', () => {
     );
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
-      targetKey: SnapEndowments.NetworkAccess,
+      targetName: SnapEndowments.NetworkAccess,
       endowmentGetter: expect.any(Function),
       allowedCaveats: null,
+      subjectTypes: [SubjectType.Snap],
     });
 
     expect(specification.endowmentGetter()).toStrictEqual([

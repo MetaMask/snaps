@@ -18,11 +18,18 @@ import { hasProperty, isObject, Json } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
 import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
+import { MethodHooksObject } from '../utils';
 import {
   handleInstallSnaps,
   InstallSnapsHook,
   InstallSnapsResult,
 } from './common/snapInstallation';
+
+const hookNames: MethodHooksObject<RequestSnapsHooks> = {
+  installSnaps: true,
+  requestPermissions: true,
+  getPermissions: true,
+};
 
 /**
  * `wallet_requestSnaps` installs the requested Snaps and requests permission to use them if necessary.
@@ -34,11 +41,7 @@ export const requestSnapsHandler: PermittedHandlerExport<
 > = {
   methodNames: ['wallet_requestSnaps'],
   implementation: requestSnapsImplementation,
-  hookNames: {
-    installSnaps: true,
-    requestPermissions: true,
-    getPermissions: true,
-  },
+  hookNames,
 };
 
 export type RequestSnapsHooks = {
@@ -54,7 +57,12 @@ export type RequestSnapsHooks = {
    */
   requestPermissions: (
     permissions: RequestedPermissions,
-  ) => Promise<PermissionConstraint[]>;
+  ) => Promise<
+    [
+      Record<string, PermissionConstraint>,
+      { data: Record<string, unknown>; id: string; origin: string },
+    ]
+  >;
 
   /**
    * Gets the current permissions for the requesting origin.
@@ -117,19 +125,19 @@ export function getSnapPermissionsRequest(
     (caveat: Caveat<string, Json>) => caveat.type === SnapCaveatType.SnapIds,
   );
 
-  const permittedSnaps = snapIdCaveat?.value ?? {};
-  const snapIdSet = new Set(Object.keys(permittedSnaps));
+  const permittedSnaps = (snapIdCaveat?.value as Record<string, Json>) ?? {};
 
   const requestedSnaps =
     requestedPermissions[WALLET_SNAP_PERMISSION_KEY].caveats[0].value;
 
-  for (const requestedSnap of Object.keys(requestedSnaps)) {
-    snapIdSet.add(requestedSnap);
-  }
+  const snapIdSet = new Set([
+    ...Object.keys(permittedSnaps),
+    ...Object.keys(requestedSnaps),
+  ]);
 
   const mergedCaveatValue = [...snapIdSet].reduce<Record<string, Json>>(
     (request, snapId) => {
-      request[snapId] = {};
+      request[snapId] = requestedSnaps[snapId] ?? permittedSnaps[snapId];
       return request;
     },
     {},
@@ -174,9 +182,6 @@ async function requestSnapsImplementation(
     );
   }
 
-  // Request the permission for the installing DApp to talk to the snap, if needed
-  // TODO: Should this be part of the install flow?
-
   try {
     if (!Object.keys(requestedSnaps).length) {
       throw new Error('Request must have at least one requested snap.');
@@ -189,33 +194,27 @@ async function requestSnapsImplementation(
     } as RequestedPermissions;
     const existingPermissions = await getPermissions();
 
-    let approvedPermissions = [];
-
     if (!existingPermissions) {
-      approvedPermissions = await requestPermissions(requestedPermissions);
-    } else if (!hasRequestedSnaps(existingPermissions, requestedSnaps)) {
+      const [, metadata] = await requestPermissions(requestedPermissions);
+      res.result = metadata.data[
+        WALLET_SNAP_PERMISSION_KEY
+      ] as InstallSnapsResult;
+    } else if (hasRequestedSnaps(existingPermissions, requestedSnaps)) {
+      res.result = await handleInstallSnaps(requestedSnaps, installSnaps);
+    } else {
       const mergedPermissionsRequest = getSnapPermissionsRequest(
         existingPermissions,
         requestedPermissions,
       );
-      approvedPermissions = await requestPermissions(mergedPermissionsRequest);
-    }
 
-    if (
-      (!existingPermissions ||
-        !hasRequestedSnaps(existingPermissions, requestedSnaps)) &&
-      !approvedPermissions?.length
-    ) {
-      throw ethErrors.provider.userRejectedRequest({ data: req });
+      const [, metadata] = await requestPermissions(mergedPermissionsRequest);
+      res.result = metadata.data[
+        WALLET_SNAP_PERMISSION_KEY
+      ] as InstallSnapsResult;
     }
-  } catch (error) {
-    return end(error);
-  }
-
-  try {
-    res.result = await handleInstallSnaps(requestedSnaps, installSnaps);
   } catch (error) {
     res.error = error;
   }
+
   return end();
 }

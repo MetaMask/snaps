@@ -3,6 +3,7 @@ import {
   PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
+  SubjectType,
 } from '@metamask/permission-controller';
 import { Component, ComponentStruct } from '@metamask/snaps-ui';
 import { NonEmptyArray } from '@metamask/utils';
@@ -21,7 +22,7 @@ import {
   union,
 } from 'superstruct';
 
-import { EnumToUnion, enumValue } from '../utils';
+import { EnumToUnion, enumValue, MethodHooksObject } from '../utils';
 
 const methodName = 'snap_dialog';
 
@@ -59,7 +60,7 @@ type DialogSpecificationBuilderOptions = {
 
 type DialogSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.RestrictedMethod;
-  targetKey: typeof methodName;
+  targetName: typeof methodName;
   methodImplementation: ReturnType<typeof getDialogImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
 }>;
@@ -88,18 +89,21 @@ const specificationBuilder: PermissionSpecificationBuilder<
 }: DialogSpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
-    targetKey: methodName,
+    targetName: methodName,
     allowedCaveats,
     methodImplementation: getDialogImplementation(methodHooks),
+    subjectTypes: [SubjectType.Snap],
   };
 };
 
+const methodHooks: MethodHooksObject<DialogMethodHooks> = {
+  showDialog: true,
+};
+
 export const dialogBuilder = Object.freeze({
-  targetKey: methodName,
+  targetName: methodName,
   specificationBuilder,
-  methodHooks: {
-    showDialog: true,
-  },
+  methodHooks,
 } as const);
 
 // Note: We use `type` here instead of `object` because `type` does not validate

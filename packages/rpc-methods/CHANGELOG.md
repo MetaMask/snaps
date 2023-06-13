@@ -6,6 +6,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.34.1-flask.1]
+### Changed
+- No changes this release.
+
+## [0.34.0-flask.1]
+### Changed
+- **BREAKING:** Rename `targetKey` to `targetName` as part of updating `PermissionController` ([#1450](https://github.com/MetaMask/snaps/pull/1450))
+
+## [0.33.1-flask.1]
+### Fixed
+- Fix versions being passed incorrectly during snap install ([#1387](https://github.com/MetaMask/snaps-monorepo/pull/1387))
+
+## [0.33.0-flask.1]
+### Added
+- Add subject type restrictions to snap-specific permissions ([#1366](https://github.com/MetaMask/snaps-monorepo/pull/1366))
+- Add `createSnapsMethodMiddleware` from extension ([#1330](https://github.com/MetaMask/snaps-monorepo/pull/1330))
+
+### Changed
+- **BREAKING:** Add encrypt and decrypt hook to let implementations use their own functions ([#1331](https://github.com/MetaMask/snaps-monorepo/pull/1331))
+- **BREAKING:** Add `snapIds` caveat mapper ([#1360](https://github.com/MetaMask/snaps-monorepo/pull/1360))
+  - Snap dependencies must be specified in a simplified manner. See the PR for an example.
+
+## [0.32.2]
+### Changed
+- No changes this release.
+
+## [0.32.1]
+### Fixed
+- Fix `handleSnapInstall` side-effect re-installing all local snaps ([#1314](https://github.com/MetaMask/snaps-monorepo/pull/1314))
+
+## [0.32.0]
+### Changed
+- Use side effects to install snaps via `wallet_snap` permission ([#1301](https://github.com/MetaMask/snaps-monorepo/pull/1301))
+
+### Fixed
+- Fix invoke snap error message ([#1293](https://github.com/MetaMask/snaps-monorepo/pull/1293))
+- Ensure that same method hooks are used in type and builder ([#1292](https://github.com/MetaMask/snaps-monorepo/pull/1292))
+
 ## [0.31.0]
 ### Changed
 - **BREAKING:** Target `ES2020` ([#1247](https://github.com/MetaMask/snaps-monorepo/pull/1247))
@@ -296,56 +334,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps-monorepo/compare/v0.31.0...HEAD
-[0.31.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.30.0...v0.31.0
-[0.30.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.29.0...v0.30.0
-[0.29.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.28.0...v0.29.0
-[0.28.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.1...v0.28.0
-[0.27.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.27.0...v0.27.1
-[0.27.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.2...v0.27.0
-[0.26.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.1...v0.26.2
-[0.26.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.26.0...v0.26.1
-[0.26.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.25.0...v0.26.0
-[0.25.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.24.1...v0.25.0
-[0.24.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.24.0...v0.24.1
-[0.24.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.23.0...v0.24.0
-[0.23.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.3...v0.23.0
-[0.22.3]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.2...v0.22.3
-[0.22.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.1...v0.22.2
-[0.22.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.22.0...v0.22.1
-[0.22.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.21.0...v0.22.0
-[0.21.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.20.0...v0.21.0
-[0.20.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.19.1...v0.20.0
-[0.19.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.19.0...v0.19.1
-[0.19.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.18.1...v0.19.0
-[0.18.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.18.0...v0.18.1
-[0.18.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.17.0...v0.18.0
-[0.17.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.16.0...v0.17.0
-[0.16.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.15.0...v0.16.0
-[0.15.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.14.0...v0.15.0
-[0.14.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.13.0...v0.14.0
-[0.13.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.12.0...v0.13.0
-[0.12.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.11.1...v0.12.0
-[0.11.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.11.0...v0.11.1
-[0.11.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.10.7...v0.11.0
-[0.10.7]: https://github.com/MetaMask/snaps-monorepo/compare/v0.10.6...v0.10.7
-[0.10.6]: https://github.com/MetaMask/snaps-monorepo/compare/v0.10.5...v0.10.6
-[0.10.5]: https://github.com/MetaMask/snaps-monorepo/compare/v0.10.3...v0.10.5
-[0.10.3]: https://github.com/MetaMask/snaps-monorepo/compare/v0.10.0...v0.10.3
-[0.10.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.9.0...v0.10.0
-[0.9.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.8.0...v0.9.0
-[0.8.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.7.0...v0.8.0
-[0.7.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.6.3...v0.7.0
-[0.6.3]: https://github.com/MetaMask/snaps-monorepo/compare/v0.6.2...v0.6.3
-[0.6.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.6.1...v0.6.2
-[0.6.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.6.0...v0.6.1
-[0.6.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.5.0...v0.6.0
-[0.5.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.4.0...v0.5.0
-[0.4.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.3.1...v0.4.0
-[0.3.1]: https://github.com/MetaMask/snaps-monorepo/compare/v0.3.0...v0.3.1
-[0.3.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.2.2...v0.3.0
-[0.2.2]: https://github.com/MetaMask/snaps-monorepo/compare/v0.2.0...v0.2.2
-[0.2.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/MetaMask/snaps-monorepo/compare/v0.0.6...v0.1.0
-[0.0.6]: https://github.com/MetaMask/snaps-monorepo/compare/v0.0.5...v0.0.6
-[0.0.5]: https://github.com/MetaMask/snaps-monorepo/releases/tag/v0.0.5
+[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.34.1-flask.1...HEAD
+[0.34.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.34.0-flask.1...v0.34.1-flask.1
+[0.34.0-flask.1]: https://github.com/MetaMask/snaps/compare/v0.33.1-flask.1...v0.34.0-flask.1
+[0.33.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.33.0-flask.1...v0.33.1-flask.1
+[0.33.0-flask.1]: https://github.com/MetaMask/snaps/compare/v0.32.2...v0.33.0-flask.1
+[0.32.2]: https://github.com/MetaMask/snaps/compare/v0.32.1...v0.32.2
+[0.32.1]: https://github.com/MetaMask/snaps/compare/v0.32.0...v0.32.1
+[0.32.0]: https://github.com/MetaMask/snaps/compare/v0.31.0...v0.32.0
+[0.31.0]: https://github.com/MetaMask/snaps/compare/v0.30.0...v0.31.0
+[0.30.0]: https://github.com/MetaMask/snaps/compare/v0.29.0...v0.30.0
+[0.29.0]: https://github.com/MetaMask/snaps/compare/v0.28.0...v0.29.0
+[0.28.0]: https://github.com/MetaMask/snaps/compare/v0.27.1...v0.28.0
+[0.27.1]: https://github.com/MetaMask/snaps/compare/v0.27.0...v0.27.1
+[0.27.0]: https://github.com/MetaMask/snaps/compare/v0.26.2...v0.27.0
+[0.26.2]: https://github.com/MetaMask/snaps/compare/v0.26.1...v0.26.2
+[0.26.1]: https://github.com/MetaMask/snaps/compare/v0.26.0...v0.26.1
+[0.26.0]: https://github.com/MetaMask/snaps/compare/v0.25.0...v0.26.0
+[0.25.0]: https://github.com/MetaMask/snaps/compare/v0.24.1...v0.25.0
+[0.24.1]: https://github.com/MetaMask/snaps/compare/v0.24.0...v0.24.1
+[0.24.0]: https://github.com/MetaMask/snaps/compare/v0.23.0...v0.24.0
+[0.23.0]: https://github.com/MetaMask/snaps/compare/v0.22.3...v0.23.0
+[0.22.3]: https://github.com/MetaMask/snaps/compare/v0.22.2...v0.22.3
+[0.22.2]: https://github.com/MetaMask/snaps/compare/v0.22.1...v0.22.2
+[0.22.1]: https://github.com/MetaMask/snaps/compare/v0.22.0...v0.22.1
+[0.22.0]: https://github.com/MetaMask/snaps/compare/v0.21.0...v0.22.0
+[0.21.0]: https://github.com/MetaMask/snaps/compare/v0.20.0...v0.21.0
+[0.20.0]: https://github.com/MetaMask/snaps/compare/v0.19.1...v0.20.0
+[0.19.1]: https://github.com/MetaMask/snaps/compare/v0.19.0...v0.19.1
+[0.19.0]: https://github.com/MetaMask/snaps/compare/v0.18.1...v0.19.0
+[0.18.1]: https://github.com/MetaMask/snaps/compare/v0.18.0...v0.18.1
+[0.18.0]: https://github.com/MetaMask/snaps/compare/v0.17.0...v0.18.0
+[0.17.0]: https://github.com/MetaMask/snaps/compare/v0.16.0...v0.17.0
+[0.16.0]: https://github.com/MetaMask/snaps/compare/v0.15.0...v0.16.0
+[0.15.0]: https://github.com/MetaMask/snaps/compare/v0.14.0...v0.15.0
+[0.14.0]: https://github.com/MetaMask/snaps/compare/v0.13.0...v0.14.0
+[0.13.0]: https://github.com/MetaMask/snaps/compare/v0.12.0...v0.13.0
+[0.12.0]: https://github.com/MetaMask/snaps/compare/v0.11.1...v0.12.0
+[0.11.1]: https://github.com/MetaMask/snaps/compare/v0.11.0...v0.11.1
+[0.11.0]: https://github.com/MetaMask/snaps/compare/v0.10.7...v0.11.0
+[0.10.7]: https://github.com/MetaMask/snaps/compare/v0.10.6...v0.10.7
+[0.10.6]: https://github.com/MetaMask/snaps/compare/v0.10.5...v0.10.6
+[0.10.5]: https://github.com/MetaMask/snaps/compare/v0.10.3...v0.10.5
+[0.10.3]: https://github.com/MetaMask/snaps/compare/v0.10.0...v0.10.3
+[0.10.0]: https://github.com/MetaMask/snaps/compare/v0.9.0...v0.10.0
+[0.9.0]: https://github.com/MetaMask/snaps/compare/v0.8.0...v0.9.0
+[0.8.0]: https://github.com/MetaMask/snaps/compare/v0.7.0...v0.8.0
+[0.7.0]: https://github.com/MetaMask/snaps/compare/v0.6.3...v0.7.0
+[0.6.3]: https://github.com/MetaMask/snaps/compare/v0.6.2...v0.6.3
+[0.6.2]: https://github.com/MetaMask/snaps/compare/v0.6.1...v0.6.2
+[0.6.1]: https://github.com/MetaMask/snaps/compare/v0.6.0...v0.6.1
+[0.6.0]: https://github.com/MetaMask/snaps/compare/v0.5.0...v0.6.0
+[0.5.0]: https://github.com/MetaMask/snaps/compare/v0.4.0...v0.5.0
+[0.4.0]: https://github.com/MetaMask/snaps/compare/v0.3.1...v0.4.0
+[0.3.1]: https://github.com/MetaMask/snaps/compare/v0.3.0...v0.3.1
+[0.3.0]: https://github.com/MetaMask/snaps/compare/v0.2.2...v0.3.0
+[0.2.2]: https://github.com/MetaMask/snaps/compare/v0.2.0...v0.2.2
+[0.2.0]: https://github.com/MetaMask/snaps/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/MetaMask/snaps/compare/v0.0.6...v0.1.0
+[0.0.6]: https://github.com/MetaMask/snaps/compare/v0.0.5...v0.0.6
+[0.0.5]: https://github.com/MetaMask/snaps/releases/tag/v0.0.5

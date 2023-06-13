@@ -14,6 +14,15 @@ import { literal, Struct } from 'superstruct';
 const HARDENED_VALUE = 0x80000000;
 
 /**
+ * Maps an interface with method hooks to an object, using the keys of the
+ * interface, and `true` as value. This ensures that the `methodHooks` object
+ * has the same values as the interface.
+ */
+export type MethodHooksObject<HooksType extends Record<string, unknown>> = {
+  [Key in keyof HooksType]: true;
+};
+
+/**
  * Returns the subset of the specified `hooks` that are included in the
  * `hookNames` object. This is a Principle of Least Authority (POLA) measure
  * to ensure that each RPC method implementation only has access to the
@@ -43,19 +52,6 @@ export function selectHooks<
     ) as Pick<Hooks, HookName>;
   }
   return undefined;
-}
-
-/**
- * Checks if array `a` is equal to array `b`. Note that this does not do a deep
- * equality check. It only checks if the arrays are the same length and if each
- * element in `a` is equal to (`===`) the corresponding element in `b`.
- *
- * @param a - The first array to compare.
- * @param b - The second array to compare.
- * @returns `true` if the arrays are equal, `false` otherwise.
- */
-export function isEqual(a: unknown[], b: unknown[]): boolean {
-  return a.length === b.length && a.every((value, index) => value === b[index]);
 }
 
 /**

@@ -3,6 +3,7 @@ import {
   PermissionType,
   EndowmentGetterParams,
   ValidPermissionSpecification,
+  SubjectType,
 } from '@metamask/permission-controller';
 
 import { SnapEndowments } from './enum';
@@ -11,7 +12,7 @@ const permissionName = SnapEndowments.LongRunning;
 
 type LongRunningEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
-  targetKey: typeof permissionName;
+  targetName: typeof permissionName;
   endowmentGetter: (_options?: any) => undefined;
   allowedCaveats: null;
 }>;
@@ -32,13 +33,14 @@ const specificationBuilder: PermissionSpecificationBuilder<
 > = (_builderOptions?: any) => {
   return {
     permissionType: PermissionType.Endowment,
-    targetKey: permissionName,
+    targetName: permissionName,
     allowedCaveats: null,
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
+    subjectTypes: [SubjectType.Snap],
   };
 };
 
 export const longRunningEndowmentBuilder = Object.freeze({
-  targetKey: permissionName,
+  targetName: permissionName,
   specificationBuilder,
 } as const);

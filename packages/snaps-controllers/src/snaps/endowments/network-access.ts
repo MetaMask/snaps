@@ -3,6 +3,7 @@ import {
   PermissionSpecificationBuilder,
   PermissionType,
   ValidPermissionSpecification,
+  SubjectType,
 } from '@metamask/permission-controller';
 
 import { SnapEndowments } from './enum';
@@ -11,7 +12,7 @@ const permissionName = SnapEndowments.NetworkAccess;
 
 type NetworkAccessEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
-  targetKey: typeof permissionName;
+  targetName: typeof permissionName;
   endowmentGetter: (
     _options?: any,
   ) => ['fetch', 'Request', 'Headers', 'Response'];
@@ -33,15 +34,16 @@ const specificationBuilder: PermissionSpecificationBuilder<
 > = (_builderOptions?: any) => {
   return {
     permissionType: PermissionType.Endowment,
-    targetKey: permissionName,
+    targetName: permissionName,
     allowedCaveats: null,
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => {
       return ['fetch', 'Request', 'Headers', 'Response'];
     },
+    subjectTypes: [SubjectType.Snap],
   };
 };
 
 export const networkAccessEndowmentBuilder = Object.freeze({
-  targetKey: permissionName,
+  targetName: permissionName,
   specificationBuilder,
 } as const);

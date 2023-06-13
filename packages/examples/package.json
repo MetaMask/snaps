@@ -1,11 +1,11 @@
 {
   "name": "examples",
-  "version": "0.31.0",
+  "version": "0.34.1-flask.1",
   "private": true,
   "description": "Example MetaMask Snaps.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "license": "MIT",
   "files": [
@@ -16,21 +16,22 @@
   ],
   "scripts": {
     "lint:changelog": "yarn auto-changelog validate",
-    "lint:eslint": "eslint . --cache --ext js,ts",
-    "lint:misc": "prettier '**/*.json' '**/*.md' '**/*.html' '!CHANGELOG.md' --ignore-path ../../.gitignore",
-    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
+    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "build": "yarn workspaces foreach --parallel --verbose run build",
-    "build:post-tsc": "yarn build"
+    "build:post-tsc": "yarn build",
+    "lint:ci": "yarn lint"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "^2.0.3",
+    "@lavamoat/allow-scripts": "^2.3.1",
     "@metamask/auto-changelog": "^3.1.0",
     "@metamask/eslint-config": "^11.0.0",
     "@metamask/eslint-config-jest": "^11.0.0",
     "@metamask/eslint-config-nodejs": "^11.0.1",
     "@metamask/eslint-config-typescript": "^11.0.0",
-    "@metamask/snaps-cli": "^0.31.0",
+    "@metamask/snaps-cli": "workspace:^",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "eslint": "^8.27.0",
@@ -42,7 +43,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.7.1",
     "prettier-plugin-packagejson": "^2.2.11",
-    "rimraf": "^3.0.2",
+    "rimraf": "^4.1.2",
     "typescript": "~4.8.4"
   },
   "engines": {

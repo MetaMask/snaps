@@ -20,6 +20,7 @@ import {
   JsonRpcRequest,
   Json,
   hasProperty,
+  getSafeJson,
 } from '@metamask/utils';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
 import { createIdRemapMiddleware } from 'json-rpc-engine';
@@ -88,7 +89,7 @@ const EXECUTION_ENVIRONMENT_METHODS = {
   },
   executeSnap: {
     struct: ExecuteSnapRequestArgumentsStruct,
-    params: ['snapName', 'sourceCode', 'endowments'],
+    params: ['snapId', 'sourceCode', 'endowments'],
   },
   terminate: {
     struct: TerminateRequestArgumentsStruct,
@@ -151,11 +152,17 @@ export class BaseSnapExecutor {
           result = null;
         }
 
-        assert(
-          isValidJson(result),
-          new TypeError('Received non-JSON-serializable value.'),
-        );
-        return result;
+        // /!\ Always return only sanitized JSON to prevent security flaws. /!\
+        try {
+          return getSafeJson(result);
+        } catch (error) {
+          throw new TypeError(
+            `Received non-JSON-serializable value: ${error.message.replace(
+              /^Assertion failed: /u,
+              '',
+            )}`,
+          );
+        }
       },
       this.onTerminate.bind(this),
     );
@@ -270,16 +277,16 @@ export class BaseSnapExecutor {
    * Attempts to evaluate a snap in SES. Generates APIs for the snap. May throw
    * on errors.
    *
-   * @param snapName - The name of the snap.
+   * @param snapId - The id of the snap.
    * @param sourceCode - The source code of the snap, in IIFE format.
    * @param _endowments - An array of the names of the endowments.
    */
   protected async startSnap(
-    snapName: string,
+    snapId: string,
     sourceCode: string,
     _endowments?: string[],
   ): Promise<void> {
-    log(`Starting snap '${snapName}' in worker.`);
+    log(`Starting snap '${snapId}' in worker.`);
     if (this.snapPromiseErrorHandler) {
       removeEventListener('unhandledrejection', this.snapPromiseErrorHandler);
     }
@@ -289,12 +296,12 @@ export class BaseSnapExecutor {
     }
 
     this.snapErrorHandler = (error: ErrorEvent) => {
-      this.errorHandler(error.error, { snapName });
+      this.errorHandler(error.error, { snapId });
     };
 
     this.snapPromiseErrorHandler = (error: PromiseRejectionEvent) => {
       this.errorHandler(error instanceof Error ? error : error.reason, {
-        snapName,
+        snapId,
       });
     };
 
@@ -314,12 +321,13 @@ export class BaseSnapExecutor {
       const { endowments, teardown: endowmentTeardown } = createEndowments(
         snap,
         ethereum,
+        snapId,
         _endowments,
       );
 
       // !!! Ensure that this is the only place the data is being set.
       // Other methods access the object value and mutate its properties.
-      this.snapData.set(snapName, {
+      this.snapData.set(snapId, {
         idleTeardown: endowmentTeardown,
         runningEvaluations: new Set(),
         exports: {},
@@ -342,14 +350,14 @@ export class BaseSnapExecutor {
       compartment.globalThis.global = compartment.globalThis;
       compartment.globalThis.window = compartment.globalThis;
 
-      await this.executeInSnapContext(snapName, () => {
+      await this.executeInSnapContext(snapId, () => {
         compartment.evaluate(sourceCode);
-        this.registerSnapExports(snapName, snapModule);
+        this.registerSnapExports(snapId, snapModule);
       });
     } catch (error) {
-      this.removeSnap(snapName);
+      this.removeSnap(snapId);
       throw new Error(
-        `Error while running snap '${snapName}': ${(error as Error).message}`,
+        `Error while running snap '${snapId}': ${(error as Error).message}`,
       );
     }
   }
@@ -368,8 +376,8 @@ export class BaseSnapExecutor {
     this.snapData.clear();
   }
 
-  private registerSnapExports(snapName: string, snapModule: any) {
-    const data = this.snapData.get(snapName);
+  private registerSnapExports(snapId: string, snapModule: any) {
+    const data = this.snapData.get(snapId);
     // Somebody deleted the Snap before we could register
     if (!data) {
       return;
@@ -395,9 +403,13 @@ export class BaseSnapExecutor {
 
     const request = async (args: RequestArguments) => {
       assertSnapOutboundRequest(args);
+      const sanitizedArgs = getSafeJson(args);
       this.notify({ method: 'OutboundRequest' });
       try {
-        return await withTeardown(originalRequest(args), this as any);
+        return await withTeardown(
+          originalRequest(sanitizedArgs as unknown as RequestArguments),
+          this as any,
+        );
       } finally {
         this.notify({ method: 'OutboundResponse' });
       }
@@ -435,9 +447,13 @@ export class BaseSnapExecutor {
 
     const request = async (args: RequestArguments) => {
       assertEthereumOutboundRequest(args);
+      const sanitizedArgs = getSafeJson(args);
       this.notify({ method: 'OutboundRequest' });
       try {
-        return await withTeardown(originalRequest(args), this as any);
+        return await withTeardown(
+          originalRequest(sanitizedArgs as unknown as RequestArguments),
+          this as any,
+        );
       } finally {
         this.notify({ method: 'OutboundResponse' });
       }
@@ -451,10 +467,10 @@ export class BaseSnapExecutor {
   /**
    * Removes the snap with the given name.
    *
-   * @param snapName - The name of the snap to remove.
+   * @param snapId - The id of the snap to remove.
    */
-  private removeSnap(snapName: string): void {
-    this.snapData.delete(snapName);
+  private removeSnap(snapId: string): void {
+    this.snapData.delete(snapId);
   }
 
   /**
@@ -463,19 +479,19 @@ export class BaseSnapExecutor {
    * counted as an evaluation of the specified snap. When the count of running
    * evaluations of a snap reaches zero, its endowments are torn down.
    *
-   * @param snapName - The name of the snap whose context to execute in.
+   * @param snapId - The id of the snap whose context to execute in.
    * @param executor - The function that will be executed in the snap's context.
    * @returns The executor's return value.
    * @template Result - The return value of the executor.
    */
   private async executeInSnapContext<Result>(
-    snapName: string,
+    snapId: string,
     executor: () => Promise<Result> | Result,
   ): Promise<Result> {
-    const data = this.snapData.get(snapName);
+    const data = this.snapData.get(snapId);
     if (data === undefined) {
       throw new Error(
-        `Tried to execute in context of unknown snap: "${snapName}".`,
+        `Tried to execute in context of unknown snap: "${snapId}".`,
       );
     }
 
@@ -486,7 +502,7 @@ export class BaseSnapExecutor {
           reject(
             // TODO(rekmarks): Specify / standardize error code for this case.
             ethErrors.rpc.internal(
-              `The snap "${snapName}" has been terminated during execution.`,
+              `The snap "${snapId}" has been terminated during execution.`,
             ),
           )),
     );

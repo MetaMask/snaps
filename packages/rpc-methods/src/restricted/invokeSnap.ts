@@ -3,10 +3,8 @@ import {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
   PermissionType,
-  RestrictedMethodCaveatSpecificationConstraint,
-  Caveat,
-  RestrictedMethodParameters,
   PermissionValidatorConstraint,
+  PermissionSideEffect,
 } from '@metamask/permission-controller';
 import {
   Snap,
@@ -14,19 +12,32 @@ import {
   HandlerType,
   SnapRpcHookArgs,
   SnapCaveatType,
-  assertIsValidSnapId,
+  RequestedSnapPermissions,
+  InstallSnapsResult,
 } from '@metamask/snaps-utils';
-import {
-  isJsonRpcRequest,
-  Json,
-  NonEmptyArray,
-  hasProperty,
-  isObject,
-} from '@metamask/utils';
+import { isJsonRpcRequest, Json, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { nanoid } from 'nanoid';
 
+import { MethodHooksObject } from '../utils';
+
 export const WALLET_SNAP_PERMISSION_KEY = 'wallet_snap';
+
+// Redeclare installSnaps action type to avoid circular dependencies
+export type InstallSnaps = {
+  type: `SnapController:install`;
+  handler: (
+    origin: string,
+    requestedSnaps: RequestedSnapPermissions,
+  ) => Promise<InstallSnapsResult>;
+};
+
+export type GetPermittedSnaps = {
+  type: `SnapController:getPermitted`;
+  handler: (origin: string) => InstallSnapsResult;
+};
+
+type AllowedActions = InstallSnaps | GetPermittedSnaps;
 
 export type InvokeSnapMethodHooks = {
   getSnap: (snapId: SnapId) => Snap | undefined;
@@ -45,36 +56,55 @@ type InvokeSnapSpecificationBuilderOptions = {
 
 type InvokeSnapSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.RestrictedMethod;
-  targetKey: typeof WALLET_SNAP_PERMISSION_KEY;
+  targetName: typeof WALLET_SNAP_PERMISSION_KEY;
   methodImplementation: ReturnType<typeof getInvokeSnapImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
+  sideEffect: {
+    onPermitted: PermissionSideEffect<AllowedActions, never>['onPermitted'];
+  };
 }>;
 
-type InvokeSnapParams = {
+export type InvokeSnapParams = {
   snapId: string;
   request: Record<string, unknown>;
 };
 
 /**
- * Validates that the caveat value exists and is a non-empty object.
+ * The side-effect method to handle the snap install.
  *
- * @param caveat - The caveat to validate.
- * @throws If the caveat is invalid.
+ * @param params - The side-effect params.
+ * @param params.requestData - The request data associated to the requested permission.
+ * @param params.messagingSystem - The messenger to call an action.
  */
-export function validateCaveat(caveat: Caveat<string, any>) {
-  if (!isObject(caveat.value) || Object.keys(caveat.value).length === 0) {
-    throw ethErrors.rpc.invalidParams({
-      message:
-        'Expected caveat to have a value property of a non-empty object of snap IDs.',
-    });
-  }
-  const snapIds = Object.keys(caveat.value);
-  for (const snapId of snapIds) {
-    assertIsValidSnapId(snapId);
-  }
-}
+export const handleSnapInstall: PermissionSideEffect<
+  AllowedActions,
+  never
+>['onPermitted'] = async ({ requestData, messagingSystem }) => {
+  const snaps = requestData.permissions[WALLET_SNAP_PERMISSION_KEY].caveats?.[0]
+    .value as RequestedSnapPermissions;
 
+  const permittedSnaps = messagingSystem.call(
+    `SnapController:getPermitted`,
+    requestData.metadata.origin,
+  );
+
+  const dedupedSnaps = Object.keys(snaps).reduce<RequestedSnapPermissions>(
+    (filteredSnaps, snap) => {
+      if (!permittedSnaps[snap]) {
+        filteredSnaps[snap] = snaps[snap];
+      }
+      return filteredSnaps;
+    },
+    {},
+  );
+
+  return messagingSystem.call(
+    `SnapController:install`,
+    requestData.metadata.origin,
+    dedupedSnaps,
+  );
+};
 /**
  * The specification builder for the `wallet_snap_*` permission.
  *
@@ -94,7 +124,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 > = ({ methodHooks }: InvokeSnapSpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
-    targetKey: WALLET_SNAP_PERMISSION_KEY,
+    targetName: WALLET_SNAP_PERMISSION_KEY,
     allowedCaveats: [SnapCaveatType.SnapIds],
     methodImplementation: getInvokeSnapImplementation(methodHooks),
     validator: ({ caveats }) => {
@@ -104,43 +134,22 @@ const specificationBuilder: PermissionSpecificationBuilder<
         });
       }
     },
+    sideEffect: {
+      onPermitted: handleSnapInstall,
+    },
   };
 };
 
-export const invokeSnapBuilder = Object.freeze({
-  targetKey: WALLET_SNAP_PERMISSION_KEY,
-  specificationBuilder,
-  methodHooks: {
-    getSnap: true,
-    handleSnapRpcRequest: true,
-  },
-} as const);
-
-export const InvokeSnapCaveatSpecifications: Record<
-  SnapCaveatType.SnapIds,
-  RestrictedMethodCaveatSpecificationConstraint
-> = {
-  [SnapCaveatType.SnapIds]: Object.freeze({
-    type: SnapCaveatType.SnapIds,
-    validator: (caveat) => validateCaveat(caveat),
-    decorator: (method, caveat) => {
-      return async (args) => {
-        const {
-          params,
-          context: { origin },
-        }: RestrictedMethodOptions<RestrictedMethodParameters> = args;
-        const snapIds = caveat.value;
-        const { snapId } = params as InvokeSnapParams;
-        if (!hasProperty(snapIds, snapId)) {
-          throw new Error(
-            `${origin} does not have permission to invoke ${snapId} snap.`,
-          );
-        }
-        return await method(args);
-      };
-    },
-  }),
+const methodHooks: MethodHooksObject<InvokeSnapMethodHooks> = {
+  getSnap: true,
+  handleSnapRpcRequest: true,
 };
+
+export const invokeSnapBuilder = Object.freeze({
+  targetName: WALLET_SNAP_PERMISSION_KEY,
+  specificationBuilder,
+  methodHooks,
+} as const);
 
 /**
  * Builds the method implementation for `wallet_snap_*`.
@@ -177,7 +186,7 @@ export function getInvokeSnapImplementation({
 
     if (!getSnap(snapId)) {
       throw ethErrors.rpc.invalidRequest({
-        message: `The snap "${snapId}" is not installed. This is a bug, please report it.`,
+        message: `The snap "${snapId}" is not installed. Please install it first, before invoking the snap.`,
       });
     }
 

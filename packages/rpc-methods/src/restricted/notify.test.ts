@@ -1,7 +1,10 @@
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
+
 import {
   getImplementation,
   getValidatedParams,
   NotificationType,
+  specificationBuilder,
 } from './notify';
 
 describe('snap_notify', () => {
@@ -9,6 +12,28 @@ describe('snap_notify', () => {
     type: NotificationType.InApp,
     message: 'Some message',
   };
+
+  describe('specification', () => {
+    it('builds specification', () => {
+      const methodHooks = {
+        showNativeNotification: jest.fn(),
+        showInAppNotification: jest.fn(),
+      };
+
+      expect(
+        specificationBuilder({
+          allowedCaveats: null,
+          methodHooks,
+        }),
+      ).toStrictEqual({
+        allowedCaveats: null,
+        methodImplementation: expect.anything(),
+        permissionType: PermissionType.RestrictedMethod,
+        targetName: 'snap_notify',
+        subjectTypes: [SubjectType.Snap],
+      });
+    });
+  });
 
   describe('getImplementation', () => {
     it('shows inApp notification', async () => {

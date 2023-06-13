@@ -5,7 +5,9 @@ const {
 const browserify = require('browserify');
 const { promises: fs } = require('fs');
 const LavaMoatBrowserify = require('lavamoat-browserify');
+const { builtinModules } = require('node:module');
 const path = require('path');
+const { minify } = require('terser');
 const yargs = require('yargs');
 
 const defaultResolvePath = createResolvePath();
@@ -15,26 +17,31 @@ const ENTRY_POINTS = {
   offscreen: {
     entryPoint: './src/offscreen/index.ts',
     html: true,
-    node: false,
   },
   'node-thread': {
     entryPoint: './src/node-thread/index.ts',
-    html: false,
     node: true,
   },
   'node-process': {
     entryPoint: './src/node-process/index.ts',
-    html: false,
     node: true,
   },
+  'worker-executor': {
+    entryPoint: './src/webworker/executor/index.ts',
+    worker: true,
+  },
+  'worker-pool': {
+    entryPoint: './src/webworker/pool/index.ts',
+    html: true,
+  },
 };
+
 const OUTPUT_PATH = './dist/browserify';
 const OUTPUT_HTML = 'index.html';
 const OUTPUT_BUNDLE = 'bundle.js';
 
 /**
- * Builds snaps execution environments using Browserify and LavaMoat.
- *
+ * Create a worker for each entry point and wait for them to finish.
  */
 async function main() {
   const {
@@ -52,13 +59,54 @@ async function main() {
       }),
   );
 
+  const lavamoatSecurityOptionsNode = {};
+
+  const lavamoatSecurityOptionsBrowser = {
+    // Only enable for browser builds for now due to incompatibilities.
+    scuttleGlobalThis: true,
+    scuttleGlobalThisExceptions: [
+      'postMessage',
+      'removeEventListener',
+      'isSecureContext',
+    ],
+  };
+
+  const lavaMoatRuntimeString = await fs.readFile(
+    require.resolve('@lavamoat/lavapack/src/runtime.js'),
+    'utf-8',
+  );
+
+  // These can be re-used for all bundles
+
+  const lavaMoatRuntimeNode = lavaMoatRuntimeString.replace(
+    '__lavamoatSecurityOptions__',
+    JSON.stringify(lavamoatSecurityOptionsNode),
+  );
+
+  const lavaMoatRuntimeBrowser = lavaMoatRuntimeString.replace(
+    '__lavamoatSecurityOptions__',
+    JSON.stringify(lavamoatSecurityOptionsBrowser),
+  );
+
+  const htmlFile = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>MetaMask Snaps Iframe Execution Environment</title>
+    <script>${lavaMoatRuntimeBrowser}</script>
+    <script src="bundle.js"></script>
+  </head>
+</html>`;
+
   await Promise.all(
     Object.entries(ENTRY_POINTS).map(async ([key, config]) => {
       console.log('Bundling', key);
-      const { html, entryPoint, node } = config;
+      const { html, node, worker, entryPoint } = config;
       const insertGlobalVars = node
         ? { process: undefined, ...LavaMoatBrowserify.args.insertGlobalVars }
         : LavaMoatBrowserify.args.insertGlobalVars;
+
       const bundler = browserify(entryPoint, {
         ...LavaMoatBrowserify.args,
         insertGlobalVars,
@@ -67,18 +115,10 @@ async function main() {
       });
 
       if (node) {
-        bundler.external([
-          'worker_threads',
-          'buffer',
-          'stream',
-          'tty',
-          'crypto',
-          'util',
-          'events',
-          'os',
-          'timers',
-          'fs',
-        ]);
+        bundler.external(builtinModules);
+      } else {
+        // The crypto polyfills are erroneously included in the browser bundle, this prevents that.
+        bundler.exclude(['crypto']);
       }
 
       bundler.transform(require('babelify'), {
@@ -108,13 +148,13 @@ async function main() {
                 if (!result) {
                   return null;
                 }
-                // Force resolve `@metamask/snaps-utils` to browser bundle regardless of environment to reduce bundle size
+                // Force resolve `@metamask/snaps-utils` to execution env bundle regardless of environment to reduce bundle size
                 // Use default resolver for everything else
                 if (
                   sourcePath === '@metamask/snaps-utils' &&
                   result.includes('../snaps-utils/src')
                 ) {
-                  return `${result}/index.browser`;
+                  return `${result}/index.executionenv`;
                 }
                 return result;
               },
@@ -123,9 +163,10 @@ async function main() {
         ],
       });
 
-      // Tree shaking
-      bundler.transform(require('@browserify/uglifyify'), { global: true });
-      bundler.plugin(require('common-shakeify'), { ecmaVersion: 2020 });
+      const lavamoatSecurityOptions =
+        worker || html
+          ? lavamoatSecurityOptionsBrowser
+          : lavamoatSecurityOptionsNode;
 
       // Add LavaMoat to wrap bundles in LavaPack
       // For Node.js builds, this also includes a prelude that contains SES and the LavaMoat runtime
@@ -141,8 +182,9 @@ async function main() {
           __dirname,
           `../lavamoat/browserify/policy-override.json`,
         ),
-        // Prelude is included in Node, in the browser it is inlined.
-        includePrelude: node,
+        // Prelude is not included, we will inline that ourselves to allow for minification.
+        includePrelude: false,
+        ...lavamoatSecurityOptions,
       });
 
       const buffer = await new Promise((resolve, reject) => {
@@ -155,35 +197,24 @@ async function main() {
         });
       });
 
+      // Minification
+      const minifiedBundle = (
+        await minify(buffer.toString(), { sourceMap: false })
+      ).code;
+
+      let outputBundle = minifiedBundle;
+
+      // For non HTML bundles, we inline the runtime in the bundle.
+      if (!html) {
+        const runtime = node ? lavaMoatRuntimeNode : lavaMoatRuntimeBrowser;
+        outputBundle = `${runtime}\n${outputBundle}`;
+      }
+
       const bundlePath = path.join(OUTPUT_PATH, key, OUTPUT_BUNDLE);
       await fs.mkdir(path.dirname(bundlePath), { recursive: true });
-      await fs.writeFile(bundlePath, buffer);
+      await fs.writeFile(bundlePath, outputBundle);
 
       if (html) {
-        const lavaMoatRuntimeString = await fs.readFile(
-          require.resolve('@lavamoat/lavapack/src/runtime.js'),
-          'utf-8',
-        );
-        const lavaMoatRuntime = lavaMoatRuntimeString.replace(
-          '__lavamoatSecurityOptions__',
-          JSON.stringify({
-            // Only enable for browser builds for now due to incompatiblities
-            scuttleGlobalThis: true,
-            scuttleGlobalThisExceptions: ['postMessage', 'removeEventListener'],
-          }),
-        );
-
-        const htmlFile = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="utf-8" />
-          <title>MetaMask Snaps Iframe Execution Environment</title>
-          <script>${lavaMoatRuntime}</script>
-          <script src="bundle.js"></script>
-        </head>
-      </html>`;
-
         const htmlPath = path.join(OUTPUT_PATH, key, OUTPUT_HTML);
         await fs.mkdir(path.dirname(htmlPath), { recursive: true });
         await fs.writeFile(htmlPath, htmlFile);

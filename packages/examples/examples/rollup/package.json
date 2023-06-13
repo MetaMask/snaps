@@ -1,11 +1,11 @@
 {
   "name": "rollup-snap",
-  "version": "0.31.0",
+  "version": "0.34.1-flask.1",
   "private": true,
   "description": "An example Snap built using TypeScript and Rollup",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "license": "ISC",
   "main": "src/index.js",
@@ -16,22 +16,26 @@
   "scripts": {
     "build": "rollup --config",
     "clean": "rimraf 'dist/*'",
-    "serve": "concurrently \"rollup --config --watch\" \"mm-snap serve\""
+    "serve": "concurrently \"rollup --config --watch\" \"mm-snap serve\"",
+    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../../../.gitignore",
+    "lint:ci": "yarn lint"
   },
   "devDependencies": {
-    "@babel/core": "^7.17.12",
-    "@babel/preset-typescript": "^7.17.12",
-    "@lavamoat/allow-scripts": "^2.0.3",
+    "@babel/core": "^7.20.12",
+    "@babel/preset-typescript": "^7.20.12",
+    "@lavamoat/allow-scripts": "^2.3.1",
     "@metamask/auto-changelog": "^3.1.0",
     "@metamask/eslint-config": "^11.0.0",
     "@metamask/eslint-config-jest": "^11.0.0",
     "@metamask/eslint-config-nodejs": "^11.0.1",
     "@metamask/eslint-config-typescript": "^11.0.0",
-    "@metamask/snaps-cli": "^0.31.0",
-    "@metamask/snaps-rollup-plugin": "^0.31.0",
-    "@metamask/snaps-types": "^0.31.0",
+    "@metamask/snaps-cli": "workspace:^",
+    "@metamask/snaps-rollup-plugin": "workspace:^",
+    "@metamask/snaps-types": "workspace:^",
     "@rollup/plugin-babel": "^5.3.1",
-    "@types/node": "^17.0.33",
+    "@types/node": "^17.0.36",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "concurrently": "^7.1.0",
@@ -44,7 +48,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.7.1",
     "prettier-plugin-packagejson": "^2.2.11",
-    "rimraf": "^3.0.2",
+    "rimraf": "^4.1.2",
     "rollup": "^2.73.0",
     "tslib": "^2.4.0",
     "typescript": "~4.8.4"

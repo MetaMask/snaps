@@ -6,6 +6,7 @@ import { GetPermissions } from '@metamask/permission-controller';
 import {
   HandlerType,
   SnapId,
+  ValidatedSnapId,
   TruncatedSnap,
   CronjobSpecification,
   parseCronExpression,
@@ -53,7 +54,7 @@ export type CronjobControllerArgs = {
 export type Cronjob = {
   timer?: Timer;
   id: string;
-  snapId: SnapId;
+  snapId: ValidatedSnapId;
 } & CronjobSpecification;
 
 export type StoredJobInformation = {
@@ -147,7 +148,7 @@ export class CronjobController extends BaseController<
    * @param snapId - ID of a Snap.
    * @returns Array of Cronjob specifications.
    */
-  private getSnapJobs(snapId: SnapId): Cronjob[] | undefined {
+  private getSnapJobs(snapId: ValidatedSnapId): Cronjob[] | undefined {
     const permissions = this.#messenger.call(
       'PermissionController:getPermissions',
       snapId,
@@ -167,7 +168,7 @@ export class CronjobController extends BaseController<
    *
    * @param snapId - ID of a snap.
    */
-  register(snapId: SnapId) {
+  register(snapId: ValidatedSnapId) {
     const jobs = this.getSnapJobs(snapId);
     jobs?.forEach((job) => this.schedule(job));
   }

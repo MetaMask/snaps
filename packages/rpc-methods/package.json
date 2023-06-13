@@ -1,11 +1,12 @@
 {
   "name": "@metamask/rpc-methods",
-  "version": "0.31.0",
+  "version": "0.34.1-flask.1",
   "description": "MetaMask Snap RPC method implementations.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
+  "sideEffects": false,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -15,9 +16,9 @@
     "test": "jest && yarn posttest",
     "posttest": "jest-it-up --margin 0.25",
     "test:ci": "yarn test",
-    "lint:eslint": "eslint . --cache --ext js,ts",
-    "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' --ignore-path ../../.gitignore",
-    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
+    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
     "build": "tsc --project tsconfig.build.json",
@@ -25,29 +26,31 @@
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
     "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
     "publish:preview": "yarn npm publish --tag preview",
-    "publish:package": "../../scripts/publish-package.sh"
+    "lint:ci": "yarn lint"
   },
   "dependencies": {
-    "@metamask/browser-passworder": "^4.0.2",
     "@metamask/key-tree": "^7.0.0",
-    "@metamask/permission-controller": "^3.0.0",
+    "@metamask/permission-controller": "^4.0.0",
     "@metamask/snaps-ui": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/types": "^1.1.0",
-    "@metamask/utils": "^5.0.0",
+    "@metamask/utils": "^6.0.0",
     "@noble/hashes": "^1.1.3",
-    "eth-rpc-errors": "^4.0.2",
+    "eth-rpc-errors": "^4.0.3",
     "nanoid": "^3.1.31",
     "superstruct": "^1.0.3"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "^2.0.3",
+    "@lavamoat/allow-scripts": "^2.3.1",
     "@metamask/auto-changelog": "^3.1.0",
+    "@metamask/browser-passworder": "^4.1.0",
     "@metamask/eslint-config": "^11.0.0",
     "@metamask/eslint-config-jest": "^11.0.0",
     "@metamask/eslint-config-nodejs": "^11.0.1",
     "@metamask/eslint-config-typescript": "^11.0.0",
-    "@types/node": "^14.14.25",
+    "@swc/core": "^1.3.61",
+    "@swc/jest": "^0.2.26",
+    "@types/node": "^17.0.36",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "deepmerge": "^4.2.2",
@@ -64,8 +67,7 @@
     "json-rpc-engine": "^6.1.0",
     "prettier": "^2.7.1",
     "prettier-plugin-packagejson": "^2.2.11",
-    "rimraf": "^3.0.2",
-    "ts-jest": "^29.0.0",
+    "rimraf": "^4.1.2",
     "typescript": "~4.8.4"
   },
   "engines": {

@@ -1,4 +1,4 @@
-import { PermissionType } from '@metamask/permission-controller';
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 
 import { SnapEndowments } from '.';
@@ -14,10 +14,11 @@ describe('endowment:rpc', () => {
     const specification = rpcEndowmentBuilder.specificationBuilder({});
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
-      targetKey: SnapEndowments.Rpc,
+      targetName: SnapEndowments.Rpc,
       endowmentGetter: expect.any(Function),
       allowedCaveats: [SnapCaveatType.RpcOrigin],
       validator: expect.any(Function),
+      subjectTypes: [SubjectType.Snap],
     });
 
     expect(specification.endowmentGetter()).toBeUndefined();

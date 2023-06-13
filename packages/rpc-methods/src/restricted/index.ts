@@ -1,11 +1,6 @@
-import { PermissionConstraint } from '@metamask/permission-controller';
-import { Json } from '@metamask/utils';
-
 import { dialogBuilder, DialogMethodHooks } from './dialog';
 import {
   getBip32EntropyBuilder,
-  getBip32EntropyCaveatMapper,
-  getBip32EntropyCaveatSpecifications,
   GetBip32EntropyMethodHooks,
 } from './getBip32Entropy';
 import {
@@ -14,19 +9,11 @@ import {
 } from './getBip32PublicKey';
 import {
   getBip44EntropyBuilder,
-  getBip44EntropyCaveatMapper,
-  getBip44EntropyCaveatSpecifications,
   GetBip44EntropyMethodHooks,
 } from './getBip44Entropy';
 import { getEntropyBuilder, GetEntropyHooks } from './getEntropy';
+import { invokeSnapBuilder, InvokeSnapMethodHooks } from './invokeSnap';
 import {
-  InvokeSnapCaveatSpecifications,
-  invokeSnapBuilder,
-  InvokeSnapMethodHooks,
-} from './invokeSnap';
-import {
-  manageAccountsCaveatSpecification,
-  manageAccountsCaveatMapper,
   manageAccountsBuilder,
   ManageAccountsMethodHooks,
 } from './manageAccounts';
@@ -50,30 +37,15 @@ export type RestrictedMethodHooks = DialogMethodHooks &
   ManageAccountsMethodHooks;
 
 export const restrictedMethodPermissionBuilders = {
-  [dialogBuilder.targetKey]: dialogBuilder,
-  [getBip32EntropyBuilder.targetKey]: getBip32EntropyBuilder,
-  [getBip32PublicKeyBuilder.targetKey]: getBip32PublicKeyBuilder,
-  [getBip44EntropyBuilder.targetKey]: getBip44EntropyBuilder,
-  [getEntropyBuilder.targetKey]: getEntropyBuilder,
-  [invokeSnapBuilder.targetKey]: invokeSnapBuilder,
-  [manageStateBuilder.targetKey]: manageStateBuilder,
-  [notifyBuilder.targetKey]: notifyBuilder,
+  [dialogBuilder.targetName]: dialogBuilder,
+  [getBip32EntropyBuilder.targetName]: getBip32EntropyBuilder,
+  [getBip32PublicKeyBuilder.targetName]: getBip32PublicKeyBuilder,
+  [getBip44EntropyBuilder.targetName]: getBip44EntropyBuilder,
+  [getEntropyBuilder.targetName]: getEntropyBuilder,
+  [invokeSnapBuilder.targetName]: invokeSnapBuilder,
+  [manageStateBuilder.targetName]: manageStateBuilder,
+  [notifyBuilder.targetName]: notifyBuilder,
   [manageAccountsBuilder.targetKey]: manageAccountsBuilder,
 } as const;
 
-export const caveatSpecifications = {
-  ...getBip32EntropyCaveatSpecifications,
-  ...getBip44EntropyCaveatSpecifications,
-  ...InvokeSnapCaveatSpecifications,
-  ...manageAccountsCaveatSpecification,
-} as const;
-
-export const caveatMappers: Record<
-  string,
-  (value: Json) => Pick<PermissionConstraint, 'caveats'>
-> = {
-  [getBip32EntropyBuilder.targetKey]: getBip32EntropyCaveatMapper,
-  [getBip32PublicKeyBuilder.targetKey]: getBip32EntropyCaveatMapper,
-  [getBip44EntropyBuilder.targetKey]: getBip44EntropyCaveatMapper,
-  [manageAccountsBuilder.targetKey]: manageAccountsCaveatMapper,
-};
+export * from './caveats';

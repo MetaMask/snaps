@@ -56,12 +56,12 @@ type RestrictedMethodImplementation<Builder> = Builder extends {
  *
  * @template Builder - A permission specification builder.
  */
-type RestrictedMethod<Builder extends { targetKey: string }> =
+type RestrictedMethod<Builder extends { targetName: string }> =
   RestrictedMethodImplementation<Builder> extends (
     args: infer Args,
   ) => infer Return
     ? Args extends RestrictedMethodOptions<infer Params>
-      ? (args: { method: Builder['targetKey']; params?: Params }) => Return
+      ? (args: { method: Builder['targetName']; params?: Params }) => Return
       : never
     : never;
 

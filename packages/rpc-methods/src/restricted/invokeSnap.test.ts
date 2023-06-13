@@ -1,28 +1,29 @@
 import {
-  Caveat,
-  OriginString,
+  PermissionsRequest,
   PermissionType,
 } from '@metamask/permission-controller';
-import { SnapCaveatType, SnapId } from '@metamask/snaps-utils';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MOCK_SNAP_ID,
   MOCK_ORIGIN,
   getTruncatedSnap,
+  MockControllerMessenger,
+  MOCK_LOCAL_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
-import { Json } from '@metamask/utils';
 
 import {
   invokeSnapBuilder,
   getInvokeSnapImplementation,
-  validateCaveat,
-  InvokeSnapCaveatSpecifications,
   WALLET_SNAP_PERMISSION_KEY,
+  handleSnapInstall,
+  InstallSnaps,
+  GetPermittedSnaps,
 } from './invokeSnap';
 
 describe('builder', () => {
   it('has the expected shape', () => {
     expect(invokeSnapBuilder).toMatchObject({
-      targetKey: WALLET_SNAP_PERMISSION_KEY,
+      targetName: WALLET_SNAP_PERMISSION_KEY,
       specificationBuilder: expect.any(Function),
       methodHooks: {
         getSnap: true,
@@ -39,11 +40,15 @@ describe('builder', () => {
           handleSnapRpcRequest: jest.fn(),
         },
       }),
-    ).toMatchObject({
+    ).toStrictEqual({
       permissionType: PermissionType.RestrictedMethod,
-      targetKey: WALLET_SNAP_PERMISSION_KEY,
+      targetName: WALLET_SNAP_PERMISSION_KEY,
       allowedCaveats: [SnapCaveatType.SnapIds],
       methodImplementation: expect.any(Function),
+      sideEffect: {
+        onPermitted: expect.any(Function),
+      },
+      validator: expect.any(Function),
     });
   });
 });
@@ -76,77 +81,6 @@ describe('specificationBuilder', () => {
           ],
         }),
       ).toThrow('Expected a single "snapIds" caveat.');
-    });
-  });
-});
-
-describe('validateCaveats', () => {
-  it('validates that a caveat has a non-empty object as a caveat value', () => {
-    const caveat = {
-      type: SnapCaveatType.SnapIds,
-      value: { [MOCK_SNAP_ID]: {} },
-    };
-    const missingValueCaveat = {
-      type: SnapCaveatType.SnapIds,
-    };
-    const emptyValueCaveat = {
-      type: SnapCaveatType.SnapIds,
-      value: {},
-    };
-    expect(() => validateCaveat(caveat)).not.toThrow();
-    expect(() =>
-      validateCaveat(missingValueCaveat as Caveat<string, Json>),
-    ).toThrow(
-      'Expected caveat to have a value property of a non-empty object of snap IDs.',
-    );
-    expect(() => validateCaveat(emptyValueCaveat)).toThrow(
-      'Expected caveat to have a value property of a non-empty object of snap IDs.',
-    );
-  });
-});
-
-describe('InvokeSnapCaveatSpecifications', () => {
-  describe('validator', () => {
-    it('throws for an invalid caveat object', () => {
-      expect(() => {
-        InvokeSnapCaveatSpecifications[SnapCaveatType.SnapIds].validator?.({
-          type: SnapCaveatType.SnapIds,
-          value: {},
-        });
-      }).toThrow(
-        'Expected caveat to have a value property of a non-empty object of snap IDs.',
-      );
-    });
-  });
-
-  describe('decorator', () => {
-    const params: { snapId: SnapId } = { snapId: MOCK_SNAP_ID };
-    const context: { origin: OriginString } = { origin: MOCK_ORIGIN };
-    it('returns the result of the method implementation', async () => {
-      const caveat = {
-        type: SnapCaveatType.SnapIds,
-        value: { [MOCK_SNAP_ID]: {} },
-      };
-      const method = jest.fn().mockImplementation(() => 'foo');
-      expect(
-        await InvokeSnapCaveatSpecifications[SnapCaveatType.SnapIds].decorator(
-          method,
-          caveat,
-        )({ method: 'hello', params, context }),
-      ).toBe('foo');
-    });
-
-    it('throws if the origin trying to invoke the snap does not have its permission', async () => {
-      const method = jest.fn().mockImplementation(() => 'foo');
-      const caveat = { type: SnapCaveatType.SnapIds, value: { foo: {} } };
-      await expect(
-        InvokeSnapCaveatSpecifications[SnapCaveatType.SnapIds].decorator(
-          method,
-          caveat,
-        )({ method: 'hello', params, context }),
-      ).rejects.toThrow(
-        `${MOCK_ORIGIN} does not have permission to invoke ${MOCK_SNAP_ID} snap.`,
-      );
     });
   });
 });
@@ -198,7 +132,7 @@ describe('implementation', () => {
         },
       }),
     ).rejects.toThrow(
-      `The snap "${MOCK_SNAP_ID}" is not installed. This is a bug, please report it.`,
+      `The snap "${MOCK_SNAP_ID}" is not installed. Please install it first, before invoking the snap.`,
     );
     expect(hooks.getSnap).toHaveBeenCalledTimes(1);
     expect(hooks.getSnap).toHaveBeenCalledWith(MOCK_SNAP_ID);
@@ -222,5 +156,122 @@ describe('implementation', () => {
 
     expect(hooks.getSnap).toHaveBeenCalledTimes(0);
     expect(hooks.handleSnapRpcRequest).not.toHaveBeenCalled();
+  });
+});
+
+describe('handleSnapInstall', () => {
+  it('calls SnapController:install with the right parameters', async () => {
+    const messenger = new MockControllerMessenger<
+      InstallSnaps | GetPermittedSnaps,
+      never
+    >();
+
+    const sideEffectMessenger = messenger.getRestricted({
+      name: 'PermissionController',
+      allowedActions: ['SnapController:install', 'SnapController:getPermitted'],
+    });
+
+    const expectedResult = {
+      [MOCK_SNAP_ID]: getTruncatedSnap(),
+    };
+
+    messenger.registerActionHandler(
+      'SnapController:install',
+      async () => expectedResult,
+    );
+
+    messenger.registerActionHandler('SnapController:getPermitted', () => ({}));
+
+    jest.spyOn(sideEffectMessenger, 'call');
+
+    const requestedSnaps = {
+      [MOCK_SNAP_ID]: {},
+    };
+
+    const requestData = {
+      permissions: {
+        [WALLET_SNAP_PERMISSION_KEY]: {
+          caveats: [
+            {
+              type: SnapCaveatType.SnapIds,
+              value: requestedSnaps,
+            },
+          ],
+        },
+      },
+      metadata: { origin: MOCK_ORIGIN, id: 'foo' },
+    } as PermissionsRequest;
+
+    const result = await handleSnapInstall({
+      requestData,
+      messagingSystem: sideEffectMessenger,
+    });
+
+    expect(sideEffectMessenger.call).toHaveBeenCalledWith(
+      'SnapController:install',
+      MOCK_ORIGIN,
+      requestedSnaps,
+    );
+
+    expect(result).toBe(expectedResult);
+  });
+
+  it('dedupes snaps before calling installSnaps', async () => {
+    const messenger = new MockControllerMessenger<
+      InstallSnaps | GetPermittedSnaps,
+      never
+    >();
+
+    const sideEffectMessenger = messenger.getRestricted({
+      name: 'PermissionController',
+      allowedActions: ['SnapController:install', 'SnapController:getPermitted'],
+    });
+
+    const expectedResult = {
+      [MOCK_LOCAL_SNAP_ID]: getTruncatedSnap({ id: MOCK_LOCAL_SNAP_ID }),
+    };
+
+    messenger.registerActionHandler(
+      'SnapController:install',
+      async () => expectedResult,
+    );
+
+    messenger.registerActionHandler('SnapController:getPermitted', () => ({
+      [MOCK_SNAP_ID]: getTruncatedSnap(),
+    }));
+
+    jest.spyOn(sideEffectMessenger, 'call');
+
+    const requestedSnaps = {
+      [MOCK_SNAP_ID]: {},
+      [MOCK_LOCAL_SNAP_ID]: {},
+    };
+
+    const requestData = {
+      permissions: {
+        [WALLET_SNAP_PERMISSION_KEY]: {
+          caveats: [
+            {
+              type: SnapCaveatType.SnapIds,
+              value: requestedSnaps,
+            },
+          ],
+        },
+      },
+      metadata: { origin: MOCK_ORIGIN, id: 'foo' },
+    } as PermissionsRequest;
+
+    const result = await handleSnapInstall({
+      requestData,
+      messagingSystem: sideEffectMessenger,
+    });
+
+    expect(sideEffectMessenger.call).toHaveBeenCalledWith(
+      'SnapController:install',
+      MOCK_ORIGIN,
+      { [MOCK_LOCAL_SNAP_ID]: {} },
+    );
+
+    expect(result).toBe(expectedResult);
   });
 });

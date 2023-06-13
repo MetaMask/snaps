@@ -1,6 +1,6 @@
-# snaps-monorepo
+# MetaMask Snaps
 
-Monorepo for experimental snaps dependencies.
+Extend the functionality of MetaMask using [Snaps](https://metamask.io/snaps/).
 
 ## Contributing
 
@@ -30,15 +30,44 @@ When developing changes to packages within this repository that a different proj
 If you're a MetaMask contributor, you can create these preview versions via draft pull requests:
 
 1. Navigate to your settings within GitHub and [create a classic access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-personal-access-token-classic). Make sure to give this token the `packages:read` scope.
-2. Switch to your project locally and add a `.npmrc` file with the following content, filling in the appropriate areas:
-   ```
-   @metamask:registry=https://npm.pkg.github.com
-   //npm.pkg.github.com/:_authToken=<your personal access token>
-   ```
-   Make sure not to commit this file.
+2. Switch to your project locally and add/edit the appropriate file with the following content, filling in the appropriate areas:
+
+   - **Yarn 1 (classic) or NPM**
+
+     Add the following in `.npmrc`
+
+     ```
+     @metamask:registry=https://npm.pkg.github.com
+     //npm.pkg.github.com/:_authToken=<your personal access token>
+     ```
+
+   - **Yarn >= 2 (berry):**
+
+     Add the following in `.yarnrc.yml`
+
+     ```
+     npmScopes:
+        metamask:
+           npmAlwaysAuth: true
+           npmAuthToken: ${GITHUB_NPM_TOKEN}
+           npmRegistryServer: 'https://npm.pkg.github.com'
+     ```
+
+   Make sure not to commit these changes.
+
 3. Go to GitHub and open up a pull request for this repository, then post a comment on the PR with the text `@metamaskbot publish-preview`. (This triggers the `publish-preview` GitHub action.)
 4. After a few minutes, you will see a new comment indicating that all packages have been published with the format `<package name>-<commit id>`.
-5. Switch back to your project locally and update `package.json` by replacing the versions for the packages you've changed in your PR using the new version format (e.g. `1.2.3-e2df9b4` instead of `~1.2.3`), then run `yarn install`.
+5. Switch back to your project locally and update `package.json` by
+   replacing the versions for the packages you've changed in your PR using
+   the new version format (e.g. `1.2.3-e2df9b4` instead of `~1.2.3`), then
+   run `GITHUB_NPM_TOKEN=your-token yarn install`.
+
+   - It's recommended to use your machine's local keychain to store the
+     token, and receive it from there. For example on macOS, you can use:
+     ```bash
+     GITHUB_NPM_TOKEN=$(security find-generic-password -s 'GitHub NPM Token' -w) yarn install
+     ```
+
 6. Repeat steps 3-5 after pushing new changes to your PR to generate and use new preview versions.
 
 #### As an independent contributor
@@ -46,15 +75,43 @@ If you're a MetaMask contributor, you can create these preview versions via draf
 If you're a contributor and you've forked this repository, you can create preview versions for a branch via provided scripts:
 
 1. Navigate to your settings within GitHub and [create a **classic** access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-personal-access-token-classic). Make sure to give this token the `packages:read` scope.
-2. Switch to your project locally and add a `.npmrc` file with the following content, filling in the appropriate areas:
-   ```
-   @<your GitHub username>:registry=https://npm.pkg.github.com
-   //npm.pkg.github.com/:_authToken=<your personal access token>
-   ```
-   Make sure not to commit this file.
+2. Switch to your project locally and add/edit the appropriate file with the following content, filling in the appropriate areas.
+
+   - **Yarn 1 (classic) or NPM:**
+
+     Add the following in `.npmrc`
+
+     ```
+     @<your GitHub username>:registry=https://npm.pkg.github.com
+     //npm.pkg.github.com/:_authToken=<your personal access token>
+     ```
+
+   - **Yarn >= 2 (berry):**
+
+     Add the following in `.yarnrc.yml`
+
+     ```
+     npmScopes:
+        <your GitHub username>:
+           npmAlwaysAuth: true
+           npmAuthToken: ${GITHUB_NPM_TOKEN}
+           npmRegistryServer: 'https://npm.pkg.github.com'
+     ```
+
+   Make sure not to commit these changes.
+
 3. Open the `package.json` for each package that you want to publish and change the scope in the name from `@metamask` to `@<your GitHub username>`.
 4. Switch to your fork of this repository locally and run `yarn prepare-preview-builds "$(git rev-parse --short HEAD)" && yarn build && yarn publish-previews` to generate preview versions for all packages based on the current branch and publish them to GitHub Package Registry. Take note of the version that is published; it should look like `1.2.3-e2df9b4` instead of `1.2.3`.
-5. Switch back to your project and update `package.json` by replacing the versions for all packages you've changed using the version that was output in the previous step, then run `yarn install`.
+5. Switch back to your project and update `package.json` by replacing the
+   versions for all packages you've changed using the version that was
+   output in the previous step, then run `GITHUB_NPM_TOKEN=your-token yarn install`.
+
+   - It's recommended to use your machine's local keychain to store the
+     token, and receive it from there. For example on macOS, you can use:
+     ```bash
+     GITHUB_NPM_TOKEN=$(security find-generic-password -s 'GitHub NPM Token' -w) yarn install
+     ```
+
 6. If you make any new changes to your project, repeat steps 3-5 to generate and use new preview versions.
 7. As changes will have been made to this repository (due to step 4), make sure to clear out those changes after you've completed testing.
 
@@ -74,6 +131,8 @@ If a package is neither referenced nor ignored, linting will fail.
 ### Testing and Linting
 
 Run `yarn test` and `yarn lint` in the project root directory, or in a workspace.
+
+You need to have both Chrome and Firefox installed globally on your computer to run browser tests.
 
 ### Publishing
 

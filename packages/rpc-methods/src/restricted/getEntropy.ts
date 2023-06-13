@@ -3,15 +3,16 @@ import {
   PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
+  SubjectType,
 } from '@metamask/permission-controller';
 import { SIP_6_MAGIC_VALUE } from '@metamask/snaps-utils';
 import { assertStruct, Hex, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { Infer, literal, object, optional, string } from 'superstruct';
 
-import { deriveEntropy } from '../utils';
+import { deriveEntropy, MethodHooksObject } from '../utils';
 
-const targetKey = 'snap_getEntropy';
+const targetName = 'snap_getEntropy';
 
 type GetEntropySpecificationBuilderOptions = {
   allowedCaveats?: Readonly<NonEmptyArray<string>> | null;
@@ -20,7 +21,7 @@ type GetEntropySpecificationBuilderOptions = {
 
 type GetEntropySpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.RestrictedMethod;
-  targetKey: typeof targetKey;
+  targetName: typeof targetName;
   methodImplementation: ReturnType<typeof getEntropyImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
 }>;
@@ -48,19 +49,22 @@ const specificationBuilder: PermissionSpecificationBuilder<
 }: GetEntropySpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
-    targetKey,
+    targetName,
     allowedCaveats,
     methodImplementation: getEntropyImplementation(methodHooks),
+    subjectTypes: [SubjectType.Snap],
   };
 };
 
+const methodHooks: MethodHooksObject<GetEntropyHooks> = {
+  getMnemonic: true,
+  getUnlockPromise: true,
+};
+
 export const getEntropyBuilder = Object.freeze({
-  targetKey,
+  targetName,
   specificationBuilder,
-  methodHooks: {
-    getMnemonic: true,
-    getUnlockPromise: true,
-  },
+  methodHooks,
 } as const);
 
 export type GetEntropyHooks = {

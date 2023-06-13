@@ -6,7 +6,7 @@ import {
   ExecutionServiceArgs,
   Job,
 } from '../AbstractExecutionService';
-import { OffscreenPostMessageStream } from './OffscreenPostMessageStream';
+import { ProxyPostMessageStream } from '../ProxyPostMessageStream';
 
 type OffscreenExecutionEnvironmentServiceArgs = {
   documentUrl: URL;
@@ -81,9 +81,14 @@ export class OffscreenExecutionService extends AbstractExecutionService<string> 
     // Lazily create the offscreen document.
     await this.createDocument();
 
-    const stream = new OffscreenPostMessageStream({
+    const stream = new ProxyPostMessageStream({
       stream: this.#runtimeStream,
-      frameUrl: this.frameUrl.toString(),
+      extra: {
+        // TODO: Rather than injecting the frame URL here, we should come up
+        // with a better way to do this. The frame URL is needed to avoid hard
+        // coding it in the offscreen execution environment.
+        frameUrl: this.frameUrl.toString(),
+      },
       jobId,
     });
 
@@ -103,7 +108,7 @@ export class OffscreenExecutionService extends AbstractExecutionService<string> 
 
     await chrome.offscreen.createDocument({
       justification: 'MetaMask Snaps Execution Environment',
-      reasons: ['IFRAME_SCRIPTING'],
+      reasons: ['IFRAME_SCRIPTING' as chrome.offscreen.Reason],
       url: this.documentUrl.toString(),
     });
   }

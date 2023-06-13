@@ -3,7 +3,7 @@ import yargs from 'yargs';
 import { cli } from './cli';
 import commands from './cmds';
 
-// Removes positional arguments from commands. eg. 'init [directory]' -> 'init'
+// Removes positional arguments from commands. eg. 'build [directory]' -> 'build'
 const sanitizeCommand = (command: string) =>
   command.replace(/(\[.*?\])/u, '').trim();
 
@@ -57,6 +57,7 @@ describe('cli', () => {
   });
 
   it('calls "help" command', async () => {
+    expect.assertions(2);
     processExitSpy.mockImplementationOnce((code: number) => {
       expect(code).toBe(0);
     });
@@ -141,15 +142,15 @@ describe('cli', () => {
     });
 
     it('handles an error thrown by a locally defined command handler', () => {
-      const mockInitHandler = jest.fn().mockImplementation(() => {
-        throw new Error('init failed');
+      const mockBuildHandler = jest.fn().mockImplementation(() => {
+        throw new Error('build failed');
       });
 
       expect(() =>
-        cli(getMockArgv('init'), [
-          { ...commandMap.init, handler: mockInitHandler },
+        cli(getMockArgv('build'), [
+          { ...commandMap.build, handler: mockBuildHandler },
         ]),
-      ).toThrow('init failed');
+      ).toThrow('build failed');
     });
   });
 });

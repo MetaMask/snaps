@@ -1,24 +1,24 @@
 import { BIP32Node, SLIP10Node } from '@metamask/key-tree';
 import {
-  Caveat,
   PermissionSpecificationBuilder,
   PermissionType,
   PermissionValidatorConstraint,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
+  SubjectType,
 } from '@metamask/permission-controller';
 import {
-  Bip32Entropy,
   bip32entropy,
   Bip32PathStruct,
   SnapCaveatType,
-  SnapGetBip32EntropyPermissionsStruct,
 } from '@metamask/snaps-utils';
 import { NonEmptyArray, assertStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
-import { boolean, enums, object, optional, type } from 'superstruct';
+import { boolean, enums, object, optional } from 'superstruct';
 
-const targetKey = 'snap_getBip32PublicKey';
+import { MethodHooksObject } from '../utils';
+
+const targetName = 'snap_getBip32PublicKey';
 
 export type GetBip32PublicKeyMethodHooks = {
   /**
@@ -40,7 +40,7 @@ type GetBip32PublicKeySpecificationBuilderOptions = {
 
 type GetBip32PublicKeySpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.RestrictedMethod;
-  targetKey: typeof targetKey;
+  targetName: typeof targetName;
   methodImplementation: ReturnType<typeof getBip32PublicKeyImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
@@ -61,24 +61,6 @@ export const Bip32PublicKeyArgsStruct = bip32entropy(
 );
 
 /**
- * Validate the path values associated with a caveat. This validates that the
- * value is a non-empty array with valid derivation paths and curves.
- *
- * @param caveat - The caveat to validate.
- * @throws If the value is invalid.
- */
-export function validateCaveatPaths(
-  caveat: Caveat<string, any>,
-): asserts caveat is Caveat<string, Bip32Entropy[]> {
-  assertStruct(
-    caveat,
-    type({ value: SnapGetBip32EntropyPermissionsStruct }),
-    'Invalid BIP-32 public key caveat',
-    ethErrors.rpc.internal,
-  );
-}
-
-/**
  * The specification builder for the `snap_getBip32PublicKey` permission.
  * `snap_getBip32PublicKey` lets the Snap retrieve public keys for a particular
  * BIP-32 node.
@@ -94,7 +76,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 > = ({ methodHooks }: GetBip32PublicKeySpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
-    targetKey,
+    targetName,
     allowedCaveats: [SnapCaveatType.PermittedDerivationPaths],
     methodImplementation: getBip32PublicKeyImplementation(methodHooks),
     validator: ({ caveats }) => {
@@ -107,16 +89,19 @@ const specificationBuilder: PermissionSpecificationBuilder<
         });
       }
     },
+    subjectTypes: [SubjectType.Snap],
   };
 };
 
+const methodHooks: MethodHooksObject<GetBip32PublicKeyMethodHooks> = {
+  getMnemonic: true,
+  getUnlockPromise: true,
+};
+
 export const getBip32PublicKeyBuilder = Object.freeze({
-  targetKey,
+  targetName,
   specificationBuilder,
-  methodHooks: {
-    getMnemonic: true,
-    getUnlockPromise: true,
-  },
+  methodHooks,
 } as const);
 
 /**

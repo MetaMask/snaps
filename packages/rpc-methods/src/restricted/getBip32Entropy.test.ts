@@ -1,38 +1,11 @@
-import { SIP_6_MAGIC_VALUE, SnapCaveatType } from '@metamask/snaps-utils';
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 import { TEST_SECRET_RECOVERY_PHRASE_BYTES } from '@metamask/snaps-utils/test-utils';
 
 import {
   getBip32EntropyBuilder,
-  getBip32EntropyCaveatMapper,
-  getBip32EntropyCaveatSpecifications,
   getBip32EntropyImplementation,
-  validateCaveatPaths,
 } from './getBip32Entropy';
-
-describe('validateCaveatPaths', () => {
-  it.each([[], null, undefined, 'foo'])(
-    'throws if the value is not an array or empty',
-    (value) => {
-      expect(() =>
-        validateCaveatPaths({
-          type: SnapCaveatType.PermittedDerivationPaths,
-          value,
-        }),
-      ).toThrow(
-        /^Invalid BIP-32 entropy caveat: At path: value -- Expected an? array/u,
-      ); // Different error messages for different types
-    },
-  );
-
-  it('throws if any of the paths is invalid', () => {
-    expect(() =>
-      validateCaveatPaths({
-        type: SnapCaveatType.PermittedDerivationPaths,
-        value: [{ path: ['foo'], curve: 'secp256k1' }],
-      }),
-    ).toThrow('At path: value.0.path -- Path must start with "m".');
-  });
-});
 
 describe('specificationBuilder', () => {
   const methodHooks = {
@@ -42,6 +15,17 @@ describe('specificationBuilder', () => {
 
   const specification = getBip32EntropyBuilder.specificationBuilder({
     methodHooks,
+  });
+
+  it('outputs expected specification', () => {
+    expect(specification).toStrictEqual({
+      permissionType: PermissionType.RestrictedMethod,
+      targetName: 'snap_getBip32Entropy',
+      allowedCaveats: [SnapCaveatType.PermittedDerivationPaths],
+      methodImplementation: expect.any(Function),
+      subjectTypes: [SubjectType.Snap],
+      validator: expect.any(Function),
+    });
   });
 
   describe('validator', () => {
@@ -71,195 +55,6 @@ describe('specificationBuilder', () => {
   });
 });
 
-describe('getBip32EntropyCaveatMapper', () => {
-  it('returns a caveat value for an array of paths', () => {
-    expect(
-      getBip32EntropyCaveatMapper([
-        { path: ['m', "44'", "60'"], curve: 'secp256k1' },
-        { path: ['m', "0'", "0'"], curve: 'ed25519' },
-      ]),
-    ).toStrictEqual({
-      caveats: [
-        {
-          type: SnapCaveatType.PermittedDerivationPaths,
-          value: [
-            { path: ['m', "44'", "60'"], curve: 'secp256k1' },
-            { path: ['m', "0'", "0'"], curve: 'ed25519' },
-          ],
-        },
-      ],
-    });
-  });
-});
-
-describe('getBip32EntropyCaveatSpecifications', () => {
-  describe('decorator', () => {
-    const params = { path: ['m', "44'", "60'"], curve: 'secp256k1' };
-
-    it('returns the result of the method implementation', async () => {
-      const fn = jest.fn().mockImplementation(() => 'foo');
-
-      expect(
-        await getBip32EntropyCaveatSpecifications[
-          SnapCaveatType.PermittedDerivationPaths
-        ].decorator(fn, {
-          type: SnapCaveatType.PermittedDerivationPaths,
-          value: [params],
-          // @ts-expect-error Missing other required properties.
-        })({ params }),
-      ).toBe('foo');
-    });
-
-    it('allows deriving child nodes', async () => {
-      const fn = jest.fn().mockImplementation(() => 'foo');
-
-      expect(
-        await getBip32EntropyCaveatSpecifications[
-          SnapCaveatType.PermittedDerivationPaths
-        ].decorator(fn, {
-          type: SnapCaveatType.PermittedDerivationPaths,
-          value: [params],
-          // @ts-expect-error Missing other required properties.
-        })({
-          params: {
-            path: ['m', "44'", "60'", "0'", '0', '1'],
-            curve: 'secp256k1',
-          },
-        }),
-      ).toBe('foo');
-    });
-
-    it('allows deriving deep nodes', async () => {
-      const fn = jest.fn().mockImplementation(() => 'foo');
-
-      expect(
-        await getBip32EntropyCaveatSpecifications[
-          SnapCaveatType.PermittedDerivationPaths
-        ].decorator(fn, {
-          type: SnapCaveatType.PermittedDerivationPaths,
-          value: [params],
-          // @ts-expect-error Missing other required properties.
-        })({
-          params: {
-            path: [
-              'm',
-              "44'",
-              "60'",
-              "0'",
-              '0',
-              '1',
-              '2',
-              '3',
-              '4',
-              '5',
-              '6',
-              '7',
-              '8',
-              '9',
-              '10',
-            ],
-            curve: 'secp256k1',
-          },
-        }),
-      ).toBe('foo');
-    });
-
-    it('ignores unknown fields', async () => {
-      const fn = jest.fn().mockImplementation(() => 'foo');
-
-      expect(
-        await getBip32EntropyCaveatSpecifications[
-          SnapCaveatType.PermittedDerivationPaths
-        ].decorator(fn, {
-          type: SnapCaveatType.PermittedDerivationPaths,
-          value: [params],
-          // @ts-expect-error Missing other required properties.
-        })({
-          params: {
-            path: ['m', "44'", "60'", "0'", '0', '1'],
-            curve: 'secp256k1',
-            compressed: true,
-          },
-        }),
-      ).toBe('foo');
-    });
-
-    it('throws if the path is invalid', async () => {
-      const fn = jest.fn().mockImplementation(() => 'foo');
-
-      await expect(
-        getBip32EntropyCaveatSpecifications[
-          SnapCaveatType.PermittedDerivationPaths
-        ].decorator(fn, {
-          type: SnapCaveatType.PermittedDerivationPaths,
-          value: [params],
-          // @ts-expect-error Missing other required properties.
-        })({ params: { ...params, path: [] } }),
-      ).rejects.toThrow(
-        'At path: path -- Path must be a non-empty BIP-32 derivation path array',
-      );
-    });
-
-    it('throws if the path is not specified in the caveats', async () => {
-      const fn = jest.fn().mockImplementation(() => 'foo');
-
-      await expect(
-        getBip32EntropyCaveatSpecifications[
-          SnapCaveatType.PermittedDerivationPaths
-        ].decorator(fn, {
-          type: SnapCaveatType.PermittedDerivationPaths,
-          value: [params],
-          // @ts-expect-error Missing other required properties.
-        })({ params: { ...params, path: ['m', "44'", "0'"] } }),
-      ).rejects.toThrow(
-        'The requested path is not permitted. Allowed paths must be specified in the snap manifest.',
-      );
-    });
-
-    it('throws if the purpose is not allowed', async () => {
-      const fn = jest.fn().mockImplementation(() => 'foo');
-
-      await expect(
-        getBip32EntropyCaveatSpecifications[
-          SnapCaveatType.PermittedDerivationPaths
-        ].decorator(fn, {
-          type: SnapCaveatType.PermittedDerivationPaths,
-          value: [params],
-          // @ts-expect-error Missing other required properties.
-        })({ params: { ...params, path: ['m', SIP_6_MAGIC_VALUE, "0'"] } }),
-      ).rejects.toThrow(
-        'Invalid BIP-32 entropy path definition: At path: path -- The purpose "1399742832\'" is not allowed for entropy derivation.',
-      );
-    });
-  });
-
-  describe('validator', () => {
-    it('throws if the caveat values are invalid', () => {
-      expect(() =>
-        getBip32EntropyCaveatSpecifications[
-          SnapCaveatType.PermittedDerivationPaths
-        ].validator?.({
-          type: SnapCaveatType.PermittedDerivationPaths,
-          value: [{ path: ['foo'], curve: 'secp256k1' }],
-        }),
-      ).toThrow('At path: value.0.path -- Path must start with "m".');
-    });
-
-    it('throws if the caveat values contain forbidden paths', () => {
-      expect(() =>
-        getBip32EntropyCaveatSpecifications[
-          SnapCaveatType.PermittedDerivationPaths
-        ].validator?.({
-          type: SnapCaveatType.PermittedDerivationPaths,
-          value: [{ path: ['m', SIP_6_MAGIC_VALUE, "0'"], curve: 'secp256k1' }],
-        }),
-      ).toThrow(
-        'Invalid BIP-32 entropy caveat: At path: value.0.path -- The purpose "1399742832\'" is not allowed for entropy derivation.',
-      );
-    });
-  });
-});
-
 describe('getBip32EntropyImplementation', () => {
   describe('getBip32Entropy', () => {
     it('derives the entropy from the path', async () => {
@@ -271,18 +66,18 @@ describe('getBip32EntropyImplementation', () => {
       expect(
         // @ts-expect-error Missing other required properties.
         await getBip32EntropyImplementation({ getUnlockPromise, getMnemonic })({
-          params: { path: ['m', "44'", "60'"], curve: 'secp256k1' },
+          params: { path: ['m', "44'", "1'"], curve: 'secp256k1' },
         }),
       ).toMatchInlineSnapshot(`
         {
-          "chainCode": "0xc4d424c253ca0eab92de6d8c819a37889e15a11bbf1cb6a48ffca2faef1f4d4d",
+          "chainCode": "0x50ccfa58a885b48b5eed09486b3948e8454f34856fb81da5d7b8519d7997abd1",
           "curve": "secp256k1",
           "depth": 2,
-          "index": 2147483708,
+          "index": 2147483649,
           "masterFingerprint": 1404659567,
           "parentFingerprint": 1829122711,
-          "privateKey": "0xca8d3571710e2b08628926f0ec14983aded0fd039518c59522c004e0e7eb4f5a",
-          "publicKey": "0x041e31e8432aab932fe18b5f9798b7252394ff0b943920b40c50a79301062df5ece2b884a45c456241e35000137e6dbd92c9119ccd5f46cc92ba9568ca661b994b",
+          "privateKey": "0xc73cedb996e7294f032766853a8b7ba11ab4ce9755fc052f2f7b9000044c99af",
+          "publicKey": "0x048e129862c1de5ca86468add43b001d32fd34b8113de716ecd63fa355b7f1165f0e76f5dc6095100f9fdaa76ddf28aa3f21406ac5fda7c71ffbedb45634fe2ceb",
         }
       `);
     });
@@ -297,20 +92,20 @@ describe('getBip32EntropyImplementation', () => {
         // @ts-expect-error Missing other required properties.
         await getBip32EntropyImplementation({ getUnlockPromise, getMnemonic })({
           params: {
-            path: ['m', "44'", "60'", "0'", '0', '1'],
+            path: ['m', "44'", "1'", "0'", '0', '1'],
             curve: 'secp256k1',
           },
         }),
       ).toMatchInlineSnapshot(`
         {
-          "chainCode": "0x6265b647bc0e70480f29856be102fe866ea6a8ec9e2926c198c2e9c4cd268a43",
+          "chainCode": "0xd2c83ffffa5266913c849306eaf3a095e779218c67fed620c6ab630d416692e9",
           "curve": "secp256k1",
           "depth": 5,
           "index": 1,
           "masterFingerprint": 1404659567,
-          "parentFingerprint": 942995271,
-          "privateKey": "0x4adb19cafa5fdf467215fa30b56a50facac2dee40a7015063c6a7a0f1f4e2576",
-          "publicKey": "0x04b21938e18aec1e2e7478988ccae5b556597d771c8e46ac2c8ea2a4a1a80619679230a109cd30e8af15856b15799e38991e45e55f406a8a24d5605ba0757da53c",
+          "parentFingerprint": 3495658567,
+          "privateKey": "0x43a9353dfebf7209c3feb1843510299e2b0f4fa09151dccc3824df88451be37c",
+          "publicKey": "0x0467f3cac111f47782b6c2d8d0984d51e22c128d24ec3eaca044509a386771d17206c740c7337c399d8ade8f52a60029340f288e11de82fffd3b69c5b863f6a515",
         }
       `);
     });
@@ -325,20 +120,20 @@ describe('getBip32EntropyImplementation', () => {
         // @ts-expect-error Missing other required properties.
         await getBip32EntropyImplementation({ getUnlockPromise, getMnemonic })({
           params: {
-            path: ['m', "44'", "60'", "0'", "0'", "1'"],
+            path: ['m', "44'", "1'", "0'", "0'", "1'"],
             curve: 'ed25519',
           },
         }),
       ).toMatchInlineSnapshot(`
         {
-          "chainCode": "0xc258fb2565397094f6fbc5b21b5a51a2dd573748ba752b192babadcd21426015",
+          "chainCode": "0x79344d249ed667aa7dcdfac0830822e1b3a99832c11926f9e69ca6e3c5014b5f",
           "curve": "ed25519",
           "depth": 5,
           "index": 2147483649,
           "masterFingerprint": 650419359,
-          "parentFingerprint": 497597606,
-          "privateKey": "0x4ef4bf3da2c6a47495d24303b7c463dca03fe164ca1550f2d60aa68e5134d6c1",
-          "publicKey": "0x009e76714baba27091db7a5abee8e1cd8416a5d78580e8dde15d68fb78ed930097",
+          "parentFingerprint": 660188756,
+          "privateKey": "0x5e6ebe8f5c33833e6c86f8769da173daa206b9dfd1956efcd2b115d82376bb5e",
+          "publicKey": "0x0012affaf55babdfb59b76adcf00f69442f019974124639108470409d47e25e19f",
         }
       `);
     });
