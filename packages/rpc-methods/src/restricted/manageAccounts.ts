@@ -19,7 +19,7 @@ import { Json, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import * as superstruct from 'superstruct';
 
-export const MANAGE_ACCOUNT_PERMISSION_KEY = 'snap_manageAccounts';
+export const methodName = 'snap_manageAccounts';
 
 export type ManageAccountParams = {
   action: ManageAccountsOperation;
@@ -133,12 +133,13 @@ export const validateCaveatManageAccounts = (caveat: Caveat<string, any>) => {
 };
 
 type ManageAccountsSpecificationBuilderOptions = {
+  allowedCaveats?: Readonly<NonEmptyArray<string>> | null;
   methodHooks: ManageAccountsMethodHooks;
 };
 
 type ManageAccountsSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.RestrictedMethod;
-  targetKey: typeof MANAGE_ACCOUNT_PERMISSION_KEY;
+  targetName: typeof methodName;
   methodImplementation: ReturnType<typeof manageAccountsImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
@@ -238,10 +239,10 @@ const specificationBuilder: PermissionSpecificationBuilder<
 > = ({ methodHooks }: ManageAccountsSpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
-    targetKey: MANAGE_ACCOUNT_PERMISSION_KEY,
+    targetName: methodName,
     allowedCaveats: [SnapCaveatType.ManageAccounts],
     methodImplementation: manageAccountsImplementation(methodHooks),
-    validator: ({ caveats }): void => {
+    validator: ({ caveats }: { caveats: any }): void => {
       if (
         caveats?.length !== 1 ||
         caveats[0].type !== SnapCaveatType.ManageAccounts
@@ -286,7 +287,7 @@ export const manageAccountsCaveatSpecification: Record<
 };
 
 export const manageAccountsBuilder = Object.freeze({
-  targetKey: MANAGE_ACCOUNT_PERMISSION_KEY,
+  targetKey: methodName,
   specificationBuilder,
   methodHooks: {
     getSnapKeyring: true,
