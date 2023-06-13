@@ -122,6 +122,8 @@ export class InterfaceController extends BaseController<
       id,
       requestState: { content },
     });
+
+    return null;
   }
 
   async resolveInterface(snapId: string, id: string, value: Json) {
@@ -137,6 +139,8 @@ export class InterfaceController extends BaseController<
     this.update((draftState) => {
       delete draftState.interfaces[id];
     });
+
+    return null;
   }
 
   async readInterface(snapId: string, id: string) {

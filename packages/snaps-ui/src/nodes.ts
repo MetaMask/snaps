@@ -64,7 +64,6 @@ export enum NodeType {
   Spinner = 'spinner',
   Text = 'text',
   Button = 'button',
-  Form = 'form',
   Label = 'label',
   Input = 'input',
 }
@@ -212,16 +211,6 @@ export const LabelStruct = assign(
 );
 
 export type Label = Infer<typeof LabelStruct>;
-
-export const FormStruct = assign(
-  ParentStruct,
-  object({
-    type: literal(NodeType.Form),
-    name: optional(string()),
-  }),
-);
-
-export type From = Infer<typeof FormStruct>;
 
 export const ComponentStruct = union([
   CopyableStruct,
