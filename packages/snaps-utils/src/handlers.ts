@@ -114,7 +114,7 @@ export enum UserInputEventType {
 
 export const UserInputEventStruct = object({
   type: enums([UserInputEventType.ButtonClickEvent]),
-  name: string(),
+  name: optional(string()),
 });
 
 type UserInputEvent = Infer<typeof UserInputEventStruct>;

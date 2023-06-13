@@ -512,6 +512,30 @@
         "superstruct": true
       }
     },
+    "external:../snaps-utils/src/checksum.ts": {
+      "packages": {
+        "@metamask/rpc-methods>@noble/hashes": true,
+        "@metamask/utils": true,
+        "external:../snaps-utils/src/virtual-file/VirtualFile.ts": true
+      }
+    },
+    "external:../snaps-utils/src/cronjob.ts": {
+      "packages": {
+        "@metamask/snaps-utils>cron-parser": true,
+        "@metamask/utils": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-utils/src/deep-clone.ts": {
+      "packages": {
+        "@metamask/snaps-utils>rfdc": true
+      }
+    },
+    "external:../snaps-utils/src/handlers.ts": {
+      "packages": {
+        "superstruct": true
+      }
+    },
     "external:../snaps-utils/src/icon.ts": {
       "builtin": {
         "buffer": true

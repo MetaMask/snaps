@@ -124,10 +124,14 @@ export class InterfaceController extends BaseController<
     });
   }
 
-  resolveInterface(snapId: string, id: string, value: Json) {
+  async resolveInterface(snapId: string, id: string, value: Json) {
     this.#validateArgs(snapId, id);
 
-    this.messagingSystem.call('ApprovalController:acceptRequest', id, value);
+    await this.messagingSystem.call(
+      'ApprovalController:acceptRequest',
+      id,
+      value,
+    );
 
     this.#interfacePromises.delete(id);
     this.update((draftState) => {
