@@ -45,7 +45,7 @@ export const restrictedMethodPermissionBuilders = {
   [invokeSnapBuilder.targetName]: invokeSnapBuilder,
   [manageStateBuilder.targetName]: manageStateBuilder,
   [notifyBuilder.targetName]: notifyBuilder,
-  [manageAccountsBuilder.targetKey]: manageAccountsBuilder,
+  [manageAccountsBuilder.targetName]: manageAccountsBuilder,
 } as const;
 
 export * from './caveats';

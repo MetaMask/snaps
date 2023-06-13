@@ -287,7 +287,7 @@ export const manageAccountsCaveatSpecification: Record<
 };
 
 export const manageAccountsBuilder = Object.freeze({
-  targetKey: methodName,
+  targetName: methodName,
   specificationBuilder,
   methodHooks: {
     getSnapKeyring: true,
