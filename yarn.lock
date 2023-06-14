@@ -3883,7 +3883,7 @@ __metadata:
     "@swc/core": ^1.3.61
     "@swc/jest": ^0.2.26
     "@types/jest": ^27.5.1
-    "@types/node": ^20.2.5
+    "@types/node": ^20.3.1
     "@types/rimraf": ^3.0.0
     "@types/yargs": ^17.0.24
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -4152,7 +4152,7 @@ __metadata:
     "@noble/hashes": ^1.1.3
     "@swc/core": ^1.3.61
     "@swc/jest": ^0.2.26
-    "@types/node": ^20.2.5
+    "@types/node": ^20.3.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
     deepmerge: ^4.2.2
@@ -4266,7 +4266,7 @@ __metadata:
     "@types/browserify": ^12.0.37
     "@types/is-url": ^1.2.28
     "@types/jest": ^27.5.1
-    "@types/node": ^20.2.5
+    "@types/node": ^20.3.1
     "@types/rimraf": ^3.0.0
     "@types/serve-handler": ^6.1.0
     "@types/yargs": ^17.0.24
@@ -4338,7 +4338,7 @@ __metadata:
     "@types/gunzip-maybe": ^1.4.0
     "@types/jest": ^27.5.1
     "@types/mocha": ^10.0.1
-    "@types/node": ^20.2.5
+    "@types/node": ^20.3.1
     "@types/pump": ^1.1.1
     "@types/readable-stream": ^2.3.15
     "@types/tar-stream": ^2.2.2
@@ -4420,7 +4420,7 @@ __metadata:
     "@swc/jest": ^0.2.26
     "@types/express": ^4.17.17
     "@types/jest": ^27.5.1
-    "@types/node": ^20.2.5
+    "@types/node": ^20.3.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
     "@wdio/browser-runner": ^8.5.2
@@ -4607,7 +4607,7 @@ __metadata:
     "@testing-library/react": ^14.0.0
     "@types/express": ^4.17.17
     "@types/jest": ^27.5.1
-    "@types/node": ^20.2.5
+    "@types/node": ^20.3.1
     "@types/pump": ^1.1.1
     "@types/react": ^18.2.5
     "@types/react-dom": ^18.2.3
@@ -4671,8 +4671,8 @@ __metadata:
     ts-node: ^10.9.1
     tsconfig-paths-webpack-plugin: ^4.0.1
     typescript: ~4.8.4
-    webpack: ^5.86.0
-    webpack-cli: ^5.1.4
+    webpack: ^5.72.1
+    webpack-cli: ^4.9.2
     webpack-dev-server: ^4.13.3
     webpack-merge: ^5.8.0
   languageName: unknown
@@ -4774,7 +4774,7 @@ __metadata:
     "@swc/jest": ^0.2.26
     "@types/jest": ^27.5.1
     "@types/mocha": ^10.0.1
-    "@types/node": ^20.2.5
+    "@types/node": ^20.3.1
     "@types/semver": ^7.3.10
     "@types/validate-npm-package-name": ^4.0.0
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -4857,7 +4857,7 @@ __metadata:
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^4.1.2
     typescript: ~4.8.4
-    webpack: ^5.86.0
+    webpack: ^5.72.1
     webpack-sources: ^3.2.3
   languageName: unknown
   linkType: soft
@@ -6259,17 +6259,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^20.1.0, @types/node@npm:^20.2.5":
-  version: 20.2.5
-  resolution: "@types/node@npm:20.2.5"
-  checksum: 38ce7c7e9d76880dc632f71d71e0d5914fcda9d5e9a7095d6c339abda55ca4affb0f2a882aeb29398f8e09d2c5151f0b6586c81c8ccdfe529c34b1ea3337425e
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^17.0.36":
-  version: 17.0.45
-  resolution: "@types/node@npm:17.0.45"
-  checksum: aa04366b9103b7d6cfd6b2ef64182e0eaa7d4462c3f817618486ea0422984c51fc69fd0d436eae6c9e696ddfdbec9ccaa27a917f7c2e8c75c5d57827fe3d95e8
+"@types/node@npm:*, @types/node@npm:^20.1.0, @types/node@npm:^20.3.1":
+  version: 20.3.1
+  resolution: "@types/node@npm:20.3.1"
+  checksum: 63a393ab6d947be17320817b35d7277ef03728e231558166ed07ee30b09fd7c08861be4d746f10fdc63ca7912e8cd023939d4eab887ff6580ff704ff24ed810c
   languageName: node
   linkType: hard
 
@@ -7330,16 +7323,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@webpack-cli/configtest@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "@webpack-cli/configtest@npm:2.1.1"
-  peerDependencies:
-    webpack: 5.x.x
-    webpack-cli: 5.x.x
-  checksum: 9f9f9145c2d05471fc83d426db1df85cf49f329836b0c4b9f46b6948bed4b013464c00622b136d2a0a26993ce2306976682592245b08ee717500b1db45009a72
-  languageName: node
-  linkType: hard
-
 "@webpack-cli/info@npm:^1.5.0":
   version: 1.5.0
   resolution: "@webpack-cli/info@npm:1.5.0"
@@ -7348,16 +7331,6 @@ __metadata:
   peerDependencies:
     webpack-cli: 4.x.x
   checksum: 7f56fe037cd7d1fd5c7428588519fbf04a0cad33925ee4202ffbafd00f8ec1f2f67d991245e687d50e0f3e23f7b7814273d56cb9f7da4b05eed47c8d815c6296
-  languageName: node
-  linkType: hard
-
-"@webpack-cli/info@npm:^2.0.2":
-  version: 2.0.2
-  resolution: "@webpack-cli/info@npm:2.0.2"
-  peerDependencies:
-    webpack: 5.x.x
-    webpack-cli: 5.x.x
-  checksum: 8f9a178afca5c82e113aed1efa552d64ee5ae4fdff63fe747c096a981ec74f18a5d07bd6e89bbe6715c3e57d96eea024a410e58977169489fe1df044c10dd94e
   languageName: node
   linkType: hard
 
@@ -7370,19 +7343,6 @@ __metadata:
     webpack-dev-server:
       optional: true
   checksum: d475e8effa23eb7ff9a48b14d4de425989fd82f906ce71c210921cc3852327c22873be00c35e181a25a6bd03d424ae2b83e7f3b3f410ac7ee31b128ab4ac7713
-  languageName: node
-  linkType: hard
-
-"@webpack-cli/serve@npm:^2.0.5":
-  version: 2.0.5
-  resolution: "@webpack-cli/serve@npm:2.0.5"
-  peerDependencies:
-    webpack: 5.x.x
-    webpack-cli: 5.x.x
-  peerDependenciesMeta:
-    webpack-dev-server:
-      optional: true
-  checksum: 75f0e54681796d567a71ac3e2781d2901a8d8cf1cdfc82f261034dddac59a8343e8c3bc5e32b4bb9d6766759ba49fb29a5cd86ef1701d79c506fe886bb63ac75
   languageName: node
   linkType: hard
 
@@ -8904,7 +8864,7 @@ __metadata:
     "@metamask/snaps-types": "workspace:^"
     "@types/browserify": ^12.0.37
     "@types/gulp": ^4.0.9
-    "@types/node": ^20.2.5
+    "@types/node": ^20.3.1
     "@types/vinyl-source-stream": ^0.0.30
     "@types/watchify": ^3.11.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -9928,13 +9888,6 @@ __metadata:
   version: 1.0.8
   resolution: "comma-separated-tokens@npm:1.0.8"
   checksum: 0adcb07174fa4d08cf0f5c8e3aec40a36b5ff0c2c720e5e23f50fe02e6789d1d00a67036c80e0c1e1539f41d3e7f0101b074039dd833b4e4a59031b659d6ca0d
-  languageName: node
-  linkType: hard
-
-"commander@npm:^10.0.1":
-  version: 10.0.1
-  resolution: "commander@npm:10.0.1"
-  checksum: 436901d64a818295803c1996cd856621a74f30b9f9e28a588e726b2b1670665bccd7c1a77007ebf328729f0139838a88a19265858a0fa7a8728c4656796db948
   languageName: node
   linkType: hard
 
@@ -14912,13 +14865,6 @@ __metadata:
   version: 2.2.0
   resolution: "interpret@npm:2.2.0"
   checksum: f51efef7cb8d02da16408ffa3504cd6053014c5aeb7bb8c223727e053e4235bf565e45d67028b0c8740d917c603807aa3c27d7bd2f21bf20b6417e2bb3e5fd6e
-  languageName: node
-  linkType: hard
-
-"interpret@npm:^3.1.1":
-  version: 3.1.1
-  resolution: "interpret@npm:3.1.1"
-  checksum: 35cebcf48c7351130437596d9ab8c8fe131ce4038da4561e6d665f25640e0034702a031cf7e3a5cea60ac7ac548bf17465e0571ede126f3d3a6933152171ac82
   languageName: node
   linkType: hard
 
@@ -20465,15 +20411,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rechoir@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "rechoir@npm:0.8.0"
-  dependencies:
-    resolve: ^1.20.0
-  checksum: ad3caed8afdefbc33fbc30e6d22b86c35b3d51c2005546f4e79bcc03c074df804b3640ad18945e6bef9ed12caedc035655ec1082f64a5e94c849ff939dc0a788
-  languageName: node
-  linkType: hard
-
 "recursive-readdir@npm:^2.2.2":
   version: 2.2.3
   resolution: "recursive-readdir@npm:2.2.3"
@@ -21033,7 +20970,7 @@ __metadata:
     "@metamask/snaps-rollup-plugin": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
     "@rollup/plugin-babel": ^5.3.1
-    "@types/node": ^20.2.5
+    "@types/node": ^20.3.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
     concurrently: ^7.1.0
@@ -21093,7 +21030,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/utils": ^6.0.1
     "@types/jest": ^27.5.1
-    "@types/node": ^20.2.5
+    "@types/node": ^20.3.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
     chromedriver: ^114.0.1
@@ -23310,7 +23247,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
-    "@types/node": ^20.2.5
+    "@types/node": ^20.3.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
     eslint: ^8.27.0
@@ -24402,38 +24339,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-cli@npm:^5.1.4":
-  version: 5.1.4
-  resolution: "webpack-cli@npm:5.1.4"
-  dependencies:
-    "@discoveryjs/json-ext": ^0.5.0
-    "@webpack-cli/configtest": ^2.1.1
-    "@webpack-cli/info": ^2.0.2
-    "@webpack-cli/serve": ^2.0.5
-    colorette: ^2.0.14
-    commander: ^10.0.1
-    cross-spawn: ^7.0.3
-    envinfo: ^7.7.3
-    fastest-levenshtein: ^1.0.12
-    import-local: ^3.0.2
-    interpret: ^3.1.1
-    rechoir: ^0.8.0
-    webpack-merge: ^5.7.3
-  peerDependencies:
-    webpack: 5.x.x
-  peerDependenciesMeta:
-    "@webpack-cli/generators":
-      optional: true
-    webpack-bundle-analyzer:
-      optional: true
-    webpack-dev-server:
-      optional: true
-  bin:
-    webpack-cli: bin/cli.js
-  checksum: 3a4ad0d0342a6815c850ee4633cc2a8a5dae04f918e7847f180bf24ab400803cf8a8943707ffbed03eb20fe6ce647f996f60a2aade87b0b4a9954da3da172ce0
-  languageName: node
-  linkType: hard
-
 "webpack-dev-middleware@npm:^5.3.1":
   version: 5.3.3
   resolution: "webpack-dev-middleware@npm:5.3.3"
@@ -24521,7 +24426,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
     "@metamask/snaps-webpack-plugin": "workspace:^"
-    "@types/node": ^17.0.36
+    "@types/node": ^20.3.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
     babel-loader: ^8.2.5
@@ -24552,7 +24457,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:^5.72.1, webpack@npm:^5.86.0":
+"webpack@npm:^5.72.1":
   version: 5.86.0
   resolution: "webpack@npm:5.86.0"
   dependencies:
