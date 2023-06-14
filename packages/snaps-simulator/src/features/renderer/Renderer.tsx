@@ -23,9 +23,11 @@ export const components: Partial<
   [NodeType.Text]: Text,
   [NodeType.Image]: Image,
   // @todo: Create a button
+  // TODO(@guillaumerx): Quick fix to build, update those later
   [NodeType.Button]: Text,
   [NodeType.Input]: Text,
   [NodeType.Label]: Text,
+  [NodeType.Form]: Text,
 };
 
 type RendererProps = {
