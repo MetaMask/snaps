@@ -10,7 +10,9 @@ import {
 import { FunctionComponent, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
+import { TestConditional } from '../../../components';
 import { useSelector } from '../../../hooks';
+import { IS_TEST_BUILD } from '../../../utils';
 import { getUserInterface } from '../../simulation';
 import { History } from './History';
 import { PlayButton } from './PlayButton';
@@ -26,57 +28,60 @@ export const Handler: FunctionComponent = () => {
   return (
     <Flex width="100%" direction="column" overflow="hidden">
       <Flex direction="row" flex="1" overflow="hidden">
-        <Flex direction="column" flex="1" width="50%" overflow="hidden">
-          <Tabs
-            display="flex"
-            flexDirection="column"
-            flex="1"
-            overflow="hidden"
-            isLazy={true}
-            onChange={setTab}
-          >
-            <ResetTab />
-            <TabList alignItems="center">
-              <Tab>Request</Tab>
-              <Tab>History</Tab>
-              {tab === 0 && (
-                <Box marginLeft="auto">
-                  <PlayButton />
-                </Box>
-              )}
-            </TabList>
-            <TabPanels
+        <TestConditional isTest={false}>
+          <Flex direction="column" flex="1" width="50%" overflow="hidden">
+            <Tabs
               display="flex"
               flexDirection="column"
               flex="1"
               overflow="hidden"
+              isLazy={true}
+              onChange={setTab}
             >
-              <TabPanel
+              <ResetTab />
+              <TabList alignItems="center">
+                <Tab>Request</Tab>
+                <Tab>History</Tab>
+                {tab === 0 && (
+                  <Box marginLeft="auto">
+                    <PlayButton />
+                  </Box>
+                )}
+              </TabList>
+              <TabPanels
                 display="flex"
                 flexDirection="column"
                 flex="1"
-                overflowY="auto"
+                overflow="hidden"
               >
-                <Outlet />
-              </TabPanel>
-              <TabPanel
-                padding="0"
-                display="flex"
-                flexDirection="column"
-                flex="1"
-                overflowY="auto"
-              >
-                <History />
-              </TabPanel>
-            </TabPanels>
-          </Tabs>
-        </Flex>
+                <TabPanel
+                  display="flex"
+                  flexDirection="column"
+                  flex="1"
+                  overflowY="auto"
+                  data-testid="tab-request"
+                >
+                  <Outlet />
+                </TabPanel>
+                <TabPanel
+                  padding="0"
+                  display="flex"
+                  flexDirection="column"
+                  flex="1"
+                  overflowY="auto"
+                >
+                  <History />
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
+          </Flex>
+        </TestConditional>
         <Box
           display="flex"
           flexDirection="column"
           flex="1"
           width="50%"
-          borderLeft="1px solid"
+          borderLeft={IS_TEST_BUILD ? 'none' : '1px solid'}
           borderColor="border.default"
         >
           <Tabs
@@ -103,11 +108,12 @@ export const Handler: FunctionComponent = () => {
                 flexDirection="column"
                 flex="1"
                 padding="0"
+                data-testid="tab-response"
               >
                 <Response />
               </TabPanel>
               {userInterface && (
-                <TabPanel overflowY="auto">
+                <TabPanel overflowY="auto" data-testid="tab-ui">
                   <UserInterface />
                 </TabPanel>
               )}

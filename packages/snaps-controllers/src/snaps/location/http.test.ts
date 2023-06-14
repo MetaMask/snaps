@@ -122,4 +122,37 @@ describe('HttpLocation', () => {
     expect(bundleFile.path).toBe('dist/bundle.js');
     expect(iconFile.path).toBe('images/icon.svg');
   });
+
+  it('sanitizes manifests', async () => {
+    const rawManifest = getSnapManifest({
+      filePath: './dist/bundle.js',
+      iconPath: './images/icon.svg',
+    });
+
+    const manifest = {
+      ...rawManifest,
+      initialPermissions: {
+        ...rawManifest.initialPermissions,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        __proto__: { foo: 'bar' },
+      },
+    };
+
+    fetchMock.mockResponses(JSON.stringify(manifest));
+
+    const location = new HttpLocation(new URL('http://foo.bar'));
+
+    const manifestFile = await location.manifest();
+
+    expect(manifestFile.path).toBe(NpmSnapFileNames.Manifest);
+    expect(manifestFile.result).toStrictEqual(rawManifest);
+    // @ts-expect-error Accessing via prototype
+    expect(manifestFile.result.initialPermissions.foo).toBeUndefined();
+
+    expect(
+      // @ts-expect-error Accessing via prototype
+      // eslint-disable-next-line no-proto, @typescript-eslint/naming-convention
+      manifestFile.result.initialPermissions.__proto__.foo,
+    ).toBeUndefined();
+  });
 });
