@@ -6,6 +6,11 @@ import { getBip32PublicKeyBuilder } from '../getBip32PublicKey';
 import { getBip44EntropyBuilder } from '../getBip44Entropy';
 import { invokeSnapBuilder } from '../invokeSnap';
 import {
+  manageAccountsBuilder,
+  manageAccountsCaveatMapper,
+  manageAccountsCaveatSpecification,
+} from '../manageAccounts';
+import {
   permittedCoinTypesCaveatMapper,
   PermittedCoinTypesCaveatSpecification,
 } from './permittedCoinTypes';
@@ -19,6 +24,7 @@ export const caveatSpecifications = {
   ...PermittedDerivationPathsCaveatSpecification,
   ...PermittedCoinTypesCaveatSpecification,
   ...SnapIdsCaveatSpecification,
+  ...manageAccountsCaveatSpecification,
 } as const;
 
 export const caveatMappers: Record<
@@ -29,4 +35,5 @@ export const caveatMappers: Record<
   [getBip32PublicKeyBuilder.targetName]: permittedDerivationPathsCaveatMapper,
   [getBip44EntropyBuilder.targetName]: permittedCoinTypesCaveatMapper,
   [invokeSnapBuilder.targetName]: snapIdsCaveatMapper,
+  [manageAccountsBuilder.targetName]: manageAccountsCaveatMapper,
 };
