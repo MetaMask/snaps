@@ -1,5 +1,5 @@
 import { HandlerType } from '@metamask/snaps-utils';
-import { JsonRpcRequest } from '@metamask/utils';
+import { JsonRpcRequest, JsonRpcResponse, Json } from '@metamask/utils';
 import { createSelector } from '@reduxjs/toolkit';
 
 import { createHandlerSlice } from '../slice';
@@ -12,7 +12,7 @@ type Request = {
   }>;
 };
 
-type Response = string;
+type Response = JsonRpcResponse<Json>;
 
 export const INITIAL_STATE = {
   request: {},
