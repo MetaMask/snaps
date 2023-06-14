@@ -66,6 +66,7 @@ export enum NodeType {
   Button = 'button',
   Label = 'label',
   Input = 'input',
+  Form = 'Form',
 }
 
 export const CopyableStruct = assign(
@@ -166,6 +167,11 @@ export enum ButtonVariants {
   Secondary = 'secondary',
 }
 
+export enum ButtonType {
+  Button = 'button',
+  Submit = 'submit',
+}
+
 export const ButtonStruct = assign(
   LiteralStruct,
   object({
@@ -173,6 +179,8 @@ export const ButtonStruct = assign(
     variant: optional(
       enums([ButtonVariants.Primary, ButtonVariants.Secondary]),
     ),
+    form: optional(string()),
+    buttonType: optional(enums([ButtonType.Button, ButtonType.Submit])),
     value: string(),
     name: optional(string()),
   }),
@@ -189,12 +197,31 @@ export const ButtonStruct = assign(
  */
 export type Button = Infer<typeof ButtonStruct>;
 
+/**
+ * This replicates the available input types from the metamask extension.
+ * https://github.com/MetaMask/metamask-extension/develop/ui/components/component-library/input/input.constants.js
+ */
+export enum InputTypes {
+  Text = 'text',
+  // Number is already a defined global but here it's used in an enum.
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  Number = 'number',
+  Password = 'password',
+  Search = 'search',
+}
+
 export const InputStruct = assign(
   NodeStruct,
   object({
     type: literal(NodeType.Input),
     value: optional(string()),
     name: optional(string()),
+    inputType: enums([
+      InputTypes.Text,
+      InputTypes.Password,
+      InputTypes.Number,
+      InputTypes.Search,
+    ]),
     placeholder: optional(string()),
   }),
 );
@@ -212,6 +239,23 @@ export const LabelStruct = assign(
 
 export type Label = Infer<typeof LabelStruct>;
 
+export const FormComponentStruct = union([
+  LabelStruct,
+  InputStruct,
+  ButtonStruct,
+]);
+
+export const FormStruct = assign(
+  NodeStruct,
+  object({
+    type: literal(NodeType.Form),
+    children: array(FormComponentStruct),
+    name: optional(string()),
+  }),
+);
+
+export type Form = Infer<typeof FormStruct>;
+
 export const ComponentStruct = union([
   CopyableStruct,
   DividerStruct,
@@ -222,6 +266,7 @@ export const ComponentStruct = union([
   ButtonStruct,
   InputStruct,
   LabelStruct,
+  FormStruct,
 ]);
 
 /**

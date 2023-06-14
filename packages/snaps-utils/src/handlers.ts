@@ -108,14 +108,45 @@ export type HandlerFunction<Type extends SnapHandler> =
     ? Handler
     : never;
 
-export enum UserInputEventType {
+export enum UserInputEventTypes {
   ButtonClickEvent = 'ButtonClickEvent',
+  FormSubmitEvent = 'FormSubmitEvent',
+  InputChangeEvent = 'InputChangeEvent',
 }
 
-export const UserInputEventStruct = object({
-  type: enums([UserInputEventType.ButtonClickEvent]),
+export const EventStruct = object({
+  type: string(),
   name: optional(string()),
 });
+
+export const ButtonClickEventStruct = assign(
+  EventStruct,
+  object({
+    type: literal(UserInputEventTypes.ButtonClickEvent),
+  }),
+);
+
+export const FormSubmitEventStruct = assign(
+  EventStruct,
+  object({
+    type: literal(UserInputEventTypes.FormSubmitEvent),
+    value: record(string(), string()),
+  }),
+);
+
+export const InputChangeEventStruct = assign(
+  EventStruct,
+  object({
+    type: literal(UserInputEventTypes.InputChangeEvent),
+    value: string(),
+  }),
+);
+
+export const UserInputEventStruct = union([
+  ButtonClickEventStruct,
+  FormSubmitEventStruct,
+  InputChangeEventStruct,
+]);
 
 type UserInputEvent = Infer<typeof UserInputEventStruct>;
 
