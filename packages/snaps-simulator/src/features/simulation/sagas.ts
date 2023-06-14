@@ -32,6 +32,7 @@ import pump from 'pump';
 import { SagaIterator } from 'redux-saga';
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
 
+import { version } from '../../../package.json';
 import { runSaga } from '../../store/middleware';
 import { getSnapId, getSrp, setSnapId } from '../configuration';
 import { addError } from '../console';
@@ -63,10 +64,7 @@ import {
   unrestrictedMethods,
 } from './snap-permissions';
 
-// TODO: Get this from the current `package.json` version, once it's deployed
-// from the monorepo.
-const DEFAULT_ENVIRONMENT_URL =
-  'https://execution.metamask.io/0.15.1/index.html';
+const DEFAULT_ENVIRONMENT_URL = `https://execution.metamask.io/${version}/index.html`;
 
 /**
  * The initialization saga is run on when the snap ID is changed and initializes the snaps execution environment.
