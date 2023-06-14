@@ -32,7 +32,7 @@
     "@metamask/providers": "^11.0.0",
     "@metamask/rpc-methods": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^6.0.0"
+    "@metamask/utils": "^6.0.1"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.3.1",

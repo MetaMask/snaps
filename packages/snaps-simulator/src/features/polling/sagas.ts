@@ -2,6 +2,7 @@ import { detectSnapLocation } from '@metamask/snaps-controllers';
 import {
   getSnapPrefix,
   logError,
+  parseJson,
   SnapIdPrefixes,
   SnapManifest,
   VirtualFile,
@@ -40,9 +41,7 @@ export function* fetchingSaga() {
     [location, 'fetch'],
     'snap.manifest.json',
   );
-  const parsedManifest = JSON.parse(
-    manifestFile.toString('utf8'),
-  ) as SnapManifest;
+  const parsedManifest = parseJson(manifestFile.toString('utf8'));
   manifestFile.result = parsedManifest;
 
   const currentManifest: SnapManifest = yield select(getSnapManifest);
