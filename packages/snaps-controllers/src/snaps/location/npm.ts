@@ -7,6 +7,7 @@ import {
   SnapManifest,
   VirtualFile,
   normalizeRelative,
+  parseJson,
 } from '@metamask/snaps-utils';
 import {
   assert,
@@ -117,7 +118,7 @@ export class NpmLocation implements SnapLocation {
     }
 
     const vfile = await this.fetch('snap.manifest.json');
-    const result = JSON.parse(vfile.toString());
+    const result = parseJson(vfile.toString());
     vfile.result = createSnapManifest(result);
     this.validatedManifest = vfile as VirtualFile<SnapManifest>;
 

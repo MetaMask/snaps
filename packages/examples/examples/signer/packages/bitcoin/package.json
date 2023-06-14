@@ -13,7 +13,7 @@
   "dependencies": {
     "@metamask/key-tree": "^7.0.0",
     "@metamask/snaps-types": "workspace:^",
-    "@metamask/utils": "^6.0.0",
+    "@metamask/utils": "^6.0.1",
     "@noble/secp256k1": "^1.7.1",
     "buffer": "^6.0.3"
   },

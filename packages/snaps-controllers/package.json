@@ -43,7 +43,7 @@
     "@metamask/snaps-execution-environments": "workspace:^",
     "@metamask/snaps-registry": "^1.2.1",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^6.0.0",
+    "@metamask/utils": "^6.0.1",
     "@xstate/fsm": "^2.0.0",
     "concat-stream": "^2.0.0",
     "cron-parser": "^4.5.0",

@@ -7,6 +7,7 @@ export * from './default-endowments';
 export * from './entropy';
 export * from './handlers';
 export * from './iframe';
+export * from './json';
 export * from './json-rpc';
 export * from './logging';
 export * from './manifest/index.browser';

@@ -14,7 +14,7 @@
     "@ethereumjs/tx": "^3.5.2",
     "@metamask/key-tree": "^7.0.0",
     "@metamask/snaps-types": "workspace:^",
-    "@metamask/utils": "^6.0.0",
+    "@metamask/utils": "^6.0.1",
     "buffer": "^6.0.3"
   },
   "devDependencies": {

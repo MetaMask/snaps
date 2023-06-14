@@ -28,7 +28,7 @@
   "dependencies": {
     "@metamask/abi-utils": "^1.1.1",
     "@metamask/snaps-ui": "workspace:^",
-    "@metamask/utils": "^6.0.0"
+    "@metamask/utils": "^6.0.1"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",
