@@ -34,7 +34,8 @@ const { getByTestId } = queries;
  * });
  * ```
  * @param snapId - The ID of the snap, including the prefix (`local:`). Defaults
- * to the URL of the built-in server, if it is running.
+ * to the URL of the built-in server, if it is running. This supports both
+ * local snap IDs and NPM snap IDs.
  * @returns The snap.
  * @throws If the built-in server is not running, and no snap ID is provided.
  */

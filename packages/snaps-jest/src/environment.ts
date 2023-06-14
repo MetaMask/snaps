@@ -105,8 +105,9 @@ export class SnapsEnvironment extends NodeEnvironment {
   }
 
   /**
-   * Get the snap ID for the current environment. This assumes that the built-in
-   * server is running.
+   * Get the snap ID for the current environment, which is used if no snap ID is
+   * passed to {@link installSnap}. This assumes that the built-in server is
+   * running.
    *
    * @returns The snap ID.
    * @throws If the server is not running.
