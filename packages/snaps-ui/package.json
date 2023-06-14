@@ -1,7 +1,6 @@
 {
   "name": "@metamask/snaps-ui",
   "version": "0.34.1-flask.1",
-  "description": "A Jest preset for end-to-end testing MetaMask Snaps, including a Jest environment, and a set of Jest matchers.",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
