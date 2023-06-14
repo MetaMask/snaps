@@ -1,4 +1,9 @@
-import { assertIsSnapManifest, SnapManifest } from '@metamask/snaps-utils';
+import {
+  assertIsSnapManifest,
+  isDirectory,
+  isFile,
+  SnapManifest,
+} from '@metamask/snaps-utils';
 import { createModuleLogger } from '@metamask/utils';
 import express from 'express';
 import { promises as fs } from 'fs';
@@ -30,48 +35,6 @@ export type ServerOptions = Required<
 >;
 
 /**
- * Check that the given path is a file. If the underlying `fs.stat` call throws
- * an error, and the error code is `ENOENT`, then this function will return
- * `false`. Otherwise, the error will be rethrown.
- *
- * @param path - The path to check.
- * @returns Whether the path is a file.
- */
-async function isFile(path: string): Promise<boolean> {
-  try {
-    const stat = await fs.stat(path);
-    return stat.isFile();
-  } catch (error) {
-    if (error.code === 'ENOENT') {
-      return false;
-    }
-
-    throw error;
-  }
-}
-
-/**
- * Check that the given path is a directory. If the underlying `fs.stat` call
- * throws an error, and the error code is `ENOENT`, then this function will
- * return `false`. Otherwise, the error will be rethrown.
- *
- * @param path - The path to check.
- * @returns Whether the path is a directory.
- */
-async function isDirectory(path: string): Promise<boolean> {
-  try {
-    const stat = await fs.stat(path);
-    return stat.isDirectory();
-  } catch (error) {
-    if (error.code === 'ENOENT') {
-      return false;
-    }
-
-    throw error;
-  }
-}
-
-/**
  * Check that:
  *
  * - The root directory exists.
@@ -86,7 +49,7 @@ async function assertRoot(root: string) {
     throw new Error('You must specify a root directory.');
   }
 
-  if (!(await isDirectory(root))) {
+  if (!(await isDirectory(root, false))) {
     throw new Error(`Root directory "${root}" is not a directory.`);
   }
 
