@@ -33,7 +33,8 @@
     "auto-changelog-init": "auto-changelog init",
     "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
     "publish:preview": "yarn npm publish --tag preview",
-    "lint:ci": "yarn lint"
+    "lint:ci": "yarn lint",
+    "start": "node scripts/start.js"
   },
   "dependencies": {
     "@metamask/object-multiplex": "^1.2.0",
@@ -46,6 +47,7 @@
     "json-rpc-engine": "^6.1.0",
     "nanoid": "^3.1.31",
     "pump": "^3.0.0",
+    "serve-handler": "^6.1.5",
     "ses": "^0.18.1",
     "stream-browserify": "^3.0.0",
     "superstruct": "^1.0.3"
