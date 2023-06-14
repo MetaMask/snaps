@@ -41,7 +41,7 @@
     "@metamask/providers": "^10.2.0",
     "@metamask/rpc-methods": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^6.0.0",
+    "@metamask/utils": "^6.0.1",
     "eth-rpc-errors": "^4.0.3",
     "json-rpc-engine": "^6.1.0",
     "pump": "^3.0.0",

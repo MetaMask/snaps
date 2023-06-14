@@ -11,7 +11,7 @@
     "start": "mm-snap serve"
   },
   "dependencies": {
-    "@metamask/utils": "^6.0.0",
+    "@metamask/utils": "^6.0.1",
     "async-mutex": "^0.4.0"
   },
   "devDependencies": {
