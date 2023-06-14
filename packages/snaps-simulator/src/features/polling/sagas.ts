@@ -41,7 +41,7 @@ export function* fetchingSaga() {
     [location, 'fetch'],
     'snap.manifest.json',
   );
-  const parsedManifest = parseJson(manifestFile.toString('utf8'));
+  const parsedManifest = parseJson<SnapManifest>(manifestFile.toString('utf8'));
   manifestFile.result = parsedManifest;
 
   const currentManifest: SnapManifest = yield select(getSnapManifest);

@@ -4494,7 +4494,7 @@ __metadata:
     "@metamask/snaps-simulator": "workspace:^"
     "@metamask/snaps-ui": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
-    "@metamask/utils": ^6.0.0
+    "@metamask/utils": ^6.0.1
     "@swc/core": ^1.3.61
     "@swc/jest": ^0.2.26
     "@types/jest": ^27.5.1
