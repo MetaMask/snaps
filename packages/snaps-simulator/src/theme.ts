@@ -62,6 +62,10 @@ export const theme = extendTheme({
       },
       background: {
         alternative: { default: '#F5F5F5', _dark: '#141618' },
+        hover: {
+          default: '#FAFBFC',
+          _dark: '#141618',
+        },
       },
       info: {
         default: '#0376C9',
@@ -72,8 +76,14 @@ export const theme = extendTheme({
         },
       },
       border: {
-        default: '#D6D9DC',
-        _dark: '#3B4046',
+        default: {
+          default: '#D6D9DC',
+          _dark: '#3B4046',
+        },
+        active: {
+          default: '#24272A',
+          _dark: 'rgba(255, 255, 255, 0.06)',
+        },
       },
       gray: {
         muted: {
@@ -105,14 +115,8 @@ export const theme = extendTheme({
     success: {
       default: '#579F6E',
     },
-    background: {
-      hover: '#FAFBFC',
-    },
     gray: {
       40: '#F2F4F6',
-    },
-    border: {
-      active: '#24272A',
     },
   },
 
@@ -144,7 +148,7 @@ export const theme = extendTheme({
           },
           input: {
             marginBottom: 4,
-            borderColor: 'border',
+            borderColor: 'border.default',
             outline: 'none',
             fontSize: 'sm',
             _active: {
@@ -160,7 +164,7 @@ export const theme = extendTheme({
           },
           textarea: {
             marginBottom: 4,
-            borderColor: 'border',
+            borderColor: 'border.default',
             outline: 'none',
             fontSize: 'sm',
             _active: {
@@ -175,7 +179,7 @@ export const theme = extendTheme({
             },
           },
           select: {
-            borderColor: 'border',
+            borderColor: 'border.default',
             outline: 'none',
             fontSize: 'sm',
             _active: {
@@ -222,7 +226,7 @@ export const theme = extendTheme({
           tablist: {
             background: 'background.alternative',
             borderBottom: '1px solid',
-            borderColor: 'border',
+            borderColor: 'border.default',
             paddingX: '4',
           },
           tab: {

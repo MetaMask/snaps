@@ -39,7 +39,7 @@ export const Console: FunctionComponent = () => {
   return (
     <Flex
       borderTop="1px solid"
-      borderColor="border"
+      borderColor="border.default"
       height={collapsed ? '47px' : '266px'}
       transition="height 0.5s"
       flexDirection="column"

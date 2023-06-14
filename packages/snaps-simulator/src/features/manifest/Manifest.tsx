@@ -59,7 +59,7 @@ export const Manifest: FunctionComponent = () => {
           flex="1"
           width="50%"
           borderLeft="1px solid"
-          borderColor="border"
+          borderColor="border.default"
         >
           <Tabs
             display="flex"

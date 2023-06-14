@@ -25,6 +25,16 @@ export const Editor: FunctionComponent<EditorProps> = ({
   const { colorMode } = useColorMode();
 
   const handleMount = (editor: typeof monaco) => {
+    // Define a theme with the proper background
+    editor.editor.defineTheme('vs-dark-custom', {
+      base: 'vs-dark',
+      inherit: true,
+      rules: [],
+      colors: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        'editor.background': '#24272A',
+      },
+    });
     editor.languages.json?.jsonDefaults.setDiagnosticsOptions({
       validate: true,
       schemas: [
@@ -50,7 +60,7 @@ export const Editor: FunctionComponent<EditorProps> = ({
         language="json"
         editorWillMount={handleMount}
         value={SAMPLE_JSON_RPC_REQUEST}
-        theme={colorMode === 'light' ? 'vs-light' : 'vs-dark'}
+        theme={colorMode === 'light' ? 'vs-light' : 'vs-dark-custom'}
         {...props}
         options={{
           tabSize: 2,

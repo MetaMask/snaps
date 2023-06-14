@@ -53,7 +53,7 @@ export const EditableNode: FunctionComponent<EditableNodeProps> = ({
           onChange={handleChange}
           fontSize="sm"
           bg="chakra-body-bg"
-          borderColor="border"
+          borderColor="border.default"
           outline="none"
           _active={{
             borderColor: 'border.active',

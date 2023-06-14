@@ -40,7 +40,7 @@ export const ConfirmationDialog: FunctionComponent<ConfirmationDialogProps> = ({
     </Box>
     <Flex
       borderTop="1px solid"
-      borderTopColor="border"
+      borderTopColor="border.default"
       paddingTop="4"
       paddingX="4"
       gap="4"

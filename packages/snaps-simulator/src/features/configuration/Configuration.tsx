@@ -142,7 +142,11 @@ export const Configuration = () => {
           <FormControl>
             <FormLabel>Snap location</FormLabel>
             <InputGroup>
-              <InputLeftAddon px="0" bg="chakra-body-bg" borderColor="border">
+              <InputLeftAddon
+                px="0"
+                bg="chakra-body-bg"
+                borderColor="border.default"
+              >
                 <Select
                   border="none"
                   onChange={handleSnapPrefixChange}
@@ -161,7 +165,7 @@ export const Configuration = () => {
                 <InputRightAddon
                   px="0"
                   bg="chakra-body-bg"
-                  borderColor="border"
+                  borderColor="border.default"
                 >
                   <Select
                     border="none"

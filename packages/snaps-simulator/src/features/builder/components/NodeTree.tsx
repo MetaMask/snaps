@@ -117,7 +117,7 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
   return (
     <Flex
       border="1px solid"
-      borderColor="border"
+      borderColor="border.default"
       borderRadius="lg"
       flex="1"
       sx={{
