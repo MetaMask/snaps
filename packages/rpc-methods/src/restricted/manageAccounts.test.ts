@@ -4,7 +4,7 @@ import { MOCK_SNAP_ID, MOCK_ORIGIN } from '@metamask/snaps-utils/test-utils';
 
 import {
   AccountType,
-  MANAGE_ACCOUNT_PERMISSION_KEY,
+  methodName,
   manageAccountsBuilder,
   validateCaveatManageAccounts,
   manageAccountsCaveatMapper,
@@ -137,7 +137,7 @@ describe('manageAccountsCaveatMapper', () => {
 describe('builder', () => {
   it('has the expected shape', () => {
     expect(manageAccountsBuilder).toMatchObject({
-      targetKey: MANAGE_ACCOUNT_PERMISSION_KEY,
+      targetName: methodName,
       specificationBuilder: expect.any(Function),
       methodHooks: {
         getSnapKeyring: true,
@@ -156,7 +156,7 @@ describe('builder', () => {
       }),
     ).toMatchObject({
       permissionType: PermissionType.RestrictedMethod,
-      targetKey: MANAGE_ACCOUNT_PERMISSION_KEY,
+      targetName: methodName,
       allowedCaveats: [SnapCaveatType.ManageAccounts],
       methodImplementation: expect.any(Function),
     });
