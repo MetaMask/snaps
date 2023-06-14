@@ -10,7 +10,7 @@ import {
 import { FunctionComponent, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
-import { Test } from '../../../components';
+import { TestConditional } from '../../../components';
 import { useSelector } from '../../../hooks';
 import { isTestBuild } from '../../../utils';
 import { getUserInterface } from '../../simulation';
@@ -28,7 +28,7 @@ export const Handler: FunctionComponent = () => {
   return (
     <Flex width="100%" direction="column" overflow="hidden">
       <Flex direction="row" flex="1" overflow="hidden">
-        <Test isTest={false}>
+        <TestConditional isTest={false}>
           <Flex direction="column" flex="1" width="50%" overflow="hidden">
             <Tabs
               display="flex"
@@ -75,7 +75,7 @@ export const Handler: FunctionComponent = () => {
               </TabPanels>
             </Tabs>
           </Flex>
-        </Test>
+        </TestConditional>
         <Box
           display="flex"
           flexDirection="column"

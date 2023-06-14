@@ -11,5 +11,5 @@ export * from './Logo';
 export * from './Prefill';
 export * from './Root';
 export * from './Link';
-export * from './Test';
+export * from './TestConditional';
 export * from './Window';

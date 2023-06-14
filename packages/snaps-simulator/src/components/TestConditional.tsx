@@ -1,6 +1,6 @@
 import { FunctionComponent, ReactNode } from 'react';
 
-import { isTestBuild } from '../utils';
+import { IS_TEST_BUILD } from '../utils';
 
 export type TestProps = {
   children: ReactNode;
@@ -16,11 +16,11 @@ export type TestProps = {
  * builds.
  * @returns The component.
  */
-export const Test: FunctionComponent<TestProps> = ({
+export const TestConditional: FunctionComponent<TestProps> = ({
   children,
   isTest = true,
 }) => {
-  if (isTestBuild() === isTest) {
+  if (IS_TEST_BUILD === isTest) {
     return <>{children}</>;
   }
 
