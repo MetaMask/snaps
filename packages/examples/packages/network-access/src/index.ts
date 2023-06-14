@@ -23,6 +23,21 @@ async function getJson(url = DEFAULT_URL) {
   return await response.json();
 }
 
+/**
+ * Handle incoming JSON-RPC requests from the dapp, sent through the
+ * `wallet_invokeSnap` method. This handler handles a single method:
+ *
+ * - `fetch`: Fetch a JSON document from the provided URL. This demonstrates
+ * that a snap can make network requests through the `fetch` function. Note that
+ * the `endowment:network-access` permission must be enabled for this to work.
+ *
+ * @param params - The request parameters.
+ * @param params.request - The JSON-RPC request object.
+ * @returns The JSON-RPC response.
+ * @see https://docs.metamask.io/snaps/reference/exports/#onrpcrequest
+ * @see https://docs.metamask.io/snaps/reference/rpc-api/#wallet_invokesnap
+ * @see https://docs.metamask.io/snaps/reference/permissions/#endowmentnetwork-access
+ */
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'fetch': {
