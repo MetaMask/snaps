@@ -84,9 +84,7 @@ export async function waitForResponse(
         if (!pending && response) {
           unsubscribe();
 
-          // TODO: The type for `response` is not correct(?).
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-          resolve(response as any);
+          resolve(response);
         }
       });
     });
