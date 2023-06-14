@@ -10,7 +10,7 @@ const config = {
 
   // End-to-end tests can take longer than usual to run, so we set the test
   // timeout to 10 seconds by default.
-  testTimeout: 10000,
+  testTimeout: 30000,
 
   setupFilesAfterEnv: [resolve(__dirname, 'dist', 'setup.js')],
 };

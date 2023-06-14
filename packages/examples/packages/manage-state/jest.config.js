@@ -4,15 +4,6 @@ const baseConfig = require('../../../../jest.config.base');
 
 module.exports = deepmerge(baseConfig, {
   preset: '@metamask/snaps-jest',
-  testEnvironmentOptions: {
-    browser: {
-      headless: true,
-    },
-  },
-
-  // End-to-end tests can take a while to run, so we need to increase the
-  // default timeout.
-  testTimeout: 10000,
 
   // Since `@metamask/snaps-jest` runs in the browser, we can't collect
   // coverage information.
