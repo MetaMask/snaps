@@ -1,4 +1,4 @@
-const { logError, logInfo } = require('@metamask/snaps-utils');
+/* eslint-disable no-console */
 const http = require('http');
 const path = require('path');
 const serveHandler = require('serve-handler');
@@ -37,17 +37,17 @@ async function start() {
   });
 
   server.listen({ port }, () =>
-    logInfo(`Server listening on: http://localhost:${port}`),
+    console.log(`Server listening on: http://localhost:${port}`),
   );
 
   server.on('error', (error) => {
-    logError('Server error', error);
+    console.error('Server error', error);
     process.exitCode = 1;
     server.close();
   });
 
   server.on('close', () => {
-    logInfo('Server closed');
+    console.log('Server closed');
     process.exitCode = 1;
   });
 }
