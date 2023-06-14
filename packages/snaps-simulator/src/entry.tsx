@@ -5,7 +5,7 @@ import { setWindowApi } from './api';
 import { App } from './App';
 import { Root } from './components';
 import { createStore } from './store';
-import { isTestBuild } from './utils';
+import { IS_TEST_BUILD } from './utils';
 
 // eslint-disable-next-line import/no-unassigned-import
 import './assets/fonts/fonts.css';
@@ -16,7 +16,7 @@ assert(rootElement, 'Root element not found.');
 const store = createStore();
 const root = createRoot(rootElement);
 
-if (isTestBuild()) {
+if (IS_TEST_BUILD) {
   setWindowApi(store);
 }
 

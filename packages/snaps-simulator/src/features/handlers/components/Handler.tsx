@@ -12,7 +12,7 @@ import { Outlet } from 'react-router-dom';
 
 import { TestConditional } from '../../../components';
 import { useSelector } from '../../../hooks';
-import { isTestBuild } from '../../../utils';
+import { IS_TEST_BUILD } from '../../../utils';
 import { getUserInterface } from '../../simulation';
 import { History } from './History';
 import { PlayButton } from './PlayButton';
@@ -81,7 +81,7 @@ export const Handler: FunctionComponent = () => {
           flexDirection="column"
           flex="1"
           width="50%"
-          borderLeft={isTestBuild() ? 'none' : '1px solid'}
+          borderLeft={IS_TEST_BUILD ? 'none' : '1px solid'}
           borderColor="border.default"
         >
           <Tabs
