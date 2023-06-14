@@ -34,7 +34,7 @@
     "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
     "publish:preview": "yarn npm publish --tag preview",
     "lint:ci": "yarn lint",
-    "start": "yarn serve ./dist/browserify/iframe/"
+    "start": "yarn serve dist/browserify/iframe/"
   },
   "dependencies": {
     "@metamask/object-multiplex": "^1.2.0",
