@@ -1,4 +1,5 @@
 import { logInfo } from '@metamask/snaps-utils';
+import { minify } from '@swc/core';
 import { promises as fs } from 'fs';
 
 import { TranspilationModes } from '../../builders';
@@ -39,7 +40,11 @@ export async function writeBundleFile({
   }
 
   try {
-    await fs.writeFile(dest, bundleBuffer?.toString());
+    const minifiedBundle = (
+      await minify(bundleBuffer?.toString(), { sourceMap: true })
+    ).code;
+
+    await fs.writeFile(dest, minifiedBundle);
     logInfo(`Build success: '${src}' bundled as '${dest}'!`);
     resolve(true);
   } catch (error) {
