@@ -2,17 +2,17 @@
   "name": "@metamask/snaps-simulator",
   "version": "0.34.1-flask.1",
   "description": "A simulator for MetaMask Snaps, to be used for testing and development",
-  "homepage": "https://github.com/MetaMask/snaps-monorepo#readme",
+  "homepage": "https://github.com/MetaMask/snaps#readme",
   "bugs": {
-    "url": "https://github.com/MetaMask/snaps-monorepo/issues"
+    "url": "https://github.com/MetaMask/snaps/issues"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "sideEffects": false,
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
   "files": [
     "dist"
   ],

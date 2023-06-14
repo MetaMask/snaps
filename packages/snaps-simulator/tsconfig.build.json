@@ -4,10 +4,11 @@
     "jsx": "react-jsx",
     "baseUrl": "./",
     "outDir": "./dist",
-    "rootDir": "./src",
-    "skipLibCheck": true
+    "rootDir": "./",
+    "skipLibCheck": true,
+    "resolveJsonModule": true
   },
-  "include": ["./src"],
+  "include": ["./src", "package.json"],
   "exclude": [
     "**/*.test.ts",
     "**/*.test.tsx",
