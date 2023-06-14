@@ -1,33 +1,40 @@
+import { rpcErrors } from '@metamask/rpc-errors';
 import { OnRpcRequestHandler } from '@metamask/snaps-types';
-import { panel, text } from '@metamask/snaps-ui';
 
-import packageJson from '../package.json';
+import { DEFAULT_URL } from './constants';
+import { FetchParams } from './types';
 
 /**
- * Retrieves test web page content.
+ * Fetch a JSON file from the provided URL. This uses the standard `fetch`
+ * function to get the JSON data. Because of CORS, the server must respond with
+ * an `Access-Control-Allow-Origin` header set to either `*` or `null`.
  *
- * @returns Response data of a fetched web page in json format.
+ * Note that `fetch` is only available with the `endowment:network-access`
+ * permission.
+ *
+ * @param url - The URL to fetch the data from. This function assumes that the
+ * provided URL is a JSON document. Defaults to
+ * `https://metamask.github.io/snaps/test-snaps/latest/test-data.json`.
+ * @returns There response as JSON.
+ * @throws If the provided URL is not a JSON document.
  */
-async function getJson() {
-  const response = await fetch(
-    `https://metamask.github.io/test-snaps/${packageJson.version}/test-data.json`,
-  );
-  return response.json();
+async function getJson(url = DEFAULT_URL) {
+  const response = await fetch(url);
+  return await response.json();
 }
 
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
-    case 'networkAccessTest': {
-      const json = await getJson();
-      return snap.request({
-        method: 'snap_dialog',
-        params: {
-          type: 'alert',
-          content: panel([text(json.result)]),
+    case 'fetch': {
+      const params = request.params as FetchParams | undefined;
+      return await getJson(params?.url);
+    }
+
+    default:
+      throw rpcErrors.methodNotFound({
+        data: {
+          method: request.method,
         },
       });
-    }
-    default:
-      throw new Error('Method not found.');
   }
 };

@@ -12,10 +12,10 @@
       "path": "../../../snaps-types"
     },
     {
-      "path": "../../../snaps-ui"
+      "path": "../../../snaps-webpack-plugin"
     },
     {
-      "path": "../../../snaps-webpack-plugin"
+      "path": "../../../snaps-jest"
     }
   ]
 }

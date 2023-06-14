@@ -1,4 +1,4 @@
-# `@metamask/get-entropy-example-snap`
+# `@metamask/manage-state-example-snap`
 
 This snap demonstrates how to use `snap_manageState` to store, receive, and
 clear internal state within a snap. This state is encrypted before being stored
