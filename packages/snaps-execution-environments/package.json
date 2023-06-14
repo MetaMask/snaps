@@ -33,7 +33,8 @@
     "auto-changelog-init": "auto-changelog init",
     "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
     "publish:preview": "yarn npm publish --tag preview",
-    "lint:ci": "yarn lint"
+    "lint:ci": "yarn lint",
+    "start": "yarn serve ./dist/browserify/iframe/"
   },
   "dependencies": {
     "@metamask/object-multiplex": "^1.2.0",
@@ -103,6 +104,7 @@
     "prettier-plugin-packagejson": "^2.2.11",
     "process": "^0.11.10",
     "rimraf": "^4.1.2",
+    "serve": "^14.2.0",
     "terser": "^5.17.7",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
@@ -120,5 +122,19 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
+  },
+  "lavamoat": {
+    "allowScripts": {
+      "@metamask/rpc-methods>@metamask/permission-controller>@metamask/controller-utils>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "@metamask/rpc-methods>@metamask/permission-controller>@metamask/controller-utils>ethereumjs-util>ethereum-cryptography>secp256k1": false,
+      "@swc/core": false,
+      "@wdio/browser-runner>@originjs/vite-plugin-commonjs>esbuild": false,
+      "@wdio/browser-runner>modern-node-polyfills>esbuild": false,
+      "@wdio/browser-runner>vite>esbuild": false,
+      "esbuild": false,
+      "vite>esbuild": false,
+      "wdio-chromedriver-service>chromedriver": false,
+      "wdio-geckodriver-service>geckodriver": false
+    }
   }
 }
