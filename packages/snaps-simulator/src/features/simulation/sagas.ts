@@ -24,6 +24,7 @@ import {
   SnapRpcHookArgs,
   VirtualFile,
 } from '@metamask/snaps-utils';
+import { getSafeJson } from '@metamask/utils';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
@@ -270,7 +271,7 @@ export function* permissionsSaga({
     // Payload is frozen for unknown reasons, this breaks our superstruct validation.
     // To circumvent we stringify and parse.
     const approvedPermissions = processSnapPermissions(
-      JSON.parse(JSON.stringify(payload.result.initialPermissions)),
+      getSafeJson(payload.result.initialPermissions),
     );
 
     // Grant all permissions

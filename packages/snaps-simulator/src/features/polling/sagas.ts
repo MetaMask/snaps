@@ -6,7 +6,7 @@ import {
   SnapManifest,
   VirtualFile,
 } from '@metamask/snaps-utils';
-import { SemVerRange } from '@metamask/utils';
+import { getSafeJson, SemVerRange } from '@metamask/utils';
 import equal from 'fast-deep-equal/es6';
 import { all, call, delay, put, select, takeLatest } from 'redux-saga/effects';
 
@@ -40,9 +40,7 @@ export function* fetchingSaga() {
     [location, 'fetch'],
     'snap.manifest.json',
   );
-  const parsedManifest = JSON.parse(
-    manifestFile.toString('utf8'),
-  ) as SnapManifest;
+  const parsedManifest = getSafeJson(JSON.parse(manifestFile.toString('utf8')));
   manifestFile.result = parsedManifest;
 
   const currentManifest: SnapManifest = yield select(getSnapManifest);

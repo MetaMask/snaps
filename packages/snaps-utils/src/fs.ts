@@ -1,4 +1,4 @@
-import { Json } from '@metamask/utils';
+import { getSafeJson, Json } from '@metamask/utils';
 import { promises as fs } from 'fs';
 import os from 'os';
 import pathUtils from 'path';
@@ -74,7 +74,7 @@ export async function readJsonFile<Type extends Json = Json>(
 
     throw error;
   }
-  file.result = JSON.parse(file.toString());
+  file.result = getSafeJson(JSON.parse(file.toString()));
   return file as VirtualFile<Type>;
 }
 
