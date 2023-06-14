@@ -57,10 +57,15 @@ export const PlayButton = () => {
       type="submit"
       minWidth="0"
       form="request-form"
+      data-testid="send-request-button"
       disabled={state !== PlayButtonState.Ready}
     >
       {state !== PlayButtonState.Loading && (
-        <Icon icon={icons[state]} width="24px" />
+        <Icon
+          icon={icons[state]}
+          width="24px"
+          data-testid="send-request-button-done"
+        />
       )}
       {state === PlayButtonState.Loading && (
         <Box bg="info.default" borderRadius="50%" width="24px">

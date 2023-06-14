@@ -1,0 +1,24 @@
+{
+  "extends": "../../tsconfig.packages.build.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "jsx": "preserve"
+  },
+  "include": ["./src"],
+  "exclude": [
+    "**/*.test.ts",
+    "./src/**/test-utils",
+    "./src/**/__mocks__",
+    "./src/**/__snapshots__"
+  ],
+  "references": [
+    {
+      "path": "../snaps-utils/tsconfig.build.json"
+    },
+    {
+      "path": "../snaps-simulator/tsconfig.build.json"
+    }
+  ]
+}

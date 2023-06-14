@@ -1,21 +1,26 @@
 {
   "name": "@metamask/snaps-simulator",
   "version": "0.34.1-flask.1",
-  "private": true,
   "description": "A simulator for MetaMask Snaps, to be used for testing and development",
-  "homepage": "https://github.com/MetaMask/snaps-monorepo#readme",
+  "homepage": "https://github.com/MetaMask/snaps#readme",
   "bugs": {
-    "url": "https://github.com/MetaMask/snaps-monorepo/issues"
+    "url": "https://github.com/MetaMask/snaps/issues"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
   },
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "webpack --mode production --config-name app",
-    "build:vendor": "webpack --mode production --config-name vendor",
+    "build": "yarn build:tsc && yarn build:webpack",
+    "build:webpack": "yarn webpack --config-name main --config-name test --mode production --progress",
+    "build:vendor": "webpack --config-name vendor --mode production --progress",
+    "build:tsc": "tsc --project tsconfig.build.json",
     "build:clean": "rimraf dist && yarn build",
     "build:post-tsc": "yarn build:vendor && yarn build",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
@@ -24,7 +29,8 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:constraints --fix && yarn lint:misc --write && yarn lint:changelog",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
     "prepack": "./scripts/prepack.sh",
-    "start": "webpack serve --config-name app --mode development",
+    "start": "webpack serve --config-name main --mode development",
+    "start:e2e": "webpack serve --config-name test --mode development",
     "test": "jest && jest-it-up --margin 0.5",
     "test:ci": "yarn test",
     "test:watch": "jest --watch",
@@ -82,16 +88,17 @@
     "@testing-library/react": "^14.0.0",
     "@types/express": "^4.17.17",
     "@types/jest": "^27.5.1",
-    "@types/node": "^17.0.36",
+    "@types/node": "^20.3.1",
     "@types/pump": "^1.1.1",
     "@types/react": "^18.2.5",
     "@types/react-dom": "^18.2.3",
-    "@types/webpack-env": "^1.18.0",
+    "@types/webpack-env": "^1.18.1",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "assert": "^2.0.0",
     "babel-jest": "^29.5.0",
     "constants-browserify": "^1.0.0",
+    "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.3",
     "deepmerge": "^4.2.2",
     "eslint": "^8.27.0",
@@ -113,7 +120,6 @@
     "jest-it-up": "^2.0.0",
     "lint-staged": "^12.4.1",
     "monaco-editor-webpack-plugin": "^7.0.1",
-    "node-polyfill-webpack-plugin": "^2.0.1",
     "prettier": "^2.7.1",
     "prettier-plugin-packagejson": "^2.2.11",
     "process": "^0.11.10",
@@ -124,6 +130,7 @@
     "stream-browserify": "^3.0.0",
     "style-loader": "^3.3.2",
     "swc-loader": "^0.2.3",
+    "terser-webpack-plugin": "^5.3.9",
     "ts-loader": "^9.4.2",
     "ts-node": "^10.9.1",
     "tsconfig-paths-webpack-plugin": "^4.0.1",
@@ -131,7 +138,7 @@
     "webpack": "^5.72.1",
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.13.3",
-    "webpackbar": "^5.0.2"
+    "webpack-merge": "^5.8.0"
   },
   "engines": {
     "node": ">=16.0.0"

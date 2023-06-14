@@ -39,6 +39,7 @@ export const Response = () => {
     );
   }
 
+  // TODO: Fix this type cast.
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
   const content = (response as any).result?.content;
 

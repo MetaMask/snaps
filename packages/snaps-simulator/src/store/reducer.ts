@@ -1,16 +1,15 @@
 import { HandlerType } from '@metamask/snaps-utils';
 import { combineReducers } from '@reduxjs/toolkit';
 
-import {
-  simulation,
-  configuration,
-  jsonRpc,
-  cronjob,
-  transactions,
-  notifications,
-  console,
-  manifest,
-} from '../features';
+// We have to import the reducers like this to avoid circular dependencies.
+import { configuration } from '../features/configuration/slice';
+import { console } from '../features/console/slice';
+import { cronjob } from '../features/handlers/cronjobs/slice';
+import { jsonRpc } from '../features/handlers/json-rpc/slice';
+import { transactions } from '../features/handlers/transactions/slice';
+import { manifest } from '../features/manifest/slice';
+import { notifications } from '../features/notifications/slice';
+import { simulation } from '../features/simulation/slice';
 
 export const reducer = combineReducers({
   configuration,

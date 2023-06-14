@@ -6,6 +6,7 @@ import { Link } from '../../../components';
 
 type ItemProps = {
   path: string;
+  tag: string;
   isExternal?: boolean;
   onClick?: () => void;
   children: ReactNode;
@@ -13,6 +14,7 @@ type ItemProps = {
 
 export const Item: FunctionComponent<ItemProps> = ({
   path,
+  tag,
   isExternal = false,
   onClick,
   children,
@@ -29,6 +31,7 @@ export const Item: FunctionComponent<ItemProps> = ({
         display="block"
         isExternal={isExternal}
         onClick={onClick}
+        data-testid={`navigation-${tag}`}
         _hover={{
           textDecoration: 'none',
           opacity: 1,
