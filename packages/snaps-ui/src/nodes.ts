@@ -1,6 +1,7 @@
 import {
   array,
   assign,
+  defaulted,
   enums,
   Infer,
   lazy,
@@ -176,11 +177,15 @@ export const ButtonStruct = assign(
   LiteralStruct,
   object({
     type: literal(NodeType.Button),
-    variant: optional(
-      enums([ButtonVariants.Primary, ButtonVariants.Secondary]),
+    variant: defaulted(
+      optional(enums([ButtonVariants.Primary, ButtonVariants.Secondary])),
+      ButtonVariants.Primary,
     ),
     form: optional(string()),
-    buttonType: optional(enums([ButtonType.Button, ButtonType.Submit])),
+    buttonType: defaulted(
+      optional(enums([ButtonType.Button, ButtonType.Submit])),
+      ButtonType.Button,
+    ),
     value: string(),
     name: optional(string()),
   }),
@@ -216,12 +221,17 @@ export const InputStruct = assign(
     type: literal(NodeType.Input),
     value: optional(string()),
     name: optional(string()),
-    inputType: enums([
+    inputType: defaulted(
+      optional(
+        enums([
+          InputTypes.Text,
+          InputTypes.Password,
+          InputTypes.Number,
+          InputTypes.Search,
+        ]),
+      ),
       InputTypes.Text,
-      InputTypes.Password,
-      InputTypes.Number,
-      InputTypes.Search,
-    ]),
+    ),
     placeholder: optional(string()),
   }),
 );
