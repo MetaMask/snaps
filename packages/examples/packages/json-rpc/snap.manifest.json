@@ -7,11 +7,11 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "VZuqkrLudJHF3qp1GtNgtgkHh79JSuE+7sCN8zSdg+Y=",
+    "shasum": "oXse2CpMR89qG7jN9m7pDdgNbrFf3tMbG3K9+t5kRdM=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
-        "packageName": "@metamask/rpc-example-snap",
+        "packageName": "@metamask/json-rpc-example-snap",
         "registry": "https://registry.npmjs.org"
       }
     }

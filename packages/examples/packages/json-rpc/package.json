@@ -1,5 +1,5 @@
 {
-  "name": "@metamask/rpc-example-snap",
+  "name": "@metamask/json-rpc-example-snap",
   "version": "0.34.1-flask.1",
   "description": "MetaMask example snap demonstrating the use of the `endowment:rpc` permission.",
   "repository": {

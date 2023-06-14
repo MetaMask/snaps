@@ -1,41 +1,31 @@
+import { rpcErrors } from '@metamask/rpc-errors';
 import { OnRpcRequestHandler } from '@metamask/snaps-types';
 
+import { SetStateParams } from './types';
+import { clearState, getState, setState } from './utils';
+
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
-  let state = (await snap.request({
-    method: 'snap_manageState',
-    params: { operation: 'get' },
-  })) as { testState: string[] } | null;
-
-  if (!state) {
-    state = { testState: [] };
-    // initialize state if empty and set default data
-    await snap.request({
-      method: 'snap_manageState',
-      params: { operation: 'update', newState: state },
-    });
-  }
-
   switch (request.method) {
-    case 'storeTestData':
-      state.testState.push((request.params as string[])[0]);
-      await snap.request({
-        method: 'snap_manageState',
-        params: { operation: 'update', newState: state },
-      });
+    case 'setState': {
+      const params = request.params as SetStateParams;
+      const state = await getState();
+
+      await setState({ ...state, ...params });
       return true;
-    case 'retrieveTestData':
-      return await snap.request({
-        method: 'snap_manageState',
-        params: { operation: 'get' },
-      });
-    case 'clearTestData':
-      await snap.request({
-        method: 'snap_manageState',
-        params: { operation: 'clear' },
-      });
+    }
+
+    case 'getState':
+      return await getState();
+
+    case 'clearState':
+      await clearState();
       return true;
 
     default:
-      throw new Error('Method not found.');
+      throw rpcErrors.methodNotFound({
+        data: {
+          method: request.method,
+        },
+      });
   }
 };
