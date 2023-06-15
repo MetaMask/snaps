@@ -50,6 +50,7 @@
     "@lavamoat/lavapack@^5.1.2": "patch:@lavamoat/lavapack@npm%3A5.1.2#./.yarn/patches/@lavamoat-lavapack-npm-5.1.2-67a55c51e2.patch",
     "@types/mocha@^10.0.1": "patch:@types/mocha@npm:10.0.1#.yarn/patches/@types-mocha-npm-10.0.1-7c94e9e170.patch",
     "clet@^1.0.1": "patch:clet@npm%3A1.0.1#./.yarn/patches/clet-npm-1.0.1-8523231bdc.patch",
+    "find-babel-config": "^2.0.0",
     "jest-fetch-mock@^3.0.3": "patch:jest-fetch-mock@npm:3.0.3#.yarn/patches/jest-fetch-mock-npm-3.0.3-ac072ca8af.patch",
     "lavamoat-browserify@^15.6.0": "patch:lavamoat-browserify@npm%3A15.6.0#./.yarn/patches/lavamoat-browserify-npm-15.6.0-e22edafc36.patch",
     "luxon@^3.2.1": "patch:luxon@npm%3A3.3.0#./.yarn/patches/luxon-npm-3.3.0-bdbae9bfd5.patch"
@@ -63,7 +64,7 @@
     "@metamask/eslint-config-typescript": "^11.0.0",
     "@metamask/utils": "^6.0.0",
     "@types/jest": "^27.5.1",
-    "@types/node": "^14.14.25",
+    "@types/node": "^20.3.1",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "chromedriver": "^112.0.0",
