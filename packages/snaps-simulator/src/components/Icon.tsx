@@ -1,4 +1,4 @@
-import { Image, PropsOf } from '@chakra-ui/react';
+import { Image, PropsOf, useColorMode } from '@chakra-ui/react';
 import { forwardRef, ForwardRefExoticComponent } from 'react';
 
 import alertIcon from '../assets/icons/alert.svg';
@@ -6,6 +6,7 @@ import arrowDownIcon from '../assets/icons/arrow-down.svg';
 import arrowRightIcon from '../assets/icons/arrow-right.svg';
 import arrowTopRightIcon from '../assets/icons/arrow-top-right.svg';
 import computerIcon from '../assets/icons/computer.svg';
+import configurationDarkIcon from '../assets/icons/configuration-dark.svg';
 import configurationIcon from '../assets/icons/configuration.svg';
 import copiedIcon from '../assets/icons/copied.svg';
 import copyIcon from '../assets/icons/copy.svg';
@@ -17,6 +18,7 @@ import dividerIcon from '../assets/icons/divider.svg';
 import dotIcon from '../assets/icons/dot.svg';
 import dragIcon from '../assets/icons/drag.svg';
 import errorTriangleIcon from '../assets/icons/error-triangle.svg';
+import gitHubDarkIcon from '../assets/icons/github-dark.svg';
 import gitHubIcon from '../assets/icons/github.svg';
 import headingIcon from '../assets/icons/heading.svg';
 import insightsIcon from '../assets/icons/insights.svg';
@@ -61,6 +63,7 @@ const DEFAULT_ICONS = {
   configuration: {
     alt: 'Configuration',
     src: configurationIcon,
+    srcDark: configurationDarkIcon,
   },
   play: {
     alt: 'Play',
@@ -113,6 +116,7 @@ const DEFAULT_ICONS = {
   gitHub: {
     alt: 'GitHub',
     src: gitHubIcon,
+    srcDark: gitHubDarkIcon,
   },
   cronjob: {
     alt: 'Cronjob',
@@ -192,14 +196,24 @@ export const Icon: ForwardRefExoticComponent<IconProps> = forwardRef(
       ...props
     },
     ref,
-  ) => (
-    <Image
-      ref={ref}
-      src={DEFAULT_ICONS[icon].src}
-      alt={alt}
-      width={width}
-      height={height}
-      {...props}
-    />
-  ),
+  ) => {
+    const { colorMode } = useColorMode();
+
+    const iconMetadata = DEFAULT_ICONS[icon];
+    const defaultSrc = iconMetadata.src;
+    const darkSrc = (iconMetadata as any).srcDark ?? iconMetadata.src;
+
+    const src = colorMode === 'light' ? defaultSrc : darkSrc;
+
+    return (
+      <Image
+        ref={ref}
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        {...props}
+      />
+    );
+  },
 );
