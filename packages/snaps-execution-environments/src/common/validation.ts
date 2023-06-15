@@ -180,8 +180,8 @@ export function assertIsOnTransactionRequestArguments(
 }
 
 export const OnNameLookupRequestArgumentsStruct = object({
-  id: ChainIdStruct,
-  content: string(),
+  chainId: ChainIdStruct,
+  domain: string(),
 });
 
 export type OnNameLookupRequestArguments = Infer<
