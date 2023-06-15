@@ -11,6 +11,7 @@ module.exports = deepmerge(baseConfig, {
       statements: 91.29,
     },
   },
+  setupFiles: ['./jest.setup.js'],
   testEnvironment: './jest.environment.js',
   moduleNameMapper: {
     // Mocks out all these file formats when tests are run
