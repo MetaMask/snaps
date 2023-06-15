@@ -80,7 +80,7 @@ export const theme = extendTheme({
       info: {
         default: {
           default: '#0376C9',
-          _dark: '#9FA6AE',
+          _dark: '#1098FC',
         },
         muted: {
           default: 'rgba(3, 118, 201, 0.1)',

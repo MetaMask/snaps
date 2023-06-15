@@ -222,6 +222,7 @@ export const Configuration = () => {
         <Divider my="4" />
         <ModalFooter pb="6" pt="2">
           <Button
+            variant="primary"
             fontFamily="default"
             fontWeight="semibold"
             fontSize="sm"
