@@ -6,6 +6,7 @@ import * as bundleUtils from './utils';
 
 jest.mock('browserify');
 jest.mock('babelify', () => 'mockBabelify');
+jest.mock('./utils');
 
 describe('bundle', () => {
   global.snaps = {

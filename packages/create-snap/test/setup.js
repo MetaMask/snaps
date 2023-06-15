@@ -1,0 +1,3 @@
+global.snaps = {
+  verboseErrors: false,
+};

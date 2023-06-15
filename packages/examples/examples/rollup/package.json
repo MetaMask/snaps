@@ -1,11 +1,11 @@
 {
   "name": "rollup-snap",
-  "version": "0.32.2",
+  "version": "0.34.1-flask.1",
   "private": true,
   "description": "An example Snap built using TypeScript and Rollup",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "license": "ISC",
   "main": "src/index.js",
@@ -16,12 +16,16 @@
   "scripts": {
     "build": "rollup --config",
     "clean": "rimraf 'dist/*'",
-    "serve": "concurrently \"rollup --config --watch\" \"mm-snap serve\""
+    "serve": "concurrently \"rollup --config --watch\" \"mm-snap serve\"",
+    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../../../.gitignore",
+    "lint:ci": "yarn lint"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
     "@babel/preset-typescript": "^7.20.12",
-    "@lavamoat/allow-scripts": "^2.0.3",
+    "@lavamoat/allow-scripts": "^2.3.1",
     "@metamask/auto-changelog": "^3.1.0",
     "@metamask/eslint-config": "^11.0.0",
     "@metamask/eslint-config-jest": "^11.0.0",
@@ -31,7 +35,7 @@
     "@metamask/snaps-rollup-plugin": "workspace:^",
     "@metamask/snaps-types": "workspace:^",
     "@rollup/plugin-babel": "^5.3.1",
-    "@types/node": "^17.0.36",
+    "@types/node": "^20.3.1",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "concurrently": "^7.1.0",

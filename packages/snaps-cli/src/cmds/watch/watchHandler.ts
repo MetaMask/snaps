@@ -5,11 +5,13 @@ import {
   validateDirPath,
   validateFilePath,
   validateOutfileName,
+  NpmSnapFileNames,
 } from '@metamask/snaps-utils';
 import chokidar from 'chokidar';
+import pathUtils from 'path';
 
 import { YargsArgs } from '../../types/yargs';
-import { loadConfig } from '../../utils';
+import { CONFIG_FILE, loadConfig } from '../../utils';
 import { bundle } from '../build/bundle';
 import { evalHandler } from '../eval/evalHandler';
 import { manifestHandler } from '../manifest/manifestHandler';
@@ -41,9 +43,8 @@ export async function watch(argv: YargsArgs): Promise<void> {
   }
   await validateFilePath(src);
   await validateDirPath(dist, true);
-  const rootDir = src.includes('/')
-    ? src.substring(0, src.lastIndexOf('/') + 1)
-    : '.';
+  const srcDir = pathUtils.dirname(src);
+  const watchDirs = [srcDir, NpmSnapFileNames.Manifest, CONFIG_FILE];
   const outfilePath = getOutfilePath(dist, outfileName);
 
   const buildSnap = async (path?: string, logMessage?: string) => {
@@ -74,7 +75,7 @@ export async function watch(argv: YargsArgs): Promise<void> {
   };
 
   chokidar
-    .watch(rootDir, {
+    .watch(watchDirs, {
       ignoreInitial: true,
       ignored: [
         '**/node_modules/**',
@@ -114,9 +115,9 @@ export async function watch(argv: YargsArgs): Promise<void> {
     .on('unlink', (path) => logInfo(`File removed: ${path}`))
     .on('error', (error: Error) => {
       logError(`Watcher error: ${error.message}`, error);
-    })
+    });
 
-    .add(rootDir);
-
-  logInfo(`Watching '${rootDir}' for changes...`);
+  logInfo(
+    `Watching ${watchDirs.map((dir) => `'${dir}'`).join(', ')} for changes...`,
+  );
 }

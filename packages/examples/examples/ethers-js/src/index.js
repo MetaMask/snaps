@@ -3,9 +3,8 @@
  * asked to.
  */
 
-const ethers = require('ethers');
-
-const provider = new ethers.providers.Web3Provider(ethereum);
+const { panel, heading, copyable } = require('@metamask/snaps-ui');
+const { Wallet } = require('ethers');
 
 /**
  * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
@@ -17,13 +16,11 @@ const provider = new ethers.providers.Web3Provider(ethereum);
  * @throws If the request method is not valid for this snap.
  */
 module.exports.onRpcRequest = async ({ request }) => {
-  console.log('received request', request);
   const privKey = await snap.request({
-    method: 'snap_getAppKey',
+    method: 'snap_getEntropy',
+    params: { version: 1 },
   });
-  console.log(`privKey is ${privKey}`);
-  const ethWallet = new ethers.Wallet(privKey, provider);
-  console.dir(ethWallet);
+  const ethWallet = new Wallet(privKey);
 
   switch (request.method) {
     case 'address':
@@ -31,13 +28,20 @@ module.exports.onRpcRequest = async ({ request }) => {
 
     case 'signMessage': {
       const message = request.params[0];
-      console.log('trying to sign message', message);
+      const result = await snap.request({
+        method: 'snap_dialog',
+        params: {
+          type: 'confirmation',
+          content: panel([
+            heading('Do you want to sign this message?'),
+            copyable(message),
+          ]),
+        },
+      });
+      if (!result) {
+        throw new Error('User rejected request');
+      }
       return ethWallet.signMessage(message);
-    }
-
-    case 'sign': {
-      const transaction = request.params[0];
-      return ethWallet.sign(transaction);
     }
 
     default:

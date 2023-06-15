@@ -1,6 +1,6 @@
 import { rootRealmGlobal } from '../globalObject';
 
-const createCrypto = () => {
+export const createCrypto = () => {
   if (
     'crypto' in rootRealmGlobal &&
     typeof rootRealmGlobal.crypto === 'object' &&

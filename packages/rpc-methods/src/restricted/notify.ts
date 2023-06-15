@@ -3,11 +3,13 @@ import {
   PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
+  SubjectType,
 } from '@metamask/permission-controller';
+import { EnumToUnion } from '@metamask/snaps-utils';
 import { NonEmptyArray, isObject } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
-import { EnumToUnion, MethodHooksObject } from '../utils';
+import { MethodHooksObject } from '../utils';
 
 const methodName = 'snap_notify';
 
@@ -57,7 +59,7 @@ type SpecificationBuilderOptions = {
 
 type Specification = ValidPermissionSpecification<{
   permissionType: PermissionType.RestrictedMethod;
-  targetKey: typeof methodName;
+  targetName: typeof methodName;
   methodImplementation: ReturnType<typeof getImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
 }>;
@@ -78,9 +80,10 @@ export const specificationBuilder: PermissionSpecificationBuilder<
 > = ({ allowedCaveats = null, methodHooks }: SpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
-    targetKey: methodName,
+    targetName: methodName,
     allowedCaveats,
     methodImplementation: getImplementation(methodHooks),
+    subjectTypes: [SubjectType.Snap],
   };
 };
 
@@ -90,7 +93,7 @@ const methodHooks: MethodHooksObject<NotifyMethodHooks> = {
 };
 
 export const notifyBuilder = Object.freeze({
-  targetKey: methodName,
+  targetName: methodName,
   specificationBuilder,
   methodHooks,
 } as const);

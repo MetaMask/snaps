@@ -125,19 +125,19 @@ export function getSnapPermissionsRequest(
     (caveat: Caveat<string, Json>) => caveat.type === SnapCaveatType.SnapIds,
   );
 
-  const permittedSnaps = snapIdCaveat?.value ?? {};
-  const snapIdSet = new Set(Object.keys(permittedSnaps));
+  const permittedSnaps = (snapIdCaveat?.value as Record<string, Json>) ?? {};
 
   const requestedSnaps =
     requestedPermissions[WALLET_SNAP_PERMISSION_KEY].caveats[0].value;
 
-  for (const requestedSnap of Object.keys(requestedSnaps)) {
-    snapIdSet.add(requestedSnap);
-  }
+  const snapIdSet = new Set([
+    ...Object.keys(permittedSnaps),
+    ...Object.keys(requestedSnaps),
+  ]);
 
   const mergedCaveatValue = [...snapIdSet].reduce<Record<string, Json>>(
     (request, snapId) => {
-      request[snapId] = {};
+      request[snapId] = requestedSnaps[snapId] ?? permittedSnaps[snapId];
       return request;
     },
     {},

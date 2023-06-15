@@ -13,6 +13,7 @@ import {
   NpmSnapIdStruct,
   assertIsValidSnapId,
   verifyRequestedSnapPermissions,
+  stripSnapPrefix,
 } from './snaps';
 import { uri, WALLET_SNAP_PERMISSION_KEY } from './types';
 
@@ -309,5 +310,19 @@ describe('isSnapPermitted', () => {
         test.error,
       );
     });
+  });
+});
+
+describe('stripSnapPrefix', () => {
+  it('strips local prefixes', () => {
+    expect(stripSnapPrefix('local:http://localhost:8080')).toBe(
+      'http://localhost:8080',
+    );
+  });
+
+  it('strips npm prefixes', () => {
+    expect(stripSnapPrefix('npm:@metamask/test-snap-bip32')).toBe(
+      '@metamask/test-snap-bip32',
+    );
   });
 });

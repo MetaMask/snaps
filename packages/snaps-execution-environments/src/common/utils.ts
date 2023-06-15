@@ -101,10 +101,11 @@ export function proxyStreamProvider(
   return proxy as StreamProvider;
 }
 
-// We're blocking these two RPC methods for v1, will revisit later.
+// We're blocking these RPC methods for v1, will revisit later.
 const BLOCKED_RPC_METHODS = Object.freeze([
   'eth_requestAccounts',
   'wallet_requestSnaps',
+  'wallet_requestPermissions',
 ]);
 
 /**

@@ -119,3 +119,8 @@ gen_enforced_dependency(WorkspaceCwd, DependencyIdent, null, DependencyType) :-
   workspace_has_dependency(WorkspaceCwd, DependencyIdent, DependencyRange, 'dependencies'),
   workspace_has_dependency(WorkspaceCwd, DependencyIdent, DependencyRange, DependencyType),
   DependencyType == 'devDependencies'.
+
+% Dependencies may not have side effects.
+gen_enforced_field(WorkspaceCwd, 'sideEffects', 'false') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.

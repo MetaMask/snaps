@@ -29,6 +29,7 @@ import {
   isAccountIdArray,
   Namespaces,
   logError,
+  ValidatedSnapId,
 } from '@metamask/snaps-utils';
 import { hasProperty, assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
@@ -149,7 +150,7 @@ export class MultiChainController extends BaseController<
       Object.values(session.handlingSnaps).map((snapId) =>
         this.messagingSystem.call(
           'SnapController:decrementActiveReferences',
-          snapId,
+          snapId as ValidatedSnapId,
         ),
       ),
     );
@@ -300,7 +301,7 @@ export class MultiChainController extends BaseController<
       Object.values(session.handlingSnaps).map((snapId) =>
         this.messagingSystem.call(
           'SnapController:incrementActiveReferences',
-          snapId,
+          snapId as ValidatedSnapId,
         ),
       ),
     );
@@ -366,7 +367,7 @@ export class MultiChainController extends BaseController<
     );
 
     return this.snapRequest({
-      snapId,
+      snapId: snapId as ValidatedSnapId,
       origin,
       method: 'handleRequest',
       args: data,
@@ -390,7 +391,7 @@ export class MultiChainController extends BaseController<
     method,
     args,
   }: {
-    snapId: SnapId;
+    snapId: ValidatedSnapId;
     origin: string;
     method: keyof SnapKeyring;
     args?: unknown;
@@ -416,7 +417,7 @@ export class MultiChainController extends BaseController<
    */
   private async getSnapAccounts(
     origin: string,
-    snapId: SnapId,
+    snapId: ValidatedSnapId,
   ): Promise<AccountId[] | null> {
     try {
       const result = await this.snapRequest({
@@ -473,7 +474,7 @@ export class MultiChainController extends BaseController<
   ): Promise<Record<NamespaceId, { snapId: SnapId; accounts: AccountId[] }[]>> {
     const dedupedSnaps = [
       ...new Set(Object.values(namespacesAndSnaps).flat()),
-    ] as SnapId[];
+    ] as ValidatedSnapId[];
 
     const allAccounts = await dedupedSnaps.reduce<
       Promise<Record<string, AccountId[]>>

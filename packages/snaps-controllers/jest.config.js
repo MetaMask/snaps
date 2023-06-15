@@ -9,5 +9,7 @@ module.exports = deepmerge(baseConfig, {
   testTimeout: 10000,
 
   // This is required for `jest-fetch-mock` to work.
+  automock: false,
   resetMocks: false,
+  restoreMocks: false,
 });

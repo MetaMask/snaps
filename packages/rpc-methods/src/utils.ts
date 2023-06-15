@@ -9,7 +9,6 @@ import {
   stringToBytes,
 } from '@metamask/utils';
 import { keccak_256 as keccak256 } from '@noble/hashes/sha3';
-import { literal, Struct } from 'superstruct';
 
 const HARDENED_VALUE = 0x80000000;
 
@@ -52,19 +51,6 @@ export function selectHooks<
     ) as Pick<Hooks, HookName>;
   }
   return undefined;
-}
-
-/**
- * Checks if array `a` is equal to array `b`. Note that this does not do a deep
- * equality check. It only checks if the arrays are the same length and if each
- * element in `a` is equal to (`===`) the corresponding element in `b`.
- *
- * @param a - The first array to compare.
- * @param b - The second array to compare.
- * @returns `true` if the arrays are equal, `false` otherwise.
- */
-export function isEqual(a: unknown[], b: unknown[]): boolean {
-  return a.length === b.length && a.every((value, index) => value === b[index]);
 }
 
 /**
@@ -157,39 +143,4 @@ export async function deriveEntropy({
   assert(privateKey, 'Failed to derive the entropy.');
 
   return add0x(privateKey);
-}
-
-/**
- * Get the enum values as union type. This allows using both the enum string
- * values and the enum itself as values.
- *
- * Note: This only works for string enums.
- *
- * @example
- * ```typescript
- * enum Foo {
- *   Bar = 'bar',
- *   Baz = 'baz',
- * }
- *
- * type FooValue = EnumToUnion<Foo>;
- * // FooValue is 'bar' | 'baz'
- *
- * const foo: FooValue = Foo.Bar; // Works
- * const foo: FooValue = 'bar'; // Also works
- * ```
- */
-export type EnumToUnion<Type extends string> = `${Type}`;
-
-/**
- * Superstruct struct for validating an enum value. This allows using both the
- * enum string values and the enum itself as values.
- *
- * @param constant - The enum to validate against.
- * @returns The superstruct struct.
- */
-export function enumValue<T extends string>(
-  constant: T,
-): Struct<EnumToUnion<T>, EnumToUnion<T>> {
-  return literal(constant as EnumToUnion<T>);
 }

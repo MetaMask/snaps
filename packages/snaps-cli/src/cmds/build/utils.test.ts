@@ -10,6 +10,8 @@ import {
   processInvalidTranspilation,
 } from './utils';
 
+jest.mock('../../utils/misc');
+
 describe('utils', () => {
   describe('writeBundleFile', () => {
     it('writes to console error if there is a bundle Error', async () => {

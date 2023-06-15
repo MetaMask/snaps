@@ -3,9 +3,13 @@ import EventEmitter from 'events';
 
 import { DEFAULT_ENDOWMENTS } from './default-endowments';
 
-const NETWORK_APIS = ['fetch'];
+const NETWORK_APIS = ['fetch', 'Request', 'Headers', 'Response'];
 
-export const ALL_APIS: string[] = [...DEFAULT_ENDOWMENTS, ...NETWORK_APIS];
+export const ALL_APIS: string[] = [
+  ...DEFAULT_ENDOWMENTS,
+  ...NETWORK_APIS,
+  'WebAssembly',
+];
 
 type MockSnapGlobal = {
   request: () => Promise<any>;

@@ -1,7 +1,7 @@
 /* eslint-disable jest/prefer-strict-equal */
 
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
-import { getSnapChecksum } from '@metamask/snaps-utils';
+import { ValidatedSnapId, getSnapChecksum } from '@metamask/snaps-utils';
 import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
@@ -179,7 +179,7 @@ describe('MultiChainController', () => {
               PERSISTED_MOCK_KEYRING_SNAP,
               getPersistedSnapObject({
                 ...PERSISTED_MOCK_KEYRING_SNAP,
-                id: secondSnapId,
+                id: secondSnapId as ValidatedSnapId,
                 sourceCode: secondSnapSourceCode,
                 manifest: getSnapManifest({
                   shasum: getSnapChecksum(
@@ -197,7 +197,7 @@ describe('MultiChainController', () => {
       const snap = snapController.getExpect(MOCK_SNAP_ID);
       await snapController.startSnap(snap.id);
 
-      const snap2 = snapController.getExpect(secondSnapId);
+      const snap2 = snapController.getExpect(secondSnapId as ValidatedSnapId);
       await snapController.startSnap(snap2.id);
 
       rootMessenger.registerActionHandler(

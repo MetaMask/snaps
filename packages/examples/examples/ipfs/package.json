@@ -1,11 +1,11 @@
 {
   "name": "ipfs-snap",
-  "version": "0.32.2",
+  "version": "0.34.1-flask.1",
   "private": true,
   "description": "An example Snap that performs IPFS operations.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "license": "ISC",
   "main": "src/index.js",
@@ -15,14 +15,18 @@
   ],
   "scripts": {
     "build": "mm-snap build",
-    "clean": "rimraf 'dist/*'"
+    "clean": "rimraf 'dist/*'",
+    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../../../.gitignore",
+    "lint:ci": "yarn lint"
   },
   "dependencies": {
     "eth-json-rpc-errors": "^1.1.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "^2.0.3",
+    "@lavamoat/allow-scripts": "^2.3.1",
     "@metamask/auto-changelog": "^3.1.0",
     "@metamask/eslint-config": "^11.0.0",
     "@metamask/eslint-config-jest": "^11.0.0",

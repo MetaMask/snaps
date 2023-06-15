@@ -3,8 +3,12 @@ import {
   PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
+  SubjectType,
 } from '@metamask/permission-controller';
-import { STATE_ENCRYPTION_MAGIC_VALUE } from '@metamask/snaps-utils';
+import {
+  EnumToUnion,
+  STATE_ENCRYPTION_MAGIC_VALUE,
+} from '@metamask/snaps-utils';
 import {
   Json,
   NonEmptyArray,
@@ -16,7 +20,7 @@ import {
 } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
-import { deriveEntropy, EnumToUnion, MethodHooksObject } from '../utils';
+import { deriveEntropy, MethodHooksObject } from '../utils';
 
 // The salt used for SIP-6-based entropy derivation.
 export const STATE_ENCRYPTION_SALT = 'snap_manageState encryption';
@@ -83,7 +87,7 @@ type ManageStateSpecificationBuilderOptions = {
 
 type ManageStateSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.RestrictedMethod;
-  targetKey: typeof methodName;
+  targetName: typeof methodName;
   methodImplementation: ReturnType<typeof getManageStateImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
 }>;
@@ -108,9 +112,10 @@ export const specificationBuilder: PermissionSpecificationBuilder<
 }: ManageStateSpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
-    targetKey: methodName,
+    targetName: methodName,
     allowedCaveats,
     methodImplementation: getManageStateImplementation(methodHooks),
+    subjectTypes: [SubjectType.Snap],
   };
 };
 
@@ -125,7 +130,7 @@ const methodHooks: MethodHooksObject<ManageStateMethodHooks> = {
 };
 
 export const manageStateBuilder = Object.freeze({
-  targetKey: methodName,
+  targetName: methodName,
   specificationBuilder,
   methodHooks,
 } as const);

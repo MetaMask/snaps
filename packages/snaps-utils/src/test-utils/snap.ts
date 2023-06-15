@@ -112,7 +112,7 @@ export const getMockSnapData = ({
   origin,
   sourceCode,
 }: {
-  id: string;
+  id: ValidatedSnapId;
   origin: string;
   sourceCode?: string;
   blocked?: boolean;

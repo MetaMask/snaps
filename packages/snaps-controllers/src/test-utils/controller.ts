@@ -4,9 +4,11 @@ import {
   SubjectPermissions,
   ValidPermission,
   Caveat,
+  SubjectMetadata,
+  SubjectType,
 } from '@metamask/permission-controller';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
-import { SnapCaveatType } from '@metamask/snaps-utils';
+import { SnapCaveatType, ValidatedSnapId } from '@metamask/snaps-utils';
 import {
   MockControllerMessenger,
   getPersistedSnapObject,
@@ -15,10 +17,6 @@ import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
-import {
-  SubjectMetadata,
-  SubjectType,
-} from '@metamask/subject-metadata-controller';
 import { Json } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
@@ -333,6 +331,7 @@ export const getSnapControllerMessenger = (
       'SubjectMetadataController:getSubjectMetadata',
       'SnapsRegistry:get',
       'SnapsRegistry:getMetadata',
+      'SnapController:disconnectOrigin',
     ],
   });
 
@@ -413,7 +412,7 @@ export const getSnapControllerWithEES = (
 };
 
 export const getPersistedSnapsState = (
-  ...snaps: PersistedSnapControllerState['snaps'][string][]
+  ...snaps: PersistedSnapControllerState['snaps'][ValidatedSnapId][]
 ): PersistedSnapControllerState['snaps'] => {
   return (snaps.length > 0 ? snaps : [getPersistedSnapObject()]).reduce<
     PersistedSnapControllerState['snaps']

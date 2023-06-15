@@ -47,7 +47,7 @@ export async function bundle(
             require('@babel/preset-env'),
             {
               targets: {
-                browsers: ['chrome >= 66', 'firefox >= 68'],
+                browsers: ['chrome >= 90', 'firefox >= 91'],
               },
             },
           ],
@@ -55,9 +55,9 @@ export async function bundle(
         plugins: [
           require('@babel/plugin-transform-runtime'),
           require('@babel/plugin-proposal-class-properties'),
-          require('@babel/plugin-proposal-object-rest-spread'),
-          require('@babel/plugin-proposal-optional-chaining'),
-          require('@babel/plugin-proposal-nullish-coalescing-operator'),
+          require('@babel/plugin-proposal-private-methods'),
+          require('@babel/plugin-proposal-class-static-block'),
+          require('@babel/plugin-proposal-private-property-in-object'),
         ],
         parserOpts: {
           attachComment: !argv.stripComments,

@@ -5,6 +5,7 @@ import {
   PermissionValidatorConstraint,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
+  SubjectType,
 } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import { NonEmptyArray } from '@metamask/utils';
@@ -12,7 +13,7 @@ import { ethErrors } from 'eth-rpc-errors';
 
 import { MethodHooksObject } from '../utils';
 
-const targetKey = 'snap_getBip44Entropy';
+const targetName = 'snap_getBip44Entropy';
 
 export type GetBip44EntropyMethodHooks = {
   /**
@@ -34,7 +35,7 @@ type GetBip44EntropySpecificationBuilderOptions = {
 
 type GetBip44EntropySpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.RestrictedMethod;
-  targetKey: typeof targetKey;
+  targetName: typeof targetName;
   methodImplementation: ReturnType<typeof getBip44EntropyImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
@@ -61,7 +62,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 > = ({ methodHooks }: GetBip44EntropySpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
-    targetKey,
+    targetName,
     allowedCaveats: [SnapCaveatType.PermittedCoinTypes],
     methodImplementation: getBip44EntropyImplementation(methodHooks),
     validator: ({ caveats }) => {
@@ -74,6 +75,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
         });
       }
     },
+    subjectTypes: [SubjectType.Snap],
   };
 };
 
@@ -83,7 +85,7 @@ const methodHooks: MethodHooksObject<GetBip44EntropyMethodHooks> = {
 };
 
 export const getBip44EntropyBuilder = Object.freeze({
-  targetKey,
+  targetName,
   specificationBuilder,
   methodHooks,
 } as const);

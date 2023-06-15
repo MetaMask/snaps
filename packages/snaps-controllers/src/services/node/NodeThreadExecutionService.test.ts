@@ -127,7 +127,7 @@ describe('NodeThreadExecutionService', () => {
     expect(await unhandledErrorPromise).toEqual({
       code: -32603,
       data: {
-        snapName: 'TestSnap',
+        snapId: 'TestSnap',
         stack: expect.any(String),
       },
       message: 'random error inside',

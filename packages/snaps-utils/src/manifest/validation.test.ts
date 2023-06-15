@@ -1,12 +1,13 @@
 import { assert, is, StructError } from 'superstruct';
 
-import { getSnapManifest } from '../test-utils';
+import { getSnapManifest, MOCK_SNAP_ID } from '../test-utils';
 import {
   assertIsSnapManifest,
   Bip32EntropyStruct,
   Bip32PathStruct,
   createSnapManifest,
   isSnapManifest,
+  SnapIdsStruct,
 } from './validation';
 
 describe('Bip32PathStruct', () => {
@@ -61,11 +62,20 @@ describe('Bip32PathStruct', () => {
     },
   );
 
-  it('throws for forbidden paths', () => {
+  it('throws for forbidden purposes', () => {
     expect(() => assert(['m', "1399742832'", '0'], Bip32PathStruct)).toThrow(
       'The purpose "1399742832\'" is not allowed for entropy derivation.',
     );
   });
+
+  it.each([`m/44'/60'/0'/0/0`, `m/44'/60'/0'/0`, `m/44'/60'/0'`, `m/44'/60'`])(
+    'throws for forbidden paths',
+    (path) => {
+      expect(() => assert(path.split('/'), Bip32PathStruct)).toThrow(
+        `The path "${path}" is not allowed for entropy derivation.`,
+      );
+    },
+  );
 });
 
 describe('Bip32EntropyStruct', () => {
@@ -117,9 +127,40 @@ describe('Bip32EntropyStruct', () => {
   );
 });
 
+describe('SnapIdsStruct', () => {
+  it('requires at least one snap ID', () => {
+    expect(is({}, SnapIdsStruct)).toBe(false);
+  });
+
+  it('requires valid snap IDs', () => {
+    expect(is({ [MOCK_SNAP_ID]: {} }, SnapIdsStruct)).toBe(true);
+    expect(is({ fooBar: {} }, SnapIdsStruct)).toBe(false);
+  });
+
+  it('requires a valid snap ID object', () => {
+    expect(is({ [MOCK_SNAP_ID]: {} }, SnapIdsStruct)).toBe(true);
+    expect(is({ [MOCK_SNAP_ID]: { version: '2.0.0' } }, SnapIdsStruct)).toBe(
+      true,
+    );
+    expect(is({ [MOCK_SNAP_ID]: { version: '3.0.0.0' } }, SnapIdsStruct)).toBe(
+      false,
+    );
+    expect(is({ fooBar: {} }, SnapIdsStruct)).toBe(false);
+  });
+});
+
 describe('isSnapManifest', () => {
   it('returns true for a valid snap manifest', () => {
     expect(isSnapManifest(getSnapManifest())).toBe(true);
+  });
+
+  it('accepts $schema property', () => {
+    const manifest = {
+      ...getSnapManifest(),
+      $schema:
+        'https://raw.githubusercontent.com/MetaMask/SIPs/main/assets/sip-9/snap.manifest.schema.json',
+    };
+    expect(isSnapManifest(manifest)).toBe(true);
   });
 
   it.each([

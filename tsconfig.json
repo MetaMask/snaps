@@ -1,12 +1,15 @@
 {
   "references": [
+    { "path": "./packages/create-snap" },
     { "path": "./packages/multichain-provider" },
     { "path": "./packages/rpc-methods" },
     { "path": "./packages/snaps-browserify-plugin" },
     { "path": "./packages/snaps-cli" },
     { "path": "./packages/snaps-controllers" },
+    { "path": "./packages/snaps-jest" },
     { "path": "./packages/snaps-execution-environments" },
     { "path": "./packages/snaps-rollup-plugin" },
+    { "path": "./packages/snaps-simulator" },
     { "path": "./packages/snaps-types" },
     { "path": "./packages/snaps-ui" },
     { "path": "./packages/snaps-utils" },
@@ -14,7 +17,8 @@
   ],
   "compilerOptions": {
     "esModuleInterop": true,
-    "noEmit": true
+    "noEmit": true,
+    "resolveJsonModule": true
   },
   "files": [],
   "include": ["scripts"]

@@ -3,6 +3,7 @@ import { join } from 'path';
 
 import { readJsonFile } from '../fs';
 import * as npm from '../npm';
+import { validateNpmSnap } from '../npm';
 import { ProgrammaticallyFixableSnapError } from '../snaps';
 import {
   DEFAULT_SNAP_BUNDLE,
@@ -27,6 +28,9 @@ import {
 import { SnapManifest } from './validation';
 
 jest.mock('fs');
+jest.mock('../npm', () => ({
+  validateNpmSnap: jest.fn(),
+}));
 
 const BASE_PATH = '/snap';
 const MANIFEST_PATH = join(BASE_PATH, NpmSnapFileNames.Manifest);
@@ -53,6 +57,10 @@ async function resetFileSystem() {
 describe('checkManifest', () => {
   beforeEach(async () => {
     await resetFileSystem();
+
+    (
+      validateNpmSnap as jest.MockedFunction<typeof validateNpmSnap>
+    ).mockImplementation(jest.requireActual('../npm').validateNpmSnap);
   });
 
   it('returns the status and warnings after processing', async () => {

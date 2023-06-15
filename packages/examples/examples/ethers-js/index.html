@@ -55,15 +55,14 @@
       try {
         const response = await ethereum.request({
           method: 'wallet_invokeSnap',
-          params: [
+          params: {
             snapId,
-            {
+            request: {
               method: 'address',
             },
-          ],
+          },
         });
         const msg = `responded ${response}`;
-        console.log(msg);
         alert(msg);
       } catch (err) {
         console.error(err);
@@ -75,16 +74,15 @@
       try {
         const response = await ethereum.request({
           method: 'wallet_invokeSnap',
-          params: [
+          params: {
             snapId,
-            {
+            request: {
               method: 'signMessage',
               params: ['Hello, world!'],
             },
-          ],
+          },
         });
         const msg = `responded: ${response}`;
-        console.log(msg);
         alert(msg);
       } catch (err) {
         console.error(err);

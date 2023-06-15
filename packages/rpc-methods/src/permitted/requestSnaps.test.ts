@@ -7,6 +7,7 @@ import {
   MOCK_SNAP_ID,
   MOCK_ORIGIN,
   getTruncatedSnap,
+  MOCK_LOCAL_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 import {
   JsonRpcRequest,
@@ -183,7 +184,10 @@ describe('implementation', () => {
     hooks.requestPermissions.mockImplementation(() => [
       {
         caveats: [
-          { type: SnapCaveatType.SnapIds, value: { [MOCK_SNAP_ID]: {} } },
+          {
+            type: SnapCaveatType.SnapIds,
+            value: { [MOCK_SNAP_ID]: { version: '^1.0.0' } },
+          },
         ],
         date: 1661166080905,
         id: 'VyAsBJiDDKawv_XlNcm13',
@@ -215,14 +219,17 @@ describe('implementation', () => {
       id: 1,
       method: 'wallet_requestSnaps',
       params: {
-        [MOCK_SNAP_ID]: {},
+        [MOCK_SNAP_ID]: { version: '^1.0.0' },
       },
     })) as JsonRpcSuccess<InstallSnapsResult>;
 
     expect(hooks.requestPermissions).toHaveBeenCalledWith({
       [WALLET_SNAP_PERMISSION_KEY]: {
         caveats: [
-          { type: SnapCaveatType.SnapIds, value: { [MOCK_SNAP_ID]: {} } },
+          {
+            type: SnapCaveatType.SnapIds,
+            value: { [MOCK_SNAP_ID]: { version: '^1.0.0' } },
+          },
         ],
       },
     });
@@ -240,7 +247,10 @@ describe('implementation', () => {
     hooks.getPermissions.mockImplementation(() => ({
       [WALLET_SNAP_PERMISSION_KEY]: {
         caveats: [
-          { type: SnapCaveatType.SnapIds, value: { [MOCK_SNAP_ID]: {} } },
+          {
+            type: SnapCaveatType.SnapIds,
+            value: { [MOCK_SNAP_ID]: { version: '^1.0.0' } },
+          },
         ],
         date: 1661166080905,
         id: 'VyAsBJiDDKawv_XlNcm13',
@@ -271,7 +281,7 @@ describe('implementation', () => {
       id: 1,
       method: 'wallet_requestSnaps',
       params: {
-        [MOCK_SNAP_ID]: {},
+        [MOCK_SNAP_ID]: { version: '^1.0.0' },
       },
     })) as JsonRpcSuccess<InstallSnapsResult>;
 
@@ -284,11 +294,100 @@ describe('implementation', () => {
     });
 
     expect(hooks.installSnaps).toHaveBeenCalledWith({
-      [MOCK_SNAP_ID]: {},
+      [MOCK_SNAP_ID]: { version: '^1.0.0' },
     });
 
     expect(response.result).toStrictEqual({
       [MOCK_SNAP_ID]: getTruncatedSnap(),
+    });
+  });
+
+  it('merges permission requests when missing snaps', async () => {
+    const { implementation } = requestSnapsHandler;
+
+    const hooks = getMockHooks();
+
+    hooks.getPermissions.mockImplementation(() => ({
+      [WALLET_SNAP_PERMISSION_KEY]: {
+        caveats: [
+          {
+            type: SnapCaveatType.SnapIds,
+            value: { [MOCK_SNAP_ID]: { version: '^1.0.0' } },
+          },
+        ],
+        date: 1661166080905,
+        id: 'VyAsBJiDDKawv_XlNcm13',
+        invoker: 'https://metamask.github.io',
+        parentCapability: WALLET_SNAP_PERMISSION_KEY,
+      },
+    }));
+
+    hooks.requestPermissions.mockImplementation(() => [
+      {
+        caveats: [
+          {
+            type: SnapCaveatType.SnapIds,
+            value: {
+              [MOCK_SNAP_ID]: { version: '^1.0.0' },
+              [MOCK_LOCAL_SNAP_ID]: { version: '^1.0.0' },
+            },
+          },
+        ],
+        date: 1661166080905,
+        id: 'VyAsBJiDDKawv_XlNcm13',
+        invoker: 'https://metamask.github.io',
+        parentCapability: WALLET_SNAP_PERMISSION_KEY,
+      },
+      {
+        data: {
+          [WALLET_SNAP_PERMISSION_KEY]: {
+            [MOCK_SNAP_ID]: getTruncatedSnap(),
+            [MOCK_LOCAL_SNAP_ID]: getTruncatedSnap({ id: MOCK_LOCAL_SNAP_ID }),
+          },
+        },
+      },
+    ]);
+
+    const engine = new JsonRpcEngine();
+    engine.push((req, res, next, end) => {
+      const result = implementation(
+        req as JsonRpcRequest<RequestedPermissions>,
+        res as PendingJsonRpcResponse<InstallSnapsResult>,
+        next,
+        end,
+        hooks,
+      );
+
+      result?.catch(end);
+    });
+
+    const response = (await engine.handle({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'wallet_requestSnaps',
+      params: {
+        [MOCK_SNAP_ID]: { version: '^1.0.0' },
+        [MOCK_LOCAL_SNAP_ID]: { version: '^1.0.0' },
+      },
+    })) as JsonRpcSuccess<InstallSnapsResult>;
+
+    expect(hooks.requestPermissions).toHaveBeenCalledWith({
+      [WALLET_SNAP_PERMISSION_KEY]: {
+        caveats: [
+          {
+            type: SnapCaveatType.SnapIds,
+            value: {
+              [MOCK_SNAP_ID]: { version: '^1.0.0' },
+              [MOCK_LOCAL_SNAP_ID]: { version: '^1.0.0' },
+            },
+          },
+        ],
+      },
+    });
+
+    expect(response.result).toStrictEqual({
+      [MOCK_SNAP_ID]: getTruncatedSnap(),
+      [MOCK_LOCAL_SNAP_ID]: getTruncatedSnap({ id: MOCK_LOCAL_SNAP_ID }),
     });
   });
 
@@ -319,14 +418,17 @@ describe('implementation', () => {
       id: 1,
       method: 'wallet_requestSnaps',
       params: {
-        [MOCK_SNAP_ID]: {},
+        [MOCK_SNAP_ID]: { version: '^1.0.0' },
       },
     })) as JsonRpcSuccess<InstallSnapsResult>;
 
     expect(hooks.requestPermissions).toHaveBeenCalledWith({
       [WALLET_SNAP_PERMISSION_KEY]: {
         caveats: [
-          { type: SnapCaveatType.SnapIds, value: { [MOCK_SNAP_ID]: {} } },
+          {
+            type: SnapCaveatType.SnapIds,
+            value: { [MOCK_SNAP_ID]: { version: '^1.0.0' } },
+          },
         ],
       },
     });

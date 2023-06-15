@@ -17,6 +17,8 @@ jest.mock('@metamask/snaps-utils', () => ({
   logError: jest.fn(),
 }));
 
+jest.mock('./serveUtils');
+
 /**
  * Get a mocked Yargs argv object.
  *

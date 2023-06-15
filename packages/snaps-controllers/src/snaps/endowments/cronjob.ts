@@ -6,6 +6,7 @@ import {
   PermissionConstraint,
   Caveat,
   CaveatSpecificationConstraint,
+  SubjectType,
 } from '@metamask/permission-controller';
 import {
   SnapCaveatType,
@@ -27,7 +28,7 @@ const permissionName = SnapEndowments.Cronjob;
 
 type CronjobEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
-  targetKey: typeof permissionName;
+  targetName: typeof permissionName;
   endowmentGetter: (_options?: any) => undefined;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
 }>;
@@ -45,14 +46,15 @@ const specificationBuilder: PermissionSpecificationBuilder<
 > = (_builderOptions?: any) => {
   return {
     permissionType: PermissionType.Endowment,
-    targetKey: permissionName,
+    targetName: permissionName,
     allowedCaveats: [SnapCaveatType.SnapCronjob],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
+    subjectTypes: [SubjectType.Snap],
   };
 };
 
 export const cronjobEndowmentBuilder = Object.freeze({
-  targetKey: permissionName,
+  targetName: permissionName,
   specificationBuilder,
 } as const);
 

@@ -2,7 +2,7 @@ const deepmerge = require('deepmerge');
 
 const baseConfig = require('../../jest.config.base');
 
-// Dependencies that are ESM-only, and need to be transpiled by Babel.
+// Dependencies that are ESM-only, and need to be transpiled by SWC.
 const ESM_DEPENDENCIES = [
   'clet',
   'execa',
@@ -27,16 +27,13 @@ module.exports = deepmerge(baseConfig, {
   coveragePathIgnorePatterns: ['./src/types'],
   coverageThreshold: {
     global: {
-      branches: 97.64,
-      functions: 94.59,
-      lines: 98.49,
-      statements: 98.5,
+      branches: 97.29,
+      functions: 93.84,
+      lines: 97.77,
+      statements: 97.54,
     },
   },
   setupFiles: ['./test/setup.js'],
   transformIgnorePatterns: [`node_modules/(?!(${ESM_DEPENDENCIES.join('|')}))`],
-  transform: {
-    '^.+\\.jsx?$': 'babel-jest',
-  },
   testTimeout: 120000,
 });

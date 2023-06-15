@@ -3,6 +3,7 @@ import { promises as fs } from 'fs';
 import os from 'os';
 import pathUtils from 'path';
 
+import { parseJson } from './json';
 import { readVirtualFile, VirtualFile } from './virtual-file';
 
 /**
@@ -74,7 +75,7 @@ export async function readJsonFile<Type extends Json = Json>(
 
     throw error;
   }
-  file.result = JSON.parse(file.toString());
+  file.result = parseJson(file.toString());
   return file as VirtualFile<Type>;
 }
 

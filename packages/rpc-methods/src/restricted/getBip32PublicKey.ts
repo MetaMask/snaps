@@ -5,6 +5,7 @@ import {
   PermissionValidatorConstraint,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
+  SubjectType,
 } from '@metamask/permission-controller';
 import {
   bip32entropy,
@@ -17,7 +18,7 @@ import { boolean, enums, object, optional } from 'superstruct';
 
 import { MethodHooksObject } from '../utils';
 
-const targetKey = 'snap_getBip32PublicKey';
+const targetName = 'snap_getBip32PublicKey';
 
 export type GetBip32PublicKeyMethodHooks = {
   /**
@@ -39,7 +40,7 @@ type GetBip32PublicKeySpecificationBuilderOptions = {
 
 type GetBip32PublicKeySpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.RestrictedMethod;
-  targetKey: typeof targetKey;
+  targetName: typeof targetName;
   methodImplementation: ReturnType<typeof getBip32PublicKeyImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
@@ -75,7 +76,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 > = ({ methodHooks }: GetBip32PublicKeySpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
-    targetKey,
+    targetName,
     allowedCaveats: [SnapCaveatType.PermittedDerivationPaths],
     methodImplementation: getBip32PublicKeyImplementation(methodHooks),
     validator: ({ caveats }) => {
@@ -88,6 +89,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
         });
       }
     },
+    subjectTypes: [SubjectType.Snap],
   };
 };
 
@@ -97,7 +99,7 @@ const methodHooks: MethodHooksObject<GetBip32PublicKeyMethodHooks> = {
 };
 
 export const getBip32PublicKeyBuilder = Object.freeze({
-  targetKey,
+  targetName,
   specificationBuilder,
   methodHooks,
 } as const);

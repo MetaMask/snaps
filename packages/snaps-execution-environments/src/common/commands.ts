@@ -80,8 +80,8 @@ export function getCommandMethodImplementations(
       return Promise.resolve('OK');
     },
 
-    executeSnap: async (snapName, sourceCode, endowments) => {
-      await startSnap(snapName, sourceCode, endowments);
+    executeSnap: async (snapId, sourceCode, endowments) => {
+      await startSnap(snapId, sourceCode, endowments);
       return 'OK';
     },
 
