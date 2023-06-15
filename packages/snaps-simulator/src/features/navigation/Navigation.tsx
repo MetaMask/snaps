@@ -1,9 +1,10 @@
-import { Box, Container, List, Stack, Tag, Text } from '@chakra-ui/react';
+import { Box, Container, List, Stack, Text } from '@chakra-ui/react';
 import { FunctionComponent } from 'react';
 
 import { Icon } from '../../components';
 import { useSelector } from '../../hooks';
 import { Item, ManifestStatusIndicator } from './components';
+import { NavigationTag } from './components/NavigationTag';
 import { NAVIGATION_ITEMS } from './items';
 
 /**
@@ -38,9 +39,7 @@ export const Navigation: FunctionComponent = () => {
                     <Box as="span" fontWeight="600">
                       {label}
                     </Box>{' '}
-                    <Tag borderRadius={'base'} variant="code">
-                      {tag}
-                    </Tag>
+                    <NavigationTag path={path}>{tag}</NavigationTag>
                   </Text>
                   <Text fontSize="sm" marginTop="1">
                     {description}
@@ -62,9 +61,7 @@ export const Navigation: FunctionComponent = () => {
               <Box as="span" fontWeight="600">
                 Manifest
               </Box>{' '}
-              <Tag borderRadius={'base'} variant="code">
-                snap.manifest.json
-              </Tag>
+              <NavigationTag path="/manifest">snap.manifest.json</NavigationTag>
             </Text>
             <Text fontSize="sm" marginTop="1">
               Validate the snap manifest

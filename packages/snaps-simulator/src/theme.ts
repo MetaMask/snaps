@@ -59,6 +59,10 @@ export const theme = extendTheme({
             _dark: '#FFFFFF',
           },
         },
+        console: {
+          default: '#535A61',
+          _dark: '#D6D9DC',
+        },
       },
       background: {
         alternative: { default: '#F5F5F5', _dark: '#141618' },
@@ -68,8 +72,10 @@ export const theme = extendTheme({
         },
       },
       info: {
-        default: '#0376C9',
-        _dark: '#9FA6AE',
+        default: {
+          default: '#0376C9',
+          _dark: '#9FA6AE',
+        },
         muted: {
           default: 'rgba(3, 118, 201, 0.1)',
           _dark: '#141618',
@@ -263,7 +269,7 @@ export const theme = extendTheme({
       variants: {
         code: defineTagPartsStyle({
           container: {
-            color: 'info',
+            color: 'info.default',
             background: 'info.muted',
             borderRadius: '0px',
             fontWeight: 'normal',
@@ -289,12 +295,12 @@ export const theme = extendTheme({
         primary: defineStyle({
           height: '48px',
           borderRadius: '30px',
-          background: 'info',
+          background: 'info.default',
           fontSize: 'sm',
           fontWeight: 'normal',
           lineHeight: '157%',
           color: 'white',
-          borderColor: 'info',
+          borderColor: 'info.default',
           padding: '3',
           fontFamily: 'custom',
         }),
@@ -305,8 +311,8 @@ export const theme = extendTheme({
           fontSize: 'sm',
           fontWeight: 'normal',
           lineHeight: '157%',
-          color: 'info',
-          borderColor: 'info',
+          color: 'info.default',
+          borderColor: 'info.default',
           padding: '3',
           fontFamily: 'custom',
         }),
