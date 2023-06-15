@@ -5,6 +5,7 @@ import {
   formAnatomy,
   tabsAnatomy,
   modalAnatomy,
+  switchAnatomy,
 } from '@chakra-ui/anatomy';
 import {
   ThemeConfig,
@@ -35,6 +36,11 @@ const {
   definePartsStyle: defineModalPartsStyle,
   defineMultiStyleConfig: defineModalMultiStyleConfig,
 } = createMultiStyleConfigHelpers(modalAnatomy.keys);
+
+const {
+  definePartsStyle: defineSwitchPartsStyle,
+  defineMultiStyleConfig: defineSwitchMultiStyleConfig,
+} = createMultiStyleConfigHelpers(switchAnatomy.keys);
 /* eslint-enable @typescript-eslint/unbound-method */
 
 const config: ThemeConfig = {
@@ -332,6 +338,16 @@ export const theme = extendTheme({
       baseStyle: defineModalPartsStyle({
         dialog: {
           bg: 'chakra-body-bg',
+        },
+      }),
+    }),
+
+    Switch: defineSwitchMultiStyleConfig({
+      baseStyle: defineSwitchPartsStyle({
+        track: {
+          _checked: {
+            bg: '#0376C9',
+          },
         },
       }),
     }),
