@@ -12,6 +12,7 @@ import copiedIcon from '../assets/icons/copied.svg';
 import copyIcon from '../assets/icons/copy.svg';
 import copyableIcon from '../assets/icons/copyable.svg';
 import cronjobIcon from '../assets/icons/cronjob.svg';
+import crossDarkIcon from '../assets/icons/cross-dark.svg';
 import crossIcon from '../assets/icons/cross.svg';
 import darkArrowTopRightIcon from '../assets/icons/dark-arrow-top-right.svg';
 import dividerIcon from '../assets/icons/divider.svg';
@@ -133,6 +134,7 @@ const DEFAULT_ICONS = {
   cross: {
     alt: 'Cross',
     src: crossIcon,
+    srcDark: crossDarkIcon,
   },
   drag: {
     alt: 'Drag',
