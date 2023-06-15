@@ -47,10 +47,10 @@ export function getHandlerArguments(
     }
     case HandlerType.OnNameLookup: {
       assertIsOnNameLookupRequestArguments(request.params);
-      const { id, content } = request.params;
+      const { chainId, domain } = request.params;
       return {
-        id,
-        content,
+        chainId,
+        domain,
       };
     }
     case HandlerType.OnRpcRequest:

@@ -1267,7 +1267,7 @@ describe('BaseSnapExecutor', () => {
         {
           jsonrpc: '2.0',
           method: 'foo',
-          params: { id: 'eip155:1', content: 'foo.lens' },
+          params: { chainId: 'eip155:1', domain: 'foo.lens' },
         },
       ],
     });
