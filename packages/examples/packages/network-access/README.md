@@ -1,21 +1,21 @@
-# `@metamask/notifications-example-snap`
+# `@metamask/network-access-example-snap`
 
-This snap demonstrates how to use `snap_notify` to send in-app and desktop
-notifications to the user.
+This snap demonstrates how to use the `endowment:network-access` permission to
+get access to the `fetch` function from a snap.
 
 ## Snap manifest
 
-> **Note**: Using `snap_notify` requires the `snap_notify`
-> permissions. Refer to [the documentation](https://docs.metamask.io/snaps/reference/rpc-api/#snap_notify)
+> **Note**: Using `fetch` requires the `endowment:network-access`
+> permissions. Refer to [the documentation](https://docs.metamask.io/snaps/reference/permissions/#endowmentnetwork-access)
 > for more information.
 
 Along with other permissions, the manifest of this snap includes the
-`snap_notify` permission:
+`endowment:network-access` permission:
 
 ```json
 {
   "initialPermissions": {
-    "snap_notify": {}
+    "endowment:network-access": {}
   }
 }
 ```
@@ -27,8 +27,8 @@ This permission does not require any additional configuration.
 This snap exposes an `onRpcRequest` handler, which supports the following
 JSON-RPC methods:
 
-- `inApp` - Send an in-app notification to the user.
-- `native` - Send a desktop notification to the user.
+- `fetch` - Fetch a JSON document from the optional `url`, and return the
+  fetched data.
 
 For more information, you can refer to
 [the end-to-end tests](./src/index.test.ts).

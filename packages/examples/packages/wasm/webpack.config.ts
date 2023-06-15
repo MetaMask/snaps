@@ -1,7 +1,8 @@
 import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
+import { bytesToHex } from '@metamask/utils';
 import { resolve } from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
-import { Configuration, ProgressPlugin } from 'webpack';
+import { Configuration, ProgressPlugin, ProvidePlugin } from 'webpack';
 
 const IS_CI = Boolean(process.env.CI);
 
@@ -29,6 +30,11 @@ const config: Configuration = {
       {
         test: /\.wasm$/u,
         type: 'asset/inline',
+        generator: {
+          dataUrl: (content: any) => {
+            return bytesToHex(content);
+          },
+        },
       },
     ],
   },
@@ -72,6 +78,9 @@ const config: Configuration = {
     new SnapsWebpackPlugin({
       manifestPath: resolve(__dirname, 'snap.manifest.json'),
       eval: false,
+    }),
+    new ProvidePlugin({
+      Buffer: ['buffer/', 'Buffer'],
     }),
     ...(IS_CI ? [] : [new ProgressPlugin()]),
   ],
