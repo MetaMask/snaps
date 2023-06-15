@@ -3753,6 +3753,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/cli-test-snap@workspace:packages/snaps-cli/test/snap":
+  version: 0.0.0-use.local
+  resolution: "@metamask/cli-test-snap@workspace:packages/snaps-cli/test/snap"
+  dependencies:
+    "@metamask/snaps-cli": "workspace:^"
+    "@metamask/snaps-types": "workspace:^"
+  languageName: unknown
+  linkType: soft
+
 "@metamask/controller-utils@npm:^4.0.0":
   version: 4.0.0
   resolution: "@metamask/controller-utils@npm:4.0.0"
