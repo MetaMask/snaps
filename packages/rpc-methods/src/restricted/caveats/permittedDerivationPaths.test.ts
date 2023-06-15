@@ -4,6 +4,7 @@ import {
   permittedDerivationPathsCaveatMapper,
   validateBIP32CaveatPaths,
   PermittedDerivationPathsCaveatSpecification,
+  validateBIP32Path,
 } from './permittedDerivationPaths';
 
 describe('permittedDerivationPathsCaveatMapper', () => {
@@ -223,6 +224,19 @@ describe('PermittedDerivationPathsCaveatSpecification', () => {
         }),
       ).toThrow(
         'Invalid BIP-32 entropy caveat: At path: value.0.path -- The purpose "1399742832\'" is not allowed for entropy derivation.',
+      );
+    });
+  });
+
+  describe('validateBIP32Path', () => {
+    it('throws if the path is invalid', () => {
+      expect(() =>
+        validateBIP32Path({
+          path: 'wrong mock path',
+          curve: 'secp256k1',
+        }),
+      ).toThrow(
+        'Invalid BIP-32 entropy path definition: At path: path -- Expected an array value, but received: "wrong mock path"',
       );
     });
   });
