@@ -1,4 +1,7 @@
+import { NotificationType } from '@metamask/rpc-methods';
+
 import {
+  addNativeNotification,
   addNotification,
   INITIAL_NOTIFICATIONS_STATE,
   notifications as reducer,
@@ -10,7 +13,10 @@ describe('notifications slice', () => {
     it('adds a notification to the state', () => {
       const result = reducer(
         INITIAL_NOTIFICATIONS_STATE,
-        addNotification('Hello, world!'),
+        addNotification({
+          id: 'foo',
+          message: 'Hello, world!',
+        }),
       );
 
       expect(result.notifications).toHaveLength(1);
@@ -18,6 +24,29 @@ describe('notifications slice', () => {
         {
           id: expect.any(String),
           message: 'Hello, world!',
+          type: NotificationType.InApp,
+        },
+      ]);
+    });
+  });
+
+  describe('addNativeNotification', () => {
+    it('adds a native notification to the state', () => {
+      const result = reducer(
+        INITIAL_NOTIFICATIONS_STATE,
+        addNativeNotification({
+          id: 'foo',
+          message: 'Hello, world!',
+        }),
+      );
+
+      expect(result.notifications).toHaveLength(0);
+      expect(result.allNotifications).toHaveLength(1);
+      expect(result.allNotifications).toStrictEqual([
+        {
+          id: expect.any(String),
+          message: 'Hello, world!',
+          type: NotificationType.Native,
         },
       ]);
     });
@@ -27,10 +56,18 @@ describe('notifications slice', () => {
     it('removes a notification from the state', () => {
       const result = reducer(
         {
+          allNotifications: [
+            {
+              id: '1',
+              message: 'Hello, world!',
+              type: NotificationType.Native,
+            },
+          ],
           notifications: [
             {
               id: '1',
               message: 'Hello, world!',
+              type: NotificationType.InApp,
             },
           ],
         },
@@ -38,6 +75,13 @@ describe('notifications slice', () => {
       );
 
       expect(result.notifications).toStrictEqual([]);
+      expect(result.allNotifications).toStrictEqual([
+        {
+          id: '1',
+          message: 'Hello, world!',
+          type: NotificationType.Native,
+        },
+      ]);
     });
   });
 });

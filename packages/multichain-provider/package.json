@@ -31,7 +31,7 @@
     "@metamask/providers": "^11.0.0",
     "@metamask/safe-event-emitter": "^3.0.0",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^6.0.0",
+    "@metamask/utils": "^6.0.1",
     "nanoid": "^3.1.31"
   },
   "devDependencies": {
