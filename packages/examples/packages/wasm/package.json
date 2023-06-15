@@ -16,18 +16,18 @@
   ],
   "scripts": {
     "build": "yarn build:wasm && webpack",
-    "build:dev": "yarn build",
-    "build:clean": "yarn clean && yarn build",
     "build:wasm": "asc",
+    "build:clean": "yarn clean && yarn build",
     "clean": "rimraf \"dist/*\"",
-    "start": "webpack watch",
-    "test": "jest --passWithNoTests",
-    "test:watch": "jest --watch",
-    "lint:eslint": "eslint . --cache --ext js,ts",
-    "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' '**/*.yml' --single-quote --ignore-path ../../.prettierignore --no-error-on-unmatched-pattern",
-    "lint": "yarn lint:eslint && yarn lint:misc --check",
+    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
+    "lint:changelog": "yarn auto-changelog validate",
+    "lint:ci": "yarn lint",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
-    "lint:changelog": "yarn auto-changelog validate"
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../../../.gitignore",
+    "start": "webpack watch",
+    "test": "yarn test:e2e",
+    "test:e2e": "jest"
   },
   "dependencies": {
     "@metamask/rpc-errors": "^5.1.1",

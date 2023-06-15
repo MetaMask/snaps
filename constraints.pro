@@ -97,23 +97,17 @@ slice(Left, From, To, Right):-
 % True if and only if the given workspace directory is an example.
 is_example(WorkspaceCwd) :-
   atomic_list_concat(Parts, '/', WorkspaceCwd),
-  slice(Parts, 0, 4, RootParts),
+  slice(Parts, 1, 3, RootParts),
   atomic_list_concat(RootParts, '/', RootCwd),
-  RootCwd = 'packages/examples/examples'.
+  RootCwd = 'examples',
+  WorkspaceCwd \= 'packages/examples'.
 
 % True if and only if the given workspace directory is a nested example.
 is_nested_example(WorkspaceCwd) :-
   atomic_list_concat(Parts, '/', WorkspaceCwd),
   slice(Parts, 0, 6, RootParts),
   atomic_list_concat(RootParts, '/', RootCwd),
-  RootCwd = 'packages/examples/examples/signer/packages'.
-
-% True if and only if the given workspace directory is a nested example.
-is_test_snap(WorkspaceCwd) :-
-  atomic_list_concat(Parts, '/', WorkspaceCwd),
-  slice(Parts, 0, 4, RootParts),
-  atomic_list_concat(RootParts, '/', RootCwd),
-  RootCwd = 'packages/test-snaps/packages'.
+  RootCwd = 'packages/examples/packages/signer/packages'.
 
 %===============================================================================
 % Constraints
@@ -153,13 +147,29 @@ gen_enforced_field(WorkspaceCwd, 'sideEffects', 'false') :-
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
 
-% Ensure all test-snaps have the same scripts.
+% Ensure all examples have the same scripts.
 gen_enforced_field(WorkspaceCwd, 'scripts.build', 'webpack') :-
-  is_test_snap(WorkspaceCwd),
-  WorkspaceCwd \= 'packages/test-snaps/packages/wasm-example'.
+  is_example(WorkspaceCwd),
+  WorkspaceCwd \= 'packages/examples/packages/wasm'.
 gen_enforced_field(WorkspaceCwd, 'scripts.build:clean', 'yarn clean && yarn build') :-
-  is_test_snap(WorkspaceCwd).
-gen_enforced_field(WorkspaceCwd, 'scripts.clean', 'rimraf "dist/*"') :-
-  is_test_snap(WorkspaceCwd).
+  is_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'scripts.start', 'webpack watch') :-
-  is_test_snap(WorkspaceCwd).
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.clean', 'rimraf "dist/*"') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.test', 'yarn test:e2e') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.test:e2e', 'jest') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.lint', 'yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:ci', 'yarn lint') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:fix', 'yarn lint:eslint --fix && yarn lint:misc --write') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:eslint', 'eslint . --cache --ext js,ts,jsx,tsx') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:misc', 'prettier --no-error-on-unmatched-pattern --loglevel warn "**/*.json" "**/*.md" "**/*.html" "!CHANGELOG.md" --ignore-path ../../../../.gitignore') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:changelog', 'yarn auto-changelog validate') :-
+  is_example(WorkspaceCwd).
