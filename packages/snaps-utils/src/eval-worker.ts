@@ -14,14 +14,7 @@ lockdown({
   mathTaming: 'unsafe',
   dateTaming: 'unsafe',
   overrideTaming: 'severe',
-
-  // TODO: See if there's an easier way to do this. This file is ran in a
-  // separate process, so we can't mock SES with Jest.
-  ...(process.env.NODE_ENV === 'test'
-    ? {
-        domainTaming: 'unsafe',
-      }
-    : {}),
+  domainTaming: 'unsafe',
 });
 
 /**
