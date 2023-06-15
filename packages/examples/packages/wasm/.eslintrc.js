@@ -1,10 +1,6 @@
 module.exports = {
   extends: ['../../.eslintrc.js'],
 
-  settings: {
-    'import/extensions': ['.js', '.ts', '.wasm'],
-  },
-
   parserOptions: {
     tsconfigRootDir: __dirname,
   },

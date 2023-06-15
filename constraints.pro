@@ -169,7 +169,7 @@ gen_enforced_field(WorkspaceCwd, 'scripts.lint:fix', 'yarn lint:eslint --fix && 
   is_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'scripts.lint:eslint', 'eslint . --cache --ext js,ts,jsx,tsx') :-
   is_example(WorkspaceCwd).
-gen_enforced_field(WorkspaceCwd, 'scripts.lint:misc', 'prettier --no-error-on-unmatched-pattern --loglevel warn "**/*.json" "**/*.md" "**/*.html" "!CHANGELOG.md" --ignore-path ../../../../.gitignore') :-
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:misc', 'prettier --no-error-on-unmatched-pattern --loglevel warn "**/*.json" "**/*.md" "**/*.html" "!CHANGELOG.md" "!snap.manifest.json" --ignore-path ../../../../.gitignore') :-
   is_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'scripts.lint:changelog', 'yarn auto-changelog validate') :-
   is_example(WorkspaceCwd).
