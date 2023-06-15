@@ -47,7 +47,6 @@
     "json-rpc-engine": "^6.1.0",
     "nanoid": "^3.1.31",
     "pump": "^3.0.0",
-    "serve-handler": "^6.1.5",
     "ses": "^0.18.1",
     "stream-browserify": "^3.0.0",
     "superstruct": "^1.0.3"
@@ -105,6 +104,7 @@
     "prettier-plugin-packagejson": "^2.2.11",
     "process": "^0.11.10",
     "rimraf": "^4.1.2",
+    "serve-handler": "^6.1.5",
     "terser": "^5.17.7",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
