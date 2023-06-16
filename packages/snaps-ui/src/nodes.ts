@@ -220,7 +220,7 @@ export const InputStruct = assign(
   object({
     type: literal(NodeType.Input),
     value: optional(string()),
-    name: optional(string()),
+    name: string(),
     inputType: defaulted(
       optional(
         enums([
@@ -260,7 +260,7 @@ export const FormStruct = assign(
   object({
     type: literal(NodeType.Form),
     children: array(FormComponentStruct),
-    name: optional(string()),
+    name: string(),
   }),
 );
 

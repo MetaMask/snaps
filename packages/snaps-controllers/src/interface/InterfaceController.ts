@@ -7,10 +7,11 @@ import {
   BaseControllerV2 as BaseController,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
+import { Component } from '@metamask/snaps-ui';
 import { Json, assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
-import { Component } from '../../../snaps-ui/src/nodes';
+import { ComponentState, constructState } from './utils';
 
 const controllerName = 'InterfaceController';
 
@@ -53,6 +54,7 @@ export type InterfaceControllerMessenger = RestrictedControllerMessenger<
 export type StoredInterface = {
   snapId: string;
   content: Component;
+  state: ComponentState;
 };
 
 export type InterfaceControllerState = {
@@ -89,6 +91,8 @@ export class InterfaceController extends BaseController<
   showInterface(snapId: string, content: Component) {
     const id = nanoid();
 
+    const componentState = constructState({}, content);
+
     const approval = this.messagingSystem.call(
       'ApprovalController:addRequest',
       {
@@ -98,6 +102,7 @@ export class InterfaceController extends BaseController<
         requestData: {},
         requestState: {
           content,
+          state: componentState,
         },
       },
       true,
@@ -107,6 +112,7 @@ export class InterfaceController extends BaseController<
       draftState.interfaces[id] = {
         snapId,
         content,
+        state: componentState,
       };
     });
 
@@ -118,9 +124,19 @@ export class InterfaceController extends BaseController<
   updateInterface(snapId: string, id: string, content: Component) {
     this.#validateArgs(snapId, id);
 
+    const oldState = this.state.interfaces[id].state;
+
+    const componentState = constructState({}, content);
+
+    const newState = { ...componentState, ...oldState };
+
     this.messagingSystem.call('ApprovalController:updateRequestState', {
       id,
-      requestState: { content },
+      requestState: { content, state: newState },
+    });
+
+    this.update((draftState) => {
+      draftState.interfaces[id].state = newState;
     });
 
     return null;
@@ -147,6 +163,18 @@ export class InterfaceController extends BaseController<
     this.#validateArgs(snapId, id);
 
     return this.#interfacePromises.get(id);
+  }
+
+  updateInterfaceState(id: string, state: ComponentState) {
+    this.update((draftState) => {
+      draftState.interfaces[id].state = state;
+    });
+  }
+
+  getInterfaceState(snapId: string, id: string) {
+    this.#validateArgs(snapId, id);
+
+    return this.state.interfaces[id].state;
   }
 
   #validateArgs(snapId: string, id: string) {
