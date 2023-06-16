@@ -1,16 +1,12 @@
-import { PermissionType, OriginString } from '@metamask/permission-controller';
-import { SnapCaveatType } from '@metamask/snaps-utils';
-import { MOCK_SNAP_ID, MOCK_ORIGIN } from '@metamask/snaps-utils/test-utils';
+import { SubjectType, PermissionType } from '@metamask/permission-controller';
+import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
 import {
-  AccountType,
   methodName,
   manageAccountsBuilder,
-  validateCaveatManageAccounts,
-  manageAccountsCaveatMapper,
   manageAccountsImplementation,
   ManageAccountsOperation,
-  manageAccountsCaveatSpecification,
+  specificationBuilder,
 } from './manageAccounts';
 
 // To Do:
@@ -36,100 +32,24 @@ class SnapKeyringMock {
   removeAccount = async (): Promise<boolean> => true;
 }
 
-describe('validateCaveatManageAccounts', () => {
-  it.each([[], null, undefined, 'foo', {}])(
-    'throws if the value is not an object containing accountType and chainId',
-    (value) => {
-      expect(() =>
-        validateCaveatManageAccounts({
-          type: SnapCaveatType.ManageAccounts,
-          value,
-        }),
-      ).toThrow('Expect object containing CAIP-2 chainId and accountType.');
-    },
-  );
+describe('specification', () => {
+  it('builds specification', () => {
+    const methodHooks = {
+      getSnapKeyring: jest.fn(),
+      saveSnapKeyring: jest.fn(),
+    };
 
-  it('should not throw if caveat struct is correct', () => {
-    expect(() =>
-      validateCaveatManageAccounts({
-        type: SnapCaveatType.ManageAccounts,
-        value: {
-          chainId: 'eip155:1',
-          accountType: AccountType.EOA,
-        },
-      }),
-    ).not.toThrow();
-  });
-});
-
-describe('specificationBuilder', () => {
-  const methodHooks = {
-    getSnapKeyring: jest.fn(),
-    saveSnapKeyring: jest.fn(),
-  };
-
-  const specification = manageAccountsBuilder.specificationBuilder({
-    methodHooks,
-  });
-
-  describe('validator', () => {
-    it('throws if the caveat is not a single "manageAccounts"', () => {
-      expect(() =>
-        // @ts-expect-error Missing required permission types.
-        specification.validator({}),
-      ).toThrow('Expected a single "manageAccounts" caveat.');
-
-      expect(() =>
-        // @ts-expect-error Missing other required permission types.
-        specification.validator({
-          caveats: [{ type: 'foo', value: 'bar' }],
-        }),
-      ).toThrow('Expected a single "manageAccounts" caveat.');
-
-      expect(() =>
-        // @ts-expect-error Missing other required permission types.
-        specification.validator({
-          caveats: [
-            { type: 'manageAccounts', value: [] },
-            { type: 'manageAccounts', value: [] },
-          ],
-        }),
-      ).toThrow('Expected a single "manageAccounts" caveat.');
-    });
-
-    it('should not throw and error if have the caveat has the correct form values for "manageAccounts"', () => {
-      expect(() =>
-        // @ts-expect-error Missing other required permission types.
-        specification.validator({
-          caveats: [
-            {
-              type: 'manageAccounts',
-              value: { chainId: 'foo', accountType: 'bar' },
-            },
-          ],
-        }),
-      ).not.toThrow();
-    });
-  });
-});
-
-describe('manageAccountsCaveatMapper', () => {
-  it('returns a caveat value for an object containing chainId and accountType', () => {
     expect(
-      manageAccountsCaveatMapper({
-        chainId: 'eip155:1',
-        accountType: 'externally-owned-account',
+      specificationBuilder({
+        allowedCaveats: null,
+        methodHooks,
       }),
     ).toStrictEqual({
-      caveats: [
-        {
-          type: SnapCaveatType.ManageAccounts,
-          value: {
-            chainId: 'eip155:1',
-            accountType: 'externally-owned-account',
-          },
-        },
-      ],
+      allowedCaveats: null,
+      methodImplementation: expect.anything(),
+      permissionType: PermissionType.RestrictedMethod,
+      targetName: methodName,
+      subjectTypes: [SubjectType.Internal, SubjectType.Snap],
     });
   });
 });
@@ -157,7 +77,7 @@ describe('builder', () => {
     ).toMatchObject({
       permissionType: PermissionType.RestrictedMethod,
       targetName: methodName,
-      allowedCaveats: [SnapCaveatType.ManageAccounts],
+      allowedCaveats: null,
       methodImplementation: expect.any(Function),
     });
   });
@@ -280,7 +200,6 @@ describe('manageAccountsImplementation', () => {
       },
       params: {
         action: ManageAccountsOperation.CreateAccount,
-        accountType: AccountType.EOA,
         accountId: mockCAIP10Account,
       },
     });
@@ -315,41 +234,10 @@ describe('manageAccountsImplementation', () => {
         },
         params: {
           action: ManageAccountsOperation.CreateAccount,
-          accountType: AccountType.EOA,
           accountId: mockBadCAIP10Account,
         },
       }),
     ).rejects.toThrow('Invalid CAIP10 Account bad account');
-    expect(createAccountSpy).toHaveBeenCalledTimes(0);
-  });
-
-  it('should throw if account type is not correct', async () => {
-    const mockKeyring = new SnapKeyringMock();
-    const getSnapKeyring = jest.fn().mockResolvedValue(mockKeyring);
-    const saveSnapKeyring = jest.fn().mockResolvedValue(undefined);
-
-    const createAccountSpy = jest.spyOn(mockKeyring, 'createAccount');
-
-    const manageAccounts = manageAccountsImplementation({
-      getSnapKeyring,
-      saveSnapKeyring,
-    });
-
-    await expect(
-      manageAccounts({
-        method: 'snap_manageAccounts',
-        context: {
-          origin: mockSnapId,
-        },
-        params: {
-          action: ManageAccountsOperation.CreateAccount,
-          accountType: 'bad account type' as AccountType,
-          accountId: mockCAIP10Account,
-        },
-      }),
-    ).rejects.toThrow(
-      'Invalid ManageAccount Arguments: Account Type bad account type is not supported',
-    );
     expect(createAccountSpy).toHaveBeenCalledTimes(0);
   });
 
@@ -514,101 +402,5 @@ describe('manageAccountsImplementation', () => {
     ).rejects.toThrow(
       'Invalid ManageAccount Request: The request unknown action is not supported',
     );
-  });
-});
-
-describe('manageAccountsCaveatSpecification', () => {
-  describe('validator', () => {
-    it('throws for an invalid caveat object', () => {
-      expect(() => {
-        manageAccountsCaveatSpecification[
-          SnapCaveatType.ManageAccounts
-        ].validator?.({
-          type: SnapCaveatType.ManageAccounts,
-          value: {},
-        });
-      }).toThrow('Expect object containing CAIP-2 chainId and accountType.');
-    });
-
-    it('validates the chainId and account type', () => {
-      expect(() => {
-        manageAccountsCaveatSpecification[
-          SnapCaveatType.ManageAccounts
-        ].validator?.({
-          type: SnapCaveatType.ManageAccounts,
-          value: {
-            chainId: 'eip155:1',
-            accountType: AccountType.EOA,
-          },
-        });
-      }).not.toThrow();
-    });
-
-    it("fails if the chainId doesn't use CAIP2", () => {
-      expect(() => {
-        manageAccountsCaveatSpecification[
-          SnapCaveatType.ManageAccounts
-        ].validator?.({
-          type: SnapCaveatType.ManageAccounts,
-          value: {
-            chainId: 'fake chain id',
-            accountType: AccountType.EOA,
-          },
-        });
-      }).toThrow('Expect object containing CAIP-2 chainId and accountType.');
-    });
-
-    it('fails if account type is not EOA', () => {
-      expect(() => {
-        manageAccountsCaveatSpecification[
-          SnapCaveatType.ManageAccounts
-        ].validator?.({
-          type: SnapCaveatType.ManageAccounts,
-          value: {
-            chainId: 'eip155:1',
-            accountType: 'unknown type',
-          },
-        });
-      }).toThrow('Expect object containing CAIP-2 chainId and accountType.');
-    });
-  });
-
-  describe('decorator', () => {
-    const params = {};
-    const context: { origin: OriginString } = { origin: MOCK_ORIGIN };
-    it('returns the result of the method implementation', async () => {
-      const caveat = {
-        type: SnapCaveatType.ManageAccounts,
-        value: {
-          chainId: 'eip155:1',
-          accountType: AccountType.EOA,
-        },
-      };
-      const method = jest.fn().mockImplementation(() => 'foo');
-      expect(
-        await manageAccountsCaveatSpecification[
-          SnapCaveatType.ManageAccounts
-        ].decorator(
-          method,
-          caveat,
-        )({ method: 'listAccounts', params, context }),
-      ).toBe('foo');
-    });
-
-    it('throws if the keyring method is incorrect', async () => {
-      const method = jest.fn().mockImplementation(() => 'foo');
-      const caveat = {
-        type: SnapCaveatType.ManageAccounts,
-        value: { foo: {} },
-      };
-      await expect(
-        manageAccountsCaveatSpecification[
-          SnapCaveatType.ManageAccounts
-        ].decorator(
-          method,
-          caveat,
-        )({ method: 'signCoolTx', params, context }),
-      ).rejects.toThrow(`Invalid Keyring Method signCoolTx`);
-    });
   });
 });
