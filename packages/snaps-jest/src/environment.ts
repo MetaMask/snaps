@@ -127,11 +127,15 @@ export class SnapsEnvironment extends NodeEnvironment {
    *
    * @param url - The page URL. Defaults to the specified Snaps Simulator URL,
    * or the default simulator URL if none is specified.
+   * @param timeout - The page timeout, in milliseconds.
    * @returns The new page.
    */
-  async createPage(url: string = this.url) {
+  async createPage(url: string = this.url, timeout = 10000) {
     const puppeteer = (await this.browser.getPuppeteer()) as unknown as Browser;
     const page = await puppeteer.newPage();
+
+    page.setDefaultTimeout(timeout);
+    page.setDefaultNavigationTimeout(timeout);
 
     // Give the page permission to show notifications. This is required for
     // testing `snap_notify`.
@@ -140,7 +144,7 @@ export class SnapsEnvironment extends NodeEnvironment {
     // `networkidle0` is used to ensure that the page is fully loaded. This
     // makes it wait for no requests to be made, which guarantees that the page
     // is ready.
-    await page.goto(url, { waitUntil: 'networkidle0' });
+    await page.goto(url, { waitUntil: 'networkidle2' });
 
     const log = createModuleLogger(rootLogger, 'browser');
 
