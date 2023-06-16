@@ -156,13 +156,14 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
           "targetName": "snap_getEntropy",
         },
         "snap_manageAccounts": {
-          "allowedCaveats": [
-            "manageAccounts",
-          ],
+          "allowedCaveats": null,
           "methodImplementation": [Function],
           "permissionType": "RestrictedMethod",
           "targetName": "snap_manageAccounts",
-          "validator": [Function],
+          "subjectTypes": [
+            "internal",
+            "snap",
+          },
         },
         "snap_manageState": {
           "allowedCaveats": null,
