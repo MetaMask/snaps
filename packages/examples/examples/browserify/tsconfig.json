@@ -3,5 +3,5 @@
   "compilerOptions": {
     "resolveJsonModule": true
   },
-  "include": ["src", "gulpfile.ts", "babel.config.json"]
+  "include": ["src", "babel.config.json"]
 }
