@@ -100,14 +100,15 @@ is_example(WorkspaceCwd) :-
   slice(Parts, 1, 3, RootParts),
   atomic_list_concat(RootParts, '/', RootCwd),
   RootCwd = 'examples',
-  WorkspaceCwd \= 'packages/examples'.
+  WorkspaceCwd \= 'packages/examples',
+  WorkspaceCwd \= 'packages/examples/packages/invoke-snap'.
 
 % True if and only if the given workspace directory is a nested example.
 is_nested_example(WorkspaceCwd) :-
   atomic_list_concat(Parts, '/', WorkspaceCwd),
-  slice(Parts, 0, 6, RootParts),
+  slice(Parts, 1, 6, RootParts),
   atomic_list_concat(RootParts, '/', RootCwd),
-  RootCwd = 'packages/examples/packages/signer/packages'.
+  RootCwd = 'examples/packages/invoke-snap/packages'.
 
 %===============================================================================
 % Constraints
@@ -173,6 +174,9 @@ gen_enforced_field(WorkspaceCwd, 'scripts.lint:fix', 'yarn lint:eslint --fix && 
 gen_enforced_field(WorkspaceCwd, 'scripts.lint:eslint', 'eslint . --cache --ext js,ts,jsx,tsx') :-
   is_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'scripts.lint:misc', 'prettier --no-error-on-unmatched-pattern --loglevel warn "**/*.json" "**/*.md" "**/*.html" "!CHANGELOG.md" "!snap.manifest.json" --ignore-path ../../../../.gitignore') :-
-  is_example(WorkspaceCwd).
+  is_example(WorkspaceCwd),
+  \+ is_nested_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:misc', 'prettier --no-error-on-unmatched-pattern --loglevel warn "**/*.json" "**/*.md" "**/*.html" "!CHANGELOG.md" "!snap.manifest.json" --ignore-path ../../../../../../.gitignore') :-
+  is_nested_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'scripts.lint:changelog', 'yarn auto-changelog validate') :-
   is_example(WorkspaceCwd).

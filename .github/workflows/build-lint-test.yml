@@ -38,7 +38,7 @@ jobs:
         run: |
           {
             echo "test-workspace-package-names=$(yarn workspaces filter --include 'packages/*' --exclude 'packages/examples' --json)"
-            echo "e2e-workspace-package-names=$(yarn workspaces filter --include 'packages/examples/packages/*' --json)"
+            echo "e2e-workspace-package-names=$(yarn workspaces filter --include 'packages/examples/packages/**' --exclude 'packages/examples/packages/invoke-snap' --json)"
             echo "all-workspace-package-names=$(yarn workspaces filter --include '{.,packages/**}' --exclude 'packages/snaps-cli/test/snap' --json)"
           } >> "$GITHUB_OUTPUT"
         shell: bash

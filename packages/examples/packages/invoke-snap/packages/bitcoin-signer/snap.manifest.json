@@ -1,0 +1,25 @@
+{
+  "version": "0.34.1-flask.1",
+  "description": "MetaMask example snap demonstrating how a snap can communicate with another snap to sign messages.",
+  "proposedName": "Bitcoin Signer Example Snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps.git"
+  },
+  "source": {
+    "shasum": "QIwnOYZ2BVMpUZN1o5A/q3ACmPBTjAL9QKmOt8ZAV98=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "@metamask/bitcoin-signer-example-snap",
+        "registry": "https://registry.npmjs.org"
+      }
+    }
+  },
+  "initialPermissions": {
+    "endowment:rpc": {
+      "dapps": true
+    }
+  },
+  "manifestVersion": "0.1"
+}
