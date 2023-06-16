@@ -159,11 +159,11 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
           "allowedCaveats": null,
           "methodImplementation": [Function],
           "permissionType": "RestrictedMethod",
-          "targetName": "snap_manageAccounts",
           "subjectTypes": [
             "internal",
             "snap",
-          },
+          ],
+          "targetName": "snap_manageAccounts",
         },
         "snap_manageState": {
           "allowedCaveats": null,
