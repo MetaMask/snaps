@@ -16,6 +16,8 @@ declare global {
 }
 /* eslint-enable */
 
+const log = createModuleLogger(rootLogger, 'environment');
+
 export class SnapsEnvironment extends NodeEnvironment {
   // `browser` is always set in the environment setup function. To avoid needing
   // to check for `undefined` everywhere, we use a type assertion here.
@@ -44,14 +46,16 @@ export class SnapsEnvironment extends NodeEnvironment {
     await super.setup();
 
     if (this.#options.server.enabled) {
+      log('Starting server.');
       this.#server = await startServer(this.#options.server);
     }
 
     const args = [];
     if (this.#options.browser.headless) {
-      args.push('--headless');
+      args.push('--headless', '--disable-gpu');
     }
 
+    log('Starting browser.');
     this.browser = await remote({
       logLevel: 'error',
       capabilities: {
@@ -73,9 +77,11 @@ export class SnapsEnvironment extends NodeEnvironment {
    */
   async teardown() {
     if (this.#options.keepAlive) {
+      log('Not tearing down environment because keepAlive is enabled.');
       return;
     }
 
+    log('Closing browser, and stopping server.');
     await this.browser?.deleteSession();
     this.#server?.close();
 
@@ -146,17 +152,17 @@ export class SnapsEnvironment extends NodeEnvironment {
     // is ready.
     await page.goto(url, { waitUntil: 'networkidle2' });
 
-    const log = createModuleLogger(rootLogger, 'browser');
+    const browserLog = createModuleLogger(rootLogger, 'browser');
 
     page
       // This is fired when the page calls `console.log` or similar.
       .on('console', (message) => {
-        log(`[${message.type()}] ${message.text()}`);
+        browserLog(`[${message.type()}] ${message.text()}`);
       })
 
       // This is fired when the page throws an error.
       .on('pageerror', ({ message }) => {
-        log(`[page error] ${message}`);
+        browserLog(`[page error] ${message}`);
       });
 
     return page;
