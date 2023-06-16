@@ -71,7 +71,7 @@ export const theme = extendTheme({
         },
       },
       background: {
-        alternative: { default: '#F5F5F5', _dark: '#141618' },
+        alternative: { default: '#F5F5F5', _dark: '#1D1F22' },
         hover: {
           default: '#FAFBFC',
           _dark: '#141618',
