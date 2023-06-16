@@ -14,10 +14,10 @@
     "snap.manifest.json"
   ],
   "scripts": {
-    "build": "gulp build",
+    "build": "node scripts/build.js",
     "manifest": "mm-snap manifest --fix",
     "eval": "mm-snap eval -b dist/snap.js",
-    "serve": "concurrently \"gulp watch\" \"mm-snap serve\"",
+    "serve": "mm-snap serve",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../../../.gitignore",
@@ -35,15 +35,11 @@
     "@metamask/snaps-cli": "workspace:^",
     "@metamask/snaps-types": "workspace:^",
     "@types/browserify": "^12.0.37",
-    "@types/gulp": "^4.0.9",
     "@types/node": "^20.3.1",
-    "@types/vinyl-source-stream": "^0.0.30",
-    "@types/watchify": "^3.11.1",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "babelify": "^10.0.0",
     "browserify": "^17.0.0",
-    "concurrently": "^7.1.0",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
@@ -51,13 +47,10 @@
     "eslint-plugin-jsdoc": "^39.6.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "gulp": "^4.0.2",
     "prettier": "^2.7.1",
     "prettier-plugin-packagejson": "^2.2.11",
     "ts-node": "^10.9.1",
-    "typescript": "~4.8.4",
-    "vinyl-source-stream": "^2.0.0",
-    "watchify": "^4.0.0"
+    "typescript": "~4.8.4"
   },
   "engines": {
     "node": ">=16.0.0"
