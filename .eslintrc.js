@@ -11,10 +11,6 @@ module.exports = {
     'shared-node-browser': true,
   },
 
-  settings: {
-    'import/resolver': 'node',
-  },
-
   rules: {
     // This prevents importing Node.js builtins. We currently use them in
     // our codebase, so this rule is disabled. This rule should be disabled

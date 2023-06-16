@@ -11,6 +11,9 @@ module.exports = {
       parserOptions: {
         sourceType: 'module',
       },
+      rules: {
+        'import/no-unresolved': 'off',
+      },
     },
   ],
 };
