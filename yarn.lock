@@ -3648,15 +3648,15 @@ __metadata:
   linkType: hard
 
 "@metamask/approval-controller@npm:^3.0.0":
-  version: 3.1.0
-  resolution: "@metamask/approval-controller@npm:3.1.0"
+  version: 3.2.0
+  resolution: "@metamask/approval-controller@npm:3.2.0"
   dependencies:
     "@metamask/base-controller": ^3.0.0
     "@metamask/utils": ^5.0.2
     eth-rpc-errors: ^4.0.2
     immer: ^9.0.6
     nanoid: ^3.1.31
-  checksum: 2043e62e8815a600e839617b4df26515fc33f655e21562dc230cd6dbfc4677e955e1e45a5df8fbb2def2122b3578f6a632acb939f8175419febb1471d0c48ce0
+  checksum: fdb9ee44f8e14ea870c80e6fe7cbb0c827763a44d243e71151bbefcfc58a5d61602c653d7a463109aae9e62437bb56652dccf7994a5334f14e61af0750d78d82
   languageName: node
   linkType: hard
 
@@ -4305,6 +4305,7 @@ __metadata:
     process: ^0.11.10
     pump: ^3.0.0
     rimraf: ^4.1.2
+    serve-handler: ^6.1.5
     ses: ^0.18.1
     stream-browserify: ^3.0.0
     superstruct: ^1.0.3
