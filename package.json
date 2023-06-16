@@ -23,7 +23,7 @@
     "build:clean": "yarn clean && yarn build",
     "build:tsc": "tsc --build tsconfig.build.json",
     "build:post-tsc": "yarn workspaces foreach --parallel --topological --topological-dev --verbose run build:post-tsc",
-    "build:post-tsc:ci": "yarn workspaces foreach --parallel --topological --topological-dev --verbose --exclude root --exclude \"@metamask/snaps-simulator\" --exclude \"@metamask/snaps-execution-environments\" --exclude \"@metamask/snaps-jest\" run build:post-tsc",
+    "build:post-tsc:ci": "yarn workspaces foreach --parallel --topological --topological-dev --verbose --exclude root --exclude \"@metamask/snaps-simulator\" --exclude \"@metamask/snaps-execution-environments\" --exclude \"@metamask/snaps-jest\" --exclude \"@metamask/example-snaps\" run build:post-tsc",
     "clean": "yarn workspaces foreach --parallel --verbose run clean",
     "test": "yarn workspaces foreach --parallel --verbose run test",
     "test:browser": "yarn workspaces foreach --verbose run test:browser",
