@@ -35,11 +35,17 @@ export type ReadInterface = {
   handler: InterfaceController['readInterface'];
 };
 
-export type InterfaceControllerActions =
-  | ShowInterface
-  | UpdateInterface
-  | ResolveInterface
-  | ReadInterface;
+export type UpdateInterfaceState = {
+  type: `${typeof controllerName}:updateInterfaceState`;
+  handler: InterfaceController['updateInterfaceState'];
+};
+
+export type GetInterfaceState = {
+  type: `${typeof controllerName}:getInterfaceState`;
+  handler: InterfaceController['getInterfaceState'];
+};
+
+export type InterfaceControllerActions = UpdateInterfaceState;
 
 type AllowedActions = AddApprovalRequest | UpdateRequestState | AcceptRequest;
 
@@ -86,6 +92,7 @@ export class InterfaceController extends BaseController<
     });
 
     this.#interfacePromises = new Map();
+    this.#registerMessageHandlers();
   }
 
   showInterface(snapId: string, content: Component) {
@@ -187,6 +194,13 @@ export class InterfaceController extends BaseController<
     assert(
       existingInterface.snapId === snapId,
       `Interface not created by ${snapId}`,
+    );
+  }
+
+  #registerMessageHandlers() {
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:updateInterfaceState`,
+      (...args) => this.updateInterfaceState(...args),
     );
   }
 }
