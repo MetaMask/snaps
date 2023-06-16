@@ -51,6 +51,9 @@ export function createHandlerSlice<Request, Response>({
         state.response = action.payload as Draft<Response>;
         state.pending = false;
       },
+      clearResponse: (state) => {
+        state.response = null;
+      },
     },
   });
 

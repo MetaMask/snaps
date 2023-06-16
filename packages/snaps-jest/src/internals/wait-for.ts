@@ -82,6 +82,10 @@ export async function waitForResponse(
 
   return await page.evaluate(async (_type) => {
     return new Promise<SnapResponse['response']>((resolve) => {
+      window.__SIMULATOR_API__.dispatch({
+        type: `${_type}/clearResponse`,
+      });
+
       const unsubscribe = window.__SIMULATOR_API__.subscribe(() => {
         const state = window.__SIMULATOR_API__.getState();
         const { pending, response } = state[_type];
