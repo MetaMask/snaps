@@ -1245,7 +1245,7 @@ describe('BaseSnapExecutor', () => {
   });
 
   it('supports onNameLookup export', async () => {
-    const CODE = `module.exports.onNameLookup = ({ id, content }) => content`;
+    const CODE = `module.exports.onNameLookup = ({ chainId, domain }) => domain`;
 
     const executor = new TestSnapExecutor();
     await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
