@@ -6,7 +6,9 @@ the MetaMask Snaps platform.
 
 ## Overview
 
-The following is a list of the snaps in this directory:
+The following is a list of the snaps in this directory.
+
+### Key management & signing
 
 - [**`packages/bip32`**](./packages/bip32): This snap demonstrates how to
   use the `snap_getBip32Entropy` and `snap_getBip32PublicKey` methods to derive
@@ -14,23 +16,22 @@ The following is a list of the snaps in this directory:
 - [**`packages/bip44`**](./packages/bip44): This snap demonstrates how to use
   the `snap_getBip44Entropy` method to derive a BIP-44 account private key from
   the user's secret recovery phrase.
+- [**`packages/get-entropy`**](./packages/get-entropy): This snap demonstrates
+  how to use the `snap_getEntropy` method to derive deterministic entropy based
+  on the user's secret recovery phrase.
+
+### Snaps features
+
 - [**`packages/cronjobs`**](./packages/cronjobs): This snap demonstrates how to
   use the `endowment:cronjob` permission to schedule a function to be called at
   a later time.
 - [**`packages/dialogs`**](./packages/dialogs): This snap demonstrates how to
   use the `snap_dialog` method to display different types of dialogs to the
   user.
-- [**`packages/errors`**](./packages/errors): This snap demonstrates
-  how the Snaps platform handles errors thrown by snaps.
 - [**`packages/ethereum-provider`**](./packages/ethereum-provider):
   This snap demonstrates how to use the `endowment:ethereum-provider` permission
   and corresponding `ethereum` provider to interact with the Ethereum blockchain
   from a snap.
-- [**`packages/ethers-js`**](./packages/ethers-js): This snap demonstrates how
-  to use Ethers.js in a snap.
-- [**`packages/get-entropy`**](./packages/get-entropy): This snap demonstrates
-  how to use the `snap_getEntropy` method to derive deterministic entropy based
-  on the user's secret recovery phrase.
 - [**`packages/json-rpc`**](./packages/json-rpc): This snap demonstrates how to
   use the `endowment:json-rpc` permission to make requests from snaps and/or
   dapps.
@@ -46,6 +47,22 @@ The following is a list of the snaps in this directory:
 - [**`packages/transaction-insights`**](./packages/transaction-insights):
   This snap demonstrates how to use `endowment:transaction-insights` permission,
   and provide transaction insights to the user.
+
+### 3rd party integrations
+
+- [**`packages/browserify-plugin`**](./packages/browserify-plugin): This snap
+  demonstrates how to use Browserify to bundle a snap.
+- [**`packages/ethers-js`**](./packages/ethers-js): This snap demonstrates how
+  to use Ethers.js in a snap.
+- [**`packages/rollup-plugin`**](./packages/rollup-plugin): This snap
+  demonstrates how to use Rollup to bundle a snap.
+- [**`packages/webpack-plugin`**](./packages/webpack-plugin): This snap
+  demonstrates how to use Webpack to bundle a snap.
+
+### Miscellaneous
+
+- [**`packages/errors`**](./packages/errors): This snap demonstrates
+  how the Snaps platform handles errors thrown by snaps.
 - [**`packages/wasm`**](./packages/wasm): This snap demonstrates how
   to use WebAssembly in a snap.
 
