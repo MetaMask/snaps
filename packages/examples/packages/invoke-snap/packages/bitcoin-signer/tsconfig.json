@@ -3,19 +3,19 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@metamask/*": ["../../../*/src"]
+      "@metamask/*": ["../../../../../*/src"]
     }
   },
   "include": ["src", "webpack.config.ts"],
   "references": [
     {
-      "path": "../../../snaps-types"
+      "path": "../../../../../snaps-types"
     },
     {
-      "path": "../../../snaps-webpack-plugin"
+      "path": "../../../../../snaps-webpack-plugin"
     },
     {
-      "path": "../../../snaps-jest"
+      "path": "../../../../../snaps-jest"
     }
   ]
 }
