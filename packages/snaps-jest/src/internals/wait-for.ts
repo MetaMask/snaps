@@ -1,9 +1,10 @@
 import { HandlerType } from '@metamask/snaps-utils';
-import { assert } from '@metamask/utils';
+import { assert, createModuleLogger } from '@metamask/utils';
 import { waitFor as waitForPuppeteer } from 'pptr-testing-library';
 import { Page } from 'puppeteer';
 
 import { SnapResponse } from '../types';
+import { rootLogger } from './logger';
 
 export type WaitForOptions = {
   /**
@@ -16,6 +17,8 @@ export type WaitForOptions = {
    */
   message?: string;
 };
+
+const log = createModuleLogger(rootLogger, 'wait-for');
 
 /**
  * Wait for a condition to be true. This is a wrapper around
@@ -75,6 +78,8 @@ export async function waitForResponse(
     | HandlerType.OnRpcRequest
     | HandlerType.OnCronjob,
 ) {
+  log('Waiting for response of type %s.', type);
+
   return await page.evaluate(async (_type) => {
     return new Promise<SnapResponse['response']>((resolve) => {
       const unsubscribe = window.__SIMULATOR_API__.subscribe(() => {
