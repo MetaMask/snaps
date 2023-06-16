@@ -11,13 +11,13 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "yarn workspaces foreach --parallel --verbose run build",
+    "build": "yarn workspaces foreach --parallel --verbose --no-private run build",
     "build:clean": "yarn clean && yarn build",
     "build:post-tsc": "yarn build",
-    "clean": "yarn workspaces foreach --parallel --verbose run clean",
-    "start": "yarn workspaces foreach --parallel --verbose --interlaced --jobs unlimited run start",
-    "test": "yarn workspaces foreach --parallel --verbose --interlaced run test",
-    "lint": "yarn workspaces foreach --parallel --verbose --interlaced run lint",
+    "clean": "yarn workspaces foreach --parallel --verbose --no-private run clean",
+    "start": "yarn workspaces foreach --parallel --verbose --interlaced --no-private --jobs unlimited run start",
+    "test": "yarn workspaces foreach --parallel --verbose --interlaced --no-private run test",
+    "lint": "yarn workspaces foreach --parallel --verbose --interlaced --no-private run lint",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" \"!packages/**\" --ignore-path ../../.gitignore",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
