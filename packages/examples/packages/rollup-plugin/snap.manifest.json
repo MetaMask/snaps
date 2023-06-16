@@ -1,17 +1,17 @@
 {
   "version": "0.34.1-flask.1",
-  "description": "MetaMask example snap demonstrating how to use the Browserify plugin to bundle a snap.",
-  "proposedName": "Browserify Plugin Example Snap",
+  "description": "MetaMask example snap demonstrating how to use the Rollup plugin to bundle a snap.",
+  "proposedName": "Rollup Plugin Example Snap",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "dHp+DPSRgs60F4H5yVRldsLi6YgYqXXyr8cY9Wx/WHs=",
+    "shasum": "1RjPYC0YvL4jofwM7lSU9AbCuIC12l9cI3fl5y6bOnY=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
-        "packageName": "@metamask/browserify-plugin-example-snap",
+        "packageName": "@metamask/rollup-plugin-example-snap",
         "registry": "https://registry.npmjs.org"
       }
     }

@@ -150,7 +150,10 @@ gen_enforced_field(WorkspaceCwd, 'sideEffects', 'false') :-
 % Ensure all examples have the same scripts.
 gen_enforced_field(WorkspaceCwd, 'scripts.build', 'webpack') :-
   is_example(WorkspaceCwd),
-  WorkspaceCwd \= 'packages/examples/packages/wasm'.
+  WorkspaceCwd \= 'packages/examples/packages/wasm',
+  WorkspaceCwd \= 'packages/examples/packages/browserify-plugin',
+  WorkspaceCwd \= 'packages/examples/packages/rollup-plugin',
+  WorkspaceCwd \= 'packages/examples/packages/webpack-plugin'.
 gen_enforced_field(WorkspaceCwd, 'scripts.build:clean', 'yarn clean && yarn build') :-
   is_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'scripts.start', 'webpack watch') :-
