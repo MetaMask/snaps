@@ -1,14 +1,14 @@
 import { rpcErrors } from '@metamask/rpc-errors';
 import { OnRpcRequestHandler } from '@metamask/snaps-types';
 import { assert, stringToBytes } from '@metamask/utils';
-import { sha256 } from '@noble/hashes/sha256';
+import { keccak_256 as keccak256 } from '@noble/hashes/sha3';
 
 import { BIP44Path, SignMessageParams } from './types';
 
 const CORE_SIGNER_SNAP_ID = 'npm:@metamask/core-signer-example-snap';
 const DEFAULT_DERIVATION_PATH: BIP44Path = [
   `bip32:44'`,
-  `bip32:1'`,
+  `bip32:60'`,
   `bip32:0'`,
   'bip32:0',
   'bip32:0',
@@ -36,10 +36,10 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         request.params as unknown as SignMessageParams;
 
       assert(
-        path[1] === `bip32:1'`,
+        path[1] === `bip32:60'`,
         rpcErrors.invalidParams({
           message:
-            "This snap only supports the Bitcoin mainnet. Please use the `bip32:1'` coin type.",
+            "This snap only supports the Ethereum mainnet. Please use the `bip32:60'` coin type.",
         }),
       );
 
@@ -64,9 +64,9 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
             method: 'signMessage',
             params: {
               // To keep this example simple, we only support signing messages
-              // with the SHA-256 hash function. In a real snap, you could also
-              // sign actual transactions.
-              message: sha256(stringToBytes(message)),
+              // with the Keccak-256 hash function. In a real snap, you could
+              // also sign actual transactions.
+              message: keccak256(stringToBytes(message)),
               account,
             },
           },

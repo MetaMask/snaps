@@ -33,9 +33,7 @@
     "@metamask/key-tree": "^7.0.0",
     "@metamask/rpc-errors": "^5.1.1",
     "@metamask/snaps-types": "workspace:^",
-    "@metamask/snaps-ui": "workspace:^",
     "@metamask/utils": "^6.0.1",
-    "@noble/bls12-381": "^1.2.0",
     "@noble/hashes": "^1.3.1"
   },
   "devDependencies": {

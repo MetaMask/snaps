@@ -35,7 +35,6 @@
     "@metamask/snaps-types": "workspace:^",
     "@metamask/snaps-ui": "workspace:^",
     "@metamask/utils": "^6.0.1",
-    "@noble/bls12-381": "^1.2.0",
     "@noble/curves": "^1.1.0",
     "async-mutex": "^0.4.0"
   },

@@ -1,11 +1,11 @@
-# `@metamask/bitcoin-signer-example-snap`
+# `@metamask/ethereum-signer-example-snap`
 
 This snap demonstrates how to use the `wallet_invokeSnap` method to invoke
 another snap. In this case, we invoke the core signer snap to sign a message
 using a private key derived from generated entropy.
 
-For simplicity, the snap does not actually sign Bitcoin-compatible messages. It
-uses Bitcoin's BIP-44 derivation path, to demonstrate how to use the
+For simplicity, the snap does not actually sign Ethereum-compatible messages. It
+uses Ethereum's BIP-44 derivation path, to demonstrate how to use the
 `wallet_invokeSnap` method to use another snap's functionality.
 
 ## Snap usage

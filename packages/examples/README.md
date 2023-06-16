@@ -32,6 +32,8 @@ The following is a list of the snaps in this directory.
   This snap demonstrates how to use the `endowment:ethereum-provider` permission
   and corresponding `ethereum` provider to interact with the Ethereum blockchain
   from a snap.
+- [**`packages/invoke-snap`**](./packages/invoke-snap): These snaps demonstrate
+  how to use the `snap_invokeSnap` method to invoke another snap.
 - [**`packages/json-rpc`**](./packages/json-rpc): This snap demonstrates how to
   use the `endowment:json-rpc` permission to make requests from snaps and/or
   dapps.
