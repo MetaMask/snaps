@@ -293,8 +293,6 @@ jobs:
         run: yarn workspace ${{ matrix.package-name }} run build
       - name: Run E2E test
         run: yarn workspace ${{ matrix.package-name }} run test:e2e
-        env:
-          DEBUG: 'metamask:snaps-jest:*'
       - name: Require clean working directory
         shell: bash
         run: |
