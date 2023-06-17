@@ -28,7 +28,7 @@
   "scripts": {
     "build": "yarn build:esm && yarn build:cjs && yarn build:webpack",
     "build:esm": "tsc --project tsconfig.build.json",
-    "build:cjs": "swc src --out-dir dist/cjs --config-file ../../.swcrc",
+    "build:cjs": "swc src --out-dir dist/cjs --config-file ../../.swcrc.build.json",
     "build:webpack": "yarn webpack --config-name main --config-name test --mode production --progress",
     "build:vendor": "webpack --config-name vendor --mode production --progress",
     "build:clean": "rimraf dist && yarn build",
