@@ -28,7 +28,8 @@
     "./dist/esm/index.js": "./dist/esm/index.browser.js"
   },
   "files": [
-    "dist/"
+    "dist/cjs",
+    "dist/esm"
   ],
   "scripts": {
     "test": "rimraf coverage && jest && yarn test:browser && yarn posttest",

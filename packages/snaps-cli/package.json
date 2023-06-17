@@ -23,8 +23,7 @@
   },
   "files": [
     "dist/cjs",
-    "dist/esm",
-    "src"
+    "dist/esm"
   ],
   "workspaces": [
     "test/snap"

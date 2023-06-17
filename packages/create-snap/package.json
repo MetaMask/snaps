@@ -21,8 +21,7 @@
   "bin": "dist/cjs/main.js",
   "files": [
     "dist/cjs",
-    "dist/esm",
-    "src"
+    "dist/esm"
   ],
   "scripts": {
     "build": "yarn build:esm && yarn build:cjs",

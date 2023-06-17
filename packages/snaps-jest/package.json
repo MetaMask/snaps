@@ -15,8 +15,7 @@
   "types": "dist/esm/index.d.ts",
   "files": [
     "dist/cjs",
-    "dist/esm",
-    "src"
+    "dist/esm"
   ],
   "scripts": {
     "test": "jest --passWithNoTests && yarn posttest",
