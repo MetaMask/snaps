@@ -15,6 +15,7 @@ export * from './manifest/index.browser';
 export * from './namespace';
 export * from './path';
 export * from './snaps';
+export * from './structs';
 export * from './types';
 export * from './validation';
 export * from './versions';

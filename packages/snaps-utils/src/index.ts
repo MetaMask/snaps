@@ -20,6 +20,7 @@ export * from './npm';
 export * from './path';
 export * from './post-process';
 export * from './snaps';
+export * from './structs';
 export * from './types';
 export * from './validation';
 export * from './versions';

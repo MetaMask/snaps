@@ -1,24 +1,4 @@
-import type { Options, PositionalOptions } from 'yargs';
-
-export type SnapsCliBuilders = {
-  readonly bundle: Readonly<Options>;
-  readonly dist: Readonly<Options>;
-  readonly eval: Readonly<Options>;
-  readonly manifest: Readonly<Options>;
-  readonly outfileName: Readonly<Options>;
-  readonly port: Readonly<Options>;
-  readonly root: Readonly<Options>;
-  readonly sourceMaps: Readonly<Options>;
-  readonly src: Readonly<Options>;
-  readonly stripComments: Readonly<Options>;
-  readonly suppressWarnings: Readonly<Options>;
-  readonly transpilationMode: Readonly<Options>;
-  readonly depsToTranspile: Readonly<Options>;
-  readonly verboseErrors: Readonly<Options>;
-  readonly writeManifest: Readonly<Options>;
-  readonly serve: Readonly<Options>;
-  readonly directory: Readonly<PositionalOptions>;
-};
+import type { Options } from 'yargs';
 
 export enum TranspilationModes {
   LocalAndDeps = 'localAndDeps',
@@ -26,7 +6,7 @@ export enum TranspilationModes {
   None = 'none',
 }
 
-const builders: SnapsCliBuilders = {
+const builders: Record<string, Readonly<Options>> = {
   bundle: {
     alias: 'b',
     describe: 'Snap bundle file',
@@ -34,6 +14,14 @@ const builders: SnapsCliBuilders = {
     demandOption: true,
     normalize: true,
     default: 'dist/bundle.js',
+  },
+
+  config: {
+    alias: 'c',
+    describe: 'Path to config file',
+    type: 'string',
+    demandOption: false,
+    normalize: true,
   },
 
   dist: {

@@ -11,7 +11,8 @@ import chokidar from 'chokidar';
 import pathUtils from 'path';
 
 import type { YargsArgs } from '../../types/yargs';
-import { CONFIG_FILE, loadConfig } from '../../utils';
+import { CONFIG_FILE } from '../../utils';
+import { loadConfig } from '../../utils/snap-config';
 import { bundle } from '../build/bundle';
 import { evalHandler } from '../eval/evalHandler';
 import { manifestHandler } from '../manifest/manifestHandler';
@@ -38,9 +39,11 @@ export async function watch(argv: YargsArgs): Promise<void> {
     src,
     serve: shouldServe,
   } = argv;
+
   if (outfileName) {
     validateOutfileName(outfileName);
   }
+
   await validateFilePath(src);
   await validateDirPath(dist, true);
   const srcDir = pathUtils.dirname(src);

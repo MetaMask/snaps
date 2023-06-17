@@ -1,15 +1,9 @@
-import type { Arguments } from 'yargs';
 import yargs from 'yargs';
-import type yargsType from 'yargs/yargs';
+import { hideBin } from 'yargs/helpers';
 
 import builders from './builders';
-import {
-  applyConfig,
-  loadConfig,
-  sanitizeInputs,
-  setSnapGlobals,
-  logError,
-} from './utils';
+import { loadConfig, resolveConfig } from './config';
+import { sanitizeInputs, logError } from './utils';
 
 /**
  * The main CLI entry point function. This processes the command line args, and
@@ -18,10 +12,8 @@ import {
  * @param argv - The raw command line arguments, i.e., `process.argv`.
  * @param commands - The list of commands to use.
  */
-export function cli(argv: string[], commands: any): void {
-  const rawArgv = argv.slice(2);
-  // eslint-disable-next-line @typescript-eslint/no-unused-expressions, @typescript-eslint/no-floating-promises
-  yargs(rawArgv)
+export async function cli(argv: string[], commands: any) {
+  await yargs(hideBin(argv))
     .scriptName('mm-snap')
     .usage('Usage: $0 <command> [options]')
 
@@ -47,23 +39,23 @@ export function cli(argv: string[], commands: any): void {
 
     .command(commands)
 
+    .option('config', builders.config)
     .option('verboseErrors', builders.verboseErrors)
-
     .option('suppressWarnings', builders.suppressWarnings)
 
     .strict()
 
-    // Typecast: The @types/yargs type for .middleware is incorrect.
-    // yargs middleware functions receive the yargs instance as a second parameter.
-    // ref: https://yargs.js.org/docs/#api-reference-middlewarecallbacks-applybeforevalidation
-    .middleware(
-      ((yargsArgv: Arguments, yargsInstance: typeof yargsType) => {
-        applyConfig(loadConfig(), rawArgv, yargsArgv, yargsInstance);
-        setSnapGlobals(yargsArgv);
-        sanitizeInputs(yargsArgv);
-      }) as any,
-      true,
-    )
+    .middleware(async (args: any) => {
+      // eslint-disable-next-line require-atomic-updates
+      args.context = {
+        config:
+          args.config && typeof args.config === 'string'
+            ? await loadConfig(args.config)
+            : await resolveConfig(process.cwd()),
+      };
+
+      sanitizeInputs(args);
+    }, false)
 
     .fail((message: string, error: Error, _yargs) => {
       logError(message, error);
@@ -73,5 +65,6 @@ export function cli(argv: string[], commands: any): void {
     .demandCommand(1, 'You must specify at least one command.')
 
     .help()
-    .alias('help', 'h').argv;
+    .alias('help', 'h')
+    .parseAsync();
 }

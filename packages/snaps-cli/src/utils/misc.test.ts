@@ -5,7 +5,6 @@ import {
   booleanStringToBoolean,
   logError,
   sanitizeInputs,
-  setSnapGlobals,
   trimPathString,
   writeError,
 } from './misc';
@@ -19,49 +18,7 @@ describe('misc', () => {
     isWatching: false,
   };
 
-  // This is the yargs object created with cli command: `mm-snap init`.
   /* eslint-disable @typescript-eslint/naming-convention */
-  const defaultArgv = {
-    _: ['init'],
-    verboseErrors: true,
-    'verbose-errors': false,
-    suppressWarnings: false,
-    'suppress-warnings': false,
-    src: 'src/index.js',
-    s: 'src/index.js',
-    dist: 'dist',
-    d: 'dist',
-    outfileName: 'bundle.js',
-    n: 'bundle.js',
-    'outfile-name': 'bundle.js',
-    port: 8081,
-    p: 8081,
-    $0: '/usr/local/bin/mm-snap',
-  };
-
-  // This is the yargs object created with cli command:
-  //   `mm-snap watch -verboseErrors --suppressWarnings`
-  const exampleArgv = {
-    _: ['watch'],
-    verboseErrors: true,
-    'verbose-errors': true,
-    suppressWarnings: true,
-    'suppress-warnings': true,
-    src: 'src/index.js',
-    s: 'src/index.js',
-    dist: 'dist',
-    d: 'dist',
-    outfileName: 'bundle.js',
-    n: 'bundle.js',
-    'outfile-name': 'bundle.js',
-    sourceMaps: false,
-    'source-maps': false,
-    stripComments: false,
-    strip: false,
-    'strip-comments': false,
-    $0: '/usr/local/bin/mm-snap',
-  };
-
   const unsanitizedArgv = {
     _: ['init'],
     verboseErrors: true,
@@ -126,32 +83,6 @@ describe('misc', () => {
       expect(() => booleanStringToBoolean('foo')).toThrow(
         'Expected a boolean or the strings "true" or "false". Received: "foo"',
       );
-    });
-  });
-
-  describe('setSnapGlobals', () => {
-    it('sets global variables correctly', () => {
-      setSnapGlobals(exampleArgv);
-      expect(global.snaps.isWatching).toBe(true);
-      expect(global.snaps.verboseErrors).toBe(true);
-      expect(global.snaps.suppressWarnings).toBe(true);
-    });
-
-    it('does not set global variables incorrectly', () => {
-      setSnapGlobals(defaultArgv);
-      expect(global.snaps.isWatching).toBe(false);
-      expect(global.snaps.verboseErrors).toBe(true);
-      expect(global.snaps.suppressWarnings).toBe(false);
-    });
-
-    it('does not set global variables if they are not in argv', () => {
-      global.snaps = { isWatching: false };
-
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      const argv = { _: ['w', 'watch'], $0: '/usr/local/bin/mm-snap' };
-      setSnapGlobals(argv);
-      expect(global.snaps.verboseErrors).toBeUndefined();
-      expect(global.snaps.suppressWarnings).toBeUndefined();
     });
   });
 

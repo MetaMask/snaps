@@ -6,7 +6,6 @@ import {
 } from '@metamask/snaps-utils';
 
 import type { YargsArgs } from '../../types/yargs';
-import { loadConfig } from '../../utils';
 import { evalHandler } from '../eval/evalHandler';
 import { manifestHandler } from '../manifest/manifestHandler';
 import { bundle } from './bundle';
@@ -21,22 +20,24 @@ import { bundle } from './bundle';
  * @param argv.src - The source file path.
  * @param argv.dist - The output directory path.
  * @param argv.outfileName - The output file name.
+ * @param argv.context - The context object.
+ * @param argv.context.config - The config object.
  */
-export async function build(argv: YargsArgs): Promise<void> {
-  const { src, dist, outfileName } = argv;
+export async function build({
+  src,
+  dist,
+  outfileName,
+  context: { config },
+}: YargsArgs): Promise<void> {
   if (outfileName) {
     validateOutfileName(outfileName);
   }
+
   await validateFilePath(src);
   await validateDirPath(dist, true);
 
   const outfilePath = getOutfilePath(dist, outfileName);
-  const result = await bundle(
-    src,
-    outfilePath,
-    argv,
-    loadConfig().bundlerCustomizer,
-  );
+  const result = await bundle(src, outfilePath, argv, config.bundlerCustomizer);
   if (result && argv.eval) {
     await evalHandler({ ...argv, bundle: outfilePath });
   }

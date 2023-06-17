@@ -1,5 +1,7 @@
 import type { Options } from 'yargs';
 
+import { SnapConfig } from '../config';
+
 // eslint-disable-next-line @typescript-eslint/ban-types
 type OptionalArguments<Type = {}> = Type & {
   /** Non-option arguments */
@@ -13,6 +15,12 @@ type OptionalArguments<Type = {}> = Type & {
 };
 
 type YargsArgs = {
+  // Context is added by the config middleware.
+  context: {
+    config: SnapConfig;
+  };
+
+  config?: string;
   sourceMaps: boolean;
   stripComments: boolean;
   transformHtmlComments: boolean;
