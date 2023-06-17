@@ -3,6 +3,7 @@
   "compilerOptions": {
     "declaration": true,
     "inlineSources": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "module": "ES2020"
   }
 }

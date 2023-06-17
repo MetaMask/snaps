@@ -3,7 +3,7 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "baseUrl": "./",
-    "outDir": "./dist",
+    "outDir": "./dist/esm",
     "rootDir": "./",
     "skipLibCheck": true,
     "resolveJsonModule": true

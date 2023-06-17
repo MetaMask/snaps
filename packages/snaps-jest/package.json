@@ -3,9 +3,20 @@
   "version": "0.34.1-flask.1",
   "description": "A Jest preset for end-to-end testing MetaMask Snaps, including a Jest environment, and a set of Jest matchers.",
   "sideEffects": false,
-  "main": "dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/esm/index.d.ts"
+    }
+  },
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
   "files": [
-    "dist"
+    "dist/cjs",
+    "dist/esm",
+    "src"
   ],
   "scripts": {
     "test": "jest --passWithNoTests && yarn posttest",
@@ -17,8 +28,9 @@
     "lint:ci": "yarn lint",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
-    "build:tsc": "tsc --project tsconfig.build.json",
-    "build": "yarn build:tsc",
+    "build": "yarn build:esm && yarn build:cjs",
+    "build:esm": "tsc --project tsconfig.build.json",
+    "build:cjs": "swc src --out-dir dist/cjs",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
     "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
@@ -50,7 +62,8 @@
     "@metamask/eslint-config-jest": "^11.0.0",
     "@metamask/eslint-config-nodejs": "^11.0.1",
     "@metamask/eslint-config-typescript": "^11.0.0",
-    "@swc/core": "^1.3.61",
+    "@swc/cli": "^0.1.62",
+    "@swc/core": "^1.3.64",
     "@swc/jest": "^0.2.26",
     "@types/jest": "^27.5.1",
     "@types/semver": "^7.3.10",

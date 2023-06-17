@@ -4,7 +4,7 @@ import builders from '../../builders';
 import { YargsArgs } from '../../types/yargs';
 import { serve } from './serveHandler';
 
-export = {
+const command = {
   command: ['serve', 's'],
   desc: 'Locally serve Snap file(s) for testing',
   builder: (yarg: yargs.Argv) => {
@@ -12,3 +12,5 @@ export = {
   },
   handler: async (argv: YargsArgs) => serve(argv),
 };
+
+export default command;
