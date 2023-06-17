@@ -38,7 +38,7 @@
     "test:ci": "yarn test",
     "build": "yarn build:esm && yarn build:cjs",
     "build:esm": "tsc --project tsconfig.build.json",
-    "build:cjs": "swc src --out-dir dist/cjs",
+    "build:cjs": "swc src --out-dir dist/cjs --config-file ../../.swcrc",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",

@@ -10,8 +10,11 @@
     "type": "commonjs"
   },
   "exclude": [
-    ".*\\.d\\.test\\.ts",
-    ".*\\.d\\.ts"
+    ".*__mocks__.*",
+    ".*__snapshots__.*",
+    ".*test-utils.*",
+    ".*\\.test\\.?.*\\.tsx?",
+    ".*\\.d\\.tsx?"
   ],
   "sourceMaps": true
 }
