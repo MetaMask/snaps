@@ -1,14 +1,14 @@
 import index from '.';
 import type { YargsArgs } from '../../types/yargs';
-import { evalHandler } from './evalHandler';
+import { evaluate } from './eval';
 
-jest.mock('./evalHandler');
+jest.mock('./eval');
 
 const getMockArgv = ({ bundle = 'dist/snap.js' } = {}) => {
   return { bundle } as unknown as YargsArgs;
 };
 
-const evalHandlerMock = evalHandler as jest.MockedFunction<typeof evalHandler>;
+const evalHandlerMock = evaluate as jest.MockedFunction<typeof evaluate>;
 
 describe('handler', () => {
   it('calls evalHandler', async () => {

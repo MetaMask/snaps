@@ -2,15 +2,15 @@ import type yargs from 'yargs';
 
 import builders from '../../builders';
 import type { YargsArgs } from '../../types/yargs';
-import { evalHandler } from './evalHandler';
+import { evaluate } from './eval';
 
 const command = {
   command: ['eval', 'e'],
-  desc: 'Attempt to evaluate Snap bundle in SES',
+  desc: 'Attempt to evaluate snap bundle in SES',
   builder: (yarg: yargs.Argv) => {
     yarg.option('bundle', builders.bundle);
   },
-  handler: async (argv: YargsArgs) => evalHandler(argv),
+  handler: async (argv: YargsArgs) => evaluate(argv),
 };
 
 export default command;

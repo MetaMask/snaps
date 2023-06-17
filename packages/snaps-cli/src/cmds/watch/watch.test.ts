@@ -8,7 +8,7 @@ import path from 'path';
 import watch from '.';
 import { CONFIG_FILE } from '../../utils';
 import * as build from '../build/bundle';
-import * as evalModule from '../eval/evalHandler';
+import * as evalModule from '../eval/eval';
 import * as manifest from '../manifest/manifestHandler';
 
 jest.mock('@metamask/snaps-utils', () => ({
@@ -278,7 +278,7 @@ describe('watch', () => {
         .spyOn(manifest, 'manifestHandler')
         .mockImplementation();
       const evalMock = jest
-        .spyOn(evalModule, 'evalHandler')
+        .spyOn(evalModule, 'evaluate')
         .mockImplementation((() => {
           resolveEvalPromise();
         }) as any);

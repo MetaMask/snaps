@@ -15,7 +15,7 @@ import type { YargsArgs } from '../../types/yargs';
 import { CONFIG_FILE } from '../../utils';
 import { loadConfig } from '../../utils/snap-config';
 import { bundle } from '../build/bundle';
-import { evalHandler } from '../eval/evalHandler';
+import { evaluate } from '../eval/eval';
 import { manifestHandler } from '../manifest/manifestHandler';
 import { serve } from '../serve/serveHandler';
 
@@ -66,7 +66,7 @@ export async function watch(argv: YargsArgs): Promise<void> {
       }
 
       if (shouldEval) {
-        await evalHandler({ ...argv, bundle: outfilePath });
+        await evaluate({ ...argv, bundle: outfilePath });
       }
     } catch (error) {
       logError(

@@ -1,12 +1,11 @@
 import {
-  getOutfilePath,
   validateDirPath,
   validateFilePath,
   validateOutfileName,
 } from '@metamask/snaps-utils';
 
 import { ProcessedBrowserifyConfig } from '../../../config';
-import { evalHandler } from '../../eval/evalHandler';
+import { evaluate } from '../../eval/eval';
 import { manifestHandler } from '../../manifest/manifestHandler';
 import { bundle } from './bundle';
 
@@ -32,11 +31,9 @@ export async function legacyBuild(
   await validateFilePath(cliOptions.src);
   await validateDirPath(cliOptions.dist, true);
 
-  const outfilePath = getOutfilePath(cliOptions.dist, cliOptions.outfileName);
   const result = await bundle(config);
-
   if (result && cliOptions.eval) {
-    await evalHandler({ ...config, bundle: outfilePath });
+    await evaluate(config);
   }
 
   if (cliOptions.manifest) {
