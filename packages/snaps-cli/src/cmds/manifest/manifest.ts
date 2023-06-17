@@ -1,19 +1,33 @@
 import { checkManifest, logError, logWarning } from '@metamask/snaps-utils';
 
-import type { YargsArgs } from '../../types/yargs';
+import type { ProcessedConfig } from '../../config';
 
 const ERROR_PREFIX = 'Manifest Error: ';
+
+/**
+ * Get whether to write the manifest to disk.
+ *
+ * @param config - The config object.
+ * @returns Whether to write the manifest to disk.
+ */
+function getWriteManifest(config: ProcessedConfig) {
+  if (config.bundler === 'browserify') {
+    return config.cliOptions.writeManifest;
+  }
+
+  return config.manifest.update;
+}
 
 /**
  * Validates a snap.manifest.json file. Attempts to fix the manifest and write
  * the fixed version to disk if `writeManifest` is true. Throws if validation
  * fails.
  *
- * @param argv - The Yargs `argv` object.
- * @param argv.writeManifest - Whether to write the fixed manifest to disk.
+ * @param config - The config object.
  */
-export async function manifestHandler({ writeManifest }: YargsArgs) {
+export async function manifest(config: ProcessedConfig) {
   try {
+    const writeManifest = getWriteManifest(config);
     const { warnings, errors } = await checkManifest(
       process.cwd(),
       Boolean(writeManifest),
@@ -31,7 +45,7 @@ export async function manifestHandler({ writeManifest }: YargsArgs) {
       logWarning(
         'Manifest Warning: Validation of snap.manifest.json completed with warnings.',
       );
-      warnings.forEach(logManifestWarning);
+      warnings.forEach((warning) => logManifestWarning(config, warning));
     }
   } catch (error) {
     throw new Error(`${ERROR_PREFIX}${error}`);
@@ -41,10 +55,11 @@ export async function manifestHandler({ writeManifest }: YargsArgs) {
 /**
  * Logs a manifest warning, if `suppressWarnings` is not enabled.
  *
+ * @param config - The config object.
  * @param message - The message to log.
  */
-function logManifestWarning(message: string) {
-  if (!global.snaps.suppressWarnings) {
+function logManifestWarning(config: ProcessedConfig, message: string) {
+  if (config.bundler === 'webpack' || !config.cliOptions.suppressWarnings) {
     logWarning(`Manifest Warning: ${message}`);
   }
 }

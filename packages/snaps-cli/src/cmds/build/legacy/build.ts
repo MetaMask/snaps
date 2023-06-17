@@ -6,7 +6,7 @@ import {
 
 import { ProcessedBrowserifyConfig } from '../../../config';
 import { evaluate } from '../../eval/eval';
-import { manifestHandler } from '../../manifest/manifestHandler';
+import { manifest } from '../../manifest/manifest';
 import { bundle } from './bundle';
 
 /**
@@ -37,6 +37,6 @@ export async function legacyBuild(
   }
 
   if (cliOptions.manifest) {
-    await manifestHandler(config);
+    await manifest(config);
   }
 }

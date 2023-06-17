@@ -1,16 +1,14 @@
 import index from '.';
 import type { YargsArgs } from '../../types/yargs';
-import { manifestHandler } from './manifestHandler';
+import { manifest } from './manifest';
 
-jest.mock('./manifestHandler');
+jest.mock('./manifest');
 
 const getMockArgv = ({ writeManifest = true } = {}) => {
   return { writeManifest } as unknown as YargsArgs;
 };
 
-const manifestHandlerMock = manifestHandler as jest.MockedFunction<
-  typeof manifestHandler
->;
+const manifestHandlerMock = manifest as jest.MockedFunction<typeof manifest>;
 
 describe('handler', () => {
   it('calls manifestHandler', async () => {

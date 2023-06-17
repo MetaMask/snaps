@@ -16,7 +16,6 @@ import { CONFIG_FILE } from '../../utils';
 import { loadConfig } from '../../utils/snap-config';
 import { bundle } from '../build/bundle';
 import { evaluate } from '../eval/eval';
-import { manifestHandler } from '../manifest/manifestHandler';
 import { serve } from '../serve/serveHandler';
 
 /**
@@ -62,7 +61,7 @@ export async function watch(argv: YargsArgs): Promise<void> {
       await bundle(src, outfilePath, argv, config.bundlerCustomizer);
 
       if (manifest) {
-        await manifestHandler(argv);
+        await manifest(argv);
       }
 
       if (shouldEval) {

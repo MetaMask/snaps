@@ -3,7 +3,7 @@ import type yargs from 'yargs';
 import builders from '../../builders';
 import type { YargsArgs } from '../../types/yargs';
 import { logError } from '../../utils';
-import { manifestHandler } from './manifestHandler';
+import { manifest } from './manifest';
 
 const command = {
   command: ['manifest', 'm'],
@@ -13,7 +13,7 @@ const command = {
   },
   handler: async (argv: YargsArgs) => {
     try {
-      await manifestHandler(argv);
+      await manifest(argv);
     } catch (error) {
       logError(error.message, error);
       throw error;
