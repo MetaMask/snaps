@@ -14,6 +14,7 @@ const builders: Record<string, Readonly<Options>> = {
     demandOption: true,
     normalize: true,
     default: 'dist/bundle.js',
+    deprecated: true,
   },
 
   config: {
