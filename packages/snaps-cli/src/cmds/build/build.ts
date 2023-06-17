@@ -1,6 +1,6 @@
 import { webpack } from 'webpack';
 
-import { YargsArgs } from '../../types/yargs';
+import { ProcessedConfig } from '../../config';
 import { getDefaultConfiguration } from '../../webpack';
 import { legacyBuild } from './legacy';
 
@@ -10,13 +10,9 @@ import { legacyBuild } from './legacy';
  *
  * This creates the destination directory if it doesn't exist.
  *
- * @param argv - Argv from Yargs.
+ * @param config - The config object.
  */
-export async function build(argv: YargsArgs): Promise<void> {
-  const {
-    context: { config },
-  } = argv;
-
+export async function build(config: ProcessedConfig): Promise<void> {
   if (config.bundler === 'browserify') {
     return await legacyBuild(config);
   }

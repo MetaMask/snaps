@@ -24,7 +24,7 @@ import { bundle } from './bundle';
 export async function legacyBuild(
   config: ProcessedBrowserifyConfig,
 ): Promise<void> {
-  const { cliOptions, bundlerCustomizer } = config;
+  const { cliOptions } = config;
   if (cliOptions.outfileName) {
     validateOutfileName(cliOptions.outfileName);
   }
@@ -33,12 +33,7 @@ export async function legacyBuild(
   await validateDirPath(cliOptions.dist, true);
 
   const outfilePath = getOutfilePath(cliOptions.dist, cliOptions.outfileName);
-  const result = await bundle(
-    cliOptions.src,
-    outfilePath,
-    config,
-    bundlerCustomizer,
-  );
+  const result = await bundle(config);
 
   if (result && cliOptions.eval) {
     await evalHandler({ ...config, bundle: outfilePath });

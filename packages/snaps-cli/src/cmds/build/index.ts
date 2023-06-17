@@ -24,7 +24,7 @@ const command = {
       .implies('depsToTranspile', 'transpilationMode')
       .middleware((argv) => processInvalidTranspilation(argv as any));
   },
-  handler: async (argv: YargsArgs) => build(argv),
+  handler: async (argv: YargsArgs) => build(argv.context.config),
 };
 
 export default command;
