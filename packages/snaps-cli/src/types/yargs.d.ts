@@ -1,6 +1,6 @@
 import type { Options } from 'yargs';
 
-import { SnapConfig } from '../config';
+import { ProcessedConfig } from '../config';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type OptionalArguments<Type = {}> = Type & {
@@ -17,7 +17,7 @@ type OptionalArguments<Type = {}> = Type & {
 type YargsArgs = {
   // Context is added by the config middleware.
   context: {
-    config: SnapConfig;
+    config: ProcessedConfig;
   };
 
   config?: string;

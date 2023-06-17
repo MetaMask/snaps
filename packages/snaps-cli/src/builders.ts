@@ -31,6 +31,7 @@ const builders: Record<string, Readonly<Options>> = {
     demandOption: true,
     normalize: true,
     default: 'dist',
+    deprecated: true,
   },
 
   eval: {
@@ -39,6 +40,7 @@ const builders: Record<string, Readonly<Options>> = {
     type: 'boolean',
     demandOption: false,
     default: true,
+    deprecated: true,
   },
 
   manifest: {
@@ -47,6 +49,7 @@ const builders: Record<string, Readonly<Options>> = {
     type: 'boolean',
     demandOption: false,
     default: true,
+    deprecated: true,
   },
 
   port: {
@@ -62,6 +65,7 @@ const builders: Record<string, Readonly<Options>> = {
       }
       return port;
     },
+    deprecated: true,
   },
 
   outfileName: {
@@ -70,6 +74,7 @@ const builders: Record<string, Readonly<Options>> = {
     type: 'string',
     demandOption: false,
     default: 'bundle.js',
+    deprecated: true,
   },
 
   root: {
@@ -79,6 +84,7 @@ const builders: Record<string, Readonly<Options>> = {
     demandOption: true,
     normalize: true,
     default: '.',
+    deprecated: true,
   },
 
   sourceMaps: {
@@ -86,6 +92,7 @@ const builders: Record<string, Readonly<Options>> = {
     type: 'boolean',
     demandOption: false,
     default: false,
+    deprecated: true,
   },
 
   src: {
@@ -95,6 +102,7 @@ const builders: Record<string, Readonly<Options>> = {
     demandOption: true,
     normalize: true,
     default: 'src/index.js',
+    deprecated: true,
   },
 
   stripComments: {
@@ -103,6 +111,7 @@ const builders: Record<string, Readonly<Options>> = {
     type: 'boolean',
     demandOption: false,
     default: true,
+    deprecated: true,
   },
 
   suppressWarnings: {
@@ -110,21 +119,24 @@ const builders: Record<string, Readonly<Options>> = {
     describe: 'Whether to suppress warnings',
     demandOption: false,
     default: false,
+    deprecated: true,
   },
 
   transpilationMode: {
     type: 'string',
     describe:
-      'Whether to use Babel to transpile all source code (including dependencies), local source code only, or nothing.',
+      'Whether to use Babel to transpile all source code (including dependencies), local source code only, or nothing',
     demandOption: false,
     default: TranspilationModes.LocalOnly,
     choices: Object.values(TranspilationModes),
+    deprecated: true,
   },
 
   depsToTranspile: {
     type: 'array',
     describe: 'Transpile only the listed dependencies.',
     demandOption: false,
+    deprecated: true,
   },
 
   verboseErrors: {
@@ -132,25 +144,23 @@ const builders: Record<string, Readonly<Options>> = {
     describe: 'Display original errors',
     demandOption: false,
     default: true,
+    deprecated: true,
   },
 
   writeManifest: {
-    describe: 'Make necessary changes to the Snap manifest file',
+    describe: 'Make necessary changes to the snap manifest file',
     type: 'boolean',
     demandOption: false,
     default: true,
+    deprecated: true,
   },
 
   serve: {
-    describe: 'Serve Snap file(s) locally for testing',
+    describe: 'Serve snap file(s) locally for testing',
     type: 'boolean',
     demandOption: false,
     default: true,
-  },
-
-  directory: {
-    describe: 'the directory to use',
-    type: 'string',
+    deprecated: true,
   },
 };
 

@@ -2,6 +2,7 @@ import { logInfo } from '@metamask/snaps-utils';
 import { promises as fs } from 'fs';
 
 import { TranspilationModes } from '../../builders';
+import type { ProcessedBrowserifyConfig } from '../../config';
 import type { YargsArgs } from '../../types/yargs';
 import { writeError } from '../../utils';
 
@@ -50,14 +51,14 @@ export async function writeBundleFile({
 /**
  * Processes dependencies and updates `argv` with an options object.
  *
- * @param argv - The Yargs arguments object.
+ * @param config - The config object.
  * @returns An object with options that can be passed to Babelify.
  */
-export function processDependencies(argv: YargsArgs) {
-  const { depsToTranspile, transpilationMode } = argv;
+export function processDependencies(config: ProcessedBrowserifyConfig) {
+  const { depsToTranspile, transpilationMode } = config.cliOptions;
   const babelifyOptions: Record<string, any> = {};
   if (transpilationMode === TranspilationModes.LocalAndDeps) {
-    const regexpStr = getDependencyRegExp(depsToTranspile as string[]);
+    const regexpStr = getDependencyRegExp(depsToTranspile);
     if (regexpStr !== null) {
       babelifyOptions.ignore = [regexpStr];
     }

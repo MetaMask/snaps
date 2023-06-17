@@ -1,8 +1,13 @@
 import type yargs from 'yargs';
 
 import builders from '../../builders';
+<<<<<<< HEAD
 import type { YargsArgs } from '../../types/yargs';
 import { build } from './buildHandler';
+=======
+import { YargsArgs } from '../../types/yargs';
+import { build } from './build';
+>>>>>>> 5115cfef (Update build command to support Webpack)
 import { processInvalidTranspilation } from './utils';
 
 const command = {

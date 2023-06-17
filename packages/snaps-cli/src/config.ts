@@ -6,10 +6,12 @@ import { readFile } from 'fs/promises';
 import Module from 'module';
 import { dirname, resolve } from 'path';
 import {
+  array,
   boolean,
   defaulted,
   define,
   func,
+  Infer,
   number,
   object,
   optional,
@@ -28,7 +30,7 @@ const CONFIG_FILES = ['snap.config.js', 'snap.config.ts'];
  * @deprecated The Browserify bundler is deprecated and will be removed in a
  * future release. Use the Webpack bundler instead.
  */
-export type SnapsBrowserifyConfig = {
+export type SnapBrowserifyConfig = {
   /**
    * The bundler to use to build the snap. For backwards compatibility, if not
    * specified, Browserify will be used. However, the Browserify bundler is
@@ -43,16 +45,123 @@ export type SnapsBrowserifyConfig = {
    * @deprecated The Browserify bundler is deprecated and will be removed in a
    * future release. Use the Webpack bundler instead.
    */
-  cliOptions: {
+  cliOptions?: {
     /**
-     * The path to the snap entry point.
+     * The path to the snap bundle file.
+     *
+     * @default 'dist/bundle.js'
      */
-    src: string;
+    bundle?: string;
+
+    /**
+     * The directory to output the snap to.
+     *
+     * @default 'dist'
+     */
+    dist?: string;
+
+    /**
+     * Whether to attempt to evaluate the snap in SES. This can catch some errors
+     * that would otherwise only be caught at runtime.
+     *
+     * @default true
+     */
+    eval?: boolean;
+
+    /**
+     * Whether to validate the snap manifest.
+     *
+     * @default true
+     */
+    manifest?: boolean;
+
+    /**
+     * The name of the bundle file.
+     *
+     * @default 'bundle.js'
+     */
+    outfileName?: string;
 
     /**
      * The port to run the server on.
+     *
+     * @default 8081
      */
     port?: number;
+
+    /**
+     * The root directory to serve the snap from.
+     *
+     * @default `process.cwd()`
+     */
+    root?: string;
+
+    /**
+     * Whether to generate source maps for the snap bundle.
+     *
+     * @default false
+     */
+    sourceMaps?: boolean;
+
+    /**
+     * The path to the snap entry point.
+     *
+     * @default 'src/index.js'
+     */
+    src?: string;
+
+    /**
+     * Whether to remove comments from the bundle.
+     *
+     * @default true
+     */
+    stripComments?: boolean;
+
+    /**
+     * Whether to suppress warnings.
+     *
+     * @default false
+     */
+    suppressWarnings?: boolean;
+
+    /**
+     * The transpilation mode to use, which determines which files are
+     * transpiled.
+     *
+     * - `'localAndDeps'`: Transpile the snap entry point and all dependencies.
+     * - `'localOnly'`: Transpile only the snap entry point.
+     * - `'none'`: Don't transpile any files.
+     *
+     * @default 'localOnly'
+     */
+    transpilationMode?: 'localAndDeps' | 'localOnly' | 'none';
+
+    /**
+     * The dependencies to transpile when `transpilationMode` is set to
+     * `'localAndDeps'`. If not specified, all dependencies will be transpiled.
+     */
+    depsToTranspile?: string[];
+
+    /**
+     * Whether to show original errors.
+     *
+     * @default true
+     */
+    verboseErrors?: boolean;
+
+    /**
+     * Whether to write the updated manifest to disk.
+     *
+     * @default true
+     */
+    writeManifest?: boolean;
+
+    /**
+     * Whether to serve the snap locally.
+     *
+     * @default true
+     */
+    serve?: boolean;
   };
 
   /**
@@ -70,7 +179,7 @@ export type SnapsBrowserifyConfig = {
  * The configuration for the Snaps CLI, stored as `snap.config.js` or
  * `snap.config.ts` in the root of the project.
  */
-export type SnapsWebpackConfig = {
+export type SnapWebpackConfig = {
   /**
    * The bundler to use to build the snap. For backwards compatibility, if not
    * specified, Browserify will be used. However, the Browserify bundler is
@@ -93,6 +202,14 @@ export type SnapsWebpackConfig = {
    * @default true
    */
   sourceMap?: boolean | 'inline';
+
+  /**
+   * Whether to attempt to evaluate the snap in SES. This can catch some errors
+   * that would otherwise only be caught at runtime.
+   *
+   * @default true
+   */
+  evaluate?: boolean;
 
   output?: {
     /**
@@ -121,6 +238,26 @@ export type SnapsWebpackConfig = {
      * @default false
      */
     clean?: boolean;
+  };
+
+  manifest?: {
+    /**
+     * The path to the snap manifest file. If the path is relative, it will be
+     * resolved relative to the current working directory.
+     *
+     * @default 'snap.manifest.json'
+     */
+    path?: string;
+
+    /**
+     * Whether to automatically update the manifest. If `true`, the manifest
+     * will be updated with the latest shasum of the snap bundle, and some
+     * common fields will be updated if they are missing or incorrect. If
+     * `false`, the manifest will be left as-is.
+     *
+     * @default true
+     */
+    update?: boolean;
   };
 
   /**
@@ -180,7 +317,7 @@ export type SnapsWebpackConfig = {
  * The configuration for the Snaps CLI, stored as `snap.config.js` or
  * `snap.config.ts` in the root of the project.
  */
-export type SnapConfig = SnapsBrowserifyConfig | SnapsWebpackConfig;
+export type SnapConfig = SnapBrowserifyConfig | SnapWebpackConfig;
 
 type SnapsBrowserifyBundlerCustomizerFunction = (
   bundler: BrowserifyObject,
@@ -199,8 +336,25 @@ export const SnapsBrowserifyConfigStruct = object({
   bundler: defaulted(literal('browserify'), 'browserify'),
   cliOptions: defaulted(
     object({
+      bundle: defaulted(string(), 'dist/bundle.js'),
+      dist: defaulted(string(), 'dist'),
+      eval: defaulted(boolean(), true),
+      manifest: defaulted(boolean(), true),
+      port: defaulted(number(), 8081),
+      outfileName: defaulted(string(), 'bundle.js'),
+      root: defaulted(string(), process.cwd()),
+      sourceMaps: defaulted(boolean(), false),
       src: defaulted(string(), 'src/index.js'),
-      port: defaulted(number(), 8000),
+      stripComments: defaulted(boolean(), true),
+      suppressWarnings: defaulted(boolean(), false),
+      transpilationMode: defaulted(
+        union([literal('localAndDeps'), literal('localOnly'), literal('none')]),
+        'localOnly',
+      ),
+      depsToTranspile: defaulted(array(string()), []),
+      verboseErrors: defaulted(boolean(), true),
+      writeManifest: defaulted(boolean(), true),
+      serve: defaulted(boolean(), true),
     }),
     {},
   ),
@@ -224,11 +378,19 @@ export const SnapsWebpackConfigStruct = object({
   bundler: literal('webpack'),
   entry: string(),
   sourceMap: defaulted(union([boolean(), literal('inline')]), true),
+  evaluate: defaulted(boolean(), true),
   output: defaulted(
     object({
-      path: defaulted(string(), 'dist'),
+      path: defaulted(string(), resolve(process.cwd(), 'dist')),
       filename: defaulted(string(), 'bundle.js'),
       clean: defaulted(boolean(), false),
+    }),
+    {},
+  ),
+  manifest: defaulted(
+    object({
+      path: defaulted(string(), resolve(process.cwd(), 'snap.manifest.json')),
+      update: defaulted(boolean(), true),
     }),
     {},
   ),
@@ -250,6 +412,16 @@ export const SnapsConfigStruct = type({
   ),
 });
 
+export type ProcessedBrowserifyConfig = Infer<
+  typeof SnapsBrowserifyConfigStruct
+>;
+
+export type ProcessedWebpackConfig = Infer<typeof SnapsWebpackConfigStruct>;
+
+export type ProcessedConfig =
+  | ProcessedBrowserifyConfig
+  | ProcessedWebpackConfig;
+
 /**
  * Get a validated snap config. This validates the config and adds default
  * values for any missing properties.
@@ -257,7 +429,7 @@ export const SnapsConfigStruct = type({
  * @param config - The config to validate.
  * @returns The validated config.
  */
-export function getConfig(config: unknown): SnapConfig {
+export function getConfig(config: unknown): ProcessedConfig {
   const suffix =
     'Make sure that your "snap.config.[j|t]s" file is valid.\nRefer to the documentation for more information: https://docs.metamask.io/snaps/reference/config/';
 

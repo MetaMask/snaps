@@ -3,7 +3,7 @@ import type yargs from 'yargs';
 import builders from '../../builders';
 import type { YargsArgs } from '../../types/yargs';
 import { processInvalidTranspilation } from '../build/utils';
-import { watch } from './watchHandler';
+import { watch } from './watch';
 
 const command = {
   command: ['watch', 'w'],
