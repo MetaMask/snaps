@@ -1,16 +1,5 @@
-import { logError } from '@metamask/snaps-utils';
-import { promises as filesystem } from 'fs';
+import { promises as fs } from 'fs';
 import path from 'path';
-
-export const permRequestKeys = [
-  '@context',
-  'id',
-  'parentCapability',
-  'invoker',
-  'date',
-  'caveats',
-  'proof',
-];
 
 export const CONFIG_FILE = 'snap.config.js';
 export const TS_CONFIG_FILE = 'snap.config.ts';
@@ -26,30 +15,6 @@ const pathArguments = new Set([
   'root',
   'r',
 ]);
-
-/**
- * Attempts to convert a string to a boolean and throws if the value is invalid.
- *
- * @param value - The value to convert to a boolean.
- * @returns `true` if the value is the string `"true"`, `false` if it is the
- * string `"false"`, the value if it is already a boolean, or an error
- * otherwise.
- */
-export function booleanStringToBoolean(value: unknown): boolean {
-  if (typeof value === 'boolean') {
-    return value;
-  } else if (value === 'true') {
-    return true;
-  } else if (value === 'false') {
-    return false;
-  }
-
-  throw new Error(
-    `Expected a boolean or the strings "true" or "false". Received: "${String(
-      value,
-    )}"`,
-  );
-}
 
 /**
  * Sanitizes inputs. Currently normalizes "./" paths to ".".
@@ -92,22 +57,11 @@ export async function writeError(
     processedPrefix += ' ';
   }
 
-  logError(processedPrefix + message, error);
-  try {
-    if (destFilePath) {
-      await filesystem.unlink(destFilePath);
-    }
-  } catch (unlinkError) {
-    logError(`${processedPrefix}Failed to unlink mangled file.`, unlinkError);
+  if (destFilePath) {
+    await fs.unlink(destFilePath);
   }
 
-  // unless the watcher is active, exit
-  if (!global.snaps.isWatching) {
-    // TODO(ritave): Remove process exit and change into collapse of functions
-    //               https://github.com/MetaMask/snaps-monorepo/issues/81
-    // eslint-disable-next-line n/no-process-exit
-    process.exit(1);
-  }
+  throw new Error(`${processedPrefix}${message}\n${error.message}`);
 }
 
 /**

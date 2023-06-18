@@ -1,23 +1,11 @@
 import fs from 'fs';
 import pathUtils from 'path';
 
-import {
-  booleanStringToBoolean,
-  logError,
-  sanitizeInputs,
-  trimPathString,
-  writeError,
-} from './misc';
+import { sanitizeInputs, trimPathString, writeError } from './misc';
 
 jest.mock('fs');
 
 describe('misc', () => {
-  global.snaps = {
-    verboseErrors: false,
-    suppressWarnings: false,
-    isWatching: false,
-  };
-
   /* eslint-disable @typescript-eslint/naming-convention */
   const unsanitizedArgv = {
     _: ['init'],
@@ -56,36 +44,6 @@ describe('misc', () => {
   };
   /* eslint-enable @typescript-eslint/naming-convention */
 
-  const setVerboseErrors = (bool: boolean) => {
-    global.snaps.verboseErrors = bool;
-  };
-
-  const setIsWatching = (bool: boolean) => {
-    global.snaps.isWatching = bool;
-  };
-
-  afterAll(() => {
-    global.snaps = {};
-  });
-
-  describe('booleanStringToBoolean', () => {
-    it('returns boolean values directly', () => {
-      expect(booleanStringToBoolean(true)).toBe(true);
-      expect(booleanStringToBoolean(false)).toBe(false);
-    });
-
-    it('converts "true"/"false" strings to their corresponding booleans', () => {
-      expect(booleanStringToBoolean('true')).toBe(true);
-      expect(booleanStringToBoolean('false')).toBe(false);
-    });
-
-    it('throws if the value cannot be converted', () => {
-      expect(() => booleanStringToBoolean('foo')).toThrow(
-        'Expected a boolean or the strings "true" or "false". Received: "foo"',
-      );
-    });
-  });
-
   describe('sanitizeInputs', () => {
     it('correctly normalizes paths', () => {
       sanitizeInputs(unsanitizedArgv);
@@ -93,41 +51,8 @@ describe('misc', () => {
     });
   });
 
-  describe('logError', () => {
-    it('logs an error message to console', () => {
-      setVerboseErrors(true);
-      jest.spyOn(console, 'error').mockImplementation();
-      logError('custom error message', new Error('verbose'));
-      expect(global.console.error).toHaveBeenCalledWith('custom error message');
-      expect(global.console.error).toHaveBeenCalledWith(new Error('verbose'));
-
-      setVerboseErrors(false);
-      jest.spyOn(console, 'error').mockImplementation();
-      logError('error message');
-      expect(global.console.error).toHaveBeenCalledWith('error message');
-    });
-
-    it("doesn't log null", () => {
-      setVerboseErrors(true);
-      jest.spyOn(console, 'error').mockImplementation();
-      logError(null, new Error('verbose'));
-      expect(global.console.error).toHaveBeenCalledWith(new Error('verbose'));
-
-      setVerboseErrors(false);
-      jest.spyOn(console, 'error').mockImplementation();
-      logError(null);
-      expect(global.console.error).toHaveBeenCalledWith('Unknown error.');
-
-      jest.spyOn(console, 'error').mockImplementation();
-      logError(null, new Error('verbose'));
-      expect(global.console.error).toHaveBeenCalledWith('Unknown error.');
-    });
-  });
-
   describe('writeError', () => {
     it('calls console error once if filesystem unlink is successful', async () => {
-      setVerboseErrors(false);
-      setIsWatching(false);
       jest.spyOn(process, 'exit').mockImplementation(() => {
         throw new Error('process exited');
       });
@@ -141,8 +66,6 @@ describe('misc', () => {
     });
 
     it('calls console error twice if filesystem unlink fails', async () => {
-      setVerboseErrors(false);
-      setIsWatching(false);
       jest.spyOn(process, 'exit').mockImplementation(() => {
         throw new Error('process exited');
       });
@@ -156,7 +79,6 @@ describe('misc', () => {
     });
 
     it('will not process an already processed prefix', async () => {
-      setIsWatching(true);
       const prefix = 'Custom Error ';
       const errorMock = jest.spyOn(console, 'error').mockImplementation();
       await writeError(prefix, 'bar', new Error('error message'));

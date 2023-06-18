@@ -33,7 +33,6 @@ module.exports = deepmerge(baseConfig, {
       statements: 97.61,
     },
   },
-  setupFiles: ['./test/setup.js'],
   transformIgnorePatterns: [`node_modules/(?!(${ESM_DEPENDENCIES.join('|')}))`],
   testTimeout: 120000,
 });
