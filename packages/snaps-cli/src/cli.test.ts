@@ -1,7 +1,7 @@
 import type yargs from 'yargs';
 
 import { cli } from './cli';
-import commands from './cmds';
+import commands from './commands';
 
 // Removes positional arguments from commands. eg. 'build [directory]' -> 'build'
 const sanitizeCommand = (command: string) =>
@@ -51,7 +51,7 @@ describe('cli', () => {
       throw new Error('process exited');
     });
 
-    expect(() => cli(getMockArgv('--help'), commands)).toThrow(
+    expect(async () => cli(getMockArgv('--help'), commands)).toThrow(
       'process exited',
     );
   });
@@ -62,13 +62,13 @@ describe('cli', () => {
       expect(code).toBe(0);
     });
 
-    await new Promise<void>((resolve) => {
+    await new Promise<void>((resolve, reject) => {
       consoleLogSpy.mockImplementationOnce((message: string) => {
         expect(message).toMatch(HELP_TEXT_REGEX);
         resolve();
       });
 
-      cli(getMockArgv('--help'), commands);
+      cli(getMockArgv('--help'), commands).catch(reject);
     });
   });
 
@@ -87,7 +87,7 @@ describe('cli', () => {
           mockCommandHandler.mockImplementation(() => resolve() as any);
         });
 
-        cli(getMockArgv(sanitizeCommand(command)), [
+        await cli(getMockArgv(sanitizeCommand(command)), [
           { ...(commandMap as any)[command], handler: mockCommandHandler },
         ]);
         await finished;
@@ -106,11 +106,11 @@ describe('cli', () => {
   });
 
   describe('command failures', () => {
-    it('handles an argument validation failure for a locally defined command', () => {
+    it('handles an argument validation failure for a locally defined command', async () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const mockServeHandler = jest.fn();
 
-      cli(
+      await cli(
         getMockArgv(
           'serve',
           '--port',
@@ -127,13 +127,14 @@ describe('cli', () => {
       expect(mockServeHandler).not.toHaveBeenCalled();
     });
 
-    it('handles an argument validation failure for a locally defined command, with verbose errors', () => {
+    it('handles an argument validation failure for a locally defined command, with verbose errors', async () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const mockServeHandler = jest.fn();
 
-      cli(getMockArgv('serve', '--port', 'not-a-number', `--verboseErrors`), [
-        { ...commandMap.serve, handler: mockServeHandler },
-      ]);
+      await cli(
+        getMockArgv('serve', '--port', 'not-a-number', `--verboseErrors`),
+        [{ ...commandMap.serve, handler: mockServeHandler }],
+      );
 
       expect(process.exitCode).toBe(1);
       expect(consoleErrorSpy).toHaveBeenCalledTimes(2);
@@ -146,7 +147,7 @@ describe('cli', () => {
         throw new Error('build failed');
       });
 
-      expect(() =>
+      expect(async () =>
         cli(getMockArgv('build'), [
           { ...commandMap.build, handler: mockBuildHandler },
         ]),

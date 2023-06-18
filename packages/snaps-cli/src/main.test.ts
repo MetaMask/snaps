@@ -1,5 +1,5 @@
 import * as cliModule from './cli';
-import commands from './cmds';
+import commands from './commands';
 
 jest.mock('./cli', () => ({
   cli: jest.fn(),
