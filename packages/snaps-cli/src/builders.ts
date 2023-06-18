@@ -11,9 +11,7 @@ const builders: Record<string, Readonly<Options>> = {
     alias: 'b',
     describe: 'Snap bundle file',
     type: 'string',
-    demandOption: true,
     normalize: true,
-    default: 'dist/bundle.js',
     deprecated: true,
   },
 
@@ -21,7 +19,6 @@ const builders: Record<string, Readonly<Options>> = {
     alias: 'c',
     describe: 'Path to config file',
     type: 'string',
-    demandOption: false,
     normalize: true,
   },
 
@@ -29,9 +26,7 @@ const builders: Record<string, Readonly<Options>> = {
     alias: 'd',
     describe: 'Output directory',
     type: 'string',
-    demandOption: true,
     normalize: true,
-    default: 'dist',
     deprecated: true,
   },
 
@@ -39,8 +34,6 @@ const builders: Record<string, Readonly<Options>> = {
     alias: 'e',
     describe: 'Attempt to evaluate Snap bundle in SES',
     type: 'boolean',
-    demandOption: false,
-    default: true,
     deprecated: true,
   },
 
@@ -48,8 +41,6 @@ const builders: Record<string, Readonly<Options>> = {
     alias: 'm',
     describe: 'Validate snap.manifest.json',
     type: 'boolean',
-    demandOption: false,
-    default: true,
     deprecated: true,
   },
 
@@ -57,8 +48,6 @@ const builders: Record<string, Readonly<Options>> = {
     alias: 'p',
     describe: 'Local server port for testing',
     type: 'number',
-    demandOption: true,
-    default: 8081,
     coerce: (arg: unknown) => {
       const port = Number.parseInt(String(arg), 10);
       if (Number.isNaN(port)) {
@@ -73,8 +62,6 @@ const builders: Record<string, Readonly<Options>> = {
     alias: 'n',
     describe: 'Output file name',
     type: 'string',
-    demandOption: false,
-    default: 'bundle.js',
     deprecated: true,
   },
 
@@ -82,17 +69,13 @@ const builders: Record<string, Readonly<Options>> = {
     alias: 'r',
     describe: 'Server root directory',
     type: 'string',
-    demandOption: true,
     normalize: true,
-    default: '.',
     deprecated: true,
   },
 
   sourceMaps: {
     describe: 'Whether builds include sourcemaps',
     type: 'boolean',
-    demandOption: false,
-    default: false,
     deprecated: true,
   },
 
@@ -100,9 +83,7 @@ const builders: Record<string, Readonly<Options>> = {
     alias: 's',
     describe: 'Source file',
     type: 'string',
-    demandOption: true,
     normalize: true,
-    default: 'src/index.js',
     deprecated: true,
   },
 
@@ -110,16 +91,12 @@ const builders: Record<string, Readonly<Options>> = {
     alias: 'strip',
     describe: 'Whether to remove code comments from the build output',
     type: 'boolean',
-    demandOption: false,
-    default: true,
     deprecated: true,
   },
 
   suppressWarnings: {
     type: 'boolean',
     describe: 'Whether to suppress warnings',
-    demandOption: false,
-    default: false,
     deprecated: true,
   },
 
@@ -127,8 +104,6 @@ const builders: Record<string, Readonly<Options>> = {
     type: 'string',
     describe:
       'Whether to use Babel to transpile all source code (including dependencies), local source code only, or nothing',
-    demandOption: false,
-    default: TranspilationModes.LocalOnly,
     choices: Object.values(TranspilationModes),
     deprecated: true,
   },
@@ -136,31 +111,24 @@ const builders: Record<string, Readonly<Options>> = {
   depsToTranspile: {
     type: 'array',
     describe: 'Transpile only the listed dependencies.',
-    demandOption: false,
     deprecated: true,
   },
 
   verboseErrors: {
     type: 'boolean',
     describe: 'Display original errors',
-    demandOption: false,
-    default: true,
     deprecated: true,
   },
 
   writeManifest: {
     describe: 'Make necessary changes to the snap manifest file',
     type: 'boolean',
-    demandOption: false,
-    default: true,
     deprecated: true,
   },
 
   serve: {
     describe: 'Serve snap file(s) locally for testing',
     type: 'boolean',
-    demandOption: false,
-    default: true,
     deprecated: true,
   },
 };

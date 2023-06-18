@@ -27,10 +27,8 @@ Commands:
 Options:
       --version           Show version number                          [boolean]
   -c, --config            Path to config file                           [string]
-      --verboseErrors     Display original errors
-                                          [deprecated] [boolean] [default: true]
-      --suppressWarnings  Whether to suppress warnings
-                                         [deprecated] [boolean] [default: false]
+      --verboseErrors     Display original errors         [deprecated] [boolean]
+      --suppressWarnings  Whether to suppress warnings    [deprecated] [boolean]
   -h, --help              Show help                                    [boolean]
 
 Examples:

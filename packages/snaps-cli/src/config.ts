@@ -21,6 +21,8 @@ import {
 } from 'superstruct';
 import type { Configuration as WebpackConfiguration } from 'webpack';
 
+import { YargsArgs } from './types/yargs';
+
 const CONFIG_FILES = ['snap.config.js', 'snap.config.ts'];
 
 /**
@@ -40,7 +42,8 @@ export type SnapBrowserifyConfig = {
   bundler?: 'browserify';
 
   /**
-   * The options for the Snaps CLI.
+   * The options for the Snaps CLI. These are merged with the options passed to
+   * the CLI, with the CLI options taking precedence.
    *
    * @deprecated The Browserify bundler is deprecated and will be removed in a
    * future release. Use the Webpack bundler instead.
@@ -546,4 +549,54 @@ export async function resolveConfig(path = resolve(process.cwd())) {
   throw new Error(
     `Could not find a "snap.config.js" or "snap.config.ts" file in the current or specified directory ("${path}").`,
   );
+}
+
+/**
+ * Get a snap config from the CLI arguments. This will either load the config
+ * from the specified config file, or resolve the config from the current
+ * working directory.
+ *
+ * @param argv - The CLI arguments.
+ * @returns The resolved and validated snap config.
+ */
+export async function getConfigByArgv(argv: YargsArgs) {
+  if (argv.config) {
+    return mergeLegacyOptions(argv, await loadConfig(argv.config));
+  }
+
+  return mergeLegacyOptions(argv, await resolveConfig(process.cwd()));
+}
+
+/**
+ * Merge legacy CLI options into the config. This is used to support the legacy
+ * config format, where options can be specified both in the config file and
+ * through CLI flags.
+ *
+ * @param argv - The CLI arguments.
+ * @param config - The config to merge the CLI options into.
+ * @returns The config with the CLI options merged in.
+ * @deprecated This function is only used to support the legacy config format.
+ */
+export function mergeLegacyOptions(argv: YargsArgs, config: ProcessedConfig) {
+  if (config.bundler === 'webpack') {
+    return config;
+  }
+
+  const cliOptions = Object.keys(config.cliOptions).reduce<
+    ProcessedBrowserifyConfig['cliOptions']
+  >((accumulator, key) => {
+    if (argv[key]) {
+      return {
+        ...accumulator,
+        [key]: argv[key],
+      };
+    }
+
+    return accumulator;
+  }, config.cliOptions);
+
+  return {
+    ...config,
+    cliOptions,
+  };
 }

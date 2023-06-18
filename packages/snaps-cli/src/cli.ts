@@ -1,9 +1,10 @@
+import { logError } from '@metamask/snaps-utils';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
 import builders from './builders';
-import { loadConfig, resolveConfig } from './config';
-import { sanitizeInputs, logError } from './utils';
+import { getConfigByArgv } from './config';
+import { sanitizeInputs } from './utils';
 
 /**
  * The main CLI entry point function. This processes the command line args, and
@@ -48,10 +49,7 @@ export async function cli(argv: string[], commands: any) {
     .middleware(async (args: any) => {
       // eslint-disable-next-line require-atomic-updates
       args.context = {
-        config:
-          args.config && typeof args.config === 'string'
-            ? await loadConfig(args.config)
-            : await resolveConfig(process.cwd()),
+        config: await getConfigByArgv(args),
       };
 
       sanitizeInputs(args);

@@ -24,7 +24,7 @@ export async function bundle(
 ): Promise<boolean> {
   const {
     bundlerCustomizer,
-    cliOptions: { src, dist, sourceMaps: debug, transpilationMode },
+    cliOptions: { src, sourceMaps: debug, transpilationMode },
   } = config;
 
   const babelifyOptions = processDependencies(config);
@@ -73,15 +73,14 @@ export async function bundle(
       eval: false,
     });
 
-    bundler.bundle(
-      async (bundleError, bundleBuffer: Buffer) =>
-        await writeBundleFile({
-          bundleError,
-          bundleBuffer,
-          src,
-          dest: dist,
-          resolve,
-        }),
-    );
+    bundler.bundle(async (bundleError, bundleBuffer: Buffer) => {
+      await writeBundleFile({
+        bundleError,
+        bundleBuffer,
+        config,
+      });
+
+      resolve(true);
+    });
   });
 }

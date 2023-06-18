@@ -1,5 +1,6 @@
 import { logInfo } from '@metamask/snaps-utils';
 import { promises as fs } from 'fs';
+import { join, resolve } from 'path';
 
 import { TranspilationModes } from '../../../builders';
 import type { ProcessedBrowserifyConfig } from '../../../config';
@@ -9,9 +10,7 @@ import { writeError } from '../../../utils';
 type WriteBundleFileArgs = {
   bundleError: Error;
   bundleBuffer: Buffer;
-  src: string;
-  dest: string;
-  resolve: (value: boolean) => void;
+  config: ProcessedBrowserifyConfig;
 };
 
 /**
@@ -23,28 +22,33 @@ type WriteBundleFileArgs = {
  * @param options.bundleError - Any error received from Browserify.
  * @param options.bundleBuffer - The {@link Buffer} with the bundle contents
  * from Browserify.
- * @param options.src - The source file path.
- * @param options.dest - The destination file path.
- * @param options.resolve - A {@link Promise} resolution function, so that we
- * can use promises and `async`/`await` even though Browserify uses callbacks.
+ * @param options.config - The config object.
  */
 export async function writeBundleFile({
   bundleError,
   bundleBuffer,
-  src,
-  dest,
-  resolve,
+  config,
 }: WriteBundleFileArgs) {
+  const {
+    cliOptions: { dist, outfileName },
+  } = config;
+
   if (bundleError) {
     await writeError('Build error:', bundleError.message, bundleError);
   }
 
+  const destination = resolve(process.cwd(), dist, outfileName);
+
   try {
-    await fs.writeFile(dest, bundleBuffer?.toString());
-    logInfo(`Build success: '${src}' bundled as '${dest}'!`);
-    resolve(true);
+    await fs.writeFile(destination, bundleBuffer?.toString());
+    logInfo(
+      `Build success: '${config.cliOptions.src}' bundled as '${join(
+        dist,
+        outfileName,
+      )}'!`,
+    );
   } catch (error) {
-    await writeError('Write error:', error.message, error, dest);
+    await writeError('Write error:', error.message, error, destination);
   }
 }
 

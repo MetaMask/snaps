@@ -1,4 +1,5 @@
 import {
+  logError,
   logInfo,
   NpmSnapFileNames,
   validateDirPath,
@@ -9,7 +10,7 @@ import chokidar from 'chokidar';
 import { dirname } from 'path';
 
 import { ProcessedBrowserifyConfig } from '../../../config';
-import { CONFIG_FILE, logError, TS_CONFIG_FILE } from '../../../utils';
+import { CONFIG_FILE, TS_CONFIG_FILE } from '../../../utils';
 import { build } from '../../build/build';
 import { evaluate } from '../../eval/eval';
 import { manifest } from '../../manifest/manifest';

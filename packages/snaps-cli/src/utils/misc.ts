@@ -1,4 +1,4 @@
-import { logError as logErrorUtil } from '@metamask/snaps-utils';
+import { logError } from '@metamask/snaps-utils';
 import { promises as filesystem } from 'fs';
 import path from 'path';
 
@@ -70,27 +70,6 @@ export function sanitizeInputs(argv: Record<string, unknown>) {
       }
     }
   });
-}
-
-/**
- * Logs an error message to console. Logs original error if it exists and
- * the verboseErrors global is true.
- *
- * @param message - The error message.
- * @param error - The original error.
- */
-export function logError(message: string | null, error?: Error): void {
-  if (message !== null) {
-    logErrorUtil(message);
-  }
-
-  if (error && global.snaps.verboseErrors) {
-    logErrorUtil(error);
-  }
-
-  if (message === null && (!error || (error && !global.snaps.verboseErrors))) {
-    logErrorUtil('Unknown error.');
-  }
 }
 
 /**
