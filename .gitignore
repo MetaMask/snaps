@@ -78,3 +78,5 @@ packages/examples/examples/webpack/index.html
 
 # Ubuntu package files
 .deb
+
+.parcel-cache

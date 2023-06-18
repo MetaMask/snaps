@@ -1,0 +1,799 @@
+{
+  "resources": {
+    "@metamask/utils": {
+      "packages": {
+        "superstruct": true,
+        "buffer": true,
+        "eslint>debug": true,
+        "@metamask/utils>semver": true
+      },
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "superstruct": {
+      "packages": {
+        "parcel>@parcel/config-default>@parcel/transformer-js": true
+      },
+      "globals": {
+        "console.warn": true
+      }
+    },
+    "buffer": {
+      "packages": {
+        "buffer>base64-js": true,
+        "buffer>ieee754": true
+      },
+      "globals": {
+        "console": true
+      }
+    },
+    "eslint>debug": {
+      "packages": {
+        "process": true,
+        "eslint>debug>ms": true
+      },
+      "globals": {
+        "process": true,
+        "console": true,
+        "navigator": true,
+        "document": true,
+        "localStorage": true
+      }
+    },
+    "process": {
+      "globals": {
+        "setTimeout": true,
+        "clearTimeout": true
+      }
+    },
+    "@metamask/utils>semver": {
+      "packages": {
+        "process": true,
+        "@metamask/utils>semver>lru-cache": true
+      }
+    },
+    "@metamask/utils>semver>lru-cache": {
+      "packages": {
+        "@metamask/utils>semver>lru-cache>yallist": true
+      }
+    },
+    "external:../snaps-utils/dist/index.browser.js": {
+      "packages": {
+        "external:../snaps-utils/dist/array.js": true,
+        "external:../snaps-utils/dist/caveats.js": true,
+        "external:../snaps-utils/dist/checksum.js": true,
+        "external:../snaps-utils/dist/cronjob.js": true,
+        "external:../snaps-utils/dist/deep-clone.js": true,
+        "external:../snaps-utils/dist/default-endowments.js": true,
+        "external:../snaps-utils/dist/entropy.js": true,
+        "external:../snaps-utils/dist/handlers.js": true,
+        "external:../snaps-utils/dist/iframe.js": true,
+        "external:../snaps-utils/dist/json.js": true,
+        "external:../snaps-utils/dist/json-rpc.js": true,
+        "external:../snaps-utils/dist/logging.js": true,
+        "external:../snaps-utils/dist/manifest/index.browser.js": true,
+        "external:../snaps-utils/dist/namespace.js": true,
+        "external:../snaps-utils/dist/notification.js": true,
+        "external:../snaps-utils/dist/path.js": true,
+        "external:../snaps-utils/dist/snaps.js": true,
+        "external:../snaps-utils/dist/types.js": true,
+        "external:../snaps-utils/dist/versions.js": true,
+        "external:../snaps-utils/dist/virtual-file/index.browser.js": true
+      }
+    },
+    "external:../snaps-utils/dist/checksum.js": {
+      "packages": {
+        "@metamask/utils": true,
+        "@metamask/rpc-methods>@noble/hashes": true,
+        "external:../snaps-utils/dist/virtual-file/VirtualFile.js": true
+      }
+    },
+    "@metamask/rpc-methods>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "external:../snaps-utils/dist/virtual-file/VirtualFile.js": {
+      "packages": {
+        "@metamask/utils": true,
+        "external:../snaps-utils/dist/deep-clone.js": true
+      },
+      "globals": {
+        "TextDecoder": true
+      }
+    },
+    "external:../snaps-utils/dist/deep-clone.js": {
+      "packages": {
+        "@metamask/snaps-utils>rfdc": true
+      }
+    },
+    "@metamask/snaps-utils>rfdc": {
+      "packages": {
+        "buffer": true
+      }
+    },
+    "external:../snaps-utils/dist/cronjob.js": {
+      "packages": {
+        "@metamask/utils": true,
+        "@metamask/snaps-utils>cron-parser": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-utils>cron-parser": {
+      "packages": {
+        "parcel>@parcel/package-manager>@parcel/node-resolver-core": true,
+        "@metamask/snaps-utils>cron-parser>luxon": true
+      }
+    },
+    "@metamask/snaps-utils>cron-parser>luxon": {
+      "globals": {
+        "Intl": true
+      }
+    },
+    "external:../snaps-utils/dist/iframe.js": {
+      "globals": {
+        "document.createElement": true,
+        "document.body.appendChild": true
+      }
+    },
+    "external:../snaps-utils/dist/json.js": {
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
+    "external:../snaps-utils/dist/json-rpc.js": {
+      "packages": {
+        "@metamask/utils": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-utils/dist/logging.js": {
+      "packages": {
+        "@metamask/utils": true
+      },
+      "globals": {
+        "console.log": true,
+        "console.error": true,
+        "console.warn": true
+      }
+    },
+    "external:../snaps-utils/dist/manifest/index.browser.js": {
+      "packages": {
+        "external:../snaps-utils/dist/manifest/validation.js": true
+      }
+    },
+    "external:../snaps-utils/dist/manifest/validation.js": {
+      "packages": {
+        "@metamask/utils": true,
+        "superstruct": true,
+        "external:../snaps-utils/dist/array.js": true,
+        "external:../snaps-utils/dist/cronjob.js": true,
+        "external:../snaps-utils/dist/entropy.js": true,
+        "external:../snaps-utils/dist/json-rpc.js": true,
+        "external:../snaps-utils/dist/namespace.js": true,
+        "external:../snaps-utils/dist/types.js": true
+      }
+    },
+    "external:../snaps-utils/dist/namespace.js": {
+      "packages": {
+        "@metamask/utils": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-utils/dist/types.js": {
+      "packages": {
+        "@metamask/utils": true,
+        "superstruct": true
+      },
+      "globals": {
+        "URL": true
+      }
+    },
+    "external:../snaps-utils/dist/notification.js": {
+      "packages": {
+        "@metamask/utils": true,
+        "superstruct": true,
+        "external:../snaps-utils/dist/namespace.js": true
+      }
+    },
+    "external:../snaps-utils/dist/path.js": {
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
+    "external:../snaps-utils/dist/snaps.js": {
+      "packages": {
+        "@metamask/utils": true,
+        "@metamask/snaps-utils>@scure/base": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "superstruct": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true,
+        "external:../snaps-utils/dist/caveats.js": true,
+        "external:../snaps-utils/dist/checksum.js": true,
+        "external:../snaps-utils/dist/types.js": true
+      }
+    },
+    "@metamask/snaps-utils>@scure/base": {
+      "packages": {
+        "parcel>@parcel/config-default>@parcel/transformer-js": true
+      },
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/snaps-utils>validate-npm-package-name": {
+      "packages": {
+        "@metamask/snaps-utils>validate-npm-package-name>builtins": true
+      }
+    },
+    "@metamask/snaps-utils>validate-npm-package-name>builtins": {
+      "packages": {
+        "process": true,
+        "@metamask/utils>semver": true
+      }
+    },
+    "external:../snaps-utils/dist/versions.js": {
+      "packages": {
+        "@metamask/utils": true,
+        "@metamask/utils>semver": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-utils/dist/virtual-file/index.browser.js": {
+      "packages": {
+        "external:../snaps-utils/dist/virtual-file/VirtualFile.js": true
+      }
+    },
+    "@metamask/object-multiplex": {
+      "packages": {
+        "@metamask/object-multiplex>readable-stream": true,
+        "pump>end-of-stream": true,
+        "pump>once": true
+      },
+      "globals": {
+        "console.warn": true
+      }
+    },
+    "@metamask/object-multiplex>readable-stream": {
+      "packages": {
+        "process": true,
+        "browserify>readable-stream>process-nextick-args": true,
+        "browserify>readable-stream>isarray": true,
+        "browserify>events": true,
+        "@metamask/object-multiplex>readable-stream>safe-buffer": true,
+        "browserify>readable-stream>core-util-is": true,
+        "browserify>inherits": true,
+        "parcel>@parcel/package-manager>@parcel/node-resolver-core": true,
+        "@metamask/object-multiplex>readable-stream>string_decoder": true,
+        "browserify>readable-stream>util-deprecate": true
+      }
+    },
+    "browserify>readable-stream>process-nextick-args": {
+      "packages": {
+        "process": true
+      }
+    },
+    "browserify>events": {
+      "globals": {
+        "console": true
+      }
+    },
+    "@metamask/object-multiplex>readable-stream>safe-buffer": {
+      "packages": {
+        "buffer": true
+      }
+    },
+    "browserify>readable-stream>core-util-is": {
+      "packages": {
+        "buffer": true
+      }
+    },
+    "browserify>readable-stream>util-deprecate": {
+      "globals": {
+        "console.trace": true,
+        "console.warn": true,
+        "localStorage": true
+      }
+    },
+    "@metamask/object-multiplex>readable-stream>string_decoder": {
+      "packages": {
+        "@metamask/object-multiplex>readable-stream>safe-buffer": true
+      }
+    },
+    "pump>end-of-stream": {
+      "packages": {
+        "process": true,
+        "pump>once": true
+      }
+    },
+    "pump>once": {
+      "packages": {
+        "pump>once>wrappy": true
+      }
+    },
+    "@metamask/post-message-stream": {
+      "packages": {
+        "@metamask/post-message-stream>@metamask/utils": true,
+        "@metamask/post-message-stream>readable-stream": true
+      },
+      "globals": {
+        "MessageEvent.prototype": true,
+        "location.origin": true,
+        "postMessage": true,
+        "addEventListener": true,
+        "removeEventListener": true,
+        "WorkerGlobalScope": true,
+        "chrome": true,
+        "browser": true
+      }
+    },
+    "@metamask/post-message-stream>@metamask/utils": {
+      "packages": {
+        "superstruct": true,
+        "buffer": true,
+        "eslint>debug": true,
+        "@metamask/utils>semver": true
+      },
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream": {
+      "packages": {
+        "process": true,
+        "@metamask/post-message-stream>readable-stream>process-nextick-args": true,
+        "browserify>readable-stream>isarray": true,
+        "browserify>events": true,
+        "@metamask/post-message-stream>readable-stream>safe-buffer": true,
+        "browserify>readable-stream>core-util-is": true,
+        "browserify>inherits": true,
+        "parcel>@parcel/package-manager>@parcel/node-resolver-core": true,
+        "@metamask/post-message-stream>readable-stream>string_decoder": true,
+        "browserify>readable-stream>util-deprecate": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream>process-nextick-args": {
+      "packages": {
+        "process": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream>safe-buffer": {
+      "packages": {
+        "buffer": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream>string_decoder": {
+      "packages": {
+        "@metamask/post-message-stream>readable-stream>safe-buffer": true
+      }
+    },
+    "pump": {
+      "packages": {
+        "process": true,
+        "pump>once": true,
+        "pump>end-of-stream": true,
+        "parcel>@parcel/package-manager>@parcel/node-resolver-core": true
+      }
+    },
+    "@metamask/providers": {
+      "packages": {
+        "@metamask/providers>@metamask/safe-event-emitter": true,
+        "eth-rpc-errors": true,
+        "@metamask/providers>fast-deep-equal": true,
+        "json-rpc-engine": true,
+        "@metamask/providers>detect-browser": true,
+        "@metamask/providers>extension-port-stream": true,
+        "@metamask/object-multiplex": true,
+        "@metamask/providers>is-stream": true,
+        "@metamask/providers>json-rpc-middleware-stream": true,
+        "pump": true
+      },
+      "globals": {
+        "console": true,
+        "chrome.runtime.connect": true,
+        "document.readyState": true,
+        "removeEventListener": true,
+        "addEventListener": true,
+        "location.hostname": true,
+        "document.createElement": true,
+        "ethereum": "write",
+        "dispatchEvent": true,
+        "Event": true,
+        "web3": true
+      }
+    },
+    "@metamask/providers>@metamask/safe-event-emitter": {
+      "packages": {
+        "browserify>events": true
+      },
+      "globals": {
+        "setTimeout": true
+      }
+    },
+    "eth-rpc-errors": {
+      "packages": {
+        "eth-rpc-errors>fast-safe-stringify": true
+      }
+    },
+    "json-rpc-engine": {
+      "packages": {
+        "json-rpc-engine>@metamask/safe-event-emitter": true,
+        "eth-rpc-errors": true
+      }
+    },
+    "json-rpc-engine>@metamask/safe-event-emitter": {
+      "packages": {
+        "browserify>events": true
+      },
+      "globals": {
+        "setTimeout": true
+      }
+    },
+    "@metamask/providers>detect-browser": {
+      "packages": {
+        "process": true,
+        "parcel>@parcel/config-default>@parcel/transformer-js": true
+      },
+      "globals": {
+        "document": true,
+        "navigator": true
+      }
+    },
+    "@metamask/providers>extension-port-stream": {
+      "packages": {
+        "buffer": true,
+        "stream-browserify": true
+      }
+    },
+    "stream-browserify": {
+      "packages": {
+        "browserify>events": true,
+        "browserify>inherits": true,
+        "stream-browserify>readable-stream": true
+      }
+    },
+    "stream-browserify>readable-stream": {
+      "packages": {
+        "process": true,
+        "browserify>events": true,
+        "buffer": true,
+        "parcel>@parcel/package-manager>@parcel/node-resolver-core": true,
+        "browserify>inherits": true,
+        "browserify>string_decoder": true,
+        "browserify>readable-stream>util-deprecate": true
+      }
+    },
+    "browserify>string_decoder": {
+      "packages": {
+        "browserify>browser-pack>safe-buffer": true
+      }
+    },
+    "browserify>browser-pack>safe-buffer": {
+      "packages": {
+        "buffer": true
+      }
+    },
+    "@metamask/providers>json-rpc-middleware-stream": {
+      "packages": {
+        "@metamask/providers>json-rpc-middleware-stream>readable-stream": true,
+        "@metamask/providers>json-rpc-middleware-stream>@metamask/safe-event-emitter": true
+      },
+      "globals": {
+        "console.warn": true,
+        "setTimeout": true
+      }
+    },
+    "@metamask/providers>json-rpc-middleware-stream>readable-stream": {
+      "packages": {
+        "process": true,
+        "browserify>readable-stream>process-nextick-args": true,
+        "browserify>readable-stream>isarray": true,
+        "browserify>events": true,
+        "@metamask/providers>json-rpc-middleware-stream>readable-stream>safe-buffer": true,
+        "browserify>readable-stream>core-util-is": true,
+        "browserify>inherits": true,
+        "parcel>@parcel/package-manager>@parcel/node-resolver-core": true,
+        "@metamask/providers>json-rpc-middleware-stream>readable-stream>string_decoder": true,
+        "browserify>readable-stream>util-deprecate": true
+      }
+    },
+    "@metamask/providers>json-rpc-middleware-stream>readable-stream>safe-buffer": {
+      "packages": {
+        "buffer": true
+      }
+    },
+    "@metamask/providers>json-rpc-middleware-stream>readable-stream>string_decoder": {
+      "packages": {
+        "@metamask/providers>json-rpc-middleware-stream>readable-stream>safe-buffer": true
+      }
+    },
+    "@metamask/providers>json-rpc-middleware-stream>@metamask/safe-event-emitter": {
+      "packages": {
+        "browserify>events": true
+      },
+      "globals": {
+        "setTimeout": true
+      }
+    },
+    "browserify>crypto-browserify": {
+      "packages": {
+        "browserify>crypto-browserify>randombytes": true,
+        "browserify>crypto-browserify>create-hash": true,
+        "browserify>crypto-browserify>create-hmac": true,
+        "browserify>crypto-browserify>browserify-sign": true,
+        "browserify>crypto-browserify>pbkdf2": true,
+        "browserify>crypto-browserify>browserify-cipher": true,
+        "browserify>crypto-browserify>diffie-hellman": true,
+        "browserify>crypto-browserify>create-ecdh": true,
+        "browserify>crypto-browserify>public-encrypt": true,
+        "browserify>crypto-browserify>randomfill": true
+      }
+    },
+    "browserify>crypto-browserify>randombytes": {
+      "packages": {
+        "process": true,
+        "browserify>browser-pack>safe-buffer": true
+      },
+      "globals": {
+        "crypto": true,
+        "msCrypto": true
+      }
+    },
+    "browserify>crypto-browserify>create-hash": {
+      "packages": {
+        "browserify>inherits": true,
+        "browserify>crypto-browserify>create-hash>md5.js": true,
+        "browserify>crypto-browserify>pbkdf2>ripemd160": true,
+        "browserify>crypto-browserify>pbkdf2>sha.js": true,
+        "browserify>crypto-browserify>create-hash>cipher-base": true
+      }
+    },
+    "browserify>crypto-browserify>create-hash>md5.js": {
+      "packages": {
+        "browserify>inherits": true,
+        "browserify>crypto-browserify>pbkdf2>ripemd160>hash-base": true,
+        "browserify>browser-pack>safe-buffer": true
+      }
+    },
+    "browserify>crypto-browserify>pbkdf2>ripemd160>hash-base": {
+      "packages": {
+        "browserify>browser-pack>safe-buffer": true,
+        "stream-browserify>readable-stream": true,
+        "browserify>inherits": true
+      }
+    },
+    "browserify>crypto-browserify>pbkdf2>ripemd160": {
+      "packages": {
+        "buffer": true,
+        "browserify>inherits": true,
+        "browserify>crypto-browserify>pbkdf2>ripemd160>hash-base": true
+      }
+    },
+    "browserify>crypto-browserify>pbkdf2>sha.js": {
+      "packages": {
+        "browserify>inherits": true,
+        "browserify>browser-pack>safe-buffer": true
+      }
+    },
+    "browserify>crypto-browserify>create-hash>cipher-base": {
+      "packages": {
+        "browserify>browser-pack>safe-buffer": true,
+        "stream-browserify": true,
+        "browserify>string_decoder": true,
+        "browserify>inherits": true
+      }
+    },
+    "browserify>crypto-browserify>create-hmac": {
+      "packages": {
+        "browserify>inherits": true,
+        "browserify>crypto-browserify>create-hash>cipher-base": true,
+        "browserify>browser-pack>safe-buffer": true,
+        "browserify>crypto-browserify>create-hash": true,
+        "browserify>crypto-browserify>pbkdf2>ripemd160": true,
+        "browserify>crypto-browserify>pbkdf2>sha.js": true
+      }
+    },
+    "browserify>crypto-browserify>browserify-sign": {
+      "packages": {
+        "browserify>browser-pack>safe-buffer": true,
+        "browserify>crypto-browserify>create-hash": true,
+        "stream-browserify>readable-stream": true,
+        "browserify>inherits": true,
+        "browserify>crypto-browserify>create-hmac": true,
+        "browserify>crypto-browserify>public-encrypt>browserify-rsa": true,
+        "browserify>crypto-browserify>create-ecdh>elliptic": true,
+        "browserify>crypto-browserify>browserify-sign>bn.js": true,
+        "browserify>crypto-browserify>public-encrypt>parse-asn1": true
+      }
+    },
+    "browserify>crypto-browserify>pbkdf2": {
+      "packages": {
+        "process": true,
+        "browserify>browser-pack>safe-buffer": true,
+        "browserify>crypto-browserify>create-hash": true,
+        "browserify>crypto-browserify>pbkdf2>ripemd160": true,
+        "browserify>crypto-browserify>pbkdf2>sha.js": true
+      },
+      "globals": {
+        "crypto": true,
+        "process": true
+      }
+    },
+    "browserify>crypto-browserify>browserify-cipher": {
+      "packages": {
+        "browserify>crypto-browserify>browserify-cipher>browserify-des": true,
+        "browserify>crypto-browserify>browserify-cipher>browserify-aes": true,
+        "browserify>crypto-browserify>browserify-cipher>evp_bytestokey": true
+      }
+    },
+    "browserify>crypto-browserify>browserify-cipher>browserify-des": {
+      "packages": {
+        "browserify>crypto-browserify>create-hash>cipher-base": true,
+        "browserify>crypto-browserify>browserify-cipher>browserify-des>des.js": true,
+        "browserify>inherits": true,
+        "browserify>browser-pack>safe-buffer": true
+      }
+    },
+    "browserify>crypto-browserify>browserify-cipher>browserify-des>des.js": {
+      "packages": {
+        "browserify>crypto-browserify>create-ecdh>elliptic>minimalistic-assert": true,
+        "browserify>inherits": true
+      }
+    },
+    "browserify>crypto-browserify>browserify-cipher>browserify-aes": {
+      "packages": {
+        "browserify>browser-pack>safe-buffer": true,
+        "browserify>crypto-browserify>create-hash>cipher-base": true,
+        "browserify>crypto-browserify>browserify-cipher>evp_bytestokey": true,
+        "browserify>inherits": true,
+        "browserify>crypto-browserify>browserify-cipher>browserify-aes>buffer-xor": true,
+        "buffer": true
+      }
+    },
+    "browserify>crypto-browserify>browserify-cipher>browserify-aes>buffer-xor": {
+      "packages": {
+        "buffer": true
+      }
+    },
+    "browserify>crypto-browserify>browserify-cipher>evp_bytestokey": {
+      "packages": {
+        "browserify>browser-pack>safe-buffer": true,
+        "browserify>crypto-browserify>create-hash>md5.js": true
+      }
+    },
+    "browserify>crypto-browserify>diffie-hellman": {
+      "packages": {
+        "buffer": true,
+        "browserify>crypto-browserify>randombytes": true,
+        "browserify>crypto-browserify>create-ecdh>bn.js": true,
+        "browserify>crypto-browserify>diffie-hellman>miller-rabin": true
+      }
+    },
+    "browserify>crypto-browserify>create-ecdh>bn.js": {
+      "packages": {
+        "parcel>@parcel/package-manager>@parcel/node-resolver-core": true
+      },
+      "globals": {
+        "Buffer": true
+      }
+    },
+    "browserify>crypto-browserify>diffie-hellman>miller-rabin": {
+      "packages": {
+        "browserify>crypto-browserify>create-ecdh>bn.js": true,
+        "browserify>crypto-browserify>create-ecdh>elliptic>brorand": true
+      }
+    },
+    "browserify>crypto-browserify>create-ecdh>elliptic>brorand": {
+      "packages": {
+        "parcel>@parcel/package-manager>@parcel/node-resolver-core": true
+      },
+      "globals": {
+        "crypto": true,
+        "msCrypto": true
+      }
+    },
+    "browserify>crypto-browserify>public-encrypt>browserify-rsa": {
+      "packages": {
+        "buffer": true,
+        "browserify>crypto-browserify>public-encrypt>browserify-rsa>bn.js": true,
+        "browserify>crypto-browserify>randombytes": true
+      }
+    },
+    "browserify>crypto-browserify>public-encrypt>browserify-rsa>bn.js": {
+      "packages": {
+        "parcel>@parcel/package-manager>@parcel/node-resolver-core": true
+      },
+      "globals": {
+        "Buffer": true
+      }
+    },
+    "browserify>crypto-browserify>create-ecdh>elliptic": {
+      "packages": {
+        "browserify>crypto-browserify>create-ecdh>elliptic>brorand": true,
+        "browserify>crypto-browserify>create-ecdh>bn.js": true,
+        "browserify>crypto-browserify>create-ecdh>elliptic>minimalistic-assert": true,
+        "browserify>crypto-browserify>create-ecdh>elliptic>minimalistic-crypto-utils": true,
+        "browserify>inherits": true,
+        "browserify>crypto-browserify>create-ecdh>elliptic>hash.js": true,
+        "browserify>crypto-browserify>create-ecdh>elliptic>hmac-drbg": true
+      }
+    },
+    "browserify>crypto-browserify>create-ecdh>elliptic>hash.js": {
+      "packages": {
+        "browserify>crypto-browserify>create-ecdh>elliptic>minimalistic-assert": true,
+        "browserify>inherits": true
+      }
+    },
+    "browserify>crypto-browserify>create-ecdh>elliptic>hmac-drbg": {
+      "packages": {
+        "browserify>crypto-browserify>create-ecdh>elliptic>hash.js": true,
+        "browserify>crypto-browserify>create-ecdh>elliptic>minimalistic-crypto-utils": true,
+        "browserify>crypto-browserify>create-ecdh>elliptic>minimalistic-assert": true
+      }
+    },
+    "browserify>crypto-browserify>browserify-sign>bn.js": {
+      "packages": {
+        "parcel>@parcel/package-manager>@parcel/node-resolver-core": true
+      },
+      "globals": {
+        "Buffer": true
+      }
+    },
+    "browserify>crypto-browserify>public-encrypt>parse-asn1": {
+      "packages": {
+        "browserify>crypto-browserify>browserify-cipher>browserify-aes": true,
+        "browserify>crypto-browserify>pbkdf2": true,
+        "browserify>browser-pack>safe-buffer": true,
+        "browserify>crypto-browserify>public-encrypt>parse-asn1>asn1.js": true,
+        "browserify>crypto-browserify>browserify-cipher>evp_bytestokey": true
+      }
+    },
+    "browserify>crypto-browserify>public-encrypt>parse-asn1>asn1.js": {
+      "packages": {
+        "browserify>crypto-browserify>create-ecdh>bn.js": true,
+        "browserify>inherits": true,
+        "@wdio/cli>inquirer>external-editor>iconv-lite>safer-buffer": true,
+        "browserify>crypto-browserify>create-ecdh>elliptic>minimalistic-assert": true
+      }
+    },
+    "@wdio/cli>inquirer>external-editor>iconv-lite>safer-buffer": {
+      "packages": {
+        "process": true,
+        "buffer": true
+      }
+    },
+    "browserify>crypto-browserify>create-ecdh": {
+      "packages": {
+        "buffer": true,
+        "browserify>crypto-browserify>create-ecdh>elliptic": true,
+        "browserify>crypto-browserify>create-ecdh>bn.js": true
+      }
+    },
+    "browserify>crypto-browserify>public-encrypt": {
+      "packages": {
+        "browserify>crypto-browserify>public-encrypt>parse-asn1": true,
+        "browserify>crypto-browserify>randombytes": true,
+        "browserify>crypto-browserify>create-hash": true,
+        "browserify>crypto-browserify>create-ecdh>bn.js": true,
+        "browserify>crypto-browserify>public-encrypt>browserify-rsa": true,
+        "browserify>browser-pack>safe-buffer": true
+      }
+    },
+    "browserify>crypto-browserify>randomfill": {
+      "packages": {
+        "process": true,
+        "browserify>browser-pack>safe-buffer": true,
+        "browserify>crypto-browserify>randombytes": true
+      },
+      "globals": {
+        "crypto": true,
+        "msCrypto": true
+      }
+    }
+  }
+}

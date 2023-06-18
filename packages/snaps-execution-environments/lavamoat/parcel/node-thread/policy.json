@@ -1,0 +1,1172 @@
+{
+  "resources": {
+    "external:../snaps-utils/dist/index.js": {
+      "packages": {
+        "external:../snaps-utils/dist/array.js": true,
+        "external:../snaps-utils/dist/caveats.js": true,
+        "external:../snaps-utils/dist/cronjob.js": true,
+        "external:../snaps-utils/dist/checksum.js": true,
+        "external:../snaps-utils/dist/deep-clone.js": true,
+        "external:../snaps-utils/dist/default-endowments.js": true,
+        "external:../snaps-utils/dist/entropy.js": true,
+        "external:../snaps-utils/dist/eval.js": true,
+        "external:../snaps-utils/dist/fs.js": true,
+        "external:../snaps-utils/dist/handlers.js": true,
+        "external:../snaps-utils/dist/iframe.js": true,
+        "external:../snaps-utils/dist/json.js": true,
+        "external:../snaps-utils/dist/json-rpc.js": true,
+        "external:../snaps-utils/dist/logging.js": true,
+        "external:../snaps-utils/dist/manifest/index.js": true,
+        "external:../snaps-utils/dist/mock.js": true,
+        "external:../snaps-utils/dist/namespace.js": true,
+        "external:../snaps-utils/dist/notification.js": true,
+        "external:../snaps-utils/dist/npm.js": true,
+        "external:../snaps-utils/dist/path.js": true,
+        "external:../snaps-utils/dist/post-process.js": true,
+        "external:../snaps-utils/dist/snaps.js": true,
+        "external:../snaps-utils/dist/types.js": true,
+        "external:../snaps-utils/dist/versions.js": true,
+        "external:../snaps-utils/dist/virtual-file/index.js": true
+      }
+    },
+    "external:../snaps-utils/dist/cronjob.js": {
+      "packages": {
+        "@metamask/utils": true,
+        "@metamask/snaps-utils>cron-parser": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/utils": {
+      "packages": {
+        "superstruct": true,
+        "eslint>debug": true,
+        "@metamask/utils>semver": true
+      },
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "Buffer": true
+      }
+    },
+    "superstruct": {
+      "packages": {
+        "parcel>@parcel/config-default>@parcel/transformer-js": true
+      },
+      "globals": {
+        "console.warn": true
+      }
+    },
+    "eslint>debug": {
+      "packages": {
+        "eslint>debug>ms": true,
+        "55c053b61031cf11": true,
+        "ed4e79c75c3e108c": true,
+        "@wdio/mocha-framework>mocha>supports-color": true
+      },
+      "globals": {
+        "process": true,
+        "console": true,
+        "navigator": true,
+        "document": true,
+        "localStorage": true
+      },
+      "builtin": {
+        "55c053b61031cf11.isatty": true,
+        "ed4e79c75c3e108c.deprecate": true,
+        "ed4e79c75c3e108c.format": true,
+        "ed4e79c75c3e108c.inspect": true
+      }
+    },
+    "@wdio/mocha-framework>mocha>supports-color": {
+      "packages": {
+        "4a292d9f84baaf5f": true,
+        "81890c261ec02a4": true,
+        "istanbul-lib-report>supports-color>has-flag": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.platform": true
+      },
+      "builtin": {
+        "4a292d9f84baaf5f.release": true,
+        "81890c261ec02a4.isatty": true
+      }
+    },
+    "istanbul-lib-report>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
+      }
+    },
+    "@metamask/utils>semver": {
+      "packages": {
+        "@metamask/utils>semver>lru-cache": true
+      },
+      "globals": {
+        "process": true,
+        "console.error": true
+      }
+    },
+    "@metamask/utils>semver>lru-cache": {
+      "packages": {
+        "@metamask/utils>semver>lru-cache>yallist": true
+      }
+    },
+    "@metamask/snaps-utils>cron-parser": {
+      "packages": {
+        "fd3dd7d6ee4db7a3": true,
+        "@metamask/snaps-utils>cron-parser>luxon": true
+      },
+      "builtin": {
+        "fd3dd7d6ee4db7a3.readFile": true
+      }
+    },
+    "@metamask/snaps-utils>cron-parser>luxon": {
+      "packages": {
+        "parcel>@parcel/config-default>@parcel/transformer-js": true
+      },
+      "globals": {
+        "Intl": true
+      }
+    },
+    "external:../snaps-utils/dist/checksum.js": {
+      "packages": {
+        "@metamask/utils": true,
+        "@metamask/rpc-methods>@noble/hashes": true,
+        "external:../snaps-utils/dist/virtual-file/VirtualFile.js": true
+      }
+    },
+    "@metamask/rpc-methods>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "external:../snaps-utils/dist/virtual-file/VirtualFile.js": {
+      "packages": {
+        "@metamask/utils": true,
+        "external:../snaps-utils/dist/deep-clone.js": true
+      },
+      "globals": {
+        "TextDecoder": true
+      }
+    },
+    "external:../snaps-utils/dist/deep-clone.js": {
+      "packages": {
+        "@metamask/snaps-utils>rfdc": true
+      }
+    },
+    "@metamask/snaps-utils>rfdc": {
+      "globals": {
+        "Buffer": true
+      }
+    },
+    "external:../snaps-utils/dist/eval.js": {
+      "packages": {
+        "6cebf4a369a89aab": true,
+        "ef59e2e96d992c8d": true,
+        "external:../snaps-utils/dist/fs.js": true
+      },
+      "globals": {
+        "__dirname": true
+      },
+      "builtin": {
+        "6cebf4a369a89aab.join": true,
+        "6cebf4a369a89aab.resolve": true,
+        "ef59e2e96d992c8d.fork": true
+      }
+    },
+    "external:../snaps-utils/dist/fs.js": {
+      "packages": {
+        "868a4a6a7c99c703": true,
+        "a9dbc6337abd0d11": true,
+        "d6d5697b6d077bf1": true,
+        "external:../snaps-utils/dist/json.js": true,
+        "external:../snaps-utils/dist/virtual-file/index.js": true
+      },
+      "builtin": {
+        "868a4a6a7c99c703.promises.mkdir": true,
+        "868a4a6a7c99c703.promises.stat": true,
+        "868a4a6a7c99c703.promises.unlink": true,
+        "868a4a6a7c99c703.promises.writeFile": true,
+        "a9dbc6337abd0d11": true,
+        "d6d5697b6d077bf1": true
+      }
+    },
+    "external:../snaps-utils/dist/json.js": {
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
+    "external:../snaps-utils/dist/virtual-file/index.js": {
+      "packages": {
+        "external:../snaps-utils/dist/virtual-file/toVirtualFile.js": true,
+        "external:../snaps-utils/dist/virtual-file/VirtualFile.js": true
+      }
+    },
+    "external:../snaps-utils/dist/virtual-file/toVirtualFile.js": {
+      "packages": {
+        "277cda0fbd08ab2e": true,
+        "external:../snaps-utils/dist/virtual-file/VirtualFile.js": true
+      },
+      "builtin": {
+        "277cda0fbd08ab2e.promises.readFile": true,
+        "277cda0fbd08ab2e.promises.writeFile": true
+      }
+    },
+    "external:../snaps-utils/dist/iframe.js": {
+      "globals": {
+        "document.createElement": true,
+        "document.body.appendChild": true
+      }
+    },
+    "external:../snaps-utils/dist/json-rpc.js": {
+      "packages": {
+        "@metamask/utils": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-utils/dist/logging.js": {
+      "packages": {
+        "@metamask/utils": true
+      },
+      "globals": {
+        "console.log": true,
+        "console.error": true,
+        "console.warn": true
+      }
+    },
+    "external:../snaps-utils/dist/manifest/index.js": {
+      "packages": {
+        "external:../snaps-utils/dist/manifest/manifest.js": true,
+        "external:../snaps-utils/dist/manifest/validation.js": true
+      }
+    },
+    "external:../snaps-utils/dist/manifest/manifest.js": {
+      "packages": {
+        "@metamask/utils": true,
+        "eslint>fast-deep-equal": true,
+        "d6fc310743812657": true,
+        "31e0a5d4229846ca": true,
+        "external:../snaps-utils/dist/deep-clone.js": true,
+        "external:../snaps-utils/dist/fs.js": true,
+        "external:../snaps-utils/dist/npm.js": true,
+        "external:../snaps-utils/dist/snaps.js": true,
+        "external:../snaps-utils/dist/types.js": true,
+        "external:../snaps-utils/dist/virtual-file/index.js": true
+      },
+      "builtin": {
+        "31e0a5d4229846ca": true,
+        "d6fc310743812657.promises.writeFile": true
+      }
+    },
+    "external:../snaps-utils/dist/npm.js": {
+      "packages": {
+        "external:../snaps-utils/dist/manifest/manifest.js": true,
+        "external:../snaps-utils/dist/manifest/validation.js": true,
+        "external:../snaps-utils/dist/types.js": true
+      },
+      "globals": {
+        "Buffer.byteLength": true
+      }
+    },
+    "external:../snaps-utils/dist/manifest/validation.js": {
+      "packages": {
+        "@metamask/utils": true,
+        "superstruct": true,
+        "external:../snaps-utils/dist/array.js": true,
+        "external:../snaps-utils/dist/cronjob.js": true,
+        "external:../snaps-utils/dist/entropy.js": true,
+        "external:../snaps-utils/dist/json-rpc.js": true,
+        "external:../snaps-utils/dist/namespace.js": true,
+        "external:../snaps-utils/dist/types.js": true
+      }
+    },
+    "external:../snaps-utils/dist/namespace.js": {
+      "packages": {
+        "@metamask/utils": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-utils/dist/types.js": {
+      "packages": {
+        "@metamask/utils": true,
+        "superstruct": true
+      },
+      "globals": {
+        "URL": true
+      }
+    },
+    "external:../snaps-utils/dist/snaps.js": {
+      "packages": {
+        "@metamask/utils": true,
+        "@metamask/snaps-utils>@scure/base": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "superstruct": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true,
+        "external:../snaps-utils/dist/caveats.js": true,
+        "external:../snaps-utils/dist/checksum.js": true,
+        "external:../snaps-utils/dist/types.js": true
+      }
+    },
+    "@metamask/snaps-utils>@scure/base": {
+      "packages": {
+        "parcel>@parcel/config-default>@parcel/transformer-js": true
+      },
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/snaps-utils>validate-npm-package-name": {
+      "packages": {
+        "@metamask/snaps-utils>validate-npm-package-name>builtins": true
+      }
+    },
+    "@metamask/snaps-utils>validate-npm-package-name>builtins": {
+      "packages": {
+        "@metamask/utils>semver": true
+      },
+      "globals": {
+        "process.version": true
+      }
+    },
+    "external:../snaps-utils/dist/mock.js": {
+      "packages": {
+        "63905acbd9ba373c": true,
+        "afaf35ffa5f93fd5": true,
+        "external:../snaps-utils/dist/default-endowments.js": true
+      },
+      "builtin": {
+        "63905acbd9ba373c": true,
+        "afaf35ffa5f93fd5": true
+      }
+    },
+    "external:../snaps-utils/dist/notification.js": {
+      "packages": {
+        "@metamask/utils": true,
+        "superstruct": true,
+        "external:../snaps-utils/dist/namespace.js": true
+      }
+    },
+    "external:../snaps-utils/dist/path.js": {
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
+    "external:../snaps-utils/dist/post-process.js": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/core>@babel/types": true
+      }
+    },
+    "@babel/core": {
+      "packages": {
+        "@babel/core>@babel/types": true,
+        "@babel/core>@babel/parser": true,
+        "@babel/core>@babel/traverse": true,
+        "@babel/core>@babel/template": true,
+        "a47bd0c43776bd22": true,
+        "@babel/core>@babel/helpers": true,
+        "lavamoat>@babel/code-frame": true,
+        "@babel/core>@babel/helper-module-transforms": true,
+        "@babel/core>semver": true,
+        "@babel/core>@babel/generator": true,
+        "@babel/core>gensync": true,
+        "3d6ab8f4b13e1489": true,
+        "4f0dd000fd8c6910": true,
+        "a125b507a871acc9": true,
+        "eslint>debug": true,
+        "adb2ca024f9d734d": true,
+        "915938e31ceed103": true,
+        "@babel/core>json5": true,
+        "cf5c80b340a8995c": true,
+        "94502226999bfee2": true,
+        "560ec52afff292e0": true,
+        "6454802499e6e4c6": true,
+        "@babel/preset-typescript": true,
+        "cff2ad35426a9630": true,
+        "9555e1ee98629c40": true,
+        "@babel/core>@babel/helper-compilation-targets": true,
+        "a931da34ab8dfd6f": true,
+        "d11fa8785b029fb4": true,
+        "c8ffa9eed1248665": true,
+        "89724f1c8016a80": true,
+        "7a449e1b13ecdc1c": true,
+        "54262f8d8338952b": true,
+        "@babel/core>convert-source-map": true,
+        "@babel/core>@ampproject/remapping": true,
+        "d440f87c46033144": true,
+        "cc0ca2828fade5f8": true,
+        "91b9ab95bcbc1b62": true,
+        "e312002818739d81": true,
+        "c34d64ebf9c9c060": true,
+        "b78c763167932795": true,
+        "e915feeb154ab504": true,
+        "7200919a2a892976": true,
+        "23ff6725b3d15ca1": true
+      },
+      "globals": {
+        "console.log": true,
+        "process": true,
+        "console.error": true
+      },
+      "builtin": {
+        "23ff6725b3d15ca1": true,
+        "3d6ab8f4b13e1489": true,
+        "4f0dd000fd8c6910": true,
+        "54262f8d8338952b": true,
+        "560ec52afff292e0": true,
+        "6454802499e6e4c6": true,
+        "7200919a2a892976": true,
+        "7a449e1b13ecdc1c": true,
+        "89724f1c8016a80": true,
+        "915938e31ceed103": true,
+        "91b9ab95bcbc1b62": true,
+        "94502226999bfee2": true,
+        "9555e1ee98629c40": true,
+        "a125b507a871acc9": true,
+        "a47bd0c43776bd22": true,
+        "a931da34ab8dfd6f": true,
+        "adb2ca024f9d734d": true,
+        "b78c763167932795": true,
+        "c34d64ebf9c9c060": true,
+        "c8ffa9eed1248665": true,
+        "cc0ca2828fade5f8": true,
+        "cf5c80b340a8995c": true,
+        "cff2ad35426a9630": true,
+        "d11fa8785b029fb4": true,
+        "d440f87c46033144": true,
+        "e312002818739d81": true,
+        "e915feeb154ab504": true
+      }
+    },
+    "@babel/core>@babel/helpers": {
+      "packages": {
+        "@babel/core>@babel/traverse": true,
+        "@babel/core>@babel/types": true,
+        "@babel/core>@babel/template": true
+      }
+    },
+    "@babel/core>@babel/traverse": {
+      "packages": {
+        "@babel/core>@babel/types": true,
+        "eslint>debug": true,
+        "@babel/core>@babel/generator": true,
+        "@babel/core>@babel/traverse>globals": true,
+        "@babel/core>@babel/traverse>@babel/helper-split-export-declaration": true,
+        "@babel/core>@babel/traverse>@babel/helper-environment-visitor": true,
+        "lavamoat>@babel/code-frame": true,
+        "@babel/core>@babel/parser": true,
+        "@babel/core>@babel/traverse>@babel/helper-hoist-variables": true,
+        "@babel/core>@babel/traverse>@babel/helper-function-name": true
+      },
+      "globals": {
+        "console.log": true
+      }
+    },
+    "@babel/core>@babel/types": {
+      "packages": {
+        "@babel/core>@babel/types>to-fast-properties": true,
+        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
+        "@babel/core>@babel/types>@babel/helper-string-parser": true
+      },
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      }
+    },
+    "@babel/core>@babel/traverse>@babel/helper-split-export-declaration": {
+      "packages": {
+        "@babel/core>@babel/types": true
+      }
+    },
+    "@babel/core>@babel/generator": {
+      "packages": {
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true,
+        "@babel/core>@babel/types": true,
+        "@babel/core>@babel/generator>jsesc": true
+      },
+      "globals": {
+        "console.error": true
+      }
+    },
+    "terser>@jridgewell/source-map>@jridgewell/gen-mapping": {
+      "packages": {
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true,
+        "parcel>@parcel/config-default>@parcel/transformer-js": true
+      }
+    },
+    "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": {
+      "packages": {
+        "parcel>@parcel/config-default>@parcel/transformer-js": true
+      }
+    },
+    "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": {
+      "packages": {
+        "parcel>@parcel/config-default>@parcel/transformer-js": true
+      },
+      "globals": {
+        "TextDecoder": true,
+        "Buffer": true
+      }
+    },
+    "terser>@jridgewell/source-map>@jridgewell/trace-mapping": {
+      "packages": {
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
+        "parcel>@parcel/config-default>@parcel/transformer-js": true
+      }
+    },
+    "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
+      "packages": {
+        "parcel>@parcel/config-default>@parcel/transformer-js": true
+      }
+    },
+    "@babel/core>@babel/generator>jsesc": {
+      "globals": {
+        "Buffer.isBuffer": true
+      }
+    },
+    "lavamoat>@babel/code-frame": {
+      "packages": {
+        "lavamoat>@babel/highlight": true
+      },
+      "globals": {
+        "process.emitWarning": true,
+        "console.warn": true
+      }
+    },
+    "lavamoat>@babel/highlight": {
+      "packages": {
+        "lavamoat>@babel/highlight>js-tokens": true,
+        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
+        "lavamoat>@babel/highlight>chalk": true
+      }
+    },
+    "lavamoat>@babel/highlight>chalk": {
+      "packages": {
+        "lavamoat>@babel/highlight>chalk>escape-string-regexp": true,
+        "lavamoat>@babel/highlight>chalk>ansi-styles": true,
+        "lavamoat>@babel/highlight>chalk>supports-color": true
+      },
+      "globals": {
+        "process.platform": true,
+        "process.env.TERM": true
+      }
+    },
+    "lavamoat>@babel/highlight>chalk>ansi-styles": {
+      "packages": {
+        "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert>color-name": true
+      }
+    },
+    "lavamoat>@babel/highlight>chalk>supports-color": {
+      "packages": {
+        "e05949aa099204ed": true,
+        "lavamoat>@babel/highlight>chalk>supports-color>has-flag": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.platform": true,
+        "process.versions.node.split": true,
+        "process.stdout": true,
+        "process.stderr": true
+      },
+      "builtin": {
+        "e05949aa099204ed.release": true
+      }
+    },
+    "lavamoat>@babel/highlight>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
+      }
+    },
+    "@babel/core>@babel/traverse>@babel/helper-hoist-variables": {
+      "packages": {
+        "@babel/core>@babel/types": true
+      }
+    },
+    "@babel/core>@babel/traverse>@babel/helper-function-name": {
+      "packages": {
+        "@babel/core>@babel/template": true,
+        "@babel/core>@babel/types": true
+      }
+    },
+    "@babel/core>@babel/template": {
+      "packages": {
+        "@babel/core>@babel/types": true,
+        "@babel/core>@babel/parser": true,
+        "lavamoat>@babel/code-frame": true
+      }
+    },
+    "@babel/core>@babel/helper-module-transforms": {
+      "packages": {
+        "3af200a945d48b33": true,
+        "@babel/core>@babel/types": true,
+        "@babel/core>@babel/template": true,
+        "@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
+        "@babel/core>@babel/traverse>@babel/helper-environment-visitor": true,
+        "@babel/core>@babel/traverse": true,
+        "7dfad01ee867b24b": true,
+        "@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
+        "85b8a877c3d45f30": true,
+        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
+        "@babel/core>@babel/traverse>@babel/helper-split-export-declaration": true
+      },
+      "builtin": {
+        "3af200a945d48b33": true,
+        "7dfad01ee867b24b": true,
+        "85b8a877c3d45f30.basename": true,
+        "85b8a877c3d45f30.extname": true
+      }
+    },
+    "@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": {
+      "packages": {
+        "c7efe450bba07476": true,
+        "@babel/core>@babel/types": true,
+        "901e08c395d06e2e": true
+      },
+      "builtin": {
+        "901e08c395d06e2e": true,
+        "c7efe450bba07476": true
+      }
+    },
+    "@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": {
+      "packages": {
+        "@babel/core>@babel/types": true
+      }
+    },
+    "@babel/core>semver": {
+      "globals": {
+        "process": true,
+        "console": true
+      }
+    },
+    "@babel/core>json5": {
+      "packages": {
+        "parcel>@parcel/config-default>@parcel/transformer-js": true
+      },
+      "globals": {
+        "console.warn": true
+      }
+    },
+    "@babel/core>@babel/helper-compilation-targets": {
+      "packages": {
+        "@babel/core>@babel/helper-compilation-targets>browserslist": true,
+        "@babel/preset-env>@babel/helper-validator-option": true,
+        "@babel/preset-env>@babel/compat-data": true,
+        "@babel/core>@babel/helper-compilation-targets>lru-cache": true,
+        "@babel/core>@babel/helper-compilation-targets>semver": true
+      },
+      "globals": {
+        "console.warn": true,
+        "process.versions.node": true
+      }
+    },
+    "@babel/core>@babel/helper-compilation-targets>browserslist": {
+      "packages": {
+        "@babel/core>@babel/helper-compilation-targets>browserslist>node-releases": true,
+        "@babel/core>@babel/helper-compilation-targets>browserslist>caniuse-lite": true,
+        "7116f2105d515f50": true,
+        "@babel/core>@babel/helper-compilation-targets>browserslist>electron-to-chromium": true,
+        "8fda451d6195e770": true,
+        "fb44261121f1229b": true
+      },
+      "globals": {
+        "process.versions.node": true,
+        "process.env": true,
+        "console.warn": true
+      },
+      "builtin": {
+        "7116f2105d515f50.resolve": true,
+        "8fda451d6195e770.basename": true,
+        "8fda451d6195e770.dirname": true,
+        "8fda451d6195e770.join": true,
+        "8fda451d6195e770.resolve": true,
+        "fb44261121f1229b.existsSync": true,
+        "fb44261121f1229b.readFileSync": true,
+        "fb44261121f1229b.statSync": true
+      }
+    },
+    "@babel/core>@babel/helper-compilation-targets>lru-cache": {
+      "packages": {
+        "@babel/core>@babel/helper-compilation-targets>lru-cache>yallist": true
+      }
+    },
+    "@babel/core>@babel/helper-compilation-targets>semver": {
+      "globals": {
+        "process": true,
+        "console": true
+      }
+    },
+    "@babel/core>convert-source-map": {
+      "packages": {
+        "f160af6bac2fe3d8": true,
+        "6d4f7980da39ea3": true
+      },
+      "globals": {
+        "Buffer": true,
+        "value": true,
+        "atob": true,
+        "btoa": true
+      },
+      "builtin": {
+        "6d4f7980da39ea3.resolve": true,
+        "f160af6bac2fe3d8.readFileSync": true
+      }
+    },
+    "@babel/core>@ampproject/remapping": {
+      "packages": {
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true,
+        "@babel/core>@ampproject/remapping>@jridgewell/gen-mapping": true,
+        "parcel>@parcel/config-default>@parcel/transformer-js": true
+      }
+    },
+    "@babel/core>@ampproject/remapping>@jridgewell/gen-mapping": {
+      "packages": {
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
+        "parcel>@parcel/config-default>@parcel/transformer-js": true
+      }
+    },
+    "@babel/preset-typescript": {
+      "packages": {
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-typescript>@babel/plugin-transform-typescript": true,
+        "@babel/preset-typescript>@babel/plugin-syntax-jsx": true,
+        "@babel/preset-env>@babel/plugin-transform-modules-commonjs": true,
+        "@babel/preset-env>@babel/helper-validator-option": true
+      }
+    },
+    "@babel/preset-typescript>@babel/plugin-transform-typescript": {
+      "packages": {
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/plugin-syntax-typescript": true,
+        "@babel/preset-env>@babel/plugin-proposal-private-methods>@babel/helper-create-class-features-plugin": true,
+        "@babel/core": true,
+        "62564d5a5688dc06": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true
+      },
+      "globals": {
+        "console.warn": true
+      },
+      "builtin": {
+        "62564d5a5688dc06": true
+      }
+    },
+    "@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/plugin-syntax-typescript": {
+      "packages": {
+        "@babel/preset-env>@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-proposal-private-methods>@babel/helper-create-class-features-plugin": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/core>@babel/traverse>@babel/helper-function-name": true,
+        "@babel/core>@babel/traverse>@babel/helper-split-export-declaration": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": true,
+        "@babel/core>@babel/traverse>@babel/helper-environment-visitor": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-member-expression-to-functions": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-optimise-call-expression": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
+        "@babel/preset-env>@babel/plugin-transform-spread>@babel/helper-skip-transparent-expression-wrappers": true
+      },
+      "globals": {
+        "console.warn": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": {
+      "packages": {
+        "@babel/core>@babel/traverse>@babel/helper-environment-visitor": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-member-expression-to-functions": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-optimise-call-expression": true,
+        "@babel/core>@babel/template": true,
+        "@babel/core>@babel/traverse": true,
+        "@babel/core>@babel/types": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-member-expression-to-functions": {
+      "packages": {
+        "@babel/core>@babel/types": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-optimise-call-expression": {
+      "packages": {
+        "@babel/core>@babel/types": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": {
+      "packages": {
+        "@babel/core>@babel/types": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-transform-spread>@babel/helper-skip-transparent-expression-wrappers": {
+      "packages": {
+        "@babel/core>@babel/types": true
+      }
+    },
+    "@babel/preset-typescript>@babel/plugin-syntax-jsx": {
+      "packages": {
+        "@babel/preset-env>@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-transform-modules-commonjs": {
+      "packages": {
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/core>@babel/helper-module-transforms": true,
+        "@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
+        "@babel/core": true
+      }
+    },
+    "external:../snaps-utils/dist/versions.js": {
+      "packages": {
+        "@metamask/utils": true,
+        "@metamask/utils>semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/object-multiplex": {
+      "packages": {
+        "@metamask/object-multiplex>readable-stream": true,
+        "pump>end-of-stream": true,
+        "pump>once": true
+      },
+      "globals": {
+        "console.warn": true
+      }
+    },
+    "@metamask/object-multiplex>readable-stream": {
+      "packages": {
+        "13ffa012e0277b04": true,
+        "browserify>readable-stream>process-nextick-args": true,
+        "browserify>readable-stream>isarray": true,
+        "dd5146fcd602ff70": true,
+        "@metamask/object-multiplex>readable-stream>safe-buffer": true,
+        "browserify>readable-stream>core-util-is": true,
+        "browserify>inherits": true,
+        "a741445db1588575": true,
+        "@metamask/object-multiplex>readable-stream>string_decoder": true,
+        "70846badf3ff5df": true,
+        "bdfaeef69893cbbd": true,
+        "browserify>readable-stream>util-deprecate": true
+      },
+      "globals": {
+        "process.env.READABLE_STREAM": true,
+        "process.stdout": true,
+        "process.stderr": true,
+        "process.browser": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "builtin": {
+        "13ffa012e0277b04": true,
+        "70846badf3ff5df": true,
+        "a741445db1588575": true,
+        "bdfaeef69893cbbd": true,
+        "dd5146fcd602ff70.EventEmitter": true
+      }
+    },
+    "browserify>readable-stream>process-nextick-args": {
+      "globals": {
+        "process": true
+      }
+    },
+    "@metamask/object-multiplex>readable-stream>safe-buffer": {
+      "packages": {
+        "e5451350e80d2615": true
+      },
+      "builtin": {
+        "e5451350e80d2615": true
+      }
+    },
+    "browserify>readable-stream>core-util-is": {
+      "globals": {
+        "Buffer.isBuffer": true
+      }
+    },
+    "browserify>inherits": {
+      "packages": {
+        "bc99293e56e11547": true
+      },
+      "builtin": {
+        "bc99293e56e11547.inherits": true
+      }
+    },
+    "browserify>readable-stream>util-deprecate": {
+      "packages": {
+        "4c3555f16ca4a739": true
+      },
+      "builtin": {
+        "4c3555f16ca4a739.deprecate": true
+      }
+    },
+    "@metamask/object-multiplex>readable-stream>string_decoder": {
+      "packages": {
+        "@metamask/object-multiplex>readable-stream>safe-buffer": true
+      }
+    },
+    "pump>end-of-stream": {
+      "packages": {
+        "pump>once": true
+      },
+      "globals": {
+        "process.nextTick": true
+      }
+    },
+    "pump>once": {
+      "packages": {
+        "pump>once>wrappy": true
+      }
+    },
+    "@metamask/post-message-stream": {
+      "packages": {
+        "@metamask/post-message-stream>@metamask/utils": true,
+        "@metamask/post-message-stream>readable-stream": true,
+        "57f239ab4ff8f4f7": true
+      },
+      "globals": {
+        "MessageEvent.prototype": true,
+        "location.origin": true,
+        "postMessage": true,
+        "addEventListener": true,
+        "removeEventListener": true,
+        "WorkerGlobalScope": true,
+        "process.send": true,
+        "process.on": true,
+        "process.removeListener": true,
+        "chrome": true,
+        "browser": true
+      },
+      "builtin": {
+        "57f239ab4ff8f4f7.parentPort": true
+      }
+    },
+    "@metamask/post-message-stream>@metamask/utils": {
+      "packages": {
+        "superstruct": true,
+        "eslint>debug": true,
+        "@metamask/utils>semver": true
+      },
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "Buffer": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream": {
+      "packages": {
+        "68f0c9d5c1225651": true,
+        "@metamask/post-message-stream>readable-stream>process-nextick-args": true,
+        "browserify>readable-stream>isarray": true,
+        "c3da99a2337d1b71": true,
+        "@metamask/post-message-stream>readable-stream>safe-buffer": true,
+        "browserify>readable-stream>core-util-is": true,
+        "browserify>inherits": true,
+        "3b650b2dbe30672b": true,
+        "@metamask/post-message-stream>readable-stream>string_decoder": true,
+        "29c1f4565a4b1a5a": true,
+        "browserify>readable-stream>util-deprecate": true
+      },
+      "globals": {
+        "process.env.READABLE_STREAM": true,
+        "process.stdout": true,
+        "process.stderr": true,
+        "process.browser": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "builtin": {
+        "29c1f4565a4b1a5a": true,
+        "3b650b2dbe30672b": true,
+        "68f0c9d5c1225651": true,
+        "c3da99a2337d1b71.EventEmitter": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream>process-nextick-args": {
+      "globals": {
+        "process.version": true,
+        "process.nextTick": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream>safe-buffer": {
+      "packages": {
+        "c2159fcbe4135b5c": true
+      },
+      "builtin": {
+        "c2159fcbe4135b5c": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream>string_decoder": {
+      "packages": {
+        "@metamask/post-message-stream>readable-stream>safe-buffer": true
+      }
+    },
+    "pump": {
+      "packages": {
+        "pump>once": true,
+        "pump>end-of-stream": true,
+        "9a4e8056b0e8b47e": true
+      },
+      "globals": {
+        "process.version": true
+      },
+      "builtin": {
+        "9a4e8056b0e8b47e": true
+      }
+    },
+    "@metamask/providers": {
+      "packages": {
+        "@metamask/providers>@metamask/safe-event-emitter": true,
+        "eth-rpc-errors": true,
+        "@metamask/providers>fast-deep-equal": true,
+        "json-rpc-engine": true,
+        "@metamask/providers>detect-browser": true,
+        "@metamask/providers>extension-port-stream": true,
+        "@metamask/object-multiplex": true,
+        "@metamask/providers>is-stream": true,
+        "@metamask/providers>json-rpc-middleware-stream": true,
+        "pump": true
+      },
+      "globals": {
+        "console": true,
+        "chrome.runtime.connect": true,
+        "document.readyState": true,
+        "removeEventListener": true,
+        "addEventListener": true,
+        "location.hostname": true,
+        "document.createElement": true,
+        "ethereum": "write",
+        "dispatchEvent": true,
+        "Event": true,
+        "web3": true
+      }
+    },
+    "@metamask/providers>@metamask/safe-event-emitter": {
+      "packages": {
+        "4ab50ccb1b820575": true
+      },
+      "globals": {
+        "setTimeout": true
+      },
+      "builtin": {
+        "4ab50ccb1b820575.EventEmitter": true
+      }
+    },
+    "eth-rpc-errors": {
+      "packages": {
+        "eth-rpc-errors>fast-safe-stringify": true
+      }
+    },
+    "json-rpc-engine": {
+      "packages": {
+        "json-rpc-engine>@metamask/safe-event-emitter": true,
+        "eth-rpc-errors": true
+      }
+    },
+    "json-rpc-engine>@metamask/safe-event-emitter": {
+      "packages": {
+        "6281fe559dff7351": true
+      },
+      "globals": {
+        "setTimeout": true
+      },
+      "builtin": {
+        "6281fe559dff7351.EventEmitter": true
+      }
+    },
+    "@metamask/providers>detect-browser": {
+      "packages": {
+        "parcel>@parcel/config-default>@parcel/transformer-js": true
+      },
+      "globals": {
+        "process": true,
+        "document": true,
+        "navigator": true
+      }
+    },
+    "@metamask/providers>extension-port-stream": {
+      "packages": {
+        "264a7fcfd8b8383c": true
+      },
+      "globals": {
+        "Buffer.isBuffer": true,
+        "Buffer.from": true
+      },
+      "builtin": {
+        "264a7fcfd8b8383c.Duplex": true
+      }
+    },
+    "@metamask/providers>json-rpc-middleware-stream": {
+      "packages": {
+        "@metamask/providers>json-rpc-middleware-stream>readable-stream": true,
+        "@metamask/providers>json-rpc-middleware-stream>@metamask/safe-event-emitter": true
+      },
+      "globals": {
+        "console.warn": true,
+        "setTimeout": true
+      }
+    },
+    "@metamask/providers>json-rpc-middleware-stream>readable-stream": {
+      "packages": {
+        "26a8394dab9c0f62": true,
+        "browserify>readable-stream>process-nextick-args": true,
+        "browserify>readable-stream>isarray": true,
+        "12404b65c1ea51bf": true,
+        "@metamask/providers>json-rpc-middleware-stream>readable-stream>safe-buffer": true,
+        "browserify>readable-stream>core-util-is": true,
+        "browserify>inherits": true,
+        "9229b90b8d8645f6": true,
+        "@metamask/providers>json-rpc-middleware-stream>readable-stream>string_decoder": true,
+        "a163953f10f8c281": true,
+        "a4798f4f0b5a7f25": true,
+        "browserify>readable-stream>util-deprecate": true
+      },
+      "globals": {
+        "process.env.READABLE_STREAM": true,
+        "process.stdout": true,
+        "process.stderr": true,
+        "process.browser": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "builtin": {
+        "12404b65c1ea51bf.EventEmitter": true,
+        "26a8394dab9c0f62": true,
+        "9229b90b8d8645f6": true,
+        "a163953f10f8c281": true,
+        "a4798f4f0b5a7f25": true
+      }
+    },
+    "@metamask/providers>json-rpc-middleware-stream>readable-stream>safe-buffer": {
+      "packages": {
+        "22add90050e22f86": true
+      },
+      "builtin": {
+        "22add90050e22f86": true
+      }
+    },
+    "@metamask/providers>json-rpc-middleware-stream>readable-stream>string_decoder": {
+      "packages": {
+        "@metamask/providers>json-rpc-middleware-stream>readable-stream>safe-buffer": true
+      }
+    },
+    "@metamask/providers>json-rpc-middleware-stream>@metamask/safe-event-emitter": {
+      "packages": {
+        "5b20e455560e9653": true
+      },
+      "globals": {
+        "setTimeout": true
+      },
+      "builtin": {
+        "5b20e455560e9653.EventEmitter": true
+      }
+    }
+  }
+}
