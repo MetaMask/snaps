@@ -30,6 +30,10 @@ export async function serve(config: ProcessedConfig): Promise<void> {
       hot: false,
       liveReload: false,
 
+      devMiddleware: {
+        writeToDisk: true,
+      },
+
       client: {
         logging: 'error',
         overlay: false,

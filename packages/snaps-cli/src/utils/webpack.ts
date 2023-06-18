@@ -1,6 +1,7 @@
+import { logError, logInfo } from '@metamask/snaps-utils';
 import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
-import { Configuration, webpack } from 'webpack';
+import { Compiler, Configuration, webpack } from 'webpack';
 
 import { ProcessedWebpackConfig } from '../config';
 
@@ -16,6 +17,32 @@ export type WebpackOptions = {
    */
   evaluate?: boolean;
 };
+
+export type WatchPluginOptions = {
+  /**
+   * The extra files to watch.
+   */
+  files?: string[];
+};
+
+export class WatchPlugin {
+  #options: WatchPluginOptions;
+
+  constructor(options: WatchPluginOptions) {
+    this.#options = options;
+  }
+
+  apply(compiler: Compiler) {
+    compiler.hooks.afterCompile.tapPromise(
+      'WatchPlugin',
+      async ({ fileDependencies }) => {
+        this.#options.files?.forEach(
+          fileDependencies.add.bind(fileDependencies),
+        );
+      },
+    );
+  }
+}
 
 /**
  * Get the Webpack devtool configuration based on the given snap config.
@@ -99,21 +126,12 @@ export function getDefaultConfiguration(
 
     /**
      * The stats option controls how much information is printed to the console
-     * when Webpack is running. We set it to `errors-only` so that only errors
-     * are printed.
+     * when Webpack is running. We set it to `none` so that we can control the
+     * output ourselves.
      *
      * @see https://webpack.js.org/configuration/stats/
      */
-    stats: 'errors-only',
-
-    /**
-     * The watch option controls whether Webpack will watch for changes and
-     * rebuild the bundle. We set it to the `watch` value which is passed to
-     * this function.
-     *
-     * @see https://webpack.js.org/configuration/watch/
-     */
-    watch: options.watch,
+    stats: 'none',
 
     /**
      * The output options.
@@ -200,16 +218,13 @@ export function getDefaultConfiguration(
              * @see https://swc.rs/docs/configuration/swcrc
              */
             options: {
-              parseMap: true,
-              sourceMaps: true,
-              inputSourceMap: true,
               /**
                * This tells SWC to generate source maps. We set it to the
                * `sourceMap` value from the config object.
                *
                * This must be enabled if source maps are enabled in the config.
                */
-              // sourceMaps: Boolean(getDevTool(config)),
+              sourceMaps: Boolean(getDevTool(config)),
 
               jsc: {
                 /**
@@ -275,10 +290,24 @@ export function getDefaultConfiguration(
      * @see https://webpack.js.org/configuration/plugins/
      */
     plugins: [
+      /**
+       * The `SnapsWebpackPlugin` is a Webpack plugin that checks and updates
+       * the manifest file, and evaluates the bundle in SES. While not strictly
+       * required, it's highly recommended to use this plugin.
+       */
       new SnapsWebpackPlugin({
         manifestPath: config.manifest.path,
         writeManifest: config.manifest.update,
         eval: options.evaluate ?? config.evaluate,
+      }),
+
+      /**
+       * The `WatchPlugin` is a Webpack plugin that adds extra files to watch
+       * for changes. This is useful for rebuilding the bundle when the
+       * manifest file changes.
+       */
+      new WatchPlugin({
+        files: [config.manifest.path],
       }),
     ],
 
@@ -307,10 +336,10 @@ export function getDefaultConfiguration(
      */
     infrastructureLogging: {
       /**
-       * The level of logging to use. We set it to `error` by default, so that
-       * only errors are logged.
+       * The level of logging to use. We set it to `none`, so that we can
+       * control the output ourselves.
        */
-      level: 'error',
+      level: 'none',
     },
   };
 }
@@ -330,5 +359,29 @@ export function getCompiler(
   const webpackConfig =
     config.customizeWebpackConfig?.(baseWebpackConfig) ?? baseWebpackConfig;
 
-  return webpack(webpackConfig);
+  const compiler = webpack(webpackConfig);
+  compiler.hooks.afterDone.tap('AfterCompilePlugin', (stats) => {
+    if (!stats) {
+      return;
+    }
+
+    const { modules, time, errors } = stats.toJson();
+    if (!modules || !time) {
+      logError('Compilation status unknown. Please check your config.');
+      process.exitCode = 1;
+      return;
+    }
+
+    if (errors?.length) {
+      logError(
+        `Compiled ${modules?.length} files in ${time}ms with ${errors?.length} errors.`,
+      );
+      process.exitCode = 1;
+      return;
+    }
+
+    logInfo(`Compiled ${modules?.length} files in ${time}ms.`);
+  });
+
+  return compiler;
 }

@@ -1,3 +1,5 @@
+import { isFile } from '@metamask/snaps-utils';
+
 import { ProcessedConfig } from '../../config';
 import { getCompiler } from '../../utils';
 import { legacyBuild } from './legacy';
@@ -13,6 +15,12 @@ import { legacyBuild } from './legacy';
 export async function build(config: ProcessedConfig): Promise<void> {
   if (config.bundler === 'browserify') {
     return await legacyBuild(config);
+  }
+
+  if (!(await isFile(config.entry))) {
+    throw new Error(
+      `Entry file not found: "${config.entry}". Make sure that the "entry" field in your snap config is correct.`,
+    );
   }
 
   const compiler = getCompiler(config);

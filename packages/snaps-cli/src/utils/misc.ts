@@ -13,6 +13,7 @@ export const permRequestKeys = [
 ];
 
 export const CONFIG_FILE = 'snap.config.js';
+export const TS_CONFIG_FILE = 'snap.config.ts';
 
 // CLI arguments whose values are file paths
 const pathArguments = new Set([
