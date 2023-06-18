@@ -10,7 +10,7 @@ const command = {
   builder: (yarg: yargs.Argv) => {
     yarg.option('bundle', builders.bundle);
   },
-  handler: async (argv: YargsArgs) => evaluate(argv),
+  handler: async (argv: YargsArgs) => evaluate(argv.context.config),
 };
 
 export default command;

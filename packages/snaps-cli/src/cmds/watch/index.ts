@@ -2,7 +2,7 @@ import type yargs from 'yargs';
 
 import builders from '../../builders';
 import type { YargsArgs } from '../../types/yargs';
-import { processInvalidTranspilation } from '../build/utils';
+import { processInvalidTranspilation } from '../build/legacy/utils';
 import { watch } from './watch';
 
 const command = {
@@ -27,7 +27,7 @@ const command = {
       .implies('depsToTranspile', 'transpilationMode')
       .middleware((argv) => processInvalidTranspilation(argv as any));
   },
-  handler: async (argv: YargsArgs) => watch(argv),
+  handler: async (argv: YargsArgs) => watch(argv.context.config),
 };
 
 export default command;

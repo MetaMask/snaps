@@ -1,7 +1,5 @@
-import { webpack } from 'webpack';
-
 import { ProcessedConfig } from '../../config';
-import { getDefaultConfiguration } from '../../webpack';
+import { getCompiler } from '../../utils';
 import { legacyBuild } from './legacy';
 
 /**
@@ -17,11 +15,7 @@ export async function build(config: ProcessedConfig): Promise<void> {
     return await legacyBuild(config);
   }
 
-  const baseWebpackConfig = getDefaultConfiguration(config);
-  const webpackConfig =
-    config.customizeWebpackConfig?.(baseWebpackConfig) ?? baseWebpackConfig;
-
-  const compiler = webpack(webpackConfig);
+  const compiler = getCompiler(config);
   return await new Promise<void>((resolve, reject) => {
     compiler.run((error, stats) => {
       if (error) {

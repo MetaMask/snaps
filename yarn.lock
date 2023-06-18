@@ -4836,6 +4836,7 @@ __metadata:
     tsc-watch: ^4.5.0
     typescript: ~4.8.4
     webpack: ^5.72.1
+    webpack-dev-server: ^4.13.3
     yargs: ^17.7.1
     yargs-parser: ^20.2.2
   bin:

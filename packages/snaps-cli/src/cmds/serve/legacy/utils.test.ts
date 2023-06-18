@@ -1,6 +1,6 @@
 import { logError, logInfo } from '@metamask/snaps-utils';
 
-import { logServerListening, logRequest, logServerError } from './serveUtils';
+import { logServerListening, logRequest, logServerError } from './utils';
 
 jest.mock('@metamask/snaps-utils', () => ({
   ...jest.requireActual('@metamask/snaps-utils'),

@@ -67,6 +67,7 @@
     "superstruct": "^1.0.3",
     "terser-webpack-plugin": "^5.3.9",
     "webpack": "^5.72.1",
+    "webpack-dev-server": "^4.13.3",
     "yargs": "^17.7.1",
     "yargs-parser": "^20.2.2"
   },

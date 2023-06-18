@@ -260,6 +260,23 @@ export type SnapWebpackConfig = {
     update?: boolean;
   };
 
+  server?: {
+    /**
+     * The root directory to serve the snap from. If the path is relative, it
+     * will be resolved relative to the current working directory.
+     *
+     * @default `process.cwd()`
+     */
+    root?: string;
+
+    /**
+     * The port to run the server on.
+     *
+     * @default 8081
+     */
+    port?: number;
+  };
+
   /**
    * A function to customize the Webpack configuration used to build the snap.
    * This function will be called with the default Webpack configuration, and
@@ -379,6 +396,7 @@ export const SnapsWebpackConfigStruct = object({
   entry: string(),
   sourceMap: defaulted(union([boolean(), literal('inline')]), true),
   evaluate: defaulted(boolean(), true),
+
   output: defaulted(
     object({
       path: defaulted(string(), resolve(process.cwd(), 'dist')),
@@ -387,6 +405,7 @@ export const SnapsWebpackConfigStruct = object({
     }),
     {},
   ),
+
   manifest: defaulted(
     object({
       path: defaulted(string(), resolve(process.cwd(), 'snap.manifest.json')),
@@ -394,9 +413,19 @@ export const SnapsWebpackConfigStruct = object({
     }),
     {},
   ),
+
+  server: defaulted(
+    object({
+      root: defaulted(string(), process.cwd()),
+      port: defaulted(number(), 8081),
+    }),
+    {},
+  ),
+
   customizeWebpackConfig: optional(
     SnapsWebpackCustomizeWebpackConfigFunctionStruct,
   ),
+
   experimental: defaulted(
     object({
       wasm: defaulted(boolean(), false),

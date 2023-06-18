@@ -1,8 +1,21 @@
 import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
-import { Configuration } from 'webpack';
+import { Configuration, webpack } from 'webpack';
 
-import { ProcessedWebpackConfig } from './config';
+import { ProcessedWebpackConfig } from '../config';
+
+export type WebpackOptions = {
+  /**
+   * Whether to watch for changes.
+   */
+  watch?: boolean;
+
+  /**
+   * Whether to evaluate the bundle. If this is set, it will override the
+   * `evaluate` option in the config object.
+   */
+  evaluate?: boolean;
+};
 
 /**
  * Get the Webpack devtool configuration based on the given snap config.
@@ -44,10 +57,12 @@ function getDevTool({
  * snap config, but in most cases, you shouldn't need to do that.
  *
  * @param config - The processed snap Webpack config.
+ * @param options - The Webpack options.
  * @returns The default Webpack configuration.
  */
 export function getDefaultConfiguration(
   config: ProcessedWebpackConfig,
+  options: WebpackOptions = {},
 ): Configuration {
   return {
     /**
@@ -83,6 +98,24 @@ export function getDefaultConfiguration(
     devtool: getDevTool(config),
 
     /**
+     * The stats option controls how much information is printed to the console
+     * when Webpack is running. We set it to `errors-only` so that only errors
+     * are printed.
+     *
+     * @see https://webpack.js.org/configuration/stats/
+     */
+    stats: 'errors-only',
+
+    /**
+     * The watch option controls whether Webpack will watch for changes and
+     * rebuild the bundle. We set it to the `watch` value which is passed to
+     * this function.
+     *
+     * @see https://webpack.js.org/configuration/watch/
+     */
+    watch: options.watch,
+
+    /**
      * The output options.
      *
      * @see https://webpack.js.org/configuration/output/
@@ -112,6 +145,14 @@ export function getDefaultConfiguration(
        * @see https://webpack.js.org/configuration/output/#outputpath
        */
       path: config.output.path,
+
+      /**
+       * The public path of the bundle. We set it to `/` by default, so that
+       * the bundle can be loaded from the root of the server.
+       *
+       * @see https://webpack.js.org/configuration/output/#outputpublicpath
+       */
+      publicPath: '/',
 
       /**
        * The library configuration. This tells Webpack how to export the
@@ -237,6 +278,7 @@ export function getDefaultConfiguration(
       new SnapsWebpackPlugin({
         manifestPath: config.manifest.path,
         writeManifest: config.manifest.update,
+        eval: options.evaluate ?? config.evaluate,
       }),
     ],
 
@@ -256,5 +298,37 @@ export function getDefaultConfiguration(
         }),
       ],
     },
+
+    /**
+     * The infrastructure logging configuration. This tells Webpack how to
+     * log messages.
+     *
+     * @see https://webpack.js.org/configuration/infrastructure-logging
+     */
+    infrastructureLogging: {
+      /**
+       * The level of logging to use. We set it to `error` by default, so that
+       * only errors are logged.
+       */
+      level: 'error',
+    },
   };
+}
+
+/**
+ * Get a Webpack compiler for the given config.
+ *
+ * @param config - The config object.
+ * @param options - The Webpack options.
+ * @returns The Webpack compiler.
+ */
+export function getCompiler(
+  config: ProcessedWebpackConfig,
+  options?: WebpackOptions,
+) {
+  const baseWebpackConfig = getDefaultConfiguration(config, options);
+  const webpackConfig =
+    config.customizeWebpackConfig?.(baseWebpackConfig) ?? baseWebpackConfig;
+
+  return webpack(webpackConfig);
 }

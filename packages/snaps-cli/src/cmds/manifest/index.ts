@@ -2,7 +2,6 @@ import type yargs from 'yargs';
 
 import builders from '../../builders';
 import type { YargsArgs } from '../../types/yargs';
-import { logError } from '../../utils';
 import { manifest } from './manifest';
 
 const command = {
@@ -11,14 +10,7 @@ const command = {
   builder: (yarg: yargs.Argv) => {
     yarg.option('writeManifest', { ...builders.writeManifest, alias: ['fix'] });
   },
-  handler: async (argv: YargsArgs) => {
-    try {
-      await manifest(argv);
-    } catch (error) {
-      logError(error.message, error);
-      throw error;
-    }
-  },
+  handler: async (argv: YargsArgs) => manifest(argv.context.config),
 };
 
 export default command;
