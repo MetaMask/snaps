@@ -4,7 +4,7 @@
   "description": "MetaMask example snap demonstrating the use of error handling in snaps.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/test-snaps.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "sideEffects": false,
   "main": "dist/index.js",

@@ -4,10 +4,10 @@
   "proposedName": "Ethereum Provider Example Snap",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/test-snaps.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "S+6uINA11h+xBuqkxIocwL36L4RWDIcuG06JU+LOcF8=",
+    "shasum": "CBxhehtEPuLtl78M7MIKRzNzd/mPVV18CROCkQjQ4r0=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

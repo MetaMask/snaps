@@ -4,10 +4,10 @@
   "proposedName": "Error Example Snap",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/test-snaps.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "TEbyE7UkiPRuP3byhgjeXkt3KMK0yUUmDykFQvHd3y0=",
+    "shasum": "1iFaRYWDkmOL2JiQcMw2/K14G8KxZ+dMLppDDF1jYsU=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

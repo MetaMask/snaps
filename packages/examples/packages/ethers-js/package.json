@@ -4,7 +4,7 @@
   "description": "MetaMask example snap demonstrating how to use Ethers.js inside a snap.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/test-snaps.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "license": "ISC",
   "sideEffects": false,

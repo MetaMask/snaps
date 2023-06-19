@@ -4,10 +4,10 @@
   "proposedName": "Ethers.js Example Snap",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/test-snaps.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "S6mg8mSVVsdRycwkLbu47lFRFRzfL4xsMhWvNlS7i4g=",
+    "shasum": "cUwHx9+8oZcBFcTYsHWWbWWk0GQpbD258MZaP//EgYw=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
