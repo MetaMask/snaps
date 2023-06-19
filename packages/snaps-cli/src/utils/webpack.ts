@@ -110,11 +110,11 @@ export function getDefaultConfiguration(
     mode: 'production',
 
     /**
-     * The entry point is set to the `entry` value from the config object.
+     * The entry point is set to the `input` value from the config object.
      *
      * @see https://webpack.js.org/configuration/entry-context/
      */
-    entry: config.entry,
+    entry: config.input,
 
     /**
      * The devtool option controls how source maps are generated. We set it to

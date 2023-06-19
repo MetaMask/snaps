@@ -1,4 +1,3 @@
-import { utils as snapsCliUtils } from '@metamask/snaps-cli';
 import yargs from 'yargs';
 
 import builders from './builders';
@@ -27,11 +26,6 @@ export function cli(argv: string[], initCommand: typeof init = init): void {
     .option('verboseErrors', builders.verboseErrors)
 
     .strict()
-
-    .fail((message: string, error: Error) => {
-      snapsCliUtils.logError(message, error);
-      process.exitCode = 1;
-    })
     .help()
     .alias('help', 'h').argv;
 }

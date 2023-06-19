@@ -17,9 +17,9 @@ export async function build(config: ProcessedConfig): Promise<void> {
     return await legacyBuild(config);
   }
 
-  if (!(await isFile(config.entry))) {
+  if (!(await isFile(config.input))) {
     throw new Error(
-      `Entry file not found: "${config.entry}". Make sure that the "entry" field in your snap config is correct.`,
+      `Input file not found: "${config.input}". Make sure that the "input" field in your snap config is correct.`,
     );
   }
 

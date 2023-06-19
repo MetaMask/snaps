@@ -2,6 +2,7 @@ import { evalBundle, logInfo } from '@metamask/snaps-utils';
 import { resolve } from 'path';
 
 import { ProcessedConfig } from '../../config';
+import { getRelativePath } from '../../utils';
 
 /**
  * Returns the path to the bundle, based on the bundler.
@@ -31,11 +32,16 @@ function getBundlePath(config: ProcessedConfig) {
  * @throws If the eval failed.
  */
 export async function evaluate(config: ProcessedConfig): Promise<void> {
+  const bundlePath = getBundlePath(config);
+  const relativePath = getRelativePath(bundlePath);
+
   try {
-    const bundlePath = getBundlePath(config);
     await evalBundle(bundlePath);
-    logInfo(`Eval Success: evaluated '${bundlePath}' in SES!`);
+
+    logInfo(`Snap bundle "${relativePath}" successfully evaluated in SES.`);
   } catch (error) {
-    throw new Error(`Snap evaluation error: ${error.message}`);
+    throw new Error(
+      `Failed to evaluate snap bundle "${relativePath}" in SES: ${error.message}`,
+    );
   }
 }
