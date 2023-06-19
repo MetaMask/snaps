@@ -51,7 +51,7 @@ const builders: Record<string, Readonly<Options>> = {
     coerce: (arg: unknown) => {
       const port = Number.parseInt(String(arg), 10);
       if (Number.isNaN(port)) {
-        throw new Error(`Invalid port: ${String(arg)}`);
+        throw new Error(`Invalid port: "${String(arg)}".`);
       }
       return port;
     },

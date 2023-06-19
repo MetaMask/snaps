@@ -1,4 +1,3 @@
-import { logError } from '@metamask/snaps-utils';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
@@ -54,11 +53,6 @@ export async function cli(argv: string[], commands: any) {
 
       sanitizeInputs(args);
     }, false)
-
-    .fail((message: string, error: Error, _yargs) => {
-      logError(message, error);
-      process.exitCode = 1;
-    })
 
     .demandCommand(1, 'You must specify at least one command.')
 
