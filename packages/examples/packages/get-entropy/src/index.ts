@@ -25,7 +25,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'signMessage': {
       const { message, salt } = request.params as SignMessageParams;
-      const privateKey = await getEntropy(salt);
 
       const approved = await snap.request({
         method: 'snap_dialog',
@@ -45,6 +44,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         throw providerErrors.userRejectedRequest();
       }
 
+      const privateKey = await getEntropy(salt);
       const newLocal = await sign(stringToBytes(message), privateKey);
       return bytesToHex(newLocal);
     }
