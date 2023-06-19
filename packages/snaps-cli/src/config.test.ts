@@ -12,7 +12,7 @@ const CONFIG_PATH = resolve(__dirname, '__fixtures__', 'configs');
 
 const DEFAULT_CONFIG: SnapConfig = {
   bundler: 'webpack',
-  entry: 'src/index.ts',
+  input: 'src/index.ts',
   evaluate: true,
   experimental: {
     wasm: false,
@@ -132,7 +132,7 @@ describe('loadConfig', () => {
     await expect(
       loadConfig(resolve(CONFIG_PATH, 'invalid.ts')),
     ).rejects.toThrow(
-      'Invalid snap config (Webpack): At path: entry -- Expected a string, but received: undefined. Make sure that your "snap.config.[j|t]s" file is valid.\nRefer to the documentation for more information: https://docs.metamask.io/snaps/reference/config/',
+      'Invalid snap config (Webpack): At path: input -- Expected a string, but received: undefined. Make sure that your "snap.config.[j|t]s" file is valid.\nRefer to the documentation for more information: https://docs.metamask.io/snaps/reference/config/',
     );
   });
 
@@ -140,7 +140,10 @@ describe('loadConfig', () => {
     await expect(
       loadConfig(resolve(CONFIG_PATH, 'invalid.json')),
     ).rejects.toThrow(
-      `Invalid snap config file ("${resolve(CONFIG_PATH, 'invalid.json')}").`,
+      `Unable to load snap config file at "${resolve(
+        CONFIG_PATH,
+        'invalid.json',
+      )}".`,
     );
   });
 });
@@ -151,7 +154,7 @@ describe('resolveConfig', () => {
       await resolveConfig(resolve(CONFIG_PATH, 'javascript')),
     ).toStrictEqual({
       ...DEFAULT_CONFIG,
-      entry: 'src/index.js',
+      input: 'src/index.js',
     });
   });
 
@@ -160,7 +163,7 @@ describe('resolveConfig', () => {
       await resolveConfig(resolve(CONFIG_PATH, 'typescript')),
     ).toStrictEqual({
       ...DEFAULT_CONFIG,
-      entry: 'src/index.ts',
+      input: 'src/index.ts',
     });
   });
 });

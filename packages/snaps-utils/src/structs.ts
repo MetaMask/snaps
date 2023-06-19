@@ -35,7 +35,7 @@ export function literal<Type extends string | number>(value: Type) {
   );
 }
 
-class SnapsStructError extends StructError {
+export class SnapsStructError extends StructError {
   constructor(
     prefix: string,
     suffix: string,

@@ -3,7 +3,7 @@
  */
 const config = {
   bundler: 'webpack',
-  entry: 'src/index.js',
+  input: 'src/index.js',
 };
 
 module.exports = config;

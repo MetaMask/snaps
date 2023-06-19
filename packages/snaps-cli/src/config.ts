@@ -1,4 +1,9 @@
-import { createFromStruct, isFile, literal } from '@metamask/snaps-utils';
+import {
+  createFromStruct,
+  isFile,
+  literal,
+  SnapsStructError,
+} from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
 import { transform } from '@swc/core';
 import type { BrowserifyObject } from 'browserify';
@@ -192,10 +197,10 @@ export type SnapWebpackConfig = {
   bundler: 'webpack';
 
   /**
-   * The path to the snap entry point. This can be a JavaScript or TypeScript
+   * The path to the snap entry point. This should be a JavaScript or TypeScript
    * file.
    */
-  entry: string;
+  input: string;
 
   /**
    * Whether to generate source maps for the snap. If `true`, source maps will
@@ -396,7 +401,7 @@ const SnapsWebpackCustomizeWebpackConfigFunctionStruct =
 
 export const SnapsWebpackConfigStruct = object({
   bundler: literal('webpack'),
-  entry: string(),
+  input: string(),
   sourceMap: defaulted(union([boolean(), literal('inline')]), true),
   evaluate: defaulted(boolean(), true),
 
@@ -530,7 +535,13 @@ export async function loadConfig(path: string) {
 
     return getConfig(config.exports.default);
   } catch (error) {
-    throw new Error(`Invalid snap config file ("${path}").\n${error.message}`);
+    if (error instanceof SnapsStructError) {
+      throw error;
+    }
+
+    throw new Error(
+      `Unable to load snap config file at "${path}".\n${error.message}`,
+    );
   }
 }
 
