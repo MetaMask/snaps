@@ -2,9 +2,7 @@ import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
 import { bytesToHex } from '@metamask/utils';
 import { resolve } from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
-import { Configuration, ProgressPlugin, ProvidePlugin } from 'webpack';
-
-const IS_CI = Boolean(process.env.CI);
+import { Configuration, ProvidePlugin } from 'webpack';
 
 const config: Configuration = {
   entry: './src/index.ts',
@@ -82,7 +80,6 @@ const config: Configuration = {
     new ProvidePlugin({
       Buffer: ['buffer/', 'Buffer'],
     }),
-    ...(IS_CI ? [] : [new ProgressPlugin()]),
   ],
   cache: {
     type: 'filesystem',
