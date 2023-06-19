@@ -11,7 +11,6 @@ import {
   templateElement,
   templateLiteral,
 } from '@babel/types';
-import { assert } from '@metamask/utils';
 
 /**
  * Source map declaration taken from `@babel/core`. Babel doesn't export the
@@ -426,11 +425,10 @@ export function postProcessBundle(
         node.operator === '<' &&
         isUnaryExpression(node.right) &&
         isUpdateExpression(node.right.argument) &&
-        node.right.argument.operator === '--'
+        node.right.argument.operator === '--' &&
+        node.left.end &&
+        node.right.argument.argument.start
       ) {
-        assert(node.left.end);
-        assert(node.right.argument.argument.start);
-
         const expression = code.slice(
           node.left.end,
           node.right.argument.argument.start,
@@ -444,11 +442,10 @@ export function postProcessBundle(
       if (
         node.operator === '>' &&
         isUpdateExpression(node.left) &&
-        node.left.operator === '--'
+        node.left.operator === '--' &&
+        node.left.argument.end &&
+        node.right.start
       ) {
-        assert(node.left.argument.end);
-        assert(node.right.start);
-
         const expression = code.slice(node.left.argument.end, node.right.start);
 
         if (expression.includes('-->')) {
