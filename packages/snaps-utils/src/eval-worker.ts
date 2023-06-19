@@ -14,6 +14,10 @@ lockdown({
   mathTaming: 'unsafe',
   dateTaming: 'unsafe',
   overrideTaming: 'severe',
+
+  // We disable domain taming, because it does not work in certain cases when
+  // running tests. This is unlikely to be a problem in production, because
+  // Node.js domains are deprecated.
   domainTaming: 'unsafe',
 });
 
