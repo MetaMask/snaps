@@ -4,6 +4,8 @@ import {
   binaryExpression,
   Expression,
   Identifier,
+  isUnaryExpression,
+  isUpdateExpression,
   stringLiteral,
   TemplateElement,
   templateElement,
@@ -411,16 +413,44 @@ export function postProcessBundle(
     },
 
     BinaryExpression(path) {
-      const source = path.getSource();
+      const { node } = path;
 
-      // Throw an error if HTML comments are used as a binary expression.
-      if (source.includes('<!--') || source.includes('-->')) {
-        throw new Error(
-          'Using HTML comments (`<!--` and `-->`) as operators is not allowed. The behaviour of ' +
-            'these comments is ambiguous, and differs per browser and environment. If you want ' +
-            'to use them as operators, break them up into separate characters, i.e., `a-- > b` ' +
-            'and `a < ! --b`.',
+      const errorMessage =
+        'Using HTML comments (`<!--` and `-->`) as operators is not allowed. The behaviour of ' +
+        'these comments is ambiguous, and differs per browser and environment. If you want ' +
+        'to use them as operators, break them up into separate characters, i.e., `a-- > b` ' +
+        'and `a < ! --b`.';
+
+      if (
+        node.operator === '<' &&
+        isUnaryExpression(node.right) &&
+        isUpdateExpression(node.right.argument) &&
+        node.right.argument.operator === '--' &&
+        node.left.end &&
+        node.right.argument.argument.start
+      ) {
+        const expression = code.slice(
+          node.left.end,
+          node.right.argument.argument.start,
         );
+
+        if (expression.includes('<!--')) {
+          throw new Error(errorMessage);
+        }
+      }
+
+      if (
+        node.operator === '>' &&
+        isUpdateExpression(node.left) &&
+        node.left.operator === '--' &&
+        node.left.argument.end &&
+        node.right.start
+      ) {
+        const expression = code.slice(node.left.argument.end, node.right.start);
+
+        if (expression.includes('-->')) {
+          throw new Error(errorMessage);
+        }
       }
     },
   };
