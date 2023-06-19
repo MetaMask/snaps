@@ -309,6 +309,15 @@ describe('postProcessBundle', () => {
     `);
   });
 
+  it(`doesn't throw for strings that contain HTML comment tokens inside binary expressions`, () => {
+    const code = `
+      const foo = foo() + '<!-- bar -->' + baz();
+      const bar = foo() + \`<!-- bar -->\` + baz();
+    `;
+
+    expect(() => postProcessBundle(code)).not.toThrow();
+  });
+
   it.each(['const a = b <!-- c;', 'const a = b --> c;'])(
     'throws an error when HTML comment tokens are used as operators',
     (code) => {
