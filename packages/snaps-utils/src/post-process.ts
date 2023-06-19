@@ -416,6 +416,12 @@ export function postProcessBundle(
     BinaryExpression(path) {
       const { node } = path;
 
+      const errorMessage =
+        'Using HTML comments (`<!--` and `-->`) as operators is not allowed. The behaviour of ' +
+        'these comments is ambiguous, and differs per browser and environment. If you want ' +
+        'to use them as operators, break them up into separate characters, i.e., `a-- > b` ' +
+        'and `a < ! --b`.';
+
       if (
         node.operator === '<' &&
         isUnaryExpression(node.right) &&
@@ -431,12 +437,7 @@ export function postProcessBundle(
         );
 
         if (expression.includes('<!--')) {
-          throw new Error(
-            'Using HTML comments (`<!--` and `-->`) as operators is not allowed. The behaviour of ' +
-              'these comments is ambiguous, and differs per browser and environment. If you want ' +
-              'to use them as operators, break them up into separate characters, i.e., `a-- > b` ' +
-              'and `a < ! --b`.',
-          );
+          throw new Error(errorMessage);
         }
       }
 
@@ -451,12 +452,7 @@ export function postProcessBundle(
         const expression = code.slice(node.left.argument.end, node.right.start);
 
         if (expression.includes('-->')) {
-          throw new Error(
-            'Using HTML comments (`<!--` and `-->`) as operators is not allowed. The behaviour of ' +
-              'these comments is ambiguous, and differs per browser and environment. If you want ' +
-              'to use them as operators, break them up into separate characters, i.e., `a-- > b` ' +
-              'and `a < ! --b`.',
-          );
+          throw new Error(errorMessage);
         }
       }
     },
