@@ -27,7 +27,7 @@
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" \"!snap.manifest.json\" --ignore-path ../../../../.gitignore",
     "test": "yarn test:e2e",
     "test:e2e": "jest",
-    "start": "webpack watch"
+    "start": "rollup watch"
   },
   "dependencies": {
     "@metamask/key-tree": "^7.0.0",

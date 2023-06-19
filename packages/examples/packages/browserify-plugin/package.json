@@ -26,8 +26,7 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" \"!snap.manifest.json\" --ignore-path ../../../../.gitignore",
     "test": "yarn test:e2e",
-    "test:e2e": "jest",
-    "start": "webpack watch"
+    "test:e2e": "jest"
   },
   "dependencies": {
     "@metamask/key-tree": "^7.0.0",

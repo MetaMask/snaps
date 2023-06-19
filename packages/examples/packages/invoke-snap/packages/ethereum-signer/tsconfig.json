@@ -6,13 +6,10 @@
       "@metamask/*": ["../../../../../*/src"]
     }
   },
-  "include": ["src", "webpack.config.ts"],
+  "include": ["src"],
   "references": [
     {
       "path": "../../../../../snaps-types"
-    },
-    {
-      "path": "../../../../../snaps-webpack-plugin"
     },
     {
       "path": "../../../../../snaps-jest"
