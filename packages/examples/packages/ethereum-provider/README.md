@@ -26,10 +26,11 @@ This permission does not require any additional configuration.
 ## Snap usage
 
 This snap exposes an `onRpcRequest` handler, which supports the following
-JSON-RPC method:
+JSON-RPC methods:
 
 - `getGasPrice`: Get the current recommended gas price from an Ethereum
   provider.
+- `getVersion`: Get the Ethereum network version from an Ethereum provider.
 
 For more information, you can refer to
 [the end-to-end tests](./src/index.test.ts).
