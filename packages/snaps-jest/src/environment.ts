@@ -150,7 +150,7 @@ export class SnapsEnvironment extends NodeEnvironment {
     // `networkidle0` is used to ensure that the page is fully loaded. This
     // makes it wait for no requests to be made, which guarantees that the page
     // is ready.
-    await page.goto(url, { waitUntil: 'networkidle2' });
+    await page.goto(url, { waitUntil: 'networkidle0' });
 
     const browserLog = createModuleLogger(rootLogger, 'browser');
 
