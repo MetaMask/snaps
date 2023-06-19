@@ -502,31 +502,36 @@ export function getConfig(config: unknown): ProcessedConfig {
  * default export.
  */
 export async function loadConfig(path: string) {
-  const contents = await readFile(path, 'utf8');
-  const source = await transform(contents, {
-    jsc: {
-      parser: {
-        syntax: 'typescript',
+  try {
+    const contents = await readFile(path, 'utf8');
+    const source = await transform(contents, {
+      swcrc: false,
+      jsc: {
+        parser: {
+          syntax: 'typescript',
+        },
       },
-    },
-    module: {
-      type: 'commonjs',
-    },
-  });
+      module: {
+        type: 'commonjs',
+      },
+    });
 
-  const config = new Module(path);
+    const config = new Module(path);
 
-  // @ts-expect-error - This function is not typed.
-  config.paths = Module._nodeModulePaths(dirname(path));
+    // @ts-expect-error - This function is not typed.
+    config.paths = Module._nodeModulePaths(dirname(path));
 
-  // @ts-expect-error - This function is not typed.
-  config._compile(source.code, path);
+    // @ts-expect-error - This function is not typed.
+    config._compile(source.code, path);
 
-  if (!hasProperty(config.exports, 'default')) {
-    return getConfig(config.exports);
+    if (!hasProperty(config.exports, 'default')) {
+      return getConfig(config.exports);
+    }
+
+    return getConfig(config.exports.default);
+  } catch (error) {
+    throw new Error(`Invalid snap config file ("${path}").\n${error.message}`);
   }
-
-  return getConfig(config.exports.default);
 }
 
 /**
@@ -557,14 +562,24 @@ export async function resolveConfig(path = resolve(process.cwd())) {
  * working directory.
  *
  * @param argv - The CLI arguments.
+ * @param cwd - The current working directory. Defaults to `process.cwd()`.
  * @returns The resolved and validated snap config.
  */
-export async function getConfigByArgv(argv: YargsArgs) {
+export async function getConfigByArgv(
+  argv: YargsArgs,
+  cwd: string = process.cwd(),
+) {
   if (argv.config) {
+    if (!(await isFile(argv.config))) {
+      throw new Error(
+        `Could not find a config file at "${argv.config}". Make sure that the path is correct.`,
+      );
+    }
+
     return mergeLegacyOptions(argv, await loadConfig(argv.config));
   }
 
-  return mergeLegacyOptions(argv, await resolveConfig(process.cwd()));
+  return mergeLegacyOptions(argv, await resolveConfig(cwd));
 }
 
 /**

@@ -1,19 +1,34 @@
 import { resolve } from 'path';
 
-import { getConfig, loadConfig, resolveConfig, SnapConfig } from './config';
+import {
+  getConfig,
+  getConfigByArgv,
+  loadConfig,
+  resolveConfig,
+  SnapConfig,
+} from './config';
 
 const CONFIG_PATH = resolve(__dirname, '__fixtures__', 'configs');
 
 const DEFAULT_CONFIG: SnapConfig = {
   bundler: 'webpack',
   entry: 'src/index.ts',
+  evaluate: true,
   experimental: {
     wasm: false,
+  },
+  manifest: {
+    path: resolve(process.cwd(), 'snap.manifest.json'),
+    update: true,
   },
   output: {
     clean: false,
     filename: 'bundle.js',
-    path: 'dist',
+    path: resolve(process.cwd(), 'dist'),
+  },
+  server: {
+    port: 8081,
+    root: process.cwd(),
   },
   sourceMap: true,
 };
@@ -54,18 +69,18 @@ describe('getConfig', () => {
         bundler: 'browserify',
         cliOptions: {
           src: 'src/index.js',
-          port: 8000,
+          port: 8081,
         },
       },
       {
         cliOptions: {
           src: 'src/index.js',
-          port: 8000,
+          port: 8081,
         },
       },
       {
         cliOptions: {
-          port: 8000,
+          port: 8081,
         },
       },
       {
@@ -78,8 +93,22 @@ describe('getConfig', () => {
       expect(config).toStrictEqual({
         bundler: 'browserify',
         cliOptions: {
+          bundle: 'dist/bundle.js',
+          depsToTranspile: [],
+          dist: 'dist',
+          eval: true,
+          manifest: true,
+          outfileName: 'bundle.js',
+          port: 8081,
+          root: process.cwd(),
+          serve: true,
+          sourceMaps: false,
           src: 'src/index.js',
-          port: 8000,
+          stripComments: true,
+          suppressWarnings: false,
+          transpilationMode: 'localOnly',
+          verboseErrors: true,
+          writeManifest: true,
         },
       });
     });
@@ -106,6 +135,14 @@ describe('loadConfig', () => {
       'Invalid snap config (Webpack): At path: entry -- Expected a string, but received: undefined. Make sure that your "snap.config.[j|t]s" file is valid.\nRefer to the documentation for more information: https://docs.metamask.io/snaps/reference/config/',
     );
   });
+
+  it('throws an error if the config is not JavaScript or TypeScript', async () => {
+    await expect(
+      loadConfig(resolve(CONFIG_PATH, 'invalid.json')),
+    ).rejects.toThrow(
+      `Invalid snap config file ("${resolve(CONFIG_PATH, 'invalid.json')}").`,
+    );
+  });
 });
 
 describe('resolveConfig', () => {
@@ -125,5 +162,37 @@ describe('resolveConfig', () => {
       ...DEFAULT_CONFIG,
       entry: 'src/index.ts',
     });
+  });
+});
+
+describe('getConfigByArgv', () => {
+  it('returns a valid config for `--config`', async () => {
+    expect(
+      // @ts-expect-error - Partial `argv`.
+      await getConfigByArgv({
+        config: resolve(CONFIG_PATH, 'typescript/snap.config.ts'),
+      }),
+    ).toStrictEqual(DEFAULT_CONFIG);
+  });
+
+  it('returns a valid config without `--config`', async () => {
+    expect(
+      // @ts-expect-error - Partial `argv`.
+      await getConfigByArgv({}, resolve(CONFIG_PATH, 'typescript/')),
+    ).toStrictEqual(DEFAULT_CONFIG);
+  });
+
+  it('throws if `--config` is not a file', async () => {
+    await expect(
+      // @ts-expect-error - Partial `argv`.
+      getConfigByArgv({
+        config: resolve(CONFIG_PATH, 'typescript/'),
+      }),
+    ).rejects.toThrow(
+      `Could not find a config file at "${resolve(
+        CONFIG_PATH,
+        'typescript/',
+      )}". Make sure that the path is correct.`,
+    );
   });
 });
