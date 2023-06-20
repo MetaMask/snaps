@@ -6,6 +6,7 @@ import {
   manageAccountsBuilder,
   manageAccountsImplementation,
   specificationBuilder,
+  validateParams,
 } from './manageAccounts';
 
 // To Do:
@@ -102,10 +103,12 @@ describe('manageAccountsImplementation', () => {
         context: {
           origin: mockSnapId,
         },
-        // @ts-expect-error Missing other required permission types.
+        // @ts-expect-error Error expected.
         params: {},
       }),
-    ).rejects.toThrow('Invalid ManageAccount Arguments');
+    ).rejects.toThrow(
+      'Invalid ManageAccount Arguments: An array of type SnapMessage was expected',
+    );
   });
 
   it('should throw params accountId is not set', async () => {
@@ -124,10 +127,12 @@ describe('manageAccountsImplementation', () => {
         context: {
           origin: mockSnapId,
         },
-        // @ts-expect-error Missing other required permission types.
-        params: {},
+        // @ts-expect-error Error expected.
+        params: [123, {}],
       }),
-    ).rejects.toThrow('Invalid ManageAccount Arguments');
+    ).rejects.toThrow(
+      'Invalid ManageAccount Arguments: The parameter "method" should be a non-empty string',
+    );
   });
 
   it('should route request to snap keyring', async () => {
@@ -149,22 +154,46 @@ describe('manageAccountsImplementation', () => {
       context: {
         origin: mockSnapId,
       },
-      params: {
-        action: 'mock-action',
-        accountId: mockCAIP10Account,
-      },
+      params: ['mock-method', { accountId: mockCAIP10Account }],
     });
 
     expect(createAccountSpy).toHaveBeenCalledTimes(1);
     expect(createAccountSpy).toHaveBeenCalledWith(
       mockSnapId,
-      {
-        accountId: mockCAIP10Account,
-        action: 'mock-action',
-      },
+      ['mock-method', { accountId: mockCAIP10Account }],
       saveSnapKeyring,
     );
     expect(requestResponse).toBe(true);
     createAccountSpy.mockClear();
+  });
+});
+
+describe('validateParams', () => {
+  it('should throw an error if message is not an array', () => {
+    expect(() => {
+      validateParams('not an array');
+    }).toThrow(
+      'Invalid ManageAccount Arguments: An array of type SnapMessage was expected',
+    );
+  });
+
+  it('should throw an error if method is not a string or is an empty string', () => {
+    expect(() => {
+      validateParams([123]);
+    }).toThrow(
+      'Invalid ManageAccount Arguments: The parameter "method" should be a non-empty string',
+    );
+
+    expect(() => {
+      validateParams(['']);
+    }).toThrow(
+      'Invalid ManageAccount Arguments: The parameter "method" should be a non-empty string',
+    );
+  });
+
+  it('should not throw an error if message is an array and method is a non-empty string', () => {
+    expect(() => {
+      validateParams(['validMethod']);
+    }).not.toThrow();
   });
 });
