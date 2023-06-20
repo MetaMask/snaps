@@ -1,4 +1,5 @@
 import { SnapKeyring } from '@metamask/eth-snap-keyring';
+import type { SnapMessage } from '@metamask/eth-snap-keyring';
 import {
   SubjectType,
   PermissionType,
@@ -6,15 +7,10 @@ import {
   ValidPermissionSpecification,
   PermissionSpecificationBuilder,
 } from '@metamask/permission-controller';
-import { Json, NonEmptyArray } from '@metamask/utils';
+import { Json, NonEmptyArray, isObject } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
 export const methodName = 'snap_manageAccounts';
-
-export type ManageAccountParams = {
-  action: string;
-  accountId?: string;
-};
 
 export type ManageAccountsMethodHooks = {
   /**
@@ -43,6 +39,15 @@ type ManageAccountsSpecification = ValidPermissionSpecification<{
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
 }>;
 
+/**
+ * The specification builder for the `snap_manageAccounts` permission.
+ * `snap_manageAccounts` lets the Snap manage a set of accounts via a custom keyring.
+ *
+ * @param options - The specification builder options.
+ * @param options.allowedCaveats - The optional allowed caveats for the permission.
+ * @param options.methodHooks - The RPC method hooks needed by the method implementation.
+ * @returns The specification for the `snap_manageAccounts` permission.
+ */
 export const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
   ManageAccountsSpecificationBuilderOptions,
@@ -60,22 +65,55 @@ export const specificationBuilder: PermissionSpecificationBuilder<
   };
 };
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+/**
+ * Validates the manageAccount method parameter `message`.
+ *
+ * @param message - Parameter to be validated.
+ */
+export function validateParams(message: unknown) {
+  if (!Array.isArray(message)) {
+    throw ethErrors.rpc.invalidParams(
+      'Invalid ManageAccount Arguments: An array of type SnapMessage was expected',
+    );
+  }
+
+  const [method, params] = message;
+  if (typeof method !== 'string' || method.length === 0) {
+    throw ethErrors.rpc.invalidParams(
+      'Invalid ManageAccount Arguments: The parameter "method" should be a non-empty string',
+    );
+  }
+
+  if (!isObject(params) || !Array.isArray(params)) {
+    throw ethErrors.rpc.invalidParams(
+      'Invalid ManageAccount Arguments: The parameter "params" should be an object or array',
+    );
+  }
+}
+
+/**
+ * Builds the method implementation for `snap_manageAccounts`.
+ *
+ * @param hooks - The RPC method hooks.
+ * @param hooks.getSnapKeyring - A function to get the snap keyring.
+ * @param hooks.saveSnapKeyring - A function to save the snap keyring.
+ * @returns The method implementation which either returns `null` for a
+ * successful state update/deletion or returns the decrypted state.
+ * @throws If the params are invalid.
+ */
 export function manageAccountsImplementation({
   getSnapKeyring,
   saveSnapKeyring,
 }: ManageAccountsMethodHooks) {
   return async function manageAccounts(
-    options: RestrictedMethodOptions<ManageAccountParams>,
+    options: RestrictedMethodOptions<SnapMessage>,
   ): Promise<string[] | Json | boolean> {
     const {
       context: { origin },
       params,
     } = options;
 
-    if (!params?.action) {
-      throw ethErrors.rpc.invalidParams('Invalid ManageAccount Arguments');
-    }
+    validateParams(params);
 
     const keyring = await getSnapKeyring(origin);
     return await keyring.handleKeyringSnapMessage(

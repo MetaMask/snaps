@@ -3895,9 +3895,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-snap-keyring@ssh://git@github.com/MetaMask/eth-snap-keyring#feat/use-keyring-api":
+"@metamask/eth-snap-keyring@ssh://git@github.com/MetaMask/eth-snap-keyring#c0046dc4ac2063ea75aebc5dc85e6e7acfe875f7":
   version: 0.1.0
-  resolution: "@metamask/eth-snap-keyring@ssh://git@github.com/MetaMask/eth-snap-keyring#commit=12bed3376c73b162e6c9a067c0f65e04b16ebbb1"
+  resolution: "@metamask/eth-snap-keyring@ssh://git@github.com/MetaMask/eth-snap-keyring#commit=c0046dc4ac2063ea75aebc5dc85e6e7acfe875f7"
   dependencies:
     "@ethereumjs/tx": ^4.1.2
     "@ethereumjs/util": ^8.0.5
@@ -3910,7 +3910,7 @@ __metadata:
     bn.js: ^5.2.1
     eth-rpc-errors: ^4.0.3
     uuid: ^9.0.0
-  checksum: a131b1912743f366d4ab46754eabd5b66eec38f55efedec14b7d9f78f090eb3c4628ed44c15b2635e47ad6f79e1fce410eeb427b405b8053e974c8fed8268c1b
+  checksum: f9b8403cdc6ed519ad6bf4e7034f65cbc7b8213f458eb149a94cbbc708c301227a772f9d8ca08245bf3df125192a43768e985dd419ef4332f82a63a0202536aa
   languageName: node
   linkType: hard
 
@@ -4119,7 +4119,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^11.0.0
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
-    "@metamask/eth-snap-keyring": "ssh://git@github.com/MetaMask/eth-snap-keyring#feat/use-keyring-api"
+    "@metamask/eth-snap-keyring": "ssh://git@github.com/MetaMask/eth-snap-keyring#c0046dc4ac2063ea75aebc5dc85e6e7acfe875f7"
     "@metamask/key-tree": ^7.0.0
     "@metamask/permission-controller": ^4.0.0
     "@metamask/snaps-ui": "workspace:^"
