@@ -1,6 +1,11 @@
 import { Component } from '@metamask/snaps-ui';
 import { HandlerType, SnapRpcHookArgs } from '@metamask/snaps-utils';
-import { assert, hasProperty, isPlainObject } from '@metamask/utils';
+import {
+  assert,
+  createModuleLogger,
+  hasProperty,
+  isPlainObject,
+} from '@metamask/utils';
 import { getDocument, queries } from 'pptr-testing-library';
 import { Page } from 'puppeteer';
 import { create } from 'superstruct';
@@ -13,8 +18,11 @@ import {
   TransactionOptions,
 } from '../types';
 import { getInterface, getNotifications } from './interface';
+import { rootLogger } from './logger';
 import { TransactionOptionsStruct } from './structs';
 import { waitForResponse } from './wait-for';
+
+const log = createModuleLogger(rootLogger, 'request');
 
 /**
  * Send a request to the snap.
@@ -70,9 +78,14 @@ export function request(
       },
     };
 
-    const id = await sendRequest(page, args);
+    log('Sending request %o', args);
 
-    const response = await waitForResponse(page, handler);
+    const promise = waitForResponse(page, handler);
+    const id = await sendRequest(page, args);
+    const response = await promise;
+
+    log('Received response %o', response);
+
     const notifications = await getNotifications(page, id);
 
     return { id, response, notifications };
@@ -120,9 +133,14 @@ export async function sendTransaction(
     },
   };
 
-  const id = await sendRequest(page, args);
+  log('Sending transaction %o', args);
 
-  const response = await waitForResponse(page, HandlerType.OnTransaction);
+  const promise = waitForResponse(page, HandlerType.OnTransaction);
+  const id = await sendRequest(page, args);
+  const response = await promise;
+
+  log('Received response %o', response);
+
   if (hasProperty(response, 'error')) {
     return { id, response, notifications: [] };
   }

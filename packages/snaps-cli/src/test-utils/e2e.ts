@@ -1,7 +1,7 @@
 import { LogLevel, runner } from 'clet';
 import { join } from 'path';
 
-export const SNAP_DIR = join('..', 'examples/examples/typescript');
+export const SNAP_DIR = join(__dirname, '../../test/snap');
 
 type RunOptions = {
   command: string;

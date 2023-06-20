@@ -1,0 +1,27 @@
+{
+  "version": "0.34.1-flask.1",
+  "description": "A snap for end-to-end testing the MetaMask Snaps CLI.",
+  "proposedName": "CLI Test Snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps.git"
+  },
+  "source": {
+    "shasum": "ElvJRk3W6Uqa6do/SoM5muRfvLLL156Uo/Lu/77a49Q=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "iconPath": "images/icon.svg",
+        "packageName": "@metamask/cli-test-snap",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    "endowment:rpc": {
+      "dapps": true
+    },
+    "snap_dialog": {}
+  },
+  "manifestVersion": "0.1"
+}

@@ -30,6 +30,7 @@ export const {
   setRequest: setTransactionRequest,
   setRequestFromHistory: setTransactionRequestFromHistory,
   setResponse: setTransactionResponse,
+  clearResponse: clearTransactionResponse,
 } = slice.actions;
 
 export const getTransactionRequest = createSelector(

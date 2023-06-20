@@ -15,6 +15,9 @@
   "files": [
     "dist/"
   ],
+  "workspaces": [
+    "test/snap"
+  ],
   "scripts": {
     "shasum": "node ./scripts/computeSnapShasum.js",
     "build:tsc": "tsc --project ./tsconfig.build.json",

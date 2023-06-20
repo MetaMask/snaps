@@ -1,0 +1,11 @@
+{
+  "entries": ["./assembly/program.ts"],
+  "targets": {
+    "release": {
+      "bindings": "raw",
+      "converge": true,
+      "optimize": true,
+      "outFile": "./build/program.wasm"
+    }
+  }
+}

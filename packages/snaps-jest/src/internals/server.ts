@@ -83,6 +83,15 @@ export async function startServer(options: ServerOptions) {
   const log = createModuleLogger(rootLogger, 'server');
   const app = express();
 
+  app.use((_request, response, next) => {
+    response.header('Access-Control-Allow-Origin', '*');
+    response.header('Access-Control-Allow-Credentials', 'true');
+    response.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    response.header('Access-Control-Allow-Headers', 'Content-Type');
+
+    next();
+  });
+
   app.use('/environment', express.static(SNAPS_EXECUTION_ENVIRONMENTS_PATH));
   app.use('/simulator', express.static(SNAPS_SIMULATOR_PATH));
   app.use(express.static(pathResolve(process.cwd(), options.root)));

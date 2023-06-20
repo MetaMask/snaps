@@ -37,6 +37,7 @@ import { runSaga } from '../../store/middleware';
 import { getSnapId, getSrp, setSnapId } from '../configuration';
 import { addError } from '../console';
 import { ManifestStatus, setValid } from '../manifest';
+import { JSON_RPC_ENDPOINT } from './constants';
 import {
   getSnapState,
   showDialog,
@@ -146,8 +147,7 @@ export function* initSaga({ payload }: PayloadAction<string>) {
     createFetchMiddleware({
       btoa: globalThis.btoa,
       fetch: globalThis.fetch,
-      // TODO: Use something else?
-      rpcUrl: 'https://cloudflare-eth.com',
+      rpcUrl: JSON_RPC_ENDPOINT,
     }),
   );
 

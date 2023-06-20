@@ -29,6 +29,7 @@ export const {
   setRequest: setJsonRpcRequest,
   setRequestFromHistory: setJsonRpcRequestFromHistory,
   setResponse: setJsonRpcResponse,
+  clearResponse: clearJsonRpcResponse,
 } = slice.actions;
 
 export const getJsonRpcRequest = createSelector(
