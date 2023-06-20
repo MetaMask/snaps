@@ -29,7 +29,7 @@
     "lint:ci": "yarn lint"
   },
   "dependencies": {
-    "@metamask/key-tree": "^7.0.0",
+    "@metamask/key-tree": "^7.1.1",
     "@metamask/permission-controller": "^4.0.0",
     "@metamask/snaps-ui": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",

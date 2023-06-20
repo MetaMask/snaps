@@ -53,14 +53,17 @@ describe('Bip32PathStruct', () => {
     );
   });
 
-  it.each(["m/0'/123/asd", 'm/0"/123', 'm/1/2/3/_', "m/1'/2'/3'/-1"])(
-    'requires numbers or hardened numbers',
-    (path) => {
-      expect(() => assert(path.split('/'), Bip32PathStruct)).toThrow(
-        'Path must be a valid BIP-32 derivation path array.',
-      );
-    },
-  );
+  it.each([
+    "m/0'/123/asd",
+    'm/0"/123',
+    'm/1/2/3/_',
+    "m/1'/2'/3'/-1",
+    "m/1'/2147483648'",
+  ])('requires numbers or hardened numbers per BIP32', (path) => {
+    expect(() => assert(path.split('/'), Bip32PathStruct)).toThrow(
+      'Path must be a valid BIP-32 derivation path array.',
+    );
+  });
 
   it('throws for forbidden purposes', () => {
     expect(() => assert(['m', "1399742832'", '0'], Bip32PathStruct)).toThrow(

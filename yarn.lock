@@ -3672,7 +3672,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^11.0.0
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
-    "@metamask/key-tree": ^7.0.0
+    "@metamask/key-tree": ^7.1.1
     "@metamask/rpc-errors": ^5.1.1
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
@@ -3712,7 +3712,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^11.0.0
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
-    "@metamask/key-tree": ^7.0.0
+    "@metamask/key-tree": ^7.1.1
     "@metamask/rpc-errors": ^5.1.1
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
@@ -3805,7 +3805,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^11.0.0
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
-    "@metamask/key-tree": ^7.0.0
+    "@metamask/key-tree": ^7.1.1
     "@metamask/rpc-errors": ^5.1.1
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
@@ -3858,7 +3858,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^11.0.0
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
-    "@metamask/key-tree": ^7.0.0
+    "@metamask/key-tree": ^7.1.1
     "@metamask/rpc-errors": ^5.1.1
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
@@ -4385,17 +4385,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/key-tree@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@metamask/key-tree@npm:7.0.0"
+"@metamask/key-tree@npm:^7.1.1":
+  version: 7.1.1
+  resolution: "@metamask/key-tree@npm:7.1.1"
   dependencies:
     "@metamask/scure-bip39": ^2.1.0
-    "@metamask/utils": ^3.3.0
+    "@metamask/utils": ^6.0.1
     "@noble/ed25519": ^1.6.0
     "@noble/hashes": ^1.0.0
     "@noble/secp256k1": ^1.5.5
     "@scure/base": ^1.0.0
-  checksum: e3b8371ba41766e1936ff0b0b34c46b7a1297e51fe177246ae6446c4f15a6601a6ed4fc5d01d0594e8b1e9b1682096900f7ab4e7e15df94041ec025116a635b9
+  checksum: ddab7917e1214c51508f821a680f8e8819a8c866fd91244e0debf28464331dfcbf9a357e01716fc593cf00a8c71f95fd45ed4ff686ee6abc4c4061aed629537c
   languageName: node
   linkType: hard
 
@@ -4665,7 +4665,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^11.0.0
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
-    "@metamask/key-tree": ^7.0.0
+    "@metamask/key-tree": ^7.1.1
     "@metamask/permission-controller": ^4.0.0
     "@metamask/snaps-ui": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
@@ -5114,7 +5114,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/eth-json-rpc-middleware": ^11.0.0
-    "@metamask/key-tree": ^7.0.0
+    "@metamask/key-tree": ^7.1.1
     "@metamask/permission-controller": ^4.0.0
     "@metamask/rpc-errors": ^5.1.1
     "@metamask/rpc-methods": "workspace:^"
@@ -5284,7 +5284,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^11.0.0
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
-    "@metamask/key-tree": ^7.0.0
+    "@metamask/key-tree": ^7.1.1
     "@metamask/permission-controller": ^4.0.0
     "@metamask/post-message-stream": ^6.1.2
     "@metamask/providers": ^11.0.0
@@ -5399,7 +5399,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^3.0.3, @metamask/utils@npm:^3.3.0":
+"@metamask/utils@npm:^3.0.3":
   version: 3.6.0
   resolution: "@metamask/utils@npm:3.6.0"
   dependencies:
