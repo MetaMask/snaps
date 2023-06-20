@@ -3648,15 +3648,15 @@ __metadata:
   linkType: hard
 
 "@metamask/approval-controller@npm:^3.0.0":
-  version: 3.2.0
-  resolution: "@metamask/approval-controller@npm:3.2.0"
+  version: 3.3.0
+  resolution: "@metamask/approval-controller@npm:3.3.0"
   dependencies:
     "@metamask/base-controller": ^3.0.0
     "@metamask/utils": ^5.0.2
     eth-rpc-errors: ^4.0.2
     immer: ^9.0.6
     nanoid: ^3.1.31
-  checksum: fdb9ee44f8e14ea870c80e6fe7cbb0c827763a44d243e71151bbefcfc58a5d61602c653d7a463109aae9e62437bb56652dccf7994a5334f14e61af0750d78d82
+  checksum: 1fa6111a897d6f4aa369fd1a669fb5e16558277019f9d6c61449aea0d7b2672a62c189e5b3d9e84ab6e4d5826932c78d2bdb0f05aafb184a4ff07903c46abf2c
   languageName: node
   linkType: hard
 
