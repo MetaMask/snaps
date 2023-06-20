@@ -20,7 +20,7 @@ export type SignMessageParams = {
 
   /**
    * The derivation path to derive the account from. If not provided, the
-   * default derivation path for Bitcoin is used.
+   * default derivation path for Ethereum is used.
    */
   path?: BIP44Path;
 };

@@ -1,5 +1,5 @@
 {
-  "name": "@metamask/bitcoin-signer-example-snap",
+  "name": "@metamask/consumer-signer-example-snap",
   "version": "0.34.1-flask.1",
   "description": "MetaMask example snap demonstrating how a snap can communicate with another snap to sign messages.",
   "repository": {

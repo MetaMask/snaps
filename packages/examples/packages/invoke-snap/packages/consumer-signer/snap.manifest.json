@@ -1,17 +1,17 @@
 {
   "version": "0.34.1-flask.1",
   "description": "MetaMask example snap demonstrating how a snap can communicate with another snap to sign messages.",
-  "proposedName": "Ethereum Signer Example Snap",
+  "proposedName": "Consumer Signer Example Snap",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "4Tq3kbP9XNK55JXhEmaBg3FOhx3NDVeeau335ck/AtY=",
+    "shasum": "TDiPq3/dtTLmGFTGTO59BVGUCNeZCLJA2NEBI065yj8=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
-        "packageName": "@metamask/ethereum-signer-example-snap",
+        "packageName": "@metamask/consumer-signer-example-snap",
         "registry": "https://registry.npmjs.org"
       }
     }
