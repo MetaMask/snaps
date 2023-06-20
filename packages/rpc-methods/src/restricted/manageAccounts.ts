@@ -7,7 +7,7 @@ import {
   ValidPermissionSpecification,
   PermissionSpecificationBuilder,
 } from '@metamask/permission-controller';
-import { Json, NonEmptyArray, isObject } from '@metamask/utils';
+import { Json, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
 export const methodName = 'snap_manageAccounts';
@@ -70,23 +70,17 @@ export const specificationBuilder: PermissionSpecificationBuilder<
  *
  * @param message - Parameter to be validated.
  */
-export function validateParams(message: unknown) {
+export function validateParams(message: unknown): void {
   if (!Array.isArray(message)) {
     throw ethErrors.rpc.invalidParams(
       'Invalid ManageAccount Arguments: An array of type SnapMessage was expected',
     );
   }
 
-  const [method, params] = message;
+  const [method] = message;
   if (typeof method !== 'string' || method.length === 0) {
     throw ethErrors.rpc.invalidParams(
       'Invalid ManageAccount Arguments: The parameter "method" should be a non-empty string',
-    );
-  }
-
-  if (!isObject(params) || !Array.isArray(params)) {
-    throw ethErrors.rpc.invalidParams(
-      'Invalid ManageAccount Arguments: The parameter "params" should be an object or array',
     );
   }
 }
