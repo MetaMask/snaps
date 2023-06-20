@@ -1,6 +1,8 @@
-import { createModuleLogger } from '@metamask/utils';
+import { JSON_RPC_ENDPOINT } from '@metamask/snaps-simulator';
+import { createModuleLogger, UnsafeJsonStruct } from '@metamask/utils';
 import { Page, HTTPRequest } from 'puppeteer';
 import {
+  assign,
   boolean,
   create,
   defaulted,
@@ -11,8 +13,10 @@ import {
   record,
   regexp,
   string,
+  Struct,
   union,
   unknown,
+  func,
 } from 'superstruct';
 
 import { DeepPartial } from '../types';
@@ -38,19 +42,21 @@ export type Unmock = () => Promise<void>;
 
 export type Mock = {
   /**
-   * The URL that was mocked.
-   */
-  url: string | RegExp;
-
-  /**
    * A function that can be used to unmock the URL.
    */
   unmock: Unmock;
 };
 
-export const MockOptionsStruct = object({
-  url: union([string(), regexp()]),
-  partial: optional(boolean()),
+/**
+ * A function that can return `true` if the given request should be mocked, or
+ * false if not.
+ *
+ * @param request - The request to check.
+ * @returns Whether to mock the request.
+ */
+export type ConditionFunction = (request: HTTPRequest) => boolean;
+
+const MockOptionsBaseStruct = object({
   response: defaulted(
     object({
       status: defaulted(number(), 200),
@@ -62,14 +68,33 @@ export const MockOptionsStruct = object({
   ),
 });
 
+const MockOptionsUrlStruct = object({
+  url: union([string(), regexp()]),
+  partial: optional(boolean()),
+});
+
+const MockOptionsConditionStruct = object({
+  condition: func() as unknown as Struct<ConditionFunction, null>,
+});
+
+export const MockOptionsStruct = union([
+  assign(MockOptionsBaseStruct, MockOptionsUrlStruct),
+  assign(MockOptionsBaseStruct, MockOptionsConditionStruct),
+]);
+
 /**
  * The options for the network mocking.
  *
  * @property url - The URL to mock. If a string is provided, the URL will be
  * matched exactly. If a RegExp is provided, the URL will be matched against it.
+ * This option is incompatible with the `condition` option.
  * @property partial - If enabled, the request will be mocked if the URL starts
  * with the given URL. This option is ignored if a RegExp is provided to the
- * `url` option.
+ * `url` option. This option is incompatible with the `condition` option.
+ * @property condition - A function which gets the {@link HTTPRequest} as
+ * parameter and returns a boolean to indicate whether the response should be
+ * mocked or not. This option is incompatible with the `url` and `partial`
+ * options.
  * @property response - The response to send for the request.
  * @property response.status - The status code to send for the response.
  * Defaults to `200`.
@@ -81,28 +106,29 @@ export const MockOptionsStruct = object({
 export type MockOptions = Infer<typeof MockOptionsStruct>;
 
 /**
- * Check if the given URL matches the given request.
+ * Check if the given URL matches the given request, or if the condition
+ * function returns `true`.
  *
  * @param request - The request to check.
  * @param options - The options for the network mocking.
- * @param options.url - The URL to mock. If a string is provided, the URL will
- * be matched exactly. If a RegExp is provided, the URL will be matched against
- * it.
- * @param options.partial - If enabled, the request will be mocked if the URL
- * starts with the given URL. This option is ignored if a RegExp is provided to
- * the `url` option.
  * @returns Whether the URL matches the request.
  */
-function matches(request: HTTPRequest, { url, partial }: MockOptions) {
-  if (typeof url === 'string') {
-    if (partial) {
-      return request.url().startsWith(url);
+function matches(request: HTTPRequest, options: MockOptions) {
+  if ('url' in options) {
+    const { url, partial } = options;
+    if (typeof url === 'string') {
+      if (partial) {
+        return request.url().startsWith(url);
+      }
+
+      return url === request.url();
     }
 
-    return url === request.url();
+    return url.test(request.url());
   }
 
-  return url.test(request.url());
+  const { condition } = options;
+  return condition(request);
 }
 
 /**
@@ -110,6 +136,7 @@ function matches(request: HTTPRequest, { url, partial }: MockOptions) {
  *
  * @param page - The page to enable network mocking on.
  * @param options - The options for the network mocking.
+ * @returns A {@link Mock} object, with an `unmock` function.
  */
 export async function mock(
   page: Page,
@@ -154,7 +181,62 @@ export async function mock(
   page.on('request', handler);
 
   return {
-    url: parsedOptions.url,
     unmock,
   };
+}
+
+const MockJsonRpcOptionsStruct = object({
+  method: string(),
+  result: UnsafeJsonStruct,
+});
+
+export type MockJsonRpcOptions = Infer<typeof MockJsonRpcOptionsStruct>;
+
+/**
+ * Mock an Ethereum JSON-RPC request. This intercepts all requests to the
+ * Ethereum provider, and returns the `result` instead.
+ *
+ * @param page - The page to enable network JSON-RPC mocking on.
+ * @param options - The options for the JSON-RPC mock.
+ * @param options.method - The JSON-RPC method to mock. Any other methods will be
+ * forwarded to the provider.
+ * @param options.result - The JSON response to return.
+ * @returns A {@link Mock} object, with an `unmock` function.
+ */
+export async function mockJsonRpc(
+  page: Page,
+  { method, result }: MockJsonRpcOptions,
+) {
+  return await mock(page, {
+    condition: (request: HTTPRequest) => {
+      if (request.url() !== JSON_RPC_ENDPOINT) {
+        return false;
+      }
+
+      const body = request.postData();
+      if (!body) {
+        return false;
+      }
+
+      try {
+        const json = JSON.parse(body);
+        return json.method === method;
+      } catch (error) {
+        log(
+          `Unable to mock "${method}" request to Ethereum provider: %s`,
+          error.message,
+        );
+        return false;
+      }
+    },
+    response: {
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        result,
+      }),
+    },
+  });
 }

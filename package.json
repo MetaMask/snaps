@@ -23,7 +23,7 @@
     "build:clean": "yarn clean && yarn build",
     "build:tsc": "tsc --build tsconfig.build.json",
     "build:post-tsc": "yarn workspaces foreach --parallel --topological --topological-dev --verbose run build:post-tsc",
-    "build:post-tsc:ci": "yarn workspaces foreach --parallel --topological --topological-dev --verbose --exclude root --exclude \"@metamask/snaps-simulator\" --exclude \"@metamask/snaps-execution-environments\" --exclude \"@metamask/snaps-jest\" run build:post-tsc",
+    "build:post-tsc:ci": "yarn workspaces foreach --parallel --topological --topological-dev --verbose --exclude root --exclude \"@metamask/snaps-simulator\" --exclude \"@metamask/snaps-execution-environments\" --exclude \"@metamask/snaps-jest\" --exclude \"@metamask/example-snaps\" run build:post-tsc",
     "clean": "yarn workspaces foreach --parallel --verbose run clean",
     "test": "yarn workspaces foreach --parallel --verbose run test",
     "test:browser": "yarn workspaces foreach --verbose run test:browser",
@@ -32,8 +32,7 @@
     "publish-previews": "yarn workspaces foreach --parallel run publish:preview",
     "install-chrome": "./scripts/install-chrome.sh",
     "get-release-tag": "ts-node --swc scripts/get-release-tag.ts",
-    "test:e2e": "yarn workspaces foreach --verbose --exclude root run test:e2e",
-    "test:e2e:ci": "yarn workspaces foreach --verbose --exclude root run test:e2e:ci"
+    "test:e2e": "yarn workspaces foreach --verbose --exclude root run test:e2e"
   },
   "simple-git-hooks": {
     "pre-commit": "yarn lint-staged && yarn dedupe --check"
@@ -67,6 +66,7 @@
     "@metamask/eslint-config-nodejs": "^11.0.1",
     "@metamask/eslint-config-typescript": "^11.0.0",
     "@metamask/utils": "^6.0.1",
+    "@swc/core": "^1.3.61",
     "@types/jest": "^27.5.1",
     "@types/node": "^20.3.1",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
@@ -109,5 +109,5 @@
       "favicons>sharp": true
     }
   },
-  "packageManager": "yarn@3.4.1"
+  "packageManager": "yarn@3.6.0"
 }

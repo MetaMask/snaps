@@ -1,28 +1,30 @@
 {
-  "name": "examples",
+  "name": "@metamask/example-snaps",
   "version": "0.34.1-flask.1",
   "private": true,
-  "description": "Example MetaMask Snaps.",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
   },
-  "license": "MIT",
-  "files": [
-    "examples/"
-  ],
+  "license": "(MIT-0 OR Apache-2.0)",
+  "files": [],
   "workspaces": [
-    "examples/*"
+    "packages/*"
   ],
   "scripts": {
-    "lint:changelog": "yarn auto-changelog validate",
-    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
-    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
-    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
-    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
-    "build": "yarn workspaces foreach --parallel --verbose run build",
+    "build": "yarn workspaces foreach --parallel --verbose --no-private run build",
+    "build:clean": "yarn clean && yarn build",
     "build:post-tsc": "yarn build",
-    "lint:ci": "yarn lint"
+    "clean": "yarn workspaces foreach --parallel --verbose --no-private run clean",
+    "start": "yarn workspaces foreach --parallel --verbose --interlaced --no-private --jobs unlimited run start",
+    "test": "yarn workspaces foreach --parallel --verbose --interlaced --no-private run test",
+    "lint": "yarn workspaces foreach --parallel --verbose --interlaced --no-private run lint",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" \"!packages/**\" --ignore-path ../../.gitignore",
+    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
+    "lint:ci": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
+    "lint:changelog": "yarn auto-changelog validate",
+    "lint:changelogs": "yarn workspaces foreach --parallel --verbose run lint:changelog"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.3.1",
@@ -31,7 +33,6 @@
     "@metamask/eslint-config-jest": "^11.0.0",
     "@metamask/eslint-config-nodejs": "^11.0.1",
     "@metamask/eslint-config-typescript": "^11.0.0",
-    "@metamask/snaps-cli": "workspace:^",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "eslint": "^8.27.0",
@@ -43,19 +44,10 @@
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.7.1",
     "prettier-plugin-packagejson": "^2.2.11",
-    "rimraf": "^4.1.2",
+    "ts-node": "^10.9.1",
     "typescript": "~4.8.4"
   },
   "engines": {
     "node": ">=16.0.0"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  },
-  "lavamoat": {
-    "allowScripts": {
-      "@lavamoat/preinstall-always-fail": false
-    }
   }
 }
