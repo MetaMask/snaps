@@ -6,7 +6,7 @@
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
   },
-  "license": "ISC",
+  "license": "(MIT-0 OR Apache-2.0)",
   "sideEffects": false,
   "main": "dist/bundle.js",
   "files": [

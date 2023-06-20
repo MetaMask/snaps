@@ -190,3 +190,7 @@ gen_enforced_field(WorkspaceCwd, 'main', 'dist/bundle.js') :-
   is_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'types', null) :-
   is_example(WorkspaceCwd).
+
+% Ensure all examples have the same license.
+gen_enforced_field(WorkspaceCwd, 'license', '(MIT-0 OR Apache-2.0)') :-
+  is_example(WorkspaceCwd).
