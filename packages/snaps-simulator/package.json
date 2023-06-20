@@ -13,22 +13,26 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "import": "./dist/esm/src/index.js",
+      "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js",
-      "types": "./dist/esm/src/index.d.ts"
+      "types": "./dist/src/index.d.ts"
     }
   },
   "main": "dist/cjs/index.js",
-  "module": "dist/esm/src/index.js",
-  "types": "dist/esm/src/index.d.ts",
+  "module": "dist/esm/index.js",
+  "types": "dist/src/index.d.ts",
   "files": [
     "dist/cjs",
-    "dist/esm"
+    "dist/esm",
+    "dist/src",
+    "dist/webpack"
   ],
   "scripts": {
-    "build": "yarn build:esm && yarn build:cjs && yarn build:webpack",
-    "build:esm": "tsc --project tsconfig.build.json",
-    "build:cjs": "swc src --out-dir dist/cjs --config-file ../../.swcrc.build.json",
+    "build": "yarn build:source && yarn build:types && yarn build:webpack",
+    "build:source": "yarn build:esm && yarn build:cjs",
+    "build:types": "tsc --project tsconfig.build.json",
+    "build:esm": "swc src --out-dir dist/esm --config-file ../../.swcrc.build.json --config module.type=es6",
+    "build:cjs": "swc src --out-dir dist/cjs --config-file ../../.swcrc.build.json --config module.type=commonjs",
     "build:webpack": "yarn webpack --config-name main --config-name test --mode production --progress",
     "build:vendor": "webpack --config-name vendor --mode production --progress",
     "build:clean": "rimraf dist && yarn build",

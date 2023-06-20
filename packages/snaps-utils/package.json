@@ -14,12 +14,12 @@
       },
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js",
-      "types": "./dist/esm/index.d.ts"
+      "types": "./dist/index.d.ts"
     },
     "./test-utils": {
       "import": "./dist/esm/test-utils/index.js",
       "require": "./dist/cjs/test-utils/index.js",
-      "types": "./dist/esm/test-utils/index.d.ts"
+      "types": "./dist/test-utils/index.d.ts"
     }
   },
   "main": "dist/index.js",
@@ -41,9 +41,11 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
-    "build": "yarn build:esm && yarn build:cjs",
-    "build:esm": "tsc --project tsconfig.build.json",
-    "build:cjs": "swc src --out-dir dist/cjs --config-file ../../.swcrc.build.json",
+    "build": "yarn build:source && yarn build:types",
+    "build:source": "yarn build:esm && yarn build:cjs",
+    "build:types": "tsc --project tsconfig.build.json",
+    "build:esm": "swc src --out-dir dist/esm --config-file ../../.swcrc.build.json --config module.type=es6",
+    "build:cjs": "swc src --out-dir dist/cjs --config-file ../../.swcrc.build.json --config module.type=commonjs",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
     "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",

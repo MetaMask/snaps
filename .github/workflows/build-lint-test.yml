@@ -55,10 +55,10 @@ jobs:
           node-version-file: '.nvmrc'
           cache: yarn
       - run: yarn --immutable --immutable-cache
-      - name: Build TypeScript files
-        run: yarn build:esm
-      - name: Build CommonJS files
-        run: yarn build:cjs
+      - name: Build types
+        run: yarn build:types
+      - name: Build source
+        run: yarn build:source
       - name: Cache build files
         uses: actions/cache@v3
         with:

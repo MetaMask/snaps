@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.packages.build.json",
   "compilerOptions": {
     "baseUrl": "./",
-    "outDir": "./dist/esm",
+    "outDir": "./dist",
     "rootDir": "./src",
     "jsx": "preserve"
   },

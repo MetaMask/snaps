@@ -12,12 +12,12 @@
     ".": {
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js",
-      "types": "./dist/esm/index.d.ts"
+      "types": "./dist/index.d.ts"
     }
   },
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
-  "types": "dist/esm/index.d.ts",
+  "types": "dist/index.d.ts",
   "bin": {
     "mm-snap": "./dist/cjs/main.js"
   },
@@ -29,9 +29,11 @@
     "test/snap"
   ],
   "scripts": {
-    "build": "yarn build:esm && yarn build:cjs",
-    "build:esm": "tsc --project tsconfig.build.json",
-    "build:cjs": "swc src --out-dir dist/cjs --config-file ../../.swcrc.build.json",
+    "build": "yarn build:source && yarn build:types",
+    "build:source": "yarn build:esm && yarn build:cjs",
+    "build:types": "tsc --project tsconfig.build.json",
+    "build:esm": "swc src --out-dir dist/esm --config-file ../../.swcrc.build.json --config module.type=es6",
+    "build:cjs": "swc src --out-dir dist/cjs --config-file ../../.swcrc.build.json --config module.type=commonjs",
     "build:post-tsc": "yarn build:chmod && yarn build:readme",
     "build:chmod": "chmod +x ./dist/esm/main.js && chmod +x ./dist/cjs/main.js",
     "build:readme": "node ./scripts/updateReadme.js",

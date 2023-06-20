@@ -10,8 +10,10 @@
     "type": "commonjs"
   },
   "exclude": [
+    ".*__fixtures__.*",
     ".*__mocks__.*",
     ".*__snapshots__.*",
+    ".*__tests?__.*",
     ".*test-utils.*",
     ".*\\.test\\.?.*\\.tsx?",
     ".*\\.d\\.tsx?"
