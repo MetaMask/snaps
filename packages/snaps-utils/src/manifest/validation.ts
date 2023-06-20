@@ -1,3 +1,4 @@
+import { isValidBIP32PathSegment } from '@metamask/key-tree';
 import {
   assertStruct,
   ChecksumStruct,
@@ -47,22 +48,6 @@ const FORBIDDEN_PATHS: string[][] = FORBIDDEN_COIN_TYPES.map((coinType) => [
   `${coinType}'`,
 ]);
 
-const BIP32_INDEX_REGEX = /^(\d+)'?$/u;
-
-const isValidBip32Path = (path: string[]) => {
-  return path.slice(1).every((part) => {
-    const pathIndex = Number(BIP32_INDEX_REGEX.exec(part)?.[1]);
-    if (
-      Number.isInteger(pathIndex) &&
-      pathIndex >= 0 &&
-      pathIndex <= 2 ** 31 - 1
-    ) {
-      return true;
-    }
-    return false;
-  });
-};
-
 export const Bip32PathStruct = refine(
   array(string()),
   'BIP-32 path',
@@ -79,7 +64,7 @@ export const Bip32PathStruct = refine(
       return 'Paths must have a length of at least three.';
     }
 
-    if (!isValidBip32Path(path)) {
+    if (path.slice(1).some((part) => !isValidBIP32PathSegment(part))) {
       return 'Path must be a valid BIP-32 derivation path array.';
     }
 
