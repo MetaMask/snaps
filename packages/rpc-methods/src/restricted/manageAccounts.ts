@@ -1,5 +1,3 @@
-import { SnapKeyring } from '@metamask/eth-snap-keyring';
-import type { SnapMessage } from '@metamask/eth-snap-keyring';
 import {
   SubjectType,
   PermissionType,
@@ -16,7 +14,14 @@ export type ManageAccountsMethodHooks = {
   /**
    * Gets the snap keyring implementation.
    */
-  getSnapKeyring: (snapOrigin: string) => Promise<SnapKeyring>;
+  getSnapKeyring: (snapOrigin: string) => Promise<{
+    handleKeyringSnapMessage: (
+      snapId: string,
+      message: any,
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      saveSnapKeyring: Function,
+    ) => Promise<Json>;
+  }>;
 
   /**
    * Saves the snap keyring, should be called after mutable operations.
@@ -100,7 +105,7 @@ export function manageAccountsImplementation({
   saveSnapKeyring,
 }: ManageAccountsMethodHooks) {
   return async function manageAccounts(
-    options: RestrictedMethodOptions<SnapMessage>,
+    options: RestrictedMethodOptions<[string, Json[] | Record<string, Json>]>,
   ): Promise<string[] | Json | boolean> {
     const {
       context: { origin },
