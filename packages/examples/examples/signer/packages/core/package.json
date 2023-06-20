@@ -15,7 +15,7 @@
     "async-mutex": "^0.4.0"
   },
   "devDependencies": {
-    "@metamask/key-tree": "^7.0.0",
+    "@metamask/key-tree": "^7.1.1",
     "@metamask/snaps-cli": "workspace:^",
     "@metamask/snaps-types": "workspace:^"
   },
