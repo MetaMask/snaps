@@ -1,13 +1,13 @@
 {
   "version": "0.34.1-flask.1",
-  "description": "MetaMask example snap demonstrating the use of `snap_dialog`.",
-  "proposedName": "Dialog Example Snap",
+  "description": "A snap for end-to-end testing the MetaMask Snaps CLI.",
+  "proposedName": "CLI Test Snap",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "Ox1kCj7+Hky/aTZwJIYswim54c6ihkdetjzjwaxZVlM=",
+    "shasum": "ElvJRk3W6Uqa6do/SoM5muRfvLLL156Uo/Lu/77a49Q=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
