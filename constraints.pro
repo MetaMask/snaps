@@ -184,3 +184,9 @@ gen_enforced_field(WorkspaceCwd, 'scripts.lint:misc', 'prettier --no-error-on-un
   is_nested_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'scripts.lint:changelog', 'yarn auto-changelog validate') :-
   is_example(WorkspaceCwd).
+
+% Ensure all examples have the same `main` and `types` fields.
+gen_enforced_field(WorkspaceCwd, 'main', 'dist/bundle.js') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'types', null) :-
+  is_example(WorkspaceCwd).
