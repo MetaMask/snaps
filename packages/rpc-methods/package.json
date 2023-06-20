@@ -29,7 +29,7 @@
     "lint:ci": "yarn lint"
   },
   "dependencies": {
-    "@metamask/eth-snap-keyring": "ssh://git@github.com/MetaMask/eth-snap-keyring#c0046dc4ac2063ea75aebc5dc85e6e7acfe875f7",
+    "@metamask/eth-snap-keyring": "git+https://github.com/MetaMask/eth-snap-keyring#c0046dc4ac2063ea75aebc5dc85e6e7acfe875f7",
     "@metamask/key-tree": "^7.1.1",
     "@metamask/permission-controller": "^4.0.0",
     "@metamask/snaps-ui": "workspace:^",
