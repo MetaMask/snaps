@@ -15,6 +15,32 @@ describe('mm-snap eval', () => {
       },
     );
 
+    it.each(['eval', 'e'])(
+      'evaluates a snap using "mm-snap %s --input eval.js"',
+      async (command) => {
+        await run({
+          command,
+          options: ['--input', 'good/eval.js'],
+          workingDirectory: resolve(__dirname, '__test__', 'webpack'),
+        })
+          .stdout(/Snap bundle ".*" successfully evaluated in SES\./u)
+          .end();
+      },
+    );
+
+    it.each(['eval', 'e'])(
+      'evaluates a snap using "mm-snap %s -i eval.js"',
+      async (command) => {
+        await run({
+          command,
+          options: ['-i', 'good/eval.js'],
+          workingDirectory: resolve(__dirname, '__test__', 'webpack'),
+        })
+          .stdout(/Snap bundle ".*" successfully evaluated in SES\./u)
+          .end();
+      },
+    );
+
     it('shows a message if the evaluation failed', async () => {
       await run({
         command: 'eval',

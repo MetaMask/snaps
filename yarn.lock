@@ -4808,6 +4808,7 @@ __metadata:
     babel-jest: ^29.5.0
     babelify: ^10.0.0
     browserify: ^17.0.0
+    chalk: ^4.1.2
     chokidar: ^3.5.2
     clet: ^1.0.1
     cross-fetch: ^3.1.5

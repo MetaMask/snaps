@@ -20,6 +20,8 @@ type YargsArgs = {
     config: ProcessedConfig;
   };
 
+  input?: string;
+
   config?: string;
   sourceMaps: boolean;
   stripComments: boolean;

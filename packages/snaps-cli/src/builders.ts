@@ -7,19 +7,27 @@ export enum TranspilationModes {
 }
 
 const builders: Record<string, Readonly<Options>> = {
-  bundle: {
-    alias: 'b',
-    describe: 'Snap bundle file',
-    type: 'string',
-    normalize: true,
-    deprecated: true,
-  },
-
   config: {
     alias: 'c',
     describe: 'Path to config file',
     type: 'string',
     normalize: true,
+  },
+
+  input: {
+    alias: 'i',
+    describe: 'Snap bundle file to evaluate',
+    type: 'string',
+    normalize: true,
+  },
+
+  // Deprecated Browserify options.
+  bundle: {
+    alias: 'b',
+    describe: 'Snap bundle file',
+    type: 'string',
+    normalize: true,
+    deprecated: 'Use --input instead.',
   },
 
   dist: {

@@ -1,8 +1,14 @@
-import { evalBundle, logInfo } from '@metamask/snaps-utils';
+import { evalBundle, isFile } from '@metamask/snaps-utils';
+import { underline } from 'chalk';
 import { resolve } from 'path';
 
 import { ProcessedConfig } from '../../config';
+import { CommandError, success } from '../../logging';
 import { getRelativePath } from '../../utils';
+
+export type EvalOptions = {
+  input?: string;
+};
 
 /**
  * Returns the path to the bundle, based on the bundler.
@@ -13,34 +19,51 @@ import { getRelativePath } from '../../utils';
  * `output.filename` values.
  *
  * @param config - The processed config object.
- * @param config.cliOptions - The CLI options object.
+ * @param options - The eval options.
  * @returns The path to the bundle.
  */
-function getBundlePath(config: ProcessedConfig) {
-  if (config.bundler === 'browserify') {
-    return config.cliOptions.bundle;
+function getBundlePath(config: ProcessedConfig, options: EvalOptions): string {
+  if (options.input) {
+    return resolve(process.cwd(), options.input);
   }
 
-  return resolve(config.output.path, config.output.filename);
+  if (config.bundler === 'browserify') {
+    return resolve(process.cwd(), config.cliOptions.bundle);
+  }
+
+  return resolve(process.cwd(), config.output.path, config.output.filename);
 }
 
 /**
  * Runs the snap in a worker, to ensure SES compatibility.
  *
  * @param config - The processed config object.
+ * @param options - The eval options.
  * @returns A promise that resolves once the eval has finished.
  * @throws If the eval failed.
  */
-export async function evaluate(config: ProcessedConfig): Promise<void> {
-  const bundlePath = getBundlePath(config);
+export async function evaluate(
+  config: ProcessedConfig,
+  options: EvalOptions = {},
+): Promise<void> {
+  const bundlePath = getBundlePath(config, options);
   const relativePath = getRelativePath(bundlePath);
+
+  if (!(await isFile(bundlePath))) {
+    throw new CommandError(
+      `Failed to evaluate snap bundle "${underline(
+        relativePath,
+      )}" in SES: The specified file does not exist.`,
+    );
+  }
 
   try {
     await evalBundle(bundlePath);
-
-    logInfo(`Snap bundle "${relativePath}" successfully evaluated in SES.`);
+    success(
+      `Snap bundle "${underline(relativePath)}" successfully evaluated in SES.`,
+    );
   } catch (error) {
-    throw new Error(
+    throw new CommandError(
       `Failed to evaluate snap bundle "${relativePath}" in SES: ${error.message}`,
     );
   }
