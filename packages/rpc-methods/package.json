@@ -18,9 +18,9 @@
   "module": "dist/esm/index.js",
   "types": "dist/types/index.d.ts",
   "files": [
-    "dist/cjs",
-    "dist/esm",
-    "dist/types"
+    "dist/cjs/**",
+    "dist/esm/**",
+    "dist/types/**"
   ],
   "scripts": {
     "test": "jest && yarn posttest",

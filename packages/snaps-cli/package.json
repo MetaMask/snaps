@@ -22,9 +22,9 @@
     "mm-snap": "./dist/cjs/main.js"
   },
   "files": [
-    "dist/cjs",
-    "dist/esm",
-    "dist/types"
+    "dist/cjs/**",
+    "dist/esm/**",
+    "dist/types/**"
   ],
   "workspaces": [
     "test/snap"

@@ -20,9 +20,9 @@
   "types": "dist/types/index.d.ts",
   "bin": "dist/cjs/main.js",
   "files": [
-    "dist/cjs",
-    "dist/esm",
-    "dist/types"
+    "dist/cjs/**",
+    "dist/esm/**",
+    "dist/types/**"
   ],
   "scripts": {
     "build": "yarn build:source && yarn build:types",

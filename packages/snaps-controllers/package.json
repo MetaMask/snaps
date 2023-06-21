@@ -27,9 +27,9 @@
   },
   "types": "dist/types/index.d.ts",
   "files": [
-    "dist/cjs",
-    "dist/esm",
-    "dist/types"
+    "dist/cjs/**",
+    "dist/esm/**",
+    "dist/types/**"
   ],
   "scripts": {
     "test:prepare": "yarn mkdirp test/fixtures && ./scripts/generate-fixtures.sh",
