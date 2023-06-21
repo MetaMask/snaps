@@ -7,7 +7,7 @@
     ".": {
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/types/index.d.ts"
     },
     "./jest-preset": {
       "import": "./jest-preset.js",
@@ -16,10 +16,11 @@
   },
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/types/index.d.ts",
   "files": [
     "dist/cjs",
     "dist/esm",
+    "dist/types",
     "jest-preset.js"
   ],
   "scripts": {

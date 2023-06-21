@@ -14,12 +14,12 @@
       },
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/types/index.d.ts"
     },
     "./test-utils": {
       "import": "./dist/esm/test-utils/index.js",
       "require": "./dist/cjs/test-utils/index.js",
-      "types": "./dist/test-utils/index.d.ts"
+      "types": "./dist/types/test-utils/index.d.ts"
     }
   },
   "main": "dist/cjs/index.js",
@@ -30,7 +30,8 @@
   },
   "files": [
     "dist/cjs",
-    "dist/esm"
+    "dist/esm",
+    "dist/types"
   ],
   "scripts": {
     "test": "rimraf coverage && jest && yarn test:browser && yarn posttest",

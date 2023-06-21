@@ -11,7 +11,7 @@
     ".": {
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/types/index.d.ts"
     },
     "./dist/services": {
       "browser": {
@@ -25,10 +25,11 @@
   "browser": {
     "./dist/services": "./dist/services/browser.js"
   },
-  "types": "dist/index.d.ts",
+  "types": "dist/types/index.d.ts",
   "files": [
     "dist/cjs",
-    "dist/esm"
+    "dist/esm",
+    "dist/types"
   ],
   "scripts": {
     "test:prepare": "yarn mkdirp test/fixtures && ./scripts/generate-fixtures.sh",

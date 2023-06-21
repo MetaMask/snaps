@@ -12,16 +12,17 @@
     ".": {
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/types/index.d.ts"
     }
   },
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/types/index.d.ts",
   "bin": "dist/cjs/main.js",
   "files": [
     "dist/cjs",
-    "dist/esm"
+    "dist/esm",
+    "dist/types"
   ],
   "scripts": {
     "build": "yarn build:source && yarn build:types",
