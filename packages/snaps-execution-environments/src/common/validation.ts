@@ -1,4 +1,4 @@
-import { HandlerType } from '@metamask/snaps-utils';
+import { ChainIdStruct, HandlerType } from '@metamask/snaps-utils';
 import {
   assertStruct,
   Json,
