@@ -8,7 +8,8 @@ jobs:
     name: Prepare
     runs-on: ubuntu-latest
     outputs:
-      child-workspace-package-names: ${{ steps.workspace-package-names.outputs.child-workspace-package-names }}
+      test-workspace-package-names: ${{ steps.workspace-package-names.outputs.test-workspace-package-names }}
+      e2e-workspace-package-names: ${{ steps.workspace-package-names.outputs.e2e-workspace-package-names }}
       all-workspace-package-names: ${{ steps.workspace-package-names.outputs.all-workspace-package-names }}
     strategy:
       fail-fast: false
@@ -35,8 +36,11 @@ jobs:
       - name: Fetch workspace package names
         id: workspace-package-names
         run: |
-          echo "child-workspace-package-names=$(yarn workspaces filter --include 'packages/*' --exclude 'packages/examples' --json)" >> "$GITHUB_OUTPUT"
-          echo "all-workspace-package-names=$(yarn workspaces filter --include '{.,packages/**}' --json)" >> "$GITHUB_OUTPUT"
+          {
+            echo "test-workspace-package-names=$(yarn workspaces filter --include 'packages/*' --exclude 'packages/examples' --json)"
+            echo "e2e-workspace-package-names=$(yarn workspaces filter --include 'packages/examples/packages/**' --exclude 'packages/examples/packages/invoke-snap' --json)"
+            echo "all-workspace-package-names=$(yarn workspaces filter --include '{.,packages/**}' --exclude 'packages/snaps-cli/test/snap' --json)"
+          } >> "$GITHUB_OUTPUT"
         shell: bash
 
   build:
@@ -53,8 +57,12 @@ jobs:
       - run: yarn --immutable --immutable-cache
       - name: Build TypeScript files
         run: yarn build:tsc
-      - name: Build other files
-        run: yarn build:post-tsc:ci
+      - name: Cache build files
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/*/dist
+          key: build-${{ runner.os }}-${{ github.sha }}
       - name: Require clean working directory
         shell: bash
         run: |
@@ -63,8 +71,29 @@ jobs:
             exit 1
           fi
 
+  post-build:
+    name: Post-build
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+      - run: yarn --immutable --immutable-cache
+      - name: Restore build files
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/*/dist
+          key: build-${{ runner.os }}-${{ github.sha }}
+      - name: Post-build
+        run: yarn build:post-tsc:ci
+
   build-simulator:
-    name: Build Snaps Simulator
+    name: Build "@metamask/snaps-simulator"
     runs-on: ubuntu-latest
     needs: prepare
     steps:
@@ -86,13 +115,20 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            packages/snaps-simulator/dist/vendor
+            packages/snaps-simulator/vendor
           key: webpack-vendor-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
       - name: Build Webpack vendor
         if: steps.cache-webpack-vendor.outputs.cache-hit != 'true'
         run: yarn workspace @metamask/snaps-simulator run build:vendor
-      - name: Build Webpack
-        run: yarn workspace @metamask/snaps-simulator run build
+      - name: Build
+        run: yarn workspace @metamask/snaps-simulator run build:webpack
+      - name: Cache "@metamask/snaps-simulator" build
+        id: cache-e2e-simulator-build
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/snaps-simulator/dist/webpack
+          key: e2e-simulator-build-${{ runner.os }}-${{ github.sha }}
       - name: Require clean working directory
         shell: bash
         run: |
@@ -156,7 +192,7 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [16.x, 18.x]
-        package-name: ${{ fromJson(needs.prepare.outputs.child-workspace-package-names) }}
+        package-name: ${{ fromJson(needs.prepare.outputs.test-workspace-package-names) }}
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -212,6 +248,58 @@ jobs:
         uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70
         with:
           files: packages/**/coverage-final.json
+
+  test-e2e:
+    name: E2E Test
+    runs-on: ubuntu-latest
+    needs:
+      - prepare
+      - build
+      - build-simulator
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [16.x, 18.x]
+        package-name: ${{ fromJson(needs.prepare.outputs.e2e-workspace-package-names) }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
+      - name: Restore "@metamask/snaps-execution-environments" build
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/snaps-execution-environments/dist/browserify
+          key: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+      - name: Restore build files
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/*/dist
+          key: build-${{ runner.os }}-${{ github.sha }}
+      - name: Restore "@metamask/snaps-simulator" build
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/snaps-simulator/dist/webpack
+          key: e2e-simulator-build-${{ runner.os }}-${{ github.sha }}
+      - run: yarn --immutable --immutable-cache
+      - name: Install Google Chrome
+        run: yarn install-chrome
+      - name: Build snap
+        run: yarn workspace ${{ matrix.package-name }} run build
+      - name: Run E2E test
+        run: yarn workspace ${{ matrix.package-name }} run test:e2e
+      - name: Require clean working directory
+        shell: bash
+        run: |
+          if ! git diff --exit-code; then
+            echo "Working tree dirty at end of job"
+            exit 1
+          fi
 
   platform-compatibility-test:
     name: Test platform compatibility

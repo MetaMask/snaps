@@ -866,7 +866,7 @@
         "@babel/core>@babel/helper-compilation-targets": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>babel-plugin-polyfill-corejs2>@babel/helper-define-polyfill-provider>lodash.debounce": true,
-        "vite>resolve": true
+        "lavamoat>resolve": true
       }
     },
     "@babel/preset-env>babel-plugin-polyfill-corejs2>@babel/helper-define-polyfill-provider>lodash.debounce": {
@@ -1053,7 +1053,7 @@
         "babel-plugin-tsconfig-paths-module-resolver>babel-plugin-module-resolver>pkg-up": true,
         "babel-plugin-tsconfig-paths-module-resolver>babel-plugin-module-resolver>reselect": true,
         "browserify>glob": true,
-        "vite>resolve": true
+        "lavamoat>resolve": true
       }
     },
     "babel-plugin-tsconfig-paths-module-resolver>babel-plugin-module-resolver>find-babel-config": {
@@ -1068,14 +1068,8 @@
         "process.cwd": true
       },
       "packages": {
-        "babel-plugin-tsconfig-paths-module-resolver>babel-plugin-module-resolver>find-babel-config>json5": true,
-        "babel-plugin-tsconfig-paths-module-resolver>babel-plugin-module-resolver>find-babel-config>path-exists": true
-      }
-    },
-    "babel-plugin-tsconfig-paths-module-resolver>babel-plugin-module-resolver>find-babel-config>path-exists": {
-      "builtin": {
-        "fs.access": true,
-        "fs.accessSync": true
+        "@babel/core>json5": true,
+        "eslint>find-up>path-exists": true
       }
     },
     "babel-plugin-tsconfig-paths-module-resolver>babel-plugin-module-resolver>pkg-up": {
@@ -1203,7 +1197,7 @@
         "browserify>through2": true,
         "browserify>xtend": true,
         "lavamoat>htmlescape": true,
-        "vite>resolve": true
+        "lavamoat>resolve": true
       }
     },
     "browserify>JSONStream": {
@@ -1235,62 +1229,11 @@
         "@lavamoat/lavapack>umd": true,
         "browserify>JSONStream": true,
         "browserify>browser-pack>safe-buffer": true,
-        "browserify>browser-pack>through2": true,
-        "browserify>defined": true
+        "browserify>defined": true,
+        "browserify>through2": true
       }
     },
     "browserify>browser-pack>safe-buffer": {
-      "builtin": {
-        "buffer": true
-      }
-    },
-    "browserify>browser-pack>through2": {
-      "builtin": {
-        "util.inherits": true
-      },
-      "globals": {
-        "process.nextTick": true
-      },
-      "packages": {
-        "browserify>browser-pack>through2>readable-stream": true,
-        "browserify>xtend": true
-      }
-    },
-    "browserify>browser-pack>through2>readable-stream": {
-      "builtin": {
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.browser": true,
-        "process.env.READABLE_STREAM": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.version.slice": true,
-        "setImmediate": true
-      },
-      "packages": {
-        "browserify>browser-pack>through2>readable-stream>safe-buffer": true,
-        "browserify>browser-pack>through2>readable-stream>string_decoder": true,
-        "browserify>inherits": true,
-        "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>isarray": true,
-        "browserify>readable-stream>process-nextick-args": true,
-        "browserify>readable-stream>util-deprecate": true
-      }
-    },
-    "browserify>browser-pack>through2>readable-stream>safe-buffer": {
-      "builtin": {
-        "buffer": true
-      }
-    },
-    "browserify>browser-pack>through2>readable-stream>string_decoder": {
-      "packages": {
-        "browserify>browser-pack>through2>readable-stream>string_decoder>safe-buffer": true
-      }
-    },
-    "browserify>browser-pack>through2>readable-stream>string_decoder>safe-buffer": {
       "builtin": {
         "buffer": true
       }
@@ -1306,7 +1249,7 @@
         "process.platform": true
       },
       "packages": {
-        "vite>resolve": true
+        "lavamoat>resolve": true
       }
     },
     "browserify>cached-path-relative": {
@@ -1331,54 +1274,8 @@
     },
     "browserify>deps-sort": {
       "packages": {
-        "browserify>deps-sort>through2": true,
-        "browserify>shasum-object": true
-      }
-    },
-    "browserify>deps-sort>through2": {
-      "builtin": {
-        "util.inherits": true
-      },
-      "globals": {
-        "process.nextTick": true
-      },
-      "packages": {
-        "browserify>deps-sort>through2>readable-stream": true,
-        "browserify>xtend": true
-      }
-    },
-    "browserify>deps-sort>through2>readable-stream": {
-      "builtin": {
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.browser": true,
-        "process.env.READABLE_STREAM": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.version.slice": true,
-        "setImmediate": true
-      },
-      "packages": {
-        "browserify>deps-sort>through2>readable-stream>safe-buffer": true,
-        "browserify>deps-sort>through2>readable-stream>string_decoder": true,
-        "browserify>inherits": true,
-        "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>isarray": true,
-        "browserify>readable-stream>process-nextick-args": true,
-        "browserify>readable-stream>util-deprecate": true
-      }
-    },
-    "browserify>deps-sort>through2>readable-stream>safe-buffer": {
-      "builtin": {
-        "buffer": true
-      }
-    },
-    "browserify>deps-sort>through2>readable-stream>string_decoder": {
-      "packages": {
-        "browserify>deps-sort>through2>readable-stream>safe-buffer": true
+        "browserify>shasum-object": true,
+        "browserify>through2": true
       }
     },
     "browserify>duplexer2": {
@@ -1524,56 +1421,10 @@
       "packages": {
         "@lavamoat/lavapack>combine-source-map": true,
         "browserify>glob>path-is-absolute": true,
-        "browserify>insert-module-globals>through2": true,
         "browserify>insert-module-globals>undeclared-identifiers": true,
         "browserify>syntax-error>acorn-node": true,
+        "browserify>through2": true,
         "browserify>xtend": true
-      }
-    },
-    "browserify>insert-module-globals>through2": {
-      "builtin": {
-        "util.inherits": true
-      },
-      "globals": {
-        "process.nextTick": true
-      },
-      "packages": {
-        "browserify>insert-module-globals>through2>readable-stream": true,
-        "browserify>xtend": true
-      }
-    },
-    "browserify>insert-module-globals>through2>readable-stream": {
-      "builtin": {
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.browser": true,
-        "process.env.READABLE_STREAM": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.version.slice": true,
-        "setImmediate": true
-      },
-      "packages": {
-        "browserify>inherits": true,
-        "browserify>insert-module-globals>through2>readable-stream>safe-buffer": true,
-        "browserify>insert-module-globals>through2>readable-stream>string_decoder": true,
-        "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>isarray": true,
-        "browserify>readable-stream>process-nextick-args": true,
-        "browserify>readable-stream>util-deprecate": true
-      }
-    },
-    "browserify>insert-module-globals>through2>readable-stream>safe-buffer": {
-      "builtin": {
-        "buffer": true
-      }
-    },
-    "browserify>insert-module-globals>through2>readable-stream>string_decoder": {
-      "packages": {
-        "browserify>insert-module-globals>through2>readable-stream>safe-buffer": true
       }
     },
     "browserify>insert-module-globals>undeclared-identifiers": {
@@ -1671,10 +1522,10 @@
         "browserify>module-deps>detective": true,
         "browserify>module-deps>readable-stream": true,
         "browserify>module-deps>stream-combiner2": true,
-        "browserify>module-deps>through2": true,
         "browserify>parents": true,
+        "browserify>through2": true,
         "browserify>xtend": true,
-        "vite>resolve": true
+        "lavamoat>resolve": true
       }
     },
     "browserify>module-deps>concat-stream": {
@@ -1767,18 +1618,6 @@
     "browserify>module-deps>stream-combiner2>readable-stream>string_decoder": {
       "packages": {
         "browserify>module-deps>stream-combiner2>readable-stream>safe-buffer": true
-      }
-    },
-    "browserify>module-deps>through2": {
-      "builtin": {
-        "util.inherits": true
-      },
-      "globals": {
-        "process.nextTick": true
-      },
-      "packages": {
-        "browserify>module-deps>readable-stream": true,
-        "browserify>xtend": true
       }
     },
     "browserify>parents": {
@@ -1936,8 +1775,42 @@
         "process.nextTick": true
       },
       "packages": {
-        "browserify>readable-stream": true,
+        "browserify>through2>readable-stream": true,
         "browserify>xtend": true
+      }
+    },
+    "browserify>through2>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "browserify>inherits": true,
+        "browserify>readable-stream>core-util-is": true,
+        "browserify>readable-stream>isarray": true,
+        "browserify>readable-stream>process-nextick-args": true,
+        "browserify>readable-stream>util-deprecate": true,
+        "browserify>through2>readable-stream>safe-buffer": true,
+        "browserify>through2>readable-stream>string_decoder": true
+      }
+    },
+    "browserify>through2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "browserify>through2>readable-stream>string_decoder": {
+      "packages": {
+        "browserify>through2>readable-stream>safe-buffer": true
       }
     },
     "eslint-plugin-import>is-core-module": {
@@ -1975,6 +1848,13 @@
       "packages": {
         "@wdio/mocha-framework>mocha>supports-color": true,
         "eslint>debug>ms": true
+      }
+    },
+    "eslint>find-up>path-exists": {
+      "builtin": {
+        "fs.access": true,
+        "fs.accessSync": true,
+        "util.promisify": true
       }
     },
     "eslint>strip-ansi": {
@@ -2118,7 +1998,7 @@
         "performantResolve": true
       },
       "packages": {
-        "vite>resolve": true
+        "lavamoat>resolve": true
       }
     },
     "lavamoat>json-stable-stringify": {
@@ -2220,6 +2100,45 @@
         "@babel/core>@babel/traverse": true
       }
     },
+    "lavamoat>resolve": {
+      "builtin": {
+        "fs.readFile": true,
+        "fs.readFileSync": true,
+        "fs.realpath": true,
+        "fs.realpathSync": true,
+        "fs.stat": true,
+        "fs.statSync": true,
+        "os.homedir": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.parse": true,
+        "path.relative": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "process.env.HOME": true,
+        "process.env.HOMEDRIVE": true,
+        "process.env.HOMEPATH": true,
+        "process.env.LNAME": true,
+        "process.env.LOGNAME": true,
+        "process.env.USER": true,
+        "process.env.USERNAME": true,
+        "process.env.USERPROFILE": true,
+        "process.getuid": true,
+        "process.nextTick": true,
+        "process.platform": true,
+        "process.versions.pnp": true
+      },
+      "packages": {
+        "eslint-plugin-import>is-core-module": true,
+        "lavamoat>resolve>path-parse": true
+      }
+    },
+    "lavamoat>resolve>path-parse": {
+      "globals": {
+        "process.platform": true
+      }
+    },
     "pump>end-of-stream": {
       "globals": {
         "process.nextTick": true
@@ -2301,12 +2220,19 @@
         "define": true
       },
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
       }
     },
     "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
       "globals": {
+        "define": true
+      }
+    },
+    "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
         "define": true
       }
     },
@@ -2319,45 +2245,6 @@
     "terser>source-map-support>buffer-from": {
       "globals": {
         "Buffer": true
-      }
-    },
-    "vite>resolve": {
-      "builtin": {
-        "fs.readFile": true,
-        "fs.readFileSync": true,
-        "fs.realpath": true,
-        "fs.realpathSync": true,
-        "fs.stat": true,
-        "fs.statSync": true,
-        "os.homedir": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.parse": true,
-        "path.relative": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "process.env.HOME": true,
-        "process.env.HOMEDRIVE": true,
-        "process.env.HOMEPATH": true,
-        "process.env.LNAME": true,
-        "process.env.LOGNAME": true,
-        "process.env.USER": true,
-        "process.env.USERNAME": true,
-        "process.env.USERPROFILE": true,
-        "process.getuid": true,
-        "process.nextTick": true,
-        "process.platform": true,
-        "process.versions.pnp": true
-      },
-      "packages": {
-        "eslint-plugin-import>is-core-module": true,
-        "vite>resolve>path-parse": true
-      }
-    },
-    "vite>resolve>path-parse": {
-      "globals": {
-        "process.platform": true
       }
     },
     "yargs": {

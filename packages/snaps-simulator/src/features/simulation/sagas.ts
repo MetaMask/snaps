@@ -24,16 +24,20 @@ import {
   SnapRpcHookArgs,
   VirtualFile,
 } from '@metamask/snaps-utils';
+import { getSafeJson } from '@metamask/utils';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
+import { SagaIterator } from 'redux-saga';
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
 
+import { version } from '../../../package.json';
 import { runSaga } from '../../store/middleware';
 import { getSnapId, getSrp, setSnapId } from '../configuration';
 import { addError } from '../console';
 import { ManifestStatus, setValid } from '../manifest';
+import { JSON_RPC_ENDPOINT } from './constants';
 import {
   getSnapState,
   showDialog,
@@ -60,6 +64,8 @@ import {
   getEndowments,
   unrestrictedMethods,
 } from './snap-permissions';
+
+const DEFAULT_ENVIRONMENT_URL = `https://execution.metamask.io/${version}/index.html`;
 
 /**
  * The initialization saga is run on when the snap ID is changed and initializes the snaps execution environment.
@@ -141,13 +147,16 @@ export function* initSaga({ payload }: PayloadAction<string>) {
     createFetchMiddleware({
       btoa: globalThis.btoa,
       fetch: globalThis.fetch,
-      // TODO: Use something else?
-      rpcUrl: 'https://cloudflare-eth.com',
+      rpcUrl: JSON_RPC_ENDPOINT,
     }),
   );
 
+  const searchParams = new URLSearchParams(window.location.search);
+  const environmentUrl =
+    searchParams.get('environment') ?? DEFAULT_ENVIRONMENT_URL;
+
   const executionService = new IframeExecutionService({
-    iframeUrl: new URL('https://execution.metamask.io/0.15.1/index.html'),
+    iframeUrl: new URL(environmentUrl),
     messenger: controllerMessenger.getRestricted({
       name: 'ExecutionService',
     }),
@@ -214,6 +223,7 @@ export function* rebootSaga({ payload }: PayloadAction<VirtualFile<string>>) {
  */
 export function* requestSaga({ payload }: PayloadAction<SnapRpcHookArgs>) {
   yield put({ type: `${payload.handler}/setRequest`, payload });
+
   const snapId: string = yield select(getSnapId);
   const executionService: IframeExecutionService = yield select(
     getExecutionService,
@@ -250,7 +260,7 @@ export function* requestSaga({ payload }: PayloadAction<SnapRpcHookArgs>) {
  */
 export function* permissionsSaga({
   payload,
-}: PayloadAction<VirtualFile<SnapManifest>>) {
+}: PayloadAction<VirtualFile<SnapManifest>>): SagaIterator {
   try {
     const snapId: string = yield select(getSnapId);
     const subjectMetadataController: SubjectMetadataController = yield select(
@@ -270,7 +280,7 @@ export function* permissionsSaga({
     // Payload is frozen for unknown reasons, this breaks our superstruct validation.
     // To circumvent we stringify and parse.
     const approvedPermissions = processSnapPermissions(
-      JSON.parse(JSON.stringify(payload.result.initialPermissions)),
+      getSafeJson(payload.result.initialPermissions),
     );
 
     // Grant all permissions

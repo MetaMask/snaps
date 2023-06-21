@@ -8,11 +8,6 @@ import {
   getCronjobCaveatMapper,
 } from './cronjob';
 import { ethereumProviderEndowmentBuilder } from './ethereum-provider';
-import {
-  keyringEndowmentBuilder,
-  keyringCaveatSpecifications,
-  getKeyringCaveatMapper,
-} from './keyring';
 import { longRunningEndowmentBuilder } from './long-running';
 import { networkAccessEndowmentBuilder } from './network-access';
 import {
@@ -32,7 +27,6 @@ export const endowmentPermissionBuilders = {
   [longRunningEndowmentBuilder.targetName]: longRunningEndowmentBuilder,
   [transactionInsightEndowmentBuilder.targetName]:
     transactionInsightEndowmentBuilder,
-  [keyringEndowmentBuilder.targetName]: keyringEndowmentBuilder,
   [cronjobEndowmentBuilder.targetName]: cronjobEndowmentBuilder,
   [ethereumProviderEndowmentBuilder.targetName]:
     ethereumProviderEndowmentBuilder,
@@ -41,7 +35,6 @@ export const endowmentPermissionBuilders = {
 } as const;
 
 export const endowmentCaveatSpecifications = {
-  ...keyringCaveatSpecifications,
   ...cronjobCaveatSpecifications,
   ...transactionInsightCaveatSpecifications,
   ...rpcCaveatSpecifications,
@@ -51,7 +44,6 @@ export const endowmentCaveatMappers: Record<
   string,
   (value: Json) => Pick<PermissionConstraint, 'caveats'>
 > = {
-  [keyringEndowmentBuilder.targetName]: getKeyringCaveatMapper,
   [cronjobEndowmentBuilder.targetName]: getCronjobCaveatMapper,
   [transactionInsightEndowmentBuilder.targetName]:
     getTransactionInsightCaveatMapper,
@@ -60,7 +52,6 @@ export const endowmentCaveatMappers: Record<
 
 export const handlerEndowments: Record<HandlerType, string> = {
   [HandlerType.OnRpcRequest]: rpcEndowmentBuilder.targetName,
-  [HandlerType.SnapKeyring]: keyringEndowmentBuilder.targetName,
   [HandlerType.OnTransaction]: transactionInsightEndowmentBuilder.targetName,
   [HandlerType.OnCronjob]: cronjobEndowmentBuilder.targetName,
 };

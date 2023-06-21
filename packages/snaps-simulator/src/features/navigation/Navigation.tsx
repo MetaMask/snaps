@@ -32,7 +32,7 @@ export const Navigation: FunctionComponent = () => {
             }
 
             return (
-              <Item key={path} path={path}>
+              <Item key={path} path={path} tag={tag}>
                 <Icon icon={icon} />
                 <Box>
                   <Text>
@@ -51,7 +51,7 @@ export const Navigation: FunctionComponent = () => {
         )}
 
         {/* For now we declare this separately, because it has special state. */}
-        <Item key="manifest" path="/manifest">
+        <Item key="manifest" tag="manifest" path="/manifest">
           <Box position="relative">
             <Icon icon="manifest" />
             <ManifestStatusIndicator />

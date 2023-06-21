@@ -159,7 +159,6 @@
     },
     "external:../snaps-utils/src/namespace.ts": {
       "packages": {
-        "@metamask/utils": true,
         "superstruct": true
       }
     },

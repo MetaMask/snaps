@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.packages.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "jsx": "preserve"
+  },
+  "include": ["./src"],
+  "references": [
+    {
+      "path": "../rpc-methods"
+    },
+    {
+      "path": "../snaps-utils"
+    },
+    {
+      "path": "../snaps-simulator"
+    }
+  ]
+}
