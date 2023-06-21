@@ -105,6 +105,14 @@ export function proxyStreamProvider(
 const BLOCKED_RPC_METHODS = Object.freeze([
   'wallet_requestSnaps',
   'wallet_requestPermissions',
+  // We disallow all of these confirmations for now, since the screens are not ready for Snaps.
+  'eth_sendRawTransaction',
+  'eth_sendTransaction',
+  'eth_sign',
+  'eth_signTypedData',
+  'eth_signTypedData_v1',
+  'eth_signTypedData_v3',
+  'eth_signTypedData_v4',
 ]);
 
 /**
