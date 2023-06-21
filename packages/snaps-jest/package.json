@@ -8,6 +8,10 @@
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./jest-preset": {
+      "import": "./jest-preset.js",
+      "require": "./jest-preset.js"
     }
   },
   "main": "dist/cjs/index.js",
@@ -15,7 +19,8 @@
   "types": "dist/index.d.ts",
   "files": [
     "dist/cjs",
-    "dist/esm"
+    "dist/esm",
+    "jest-preset.js"
   ],
   "scripts": {
     "test": "jest --passWithNoTests && yarn posttest",
