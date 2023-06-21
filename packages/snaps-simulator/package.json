@@ -35,7 +35,9 @@
     "test:ci": "yarn test",
     "test:watch": "jest --watch",
     "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
-    "lint:ci": "yarn lint"
+    "lint:ci": "yarn lint",
+    "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
+    "publish:preview": "yarn npm publish --tag preview"
   },
   "dependencies": {
     "@chakra-ui/anatomy": "^2.1.1",
