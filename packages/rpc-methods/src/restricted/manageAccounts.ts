@@ -66,7 +66,7 @@ export const specificationBuilder: PermissionSpecificationBuilder<
     targetName: methodName,
     allowedCaveats,
     methodImplementation: manageAccountsImplementation(methodHooks),
-    subjectTypes: [SubjectType.Internal, SubjectType.Snap],
+    subjectTypes: [SubjectType.Snap],
   };
 };
 

@@ -44,7 +44,7 @@ describe('specification', () => {
       methodImplementation: expect.anything(),
       permissionType: PermissionType.RestrictedMethod,
       targetName: methodName,
-      subjectTypes: [SubjectType.Internal, SubjectType.Snap],
+      subjectTypes: [SubjectType.Snap],
     });
   });
 });
