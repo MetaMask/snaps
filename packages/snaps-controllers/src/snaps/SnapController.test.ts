@@ -52,10 +52,8 @@ import {
   MOCK_BLOCK_NUMBER,
   MOCK_DAPP_SUBJECT_METADATA,
   MOCK_DAPPS_RPC_ORIGINS_PERMISSION,
-  MOCK_NAMESPACES,
   MOCK_RPC_ORIGINS_PERMISSION,
   MOCK_SNAP_SUBJECT_METADATA,
-  PERSISTED_MOCK_KEYRING_SNAP,
   sleep,
   loopbackDetect,
   LoopbackLocation,
@@ -2523,7 +2521,7 @@ describe('SnapController', () => {
           [MOCK_SNAP_ID]: {},
         }),
       ).rejects.toThrow(
-        'A snap must request at least one of the following permissions: endowment:rpc, endowment:keyring, endowment:transaction-insight, endowment:cronjob.',
+        'A snap must request at least one of the following permissions: endowment:rpc, endowment:transaction-insight, endowment:cronjob.',
       );
 
       controller.destroy();
@@ -2687,8 +2685,15 @@ describe('SnapController', () => {
     });
 
     it('maps endowment permission caveats to the proper format', async () => {
-      const keyringSnap = PERSISTED_MOCK_KEYRING_SNAP;
-      const { manifest } = keyringSnap;
+      const initialPermissions = {
+        [handlerEndowments.onRpcRequest]: { snaps: false, dapps: true },
+      };
+      const { manifest, sourceCode } = getSnapFiles({
+        manifest: getSnapManifest({
+          version: '1.1.0' as SemVerVersion,
+          initialPermissions,
+        }),
+      });
 
       const messenger = getSnapControllerMessenger();
       const snapController = getSnapController(
@@ -2696,16 +2701,7 @@ describe('SnapController', () => {
           messenger,
           detectSnapLocation: loopbackDetect({
             manifest,
-            files: [
-              new VirtualFile({
-                value: keyringSnap.sourceCode,
-                path: manifest.source.location.npm.filePath,
-              }),
-              new VirtualFile({
-                value: DEFAULT_SNAP_ICON,
-                path: manifest.source.location.npm.iconPath,
-              }),
-            ],
+            files: [sourceCode],
           }),
         }),
       );
@@ -2715,8 +2711,11 @@ describe('SnapController', () => {
       });
 
       const caveat = {
-        type: SnapCaveatType.SnapKeyring,
-        value: { namespaces: MOCK_NAMESPACES },
+        type: SnapCaveatType.RpcOrigin,
+        value: {
+          dapps: true,
+          snaps: false,
+        },
       };
 
       expect(messenger.call).toHaveBeenNthCalledWith(
@@ -2744,7 +2743,7 @@ describe('SnapController', () => {
           requestState: {
             loading: false,
             permissions: {
-              [SnapEndowments.Keyring]: {
+              [SnapEndowments.Rpc]: {
                 caveats: [caveat],
               },
             },
@@ -2757,7 +2756,7 @@ describe('SnapController', () => {
         'PermissionController:grantPermissions',
         {
           approvedPermissions: {
-            [SnapEndowments.Keyring]: {
+            [SnapEndowments.Rpc]: {
               caveats: [caveat],
             },
           },

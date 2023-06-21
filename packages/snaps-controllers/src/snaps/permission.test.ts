@@ -28,18 +28,6 @@ describe('buildSnapEndowmentSpecifications', () => {
           ],
           "targetName": "endowment:ethereum-provider",
         },
-        "endowment:keyring": {
-          "allowedCaveats": [
-            "snapKeyring",
-          ],
-          "endowmentGetter": [Function],
-          "permissionType": "Endowment",
-          "subjectTypes": [
-            "snap",
-          ],
-          "targetName": "endowment:keyring",
-          "validator": [Function],
-        },
         "endowment:long-running": {
           "allowedCaveats": null,
           "endowmentGetter": [Function],

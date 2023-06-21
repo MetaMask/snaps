@@ -2,7 +2,7 @@ import { GenericPermissionController } from '@metamask/permission-controller';
 import { endowmentPermissionBuilders } from '@metamask/snaps-controllers';
 import { DEFAULT_ENDOWMENTS } from '@metamask/snaps-utils';
 
-export const ExcludedSnapEndowments = Object.freeze(['endowment:keyring']);
+export const ExcludedSnapEndowments = Object.freeze([]);
 
 // Copied from the extension
 /**
