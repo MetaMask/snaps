@@ -13,17 +13,20 @@
       "require": "./dist/cjs/index.js",
       "types": "./dist/types/index.d.ts"
     },
-    "./dist/services": {
-      "browser": {
-        "import": "./dist/esm/services/browser.js",
-        "require": "./dist/cjs/services/browser.js"
-      }
+    "./dist/cjs/services": {
+      "default": "./dist/cjs/services/index.js",
+      "browser": "./dist/cjs/services/browser.js"
+    },
+    "./dist/esm/services": {
+      "default": "./dist/esm/services/index.js",
+      "browser": "./dist/esm/services/browser.js"
     }
   },
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "browser": {
-    "./dist/services": "./dist/services/browser.js"
+    "./dist/cjs/services": "./dist/cjs/services/browser.js",
+    "./dist/esm/services": "./dist/esm/services/browser.js"
   },
   "types": "dist/types/index.d.ts",
   "files": [
