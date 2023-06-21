@@ -1,22 +1,12 @@
 import {
-  JsonRpcRequestStruct,
-  AssertionErrorConstructor,
-  assertStruct,
-} from '@metamask/utils';
-import {
   array,
   Infer,
   is,
   object,
   optional,
   pattern,
-  record,
   size,
   string,
-  omit,
-  assign,
-  partial,
-  pick,
 } from 'superstruct';
 
 export const CHAIN_ID_REGEX =
@@ -118,61 +108,11 @@ export const NamespaceStruct = object({
 });
 export type Namespace = Infer<typeof NamespaceStruct>;
 
-export const RequestNamespaceStruct = assign(
-  omit(NamespaceStruct, ['chains']),
-  object({ chains: array(ChainIdStruct) }),
-);
-export type RequestNamespace = Infer<typeof RequestNamespaceStruct>;
-
-export const SessionNamespaceStruct = assign(
-  RequestNamespaceStruct,
-  object({ accounts: array(AccountIdStruct) }),
-);
-export type SessionNamespace = Infer<typeof SessionNamespaceStruct>;
-
 /**
  * A CAIP-2 namespace, i.e., the first part of a chain ID.
  */
 export const NamespaceIdStruct = pattern(string(), /^[-a-z0-9]{3,8}$/u);
 export type NamespaceId = Infer<typeof NamespaceIdStruct>;
-
-/**
- * An object mapping CAIP-2 namespaces to their values.
- */
-export const NamespacesStruct = record(NamespaceIdStruct, NamespaceStruct);
-export type Namespaces = Infer<typeof NamespacesStruct>;
-
-export const SessionStruct = object({
-  namespaces: record(NamespaceIdStruct, SessionNamespaceStruct),
-});
-export type Session = Infer<typeof SessionStruct>;
-
-/**
- * Asserts that the given value is a valid {@link Session}.
- *
- * @param value - The value to assert.
- * @throws If the value is not a valid {@link Session}.
- */
-export function assertIsSession(value: unknown): asserts value is Session {
-  assertStruct(value, SessionStruct, 'Invalid session');
-}
-
-export const ConnectArgumentsStruct = object({
-  requiredNamespaces: record(NamespaceIdStruct, RequestNamespaceStruct),
-});
-export type ConnectArguments = Infer<typeof ConnectArgumentsStruct>;
-
-export const RequestArgumentsStruct = assign(
-  partial(pick(JsonRpcRequestStruct, ['id', 'jsonrpc'])),
-  omit(JsonRpcRequestStruct, ['id', 'jsonrpc']),
-);
-export type RequestArguments = Infer<typeof RequestArgumentsStruct>;
-
-export const MultiChainRequestStruct = object({
-  chainId: ChainIdStruct,
-  request: RequestArgumentsStruct,
-});
-export type MultiChainRequest = Infer<typeof MultiChainRequestStruct>;
 
 /**
  * Check if the given value is a CAIP-2 namespace ID.
@@ -215,52 +155,6 @@ export function isAccountIdArray(value: unknown): value is AccountId[] {
 }
 
 /**
- * Check if the given value is a {@link ConnectArguments} object.
- *
- * @param value - The value to check.
- * @returns Whether the value is a valid {@link ConnectArguments} object.
- */
-export function isConnectArguments(value: unknown): value is ConnectArguments {
-  return is(value, ConnectArgumentsStruct);
-}
-
-/**
- * Assert that the given value is a {@link ConnectArguments} object.
- *
- * @param value - The value to check.
- * @throws If the value is not a valid {@link ConnectArguments} object.
- */
-export function assertIsConnectArguments(
-  value: unknown,
-): asserts value is ConnectArguments {
-  assertStruct(value, ConnectArgumentsStruct, 'Invalid connect arguments');
-}
-
-/**
- * Check if the given value is a {@link MultiChainRequest} object.
- *
- * @param value - The value to check.
- * @returns Whether the value is a valid {@link MultiChainRequest} object.
- */
-export function isMultiChainRequest(
-  value: unknown,
-): value is MultiChainRequest {
-  return is(value, MultiChainRequestStruct);
-}
-
-/**
- * Assert that the given value is a {@link MultiChainRequest} object.
- *
- * @param value - The value to check.
- * @throws If the value is not a valid {@link MultiChainRequest} object.
- */
-export function assertIsMultiChainRequest(
-  value: unknown,
-): asserts value is MultiChainRequest {
-  assertStruct(value, MultiChainRequestStruct, 'Invalid request arguments');
-}
-
-/**
  * Check if a value is a {@link Namespace}.
  *
  * @param value - The value to validate.
@@ -268,35 +162,4 @@ export function assertIsMultiChainRequest(
  */
 export function isNamespace(value: unknown): value is Namespace {
   return is(value, NamespaceStruct);
-}
-
-/**
- * Check if a value is an object containing {@link Namespace}s.
- *
- * @param value - The value to validate.
- * @returns True if the value is a valid object containing namespaces.
- */
-export function isNamespacesObject(value: unknown): value is Namespaces {
-  return is(value, NamespacesStruct);
-}
-
-/**
- * Assert that the given value is a {@link Namespaces} object.
- *
- * @param value - The value to check.
- * @param ErrorWrapper - The error wrapper to use. Defaults to
- * {@link AssertionError}.
- * @throws If the value is not a valid {@link Namespaces} object.
- */
-export function assertIsNamespacesObject(
-  value: unknown,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  ErrorWrapper?: AssertionErrorConstructor,
-): asserts value is Namespaces {
-  assertStruct(
-    value,
-    NamespacesStruct,
-    'Invalid namespaces object',
-    ErrorWrapper,
-  );
 }

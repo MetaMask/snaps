@@ -16,12 +16,8 @@ export type { SnapsGlobalObject } from '@metamask/rpc-methods';
 export type {
   AccountId,
   ChainId,
-  KeyringEvent,
-  KeyringRequest,
   OnCronjobHandler,
   OnRpcRequestHandler,
   OnTransactionHandler,
   OnTransactionResponse,
-  RequestArguments,
-  SnapKeyring,
 } from '@metamask/snaps-utils';

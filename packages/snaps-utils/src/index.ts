@@ -16,7 +16,6 @@ export * from './logging';
 export * from './manifest';
 export * from './mock';
 export * from './namespace';
-export * from './notification';
 export * from './npm';
 export * from './path';
 export * from './post-process';
