@@ -148,6 +148,15 @@ gen_enforced_field(WorkspaceCwd, 'sideEffects', 'false') :-
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
 
+% Dependencies must have preview scripts.
+gen_enforced_field(WorkspaceCwd, 'scripts.prepare-manifest:preview', '../../scripts/prepare-preview-manifest.sh') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  \+ is_example(WorkspaceCwd),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'scripts.publish:preview', 'yarn npm publish --tag preview') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+
 % Ensure all examples have the same scripts.
 gen_enforced_field(WorkspaceCwd, 'scripts.build', 'mm-snap build') :-
   is_example(WorkspaceCwd),
@@ -184,6 +193,11 @@ gen_enforced_field(WorkspaceCwd, 'scripts.lint:misc', 'prettier --no-error-on-un
   is_nested_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'scripts.lint:changelog', 'yarn auto-changelog validate') :-
   is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.prepare-manifest:preview', '../../../../scripts/prepare-preview-manifest.sh') :-
+  is_example(WorkspaceCwd),
+  \+ is_nested_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.prepare-manifest:preview', '../../../../../../scripts/prepare-preview-manifest.sh') :-
+  is_nested_example(WorkspaceCwd).
 
 % Ensure all examples have the same `main` and `types` fields.
 gen_enforced_field(WorkspaceCwd, 'main', 'dist/bundle.js') :-
