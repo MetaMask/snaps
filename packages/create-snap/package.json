@@ -30,7 +30,9 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "publish:package": "../../scripts/publish-package.sh",
-    "lint:ci": "yarn lint"
+    "lint:ci": "yarn lint",
+    "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
+    "publish:preview": "yarn npm publish --tag preview"
   },
   "dependencies": {
     "@babel/core": "^7.20.12",

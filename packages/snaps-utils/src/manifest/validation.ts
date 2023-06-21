@@ -30,7 +30,6 @@ import { isEqual } from '../array';
 import { CronjobSpecificationArrayStruct } from '../cronjob';
 import { SIP_6_MAGIC_VALUE, STATE_ENCRYPTION_MAGIC_VALUE } from '../entropy';
 import { RpcOriginsStruct } from '../json-rpc';
-import { NamespacesStruct } from '../namespace';
 import { SnapIdStruct } from '../snaps';
 import { NameStruct, NpmSnapFileNames } from '../types';
 
@@ -166,11 +165,6 @@ export const PermissionsStruct = type({
     ),
   ),
   snap_getEntropy: optional(object({})),
-  'endowment:keyring': optional(
-    object({
-      namespaces: NamespacesStruct,
-    }),
-  ),
   wallet_snap: optional(SnapIdsStruct),
 });
 /* eslint-enable @typescript-eslint/naming-convention */

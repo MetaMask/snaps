@@ -10,11 +10,6 @@ export enum SnapCaveatType {
   PermittedCoinTypes = 'permittedCoinTypes',
 
   /**
-   * Permission to use the Snap keyring API.
-   */
-  SnapKeyring = 'snapKeyring',
-
-  /**
    * Caveat specifying a snap cronjob.
    */
   SnapCronjob = 'snapCronjob',
