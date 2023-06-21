@@ -1,4 +1,5 @@
 import { Image, PropsOf, useColorMode } from '@chakra-ui/react';
+import { hasProperty } from '@metamask/utils';
 import { forwardRef, ForwardRefExoticComponent } from 'react';
 
 import alertIcon from '../assets/icons/alert.svg';
@@ -203,7 +204,9 @@ export const Icon: ForwardRefExoticComponent<IconProps> = forwardRef(
 
     const iconMetadata = DEFAULT_ICONS[icon];
     const defaultSrc = iconMetadata.src;
-    const darkSrc = (iconMetadata as any).srcDark ?? iconMetadata.src;
+    const darkSrc = hasProperty(iconMetadata, 'srcDark')
+      ? iconMetadata.srcDark
+      : iconMetadata.src;
 
     const src = colorMode === 'light' ? defaultSrc : darkSrc;
 
