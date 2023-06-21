@@ -2688,7 +2688,7 @@ describe('SnapController', () => {
       const initialPermissions = {
         [handlerEndowments.onRpcRequest]: { snaps: false, dapps: true },
       };
-      const { manifest, sourceCode } = getSnapFiles({
+      const { manifest, sourceCode, svgIcon } = getSnapFiles({
         manifest: getSnapManifest({
           version: '1.1.0' as SemVerVersion,
           initialPermissions,
@@ -2701,7 +2701,7 @@ describe('SnapController', () => {
           messenger,
           detectSnapLocation: loopbackDetect({
             manifest,
-            files: [sourceCode],
+            files: [sourceCode, svgIcon],
           }),
         }),
       );
