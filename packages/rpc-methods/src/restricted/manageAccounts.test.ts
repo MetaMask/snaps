@@ -158,11 +158,10 @@ describe('manageAccountsImplementation', () => {
     });
 
     expect(createAccountSpy).toHaveBeenCalledTimes(1);
-    expect(createAccountSpy).toHaveBeenCalledWith(
-      mockSnapId,
-      ['mock-method', { accountId: mockCAIP10Account }],
-      saveSnapKeyring,
-    );
+    expect(createAccountSpy).toHaveBeenCalledWith(mockSnapId, [
+      'mock-method',
+      { accountId: mockCAIP10Account },
+    ]);
     expect(requestResponse).toBe(true);
     createAccountSpy.mockClear();
   });
