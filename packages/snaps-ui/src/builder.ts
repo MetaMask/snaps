@@ -12,7 +12,6 @@ import {
   TextStruct,
   ButtonStruct,
   InputStruct,
-  LabelStruct,
   FormStruct,
 } from './nodes';
 
@@ -205,7 +204,6 @@ export const button = createBuilder(NodeType.Button, ButtonStruct, [
   'value',
   'variant',
   'name',
-  'form',
   'buttonType',
 ]);
 
@@ -214,11 +212,6 @@ export const input = createBuilder(NodeType.Input, InputStruct, [
   'name',
   'inputType',
   'placeholder',
-]);
-
-export const label = createBuilder(NodeType.Label, LabelStruct, [
-  'value',
-  'for',
 ]);
 
 export const form = createBuilder(NodeType.Form, FormStruct, [

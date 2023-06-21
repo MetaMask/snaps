@@ -1,7 +1,6 @@
 import {
   array,
   assign,
-  defaulted,
   enums,
   Infer,
   lazy,
@@ -65,7 +64,6 @@ export enum NodeType {
   Spinner = 'spinner',
   Text = 'text',
   Button = 'button',
-  Label = 'label',
   Input = 'input',
   Form = 'Form',
 }
@@ -177,16 +175,11 @@ export const ButtonStruct = assign(
   LiteralStruct,
   object({
     type: literal(NodeType.Button),
-    variant: defaulted(
-      optional(enums([ButtonVariants.Primary, ButtonVariants.Secondary])),
-      ButtonVariants.Primary,
-    ),
-    form: optional(string()),
-    buttonType: defaulted(
-      optional(enums([ButtonType.Button, ButtonType.Submit])),
-      ButtonType.Button,
-    ),
     value: string(),
+    variant: optional(
+      enums([ButtonVariants.Primary, ButtonVariants.Secondary]),
+    ),
+    buttonType: optional(enums([ButtonType.Button, ButtonType.Submit])),
     name: optional(string()),
   }),
 );
@@ -221,39 +214,22 @@ export const InputStruct = assign(
     type: literal(NodeType.Input),
     value: optional(string()),
     name: string(),
-    inputType: defaulted(
-      optional(
-        enums([
-          InputTypes.Text,
-          InputTypes.Password,
-          InputTypes.Number,
-          InputTypes.Search,
-        ]),
-      ),
-      InputTypes.Text,
+    inputType: optional(
+      enums([
+        InputTypes.Text,
+        InputTypes.Password,
+        InputTypes.Number,
+        InputTypes.Search,
+      ]),
     ),
     placeholder: optional(string()),
+    label: optional(string()),
   }),
 );
 
 export type Input = Infer<typeof InputStruct>;
 
-export const LabelStruct = assign(
-  LiteralStruct,
-  object({
-    type: literal(NodeType.Label),
-    value: string(),
-    for: string(),
-  }),
-);
-
-export type Label = Infer<typeof LabelStruct>;
-
-export const FormComponentStruct = union([
-  LabelStruct,
-  InputStruct,
-  ButtonStruct,
-]);
+export const FormComponentStruct = union([InputStruct, ButtonStruct]);
 
 export const FormStruct = assign(
   NodeStruct,
@@ -275,7 +251,6 @@ export const ComponentStruct = union([
   TextStruct,
   ButtonStruct,
   InputStruct,
-  LabelStruct,
   FormStruct,
 ]);
 
