@@ -354,21 +354,6 @@ export function isCaipChainId(chainId: unknown): chainId is string {
 }
 
 /**
- * Typeguard to ensure an account follows the CAIP-10 standard.
- *
- * @param caip10Account - The account being tested.
- * @returns `true` if the value is a valid CAIP-10 account, and `false` otherwise.
- */
-export function isCaipAccount(caip10Account: unknown): caip10Account is string {
-  return (
-    typeof caip10Account === 'string' &&
-    /^(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-a-zA-Z0-9]{1,32}):(?<address>[-.%a-zA-Z0-9]{1,128})$/u.test(
-      caip10Account,
-    )
-  );
-}
-
-/**
  * Utility function to check if an origin has permission (and caveat) for a particular snap.
  *
  * @param permissions - An origin's permissions object.
