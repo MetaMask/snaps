@@ -154,12 +154,12 @@ describe('manageAccountsImplementation', () => {
       context: {
         origin: mockSnapId,
       },
-      params: ['mock-method', { accountId: mockCAIP10Account }],
+      params: ['delete', { accountId: mockCAIP10Account }],
     });
 
     expect(createAccountSpy).toHaveBeenCalledTimes(1);
     expect(createAccountSpy).toHaveBeenCalledWith(mockSnapId, [
-      'mock-method',
+      'delete',
       { accountId: mockCAIP10Account },
     ]);
     expect(requestResponse).toBe(true);

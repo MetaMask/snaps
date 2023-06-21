@@ -117,7 +117,8 @@ export function manageAccountsImplementation({
     // eslint-disable-next-line no-console
     console.log('Debug:', { result });
     // @ts-expect-error error expected
-    if (['update', 'create', 'delete'].includes(params.method)) {
+    const [method] = params;
+    if (['update', 'create', 'delete'].includes(method)) {
       // eslint-disable-next-line no-console
       console.log('Debug: Execute saveSnapKeyring');
       await saveSnapKeyring();
