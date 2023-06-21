@@ -148,7 +148,6 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
           "methodImplementation": [Function],
           "permissionType": "RestrictedMethod",
           "subjectTypes": [
-            "internal",
             "snap",
           ],
           "targetName": "snap_manageAccounts",
