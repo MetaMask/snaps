@@ -18,12 +18,19 @@ shorthash="$1"
 # of the version. Technically we'd want to bump the non-prerelease portion as
 # well if we wanted this to be SemVer-compliant, but it was simpler not to.
 # This is just for testing, it doesn't need to strictly follow SemVer.
-jq --raw-output ".version |= split(\"-\")[0] + \"-preview.${shorthash}\"" ./package.json > temp.json
+jq --raw-output --arg hash "$shorthash" '.version |= split("-")[0] + "-preview.\($hash)"' ./package.json |
+
+# The workspace dependencies are updated to point to the exact preview build
+# version, so that it does not try to resolve a different version from the
+# registry.
+jq --raw-output 'if has("devDependencies") then .devDependencies |= map_values(if . == "workspace:^" then "workspace:*" else . end) else . end' |
+jq --raw-output 'if has("dependencies") then .dependencies |= map_values(if . == "workspace:^" then "workspace:*" else . end) else . end' |
 
 # The registry is updated here because the manifest publish config always takes
 # precedence, and cannot be overwritten from the command-line.
-jq --raw-output ".publishConfig.registry = \"https://npm.pkg.github.com\"" ./temp.json > package.json
+jq --raw-output ".publishConfig.registry = \"https://npm.pkg.github.com\"" > temp.json
 
 # jq does not support in-place modification of files, so a temporary file is
-# used to store the result of the first operation.
-rm temp.json
+# used to store the result of the first operation. The original file is then
+# overwritten with the temporary file.
+mv temp.json package.json
