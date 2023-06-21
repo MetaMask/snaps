@@ -16,7 +16,8 @@
     ".*__tests?__.*",
     ".*test-utils.*",
     ".*\\.test\\.?.*\\.tsx?",
-    ".*\\.d\\.tsx?"
+    ".*\\.d\\.tsx?",
+    ".*eval-worker\\.js"
   ],
   "sourceMaps": true
 }
