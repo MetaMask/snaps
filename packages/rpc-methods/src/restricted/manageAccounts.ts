@@ -15,12 +15,7 @@ export type ManageAccountsMethodHooks = {
    * Gets the snap keyring implementation.
    */
   getSnapKeyring: (snapOrigin: string) => Promise<{
-    handleKeyringSnapMessage: (
-      snapId: string,
-      message: any,
-      // eslint-disable-next-line @typescript-eslint/ban-types
-      saveSnapKeyring: Function,
-    ) => Promise<Json>;
+    handleKeyringSnapMessage: (snapId: string, message: any) => Promise<Json>;
   }>;
 
   /**
@@ -29,7 +24,7 @@ export type ManageAccountsMethodHooks = {
    * If an account was removed the address of the account must be passed to
    * update the UI.
    */
-  saveSnapKeyring: (removedAddress?: string) => Promise<void>;
+  saveSnapKeyring: () => Promise<void>;
 };
 
 type ManageAccountsSpecificationBuilderOptions = {
@@ -115,11 +110,12 @@ export function manageAccountsImplementation({
     validateParams(params);
 
     const keyring = await getSnapKeyring(origin);
-    return await keyring.handleKeyringSnapMessage(
-      origin,
-      params,
-      saveSnapKeyring,
-    );
+    const result = await keyring.handleKeyringSnapMessage(origin, params);
+    if (result) {
+      await saveSnapKeyring();
+    }
+
+    return result;
   };
 }
 
