@@ -78,6 +78,3 @@ packages/examples/examples/webpack/index.html
 
 # Ubuntu package files
 .deb
-
-# Vendor files
-packages/snaps-simulator/vendor/
