@@ -20,8 +20,8 @@ export const Delineator: FunctionComponent<DelineatorProps> = ({
       borderBottom="1px solid"
       borderColor="border.default"
     >
-      <Icon icon="snap" width="15px" marginRight="1" />
-      <Text fontFamily="custom" fontSize="xx-small">
+      <Icon icon="snap" width="16px" marginRight="1" />
+      <Text fontFamily="custom" fontSize="xs">
         Content from {snapName}
       </Text>
     </Flex>

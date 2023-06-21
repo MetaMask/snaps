@@ -18,6 +18,7 @@ import {
   InputRightAddon,
   InputGroup,
   Select,
+  useColorMode,
 } from '@chakra-ui/react';
 import {
   fetchNpmMetadata,
@@ -49,6 +50,8 @@ export const Configuration = () => {
   const srp = useSelector(getSrp);
   const sesEnabled = useSelector(getSesEnabled);
   const isOpen = useSelector(getOpen);
+
+  const { colorMode, toggleColorMode } = useColorMode();
 
   const [snapIdInput, setSnapIdInput] = useState(stripSnapPrefix(snapUrl));
   const [snapIdPrefix, setSnapIdPrefix] = useState(
@@ -122,6 +125,10 @@ export const Configuration = () => {
   //   dispatch(setSesEnabled(!sesEnabled));
   // };
 
+  const handleDarkModeToggle = () => {
+    toggleColorMode();
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={handleClose}>
       <ModalOverlay />
@@ -137,7 +144,11 @@ export const Configuration = () => {
           <FormControl>
             <FormLabel>Snap location</FormLabel>
             <InputGroup>
-              <InputLeftAddon px="0" bg="white" borderColor="border.default">
+              <InputLeftAddon
+                px="0"
+                bg="chakra-body-bg"
+                borderColor="border.default"
+              >
                 <Select
                   border="none"
                   onChange={handleSnapPrefixChange}
@@ -154,7 +165,11 @@ export const Configuration = () => {
                 data-testid="snap-id-input"
               />
               {isNPM && npmVersions.length > 0 && (
-                <InputRightAddon px="0" bg="white" borderColor="border.default">
+                <InputRightAddon
+                  px="0"
+                  bg="chakra-body-bg"
+                  borderColor="border.default"
+                >
                   <Select
                     border="none"
                     onChange={handleNpmVersionChange}
@@ -179,7 +194,7 @@ export const Configuration = () => {
               // onChange={handleSrpChange}
             />
 
-            <HStack alignItems="center" justifyContent="space-between">
+            <HStack alignItems="center" justifyContent="space-between" mb="4">
               <FormLabel mb="0" htmlFor="ses-switch">
                 Secure EcmaScript (SES)
               </FormLabel>
@@ -192,11 +207,25 @@ export const Configuration = () => {
                 colorScheme="gray"
               />
             </HStack>
+
+            <HStack alignItems="center" justifyContent="space-between">
+              <FormLabel mb="0" htmlFor="darkmode-switch">
+                Dark Mode
+              </FormLabel>
+              <Switch
+                id="darkmode-switch"
+                size="lg"
+                isChecked={colorMode === 'dark'}
+                onChange={handleDarkModeToggle}
+                colorScheme="gray"
+              />
+            </HStack>
           </FormControl>
         </ModalBody>
         <Divider my="4" />
         <ModalFooter pb="6" pt="2">
           <Button
+            variant="primary"
             fontFamily="default"
             fontWeight="semibold"
             fontSize="sm"
