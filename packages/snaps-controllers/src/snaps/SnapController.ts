@@ -734,6 +734,8 @@ export class SnapController extends BaseController<
         },
       },
     });
+    // eslint-disable-next-line no-console
+    console.log('New SnapsController');
 
     this.#closeAllConnections = closeAllConnections;
     this.#environmentEndowmentPermissions = environmentEndowmentPermissions;
