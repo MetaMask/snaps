@@ -16,7 +16,7 @@ import {
   record,
 } from 'superstruct';
 
-type Message = { method: string; params: Json };
+type Message = Infer<typeof SnapMessageStruct>;
 
 const SnapMessageStruct = object({
   method: string(),
