@@ -19,8 +19,7 @@ class SnapKeyringMock {
   handleKeyringSnapMessage = async (
     _origin: string,
     _params: any,
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    _saveSnapKeyring: Function,
+    _saveSnapKeyring: () => void,
   ): Promise<any> => {
     return true;
   };
