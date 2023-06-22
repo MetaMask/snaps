@@ -62,13 +62,7 @@ export const TemplateComponentList: FunctionComponent<ComponentsListProps> = ({
   incrementId,
 }) => (
   <Box marginBottom="4">
-    <Text
-      fontSize="xs"
-      fontWeight="600"
-      lineHeight="133%"
-      color="text.alternative"
-      marginBottom="1"
-    >
+    <Text fontSize="xs" fontWeight="600" lineHeight="133%" marginBottom="1">
       Components
     </Text>
     <Flex as={List} gap="2">

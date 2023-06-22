@@ -7,7 +7,7 @@ export const ConsoleContent = () => {
   const entries = useSelector(getConsoleEntries);
 
   const colors = {
-    [ConsoleEntryType.Log]: 'text.alternative',
+    [ConsoleEntryType.Log]: 'text.console',
     [ConsoleEntryType.Error]: 'text.error',
   };
 
