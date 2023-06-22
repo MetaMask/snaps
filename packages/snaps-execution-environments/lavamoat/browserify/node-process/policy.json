@@ -83,7 +83,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>semver": true,
+        "@swc/cli>semver": true,
         "buffer": true,
         "eslint>debug": true,
         "superstruct": true
@@ -251,24 +251,24 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>semver": true,
+        "@swc/cli>semver": true,
         "buffer": true,
         "eslint>debug": true,
         "superstruct": true
       }
     },
-    "@metamask/utils>semver": {
+    "@swc/cli>semver": {
       "globals": {
         "console.error": true,
         "process": true
       },
       "packages": {
-        "@metamask/utils>semver>lru-cache": true
+        "@swc/cli>semver>lru-cache": true
       }
     },
-    "@metamask/utils>semver>lru-cache": {
+    "@swc/cli>semver>lru-cache": {
       "packages": {
-        "@metamask/utils>semver>lru-cache>yallist": true
+        "@swc/cli>semver>lru-cache>yallist": true
       }
     },
     "@wdio/mocha-framework>mocha>supports-color": {
