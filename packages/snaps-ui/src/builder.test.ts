@@ -2,12 +2,14 @@ import {
   button,
   copyable,
   divider,
+  form,
   heading,
+  input,
   panel,
   spinner,
   text,
 } from './builder';
-import { ButtonVariants, NodeType } from './nodes';
+import { ButtonTypes, ButtonVariants, InputTypes, NodeType } from './nodes';
 
 describe('copyable', () => {
   it('creates a copyable component', () => {
@@ -132,30 +134,6 @@ describe('panel', () => {
         },
       ],
     });
-
-    expect(
-      panel({
-        children: [
-          text({ value: 'foo' }),
-          button({
-            variant: ButtonVariants.Primary,
-            value: 'bar',
-            name: 'bar',
-          }),
-        ],
-      }),
-    ).toStrictEqual({
-      type: NodeType.Panel,
-      children: [
-        { type: NodeType.Text, value: 'foo' },
-        {
-          type: NodeType.Button,
-          variant: ButtonVariants.Primary,
-          value: 'bar',
-          name: 'bar',
-        },
-      ],
-    });
   });
 
   it('creates a panel component using the shorthand form', () => {
@@ -258,10 +236,12 @@ describe('button', () => {
         variant: ButtonVariants.Primary,
         value: 'Hello, world!',
         name: 'myButton',
+        buttonType: ButtonTypes.Button,
       }),
     ).toStrictEqual({
       type: NodeType.Button,
       variant: ButtonVariants.Primary,
+      buttonType: ButtonTypes.Button,
       name: 'myButton',
       value: 'Hello, world!',
     });
@@ -275,19 +255,24 @@ describe('button', () => {
       value: 'Hello, world!',
     });
   });
-
-  it('creates a text component using the shorthand form', () => {
+  it('creates a button component using the shorthand form', () => {
     expect(
-      button(ButtonVariants.Primary, 'Hello, world!', 'myButton'),
+      button(
+        'Hello, world!',
+        ButtonTypes.Button,
+        'myButton',
+        ButtonVariants.Primary,
+      ),
     ).toStrictEqual({
       type: NodeType.Button,
       value: 'Hello, world!',
+      buttonType: ButtonTypes.Button,
       variant: ButtonVariants.Primary,
       name: 'myButton',
     });
 
-    expect(text('foo bar')).toStrictEqual({
-      type: NodeType.Text,
+    expect(button('foo bar')).toStrictEqual({
+      type: NodeType.Button,
       value: 'foo bar',
     });
   });
@@ -301,6 +286,111 @@ describe('button', () => {
     // @ts-expect-error - Invalid args.
     expect(() => button({})).toThrow(
       'Invalid button component: At path: value -- Expected a string, but received: undefined.',
+    );
+  });
+});
+
+describe('Input', () => {
+  it('creates an input component', () => {
+    expect(
+      input({
+        value: 'Hello, world!',
+        name: 'myInput',
+        inputType: InputTypes.Text,
+        placeholder: 'Type here...',
+        label: 'Hello',
+      }),
+    ).toStrictEqual({
+      type: NodeType.Input,
+      value: 'Hello, world!',
+      name: 'myInput',
+      inputType: InputTypes.Text,
+      placeholder: 'Type here...',
+      label: 'Hello',
+    });
+
+    expect(
+      input({
+        name: 'myInput',
+      }),
+    ).toStrictEqual({
+      type: NodeType.Input,
+      name: 'myInput',
+    });
+  });
+  it('creates an input component using the shorthand form', () => {
+    expect(
+      input('myInput', InputTypes.Text, 'type here...', 'foo bar', 'input'),
+    ).toStrictEqual({
+      type: NodeType.Input,
+      inputType: InputTypes.Text,
+      placeholder: 'type here...',
+      value: 'foo bar',
+      name: 'myInput',
+      label: 'input',
+    });
+
+    expect(input('myInput')).toStrictEqual({
+      type: NodeType.Input,
+      name: 'myInput',
+    });
+  });
+
+  it('validates the args', () => {
+    // @ts-expect-error - Invalid args.
+    expect(() => input({ name: 'foo', bar: 'baz' })).toThrow(
+      'Invalid input component: At path: bar -- Expected a value of type `never`, but received: `"baz"`.',
+    );
+
+    // @ts-expect-error - Invalid args.
+    expect(() => input({})).toThrow(
+      'Invalid input component: At path: name -- Expected a string, but received: undefined.',
+    );
+  });
+});
+
+describe('Form', () => {
+  it('creates a form component', () => {
+    expect(
+      form({
+        name: 'myForm',
+        children: [input('myInput')],
+      }),
+    ).toStrictEqual({
+      type: NodeType.Form,
+      name: 'myForm',
+      children: [
+        {
+          type: NodeType.Input,
+          name: 'myInput',
+        },
+      ],
+    });
+  });
+  it('creates a form component using the shorthand form', () => {
+    expect(form('myForm', [input('myInput')])).toStrictEqual({
+      type: NodeType.Form,
+      name: 'myForm',
+      children: [
+        {
+          type: NodeType.Input,
+          name: 'myInput',
+        },
+      ],
+    });
+  });
+
+  it('validates the args', () => {
+    expect(() =>
+      // @ts-expect-error - Invalid args.
+      form({ name: 'foo', children: [input('myInput')], bar: 'baz' }),
+    ).toThrow(
+      'Invalid form component: At path: bar -- Expected a value of type `never`, but received: `"baz"`.',
+    );
+
+    // @ts-expect-error - Invalid args.
+    expect(() => form({})).toThrow(
+      'Invalid form component: At path: children -- Expected an array value, but received: undefined.',
     );
   });
 });

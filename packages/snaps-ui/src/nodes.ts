@@ -1,7 +1,6 @@
 import {
   array,
   assign,
-  enums,
   Infer,
   lazy,
   literal,
@@ -65,7 +64,7 @@ export enum NodeType {
   Text = 'text',
   Button = 'button',
   Input = 'input',
-  Form = 'Form',
+  Form = 'form',
 }
 
 export const CopyableStruct = assign(
@@ -166,7 +165,7 @@ export enum ButtonVariants {
   Secondary = 'secondary',
 }
 
-export enum ButtonType {
+export enum ButtonTypes {
   Button = 'button',
   Submit = 'submit',
 }
@@ -174,12 +173,17 @@ export enum ButtonType {
 export const ButtonStruct = assign(
   LiteralStruct,
   object({
-    type: literal(NodeType.Button),
+    type: optional(literal(NodeType.Button)),
     value: string(),
     variant: optional(
-      enums([ButtonVariants.Primary, ButtonVariants.Secondary]),
+      union([
+        literal(ButtonVariants.Primary),
+        literal(ButtonVariants.Secondary),
+      ]),
     ),
-    buttonType: optional(enums([ButtonType.Button, ButtonType.Submit])),
+    buttonType: optional(
+      union([literal(ButtonTypes.Button), literal(ButtonTypes.Submit)]),
+    ),
     name: optional(string()),
   }),
 );
@@ -215,11 +219,11 @@ export const InputStruct = assign(
     value: optional(string()),
     name: string(),
     inputType: optional(
-      enums([
-        InputTypes.Text,
-        InputTypes.Password,
-        InputTypes.Number,
-        InputTypes.Search,
+      union([
+        literal(InputTypes.Text),
+        literal(InputTypes.Password),
+        literal(InputTypes.Number),
+        literal(InputTypes.Search),
       ]),
     ),
     placeholder: optional(string()),
@@ -230,6 +234,8 @@ export const InputStruct = assign(
 export type Input = Infer<typeof InputStruct>;
 
 export const FormComponentStruct = union([InputStruct, ButtonStruct]);
+
+export type FormComponent = Infer<typeof FormComponentStruct>;
 
 export const FormStruct = assign(
   NodeStruct,

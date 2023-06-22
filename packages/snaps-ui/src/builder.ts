@@ -46,10 +46,13 @@ type NodeArrayType<Node extends Component, Keys extends (keyof Node)[]> = {
  * the type of the component from the given struct, and performs validation on
  * the created component.
  *
+ * This function will filter out the optional keys from the node if they are undefined so we can send it through JSON-RPC.
+ *
  * The returned function can handle the node arguments in two ways:
  * 1. As a single object, with the keys corresponding to the node's properties,
  * excluding the `type` property.
  * 2. As an array of arguments, with the order corresponding to the given keys.
+ *
  *
  * @param type - The type of the component to build.
  * @param struct - The struct to use to validate the component.
@@ -68,7 +71,18 @@ function createBuilder<
   return (...args: [Omit<Node, 'type'>] | NodeArrayType<Node, Keys> | []) => {
     // Node passed as a single object.
     if (args.length === 1 && isPlainObject(args[0])) {
-      const node = { ...args[0], type };
+      const rawNode = args[0];
+
+      const node = Object.keys(rawNode).reduce<Partial<Component>>(
+        (acc, key) => {
+          if (rawNode[key as keyof typeof rawNode] !== undefined) {
+            return { ...acc, [key]: rawNode[key as keyof typeof rawNode] };
+          }
+
+          return acc;
+        },
+        { type },
+      );
 
       // The user could be passing invalid values to the builder, so we need to
       // validate them as per the component's struct.
@@ -79,10 +93,13 @@ function createBuilder<
     // Node passed as an array of arguments.
     const node = keys.reduce<Partial<Component>>(
       (partialNode, key, index) => {
-        return {
-          ...partialNode,
-          [key]: args[index],
-        };
+        if (args[index] !== undefined) {
+          return {
+            ...partialNode,
+            [key]: args[index],
+          };
+        }
+        return partialNode;
       },
       { type },
     );
@@ -202,19 +219,20 @@ export const text = createBuilder(NodeType.Text, TextStruct, ['value']);
  */
 export const button = createBuilder(NodeType.Button, ButtonStruct, [
   'value',
-  'variant',
-  'name',
   'buttonType',
+  'name',
+  'variant',
 ]);
 
 export const input = createBuilder(NodeType.Input, InputStruct, [
-  'value',
   'name',
   'inputType',
   'placeholder',
+  'value',
+  'label',
 ]);
 
 export const form = createBuilder(NodeType.Form, FormStruct, [
-  'children',
   'name',
+  'children',
 ]);
