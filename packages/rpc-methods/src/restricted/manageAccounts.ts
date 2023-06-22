@@ -5,8 +5,9 @@ import {
   ValidPermissionSpecification,
   PermissionSpecificationBuilder,
 } from '@metamask/permission-controller';
-import { Json, NonEmptyArray } from '@metamask/utils';
+import { Json, JsonStruct, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
+import { assert, string, tuple } from 'superstruct';
 
 export const methodName = 'snap_manageAccounts';
 
@@ -109,18 +110,12 @@ export function manageAccountsImplementation({
 
     validateParams(params);
 
-    // eslint-disable-next-line no-console
-    console.log('Debug:', { options });
-
     const keyring = await getSnapKeyring(origin);
     const result = await keyring.handleKeyringSnapMessage(origin, params);
-    // eslint-disable-next-line no-console
-    console.log('Debug:', { result });
-    // @ts-expect-error error expected
+
+    assert(params, tuple([string(), JsonStruct]));
     const [method] = params;
     if (['update', 'create', 'delete'].includes(method)) {
-      // eslint-disable-next-line no-console
-      console.log('Debug: Execute saveSnapKeyring');
       await saveSnapKeyring();
     }
 
