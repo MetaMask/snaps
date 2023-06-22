@@ -173,7 +173,7 @@ export enum ButtonTypes {
 export const ButtonStruct = assign(
   LiteralStruct,
   object({
-    type: optional(literal(NodeType.Button)),
+    type: literal(NodeType.Button),
     value: string(),
     variant: optional(
       union([
