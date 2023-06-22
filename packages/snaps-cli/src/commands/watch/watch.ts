@@ -1,8 +1,5 @@
-import { resolve } from 'path';
-import WebpackDevServer from 'webpack-dev-server';
-
 import type { ProcessedConfig } from '../../config';
-import { getCompiler } from '../../utils';
+import { getServer } from '../../webpack';
 import { legacyWatch } from './legacy';
 
 /**
@@ -19,37 +16,10 @@ export async function watch(config: ProcessedConfig): Promise<void> {
     return await legacyWatch(config);
   }
 
-  const compiler = getCompiler(config, {
+  const server = getServer(config, {
     evaluate: false,
     watch: true,
   });
-
-  const server = new WebpackDevServer(
-    {
-      port: config.server.port,
-      static: {
-        directory: resolve(process.cwd(), config.server.root),
-        watch: true,
-        serveIndex: true,
-      },
-
-      devMiddleware: {
-        writeToDisk: true,
-      },
-
-      magicHtml: false,
-      hot: false,
-      liveReload: false,
-
-      client: {
-        logging: 'error',
-        overlay: false,
-        progress: false,
-        reconnect: false,
-      },
-    },
-    compiler,
-  );
 
   return await server.start();
 }

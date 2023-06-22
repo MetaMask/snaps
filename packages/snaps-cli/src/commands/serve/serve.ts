@@ -1,9 +1,5 @@
-import { logInfo } from '@metamask/snaps-utils';
-import { resolve } from 'path';
-import WebpackDevServer from 'webpack-dev-server';
-
 import { ProcessedConfig } from '../../config';
-import { getCompiler } from '../../utils';
+import { getServer } from '../../webpack';
 import { legacyServe } from './legacy';
 
 /**
@@ -12,40 +8,15 @@ import { legacyServe } from './legacy';
  *
  * @param config - The config object.
  */
-// eslint-disable-next-line consistent-return
 export async function serve(config: ProcessedConfig): Promise<void> {
   if (config.bundler === 'browserify') {
     return await legacyServe(config);
   }
 
-  const compiler = getCompiler(config, {
-    watch: false,
+  const server = getServer(config, {
     evaluate: false,
+    watch: false,
   });
 
-  const server = new WebpackDevServer(
-    {
-      port: config.server.port,
-      watchFiles: [],
-      hot: false,
-      liveReload: false,
-
-      devMiddleware: {
-        writeToDisk: true,
-      },
-
-      client: {
-        logging: 'error',
-        overlay: false,
-      },
-
-      static: {
-        directory: resolve(process.cwd(), config.server.root),
-      },
-    },
-    compiler,
-  );
-
-  await server.start();
-  logInfo(`Server listening on: http://localhost:${config.server.port}`);
+  return server.start();
 }

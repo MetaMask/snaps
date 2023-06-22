@@ -1,9 +1,11 @@
-import { logError, logInfo } from '@metamask/snaps-utils';
 import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
+import { builtinModules } from 'module';
 import TerserPlugin from 'terser-webpack-plugin';
-import { Compiler, Configuration, webpack } from 'webpack';
+import { Configuration, EnvironmentPlugin } from 'webpack';
 
 import { ProcessedWebpackConfig } from '../config';
+import { SnapsBuiltInResolver, SnapsWatchPlugin } from './plugins';
+import { getDevTool } from './utils';
 
 export type WebpackOptions = {
   /**
@@ -17,57 +19,6 @@ export type WebpackOptions = {
    */
   evaluate?: boolean;
 };
-
-export type WatchPluginOptions = {
-  /**
-   * The extra files to watch.
-   */
-  files?: string[];
-};
-
-export class WatchPlugin {
-  #options: WatchPluginOptions;
-
-  constructor(options: WatchPluginOptions) {
-    this.#options = options;
-  }
-
-  apply(compiler: Compiler) {
-    compiler.hooks.afterCompile.tapPromise(
-      'WatchPlugin',
-      async ({ fileDependencies }) => {
-        this.#options.files?.forEach(
-          fileDependencies.add.bind(fileDependencies),
-        );
-      },
-    );
-  }
-}
-
-/**
- * Get the Webpack devtool configuration based on the given snap config.
- *
- * - If `sourceMap` is `inline`, return `inline-source-map`.
- * - If `sourceMap` is `true`, return `source-map`.
- * - Otherwise, return `false`.
- *
- * @param config - The processed snap Webpack config.
- * @param config.sourceMap - Whether to generate source maps.
- * @returns The Webpack devtool configuration.
- */
-function getDevTool({
-  sourceMap,
-}: ProcessedWebpackConfig): Configuration['devtool'] {
-  if (sourceMap === 'inline') {
-    return 'inline-source-map';
-  }
-
-  if (sourceMap === true) {
-    return 'source-map';
-  }
-
-  return false;
-}
 
 /**
  * Get the default Webpack configuration. This is the configuration that will
@@ -89,7 +40,9 @@ function getDevTool({
  */
 export function getDefaultConfiguration(
   config: ProcessedWebpackConfig,
-  options: WebpackOptions = {},
+  options: WebpackOptions = {
+    evaluate: config.evaluate,
+  },
 ): Configuration {
   return {
     /**
@@ -282,6 +235,22 @@ export function getDefaultConfiguration(
        * files.
        */
       extensions: ['.js', '.ts'],
+
+      /**
+       * The fallback options. This tells Webpack how to handle imports that
+       * aren't resolved. By default, we set Node.js built-ins to `false`, so
+       * that they are ignored.
+       */
+      fallback: Object.fromEntries(builtinModules.map((name) => [name, false])),
+
+      /**
+       * The plugins to use. We use the {@link SnapsBuiltInResolver} to show
+       * warnings about using Node.js built-ins, when no fallback is specified.
+       */
+      plugins: [
+        config.plugins.builtInResolver &&
+          new SnapsBuiltInResolver(config.plugins.builtInResolver),
+      ],
     },
 
     /**
@@ -298,7 +267,7 @@ export function getDefaultConfiguration(
       new SnapsWebpackPlugin({
         manifestPath: config.manifest.path,
         writeManifest: config.manifest.update,
-        eval: options.evaluate ?? config.evaluate,
+        eval: options.evaluate,
       }),
 
       /**
@@ -306,9 +275,16 @@ export function getDefaultConfiguration(
        * for changes. This is useful for rebuilding the bundle when the
        * manifest file changes.
        */
-      new WatchPlugin({
+      new SnapsWatchPlugin({
         files: [config.manifest.path],
       }),
+
+      /**
+       * The `EnvironmentPlugin` is a Webpack plugin that adds environment
+       * variables to the bundle. We use it to add the `NODE_ENV` and `DEBUG`
+       * environment variables.
+       */
+      new EnvironmentPlugin(config.environment),
     ],
 
     /**
@@ -318,12 +294,11 @@ export function getDefaultConfiguration(
      */
     optimization: {
       /**
-       * The minimizer to use. We set it to use the `TerserPlugin`, which
-       * minifies the bundle using SWC.
+       * The minimizer to use. We set it to use the `TerserPlugin`.
        */
       minimizer: [
         new TerserPlugin({
-          minify: TerserPlugin.swcMinify,
+          parallel: true,
         }),
       ],
     },
@@ -342,46 +317,4 @@ export function getDefaultConfiguration(
       level: 'none',
     },
   };
-}
-
-/**
- * Get a Webpack compiler for the given config.
- *
- * @param config - The config object.
- * @param options - The Webpack options.
- * @returns The Webpack compiler.
- */
-export function getCompiler(
-  config: ProcessedWebpackConfig,
-  options?: WebpackOptions,
-) {
-  const baseWebpackConfig = getDefaultConfiguration(config, options);
-  const webpackConfig =
-    config.customizeWebpackConfig?.(baseWebpackConfig) ?? baseWebpackConfig;
-
-  const compiler = webpack(webpackConfig);
-  compiler.hooks.afterDone.tap('AfterCompilePlugin', (stats) => {
-    if (!stats) {
-      return;
-    }
-
-    const { modules, time, errors } = stats.toJson();
-    if (!modules || !time) {
-      logError('Compilation status unknown. Please check your config.');
-      process.exitCode = 1;
-      return;
-    }
-
-    if (errors?.length) {
-      logError(
-        `Compiled ${modules?.length} files in ${time}ms with ${errors?.length} errors.`,
-      );
-      process.exitCode = 1;
-      return;
-    }
-
-    logInfo(`Compiled ${modules?.length} files in ${time}ms.`);
-  });
-
-  return compiler;
 }

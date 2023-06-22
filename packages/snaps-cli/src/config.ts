@@ -20,9 +20,11 @@ import {
   number,
   object,
   optional,
+  record,
   string,
   type,
   union,
+  unknown,
 } from 'superstruct';
 import type { Configuration as WebpackConfiguration } from 'webpack';
 
@@ -286,6 +288,36 @@ export type SnapWebpackConfig = {
   };
 
   /**
+   * The environment variables to set when building the snap. These will be
+   * available in the snap as `process.env`. In addition to these environment
+   * variables, the following environment variables will always be set:
+   *
+   * - `NODE_DEBUG`: `false`
+   * - `NODE_ENV`: `'production'`
+   * - `DEBUG`: `false`
+   *
+   * Any environment variables specified here will override these defaults. You
+   * can also override any variables here by setting them in your shell when
+   * running the CLI.
+   */
+  environment?: Record<string, unknown>;
+
+  plugins?: {
+    /**
+     * Options for the {@link SnapsBuiltInResolver} plugin. If `false`, the
+     * plugin will be disabled.
+     */
+    builtInResolver?:
+      | {
+          /**
+           * The built-in modules to ignore when resolving modules.
+           */
+          ignore?: string[];
+        }
+      | false;
+  };
+
+  /**
    * A function to customize the Webpack configuration used to build the snap.
    * This function will be called with the default Webpack configuration, and
    * should return the modified configuration. If not specified, the default
@@ -426,6 +458,25 @@ export const SnapsWebpackConfigStruct = object({
     object({
       root: defaulted(string(), process.cwd()),
       port: defaulted(number(), 8081),
+    }),
+    {},
+  ),
+
+  environment: defaulted(record(string(), unknown()), {
+    NODE_DEBUG: false,
+    NODE_ENV: 'production',
+    DEBUG: false,
+  }),
+
+  plugins: defaulted(
+    object({
+      builtInResolver: defaulted(
+        union([
+          object({ ignore: defaulted(array(string()), []) }),
+          literal(false),
+        ]),
+        {},
+      ),
     }),
     {},
   ),

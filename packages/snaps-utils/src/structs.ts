@@ -28,7 +28,7 @@ import {
  * @returns The `superstruct` struct, which validates that the value is equal
  * to the literal value.
  */
-export function literal<Type extends string | number>(value: Type) {
+export function literal<Type extends string | number | boolean>(value: Type) {
   return define<Type>(
     JSON.stringify(value),
     superstructLiteral(value).validator,

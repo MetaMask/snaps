@@ -69,6 +69,7 @@
     "terser-webpack-plugin": "^5.3.9",
     "webpack": "^5.88.0",
     "webpack-dev-server": "^4.15.1",
+    "webpack-merge": "^5.9.0",
     "yargs": "^17.7.1",
     "yargs-parser": "^20.2.2"
   },

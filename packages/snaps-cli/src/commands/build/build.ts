@@ -1,7 +1,7 @@
 import { isFile } from '@metamask/snaps-utils';
 
 import { ProcessedConfig } from '../../config';
-import { getCompiler } from '../../utils';
+import { getCompiler } from '../../webpack';
 import { legacyBuild } from './legacy';
 
 /**
