@@ -3936,7 +3936,7 @@ __metadata:
     typescript: ~4.8.4
     yargs: ^17.7.1
   bin:
-    create-snap: dist/cjs/main.js
+    create-snap: ./dist/cjs/main.js
   languageName: unknown
   linkType: soft
 
