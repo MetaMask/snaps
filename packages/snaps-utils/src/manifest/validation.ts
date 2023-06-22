@@ -154,6 +154,7 @@ export const PermissionsStruct = type({
   // TODO: Remove
   snap_confirm: optional(object({})),
   snap_manageState: optional(object({})),
+  snap_manageAccounts: optional(object({})),
   snap_notify: optional(object({})),
   snap_getBip32Entropy: optional(SnapGetBip32EntropyPermissionsStruct),
   snap_getBip32PublicKey: optional(SnapGetBip32EntropyPermissionsStruct),
