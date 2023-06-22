@@ -14,14 +14,15 @@ import {
   union,
   array,
   record,
+  Infer,
 } from 'superstruct';
-
-type Message = Infer<typeof SnapMessageStruct>;
 
 const SnapMessageStruct = object({
   method: string(),
   params: optional(union([array(JsonStruct), record(string(), JsonStruct)])),
 });
+
+type Message = Infer<typeof SnapMessageStruct>;
 
 export const methodName = 'snap_manageAccounts';
 
