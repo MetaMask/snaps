@@ -200,7 +200,7 @@ gen_enforced_field(WorkspaceCwd, 'scripts.prepare-manifest:preview', '../../../.
   is_nested_example(WorkspaceCwd).
 
 % Ensure all examples have the same `main` and `types` fields.
-gen_enforced_field(WorkspaceCwd, 'main', 'dist/bundle.js') :-
+gen_enforced_field(WorkspaceCwd, 'main', './dist/bundle.js') :-
   is_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'types', null) :-
   is_example(WorkspaceCwd).
