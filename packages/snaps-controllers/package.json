@@ -22,8 +22,8 @@
       "browser": "./dist/esm/services/browser.js"
     }
   },
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
   "browser": {
     "./dist/cjs/services": "./dist/cjs/services/browser.js",
     "./dist/esm/services": "./dist/esm/services/browser.js"

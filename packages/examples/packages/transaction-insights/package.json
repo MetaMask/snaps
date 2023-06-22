@@ -8,7 +8,7 @@
   },
   "license": "(MIT-0 OR Apache-2.0)",
   "sideEffects": false,
-  "main": "dist/bundle.js",
+  "main": "./dist/bundle.js",
   "files": [
     "dist/",
     "snap.manifest.json",
