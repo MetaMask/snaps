@@ -79,9 +79,8 @@ describe('builder', () => {
 });
 
 describe('manageAccountsImplementation', () => {
-  const mockCAIP10Account =
+  const MOCK_CAIP_10_ACCOUNT =
     'eip155:1:0xab16a96D359eC26a11e2C2b3d8f8B8942d5Bfcdb';
-  const mockSnapId = MOCK_SNAP_ID;
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -101,7 +100,7 @@ describe('manageAccountsImplementation', () => {
       manageAccounts({
         method: 'snap_manageAccounts',
         context: {
-          origin: mockSnapId,
+          origin: MOCK_SNAP_ID,
         },
         // @ts-expect-error Error expected.
         params: {},
@@ -125,7 +124,7 @@ describe('manageAccountsImplementation', () => {
       manageAccounts({
         method: 'snap_manageAccounts',
         context: {
-          origin: mockSnapId,
+          origin: MOCK_SNAP_ID,
         },
         // @ts-expect-error Error expected.
         params: [123, {}],
@@ -152,15 +151,15 @@ describe('manageAccountsImplementation', () => {
     const requestResponse = await manageAccounts({
       method: 'snap_manageAccounts',
       context: {
-        origin: mockSnapId,
+        origin: MOCK_SNAP_ID,
       },
-      params: ['delete', { accountId: mockCAIP10Account }],
+      params: ['delete', { accountId: MOCK_CAIP_10_ACCOUNT }],
     });
 
     expect(createAccountSpy).toHaveBeenCalledTimes(1);
-    expect(createAccountSpy).toHaveBeenCalledWith(mockSnapId, [
+    expect(createAccountSpy).toHaveBeenCalledWith(MOCK_SNAP_ID, [
       'delete',
-      { accountId: mockCAIP10Account },
+      { accountId: MOCK_CAIP_10_ACCOUNT },
     ]);
     expect(requestResponse).toBe(true);
     createAccountSpy.mockClear();
