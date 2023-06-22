@@ -6,7 +6,6 @@ import {
   manageAccountsBuilder,
   manageAccountsImplementation,
   specificationBuilder,
-  validateParams,
 } from './manageAccounts';
 
 // To Do:
@@ -106,7 +105,7 @@ describe('manageAccountsImplementation', () => {
         params: {},
       }),
     ).rejects.toThrow(
-      'Invalid ManageAccount Arguments: An array of type SnapMessage was expected',
+      'At path: method -- Expected a string, but received: undefined',
     );
   });
 
@@ -127,10 +126,10 @@ describe('manageAccountsImplementation', () => {
           origin: MOCK_SNAP_ID,
         },
         // @ts-expect-error Error expected.
-        params: [123, {}],
+        params: { method: 123, params: {} },
       }),
     ).rejects.toThrow(
-      'Invalid ManageAccount Arguments: The parameter "method" should be a non-empty string',
+      'At path: method -- Expected a string, but received: 123',
     );
   });
 
@@ -153,45 +152,18 @@ describe('manageAccountsImplementation', () => {
       context: {
         origin: MOCK_SNAP_ID,
       },
-      params: ['delete', { accountId: MOCK_CAIP_10_ACCOUNT }],
+      params: {
+        method: 'deleteAccount',
+        params: { accountId: MOCK_CAIP_10_ACCOUNT },
+      },
     });
 
     expect(createAccountSpy).toHaveBeenCalledTimes(1);
-    expect(createAccountSpy).toHaveBeenCalledWith(MOCK_SNAP_ID, [
-      'delete',
-      { accountId: MOCK_CAIP_10_ACCOUNT },
-    ]);
+    expect(createAccountSpy).toHaveBeenCalledWith(MOCK_SNAP_ID, {
+      method: 'deleteAccount',
+      params: { accountId: MOCK_CAIP_10_ACCOUNT },
+    });
     expect(requestResponse).toBe(true);
     createAccountSpy.mockClear();
-  });
-});
-
-describe('validateParams', () => {
-  it('should throw an error if message is not an array', () => {
-    expect(() => {
-      validateParams('not an array');
-    }).toThrow(
-      'Invalid ManageAccount Arguments: An array of type SnapMessage was expected',
-    );
-  });
-
-  it('should throw an error if method is not a string or is an empty string', () => {
-    expect(() => {
-      validateParams([123]);
-    }).toThrow(
-      'Invalid ManageAccount Arguments: The parameter "method" should be a non-empty string',
-    );
-
-    expect(() => {
-      validateParams(['']);
-    }).toThrow(
-      'Invalid ManageAccount Arguments: The parameter "method" should be a non-empty string',
-    );
-  });
-
-  it('should not throw an error if message is an array and method is a non-empty string', () => {
-    expect(() => {
-      validateParams(['validMethod']);
-    }).not.toThrow();
   });
 });

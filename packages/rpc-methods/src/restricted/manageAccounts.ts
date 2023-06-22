@@ -6,8 +6,22 @@ import {
   PermissionSpecificationBuilder,
 } from '@metamask/permission-controller';
 import { Json, JsonStruct, NonEmptyArray } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
-import { assert, string, tuple } from 'superstruct';
+import {
+  assert,
+  string,
+  object,
+  optional,
+  union,
+  array,
+  record,
+} from 'superstruct';
+
+type Message = { method: string; params: Json };
+
+const SnapMessageStruct = object({
+  method: string(),
+  params: optional(union([array(JsonStruct), record(string(), JsonStruct)])),
+});
 
 export const methodName = 'snap_manageAccounts';
 
@@ -16,7 +30,10 @@ export type ManageAccountsMethodHooks = {
    * Gets the snap keyring implementation.
    */
   getSnapKeyring: (snapOrigin: string) => Promise<{
-    handleKeyringSnapMessage: (snapId: string, message: any) => Promise<Json>;
+    handleKeyringSnapMessage: (
+      snapId: string,
+      message: Message,
+    ) => Promise<Json>;
   }>;
 
   /**
@@ -67,26 +84,6 @@ export const specificationBuilder: PermissionSpecificationBuilder<
 };
 
 /**
- * Validates the manageAccount method parameter `message`.
- *
- * @param message - Parameter to be validated.
- */
-export function validateParams(message: unknown): void {
-  if (!Array.isArray(message)) {
-    throw ethErrors.rpc.invalidParams(
-      'Invalid ManageAccount Arguments: An array of type SnapMessage was expected',
-    );
-  }
-
-  const [method] = message;
-  if (typeof method !== 'string' || method.length === 0) {
-    throw ethErrors.rpc.invalidParams(
-      'Invalid ManageAccount Arguments: The parameter "method" should be a non-empty string',
-    );
-  }
-}
-
-/**
  * Builds the method implementation for `snap_manageAccounts`.
  *
  * @param hooks - The RPC method hooks.
@@ -101,21 +98,19 @@ export function manageAccountsImplementation({
   saveSnapKeyring,
 }: ManageAccountsMethodHooks) {
   return async function manageAccounts(
-    options: RestrictedMethodOptions<[string, Json[] | Record<string, Json>]>,
+    options: RestrictedMethodOptions<Message>,
   ): Promise<string[] | Json | boolean> {
     const {
       context: { origin },
       params,
     } = options;
 
-    validateParams(params);
-
+    assert(params, SnapMessageStruct);
     const keyring = await getSnapKeyring(origin);
     const result = await keyring.handleKeyringSnapMessage(origin, params);
 
-    assert(params, tuple([string(), JsonStruct]));
-    const [method] = params;
-    if (['update', 'create', 'delete'].includes(method)) {
+    const { method } = params;
+    if (['updateAccount', 'createAccount', 'deleteAccount'].includes(method)) {
       await saveSnapKeyring();
     }
 
