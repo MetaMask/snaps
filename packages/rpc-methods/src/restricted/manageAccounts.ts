@@ -39,9 +39,6 @@ export type ManageAccountsMethodHooks = {
 
   /**
    * Saves the snap keyring, should be called after mutable operations.
-   *
-   * If an account was removed the address of the account must be passed to
-   * update the UI.
    */
   saveSnapKeyring: () => Promise<void>;
 };
