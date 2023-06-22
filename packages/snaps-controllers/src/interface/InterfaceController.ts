@@ -15,43 +15,11 @@ import { ComponentState, constructState } from './utils';
 
 const controllerName = 'InterfaceController';
 
-export type ShowInterface = {
-  type: `${typeof controllerName}:show`;
-  handler: InterfaceController['showInterface'];
-};
-
-export type UpdateInterface = {
-  type: `${typeof controllerName}:update`;
-  handler: InterfaceController['updateInterface'];
-};
-
-export type ResolveInterface = {
-  type: `${typeof controllerName}:resolve`;
-  handler: InterfaceController['resolveInterface'];
-};
-
-export type ReadInterface = {
-  type: `${typeof controllerName}:read`;
-  handler: InterfaceController['readInterface'];
-};
-
-export type UpdateInterfaceState = {
-  type: `${typeof controllerName}:updateInterfaceState`;
-  handler: InterfaceController['updateInterfaceState'];
-};
-
-export type GetInterfaceState = {
-  type: `${typeof controllerName}:getInterfaceState`;
-  handler: InterfaceController['getInterfaceState'];
-};
-
-export type InterfaceControllerActions = UpdateInterfaceState;
-
 type AllowedActions = AddApprovalRequest | UpdateRequestState | AcceptRequest;
 
 export type InterfaceControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
-  InterfaceControllerActions | AllowedActions,
+  AllowedActions,
   never,
   AllowedActions['type'],
   never
@@ -92,7 +60,6 @@ export class InterfaceController extends BaseController<
     });
 
     this.#interfacePromises = new Map();
-    this.#registerMessageHandlers();
   }
 
   showInterface(snapId: string, content: Component) {
@@ -178,12 +145,6 @@ export class InterfaceController extends BaseController<
     });
   }
 
-  getInterfaceState(snapId: string, id: string) {
-    this.#validateArgs(snapId, id);
-
-    return this.state.interfaces[id].state;
-  }
-
   #validateArgs(snapId: string, id: string) {
     const existingInterface = this.state.interfaces[id];
 
@@ -194,13 +155,6 @@ export class InterfaceController extends BaseController<
     assert(
       existingInterface.snapId === snapId,
       `Interface not created by ${snapId}`,
-    );
-  }
-
-  #registerMessageHandlers() {
-    this.messagingSystem.registerActionHandler(
-      `${controllerName}:updateInterfaceState`,
-      (...args) => this.updateInterfaceState(...args),
     );
   }
 }
