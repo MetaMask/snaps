@@ -7,29 +7,6 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "sideEffects": false,
-  "exports": {
-    ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js",
-      "types": "./dist/types/index.d.ts"
-    },
-    "./dist/cjs/services": {
-      "default": "./dist/cjs/services/index.js",
-      "browser": "./dist/cjs/services/browser.js"
-    },
-    "./dist/esm/services": {
-      "default": "./dist/esm/services/index.js",
-      "browser": "./dist/esm/services/browser.js"
-    },
-    "./dist/cjs/*": {
-      "require": "./dist/cjs/*.js",
-      "types": "./dist/types/*.d.ts"
-    },
-    "./dist/esm/*": {
-      "import": "./dist/esm/*.js",
-      "types": "./dist/types/*.d.ts"
-    }
-  },
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "browser": {
@@ -37,19 +14,6 @@
     "./dist/esm/services": "./dist/esm/services/browser.js"
   },
   "types": "./dist/types/index.d.ts",
-  "typesVersions": {
-    "*": {
-      "*": [
-        "./dist/types/*"
-      ],
-      "./dist/cjs/*": [
-        "./dist/types/*"
-      ],
-      "./dist/esm/*": [
-        "./dist/types/*"
-      ]
-    }
-  },
   "files": [
     "dist/cjs/**",
     "dist/esm/**",

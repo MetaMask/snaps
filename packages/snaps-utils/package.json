@@ -13,21 +13,12 @@
         "require": "./dist/cjs/index.browser.js"
       },
       "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js",
-      "types": "./dist/types/index.d.ts"
+      "require": "./dist/cjs/index.js"
     },
     "./test-utils": {
       "import": "./dist/esm/test-utils/index.js",
       "require": "./dist/cjs/test-utils/index.js",
       "types": "./dist/types/test-utils/index.d.ts"
-    },
-    "./dist/cjs/*": {
-      "require": "./dist/cjs/*.js",
-      "types": "./dist/types/*.d.ts"
-    },
-    "./dist/esm/*": {
-      "import": "./dist/esm/*.js",
-      "types": "./dist/types/*.d.ts"
     }
   },
   "main": "./dist/cjs/index.js",
@@ -40,13 +31,10 @@
   "typesVersions": {
     "*": {
       "*": [
-        "./dist/types/*"
+        "./dist/types/index.d.ts"
       ],
-      "./dist/cjs/*": [
-        "./dist/types/*"
-      ],
-      "./dist/esm/*": [
-        "./dist/types/*"
+      "test-utils": [
+        "./dist/types/test-utils/index.d.ts"
       ]
     }
   },
