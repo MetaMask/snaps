@@ -11,8 +11,8 @@
       "browser": {
         "default": "./dist/index.browser.js"
       },
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
     },
     "./test-utils": {
       "import": "./dist/esm/test-utils/index.js",
