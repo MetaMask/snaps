@@ -66,4 +66,5 @@ export const handlerEndowments: Record<HandlerType, string> = {
 };
 
 export * from './enum';
+export { getRpcCaveatOrigins } from './rpc';
 export { getTransactionOriginCaveat } from './transaction-insight';
