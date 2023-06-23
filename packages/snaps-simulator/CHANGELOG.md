@@ -7,18 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.35.0-flask.1]
-### Uncategorized
-- Add wildcard exports to all packages ([#1532](https://github.com/MetaMask/snaps/pull/1532))
-- Build packages as both CJS and ESM ([#1519](https://github.com/MetaMask/snaps/pull/1519))
-- Snaps Simulator Dark Mode ([#1453](https://github.com/MetaMask/snaps/pull/1453))
-- Add missing `prepare-manifest:preview` and `publish:preview` scripts ([#1528](https://github.com/MetaMask/snaps/pull/1528))
-- Delete Multichain/Keyring code ([#1527](https://github.com/MetaMask/snaps/pull/1527))
-- Fix BIP-32 path validation ([#1506](https://github.com/MetaMask/snaps/pull/1506))
-- Move `test-snaps` to this repository ([#1488](https://github.com/MetaMask/snaps/pull/1488))
-- Implement Jest environment for Snaps end-to-end testing ([#1438](https://github.com/MetaMask/snaps/pull/1438))
-- Improve JSON parsing safety ([#1499](https://github.com/MetaMask/snaps/pull/1499))
+### Changed
+- **BREAKING:** Build packages as both CJS and ESM ([#1519](https://github.com/MetaMask/snaps/pull/1519), ([#1532](https://github.com/MetaMask/snaps/pull/1532)))
+  - This is breaking in the sense that imports to `dist/` will now require you to import either `dist/cjs` or `dist/esm`.
+- Add `sideEffects: false` ([#1486](https://github.com/MetaMask/snaps/pull/1486))
+- Add support for E2E testing mode, to be used by `@metamask/snaps-jest` ([#1438](https://github.com/MetaMask/snaps/pull/1438), [#1488](https://github.com/MetaMask/snaps/pull/1488))
+
+### Added
+- Add Dark Mode ([#1453](https://github.com/MetaMask/snaps/pull/1453))
+
+### Fixed
 - Fix response typing in `snaps-simulator` ([#1498](https://github.com/MetaMask/snaps/pull/1498))
-- Fix manageState in `snaps-simulator` ([#1494](https://github.com/MetaMask/snaps/pull/1494))
+- Fix `snap_manageState` in `snaps-simulator` ([#1494](https://github.com/MetaMask/snaps/pull/1494))
 
 ## [0.34.1-flask.1]
 ### Changed

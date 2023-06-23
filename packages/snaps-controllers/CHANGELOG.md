@@ -7,18 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.35.0-flask.1]
-### Uncategorized
-- Add wildcard exports to all packages ([#1532](https://github.com/MetaMask/snaps/pull/1532))
+### Changed
+- **BREAKING:** Build packages as both CJS and ESM ([#1519](https://github.com/MetaMask/snaps/pull/1519), ([#1532](https://github.com/MetaMask/snaps/pull/1532)))
+  - This is breaking in the sense that imports to `dist/` will now require you to import either `dist/cjs` or `dist/esm`.
+- Add `sideEffects: false` ([#1486](https://github.com/MetaMask/snaps/pull/1486))
+
+### Added
 - Add export for `getRpcCaveatOrigins` ([#1533](https://github.com/MetaMask/snaps/pull/1533))
-- Add manageAccounts RPC method ([#1290](https://github.com/MetaMask/snaps/pull/1290))
-- Build packages as both CJS and ESM ([#1519](https://github.com/MetaMask/snaps/pull/1519))
-- Delete Multichain/Keyring code ([#1527](https://github.com/MetaMask/snaps/pull/1527))
-- Fix a few dependabot warnings ([#1341](https://github.com/MetaMask/snaps/pull/1341))
-- Implement Jest environment for Snaps end-to-end testing ([#1438](https://github.com/MetaMask/snaps/pull/1438))
+
+### Fixed
 - Improve JSON parsing safety ([#1499](https://github.com/MetaMask/snaps/pull/1499))
-- Add sideEffects: false to every package ([#1486](https://github.com/MetaMask/snaps/pull/1486))
-- Disallow deriving Ethereum keys ([#1217](https://github.com/MetaMask/snaps/pull/1217))
-- Bump @metamask/providers from 10.2.1 to 11.0.0 ([#1446](https://github.com/MetaMask/snaps/pull/1446))
+
+### Removed
+- Remove `MultiChainController` ([#1527](https://github.com/MetaMask/snaps/pull/1527))
 
 ## [0.34.1-flask.1]
 ### Changed

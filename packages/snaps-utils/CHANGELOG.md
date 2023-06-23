@@ -7,21 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.35.0-flask.1]
-### Uncategorized
-- Add wildcard exports to all packages ([#1532](https://github.com/MetaMask/snaps/pull/1532))
-- Add manageAccounts RPC method ([#1290](https://github.com/MetaMask/snaps/pull/1290))
-- Build packages as both CJS and ESM ([#1519](https://github.com/MetaMask/snaps/pull/1519))
-- Delete Multichain/Keyring code ([#1527](https://github.com/MetaMask/snaps/pull/1527))
-- Fix BIP-32 path validation ([#1506](https://github.com/MetaMask/snaps/pull/1506))
-- Move `test-snaps` to this repository ([#1488](https://github.com/MetaMask/snaps/pull/1488))
-- Fix false positives when post processing code with HTML comment tokens ([#1522](https://github.com/MetaMask/snaps/pull/1522))
-- Fix a few dependabot warnings ([#1341](https://github.com/MetaMask/snaps/pull/1341))
-- Implement Jest environment for Snaps end-to-end testing ([#1438](https://github.com/MetaMask/snaps/pull/1438))
+### Changed
+- **BREAKING:** Build packages as both CJS and ESM ([#1519](https://github.com/MetaMask/snaps/pull/1519), ([#1532](https://github.com/MetaMask/snaps/pull/1532)))
+  - This is breaking in the sense that imports to `dist/` will now require you to import either `dist/cjs` or `dist/esm`.
+- **BREAKING:** Disallow deriving Ethereum keys ([#1217](https://github.com/MetaMask/snaps/pull/1217))
+  - Coin type `60` is now blocked for derivation.
+- Add `sideEffects: false` ([#1486](https://github.com/MetaMask/snaps/pull/1486))
+
+### Added
+- Add `snap_manageAccounts` RPC method ([#1290](https://github.com/MetaMask/snaps/pull/1290))
+
+### Fixed
 - Improve JSON parsing safety ([#1499](https://github.com/MetaMask/snaps/pull/1499))
-- Add sideEffects: false to every package ([#1486](https://github.com/MetaMask/snaps/pull/1486))
-- Disallow deriving Ethereum keys ([#1217](https://github.com/MetaMask/snaps/pull/1217))
-- Bump @metamask/providers from 10.2.1 to 11.0.0 ([#1446](https://github.com/MetaMask/snaps/pull/1446))
-- Execution environment bundling refactor ([#1458](https://github.com/MetaMask/snaps/pull/1458))
+- Fix false positives when post processing code with HTML comment tokens ([#1522](https://github.com/MetaMask/snaps/pull/1522))
+- Fix BIP-32 path validation ([#1506](https://github.com/MetaMask/snaps/pull/1506))
+
+### Removed
+- **BREAKING:** Remove utility functions used for multichain/keyring effort ([#1527](https://github.com/MetaMask/snaps/pull/1527))
+
 
 ## [0.34.1-flask.1]
 ### Changed

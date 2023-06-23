@@ -7,14 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.35.0-flask.1]
-### Uncategorized
-- Add wildcard exports to all packages ([#1532](https://github.com/MetaMask/snaps/pull/1532))
-- Build packages as both CJS and ESM ([#1519](https://github.com/MetaMask/snaps/pull/1519))
-- Delete Multichain/Keyring code ([#1527](https://github.com/MetaMask/snaps/pull/1527))
-- Move `test-snaps` to this repository ([#1488](https://github.com/MetaMask/snaps/pull/1488))
-- Improve JSON parsing safety ([#1499](https://github.com/MetaMask/snaps/pull/1499))
-- Add sideEffects: false to every package ([#1486](https://github.com/MetaMask/snaps/pull/1486))
-- Bump @metamask/providers from 10.2.1 to 11.0.0 ([#1446](https://github.com/MetaMask/snaps/pull/1446))
+### Changed
+- **BREAKING:** Build packages as both CJS and ESM ([#1519](https://github.com/MetaMask/snaps/pull/1519), ([#1532](https://github.com/MetaMask/snaps/pull/1532)))
+  - This is breaking in the sense that imports to `dist/` will now require you to import either `dist/cjs` or `dist/esm`.
+- Add `sideEffects: false` ([#1486](https://github.com/MetaMask/snaps/pull/1486))
+- Properly build this package to allow for exporting of enums ([#1488](https://github.com/MetaMask/snaps/pull/1488))
+
+### Removed
+- Remove types used for multichain/keyring effort([#1527](https://github.com/MetaMask/snaps/pull/1527))
 
 ## [0.34.1-flask.1]
 ### Changed
