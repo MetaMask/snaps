@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.35.0-flask.1]
+### Added
+- Add `snap_manageAccounts` RPC method ([#1290](https://github.com/MetaMask/snaps/pull/1290))
+
 ### Changed
 - **BREAKING:** Build packages as both CJS and ESM ([#1519](https://github.com/MetaMask/snaps/pull/1519), ([#1532](https://github.com/MetaMask/snaps/pull/1532)))
   - This is breaking in the sense that imports to `dist/` will now require you to import either `dist/cjs` or `dist/esm`.
@@ -14,17 +17,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Coin type `60` is now blocked for derivation.
 - Add `sideEffects: false` ([#1486](https://github.com/MetaMask/snaps/pull/1486))
 
-### Added
-- Add `snap_manageAccounts` RPC method ([#1290](https://github.com/MetaMask/snaps/pull/1290))
+### Removed
+- **BREAKING:** Remove utility functions used for multichain/keyring effort ([#1527](https://github.com/MetaMask/snaps/pull/1527))
 
 ### Fixed
 - Improve JSON parsing safety ([#1499](https://github.com/MetaMask/snaps/pull/1499))
 - Fix false positives when post processing code with HTML comment tokens ([#1522](https://github.com/MetaMask/snaps/pull/1522))
 - Fix BIP-32 path validation ([#1506](https://github.com/MetaMask/snaps/pull/1506))
-
-### Removed
-- **BREAKING:** Remove utility functions used for multichain/keyring effort ([#1527](https://github.com/MetaMask/snaps/pull/1527))
-
 
 ## [0.34.1-flask.1]
 ### Changed

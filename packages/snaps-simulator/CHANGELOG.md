@@ -7,14 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.35.0-flask.1]
+### Added
+- Add Dark Mode ([#1453](https://github.com/MetaMask/snaps/pull/1453))
+
 ### Changed
 - **BREAKING:** Build packages as both CJS and ESM ([#1519](https://github.com/MetaMask/snaps/pull/1519), ([#1532](https://github.com/MetaMask/snaps/pull/1532)))
   - This is breaking in the sense that imports to `dist/` will now require you to import either `dist/cjs` or `dist/esm`.
 - Add `sideEffects: false` ([#1486](https://github.com/MetaMask/snaps/pull/1486))
 - Add support for E2E testing mode, to be used by `@metamask/snaps-jest` ([#1438](https://github.com/MetaMask/snaps/pull/1438), [#1488](https://github.com/MetaMask/snaps/pull/1488))
-
-### Added
-- Add Dark Mode ([#1453](https://github.com/MetaMask/snaps/pull/1453))
 
 ### Fixed
 - Fix response typing in `snaps-simulator` ([#1498](https://github.com/MetaMask/snaps/pull/1498))
