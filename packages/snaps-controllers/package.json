@@ -34,6 +34,13 @@
     "./dist/esm/services": "./dist/esm/services/browser.js"
   },
   "types": "./dist/types/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/types/*"
+      ]
+    }
+  },
   "files": [
     "dist/cjs/**",
     "dist/esm/**",

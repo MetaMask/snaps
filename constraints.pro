@@ -192,6 +192,12 @@ gen_enforced_field(WorkspaceCwd, 'exports["./*"].import', './dist/esm/*.js') :-
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
 
+% The dependency types must be importable from subpaths.
+gen_enforced_field(WorkspaceCwd, 'typesVersions["*"]["*"]', ['./dist/types/*']) :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+
 % Dependencies must have preview scripts.
 gen_enforced_field(WorkspaceCwd, 'scripts.prepare-manifest:preview', '../../scripts/prepare-preview-manifest.sh') :-
   \+ workspace_field(WorkspaceCwd, 'private', true),
