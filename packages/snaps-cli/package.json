@@ -18,6 +18,11 @@
       "import": "./dist/esm/*.js",
       "require": "./dist/cjs/*.js",
       "types": "./dist/types/*.d.ts"
+    },
+    "./dist/*": {
+      "import": "./dist/esm/*.js",
+      "require": "./dist/cjs/*.js",
+      "types": "./dist/types/*.d.ts"
     }
   },
   "main": "./dist/cjs/index.js",
@@ -26,6 +31,9 @@
   "typesVersions": {
     "*": {
       "*": [
+        "./dist/types/*"
+      ],
+      "./dist/*": [
         "./dist/types/*"
       ]
     }
