@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-jest",
-  "version": "0.34.1-flask.1",
+  "version": "0.35.0-flask.1",
   "description": "A Jest preset for end-to-end testing MetaMask Snaps, including a Jest environment, and a set of Jest matchers.",
   "sideEffects": false,
   "exports": {

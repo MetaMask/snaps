@@ -1,6 +1,6 @@
 {
   "name": "@metamask/invoke-snap-example-snap",
-  "version": "0.34.1-flask.1",
+  "version": "0.35.0-flask.1",
   "private": true,
   "description": "MetaMask example snaps demonstrating the use of `wallet_invokeSnap` to call a snap from another snap.",
   "repository": {

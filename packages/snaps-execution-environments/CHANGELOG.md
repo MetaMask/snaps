@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.35.0-flask.1]
+### Uncategorized
+- Add wildcard exports to all packages ([#1532](https://github.com/MetaMask/snaps/pull/1532))
+- Build packages as both CJS and ESM ([#1519](https://github.com/MetaMask/snaps/pull/1519))
+- Delete Multichain/Keyring code ([#1527](https://github.com/MetaMask/snaps/pull/1527))
+- Move `test-snaps` to this repository ([#1488](https://github.com/MetaMask/snaps/pull/1488))
+- Add script to spin up local instance of the Iframe Execution Environment ([#1502](https://github.com/MetaMask/snaps/pull/1502))
+- Fix a few dependabot warnings ([#1341](https://github.com/MetaMask/snaps/pull/1341))
+- Implement Jest environment for Snaps end-to-end testing ([#1438](https://github.com/MetaMask/snaps/pull/1438))
+- Improve JSON parsing safety ([#1499](https://github.com/MetaMask/snaps/pull/1499))
+- Remove `child-workspace-package-names-as-json` script in favour of `yarn workspaces filter` command ([#1491](https://github.com/MetaMask/snaps/pull/1491))
+- Add sideEffects: false to every package ([#1486](https://github.com/MetaMask/snaps/pull/1486))
+- Bump @metamask/providers from 10.2.1 to 11.0.0 ([#1446](https://github.com/MetaMask/snaps/pull/1446))
+- Execution environment bundling refactor ([#1458](https://github.com/MetaMask/snaps/pull/1458))
+- Bump LavaMoat ([#1479](https://github.com/MetaMask/snaps/pull/1479))
+
 ## [0.34.1-flask.1]
 ### Changed
 - Deploy `iframe-execution-environment` from this repository ([#1406](https://github.com/MetaMask/snaps/pull/1406))
@@ -264,7 +280,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Previously, default endowments were specified in the execution environment itself. Now, all endowments must be specified in the `executeSnap` RPC parameters, except for the `wallet` API object.
 - Add endowments to the global `self` in addition to `window` ([#263](https://github.com/MetaMask/snaps-monorepo/pull/263))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.34.1-flask.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.35.0-flask.1...HEAD
+[0.35.0-flask.1]: https://github.com/MetaMask/snaps/compare/v0.34.1-flask.1...v0.35.0-flask.1
 [0.34.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.34.0-flask.1...v0.34.1-flask.1
 [0.34.0-flask.1]: https://github.com/MetaMask/snaps/compare/v0.33.1-flask.1...v0.34.0-flask.1
 [0.33.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.33.0-flask.1...v0.33.1-flask.1

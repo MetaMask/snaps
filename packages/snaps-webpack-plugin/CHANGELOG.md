@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.35.0-flask.1]
+### Uncategorized
+- Add wildcard exports to all packages ([#1532](https://github.com/MetaMask/snaps/pull/1532))
+- Build packages as both CJS and ESM ([#1519](https://github.com/MetaMask/snaps/pull/1519))
+- Move `test-snaps` to this repository ([#1488](https://github.com/MetaMask/snaps/pull/1488))
+- Implement Jest environment for Snaps end-to-end testing ([#1438](https://github.com/MetaMask/snaps/pull/1438))
+- Improve JSON parsing safety ([#1499](https://github.com/MetaMask/snaps/pull/1499))
+- Add sideEffects: false to every package ([#1486](https://github.com/MetaMask/snaps/pull/1486))
+
 ## [0.34.1-flask.1]
 ### Changed
 - No changes this release.
@@ -154,7 +163,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release ([#420](https://github.com/MetaMask/snaps-monorepo/pull/420))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.34.1-flask.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.35.0-flask.1...HEAD
+[0.35.0-flask.1]: https://github.com/MetaMask/snaps/compare/v0.34.1-flask.1...v0.35.0-flask.1
 [0.34.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.34.0-flask.1...v0.34.1-flask.1
 [0.34.0-flask.1]: https://github.com/MetaMask/snaps/compare/v0.33.1-flask.1...v0.34.0-flask.1
 [0.33.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.33.0-flask.1...v0.33.1-flask.1
