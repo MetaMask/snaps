@@ -7,10 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.35.0-flask.1]
-### Uncategorized
-- Build packages as both CJS and ESM ([#1519](https://github.com/MetaMask/snaps/pull/1519))
-- Add missing `prepare-manifest:preview` and `publish:preview` scripts ([#1528](https://github.com/MetaMask/snaps/pull/1528))
-- Move `test-snaps` to this repository ([#1488](https://github.com/MetaMask/snaps/pull/1488))
+### Changed
+- Re-do all examples ([#1488](https://github.com/MetaMask/snaps/pull/1488), [#1507](https://github.com/MetaMask/snaps/pull/1507))
 
 [Unreleased]: https://github.com/MetaMask/snaps/compare/v0.35.0-flask.1...HEAD
 [0.35.0-flask.1]: https://github.com/MetaMask/snaps/releases/tag/v0.35.0-flask.1
