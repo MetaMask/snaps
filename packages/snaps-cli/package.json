@@ -47,9 +47,6 @@
     "dist/esm/**",
     "dist/types/**"
   ],
-  "workspaces": [
-    "test/snap"
-  ],
   "scripts": {
     "build": "yarn build:source && yarn build:types",
     "build:source": "yarn build:esm && yarn build:cjs",
