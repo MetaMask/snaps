@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-webpack-plugin",
-  "version": "0.32.2",
+  "version": "1.0.0-prerelease.1",
   "keywords": [
     "webpack",
     "plugin"

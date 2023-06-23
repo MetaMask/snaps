@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-types",
-  "version": "0.32.2",
+  "version": "1.0.0-prerelease.1",
   "description": "TypeScript types for developing MetaMask Snaps.",
   "repository": {
     "type": "git",
