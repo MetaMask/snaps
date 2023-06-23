@@ -13,7 +13,8 @@
   "files": [
     "dist/cjs/**",
     "dist/esm/**",
-    "dist/types/**"
+    "dist/types/**",
+    "dist/browserify/**"
   ],
   "scripts": {
     "test": "rimraf coverage && jest && yarn test:browser && yarn posttest",
