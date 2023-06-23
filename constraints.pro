@@ -228,6 +228,13 @@ gen_enforced_field(WorkspaceCwd, 'scripts.publish:preview', 'yarn npm publish --
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
 
+gen_enforced_field(WorkspaceCwd, 'publishConfig.access', 'public') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'publishConfig.registry', 'https://registry.npmjs.org/') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+
 % Ensure all examples have the same scripts.
 gen_enforced_field(WorkspaceCwd, 'scripts.build', 'mm-snap build') :-
   is_example(WorkspaceCwd),
