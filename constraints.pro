@@ -148,6 +148,77 @@ gen_enforced_field(WorkspaceCwd, 'sideEffects', 'false') :-
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
 
+% The type definitions entrypoint for the dependency must be `./dist/types/index.d.ts`.
+gen_enforced_field(WorkspaceCwd, 'types', './dist/types/index.d.ts') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'exports["."].types', './dist/types/index.d.ts') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+
+% The entrypoint for the dependency must be `./dist/cjs/index.js`.
+gen_enforced_field(WorkspaceCwd, 'main', './dist/cjs/index.js') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'exports["."].require', './dist/cjs/index.js') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+
+% The module entrypoint for the dependency must be `./dist/esm/index.js`.
+gen_enforced_field(WorkspaceCwd, 'module', './dist/esm/index.js') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'exports["."].import', './dist/esm/index.js') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+
+% The dependency must be importable from `./dist/cjs` and `./dist/esm` subpaths,
+% for backwards compatibility with older versions of the package.
+gen_enforced_field(WorkspaceCwd, 'exports["./dist/esm/*"].types', './dist/types/*.d.ts') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'exports["./dist/esm/*"].require', null) :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'exports["./dist/esm/*"].import', './dist/esm/*.js') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'exports["./dist/cjs/*"].types', './dist/types/*.d.ts') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'exports["./dist/cjs/*"].require', './dist/cjs/*.js') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'exports["./dist/cjs/*"].import', null) :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+
+% The dependency types must be importable from subpaths.
+gen_enforced_field(WorkspaceCwd, 'typesVersions["*"]["*"]', ['./dist/types/*']) :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'typesVersions["*"]["./dist/esm/*"]', ['./dist/types/*']) :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'typesVersions["*"]["./dist/cjs/*"]', ['./dist/types/*']) :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+
 % Dependencies must have preview scripts.
 gen_enforced_field(WorkspaceCwd, 'scripts.prepare-manifest:preview', '../../scripts/prepare-preview-manifest.sh') :-
   \+ workspace_field(WorkspaceCwd, 'private', true),

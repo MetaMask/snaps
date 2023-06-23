@@ -15,13 +15,34 @@
     ".": {
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js",
-      "types": "./dist/src/index.d.ts"
+      "types": "./dist/types/index.d.ts"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./dist/cjs/*": {
+      "require": "./dist/cjs/*.js",
+      "types": "./dist/types/*.d.ts"
+    },
+    "./dist/esm/*": {
+      "import": "./dist/esm/*.js",
+      "types": "./dist/types/*.d.ts"
+    }
   },
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
-  "types": "dist/src/index.d.ts",
+  "types": "./dist/types/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/types/*"
+      ],
+      "./dist/cjs/*": [
+        "./dist/types/*"
+      ],
+      "./dist/esm/*": [
+        "./dist/types/*"
+      ]
+    }
+  },
   "files": [
     "dist/cjs",
     "dist/esm",
