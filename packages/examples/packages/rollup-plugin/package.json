@@ -1,6 +1,6 @@
 {
   "name": "@metamask/rollup-plugin-example-snap",
-  "version": "0.34.1-flask.1",
+  "version": "0.35.0-flask.1",
   "description": "MetaMask example snap demonstrating how to use the Rollup plugin to bundle a snap.",
   "repository": {
     "type": "git",
