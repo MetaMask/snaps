@@ -1,5 +1,5 @@
 {
-  "version": "0.35.0-flask.1",
+  "version": "0.35.1-flask.1",
   "description": "MetaMask example snap demonstrating the use of error handling in snaps.",
   "proposedName": "Error Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "uLw/JnpdK4xnFoB9zt00gclzKZgZSVsCrEX9LMcKZU0=",
+    "shasum": "0FVZPk75wxDPSSNE6ZcwP+57eb/hPN0j26KeKmQpfRo=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
