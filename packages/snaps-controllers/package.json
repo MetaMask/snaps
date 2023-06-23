@@ -20,6 +20,11 @@
     "./dist/esm/services": {
       "default": "./dist/esm/services/index.js",
       "browser": "./dist/esm/services/browser.js"
+    },
+    "./*": {
+      "import": "./dist/esm/*.js",
+      "require": "./dist/cjs/*.js",
+      "types": "./dist/types/*.d.ts"
     }
   },
   "main": "./dist/cjs/index.js",
@@ -28,7 +33,7 @@
     "./dist/cjs/services": "./dist/cjs/services/browser.js",
     "./dist/esm/services": "./dist/esm/services/browser.js"
   },
-  "types": "dist/types/index.d.ts",
+  "types": "./dist/types/index.d.ts",
   "files": [
     "dist/cjs/**",
     "dist/esm/**",

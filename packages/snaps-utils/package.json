@@ -20,6 +20,11 @@
       "import": "./dist/esm/test-utils/index.js",
       "require": "./dist/cjs/test-utils/index.js",
       "types": "./dist/types/test-utils/index.d.ts"
+    },
+    "./*": {
+      "import": "./dist/esm/*.js",
+      "require": "./dist/cjs/*.js",
+      "types": "./dist/types/*.d.ts"
     }
   },
   "main": "./dist/cjs/index.js",
@@ -28,6 +33,7 @@
     "./dist/cjs/index.js": "./dist/cjs/index.browser.js",
     "./dist/esm/index.js": "./dist/esm/index.browser.js"
   },
+  "types": "./dist/types/index.d.ts",
   "files": [
     "dist/cjs/**",
     "dist/esm/**",
