@@ -5,7 +5,7 @@
   "description": "An example transaction insights Snap.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "license": "MIT",
   "main": "src/index.ts",

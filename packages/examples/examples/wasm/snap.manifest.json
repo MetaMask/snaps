@@ -4,7 +4,7 @@
   "proposedName": "wasm",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
     "shasum": "h5GcHFNJwrkOiPs18Pe7d5AkL+bcPB78lNyy//ZbXSY=",

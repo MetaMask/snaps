@@ -4,7 +4,7 @@
   "proposedName": "Transaction Insights Example Snap",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
     "shasum": "LsXatr6vQSl0YX+ivR+AN39JGqClNH4WZyxx1Xz+b2c=",

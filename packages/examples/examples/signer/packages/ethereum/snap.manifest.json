@@ -4,7 +4,7 @@
   "proposedName": "signer-ethereum",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
     "shasum": "hK5gKrJlLqb7VRa+kkCt4ovx+/QRhb2XmtYxfHSG2Uk=",
