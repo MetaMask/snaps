@@ -18,12 +18,12 @@
       "types": "./dist/types/index.d.ts"
     },
     "./package.json": "./package.json",
-    "./*": {
+    "./dist/cjs/*": {
       "import": "./dist/esm/*.js",
       "require": "./dist/cjs/*.js",
       "types": "./dist/types/*.d.ts"
     },
-    "./dist/*": {
+    "./dist/esm/*": {
       "import": "./dist/esm/*.js",
       "require": "./dist/cjs/*.js",
       "types": "./dist/types/*.d.ts"
@@ -37,7 +37,10 @@
       "*": [
         "./dist/types/*"
       ],
-      "./dist/*": [
+      "./dist/cjs/*": [
+        "./dist/types/*"
+      ],
+      "./dist/esm/*": [
         "./dist/types/*"
       ]
     }

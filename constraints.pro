@@ -178,31 +178,29 @@ gen_enforced_field(WorkspaceCwd, 'exports["."].import', './dist/esm/index.js') :
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
 
-% The dependency must be importable from subpaths.
-gen_enforced_field(WorkspaceCwd, 'exports["./*"].types', './dist/types/*.d.ts') :-
+% The dependency must be importable from `./dist/cjs` and `./dist/esm` subpaths,
+% for backwards compatibility with older versions of the package.
+gen_enforced_field(WorkspaceCwd, 'exports["./dist/esm/*"].types', './dist/types/*.d.ts') :-
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
-gen_enforced_field(WorkspaceCwd, 'exports["./*"].require', './dist/cjs/*.js') :-
+gen_enforced_field(WorkspaceCwd, 'exports["./dist/esm/*"].require', './dist/cjs/*.js') :-
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
-gen_enforced_field(WorkspaceCwd, 'exports["./*"].import', './dist/esm/*.js') :-
+gen_enforced_field(WorkspaceCwd, 'exports["./dist/esm/*"].import', './dist/esm/*.js') :-
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
-
-% The dependency must be importable from `./dist` subpaths, for backwards
-% compatibility with older versions of the package.
-gen_enforced_field(WorkspaceCwd, 'exports["./dist/*"].types', './dist/types/*.d.ts') :-
+gen_enforced_field(WorkspaceCwd, 'exports["./dist/cjs/*"].types', './dist/types/*.d.ts') :-
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
-gen_enforced_field(WorkspaceCwd, 'exports["./dist/*"].require', './dist/cjs/*.js') :-
+gen_enforced_field(WorkspaceCwd, 'exports["./dist/cjs/*"].require', './dist/cjs/*.js') :-
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
-gen_enforced_field(WorkspaceCwd, 'exports["./dist/*"].import', './dist/esm/*.js') :-
+gen_enforced_field(WorkspaceCwd, 'exports["./dist/cjs/*"].import', './dist/esm/*.js') :-
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
@@ -212,7 +210,11 @@ gen_enforced_field(WorkspaceCwd, 'typesVersions["*"]["*"]', ['./dist/types/*']) 
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
-gen_enforced_field(WorkspaceCwd, 'typesVersions["*"]["./dist/*"]', ['./dist/types/*']) :-
+gen_enforced_field(WorkspaceCwd, 'typesVersions["*"]["./dist/esm/*"]', ['./dist/types/*']) :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'typesVersions["*"]["./dist/cjs/*"]', ['./dist/types/*']) :-
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
