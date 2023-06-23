@@ -1,5 +1,5 @@
 {
-  "version": "0.35.1-flask.1",
+  "version": "0.35.2-flask.1",
   "description": "MetaMask example snap demonstrating the use of `snap_notify`.",
   "proposedName": "Notifications Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "CdQtWCqszroje+XhJJxY+fGLTHmr2hL0B5P/nrsx7J8=",
+    "shasum": "8ip4xc7sMbpic8lNDVYRUEhPK0QHR2SLPyDXCuf62m4=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

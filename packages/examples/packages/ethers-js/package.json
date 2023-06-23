@@ -1,6 +1,6 @@
 {
   "name": "@metamask/ethers-js-example-snap",
-  "version": "0.35.1-flask.1",
+  "version": "0.35.2-flask.1",
   "description": "MetaMask example snap demonstrating how to use Ethers.js inside a snap.",
   "repository": {
     "type": "git",
