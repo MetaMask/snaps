@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.35.1-flask.1]
+### Uncategorized
+- Add missing `publishConfig` to `snaps-jest` and `snaps-simulator` ([#1538](https://github.com/MetaMask/snaps/pull/1538))
+
 ## [0.35.0-flask.1]
 ### Added
 - Add dark mode ([#1453](https://github.com/MetaMask/snaps/pull/1453))
@@ -28,7 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Migrate `snaps-simulator` to `snaps-monorepo` ([#1408](https://github.com/MetaMask/snaps/pull/1408), [#1418](https://github.com/MetaMask/snaps/pull/1418))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.35.0-flask.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.35.1-flask.1...HEAD
+[0.35.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.35.0-flask.1...v0.35.1-flask.1
 [0.35.0-flask.1]: https://github.com/MetaMask/snaps/compare/v0.34.1-flask.1...v0.35.0-flask.1
 [0.34.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.34.0-flask.1...v0.34.1-flask.1
 [0.34.0-flask.1]: https://github.com/MetaMask/snaps/releases/tag/v0.34.0-flask.1
