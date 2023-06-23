@@ -31,10 +31,10 @@
   "typesVersions": {
     "*": {
       "*": [
-        "dist/types/index.d.ts"
+        "./dist/types/index.d.ts"
       ],
       "test-utils": [
-        "dist/types/test-utils/index.d.ts"
+        "./dist/types/test-utils/index.d.ts"
       ]
     }
   },
