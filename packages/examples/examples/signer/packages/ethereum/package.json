@@ -1,10 +1,10 @@
 {
   "name": "signer-ethereum",
-  "version": "0.32.2",
+  "version": "1.0.0-prerelease.1",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "scripts": {
     "build": "mm-snap build",

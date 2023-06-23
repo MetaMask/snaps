@@ -1,11 +1,11 @@
 {
   "name": "ethers-js-snap",
-  "version": "0.32.2",
+  "version": "1.0.0-prerelease.1",
   "private": true,
   "description": "An example Snap that that uses ethers.js.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MetaMask/snaps-monorepo.git"
+    "url": "https://github.com/MetaMask/snaps.git"
   },
   "license": "ISC",
   "main": "src/index.js",
@@ -27,7 +27,7 @@
     "@metamask/eslint-config-jest": "^11.0.0",
     "@metamask/eslint-config-nodejs": "^11.0.1",
     "@metamask/eslint-config-typescript": "^11.0.0",
-    "@metamask/snaps-cli": "^0.32.2",
+    "@metamask/snaps-cli": "^1.0.0-prerelease.1",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "eslint": "^8.27.0",
