@@ -17,7 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Improve JSON parsing safety ([#1499](https://github.com/MetaMask/snaps/pull/1499))
 
-
 ## [0.32.2]
 ### Changed
 - No changes this release.
