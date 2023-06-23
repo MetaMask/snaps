@@ -9,7 +9,8 @@
   "exports": {
     ".": {
       "browser": {
-        "default": "./dist/index.browser.js"
+        "import": "./dist/esm/index.browser.js",
+        "require": "./dist/cjs/index.browser.js"
       },
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js"
