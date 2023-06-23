@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.35.0-flask.1]
 ### Added
-- Add Dark Mode ([#1453](https://github.com/MetaMask/snaps/pull/1453))
+- Add dark mode ([#1453](https://github.com/MetaMask/snaps/pull/1453))
 
 ### Changed
 - **BREAKING:** Build packages as both CJS and ESM ([#1519](https://github.com/MetaMask/snaps/pull/1519), ([#1532](https://github.com/MetaMask/snaps/pull/1532)))
