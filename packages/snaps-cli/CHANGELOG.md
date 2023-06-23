@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.35.2-flask.1]
-### Uncategorized
-- Remove unnecessary exports fields and fix missing build files ([#1541](https://github.com/MetaMask/snaps/pull/1541))
+### Fixed
+- Fix type issue introduced by [#1532](https://github.com/MetaMask/snaps/pull/1532) ([#1541](https://github.com/MetaMask/snaps/pull/1541))
 
 ## [0.35.1-flask.1]
 ### Changed
