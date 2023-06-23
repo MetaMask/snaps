@@ -184,7 +184,7 @@ gen_enforced_field(WorkspaceCwd, 'exports["./dist/esm/*"].types', './dist/types/
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
-gen_enforced_field(WorkspaceCwd, 'exports["./dist/esm/*"].require', './dist/cjs/*.js') :-
+gen_enforced_field(WorkspaceCwd, 'exports["./dist/esm/*"].require', null) :-
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
@@ -200,7 +200,7 @@ gen_enforced_field(WorkspaceCwd, 'exports["./dist/cjs/*"].require', './dist/cjs/
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
-gen_enforced_field(WorkspaceCwd, 'exports["./dist/cjs/*"].import', './dist/esm/*.js') :-
+gen_enforced_field(WorkspaceCwd, 'exports["./dist/cjs/*"].import', null) :-
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.

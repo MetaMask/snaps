@@ -19,13 +19,11 @@
     },
     "./package.json": "./package.json",
     "./dist/cjs/*": {
-      "import": "./dist/esm/*.js",
       "require": "./dist/cjs/*.js",
       "types": "./dist/types/*.d.ts"
     },
     "./dist/esm/*": {
       "import": "./dist/esm/*.js",
-      "require": "./dist/cjs/*.js",
       "types": "./dist/types/*.d.ts"
     }
   },
