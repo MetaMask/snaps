@@ -7,15 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [1.0.0-prerelease.1]
-### Uncategorized
+### Added
+- Add subject type restrictions to snap-specific permissions ([#1366](https://github.com/MetaMask/snaps/pull/1366))
+
+### Changed
+- **BREAKING:** Rename `targetKey` to `targetName` as part of updating `PermissionController` ([#1450](https://github.com/MetaMask/snaps/pull/1450))
+- **BREAKING:** Disallow deriving Ethereum keys ([#1217](https://github.com/MetaMask/snaps/pull/1217))
+  - Coin type `60` is now blocked for derivation.
+
+### Fixed
 - Fix BIP-32 path validation ([#1506](https://github.com/MetaMask/snaps/pull/1506))
-- Improve JSON parsing safety ([#1499](https://github.com/MetaMask/snaps/pull/1499))
-- Fix a few dependabot warnings ([#1341](https://github.com/MetaMask/snaps/pull/1341))
-- Disallow deriving Ethereum keys ([#1217](https://github.com/MetaMask/snaps/pull/1217))
-- Update core monorepo libs ([#1450](https://github.com/MetaMask/snaps/pull/1450))
-- Bump `@metamask/utils` and `@metamask/snaps-registry` ([#1457](https://github.com/MetaMask/snaps/pull/1457))
-- Fix snap install versioning ([#1387](https://github.com/MetaMask/snaps/pull/1387))
-- Add subjectType restrictions to snap-specific permissions ([#1366](https://github.com/MetaMask/snaps/pull/1366))
+- Fix versions being passed incorrectly during snap install ([#1387](https://github.com/MetaMask/snaps/pull/1387))
 
 ## [0.32.2]
 ### Changed

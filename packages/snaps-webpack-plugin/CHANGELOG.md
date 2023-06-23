@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0-prerelease.1]
 ### Uncategorized
-- Improve JSON parsing safety ([#1499](https://github.com/MetaMask/snaps/pull/1499))
 - Fix a few dependabot warnings ([#1341](https://github.com/MetaMask/snaps/pull/1341))
 - Bump `@metamask/utils` and `@metamask/snaps-registry` ([#1457](https://github.com/MetaMask/snaps/pull/1457))
 

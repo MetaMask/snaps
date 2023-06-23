@@ -7,12 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [1.0.0-prerelease.1]
-### Uncategorized
-- Fix BIP-32 path validation ([#1506](https://github.com/MetaMask/snaps/pull/1506))
+### Changed
 - Simplify Browserify example ([#1507](https://github.com/MetaMask/snaps/pull/1507))
-- Improve JSON parsing safety ([#1499](https://github.com/MetaMask/snaps/pull/1499))
-- Fix a few dependabot warnings ([#1341](https://github.com/MetaMask/snaps/pull/1341))
-- Bump `@metamask/utils` and `@metamask/snaps-registry` ([#1457](https://github.com/MetaMask/snaps/pull/1457))
 
 ## [0.32.2]
 ### Changed

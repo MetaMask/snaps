@@ -7,15 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [1.0.0-prerelease.1]
-### Uncategorized
-- Simplify Browserify example ([#1507](https://github.com/MetaMask/snaps/pull/1507))
-- Improve JSON parsing safety ([#1499](https://github.com/MetaMask/snaps/pull/1499))
-- Fix a few dependabot warnings ([#1341](https://github.com/MetaMask/snaps/pull/1341))
-- Execution environment bundling refactor ([#1458](https://github.com/MetaMask/snaps/pull/1458))
-- Bump LavaMoat ([#1479](https://github.com/MetaMask/snaps/pull/1479))
-- Add second part of a solution for secure JSON validation ([#1405](https://github.com/MetaMask/snaps/pull/1405))
-- Bump `@metamask/utils` and `@metamask/snaps-registry` ([#1457](https://github.com/MetaMask/snaps/pull/1457))
-- Block `wallet_requestPermissions` ([#1371](https://github.com/MetaMask/snaps/pull/1371))
+### Changed
+- **BREAKING:** Block `wallet_requestPermissions` ([#1371](https://github.com/MetaMask/snaps/pull/1371))
+- Refactored bundling process to reduce bundle size ([#1458](https://github.com/MetaMask/snaps/pull/1458))
+- Improve JSON sanitization ([#1405](https://github.com/MetaMask/snaps/pull/1405))
 
 ## [0.32.2]
 ### Changed
