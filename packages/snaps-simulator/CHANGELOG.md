@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.35.1-flask.1]
-### Uncategorized
-- Add missing `publishConfig` to `snaps-jest` and `snaps-simulator` ([#1538](https://github.com/MetaMask/snaps/pull/1538))
+### Fixed
+- Fix publishing to NPM ([#1538](https://github.com/MetaMask/snaps/pull/1538))
 
 ## [0.35.0-flask.1]
 ### Added

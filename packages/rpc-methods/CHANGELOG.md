@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.35.1-flask.1]
+### Changed
+- No changes this release.
 
 ## [0.35.0-flask.1]
 ### Added
