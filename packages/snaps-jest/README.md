@@ -57,7 +57,7 @@ matchers by adding them to your Jest configuration manually:
 ```js
 module.exports = {
   testEnvironment: '@metamask/snaps-jest',
-  setupFilesAfterEnv: ['@metamask/snaps-jest/dist/setup.js'],
+  setupFilesAfterEnv: ['@metamask/snaps-jest/dist/cjs/setup.js'],
 };
 ```
 
