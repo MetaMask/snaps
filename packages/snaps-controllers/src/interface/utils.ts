@@ -1,6 +1,9 @@
 import { Component, NodeType } from '@metamask/snaps-ui';
 
-export type ComponentState = Record<string, string | Record<string, string>>;
+export type ComponentState = Record<
+  string,
+  string | Record<string, string | null> | null
+>;
 
 export const constructState = (
   state: ComponentState,
@@ -8,13 +11,10 @@ export const constructState = (
 ): ComponentState => {
   const { type } = component;
   if (type === NodeType.Panel) {
-    return {
-      ...state,
-      ...component.children.reduce(
-        (acc, node) => constructState(acc, node),
-        state,
-      ),
-    };
+    return component.children.reduce(
+      (acc, node) => constructState(acc, node),
+      state,
+    );
   }
   if (type === NodeType.Form) {
     return {
@@ -26,7 +26,7 @@ export const constructState = (
     };
   }
   if (type === NodeType.Input) {
-    return { ...state, [component.name]: '' };
+    return { ...state, [component.name]: null };
   }
 
   return state;
