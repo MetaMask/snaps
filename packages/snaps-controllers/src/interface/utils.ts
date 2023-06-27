@@ -8,13 +8,17 @@ export const constructState = (
 ): ComponentState => {
   const { type } = component;
   if (type === NodeType.Panel) {
-    return component.children.reduce(
-      (acc, node) => constructState(acc, node),
-      state,
-    );
+    return {
+      ...state,
+      ...component.children.reduce(
+        (acc, node) => constructState(acc, node),
+        state,
+      ),
+    };
   }
   if (type === NodeType.Form) {
     return {
+      ...state,
       [component.name]: component.children.reduce(
         (acc, node) => constructState(acc, node),
         {},
@@ -22,7 +26,7 @@ export const constructState = (
     };
   }
   if (type === NodeType.Input) {
-    return { [component.name]: '' };
+    return { ...state, [component.name]: '' };
   }
 
   return state;
