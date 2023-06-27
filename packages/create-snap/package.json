@@ -27,7 +27,7 @@
     "build:chmod": "chmod +x ./dist/esm/main.js && chmod +x ./dist/cjs/main.js",
     "build:clean": "yarn clean && yarn build",
     "build:watch": "tsc-watch --onSuccess 'yarn build:chmod'",
-    "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
+    "clean": "rimraf '*.tsbuildinfo' 'dist'",
     "test": "jest && yarn posttest",
     "posttest": "jest-it-up",
     "test:watch": "yarn test --watch",

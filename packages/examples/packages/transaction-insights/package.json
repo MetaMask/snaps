@@ -17,7 +17,7 @@
   "scripts": {
     "build": "mm-snap build",
     "build:clean": "yarn clean && yarn build",
-    "clean": "rimraf \"dist/*\"",
+    "clean": "rimraf \"dist\"",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
     "lint:changelog": "yarn auto-changelog validate",
     "lint:ci": "yarn lint",

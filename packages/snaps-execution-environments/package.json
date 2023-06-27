@@ -27,7 +27,7 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "yarn auto-changelog validate",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
-    "clean": "rimraf '*.tsbuildinfo' 'dist/*' 'src/__GENERATED__/' 'coverage/*' '__test__/*'",
+    "clean": "rimraf '*.tsbuildinfo' 'dist' 'src/__GENERATED__/' 'coverage/*' '__test__/*'",
     "build": "yarn build:source && yarn build:types",
     "build:source": "yarn build:esm && yarn build:cjs",
     "build:types": "tsc --project tsconfig.build.json",
