@@ -1,0 +1,14 @@
+name: Publish "@metamask/test-snaps"
+
+on:
+  workflow_call:
+    secrets:
+      PUBLISH_PAGES_TOKEN:
+        required: true
+
+jobs:
+  publish-test-snaps:
+    name: Publish "@metamask/test-snaps"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
