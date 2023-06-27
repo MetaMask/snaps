@@ -31,7 +31,7 @@
     "build:esm": "swc src --out-dir dist/esm --config-file ../../.swcrc.build.json --config module.type=es6",
     "build:cjs": "swc src --out-dir dist/cjs --config-file ../../.swcrc.build.json --config module.type=commonjs",
     "build:clean": "yarn clean && yarn build",
-    "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
+    "clean": "rimraf '*.tsbuildinfo' 'dist'",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",

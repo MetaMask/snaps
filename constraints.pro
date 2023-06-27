@@ -197,7 +197,7 @@ gen_enforced_field(WorkspaceCwd, 'scripts.start', 'mm-snap watch') :-
   WorkspaceCwd \= 'packages/examples/packages/browserify-plugin',
   WorkspaceCwd \= 'packages/examples/packages/rollup-plugin',
   WorkspaceCwd \= 'packages/examples/packages/webpack-plugin'.
-gen_enforced_field(WorkspaceCwd, 'scripts.clean', 'rimraf "dist/*"') :-
+gen_enforced_field(WorkspaceCwd, 'scripts.clean', 'rimraf "dist"') :-
   is_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'scripts.test', 'yarn test:e2e') :-
   is_example(WorkspaceCwd).
