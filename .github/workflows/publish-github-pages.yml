@@ -46,6 +46,6 @@ jobs:
         with:
           # This `PUBLISH_PAGES_TOKEN` needs to be manually set per-repository.
           # Look in the repository settings under "Environments", and set this token in the `github-pages` environment.
-          personal_token: ${{ secrets.PUBLISH_DOCS_TOKEN }}
+          personal_token: ${{ secrets.PUBLISH_PAGES_TOKEN }}
           publish_dir: ./docs
           destination_dir: ${{ inputs.destination_dir }}

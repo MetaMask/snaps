@@ -48,7 +48,7 @@ jobs:
     uses: ./.github/workflows/publish-release.yml
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_DOCS_TOKEN }}
+      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
 
   all-jobs-complete:
     name: All jobs complete

@@ -115,4 +115,4 @@ jobs:
       destination_dir: test-snaps/${{ needs.get-release-version.outputs.RELEASE_VERSION }}
       publish_dir: ./packages/test-snaps/public
     secrets:
-      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_DOCS_TOKEN }}
+      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
