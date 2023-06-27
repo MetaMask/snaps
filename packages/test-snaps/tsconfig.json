@@ -9,6 +9,7 @@
     "./src",
     "gatsby-browser.tsx",
     "gatsby-config.ts",
+    "gatsby-node.ts",
     "gatsby-ssr.tsx",
     "package.json"
   ],

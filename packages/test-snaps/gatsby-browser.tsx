@@ -2,7 +2,7 @@ import { GatsbyBrowser } from 'gatsby';
 import { SSRProvider } from 'react-bootstrap';
 
 // eslint-disable-next-line import/no-unassigned-import
-import './src/assets/index.scss';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export const wrapRootElement: GatsbyBrowser['wrapRootElement'] = ({
   element,
