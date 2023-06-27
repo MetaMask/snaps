@@ -1,13 +1,15 @@
+import { logError } from '@metamask/snaps-utils';
 import { graphql, useStaticQuery } from 'gatsby';
 import { ChangeEvent, FormEvent, FunctionComponent, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 
+import { ButtonSpinner } from './ButtonSpinner';
 import { useInstallSnapMutation } from '../api';
 import { useInstalled } from '../utils';
-import { ButtonSpinner } from './ButtonSpinner';
 
 type ConnectProps = {
   name: string;
+  testId: string;
   snapId?: string;
   version?: string;
 };
@@ -49,10 +51,8 @@ export const Connect: FunctionComponent<ConnectProps> = ({
   const handleConnect = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    installSnap({ snapId, version: defaultVersion ?? version });
+    installSnap({ snapId, version: defaultVersion ?? version }).catch(logError);
   };
-
-  const buttonText = isInstalled ? 'Reconnect' : 'Connect';
 
   return (
     <Form onSubmit={handleConnect} className="mb-3">
@@ -79,7 +79,7 @@ export const Connect: FunctionComponent<ConnectProps> = ({
           <ButtonSpinner>Connecting</ButtonSpinner>
         ) : (
           <span>
-            {buttonText} to {name}
+            {isInstalled ? 'Reconnect' : 'Connect'} to {name}
           </span>
         )}
       </Button>

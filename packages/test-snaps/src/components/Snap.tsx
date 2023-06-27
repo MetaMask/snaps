@@ -2,8 +2,8 @@ import { FunctionComponent, ReactNode } from 'react';
 import { Card, Col } from 'react-bootstrap';
 import CardHeader from 'react-bootstrap/CardHeader';
 
-import { getSnapId } from '../utils/id';
 import { Connect } from './Connect';
+import { getSnapId } from '../utils';
 
 export type SnapProps = {
   /**
@@ -14,7 +14,7 @@ export type SnapProps = {
   /**
    * The `data-testid` of the Snap.
    */
-  testId?: string;
+  testId: string;
 
   /**
    * The snap ID. This is only used in production.

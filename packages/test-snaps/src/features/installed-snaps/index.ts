@@ -1,1 +1,1 @@
-export * from './Snaps';
+export * from './InstalledSnaps';

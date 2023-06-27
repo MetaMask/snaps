@@ -6,7 +6,7 @@ import { Fox } from './Fox';
 export const Logo: FunctionComponent = () => {
   // Prevent SSR from rendering the logo.
   if (typeof document === 'undefined') {
-    return null;
+    return <Container style={{ height: '500px' }} />;
   }
 
   return (
