@@ -28,7 +28,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
           // We're using the `NotificationType` enum here, but you can also use
           // the string values directly, e.g. `type: 'inApp'`.
           type: NotificationType.InApp,
-          message: `Hello, ${origin}, from within MetaMask!`,
+          message: `Hello from within MetaMask!`,
         },
       });
 

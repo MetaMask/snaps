@@ -9,7 +9,7 @@ import { Result, Snap } from '../../../components';
 import { getSnapId } from '../../../utils';
 
 export const BIP44: FunctionComponent = () => {
-  const [invokeSnap, { isLoading, data }] = useInvokeMutation();
+  const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
 
   const handleClick = (method: string, coinType: number) => () => {
     invokeSnap({
@@ -32,16 +32,16 @@ export const BIP44: FunctionComponent = () => {
         <Button
           id="sendBip44Test"
           data-testid="send-test"
-          onClick={handleClick('getAccount', 1)}
+          onClick={handleClick('getPublicKey', 1)}
           disabled={isLoading}
         >
-          Send Test
+          Get Public Key
         </Button>
         <Button
           variant="secondary"
           id="sendInvalidBip44Test"
           data-testid="send-invalid-test"
-          onClick={handleClick('getAccount', 3)}
+          onClick={handleClick('getPublicKey', 3)}
           disabled={isLoading}
         >
           Send Invalid
@@ -50,6 +50,7 @@ export const BIP44: FunctionComponent = () => {
       <Result className="mb-3">
         <span id="bip44Result" data-testid="test-result">
           {JSON.stringify(data, null, 2)}
+          {JSON.stringify(error, null, 2)}
         </span>
       </Result>
 

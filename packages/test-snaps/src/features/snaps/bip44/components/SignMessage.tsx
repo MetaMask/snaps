@@ -9,7 +9,7 @@ import { BIP_44_PORT, BIP_44_SNAP_ID } from '../constants';
 
 export const SignMessage: FunctionComponent = () => {
   const [message, setMessage] = useState('');
-  const [invokeSnap, { isLoading, data }] = useInvokeMutation();
+  const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setMessage(event.target.value);
@@ -21,7 +21,9 @@ export const SignMessage: FunctionComponent = () => {
     invokeSnap({
       snapId: getSnapId(BIP_44_SNAP_ID, BIP_44_PORT),
       method: 'signMessage',
-      params: [message],
+      params: {
+        message,
+      },
     }).catch(logError);
   };
 
@@ -43,7 +45,10 @@ export const SignMessage: FunctionComponent = () => {
         </Button>
       </Form>
       <Result>
-        <span id="bip44SignResult">{JSON.stringify(data, null, 2)}</span>
+        <span id="bip44SignResult">
+          {JSON.stringify(data, null, 2)}
+          {JSON.stringify(error, null, 2)}
+        </span>
       </Result>
     </>
   );
