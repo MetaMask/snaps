@@ -41,7 +41,7 @@ export const BIP44: FunctionComponent = () => {
           variant="secondary"
           id="sendInvalidBip44Test"
           data-testid="send-invalid-test"
-          onClick={handleClick('getPublicKey', 3)}
+          onClick={handleClick('getPublicKey', 2)}
           disabled={isLoading}
         >
           Send Invalid
