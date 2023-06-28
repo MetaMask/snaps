@@ -1,9 +1,9 @@
 import { logError } from '@metamask/snaps-utils';
-import { graphql, useStaticQuery } from 'gatsby';
 import { ChangeEvent, FormEvent, FunctionComponent, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 
 import { ButtonSpinner } from './ButtonSpinner';
+import packageJson from '../../package.json';
 import { useInstallSnapMutation } from '../api';
 import { useInstalled } from '../utils';
 
@@ -12,14 +12,6 @@ type ConnectProps = {
   testId: string;
   snapId?: string;
   version?: string;
-};
-
-type Query = {
-  site: {
-    siteMetadata: {
-      version: string;
-    };
-  };
 };
 
 export const Connect: FunctionComponent<ConnectProps> = ({
@@ -32,18 +24,6 @@ export const Connect: FunctionComponent<ConnectProps> = ({
   const [snapId, setSnapId] = useState(defaultSnapId);
   const isInstalled = useInstalled(snapId);
 
-  const { site } = useStaticQuery<Query>(graphql`
-    query Version {
-      site {
-        siteMetadata {
-          version
-        }
-      }
-    }
-  `);
-
-  const { version } = site.siteMetadata;
-
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSnapId(event.target.value);
   };
@@ -51,7 +31,10 @@ export const Connect: FunctionComponent<ConnectProps> = ({
   const handleConnect = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    installSnap({ snapId, version: defaultVersion ?? version }).catch(logError);
+    installSnap({
+      snapId,
+      version: defaultVersion ?? packageJson.version,
+    }).catch(logError);
   };
 
   return (

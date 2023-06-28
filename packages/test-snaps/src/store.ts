@@ -3,14 +3,13 @@ import { setupListeners } from '@reduxjs/toolkit/query';
 
 import { baseApi } from './api';
 
-const createStore = (preloadedState: any) => {
+const createStore = () => {
   const store = configureStore({
     reducer: {
       [baseApi.reducerPath]: baseApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(baseApi.middleware),
-    preloadedState,
   });
 
   setupListeners(store.dispatch);
@@ -18,7 +17,10 @@ const createStore = (preloadedState: any) => {
   return store;
 };
 
-export type RootState = ReturnType<ReturnType<typeof createStore>['getState']>;
-export type AppDispatch = ReturnType<typeof createStore>['dispatch'];
+export type ApplicationState = ReturnType<
+  ReturnType<typeof createStore>['getState']
+>;
+
+export type ApplicationDispatch = ReturnType<typeof createStore>['dispatch'];
 
 export default createStore;

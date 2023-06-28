@@ -2,17 +2,10 @@
   "extends": "../../tsconfig.packages.json",
   "compilerOptions": {
     "baseUrl": "./",
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "resolveJsonModule": true
   },
-  "include": [
-    "./src",
-    "gatsby-browser.tsx",
-    "gatsby-config.ts",
-    "gatsby-node.ts",
-    "gatsby-ssr.tsx",
-    "package.json"
-  ],
+  "include": ["./src", "webpack.config.ts", "package.json"],
   "references": [
     {
       "path": "../snaps-utils"
