@@ -5,6 +5,8 @@ on:
     secrets:
       NPM_TOKEN:
         required: true
+      PUBLISH_PAGES_TOKEN:
+        required: true
 
 jobs:
   publish-release:
