@@ -1535,7 +1535,7 @@ export class SnapController extends BaseController<
     permissionNames: NonEmptyArray<string>,
   ) {
     assert(
-      !permissionNames.every((permissionName) =>
+      permissionNames.every((permissionName) =>
         this.#dynamicPermissions.includes(permissionName),
       ),
       'Non-dynamic permissions cannot be revoked',

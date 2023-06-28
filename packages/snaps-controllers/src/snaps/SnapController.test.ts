@@ -5377,4 +5377,47 @@ describe('SnapController', () => {
       snapController.destroy();
     });
   });
+
+  describe('SnapController:revokeDynamicPermissions', () => {
+    it('calls PermissionController:revokePermissions', () => {
+      const messenger = getSnapControllerMessenger();
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+        }),
+      );
+
+      const callActionSpy = jest.spyOn(messenger, 'call');
+
+      messenger.call('SnapController:revokeDynamicPermissions', MOCK_SNAP_ID, [
+        'eth_accounts',
+      ]);
+
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'PermissionController:revokePermissions',
+        { [MOCK_SNAP_ID]: ['eth_accounts'] },
+      );
+
+      snapController.destroy();
+    });
+
+    it('throws if input permission is not a dynamic permission', () => {
+      const messenger = getSnapControllerMessenger();
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+        }),
+      );
+
+      expect(() =>
+        messenger.call(
+          'SnapController:revokeDynamicPermissions',
+          MOCK_SNAP_ID,
+          ['snap_notify'],
+        ),
+      ).toThrow('Non-dynamic permissions cannot be revoked');
+
+      snapController.destroy();
+    });
+  });
 });

@@ -332,6 +332,7 @@ export const getSnapControllerMessenger = (
       'SnapsRegistry:get',
       'SnapsRegistry:getMetadata',
       'SnapController:disconnectOrigin',
+      'SnapController:revokeDynamicPermissions',
     ],
   });
 
