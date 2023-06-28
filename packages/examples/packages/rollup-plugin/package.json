@@ -26,7 +26,7 @@
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" \"!snap.manifest.json\" --ignore-path ../../../../.gitignore",
     "test": "yarn test:e2e",
     "test:e2e": "jest",
-    "start": "rollup watch",
+    "start": "yarn build --watch",
     "prepare-manifest:preview": "../../../../scripts/prepare-preview-manifest.sh",
     "publish:preview": "yarn npm publish --tag preview"
   },
