@@ -3,7 +3,7 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "baseUrl": "./",
-    "outDir": "./dist",
+    "outDir": "./dist/types",
     "rootDir": "./",
     "skipLibCheck": true,
     "resolveJsonModule": true

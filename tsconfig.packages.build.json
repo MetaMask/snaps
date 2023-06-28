@@ -2,7 +2,9 @@
   "extends": "./tsconfig.packages.json",
   "compilerOptions": {
     "declaration": true,
+    "emitDeclarationOnly": true,
     "inlineSources": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "module": "ES2020"
   }
 }

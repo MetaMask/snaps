@@ -148,6 +148,40 @@ gen_enforced_field(WorkspaceCwd, 'sideEffects', 'false') :-
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
 
+% The type definitions entrypoint for the dependency must be `./dist/types/index.d.ts`.
+gen_enforced_field(WorkspaceCwd, 'types', './dist/types/index.d.ts') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+
+% The entrypoint for the dependency must be `./dist/cjs/index.js`.
+gen_enforced_field(WorkspaceCwd, 'main', './dist/cjs/index.js') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+
+% The module entrypoint for the dependency must be `./dist/esm/index.js`.
+gen_enforced_field(WorkspaceCwd, 'module', './dist/esm/index.js') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+
+% Dependencies must have preview scripts.
+gen_enforced_field(WorkspaceCwd, 'scripts.prepare-manifest:preview', '../../scripts/prepare-preview-manifest.sh') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  \+ is_example(WorkspaceCwd),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'scripts.publish:preview', 'yarn npm publish --tag preview') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+
+gen_enforced_field(WorkspaceCwd, 'publishConfig.access', 'public') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'publishConfig.registry', 'https://registry.npmjs.org/') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+
 % Ensure all examples have the same scripts.
 gen_enforced_field(WorkspaceCwd, 'scripts.build', 'mm-snap build') :-
   is_example(WorkspaceCwd),
@@ -163,7 +197,7 @@ gen_enforced_field(WorkspaceCwd, 'scripts.start', 'mm-snap watch') :-
   WorkspaceCwd \= 'packages/examples/packages/browserify-plugin',
   WorkspaceCwd \= 'packages/examples/packages/rollup-plugin',
   WorkspaceCwd \= 'packages/examples/packages/webpack-plugin'.
-gen_enforced_field(WorkspaceCwd, 'scripts.clean', 'rimraf "dist/*"') :-
+gen_enforced_field(WorkspaceCwd, 'scripts.clean', 'rimraf "dist"') :-
   is_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'scripts.test', 'yarn test:e2e') :-
   is_example(WorkspaceCwd).
@@ -184,9 +218,14 @@ gen_enforced_field(WorkspaceCwd, 'scripts.lint:misc', 'prettier --no-error-on-un
   is_nested_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'scripts.lint:changelog', 'yarn auto-changelog validate') :-
   is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.prepare-manifest:preview', '../../../../scripts/prepare-preview-manifest.sh') :-
+  is_example(WorkspaceCwd),
+  \+ is_nested_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.prepare-manifest:preview', '../../../../../../scripts/prepare-preview-manifest.sh') :-
+  is_nested_example(WorkspaceCwd).
 
 % Ensure all examples have the same `main` and `types` fields.
-gen_enforced_field(WorkspaceCwd, 'main', 'dist/bundle.js') :-
+gen_enforced_field(WorkspaceCwd, 'main', './dist/bundle.js') :-
   is_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'types', null) :-
   is_example(WorkspaceCwd).

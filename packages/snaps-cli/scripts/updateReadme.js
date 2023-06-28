@@ -13,7 +13,7 @@ main();
  * `mm-snap --help`.
  */
 async function main() {
-  const binPath = path.join(__dirname, '../dist/main.js');
+  const binPath = path.join(__dirname, '../dist/cjs/main.js');
   const readmePath = path.join(__dirname, '../README.md');
   const currentReadme = await fs.readFile(readmePath, 'utf8');
 

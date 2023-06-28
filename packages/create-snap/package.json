@@ -1,6 +1,6 @@
 {
   "name": "@metamask/create-snap",
-  "version": "0.34.1-flask.1",
+  "version": "0.35.2-flask.1",
   "description": "A CLI for creating MetaMask Snaps.",
   "repository": {
     "type": "git",
@@ -8,18 +8,26 @@
   },
   "license": "ISC",
   "sideEffects": false,
-  "bin": "./dist/main.js",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "bin": "./dist/cjs/main.js",
   "files": [
-    "dist/"
+    "dist/cjs/**",
+    "dist/esm/**",
+    "dist/types/**"
   ],
   "scripts": {
-    "build:tsc": "tsc --project ./tsconfig.build.json",
-    "build:chmod": "chmod +x ./dist/main.js",
-    "build": "yarn build:tsc && yarn build:post-tsc",
+    "build": "yarn build:source && yarn build:types",
+    "build:source": "yarn build:esm && yarn build:cjs",
+    "build:types": "tsc --project tsconfig.build.json",
+    "build:esm": "swc src --out-dir dist/esm --config-file ../../.swcrc.build.json --config module.type=es6",
+    "build:cjs": "swc src --out-dir dist/cjs --config-file ../../.swcrc.build.json --config module.type=commonjs",
     "build:post-tsc": "yarn build:chmod",
+    "build:chmod": "chmod +x ./dist/esm/main.js && chmod +x ./dist/cjs/main.js",
     "build:clean": "yarn clean && yarn build",
     "build:watch": "tsc-watch --onSuccess 'yarn build:chmod'",
-    "clean": "rimraf '*.tsbuildinfo' 'dist/*'",
+    "clean": "rimraf '*.tsbuildinfo' 'dist'",
     "test": "jest && yarn posttest",
     "posttest": "jest-it-up",
     "test:watch": "yarn test --watch",
@@ -30,7 +38,9 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "publish:package": "../../scripts/publish-package.sh",
-    "lint:ci": "yarn lint"
+    "lint:ci": "yarn lint",
+    "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
+    "publish:preview": "yarn npm publish --tag preview"
   },
   "dependencies": {
     "@babel/core": "^7.20.12",
@@ -52,7 +62,8 @@
     "@metamask/eslint-config-jest": "^11.0.0",
     "@metamask/eslint-config-nodejs": "^11.0.1",
     "@metamask/eslint-config-typescript": "^11.0.0",
-    "@swc/core": "^1.3.61",
+    "@swc/cli": "^0.1.62",
+    "@swc/core": "^1.3.66",
     "@swc/jest": "^0.2.26",
     "@types/jest": "^27.5.1",
     "@types/node": "^20.3.1",
