@@ -1,7 +1,7 @@
 import { FunctionComponent } from 'react';
 
-import { CRONJOBS_SNAP_ID, CRONJOBS_SNAP_PORT } from './constants';
 import { Snap } from '../../../components';
+import { CRONJOBS_SNAP_ID, CRONJOBS_SNAP_PORT } from './constants';
 
 export const Cronjobs: FunctionComponent = () => {
   return (

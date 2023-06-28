@@ -60,7 +60,7 @@ async function sendRequest(page: Page, args: SnapRpcHookArgs) {
  * @param handler - The handler to use. Defaults to `onRpcRequest`.
  * @returns The response.
  */
-export function request(
+export async function request(
   page: Page,
   { origin = 'metamask.io', ...options }: RequestOptions,
   handler:
@@ -163,6 +163,6 @@ export async function sendTransaction(
  * @param options - The request options.
  * @returns The response.
  */
-export function runCronjob(page: Page, options: CronjobOptions) {
+export async function runCronjob(page: Page, options: CronjobOptions) {
   return request(page, options, HandlerType.OnCronjob);
 }

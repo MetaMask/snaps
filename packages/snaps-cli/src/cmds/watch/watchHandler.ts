@@ -91,7 +91,7 @@ export async function watch(argv: YargsArgs): Promise<void> {
 
     .on('ready', () => {
       buildSnap()
-        .then(() => {
+        .then(async () => {
           if (shouldServe) {
             return serve(argv);
           }

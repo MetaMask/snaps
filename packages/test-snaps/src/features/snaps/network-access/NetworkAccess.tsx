@@ -2,10 +2,10 @@ import { logError } from '@metamask/snaps-utils';
 import { FunctionComponent } from 'react';
 import { Button } from 'react-bootstrap';
 
-import { NETWORK_ACCESS_PORT, NETWORK_ACCESS_SNAP_ID } from './constants';
 import { useInvokeMutation } from '../../../api';
 import { Snap } from '../../../components';
 import { getSnapId } from '../../../utils';
+import { NETWORK_ACCESS_PORT, NETWORK_ACCESS_SNAP_ID } from './constants';
 
 export const NetworkAccess: FunctionComponent = () => {
   const [invokeSnap, { isLoading }] = useInvokeMutation();

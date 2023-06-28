@@ -70,7 +70,7 @@ export async function installSnap(
   });
 
   return {
-    request: (options) => {
+    request: async (options) => {
       log('Sending request %o.', options);
 
       // Note: This function is intentionally not async, so that we can access
@@ -84,7 +84,7 @@ export async function installSnap(
       return await sendTransaction(page, options);
     },
 
-    runCronjob: (options) => {
+    runCronjob: async (options) => {
       log('Running cronjob %o.', options);
 
       // Note: This function is intentionally not async, so that we can access
