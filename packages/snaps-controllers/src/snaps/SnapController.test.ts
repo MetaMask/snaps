@@ -1772,7 +1772,7 @@ describe('SnapController', () => {
       // we need an rpc message handler function to be returned
       jest
         .spyOn(messenger, 'call')
-        .mockImplementation(async (method, ..._args: unknown[]) => {
+        .mockImplementation((method, ..._args: unknown[]) => {
           if (method === 'ExecutionService:executeSnap') {
             return deferredExecutePromise;
           } else if (method === 'ExecutionService:handleRpcRequest') {

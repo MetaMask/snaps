@@ -53,7 +53,6 @@
     "@types/glob@^7.1.1": "patch:@types/glob@npm%3A7.1.4#./.yarn/patches/@types-glob-npm-7.1.4-d45247eaa2.patch",
     "@types/mocha@^10.0.1": "patch:@types/mocha@npm:10.0.1#.yarn/patches/@types-mocha-npm-10.0.1-7c94e9e170.patch",
     "clet@^1.0.1": "patch:clet@npm%3A1.0.1#./.yarn/patches/clet-npm-1.0.1-8523231bdc.patch",
-    "eslint-plugin-import": "2.26.0",
     "find-babel-config": "^2.0.0",
     "inline-source-map@~0.6.0": "patch:inline-source-map@npm%3A0.6.2#./.yarn/patches/inline-source-map-npm-0.6.2-96902459a0.patch",
     "jest-fetch-mock@^3.0.3": "patch:jest-fetch-mock@npm:3.0.3#.yarn/patches/jest-fetch-mock-npm-3.0.3-ac072ca8af.patch",

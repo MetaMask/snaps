@@ -1,8 +1,8 @@
 import { FunctionComponent } from 'react';
 
-import { Snap } from '../../../components';
 import { PublicKey, SignMessage } from './components';
 import { BIP_32_PORT, BIP_32_SNAP_ID } from './constants';
+import { Snap } from '../../../components';
 
 export const BIP32: FunctionComponent = () => {
   return (

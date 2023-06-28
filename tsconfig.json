@@ -15,8 +15,6 @@
     { "path": "./packages/snaps-webpack-plugin" }
   ],
   "compilerOptions": {
-    "strict": true,
-    "strictNullChecks": true,
     "esModuleInterop": true,
     "noEmit": true,
     "resolveJsonModule": true

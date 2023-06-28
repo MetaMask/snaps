@@ -4,11 +4,4 @@ module.exports = {
   parserOptions: {
     tsconfigRootDir: __dirname,
   },
-
-  ignorePatterns: [
-    '!.prettierrc.js',
-    '**/!.eslintrc.js',
-    '**/.cache/**',
-    '**/public/**',
-  ],
 };
