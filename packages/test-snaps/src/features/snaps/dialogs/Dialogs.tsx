@@ -45,7 +45,7 @@ export const Dialogs: FunctionComponent = () => {
           onClick={handleSubmitAlert}
           disabled={isLoading}
         >
-          Alert Dialog
+          Alert
         </Button>
         <Button
           id="sendConfirmationButton"
@@ -59,7 +59,7 @@ export const Dialogs: FunctionComponent = () => {
           onClick={handleSubmitPrompt}
           disabled={isLoading}
         >
-          Prompt Dialog
+          Prompt
         </Button>
       </ButtonGroup>
 

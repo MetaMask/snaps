@@ -34,7 +34,7 @@ export const EthereumProvider: FunctionComponent = () => {
         disabled={isLoading}
         onClick={handleSubmit}
       >
-        Get version
+        Get Version
       </Button>
       <Result>
         <span id="ethproviderResult">

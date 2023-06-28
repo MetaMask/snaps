@@ -31,7 +31,7 @@ export const JsonRpc: FunctionComponent = () => {
         disabled={isLoading}
         onClick={handleSubmit}
       >
-        Invoke snap
+        Invoke Snap
       </Button>
       <Result>
         <span id="rpcResult">

@@ -33,7 +33,7 @@ export const TransactionInsights: FunctionComponent = () => {
           from: account,
           to: account,
           value: '0x0',
-          data: '0x1',
+          data: '0xa9059cbb00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
         },
       ],
     }).catch(logError);
