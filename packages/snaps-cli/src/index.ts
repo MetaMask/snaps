@@ -5,10 +5,12 @@ export {
   SnapsWatchPlugin,
   SnapsBuiltInResolver,
   SnapsBuiltInResolverPlugin,
+  SnapsBundleWarningsPlugin,
 } from './webpack';
 export type {
   SnapsWatchPluginOptions,
   SnapsBuiltInResolverOptions,
+  SnapsBundleWarningsPluginOptions,
 } from './webpack';
 
 // Re-exported from `snaps-cli` for convenience.

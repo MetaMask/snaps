@@ -8,6 +8,7 @@ import { ProcessedWebpackConfig } from '../config';
 import {
   SnapsBuiltInResolver,
   SnapsBuiltInResolverPlugin,
+  SnapsBundleWarningsPlugin,
   SnapsWatchPlugin,
 } from './plugins';
 import { getDevTool } from './utils';
@@ -295,6 +296,14 @@ export function getDefaultConfiguration(
        * warnings about using Node.js built-ins, when no fallback is specified.
        */
       new SnapsBuiltInResolverPlugin(builtInResolver, options.spinner),
+
+      /**
+       * The `SnapsBundleWarningPlugin` is a Webpack plugin that shows a
+       * warning when the bundle is potentially incompatible with MetaMask
+       * Snaps.
+       */
+      config.plugins.builtInResolver &&
+        new SnapsBundleWarningsPlugin(options.spinner),
 
       /**
        * The `EnvironmentPlugin` is a Webpack plugin that adds environment

@@ -3,6 +3,7 @@ import { isBuiltin } from 'module';
 import { Ora } from 'ora';
 import {
   Compiler,
+  ProvidePlugin,
   ResolvePluginInstance,
   Resolver,
   WebpackPluginInstance,
@@ -11,7 +12,7 @@ import {
 import { indent, warn } from '../utils';
 
 /**
- * The options to pass to the {@link SnapsWatchPlugin}.
+ * The options for the {@link SnapsWatchPlugin}.
  */
 export type SnapsWatchPluginOptions = {
   /**
@@ -49,6 +50,9 @@ export class SnapsWatchPlugin implements WebpackPluginInstance {
   }
 }
 
+/**
+ * The options for the {@link SnapsBuiltInResolver}.
+ */
 export type SnapsBuiltInResolverOptions = {
   /**
    * The built-in modules to ignore.
@@ -141,8 +145,14 @@ export class SnapsBuiltInResolver implements ResolvePluginInstance {
  * plugin doesn't have access to the resolver.
  */
 export class SnapsBuiltInResolverPlugin implements WebpackPluginInstance {
+  /**
+   * The resolver to use for detecting built-in modules.
+   */
   readonly #resolver: SnapsBuiltInResolver | false;
 
+  /**
+   * The spinner to use for logging.
+   */
   readonly #spinner?: Ora;
 
   constructor(resolver: SnapsBuiltInResolver | false, spinner?: Ora) {
@@ -181,6 +191,103 @@ export class SnapsBuiltInResolverPlugin implements WebpackPluginInstance {
             '`plugins.builtInResolver.ignore`',
           )} array.\n\n${formattedModules}\n`,
         this.#spinner,
+      );
+    });
+  }
+}
+
+/**
+ * The options for the {@link SnapsBundleWarningsPlugin}.
+ */
+export type SnapsBundleWarningsPluginOptions = {
+  /**
+   * Whether to show warnings if the `Buffer` global is used, but not provided
+   * by Webpack's `DefinePlugin`.
+   */
+  buffer?: boolean;
+};
+
+/**
+ * A plugin that logs a message when a snap uses the `Buffer` global. The
+ * MetaMask Snaps CLI does not support the `Buffer` global by default, and this
+ * plugin is used to warn the user when they try to use the `Buffer` global.
+ */
+export class SnapsBundleWarningsPlugin implements WebpackPluginInstance {
+  /**
+   * The spinner to use for logging.
+   */
+  readonly #spinner?: Ora;
+
+  /**
+   * The options for the plugin.
+   */
+  readonly #options: SnapsBundleWarningsPluginOptions;
+
+  constructor(
+    options: SnapsBundleWarningsPluginOptions = {
+      buffer: true,
+    },
+    spinner?: Ora,
+  ) {
+    this.#options = options;
+    this.#spinner = spinner;
+  }
+
+  /**
+   * Apply the plugin to the Webpack compiler.
+   *
+   * @param compiler - The Webpack compiler.
+   */
+  apply(compiler: Compiler) {
+    if (this.#options.buffer) {
+      this.#checkBuffer(compiler);
+    }
+  }
+
+  /**
+   * Check if the `Buffer` global is used, but not provided by Webpack's
+   * `DefinePlugin`.
+   *
+   * @param compiler - The Webpack compiler.
+   */
+  #checkBuffer(compiler: Compiler) {
+    const plugin = compiler.options.plugins?.find(
+      (instance) => instance instanceof ProvidePlugin,
+    ) as ProvidePlugin | undefined;
+
+    // If the `ProvidePlugin` is configured to provide `Buffer`, then we don't
+    // need to warn the user.
+    if (plugin) {
+      const { definitions } = plugin;
+      if (definitions.Buffer) {
+        return;
+      }
+    }
+
+    compiler.hooks.compilation.tap(this.constructor.name, (compilation) => {
+      compilation.hooks.afterProcessAssets.tap(
+        this.constructor.name,
+        (assets) => {
+          // Check if assets use `Buffer`.
+          const bufferAssets = Object.entries(assets)
+            .filter(([name]) => name.endsWith('.js'))
+            .filter(([, asset]) => asset.source().includes('Buffer'));
+
+          if (bufferAssets.length === 0) {
+            return;
+          }
+
+          warn(
+            `The snap attempted to use the Node.js Buffer global, which is not supported by the MetaMask Snaps CLI.\n` +
+              `To use the Buffer global, you must use the ${yellow(
+                '`ProvidePlugin`',
+              )} to inject it: https://webpack.js.org/plugins/provide-plugin/.\n` +
+              `To disable this warning, set ${yellow(
+                '`plugins.bundleWarning`',
+              )} to ${yellow('`false`')} in your snap config file.`,
+            this.#spinner,
+          );
+        },
       );
     });
   }

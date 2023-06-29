@@ -315,6 +315,20 @@ export type SnapWebpackConfig = {
           ignore?: string[];
         }
       | false;
+
+    /**
+     * Options for the {@link SnapsBundleWarningsPlugin} plugin. If `false`, the
+     * plugin will be disabled.
+     */
+    bundleWarnings?:
+      | {
+          /**
+           * Whether to show warnings if the `Buffer` global is used, but not
+           * provided by Webpack's `DefinePlugin`.
+           */
+          buffer?: boolean;
+        }
+      | false;
   };
 
   /**
@@ -475,6 +489,11 @@ export const SnapsWebpackConfigStruct = object({
           object({ ignore: defaulted(array(string()), []) }),
           literal(false),
         ]),
+        {},
+      ),
+
+      bundleWarnings: defaulted(
+        union([object({ buffer: defaulted(boolean(), true) }), literal(false)]),
         {},
       ),
     }),

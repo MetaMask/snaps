@@ -1,10 +1,10 @@
-import { logError, logInfo } from '@metamask/snaps-utils';
+import { logInfo } from '@metamask/snaps-utils';
 import { resolve } from 'path';
 import { webpack } from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 
 import { ProcessedWebpackConfig } from '../config';
-import { info } from '../utils';
+import { error, info } from '../utils';
 import { getDefaultConfiguration, WebpackOptions } from './config';
 
 /**
@@ -30,15 +30,21 @@ export function getCompiler(
 
     const { modules, time, errors } = stats.toJson();
     if (!modules || !time) {
-      logError('Compilation status unknown. Please check your config.');
+      error(
+        'Compilation status unknown. Please check your config.',
+        options?.spinner,
+      );
+
       process.exitCode = 1;
       return;
     }
 
     if (errors?.length) {
-      logError(
+      error(
         `Compiled ${modules?.length} files in ${time}ms with ${errors?.length} errors.`,
+        options?.spinner,
       );
+
       process.exitCode = 1;
       return;
     }
