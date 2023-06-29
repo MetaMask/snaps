@@ -302,8 +302,11 @@ export function getDefaultConfiguration(
        * warning when the bundle is potentially incompatible with MetaMask
        * Snaps.
        */
-      config.plugins.builtInResolver &&
-        new SnapsBundleWarningsPlugin(options.spinner),
+      config.plugins.bundleWarnings &&
+        new SnapsBundleWarningsPlugin(
+          config.plugins.bundleWarnings,
+          options.spinner,
+        ),
 
       /**
        * The `EnvironmentPlugin` is a Webpack plugin that adds environment
