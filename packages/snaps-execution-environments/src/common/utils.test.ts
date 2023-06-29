@@ -1,4 +1,5 @@
 import {
+  BLOCKED_RPC_METHODS,
   assertEthereumOutboundRequest,
   assertSnapOutboundRequest,
   constructError,
@@ -41,24 +42,14 @@ describe('assertSnapOutboundRequest', () => {
     );
   });
 
-  it('disallows eth_requestAccounts', () => {
-    expect(() =>
-      assertSnapOutboundRequest({ method: 'eth_requestAccounts' }),
-    ).toThrow(
-      'The global Snap API only allows RPC methods starting with `wallet_*` and `snap_*`.',
+  it.each(
+    BLOCKED_RPC_METHODS.filter(
+      (method) => method.startsWith('wallet_') || method.startsWith('snap_'),
+    ),
+  )('disallows %s', (method) => {
+    expect(() => assertSnapOutboundRequest({ method })).toThrow(
+      'The method does not exist / is not available.',
     );
-  });
-
-  it('disallows wallet_requestSnaps', () => {
-    expect(() =>
-      assertSnapOutboundRequest({ method: 'wallet_requestSnaps' }),
-    ).toThrow('The method does not exist / is not available.');
-  });
-
-  it('disallows wallet_requestPermissions', () => {
-    expect(() =>
-      assertSnapOutboundRequest({ method: 'wallet_requestPermissions' }),
-    ).toThrow('The method does not exist / is not available.');
   });
 
   it('throws for invalid JSON values', () => {
@@ -89,22 +80,10 @@ describe('assertEthereumOutboundRequest', () => {
     ).toThrow('The method does not exist / is not available.');
   });
 
-  it('disallows wallet_requestPermissions', () => {
-    expect(() =>
-      assertEthereumOutboundRequest({ method: 'wallet_requestPermissions' }),
-    ).toThrow('The method does not exist / is not available.');
-  });
-
-  it('disallows eth_requestAccounts', () => {
-    expect(() =>
-      assertEthereumOutboundRequest({ method: 'eth_requestAccounts' }),
-    ).toThrow('The method does not exist / is not available.');
-  });
-
-  it('disallows wallet_requestSnaps', () => {
-    expect(() =>
-      assertEthereumOutboundRequest({ method: 'wallet_requestSnaps' }),
-    ).toThrow('The method does not exist / is not available.');
+  it.each(BLOCKED_RPC_METHODS)('disallows %s', (method) => {
+    expect(() => assertEthereumOutboundRequest({ method })).toThrow(
+      'The method does not exist / is not available.',
+    );
   });
 
   it('throws for invalid JSON values', () => {

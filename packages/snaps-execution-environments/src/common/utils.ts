@@ -102,10 +102,25 @@ export function proxyStreamProvider(
 }
 
 // We're blocking these RPC methods for v1, will revisit later.
-const BLOCKED_RPC_METHODS = Object.freeze([
-  'eth_requestAccounts',
+export const BLOCKED_RPC_METHODS = Object.freeze([
   'wallet_requestSnaps',
   'wallet_requestPermissions',
+  // We disallow all of these confirmations for now, since the screens are not ready for Snaps.
+  'eth_sendRawTransaction',
+  'eth_sendTransaction',
+  'personal_sign',
+  'eth_sign',
+  'eth_signTypedData',
+  'eth_signTypedData_v1',
+  'eth_signTypedData_v3',
+  'eth_signTypedData_v4',
+  'eth_decrypt',
+  'eth_getEncryptionPublicKey',
+  'wallet_addEthereumChain',
+  'wallet_switchEthereumChain',
+  'wallet_watchAsset',
+  'wallet_registerOnboarding',
+  'wallet_scanQRCode',
 ]);
 
 /**

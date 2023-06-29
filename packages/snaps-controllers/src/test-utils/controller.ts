@@ -255,6 +255,10 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
 
   messenger.registerActionHandler('ExecutionService:executeSnap', asyncNoOp);
   messenger.registerActionHandler('ExecutionService:terminateSnap', asyncNoOp);
+  messenger.registerActionHandler(
+    'ExecutionService:terminateAllSnaps',
+    asyncNoOp,
+  );
 
   messenger.registerActionHandler(
     'SnapsRegistry:get',
@@ -332,6 +336,7 @@ export const getSnapControllerMessenger = (
       'SnapsRegistry:get',
       'SnapsRegistry:getMetadata',
       'SnapController:disconnectOrigin',
+      'SnapController:revokeDynamicPermissions',
     ],
   });
 
