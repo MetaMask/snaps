@@ -1,4 +1,4 @@
-import { green, yellow } from 'chalk';
+import { yellow } from 'chalk';
 import { isBuiltin } from 'module';
 import { Ora } from 'ora';
 import {
@@ -8,12 +8,12 @@ import {
   WebpackPluginInstance,
 } from 'webpack';
 
-import { warn } from '../utils';
+import { indent, warn } from '../utils';
 
 /**
  * The options to pass to the {@link SnapsWatchPlugin}.
  */
-export type WatchPluginOptions = {
+export type SnapsWatchPluginOptions = {
   /**
    * The extra files to watch.
    */
@@ -26,9 +26,9 @@ export type WatchPluginOptions = {
  * file.
  */
 export class SnapsWatchPlugin implements WebpackPluginInstance {
-  #options: WatchPluginOptions;
+  readonly #options: SnapsWatchPluginOptions;
 
-  constructor(options: WatchPluginOptions) {
+  constructor(options: SnapsWatchPluginOptions) {
     this.#options = options;
   }
 
@@ -64,24 +64,24 @@ export type SnapsBuiltInResolverOptions = {
  */
 export class SnapsBuiltInResolver implements ResolvePluginInstance {
   /**
-   * The name of the resolver hook to tap into.
-   */
-  #source = 'described-resolve';
-
-  /**
    * The built-in modules that have been imported, but not resolved.
    */
-  unresolvedModules: string[] = [];
+  readonly unresolvedModules = new Set<string>();
+
+  /**
+   * The name of the resolver hook to tap into.
+   */
+  readonly #source = 'described-resolve';
 
   /**
    * The options for the plugin.
    */
-  #options: SnapsBuiltInResolverOptions;
+  readonly #options: SnapsBuiltInResolverOptions;
 
   /**
    * The spinner to use for logging.
    */
-  #spinner?: Ora;
+  readonly #spinner?: Ora;
 
   constructor(
     options: SnapsBuiltInResolverOptions = {
@@ -111,33 +111,77 @@ export class SnapsBuiltInResolver implements ResolvePluginInstance {
           const baseRequest = request.split('/')[0];
           if (
             isBuiltin(baseRequest) &&
-            !this.#options.ignore?.includes(baseRequest) &&
-            !this.unresolvedModules.includes(baseRequest)
+            !this.#options.ignore?.includes(baseRequest)
           ) {
             const fallback = resolver.options.fallback.find(
               ({ name }) => name === baseRequest,
             );
 
             if (fallback && !fallback.alias) {
-              warn(
-                // TODO: Use `docs.metamask.io` link when available.
-                `Attempted to use ${green(
-                  `"${baseRequest}"`,
-                )}, but no browser fallback has been provided.\nThe MetaMask Snaps CLI does not support Node.js builtins by default. If you want to use this module, you must provide a fallback: https://webpack.js.org/configuration/resolve/#resolvefallback.\nTo disable this warning, set ${yellow(
-                  '`plugins.builtInResolver`',
-                )} to ${yellow(
-                  '`false`',
-                )} in your snap config file, or add ${green(
-                  `"${baseRequest}"`,
-                )} to the ${yellow('`ignore`')} array.`,
-                this.#spinner,
-              );
-              this.unresolvedModules.push(baseRequest);
+              this.unresolvedModules.add(baseRequest);
             }
           }
 
           return callback();
         },
       );
+  }
+}
+
+/**
+ * A plugin that logs a message when a built-in module is not resolved. The
+ * MetaMask Snaps CLI does not support built-in modules by default, and this
+ * plugin is used to warn the user when they try to import a built-in module,
+ * when no fallback is configured.
+ *
+ * We use both a resolver and a plugin, because the resolver is used to detect
+ * when a built-in module is imported, and the plugin is used to log a single
+ * message when the compilation is complete. We can't do everything in a single
+ * plugin, because the resolver doesn't have access to the compilation, and the
+ * plugin doesn't have access to the resolver.
+ */
+export class SnapsBuiltInResolverPlugin implements WebpackPluginInstance {
+  readonly #resolver: SnapsBuiltInResolver | false;
+
+  readonly #spinner?: Ora;
+
+  constructor(resolver: SnapsBuiltInResolver | false, spinner?: Ora) {
+    this.#resolver = resolver;
+    this.#spinner = spinner;
+  }
+
+  /**
+   * Apply the plugin to the Webpack compiler.
+   *
+   * @param compiler - The Webpack compiler.
+   */
+  apply(compiler: Compiler) {
+    compiler.hooks.afterCompile.tap(this.constructor.name, () => {
+      if (!this.#resolver) {
+        return;
+      }
+
+      const { unresolvedModules } = this.#resolver;
+      if (unresolvedModules.size === 0) {
+        return;
+      }
+
+      const formattedModules = new Array(...unresolvedModules)
+        .map((name) => indent(`• ${name}`, 2))
+        .join('\n');
+
+      warn(
+        `The snap attempted to use one or more Node.js builtins, but no browser fallback has been provided.\n` +
+          `The MetaMask Snaps CLI does not support Node.js builtins by default. If you want to use this module, you must provide a fallback: https://webpack.js.org/configuration/resolve/#resolvefallback.\n` +
+          `To disable this warning, set ${yellow(
+            '`plugins.builtInResolver`',
+          )} to ${yellow(
+            '`false`',
+          )} in your snap config file, or add the module to the ${yellow(
+            '`plugins.builtInResolver.ignore`',
+          )} array.\n\n${formattedModules}\n`,
+        this.#spinner,
+      );
+    });
   }
 }

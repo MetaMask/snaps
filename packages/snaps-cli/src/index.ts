@@ -4,6 +4,11 @@ export {
   getDefaultConfiguration,
   SnapsWatchPlugin,
   SnapsBuiltInResolver,
+  SnapsBuiltInResolverPlugin,
+} from './webpack';
+export type {
+  SnapsWatchPluginOptions,
+  SnapsBuiltInResolverOptions,
 } from './webpack';
 
 // Re-exported from `snaps-cli` for convenience.

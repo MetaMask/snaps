@@ -5,7 +5,11 @@ import TerserPlugin from 'terser-webpack-plugin';
 import { Configuration, EnvironmentPlugin } from 'webpack';
 
 import { ProcessedWebpackConfig } from '../config';
-import { SnapsBuiltInResolver, SnapsWatchPlugin } from './plugins';
+import {
+  SnapsBuiltInResolver,
+  SnapsBuiltInResolverPlugin,
+  SnapsWatchPlugin,
+} from './plugins';
 import { getDevTool } from './utils';
 
 export type WebpackOptions = {
@@ -50,6 +54,10 @@ export function getDefaultConfiguration(
     evaluate: config.evaluate,
   },
 ): Configuration {
+  const builtInResolver =
+    config.plugins.builtInResolver &&
+    new SnapsBuiltInResolver(config.plugins.builtInResolver, options.spinner);
+
   return {
     /**
      * `web` is the default target for Webpack, so we don't need to set it, but
@@ -253,13 +261,7 @@ export function getDefaultConfiguration(
        * The plugins to use. We use the {@link SnapsBuiltInResolver} to show
        * warnings about using Node.js built-ins, when no fallback is specified.
        */
-      plugins: [
-        config.plugins.builtInResolver &&
-          new SnapsBuiltInResolver(
-            config.plugins.builtInResolver,
-            options.spinner,
-          ),
-      ],
+      plugins: [builtInResolver],
     },
 
     /**
@@ -287,6 +289,12 @@ export function getDefaultConfiguration(
       new SnapsWatchPlugin({
         files: [config.manifest.path],
       }),
+
+      /**
+       * The `SnapsBuiltInResolverPlugin` is a Webpack plugin that shows
+       * warnings about using Node.js built-ins, when no fallback is specified.
+       */
+      new SnapsBuiltInResolverPlugin(builtInResolver, options.spinner),
 
       /**
        * The `EnvironmentPlugin` is a Webpack plugin that adds environment
