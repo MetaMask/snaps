@@ -15,9 +15,8 @@ import {
   RequestedSnapPermissions,
   InstallSnapsResult,
 } from '@metamask/snaps-utils';
-import { isJsonRpcRequest, Json, NonEmptyArray } from '@metamask/utils';
+import { Json, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
-import { nanoid } from 'nanoid';
 
 import { MethodHooksObject } from '../utils';
 
@@ -171,19 +170,6 @@ export function getInvokeSnapImplementation({
 
     const { snapId, request } = params as InvokeSnapParams;
 
-    const rpcRequest = {
-      jsonrpc: '2.0',
-      id: nanoid(),
-      ...request,
-    };
-
-    if (!isJsonRpcRequest(rpcRequest)) {
-      throw ethErrors.rpc.invalidParams({
-        message:
-          'Must specify a valid JSON-RPC request object as single parameter.',
-      });
-    }
-
     if (!getSnap(snapId)) {
       throw ethErrors.rpc.invalidRequest({
         message: `The snap "${snapId}" is not installed. Please install it first, before invoking the snap.`,
@@ -195,7 +181,7 @@ export function getInvokeSnapImplementation({
     return (await handleSnapRpcRequest({
       snapId,
       origin,
-      request: rpcRequest,
+      request,
       handler: HandlerType.OnRpcRequest,
     })) as Json;
   };

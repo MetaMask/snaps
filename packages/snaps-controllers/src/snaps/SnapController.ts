@@ -60,6 +60,7 @@ import {
 } from '@metamask/snaps-utils';
 import {
   assert,
+  assertIsJsonRpcRequest,
   Duration,
   gtRange,
   gtVersion,
@@ -2420,8 +2421,16 @@ export class SnapController extends BaseController<
     snapId,
     origin,
     handler: handlerType,
-    request,
+    request: rawRequest,
   }: SnapRpcHookArgs & { snapId: ValidatedSnapId }): Promise<unknown> {
+    const request = {
+      jsonrpc: '2.0',
+      id: nanoid(),
+      ...rawRequest,
+    };
+
+    assertIsJsonRpcRequest(request);
+
     const permissionName = handlerEndowments[handlerType];
     const hasPermission = this.messagingSystem.call(
       'PermissionController:hasPermission',
@@ -2526,23 +2535,13 @@ export class SnapController extends BaseController<
         }
       }
 
-      let _request = request;
-      if (!hasProperty(request, 'jsonrpc')) {
-        _request = { ...(request as Record<string, unknown>), jsonrpc: '2.0' };
-      } else if (request.jsonrpc !== '2.0') {
-        throw ethErrors.rpc.invalidRequest({
-          message: 'Invalid "jsonrpc" property. Must be "2.0" if provided.',
-          data: request.jsonrpc,
-        });
-      }
-
       const timer = new Timer(this.maxRequestTime);
       this.#recordSnapRpcRequestStart(snapId, request.id, timer);
 
       const handleRpcRequestPromise = this.messagingSystem.call(
         'ExecutionService:handleRpcRequest',
         snapId,
-        { origin, handler: handlerType, request: _request },
+        { origin, handler: handlerType, request },
       );
 
       // This will either get the result or reject due to the timeout.
