@@ -1,5 +1,6 @@
-import { logWarning } from '@metamask/snaps-utils';
-import { bold, red, yellow } from 'chalk';
+import { logInfo, logWarning } from '@metamask/snaps-utils';
+import { blue, bold, dim, red, yellow } from 'chalk';
+import { Ora } from 'ora';
 
 /**
  * Normalize a message by trimming whitespace.
@@ -19,9 +20,30 @@ export function normalize(message: string) {
  * Log a warning message. The message is prefixed with "Warning:".
  *
  * @param message - The message to log.
+ * @param spinner - The spinner to clear.
  */
-export function warn(message: string) {
-  logWarning(`${bold(yellow('Warning:'))} ${normalize(message)}`);
+export function warn(message: string, spinner?: Ora) {
+  if (spinner) {
+    spinner.clear();
+    spinner.frame();
+  }
+
+  logWarning(`${yellow('⚠')} ${normalize(message)}`);
+}
+
+/**
+ * Log an info message.
+ *
+ * @param message - The message to log.
+ * @param spinner - The spinner to clear.
+ */
+export function info(message: string, spinner?: Ora) {
+  if (spinner) {
+    spinner.clear();
+    spinner.frame();
+  }
+
+  logInfo(`${blue('ℹ')} ${dim(normalize(message))}`);
 }
 
 /**

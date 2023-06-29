@@ -1,5 +1,6 @@
 import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
 import { builtinModules } from 'module';
+import { Ora } from 'ora';
 import TerserPlugin from 'terser-webpack-plugin';
 import { Configuration, EnvironmentPlugin } from 'webpack';
 
@@ -18,6 +19,11 @@ export type WebpackOptions = {
    * `evaluate` option in the config object.
    */
   evaluate?: boolean;
+
+  /**
+   * The spinner to use for logging.
+   */
+  spinner?: Ora;
 };
 
 /**
@@ -249,7 +255,10 @@ export function getDefaultConfiguration(
        */
       plugins: [
         config.plugins.builtInResolver &&
-          new SnapsBuiltInResolver(config.plugins.builtInResolver),
+          new SnapsBuiltInResolver(
+            config.plugins.builtInResolver,
+            options.spinner,
+          ),
       ],
     },
 

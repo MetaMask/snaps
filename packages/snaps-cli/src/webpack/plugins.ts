@@ -1,4 +1,5 @@
 import { isBuiltin } from 'module';
+import { Ora } from 'ora';
 import {
   Compiler,
   ResolvePluginInstance,
@@ -76,12 +77,19 @@ export class SnapsBuiltInResolver implements ResolvePluginInstance {
    */
   #options: SnapsBuiltInResolverOptions;
 
+  /**
+   * The spinner to use for logging.
+   */
+  #spinner?: Ora;
+
   constructor(
     options: SnapsBuiltInResolverOptions = {
       ignore: [],
     },
+    spinner?: Ora,
   ) {
     this.#options = options;
+    this.#spinner = spinner;
   }
 
   /**
@@ -115,6 +123,7 @@ export class SnapsBuiltInResolver implements ResolvePluginInstance {
                 `Attempted to use "${baseRequest}", but no browser fallback has been provided.
                 The MetaMask Snaps CLI does not support Node.js builtins by default. If you want to use this module, you must provide a fallback: https://webpack.js.org/configuration/resolve/#resolvefallback.
                 To disable this warning, set \`plugins.builtInResolver\` to \`false\` in your snap config file, or add "${baseRequest}" to the \`ignore\` array.`,
+                this.#spinner,
               );
               this.#history.push(baseRequest);
             }

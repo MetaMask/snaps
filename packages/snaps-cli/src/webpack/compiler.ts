@@ -4,6 +4,7 @@ import { webpack } from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 
 import { ProcessedWebpackConfig } from '../config';
+import { info } from '../utils';
 import { getDefaultConfiguration, WebpackOptions } from './config';
 
 /**
@@ -42,7 +43,7 @@ export function getCompiler(
       return;
     }
 
-    logInfo(`Compiled ${modules?.length} files in ${time}ms.`);
+    info(`Compiled ${modules?.length} files in ${time}ms.`, options?.spinner);
   });
 
   return compiler;
