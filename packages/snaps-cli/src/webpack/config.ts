@@ -1,8 +1,9 @@
 import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
+import { dim } from 'chalk';
 import { builtinModules } from 'module';
 import { Ora } from 'ora';
 import TerserPlugin from 'terser-webpack-plugin';
-import { Configuration, EnvironmentPlugin } from 'webpack';
+import { Configuration, EnvironmentPlugin, ProgressPlugin } from 'webpack';
 
 import { ProcessedWebpackConfig } from '../config';
 import {
@@ -55,6 +56,7 @@ export function getDefaultConfiguration(
     evaluate: config.evaluate,
   },
 ): Configuration {
+  const spinnerText = options.spinner?.text;
   const builtInResolver =
     config.plugins.builtInResolver &&
     new SnapsBuiltInResolver(config.plugins.builtInResolver, options.spinner);
@@ -314,6 +316,20 @@ export function getDefaultConfiguration(
        * environment variables.
        */
       new EnvironmentPlugin(config.environment),
+
+      /**
+       * The `ProgressPlugin` is a Webpack plugin that logs the progress of
+       * the build. We set it to log the progress to the spinner.
+       */
+      new ProgressPlugin({
+        handler: (percentage) => {
+          if (options.spinner && spinnerText) {
+            options.spinner.text = `${spinnerText} ${dim(
+              `(${Math.round(percentage * 100)}%)`,
+            )}`;
+          }
+        },
+      }),
     ],
 
     /**
