@@ -1,19 +1,16 @@
-import { logInfo, logWarning } from '@metamask/snaps-utils';
-import { blue, bold, dim, red, yellow } from 'chalk';
+import { logError, logInfo, logWarning } from '@metamask/snaps-utils';
+import { blue, dim, red, yellow } from 'chalk';
 import { Ora } from 'ora';
 
 /**
- * Normalize a message by trimming whitespace.
+ * Indent a message by adding a number of spaces to the beginning of each line.
  *
- * @param message - The message to normalize.
- * @returns The normalized message.
+ * @param message - The message to indent.
+ * @param spaces - The number of spaces to indent by. Defaults to 2.
+ * @returns The indented message.
  */
-export function normalize(message: string) {
-  return message
-    .split('\n')
-    .map((line) => line.trim())
-    .join('\n')
-    .replace(/^\s*\n/u, '');
+export function indent(message: string, spaces = 2) {
+  return message.replace(/^/gmu, ' '.repeat(spaces));
 }
 
 /**
@@ -28,7 +25,7 @@ export function warn(message: string, spinner?: Ora) {
     spinner.frame();
   }
 
-  logWarning(`${yellow('⚠')} ${normalize(message)}`);
+  logWarning(`${yellow('⚠')} ${message}`);
 }
 
 /**
@@ -43,14 +40,20 @@ export function info(message: string, spinner?: Ora) {
     spinner.frame();
   }
 
-  logInfo(`${blue('ℹ')} ${dim(normalize(message))}`);
+  logInfo(`${blue('ℹ')} ${dim(message)}`);
 }
 
 /**
  * Log an error message. The message is prefixed with "Error:".
  *
  * @param message - The message to log.
+ * @param spinner - The spinner to clear.
  */
-export function error(message: string) {
-  logWarning(`${bold(red('Error:'))} ${normalize(message)}`);
+export function error(message: string, spinner?: Ora) {
+  if (spinner) {
+    spinner.clear();
+    spinner.frame();
+  }
+
+  logError(`${red('✖')} ${message}`);
 }

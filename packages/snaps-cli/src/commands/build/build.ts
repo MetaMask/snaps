@@ -1,10 +1,11 @@
-import { evalBundle, isFile } from '@metamask/snaps-utils';
+import { evalBundle, isFile, SnapEvalError } from '@metamask/snaps-utils';
+import { red } from 'chalk';
 import { Ora } from 'ora';
 import { resolve as pathResolve } from 'path';
 
 import { ProcessedConfig, ProcessedWebpackConfig } from '../../config';
 import { CommandError } from '../../logging';
-import { executeSteps, Steps } from '../../utils';
+import { executeSteps, indent, Steps } from '../../utils';
 import { getCompiler } from '../../webpack';
 import { legacyBuild } from './legacy';
 
@@ -57,10 +58,19 @@ const steps: Steps<BuildContext & { spinner: Ora }> = [
 
       try {
         await evalBundle(path);
-      } catch {
-        throw new CommandError(
-          `Failed to evaluate snap bundle in SES. This is likely due to an incompatibility with the SES environment in your snap.`,
-        );
+      } catch (error) {
+        if (error instanceof SnapEvalError) {
+          throw new CommandError(
+            `Failed to evaluate snap bundle in SES. This is likely due to an incompatibility with the SES environment in your snap.\nReceived the following error from the SES environment:\n\n${indent(
+              red(error.output.stderr),
+              2,
+            )}`,
+          );
+        }
+
+        // If the error is not a `SnapEvalError`, we don't know what it is, so
+        // we just throw it.
+        throw error;
       }
     },
   },

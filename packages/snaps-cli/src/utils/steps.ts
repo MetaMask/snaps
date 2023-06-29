@@ -1,6 +1,8 @@
 import { dim } from 'chalk';
 import createSpinner, { Ora } from 'ora';
 
+import { error } from './logging';
+
 export type Step<Context extends Record<string, unknown>> = {
   name: string;
   task: (context: Context) => Promise<void>;
@@ -37,8 +39,9 @@ export async function executeSteps<Context extends Record<string, unknown>>(
     if (spinner.isSpinning) {
       spinner.succeed('Done!');
     }
-  } catch (error) {
-    spinner.fail(error.message);
+  } catch (_error) {
+    error(_error.message, spinner);
+    spinner.stop();
     process.exitCode = 1;
   }
 }

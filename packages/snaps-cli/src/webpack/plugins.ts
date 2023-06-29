@@ -1,3 +1,4 @@
+import { green, yellow } from 'chalk';
 import { isBuiltin } from 'module';
 import { Ora } from 'ora';
 import {
@@ -68,9 +69,9 @@ export class SnapsBuiltInResolver implements ResolvePluginInstance {
   #source = 'described-resolve';
 
   /**
-   * The history of built-in modules that have been resolved.
+   * The built-in modules that have been imported, but not resolved.
    */
-  #history: string[] = [];
+  unresolvedModules: string[] = [];
 
   /**
    * The options for the plugin.
@@ -111,7 +112,7 @@ export class SnapsBuiltInResolver implements ResolvePluginInstance {
           if (
             isBuiltin(baseRequest) &&
             !this.#options.ignore?.includes(baseRequest) &&
-            !this.#history.includes(baseRequest)
+            !this.unresolvedModules.includes(baseRequest)
           ) {
             const fallback = resolver.options.fallback.find(
               ({ name }) => name === baseRequest,
@@ -120,12 +121,18 @@ export class SnapsBuiltInResolver implements ResolvePluginInstance {
             if (fallback && !fallback.alias) {
               warn(
                 // TODO: Use `docs.metamask.io` link when available.
-                `Attempted to use "${baseRequest}", but no browser fallback has been provided.
-                The MetaMask Snaps CLI does not support Node.js builtins by default. If you want to use this module, you must provide a fallback: https://webpack.js.org/configuration/resolve/#resolvefallback.
-                To disable this warning, set \`plugins.builtInResolver\` to \`false\` in your snap config file, or add "${baseRequest}" to the \`ignore\` array.`,
+                `Attempted to use ${green(
+                  `"${baseRequest}"`,
+                )}, but no browser fallback has been provided.\nThe MetaMask Snaps CLI does not support Node.js builtins by default. If you want to use this module, you must provide a fallback: https://webpack.js.org/configuration/resolve/#resolvefallback.\nTo disable this warning, set ${yellow(
+                  '`plugins.builtInResolver`',
+                )} to ${yellow(
+                  '`false`',
+                )} in your snap config file, or add ${green(
+                  `"${baseRequest}"`,
+                )} to the ${yellow('`ignore`')} array.`,
                 this.#spinner,
               );
-              this.#history.push(baseRequest);
+              this.unresolvedModules.push(baseRequest);
             }
           }
 
