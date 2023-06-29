@@ -4887,6 +4887,40 @@ describe('SnapController', () => {
     });
   });
 
+  describe('clearState', () => {
+    it('clears the state and terminates running snaps', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      const callActionSpy = jest.spyOn(messenger, 'call');
+
+      expect(snapController.has(MOCK_SNAP_ID)).toBe(true);
+
+      await snapController.clearState();
+
+      expect(snapController.has(MOCK_SNAP_ID)).toBe(false);
+
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'ExecutionService:terminateAllSnaps',
+      );
+
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'PermissionController:revokeAllPermissions',
+        MOCK_SNAP_ID,
+      );
+
+      snapController.destroy();
+    });
+  });
+
   describe('SnapController actions', () => {
     describe('SnapController:get', () => {
       it('gets a snap', () => {
