@@ -1,14 +1,56 @@
-import { evalBundle, isFile } from '@metamask/snaps-utils';
-import { underline } from 'chalk';
+import { evalBundle, isFile, SnapEvalError } from '@metamask/snaps-utils';
+import { red } from 'chalk';
+import { Ora } from 'ora';
 import { resolve } from 'path';
 
 import { ProcessedConfig } from '../../config';
-import { CommandError, success } from '../../logging';
-import { getRelativePath } from '../../utils';
+import { CommandError } from '../../errors';
+import { executeSteps, getRelativePath, indent, Steps } from '../../utils';
 
 export type EvalOptions = {
   input?: string;
 };
+
+export type EvalContext = {
+  input: string;
+  spinner: Ora;
+};
+
+const steps: Steps<EvalContext> = [
+  {
+    name: 'Checking the input file.',
+    task: async ({ input }) => {
+      if (!(await isFile(input))) {
+        const relativePath = getRelativePath(input);
+        throw new CommandError(
+          `Input file not found: "${relativePath}". Make sure that the "input" field in your snap config or the specified input file is correct.`,
+        );
+      }
+    },
+  },
+  {
+    name: 'Evaluating the snap bundle.',
+    task: async ({ input, spinner }) => {
+      try {
+        await evalBundle(input);
+        spinner.succeed('Successfully evaluated snap bundle.');
+      } catch (error) {
+        if (error instanceof SnapEvalError) {
+          throw new CommandError(
+            `Failed to evaluate snap bundle in SES. This is likely due to an incompatibility with the SES environment in your snap.\nReceived the following error from the SES environment:\n\n${indent(
+              red(error.output.stderr),
+              2,
+            )}`,
+          );
+        }
+
+        // If the error is not a `SnapEvalError`, we don't know what it is, so
+        // we just throw it.
+        throw error;
+      }
+    },
+  },
+];
 
 /**
  * Returns the path to the bundle, based on the bundler.
@@ -46,25 +88,6 @@ export async function evaluate(
   config: ProcessedConfig,
   options: EvalOptions = {},
 ): Promise<void> {
-  const bundlePath = getBundlePath(config, options);
-  const relativePath = getRelativePath(bundlePath);
-
-  if (!(await isFile(bundlePath))) {
-    throw new CommandError(
-      `Failed to evaluate snap bundle "${underline(
-        relativePath,
-      )}" in SES: The specified file does not exist.`,
-    );
-  }
-
-  try {
-    await evalBundle(bundlePath);
-    success(
-      `Snap bundle "${underline(relativePath)}" successfully evaluated in SES.`,
-    );
-  } catch (error) {
-    throw new CommandError(
-      `Failed to evaluate snap bundle "${relativePath}" in SES: ${error.message}`,
-    );
-  }
+  const input = getBundlePath(config, options);
+  await executeSteps(steps, { input });
 }

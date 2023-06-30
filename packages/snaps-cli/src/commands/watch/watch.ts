@@ -1,7 +1,9 @@
+import { isFile } from '@metamask/snaps-utils';
 import type { Ora } from 'ora';
 import { join } from 'path';
 
 import type { ProcessedConfig, ProcessedWebpackConfig } from '../../config';
+import { CommandError } from '../../errors';
 import type { Steps } from '../../utils';
 import { executeSteps, info } from '../../utils';
 import { getCompiler, getServer } from '../../webpack';
@@ -13,6 +15,18 @@ type WatchContext = {
 };
 
 const steps: Steps<WatchContext> = [
+  {
+    name: 'Checking the input file.',
+    task: async ({ config }) => {
+      const { input } = config;
+
+      if (!(await isFile(input))) {
+        throw new CommandError(
+          `Input file not found: "${input}". Make sure that the "input" field in your snap config is correct.`,
+        );
+      }
+    },
+  },
   {
     name: 'Starting the development server.',
     task: async ({ config, spinner }) => {

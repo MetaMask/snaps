@@ -4,7 +4,7 @@ import { Ora } from 'ora';
 import { resolve as pathResolve } from 'path';
 
 import { ProcessedConfig, ProcessedWebpackConfig } from '../../config';
-import { CommandError } from '../../logging';
+import { CommandError } from '../../errors';
 import { executeSteps, indent, Steps } from '../../utils';
 import { getCompiler } from '../../webpack';
 import { legacyBuild } from './legacy';
