@@ -17,6 +17,7 @@
     "build:post-tsc": "yarn build",
     "clean": "yarn workspaces foreach --parallel --verbose --no-private run clean",
     "start": "yarn workspaces foreach --parallel --verbose --interlaced --no-private --jobs unlimited run start",
+    "start:test": "yarn start",
     "test": "yarn workspaces foreach --parallel --verbose --interlaced --no-private run test",
     "lint": "yarn workspaces foreach --parallel --verbose --interlaced --no-private run lint",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",

@@ -35,7 +35,7 @@ describe('onRpcRequest', () => {
 
       expect(response).toRespondWith(null);
       expect(response).toSendNotification(
-        'Hello, Jest, from within MetaMask!',
+        'Hello from within MetaMask!',
         NotificationType.InApp,
       );
 
