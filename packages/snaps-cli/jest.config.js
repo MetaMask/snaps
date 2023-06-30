@@ -29,8 +29,8 @@ module.exports = deepmerge(baseConfig, {
     global: {
       branches: 97.29,
       functions: 93.84,
-      lines: 97.77,
-      statements: 97.54,
+      lines: 97.81,
+      statements: 97.61,
     },
   },
   setupFiles: ['./test/setup.js'],

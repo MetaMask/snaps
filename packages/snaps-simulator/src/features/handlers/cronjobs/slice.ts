@@ -29,6 +29,7 @@ export const {
   setRequest: setCronjobRequest,
   setRequestFromHistory: setCronjobRequestFromHistory,
   setResponse: setCronjobResponse,
+  clearResponse: clearCronjobResponse,
 } = slice.actions;
 
 export const getCronjobRequest = createSelector(

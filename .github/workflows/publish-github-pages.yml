@@ -1,0 +1,49 @@
+name: Publish to GitHub Pages
+
+on:
+  workflow_call:
+    inputs:
+      build_script:
+        required: true
+        type: string
+      destination_dir:
+        required: true
+        type: string
+      publish_dir:
+        required: true
+        type: string
+    secrets:
+      PUBLISH_PAGES_TOKEN:
+        required: true
+
+jobs:
+  publish-environment:
+    name: Publish to GitHub Pages
+    runs-on: ubuntu-latest
+    environment: github-pages
+    permissions:
+      contents: write
+    steps:
+      - name: Ensure `build_script` is not empty
+        if: ${{ inputs.destination_dir == '' }}
+        run: exit 1
+      - name: Ensure `destination_dir` is not empty
+        if: ${{ inputs.destination_dir == '' }}
+        run: exit 1
+      - name: Ensure `publish_dir` is not empty
+        if: ${{ inputs.publish_dir == '' }}
+        run: exit 1
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+      - run: yarn --immutable
+      - name: Run build script
+        run: ${{ inputs.build_script }}
+      - name: Deploy to `${{ inputs.destination_dir }}` directory of `gh-pages` branch
+        uses: peaceiris/actions-gh-pages@de7ea6f8efb354206b205ef54722213d99067935
+        with:
+          personal_token: ${{ secrets.PUBLISH_PAGES_TOKEN }}
+          publish_dir: ${{ inputs.publish_dir }}
+          destination_dir: ${{ inputs.destination_dir }}

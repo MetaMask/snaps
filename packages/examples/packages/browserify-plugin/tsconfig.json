@@ -1,0 +1,22 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "baseUrl": "./",
+    "paths": {
+      "@metamask/*": ["../../../*/src"]
+    }
+  },
+  "include": ["src", "scripts", "babel.config.json"],
+  "references": [
+    {
+      "path": "../../../snaps-types"
+    },
+    {
+      "path": "../../../snaps-browserify-plugin"
+    },
+    {
+      "path": "../../../snaps-jest"
+    }
+  ]
+}

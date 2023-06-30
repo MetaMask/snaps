@@ -8,8 +8,6 @@ describe('Caveat utilities', () => {
 
     expect(SnapCaveatType.PermittedCoinTypes).toBe('permittedCoinTypes');
 
-    expect(SnapCaveatType.SnapKeyring).toBe('snapKeyring');
-
     expect(SnapCaveatType.SnapCronjob).toBe('snapCronjob');
   });
 });

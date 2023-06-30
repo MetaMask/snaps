@@ -1,4 +1,4 @@
-import { SnapKeyring, ChainIdStruct, HandlerType } from '@metamask/snaps-utils';
+import { ChainIdStruct, HandlerType } from '@metamask/snaps-utils';
 import {
   assertStruct,
   Json,
@@ -28,7 +28,6 @@ import {
 const VALIDATION_FUNCTIONS = {
   [HandlerType.OnRpcRequest]: validateFunctionExport,
   [HandlerType.OnTransaction]: validateFunctionExport,
-  [HandlerType.SnapKeyring]: validateKeyringExport,
   [HandlerType.OnCronjob]: validateFunctionExport,
   [HandlerType.OnNameLookup]: validateFunctionExport,
 };
@@ -43,17 +42,6 @@ function validateFunctionExport(
   snapExport: unknown,
 ): snapExport is (...args: unknown[]) => unknown {
   return typeof snapExport === 'function';
-}
-
-/**
- * Validates a keyring export.
- *
- * @param snapExport - The export itself.
- * @returns True if the export matches the expected shape, false otherwise.
- */
-function validateKeyringExport(snapExport: unknown): snapExport is SnapKeyring {
-  // TODO Decide whether we want more validation
-  return typeof snapExport === 'object';
 }
 
 /**

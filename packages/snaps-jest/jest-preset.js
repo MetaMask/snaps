@@ -8,7 +8,11 @@ const { resolve } = require('path');
 const config = {
   testEnvironment: '@metamask/snaps-jest',
 
-  setupFilesAfterEnv: [resolve(__dirname, 'dist', 'setup.js')],
+  // End-to-end tests can take longer than usual to run, so we set the test
+  // timeout to 30 seconds by default.
+  testTimeout: 30000,
+
+  setupFilesAfterEnv: [resolve(__dirname, 'dist', 'cjs', 'setup.js')],
 };
 
 module.exports = config;

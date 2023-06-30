@@ -3,9 +3,10 @@
   "compilerOptions": {
     "baseUrl": "./"
   },
-  "include": ["./src", "./src/**/*.json"],
+  "include": ["./src", "./src/**/*.json", "test"],
   "references": [
     { "path": "../snaps-utils" },
-    { "path": "../snaps-browserify-plugin" }
+    { "path": "../snaps-browserify-plugin" },
+    { "path": "../snaps-types" }
   ]
 }

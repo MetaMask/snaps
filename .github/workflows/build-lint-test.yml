@@ -8,7 +8,8 @@ jobs:
     name: Prepare
     runs-on: ubuntu-latest
     outputs:
-      child-workspace-package-names: ${{ steps.workspace-package-names.outputs.child-workspace-package-names }}
+      test-workspace-package-names: ${{ steps.workspace-package-names.outputs.test-workspace-package-names }}
+      e2e-workspace-package-names: ${{ steps.workspace-package-names.outputs.e2e-workspace-package-names }}
       all-workspace-package-names: ${{ steps.workspace-package-names.outputs.all-workspace-package-names }}
     strategy:
       fail-fast: false
@@ -35,12 +36,15 @@ jobs:
       - name: Fetch workspace package names
         id: workspace-package-names
         run: |
-          echo "child-workspace-package-names=$(yarn workspaces filter --include 'packages/*' --exclude 'packages/examples' --json)" >> "$GITHUB_OUTPUT"
-          echo "all-workspace-package-names=$(yarn workspaces filter --include '{.,packages/**}' --json)" >> "$GITHUB_OUTPUT"
+          {
+            echo "test-workspace-package-names=$(yarn workspaces filter --include 'packages/*' --exclude 'packages/examples' --json)"
+            echo "e2e-workspace-package-names=$(yarn workspaces filter --include 'packages/examples/packages/**' --exclude 'packages/examples/packages/invoke-snap' --json)"
+            echo "all-workspace-package-names=$(yarn workspaces filter --include '{.,packages/**}' --exclude 'packages/snaps-cli/test/snap' --json)"
+          } >> "$GITHUB_OUTPUT"
         shell: bash
 
-  build:
-    name: Build
+  build-source:
+    name: Build source
     runs-on: ubuntu-latest
     needs: prepare
     steps:
@@ -51,14 +55,43 @@ jobs:
           node-version-file: '.nvmrc'
           cache: yarn
       - run: yarn --immutable --immutable-cache
-      - name: Build TypeScript files
-        run: yarn build:tsc
+      - name: Build source
+        run: yarn build:source
       - name: Cache build files
         uses: actions/cache@v3
         with:
           path: |
-            packages/*/dist
-          key: build-${{ runner.os }}-${{ github.sha }}
+            packages/*/dist/esm
+            packages/*/dist/cjs
+          key: build-source-${{ runner.os }}-${{ github.sha }}
+      - name: Require clean working directory
+        shell: bash
+        run: |
+          if ! git diff --exit-code; then
+            echo "Working tree dirty at end of job"
+            exit 1
+          fi
+
+  build-types:
+    name: Build types
+    runs-on: ubuntu-latest
+    needs: prepare
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+      - run: yarn --immutable --immutable-cache
+      - name: Build types
+        run: yarn build:types
+      - name: Cache build files
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/*/dist/types
+          key: build-types-${{ runner.os }}-${{ github.sha }}
       - name: Require clean working directory
         shell: bash
         run: |
@@ -70,7 +103,9 @@ jobs:
   post-build:
     name: Post-build
     runs-on: ubuntu-latest
-    needs: build
+    needs:
+      - build-source
+      - build-types
     steps:
       - uses: actions/checkout@v3
       - name: Setup Node
@@ -83,8 +118,15 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            packages/*/dist
-          key: build-${{ runner.os }}-${{ github.sha }}
+            packages/*/dist/esm
+            packages/*/dist/cjs
+          key: build-source-${{ runner.os }}-${{ github.sha }}
+      - name: Restore types files
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/*/dist/types
+          key: build-types-${{ runner.os }}-${{ github.sha }}
       - name: Post-build
         run: yarn build:post-tsc:ci
 
@@ -125,6 +167,28 @@ jobs:
           path: |
             packages/snaps-simulator/dist/webpack
           key: e2e-simulator-build-${{ runner.os }}-${{ github.sha }}
+      - name: Require clean working directory
+        shell: bash
+        run: |
+          if ! git diff --exit-code; then
+            echo "Working tree dirty at end of job"
+            exit 1
+          fi
+
+  build-test-snaps:
+    name: Build "@metamask/test-snaps"
+    runs-on: ubuntu-latest
+    needs: prepare
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+      - run: yarn --immutable --immutable-cache
+      - name: Build
+        run: yarn workspace @metamask/test-snaps run build
       - name: Require clean working directory
         shell: bash
         run: |
@@ -188,7 +252,7 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [16.x, 18.x]
-        package-name: ${{ fromJson(needs.prepare.outputs.child-workspace-package-names) }}
+        package-name: ${{ fromJson(needs.prepare.outputs.test-workspace-package-names) }}
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -244,6 +308,66 @@ jobs:
         uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70
         with:
           files: packages/**/coverage-final.json
+
+  test-e2e:
+    name: E2E Test
+    runs-on: ubuntu-latest
+    needs:
+      - prepare
+      - build-source
+      - build-types
+      - build-simulator
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [16.x, 18.x]
+        package-name: ${{ fromJson(needs.prepare.outputs.e2e-workspace-package-names) }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
+      - name: Restore "@metamask/snaps-execution-environments" build
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/snaps-execution-environments/dist/browserify
+          key: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+      - name: Restore build files
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/*/dist/esm
+            packages/*/dist/cjs
+          key: build-source-${{ runner.os }}-${{ github.sha }}
+      - name: Restore types files
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/*/dist/types
+          key: build-types-${{ runner.os }}-${{ github.sha }}
+      - name: Restore "@metamask/snaps-simulator" build
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/snaps-simulator/dist/webpack
+          key: e2e-simulator-build-${{ runner.os }}-${{ github.sha }}
+      - run: yarn --immutable --immutable-cache
+      - name: Install Google Chrome
+        run: yarn install-chrome
+      - name: Build snap
+        run: yarn workspace ${{ matrix.package-name }} run build
+      - name: Run E2E test
+        run: yarn workspace ${{ matrix.package-name }} run test:e2e
+      - name: Require clean working directory
+        shell: bash
+        run: |
+          if ! git diff --exit-code; then
+            echo "Working tree dirty at end of job"
+            exit 1
+          fi
 
   platform-compatibility-test:
     name: Test platform compatibility

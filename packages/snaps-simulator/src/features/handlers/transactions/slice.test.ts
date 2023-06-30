@@ -4,6 +4,7 @@ import {
   INITIAL_STATE,
   setTransactionResponse,
   setTransactionRequestFromHistory,
+  clearTransactionResponse,
 } from './slice';
 
 describe('transactions', () => {
@@ -141,6 +142,20 @@ describe('transactions', () => {
       const result = reducer(INITIAL_STATE, setTransactionResponse('foo'));
 
       expect(result.response).toBe('foo');
+    });
+  });
+
+  describe('clearResponse', () => {
+    it('clears the response', () => {
+      const result = reducer(
+        {
+          ...INITIAL_STATE,
+          response: { jsonrpc: '2.0', id: null, result: 'foo' },
+        },
+        clearTransactionResponse(),
+      );
+
+      expect(result.response).toBeNull();
     });
   });
 });

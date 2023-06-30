@@ -37,8 +37,8 @@ export const SnapIcon: FunctionComponent<SnapIconProps> = ({ snapName }) => {
       />
       <Icon
         icon="snap"
-        width="15px"
-        height="15px"
+        width="16px"
+        height="16px"
         position="absolute"
         bottom="0px"
         right="0px"

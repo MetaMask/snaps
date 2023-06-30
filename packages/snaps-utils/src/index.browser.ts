@@ -13,7 +13,6 @@ export * from './json-rpc';
 export * from './logging';
 export * from './manifest/index.browser';
 export * from './namespace';
-export * from './notification';
 export * from './path';
 export * from './snaps';
 export * from './types';

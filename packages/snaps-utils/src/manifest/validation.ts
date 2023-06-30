@@ -1,3 +1,4 @@
+import { isValidBIP32PathSegment } from '@metamask/key-tree';
 import {
   assertStruct,
   ChecksumStruct,
@@ -29,7 +30,6 @@ import { isEqual } from '../array';
 import { CronjobSpecificationArrayStruct } from '../cronjob';
 import { SIP_6_MAGIC_VALUE, STATE_ENCRYPTION_MAGIC_VALUE } from '../entropy';
 import { RpcOriginsStruct } from '../json-rpc';
-import { NamespacesStruct } from '../namespace';
 import { SnapIdStruct } from '../snaps';
 import { NameStruct, NpmSnapFileNames } from '../types';
 
@@ -47,11 +47,10 @@ const FORBIDDEN_PATHS: string[][] = FORBIDDEN_COIN_TYPES.map((coinType) => [
   `${coinType}'`,
 ]);
 
-const BIP32_INDEX_REGEX = /^\d+'?$/u;
 export const Bip32PathStruct = refine(
   array(string()),
   'BIP-32 path',
-  (path) => {
+  (path: string[]) => {
     if (path.length === 0) {
       return 'Path must be a non-empty BIP-32 derivation path array';
     }
@@ -64,7 +63,7 @@ export const Bip32PathStruct = refine(
       return 'Paths must have a length of at least three.';
     }
 
-    if (path.slice(1).some((part) => !BIP32_INDEX_REGEX.test(part))) {
+    if (path.slice(1).some((part) => !isValidBIP32PathSegment(part))) {
       return 'Path must be a valid BIP-32 derivation path array.';
     }
 
@@ -156,6 +155,7 @@ export const PermissionsStruct = type({
   // TODO: Remove
   snap_confirm: optional(object({})),
   snap_manageState: optional(object({})),
+  snap_manageAccounts: optional(object({})),
   snap_notify: optional(object({})),
   snap_getBip32Entropy: optional(SnapGetBip32EntropyPermissionsStruct),
   snap_getBip32PublicKey: optional(SnapGetBip32EntropyPermissionsStruct),
@@ -167,11 +167,6 @@ export const PermissionsStruct = type({
     ),
   ),
   snap_getEntropy: optional(object({})),
-  'endowment:keyring': optional(
-    object({
-      namespaces: NamespacesStruct,
-    }),
-  ),
   wallet_snap: optional(SnapIdsStruct),
 });
 /* eslint-enable @typescript-eslint/naming-convention */

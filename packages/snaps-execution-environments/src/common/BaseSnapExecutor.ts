@@ -35,7 +35,6 @@ import {
 } from './commands';
 import { createEndowments } from './endowments';
 import { addEventListener, removeEventListener } from './globalEvents';
-import { wrapKeyring } from './keyring';
 import { sortParamKeys } from './sortParams';
 import {
   assertEthereumOutboundRequest,
@@ -67,8 +66,6 @@ const fallbackError = {
   message: 'Execution Environment Error',
 };
 
-// TODO: `KeyringParameters` expects a `chainId` for certain methods, but we're
-// not providing it in `getHandlerArguments`, resulting in type errors.
 export type InvokeSnapArgs = Omit<SnapExportsParameters[0], 'chainId'>;
 
 export type InvokeSnap = (
@@ -134,10 +131,7 @@ export class BaseSnapExecutor {
       async (target, handlerName, args) => {
         const data = this.snapData.get(target);
         // We're capturing the handler in case someone modifies the data object before the call
-        const handler =
-          handlerName === HandlerType.SnapKeyring
-            ? wrapKeyring(this.notify.bind(this), data?.exports.keyring)
-            : data?.exports[handlerName];
+        const handler = data?.exports[handlerName];
         assert(
           handler !== undefined,
           `No ${handlerName} handler exported for snap "${target}`,

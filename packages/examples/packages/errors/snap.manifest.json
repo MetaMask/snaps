@@ -1,0 +1,26 @@
+{
+  "version": "0.35.2-flask.1",
+  "description": "MetaMask example snap demonstrating the use of error handling in snaps.",
+  "proposedName": "Error Example Snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps.git"
+  },
+  "source": {
+    "shasum": "hBUfX1TG4x4Qj5Lo7P6zJ5YR6Q1eL7BqbGYmTVgQEN4=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "iconPath": "images/icon.svg",
+        "packageName": "@metamask/error-example-snap",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    "endowment:rpc": {
+      "dapps": true
+    }
+  },
+  "manifestVersion": "0.1"
+}

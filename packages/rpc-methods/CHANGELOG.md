@@ -6,6 +6,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.35.2-flask.1]
+### Fixed
+- Fix type issue introduced by [#1532](https://github.com/MetaMask/snaps/pull/1532) ([#1541](https://github.com/MetaMask/snaps/pull/1541))
+
+## [0.35.1-flask.1]
+### Changed
+- No changes this release.
+
+## [0.35.0-flask.1]
+### Added
+- Add `snap_manageAccounts` RPC method ([#1290](https://github.com/MetaMask/snaps/pull/1290))
+
+### Changed
+- **BREAKING:** Build packages as both CJS and ESM ([#1519](https://github.com/MetaMask/snaps/pull/1519), ([#1532](https://github.com/MetaMask/snaps/pull/1532)))
+  - This is breaking in the sense that imports to `dist/` will now require you to import either `dist/cjs` or `dist/esm`.
+- **BREAKING:** Disallow deriving Ethereum keys ([#1217](https://github.com/MetaMask/snaps/pull/1217))
+  - Coin type `60` is now blocked for derivation.
+- Add `sideEffects: false` ([#1486](https://github.com/MetaMask/snaps/pull/1486))
+
+### Fixed
+- Fix BIP-32 path validation ([#1506](https://github.com/MetaMask/snaps/pull/1506))
+
 ## [0.34.1-flask.1]
 ### Changed
 - No changes this release.
@@ -334,7 +356,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.34.1-flask.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.35.2-flask.1...HEAD
+[0.35.2-flask.1]: https://github.com/MetaMask/snaps/compare/v0.35.1-flask.1...v0.35.2-flask.1
+[0.35.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.35.0-flask.1...v0.35.1-flask.1
+[0.35.0-flask.1]: https://github.com/MetaMask/snaps/compare/v0.34.1-flask.1...v0.35.0-flask.1
 [0.34.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.34.0-flask.1...v0.34.1-flask.1
 [0.34.0-flask.1]: https://github.com/MetaMask/snaps/compare/v0.33.1-flask.1...v0.34.0-flask.1
 [0.33.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.33.0-flask.1...v0.33.1-flask.1

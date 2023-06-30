@@ -28,18 +28,6 @@ describe('buildSnapEndowmentSpecifications', () => {
           ],
           "targetName": "endowment:ethereum-provider",
         },
-        "endowment:keyring": {
-          "allowedCaveats": [
-            "snapKeyring",
-          ],
-          "endowmentGetter": [Function],
-          "permissionType": "Endowment",
-          "subjectTypes": [
-            "snap",
-          ],
-          "targetName": "endowment:keyring",
-          "validator": [Function],
-        },
         "endowment:long-running": {
           "allowedCaveats": null,
           "endowmentGetter": [Function],
@@ -163,6 +151,15 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
             "snap",
           ],
           "targetName": "snap_getEntropy",
+        },
+        "snap_manageAccounts": {
+          "allowedCaveats": null,
+          "methodImplementation": [Function],
+          "permissionType": "RestrictedMethod",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "snap_manageAccounts",
         },
         "snap_manageState": {
           "allowedCaveats": null,

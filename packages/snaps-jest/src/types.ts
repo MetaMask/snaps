@@ -6,6 +6,7 @@ import { Infer } from 'superstruct';
 
 import {
   Mock,
+  MockJsonRpcOptions,
   MockOptions,
   SnapOptionsStruct,
   SnapResponseStruct,
@@ -277,8 +278,21 @@ export type Snap = {
    * Enable network mocking for the snap.
    *
    * @param options - The options for the network mocking.
+   * @returns A {@link Mock} object, with an `unmock` function.
    */
   mock(options: DeepPartial<MockOptions>): Promise<Mock>;
+
+  /**
+   * Enable JSON-RPC provider mocking for the snap. This will mock any requests
+   * sent through the `ethereum` global, with the specified `method`.
+   *
+   * @param options - The options for the JSON-RPC mocking.
+   * @param options.method - The JSON-RPC method to mock, e.g.,
+   * `eth_blockNumber`.
+   * @param options.result - The JSON value to return.
+   * @returns A {@link Mock} object, with an `unmock` function.
+   */
+  mockJsonRpc(options: MockJsonRpcOptions): Promise<Mock>;
 };
 
 export type SnapResponse = Infer<typeof SnapResponseStruct>;

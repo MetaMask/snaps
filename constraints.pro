@@ -87,6 +87,29 @@ npm_version_range_out_of_sync(VersionRange1, VersionRange2) :-
     )
   ).
 
+% Slice a list from From to To.
+slice(Left, From, To, Right):-
+  length(LeftFrom, From),
+  length([_|LeftTo], To),
+  append(LeftTo, _, Left),
+  append(LeftFrom, Right, LeftTo).
+
+% True if and only if the given workspace directory is an example.
+is_example(WorkspaceCwd) :-
+  atomic_list_concat(Parts, '/', WorkspaceCwd),
+  slice(Parts, 1, 3, RootParts),
+  atomic_list_concat(RootParts, '/', RootCwd),
+  RootCwd = 'examples',
+  WorkspaceCwd \= 'packages/examples',
+  WorkspaceCwd \= 'packages/examples/packages/invoke-snap'.
+
+% True if and only if the given workspace directory is a nested example.
+is_nested_example(WorkspaceCwd) :-
+  atomic_list_concat(Parts, '/', WorkspaceCwd),
+  slice(Parts, 1, 6, RootParts),
+  atomic_list_concat(RootParts, '/', RootCwd),
+  RootCwd = 'examples/packages/invoke-snap/packages'.
+
 %===============================================================================
 % Constraints
 %===============================================================================
@@ -124,3 +147,89 @@ gen_enforced_dependency(WorkspaceCwd, DependencyIdent, null, DependencyType) :-
 gen_enforced_field(WorkspaceCwd, 'sideEffects', 'false') :-
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
+
+% The type definitions entrypoint for the dependency must be `./dist/types/index.d.ts`.
+gen_enforced_field(WorkspaceCwd, 'types', './dist/types/index.d.ts') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+
+% The entrypoint for the dependency must be `./dist/cjs/index.js`.
+gen_enforced_field(WorkspaceCwd, 'main', './dist/cjs/index.js') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+
+% The module entrypoint for the dependency must be `./dist/esm/index.js`.
+gen_enforced_field(WorkspaceCwd, 'module', './dist/esm/index.js') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+
+% Dependencies must have preview scripts.
+gen_enforced_field(WorkspaceCwd, 'scripts.prepare-manifest:preview', '../../scripts/prepare-preview-manifest.sh') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  \+ is_example(WorkspaceCwd),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'scripts.publish:preview', 'yarn npm publish --tag preview') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+
+gen_enforced_field(WorkspaceCwd, 'publishConfig.access', 'public') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'publishConfig.registry', 'https://registry.npmjs.org/') :-
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+
+% Ensure all examples have the same scripts.
+gen_enforced_field(WorkspaceCwd, 'scripts.build', 'mm-snap build') :-
+  is_example(WorkspaceCwd),
+  WorkspaceCwd \= 'packages/examples/packages/wasm',
+  WorkspaceCwd \= 'packages/examples/packages/browserify-plugin',
+  WorkspaceCwd \= 'packages/examples/packages/rollup-plugin',
+  WorkspaceCwd \= 'packages/examples/packages/webpack-plugin'.
+gen_enforced_field(WorkspaceCwd, 'scripts.build:clean', 'yarn clean && yarn build') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.start', 'mm-snap watch') :-
+  is_example(WorkspaceCwd),
+  WorkspaceCwd \= 'packages/examples/packages/wasm',
+  WorkspaceCwd \= 'packages/examples/packages/browserify-plugin',
+  WorkspaceCwd \= 'packages/examples/packages/rollup-plugin',
+  WorkspaceCwd \= 'packages/examples/packages/webpack-plugin'.
+gen_enforced_field(WorkspaceCwd, 'scripts.clean', 'rimraf "dist"') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.test', 'yarn test:e2e') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.test:e2e', 'jest') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.lint', 'yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:ci', 'yarn lint') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:fix', 'yarn lint:eslint --fix && yarn lint:misc --write') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:eslint', 'eslint . --cache --ext js,ts,jsx,tsx') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:misc', 'prettier --no-error-on-unmatched-pattern --loglevel warn "**/*.json" "**/*.md" "**/*.html" "!CHANGELOG.md" "!snap.manifest.json" --ignore-path ../../../../.gitignore') :-
+  is_example(WorkspaceCwd),
+  \+ is_nested_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:misc', 'prettier --no-error-on-unmatched-pattern --loglevel warn "**/*.json" "**/*.md" "**/*.html" "!CHANGELOG.md" "!snap.manifest.json" --ignore-path ../../../../../../.gitignore') :-
+  is_nested_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:changelog', 'yarn auto-changelog validate') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.prepare-manifest:preview', '../../../../scripts/prepare-preview-manifest.sh') :-
+  is_example(WorkspaceCwd),
+  \+ is_nested_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.prepare-manifest:preview', '../../../../../../scripts/prepare-preview-manifest.sh') :-
+  is_nested_example(WorkspaceCwd).
+
+% Ensure all examples have the same `main` and `types` fields.
+gen_enforced_field(WorkspaceCwd, 'main', './dist/bundle.js') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'types', null) :-
+  is_example(WorkspaceCwd).
+
+% Ensure all examples have the same license.
+gen_enforced_field(WorkspaceCwd, 'license', '(MIT-0 OR Apache-2.0)') :-
+  is_example(WorkspaceCwd).

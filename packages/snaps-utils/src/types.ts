@@ -16,7 +16,7 @@ import {
 } from 'superstruct';
 
 import { SnapCaveatType } from './caveats';
-import { SnapFunctionExports, SnapKeyring as Keyring } from './handlers';
+import { SnapFunctionExports } from './handlers';
 import { SnapManifest } from './manifest';
 import { VirtualFile } from './virtual-file';
 
@@ -133,7 +133,6 @@ export enum SNAP_STREAM_NAMES {
 export enum HandlerType {
   OnRpcRequest = 'onRpcRequest',
   OnTransaction = 'onTransaction',
-  SnapKeyring = 'keyring',
   OnCronjob = 'onCronjob',
   OnNameLookup = 'onNameLookup',
 }
@@ -153,15 +152,7 @@ type ObjectParameters<
   Type extends Record<string, (...args: any[]) => unknown>,
 > = Parameters<Type[keyof Type]>;
 
-type KeyringParameter<Fn> = Fn extends (...args: any[]) => unknown
-  ? Parameters<Fn>
-  : never;
-
-type KeyringParameters = KeyringParameter<Keyring[keyof Keyring]>;
-
-export type SnapExportsParameters =
-  | ObjectParameters<SnapFunctionExports>
-  | KeyringParameters;
+export type SnapExportsParameters = ObjectParameters<SnapFunctionExports>;
 
 type UriOptions<T extends string> = {
   protocol?: Struct<T>;

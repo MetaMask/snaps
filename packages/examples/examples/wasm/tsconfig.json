@@ -1,9 +1,0 @@
-{
-  "extends": "../../../../tsconfig.packages.json",
-  "compilerOptions": {
-    "composite": false,
-    "declaration": false,
-    "typeRoots": ["../../../../node_modules/@types"]
-  },
-  "include": ["assembly"]
-}

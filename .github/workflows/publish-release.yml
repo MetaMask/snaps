@@ -5,6 +5,8 @@ on:
     secrets:
       NPM_TOKEN:
         required: true
+      PUBLISH_PAGES_TOKEN:
+        required: true
 
 jobs:
   publish-release:
@@ -100,3 +102,19 @@ jobs:
     uses: ./.github/workflows/publish-environment.yml
     with:
       destination_dir: ${{ needs.get-release-version.outputs.RELEASE_VERSION }}
+
+  publish-test-snaps:
+    needs: get-release-version
+    name: Publish test snaps
+    # The `rc/1.0.0` branch does not have `test-snaps` package, so we only run
+    # this job on the `main` branch.
+    if: ${{ github.ref_name == 'main' }}
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-github-pages.yml
+    with:
+      build_script: yarn workspace @metamask/test-snaps build
+      destination_dir: test-snaps/${{ needs.get-release-version.outputs.RELEASE_VERSION }}
+      publish_dir: ./packages/test-snaps/public
+    secrets:
+      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}

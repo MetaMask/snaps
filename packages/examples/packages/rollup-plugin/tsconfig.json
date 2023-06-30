@@ -1,0 +1,21 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@metamask/*": ["../../../*/src"]
+    }
+  },
+  "include": ["src", "rollup.config.js"],
+  "references": [
+    {
+      "path": "../../../snaps-types"
+    },
+    {
+      "path": "../../../snaps-rollup-plugin"
+    },
+    {
+      "path": "../../../snaps-jest"
+    }
+  ]
+}

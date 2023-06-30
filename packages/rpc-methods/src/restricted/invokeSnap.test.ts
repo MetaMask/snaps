@@ -110,8 +110,6 @@ describe('implementation', () => {
       handler: 'onRpcRequest',
       origin: MOCK_ORIGIN,
       request: {
-        jsonrpc: '2.0',
-        id: expect.any(String),
         method: 'hello',
         params: {},
       },
@@ -137,24 +135,6 @@ describe('implementation', () => {
     expect(hooks.getSnap).toHaveBeenCalledTimes(1);
     expect(hooks.getSnap).toHaveBeenCalledWith(MOCK_SNAP_ID);
 
-    expect(hooks.handleSnapRpcRequest).not.toHaveBeenCalled();
-  });
-
-  it('throws if request is not valid', async () => {
-    const hooks = getMockHooks();
-    hooks.getSnap.mockImplementation(getTruncatedSnap);
-    const implementation = getInvokeSnapImplementation(hooks);
-    await expect(
-      implementation({
-        context: { origin: MOCK_ORIGIN },
-        method: WALLET_SNAP_PERMISSION_KEY,
-        params: {},
-      }),
-    ).rejects.toThrow(
-      'Must specify a valid JSON-RPC request object as single parameter.',
-    );
-
-    expect(hooks.getSnap).toHaveBeenCalledTimes(0);
     expect(hooks.handleSnapRpcRequest).not.toHaveBeenCalled();
   });
 });

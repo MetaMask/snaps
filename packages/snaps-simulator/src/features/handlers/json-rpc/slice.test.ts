@@ -4,6 +4,7 @@ import {
   setJsonRpcResponse,
   INITIAL_STATE,
   setJsonRpcRequestFromHistory,
+  clearJsonRpcResponse,
 } from './slice';
 
 describe('jsonRpc', () => {
@@ -54,6 +55,20 @@ describe('jsonRpc', () => {
       const result = reducer(INITIAL_STATE, setJsonRpcResponse('foo'));
 
       expect(result.response).toBe('foo');
+    });
+  });
+
+  describe('clearResponse', () => {
+    it('clears the response', () => {
+      const result = reducer(
+        {
+          ...INITIAL_STATE,
+          response: { jsonrpc: '2.0', id: null, result: 'foo' },
+        },
+        clearJsonRpcResponse(),
+      );
+
+      expect(result.response).toBeNull();
     });
   });
 });

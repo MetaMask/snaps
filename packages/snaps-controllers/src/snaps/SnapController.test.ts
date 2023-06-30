@@ -52,10 +52,8 @@ import {
   MOCK_BLOCK_NUMBER,
   MOCK_DAPP_SUBJECT_METADATA,
   MOCK_DAPPS_RPC_ORIGINS_PERMISSION,
-  MOCK_NAMESPACES,
   MOCK_RPC_ORIGINS_PERMISSION,
   MOCK_SNAP_SUBJECT_METADATA,
-  PERSISTED_MOCK_KEYRING_SNAP,
   sleep,
   loopbackDetect,
   LoopbackLocation,
@@ -1661,8 +1659,8 @@ describe('SnapController', () => {
         }),
       ).rejects.toThrow(
         ethErrors.rpc.invalidRequest({
-          message: 'Invalid "jsonrpc" property. Must be "2.0" if provided.',
-          data: 'kaplar',
+          message:
+            'Invalid JSON-RPC request: At path: jsonrpc -- Expected the literal `"2.0"`, but received: "kaplar".',
         }),
       );
 
@@ -2687,8 +2685,15 @@ describe('SnapController', () => {
     });
 
     it('maps endowment permission caveats to the proper format', async () => {
-      const keyringSnap = PERSISTED_MOCK_KEYRING_SNAP;
-      const { manifest } = keyringSnap;
+      const initialPermissions = {
+        [handlerEndowments.onRpcRequest]: { snaps: false, dapps: true },
+      };
+      const { manifest, sourceCode, svgIcon } = getSnapFiles({
+        manifest: getSnapManifest({
+          version: '1.1.0' as SemVerVersion,
+          initialPermissions,
+        }),
+      });
 
       const messenger = getSnapControllerMessenger();
       const snapController = getSnapController(
@@ -2696,16 +2701,7 @@ describe('SnapController', () => {
           messenger,
           detectSnapLocation: loopbackDetect({
             manifest,
-            files: [
-              new VirtualFile({
-                value: keyringSnap.sourceCode,
-                path: manifest.source.location.npm.filePath,
-              }),
-              new VirtualFile({
-                value: DEFAULT_SNAP_ICON,
-                path: manifest.source.location.npm.iconPath,
-              }),
-            ],
+            files: [sourceCode, svgIcon],
           }),
         }),
       );
@@ -2715,8 +2711,11 @@ describe('SnapController', () => {
       });
 
       const caveat = {
-        type: SnapCaveatType.SnapKeyring,
-        value: { namespaces: MOCK_NAMESPACES },
+        type: SnapCaveatType.RpcOrigin,
+        value: {
+          dapps: true,
+          snaps: false,
+        },
       };
 
       expect(messenger.call).toHaveBeenNthCalledWith(
@@ -2744,7 +2743,7 @@ describe('SnapController', () => {
           requestState: {
             loading: false,
             permissions: {
-              [SnapEndowments.Keyring]: {
+              [SnapEndowments.Rpc]: {
                 caveats: [caveat],
               },
             },
@@ -2757,7 +2756,7 @@ describe('SnapController', () => {
         'PermissionController:grantPermissions',
         {
           approvedPermissions: {
-            [SnapEndowments.Keyring]: {
+            [SnapEndowments.Rpc]: {
               caveats: [caveat],
             },
           },
@@ -4888,6 +4887,40 @@ describe('SnapController', () => {
     });
   });
 
+  describe('clearState', () => {
+    it('clears the state and terminates running snaps', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      const callActionSpy = jest.spyOn(messenger, 'call');
+
+      expect(snapController.has(MOCK_SNAP_ID)).toBe(true);
+
+      await snapController.clearState();
+
+      expect(snapController.has(MOCK_SNAP_ID)).toBe(false);
+
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'ExecutionService:terminateAllSnaps',
+      );
+
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'PermissionController:revokeAllPermissions',
+        MOCK_SNAP_ID,
+      );
+
+      snapController.destroy();
+    });
+  });
+
   describe('SnapController actions', () => {
     describe('SnapController:get', () => {
       it('gets a snap', () => {
@@ -5374,6 +5407,49 @@ describe('SnapController', () => {
         MOCK_ORIGIN,
         MOCK_SNAP_ID,
       );
+
+      snapController.destroy();
+    });
+  });
+
+  describe('SnapController:revokeDynamicPermissions', () => {
+    it('calls PermissionController:revokePermissions', () => {
+      const messenger = getSnapControllerMessenger();
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+        }),
+      );
+
+      const callActionSpy = jest.spyOn(messenger, 'call');
+
+      messenger.call('SnapController:revokeDynamicPermissions', MOCK_SNAP_ID, [
+        'eth_accounts',
+      ]);
+
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'PermissionController:revokePermissions',
+        { [MOCK_SNAP_ID]: ['eth_accounts'] },
+      );
+
+      snapController.destroy();
+    });
+
+    it('throws if input permission is not a dynamic permission', () => {
+      const messenger = getSnapControllerMessenger();
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+        }),
+      );
+
+      expect(() =>
+        messenger.call(
+          'SnapController:revokeDynamicPermissions',
+          MOCK_SNAP_ID,
+          ['snap_notify'],
+        ),
+      ).toThrow('Non-dynamic permissions cannot be revoked');
 
       snapController.destroy();
     });

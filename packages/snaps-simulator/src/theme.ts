@@ -1,7 +1,14 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { tagAnatomy, formAnatomy, tabsAnatomy } from '@chakra-ui/anatomy';
 import {
+  tagAnatomy,
+  formAnatomy,
+  tabsAnatomy,
+  modalAnatomy,
+  switchAnatomy,
+} from '@chakra-ui/anatomy';
+import {
+  ThemeConfig,
   createMultiStyleConfigHelpers,
   cssVar,
   defineStyle,
@@ -24,24 +31,94 @@ const {
   definePartsStyle: defineTabsPartsStyle,
   defineMultiStyleConfig: defineTabsMultiStyleConfig,
 } = createMultiStyleConfigHelpers(tabsAnatomy.keys);
+
+const {
+  definePartsStyle: defineModalPartsStyle,
+  defineMultiStyleConfig: defineModalMultiStyleConfig,
+} = createMultiStyleConfigHelpers(modalAnatomy.keys);
+
+const {
+  definePartsStyle: defineSwitchPartsStyle,
+  defineMultiStyleConfig: defineSwitchMultiStyleConfig,
+} = createMultiStyleConfigHelpers(switchAnatomy.keys);
 /* eslint-enable @typescript-eslint/unbound-method */
 
+const config: ThemeConfig = {
+  initialColorMode: 'system',
+  useSystemColorMode: true,
+};
+
 export const theme = extendTheme({
-  borders: {
-    muted: '1px solid #D6D9DC',
+  config,
+
+  semanticTokens: {
+    colors: {
+      'chakra-body-bg': { _light: 'white', _dark: '#24272A' },
+      text: {
+        default: '#24272A',
+        _dark: '#9FA6AE',
+        tab: {
+          default: '#535A61',
+          _dark: '#FFFFFF',
+          selected: {
+            default: '#24272A',
+            _dark: '#FFFFFF',
+          },
+        },
+        console: {
+          default: '#535A61',
+          _dark: '#D6D9DC',
+        },
+      },
+      background: {
+        alternative: { default: '#F5F5F5', _dark: '#1D1F22' },
+        hover: {
+          default: '#FAFBFC',
+          _dark: '#141618',
+        },
+      },
+      info: {
+        default: {
+          default: '#0376C9',
+          _dark: '#1098FC',
+        },
+        muted: {
+          default: 'rgba(3, 118, 201, 0.1)',
+          _dark: '#141618',
+        },
+      },
+      border: {
+        default: {
+          default: '#D6D9DC',
+          _dark: '#3B4046',
+        },
+        active: {
+          default: '#24272A',
+          _dark: 'rgba(255, 255, 255, 0.06)',
+        },
+      },
+      gray: {
+        muted: {
+          default: '#D6D9DC',
+          _dark: '#3B4046',
+        },
+      },
+    },
+    borders: {
+      muted: {
+        default: '1px solid #D6D9DC',
+        _dark: '1px solid #3B4046',
+      },
+    },
   },
 
   colors: {
     text: {
-      default: '#24272A',
+      white: '#FFFFFF',
       alternative: '#535A61',
       success: '#579F6E',
       error: '#D34C46',
       muted: '#BBC0C5',
-    },
-    info: {
-      default: '#0376C9',
-      muted: 'rgba(3, 118, 201, 0.1)',
     },
     error: {
       default: '#D34C46',
@@ -50,17 +127,8 @@ export const theme = extendTheme({
     success: {
       default: '#579F6E',
     },
-    background: {
-      alternative: '#F5F5F5',
-      hover: '#FAFBFC',
-    },
     gray: {
-      muted: '#D6D9DC',
       40: '#F2F4F6',
-    },
-    border: {
-      default: '#D6D9DC',
-      active: '#24272A',
     },
   },
 
@@ -174,7 +242,7 @@ export const theme = extendTheme({
             paddingX: '4',
           },
           tab: {
-            color: 'text.alternative',
+            color: 'text.tab',
             fontSize: 'xs',
             fontWeight: '600',
             textTransform: 'uppercase',
@@ -188,7 +256,7 @@ export const theme = extendTheme({
               marginLeft: '4',
             },
             _selected: {
-              color: 'text.default',
+              color: 'text.tab.selected',
               borderBottom: '2px solid',
               borderColor: 'border.active',
             },
@@ -199,7 +267,7 @@ export const theme = extendTheme({
 
     Text: defineStyleConfig({
       baseStyle: {
-        color: 'text.default',
+        color: 'text',
       },
     }),
 
@@ -261,8 +329,26 @@ export const theme = extendTheme({
       baseStyle: defineStyle({
         [cssVar('skeleton-start-color').variable]:
           'colors.background.alternative',
-        [cssVar('skeleton-end-color').variable]: 'colors.border.default',
+        [cssVar('skeleton-end-color').variable]: 'colors.border',
         borderRadius: 'lg',
+      }),
+    }),
+
+    Modal: defineModalMultiStyleConfig({
+      baseStyle: defineModalPartsStyle({
+        dialog: {
+          bg: 'chakra-body-bg',
+        },
+      }),
+    }),
+
+    Switch: defineSwitchMultiStyleConfig({
+      baseStyle: defineSwitchPartsStyle({
+        track: {
+          _checked: {
+            bg: '#0376C9',
+          },
+        },
       }),
     }),
   },
