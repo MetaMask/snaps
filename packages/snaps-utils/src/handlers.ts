@@ -90,8 +90,8 @@ export type OnNameLookupResponse = {
  * @returns Resolved address(es) from the content lookup. See {@link OnNameLookupResponse}.
  */
 export type OnNameLookupHandler = (args: {
-  id: Caip2ChainId;
-  content: string;
+  chainId: Caip2ChainId;
+  domain: string;
 }) => Promise<OnNameLookupResponse>;
 
 /**
