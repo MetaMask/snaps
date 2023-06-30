@@ -1659,8 +1659,8 @@ describe('SnapController', () => {
         }),
       ).rejects.toThrow(
         ethErrors.rpc.invalidRequest({
-          message: 'Invalid "jsonrpc" property. Must be "2.0" if provided.',
-          data: 'kaplar',
+          message:
+            'Invalid JSON-RPC request: At path: jsonrpc -- Expected the literal `"2.0"`, but received: "kaplar".',
         }),
       );
 
