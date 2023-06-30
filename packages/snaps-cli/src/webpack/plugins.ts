@@ -82,9 +82,11 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
 
       info(`Compiled ${modules?.length} files in ${time}ms.`, this.#spinner);
 
-      // The spinner may be restarted by the watch plugin, outside of the
-      // `executeSteps` flow, so we stop it here just in case.
-      this.#spinner?.succeed('Done!');
+      if (compiler.watchMode) {
+        // The spinner may be restarted by the watch plugin, outside of the
+        // `executeSteps` flow, so we stop it here just in case.
+        this.#spinner?.succeed('Done!');
+      }
     });
   }
 
