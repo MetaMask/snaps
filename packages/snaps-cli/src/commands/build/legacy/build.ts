@@ -37,6 +37,6 @@ export async function legacyBuild(
   }
 
   if (cliOptions.manifest) {
-    await manifest(config);
+    await manifest(config, { fix: cliOptions.writeManifest });
   }
 }

@@ -280,7 +280,7 @@ export async function getSnapSourceCode(
     );
     return virtualFile;
   } catch (error) {
-    throw new Error(`Failed to read Snap bundle file: ${error.message}`);
+    throw new Error(`Failed to read snap bundle file: ${error.message}`);
   }
 }
 

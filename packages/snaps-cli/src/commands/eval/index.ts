@@ -8,7 +8,7 @@ const command = {
   command: ['eval', 'e'],
   desc: 'Attempt to evaluate snap bundle in SES',
   builder: (yarg: yargs.Argv) => {
-    // Browserify options.
+    // Browserify options. These are merged into the config object.
     yarg.option('bundle', builders.bundle);
 
     // Webpack options.

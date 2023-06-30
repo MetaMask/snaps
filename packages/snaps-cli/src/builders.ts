@@ -14,6 +14,11 @@ const builders: Record<string, Readonly<Options>> = {
     normalize: true,
   },
 
+  fix: {
+    describe: 'Attempt to fix snap.manifest.json',
+    type: 'boolean',
+  },
+
   input: {
     alias: 'i',
     describe: 'Snap bundle file to evaluate',

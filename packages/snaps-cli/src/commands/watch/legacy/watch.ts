@@ -36,6 +36,7 @@ export async function legacyWatch(
     outfileName,
     src,
     serve: shouldServe,
+    writeManifest: fix,
   } = config.cliOptions;
 
   if (outfileName) {
@@ -61,7 +62,7 @@ export async function legacyWatch(
       await build(config);
 
       if (checkManifest) {
-        await manifest(config);
+        await manifest(config, { fix });
       }
 
       if (shouldEval) {
