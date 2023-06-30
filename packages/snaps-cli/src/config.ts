@@ -304,6 +304,17 @@ export type SnapWebpackConfig = {
 
   plugins?: {
     /**
+     * Options for the {@link SnapsStatsPlugin} plugin. This plugin cannot be
+     * disabled.
+     */
+    stats?: {
+      /**
+       * Whether to enable verbose logging.
+       */
+      verbose?: boolean;
+    };
+
+    /**
      * Options for the {@link SnapsBuiltInResolver} plugin. If `false`, the
      * plugin will be disabled.
      */
@@ -484,6 +495,13 @@ export const SnapsWebpackConfigStruct = object({
 
   plugins: defaulted(
     object({
+      stats: defaulted(
+        object({
+          verbose: defaulted(boolean(), false),
+        }),
+        {},
+      ),
+
       builtInResolver: defaulted(
         union([
           object({ ignore: defaulted(array(string()), []) }),

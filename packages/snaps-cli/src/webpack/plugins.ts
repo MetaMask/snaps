@@ -1,4 +1,4 @@
-import { yellow } from 'chalk';
+import { dim, red, yellow } from 'chalk';
 import { isBuiltin } from 'module';
 import { Ora } from 'ora';
 import {
@@ -6,10 +6,110 @@ import {
   ProvidePlugin,
   ResolvePluginInstance,
   Resolver,
+  StatsError,
   WebpackPluginInstance,
 } from 'webpack';
 
-import { indent, info, warn } from '../utils';
+import { error, indent, info, warn } from '../utils';
+
+export type SnapsStatsPluginOptions = {
+  /**
+   * Whether to log the verbose stats.
+   */
+  verbose?: boolean;
+};
+
+/**
+ * A plugin that logs the stats after compilation. This is useful for logging
+ * the number of files compiled, and the time taken to compile them.
+ */
+export class SnapsStatsPlugin implements WebpackPluginInstance {
+  /**
+   * The options for the plugin.
+   */
+  readonly #options: SnapsStatsPluginOptions;
+
+  /**
+   * The spinner to use for logging.
+   */
+  readonly #spinner?: Ora;
+
+  constructor(
+    options: SnapsStatsPluginOptions = {
+      verbose: false,
+    },
+    spinner?: Ora,
+  ) {
+    this.#options = options;
+    this.#spinner = spinner;
+  }
+
+  /**
+   * Apply the plugin to the Webpack compiler.
+   *
+   * @param compiler - The Webpack compiler.
+   */
+  apply(compiler: Compiler) {
+    compiler.hooks.afterDone.tap(this.constructor.name, (stats) => {
+      const { modules, time, errors } = stats.toJson();
+      if (!modules || !time) {
+        error(
+          'Compilation status unknown. This is likely due to an error in the Webpack compiler. Please double-check your configuration.',
+          this.#spinner,
+        );
+
+        this.#spinner?.stop();
+
+        process.exitCode = 1;
+        return;
+      }
+
+      if (errors?.length) {
+        const formattedErrors = errors
+          .map(this.#getStatsErrorMessage.bind(this))
+          .join('\n\n');
+
+        error(
+          `Compiled ${modules?.length} files in ${time}ms with ${errors.length} error(s).\n\n${formattedErrors}\n`,
+          this.#spinner,
+        );
+
+        this.#spinner?.stop();
+
+        process.exitCode = 1;
+        return;
+      }
+
+      info(`Compiled ${modules?.length} files in ${time}ms.`, this.#spinner);
+
+      // The spinner may be restarted by the watch plugin, outside of the
+      // `executeSteps` flow, so we stop it here just in case.
+      this.#spinner?.succeed('Done!');
+    });
+  }
+
+  /**
+   * Get the error message for the given stats error.
+   *
+   * @param statsError - The stats error.
+   * @returns The error message.
+   */
+  #getStatsErrorMessage(statsError: StatsError) {
+    const baseMessage = this.#options.verbose
+      ? statsError.stack ?? statsError.message
+      : statsError.message;
+
+    const [first, ...rest] = baseMessage.split('\n');
+
+    return [
+      indent(red(`• ${first}`), 2),
+      ...rest.map((message) => indent(red(message), 4)),
+      statsError.details && indent(dim(statsError.details), 4),
+    ]
+      .filter(Boolean)
+      .join('\n');
+  }
+}
 
 /**
  * The options for the {@link SnapsWatchPlugin}.

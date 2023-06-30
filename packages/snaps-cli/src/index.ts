@@ -2,12 +2,14 @@ export * as utils from './utils';
 export type { SnapConfig } from './config';
 export {
   getDefaultConfiguration,
+  SnapsStatsPlugin,
   SnapsWatchPlugin,
   SnapsBuiltInResolver,
   SnapsBuiltInResolverPlugin,
   SnapsBundleWarningsPlugin,
 } from './webpack';
 export type {
+  SnapsStatsPluginOptions,
   SnapsWatchPluginOptions,
   SnapsBuiltInResolverOptions,
   SnapsBundleWarningsPluginOptions,

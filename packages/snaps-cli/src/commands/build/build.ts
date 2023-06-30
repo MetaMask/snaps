@@ -31,17 +31,7 @@ const steps: Steps<BuildContext & { spinner: Ora }> = [
     task: async ({ config, spinner }) => {
       const compiler = getCompiler(config, { evaluate: false, spinner });
       return await new Promise<void>((resolve, reject) => {
-        compiler.run((error, stats) => {
-          if (error) {
-            reject(error);
-            return;
-          }
-
-          if (stats?.hasErrors()) {
-            reject(stats.toString());
-            return;
-          }
-
+        compiler.run(() => {
           compiler.close((closeError) => {
             if (closeError) {
               reject(closeError);

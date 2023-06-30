@@ -3,7 +3,6 @@ import { AddressInfo } from 'net';
 import { webpack } from 'webpack';
 
 import { ProcessedWebpackConfig } from '../config';
-import { error, info } from '../utils';
 import { getDefaultConfiguration, WebpackOptions } from './config';
 
 /**
@@ -21,48 +20,22 @@ export function getCompiler(
   const webpackConfig =
     config.customizeWebpackConfig?.(baseWebpackConfig) ?? baseWebpackConfig;
 
-  const compiler = webpack(webpackConfig);
-  compiler.hooks.afterDone.tap('AfterCompilePlugin', (stats) => {
-    if (!stats) {
-      return;
-    }
-
-    const { modules, time, errors } = stats.toJson();
-    if (!modules || !time) {
-      error(
-        'Compilation status unknown. Please check your config.',
-        options?.spinner,
-      );
-
-      process.exitCode = 1;
-      return;
-    }
-
-    if (errors?.length) {
-      error(
-        `Compiled ${modules?.length} files in ${time}ms with ${errors?.length} errors.`,
-        options?.spinner,
-      );
-
-      process.exitCode = 1;
-      return;
-    }
-
-    info(`Compiled ${modules?.length} files in ${time}ms.`, options?.spinner);
-    options?.spinner?.succeed('Done!');
-  });
-
-  return compiler;
+  return webpack(webpackConfig);
 }
 
 /**
  * Get a static server for development purposes.
+ *
+ * Note: We're intentionally not using `webpack-dev-server` here because it
+ * adds a lot of extra stuff to the output that we don't need, and it's
+ * difficult to customize.
  *
  * @returns An object with a `listen` method that returns a promise that
  * resolves when the server is listening.
  */
 export function getServer() {
   const app = express();
+
   app.use(
     // TODO: Get path from config (or manifest?).
     express.static(process.cwd(), {
@@ -71,6 +44,12 @@ export function getServer() {
     }),
   );
 
+  /**
+   * Start the server on the given port.
+   *
+   * @param port - The port to listen on.
+   * @returns A promise that resolves when the server is listening.
+   */
   const listen = async (port: number) => {
     return new Promise<number>((resolve, reject) => {
       try {
