@@ -137,6 +137,7 @@ export default class SnapsWebpackPlugin {
           pathUtils.dirname(this.options.manifestPath),
           this.options.writeManifest,
           bundleContent,
+          promisify(compiler.outputFileSystem.writeFile),
         );
 
         if (!this.options.writeManifest && errors.length > 0) {

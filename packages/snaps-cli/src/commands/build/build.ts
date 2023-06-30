@@ -15,7 +15,7 @@ type BuildContext = {
 
 const steps: Steps<BuildContext & { spinner: Ora }> = [
   {
-    name: 'Checking input file.',
+    name: 'Checking the input file.',
     task: async ({ config }) => {
       const { input } = config;
 
@@ -27,7 +27,7 @@ const steps: Steps<BuildContext & { spinner: Ora }> = [
     },
   },
   {
-    name: 'Building snap bundle.',
+    name: 'Building the snap bundle.',
     task: async ({ config, spinner }) => {
       const compiler = getCompiler(config, { evaluate: false, spinner });
       return await new Promise<void>((resolve, reject) => {
@@ -42,13 +42,20 @@ const steps: Steps<BuildContext & { spinner: Ora }> = [
             return;
           }
 
-          resolve();
+          compiler.close((closeError) => {
+            if (closeError) {
+              reject(closeError);
+              return;
+            }
+
+            resolve();
+          });
         });
       });
     },
   },
   {
-    name: 'Evaluating snap bundle.',
+    name: 'Evaluating the snap bundle.',
     task: async ({ config }) => {
       const path = pathResolve(
         process.cwd(),

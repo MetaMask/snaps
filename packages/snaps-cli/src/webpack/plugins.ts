@@ -9,7 +9,7 @@ import {
   WebpackPluginInstance,
 } from 'webpack';
 
-import { indent, warn } from '../utils';
+import { indent, info, warn } from '../utils';
 
 /**
  * The options for the {@link SnapsWatchPlugin}.
@@ -27,10 +27,19 @@ export type SnapsWatchPluginOptions = {
  * file.
  */
 export class SnapsWatchPlugin implements WebpackPluginInstance {
+  /**
+   * The options for the plugin.
+   */
   readonly #options: SnapsWatchPluginOptions;
 
-  constructor(options: SnapsWatchPluginOptions) {
+  /**
+   * The spinner to use for logging.
+   */
+  readonly #spinner?: Ora;
+
+  constructor(options: SnapsWatchPluginOptions, spinner?: Ora) {
     this.#options = options;
+    this.#spinner = spinner;
   }
 
   /**
@@ -39,8 +48,13 @@ export class SnapsWatchPlugin implements WebpackPluginInstance {
    * @param compiler - The Webpack compiler.
    */
   apply(compiler: Compiler) {
-    compiler.hooks.afterCompile.tapPromise(
-      'WatchPlugin',
+    compiler.hooks.invalid.tap(this.constructor.name, (file) => {
+      this.#spinner?.start();
+      info(`Changes detected in ${yellow(file)}, recompiling.`, this.#spinner);
+    });
+
+    compiler.hooks.afterEmit.tapPromise(
+      this.constructor.name,
       async ({ fileDependencies }) => {
         this.#options.files?.forEach(
           fileDependencies.add.bind(fileDependencies),

@@ -49,6 +49,8 @@ export type CheckManifestResult = {
   errors: string[];
 };
 
+export type WriteFileFunction = (path: string, data: string) => Promise<void>;
+
 /**
  * Validates a snap.manifest.json file. Attempts to fix the manifest and write
  * the fixed version to disk if `writeManifest` is true. Throws if validation
@@ -57,6 +59,7 @@ export type CheckManifestResult = {
  * @param basePath - The path to the folder with the manifest files.
  * @param writeManifest - Whether to write the fixed manifest to disk.
  * @param sourceCode - The source code of the Snap.
+ * @param writeFileFn - The function to use to write the manifest to disk.
  * @returns Whether the manifest was updated, and an array of warnings that
  * were encountered during processing of the manifest files.
  */
@@ -64,6 +67,7 @@ export async function checkManifest(
   basePath: string,
   writeManifest = true,
   sourceCode?: string,
+  writeFileFn: WriteFileFunction = fs.writeFile,
 ): Promise<CheckManifestResult> {
   const warnings: string[] = [];
   const errors: string[] = [];
@@ -176,7 +180,7 @@ export async function checkManifest(
       )}\n`;
 
       if (updated || newManifest !== manifestFile.value) {
-        await fs.writeFile(
+        await writeFileFn(
           pathUtils.join(basePath, NpmSnapFileNames.Manifest),
           newManifest,
         );

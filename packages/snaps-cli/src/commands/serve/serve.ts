@@ -1,4 +1,5 @@
 import { ProcessedConfig } from '../../config';
+import { info } from '../../utils';
 import { getServer } from '../../webpack';
 import { legacyServe } from './legacy';
 
@@ -10,13 +11,12 @@ import { legacyServe } from './legacy';
  */
 export async function serve(config: ProcessedConfig): Promise<void> {
   if (config.bundler === 'browserify') {
-    return await legacyServe(config);
+    await legacyServe(config);
+    return;
   }
 
-  const server = getServer(config, {
-    evaluate: false,
-    watch: false,
-  });
+  const server = getServer();
+  const port = await server.listen(config.server.port ?? 0);
 
-  return server.start();
+  info(`The server is listening on http://localhost:${port}.`);
 }

@@ -2,6 +2,7 @@ import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
 import { dim } from 'chalk';
 import { builtinModules } from 'module';
 import { Ora } from 'ora';
+import { resolve } from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import { Configuration, EnvironmentPlugin, ProgressPlugin } from 'webpack';
 
@@ -289,9 +290,13 @@ export function getDefaultConfiguration(
        * for changes. This is useful for rebuilding the bundle when the
        * manifest file changes.
        */
-      new SnapsWatchPlugin({
-        files: [config.manifest.path],
-      }),
+      options.watch &&
+        new SnapsWatchPlugin(
+          {
+            files: [resolve(process.cwd(), config.manifest.path)],
+          },
+          options.spinner,
+        ),
 
       /**
        * The `SnapsBuiltInResolverPlugin` is a Webpack plugin that shows

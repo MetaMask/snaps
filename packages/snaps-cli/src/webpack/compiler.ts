@@ -1,7 +1,6 @@
-import { logInfo } from '@metamask/snaps-utils';
-import { resolve } from 'path';
+import express from 'express';
+import { AddressInfo } from 'net';
 import { webpack } from 'webpack';
-import WebpackDevServer from 'webpack-dev-server';
 
 import { ProcessedWebpackConfig } from '../config';
 import { error, info } from '../utils';
@@ -50,52 +49,40 @@ export function getCompiler(
     }
 
     info(`Compiled ${modules?.length} files in ${time}ms.`, options?.spinner);
+    options?.spinner?.succeed('Done!');
   });
 
   return compiler;
 }
 
 /**
- * Get a Webpack dev server for the given config.
+ * Get a static server for development purposes.
  *
- * @param config - The config object.
- * @param options - The Webpack options.
- * @returns The Webpack dev server.
+ * @returns An object with a `listen` method that returns a promise that
+ * resolves when the server is listening.
  */
-export function getServer(
-  config: ProcessedWebpackConfig,
-  options: WebpackOptions,
-) {
-  const compiler = getCompiler(config, options);
-
-  return new WebpackDevServer(
-    {
-      port: config.server.port,
-      static: {
-        directory: resolve(process.cwd(), config.server.root),
-        watch: options.watch,
-        serveIndex: true,
-      },
-
-      devMiddleware: {
-        writeToDisk: true,
-      },
-
-      magicHtml: false,
-      hot: false,
-      liveReload: false,
-
-      client: {
-        logging: 'error',
-        overlay: false,
-        progress: false,
-        reconnect: false,
-      },
-
-      onListening: () => {
-        logInfo(`Server listening on: http://localhost:${config.server.port}`);
-      },
-    },
-    compiler,
+export function getServer() {
+  const app = express();
+  app.use(
+    // TODO: Get path from config (or manifest?).
+    express.static(process.cwd(), {
+      dotfiles: 'deny',
+      extensions: ['html', 'js', 'json', 'svg'],
+    }),
   );
+
+  const listen = async (port: number) => {
+    return new Promise<number>((resolve, reject) => {
+      try {
+        const server = app.listen(port, () => {
+          const address = server.address() as AddressInfo;
+          resolve(address.port);
+        });
+      } catch (listenError) {
+        reject(listenError);
+      }
+    });
+  };
+
+  return { listen };
 }

@@ -1,5 +1,6 @@
 import { dim } from 'chalk';
-import createSpinner, { Ora } from 'ora';
+import type { Ora } from 'ora';
+import createSpinner from 'ora';
 
 import { error } from './logging';
 
