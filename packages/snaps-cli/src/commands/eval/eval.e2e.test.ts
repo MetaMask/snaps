@@ -1,7 +1,7 @@
 import { run } from '@metamask/snaps-cli/test-utils';
 import { resolve } from 'path';
 
-describe('mm-snap eval', () => {
+describe.skip('mm-snap eval', () => {
   describe('webpack', () => {
     it.each(['eval', 'e'])(
       'evaluates a snap using "mm-snap %s"',

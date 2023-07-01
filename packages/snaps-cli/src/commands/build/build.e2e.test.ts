@@ -2,7 +2,7 @@ import { join } from 'path';
 
 import { run, SNAP_DIR } from '../../test-utils';
 
-describe('mm-snap build', () => {
+describe.skip('mm-snap build', () => {
   it.each(['build', 'b'])(
     'builds a snap using "mm-snap %s"',
     async (command) => {

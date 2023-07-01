@@ -26,11 +26,18 @@ export function getMockConfig<
   Result = Bundler extends 'browserify'
     ? ProcessedBrowserifyConfig
     : ProcessedWebpackConfig,
->(bundler: Bundler, options?: Partial<Result>): Result {
+>(
+  bundler: Bundler,
+  options?: Partial<Result>,
+): Bundler extends 'browserify'
+  ? ProcessedBrowserifyConfig
+  : ProcessedWebpackConfig {
   return getConfig(
     deepMerge(
       { bundler },
       options ?? (DEFAULT_OPTIONS[bundler] as Partial<Result>),
     ),
-  ) as Result;
+  ) as Bundler extends 'browserify'
+    ? ProcessedBrowserifyConfig
+    : ProcessedWebpackConfig;
 }

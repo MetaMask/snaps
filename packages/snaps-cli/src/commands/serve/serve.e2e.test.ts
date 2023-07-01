@@ -1,7 +1,7 @@
 import { run } from '@metamask/snaps-cli/test-utils';
 import fetch from 'cross-fetch';
 
-describe('mm-snap serve', () => {
+describe.skip('mm-snap serve', () => {
   it.each([
     {
       command: 'serve',

@@ -35,4 +35,7 @@ module.exports = deepmerge(baseConfig, {
   },
   transformIgnorePatterns: [`node_modules/(?!(${ESM_DEPENDENCIES.join('|')}))`],
   testTimeout: 120000,
+  clearMocks: true,
+  resetMocks: false,
+  restoreMocks: false,
 });

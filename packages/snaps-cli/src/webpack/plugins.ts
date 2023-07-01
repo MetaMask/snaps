@@ -1,3 +1,4 @@
+import { assert } from '@metamask/utils';
 import { dim, red, yellow } from 'chalk';
 import { isBuiltin } from 'module';
 import { Ora } from 'ora';
@@ -52,17 +53,9 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
   apply(compiler: Compiler) {
     compiler.hooks.afterDone.tap(this.constructor.name, (stats) => {
       const { modules, time, errors } = stats.toJson();
-      if (!modules || !time) {
-        error(
-          'Compilation status unknown. This is likely due to an error in the Webpack compiler. Please double-check your configuration.',
-          this.#spinner,
-        );
 
-        this.#spinner?.stop();
-
-        process.exitCode = 1;
-        return;
-      }
+      assert(modules, 'Modules must be defined in stats.');
+      assert(time, 'Time must be defined in stats.');
 
       if (errors?.length) {
         const formattedErrors = errors

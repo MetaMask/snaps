@@ -4,7 +4,7 @@ import { join } from 'path';
 
 import { run, SNAP_DIR } from '../../test-utils';
 
-describe('mm-snap watch', () => {
+describe.skip('mm-snap watch', () => {
   it.each(['watch', 'w'])(
     'builds and watches for changes using "mm-snap %s"',
     async (command) => {

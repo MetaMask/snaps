@@ -1,3 +1,4 @@
+import { getMockConfig } from '@metamask/snaps-cli/test-utils';
 import { resolve } from 'path';
 
 import {
@@ -5,33 +6,11 @@ import {
   getConfigByArgv,
   loadConfig,
   resolveConfig,
-  SnapConfig,
 } from './config';
 
 const CONFIG_PATH = resolve(__dirname, '__fixtures__', 'configs');
 
-const DEFAULT_CONFIG: SnapConfig = {
-  bundler: 'webpack',
-  input: 'src/index.ts',
-  evaluate: true,
-  experimental: {
-    wasm: false,
-  },
-  manifest: {
-    path: resolve(process.cwd(), 'snap.manifest.json'),
-    update: true,
-  },
-  output: {
-    clean: false,
-    filename: 'bundle.js',
-    path: resolve(process.cwd(), 'dist'),
-  },
-  server: {
-    port: 8081,
-    root: process.cwd(),
-  },
-  sourceMap: true,
-};
+const DEFAULT_CONFIG = getMockConfig('webpack');
 
 describe('getConfig', () => {
   it('throws an error if `bundler` is not `browserify` or `webpack`', () => {
@@ -55,7 +34,7 @@ describe('getConfig', () => {
     expect(() =>
       getConfig({
         bundler: 'webpack',
-        entry: 'foo',
+        input: 'foo',
         cliOptions: { port: 8000 },
       }),
     ).toThrow(

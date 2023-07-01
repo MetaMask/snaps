@@ -1,4 +1,5 @@
 import express from 'express';
+import { Server } from 'http';
 import { AddressInfo } from 'net';
 import { webpack } from 'webpack';
 
@@ -51,11 +52,11 @@ export function getServer() {
    * @returns A promise that resolves when the server is listening.
    */
   const listen = async (port: number) => {
-    return new Promise<number>((resolve, reject) => {
+    return new Promise<{ port: number; server: Server }>((resolve, reject) => {
       try {
         const server = app.listen(port, () => {
           const address = server.address() as AddressInfo;
-          resolve(address.port);
+          resolve({ port: address.port, server });
         });
       } catch (listenError) {
         reject(listenError);
