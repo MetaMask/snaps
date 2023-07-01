@@ -1,29 +1,26 @@
-import { checkManifest, isFile } from '@metamask/snaps-utils';
-import { red, yellow } from 'chalk';
-import type { Ora } from 'ora';
-import { dirname, resolve } from 'path';
+import { isFile } from '@metamask/snaps-utils';
+import { resolve } from 'path';
 
 import type { ProcessedConfig } from '../../config';
 import { CommandError } from '../../errors';
 import type { Steps } from '../../utils';
-import { error, executeSteps, indent, warn } from '../../utils';
+import { executeSteps } from '../../utils';
+import { manifest } from '../helpers';
 
 type ManifestOptions = {
   fix?: boolean;
 };
 
 type ManifestContext = {
+  input: string;
   config: ProcessedConfig;
   options: ManifestOptions;
-  spinner: Ora;
 };
 
 const steps: Steps<ManifestContext> = [
   {
     name: 'Checking the input file.',
-    task: async ({ config }) => {
-      const input = getManifestPath(config);
-
+    task: async ({ input }) => {
       if (!(await isFile(input))) {
         throw new CommandError(
           `Manifest file not found: "${input}". Make sure that the \`snap.manifest.json\` file exists.`,
@@ -33,42 +30,9 @@ const steps: Steps<ManifestContext> = [
   },
   {
     name: 'Validating the snap manifest.',
-    task: async ({ config, options, spinner }) => {
-      const writeManifest = getWriteManifest(config, options);
-      const input = getManifestPath(config);
-
-      const { warnings, errors } = await checkManifest(
-        dirname(input),
-        Boolean(writeManifest),
-      );
-
-      if (!writeManifest && errors.length > 0) {
-        const formattedErrors = errors
-          .map((manifestError) => indent(red(`• ${manifestError}`)))
-          .join('\n');
-
-        error(
-          `The snap manifest file is invalid.\n\n${formattedErrors}\n\nRun the command with the \`--fix\` flag to attempt to fix the manifest.`,
-          spinner,
-        );
-
-        spinner.stop();
-        process.exitCode = 1;
-        return;
-      }
-
-      if (warnings.length > 0) {
-        const formattedWarnings = warnings.map((manifestWarning) =>
-          indent(yellow(`• ${manifestWarning}`)),
-        );
-
-        warn(
-          `The snap manifest file has warnings.\n\n${formattedWarnings.join(
-            '\n',
-          )}`,
-          spinner,
-        );
-      }
+    task: async ({ input, config, options, spinner }) => {
+      const write = getWriteManifest(config, options);
+      await manifest(input, write, spinner);
 
       spinner.succeed('The snap manifest file is valid.');
     },
@@ -118,9 +82,13 @@ function getManifestPath(config: ProcessedConfig) {
  * @param config - The config object.
  * @param options - The options object.
  */
-export async function manifest(
+export async function manifestHandler(
   config: ProcessedConfig,
   options: ManifestOptions,
 ) {
-  await executeSteps(steps, { config, options });
+  await executeSteps(steps, {
+    input: getManifestPath(config),
+    config,
+    options,
+  });
 }

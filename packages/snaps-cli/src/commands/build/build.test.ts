@@ -10,7 +10,7 @@ jest.mock('fs');
 jest.mock('../helpers');
 jest.mock('./legacy');
 
-describe('build', () => {
+describe('buildHandler', () => {
   it('builds a snap', async () => {
     await fs.promises.writeFile('/input.js', DEFAULT_SNAP_BUNDLE);
 

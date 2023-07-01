@@ -9,7 +9,7 @@ import { evaluateHandler } from './eval';
 jest.mock('fs');
 jest.mock('../helpers');
 
-describe('evaluate', () => {
+describe('evaluateHandler', () => {
   beforeAll(async () => {
     await fs.mkdir('/foo', { recursive: true });
     await fs.writeFile('/foo/output.js', DEFAULT_SNAP_BUNDLE);

@@ -13,7 +13,7 @@ import { ProcessedBrowserifyConfig } from '../../../config';
 import { CONFIG_FILE, TS_CONFIG_FILE } from '../../../utils';
 import { buildHandler } from '../../build/build';
 import { evaluateHandler } from '../../eval/eval';
-import { manifest } from '../../manifest/manifest';
+import { manifestHandler } from '../../manifest/manifest';
 import { serve } from '../../serve/serve';
 
 /**
@@ -62,7 +62,7 @@ export async function legacyWatch(
       await buildHandler(config);
 
       if (checkManifest) {
-        await manifest(config, { fix });
+        await manifestHandler(config, { fix });
       }
 
       if (shouldEval) {

@@ -1,4 +1,4 @@
-import index from '.';
+import command from '.';
 import { getMockConfig } from '../../test-utils';
 import type { YargsArgs } from '../../types/yargs';
 import { evaluateHandler } from './eval';
@@ -12,11 +12,9 @@ const getMockArgv = ({ bundle = 'dist/snap.js' } = {}) => {
   } as unknown as YargsArgs;
 };
 
-describe('handler', () => {
-  it('calls eval', async () => {
-    await index.handler(getMockArgv());
-
-    const mock = evaluateHandler as jest.MockedFunction<typeof evaluateHandler>;
-    expect(mock).toHaveBeenCalled();
+describe('eval command', () => {
+  it('calls the `evaluateHandler` function', async () => {
+    await command.handler(getMockArgv());
+    expect(evaluateHandler).toHaveBeenCalled();
   });
 });

@@ -2,7 +2,7 @@ import type yargs from 'yargs';
 
 import builders from '../../builders';
 import type { YargsArgs } from '../../types/yargs';
-import { manifest } from './manifest';
+import { manifestHandler } from './manifest';
 
 const command = {
   command: ['manifest', 'm'],
@@ -15,7 +15,7 @@ const command = {
     yarg.option('fix', builders.fix);
   },
   handler: async (argv: YargsArgs) =>
-    manifest(argv.context.config, { fix: argv.fix }),
+    manifestHandler(argv.context.config, { fix: argv.fix }),
 };
 
 export default command;
