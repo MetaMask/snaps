@@ -5,7 +5,7 @@ import {
 } from '@metamask/snaps-utils';
 
 import { ProcessedBrowserifyConfig } from '../../../config';
-import { evaluate } from '../../eval/eval';
+import { evaluateHandler } from '../../eval/eval';
 import { manifest } from '../../manifest/manifest';
 import { bundle } from './bundle';
 
@@ -33,7 +33,7 @@ export async function legacyBuild(
 
   const result = await bundle(config);
   if (result && cliOptions.eval) {
-    await evaluate(config);
+    await evaluateHandler(config);
   }
 
   if (cliOptions.manifest) {

@@ -2,8 +2,8 @@ import { DEFAULT_SNAP_BUNDLE } from '@metamask/snaps-utils/test-utils';
 import fs from 'fs';
 
 import { getMockConfig } from '../../test-utils';
-import { compile, evaluate } from '../helpers';
-import { build } from './build';
+import { build, evaluate } from '../helpers';
+import { buildHandler } from './build';
 import { legacyBuild } from './legacy';
 
 jest.mock('fs');
@@ -23,10 +23,10 @@ describe('build', () => {
       },
     });
 
-    await build(config);
+    await buildHandler(config);
 
     expect(process.exitCode).not.toBe(1);
-    expect(compile).toHaveBeenCalledWith(config, {
+    expect(build).toHaveBeenCalledWith(config, {
       evaluate: false,
       spinner: expect.any(Object),
     });
@@ -47,10 +47,10 @@ describe('build', () => {
       evaluate: false,
     });
 
-    await build(config);
+    await buildHandler(config);
 
     expect(process.exitCode).not.toBe(1);
-    expect(compile).toHaveBeenCalled();
+    expect(build).toHaveBeenCalled();
     expect(evaluate).not.toHaveBeenCalled();
   });
 
@@ -60,7 +60,7 @@ describe('build', () => {
       input: 'fake-input-file.js',
     });
 
-    await build(config);
+    await buildHandler(config);
 
     expect(process.exitCode).toBe(1);
     expect(log).toHaveBeenCalledWith(
@@ -72,7 +72,7 @@ describe('build', () => {
 
   it('calls `legacyBuild` if the bundler is set to browserify', async () => {
     const config = getMockConfig('browserify');
-    await build(config);
+    await buildHandler(config);
 
     expect(legacyBuild).toHaveBeenCalledWith(config);
   });

@@ -2,7 +2,7 @@ import type yargs from 'yargs';
 
 import builders from '../../builders';
 import type { YargsArgs } from '../../types/yargs';
-import { build } from './build';
+import { buildHandler } from './build';
 import { processInvalidTranspilation } from './legacy/utils';
 
 const command = {
@@ -24,7 +24,7 @@ const command = {
       .implies('depsToTranspile', 'transpilationMode')
       .middleware((argv) => processInvalidTranspilation(argv as any));
   },
-  handler: async (argv: YargsArgs) => build(argv.context.config),
+  handler: async (argv: YargsArgs) => buildHandler(argv.context.config),
 };
 
 export default command;

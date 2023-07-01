@@ -11,8 +11,8 @@ import { dirname } from 'path';
 
 import { ProcessedBrowserifyConfig } from '../../../config';
 import { CONFIG_FILE, TS_CONFIG_FILE } from '../../../utils';
-import { build } from '../../build/build';
-import { evaluate } from '../../eval/eval';
+import { buildHandler } from '../../build/build';
+import { evaluateHandler } from '../../eval/eval';
 import { manifest } from '../../manifest/manifest';
 import { serve } from '../../serve/serve';
 
@@ -59,14 +59,14 @@ export async function legacyWatch(
     }
 
     try {
-      await build(config);
+      await buildHandler(config);
 
       if (checkManifest) {
         await manifest(config, { fix });
       }
 
       if (shouldEval) {
-        await evaluate(config);
+        await evaluateHandler(config);
       }
     } catch (error) {
       logError(

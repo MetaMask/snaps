@@ -4,7 +4,7 @@ import { resolve as pathResolve } from 'path';
 import { ProcessedConfig, ProcessedWebpackConfig } from '../../config';
 import { CommandError } from '../../errors';
 import { executeSteps, Steps } from '../../utils';
-import { compile, evaluate } from '../helpers';
+import { build, evaluate } from '../helpers';
 import { legacyBuild } from './legacy';
 
 type BuildContext = {
@@ -29,7 +29,7 @@ const steps: Steps<BuildContext> = [
     task: async ({ config, spinner }) => {
       // We don't evaluate the bundle here, because it's done in a separate
       // step.
-      return await compile(config, { evaluate: false, spinner });
+      return await build(config, { evaluate: false, spinner });
     },
   },
   {
@@ -55,7 +55,7 @@ const steps: Steps<BuildContext> = [
  *
  * @param config - The config object.
  */
-export async function build(config: ProcessedConfig): Promise<void> {
+export async function buildHandler(config: ProcessedConfig): Promise<void> {
   if (config.bundler === 'browserify') {
     return await legacyBuild(config);
   }

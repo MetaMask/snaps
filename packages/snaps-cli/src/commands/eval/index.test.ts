@@ -1,7 +1,7 @@
 import index from '.';
 import { getMockConfig } from '../../test-utils';
 import type { YargsArgs } from '../../types/yargs';
-import { evaluate } from './eval';
+import { evaluateHandler } from './eval';
 
 jest.mock('./eval');
 
@@ -16,7 +16,7 @@ describe('handler', () => {
   it('calls eval', async () => {
     await index.handler(getMockArgv());
 
-    const mock = evaluate as jest.MockedFunction<typeof evaluate>;
+    const mock = evaluateHandler as jest.MockedFunction<typeof evaluateHandler>;
     expect(mock).toHaveBeenCalled();
   });
 });

@@ -13,7 +13,7 @@ import { getCompiler, WebpackOptions } from '../webpack';
  * @param options - The Webpack options.
  * @returns A promise that resolves when the bundle is built.
  */
-export async function compile(
+export async function build(
   config: ProcessedWebpackConfig,
   options?: WebpackOptions,
 ) {

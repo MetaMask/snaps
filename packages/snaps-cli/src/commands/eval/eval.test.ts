@@ -1,88 +1,125 @@
 import { getMockConfig } from '@metamask/snaps-cli/test-utils';
-import { evalBundle, isFile } from '@metamask/snaps-utils';
-import { resolve } from 'path';
+import { DEFAULT_SNAP_BUNDLE } from '@metamask/snaps-utils/test-utils';
+import { promises as fs } from 'fs';
+import ora from 'ora';
 
-import { evaluate } from './eval';
+import { evaluate } from '../helpers';
+import { evaluateHandler } from './eval';
 
-jest.mock('@metamask/snaps-utils', () => ({
-  ...jest.requireActual('@metamask/snaps-utils'),
-  evalBundle: jest.fn(),
-  isFile: jest.fn(),
-}));
+jest.mock('fs');
+jest.mock('../helpers');
 
 describe('evaluate', () => {
+  beforeAll(async () => {
+    await fs.mkdir('/foo', { recursive: true });
+    await fs.writeFile('/foo/output.js', DEFAULT_SNAP_BUNDLE);
+  });
+
   it('evaluates the bundle using Webpack', async () => {
-    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
-    const evalBundleMock = evalBundle as jest.MockedFunction<typeof evalBundle>;
+    jest.spyOn(process, 'cwd').mockReturnValue('/');
+    jest.spyOn(console, 'log').mockImplementation();
 
-    const isFileMock = isFile as jest.MockedFunction<typeof isFile>;
-    isFileMock.mockResolvedValueOnce(true);
+    const config = getMockConfig('webpack', {
+      input: '/input.js',
+      output: {
+        path: '/foo',
+        filename: 'output.js',
+      },
+    });
 
-    await evaluate(getMockConfig('webpack'));
+    await evaluateHandler(config);
 
-    expect(evalBundleMock).toHaveBeenCalledWith(
-      resolve(process.cwd(), 'dist/bundle.js'),
-    );
+    expect(evaluate).toHaveBeenCalledWith('/foo/output.js');
 
-    expect(consoleLogSpy).toHaveBeenCalledWith(
-      expect.stringMatching(
-        /Snap bundle ".*" successfully evaluated in SES\./u,
-      ),
+    const { mock } = ora as jest.MockedFunction<typeof ora>;
+    const spinner = mock.results[0].value;
+    expect(spinner.succeed).toHaveBeenCalledWith(
+      'Successfully evaluated snap bundle.',
     );
   });
 
   it('evaluates the bundle using Browserify', async () => {
-    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
-    const evalBundleMock = evalBundle as jest.MockedFunction<typeof evalBundle>;
+    jest.spyOn(process, 'cwd').mockReturnValue('/');
+    jest.spyOn(console, 'log').mockImplementation();
 
-    const isFileMock = isFile as jest.MockedFunction<typeof isFile>;
-    isFileMock.mockResolvedValueOnce(true);
-
-    await evaluate(getMockConfig('webpack'));
-
-    expect(evalBundleMock).toHaveBeenCalledWith(
-      resolve(process.cwd(), 'dist/bundle.js'),
+    await evaluateHandler(
+      getMockConfig('browserify', {
+        cliOptions: {
+          bundle: '/foo/output.js',
+        },
+      }),
     );
 
-    expect(consoleLogSpy).toHaveBeenCalledWith(
-      expect.stringMatching(
-        /Snap bundle ".*" successfully evaluated in SES\./u,
-      ),
+    expect(evaluate).toHaveBeenCalledWith('/foo/output.js');
+
+    const { mock } = ora as jest.MockedFunction<typeof ora>;
+    const spinner = mock.results[0].value;
+    expect(spinner.succeed).toHaveBeenCalledWith(
+      'Successfully evaluated snap bundle.',
     );
   });
 
   it('evaluates the bundle using the --input flag', async () => {
-    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
-    const evalBundleMock = evalBundle as jest.MockedFunction<typeof evalBundle>;
+    jest.spyOn(process, 'cwd').mockReturnValue('/');
+    jest.spyOn(console, 'log').mockImplementation();
 
-    const isFileMock = isFile as jest.MockedFunction<typeof isFile>;
-    isFileMock.mockResolvedValueOnce(true);
+    const config = getMockConfig('webpack', {
+      input: '/input.js',
+      output: {
+        path: '/foo',
+        filename: 'bar.js',
+      },
+    });
 
-    await evaluate(getMockConfig('webpack'), { input: 'foo/bar.js' });
+    await evaluateHandler(config, { input: '/foo/output.js' });
 
-    expect(evalBundleMock).toHaveBeenCalledWith(
-      resolve(process.cwd(), 'foo/bar.js'),
+    expect(evaluate).toHaveBeenCalledWith('/foo/output.js');
+
+    const { mock } = ora as jest.MockedFunction<typeof ora>;
+    const spinner = mock.results[0].value;
+    expect(spinner.succeed).toHaveBeenCalledWith(
+      'Successfully evaluated snap bundle.',
     );
+  });
 
-    expect(consoleLogSpy).toHaveBeenCalledWith(
+  it('throws an error if the input file is not found', async () => {
+    jest.spyOn(process, 'cwd').mockReturnValue('/');
+    const log = jest.spyOn(console, 'error').mockImplementation();
+
+    const config = getMockConfig('webpack', {
+      input: '/input.js',
+      output: {
+        path: '/foo',
+        filename: 'bar.js',
+      },
+    });
+
+    await evaluateHandler(config);
+
+    expect(log).toHaveBeenCalledWith(
       expect.stringMatching(
-        /Snap bundle ".*" successfully evaluated in SES\./u,
+        /Input file not found: ".*"\. Make sure that the "input" field in your snap config or the specified input file is correct\./u,
       ),
     );
   });
 
   it('throws an error if the eval fails', async () => {
-    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
-    const evalBundleMock = evalBundle as jest.MockedFunction<typeof evalBundle>;
-    evalBundleMock.mockRejectedValueOnce(new Error('Eval error.'));
+    jest.spyOn(process, 'cwd').mockReturnValue('/');
+    const log = jest.spyOn(console, 'error').mockImplementation();
 
-    const isFileMock = isFile as jest.MockedFunction<typeof isFile>;
-    isFileMock.mockResolvedValueOnce(true);
+    const mock = evaluate as jest.MockedFunction<typeof evaluate>;
+    mock.mockRejectedValueOnce(new Error('Eval error.'));
 
-    await expect(evaluate(getMockConfig('webpack'))).rejects.toThrow(
-      /Failed to evaluate snap bundle ".*" in SES: Eval error\./u,
-    );
+    const config = getMockConfig('webpack', {
+      input: '/input.js',
+      output: {
+        path: '/foo',
+        filename: 'output.js',
+      },
+    });
 
-    expect(consoleLogSpy).not.toHaveBeenCalled();
+    await evaluateHandler(config);
+
+    expect(log).toHaveBeenCalledWith(expect.stringContaining('Eval error.'));
   });
 });

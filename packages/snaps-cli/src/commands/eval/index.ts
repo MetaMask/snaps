@@ -2,7 +2,7 @@ import type yargs from 'yargs';
 
 import builders from '../../builders';
 import type { YargsArgs } from '../../types/yargs';
-import { evaluate } from './eval';
+import { evaluateHandler } from './eval';
 
 const command = {
   command: ['eval', 'e'],
@@ -15,7 +15,7 @@ const command = {
     yarg.option('input', builders.input);
   },
   handler: async (argv: YargsArgs) =>
-    evaluate(argv.context.config, { input: argv.input }),
+    evaluateHandler(argv.context.config, { input: argv.input }),
 };
 
 export default command;

@@ -1,20 +1,16 @@
-import { evalBundle, isFile, SnapEvalError } from '@metamask/snaps-utils';
-import { red } from 'chalk';
-import { Ora } from 'ora';
+import { isFile } from '@metamask/snaps-utils';
 import { resolve } from 'path';
 
 import { ProcessedConfig } from '../../config';
 import { CommandError } from '../../errors';
-import { executeSteps, getRelativePath, indent, Steps } from '../../utils';
+import { executeSteps, getRelativePath, Steps } from '../../utils';
+import { evaluate } from '../helpers';
 
 export type EvalOptions = {
   input?: string;
 };
 
-export type EvalContext = {
-  input: string;
-  spinner: Ora;
-};
+export type EvalContext = Required<EvalOptions>;
 
 const steps: Steps<EvalContext> = [
   {
@@ -31,23 +27,8 @@ const steps: Steps<EvalContext> = [
   {
     name: 'Evaluating the snap bundle.',
     task: async ({ input, spinner }) => {
-      try {
-        await evalBundle(input);
-        spinner.succeed('Successfully evaluated snap bundle.');
-      } catch (error) {
-        if (error instanceof SnapEvalError) {
-          throw new CommandError(
-            `Failed to evaluate snap bundle in SES. This is likely due to an incompatibility with the SES environment in your snap.\nReceived the following error from the SES environment:\n\n${indent(
-              red(error.output.stderr),
-              2,
-            )}`,
-          );
-        }
-
-        // If the error is not a `SnapEvalError`, we don't know what it is, so
-        // we just throw it.
-        throw error;
-      }
+      await evaluate(input);
+      spinner.succeed('Successfully evaluated snap bundle.');
     },
   },
 ];
@@ -84,7 +65,7 @@ function getBundlePath(config: ProcessedConfig, options: EvalOptions): string {
  * @returns A promise that resolves once the eval has finished.
  * @throws If the eval failed.
  */
-export async function evaluate(
+export async function evaluateHandler(
   config: ProcessedConfig,
   options: EvalOptions = {},
 ): Promise<void> {

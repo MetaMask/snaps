@@ -1,7 +1,7 @@
 import { getMockConfig } from '@metamask/snaps-cli/test-utils';
 
 import command from '.';
-import { build } from './build';
+import { buildHandler } from './build';
 
 jest.mock('./build');
 
@@ -12,6 +12,6 @@ describe('build command', () => {
     // @ts-expect-error - Partial `YargsArgs` is fine for testing.
     await command.handler({ context: { config } });
 
-    expect(build).toHaveBeenCalledWith(config);
+    expect(buildHandler).toHaveBeenCalledWith(config);
   });
 });
