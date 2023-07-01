@@ -1,19 +1,17 @@
-import { evalBundle, isFile, SnapEvalError } from '@metamask/snaps-utils';
-import { red } from 'chalk';
-import { Ora } from 'ora';
+import { isFile } from '@metamask/snaps-utils';
 import { resolve as pathResolve } from 'path';
 
 import { ProcessedConfig, ProcessedWebpackConfig } from '../../config';
 import { CommandError } from '../../errors';
-import { executeSteps, indent, Steps } from '../../utils';
-import { getCompiler } from '../../webpack';
+import { executeSteps, Steps } from '../../utils';
+import { compile, evaluate } from '../helpers';
 import { legacyBuild } from './legacy';
 
 type BuildContext = {
   config: ProcessedWebpackConfig;
 };
 
-const steps: Steps<BuildContext & { spinner: Ora }> = [
+const steps: Steps<BuildContext> = [
   {
     name: 'Checking the input file.',
     task: async ({ config }) => {
@@ -29,23 +27,14 @@ const steps: Steps<BuildContext & { spinner: Ora }> = [
   {
     name: 'Building the snap bundle.',
     task: async ({ config, spinner }) => {
-      const compiler = getCompiler(config, { evaluate: false, spinner });
-      return await new Promise<void>((resolve, reject) => {
-        compiler.run(() => {
-          compiler.close((closeError) => {
-            if (closeError) {
-              reject(closeError);
-              return;
-            }
-
-            resolve();
-          });
-        });
-      });
+      // We don't evaluate the bundle here, because it's done in a separate
+      // step.
+      return await compile(config, { evaluate: false, spinner });
     },
   },
   {
     name: 'Evaluating the snap bundle.',
+    condition: ({ config }) => config.evaluate,
     task: async ({ config }) => {
       const path = pathResolve(
         process.cwd(),
@@ -53,22 +42,7 @@ const steps: Steps<BuildContext & { spinner: Ora }> = [
         config.output.filename,
       );
 
-      try {
-        await evalBundle(path);
-      } catch (error) {
-        if (error instanceof SnapEvalError) {
-          throw new CommandError(
-            `Failed to evaluate snap bundle in SES. This is likely due to an incompatibility with the SES environment in your snap.\nReceived the following error from the SES environment:\n\n${indent(
-              red(error.output.stderr),
-              2,
-            )}`,
-          );
-        }
-
-        // If the error is not a `SnapEvalError`, we don't know what it is, so
-        // we just throw it.
-        throw error;
-      }
+      await evaluate(path);
     },
   },
 ] as const;
