@@ -2,7 +2,7 @@ import type yargs from 'yargs';
 
 import builders from '../../builders';
 import type { YargsArgs } from '../../types/yargs';
-import { serve } from './serve';
+import { serveHandler } from './serve';
 
 const command = {
   command: ['serve', 's'],
@@ -10,7 +10,7 @@ const command = {
   builder: (yarg: yargs.Argv) => {
     yarg.option('root', builders.root).option('port', builders.port);
   },
-  handler: async (argv: YargsArgs) => serve(argv.context.config),
+  handler: async (argv: YargsArgs) => serveHandler(argv.context.config),
 };
 
 export default command;

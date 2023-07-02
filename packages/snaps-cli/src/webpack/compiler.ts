@@ -31,15 +31,17 @@ export function getCompiler(
  * adds a lot of extra stuff to the output that we don't need, and it's
  * difficult to customize.
  *
+ * @param path - The root directory to serve. Defaults to the current working
+ * directory.
  * @returns An object with a `listen` method that returns a promise that
  * resolves when the server is listening.
  */
-export function getServer() {
+export function getServer(path: string = process.cwd()) {
   const app = express();
 
   app.use(
     // TODO: Get path from config (or manifest?).
-    express.static(process.cwd(), {
+    express.static(path, {
       dotfiles: 'deny',
       extensions: ['html', 'js', 'json', 'svg'],
     }),

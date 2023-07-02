@@ -14,7 +14,7 @@ import { CONFIG_FILE, TS_CONFIG_FILE } from '../../../utils';
 import { buildHandler } from '../../build/build';
 import { evaluateHandler } from '../../eval/eval';
 import { manifestHandler } from '../../manifest/manifest';
-import { serve } from '../../serve/serve';
+import { serveHandler } from '../../serve/serve';
 
 /**
  * Watch a directory and its subdirectories for changes, and build when files
@@ -99,7 +99,7 @@ export async function legacyWatch(
       buildSnap()
         .then(() => {
           if (shouldServe) {
-            return serve(config);
+            return serveHandler(config);
           }
 
           return undefined;

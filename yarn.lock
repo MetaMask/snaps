@@ -4831,7 +4831,6 @@ __metadata:
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^4.1.2
-    serve-handler: ^6.1.5
     ses: ^0.18.1
     superstruct: ^1.0.3
     terser-webpack-plugin: ^5.3.9
