@@ -1,17 +1,15 @@
 import { isFile } from '@metamask/snaps-utils';
-import type { Ora } from 'ora';
-import { join } from 'path';
 
 import type { ProcessedConfig, ProcessedWebpackConfig } from '../../config';
 import { CommandError } from '../../errors';
 import type { Steps } from '../../utils';
 import { executeSteps, info } from '../../utils';
-import { getCompiler, getServer } from '../../webpack';
+import { getServer } from '../../webpack';
+import { watch } from '../helpers';
 import { legacyWatch } from './legacy';
 
 type WatchContext = {
   config: ProcessedWebpackConfig;
-  spinner: Ora;
 };
 
 const steps: Steps<WatchContext> = [
@@ -31,7 +29,7 @@ const steps: Steps<WatchContext> = [
     name: 'Starting the development server.',
     task: async ({ config, spinner }) => {
       const server = getServer();
-      const { port } = await server.listen(config.server.port ?? 0);
+      const { port } = await server.listen(config.server.port);
 
       info(`The server is listening on http://localhost:${port}.`, spinner);
     },
@@ -39,35 +37,7 @@ const steps: Steps<WatchContext> = [
   {
     name: 'Building the snap bundle.',
     task: async ({ config, spinner }) => {
-      const compiler = getCompiler(config, {
-        evaluate: true,
-        watch: true,
-        spinner,
-      });
-
-      return new Promise((resolve, reject) => {
-        compiler.watch(
-          {
-            ignored: [
-              '**/node_modules/**/*',
-              join(process.cwd(), config.output.path, '**/*'),
-            ],
-          },
-          (error, stats) => {
-            if (error) {
-              reject(error);
-              return;
-            }
-
-            if (stats?.hasErrors()) {
-              reject(stats.toString());
-              return;
-            }
-
-            resolve();
-          },
-        );
-      });
+      await watch(config, { spinner });
     },
   },
 ];
@@ -81,7 +51,7 @@ const steps: Steps<WatchContext> = [
  *
  * @param config - The config object.
  */
-export async function watch(config: ProcessedConfig): Promise<void> {
+export async function watchHandler(config: ProcessedConfig): Promise<void> {
   if (config.bundler === 'browserify') {
     await legacyWatch(config);
     return;

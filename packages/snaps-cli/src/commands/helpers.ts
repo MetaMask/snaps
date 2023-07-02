@@ -5,7 +5,8 @@ import {
 } from '@metamask/snaps-utils';
 import { red, yellow } from 'chalk';
 import type { Ora } from 'ora';
-import { dirname } from 'path';
+import { dirname, join } from 'path';
+import type { Watching } from 'webpack';
 
 import type { ProcessedWebpackConfig } from '../config';
 import { CommandError } from '../errors';
@@ -108,4 +109,44 @@ export async function manifest(
       spinner,
     );
   }
+}
+
+/**
+ * Build the snap bundle and watch for changes. This uses Webpack to build the
+ * bundle.
+ *
+ * @param config - The config object.
+ * @param options - The Webpack options.
+ * @returns A promise that resolves when the bundle is built for the first time.
+ * The promise resolves with a Webpack watching instance that can be used to
+ * close the watcher.
+ */
+export async function watch(
+  config: ProcessedWebpackConfig,
+  options?: WebpackOptions,
+) {
+  const compiler = getCompiler(config, {
+    evaluate: config.evaluate,
+    watch: true,
+    spinner: options?.spinner,
+  });
+
+  return new Promise<Watching>((resolve, reject) => {
+    const watcher = compiler.watch(
+      {
+        ignored: [
+          '**/node_modules/**/*',
+          join(process.cwd(), config.output.path, '**/*'),
+        ],
+      },
+      (watchError) => {
+        if (watchError) {
+          reject(watchError);
+          return;
+        }
+
+        resolve(watcher);
+      },
+    );
+  });
 }

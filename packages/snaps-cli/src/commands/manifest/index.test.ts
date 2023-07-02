@@ -11,8 +11,8 @@ const getMockArgv = () => {
   } as unknown as YargsArgs;
 };
 
-describe('eval command', () => {
-  it('calls the `evaluateHandler` function', async () => {
+describe('manifest command', () => {
+  it('calls the `manifestHandler` function', async () => {
     await command.handler(getMockArgv());
     expect(manifestHandler).toHaveBeenCalled();
   });
