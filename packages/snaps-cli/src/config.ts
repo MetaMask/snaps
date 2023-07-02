@@ -642,7 +642,7 @@ export async function loadConfig(path: string) {
  * @returns The resolved and validated snap config.
  * @throws If a snap config could not be found.
  */
-export async function resolveConfig(path = resolve(process.cwd())) {
+export async function resolveConfig(path = process.cwd()) {
   for (const file of CONFIG_FILES) {
     const filePath = resolve(path, file);
     if (await isFile(filePath)) {

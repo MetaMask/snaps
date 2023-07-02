@@ -5,6 +5,7 @@ import {
   getConfig,
   getConfigByArgv,
   loadConfig,
+  mergeLegacyOptions,
   resolveConfig,
 } from './config';
 
@@ -145,6 +146,12 @@ describe('resolveConfig', () => {
       input: 'src/index.ts',
     });
   });
+
+  it('throws an error if no config is found', async () => {
+    await expect(resolveConfig()).rejects.toThrow(
+      /Could not find a "snap\.config\.js" or "snap\.config\.ts" file in the current or specified directory \(".*"\)\./u,
+    );
+  });
 });
 
 describe('getConfigByArgv', () => {
@@ -176,5 +183,32 @@ describe('getConfigByArgv', () => {
         'typescript/',
       )}". Make sure that the path is correct.`,
     );
+  });
+});
+
+describe('mergeLegacyOptions', () => {
+  it('merges the argv with the config', () => {
+    expect(
+      mergeLegacyOptions(
+        // @ts-expect-error - Partial `argv`.
+        {
+          src: 'src/index.ts',
+          port: 8000,
+        },
+        {
+          cliOptions: {
+            src: 'src/index.js',
+            port: 9000,
+            writeManifest: true,
+          },
+        },
+      ),
+    ).toStrictEqual({
+      cliOptions: {
+        port: 8000,
+        src: 'src/index.ts',
+        writeManifest: true,
+      },
+    });
   });
 });
