@@ -111,10 +111,10 @@ describe('cli', () => {
         [{ ...commandMap.serve, handler: mockServeHandler }],
       );
 
-      expect(consoleErrorSpy).toHaveBeenCalledTimes(3);
+      expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
       expect(consoleErrorSpy).toHaveBeenNthCalledWith(
-        3,
-        'Invalid port: "NaN".',
+        1,
+        expect.stringContaining('Invalid port: "NaN".'),
       );
       expect(processExitSpy).toHaveBeenCalledTimes(1);
       expect(processExitSpy).toHaveBeenCalledWith(1);
@@ -131,10 +131,10 @@ describe('cli', () => {
         [{ ...commandMap.serve, handler: mockServeHandler }],
       );
 
-      expect(consoleErrorSpy).toHaveBeenCalledTimes(3);
+      expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
       expect(consoleErrorSpy).toHaveBeenNthCalledWith(
-        3,
-        'Invalid port: "NaN".',
+        1,
+        expect.stringContaining('Invalid port: "NaN".'),
       );
       expect(processExitSpy).toHaveBeenCalledTimes(1);
       expect(processExitSpy).toHaveBeenCalledWith(1);

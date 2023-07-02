@@ -1,7 +1,6 @@
-import fs from 'fs';
 import pathUtils from 'path';
 
-import { sanitizeInputs, trimPathString, writeError } from './misc';
+import { sanitizeInputs, trimPathString } from './cli';
 
 jest.mock('fs');
 
@@ -48,41 +47,6 @@ describe('misc', () => {
     it('correctly normalizes paths', () => {
       sanitizeInputs(unsanitizedArgv);
       expect(unsanitizedArgv).toStrictEqual(sanitizedArgv);
-    });
-  });
-
-  describe('writeError', () => {
-    it('calls console error once if filesystem unlink is successful', async () => {
-      jest.spyOn(process, 'exit').mockImplementation(() => {
-        throw new Error('process exited');
-      });
-      jest.spyOn(fs.promises, 'unlink').mockResolvedValueOnce();
-      const errorMock = jest.spyOn(console, 'error').mockImplementation();
-      await expect(
-        writeError('foo', 'bar', new Error('error message'), 'dest'),
-      ).rejects.toThrow('process exited');
-      expect(errorMock).toHaveBeenNthCalledWith(1, 'foo bar');
-      expect(errorMock).toHaveBeenCalledTimes(1);
-    });
-
-    it('calls console error twice if filesystem unlink fails', async () => {
-      jest.spyOn(process, 'exit').mockImplementation(() => {
-        throw new Error('process exited');
-      });
-      jest.spyOn(fs.promises, 'unlink').mockRejectedValueOnce(undefined);
-      const errorMock = jest.spyOn(console, 'error').mockImplementation();
-      await expect(
-        writeError('foo', 'bar', new Error('error message'), 'dest'),
-      ).rejects.toThrow('process exited');
-      expect(errorMock).toHaveBeenNthCalledWith(1, 'foo bar');
-      expect(errorMock).toHaveBeenCalledTimes(2);
-    });
-
-    it('will not process an already processed prefix', async () => {
-      const prefix = 'Custom Error ';
-      const errorMock = jest.spyOn(console, 'error').mockImplementation();
-      await writeError(prefix, 'bar', new Error('error message'));
-      expect(errorMock).toHaveBeenCalledWith(`${prefix}bar`);
     });
   });
 

@@ -119,6 +119,29 @@ describe('SnapsStatsPlugin', () => {
       expect.stringContaining('Done!'),
     );
   });
+
+  it('does not log if stats are not available', async () => {
+    const log = jest.spyOn(console, 'log').mockImplementation();
+
+    const plugin = new SnapsStatsPlugin();
+
+    const tap = jest.fn();
+    plugin.apply({
+      hooks: {
+        // @ts-expect-error - Partial mock.
+        afterDone: {
+          tap,
+        },
+      },
+    });
+
+    expect(tap).toHaveBeenCalled();
+    const callback = tap.mock.calls[0][1];
+
+    // eslint-disable-next-line node/callback-return
+    await callback();
+    expect(log).not.toHaveBeenCalled();
+  });
 });
 
 describe('SnapsWatchPlugin', () => {

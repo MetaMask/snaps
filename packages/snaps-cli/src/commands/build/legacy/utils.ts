@@ -5,51 +5,26 @@ import { join, resolve } from 'path';
 import { TranspilationModes } from '../../../builders';
 import type { ProcessedBrowserifyConfig } from '../../../config';
 import type { YargsArgs } from '../../../types/yargs';
-import { writeError } from '../../../utils';
-
-type WriteBundleFileArgs = {
-  bundleError: Error;
-  bundleBuffer: Buffer;
-  config: ProcessedBrowserifyConfig;
-};
 
 /**
  * Performs postprocessing on the bundle contents and writes them to disk.
  * Intended to be used in the callback passed to the Browserify `.bundle()`
  * call.
  *
- * @param options - Options bag.
- * @param options.bundleError - Any error received from Browserify.
- * @param options.bundleBuffer - The {@link Buffer} with the bundle contents
- * from Browserify.
- * @param options.config - The config object.
+ * @param buffer - The bundle contents.
+ * @param config - The config object.
+ * @param config.cliOptions - The CLI options.
+ * @returns A promise that resolves when the bundle is written to disk.
  */
-export async function writeBundleFile({
-  bundleError,
-  bundleBuffer,
-  config,
-}: WriteBundleFileArgs) {
-  const {
-    cliOptions: { dist, outfileName },
-  } = config;
-
-  if (bundleError) {
-    await writeError('Build error:', bundleError.message, bundleError);
-  }
-
+export async function writeBundleFile(
+  buffer: Buffer,
+  { cliOptions }: ProcessedBrowserifyConfig,
+) {
+  const { src, dist, outfileName } = cliOptions;
   const destination = resolve(process.cwd(), dist, outfileName);
 
-  try {
-    await fs.writeFile(destination, bundleBuffer?.toString());
-    logInfo(
-      `Build success: '${config.cliOptions.src}' bundled as '${join(
-        dist,
-        outfileName,
-      )}'!`,
-    );
-  } catch (error) {
-    await writeError('Write error:', error.message, error, destination);
-  }
+  await fs.writeFile(destination, buffer?.toString());
+  logInfo(`Build success: '${src}' bundled as '${join(dist, outfileName)}'!`);
 }
 
 /**

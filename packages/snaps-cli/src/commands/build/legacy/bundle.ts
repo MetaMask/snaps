@@ -28,7 +28,7 @@ export async function bundle(
   } = config;
 
   const babelifyOptions = processDependencies(config);
-  return new Promise((resolve, _reject) => {
+  return new Promise((resolve, reject) => {
     const bundler = browserify(src, {
       debug,
       extensions: ['.js', '.ts'],
@@ -73,14 +73,15 @@ export async function bundle(
       eval: false,
     });
 
-    bundler.bundle(async (bundleError, bundleBuffer: Buffer) => {
-      await writeBundleFile({
-        bundleError,
-        bundleBuffer,
-        config,
-      });
+    bundler.bundle((bundleError, buffer: Buffer) => {
+      if (bundleError) {
+        reject(bundleError);
+        return;
+      }
 
-      resolve(true);
+      writeBundleFile(buffer, config)
+        .then(() => resolve(true))
+        .catch(reject);
     });
   });
 }

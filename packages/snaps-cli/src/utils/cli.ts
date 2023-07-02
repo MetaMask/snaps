@@ -1,10 +1,9 @@
-import { promises as fs } from 'fs';
 import path from 'path';
 
 export const CONFIG_FILE = 'snap.config.js';
 export const TS_CONFIG_FILE = 'snap.config.ts';
 
-// CLI arguments whose values are file paths
+// CLI arguments whose values are file paths.
 const pathArguments = new Set([
   'src',
   's',
@@ -35,33 +34,6 @@ export function sanitizeInputs(argv: Record<string, unknown>) {
       }
     }
   });
-}
-
-/**
- * Logs an error, attempts to unlink the destination file, and kills the
- * process.
- *
- * @param prefix - The message prefix.
- * @param message - The error message.
- * @param error - The original error.
- * @param destFilePath - The output file path.
- */
-export async function writeError(
-  prefix: string,
-  message: string,
-  error: Error,
-  destFilePath?: string,
-): Promise<void> {
-  let processedPrefix = prefix;
-  if (!prefix.endsWith(' ')) {
-    processedPrefix += ' ';
-  }
-
-  if (destFilePath) {
-    await fs.unlink(destFilePath);
-  }
-
-  throw new Error(`${processedPrefix}${message}\n${error.message}`);
 }
 
 /**
