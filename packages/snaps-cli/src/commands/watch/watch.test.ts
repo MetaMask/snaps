@@ -3,13 +3,13 @@ import { DEFAULT_SNAP_BUNDLE } from '@metamask/snaps-utils/test-utils';
 import fs from 'fs';
 
 import * as webpack from '../../webpack';
-import { watch } from '../helpers';
+import { watch } from './implementation';
 import { legacyWatch } from './legacy';
 import { watchHandler } from './watch';
 
 jest.mock('fs');
 jest.mock('../../webpack');
-jest.mock('../helpers');
+jest.mock('./implementation');
 jest.mock('./legacy');
 
 describe('watchHandler', () => {

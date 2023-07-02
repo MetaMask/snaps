@@ -119,9 +119,9 @@ export default class SnapsWebpackPlugin {
 
       const filePath = pathUtils.join(outputPath, file.name);
 
-      const bundleFile = await promisify(compiler.outputFileSystem.readFile)(
-        filePath,
-      );
+      const bundleFile = await promisify(
+        compiler.outputFileSystem.readFile.bind(compiler.outputFileSystem),
+      )(filePath);
       assert(bundleFile);
 
       const bundleContent = bundleFile.toString();
@@ -137,7 +137,9 @@ export default class SnapsWebpackPlugin {
           pathUtils.dirname(this.options.manifestPath),
           this.options.writeManifest,
           bundleContent,
-          promisify(compiler.outputFileSystem.writeFile),
+          promisify(
+            compiler.outputFileSystem.writeFile.bind(compiler.outputFileSystem),
+          ),
         );
 
         if (!this.options.writeManifest && errors.length > 0) {

@@ -4,7 +4,8 @@ import { resolve as pathResolve } from 'path';
 import { ProcessedConfig, ProcessedWebpackConfig } from '../../config';
 import { CommandError } from '../../errors';
 import { executeSteps, Steps } from '../../utils';
-import { build, evaluate } from '../helpers';
+import { evaluate } from '../eval';
+import { build } from './implementation';
 import { legacyBuild } from './legacy';
 
 type BuildContext = {

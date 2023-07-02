@@ -314,7 +314,7 @@ export async function getSnapIcon(
     );
     return virtualFile;
   } catch (error) {
-    throw new Error(`Failed to read Snap icon file: ${error.message}`);
+    throw new Error(`Failed to read snap icon file: ${error.message}`);
   }
 }
 

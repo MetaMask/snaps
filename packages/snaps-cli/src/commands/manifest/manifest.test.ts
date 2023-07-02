@@ -3,11 +3,11 @@ import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
 import { promises as fs } from 'fs';
 import ora from 'ora';
 
-import { manifest } from '../helpers';
+import { manifest } from './implementation';
 import { manifestHandler } from './manifest';
 
 jest.mock('fs');
-jest.mock('../helpers');
+jest.mock('./implementation');
 
 describe('manifestHandler', () => {
   beforeAll(async () => {

@@ -3,11 +3,11 @@ import { DEFAULT_SNAP_BUNDLE } from '@metamask/snaps-utils/test-utils';
 import { promises as fs } from 'fs';
 import ora from 'ora';
 
-import { evaluate } from '../helpers';
 import { evaluateHandler } from './eval';
+import { evaluate } from './implementation';
 
 jest.mock('fs');
-jest.mock('../helpers');
+jest.mock('./implementation');
 
 describe('evaluateHandler', () => {
   beforeAll(async () => {

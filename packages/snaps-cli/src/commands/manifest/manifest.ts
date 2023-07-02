@@ -5,7 +5,7 @@ import type { ProcessedConfig } from '../../config';
 import { CommandError } from '../../errors';
 import type { Steps } from '../../utils';
 import { executeSteps } from '../../utils';
-import { manifest } from '../helpers';
+import { manifest } from './implementation';
 
 type ManifestOptions = {
   fix?: boolean;

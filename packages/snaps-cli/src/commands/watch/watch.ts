@@ -5,7 +5,7 @@ import { CommandError } from '../../errors';
 import type { Steps } from '../../utils';
 import { executeSteps, info } from '../../utils';
 import { getServer } from '../../webpack';
-import { watch } from '../helpers';
+import { watch } from './implementation';
 import { legacyWatch } from './legacy';
 
 type WatchContext = {

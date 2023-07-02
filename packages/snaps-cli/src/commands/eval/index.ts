@@ -18,4 +18,5 @@ const command = {
     evaluateHandler(argv.context.config, { input: argv.input }),
 };
 
+export * from './implementation';
 export default command;

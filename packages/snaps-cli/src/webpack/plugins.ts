@@ -52,6 +52,10 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
    */
   apply(compiler: Compiler) {
     compiler.hooks.afterDone.tap(this.constructor.name, (stats) => {
+      if (!stats) {
+        return;
+      }
+
       const { modules, time, errors } = stats.toJson();
 
       assert(modules, 'Modules must be defined in stats.');

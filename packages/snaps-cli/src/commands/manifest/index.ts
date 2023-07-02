@@ -18,4 +18,5 @@ const command = {
     manifestHandler(argv.context.config, { fix: argv.fix }),
 };
 
+export * from './implementation';
 export default command;

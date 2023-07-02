@@ -2,12 +2,14 @@ import { DEFAULT_SNAP_BUNDLE } from '@metamask/snaps-utils/test-utils';
 import fs from 'fs';
 
 import { getMockConfig } from '../../test-utils';
-import { build, evaluate } from '../helpers';
+import { evaluate } from '../eval';
 import { buildHandler } from './build';
+import { build } from './implementation';
 import { legacyBuild } from './legacy';
 
 jest.mock('fs');
-jest.mock('../helpers');
+jest.mock('../eval');
+jest.mock('./implementation');
 jest.mock('./legacy');
 
 describe('buildHandler', () => {

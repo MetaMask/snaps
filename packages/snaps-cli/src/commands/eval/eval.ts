@@ -4,7 +4,7 @@ import { resolve } from 'path';
 import { ProcessedConfig } from '../../config';
 import { CommandError } from '../../errors';
 import { executeSteps, getRelativePath, Steps } from '../../utils';
-import { evaluate } from '../helpers';
+import { evaluate } from './implementation';
 
 export type EvalOptions = {
   input?: string;

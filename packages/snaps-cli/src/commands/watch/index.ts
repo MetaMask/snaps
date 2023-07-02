@@ -30,4 +30,5 @@ const command = {
   handler: async (argv: YargsArgs) => watchHandler(argv.context.config),
 };
 
+export * from './implementation';
 export default command;

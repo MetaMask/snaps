@@ -27,4 +27,5 @@ const command = {
   handler: async (argv: YargsArgs) => buildHandler(argv.context.config),
 };
 
+export * from './implementation';
 export default command;
