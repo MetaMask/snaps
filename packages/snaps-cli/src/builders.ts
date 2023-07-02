@@ -66,6 +66,7 @@ const builders: Record<string, Readonly<Options>> = {
       if (Number.isNaN(port)) {
         throw new Error(`Invalid port: "${String(arg)}".`);
       }
+
       return port;
     },
     deprecated: true,

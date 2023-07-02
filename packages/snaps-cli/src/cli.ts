@@ -3,7 +3,7 @@ import { hideBin } from 'yargs/helpers';
 
 import builders from './builders';
 import { getConfigByArgv } from './config';
-import { error, sanitizeInputs } from './utils';
+import { error, getErrorMessage, sanitizeInputs } from './utils';
 
 /**
  * The main CLI entry point function. This processes the command line args, and
@@ -57,7 +57,7 @@ export async function cli(argv: string[], commands: any) {
     .demandCommand(1, 'You must specify at least one command.')
 
     .fail((_, failure) => {
-      error(failure.stack ?? failure.message);
+      error(getErrorMessage(failure));
       process.exit(1);
     })
 

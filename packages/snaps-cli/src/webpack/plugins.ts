@@ -11,7 +11,7 @@ import {
   WebpackPluginInstance,
 } from 'webpack';
 
-import { error, indent, info, warn } from '../utils';
+import { error, getErrorMessage, indent, info, warn } from '../utils';
 
 export type SnapsStatsPluginOptions = {
   /**
@@ -95,7 +95,7 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
    */
   #getStatsErrorMessage(statsError: StatsError) {
     const baseMessage = this.#options.verbose
-      ? statsError.stack ?? statsError.message
+      ? getErrorMessage(statsError)
       : statsError.message;
 
     const [first, ...rest] = baseMessage.split('\n');

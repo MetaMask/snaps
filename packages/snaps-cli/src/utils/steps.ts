@@ -2,6 +2,7 @@ import { dim } from 'chalk';
 import type { Ora } from 'ora';
 import createSpinner from 'ora';
 
+import { getErrorMessage } from './errors';
 import { error } from './logging';
 
 export type Step<Context extends Record<string, unknown>> = {
@@ -49,7 +50,7 @@ export async function executeSteps<Context extends Record<string, unknown>>(
       spinner.succeed('Done!');
     }
   } catch (_error) {
-    error(_error.stack ?? _error.message, spinner);
+    error(getErrorMessage(_error), spinner);
     spinner.stop();
     process.exitCode = 1;
   }
