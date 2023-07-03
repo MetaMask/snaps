@@ -65,7 +65,7 @@ type GetErrorOptions = {
  * @returns A generator function.
  * @yields The items in the array.
  */
-function* arrayToGenerator<Type>(
+export function* arrayToGenerator<Type>(
   array: Type[],
 ): Generator<Type, void, undefined> {
   for (const item of array) {
@@ -83,7 +83,7 @@ function* arrayToGenerator<Type>(
  * @param options.error - The `superstruct` error to wrap.
  * @returns The `SnapsStructError`.
  */
-function getError({ prefix, suffix = '', error }: GetErrorOptions) {
+export function getError({ prefix, suffix = '', error }: GetErrorOptions) {
   return new SnapsStructError(prefix, suffix, error, () =>
     arrayToGenerator(error.failures()),
   );
