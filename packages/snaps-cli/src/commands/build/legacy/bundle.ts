@@ -11,13 +11,10 @@ import { processDependencies, writeBundleFile } from './utils';
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require */
 
 /**
- * Builds a Snap bundle JS file from its JavaScript source.
+ * Build a snap bundle file from its JavaScript source.
  *
  * @param config - Processed CLI configuration.
- * @param config.sourceMaps - Whether to output sourcemaps.
- * @param config.stripComments - Whether to remove comments from code.
- * @param config.transpilationMode - The Babel transpilation mode.
- * the Browserify instance, e.g., adding a custom transform or plugin.
+ * @returns Whether the bundle was built successfully.
  */
 export async function bundle(
   config: ProcessedBrowserifyConfig,

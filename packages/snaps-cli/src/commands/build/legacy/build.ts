@@ -3,10 +3,11 @@ import {
   validateFilePath,
   validateOutfileName,
 } from '@metamask/snaps-utils';
+import { resolve } from 'path';
 
 import { ProcessedBrowserifyConfig } from '../../../config';
-import { evaluateHandler } from '../../eval/eval';
-import { manifestHandler } from '../../manifest/manifest';
+import { evaluate } from '../../eval';
+import { manifest } from '../../manifest';
 import { bundle } from './bundle';
 
 /**
@@ -33,10 +34,17 @@ export async function legacyBuild(
 
   const result = await bundle(config);
   if (result && cliOptions.eval) {
-    await evaluateHandler(config);
+    const bundlePath = resolve(
+      process.cwd(),
+      cliOptions.dist,
+      cliOptions.outfileName,
+    );
+
+    await evaluate(bundlePath);
   }
 
   if (cliOptions.manifest) {
-    await manifestHandler(config, { fix: cliOptions.writeManifest });
+    const manifestPath = resolve(process.cwd(), 'snap.manifest.json');
+    await manifest(manifestPath, cliOptions.writeManifest);
   }
 }

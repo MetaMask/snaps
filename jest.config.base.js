@@ -202,7 +202,7 @@ module.exports = {
             syntax: 'typescript',
           },
         },
-        sourceMaps: true,
+        sourceMaps: false,
       },
     ],
   },
