@@ -1,11 +1,15 @@
 import ora from 'ora';
-import os from 'os';
-import path from 'path';
 
 import { getMockConfig } from '../test-utils';
 import { getDefaultConfiguration } from './config';
 
 jest.unmock('fs');
+
+jest.mock('path', () => ({
+  // For compatibility with Windows, we make `path` always use POSIX-style
+  // paths.
+  ...jest.requireActual('path/posix'),
+}));
 
 jest.mock('module', () => ({
   // Built-in modules are different across Node versions, so we need to mock
@@ -16,14 +20,6 @@ jest.mock('module', () => ({
 jest.spyOn(process, 'cwd').mockReturnValue('/foo/bar');
 
 describe('getDefaultConfiguration', () => {
-  beforeAll(() => {
-    if (os.platform() === 'win32') {
-      jest.spyOn(path, 'resolve').mockImplementation((...args) => {
-        return path.posix.resolve(...args);
-      });
-    }
-  });
-
   it.each([
     getMockConfig('webpack', {
       input: 'src/index.js',
