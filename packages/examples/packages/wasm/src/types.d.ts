@@ -9,6 +9,6 @@
  */
 // eslint-disable-next-line import/unambiguous
 declare module '*.wasm' {
-  const module: string;
+  const module: Uint8Array;
   export default module;
 }

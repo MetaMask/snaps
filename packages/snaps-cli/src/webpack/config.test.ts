@@ -9,6 +9,15 @@ jest.mock('path', () => ({
   // For compatibility with Windows, we make `path` always use POSIX-style
   // paths.
   ...jest.requireActual('path/posix'),
+  resolve: (first: string, ...rest: string[]) => {
+    const realResolve = jest.requireActual('path/posix').resolve;
+
+    if (first === __dirname) {
+      return realResolve('/foo/bar', ...rest);
+    }
+
+    return realResolve(first, ...rest);
+  },
 }));
 
 jest.mock('module', () => ({
@@ -68,6 +77,18 @@ describe('getDefaultConfiguration', () => {
         builtInResolver: false,
       },
       sourceMap: true,
+    }),
+    getMockConfig('webpack', {
+      input: 'src/index.js',
+      output: {
+        path: 'dist',
+      },
+      manifest: {
+        path: 'snap.manifest.json',
+      },
+      experimental: {
+        wasm: true,
+      },
     }),
   ])(
     'returns the default Webpack configuration for the given CLI config',

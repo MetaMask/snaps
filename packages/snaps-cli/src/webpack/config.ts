@@ -1,6 +1,7 @@
 import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
 import { builtinModules } from 'module';
 import { Ora } from 'ora';
+import { resolve } from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import { Configuration, EnvironmentPlugin, ProgressPlugin } from 'webpack';
 
@@ -235,6 +236,13 @@ export function getDefaultConfiguration(
                 type: 'commonjs',
               },
             },
+          },
+        },
+
+        config.experimental.wasm && {
+          test: /\.wasm$/u,
+          use: {
+            loader: resolve(__dirname, 'wasm'),
           },
         },
       ],
