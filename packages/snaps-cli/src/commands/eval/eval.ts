@@ -54,7 +54,7 @@ function getBundlePath(config: ProcessedConfig, options: EvalOptions): string {
     return resolve(process.cwd(), config.cliOptions.bundle);
   }
 
-  return resolve(process.cwd(), config.output.path, config.output.filename);
+  return resolve(config.output.path, config.output.filename);
 }
 
 /**

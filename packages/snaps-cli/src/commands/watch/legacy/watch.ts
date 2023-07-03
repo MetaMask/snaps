@@ -76,11 +76,11 @@ export async function legacyWatch(
       ignoreInitial: true,
       ignored: [
         '**/node_modules/**',
-        `**/${dist}/**`,
         `**/test/**`,
         `**/tests/**`,
         `**/*.test.js`,
         `**/*.test.ts`,
+        join(dist, '**'),
         /* istanbul ignore next */
         (str: string) => str !== '.' && str.startsWith('.'),
       ],

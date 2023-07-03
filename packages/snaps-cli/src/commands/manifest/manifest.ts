@@ -71,7 +71,7 @@ function getManifestPath(config: ProcessedConfig) {
     return resolve(process.cwd(), 'snap.manifest.json');
   }
 
-  return resolve(process.cwd(), config.manifest.path);
+  return config.manifest.path;
 }
 
 /**

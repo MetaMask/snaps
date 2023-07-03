@@ -1,5 +1,6 @@
 import {
   createFromStruct,
+  file,
   isFile,
   literal,
   SnapsStructError,
@@ -29,8 +30,9 @@ import {
 import type { Configuration as WebpackConfiguration } from 'webpack';
 
 import { YargsArgs } from './types/yargs';
+import { CONFIG_FILE, TS_CONFIG_FILE } from './utils';
 
-const CONFIG_FILES = ['snap.config.js', 'snap.config.ts'];
+const CONFIG_FILES = [CONFIG_FILE, TS_CONFIG_FILE];
 
 /**
  * The configuration for the Snaps CLI, stored as `snap.config.js` or
@@ -418,15 +420,15 @@ export const SnapsBrowserifyConfigStruct = object({
   bundler: defaulted(literal('browserify'), 'browserify'),
   cliOptions: defaulted(
     object({
-      bundle: defaulted(string(), 'dist/bundle.js'),
-      dist: defaulted(string(), 'dist'),
+      bundle: defaulted(file(), 'dist/bundle.js'),
+      dist: defaulted(file(), 'dist'),
       eval: defaulted(boolean(), true),
       manifest: defaulted(boolean(), true),
       port: defaulted(number(), 8081),
       outfileName: defaulted(string(), 'bundle.js'),
-      root: defaulted(string(), process.cwd()),
+      root: defaulted(file(), process.cwd()),
       sourceMaps: defaulted(boolean(), false),
-      src: defaulted(string(), 'src/index.js'),
+      src: defaulted(file(), 'src/index.js'),
       stripComments: defaulted(boolean(), true),
       suppressWarnings: defaulted(boolean(), false),
       transpilationMode: defaulted(
@@ -458,13 +460,13 @@ const SnapsWebpackCustomizeWebpackConfigFunctionStruct =
 
 export const SnapsWebpackConfigStruct = object({
   bundler: literal('webpack'),
-  input: string(),
+  input: file(),
   sourceMap: defaulted(union([boolean(), literal('inline')]), true),
   evaluate: defaulted(boolean(), true),
 
   output: defaulted(
     object({
-      path: defaulted(string(), resolve(process.cwd(), 'dist')),
+      path: defaulted(file(), resolve(process.cwd(), 'dist')),
       filename: defaulted(string(), 'bundle.js'),
       clean: defaulted(boolean(), false),
     }),
@@ -473,7 +475,7 @@ export const SnapsWebpackConfigStruct = object({
 
   manifest: defaulted(
     object({
-      path: defaulted(string(), resolve(process.cwd(), 'snap.manifest.json')),
+      path: defaulted(file(), resolve(process.cwd(), 'snap.manifest.json')),
       update: defaulted(boolean(), true),
     }),
     {},
@@ -481,7 +483,7 @@ export const SnapsWebpackConfigStruct = object({
 
   server: defaulted(
     object({
-      root: defaulted(string(), process.cwd()),
+      root: defaulted(file(), process.cwd()),
       port: defaulted(number(), 8081),
     }),
     {},
@@ -643,8 +645,8 @@ export async function loadConfig(path: string) {
  * @throws If a snap config could not be found.
  */
 export async function resolveConfig(path = process.cwd()) {
-  for (const file of CONFIG_FILES) {
-    const filePath = resolve(path, file);
+  for (const configFile of CONFIG_FILES) {
+    const filePath = resolve(path, configFile);
     if (await isFile(filePath)) {
       return await loadConfig(filePath);
     }

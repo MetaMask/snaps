@@ -22,10 +22,12 @@ export async function writeBundleFile(
   { cliOptions }: ProcessedBrowserifyConfig,
 ) {
   const { src, dist, outfileName } = cliOptions;
-  const destination = resolve(process.cwd(), dist, outfileName);
+  const destination = resolve(dist, outfileName);
 
   await fs.writeFile(destination, buffer?.toString());
-  logInfo(`Build success: '${src}' bundled as '${join(dist, outfileName)}'!`);
+  logInfo(
+    `Build success: '${String(src)}' bundled as '${join(dist, outfileName)}'!`,
+  );
 }
 
 /**

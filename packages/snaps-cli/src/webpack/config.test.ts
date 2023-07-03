@@ -10,33 +10,35 @@ jest.mock('module', () => ({
   builtinModules: ['fs', 'path'],
 }));
 
+jest.spyOn(process, 'cwd').mockReturnValue('/foo/bar');
+
 describe('getDefaultConfiguration', () => {
   it.each([
     getMockConfig('webpack', {
       input: 'src/index.js',
       output: {
-        path: '/foo/bar',
+        path: 'dist',
       },
       manifest: {
-        path: '/foo/snap.manifest.json',
+        path: 'snap.manifest.json',
       },
     }),
     getMockConfig('webpack', {
       input: 'src/index.ts',
       output: {
-        path: '/bar/baz',
+        path: 'dist',
       },
       manifest: {
-        path: '/bar/snap.manifest.json',
+        path: 'snap.manifest.json',
       },
     }),
     getMockConfig('webpack', {
       input: 'src/index.ts',
       output: {
-        path: '/bar/baz',
+        path: 'dist',
       },
       manifest: {
-        path: '/bar/snap.manifest.json',
+        path: 'snap.manifest.json',
       },
       plugins: {
         bundleWarnings: false,
@@ -46,10 +48,10 @@ describe('getDefaultConfiguration', () => {
     getMockConfig('webpack', {
       input: 'src/index.ts',
       output: {
-        path: '/bar/baz',
+        path: 'dist',
       },
       manifest: {
-        path: '/bar/snap.manifest.json',
+        path: 'snap.manifest.json',
       },
       environment: {
         FOO: 'bar',
@@ -95,8 +97,6 @@ describe('getDefaultConfiguration', () => {
   ])(
     'returns the default Webpack configuration for the given CLI config and options',
     (options) => {
-      jest.spyOn(process, 'cwd').mockReturnValue('/foo/bar');
-
       const config = getMockConfig('webpack', {
         input: 'src/index.ts',
         output: {

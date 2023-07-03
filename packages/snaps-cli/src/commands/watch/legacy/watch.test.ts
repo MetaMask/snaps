@@ -88,7 +88,10 @@ describe('legacyWatch', () => {
       ['/snap', NpmSnapFileNames.Manifest, CONFIG_FILE, TS_CONFIG_FILE],
       {
         ignoreInitial: true,
-        ignored: expect.arrayContaining(['**/node_modules/**', '**/dist/**']),
+        ignored: expect.arrayContaining([
+          '**/node_modules/**',
+          join(config.cliOptions.dist, '**'),
+        ]),
       },
     );
 

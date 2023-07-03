@@ -73,9 +73,9 @@ describe('getConfig', () => {
       expect(config).toStrictEqual({
         bundler: 'browserify',
         cliOptions: {
-          bundle: 'dist/bundle.js',
+          bundle: resolve(process.cwd(), 'dist', 'bundle.js'),
           depsToTranspile: [],
-          dist: 'dist',
+          dist: resolve(process.cwd(), 'dist'),
           eval: true,
           manifest: true,
           outfileName: 'bundle.js',
@@ -83,7 +83,7 @@ describe('getConfig', () => {
           root: process.cwd(),
           serve: true,
           sourceMaps: false,
-          src: 'src/index.js',
+          src: resolve(process.cwd(), 'src', 'index.js'),
           stripComments: true,
           suppressWarnings: false,
           transpilationMode: 'localOnly',
@@ -134,7 +134,7 @@ describe('resolveConfig', () => {
       await resolveConfig(resolve(CONFIG_PATH, 'javascript')),
     ).toStrictEqual({
       ...DEFAULT_CONFIG,
-      input: 'src/index.js',
+      input: resolve(process.cwd(), 'src', 'index.js'),
     });
   });
 
@@ -143,7 +143,7 @@ describe('resolveConfig', () => {
       await resolveConfig(resolve(CONFIG_PATH, 'typescript')),
     ).toStrictEqual({
       ...DEFAULT_CONFIG,
-      input: 'src/index.ts',
+      input: resolve(process.cwd(), 'src', 'index.ts'),
     });
   });
 

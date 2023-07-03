@@ -3,7 +3,7 @@
 exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config 1`] = `
 {
   "devtool": "source-map",
-  "entry": "src/index.js",
+  "entry": "/foo/bar/src/index.js",
   "infrastructureLogging": {
     "level": "none",
   },
@@ -54,14 +54,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "library": {
       "type": "commonjs",
     },
-    "path": "/foo/bar",
+    "path": "/foo/bar/dist",
     "publicPath": "/",
   },
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
         "eval": true,
-        "manifestPath": "/foo/snap.manifest.json",
+        "manifestPath": "/foo/bar/snap.manifest.json",
         "writeManifest": true,
       },
     },
@@ -116,7 +116,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config 2`] = `
 {
   "devtool": "source-map",
-  "entry": "src/index.ts",
+  "entry": "/foo/bar/src/index.ts",
   "infrastructureLogging": {
     "level": "none",
   },
@@ -167,14 +167,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "library": {
       "type": "commonjs",
     },
-    "path": "/bar/baz",
+    "path": "/foo/bar/dist",
     "publicPath": "/",
   },
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
         "eval": true,
-        "manifestPath": "/bar/snap.manifest.json",
+        "manifestPath": "/foo/bar/snap.manifest.json",
         "writeManifest": true,
       },
     },
@@ -229,7 +229,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config 3`] = `
 {
   "devtool": "inline-source-map",
-  "entry": "src/index.ts",
+  "entry": "/foo/bar/src/index.ts",
   "infrastructureLogging": {
     "level": "none",
   },
@@ -280,14 +280,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "library": {
       "type": "commonjs",
     },
-    "path": "/bar/baz",
+    "path": "/foo/bar/dist",
     "publicPath": "/",
   },
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
         "eval": true,
-        "manifestPath": "/bar/snap.manifest.json",
+        "manifestPath": "/foo/bar/snap.manifest.json",
         "writeManifest": true,
       },
     },
@@ -342,7 +342,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config 4`] = `
 {
   "devtool": "source-map",
-  "entry": "src/index.ts",
+  "entry": "/foo/bar/src/index.ts",
   "infrastructureLogging": {
     "level": "none",
   },
@@ -393,14 +393,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "library": {
       "type": "commonjs",
     },
-    "path": "/bar/baz",
+    "path": "/foo/bar/dist",
     "publicPath": "/",
   },
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
         "eval": true,
-        "manifestPath": "/bar/snap.manifest.json",
+        "manifestPath": "/foo/bar/snap.manifest.json",
         "writeManifest": true,
       },
     },
@@ -455,7 +455,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config and options 1`] = `
 {
   "devtool": "source-map",
-  "entry": "src/index.ts",
+  "entry": "/foo/bar/src/index.ts",
   "infrastructureLogging": {
     "level": "none",
   },
@@ -568,7 +568,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config and options 2`] = `
 {
   "devtool": "source-map",
-  "entry": "src/index.ts",
+  "entry": "/foo/bar/src/index.ts",
   "infrastructureLogging": {
     "level": "none",
   },
@@ -681,7 +681,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config and options 3`] = `
 {
   "devtool": "source-map",
-  "entry": "src/index.ts",
+  "entry": "/foo/bar/src/index.ts",
   "infrastructureLogging": {
     "level": "none",
   },
@@ -794,7 +794,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config and options 4`] = `
 {
   "devtool": "source-map",
-  "entry": "src/index.ts",
+  "entry": "/foo/bar/src/index.ts",
   "infrastructureLogging": {
     "level": "none",
   },
@@ -907,7 +907,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config and options 5`] = `
 {
   "devtool": "source-map",
-  "entry": "src/index.ts",
+  "entry": "/foo/bar/src/index.ts",
   "infrastructureLogging": {
     "level": "none",
   },

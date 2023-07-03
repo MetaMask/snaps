@@ -1,4 +1,5 @@
 import superstruct, {
+  create,
   defaulted,
   is,
   object,
@@ -11,6 +12,7 @@ import superstruct, {
 import {
   arrayToGenerator,
   createFromStruct,
+  file,
   getError,
   literal,
   SnapsStructError,
@@ -33,6 +35,20 @@ describe('literal', () => {
     );
     expect(unionError?.message).toBe(
       'Expected the value to satisfy a union of `"bar" | "baz"`, but received: "foo"',
+    );
+  });
+});
+
+describe('file', () => {
+  it('resolves a file path relative to the current working directory', () => {
+    jest.spyOn(process, 'cwd').mockReturnValue('/foo/bar');
+
+    expect(is('packages/snaps-utils/src/structs.test.ts', file())).toBe(true);
+    expect(create('packages/snaps-utils/src/structs.test.ts', file())).toBe(
+      '/foo/bar/packages/snaps-utils/src/structs.test.ts',
+    );
+    expect(create('/packages/snaps-utils/src/structs.test.ts', file())).toBe(
+      '/packages/snaps-utils/src/structs.test.ts',
     );
   });
 });
