@@ -1,8 +1,15 @@
-import build from './build';
-import evaluate from './eval';
-import manifest from './manifest';
-import serve from './serve';
-import watch from './watch';
+import buildCommand from './build';
+import evaluateCommand from './eval';
+import manifestCommand from './manifest';
+import serveCommand from './serve';
+import watchCommand from './watch';
 
-const commands = [build, evaluate, manifest, serve, watch];
+const commands = [
+  buildCommand,
+  evaluateCommand,
+  manifestCommand,
+  serveCommand,
+  watchCommand,
+];
+
 export default commands;
