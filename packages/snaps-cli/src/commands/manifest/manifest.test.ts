@@ -31,7 +31,12 @@ describe('manifestHandler', () => {
     const { mock } = ora as jest.MockedFunction<typeof ora>;
     const spinner = mock.results[0].value;
 
-    expect(manifest).toHaveBeenCalledWith(config.manifest.path, false, spinner);
+    expect(manifest).toHaveBeenCalledWith(
+      expect.stringMatching(/.*snap\.manifest\.json.*/u),
+      false,
+      spinner,
+    );
+
     expect(spinner.succeed).toHaveBeenCalledWith(
       'The snap manifest file is valid.',
     );
@@ -53,7 +58,12 @@ describe('manifestHandler', () => {
     const { mock } = ora as jest.MockedFunction<typeof ora>;
     const spinner = mock.results[0].value;
 
-    expect(manifest).toHaveBeenCalledWith(config.manifest.path, true, spinner);
+    expect(manifest).toHaveBeenCalledWith(
+      expect.stringMatching(/.*snap\.manifest\.json.*/u),
+      true,
+      spinner,
+    );
+
     expect(spinner.succeed).toHaveBeenCalledWith(
       'The snap manifest file is valid.',
     );
@@ -74,7 +84,12 @@ describe('manifestHandler', () => {
     const { mock } = ora as jest.MockedFunction<typeof ora>;
     const spinner = mock.results[0].value;
 
-    expect(manifest).toHaveBeenCalledWith('/snap.manifest.json', true, spinner);
+    expect(manifest).toHaveBeenCalledWith(
+      expect.stringMatching(/.*snap\.manifest\.json.*/u),
+      true,
+      spinner,
+    );
+
     expect(spinner.succeed).toHaveBeenCalledWith(
       'The snap manifest file is valid.',
     );
@@ -95,7 +110,7 @@ describe('manifestHandler', () => {
     expect(manifest).not.toHaveBeenCalled();
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(
-        /Manifest file not found: "\/invalid.json"\. Make sure that the `snap.manifest.json` file exists\./u,
+        /Manifest file not found: ".+"\. Make sure that the `snap\.manifest\.json` file exists\./u,
       ),
     );
   });

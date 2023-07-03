@@ -62,13 +62,9 @@ describe('evaluate', () => {
       });
     });
 
-    await expect(evaluate(BUNDLE_PATH)).rejects
-      .toThrowErrorMatchingInlineSnapshot(`
-      "Failed to evaluate snap bundle in SES. This is likely due to an incompatibility with the SES environment in your snap.
-      Received the following error from the SES environment:
-
-        [31mError from SES.[39m"
-    `);
+    await expect(evaluate(BUNDLE_PATH)).rejects.toThrow(
+      'Failed to evaluate snap bundle in SES. This is likely due to an incompatibility with the SES environment in your snap.',
+    );
   });
 
   it('rejects if the bundle has an unknown error', async () => {

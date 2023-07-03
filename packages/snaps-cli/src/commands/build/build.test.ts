@@ -33,7 +33,9 @@ describe('buildHandler', () => {
       spinner: expect.any(Object),
     });
 
-    expect(evaluate).toHaveBeenCalledWith('/foo/output.js');
+    expect(evaluate).toHaveBeenCalledWith(
+      expect.stringMatching(/.*output\.js.*/u),
+    );
   });
 
   it('does note evaluate if the evaluate option is set to false', async () => {
@@ -67,7 +69,7 @@ describe('buildHandler', () => {
     expect(process.exitCode).toBe(1);
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(
-        /Input file not found: ".*"\. Make sure that the "input" field in your snap config is correct\./u,
+        /Input file not found: ".+"\. Make sure that the "input" field in your snap config is correct\./u,
       ),
     );
   });

@@ -8,6 +8,7 @@ import {
 import chokidar from 'chokidar';
 import EventEmitter from 'events';
 import { promises as fs } from 'fs';
+import { join } from 'path';
 
 import { CONFIG_FILE, TS_CONFIG_FILE } from '../../../utils';
 import { legacyBuild } from '../../build/legacy';
@@ -144,7 +145,9 @@ describe('legacyWatch', () => {
 
     expect(legacyBuild).toHaveBeenCalledTimes(1);
     expect(evaluate).toHaveBeenCalledTimes(1);
-    expect(evaluate).toHaveBeenCalledWith('/snap/bundle.js');
+    expect(evaluate).toHaveBeenCalledWith(
+      join(config.cliOptions.dist, config.cliOptions.outfileName),
+    );
   });
 
   it('checks the manifest if configured', async () => {
@@ -174,7 +177,10 @@ describe('legacyWatch', () => {
 
     expect(legacyBuild).toHaveBeenCalledTimes(1);
     expect(manifest).toHaveBeenCalledTimes(1);
-    expect(manifest).toHaveBeenCalledWith('/snap/snap.manifest.json', true);
+    expect(manifest).toHaveBeenCalledWith(
+      join(process.cwd(), NpmSnapFileNames.Manifest),
+      true,
+    );
   });
 
   it('serves the bundle if configured', async () => {

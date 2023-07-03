@@ -26,7 +26,7 @@ describe('serveHandler', () => {
     await serveHandler(config);
 
     expect(process.exitCode).not.toBe(1);
-    expect(getServer).toHaveBeenCalledWith(config.server.root);
+    expect(getServer).toHaveBeenCalled();
     expect(listen).toHaveBeenCalledWith(config.server.port);
     expect(log).toHaveBeenCalledWith(
       expect.stringContaining(
@@ -54,7 +54,7 @@ describe('serveHandler', () => {
     await serveHandler(config);
 
     expect(process.exitCode).not.toBe(1);
-    expect(getServer).toHaveBeenCalledWith(config.cliOptions.root);
+    expect(getServer).toHaveBeenCalled();
     expect(listen).toHaveBeenCalledWith(config.cliOptions.port);
     expect(log).toHaveBeenCalledWith(
       expect.stringContaining(

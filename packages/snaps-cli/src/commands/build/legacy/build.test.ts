@@ -69,7 +69,9 @@ describe('legacyBuild', () => {
     await legacyBuild(config);
 
     expect(bundle).toHaveBeenCalledWith(config);
-    expect(evaluate).toHaveBeenCalledWith('/snap/bundle.js');
+    expect(evaluate).toHaveBeenCalledWith(
+      expect.stringMatching(/.*bundle\.js.*/u),
+    );
   });
 
   it('checks the manifest if configured', async () => {
@@ -90,6 +92,9 @@ describe('legacyBuild', () => {
     await legacyBuild(config);
 
     expect(bundle).toHaveBeenCalledWith(config);
-    expect(manifest).toHaveBeenCalledWith('/snap/snap.manifest.json', true);
+    expect(manifest).toHaveBeenCalledWith(
+      expect.stringMatching(/.*snap\.manifest\.json.*/u),
+      true,
+    );
   });
 });

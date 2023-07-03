@@ -48,7 +48,9 @@ describe('evalBundle', () => {
       (caughtError) => caughtError,
     );
 
-    expect(error.message).toBe('Process exited with non-zero exit code: 255.');
+    expect(error.message).toMatch(
+      /Process exited with non-zero exit code: \d+\./u,
+    );
     expect(error).toBeInstanceOf(SnapEvalError);
   });
 

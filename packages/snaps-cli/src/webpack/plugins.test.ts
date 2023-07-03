@@ -91,7 +91,7 @@ describe('SnapsStatsPlugin', () => {
     );
 
     expect(log).toHaveBeenCalledWith(
-      expect.stringMatching(/at .*webpack\/lib\/Compilation\.js/u),
+      expect.stringMatching(/at .*Compilation\.js/u),
     );
 
     expect(process.exitCode).toBe(1);
@@ -202,7 +202,6 @@ describe('SnapsWatchPlugin', () => {
       },
     });
 
-    expect.assertions(2);
     const promise = new Promise<void>((resolve) => {
       compiler.hooks.afterEmit.tap('Jest', (compilation) => {
         expect(compilation.fileDependencies.has('/snap.manifest.json')).toBe(

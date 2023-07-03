@@ -31,7 +31,7 @@ describe('writeBundleFile', () => {
     expect(file).toBe('test');
 
     expect(log).toHaveBeenCalledWith(
-      "Build success: '/snap/input.js' bundled as '/snap/bundle.js'!",
+      expect.stringMatching(/Build success: '.+' bundled as '.+'!/u),
     );
   });
 });

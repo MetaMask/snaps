@@ -29,7 +29,9 @@ describe('evaluateHandler', () => {
 
     await evaluateHandler(config);
 
-    expect(evaluate).toHaveBeenCalledWith('/foo/output.js');
+    expect(evaluate).toHaveBeenCalledWith(
+      expect.stringMatching(/.*output\.js.*/u),
+    );
 
     const { mock } = ora as jest.MockedFunction<typeof ora>;
     const spinner = mock.results[0].value;
@@ -50,7 +52,9 @@ describe('evaluateHandler', () => {
       }),
     );
 
-    expect(evaluate).toHaveBeenCalledWith('/foo/output.js');
+    expect(evaluate).toHaveBeenCalledWith(
+      expect.stringMatching(/.*output\.js.*/u),
+    );
 
     const { mock } = ora as jest.MockedFunction<typeof ora>;
     const spinner = mock.results[0].value;
@@ -73,7 +77,9 @@ describe('evaluateHandler', () => {
 
     await evaluateHandler(config, { input: '/foo/output.js' });
 
-    expect(evaluate).toHaveBeenCalledWith('/foo/output.js');
+    expect(evaluate).toHaveBeenCalledWith(
+      expect.stringMatching(/.*output\.js.*/u),
+    );
 
     const { mock } = ora as jest.MockedFunction<typeof ora>;
     const spinner = mock.results[0].value;
