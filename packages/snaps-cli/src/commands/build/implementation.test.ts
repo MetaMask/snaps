@@ -52,9 +52,9 @@ describe('build', () => {
     const log = jest.spyOn(console, 'log').mockImplementation();
 
     const config = getMockConfig('webpack', {
-      input: '/input.js',
+      input: '/snap/input.js',
       output: {
-        path: '/foo',
+        path: './',
         filename: 'output.js',
       },
       evaluate: false,
@@ -69,7 +69,7 @@ describe('build', () => {
       expect.stringMatching(/Compiled 1 files in \d+ms\./u),
     );
 
-    const output = await fs.readFile('/foo/output.js', 'utf8');
+    const output = await fs.readFile('/snap/output.js', 'utf8');
     expect(output).toMatchInlineSnapshot(`
       "(()=>{var e={67:e=>{e.exports.onRpcRequest=({request:e})=>{console.log("Hello, world!");const{method:r,id:o}=e;return r+o}}},r={};var o=function o(t){var s=r[t];if(void 0!==s)return s.exports;var n=r[t]={exports:{}};return e[t](n,n.exports,o),n.exports}(67),t=exports;for(var s in o)t[s]=o[s];o.__esModule&&Object.defineProperty(t,"__esModule",{value:!0})})();
       //# sourceMappingURL=output.js.map"

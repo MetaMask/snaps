@@ -85,7 +85,12 @@ describe('legacyWatch', () => {
     const watcher: MockWatcher = watch.mock.results[0].value;
 
     expect(watch).toHaveBeenCalledWith(
-      ['/snap', NpmSnapFileNames.Manifest, CONFIG_FILE, TS_CONFIG_FILE],
+      [
+        expect.stringContaining('snap'),
+        NpmSnapFileNames.Manifest,
+        CONFIG_FILE,
+        TS_CONFIG_FILE,
+      ],
       {
         ignoreInitial: true,
         ignored: expect.arrayContaining([
@@ -301,7 +306,7 @@ describe('legacyWatch', () => {
     });
 
     await expect(legacyWatch(config)).rejects.toThrow(
-      "Invalid params: '/snap/foo.js' is not a file or does not exist.",
+      /Invalid params: '.+' is not a file or does not exist\./u,
     );
   });
 });

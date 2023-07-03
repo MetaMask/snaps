@@ -3,7 +3,7 @@ import ora from 'ora';
 import { getMockConfig } from '../test-utils';
 import { getDefaultConfiguration } from './config';
 
-jest.dontMock('fs');
+jest.unmock('fs');
 
 jest.mock('path', () => ({
   // For compatibility with Windows, we make `path` always use POSIX-style
