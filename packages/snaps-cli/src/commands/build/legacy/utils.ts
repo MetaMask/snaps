@@ -7,9 +7,10 @@ import type { ProcessedBrowserifyConfig } from '../../../config';
 import type { YargsArgs } from '../../../types/yargs';
 
 /**
- * Performs postprocessing on the bundle contents and writes them to disk.
- * Intended to be used in the callback passed to the Browserify `.bundle()`
- * call.
+ * Write the bundle to disk. This logs a success message when the bundle is
+ * written.
+ *
+ * This function assumes that the destination directory exists.
  *
  * @param buffer - The bundle contents.
  * @param config - The config object.
@@ -52,19 +53,17 @@ export function processDependencies(config: ProcessedBrowserifyConfig) {
  * @returns A RegExp object.
  */
 export function getDependencyRegExp(dependencies: string[]): RegExp | null {
-  let regexp: string | null = null;
   if (!dependencies || dependencies.includes('.') || !dependencies.length) {
-    return regexp;
+    return null;
   }
+
   const paths: string[] = sanitizeDependencyPaths(dependencies);
-  regexp = `/node_modules/(?!${paths.shift() ?? ''}`;
-  paths.forEach((path) => (regexp += `|${path}`));
-  regexp += '/)';
-  return RegExp(regexp, 'u');
+  return RegExp(`/node_modules/(?!${paths.join('|')})`, 'u');
 }
 
 /**
- * Helper function remove any leading and trailing slashes from dependency list.
+ * Helper function to remove any leading and trailing slashes from dependency
+ * list.
  *
  * @param dependencies - An array of dependencies to sanitize.
  * @returns An array of sanitized paths.
@@ -90,7 +89,7 @@ export function processInvalidTranspilation(argv: YargsArgs) {
     argv.transpilationMode !== TranspilationModes.LocalAndDeps
   ) {
     throw new Error(
-      '"depsToTranspile" can only be specified if "transpilationMode" is set to "localAndDeps" .',
+      '"depsToTranspile" can only be specified if "transpilationMode" is set to "localAndDeps".',
     );
   }
 }
