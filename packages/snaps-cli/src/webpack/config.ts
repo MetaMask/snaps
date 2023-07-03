@@ -1,5 +1,4 @@
 import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
-import { dim } from 'chalk';
 import { builtinModules } from 'module';
 import { Ora } from 'ora';
 import { resolve } from 'path';
@@ -14,7 +13,7 @@ import {
   SnapsStatsPlugin,
   SnapsWatchPlugin,
 } from './plugins';
-import { getDevTool } from './utils';
+import { getDevTool, getProgressHandler } from './utils';
 
 export type WebpackOptions = {
   /**
@@ -305,13 +304,7 @@ export function getDefaultConfiguration(
        * the build. We set it to log the progress to the spinner.
        */
       new ProgressPlugin({
-        handler: (percentage) => {
-          if (options.spinner && spinnerText) {
-            options.spinner.text = `${spinnerText} ${dim(
-              `(${Math.round(percentage * 100)}%)`,
-            )}`;
-          }
-        },
+        handler: getProgressHandler(options.spinner, spinnerText),
       }),
 
       /**

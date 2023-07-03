@@ -1,5 +1,7 @@
+import { dim } from 'chalk';
+
 import { getMockConfig } from '../test-utils';
-import { getDevTool } from './utils';
+import { getDevTool, getProgressHandler } from './utils';
 
 describe('getDevTool', () => {
   it('returns `inline-source-map` when `sourceMap` is `inline`', () => {
@@ -27,5 +29,27 @@ describe('getDevTool', () => {
     });
 
     expect(getDevTool(config)).toBe(false);
+  });
+});
+
+describe('getProgressHandler', () => {
+  it('returns a function that updates the spinner text', () => {
+    const spinner = {
+      text: '',
+    };
+
+    // @ts-expect-error - Partial spinner object.
+    const progressHandler = getProgressHandler(spinner, 'Building');
+
+    progressHandler(0.5);
+    expect(spinner.text).toBe(`Building ${dim('(50%)')}`);
+
+    progressHandler(0.75);
+    expect(spinner.text).toBe(`Building ${dim('(75%)')}`);
+  });
+
+  it('works without spinner', () => {
+    const progressHandler = getProgressHandler();
+    expect(() => progressHandler(0.5)).not.toThrow();
   });
 });

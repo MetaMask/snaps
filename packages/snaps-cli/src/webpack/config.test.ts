@@ -1,3 +1,5 @@
+import ora from 'ora';
+
 import { getMockConfig } from '../test-utils';
 import { getDefaultConfiguration } from './config';
 
@@ -60,6 +62,40 @@ describe('getDefaultConfiguration', () => {
 
       // eslint-disable-next-line jest/no-restricted-matchers
       expect(getDefaultConfiguration(config)).toMatchSnapshot();
+    },
+  );
+
+  it.each([
+    {
+      evaluate: true,
+      watch: true,
+    },
+    {
+      evaluate: false,
+      watch: false,
+    },
+    {
+      evaluate: true,
+      watch: false,
+    },
+    {
+      evaluate: false,
+      watch: true,
+    },
+    {
+      evaluate: true,
+      watch: true,
+      spinner: ora(),
+    },
+  ])(
+    'returns the default Webpack configuration for the options %o',
+    (options) => {
+      jest.spyOn(process, 'cwd').mockReturnValue('/foo/bar');
+
+      const config = getMockConfig('webpack');
+
+      // eslint-disable-next-line jest/no-restricted-matchers
+      expect(getDefaultConfiguration(config, options)).toMatchSnapshot();
     },
   );
 });

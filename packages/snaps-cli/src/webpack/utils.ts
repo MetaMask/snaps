@@ -1,3 +1,5 @@
+import { dim } from 'chalk';
+import { Ora } from 'ora';
 import { Configuration } from 'webpack';
 
 import { ProcessedWebpackConfig } from '../config';
@@ -25,4 +27,25 @@ export function getDevTool({
   }
 
   return false;
+}
+
+/**
+ * Get a function that can be used as handler function for Webpack's
+ * `ProgressPlugin`.
+ *
+ * @param spinner - The spinner to update.
+ * @param spinnerText - The initial spinner text. This will be prepended to the
+ * percentage.
+ * @returns A function that can be used as handler function for Webpack's
+ * `ProgressPlugin`.
+ */
+// Note: This is extracted for testing purposes.
+export function getProgressHandler(spinner?: Ora, spinnerText?: string) {
+  return (percentage: number) => {
+    if (spinner && spinnerText) {
+      spinner.text = `${spinnerText} ${dim(
+        `(${Math.round(percentage * 100)}%)`,
+      )}`;
+    }
+  };
 }
