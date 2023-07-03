@@ -7,13 +7,13 @@ import {
   validateOutfileName,
 } from '@metamask/snaps-utils';
 import chokidar from 'chokidar';
-import { dirname } from 'path';
+import { dirname, join } from 'path';
 
 import { ProcessedBrowserifyConfig } from '../../../config';
 import { CONFIG_FILE, TS_CONFIG_FILE } from '../../../utils';
-import { buildHandler } from '../../build/build';
-import { evaluateHandler } from '../../eval/eval';
-import { manifestHandler } from '../../manifest/manifest';
+import { legacyBuild } from '../../build/legacy';
+import { evaluate } from '../../eval';
+import { manifest } from '../../manifest';
 import { serveHandler } from '../../serve/serve';
 
 /**
@@ -53,30 +53,21 @@ export async function legacyWatch(
     TS_CONFIG_FILE,
   ];
 
-  const buildSnap = async (path?: string, logMessage?: string) => {
+  const buildSnap = async (logMessage?: string) => {
     if (logMessage !== undefined) {
       logInfo(logMessage);
     }
 
-    try {
-      await buildHandler(config);
+    await legacyBuild(config);
 
-      if (checkManifest) {
-        await manifestHandler(config, { fix });
-      }
+    if (checkManifest) {
+      const manifestPath = join(process.cwd(), NpmSnapFileNames.Manifest);
+      await manifest(manifestPath, fix);
+    }
 
-      if (shouldEval) {
-        await evaluateHandler(config);
-      }
-    } catch (error) {
-      logError(
-        `Error ${
-          path === undefined
-            ? 'during initial build'
-            : `while processing "${path}"`
-        }.`,
-        error,
-      );
+    if (shouldEval) {
+      const bundle = join(dist, outfileName);
+      await evaluate(bundle);
     }
   };
 
@@ -109,12 +100,12 @@ export async function legacyWatch(
         });
     })
     .on('add', (path) => {
-      buildSnap(path, `File added: ${path}`).catch((error) => {
+      buildSnap(`File added: ${path}`).catch((error) => {
         logError(`Error while processing "${path}".`, error);
       });
     })
     .on('change', (path) => {
-      buildSnap(path, `File changed: ${path}`).catch((error) => {
+      buildSnap(`File changed: ${path}`).catch((error) => {
         logError(`Error while processing "${path}".`, error);
       });
     })
