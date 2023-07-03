@@ -88,11 +88,19 @@ describe('getDefaultConfiguration', () => {
       spinner: ora(),
     },
   ])(
-    'returns the default Webpack configuration for the options %o',
+    'returns the default Webpack configuration for the given CLI config and options',
     (options) => {
       jest.spyOn(process, 'cwd').mockReturnValue('/foo/bar');
 
-      const config = getMockConfig('webpack');
+      const config = getMockConfig('webpack', {
+        input: 'src/index.ts',
+        output: {
+          path: '/bar/baz',
+        },
+        manifest: {
+          path: '/bar/snap.manifest.json',
+        },
+      });
 
       // eslint-disable-next-line jest/no-restricted-matchers
       expect(getDefaultConfiguration(config, options)).toMatchSnapshot();
