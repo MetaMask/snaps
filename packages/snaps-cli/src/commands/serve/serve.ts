@@ -4,6 +4,13 @@ import { ProcessedConfig } from '../../config';
 import { info } from '../../utils';
 import { getServer } from '../../webpack';
 
+type ServeOptions = {
+  /**
+   * The port to listen on.
+   */
+  port?: number;
+};
+
 /**
  * Get the root directory for the given config.
  *
@@ -28,9 +35,17 @@ export function getRootDirectory(config: ProcessedConfig): string {
  * Browserify, this will be `cliOptions.port`.
  *
  * @param config - The config object.
+ * @param options - The options object.
  * @returns The port.
  */
-export function getPort(config: ProcessedConfig): number {
+export function getPort(
+  config: ProcessedConfig,
+  options: ServeOptions,
+): number {
+  if (options.port) {
+    return options.port;
+  }
+
   if (config.bundler === 'browserify') {
     return config.cliOptions.port;
   }
@@ -43,10 +58,14 @@ export function getPort(config: ProcessedConfig): number {
  * directory.
  *
  * @param config - The config object.
+ * @param options - The options object.
  */
-export async function serveHandler(config: ProcessedConfig): Promise<void> {
+export async function serveHandler(
+  config: ProcessedConfig,
+  options: ServeOptions,
+): Promise<void> {
   const path = resolve(process.cwd(), getRootDirectory(config));
-  const configPort = getPort(config);
+  const configPort = getPort(config, options);
 
   const server = getServer(path);
 

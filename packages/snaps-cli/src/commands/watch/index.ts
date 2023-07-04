@@ -27,7 +27,10 @@ const command = {
       .implies('depsToTranspile', 'transpilationMode')
       .middleware((argv) => processInvalidTranspilation(argv as any));
   },
-  handler: async (argv: YargsArgs) => watchHandler(argv.context.config),
+  handler: async (argv: YargsArgs) =>
+    watchHandler(argv.context.config, {
+      port: argv.port,
+    }),
 };
 
 export * from './implementation';

@@ -1,6 +1,8 @@
 class MockSpinner {
   isSpinning = true;
 
+  text = '';
+
   start = jest.fn();
 
   succeed = jest.fn();
@@ -12,6 +14,8 @@ class MockSpinner {
   clear = jest.fn();
 
   frame = jest.fn();
+
+  render = jest.fn();
 }
 
 /**

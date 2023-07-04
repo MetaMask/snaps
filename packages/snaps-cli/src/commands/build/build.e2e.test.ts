@@ -1,51 +1,18 @@
-import { join } from 'path';
+import { getCommandRunner } from '../../test-utils';
 
-import { run, SNAP_DIR } from '../../test-utils';
-
-describe.skip('mm-snap build', () => {
+describe('mm-snap build', () => {
   it.each(['build', 'b'])(
     'builds a snap using "mm-snap %s"',
     async (command) => {
-      await run({ command })
-        .stdout(/Build success: '.*' bundled as '.*'!/u)
-        .stdout(/Eval Success: evaluated '.*' in SES!/u)
-        .end();
+      const runner = getCommandRunner(command, []);
+      await runner.wait();
+
+      expect(runner.exitCode).toBe(0);
+      expect(runner.stderr).toStrictEqual([]);
+      expect(runner.stdout[0]).toMatch(/Checking the input file\./u);
+      expect(runner.stdout[1]).toMatch(/Building the snap bundle\./u);
+      expect(runner.stdout[2]).toMatch(/Compiled \d+ files in \d+ms\./u);
+      expect(runner.stdout[3]).toMatch(/Evaluating the snap bundle\./u);
     },
   );
-
-  it('supports setting a bundle and output file', async () => {
-    await run({
-      command: 'build',
-      options: [
-        '--src',
-        join(SNAP_DIR, 'src/index.ts'),
-        '--dist',
-        join(SNAP_DIR, 'dist'),
-        '--manifest',
-        'false',
-        '--writeManifest',
-        'false',
-      ],
-      workingDirectory: '.',
-    })
-      .stdout(/Build success: '.*' bundled as '.*'!/u)
-      .stdout(/Eval Success: evaluated '.*' in SES!/u)
-      .end();
-  });
-
-  it('does not eval when set to false', async () => {
-    await run({ command: 'build', options: ['--eval', 'false'] })
-      .stdout(/Build success: '.*' bundled as '.*'!/u)
-      .notStdout(/Eval Success: evaluated '.*' in SES!/u)
-      .end();
-  });
-
-  it('logs an error when the input file does not exist', async () => {
-    await run({ command: 'build', options: ['--src', 'foo.js'] })
-      .stderr(
-        "Error: Invalid params: 'foo.js' is not a file or does not exist.",
-      )
-      .code(1)
-      .end();
-  });
 });

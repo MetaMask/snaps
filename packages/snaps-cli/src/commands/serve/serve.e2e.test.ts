@@ -1,7 +1,6 @@
-import { run } from '@metamask/snaps-cli/test-utils';
-import fetch from 'cross-fetch';
+import { getCommandRunner } from '@metamask/snaps-cli/test-utils';
 
-describe.skip('mm-snap serve', () => {
+describe('mm-snap serve', () => {
   it.each([
     {
       command: 'serve',
@@ -12,23 +11,20 @@ describe.skip('mm-snap serve', () => {
       port: '8087',
     },
   ])(
-    'serves a snap over HTTP on port $port using "mm-snap $command"',
+    'serves a snap over HTTP on port $port using "mm-snap $command --port $port"',
     async ({ command, port }) => {
-      expect.assertions(1);
+      const runner = getCommandRunner(command, ['--port', port]);
+      await runner.waitForStdout();
 
-      await run({
-        command,
-        options: ['--port', port],
-      })
-        .stdout('Starting server...')
-        .stdout(`Server listening on: http://localhost:${port}`)
-        .tap(async () => {
-          const response = await fetch(`http://localhost:${port}`);
-          expect(response.ok).toBe(true);
-        })
-        .stdout('Handling incoming request for: /')
-        .kill()
-        .end();
+      expect(runner.stderr).toStrictEqual([]);
+      expect(runner.stdout[0]).toMatch(
+        /The server is listening on http:\/\/localhost:\d+\./u,
+      );
+
+      const result = await fetch(`http://localhost:${port}/snap.manifest.json`);
+      expect(result.ok).toBe(true);
+
+      runner.kill();
     },
   );
 });

@@ -15,7 +15,7 @@ describe('serveHandler', () => {
       },
     });
 
-    const listen = jest.fn().mockReturnValue({ port: config.server.port });
+    const listen = jest.fn().mockImplementation((port) => ({ port }));
     const log = jest.spyOn(console, 'log').mockImplementation();
     const getServer = jest
       .spyOn(webpack, 'getServer')
@@ -23,7 +23,7 @@ describe('serveHandler', () => {
         listen,
       }));
 
-    await serveHandler(config);
+    await serveHandler(config, {});
 
     expect(process.exitCode).not.toBe(1);
     expect(getServer).toHaveBeenCalled();
@@ -43,7 +43,7 @@ describe('serveHandler', () => {
       },
     });
 
-    const listen = jest.fn().mockReturnValue({ port: config.cliOptions.port });
+    const listen = jest.fn().mockImplementation((port) => ({ port }));
     const log = jest.spyOn(console, 'log').mockImplementation();
     const getServer = jest
       .spyOn(webpack, 'getServer')
@@ -51,7 +51,7 @@ describe('serveHandler', () => {
         listen,
       }));
 
-    await serveHandler(config);
+    await serveHandler(config, {});
 
     expect(process.exitCode).not.toBe(1);
     expect(getServer).toHaveBeenCalled();
@@ -59,6 +59,37 @@ describe('serveHandler', () => {
     expect(log).toHaveBeenCalledWith(
       expect.stringContaining(
         `The server is listening on http://localhost:${config.cliOptions.port}.`,
+      ),
+    );
+  });
+
+  it('starts a server on the specified port', async () => {
+    const config = getMockConfig('webpack', {
+      input: '/input.js',
+      server: {
+        root: '/foo',
+        port: 1234,
+      },
+    });
+
+    const listen = jest.fn().mockImplementation((port) => ({ port }));
+    const log = jest.spyOn(console, 'log').mockImplementation();
+    const getServer = jest
+      .spyOn(webpack, 'getServer')
+      .mockImplementation(() => ({
+        listen,
+      }));
+
+    await serveHandler(config, {
+      port: 5678,
+    });
+
+    expect(process.exitCode).not.toBe(1);
+    expect(getServer).toHaveBeenCalled();
+    expect(listen).toHaveBeenCalledWith(5678);
+    expect(log).toHaveBeenCalledWith(
+      expect.stringContaining(
+        `The server is listening on http://localhost:5678.`,
       ),
     );
   });

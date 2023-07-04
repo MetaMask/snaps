@@ -30,7 +30,7 @@ describe('watchHandler', () => {
       listen,
     }));
 
-    await watchHandler(config);
+    await watchHandler(config, {});
 
     expect(process.exitCode).not.toBe(1);
     expect(listen).toHaveBeenCalledWith(config.server.port);
@@ -51,7 +51,7 @@ describe('watchHandler', () => {
       input: 'fake-input-file.js',
     });
 
-    await watchHandler(config);
+    await watchHandler(config, {});
 
     expect(process.exitCode).toBe(1);
     expect(log).toHaveBeenCalledWith(
@@ -61,9 +61,42 @@ describe('watchHandler', () => {
     );
   });
 
+  it('serves the bundle on the specified port', async () => {
+    await fs.promises.writeFile('/input.js', DEFAULT_SNAP_BUNDLE);
+
+    const listen = jest.fn().mockImplementation((port) => ({ port }));
+    const log = jest.spyOn(console, 'log').mockImplementation();
+    const getServer = jest
+      .spyOn(webpack, 'getServer')
+      .mockImplementation(() => ({
+        listen,
+      }));
+
+    const config = getMockConfig('webpack', {
+      input: '/input.js',
+      output: {
+        path: '/foo',
+        filename: 'output.js',
+      },
+    });
+
+    await watchHandler(config, {
+      port: 1000,
+    });
+
+    expect(getServer).toHaveBeenCalled();
+    expect(listen).toHaveBeenCalledWith(1000);
+
+    expect(log).toHaveBeenCalledWith(
+      expect.stringContaining(
+        `The server is listening on http://localhost:1000.`,
+      ),
+    );
+  });
+
   it('calls `legacyWatch` if the bundler is set to browserify', async () => {
     const config = getMockConfig('browserify');
-    await watchHandler(config);
+    await watchHandler(config, {});
 
     expect(legacyWatch).toHaveBeenCalledWith(config);
   });

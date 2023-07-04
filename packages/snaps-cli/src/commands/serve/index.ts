@@ -10,7 +10,10 @@ const command = {
   builder: (yarg: yargs.Argv) => {
     yarg.option('root', builders.root).option('port', builders.port);
   },
-  handler: async (argv: YargsArgs) => serveHandler(argv.context.config),
+  handler: async (argv: YargsArgs) =>
+    serveHandler(argv.context.config, {
+      port: argv.port,
+    }),
 };
 
 export default command;

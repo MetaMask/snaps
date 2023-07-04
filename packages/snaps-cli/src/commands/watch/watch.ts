@@ -8,8 +8,16 @@ import { getServer } from '../../webpack';
 import { watch } from './implementation';
 import { legacyWatch } from './legacy';
 
+type WatchOptions = {
+  /**
+   * The port to listen on.
+   */
+  port?: number;
+};
+
 type WatchContext = {
   config: ProcessedWebpackConfig;
+  options: WatchOptions;
 };
 
 const steps: Steps<WatchContext> = [
@@ -27,9 +35,9 @@ const steps: Steps<WatchContext> = [
   },
   {
     name: 'Starting the development server.',
-    task: async ({ config, spinner }) => {
+    task: async ({ config, options, spinner }) => {
       const server = getServer();
-      const { port } = await server.listen(config.server.port);
+      const { port } = await server.listen(options.port ?? config.server.port);
 
       info(`The server is listening on http://localhost:${port}.`, spinner);
     },
@@ -50,12 +58,16 @@ const steps: Steps<WatchContext> = [
  * Creates destination directory if it doesn't exist.
  *
  * @param config - The config object.
+ * @param options - The options object.
  */
-export async function watchHandler(config: ProcessedConfig): Promise<void> {
+export async function watchHandler(
+  config: ProcessedConfig,
+  options: WatchOptions,
+): Promise<void> {
   if (config.bundler === 'browserify') {
     await legacyWatch(config);
     return;
   }
 
-  await executeSteps(steps, { config });
+  await executeSteps(steps, { config, options });
 }

@@ -34,9 +34,8 @@ describe('executeSteps', () => {
     const mock = ora as jest.MockedFunction<typeof ora>;
     const spinner = mock.mock.results[0].value;
 
-    expect(spinner.start).toHaveBeenCalledWith(
-      expect.stringContaining('Step 1'),
-    );
+    expect(spinner.start).toHaveBeenCalled();
+    expect(spinner.text).toMatch(steps[0].name);
 
     expect(spinner.succeed).toHaveBeenCalledWith(
       expect.stringContaining('Done!'),

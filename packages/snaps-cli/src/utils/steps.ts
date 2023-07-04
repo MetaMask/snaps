@@ -26,8 +26,12 @@ export async function executeSteps<Context extends Record<string, unknown>>(
   steps: Steps<Context>,
   context: Context,
 ) {
-  const spinner = createSpinner();
-  spinner.start(dim(steps[0].name));
+  const spinner = createSpinner({
+    // Ora writes to `process.stderr` by default.
+    stream: process.stdout,
+  });
+
+  spinner.start();
 
   try {
     for (const step of steps) {
@@ -37,6 +41,7 @@ export async function executeSteps<Context extends Record<string, unknown>>(
       }
 
       spinner.text = dim(step.name);
+      spinner.render();
 
       await step.task({
         ...context,
