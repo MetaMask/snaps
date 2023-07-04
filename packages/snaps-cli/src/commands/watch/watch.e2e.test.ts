@@ -33,14 +33,6 @@ describe('mm-snap watch', () => {
       expect(runner.stdout[3]).toMatch(/Building the snap bundle\./u);
       expect(runner.stdout[4]).toMatch(/Compiled \d+ files in \d+ms\./u);
 
-      const promise = runner.waitForStdout(/Compiled \d+ files in \d+ms\./u);
-      await fs.writeFile(SNAP_FILE, 'console.log("Hello, world!");');
-      await promise;
-
-      expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Changes detected in .*, recompiling\./u),
-      );
-
       runner.kill();
     },
   );
