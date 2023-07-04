@@ -1,8 +1,9 @@
 import type { SnapConfig } from '../../config';
 
-// @ts-expect-error - Missing required properties.
 const config: SnapConfig = {
   bundler: 'webpack',
+  // @ts-expect-error - Invalid option.
+  foo: 'bar',
 };
 
 export default config;

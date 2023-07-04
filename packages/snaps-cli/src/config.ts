@@ -8,6 +8,7 @@ import {
 import { hasProperty } from '@metamask/utils';
 import { transform } from '@swc/core';
 import type { BrowserifyObject } from 'browserify';
+import { dim } from 'chalk';
 import { readFile } from 'fs/promises';
 import Module from 'module';
 import { dirname, resolve } from 'path';
@@ -29,9 +30,9 @@ import {
 } from 'superstruct';
 import type { Configuration as WebpackConfiguration } from 'webpack';
 
-import { CommandError } from './errors';
+import { ConfigError } from './errors';
 import { YargsArgs } from './types/yargs';
-import { CONFIG_FILE, TS_CONFIG_FILE } from './utils';
+import { CONFIG_FILE, indent, TS_CONFIG_FILE } from './utils';
 
 const CONFIG_FILES = [CONFIG_FILE, TS_CONFIG_FILE];
 
@@ -558,13 +559,15 @@ export type ProcessedConfig =
  * @returns The validated config.
  */
 export function getConfig(config: unknown): ProcessedConfig {
-  const suffix =
-    'Make sure that your "snap.config.[j|t]s" file is valid.\nRefer to the documentation for more information: https://docs.metamask.io/snaps/reference/config/';
+  const prefix = 'Invalid snap config file';
+  const suffix = dim(
+    '\nMake sure that your "snap.config.[j|t]s" file is valid.\nRefer to the documentation for more information: https://docs.metamask.io/snaps/reference/config/',
+  );
 
   const { bundler } = createFromStruct(
     config,
     SnapsConfigStruct,
-    'Invalid snap config',
+    prefix,
     suffix,
   );
 
@@ -572,17 +575,12 @@ export function getConfig(config: unknown): ProcessedConfig {
     return createFromStruct(
       config,
       SnapsBrowserifyConfigStruct,
-      'Invalid snap config (Browserify)',
+      prefix,
       suffix,
     );
   }
 
-  return createFromStruct(
-    config,
-    SnapsWebpackConfigStruct,
-    'Invalid snap config (Webpack)',
-    suffix,
-  );
+  return createFromStruct(config, SnapsWebpackConfigStruct, prefix, suffix);
 }
 
 /**
@@ -627,11 +625,11 @@ export async function loadConfig(path: string) {
     return getConfig(config.exports.default);
   } catch (error) {
     if (error instanceof SnapsStructError) {
-      throw error;
+      throw new ConfigError(error.message);
     }
 
-    throw new Error(
-      `Unable to load snap config file at "${path}".\n${error.message}`,
+    throw new ConfigError(
+      `Unable to load snap config file at "${path}".\n${indent(error.message)}`,
     );
   }
 }
@@ -653,7 +651,7 @@ export async function resolveConfig(path = process.cwd()) {
     }
   }
 
-  throw new Error(
+  throw new ConfigError(
     `Could not find a "snap.config.js" or "snap.config.ts" file in the current or specified directory ("${path}").`,
   );
 }
@@ -671,14 +669,14 @@ export async function getConfigByArgv(
   argv: YargsArgs,
   cwd: string = process.cwd(),
 ) {
-  if (argv.configFile) {
-    if (!(await isFile(argv.configFile))) {
-      throw new CommandError(
-        `Could not find a config file at "${argv.configFile}". Make sure that the path is correct.`,
+  if (argv.config) {
+    if (!(await isFile(argv.config))) {
+      throw new ConfigError(
+        `Could not find a config file at "${argv.config}". Make sure that the path is correct.`,
       );
     }
 
-    return mergeLegacyOptions(argv, await loadConfig(argv.configFile));
+    return mergeLegacyOptions(argv, await loadConfig(argv.config));
   }
 
   return mergeLegacyOptions(argv, await resolveConfig(cwd));

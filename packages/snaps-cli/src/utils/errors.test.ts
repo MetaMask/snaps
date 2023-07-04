@@ -1,4 +1,14 @@
-import { getErrorMessage } from './errors';
+import { getErrorMessage, getYargsErrorMessage } from './errors';
+
+describe('getYargsErrorMessage', () => {
+  it('returns the plain message if the error is undefined', () => {
+    expect(getYargsErrorMessage('foo', undefined)).toBe('foo');
+  });
+
+  it('returns the error message if the error is not undefined', () => {
+    expect(getYargsErrorMessage('foo', 'bar')).toBe('bar');
+  });
+});
 
 describe('getErrorMessage', () => {
   it('returns the stack trace if it exists', () => {

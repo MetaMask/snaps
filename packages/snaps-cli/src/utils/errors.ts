@@ -1,6 +1,23 @@
 import { hasProperty, isObject } from '@metamask/utils';
 
 /**
+ * Get the error message from an error in a Yargs `fail` handler. If the error
+ * is not `undefined`, {@link getErrorMessage} is used to get the error message.
+ * Otherwise, the given message is returned.
+ *
+ * @param message - The error message.
+ * @param error - The error object. This may be `undefined`.
+ * @returns The error message.
+ */
+export function getYargsErrorMessage(message: string, error?: unknown): string {
+  if (error) {
+    return getErrorMessage(error);
+  }
+
+  return message;
+}
+
+/**
  * Get the error message from an error.
  *
  * - If the error is an object with a `stack` property, the `stack` property is

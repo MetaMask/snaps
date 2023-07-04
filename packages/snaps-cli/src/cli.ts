@@ -3,7 +3,7 @@ import { hideBin } from 'yargs/helpers';
 
 import builders from './builders';
 import { getConfigByArgv } from './config';
-import { error, getErrorMessage, sanitizeInputs } from './utils';
+import { error, getYargsErrorMessage, sanitizeInputs } from './utils';
 
 /**
  * The main CLI entry point function. This processes the command line args, and
@@ -19,14 +19,14 @@ export async function cli(argv: string[], commands: any) {
 
     .example('$0 build', `Build './src/index.js' as './dist/bundle.js'`)
     .example(
-      '$0 build --config-file ./snap.config.build.ts',
+      '$0 build --config ./snap.config.build.ts',
       `Build './src/index.js' as './dist/bundle.js' using the config in './snap.config.build.ts'`,
     )
     .example('$0 manifest --fix', `Check the snap manifest, and fix any errors`)
 
     .command(commands)
 
-    .option('config-file', builders.configFile)
+    .option('config', builders.config)
     .option('verboseErrors', builders.verboseErrors)
     .option('suppressWarnings', builders.suppressWarnings)
 
@@ -44,7 +44,7 @@ export async function cli(argv: string[], commands: any) {
     .demandCommand(1, 'You must specify at least one command.')
 
     .fail((message, failure) => {
-      error(failure ? getErrorMessage(failure) : message);
+      error(getYargsErrorMessage(message, failure));
       process.exit(1);
     })
 

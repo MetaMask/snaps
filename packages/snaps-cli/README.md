@@ -26,7 +26,7 @@ Commands:
 
 Options:
       --version           Show version number                          [boolean]
-  -C, --config-file       Path to config file                           [string]
+  -c, --config            Path to config file                           [string]
       --verboseErrors     Display original errors         [deprecated] [boolean]
       --suppressWarnings  Whether to suppress warnings    [deprecated] [boolean]
   -h, --help              Show help                                    [boolean]
@@ -34,7 +34,7 @@ Options:
 Examples:
   mm-snap build                             Build './src/index.js' as
                                             './dist/bundle.js'
-  mm-snap build --config-file               Build './src/index.js' as
+  mm-snap build --config                    Build './src/index.js' as
   ./snap.config.build.ts                    './dist/bundle.js' using the config
                                             in './snap.config.build.ts'
   mm-snap manifest --fix                    Check the snap manifest, and fix any

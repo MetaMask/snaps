@@ -23,7 +23,7 @@ type YargsArgs = {
   fix?: boolean;
   input?: string;
 
-  configFile?: string;
+  config?: string;
   sourceMaps: boolean;
   stripComments: boolean;
   transformHtmlComments: boolean;
