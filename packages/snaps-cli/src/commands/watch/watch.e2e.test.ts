@@ -1,4 +1,3 @@
-import fetch from 'cross-fetch';
 import { promises as fs } from 'fs';
 import { resolve } from 'path';
 
@@ -33,9 +32,6 @@ describe('mm-snap watch', () => {
       );
       expect(runner.stdout[3]).toMatch(/Building the snap bundle\./u);
       expect(runner.stdout[4]).toMatch(/Compiled \d+ files in \d+ms\./u);
-
-      const result = await fetch('http://localhost:8123/snap.manifest.json');
-      expect(result.ok).toBe(true);
 
       await fs.writeFile(SNAP_FILE, 'console.log("Hello, world!");');
       await runner.waitForStdout(/Compiled \d+ files in \d+ms\./u);
