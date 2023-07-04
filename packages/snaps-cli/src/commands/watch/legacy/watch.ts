@@ -90,7 +90,7 @@ export async function legacyWatch(
       buildSnap()
         .then(() => {
           if (shouldServe) {
-            return serveHandler(config);
+            return serveHandler(config, {});
           }
 
           return undefined;

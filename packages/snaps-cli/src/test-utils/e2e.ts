@@ -1,5 +1,5 @@
 import { assert } from '@metamask/utils';
-import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
+import { ChildProcess, fork } from 'child_process';
 import EventEmitter from 'events';
 import { join } from 'path';
 
@@ -9,7 +9,7 @@ export const SNAP_DIR = join(__dirname, '../../../examples/packages/json-rpc');
  * A test runner for running CLI commands.
  */
 class TestRunner extends EventEmitter {
-  readonly #process: ChildProcessWithoutNullStreams;
+  readonly #process: ChildProcess;
 
   readonly stdout: string[] = [];
 
@@ -24,17 +24,17 @@ class TestRunner extends EventEmitter {
   ) {
     super();
 
-    this.#process = spawn(command, options, {
+    this.#process = fork(command, options, {
       cwd: workingDirectory,
       stdio: 'pipe',
     });
 
-    this.#process.stdout.on('data', (data) => {
+    this.#process.stdout?.on('data', (data) => {
       this.stdout.push(data.toString());
       this.emit('stdout', data.toString());
     });
 
-    this.#process.stderr.on('data', (data) => {
+    this.#process.stderr?.on('data', (data) => {
       this.stderr.push(data.toString());
       this.emit('stderr', data.toString());
     });

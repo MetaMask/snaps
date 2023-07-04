@@ -218,7 +218,7 @@ describe('legacyWatch', () => {
 
     expect(legacyBuild).toHaveBeenCalledTimes(1);
     expect(serveHandler).toHaveBeenCalledTimes(1);
-    expect(serveHandler).toHaveBeenCalledWith(config);
+    expect(serveHandler).toHaveBeenCalledWith(config, {});
   });
 
   it('logs errors during the initial build', async () => {
