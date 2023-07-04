@@ -7,8 +7,9 @@ export enum TranspilationModes {
 }
 
 const builders: Record<string, Readonly<Options>> = {
-  config: {
-    alias: 'c',
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  configFile: {
+    alias: 'C',
     describe: 'Path to config file',
     type: 'string',
     normalize: true,

@@ -29,6 +29,7 @@ import {
 } from 'superstruct';
 import type { Configuration as WebpackConfiguration } from 'webpack';
 
+import { CommandError } from './errors';
 import { YargsArgs } from './types/yargs';
 import { CONFIG_FILE, TS_CONFIG_FILE } from './utils';
 
@@ -460,7 +461,7 @@ const SnapsWebpackCustomizeWebpackConfigFunctionStruct =
 
 export const SnapsWebpackConfigStruct = object({
   bundler: literal('webpack'),
-  input: file(),
+  input: defaulted(file(), resolve(process.cwd(), 'src/index.js')),
   sourceMap: defaulted(union([boolean(), literal('inline')]), true),
   evaluate: defaulted(boolean(), true),
 
@@ -670,14 +671,14 @@ export async function getConfigByArgv(
   argv: YargsArgs,
   cwd: string = process.cwd(),
 ) {
-  if (argv.config) {
-    if (!(await isFile(argv.config))) {
-      throw new Error(
-        `Could not find a config file at "${argv.config}". Make sure that the path is correct.`,
+  if (argv.configFile) {
+    if (!(await isFile(argv.configFile))) {
+      throw new CommandError(
+        `Could not find a config file at "${argv.configFile}". Make sure that the path is correct.`,
       );
     }
 
-    return mergeLegacyOptions(argv, await loadConfig(argv.config));
+    return mergeLegacyOptions(argv, await loadConfig(argv.configFile));
   }
 
   return mergeLegacyOptions(argv, await resolveConfig(cwd));
