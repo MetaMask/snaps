@@ -62,7 +62,10 @@ const MockOptionsBaseStruct = object({
       status: defaulted(number(), 200),
       headers: defaulted(record(string(), unknown()), DEFAULT_HEADERS),
       contentType: defaulted(string(), 'text/plain'),
-      body: defaulted(string(), ''),
+
+      // Note: We default to a newline here, because the fetch request never
+      // resolves if the body is empty.
+      body: defaulted(string(), '\n'),
     }),
     {},
   ),
