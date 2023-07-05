@@ -1,8 +1,10 @@
 import {
   createFromStruct,
   file,
+  indent,
   isFile,
   literal,
+  union,
   SnapsStructError,
 } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
@@ -25,14 +27,13 @@ import {
   record,
   string,
   type,
-  union,
   unknown,
 } from 'superstruct';
 import type { Configuration as WebpackConfiguration } from 'webpack';
 
 import { ConfigError } from './errors';
 import { YargsArgs } from './types/yargs';
-import { CONFIG_FILE, indent, TS_CONFIG_FILE } from './utils';
+import { CONFIG_FILE, TS_CONFIG_FILE } from './utils';
 
 const CONFIG_FILES = [CONFIG_FILE, TS_CONFIG_FILE];
 
@@ -559,9 +560,9 @@ export type ProcessedConfig =
  * @returns The validated config.
  */
 export function getConfig(config: unknown): ProcessedConfig {
-  const prefix = 'Invalid snap config file';
+  const prefix = 'The snap config file is invalid';
   const suffix = dim(
-    '\nMake sure that your "snap.config.[j|t]s" file is valid.\nRefer to the documentation for more information: https://docs.metamask.io/snaps/reference/config/',
+    'Refer to the documentation for more information: https://docs.metamask.io/snaps/reference/config/',
   );
 
   const { bundler } = createFromStruct(
@@ -629,7 +630,9 @@ export async function loadConfig(path: string) {
     }
 
     throw new ConfigError(
-      `Unable to load snap config file at "${path}".\n${indent(error.message)}`,
+      `Unable to load snap config file at "${path}".\n\n${indent(
+        error.message,
+      )}`,
     );
   }
 }

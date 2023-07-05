@@ -1,5 +1,7 @@
 import { hasProperty, isObject } from '@metamask/utils';
 
+import { CLIError } from '../errors';
+
 /**
  * Get the error message from an error in a Yargs `fail` handler. If the error
  * is not `undefined`, {@link getErrorMessage} is used to get the error message.
@@ -11,6 +13,10 @@ import { hasProperty, isObject } from '@metamask/utils';
  */
 export function getYargsErrorMessage(message: string, error?: unknown): string {
   if (error) {
+    if (error instanceof CLIError) {
+      return error.message;
+    }
+
     return getErrorMessage(error);
   }
 

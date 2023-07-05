@@ -1,8 +1,7 @@
-import { evalBundle, SnapEvalError } from '@metamask/snaps-utils';
+import { evalBundle, SnapEvalError, indent } from '@metamask/snaps-utils';
 import { red } from 'chalk';
 
 import { CommandError } from '../../errors';
-import { indent } from '../../utils';
 
 /**
  * Evaluate the given bundle in the SES environment. This is a wrapper around

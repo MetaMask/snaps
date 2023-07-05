@@ -1,12 +1,15 @@
+import { assert } from '@metamask/utils';
+import { bold, green, red } from 'chalk';
 import superstruct, {
   create,
   defaulted,
   is,
+  number,
   object,
   string,
-  StructError,
-  union,
+  Struct,
   validate,
+  union as superstructUnion,
 } from 'superstruct';
 
 import {
@@ -14,9 +17,30 @@ import {
   createFromStruct,
   file,
   getError,
+  getStructErrorMessage,
+  getStructErrorPrefix,
+  getStructFailureMessage,
   literal,
+  union,
   SnapsStructError,
+  getStructFromPath,
+  getUnionStructNames,
 } from './structs';
+
+/**
+ * Get an error from a struct, for testing.
+ *
+ * @param value - The value to validate.
+ * @param struct - The struct to validate against.
+ * @returns The error.
+ * @throws If the value passes validation.
+ */
+function getStructError(value: unknown, struct: Struct<any>) {
+  const [error] = validate(value, struct);
+  assert(error, 'Expected an error to be thrown.');
+
+  return error;
+}
 
 describe('literal', () => {
   it.each(['foo', 42, true, false])('validates a literal value', (value) => {
@@ -66,87 +90,54 @@ describe('arrayToGenerator', () => {
 
 describe('getError', () => {
   it('returns a readable error', () => {
-    const error = new StructError(
-      {
-        branch: [],
-        key: 'foo',
-        message: 'Expected a string, but received: 42',
-        path: ['foo'],
-        refinement: 'bar',
-        type: 'string',
-        value: 42,
-      },
-      () =>
-        arrayToGenerator([
-          {
-            branch: [],
-            key: 'bar',
-            message: 'Expected a string, but received: 42',
-            path: ['bar'],
-            refinement: 'bar',
-            type: 'string',
-            value: 123,
-          },
-        ]),
-    );
+    const struct = object({
+      foo: string(),
+      bar: string(),
+    });
 
+    const error = getStructError({ foo: 42 }, struct);
     const readableError = getError({
+      struct,
+      error,
       prefix: 'Foo',
       suffix: 'Bar',
-      error,
     });
 
     expect(readableError).toBeInstanceOf(SnapsStructError);
     expect(readableError.message).toBe(
-      'Foo: At path: foo -- Expected a string, but received: 42. Bar',
+      `Foo.\n\n  • At path: ${bold('foo')} — Expected a value of type ${green(
+        'string',
+      )}, but received: ${red('42')}.\n  • At path: ${bold(
+        'bar',
+      )} — Expected a value of type ${green('string')}, but received: ${red(
+        'undefined',
+      )}.\n\nBar`,
     );
 
     expect(readableError.failures).toBeInstanceOf(Function);
     expect([...readableError.failures()]).toStrictEqual([
       error,
-      {
-        branch: [],
-        key: 'foo',
-        message: 'Expected a string, but received: 42',
-        path: ['foo'],
-        refinement: 'bar',
-        type: 'string',
-        value: 42,
-      },
-      {
-        branch: [],
-        key: 'bar',
-        message: 'Expected a string, but received: 42',
-        path: ['bar'],
-        refinement: 'bar',
-        type: 'string',
-        value: 123,
-      },
+      ...error.failures(),
     ]);
   });
 
   it('returns a readable error without a suffix', () => {
-    const error = new StructError(
-      {
-        branch: [],
-        key: 'foo',
-        message: 'Expected a string, but received: 42',
-        path: ['foo'],
-        refinement: 'bar',
-        type: 'string',
-        value: 42,
-      },
-      () => arrayToGenerator([]),
-    );
+    const struct = object({
+      foo: string(),
+    });
 
+    const error = getStructError({ foo: 42 }, struct);
     const readableError = getError({
-      prefix: 'Foo',
+      struct,
       error,
+      prefix: 'Foo',
     });
 
     expect(readableError).toBeInstanceOf(SnapsStructError);
     expect(readableError.message).toBe(
-      'Foo: At path: foo -- Expected a string, but received: 42.',
+      `Foo.\n\n  • At path: ${bold('foo')} — Expected a value of type ${green(
+        'string',
+      )}, but received: ${red('42')}.`,
     );
   });
 });
@@ -168,12 +159,18 @@ describe('createFromStruct', () => {
 
   it('throws readable errors', () => {
     expect(() => createFromStruct({ foo: 42 }, DEFAULT_STRUCT, 'Foo')).toThrow(
-      'Foo: At path: foo -- Expected a string, but received: 42.',
+      `Foo.\n\n  • At path: ${bold('foo')} — Expected a value of type ${green(
+        'string',
+      )}, but received: ${red('42')}.`,
     );
 
     expect(() =>
       createFromStruct({ foo: 42 }, DEFAULT_STRUCT, 'Foo', 'Bar'),
-    ).toThrow('Foo: At path: foo -- Expected a string, but received: 42. Bar');
+    ).toThrow(
+      `Foo.\n\n  • At path: ${bold('foo')} — Expected a value of type ${green(
+        'string',
+      )}, but received: ${red('42')}.\n\nBar`,
+    );
   });
 
   it('throws the raw error if an unknown error is thrown', () => {
@@ -184,5 +181,129 @@ describe('createFromStruct', () => {
     expect(() =>
       createFromStruct({ foo: 42 }, DEFAULT_STRUCT, 'Foo', 'Bar'),
     ).toThrow('Unknown error.');
+  });
+});
+
+describe('getStructFromPath', () => {
+  it('gets a struct from a failure path', () => {
+    const struct = object({
+      foo: union([string(), number()]),
+    });
+
+    expect(getStructFromPath(struct, [])).toBe(struct);
+    expect(getStructFromPath(struct, ['foo'])).toBe(struct.schema.foo);
+    expect(getStructFromPath(struct, ['foo', 'bar'])).toBe(struct.schema.foo);
+  });
+});
+
+describe('getUnionStructNames', () => {
+  it('gets the union names from a union struct', () => {
+    const struct = union([literal('foo'), literal('bar')]);
+    expect(getUnionStructNames(struct)).toStrictEqual([
+      `${green('"foo"')}`,
+      `${green('"bar"')}`,
+    ]);
+  });
+
+  it('returns null if the struct is not a union', () => {
+    const struct = object({});
+    expect(getUnionStructNames(struct)).toBeNull();
+  });
+});
+
+describe('getStructErrorPrefix', () => {
+  it('returns an empty string for a failure without a path', () => {
+    const error = getStructError(42, string());
+    expect(getStructErrorPrefix(error)).toBe('');
+  });
+
+  it('returns an empty string for a failure with type never', () => {
+    const error = getStructError({ foo: 42 }, object({}));
+    expect(getStructErrorPrefix(error)).toBe('');
+  });
+
+  it('returns a readable path for a failure with a path', () => {
+    const error = getStructError(
+      {
+        foo: {
+          bar: 42,
+        },
+      },
+      object({ foo: object({ bar: string() }) }),
+    );
+    expect(getStructErrorPrefix(error)).toBe(`At path: ${bold('foo.bar')} — `);
+  });
+});
+
+describe('getStructFailureMessage', () => {
+  it('returns a readable error from a string struct', () => {
+    const struct = string();
+    const error = getStructError(42, struct);
+    expect(getStructFailureMessage(struct, error)).toBe(
+      `Expected a value of type ${green('string')}, but received: ${red(
+        '42',
+      )}.`,
+    );
+  });
+
+  it('returns a readable error from an object struct', () => {
+    const struct = object({ foo: string() });
+    const error = getStructError({ bar: 42 }, struct);
+    expect(getStructFailureMessage(struct, error)).toBe(
+      `At path: ${bold('foo')} — Expected a value of type ${green(
+        'string',
+      )}, but received: ${red('undefined')}.`,
+    );
+  });
+
+  it('returns a readable error for an unknown key', () => {
+    const struct = object({});
+    const error = getStructError({ bar: 42 }, struct);
+    expect(getStructFailureMessage(struct, error)).toBe(
+      `Unknown key: ${bold('bar')}, received: ${red('42')}.`,
+    );
+  });
+
+  it('returns a readable error for an union of literals', () => {
+    const struct = union([literal('bar'), literal('baz')]);
+    const error = getStructError('foo', struct);
+    expect(getStructFailureMessage(struct, error)).toBe(
+      `Expected the value to be one of: ${green('"bar"')}, ${green(
+        '"baz"',
+      )}, but received: ${red('"foo"')}.`,
+    );
+  });
+
+  it('returns a readable error for a literal', () => {
+    const error = getStructError('foo', literal('bar'));
+    expect(getStructFailureMessage(literal('bar'), error)).toBe(
+      `Expected the value to be \`${green('"bar"')}\`, but received: ${red(
+        '"foo"',
+      )}.`,
+    );
+  });
+
+  it('returns a fallback for non-formatted unions', () => {
+    const struct = superstructUnion([literal('bar'), literal('baz')]);
+    const error = getStructError('foo', struct);
+    expect(getStructFailureMessage(struct, error)).toBe(
+      'Expected the value to satisfy a union of `"bar" | "baz"`, but received: "foo".',
+    );
+  });
+});
+
+describe('getStructErrorMessage', () => {
+  it('returns a list of readable errors', () => {
+    const struct = object({ foo: string() });
+    const error = getStructError({ bar: 42 }, struct);
+
+    const messages = [
+      getStructFailureMessage(struct, error.failures()[0]),
+      getStructFailureMessage(struct, error.failures()[1]),
+    ];
+
+    expect(getStructErrorMessage(struct, error.failures())).toBe(
+      messages.map((message) => `  • ${message}`).join('\n'),
+    );
   });
 });

@@ -5342,6 +5342,7 @@ __metadata:
     "@wdio/mocha-framework": ^8.5.2
     "@wdio/spec-reporter": ^8.5.2
     "@wdio/static-server-service": ^8.5.2
+    chalk: ^4.1.2
     cron-parser: ^4.5.0
     deepmerge: ^4.2.2
     esbuild: ^0.17.15

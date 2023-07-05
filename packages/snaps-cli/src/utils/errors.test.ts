@@ -1,3 +1,4 @@
+import { CommandError } from '../errors';
 import { getErrorMessage, getYargsErrorMessage } from './errors';
 
 describe('getYargsErrorMessage', () => {
@@ -7,6 +8,13 @@ describe('getYargsErrorMessage', () => {
 
   it('returns the error message if the error is not undefined', () => {
     expect(getYargsErrorMessage('foo', 'bar')).toBe('bar');
+  });
+
+  it('returns the error message if the error extends `CLIError`', () => {
+    const error = new CommandError('foo');
+    error.stack = 'bar';
+
+    expect(getYargsErrorMessage('baz', error)).toBe('foo');
   });
 });
 

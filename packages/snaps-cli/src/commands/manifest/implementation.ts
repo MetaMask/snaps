@@ -1,9 +1,9 @@
-import { checkManifest } from '@metamask/snaps-utils';
+import { checkManifest, indent } from '@metamask/snaps-utils';
 import { red, yellow } from 'chalk';
 import { Ora } from 'ora';
 import { dirname } from 'path';
 
-import { error, indent, warn } from '../../utils';
+import { error, warn } from '../../utils';
 
 /**
  * Check the snap manifest file at the given path. If `write` is `true`, the

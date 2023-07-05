@@ -1,3 +1,4 @@
+import { indent } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 import { dim, red, yellow } from 'chalk';
 import { isBuiltin } from 'module';
@@ -11,7 +12,7 @@ import {
   WebpackPluginInstance,
 } from 'webpack';
 
-import { error, getErrorMessage, indent, info, warn } from '../utils';
+import { error, getErrorMessage, info, warn } from '../utils';
 
 export type SnapsStatsPluginOptions = {
   /**

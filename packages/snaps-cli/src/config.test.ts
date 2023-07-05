@@ -1,4 +1,5 @@
 import { getMockConfig } from '@metamask/snaps-cli/test-utils';
+import { bold, green, red } from 'chalk';
 import { resolve } from 'path';
 
 import {
@@ -16,7 +17,9 @@ const DEFAULT_CONFIG = getMockConfig('webpack');
 describe('getConfig', () => {
   it('throws an error if `bundler` is not `browserify` or `webpack`', () => {
     expect(() => getConfig({ bundler: 'foo' })).toThrow(
-      'Invalid snap config file: At path: bundler -- Expected the value to satisfy a union of `"browserify" | "webpack"`, but received: "foo".',
+      `At path: ${bold('bundler')} — Expected the value to be one of: ${green(
+        '"browserify"',
+      )}, ${green('"webpack"')}, but received: ${red('"foo"')}.`,
     );
   });
 
@@ -26,9 +29,7 @@ describe('getConfig', () => {
         bundler: 'browserify',
         entry: 'foo',
       }),
-    ).toThrow(
-      'Invalid snap config file: At path: entry -- Expected a value of type `never`, but received: `"foo"`.',
-    );
+    ).toThrow(`Unknown key: ${bold('entry')}, received: ${red('"foo"')}.`);
   });
 
   it('throws an error if `cliOptions` is being used with `webpack`', () => {
@@ -38,9 +39,7 @@ describe('getConfig', () => {
         input: 'foo',
         cliOptions: { port: 8000 },
       }),
-    ).toThrow(
-      'Invalid snap config file: At path: cliOptions -- Expected a value of type `never`, but received: `[object Object]`.',
-    );
+    ).toThrow(`Unknown key: ${bold('cliOptions')}, received:`);
   });
 
   describe('browserify', () => {
@@ -112,7 +111,7 @@ describe('loadConfig', () => {
     await expect(
       loadConfig(resolve(CONFIG_PATH, 'invalid.ts')),
     ).rejects.toThrow(
-      'Invalid snap config file: At path: foo -- Expected a value of type `never`, but received: `"bar"',
+      `Unknown key: ${bold('foo')}, received: ${red('"bar"')}.`,
     );
   });
 

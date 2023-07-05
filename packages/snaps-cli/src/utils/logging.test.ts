@@ -1,16 +1,7 @@
 import { blue, dim, red, yellow } from 'chalk';
 import { Ora } from 'ora';
 
-import { error, indent, info, warn } from './logging';
-
-describe('indent', () => {
-  it('indents a string by a given number of spaces', () => {
-    expect(indent('foo')).toBe('  foo');
-    expect(indent('foo', 4)).toBe('    foo');
-    expect(indent('foo\nbar')).toBe('  foo\n  bar');
-    expect(indent('foo\nbar', 4)).toBe('    foo\n    bar');
-  });
-});
+import { error, info, warn } from './logging';
 
 describe('warn', () => {
   it('logs a warning message', () => {
