@@ -58,6 +58,7 @@ export enum NodeType {
   Copyable = 'copyable',
   Divider = 'divider',
   Heading = 'heading',
+  Image = 'image',
   Panel = 'panel',
   Spinner = 'spinner',
   Text = 'text',
@@ -108,6 +109,28 @@ export const HeadingStruct = assign(
  * markdown string.
  */
 export type Heading = Infer<typeof HeadingStruct>;
+
+// TODO:
+// - Add support for `size` property.
+// - Add support for `alt` property.
+// - Add support for `fill` property.
+// - Validate that the `value` property is a valid SVG string.
+export const ImageStruct = assign(
+  LiteralStruct,
+  object({
+    type: literal(NodeType.Image),
+    value: string(),
+  }),
+);
+
+/**
+ * An image node, that renders an image. The `value` property must be an SVG
+ * string.
+ *
+ * @property type - The type of the node, must be the string 'image'.
+ * @property value - The SVG string to render.
+ */
+export type Image = Infer<typeof ImageStruct>;
 
 export const PanelStruct: Struct<Panel> = assign(
   ParentStruct,
@@ -160,6 +183,7 @@ export const ComponentStruct = union([
   CopyableStruct,
   DividerStruct,
   HeadingStruct,
+  ImageStruct,
   PanelStruct,
   SpinnerStruct,
   TextStruct,

@@ -6,6 +6,7 @@ import {
   CopyableStruct,
   DividerStruct,
   HeadingStruct,
+  ImageStruct,
   NodeType,
   PanelStruct,
   SpinnerStruct,
@@ -130,6 +131,21 @@ export const divider = createBuilder(NodeType.Divider, DividerStruct);
 export const heading = createBuilder(NodeType.Heading, HeadingStruct, [
   'value',
 ]);
+
+/**
+ * Create an {@link Image} node.
+ *
+ * @param args - The node arguments. This can either be a string, or an object
+ * with the `value` property.
+ * @param args.value - The SVG image to display.
+ * @returns The image node as object.
+ * @example
+ * ```typescript
+ * const node = image({ value: '<svg />' });
+ * const node = image('<svg />');
+ * ```
+ */
+export const image = createBuilder(NodeType.Image, ImageStruct, ['value']);
 
 /**
  * Create a {@link Panel} node.

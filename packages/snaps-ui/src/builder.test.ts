@@ -1,4 +1,12 @@
-import { copyable, divider, heading, panel, spinner, text } from './builder';
+import {
+  copyable,
+  divider,
+  heading,
+  image,
+  panel,
+  spinner,
+  text,
+} from './builder';
 import { NodeType } from './nodes';
 
 describe('copyable', () => {
@@ -88,6 +96,44 @@ describe('heading', () => {
     // @ts-expect-error - Invalid args.
     expect(() => heading({})).toThrow(
       'Invalid heading component: At path: value -- Expected a string, but received: undefined.',
+    );
+  });
+});
+
+describe('image', () => {
+  it('creates an image component', () => {
+    expect(image({ value: '<svg />' })).toStrictEqual({
+      type: NodeType.Image,
+      value: '<svg />',
+    });
+
+    expect(image({ value: '<svg><circle r="1" /></svg>' })).toStrictEqual({
+      type: NodeType.Image,
+      value: '<svg><circle r="1" /></svg>',
+    });
+  });
+
+  it('creates a heading component using the shorthand form', () => {
+    expect(image('<svg />')).toStrictEqual({
+      type: NodeType.Image,
+      value: '<svg />',
+    });
+
+    expect(image('<svg><circle r="1" /></svg>')).toStrictEqual({
+      type: NodeType.Image,
+      value: '<svg><circle r="1" /></svg>',
+    });
+  });
+
+  it('validates the args', () => {
+    // @ts-expect-error - Invalid args.
+    expect(() => image({ value: '<svg />', bar: 'baz' })).toThrow(
+      'Invalid image component: At path: bar -- Expected a value of type `never`, but received: `"baz"`.',
+    );
+
+    // @ts-expect-error - Invalid args.
+    expect(() => image({})).toThrow(
+      'Invalid image component: At path: value -- Expected a string, but received: undefined.',
     );
   });
 });
