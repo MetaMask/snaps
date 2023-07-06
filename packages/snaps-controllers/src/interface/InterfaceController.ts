@@ -8,10 +8,11 @@ import {
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
 import { Component } from '@metamask/snaps-ui';
+import { ComponentState } from '@metamask/snaps-utils';
 import { Json, assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
-import { ComponentState, constructState } from './utils';
+import { constructState } from './utils';
 
 const controllerName = 'InterfaceController';
 
@@ -143,6 +144,12 @@ export class InterfaceController extends BaseController<
     this.update((draftState) => {
       draftState.interfaces[id].state = state;
     });
+  }
+
+  getInterfaceState(snapId: string, id: string) {
+    this.#validateArgs(snapId, id);
+
+    return this.state.interfaces[id].state;
   }
 
   #validateArgs(snapId: string, id: string) {
