@@ -1,4 +1,5 @@
-import { spawn } from 'child_process';
+import { assert } from '@metamask/utils';
+import { fork, spawn } from 'child_process';
 import { join } from 'path';
 
 import { validateFilePath } from './fs';
@@ -30,18 +31,20 @@ export async function evalBundle(bundlePath: string): Promise<EvalOutput> {
   await validateFilePath(bundlePath);
 
   return new Promise((resolve, reject) => {
-    const worker = spawn(
-      'node',
-      [join(__dirname, 'eval-worker.js'), bundlePath],
-      {
-        // To avoid printing the output of the worker to the console, we set
-        // `stdio` to `pipe` and handle the output ourselves.
-        stdio: 'pipe',
-      },
-    );
+    spawn('foo', {
+      stdio: 'pipe',
+    });
+    const worker = fork(join(__dirname, 'eval-worker.js'), [bundlePath], {
+      // To avoid printing the output of the worker to the console, we set
+      // `stdio` to `pipe` and handle the output ourselves.
+      stdio: 'pipe',
+    });
 
     let stdout = '';
     let stderr = '';
+
+    assert(worker.stdout, '`stdout` should be defined.');
+    assert(worker.stderr, '`stderr` should be defined.');
 
     worker.stdout.on('data', (data: Buffer) => {
       stdout += data.toString();
