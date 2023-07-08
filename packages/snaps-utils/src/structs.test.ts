@@ -10,6 +10,7 @@ import superstruct, {
   Struct,
   validate,
   union as superstructUnion,
+  array,
 } from 'superstruct';
 
 import {
@@ -25,6 +26,7 @@ import {
   SnapsStructError,
   getStructFromPath,
   getUnionStructNames,
+  empty,
 } from './structs';
 
 /**
@@ -74,6 +76,20 @@ describe('file', () => {
     expect(create('/packages/snaps-utils/src/structs.test.ts', file())).toBe(
       '/packages/snaps-utils/src/structs.test.ts',
     );
+  });
+});
+
+describe('empty', () => {
+  it('sets the struct name', () => {
+    expect(empty(string()).type).toBe('empty string');
+    expect(empty(array()).type).toBe('empty array');
+  });
+
+  it('validates an empty value', () => {
+    expect(is([], empty(array()))).toBe(true);
+    expect(is('', empty(string()))).toBe(true);
+    expect(is(['foo'], empty(array()))).toBe(false);
+    expect(is('foo', empty(string()))).toBe(false);
   });
 });
 

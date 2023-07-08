@@ -5,12 +5,10 @@ import { getMockConfig } from '../../test-utils';
 import { evaluate } from '../eval';
 import { buildHandler } from './build';
 import { build } from './implementation';
-import { legacyBuild } from './legacy';
 
 jest.mock('fs');
 jest.mock('../eval');
 jest.mock('./implementation');
-jest.mock('./legacy');
 
 describe('buildHandler', () => {
   it('builds a snap', async () => {
@@ -72,12 +70,5 @@ describe('buildHandler', () => {
         /Input file not found: ".+"\. Make sure that the "input" field in your snap config is correct\./u,
       ),
     );
-  });
-
-  it('calls `legacyBuild` if the bundler is set to browserify', async () => {
-    const config = getMockConfig('browserify');
-    await buildHandler(config);
-
-    expect(legacyBuild).toHaveBeenCalledWith(config);
   });
 });

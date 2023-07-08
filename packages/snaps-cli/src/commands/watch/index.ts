@@ -2,7 +2,6 @@ import type yargs from 'yargs';
 
 import builders from '../../builders';
 import type { YargsArgs } from '../../types/yargs';
-import { processInvalidTranspilation } from '../build/legacy/utils';
 import { watchHandler } from './watch';
 
 const command = {
@@ -24,8 +23,7 @@ const command = {
       .option('root', builders.root)
       .option('port', builders.port)
       .implies('writeManifest', 'manifest')
-      .implies('depsToTranspile', 'transpilationMode')
-      .middleware((argv) => processInvalidTranspilation(argv as any));
+      .implies('depsToTranspile', 'transpilationMode');
   },
   handler: async (argv: YargsArgs) =>
     watchHandler(argv.context.config, {

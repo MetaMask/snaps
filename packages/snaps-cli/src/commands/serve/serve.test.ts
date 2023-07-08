@@ -23,7 +23,9 @@ describe('serveHandler', () => {
         listen,
       }));
 
-    await serveHandler(config, {});
+    await serveHandler(config, {
+      port: config.server.port,
+    });
 
     expect(process.exitCode).not.toBe(1);
     expect(getServer).toHaveBeenCalled();
@@ -51,14 +53,16 @@ describe('serveHandler', () => {
         listen,
       }));
 
-    await serveHandler(config, {});
+    await serveHandler(config, {
+      port: config.server.port,
+    });
 
     expect(process.exitCode).not.toBe(1);
     expect(getServer).toHaveBeenCalled();
-    expect(listen).toHaveBeenCalledWith(config.cliOptions.port);
+    expect(listen).toHaveBeenCalledWith(config.server.port);
     expect(log).toHaveBeenCalledWith(
       expect.stringContaining(
-        `The server is listening on http://localhost:${config.cliOptions.port}.`,
+        `The server is listening on http://localhost:${config.server.port}.`,
       ),
     );
   });

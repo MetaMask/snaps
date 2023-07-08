@@ -50,10 +50,6 @@ function getBundlePath(config: ProcessedConfig, options: EvalOptions): string {
     return resolve(process.cwd(), options.input);
   }
 
-  if (config.bundler === 'browserify') {
-    return resolve(process.cwd(), config.cliOptions.bundle);
-  }
-
   return resolve(config.output.path, config.output.filename);
 }
 

@@ -1,4 +1,4 @@
-import { Volume } from 'memfs';
+import { createFsFromVolume, Volume } from 'memfs';
 
 // Note: `Volume` implements most of the `fs` API, but not all.
 const volume = new Volume();
@@ -21,4 +21,4 @@ for (const file of BROWSERIFY_FILES) {
   /* eslint-enable node/no-sync */
 }
 
-export = volume;
+export = createFsFromVolume(volume);

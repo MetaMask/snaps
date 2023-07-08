@@ -12,7 +12,7 @@ const command = {
   },
   handler: async (argv: YargsArgs) =>
     serveHandler(argv.context.config, {
-      port: argv.port,
+      port: argv.port ?? argv.context.config.server.port,
     }),
 };
 

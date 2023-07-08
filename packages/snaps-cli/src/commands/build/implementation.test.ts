@@ -4,6 +4,7 @@ import {
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
 import normalFs from 'fs';
+import { Configuration } from 'webpack';
 
 import { getMockConfig } from '../../test-utils';
 import { getCompiler } from '../../webpack';
@@ -60,6 +61,10 @@ describe('build', () => {
       evaluate: false,
       manifest: {
         path: '/snap/snap.manifest.json',
+      },
+      customizeWebpackConfig: (webpackConfig: Configuration) => {
+        delete webpackConfig.module?.rules;
+        return webpackConfig;
       },
     });
 

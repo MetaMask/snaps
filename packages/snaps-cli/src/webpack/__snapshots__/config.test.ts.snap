@@ -12,7 +12,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.tsx\\?\\$/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
           "loader": "swc-loader",
           "options": {
@@ -26,6 +26,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "type": "commonjs",
             },
             "sourceMaps": true,
+            "sync": false,
           },
         },
       },
@@ -126,7 +127,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.tsx\\?\\$/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
           "loader": "swc-loader",
           "options": {
@@ -140,6 +141,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "type": "commonjs",
             },
             "sourceMaps": true,
+            "sync": false,
           },
         },
       },
@@ -240,7 +242,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.tsx\\?\\$/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
           "loader": "swc-loader",
           "options": {
@@ -254,6 +256,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "type": "commonjs",
             },
             "sourceMaps": true,
+            "sync": false,
           },
         },
       },
@@ -354,7 +357,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.tsx\\?\\$/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
           "loader": "swc-loader",
           "options": {
@@ -368,6 +371,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "type": "commonjs",
             },
             "sourceMaps": true,
+            "sync": false,
           },
         },
       },
@@ -468,7 +472,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.tsx\\?\\$/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
           "loader": "swc-loader",
           "options": {
@@ -482,13 +486,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "type": "commonjs",
             },
             "sourceMaps": true,
+            "sync": false,
           },
         },
       },
       {
         "test": /\\\\\\.wasm\\$/u,
         "use": {
-          "loader": "/foo/bar/wasm",
+          "loader": "/foo/bar/loaders/wasm",
         },
       },
     ],
@@ -587,7 +592,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.tsx\\?\\$/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
           "loader": "swc-loader",
           "options": {
@@ -601,6 +606,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "type": "commonjs",
             },
             "sourceMaps": true,
+            "sync": false,
           },
         },
       },
@@ -701,7 +707,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.tsx\\?\\$/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
           "loader": "swc-loader",
           "options": {
@@ -715,6 +721,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "type": "commonjs",
             },
             "sourceMaps": true,
+            "sync": false,
           },
         },
       },
@@ -815,7 +822,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.tsx\\?\\$/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
           "loader": "swc-loader",
           "options": {
@@ -829,6 +836,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "type": "commonjs",
             },
             "sourceMaps": true,
+            "sync": false,
           },
         },
       },
@@ -929,7 +937,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.tsx\\?\\$/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
           "loader": "swc-loader",
           "options": {
@@ -943,6 +951,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "type": "commonjs",
             },
             "sourceMaps": true,
+            "sync": false,
           },
         },
       },
@@ -1043,7 +1052,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.tsx\\?\\$/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
           "loader": "swc-loader",
           "options": {
@@ -1057,6 +1066,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "type": "commonjs",
             },
             "sourceMaps": true,
+            "sync": false,
           },
         },
       },

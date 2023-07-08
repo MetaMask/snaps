@@ -4,13 +4,11 @@ import fs from 'fs';
 
 import * as webpack from '../../webpack';
 import { watch } from './implementation';
-import { legacyWatch } from './legacy';
 import { watchHandler } from './watch';
 
 jest.mock('fs');
 jest.mock('../../webpack');
 jest.mock('./implementation');
-jest.mock('./legacy');
 
 describe('watchHandler', () => {
   it('builds the snap and watches for changes', async () => {
@@ -92,12 +90,5 @@ describe('watchHandler', () => {
         `The server is listening on http://localhost:1000.`,
       ),
     );
-  });
-
-  it('calls `legacyWatch` if the bundler is set to browserify', async () => {
-    const config = getMockConfig('browserify');
-    await watchHandler(config, {});
-
-    expect(legacyWatch).toHaveBeenCalledWith(config);
   });
 });

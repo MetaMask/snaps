@@ -1,34 +1,37 @@
+import { getMockConfig } from '@metamask/snaps-cli/test-utils';
 import { dim } from 'chalk';
 
-import { getMockConfig } from '../test-utils';
-import { getDevTool, getProgressHandler } from './utils';
+import { getDefaultLoader, getDevTool, getProgressHandler } from './utils';
+
+describe('getDefaultLoader', () => {
+  it('returns the Browserify loader if `legacy` is set', () => {
+    const config = getMockConfig('browserify');
+    expect(getDefaultLoader(config)).toStrictEqual({
+      loader: expect.stringContaining('browserify'),
+      options: config.legacy,
+    });
+  });
+
+  it('returns the SWC loader if `legacy` is not set', () => {
+    const config = getMockConfig('webpack');
+    expect(getDefaultLoader(config)).toStrictEqual({
+      loader: 'swc-loader',
+      options: expect.any(Object),
+    });
+  });
+});
 
 describe('getDevTool', () => {
   it('returns `inline-source-map` when `sourceMap` is `inline`', () => {
-    const config = getMockConfig('webpack', {
-      input: 'src/index.ts',
-      sourceMap: 'inline',
-    });
-
-    expect(getDevTool(config)).toBe('inline-source-map');
+    expect(getDevTool('inline')).toBe('inline-source-map');
   });
 
   it('returns `source-map` when `sourceMap` is `true`', () => {
-    const config = getMockConfig('webpack', {
-      input: 'src/index.ts',
-      sourceMap: true,
-    });
-
-    expect(getDevTool(config)).toBe('source-map');
+    expect(getDevTool(true)).toBe('source-map');
   });
 
   it('returns `false` when `sourceMap` is `false`', () => {
-    const config = getMockConfig('webpack', {
-      input: 'src/index.ts',
-      sourceMap: false,
-    });
-
-    expect(getDevTool(config)).toBe(false);
+    expect(getDevTool(false)).toBe(false);
   });
 });
 

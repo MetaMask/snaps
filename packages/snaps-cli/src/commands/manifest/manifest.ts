@@ -1,5 +1,4 @@
 import { isFile } from '@metamask/snaps-utils';
-import { resolve } from 'path';
 
 import type { ProcessedConfig } from '../../config';
 import { CommandError } from '../../errors';
@@ -51,27 +50,7 @@ function getWriteManifest(config: ProcessedConfig, options: ManifestOptions) {
     return options.fix;
   }
 
-  if (config.bundler === 'browserify') {
-    return config.cliOptions.writeManifest;
-  }
-
-  return false;
-}
-
-/**
- * Get the path to the manifest file.
- *
- * @param config - The config object.
- * @returns The path to the manifest file.
- */
-function getManifestPath(config: ProcessedConfig) {
-  if (config.bundler === 'browserify') {
-    // The Browserify options don't have a `manifest` property, so we just use
-    // the current working directory.
-    return resolve(process.cwd(), 'snap.manifest.json');
-  }
-
-  return config.manifest.path;
+  return config.legacy?.writeManifest ?? false;
 }
 
 /**
@@ -87,7 +66,7 @@ export async function manifestHandler(
   options: ManifestOptions,
 ) {
   await executeSteps(steps, {
-    input: getManifestPath(config),
+    input: config.manifest.path,
     config,
     options,
   });

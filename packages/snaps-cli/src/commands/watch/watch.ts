@@ -6,7 +6,6 @@ import type { Steps } from '../../utils';
 import { executeSteps, info } from '../../utils';
 import { getServer } from '../../webpack';
 import { watch } from './implementation';
-import { legacyWatch } from './legacy';
 
 type WatchOptions = {
   /**
@@ -64,10 +63,5 @@ export async function watchHandler(
   config: ProcessedConfig,
   options: WatchOptions,
 ): Promise<void> {
-  if (config.bundler === 'browserify') {
-    await legacyWatch(config);
-    return;
-  }
-
   await executeSteps(steps, { config, options });
 }

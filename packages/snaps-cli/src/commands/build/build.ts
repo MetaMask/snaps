@@ -6,7 +6,6 @@ import { CommandError } from '../../errors';
 import { executeSteps, Steps } from '../../utils';
 import { evaluate } from '../eval';
 import { build } from './implementation';
-import { legacyBuild } from './legacy';
 
 type BuildContext = {
   config: ProcessedWebpackConfig;
@@ -57,10 +56,6 @@ const steps: Steps<BuildContext> = [
  * @param config - The config object.
  */
 export async function buildHandler(config: ProcessedConfig): Promise<void> {
-  if (config.bundler === 'browserify') {
-    return await legacyBuild(config);
-  }
-
   return await executeSteps(steps, {
     config,
   });

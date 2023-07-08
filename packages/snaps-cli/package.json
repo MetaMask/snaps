@@ -67,6 +67,7 @@
     "ora": "^5.4.1",
     "ses": "^0.18.1",
     "superstruct": "^1.0.3",
+    "swc-loader": "^0.2.3",
     "terser-webpack-plugin": "^5.3.9",
     "webpack": "^5.88.0",
     "webpack-dev-server": "^4.15.1",

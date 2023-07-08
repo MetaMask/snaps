@@ -21,14 +21,14 @@ describe('mm-snap watch', () => {
   it.each(['watch', 'w'])(
     'builds and watches for changes using "mm-snap %s"',
     async (command) => {
-      const runner = getCommandRunner(command, ['--port', '8123']);
+      const runner = getCommandRunner(command, ['--port', '0']);
       await runner.waitForStdout(/Compiled \d+ files in \d+ms\./u);
 
       expect(runner.stderr).toStrictEqual([]);
       expect(runner.stdout[0]).toMatch(/Checking the input file\./u);
       expect(runner.stdout[1]).toMatch(/Starting the development server\./u);
       expect(runner.stdout[2]).toMatch(
-        /The server is listening on http:\/\/localhost:8123\./u,
+        /The server is listening on http:\/\/localhost:\d+\./u,
       );
       expect(runner.stdout[3]).toMatch(/Building the snap bundle\./u);
       expect(runner.stdout[4]).toMatch(/Compiled \d+ files in \d+ms\./u);

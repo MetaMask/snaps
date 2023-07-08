@@ -13,7 +13,7 @@ import {
   SnapsStatsPlugin,
   SnapsWatchPlugin,
 } from './plugins';
-import { getDevTool, getProgressHandler } from './utils';
+import { getDefaultLoader, getDevTool, getProgressHandler } from './utils';
 
 export type WebpackOptions = {
   /**
@@ -93,7 +93,7 @@ export function getDefaultConfiguration(
      *
      * @see https://webpack.js.org/configuration/devtool/
      */
-    devtool: getDevTool(config),
+    devtool: getDevTool(config.sourceMap),
 
     /**
      * The stats option controls how much information is printed to the console
@@ -169,80 +169,15 @@ export function getDefaultConfiguration(
     module: {
       rules: [
         {
-          /**
-           * We use the `swc-loader` to transpile TypeScript and JavaScript
-           * files. This is a Webpack loader that uses the `SWC` compiler,
-           * which is a much faster alternative to Babel and TypeScript's own
-           * compiler.
-           *
-           * @see https://swc.rs/docs/usage/swc-loader
-           */
-          test: /\.tsx?$/u,
+          test: /\.[tj]sx?$/u,
           exclude: /node_modules/u,
-          use: {
-            loader: 'swc-loader',
-
-            /**
-             * The options for the `swc-loader`. These can be overridden in the
-             * `.swcrc` file.
-             *
-             * @see https://swc.rs/docs/configuration/swcrc
-             */
-            options: {
-              /**
-               * This tells SWC to generate source maps. We set it to the
-               * `sourceMap` value from the config object.
-               *
-               * This must be enabled if source maps are enabled in the config.
-               */
-              sourceMaps: Boolean(getDevTool(config)),
-
-              jsc: {
-                /**
-                 * MetaMask targets ES2020, so we set the target to ES2020. If
-                 * you need to support older browsers, you can set the target
-                 * to something lower to include the necessary polyfills.
-                 *
-                 * @see https://swc.rs/docs/configuration/compilation#jsctarget
-                 */
-                target: 'es2020',
-
-                parser: {
-                  /**
-                   * This tells the parser to parse TypeScript files. If you
-                   * don't need to support TypeScript, you can set this to
-                   * `ecmascript` instead, but there's no harm in leaving it
-                   * as `typescript`.
-                   *
-                   * @see https://swc.rs/docs/configuration/compilation#jscparser
-                   */
-                  syntax: 'typescript',
-                },
-              },
-
-              /**
-               * The module configuration. This tells SWC how to output the
-               * transpiled code.
-               *
-               * @see https://swc.rs/docs/configuration/modules
-               */
-              module: {
-                /**
-                 * This tells SWC to output CommonJS modules. MetaMask Snaps
-                 * doesn't support ES modules yet, so this is necessary.
-                 *
-                 * @see https://swc.rs/docs/configuration/modules#commonjs
-                 */
-                type: 'commonjs',
-              },
-            },
-          },
+          use: getDefaultLoader(config),
         },
 
         config.experimental.wasm && {
           test: /\.wasm$/u,
           use: {
-            loader: resolve(__dirname, 'wasm'),
+            loader: resolve(__dirname, 'loaders', 'wasm'),
           },
         },
       ],

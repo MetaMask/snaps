@@ -2,6 +2,7 @@ import deepMerge from 'deepmerge';
 
 import {
   getConfig,
+  LegacyOptions,
   ProcessedBrowserifyConfig,
   ProcessedWebpackConfig,
 } from '../config';
@@ -12,6 +13,13 @@ const DEFAULT_OPTIONS = {
     input: 'src/index.ts',
   },
 };
+
+type MockConfigResult<Bundler extends 'browserify' | 'webpack'> =
+  Bundler extends 'browserify'
+    ? Omit<ProcessedWebpackConfig, 'legacy'> & {
+        legacy: LegacyOptions;
+      }
+    : ProcessedWebpackConfig;
 
 /**
  * Get a mock config object. The mock config is generated from the given
@@ -26,18 +34,13 @@ export function getMockConfig<
   Result = Bundler extends 'browserify'
     ? ProcessedBrowserifyConfig
     : ProcessedWebpackConfig,
->(
-  bundler: Bundler,
-  options?: Partial<Result>,
-): Bundler extends 'browserify'
-  ? ProcessedBrowserifyConfig
-  : ProcessedWebpackConfig {
+>(bundler: Bundler, options?: Partial<Result>): MockConfigResult<Bundler> {
   return getConfig(
     deepMerge(
       { bundler },
       options ?? (DEFAULT_OPTIONS[bundler] as Partial<Result>),
     ),
-  ) as Bundler extends 'browserify'
-    ? ProcessedBrowserifyConfig
-    : ProcessedWebpackConfig;
+    // @ts-expect-error - Invalid `argv` type, but it's not used in tests.
+    {},
+  ) as MockConfigResult<Bundler>;
 }

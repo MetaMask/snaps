@@ -1,7 +1,9 @@
 import { getMockConfig } from '@metamask/snaps-cli/test-utils';
+import { BrowserifyObject } from 'browserify';
 import { bold, green, red } from 'chalk';
 import { resolve } from 'path';
 
+import { TranspilationModes } from './builders';
 import {
   getConfig,
   getConfigByArgv,
@@ -9,14 +11,15 @@ import {
   mergeLegacyOptions,
   resolveConfig,
 } from './config';
+import { YargsArgs } from './types/yargs';
 
 const CONFIG_PATH = resolve(__dirname, '__fixtures__', 'configs');
-
 const DEFAULT_CONFIG = getMockConfig('webpack');
+const MOCK_ARGV = {} as YargsArgs;
 
 describe('getConfig', () => {
   it('throws an error if `bundler` is not `browserify` or `webpack`', () => {
-    expect(() => getConfig({ bundler: 'foo' })).toThrow(
+    expect(() => getConfig({ bundler: 'foo' }, MOCK_ARGV)).toThrow(
       `At path: ${bold('bundler')} — Expected the value to be one of: ${green(
         '"browserify"',
       )}, ${green('"webpack"')}, but received: ${red('"foo"')}.`,
@@ -25,25 +28,43 @@ describe('getConfig', () => {
 
   it('throws an error if `entry` is being used with `browserify`', () => {
     expect(() =>
-      getConfig({
-        bundler: 'browserify',
-        entry: 'foo',
-      }),
+      getConfig(
+        {
+          bundler: 'browserify',
+          entry: 'foo',
+        },
+        MOCK_ARGV,
+      ),
     ).toThrow(`Unknown key: ${bold('entry')}, received: ${red('"foo"')}.`);
   });
 
   it('throws an error if `cliOptions` is being used with `webpack`', () => {
     expect(() =>
-      getConfig({
-        bundler: 'webpack',
-        input: 'foo',
-        cliOptions: { port: 8000 },
-      }),
+      getConfig(
+        {
+          bundler: 'webpack',
+          input: 'foo',
+          cliOptions: { port: 8000 },
+        },
+        MOCK_ARGV,
+      ),
     ).toThrow(`Unknown key: ${bold('cliOptions')}, received:`);
   });
 
   describe('browserify', () => {
     it.each([
+      {
+        bundler: 'browserify',
+        cliOptions: {
+          src: 'src/index.js',
+          port: 8081,
+          transpilationMode: TranspilationModes.LocalAndDeps,
+          depsToTranspile: ['foo', 'bar'],
+        },
+        bundlerCustomizer: (browserify: BrowserifyObject) => {
+          browserify.plugin('foo');
+        },
+      },
       {
         bundler: 'browserify',
         cliOptions: {
@@ -67,49 +88,61 @@ describe('getConfig', () => {
       },
       {},
     ])('returns a valid config for `%o`', (value) => {
-      const config = getConfig(value);
+      const config = getConfig(value, MOCK_ARGV);
 
-      expect(config).toStrictEqual({
-        bundler: 'browserify',
-        cliOptions: {
-          bundle: resolve(process.cwd(), 'dist', 'bundle.js'),
-          depsToTranspile: [],
-          dist: resolve(process.cwd(), 'dist'),
-          eval: true,
-          manifest: true,
-          outfileName: 'bundle.js',
-          port: 8081,
-          root: process.cwd(),
-          serve: true,
-          sourceMaps: false,
-          src: resolve(process.cwd(), 'src', 'index.js'),
-          stripComments: true,
-          suppressWarnings: false,
-          transpilationMode: 'localOnly',
-          verboseErrors: true,
-          writeManifest: true,
-        },
+      expect(config.legacy).toStrictEqual({
+        bundlerCustomizer: value.bundlerCustomizer ?? undefined,
+        depsToTranspile: value.cliOptions?.depsToTranspile ?? [],
+        dist: resolve(process.cwd(), 'dist'),
+        eval: true,
+        manifest: true,
+        outfileName: 'bundle.js',
+        port: 8081,
+        root: process.cwd(),
+        serve: true,
+        sourceMaps: false,
+        src: resolve(process.cwd(), 'src', 'index.js'),
+        stripComments: true,
+        suppressWarnings: false,
+        transpilationMode:
+          value.cliOptions?.transpilationMode ?? TranspilationModes.LocalOnly,
+        verboseErrors: true,
+        writeManifest: true,
       });
+    });
+
+    it('throws when trying to use `depsToTranspile` with `transpilationMode` not set to `LocalAndDeps`', () => {
+      expect(() =>
+        getConfig(
+          {
+            cliOptions: {
+              depsToTranspile: ['foo', 'bar'],
+              transpilationMode: TranspilationModes.LocalOnly,
+            },
+          },
+          MOCK_ARGV,
+        ),
+      ).toThrow('Invalid Browserify CLI options.');
     });
   });
 });
 
 describe('loadConfig', () => {
   it('loads an ESM-based config', async () => {
-    expect(await loadConfig(resolve(CONFIG_PATH, 'esm.ts'))).toStrictEqual(
-      DEFAULT_CONFIG,
-    );
+    expect(
+      await loadConfig(resolve(CONFIG_PATH, 'esm.ts'), MOCK_ARGV),
+    ).toStrictEqual(DEFAULT_CONFIG);
   });
 
   it('loads a CJS-based config', async () => {
-    expect(await loadConfig(resolve(CONFIG_PATH, 'cjs.ts'))).toStrictEqual(
-      DEFAULT_CONFIG,
-    );
+    expect(
+      await loadConfig(resolve(CONFIG_PATH, 'cjs.ts'), MOCK_ARGV),
+    ).toStrictEqual(DEFAULT_CONFIG);
   });
 
   it('throws an error if the config is invalid', async () => {
     await expect(
-      loadConfig(resolve(CONFIG_PATH, 'invalid.ts')),
+      loadConfig(resolve(CONFIG_PATH, 'invalid.ts'), MOCK_ARGV),
     ).rejects.toThrow(
       `Unknown key: ${bold('foo')}, received: ${red('"bar"')}.`,
     );
@@ -117,7 +150,7 @@ describe('loadConfig', () => {
 
   it('throws an error if the config is not JavaScript or TypeScript', async () => {
     await expect(
-      loadConfig(resolve(CONFIG_PATH, 'invalid.json')),
+      loadConfig(resolve(CONFIG_PATH, 'invalid.json'), MOCK_ARGV),
     ).rejects.toThrow(
       `Unable to load snap config file at "${resolve(
         CONFIG_PATH,
@@ -130,7 +163,7 @@ describe('loadConfig', () => {
 describe('resolveConfig', () => {
   it('resolves a JavaScript config in the provided directory', async () => {
     expect(
-      await resolveConfig(resolve(CONFIG_PATH, 'javascript')),
+      await resolveConfig(resolve(CONFIG_PATH, 'javascript'), MOCK_ARGV),
     ).toStrictEqual({
       ...DEFAULT_CONFIG,
       input: resolve(process.cwd(), 'src', 'index.js'),
@@ -139,7 +172,7 @@ describe('resolveConfig', () => {
 
   it('resolves a TypeScript config in the provided directory', async () => {
     expect(
-      await resolveConfig(resolve(CONFIG_PATH, 'typescript')),
+      await resolveConfig(resolve(CONFIG_PATH, 'typescript'), MOCK_ARGV),
     ).toStrictEqual({
       ...DEFAULT_CONFIG,
       input: resolve(process.cwd(), 'src', 'index.ts'),
@@ -147,7 +180,7 @@ describe('resolveConfig', () => {
   });
 
   it('throws an error if no config is found', async () => {
-    await expect(resolveConfig()).rejects.toThrow(
+    await expect(resolveConfig(process.cwd(), MOCK_ARGV)).rejects.toThrow(
       /Could not find a "snap\.config\.js" or "snap\.config\.ts" file in the current or specified directory \(".*"\)\./u,
     );
   });

@@ -3,7 +3,6 @@ import type yargs from 'yargs';
 import builders from '../../builders';
 import type { YargsArgs } from '../../types/yargs';
 import { buildHandler } from './build';
-import { processInvalidTranspilation } from './legacy/utils';
 
 const command = {
   command: ['build', 'b'],
@@ -21,8 +20,7 @@ const command = {
       .option('depsToTranspile', builders.depsToTranspile)
       .option('writeManifest', builders.writeManifest)
       .implies('writeManifest', 'manifest')
-      .implies('depsToTranspile', 'transpilationMode')
-      .middleware((argv) => processInvalidTranspilation(argv as any));
+      .implies('depsToTranspile', 'transpilationMode');
   },
   handler: async (argv: YargsArgs) => buildHandler(argv.context.config),
 };
