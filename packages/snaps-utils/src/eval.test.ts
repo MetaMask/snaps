@@ -21,7 +21,7 @@ describe('evalBundle', () => {
     await fs.mkdir(TEMPORARY_FOLDER, { recursive: true });
     await fs.writeFile(BUNDLE_PATH, `console.log('Hello, world!');`);
 
-    jest.spyOn(childProcess, 'spawn').mockImplementation(() => {
+    jest.spyOn(childProcess, 'fork').mockImplementation(() => {
       const actualSpawn = jest.requireActual('child_process').spawn;
 
       return actualSpawn('yarn', ['ts-node', WORKER_PATH, BUNDLE_PATH], {
