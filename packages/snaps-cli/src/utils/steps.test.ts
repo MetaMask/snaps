@@ -1,3 +1,4 @@
+import { dim } from 'chalk';
 import ora from 'ora';
 
 import { executeSteps } from './steps';
@@ -34,8 +35,8 @@ describe('executeSteps', () => {
     const mock = ora as jest.MockedFunction<typeof ora>;
     const spinner = mock.mock.results[0].value;
 
-    expect(spinner.start).toHaveBeenCalled();
-    expect(spinner.text).toMatch(steps[0].name);
+    expect(spinner.start).toHaveBeenCalledTimes(2);
+    expect(spinner.start).toHaveBeenNthCalledWith(2, dim('Step 1'));
 
     expect(spinner.succeed).toHaveBeenCalledWith(
       expect.stringContaining('Done!'),

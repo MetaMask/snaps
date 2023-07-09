@@ -40,8 +40,9 @@ export async function executeSteps<Context extends Record<string, unknown>>(
         continue;
       }
 
-      spinner.text = dim(step.name);
-      spinner.render();
+      // Calling `start` here instead of setting `spinner.text` seems to work
+      // better when the process doesn't have a TTY.
+      spinner.start(dim(step.name));
 
       await step.task({
         ...context,
