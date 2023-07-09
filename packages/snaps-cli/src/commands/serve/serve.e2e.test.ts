@@ -23,6 +23,8 @@ describe('mm-snap serve', () => {
 
       const result = await fetch(`http://localhost:${port}/snap.manifest.json`);
       expect(result.ok).toBe(true);
+      expect(result.headers.get('Cache-Control')).toBe('no-cache');
+      expect(result.headers.get('Access-Control-Allow-Origin')).toBe('*');
 
       runner.kill();
     },

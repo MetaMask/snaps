@@ -1,5 +1,3 @@
-import { resolve } from 'path';
-
 import { ProcessedConfig } from '../../config';
 import { info } from '../../utils';
 import { getServer } from '../../webpack';
@@ -22,8 +20,7 @@ export async function serveHandler(
   config: ProcessedConfig,
   options: ServeOptions,
 ): Promise<void> {
-  const path = resolve(process.cwd(), config.server.root);
-  const server = getServer(path);
+  const server = getServer(config);
 
   // If the `configPort` is `0`, the OS will choose a random port for us, so we
   // need to get the port from the server after it starts.

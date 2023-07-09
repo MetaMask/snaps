@@ -35,7 +35,7 @@ const steps: Steps<WatchContext> = [
   {
     name: 'Starting the development server.',
     task: async ({ config, options, spinner }) => {
-      const server = getServer();
+      const server = getServer(config);
       const { port } = await server.listen(options.port ?? config.server.port);
 
       info(`The server is listening on http://localhost:${port}.`, spinner);

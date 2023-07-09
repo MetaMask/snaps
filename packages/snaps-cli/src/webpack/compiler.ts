@@ -3,7 +3,7 @@ import { Server } from 'http';
 import { AddressInfo } from 'net';
 import { webpack } from 'webpack';
 
-import { ProcessedWebpackConfig } from '../config';
+import { ProcessedConfig, ProcessedWebpackConfig } from '../config';
 import { getDefaultConfiguration, WebpackOptions } from './config';
 
 /**
@@ -31,29 +31,41 @@ export function getCompiler(
  * adds a lot of extra stuff to the output that we don't need, and it's
  * difficult to customize.
  *
- * @param path - The root directory to serve. Defaults to the current working
- * directory.
+ * @param config - The config object.
  * @returns An object with a `listen` method that returns a promise that
  * resolves when the server is listening.
  */
-export function getServer(path: string = process.cwd()) {
+export function getServer(config: ProcessedConfig) {
   const app = express();
 
   app.use(
     // TODO: Get path from config (or manifest?).
-    express.static(path, {
+    express.static(config.server.root, {
       dotfiles: 'deny',
       extensions: ['html', 'js', 'json', 'svg'],
+      cacheControl: false,
+      setHeaders: (response) => {
+        // Add cache header to all responses, to prevent the browser from
+        // caching the response.
+        response.setHeader('Cache-Control', 'no-cache');
+
+        // Add CORS header to all responses, to allow the browser to make
+        // requests to the server.
+        response.setHeader('Access-Control-Allow-Origin', '*');
+      },
     }),
   );
 
   /**
-   * Start the server on the given port.
+   * Start the server on the port specified in the config.
    *
    * @param port - The port to listen on.
-   * @returns A promise that resolves when the server is listening.
+   * @returns A promise that resolves when the server is listening. The promise
+   * resolves to an object with the port and the server instance. Note that if
+   * the `config.server.port` is `0`, the OS will choose a random port for us,
+   * so we need to get the port from the server after it starts.
    */
-  const listen = async (port: number) => {
+  const listen = async (port = config.server.port) => {
     return new Promise<{ port: number; server: Server }>((resolve, reject) => {
       try {
         const server = app.listen(port, () => {

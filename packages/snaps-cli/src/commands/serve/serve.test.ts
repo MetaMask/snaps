@@ -1,5 +1,4 @@
-import { getMockConfig } from '@metamask/snaps-cli/test-utils';
-
+import { getMockConfig } from '../../test-utils';
 import * as webpack from '../../webpack';
 import { serveHandler } from './serve';
 
