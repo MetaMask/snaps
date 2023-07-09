@@ -26,7 +26,7 @@ import {
   SnapsStructError,
   getStructFromPath,
   getUnionStructNames,
-  empty,
+  named,
 } from './structs';
 
 /**
@@ -79,17 +79,16 @@ describe('file', () => {
   });
 });
 
-describe('empty', () => {
+describe('named', () => {
   it('sets the struct name', () => {
-    expect(empty(string()).type).toBe('empty string');
-    expect(empty(array()).type).toBe('empty array');
+    expect(named('foo', string()).type).toBe('foo');
+    expect(named('bar', array()).type).toBe('bar');
   });
 
-  it('validates an empty value', () => {
-    expect(is([], empty(array()))).toBe(true);
-    expect(is('', empty(string()))).toBe(true);
-    expect(is(['foo'], empty(array()))).toBe(false);
-    expect(is('foo', empty(string()))).toBe(false);
+  it('validates using the original struct', () => {
+    const struct = named('foo', string());
+    const [error] = validate(42, struct);
+    expect(error?.message).toBe('Expected a string, but received: 42');
   });
 });
 

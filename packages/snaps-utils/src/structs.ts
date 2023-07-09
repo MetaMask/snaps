@@ -12,7 +12,6 @@ import {
   string,
   coerce,
   Infer,
-  empty as superstructEmpty,
 } from 'superstruct';
 import { AnyStruct, InferStructTuple } from 'superstruct/dist/utils';
 
@@ -95,26 +94,6 @@ export function union<Head extends AnyStruct, Tail extends AnyStruct[]>([
 export function file() {
   return coerce(string(), string(), (value) => {
     return resolve(process.cwd(), value);
-  });
-}
-
-/**
- * A wrapper of `superstruct`'s `epmty` struct, that also defines the name of
- * the struct as `empty [struct]`.
- *
- * This is useful for improving the error messages returned by `superstruct`.
- *
- * @param struct - The struct that must be empty. Must be a string or array
- * struct.
- * @returns The struct.
- */
-export function empty<Type extends string | any[], Schema>(
-  struct: Struct<Type, Schema>,
-) {
-  return new Struct({
-    ...struct,
-    type: `empty ${struct.type}`,
-    refiner: superstructEmpty(struct).refiner,
   });
 }
 
