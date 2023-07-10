@@ -22,9 +22,10 @@ describe('evalBundle', () => {
     await fs.writeFile(BUNDLE_PATH, `console.log('Hello, world!');`);
 
     jest.spyOn(childProcess, 'fork').mockImplementation(() => {
-      const actualSpawn = jest.requireActual('child_process').spawn;
+      const actualFork = jest.requireActual('child_process').fork;
 
-      return actualSpawn('yarn', ['ts-node', WORKER_PATH, BUNDLE_PATH], {
+      return actualFork(WORKER_PATH, [BUNDLE_PATH], {
+        execArgv: ['-r', 'ts-node/register'],
         stdio: 'pipe',
       });
     });
