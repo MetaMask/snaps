@@ -4,7 +4,6 @@ import { DEFAULT_SNAP_BUNDLE } from '@metamask/snaps-utils/test-utils';
 import normalFs from 'fs';
 import { dirname, join } from 'path';
 
-import { getCompiler } from '../../webpack';
 import { evaluate } from './implementation';
 
 const { promises: fs } = normalFs;
@@ -16,23 +15,6 @@ jest.mock('@metamask/snaps-utils', () => ({
   evalBundle: jest
     .fn()
     .mockImplementation(jest.requireActual('@metamask/snaps-utils').evalBundle),
-}));
-
-jest.mock('../../webpack', () => ({
-  ...jest.requireActual('../../webpack'),
-  getCompiler: jest.fn<
-    ReturnType<typeof getCompiler>,
-    Parameters<typeof getCompiler>
-  >((...args) => {
-    const compiler = jest
-      .requireActual<typeof import('../../webpack')>('../../webpack')
-      .getCompiler(...args);
-
-    compiler.inputFileSystem = normalFs;
-    compiler.outputFileSystem = normalFs;
-
-    return compiler;
-  }),
 }));
 
 describe('evaluate', () => {

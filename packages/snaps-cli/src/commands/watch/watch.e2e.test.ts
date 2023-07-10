@@ -24,6 +24,10 @@ describe('mm-snap watch', () => {
       const runner = getCommandRunner(command, ['--port', '0']);
       await runner.waitForStdout(/Compiled \d+ files in \d+ms\./u);
 
+      await fs.writeFile(SNAP_FILE, originalFile);
+      await runner.waitForStdout(/Changes detected in .+, recompiling\./u);
+      await runner.waitForStdout(/Compiled \d+ files in \d+ms\./u);
+
       expect(runner.stderr).toStrictEqual([]);
       expect(runner.stdout[0]).toMatch(/Checking the input file\./u);
       expect(runner.stdout[1]).toMatch(/Starting the development server\./u);
@@ -32,6 +36,11 @@ describe('mm-snap watch', () => {
       );
       expect(runner.stdout[3]).toMatch(/Building the snap bundle\./u);
       expect(runner.stdout[4]).toMatch(/Compiled \d+ files in \d+ms\./u);
+
+      expect(runner.stdout[7]).toMatch(
+        /Changes detected in .+, recompiling\./u,
+      );
+      expect(runner.stdout[8]).toMatch(/Compiled \d+ files in \d+ms\./u);
 
       runner.kill();
     },
