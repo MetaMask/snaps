@@ -1,6 +1,6 @@
 {
   "name": "@metamask/example-snaps",
-  "version": "0.35.2-flask.1",
+  "version": "0.36.0-flask.1",
   "private": true,
   "repository": {
     "type": "git",

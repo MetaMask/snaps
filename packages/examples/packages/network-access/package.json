@@ -1,6 +1,6 @@
 {
   "name": "@metamask/network-example-snap",
-  "version": "0.35.2-flask.1",
+  "version": "0.36.0-flask.1",
   "description": "MetaMask example snap demonstrating the use of the `endowment:network-access` permission in snaps.",
   "repository": {
     "type": "git",

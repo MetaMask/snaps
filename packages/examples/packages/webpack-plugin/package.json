@@ -1,6 +1,6 @@
 {
   "name": "@metamask/webpack-plugin-example-snap",
-  "version": "0.35.2-flask.1",
+  "version": "0.36.0-flask.1",
   "description": "MetaMask example snap demonstrating how to use the Webpack plugin to bundle a snap.",
   "repository": {
     "type": "git",
