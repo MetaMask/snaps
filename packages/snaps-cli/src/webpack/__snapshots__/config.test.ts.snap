@@ -16,6 +16,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "swc-loader",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
@@ -111,7 +114,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "stats": "none",
-  "target": "web",
+  "target": "browserslist:/.browserslistrc",
 }
 `;
 
@@ -131,6 +134,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "swc-loader",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
@@ -226,7 +232,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "stats": "none",
-  "target": "web",
+  "target": "browserslist:/.browserslistrc",
 }
 `;
 
@@ -246,6 +252,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "swc-loader",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
@@ -341,7 +350,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "stats": "none",
-  "target": "web",
+  "target": "browserslist:/.browserslistrc",
 }
 `;
 
@@ -361,6 +370,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "swc-loader",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
@@ -456,7 +468,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "stats": "none",
-  "target": "web",
+  "target": "browserslist:/.browserslistrc",
 }
 `;
 
@@ -476,6 +488,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "swc-loader",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
@@ -576,7 +591,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "stats": "none",
-  "target": "web",
+  "target": "browserslist:/.browserslistrc",
 }
 `;
 
@@ -596,6 +611,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "swc-loader",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
@@ -691,7 +709,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "stats": "none",
-  "target": "web",
+  "target": "browserslist:/.browserslistrc",
 }
 `;
 
@@ -711,6 +729,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "swc-loader",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
@@ -806,7 +827,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "stats": "none",
-  "target": "web",
+  "target": "browserslist:/.browserslistrc",
 }
 `;
 
@@ -826,6 +847,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "swc-loader",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
@@ -921,7 +945,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "stats": "none",
-  "target": "web",
+  "target": "browserslist:/.browserslistrc",
 }
 `;
 
@@ -941,6 +965,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "swc-loader",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
@@ -1036,7 +1063,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "stats": "none",
-  "target": "web",
+  "target": "browserslist:/.browserslistrc",
 }
 `;
 
@@ -1056,6 +1083,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "swc-loader",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
@@ -1151,6 +1181,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "stats": "none",
-  "target": "web",
+  "target": "browserslist:/.browserslistrc",
 }
 `;

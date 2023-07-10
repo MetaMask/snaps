@@ -12,7 +12,7 @@ export async function build(
   config: ProcessedWebpackConfig,
   options?: WebpackOptions,
 ) {
-  const compiler = getCompiler(config, options);
+  const compiler = await getCompiler(config, options);
   return await new Promise<void>((resolve, reject) => {
     compiler.run((runError) => {
       if (runError) {

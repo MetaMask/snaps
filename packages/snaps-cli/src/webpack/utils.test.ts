@@ -1,20 +1,25 @@
 import { getMockConfig } from '@metamask/snaps-cli/test-utils';
 import { dim } from 'chalk';
 
-import { getDefaultLoader, getDevTool, getProgressHandler } from './utils';
+import {
+  getBrowserslistTargets,
+  getDefaultLoader,
+  getDevTool,
+  getProgressHandler,
+} from './utils';
 
 describe('getDefaultLoader', () => {
-  it('returns the Browserify loader if `legacy` is set', () => {
+  it('returns the Browserify loader if `legacy` is set', async () => {
     const config = getMockConfig('browserify');
-    expect(getDefaultLoader(config)).toStrictEqual({
+    expect(await getDefaultLoader(config)).toStrictEqual({
       loader: expect.stringContaining('browserify'),
       options: config.legacy,
     });
   });
 
-  it('returns the SWC loader if `legacy` is not set', () => {
+  it('returns the SWC loader if `legacy` is not set', async () => {
     const config = getMockConfig('webpack');
-    expect(getDefaultLoader(config)).toStrictEqual({
+    expect(await getDefaultLoader(config)).toStrictEqual({
       loader: 'swc-loader',
       options: expect.any(Object),
     });
@@ -54,5 +59,17 @@ describe('getProgressHandler', () => {
   it('works without spinner', () => {
     const progressHandler = getProgressHandler();
     expect(() => progressHandler(0.5)).not.toThrow();
+  });
+});
+
+describe('getBrowserslistTargets', () => {
+  it('returns the default targets', async () => {
+    const targets = await getBrowserslistTargets();
+    expect(targets).toMatchInlineSnapshot(`
+      [
+        "chrome >= 90",
+        "firefox >= 91",
+      ]
+    `);
   });
 });

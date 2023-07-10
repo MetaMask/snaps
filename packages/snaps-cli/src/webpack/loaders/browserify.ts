@@ -5,6 +5,7 @@ import { LoaderDefinitionFunction } from 'webpack';
 import { TranspilationModes } from '../../builders';
 import { LegacyOptions } from '../../config';
 import { processDependencies } from '../../utils';
+import { getBrowserslistTargets } from '../utils';
 
 /**
  * A Browserify loader for Webpack. This exists for backwards compatibility with
@@ -47,7 +48,7 @@ const loader: LoaderDefinitionFunction<LegacyOptions> = async function (
           require('@babel/preset-env'),
           {
             targets: {
-              browsers: ['chrome >= 90', 'firefox >= 91'],
+              browsers: await getBrowserslistTargets(),
             },
           },
         ],

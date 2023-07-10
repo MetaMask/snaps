@@ -51,12 +51,12 @@ export type WebpackOptions = {
  * @param options - The Webpack options.
  * @returns The default Webpack configuration.
  */
-export function getDefaultConfiguration(
+export async function getDefaultConfiguration(
   config: ProcessedWebpackConfig,
   options: WebpackOptions = {
     evaluate: config.evaluate,
   },
-): Configuration {
+): Promise<Configuration> {
   const spinnerText = options.spinner?.text;
   const builtInResolver =
     config.plugins.builtInResolver &&
@@ -64,13 +64,14 @@ export function getDefaultConfiguration(
 
   return {
     /**
-     * `web` is the default target for Webpack, so we don't need to set it, but
-     * we do so here for clarity. This ensures that Webpack will build a bundle
-     * that can be loaded in a browser.
+     * The target is set to `browserslist` so that Webpack will compile the
+     * bundle to support the browsers specified in the `.browserslistrc` file.
+     * This Browserslist file contains the browsers that are supported by
+     * MetaMask Snaps.
      *
      * @see https://webpack.js.org/configuration/target/
      */
-    target: 'web',
+    target: `browserslist:${resolve(__dirname, '..', '..', '.browserslistrc')}`,
 
     /**
      * The mode is set to `production` by default, so that Webpack will minify
@@ -171,7 +172,7 @@ export function getDefaultConfiguration(
         {
           test: /\.[tj]sx?$/u,
           exclude: /node_modules/u,
-          use: getDefaultLoader(config),
+          use: await getDefaultLoader(config),
         },
 
         config.experimental.wasm && {

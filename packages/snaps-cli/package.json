@@ -17,7 +17,8 @@
   "files": [
     "dist/cjs/**",
     "dist/esm/**",
-    "dist/types/**"
+    "dist/types/**",
+    ".browserslistrc"
   ],
   "scripts": {
     "build": "yarn build:source && yarn build:types",

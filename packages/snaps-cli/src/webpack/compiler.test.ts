@@ -20,12 +20,12 @@ jest.mock('express', () => {
 });
 
 describe('getCompiler', () => {
-  it('returns a Webpack compiler for the given config', () => {
+  it('returns a Webpack compiler for the given config', async () => {
     const config = getMockConfig('webpack', {
       input: 'src/index.js',
     });
 
-    const compiler = getCompiler(config);
+    const compiler = await getCompiler(config);
     expect(compiler).toBeInstanceOf(Compiler);
     expect(compiler.options.entry).toStrictEqual({
       main: {
@@ -34,7 +34,7 @@ describe('getCompiler', () => {
     });
   });
 
-  it('modifies the Webpack config if a customizer is provided', () => {
+  it('modifies the Webpack config if a customizer is provided', async () => {
     const config = getMockConfig('webpack', {
       input: 'src/index.js',
       customizeWebpackConfig: (webpackConfig: Configuration) =>
@@ -43,7 +43,7 @@ describe('getCompiler', () => {
         }),
     });
 
-    const compiler = getCompiler(config);
+    const compiler = await getCompiler(config);
     expect(compiler).toBeInstanceOf(Compiler);
     expect(compiler.options.entry).toStrictEqual({
       main: {

@@ -13,11 +13,11 @@ import { getDefaultConfiguration, WebpackOptions } from './config';
  * @param options - The Webpack options.
  * @returns The Webpack compiler.
  */
-export function getCompiler(
+export async function getCompiler(
   config: ProcessedWebpackConfig,
   options?: WebpackOptions,
 ) {
-  const baseWebpackConfig = getDefaultConfiguration(config, options);
+  const baseWebpackConfig = await getDefaultConfiguration(config, options);
   const webpackConfig =
     config.customizeWebpackConfig?.(baseWebpackConfig) ?? baseWebpackConfig;
 

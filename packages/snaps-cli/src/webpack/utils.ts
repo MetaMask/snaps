@@ -1,9 +1,12 @@
 import { dim } from 'chalk';
+import { promises as fs } from 'fs';
 import { Ora } from 'ora';
 import { resolve } from 'path';
 import { Configuration } from 'webpack';
 
 import { ProcessedWebpackConfig } from '../config';
+
+const BROWSERSLIST_FILE = resolve(__dirname, '..', '..', '.browserslistrc');
 
 /**
  * Get the default loader for JavaScript and TypeScript files, based on the
@@ -21,7 +24,7 @@ import { ProcessedWebpackConfig } from '../config';
  * @see https://swc.rs/docs/usage/swc-loader
  * @returns The default loader.
  */
-export function getDefaultLoader({
+export async function getDefaultLoader({
   legacy,
   sourceMap,
 }: ProcessedWebpackConfig) {
@@ -43,6 +46,7 @@ export function getDefaultLoader({
     };
   }
 
+  const targets = await getBrowserslistTargets();
   return {
     /**
      * We use the `swc-loader` to transpile TypeScript and JavaScript files.
@@ -106,6 +110,10 @@ export function getDefaultLoader({
          */
         type: 'commonjs',
       },
+
+      env: {
+        targets: targets.join(', '),
+      },
     },
   };
 }
@@ -153,4 +161,17 @@ export function getProgressHandler(spinner?: Ora, spinnerText?: string) {
       )}`;
     }
   };
+}
+
+/**
+ * Get the targets from the `.browserslistrc` file.
+ *
+ * @returns The browser targets as an array of strings.
+ */
+export async function getBrowserslistTargets() {
+  const contents = await fs.readFile(BROWSERSLIST_FILE, 'utf8');
+  return contents
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith('#'));
 }

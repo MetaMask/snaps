@@ -18,7 +18,7 @@ export async function watch(
   config: ProcessedWebpackConfig,
   options?: WebpackOptions,
 ) {
-  const compiler = getCompiler(config, {
+  const compiler = await getCompiler(config, {
     evaluate: config.evaluate,
     watch: true,
     spinner: options?.spinner,

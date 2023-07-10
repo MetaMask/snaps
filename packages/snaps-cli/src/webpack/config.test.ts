@@ -1,10 +1,10 @@
+import { promises as fs } from 'fs';
 import ora from 'ora';
 
 import { getMockConfig } from '../test-utils';
 import { getDefaultConfiguration } from './config';
 
-jest.unmock('fs');
-
+jest.mock('fs');
 jest.mock('path', () => ({
   // For compatibility with Windows, we make `path` always use POSIX-style
   // paths.
@@ -29,6 +29,10 @@ jest.mock('module', () => ({
 jest.spyOn(process, 'cwd').mockReturnValue('/foo/bar');
 
 describe('getDefaultConfiguration', () => {
+  beforeAll(async () => {
+    await fs.writeFile('/.browserslistrc', 'chrome >= 90\nfirefox >= 91\n');
+  });
+
   it.each([
     getMockConfig('webpack', {
       input: 'src/index.js',
@@ -92,11 +96,11 @@ describe('getDefaultConfiguration', () => {
     }),
   ])(
     'returns the default Webpack configuration for the given CLI config',
-    (config) => {
+    async (config) => {
       jest.spyOn(process, 'cwd').mockReturnValue('/foo/bar');
 
       // eslint-disable-next-line jest/no-restricted-matchers
-      expect(getDefaultConfiguration(config)).toMatchSnapshot();
+      expect(await getDefaultConfiguration(config)).toMatchSnapshot();
     },
   );
 
@@ -124,7 +128,7 @@ describe('getDefaultConfiguration', () => {
     },
   ])(
     'returns the default Webpack configuration for the given CLI config and options',
-    (options) => {
+    async (options) => {
       const config = getMockConfig('webpack', {
         input: 'src/index.ts',
         output: {
@@ -136,7 +140,7 @@ describe('getDefaultConfiguration', () => {
       });
 
       // eslint-disable-next-line jest/no-restricted-matchers
-      expect(getDefaultConfiguration(config, options)).toMatchSnapshot();
+      expect(await getDefaultConfiguration(config, options)).toMatchSnapshot();
     },
   );
 });
