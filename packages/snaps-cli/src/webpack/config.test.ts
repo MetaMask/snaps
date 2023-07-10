@@ -4,7 +4,6 @@ import { dirname } from 'path';
 
 import { getMockConfig } from '../test-utils';
 import { getDefaultConfiguration } from './config';
-import { BROWSERSLIST_FILE } from './utils';
 
 jest.mock('fs');
 jest.mock('path', () => ({
@@ -28,12 +27,18 @@ jest.mock('module', () => ({
   builtinModules: ['fs', 'path'],
 }));
 
+jest.mock('./utils', () => ({
+  ...jest.requireActual('./utils'),
+  BROWSERSLIST_FILE: '/foo/bar/.browserslistrc',
+}));
+
 jest.spyOn(process, 'cwd').mockReturnValue('/foo/bar');
 
 describe('getDefaultConfiguration', () => {
   beforeAll(async () => {
-    await fs.mkdir(dirname(BROWSERSLIST_FILE), { recursive: true });
-    await fs.writeFile(BROWSERSLIST_FILE, 'chrome >= 90\nfirefox >= 91\n');
+    const actualFile = jest.requireActual('./utils').BROWSERSLIST_FILE;
+    await fs.mkdir(dirname(actualFile), { recursive: true });
+    await fs.writeFile(actualFile, 'chrome >= 90\nfirefox >= 91\n');
   });
 
   it.each([
@@ -99,6 +104,32 @@ describe('getDefaultConfiguration', () => {
     }),
   ])(
     'returns the default Webpack configuration for the given CLI config',
+    async (config) => {
+      jest.spyOn(process, 'cwd').mockReturnValue('/foo/bar');
+
+      // eslint-disable-next-line jest/no-restricted-matchers
+      expect(await getDefaultConfiguration(config)).toMatchSnapshot();
+    },
+  );
+
+  it.each([
+    getMockConfig('browserify', {
+      cliOptions: {
+        src: 'src/index.js',
+        dist: 'dist',
+        outfileName: 'bundle.js',
+        root: '/foo/bar',
+      },
+    }),
+    getMockConfig('browserify', {
+      cliOptions: {
+        src: 'src/index.ts',
+        dist: 'dist',
+        root: '/foo/bar',
+      },
+    }),
+  ])(
+    'returns the default Webpack configuration for the given legacy CLI config',
     async (config) => {
       jest.spyOn(process, 'cwd').mockReturnValue('/foo/bar');
 

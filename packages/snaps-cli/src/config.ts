@@ -813,6 +813,16 @@ export function getWebpackConfig(
       port: legacyConfig.cliOptions.port,
       root: legacyConfig.cliOptions.root,
     },
+    plugins: {
+      stats: {
+        verbose: false,
+      },
+
+      // These plugins are designed to be used with the modern config format, so
+      // we disable them for the legacy config format.
+      builtInResolver: false,
+      bundleWarnings: false,
+    },
     legacy: createFromStruct(
       {
         ...legacyConfig.cliOptions,

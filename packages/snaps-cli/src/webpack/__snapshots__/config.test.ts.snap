@@ -114,7 +114,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "stats": "none",
-  "target": "browserslist:/.browserslistrc",
+  "target": "browserslist:/foo/bar/.browserslistrc",
 }
 `;
 
@@ -232,7 +232,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "stats": "none",
-  "target": "browserslist:/.browserslistrc",
+  "target": "browserslist:/foo/bar/.browserslistrc",
 }
 `;
 
@@ -350,7 +350,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "stats": "none",
-  "target": "browserslist:/.browserslistrc",
+  "target": "browserslist:/foo/bar/.browserslistrc",
 }
 `;
 
@@ -468,7 +468,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "stats": "none",
-  "target": "browserslist:/.browserslistrc",
+  "target": "browserslist:/foo/bar/.browserslistrc",
 }
 `;
 
@@ -591,7 +591,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "stats": "none",
-  "target": "browserslist:/.browserslistrc",
+  "target": "browserslist:/foo/bar/.browserslistrc",
 }
 `;
 
@@ -709,7 +709,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "stats": "none",
-  "target": "browserslist:/.browserslistrc",
+  "target": "browserslist:/foo/bar/.browserslistrc",
 }
 `;
 
@@ -827,7 +827,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "stats": "none",
-  "target": "browserslist:/.browserslistrc",
+  "target": "browserslist:/foo/bar/.browserslistrc",
 }
 `;
 
@@ -945,7 +945,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "stats": "none",
-  "target": "browserslist:/.browserslistrc",
+  "target": "browserslist:/foo/bar/.browserslistrc",
 }
 `;
 
@@ -1063,7 +1063,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "stats": "none",
-  "target": "browserslist:/.browserslistrc",
+  "target": "browserslist:/foo/bar/.browserslistrc",
 }
 `;
 
@@ -1181,6 +1181,242 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "stats": "none",
-  "target": "browserslist:/.browserslistrc",
+  "target": "browserslist:/foo/bar/.browserslistrc",
+}
+`;
+
+exports[`getDefaultConfiguration returns the default Webpack configuration for the given legacy CLI config 1`] = `
+{
+  "devtool": false,
+  "entry": "/foo/bar/src/index.js",
+  "infrastructureLogging": {
+    "level": "none",
+  },
+  "mode": "production",
+  "module": {
+    "rules": [
+      {
+        "exclude": /node_modules/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
+        "use": {
+          "loader": "/foo/bar/loaders/browserify",
+          "options": {
+            "bundlerCustomizer": undefined,
+            "depsToTranspile": [],
+            "dist": "/foo/bar/dist",
+            "eval": true,
+            "manifest": true,
+            "outfileName": "bundle.js",
+            "port": 8081,
+            "root": "/foo/bar",
+            "serve": true,
+            "sourceMaps": false,
+            "src": "/foo/bar/src/index.js",
+            "stripComments": true,
+            "suppressWarnings": false,
+            "transpilationMode": "localOnly",
+            "verboseErrors": true,
+            "writeManifest": true,
+          },
+        },
+      },
+      false,
+    ],
+  },
+  "optimization": {
+    "minimizer": [
+      TerserPlugin {
+        "options": {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minimizer": {
+            "implementation": [Function],
+            "options": {},
+          },
+          "parallel": true,
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+  },
+  "output": {
+    "clean": false,
+    "filename": "bundle.js",
+    "library": {
+      "type": "commonjs",
+    },
+    "path": "/foo/bar/dist",
+    "publicPath": "/",
+  },
+  "plugins": [
+    SnapsWebpackPlugin {
+      "options": {
+        "eval": true,
+        "manifestPath": "/foo/bar/snap.manifest.json",
+        "writeManifest": true,
+      },
+    },
+    SnapsStatsPlugin {},
+    EnvironmentPlugin {
+      "defaultValues": {
+        "DEBUG": false,
+        "NODE_DEBUG": false,
+        "NODE_ENV": "production",
+      },
+      "keys": [
+        "NODE_DEBUG",
+        "NODE_ENV",
+        "DEBUG",
+      ],
+    },
+    ProgressPlugin {
+      "dependenciesCount": 10000,
+      "handler": [Function],
+      "modulesCount": 5000,
+      "percentBy": undefined,
+      "profile": false,
+      "showActiveModules": false,
+      "showDependencies": true,
+      "showEntries": true,
+      "showModules": true,
+    },
+    undefined,
+    false,
+    false,
+  ],
+  "resolve": {
+    "extensions": [
+      ".js",
+      ".ts",
+    ],
+    "fallback": {
+      "fs": false,
+      "path": false,
+    },
+    "plugins": [
+      false,
+    ],
+  },
+  "stats": "none",
+  "target": "browserslist:/foo/bar/.browserslistrc",
+}
+`;
+
+exports[`getDefaultConfiguration returns the default Webpack configuration for the given legacy CLI config 2`] = `
+{
+  "devtool": false,
+  "entry": "/foo/bar/src/index.ts",
+  "infrastructureLogging": {
+    "level": "none",
+  },
+  "mode": "production",
+  "module": {
+    "rules": [
+      {
+        "exclude": /node_modules/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
+        "use": {
+          "loader": "/foo/bar/loaders/browserify",
+          "options": {
+            "bundlerCustomizer": undefined,
+            "depsToTranspile": [],
+            "dist": "/foo/bar/dist",
+            "eval": true,
+            "manifest": true,
+            "outfileName": "bundle.js",
+            "port": 8081,
+            "root": "/foo/bar",
+            "serve": true,
+            "sourceMaps": false,
+            "src": "/foo/bar/src/index.ts",
+            "stripComments": true,
+            "suppressWarnings": false,
+            "transpilationMode": "localOnly",
+            "verboseErrors": true,
+            "writeManifest": true,
+          },
+        },
+      },
+      false,
+    ],
+  },
+  "optimization": {
+    "minimizer": [
+      TerserPlugin {
+        "options": {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minimizer": {
+            "implementation": [Function],
+            "options": {},
+          },
+          "parallel": true,
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+  },
+  "output": {
+    "clean": false,
+    "filename": "bundle.js",
+    "library": {
+      "type": "commonjs",
+    },
+    "path": "/foo/bar/dist",
+    "publicPath": "/",
+  },
+  "plugins": [
+    SnapsWebpackPlugin {
+      "options": {
+        "eval": true,
+        "manifestPath": "/foo/bar/snap.manifest.json",
+        "writeManifest": true,
+      },
+    },
+    SnapsStatsPlugin {},
+    EnvironmentPlugin {
+      "defaultValues": {
+        "DEBUG": false,
+        "NODE_DEBUG": false,
+        "NODE_ENV": "production",
+      },
+      "keys": [
+        "NODE_DEBUG",
+        "NODE_ENV",
+        "DEBUG",
+      ],
+    },
+    ProgressPlugin {
+      "dependenciesCount": 10000,
+      "handler": [Function],
+      "modulesCount": 5000,
+      "percentBy": undefined,
+      "profile": false,
+      "showActiveModules": false,
+      "showDependencies": true,
+      "showEntries": true,
+      "showModules": true,
+    },
+    undefined,
+    false,
+    false,
+  ],
+  "resolve": {
+    "extensions": [
+      ".js",
+      ".ts",
+    ],
+    "fallback": {
+      "fs": false,
+      "path": false,
+    },
+    "plugins": [
+      false,
+    ],
+  },
+  "stats": "none",
+  "target": "browserslist:/foo/bar/.browserslistrc",
 }
 `;
