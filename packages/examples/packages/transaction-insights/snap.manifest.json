@@ -1,5 +1,5 @@
 {
-  "version": "0.35.2-flask.1",
+  "version": "0.36.0-flask.1",
   "description": "MetaMask example snap demonstrating the use of the Transaction Insights API.",
   "proposedName": "Insights Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "gwdbMqt4SeZ3M15jRB8XYECOsi/pJBeYIUUeOHSXWY4=",
+    "shasum": "w2rMRAl+exF8Gh+ywjxscSDkeby0/jT4mitgP3Atp0I=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

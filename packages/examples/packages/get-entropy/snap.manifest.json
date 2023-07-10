@@ -1,5 +1,5 @@
 {
-  "version": "0.35.2-flask.1",
+  "version": "0.36.0-flask.1",
   "description": "MetaMask example snap demonstrating the use of `snap_getEntropy`.",
   "proposedName": "Get Entropy Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "HgZvE/n41ozPudgvCEmFdGc30cW50H/PZkrzCp4gFNU=",
+    "shasum": "SaCeu9+pB5I+s7Rv5RZPXmynRroAi1Uvv7k2JNc+FLU=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
