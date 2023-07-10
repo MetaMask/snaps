@@ -5,6 +5,13 @@ import { join } from 'path';
 
 export const SNAP_DIR = join(__dirname, '../../../examples/packages/json-rpc');
 
+// TODO: When replacing all examples to build with Webpack, add a new example
+// that uses Browserify and use that for testing.
+export const SNAP_BROWSERIFY_DIR = join(
+  __dirname,
+  '../../../examples/packages/cronjobs',
+);
+
 /**
  * A test runner for running CLI commands.
  */
