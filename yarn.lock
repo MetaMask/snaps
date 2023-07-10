@@ -4646,7 +4646,6 @@ __metadata:
     jest: ^29.0.2
     jest-it-up: ^2.0.0
     json-rpc-engine: ^6.1.0
-    nanoid: ^3.1.31
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^4.1.2
