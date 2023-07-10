@@ -3,15 +3,14 @@ import {
   getPackageJson,
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
-import { assert } from '@metamask/utils';
 import normalFs from 'fs';
 import { dirname, resolve } from 'path';
 import { Configuration } from 'webpack';
 
-import { ProcessedConfig } from '../../config';
 import { getMockConfig } from '../../test-utils';
 import { getCompiler } from '../../webpack';
-import utils, { BROWSERSLIST_FILE } from '../../webpack/utils';
+import * as utils from '../../webpack/utils';
+import { BROWSERSLIST_FILE } from '../../webpack/utils';
 import { build } from './implementation';
 
 const { promises: fs } = normalFs;
@@ -42,6 +41,21 @@ jest.mock('../../webpack', () => ({
 
 jest.mock('../../webpack/utils', () => ({
   ...jest.requireActual('../../webpack/utils'),
+  getDefaultLoader: jest.fn<
+    ReturnType<typeof utils.getDefaultLoader>,
+    Parameters<typeof utils.getDefaultLoader>
+  >(async (config) => {
+    if (config.legacy) {
+      return {
+        loader: BROWSERIFY_LOADER_PATH,
+        options: config.legacy,
+      };
+    }
+
+    return jest
+      .requireActual<typeof utils>('../../webpack/utils')
+      .getDefaultLoader(config);
+  }),
 }));
 
 describe('build', () => {
@@ -109,19 +123,76 @@ describe('build', () => {
     `);
   });
 
-  it('builds the snap bundle using a legacy config', async () => {
+  it('builds an unminimized snap bundle using Webpack', async () => {
     jest.spyOn(process, 'cwd').mockReturnValue('/snap');
     const log = jest.spyOn(console, 'log').mockImplementation();
 
-    jest.spyOn(utils, 'getDefaultLoader').mockImplementation((_config) => {
-      const config = _config as ProcessedConfig;
-      assert(config.legacy);
-
-      return {
-        loader: BROWSERIFY_LOADER_PATH,
-        options: config.legacy,
-      };
+    const config = getMockConfig('webpack', {
+      input: '/snap/input.js',
+      output: {
+        path: './',
+        filename: 'output.js',
+        minimize: false,
+      },
+      evaluate: false,
+      manifest: {
+        path: '/snap/snap.manifest.json',
+      },
+      customizeWebpackConfig: (webpackConfig: Configuration) => {
+        delete webpackConfig.module?.rules;
+        return webpackConfig;
+      },
     });
+
+    await build(config);
+
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching(/Compiled 1 files in \d+ms\./u),
+    );
+
+    const output = await fs.readFile('/snap/output.js', 'utf8');
+    expect(output).toMatchInlineSnapshot(`
+      "(() => {
+        var __webpack_modules__ = {
+          67: module => {
+            module.exports.onRpcRequest = ({
+              request
+            }) => {
+              console.log("Hello, world!");
+              const {
+                method,
+                id
+              } = request;
+              return method + id;
+            };
+          }
+        };
+        var __webpack_module_cache__ = {};
+        function __webpack_require__(moduleId) {
+          var cachedModule = __webpack_module_cache__[moduleId];
+          if (cachedModule !== undefined) {
+            return cachedModule.exports;
+          }
+          var module = __webpack_module_cache__[moduleId] = {
+            exports: {}
+          };
+          __webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+          return module.exports;
+        }
+        var __webpack_exports__ = __webpack_require__(67);
+        var __webpack_export_target__ = exports;
+        for (var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];
+        if (__webpack_exports__.__esModule) Object.defineProperty(__webpack_export_target__, "__esModule", {
+          value: true
+        });
+      })();
+      //# sourceMappingURL=output.js.map"
+    `);
+  });
+
+  it('builds the snap bundle using a legacy config', async () => {
+    jest.spyOn(process, 'cwd').mockReturnValue('/snap');
+    const log = jest.spyOn(console, 'log').mockImplementation();
 
     const config = getMockConfig('browserify', {
       cliOptions: {
@@ -142,6 +213,105 @@ describe('build', () => {
     expect(output).toMatchInlineSnapshot(
       `"(()=>{var r={484:r=>{r.exports=function(){function r(e,o,t){function n(s,i){if(!o[s]){if(!e[s]){if(u)return u(s,!0);var f=new Error("Cannot find module '"+s+"'");throw f.code="MODULE_NOT_FOUND",f}var c=o[s]={exports:{}};e[s][0].call(c.exports,(function(r){return n(e[s][1][r]||r)}),c,c.exports,r,e,o,t)}return o[s].exports}for(var u=void 0,s=0;s<t.length;s++)n(t[s]);return n}return r}()({1:[function(r,e,o){"use strict";e.exports.onRpcRequest=({request:r})=>{console.log("Hello, world!");const{method:e,id:o}=r;return e+o}},{}]},{},[1])(1)}},e={};var o=function o(t){var n=e[t];if(void 0!==n)return n.exports;var u=e[t]={exports:{}};return r[t](u,u.exports,o),u.exports}(484),t=exports;for(var n in o)t[n]=o[n];o.__esModule&&Object.defineProperty(t,"__esModule",{value:!0})})();"`,
     );
+  });
+
+  it('builds an unminimized snap bundle using a legacy config', async () => {
+    jest.spyOn(process, 'cwd').mockReturnValue('/snap');
+    const log = jest.spyOn(console, 'log').mockImplementation();
+
+    const config = getMockConfig('browserify', {
+      cliOptions: {
+        src: '/snap/input.js',
+        dist: '/snap',
+        outfileName: 'output.js',
+        eval: false,
+        stripComments: false,
+      },
+    });
+
+    await build(config);
+
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching(/Compiled 1 files in \d+ms\./u),
+    );
+
+    const output = await fs.readFile('/snap/output.js', 'utf8');
+    expect(output).toMatchInlineSnapshot(`
+      "(() => {
+        var __webpack_modules__ = {
+          484: module => {
+            (function (f) {
+              if (true) {
+                module.exports = f();
+              } else {
+                var g;
+              }
+            })(function () {
+              var define, module, exports;
+              return function () {
+                function r(e, n, t) {
+                  function o(i, f) {
+                    if (!n[i]) {
+                      if (!e[i]) {
+                        var c = undefined;
+                        if (!f && c) return require(i, !0);
+                        if (u) return u(i, !0);
+                        var a = new Error("Cannot find module '" + i + "'");
+                        throw a.code = "MODULE_NOT_FOUND", a;
+                      }
+                      var p = n[i] = {
+                        exports: {}
+                      };
+                      e[i][0].call(p.exports, function (r) {
+                        var n = e[i][1][r];
+                        return o(n || r);
+                      }, p, p.exports, r, e, n, t);
+                    }
+                    return n[i].exports;
+                  }
+                  for (var u = undefined, i = 0; i < t.length; i++) o(t[i]);
+                  return o;
+                }
+                return r;
+              }()({
+                1: [function (require, module, exports) {
+                  "use strict";
+
+                  module.exports.onRpcRequest = ({
+                    request
+                  }) => {
+                    console.log("Hello, world!");
+                    const {
+                      method,
+                      id
+                    } = request;
+                    return method + id;
+                  };
+                }, {}]
+              }, {}, [1])(1);
+            });
+          }
+        };
+        var __webpack_module_cache__ = {};
+        function __webpack_require__(moduleId) {
+          var cachedModule = __webpack_module_cache__[moduleId];
+          if (cachedModule !== undefined) {
+            return cachedModule.exports;
+          }
+          var module = __webpack_module_cache__[moduleId] = {
+            exports: {}
+          };
+          __webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+          return module.exports;
+        }
+        var __webpack_exports__ = __webpack_require__(484);
+        var __webpack_export_target__ = exports;
+        for (var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];
+        if (__webpack_exports__.__esModule) Object.defineProperty(__webpack_export_target__, "__esModule", {
+          value: true
+        });
+      })();"
+    `);
   });
 
   it('rejects if the compiler has an error', async () => {

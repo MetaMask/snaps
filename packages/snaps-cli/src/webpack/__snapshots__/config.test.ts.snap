@@ -37,6 +37,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "optimization": {
+    "minimize": true,
     "minimizer": [
       TerserPlugin {
         "options": {
@@ -155,6 +156,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "optimization": {
+    "minimize": true,
     "minimizer": [
       TerserPlugin {
         "options": {
@@ -273,6 +275,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "optimization": {
+    "minimize": true,
     "minimizer": [
       TerserPlugin {
         "options": {
@@ -391,6 +394,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "optimization": {
+    "minimize": true,
     "minimizer": [
       TerserPlugin {
         "options": {
@@ -514,6 +518,126 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "optimization": {
+    "minimize": true,
+    "minimizer": [
+      TerserPlugin {
+        "options": {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minimizer": {
+            "implementation": [Function],
+            "options": {},
+          },
+          "parallel": true,
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+  },
+  "output": {
+    "clean": false,
+    "filename": "bundle.js",
+    "library": {
+      "type": "commonjs",
+    },
+    "path": "/foo/bar/dist",
+    "publicPath": "/",
+  },
+  "plugins": [
+    SnapsWebpackPlugin {
+      "options": {
+        "eval": true,
+        "manifestPath": "/foo/bar/snap.manifest.json",
+        "writeManifest": true,
+      },
+    },
+    SnapsStatsPlugin {},
+    EnvironmentPlugin {
+      "defaultValues": {
+        "DEBUG": false,
+        "NODE_DEBUG": false,
+        "NODE_ENV": "production",
+      },
+      "keys": [
+        "NODE_DEBUG",
+        "NODE_ENV",
+        "DEBUG",
+      ],
+    },
+    ProgressPlugin {
+      "dependenciesCount": 10000,
+      "handler": [Function],
+      "modulesCount": 5000,
+      "percentBy": undefined,
+      "profile": false,
+      "showActiveModules": false,
+      "showDependencies": true,
+      "showEntries": true,
+      "showModules": true,
+    },
+    undefined,
+    SnapsBuiltInResolverPlugin {},
+    SnapsBundleWarningsPlugin {},
+  ],
+  "resolve": {
+    "extensions": [
+      ".js",
+      ".ts",
+    ],
+    "fallback": {
+      "fs": false,
+      "path": false,
+    },
+    "plugins": [
+      SnapsBuiltInResolver {
+        "unresolvedModules": Set {},
+      },
+    ],
+  },
+  "stats": "none",
+  "target": "browserslist:/foo/bar/.browserslistrc",
+}
+`;
+
+exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config 6`] = `
+{
+  "devtool": "source-map",
+  "entry": "/foo/bar/src/index.js",
+  "infrastructureLogging": {
+    "level": "none",
+  },
+  "mode": "production",
+  "module": {
+    "rules": [
+      {
+        "exclude": /node_modules/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
+        "use": {
+          "loader": "swc-loader",
+          "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
+            "jsc": {
+              "parser": {
+                "syntax": "typescript",
+              },
+              "target": "es2020",
+            },
+            "module": {
+              "type": "commonjs",
+            },
+            "sourceMaps": true,
+            "sync": false,
+          },
+        },
+      },
+      false,
+    ],
+  },
+  "optimization": {
+    "minimize": false,
     "minimizer": [
       TerserPlugin {
         "options": {
@@ -632,6 +756,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "optimization": {
+    "minimize": true,
     "minimizer": [
       TerserPlugin {
         "options": {
@@ -750,6 +875,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "optimization": {
+    "minimize": true,
     "minimizer": [
       TerserPlugin {
         "options": {
@@ -868,6 +994,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "optimization": {
+    "minimize": true,
     "minimizer": [
       TerserPlugin {
         "options": {
@@ -986,6 +1113,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "optimization": {
+    "minimize": true,
     "minimizer": [
       TerserPlugin {
         "options": {
@@ -1104,6 +1232,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "optimization": {
+    "minimize": true,
     "minimizer": [
       TerserPlugin {
         "options": {
@@ -1224,6 +1353,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "optimization": {
+    "minimize": true,
     "minimizer": [
       TerserPlugin {
         "options": {
@@ -1342,6 +1472,126 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "optimization": {
+    "minimize": true,
+    "minimizer": [
+      TerserPlugin {
+        "options": {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minimizer": {
+            "implementation": [Function],
+            "options": {},
+          },
+          "parallel": true,
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+  },
+  "output": {
+    "clean": false,
+    "filename": "bundle.js",
+    "library": {
+      "type": "commonjs",
+    },
+    "path": "/foo/bar/dist",
+    "publicPath": "/",
+  },
+  "plugins": [
+    SnapsWebpackPlugin {
+      "options": {
+        "eval": true,
+        "manifestPath": "/foo/bar/snap.manifest.json",
+        "writeManifest": true,
+      },
+    },
+    SnapsStatsPlugin {},
+    EnvironmentPlugin {
+      "defaultValues": {
+        "DEBUG": false,
+        "NODE_DEBUG": false,
+        "NODE_ENV": "production",
+      },
+      "keys": [
+        "NODE_DEBUG",
+        "NODE_ENV",
+        "DEBUG",
+      ],
+    },
+    ProgressPlugin {
+      "dependenciesCount": 10000,
+      "handler": [Function],
+      "modulesCount": 5000,
+      "percentBy": undefined,
+      "profile": false,
+      "showActiveModules": false,
+      "showDependencies": true,
+      "showEntries": true,
+      "showModules": true,
+    },
+    undefined,
+    false,
+    false,
+  ],
+  "resolve": {
+    "extensions": [
+      ".js",
+      ".ts",
+    ],
+    "fallback": {
+      "fs": false,
+      "path": false,
+    },
+    "plugins": [
+      false,
+    ],
+  },
+  "stats": "none",
+  "target": "browserslist:/foo/bar/.browserslistrc",
+}
+`;
+
+exports[`getDefaultConfiguration returns the default Webpack configuration for the given legacy CLI config 3`] = `
+{
+  "devtool": false,
+  "entry": "/foo/bar/src/index.ts",
+  "infrastructureLogging": {
+    "level": "none",
+  },
+  "mode": "production",
+  "module": {
+    "rules": [
+      {
+        "exclude": /node_modules/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
+        "use": {
+          "loader": "/foo/bar/loaders/browserify",
+          "options": {
+            "bundlerCustomizer": undefined,
+            "depsToTranspile": [],
+            "dist": "/foo/bar/dist",
+            "eval": true,
+            "manifest": true,
+            "outfileName": "bundle.js",
+            "port": 8081,
+            "root": "/foo/bar",
+            "serve": true,
+            "sourceMaps": false,
+            "src": "/foo/bar/src/index.ts",
+            "stripComments": false,
+            "suppressWarnings": false,
+            "transpilationMode": "localOnly",
+            "verboseErrors": true,
+            "writeManifest": true,
+          },
+        },
+      },
+      false,
+    ],
+  },
+  "optimization": {
+    "minimize": false,
     "minimizer": [
       TerserPlugin {
         "options": {

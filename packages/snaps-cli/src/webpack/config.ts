@@ -293,6 +293,8 @@ export async function getDefaultConfiguration(
      * options set by the `mode` option are sufficient.
      */
     optimization: {
+      minimize: config.output.minimize,
+
       /**
        * The minimizer to use. We set it to use the `TerserPlugin`.
        */

@@ -102,6 +102,16 @@ describe('getDefaultConfiguration', () => {
         wasm: true,
       },
     }),
+    getMockConfig('webpack', {
+      input: 'src/index.js',
+      output: {
+        path: 'dist',
+        minimize: false,
+      },
+      manifest: {
+        path: 'snap.manifest.json',
+      },
+    }),
   ])(
     'returns the default Webpack configuration for the given CLI config',
     async (config) => {
@@ -126,6 +136,14 @@ describe('getDefaultConfiguration', () => {
         src: 'src/index.ts',
         dist: 'dist',
         root: '/foo/bar',
+      },
+    }),
+    getMockConfig('browserify', {
+      cliOptions: {
+        src: 'src/index.ts',
+        dist: 'dist',
+        root: '/foo/bar',
+        stripComments: false,
       },
     }),
   ])(

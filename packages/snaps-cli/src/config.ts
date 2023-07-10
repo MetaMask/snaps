@@ -259,6 +259,14 @@ export type SnapWebpackConfig = {
      * @default false
      */
     clean?: boolean;
+
+    /**
+     * Whether to minimize the snap bundle. If `true`, the bundle will be
+     * minified. Otherwise, the bundle will be left as-is.
+     *
+     * @default true
+     */
+    minimize?: boolean;
   };
 
   manifest?: {
@@ -487,6 +495,7 @@ export const SnapsWebpackConfigStruct = object({
       path: defaulted(file(), resolve(process.cwd(), 'dist')),
       filename: defaulted(string(), 'bundle.js'),
       clean: defaulted(boolean(), false),
+      minimize: defaulted(boolean(), true),
     }),
     {},
   ),
@@ -808,6 +817,13 @@ export function getWebpackConfig(
     output: {
       path,
       filename,
+
+      // The legacy config has an option to remove comments from the bundle, but
+      // the terser plugin does this by default, so we only enable the terser if
+      // the legacy config has `stripComments` set to `true`. This is not a
+      // perfect solution, but it's the best we can do without breaking the
+      // legacy config.
+      minimize: legacyConfig.cliOptions.stripComments,
 
       // The legacy config does not have a `clean` option, so we default to
       // `false` here.
