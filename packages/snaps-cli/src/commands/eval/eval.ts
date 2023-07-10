@@ -34,12 +34,11 @@ const steps: Steps<EvalContext> = [
 ];
 
 /**
- * Returns the path to the bundle, based on the bundler.
+ * Returns the path to the bundle, based on the config and options.
  *
- * - If the bundler is Browserify, the bundle path is the `cliOptions.bundle`
- * value.
- * - If the bundler is Webpack, the bundle path is the `output.path` and
- * `output.filename` values.
+ * - If `options.input` is specified, it is used as the bundle path.
+ * - Otherwise, the bundle path is resolved from the config's output path and
+ * filename.
  *
  * @param config - The processed config object.
  * @param options - The eval options.
