@@ -210,8 +210,10 @@ describe('build', () => {
     );
 
     const output = await fs.readFile('/snap/output.js', 'utf8');
-    expect(output).toMatchInlineSnapshot(
-      `"(()=>{var r={484:r=>{r.exports=function(){function r(e,o,t){function n(s,i){if(!o[s]){if(!e[s]){if(u)return u(s,!0);var f=new Error("Cannot find module '"+s+"'");throw f.code="MODULE_NOT_FOUND",f}var c=o[s]={exports:{}};e[s][0].call(c.exports,(function(r){return n(e[s][1][r]||r)}),c,c.exports,r,e,o,t)}return o[s].exports}for(var u=void 0,s=0;s<t.length;s++)n(t[s]);return n}return r}()({1:[function(r,e,o){"use strict";e.exports.onRpcRequest=({request:r})=>{console.log("Hello, world!");const{method:e,id:o}=r;return e+o}},{}]},{},[1])(1)}},e={};var o=function o(t){var n=e[t];if(void 0!==n)return n.exports;var u=e[t]={exports:{}};return r[t](u,u.exports,o),u.exports}(484),t=exports;for(var n in o)t[n]=o[n];o.__esModule&&Object.defineProperty(t,"__esModule",{value:!0})})();"`,
+    const deterministicOutput = output.replace(/var r=\{(\d+):/u, 'var r={1:');
+
+    expect(deterministicOutput).toMatchInlineSnapshot(
+      `"(()=>{var r={1:r=>{r.exports=function(){function r(e,o,t){function n(s,i){if(!o[s]){if(!e[s]){if(u)return u(s,!0);var f=new Error("Cannot find module '"+s+"'");throw f.code="MODULE_NOT_FOUND",f}var c=o[s]={exports:{}};e[s][0].call(c.exports,(function(r){return n(e[s][1][r]||r)}),c,c.exports,r,e,o,t)}return o[s].exports}for(var u=void 0,s=0;s<t.length;s++)n(t[s]);return n}return r}()({1:[function(r,e,o){"use strict";e.exports.onRpcRequest=({request:r})=>{console.log("Hello, world!");const{method:e,id:o}=r;return e+o}},{}]},{},[1])(1)}},e={};var o=function o(t){var n=e[t];if(void 0!==n)return n.exports;var u=e[t]={exports:{}};return r[t](u,u.exports,o),u.exports}(484),t=exports;for(var n in o)t[n]=o[n];o.__esModule&&Object.defineProperty(t,"__esModule",{value:!0})})();"`,
     );
   });
 
@@ -236,10 +238,12 @@ describe('build', () => {
     );
 
     const output = await fs.readFile('/snap/output.js', 'utf8');
-    expect(output).toMatchInlineSnapshot(`
+    const deterministicOutput = output.replace(/\d+: module/u, '1: module');
+
+    expect(deterministicOutput).toMatchInlineSnapshot(`
       "(() => {
         var __webpack_modules__ = {
-          484: module => {
+          1: module => {
             (function (f) {
               if (true) {
                 module.exports = f();
