@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.36.1-flask.1]
+### Fixed
+- Fix deployment path ([#1569](https://github.com/MetaMask/snaps/pull/1569))
 
 ## [0.36.0-flask.1]
 ### Added
