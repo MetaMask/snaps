@@ -1,5 +1,5 @@
 {
-  "version": "0.36.0-flask.1",
+  "version": "0.36.1-flask.1",
   "description": "MetaMask example snap demonstrating how to use Ethers.js inside a snap.",
   "proposedName": "Ethers.js Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "xxLXgL3QoJ3jG0EQM0bKcMTJRkN+0TsEH8ZsXPmzslg=",
+    "shasum": "sg3EZMGlxbC6nJiu7xzYgIiFt45IW8IKd3TO2o1NUAg=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

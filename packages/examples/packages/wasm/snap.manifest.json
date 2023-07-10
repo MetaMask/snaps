@@ -1,5 +1,5 @@
 {
-  "version": "0.36.0-flask.1",
+  "version": "0.36.1-flask.1",
   "description": "MetaMask example snap demonstrating the use of WebAssembly and the `endowment:webassembly` permission.",
   "proposedName": "WebAssembly Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "zr0r65oRc/gFAp3OAfQ6p2ioFiW84693/H4M2AT0NlY=",
+    "shasum": "P7q2Z3Df+t0AuoWnpXB+FU0dtwiyTIqmKPo7ls+vuAw=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
