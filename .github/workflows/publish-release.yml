@@ -115,6 +115,6 @@ jobs:
     with:
       build_script: yarn workspace @metamask/test-snaps build
       destination_dir: test-snaps/${{ needs.get-release-version.outputs.RELEASE_VERSION }}
-      publish_dir: ./packages/test-snaps/public
+      publish_dir: ./packages/test-snaps/dist
     secrets:
       PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
