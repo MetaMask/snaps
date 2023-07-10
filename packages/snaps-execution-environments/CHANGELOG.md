@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.36.1-flask.1]
+
 ## [0.36.0-flask.1]
 ### Changed
 - Unblock `wallet_requestSnaps` and add dynamic permission support ([#1421](https://github.com/MetaMask/snaps/pull/1421))
@@ -286,7 +288,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Previously, default endowments were specified in the execution environment itself. Now, all endowments must be specified in the `executeSnap` RPC parameters, except for the `wallet` API object.
 - Add endowments to the global `self` in addition to `window` ([#263](https://github.com/MetaMask/snaps-monorepo/pull/263))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.36.0-flask.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.36.1-flask.1...HEAD
+[0.36.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.36.0-flask.1...v0.36.1-flask.1
 [0.36.0-flask.1]: https://github.com/MetaMask/snaps/compare/v0.35.2-flask.1...v0.36.0-flask.1
 [0.35.2-flask.1]: https://github.com/MetaMask/snaps/compare/v0.35.1-flask.1...v0.35.2-flask.1
 [0.35.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.35.0-flask.1...v0.35.1-flask.1

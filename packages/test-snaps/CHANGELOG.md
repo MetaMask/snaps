@@ -6,9 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.36.1-flask.1]
+
 ## [0.36.0-flask.1]
 ### Added
 - Move `test-snaps` site to this repository ([#1549](https://github.com/MetaMask/snaps/pull/1549))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.36.0-flask.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.36.1-flask.1...HEAD
+[0.36.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.36.0-flask.1...v0.36.1-flask.1
 [0.36.0-flask.1]: https://github.com/MetaMask/snaps/releases/tag/v0.36.0-flask.1
