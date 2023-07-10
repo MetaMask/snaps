@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.36.0-flask.1]
-### Uncategorized
-- Move `test-snaps` site to this repository ([#1549](https://github.com/MetaMask/snaps/pull/1549))
-- Fix `clean` command ([#1548](https://github.com/MetaMask/snaps/pull/1548))
+### Changed
+- No changes this release.
 
 ## [0.35.2-flask.1]
 ### Changed

@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.36.0-flask.1]
-### Uncategorized
+### Changed
 - Unblock `wallet_requestSnaps` and add dynamic permission support ([#1421](https://github.com/MetaMask/snaps/pull/1421))
-- Fix `clean` command ([#1548](https://github.com/MetaMask/snaps/pull/1548))
 
 ## [0.35.2-flask.1]
 ### Fixed

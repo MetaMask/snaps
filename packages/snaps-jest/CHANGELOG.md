@@ -7,10 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.36.0-flask.1]
-### Uncategorized
+### Changed
 - Default to newline instead of empty string for network mocking ([#1560](https://github.com/MetaMask/snaps/pull/1560))
-- Update setup script path in `snaps-jest` README file ([#1550](https://github.com/MetaMask/snaps/pull/1550))
-- Fix `clean` command ([#1548](https://github.com/MetaMask/snaps/pull/1548))
 
 ## [0.35.2-flask.1]
 ### Fixed
