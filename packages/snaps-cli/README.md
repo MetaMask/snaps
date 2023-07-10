@@ -254,6 +254,15 @@ thrown if the manifest is not up-to-date.
 The development server configuration. The development server is used to test
 your snap during development, using the `watch` and `serve` commands.
 
+##### `server.enabled`
+
+- Type: `boolean`
+- Default: `true`
+
+Whether to enable the development server. If `false`, the development server
+will not be started when running the `watch` command. This option has no effect
+on the `serve` command.
+
 ##### `server.root`
 
 - Type: `string`

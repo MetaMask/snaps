@@ -283,6 +283,15 @@ export type SnapWebpackConfig = {
 
   server?: {
     /**
+     * Whether to enable the local server. If `true`, the snap will be served
+     * from a local server, when running the `watch` command. If `false`, the
+     * snap will not be served.
+     *
+     * @default true
+     */
+    enabled?: boolean;
+
+    /**
      * The root directory to serve the snap from. If the path is relative, it
      * will be resolved relative to the current working directory.
      *
@@ -492,6 +501,7 @@ export const SnapsWebpackConfigStruct = object({
 
   server: defaulted(
     object({
+      enabled: defaulted(boolean(), true),
       root: defaulted(file(), process.cwd()),
       port: defaulted(number(), 8081),
     }),
@@ -747,7 +757,7 @@ export function mergeLegacyOptions(
   const cliOptions = Object.keys(config.cliOptions).reduce<
     ProcessedBrowserifyConfig['cliOptions']
   >((accumulator, key) => {
-    if (argv[key]) {
+    if (argv[key] !== undefined) {
       return {
         ...accumulator,
         [key]: argv[key],
@@ -810,6 +820,7 @@ export function getWebpackConfig(
       update: legacyConfig.cliOptions.writeManifest,
     },
     server: {
+      enabled: legacyConfig.cliOptions.serve,
       port: legacyConfig.cliOptions.port,
       root: legacyConfig.cliOptions.root,
     },

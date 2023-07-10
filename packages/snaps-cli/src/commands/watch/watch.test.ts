@@ -91,4 +91,40 @@ describe('watchHandler', () => {
       ),
     );
   });
+
+  it('does not serve when the server is disabled', async () => {
+    await fs.promises.writeFile('/input.js', DEFAULT_SNAP_BUNDLE);
+
+    const listen = jest.fn();
+    const log = jest.spyOn(console, 'log').mockImplementation();
+    const getServer = jest
+      .spyOn(webpack, 'getServer')
+      .mockImplementation(() => ({
+        listen,
+      }));
+
+    const config = getMockConfig('webpack', {
+      input: '/input.js',
+      output: {
+        path: '/foo',
+        filename: 'output.js',
+      },
+      server: {
+        enabled: false,
+      },
+    });
+
+    await watchHandler(config, {
+      port: 1000,
+    });
+
+    expect(getServer).not.toHaveBeenCalled();
+    expect(listen).not.toHaveBeenCalledWith();
+
+    expect(log).not.toHaveBeenCalledWith(
+      expect.stringContaining(
+        `The server is listening on http://localhost:1000.`,
+      ),
+    );
+  });
 });

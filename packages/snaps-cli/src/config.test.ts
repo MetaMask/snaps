@@ -226,12 +226,14 @@ describe('mergeLegacyOptions', () => {
         {
           src: 'src/index.ts',
           port: 8000,
+          serve: false,
         },
         {
           cliOptions: {
             src: 'src/index.js',
             port: 9000,
             writeManifest: true,
+            serve: true,
           },
         },
       ),
@@ -240,6 +242,7 @@ describe('mergeLegacyOptions', () => {
         port: 8000,
         src: 'src/index.ts',
         writeManifest: true,
+        serve: false,
       },
     });
   });
