@@ -1,8 +1,10 @@
 import { promises as fs } from 'fs';
 import ora from 'ora';
+import { dirname } from 'path';
 
 import { getMockConfig } from '../test-utils';
 import { getDefaultConfiguration } from './config';
+import { BROWSERSLIST_FILE } from './utils';
 
 jest.mock('fs');
 jest.mock('path', () => ({
@@ -30,7 +32,8 @@ jest.spyOn(process, 'cwd').mockReturnValue('/foo/bar');
 
 describe('getDefaultConfiguration', () => {
   beforeAll(async () => {
-    await fs.writeFile('/.browserslistrc', 'chrome >= 90\nfirefox >= 91\n');
+    await fs.mkdir(dirname(BROWSERSLIST_FILE), { recursive: true });
+    await fs.writeFile(BROWSERSLIST_FILE, 'chrome >= 90\nfirefox >= 91\n');
   });
 
   it.each([

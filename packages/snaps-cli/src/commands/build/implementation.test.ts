@@ -4,11 +4,12 @@ import {
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
 import normalFs from 'fs';
-import { dirname, resolve } from 'path';
+import { dirname } from 'path';
 import { Configuration } from 'webpack';
 
 import { getMockConfig } from '../../test-utils';
 import { getCompiler } from '../../webpack';
+import { BROWSERSLIST_FILE } from '../../webpack/utils';
 import { build } from './implementation';
 
 const { promises: fs } = normalFs;
@@ -21,7 +22,7 @@ jest.mock('../../webpack', () => ({
     ReturnType<typeof getCompiler>,
     Parameters<typeof getCompiler>
   >(async (...args) => {
-    const compiler = jest
+    const compiler = await jest
       .requireActual<typeof import('../../webpack')>('../../webpack')
       .getCompiler(...args);
 
@@ -31,8 +32,6 @@ jest.mock('../../webpack', () => ({
     return compiler;
   }),
 }));
-
-const BROWSERSLIST_PATH = resolve(__dirname, '../../../.browserslistrc');
 
 describe('build', () => {
   beforeEach(async () => {
@@ -45,12 +44,12 @@ describe('build', () => {
     await fs.writeFile('/snap/package.json', JSON.stringify(getPackageJson()));
     await fs.mkdir('/snap/images');
     await fs.writeFile('/snap/images/icon.svg', '<svg></svg>');
-    await fs.mkdir(dirname(BROWSERSLIST_PATH), { recursive: true });
+    await fs.mkdir(dirname(BROWSERSLIST_FILE), { recursive: true });
     await fs.writeFile(
-      BROWSERSLIST_PATH,
+      BROWSERSLIST_FILE,
       await jest
         .requireActual<typeof normalFs>('fs')
-        .promises.readFile(BROWSERSLIST_PATH),
+        .promises.readFile(BROWSERSLIST_FILE),
     );
   });
 

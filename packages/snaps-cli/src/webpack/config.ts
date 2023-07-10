@@ -13,7 +13,12 @@ import {
   SnapsStatsPlugin,
   SnapsWatchPlugin,
 } from './plugins';
-import { getDefaultLoader, getDevTool, getProgressHandler } from './utils';
+import {
+  BROWSERSLIST_FILE,
+  getDefaultLoader,
+  getDevTool,
+  getProgressHandler,
+} from './utils';
 
 export type WebpackOptions = {
   /**
@@ -71,7 +76,7 @@ export async function getDefaultConfiguration(
      *
      * @see https://webpack.js.org/configuration/target/
      */
-    target: `browserslist:${resolve(__dirname, '..', '..', '.browserslistrc')}`,
+    target: `browserslist:${BROWSERSLIST_FILE}`,
 
     /**
      * The mode is set to `production` by default, so that Webpack will minify
