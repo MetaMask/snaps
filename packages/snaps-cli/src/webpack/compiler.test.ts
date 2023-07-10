@@ -1,5 +1,5 @@
-import express from 'express';
-import { Server } from 'http';
+import http, { IncomingMessage, ServerResponse, Server } from 'http';
+import serveMiddleware from 'serve-handler';
 import { Compiler, Configuration } from 'webpack';
 import merge from 'webpack-merge';
 
@@ -7,17 +7,11 @@ import { getMockConfig } from '../test-utils';
 import { getCompiler, getServer } from './compiler';
 
 jest.dontMock('fs');
-jest.mock('express', () => {
-  const fn = jest
-    .fn()
-    .mockImplementation(() => jest.requireActual('express')());
-
-  // @ts-expect-error - We're mocking a function.
-  // eslint-disable-next-line jest/prefer-spy-on
-  fn.static = jest.fn().mockReturnValue(jest.fn());
-
-  return fn;
-});
+jest.mock('serve-handler', () =>
+  jest.fn().mockImplementation((_request, response) => {
+    response.end();
+  }),
+);
 
 describe('getCompiler', () => {
   it('returns a Webpack compiler for the given config', async () => {
@@ -66,12 +60,12 @@ describe('getServer', () => {
     const server = getServer(config);
     expect(server.listen).toBeInstanceOf(Function);
 
-    const { port, server: httpServer } = await server.listen();
+    const { port, server: httpServer, close } = await server.listen();
 
     expect(port).toBeGreaterThan(0);
     expect(httpServer).toBeInstanceOf(Server);
 
-    httpServer.close();
+    await close();
   });
 
   it('listens to a specific port', async () => {
@@ -85,10 +79,10 @@ describe('getServer', () => {
 
     const server = getServer(config);
 
-    const { port, server: httpServer } = await server.listen();
+    const { port, close } = await server.listen();
     expect(port).toBe(config.server.port);
 
-    httpServer.close();
+    await close();
   });
 
   it('listens to the port specified in the listen function', async () => {
@@ -102,43 +96,36 @@ describe('getServer', () => {
 
     const server = getServer(config);
 
-    const { port, server: httpServer } = await server.listen(32432);
+    const { port, close } = await server.listen(32432);
     expect(port).toBe(32432);
 
-    httpServer.close();
+    await close();
   });
 
-  it('sets headers on the response', () => {
+  it('calls the serve middleware', async () => {
     const config = getMockConfig('webpack', {
       input: 'src/index.js',
       server: {
-        root: '/foo',
+        root: __dirname,
         port: 0,
       },
     });
 
-    getServer(config);
-    const mock = express.static as jest.MockedFunction<typeof express.static>;
+    const server = getServer(config);
+    const { port, close } = await server.listen();
 
-    expect(mock).toHaveBeenCalled();
-    const setHeaders = mock.mock.calls[0][1]?.setHeaders;
-    expect(setHeaders).toBeInstanceOf(Function);
+    const response = await fetch(`http://localhost:${port}/`);
 
-    const response = {
-      setHeader: jest.fn(),
-    };
+    expect(response.status).toBe(200);
+    expect(await response.text()).toBe('');
 
-    // @ts-expect-error - Partial response mock.
-    setHeaders?.(response, '/foo/bar.js', undefined);
-
-    expect(response.setHeader).toHaveBeenCalledWith(
-      'Cache-Control',
-      'no-cache',
+    expect(serveMiddleware).toHaveBeenCalledWith(
+      expect.any(IncomingMessage),
+      expect.any(ServerResponse),
+      expect.objectContaining({ public: __dirname }),
     );
-    expect(response.setHeader).toHaveBeenCalledWith(
-      'Access-Control-Allow-Origin',
-      '*',
-    );
+
+    await close();
   });
 
   it('throws if the port is already in use', async () => {
@@ -150,15 +137,40 @@ describe('getServer', () => {
       },
     });
 
+    const createServer = jest.spyOn(http, 'createServer');
     const server = getServer(config);
+    const httpServer: Server = createServer.mock.results[0].value;
 
-    const { mock } = express as jest.MockedFunction<typeof express>;
-    const app = mock.results[0].value;
-
-    jest.spyOn(app, 'listen').mockImplementationOnce(() => {
+    jest.spyOn(httpServer, 'listen').mockImplementationOnce(() => {
       throw new Error('Address already in use.');
     });
 
     await expect(server.listen()).rejects.toThrow('Address already in use.');
+
+    httpServer.close();
+  });
+
+  it('throws if the server fails to close', async () => {
+    const config = getMockConfig('webpack', {
+      input: 'src/index.js',
+      server: {
+        root: '/foo',
+        port: 0,
+      },
+    });
+
+    const createServer = jest.spyOn(http, 'createServer');
+    const server = getServer(config);
+    const httpServer: Server = createServer.mock.results[0].value;
+
+    // @ts-expect-error - Invalid mock.
+    jest.spyOn(httpServer, 'close').mockImplementationOnce((callback) => {
+      return callback?.(new Error('Failed to close server.'));
+    });
+
+    const { close } = await server.listen();
+    await expect(close()).rejects.toThrow('Failed to close server.');
+
+    httpServer.close();
   });
 });

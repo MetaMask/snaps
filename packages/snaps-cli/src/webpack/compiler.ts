@@ -1,6 +1,6 @@
-import express from 'express';
-import { Server } from 'http';
+import { createServer, Server } from 'http';
 import { AddressInfo } from 'net';
+import serveMiddleware from 'serve-handler';
 import { webpack } from 'webpack';
 
 import { ProcessedConfig, ProcessedWebpackConfig } from '../config';
@@ -36,25 +36,31 @@ export async function getCompiler(
  * resolves when the server is listening.
  */
 export function getServer(config: ProcessedConfig) {
-  const app = express();
-
-  app.use(
-    // TODO: Get path from config (or manifest?).
-    express.static(config.server.root, {
-      dotfiles: 'deny',
-      extensions: ['html', 'js', 'json', 'svg'],
-      cacheControl: false,
-      setHeaders: (response) => {
-        // Add cache header to all responses, to prevent the browser from
-        // caching the response.
-        response.setHeader('Cache-Control', 'no-cache');
-
-        // Add CORS header to all responses, to allow the browser to make
-        // requests to the server.
-        response.setHeader('Access-Control-Allow-Origin', '*');
+  const server = createServer((request, response) => {
+    serveMiddleware(request, response, {
+      public: config.server.root,
+      headers: [
+        {
+          source: '**/*',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'no-cache',
+            },
+            {
+              key: 'Access-Control-Allow-Origin',
+              value: '*',
+            },
+          ],
+        },
+      ],
+    })?.catch(
+      /* istanbul ignore next */ () => {
+        response.statusCode = 500;
+        response.end();
       },
-    }),
-  );
+    );
+  });
 
   /**
    * Start the server on the port specified in the config.
@@ -66,11 +72,27 @@ export function getServer(config: ProcessedConfig) {
    * so we need to get the port from the server after it starts.
    */
   const listen = async (port = config.server.port) => {
-    return new Promise<{ port: number; server: Server }>((resolve, reject) => {
+    return new Promise<{
+      port: number;
+      server: Server;
+      close: () => Promise<void>;
+    }>((resolve, reject) => {
       try {
-        const server = app.listen(port, () => {
+        server.listen(port, () => {
+          const close = async () => {
+            await new Promise<void>((resolveClose, rejectClose) => {
+              server.close((closeError) => {
+                if (closeError) {
+                  rejectClose(closeError);
+                }
+
+                resolveClose();
+              });
+            });
+          };
+
           const address = server.address() as AddressInfo;
-          resolve({ port: address.port, server });
+          resolve({ port: address.port, server, close });
         });
       } catch (listenError) {
         reject(listenError);
