@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { basename } from 'path';
 import { Watching } from 'webpack';
 
 import { ProcessedWebpackConfig } from '../../config';
@@ -29,7 +29,7 @@ export async function watch(
       {
         ignored: [
           '**/node_modules/**/*',
-          join(process.cwd(), config.output.path, '**/*'),
+          `**/${basename(config.output.path)}/**/*`,
         ],
       },
       (watchError) => {
