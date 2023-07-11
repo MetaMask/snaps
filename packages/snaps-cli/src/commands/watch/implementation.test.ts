@@ -18,8 +18,8 @@ jest.mock('../../webpack', () => ({
   getCompiler: jest.fn<
     ReturnType<typeof getCompiler>,
     Parameters<typeof getCompiler>
-  >((...args) => {
-    const compiler = jest
+  >(async (...args) => {
+    const compiler = await jest
       .requireActual<typeof import('../../webpack')>('../../webpack')
       .getCompiler(...args);
 

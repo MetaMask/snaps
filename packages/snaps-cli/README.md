@@ -39,6 +39,9 @@ Examples:
                                             in './snap.config.build.ts'
   mm-snap manifest --fix                    Check the snap manifest, and fix any
                                             errors
+  mm-snap watch --port 8000                 The snap input file for changes, and
+                                            serve it on port 8000
+  mm-snap serve --port 8000                 Serve the snap bundle on port 8000
 ```
 
 ## MetaMask Snaps
