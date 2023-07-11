@@ -3,7 +3,7 @@ import { red, yellow } from 'chalk';
 import { Ora } from 'ora';
 import { dirname } from 'path';
 
-import { error, warn } from '../../utils';
+import { error, info, warn } from '../../utils';
 
 /**
  * Check the snap manifest file at the given path. If `write` is `true`, the
@@ -19,8 +19,15 @@ export async function manifest(
   path: string,
   write: boolean,
   spinner?: Ora,
-): Promise<void> {
-  const { warnings, errors } = await checkManifest(dirname(path), write);
+): Promise<boolean> {
+  const { warnings, errors, updated } = await checkManifest(
+    dirname(path),
+    write,
+  );
+
+  if (write && updated) {
+    info('The snap manifest file has been updated.', spinner);
+  }
 
   if (!write && errors.length > 0) {
     const formattedErrors = errors
@@ -34,7 +41,7 @@ export async function manifest(
 
     spinner?.stop();
     process.exitCode = 1;
-    return;
+    return false;
   }
 
   if (warnings.length > 0) {
@@ -47,4 +54,6 @@ export async function manifest(
       spinner,
     );
   }
+
+  return true;
 }

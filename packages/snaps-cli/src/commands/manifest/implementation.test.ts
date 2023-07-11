@@ -18,8 +18,8 @@ jest.mock('../../webpack', () => ({
   getCompiler: jest.fn<
     ReturnType<typeof getCompiler>,
     Parameters<typeof getCompiler>
-  >((...args) => {
-    const compiler = jest
+  >(async (...args) => {
+    const compiler = await jest
       .requireActual<typeof import('../../webpack')>('../../webpack')
       .getCompiler(...args);
 
@@ -54,12 +54,15 @@ describe('manifest', () => {
   it('validates a snap manifest', async () => {
     const error = jest.spyOn(console, 'error').mockImplementation();
     const warn = jest.spyOn(console, 'warn').mockImplementation();
+    const log = jest.spyOn(console, 'log').mockImplementation();
 
     const spinner = ora();
-    await manifest('/snap/snap.manifest.json', false, spinner);
+    const result = await manifest('/snap/snap.manifest.json', false, spinner);
+    expect(result).toBe(true);
 
     expect(error).not.toHaveBeenCalled();
     expect(warn).not.toHaveBeenCalled();
+    expect(log).not.toHaveBeenCalled();
   });
 
   it('validates a snap manifest with errors', async () => {
@@ -72,7 +75,8 @@ describe('manifest', () => {
     await fs.writeFile('/snap/package.json', JSON.stringify(packageJson));
 
     const spinner = ora();
-    await manifest('/snap/snap.manifest.json', false, spinner);
+    const result = await manifest('/snap/snap.manifest.json', false, spinner);
+    expect(result).toBe(false);
 
     expect(warn).not.toHaveBeenCalled();
     expect(spinner.stop).toHaveBeenCalled();
@@ -94,6 +98,7 @@ describe('manifest', () => {
   it('validates a snap manifest with warnings', async () => {
     const error = jest.spyOn(console, 'error').mockImplementation();
     const warn = jest.spyOn(console, 'warn').mockImplementation();
+    const log = jest.spyOn(console, 'log').mockImplementation();
 
     const packageJson = getPackageJson();
     delete packageJson.repository;
@@ -101,13 +106,17 @@ describe('manifest', () => {
     await fs.writeFile('/snap/package.json', JSON.stringify(packageJson));
 
     const spinner = ora();
-    await manifest('/snap/snap.manifest.json', true, spinner);
+    const result = await manifest('/snap/snap.manifest.json', true, spinner);
+    expect(result).toBe(true);
 
     expect(error).not.toHaveBeenCalled();
     expect(warn).toHaveBeenCalledWith(
       expect.stringMatching(
         /Missing recommended package\.json properties:.*\n.*repository/u,
       ),
+    );
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching('The snap manifest file has been updated.'),
     );
   });
 });
