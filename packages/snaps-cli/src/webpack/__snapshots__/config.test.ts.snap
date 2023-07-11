@@ -71,7 +71,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "writeManifest": true,
       },
     },
-    SnapsStatsPlugin {},
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
     EnvironmentPlugin {
       "defaultValues": {
         "DEBUG": false,
@@ -97,7 +101,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     undefined,
     SnapsBuiltInResolverPlugin {},
-    SnapsBundleWarningsPlugin {},
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+      },
+    },
   ],
   "resolve": {
     "extensions": [
@@ -110,6 +118,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     "plugins": [
       SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
         "unresolvedModules": Set {},
       },
     ],
@@ -190,7 +201,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "writeManifest": true,
       },
     },
-    SnapsStatsPlugin {},
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
     EnvironmentPlugin {
       "defaultValues": {
         "DEBUG": false,
@@ -216,7 +231,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     undefined,
     SnapsBuiltInResolverPlugin {},
-    SnapsBundleWarningsPlugin {},
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+      },
+    },
   ],
   "resolve": {
     "extensions": [
@@ -229,6 +248,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     "plugins": [
       SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
         "unresolvedModules": Set {},
       },
     ],
@@ -309,7 +331,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "writeManifest": true,
       },
     },
-    SnapsStatsPlugin {},
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
     EnvironmentPlugin {
       "defaultValues": {
         "DEBUG": false,
@@ -348,6 +374,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     "plugins": [
       SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
         "unresolvedModules": Set {},
       },
     ],
@@ -428,7 +457,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "writeManifest": true,
       },
     },
-    SnapsStatsPlugin {},
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
     EnvironmentPlugin {
       "defaultValues": {
         "DEBUG": false,
@@ -552,7 +585,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "writeManifest": true,
       },
     },
-    SnapsStatsPlugin {},
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
     EnvironmentPlugin {
       "defaultValues": {
         "DEBUG": false,
@@ -578,7 +615,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     undefined,
     SnapsBuiltInResolverPlugin {},
-    SnapsBundleWarningsPlugin {},
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+      },
+    },
   ],
   "resolve": {
     "extensions": [
@@ -591,6 +632,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     "plugins": [
       SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
         "unresolvedModules": Set {},
       },
     ],
@@ -671,7 +715,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "writeManifest": true,
       },
     },
-    SnapsStatsPlugin {},
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
     EnvironmentPlugin {
       "defaultValues": {
         "DEBUG": false,
@@ -697,7 +745,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     undefined,
     SnapsBuiltInResolverPlugin {},
-    SnapsBundleWarningsPlugin {},
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+      },
+    },
   ],
   "resolve": {
     "extensions": [
@@ -710,6 +762,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     "plugins": [
       SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
         "unresolvedModules": Set {},
       },
     ],
@@ -790,7 +845,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "writeManifest": true,
       },
     },
-    SnapsStatsPlugin {},
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
     EnvironmentPlugin {
       "defaultValues": {
         "DEBUG": false,
@@ -824,7 +883,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
       },
     },
     SnapsBuiltInResolverPlugin {},
-    SnapsBundleWarningsPlugin {},
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+      },
+    },
   ],
   "resolve": {
     "extensions": [
@@ -837,6 +900,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     "plugins": [
       SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
         "unresolvedModules": Set {},
       },
     ],
@@ -917,7 +983,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "writeManifest": true,
       },
     },
-    SnapsStatsPlugin {},
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
     EnvironmentPlugin {
       "defaultValues": {
         "DEBUG": false,
@@ -943,7 +1013,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     false,
     SnapsBuiltInResolverPlugin {},
-    SnapsBundleWarningsPlugin {},
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+      },
+    },
   ],
   "resolve": {
     "extensions": [
@@ -956,6 +1030,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     "plugins": [
       SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
         "unresolvedModules": Set {},
       },
     ],
@@ -1036,7 +1113,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "writeManifest": true,
       },
     },
-    SnapsStatsPlugin {},
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
     EnvironmentPlugin {
       "defaultValues": {
         "DEBUG": false,
@@ -1062,7 +1143,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     false,
     SnapsBuiltInResolverPlugin {},
-    SnapsBundleWarningsPlugin {},
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+      },
+    },
   ],
   "resolve": {
     "extensions": [
@@ -1075,6 +1160,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     "plugins": [
       SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
         "unresolvedModules": Set {},
       },
     ],
@@ -1155,7 +1243,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "writeManifest": true,
       },
     },
-    SnapsStatsPlugin {},
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
     EnvironmentPlugin {
       "defaultValues": {
         "DEBUG": false,
@@ -1189,7 +1281,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
       },
     },
     SnapsBuiltInResolverPlugin {},
-    SnapsBundleWarningsPlugin {},
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+      },
+    },
   ],
   "resolve": {
     "extensions": [
@@ -1202,6 +1298,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     "plugins": [
       SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
         "unresolvedModules": Set {},
       },
     ],
@@ -1282,7 +1381,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "writeManifest": true,
       },
     },
-    SnapsStatsPlugin {},
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
     EnvironmentPlugin {
       "defaultValues": {
         "DEBUG": false,
@@ -1316,7 +1419,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
       },
     },
     SnapsBuiltInResolverPlugin {},
-    SnapsBundleWarningsPlugin {},
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+      },
+    },
   ],
   "resolve": {
     "extensions": [
@@ -1329,6 +1436,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     "plugins": [
       SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
         "unresolvedModules": Set {},
       },
     ],
@@ -1411,7 +1521,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "writeManifest": true,
       },
     },
-    SnapsStatsPlugin {},
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
     EnvironmentPlugin {
       "defaultValues": {
         "DEBUG": false,
@@ -1530,7 +1644,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "writeManifest": true,
       },
     },
-    SnapsStatsPlugin {},
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
     EnvironmentPlugin {
       "defaultValues": {
         "DEBUG": false,
@@ -1649,7 +1767,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "writeManifest": true,
       },
     },
-    SnapsStatsPlugin {},
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
     EnvironmentPlugin {
       "defaultValues": {
         "DEBUG": false,

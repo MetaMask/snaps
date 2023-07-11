@@ -31,7 +31,7 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
   /**
    * The options for the plugin.
    */
-  readonly #options: SnapsStatsPluginOptions;
+  readonly options: SnapsStatsPluginOptions;
 
   /**
    * The spinner to use for logging.
@@ -44,7 +44,7 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
     },
     spinner?: Ora,
   ) {
-    this.#options = options;
+    this.options = options;
     this.#spinner = spinner;
   }
 
@@ -109,7 +109,7 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
    * @returns The error message.
    */
   #getStatsErrorMessage(statsError: StatsError) {
-    const baseMessage = this.#options.verbose
+    const baseMessage = this.options.verbose
       ? getErrorMessage(statsError)
       : statsError.message;
 
@@ -240,7 +240,7 @@ export class SnapsBuiltInResolver implements ResolvePluginInstance {
   /**
    * The options for the plugin.
    */
-  readonly #options: SnapsBuiltInResolverOptions;
+  readonly options: SnapsBuiltInResolverOptions;
 
   /**
    * The spinner to use for logging.
@@ -253,7 +253,7 @@ export class SnapsBuiltInResolver implements ResolvePluginInstance {
     },
     spinner?: Ora,
   ) {
-    this.#options = options;
+    this.options = options;
     this.#spinner = spinner;
   }
 
@@ -275,7 +275,7 @@ export class SnapsBuiltInResolver implements ResolvePluginInstance {
           const baseRequest = request.split('/')[0];
           if (
             isBuiltin(baseRequest) &&
-            !this.#options.ignore?.includes(baseRequest)
+            !this.options.ignore?.includes(baseRequest)
           ) {
             const fallback = resolver.options.fallback.find(
               ({ name }) => name === baseRequest,
@@ -381,7 +381,7 @@ export class SnapsBundleWarningsPlugin implements WebpackPluginInstance {
   /**
    * The options for the plugin.
    */
-  readonly #options: SnapsBundleWarningsPluginOptions;
+  readonly options: SnapsBundleWarningsPluginOptions;
 
   constructor(
     options: SnapsBundleWarningsPluginOptions = {
@@ -389,7 +389,7 @@ export class SnapsBundleWarningsPlugin implements WebpackPluginInstance {
     },
     spinner?: Ora,
   ) {
-    this.#options = options;
+    this.options = options;
     this.#spinner = spinner;
   }
 
@@ -399,7 +399,7 @@ export class SnapsBundleWarningsPlugin implements WebpackPluginInstance {
    * @param compiler - The Webpack compiler.
    */
   apply(compiler: Compiler) {
-    if (this.#options.buffer) {
+    if (this.options.buffer) {
       this.#checkBuffer(compiler);
     }
   }
