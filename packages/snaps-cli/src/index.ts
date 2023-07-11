@@ -5,7 +5,6 @@ export {
   SnapsStatsPlugin,
   SnapsWatchPlugin,
   SnapsBuiltInResolver,
-  SnapsBuiltInResolverPlugin,
   SnapsBundleWarningsPlugin,
 } from './webpack';
 export type {
