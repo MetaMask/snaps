@@ -230,7 +230,7 @@ export async function getDefaultConfiguration(
       new SnapsWebpackPlugin({
         manifestPath: config.manifest.path,
         writeManifest: config.manifest.update,
-        eval: options.evaluate,
+        eval: !options.watch && options.evaluate,
       }),
 
       /**
@@ -263,6 +263,8 @@ export async function getDefaultConfiguration(
       options.watch &&
         new SnapsWatchPlugin(
           {
+            bundle: resolve(config.output.path, config.output.filename),
+            evaluate: options.evaluate,
             files: [config.manifest.path],
           },
           options.spinner,

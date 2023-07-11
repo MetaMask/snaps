@@ -12,6 +12,7 @@ import {
   WebpackPluginInstance,
 } from 'webpack';
 
+import { evaluate } from '../commands/eval';
 import { error, getErrorMessage, info, warn } from '../utils';
 import { pluralize } from './utils';
 
@@ -129,6 +130,18 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
  */
 export type SnapsWatchPluginOptions = {
   /**
+   * The bundle path. This is the file that will be evaluated, if the `evaluate`
+   * option is set.
+   */
+  bundle?: string;
+
+  /**
+   * Whether to evaluate the bundle. This only applies if the `bundle` option is
+   * set.
+   */
+  evaluate?: boolean;
+
+  /**
    * The extra files to watch.
    */
   files?: string[];
@@ -143,7 +156,7 @@ export class SnapsWatchPlugin implements WebpackPluginInstance {
   /**
    * The options for the plugin.
    */
-  readonly #options: SnapsWatchPluginOptions;
+  readonly options: SnapsWatchPluginOptions;
 
   /**
    * The spinner to use for logging.
@@ -151,7 +164,7 @@ export class SnapsWatchPlugin implements WebpackPluginInstance {
   readonly #spinner?: Ora;
 
   constructor(options: SnapsWatchPluginOptions, spinner?: Ora) {
-    this.#options = options;
+    this.options = options;
     this.#spinner = spinner;
   }
 
@@ -169,11 +182,31 @@ export class SnapsWatchPlugin implements WebpackPluginInstance {
     compiler.hooks.afterEmit.tapPromise(
       this.constructor.name,
       async ({ fileDependencies }) => {
-        this.#options.files?.forEach(
+        this.options.files?.forEach(
           fileDependencies.add.bind(fileDependencies),
         );
+
+        if (this.options.bundle && this.options.evaluate) {
+          await this.#safeEvaluate(this.options.bundle);
+        }
       },
     );
+  }
+
+  /**
+   * Safely evaluate the bundle at the given path. If an error occurs, it will
+   * be logged to the console, rather than throwing an error.
+   *
+   * This function should never throw an error.
+   *
+   * @param bundlePath - The path to the bundle.
+   */
+  async #safeEvaluate(bundlePath: string) {
+    try {
+      await evaluate(bundlePath);
+    } catch (evaluateError) {
+      error(evaluateError.message, this.#spinner);
+    }
   }
 }
 

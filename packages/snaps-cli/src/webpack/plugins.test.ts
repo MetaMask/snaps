@@ -3,6 +3,7 @@ import ora from 'ora';
 import { promisify } from 'util';
 import { ProvidePlugin, Watching } from 'webpack';
 
+import * as evalImplementation from '../commands/eval/implementation';
 import { compile, getCompiler } from '../test-utils';
 import {
   SnapsBuiltInResolver,
@@ -13,6 +14,7 @@ import {
 } from './plugins';
 
 jest.dontMock('fs');
+jest.mock('../commands/eval/implementation');
 
 describe('SnapsStatsPlugin', () => {
   it('logs the compilation stats', async () => {
@@ -229,6 +231,90 @@ describe('SnapsWatchPlugin', () => {
     await invalidate();
 
     await promise;
+
+    const close = promisify(watcher.close.bind(watcher));
+    await close();
+  });
+
+  it('evaluates the bundle if enabled', async () => {
+    const log = jest.spyOn(console, 'log').mockImplementation();
+    const evaluate = jest
+      .spyOn(evalImplementation, 'evaluate')
+      .mockImplementation();
+
+    const fileSystem = createFsFromVolume(new Volume());
+    const compiler = await getCompiler({
+      fileSystem,
+      config: {
+        plugins: [
+          new SnapsWatchPlugin({
+            bundle: '/output.js',
+            evaluate: true,
+            files: [],
+          }),
+        ],
+      },
+    });
+
+    // Wait for the initial compilation to complete.
+    const watcher = await new Promise<Watching>((resolve) => {
+      const innerWatcher = compiler.watch(
+        {
+          poll: 1,
+          ignored: ['/output.js'],
+        },
+        () => {
+          resolve(innerWatcher);
+        },
+      );
+    });
+
+    expect(log).not.toHaveBeenCalled();
+    expect(evaluate).toHaveBeenCalled();
+
+    const close = promisify(watcher.close.bind(watcher));
+    await close();
+  });
+
+  it('logs evaluation errors', async () => {
+    const log = jest.spyOn(console, 'log').mockImplementation();
+    const error = jest.spyOn(console, 'error').mockImplementation();
+    const evaluate = jest
+      .spyOn(evalImplementation, 'evaluate')
+      .mockRejectedValue(new Error('Evaluation error.'));
+
+    const fileSystem = createFsFromVolume(new Volume());
+    const compiler = await getCompiler({
+      fileSystem,
+      config: {
+        plugins: [
+          new SnapsWatchPlugin({
+            bundle: '/output.js',
+            evaluate: true,
+            files: [],
+          }),
+        ],
+      },
+    });
+
+    // Wait for the initial compilation to complete.
+    const watcher = await new Promise<Watching>((resolve) => {
+      const innerWatcher = compiler.watch(
+        {
+          poll: 1,
+          ignored: ['/output.js'],
+        },
+        () => {
+          resolve(innerWatcher);
+        },
+      );
+    });
+
+    expect(log).not.toHaveBeenCalled();
+    expect(evaluate).toHaveBeenCalled();
+    expect(error).toHaveBeenCalledWith(
+      expect.stringContaining('Evaluation error.'),
+    );
 
     const close = promisify(watcher.close.bind(watcher));
     await close();
