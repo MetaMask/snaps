@@ -210,10 +210,16 @@ describe('build', () => {
     );
 
     const output = await fs.readFile('/snap/output.js', 'utf8');
-    const deterministicOutput = output.replace(/var r=\{(\d+):/u, 'var r={1:');
+
+    // Browserify output is non-deterministic across different platforms (e.g.,
+    // Windows vs. Linux), so we normalize it to make the snapshot
+    // deterministic.
+    const deterministicOutput = output
+      .replace(/var r=\{(\d+):/u, 'var r={1:')
+      .replace(/u.exports\}\(\d+\),t/u, 'u.exports}(1),t');
 
     expect(deterministicOutput).toMatchInlineSnapshot(
-      `"(()=>{var r={1:r=>{r.exports=function(){function r(e,o,t){function n(s,i){if(!o[s]){if(!e[s]){if(u)return u(s,!0);var f=new Error("Cannot find module '"+s+"'");throw f.code="MODULE_NOT_FOUND",f}var c=o[s]={exports:{}};e[s][0].call(c.exports,(function(r){return n(e[s][1][r]||r)}),c,c.exports,r,e,o,t)}return o[s].exports}for(var u=void 0,s=0;s<t.length;s++)n(t[s]);return n}return r}()({1:[function(r,e,o){"use strict";e.exports.onRpcRequest=({request:r})=>{console.log("Hello, world!");const{method:e,id:o}=r;return e+o}},{}]},{},[1])(1)}},e={};var o=function o(t){var n=e[t];if(void 0!==n)return n.exports;var u=e[t]={exports:{}};return r[t](u,u.exports,o),u.exports}(484),t=exports;for(var n in o)t[n]=o[n];o.__esModule&&Object.defineProperty(t,"__esModule",{value:!0})})();"`,
+      `"(()=>{var r={1:r=>{r.exports=function(){function r(e,o,t){function n(s,i){if(!o[s]){if(!e[s]){if(u)return u(s,!0);var f=new Error("Cannot find module '"+s+"'");throw f.code="MODULE_NOT_FOUND",f}var c=o[s]={exports:{}};e[s][0].call(c.exports,(function(r){return n(e[s][1][r]||r)}),c,c.exports,r,e,o,t)}return o[s].exports}for(var u=void 0,s=0;s<t.length;s++)n(t[s]);return n}return r}()({1:[function(r,e,o){"use strict";e.exports.onRpcRequest=({request:r})=>{console.log("Hello, world!");const{method:e,id:o}=r;return e+o}},{}]},{},[1])(1)}},e={};var o=function o(t){var n=e[t];if(void 0!==n)return n.exports;var u=e[t]={exports:{}};return r[t](u,u.exports,o),u.exports}(1),t=exports;for(var n in o)t[n]=o[n];o.__esModule&&Object.defineProperty(t,"__esModule",{value:!0})})();"`,
     );
   });
 
@@ -238,7 +244,16 @@ describe('build', () => {
     );
 
     const output = await fs.readFile('/snap/output.js', 'utf8');
-    const deterministicOutput = output.replace(/\d+: module/u, '1: module');
+
+    // Browserify output is non-deterministic across different platforms (e.g.,
+    // Windows vs. Linux), so we normalize it to make the snapshot
+    // deterministic.
+    const deterministicOutput = output
+      .replace(/\d+: module/u, '1: module')
+      .replace(
+        /var __webpack_exports__ = __webpack_require__\(\d+\);/u,
+        'var __webpack_exports__ = __webpack_require__(1);',
+      );
 
     expect(deterministicOutput).toMatchInlineSnapshot(`
       "(() => {
@@ -308,7 +323,7 @@ describe('build', () => {
           __webpack_modules__[moduleId](module, module.exports, __webpack_require__);
           return module.exports;
         }
-        var __webpack_exports__ = __webpack_require__(484);
+        var __webpack_exports__ = __webpack_require__(1);
         var __webpack_export_target__ = exports;
         for (var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];
         if (__webpack_exports__.__esModule) Object.defineProperty(__webpack_export_target__, "__esModule", {
