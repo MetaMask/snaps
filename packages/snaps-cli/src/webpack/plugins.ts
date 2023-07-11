@@ -397,7 +397,7 @@ export class SnapsBundleWarningsPlugin implements WebpackPluginInstance {
                 '`ProvidePlugin`',
               )} to inject it: https://webpack.js.org/plugins/provide-plugin/.\n` +
               `To disable this warning, set ${yellow(
-                '`plugins.bundleWarning`',
+                '`plugins.bundleWarnings`',
               )} to ${yellow('`false`')} in your snap config file.`,
             this.#spinner,
           );
