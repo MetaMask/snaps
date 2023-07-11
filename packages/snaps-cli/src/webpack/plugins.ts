@@ -395,11 +395,11 @@ export class SnapsBundleWarningsPlugin implements WebpackPluginInstance {
         `The snap attempted to use one or more Node.js builtins, but no browser fallback has been provided.\n` +
           `The MetaMask Snaps CLI does not support Node.js builtins by default. If you want to use this module, you must provide a fallback: https://webpack.js.org/configuration/resolve/#resolvefallback.\n` +
           `To disable this warning, set ${yellow(
-            '`plugins.builtInResolver`',
+            '`stats.builtIns`',
           )} to ${yellow(
             '`false`',
           )} in your snap config file, or add the module to the ${yellow(
-            '`plugins.builtInResolver.ignore`',
+            '`stats.builtIns.ignore`',
           )} array.\n\n${formattedModules}\n`,
         this.#spinner,
       );
@@ -463,7 +463,7 @@ export class SnapsBundleWarningsPlugin implements WebpackPluginInstance {
                 '`ProvidePlugin`',
               )} to inject it: https://webpack.js.org/plugins/provide-plugin/.\n` +
               `To disable this warning, set ${yellow(
-                '`plugins.bundleWarnings`',
+                '`stats.buffer`',
               )} to ${yellow('`false`')} in your snap config file.`,
             this.#spinner,
           );
