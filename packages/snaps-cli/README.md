@@ -167,6 +167,26 @@ The configuration file should not be published.
 
 ### Options
 
+- [`bundler`](#bundler)
+- [`input`](#input)
+- [`output`](#output)
+  - [`output.path`](#outputpath)
+  - [`output.filename`](#outputfilename)
+  - [`output.clean`](#outputclean)
+  - [`output.minimize`](#outputminimize)
+- [`server`](#server)
+  - [`server.enabled`](#serverenabled)
+  - [`server.root`](#serverroot)
+  - [`server.port`](#serverport)
+- [`environment`](#environment)
+- [`stats`](#stats)
+  - [`stats.verbose`](#statsverbose)
+  - [`stats.builtIns`](#statsbuiltins)
+  - [`stats.buffer`](#statsbuffer)
+- [`customizeWebpackConfig`](#customizewebpackconfig)
+- [`experimental`](#experimental)
+  - [`experimental.wasm`](#experimentalwasm)
+
 #### `bundler`
 
 - Type: `"browserify"` | `"webpack"`
@@ -212,6 +232,14 @@ The output filename.
 - Default: `false`
 
 Whether to clean the output directory before building.
+
+##### `output.minimize`
+
+- Type: `boolean`
+- Default: `true`
+
+Whether to minimize the bundle. This will remove comments and whitespace from
+the bundle, mangle variable names, and perform other optimizations.
 
 #### `sourceMap`
 
@@ -297,63 +325,45 @@ environment variables are set by the CLI:
 - `NODE_DEBUG` - `false`.
 - `DEBUG` - `false`.
 
-#### `plugins`
+#### `stats`
 
 - Type: `object`
 
-The plugin configuration. The MetaMask Snaps CLI comes with a set of Webpack
-plugins that are enabled by default. These plugins can be disabled or
-configured using this option.
+The stats configuration, which controls the log output of the CLI.
 
-##### `plugins.stats`
-
-- Type: `object`
-
-The configuration for the stats plugin. This plugin shows information about
-the bundle after it is built.
-
-###### `plugins.stats.verbose`
+##### `stats.verbose`
 
 - Type: `boolean`
+- Default: `false`
 
-Whether to show verbose information about the bundle.
+Whether to enable verbose logging. If `true`, the CLI will log more
+information.
 
-##### `plugins.builtInResolver`
+##### `stats.builtIns`
 
 - Type: `false | object`
+- Default: `{ ignore: [] }`
 
-Whether to use the built-in resolver plugin. This plugin checks for missing
-built-in modules. The MetaMask Snaps CLI does not support Node.js built-ins
-out of the box, and any used built-ins must be provided through the
-`customizeWebpackConfig` option. This plugin shows a warning if a built-in
-module is used, but not provided.
+Whether to check for missing built-in modules. The MetaMask Snaps CLI does not
+support Node.js built-ins out of the box, and any used built-ins must be
+provided through the `customizeWebpackConfig` option. When enabled, the CLI
+shows a warning if a built-in module is used, but not provided.
 
-If `false`, the plugin will not be used.
-
-###### `plugins.builtInResolver.ignore`
+###### `stats.builtIns.ignore`
 
 - Type: `string[]`
 
 A list of built-in modules to ignore. This is useful if the built-in module is
 not actually used in the snap, but is added by a dependency.
 
-##### `plugins.bundleWarnings`
-
-- Type: `false | object`
-
-Whether to use the bundle warnings plugin. This plugin shows warnings about
-the bundle. Currently, it only shows a warning if `Buffer` is used, as it is
-not supported by the MetaMask Snaps CLI by default, and must be provided through
-the `customizeWebpackConfig` option.
-
-If `false`, the plugin will not be used.
-
-###### `plugins.bundleWarnings.buffer`
+###### `stats.buffer`
 
 - Type: `boolean`
 - Default: `true`
 
-Whether to show a warning if `Buffer` is used.
+Whether to show a warning if `Buffer` is used, but not provided. The `Buffer`
+global is not available in the MetaMask Snaps runtime by default, and must
+be provided through the `customizeWebpackConfig` option.
 
 #### `customizeWebpackConfig`
 
@@ -417,6 +427,26 @@ const module = await WebAssembly.instantiate(program, {});
 > **Warning**: Using the Browserify-based build system is deprecated, and will
 > be removed in a future version. Please migrate to the Webpack-based build
 > system.
+
+- [`bundler`](#bundler)
+- [`cliOptions`](#clioptions)
+  - [`cliOptions.bundle`](#clioptionsbundle)
+  - [`cliOptions.dist`](#clioptionsdist)
+  - [`cliOptions.eval`](#clioptionseval)
+  - [`cliOptions.manifest`](#clioptionsmanifest)
+  - [`cliOptions.outfileName`](#clioptionsoutfilename)
+  - [`cliOptions.port`](#clioptionsport)
+  - [`cliOptions.root`](#clioptionsroot)
+  - [`cliOptions.sourceMaps`](#clioptionssourcemaps)
+  - [`cliOptions.src`](#clioptionssrc)
+  - [`cliOptions.stripComments`](#clioptionsstripcomments)
+  - [`cliOptions.transpilationMode`](#clioptionstranspilationmode)
+  - [`cliOptions.depsToTranspile`](#clioptionsdepstotranspile)
+  - [`cliOptions.writeManifest`](#clioptionswritemanifest)
+  - [`cliOptions.serve`](#clioptionsserve)
+  - [`cliOptions.verboseErrors`](#clioptionsverboseerrors)
+  - [`cliOptions.suppressWarnings`](#clioptionssuppresswarnings)
+- [`bundlerCustomizer`](#bundlercustomizer)
 
 #### `bundler`
 
