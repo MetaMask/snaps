@@ -1,6 +1,12 @@
-import { getCommandRunner } from '@metamask/snaps-cli/test-utils';
+import { getCommandRunner, TestRunner } from '@metamask/snaps-cli/test-utils';
 
 describe('mm-snap serve', () => {
+  let runner: TestRunner;
+
+  afterEach(() => {
+    runner?.kill();
+  });
+
   it.each([
     {
       command: 'serve',
@@ -13,7 +19,7 @@ describe('mm-snap serve', () => {
   ])(
     'serves a snap over HTTP on port $port using "mm-snap $command --port $port"',
     async ({ command, port }) => {
-      const runner = getCommandRunner(command, ['--port', port]);
+      runner = getCommandRunner(command, ['--port', port]);
       await runner.waitForStdout();
 
       expect(runner.stderr).toStrictEqual([]);
@@ -25,8 +31,6 @@ describe('mm-snap serve', () => {
       expect(result.ok).toBe(true);
       expect(result.headers.get('Cache-Control')).toBe('no-cache');
       expect(result.headers.get('Access-Control-Allow-Origin')).toBe('*');
-
-      runner.kill();
     },
   );
 });

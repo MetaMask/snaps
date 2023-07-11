@@ -1,11 +1,12 @@
 import { promises as fs } from 'fs';
 import { resolve } from 'path';
 
-import { getCommandRunner, SNAP_DIR } from '../../test-utils';
+import { getCommandRunner, SNAP_DIR, TestRunner } from '../../test-utils';
 
 describe('mm-snap watch', () => {
   const SNAP_FILE = resolve(SNAP_DIR, 'src/index.ts');
   let originalFile: string;
+  let runner: TestRunner;
 
   beforeEach(async () => {
     // Since this is an end-to-end test, and we're working with a "real" snap,
@@ -15,13 +16,14 @@ describe('mm-snap watch', () => {
   });
 
   afterEach(async () => {
+    runner?.kill();
     await fs.writeFile(SNAP_FILE, originalFile);
   });
 
   it.each(['watch', 'w'])(
     'builds and watches for changes using "mm-snap %s"',
     async (command) => {
-      const runner = getCommandRunner(command, ['--port', '0']);
+      runner = getCommandRunner(command, ['--port', '0']);
       await runner.waitForStdout(/Compiled \d+ files? in \d+ms\./u);
 
       await fs.writeFile(SNAP_FILE, originalFile);
@@ -41,8 +43,6 @@ describe('mm-snap watch', () => {
         /Changes detected in .+, recompiling\./u,
       );
       expect(runner.stdout[8]).toMatch(/Compiled \d+ files? in \d+ms\./u);
-
-      runner.kill();
     },
   );
 });

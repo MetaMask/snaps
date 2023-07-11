@@ -15,7 +15,7 @@ export const SNAP_BROWSERIFY_DIR = join(
 /**
  * A test runner for running CLI commands.
  */
-class TestRunner extends EventEmitter {
+export class TestRunner extends EventEmitter {
   readonly #process: ChildProcess;
 
   readonly stdout: string[] = [];
@@ -72,11 +72,15 @@ class TestRunner extends EventEmitter {
   }
 
   /**
-   * Kill the process.
+   * Kill the process. If the process is already dead, this does nothing.
    *
    * @param signal - The signal to send to the process.
    */
   kill(signal?: NodeJS.Signals) {
+    if (!this.running) {
+      return;
+    }
+
     this.#process.kill(signal);
   }
 

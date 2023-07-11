@@ -1,7 +1,13 @@
-import { getCommandRunner } from '@metamask/snaps-cli/test-utils';
+import { getCommandRunner, TestRunner } from '@metamask/snaps-cli/test-utils';
 import { resolve } from 'path';
 
 describe('mm-snap eval', () => {
+  let runner: TestRunner;
+
+  afterEach(() => {
+    runner?.kill();
+  });
+
   it.each([
     {
       command: 'eval',
@@ -22,7 +28,7 @@ describe('mm-snap eval', () => {
   ])(
     'evaluates a $bundler snap using "mm-snap $command"',
     async ({ command, bundler }) => {
-      const runner = getCommandRunner(
+      runner = getCommandRunner(
         command,
         [],
         resolve(__dirname, '__test__', bundler, 'good'),
@@ -30,18 +36,18 @@ describe('mm-snap eval', () => {
 
       await runner.wait();
 
-      expect(runner.exitCode).toBe(0);
       expect(runner.stderr).toStrictEqual([]);
       expect(runner.stdout[0]).toMatch(/Checking the input file\./u);
       expect(runner.stdout[1]).toMatch(/Evaluating the snap bundle\./u);
       expect(runner.stdout[2]).toMatch(/Successfully evaluated snap bundle\./u);
+      expect(runner.exitCode).toBe(0);
     },
   );
 
   it.each(['eval', 'e'])(
     'evaluates a snap using "mm-snap %s --input eval.js"',
     async (command) => {
-      const runner = getCommandRunner(
+      runner = getCommandRunner(
         command,
         ['--input', 'good/eval.js'],
         resolve(__dirname, '__test__', 'webpack'),
@@ -49,18 +55,18 @@ describe('mm-snap eval', () => {
 
       await runner.wait();
 
-      expect(runner.exitCode).toBe(0);
       expect(runner.stderr).toStrictEqual([]);
       expect(runner.stdout[0]).toMatch(/Checking the input file\./u);
       expect(runner.stdout[1]).toMatch(/Evaluating the snap bundle\./u);
       expect(runner.stdout[2]).toMatch(/Successfully evaluated snap bundle\./u);
+      expect(runner.exitCode).toBe(0);
     },
   );
 
   it.each(['eval', 'e'])(
     'evaluates a snap using "mm-snap %s -i eval.js"',
     async (command) => {
-      const runner = getCommandRunner(
+      runner = getCommandRunner(
         command,
         ['-i', 'good/eval.js'],
         resolve(__dirname, '__test__', 'webpack'),
@@ -68,16 +74,16 @@ describe('mm-snap eval', () => {
 
       await runner.wait();
 
-      expect(runner.exitCode).toBe(0);
       expect(runner.stderr).toStrictEqual([]);
       expect(runner.stdout[0]).toMatch(/Checking the input file\./u);
       expect(runner.stdout[1]).toMatch(/Evaluating the snap bundle\./u);
       expect(runner.stdout[2]).toMatch(/Successfully evaluated snap bundle\./u);
+      expect(runner.exitCode).toBe(0);
     },
   );
 
   it('shows a message if the evaluation failed', async () => {
-    const runner = getCommandRunner(
+    runner = getCommandRunner(
       'eval',
       [],
       resolve(__dirname, '__test__', 'webpack', 'bad'),
@@ -85,11 +91,11 @@ describe('mm-snap eval', () => {
 
     await runner.wait();
 
-    expect(runner.exitCode).toBe(1);
     expect(runner.stdout[0]).toMatch(/Checking the input file\./u);
     expect(runner.stdout[1]).toMatch(/Evaluating the snap bundle\./u);
     expect(runner.stderr[0]).toMatch(
       /Failed to evaluate snap bundle in SES\. This is likely due to an incompatibility with the SES environment in your snap\./u,
     );
+    expect(runner.exitCode).toBe(1);
   });
 });
