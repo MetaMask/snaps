@@ -1,5 +1,5 @@
 import { indent } from '@metamask/snaps-utils';
-import { assert } from '@metamask/utils';
+import { assert, hasProperty, isObject } from '@metamask/utils';
 import { dim, red, yellow } from 'chalk';
 import { isBuiltin } from 'module';
 import { Ora } from 'ora';
@@ -372,14 +372,32 @@ export class SnapsBundleWarningsPlugin implements WebpackPluginInstance {
   }
 
   /**
+   * Check if the given instance is a `ProvidePlugin`. This is not guaranteed to
+   * be accurate, but it's good enough for our purposes. If we were to use
+   * `instanceof` instead, it might not work if multiple versions of Webpack are
+   * installed.
+   *
+   * @param instance - The instance to check.
+   * @returns Whether the instance is a `ProvidePlugin`, i.e., whether it's an
+   * object with the name `ProvidePlugin` and a `definitions` property.
+   */
+  #isProvidePlugin(instance: unknown): instance is ProvidePlugin {
+    return (
+      isObject(instance) &&
+      instance.constructor.name === 'ProvidePlugin' &&
+      hasProperty(instance, 'definitions')
+    );
+  }
+
+  /**
    * Check if the `Buffer` global is used, but not provided by Webpack's
    * `DefinePlugin`.
    *
    * @param compiler - The Webpack compiler.
    */
   #checkBuffer(compiler: Compiler) {
-    const plugin = compiler.options.plugins?.find(
-      (instance) => instance instanceof ProvidePlugin,
+    const plugin = compiler.options.plugins?.find((instance) =>
+      this.#isProvidePlugin(instance),
     ) as ProvidePlugin | undefined;
 
     // If the `ProvidePlugin` is configured to provide `Buffer`, then we don't
