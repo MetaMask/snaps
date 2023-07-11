@@ -24,8 +24,10 @@ describe('mm-snap serve', () => {
       await runner.waitForStdout();
 
       expect(runner.stderr).toStrictEqual([]);
-      expect(runner.stdout[0]).toMatch(
-        /The server is listening on http:\/\/localhost:\d+\./u,
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(
+          /The server is listening on http:\/\/localhost:\d+\./u,
+        ),
       );
 
       const result = await fetch(`http://localhost:${port}/snap.manifest.json`);

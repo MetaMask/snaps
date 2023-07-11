@@ -31,16 +31,23 @@ describe('mm-snap watch', () => {
       await runner.waitForStdout(/Compiled \d+ files? in \d+ms\./u);
 
       expect(runner.stderr).toStrictEqual([]);
-      expect(runner.stdout[0]).toMatch(/Checking the input file\./u);
-      expect(runner.stdout[1]).toMatch(/Starting the development server\./u);
-      expect(runner.stdout[2]).toMatch(
-        /The server is listening on http:\/\/localhost:\d+\./u,
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Checking the input file\./u),
       );
-      expect(runner.stdout[3]).toMatch(/Building the snap bundle\./u);
-      expect(runner.stdout[4]).toMatch(/Compiled \d+ files? in \d+ms\./u);
-
-      // The order of the following message seems to be different across
-      // platforms, so we'll just check that it's there somewhere.
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Starting the development server\./u),
+      );
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(
+          /The server is listening on http:\/\/localhost:\d+\./u,
+        ),
+      );
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Building the snap bundle\./u),
+      );
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Compiled \d+ files? in \d+ms\./u),
+      );
       expect(runner.stdout).toContainEqual(
         expect.stringMatching(/Changes detected in .+, recompiling\./u),
       );

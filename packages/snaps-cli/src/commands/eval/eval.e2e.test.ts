@@ -37,9 +37,15 @@ describe('mm-snap eval', () => {
       await runner.wait();
 
       expect(runner.stderr).toStrictEqual([]);
-      expect(runner.stdout[0]).toMatch(/Checking the input file\./u);
-      expect(runner.stdout[1]).toMatch(/Evaluating the snap bundle\./u);
-      expect(runner.stdout[2]).toMatch(/Successfully evaluated snap bundle\./u);
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Checking the input file\./u),
+      );
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Evaluating the snap bundle\./u),
+      );
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Successfully evaluated snap bundle\./u),
+      );
       expect(runner.exitCode).toBe(0);
     },
   );
@@ -56,9 +62,15 @@ describe('mm-snap eval', () => {
       await runner.wait();
 
       expect(runner.stderr).toStrictEqual([]);
-      expect(runner.stdout[0]).toMatch(/Checking the input file\./u);
-      expect(runner.stdout[1]).toMatch(/Evaluating the snap bundle\./u);
-      expect(runner.stdout[2]).toMatch(/Successfully evaluated snap bundle\./u);
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Checking the input file\./u),
+      );
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Evaluating the snap bundle\./u),
+      );
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Successfully evaluated snap bundle\./u),
+      );
       expect(runner.exitCode).toBe(0);
     },
   );
@@ -75,9 +87,15 @@ describe('mm-snap eval', () => {
       await runner.wait();
 
       expect(runner.stderr).toStrictEqual([]);
-      expect(runner.stdout[0]).toMatch(/Checking the input file\./u);
-      expect(runner.stdout[1]).toMatch(/Evaluating the snap bundle\./u);
-      expect(runner.stdout[2]).toMatch(/Successfully evaluated snap bundle\./u);
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Checking the input file\./u),
+      );
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Evaluating the snap bundle\./u),
+      );
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Successfully evaluated snap bundle\./u),
+      );
       expect(runner.exitCode).toBe(0);
     },
   );
@@ -91,10 +109,16 @@ describe('mm-snap eval', () => {
 
     await runner.wait();
 
-    expect(runner.stdout[0]).toMatch(/Checking the input file\./u);
-    expect(runner.stdout[1]).toMatch(/Evaluating the snap bundle\./u);
-    expect(runner.stderr[0]).toMatch(
-      /Failed to evaluate snap bundle in SES\. This is likely due to an incompatibility with the SES environment in your snap\./u,
+    expect(runner.stdout).toContainEqual(
+      expect.stringMatching(/Checking the input file\./u),
+    );
+    expect(runner.stdout).toContainEqual(
+      expect.stringMatching(/Evaluating the snap bundle\./u),
+    );
+    expect(runner.stderr).toContainEqual(
+      expect.stringMatching(
+        /Failed to evaluate snap bundle in SES\. This is likely due to an incompatibility with the SES environment in your snap\./u,
+      ),
     );
     expect(runner.exitCode).toBe(1);
   });

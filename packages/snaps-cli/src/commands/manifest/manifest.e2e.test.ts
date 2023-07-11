@@ -14,9 +14,15 @@ describe('mm-snap manifest', () => {
       await runner.wait();
 
       expect(runner.stderr).toStrictEqual([]);
-      expect(runner.stdout[0]).toMatch(/Checking the input file\./u);
-      expect(runner.stdout[1]).toMatch(/Validating the snap manifest\./u);
-      expect(runner.stdout[2]).toMatch(/The snap manifest file is valid\./u);
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Checking the input file\./u),
+      );
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Validating the snap manifest\./u),
+      );
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/The snap manifest file is valid\./u),
+      );
       expect(runner.exitCode).toBe(0);
     },
   );

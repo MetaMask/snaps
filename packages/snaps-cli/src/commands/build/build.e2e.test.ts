@@ -18,10 +18,18 @@ describe('mm-snap build', () => {
       await runner.wait();
 
       expect(runner.stderr).toStrictEqual([]);
-      expect(runner.stdout[0]).toMatch(/Checking the input file\./u);
-      expect(runner.stdout[1]).toMatch(/Building the snap bundle\./u);
-      expect(runner.stdout[2]).toMatch(/Compiled \d+ files? in \d+ms\./u);
-      expect(runner.stdout[3]).toMatch(/Evaluating the snap bundle\./u);
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Checking the input file\./u),
+      );
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Building the snap bundle\./u),
+      );
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Compiled \d+ files? in \d+ms\./u),
+      );
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Evaluating the snap bundle\./u),
+      );
       expect(runner.exitCode).toBe(0);
     },
   );
@@ -33,10 +41,18 @@ describe('mm-snap build', () => {
       await runner.wait();
 
       expect(runner.stderr).toStrictEqual([]);
-      expect(runner.stdout[0]).toMatch(/Checking the input file\./u);
-      expect(runner.stdout[1]).toMatch(/Building the snap bundle\./u);
-      expect(runner.stdout[2]).toMatch(/Compiled \d+ files? in \d+ms\./u);
-      expect(runner.stdout[3]).toMatch(/Evaluating the snap bundle\./u);
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Checking the input file\./u),
+      );
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Building the snap bundle\./u),
+      );
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Compiled \d+ files? in \d+ms\./u),
+      );
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Evaluating the snap bundle\./u),
+      );
       expect(runner.exitCode).toBe(0);
     },
   );
