@@ -9,7 +9,7 @@ export const SNAP_DIR = join(__dirname, '../../../examples/packages/json-rpc');
 // that uses Browserify and use that for testing.
 export const SNAP_BROWSERIFY_DIR = join(
   __dirname,
-  '../../../examples/packages/cronjobs',
+  '../../../examples/packages/network-access',
 );
 
 /**
