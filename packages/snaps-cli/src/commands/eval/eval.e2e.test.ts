@@ -44,7 +44,7 @@ describe('mm-snap eval', () => {
         expect.stringMatching(/Evaluating the snap bundle\./u),
       );
       expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Successfully evaluated snap bundle\./u),
+        expect.stringMatching(/Snap bundle evaluated successfully\./u),
       );
       expect(runner.exitCode).toBe(0);
     },
@@ -69,7 +69,7 @@ describe('mm-snap eval', () => {
         expect.stringMatching(/Evaluating the snap bundle\./u),
       );
       expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Successfully evaluated snap bundle\./u),
+        expect.stringMatching(/Snap bundle evaluated successfully\./u),
       );
       expect(runner.exitCode).toBe(0);
     },
@@ -94,7 +94,7 @@ describe('mm-snap eval', () => {
         expect.stringMatching(/Evaluating the snap bundle\./u),
       );
       expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Successfully evaluated snap bundle\./u),
+        expect.stringMatching(/Snap bundle evaluated successfully\./u),
       );
       expect(runner.exitCode).toBe(0);
     },

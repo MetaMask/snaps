@@ -204,6 +204,7 @@ export class SnapsWatchPlugin implements WebpackPluginInstance {
   async #safeEvaluate(bundlePath: string) {
     try {
       await evaluate(bundlePath);
+      info(`Snap bundle evaluated successfully.`, this.#spinner);
     } catch (evaluateError) {
       error(evaluateError.message, this.#spinner);
     }

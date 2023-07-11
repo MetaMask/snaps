@@ -269,7 +269,10 @@ describe('SnapsWatchPlugin', () => {
       );
     });
 
-    expect(log).not.toHaveBeenCalled();
+    expect(log).toHaveBeenCalledTimes(1);
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching(/Snap bundle evaluated successfully\./u),
+    );
     expect(evaluate).toHaveBeenCalled();
 
     const close = promisify(watcher.close.bind(watcher));
