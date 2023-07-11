@@ -99,11 +99,16 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
       "showEntries": true,
       "showModules": true,
     },
-    undefined,
-    SnapsBuiltInResolverPlugin {},
     SnapsBundleWarningsPlugin {
       "options": {
         "buffer": true,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
       },
     },
   ],
@@ -203,7 +208,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     SnapsStatsPlugin {
       "options": {
-        "verbose": false,
+        "verbose": true,
       },
     },
     EnvironmentPlugin {
@@ -229,11 +234,16 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
       "showEntries": true,
       "showModules": true,
     },
-    undefined,
-    SnapsBuiltInResolverPlugin {},
     SnapsBundleWarningsPlugin {
       "options": {
         "buffer": true,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
       },
     },
   ],
@@ -359,9 +369,18 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
       "showEntries": true,
       "showModules": true,
     },
-    undefined,
-    SnapsBuiltInResolverPlugin {},
-    false,
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": false,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
+      },
+    },
   ],
   "resolve": {
     "extensions": [
@@ -487,9 +506,13 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
       "showEntries": true,
       "showModules": true,
     },
-    undefined,
-    false,
-    false,
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": false,
+        "builtInResolver": false,
+        "builtIns": false,
+      },
+    },
   ],
   "resolve": {
     "extensions": [
@@ -613,11 +636,16 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
       "showEntries": true,
       "showModules": true,
     },
-    undefined,
-    SnapsBuiltInResolverPlugin {},
     SnapsBundleWarningsPlugin {
       "options": {
         "buffer": true,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
       },
     },
   ],
@@ -743,11 +771,16 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
       "showEntries": true,
       "showModules": true,
     },
-    undefined,
-    SnapsBuiltInResolverPlugin {},
     SnapsBundleWarningsPlugin {
       "options": {
         "buffer": true,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
       },
     },
   ],
@@ -873,6 +906,18 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
       "showEntries": true,
       "showModules": true,
     },
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
+      },
+    },
     SnapsWatchPlugin {
       "options": {
         "bundle": "/bar/baz/bundle.js",
@@ -880,12 +925,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "files": [
           "/bar/snap.manifest.json",
         ],
-      },
-    },
-    SnapsBuiltInResolverPlugin {},
-    SnapsBundleWarningsPlugin {
-      "options": {
-        "buffer": true,
       },
     },
   ],
@@ -1011,11 +1050,16 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
       "showEntries": true,
       "showModules": true,
     },
-    false,
-    SnapsBuiltInResolverPlugin {},
     SnapsBundleWarningsPlugin {
       "options": {
         "buffer": true,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
       },
     },
   ],
@@ -1141,11 +1185,16 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
       "showEntries": true,
       "showModules": true,
     },
-    false,
-    SnapsBuiltInResolverPlugin {},
     SnapsBundleWarningsPlugin {
       "options": {
         "buffer": true,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
       },
     },
   ],
@@ -1271,6 +1320,18 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
       "showEntries": true,
       "showModules": true,
     },
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
+      },
+    },
     SnapsWatchPlugin {
       "options": {
         "bundle": "/bar/baz/bundle.js",
@@ -1278,12 +1339,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "files": [
           "/bar/snap.manifest.json",
         ],
-      },
-    },
-    SnapsBuiltInResolverPlugin {},
-    SnapsBundleWarningsPlugin {
-      "options": {
-        "buffer": true,
       },
     },
   ],
@@ -1409,6 +1464,18 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
       "showEntries": true,
       "showModules": true,
     },
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
+      },
+    },
     SnapsWatchPlugin {
       "options": {
         "bundle": "/bar/baz/bundle.js",
@@ -1416,12 +1483,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "files": [
           "/bar/snap.manifest.json",
         ],
-      },
-    },
-    SnapsBuiltInResolverPlugin {},
-    SnapsBundleWarningsPlugin {
-      "options": {
-        "buffer": true,
       },
     },
   ],
@@ -1549,9 +1610,13 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
       "showEntries": true,
       "showModules": true,
     },
-    undefined,
-    false,
-    false,
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": false,
+        "builtInResolver": false,
+        "builtIns": false,
+      },
+    },
   ],
   "resolve": {
     "extensions": [
@@ -1672,9 +1737,13 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
       "showEntries": true,
       "showModules": true,
     },
-    undefined,
-    false,
-    false,
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": false,
+        "builtInResolver": false,
+        "builtIns": false,
+      },
+    },
   ],
   "resolve": {
     "extensions": [
@@ -1795,9 +1864,13 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
       "showEntries": true,
       "showModules": true,
     },
-    undefined,
-    false,
-    false,
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": false,
+        "builtInResolver": false,
+        "builtIns": false,
+      },
+    },
   ],
   "resolve": {
     "extensions": [

@@ -330,44 +330,37 @@ export type SnapWebpackConfig = {
    */
   environment?: Record<string, unknown>;
 
-  plugins?: {
+  /**
+   * Options that control the logging output of the CLI.
+   */
+  stats?: {
     /**
-     * Options for the {@link SnapsStatsPlugin} plugin. This plugin cannot be
-     * disabled.
+     * Whether to enable verbose logging.
+     *
+     * @default false
      */
-    stats?: {
-      /**
-       * Whether to enable verbose logging.
-       */
-      verbose?: boolean;
-    };
+    verbose?: boolean;
 
     /**
-     * Options for the {@link SnapsBuiltInResolver} plugin. If `false`, the
-     * plugin will be disabled.
+     * Whether to log warnings about unresolved built-in modules. If `false`,
+     * warnings will not be logged.
      */
-    builtInResolver?:
+    builtIns?:
       | {
           /**
-           * The built-in modules to ignore when resolving modules.
+           * The built-in modules to ignore when resolving modules. If a module
+           * is ignored, no warning will be logged if it is not resolved.
            */
           ignore?: string[];
         }
       | false;
 
     /**
-     * Options for the {@link SnapsBundleWarningsPlugin} plugin. If `false`, the
-     * plugin will be disabled.
+     * Whether to log warnings about the use of the `Buffer` global. If `false`,
+     * warnings will not be logged. If `true`, the CLI will warn if the `Buffer`
+     * global is used, but not provided by Webpack's `DefinePlugin`.
      */
-    bundleWarnings?:
-      | {
-          /**
-           * Whether to show warnings if the `Buffer` global is used, but not
-           * provided by Webpack's `DefinePlugin`.
-           */
-          buffer?: boolean;
-        }
-      | false;
+    buffer?: boolean;
   };
 
   /**
@@ -523,27 +516,17 @@ export const SnapsWebpackConfigStruct = object({
     DEBUG: false,
   }),
 
-  plugins: defaulted(
+  stats: defaulted(
     object({
-      stats: defaulted(
-        object({
-          verbose: defaulted(boolean(), false),
-        }),
-        {},
-      ),
-
-      builtInResolver: defaulted(
+      verbose: defaulted(boolean(), false),
+      builtIns: defaulted(
         union([
           object({ ignore: defaulted(array(string()), []) }),
           literal(false),
         ]),
         {},
       ),
-
-      bundleWarnings: defaulted(
-        union([object({ buffer: defaulted(boolean(), true) }), literal(false)]),
-        {},
-      ),
+      buffer: defaulted(boolean(), true),
     }),
     {},
   ),
@@ -840,15 +823,13 @@ export function getWebpackConfig(
       port: legacyConfig.cliOptions.port,
       root: legacyConfig.cliOptions.root,
     },
-    plugins: {
-      stats: {
-        verbose: false,
-      },
+    stats: {
+      verbose: false,
 
       // These plugins are designed to be used with the modern config format, so
       // we disable them for the legacy config format.
-      builtInResolver: false,
-      bundleWarnings: false,
+      builtIns: false,
+      buffer: false,
     },
     legacy: createFromStruct(
       {

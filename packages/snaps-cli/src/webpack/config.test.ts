@@ -59,6 +59,9 @@ describe('getDefaultConfiguration', () => {
       manifest: {
         path: 'snap.manifest.json',
       },
+      stats: {
+        verbose: true,
+      },
     }),
     getMockConfig('webpack', {
       input: 'src/index.ts',
@@ -68,8 +71,8 @@ describe('getDefaultConfiguration', () => {
       manifest: {
         path: 'snap.manifest.json',
       },
-      plugins: {
-        bundleWarnings: false,
+      stats: {
+        buffer: false,
       },
       sourceMap: 'inline',
     }),
@@ -84,9 +87,9 @@ describe('getDefaultConfiguration', () => {
       environment: {
         FOO: 'bar',
       },
-      plugins: {
-        bundleWarnings: false,
-        builtInResolver: false,
+      stats: {
+        builtIns: false,
+        buffer: false,
       },
       sourceMap: true,
     }),

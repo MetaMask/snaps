@@ -294,10 +294,37 @@ export class SnapsBuiltInResolver implements ResolvePluginInstance {
 }
 
 /**
- * A plugin that logs a message when a built-in module is not resolved. The
- * MetaMask Snaps CLI does not support built-in modules by default, and this
- * plugin is used to warn the user when they try to import a built-in module,
- * when no fallback is configured.
+ * The options for the {@link SnapsBundleWarningsPlugin}.
+ */
+export type SnapsBundleWarningsPluginOptions = {
+  /**
+   * The {@link SnapsBuiltInResolver} instance to use for detecting built-in
+   * modules.
+   */
+  builtInResolver?: SnapsBuiltInResolver | false;
+
+  /**
+   * Whether to show warnings if built-in modules are used, but not provided by
+   * Webpack's `fallback` configuration.
+   */
+  builtIns?: boolean;
+
+  /**
+   * Whether to show warnings if the `Buffer` global is used, but not provided
+   * by Webpack's `DefinePlugin`.
+   */
+  buffer?: boolean;
+};
+
+/**
+ * A plugin that logs a message when:
+ *
+ * - A built-in module is not resolved. The MetaMask Snaps CLI does not support
+ * built-in modules by default, and this plugin is used to warn the user when
+ * they try to import a built-in module, when no fallback is configured.
+ * - A snap uses the `Buffer` global. The MetaMask Snaps CLI does not support
+ * the `Buffer` global by default, and this plugin is used to warn the user when
+ * they try to use the `Buffer` global.
  *
  * We use both a resolver and a plugin, because the resolver is used to detect
  * when a built-in module is imported, and the plugin is used to log a single
@@ -305,19 +332,26 @@ export class SnapsBuiltInResolver implements ResolvePluginInstance {
  * plugin, because the resolver doesn't have access to the compilation, and the
  * plugin doesn't have access to the resolver.
  */
-export class SnapsBuiltInResolverPlugin implements WebpackPluginInstance {
-  /**
-   * The resolver to use for detecting built-in modules.
-   */
-  readonly #resolver: SnapsBuiltInResolver | false;
 
+export class SnapsBundleWarningsPlugin implements WebpackPluginInstance {
   /**
    * The spinner to use for logging.
    */
   readonly #spinner?: Ora;
 
-  constructor(resolver: SnapsBuiltInResolver | false, spinner?: Ora) {
-    this.#resolver = resolver;
+  /**
+   * The options for the plugin.
+   */
+  readonly options: SnapsBundleWarningsPluginOptions;
+
+  constructor(
+    options: SnapsBundleWarningsPluginOptions = {
+      buffer: true,
+      builtIns: true,
+    },
+    spinner?: Ora,
+  ) {
+    this.options = options;
     this.#spinner = spinner;
   }
 
@@ -327,12 +361,28 @@ export class SnapsBuiltInResolverPlugin implements WebpackPluginInstance {
    * @param compiler - The Webpack compiler.
    */
   apply(compiler: Compiler) {
+    if (this.options.builtIns) {
+      this.#checkBuiltIns(compiler);
+    }
+
+    if (this.options.buffer) {
+      this.#checkBuffer(compiler);
+    }
+  }
+
+  /**
+   * Check if a built-in module is used, but not provided by Webpack's
+   * `fallback` configuration.
+   *
+   * @param compiler - The Webpack compiler.
+   */
+  #checkBuiltIns(compiler: Compiler) {
     compiler.hooks.afterCompile.tap(this.constructor.name, () => {
-      if (!this.#resolver) {
+      if (!this.options.builtInResolver) {
         return;
       }
 
-      const { unresolvedModules } = this.#resolver;
+      const { unresolvedModules } = this.options.builtInResolver;
       if (unresolvedModules.size === 0) {
         return;
       }
@@ -354,55 +404,6 @@ export class SnapsBuiltInResolverPlugin implements WebpackPluginInstance {
         this.#spinner,
       );
     });
-  }
-}
-
-/**
- * The options for the {@link SnapsBundleWarningsPlugin}.
- */
-export type SnapsBundleWarningsPluginOptions = {
-  /**
-   * Whether to show warnings if the `Buffer` global is used, but not provided
-   * by Webpack's `DefinePlugin`.
-   */
-  buffer?: boolean;
-};
-
-/**
- * A plugin that logs a message when a snap uses the `Buffer` global. The
- * MetaMask Snaps CLI does not support the `Buffer` global by default, and this
- * plugin is used to warn the user when they try to use the `Buffer` global.
- */
-export class SnapsBundleWarningsPlugin implements WebpackPluginInstance {
-  /**
-   * The spinner to use for logging.
-   */
-  readonly #spinner?: Ora;
-
-  /**
-   * The options for the plugin.
-   */
-  readonly options: SnapsBundleWarningsPluginOptions;
-
-  constructor(
-    options: SnapsBundleWarningsPluginOptions = {
-      buffer: true,
-    },
-    spinner?: Ora,
-  ) {
-    this.options = options;
-    this.#spinner = spinner;
-  }
-
-  /**
-   * Apply the plugin to the Webpack compiler.
-   *
-   * @param compiler - The Webpack compiler.
-   */
-  apply(compiler: Compiler) {
-    if (this.options.buffer) {
-      this.#checkBuffer(compiler);
-    }
   }
 
   /**

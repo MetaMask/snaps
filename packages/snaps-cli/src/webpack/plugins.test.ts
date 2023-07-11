@@ -7,7 +7,6 @@ import * as evalImplementation from '../commands/eval/implementation';
 import { compile, getCompiler } from '../test-utils';
 import {
   SnapsBuiltInResolver,
-  SnapsBuiltInResolverPlugin,
   SnapsBundleWarningsPlugin,
   SnapsStatsPlugin,
   SnapsWatchPlugin,
@@ -404,13 +403,13 @@ describe('SnapsBuiltInResolver', () => {
   });
 });
 
-describe('SnapsBuiltInResolverPlugin', () => {
+describe('SnapsBundleWarningsPlugin', () => {
   it('logs a message when built-in modules are unresolved', async () => {
     const log = jest.spyOn(console, 'warn').mockImplementation();
-    const resolver = new SnapsBuiltInResolver();
+    const builtInResolver = new SnapsBuiltInResolver();
 
-    resolver.unresolvedModules.add('fs');
-    resolver.unresolvedModules.add('path');
+    builtInResolver.unresolvedModules.add('fs');
+    builtInResolver.unresolvedModules.add('path');
 
     await compile({
       code: `
@@ -420,7 +419,9 @@ describe('SnapsBuiltInResolverPlugin', () => {
         console.log(fs, path);
       `,
       config: {
-        plugins: [new SnapsBuiltInResolverPlugin(resolver)],
+        plugins: [
+          new SnapsBundleWarningsPlugin({ builtIns: true, builtInResolver }),
+        ],
         resolve: {
           fallback: {
             fs: false,
@@ -441,7 +442,7 @@ describe('SnapsBuiltInResolverPlugin', () => {
 
   it('does not log a message when built-in modules are resolved', async () => {
     const log = jest.spyOn(console, 'warn').mockImplementation();
-    const resolver = new SnapsBuiltInResolver();
+    const builtInResolver = new SnapsBuiltInResolver();
 
     await compile({
       code: `
@@ -451,7 +452,9 @@ describe('SnapsBuiltInResolverPlugin', () => {
         console.log(fs, path);
       `,
       config: {
-        plugins: [new SnapsBuiltInResolverPlugin(resolver)],
+        plugins: [
+          new SnapsBundleWarningsPlugin({ builtIns: true, builtInResolver }),
+        ],
         resolve: {
           fallback: {
             // These are technically not resolved, but for this test, we just
@@ -477,7 +480,12 @@ describe('SnapsBuiltInResolverPlugin', () => {
         console.log(fs, path);
       `,
       config: {
-        plugins: [new SnapsBuiltInResolverPlugin(false)],
+        plugins: [
+          new SnapsBundleWarningsPlugin({
+            builtIns: true,
+            builtInResolver: undefined,
+          }),
+        ],
         resolve: {
           fallback: {
             // These are technically not resolved, but for this test, we just
@@ -491,9 +499,7 @@ describe('SnapsBuiltInResolverPlugin', () => {
 
     expect(log).not.toHaveBeenCalled();
   });
-});
 
-describe('SnapsBundleWarningsPlugin', () => {
   it('logs a message when the bundle contains Buffer', async () => {
     const log = jest.spyOn(console, 'warn').mockImplementation();
 

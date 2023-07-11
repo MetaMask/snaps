@@ -8,7 +8,6 @@ import { Configuration, EnvironmentPlugin, ProgressPlugin } from 'webpack';
 import { ProcessedWebpackConfig } from '../config';
 import {
   SnapsBuiltInResolver,
-  SnapsBuiltInResolverPlugin,
   SnapsBundleWarningsPlugin,
   SnapsStatsPlugin,
   SnapsWatchPlugin,
@@ -64,8 +63,8 @@ export async function getDefaultConfiguration(
 ): Promise<Configuration> {
   const spinnerText = options.spinner?.text;
   const builtInResolver =
-    config.plugins.builtInResolver &&
-    new SnapsBuiltInResolver(config.plugins.builtInResolver, options.spinner);
+    config.stats.builtIns &&
+    new SnapsBuiltInResolver(config.stats.builtIns, options.spinner);
 
   return {
     /**
@@ -238,7 +237,7 @@ export async function getDefaultConfiguration(
        * output. It's used to show the stats in the terminal, in a format that
        * is easy to read.
        */
-      new SnapsStatsPlugin(config.plugins.stats, options.spinner),
+      new SnapsStatsPlugin({ verbose: config.stats.verbose }, options.spinner),
 
       /**
        * The `EnvironmentPlugin` is a Webpack plugin that adds environment
@@ -256,6 +255,20 @@ export async function getDefaultConfiguration(
       }),
 
       /**
+       * The `SnapsBundleWarningPlugin` is a Webpack plugin that shows a
+       * warning when the bundle is potentially incompatible with MetaMask
+       * Snaps.
+       */
+      new SnapsBundleWarningsPlugin(
+        {
+          builtInResolver,
+          builtIns: Boolean(config.stats.builtIns),
+          buffer: config.stats.buffer,
+        },
+        options.spinner,
+      ),
+
+      /**
        * The `WatchPlugin` is a Webpack plugin that adds extra files to watch
        * for changes. This is useful for rebuilding the bundle when the
        * manifest file changes.
@@ -269,25 +282,7 @@ export async function getDefaultConfiguration(
           },
           options.spinner,
         ),
-
-      /**
-       * The `SnapsBuiltInResolverPlugin` is a Webpack plugin that shows
-       * warnings about using Node.js built-ins, when no fallback is specified.
-       */
-      config.plugins.builtInResolver &&
-        new SnapsBuiltInResolverPlugin(builtInResolver, options.spinner),
-
-      /**
-       * The `SnapsBundleWarningPlugin` is a Webpack plugin that shows a
-       * warning when the bundle is potentially incompatible with MetaMask
-       * Snaps.
-       */
-      config.plugins.bundleWarnings &&
-        new SnapsBundleWarningsPlugin(
-          config.plugins.bundleWarnings,
-          options.spinner,
-        ),
-    ],
+    ].filter(Boolean),
 
     /**
      * The optimization configuration. This tells Webpack how to optimize the

@@ -6,10 +6,8 @@ const config: SnapConfig = {
   server: {
     port: 8013,
   },
-  plugins: {
-    bundleWarnings: {
-      buffer: false,
-    },
+  stats: {
+    buffer: false,
   },
 };
 
