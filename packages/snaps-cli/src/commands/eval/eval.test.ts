@@ -36,7 +36,7 @@ describe('evaluateHandler', () => {
     const { mock } = ora as jest.MockedFunction<typeof ora>;
     const spinner = mock.results[0].value;
     expect(spinner.succeed).toHaveBeenCalledWith(
-      'Successfully evaluated snap bundle.',
+      'Snap bundle evaluated successfully.',
     );
   });
 
@@ -59,7 +59,7 @@ describe('evaluateHandler', () => {
     const { mock } = ora as jest.MockedFunction<typeof ora>;
     const spinner = mock.results[0].value;
     expect(spinner.succeed).toHaveBeenCalledWith(
-      'Successfully evaluated snap bundle.',
+      'Snap bundle evaluated successfully.',
     );
   });
 
@@ -84,7 +84,7 @@ describe('evaluateHandler', () => {
     const { mock } = ora as jest.MockedFunction<typeof ora>;
     const spinner = mock.results[0].value;
     expect(spinner.succeed).toHaveBeenCalledWith(
-      'Successfully evaluated snap bundle.',
+      'Snap bundle evaluated successfully.',
     );
   });
 

@@ -28,7 +28,7 @@ const steps: Steps<EvalContext> = [
     name: 'Evaluating the snap bundle.',
     task: async ({ input, spinner }) => {
       await evaluate(input);
-      spinner.succeed('Successfully evaluated snap bundle.');
+      spinner.succeed('Snap bundle evaluated successfully.');
     },
   },
 ];

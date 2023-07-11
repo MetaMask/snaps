@@ -3,7 +3,7 @@ import { resolve as pathResolve } from 'path';
 
 import { ProcessedConfig, ProcessedWebpackConfig } from '../../config';
 import { CommandError } from '../../errors';
-import { executeSteps, Steps } from '../../utils';
+import { executeSteps, info, Steps } from '../../utils';
 import { evaluate } from '../eval';
 import { build } from './implementation';
 
@@ -35,7 +35,7 @@ const steps: Steps<BuildContext> = [
   {
     name: 'Evaluating the snap bundle.',
     condition: ({ config }) => config.evaluate,
-    task: async ({ config }) => {
+    task: async ({ config, spinner }) => {
       const path = pathResolve(
         process.cwd(),
         config.output.path,
@@ -43,6 +43,8 @@ const steps: Steps<BuildContext> = [
       );
 
       await evaluate(path);
+
+      info(`Snap bundle evaluated successfully.`, spinner);
     },
   },
 ] as const;
