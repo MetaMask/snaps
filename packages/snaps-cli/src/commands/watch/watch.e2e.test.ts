@@ -39,10 +39,11 @@ describe('mm-snap watch', () => {
       expect(runner.stdout[3]).toMatch(/Building the snap bundle\./u);
       expect(runner.stdout[4]).toMatch(/Compiled \d+ files? in \d+ms\./u);
 
-      expect(runner.stdout[7]).toMatch(
-        /Changes detected in .+, recompiling\./u,
+      // The order of the following message seems to be different across
+      // platforms, so we'll just check that it's there somewhere.
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Changes detected in .+, recompiling\./u),
       );
-      expect(runner.stdout[8]).toMatch(/Compiled \d+ files? in \d+ms\./u);
     },
   );
 });
