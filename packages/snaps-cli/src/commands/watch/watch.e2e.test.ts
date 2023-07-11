@@ -22,11 +22,11 @@ describe('mm-snap watch', () => {
     'builds and watches for changes using "mm-snap %s"',
     async (command) => {
       const runner = getCommandRunner(command, ['--port', '0']);
-      await runner.waitForStdout(/Compiled \d+ files in \d+ms\./u);
+      await runner.waitForStdout(/Compiled \d+ files? in \d+ms\./u);
 
       await fs.writeFile(SNAP_FILE, originalFile);
       await runner.waitForStdout(/Changes detected in .+, recompiling\./u);
-      await runner.waitForStdout(/Compiled \d+ files in \d+ms\./u);
+      await runner.waitForStdout(/Compiled \d+ files? in \d+ms\./u);
 
       expect(runner.stderr).toStrictEqual([]);
       expect(runner.stdout[0]).toMatch(/Checking the input file\./u);
@@ -35,12 +35,12 @@ describe('mm-snap watch', () => {
         /The server is listening on http:\/\/localhost:\d+\./u,
       );
       expect(runner.stdout[3]).toMatch(/Building the snap bundle\./u);
-      expect(runner.stdout[4]).toMatch(/Compiled \d+ files in \d+ms\./u);
+      expect(runner.stdout[4]).toMatch(/Compiled \d+ files? in \d+ms\./u);
 
       expect(runner.stdout[7]).toMatch(
         /Changes detected in .+, recompiling\./u,
       );
-      expect(runner.stdout[8]).toMatch(/Compiled \d+ files in \d+ms\./u);
+      expect(runner.stdout[8]).toMatch(/Compiled \d+ files? in \d+ms\./u);
 
       runner.kill();
     },

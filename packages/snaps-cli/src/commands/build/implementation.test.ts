@@ -113,7 +113,7 @@ describe('build', () => {
     await build(config);
 
     expect(log).toHaveBeenCalledWith(
-      expect.stringMatching(/Compiled 1 files in \d+ms\./u),
+      expect.stringMatching(/Compiled 1 file in \d+ms\./u),
     );
 
     const output = await fs.readFile('/snap/output.js', 'utf8');
@@ -147,7 +147,7 @@ describe('build', () => {
     await build(config);
 
     expect(log).toHaveBeenCalledWith(
-      expect.stringMatching(/Compiled 1 files in \d+ms\./u),
+      expect.stringMatching(/Compiled 1 file in \d+ms\./u),
     );
 
     const output = await fs.readFile('/snap/output.js', 'utf8');
@@ -206,7 +206,7 @@ describe('build', () => {
     await build(config);
 
     expect(log).toHaveBeenCalledWith(
-      expect.stringMatching(/Compiled 1 files in \d+ms\./u),
+      expect.stringMatching(/Compiled 1 file in \d+ms\./u),
     );
 
     const output = await fs.readFile('/snap/output.js', 'utf8');
@@ -234,7 +234,7 @@ describe('build', () => {
     await build(config);
 
     expect(log).toHaveBeenCalledWith(
-      expect.stringMatching(/Compiled 1 files in \d+ms\./u),
+      expect.stringMatching(/Compiled 1 file in \d+ms\./u),
     );
 
     const output = await fs.readFile('/snap/output.js', 'utf8');

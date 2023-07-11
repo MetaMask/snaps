@@ -25,7 +25,7 @@ describe('SnapsStatsPlugin', () => {
     });
 
     expect(log).toHaveBeenCalledWith(
-      expect.stringMatching(/Compiled 1 files in \d+ms\./u),
+      expect.stringMatching(/Compiled 1 file in \d+ms\./u),
     );
   });
 
@@ -49,7 +49,7 @@ describe('SnapsStatsPlugin', () => {
     ).rejects.toThrow('Failed to compile.');
 
     expect(log).toHaveBeenCalledWith(
-      expect.stringMatching(/Compiled 2 files in \d+ms with 1 error\(s\)\./u),
+      expect.stringMatching(/Compiled 2 files in \d+ms with 1 error\./u),
     );
 
     expect(log).toHaveBeenCalledWith(
@@ -81,7 +81,7 @@ describe('SnapsStatsPlugin', () => {
     ).rejects.toThrow('Failed to compile.');
 
     expect(log).toHaveBeenCalledWith(
-      expect.stringMatching(/Compiled 2 files in \d+ms with 1 error\(s\)\./u),
+      expect.stringMatching(/Compiled 2 files in \d+ms with 1 error\./u),
     );
 
     expect(log).toHaveBeenCalledWith(

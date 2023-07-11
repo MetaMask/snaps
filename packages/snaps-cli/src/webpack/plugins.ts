@@ -13,6 +13,7 @@ import {
 } from 'webpack';
 
 import { error, getErrorMessage, info, warn } from '../utils';
+import { pluralize } from './utils';
 
 export type SnapsStatsPluginOptions = {
   /**
@@ -68,7 +69,13 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
           .join('\n\n');
 
         error(
-          `Compiled ${modules?.length} files in ${time}ms with ${errors.length} error(s).\n\n${formattedErrors}\n`,
+          `Compiled ${modules.length} ${pluralize(
+            modules.length,
+            'file',
+          )} in ${time}ms with ${errors.length} ${pluralize(
+            errors.length,
+            'error',
+          )}.\n\n${formattedErrors}\n`,
           this.#spinner,
         );
 
@@ -78,7 +85,13 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
         return;
       }
 
-      info(`Compiled ${modules?.length} files in ${time}ms.`, this.#spinner);
+      info(
+        `Compiled ${modules.length} ${pluralize(
+          modules.length,
+          'file',
+        )} in ${time}ms.`,
+        this.#spinner,
+      );
 
       if (compiler.watchMode) {
         // The spinner may be restarted by the watch plugin, outside of the

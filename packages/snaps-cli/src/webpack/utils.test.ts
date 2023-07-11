@@ -6,6 +6,7 @@ import {
   getDefaultLoader,
   getDevTool,
   getProgressHandler,
+  pluralize,
 } from './utils';
 
 describe('getDefaultLoader', () => {
@@ -71,5 +72,19 @@ describe('getBrowserslistTargets', () => {
         "firefox >= 91",
       ]
     `);
+  });
+});
+
+describe('pluralize', () => {
+  it('pluralizes a word, based on the count', () => {
+    expect(pluralize(0, 'test')).toBe('tests');
+    expect(pluralize(1, 'test')).toBe('test');
+    expect(pluralize(2, 'test')).toBe('tests');
+  });
+
+  it('returns the plural form if `plural` is set', () => {
+    expect(pluralize(0, 'test', 'problems')).toBe('problems');
+    expect(pluralize(1, 'test', 'problems')).toBe('test');
+    expect(pluralize(2, 'test', 'problems')).toBe('problems');
   });
 });

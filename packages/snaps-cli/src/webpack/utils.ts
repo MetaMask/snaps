@@ -181,3 +181,31 @@ export async function getBrowserslistTargets() {
     .map((line) => line.trim())
     .filter((line) => line && !line.startsWith('#'));
 }
+
+/**
+ * Get a singular or plural string based on the given count. This is useful for
+ * generating messages like "1 error" or "2 errors". By default, the plural
+ * string is the singular string with an "s" appended to it.
+ *
+ * This assumes that the text is in English, and likely won't work for some
+ * other languages.
+ *
+ * @param count - The count.
+ * @param singular - The singular string.
+ * @param plural - The plural string.
+ * @returns The singular or plural string.
+ * @example
+ * ```typescript
+ * pluralize(1, 'error'); // => 'error'
+ * pluralize(2, 'error'); // => 'errors'
+ * pluralize(1, 'error', 'problem'); // => 'error'
+ * pluralize(2, 'error', 'problems'); // => 'problems'
+ * ```
+ */
+export function pluralize(
+  count: number,
+  singular: string,
+  plural = `${singular}s`,
+) {
+  return count === 1 ? singular : plural;
+}
