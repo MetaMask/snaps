@@ -31,6 +31,8 @@ JSON-RPC methods:
 - `getGasPrice`: Get the current recommended gas price from an Ethereum
   provider.
 - `getVersion`: Get the Ethereum network version from an Ethereum provider.
+- `getAccounts`: Get the Ethereum accounts made available to the snap from an
+  Ethereum provider.
 
 For more information, you can refer to
 [the end-to-end tests](./src/index.test.ts).

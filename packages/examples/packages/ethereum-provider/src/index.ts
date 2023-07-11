@@ -3,8 +3,8 @@ import { OnRpcRequestHandler } from '@metamask/snaps-types';
 import { assert, Hex } from '@metamask/utils';
 
 /**
- * Get the current gas price using the `ethereum` global. This essentially the
- * same as the `window.ethereum` global, but does not have access to all
+ * Get the current gas price using the `ethereum` global. This is essentially
+ * the same as the `window.ethereum` global, but does not have access to all
  * methods.
  *
  * Note that using the `ethereum` global requires the
@@ -21,9 +21,9 @@ async function getGasPrice() {
 }
 
 /**
- * Get the current network version using the `ethereum` global. This essentially
- * the same as the `window.ethereum` global, but does not have access to all
- * methods.
+ * Get the current network version using the `ethereum` global. This is
+ * essentially the same as the `window.ethereum` global, but does not have
+ * access to all methods.
  *
  * Note that using the `ethereum` global requires the
  * `endowment:ethereum-provider` permission.
@@ -39,11 +39,37 @@ async function getVersion() {
 }
 
 /**
+ * Get the Ethereum accounts that the snap has access to using the `ethereum`
+ * global. This is essentially the same as the `window.ethereum` global, but
+ * does not have access to all methods.
+ *
+ * If the user hasn't given the snap access to any accounts yet, this JSON-RPC
+ * method will show a prompt to the user, asking them to select the accounts to
+ * give the snap access to.
+ *
+ * Note that using the `ethereum` global requires the
+ * `endowment:ethereum-provider` permission.
+ *
+ * @returns The selected accounts as an array of hexadecimal strings.
+ * @throws If the user rejects the prompt.
+ * @see https://docs.metamask.io/snaps/reference/permissions/#endowmentethereum-provider
+ */
+async function getAccounts() {
+  const accounts = await ethereum.request<string[]>({
+    method: 'eth_requestAccounts',
+  });
+  assert(accounts, 'Ethereum provider did not return accounts.');
+
+  return accounts;
+}
+
+/**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
- * `wallet_invokeSnap` method. This handler handles two methods:
+ * `wallet_invokeSnap` method. This handler handles three methods:
  *
  * - `getGasPrice`: Get the current Ethereum gas price as a hexadecimal string.
  * - `getVersion`: Get the current Ethereum network version as a string.
+ * - `getAccounts`: Get the Ethereum accounts that the snap has access to.
  *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.
@@ -58,6 +84,9 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
 
     case 'getVersion':
       return await getVersion();
+
+    case 'getAccounts':
+      return await getAccounts();
 
     default:
       throw rpcErrors.methodNotFound({
