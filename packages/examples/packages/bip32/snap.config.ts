@@ -7,6 +7,10 @@ const config: SnapConfig = {
   server: {
     port: 8001,
   },
+  stats: {
+    builtIns: false,
+    buffer: false,
+  },
   customizeWebpackConfig: (defaultConfig) =>
     merge(defaultConfig, {
       resolve: {
