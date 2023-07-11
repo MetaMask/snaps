@@ -3,8 +3,8 @@ import { OnRpcRequestHandler } from '@metamask/snaps-types';
 import { assert, Hex } from '@metamask/utils';
 
 /**
- * Get the current gas price using the `ethereum` global. This is essentially the
- * same as the `window.ethereum` global, but does not have access to all
+ * Get the current gas price using the `ethereum` global. This is essentially
+ * the same as the `window.ethereum` global, but does not have access to all
  * methods.
  *
  * Note that using the `ethereum` global requires the
@@ -21,9 +21,9 @@ async function getGasPrice() {
 }
 
 /**
- * Get the current network version using the `ethereum` global. This is essentially
- * the same as the `window.ethereum` global, but does not have access to all
- * methods.
+ * Get the current network version using the `ethereum` global. This is
+ * essentially the same as the `window.ethereum` global, but does not have
+ * access to all methods.
  *
  * Note that using the `ethereum` global requires the
  * `endowment:ethereum-provider` permission.
@@ -39,13 +39,13 @@ async function getVersion() {
 }
 
 /**
- * Get the Ethereum accounts that the snap has access to using the `ethereum` global.
- * This is essentially the same as the `window.ethereum` global, but does not have access to all
- * methods.
+ * Get the Ethereum accounts that the snap has access to using the `ethereum`
+ * global. This is essentially the same as the `window.ethereum` global, but
+ * does not have access to all methods.
  *
- * If the user hasn't given the snap access to any accounts yet,
- * this JSON-RPC method will show a prompt to the user,
- * asking them to select the accounts to give the snap access to.
+ * If the user hasn't given the snap access to any accounts yet, this JSON-RPC
+ * method will show a prompt to the user, asking them to select the accounts to
+ * give the snap access to.
  *
  * Note that using the `ethereum` global requires the
  * `endowment:ethereum-provider` permission.
