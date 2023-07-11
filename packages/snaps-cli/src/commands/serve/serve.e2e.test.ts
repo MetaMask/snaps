@@ -1,4 +1,5 @@
 import { getCommandRunner, TestRunner } from '@metamask/snaps-cli/test-utils';
+import fetch from 'cross-fetch';
 
 describe('mm-snap serve', () => {
   let runner: TestRunner;

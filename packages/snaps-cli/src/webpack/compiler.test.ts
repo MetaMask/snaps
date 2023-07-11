@@ -1,3 +1,4 @@
+import fetch from 'cross-fetch';
 import http, { IncomingMessage, ServerResponse, Server } from 'http';
 import serveMiddleware from 'serve-handler';
 import { Compiler, Configuration } from 'webpack';
