@@ -1,6 +1,7 @@
 import { rpcErrors } from '@metamask/rpc-errors';
-import { OnRpcRequestHandler } from '@metamask/snaps-types';
-import { assert, Hex } from '@metamask/utils';
+import type { OnRpcRequestHandler } from '@metamask/snaps-types';
+import type { Hex } from '@metamask/utils';
+import { assert } from '@metamask/utils';
 
 /**
  * Get the current gas price using the `ethereum` global. This is essentially

@@ -1,4 +1,4 @@
-import { StreamProvider } from '@metamask/providers';
+import type { StreamProvider } from '@metamask/providers';
 
 /**
  * The type of `window.ethereum`.

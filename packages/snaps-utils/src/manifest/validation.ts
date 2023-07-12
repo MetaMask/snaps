@@ -5,12 +5,12 @@ import {
   VersionStruct,
   isValidSemVerRange,
 } from '@metamask/utils';
+import type { Infer, Struct } from 'superstruct';
 import {
   array,
   boolean,
   create,
   enums,
-  Infer,
   integer,
   is,
   literal,
@@ -21,7 +21,6 @@ import {
   record,
   size,
   string,
-  Struct,
   type,
   union,
 } from 'superstruct';

@@ -10,13 +10,14 @@ import {
   Textarea,
 } from '@chakra-ui/react';
 import { HandlerType } from '@metamask/snaps-utils';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { useDispatch, useSelector } from '../../../../hooks';
 import { sendRequest } from '../../../simulation';
 import { getTransactionRequest } from '../slice';
-import { TransactionFormData, hexlifyTransactionData } from '../utils';
+import type { TransactionFormData } from '../utils';
+import { hexlifyTransactionData } from '../utils';
 import { TransactionPrefills } from './TransactionPrefills';
 
 const PLACEHOLDERS = {

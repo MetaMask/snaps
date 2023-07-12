@@ -1,12 +1,8 @@
-import {
-  LinkProps as ChakraLinkProps,
-  Link as ChakraLink,
-} from '@chakra-ui/react';
-import { FunctionComponent } from 'react';
-import {
-  Link as RouterLink,
-  LinkProps as RouterLinkProps,
-} from 'react-router-dom';
+import type { LinkProps as ChakraLinkProps } from '@chakra-ui/react';
+import { Link as ChakraLink } from '@chakra-ui/react';
+import type { FunctionComponent } from 'react';
+import type { LinkProps as RouterLinkProps } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 type LinkProps = {
   to: string;

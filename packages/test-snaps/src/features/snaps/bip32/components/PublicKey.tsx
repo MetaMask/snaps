@@ -1,6 +1,6 @@
 import { logError } from '@metamask/snaps-utils';
-import { JsonRpcParams } from '@metamask/utils';
-import { FunctionComponent } from 'react';
+import type { JsonRpcParams } from '@metamask/utils';
+import type { FunctionComponent } from 'react';
 import { Button, ButtonGroup } from 'react-bootstrap';
 
 import { useInvokeMutation } from '../../../../api';

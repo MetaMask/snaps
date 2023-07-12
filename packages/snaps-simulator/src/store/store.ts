@@ -1,5 +1,5 @@
 import { configureStore, createAction } from '@reduxjs/toolkit';
-import { SagaIterator, Saga } from 'redux-saga';
+import type { SagaIterator, Saga } from 'redux-saga';
 import { cancel, fork, take } from 'redux-saga/effects';
 
 import { sagaMiddleware } from './middleware';

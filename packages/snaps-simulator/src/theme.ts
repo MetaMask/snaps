@@ -7,8 +7,8 @@ import {
   modalAnatomy,
   switchAnatomy,
 } from '@chakra-ui/anatomy';
+import type { ThemeConfig } from '@chakra-ui/react';
 import {
-  ThemeConfig,
   createMultiStyleConfigHelpers,
   cssVar,
   defineStyle,

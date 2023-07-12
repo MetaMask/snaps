@@ -1,6 +1,6 @@
 import { Box, Button, Flex, FormControl, Input } from '@chakra-ui/react';
-import { Component } from '@metamask/snaps-ui';
-import { FunctionComponent } from 'react';
+import type { Component } from '@metamask/snaps-ui';
+import type { FunctionComponent } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Renderer } from '../../features/renderer';

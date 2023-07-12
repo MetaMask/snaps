@@ -1,8 +1,10 @@
-import plugin, { Options } from '@metamask/snaps-browserify-plugin';
-import browserify, { BrowserifyObject } from 'browserify';
+import type { Options } from '@metamask/snaps-browserify-plugin';
+import plugin from '@metamask/snaps-browserify-plugin';
+import type { BrowserifyObject } from 'browserify';
+import browserify from 'browserify';
 
 import { TranspilationModes } from '../../builders';
-import { YargsArgs } from '../../types/yargs';
+import type { YargsArgs } from '../../types/yargs';
 import { processDependencies, writeBundleFile } from './utils';
 
 // We need to statically import all Browserify transforms and all Babel presets

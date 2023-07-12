@@ -4,12 +4,8 @@ import {
   MOCK_LOCAL_SNAP_ID,
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
-import {
-  isJsonRpcRequest,
-  isPlainObject,
-  Json,
-  JsonRpcRequest,
-} from '@metamask/utils';
+import type { Json, JsonRpcRequest } from '@metamask/utils';
+import { isJsonRpcRequest, isPlainObject } from '@metamask/utils';
 
 import { getMockedFunction } from '../../test-utils/mock';
 import { OffscreenExecutionService } from './OffscreenExecutionService';

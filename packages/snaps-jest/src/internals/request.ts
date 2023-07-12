@@ -1,5 +1,6 @@
-import { Component } from '@metamask/snaps-ui';
-import { HandlerType, SnapRpcHookArgs } from '@metamask/snaps-utils';
+import type { Component } from '@metamask/snaps-ui';
+import type { SnapRpcHookArgs } from '@metamask/snaps-utils';
+import { HandlerType } from '@metamask/snaps-utils';
 import {
   assert,
   createModuleLogger,
@@ -7,10 +8,10 @@ import {
   isPlainObject,
 } from '@metamask/utils';
 import { getDocument, queries } from 'pptr-testing-library';
-import { Page } from 'puppeteer';
+import type { Page } from 'puppeteer';
 import { create } from 'superstruct';
 
-import {
+import type {
   CronjobOptions,
   RequestOptions,
   SnapRequest,

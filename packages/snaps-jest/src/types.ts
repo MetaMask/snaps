@@ -1,10 +1,10 @@
-import { NotificationType } from '@metamask/rpc-methods';
-import { Component } from '@metamask/snaps-ui';
-import { EnumToUnion } from '@metamask/snaps-utils';
-import { JsonRpcId, JsonRpcParams } from '@metamask/utils';
-import { Infer } from 'superstruct';
+import type { NotificationType } from '@metamask/rpc-methods';
+import type { Component } from '@metamask/snaps-ui';
+import type { EnumToUnion } from '@metamask/snaps-utils';
+import type { JsonRpcId, JsonRpcParams } from '@metamask/utils';
+import type { Infer } from 'superstruct';
 
-import {
+import type {
   Mock,
   MockJsonRpcOptions,
   MockOptions,

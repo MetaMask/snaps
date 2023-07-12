@@ -1,4 +1,4 @@
-import { Options } from 'yargs';
+import type { Options } from 'yargs';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type OptionalArguments<T = {}> = T & {

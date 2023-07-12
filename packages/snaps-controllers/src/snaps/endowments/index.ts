@@ -1,6 +1,6 @@
-import { PermissionConstraint } from '@metamask/permission-controller';
+import type { PermissionConstraint } from '@metamask/permission-controller';
 import { HandlerType } from '@metamask/snaps-utils';
-import { Json } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
 
 import {
   cronjobCaveatSpecifications,

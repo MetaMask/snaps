@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 import { Container, Row } from 'react-bootstrap';
 
 import { Logo } from './components';

@@ -1,24 +1,23 @@
-import {
+import type {
   PermissionSpecificationBuilder,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-  PermissionType,
   PermissionValidatorConstraint,
   PermissionSideEffect,
 } from '@metamask/permission-controller';
-import {
+import { PermissionType } from '@metamask/permission-controller';
+import type {
   Snap,
   SnapId,
-  HandlerType,
   SnapRpcHookArgs,
-  SnapCaveatType,
   RequestedSnapPermissions,
   InstallSnapsResult,
 } from '@metamask/snaps-utils';
-import { Json, NonEmptyArray } from '@metamask/utils';
+import { HandlerType, SnapCaveatType } from '@metamask/snaps-utils';
+import type { Json, NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
-import { MethodHooksObject } from '../utils';
+import type { MethodHooksObject } from '../utils';
 
 export const WALLET_SNAP_PERMISSION_KEY = 'wallet_snap';
 

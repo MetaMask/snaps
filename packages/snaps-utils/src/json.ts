@@ -1,4 +1,5 @@
-import { getSafeJson, Json } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
+import { getSafeJson } from '@metamask/utils';
 
 // TODO: Upstream this to @metamask/utils
 

@@ -1,4 +1,4 @@
-import {
+import type {
   SubjectPermissions,
   PermissionConstraint,
 } from '@metamask/permission-controller';

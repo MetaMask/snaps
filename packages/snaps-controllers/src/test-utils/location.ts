@@ -1,6 +1,6 @@
+import type { SnapManifest } from '@metamask/snaps-utils';
 import {
   VirtualFile,
-  SnapManifest,
   createSnapManifest,
   normalizeRelative,
 } from '@metamask/snaps-utils';
@@ -10,7 +10,7 @@ import {
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
 import { assert } from '@metamask/utils';
-import { SnapLocation } from 'src/snaps/location';
+import type { SnapLocation } from 'src/snaps/location';
 
 const MANIFEST_PATH = 'snap.manifest.json';
 

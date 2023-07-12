@@ -2,7 +2,7 @@ import { logError as logErrorUtil } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
 import { promises as filesystem } from 'fs';
 import path from 'path';
-import { Arguments } from 'yargs';
+import type { Arguments } from 'yargs';
 
 export const permRequestKeys = [
   '@context',

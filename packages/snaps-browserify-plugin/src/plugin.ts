@@ -1,15 +1,16 @@
+import type { PostProcessOptions } from '@metamask/snaps-utils';
 import {
   checkManifest,
   evalBundle,
   logWarning,
   postProcessBundle,
-  PostProcessOptions,
   useTemporaryFile,
 } from '@metamask/snaps-utils';
-import { BrowserifyObject } from 'browserify';
+import type { BrowserifyObject } from 'browserify';
 import { fromSource } from 'convert-source-map';
 import pathUtils from 'path';
-import { Transform, TransformCallback } from 'stream';
+import type { TransformCallback } from 'stream';
+import { Transform } from 'stream';
 
 type PluginOptions = {
   eval?: boolean;

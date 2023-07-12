@@ -1,18 +1,17 @@
 import { ChainIdStruct, HandlerType } from '@metamask/snaps-utils';
+import type { Json, JsonRpcSuccess } from '@metamask/utils';
 import {
   assertStruct,
-  Json,
   JsonRpcIdStruct,
   JsonRpcRequestStruct,
-  JsonRpcSuccess,
   JsonRpcSuccessStruct,
   JsonStruct,
 } from '@metamask/utils';
+import type { Infer } from 'superstruct';
 import {
   array,
   assign,
   enums,
-  Infer,
   is,
   literal,
   nullable,

@@ -1,13 +1,10 @@
-import {
-  LocalSnapIdStruct,
-  SnapIdPrefixes,
-  SnapManifest,
-  VirtualFile,
-} from '@metamask/snaps-utils';
+import type { SnapManifest, VirtualFile } from '@metamask/snaps-utils';
+import { LocalSnapIdStruct, SnapIdPrefixes } from '@metamask/snaps-utils';
 import { assert, assertStruct } from '@metamask/utils';
 
-import { HttpLocation, HttpOptions } from './http';
-import { SnapLocation } from './location';
+import type { HttpOptions } from './http';
+import { HttpLocation } from './http';
+import type { SnapLocation } from './location';
 
 export class LocalLocation implements SnapLocation {
   readonly #http: HttpLocation;

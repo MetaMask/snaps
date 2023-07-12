@@ -1,28 +1,27 @@
-import {
-  BaseControllerV2 as BaseController,
-  RestrictedControllerMessenger,
-} from '@metamask/base-controller';
-import { GetPermissions } from '@metamask/permission-controller';
-import {
-  HandlerType,
+import type { RestrictedControllerMessenger } from '@metamask/base-controller';
+import { BaseControllerV2 as BaseController } from '@metamask/base-controller';
+import type { GetPermissions } from '@metamask/permission-controller';
+import type {
   SnapId,
   ValidatedSnapId,
   TruncatedSnap,
   CronjobSpecification,
+} from '@metamask/snaps-utils';
+import {
+  HandlerType,
   parseCronExpression,
   logError,
 } from '@metamask/snaps-utils';
 import { Duration, inMilliseconds } from '@metamask/utils';
 
-import {
+import type {
   GetAllSnaps,
-  getRunnableSnaps,
   HandleSnapRequest,
-  SnapEndowments,
   SnapInstalled,
   SnapRemoved,
   SnapUpdated,
 } from '..';
+import { getRunnableSnaps, SnapEndowments } from '..';
 import { getCronjobCaveatJobs } from '../snaps/endowments/cronjob';
 import { Timer } from '../snaps/Timer';
 

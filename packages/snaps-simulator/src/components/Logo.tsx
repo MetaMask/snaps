@@ -1,5 +1,5 @@
 import { Image, useColorMode } from '@chakra-ui/react';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 
 import logoDark from '../assets/logo-dark.svg';
 import logo from '../assets/logo.svg';

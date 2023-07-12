@@ -13,11 +13,8 @@ import {
   getSnapFiles,
   getSnapManifest,
 } from '../test-utils';
-import {
-  NpmSnapFileNames,
-  SnapFiles,
-  SnapValidationFailureReason,
-} from '../types';
+import type { SnapFiles } from '../types';
+import { NpmSnapFileNames, SnapValidationFailureReason } from '../types';
 import {
   checkManifest,
   fixManifest,
@@ -25,7 +22,7 @@ import {
   getSnapSourceCode,
   getWritableManifest,
 } from './manifest';
-import { SnapManifest } from './validation';
+import type { SnapManifest } from './validation';
 
 jest.mock('fs');
 jest.mock('../npm', () => ({

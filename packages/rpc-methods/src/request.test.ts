@@ -1,10 +1,10 @@
-import { JsonSLIP10Node } from '@metamask/key-tree';
-import { RequestedPermissions } from '@metamask/permission-controller';
-import { InstallSnapsResult } from '@metamask/snaps-utils';
-import { JsonRpcParams } from '@metamask/utils';
+import type { JsonSLIP10Node } from '@metamask/key-tree';
+import type { RequestedPermissions } from '@metamask/permission-controller';
+import type { InstallSnapsResult } from '@metamask/snaps-utils';
+import type { JsonRpcParams } from '@metamask/utils';
 import { expectTypeOf } from 'expect-type';
 
-import { ObjectFromMethodName, MethodReturnType } from './request';
+import type { ObjectFromMethodName, MethodReturnType } from './request';
 
 describe('MethodRequestArguments', () => {
   it('has the proper types for Snaps JSON-RPC methods', () => {

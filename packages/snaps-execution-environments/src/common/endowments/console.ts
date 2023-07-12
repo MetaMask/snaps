@@ -1,8 +1,8 @@
-import { SnapId } from '@metamask/snaps-utils';
+import type { SnapId } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 
 import { rootRealmGlobal } from '../globalObject';
-import { EndowmentFactoryOptions } from './commonEndowmentFactory';
+import type { EndowmentFactoryOptions } from './commonEndowmentFactory';
 
 export const consoleAttenuatedMethods = new Set([
   'log',

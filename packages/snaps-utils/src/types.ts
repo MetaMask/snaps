@@ -1,6 +1,7 @@
-import { assertStruct, Json, VersionStruct } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
+import { assertStruct, VersionStruct } from '@metamask/utils';
+import type { Infer, Struct } from 'superstruct';
 import {
-  Infer,
   instance,
   is,
   object,
@@ -9,16 +10,15 @@ import {
   refine,
   size,
   string,
-  Struct,
   type,
   union,
   assert as assertSuperstruct,
 } from 'superstruct';
 
-import { SnapCaveatType } from './caveats';
-import { SnapFunctionExports } from './handlers';
-import { SnapManifest } from './manifest';
-import { VirtualFile } from './virtual-file';
+import type { SnapCaveatType } from './caveats';
+import type { SnapFunctionExports } from './handlers';
+import type { SnapManifest } from './manifest';
+import type { VirtualFile } from './virtual-file';
 
 export enum NpmSnapFileNames {
   PackageJson = 'package.json',

@@ -1,11 +1,10 @@
-import {
-  ThreadParentMessageStream,
-  BasePostMessageStream,
-} from '@metamask/post-message-stream';
+import type { BasePostMessageStream } from '@metamask/post-message-stream';
+import { ThreadParentMessageStream } from '@metamask/post-message-stream';
 // eslint-disable-next-line @typescript-eslint/no-shadow
 import { Worker } from 'worker_threads';
 
-import { AbstractExecutionService, Job } from '..';
+import type { Job } from '..';
+import { AbstractExecutionService } from '..';
 
 export class NodeThreadExecutionService extends AbstractExecutionService<Worker> {
   protected async initEnvStream(): Promise<{

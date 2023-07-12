@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 
 import { Result, Snap } from '../../../components';
 import { ClearData, SendData } from './components';

@@ -1,4 +1,4 @@
-import { OnTransactionHandler } from '@metamask/snaps-types';
+import type { OnTransactionHandler } from '@metamask/snaps-types';
 import { panel, text } from '@metamask/snaps-ui';
 import { hasProperty } from '@metamask/utils';
 

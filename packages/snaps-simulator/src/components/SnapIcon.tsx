@@ -1,5 +1,5 @@
 import { Avatar, Box } from '@chakra-ui/react';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 
 import { getIcon } from '../features';
 import { useSelector } from '../hooks';

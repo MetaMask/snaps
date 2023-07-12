@@ -1,11 +1,11 @@
-import { InstallSnapsResult } from '@metamask/snaps-utils';
-import {
+import type { InstallSnapsResult } from '@metamask/snaps-utils';
+import type {
   PermittedHandlerExport,
   PendingJsonRpcResponse,
   JsonRpcEngineEndCallback,
 } from '@metamask/types';
 
-import { MethodHooksObject } from '../utils';
+import type { MethodHooksObject } from '../utils';
 
 const hookNames: MethodHooksObject<GetSnapsHooks> = {
   getSnaps: true,

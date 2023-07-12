@@ -1,12 +1,10 @@
-import {
+import type {
   AddApprovalRequest,
   UpdateRequestState,
 } from '@metamask/approval-controller';
-import {
-  BaseControllerV2 as BaseController,
-  RestrictedControllerMessenger,
-} from '@metamask/base-controller';
-import {
+import type { RestrictedControllerMessenger } from '@metamask/base-controller';
+import { BaseControllerV2 as BaseController } from '@metamask/base-controller';
+import type {
   Caveat,
   GetEndowments,
   GetPermissions,
@@ -24,40 +22,43 @@ import {
   ValidPermission,
   UpdateCaveat,
   GetSubjectMetadata,
-  SubjectType,
 } from '@metamask/permission-controller';
+import { SubjectType } from '@metamask/permission-controller';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
-import { BlockReason } from '@metamask/snaps-registry';
-import {
-  assertIsSnapManifest,
-  DEFAULT_ENDOWMENTS,
-  DEFAULT_REQUESTED_SNAP_VERSION,
+import type { BlockReason } from '@metamask/snaps-registry';
+import type {
   InstallSnapsResult,
-  normalizeRelative,
   PersistedSnap,
   ProcessSnapResult,
   RequestedSnapPermissions,
-  resolveVersionRange,
   Snap,
-  SnapCaveatType,
   SnapId,
   SnapManifest,
   SnapRpcHook,
   SnapRpcHookArgs,
-  SnapStatus,
-  SnapStatusEvents,
   StatusContext,
   StatusEvents,
   StatusStates,
   TruncatedSnap,
   TruncatedSnapFields,
   ValidatedSnapId,
-  assertIsValidSnapId,
   VirtualFile,
+} from '@metamask/snaps-utils';
+import {
+  assertIsSnapManifest,
+  DEFAULT_ENDOWMENTS,
+  DEFAULT_REQUESTED_SNAP_VERSION,
+  normalizeRelative,
+  resolveVersionRange,
+  SnapCaveatType,
+  SnapStatus,
+  SnapStatusEvents,
+  assertIsValidSnapId,
   logError,
   logWarning,
   validateFetchedSnap,
 } from '@metamask/snaps-utils';
+import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
   assert,
   assertIsJsonRpcRequest,
@@ -68,20 +69,18 @@ import {
   inMilliseconds,
   isNonEmptyArray,
   isValidSemVerRange,
-  Json,
-  NonEmptyArray,
   satisfiesVersionRange,
-  SemVerRange,
   timeSince,
 } from '@metamask/utils';
-import { createMachine, interpret, StateMachine } from '@xstate/fsm';
+import type { StateMachine } from '@xstate/fsm';
+import { createMachine, interpret } from '@xstate/fsm';
 import { ethErrors } from 'eth-rpc-errors';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
 
 import { forceStrict, validateMachine } from '../fsm';
 import { log } from '../logging';
-import {
+import type {
   ExecuteSnapAction,
   ExecutionServiceEvents,
   HandleRpcRequestAction,
@@ -92,16 +91,17 @@ import {
 import { hasTimedOut, setDiff, withTimeout } from '../utils';
 import { handlerEndowments, SnapEndowments } from './endowments';
 import { getRpcCaveatOrigins } from './endowments/rpc';
-import { detectSnapLocation, SnapLocation } from './location';
+import type { SnapLocation } from './location';
+import { detectSnapLocation } from './location';
 import { processSnapPermissions } from './permissions';
-import {
+import type {
   GetMetadata,
   GetResult,
   SnapsRegistryInfo,
   SnapsRegistryMetadata,
   SnapsRegistryRequest,
-  SnapsRegistryStatus,
 } from './registry';
+import { SnapsRegistryStatus } from './registry';
 import { RequestQueue } from './RequestQueue';
 import { Timer } from './Timer';
 

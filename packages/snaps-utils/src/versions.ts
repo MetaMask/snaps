@@ -1,9 +1,5 @@
-import {
-  Json,
-  SemVerVersion,
-  SemVerRange,
-  VersionRangeStruct,
-} from '@metamask/utils';
+import type { Json, SemVerVersion, SemVerRange } from '@metamask/utils';
+import { VersionRangeStruct } from '@metamask/utils';
 import { maxSatisfying as maxSatisfyingSemver } from 'semver';
 import { validate } from 'superstruct';
 

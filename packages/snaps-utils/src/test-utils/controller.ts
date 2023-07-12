@@ -1,9 +1,9 @@
-import {
+import type {
   ActionConstraint,
   ActionHandler,
-  ControllerMessenger,
   EventConstraint,
 } from '@metamask/base-controller';
+import { ControllerMessenger } from '@metamask/base-controller';
 
 export class MockControllerMessenger<
   Action extends ActionConstraint,

@@ -1,4 +1,5 @@
-import { literal, Struct } from 'superstruct';
+import type { Struct } from 'superstruct';
+import { literal } from 'superstruct';
 
 /**
  * Get the enum values as union type. This allows using both the enum string

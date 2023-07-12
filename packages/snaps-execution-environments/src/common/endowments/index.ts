@@ -1,12 +1,12 @@
-import { StreamProvider } from '@metamask/providers';
-import { SnapsGlobalObject } from '@metamask/rpc-methods';
-import { SnapId, logWarning } from '@metamask/snaps-utils';
+import type { StreamProvider } from '@metamask/providers';
+import type { SnapsGlobalObject } from '@metamask/rpc-methods';
+import type { SnapId } from '@metamask/snaps-utils';
+import { logWarning } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
 
 import { rootRealmGlobal } from '../globalObject';
-import buildCommonEndowments, {
-  EndowmentFactoryOptions,
-} from './commonEndowmentFactory';
+import type { EndowmentFactoryOptions } from './commonEndowmentFactory';
+import buildCommonEndowments from './commonEndowmentFactory';
 
 type EndowmentFactoryResult = {
   /**

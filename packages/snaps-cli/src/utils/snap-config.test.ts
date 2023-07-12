@@ -2,7 +2,8 @@ import path from 'path';
 
 import builders from '../builders';
 import * as miscUtils from './misc';
-import { applyConfig, loadConfig, SnapConfig } from './snap-config';
+import type { SnapConfig } from './snap-config';
+import { applyConfig, loadConfig } from './snap-config';
 
 const CONFIG_FILE_LOCATION = path.resolve(process.cwd(), miscUtils.CONFIG_FILE);
 

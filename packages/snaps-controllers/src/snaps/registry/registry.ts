@@ -1,6 +1,9 @@
-import { BlockReason, SnapsRegistryDatabase } from '@metamask/snaps-registry';
-import { SnapId, ValidatedSnapId } from '@metamask/snaps-utils';
-import { SemVerVersion } from '@metamask/utils';
+import type {
+  BlockReason,
+  SnapsRegistryDatabase,
+} from '@metamask/snaps-registry';
+import type { SnapId, ValidatedSnapId } from '@metamask/snaps-utils';
+import type { SemVerVersion } from '@metamask/utils';
 
 export type SnapsRegistryInfo = { version: SemVerVersion; checksum: string };
 export type SnapsRegistryRequest = Record<SnapId, SnapsRegistryInfo>;

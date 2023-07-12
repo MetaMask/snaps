@@ -2,9 +2,10 @@ import { ControllerMessenger } from '@metamask/base-controller';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
-import { Duplex } from 'stream';
+import type { Duplex } from 'stream';
 
-import { ErrorMessageEvent, setupMultiplex } from '../services';
+import type { ErrorMessageEvent } from '../services';
+import { setupMultiplex } from '../services';
 import { MOCK_BLOCK_NUMBER } from './execution-environment';
 
 export const createService = <

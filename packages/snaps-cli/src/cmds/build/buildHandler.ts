@@ -5,7 +5,7 @@ import {
   validateOutfileName,
 } from '@metamask/snaps-utils';
 
-import { YargsArgs } from '../../types/yargs';
+import type { YargsArgs } from '../../types/yargs';
 import { loadConfig } from '../../utils';
 import { evalHandler } from '../eval/evalHandler';
 import { manifestHandler } from '../manifest/manifestHandler';

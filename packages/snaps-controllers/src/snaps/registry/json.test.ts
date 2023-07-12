@@ -1,13 +1,14 @@
-import { SnapsRegistryDatabase } from '@metamask/snaps-registry';
+import type { SnapsRegistryDatabase } from '@metamask/snaps-registry';
 import {
   DEFAULT_SNAP_SHASUM,
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
-import { SemVerRange, SemVerVersion } from '@metamask/utils';
+import type { SemVerRange, SemVerVersion } from '@metamask/utils';
 import fetchMock from 'jest-fetch-mock';
 
 import { getRestrictedSnapsRegistryControllerMessenger } from '../../test-utils';
-import { JsonSnapsRegistry, JsonSnapsRegistryArgs } from './json';
+import type { JsonSnapsRegistryArgs } from './json';
+import { JsonSnapsRegistry } from './json';
 import { SnapsRegistryStatus } from './registry';
 
 const MOCK_PUBLIC_KEY =

@@ -1,9 +1,10 @@
-import { SnapManifest, VirtualFile } from '@metamask/snaps-utils';
+import type { SnapManifest, VirtualFile } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 
 import { HttpLocation } from './http';
 import { LocalLocation } from './local';
-import { NpmLocation, NpmOptions } from './npm';
+import type { NpmOptions } from './npm';
+import { NpmLocation } from './npm';
 
 declare module '@metamask/snaps-utils' {
   interface DataMap {

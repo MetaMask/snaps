@@ -1,14 +1,13 @@
+import type { Infer, Struct } from 'superstruct';
 import {
   array,
   assign,
   boolean,
-  Infer,
   lazy,
   literal,
   object,
   optional,
   string,
-  Struct,
   union,
   unknown,
 } from 'superstruct';

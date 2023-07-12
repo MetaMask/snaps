@@ -1,5 +1,6 @@
-import { FunctionComponent, ReactNode } from 'react';
-import { Alert, AlertProps } from 'react-bootstrap';
+import type { FunctionComponent, ReactNode } from 'react';
+import type { AlertProps } from 'react-bootstrap';
+import { Alert } from 'react-bootstrap';
 
 export type ResultProps = {
   children: ReactNode;

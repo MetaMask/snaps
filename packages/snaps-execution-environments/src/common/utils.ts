@@ -1,5 +1,5 @@
-import { StreamProvider } from '@metamask/providers';
-import { RequestArguments } from '@metamask/providers/dist/BaseProvider';
+import type { StreamProvider } from '@metamask/providers';
+import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
 import { assert, assertStruct, JsonStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 

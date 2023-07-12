@@ -6,7 +6,7 @@ import {
   Input,
 } from '@chakra-ui/react';
 import { HandlerType } from '@metamask/snaps-utils';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 import { Editor } from '../../../../components';

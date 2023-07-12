@@ -4,16 +4,17 @@
 // a Jest environment. This is why it's not exported from the index file.
 
 import { expect } from '@jest/globals';
-import { NotificationType } from '@metamask/rpc-methods';
-import { Component } from '@metamask/snaps-ui';
-import { EnumToUnion } from '@metamask/snaps-utils';
-import { hasProperty, Json } from '@metamask/utils';
+import type { NotificationType } from '@metamask/rpc-methods';
+import type { Component } from '@metamask/snaps-ui';
+import type { EnumToUnion } from '@metamask/snaps-utils';
+import type { Json } from '@metamask/utils';
+import { hasProperty } from '@metamask/utils';
 import type { MatcherFunction } from 'expect';
+import type { MatcherHintOptions } from 'jest-matcher-utils';
 import {
   diff,
   matcherErrorMessage,
   matcherHint,
-  MatcherHintOptions,
   printReceived,
   printWithType,
   RECEIVED_COLOR,
@@ -21,7 +22,7 @@ import {
 import { is } from 'superstruct';
 
 import { InterfaceStruct, SnapResponseStruct } from './internals';
-import { SnapResponse } from './types';
+import type { SnapResponse } from './types';
 
 /**
  * Ensure that the actual value is a response from the `request` function.

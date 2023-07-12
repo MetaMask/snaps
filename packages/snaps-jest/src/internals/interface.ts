@@ -1,9 +1,9 @@
 import { DialogType } from '@metamask/rpc-methods';
 import { assert } from '@metamask/utils';
-import { Page } from 'puppeteer';
+import type { Page } from 'puppeteer';
 import { create } from 'superstruct';
 
-import { SnapInterface, SnapOptions } from '../types';
+import type { SnapInterface, SnapOptions } from '../types';
 import { SnapOptionsStruct } from './structs';
 import { waitFor } from './wait-for';
 

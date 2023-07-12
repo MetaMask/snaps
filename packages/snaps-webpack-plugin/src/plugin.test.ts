@@ -10,13 +10,16 @@ import {
   DEFAULT_SNAP_BUNDLE,
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
-import { createFsFromVolume, IFs, Volume } from 'memfs';
-import { IPromisesAPI } from 'memfs/lib/promises';
+import type { IFs } from 'memfs';
+import { createFsFromVolume, Volume } from 'memfs';
+import type { IPromisesAPI } from 'memfs/lib/promises';
 import * as os from 'os';
 import * as pathUtils from 'path';
-import webpack, { Stats, Configuration } from 'webpack';
+import type { Stats, Configuration } from 'webpack';
+import webpack from 'webpack';
 
-import SnapsWebpackPlugin, { Options } from './plugin';
+import type { Options } from './plugin';
+import SnapsWebpackPlugin from './plugin';
 
 jest.mock('@metamask/snaps-utils', () => ({
   ...jest.requireActual('@metamask/snaps-utils'),

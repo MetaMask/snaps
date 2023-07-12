@@ -1,17 +1,17 @@
-import { BIP44CoinTypeNode, JsonBIP44CoinTypeNode } from '@metamask/key-tree';
-import {
+import type { JsonBIP44CoinTypeNode } from '@metamask/key-tree';
+import { BIP44CoinTypeNode } from '@metamask/key-tree';
+import type {
   PermissionSpecificationBuilder,
-  PermissionType,
   PermissionValidatorConstraint,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-  SubjectType,
 } from '@metamask/permission-controller';
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
-import { NonEmptyArray } from '@metamask/utils';
+import type { NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
-import { MethodHooksObject } from '../utils';
+import type { MethodHooksObject } from '../utils';
 
 const targetName = 'snap_getBip44Entropy';
 

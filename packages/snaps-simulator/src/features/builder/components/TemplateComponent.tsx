@@ -1,10 +1,11 @@
 import { Box } from '@chakra-ui/react';
-import { Component } from '@metamask/snaps-ui';
-import { NodeModel } from '@minoru/react-dnd-treeview';
-import { FunctionComponent } from 'react';
+import type { Component } from '@metamask/snaps-ui';
+import type { NodeModel } from '@minoru/react-dnd-treeview';
+import type { FunctionComponent } from 'react';
 import { useDrag } from 'react-dnd';
 
-import { IconName, Prefill } from '../../../components';
+import type { IconName } from '../../../components';
+import { Prefill } from '../../../components';
 
 type TemplateComponentProps = {
   node: NodeModel<Component>;

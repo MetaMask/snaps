@@ -1,8 +1,8 @@
 import { assertStruct, isPlainObject } from '@metamask/utils';
-import { Struct } from 'superstruct';
+import type { Struct } from 'superstruct';
 
+import type { Component } from './nodes';
 import {
-  Component,
   CopyableStruct,
   DividerStruct,
   HeadingStruct,

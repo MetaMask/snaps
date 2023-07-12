@@ -1,5 +1,5 @@
 import { Spinner as ChakraSpinner } from '@chakra-ui/react';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 
 export type SpinnerProps = {
   id: string;

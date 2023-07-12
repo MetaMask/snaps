@@ -1,4 +1,5 @@
-import { secp256k1, SLIP10Node } from '@metamask/key-tree';
+import type { SLIP10Node } from '@metamask/key-tree';
+import { secp256k1 } from '@metamask/key-tree';
 import { createBip39KeyFromSeed } from '@metamask/key-tree/dist/derivers/bip39';
 import { assertIsHexString, bytesToHex, hexToBytes } from '@metamask/utils';
 import { Mutex } from 'async-mutex';

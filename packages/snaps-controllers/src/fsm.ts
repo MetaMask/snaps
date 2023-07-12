@@ -1,10 +1,6 @@
 import { assert } from '@metamask/utils';
-import {
-  EventObject,
-  InterpreterStatus,
-  StateMachine,
-  Typestate,
-} from '@xstate/fsm';
+import type { EventObject, StateMachine, Typestate } from '@xstate/fsm';
+import { InterpreterStatus } from '@xstate/fsm';
 
 /**
  * Validates the set-up of a @xstate/fsm machine.

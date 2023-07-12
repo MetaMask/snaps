@@ -1,4 +1,4 @@
-import { TransactionFormData } from './utils';
+import type { TransactionFormData } from './utils';
 
 export type TransactionPreset = {
   name: string;

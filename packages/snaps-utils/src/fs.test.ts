@@ -12,7 +12,7 @@ import {
   validateFilePath,
   validateOutfileName,
 } from './fs';
-import { SnapManifest } from './manifest/validation';
+import type { SnapManifest } from './manifest/validation';
 import { DEFAULT_SNAP_BUNDLE, getSnapManifest } from './test-utils';
 import { NpmSnapFileNames } from './types';
 

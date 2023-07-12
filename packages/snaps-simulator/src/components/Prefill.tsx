@@ -1,7 +1,10 @@
-import { Tag, TagProps } from '@chakra-ui/react';
-import { forwardRef, ReactNode } from 'react';
+import type { TagProps } from '@chakra-ui/react';
+import { Tag } from '@chakra-ui/react';
+import type { ReactNode } from 'react';
+import { forwardRef } from 'react';
 
-import { Icon, IconName } from './Icon';
+import type { IconName } from './Icon';
+import { Icon } from './Icon';
 
 type PrefillProps = TagProps & {
   icon?: IconName;

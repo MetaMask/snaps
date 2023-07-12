@@ -1,4 +1,5 @@
-import { createSlice, Draft, PayloadAction } from '@reduxjs/toolkit';
+import type { Draft, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 export type HandlerSliceOptions<Request, Response> = {
   name: string;

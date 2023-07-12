@@ -1,7 +1,7 @@
 import { HandlerType } from '@metamask/snaps-utils';
 
-import { IconName } from '../../components';
-import { ApplicationState } from '../../store';
+import type { IconName } from '../../components';
+import type { ApplicationState } from '../../store';
 
 type ConditionFunction = (state: ApplicationState) => boolean;
 

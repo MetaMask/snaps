@@ -1,6 +1,6 @@
 import { SLIP10Node } from '@metamask/key-tree';
 
-import { GetBip32PublicKeyParams, SignMessageParams } from './types';
+import type { GetBip32PublicKeyParams, SignMessageParams } from './types';
 
 /**
  * Get an extended private key BIP-32 node, using the `snap_getBip32Entropy`
