@@ -4391,6 +4391,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/key-tree@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "@metamask/key-tree@npm:8.0.0"
+  dependencies:
+    "@metamask/scure-bip39": ^2.1.0
+    "@metamask/utils": ^6.0.1
+    "@noble/ed25519": ^1.6.0
+    "@noble/hashes": ^1.0.0
+    "@noble/secp256k1": ^1.5.5
+    "@scure/base": ^1.0.0
+  checksum: d0cac5e3d29a1a6fde091bff23129fcd35c74276d44ad3450c5be32134f58806fa6a3b0e2c3a6c44e44fd3a1cf52e56255f2795812ada0894207a5b1effa9276
+  languageName: node
+  linkType: hard
+
 "@metamask/manage-state-example-snap@workspace:packages/examples/packages/manage-state":
   version: 0.0.0-use.local
   resolution: "@metamask/manage-state-example-snap@workspace:packages/examples/packages/manage-state"
@@ -4620,7 +4634,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^11.0.0
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
-    "@metamask/key-tree": ^7.1.1
+    "@metamask/key-tree": ^8.0.0
     "@metamask/permission-controller": ^4.0.0
     "@metamask/snaps-ui": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
@@ -5075,7 +5089,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/eth-json-rpc-middleware": ^11.0.0
-    "@metamask/key-tree": ^7.1.1
+    "@metamask/key-tree": ^8.0.0
     "@metamask/permission-controller": ^4.0.0
     "@metamask/rpc-errors": ^5.1.1
     "@metamask/rpc-methods": "workspace:^"
@@ -5249,7 +5263,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^11.0.0
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
-    "@metamask/key-tree": ^7.1.1
+    "@metamask/key-tree": ^8.0.0
     "@metamask/permission-controller": ^4.0.0
     "@metamask/post-message-stream": ^6.1.2
     "@metamask/providers": ^11.0.0

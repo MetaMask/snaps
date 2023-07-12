@@ -68,7 +68,7 @@
     "@babel/core": "^7.20.12",
     "@babel/types": "^7.18.7",
     "@metamask/base-controller": "^3.0.0",
-    "@metamask/key-tree": "^7.1.1",
+    "@metamask/key-tree": "^8.0.0",
     "@metamask/permission-controller": "^4.0.0",
     "@metamask/providers": "^11.0.0",
     "@metamask/snaps-registry": "^1.2.1",
