@@ -12,9 +12,9 @@ export type SnapsRegistryMetadata =
 
 // TODO: Decide on names for these
 export enum SnapsRegistryStatus {
-  Unverified,
-  Blocked,
-  Verified,
+  Unverified = 0,
+  Blocked = 1,
+  Verified = 2,
 }
 
 export type SnapsRegistryResult = {
