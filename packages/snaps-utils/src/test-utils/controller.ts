@@ -16,9 +16,9 @@ export class MockControllerMessenger<
    * @param actionType - The action type to register the handler for.
    * @param handler - The action handler to register.
    */
-  registerActionHandler<T extends Action['type']>(
-    actionType: T,
-    handler: ActionHandler<Action, T>,
+  registerActionHandler<ActionType extends Action['type']>(
+    actionType: ActionType,
+    handler: ActionHandler<Action, ActionType>,
   ) {
     super.unregisterActionHandler(actionType);
     super.registerActionHandler(actionType, handler);

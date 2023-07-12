@@ -84,8 +84,11 @@ export const Bip32PathStruct = refine(
   },
 );
 
-export const bip32entropy = <T extends { path: string[]; curve: string }, S>(
-  struct: Struct<T, S>,
+export const bip32entropy = <
+  Type extends { path: string[]; curve: string },
+  Schema,
+>(
+  struct: Struct<Type, Schema>,
 ) =>
   refine(struct, 'BIP-32 entropy', (value) => {
     if (

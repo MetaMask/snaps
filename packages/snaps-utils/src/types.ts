@@ -153,14 +153,15 @@ type ObjectParameters<
 
 export type SnapExportsParameters = ObjectParameters<SnapFunctionExports>;
 
-type UriOptions<T extends string> = {
-  protocol?: Struct<T>;
-  hash?: Struct<T>;
-  port?: Struct<T>;
-  hostname?: Struct<T>;
-  pathname?: Struct<T>;
-  search?: Struct<T>;
+type UriOptions<Type extends string> = {
+  protocol?: Struct<Type>;
+  hash?: Struct<Type>;
+  port?: Struct<Type>;
+  hostname?: Struct<Type>;
+  pathname?: Struct<Type>;
+  search?: Struct<Type>;
 };
+
 export const uri = (opts: UriOptions<any> = {}) =>
   refine(union([string(), instance(URL)]), 'uri', (value) => {
     try {
