@@ -118,3 +118,35 @@ jobs:
       publish_dir: ./packages/test-snaps/dist
     secrets:
       PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
+
+  publish-simulator-to-versioned-gh-pages:
+    name: Publish Snaps Simulator to `${{ needs.get-release-version.outputs.RELEASE_VERSION }}` folder
+    needs: get-release-version
+    # The `rc/1.0.0` branch does not have the `snaps-simulator` package, so we
+    # only run this job on the `main` branch.
+    if: ${{ github.ref_name == 'main' }}
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-github-pages.yml
+    with:
+      build_script: yarn workspace @metamask/snaps-simulator build:post-tsc
+      publish_dir: ./packages/snaps-simulator/dist/webpack/main
+      destination_dir: snaps-simulator/${{ needs.get-release-version.outputs.RELEASE_VERSION }}
+    secrets:
+      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
+
+  publish-simulator-to-latest-gh-pages:
+    name: Publish Snaps Simulator to `latest` folder
+    needs: publish-release
+    # The `rc/1.0.0` branch does not have the `snaps-simulator` package, so we
+    # only run this job on the `main` branch.
+    if: ${{ github.ref_name == 'main' }}
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-github-pages.yml
+    with:
+      build_script: yarn workspace @metamask/snaps-simulator build:post-tsc
+      publish_dir: ./packages/snaps-simulator/dist/webpack/main
+      destination_dir: snaps-simulator/latest
+    secrets:
+      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}

@@ -29,7 +29,7 @@
     "build:webpack": "yarn webpack --config-name main --config-name test --mode production --progress",
     "build:vendor": "webpack --config-name vendor --mode production --progress",
     "build:clean": "rimraf dist && yarn build",
-    "build:post-tsc": "yarn build:vendor && yarn build",
+    "build:post-tsc": "yarn build:vendor && yarn build:webpack",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
     "lint:changelog": "auto-changelog validate",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
