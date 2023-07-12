@@ -105,7 +105,7 @@ const config: Configuration & Record<'devServer', DevServerConfiguration> = {
     },
   },
   devServer: {
-    port: 8000,
+    port: 9000,
     historyApiFallback: true,
   },
 };
