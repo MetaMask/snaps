@@ -9,7 +9,7 @@ import { processDependencies, writeBundleFile } from './utils';
 
 // We need to statically import all Browserify transforms and all Babel presets
 // and plugins, and calling `require` is the sanest way to do that.
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require */
+/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require */
 
 /**
  * Builds a Snap bundle JS file from its JavaScript source.

@@ -152,6 +152,7 @@ export async function writeError(
   if (!global.snaps.isWatching) {
     // TODO(ritave): Remove process exit and change into collapse of functions
     //               https://github.com/MetaMask/snaps-monorepo/issues/81
+    // eslint-disable-next-line n/no-process-exit
     process.exit(1);
   }
 }

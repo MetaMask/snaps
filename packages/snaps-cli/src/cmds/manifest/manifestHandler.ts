@@ -23,6 +23,7 @@ export async function manifestHandler({ writeManifest }: YargsArgs) {
       logError(`${ERROR_PREFIX}The manifest is invalid.`);
       errors.forEach(logManifestError);
 
+      // eslint-disable-next-line n/no-process-exit
       process.exit(1);
     }
 
