@@ -17,6 +17,13 @@ module.exports = {
         ],
       },
     },
+    {
+      files: ['scripts/**/*.js'],
+      extends: ['@metamask/eslint-config-nodejs'],
+      parserOptions: {
+        ecmaVersion: 2021,
+      },
+    },
   ],
 
   ignorePatterns: ['src/openrpc.json', 'webpack.config.js', '__test__'],

@@ -35,12 +35,12 @@ export function constructError(originalError: unknown) {
  * @param teardownRef.lastTeardown - Number of the last teardown.
  * @returns New proxy promise.
  */
-export async function withTeardown<T>(
-  originalPromise: Promise<T>,
+export async function withTeardown<Type>(
+  originalPromise: Promise<Type>,
   teardownRef: { lastTeardown: number },
-): Promise<T> {
+): Promise<Type> {
   const myTeardown = teardownRef.lastTeardown;
-  return new Promise<T>((resolve, reject) => {
+  return new Promise<Type>((resolve, reject) => {
     originalPromise
       .then((value) => {
         if (teardownRef.lastTeardown === myTeardown) {
