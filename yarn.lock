@@ -3894,7 +3894,7 @@ __metadata:
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-nodejs": ^12.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
@@ -4072,6 +4072,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eslint-config-nodejs@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "@metamask/eslint-config-nodejs@npm:12.0.0"
+  peerDependencies:
+    "@metamask/eslint-config": ^12.0.0
+    eslint: ^8.27.0
+    eslint-plugin-n: ^15.7.0
+  checksum: e9e849f799d96dcb508830aa747d49e5109d7d1a7fa3f3d64c831dea54cf649112a96e4534485ad120fc320805b6142ab205e188e86df36e829c0c3e67007714
+  languageName: node
+  linkType: hard
+
 "@metamask/eslint-config-typescript@npm:^11.0.0":
   version: 11.1.0
   resolution: "@metamask/eslint-config-typescript@npm:11.1.0"
@@ -4224,7 +4235,7 @@ __metadata:
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-nodejs": ^12.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
@@ -4618,7 +4629,7 @@ __metadata:
     "@metamask/browser-passworder": ^4.1.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-nodejs": ^12.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/key-tree": ^7.1.1
     "@metamask/permission-controller": ^4.0.0
@@ -4686,7 +4697,7 @@ __metadata:
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-nodejs": ^12.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-utils": "workspace:^"
     "@swc/cli": ^0.1.62
@@ -4734,7 +4745,7 @@ __metadata:
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-nodejs": ^12.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-browserify-plugin": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
@@ -4798,7 +4809,7 @@ __metadata:
     "@metamask/base-controller": ^3.0.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-nodejs": ^12.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/object-multiplex": ^1.2.0
     "@metamask/permission-controller": ^4.0.0
@@ -4888,7 +4899,7 @@ __metadata:
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-nodejs": ^12.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/object-multiplex": ^1.2.0
     "@metamask/post-message-stream": ^6.1.2
@@ -4969,7 +4980,7 @@ __metadata:
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-nodejs": ^12.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/rpc-methods": "workspace:^"
     "@metamask/snaps-execution-environments": "workspace:^"
@@ -5027,7 +5038,7 @@ __metadata:
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-nodejs": ^12.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-utils": "workspace:^"
     "@rollup/plugin-virtual": ^2.1.0
@@ -5072,7 +5083,7 @@ __metadata:
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-browser": ^11.1.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-nodejs": ^12.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/eth-json-rpc-middleware": ^11.0.0
     "@metamask/key-tree": ^7.1.1
@@ -5172,7 +5183,7 @@ __metadata:
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-nodejs": ^12.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/providers": ^11.0.0
     "@metamask/rpc-methods": "workspace:^"
@@ -5206,7 +5217,7 @@ __metadata:
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-nodejs": ^12.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/utils": ^6.0.1
     "@swc/cli": ^0.1.62
@@ -5247,7 +5258,7 @@ __metadata:
     "@metamask/base-controller": ^3.0.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-nodejs": ^12.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/key-tree": ^7.1.1
     "@metamask/permission-controller": ^4.0.0
@@ -5321,7 +5332,7 @@ __metadata:
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-nodejs": ^12.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/utils": ^6.0.1
@@ -5366,7 +5377,7 @@ __metadata:
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-nodejs": ^12.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/providers": ^11.0.0
     "@metamask/snaps-utils": "workspace:^"
@@ -20165,7 +20176,7 @@ __metadata:
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/eslint-config": ^11.0.0
     "@metamask/eslint-config-jest": ^11.0.0
-    "@metamask/eslint-config-nodejs": ^11.0.1
+    "@metamask/eslint-config-nodejs": ^12.0.0
     "@metamask/eslint-config-typescript": ^11.0.0
     "@metamask/utils": ^6.0.1
     "@swc/cli": ^0.1.62
