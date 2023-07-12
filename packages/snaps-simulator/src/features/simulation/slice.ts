@@ -19,9 +19,9 @@ import {
 } from '@reduxjs/toolkit';
 
 export enum SnapStatus {
-  Ok,
-  Loading,
-  Error,
+  Ok = 'ok',
+  Loading = 'loading',
+  Error = 'error',
 }
 
 export type HandlerUserInterface = {

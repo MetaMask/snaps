@@ -2,8 +2,8 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSelector, createSlice } from '@reduxjs/toolkit';
 
 export enum ConsoleEntryType {
-  Log,
-  Error,
+  Log = 'log',
+  Error = 'error',
 }
 
 export type ConsoleEntry = {
