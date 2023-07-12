@@ -28,6 +28,7 @@ declare module 'expect' {
   // Ideally we would use `Matchers<Result>` instead of `Matchers<R>`, but
   // TypeScript doesn't allow this:
   // TS2428: All declarations of 'Matchers' must have identical type parameters.
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   interface Matchers<R> {
     toRespondWith(response: unknown): R;
     toRespondWithError(error: unknown): R;
