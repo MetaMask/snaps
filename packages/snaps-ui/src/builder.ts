@@ -76,10 +76,14 @@ function createBuilder<
     // Node passed as an array of arguments.
     const node = keys.reduce<Partial<Component>>(
       (partialNode, key, index) => {
-        return {
-          ...partialNode,
-          [key]: args[index],
-        };
+        if (args[index] !== undefined) {
+          return {
+            ...partialNode,
+            [key]: args[index],
+          };
+        }
+
+        return partialNode;
       },
       { type },
     );
@@ -171,13 +175,16 @@ export const spinner = createBuilder(NodeType.Spinner, SpinnerStruct);
  * Create a {@link Text} node.
  *
  * @param args - The node arguments. This can be either a string, or an object
- * with a `text` property.
+ * with a `value` property.
  * @param args.text - The text content of the node.
  * @returns The text node as object.
  * @example
  * ```typescript
- * const node = text({ text: 'Hello, world!' });
+ * const node = text({ value: 'Hello, world!' });
  * const node = text('Hello, world!');
  * ```
  */
-export const text = createBuilder(NodeType.Text, TextStruct, ['value']);
+export const text = createBuilder(NodeType.Text, TextStruct, [
+  'value',
+  'markdown',
+]);

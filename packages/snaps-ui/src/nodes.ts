@@ -1,10 +1,12 @@
 import {
   array,
   assign,
+  boolean,
   Infer,
   lazy,
   literal,
   object,
+  optional,
   string,
   Struct,
   union,
@@ -144,6 +146,7 @@ export const TextStruct = assign(
   object({
     type: literal(NodeType.Text),
     value: string(),
+    markdown: optional(boolean()),
   }),
 );
 
@@ -153,6 +156,8 @@ export const TextStruct = assign(
  * @property type - The type of the node, must be the string 'text'.
  * @property value - The text content of the node, either as plain text, or as a
  * markdown string.
+ * @property markdown - A flag to enable/disable markdown, if nothing is specified
+ * markdown will be enabled.
  */
 export type Text = Infer<typeof TextStruct>;
 

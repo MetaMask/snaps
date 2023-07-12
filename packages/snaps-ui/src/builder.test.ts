@@ -192,6 +192,18 @@ describe('text', () => {
       type: NodeType.Text,
       value: 'foo bar',
     });
+
+    expect(text({ value: 'foo bar', markdown: false })).toStrictEqual({
+      type: NodeType.Text,
+      value: 'foo bar',
+      markdown: false,
+    });
+
+    expect(text({ value: 'foo bar', markdown: true })).toStrictEqual({
+      type: NodeType.Text,
+      value: 'foo bar',
+      markdown: true,
+    });
   });
 
   it('creates a text component using the shorthand form', () => {
@@ -203,6 +215,18 @@ describe('text', () => {
     expect(text('foo bar')).toStrictEqual({
       type: NodeType.Text,
       value: 'foo bar',
+    });
+
+    expect(text('Hello, world!', false)).toStrictEqual({
+      type: NodeType.Text,
+      value: 'Hello, world!',
+      markdown: false,
+    });
+
+    expect(text('Hello, world!', true)).toStrictEqual({
+      type: NodeType.Text,
+      value: 'Hello, world!',
+      markdown: true,
     });
   });
 
