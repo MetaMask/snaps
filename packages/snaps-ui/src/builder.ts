@@ -174,14 +174,18 @@ export const spinner = createBuilder(NodeType.Spinner, SpinnerStruct);
 /**
  * Create a {@link Text} node.
  *
- * @param args - The node arguments. This can be either a string, or an object
- * with a `value` property.
- * @param args.text - The text content of the node.
+ * @param args - The node arguments. This can be either a string
+ * and a boolean, or an object with a `value` property
+ * and an optional `markdown` property.
+ * @param args.value - The text content of the node.
+ * @param args.markdown - An optional flag to enable/disable markdown.
  * @returns The text node as object.
  * @example
  * ```typescript
  * const node = text({ value: 'Hello, world!' });
  * const node = text('Hello, world!');
+ * const node = text({ value: 'Hello, world!', markdown: false });
+ * const node = text('Hello, world!', false);
  * ```
  */
 export const text = createBuilder(NodeType.Text, TextStruct, [
