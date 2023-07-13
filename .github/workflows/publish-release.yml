@@ -240,7 +240,7 @@ jobs:
     with:
       build_script: yarn workspace @metamask/snaps-simulator build:post-tsc
       publish_dir: ./packages/snaps-simulator/dist/webpack/main
-      destination_dir: snaps-simulator/${{ needs.get-release-version.outputs.SIMULATOR_VERSION }}
+      destination_dir: snaps-simulator/${{ needs.is-simulator-release.outputs.SIMULATOR_VERSION }}
     secrets:
       PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
 
