@@ -184,10 +184,17 @@
         "TextEncoder": true
       },
       "packages": {
+        "@metamask/utils>@noble/hashes": true,
         "@swc/cli>semver": true,
         "browserify>buffer": true,
         "eslint>debug": true,
         "superstruct": true
+      }
+    },
+    "@metamask/utils>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@swc/cli>semver": {
