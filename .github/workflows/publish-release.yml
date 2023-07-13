@@ -174,6 +174,7 @@ jobs:
     needs: publish-release
     outputs:
       IS_TEST_SNAPS_RELEASE: ${{ steps.is-test-snaps-release.outputs.IS_TEST_SNAPS_RELEASE }}
+      TEST_SNAPS_VERSION: ${{ steps.is-test-snaps-release.outputs.TEST_SNAPS_VERSION }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -210,6 +211,7 @@ jobs:
     needs: publish-release
     outputs:
       IS_SIMULATOR_RELEASE: ${{ steps.is-simulator-release.outputs.IS_SIMULATOR_RELEASE }}
+      SIMULATOR_VERSION: ${{ steps.is-simulator-release.outputs.SIMULATOR_VERSION }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -236,7 +238,7 @@ jobs:
     with:
       build_script: yarn workspace @metamask/snaps-simulator build:post-tsc
       publish_dir: ./packages/snaps-simulator/dist/webpack/main
-      destination_dir: snaps-simulator/${{ needs.get-release-version.outputs.RELEASE_VERSION }}
+      destination_dir: snaps-simulator/${{ needs.get-release-version.outputs.SIMULATOR_VERSION }}
     secrets:
       PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
 
