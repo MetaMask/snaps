@@ -184,33 +184,25 @@ jobs:
         run: ./scripts/is-release.sh "packages/test-snaps/package.json" "${{ github.event.before }}" "IS_TEST_SNAPS_RELEASE"
       - name: Set output
         if: steps.is-environment-release.outputs.IS_TEST_SNAPS_RELEASE == 'true'
-        run: echo "IS_TEST_SNAPS_RELEASE=true" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "IS_TEST_SNAPS_RELEASE=true" >> "$GITHUB_OUTPUT"
+          echo "TEST_SNAPS_VERSION=$(jq --raw-output '.version' packages/test-snaps/package.json)" >> "$GITHUB_OUTPUT"
 
   publish-test-snaps:
     name: Publish test snaps
     needs: is-test-snaps-release
-    runs-on: ubuntu-latest
     # The `rc/1.0.0` branch does not have `test-snaps` package, so we only run
     # this job on the `main` branch.
     if: ${{ github.ref_name == 'main' && needs.is-test-snaps-release.outputs.IS_TEST_SNAPS_RELEASE == 'true' }}
     permissions:
       contents: write
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.sha }}
-      - name: Get release version
-        id: get-release-version
-        shell: bash
-        run: |
-          VERSION=$(jq --raw-output '.version' packages/test-snaps/package.json)
-          echo "RELEASE_VERSION=$VERSION" >> "$GITHUB_OUTPUT"
-      - uses: ./.github/workflows/publish-github-pages.yml
-        with:
-          build_script: yarn workspace @metamask/test-snaps build
-          destination_dir: test-snaps/${{ steps.get-release-version.outputs.RELEASE_VERSION }}
-          publish_dir: ./packages/test-snaps/dist
-          token: ${{ secrets.PUBLISH_PAGES_TOKEN }}
+    uses: ./.github/workflows/publish-github-pages.yml
+    with:
+      build_script: yarn workspace @metamask/test-snaps build
+      destination_dir: test-snaps/${{ needs.is-test-snaps-release.outputs.TEST_SNAPS_VERSION }}
+      publish_dir: ./packages/test-snaps/dist
+    secrets:
+      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
 
   is-simulator-release:
     name: Determine whether this release updates the simulator
@@ -228,36 +220,38 @@ jobs:
         run: ./scripts/is-release.sh "packages/snaps-simulator/package.json" "${{ github.event.before }}" "IS_SIMULATOR_RELEASE"
       - name: Set output
         if: steps.is-simulator-release.outputs.IS_SIMULATOR_RELEASE == 'true'
-        run: echo "IS_SIMULATOR_RELEASE=true" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "IS_SIMULATOR_RELEASE=true" >> "$GITHUB_OUTPUT"
+          echo "SIMULATOR_VERSION=$(jq --raw-output '.version' packages/snaps-simulator/package.json)" >> "$GITHUB_OUTPUT"
 
-  publish-simulator:
-    name: Publish Snaps Simulator
+  publish-simulator-versioned:
+    name: Publish Snaps Simulator to `${{ needs.is-simulator-release.outputs.SIMULATOR_VERSION }}` folder
     needs: is-simulator-release
-    runs-on: ubuntu-latest
     # The `rc/1.0.0` branch does not have the `snaps-simulator` package, so we
     # only run this job on the `main` branch.
     if: ${{ github.ref_name == 'main' && needs.is-simulator-release.outputs.IS_SIMULATOR_RELEASE == 'true' }}
     permissions:
       contents: write
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.sha }}
-      - name: Get release version
-        id: get-release-version
-        shell: bash
-        run: |
-          VERSION=$(jq --raw-output '.version' packages/snaps-simulator/package.json)
-          echo "RELEASE_VERSION=$VERSION" >> "$GITHUB_OUTPUT"
-      - uses: ./.github/workflows/publish-github-pages.yml
-        with:
-          build_script: yarn workspace @metamask/snaps-simulator build:post-tsc
-          publish_dir: ./packages/snaps-simulator/dist/webpack/main
-          destination_dir: snaps-simulator/${{ needs.get-release-version.outputs.RELEASE_VERSION }}
-          token: ${{ secrets.PUBLISH_PAGES_TOKEN }}
-      - uses: ./github/workflows/publish-github-pages.yml
-        with:
-          build_script: yarn workspace @metamask/snaps-simulator build:post-tsc
-          publish_dir: ./packages/snaps-simulator/dist/webpack/main
-          destination_dir: snaps-simulator/latest
-          token: ${{ secrets.PUBLISH_PAGES_TOKEN }}
+    uses: ./.github/workflows/publish-github-pages.yml
+    with:
+      build_script: yarn workspace @metamask/snaps-simulator build:post-tsc
+      publish_dir: ./packages/snaps-simulator/dist/webpack/main
+      destination_dir: snaps-simulator/${{ needs.get-release-version.outputs.RELEASE_VERSION }}
+    secrets:
+      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
+
+  publish-simulator-latest:
+    name: Publish Snaps Simulator to `latest` folder
+    needs: is-simulator-release
+    # The `rc/1.0.0` branch does not have the `snaps-simulator` package, so we
+    # only run this job on the `main` branch.
+    if: ${{ github.ref_name == 'main' && needs.is-simulator-release.outputs.IS_SIMULATOR_RELEASE == 'true' }}
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-github-pages.yml
+    with:
+      build_script: yarn workspace @metamask/snaps-simulator build:post-tsc
+      publish_dir: ./packages/snaps-simulator/dist/webpack/main
+      destination_dir: snaps-simulator/latest
+    secrets:
+      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
