@@ -2,11 +2,29 @@ name: Publish Release
 
 on:
   workflow_call:
+    inputs:
+      slack-channel:
+        required: false
+        type: string
+        default: 'metamask-dev'
+      slack-icon-url:
+        required: false
+        type: string
+        default: 'https://raw.githubusercontent.com/MetaMask/action-npm-publish/main/robo.png'
+      slack-subteam:
+        required: false
+        type: string
+      slack-username:
+        required: false
+        type: string
+        default: 'MetaMask bot'
     secrets:
       NPM_TOKEN:
         required: true
       PUBLISH_PAGES_TOKEN:
         required: true
+      SLACK_WEBHOOK_URL:
+        required: false
 
 jobs:
   publish-release:
@@ -52,7 +70,7 @@ jobs:
           key: ${{ github.sha }}
       - run: npm config set ignore-scripts true
       - name: Dry Run Publish
-        uses: MetaMask/action-npm-publish@v3
+        uses: MetaMask/action-npm-publish@v4
 
   npm-publish:
     environment: npm-publish
@@ -73,7 +91,6 @@ jobs:
         id: get-release-tag
         run: echo "tag=$(yarn get-release-tag)" >> "$GITHUB_OUTPUT"
         shell: bash
-      - run: npm config set ignore-scripts true
       - name: Publish ${{ steps.get-release-tag.outputs.tag }}
         uses: MetaMask/action-npm-publish@v3
         with:
@@ -94,14 +111,48 @@ jobs:
         run: ./scripts/get.sh ".version" "RELEASE_VERSION"
 
   publish-environment:
-    needs: get-release-version
     name: Publish iframe execution environment
+    runs-on: ubuntu-latest
+    needs: get-release-version
     permissions:
       id-token: write
       contents: read
-    uses: ./.github/workflows/publish-environment.yml
-    with:
-      destination_dir: ${{ needs.get-release-version.outputs.RELEASE_VERSION }}
+    steps:
+      - id: name-version
+        shell: bash
+        if: inputs.slack-subteam != ''
+        run: |
+          NAME_VERSION_TEXT=$(jq --raw-output '.name + "@" + .version' packages/snaps-execution-environments/package.json)
+          NAME_VERSION_TEXT_STRIPPED="${NAME_VERSION_TEXT#@}"
+          echo "NAME_VERSION=$NAME_VERSION_TEXT_STRIPPED" >> "$GITHUB_OUTPUT"
+      - id: final-text
+        shell: bash
+        if: inputs.slack-subteam != ''
+        run: |
+          DEFAULT_TEXT="\`${{ steps.name-version.outputs.NAME_VERSION }}\` is awaiting deployment :rocket: \n <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/|→ Click here to review deployment>"
+          SUBTEAM_TEXT="${{ inputs.slack-subteam }}"
+          FINAL_TEXT="$DEFAULT_TEXT"
+          if [[ ! "$SUBTEAM_TEXT" == "" ]]; then
+            FINAL_TEXT="<!subteam^$SUBTEAM_TEXT> $DEFAULT_TEXT"
+          fi
+          echo "FINAL_TEXT=$FINAL_TEXT" >> "$GITHUB_OUTPUT"
+      - name: Post to a Slack channel
+        if: inputs.slack-subteam != ''
+        uses: slackapi/slack-github-action@007b2c3c751a190b6f0f040e47ed024deaa72844
+        with:
+          payload: |
+            {
+              "text": "${{ steps.final-text.outputs.FINAL_TEXT }}",
+              "icon_url": "${{ inputs.slack-icon-url }}",
+              "username": "${{ inputs.slack-username }}",
+              "channel": "#${{ inputs.slack-channel }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+      - uses: ./.github/workflows/publish-environment.yml
+        with:
+          destination_dir: ${{ needs.get-release-version.outputs.RELEASE_VERSION }}
 
   publish-test-snaps:
     needs: get-release-version
