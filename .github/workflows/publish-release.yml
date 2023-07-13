@@ -97,28 +97,41 @@ jobs:
           npm-token: ${{ secrets.NPM_TOKEN }}
           npm-tag: ${{ steps.get-release-tag.outputs.tag }}
 
-  get-release-version:
+  is-environment-release:
+    name: Determine whether this release updates the iframe execution environment
     runs-on: ubuntu-latest
     needs: publish-release
     outputs:
-      RELEASE_VERSION: ${{ steps.get-release-version.outputs.RELEASE_VERSION }}
+      IS_ENVIRONMENT_RELEASE: ${{ steps.is-environment-release.outputs.IS_ENVIRONMENT_RELEASE }}
     steps:
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.sha }}
-      - id: get-release-version
+      - name: Check if this is an environment release
+        id: is-environment-release
         shell: bash
-        run: ./scripts/get.sh ".version" "RELEASE_VERSION"
+        run: ./scripts/is-release.sh "packages/snaps-execution-environments/package.json" "${{ github.event.before }}" "IS_ENVIRONMENT_RELEASE"
+      - name: Set output
+        if: steps.is-environment-release.outputs.IS_ENVIRONMENT_RELEASE == 'true'
+        run: echo "IS_ENVIRONMENT_RELEASE=true" >> "$GITHUB_OUTPUT"
 
   publish-environment:
     name: Publish iframe execution environment
     runs-on: ubuntu-latest
-    needs: get-release-version
+    needs: is-environment-release
+    if: needs.is-environment-release.outputs.IS_ENVIRONMENT_RELEASE == 'true'
     permissions:
       id-token: write
       contents: read
     steps:
+      - id: version
+        name: Get release version
+        shell: bash
+        run: |
+          VERSION=$(jq --raw-output '.version' packages/snaps-execution-environments/package.json)
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
       - id: name-version
+        name: Get Slack name and version
         shell: bash
         if: inputs.slack-subteam != ''
         run: |
@@ -126,6 +139,7 @@ jobs:
           NAME_VERSION_TEXT_STRIPPED="${NAME_VERSION_TEXT#@}"
           echo "NAME_VERSION=$NAME_VERSION_TEXT_STRIPPED" >> "$GITHUB_OUTPUT"
       - id: final-text
+        name: Get Slack final text
         shell: bash
         if: inputs.slack-subteam != ''
         run: |
@@ -152,52 +166,98 @@ jobs:
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
       - uses: ./.github/workflows/publish-environment.yml
         with:
-          destination_dir: ${{ needs.get-release-version.outputs.RELEASE_VERSION }}
+          destination_dir: ${{ steps.version.outputs.VERSION }}
+
+  is-test-snaps-release:
+    name: Determine whether this release updates test snaps
+    runs-on: ubuntu-latest
+    needs: publish-release
+    outputs:
+      IS_TEST_SNAPS_RELEASE: ${{ steps.is-test-snaps-release.outputs.IS_TEST_SNAPS_RELEASE }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.sha }}
+      - name: Check if this is a test snaps release
+        id: is-test-snaps-release
+        shell: bash
+        run: ./scripts/is-release.sh "packages/test-snaps/package.json" "${{ github.event.before }}" "IS_TEST_SNAPS_RELEASE"
+      - name: Set output
+        if: steps.is-environment-release.outputs.IS_TEST_SNAPS_RELEASE == 'true'
+        run: echo "IS_TEST_SNAPS_RELEASE=true" >> "$GITHUB_OUTPUT"
 
   publish-test-snaps:
-    needs: get-release-version
     name: Publish test snaps
+    needs: is-test-snaps-release
+    runs-on: ubuntu-latest
     # The `rc/1.0.0` branch does not have `test-snaps` package, so we only run
     # this job on the `main` branch.
-    if: ${{ github.ref_name == 'main' }}
+    if: ${{ github.ref_name == 'main' && needs.is-test-snaps-release.outputs.IS_TEST_SNAPS_RELEASE == 'true' }}
     permissions:
       contents: write
-    uses: ./.github/workflows/publish-github-pages.yml
-    with:
-      build_script: yarn workspace @metamask/test-snaps build
-      destination_dir: test-snaps/${{ needs.get-release-version.outputs.RELEASE_VERSION }}
-      publish_dir: ./packages/test-snaps/dist
-    secrets:
-      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.sha }}
+      - name: Get release version
+        id: get-release-version
+        shell: bash
+        run: |
+          VERSION=$(jq --raw-output '.version' packages/test-snaps/package.json)
+          echo "RELEASE_VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+      - uses: ./.github/workflows/publish-github-pages.yml
+        with:
+          build_script: yarn workspace @metamask/test-snaps build
+          destination_dir: test-snaps/${{ steps.get-release-version.outputs.RELEASE_VERSION }}
+          publish_dir: ./packages/test-snaps/dist
+          token: ${{ secrets.PUBLISH_PAGES_TOKEN }}
 
-  publish-simulator-to-versioned-gh-pages:
-    name: Publish Snaps Simulator to `${{ needs.get-release-version.outputs.RELEASE_VERSION }}` folder
-    needs: get-release-version
-    # The `rc/1.0.0` branch does not have the `snaps-simulator` package, so we
-    # only run this job on the `main` branch.
-    if: ${{ github.ref_name == 'main' }}
-    permissions:
-      contents: write
-    uses: ./.github/workflows/publish-github-pages.yml
-    with:
-      build_script: yarn workspace @metamask/snaps-simulator build:post-tsc
-      publish_dir: ./packages/snaps-simulator/dist/webpack/main
-      destination_dir: snaps-simulator/${{ needs.get-release-version.outputs.RELEASE_VERSION }}
-    secrets:
-      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
-
-  publish-simulator-to-latest-gh-pages:
-    name: Publish Snaps Simulator to `latest` folder
+  is-simulator-release:
+    name: Determine whether this release updates the simulator
+    runs-on: ubuntu-latest
     needs: publish-release
+    outputs:
+      IS_SIMULATOR_RELEASE: ${{ steps.is-simulator-release.outputs.IS_SIMULATOR_RELEASE }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.sha }}
+      - name: Check if this is a simulator release
+        id: is-simulator-release
+        shell: bash
+        run: ./scripts/is-release.sh "packages/snaps-simulator/package.json" "${{ github.event.before }}" "IS_SIMULATOR_RELEASE"
+      - name: Set output
+        if: steps.is-simulator-release.outputs.IS_SIMULATOR_RELEASE == 'true'
+        run: echo "IS_SIMULATOR_RELEASE=true" >> "$GITHUB_OUTPUT"
+
+  publish-simulator:
+    name: Publish Snaps Simulator
+    needs: is-simulator-release
+    runs-on: ubuntu-latest
     # The `rc/1.0.0` branch does not have the `snaps-simulator` package, so we
     # only run this job on the `main` branch.
-    if: ${{ github.ref_name == 'main' }}
+    if: ${{ github.ref_name == 'main' && needs.is-simulator-release.outputs.IS_SIMULATOR_RELEASE == 'true' }}
     permissions:
       contents: write
-    uses: ./.github/workflows/publish-github-pages.yml
-    with:
-      build_script: yarn workspace @metamask/snaps-simulator build:post-tsc
-      publish_dir: ./packages/snaps-simulator/dist/webpack/main
-      destination_dir: snaps-simulator/latest
-    secrets:
-      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.sha }}
+      - name: Get release version
+        id: get-release-version
+        shell: bash
+        run: |
+          VERSION=$(jq --raw-output '.version' packages/snaps-simulator/package.json)
+          echo "RELEASE_VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+      - uses: ./.github/workflows/publish-github-pages.yml
+        with:
+          build_script: yarn workspace @metamask/snaps-simulator build:post-tsc
+          publish_dir: ./packages/snaps-simulator/dist/webpack/main
+          destination_dir: snaps-simulator/${{ needs.get-release-version.outputs.RELEASE_VERSION }}
+          token: ${{ secrets.PUBLISH_PAGES_TOKEN }}
+      - uses: ./github/workflows/publish-github-pages.yml
+        with:
+          build_script: yarn workspace @metamask/snaps-simulator build:post-tsc
+          publish_dir: ./packages/snaps-simulator/dist/webpack/main
+          destination_dir: snaps-simulator/latest
+          token: ${{ secrets.PUBLISH_PAGES_TOKEN }}
