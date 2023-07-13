@@ -4040,13 +4040,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/eslint-config-browser@npm:^11.1.0":
-  version: 11.1.0
-  resolution: "@metamask/eslint-config-browser@npm:11.1.0"
+"@metamask/eslint-config-browser@npm:^12.1.0":
+  version: 12.1.0
+  resolution: "@metamask/eslint-config-browser@npm:12.1.0"
   peerDependencies:
-    "@metamask/eslint-config": ^11.0.0
+    "@metamask/eslint-config": ^12.0.0
     eslint: ^8.27.0
-  checksum: 43201e5fc0c7314413ecc2bbffdeb4d3e704c05349eac7b02ac1dc7b541f3baa98975df8e1e19cd9ff7e19fe5e3fa0f267a6fbf64a49e9428639864dec083d34
+  checksum: a1d3035b0dd82aa66397e9c8916c45e1dc2d339c13dac385f7c90de09df943c313801538c0d955c2abf44a57008100874f8615d70f19188d8893b653cfe15485
   languageName: node
   linkType: hard
 
@@ -5070,7 +5070,7 @@ __metadata:
     "@metamask/base-controller": ^3.0.0
     "@metamask/browser-passworder": ^4.1.0
     "@metamask/eslint-config": ^11.0.0
-    "@metamask/eslint-config-browser": ^11.1.0
+    "@metamask/eslint-config-browser": ^12.1.0
     "@metamask/eslint-config-jest": ^11.0.0
     "@metamask/eslint-config-nodejs": ^11.0.1
     "@metamask/eslint-config-typescript": ^11.0.0
