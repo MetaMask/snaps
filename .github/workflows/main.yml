@@ -39,8 +39,7 @@ jobs:
       build_script: yarn workspace @metamask/snaps-simulator build:post-tsc
       publish_dir: ./packages/snaps-simulator/dist/webpack/main
       destination_dir: snaps-simulator/staging
-    secrets:
-      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
+      token: ${{ secrets.PUBLISH_PAGES_TOKEN }}
 
   is-release:
     name: Determine whether this is a release merge commit
