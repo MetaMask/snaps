@@ -1,10 +1,11 @@
 import { Flex, Text } from '@chakra-ui/react';
-import { Component } from '@metamask/snaps-ui';
+import type { Component } from '@metamask/snaps-ui';
 import { assert } from '@metamask/utils';
-import { NodeModel } from '@minoru/react-dnd-treeview';
-import { FunctionComponent, ReactNode } from 'react';
+import type { NodeModel } from '@minoru/react-dnd-treeview';
+import type { FunctionComponent, ReactNode } from 'react';
 
-import { Icon, IconName } from '../../../components';
+import type { IconName } from '../../../components';
+import { Icon } from '../../../components';
 
 export type BaseNodeProps = {
   node: NodeModel<Component>;

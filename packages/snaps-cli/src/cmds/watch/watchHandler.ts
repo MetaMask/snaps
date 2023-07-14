@@ -10,7 +10,7 @@ import {
 import chokidar from 'chokidar';
 import pathUtils from 'path';
 
-import { YargsArgs } from '../../types/yargs';
+import type { YargsArgs } from '../../types/yargs';
 import { CONFIG_FILE, loadConfig } from '../../utils';
 import { bundle } from '../build/bundle';
 import { evalHandler } from '../eval/evalHandler';

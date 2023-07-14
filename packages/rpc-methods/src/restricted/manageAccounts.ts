@@ -1,11 +1,12 @@
-import {
-  SubjectType,
-  PermissionType,
+import type {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
   PermissionSpecificationBuilder,
 } from '@metamask/permission-controller';
-import { Json, JsonStruct, NonEmptyArray } from '@metamask/utils';
+import { SubjectType, PermissionType } from '@metamask/permission-controller';
+import type { Json, NonEmptyArray } from '@metamask/utils';
+import { JsonStruct } from '@metamask/utils';
+import type { Infer } from 'superstruct';
 import {
   assert,
   string,
@@ -14,7 +15,6 @@ import {
   union,
   array,
   record,
-  Infer,
 } from 'superstruct';
 
 const SnapMessageStruct = object({

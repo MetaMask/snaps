@@ -1,6 +1,6 @@
 import { checkManifest, logError, logWarning } from '@metamask/snaps-utils';
 
-import { YargsArgs } from '../../types/yargs';
+import type { YargsArgs } from '../../types/yargs';
 
 const ERROR_PREFIX = 'Manifest Error: ';
 
@@ -23,6 +23,7 @@ export async function manifestHandler({ writeManifest }: YargsArgs) {
       logError(`${ERROR_PREFIX}The manifest is invalid.`);
       errors.forEach(logManifestError);
 
+      // eslint-disable-next-line n/no-process-exit
       process.exit(1);
     }
 

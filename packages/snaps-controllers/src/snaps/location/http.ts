@@ -1,5 +1,5 @@
+import type { SnapManifest } from '@metamask/snaps-utils';
 import {
-  SnapManifest,
   VirtualFile,
   HttpSnapIdStruct,
   NpmSnapFileNames,
@@ -9,7 +9,7 @@ import {
 } from '@metamask/snaps-utils';
 import { assert, assertStruct } from '@metamask/utils';
 
-import { SnapLocation } from './location';
+import type { SnapLocation } from './location';
 
 export interface HttpOptions {
   /**

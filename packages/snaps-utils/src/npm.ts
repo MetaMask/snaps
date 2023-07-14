@@ -1,12 +1,8 @@
 import { assertIsSnapIcon } from './icon';
 import { validateNpmSnapManifest } from './manifest/manifest';
 import { assertIsSnapManifest } from './manifest/validation';
-import {
-  assertIsNpmSnapPackageJson,
-  NpmSnapFileNames,
-  SnapFiles,
-  UnvalidatedSnapFiles,
-} from './types';
+import type { SnapFiles, UnvalidatedSnapFiles } from './types';
+import { assertIsNpmSnapPackageJson, NpmSnapFileNames } from './types';
 
 export const EXPECTED_SNAP_FILES = [
   'manifest',

@@ -1,22 +1,23 @@
-import { BIP32Node, SLIP10Node } from '@metamask/key-tree';
-import {
+import type { BIP32Node } from '@metamask/key-tree';
+import { SLIP10Node } from '@metamask/key-tree';
+import type {
   PermissionSpecificationBuilder,
-  PermissionType,
   PermissionValidatorConstraint,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-  SubjectType,
 } from '@metamask/permission-controller';
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import {
   bip32entropy,
   Bip32PathStruct,
   SnapCaveatType,
 } from '@metamask/snaps-utils';
-import { NonEmptyArray, assertStruct } from '@metamask/utils';
+import type { NonEmptyArray } from '@metamask/utils';
+import { assertStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { boolean, enums, object, optional } from 'superstruct';
 
-import { MethodHooksObject } from '../utils';
+import type { MethodHooksObject } from '../utils';
 
 const targetName = 'snap_getBip32PublicKey';
 

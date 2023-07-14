@@ -1,4 +1,4 @@
-import {
+import type {
   PermissionConstraint,
   PermissionSpecificationConstraint,
 } from '@metamask/permission-controller';
@@ -7,7 +7,7 @@ import {
   restrictedMethodPermissionBuilders,
   selectHooks,
 } from '@metamask/rpc-methods';
-import { SnapPermissions } from '@metamask/snaps-utils';
+import type { SnapPermissions } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
 
 import {

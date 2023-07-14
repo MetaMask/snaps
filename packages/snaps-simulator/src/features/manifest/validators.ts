@@ -1,9 +1,5 @@
-import {
-  SnapManifest,
-  SnapManifestStruct,
-  VirtualFile,
-  getSnapChecksum,
-} from '@metamask/snaps-utils';
+import type { SnapManifest, VirtualFile } from '@metamask/snaps-utils';
+import { SnapManifestStruct, getSnapChecksum } from '@metamask/snaps-utils';
 
 type ValidatorContext = {
   sourceCode: VirtualFile<string>;

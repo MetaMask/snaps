@@ -1,5 +1,5 @@
 import { Flex, Text } from '@chakra-ui/react';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 
 import { SnapIcon } from './SnapIcon';
 

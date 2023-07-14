@@ -1,5 +1,5 @@
 import { Box, List, Text } from '@chakra-ui/react';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 
 import { Icon } from '../../../components';
 import { useDispatch } from '../../../hooks';

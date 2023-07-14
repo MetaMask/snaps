@@ -1,4 +1,4 @@
-import { IframeExecutionService } from '@metamask/snaps-controllers';
+import type { IframeExecutionService } from '@metamask/snaps-controllers';
 import { VirtualFile } from '@metamask/snaps-utils';
 
 import {

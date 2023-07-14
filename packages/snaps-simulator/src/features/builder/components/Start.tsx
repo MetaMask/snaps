@@ -1,5 +1,5 @@
 import { Flex, Heading, Text } from '@chakra-ui/react';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 
 import { Icon } from '../../../components';
 

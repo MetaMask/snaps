@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 
 import { Snap } from '../../../components';
 import { PublicKey, SignMessage } from './components';

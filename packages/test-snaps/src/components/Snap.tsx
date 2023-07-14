@@ -1,4 +1,4 @@
-import { FunctionComponent, ReactNode } from 'react';
+import type { FunctionComponent, ReactNode } from 'react';
 import { Card, Col } from 'react-bootstrap';
 import CardHeader from 'react-bootstrap/CardHeader';
 

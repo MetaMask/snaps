@@ -1,5 +1,6 @@
 import { useToast } from '@chakra-ui/react';
-import { FunctionComponent, useEffect } from 'react';
+import type { FunctionComponent } from 'react';
+import { useEffect } from 'react';
 
 import { useDispatch, useSelector } from '../../hooks';
 import { getNotifications, removeNotification } from './slice';

@@ -1,6 +1,6 @@
-import { NotificationType } from '@metamask/rpc-methods';
-import { ApplicationState, Dispatch } from '@metamask/snaps-simulator';
-import { EnumToUnion } from '@metamask/snaps-utils';
+import type { NotificationType } from '@metamask/rpc-methods';
+import type { ApplicationState, Dispatch } from '@metamask/snaps-simulator';
+import type { EnumToUnion } from '@metamask/snaps-utils';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

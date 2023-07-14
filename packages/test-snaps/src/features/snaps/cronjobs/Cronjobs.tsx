@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 
 import { Snap } from '../../../components';
 import { CRONJOBS_SNAP_ID, CRONJOBS_SNAP_PORT } from './constants';

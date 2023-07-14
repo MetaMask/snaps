@@ -2,7 +2,7 @@ import { logInfo } from '@metamask/snaps-utils';
 import { promises as fs } from 'fs';
 
 import { TranspilationModes } from '../../builders';
-import { YargsArgs } from '../../types/yargs';
+import type { YargsArgs } from '../../types/yargs';
 import { writeError } from '../../utils';
 
 type WriteBundleFileArgs = {

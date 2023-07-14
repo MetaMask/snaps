@@ -1,8 +1,6 @@
-import {
-  render as testingLibraryRender,
-  RenderResult,
-} from '@testing-library/react';
-import { ReactElement } from 'react';
+import type { RenderResult } from '@testing-library/react';
+import { render as testingLibraryRender } from '@testing-library/react';
+import type { ReactElement } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 
 import { Root } from '../components';

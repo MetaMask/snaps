@@ -5,7 +5,7 @@ import { promises as fs } from 'fs';
 import pathUtils from 'path';
 
 import { resetFileSystem } from '../../test-utils';
-import { YargsArgs } from '../../types/yargs';
+import type { YargsArgs } from '../../types/yargs';
 import { initHandler } from './initHandler';
 import * as initUtils from './initUtils';
 

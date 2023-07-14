@@ -1,19 +1,16 @@
+import type { NpmSnapPackageJson } from '@metamask/snaps-utils';
 import {
   NpmSnapFileNames,
   readJsonFile,
-  NpmSnapPackageJson,
   createSnapManifest,
   logInfo,
 } from '@metamask/snaps-utils';
-import {
-  satisfiesVersionRange,
-  SemVerRange,
-  SemVerVersion,
-} from '@metamask/utils';
+import type { SemVerRange, SemVerVersion } from '@metamask/utils';
+import { satisfiesVersionRange } from '@metamask/utils';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
 
-import { YargsArgs } from '../../types/yargs';
+import type { YargsArgs } from '../../types/yargs';
 import {
   buildSnap,
   cloneTemplate,

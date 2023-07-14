@@ -1,38 +1,37 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 /// <reference path="../../../../node_modules/ses/index.d.ts" />
 import { StreamProvider } from '@metamask/providers';
-import { RequestArguments } from '@metamask/providers/dist/BaseProvider';
-import { SnapsGlobalObject } from '@metamask/rpc-methods';
-import {
+import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
+import type { SnapsGlobalObject } from '@metamask/rpc-methods';
+import type {
   SnapExports,
   HandlerType,
   SnapExportsParameters,
-  SNAP_EXPORT_NAMES,
-  logError,
 } from '@metamask/snaps-utils';
-import {
-  isObject,
-  isValidJson,
+import { SNAP_EXPORT_NAMES, logError } from '@metamask/snaps-utils';
+import type {
   JsonRpcNotification,
-  assert,
-  isJsonRpcRequest,
   JsonRpcId,
   JsonRpcRequest,
   Json,
+} from '@metamask/utils';
+import {
+  isObject,
+  isValidJson,
+  assert,
+  isJsonRpcRequest,
   hasProperty,
   getSafeJson,
 } from '@metamask/utils';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
 import { createIdRemapMiddleware } from 'json-rpc-engine';
-import { Duplex } from 'stream';
+import type { Duplex } from 'stream';
 import { validate } from 'superstruct';
 
 import { log } from '../logging';
 import EEOpenRPCDocument from '../openrpc.json';
-import {
-  CommandMethodsMapping,
-  getCommandMethodImplementations,
-} from './commands';
+import type { CommandMethodsMapping } from './commands';
+import { getCommandMethodImplementations } from './commands';
 import { createEndowments } from './endowments';
 import { addEventListener, removeEventListener } from './globalEvents';
 import { sortParamKeys } from './sortParams';

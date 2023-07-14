@@ -1,25 +1,24 @@
 import { JSON_RPC_ENDPOINT } from '@metamask/snaps-simulator';
 import { createModuleLogger, UnsafeJsonStruct } from '@metamask/utils';
-import { Page, HTTPRequest } from 'puppeteer';
+import type { Page, HTTPRequest } from 'puppeteer';
+import type { Infer, Struct } from 'superstruct';
 import {
   assign,
   boolean,
   create,
   defaulted,
-  Infer,
   number,
   object,
   optional,
   record,
   regexp,
   string,
-  Struct,
   union,
   unknown,
   func,
 } from 'superstruct';
 
-import { DeepPartial } from '../types';
+import type { DeepPartial } from '../types';
 import { rootLogger } from './logger';
 
 /**

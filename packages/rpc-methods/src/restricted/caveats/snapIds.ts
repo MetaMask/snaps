@@ -1,16 +1,18 @@
-import {
+import type {
   Caveat,
   RestrictedMethodOptions,
   RestrictedMethodParameters,
   RestrictedMethodCaveatSpecificationConstraint,
   PermissionConstraint,
 } from '@metamask/permission-controller';
-import { SnapIds, SnapCaveatType, SnapIdsStruct } from '@metamask/snaps-utils';
-import { hasProperty, Json, assertStruct } from '@metamask/utils';
+import type { SnapIds } from '@metamask/snaps-utils';
+import { SnapCaveatType, SnapIdsStruct } from '@metamask/snaps-utils';
+import type { Json } from '@metamask/utils';
+import { hasProperty, assertStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { type } from 'superstruct';
 
-import { InvokeSnapParams } from '../invokeSnap';
+import type { InvokeSnapParams } from '../invokeSnap';
 
 /**
  * Map a raw value from the `initialPermissions` to a caveat specification.

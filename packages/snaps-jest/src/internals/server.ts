@@ -1,16 +1,17 @@
+import type { SnapManifest } from '@metamask/snaps-utils';
 import {
   assertIsSnapManifest,
   isDirectory,
   isFile,
-  SnapManifest,
 } from '@metamask/snaps-utils';
 import { createModuleLogger } from '@metamask/utils';
 import express from 'express';
 import { promises as fs } from 'fs';
-import { createServer, Server } from 'http';
+import type { Server } from 'http';
+import { createServer } from 'http';
 import { resolve as pathResolve, dirname } from 'path';
 
-import { SnapsEnvironmentOptions } from '../options';
+import type { SnapsEnvironmentOptions } from '../options';
 import { rootLogger } from './logger';
 
 const SNAPS_EXECUTION_ENVIRONMENTS_PATH = pathResolve(

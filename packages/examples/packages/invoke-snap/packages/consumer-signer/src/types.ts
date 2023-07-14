@@ -1,4 +1,4 @@
-import { PartialHDPathTuple5 } from '@metamask/key-tree';
+import type { PartialHDPathTuple5 } from '@metamask/key-tree';
 
 /**
  * A BIP-44 path is of the form:

@@ -1,4 +1,4 @@
-import { SnapId } from '@metamask/snaps-utils';
+import type { SnapId } from '@metamask/snaps-utils';
 
 import { rootRealmGlobal } from '../globalObject';
 import consoleEndowment from './console';

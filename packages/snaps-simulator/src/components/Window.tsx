@@ -1,5 +1,5 @@
 import { Flex } from '@chakra-ui/react';
-import { FunctionComponent, ReactNode } from 'react';
+import type { FunctionComponent, ReactNode } from 'react';
 
 import { Author } from './Author';
 

@@ -1,25 +1,24 @@
-import {
-  BaseControllerV2 as BaseController,
-  RestrictedControllerMessenger,
-} from '@metamask/base-controller';
-import { SnapsRegistryDatabase, verify } from '@metamask/snaps-registry';
-import { SnapId } from '@metamask/snaps-utils';
+import type { RestrictedControllerMessenger } from '@metamask/base-controller';
+import { BaseControllerV2 as BaseController } from '@metamask/base-controller';
+import type { SnapsRegistryDatabase } from '@metamask/snaps-registry';
+import { verify } from '@metamask/snaps-registry';
+import type { SnapId } from '@metamask/snaps-utils';
+import type { Hex } from '@metamask/utils';
 import {
   assert,
   Duration,
-  Hex,
   inMilliseconds,
   satisfiesVersionRange,
 } from '@metamask/utils';
 
-import {
+import type {
   SnapsRegistry,
   SnapsRegistryInfo,
   SnapsRegistryMetadata,
   SnapsRegistryRequest,
   SnapsRegistryResult,
-  SnapsRegistryStatus,
 } from './registry';
+import { SnapsRegistryStatus } from './registry';
 
 // TODO: Replace with a Codefi URL
 const SNAP_REGISTRY_URL =

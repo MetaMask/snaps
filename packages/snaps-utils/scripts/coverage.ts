@@ -1,9 +1,12 @@
 /* eslint-disable no-console */
 
 import { promises as fs } from 'fs';
-import { CoverageMap, createCoverageMap } from 'istanbul-lib-coverage';
-import { createContext, ReportBase } from 'istanbul-lib-report';
-import reports, { ReportOptions, ReportType } from 'istanbul-reports';
+import type { CoverageMap } from 'istanbul-lib-coverage';
+import { createCoverageMap } from 'istanbul-lib-coverage';
+import type { ReportBase } from 'istanbul-lib-report';
+import { createContext } from 'istanbul-lib-report';
+import type { ReportOptions, ReportType } from 'istanbul-reports';
+import reports from 'istanbul-reports';
 import { resolve } from 'path';
 import * as process from 'process';
 

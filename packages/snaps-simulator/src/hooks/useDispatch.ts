@@ -1,6 +1,6 @@
 import { useDispatch as useReduxDispatch } from 'react-redux';
 
-import { Dispatch } from '../store/store';
+import type { Dispatch } from '../store/store';
 
 /**
  * A hook to access the Redux dispatch function.

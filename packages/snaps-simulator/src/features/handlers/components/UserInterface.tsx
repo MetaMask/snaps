@@ -1,6 +1,7 @@
 import { useTabsContext } from '@chakra-ui/react';
 import { DialogType } from '@metamask/rpc-methods';
-import { FunctionComponent, useEffect } from 'react';
+import type { FunctionComponent } from 'react';
+import { useEffect } from 'react';
 
 import {
   AlertDialog,

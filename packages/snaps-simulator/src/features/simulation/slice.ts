@@ -1,27 +1,27 @@
-import {
+import type {
   GenericPermissionController,
   SubjectMetadataController,
 } from '@metamask/permission-controller';
-import { DialogType } from '@metamask/rpc-methods';
-import { IframeExecutionService } from '@metamask/snaps-controllers';
-import { Component } from '@metamask/snaps-ui';
-import {
+import type { DialogType } from '@metamask/rpc-methods';
+import type { IframeExecutionService } from '@metamask/snaps-controllers';
+import type { Component } from '@metamask/snaps-ui';
+import type {
   SnapManifest,
   SnapRpcHookArgs,
   VirtualFile,
 } from '@metamask/snaps-utils';
+import type { PayloadAction } from '@reduxjs/toolkit';
 import {
   createAction,
   createSelector,
   createSlice,
   nanoid,
-  PayloadAction,
 } from '@reduxjs/toolkit';
 
 export enum SnapStatus {
-  Ok,
-  Loading,
-  Error,
+  Ok = 'ok',
+  Loading = 'loading',
+  Error = 'error',
 }
 
 export type HandlerUserInterface = {

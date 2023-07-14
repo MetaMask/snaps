@@ -1,4 +1,4 @@
-import { HandlerType } from '@metamask/snaps-utils';
+import type { HandlerType } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 import { useMatch } from 'react-router-dom';
 

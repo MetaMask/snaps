@@ -1,7 +1,7 @@
-import yargs from 'yargs';
+import type yargs from 'yargs';
 
 import builders from '../../builders';
-import { YargsArgs } from '../../types/yargs';
+import type { YargsArgs } from '../../types/yargs';
 import { logError } from '../../utils';
 import { manifestHandler } from './manifestHandler';
 

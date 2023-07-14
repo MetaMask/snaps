@@ -1,5 +1,5 @@
-import { Component } from '@metamask/snaps-ui';
-import { Json, JsonRpcRequest } from '@metamask/utils';
+import type { Component } from '@metamask/snaps-ui';
+import type { Json, JsonRpcRequest } from '@metamask/utils';
 
 /**
  * The `onRpcRequest` handler. This is called whenever a JSON-RPC request is

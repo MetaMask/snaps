@@ -6,7 +6,8 @@ import {
   TabPanels,
   Tabs,
 } from '@chakra-ui/react';
-import { FunctionComponent, useEffect, useRef, useState } from 'react';
+import type { FunctionComponent } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Icon } from '../../components';
 import { useSelector } from '../../hooks';

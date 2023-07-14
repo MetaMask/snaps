@@ -1,13 +1,15 @@
-import plugin, { Options } from '@metamask/snaps-browserify-plugin';
-import browserify, { BrowserifyObject } from 'browserify';
+import type { Options } from '@metamask/snaps-browserify-plugin';
+import plugin from '@metamask/snaps-browserify-plugin';
+import type { BrowserifyObject } from 'browserify';
+import browserify from 'browserify';
 
 import { TranspilationModes } from '../../builders';
-import { YargsArgs } from '../../types/yargs';
+import type { YargsArgs } from '../../types/yargs';
 import { processDependencies, writeBundleFile } from './utils';
 
 // We need to statically import all Browserify transforms and all Babel presets
 // and plugins, and calling `require` is the sanest way to do that.
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require */
+/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require */
 
 /**
  * Builds a Snap bundle JS file from its JavaScript source.

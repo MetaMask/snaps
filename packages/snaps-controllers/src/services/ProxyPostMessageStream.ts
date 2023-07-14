@@ -1,5 +1,5 @@
 import { BasePostMessageStream } from '@metamask/post-message-stream';
-import { JsonRpcRequest } from '@metamask/utils';
+import type { JsonRpcRequest } from '@metamask/utils';
 
 export type ProxyPostMessageStreamArgs = {
   stream: BasePostMessageStream;

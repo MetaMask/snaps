@@ -1,4 +1,5 @@
-import { FunctionComponent, useEffect } from 'react';
+import type { FunctionComponent } from 'react';
+import { useEffect } from 'react';
 import { RouterProvider } from 'react-router-dom';
 
 import { setSnapId } from './features';

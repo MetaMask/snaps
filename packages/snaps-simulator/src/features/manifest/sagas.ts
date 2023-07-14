@@ -1,15 +1,15 @@
-import { SnapManifest, VirtualFile } from '@metamask/snaps-utils';
-import { PayloadAction } from '@reduxjs/toolkit';
-import { SagaIterator } from 'redux-saga';
+import type { SnapManifest, VirtualFile } from '@metamask/snaps-utils';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import type { SagaIterator } from 'redux-saga';
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
 
 import { getIcon, getSourceCode } from '../simulation';
+import type { ValidationResult } from './slice';
 import {
   ManifestStatus,
   setResults,
   setValid,
   validateManifest,
-  ValidationResult,
 } from './slice';
 import { validators } from './validators';
 

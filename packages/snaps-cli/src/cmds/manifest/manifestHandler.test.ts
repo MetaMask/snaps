@@ -1,11 +1,7 @@
-import {
-  checkManifest,
-  CheckManifestResult,
-  logError,
-  logWarning,
-} from '@metamask/snaps-utils';
+import type { CheckManifestResult } from '@metamask/snaps-utils';
+import { checkManifest, logError, logWarning } from '@metamask/snaps-utils';
 
-import { YargsArgs } from '../../types/yargs';
+import type { YargsArgs } from '../../types/yargs';
 import { manifestHandler } from './manifestHandler';
 
 jest.mock('@metamask/snaps-utils');

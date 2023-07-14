@@ -1,14 +1,14 @@
 // eslint-disable-next-line import/no-unassigned-import
 import 'ses';
 import { HandlerType } from '@metamask/snaps-utils';
+import type { SpyFunction } from '@metamask/snaps-utils/test-utils';
 import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
   MockWindowPostMessageStream,
   spy,
-  SpyFunction,
 } from '@metamask/snaps-utils/test-utils';
-import { JsonRpcRequest } from '@metamask/utils';
+import type { JsonRpcRequest } from '@metamask/utils';
 
 import { WebWorkerSnapExecutor } from './WebWorkerSnapExecutor';
 

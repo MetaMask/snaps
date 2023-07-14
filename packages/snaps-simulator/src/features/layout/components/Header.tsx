@@ -1,5 +1,5 @@
 import { Container, Stack } from '@chakra-ui/react';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 
 import { Logo } from '../../../components';
 import { Configuration } from '../../configuration';

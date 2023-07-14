@@ -8,15 +8,15 @@ import MonacoEditorWebpackPlugin from 'monaco-editor-webpack-plugin';
 import { resolve } from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
+import type { Configuration } from 'webpack';
 import {
-  Configuration,
   ProvidePlugin,
   DllPlugin,
   DllReferencePlugin,
   EnvironmentPlugin,
   NormalModuleReplacementPlugin,
 } from 'webpack';
-import { Configuration as DevServerConfiguration } from 'webpack-dev-server';
+import type { Configuration as DevServerConfiguration } from 'webpack-dev-server';
 import { merge } from 'webpack-merge';
 
 import packageJson from './package.json';

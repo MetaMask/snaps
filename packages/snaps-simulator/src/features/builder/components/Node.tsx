@@ -1,11 +1,13 @@
 import { Box } from '@chakra-ui/react';
-import { Component, NodeType } from '@metamask/snaps-ui';
+import type { Component } from '@metamask/snaps-ui';
+import { NodeType } from '@metamask/snaps-ui';
 import { assert } from '@metamask/utils';
-import { NodeModel } from '@minoru/react-dnd-treeview';
-import { FunctionComponent } from 'react';
+import type { NodeModel } from '@minoru/react-dnd-treeview';
+import type { FunctionComponent } from 'react';
 
 import { BaseNode } from './BaseNode';
-import { EditableComponent, EditableNode } from './EditableNode';
+import type { EditableComponent } from './EditableNode';
+import { EditableNode } from './EditableNode';
 
 export const EDITABLE_NODES = [
   NodeType.Heading,

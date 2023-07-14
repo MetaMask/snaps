@@ -1,20 +1,19 @@
 import { getPersistentState } from '@metamask/base-controller';
-import {
+import type {
   Caveat,
   SubjectPermissions,
   ValidPermission,
 } from '@metamask/permission-controller';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
+import type { SnapPermissions, ValidatedSnapId } from '@metamask/snaps-utils';
 import {
   DEFAULT_ENDOWMENTS,
   getSnapChecksum,
   HandlerType,
   SnapCaveatType,
-  SnapPermissions,
   SnapStatus,
   VirtualFile,
   DEFAULT_REQUESTED_SNAP_VERSION,
-  ValidatedSnapId,
 } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
@@ -30,15 +29,17 @@ import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
-import { AssertionError, SemVerVersion, SemVerRange } from '@metamask/utils';
+import type { SemVerVersion, SemVerRange } from '@metamask/utils';
+import { AssertionError } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
 import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
-import { Duplex } from 'stream';
+import type { Duplex } from 'stream';
 
-import { NodeThreadExecutionService, setupMultiplex } from '../services';
+import type { NodeThreadExecutionService } from '../services';
+import { setupMultiplex } from '../services';
 import {
   ExecutionEnvironmentStub,
   getControllerMessenger,
@@ -66,8 +67,8 @@ import {
 import { delay } from '../utils';
 import { handlerEndowments, SnapEndowments } from './endowments';
 import { SnapsRegistryStatus } from './registry';
+import type { SnapControllerState } from './SnapController';
 import {
-  SnapControllerState,
   SNAP_APPROVAL_INSTALL,
   SNAP_APPROVAL_RESULT,
   SNAP_APPROVAL_UPDATE,

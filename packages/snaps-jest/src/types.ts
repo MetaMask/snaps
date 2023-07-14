@@ -1,10 +1,10 @@
-import { NotificationType } from '@metamask/rpc-methods';
-import { Component } from '@metamask/snaps-ui';
-import { EnumToUnion } from '@metamask/snaps-utils';
-import { JsonRpcId, JsonRpcParams } from '@metamask/utils';
-import { Infer } from 'superstruct';
+import type { NotificationType } from '@metamask/rpc-methods';
+import type { Component } from '@metamask/snaps-ui';
+import type { EnumToUnion } from '@metamask/snaps-utils';
+import type { JsonRpcId, JsonRpcParams } from '@metamask/utils';
+import type { Infer } from 'superstruct';
 
-import {
+import type {
   Mock,
   MockJsonRpcOptions,
   MockOptions,
@@ -28,6 +28,7 @@ declare module 'expect' {
   // Ideally we would use `Matchers<Result>` instead of `Matchers<R>`, but
   // TypeScript doesn't allow this:
   // TS2428: All declarations of 'Matchers' must have identical type parameters.
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   interface Matchers<R> {
     toRespondWith(response: unknown): R;
     toRespondWithError(error: unknown): R;

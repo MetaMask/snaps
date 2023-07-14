@@ -1,7 +1,7 @@
-import { DialogType, NotificationArgs } from '@metamask/rpc-methods';
-import { Component } from '@metamask/snaps-ui';
+import type { DialogType, NotificationArgs } from '@metamask/rpc-methods';
+import type { Component } from '@metamask/snaps-ui';
 import { nanoid } from '@reduxjs/toolkit';
-import { SagaIterator } from 'redux-saga';
+import type { SagaIterator } from 'redux-saga';
 import { call, put, select, take } from 'redux-saga/effects';
 
 import { addNativeNotification, addNotification } from '../notifications';

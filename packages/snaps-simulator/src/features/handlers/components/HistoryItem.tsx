@@ -8,13 +8,13 @@ import {
   Text,
   useTabsContext,
 } from '@chakra-ui/react';
-import { JsonRpcRequest } from '@metamask/utils';
+import type { JsonRpcRequest } from '@metamask/utils';
 import { formatDistance } from 'date-fns';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 
 import { Icon } from '../../../components';
 import { useDispatch, useHandler } from '../../../hooks';
-import { HistoryEntry } from '../slice';
+import type { HistoryEntry } from '../slice';
 
 export type HistoryItemProps<Request extends { request?: JsonRpcRequest }> = {
   item: HistoryEntry<Request>;

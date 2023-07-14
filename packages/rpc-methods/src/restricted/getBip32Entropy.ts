@@ -1,22 +1,23 @@
-import {
+import type {
   BIP32Node,
   JsonSLIP10Node,
-  SLIP10Node,
   SLIP10PathNode,
 } from '@metamask/key-tree';
-import {
+import { SLIP10Node } from '@metamask/key-tree';
+import type {
   PermissionSpecificationBuilder,
-  PermissionType,
   PermissionValidatorConstraint,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-  SubjectType,
 } from '@metamask/permission-controller';
-import { Bip32Entropy, SnapCaveatType } from '@metamask/snaps-utils';
-import { NonEmptyArray, assert } from '@metamask/utils';
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import type { Bip32Entropy } from '@metamask/snaps-utils';
+import { SnapCaveatType } from '@metamask/snaps-utils';
+import type { NonEmptyArray } from '@metamask/utils';
+import { assert } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
-import { MethodHooksObject } from '../utils';
+import type { MethodHooksObject } from '../utils';
 
 const targetName = 'snap_getBip32Entropy';
 

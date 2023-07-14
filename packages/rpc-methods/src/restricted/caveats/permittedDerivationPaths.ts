@@ -1,15 +1,16 @@
-import {
+import type {
   Caveat,
   PermissionConstraint,
   RestrictedMethodCaveatSpecificationConstraint,
 } from '@metamask/permission-controller';
+import type { Bip32Entropy } from '@metamask/snaps-utils';
 import {
   SnapCaveatType,
-  Bip32Entropy,
   Bip32EntropyStruct,
   isEqual,
 } from '@metamask/snaps-utils';
-import { Json, assertStruct } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
+import { assertStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { array, size, type } from 'superstruct';
 

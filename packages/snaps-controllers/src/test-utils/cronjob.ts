@@ -1,4 +1,4 @@
-import { PermissionConstraint } from '@metamask/permission-controller';
+import type { PermissionConstraint } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import { MOCK_ORIGIN } from '@metamask/snaps-utils/test-utils';
 

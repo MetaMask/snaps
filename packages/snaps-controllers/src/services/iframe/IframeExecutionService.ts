@@ -1,14 +1,9 @@
-import {
-  WindowPostMessageStream,
-  BasePostMessageStream,
-} from '@metamask/post-message-stream';
+import type { BasePostMessageStream } from '@metamask/post-message-stream';
+import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { createWindow } from '@metamask/snaps-utils';
 
-import {
-  Job,
-  AbstractExecutionService,
-  ExecutionServiceArgs,
-} from '../AbstractExecutionService';
+import type { Job, ExecutionServiceArgs } from '../AbstractExecutionService';
+import { AbstractExecutionService } from '../AbstractExecutionService';
 
 type IframeExecutionEnvironmentServiceArgs = {
   iframeUrl: URL;

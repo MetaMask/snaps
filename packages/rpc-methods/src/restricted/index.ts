@@ -1,24 +1,21 @@
-import { dialogBuilder, DialogMethodHooks } from './dialog';
-import {
-  getBip32EntropyBuilder,
-  GetBip32EntropyMethodHooks,
-} from './getBip32Entropy';
-import {
-  getBip32PublicKeyBuilder,
-  GetBip32PublicKeyMethodHooks,
-} from './getBip32PublicKey';
-import {
-  getBip44EntropyBuilder,
-  GetBip44EntropyMethodHooks,
-} from './getBip44Entropy';
-import { getEntropyBuilder, GetEntropyHooks } from './getEntropy';
-import { invokeSnapBuilder, InvokeSnapMethodHooks } from './invokeSnap';
-import {
-  manageAccountsBuilder,
-  ManageAccountsMethodHooks,
-} from './manageAccounts';
-import { manageStateBuilder, ManageStateMethodHooks } from './manageState';
-import { notifyBuilder, NotifyMethodHooks } from './notify';
+import type { DialogMethodHooks } from './dialog';
+import { dialogBuilder } from './dialog';
+import type { GetBip32EntropyMethodHooks } from './getBip32Entropy';
+import { getBip32EntropyBuilder } from './getBip32Entropy';
+import type { GetBip32PublicKeyMethodHooks } from './getBip32PublicKey';
+import { getBip32PublicKeyBuilder } from './getBip32PublicKey';
+import type { GetBip44EntropyMethodHooks } from './getBip44Entropy';
+import { getBip44EntropyBuilder } from './getBip44Entropy';
+import type { GetEntropyHooks } from './getEntropy';
+import { getEntropyBuilder } from './getEntropy';
+import type { InvokeSnapMethodHooks } from './invokeSnap';
+import { invokeSnapBuilder } from './invokeSnap';
+import type { ManageAccountsMethodHooks } from './manageAccounts';
+import { manageAccountsBuilder } from './manageAccounts';
+import type { ManageStateMethodHooks } from './manageState';
+import { manageStateBuilder } from './manageState';
+import type { NotifyMethodHooks } from './notify';
+import { notifyBuilder } from './notify';
 
 export type { DialogParameters } from './dialog';
 export { DialogType } from './dialog';
