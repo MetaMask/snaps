@@ -103,12 +103,20 @@ is_example(WorkspaceCwd) :-
   WorkspaceCwd \= 'packages/examples',
   WorkspaceCwd \= 'packages/examples/packages/invoke-snap'.
 
-% True if and only if the given workspace directory is a nested example.
-is_nested_example(WorkspaceCwd) :-
+% Repeat a value a given number of times. This is useful for generating lists of
+% a given length. For example, repeat('foo', 3, Result) will unify Result with
+% ['foo', 'foo', 'foo'].
+repeat(Value, Amount, Result) :-
+  length(Result, Amount),
+  maplist(=(Value), Result).
+
+% Resolve a relative path from a workspace directory.
+relative_path(WorkspaceCwd, Path, RelativePath) :-
   atomic_list_concat(Parts, '/', WorkspaceCwd),
-  slice(Parts, 1, 6, RootParts),
-  atomic_list_concat(RootParts, '/', RootCwd),
-  RootCwd = 'examples/packages/invoke-snap/packages'.
+  length(Parts, Distance),
+  repeat('..', Distance, DistanceParts),
+  atomic_list_concat(DistanceParts, '/', DistanceString),
+  atomic_list_concat([DistanceString, Path], '/', RelativePath).
 
 %===============================================================================
 % Constraints
@@ -163,9 +171,9 @@ gen_enforced_field(WorkspaceCwd, 'module', './dist/esm/index.js') :-
   WorkspaceCwd \= '.'.
 
 % Dependencies must have preview scripts.
-gen_enforced_field(WorkspaceCwd, 'scripts.prepare-manifest:preview', '../../scripts/prepare-preview-manifest.sh') :-
+gen_enforced_field(WorkspaceCwd, 'scripts.prepare-manifest:preview', PrepareManifestScript) :-
   \+ workspace_field(WorkspaceCwd, 'private', true),
-  \+ is_example(WorkspaceCwd),
+  relative_path(WorkspaceCwd, 'scripts/prepare-preview-manifest.sh', PrepareManifestScript),
   WorkspaceCwd \= '.'.
 gen_enforced_field(WorkspaceCwd, 'scripts.publish:preview', 'yarn npm publish --tag preview') :-
   \+ workspace_field(WorkspaceCwd, 'private', true),
@@ -180,11 +188,11 @@ gen_enforced_field(WorkspaceCwd, 'publishConfig.registry', 'https://registry.npm
 
 % The "changelog:validate" script for each published package must run a common
 % script with the name of the package as an argument.
-gen_enforced_field(WorkspaceCwd, 'scripts.lint:changelog', ProperChangelogValidationScript) :-
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:changelog', ChangelogValidationScript) :-
   \+ workspace_field(WorkspaceCwd, 'private', true),
-  \+ is_nested_example(WorkspaceCwd),
   workspace_field(WorkspaceCwd, 'name', WorkspacePackageName),
-  atomic_list_concat(['../../scripts/validate-changelog.sh ', WorkspacePackageName], ProperChangelogValidationScript).
+  relative_path(WorkspaceCwd, 'scripts/validate-changelog.sh', BaseChangelogValidationScript),
+  atomic_list_concat([BaseChangelogValidationScript, ' ', WorkspacePackageName], ChangelogValidationScript).
 
 % Ensure all examples have the same scripts.
 gen_enforced_field(WorkspaceCwd, 'scripts.build', 'mm-snap build') :-
@@ -215,21 +223,10 @@ gen_enforced_field(WorkspaceCwd, 'scripts.lint:fix', 'yarn lint:eslint --fix && 
   is_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'scripts.lint:eslint', 'eslint . --cache --ext js,ts,jsx,tsx') :-
   is_example(WorkspaceCwd).
-gen_enforced_field(WorkspaceCwd, 'scripts.lint:misc', 'prettier --no-error-on-unmatched-pattern --loglevel warn "**/*.json" "**/*.md" "**/*.html" "!CHANGELOG.md" "!snap.manifest.json" --ignore-path ../../../../.gitignore') :-
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:misc', LintMiscScript) :-
   is_example(WorkspaceCwd),
-  \+ is_nested_example(WorkspaceCwd).
-gen_enforced_field(WorkspaceCwd, 'scripts.lint:misc', 'prettier --no-error-on-unmatched-pattern --loglevel warn "**/*.json" "**/*.md" "**/*.html" "!CHANGELOG.md" "!snap.manifest.json" --ignore-path ../../../../../../.gitignore') :-
-  is_nested_example(WorkspaceCwd).
-gen_enforced_field(WorkspaceCwd, 'scripts.lint:changelog', ProperChangelogValidationScript) :-
-  \+ workspace_field(WorkspaceCwd, 'private', true),
-  is_nested_example(WorkspaceCwd),
-  workspace_field(WorkspaceCwd, 'name', WorkspacePackageName),
-  atomic_list_concat(['../../../../scripts/validate-changelog.sh ', WorkspacePackageName], ProperChangelogValidationScript).
-gen_enforced_field(WorkspaceCwd, 'scripts.prepare-manifest:preview', '../../../../scripts/prepare-preview-manifest.sh') :-
-  is_example(WorkspaceCwd),
-  \+ is_nested_example(WorkspaceCwd).
-gen_enforced_field(WorkspaceCwd, 'scripts.prepare-manifest:preview', '../../../../../../scripts/prepare-preview-manifest.sh') :-
-  is_nested_example(WorkspaceCwd).
+  relative_path(WorkspaceCwd, '.gitignore', GitIgnorePath),
+  atomic_list_concat(['prettier --no-error-on-unmatched-pattern --loglevel warn "**/*.json" "**/*.md" "**/*.html" "!CHANGELOG.md" "!snap.manifest.json" --ignore-path ', GitIgnorePath], LintMiscScript).
 
 % Ensure all examples have the same `main` and `types` fields.
 gen_enforced_field(WorkspaceCwd, 'main', './dist/bundle.js') :-
