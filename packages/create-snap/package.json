@@ -32,7 +32,7 @@
     "posttest": "jest-it-up",
     "test:watch": "yarn test --watch",
     "test:ci": "yarn test",
-    "lint:changelog": "yarn auto-changelog validate",
+    "lint:changelog": "../../scripts/validate-changelog.sh @metamask/create-snap",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",

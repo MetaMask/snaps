@@ -114,10 +114,6 @@ is_nested_example(WorkspaceCwd) :-
 % Constraints
 %===============================================================================
 
-% Ensure all subpackage versions are the same as the root package version.
-gen_enforced_field(WorkspaceCwd, 'version', Version) :-
-  workspace_field('.', 'version', Version).
-
 % All dependency ranges must be recognizable (this makes it possible to apply
 % the next two rules effectively).
 gen_enforced_dependency(WorkspaceCwd, DependencyIdent, 'a range optionally starting with ^ or ~', DependencyType) :-
@@ -182,6 +178,14 @@ gen_enforced_field(WorkspaceCwd, 'publishConfig.registry', 'https://registry.npm
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
 
+% The "changelog:validate" script for each published package must run a common
+% script with the name of the package as an argument.
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:changelog', ProperChangelogValidationScript) :-
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  \+ is_nested_example(WorkspaceCwd),
+  workspace_field(WorkspaceCwd, 'name', WorkspacePackageName),
+  atomic_list_concat(['../../scripts/validate-changelog.sh ', WorkspacePackageName], ProperChangelogValidationScript).
+
 % Ensure all examples have the same scripts.
 gen_enforced_field(WorkspaceCwd, 'scripts.build', 'mm-snap build') :-
   is_example(WorkspaceCwd),
@@ -216,8 +220,11 @@ gen_enforced_field(WorkspaceCwd, 'scripts.lint:misc', 'prettier --no-error-on-un
   \+ is_nested_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'scripts.lint:misc', 'prettier --no-error-on-unmatched-pattern --loglevel warn "**/*.json" "**/*.md" "**/*.html" "!CHANGELOG.md" "!snap.manifest.json" --ignore-path ../../../../../../.gitignore') :-
   is_nested_example(WorkspaceCwd).
-gen_enforced_field(WorkspaceCwd, 'scripts.lint:changelog', 'yarn auto-changelog validate') :-
-  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:changelog', ProperChangelogValidationScript) :-
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  is_nested_example(WorkspaceCwd),
+  workspace_field(WorkspaceCwd, 'name', WorkspacePackageName),
+  atomic_list_concat(['../../../../scripts/validate-changelog.sh ', WorkspacePackageName], ProperChangelogValidationScript).
 gen_enforced_field(WorkspaceCwd, 'scripts.prepare-manifest:preview', '../../../../scripts/prepare-preview-manifest.sh') :-
   is_example(WorkspaceCwd),
   \+ is_nested_example(WorkspaceCwd).
