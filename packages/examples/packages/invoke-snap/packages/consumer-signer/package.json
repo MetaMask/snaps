@@ -31,7 +31,7 @@
     "publish:preview": "yarn npm publish --tag preview"
   },
   "dependencies": {
-    "@metamask/key-tree": "^7.1.1",
+    "@metamask/key-tree": "^9.0.0",
     "@metamask/rpc-errors": "^5.1.1",
     "@metamask/snaps-types": "workspace:^",
     "@metamask/utils": "^6.0.1",
