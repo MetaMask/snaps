@@ -1,5 +1,4 @@
-// TODO: Import from root.
-import { mnemonicPhraseToBytes } from '@metamask/key-tree/dist/utils';
+import { mnemonicPhraseToBytes } from '@metamask/key-tree';
 import type { SemVerVersion } from '@metamask/utils';
 
 export const TEST_SECRET_RECOVERY_PHRASE =

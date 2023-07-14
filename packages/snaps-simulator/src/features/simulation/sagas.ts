@@ -1,7 +1,7 @@
 import { ControllerMessenger } from '@metamask/base-controller';
 import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { createFetchMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { mnemonicPhraseToBytes } from '@metamask/key-tree/dist/utils';
+import { mnemonicPhraseToBytes } from '@metamask/key-tree';
 import type { GenericPermissionController } from '@metamask/permission-controller';
 import {
   PermissionController,
