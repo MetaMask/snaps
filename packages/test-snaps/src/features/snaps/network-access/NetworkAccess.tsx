@@ -3,12 +3,12 @@ import type { FunctionComponent } from 'react';
 import { Button } from 'react-bootstrap';
 
 import { useInvokeMutation } from '../../../api';
-import { Snap } from '../../../components';
+import { Result, Snap } from '../../../components';
 import { getSnapId } from '../../../utils';
 import { NETWORK_ACCESS_PORT, NETWORK_ACCESS_SNAP_ID } from './constants';
 
 export const NetworkAccess: FunctionComponent = () => {
-  const [invokeSnap, { isLoading }] = useInvokeMutation();
+  const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
 
   const handleSubmit = () => {
     invokeSnap({
@@ -33,6 +33,12 @@ export const NetworkAccess: FunctionComponent = () => {
       >
         Fetch
       </Button>
+      <Result>
+        <span id="networkAccessResult">
+          {JSON.stringify(data, null, 2)}
+          {JSON.stringify(error, null, 2)}
+        </span>
+      </Result>
     </Snap>
   );
 };
