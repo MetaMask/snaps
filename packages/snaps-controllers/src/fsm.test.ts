@@ -1,6 +1,7 @@
 import { AssertionError } from '@metamask/utils';
-import { createMachine, interpret, StateMachine } from '@xstate/fsm';
-import { InitEvent } from '@xstate/fsm/lib/types';
+import type { StateMachine } from '@xstate/fsm';
+import { createMachine, interpret } from '@xstate/fsm';
+import type { InitEvent } from '@xstate/fsm/lib/types';
 
 import { forceStrict, validateMachine } from './fsm';
 

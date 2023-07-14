@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { SnapManifest, VirtualFile } from '@metamask/snaps-utils';
-import { SemVerVersion, stringToBytes } from '@metamask/utils';
+import type { SnapManifest } from '@metamask/snaps-utils';
+import { VirtualFile } from '@metamask/snaps-utils';
+import type { SemVerVersion } from '@metamask/utils';
+import { stringToBytes } from '@metamask/utils';
 
 export const MOCK_MANIFEST = {
   version: '1.0.0' as SemVerVersion,

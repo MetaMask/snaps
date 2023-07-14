@@ -1,5 +1,6 @@
-import yargs, { Arguments } from 'yargs';
-import yargsType from 'yargs/yargs';
+import type { Arguments } from 'yargs';
+import yargs from 'yargs';
+import type yargsType from 'yargs/yargs';
 
 import builders from './builders';
 import {

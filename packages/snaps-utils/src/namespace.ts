@@ -1,6 +1,6 @@
+import type { Infer } from 'superstruct';
 import {
   array,
-  Infer,
   is,
   object,
   optional,

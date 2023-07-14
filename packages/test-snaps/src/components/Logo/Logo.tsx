@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 import { Container } from 'react-bootstrap';
 
 import { Fox } from './Fox';

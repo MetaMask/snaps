@@ -7,7 +7,8 @@ import {
   TabPanels,
   Tabs,
 } from '@chakra-ui/react';
-import { FunctionComponent, useState } from 'react';
+import type { FunctionComponent } from 'react';
+import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import { TestConditional } from '../../../components';

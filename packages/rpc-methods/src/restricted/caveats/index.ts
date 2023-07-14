@@ -1,5 +1,5 @@
-import { PermissionConstraint } from '@metamask/permission-controller';
-import { Json } from '@metamask/utils';
+import type { PermissionConstraint } from '@metamask/permission-controller';
+import type { Json } from '@metamask/utils';
 
 import { getBip32EntropyBuilder } from '../getBip32Entropy';
 import { getBip32PublicKeyBuilder } from '../getBip32PublicKey';

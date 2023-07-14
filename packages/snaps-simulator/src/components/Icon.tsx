@@ -1,6 +1,8 @@
-import { Image, PropsOf, useColorMode } from '@chakra-ui/react';
+import type { PropsOf } from '@chakra-ui/react';
+import { Image, useColorMode } from '@chakra-ui/react';
 import { hasProperty } from '@metamask/utils';
-import { forwardRef, ForwardRefExoticComponent } from 'react';
+import type { ForwardRefExoticComponent } from 'react';
+import { forwardRef } from 'react';
 
 import alertIcon from '../assets/icons/alert.svg';
 import arrowDownIcon from '../assets/icons/arrow-down.svg';

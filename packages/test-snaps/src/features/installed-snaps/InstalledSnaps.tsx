@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 
 import { useGetSnapsQuery } from '../../api';
 import { Result, Snap } from '../../components';

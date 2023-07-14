@@ -11,13 +11,15 @@ import {
   DEFAULT_SNAP_BUNDLE,
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
-import browserify, { Options as BrowserifyOptions } from 'browserify';
+import type { Options as BrowserifyOptions } from 'browserify';
+import browserify from 'browserify';
 import concat from 'concat-stream';
 import os from 'os';
 import pathUtils from 'path';
 import { Readable } from 'stream';
 
-import plugin, { Options, SnapsBrowserifyTransform } from './plugin';
+import type { Options } from './plugin';
+import plugin, { SnapsBrowserifyTransform } from './plugin';
 
 jest.mock('fs');
 

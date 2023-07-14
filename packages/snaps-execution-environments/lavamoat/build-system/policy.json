@@ -1813,7 +1813,7 @@
         "browserify>through2>readable-stream>safe-buffer": true
       }
     },
-    "eslint-plugin-import>is-core-module": {
+    "eslint-plugin-n>is-core-module": {
       "globals": {
         "process.versions": true
       },
@@ -2130,7 +2130,7 @@
         "process.versions.pnp": true
       },
       "packages": {
-        "eslint-plugin-import>is-core-module": true,
+        "eslint-plugin-n>is-core-module": true,
         "lavamoat>resolve>path-parse": true
       }
     },

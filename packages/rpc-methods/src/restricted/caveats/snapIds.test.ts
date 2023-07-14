@@ -1,7 +1,8 @@
-import { Caveat, OriginString } from '@metamask/permission-controller';
-import { SnapCaveatType, SnapId } from '@metamask/snaps-utils';
+import type { Caveat, OriginString } from '@metamask/permission-controller';
+import type { SnapId } from '@metamask/snaps-utils';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID, MOCK_ORIGIN } from '@metamask/snaps-utils/test-utils';
-import { Json } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
 
 import {
   validateSnapIdsCaveat,

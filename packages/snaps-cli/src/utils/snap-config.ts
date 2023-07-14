@@ -1,10 +1,11 @@
 import { hasProperty } from '@metamask/utils';
 import type browserify from 'browserify';
 import path from 'path';
-import { object, optional, func, Infer, is } from 'superstruct';
-import { Arguments } from 'yargs';
+import type { Infer } from 'superstruct';
+import { object, optional, func, is } from 'superstruct';
+import type { Arguments } from 'yargs';
 import yargsParse from 'yargs-parser';
-import yargs from 'yargs/yargs';
+import type yargs from 'yargs/yargs';
 
 import builders from '../builders';
 import { CONFIG_FILE, logError } from './misc';
@@ -54,7 +55,7 @@ export function loadConfig(cached = true): SnapConfig {
 
   let config: any;
   try {
-    // eslint-disable-next-line node/global-require, import/no-dynamic-require, @typescript-eslint/no-require-imports
+    // eslint-disable-next-line n/global-require, import/no-dynamic-require, @typescript-eslint/no-require-imports
     config = require(path.resolve(process.cwd(), CONFIG_FILE));
   } catch (error: any) {
     if (error.code === 'MODULE_NOT_FOUND') {
@@ -62,6 +63,7 @@ export function loadConfig(cached = true): SnapConfig {
       return snapConfigCache;
     }
     logError(`Error during parsing of ${CONFIG_FILE}`, error);
+    // eslint-disable-next-line n/no-process-exit
     return process.exit(1);
   }
 
@@ -69,6 +71,7 @@ export function loadConfig(cached = true): SnapConfig {
     logError(
       `Can't validate ${CONFIG_FILE}. Ensure it's a proper javascript file and abides with the structure of a snap configuration file`,
     );
+    // eslint-disable-next-line n/no-process-exit
     return process.exit(1);
   }
   snapConfigCache = config;
@@ -138,6 +141,7 @@ export function applyConfig(
       logError(
         `Error: Encountered unrecognized config property "options.${key}" in config file "${CONFIG_FILE}". Remove the property and try again.`,
       );
+      // eslint-disable-next-line n/no-process-exit
       process.exit(1);
     }
   }

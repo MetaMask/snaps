@@ -1,5 +1,6 @@
-import { Component, NodeType } from '@metamask/snaps-ui';
-import { FunctionComponent } from 'react';
+import type { Component } from '@metamask/snaps-ui';
+import { NodeType } from '@metamask/snaps-ui';
+import type { FunctionComponent } from 'react';
 
 import { Copyable, Panel, Text, Divider, Heading, Spinner } from './components';
 

@@ -1,4 +1,4 @@
-import { Options, PositionalOptions } from 'yargs';
+import type { Options, PositionalOptions } from 'yargs';
 
 export type SnapsCliBuilders = {
   readonly verboseErrors: Readonly<Options>;

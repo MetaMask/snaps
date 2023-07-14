@@ -1,12 +1,15 @@
-import {
-  isJsonRpcFailure,
-  isJsonRpcSuccess,
+import type {
   Json,
   JsonRpcSuccess,
   AssertionErrorConstructor,
+} from '@metamask/utils';
+import {
+  isJsonRpcFailure,
+  isJsonRpcSuccess,
   assertStruct,
 } from '@metamask/utils';
-import { boolean, Infer, object, optional, refine } from 'superstruct';
+import type { Infer } from 'superstruct';
+import { boolean, object, optional, refine } from 'superstruct';
 
 export const RpcOriginsStruct = refine(
   object({

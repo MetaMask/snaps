@@ -1,7 +1,7 @@
 import { HandlerType } from '@metamask/snaps-utils';
 
 import { createService } from '../test-utils';
-import { ExecutionServiceArgs } from './AbstractExecutionService';
+import type { ExecutionServiceArgs } from './AbstractExecutionService';
 import { NodeThreadExecutionService } from './node';
 
 class MockExecutionService extends NodeThreadExecutionService {

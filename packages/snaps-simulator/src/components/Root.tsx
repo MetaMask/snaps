@@ -1,6 +1,7 @@
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 import { getBackendOptions, MultiBackend } from '@minoru/react-dnd-treeview';
-import { FunctionComponent, ReactElement, StrictMode } from 'react';
+import type { FunctionComponent, ReactElement } from 'react';
+import { StrictMode } from 'react';
 import { DndProvider } from 'react-dnd';
 import { Provider } from 'react-redux';
 

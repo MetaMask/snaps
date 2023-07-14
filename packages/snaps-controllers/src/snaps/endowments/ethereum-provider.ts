@@ -1,10 +1,9 @@
-import {
+import type {
   EndowmentGetterParams,
   PermissionSpecificationBuilder,
-  PermissionType,
   ValidPermissionSpecification,
-  SubjectType,
 } from '@metamask/permission-controller';
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
 
 import { SnapEndowments } from './enum';
 

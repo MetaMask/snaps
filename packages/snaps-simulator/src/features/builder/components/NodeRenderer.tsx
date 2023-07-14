@@ -1,7 +1,8 @@
 import { Box } from '@chakra-ui/react';
-import { Component } from '@metamask/snaps-ui';
-import { NodeModel } from '@minoru/react-dnd-treeview';
-import { FunctionComponent, useMemo } from 'react';
+import type { Component } from '@metamask/snaps-ui';
+import type { NodeModel } from '@minoru/react-dnd-treeview';
+import type { FunctionComponent } from 'react';
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Delineator, Window } from '../../../components';

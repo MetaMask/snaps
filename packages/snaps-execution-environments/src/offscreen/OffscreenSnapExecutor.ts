@@ -1,9 +1,8 @@
-import {
-  BasePostMessageStream,
-  WindowPostMessageStream,
-} from '@metamask/post-message-stream';
+import type { BasePostMessageStream } from '@metamask/post-message-stream';
+import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { createWindow, logError } from '@metamask/snaps-utils';
-import { JsonRpcRequest, assert } from '@metamask/utils';
+import type { JsonRpcRequest } from '@metamask/utils';
+import { assert } from '@metamask/utils';
 
 type ExecutorJob = {
   id: string;

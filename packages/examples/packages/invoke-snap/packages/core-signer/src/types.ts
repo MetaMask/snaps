@@ -1,5 +1,5 @@
-import { PartialHDPathTuple5 } from '@metamask/key-tree';
-import { Hex } from '@metamask/utils';
+import type { PartialHDPathTuple5 } from '@metamask/key-tree';
+import type { Hex } from '@metamask/utils';
 
 /**
  * A BIP-44 path is of the form:

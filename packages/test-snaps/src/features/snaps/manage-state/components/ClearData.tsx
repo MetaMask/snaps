@@ -1,5 +1,5 @@
 import { logError } from '@metamask/snaps-utils';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 import { Button } from 'react-bootstrap';
 
 import { Tag, useInvokeMutation } from '../../../../api';

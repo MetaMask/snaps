@@ -1,4 +1,4 @@
-import { State } from './utils';
+import type { State } from './utils';
 
 /**
  * The parameters for the `setState` JSON-RPC method.

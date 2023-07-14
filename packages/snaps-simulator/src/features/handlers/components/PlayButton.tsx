@@ -6,11 +6,11 @@ import { Icon } from '../../../components';
 import { useHandler, useSelector } from '../../../hooks';
 
 enum PlayButtonState {
-  Ready,
-  Disabled,
-  Loading,
-  Success,
-  Error,
+  Ready = 'ready',
+  Disabled = 'disabled',
+  Loading = 'loading',
+  Success = 'success',
+  Error = 'error',
 }
 
 export const PlayButton = () => {

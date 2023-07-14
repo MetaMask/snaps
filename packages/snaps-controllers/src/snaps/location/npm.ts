@@ -1,30 +1,29 @@
+import type { SnapManifest } from '@metamask/snaps-utils';
 import {
   createSnapManifest,
   DEFAULT_REQUESTED_SNAP_VERSION,
   getTargetVersion,
   isValidUrl,
   NpmSnapIdStruct,
-  SnapManifest,
   VirtualFile,
   normalizeRelative,
   parseJson,
 } from '@metamask/snaps-utils';
+import type { SemVerRange, SemVerVersion } from '@metamask/utils';
 import {
   assert,
   assertIsSemVerVersion,
   assertStruct,
   isObject,
-  SemVerRange,
-  SemVerVersion,
 } from '@metamask/utils';
 import concat from 'concat-stream';
 import createGunzipStream from 'gunzip-maybe';
 import pump from 'pump';
 import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
-import { Readable, Writable } from 'stream';
+import type { Readable, Writable } from 'stream';
 import { extract as tarExtract } from 'tar-stream';
 
-import { DetectSnapLocationOptions, SnapLocation } from './location';
+import type { DetectSnapLocationOptions, SnapLocation } from './location';
 
 export const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
 

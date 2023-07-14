@@ -1,8 +1,8 @@
 import { rpcErrors } from '@metamask/rpc-errors';
-import { OnRpcRequestHandler } from '@metamask/snaps-types';
+import type { OnRpcRequestHandler } from '@metamask/snaps-types';
 
 import { DEFAULT_URL } from './constants';
-import { FetchParams } from './types';
+import type { FetchParams } from './types';
 
 /**
  * Fetch a JSON file from the provided URL. This uses the standard `fetch`

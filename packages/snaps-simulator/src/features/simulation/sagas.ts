@@ -1,9 +1,9 @@
 import { ControllerMessenger } from '@metamask/base-controller';
 import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { createFetchMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { mnemonicPhraseToBytes } from '@metamask/key-tree/dist/utils';
+import { mnemonicPhraseToBytes } from '@metamask/key-tree';
+import type { GenericPermissionController } from '@metamask/permission-controller';
 import {
-  GenericPermissionController,
   PermissionController,
   SubjectMetadataController,
   SubjectType,
@@ -18,18 +18,18 @@ import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-controllers';
-import {
-  logError,
+import type {
   SnapManifest,
   SnapRpcHookArgs,
   VirtualFile,
 } from '@metamask/snaps-utils';
+import { logError } from '@metamask/snaps-utils';
 import { getSafeJson } from '@metamask/utils';
-import { PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
-import { SagaIterator } from 'redux-saga';
+import type { SagaIterator } from 'redux-saga';
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
 
 import { version } from '../../../package.json';

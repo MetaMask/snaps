@@ -1,8 +1,5 @@
-import {
-  Caveat,
-  PermissionType,
-  SubjectType,
-} from '@metamask/permission-controller';
+import type { Caveat } from '@metamask/permission-controller';
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 
 import { SnapEndowments } from '.';

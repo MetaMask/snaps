@@ -1,15 +1,16 @@
-import {
+import type {
   RequestedPermissions,
   PermissionConstraint,
 } from '@metamask/permission-controller';
-import { InstallSnapsResult, SnapCaveatType } from '@metamask/snaps-utils';
+import type { InstallSnapsResult } from '@metamask/snaps-utils';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MOCK_SNAP_ID,
   MOCK_ORIGIN,
   getTruncatedSnap,
   MOCK_LOCAL_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
-import {
+import type {
   JsonRpcRequest,
   JsonRpcSuccess,
   PendingJsonRpcResponse,

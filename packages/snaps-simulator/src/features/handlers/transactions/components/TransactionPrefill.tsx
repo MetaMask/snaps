@@ -1,7 +1,7 @@
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 
 import { Prefill } from '../../../../components';
-import { TransactionFormData } from '../utils';
+import type { TransactionFormData } from '../utils';
 
 export type TransactionPrefillProps = TransactionFormData & {
   name: string;

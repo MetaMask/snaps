@@ -1,9 +1,7 @@
-import {
-  TypedUseSelectorHook,
-  useSelector as useReduxSelector,
-} from 'react-redux';
+import type { TypedUseSelectorHook } from 'react-redux';
+import { useSelector as useReduxSelector } from 'react-redux';
 
-import { ApplicationState } from '../store/store';
+import type { ApplicationState } from '../store/store';
 
 /**
  * A hook to access the Redux store's state.

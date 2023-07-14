@@ -6,7 +6,7 @@ import {
   MOCK_SNAP_ID,
   MockWindowPostMessageStream,
 } from '@metamask/snaps-utils/test-utils';
-import { JsonRpcRequest } from '@metamask/utils';
+import type { JsonRpcRequest } from '@metamask/utils';
 
 import { IFrameSnapExecutor } from './IFrameSnapExecutor';
 

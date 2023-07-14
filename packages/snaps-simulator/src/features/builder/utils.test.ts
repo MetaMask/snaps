@@ -1,5 +1,6 @@
-import { Component, panel, text } from '@metamask/snaps-ui';
-import { NodeModel } from '@minoru/react-dnd-treeview';
+import type { Component } from '@metamask/snaps-ui';
+import { panel, text } from '@metamask/snaps-ui';
+import type { NodeModel } from '@minoru/react-dnd-treeview';
 
 import { panelToCode, nodeModelsToComponent } from './utils';
 

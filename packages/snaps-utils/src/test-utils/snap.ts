@@ -1,13 +1,13 @@
-import { SemVerVersion } from '@metamask/utils';
+import type { SemVerVersion } from '@metamask/utils';
 
-import {
+import type {
   PersistedSnap,
   Snap,
-  SnapStatus,
   TruncatedSnap,
   ValidatedSnapId,
 } from '../snaps';
-import { MakeSemVer } from './common';
+import { SnapStatus } from '../snaps';
+import type { MakeSemVer } from './common';
 import {
   DEFAULT_SNAP_BUNDLE,
   DEFAULT_SNAP_SHASUM,

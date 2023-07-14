@@ -1,23 +1,16 @@
-import {
+import type {
   PermissionSpecificationBuilder,
-  PermissionType,
   EndowmentGetterParams,
   ValidPermissionSpecification,
   PermissionValidatorConstraint,
   PermissionConstraint,
   CaveatSpecificationConstraint,
   Caveat,
-  SubjectType,
 } from '@metamask/permission-controller';
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
-import {
-  assert,
-  hasProperty,
-  isObject,
-  isPlainObject,
-  Json,
-  NonEmptyArray,
-} from '@metamask/utils';
+import type { Json, NonEmptyArray } from '@metamask/utils';
+import { assert, hasProperty, isObject, isPlainObject } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
 import { SnapEndowments } from './enum';

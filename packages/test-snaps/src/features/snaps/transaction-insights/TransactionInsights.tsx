@@ -1,6 +1,6 @@
 import { logError } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 import { Button, ButtonGroup } from 'react-bootstrap';
 
 import { useLazyGetAccountsQuery, useLazyRequestQuery } from '../../../api';

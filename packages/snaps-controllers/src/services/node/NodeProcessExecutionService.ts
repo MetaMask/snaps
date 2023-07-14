@@ -1,10 +1,10 @@
-import {
-  ProcessParentMessageStream,
-  BasePostMessageStream,
-} from '@metamask/post-message-stream';
-import { ChildProcess, fork } from 'child_process';
+import type { BasePostMessageStream } from '@metamask/post-message-stream';
+import { ProcessParentMessageStream } from '@metamask/post-message-stream';
+import type { ChildProcess } from 'child_process';
+import { fork } from 'child_process';
 
-import { AbstractExecutionService, Job } from '..';
+import type { Job } from '..';
+import { AbstractExecutionService } from '..';
 
 export class NodeProcessExecutionService extends AbstractExecutionService<ChildProcess> {
   protected async initEnvStream(): Promise<{

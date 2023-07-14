@@ -1,5 +1,6 @@
 import { NotificationType } from '@metamask/rpc-methods';
-import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSelector, createSlice } from '@reduxjs/toolkit';
 
 export type Notification = {
   id: string;

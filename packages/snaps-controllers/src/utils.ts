@@ -30,7 +30,7 @@ export function setDiff<
 }
 
 /**
- * A Promise that delays it's return for a given amount of milliseconds.
+ * A Promise that delays its return for a given amount of milliseconds.
  *
  * @param ms - Milliseconds to delay the execution for.
  * @param result - The result to return from the Promise after delay.
@@ -90,7 +90,7 @@ export const hasTimedOut = Symbol(
  * @param timerOrMs - The timer controlling the timeout or a ms value.
  * @returns The resolved `PromiseValue`, or the hasTimedOut symbol if
  * returning early.
- * @template PromiseValue- - The value of the Promise.
+ * @template PromiseValue - The value of the Promise.
  */
 export async function withTimeout<PromiseValue = void>(
   promise: Promise<PromiseValue>,
@@ -129,8 +129,8 @@ export async function withTimeout<PromiseValue = void>(
  * // t5 = false;
  * ```
  */
-type IsLiteral<T> = T extends string | number | boolean | symbol
-  ? Extract<string | number | boolean | symbol, T> extends never
+type IsLiteral<Type> = Type extends string | number | boolean | symbol
+  ? Extract<string | number | boolean | symbol, Type> extends never
     ? true
     : false
   : false;
@@ -145,10 +145,10 @@ type IsLiteral<T> = T extends string | number | boolean | symbol
  * ```
  * @see [Literal types]{@link https://www.typescriptlang.org/docs/handbook/literal-types.html}
  */
-type LiteralKeys<T> = NonNullable<
+type LiteralKeys<Type> = NonNullable<
   {
-    [Key in keyof T]: IsLiteral<Key> extends true ? Key : never;
-  }[keyof T]
+    [Key in keyof Type]: IsLiteral<Key> extends true ? Key : never;
+  }[keyof Type]
 >;
 
 /**
@@ -161,10 +161,10 @@ type LiteralKeys<T> = NonNullable<
  * ```
  * @see [Literal types]{@link https://www.typescriptlang.org/docs/handbook/literal-types.html}
  */
-type NonLiteralKeys<T> = NonNullable<
+type NonLiteralKeys<Type> = NonNullable<
   {
-    [Key in keyof T]: IsLiteral<Key> extends false ? Key : never;
-  }[keyof T]
+    [Key in keyof Type]: IsLiteral<Key> extends false ? Key : never;
+  }[keyof Type]
 >;
 
 /**
@@ -181,20 +181,20 @@ type NonLiteralKeys<T> = NonNullable<
  * ```
  * @see {@link setDiff} for the main use-case
  */
-export type Diff<A, B> = Omit<A, LiteralKeys<B>> &
-  Partial<Pick<A, Extract<keyof A, NonLiteralKeys<B>>>>;
+export type Diff<First, Second> = Omit<First, LiteralKeys<Second>> &
+  Partial<Pick<First, Extract<keyof First, NonLiteralKeys<Second>>>>;
 
 /**
  * Makes every specified property of the specified object type mutable.
  *
- * @template T - The object whose readonly properties to make mutable.
+ * @template Type - The object whose readonly properties to make mutable.
  * @template TargetKey - The property key(s) to make mutable.
  */
 export type Mutable<
-  T extends Record<string, unknown>,
+  Type extends Record<string, unknown>,
   TargetKey extends string,
 > = {
-  -readonly [Key in keyof Pick<T, TargetKey>]: T[Key];
+  -readonly [Key in keyof Pick<Type, TargetKey>]: Type[Key];
 } & {
-  [Key in keyof Omit<T, TargetKey>]: T[Key];
+  [Key in keyof Omit<Type, TargetKey>]: Type[Key];
 };

@@ -1,13 +1,12 @@
 import { detectSnapLocation } from '@metamask/snaps-controllers';
+import type { SnapManifest, VirtualFile } from '@metamask/snaps-utils';
 import {
   getSnapPrefix,
   logError,
   parseJson,
   SnapIdPrefixes,
-  SnapManifest,
-  VirtualFile,
 } from '@metamask/snaps-utils';
-import { SemVerRange } from '@metamask/utils';
+import type { SemVerRange } from '@metamask/utils';
 import equal from 'fast-deep-equal/es6';
 import { all, call, delay, put, select, takeLatest } from 'redux-saga/effects';
 

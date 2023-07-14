@@ -1,4 +1,4 @@
-/* eslint-disable no-console, node/global-require, node/no-process-exit */
+/* eslint-disable no-console, n/global-require */
 const {
   createResolvePath,
 } = require('babel-plugin-tsconfig-paths-module-resolver');
@@ -228,5 +228,5 @@ async function main() {
 
 main().catch((error) => {
   console.error(error);
-  process.exit(1);
+  process.exitCode = 1;
 });

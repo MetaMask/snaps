@@ -1,6 +1,7 @@
 import { expect } from '@jest/globals';
 import { installSnap } from '@metamask/snaps-jest';
-import { assert, bytesToHex, hasProperty, Json } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
+import { assert, bytesToHex, hasProperty } from '@metamask/utils';
 import { sha256 } from '@noble/hashes/sha256';
 
 describe('onRpcRequest', () => {

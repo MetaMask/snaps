@@ -1,12 +1,8 @@
-import { SnapManifest, VirtualFile } from '@metamask/snaps-utils';
-import {
-  createAction,
-  createSelector,
-  createSlice,
-  PayloadAction,
-} from '@reduxjs/toolkit';
+import type { SnapManifest, VirtualFile } from '@metamask/snaps-utils';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createAction, createSelector, createSlice } from '@reduxjs/toolkit';
 
-import { Validator } from './validators';
+import type { Validator } from './validators';
 
 export enum ManifestStatus {
   Valid = 'valid',

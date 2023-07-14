@@ -1,4 +1,5 @@
-import { FunctionComponent, ReactElement, StrictMode } from 'react';
+import type { FunctionComponent, ReactElement } from 'react';
+import { StrictMode } from 'react';
 import { Provider } from 'react-redux';
 
 import type createStore from '../store';

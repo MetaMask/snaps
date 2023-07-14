@@ -1,11 +1,12 @@
-import { HardenedBIP32Node, SLIP10Node } from '@metamask/key-tree';
-import { MagicValue } from '@metamask/snaps-utils';
+import type { HardenedBIP32Node } from '@metamask/key-tree';
+import { SLIP10Node } from '@metamask/key-tree';
+import type { MagicValue } from '@metamask/snaps-utils';
+import type { Hex } from '@metamask/utils';
 import {
   add0x,
   assert,
   concatBytes,
   createDataView,
-  Hex,
   stringToBytes,
 } from '@metamask/utils';
 import { keccak_256 as keccak256 } from '@noble/hashes/sha3';

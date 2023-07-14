@@ -20,10 +20,10 @@ import { assert } from '@metamask/utils';
  * const fn = mock as jest.MockedFunction<typeof mock>;
  * ```
  */
-export function getMockedFunction<Fn extends (...args: any[]) => unknown>(
-  fn: Fn,
-): jest.MockedFunction<Fn> {
-  const mock = fn as jest.MockedFunction<Fn>;
+export function getMockedFunction<
+  FunctionMock extends (...args: any[]) => unknown,
+>(fn: FunctionMock): jest.MockedFunction<FunctionMock> {
+  const mock = fn as jest.MockedFunction<FunctionMock>;
   assert(mock.mock, 'Function is not mocked.');
   return mock;
 }

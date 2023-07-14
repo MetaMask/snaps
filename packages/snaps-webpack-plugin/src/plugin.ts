@@ -1,15 +1,15 @@
+import type { PostProcessOptions, SourceMap } from '@metamask/snaps-utils';
 import {
   checkManifest,
   evalBundle,
   postProcessBundle,
-  PostProcessOptions,
-  SourceMap,
   useTemporaryFile,
 } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 import pathUtils from 'path';
 import { promisify } from 'util';
-import { Compiler, WebpackError } from 'webpack';
+import type { Compiler } from 'webpack';
+import { WebpackError } from 'webpack';
 import { RawSource, SourceMapSource } from 'webpack-sources';
 
 const PLUGIN_NAME = 'SnapsWebpackPlugin';

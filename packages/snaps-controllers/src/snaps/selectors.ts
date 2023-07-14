@@ -1,4 +1,4 @@
-import { TruncatedSnap } from '@metamask/snaps-utils';
+import type { TruncatedSnap } from '@metamask/snaps-utils';
 
-export const getRunnableSnaps = <T extends TruncatedSnap>(snaps: T[]) =>
+export const getRunnableSnaps = <Snap extends TruncatedSnap>(snaps: Snap[]) =>
   snaps.filter((snap) => snap.enabled && !snap.blocked);

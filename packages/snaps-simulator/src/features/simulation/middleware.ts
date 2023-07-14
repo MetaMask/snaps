@@ -1,5 +1,5 @@
 import { logError } from '@metamask/snaps-utils';
-import {
+import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
   JsonRpcMiddleware,

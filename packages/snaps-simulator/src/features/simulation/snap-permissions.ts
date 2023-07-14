@@ -1,4 +1,4 @@
-import { GenericPermissionController } from '@metamask/permission-controller';
+import type { GenericPermissionController } from '@metamask/permission-controller';
 import { endowmentPermissionBuilders } from '@metamask/snaps-controllers';
 import { DEFAULT_ENDOWMENTS } from '@metamask/snaps-utils';
 

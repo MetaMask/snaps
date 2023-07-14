@@ -1,15 +1,15 @@
 import { HandlerType } from '@metamask/snaps-utils';
 import { assertExhaustive } from '@metamask/utils';
 
-import { InvokeSnap, InvokeSnapArgs } from './BaseSnapExecutor';
-import {
-  assertIsOnTransactionRequestArguments,
+import type { InvokeSnap, InvokeSnapArgs } from './BaseSnapExecutor';
+import type {
   ExecuteSnap,
   JsonRpcRequestWithoutId,
   Ping,
   SnapRpc,
   Terminate,
 } from './validation';
+import { assertIsOnTransactionRequestArguments } from './validation';
 
 export type CommandMethodsMapping = {
   ping: Ping;

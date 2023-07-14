@@ -2,7 +2,8 @@ import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
 import { bytesToHex } from '@metamask/utils';
 import { resolve } from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
-import { Configuration, ProvidePlugin } from 'webpack';
+import type { Configuration } from 'webpack';
+import { ProvidePlugin } from 'webpack';
 
 const config: Configuration = {
   entry: './src/index.ts',

@@ -1,7 +1,5 @@
-import {
-  PermissionsRequest,
-  PermissionType,
-} from '@metamask/permission-controller';
+import type { PermissionsRequest } from '@metamask/permission-controller';
+import { PermissionType } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MOCK_SNAP_ID,
@@ -11,13 +9,12 @@ import {
   MOCK_LOCAL_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 
+import type { InstallSnaps, GetPermittedSnaps } from './invokeSnap';
 import {
   invokeSnapBuilder,
   getInvokeSnapImplementation,
   WALLET_SNAP_PERMISSION_KEY,
   handleSnapInstall,
-  InstallSnaps,
-  GetPermittedSnaps,
 } from './invokeSnap';
 
 describe('builder', () => {

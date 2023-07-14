@@ -2,9 +2,10 @@ import {
   createService,
   MOCK_BLOCK_NUMBER,
 } from '@metamask/snaps-controllers/test-utils';
-import { HandlerType, SnapId } from '@metamask/snaps-utils';
+import type { SnapId } from '@metamask/snaps-utils';
+import { HandlerType } from '@metamask/snaps-utils';
 
-import { SnapErrorJson } from '../ExecutionService';
+import type { SnapErrorJson } from '../ExecutionService';
 import { NodeThreadExecutionService } from './NodeThreadExecutionService';
 
 const ON_RPC_REQUEST = HandlerType.OnRpcRequest;

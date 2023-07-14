@@ -1,4 +1,5 @@
-import { Json, assertExhaustive, assert, isPlainObject } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
+import { assertExhaustive, assert, isPlainObject } from '@metamask/utils';
 import deepEqual from 'fast-deep-equal';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
@@ -11,14 +12,10 @@ import {
   ProgrammaticallyFixableSnapError,
   validateSnapShasum,
 } from '../snaps';
-import {
-  NpmSnapFileNames,
-  SnapFiles,
-  SnapValidationFailureReason,
-  UnvalidatedSnapFiles,
-} from '../types';
+import type { SnapFiles, UnvalidatedSnapFiles } from '../types';
+import { NpmSnapFileNames, SnapValidationFailureReason } from '../types';
 import { readVirtualFile, VirtualFile } from '../virtual-file';
-import { SnapManifest } from './validation';
+import type { SnapManifest } from './validation';
 
 const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {
   $schema: 1,

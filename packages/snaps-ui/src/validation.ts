@@ -1,7 +1,8 @@
 import { assertStruct } from '@metamask/utils';
 import { is } from 'superstruct';
 
-import { Component, ComponentStruct } from './nodes';
+import type { Component } from './nodes';
+import { ComponentStruct } from './nodes';
 
 /**
  * Check if the given value is a {@link Component}. This performs recursive

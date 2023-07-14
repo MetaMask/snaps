@@ -1,5 +1,5 @@
 import index from '.';
-import { YargsArgs } from '../../types/yargs';
+import type { YargsArgs } from '../../types/yargs';
 import { evalHandler } from './evalHandler';
 
 jest.mock('./evalHandler');

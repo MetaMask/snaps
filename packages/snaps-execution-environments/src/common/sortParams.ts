@@ -1,6 +1,6 @@
 // original source sortParamKeys from: https://github.com/etclabscore/sig.tools/blob/master/src/postMessageServer/postMessageServer.ts#L75-L77
 
-import { JsonRpcParams } from '@metamask/utils';
+import type { JsonRpcParams } from '@metamask/utils';
 
 /**
  * Deterministically sort JSON-RPC parameter keys. This makes it possible to

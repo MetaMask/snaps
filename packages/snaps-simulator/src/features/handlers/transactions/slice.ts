@@ -1,5 +1,5 @@
 import { HandlerType } from '@metamask/snaps-utils';
-import { JsonRpcRequest, JsonRpcResponse, Json } from '@metamask/utils';
+import type { JsonRpcRequest, JsonRpcResponse, Json } from '@metamask/utils';
 import { createSelector } from '@reduxjs/toolkit';
 
 import { createHandlerSlice } from '../slice';

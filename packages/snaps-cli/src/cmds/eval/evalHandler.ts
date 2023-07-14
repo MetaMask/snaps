@@ -1,7 +1,7 @@
 import { evalBundle, logInfo } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 
-import { YargsArgs } from '../../types/yargs';
+import type { YargsArgs } from '../../types/yargs';
 
 /**
  * Runs the snap in a worker, to ensure SES compatibility.

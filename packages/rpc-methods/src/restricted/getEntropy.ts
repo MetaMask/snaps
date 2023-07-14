@@ -1,16 +1,18 @@
-import {
+import type {
   PermissionSpecificationBuilder,
-  PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-  SubjectType,
 } from '@metamask/permission-controller';
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { SIP_6_MAGIC_VALUE } from '@metamask/snaps-utils';
-import { assertStruct, Hex, NonEmptyArray } from '@metamask/utils';
+import type { Hex, NonEmptyArray } from '@metamask/utils';
+import { assertStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
-import { Infer, literal, object, optional, string } from 'superstruct';
+import type { Infer } from 'superstruct';
+import { literal, object, optional, string } from 'superstruct';
 
-import { deriveEntropy, MethodHooksObject } from '../utils';
+import type { MethodHooksObject } from '../utils';
+import { deriveEntropy } from '../utils';
 
 const targetName = 'snap_getEntropy';
 
