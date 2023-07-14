@@ -4071,13 +4071,13 @@ __metadata:
   linkType: hard
 
 "@metamask/eslint-config-nodejs@npm:^12.0.0":
-  version: 12.0.0
-  resolution: "@metamask/eslint-config-nodejs@npm:12.0.0"
+  version: 12.1.0
+  resolution: "@metamask/eslint-config-nodejs@npm:12.1.0"
   peerDependencies:
     "@metamask/eslint-config": ^12.0.0
     eslint: ^8.27.0
     eslint-plugin-n: ^15.7.0
-  checksum: e9e849f799d96dcb508830aa747d49e5109d7d1a7fa3f3d64c831dea54cf649112a96e4534485ad120fc320805b6142ab205e188e86df36e829c0c3e67007714
+  checksum: f4387ba5b0a5173197b960dc59b8e29b7ef02754107b61c3af98f505397048717bd8ba5f9d09555740886c968fc0898520c26899268886f1967bc80f93c26919
   languageName: node
   linkType: hard
 
