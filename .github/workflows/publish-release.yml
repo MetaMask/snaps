@@ -130,6 +130,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.sha }}
+          fetch-depth: 2
       - name: Check if this is an environment release
         id: is-environment-release
         shell: bash
@@ -202,6 +203,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.sha }}
+          fetch-depth: 2
       - name: Check if this is a test snaps release
         id: is-test-snaps-release
         shell: bash
@@ -240,6 +242,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.sha }}
+          fetch-depth: 2
       - name: Check if this is a simulator release
         id: is-simulator-release
         shell: bash
