@@ -34,7 +34,7 @@ export const NetworkAccess: FunctionComponent = () => {
         Fetch
       </Button>
       <Result>
-        <span id="networkaccessResult">
+        <span id="networkAccessResult">
           {JSON.stringify(data, null, 2)}
           {JSON.stringify(error, null, 2)}
         </span>
