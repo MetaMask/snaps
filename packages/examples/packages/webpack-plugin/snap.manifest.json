@@ -1,5 +1,5 @@
 {
-  "version": "0.36.1-flask.1",
+  "version": "0.37.0-flask.1",
   "description": "MetaMask example snap demonstrating how to use the Webpack plugin to bundle a snap.",
   "proposedName": "Webpack Plugin Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "iuv+M+I8vcNLfSZeaAxSw8dsWIjSWbTzxZXVCt/23pc=",
+    "shasum": "WtljEPcmTRiPwZFp3eeb7QnEMJ3VqOL1RSoxy1pg684=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
