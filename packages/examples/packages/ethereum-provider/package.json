@@ -1,6 +1,6 @@
 {
   "name": "@metamask/ethereum-provider-example-snap",
-  "version": "0.37.0-flask.1",
+  "version": "0.37.1-flask.1",
   "description": "MetaMask example snap demonstrating the use of the Ethereum Provider API and `endowment:ethereum-provider` permission.",
   "repository": {
     "type": "git",
