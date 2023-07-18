@@ -1,5 +1,5 @@
 {
-  "version": "0.36.1-flask.1",
+  "version": "0.37.0-flask.1",
   "description": "MetaMask example snap demonstrating how a snap can communicate with another snap to sign messages.",
   "proposedName": "Core Signer Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "bAWdk7uKkMmp9l29vcYwvWAjc+uo7OYkyHw1n0Th/FM=",
+    "shasum": "z6Xls74ToCSMe7lwSqTmmK1y0Ma9jEVbwSslSdjblNw=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

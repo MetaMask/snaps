@@ -1,5 +1,5 @@
 {
-  "version": "0.36.1-flask.1",
+  "version": "0.37.0-flask.1",
   "description": "An example snap to test JSON-RPC permissions.",
   "proposedName": "JSON-RPC Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "ydYjquUr17K+rHh1gXHQ4AR+9JbaaT25fLZ9s0vG8Q0=",
+    "shasum": "/3fsivJNK2WrRVAjvK8wlVX/2wky1dGp2wAW3GUXIjI=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
