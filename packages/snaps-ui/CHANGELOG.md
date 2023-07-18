@@ -7,9 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.37.0-flask.1]
-### Uncategorized
-- Use latest MetaMask `eslint` config ([#1606](https://github.com/MetaMask/snaps/pull/1606))
-- Bump @metamask/eslint-config from 11.1.0 to 12.0.0 ([#1576](https://github.com/MetaMask/snaps/pull/1576))
+### Added
 - Allow disabling markdown for text component ([#1586](https://github.com/MetaMask/snaps/pull/1586))
 
 ## [0.36.1-flask.1]

@@ -7,13 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.37.0-flask.1]
-### Uncategorized
-- Changes to fix compatibility with extension E2E tests ([#1602](https://github.com/MetaMask/snaps/pull/1602))
-- Use latest MetaMask `eslint` config ([#1606](https://github.com/MetaMask/snaps/pull/1606))
-- Bump @metamask/eslint-config from 11.1.0 to 12.0.0 ([#1576](https://github.com/MetaMask/snaps/pull/1576))
-- fixed port ([#1593](https://github.com/MetaMask/snaps/pull/1593))
-- fixed names in package.json ([#1581](https://github.com/MetaMask/snaps/pull/1581))
-- Add `eth_requestAccounts` usage to the Ethereum provider example ([#1579](https://github.com/MetaMask/snaps/pull/1579))
+### Changed
+- Changes to fix compatibility with extension E2E tests ([#1581](https://github.com/MetaMask/snaps/pull/1581), [#1593](https://github.com/MetaMask/snaps/pull/1593), [#1602](https://github.com/MetaMask/snaps/pull/1602))
 
 ## [0.36.1-flask.1]
 ### Fixed
