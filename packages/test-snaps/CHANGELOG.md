@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.37.0-flask.1]
 ### Changed
-- Changes to fix compatibility with extension E2E tests ([#1581](https://github.com/MetaMask/snaps/pull/1581), [#1593](https://github.com/MetaMask/snaps/pull/1593), [#1602](https://github.com/MetaMask/snaps/pull/1602))
+- Fix compatibility with extension E2E tests ([#1581](https://github.com/MetaMask/snaps/pull/1581), [#1593](https://github.com/MetaMask/snaps/pull/1593), [#1602](https://github.com/MetaMask/snaps/pull/1602))
 
 ## [0.36.1-flask.1]
 ### Fixed
