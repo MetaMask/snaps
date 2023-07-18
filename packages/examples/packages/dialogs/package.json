@@ -1,6 +1,6 @@
 {
   "name": "@metamask/dialog-example-snap",
-  "version": "0.36.1-flask.1",
+  "version": "0.37.0-flask.1",
   "description": "MetaMask example snap demonstrating the use of `snap_dialog`.",
   "repository": {
     "type": "git",
