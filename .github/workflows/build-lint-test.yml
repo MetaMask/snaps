@@ -4,6 +4,13 @@ on:
   workflow_call:
 
 jobs:
+  skipped:
+    if: ${{ never() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: This should not run
+        run: exit 1
+
   prepare:
     name: Prepare
     runs-on: ubuntu-latest
@@ -15,6 +22,8 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [16.x, 18.x]
+    needs:
+      - skipped
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
