@@ -1,6 +1,6 @@
 {
   "name": "@metamask/cronjob-example-snap",
-  "version": "0.36.1-flask.1",
+  "version": "0.37.0-flask.1",
   "description": "MetaMask example snap demonstrating the use of cronjobs in snaps.",
   "repository": {
     "type": "git",

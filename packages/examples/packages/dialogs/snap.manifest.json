@@ -1,5 +1,5 @@
 {
-  "version": "0.36.1-flask.1",
+  "version": "0.37.0-flask.1",
   "description": "MetaMask example snap demonstrating the use of `snap_dialog`.",
   "proposedName": "Dialog Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "BkVZI2rqZ4nV2+TwhfaZdrU9bdo9RLxbDtb/906kyQU=",
+    "shasum": "dDv1ne0zDszMZa+eDyxKqdFD2+oa4yBAxznocPI4xgA=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
