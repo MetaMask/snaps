@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.37.0-flask.1]
 ### Changed
-- Update GitHub link in snaps-simulator ([#1610](https://github.com/MetaMask/snaps/pull/1610))
+- Update GitHub link ([#1610](https://github.com/MetaMask/snaps/pull/1610))
 
 ## [0.36.1-flask.1]
 ### Changed
