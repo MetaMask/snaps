@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.37.0]
+
 ## [0.37.0-flask.1]
 ### Changed
 - No changes this release.
@@ -364,7 +366,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Example snaps ([#72](https://github.com/MetaMask/snaps-monorepo/pull/72))
   - The examples now live in their own package, [`@metamask/snap-examples`](https://npmjs.com/package/@metamask/snap-examples).
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.37.0-flask.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.37.0...HEAD
+[0.37.0]: https://github.com/MetaMask/snaps/compare/v0.37.0-flask.1...v0.37.0
 [0.37.0-flask.1]: https://github.com/MetaMask/snaps/compare/v0.36.1-flask.1...v0.37.0-flask.1
 [0.36.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.36.0-flask.1...v0.36.1-flask.1
 [0.36.0-flask.1]: https://github.com/MetaMask/snaps/compare/v0.35.2-flask.1...v0.36.0-flask.1

@@ -1,6 +1,6 @@
 {
   "name": "@metamask/error-example-snap",
-  "version": "0.37.0-flask.1",
+  "version": "0.37.0",
   "description": "MetaMask example snap demonstrating the use of error handling in snaps.",
   "repository": {
     "type": "git",
