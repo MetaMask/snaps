@@ -1,8 +1,5 @@
 name: Publish to GitHub Pages
 
-concurrency:
-  group: ${{ github.ref }}
-
 on:
   workflow_call:
     inputs:
