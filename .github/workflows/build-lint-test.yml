@@ -5,7 +5,7 @@ on:
 
 jobs:
   skipped:
-    if: ${{ never() }}
+    if: ${{ false }}
     runs-on: ubuntu-latest
     steps:
       - name: This should not run
