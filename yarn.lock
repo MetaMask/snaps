@@ -3624,14 +3624,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/action-utils@npm:^0.0.2":
-  version: 0.0.2
-  resolution: "@metamask/action-utils@npm:0.0.2"
+"@metamask/action-utils@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/action-utils@npm:1.0.0"
   dependencies:
     "@types/semver": ^7.3.6
     glob: ^7.1.7
     semver: ^7.3.5
-  checksum: 4d3552d77a329791e2b1da0ca5023e9e04c1920c61f06ef070e8b4f4f072dd1f632124003964d47cdebf314a621a12d7209fbdd6871db37cfa1330a6ed679a11
+  checksum: 5cfd5c7f8895f4bc602cb6e7b3e133aae0431ded8f50e136d314b2e54936ae22cc6add226fa6dfabb300addf084e32fd864a87b91af9188fa158b6e99d91e784
   languageName: node
   linkType: hard
 
@@ -3895,23 +3895,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/create-release-branch@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@metamask/create-release-branch@npm:1.0.1"
+"@metamask/create-release-branch@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@metamask/create-release-branch@npm:1.1.0"
   dependencies:
-    "@metamask/action-utils": ^0.0.2
-    "@metamask/utils": ^3.0.3
+    "@metamask/action-utils": ^1.0.0
+    "@metamask/utils": ^5.0.2
     debug: ^4.3.4
-    execa: ^5.0.0
-    glob: ^8.0.3
-    pony-cause: ^2.1.0
-    semver: ^7.3.7
-    which: ^2.0.2
-    yaml: ^2.1.1
-    yargs: ^17.5.1
+    execa: ^5.1.1
+    pony-cause: ^2.1.9
+    semver: ^7.5.0
+    which: ^3.0.0
+    yaml: ^2.2.2
+    yargs: ^17.7.1
   bin:
     create-release-branch: bin/create-release-branch.js
-  checksum: 9da926ee4c183eedaf7fb42ef36fb1b4edf9b83a573e68978d6027ba9af160206ad0065f3d943d1243b1f650b32bb02115ec1389aaa9ef9fb2aa69891dbf4312
+  checksum: 04ab235f27768c8977fe998da6b4f09eccd384debb80dcafda6c4a5ea59638c414b2e6a2ebd770471946f050ae6eaf1c2d798d06ff0b38c0585d6dc17a62cab4
   languageName: node
   linkType: hard
 
@@ -5487,18 +5486,6 @@ __metadata:
   version: 1.1.0
   resolution: "@metamask/types@npm:1.1.0"
   checksum: 500e8c076a2b0a6d688c8c465101256f090547d99c9a5585efe3d1db7a494b6b2712b127043fb316912caffc4fff78976b9a7780780abb68305e8a3bf812689c
-  languageName: node
-  linkType: hard
-
-"@metamask/utils@npm:^3.0.3":
-  version: 3.6.0
-  resolution: "@metamask/utils@npm:3.6.0"
-  dependencies:
-    "@types/debug": ^4.1.7
-    debug: ^4.3.4
-    semver: ^7.3.8
-    superstruct: ^1.0.3
-  checksum: 1ebc6677bb017e4d09d4af143621fe27194d8ed815234cfd76469c3c734dc1db2ea7b577c01a2096c21c04d8c9c4d721d3035b5353fe2ded3b4737f326755e43
   languageName: node
   linkType: hard
 
@@ -18623,7 +18610,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pony-cause@npm:^2.1.0":
+"pony-cause@npm:^2.1.9":
   version: 2.1.10
   resolution: "pony-cause@npm:2.1.10"
   checksum: 8b61378f213e61056312dc274a1c79980154e9d864f6ad86e0c8b91a50d3ce900d430995ee24147c9f3caa440dfe7d51c274b488d7f033b65b206522536d7217
@@ -20249,7 +20236,7 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.3.1
     "@metamask/auto-changelog": ^3.1.0
-    "@metamask/create-release-branch": ^1.0.1
+    "@metamask/create-release-branch": ^1.1.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -23509,7 +23496,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.1.1":
+"yaml@npm:^2.2.2":
   version: 2.3.1
   resolution: "yaml@npm:2.3.1"
   checksum: 2c7bc9a7cd4c9f40d3b0b0a98e370781b68b8b7c4515720869aced2b00d92f5da1762b4ffa947f9e795d6cd6b19f410bd4d15fdd38aca7bd96df59bd9486fb54
