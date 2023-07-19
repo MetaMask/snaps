@@ -18,6 +18,7 @@ import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-controllers';
+import packageJson from '@metamask/snaps-execution-environments/package.json';
 import type {
   SnapManifest,
   SnapRpcHookArgs,
@@ -32,7 +33,6 @@ import pump from 'pump';
 import type { SagaIterator } from 'redux-saga';
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
 
-import { version } from '../../../package.json';
 import { runSaga } from '../../store/middleware';
 import { getSnapId, getSrp, setSnapId } from '../configuration';
 import { addError } from '../console';
@@ -65,7 +65,7 @@ import {
   unrestrictedMethods,
 } from './snap-permissions';
 
-const DEFAULT_ENVIRONMENT_URL = `https://execution.metamask.io/${version}/index.html`;
+const DEFAULT_ENVIRONMENT_URL = `https://execution.metamask.io/${packageJson.version}/index.html`;
 
 /**
  * The initialization saga is run on when the snap ID is changed and initializes the snaps execution environment.
