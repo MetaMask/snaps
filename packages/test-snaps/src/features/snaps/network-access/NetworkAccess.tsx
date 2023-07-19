@@ -5,7 +5,11 @@ import { Button } from 'react-bootstrap';
 import { useInvokeMutation } from '../../../api';
 import { Result, Snap } from '../../../components';
 import { getSnapId } from '../../../utils';
-import { NETWORK_ACCESS_PORT, NETWORK_ACCESS_SNAP_ID } from './constants';
+import {
+  NETWORK_ACCESS_PORT,
+  NETWORK_ACCESS_SNAP_ID,
+  NETWORK_ACCESS_VERSION,
+} from './constants';
 
 export const NetworkAccess: FunctionComponent = () => {
   const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
@@ -22,6 +26,7 @@ export const NetworkAccess: FunctionComponent = () => {
       name="Network Access Snap"
       snapId={NETWORK_ACCESS_SNAP_ID}
       port={NETWORK_ACCESS_PORT}
+      version={NETWORK_ACCESS_VERSION}
       testId="network-access"
     >
       <Button
