@@ -148,6 +148,9 @@ jobs:
       id-token: write
       contents: read
     steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.sha }}
       - id: version
         name: Get release version
         shell: bash
