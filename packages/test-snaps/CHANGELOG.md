@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.37.3-flask.1]
+### Uncategorized
+- Fix transaction insights example snap npm name ([#1628](https://github.com/MetaMask/snaps/pull/1628))
+
 ## [0.37.2-flask.1]
 ### Changed
 - Release package independently ([#1600](https://github.com/MetaMask/snaps/pull/1600))
@@ -15,5 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@0.37.2-flask.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@0.37.3-flask.1...HEAD
+[0.37.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@0.37.2-flask.1...@metamask/test-snaps@0.37.3-flask.1
 [0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/test-snaps@0.37.2-flask.1
