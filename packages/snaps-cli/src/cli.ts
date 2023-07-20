@@ -1,15 +1,9 @@
-import type { Arguments } from 'yargs';
 import yargs from 'yargs';
-import type yargsType from 'yargs/yargs';
+import { hideBin } from 'yargs/helpers';
 
 import builders from './builders';
-import {
-  applyConfig,
-  loadConfig,
-  sanitizeInputs,
-  setSnapGlobals,
-  logError,
-} from './utils';
+import { getConfigByArgv } from './config';
+import { error, getYargsErrorMessage, sanitizeInputs } from './utils';
 
 /**
  * The main CLI entry point function. This processes the command line args, and
@@ -18,60 +12,49 @@ import {
  * @param argv - The raw command line arguments, i.e., `process.argv`.
  * @param commands - The list of commands to use.
  */
-export function cli(argv: string[], commands: any): void {
-  const rawArgv = argv.slice(2);
-  // eslint-disable-next-line @typescript-eslint/no-unused-expressions, @typescript-eslint/no-floating-promises
-  yargs(rawArgv)
+export async function cli(argv: string[], commands: any) {
+  await yargs(hideBin(argv))
     .scriptName('mm-snap')
     .usage('Usage: $0 <command> [options]')
 
-    .example('$0 init', `\tInitialize a snap project in the current directory`)
+    .example('$0 build', `Build './src/index.js' as './dist/bundle.js'`)
     .example(
-      '$0 init my-snap',
-      `\tInitialize a snap project in the 'my-snap' directory`,
+      '$0 build --config ./snap.config.build.ts',
+      `Build './src/index.js' as './dist/bundle.js' using the config in './snap.config.build.ts'`,
     )
+    .example('$0 manifest --fix', `Check the snap manifest, and fix any errors`)
     .example(
-      '$0 build -s src/index.js -d out',
-      `\tBuild 'src/index.js' as './out/bundle.js'`,
+      '$0 watch --port 8000',
+      `The snap input file for changes, and serve it on port 8000`,
     )
-    .example(
-      '$0 build -s src/index.js -d out -n snap.js',
-      `\tBuild 'src/index.js' as './out/snap.js'`,
-    )
-    .example('$0 serve -r out', `\tServe files in './out' on port 8080`)
-    .example('$0 serve -r out -p 9000', `\tServe files in './out' on port 9000`)
-    .example(
-      '$0 watch -s src/index.js -d out',
-      `\tRebuild './out/bundle.js' on changes to files in 'src/index.js' parent and child directories`,
-    )
+    .example('$0 serve --port 8000', `Serve the snap bundle on port 8000`)
 
     .command(commands)
 
+    .option('config', builders.config)
     .option('verboseErrors', builders.verboseErrors)
-
     .option('suppressWarnings', builders.suppressWarnings)
 
     .strict()
 
-    // Typecast: The @types/yargs type for .middleware is incorrect.
-    // yargs middleware functions receive the yargs instance as a second parameter.
-    // ref: https://yargs.js.org/docs/#api-reference-middlewarecallbacks-applybeforevalidation
-    .middleware(
-      ((yargsArgv: Arguments, yargsInstance: typeof yargsType) => {
-        applyConfig(loadConfig(), rawArgv, yargsArgv, yargsInstance);
-        setSnapGlobals(yargsArgv);
-        sanitizeInputs(yargsArgv);
-      }) as any,
-      true,
-    )
+    .middleware(async (args: any) => {
+      // eslint-disable-next-line require-atomic-updates
+      args.context = {
+        config: await getConfigByArgv(args),
+      };
 
-    .fail((message: string, error: Error, _yargs) => {
-      logError(message, error);
-      process.exitCode = 1;
-    })
+      sanitizeInputs(args);
+    }, false)
 
     .demandCommand(1, 'You must specify at least one command.')
 
+    .fail((message, failure) => {
+      error(getYargsErrorMessage(message, failure));
+      // eslint-disable-next-line n/no-process-exit
+      process.exit(1);
+    })
+
     .help()
-    .alias('help', 'h').argv;
+    .alias('help', 'h')
+    .parseAsync();
 }

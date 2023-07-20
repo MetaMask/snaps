@@ -1,0 +1,1891 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config 1`] = `
+{
+  "devtool": "source-map",
+  "entry": "/foo/bar/src/index.js",
+  "infrastructureLogging": {
+    "level": "none",
+  },
+  "mode": "production",
+  "module": {
+    "rules": [
+      {
+        "exclude": /node_modules/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
+        "use": {
+          "loader": "swc-loader",
+          "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
+            "jsc": {
+              "parser": {
+                "syntax": "typescript",
+              },
+              "target": "es2020",
+            },
+            "module": {
+              "type": "commonjs",
+            },
+            "sourceMaps": true,
+            "sync": false,
+          },
+        },
+      },
+      false,
+    ],
+  },
+  "optimization": {
+    "minimize": true,
+    "minimizer": [
+      TerserPlugin {
+        "options": {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minimizer": {
+            "implementation": [Function],
+            "options": {},
+          },
+          "parallel": true,
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+  },
+  "output": {
+    "clean": false,
+    "filename": "bundle.js",
+    "library": {
+      "type": "commonjs",
+    },
+    "path": "/foo/bar/dist",
+    "publicPath": "/",
+  },
+  "plugins": [
+    SnapsWebpackPlugin {
+      "options": {
+        "eval": true,
+        "manifestPath": "/foo/bar/snap.manifest.json",
+        "writeManifest": true,
+      },
+    },
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
+    EnvironmentPlugin {
+      "defaultValues": {
+        "DEBUG": false,
+        "NODE_DEBUG": false,
+        "NODE_ENV": "production",
+      },
+      "keys": [
+        "NODE_DEBUG",
+        "NODE_ENV",
+        "DEBUG",
+      ],
+    },
+    ProgressPlugin {
+      "dependenciesCount": 10000,
+      "handler": [Function],
+      "modulesCount": 5000,
+      "percentBy": undefined,
+      "profile": false,
+      "showActiveModules": false,
+      "showDependencies": true,
+      "showEntries": true,
+      "showModules": true,
+    },
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
+      },
+    },
+  ],
+  "resolve": {
+    "extensions": [
+      ".js",
+      ".ts",
+    ],
+    "fallback": {
+      "fs": false,
+      "path": false,
+    },
+    "plugins": [
+      SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
+        "unresolvedModules": Set {},
+      },
+    ],
+  },
+  "stats": "none",
+  "target": "browserslist:/foo/bar/.browserslistrc",
+}
+`;
+
+exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config 2`] = `
+{
+  "devtool": "source-map",
+  "entry": "/foo/bar/src/index.ts",
+  "infrastructureLogging": {
+    "level": "none",
+  },
+  "mode": "production",
+  "module": {
+    "rules": [
+      {
+        "exclude": /node_modules/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
+        "use": {
+          "loader": "swc-loader",
+          "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
+            "jsc": {
+              "parser": {
+                "syntax": "typescript",
+              },
+              "target": "es2020",
+            },
+            "module": {
+              "type": "commonjs",
+            },
+            "sourceMaps": true,
+            "sync": false,
+          },
+        },
+      },
+      false,
+    ],
+  },
+  "optimization": {
+    "minimize": true,
+    "minimizer": [
+      TerserPlugin {
+        "options": {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minimizer": {
+            "implementation": [Function],
+            "options": {},
+          },
+          "parallel": true,
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+  },
+  "output": {
+    "clean": false,
+    "filename": "bundle.js",
+    "library": {
+      "type": "commonjs",
+    },
+    "path": "/foo/bar/dist",
+    "publicPath": "/",
+  },
+  "plugins": [
+    SnapsWebpackPlugin {
+      "options": {
+        "eval": true,
+        "manifestPath": "/foo/bar/snap.manifest.json",
+        "writeManifest": true,
+      },
+    },
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": true,
+      },
+    },
+    EnvironmentPlugin {
+      "defaultValues": {
+        "DEBUG": false,
+        "NODE_DEBUG": false,
+        "NODE_ENV": "production",
+      },
+      "keys": [
+        "NODE_DEBUG",
+        "NODE_ENV",
+        "DEBUG",
+      ],
+    },
+    ProgressPlugin {
+      "dependenciesCount": 10000,
+      "handler": [Function],
+      "modulesCount": 5000,
+      "percentBy": undefined,
+      "profile": false,
+      "showActiveModules": false,
+      "showDependencies": true,
+      "showEntries": true,
+      "showModules": true,
+    },
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
+      },
+    },
+  ],
+  "resolve": {
+    "extensions": [
+      ".js",
+      ".ts",
+    ],
+    "fallback": {
+      "fs": false,
+      "path": false,
+    },
+    "plugins": [
+      SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
+        "unresolvedModules": Set {},
+      },
+    ],
+  },
+  "stats": "none",
+  "target": "browserslist:/foo/bar/.browserslistrc",
+}
+`;
+
+exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config 3`] = `
+{
+  "devtool": "inline-source-map",
+  "entry": "/foo/bar/src/index.ts",
+  "infrastructureLogging": {
+    "level": "none",
+  },
+  "mode": "production",
+  "module": {
+    "rules": [
+      {
+        "exclude": /node_modules/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
+        "use": {
+          "loader": "swc-loader",
+          "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
+            "jsc": {
+              "parser": {
+                "syntax": "typescript",
+              },
+              "target": "es2020",
+            },
+            "module": {
+              "type": "commonjs",
+            },
+            "sourceMaps": true,
+            "sync": false,
+          },
+        },
+      },
+      false,
+    ],
+  },
+  "optimization": {
+    "minimize": true,
+    "minimizer": [
+      TerserPlugin {
+        "options": {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minimizer": {
+            "implementation": [Function],
+            "options": {},
+          },
+          "parallel": true,
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+  },
+  "output": {
+    "clean": false,
+    "filename": "bundle.js",
+    "library": {
+      "type": "commonjs",
+    },
+    "path": "/foo/bar/dist",
+    "publicPath": "/",
+  },
+  "plugins": [
+    SnapsWebpackPlugin {
+      "options": {
+        "eval": true,
+        "manifestPath": "/foo/bar/snap.manifest.json",
+        "writeManifest": true,
+      },
+    },
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
+    EnvironmentPlugin {
+      "defaultValues": {
+        "DEBUG": false,
+        "NODE_DEBUG": false,
+        "NODE_ENV": "production",
+      },
+      "keys": [
+        "NODE_DEBUG",
+        "NODE_ENV",
+        "DEBUG",
+      ],
+    },
+    ProgressPlugin {
+      "dependenciesCount": 10000,
+      "handler": [Function],
+      "modulesCount": 5000,
+      "percentBy": undefined,
+      "profile": false,
+      "showActiveModules": false,
+      "showDependencies": true,
+      "showEntries": true,
+      "showModules": true,
+    },
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": false,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
+      },
+    },
+  ],
+  "resolve": {
+    "extensions": [
+      ".js",
+      ".ts",
+    ],
+    "fallback": {
+      "fs": false,
+      "path": false,
+    },
+    "plugins": [
+      SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
+        "unresolvedModules": Set {},
+      },
+    ],
+  },
+  "stats": "none",
+  "target": "browserslist:/foo/bar/.browserslistrc",
+}
+`;
+
+exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config 4`] = `
+{
+  "devtool": "source-map",
+  "entry": "/foo/bar/src/index.ts",
+  "infrastructureLogging": {
+    "level": "none",
+  },
+  "mode": "production",
+  "module": {
+    "rules": [
+      {
+        "exclude": /node_modules/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
+        "use": {
+          "loader": "swc-loader",
+          "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
+            "jsc": {
+              "parser": {
+                "syntax": "typescript",
+              },
+              "target": "es2020",
+            },
+            "module": {
+              "type": "commonjs",
+            },
+            "sourceMaps": true,
+            "sync": false,
+          },
+        },
+      },
+      false,
+    ],
+  },
+  "optimization": {
+    "minimize": true,
+    "minimizer": [
+      TerserPlugin {
+        "options": {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minimizer": {
+            "implementation": [Function],
+            "options": {},
+          },
+          "parallel": true,
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+  },
+  "output": {
+    "clean": false,
+    "filename": "bundle.js",
+    "library": {
+      "type": "commonjs",
+    },
+    "path": "/foo/bar/dist",
+    "publicPath": "/",
+  },
+  "plugins": [
+    SnapsWebpackPlugin {
+      "options": {
+        "eval": true,
+        "manifestPath": "/foo/bar/snap.manifest.json",
+        "writeManifest": true,
+      },
+    },
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
+    EnvironmentPlugin {
+      "defaultValues": {
+        "DEBUG": false,
+        "FOO": "bar",
+        "NODE_DEBUG": false,
+        "NODE_ENV": "production",
+      },
+      "keys": [
+        "FOO",
+        "NODE_DEBUG",
+        "NODE_ENV",
+        "DEBUG",
+      ],
+    },
+    ProgressPlugin {
+      "dependenciesCount": 10000,
+      "handler": [Function],
+      "modulesCount": 5000,
+      "percentBy": undefined,
+      "profile": false,
+      "showActiveModules": false,
+      "showDependencies": true,
+      "showEntries": true,
+      "showModules": true,
+    },
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": false,
+        "builtInResolver": false,
+        "builtIns": false,
+      },
+    },
+  ],
+  "resolve": {
+    "extensions": [
+      ".js",
+      ".ts",
+    ],
+    "fallback": {
+      "fs": false,
+      "path": false,
+    },
+    "plugins": [
+      false,
+    ],
+  },
+  "stats": "none",
+  "target": "browserslist:/foo/bar/.browserslistrc",
+}
+`;
+
+exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config 5`] = `
+{
+  "devtool": "source-map",
+  "entry": "/foo/bar/src/index.js",
+  "infrastructureLogging": {
+    "level": "none",
+  },
+  "mode": "production",
+  "module": {
+    "rules": [
+      {
+        "exclude": /node_modules/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
+        "use": {
+          "loader": "swc-loader",
+          "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
+            "jsc": {
+              "parser": {
+                "syntax": "typescript",
+              },
+              "target": "es2020",
+            },
+            "module": {
+              "type": "commonjs",
+            },
+            "sourceMaps": true,
+            "sync": false,
+          },
+        },
+      },
+      {
+        "test": /\\\\\\.wasm\\$/u,
+        "use": {
+          "loader": "/foo/bar/loaders/wasm",
+        },
+      },
+    ],
+  },
+  "optimization": {
+    "minimize": true,
+    "minimizer": [
+      TerserPlugin {
+        "options": {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minimizer": {
+            "implementation": [Function],
+            "options": {},
+          },
+          "parallel": true,
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+  },
+  "output": {
+    "clean": false,
+    "filename": "bundle.js",
+    "library": {
+      "type": "commonjs",
+    },
+    "path": "/foo/bar/dist",
+    "publicPath": "/",
+  },
+  "plugins": [
+    SnapsWebpackPlugin {
+      "options": {
+        "eval": true,
+        "manifestPath": "/foo/bar/snap.manifest.json",
+        "writeManifest": true,
+      },
+    },
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
+    EnvironmentPlugin {
+      "defaultValues": {
+        "DEBUG": false,
+        "NODE_DEBUG": false,
+        "NODE_ENV": "production",
+      },
+      "keys": [
+        "NODE_DEBUG",
+        "NODE_ENV",
+        "DEBUG",
+      ],
+    },
+    ProgressPlugin {
+      "dependenciesCount": 10000,
+      "handler": [Function],
+      "modulesCount": 5000,
+      "percentBy": undefined,
+      "profile": false,
+      "showActiveModules": false,
+      "showDependencies": true,
+      "showEntries": true,
+      "showModules": true,
+    },
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
+      },
+    },
+  ],
+  "resolve": {
+    "extensions": [
+      ".js",
+      ".ts",
+    ],
+    "fallback": {
+      "fs": false,
+      "path": false,
+    },
+    "plugins": [
+      SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
+        "unresolvedModules": Set {},
+      },
+    ],
+  },
+  "stats": "none",
+  "target": "browserslist:/foo/bar/.browserslistrc",
+}
+`;
+
+exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config 6`] = `
+{
+  "devtool": "source-map",
+  "entry": "/foo/bar/src/index.js",
+  "infrastructureLogging": {
+    "level": "none",
+  },
+  "mode": "production",
+  "module": {
+    "rules": [
+      {
+        "exclude": /node_modules/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
+        "use": {
+          "loader": "swc-loader",
+          "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
+            "jsc": {
+              "parser": {
+                "syntax": "typescript",
+              },
+              "target": "es2020",
+            },
+            "module": {
+              "type": "commonjs",
+            },
+            "sourceMaps": true,
+            "sync": false,
+          },
+        },
+      },
+      false,
+    ],
+  },
+  "optimization": {
+    "minimize": false,
+    "minimizer": [
+      TerserPlugin {
+        "options": {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minimizer": {
+            "implementation": [Function],
+            "options": {},
+          },
+          "parallel": true,
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+  },
+  "output": {
+    "clean": false,
+    "filename": "bundle.js",
+    "library": {
+      "type": "commonjs",
+    },
+    "path": "/foo/bar/dist",
+    "publicPath": "/",
+  },
+  "plugins": [
+    SnapsWebpackPlugin {
+      "options": {
+        "eval": true,
+        "manifestPath": "/foo/bar/snap.manifest.json",
+        "writeManifest": true,
+      },
+    },
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
+    EnvironmentPlugin {
+      "defaultValues": {
+        "DEBUG": false,
+        "NODE_DEBUG": false,
+        "NODE_ENV": "production",
+      },
+      "keys": [
+        "NODE_DEBUG",
+        "NODE_ENV",
+        "DEBUG",
+      ],
+    },
+    ProgressPlugin {
+      "dependenciesCount": 10000,
+      "handler": [Function],
+      "modulesCount": 5000,
+      "percentBy": undefined,
+      "profile": false,
+      "showActiveModules": false,
+      "showDependencies": true,
+      "showEntries": true,
+      "showModules": true,
+    },
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
+      },
+    },
+  ],
+  "resolve": {
+    "extensions": [
+      ".js",
+      ".ts",
+    ],
+    "fallback": {
+      "fs": false,
+      "path": false,
+    },
+    "plugins": [
+      SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
+        "unresolvedModules": Set {},
+      },
+    ],
+  },
+  "stats": "none",
+  "target": "browserslist:/foo/bar/.browserslistrc",
+}
+`;
+
+exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config and options 1`] = `
+{
+  "devtool": "source-map",
+  "entry": "/foo/bar/src/index.ts",
+  "infrastructureLogging": {
+    "level": "none",
+  },
+  "mode": "production",
+  "module": {
+    "rules": [
+      {
+        "exclude": /node_modules/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
+        "use": {
+          "loader": "swc-loader",
+          "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
+            "jsc": {
+              "parser": {
+                "syntax": "typescript",
+              },
+              "target": "es2020",
+            },
+            "module": {
+              "type": "commonjs",
+            },
+            "sourceMaps": true,
+            "sync": false,
+          },
+        },
+      },
+      false,
+    ],
+  },
+  "optimization": {
+    "minimize": true,
+    "minimizer": [
+      TerserPlugin {
+        "options": {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minimizer": {
+            "implementation": [Function],
+            "options": {},
+          },
+          "parallel": true,
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+  },
+  "output": {
+    "clean": false,
+    "filename": "bundle.js",
+    "library": {
+      "type": "commonjs",
+    },
+    "path": "/bar/baz",
+    "publicPath": "/",
+  },
+  "plugins": [
+    SnapsWebpackPlugin {
+      "options": {
+        "eval": false,
+        "manifestPath": "/bar/snap.manifest.json",
+        "writeManifest": true,
+      },
+    },
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
+    EnvironmentPlugin {
+      "defaultValues": {
+        "DEBUG": false,
+        "NODE_DEBUG": false,
+        "NODE_ENV": "production",
+      },
+      "keys": [
+        "NODE_DEBUG",
+        "NODE_ENV",
+        "DEBUG",
+      ],
+    },
+    ProgressPlugin {
+      "dependenciesCount": 10000,
+      "handler": [Function],
+      "modulesCount": 5000,
+      "percentBy": undefined,
+      "profile": false,
+      "showActiveModules": false,
+      "showDependencies": true,
+      "showEntries": true,
+      "showModules": true,
+    },
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
+      },
+    },
+    SnapsWatchPlugin {
+      "options": {
+        "bundle": "/bar/baz/bundle.js",
+        "evaluate": true,
+        "files": [
+          "/bar/snap.manifest.json",
+        ],
+      },
+    },
+  ],
+  "resolve": {
+    "extensions": [
+      ".js",
+      ".ts",
+    ],
+    "fallback": {
+      "fs": false,
+      "path": false,
+    },
+    "plugins": [
+      SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
+        "unresolvedModules": Set {},
+      },
+    ],
+  },
+  "stats": "none",
+  "target": "browserslist:/foo/bar/.browserslistrc",
+}
+`;
+
+exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config and options 2`] = `
+{
+  "devtool": "source-map",
+  "entry": "/foo/bar/src/index.ts",
+  "infrastructureLogging": {
+    "level": "none",
+  },
+  "mode": "production",
+  "module": {
+    "rules": [
+      {
+        "exclude": /node_modules/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
+        "use": {
+          "loader": "swc-loader",
+          "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
+            "jsc": {
+              "parser": {
+                "syntax": "typescript",
+              },
+              "target": "es2020",
+            },
+            "module": {
+              "type": "commonjs",
+            },
+            "sourceMaps": true,
+            "sync": false,
+          },
+        },
+      },
+      false,
+    ],
+  },
+  "optimization": {
+    "minimize": true,
+    "minimizer": [
+      TerserPlugin {
+        "options": {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minimizer": {
+            "implementation": [Function],
+            "options": {},
+          },
+          "parallel": true,
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+  },
+  "output": {
+    "clean": false,
+    "filename": "bundle.js",
+    "library": {
+      "type": "commonjs",
+    },
+    "path": "/bar/baz",
+    "publicPath": "/",
+  },
+  "plugins": [
+    SnapsWebpackPlugin {
+      "options": {
+        "eval": false,
+        "manifestPath": "/bar/snap.manifest.json",
+        "writeManifest": true,
+      },
+    },
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
+    EnvironmentPlugin {
+      "defaultValues": {
+        "DEBUG": false,
+        "NODE_DEBUG": false,
+        "NODE_ENV": "production",
+      },
+      "keys": [
+        "NODE_DEBUG",
+        "NODE_ENV",
+        "DEBUG",
+      ],
+    },
+    ProgressPlugin {
+      "dependenciesCount": 10000,
+      "handler": [Function],
+      "modulesCount": 5000,
+      "percentBy": undefined,
+      "profile": false,
+      "showActiveModules": false,
+      "showDependencies": true,
+      "showEntries": true,
+      "showModules": true,
+    },
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
+      },
+    },
+  ],
+  "resolve": {
+    "extensions": [
+      ".js",
+      ".ts",
+    ],
+    "fallback": {
+      "fs": false,
+      "path": false,
+    },
+    "plugins": [
+      SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
+        "unresolvedModules": Set {},
+      },
+    ],
+  },
+  "stats": "none",
+  "target": "browserslist:/foo/bar/.browserslistrc",
+}
+`;
+
+exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config and options 3`] = `
+{
+  "devtool": "source-map",
+  "entry": "/foo/bar/src/index.ts",
+  "infrastructureLogging": {
+    "level": "none",
+  },
+  "mode": "production",
+  "module": {
+    "rules": [
+      {
+        "exclude": /node_modules/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
+        "use": {
+          "loader": "swc-loader",
+          "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
+            "jsc": {
+              "parser": {
+                "syntax": "typescript",
+              },
+              "target": "es2020",
+            },
+            "module": {
+              "type": "commonjs",
+            },
+            "sourceMaps": true,
+            "sync": false,
+          },
+        },
+      },
+      false,
+    ],
+  },
+  "optimization": {
+    "minimize": true,
+    "minimizer": [
+      TerserPlugin {
+        "options": {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minimizer": {
+            "implementation": [Function],
+            "options": {},
+          },
+          "parallel": true,
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+  },
+  "output": {
+    "clean": false,
+    "filename": "bundle.js",
+    "library": {
+      "type": "commonjs",
+    },
+    "path": "/bar/baz",
+    "publicPath": "/",
+  },
+  "plugins": [
+    SnapsWebpackPlugin {
+      "options": {
+        "eval": true,
+        "manifestPath": "/bar/snap.manifest.json",
+        "writeManifest": true,
+      },
+    },
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
+    EnvironmentPlugin {
+      "defaultValues": {
+        "DEBUG": false,
+        "NODE_DEBUG": false,
+        "NODE_ENV": "production",
+      },
+      "keys": [
+        "NODE_DEBUG",
+        "NODE_ENV",
+        "DEBUG",
+      ],
+    },
+    ProgressPlugin {
+      "dependenciesCount": 10000,
+      "handler": [Function],
+      "modulesCount": 5000,
+      "percentBy": undefined,
+      "profile": false,
+      "showActiveModules": false,
+      "showDependencies": true,
+      "showEntries": true,
+      "showModules": true,
+    },
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
+      },
+    },
+  ],
+  "resolve": {
+    "extensions": [
+      ".js",
+      ".ts",
+    ],
+    "fallback": {
+      "fs": false,
+      "path": false,
+    },
+    "plugins": [
+      SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
+        "unresolvedModules": Set {},
+      },
+    ],
+  },
+  "stats": "none",
+  "target": "browserslist:/foo/bar/.browserslistrc",
+}
+`;
+
+exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config and options 4`] = `
+{
+  "devtool": "source-map",
+  "entry": "/foo/bar/src/index.ts",
+  "infrastructureLogging": {
+    "level": "none",
+  },
+  "mode": "production",
+  "module": {
+    "rules": [
+      {
+        "exclude": /node_modules/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
+        "use": {
+          "loader": "swc-loader",
+          "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
+            "jsc": {
+              "parser": {
+                "syntax": "typescript",
+              },
+              "target": "es2020",
+            },
+            "module": {
+              "type": "commonjs",
+            },
+            "sourceMaps": true,
+            "sync": false,
+          },
+        },
+      },
+      false,
+    ],
+  },
+  "optimization": {
+    "minimize": true,
+    "minimizer": [
+      TerserPlugin {
+        "options": {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minimizer": {
+            "implementation": [Function],
+            "options": {},
+          },
+          "parallel": true,
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+  },
+  "output": {
+    "clean": false,
+    "filename": "bundle.js",
+    "library": {
+      "type": "commonjs",
+    },
+    "path": "/bar/baz",
+    "publicPath": "/",
+  },
+  "plugins": [
+    SnapsWebpackPlugin {
+      "options": {
+        "eval": false,
+        "manifestPath": "/bar/snap.manifest.json",
+        "writeManifest": true,
+      },
+    },
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
+    EnvironmentPlugin {
+      "defaultValues": {
+        "DEBUG": false,
+        "NODE_DEBUG": false,
+        "NODE_ENV": "production",
+      },
+      "keys": [
+        "NODE_DEBUG",
+        "NODE_ENV",
+        "DEBUG",
+      ],
+    },
+    ProgressPlugin {
+      "dependenciesCount": 10000,
+      "handler": [Function],
+      "modulesCount": 5000,
+      "percentBy": undefined,
+      "profile": false,
+      "showActiveModules": false,
+      "showDependencies": true,
+      "showEntries": true,
+      "showModules": true,
+    },
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
+      },
+    },
+    SnapsWatchPlugin {
+      "options": {
+        "bundle": "/bar/baz/bundle.js",
+        "evaluate": false,
+        "files": [
+          "/bar/snap.manifest.json",
+        ],
+      },
+    },
+  ],
+  "resolve": {
+    "extensions": [
+      ".js",
+      ".ts",
+    ],
+    "fallback": {
+      "fs": false,
+      "path": false,
+    },
+    "plugins": [
+      SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
+        "unresolvedModules": Set {},
+      },
+    ],
+  },
+  "stats": "none",
+  "target": "browserslist:/foo/bar/.browserslistrc",
+}
+`;
+
+exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config and options 5`] = `
+{
+  "devtool": "source-map",
+  "entry": "/foo/bar/src/index.ts",
+  "infrastructureLogging": {
+    "level": "none",
+  },
+  "mode": "production",
+  "module": {
+    "rules": [
+      {
+        "exclude": /node_modules/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
+        "use": {
+          "loader": "swc-loader",
+          "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
+            "jsc": {
+              "parser": {
+                "syntax": "typescript",
+              },
+              "target": "es2020",
+            },
+            "module": {
+              "type": "commonjs",
+            },
+            "sourceMaps": true,
+            "sync": false,
+          },
+        },
+      },
+      false,
+    ],
+  },
+  "optimization": {
+    "minimize": true,
+    "minimizer": [
+      TerserPlugin {
+        "options": {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minimizer": {
+            "implementation": [Function],
+            "options": {},
+          },
+          "parallel": true,
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+  },
+  "output": {
+    "clean": false,
+    "filename": "bundle.js",
+    "library": {
+      "type": "commonjs",
+    },
+    "path": "/bar/baz",
+    "publicPath": "/",
+  },
+  "plugins": [
+    SnapsWebpackPlugin {
+      "options": {
+        "eval": false,
+        "manifestPath": "/bar/snap.manifest.json",
+        "writeManifest": true,
+      },
+    },
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
+    EnvironmentPlugin {
+      "defaultValues": {
+        "DEBUG": false,
+        "NODE_DEBUG": false,
+        "NODE_ENV": "production",
+      },
+      "keys": [
+        "NODE_DEBUG",
+        "NODE_ENV",
+        "DEBUG",
+      ],
+    },
+    ProgressPlugin {
+      "dependenciesCount": 10000,
+      "handler": [Function],
+      "modulesCount": 5000,
+      "percentBy": undefined,
+      "profile": false,
+      "showActiveModules": false,
+      "showDependencies": true,
+      "showEntries": true,
+      "showModules": true,
+    },
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
+      },
+    },
+    SnapsWatchPlugin {
+      "options": {
+        "bundle": "/bar/baz/bundle.js",
+        "evaluate": true,
+        "files": [
+          "/bar/snap.manifest.json",
+        ],
+      },
+    },
+  ],
+  "resolve": {
+    "extensions": [
+      ".js",
+      ".ts",
+    ],
+    "fallback": {
+      "fs": false,
+      "path": false,
+    },
+    "plugins": [
+      SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
+        "unresolvedModules": Set {},
+      },
+    ],
+  },
+  "stats": "none",
+  "target": "browserslist:/foo/bar/.browserslistrc",
+}
+`;
+
+exports[`getDefaultConfiguration returns the default Webpack configuration for the given legacy CLI config 1`] = `
+{
+  "devtool": false,
+  "entry": "/foo/bar/src/index.js",
+  "infrastructureLogging": {
+    "level": "none",
+  },
+  "mode": "production",
+  "module": {
+    "rules": [
+      {
+        "exclude": /node_modules/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
+        "use": {
+          "loader": "/foo/bar/loaders/browserify",
+          "options": {
+            "bundlerCustomizer": undefined,
+            "depsToTranspile": [],
+            "dist": "/foo/bar/dist",
+            "eval": true,
+            "manifest": true,
+            "outfileName": "bundle.js",
+            "port": 8081,
+            "root": "/foo/bar",
+            "serve": true,
+            "sourceMaps": false,
+            "src": "/foo/bar/src/index.js",
+            "stripComments": true,
+            "suppressWarnings": false,
+            "transpilationMode": "localOnly",
+            "verboseErrors": true,
+            "writeManifest": true,
+          },
+        },
+      },
+      false,
+    ],
+  },
+  "optimization": {
+    "minimize": true,
+    "minimizer": [
+      TerserPlugin {
+        "options": {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minimizer": {
+            "implementation": [Function],
+            "options": {},
+          },
+          "parallel": true,
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+  },
+  "output": {
+    "clean": false,
+    "filename": "bundle.js",
+    "library": {
+      "type": "commonjs",
+    },
+    "path": "/foo/bar/dist",
+    "publicPath": "/",
+  },
+  "plugins": [
+    SnapsWebpackPlugin {
+      "options": {
+        "eval": true,
+        "manifestPath": "/foo/bar/snap.manifest.json",
+        "writeManifest": true,
+      },
+    },
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
+    EnvironmentPlugin {
+      "defaultValues": {
+        "DEBUG": false,
+        "NODE_DEBUG": false,
+        "NODE_ENV": "production",
+      },
+      "keys": [
+        "NODE_DEBUG",
+        "NODE_ENV",
+        "DEBUG",
+      ],
+    },
+    ProgressPlugin {
+      "dependenciesCount": 10000,
+      "handler": [Function],
+      "modulesCount": 5000,
+      "percentBy": undefined,
+      "profile": false,
+      "showActiveModules": false,
+      "showDependencies": true,
+      "showEntries": true,
+      "showModules": true,
+    },
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": false,
+        "builtInResolver": false,
+        "builtIns": false,
+      },
+    },
+  ],
+  "resolve": {
+    "extensions": [
+      ".js",
+      ".ts",
+    ],
+    "fallback": {
+      "fs": false,
+      "path": false,
+    },
+    "plugins": [
+      false,
+    ],
+  },
+  "stats": "none",
+  "target": "browserslist:/foo/bar/.browserslistrc",
+}
+`;
+
+exports[`getDefaultConfiguration returns the default Webpack configuration for the given legacy CLI config 2`] = `
+{
+  "devtool": false,
+  "entry": "/foo/bar/src/index.ts",
+  "infrastructureLogging": {
+    "level": "none",
+  },
+  "mode": "production",
+  "module": {
+    "rules": [
+      {
+        "exclude": /node_modules/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
+        "use": {
+          "loader": "/foo/bar/loaders/browserify",
+          "options": {
+            "bundlerCustomizer": undefined,
+            "depsToTranspile": [],
+            "dist": "/foo/bar/dist",
+            "eval": true,
+            "manifest": true,
+            "outfileName": "bundle.js",
+            "port": 8081,
+            "root": "/foo/bar",
+            "serve": true,
+            "sourceMaps": false,
+            "src": "/foo/bar/src/index.ts",
+            "stripComments": true,
+            "suppressWarnings": false,
+            "transpilationMode": "localOnly",
+            "verboseErrors": true,
+            "writeManifest": true,
+          },
+        },
+      },
+      false,
+    ],
+  },
+  "optimization": {
+    "minimize": true,
+    "minimizer": [
+      TerserPlugin {
+        "options": {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minimizer": {
+            "implementation": [Function],
+            "options": {},
+          },
+          "parallel": true,
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+  },
+  "output": {
+    "clean": false,
+    "filename": "bundle.js",
+    "library": {
+      "type": "commonjs",
+    },
+    "path": "/foo/bar/dist",
+    "publicPath": "/",
+  },
+  "plugins": [
+    SnapsWebpackPlugin {
+      "options": {
+        "eval": true,
+        "manifestPath": "/foo/bar/snap.manifest.json",
+        "writeManifest": true,
+      },
+    },
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
+    EnvironmentPlugin {
+      "defaultValues": {
+        "DEBUG": false,
+        "NODE_DEBUG": false,
+        "NODE_ENV": "production",
+      },
+      "keys": [
+        "NODE_DEBUG",
+        "NODE_ENV",
+        "DEBUG",
+      ],
+    },
+    ProgressPlugin {
+      "dependenciesCount": 10000,
+      "handler": [Function],
+      "modulesCount": 5000,
+      "percentBy": undefined,
+      "profile": false,
+      "showActiveModules": false,
+      "showDependencies": true,
+      "showEntries": true,
+      "showModules": true,
+    },
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": false,
+        "builtInResolver": false,
+        "builtIns": false,
+      },
+    },
+  ],
+  "resolve": {
+    "extensions": [
+      ".js",
+      ".ts",
+    ],
+    "fallback": {
+      "fs": false,
+      "path": false,
+    },
+    "plugins": [
+      false,
+    ],
+  },
+  "stats": "none",
+  "target": "browserslist:/foo/bar/.browserslistrc",
+}
+`;
+
+exports[`getDefaultConfiguration returns the default Webpack configuration for the given legacy CLI config 3`] = `
+{
+  "devtool": false,
+  "entry": "/foo/bar/src/index.ts",
+  "infrastructureLogging": {
+    "level": "none",
+  },
+  "mode": "production",
+  "module": {
+    "rules": [
+      {
+        "exclude": /node_modules/u,
+        "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
+        "use": {
+          "loader": "/foo/bar/loaders/browserify",
+          "options": {
+            "bundlerCustomizer": undefined,
+            "depsToTranspile": [],
+            "dist": "/foo/bar/dist",
+            "eval": true,
+            "manifest": true,
+            "outfileName": "bundle.js",
+            "port": 8081,
+            "root": "/foo/bar",
+            "serve": true,
+            "sourceMaps": false,
+            "src": "/foo/bar/src/index.ts",
+            "stripComments": false,
+            "suppressWarnings": false,
+            "transpilationMode": "localOnly",
+            "verboseErrors": true,
+            "writeManifest": true,
+          },
+        },
+      },
+      false,
+    ],
+  },
+  "optimization": {
+    "minimize": false,
+    "minimizer": [
+      TerserPlugin {
+        "options": {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minimizer": {
+            "implementation": [Function],
+            "options": {},
+          },
+          "parallel": true,
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+  },
+  "output": {
+    "clean": false,
+    "filename": "bundle.js",
+    "library": {
+      "type": "commonjs",
+    },
+    "path": "/foo/bar/dist",
+    "publicPath": "/",
+  },
+  "plugins": [
+    SnapsWebpackPlugin {
+      "options": {
+        "eval": true,
+        "manifestPath": "/foo/bar/snap.manifest.json",
+        "writeManifest": true,
+      },
+    },
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
+    EnvironmentPlugin {
+      "defaultValues": {
+        "DEBUG": false,
+        "NODE_DEBUG": false,
+        "NODE_ENV": "production",
+      },
+      "keys": [
+        "NODE_DEBUG",
+        "NODE_ENV",
+        "DEBUG",
+      ],
+    },
+    ProgressPlugin {
+      "dependenciesCount": 10000,
+      "handler": [Function],
+      "modulesCount": 5000,
+      "percentBy": undefined,
+      "profile": false,
+      "showActiveModules": false,
+      "showDependencies": true,
+      "showEntries": true,
+      "showModules": true,
+    },
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": false,
+        "builtInResolver": false,
+        "builtIns": false,
+      },
+    },
+  ],
+  "resolve": {
+    "extensions": [
+      ".js",
+      ".ts",
+    ],
+    "fallback": {
+      "fs": false,
+      "path": false,
+    },
+    "plugins": [
+      false,
+    ],
+  },
+  "stats": "none",
+  "target": "browserslist:/foo/bar/.browserslistrc",
+}
+`;

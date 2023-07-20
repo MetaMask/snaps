@@ -286,7 +286,7 @@ describe('getSnapSourceCode', () => {
 
     await expect(
       getSnapSourceCode(BASE_PATH, getSnapManifest()),
-    ).rejects.toThrow('Failed to read Snap bundle file: foo');
+    ).rejects.toThrow('Failed to read snap bundle file: foo');
   });
 });
 
@@ -319,7 +319,7 @@ describe('getSnapIcon', () => {
     });
 
     await expect(getSnapIcon(BASE_PATH, getSnapManifest())).rejects.toThrow(
-      'Failed to read Snap icon file: foo',
+      'Failed to read snap icon file: foo',
     );
   });
 });

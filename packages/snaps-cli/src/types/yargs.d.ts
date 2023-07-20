@@ -1,5 +1,7 @@
 import type { Options } from 'yargs';
 
+import type { ProcessedConfig } from '../config';
+
 // eslint-disable-next-line @typescript-eslint/ban-types
 type OptionalArguments<Type = {}> = Type & {
   /** Non-option arguments */
@@ -13,6 +15,15 @@ type OptionalArguments<Type = {}> = Type & {
 };
 
 type YargsArgs = {
+  // Context is added by the config middleware.
+  context: {
+    config: ProcessedConfig;
+  };
+
+  fix?: boolean;
+  input?: string;
+
+  config?: string;
   sourceMaps: boolean;
   stripComments: boolean;
   transformHtmlComments: boolean;

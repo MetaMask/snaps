@@ -2,8 +2,7 @@ import childProcess from 'child_process';
 import { promises as fs } from 'fs';
 import { join } from 'path';
 
-import { evalBundle } from './eval';
-import { DEFAULT_SNAP_BUNDLE } from './test-utils';
+import { evalBundle, SnapEvalError } from './eval';
 
 const WORKER_PATH = join(__dirname, 'eval-worker.ts');
 const TEMPORARY_FOLDER = join(__dirname, '__test__/temporary');
@@ -20,14 +19,14 @@ describe('evalBundle', () => {
     // system. Therefore, we need to create a temporary folder to store the
     // bundle.
     await fs.mkdir(TEMPORARY_FOLDER, { recursive: true });
-    await fs.writeFile(BUNDLE_PATH, DEFAULT_SNAP_BUNDLE);
+    await fs.writeFile(BUNDLE_PATH, `console.log('Hello, world!');`);
 
     jest.spyOn(childProcess, 'fork').mockImplementation(() => {
       const actualFork = jest.requireActual('child_process').fork;
 
       return actualFork(WORKER_PATH, [BUNDLE_PATH], {
         execArgv: ['-r', 'ts-node/register'],
-        stdio: 'ignore',
+        stdio: 'pipe',
       });
     });
   });
@@ -36,16 +35,24 @@ describe('evalBundle', () => {
     await fs.rm(TEMPORARY_FOLDER, { recursive: true });
   });
 
-  it('successfully executes a snap', async () => {
-    expect(await evalBundle(BUNDLE_PATH)).toBeNull();
+  it('successfully executes a snap and captures the stdout', async () => {
+    expect(await evalBundle(BUNDLE_PATH)).toStrictEqual({
+      stdout: 'Hello, world!\n',
+      stderr: '',
+    });
   });
 
   it('throws on a non-zero exit code', async () => {
     await fs.writeFile(BUNDLE_PATH, 'throw new Error("foo");');
 
-    await expect(evalBundle(BUNDLE_PATH)).rejects.toThrow(
-      'Process exited with non-zero exit code: 255',
+    const error: SnapEvalError = await evalBundle(BUNDLE_PATH).catch(
+      (caughtError) => caughtError,
     );
+
+    expect(error.message).toMatch(
+      /Process exited with non-zero exit code: \d+\./u,
+    );
+    expect(error).toBeInstanceOf(SnapEvalError);
   });
 
   it('throws if the bundle does not exist', async () => {

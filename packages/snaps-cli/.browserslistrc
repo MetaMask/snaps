@@ -1,0 +1,3 @@
+# The minimum browser versions supported by MetaMask.
+chrome >= 90
+firefox >= 91

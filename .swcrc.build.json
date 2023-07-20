@@ -17,7 +17,8 @@
     ".*test-utils.*",
     ".*\\.test\\.?.*\\.tsx?",
     ".*\\.d\\.tsx?",
-    ".*eval-worker\\.js"
+    ".*eval-worker\\.js",
+    ".*browserify\\.js"
   ],
   "sourceMaps": true
 }

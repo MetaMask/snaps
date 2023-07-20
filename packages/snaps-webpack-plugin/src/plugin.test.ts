@@ -203,7 +203,12 @@ describe('SnapsWebpackPlugin', () => {
     });
 
     expect(mock).toHaveBeenCalledTimes(1);
-    expect(mock).toHaveBeenCalledWith('/', true, expect.any(String));
+    expect(mock).toHaveBeenCalledWith(
+      '/',
+      true,
+      expect.any(String),
+      expect.any(Function),
+    );
   });
 
   it('does not fix the manifest if configured', async () => {
@@ -223,7 +228,12 @@ describe('SnapsWebpackPlugin', () => {
     });
 
     expect(mock).toHaveBeenCalledTimes(1);
-    expect(mock).toHaveBeenCalledWith('/', false, expect.any(String));
+    expect(mock).toHaveBeenCalledWith(
+      '/',
+      false,
+      expect.any(String),
+      expect.any(Function),
+    );
   });
 
   it('logs manifest errors if writeManifest is disabled', async () => {

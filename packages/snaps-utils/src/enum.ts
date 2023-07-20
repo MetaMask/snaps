@@ -1,5 +1,6 @@
 import type { Struct } from 'superstruct';
-import { literal } from 'superstruct';
+
+import { literal } from './structs';
 
 /**
  * Get the enum values as union type. This allows using both the enum string
@@ -32,6 +33,6 @@ export type EnumToUnion<Type extends string> = `${Type}`;
  */
 export function enumValue<Type extends string>(
   constant: Type,
-): Struct<EnumToUnion<Type>, EnumToUnion<Type>> {
+): Struct<EnumToUnion<Type>, null> {
   return literal(constant as EnumToUnion<Type>);
 }

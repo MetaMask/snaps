@@ -28,6 +28,10 @@ module.exports = {
     '!./src/**/*.test.browser.ts',
     '!./src/test-utils/**/*.ts',
     '!./src/**/*.d.ts',
+    '!./src/**/__test__/**',
+    '!./src/**/__mocks__/**',
+    '!./src/**/__snapshots__/**',
+    '!./src/**/__fixtures__/**',
   ],
 
   // The directory where Jest should output its coverage files
@@ -198,7 +202,7 @@ module.exports = {
             syntax: 'typescript',
           },
         },
-        sourceMaps: true,
+        sourceMaps: false,
       },
     ],
   },

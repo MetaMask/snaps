@@ -9,7 +9,7 @@ import { assert } from '@metamask/utils';
 import pathUtils from 'path';
 import { promisify } from 'util';
 import type { Compiler } from 'webpack';
-import { WebpackError } from 'webpack';
+import { Compilation, WebpackError } from 'webpack';
 import { RawSource, SourceMapSource } from 'webpack-sources';
 
 const PLUGIN_NAME = 'SnapsWebpackPlugin';
@@ -59,40 +59,52 @@ export default class SnapsWebpackPlugin {
     const { devtool } = compiler.options;
 
     compiler.hooks.compilation.tap(PLUGIN_NAME, (compilation) => {
-      compilation.hooks.processAssets.tap(PLUGIN_NAME, (assets) => {
-        Object.keys(assets)
-          .filter((assetName) => assetName.endsWith('.js'))
-          .forEach((assetName) => {
-            const asset = assets[assetName];
-            const processed = postProcessBundle(asset.source() as string, {
-              ...this.options,
-              sourceMap: Boolean(devtool),
-              inputSourceMap: devtool ? (asset.map() as SourceMap) : undefined,
+      compilation.hooks.processAssets.tap(
+        {
+          name: PLUGIN_NAME,
+          stage: Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE_COMPATIBILITY,
+          additionalAssets: true,
+        },
+        (assets) => {
+          Object.keys(assets)
+            .filter((assetName) => assetName.endsWith('.js'))
+            .forEach((assetName) => {
+              const asset = assets[assetName];
+              const source = asset.source() as string;
+              const sourceMap = asset.map();
+
+              const processed = postProcessBundle(source, {
+                ...this.options,
+                sourceMap: Boolean(devtool),
+                inputSourceMap: devtool ? (sourceMap as SourceMap) : undefined,
+              });
+
+              if (processed.warnings.length > 0) {
+                compilation.warnings.push(
+                  new WebpackError(
+                    `${PLUGIN_NAME}: Bundle Warning: Processing of the Snap bundle completed with warnings.\n${processed.warnings.join(
+                      '\n',
+                    )}`,
+                  ),
+                );
+              }
+
+              const replacement = processed.sourceMap
+                ? new SourceMapSource(
+                    processed.code,
+                    assetName,
+                    processed.sourceMap,
+                    source,
+                    sourceMap as SourceMap,
+                  )
+                : new RawSource(processed.code);
+
+              // For some reason the type of `RawSource` is not compatible with
+              // Webpack's own `Source`, but works fine when casting it to `any`.
+              compilation.updateAsset(assetName, replacement as any);
             });
-
-            if (processed.warnings.length > 0) {
-              compilation.warnings.push(
-                new WebpackError(
-                  `${PLUGIN_NAME}: Bundle Warning: Processing of the Snap bundle completed with warnings.\n${processed.warnings.join(
-                    '\n',
-                  )}`,
-                ),
-              );
-            }
-
-            const replacement = processed.sourceMap
-              ? new SourceMapSource(
-                  processed.code,
-                  assetName,
-                  processed.sourceMap,
-                )
-              : new RawSource(processed.code);
-
-            // For some reason the type of `RawSource` is not compatible with Webpack's own
-            // `Source`, but works fine when casting it to `any`.
-            compilation.updateAsset(assetName, replacement as any);
-          });
-      });
+        },
+      );
     });
 
     compiler.hooks.afterEmit.tapPromise(PLUGIN_NAME, async (compilation) => {
@@ -107,9 +119,9 @@ export default class SnapsWebpackPlugin {
 
       const filePath = pathUtils.join(outputPath, file.name);
 
-      const bundleFile = await promisify(compiler.outputFileSystem.readFile)(
-        filePath,
-      );
+      const bundleFile = await promisify(
+        compiler.outputFileSystem.readFile.bind(compiler.outputFileSystem),
+      )(filePath);
       assert(bundleFile);
 
       const bundleContent = bundleFile.toString();
@@ -125,6 +137,9 @@ export default class SnapsWebpackPlugin {
           pathUtils.dirname(this.options.manifestPath),
           this.options.writeManifest,
           bundleContent,
+          promisify(
+            compiler.outputFileSystem.writeFile.bind(compiler.outputFileSystem),
+          ),
         );
 
         if (!this.options.writeManifest && errors.length > 0) {
