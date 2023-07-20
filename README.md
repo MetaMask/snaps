@@ -6,4 +6,4 @@ Extend the functionality of MetaMask using
 ## Getting started
 
 For instructions on performing common development-related tasks, see
-[contributing to the monorepo](./docs/contributing).
+[contributing to the monorepo](./docs/contributing.md).
