@@ -6,4 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-[Unreleased]: https://github.com/MetaMask/snaps/
+## [0.37.2-flask.1]
+### Uncategorized
+- Set up workflows for independent releases ([#1600](https://github.com/MetaMask/snaps/pull/1600))
+
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rollup-plugin@0.37.2-flask.1...HEAD
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/snaps-rollup-plugin@0.37.2-flask.1

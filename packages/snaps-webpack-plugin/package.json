@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-webpack-plugin",
-  "version": "0.37.1-flask.1",
+  "version": "0.37.2-flask.1",
   "keywords": [
     "webpack",
     "plugin"
