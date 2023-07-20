@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.37.3-flask.1]
+### Fixed
+- Fix deployment of the iframe execution environment ([#1627](https://github.com/MetaMask/snaps/pull/1627))
 
 ## [0.37.2-flask.1]
 ### Changed

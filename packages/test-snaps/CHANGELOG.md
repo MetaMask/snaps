@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.37.3-flask.1]
-### Uncategorized
-- Fix transaction insights example snap npm name ([#1628](https://github.com/MetaMask/snaps/pull/1628))
+### Fixed
+- Fix transaction insights example snap NPM package name ([#1628](https://github.com/MetaMask/snaps/pull/1628))
 
 ## [0.37.2-flask.1]
 ### Changed
