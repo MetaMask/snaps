@@ -1,7 +1,8 @@
 import fetch from 'cross-fetch';
 import http, { IncomingMessage, ServerResponse, Server } from 'http';
 import serveMiddleware from 'serve-handler';
-import { Compiler, Configuration } from 'webpack';
+import type { Configuration } from 'webpack';
+import { Compiler } from 'webpack';
 import merge from 'webpack-merge';
 
 import { getMockConfig } from '../test-utils';

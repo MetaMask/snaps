@@ -50,6 +50,7 @@ export async function cli(argv: string[], commands: any) {
 
     .fail((message, failure) => {
       error(getYargsErrorMessage(message, failure));
+      // eslint-disable-next-line n/no-process-exit
       process.exit(1);
     })
 

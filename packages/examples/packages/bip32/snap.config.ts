@@ -1,4 +1,5 @@
-import { SnapConfig, merge } from '@metamask/snaps-cli';
+import type { SnapConfig } from '@metamask/snaps-cli';
+import { merge } from '@metamask/snaps-cli';
 import { resolve } from 'path';
 
 const config: SnapConfig = {

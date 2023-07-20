@@ -2,8 +2,8 @@ import { indent } from '@metamask/snaps-utils';
 import { assert, hasProperty, isObject } from '@metamask/utils';
 import { dim, red, yellow } from 'chalk';
 import { isBuiltin } from 'module';
-import { Ora } from 'ora';
-import {
+import type { Ora } from 'ora';
+import type {
   Compiler,
   ProvidePlugin,
   ResolvePluginInstance,

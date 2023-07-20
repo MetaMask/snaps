@@ -15,6 +15,7 @@ import { dim } from 'chalk';
 import { readFile } from 'fs/promises';
 import Module from 'module';
 import { basename, dirname, resolve } from 'path';
+import type { Infer } from 'superstruct';
 import {
   array,
   boolean,
@@ -22,7 +23,6 @@ import {
   defaulted,
   define,
   func,
-  Infer,
   number,
   object,
   optional,
@@ -36,7 +36,7 @@ import type { Configuration as WebpackConfiguration } from 'webpack';
 
 import { TranspilationModes } from './builders';
 import { ConfigError } from './errors';
-import { YargsArgs } from './types/yargs';
+import type { YargsArgs } from './types/yargs';
 import { CONFIG_FILE, TS_CONFIG_FILE } from './utils';
 
 const CONFIG_FILES = [CONFIG_FILE, TS_CONFIG_FILE];

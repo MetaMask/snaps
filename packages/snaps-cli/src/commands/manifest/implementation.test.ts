@@ -6,7 +6,7 @@ import {
 import normalFs from 'fs';
 import ora from 'ora';
 
-import { getCompiler } from '../../webpack';
+import type * as webpack from '../../webpack';
 import { manifest } from './implementation';
 
 const { promises: fs } = normalFs;
@@ -16,11 +16,11 @@ jest.mock('fs');
 jest.mock('../../webpack', () => ({
   ...jest.requireActual('../../webpack'),
   getCompiler: jest.fn<
-    ReturnType<typeof getCompiler>,
-    Parameters<typeof getCompiler>
+    ReturnType<typeof webpack.getCompiler>,
+    Parameters<typeof webpack.getCompiler>
   >(async (...args) => {
     const compiler = await jest
-      .requireActual<typeof import('../../webpack')>('../../webpack')
+      .requireActual<typeof webpack>('../../webpack')
       .getCompiler(...args);
 
     compiler.inputFileSystem = normalFs;

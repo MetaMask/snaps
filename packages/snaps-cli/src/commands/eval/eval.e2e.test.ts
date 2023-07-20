@@ -1,4 +1,5 @@
-import { getCommandRunner, TestRunner } from '@metamask/snaps-cli/test-utils';
+import type { TestRunner } from '@metamask/snaps-cli/test-utils';
+import { getCommandRunner } from '@metamask/snaps-cli/test-utils';
 import { resolve } from 'path';
 
 describe('mm-snap eval', () => {

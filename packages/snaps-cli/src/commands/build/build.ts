@@ -1,9 +1,10 @@
 import { isFile } from '@metamask/snaps-utils';
 import { resolve as pathResolve } from 'path';
 
-import { ProcessedConfig, ProcessedWebpackConfig } from '../../config';
+import type { ProcessedConfig, ProcessedWebpackConfig } from '../../config';
 import { CommandError } from '../../errors';
-import { executeSteps, info, Steps } from '../../utils';
+import type { Steps } from '../../utils';
+import { executeSteps, info } from '../../utils';
 import { evaluate } from '../eval';
 import { build } from './implementation';
 

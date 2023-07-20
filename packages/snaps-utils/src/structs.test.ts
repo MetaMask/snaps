@@ -1,5 +1,6 @@
 import { assert } from '@metamask/utils';
 import { bold, green, red } from 'chalk';
+import type { Struct } from 'superstruct';
 import superstruct, {
   create,
   defaulted,
@@ -7,7 +8,6 @@ import superstruct, {
   number,
   object,
   string,
-  Struct,
   validate,
   union as superstructUnion,
   array,

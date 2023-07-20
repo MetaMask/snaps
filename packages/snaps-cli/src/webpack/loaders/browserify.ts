@@ -1,9 +1,9 @@
 import browserify from 'browserify';
 import { Readable } from 'stream';
-import { LoaderDefinitionFunction } from 'webpack';
+import type { LoaderDefinitionFunction } from 'webpack';
 
 import { TranspilationModes } from '../../builders';
-import { LegacyOptions } from '../../config';
+import type { LegacyOptions } from '../../config';
 import { processDependencies } from '../../utils';
 import { getBrowserslistTargets } from '../utils';
 
@@ -38,7 +38,7 @@ const loader: LoaderDefinitionFunction<LegacyOptions> = async function (
 
     // We need to statically import all Browserify transforms, and all Babel
     // presets and plugins, and calling `require` is the sanest way to do that.
-    /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require */
+    /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require */
     bundler.transform(require('babelify'), {
       global: transpilationMode === TranspilationModes.LocalAndDeps,
       extensions: ['.js', '.ts'],
@@ -62,7 +62,7 @@ const loader: LoaderDefinitionFunction<LegacyOptions> = async function (
       ],
       ...(babelifyOptions as any),
     });
-    /* eslint-enable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require */
+    /* eslint-enable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require */
   }
 
   config.bundlerCustomizer?.(bundler);

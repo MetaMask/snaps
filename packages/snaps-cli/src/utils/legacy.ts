@@ -1,5 +1,5 @@
 import { TranspilationModes } from '../builders';
-import { LegacyOptions } from '../config';
+import type { LegacyOptions } from '../config';
 
 /**
  * Get the dependencies to transpile, as well as the regular input file.

@@ -1,6 +1,6 @@
 import { checkManifest, indent } from '@metamask/snaps-utils';
 import { red, yellow } from 'chalk';
-import { Ora } from 'ora';
+import type { Ora } from 'ora';
 import { dirname } from 'path';
 
 import { error, info, warn } from '../../utils';

@@ -1,11 +1,12 @@
 import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
 import { builtinModules } from 'module';
-import { Ora } from 'ora';
+import type { Ora } from 'ora';
 import { resolve } from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
-import { Configuration, EnvironmentPlugin, ProgressPlugin } from 'webpack';
+import type { Configuration } from 'webpack';
+import { EnvironmentPlugin, ProgressPlugin } from 'webpack';
 
-import { ProcessedWebpackConfig } from '../config';
+import type { ProcessedWebpackConfig } from '../config';
 import {
   SnapsBuiltInResolver,
   SnapsBundleWarningsPlugin,

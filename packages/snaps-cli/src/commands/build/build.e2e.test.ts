@@ -1,8 +1,5 @@
-import {
-  getCommandRunner,
-  SNAP_BROWSERIFY_DIR,
-  TestRunner,
-} from '../../test-utils';
+import type { TestRunner } from '../../test-utils';
+import { getCommandRunner, SNAP_BROWSERIFY_DIR } from '../../test-utils';
 
 describe('mm-snap build', () => {
   let runner: TestRunner;

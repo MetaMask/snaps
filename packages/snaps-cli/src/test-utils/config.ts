@@ -1,11 +1,11 @@
 import deepMerge from 'deepmerge';
 
-import {
-  getConfig,
+import type {
   LegacyOptions,
   ProcessedBrowserifyConfig,
   ProcessedWebpackConfig,
 } from '../config';
+import { getConfig } from '../config';
 
 const DEFAULT_OPTIONS = {
   browserify: {},

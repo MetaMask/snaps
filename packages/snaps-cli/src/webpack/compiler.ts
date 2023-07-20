@@ -1,10 +1,12 @@
-import { createServer, Server } from 'http';
-import { AddressInfo } from 'net';
+import type { Server } from 'http';
+import { createServer } from 'http';
+import type { AddressInfo } from 'net';
 import serveMiddleware from 'serve-handler';
 import { webpack } from 'webpack';
 
-import { ProcessedConfig, ProcessedWebpackConfig } from '../config';
-import { getDefaultConfiguration, WebpackOptions } from './config';
+import type { ProcessedConfig, ProcessedWebpackConfig } from '../config';
+import type { WebpackOptions } from './config';
+import { getDefaultConfiguration } from './config';
 
 /**
  * Get a Webpack compiler for the given config.
@@ -83,10 +85,10 @@ export function getServer(config: ProcessedConfig) {
             await new Promise<void>((resolveClose, rejectClose) => {
               server.close((closeError) => {
                 if (closeError) {
-                  rejectClose(closeError);
+                  return rejectClose(closeError);
                 }
 
-                resolveClose();
+                return resolveClose();
               });
             });
           };

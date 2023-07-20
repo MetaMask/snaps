@@ -1,14 +1,14 @@
 import { dim } from 'chalk';
 import { promises as fs } from 'fs';
-import { Ora } from 'ora';
+import type { Ora } from 'ora';
 import { dirname, resolve } from 'path';
-import { Configuration } from 'webpack';
+import type { Configuration } from 'webpack';
 
-import { ProcessedWebpackConfig } from '../config';
+import type { ProcessedWebpackConfig } from '../config';
 
 export const BROWSERSLIST_FILE = resolve(
   dirname(
-    // eslint-disable-next-line node/no-extraneous-require
+    // eslint-disable-next-line n/no-extraneous-require
     require.resolve('@metamask/snaps-cli/package.json'),
   ),
   '.browserslistrc',

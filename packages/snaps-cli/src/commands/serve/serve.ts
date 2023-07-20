@@ -1,4 +1,4 @@
-import { ProcessedConfig } from '../../config';
+import type { ProcessedConfig } from '../../config';
 import { info } from '../../utils';
 import { getServer } from '../../webpack';
 

@@ -1,5 +1,6 @@
-import { ProcessedWebpackConfig } from '../../config';
-import { getCompiler, WebpackOptions } from '../../webpack';
+import type { ProcessedWebpackConfig } from '../../config';
+import type { WebpackOptions } from '../../webpack';
+import { getCompiler } from '../../webpack';
 
 /**
  * Build the snap bundle. This uses Webpack to build the bundle.

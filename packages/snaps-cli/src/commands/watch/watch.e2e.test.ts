@@ -1,7 +1,8 @@
 import { promises as fs } from 'fs';
 import { resolve } from 'path';
 
-import { getCommandRunner, SNAP_DIR, TestRunner } from '../../test-utils';
+import type { TestRunner } from '../../test-utils';
+import { getCommandRunner, SNAP_DIR } from '../../test-utils';
 
 describe('mm-snap watch', () => {
   const SNAP_FILE = resolve(SNAP_DIR, 'src/index.ts');

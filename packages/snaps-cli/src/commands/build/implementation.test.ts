@@ -5,11 +5,12 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 import normalFs from 'fs';
 import { dirname, resolve } from 'path';
-import { Configuration } from 'webpack';
+import type { Configuration } from 'webpack';
 
 import { getMockConfig } from '../../test-utils';
 import { getCompiler } from '../../webpack';
-import * as utils from '../../webpack/utils';
+import type * as webpack from '../../webpack';
+import type * as utils from '../../webpack/utils';
 import { BROWSERSLIST_FILE } from '../../webpack/utils';
 import { build } from './implementation';
 
@@ -29,7 +30,7 @@ jest.mock('../../webpack', () => ({
     Parameters<typeof getCompiler>
   >(async (...args) => {
     const compiler = await jest
-      .requireActual<typeof import('../../webpack')>('../../webpack')
+      .requireActual<typeof webpack>('../../webpack')
       .getCompiler(...args);
 
     compiler.inputFileSystem = normalFs;

@@ -1,19 +1,18 @@
 import { isObject } from '@metamask/utils';
 import { bold, green, red } from 'chalk';
 import { resolve } from 'path';
+import type { Failure, Infer } from 'superstruct';
 import {
   Struct,
   StructError,
   define,
   literal as superstructLiteral,
   union as superstructUnion,
-  Failure,
   create,
   string,
   coerce,
-  Infer,
 } from 'superstruct';
-import { AnyStruct, InferStructTuple } from 'superstruct/dist/utils';
+import type { AnyStruct, InferStructTuple } from 'superstruct/dist/utils';
 
 import { indent } from './strings';
 

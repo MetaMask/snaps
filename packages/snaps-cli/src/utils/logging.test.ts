@@ -1,5 +1,5 @@
 import { blue, dim, red, yellow } from 'chalk';
-import { Ora } from 'ora';
+import type { Ora } from 'ora';
 
 import { error, info, warn } from './logging';
 

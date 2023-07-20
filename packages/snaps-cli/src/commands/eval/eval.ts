@@ -1,9 +1,10 @@
 import { isFile } from '@metamask/snaps-utils';
 import { resolve } from 'path';
 
-import { ProcessedConfig } from '../../config';
+import type { ProcessedConfig } from '../../config';
 import { CommandError } from '../../errors';
-import { executeSteps, getRelativePath, Steps } from '../../utils';
+import type { Steps } from '../../utils';
+import { executeSteps, getRelativePath } from '../../utils';
 import { evaluate } from './implementation';
 
 export type EvalOptions = {

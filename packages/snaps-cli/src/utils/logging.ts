@@ -1,6 +1,6 @@
 import { logError, logInfo, logWarning } from '@metamask/snaps-utils';
 import { blue, dim, red, yellow } from 'chalk';
-import { Ora } from 'ora';
+import type { Ora } from 'ora';
 
 /**
  * Log a warning message. The message is prefixed with "Warning:".

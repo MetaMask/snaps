@@ -1,8 +1,10 @@
 import { logError } from '@metamask/snaps-utils';
 import { DEFAULT_SNAP_BUNDLE } from '@metamask/snaps-utils/test-utils';
-import { createFsFromVolume, Volume, IFs } from 'memfs';
+import type { IFs } from 'memfs';
+import { createFsFromVolume, Volume } from 'memfs';
 import { promisify } from 'util';
-import webpack, { Configuration } from 'webpack';
+import type { Configuration } from 'webpack';
+import webpack from 'webpack';
 
 export type CompileOptions = {
   code?: string;

@@ -1,4 +1,5 @@
-import { getCommandRunner, TestRunner } from '../../test-utils';
+import type { TestRunner } from '../../test-utils';
+import { getCommandRunner } from '../../test-utils';
 
 describe('mm-snap manifest', () => {
   let runner: TestRunner;

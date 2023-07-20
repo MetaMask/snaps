@@ -7,6 +7,7 @@ import normalFs from 'fs';
 
 import { getMockConfig } from '../../test-utils';
 import { getCompiler } from '../../webpack';
+import type * as webpack from '../../webpack';
 import { watch } from './implementation';
 
 const { promises: fs } = normalFs;
@@ -20,7 +21,7 @@ jest.mock('../../webpack', () => ({
     Parameters<typeof getCompiler>
   >(async (...args) => {
     const compiler = await jest
-      .requireActual<typeof import('../../webpack')>('../../webpack')
+      .requireActual<typeof webpack>('../../webpack')
       .getCompiler(...args);
 
     compiler.inputFileSystem = normalFs;

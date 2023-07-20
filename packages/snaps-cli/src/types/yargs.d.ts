@@ -1,6 +1,6 @@
 import type { Options } from 'yargs';
 
-import { ProcessedConfig } from '../config';
+import type { ProcessedConfig } from '../config';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type OptionalArguments<Type = {}> = Type & {
