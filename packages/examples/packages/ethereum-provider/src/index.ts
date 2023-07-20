@@ -70,9 +70,7 @@ async function getAccounts() {
 }
 
 /**
- * Signs a message using the `ethereum` global, using the personal_sign RPC method.
- * This is essentially the same as the `window.ethereum` global, but
- * does not have access to all methods.
+ * Sign a message using the `personal_sign` JSON-RPC method.
  *
  * Note that using the `ethereum` global requires the
  * `endowment:ethereum-provider` permission.
@@ -82,6 +80,7 @@ async function getAccounts() {
  * @returns A signature for the proposed message and account.
  * @throws If the user rejects the prompt.
  * @see https://docs.metamask.io/snaps/reference/permissions/#endowmentethereum-provider
+ * @see https://docs.metamask.io/wallet/concepts/signing-methods/#personal_sign
  */
 async function personalSign(message: string, from: string) {
   const signature = await ethereum.request<string[]>({
