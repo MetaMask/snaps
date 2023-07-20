@@ -139,14 +139,13 @@ jobs:
         if: steps.is-environment-release.outputs.IS_ENVIRONMENT_RELEASE == 'true'
         run: echo "IS_ENVIRONMENT_RELEASE=true" >> "$GITHUB_OUTPUT"
 
-  publish-environment:
-    name: Publish iframe execution environment
+  configure-environment-publish:
+    name: Configure iframe execution environment release
     runs-on: ubuntu-latest
     needs: is-environment-release
     if: needs.is-environment-release.outputs.IS_ENVIRONMENT_RELEASE == 'true'
-    permissions:
-      id-token: write
-      contents: read
+    outputs:
+      version: ${{ steps.version.outputs.VERSION }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -191,9 +190,19 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-      - uses: ./.github/workflows/publish-environment.yml
-        with:
-          destination_dir: ${{ steps.version.outputs.VERSION }}
+
+  publish-environment:
+    name: Publish iframe execution environment
+    permissions:
+      id-token: write
+      contents: read
+    uses: ./.github/workflows/publish-environment.yml
+    needs:
+      - is-environment-release
+      - configure-environment-publish
+    if: needs.is-environment-release.outputs.IS_ENVIRONMENT_RELEASE == 'true'
+    with:
+      destination_dir: ${{ needs.configure-environment-publish.outputs.version }}
 
   is-test-snaps-release:
     name: Determine whether this release updates test snaps
