@@ -1,7 +1,12 @@
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { OnRpcRequestHandler } from '@metamask/snaps-types';
 import type { Hex } from '@metamask/utils';
-import { assert } from '@metamask/utils';
+import {
+  assert,
+  stringToBytes,
+  bytesToHex,
+  hasProperty,
+} from '@metamask/utils';
 
 /**
  * Get the current gas price using the `ethereum` global. This is essentially
@@ -61,7 +66,31 @@ async function getAccounts() {
   });
   assert(accounts, 'Ethereum provider did not return accounts.');
 
-  return accounts;
+  return accounts as string[];
+}
+
+/**
+ * Signs a message using the `ethereum` global, using the personal_sign RPC method.
+ * This is essentially the same as the `window.ethereum` global, but
+ * does not have access to all methods.
+ *
+ * Note that using the `ethereum` global requires the
+ * `endowment:ethereum-provider` permission.
+ *
+ * @param message - The message to sign as a string.
+ * @param from - The account to sign the message with as a string.
+ * @returns A signature for the proposed message and account.
+ * @throws If the user rejects the prompt.
+ * @see https://docs.metamask.io/snaps/reference/permissions/#endowmentethereum-provider
+ */
+async function personalSign(message: string, from: string) {
+  const signature = await ethereum.request<string[]>({
+    method: 'personal_sign',
+    params: [bytesToHex(stringToBytes(message)), from],
+  });
+  assert(signature, 'Ethereum provider did not return a signature.');
+
+  return signature;
 }
 
 /**
@@ -88,6 +117,20 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
 
     case 'getAccounts':
       return await getAccounts();
+
+    case 'personalSign': {
+      const accounts = await getAccounts();
+      assert(request.params, 'Must pass parameters');
+      assert(
+        hasProperty(request.params, 'message'),
+        'Must pass parameters containing a message to sign',
+      );
+      assert(
+        typeof request.params.message === 'string',
+        'Must pass message to sign as a string',
+      );
+      return await personalSign(request.params.message, accounts[0]);
+    }
 
     default:
       throw rpcErrors.methodNotFound({
