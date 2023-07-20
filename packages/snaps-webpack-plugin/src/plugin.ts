@@ -76,7 +76,7 @@ export default class SnapsWebpackPlugin {
               const processed = postProcessBundle(source, {
                 ...this.options,
                 sourceMap: Boolean(devtool),
-                // inputSourceMap: devtool ? (sourceMap as SourceMap) : undefined,
+                inputSourceMap: devtool ? (sourceMap as SourceMap) : undefined,
               });
 
               if (processed.warnings.length > 0) {
