@@ -1,6 +1,6 @@
 {
   "name": "@metamask/test-snaps",
-  "version": "0.37.1-flask.1",
+  "version": "0.37.2-flask.1",
   "private": true,
   "description": "The test snaps website for MetaMask Snaps, used for end-to-end testing.",
   "repository": {
@@ -25,7 +25,7 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
     "lint:ci": "yarn lint",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
-    "lint:changelog": "yarn auto-changelog validate"
+    "lint:changelog": "../../scripts/validate-changelog.sh @metamask/test-snaps"
   },
   "dependencies": {
     "@metamask/bip32-example-snap": "workspace:^",
