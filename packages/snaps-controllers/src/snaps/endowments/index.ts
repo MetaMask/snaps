@@ -8,6 +8,7 @@ import {
   getCronjobCaveatMapper,
 } from './cronjob';
 import { ethereumProviderEndowmentBuilder } from './ethereum-provider';
+import { extendRuntimeEndowmentBuilder } from './extend-runtime';
 import { lifecycleHooksEndowmentBuilder } from './lifecycle-hooks';
 import { longRunningEndowmentBuilder } from './long-running';
 import { networkAccessEndowmentBuilder } from './network-access';
@@ -26,6 +27,7 @@ import { webAssemblyEndowmentBuilder } from './web-assembly';
 export const endowmentPermissionBuilders = {
   [networkAccessEndowmentBuilder.targetName]: networkAccessEndowmentBuilder,
   [longRunningEndowmentBuilder.targetName]: longRunningEndowmentBuilder,
+  [extendRuntimeEndowmentBuilder.targetName]: extendRuntimeEndowmentBuilder,
   [transactionInsightEndowmentBuilder.targetName]:
     transactionInsightEndowmentBuilder,
   [cronjobEndowmentBuilder.targetName]: cronjobEndowmentBuilder,

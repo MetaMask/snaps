@@ -5,6 +5,7 @@ import { createEndowments } from '.';
 
 const mockSnapAPI = { foo: Symbol('bar') };
 const mockEthereum = { foo: Symbol('bar') };
+const mockNotifyFunction = jest.fn();
 
 describe('Endowment utils', () => {
   describe('createEndowments', () => {
@@ -23,10 +24,16 @@ describe('Endowment utils', () => {
         mockSnapAPI as any,
         mockEthereum as any,
         MOCK_SNAP_ID,
+        mockNotifyFunction,
       );
 
       expect(
-        createEndowments(mockSnapAPI as any, mockEthereum as any, MOCK_SNAP_ID),
+        createEndowments(
+          mockSnapAPI as any,
+          mockEthereum as any,
+          MOCK_SNAP_ID,
+          mockNotifyFunction,
+        ),
       ).toStrictEqual({
         endowments: {
           snap: mockSnapAPI,
@@ -43,6 +50,7 @@ describe('Endowment utils', () => {
         mockSnapAPI as any,
         mockEthereum as any,
         MOCK_SNAP_ID,
+        mockNotifyFunction,
         ['mockEndowment'],
       );
       expect(endowments.mockEndowment).toBeDefined();
@@ -54,9 +62,26 @@ describe('Endowment utils', () => {
         mockSnapAPI as any,
         mockEthereum as any,
         MOCK_SNAP_ID,
+        mockNotifyFunction,
         ['ethereum'],
       );
       expect(endowments.ethereum).toBe(mockEthereum);
+    });
+
+    it('handles special case for extend-runtime endowment', async () => {
+      const { endowments } = createEndowments(
+        mockSnapAPI as any,
+        mockEthereum as any,
+        MOCK_SNAP_ID,
+        mockNotifyFunction,
+        ['extendRuntime'],
+      );
+      const extendRuntimeEndowment = endowments.extendRuntime as (
+        callback: () => void,
+        configuration: unknown,
+      ) => Promise<unknown>;
+
+      expect(typeof extendRuntimeEndowment).toBe('function');
     });
 
     it('handles factory endowments', () => {
@@ -64,6 +89,7 @@ describe('Endowment utils', () => {
         mockSnapAPI as any,
         mockEthereum as any,
         MOCK_SNAP_ID,
+        mockNotifyFunction,
         ['setTimeout'],
       );
 
@@ -79,6 +105,7 @@ describe('Endowment utils', () => {
         mockSnapAPI as any,
         mockEthereum as any,
         MOCK_SNAP_ID,
+        mockNotifyFunction,
         ['setTimeout'],
       );
 
@@ -94,6 +121,7 @@ describe('Endowment utils', () => {
         mockSnapAPI as any,
         mockEthereum as any,
         MOCK_SNAP_ID,
+        mockNotifyFunction,
         ['setTimeout', 'clearTimeout'],
       );
 
@@ -110,6 +138,7 @@ describe('Endowment utils', () => {
         mockSnapAPI as any,
         mockEthereum as any,
         MOCK_SNAP_ID,
+        mockNotifyFunction,
         [
           'console',
           'Uint8Array',
@@ -146,6 +175,7 @@ describe('Endowment utils', () => {
           mockSnapAPI as any,
           mockEthereum as any,
           MOCK_SNAP_ID,
+          mockNotifyFunction,
           ['foo'],
         ),
       ).toThrow('Unknown endowment: "foo"');
@@ -156,6 +186,7 @@ describe('Endowment utils', () => {
         mockSnapAPI as any,
         mockEthereum as any,
         MOCK_SNAP_ID,
+        mockNotifyFunction,
         ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
       );
 
@@ -194,6 +225,7 @@ describe('Endowment utils', () => {
         mockSnapAPI as any,
         mockEthereum as any,
         MOCK_SNAP_ID,
+        mockNotifyFunction,
         ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
       );
 

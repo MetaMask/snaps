@@ -324,10 +324,17 @@ export class BaseSnapExecutor {
     const snapModule: any = { exports: {} };
 
     try {
+      const notifyCallback = (
+        requestObject: Omit<JsonRpcNotification, 'jsonrpc'>,
+      ) => {
+        this.notify(requestObject);
+      };
+
       const { endowments, teardown: endowmentTeardown } = createEndowments(
         snap,
         ethereum,
         snapId,
+        notifyCallback,
         _endowments,
       );
 

@@ -142,6 +142,7 @@ export type SnapIds = Infer<typeof SnapIdsStruct>;
 export const PermissionsStruct = type({
   'endowment:long-running': optional(object({})),
   'endowment:network-access': optional(object({})),
+  'endowment:extend-runtime': optional(object({})),
   'endowment:webassembly': optional(object({})),
   'endowment:transaction-insight': optional(
     object({

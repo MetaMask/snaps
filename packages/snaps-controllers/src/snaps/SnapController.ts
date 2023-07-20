@@ -598,6 +598,11 @@ const defaultState: SnapControllerState = {
   snapStates: {},
 };
 
+enum TimerAction {
+  Pause = 'pause',
+  Resume = 'resume',
+}
+
 /**
  * Truncates the properties of a snap to only ones that are easily serializable.
  *
@@ -669,6 +674,8 @@ export class SnapController extends BaseController<
     StatusStates
   >;
 
+  #extendRuntimeRequests: Set<string | unknown>;
+
   constructor({
     closeAllConnections,
     messenger,
@@ -732,6 +739,7 @@ export class SnapController extends BaseController<
     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
     this._onOutboundRequest = this._onOutboundRequest.bind(this);
     this._onOutboundResponse = this._onOutboundResponse.bind(this);
+    this._onExecutionTimerRequest = this._onExecutionTimerRequest.bind(this);
     this.#rollbackSnapshots = new Map();
     this.#snapsRuntimeData = new Map();
     this.#pollForLastRequestStatus();
@@ -750,6 +758,11 @@ export class SnapController extends BaseController<
     this.messagingSystem.subscribe(
       'ExecutionService:outboundResponse',
       this._onOutboundResponse,
+    );
+
+    this.messagingSystem.subscribe(
+      'ExecutionService:executionTimerRequest',
+      this._onExecutionTimerRequest,
     );
     /* eslint-enable @typescript-eslint/unbound-method */
 
@@ -775,6 +788,7 @@ export class SnapController extends BaseController<
 
     this.#initializeStateMachine();
     this.#registerMessageHandlers();
+    this.#extendRuntimeRequests = new Set<string | unknown>();
 
     Object.values(state?.snaps ?? {}).forEach((snap) =>
       this.#setupRuntime(snap.id, {
@@ -1122,6 +1136,58 @@ export class SnapController extends BaseController<
       runtime.pendingInboundRequests
         .filter((pendingRequest) => pendingRequest.timer.status === 'paused')
         .forEach((pendingRequest) => pendingRequest.timer.resume());
+    }
+  }
+
+  /**
+   * Used to handle an execution timer control request received over the
+   * notification system.
+   *
+   * @param payload - JSON object with timer control configuration.
+   */
+  _onExecutionTimerRequest(payload: string) {
+    const configuration = JSON.parse(payload) as {
+      snapId: string;
+      message: { params: { timerAction: TimerAction; timeWait: number } };
+    };
+    const { snapId } = configuration;
+    const { timerAction, timeWait } = configuration.message.params;
+
+    const runtime = this.#getRuntimeExpect(snapId as ValidatedSnapId);
+
+    assert(
+      timerAction === TimerAction.Pause || timerAction === TimerAction.Resume,
+      'Unknown timer action received for extended runtime control.',
+    );
+
+    const inboundRequest = runtime.pendingInboundRequests[0];
+    const inboundRequestTimer = inboundRequest.timer;
+
+    if (timerAction === TimerAction.Pause) {
+      if (this.#extendRuntimeRequests.has(inboundRequest.requestId)) {
+        return;
+      }
+      this.#extendRuntimeRequests.add(inboundRequest.requestId);
+      // Prevent redundant request IDs to be accumulated long term
+      setTimeout(() => {
+        this.#extendRuntimeRequests.delete(inboundRequest.requestId);
+      }, timeWait * 1000 + this.maxRequestTime);
+
+      inboundRequestTimer.pause();
+
+      // If a snap callback didn't finish after requested time passed,
+      // resume notification will not be sent,
+      // then enforce resume of the timer.
+      setTimeout(() => {
+        if (inboundRequestTimer.status === 'paused') {
+          inboundRequestTimer.resume();
+        }
+      }, timeWait * 1000);
+    } else if (
+      timerAction === TimerAction.Resume &&
+      inboundRequestTimer.status === 'paused'
+    ) {
+      inboundRequestTimer.resume();
     }
   }
 

@@ -26,6 +26,7 @@ export const getNodeEESMessenger = (
       'ExecutionService:unhandledError',
       'ExecutionService:outboundRequest',
       'ExecutionService:outboundResponse',
+      'ExecutionService:executionTimerRequest',
     ],
     allowedActions: [
       'ExecutionService:executeSnap',

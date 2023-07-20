@@ -218,4 +218,43 @@ describe('IframeExecutionService', () => {
       composedPathIsUndefined: true,
     });
   });
+
+  it('can handle long running job endowment execution', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = async ({ request }) => {
+        let counter = 0;
+        // Do some synchronous work
+        const jobCallback = () => {
+          while (counter < 10) {
+            counter = counter + 1;
+          }
+        }
+        await extendRuntime(jobCallback, { timeWait: 30 });
+        return counter;
+      };
+    `;
+    const { service } = createService(IframeExecutionService, {
+      iframeUrl: new URL(IFRAME_URL),
+    });
+
+    await service.executeSnap({
+      snapId: MOCK_SNAP_ID,
+      sourceCode: CODE,
+      endowments: ['extendRuntime'],
+    });
+
+    const result = await service.handleRpcRequest(MOCK_SNAP_ID, {
+      origin: MOCK_ORIGIN,
+      handler: HandlerType.OnRpcRequest,
+      request: {
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'foo',
+      },
+    });
+
+    expect(result).toBe(10);
+
+    await service.terminateAllSnaps();
+  });
 });

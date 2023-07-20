@@ -2,11 +2,13 @@ import type { StreamProvider } from '@metamask/providers';
 import type { SnapsGlobalObject } from '@metamask/rpc-methods';
 import type { SnapId } from '@metamask/snaps-utils';
 import { logWarning } from '@metamask/snaps-utils';
+import type { JsonRpcNotification } from '@metamask/utils';
 import { hasProperty } from '@metamask/utils';
 
 import { rootRealmGlobal } from '../globalObject';
 import type { EndowmentFactoryOptions } from './commonEndowmentFactory';
 import buildCommonEndowments from './commonEndowmentFactory';
+import extendRuntime from './extendRuntime';
 
 type EndowmentFactoryResult = {
   /**
@@ -48,6 +50,7 @@ const endowmentFactories = registeredEndowments.reduce((factories, builder) => {
  * @param snap - The Snaps global API object.
  * @param ethereum - The Snap's EIP-1193 provider object.
  * @param snapId - The id of the snap that will use the created endowments.
+ * @param notify - Callback function for sending notifications.
  * @param endowments - The list of endowments to provide to the snap.
  * @returns An object containing the Snap's endowments.
  */
@@ -55,6 +58,7 @@ export function createEndowments(
   snap: SnapsGlobalObject,
   ethereum: StreamProvider,
   snapId: SnapId,
+  notify: (requestObject: Omit<JsonRpcNotification, 'jsonrpc'>) => void,
   endowments: string[] = [],
 ): { endowments: Record<string, unknown>; teardown: () => Promise<void> } {
   const attenuatedEndowments: Record<string, unknown> = {};
@@ -90,6 +94,10 @@ export function createEndowments(
       } else if (endowmentName === 'ethereum') {
         // Special case for adding the EIP-1193 provider.
         allEndowments[endowmentName] = ethereum;
+      } else if (endowmentName === 'extendRuntime') {
+        // Special case long-running job endowment which requires use of notification system..
+        allEndowments[endowmentName] =
+          extendRuntime.factory(notify).extendRuntime;
       } else if (endowmentName in rootRealmGlobal) {
         logWarning(`Access to unhardened global ${endowmentName}.`);
         // If the endowment doesn't have a factory, just use whatever is on the

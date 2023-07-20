@@ -57,6 +57,68 @@ export const DEFAULT_SNAP_BUNDLE = `
   };
 `;
 
+/**
+ * A mock for extended runtime (long-running) snap.
+ */
+export const EXTENDED_RUNTIME_SNAP_BUNDLE = `
+  module.exports.onRpcRequest = async ({ request }) => {
+   let result = null;
+   // Do some long-running work
+   const jobCallback = async () => {
+     const work = new Promise(resolve => {
+        // setTimeout(resolve, request.params.delay);
+        setTimeout(resolve, request.params.delay);
+     });
+     await work;
+     result = 'JOB_DONE';
+   }
+   await extendRuntime(jobCallback, { timeWait: 2 });
+   return result;
+ };
+`;
+
+/**
+ * A mock for extended runtime snap with bad usage of the endowment
+ * (trying to run it multiple times in parallel).
+ */
+export const EXTENDED_RUNTIME_PARALLEL_BAD_SNAP_BUNDLE = `
+  module.exports.onRpcRequest = async ({ request }) => {
+   let result = null;
+   // Do some long-running work
+   const jobCallback = async () => {
+     await extendRuntime(jobCallback, { timeWait: 2 });
+     const work = new Promise(resolve => {
+        setTimeout(resolve, request.params.delay);
+     });
+     await work;
+     result = 'JOB_DONE';
+   }
+   await extendRuntime(jobCallback, { timeWait: 2 });
+   return result;
+ };
+`;
+
+/**
+ * A mock for extended runtime snap with bad usage of the endowment
+ * (trying to run it multiple times sequentially).
+ */
+export const EXTENDED_RUNTIME_SEQUENTIAL_BAD_SNAP_BUNDLE = `
+  module.exports.onRpcRequest = async ({ request }) => {
+   let result = null;
+   // Do some long-running work
+   const jobCallback = async () => {
+     const work = new Promise(resolve => {
+        setTimeout(resolve, request.params.delay);
+     });
+     await work;
+     result = 'JOB_DONE';
+   }
+   await extendRuntime(jobCallback, { timeWait: 2 });
+   await extendRuntime(jobCallback, { timeWait: 2 });
+   return result;
+ };
+`;
+
 export const DEFAULT_SNAP_ICON = '<svg />';
 
 export const ALTERNATIVE_SNAP_ICON =

@@ -28,6 +28,15 @@ describe('buildSnapEndowmentSpecifications', () => {
           ],
           "targetName": "endowment:ethereum-provider",
         },
+        "endowment:extend-runtime": {
+          "allowedCaveats": null,
+          "endowmentGetter": [Function],
+          "permissionType": "Endowment",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "endowment:extend-runtime",
+        },
         "endowment:lifecycle-hooks": {
           "allowedCaveats": null,
           "endowmentGetter": [Function],
