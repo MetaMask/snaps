@@ -8,6 +8,7 @@ import { getSnapId } from '../../../utils';
 import {
   ETHEREUM_PROVIDER_SNAP_ID,
   ETHEREUM_PROVIDER_SNAP_PORT,
+  ETHEREUM_PROVIDER_VERSION,
 } from './constants';
 
 export const EthereumProvider: FunctionComponent = () => {
@@ -28,6 +29,7 @@ export const EthereumProvider: FunctionComponent = () => {
       name="Ethereum Provider Snap"
       snapId={ETHEREUM_PROVIDER_SNAP_ID}
       port={ETHEREUM_PROVIDER_SNAP_PORT}
+      version={ETHEREUM_PROVIDER_VERSION}
       testId="ethereum-provider"
     >
       <ButtonGroup>

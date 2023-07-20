@@ -19,7 +19,7 @@
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf \"dist\"",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
-    "lint:changelog": "yarn auto-changelog validate",
+    "lint:changelog": "../../../../scripts/validate-changelog.sh @metamask/manage-state-example-snap",
     "lint:ci": "yarn lint",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",

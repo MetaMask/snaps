@@ -5,7 +5,11 @@ import { Button } from 'react-bootstrap';
 import { useInvokeMutation } from '../../../api';
 import { Result, Snap } from '../../../components';
 import { getSnapId } from '../../../utils';
-import { JSON_RPC_SNAP_ID, JSON_RPC_SNAP_PORT } from './constants';
+import {
+  JSON_RPC_SNAP_ID,
+  JSON_RPC_SNAP_PORT,
+  JSON_RPC_VERSION,
+} from './constants';
 
 export const JsonRpc: FunctionComponent = () => {
   const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
@@ -22,6 +26,7 @@ export const JsonRpc: FunctionComponent = () => {
       name="JSON-RPC Snap"
       snapId={JSON_RPC_SNAP_ID}
       port={JSON_RPC_SNAP_PORT}
+      version={JSON_RPC_VERSION}
       testId="json-rpc"
     >
       <Button

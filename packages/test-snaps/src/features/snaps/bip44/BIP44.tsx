@@ -6,7 +6,7 @@ import { useInvokeMutation } from '../../../api';
 import { Result, Snap } from '../../../components';
 import { getSnapId } from '../../../utils';
 import { SignMessage } from './components';
-import { BIP_44_PORT, BIP_44_SNAP_ID } from './constants';
+import { BIP_44_PORT, BIP_44_SNAP_ID, BIP_44_VERSION } from './constants';
 
 export const BIP44: FunctionComponent = () => {
   const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
@@ -26,6 +26,7 @@ export const BIP44: FunctionComponent = () => {
       name="BIP-44 Snap"
       snapId={BIP_44_SNAP_ID}
       port={BIP_44_PORT}
+      version={BIP_44_VERSION}
       testId="bip44"
     >
       <ButtonGroup className="mb-3">

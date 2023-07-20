@@ -3624,6 +3624,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/action-utils@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/action-utils@npm:1.0.0"
+  dependencies:
+    "@types/semver": ^7.3.6
+    glob: ^7.1.7
+    semver: ^7.3.5
+  checksum: 5cfd5c7f8895f4bc602cb6e7b3e133aae0431ded8f50e136d314b2e54936ae22cc6add226fa6dfabb300addf084e32fd864a87b91af9188fa158b6e99d91e784
+  languageName: node
+  linkType: hard
+
 "@metamask/approval-controller@npm:^3.0.0":
   version: 3.4.0
   resolution: "@metamask/approval-controller@npm:3.4.0"
@@ -3661,7 +3672,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bip32-example-snap@workspace:packages/examples/packages/bip32":
+"@metamask/bip32-example-snap@workspace:^, @metamask/bip32-example-snap@workspace:packages/examples/packages/bip32":
   version: 0.0.0-use.local
   resolution: "@metamask/bip32-example-snap@workspace:packages/examples/packages/bip32"
   dependencies:
@@ -3702,7 +3713,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/bip44-example-snap@workspace:packages/examples/packages/bip44":
+"@metamask/bip44-example-snap@workspace:^, @metamask/bip44-example-snap@workspace:packages/examples/packages/bip44":
   version: 0.0.0-use.local
   resolution: "@metamask/bip44-example-snap@workspace:packages/examples/packages/bip44"
   dependencies:
@@ -3884,6 +3895,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@metamask/create-release-branch@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@metamask/create-release-branch@npm:1.1.0"
+  dependencies:
+    "@metamask/action-utils": ^1.0.0
+    "@metamask/utils": ^5.0.2
+    debug: ^4.3.4
+    execa: ^5.1.1
+    pony-cause: ^2.1.9
+    semver: ^7.5.0
+    which: ^3.0.0
+    yaml: ^2.2.2
+    yargs: ^17.7.1
+  bin:
+    create-release-branch: bin/create-release-branch.js
+  checksum: 04ab235f27768c8977fe998da6b4f09eccd384debb80dcafda6c4a5ea59638c414b2e6a2ebd770471946f050ae6eaf1c2d798d06ff0b38c0585d6dc17a62cab4
+  languageName: node
+  linkType: hard
+
 "@metamask/create-snap@workspace:packages/create-snap":
   version: 0.0.0-use.local
   resolution: "@metamask/create-snap@workspace:packages/create-snap"
@@ -3937,7 +3967,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/cronjob-example-snap@workspace:packages/examples/packages/cronjobs":
+"@metamask/cronjob-example-snap@workspace:^, @metamask/cronjob-example-snap@workspace:packages/examples/packages/cronjobs":
   version: 0.0.0-use.local
   resolution: "@metamask/cronjob-example-snap@workspace:packages/examples/packages/cronjobs"
   dependencies:
@@ -3975,7 +4005,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/dialog-example-snap@workspace:packages/examples/packages/dialogs":
+"@metamask/dialog-example-snap@workspace:^, @metamask/dialog-example-snap@workspace:packages/examples/packages/dialogs":
   version: 0.0.0-use.local
   resolution: "@metamask/dialog-example-snap@workspace:packages/examples/packages/dialogs"
   dependencies:
@@ -4014,7 +4044,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/error-example-snap@workspace:packages/examples/packages/errors":
+"@metamask/error-example-snap@workspace:^, @metamask/error-example-snap@workspace:packages/examples/packages/errors":
   version: 0.0.0-use.local
   resolution: "@metamask/error-example-snap@workspace:packages/examples/packages/errors"
   dependencies:
@@ -4150,7 +4180,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ethereum-provider-example-snap@workspace:packages/examples/packages/ethereum-provider":
+"@metamask/ethereum-provider-example-snap@workspace:^, @metamask/ethereum-provider-example-snap@workspace:packages/examples/packages/ethereum-provider":
   version: 0.0.0-use.local
   resolution: "@metamask/ethereum-provider-example-snap@workspace:packages/examples/packages/ethereum-provider"
   dependencies:
@@ -4188,7 +4218,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/ethers-js-example-snap@workspace:packages/examples/packages/ethers-js":
+"@metamask/ethers-js-example-snap@workspace:^, @metamask/ethers-js-example-snap@workspace:packages/examples/packages/ethers-js":
   version: 0.0.0-use.local
   resolution: "@metamask/ethers-js-example-snap@workspace:packages/examples/packages/ethers-js"
   dependencies:
@@ -4255,7 +4285,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/get-entropy-example-snap@workspace:packages/examples/packages/get-entropy":
+"@metamask/get-entropy-example-snap@workspace:^, @metamask/get-entropy-example-snap@workspace:packages/examples/packages/get-entropy":
   version: 0.0.0-use.local
   resolution: "@metamask/get-entropy-example-snap@workspace:packages/examples/packages/get-entropy"
   dependencies:
@@ -4294,7 +4324,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/insights-example-snap@workspace:packages/examples/packages/transaction-insights":
+"@metamask/insights-example-snap@workspace:^, @metamask/insights-example-snap@workspace:packages/examples/packages/transaction-insights":
   version: 0.0.0-use.local
   resolution: "@metamask/insights-example-snap@workspace:packages/examples/packages/transaction-insights"
   dependencies:
@@ -4358,7 +4388,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/json-rpc-example-snap@workspace:packages/examples/packages/json-rpc":
+"@metamask/json-rpc-example-snap@workspace:^, @metamask/json-rpc-example-snap@workspace:packages/examples/packages/json-rpc":
   version: 0.0.0-use.local
   resolution: "@metamask/json-rpc-example-snap@workspace:packages/examples/packages/json-rpc"
   dependencies:
@@ -4408,7 +4438,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/manage-state-example-snap@workspace:packages/examples/packages/manage-state":
+"@metamask/manage-state-example-snap@workspace:^, @metamask/manage-state-example-snap@workspace:packages/examples/packages/manage-state":
   version: 0.0.0-use.local
   resolution: "@metamask/manage-state-example-snap@workspace:packages/examples/packages/manage-state"
   dependencies:
@@ -4444,7 +4474,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/network-example-snap@workspace:packages/examples/packages/network-access":
+"@metamask/network-example-snap@workspace:^, @metamask/network-example-snap@workspace:packages/examples/packages/network-access":
   version: 0.0.0-use.local
   resolution: "@metamask/network-example-snap@workspace:packages/examples/packages/network-access"
   dependencies:
@@ -4480,7 +4510,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/notification-example-snap@workspace:packages/examples/packages/notifications":
+"@metamask/notification-example-snap@workspace:^, @metamask/notification-example-snap@workspace:packages/examples/packages/notifications":
   version: 0.0.0-use.local
   resolution: "@metamask/notification-example-snap@workspace:packages/examples/packages/notifications"
   dependencies:
@@ -5108,6 +5138,7 @@ __metadata:
     "@metamask/rpc-errors": ^5.1.1
     "@metamask/rpc-methods": "workspace:^"
     "@metamask/snaps-controllers": "workspace:^"
+    "@metamask/snaps-execution-environments": "workspace:^"
     "@metamask/snaps-ui": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/utils": ^6.0.1
@@ -5397,13 +5428,27 @@ __metadata:
   resolution: "@metamask/test-snaps@workspace:packages/test-snaps"
   dependencies:
     "@metamask/auto-changelog": ^3.1.0
+    "@metamask/bip32-example-snap": "workspace:^"
+    "@metamask/bip44-example-snap": "workspace:^"
+    "@metamask/cronjob-example-snap": "workspace:^"
+    "@metamask/dialog-example-snap": "workspace:^"
+    "@metamask/error-example-snap": "workspace:^"
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
+    "@metamask/ethereum-provider-example-snap": "workspace:^"
+    "@metamask/ethers-js-example-snap": "workspace:^"
+    "@metamask/get-entropy-example-snap": "workspace:^"
+    "@metamask/insights-example-snap": "workspace:^"
+    "@metamask/json-rpc-example-snap": "workspace:^"
+    "@metamask/manage-state-example-snap": "workspace:^"
+    "@metamask/network-example-snap": "workspace:^"
+    "@metamask/notification-example-snap": "workspace:^"
     "@metamask/providers": ^11.0.0
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/utils": ^6.0.1
+    "@metamask/wasm-example-snap": "workspace:^"
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.10
     "@popperjs/core": ^2.11.8
     "@reduxjs/toolkit": ^1.9.5
@@ -5486,7 +5531,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/wasm-example-snap@workspace:packages/examples/packages/wasm":
+"@metamask/wasm-example-snap@workspace:^, @metamask/wasm-example-snap@workspace:packages/examples/packages/wasm":
   version: 0.0.0-use.local
   resolution: "@metamask/wasm-example-snap@workspace:packages/examples/packages/wasm"
   dependencies:
@@ -7249,10 +7294,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:^7.3.10, @types/semver@npm:^7.3.12":
-  version: 7.3.13
-  resolution: "@types/semver@npm:7.3.13"
-  checksum: 00c0724d54757c2f4bc60b5032fe91cda6410e48689633d5f35ece8a0a66445e3e57fa1d6e07eb780f792e82ac542948ec4d0b76eb3484297b79bd18b8cf1cb0
+"@types/semver@npm:^7.3.10, @types/semver@npm:^7.3.12, @types/semver@npm:^7.3.6":
+  version: 7.5.0
+  resolution: "@types/semver@npm:7.5.0"
+  checksum: 0a64b9b9c7424d9a467658b18dd70d1d781c2d6f033096a6e05762d20ebbad23c1b69b0083b0484722aabf35640b78ccc3de26368bcae1129c87e9df028a22e2
   languageName: node
   linkType: hard
 
@@ -13760,7 +13805,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^7.1.0, glob@npm:^7.1.2, glob@npm:^7.1.3, glob@npm:^7.1.4, glob@npm:^7.1.6":
+"glob@npm:^7.1.0, glob@npm:^7.1.2, glob@npm:^7.1.3, glob@npm:^7.1.4, glob@npm:^7.1.6, glob@npm:^7.1.7":
   version: 7.2.3
   resolution: "glob@npm:7.2.3"
   dependencies:
@@ -18580,6 +18625,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pony-cause@npm:^2.1.9":
+  version: 2.1.10
+  resolution: "pony-cause@npm:2.1.10"
+  checksum: 8b61378f213e61056312dc274a1c79980154e9d864f6ad86e0c8b91a50d3ce900d430995ee24147c9f3caa440dfe7d51c274b488d7f033b65b206522536d7217
+  languageName: node
+  linkType: hard
+
 "popmotion@npm:11.0.3":
   version: 11.0.3
   resolution: "popmotion@npm:11.0.3"
@@ -20199,6 +20251,7 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.3.1
     "@metamask/auto-changelog": ^3.1.0
+    "@metamask/create-release-branch": ^1.1.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -23455,6 +23508,13 @@ __metadata:
   version: 1.10.2
   resolution: "yaml@npm:1.10.2"
   checksum: ce4ada136e8a78a0b08dc10b4b900936912d15de59905b2bf415b4d33c63df1d555d23acb2a41b23cf9fb5da41c256441afca3d6509de7247daa062fd2c5ea5f
+  languageName: node
+  linkType: hard
+
+"yaml@npm:^2.2.2":
+  version: 2.3.1
+  resolution: "yaml@npm:2.3.1"
+  checksum: 2c7bc9a7cd4c9f40d3b0b0a98e370781b68b8b7c4515720869aced2b00d92f5da1762b4ffa947f9e795d6cd6b19f410bd4d15fdd38aca7bd96df59bd9486fb54
   languageName: node
   linkType: hard
 
