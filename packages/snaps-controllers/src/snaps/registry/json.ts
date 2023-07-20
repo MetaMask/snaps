@@ -53,7 +53,12 @@ export type GetMetadata = {
   handler: SnapsRegistry['getMetadata'];
 };
 
-export type SnapsRegistryActions = GetResult | GetMetadata;
+export type UpdateDatabase = {
+  type: `${typeof controllerName}:update`;
+  handler: SnapsRegistry['updateDatabase'];
+};
+
+export type SnapsRegistryActions = GetResult | GetMetadata | UpdateDatabase;
 
 export type SnapsRegistryEvents = never;
 
@@ -133,6 +138,11 @@ export class JsonSnapsRegistry extends BaseController<
     this.messagingSystem.registerActionHandler(
       'SnapsRegistry:getMetadata',
       async (...args) => this.#getMetadata(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'SnapsRegistry:update',
+      async () => this.#updateDatabase(),
     );
   }
 
