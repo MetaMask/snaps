@@ -1,12 +1,9 @@
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { OnRpcRequestHandler } from '@metamask/snaps-types';
 import type { Hex } from '@metamask/utils';
-import {
-  assert,
-  stringToBytes,
-  bytesToHex,
-  hasProperty,
-} from '@metamask/utils';
+import { assert, stringToBytes, bytesToHex } from '@metamask/utils';
+
+import type { PersonalSignParams } from './types';
 
 /**
  * Get the current gas price using the `ethereum` global. This is essentially
@@ -118,17 +115,9 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       return await getAccounts();
 
     case 'personalSign': {
+      const params = request.params as PersonalSignParams;
       const accounts = await getAccounts();
-      assert(request.params, 'Must pass parameters');
-      assert(
-        hasProperty(request.params, 'message'),
-        'Must pass parameters containing a message to sign',
-      );
-      assert(
-        typeof request.params.message === 'string',
-        'Must pass message to sign as a string',
-      );
-      return await personalSign(request.params.message, accounts[0]);
+      return await personalSign(params.message, accounts[0]);
     }
 
     default:
