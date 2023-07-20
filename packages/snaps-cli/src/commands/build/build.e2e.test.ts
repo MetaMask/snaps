@@ -1,11 +1,29 @@
+import { promises as fs } from 'fs';
+import { join } from 'path';
+
 import type { TestRunner } from '../../test-utils';
 import { getCommandRunner, SNAP_BROWSERIFY_DIR } from '../../test-utils';
 
 describe('mm-snap build', () => {
   let runner: TestRunner;
+  let originalManifest: string;
 
-  afterEach(() => {
+  beforeEach(async () => {
+    // Since this is an end-to-end test, and we're working with a "real" snap,
+    // we have to make a copy of the original snap manifest, so we can modify it
+    // and reset it after the test.
+    originalManifest = await fs.readFile(
+      join(SNAP_BROWSERIFY_DIR, 'snap.manifest.json'),
+      'utf-8',
+    );
+  });
+
+  afterEach(async () => {
     runner?.kill();
+    await fs.writeFile(
+      join(SNAP_BROWSERIFY_DIR, 'snap.manifest.json'),
+      originalManifest,
+    );
   });
 
   it.each(['build', 'b'])(
