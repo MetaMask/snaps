@@ -19,7 +19,6 @@
     "start": "yarn workspaces foreach --parallel --verbose --interlaced --jobs unlimited run start",
     "test": "yarn workspaces foreach --parallel --verbose --interlaced run test",
     "lint": "yarn workspaces foreach --parallel --verbose --interlaced run lint",
-    "lint:changelog": "yarn auto-changelog validate",
     "lint:ci": "yarn lint:eslint && yarn lint:misc --check",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
