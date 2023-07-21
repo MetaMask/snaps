@@ -52,6 +52,7 @@
     "@swc/jest": "^0.2.26",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
+    "buffer": "^6.0.3",
     "deepmerge": "^4.2.2",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",
