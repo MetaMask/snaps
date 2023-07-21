@@ -80,7 +80,7 @@ async function getAccounts() {
  * @see https://docs.metamask.io/wallet/concepts/signing-methods/#personal_sign
  */
 async function personalSign(message: string, from: string) {
-  const signature = await ethereum.request<string[]>({
+  const signature = await ethereum.request<Hex>({
     method: 'personal_sign',
     params: [bytesToHex(stringToBytes(message)), from],
   });
