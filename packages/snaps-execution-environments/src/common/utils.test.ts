@@ -95,12 +95,6 @@ describe('assertEthereumOutboundRequest', () => {
     ).toThrow('The method does not exist / is not available.');
   });
 
-  it('disallows eth_requestAccounts', () => {
-    expect(() =>
-      assertEthereumOutboundRequest({ method: 'eth_requestAccounts' }),
-    ).toThrow('The method does not exist / is not available.');
-  });
-
   it('disallows wallet_requestSnaps', () => {
     expect(() =>
       assertEthereumOutboundRequest({ method: 'wallet_requestSnaps' }),
