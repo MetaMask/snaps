@@ -1,7 +1,9 @@
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { OnRpcRequestHandler } from '@metamask/snaps-types';
 import type { Hex } from '@metamask/utils';
-import { assert } from '@metamask/utils';
+import { assert, stringToBytes, bytesToHex } from '@metamask/utils';
+
+import type { PersonalSignParams } from './types';
 
 /**
  * Get the current gas price using the `ethereum` global. This is essentially
@@ -61,7 +63,30 @@ async function getAccounts() {
   });
   assert(accounts, 'Ethereum provider did not return accounts.');
 
-  return accounts;
+  return accounts as string[];
+}
+
+/**
+ * Sign a message using the `personal_sign` JSON-RPC method.
+ *
+ * Note that using the `ethereum` global requires the
+ * `endowment:ethereum-provider` permission.
+ *
+ * @param message - The message to sign as a string.
+ * @param from - The account to sign the message with as a string.
+ * @returns A signature for the proposed message and account.
+ * @throws If the user rejects the prompt.
+ * @see https://docs.metamask.io/snaps/reference/permissions/#endowmentethereum-provider
+ * @see https://docs.metamask.io/wallet/concepts/signing-methods/#personal_sign
+ */
+async function personalSign(message: string, from: string) {
+  const signature = await ethereum.request<Hex>({
+    method: 'personal_sign',
+    params: [bytesToHex(stringToBytes(message)), from],
+  });
+  assert(signature, 'Ethereum provider did not return a signature.');
+
+  return signature;
 }
 
 /**
@@ -88,6 +113,12 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
 
     case 'getAccounts':
       return await getAccounts();
+
+    case 'personalSign': {
+      const params = request.params as PersonalSignParams;
+      const accounts = await getAccounts();
+      return await personalSign(params.message, accounts[0]);
+    }
 
     default:
       throw rpcErrors.methodNotFound({
