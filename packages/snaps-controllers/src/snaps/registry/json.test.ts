@@ -352,4 +352,29 @@ describe('JsonSnapsRegistry', () => {
       expect(result).toBeNull();
     });
   });
+
+  describe('updateDatabase', () => {
+    it('updates the database', async () => {
+      fetchMock
+        .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+        .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
+
+      const { messenger } = getRegistry();
+      await messenger.call('SnapsRegistry:update');
+
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+
+    it('does not fetch if a second call is made under the threshold', async () => {
+      fetchMock
+        .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+        .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
+
+      const { messenger } = getRegistry();
+      await messenger.call('SnapsRegistry:update');
+      await messenger.call('SnapsRegistry:update');
+
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+  });
 });

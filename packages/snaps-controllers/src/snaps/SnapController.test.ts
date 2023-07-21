@@ -4606,6 +4606,7 @@ describe('SnapController', () => {
 
       snapController.destroy();
     });
+
     it('blocks snaps as expected', async () => {
       const registry = new MockSnapsRegistry();
       const rootMessenger = getControllerMessenger(registry);

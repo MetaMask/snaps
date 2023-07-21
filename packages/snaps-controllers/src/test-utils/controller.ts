@@ -522,7 +522,11 @@ export const getRestrictedSnapsRegistryControllerMessenger = (
   >({
     name: 'SnapsRegistry',
     allowedEvents: [],
-    allowedActions: ['SnapsRegistry:get', 'SnapsRegistry:getMetadata'],
+    allowedActions: [
+      'SnapsRegistry:get',
+      'SnapsRegistry:getMetadata',
+      'SnapsRegistry:update',
+    ],
   });
 
   return controllerMessenger;
