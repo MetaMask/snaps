@@ -108,7 +108,6 @@ export const BLOCKED_RPC_METHODS = Object.freeze([
   // We disallow all of these confirmations for now, since the screens are not ready for Snaps.
   'eth_sendRawTransaction',
   'eth_sendTransaction',
-  'personal_sign',
   'eth_sign',
   'eth_signTypedData',
   'eth_signTypedData_v1',

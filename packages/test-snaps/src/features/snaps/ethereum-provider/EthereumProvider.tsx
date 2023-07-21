@@ -5,6 +5,7 @@ import { Button, ButtonGroup } from 'react-bootstrap';
 import { useInvokeMutation } from '../../../api';
 import { Result, Snap } from '../../../components';
 import { getSnapId } from '../../../utils';
+import { SignMessage } from './components/SignMessage';
 import {
   ETHEREUM_PROVIDER_SNAP_ID,
   ETHEREUM_PROVIDER_SNAP_PORT,
@@ -52,12 +53,13 @@ export const EthereumProvider: FunctionComponent = () => {
           Get Accounts
         </Button>
       </ButtonGroup>
-      <Result>
+      <Result className="mb-3">
         <span id="ethproviderResult">
           {JSON.stringify(data, null, 2)}
           {JSON.stringify(error, null, 2)}
         </span>
       </Result>
+      <SignMessage />
     </Snap>
   );
 };
