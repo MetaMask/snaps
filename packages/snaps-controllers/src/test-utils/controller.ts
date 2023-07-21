@@ -272,6 +272,11 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
     registry.getMetadata.bind(registry),
   );
 
+  messenger.registerActionHandler(
+    'SnapsRegistry:update',
+    registry.updateDatabase.bind(registry),
+  );
+
   jest.spyOn(messenger, 'call');
 
   return messenger;
@@ -338,6 +343,7 @@ export const getSnapControllerMessenger = (
       'SubjectMetadataController:getSubjectMetadata',
       'SnapsRegistry:get',
       'SnapsRegistry:getMetadata',
+      'SnapsRegistry:update',
       'SnapController:disconnectOrigin',
       'SnapController:revokeDynamicPermissions',
     ],
