@@ -82,7 +82,7 @@
     "prettier": "^2.7.1",
     "prettier-plugin-packagejson": "^2.2.11",
     "rimraf": "^3.0.2",
-    "semver": "^7.3.7",
+    "semver": "^7.5.4",
     "simple-git-hooks": "^2.7.0",
     "ts-jest": "^29.0.0",
     "ts-node": "^10.9.1",
