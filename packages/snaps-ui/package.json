@@ -37,7 +37,7 @@
     "@metamask/eslint-config-nodejs": "^11.0.1",
     "@metamask/eslint-config-typescript": "^11.0.0",
     "@types/jest": "^27.5.1",
-    "@types/semver": "^7.3.10",
+    "@types/semver": "^7.5.0",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "deepmerge": "^4.2.2",
