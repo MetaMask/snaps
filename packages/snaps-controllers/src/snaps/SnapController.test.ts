@@ -117,10 +117,7 @@ describe('SnapController', () => {
     const snapState = await snapController.getSnapState(snap.id);
     expect(snapState).toStrictEqual(state);
 
-    expect(
-      // @ts-expect-error Accessing private property
-      snapController.snapsRuntimeData.get(MOCK_SNAP_ID).state,
-    ).toStrictEqual(state);
+    expect(snapController.state.snapStates[MOCK_SNAP_ID]).toStrictEqual(state);
     snapController.destroy();
     await service.terminateAllSnaps();
   });
@@ -5094,10 +5091,9 @@ describe('SnapController', () => {
       );
 
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(1);
-      expect(
-        // @ts-expect-error Accessing private property
-        snapController.snapsRuntimeData.get(MOCK_SNAP_ID).state,
-      ).toStrictEqual(state);
+      expect(snapController.state.snapStates[MOCK_SNAP_ID]).toStrictEqual(
+        state,
+      );
 
       snapController.destroy();
     });

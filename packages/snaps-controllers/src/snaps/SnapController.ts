@@ -169,16 +169,6 @@ export interface SnapRuntimeData {
    * @see {@link SnapController:constructor}
    */
   interpreter: StateMachine.Service<StatusContext, StatusEvents, StatusStates>;
-
-  /**
-   * The snap source code
-   */
-  sourceCode: null | string;
-
-  /**
-   * The snap state (encrypted)
-   */
-  state: null | string;
 }
 
 export type SnapError = {
@@ -215,9 +205,7 @@ type StoredSnaps = Record<ValidatedSnapId, Snap>;
 
 export type SnapControllerState = {
   snaps: StoredSnaps;
-  // This type needs to be defined but is always empty in practice.
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  snapStates: {};
+  snapStates: Record<ValidatedSnapId, string | null>;
   snapErrors: {
     [internalID: string]: SnapError & { internalID: string };
   };
@@ -230,7 +218,6 @@ export type PersistedSnapControllerState = SnapControllerState & {
 
 type RollbackSnapshot = {
   statePatches: Patch[];
-  sourceCode: string | null;
   permissions: {
     revoked: unknown;
     granted: unknown[];
@@ -663,8 +650,7 @@ export class SnapController extends BaseController<
 
   #detectSnapLocation: typeof detectSnapLocation;
 
-  // This property cannot be hash private yet because of tests.
-  private readonly snapsRuntimeData: Map<ValidatedSnapId, SnapRuntimeData>;
+  #snapsRuntimeData: Map<ValidatedSnapId, SnapRuntimeData>;
 
   #rollbackSnapshots: Map<SnapId, RollbackSnapshot>;
 
@@ -698,16 +684,7 @@ export class SnapController extends BaseController<
           anonymous: false,
         },
         snapStates: {
-          persist: () => {
-            return Object.keys(this.state.snaps).reduce<
-              Record<ValidatedSnapId, SnapRuntimeData['state']>
-            >((acc, cur) => {
-              acc[cur as ValidatedSnapId] = this.#getRuntimeExpect(
-                cur as ValidatedSnapId,
-              ).state;
-              return acc;
-            }, {});
-          },
+          persist: true,
           anonymous: false,
         },
         snaps: {
@@ -716,7 +693,6 @@ export class SnapController extends BaseController<
               .map((snap) => {
                 return {
                   ...snap,
-                  sourceCode: this.#getRuntimeExpect(snap.id).sourceCode,
                   // At the time state is rehydrated, no snap will be running.
                   status: SnapStatus.Stopped,
                 };
@@ -732,21 +708,7 @@ export class SnapController extends BaseController<
       name,
       state: {
         ...defaultState,
-        ...{
-          ...state,
-          snaps: Object.values(state?.snaps ?? {}).reduce(
-            (memo: Record<ValidatedSnapId, Snap>, snap: PersistedSnap) => {
-              // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              // sourceCode is stripped out to prevent piping to MetaMask UI,
-              // it is stored in the runtime while we're running a snap and then
-              // persisted to state when needed.
-              const { sourceCode, ...rest } = snap;
-              memo[snap.id] = rest;
-              return memo;
-            },
-            {},
-          ),
-        },
+        ...state,
       },
     });
 
@@ -764,7 +726,7 @@ export class SnapController extends BaseController<
     this._onOutboundRequest = this._onOutboundRequest.bind(this);
     this._onOutboundResponse = this._onOutboundResponse.bind(this);
     this.#rollbackSnapshots = new Map();
-    this.snapsRuntimeData = new Map();
+    this.#snapsRuntimeData = new Map();
     this.#pollForLastRequestStatus();
 
     /* eslint-disable @typescript-eslint/unbound-method */
@@ -1089,7 +1051,7 @@ export class SnapController extends BaseController<
   }
 
   async #stopSnapsLastRequestPastMax() {
-    const entries = [...this.snapsRuntimeData.entries()];
+    const entries = [...this.#snapsRuntimeData.entries()];
     return Promise.all(
       entries
         .filter(
@@ -1164,17 +1126,15 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap to start.
    */
   async startSnap(snapId: ValidatedSnapId): Promise<void> {
-    const runtime = this.#getRuntimeExpect(snapId);
+    const snap = this.state.snaps[snapId];
 
-    if (this.state.snaps[snapId].enabled === false) {
+    if (snap.enabled === false) {
       throw new Error(`Snap "${snapId}" is disabled.`);
     }
 
-    assert(runtime.sourceCode);
-
     await this.#startSnap({
       snapId,
-      sourceCode: runtime.sourceCode,
+      sourceCode: snap.sourceCode,
     });
   }
 
@@ -1351,8 +1311,9 @@ export class SnapController extends BaseController<
     snapId: ValidatedSnapId,
     newSnapState: string,
   ): Promise<void> {
-    const runtime = this.#getRuntimeExpect(snapId);
-    runtime.state = newSnapState;
+    this.update((state) => {
+      state.snapStates[snapId] = newSnapState;
+    });
   }
 
   /**
@@ -1362,8 +1323,9 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap whose state should be cleared.
    */
   clearSnapState(snapId: ValidatedSnapId) {
-    const runtime = this.#getRuntimeExpect(snapId);
-    runtime.state = null;
+    this.update((state) => {
+      state.snapStates[snapId] = null;
+    });
   }
 
   /**
@@ -1410,7 +1372,7 @@ export class SnapController extends BaseController<
    * @throws If the snap state decryption fails.
    */
   async getSnapState(snapId: ValidatedSnapId): Promise<Json> {
-    const { state } = this.#getRuntimeExpect(snapId);
+    const state = this.state.snapStates[snapId];
     return state ?? null;
   }
 
@@ -1466,7 +1428,7 @@ export class SnapController extends BaseController<
 
         this.#removeSnapFromSubjects(snapId);
 
-        this.snapsRuntimeData.delete(snapId);
+        this.#snapsRuntimeData.delete(snapId);
 
         this.update((state: any) => {
           delete state.snaps[snapId];
@@ -1688,9 +1650,7 @@ export class SnapController extends BaseController<
           pendingUpdates.push(snapId);
           let rollbackSnapshot = this.#getRollbackSnapshot(snapId);
           if (rollbackSnapshot === undefined) {
-            const prevSourceCode = this.#getRuntimeExpect(snapId).sourceCode;
             rollbackSnapshot = this.#createRollbackSnapshot(snapId);
-            rollbackSnapshot.sourceCode = prevSourceCode;
             rollbackSnapshot.newVersion = version;
           } else {
             throw new Error('This snap is already being updated.');
@@ -2236,6 +2196,7 @@ export class SnapController extends BaseController<
       initialPermissions: manifest.result.initialPermissions,
       manifest: manifest.result,
       status: this.#statusMachine.config.initial as StatusStates['value'],
+      sourceCode,
       version,
       versionHistory,
     };
@@ -2255,9 +2216,6 @@ export class SnapController extends BaseController<
         rollbackSnapshot.statePatches = inversePatches;
       }
     }
-
-    const runtime = this.#getRuntimeExpect(snapId);
-    runtime.sourceCode = sourceCode;
 
     this.messagingSystem.publish(
       `SnapController:snapAdded`,
@@ -2646,7 +2604,6 @@ export class SnapController extends BaseController<
 
     this.#rollbackSnapshots.set(snapId, {
       statePatches: [],
-      sourceCode: '',
       permissions: { revoked: null, granted: [], requestData: null },
       newVersion: '',
     });
@@ -2683,7 +2640,7 @@ export class SnapController extends BaseController<
       this.#transition(snapId, SnapStatusEvents.Stop);
     }
 
-    const { statePatches, sourceCode, permissions } = rollbackSnapshot;
+    const { statePatches, permissions } = rollbackSnapshot;
 
     if (statePatches?.length) {
       this.applyPatches(statePatches);
@@ -2695,11 +2652,6 @@ export class SnapController extends BaseController<
       this.update((state) => {
         state.snaps[snapId].status = SnapStatus.Stopped;
       });
-    }
-
-    if (sourceCode) {
-      const runtime = this.#getRuntimeExpect(snapId);
-      runtime.sourceCode = sourceCode;
     }
 
     if (permissions.revoked && Object.keys(permissions.revoked).length) {
@@ -2740,7 +2692,7 @@ export class SnapController extends BaseController<
   }
 
   #getRuntime(snapId: ValidatedSnapId): SnapRuntimeData | undefined {
-    return this.snapsRuntimeData.get(snapId);
+    return this.#snapsRuntimeData.get(snapId);
   }
 
   #getRuntimeExpect(snapId: ValidatedSnapId): SnapRuntimeData {
@@ -2756,7 +2708,7 @@ export class SnapController extends BaseController<
     snapId: ValidatedSnapId,
     data: { sourceCode: string | null; state: string | null },
   ) {
-    if (this.snapsRuntimeData.has(snapId)) {
+    if (this.#snapsRuntimeData.has(snapId)) {
       return;
     }
 
@@ -2771,7 +2723,7 @@ export class SnapController extends BaseController<
 
     forceStrict(interpreter);
 
-    this.snapsRuntimeData.set(snapId, {
+    this.#snapsRuntimeData.set(snapId, {
       lastRequest: null,
       rpcHandler: null,
       installPromise: null,
