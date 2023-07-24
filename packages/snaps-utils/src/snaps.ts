@@ -81,12 +81,7 @@ export type VersionHistory = {
   date: number;
 };
 
-export type PersistedSnap = Snap & {
-  /**
-   * The source code of the Snap.
-   */
-  sourceCode: string;
-};
+export type PersistedSnap = Snap;
 
 /**
  * A Snap as it exists in {@link SnapController} state.
@@ -107,6 +102,11 @@ export type Snap = {
    * installed.
    */
   initialPermissions: SnapPermissions;
+
+  /**
+   * The source code of the Snap.
+   */
+  sourceCode: string;
 
   /**
    * The Snap's manifest file.
