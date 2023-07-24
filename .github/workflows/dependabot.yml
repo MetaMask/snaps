@@ -1,0 +1,42 @@
+name: Update Dependabot pull request
+
+on:
+  push:
+    branches:
+      - dependabot/npm_and_yarn/**
+
+jobs:
+  dependabot:
+    name: Deduplicate yarn.lock and regenerate LavaMoat policies
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+      - run: yarn --immutable
+      - name: Configure Git
+        run: |
+          git config --global user.name "dependabot[bot]"
+          git config --global user.email "support@github.com"
+      - name: Deduplicate yarn.lock
+        run: |
+          yarn dedupe
+          git add yarn.lock
+          git commit -m "[dependabot skip] Deduplicate yarn.lock" || true
+      - name: Regenerate LavaMoat policies
+        run: |
+          yarn build:lavamoat:policy
+          git add packages/snaps-execution-environments/lavamoat
+          git commit -m "[dependabot skip] Regenerate LavaMoat policies" || true
+      - name: Update examples
+        run: |
+          yarn build
+          git add packages/examples/packages
+          git commit -m "[dependabot skip] Update examples" || true
+      - name: Push changes
+        run: git push
