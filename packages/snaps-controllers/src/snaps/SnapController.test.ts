@@ -4525,6 +4525,26 @@ describe('SnapController', () => {
   });
 
   describe('updateBlockedSnaps', () => {
+    it('updates the registry database', async () => {
+      const registry = new MockSnapsRegistry();
+      const rootMessenger = getControllerMessenger(registry);
+      const messenger = getSnapControllerMessenger(rootMessenger);
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+      await snapController.updateBlockedSnaps();
+
+      expect(registry.updateDatabase).toHaveBeenCalled();
+
+      snapController.destroy();
+    });
+
     it('blocks snaps as expected', async () => {
       const registry = new MockSnapsRegistry();
       const rootMessenger = getControllerMessenger(registry);

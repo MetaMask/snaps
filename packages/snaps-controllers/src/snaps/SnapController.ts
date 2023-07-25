@@ -107,6 +107,7 @@ import {
   SnapsRegistryMetadata,
   SnapsRegistryRequest,
   SnapsRegistryStatus,
+  Update,
 } from './registry';
 import { RequestQueue } from './RequestQueue';
 import { Timer } from './Timer';
@@ -466,7 +467,8 @@ export type AllowedActions =
   | UpdateCaveat
   | UpdateRequestState
   | GetResult
-  | GetMetadata;
+  | GetMetadata
+  | Update;
 
 export type AllowedEvents = ExecutionServiceEvents;
 
@@ -918,6 +920,8 @@ export class SnapController extends BaseController<
    * for more information.
    */
   async updateBlockedSnaps(): Promise<void> {
+    await this.messagingSystem.call('SnapsRegistry:update');
+
     const blockedSnaps = await this.messagingSystem.call(
       'SnapsRegistry:get',
       Object.values(this.state.snaps).reduce<SnapsRegistryRequest>(

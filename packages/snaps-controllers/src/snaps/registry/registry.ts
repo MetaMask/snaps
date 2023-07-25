@@ -24,6 +24,8 @@ export type SnapsRegistry = {
     snaps: SnapsRegistryRequest,
   ): Promise<Record<SnapId, SnapsRegistryResult>>;
 
+  update(): Promise<void>;
+
   /**
    * Get metadata for the given snap ID.
    *
