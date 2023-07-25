@@ -100,7 +100,7 @@ import type {
   SnapsRegistryInfo,
   SnapsRegistryMetadata,
   SnapsRegistryRequest,
-  UpdateDatabase,
+  Update,
 } from './registry';
 import { SnapsRegistryStatus } from './registry';
 import { RequestQueue } from './RequestQueue';
@@ -474,7 +474,7 @@ export type AllowedActions =
   | UpdateRequestState
   | GetResult
   | GetMetadata
-  | UpdateDatabase;
+  | Update;
 
 export type AllowedEvents = ExecutionServiceEvents;
 
