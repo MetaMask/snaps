@@ -17,6 +17,7 @@ import {
 
 import type { SnapCaveatType } from './caveats';
 import type { SnapFunctionExports } from './handlers';
+import { HandlerType } from './handlers';
 import type { SnapManifest } from './manifest';
 import type { VirtualFile } from './virtual-file';
 
@@ -129,12 +130,6 @@ export enum SNAP_STREAM_NAMES {
   COMMAND = 'command',
 }
 /* eslint-enable @typescript-eslint/naming-convention */
-
-export enum HandlerType {
-  OnRpcRequest = 'onRpcRequest',
-  OnTransaction = 'onTransaction',
-  OnCronjob = 'onCronjob',
-}
 
 export const SNAP_EXPORT_NAMES = Object.values(HandlerType);
 

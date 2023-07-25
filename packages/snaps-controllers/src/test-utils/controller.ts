@@ -257,6 +257,10 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
   );
 
   messenger.registerActionHandler('ExecutionService:executeSnap', asyncNoOp);
+  messenger.registerActionHandler(
+    'ExecutionService:handleRpcRequest',
+    asyncNoOp,
+  );
   messenger.registerActionHandler('ExecutionService:terminateSnap', asyncNoOp);
   messenger.registerActionHandler(
     'ExecutionService:terminateAllSnaps',

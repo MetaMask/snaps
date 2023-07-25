@@ -8,6 +8,7 @@ import type {
   Caveat,
   GetEndowments,
   GetPermissions,
+  GetSubjectMetadata,
   GetSubjects,
   GrantPermissions,
   HasPermission,
@@ -19,9 +20,8 @@ import type {
   RevokePermissionForAllSubjects,
   RevokePermissions,
   SubjectPermissions,
-  ValidPermission,
   UpdateCaveat,
-  GetSubjectMetadata,
+  ValidPermission,
 } from '@metamask/permission-controller';
 import { SubjectType } from '@metamask/permission-controller';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
@@ -46,16 +46,18 @@ import type {
 } from '@metamask/snaps-utils';
 import {
   assertIsSnapManifest,
+  assertIsValidSnapId,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
+  getErrorMessage,
+  HandlerType,
+  logError,
+  logWarning,
   normalizeRelative,
   resolveVersionRange,
   SnapCaveatType,
   SnapStatus,
   SnapStatusEvents,
-  assertIsValidSnapId,
-  logError,
-  logWarning,
   validateFetchedSnap,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
@@ -476,7 +478,10 @@ export type AllowedActions =
   | GetMetadata
   | Update;
 
-export type AllowedEvents = ExecutionServiceEvents;
+export type AllowedEvents =
+  | ExecutionServiceEvents
+  | SnapInstalled
+  | SnapUpdated;
 
 type SnapControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
@@ -747,6 +752,26 @@ export class SnapController extends BaseController<
       this._onOutboundResponse,
     );
     /* eslint-enable @typescript-eslint/unbound-method */
+
+    this.messagingSystem.subscribe('SnapController:snapInstalled', ({ id }) => {
+      this.#callLifecycleHook(id, HandlerType.OnInstall).catch((error) => {
+        logError(
+          `Error when calling \`onInstall\` lifecycle hook for snap "${id}": ${getErrorMessage(
+            error,
+          )}`,
+        );
+      });
+    });
+
+    this.messagingSystem.subscribe('SnapController:snapUpdated', ({ id }) => {
+      this.#callLifecycleHook(id, HandlerType.OnUpdate).catch((error) => {
+        logError(
+          `Error when calling \`onUpdate\` lifecycle hook for snap "${id}": ${getErrorMessage(
+            error,
+          )}`,
+        );
+      });
+    });
 
     this.#initializeStateMachine();
     this.#registerMessageHandlers();
@@ -1682,6 +1707,7 @@ export class SnapController extends BaseController<
 
       throw error;
     }
+
     return result;
   }
 
@@ -2259,10 +2285,9 @@ export class SnapController extends BaseController<
 
       return { manifest, files, location };
     } catch (error) {
-      // TODO(ritave): Export `getErrorMessage()` from @metamask/utils and use it here
-      //               https://github.com/MetaMask/utils/blob/62d022ef83c91fa4d150e51913be4441508a0ab1/src/assert.ts
-      const message = error instanceof Error ? error.message : error.toString();
-      throw new Error(`Failed to fetch Snap "${snapId}": ${message}.`);
+      throw new Error(
+        `Failed to fetch snap "${snapId}": ${getErrorMessage(error)}.`,
+      );
     }
   }
 
@@ -2270,8 +2295,9 @@ export class SnapController extends BaseController<
     processedPermissions: Record<string, Pick<PermissionConstraint, 'caveats'>>,
   ) {
     const permissionKeys = Object.keys(processedPermissions);
-
-    const handlerPermissions = Object.values(handlerEndowments);
+    const handlerPermissions = Array.from(
+      new Set(Object.values(handlerEndowments)),
+    );
 
     assert(
       permissionKeys.some((key) => handlerPermissions.includes(key)),
@@ -2799,5 +2825,38 @@ export class SnapController extends BaseController<
     }
 
     return true;
+  }
+
+  /**
+   * Call a lifecycle hook on a snap, if the snap has the
+   * `endowment:lifecycle-hooks` permission. If the snap does not have the
+   * permission, nothing happens.
+   *
+   * @param snapId - The snap ID.
+   * @param handler - The lifecycle hook to call. This should be one of the
+   * supported lifecycle hooks.
+   * @private
+   */
+  async #callLifecycleHook(snapId: ValidatedSnapId, handler: HandlerType) {
+    const permissionName = handlerEndowments[handler];
+    const hasPermission = this.messagingSystem.call(
+      'PermissionController:hasPermission',
+      snapId,
+      permissionName,
+    );
+
+    if (!hasPermission) {
+      return;
+    }
+
+    await this.handleRequest({
+      snapId,
+      handler,
+      origin: '',
+      request: {
+        jsonrpc: '2.0',
+        method: handler,
+      },
+    });
   }
 }
