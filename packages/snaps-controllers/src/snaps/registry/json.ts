@@ -54,7 +54,12 @@ export type GetMetadata = {
   handler: SnapsRegistry['getMetadata'];
 };
 
-export type SnapsRegistryActions = GetResult | GetMetadata;
+export type Update = {
+  type: `${typeof controllerName}:update`;
+  handler: SnapsRegistry['update'];
+};
+
+export type SnapsRegistryActions = GetResult | GetMetadata | Update;
 
 export type SnapsRegistryEvents = never;
 
@@ -135,6 +140,11 @@ export class JsonSnapsRegistry extends BaseController<
       'SnapsRegistry:getMetadata',
       async (...args) => this.#getMetadata(...args),
     );
+
+    this.messagingSystem.registerActionHandler(
+      'SnapsRegistry:update',
+      async () => this.#update(),
+    );
   }
 
   #wasRecentlyFetched() {
@@ -144,7 +154,7 @@ export class JsonSnapsRegistry extends BaseController<
     );
   }
 
-  async #updateDatabase() {
+  async #update() {
     // No-op if we recently fetched the registry.
     if (this.#wasRecentlyFetched()) {
       return;
@@ -169,7 +179,7 @@ export class JsonSnapsRegistry extends BaseController<
 
   async #getDatabase(): Promise<SnapsRegistryDatabase | null> {
     if (this.state.database === null) {
-      await this.#updateDatabase();
+      await this.#update();
     }
 
     // If the database is still null and we require it, throw.
@@ -211,7 +221,7 @@ export class JsonSnapsRegistry extends BaseController<
     }
     // For now, if we have an allowlist miss, we can refetch once and try again.
     if (this.#refetchOnAllowlistMiss && !refetch) {
-      await this.#updateDatabase();
+      await this.#update();
       return this.#getSingle(snapId, snapInfo, true);
     }
     return { status: SnapsRegistryStatus.Unverified };
