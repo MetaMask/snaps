@@ -353,7 +353,7 @@ describe('JsonSnapsRegistry', () => {
     });
   });
 
-  describe('updateDatabase', () => {
+  describe('update', () => {
     it('updates the database', async () => {
       fetchMock
         .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
