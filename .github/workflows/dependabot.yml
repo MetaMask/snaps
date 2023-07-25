@@ -3,11 +3,14 @@ name: Update Dependabot pull request
 on:
   push:
     branches:
-      - dependabot/npm_and_yarn/**
+      - 'dependabot/**'
+  pull_request:
+    branches:
+      - 'dependabot/**'
 
 jobs:
   dependabot:
-    name: Deduplicate yarn.lock and regenerate LavaMoat policies
+    name: Update pull request
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -21,8 +24,8 @@ jobs:
       - run: yarn --immutable
       - name: Configure Git
         run: |
-          git config --global user.name "dependabot[bot]"
-          git config --global user.email "support@github.com"
+          git config user.name "dependabot[bot]"
+          git config user.email "support@github.com"
       - name: Deduplicate yarn.lock
         run: |
           yarn dedupe
