@@ -7,6 +7,7 @@ export * from './ethereum-provider';
 export * from './ethers-js';
 export * from './get-entropy';
 export * from './json-rpc';
+export * from './lifecycle-hooks';
 export * from './manage-state';
 export * from './network-access';
 export * from './notifications';
