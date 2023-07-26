@@ -1,6 +1,6 @@
 {
   "name": "@metamask/manage-state-example-snap",
-  "version": "0.37.2-flask.1",
+  "version": "0.38.0-flask.1",
   "description": "MetaMask example snap demonstrating the use of `snap_manageState`.",
   "repository": {
     "type": "git",

@@ -1,5 +1,5 @@
 {
-  "version": "0.37.2-flask.1",
+  "version": "0.38.0-flask.1",
   "description": "MetaMask example snap demonstrating the use of the `endowment:network-access` permission in snaps.",
   "proposedName": "Network Access Test Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "DdXGi5jU+RiJpXg1Z7UjqVZocxhesfLTz8rloGP27X0=",
+    "shasum": "/xrzK+LNyXfupec9dDNUM6AGROGkJzIzrnnn5++j/Z0=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
