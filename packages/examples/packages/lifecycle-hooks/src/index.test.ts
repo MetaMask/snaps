@@ -8,6 +8,6 @@ describe('onInstall', () => {
 
 describe('onUpdate', () => {
   // TODO: The Snaps testing framework does not currently support testing the
-  // onInstall handler.
+  // onUpdate handler.
   it.todo('shows a dialog when the snap is updated');
 });
