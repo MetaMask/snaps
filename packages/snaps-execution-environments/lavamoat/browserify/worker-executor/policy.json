@@ -315,6 +315,7 @@
       },
       "packages": {
         "@metamask/utils": true,
+        "external:../snaps-utils/src/handlers.ts": true,
         "superstruct": true
       }
     },

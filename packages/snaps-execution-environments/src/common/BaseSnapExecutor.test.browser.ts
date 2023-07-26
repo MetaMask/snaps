@@ -912,6 +912,80 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  describe('lifecycle hooks', () => {
+    const LIFECYCLE_HOOKS = [HandlerType.OnInstall, HandlerType.OnUpdate];
+
+    for (const handler of LIFECYCLE_HOOKS) {
+      // eslint-disable-next-line no-loop-func
+      it(`supports \`${handler}\` export`, async () => {
+        const CODE = `
+          module.exports.${handler} = ({ request }) => request.params[0];
+        `;
+
+        const executor = new TestSnapExecutor();
+        await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+        expect(await executor.readCommand()).toStrictEqual({
+          jsonrpc: '2.0',
+          id: 1,
+          result: 'OK',
+        });
+
+        await executor.writeCommand({
+          jsonrpc: '2.0',
+          id: 2,
+          method: 'snapRpc',
+          params: [
+            MOCK_SNAP_ID,
+            handler,
+            MOCK_ORIGIN,
+            { jsonrpc: '2.0', method: 'foo', params: ['bar'] },
+          ],
+        });
+
+        expect(await executor.readCommand()).toStrictEqual({
+          id: 2,
+          jsonrpc: '2.0',
+          result: 'bar',
+        });
+      });
+
+      // eslint-disable-next-line no-loop-func
+      it(`does not throw if \`${handler}\` is called, but the snap does not export it`, async () => {
+        const CODE = `
+          module.exports.onRpcRequest = () => 'foo';
+        `;
+
+        const executor = new TestSnapExecutor();
+        await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+        expect(await executor.readCommand()).toStrictEqual({
+          jsonrpc: '2.0',
+          id: 1,
+          result: 'OK',
+        });
+
+        await executor.writeCommand({
+          jsonrpc: '2.0',
+          id: 2,
+          method: 'snapRpc',
+          params: [
+            MOCK_SNAP_ID,
+            handler,
+            MOCK_ORIGIN,
+            { jsonrpc: '2.0', method: 'foo', params: ['bar'] },
+          ],
+        });
+
+        expect(await executor.readCommand()).toStrictEqual({
+          id: 2,
+          jsonrpc: '2.0',
+          result: null,
+        });
+      });
+    }
+  });
+
   it('blocks snaps from escaping confinement by using unbound this', async () => {
     const consoleSpy = spy(console, 'log');
 

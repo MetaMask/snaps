@@ -49,6 +49,8 @@ export function getHandlerArguments(
       return { origin, request };
 
     case HandlerType.OnCronjob:
+    case HandlerType.OnInstall:
+    case HandlerType.OnUpdate:
       return { request };
 
     default:

@@ -6,6 +6,7 @@ export * from './deep-clone';
 export * from './default-endowments';
 export * from './entropy';
 export * from './enum';
+export * from './errors';
 export * from './handlers';
 export * from './iframe';
 export * from './json';

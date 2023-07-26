@@ -8,6 +8,7 @@ import {
   getCronjobCaveatMapper,
 } from './cronjob';
 import { ethereumProviderEndowmentBuilder } from './ethereum-provider';
+import { lifecycleHooksEndowmentBuilder } from './lifecycle-hooks';
 import { longRunningEndowmentBuilder } from './long-running';
 import { networkAccessEndowmentBuilder } from './network-access';
 import {
@@ -32,6 +33,7 @@ export const endowmentPermissionBuilders = {
     ethereumProviderEndowmentBuilder,
   [rpcEndowmentBuilder.targetName]: rpcEndowmentBuilder,
   [webAssemblyEndowmentBuilder.targetName]: webAssemblyEndowmentBuilder,
+  [lifecycleHooksEndowmentBuilder.targetName]: lifecycleHooksEndowmentBuilder,
 } as const;
 
 export const endowmentCaveatSpecifications = {
@@ -54,6 +56,8 @@ export const handlerEndowments: Record<HandlerType, string> = {
   [HandlerType.OnRpcRequest]: rpcEndowmentBuilder.targetName,
   [HandlerType.OnTransaction]: transactionInsightEndowmentBuilder.targetName,
   [HandlerType.OnCronjob]: cronjobEndowmentBuilder.targetName,
+  [HandlerType.OnInstall]: lifecycleHooksEndowmentBuilder.targetName,
+  [HandlerType.OnUpdate]: lifecycleHooksEndowmentBuilder.targetName,
 };
 
 export * from './enum';
