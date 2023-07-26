@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.38.1-flask.1]
-### Uncategorized
+### Changed
 - Update all examples to use Webpack ([#1632](https://github.com/MetaMask/snaps/pull/1632))
 
 ## [0.38.0-flask.1]

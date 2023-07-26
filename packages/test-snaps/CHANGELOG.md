@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.38.0-flask.1]
-### Uncategorized
+### Added
 - Add lifecycle hooks example snap ([#1645](https://github.com/MetaMask/snaps/pull/1645))
-- Unblock `personal_sign` ([#1601](https://github.com/MetaMask/snaps/pull/1601))
+- Add `personal_sign` test to the Ethereum Provider example snap ([#1601](https://github.com/MetaMask/snaps/pull/1601))
 
 ## [0.37.3-flask.1]
 ### Fixed

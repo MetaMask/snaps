@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.38.0-flask.1]
-### Uncategorized
-- Update all examples to use Webpack ([#1632](https://github.com/MetaMask/snaps/pull/1632))
-- Unblock `personal_sign` ([#1601](https://github.com/MetaMask/snaps/pull/1601))
+### Added
+- Add example JSON-RPC method using `personal_sign` ([#1601](https://github.com/MetaMask/snaps/pull/1601))
+
+### Changed
+- Update example to the new configuration format ([#1632](https://github.com/MetaMask/snaps/pull/1632))
+  - The example now uses Webpack instead of Browserify.
 
 ## [0.37.2-flask.1]
 ### Changed

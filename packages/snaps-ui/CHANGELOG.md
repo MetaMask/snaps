@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.37.3-flask.1]
-### Uncategorized
-- Bump semver to ensure signed provenance, CVE fix ([#1631](https://github.com/MetaMask/snaps/pull/1631))
+### Changed
+- Bump `semver` to `^7.5.4` ([#1631](https://github.com/MetaMask/snaps/pull/1631))
 
 ## [0.37.2-flask.1]
 ### Changed

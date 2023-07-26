@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.38.0-flask.1]
-### Uncategorized
+### Added
 - Add `onInstall` and `onUpdate` lifecycle hooks ([#1643](https://github.com/MetaMask/snaps/pull/1643))
+
+### Changed
 - Make `updateBlockedSnaps` update the registry ([#1625](https://github.com/MetaMask/snaps/pull/1625))
 - Move source code and snap state back to controller state ([#1634](https://github.com/MetaMask/snaps/pull/1634))
 
