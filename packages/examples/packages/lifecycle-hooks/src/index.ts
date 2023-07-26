@@ -8,7 +8,6 @@ import { heading, panel, text } from '@metamask/snaps-ui';
  * This handler is optional. If it is not provided, the snap will be installed
  * as usual.
  *
- * @returns The JSON-RPC response.
  * @see https://docs.metamask.io/snaps/reference/exports/#oninstall
  */
 export const onInstall: OnInstallHandler = async () => {
@@ -32,6 +31,8 @@ export const onInstall: OnInstallHandler = async () => {
  *
  * This handler is optional. If it is not provided, the snap will be updated
  * as usual.
+ *
+ * @see https://docs.metamask.io/snaps/reference/exports/#onupdate
  */
 export const onUpdate: OnUpdateHandler = async () => {
   await snap.request({
