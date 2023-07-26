@@ -6,4 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-[Unreleased]: https://github.com/MetaMask/snaps/
+## [0.38.0-flask.1]
+### Uncategorized
+- Update all examples to use Webpack ([#1632](https://github.com/MetaMask/snaps/pull/1632))
+
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/browserify-example-snap@0.38.0-flask.1...HEAD
+[0.38.0-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/browserify-example-snap@0.38.0-flask.1
