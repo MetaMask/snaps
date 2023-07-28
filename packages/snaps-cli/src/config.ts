@@ -381,7 +381,7 @@ export type SnapWebpackConfig = {
    * }
    * ```
    */
-  polyfills:
+  polyfills?:
     | boolean
     | {
         assert: boolean;
