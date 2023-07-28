@@ -8,6 +8,8 @@ responsible for:
 - Managing snap state.
 - Handling incoming requests from dapps, and routing them to the correct
   snap (through the [Execution Service]).
+- Installing and uninstalling snaps.
+- Checking if snaps are allowed to be installed (through the [Snaps Registry]).
 
 As such, it is the main entry point for the MetaMask Snaps platform. It is
 hooked up to the controller messaging system in the MetaMask extension, so it
@@ -28,3 +30,4 @@ Snap Controller updates the state of the snap in the state machine.
 [execution service]: ./execution-service.md
 [execution environment]: ../../../packages/snaps-execution-environments/src/common/BaseSnapExecutor.ts
 [xstate]: https://xstate.js.org/
+[snaps registry]: ./snaps-registry.md

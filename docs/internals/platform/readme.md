@@ -8,3 +8,4 @@ the snap controller, execution service, and execution environment.
 - [Execution Environment](./execution-environment.md)
 - [Execution Service](./execution-service.md)
 - [Snap Controller](./snap-controller.md)
+- [Snaps Registry](./snaps-registry.md)
