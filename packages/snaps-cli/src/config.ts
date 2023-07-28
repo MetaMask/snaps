@@ -364,6 +364,59 @@ export type SnapWebpackConfig = {
   };
 
   /**
+   * Whether to provide polyfills for node builtins. If `true`, all the available
+   * polyfills will be provided. If `false` no polyfills will be provided. If a
+   * configuration object is passed only the polyfills set to `true` will be provided.
+   *
+   * @default false
+   * @example
+   * ```ts
+   * polyfills: true
+   *
+   * // or
+   *
+   * polyfills: {
+   *  assert: true,
+   *  buffer: true
+   * }
+   * ```
+   */
+  polyfills:
+    | boolean
+    | {
+        assert: boolean;
+        buffer: boolean;
+        console: boolean;
+        constants: boolean;
+        crypto: boolean;
+        domain: boolean;
+        events: boolean;
+        http: boolean;
+        https: boolean;
+        os: boolean;
+        path: boolean;
+        punycode: boolean;
+        process: boolean;
+        querystring: boolean;
+        stream: boolean;
+        /* eslint-disable @typescript-eslint/naming-convention */
+        _stream_duplex: boolean;
+        _stream_passthrough: boolean;
+        _stream_readable: boolean;
+        _stream_transform: boolean;
+        _stream_writable: boolean;
+        string_decoder: boolean;
+        /* eslint-enable @typescript-eslint/naming-convention */
+        sys: boolean;
+        timers: boolean;
+        tty: boolean;
+        url: boolean;
+        util: boolean;
+        vm: boolean;
+        zlib: boolean;
+      };
+
+  /**
    * A function to customize the Webpack configuration used to build the snap.
    * This function will be called with the default Webpack configuration, and
    * should return the modified configuration. If not specified, the default

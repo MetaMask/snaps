@@ -260,7 +260,7 @@ export function getFallbacks(polyfills: ProcessedWebpackConfig['polyfills']): {
     return Object.fromEntries(
       builtinModules.map((name) => [
         name,
-        WEBPACK_FALLBACKS[name as keyof typeof WEBPACK_FALLBACKS],
+        WEBPACK_FALLBACKS[name as keyof typeof WEBPACK_FALLBACKS] ?? false,
       ]),
     );
   }

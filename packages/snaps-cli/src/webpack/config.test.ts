@@ -2,7 +2,7 @@ import { promises as fs } from 'fs';
 import ora from 'ora';
 import { dirname } from 'path';
 
-import { getMockConfig } from '../test-utils';
+import { getMockConfig, normalizePolyfillPaths } from '../test-utils';
 import { getDefaultConfiguration } from './config';
 
 jest.mock('fs');
@@ -24,7 +24,7 @@ jest.mock('path', () => ({
 jest.mock('module', () => ({
   // Built-in modules are different across Node versions, so we need to mock
   // them out.
-  builtinModules: ['fs', 'path'],
+  builtinModules: ['fs', 'path', 'buffer'],
 }));
 
 jest.mock('./utils', () => ({
@@ -155,8 +155,10 @@ describe('getDefaultConfiguration', () => {
     async (config) => {
       jest.spyOn(process, 'cwd').mockReturnValue('/foo/bar');
 
+      const output = await getDefaultConfiguration(config);
+
       // eslint-disable-next-line jest/no-restricted-matchers
-      expect(await getDefaultConfiguration(config)).toMatchSnapshot();
+      expect(normalizePolyfillPaths(output)).toMatchSnapshot();
     },
   );
 

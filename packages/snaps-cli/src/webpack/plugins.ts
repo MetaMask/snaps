@@ -393,7 +393,11 @@ export class SnapsBundleWarningsPlugin implements WebpackPluginInstance {
 
       warn(
         `The snap attempted to use one or more Node.js builtins, but no browser fallback has been provided.\n` +
-          `The MetaMask Snaps CLI does not support Node.js builtins by default. If you want to use this module, you must provide a fallback: https://webpack.js.org/configuration/resolve/#resolvefallback.\n` +
+          `The MetaMask Snaps CLI does not support Node.js builtins by default. If you want to use this module, you must set ${yellow(
+            `polyfills`,
+          )} to true or an object with the builtins to polyfill as the key and ${yellow(
+            `true`,
+          )} as the value.\n` +
           `To disable this warning, set ${yellow(
             '`stats.builtIns`',
           )} to ${yellow(
@@ -458,10 +462,12 @@ export class SnapsBundleWarningsPlugin implements WebpackPluginInstance {
           }
 
           warn(
-            `The snap attempted to use the Node.js Buffer global, which is not supported by the MetaMask Snaps CLI.\n` +
-              `To use the Buffer global, you must use the ${yellow(
-                '`ProvidePlugin`',
-              )} to inject it: https://webpack.js.org/plugins/provide-plugin/.\n` +
+            `The snap attempted to use the Node.js Buffer global, which is not supported in the MetaMask Snaps CLI by default.\n` +
+              `To use the Buffer global, you must polyfill Buffer by setting ${yellow(
+                `buffer`,
+              )} to true in the ${yellow(
+                `polyfills`,
+              )} config object in your snap config.\n` +
               `To disable this warning, set ${yellow(
                 '`stats.buffer`',
               )} to ${yellow('`false`')} in your snap config file.`,

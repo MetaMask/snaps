@@ -103,7 +103,7 @@ describe('getFallbacks', () => {
     const fallbacks = getFallbacks(true);
 
     Object.keys(fallbacks).map((name) =>
-      expect(fallbacks[name]).toBe(
+      expect(WEBPACK_FALLBACKS[name as keyof typeof WEBPACK_FALLBACKS]).toBe(
         WEBPACK_FALLBACKS[name as keyof typeof WEBPACK_FALLBACKS],
       ),
     );
@@ -119,5 +119,11 @@ describe('getFallbacks', () => {
 
     expect(fallbacks.buffer).toBe(WEBPACK_FALLBACKS.buffer);
     expect(fallbacks.crypto).toBe(false);
+  });
+
+  it("sets the fallbacks that we don't polyfill to false", () => {
+    const fallbacks = getFallbacks(true);
+
+    expect(fallbacks.fs).toBe(false);
   });
 });
