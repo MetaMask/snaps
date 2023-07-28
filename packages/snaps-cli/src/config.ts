@@ -531,6 +531,45 @@ export const SnapsWebpackConfigStruct = object({
     {},
   ),
 
+  polyfills: defaulted(
+    union([
+      boolean(),
+      object({
+        assert: defaulted(boolean(), false),
+        buffer: defaulted(boolean(), false),
+        console: defaulted(boolean(), false),
+        constants: defaulted(boolean(), false),
+        crypto: defaulted(boolean(), false),
+        domain: defaulted(boolean(), false),
+        events: defaulted(boolean(), false),
+        http: defaulted(boolean(), false),
+        https: defaulted(boolean(), false),
+        os: defaulted(boolean(), false),
+        path: defaulted(boolean(), false),
+        punycode: defaulted(boolean(), false),
+        process: defaulted(boolean(), false),
+        querystring: defaulted(boolean(), false),
+        stream: defaulted(boolean(), false),
+        /* eslint-disable @typescript-eslint/naming-convention */
+        _stream_duplex: defaulted(boolean(), false),
+        _stream_passthrough: defaulted(boolean(), false),
+        _stream_readable: defaulted(boolean(), false),
+        _stream_transform: defaulted(boolean(), false),
+        _stream_writable: defaulted(boolean(), false),
+        string_decoder: defaulted(boolean(), false),
+        /* eslint-enable @typescript-eslint/naming-convention */
+        sys: defaulted(boolean(), false),
+        timers: defaulted(boolean(), false),
+        tty: defaulted(boolean(), false),
+        url: defaulted(boolean(), false),
+        util: defaulted(boolean(), false),
+        vm: defaulted(boolean(), false),
+        zlib: defaulted(boolean(), false),
+      }),
+    ]),
+    false,
+  ),
+
   customizeWebpackConfig: optional(
     SnapsWebpackCustomizeWebpackConfigFunctionStruct,
   ),

@@ -115,6 +115,41 @@ describe('getDefaultConfiguration', () => {
         path: 'snap.manifest.json',
       },
     }),
+    getMockConfig('webpack', {
+      input: 'src/index.js',
+      output: {
+        path: 'dist',
+        minimize: false,
+      },
+      manifest: {
+        path: 'snap.manifest.json',
+      },
+      polyfills: false,
+    }),
+    getMockConfig('webpack', {
+      input: 'src/index.js',
+      output: {
+        path: 'dist',
+        minimize: false,
+      },
+      manifest: {
+        path: 'snap.manifest.json',
+      },
+      polyfills: true,
+    }),
+    getMockConfig('webpack', {
+      input: 'src/index.js',
+      output: {
+        path: 'dist',
+        minimize: false,
+      },
+      manifest: {
+        path: 'snap.manifest.json',
+      },
+      polyfills: {
+        buffer: true,
+      },
+    }),
   ])(
     'returns the default Webpack configuration for the given CLI config',
     async (config) => {

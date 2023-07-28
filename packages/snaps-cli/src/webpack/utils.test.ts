@@ -1,10 +1,13 @@
 import { getMockConfig } from '@metamask/snaps-cli/test-utils';
 import { dim } from 'chalk';
+import type { ProcessedWebpackConfig } from 'src/config';
 
 import {
+  WEBPACK_FALLBACKS,
   getBrowserslistTargets,
   getDefaultLoader,
   getDevTool,
+  getFallbacks,
   getProgressHandler,
   pluralize,
 } from './utils';
@@ -86,5 +89,35 @@ describe('pluralize', () => {
     expect(pluralize(0, 'test', 'problems')).toBe('problems');
     expect(pluralize(1, 'test', 'problems')).toBe('test');
     expect(pluralize(2, 'test', 'problems')).toBe('problems');
+  });
+});
+
+describe('getFallbacks', () => {
+  it('disables all fallbacks if polyfills is set to false', () => {
+    const fallbacks = getFallbacks(false);
+
+    Object.keys(fallbacks).map((name) => expect(fallbacks[name]).toBe(false));
+  });
+
+  it('requires all the polyfills if polyfills is set to true', () => {
+    const fallbacks = getFallbacks(true);
+
+    Object.keys(fallbacks).map((name) =>
+      expect(fallbacks[name]).toBe(
+        WEBPACK_FALLBACKS[name as keyof typeof WEBPACK_FALLBACKS],
+      ),
+    );
+  });
+
+  it('disable or enable the polyfill if a polyfill config is passed', () => {
+    const config = {
+      buffer: true,
+      crypto: false,
+    } as ProcessedWebpackConfig['polyfills'];
+
+    const fallbacks = getFallbacks(config);
+
+    expect(fallbacks.buffer).toBe(WEBPACK_FALLBACKS.buffer);
+    expect(fallbacks.crypto).toBe(false);
   });
 });

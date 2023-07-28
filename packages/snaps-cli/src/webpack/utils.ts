@@ -1,5 +1,6 @@
 import { dim } from 'chalk';
 import { promises as fs } from 'fs';
+import { builtinModules } from 'module';
 import type { Ora } from 'ora';
 import { dirname, resolve } from 'path';
 import type { Configuration } from 'webpack';
@@ -13,6 +14,41 @@ export const BROWSERSLIST_FILE = resolve(
   ),
   '.browserslistrc',
 );
+
+export const WEBPACK_FALLBACKS = {
+  assert: require.resolve('assert/'),
+  buffer: require.resolve('buffer/'),
+  console: require.resolve('console-browserify'),
+  constants: require.resolve('constants-browserify'),
+  crypto: require.resolve('crypto-browserify'),
+  domain: require.resolve('domain-browser'),
+  events: require.resolve('events/'),
+  http: require.resolve('stream-http'),
+  https: require.resolve('https-browserify'),
+  os: require.resolve('os-browserify/browser'),
+  path: require.resolve('path-browserify'),
+  punycode: require.resolve('punycode/'),
+  process: require.resolve('process/browser'),
+  querystring: require.resolve('querystring-es3'),
+  stream: require.resolve('stream-browserify'),
+  /* eslint-disable @typescript-eslint/naming-convention  */
+  _stream_duplex: require.resolve('readable-stream/lib/_stream_duplex'),
+  _stream_passthrough: require.resolve(
+    'readable-stream/lib/_stream_passthrough',
+  ),
+  _stream_readable: require.resolve('readable-stream/lib/_stream_readable'),
+  _stream_transform: require.resolve('readable-stream/lib/_stream_transform'),
+  _stream_writable: require.resolve('readable-stream/lib/_stream_writable'),
+  string_decoder: require.resolve('string_decoder/'),
+  /* eslint-enable @typescript-eslint/naming-convention  */
+  sys: require.resolve('util/'),
+  timers: require.resolve('timers-browserify'),
+  tty: require.resolve('tty-browserify'),
+  url: require.resolve('url/'),
+  util: require.resolve('util/'),
+  vm: require.resolve('vm-browserify'),
+  zlib: require.resolve('browserify-zlib'),
+};
 
 /**
  * Get the default loader for JavaScript and TypeScript files, based on the
@@ -208,4 +244,37 @@ export function pluralize(
   plural = `${singular}s`,
 ) {
   return count === 1 ? singular : plural;
+}
+
+/**
+ * Get an object that can be used as fallback config for Webpack's
+ * `fallback` config.
+ *
+ * @param polyfills - The polyfill object from the snap config.
+ * @returns The webpack fallback config.
+ */
+export function getFallbacks(polyfills: ProcessedWebpackConfig['polyfills']): {
+  [index: string]: string | false;
+} {
+  if (polyfills === true) {
+    return Object.fromEntries(
+      builtinModules.map((name) => [
+        name,
+        WEBPACK_FALLBACKS[name as keyof typeof WEBPACK_FALLBACKS],
+      ]),
+    );
+  }
+
+  if (polyfills === false) {
+    return Object.fromEntries(builtinModules.map((name) => [name, false]));
+  }
+
+  return Object.fromEntries(
+    builtinModules.map((name) => [
+      name,
+      polyfills[name as keyof ProcessedWebpackConfig['polyfills']]
+        ? WEBPACK_FALLBACKS[name as keyof typeof WEBPACK_FALLBACKS]
+        : false,
+    ]),
+  );
 }

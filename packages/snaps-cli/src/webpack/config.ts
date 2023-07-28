@@ -1,10 +1,9 @@
 import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
-import { builtinModules } from 'module';
 import type { Ora } from 'ora';
 import { resolve } from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import type { Configuration } from 'webpack';
-import { EnvironmentPlugin, ProgressPlugin } from 'webpack';
+import { EnvironmentPlugin, ProgressPlugin, ProvidePlugin } from 'webpack';
 
 import type { ProcessedWebpackConfig } from '../config';
 import {
@@ -17,6 +16,7 @@ import {
   BROWSERSLIST_FILE,
   getDefaultLoader,
   getDevTool,
+  getFallbacks,
   getProgressHandler,
 } from './utils';
 
@@ -207,7 +207,7 @@ export async function getDefaultConfiguration(
        * aren't resolved. By default, we set Node.js built-ins to `false`, so
        * that they are ignored.
        */
-      fallback: Object.fromEntries(builtinModules.map((name) => [name, false])),
+      fallback: getFallbacks(config.polyfills),
 
       /**
        * The plugins to use. We use the {@link SnapsBuiltInResolver} to show
@@ -283,6 +283,16 @@ export async function getDefaultConfiguration(
           },
           options.spinner,
         ),
+
+      /**
+       * The `ProviderPlugin` is a Webpack plugin that automatically load
+       * modules instead of having to import or require them everywhere.
+       */
+      (config.polyfills === true ||
+        (config.polyfills !== false && config.polyfills.buffer)) &&
+        new ProvidePlugin({
+          Buffer: ['buffer', 'Buffer'],
+        }),
     ].filter(Boolean),
 
     /**
