@@ -109,13 +109,10 @@ export function normalizePolyfillPaths(config: Configuration): Configuration {
 
   const normalizedFallbacks = Object.keys(fallback).reduce((acc, index) => {
     if (typeof (fallback as Record<string, string>)[index] === 'string') {
-      const pathArray = (fallback as Record<string, string>)?.[index].split(
-        '/',
-      );
-
-      const normalized = pathArray
-        .slice(pathArray.findIndex((el: string) => el === 'node_module') - 2)
-        .join('/');
+      const normalized = (fallback as Record<string, string>)?.[index]
+        .replace(/\\/u, '/')
+        .split('/')
+        .pop();
 
       return { [index]: normalized, ...acc };
     }
