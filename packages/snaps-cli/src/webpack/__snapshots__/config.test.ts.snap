@@ -1075,9 +1075,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
       ".ts",
     ],
     "fallback": {
-      "buffer": "index.js",
+      "buffer": "/foo/bar/index.js",
       "fs": false,
-      "path": "index.js",
+      "path": "/foo/bar/index.js",
     },
     "plugins": [
       SnapsBuiltInResolver {
@@ -1219,7 +1219,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
       ".ts",
     ],
     "fallback": {
-      "buffer": "index.js",
+      "buffer": "/foo/bar/index.js",
       "fs": false,
       "path": false,
     },

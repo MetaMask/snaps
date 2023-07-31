@@ -384,36 +384,36 @@ export type SnapWebpackConfig = {
   polyfills?:
     | boolean
     | {
-        assert: boolean;
-        buffer: boolean;
-        console: boolean;
-        constants: boolean;
-        crypto: boolean;
-        domain: boolean;
-        events: boolean;
-        http: boolean;
-        https: boolean;
-        os: boolean;
-        path: boolean;
-        punycode: boolean;
-        process: boolean;
-        querystring: boolean;
-        stream: boolean;
+        assert?: boolean;
+        buffer?: boolean;
+        console?: boolean;
+        constants?: boolean;
+        crypto?: boolean;
+        domain?: boolean;
+        events?: boolean;
+        http?: boolean;
+        https?: boolean;
+        os?: boolean;
+        path?: boolean;
+        punycode?: boolean;
+        process?: boolean;
+        querystring?: boolean;
+        stream?: boolean;
         /* eslint-disable @typescript-eslint/naming-convention */
-        _stream_duplex: boolean;
-        _stream_passthrough: boolean;
-        _stream_readable: boolean;
-        _stream_transform: boolean;
-        _stream_writable: boolean;
-        string_decoder: boolean;
+        _stream_duplex?: boolean;
+        _stream_passthrough?: boolean;
+        _stream_readable?: boolean;
+        _stream_transform?: boolean;
+        _stream_writable?: boolean;
+        string_decoder?: boolean;
         /* eslint-enable @typescript-eslint/naming-convention */
-        sys: boolean;
-        timers: boolean;
-        tty: boolean;
-        url: boolean;
-        util: boolean;
-        vm: boolean;
-        zlib: boolean;
+        sys?: boolean;
+        timers?: boolean;
+        tty?: boolean;
+        url?: boolean;
+        util?: boolean;
+        vm?: boolean;
+        zlib?: boolean;
       };
 
   /**
