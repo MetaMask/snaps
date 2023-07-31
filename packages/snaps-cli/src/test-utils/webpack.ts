@@ -92,12 +92,12 @@ export async function compile(
 }
 
 /**
- * Normalizes the fallback modules path to ensure that snapshots have the same path on different systems.
+ * Fakes the fallback modules path to ensure that snapshots have the same path on different systems.
  *
  * @param config - The webpack configuration.
  * @returns The webpack configuration with the fallback paths normalized.
  */
-export function normalizePolyfillPaths(config: Configuration): Configuration {
+export function fakePolyfillPaths(config: Configuration): Configuration {
   if (!config.resolve?.fallback) {
     return config;
   }
@@ -109,12 +109,7 @@ export function normalizePolyfillPaths(config: Configuration): Configuration {
 
   const normalizedFallbacks = Object.keys(fallback).reduce((acc, index) => {
     if (typeof (fallback as Record<string, string>)[index] === 'string') {
-      const normalized = (fallback as Record<string, string>)?.[index]
-        .replace(/\\/u, '/')
-        .split('/')
-        .pop();
-
-      return { [index]: normalized, ...acc };
+      return { [index]: '/foo/bar/index.js', ...acc };
     }
 
     return { [index]: (fallback as Record<string, string>)[index], ...acc };
