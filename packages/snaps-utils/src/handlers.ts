@@ -76,8 +76,12 @@ export type OnCronjobHandler<
  * If the snap has no resolved addresses from its lookup, this should be `null`.
  */
 export type OnNameLookupResponse = {
-  resolvedAccount: AccountAddress;
+  resolvedAddress: AccountAddress;
 } | null;
+
+export type OnNameLookupArgs = {
+  chainId: Caip2ChainId;
+} & ({ domain: string } | { address: string });
 
 /**
  * The `onNameLookup` handler. This is called whenever content is entered
@@ -89,10 +93,9 @@ export type OnNameLookupResponse = {
  * being submitted to.
  * @returns Resolved address(es) from the content lookup. See {@link OnNameLookupResponse}.
  */
-export type OnNameLookupHandler = (args: {
-  chainId: Caip2ChainId;
-  domain: string;
-}) => Promise<OnNameLookupResponse>;
+export type OnNameLookupHandler = (
+  args: OnNameLookupArgs,
+) => Promise<OnNameLookupResponse>;
 
 /**
  * All the function-based handlers that a snap can implement.
