@@ -1,10 +1,10 @@
 /* eslint-disable no-console, n/global-require */
+const LavaMoatBrowserify = require('@metamask/lavamoat-browserify');
 const {
   createResolvePath,
 } = require('babel-plugin-tsconfig-paths-module-resolver');
 const browserify = require('browserify');
 const { promises: fs } = require('fs');
-const LavaMoatBrowserify = require('lavamoat-browserify');
 const { builtinModules } = require('node:module');
 const path = require('path');
 const { minify } = require('terser');
@@ -70,7 +70,7 @@ async function main() {
   };
 
   const lavaMoatRuntimeString = await fs.readFile(
-    require.resolve('@lavamoat/lavapack/src/runtime.js'),
+    require.resolve('@metamask/lavapack/src/runtime.js'),
     'utf-8',
   );
 

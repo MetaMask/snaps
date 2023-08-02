@@ -933,7 +933,68 @@
         "@babel/preset-env>@babel/helper-plugin-utils": true
       }
     },
-    "@lavamoat/lavapack": {
+    "@metamask/lavamoat-browserify": {
+      "builtin": {
+        "fs.existsSync": true,
+        "fs.mkdirSync": true,
+        "fs.readFileSync": true,
+        "fs.writeFileSync": true,
+        "path.dirname": true,
+        "path.extname": true,
+        "path.resolve": true,
+        "util.callbackify": true
+      },
+      "globals": {
+        "console.warn": true,
+        "process.cwd": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/lavamoat-browserify>concat-stream": true,
+        "@metamask/lavamoat-browserify>duplexify": true,
+        "@metamask/lavamoat-browserify>through2": true,
+        "@metamask/lavapack": true,
+        "@metamask/lavapack>@metamask/lavamoat-core": true,
+        "browserify>browser-resolve": true,
+        "lavamoat>@lavamoat/aa": true,
+        "lavamoat>json-stable-stringify": true,
+        "stream-browserify>readable-stream": true
+      }
+    },
+    "@metamask/lavamoat-browserify>concat-stream": {
+      "globals": {
+        "Buffer.concat": true,
+        "Buffer.isBuffer": true
+      },
+      "packages": {
+        "browserify>concat-stream>typedarray": true,
+        "browserify>inherits": true,
+        "stream-browserify>readable-stream": true,
+        "terser>source-map-support>buffer-from": true
+      }
+    },
+    "@metamask/lavamoat-browserify>duplexify": {
+      "globals": {
+        "Buffer": true,
+        "process.nextTick": true
+      },
+      "packages": {
+        "@metamask/lavamoat-browserify>duplexify>stream-shift": true,
+        "browserify>inherits": true,
+        "pump>end-of-stream": true,
+        "stream-browserify>readable-stream": true
+      }
+    },
+    "@metamask/lavamoat-browserify>through2": {
+      "globals": {
+        "process.nextTick": true
+      },
+      "packages": {
+        "browserify>inherits": true,
+        "stream-browserify>readable-stream": true
+      }
+    },
+    "@metamask/lavapack": {
       "builtin": {
         "assert": true,
         "buffer.Buffer.from": true,
@@ -946,21 +1007,43 @@
       "globals": {
         "__dirname": true,
         "__filename.slice": true,
+        "console.warn": true,
         "process.cwd": true,
         "setTimeout": true
       },
       "packages": {
-        "@lavamoat/lavapack>combine-source-map": true,
-        "@lavamoat/lavapack>convert-source-map": true,
-        "@lavamoat/lavapack>through2": true,
-        "@lavamoat/lavapack>umd": true,
+        "@metamask/lavapack>@metamask/lavamoat-core": true,
+        "@metamask/lavapack>combine-source-map": true,
+        "@metamask/lavapack>convert-source-map": true,
+        "@metamask/lavapack>through2": true,
+        "@metamask/lavapack>umd": true,
         "browserify>JSONStream": true,
         "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-core": true,
         "stream-browserify>readable-stream": true
       }
     },
-    "@lavamoat/lavapack>combine-source-map": {
+    "@metamask/lavapack>@metamask/lavamoat-core": {
+      "builtin": {
+        "events": true,
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "fs.writeFileSync": true,
+        "path.extname": true,
+        "path.join": true
+      },
+      "globals": {
+        "__dirname": true,
+        "console.error": true,
+        "console.warn": true,
+        "define": true
+      },
+      "packages": {
+        "lavamoat>json-stable-stringify": true,
+        "lavamoat>lavamoat-core>merge-deep": true,
+        "lavamoat>lavamoat-tofu": true
+      }
+    },
+    "@metamask/lavapack>combine-source-map": {
       "builtin": {
         "path.dirname": true,
         "path.join": true
@@ -969,13 +1052,13 @@
         "process.platform": true
       },
       "packages": {
-        "@lavamoat/lavapack>combine-source-map>convert-source-map": true,
-        "@lavamoat/lavapack>combine-source-map>inline-source-map": true,
-        "@lavamoat/lavapack>combine-source-map>lodash.memoize": true,
-        "@lavamoat/lavapack>combine-source-map>source-map": true
+        "@metamask/lavapack>combine-source-map>convert-source-map": true,
+        "@metamask/lavapack>combine-source-map>inline-source-map": true,
+        "@metamask/lavapack>combine-source-map>lodash.memoize": true,
+        "@metamask/lavapack>combine-source-map>source-map": true
       }
     },
-    "@lavamoat/lavapack>combine-source-map>convert-source-map": {
+    "@metamask/lavapack>combine-source-map>convert-source-map": {
       "builtin": {
         "fs.readFileSync": true,
         "path.join": true
@@ -984,15 +1067,15 @@
         "Buffer": true
       }
     },
-    "@lavamoat/lavapack>combine-source-map>inline-source-map": {
+    "@metamask/lavapack>combine-source-map>inline-source-map": {
       "globals": {
         "Buffer.from": true
       },
       "packages": {
-        "@lavamoat/lavapack>combine-source-map>inline-source-map>source-map": true
+        "@metamask/lavapack>combine-source-map>inline-source-map>source-map": true
       }
     },
-    "@lavamoat/lavapack>convert-source-map": {
+    "@metamask/lavapack>convert-source-map": {
       "globals": {
         "Buffer": true,
         "atob": true,
@@ -1000,7 +1083,7 @@
         "value": true
       }
     },
-    "@lavamoat/lavapack>through2": {
+    "@metamask/lavapack>through2": {
       "packages": {
         "stream-browserify>readable-stream": true
       }
@@ -1225,8 +1308,8 @@
         "process.cwd": true
       },
       "packages": {
-        "@lavamoat/lavapack>combine-source-map": true,
-        "@lavamoat/lavapack>umd": true,
+        "@metamask/lavapack>combine-source-map": true,
+        "@metamask/lavapack>umd": true,
         "browserify>JSONStream": true,
         "browserify>browser-pack>safe-buffer": true,
         "browserify>defined": true,
@@ -1419,7 +1502,7 @@
         "Buffer.isBuffer": true
       },
       "packages": {
-        "@lavamoat/lavapack>combine-source-map": true,
+        "@metamask/lavapack>combine-source-map": true,
         "browserify>glob>path-is-absolute": true,
         "browserify>insert-module-globals>undeclared-identifiers": true,
         "browserify>syntax-error>acorn-node": true,
@@ -1869,64 +1952,7 @@
     },
     "lavamoat-browserify": {
       "builtin": {
-        "fs.existsSync": true,
-        "fs.mkdirSync": true,
-        "fs.readFileSync": true,
-        "fs.writeFileSync": true,
-        "node:module": true,
-        "path.dirname": true,
-        "path.extname": true,
-        "path.resolve": true,
-        "util.callbackify": true
-      },
-      "globals": {
-        "console.warn": true,
-        "process.cwd": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@lavamoat/lavapack": true,
-        "browserify>browser-resolve": true,
-        "lavamoat-browserify>concat-stream": true,
-        "lavamoat-browserify>duplexify": true,
-        "lavamoat-browserify>through2": true,
-        "lavamoat>@lavamoat/aa": true,
-        "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-core": true,
-        "stream-browserify>readable-stream": true
-      }
-    },
-    "lavamoat-browserify>concat-stream": {
-      "globals": {
-        "Buffer.concat": true,
-        "Buffer.isBuffer": true
-      },
-      "packages": {
-        "browserify>concat-stream>typedarray": true,
-        "browserify>inherits": true,
-        "stream-browserify>readable-stream": true,
-        "terser>source-map-support>buffer-from": true
-      }
-    },
-    "lavamoat-browserify>duplexify": {
-      "globals": {
-        "Buffer": true,
-        "process.nextTick": true
-      },
-      "packages": {
-        "browserify>inherits": true,
-        "lavamoat-browserify>duplexify>stream-shift": true,
-        "pump>end-of-stream": true,
-        "stream-browserify>readable-stream": true
-      }
-    },
-    "lavamoat-browserify>through2": {
-      "globals": {
-        "process.nextTick": true
-      },
-      "packages": {
-        "browserify>inherits": true,
-        "stream-browserify>readable-stream": true
+        "node:module": true
       }
     },
     "lavamoat>@babel/code-frame": {
@@ -2004,27 +2030,6 @@
     "lavamoat>json-stable-stringify": {
       "packages": {
         "lavamoat>json-stable-stringify>jsonify": true
-      }
-    },
-    "lavamoat>lavamoat-core": {
-      "builtin": {
-        "events": true,
-        "fs.existsSync": true,
-        "fs.readFileSync": true,
-        "fs.writeFileSync": true,
-        "path.extname": true,
-        "path.join": true
-      },
-      "globals": {
-        "__dirname": true,
-        "console.error": true,
-        "console.warn": true,
-        "define": true
-      },
-      "packages": {
-        "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-core>merge-deep": true,
-        "lavamoat>lavamoat-tofu": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep": {
