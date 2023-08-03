@@ -1,0 +1,30 @@
+diff --git a/src/index.js b/src/index.js
+index b0de0d6fea237ed3e11d393814174d5696cae3ff..130ac284eea62cb9e7f0d0da591ed836e5a39fd1 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -8,6 +8,7 @@ const createLavaPack = require('@lavamoat/lavapack')
+ const { createSesWorkaroundsTransform } = require('./sesTransforms')
+ const { loadCanonicalNameMap } = require('@lavamoat/aa')
+ const browserResolve = require('browser-resolve')
++const { isBuiltin } = require('node:module')
+
+
+ // these are the reccomended arguments for lavaMoat to work well with browserify
+@@ -71,7 +72,7 @@ function plugin (browserify, pluginOpts) {
+       browserify.pipeline.get('emit-deps').push(createModuleInspectorSpy({
+         policyOverride,
+         // no builtins in the browser (yet!)
+-        isBuiltin: () => false,
++        isBuiltin: (name) => browserify._options.node && isBuiltin(name),
+         // should prepare debug info
+         includeDebugInfo: configuration.writeAutoPolicyDebug,
+         // write policy files to disk
+@@ -280,7 +281,7 @@ function validatePolicy (policy) {
+   Object.entries(policy.resources).forEach(([packageName, packageOpts], index) => {
+     const packageOptions = Object.keys(packageOpts)
+     const packageEntries = Object.values(packageOpts)
+-    const optionsWhitelist = ['globals', 'packages']
++    const optionsWhitelist = ['globals', 'packages', 'builtin']
+     const valuesWhitelist = [true, 'write']
+
+     if (!packageOptions.every(packageOpt => optionsWhitelist.includes(packageOpt))) {
