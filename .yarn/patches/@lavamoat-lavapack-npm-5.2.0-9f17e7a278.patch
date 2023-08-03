@@ -1,0 +1,22 @@
+diff --git a/src/runtime.js b/src/runtime.js
+index 2449c4410fbc4603ccb08e13a82c5083f4e8f7c6..67716d244251b57a96cad0b2e933169afb8e17b6 100644
+--- a/src/runtime.js
++++ b/src/runtime.js
+@@ -12045,6 +12045,17 @@ module.exports = {
+
+
+   function loadModuleData (moduleId) {
++    if (typeof window === 'undefined' && typeof require === 'function' && require('node:module').isBuiltin(moduleId)) {
++      return {
++        type: 'builtin',
++        package: moduleId,
++        id: moduleId,
++        // Using unprotected require
++        moduleInitializer: (_, module) => {
++          module.exports = require(moduleId);
++        },
++      }
++    }
+     if (!moduleRegistry.has(moduleId)) {
+       throw new Error(`no module registered for "${moduleId}" (${typeof moduleId})`)
+     }
