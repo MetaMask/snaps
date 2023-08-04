@@ -1,6 +1,8 @@
 import type { Component } from '@metamask/snaps-ui';
 import type { Json, JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 
+import type { EnumToUnion } from './enum';
+
 export enum HandlerType {
   OnRpcRequest = 'onRpcRequest',
   OnTransaction = 'onTransaction',
@@ -103,7 +105,7 @@ export enum SeverityLevel {
  */
 export type OnTransactionResponse = {
   content: Component | null;
-  severity?: SeverityLevel;
+  severity?: EnumToUnion<SeverityLevel>;
 };
 
 /**
