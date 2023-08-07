@@ -4195,12 +4195,13 @@ __metadata:
   linkType: hard
 
 "@metamask/eth-json-rpc-provider@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/eth-json-rpc-provider@npm:1.0.0"
+  version: 1.0.1
+  resolution: "@metamask/eth-json-rpc-provider@npm:1.0.1"
   dependencies:
-    "@metamask/safe-event-emitter": ^2.0.0
-    json-rpc-engine: ^6.1.0
-  checksum: 27865d84d90030db1a9e5a66bc0b0ae079706fb7be635ec1e9bd4f64771e819aae78f0a026c6629d3a1a2eb277fcd51977315c049c47a70df1dd95d1d4106982
+    "@metamask/json-rpc-engine": ^7.0.0
+    "@metamask/safe-event-emitter": ^3.0.0
+    "@metamask/utils": ^5.0.1
+  checksum: ff97648b002d2889bd020c03abc26137cf068df3280e46144b5333c1b294f35f5099361343825f900ef20b9dcb6819495830b7a99eb1cbfbd671e5b11c0dfde1
   languageName: node
   linkType: hard
 
@@ -4426,6 +4427,17 @@ __metadata:
     typescript: ~4.8.4
   languageName: unknown
   linkType: soft
+
+"@metamask/json-rpc-engine@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "@metamask/json-rpc-engine@npm:7.0.0"
+  dependencies:
+    "@metamask/rpc-errors": ^5.0.0
+    "@metamask/safe-event-emitter": ^2.0.0
+    "@metamask/utils": ^5.0.1
+  checksum: d22347ee4597bc72cdc34e65a27872ed8e77de188c5b95fed9133c25289cd4abd7aafa72e3e326d8a7449a857c275ed6435642727c30c51319f5d97a579c5f49
+  languageName: node
+  linkType: hard
 
 "@metamask/json-rpc-example-snap@workspace:^, @metamask/json-rpc-example-snap@workspace:packages/examples/packages/json-rpc":
   version: 0.0.0-use.local
@@ -4725,7 +4737,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/rpc-errors@npm:^5.1.1":
+"@metamask/rpc-errors@npm:^5.0.0, @metamask/rpc-errors@npm:^5.1.1":
   version: 5.1.1
   resolution: "@metamask/rpc-errors@npm:5.1.1"
   dependencies:
