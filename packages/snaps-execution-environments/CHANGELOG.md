@@ -10,12 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update LavaMoat packages to latest versions ([#1657](https://github.com/MetaMask/snaps/pull/1657))
 
-### Fixed
-- Pass correct scuttle args ([#1654](https://github.com/MetaMask/snaps/pull/1654))
-
 ### Removed
 - Remove direct dependency on SES ([#1660](https://github.com/MetaMask/snaps/pull/1660))
   - It's now a dev dependency, as it's only used in development.
+
+### Fixed
+- Pass correct scuttle args ([#1654](https://github.com/MetaMask/snaps/pull/1654))
 
 ## [0.38.0-flask.1]
 ### Added
