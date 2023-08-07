@@ -3578,42 +3578,42 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/lavapack@npm:5.1.2":
-  version: 5.1.2
-  resolution: "@lavamoat/lavapack@npm:5.1.2"
+"@lavamoat/lavapack@npm:5.2.1":
+  version: 5.2.1
+  resolution: "@lavamoat/lavapack@npm:5.2.1"
   dependencies:
     JSONStream: ^1.3.5
     combine-source-map: ^0.8.0
     convert-source-map: ^2.0.0
     json-stable-stringify: ^1.0.2
-    lavamoat-core: ^14.1.1
+    lavamoat-core: ^14.2.1
     readable-stream: ^3.6.0
     through2: ^4.0.2
     umd: ^3.0.3
-  checksum: 0499c8a5f42079f2e4538bc6c3569b21f054daab46e7dcf68daf7e29cc710fe397101b38484f174218216947c30758efe2040970e1aa4711ff8d8ae6ccd42c9d
+  checksum: 8d453e37b69f01ab55ada10e72875750f7d60e16a717bdb2a78867d5413c4c1c493731beef3f4549ac3c61ea34e8ae2386e97c599e962a33582d4b5bc89f1d1b
   languageName: node
   linkType: hard
 
-"@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A5.1.2#./.yarn/patches/@lavamoat-lavapack-npm-5.1.2-67a55c51e2.patch::locator=root%40workspace%3A.":
-  version: 5.1.2
-  resolution: "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A5.1.2#./.yarn/patches/@lavamoat-lavapack-npm-5.1.2-67a55c51e2.patch::version=5.1.2&hash=cbcea4&locator=root%40workspace%3A."
+"@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A5.2.1#./.yarn/patches/@lavamoat-lavapack-npm-5.2.1-6ac9929a63.patch::locator=root%40workspace%3A.":
+  version: 5.2.1
+  resolution: "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A5.2.1#./.yarn/patches/@lavamoat-lavapack-npm-5.2.1-6ac9929a63.patch::version=5.2.1&hash=b92d3b&locator=root%40workspace%3A."
   dependencies:
     JSONStream: ^1.3.5
     combine-source-map: ^0.8.0
     convert-source-map: ^2.0.0
     json-stable-stringify: ^1.0.2
-    lavamoat-core: ^14.1.1
+    lavamoat-core: ^14.2.1
     readable-stream: ^3.6.0
     through2: ^4.0.2
     umd: ^3.0.3
-  checksum: 195fa6e0717b85b30fcb47d93066f3ab4780446369bfe790590d81eb7a9af07668d71968469c5015db3191f82e49e66fc5edb7f59b0d1762fde64e1b56cdeb21
+  checksum: 533f57df67cc90f1ee597a233bdf2ce7ea323a9ab1016d696ea90a039bc08f14b64e39ecdf8b77c05b96bc9bb70f816956bbf8607f244333d55bd7f12a4c11f8
   languageName: node
   linkType: hard
 
-"@lavamoat/lavatube@npm:^0.0.1":
-  version: 0.0.1
-  resolution: "@lavamoat/lavatube@npm:0.0.1"
-  checksum: 91b73a9053f16e3d8e630df4f3e60cbdea4fea0abb820e5124e92e4b867f934d0e55f1c1430272a8100ed4d547494bb818baee86216bdf430104184ad5ce735c
+"@lavamoat/lavatube@npm:^0.2.3":
+  version: 0.2.3
+  resolution: "@lavamoat/lavatube@npm:0.2.3"
+  checksum: 3dfae66b3585b87fbdb7ef5984b4e33e0a5816286e1e70709b95c2fb4c83b07b280a598d6162b1f8296c53f13b4f94461f715c580d8bf62dbc159bcb76088f3e
   languageName: node
   linkType: hard
 
@@ -5019,8 +5019,8 @@ __metadata:
     "@esbuild-plugins/node-globals-polyfill": ^0.2.3
     "@esbuild-plugins/node-modules-polyfill": ^0.2.2
     "@lavamoat/allow-scripts": ^2.3.1
-    "@lavamoat/lavapack": ^5.1.2
-    "@lavamoat/lavatube": ^0.0.1
+    "@lavamoat/lavapack": ^5.2.1
+    "@lavamoat/lavatube": ^0.2.3
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -5069,7 +5069,7 @@ __metadata:
     jest-fetch-mock: ^3.0.3
     json-rpc-engine: ^6.1.0
     lavamoat: ^7.0.0
-    lavamoat-browserify: ^15.6.0
+    lavamoat-browserify: ^15.7.1
     memfs: ^3.4.13
     nanoid: ^3.1.31
     prettier: ^2.7.1
@@ -16079,54 +16079,54 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-browserify@npm:15.6.0":
-  version: 15.6.0
-  resolution: "lavamoat-browserify@npm:15.6.0"
+"lavamoat-browserify@npm:15.7.1":
+  version: 15.7.1
+  resolution: "lavamoat-browserify@npm:15.7.1"
   dependencies:
     "@lavamoat/aa": ^3.1.0
-    "@lavamoat/lavapack": ^5.1.2
+    "@lavamoat/lavapack": ^5.2.1
     browser-resolve: ^2.0.0
     concat-stream: ^2.0.0
     convert-source-map: ^1.9.0
     duplexify: ^4.1.1
     json-stable-stringify: ^1.0.1
-    lavamoat-core: ^14.1.1
+    lavamoat-core: ^14.2.1
     pify: ^4.0.1
     readable-stream: ^3.6.0
     source-map: ^0.7.4
     through2: ^3.0.0
-  checksum: ee348e6c1cf65ec0f0d7461efc970b1cb0c4b994963fdee705da6cc789b1f7940eee784b7f1e798c0e5410293aa2c163e3667da764845f3887545b05e8a795a1
+  checksum: 304a8b343d5e15da08f4a7a2afe818e08def2d021960f96e5522514f674ff989675664d65091769bcb36af364d8991eb81d85438c96ca84451c5e288cd39f9be
   languageName: node
   linkType: hard
 
-"lavamoat-browserify@patch:lavamoat-browserify@npm%3A15.6.0#./.yarn/patches/lavamoat-browserify-npm-15.6.0-e22edafc36.patch::locator=root%40workspace%3A.":
-  version: 15.6.0
-  resolution: "lavamoat-browserify@patch:lavamoat-browserify@npm%3A15.6.0#./.yarn/patches/lavamoat-browserify-npm-15.6.0-e22edafc36.patch::version=15.6.0&hash=3f1d28&locator=root%40workspace%3A."
+"lavamoat-browserify@patch:lavamoat-browserify@npm%3A15.7.1#./.yarn/patches/lavamoat-browserify-npm-15.7.1-c443b6ace1.patch::locator=root%40workspace%3A.":
+  version: 15.7.1
+  resolution: "lavamoat-browserify@patch:lavamoat-browserify@npm%3A15.7.1#./.yarn/patches/lavamoat-browserify-npm-15.7.1-c443b6ace1.patch::version=15.7.1&hash=2de70e&locator=root%40workspace%3A."
   dependencies:
     "@lavamoat/aa": ^3.1.0
-    "@lavamoat/lavapack": ^5.1.2
+    "@lavamoat/lavapack": ^5.2.1
     browser-resolve: ^2.0.0
     concat-stream: ^2.0.0
     convert-source-map: ^1.9.0
     duplexify: ^4.1.1
     json-stable-stringify: ^1.0.1
-    lavamoat-core: ^14.1.1
+    lavamoat-core: ^14.2.1
     pify: ^4.0.1
     readable-stream: ^3.6.0
     source-map: ^0.7.4
     through2: ^3.0.0
-  checksum: 8810aa56d5839b0c05ceee4064b66b478f953486157fc40e2c276a1753e33f976c836be58d75476395c191fe204bbd038a7a2b5758ff8bca89c86106844c7c88
+  checksum: a406205d874d7a826b5f11557baf0427cd5543dbff793ee6baaa2c594863f1cabf1d5c5565145682a38ff15a00fe323c931edd218a8398d576d14e7e82d9041a
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^14.1.1":
-  version: 14.1.1
-  resolution: "lavamoat-core@npm:14.1.1"
+"lavamoat-core@npm:^14.1.1, lavamoat-core@npm:^14.2.1":
+  version: 14.2.1
+  resolution: "lavamoat-core@npm:14.2.1"
   dependencies:
     json-stable-stringify: ^1.0.2
     lavamoat-tofu: ^6.0.2
     merge-deep: ^3.0.3
-  checksum: e27bd68b2f5a220d40b02beb7cdcdcb6682ed418de197e38cd50e95a007c66d839b56cd4fc69e2d1e066a873bd1a575116305af4d9ac2040c61b0471fe686b98
+  checksum: 84d52ed1ea4b240e8ed9ba63e33716b208d832a88c02ab25466efb91603713e0b8d829d5acea8e00bcff9f2d2d6c761e3be6d0c7fe6b3908e55918b8a2e223dc
   languageName: node
   linkType: hard
 
