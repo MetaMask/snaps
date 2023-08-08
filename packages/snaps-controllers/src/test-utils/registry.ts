@@ -15,5 +15,5 @@ export class MockSnapsRegistry implements SnapsRegistry {
 
   getMetadata = jest.fn().mockResolvedValue(null);
 
-  updateDatabase = jest.fn();
+  update = jest.fn();
 }
