@@ -4603,7 +4603,7 @@ describe('SnapController', () => {
       );
       await snapController.updateBlockedSnaps();
 
-      expect(registry.updateDatabase).toHaveBeenCalled();
+      expect(registry.update).toHaveBeenCalled();
 
       snapController.destroy();
     });
