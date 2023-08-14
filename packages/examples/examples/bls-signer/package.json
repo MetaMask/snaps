@@ -1,6 +1,6 @@
 {
   "name": "bls-signer",
-  "version": "1.0.0-prerelease.1",
+  "version": "1.0.0",
   "private": true,
   "description": "An example Snap that signs messages using BLS.",
   "repository": {

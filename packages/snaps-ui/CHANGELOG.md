@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0]
+### Uncategorized
+- Allow disabling markdown for text component ([#1586](https://github.com/MetaMask/snaps/pull/1586))
+- Bump semver to ensure signed provenance, CVE fix ([#1631](https://github.com/MetaMask/snaps/pull/1631))
+- 1.0.0-prerelease.1 ([#1540](https://github.com/MetaMask/snaps/pull/1540))
+- Improve JSON parsing safety ([#1499](https://github.com/MetaMask/snaps/pull/1499))
+- Bump `@metamask/utils` and `@metamask/snaps-registry` ([#1457](https://github.com/MetaMask/snaps/pull/1457))
+
 ## [1.0.0-prerelease.1]
 ### Changed
 - No changes this release.
@@ -62,7 +70,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release ([#978](https://github.com/MetaMask/snaps-monorepo/pull/978), [#1009](https://github.com/MetaMask/snaps-monorepo/pull/1009))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/v1.0.0-prerelease.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/MetaMask/snaps/compare/v1.0.0-prerelease.1...v1.0.0
 [1.0.0-prerelease.1]: https://github.com/MetaMask/snaps/compare/v0.32.2...v1.0.0-prerelease.1
 [0.32.2]: https://github.com/MetaMask/snaps/compare/v0.32.1...v0.32.2
 [0.32.1]: https://github.com/MetaMask/snaps/compare/v0.32.0...v0.32.1

@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0]
+### Uncategorized
+- deps: ses@0.18.1->0.18.7 ([#1666](https://github.com/MetaMask/snaps/pull/1666))
+- Unblock `personal_sign` ([#1601](https://github.com/MetaMask/snaps/pull/1601))
+- Update lavamoat to latest version ([#1657](https://github.com/MetaMask/snaps/pull/1657))
+- Pass correct scuttle args ([#1654](https://github.com/MetaMask/snaps/pull/1654))
+- 1.0.0-prerelease.1 ([#1540](https://github.com/MetaMask/snaps/pull/1540))
+- Simplify Browserify example ([#1507](https://github.com/MetaMask/snaps/pull/1507))
+- Improve JSON parsing safety ([#1499](https://github.com/MetaMask/snaps/pull/1499))
+- Fix a few dependabot warnings ([#1341](https://github.com/MetaMask/snaps/pull/1341))
+- Bump LavaMoat ([#1479](https://github.com/MetaMask/snaps/pull/1479))
+- Bump `@metamask/utils` and `@metamask/snaps-registry` ([#1457](https://github.com/MetaMask/snaps/pull/1457))
+
 ## [1.0.0-prerelease.1]
 ### Changed
 - **BREAKING:** Block `wallet_requestPermissions` ([#1371](https://github.com/MetaMask/snaps/pull/1371))
@@ -249,7 +262,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Previously, default endowments were specified in the execution environment itself. Now, all endowments must be specified in the `executeSnap` RPC parameters, except for the `wallet` API object.
 - Add endowments to the global `self` in addition to `window` ([#263](https://github.com/MetaMask/snaps-monorepo/pull/263))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/v1.0.0-prerelease.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/MetaMask/snaps/compare/v1.0.0-prerelease.1...v1.0.0
 [1.0.0-prerelease.1]: https://github.com/MetaMask/snaps/compare/v0.32.2...v1.0.0-prerelease.1
 [0.32.2]: https://github.com/MetaMask/snaps/compare/v0.32.1...v0.32.2
 [0.32.1]: https://github.com/MetaMask/snaps/compare/v0.32.0...v0.32.1

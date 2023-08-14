@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0]
+### Uncategorized
+- Fix `MockSnapsRegistry` not matching `SnapsRegistry` interface ([#1663](https://github.com/MetaMask/snaps/pull/1663))
+- Allow disabling markdown for text component ([#1586](https://github.com/MetaMask/snaps/pull/1586))
+- 1.0.0-prerelease.1 ([#1540](https://github.com/MetaMask/snaps/pull/1540))
+- Fix BIP-32 path validation ([#1506](https://github.com/MetaMask/snaps/pull/1506))
+- Improve JSON parsing safety ([#1499](https://github.com/MetaMask/snaps/pull/1499))
+- Fix a few dependabot warnings ([#1341](https://github.com/MetaMask/snaps/pull/1341))
+- Bump `@metamask/utils` and `@metamask/snaps-registry` ([#1457](https://github.com/MetaMask/snaps/pull/1457))
+
 ## [1.0.0-prerelease.1]
 ### Changed
 - Simplify Browserify example ([#1507](https://github.com/MetaMask/snaps/pull/1507))
@@ -260,7 +270,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - This package was previously a subset of [`snaps-cli`](https://github.com/MetaMask/snaps-cli/tree/main/examples), which has been renamed to [`@metamask/snaps-cli`](https://npmjs.com/package/@metamask/snaps-cli).
   - Some examples have been deleted because they were outdated.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/v1.0.0-prerelease.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/MetaMask/snaps/compare/v1.0.0-prerelease.1...v1.0.0
 [1.0.0-prerelease.1]: https://github.com/MetaMask/snaps/compare/v0.32.2...v1.0.0-prerelease.1
 [0.32.2]: https://github.com/MetaMask/snaps/compare/v0.32.1...v0.32.2
 [0.32.1]: https://github.com/MetaMask/snaps/compare/v0.32.0...v0.32.1
