@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0]
+### Changed
+- No changes this release.
+
 ## [1.0.0-prerelease.1]
 ### Added
 - Add subject type restrictions to snap-specific permissions ([#1366](https://github.com/MetaMask/snaps/pull/1366))

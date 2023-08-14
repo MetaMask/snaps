@@ -7,13 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [1.0.0]
-### Uncategorized
-- Fix `MockSnapsRegistry` not matching `SnapsRegistry` interface ([#1663](https://github.com/MetaMask/snaps/pull/1663))
+### Changed
 - Make `updateBlockedSnaps` update the registry ([#1625](https://github.com/MetaMask/snaps/pull/1625))
 - Move source code and snap state back to controller state ([#1634](https://github.com/MetaMask/snaps/pull/1634))
-- 1.0.0-prerelease.1 ([#1540](https://github.com/MetaMask/snaps/pull/1540))
-- Fix a few dependabot warnings ([#1341](https://github.com/MetaMask/snaps/pull/1341))
-- Bump `@metamask/utils` and `@metamask/snaps-registry` ([#1457](https://github.com/MetaMask/snaps/pull/1457))
 
 ## [1.0.0-prerelease.1]
 ### Added

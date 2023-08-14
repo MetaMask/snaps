@@ -7,12 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [1.0.0]
-### Uncategorized
+### Changed
 - Allow disabling markdown for text component ([#1586](https://github.com/MetaMask/snaps/pull/1586))
-- Bump semver to ensure signed provenance, CVE fix ([#1631](https://github.com/MetaMask/snaps/pull/1631))
-- 1.0.0-prerelease.1 ([#1540](https://github.com/MetaMask/snaps/pull/1540))
-- Improve JSON parsing safety ([#1499](https://github.com/MetaMask/snaps/pull/1499))
-- Bump `@metamask/utils` and `@metamask/snaps-registry` ([#1457](https://github.com/MetaMask/snaps/pull/1457))
+- Bump semver to `^7.5.4` ([#1631](https://github.com/MetaMask/snaps/pull/1631))
 
 ## [1.0.0-prerelease.1]
 ### Changed
