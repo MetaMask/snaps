@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0]
+### Changed
+- Update LavaMoat packages to latest versions ([#1657](https://github.com/MetaMask/snaps/pull/1657))
+- Unblock `eth_requestAccounts` and `personal_sign` ([#1601](https://github.com/MetaMask/snaps/pull/1601))
+
+### Fixed
+- Pass correct scuttle args ([#1654](https://github.com/MetaMask/snaps/pull/1654))
+
 ## [1.0.0-prerelease.1]
 ### Changed
 - **BREAKING:** Block `wallet_requestPermissions` ([#1371](https://github.com/MetaMask/snaps/pull/1371))
@@ -249,7 +257,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Previously, default endowments were specified in the execution environment itself. Now, all endowments must be specified in the `executeSnap` RPC parameters, except for the `wallet` API object.
 - Add endowments to the global `self` in addition to `window` ([#263](https://github.com/MetaMask/snaps-monorepo/pull/263))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/v1.0.0-prerelease.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/MetaMask/snaps/compare/v1.0.0-prerelease.1...v1.0.0
 [1.0.0-prerelease.1]: https://github.com/MetaMask/snaps/compare/v0.32.2...v1.0.0-prerelease.1
 [0.32.2]: https://github.com/MetaMask/snaps/compare/v0.32.1...v0.32.2
 [0.32.1]: https://github.com/MetaMask/snaps/compare/v0.32.0...v0.32.1

@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-prerelease.1",
+  "version": "1.0.0",
   "description": "An Ethereum transaction signer, which uses a snap for deriving private keys",
   "proposedName": "signer-ethereum",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "+oa2jdZ6V2nojSkFDT3bQqD1pUjDgSRL/lK5jP0AOS8=",
+    "shasum": "0/UG2xSN4zdd/DFHOMLubE1qjphWC3ryrlIXOEJoMT4=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
