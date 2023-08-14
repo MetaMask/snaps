@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
-/// <reference path="../../../../node_modules/ses/index.d.ts" />
+/// <reference path="../../../../node_modules/ses/types.d.ts" />
 import { StreamProvider } from '@metamask/providers';
 import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
 import type { SnapsGlobalObject } from '@metamask/rpc-methods';

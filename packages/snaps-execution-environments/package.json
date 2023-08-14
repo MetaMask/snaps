@@ -113,7 +113,7 @@
     "process": "^0.11.10",
     "rimraf": "^4.1.2",
     "serve-handler": "^6.1.5",
-    "ses": "^0.18.1",
+    "ses": "^0.18.7",
     "terser": "^5.17.7",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
