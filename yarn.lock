@@ -3670,12 +3670,12 @@ __metadata:
   linkType: hard
 
 "@metamask/base-controller@npm:^3.0.0":
-  version: 3.1.0
-  resolution: "@metamask/base-controller@npm:3.1.0"
+  version: 3.2.0
+  resolution: "@metamask/base-controller@npm:3.2.0"
   dependencies:
-    "@metamask/utils": ^5.0.2
+    "@metamask/utils": ^6.2.0
     immer: ^9.0.6
-  checksum: fc1597a099e6d28bd089df936ca349d6c38c2e1b0f0737385cba30c34a5239241519eb172d77c70f8db2604f4dc5724f6893affe42bdd104cef98f9cfd6f1db8
+  checksum: 3be6f2594309c013e07f83c4bb8271e1e99f02b6ff829c18b5e7218fbab4e6a9e03bcb49056704ce47f84ae2f38b1bc1c10284ec538aad56ed7b554ef2d3e189
   languageName: node
   linkType: hard
 
@@ -5607,7 +5607,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^6.0.0, @metamask/utils@npm:^6.0.1":
+"@metamask/utils@npm:^6.0.0, @metamask/utils@npm:^6.0.1, @metamask/utils@npm:^6.2.0":
   version: 6.2.0
   resolution: "@metamask/utils@npm:6.2.0"
   dependencies:
