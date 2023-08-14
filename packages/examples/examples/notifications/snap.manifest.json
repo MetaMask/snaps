@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-prerelease.1",
+  "version": "1.0.0",
   "description": "A notification example snap.",
   "proposedName": "Notification Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snap-template.git"
   },
   "source": {
-    "shasum": "j9UHX8VxF8KR7xbPbMsbMq7DSgh43gMyTT6K6kmjxIU=",
+    "shasum": "oUnZwuVfdEVnh3LN6/RdNLUz/N2zZyL7iuOHG5qT44A=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-prerelease.1",
+  "version": "1.0.0",
   "description": "An example Snap that performs IPFS operations.",
   "proposedName": "ipfs-snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "w3I7l2ncoW9r586Sc0a/Sm5AtaRWOLBThOuz73m9fq4=",
+    "shasum": "TpcBhqL+KxK+/y1rKfXIkTRP255g0A+9SdQ0RTEgPaM=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
