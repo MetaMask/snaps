@@ -30,7 +30,7 @@
     "publish:package": "../../scripts/publish-package.sh"
   },
   "dependencies": {
-    "@metamask/snaps-utils": "^1.0.0",
+    "@metamask/snaps-utils": "^1.0.1",
     "convert-source-map": "^1.8.0"
   },
   "devDependencies": {
