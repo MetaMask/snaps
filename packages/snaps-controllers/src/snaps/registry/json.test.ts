@@ -375,5 +375,19 @@ describe('JsonSnapsRegistry', () => {
 
       expect(fetchMock).toHaveBeenCalledTimes(2);
     });
+
+    it('does not fetch twice with parallel promises', async () => {
+      fetchMock
+        .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+        .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
+
+      const { messenger } = getRegistry();
+      await Promise.all([
+        messenger.call('SnapsRegistry:update'),
+        messenger.call('SnapsRegistry:update'),
+      ]);
+
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
   });
 });
