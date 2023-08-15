@@ -156,6 +156,11 @@ export class JsonSnapsRegistry extends BaseController<
     );
   }
 
+  /**
+   * Triggers an update of the registry database.
+   *
+   * If an existing update is in progress this function will await that update.
+   */
   async #triggerUpdate() {
     // If an update is ongoing, wait for that.
     if (this.#currentUpdate) {
@@ -170,7 +175,11 @@ export class JsonSnapsRegistry extends BaseController<
     this.#currentUpdate = null;
   }
 
-  // Should not be called directly, instead triggerUpdate should be used.
+  /**
+   * Updates the registry database if the registry hasn't been updated recently.
+   *
+   * NOTE: SHOULD NOT be called directly, instead `triggerUpdate` should be used.
+   */
   async #update() {
     // No-op if we recently fetched the registry.
     if (this.#wasRecentlyFetched()) {
