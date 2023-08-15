@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [1.0.1]
-### Uncategorized
+### Fixed
 - Fix parallel usage of registry ([#1669](https://github.com/MetaMask/snaps/pull/1669))
 
 ## [1.0.0]

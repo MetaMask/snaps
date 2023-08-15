@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An example Snap built using TypeScript and Browserify",
   "proposedName": "browserify-snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "48vanIwTvzIb3ijJmoVPTkLP7xn5k3HkR5c38Du4ThI=",
+    "shasum": "D4VZ4YIjg/vYfQprpPNtMWVmeLOWv3zfSKj9zNTy/ao=",
     "location": {
       "npm": {
         "filePath": "dist/snap.js",

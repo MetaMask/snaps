@@ -1,6 +1,6 @@
 {
   "name": "ipfs-snap",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "An example Snap that performs IPFS operations.",
   "repository": {
