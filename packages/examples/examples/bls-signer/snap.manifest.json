@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An example Snap that signs messages using BLS.",
   "proposedName": "bls-signer",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "NS2BHLwJ27U1sEAGk7bmtdQxqRGEOzNiOA43mnrV3c4=",
+    "shasum": "U09xlQ1ioPw42qx0GpL+4/jwDIbazKjGL8XfhWjUNJw=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

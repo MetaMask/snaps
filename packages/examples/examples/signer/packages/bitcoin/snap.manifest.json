@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An Bitcoin transaction signer, which uses a snap for deriving private keys",
   "proposedName": "signer-bitcoin",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "QVO+0XmcG6taxQ5nk5poLDh8zGRK4Gk2nKL4I6mFuY0=",
+    "shasum": "0WW1YcLUcpxkIuzWqdm8YWxKUJ020MiCm3veEOK/p/w=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
