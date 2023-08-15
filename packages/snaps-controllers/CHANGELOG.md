@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1]
+### Uncategorized
+- Fix parallel usage of registry ([#1669](https://github.com/MetaMask/snaps/pull/1669))
+
 ## [1.0.0]
 ### Changed
 - Make `updateBlockedSnaps` update the registry ([#1625](https://github.com/MetaMask/snaps/pull/1625))
@@ -515,7 +519,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First semi-stable release.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/MetaMask/snaps/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/MetaMask/snaps/compare/v1.0.0-prerelease.1...v1.0.0
 [1.0.0-prerelease.1]: https://github.com/MetaMask/snaps/compare/v0.32.2...v1.0.0-prerelease.1
 [0.32.2]: https://github.com/MetaMask/snaps/compare/v0.32.1...v0.32.2
