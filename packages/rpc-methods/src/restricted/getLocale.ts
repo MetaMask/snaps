@@ -1,13 +1,12 @@
-import {
+import type {
   PermissionSpecificationBuilder,
-  PermissionType,
   ValidPermissionSpecification,
-  SubjectType,
   RestrictedMethodOptions,
 } from '@metamask/permission-controller';
-import { NonEmptyArray } from '@metamask/utils';
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import type { NonEmptyArray } from '@metamask/utils';
 
-import { MethodHooksObject } from '../utils';
+import type { MethodHooksObject } from '../utils';
 
 const methodName = 'snap_getLocale';
 
