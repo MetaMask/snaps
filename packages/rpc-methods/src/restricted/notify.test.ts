@@ -22,7 +22,6 @@ describe('snap_notify', () => {
 
       expect(
         specificationBuilder({
-          allowedCaveats: null,
           methodHooks,
         }),
       ).toStrictEqual({
