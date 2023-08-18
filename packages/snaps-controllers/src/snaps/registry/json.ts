@@ -99,6 +99,8 @@ export class JsonSnapsRegistry extends BaseController<
 
   #failOnUnavailableRegistry: boolean;
 
+  #currentUpdate: Promise<void> | null;
+
   constructor({
     messenger,
     state,
@@ -130,6 +132,7 @@ export class JsonSnapsRegistry extends BaseController<
     this.#recentFetchThreshold = recentFetchThreshold;
     this.#refetchOnAllowlistMiss = refetchOnAllowlistMiss;
     this.#failOnUnavailableRegistry = failOnUnavailableRegistry;
+    this.#currentUpdate = null;
 
     this.messagingSystem.registerActionHandler(
       'SnapsRegistry:get',
@@ -142,7 +145,7 @@ export class JsonSnapsRegistry extends BaseController<
 
     this.messagingSystem.registerActionHandler(
       'SnapsRegistry:update',
-      async () => this.#update(),
+      async () => this.#triggerUpdate(),
     );
   }
 
@@ -153,6 +156,30 @@ export class JsonSnapsRegistry extends BaseController<
     );
   }
 
+  /**
+   * Triggers an update of the registry database.
+   *
+   * If an existing update is in progress this function will await that update.
+   */
+  async #triggerUpdate() {
+    // If an update is ongoing, wait for that.
+    if (this.#currentUpdate) {
+      await this.#currentUpdate;
+      return;
+    }
+    // If no update exists, create promise and store globally.
+    if (this.#currentUpdate === null) {
+      this.#currentUpdate = this.#update();
+    }
+    await this.#currentUpdate;
+    this.#currentUpdate = null;
+  }
+
+  /**
+   * Updates the registry database if the registry hasn't been updated recently.
+   *
+   * NOTE: SHOULD NOT be called directly, instead `triggerUpdate` should be used.
+   */
   async #update() {
     // No-op if we recently fetched the registry.
     if (this.#wasRecentlyFetched()) {
@@ -178,7 +205,7 @@ export class JsonSnapsRegistry extends BaseController<
 
   async #getDatabase(): Promise<SnapsRegistryDatabase | null> {
     if (this.state.database === null) {
-      await this.#update();
+      await this.#triggerUpdate();
     }
 
     // If the database is still null and we require it, throw.
@@ -220,7 +247,7 @@ export class JsonSnapsRegistry extends BaseController<
     }
     // For now, if we have an allowlist miss, we can refetch once and try again.
     if (this.#refetchOnAllowlistMiss && !refetch) {
-      await this.#update();
+      await this.#triggerUpdate();
       return this.#getSingle(snapId, snapInfo, true);
     }
     return { status: SnapsRegistryStatus.Unverified };

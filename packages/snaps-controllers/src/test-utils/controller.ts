@@ -278,7 +278,7 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
 
   messenger.registerActionHandler(
     'SnapsRegistry:update',
-    registry.updateDatabase.bind(registry),
+    registry.update.bind(registry),
   );
 
   jest.spyOn(messenger, 'call');
