@@ -25,17 +25,22 @@
         "process.version.slice": true
       },
       "packages": {
+        "@metamask/object-multiplex>readable-stream>process-nextick-args": true,
         "@metamask/object-multiplex>readable-stream>safe-buffer": true,
         "@metamask/object-multiplex>readable-stream>string_decoder": true,
         "browserify>inherits": true,
         "browserify>readable-stream>core-util-is": true,
         "browserify>readable-stream>isarray": true,
-        "browserify>readable-stream>process-nextick-args": true,
         "browserify>readable-stream>util-deprecate": true,
         "events": true,
         "stream": true,
         "timers": true,
         "util": true
+      }
+    },
+    "@metamask/object-multiplex>readable-stream>process-nextick-args": {
+      "globals": {
+        "process": true
       }
     },
     "@metamask/object-multiplex>readable-stream>safe-buffer": {
@@ -216,17 +221,22 @@
         "process.version.slice": true
       },
       "packages": {
+        "@metamask/providers>json-rpc-middleware-stream>readable-stream>process-nextick-args": true,
         "@metamask/providers>json-rpc-middleware-stream>readable-stream>safe-buffer": true,
         "@metamask/providers>json-rpc-middleware-stream>readable-stream>string_decoder": true,
         "browserify>inherits": true,
         "browserify>readable-stream>core-util-is": true,
         "browserify>readable-stream>isarray": true,
-        "browserify>readable-stream>process-nextick-args": true,
         "browserify>readable-stream>util-deprecate": true,
         "events": true,
         "stream": true,
         "timers": true,
         "util": true
+      }
+    },
+    "@metamask/providers>json-rpc-middleware-stream>readable-stream>process-nextick-args": {
+      "globals": {
+        "process": true
       }
     },
     "@metamask/providers>json-rpc-middleware-stream>readable-stream>safe-buffer": {
@@ -304,11 +314,6 @@
     "browserify>readable-stream>core-util-is": {
       "packages": {
         "browserify>insert-module-globals>is-buffer": true
-      }
-    },
-    "browserify>readable-stream>process-nextick-args": {
-      "globals": {
-        "process": true
       }
     },
     "browserify>readable-stream>util-deprecate": {
