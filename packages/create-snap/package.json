@@ -43,14 +43,6 @@
     "publish:preview": "yarn npm publish --tag preview"
   },
   "dependencies": {
-    "@babel/core": "^7.20.12",
-    "@babel/plugin-proposal-class-properties": "^7.16.7",
-    "@babel/plugin-proposal-object-rest-spread": "^7.16.7",
-    "@babel/plugin-proposal-optional-chaining": "^7.16.7",
-    "@babel/plugin-transform-runtime": "^7.16.7",
-    "@babel/preset-env": "^7.20.12",
-    "@babel/preset-typescript": "^7.20.12",
-    "@metamask/snaps-cli": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/utils": "^6.0.1",
     "yargs": "^17.7.1"
