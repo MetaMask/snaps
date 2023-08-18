@@ -23,3 +23,4 @@ export type {
   OnInstallHandler,
   OnUpdateHandler,
 } from '@metamask/snaps-utils';
+export { SeverityLevel } from '@metamask/snaps-utils';

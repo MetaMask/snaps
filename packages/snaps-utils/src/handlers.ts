@@ -1,6 +1,8 @@
 import type { Component } from '@metamask/snaps-ui';
 import type { Json, JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 
+import type { EnumToUnion } from './enum';
+
 export enum HandlerType {
   OnRpcRequest = 'onRpcRequest',
   OnTransaction = 'onTransaction',
@@ -88,6 +90,13 @@ export type OnRpcRequestHandler<Params extends JsonRpcParams = JsonRpcParams> =
   }) => Promise<unknown>;
 
 /**
+ * Enum used to specify the severity level of content being returned from a transaction insight.
+ */
+export enum SeverityLevel {
+  Critical = 'critical',
+}
+
+/**
  * The response from a snap's `onTransaction` handler.
  *
  * @property content - A custom UI component, that will be shown in MetaMask. Can be created using `@metamask/snaps-ui`.
@@ -96,6 +105,7 @@ export type OnRpcRequestHandler<Params extends JsonRpcParams = JsonRpcParams> =
  */
 export type OnTransactionResponse = {
   content: Component | null;
+  severity?: EnumToUnion<SeverityLevel>;
 };
 
 /**

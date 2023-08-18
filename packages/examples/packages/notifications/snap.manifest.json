@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "0LG/grTzSGtGb6nB8g8WK8B38dKITtH/d+Jfd+15Tsc=",
+    "shasum": "t/nO4FI4ZsYgkk4NsiuSe3MkV4ifoYBmE3DiddRukUs=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
