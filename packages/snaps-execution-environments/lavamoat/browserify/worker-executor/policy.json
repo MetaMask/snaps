@@ -112,9 +112,9 @@
         "@metamask/providers>@metamask/safe-event-emitter": true,
         "@metamask/providers>detect-browser": true,
         "@metamask/providers>extension-port-stream": true,
-        "@metamask/providers>fast-deep-equal": true,
         "@metamask/providers>is-stream": true,
         "@metamask/providers>json-rpc-middleware-stream": true,
+        "eslint>fast-deep-equal": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
         "pump": true
