@@ -115,15 +115,6 @@ export async function getDefaultLoader({
       sourceMaps: Boolean(getDevTool(sourceMap)),
 
       jsc: {
-        /**
-         * MetaMask targets ES2020, so we set the target to ES2020. This
-         * ensures that the code is transpiled to ES2020, and that the
-         * necessary polyfills are added.
-         *
-         * @see https://swc.rs/docs/configuration/compilation#jsctarget
-         */
-        target: 'es2020',
-
         parser: {
           /**
            * This tells the parser to parse TypeScript files. If you
