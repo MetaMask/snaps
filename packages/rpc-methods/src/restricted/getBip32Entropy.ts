@@ -1,9 +1,4 @@
-import type {
-  BIP32Node,
-  JsonSLIP10Node,
-  SLIP10PathNode,
-} from '@metamask/key-tree';
-import { SLIP10Node } from '@metamask/key-tree';
+import type { JsonSLIP10Node } from '@metamask/key-tree';
 import type {
   PermissionSpecificationBuilder,
   PermissionValidatorConstraint,
@@ -18,6 +13,7 @@ import { assert } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
 import type { MethodHooksObject } from '../utils';
+import { getNode } from '../utils';
 
 const targetName = 'snap_getBip32Entropy';
 
@@ -113,16 +109,10 @@ export function getBip32EntropyImplementation({
     const { params } = args;
     assert(params);
 
-    const prefix = params.curve === 'ed25519' ? 'slip10' : 'bip32';
-
-    const node = await SLIP10Node.fromDerivationPath({
+    const node = await getNode({
       curve: params.curve,
-      derivationPath: [
-        await getMnemonic(),
-        ...(params.path.slice(1).map((index) => `${prefix}:${index}`) as
-          | BIP32Node[]
-          | SLIP10PathNode[]),
-      ],
+      path: params.path,
+      secretRecoveryPhrase: await getMnemonic(),
     });
 
     return node.toJSON();

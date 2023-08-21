@@ -1,4 +1,4 @@
-import type { HardenedBIP32Node } from '@metamask/key-tree';
+import type { HardenedBIP32Node, BIP32Node } from '@metamask/key-tree';
 import { SLIP10Node } from '@metamask/key-tree';
 import type { MagicValue } from '@metamask/snaps-utils';
 import type { Hex } from '@metamask/utils';
@@ -144,4 +144,64 @@ export async function deriveEntropy({
   assert(privateKey, 'Failed to derive the entropy.');
 
   return add0x(privateKey);
+}
+
+/**
+ * Get the path prefix to use for key derivation in `key-tree`. This assumes the
+ * following:
+ *
+ * - The Secp256k1 curve always use the BIP-32 specification.
+ * - The Ed25519 curve always use the SLIP-10 specification.
+ *
+ * While this does not matter in most situations (no known case at the time of
+ * writing), `key-tree` requires a specific specification to be used.
+ *
+ * @param curve - The curve to get the path prefix for. The curve is NOT
+ * validated by this function.
+ * @returns The path prefix, i.e., `secp256k1` or `ed25519`.
+ */
+export function getPathPrefix(
+  curve: 'secp256k1' | 'ed25519',
+): 'bip32' | 'slip10' {
+  if (curve === 'secp256k1') {
+    return 'bip32';
+  }
+
+  return 'slip10';
+}
+
+type GetNodeArgs = {
+  curve: 'secp256k1' | 'ed25519';
+  secretRecoveryPhrase: Uint8Array;
+  path: string[];
+};
+
+/**
+ * Get a `key-tree`-compatible node.
+ *
+ * Note: This function assumes that all the parameters have been validated
+ * beforehand.
+ *
+ * @param options - The derivation options.
+ * @param options.curve - The curve to use for derivation.
+ * @param options.secretRecoveryPhrase - The secret recovery phrase to use for
+ * derivation.
+ * @param options.path - The derivation path to use as array, starting with an
+ * "m" as the first item.
+ */
+export async function getNode({
+  curve,
+  secretRecoveryPhrase,
+  path,
+}: GetNodeArgs) {
+  const prefix = getPathPrefix(curve);
+  return await SLIP10Node.fromDerivationPath({
+    curve,
+    derivationPath: [
+      secretRecoveryPhrase,
+      ...path
+        .slice(1)
+        .map<BIP32Node>((index) => `${prefix}:${index}` as BIP32Node),
+    ],
+  });
 }
