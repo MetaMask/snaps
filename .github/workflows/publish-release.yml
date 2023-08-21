@@ -92,6 +92,7 @@ jobs:
             ./packages/**/dist
             ./node_modules
           key: ${{ github.sha }}
+          fail-on-cache-miss: true
       - run: npm config set ignore-scripts true
       - name: Dry Run Publish
         uses: MetaMask/action-npm-publish@v4
@@ -114,6 +115,7 @@ jobs:
             ./packages/**/dist
             ./node_modules
           key: ${{ github.sha }}
+          fail-on-cache-miss: true
       - name: Publish ${{ needs.get-release-tag.outputs.tag }} to NPM
         uses: MetaMask/action-npm-publish@v4
         with:

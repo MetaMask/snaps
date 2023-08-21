@@ -121,12 +121,14 @@ jobs:
             packages/*/dist/esm
             packages/*/dist/cjs
           key: build-source-${{ runner.os }}-${{ github.sha }}
+          fail-on-cache-miss: true
       - name: Restore types files
         uses: actions/cache@v3
         with:
           path: |
             packages/*/dist/types
           key: build-types-${{ runner.os }}-${{ github.sha }}
+          fail-on-cache-miss: true
       - name: Post-build
         run: yarn build:post-tsc:ci
 
@@ -148,6 +150,7 @@ jobs:
           path: |
             packages/snaps-execution-environments/dist/browserify
           key: snaps-execution-environments-build-${{ runner.os }}-18.x-${{ github.sha }}
+          fail-on-cache-miss: true
       - name: Cache Webpack vendor
         id: cache-webpack-vendor
         uses: actions/cache@v3
@@ -266,6 +269,7 @@ jobs:
           path: |
             packages/snaps-execution-environments/dist/browserify
           key: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+          fail-on-cache-miss: true
       - run: yarn --immutable --immutable-cache
       - name: Install Google Chrome
         run: yarn install-chrome
@@ -335,6 +339,7 @@ jobs:
           path: |
             packages/snaps-execution-environments/dist/browserify
           key: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+          fail-on-cache-miss: true
       - name: Restore build files
         uses: actions/cache@v3
         with:
@@ -342,18 +347,21 @@ jobs:
             packages/*/dist/esm
             packages/*/dist/cjs
           key: build-source-${{ runner.os }}-${{ github.sha }}
+          fail-on-cache-miss: true
       - name: Restore types files
         uses: actions/cache@v3
         with:
           path: |
             packages/*/dist/types
           key: build-types-${{ runner.os }}-${{ github.sha }}
+          fail-on-cache-miss: true
       - name: Restore "@metamask/snaps-simulator" build
         uses: actions/cache@v3
         with:
           path: |
             packages/snaps-simulator/dist/webpack
           key: e2e-simulator-build-${{ runner.os }}-${{ github.sha }}
+          fail-on-cache-miss: true
       - run: yarn --immutable --immutable-cache
       - name: Install Google Chrome
         run: yarn install-chrome
