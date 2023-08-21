@@ -23,7 +23,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "parser": {
                 "syntax": "typescript",
               },
-              "target": "es2020",
             },
             "module": {
               "type": "commonjs",
@@ -159,7 +158,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "parser": {
                 "syntax": "typescript",
               },
-              "target": "es2020",
             },
             "module": {
               "type": "commonjs",
@@ -295,7 +293,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "parser": {
                 "syntax": "typescript",
               },
-              "target": "es2020",
             },
             "module": {
               "type": "commonjs",
@@ -431,7 +428,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "parser": {
                 "syntax": "typescript",
               },
-              "target": "es2020",
             },
             "module": {
               "type": "commonjs",
@@ -559,7 +555,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "parser": {
                 "syntax": "typescript",
               },
-              "target": "es2020",
             },
             "module": {
               "type": "commonjs",
@@ -700,7 +695,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "parser": {
                 "syntax": "typescript",
               },
-              "target": "es2020",
             },
             "module": {
               "type": "commonjs",
@@ -836,7 +830,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "parser": {
                 "syntax": "typescript",
               },
-              "target": "es2020",
             },
             "module": {
               "type": "commonjs",
@@ -972,7 +965,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "parser": {
                 "syntax": "typescript",
               },
-              "target": "es2020",
             },
             "module": {
               "type": "commonjs",
@@ -1116,7 +1108,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "parser": {
                 "syntax": "typescript",
               },
-              "target": "es2020",
             },
             "module": {
               "type": "commonjs",
@@ -1260,7 +1251,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "parser": {
                 "syntax": "typescript",
               },
-              "target": "es2020",
             },
             "module": {
               "type": "commonjs",
@@ -1405,7 +1395,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "parser": {
                 "syntax": "typescript",
               },
-              "target": "es2020",
             },
             "module": {
               "type": "commonjs",
@@ -1541,7 +1530,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "parser": {
                 "syntax": "typescript",
               },
-              "target": "es2020",
             },
             "module": {
               "type": "commonjs",
@@ -1677,7 +1665,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "parser": {
                 "syntax": "typescript",
               },
-              "target": "es2020",
             },
             "module": {
               "type": "commonjs",
@@ -1822,7 +1809,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               "parser": {
                 "syntax": "typescript",
               },
-              "target": "es2020",
             },
             "module": {
               "type": "commonjs",

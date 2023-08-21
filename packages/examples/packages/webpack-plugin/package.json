@@ -45,7 +45,7 @@
     "@metamask/snaps-jest": "workspace:^",
     "@metamask/snaps-rollup-plugin": "workspace:^",
     "@metamask/snaps-webpack-plugin": "workspace:^",
-    "@swc/core": "^1.3.66",
+    "@swc/core": "1.3.78",
     "@swc/jest": "^0.2.26",
     "@types/webpack-env": "^1.18.1",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
