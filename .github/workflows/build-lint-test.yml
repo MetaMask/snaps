@@ -158,7 +158,6 @@ jobs:
           path: |
             packages/snaps-simulator/vendor
           key: webpack-vendor-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
-          fail-on-cache-miss: true
       - name: Build Webpack vendor
         if: steps.cache-webpack-vendor.outputs.cache-hit != 'true'
         run: yarn workspace @metamask/snaps-simulator run build:vendor
