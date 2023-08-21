@@ -1,5 +1,4 @@
 import type { SnapConfig } from '@metamask/snaps-cli';
-import { merge } from '@metamask/snaps-cli';
 import { resolve } from 'path';
 
 const config: SnapConfig = {
@@ -8,15 +7,10 @@ const config: SnapConfig = {
   server: {
     port: 8002,
   },
-  customizeWebpackConfig: (defaultConfig) =>
-    merge(defaultConfig, {
-      resolve: {
-        fallback: {
-          buffer: require.resolve('buffer/'),
-          stream: require.resolve('stream-browserify'),
-        },
-      },
-    }),
+  polyfills: {
+    buffer: true,
+    stream: true,
+  },
 };
 
 export default config;

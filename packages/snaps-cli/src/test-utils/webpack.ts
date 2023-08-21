@@ -90,3 +90,33 @@ export async function compile(
     });
   });
 }
+
+/**
+ * Fakes the fallback modules path to ensure that snapshots have the same path on different systems.
+ *
+ * @param config - The webpack configuration.
+ * @returns The webpack configuration with the fallback paths normalized.
+ */
+export function fakePolyfillPaths(config: Configuration): Configuration {
+  if (!config.resolve?.fallback) {
+    return config;
+  }
+
+  const {
+    resolve: { fallback, ...resolveRest },
+    ...rest
+  } = config;
+
+  const normalizedFallbacks = Object.keys(fallback).reduce((acc, index) => {
+    if (typeof (fallback as Record<string, string>)[index] === 'string') {
+      return { [index]: '/foo/bar/index.js', ...acc };
+    }
+
+    return { [index]: (fallback as Record<string, string>)[index], ...acc };
+  }, {});
+
+  return {
+    ...rest,
+    resolve: { ...resolveRest, fallback: normalizedFallbacks },
+  };
+}

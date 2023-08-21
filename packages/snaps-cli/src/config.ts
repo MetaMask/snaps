@@ -364,6 +364,59 @@ export type SnapWebpackConfig = {
   };
 
   /**
+   * Whether to provide polyfills for node builtins. If `true`, all the available
+   * polyfills will be provided. If `false` no polyfills will be provided. If a
+   * configuration object is passed only the polyfills set to `true` will be provided.
+   *
+   * @default false
+   * @example
+   * ```ts
+   * polyfills: true
+   *
+   * // or
+   *
+   * polyfills: {
+   *  assert: true,
+   *  buffer: true
+   * }
+   * ```
+   */
+  polyfills?:
+    | boolean
+    | {
+        assert?: boolean;
+        buffer?: boolean;
+        console?: boolean;
+        constants?: boolean;
+        crypto?: boolean;
+        domain?: boolean;
+        events?: boolean;
+        http?: boolean;
+        https?: boolean;
+        os?: boolean;
+        path?: boolean;
+        punycode?: boolean;
+        process?: boolean;
+        querystring?: boolean;
+        stream?: boolean;
+        /* eslint-disable @typescript-eslint/naming-convention */
+        _stream_duplex?: boolean;
+        _stream_passthrough?: boolean;
+        _stream_readable?: boolean;
+        _stream_transform?: boolean;
+        _stream_writable?: boolean;
+        string_decoder?: boolean;
+        /* eslint-enable @typescript-eslint/naming-convention */
+        sys?: boolean;
+        timers?: boolean;
+        tty?: boolean;
+        url?: boolean;
+        util?: boolean;
+        vm?: boolean;
+        zlib?: boolean;
+      };
+
+  /**
    * A function to customize the Webpack configuration used to build the snap.
    * This function will be called with the default Webpack configuration, and
    * should return the modified configuration. If not specified, the default
@@ -529,6 +582,45 @@ export const SnapsWebpackConfigStruct = object({
       buffer: defaulted(boolean(), true),
     }),
     {},
+  ),
+
+  polyfills: defaulted(
+    union([
+      boolean(),
+      object({
+        assert: defaulted(boolean(), false),
+        buffer: defaulted(boolean(), false),
+        console: defaulted(boolean(), false),
+        constants: defaulted(boolean(), false),
+        crypto: defaulted(boolean(), false),
+        domain: defaulted(boolean(), false),
+        events: defaulted(boolean(), false),
+        http: defaulted(boolean(), false),
+        https: defaulted(boolean(), false),
+        os: defaulted(boolean(), false),
+        path: defaulted(boolean(), false),
+        punycode: defaulted(boolean(), false),
+        process: defaulted(boolean(), false),
+        querystring: defaulted(boolean(), false),
+        stream: defaulted(boolean(), false),
+        /* eslint-disable @typescript-eslint/naming-convention */
+        _stream_duplex: defaulted(boolean(), false),
+        _stream_passthrough: defaulted(boolean(), false),
+        _stream_readable: defaulted(boolean(), false),
+        _stream_transform: defaulted(boolean(), false),
+        _stream_writable: defaulted(boolean(), false),
+        string_decoder: defaulted(boolean(), false),
+        /* eslint-enable @typescript-eslint/naming-convention */
+        sys: defaulted(boolean(), false),
+        timers: defaulted(boolean(), false),
+        tty: defaulted(boolean(), false),
+        url: defaulted(boolean(), false),
+        util: defaulted(boolean(), false),
+        vm: defaulted(boolean(), false),
+        zlib: defaulted(boolean(), false),
+      }),
+    ]),
+    false,
   ),
 
   customizeWebpackConfig: optional(

@@ -2,7 +2,7 @@ import { promises as fs } from 'fs';
 import ora from 'ora';
 import { dirname } from 'path';
 
-import { getMockConfig } from '../test-utils';
+import { getMockConfig, fakePolyfillPaths } from '../test-utils';
 import { getDefaultConfiguration } from './config';
 
 jest.mock('fs');
@@ -24,7 +24,7 @@ jest.mock('path', () => ({
 jest.mock('module', () => ({
   // Built-in modules are different across Node versions, so we need to mock
   // them out.
-  builtinModules: ['fs', 'path'],
+  builtinModules: ['fs', 'path', 'buffer'],
 }));
 
 jest.mock('./utils', () => ({
@@ -115,13 +115,50 @@ describe('getDefaultConfiguration', () => {
         path: 'snap.manifest.json',
       },
     }),
+    getMockConfig('webpack', {
+      input: 'src/index.js',
+      output: {
+        path: 'dist',
+        minimize: false,
+      },
+      manifest: {
+        path: 'snap.manifest.json',
+      },
+      polyfills: false,
+    }),
+    getMockConfig('webpack', {
+      input: 'src/index.js',
+      output: {
+        path: 'dist',
+        minimize: false,
+      },
+      manifest: {
+        path: 'snap.manifest.json',
+      },
+      polyfills: true,
+    }),
+    getMockConfig('webpack', {
+      input: 'src/index.js',
+      output: {
+        path: 'dist',
+        minimize: false,
+      },
+      manifest: {
+        path: 'snap.manifest.json',
+      },
+      polyfills: {
+        buffer: true,
+      },
+    }),
   ])(
     'returns the default Webpack configuration for the given CLI config',
     async (config) => {
       jest.spyOn(process, 'cwd').mockReturnValue('/foo/bar');
 
+      const output = await getDefaultConfiguration(config);
+
       // eslint-disable-next-line jest/no-restricted-matchers
-      expect(await getDefaultConfiguration(config)).toMatchSnapshot();
+      expect(fakePolyfillPaths(output)).toMatchSnapshot();
     },
   );
 

@@ -515,7 +515,7 @@ describe('SnapsBundleWarningsPlugin', () => {
 
     expect(log).toHaveBeenCalledWith(
       expect.stringContaining(
-        'The snap attempted to use the Node.js Buffer global, which is not supported by the MetaMask Snaps CLI.',
+        'The snap attempted to use the Node.js Buffer global, which is not supported in the MetaMask Snaps CLI by default.',
       ),
     );
   });
