@@ -5122,7 +5122,7 @@ __metadata:
     istanbul-lib-report: ^3.0.0
     istanbul-reports: ^3.1.5
     jest: ^29.0.2
-    jest-environment-node: ^29.6.3
+    jest-environment-node: ^29.5.0
     jest-fetch-mock: ^3.0.3
     json-rpc-engine: ^6.1.0
     lavamoat: ^7.0.0
@@ -15585,7 +15585,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-environment-node@npm:^29.5.0, jest-environment-node@npm:^29.6.3":
+"jest-environment-node@npm:^29.5.0":
   version: 29.6.3
   resolution: "jest-environment-node@npm:29.6.3"
   dependencies:

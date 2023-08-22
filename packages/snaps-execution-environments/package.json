@@ -105,7 +105,7 @@
     "istanbul-lib-report": "^3.0.0",
     "istanbul-reports": "^3.1.5",
     "jest": "^29.0.2",
-    "jest-environment-node": "^29.6.3",
+    "jest-environment-node": "^29.5.0",
     "jest-fetch-mock": "^3.0.3",
     "lavamoat": "^7.0.0",
     "lavamoat-browserify": "^15.7.1",

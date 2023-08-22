@@ -5,6 +5,7 @@
     "@lavamoat/preinstall-always-fail",
     "@metamask/auto-changelog",
     "@metamask/eslint-*",
+    "@metamask/snaps-browserify-plugin",
     "@types/*",
     "@typescript-eslint/*",
     "eslint-config-*",
