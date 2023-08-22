@@ -9,3 +9,4 @@ the snap controller, execution service, and execution environment.
 - [Execution Service](./execution-service.md)
 - [Snap Controller](./snap-controller.md)
 - [Snaps Registry](./snaps-registry.md)
+- [RPC Methods](./rpc-methods.md)
