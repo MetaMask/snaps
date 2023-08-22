@@ -24,6 +24,7 @@ Generally, these execution services work as follows:
    stream]s, depending on the environment.
 4. The execution service calls the [Execution Environment] to execute the snap
    code in the [Execution Environment].
+5. The snap is now running and ready to service requests.
 
 ```mermaid
 sequenceDiagram
@@ -41,6 +42,17 @@ sequenceDiagram
     Service->>Controller: "OK"
 
     deactivate Service
+```
+
+After this initial boot-up, the snap is now ready to service requests, also via JSON-RPC.
+
+```mermaid
+sequenceDiagram
+    Controller->>Service: handleRpcRequest
+    Service->>Environment: "snapRpc"
+    Environment->>Environment: Snap export is executed with given parameters
+    Environment->>Service: Response
+    Service->>Controller: Response
 ```
 
 All of the communication between the [Snap Controller] and the execution
