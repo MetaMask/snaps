@@ -36,16 +36,16 @@
         "browserify>browser-resolve": true,
         "browserify>events": true,
         "browserify>inherits": true,
+        "browserify>process": true,
         "browserify>readable-stream>core-util-is": true,
         "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>util-deprecate": true,
-        "browserify>timers-browserify": true,
-        "process": true
+        "browserify>timers-browserify": true
       }
     },
     "@metamask/post-message-stream>readable-stream>process-nextick-args": {
       "packages": {
-        "process": true
+        "browserify>process": true
       }
     },
     "@metamask/post-message-stream>readable-stream>safe-buffer": {
@@ -83,7 +83,7 @@
       },
       "packages": {
         "@swc/cli>semver>lru-cache": true,
-        "process": true
+        "browserify>process": true
       }
     },
     "@swc/cli>semver>lru-cache": {
@@ -96,13 +96,19 @@
         "console": true
       },
       "packages": {
-        "buffer>base64-js": true,
-        "buffer>ieee754": true
+        "browserify>buffer>base64-js": true,
+        "browserify>buffer>ieee754": true
       }
     },
     "browserify>events": {
       "globals": {
         "console": true
+      }
+    },
+    "browserify>process": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
       }
     },
     "browserify>readable-stream>core-util-is": {
@@ -125,7 +131,7 @@
         "setTimeout": true
       },
       "packages": {
-        "process": true
+        "browserify>process": true
       }
     },
     "eslint>debug": {
@@ -137,8 +143,8 @@
         "process": true
       },
       "packages": {
-        "eslint>debug>ms": true,
-        "process": true
+        "browserify>process": true,
+        "eslint>debug>ms": true
       }
     },
     "external:../snaps-utils/src/icon.ts": {
@@ -177,12 +183,6 @@
         "@metamask/utils": true,
         "external:../snaps-utils/src/handlers.ts": true,
         "superstruct": true
-      }
-    },
-    "process": {
-      "globals": {
-        "clearTimeout": true,
-        "setTimeout": true
       }
     },
     "superstruct": {

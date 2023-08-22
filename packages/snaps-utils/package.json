@@ -70,7 +70,6 @@
     "@metamask/base-controller": "^3.2.0",
     "@metamask/key-tree": "^9.0.0",
     "@metamask/permission-controller": "^4.1.0",
-    "@metamask/providers": "^11.1.1",
     "@metamask/snaps-registry": "^1.2.1",
     "@metamask/snaps-ui": "workspace:^",
     "@metamask/utils": "^6.0.1",

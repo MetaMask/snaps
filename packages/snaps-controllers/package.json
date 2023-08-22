@@ -54,7 +54,6 @@
     "@metamask/utils": "^6.0.1",
     "@xstate/fsm": "^2.0.0",
     "concat-stream": "^2.0.0",
-    "cron-parser": "^4.5.0",
     "eth-rpc-errors": "^4.0.3",
     "gunzip-maybe": "^1.4.2",
     "immer": "^9.0.6",

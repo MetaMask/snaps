@@ -54,7 +54,6 @@
     "@babel/plugin-transform-runtime": "^7.16.7",
     "@babel/preset-env": "^7.20.12",
     "@babel/preset-typescript": "^7.20.12",
-    "@metamask/snaps-browserify-plugin": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/snaps-webpack-plugin": "workspace:^",
     "@metamask/utils": "^6.0.1",
@@ -72,7 +71,6 @@
     "domain-browser": "^4.22.0",
     "events": "^3.3.0",
     "https-browserify": "^1.0.0",
-    "is-url": "^1.2.4",
     "ora": "^5.4.1",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
@@ -93,10 +91,8 @@
     "util": "^0.12.5",
     "vm-browserify": "^1.1.2",
     "webpack": "^5.88.0",
-    "webpack-dev-server": "^4.15.1",
     "webpack-merge": "^5.9.0",
-    "yargs": "^17.7.1",
-    "yargs-parser": "^20.2.2"
+    "yargs": "^17.7.1"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.3.1",
@@ -108,7 +104,6 @@
     "@swc/cli": "^0.1.62",
     "@swc/jest": "^0.2.26",
     "@types/browserify": "^12.0.37",
-    "@types/is-url": "^1.2.28",
     "@types/jest": "^27.5.1",
     "@types/node": "^20.3.1",
     "@types/rimraf": "^3.0.0",
