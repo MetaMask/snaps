@@ -1,4 +1,3 @@
-import { getMockConfig } from '@metamask/snaps-cli/test-utils';
 import type { BrowserifyObject } from 'browserify';
 import { bold, green, red } from 'chalk';
 import { resolve } from 'path';
@@ -11,6 +10,7 @@ import {
   mergeLegacyOptions,
   resolveConfig,
 } from './config';
+import { getMockConfig } from './test-utils';
 import type { YargsArgs } from './types/yargs';
 
 const CONFIG_PATH = resolve(__dirname, '__fixtures__', 'configs');

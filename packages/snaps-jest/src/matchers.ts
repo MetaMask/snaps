@@ -3,13 +3,13 @@
 // Note: Because this file imports from `@jest/globals`, it can only be used in
 // a Jest environment. This is why it's not exported from the index file.
 
+import type { MatcherFunction } from '@jest/expect';
 import { expect } from '@jest/globals';
 import type { NotificationType } from '@metamask/rpc-methods';
 import type { Component } from '@metamask/snaps-ui';
 import type { EnumToUnion } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
 import { hasProperty } from '@metamask/utils';
-import type { MatcherFunction } from 'expect';
 import type { MatcherHintOptions } from 'jest-matcher-utils';
 import {
   diff,

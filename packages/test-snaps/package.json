@@ -22,10 +22,11 @@
     "clean": "rimraf 'dist'",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
-    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
+    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog && yarn lint:dependencies",
     "lint:ci": "yarn lint",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
-    "lint:changelog": "../../scripts/validate-changelog.sh @metamask/test-snaps"
+    "lint:changelog": "../../scripts/validate-changelog.sh @metamask/test-snaps",
+    "lint:dependencies": "depcheck"
   },
   "dependencies": {
     "@metamask/bip32-example-snap": "workspace:^",
@@ -74,6 +75,7 @@
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.3",
     "deepmerge": "^4.2.2",
+    "depcheck": "^1.4.5",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",

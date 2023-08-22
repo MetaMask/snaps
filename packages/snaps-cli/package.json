@@ -39,11 +39,12 @@
     "lint:changelog": "../../scripts/validate-changelog.sh @metamask/snaps-cli",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
-    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
+    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog && yarn lint:dependencies",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
     "publish:preview": "yarn npm publish --tag preview",
-    "lint:ci": "yarn lint"
+    "lint:ci": "yarn lint",
+    "lint:dependencies": "depcheck"
   },
   "dependencies": {
     "@babel/core": "^7.20.12",
@@ -111,9 +112,9 @@
     "@types/yargs": "^17.0.24",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
-    "babel-jest": "^29.5.0",
     "cross-fetch": "^3.1.5",
     "deepmerge": "^4.2.2",
+    "depcheck": "^1.4.5",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",

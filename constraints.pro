@@ -194,6 +194,10 @@ gen_enforced_field(WorkspaceCwd, 'scripts.lint:changelog', ChangelogValidationSc
   relative_path(WorkspaceCwd, 'scripts/validate-changelog.sh', BaseChangelogValidationScript),
   atomic_list_concat([BaseChangelogValidationScript, ' ', WorkspacePackageName], ChangelogValidationScript).
 
+% The "lint:dependencies" script must be the same for all packages.
+gen_enforced_field(WorkspaceCwd, 'scripts.lint:dependencies', 'depcheck') :-
+  WorkspaceCwd \= '.'.
+
 % Ensure all examples have the same scripts.
 gen_enforced_field(WorkspaceCwd, 'scripts.build', 'mm-snap build') :-
   is_example(WorkspaceCwd),
@@ -215,7 +219,7 @@ gen_enforced_field(WorkspaceCwd, 'scripts.test', 'yarn test:e2e') :-
   is_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'scripts.test:e2e', 'jest') :-
   is_example(WorkspaceCwd).
-gen_enforced_field(WorkspaceCwd, 'scripts.lint', 'yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog') :-
+gen_enforced_field(WorkspaceCwd, 'scripts.lint', 'yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog && yarn lint:dependencies') :-
   is_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'scripts.lint:ci', 'yarn lint') :-
   is_example(WorkspaceCwd).

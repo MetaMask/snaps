@@ -1,10 +1,7 @@
-import {
-  createService,
-  MOCK_BLOCK_NUMBER,
-} from '@metamask/snaps-controllers/test-utils';
 import type { SnapId } from '@metamask/snaps-utils';
 import { HandlerType } from '@metamask/snaps-utils';
 
+import { createService, MOCK_BLOCK_NUMBER } from '../../test-utils';
 import type { SnapErrorJson } from '../ExecutionService';
 import { NodeThreadExecutionService } from './NodeThreadExecutionService';
 
