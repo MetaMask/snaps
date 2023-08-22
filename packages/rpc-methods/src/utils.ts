@@ -1,4 +1,8 @@
-import type { HardenedBIP32Node, BIP32Node } from '@metamask/key-tree';
+import type {
+  HardenedBIP32Node,
+  BIP32Node,
+  SLIP10PathNode,
+} from '@metamask/key-tree';
 import { SLIP10Node } from '@metamask/key-tree';
 import type { MagicValue } from '@metamask/snaps-utils';
 import type { Hex } from '@metamask/utils';
@@ -199,9 +203,9 @@ export async function getNode({
     curve,
     derivationPath: [
       secretRecoveryPhrase,
-      ...path
-        .slice(1)
-        .map<BIP32Node>((index) => `${prefix}:${index}` as BIP32Node),
+      ...(path.slice(1).map((index) => `${prefix}:${index}`) as
+        | BIP32Node[]
+        | SLIP10PathNode[]),
     ],
   });
 }
