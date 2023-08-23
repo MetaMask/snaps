@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `polyfills` option to Webpack configuration ([#1650](https://github.com/MetaMask/snaps/pull/1650))
 
 ### Fixed
-- Fix CLI usage of SWC ([#1677](https://github.com/MetaMask/snaps/pull/1677))
+- Fix breaking change to SWC causing the CLI to break ([#1677](https://github.com/MetaMask/snaps/pull/1677))
 
 ## [0.38.1-flask.1]
 ### Changed

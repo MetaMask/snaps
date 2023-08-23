@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.37.3-flask.1]
 ### Changed
-- Remove unused deps ([#1674](https://github.com/MetaMask/snaps/pull/1674))
+- Remove unused dependencies ([#1674](https://github.com/MetaMask/snaps/pull/1674))
 
 ## [0.37.2-flask.1]
 ### Changed

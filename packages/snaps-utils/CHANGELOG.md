@@ -8,7 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.38.1-flask.1]
 ### Changed
-- Update transaction insight response and add severity level enum ([#1653](https://github.com/MetaMask/snaps/pull/1653))
+- Update transaction insights response and add severity level enum ([#1653](https://github.com/MetaMask/snaps/pull/1653))
+   - Snaps are now able to specify a `severity` for transactions.
+   - See [SIP-11](https://metamask.github.io/SIPs/SIPS/sip-11) for more information.
 
 ## [0.38.0-flask.1]
 ### Added
