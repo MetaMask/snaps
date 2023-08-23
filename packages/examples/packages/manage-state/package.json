@@ -18,7 +18,7 @@
     "build": "mm-snap build",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf \"dist\"",
-    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog",
+    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog && yarn lint:dependencies",
     "lint:changelog": "../../../../scripts/validate-changelog.sh @metamask/manage-state-example-snap",
     "lint:ci": "yarn lint",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
@@ -28,7 +28,8 @@
     "test": "yarn test:e2e",
     "test:e2e": "jest",
     "prepare-manifest:preview": "../../../../scripts/prepare-preview-manifest.sh",
-    "publish:preview": "yarn npm publish --tag preview"
+    "publish:preview": "yarn npm publish --tag preview",
+    "lint:dependencies": "depcheck"
   },
   "dependencies": {
     "@metamask/rpc-errors": "^5.1.1",
@@ -49,6 +50,7 @@
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "deepmerge": "^4.2.2",
+    "depcheck": "^1.4.5",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",

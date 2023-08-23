@@ -1,7 +1,7 @@
-import { getMockConfig } from '@metamask/snaps-cli/test-utils';
 import { dim } from 'chalk';
-import type { ProcessedWebpackConfig } from 'src/config';
 
+import type { ProcessedWebpackConfig } from '../config';
+import { getMockConfig } from '../test-utils';
 import {
   WEBPACK_FALLBACKS,
   getBrowserslistTargets,

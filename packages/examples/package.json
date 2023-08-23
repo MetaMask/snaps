@@ -19,12 +19,13 @@
     "start": "yarn workspaces foreach --parallel --verbose --interlaced --no-private --jobs unlimited run start",
     "start:test": "yarn start",
     "test": "yarn workspaces foreach --parallel --verbose --interlaced --no-private run test",
-    "lint": "yarn workspaces foreach --parallel --verbose --interlaced --no-private run lint",
+    "lint": "yarn workspaces foreach --parallel --verbose --interlaced --no-private run lint && yarn lint:dependencies",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" \"!packages/**\" --ignore-path ../../.gitignore",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:ci": "yarn lint:eslint && yarn lint:misc --check",
-    "lint:changelogs": "yarn workspaces foreach --parallel --verbose run lint:changelog"
+    "lint:changelogs": "yarn workspaces foreach --parallel --verbose run lint:changelog",
+    "lint:dependencies": "depcheck"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.3.1",
@@ -35,6 +36,7 @@
     "@metamask/eslint-config-typescript": "^12.1.0",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
+    "depcheck": "^1.4.5",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
