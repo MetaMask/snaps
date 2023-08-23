@@ -7,12 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.38.2-flask.1]
-### Uncategorized
-- Use depcheck to lint dependencies ([#1680](https://github.com/MetaMask/snaps-skunkworks.git/pull/1680))
-- Remove unused deps ([#1674](https://github.com/MetaMask/snaps-skunkworks.git/pull/1674))
-- Fix CLI usage of SWC ([#1677](https://github.com/MetaMask/snaps-skunkworks.git/pull/1677))
-- Add `polyfills` option to Webpack configuration ([#1650](https://github.com/MetaMask/snaps-skunkworks.git/pull/1650))
-- Fix SES dependencies ([#1660](https://github.com/MetaMask/snaps-skunkworks.git/pull/1660))
+### Added
+- Add `polyfills` option to Webpack configuration ([#1650](https://github.com/MetaMask/snaps/pull/1650))
+
+### Fixed
+- Fix CLI usage of SWC ([#1677](https://github.com/MetaMask/snaps/pull/1677))
 
 ## [0.38.1-flask.1]
 ### Changed
@@ -36,7 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@0.38.2-flask.1...HEAD
-[0.38.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@0.38.1-flask.1...@metamask/snaps-cli@0.38.2-flask.1
-[0.38.1-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@0.38.0-flask.1...@metamask/snaps-cli@0.38.1-flask.1
-[0.38.0-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/snaps-cli@0.38.0-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@0.38.2-flask.1...HEAD
+[0.38.2-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@0.38.1-flask.1...@metamask/snaps-cli@0.38.2-flask.1
+[0.38.1-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@0.38.0-flask.1...@metamask/snaps-cli@0.38.1-flask.1
+[0.38.0-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/snaps-cli@0.38.0-flask.1
