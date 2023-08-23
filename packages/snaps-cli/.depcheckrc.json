@@ -24,7 +24,6 @@
     "typedoc",
     "typescript",
     "url",
-    "util",
-    "yargs-parser"
+    "util"
   ]
 }
