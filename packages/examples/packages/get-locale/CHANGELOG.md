@@ -6,4 +6,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/get-locale-example-snap@0.38.0-flask.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/
