@@ -14,3 +14,4 @@ export * from './notifications';
 export * from './transaction-insights';
 export * from './updates';
 export * from './wasm';
+export * from './get-locale';

@@ -1,21 +1,21 @@
-# `@metamask/get-entropy-example-snap`
+# `@metamask/get-locale-example-snap`
 
-This snap demonstrates how to use `snap_getEntropy` JSON-RPC method to get
-entropy from the MetaMask extension, and use it to sign a message.
+This snap demonstrates how to use `snap_getLocale` JSON-RPC method to get
+the currently selected user locale from the MetaMask extension, and use it in a snap.
 
 ## Snap manifest
 
-> **Note**: Using `snap_getEntropy` requires the `snap_getEntropy`
-> permissions. Refer to [the documentation](https://docs.metamask.io/snaps/reference/rpc-api/#snap_getentropy)
+> **Note**: Using `snap_getLocale` requires the `snap_getLocale`
+> permissions. Refer to [the documentation](https://docs.metamask.io/snaps/reference/rpc-api/#snap_getlocale)
 > for more information.
 
 Along with other permissions, the manifest of this snap includes the
-`snap_getEntropy` permission:
+`snap_getLocale` permission:
 
 ```json
 {
   "initialPermissions": {
-    "snap_getEntropy": {}
+    "snap_getLocale": {}
   }
 }
 ```
@@ -27,9 +27,8 @@ This permission does not require any additional configuration.
 This snap exposes an `onRpcRequest` handler, which supports the following
 JSON-RPC methods:
 
-- `signMessage`: Derives a private key using the `snap_getEntropy` method, and
-  uses it to sign a `message`. For this particular example, we use the
-  `BLS12-381` elliptic curve to sign the message.
+- `hello`: Shows an alert dialog with a localized message, using both `snap_dialog`
+  and `snap_getLocale`.
 
 For more information, you can refer to
 [the end-to-end tests](./src/index.test.ts).

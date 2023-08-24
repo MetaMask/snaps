@@ -7,11 +7,11 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "duUVcic1OaNIyQnSGn9Wk7ERsGFRHxQek95a8tkGnFc=",
+    "shasum": "bts852jYywqIQzWdD97sI7trRep8gGrGBMU74DIRovM=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
-        "packageName": "@metamask/get-entropy-example-snap",
+        "packageName": "@metamask/get-locale-example-snap",
         "registry": "https://registry.npmjs.org"
       }
     }
