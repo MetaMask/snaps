@@ -18,17 +18,24 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
 };
 
 /**
- * Provides basic translation given a locale, a translation key and some optional arguments.
+ * Get a translated message given a locale, a translation key, and some optional
+ * arguments. The arguments replace the placeholders in the translation.
+ *
+ * In a real world scenario, this function would likely be implemented by some
+ * translation library, but for the sake of simplicity, we're just using a
+ * simple function here.
  *
  * @param locale - The currently selected user locale.
- * @param translationKey - The translation key to translate.
+ * @param translationKey - The key of the message in {@link TRANSLATIONS}
+ * to translate.
  * @param args - An optional array of arguments for the translation.
  * @returns The translated string.
  * @throws If the `translationKey` does not exist.
  */
 const translate = (locale: string, translationKey: string, args?: string[]) => {
   const translationsForKey = TRANSLATIONS[translationKey];
-  assert(translationsForKey, `Invalid translation key: ${translationKey}`);
+  assert(translationsForKey, `Unknown translation key: ${translationKey}.`);
+
   const translatedString =
     translationsForKey[locale] ?? translationsForKey[FALLBACK_LANGUAGE];
   assert(translatedString, `Invalid translation key: ${translationKey}`);
@@ -46,7 +53,9 @@ const translate = (locale: string, translationKey: string, args?: string[]) => {
  * Handle incoming JSON-RPC requests from the dapp, sent through the
  * `wallet_invokeSnap` method. This handler handles a single method:
  *
- * - `hello`: Shows an alert dialog with a localized message.
+ * - `hello`: Shows an alert dialog with a localized message. This uses the
+ * `snap_getLocale` JSON-RPC method to get the locale of the user's MetaMask
+ * instance.
  *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.
@@ -70,8 +79,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
       return snap.request({
         method: 'snap_dialog',
         params: {
-          // For this example we're using `DialogType.Alert`, but you can also
-          // use the literal string value "alert" here.
           type: DialogType.Alert,
           content: panel([heading(header), text(body)]),
         },
