@@ -86,6 +86,8 @@ export function* initSaga({ payload }: PayloadAction<string>) {
       // TODO: Add all the hooks required
       encrypt,
       decrypt,
+      // TODO: Allow changing this?
+      getLocale: async () => Promise.resolve('en'),
       getUnlockPromise: async () => Promise.resolve(true),
       getMnemonic: async () => mnemonicPhraseToBytes(srp),
       showDialog: async (...args: Parameters<typeof showDialog>) =>
