@@ -4,8 +4,12 @@ import { DialogType } from '@metamask/snaps-types';
 import { panel, text, heading } from '@metamask/snaps-ui';
 import { assert } from '@metamask/utils';
 
+// Fallback language, to be used if we don't have a valid translation in
+// the requested locale.
 const FALLBACK_LANGUAGE = 'en';
 
+// Object containing translation strings for different translation keys
+// in multiple locales.
 const TRANSLATIONS: Record<string, Record<string, string>> = {
   greeting: {
     en: 'Hello $1!',
