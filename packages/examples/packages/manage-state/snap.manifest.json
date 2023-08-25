@@ -1,5 +1,5 @@
 {
-  "version": "0.38.0-flask.1",
+  "version": "0.38.1-flask.1",
   "description": "MetaMask example snap demonstrating the use of `snap_manageState`.",
   "proposedName": "Manage State Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "3+Bhwz5DCqf5mjikQvLD0UFAwc9c5IrJHa6O2hZtc7w=",
+    "shasum": "mK8k9cUJX4aMrC0wnljGS7H9kDXY5h8atsu+Av3QyYI=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
