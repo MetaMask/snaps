@@ -7,11 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.38.0-flask.1]
-### Uncategorized
-- Add example snap for `snap_getLocale` ([#1684](https://github.com/MetaMask/snaps/pull/1684))
-- Use depcheck to lint dependencies ([#1680](https://github.com/MetaMask/snaps/pull/1680))
-- Fix CLI usage of SWC ([#1677](https://github.com/MetaMask/snaps/pull/1677))
-- Update core libs ([#1673](https://github.com/MetaMask/snaps/pull/1673))
+### Added
+- Add support for `snap_getLocale` JSON-RPC method ([#1684](https://github.com/MetaMask/snaps/pull/1684))
+
+### Fixed
+- Remove unused dependencies ([#1680](https://github.com/MetaMask/snaps/pull/1680))
 
 ## [0.37.2-flask.1]
 ### Changed

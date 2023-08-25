@@ -7,16 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.37.3-flask.1]
-### Uncategorized
-- Make `manageAccounts` arguments extend `RestrictedMethodParameters` ([#1687](https://github.com/MetaMask/snaps/pull/1687))
-- Use depcheck to lint dependencies ([#1680](https://github.com/MetaMask/snaps/pull/1680))
-- Fix ed25519 public key derivation ([#1678](https://github.com/MetaMask/snaps/pull/1678))
-- Fix CLI usage of SWC ([#1677](https://github.com/MetaMask/snaps/pull/1677))
-- Add `polyfills` option to Webpack configuration ([#1650](https://github.com/MetaMask/snaps/pull/1650))
-- Update transaction insight response and add severity level enum ([#1653](https://github.com/MetaMask/snaps/pull/1653))
-- Update core libs ([#1673](https://github.com/MetaMask/snaps/pull/1673))
-- Implement `snap_getLocale` ([#1557](https://github.com/MetaMask/snaps/pull/1557))
-- Add `onInstall` and `onUpdate` lifecycle hooks ([#1643](https://github.com/MetaMask/snaps/pull/1643))
+### Changed
+- Use `polyfills` option for specifying Node.js polyfills ([#1650](https://github.com/MetaMask/snaps/pull/1650))
+
+### Fixed
+- Remove unused dependencies ([#1680](https://github.com/MetaMask/snaps/pull/1680))
 
 ## [0.37.2-flask.1]
 ### Changed

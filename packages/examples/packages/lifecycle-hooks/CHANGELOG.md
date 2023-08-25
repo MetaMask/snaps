@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.38.1-flask.1]
-### Uncategorized
-- Use depcheck to lint dependencies ([#1680](https://github.com/MetaMask/snaps/pull/1680))
-- Fix CLI usage of SWC ([#1677](https://github.com/MetaMask/snaps/pull/1677))
+### Fixed
+- Remove unused dependencies ([#1680](https://github.com/MetaMask/snaps/pull/1680))
 
 ## [0.38.0-flask.1]
 ### Uncategorized

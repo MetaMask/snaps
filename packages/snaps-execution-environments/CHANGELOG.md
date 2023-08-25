@@ -7,12 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.38.2-flask.1]
-### Uncategorized
-- Use depcheck to lint dependencies ([#1680](https://github.com/MetaMask/snaps/pull/1680))
-- Remove unused deps ([#1674](https://github.com/MetaMask/snaps/pull/1674))
-- Fix CLI usage of SWC ([#1677](https://github.com/MetaMask/snaps/pull/1677))
-- Update core libs ([#1673](https://github.com/MetaMask/snaps/pull/1673))
-- deps: ses@0.18.1->0.18.7 ([#1666](https://github.com/MetaMask/snaps/pull/1666))
+### Changed
+- Bump `ses` to `0.18.7` ([#1666](https://github.com/MetaMask/snaps/pull/1666))
+
+### Fixed
+- Remove unused dependencies ([#1680](https://github.com/MetaMask/snaps/pull/1680))
 
 ## [0.38.1-flask.1]
 ### Changed

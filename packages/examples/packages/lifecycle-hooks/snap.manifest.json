@@ -1,5 +1,5 @@
 {
-  "version": "0.38.0-flask.1",
+  "version": "0.38.1-flask.1",
   "description": "MetaMask example snap demonstrating the use of the `onInstall` and `onUpdate` lifecycle hooks.",
   "proposedName": "Lifecycle Hooks Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "4DHXPu5lFAka46ohpDpyfwcSjT73s+nnZnO8PrVEr18=",
+    "shasum": "mzUpreZgfBcfKj7uBRvBfjQeuhj1a7PLajr1K3/CK+s=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

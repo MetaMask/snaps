@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.38.1-flask.1]
-### Uncategorized
-- Use depcheck to lint dependencies ([#1680](https://github.com/MetaMask/snaps/pull/1680))
-- Fix CLI usage of SWC ([#1677](https://github.com/MetaMask/snaps/pull/1677))
+### Changed
+- Use `polyfills` option for specifying Node.js polyfills ([#1650](https://github.com/MetaMask/snaps/pull/1650))
+
+### Fixed
+- Remove unused dependencies ([#1680](https://github.com/MetaMask/snaps/pull/1680))
 
 ## [0.38.0-flask.1]
 ### Changed
