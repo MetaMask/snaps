@@ -1,5 +1,5 @@
 {
-  "version": "0.38.0-flask.1",
+  "version": "0.38.1-flask.1",
   "description": "MetaMask example snap demonstrating the use of `snap_getBip44Entropy`.",
   "proposedName": "BIP-44 Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "79GScHi2aSAhHABs46J2/+1gK3GuA6GlRPNzAqGuNmo=",
+    "shasum": "w3Sp0Y7HB+uqHgv1L6S+V+Q7TW10/mUD7+jbbMUgz0g=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
