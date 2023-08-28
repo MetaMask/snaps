@@ -172,6 +172,18 @@ describe('endowments', () => {
         endowments: { btoa },
         factory: () => btoa('Snaps'),
       },
+      Request: {
+        endowments: { Request },
+        factory: () => new Request('https://metamask.io'),
+      },
+      Headers: {
+        endowments: { Headers },
+        factory: () => new Headers(),
+      },
+      Response: {
+        endowments: { Response },
+        factory: () => new Response(),
+      },
       setTimeoutAttenuated: {
         endowments: { setTimeoutAttenuated },
         factory: () => setTimeoutAttenuated((param: unknown) => param, 1),
@@ -214,7 +226,7 @@ describe('endowments', () => {
         });
 
         if (factory()) {
-          it('does not leak `globalThis`', () => {
+          it(`does not leak 'globalThis' (${name})`, () => {
             const instance = factory();
             expect(walkAndSearch(instance, globalThis)).toBe(false);
           });
