@@ -4,7 +4,10 @@ The MetaMask Snaps platform has several execution **environments**, not to be
 confused with execution **services**. The execution environment is responsible
 for executing the snap code, and for communicating with the [Execution Service].
 
-Each execution environment consists of an **executor**, which is a JavaScript bundle that is built with LavaMoat and run LavaMoat at runtime for runtime protections. They are designed to run in a specific environment and to be paired with a specific [Execution Service].
+Each execution environment consists of an **executor**, which is a JavaScript
+bundle that is built with LavaMoat and run LavaMoat at runtime for runtime
+protections. They are designed to run in a specific environment and to be paired
+with a specific [Execution Service].
 
 Currently, the following execution environments are supported:
 

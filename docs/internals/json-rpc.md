@@ -25,7 +25,8 @@ differently than requests from dapps.
 
 Middlewares are functions that can modify the request before it is sent to the
 handler, or handle the request themselves. They are executed in the order they
-are added to the engine, **meaning the order they are added to the engine in matters**.
+are added to the engine, **meaning the order they are added to the engine in
+matters**.
 
 A middleware function looks like this:
 
@@ -40,8 +41,10 @@ type Middleware = (
 
 The `request` and `response` parameters are the JSON-RPC request and response
 objects, respectively. The response object is initially empty, and is passed
-from middleware to middleware. Each middleware can modify both the request and response objects
-before passing them to the next middleware. Since the middlewares are executed in order, one middleware may modify the objects that the following middlewares see.
+from middleware to middleware. Each middleware can modify both the request and
+response objects before passing them to the next middleware. Since the
+middlewares are executed in order, one middleware may modify the objects that
+the following middlewares see.
 
 The `next` and `end` functions are used to control the flow of the middleware
 stack. If the `next` function is called, the next middleware in the stack will
@@ -61,7 +64,11 @@ sequenceDiagram
   Engine->>Client: Send response
 ```
 
-Once all middlewares have been executed or the `end` callback has been invoked the JSON-RPC engine will return the resulting response object. If defined, this object should be a JSON-RPC specification result object that contains either a `result` property or an error `property`. The engine may also return an error in case of issues processing a request.
+Once all middlewares have been executed or the `end` callback has been invoked
+the JSON-RPC engine will return the resulting response object. If defined, this
+object should be a JSON-RPC specification result object that contains either a
+`result` property or an error `property`. The engine may also return an error in
+case of issues processing a request.
 
 ## JSON-RPC in MetaMask Snaps
 

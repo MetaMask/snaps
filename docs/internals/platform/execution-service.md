@@ -44,7 +44,8 @@ sequenceDiagram
     deactivate Service
 ```
 
-After this initial boot-up, the snap is now ready to service requests, also via JSON-RPC.
+After this initial boot-up, the snap is now ready to service requests, also via
+JSON-RPC.
 
 ```mermaid
 sequenceDiagram
@@ -55,10 +56,10 @@ sequenceDiagram
     Service->>Controller: Response
 ```
 
-All of the communication between the [Snap Controller] and the execution
-service is done through the controller messaging system in the MetaMask
-extension. The execution service is hooked up to the controller messaging
-system, so it can handle requests from other parts of the extension.
+All of the communication between the [Snap Controller] and the execution service
+is done through the controller messaging system in the MetaMask extension. The
+execution service is hooked up to the controller messaging system, so it can
+handle requests from other parts of the extension.
 
 [snap controller]: ./snap-controller.md
 [execution environment]: ./execution-environment.md
