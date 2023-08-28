@@ -50,7 +50,12 @@ describe('endowments', () => {
       clearInterval: clearIntervalAttenuated,
     } = interval.factory();
     const { Math: mathAttenuated } = math.factory();
-    const { fetch: fetchAttenuated } = network.factory();
+    const {
+      fetch: fetchAttenuated,
+      Request: RequestHardened,
+      Headers: HeadersHardened,
+      Response: ResponseHardened,
+    } = network.factory();
     const { Date: DateAttenuated } = date.factory();
     const { console: consoleAttenuated } = consoleEndowment.factory({
       snapId: MOCK_SNAP_ID,
@@ -172,17 +177,17 @@ describe('endowments', () => {
         endowments: { btoa },
         factory: () => btoa('Snaps'),
       },
-      Request: {
-        endowments: { Request },
-        factory: () => new Request('https://metamask.io'),
+      RequestHardened: {
+        endowments: { RequestHardened },
+        factory: () => new RequestHardened('https://metamask.io'),
       },
-      Headers: {
-        endowments: { Headers },
-        factory: () => new Headers(),
+      HeadersHardened: {
+        endowments: { HeadersHardened },
+        factory: () => new HeadersHardened(),
       },
-      Response: {
-        endowments: { Response },
-        factory: () => new Response(),
+      ResponseHardened: {
+        endowments: { ResponseHardened },
+        factory: () => new ResponseHardened(),
       },
       setTimeoutAttenuated: {
         endowments: { setTimeoutAttenuated },
