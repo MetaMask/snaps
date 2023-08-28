@@ -226,7 +226,7 @@ describe('endowments', () => {
         });
 
         if (factory()) {
-          it(`does not leak 'globalThis' (${name})`, () => {
+          it(`${name} does not leak 'globalThis'`, () => {
             const instance = factory();
             expect(walkAndSearch(instance, globalThis)).toBe(false);
           });
@@ -253,7 +253,7 @@ describe('endowments', () => {
         },
         {
           factory: expect.any(Function),
-          names: ['fetch'],
+          names: ['fetch', 'Request', 'Headers', 'Response'],
         },
         {
           factory: expect.any(Function),

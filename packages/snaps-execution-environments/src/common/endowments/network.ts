@@ -93,14 +93,6 @@ class ResponseWrapper implements Response {
  * function, as well as a teardown function.
  */
 const createNetwork = () => {
-  // Request, Headers and Response are the endowments injected alongside fetch
-  // only when 'endowment:network-access' permission is requested,
-  // therefore these are hardened as part of fetch dependency injection within its factory.
-  // These endowments are not (and should never be) available by default.
-  harden(Request);
-  harden(Headers);
-  harden(Response);
-
   // Open fetch calls or open body streams
   const openConnections = new Set<{ cancel: () => Promise<void> }>();
   // Track last teardown count
@@ -193,12 +185,19 @@ const createNetwork = () => {
 
   return {
     fetch: harden(_fetch),
+    // Request, Headers and Response are the endowments injected alongside fetch
+    // only when 'endowment:network-access' permission is requested,
+    // therefore these are hardened as part of fetch dependency injection within its factory.
+    // These endowments are not (and should never be) available by default.
+    Request: harden(Request),
+    Headers: harden(Headers),
+    Response: harden(Response),
     teardownFunction,
   };
 };
 
 const endowmentModule = {
-  names: ['fetch'] as const,
+  names: ['fetch', 'Request', 'Headers', 'Response'] as const,
   factory: createNetwork,
 };
 export default endowmentModule;
