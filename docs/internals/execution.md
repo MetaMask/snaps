@@ -39,9 +39,13 @@ and `Response`. These endowments may also be further hardened before being
 passed to the snap, see for example [network hardening], which hardens the
 `fetch` global before granting it to the snap.
 
+<!--
+
 ## Hardening of the `snap` and `ethereum` globals
 
 ...
+
+-->
 
 [endowment:network-access]: ../../packages/snaps-controllers/src/snaps/endowments/network-access.ts
 [network hardening]: ../../packages/snaps-execution-environments/src/common/endowments/network.ts
