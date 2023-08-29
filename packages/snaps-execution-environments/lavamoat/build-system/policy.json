@@ -988,14 +988,6 @@
         "@lavamoat/lavapack>readable-stream": true
       }
     },
-    "@wdio/cli>inquirer>through": {
-      "builtin": {
-        "stream": true
-      },
-      "globals": {
-        "process.nextTick": true
-      }
-    },
     "@wdio/mocha-framework>mocha>supports-color": {
       "builtin": {
         "os.release": true,
@@ -1156,13 +1148,21 @@
         "Buffer": true
       },
       "packages": {
-        "@wdio/cli>inquirer>through": true,
-        "browserify>JSONStream>jsonparse": true
+        "browserify>JSONStream>jsonparse": true,
+        "browserify>JSONStream>through": true
       }
     },
     "browserify>JSONStream>jsonparse": {
       "globals": {
         "Buffer": true
+      }
+    },
+    "browserify>JSONStream>through": {
+      "builtin": {
+        "stream": true
+      },
+      "globals": {
+        "process.nextTick": true
       }
     },
     "browserify>browser-pack": {
