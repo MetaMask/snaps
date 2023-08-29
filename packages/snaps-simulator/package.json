@@ -63,7 +63,7 @@
     "@metamask/snaps-execution-environments": "workspace:^",
     "@metamask/snaps-ui": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^7.1.0",
+    "@metamask/utils": "^8.0.0",
     "@minoru/react-dnd-treeview": "^3.4.4",
     "@reduxjs/toolkit": "^1.9.5",
     "date-fns": "^2.30.0",
