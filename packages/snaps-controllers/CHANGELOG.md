@@ -10,7 +10,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - No changes this release.
 
-
 ## [1.0.1]
 ### Fixed
 - Fix parallel usage of registry ([#1669](https://github.com/MetaMask/snaps/pull/1669))
