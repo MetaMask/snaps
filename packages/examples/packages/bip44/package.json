@@ -36,7 +36,7 @@
     "@metamask/rpc-errors": "^5.1.1",
     "@metamask/snaps-types": "workspace:^",
     "@metamask/snaps-ui": "workspace:^",
-    "@metamask/utils": "^7.1.0",
+    "@metamask/utils": "^8.0.0",
     "@noble/bls12-381": "^1.2.0"
   },
   "devDependencies": {
