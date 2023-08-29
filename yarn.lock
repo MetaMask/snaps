@@ -8902,14 +8902,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.2.1":
-  version: 1.3.3
-  resolution: "axios@npm:1.3.3"
+"axios@npm:^1.4.0":
+  version: 1.5.0
+  resolution: "axios@npm:1.5.0"
   dependencies:
     follow-redirects: ^1.15.0
     form-data: ^4.0.0
     proxy-from-env: ^1.1.0
-  checksum: b734a4bc348e2fa27150a7d4289d783fa405feb3f79f8daf28fd05813a12c8525ae9d3854aafe7ba041b005a4a751a0ba3b923331ceed41296ae14c7e54e2f26
+  checksum: e7405a5dbbea97760d0e6cd58fecba311b0401ddb4a8efbc4108f5537da9b3f278bde566deb777935a960beec4fa18e7b8353881f2f465e4f2c0e949fead35be
   languageName: node
   linkType: hard
 
@@ -9986,20 +9986,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromedriver@npm:^114.0.1":
-  version: 114.0.1
-  resolution: "chromedriver@npm:114.0.1"
+"chromedriver@npm:^116.0.0":
+  version: 116.0.0
+  resolution: "chromedriver@npm:116.0.0"
   dependencies:
     "@testim/chrome-version": ^1.1.3
-    axios: ^1.2.1
-    compare-versions: ^5.0.1
+    axios: ^1.4.0
+    compare-versions: ^6.0.0
     extract-zip: ^2.0.1
     https-proxy-agent: ^5.0.1
     proxy-from-env: ^1.1.0
     tcp-port-used: ^1.0.1
   bin:
     chromedriver: bin/chromedriver
-  checksum: 568e3383db1e6c5c1918170e128a72946a58afba4fb303e8b8fa46290390955d7304045ad0e10066c29941e3092fcba1d9716a375c90b4fbac7bb22d260d09d8
+  checksum: a8d2db81e6f536ce5e9fd347f16b754e78cbaf691dc810880bcfe71128a8916af5b4d915d25ffff8be688cce73ba8bf4f50781b71e62136615d136cdb377fdfb
   languageName: node
   linkType: hard
 
@@ -10371,10 +10371,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"compare-versions@npm:^5.0.1":
-  version: 5.0.3
-  resolution: "compare-versions@npm:5.0.3"
-  checksum: f66a4bb6ef8ff32031cc92c04dea4bbead039e72a7f6c7df7ef05f5a42ddca9202f8875b7449add54181e73b89f039662a8760c8db0ab036c4e8f653a7cd29c1
+"compare-versions@npm:^6.0.0":
+  version: 6.1.0
+  resolution: "compare-versions@npm:6.1.0"
+  checksum: d4e2a45706a023d8d0b6680338b66b79e20bd02d1947f0ac6531dab634cbed89fa373b3f03d503c5e489761194258d6e1bae67a07f88b1efc61648454f2d47e7
   languageName: node
   linkType: hard
 
@@ -20259,7 +20259,7 @@ __metadata:
     "@types/node": ^20.3.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
-    chromedriver: ^114.0.1
+    chromedriver: ^116.0.0
     depcheck: ^1.4.5
     eslint: ^8.27.0
     eslint-config-prettier: ^8.5.0
