@@ -7,17 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [1.0.2]
-### Uncategorized
-- Add hardening for Request, Headers and Response endowments ([#1695](https://github.com/MetaMask/snaps/pull/1695))
-- 1.0.1 ([#1671](https://github.com/MetaMask/snaps/pull/1671))
-- 1.0.0 ([#1668](https://github.com/MetaMask/snaps/pull/1668))
-- deps: ses@0.18.1->0.18.7 ([#1666](https://github.com/MetaMask/snaps/pull/1666))
-- 1.0.0-prerelease.1 ([#1540](https://github.com/MetaMask/snaps/pull/1540))
-- Simplify Browserify example ([#1507](https://github.com/MetaMask/snaps/pull/1507))
-- Improve JSON parsing safety ([#1499](https://github.com/MetaMask/snaps/pull/1499))
-- Fix a few dependabot warnings ([#1341](https://github.com/MetaMask/snaps/pull/1341))
-- Bump LavaMoat ([#1479](https://github.com/MetaMask/snaps/pull/1479))
-- Bump `@metamask/utils` and `@metamask/snaps-registry` ([#1457](https://github.com/MetaMask/snaps/pull/1457))
+### Fixed
+- Fix hardening for Request, Headers and Response endowments ([#1695](https://github.com/MetaMask/snaps/pull/1695))
 
 ## [1.0.1]
 ### Changed
