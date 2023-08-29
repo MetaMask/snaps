@@ -45,7 +45,7 @@
     "@metamask/network-example-snap": "workspace:^",
     "@metamask/notification-example-snap": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^7.1.0",
+    "@metamask/utils": "^8.0.0",
     "@metamask/wasm-example-snap": "workspace:^",
     "@popperjs/core": "^2.11.8",
     "@reduxjs/toolkit": "^1.9.5",
