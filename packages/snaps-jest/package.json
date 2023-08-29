@@ -47,7 +47,7 @@
     "jest-environment-node": "^29.5.0",
     "jest-matcher-utils": "^29.5.0",
     "pptr-testing-library": "^0.7.0",
-    "puppeteer": "20.3.0",
+    "puppeteer": "21.1.1",
     "superstruct": "^1.0.3",
     "webdriverio": "^8.15.9"
   },
