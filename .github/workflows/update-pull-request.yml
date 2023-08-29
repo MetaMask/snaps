@@ -1,0 +1,212 @@
+name: Update pull request
+
+on:
+  issue_comment:
+    types:
+      - created
+
+jobs:
+  is-fork-pull-request:
+    name: Determine whether this issue comment was on a pull request from a fork
+    if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot update-pr') }}
+    runs-on: ubuntu-latest
+    outputs:
+      IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Determine whether this PR is from a fork
+        id: is-fork
+        run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+
+  react-to-comment:
+    name: React to the comment
+    runs-on: ubuntu-latest
+    needs: is-fork-pull-request
+    # Early exit if this is a fork, since later steps are skipped for forks.
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: React to the comment
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/${REPO}/issues/comments/${COMMENT_ID}/reactions" \
+            -f content='+1'
+        env:
+          COMMENT_ID: ${{ github.event.comment.id }}
+          GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
+          REPO: ${{ github.repository }}
+
+  prepare:
+    name: Prepare dependencies
+    runs-on: ubuntu-latest
+    needs: is-fork-pull-request
+    # Early exit if this is a fork, since later steps are skipped for forks.
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    outputs:
+      COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+      - name: Install Yarn dependencies
+        run: yarn --immutable
+      - name: Get commit SHA
+        id: commit-sha
+        run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+  dedupe-yarn-lock:
+    name: Deduplicate yarn.lock
+    runs-on: ubuntu-latest
+    needs: prepare
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+      - name: Install dependencies from cache
+        run: yarn --immutable --immutable-cache
+      - name: Deduplicate yarn.lock
+        run: yarn dedupe
+      - name: Cache yarn.lock
+        uses: actions/cache/save@v3
+        with:
+          path: yarn.lock
+          key: cache-yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
+
+  regenerate-lavamoat-policies:
+    name: Regenerate LavaMoat policies
+    runs-on: ubuntu-latest
+    needs: prepare
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+      - name: Install dependencies from cache
+        run: yarn --immutable --immutable-cache
+      - name: Regenerate LavaMoat policies
+        run: yarn build:lavamoat:policy
+      - name: Cache LavaMoat policies
+        uses: actions/cache/save@v3
+        with:
+          path: packages/snaps-execution-environments/lavamoat
+          key: cache-lavamoat-${{ needs.prepare.outputs.COMMIT_SHA }}
+
+  update-examples:
+    name: Update examples
+    runs-on: ubuntu-latest
+    needs: prepare
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+      - name: Install dependencies from cache
+        run: yarn --immutable --immutable-cache
+      - name: Update examples
+        run: yarn build
+      - name: Cache examples
+        uses: actions/cache/save@v3
+        with:
+          path: packages/examples/packages
+          key: cache-examples-${{ needs.prepare.outputs.COMMIT_SHA }}
+
+  commit-result:
+    name: Commit result
+    runs-on: ubuntu-latest
+    needs:
+      - prepare
+      - dedupe-yarn-lock
+      - regenerate-lavamoat-policies
+      - update-examples
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          # Use PAT to ensure that the commit later can trigger status check
+          # workflows.
+          token: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+      - name: Configure Git
+        run: |
+          git config --global user.name 'MetaMask Bot'
+          git config --global user.email 'metamaskbot@users.noreply.github.com'
+      - name: Get commit SHA
+        id: commit-sha
+        run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Restore yarn.lock
+        uses: actions/cache/restore@v3
+        with:
+          path: yarn.lock
+          key: cache-yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+      - name: Commit yarn.lock
+        run: |
+          git add yarn.lock
+          git commit -m "Deduplicate yarn.lock" || true
+      - name: Restore LavaMoat policies
+        uses: actions/cache/restore@v3
+        with:
+          path: packages/snaps-execution-environments/lavamoat
+          key: cache-lavamoat-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+      - name: Commit LavaMoat policies
+        run: |
+          git add packages/snaps-execution-environments/lavamoat
+          git commit -m "Update LavaMoat policies" || true
+      - name: Restore examples
+        uses: actions/cache/restore@v3
+        with:
+          path: packages/examples/packages
+          key: cache-examples-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+      - name: Commit examples
+        run: |
+          git add packages/examples/packages
+          git commit -m "Update example snaps" || true
+      - name: Push changes
+        run: git push
