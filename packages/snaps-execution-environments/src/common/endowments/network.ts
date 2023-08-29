@@ -185,12 +185,19 @@ const createNetwork = () => {
 
   return {
     fetch: harden(_fetch),
+    // Request, Headers and Response are the endowments injected alongside fetch
+    // only when 'endowment:network-access' permission is requested,
+    // therefore these are hardened as part of fetch dependency injection within its factory.
+    // These endowments are not (and should never be) available by default.
+    Request: harden(Request),
+    Headers: harden(Headers),
+    Response: harden(Response),
     teardownFunction,
   };
 };
 
 const endowmentModule = {
-  names: ['fetch'] as const,
+  names: ['fetch', 'Request', 'Headers', 'Response'] as const,
   factory: createNetwork,
 };
 export default endowmentModule;
