@@ -1,5 +1,5 @@
 {
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "An example Snap that uses WebAssembly.",
   "proposedName": "wasm",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "1sN6/2Q2U5IzcAm53WMPE6mNylcm8XT646w8FgXk0io=",
+    "shasum": "wqosXCCoMQxZGnN14xr65b0GoLvqjYwzKvdZV6ONdZo=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

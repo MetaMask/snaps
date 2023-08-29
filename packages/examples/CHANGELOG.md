@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2]
+### Changed
+- No changes this release.
+
 ## [1.0.1]
 ### Changed
 - No changes this release.
@@ -268,7 +272,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - This package was previously a subset of [`snaps-cli`](https://github.com/MetaMask/snaps-cli/tree/main/examples), which has been renamed to [`@metamask/snaps-cli`](https://npmjs.com/package/@metamask/snaps-cli).
   - Some examples have been deleted because they were outdated.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/v1.0.2...HEAD
+[1.0.2]: https://github.com/MetaMask/snaps/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/MetaMask/snaps/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/MetaMask/snaps/compare/v1.0.0-prerelease.1...v1.0.0
 [1.0.0-prerelease.1]: https://github.com/MetaMask/snaps/compare/v0.32.2...v1.0.0-prerelease.1
