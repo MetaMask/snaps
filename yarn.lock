@@ -7780,7 +7780,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wdio/browser-runner@npm:^8.15.9":
+"@wdio/browser-runner@npm:8.15.9":
   version: 8.15.9
   resolution: "@wdio/browser-runner@npm:8.15.9"
   dependencies:
@@ -7818,6 +7818,47 @@ __metadata:
     webdriverio: 8.15.9
     ws: ^8.13.0
   checksum: c3293cf3bcafde031f75af8fe5ef021208dcf2a5a3921a97f1ead225be904e025956a255b3e1478e402beb4715835254b973ac9f1d3670de22156a32790a9e22
+  languageName: node
+  linkType: hard
+
+"@wdio/browser-runner@patch:@wdio/browser-runner@npm%3A8.15.9#./.yarn/patches/@wdio-browser-runner-npm-8.15.9-c3dd0d4a69.patch::locator=root%40workspace%3A.":
+  version: 8.15.9
+  resolution: "@wdio/browser-runner@patch:@wdio/browser-runner@npm%3A8.15.9#./.yarn/patches/@wdio-browser-runner-npm-8.15.9-c3dd0d4a69.patch::version=8.15.9&hash=04b6f0&locator=root%40workspace%3A."
+  dependencies:
+    "@babel/plugin-proposal-class-properties": ^7.18.6
+    "@originjs/vite-plugin-commonjs": ^1.0.3
+    "@types/istanbul-lib-source-maps": ^4.0.1
+    "@types/node": ^20.1.0
+    "@vitest/spy": ^0.34.1
+    "@wdio/globals": 8.15.9
+    "@wdio/local-runner": 8.15.9
+    "@wdio/logger": 8.11.0
+    "@wdio/mocha-framework": 8.15.9
+    "@wdio/protocols": 8.14.6
+    "@wdio/types": 8.15.7
+    "@wdio/utils": 8.15.9
+    ast-types: ^0.14.2
+    deepmerge-ts: ^5.0.0
+    expect-webdriverio: ^4.2.5
+    fast-safe-stringify: ^2.1.1
+    get-port: ^7.0.0
+    import-meta-resolve: ^3.0.0
+    istanbul-lib-coverage: ^3.2.0
+    istanbul-lib-report: ^3.0.0
+    istanbul-lib-source-maps: ^4.0.1
+    istanbul-reports: ^3.1.5
+    mlly: ^1.4.0
+    modern-node-polyfills: ^1.0.0
+    recast: ^0.23.2
+    serialize-error: ^11.0.0
+    source-map-support: ^0.5.21
+    vite: ~4.4.6
+    vite-plugin-istanbul: ^5.0.0
+    vite-plugin-top-level-await: ^1.3.0
+    webdriver: 8.15.9
+    webdriverio: 8.15.9
+    ws: ^8.13.0
+  checksum: 1bdc2ba603283b671147ca483b8add80cc5d48d9c69ede38b21d241c283ca8312558e38995a3a6ce1d2970913babff2924f9cf2131aab36157ee5e8a6c275432
   languageName: node
   linkType: hard
 
@@ -15840,7 +15881,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-util@npm:^29.5.0, jest-util@npm:^29.6.3":
+"jest-util@npm:29.6.3":
   version: 29.6.3
   resolution: "jest-util@npm:29.6.3"
   dependencies:
@@ -15851,6 +15892,20 @@ __metadata:
     graceful-fs: ^4.2.9
     picomatch: ^2.2.3
   checksum: 7bf3ba3ac67ac6ceff7d8fdd23a86768e23ddd9133ecd9140ef87cc0c28708effabaf67a6cd45cd9d90a63d645a522ed0825d09ee59ac4c03b9c473b1fef4c7c
+  languageName: node
+  linkType: hard
+
+"jest-util@patch:jest-util@npm%3A29.6.3#./.yarn/patches/jest-util-npm-29.6.3-6ffdea2c1c.patch::locator=root%40workspace%3A.":
+  version: 29.6.3
+  resolution: "jest-util@patch:jest-util@npm%3A29.6.3#./.yarn/patches/jest-util-npm-29.6.3-6ffdea2c1c.patch::version=29.6.3&hash=e23cd5&locator=root%40workspace%3A."
+  dependencies:
+    "@jest/types": ^29.6.3
+    "@types/node": "*"
+    chalk: ^4.0.0
+    ci-info: ^3.2.0
+    graceful-fs: ^4.2.9
+    picomatch: ^2.2.3
+  checksum: a29b6e63f50a7f0396fbbcda5938c18dc99245c672c0318c028c260b824657a5325b901b083b61a7f6c45530b7fe0fcbb13ae0b3993c432fc76a30d394da43d2
   languageName: node
   linkType: hard
 
