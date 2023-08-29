@@ -155,6 +155,7 @@ jobs:
     name: Commit result
     runs-on: ubuntu-latest
     needs:
+      - is-fork-pull-request
       - prepare
       - dedupe-yarn-lock
       - regenerate-lavamoat-policies
