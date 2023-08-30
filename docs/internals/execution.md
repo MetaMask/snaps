@@ -1,6 +1,6 @@
 # Secure snap execution in SES
 
-To avoid snaps from getting access to the extension, dangerous APIs, and such,
+To avoid snaps from getting access to the client, dangerous APIs, and such,
 we run snaps in a different "realm," which is a separate JavaScript execution
 environment. Inside this realm we use [SES]'s lockdown feature to harden the
 realm, and prevent the snap from breaking out of the sandbox. For certain APIs,

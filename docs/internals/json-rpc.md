@@ -1,6 +1,6 @@
 # JSON-RPC
 
-The JSON-RPC stack is the core of the MetaMask extension. It is responsible for
+The JSON-RPC stack is the core of the MetaMask clients. It is responsible for
 handling all JSON-RPC requests from dapps, and for sending JSON-RPC requests to
 the right places, depending on the request. The stack consists of the following
 components:
