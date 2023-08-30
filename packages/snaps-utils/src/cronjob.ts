@@ -1,6 +1,7 @@
+import type { Json } from '@metamask/utils';
 import { JsonRpcRequestStruct } from '@metamask/utils';
 import { parseExpression } from 'cron-parser';
-import type { Infer } from 'superstruct';
+import type { Infer, Struct } from 'superstruct';
 import {
   array,
   assign,
@@ -15,7 +16,20 @@ import {
   string,
 } from 'superstruct';
 
-export const CronjobRpcRequestStruct = assign(
+export const CronjobRpcRequestStruct: Struct<
+  {
+    method: string;
+    params?: Record<string, Json> | Json[] | undefined;
+    id?: string | number | null | undefined;
+    jsonrpc?: '2.0' | undefined;
+  },
+  {
+    params: Struct<Record<string, Json> | Json[] | undefined, null>;
+    method: Struct<string, null>;
+    id: Struct<string | number | null | undefined>;
+    jsonrpc: Struct<'2.0' | undefined>;
+  }
+> = assign(
   partial(pick(JsonRpcRequestStruct, ['id', 'jsonrpc'])),
   omit(JsonRpcRequestStruct, ['id', 'jsonrpc']),
 );
