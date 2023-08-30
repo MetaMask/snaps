@@ -376,7 +376,7 @@ function createTarballStream(
       // The name is a path if the header type is "file".
       const path = headerName.replace(NPM_TARBALL_PATH_PREFIX, '');
       return entryStream.pipe(
-        concat((data) => {
+        concat({ encoding: 'uint8array' }, (data) => {
           try {
             totalSize += data.byteLength;
             // To prevent zip bombs, we set a safety limit for the total size of tarballs.
