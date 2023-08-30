@@ -11,14 +11,13 @@ import type {
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
 
+/* eslint-disable @typescript-eslint/naming-convention */
 export const methodHandlers = {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   metamask_getProviderState: getProviderStateHandler,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   eth_requestAccounts: getAccountsHandler,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   eth_accounts: getAccountsHandler,
 };
+/* eslint-enable @typescript-eslint/naming-convention */
 
 export type MiscMiddlewareHooks = {
   getMnemonic: () => Promise<Uint8Array>;
