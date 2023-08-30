@@ -143,8 +143,12 @@ jobs:
           cache: 'yarn'
       - name: Install dependencies from cache
         run: yarn --immutable --immutable-cache
+      - name: Build dependencies
+        run: |
+          yarn build:source
+          yarn build:types
       - name: Update examples
-        run: yarn build
+        run: yarn build:examples
       - name: Cache examples
         uses: actions/cache/save@v3
         with:
