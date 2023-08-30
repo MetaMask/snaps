@@ -56,6 +56,7 @@
     "@types/mocha@^10.0.1": "patch:@types/mocha@npm:10.0.1#.yarn/patches/@types-mocha-npm-10.0.1-7c94e9e170.patch",
     "@wdio/browser-runner@^8.15.9": "patch:@wdio/browser-runner@npm%3A8.15.9#./.yarn/patches/@wdio-browser-runner-npm-8.15.9-c3dd0d4a69.patch",
     "find-babel-config": "^2.0.0",
+    "got": "^13.0.0",
     "inline-source-map@~0.6.0": "patch:inline-source-map@npm%3A0.6.2#./.yarn/patches/inline-source-map-npm-0.6.2-96902459a0.patch",
     "jest-fetch-mock@^3.0.3": "patch:jest-fetch-mock@npm:3.0.3#.yarn/patches/jest-fetch-mock-npm-3.0.3-ac072ca8af.patch",
     "jest-util@^29.5.0": "patch:jest-util@npm%3A29.6.3#./.yarn/patches/jest-util-npm-29.6.3-6ffdea2c1c.patch",
