@@ -68,4 +68,21 @@ describe('onRpcRequest', () => {
       await close();
     });
   });
+
+  describe('getAccounts', () => {
+    it('returns the addresses granted access to by the user', async () => {
+      const { request, close } = await installSnap();
+
+      const response = await request({
+        method: 'getAccounts',
+      });
+
+      // Currently, snaps-jest will always return this account.
+      expect(response).toRespondWith([
+        '0xc6d5a3c98ec9073b54fa0969957bd582e8d874bf',
+      ]);
+
+      await close();
+    });
+  });
 });
