@@ -5105,7 +5105,7 @@ __metadata:
     vite: ^4.3.9
     vite-tsconfig-paths: ^4.0.5
     wdio-chromedriver-service: ^8.1.1
-    wdio-geckodriver-service: ^4.1.0
+    wdio-geckodriver-service: ^5.0.2
     webdriverio: ^8.15.9
   languageName: unknown
   linkType: soft
@@ -5187,7 +5187,7 @@ __metadata:
     vite: ^4.3.9
     vite-tsconfig-paths: ^4.0.5
     wdio-chromedriver-service: ^8.1.1
-    wdio-geckodriver-service: ^4.1.0
+    wdio-geckodriver-service: ^5.0.2
     webdriverio: ^8.15.9
     yargs: ^17.7.1
   languageName: unknown
@@ -5550,7 +5550,7 @@ __metadata:
     vite: ^4.3.9
     vite-tsconfig-paths: ^4.0.5
     wdio-chromedriver-service: ^8.1.1
-    wdio-geckodriver-service: ^4.1.0
+    wdio-geckodriver-service: ^5.0.2
     webdriverio: ^8.15.9
   languageName: unknown
   linkType: soft
@@ -13501,14 +13501,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-extra@npm:^11.1.0":
-  version: 11.1.0
-  resolution: "fs-extra@npm:11.1.0"
+"fs-extra@npm:^11.1.0, fs-extra@npm:^11.1.1":
+  version: 11.1.1
+  resolution: "fs-extra@npm:11.1.1"
   dependencies:
     graceful-fs: ^4.2.0
     jsonfile: ^6.0.1
     universalify: ^2.0.0
-  checksum: 5ca476103fa1f5ff4a9b3c4f331548f8a3c1881edaae323a4415d3153b5dc11dc6a981c8d1dd93eec8367ceee27b53f8bd27eecbbf66ffcdd04927510c171e7f
+  checksum: fb883c68245b2d777fbc1f2082c9efb084eaa2bbf9fddaa366130d196c03608eebef7fb490541276429ee1ca99f317e2d73e96f5ca0999eefedf5a624ae1edfd
   languageName: node
   linkType: hard
 
@@ -13635,7 +13635,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"geckodriver@npm:^4.2.0":
+"geckodriver@npm:^4.0.5, geckodriver@npm:^4.2.0":
   version: 4.2.0
   resolution: "geckodriver@npm:4.2.0"
   dependencies:
@@ -13696,13 +13696,6 @@ __metadata:
   version: 0.1.0
   resolution: "get-package-type@npm:0.1.0"
   checksum: bba0811116d11e56d702682ddef7c73ba3481f114590e705fc549f4d868972263896af313c57a25c076e3c0d567e11d919a64ba1b30c879be985fc9d44f96148
-  languageName: node
-  linkType: hard
-
-"get-port@npm:^6.1.2":
-  version: 6.1.2
-  resolution: "get-port@npm:6.1.2"
-  checksum: e3c3d591492a11393455ef220f24c812a28f7da56ec3e4a2512d931a1f196d42850b50ac6138349a44622eda6dc3c0ccd8495cd91376d968e2d9e6f6f849e0a9
   languageName: node
   linkType: hard
 
@@ -22841,24 +22834,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wdio-geckodriver-service@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "wdio-geckodriver-service@npm:4.1.0"
+"wdio-geckodriver-service@npm:^5.0.2":
+  version: 5.0.2
+  resolution: "wdio-geckodriver-service@npm:5.0.2"
   dependencies:
-    "@wdio/logger": ^8.1.0
-    fs-extra: ^11.1.0
-    get-port: ^6.1.2
-    split2: ^4.1.0
-    tcp-port-used: ^1.0.2
+    "@wdio/logger": ^8.11.0
+    fs-extra: ^11.1.1
+    geckodriver: ^4.0.5
+    get-port: ^7.0.0
+    wait-port: ^1.0.4
   peerDependencies:
-    "@wdio/types": ^7.25.0
-    geckodriver: ^3.2.0
+    "@wdio/types": ^7.0.0 || ^8.0.0
+    webdriverio: ^8.0.0
   peerDependenciesMeta:
     "@wdio/types":
       optional: true
-    geckodriver:
-      optional: true
-  checksum: 3d618c9b91a18566fb176fa3195d2c83f8a6f10768ae60aa8cfbcf817144c66ff01c6216d5ad9cfd870527be56205874b2b3bcf17166db2912238882d36d9795
+    webdriverio:
+      optional: false
+  checksum: 2460f7d6c7e44ad450d0f501cd72a6dbd11b2164acce6d928c0b2a78b1bf751eb1931add3698b37961d110ddd08310ce70ab9891677cd28120eee730a294fdbc
   languageName: node
   linkType: hard
 

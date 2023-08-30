@@ -140,7 +140,7 @@
     "vite": "^4.3.9",
     "vite-tsconfig-paths": "^4.0.5",
     "wdio-chromedriver-service": "^8.1.1",
-    "wdio-geckodriver-service": "^4.1.0",
+    "wdio-geckodriver-service": "^5.0.2",
     "webdriverio": "^8.15.9"
   },
   "engines": {
