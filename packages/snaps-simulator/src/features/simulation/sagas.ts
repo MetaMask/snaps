@@ -80,16 +80,20 @@ export function* initSaga({ payload }: PayloadAction<string>) {
 
   const srp: string = yield select(getSrp);
 
+  const sharedHooks = {
+    getMnemonic: async () => mnemonicPhraseToBytes(srp),
+  };
+
   const permissionSpecifications = {
     ...buildSnapEndowmentSpecifications(Object.keys(ExcludedSnapEndowments)),
     ...buildSnapRestrictedMethodSpecifications([], {
+      ...sharedHooks,
       // TODO: Add all the hooks required
       encrypt,
       decrypt,
       // TODO: Allow changing this?
       getLocale: async () => Promise.resolve('en'),
       getUnlockPromise: async () => Promise.resolve(true),
-      getMnemonic: async () => mnemonicPhraseToBytes(srp),
       showDialog: async (...args: Parameters<typeof showDialog>) =>
         await runSaga(showDialog, ...args).toPromise(),
       showNativeNotification: async (
@@ -137,7 +141,7 @@ export function* initSaga({ payload }: PayloadAction<string>) {
 
   const engine = new JsonRpcEngine();
 
-  engine.push(createMiscMethodMiddleware());
+  engine.push(createMiscMethodMiddleware(sharedHooks));
 
   engine.push(
     permissionController.createPermissionMiddleware({

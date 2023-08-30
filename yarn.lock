@@ -3659,16 +3659,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^3.5.0":
-  version: 3.5.0
-  resolution: "@metamask/approval-controller@npm:3.5.0"
+"@metamask/approval-controller@npm:^3.5.0, @metamask/approval-controller@npm:^3.5.1":
+  version: 3.5.1
+  resolution: "@metamask/approval-controller@npm:3.5.1"
   dependencies:
-    "@metamask/base-controller": ^3.2.0
+    "@metamask/base-controller": ^3.2.1
     "@metamask/utils": ^6.2.0
     eth-rpc-errors: ^4.0.2
     immer: ^9.0.6
     nanoid: ^3.1.31
-  checksum: d555e2b1365fcbc6337ec0ba0a35f9b00485c92cc734e7d6457a77e4c4833eca46bf2950dbcfe4f4831d980af5457851bac522b23bd68c4dc44a58fd026d7674
+  checksum: 5d4d1425d44b3848b4486744472fb8eeb31ca9a70d58c6ca6e0603bcbba32f1c5dcd04a8fb2ab6b4bdbf2b4e3309f75387d7d345cd2aedee5e3d6b5d4af4dbad
   languageName: node
   linkType: hard
 
@@ -3686,13 +3686,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "@metamask/base-controller@npm:3.2.0"
+"@metamask/base-controller@npm:^3.2.0, @metamask/base-controller@npm:^3.2.1":
+  version: 3.2.1
+  resolution: "@metamask/base-controller@npm:3.2.1"
   dependencies:
     "@metamask/utils": ^6.2.0
     immer: ^9.0.6
-  checksum: 3be6f2594309c013e07f83c4bb8271e1e99f02b6ff829c18b5e7218fbab4e6a9e03bcb49056704ce47f84ae2f38b1bc1c10284ec538aad56ed7b554ef2d3e189
+  checksum: 73723a275ad2c8c6f9fcfcd69fd8b469bf8f4455fc572fc19ac9a8d76e5b65152cb111d95bfb9a4b9443298147e03a5f9778747dec2ca2203495ace54c97688c
   languageName: node
   linkType: hard
 
@@ -3904,9 +3904,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/controller-utils@npm:^4.3.0":
-  version: 4.3.1
-  resolution: "@metamask/controller-utils@npm:4.3.1"
+"@metamask/controller-utils@npm:^4.3.2":
+  version: 4.3.2
+  resolution: "@metamask/controller-utils@npm:4.3.2"
   dependencies:
     "@metamask/eth-query": ^3.0.1
     "@metamask/utils": ^6.2.0
@@ -3916,7 +3916,7 @@ __metadata:
     ethereumjs-util: ^7.0.10
     ethjs-unit: ^0.1.6
     fast-deep-equal: ^3.1.3
-  checksum: 5bb471df560a12fba1b7fa147fe0332e06b527637c04facff1774b1279dd388b4cf1d74340469adb13551c08cc156f204d90e36599ad69b54716b11e5842b348
+  checksum: 0af7de11bee8cea81946c424d51e2f0a27f3deeebb491aed00262b2f76b4b1e16ff8fa129309944b3e16a6531b0d153dde6794011bf355234fdebb965261372e
   languageName: node
   linkType: hard
 
@@ -4716,12 +4716,12 @@ __metadata:
   linkType: hard
 
 "@metamask/permission-controller@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "@metamask/permission-controller@npm:4.1.0"
+  version: 4.1.1
+  resolution: "@metamask/permission-controller@npm:4.1.1"
   dependencies:
-    "@metamask/approval-controller": ^3.5.0
-    "@metamask/base-controller": ^3.2.0
-    "@metamask/controller-utils": ^4.3.0
+    "@metamask/approval-controller": ^3.5.1
+    "@metamask/base-controller": ^3.2.1
+    "@metamask/controller-utils": ^4.3.2
     "@metamask/utils": ^6.2.0
     "@types/deep-freeze-strict": ^1.1.0
     deep-freeze-strict: ^1.1.1
@@ -4730,18 +4730,18 @@ __metadata:
     json-rpc-engine: ^6.1.0
     nanoid: ^3.1.31
   peerDependencies:
-    "@metamask/approval-controller": ^3.5.0
-  checksum: dc0a78321d1331070eb3775928c4c0b0138515c6449c09a73c2243ca8d55801f5a97c4ce2229cdbf630d1a893ec373474d8c17cb35e06c26b0d5ea490c402c48
+    "@metamask/approval-controller": ^3.5.1
+  checksum: 45f94c805302256d54f4e25d7f15fd22ea8c9c8548cca4514babeccfe31cfef47ca79dacd5fc45013120a0ad22eaa0ded4b56d37bf59f4dc2712d58edcc0aaca
   languageName: node
   linkType: hard
 
-"@metamask/post-message-stream@npm:^6.1.2":
-  version: 6.1.2
-  resolution: "@metamask/post-message-stream@npm:6.1.2"
+"@metamask/post-message-stream@npm:^6.2.0":
+  version: 6.2.0
+  resolution: "@metamask/post-message-stream@npm:6.2.0"
   dependencies:
     "@metamask/utils": ^5.0.0
     readable-stream: 2.3.3
-  checksum: 3591ec9b7fd602806b07cbc0fed5075fb7a347c279c43ef1f25fbdd8634dfcad9ce192ae59457fb76554ef0bc15cbf25cfaa5875aee2d72668a273b7a6852c32
+  checksum: 657cdb2dd61a46a4da7f036a97ef0aa9ad8e918d8f8c0fd620eaede4a32c2ff909738a7dfb2b1e6099e7771fd03c3466b60fedab56e39a5cc5507927758e3cb7
   languageName: node
   linkType: hard
 
@@ -5041,7 +5041,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/object-multiplex": ^1.2.0
     "@metamask/permission-controller": ^4.1.0
-    "@metamask/post-message-stream": ^6.1.2
+    "@metamask/post-message-stream": ^6.2.0
     "@metamask/rpc-methods": "workspace:^"
     "@metamask/snaps-execution-environments": "workspace:^"
     "@metamask/snaps-registry": ^1.2.2
@@ -5128,7 +5128,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/object-multiplex": ^1.2.0
-    "@metamask/post-message-stream": ^6.1.2
+    "@metamask/post-message-stream": ^6.2.0
     "@metamask/providers": ^11.1.1
     "@metamask/rpc-methods": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
@@ -5491,7 +5491,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/key-tree": ^9.0.0
     "@metamask/permission-controller": ^4.1.0
-    "@metamask/post-message-stream": ^6.1.2
+    "@metamask/post-message-stream": ^6.2.0
     "@metamask/snaps-registry": ^1.2.2
     "@metamask/snaps-ui": "workspace:^"
     "@metamask/utils": ^7.1.0

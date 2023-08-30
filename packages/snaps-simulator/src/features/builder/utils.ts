@@ -89,7 +89,7 @@ function getComponentArgs(component: Component): string {
     case NodeType.Text:
     case NodeType.Heading:
     case NodeType.Copyable:
-      return `'${component.value}'`;
+      return `'${component.value.replace(/'/gu, "\\'")}'`;
     case NodeType.Spinner:
     case NodeType.Divider:
     default:
