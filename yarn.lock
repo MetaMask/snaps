@@ -4728,13 +4728,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/post-message-stream@npm:^6.1.2":
-  version: 6.1.2
-  resolution: "@metamask/post-message-stream@npm:6.1.2"
+"@metamask/post-message-stream@npm:^6.2.0":
+  version: 6.2.0
+  resolution: "@metamask/post-message-stream@npm:6.2.0"
   dependencies:
     "@metamask/utils": ^5.0.0
     readable-stream: 2.3.3
-  checksum: 3591ec9b7fd602806b07cbc0fed5075fb7a347c279c43ef1f25fbdd8634dfcad9ce192ae59457fb76554ef0bc15cbf25cfaa5875aee2d72668a273b7a6852c32
+  checksum: 657cdb2dd61a46a4da7f036a97ef0aa9ad8e918d8f8c0fd620eaede4a32c2ff909738a7dfb2b1e6099e7771fd03c3466b60fedab56e39a5cc5507927758e3cb7
   languageName: node
   linkType: hard
 
@@ -5034,7 +5034,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/object-multiplex": ^1.2.0
     "@metamask/permission-controller": ^4.1.0
-    "@metamask/post-message-stream": ^6.1.2
+    "@metamask/post-message-stream": ^6.2.0
     "@metamask/rpc-methods": "workspace:^"
     "@metamask/snaps-execution-environments": "workspace:^"
     "@metamask/snaps-registry": ^1.2.2
@@ -5121,7 +5121,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/object-multiplex": ^1.2.0
-    "@metamask/post-message-stream": ^6.1.2
+    "@metamask/post-message-stream": ^6.2.0
     "@metamask/providers": ^11.1.1
     "@metamask/rpc-methods": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
@@ -5484,7 +5484,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/key-tree": ^9.0.0
     "@metamask/permission-controller": ^4.1.0
-    "@metamask/post-message-stream": ^6.1.2
+    "@metamask/post-message-stream": ^6.2.0
     "@metamask/snaps-registry": ^1.2.2
     "@metamask/snaps-ui": "workspace:^"
     "@metamask/utils": ^7.1.0
