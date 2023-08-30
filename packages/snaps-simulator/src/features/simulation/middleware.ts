@@ -1,7 +1,4 @@
-import {
-  BIP44CoinTypeNode,
-  getBIP44AddressKeyDeriver,
-} from '@metamask/key-tree';
+import { BIP44Node } from '@metamask/key-tree';
 import { logError } from '@metamask/snaps-utils';
 import type {
   JsonRpcEngineEndCallback,
@@ -41,17 +38,18 @@ async function getAccountsHandler(
 ) {
   const { getMnemonic } = hooks;
 
-  const node = await BIP44CoinTypeNode.fromDerivationPath([
-    await getMnemonic(),
-    `bip32:44'`,
-    `bip32:60'`,
-  ]);
+  const node = await BIP44Node.fromDerivationPath({
+    derivationPath: [
+      await getMnemonic(),
+      `bip32:44'`,
+      `bip32:60'`,
+      `bip32:0'`,
+      `bip32:0`,
+      `bip32:0`,
+    ],
+  });
 
-  const deriveAddress = await getBIP44AddressKeyDeriver(node);
-
-  const { address } = await deriveAddress(0);
-
-  response.result = [address];
+  response.result = [node.address];
   return end();
 }
 
