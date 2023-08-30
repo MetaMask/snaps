@@ -1,3 +1,4 @@
+import { BIP44Node } from '@metamask/key-tree';
 import { logError } from '@metamask/snaps-utils';
 import type {
   JsonRpcEngineEndCallback,
@@ -7,10 +8,50 @@ import type {
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
 
+/* eslint-disable @typescript-eslint/naming-convention */
 export const methodHandlers = {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   metamask_getProviderState: getProviderStateHandler,
+  eth_requestAccounts: getAccountsHandler,
+  eth_accounts: getAccountsHandler,
 };
+/* eslint-enable @typescript-eslint/naming-convention */
+
+export type MiscMiddlewareHooks = {
+  getMnemonic: () => Promise<Uint8Array>;
+};
+
+/**
+ * A mock handler for account related methods that always returns the first address for the selected SRP.
+ *
+ * @param _request - Incoming JSON-RPC request, ignored for this specific handler.
+ * @param response - The outgoing JSON-RPC response, modified to return the result.
+ * @param _next - The json-rpc-engine middleware next handler.
+ * @param end - The json-rpc-engine middleware end handler.
+ * @param hooks - Any hooks required by this handler.
+ */
+async function getAccountsHandler(
+  _request: JsonRpcRequest<unknown>,
+  response: PendingJsonRpcResponse<unknown>,
+  _next: JsonRpcEngineNextCallback,
+  end: JsonRpcEngineEndCallback,
+  hooks: MiscMiddlewareHooks,
+) {
+  const { getMnemonic } = hooks;
+
+  const node = await BIP44Node.fromDerivationPath({
+    derivationPath: [
+      await getMnemonic(),
+      `bip32:44'`,
+      `bip32:60'`,
+      `bip32:0'`,
+      `bip32:0`,
+      `bip32:0`,
+    ],
+  });
+
+  response.result = [node.address];
+  return end();
+}
 
 /**
  * A mock handler for metamask_getProviderState that always returns a specific hardcoded result.
@@ -39,12 +80,14 @@ async function getProviderStateHandler(
 /**
  * Creates a middleware for handling misc RPC methods normally handled internally by the MM client.
  *
+ * NOTE: This middleware provides all `hooks` to all handlers and should therefore NOT be used outside of the simulator.
+ *
+ * @param hooks - Any hooks used by the middleware handlers.
  * @returns Nothing.
  */
-export function createMiscMethodMiddleware(): JsonRpcMiddleware<
-  unknown,
-  unknown
-> {
+export function createMiscMethodMiddleware(
+  hooks: MiscMiddlewareHooks,
+): JsonRpcMiddleware<unknown, unknown> {
   // This should probably use createAsyncMiddleware
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async function methodMiddleware(request, response, next, end) {
@@ -53,7 +96,7 @@ export function createMiscMethodMiddleware(): JsonRpcMiddleware<
     if (handler) {
       try {
         // Implementations may or may not be async, so we must await them.
-        return await handler(request, response, next, end);
+        return await handler(request, response, next, end, hooks);
       } catch (error: any) {
         logError(error);
         return end(error);
