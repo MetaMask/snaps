@@ -76,7 +76,7 @@
     "@swc/jest": "^0.2.26",
     "@types/express": "^4.17.17",
     "@types/jest": "^27.5.1",
-    "@types/node": "^18.11.9",
+    "@types/node": "18.14.2",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "@wdio/browser-runner": "^8.15.9",
