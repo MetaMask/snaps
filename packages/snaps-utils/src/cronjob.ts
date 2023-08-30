@@ -16,23 +16,25 @@ import {
   string,
 } from 'superstruct';
 
-export const CronjobRpcRequestStruct: Struct<
+type MTCronjobRpcRequestStructType = Struct<
   {
     method: string;
-    params?: Record<string, Json> | Json[] | undefined;
-    id?: string | number | null | undefined;
-    jsonrpc?: '2.0' | undefined;
+    params?: Record<string, Json> | Json[];
+    id?: string | number | null;
+    jsonrpc?: '2.0';
   },
   {
-    params: Struct<Record<string, Json> | Json[] | undefined, null>;
+    params?: Struct<Record<string, Json> | Json[], null>;
     method: Struct<string, null>;
-    id: Struct<string | number | null | undefined>;
-    jsonrpc: Struct<'2.0' | undefined>;
+    id?: Struct<string | number | null>;
+    jsonrpc?: Struct<'2.0'>;
   }
-> = assign(
-  partial(pick(JsonRpcRequestStruct, ['id', 'jsonrpc'])),
-  omit(JsonRpcRequestStruct, ['id', 'jsonrpc']),
-);
+>;
+export const CronjobRpcRequestStruct: MTCronjobRpcRequestStructType = assign(
+  partial(pick(JsonRpcRequestStruct as any, ['id', 'jsonrpc'])),
+  omit(JsonRpcRequestStruct as any, ['id', 'jsonrpc']),
+) as any as MTCronjobRpcRequestStructType;
+
 export type CronjobRpcRequest = Infer<typeof CronjobRpcRequestStruct>;
 
 export const CronExpressionStruct = refine(
