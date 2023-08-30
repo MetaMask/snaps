@@ -66,11 +66,11 @@ describe('NpmLocation', () => {
     const manifest = await location.manifest();
     const sourceCode = (
       await location.fetch(manifest.result.source.location.npm.filePath)
-    ).value.toString();
+    ).toString();
     assert(manifest.result.source.location.npm.iconPath);
     const svgIcon = (
       await location.fetch(manifest.result.source.location.npm.iconPath)
-    ).value.toString();
+    ).toString();
 
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(fetchMock).toHaveBeenNthCalledWith(
