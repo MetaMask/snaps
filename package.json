@@ -51,6 +51,13 @@
   "resolutions": {
     "@babel/core": "patch:@babel/core@npm%3A7.21.0#./.yarn/patches/@babel-core-npm-7.21.0-fb3817b0e5.patch",
     "@lavamoat/lavapack@^5.2.1": "patch:@lavamoat/lavapack@npm%3A5.2.1#./.yarn/patches/@lavamoat-lavapack-npm-5.2.1-6ac9929a63.patch",
+    "@metamask/utils@^5.0.0": "patch:@metamask/utils@npm%3A8.0.0#./.yarn/patches/@metamask-utils-npm-8.0.0-7a3c3a899a.patch",
+    "@metamask/utils@^5.0.1": "patch:@metamask/utils@npm%3A8.0.0#./.yarn/patches/@metamask-utils-npm-8.0.0-7a3c3a899a.patch",
+    "@metamask/utils@^5.0.2": "patch:@metamask/utils@npm%3A8.0.0#./.yarn/patches/@metamask-utils-npm-8.0.0-7a3c3a899a.patch",
+    "@metamask/utils@^6.0.1": "patch:@metamask/utils@npm%3A8.0.0#./.yarn/patches/@metamask-utils-npm-8.0.0-7a3c3a899a.patch",
+    "@metamask/utils@^6.2.0": "patch:@metamask/utils@npm%3A8.0.0#./.yarn/patches/@metamask-utils-npm-8.0.0-7a3c3a899a.patch",
+    "@metamask/utils@^7.1.0": "patch:@metamask/utils@npm%3A8.0.0#./.yarn/patches/@metamask-utils-npm-8.0.0-7a3c3a899a.patch",
+    "@metamask/utils@^8.0.0": "patch:@metamask/utils@npm%3A8.0.0#./.yarn/patches/@metamask-utils-npm-8.0.0-7a3c3a899a.patch",
     "@types/glob@*": "patch:@types/glob@npm%3A7.1.4#./.yarn/patches/@types-glob-npm-7.1.4-d45247eaa2.patch",
     "@types/glob@^7.1.1": "patch:@types/glob@npm%3A7.1.4#./.yarn/patches/@types-glob-npm-7.1.4-d45247eaa2.patch",
     "@types/mocha@^10.0.1": "patch:@types/mocha@npm:10.0.1#.yarn/patches/@types-mocha-npm-10.0.1-7c94e9e170.patch",
