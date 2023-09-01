@@ -1,8 +1,8 @@
 import { HandlerType } from '@metamask/snaps-utils';
 import { MOCK_ORIGIN } from '@metamask/snaps-utils/test-utils';
 
+import type { CommandMethodsMapping } from './commands';
 import {
-  CommandMethodsMapping,
   getCommandMethodImplementations,
   getHandlerArguments,
 } from './commands';

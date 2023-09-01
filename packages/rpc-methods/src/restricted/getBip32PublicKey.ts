@@ -1,22 +1,22 @@
-import { BIP32Node, SLIP10Node } from '@metamask/key-tree';
-import {
+import type {
   PermissionSpecificationBuilder,
-  PermissionType,
   PermissionValidatorConstraint,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-  SubjectType,
 } from '@metamask/permission-controller';
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import {
   bip32entropy,
   Bip32PathStruct,
   SnapCaveatType,
 } from '@metamask/snaps-utils';
-import { NonEmptyArray, assertStruct } from '@metamask/utils';
+import type { NonEmptyArray } from '@metamask/utils';
+import { assertStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { boolean, enums, object, optional } from 'superstruct';
 
-import { MethodHooksObject } from '../utils';
+import type { MethodHooksObject } from '../utils';
+import { getNode } from '../utils';
 
 const targetName = 'snap_getBip32PublicKey';
 
@@ -55,7 +55,7 @@ type GetBip32PublicKeyParameters = {
 export const Bip32PublicKeyArgsStruct = bip32entropy(
   object({
     path: Bip32PathStruct,
-    curve: enums(['ed225519', 'secp256k1']),
+    curve: enums(['ed25519', 'secp256k1']),
     compressed: optional(boolean()),
   }),
 );
@@ -131,15 +131,10 @@ export function getBip32PublicKeyImplementation({
     );
 
     const { params } = args;
-
-    const node = await SLIP10Node.fromDerivationPath({
+    const node = await getNode({
       curve: params.curve,
-      derivationPath: [
-        await getMnemonic(),
-        ...params.path
-          .slice(1)
-          .map<BIP32Node>((index) => `bip32:${index}` as BIP32Node),
-      ],
+      path: params.path,
+      secretRecoveryPhrase: await getMnemonic(),
     });
 
     if (params.compressed) {

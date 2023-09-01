@@ -1,5 +1,6 @@
 import { useTabsContext } from '@chakra-ui/react';
-import { FunctionComponent, useEffect } from 'react';
+import type { FunctionComponent } from 'react';
+import { useEffect } from 'react';
 
 import { useSelector } from '../../../hooks';
 import { getUserInterface } from '../../simulation';

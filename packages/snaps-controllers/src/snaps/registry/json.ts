@@ -1,25 +1,24 @@
-import {
-  BaseControllerV2 as BaseController,
-  RestrictedControllerMessenger,
-} from '@metamask/base-controller';
-import { SnapsRegistryDatabase, verify } from '@metamask/snaps-registry';
-import { SnapId } from '@metamask/snaps-utils';
+import type { RestrictedControllerMessenger } from '@metamask/base-controller';
+import { BaseControllerV2 as BaseController } from '@metamask/base-controller';
+import type { SnapsRegistryDatabase } from '@metamask/snaps-registry';
+import { verify } from '@metamask/snaps-registry';
+import type { SnapId } from '@metamask/snaps-utils';
+import type { Hex } from '@metamask/utils';
 import {
   assert,
   Duration,
-  Hex,
   inMilliseconds,
   satisfiesVersionRange,
 } from '@metamask/utils';
 
-import {
+import type {
   SnapsRegistry,
   SnapsRegistryInfo,
   SnapsRegistryMetadata,
   SnapsRegistryRequest,
   SnapsRegistryResult,
-  SnapsRegistryStatus,
 } from './registry';
+import { SnapsRegistryStatus } from './registry';
 
 // TODO: Replace with a Codefi URL
 const SNAP_REGISTRY_URL =
@@ -54,7 +53,12 @@ export type GetMetadata = {
   handler: SnapsRegistry['getMetadata'];
 };
 
-export type SnapsRegistryActions = GetResult | GetMetadata;
+export type Update = {
+  type: `${typeof controllerName}:update`;
+  handler: SnapsRegistry['update'];
+};
+
+export type SnapsRegistryActions = GetResult | GetMetadata | Update;
 
 export type SnapsRegistryEvents = never;
 
@@ -95,6 +99,8 @@ export class JsonSnapsRegistry extends BaseController<
 
   #failOnUnavailableRegistry: boolean;
 
+  #currentUpdate: Promise<void> | null;
+
   constructor({
     messenger,
     state,
@@ -126,6 +132,7 @@ export class JsonSnapsRegistry extends BaseController<
     this.#recentFetchThreshold = recentFetchThreshold;
     this.#refetchOnAllowlistMiss = refetchOnAllowlistMiss;
     this.#failOnUnavailableRegistry = failOnUnavailableRegistry;
+    this.#currentUpdate = null;
 
     this.messagingSystem.registerActionHandler(
       'SnapsRegistry:get',
@@ -134,6 +141,11 @@ export class JsonSnapsRegistry extends BaseController<
     this.messagingSystem.registerActionHandler(
       'SnapsRegistry:getMetadata',
       async (...args) => this.#getMetadata(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'SnapsRegistry:update',
+      async () => this.#triggerUpdate(),
     );
   }
 
@@ -144,7 +156,31 @@ export class JsonSnapsRegistry extends BaseController<
     );
   }
 
-  async #updateDatabase() {
+  /**
+   * Triggers an update of the registry database.
+   *
+   * If an existing update is in progress this function will await that update.
+   */
+  async #triggerUpdate() {
+    // If an update is ongoing, wait for that.
+    if (this.#currentUpdate) {
+      await this.#currentUpdate;
+      return;
+    }
+    // If no update exists, create promise and store globally.
+    if (this.#currentUpdate === null) {
+      this.#currentUpdate = this.#update();
+    }
+    await this.#currentUpdate;
+    this.#currentUpdate = null;
+  }
+
+  /**
+   * Updates the registry database if the registry hasn't been updated recently.
+   *
+   * NOTE: SHOULD NOT be called directly, instead `triggerUpdate` should be used.
+   */
+  async #update() {
     // No-op if we recently fetched the registry.
     if (this.#wasRecentlyFetched()) {
       return;
@@ -169,7 +205,7 @@ export class JsonSnapsRegistry extends BaseController<
 
   async #getDatabase(): Promise<SnapsRegistryDatabase | null> {
     if (this.state.database === null) {
-      await this.#updateDatabase();
+      await this.#triggerUpdate();
     }
 
     // If the database is still null and we require it, throw.
@@ -211,7 +247,7 @@ export class JsonSnapsRegistry extends BaseController<
     }
     // For now, if we have an allowlist miss, we can refetch once and try again.
     if (this.#refetchOnAllowlistMiss && !refetch) {
-      await this.#updateDatabase();
+      await this.#triggerUpdate();
       return this.#getSingle(snapId, snapInfo, true);
     }
     return { status: SnapsRegistryStatus.Unverified };

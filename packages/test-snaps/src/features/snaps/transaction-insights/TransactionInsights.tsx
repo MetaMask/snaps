@@ -1,6 +1,6 @@
 import { logError } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 import { Button, ButtonGroup } from 'react-bootstrap';
 
 import { useLazyGetAccountsQuery, useLazyRequestQuery } from '../../../api';
@@ -8,6 +8,7 @@ import { Snap, Result } from '../../../components';
 import {
   TRANSACTION_INSIGHTS_SNAP_ID,
   TRANSACTION_INSIGHTS_SNAP_PORT,
+  TRANSACTION_INSIGHTS_VERSION,
 } from './constants';
 
 export const TransactionInsights: FunctionComponent = () => {
@@ -44,6 +45,7 @@ export const TransactionInsights: FunctionComponent = () => {
       name="Transaction Insights Snap"
       snapId={TRANSACTION_INSIGHTS_SNAP_ID}
       port={TRANSACTION_INSIGHTS_SNAP_PORT}
+      version={TRANSACTION_INSIGHTS_VERSION}
       testId="transaction-insights"
     >
       <ButtonGroup>

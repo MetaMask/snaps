@@ -1,9 +1,9 @@
 import { ControllerMessenger } from '@metamask/base-controller';
 import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { createFetchMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { mnemonicPhraseToBytes } from '@metamask/key-tree/dist/utils';
+import { mnemonicPhraseToBytes } from '@metamask/key-tree';
+import type { GenericPermissionController } from '@metamask/permission-controller';
 import {
-  GenericPermissionController,
   PermissionController,
   SubjectMetadataController,
   SubjectType,
@@ -18,21 +18,21 @@ import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-controllers';
-import {
-  logError,
+import packageJson from '@metamask/snaps-execution-environments/package.json';
+import type {
   SnapManifest,
   SnapRpcHookArgs,
   VirtualFile,
 } from '@metamask/snaps-utils';
+import { logError } from '@metamask/snaps-utils';
 import { getSafeJson } from '@metamask/utils';
-import { PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import pump from 'pump';
-import { SagaIterator } from 'redux-saga';
+import type { SagaIterator } from 'redux-saga';
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
 
-import { version } from '../../../package.json';
 import { runSaga } from '../../store/middleware';
 import { getSnapId, getSrp, setSnapId } from '../configuration';
 import { addError } from '../console';
@@ -65,7 +65,7 @@ import {
   unrestrictedMethods,
 } from './snap-permissions';
 
-const DEFAULT_ENVIRONMENT_URL = `https://execution.metamask.io/${version}/index.html`;
+const DEFAULT_ENVIRONMENT_URL = `https://execution.metamask.io/${packageJson.version}/index.html`;
 
 /**
  * The initialization saga is run on when the snap ID is changed and initializes the snaps execution environment.
@@ -80,14 +80,20 @@ export function* initSaga({ payload }: PayloadAction<string>) {
 
   const srp: string = yield select(getSrp);
 
+  const sharedHooks = {
+    getMnemonic: async () => mnemonicPhraseToBytes(srp),
+  };
+
   const permissionSpecifications = {
     ...buildSnapEndowmentSpecifications(Object.keys(ExcludedSnapEndowments)),
     ...buildSnapRestrictedMethodSpecifications([], {
+      ...sharedHooks,
       // TODO: Add all the hooks required
       encrypt,
       decrypt,
+      // TODO: Allow changing this?
+      getLocale: async () => Promise.resolve('en'),
       getUnlockPromise: async () => Promise.resolve(true),
-      getMnemonic: async () => mnemonicPhraseToBytes(srp),
       showDialog: async (...args: Parameters<typeof showDialog>) =>
         await runSaga(showDialog, ...args).toPromise(),
       showNativeNotification: async (
@@ -135,7 +141,7 @@ export function* initSaga({ payload }: PayloadAction<string>) {
 
   const engine = new JsonRpcEngine();
 
-  engine.push(createMiscMethodMiddleware());
+  engine.push(createMiscMethodMiddleware(sharedHooks));
 
   engine.push(
     permissionController.createPermissionMiddleware({

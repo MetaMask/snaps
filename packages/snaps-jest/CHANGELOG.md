@@ -6,19 +6,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.35.2-flask.1]
+## [0.37.4-flask.1]
 ### Fixed
-- Fix type issue introduced by [#1532](https://github.com/MetaMask/snaps/pull/1532) ([#1541](https://github.com/MetaMask/snaps/pull/1541))
+- Remove unused dependencies ([#1680](https://github.com/MetaMask/snaps/pull/1680))
 
-## [0.35.1-flask.1]
-### Fixed
-- Fix publishing to NPM ([#1538](https://github.com/MetaMask/snaps/pull/1538))
+## [0.37.3-flask.1]
+### Changed
+- Bump `semver` to `^7.5.4` ([#1631](https://github.com/MetaMask/snaps/pull/1631))
 
-## [0.35.0-flask.1]
-### Added
-- Initial release ([#1438](https://github.com/MetaMask/snaps/pull/1438), [#1488](https://github.com/MetaMask/snaps/pull/1488), [#1519](https://github.com/MetaMask/snaps/pull/1519), [#1532](https://github.com/MetaMask/snaps/pull/1532))
+## [0.37.2-flask.1]
+### Changed
+- Release package independently ([#1600](https://github.com/MetaMask/snaps/pull/1600))
+  - The version of the package no longer needs to match the version of all other
+    MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/v0.35.2-flask.1...HEAD
-[0.35.2-flask.1]: https://github.com/MetaMask/snaps/compare/v0.35.1-flask.1...v0.35.2-flask.1
-[0.35.1-flask.1]: https://github.com/MetaMask/snaps/compare/v0.35.0-flask.1...v0.35.1-flask.1
-[0.35.0-flask.1]: https://github.com/MetaMask/snaps/releases/tag/v0.35.0-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@0.37.4-flask.1...HEAD
+[0.37.4-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@0.37.3-flask.1...@metamask/snaps-jest@0.37.4-flask.1
+[0.37.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@0.37.2-flask.1...@metamask/snaps-jest@0.37.3-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/snaps-jest@0.37.2-flask.1

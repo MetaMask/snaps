@@ -7,4 +7,5 @@ export enum SnapEndowments {
   Rpc = 'endowment:rpc',
   WebAssemblyAccess = 'endowment:webassembly',
   NameLookup = 'endowment:name-lookup',
+  LifecycleHooks = 'endowment:lifecycle-hooks',
 }

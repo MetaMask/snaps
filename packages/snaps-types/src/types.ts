@@ -1,4 +1,4 @@
-import { StreamProvider } from '@metamask/providers';
+import type { StreamProvider } from '@metamask/providers';
 
 /**
  * The type of `window.ethereum`.
@@ -20,4 +20,7 @@ export type {
   OnRpcRequestHandler,
   OnTransactionHandler,
   OnTransactionResponse,
+  OnInstallHandler,
+  OnUpdateHandler,
 } from '@metamask/snaps-utils';
+export { SeverityLevel } from '@metamask/snaps-utils';

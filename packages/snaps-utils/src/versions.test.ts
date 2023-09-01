@@ -1,4 +1,5 @@
-import { assert, SemVerRange, SemVerVersion } from '@metamask/utils';
+import type { SemVerRange, SemVerVersion } from '@metamask/utils';
+import { assert } from '@metamask/utils';
 
 import { getSnapPrefix } from './snaps';
 import { SnapIdPrefixes } from './types';

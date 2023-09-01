@@ -1,14 +1,15 @@
-import { ApprovalRequest } from '@metamask/approval-controller';
-import {
+import type { ApprovalRequest } from '@metamask/approval-controller';
+import type {
   PermissionConstraint,
   SubjectPermissions,
   ValidPermission,
   Caveat,
   SubjectMetadata,
-  SubjectType,
 } from '@metamask/permission-controller';
+import { SubjectType } from '@metamask/permission-controller';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
-import { SnapCaveatType, ValidatedSnapId } from '@metamask/snaps-utils';
+import type { ValidatedSnapId } from '@metamask/snaps-utils';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MockControllerMessenger,
   getPersistedSnapObject,
@@ -17,21 +18,23 @@ import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
-import { Json } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
-import { CronjobControllerActions, CronjobControllerEvents } from '../cronjob';
-import {
+import type {
+  CronjobControllerActions,
+  CronjobControllerEvents,
+} from '../cronjob';
+import type {
   AllowedActions,
   AllowedEvents,
   PersistedSnapControllerState,
-  SnapController,
   SnapControllerActions,
   SnapControllerEvents,
-  SnapEndowments,
   SnapsRegistryActions,
   SnapsRegistryEvents,
 } from '../snaps';
+import { SnapController, SnapEndowments } from '../snaps';
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
 import { MockSnapsRegistry } from './registry';
@@ -254,6 +257,10 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
   );
 
   messenger.registerActionHandler('ExecutionService:executeSnap', asyncNoOp);
+  messenger.registerActionHandler(
+    'ExecutionService:handleRpcRequest',
+    asyncNoOp,
+  );
   messenger.registerActionHandler('ExecutionService:terminateSnap', asyncNoOp);
   messenger.registerActionHandler(
     'ExecutionService:terminateAllSnaps',
@@ -267,6 +274,11 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
   messenger.registerActionHandler(
     'SnapsRegistry:getMetadata',
     registry.getMetadata.bind(registry),
+  );
+
+  messenger.registerActionHandler(
+    'SnapsRegistry:update',
+    registry.update.bind(registry),
   );
 
   jest.spyOn(messenger, 'call');
@@ -335,6 +347,7 @@ export const getSnapControllerMessenger = (
       'SubjectMetadataController:getSubjectMetadata',
       'SnapsRegistry:get',
       'SnapsRegistry:getMetadata',
+      'SnapsRegistry:update',
       'SnapController:disconnectOrigin',
       'SnapController:revokeDynamicPermissions',
     ],
@@ -513,7 +526,11 @@ export const getRestrictedSnapsRegistryControllerMessenger = (
   >({
     name: 'SnapsRegistry',
     allowedEvents: [],
-    allowedActions: ['SnapsRegistry:get', 'SnapsRegistry:getMetadata'],
+    allowedActions: [
+      'SnapsRegistry:get',
+      'SnapsRegistry:getMetadata',
+      'SnapsRegistry:update',
+    ],
   });
 
   return controllerMessenger;

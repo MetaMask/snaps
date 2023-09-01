@@ -1,10 +1,11 @@
-import { Json } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
 import { promises as fs } from 'fs';
 import os from 'os';
 import pathUtils from 'path';
 
 import { parseJson } from './json';
-import { readVirtualFile, VirtualFile } from './virtual-file';
+import type { VirtualFile } from './virtual-file';
+import { readVirtualFile } from './virtual-file';
 
 /**
  * Checks whether the given path string resolves to an existing directory, and

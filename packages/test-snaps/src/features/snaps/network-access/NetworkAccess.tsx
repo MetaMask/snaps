@@ -1,14 +1,18 @@
 import { logError } from '@metamask/snaps-utils';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 import { Button } from 'react-bootstrap';
 
 import { useInvokeMutation } from '../../../api';
-import { Snap } from '../../../components';
+import { Result, Snap } from '../../../components';
 import { getSnapId } from '../../../utils';
-import { NETWORK_ACCESS_PORT, NETWORK_ACCESS_SNAP_ID } from './constants';
+import {
+  NETWORK_ACCESS_PORT,
+  NETWORK_ACCESS_SNAP_ID,
+  NETWORK_ACCESS_VERSION,
+} from './constants';
 
 export const NetworkAccess: FunctionComponent = () => {
-  const [invokeSnap, { isLoading }] = useInvokeMutation();
+  const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
 
   const handleSubmit = () => {
     invokeSnap({
@@ -22,6 +26,7 @@ export const NetworkAccess: FunctionComponent = () => {
       name="Network Access Snap"
       snapId={NETWORK_ACCESS_SNAP_ID}
       port={NETWORK_ACCESS_PORT}
+      version={NETWORK_ACCESS_VERSION}
       testId="network-access"
     >
       <Button
@@ -33,6 +38,12 @@ export const NetworkAccess: FunctionComponent = () => {
       >
         Fetch
       </Button>
+      <Result>
+        <span id="networkAccessResult">
+          {JSON.stringify(data, null, 2)}
+          {JSON.stringify(error, null, 2)}
+        </span>
+      </Result>
     </Snap>
   );
 };

@@ -1,0 +1,11 @@
+diff --git a/build/isInteractive.js b/build/isInteractive.js
+index b4588ba0514d72b9248802700a15c2fe5e754932..e6e878cf46f0a6fae0f61300742def9a39aa22c4 100644
+--- a/build/isInteractive.js
++++ b/build/isInteractive.js
+@@ -18,5 +18,5 @@ function _ciInfo() {
+  * LICENSE file in the root directory of this source tree.
+  */
+ var _default =
+-  !!process.stdout.isTTY && process.env.TERM !== 'dumb' && !_ciInfo().isCI;
++  !process.browser && !!process.stdout.isTTY && process.env.TERM !== 'dumb' && !_ciInfo().isCI;
+ exports.default = _default;

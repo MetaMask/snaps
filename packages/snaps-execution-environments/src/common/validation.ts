@@ -1,18 +1,17 @@
 import { ChainIdStruct, HandlerType } from '@metamask/snaps-utils';
+import type { Json, JsonRpcSuccess } from '@metamask/utils';
 import {
   assertStruct,
-  Json,
   JsonRpcIdStruct,
   JsonRpcRequestStruct,
-  JsonRpcSuccess,
   JsonRpcSuccessStruct,
   JsonStruct,
 } from '@metamask/utils';
+import type { Infer } from 'superstruct';
 import {
   array,
   assign,
   enums,
-  Infer,
   is,
   literal,
   nullable,
@@ -24,37 +23,6 @@ import {
   tuple,
   union,
 } from 'superstruct';
-
-const VALIDATION_FUNCTIONS = {
-  [HandlerType.OnRpcRequest]: validateFunctionExport,
-  [HandlerType.OnTransaction]: validateFunctionExport,
-  [HandlerType.OnCronjob]: validateFunctionExport,
-  [HandlerType.OnNameLookup]: validateFunctionExport,
-};
-
-/**
- * Validates a function export.
- *
- * @param snapExport - The export itself.
- * @returns True if the export matches the expected shape, false otherwise.
- */
-function validateFunctionExport(
-  snapExport: unknown,
-): snapExport is (...args: unknown[]) => unknown {
-  return typeof snapExport === 'function';
-}
-
-/**
- * Validates a given snap export.
- *
- * @param type - The type of export expected.
- * @param snapExport - The export itself.
- * @returns True if the export matches the expected shape, false otherwise.
- */
-export function validateExport(type: HandlerType, snapExport: unknown) {
-  const validationFunction = VALIDATION_FUNCTIONS[type];
-  return validationFunction?.(snapExport) ?? false;
-}
 
 export const JsonRpcRequestWithoutIdStruct = assign(
   omit(JsonRpcRequestStruct, ['id']),

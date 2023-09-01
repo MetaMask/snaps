@@ -1,5 +1,6 @@
 import { logError } from '@metamask/snaps-utils';
-import { ChangeEvent, FormEvent, FunctionComponent, useState } from 'react';
+import type { ChangeEvent, FormEvent, FunctionComponent } from 'react';
+import { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 
 import packageJson from '../../package.json';

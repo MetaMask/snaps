@@ -1,7 +1,3 @@
-import {
-  createService,
-  MOCK_BLOCK_NUMBER,
-} from '@metamask/snaps-controllers/test-utils';
 import { HandlerType } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
@@ -11,6 +7,7 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 import { assert } from '@metamask/utils';
 
+import { createService, MOCK_BLOCK_NUMBER } from '../../test-utils';
 import { IframeExecutionService } from './IframeExecutionService';
 
 const IFRAME_URL = 'http://localhost:4567';

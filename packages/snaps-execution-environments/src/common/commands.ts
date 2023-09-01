@@ -1,15 +1,17 @@
 import { HandlerType } from '@metamask/snaps-utils';
 import { assertExhaustive } from '@metamask/utils';
 
-import { InvokeSnap, InvokeSnapArgs } from './BaseSnapExecutor';
-import {
-  assertIsOnTransactionRequestArguments,
-  assertIsOnNameLookupRequestArguments,
+import type { InvokeSnap, InvokeSnapArgs } from './BaseSnapExecutor';
+import type {
   ExecuteSnap,
   JsonRpcRequestWithoutId,
   Ping,
   SnapRpc,
   Terminate,
+} from './validation';
+import {
+  assertIsOnTransactionRequestArguments,
+  assertIsOnNameLookupRequestArguments,
 } from './validation';
 
 export type CommandMethodsMapping = {
@@ -57,6 +59,8 @@ export function getHandlerArguments(
       return { origin, request };
 
     case HandlerType.OnCronjob:
+    case HandlerType.OnInstall:
+    case HandlerType.OnUpdate:
       return { request };
 
     default:

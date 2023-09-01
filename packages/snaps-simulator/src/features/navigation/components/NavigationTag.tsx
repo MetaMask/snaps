@@ -1,5 +1,5 @@
 import { Tag } from '@chakra-ui/react';
-import { FunctionComponent, ReactNode } from 'react';
+import type { FunctionComponent, ReactNode } from 'react';
 import { useMatch } from 'react-router-dom';
 
 type NavigationTagProps = {

@@ -1,4 +1,5 @@
-import { Divider, Heading, NodeType, Panel, Spinner, Text } from './nodes';
+import type { Divider, Heading, Panel, Spinner, Text } from './nodes';
+import { NodeType } from './nodes';
 import { assertIsComponent, isComponent } from './validation';
 
 describe('isComponent', () => {

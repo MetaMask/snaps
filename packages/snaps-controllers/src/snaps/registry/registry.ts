@@ -1,6 +1,9 @@
-import { BlockReason, SnapsRegistryDatabase } from '@metamask/snaps-registry';
-import { SnapId, ValidatedSnapId } from '@metamask/snaps-utils';
-import { SemVerVersion } from '@metamask/utils';
+import type {
+  BlockReason,
+  SnapsRegistryDatabase,
+} from '@metamask/snaps-registry';
+import type { SnapId, ValidatedSnapId } from '@metamask/snaps-utils';
+import type { SemVerVersion } from '@metamask/utils';
 
 export type SnapsRegistryInfo = { version: SemVerVersion; checksum: string };
 export type SnapsRegistryRequest = Record<SnapId, SnapsRegistryInfo>;
@@ -9,9 +12,9 @@ export type SnapsRegistryMetadata =
 
 // TODO: Decide on names for these
 export enum SnapsRegistryStatus {
-  Unverified,
-  Blocked,
-  Verified,
+  Unverified = 0,
+  Blocked = 1,
+  Verified = 2,
 }
 
 export type SnapsRegistryResult = {
@@ -23,6 +26,8 @@ export type SnapsRegistry = {
   get(
     snaps: SnapsRegistryRequest,
   ): Promise<Record<ValidatedSnapId, SnapsRegistryResult>>;
+
+  update(): Promise<void>;
 
   /**
    * Get metadata for the given snap ID.

@@ -1,4 +1,4 @@
-import { FunctionComponent, ReactNode } from 'react';
+import type { FunctionComponent, ReactNode } from 'react';
 import { Card, Col } from 'react-bootstrap';
 import CardHeader from 'react-bootstrap/CardHeader';
 
@@ -12,7 +12,7 @@ export type SnapProps = {
   name: string;
 
   /**
-   * The `data-testid` of the Snap.
+   * The `data-testid` of the snap.
    */
   testId: string;
 
@@ -22,14 +22,15 @@ export type SnapProps = {
   snapId?: `npm:${string}`;
 
   /**
-   * The port that the Snap is listening on. This is only used in development.
+   * The port that the snap is listening on. This is only used in development.
    */
   port?: number;
 
   /**
-   * The version of the Snap. This overrides the version in the `package.json`.
+   * The version of the snap. This should be the version that is used in the
+   * snap's `package.json`.
    */
-  version?: string;
+  version: string;
 
   hideConnect?: boolean;
   children?: ReactNode;

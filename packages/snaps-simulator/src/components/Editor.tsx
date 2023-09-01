@@ -1,6 +1,8 @@
-import { Box, BoxProps, useColorMode } from '@chakra-ui/react';
-import { FunctionComponent } from 'react';
-import MonacoEditor, { monaco, MonacoEditorProps } from 'react-monaco-editor';
+import type { BoxProps } from '@chakra-ui/react';
+import { Box, useColorMode } from '@chakra-ui/react';
+import type { FunctionComponent } from 'react';
+import type { monaco, MonacoEditorProps } from 'react-monaco-editor';
+import MonacoEditor from 'react-monaco-editor';
 
 import {
   JSON_RPC_SCHEMA,

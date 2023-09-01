@@ -1,8 +1,6 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
-import {
-  BasePostMessageStream,
-  WebWorkerPostMessageStream,
-} from '@metamask/post-message-stream';
+import type { BasePostMessageStream } from '@metamask/post-message-stream';
+import { WebWorkerPostMessageStream } from '@metamask/post-message-stream';
 import { logError, SNAP_STREAM_NAMES } from '@metamask/snaps-utils';
 import pump from 'pump';
 

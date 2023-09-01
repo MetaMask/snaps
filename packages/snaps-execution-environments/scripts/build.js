@@ -1,4 +1,4 @@
-/* eslint-disable no-console, node/global-require, node/no-process-exit */
+/* eslint-disable no-console, n/global-require */
 const {
   createResolvePath,
 } = require('babel-plugin-tsconfig-paths-module-resolver');
@@ -63,12 +63,10 @@ async function main() {
 
   const lavamoatSecurityOptionsBrowser = {
     // Only enable for browser builds for now due to incompatibilities.
-    scuttleGlobalThis: true,
-    scuttleGlobalThisExceptions: [
-      'postMessage',
-      'removeEventListener',
-      'isSecureContext',
-    ],
+    scuttleGlobalThis: {
+      enabled: true,
+      exceptions: ['postMessage', 'removeEventListener', 'isSecureContext'],
+    },
   };
 
   const lavaMoatRuntimeString = await fs.readFile(
@@ -228,5 +226,5 @@ async function main() {
 
 main().catch((error) => {
   console.error(error);
-  process.exit(1);
+  process.exitCode = 1;
 });

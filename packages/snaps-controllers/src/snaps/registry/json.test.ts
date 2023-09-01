@@ -1,13 +1,14 @@
-import { SnapsRegistryDatabase } from '@metamask/snaps-registry';
+import type { SnapsRegistryDatabase } from '@metamask/snaps-registry';
 import {
   DEFAULT_SNAP_SHASUM,
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
-import { SemVerRange, SemVerVersion } from '@metamask/utils';
+import type { SemVerRange, SemVerVersion } from '@metamask/utils';
 import fetchMock from 'jest-fetch-mock';
 
 import { getRestrictedSnapsRegistryControllerMessenger } from '../../test-utils';
-import { JsonSnapsRegistry, JsonSnapsRegistryArgs } from './json';
+import type { JsonSnapsRegistryArgs } from './json';
+import { JsonSnapsRegistry } from './json';
 import { SnapsRegistryStatus } from './registry';
 
 const MOCK_PUBLIC_KEY =
@@ -349,6 +350,45 @@ describe('JsonSnapsRegistry', () => {
       const result = await messenger.call('SnapsRegistry:getMetadata', 'foo');
 
       expect(result).toBeNull();
+    });
+  });
+
+  describe('update', () => {
+    it('updates the database', async () => {
+      fetchMock
+        .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+        .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
+
+      const { messenger } = getRegistry();
+      await messenger.call('SnapsRegistry:update');
+
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+
+    it('does not fetch if a second call is made under the threshold', async () => {
+      fetchMock
+        .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+        .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
+
+      const { messenger } = getRegistry();
+      await messenger.call('SnapsRegistry:update');
+      await messenger.call('SnapsRegistry:update');
+
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+
+    it('does not fetch twice with parallel promises', async () => {
+      fetchMock
+        .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+        .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
+
+      const { messenger } = getRegistry();
+      await Promise.all([
+        messenger.call('SnapsRegistry:update'),
+        messenger.call('SnapsRegistry:update'),
+      ]);
+
+      expect(fetchMock).toHaveBeenCalledTimes(2);
     });
   });
 });

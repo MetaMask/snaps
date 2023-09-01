@@ -1,11 +1,8 @@
 import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 import { nanoid } from 'nanoid';
 
-import {
-  AbstractExecutionService,
-  ExecutionServiceArgs,
-  Job,
-} from '../AbstractExecutionService';
+import type { ExecutionServiceArgs, Job } from '../AbstractExecutionService';
+import { AbstractExecutionService } from '../AbstractExecutionService';
 import { ProxyPostMessageStream } from '../ProxyPostMessageStream';
 
 type OffscreenExecutionEnvironmentServiceArgs = {

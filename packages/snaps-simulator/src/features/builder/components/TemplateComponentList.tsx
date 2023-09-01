@@ -1,15 +1,9 @@
 import { Box, Flex, List, ListItem, Text } from '@chakra-ui/react';
-import {
-  Component,
-  copyable,
-  divider,
-  heading,
-  panel,
-  text,
-} from '@metamask/snaps-ui';
-import { FunctionComponent } from 'react';
+import type { Component } from '@metamask/snaps-ui';
+import { copyable, divider, heading, panel, text } from '@metamask/snaps-ui';
+import type { FunctionComponent } from 'react';
 
-import { IconName } from '../../../components';
+import type { IconName } from '../../../components';
 import { TemplateComponent } from './TemplateComponent';
 
 type TemplateComponent = {

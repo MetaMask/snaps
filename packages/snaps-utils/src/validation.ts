@@ -1,7 +1,7 @@
 import { assertIsSnapIcon } from './icon';
 import { assertIsSnapManifest } from './manifest/validation';
 import { validateSnapShasum } from './snaps';
-import { SnapFiles } from './types';
+import type { SnapFiles } from './types';
 
 /**
  * Validates the files contained in a fetched snap.

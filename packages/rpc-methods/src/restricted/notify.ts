@@ -1,15 +1,15 @@
-import {
+import type {
   PermissionSpecificationBuilder,
-  PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-  SubjectType,
 } from '@metamask/permission-controller';
-import { EnumToUnion } from '@metamask/snaps-utils';
-import { NonEmptyArray, isObject } from '@metamask/utils';
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import type { EnumToUnion } from '@metamask/snaps-utils';
+import type { NonEmptyArray } from '@metamask/utils';
+import { isObject } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
-import { MethodHooksObject } from '../utils';
+import type { MethodHooksObject } from '../utils';
 
 const methodName = 'snap_notify';
 

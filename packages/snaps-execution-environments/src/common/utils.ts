@@ -1,5 +1,5 @@
-import { StreamProvider } from '@metamask/providers';
-import { RequestArguments } from '@metamask/providers/dist/BaseProvider';
+import type { StreamProvider } from '@metamask/providers';
+import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
 import { assert, assertStruct, JsonStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
@@ -35,12 +35,12 @@ export function constructError(originalError: unknown) {
  * @param teardownRef.lastTeardown - Number of the last teardown.
  * @returns New proxy promise.
  */
-export async function withTeardown<T>(
-  originalPromise: Promise<T>,
+export async function withTeardown<Type>(
+  originalPromise: Promise<Type>,
   teardownRef: { lastTeardown: number },
-): Promise<T> {
+): Promise<Type> {
   const myTeardown = teardownRef.lastTeardown;
-  return new Promise<T>((resolve, reject) => {
+  return new Promise<Type>((resolve, reject) => {
     originalPromise
       .then((value) => {
         if (teardownRef.lastTeardown === myTeardown) {
@@ -108,7 +108,6 @@ export const BLOCKED_RPC_METHODS = Object.freeze([
   // We disallow all of these confirmations for now, since the screens are not ready for Snaps.
   'eth_sendRawTransaction',
   'eth_sendTransaction',
-  'personal_sign',
   'eth_sign',
   'eth_signTypedData',
   'eth_signTypedData_v1',

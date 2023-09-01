@@ -1,0 +1,22 @@
+{
+  "ignore-patterns": ["dist", "coverage"],
+  "ignores": [
+    "@lavamoat/allow-scripts",
+    "@lavamoat/preinstall-always-fail",
+    "@metamask/auto-changelog",
+    "@metamask/eslint-*",
+    "@types/*",
+    "@typescript-eslint/*",
+    "@wdio/*",
+    "eslint-config-*",
+    "eslint-plugin-*",
+    "expect-webdriverio",
+    "prettier-plugin-packagejson",
+    "ts-node",
+    "typedoc",
+    "typescript",
+    "vite",
+    "wdio-*",
+    "webdriverio"
+  ]
+}

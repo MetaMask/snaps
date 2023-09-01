@@ -1,6 +1,7 @@
 # Snaps Simulator
 
-A simulator for MetaMask Snaps, to be used for testing and development.
+A simulator for MetaMask Snaps, to be used for testing and development. The
+latest version can be found [here](https://metamask.github.io/snaps/snaps-simulator/latest/).
 
 ## Contributing
 

@@ -1,7 +1,7 @@
 import { Heading as ChakraHeading } from '@chakra-ui/react';
 import { isComponent } from '@metamask/snaps-ui';
 import { assert } from '@metamask/utils';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 
 export type HeadingProps = {
   id: string;

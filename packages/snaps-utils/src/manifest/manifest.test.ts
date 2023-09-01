@@ -13,11 +13,8 @@ import {
   getSnapFiles,
   getSnapManifest,
 } from '../test-utils';
-import {
-  NpmSnapFileNames,
-  SnapFiles,
-  SnapValidationFailureReason,
-} from '../types';
+import type { SnapFiles } from '../types';
+import { NpmSnapFileNames, SnapValidationFailureReason } from '../types';
 import {
   checkManifest,
   fixManifest,
@@ -25,7 +22,7 @@ import {
   getSnapSourceCode,
   getWritableManifest,
 } from './manifest';
-import { SnapManifest } from './validation';
+import type { SnapManifest } from './validation';
 
 jest.mock('fs');
 jest.mock('../npm', () => ({
@@ -289,7 +286,7 @@ describe('getSnapSourceCode', () => {
 
     await expect(
       getSnapSourceCode(BASE_PATH, getSnapManifest()),
-    ).rejects.toThrow('Failed to read Snap bundle file: foo');
+    ).rejects.toThrow('Failed to read snap bundle file: foo');
   });
 });
 
@@ -322,7 +319,7 @@ describe('getSnapIcon', () => {
     });
 
     await expect(getSnapIcon(BASE_PATH, getSnapManifest())).rejects.toThrow(
-      'Failed to read Snap icon file: foo',
+      'Failed to read snap icon file: foo',
     );
   });
 });

@@ -1,7 +1,7 @@
 import { deriveBIP44AddressKey } from '@metamask/key-tree';
 import { assert, remove0x } from '@metamask/utils';
 
-import { GetAccountParams } from './types';
+import type { GetAccountParams } from './types';
 
 /**
  * Get a BIP-44 private key, using the `snap_getBip44Entropy` method.

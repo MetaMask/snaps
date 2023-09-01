@@ -1,29 +1,30 @@
-import {
+import type {
   PermissionConstraint,
   RequestedPermissions,
   Caveat,
 } from '@metamask/permission-controller';
+import type { SnapsPermissionRequest } from '@metamask/snaps-utils';
 import {
   SnapCaveatType,
-  SnapsPermissionRequest,
   verifyRequestedSnapPermissions,
 } from '@metamask/snaps-utils';
-import {
+import type {
   PermittedHandlerExport,
   JsonRpcRequest,
   PendingJsonRpcResponse,
   JsonRpcEngineEndCallback,
 } from '@metamask/types';
-import { hasProperty, isObject, Json } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
+import { hasProperty, isObject } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
 import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
-import { MethodHooksObject } from '../utils';
-import {
-  handleInstallSnaps,
+import type { MethodHooksObject } from '../utils';
+import type {
   InstallSnapsHook,
   InstallSnapsResult,
 } from './common/snapInstallation';
+import { handleInstallSnaps } from './common/snapInstallation';
 
 const hookNames: MethodHooksObject<RequestSnapsHooks> = {
   installSnaps: true,

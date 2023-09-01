@@ -1,5 +1,5 @@
-import { Json } from '@metamask/utils';
-import { FunctionComponent } from 'react';
+import type { Json } from '@metamask/utils';
+import type { FunctionComponent } from 'react';
 
 import { Prefill } from '../../../../components/Prefill';
 

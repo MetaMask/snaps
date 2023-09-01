@@ -1,16 +1,11 @@
-import {
-  BasePostMessageStream,
-  WindowPostMessageStream,
-} from '@metamask/post-message-stream';
+import type { BasePostMessageStream } from '@metamask/post-message-stream';
+import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { createWindow } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
-import {
-  AbstractExecutionService,
-  ExecutionServiceArgs,
-  Job,
-} from '../AbstractExecutionService';
+import type { ExecutionServiceArgs, Job } from '../AbstractExecutionService';
+import { AbstractExecutionService } from '../AbstractExecutionService';
 import { ProxyPostMessageStream } from '../ProxyPostMessageStream';
 
 type WebWorkerExecutionEnvironmentServiceArgs = {

@@ -1,12 +1,13 @@
 import { Box, Flex } from '@chakra-ui/react';
-import { Component } from '@metamask/snaps-ui';
-import {
+import type { Component } from '@metamask/snaps-ui';
+import type {
   NodeModel,
   NodeRender,
-  Tree,
   TreeMethods,
 } from '@minoru/react-dnd-treeview';
-import { FunctionComponent, useEffect, useRef } from 'react';
+import { Tree } from '@minoru/react-dnd-treeview';
+import type { FunctionComponent } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { Node } from './Node';
 import { Start } from './Start';

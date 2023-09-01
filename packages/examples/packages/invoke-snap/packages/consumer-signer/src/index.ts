@@ -1,9 +1,9 @@
 import { rpcErrors } from '@metamask/rpc-errors';
-import { OnRpcRequestHandler } from '@metamask/snaps-types';
+import type { OnRpcRequestHandler } from '@metamask/snaps-types';
 import { assert, stringToBytes } from '@metamask/utils';
 import { keccak_256 as keccak256 } from '@noble/hashes/sha3';
 
-import { BIP44Path, SignMessageParams } from './types';
+import type { BIP44Path, SignMessageParams } from './types';
 
 const CORE_SIGNER_SNAP_ID = 'npm:@metamask/core-signer-example-snap';
 const DEFAULT_DERIVATION_PATH: BIP44Path = [

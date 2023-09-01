@@ -7,9 +7,11 @@ import {
   TabPanels,
   Tabs,
 } from '@chakra-ui/react';
-import { Component, NodeType } from '@metamask/snaps-ui';
-import { NodeModel } from '@minoru/react-dnd-treeview';
-import { FunctionComponent, useState } from 'react';
+import type { Component } from '@metamask/snaps-ui';
+import { NodeType } from '@metamask/snaps-ui';
+import type { NodeModel } from '@minoru/react-dnd-treeview';
+import type { FunctionComponent } from 'react';
+import { useState } from 'react';
 
 import { Editor } from '../../components';
 import { TemplateComponentList, NodeTree, NodeRenderer } from './components';

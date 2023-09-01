@@ -1,13 +1,13 @@
-import { SemVerVersion } from '@metamask/utils';
+import type { SemVerVersion } from '@metamask/utils';
 
-import {
+import type {
   PersistedSnap,
   Snap,
-  SnapStatus,
   TruncatedSnap,
   ValidatedSnapId,
 } from '../snaps';
-import { MakeSemVer } from './common';
+import { SnapStatus } from '../snaps';
+import type { MakeSemVer } from './common';
 import {
   DEFAULT_SNAP_BUNDLE,
   DEFAULT_SNAP_SHASUM,
@@ -54,6 +54,7 @@ export const getSnapObject = ({
   enabled = true,
   id = MOCK_SNAP_ID,
   initialPermissions = getSnapManifest().initialPermissions,
+  sourceCode = DEFAULT_SNAP_BUNDLE,
   manifest = getSnapManifest(),
   status = SnapStatus.Stopped,
   version = getSnapManifest().version,
@@ -64,6 +65,7 @@ export const getSnapObject = ({
   return {
     blocked,
     initialPermissions,
+    sourceCode,
     id,
     version: version as SemVerVersion,
     manifest,

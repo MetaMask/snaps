@@ -1,25 +1,24 @@
 import { JSON_RPC_ENDPOINT } from '@metamask/snaps-simulator';
 import { createModuleLogger, UnsafeJsonStruct } from '@metamask/utils';
-import { Page, HTTPRequest } from 'puppeteer';
+import type { Page, HTTPRequest } from 'puppeteer';
+import type { Infer, Struct } from 'superstruct';
 import {
   assign,
   boolean,
   create,
   defaulted,
-  Infer,
   number,
   object,
   optional,
   record,
   regexp,
   string,
-  Struct,
   union,
   unknown,
   func,
 } from 'superstruct';
 
-import { DeepPartial } from '../types';
+import type { DeepPartial } from '../types';
 import { rootLogger } from './logger';
 
 /**
@@ -62,7 +61,10 @@ const MockOptionsBaseStruct = object({
       status: defaulted(number(), 200),
       headers: defaulted(record(string(), unknown()), DEFAULT_HEADERS),
       contentType: defaulted(string(), 'text/plain'),
-      body: defaulted(string(), ''),
+
+      // Note: We default to a newline here, because the fetch request never
+      // resolves if the body is empty.
+      body: defaulted(string(), '\n'),
     }),
     {},
   ),

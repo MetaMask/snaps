@@ -1,9 +1,9 @@
-import { HandlerType } from '@metamask/snaps-utils';
+import type { HandlerType } from '@metamask/snaps-utils';
 import { assert, createModuleLogger } from '@metamask/utils';
 import { waitFor as waitForPuppeteer } from 'pptr-testing-library';
-import { Page } from 'puppeteer';
+import type { Page } from 'puppeteer';
 
-import { SnapResponse } from '../types';
+import type { SnapResponse } from '../types';
 import { rootLogger } from './logger';
 
 export type WaitForOptions = {

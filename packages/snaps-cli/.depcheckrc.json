@@ -1,0 +1,29 @@
+{
+  "ignore-patterns": ["dist", "coverage"],
+  "ignores": [
+    "@lavamoat/allow-scripts",
+    "@lavamoat/preinstall-always-fail",
+    "@metamask/auto-changelog",
+    "@metamask/eslint-*",
+    "@metamask/snaps-cli",
+    "@types/*",
+    "@typescript-eslint/*",
+    "assert",
+    "browser-pack",
+    "buffer",
+    "eslint-config-*",
+    "eslint-plugin-*",
+    "events",
+    "is-core-module",
+    "prettier-plugin-packagejson",
+    "process",
+    "punycode",
+    "string_decoder",
+    "swc-loader",
+    "ts-node",
+    "typedoc",
+    "typescript",
+    "url",
+    "util"
+  ]
+}

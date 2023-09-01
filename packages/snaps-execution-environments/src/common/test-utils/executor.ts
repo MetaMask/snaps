@@ -1,5 +1,6 @@
-import { Json, JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
-import { Duplex, DuplexOptions, Readable } from 'stream';
+import type { Json, JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
+import type { DuplexOptions, Readable } from 'stream';
+import { Duplex } from 'stream';
 
 import { BaseSnapExecutor } from '../BaseSnapExecutor';
 

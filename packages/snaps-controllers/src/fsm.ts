@@ -1,10 +1,6 @@
 import { assert } from '@metamask/utils';
-import {
-  EventObject,
-  InterpreterStatus,
-  StateMachine,
-  Typestate,
-} from '@xstate/fsm';
+import type { EventObject, StateMachine, Typestate } from '@xstate/fsm';
+import { InterpreterStatus } from '@xstate/fsm';
 
 /**
  * Validates the set-up of a @xstate/fsm machine.
@@ -25,7 +21,7 @@ export function validateMachine<
   };
 
   // 1.
-  const toArray = <T>(obj: T | T[]): T[] => {
+  const toArray = <Type>(obj: Type | Type[]): Type[] => {
     if (Array.isArray(obj)) {
       return obj;
     } else if (obj === undefined || obj === null) {
@@ -33,6 +29,7 @@ export function validateMachine<
     }
     return [obj];
   };
+
   const allActions = new Set<string>();
   const addActions = (actions: any) =>
     toArray(actions)

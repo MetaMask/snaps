@@ -1,5 +1,5 @@
-import { GetSnapsHooks } from './getSnaps';
-import { RequestSnapsHooks } from './requestSnaps';
+import type { GetSnapsHooks } from './getSnaps';
+import type { RequestSnapsHooks } from './requestSnaps';
 
 export type PermittedRpcMethodHooks = GetSnapsHooks & RequestSnapsHooks;
 

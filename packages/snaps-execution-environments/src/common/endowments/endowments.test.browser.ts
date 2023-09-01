@@ -50,7 +50,12 @@ describe('endowments', () => {
       clearInterval: clearIntervalAttenuated,
     } = interval.factory();
     const { Math: mathAttenuated } = math.factory();
-    const { fetch: fetchAttenuated } = network.factory();
+    const {
+      fetch: fetchAttenuated,
+      Request: RequestHardened,
+      Headers: HeadersHardened,
+      Response: ResponseHardened,
+    } = network.factory();
     const { Date: DateAttenuated } = date.factory();
     const { console: consoleAttenuated } = consoleEndowment.factory({
       snapId: MOCK_SNAP_ID,
@@ -172,6 +177,18 @@ describe('endowments', () => {
         endowments: { btoa },
         factory: () => btoa('Snaps'),
       },
+      RequestHardened: {
+        endowments: { RequestHardened },
+        factory: () => new RequestHardened('https://metamask.io'),
+      },
+      HeadersHardened: {
+        endowments: { HeadersHardened },
+        factory: () => new HeadersHardened(),
+      },
+      ResponseHardened: {
+        endowments: { ResponseHardened },
+        factory: () => new ResponseHardened(),
+      },
       setTimeoutAttenuated: {
         endowments: { setTimeoutAttenuated },
         factory: () => setTimeoutAttenuated((param: unknown) => param, 1),
@@ -214,7 +231,7 @@ describe('endowments', () => {
         });
 
         if (factory()) {
-          it('does not leak `globalThis`', () => {
+          it(`${name} does not leak 'globalThis'`, () => {
             const instance = factory();
             expect(walkAndSearch(instance, globalThis)).toBe(false);
           });
@@ -241,7 +258,7 @@ describe('endowments', () => {
         },
         {
           factory: expect.any(Function),
-          names: ['fetch'],
+          names: ['fetch', 'Request', 'Headers', 'Response'],
         },
         {
           factory: expect.any(Function),

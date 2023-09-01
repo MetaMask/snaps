@@ -1,6 +1,6 @@
-import { PermissionConstraint } from '@metamask/permission-controller';
+import type { PermissionConstraint } from '@metamask/permission-controller';
 import { HandlerType } from '@metamask/snaps-utils';
-import { Json } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
 
 import {
   cronjobCaveatSpecifications,
@@ -8,6 +8,7 @@ import {
   getCronjobCaveatMapper,
 } from './cronjob';
 import { ethereumProviderEndowmentBuilder } from './ethereum-provider';
+import { lifecycleHooksEndowmentBuilder } from './lifecycle-hooks';
 import { longRunningEndowmentBuilder } from './long-running';
 import { nameLookupEndowmentBuilder } from './name-lookup';
 import { networkAccessEndowmentBuilder } from './network-access';
@@ -34,6 +35,7 @@ export const endowmentPermissionBuilders = {
   [rpcEndowmentBuilder.targetName]: rpcEndowmentBuilder,
   [webAssemblyEndowmentBuilder.targetName]: webAssemblyEndowmentBuilder,
   [nameLookupEndowmentBuilder.targetName]: nameLookupEndowmentBuilder,
+  [lifecycleHooksEndowmentBuilder.targetName]: lifecycleHooksEndowmentBuilder,
 } as const;
 
 export const endowmentCaveatSpecifications = {
@@ -57,6 +59,8 @@ export const handlerEndowments: Record<HandlerType, string> = {
   [HandlerType.OnTransaction]: transactionInsightEndowmentBuilder.targetName,
   [HandlerType.OnCronjob]: cronjobEndowmentBuilder.targetName,
   [HandlerType.OnNameLookup]: nameLookupEndowmentBuilder.targetName,
+  [HandlerType.OnInstall]: lifecycleHooksEndowmentBuilder.targetName,
+  [HandlerType.OnUpdate]: lifecycleHooksEndowmentBuilder.targetName,
 };
 
 export * from './enum';

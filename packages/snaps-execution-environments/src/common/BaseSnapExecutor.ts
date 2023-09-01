@@ -1,38 +1,41 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
-/// <reference path="../../../../node_modules/ses/index.d.ts" />
+/// <reference path="../../../../node_modules/ses/types.d.ts" />
 import { StreamProvider } from '@metamask/providers';
-import { RequestArguments } from '@metamask/providers/dist/BaseProvider';
-import { SnapsGlobalObject } from '@metamask/rpc-methods';
-import {
+import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
+import type { SnapsGlobalObject } from '@metamask/rpc-methods';
+import type {
   SnapExports,
   HandlerType,
   SnapExportsParameters,
-  SNAP_EXPORT_NAMES,
-  logError,
 } from '@metamask/snaps-utils';
 import {
-  isObject,
-  isValidJson,
+  SNAP_EXPORT_NAMES,
+  logError,
+  SNAP_EXPORTS,
+} from '@metamask/snaps-utils';
+import type {
   JsonRpcNotification,
-  assert,
-  isJsonRpcRequest,
   JsonRpcId,
   JsonRpcRequest,
   Json,
+} from '@metamask/utils';
+import {
+  isObject,
+  isValidJson,
+  assert,
+  isJsonRpcRequest,
   hasProperty,
   getSafeJson,
 } from '@metamask/utils';
 import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
 import { createIdRemapMiddleware } from 'json-rpc-engine';
-import { Duplex } from 'stream';
+import type { Duplex } from 'stream';
 import { validate } from 'superstruct';
 
 import { log } from '../logging';
 import EEOpenRPCDocument from '../openrpc.json';
-import {
-  CommandMethodsMapping,
-  getCommandMethodImplementations,
-} from './commands';
+import type { CommandMethodsMapping } from './commands';
+import { getCommandMethodImplementations } from './commands';
 import { createEndowments } from './endowments';
 import { addEventListener, removeEventListener } from './globalEvents';
 import { sortParamKeys } from './sortParams';
@@ -48,7 +51,6 @@ import {
   PingRequestArgumentsStruct,
   SnapRpcRequestArgumentsStruct,
   TerminateRequestArgumentsStruct,
-  validateExport,
 } from './validation';
 
 type EvaluationData = {
@@ -128,14 +130,24 @@ export class BaseSnapExecutor {
 
     this.methods = getCommandMethodImplementations(
       this.startSnap.bind(this),
-      async (target, handlerName, args) => {
+      async (target, handlerType, args) => {
         const data = this.snapData.get(target);
-        // We're capturing the handler in case someone modifies the data object before the call
-        const handler = data?.exports[handlerName];
+        // We're capturing the handler in case someone modifies the data object
+        // before the call.
+        const handler = data?.exports[handlerType];
+        const { required } = SNAP_EXPORTS[handlerType];
+
         assert(
-          handler !== undefined,
-          `No ${handlerName} handler exported for snap "${target}`,
+          !required || handler !== undefined,
+          `No ${handlerType} handler exported for snap "${target}`,
         );
+
+        // Certain handlers are not required. If they are not exported, we
+        // return null.
+        if (!handler) {
+          return null;
+        }
+
         // TODO: fix handler args type cast
         let result = await this.executeInSnapContext(target, () =>
           handler(args as any),
@@ -372,14 +384,15 @@ export class BaseSnapExecutor {
 
   private registerSnapExports(snapId: string, snapModule: any) {
     const data = this.snapData.get(snapId);
-    // Somebody deleted the Snap before we could register
+    // Somebody deleted the snap before we could register.
     if (!data) {
       return;
     }
 
     data.exports = SNAP_EXPORT_NAMES.reduce((acc, exportName) => {
       const snapExport = snapModule.exports[exportName];
-      if (validateExport(exportName, snapExport)) {
+      const { validator } = SNAP_EXPORTS[exportName];
+      if (validator(snapExport)) {
         return { ...acc, [exportName]: snapExport };
       }
       return acc;

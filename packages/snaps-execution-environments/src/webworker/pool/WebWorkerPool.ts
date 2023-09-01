@@ -1,10 +1,11 @@
+import type { BasePostMessageStream } from '@metamask/post-message-stream';
 import {
-  BasePostMessageStream,
   WebWorkerParentPostMessageStream,
   WindowPostMessageStream,
 } from '@metamask/post-message-stream';
 import { logError } from '@metamask/snaps-utils';
-import { JsonRpcRequest, assert } from '@metamask/utils';
+import type { JsonRpcRequest } from '@metamask/utils';
+import { assert } from '@metamask/utils';
 import { nanoid } from 'nanoid/non-secure';
 
 type ExecutorJob = {

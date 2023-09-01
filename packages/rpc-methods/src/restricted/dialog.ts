@@ -1,29 +1,29 @@
-import {
+import type {
   PermissionSpecificationBuilder,
-  PermissionType,
   RestrictedMethodOptions,
   ValidPermissionSpecification,
-  SubjectType,
 } from '@metamask/permission-controller';
-import { Component, ComponentStruct } from '@metamask/snaps-ui';
-import { EnumToUnion, enumValue } from '@metamask/snaps-utils';
-import { NonEmptyArray } from '@metamask/utils';
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import type { Component } from '@metamask/snaps-ui';
+import { ComponentStruct } from '@metamask/snaps-ui';
+import type { EnumToUnion } from '@metamask/snaps-utils';
+import { enumValue } from '@metamask/snaps-utils';
+import type { NonEmptyArray } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
+import type { Infer, Struct } from 'superstruct';
 import {
   create,
   enums,
-  Infer,
   object,
   optional,
   size,
   string,
-  Struct,
   StructError,
   type,
   union,
 } from 'superstruct';
 
-import { MethodHooksObject } from '../utils';
+import type { MethodHooksObject } from '../utils';
 
 const methodName = 'snap_dialog';
 

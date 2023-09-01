@@ -1,32 +1,23 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { BasePostMessageStream } from '@metamask/post-message-stream';
-import {
-  SnapRpcHook,
-  SnapRpcHookArgs,
-  SNAP_STREAM_NAMES,
-  logError,
-} from '@metamask/snaps-utils';
-import {
-  Duration,
-  isJsonRpcNotification,
-  isObject,
-  Json,
-  JsonRpcNotification,
-} from '@metamask/utils';
-import {
-  JsonRpcEngine,
+import type { BasePostMessageStream } from '@metamask/post-message-stream';
+import type { SnapRpcHook, SnapRpcHookArgs } from '@metamask/snaps-utils';
+import { SNAP_STREAM_NAMES, logError } from '@metamask/snaps-utils';
+import type { Json, JsonRpcNotification } from '@metamask/utils';
+import { Duration, isJsonRpcNotification, isObject } from '@metamask/utils';
+import type {
   // TODO: Replace with @metamask/utils version after bumping json-rpc-engine
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from 'json-rpc-engine';
+import { JsonRpcEngine } from 'json-rpc-engine';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import pump from 'pump';
-import { Duplex } from 'stream';
+import type { Duplex } from 'stream';
 
 import { log } from '../logging';
 import { hasTimedOut, withTimeout } from '../utils';
-import {
+import type {
   ExecutionService,
   ExecutionServiceMessenger,
   SnapErrorJson,
@@ -404,26 +395,6 @@ export abstract class AbstractExecutionService<WorkerType>
     };
 
     this.#snapRpcHooks.set(snapId, rpcHook);
-  }
-
-  /**
-   * Gets the job id for a given snap.
-   *
-   * @param snapId - A given snap id.
-   * @returns The ID of the snap's job.
-   */
-  #getJobForSnap(snapId: string): string | undefined {
-    return this.#snapToJobMap.get(snapId);
-  }
-
-  /**
-   * Gets the snap id for a given job.
-   *
-   * @param jobId - A given job id.
-   * @returns The ID of the snap that is running the job.
-   */
-  #getSnapForJob(jobId: string): string | undefined {
-    return this.#jobToSnapMap.get(jobId);
   }
 
   #mapSnapAndJob(snapId: string, jobId: string): void {

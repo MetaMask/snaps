@@ -15,23 +15,9 @@ module.exports = {
     },
 
     {
-      files: ['src/**/*', 'scripts/**/*'],
-      rules: {
-        'node/no-process-exit': 'off',
-      },
-    },
-
-    {
       files: ['src/main.ts'],
       rules: {
-        'node/shebang': 'off',
-      },
-    },
-
-    {
-      files: ['**/*.test.ts'],
-      rules: {
-        'node/no-callback-literal': 'off',
+        'n/shebang': 'off',
       },
     },
   ],

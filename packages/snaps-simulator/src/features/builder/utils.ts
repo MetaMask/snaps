@@ -1,7 +1,8 @@
-import { Component, NodeType, Panel } from '@metamask/snaps-ui';
+import type { Component, Panel } from '@metamask/snaps-ui';
+import { NodeType } from '@metamask/snaps-ui';
 import { deepClone } from '@metamask/snaps-utils';
 import { assert, hasProperty } from '@metamask/utils';
-import { NodeModel } from '@minoru/react-dnd-treeview';
+import type { NodeModel } from '@minoru/react-dnd-treeview';
 import typescript from 'prettier/parser-typescript';
 import prettier from 'prettier/standalone';
 
@@ -88,7 +89,7 @@ function getComponentArgs(component: Component): string {
     case NodeType.Text:
     case NodeType.Heading:
     case NodeType.Copyable:
-      return `'${component.value}'`;
+      return `'${component.value.replace(/'/gu, "\\'")}'`;
     case NodeType.Spinner:
     case NodeType.Divider:
     default:

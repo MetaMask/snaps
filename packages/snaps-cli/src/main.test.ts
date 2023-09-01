@@ -1,20 +1,19 @@
-import * as cliModule from './cli';
-import commands from './cmds';
+import { cli } from './cli';
+import commands from './commands';
 
-jest.mock('./cli', () => ({
-  cli: jest.fn(),
-}));
+jest.mock('./cli');
 
 describe('main', () => {
   it('executes the CLI application', async () => {
+    const mock = cli as jest.MockedFunction<typeof cli>;
+    mock.mockRejectedValue('foo');
+
+    jest.spyOn(console, 'error').mockImplementation();
+
     await import('./main');
-    expect(cliModule.cli).toHaveBeenCalledTimes(1);
-    expect(cliModule.cli).toHaveBeenCalledWith(process.argv, commands);
-    expect(global.snaps).toStrictEqual({
-      // see test/setup.js
-      verboseErrors: false,
-      suppressWarnings: false,
-      isWatching: false,
-    });
+
+    expect(cli).toHaveBeenCalledTimes(1);
+    expect(cli).toHaveBeenCalledWith(process.argv, commands);
+    expect(process.exitCode).toBe(1);
   });
 });

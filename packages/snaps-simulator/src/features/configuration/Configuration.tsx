@@ -29,7 +29,8 @@ import {
   getSnapPrefix,
   stripSnapPrefix,
 } from '@metamask/snaps-utils';
-import { FormEvent, useEffect, useState } from 'react';
+import type { FormEvent } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from '../../hooks';
 import {

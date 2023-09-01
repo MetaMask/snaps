@@ -1,13 +1,17 @@
-import { EnvironmentContext, JestEnvironmentConfig } from '@jest/environment';
+import type {
+  EnvironmentContext,
+  JestEnvironmentConfig,
+} from '@jest/environment';
 import { assert, createModuleLogger } from '@metamask/utils';
-import { Server } from 'http';
+import type { Server } from 'http';
 import NodeEnvironment from 'jest-environment-node';
-import { AddressInfo } from 'net';
-import { Browser } from 'puppeteer';
+import type { AddressInfo } from 'net';
+import type { Browser } from 'puppeteer';
 import { remote } from 'webdriverio';
 
 import { rootLogger, startServer } from './internals';
-import { getOptions, SnapsEnvironmentOptions } from './options';
+import type { SnapsEnvironmentOptions } from './options';
+import { getOptions } from './options';
 
 /* eslint-disable */
 declare global {

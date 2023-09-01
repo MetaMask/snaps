@@ -1,8 +1,8 @@
+import type { Infer } from 'superstruct';
 import {
   boolean,
   create,
   defaulted,
-  Infer,
   number,
   object,
   optional,

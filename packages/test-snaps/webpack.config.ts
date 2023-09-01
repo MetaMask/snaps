@@ -6,8 +6,9 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { resolve } from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
-import { Configuration, EnvironmentPlugin } from 'webpack';
-import { Configuration as DevServerConfiguration } from 'webpack-dev-server';
+import type { Configuration } from 'webpack';
+import { EnvironmentPlugin } from 'webpack';
+import type { Configuration as DevServerConfiguration } from 'webpack-dev-server';
 
 const STATIC_PATH = resolve(__dirname, 'static');
 
@@ -105,7 +106,7 @@ const config: Configuration & Record<'devServer', DevServerConfiguration> = {
     },
   },
   devServer: {
-    port: 8000,
+    port: 9000,
     historyApiFallback: true,
   },
 };

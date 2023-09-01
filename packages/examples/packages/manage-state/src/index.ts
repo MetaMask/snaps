@@ -1,7 +1,7 @@
 import { rpcErrors } from '@metamask/rpc-errors';
-import { OnRpcRequestHandler } from '@metamask/snaps-types';
+import type { OnRpcRequestHandler } from '@metamask/snaps-types';
 
-import { SetStateParams } from './types';
+import type { SetStateParams } from './types';
 import { clearState, getState, setState } from './utils';
 
 /**

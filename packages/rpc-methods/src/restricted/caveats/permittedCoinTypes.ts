@@ -1,13 +1,14 @@
-import {
+import type {
   PermissionConstraint,
   RestrictedMethodCaveatSpecificationConstraint,
   Caveat,
 } from '@metamask/permission-controller';
 import { FORBIDDEN_COIN_TYPES, SnapCaveatType } from '@metamask/snaps-utils';
-import { Json, hasProperty, isPlainObject } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
+import { hasProperty, isPlainObject } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
-import { GetBip44EntropyParams } from '../getBip44Entropy';
+import type { GetBip44EntropyParams } from '../getBip44Entropy';
 
 /**
  * Map a raw value from the `initialPermissions` to a caveat specification.

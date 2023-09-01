@@ -1,4 +1,3 @@
-import { utils as snapsCliUtils } from '@metamask/snaps-cli';
 import yargs from 'yargs';
 
 import builders from './builders';
@@ -11,10 +10,12 @@ import { init } from './cmds';
  * @param argv - The raw command line arguments, i.e., `process.argv`.
  * @param initCommand - Optional specification for init command.
  */
-export function cli(argv: string[], initCommand: typeof init = init): void {
+export async function cli(
+  argv: string[],
+  initCommand: typeof init = init,
+): Promise<void> {
   const rawArgv = argv.slice(2);
-  // eslint-disable-next-line @typescript-eslint/no-unused-expressions, @typescript-eslint/no-floating-promises
-  yargs(rawArgv)
+  await yargs(rawArgv)
     .scriptName('create-snap')
     .usage('Usage: $0 [directory-name]')
 
@@ -27,11 +28,7 @@ export function cli(argv: string[], initCommand: typeof init = init): void {
     .option('verboseErrors', builders.verboseErrors)
 
     .strict()
-
-    .fail((message: string, error: Error) => {
-      snapsCliUtils.logError(message, error);
-      process.exitCode = 1;
-    })
     .help()
-    .alias('help', 'h').argv;
+    .alias('help', 'h')
+    .parseAsync();
 }

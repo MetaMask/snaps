@@ -1,7 +1,9 @@
-import yargs from 'yargs';
+import type yargs from 'yargs';
 
 import { cli } from './cli';
-import commands from './cmds';
+import commands from './commands';
+
+jest.mock('./config');
 
 // Removes positional arguments from commands. eg. 'build [directory]' -> 'build'
 const sanitizeCommand = (command: string) =>
@@ -26,59 +28,48 @@ const getMockArgv = (...args: string[]) => {
 const HELP_TEXT_REGEX = /^\s*Usage: .+ <command> \[options\]/u;
 
 describe('cli', () => {
-  let consoleLogSpy: jest.SpyInstance;
-  let processExitSpy: jest.SpyInstance;
+  it('exits if no argument was provided', async () => {
+    expect.assertions(2);
 
-  beforeAll(() => {
-    global.snaps = {};
-  });
+    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
+    const processExitSpy = jest.spyOn(process, 'exit').mockImplementation();
 
-  beforeEach(() => {
-    consoleLogSpy = jest.spyOn(console, 'log');
-    processExitSpy = jest.spyOn(process, 'exit');
-  });
-
-  afterAll(() => {
-    delete (global as any).snaps;
-  });
-
-  it('exits if no argument was provided', () => {
     consoleLogSpy.mockImplementationOnce((message: string) => {
       expect(message).toMatch(HELP_TEXT_REGEX);
     });
 
-    processExitSpy.mockImplementationOnce(() => {
-      throw new Error('process exited');
+    // @ts-expect-error `process.exit` returns `never`, but we can't mock that.
+    processExitSpy.mockImplementationOnce((code?: number | undefined): void => {
+      expect(code).toBe(0);
     });
 
-    expect(() => cli(getMockArgv('--help'), commands)).toThrow(
-      'process exited',
-    );
+    await cli(getMockArgv('--help'), commands);
   });
 
   it('calls "help" command', async () => {
     expect.assertions(2);
+
+    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
+    const processExitSpy = jest.spyOn(process, 'exit').mockImplementation();
+
+    // @ts-expect-error `process.exit` returns `never`, but we can't mock that.
     processExitSpy.mockImplementationOnce((code: number) => {
       expect(code).toBe(0);
     });
 
-    await new Promise<void>((resolve) => {
+    await new Promise<void>((resolve, reject) => {
       consoleLogSpy.mockImplementationOnce((message: string) => {
         expect(message).toMatch(HELP_TEXT_REGEX);
         resolve();
       });
 
-      cli(getMockArgv('--help'), commands);
+      cli(getMockArgv('--help'), commands).catch(reject);
     });
   });
 
   // Commands are fully tested in their respective unit tests.
   // This is just to ensure full coverage of cli.ts.
   describe('locally defined commands', () => {
-    beforeEach(() => {
-      processExitSpy.mockImplementation();
-    });
-
     Object.keys(commandMap).forEach((command) => {
       it(`calls ${sanitizeCommand(command)}`, async () => {
         const mockCommandHandler = jest.fn();
@@ -87,18 +78,16 @@ describe('cli', () => {
           mockCommandHandler.mockImplementation(() => resolve() as any);
         });
 
-        cli(getMockArgv(sanitizeCommand(command)), [
+        await cli(getMockArgv(sanitizeCommand(command)), [
           { ...(commandMap as any)[command], handler: mockCommandHandler },
         ]);
         await finished;
+
         expect(mockCommandHandler).toHaveBeenCalledTimes(1);
-        // TODO: Test the complete argv for each command
         expect(mockCommandHandler).toHaveBeenCalledWith(
           expect.objectContaining({
             // eslint-disable-next-line @typescript-eslint/naming-convention
             _: [sanitizeCommand(command)],
-            suppressWarnings: false,
-            verboseErrors: true,
           }),
         );
       });
@@ -106,11 +95,12 @@ describe('cli', () => {
   });
 
   describe('command failures', () => {
-    it('handles an argument validation failure for a locally defined command', () => {
+    it('handles an argument validation failure for a locally defined command', async () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+      const processExitSpy = jest.spyOn(process, 'exit').mockImplementation();
       const mockServeHandler = jest.fn();
 
-      cli(
+      await cli(
         getMockArgv(
           'serve',
           '--port',
@@ -121,36 +111,48 @@ describe('cli', () => {
         [{ ...commandMap.serve, handler: mockServeHandler }],
       );
 
-      expect(process.exitCode).toBe(1);
       expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Invalid port: NaN');
+      expect(consoleErrorSpy).toHaveBeenNthCalledWith(
+        1,
+        expect.stringContaining('Invalid port: "NaN".'),
+      );
+      expect(processExitSpy).toHaveBeenCalledTimes(1);
+      expect(processExitSpy).toHaveBeenCalledWith(1);
       expect(mockServeHandler).not.toHaveBeenCalled();
     });
 
-    it('handles an argument validation failure for a locally defined command, with verbose errors', () => {
+    it('handles an argument validation failure for a locally defined command, with verbose errors', async () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+      const processExitSpy = jest.spyOn(process, 'exit').mockImplementation();
       const mockServeHandler = jest.fn();
 
-      cli(getMockArgv('serve', '--port', 'not-a-number', `--verboseErrors`), [
-        { ...commandMap.serve, handler: mockServeHandler },
-      ]);
+      await cli(
+        getMockArgv('serve', '--port', 'not-a-number', `--verboseErrors`),
+        [{ ...commandMap.serve, handler: mockServeHandler }],
+      );
 
-      expect(process.exitCode).toBe(1);
-      expect(consoleErrorSpy).toHaveBeenCalledTimes(2);
-      expect(consoleErrorSpy).toHaveBeenNthCalledWith(1, 'Invalid port: NaN');
+      expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
+      expect(consoleErrorSpy).toHaveBeenNthCalledWith(
+        1,
+        expect.stringContaining('Invalid port: "NaN".'),
+      );
+      expect(processExitSpy).toHaveBeenCalledTimes(1);
+      expect(processExitSpy).toHaveBeenCalledWith(1);
       expect(mockServeHandler).not.toHaveBeenCalled();
     });
 
-    it('handles an error thrown by a locally defined command handler', () => {
+    it('handles an error thrown by a locally defined command handler', async () => {
+      jest.spyOn(process, 'exit').mockImplementation();
+
       const mockBuildHandler = jest.fn().mockImplementation(() => {
-        throw new Error('build failed');
+        throw new Error('Build failed.');
       });
 
-      expect(() =>
+      await expect(
         cli(getMockArgv('build'), [
           { ...commandMap.build, handler: mockBuildHandler },
         ]),
-      ).toThrow('build failed');
+      ).rejects.toThrow('Build failed.');
     });
   });
 });

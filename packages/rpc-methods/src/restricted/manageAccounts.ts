@@ -1,26 +1,23 @@
-import {
-  SubjectType,
-  PermissionType,
+import type {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
   PermissionSpecificationBuilder,
 } from '@metamask/permission-controller';
-import { Json, JsonStruct, NonEmptyArray } from '@metamask/utils';
-import {
-  assert,
-  string,
-  object,
-  optional,
-  union,
-  array,
-  record,
-  Infer,
-} from 'superstruct';
+import { SubjectType, PermissionType } from '@metamask/permission-controller';
+import type { Json, NonEmptyArray } from '@metamask/utils';
+import { JsonStruct } from '@metamask/utils';
+import type { Infer } from 'superstruct';
+import { assert, string, object, union, array, record } from 'superstruct';
 
-const SnapMessageStruct = object({
-  method: string(),
-  params: optional(union([array(JsonStruct), record(string(), JsonStruct)])),
-});
+const SnapMessageStruct = union([
+  object({
+    method: string(),
+  }),
+  object({
+    method: string(),
+    params: union([array(JsonStruct), record(string(), JsonStruct)]),
+  }),
+]);
 
 type Message = Infer<typeof SnapMessageStruct>;
 
@@ -97,7 +94,7 @@ export function manageAccountsImplementation({
 }: ManageAccountsMethodHooks) {
   return async function manageAccounts(
     options: RestrictedMethodOptions<Message>,
-  ): Promise<string[] | Json | boolean> {
+  ): Promise<Json> {
     const {
       context: { origin },
       params,

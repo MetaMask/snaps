@@ -1,8 +1,9 @@
 import { Box, Input } from '@chakra-ui/react';
-import { Component, Heading, Text } from '@metamask/snaps-ui';
+import type { Component, Heading, Text } from '@metamask/snaps-ui';
 import { assert } from '@metamask/utils';
-import { NodeModel } from '@minoru/react-dnd-treeview';
-import { ChangeEvent, FunctionComponent, useState } from 'react';
+import type { NodeModel } from '@minoru/react-dnd-treeview';
+import type { ChangeEvent, FunctionComponent } from 'react';
+import { useState } from 'react';
 
 import { getNodeText } from '../utils';
 import { BaseNode } from './BaseNode';

@@ -1,13 +1,13 @@
+import type { PostProcessOptions } from '@metamask/snaps-utils';
 import {
   checkManifest,
   evalBundle,
   postProcessBundle,
-  PostProcessOptions,
 } from '@metamask/snaps-utils';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
 // eslint-disable-next-line @typescript-eslint/no-shadow
-import { Plugin, SourceMapInput } from 'rollup';
+import type { Plugin, SourceMapInput } from 'rollup';
 
 type PluginOptions = {
   eval?: boolean;

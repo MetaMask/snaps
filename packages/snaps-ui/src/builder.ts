@@ -1,8 +1,8 @@
 import { assertStruct, isPlainObject } from '@metamask/utils';
-import { Struct } from 'superstruct';
+import type { Struct } from 'superstruct';
 
+import type { Component } from './nodes';
 import {
-  Component,
   CopyableStruct,
   DividerStruct,
   HeadingStruct,
@@ -76,10 +76,14 @@ function createBuilder<
     // Node passed as an array of arguments.
     const node = keys.reduce<Partial<Component>>(
       (partialNode, key, index) => {
-        return {
-          ...partialNode,
-          [key]: args[index],
-        };
+        if (args[index] !== undefined) {
+          return {
+            ...partialNode,
+            [key]: args[index],
+          };
+        }
+
+        return partialNode;
       },
       { type },
     );
@@ -170,14 +174,21 @@ export const spinner = createBuilder(NodeType.Spinner, SpinnerStruct);
 /**
  * Create a {@link Text} node.
  *
- * @param args - The node arguments. This can be either a string, or an object
- * with a `text` property.
- * @param args.text - The text content of the node.
+ * @param args - The node arguments. This can be either a string
+ * and a boolean, or an object with a `value` property
+ * and an optional `markdown` property.
+ * @param args.value - The text content of the node.
+ * @param args.markdown - An optional flag to enable/disable markdown.
  * @returns The text node as object.
  * @example
  * ```typescript
- * const node = text({ text: 'Hello, world!' });
+ * const node = text({ value: 'Hello, world!' });
  * const node = text('Hello, world!');
+ * const node = text({ value: 'Hello, world!', markdown: false });
+ * const node = text('Hello, world!', false);
  * ```
  */
-export const text = createBuilder(NodeType.Text, TextStruct, ['value']);
+export const text = createBuilder(NodeType.Text, TextStruct, [
+  'value',
+  'markdown',
+]);

@@ -1,5 +1,6 @@
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
-import { DialogType, OnRpcRequestHandler } from '@metamask/snaps-types';
+import type { OnRpcRequestHandler } from '@metamask/snaps-types';
+import { DialogType } from '@metamask/snaps-types';
 import { panel, text, heading, copyable } from '@metamask/snaps-ui';
 import {
   add0x,
@@ -11,7 +12,7 @@ import {
 import { sign as signEd25519 } from '@noble/ed25519';
 import { sign as signSecp256k1 } from '@noble/secp256k1';
 
-import { GetBip32PublicKeyParams, SignMessageParams } from './types';
+import type { GetBip32PublicKeyParams, SignMessageParams } from './types';
 import { getPrivateNode, getPublicKey } from './utils';
 
 /**

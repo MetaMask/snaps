@@ -1,5 +1,5 @@
 import { Flex } from '@chakra-ui/react';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 
 import { Navigation } from '../../navigation';
 import { Bottom } from '../../navigation/components';

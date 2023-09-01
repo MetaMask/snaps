@@ -1,11 +1,15 @@
 import { logError } from '@metamask/snaps-utils';
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 import { Button, ButtonGroup } from 'react-bootstrap';
 
 import { useInvokeMutation } from '../../../api';
 import { Snap } from '../../../components';
 import { getSnapId } from '../../../utils';
-import { NOTIFICATIONS_SNAP_ID, NOTIFICATIONS_SNAP_PORT } from './constants';
+import {
+  NOTIFICATIONS_SNAP_ID,
+  NOTIFICATIONS_SNAP_PORT,
+  NOTIFICATIONS_VERSION,
+} from './constants';
 
 export const Notifications: FunctionComponent = () => {
   const [invokeSnap, { isLoading }] = useInvokeMutation();
@@ -22,6 +26,7 @@ export const Notifications: FunctionComponent = () => {
       name="Notifications Snap"
       snapId={NOTIFICATIONS_SNAP_ID}
       port={NOTIFICATIONS_SNAP_PORT}
+      version={NOTIFICATIONS_VERSION}
       testId="notifications"
     >
       <ButtonGroup>

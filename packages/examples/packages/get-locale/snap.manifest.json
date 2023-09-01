@@ -1,0 +1,27 @@
+{
+  "version": "0.38.1-flask.1",
+  "description": "MetaMask example snap demonstrating the use of `snap_getLocale`.",
+  "proposedName": "Get Locale Example Snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps.git"
+  },
+  "source": {
+    "shasum": "2xxJIVBgF3i0x+/CP4kxAaWaHH1DNO/z6lgnBv0UmZI=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "@metamask/get-locale-example-snap",
+        "registry": "https://registry.npmjs.org"
+      }
+    }
+  },
+  "initialPermissions": {
+    "endowment:rpc": {
+      "dapps": true
+    },
+    "snap_dialog": {},
+    "snap_getLocale": {}
+  },
+  "manifestVersion": "0.1"
+}

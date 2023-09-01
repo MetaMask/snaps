@@ -1,6 +1,7 @@
-import { assertStruct, Json, VersionStruct } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
+import { assertStruct, VersionStruct } from '@metamask/utils';
+import type { Infer, Struct } from 'superstruct';
 import {
-  Infer,
   instance,
   is,
   object,
@@ -9,16 +10,16 @@ import {
   refine,
   size,
   string,
-  Struct,
   type,
   union,
   assert as assertSuperstruct,
 } from 'superstruct';
 
-import { SnapCaveatType } from './caveats';
-import { SnapFunctionExports } from './handlers';
-import { SnapManifest } from './manifest';
-import { VirtualFile } from './virtual-file';
+import type { SnapCaveatType } from './caveats';
+import type { SnapFunctionExports } from './handlers';
+import { HandlerType } from './handlers';
+import type { SnapManifest } from './manifest';
+import type { VirtualFile } from './virtual-file';
 
 export enum NpmSnapFileNames {
   PackageJson = 'package.json',
@@ -130,13 +131,6 @@ export enum SNAP_STREAM_NAMES {
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
-export enum HandlerType {
-  OnRpcRequest = 'onRpcRequest',
-  OnTransaction = 'onTransaction',
-  OnCronjob = 'onCronjob',
-  OnNameLookup = 'onNameLookup',
-}
-
 export const SNAP_EXPORT_NAMES = Object.values(HandlerType);
 
 export type SnapRpcHookArgs = {
@@ -154,14 +148,15 @@ type ObjectParameters<
 
 export type SnapExportsParameters = ObjectParameters<SnapFunctionExports>;
 
-type UriOptions<T extends string> = {
-  protocol?: Struct<T>;
-  hash?: Struct<T>;
-  port?: Struct<T>;
-  hostname?: Struct<T>;
-  pathname?: Struct<T>;
-  search?: Struct<T>;
+type UriOptions<Type extends string> = {
+  protocol?: Struct<Type>;
+  hash?: Struct<Type>;
+  port?: Struct<Type>;
+  hostname?: Struct<Type>;
+  pathname?: Struct<Type>;
+  search?: Struct<Type>;
 };
+
 export const uri = (opts: UriOptions<any> = {}) =>
   refine(union([string(), instance(URL)]), 'uri', (value) => {
     try {

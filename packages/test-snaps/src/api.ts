@@ -1,8 +1,9 @@
-import { MetaMaskInpageProvider } from '@metamask/providers';
-import { RequestArguments } from '@metamask/providers/dist/BaseProvider';
+import type { MetaMaskInpageProvider } from '@metamask/providers';
+import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
 import { logError } from '@metamask/snaps-utils';
-import { JsonRpcError, JsonRpcParams } from '@metamask/utils';
-import { BaseQueryFn, createApi } from '@reduxjs/toolkit/query/react';
+import type { JsonRpcError, JsonRpcParams } from '@metamask/utils';
+import type { BaseQueryFn } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
