@@ -59,6 +59,13 @@ export const SNAP_EXPORTS = {
       return typeof snapExport === 'function';
     },
   },
+  [HandlerType.OnNameLookup]: {
+    type: HandlerType.OnNameLookup,
+    required: true,
+    validator: (snapExport: unknown): snapExport is OnNameLookupHandler => {
+      return typeof snapExport === 'function';
+    },
+  },
   [HandlerType.OnInstall]: {
     type: HandlerType.OnInstall,
     required: false,
