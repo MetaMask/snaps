@@ -57,7 +57,7 @@
     "@metamask/eth-json-rpc-middleware": "^11.0.0",
     "@metamask/key-tree": "^9.0.0",
     "@metamask/permission-controller": "^4.1.0",
-    "@metamask/rpc-errors": "^5.1.1",
+    "@metamask/rpc-errors": "^6.0.0",
     "@metamask/rpc-methods": "workspace:^",
     "@metamask/snaps-controllers": "workspace:^",
     "@metamask/snaps-execution-environments": "workspace:^",
