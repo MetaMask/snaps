@@ -1,4 +1,5 @@
 import {
+  assertIsOnNameLookupRequestArguments,
   assertIsOnTransactionRequestArguments,
   isEndowment,
   isEndowmentsArray,
@@ -73,6 +74,35 @@ describe('assertIsOnTransactionRequestArguments', () => {
     'throws if the value is not a valid transaction params object',
     (value) => {
       expect(() => assertIsOnTransactionRequestArguments(value as any)).toThrow(
+        'Invalid request params:',
+      );
+    },
+  );
+});
+
+describe('assertIsOnNameLookupRequestArguments', () => {
+  it.each([
+    { chainId: 'eip155:1', domain: 'foo.lens' },
+    {
+      chainId: 'eip155:1',
+      address: '0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb',
+    },
+  ])('does not throw for a valid lookup request object', (args) => {
+    expect(() => assertIsOnNameLookupRequestArguments(args)).not.toThrow();
+  });
+
+  it.each([
+    { chainId: 123, domain: 12 },
+    { chainId: 'eip155:1', domain: false },
+    { chainId: 'foo' },
+    { domain: 'foo.lens' },
+    { chainId: 'eip155:1', address: 123 },
+    { chainId: 'eip155:1', address: false },
+    { address: '0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb' },
+  ])(
+    'throws if the value is not a valid transaction params object',
+    (value) => {
+      expect(() => assertIsOnNameLookupRequestArguments(value as any)).toThrow(
         'Invalid request params:',
       );
     },
