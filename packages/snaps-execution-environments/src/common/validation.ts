@@ -135,13 +135,11 @@ export function assertIsOnTransactionRequestArguments(
   );
 }
 
-export const OnNameLookupRequestArgumentsStruct = union([
-  object({
-    chainId: ChainIdStruct,
-    domain: string(),
-  }),
-  object({ chainId: ChainIdStruct, address: string() }),
-]);
+export const OnNameLookupRequestArgumentsStruct = object({
+  chainId: ChainIdStruct,
+  domain: optional(string()),
+  address: optional(string()),
+});
 
 export type OnNameLookupRequestArguments = Infer<
   typeof OnNameLookupRequestArgumentsStruct

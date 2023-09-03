@@ -49,9 +49,11 @@ export function getHandlerArguments(
     }
     case HandlerType.OnNameLookup: {
       assertIsOnNameLookupRequestArguments(request.params);
-      const { chainId, domain } = request.params;
+
+      const { chainId, domain, address } = request.params;
       return {
         chainId,
+        address,
         domain,
       };
     }
