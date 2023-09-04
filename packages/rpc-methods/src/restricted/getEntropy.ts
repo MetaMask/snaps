@@ -4,10 +4,10 @@ import type {
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { SIP_6_MAGIC_VALUE } from '@metamask/snaps-utils';
 import type { Hex, NonEmptyArray } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 import type { Infer } from 'superstruct';
 import { literal, object, optional, string } from 'superstruct';
 
@@ -111,7 +111,7 @@ function getEntropyImplementation({
       params,
       GetEntropyArgsStruct,
       'Invalid "snap_getEntropy" parameters',
-      ethErrors.rpc.invalidParams,
+      rpcErrors.invalidParams,
     );
 
     await getUnlockPromise(true);
