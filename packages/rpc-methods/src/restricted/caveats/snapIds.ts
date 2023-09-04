@@ -5,11 +5,11 @@ import type {
   RestrictedMethodCaveatSpecificationConstraint,
   PermissionConstraint,
 } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import type { SnapIds } from '@metamask/snaps-utils';
 import { SnapCaveatType, SnapIdsStruct } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
 import { hasProperty, assertStruct } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 import { type } from 'superstruct';
 
 import type { InvokeSnapParams } from '../invokeSnap';
@@ -50,7 +50,7 @@ export function validateSnapIdsCaveat(
       value: SnapIdsStruct,
     }),
     'Expected caveat to have a value property of a non-empty object of snap IDs.',
-    ethErrors.rpc.invalidParams,
+    rpcErrors.invalidParams,
   );
 }
 

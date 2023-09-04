@@ -1,3 +1,4 @@
+import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   PermittedHandlerExport,
   JsonRpcRequest,
@@ -5,7 +6,6 @@ import type {
   JsonRpcEngineEndCallback,
 } from '@metamask/types';
 import { isObject } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 
 export type InvokeSnapSugarArgs = {
   snapId: string;
@@ -64,7 +64,7 @@ export function invokeSnapSugar(
  */
 export function getValidatedParams(params: unknown): InvokeSnapSugarArgs {
   if (!isObject(params)) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: 'Expected params to be a single object.',
     });
   }
@@ -72,13 +72,13 @@ export function getValidatedParams(params: unknown): InvokeSnapSugarArgs {
   const { snapId, request } = params;
 
   if (!snapId || typeof snapId !== 'string' || snapId === '') {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: 'Must specify a valid snap ID.',
     });
   }
 
   if (!isObject(request)) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: 'Expected request to be a single object.',
     });
   }
