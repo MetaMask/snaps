@@ -7,17 +7,20 @@ import { SubjectType, PermissionType } from '@metamask/permission-controller';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import { JsonStruct } from '@metamask/utils';
 import type { Infer } from 'superstruct';
-import { assert, string, object, union, array, record } from 'superstruct';
+import {
+  assert,
+  string,
+  object,
+  union,
+  array,
+  record,
+  optional,
+} from 'superstruct';
 
-const SnapMessageStruct = union([
-  object({
-    method: string(),
-  }),
-  object({
-    method: string(),
-    params: union([array(JsonStruct), record(string(), JsonStruct)]),
-  }),
-]);
+const SnapMessageStruct = object({
+  method: string(),
+  params: optional(union([array(JsonStruct), record(string(), JsonStruct)])),
+});
 
 type Message = Infer<typeof SnapMessageStruct>;
 
@@ -31,6 +34,7 @@ export type ManageAccountsMethodHooks = {
     handleKeyringSnapMessage: (
       snapId: string,
       message: Message,
+      saveCallback: () => Promise<void>,
     ) => Promise<Json>;
   }>;
 
@@ -102,14 +106,11 @@ export function manageAccountsImplementation({
 
     assert(params, SnapMessageStruct);
     const keyring = await getSnapKeyring(origin);
-    const result = await keyring.handleKeyringSnapMessage(origin, params);
-
-    const { method } = params;
-    if (['updateAccount', 'createAccount', 'deleteAccount'].includes(method)) {
-      await saveSnapKeyring();
-    }
-
-    return result;
+    return await keyring.handleKeyringSnapMessage(
+      origin,
+      params,
+      saveSnapKeyring,
+    );
   };
 }
 
