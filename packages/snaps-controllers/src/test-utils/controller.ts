@@ -19,7 +19,7 @@ import {
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 import type { Json } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 
 import type {
   CronjobControllerActions,
