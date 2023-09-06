@@ -14,7 +14,7 @@ import {
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import { assert, hasProperty, isPlainObject } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 
 import { SnapEndowments } from './enum';
 

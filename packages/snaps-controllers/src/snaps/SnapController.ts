@@ -76,7 +76,7 @@ import {
 } from '@metamask/utils';
 import type { StateMachine } from '@xstate/fsm';
 import { createMachine, interpret } from '@xstate/fsm';
-import { ethErrors } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
 

@@ -32,7 +32,7 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 import type { SemVerRange, SemVerVersion } from '@metamask/utils';
 import { AssertionError } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import fetchMock from 'jest-fetch-mock';
 import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
