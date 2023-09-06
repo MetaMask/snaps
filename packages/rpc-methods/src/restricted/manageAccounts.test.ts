@@ -98,7 +98,7 @@ describe('manageAccountsImplementation', () => {
         params: {},
       }),
     ).rejects.toThrow(
-      'Expected the value to satisfy a union of `object | object`, but received: [object Object]',
+      'At path: method -- Expected a string, but received: undefined',
     );
   });
 
@@ -120,7 +120,7 @@ describe('manageAccountsImplementation', () => {
         params: { method: 123, params: {} },
       }),
     ).rejects.toThrow(
-      'Expected the value to satisfy a union of `object | object`, but received: [object Object]',
+      'At path: method -- Expected a string, but received: 123',
     );
   });
 
@@ -148,10 +148,14 @@ describe('manageAccountsImplementation', () => {
     });
 
     expect(createAccountSpy).toHaveBeenCalledTimes(1);
-    expect(createAccountSpy).toHaveBeenCalledWith(MOCK_SNAP_ID, {
-      method: 'deleteAccount',
-      params: { accountId: MOCK_CAIP_10_ACCOUNT },
-    });
+    expect(createAccountSpy).toHaveBeenCalledWith(
+      MOCK_SNAP_ID,
+      {
+        method: 'deleteAccount',
+        params: { accountId: MOCK_CAIP_10_ACCOUNT },
+      },
+      saveSnapKeyring,
+    );
     expect(requestResponse).toBe(true);
     createAccountSpy.mockClear();
   });
