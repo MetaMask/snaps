@@ -4735,13 +4735,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/post-message-stream@npm:^6.2.0":
-  version: 6.2.0
-  resolution: "@metamask/post-message-stream@npm:6.2.0"
+"@metamask/post-message-stream@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "@metamask/post-message-stream@npm:7.0.0"
   dependencies:
     "@metamask/utils": ^5.0.0
-    readable-stream: 2.3.3
-  checksum: 657cdb2dd61a46a4da7f036a97ef0aa9ad8e918d8f8c0fd620eaede4a32c2ff909738a7dfb2b1e6099e7771fd03c3466b60fedab56e39a5cc5507927758e3cb7
+    readable-stream: 3.6.2
+  checksum: a922874f00870e0c666216e592dff6c508e926fae122646d2792c9a7fac4f73323c65046a1eb9dc48a4b0e7de3bbcf753f5ad470688ed4ba2298b4d3a9b39c7d
   languageName: node
   linkType: hard
 
@@ -5041,7 +5041,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/object-multiplex": ^1.2.0
     "@metamask/permission-controller": ^4.1.0
-    "@metamask/post-message-stream": ^6.2.0
+    "@metamask/post-message-stream": ^7.0.0
     "@metamask/rpc-methods": "workspace:^"
     "@metamask/snaps-execution-environments": "workspace:^"
     "@metamask/snaps-registry": ^1.2.2
@@ -5128,7 +5128,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/object-multiplex": ^1.2.0
-    "@metamask/post-message-stream": ^6.2.0
+    "@metamask/post-message-stream": ^7.0.0
     "@metamask/providers": ^11.1.1
     "@metamask/rpc-methods": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
@@ -5491,7 +5491,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/key-tree": ^9.0.0
     "@metamask/permission-controller": ^4.1.0
-    "@metamask/post-message-stream": ^6.2.0
+    "@metamask/post-message-stream": ^7.0.0
     "@metamask/snaps-registry": ^1.2.2
     "@metamask/snaps-ui": "workspace:^"
     "@metamask/utils": ^7.1.0
@@ -18718,13 +18718,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"process-nextick-args@npm:~1.0.6":
-  version: 1.0.7
-  resolution: "process-nextick-args@npm:1.0.7"
-  checksum: 41224fbc803ac6c96907461d4dfc20942efa3ca75f2d521bcf7cf0e89f8dec127fb3fb5d76746b8fb468a232ea02d84824fae08e027aec185fd29049c66d49f8
-  languageName: node
-  linkType: hard
-
 "process-nextick-args@npm:~2.0.0":
   version: 2.0.1
   resolution: "process-nextick-args@npm:2.0.1"
@@ -19526,7 +19519,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:2 || 3, readable-stream@npm:3, readable-stream@npm:^3.0.2, readable-stream@npm:^3.0.6, readable-stream@npm:^3.1.1, readable-stream@npm:^3.4.0, readable-stream@npm:^3.5.0, readable-stream@npm:^3.6.0, readable-stream@npm:^3.6.2":
+"readable-stream@npm:2 || 3, readable-stream@npm:3, readable-stream@npm:3.6.2, readable-stream@npm:^3.0.2, readable-stream@npm:^3.0.6, readable-stream@npm:^3.1.1, readable-stream@npm:^3.4.0, readable-stream@npm:^3.5.0, readable-stream@npm:^3.6.0, readable-stream@npm:^3.6.2":
   version: 3.6.2
   resolution: "readable-stream@npm:3.6.2"
   dependencies:
@@ -19534,21 +19527,6 @@ __metadata:
     string_decoder: ^1.1.1
     util-deprecate: ^1.0.1
   checksum: bdcbe6c22e846b6af075e32cf8f4751c2576238c5043169a1c221c92ee2878458a816a4ea33f4c67623c0b6827c8a400409bfb3cf0bf3381392d0b1dfb52ac8d
-  languageName: node
-  linkType: hard
-
-"readable-stream@npm:2.3.3":
-  version: 2.3.3
-  resolution: "readable-stream@npm:2.3.3"
-  dependencies:
-    core-util-is: ~1.0.0
-    inherits: ~2.0.3
-    isarray: ~1.0.0
-    process-nextick-args: ~1.0.6
-    safe-buffer: ~5.1.1
-    string_decoder: ~1.0.3
-    util-deprecate: ~1.0.1
-  checksum: 76f9863065d7edc14abd78e68784048487e83a4b6908336ba3eacb5e9544d642ad60836f91fab16e1dc6ad9e493dfe6c2e5b65f370ec65454d415efa50361a76
   languageName: node
   linkType: hard
 
@@ -21158,15 +21136,6 @@ __metadata:
   dependencies:
     safe-buffer: ~5.2.0
   checksum: 8417646695a66e73aefc4420eb3b84cc9ffd89572861fe004e6aeb13c7bc00e2f616247505d2dbbef24247c372f70268f594af7126f43548565c68c117bdeb56
-  languageName: node
-  linkType: hard
-
-"string_decoder@npm:~1.0.3":
-  version: 1.0.3
-  resolution: "string_decoder@npm:1.0.3"
-  dependencies:
-    safe-buffer: ~5.1.0
-  checksum: 57ef02a148fd1ff2f20fe1accd944505ed3703e78bb28d302d940b2ad3dfb469508f79dcd0275ba1960d9675aa206452f76b2416059a6d0b0200bd7e9f552cdb
   languageName: node
   linkType: hard
 
