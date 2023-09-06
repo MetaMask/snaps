@@ -84,7 +84,11 @@ directory of your npm package. Here's an example manifest:
     }
   },
   "initialPermissions": {
-    "snap_dialog": {}
+    "snap_dialog": {},
+    "endowment:rpc": {
+      "dapps": true,
+      "snaps": false
+    }
   },
   "manifestVersion": "0.1"
 }
