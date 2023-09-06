@@ -4,10 +4,14 @@ import type {
   PermissionConstraint,
 } from '@metamask/permission-controller';
 import type { BlockReason } from '@metamask/snaps-registry';
-import type { Json, SemVerVersion, Opaque } from '@metamask/utils';
+import type {
+  Json,
+  JsonRpcError,
+  Opaque,
+  SemVerVersion,
+} from '@metamask/utils';
 import { assert, isObject, assertStruct } from '@metamask/utils';
 import { base64 } from '@scure/base';
-import type { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
 import stableStringify from 'fast-json-stable-stringify';
 import type { Struct } from 'superstruct';
 import {
@@ -153,9 +157,7 @@ export type TruncatedSnapFields =
  */
 export type TruncatedSnap = Pick<Snap, TruncatedSnapFields>;
 
-export type ProcessSnapResult =
-  | TruncatedSnap
-  | { error: SerializedEthereumRpcError };
+export type ProcessSnapResult = TruncatedSnap | { error: JsonRpcError };
 
 export type InstallSnapsResult = Record<SnapId, ProcessSnapResult>;
 
