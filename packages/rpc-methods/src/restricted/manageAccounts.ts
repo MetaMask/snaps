@@ -43,12 +43,12 @@ export type ManageAccountsMethodHooks = {
    */
   saveSnapKeyring: () => Promise<void>;
 
-  showDialog: (
+  showSnapAccountConfirmation: (
     origin: any,
     type: any,
     content: any,
     placeholder: any,
-  ) => Promise<any>;
+  ) => Promise<boolean>;
 };
 
 type ManageAccountsSpecificationBuilderOptions = {
@@ -95,7 +95,7 @@ export const specificationBuilder: PermissionSpecificationBuilder<
  * @param hooks - The RPC method hooks.
  * @param hooks.getSnapKeyring - A function to get the snap keyring.
  * @param hooks.saveSnapKeyring - A function to save the snap keyring.
- * @param hooks.showDialog - A function to show a dialog.
+ * @param hooks.showSnapAccountConfirmation - A function to show a dialog.
  * @returns The method implementation which either returns `null` for a
  * successful state update/deletion or returns the decrypted state.
  * @throws If the params are invalid.
@@ -103,7 +103,7 @@ export const specificationBuilder: PermissionSpecificationBuilder<
 export function manageAccountsImplementation({
   getSnapKeyring,
   saveSnapKeyring,
-  showDialog,
+  showSnapAccountConfirmation,
 }: ManageAccountsMethodHooks) {
   return async function manageAccounts(
     options: RestrictedMethodOptions<Message>,
@@ -115,9 +115,9 @@ export function manageAccountsImplementation({
 
     assert(params, SnapMessageStruct);
     const keyring = await getSnapKeyring(origin);
-    await showDialog(
+    const confirmationResult = await showSnapAccountConfirmation(
       origin,
-      'confirmation',
+      'snap_manageAccounts:confirmation',
       {
         type: 'panel',
         children: [
@@ -133,11 +133,19 @@ export function manageAccountsImplementation({
       },
       undefined,
     );
-    return await keyring.handleKeyringSnapMessage(
-      origin,
-      params,
-      saveSnapKeyring,
+    // eslint-disable-next-line no-console
+    console.log(
+      'SNAPS/ manageAccountsImplementation/ confirmationResult',
+      confirmationResult,
     );
+    if (confirmationResult) {
+      return await keyring.handleKeyringSnapMessage(
+        origin,
+        params,
+        saveSnapKeyring,
+      );
+    }
+    throw new Error('User denied account addition');
   };
 }
 
@@ -147,6 +155,6 @@ export const manageAccountsBuilder = Object.freeze({
   methodHooks: {
     getSnapKeyring: true,
     saveSnapKeyring: true,
-    showDialog: true,
+    showSnapAccountConfirmation: true,
   },
 } as const);
