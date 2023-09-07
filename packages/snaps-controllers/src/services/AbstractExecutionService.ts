@@ -186,6 +186,11 @@ export abstract class AbstractExecutionService<WorkerType>
       jsonRpcConnection.stream,
       streams.command,
       jsonRpcConnection.stream,
+      (error) => {
+        if (error) {
+          logError(`Command stream failure.`, error);
+        }
+      },
     );
 
     rpcEngine.push(jsonRpcConnection.middleware);

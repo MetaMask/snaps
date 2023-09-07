@@ -11,6 +11,7 @@ import {
   DEFAULT_REQUESTED_SNAP_VERSION,
   getSnapChecksum,
   HandlerType,
+  logError,
   SnapCaveatType,
   SnapStatus,
   VirtualFile,
@@ -1102,7 +1103,11 @@ describe('SnapController', () => {
         });
         engine.push(middleware);
         const providerStream = createEngineStream({ engine });
-        pipeline(stream, providerStream, stream);
+        pipeline(stream, providerStream, stream, (error) => {
+          if (error) {
+            logError(`Provider stream failure.`, error);
+          }
+        });
       });
 
     await snapController.startSnap(snap.id);
@@ -1183,7 +1188,11 @@ describe('SnapController', () => {
         });
         engine.push(middleware);
         const providerStream = createEngineStream({ engine });
-        pipeline(stream, providerStream, stream);
+        pipeline(stream, providerStream, stream, (error) => {
+          if (error) {
+            logError(`Provider stream failure.`, error);
+          }
+        });
       });
 
     await snapController.startSnap(snap.id);

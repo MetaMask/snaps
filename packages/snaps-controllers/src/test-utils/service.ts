@@ -1,4 +1,5 @@
 import { ControllerMessenger } from '@metamask/base-controller';
+import { logError } from '@metamask/snaps-utils';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { pipeline } from 'stream';
@@ -56,7 +57,11 @@ export const createService = <
         return next();
       });
       const providerStream = createEngineStream({ engine });
-      pipeline(stream, providerStream, stream);
+      pipeline(stream, providerStream, stream, (error) => {
+        if (error) {
+          logError(`Provider stream failure.`, error);
+        }
+      });
     },
     ...options,
   });

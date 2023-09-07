@@ -170,7 +170,11 @@ export function* initSaga({ payload }: PayloadAction<string>) {
       const mux = setupMultiplex(rpcStream, 'snapStream');
       const stream = mux.createStream('metamask-provider');
       const providerStream = createEngineStream({ engine });
-      pipeline(stream, providerStream, stream);
+      pipeline(stream, providerStream, stream, (error) => {
+        if (error) {
+          logError(`Provider stream failure.`, error);
+        }
+      });
     },
   });
 
