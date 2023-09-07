@@ -175,6 +175,8 @@ describe('WebWorkerSnapExecutor', () => {
     WebWorkerSnapExecutor.initialize(mockStream);
     mockStream.destroy();
 
+    await new Promise((resolve) => setTimeout(resolve, 1));
+
     expect(closeSpy.calls.length).toBe(1);
 
     closeSpy.reset();
