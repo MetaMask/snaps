@@ -1688,7 +1688,7 @@ export class SnapController extends BaseController<
         const [error, version] = resolveVersionRange(rawVersion);
 
         if (error) {
-          throw ethErrors.rpc.invalidParams(
+          throw rpcErrors.invalidParams(
             `The "version" field must be a valid SemVer version range if specified. Received: "${rawVersion}".`,
           );
         }
@@ -1766,7 +1766,7 @@ export class SnapController extends BaseController<
       if (this.#featureFlags.dappsCanUpdateSnaps === true) {
         return await this.updateSnap(origin, snapId, location, versionRange);
       }
-      throw ethErrors.rpc.invalidParams(
+      throw rpcErrors.invalidParams(
         `Version mismatch with already installed snap. ${snapId}@${existingSnap.version} doesn't satisfy requested version ${versionRange}.`,
       );
     }
@@ -1916,7 +1916,7 @@ export class SnapController extends BaseController<
 
       const newVersion = newSnap.manifest.result.version;
       if (!gtVersion(newVersion, snap.version)) {
-        throw ethErrors.rpc.invalidParams(
+        throw rpcErrors.invalidParams(
           `Snap "${snapId}@${snap.version}" is already installed. Couldn't update to a version inside requested "${newVersionRange}" range.`,
         );
       }
