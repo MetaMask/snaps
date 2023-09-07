@@ -109,7 +109,7 @@ export function getCronjobCaveatJobs(
  */
 export function validateCronjobCaveat(caveat: Caveat<string, any>) {
   if (!hasProperty(caveat, 'value') || !isPlainObject(caveat.value)) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: 'Expected a plain object.',
     });
   }
@@ -117,13 +117,13 @@ export function validateCronjobCaveat(caveat: Caveat<string, any>) {
   const { value } = caveat;
 
   if (!hasProperty(value, 'jobs') || !isPlainObject(value)) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: 'Expected a plain object.',
     });
   }
 
   if (!isCronjobSpecificationArray(value.jobs)) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: 'Expected a valid cronjob specification array.',
     });
   }

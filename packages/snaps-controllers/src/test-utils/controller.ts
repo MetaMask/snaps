@@ -19,7 +19,7 @@ import {
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 import type { Json } from '@metamask/utils';
-import { rpcErrors } from '@metamask/rpc-errors';
+import { providerErrors } from '@metamask/rpc-errors';
 
 import type {
   CronjobControllerActions,
@@ -88,7 +88,7 @@ export class MockApprovalController {
   }) {
     if (this.#approval) {
       if (requestState.loading === false && !requestState.error) {
-        this.#approval.promise.reject(ethErrors.provider.userRejectedRequest());
+        this.#approval.promise.reject(providerErrors.userRejectedRequest());
       }
     }
   }
