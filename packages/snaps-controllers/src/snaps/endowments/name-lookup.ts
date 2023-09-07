@@ -19,7 +19,7 @@ type NameLookupEndowmentSpecification = ValidPermissionSpecification<{
 
 /**
  * `endowment:name-lookup` returns nothing; it is intended to be used as a flag
- * by the extension to detect whether the snap has the capability to resolve content entered into the send screen.
+ * by the extension to detect whether the snap has the capability to resolve a domain/address.
  *
  * @param _builderOptions - Optional specification builder options.
  * @returns The specification for the name-lookup endowment.

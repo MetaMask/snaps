@@ -99,6 +99,11 @@ describe('assertIsOnNameLookupRequestArguments', () => {
     { chainId: 'eip155:1', address: 123 },
     { chainId: 'eip155:1', address: false },
     { address: '0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb' },
+    {
+      chainId: 123,
+      domain: 'foo.lens',
+      address: '0xab16a96d359ec26a11e2c2b3d8f8b8942d5bfcdb',
+    },
   ])(
     'throws if the value is not a valid transaction params object',
     (value) => {

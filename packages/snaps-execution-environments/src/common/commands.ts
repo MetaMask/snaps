@@ -50,12 +50,19 @@ export function getHandlerArguments(
     case HandlerType.OnNameLookup: {
       assertIsOnNameLookupRequestArguments(request.params);
 
-      const { chainId, domain, address } = request.params;
-      return {
-        chainId,
-        address,
-        domain,
-      };
+      // TS complains that domain/address are not part of the type
+      // casting here as we've already validated the request args in the above step.
+      const { chainId, domain, address } = request.params as any;
+
+      return domain
+        ? {
+            chainId,
+            domain,
+          }
+        : {
+            chainId,
+            address,
+          };
     }
     case HandlerType.OnRpcRequest:
       return { origin, request };

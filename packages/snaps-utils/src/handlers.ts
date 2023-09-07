@@ -179,13 +179,18 @@ export type HandlerFunction<Type extends SnapHandler> =
 /**
  * The response from a snap's `onNameLookup` handler.
  *
- * @property protocolName - This refers to the protocol that was used for the address lookup.
+ * @property resolvedAddress - The resolved address for a given domain.
+ * @property resolvedDomain - The resolved domain for a given address.
  *
- * If the snap has no resolved addresses from its lookup, this should be `null`.
+ *
+ * If the snap has no resolved address/domain from its lookup, this should be `null`.
  */
-export type OnNameLookupResponse = {
-  resolvedAddress: AccountAddress;
-} | null;
+export type OnNameLookupResponse =
+  | {
+      resolvedAddress: AccountAddress;
+    }
+  | { resolvedDomain: string }
+  | null;
 
 export type OnNameLookupArgs = {
   chainId: Caip2ChainId;
@@ -196,10 +201,11 @@ export type OnNameLookupArgs = {
  * into the send to field for sending assets to an EOA address.
  *
  * @param args - The request arguments.
- * @param args.content - The human-readable address that is to be resolved.
- * @param args.id - The CAIP-2 chain ID of the network the transaction is
+ * @param args.domain - The human-readable address that is to be resolved.
+ * @param args.chainId - The CAIP-2 chain ID of the network the transaction is
  * being submitted to.
- * @returns Resolved address(es) from the content lookup. See {@link OnNameLookupResponse}.
+ * @param args.address - The address that is to be resolved.
+ * @returns Resolved address/domain from the lookup. See {@link OnNameLookupResponse}.
  */
 export type OnNameLookupHandler = (
   args: OnNameLookupArgs,
