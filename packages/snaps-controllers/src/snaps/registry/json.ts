@@ -228,6 +228,7 @@ export class JsonSnapsRegistry extends BaseController<
           blocked.id === snapId &&
           satisfiesVersionRange(
             snapInfo.version,
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
             blocked.versionRange as SemVerRange,
           )
         );
