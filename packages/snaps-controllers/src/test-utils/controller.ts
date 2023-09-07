@@ -7,6 +7,7 @@ import type {
   SubjectMetadata,
 } from '@metamask/permission-controller';
 import { SubjectType } from '@metamask/permission-controller';
+import { providerErrors } from '@metamask/rpc-errors';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 import type { ValidatedSnapId } from '@metamask/snaps-utils';
 import { SnapCaveatType } from '@metamask/snaps-utils';
@@ -19,7 +20,6 @@ import {
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 import type { Json } from '@metamask/utils';
-import { providerErrors } from '@metamask/rpc-errors';
 
 import type {
   CronjobControllerActions,

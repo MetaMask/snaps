@@ -4,6 +4,7 @@ import type {
   SubjectPermissions,
   ValidPermission,
 } from '@metamask/permission-controller';
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 import type { SnapPermissions, ValidatedSnapId } from '@metamask/snaps-utils';
 import {
@@ -32,7 +33,6 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 import type { SemVerRange, SemVerVersion } from '@metamask/utils';
 import { AssertionError } from '@metamask/utils';
-import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import fetchMock from 'jest-fetch-mock';
 import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';

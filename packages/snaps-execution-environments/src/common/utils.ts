@@ -1,7 +1,7 @@
 import type { StreamProvider } from '@metamask/providers';
 import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
-import { assert, assertStruct, JsonStruct } from '@metamask/utils';
 import { rpcErrors } from '@metamask/rpc-errors';
+import { assert, assertStruct, JsonStruct } from '@metamask/utils';
 
 import { log } from '../logging';
 
