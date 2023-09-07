@@ -1692,7 +1692,7 @@ export class SnapController extends BaseController<
         const [error, version] = resolveVersionRange(rawVersion);
 
         if (error) {
-          throw ethErrors.rpc.invalidParams(
+          throw rpcErrors.invalidParams(
             `The "version" field must be a valid SemVer version range if specified. Received: "${rawVersion}".`,
           );
         }
@@ -1949,7 +1949,7 @@ export class SnapController extends BaseController<
 
       const newVersion = manifest.version;
       if (!gtVersion(newVersion, snap.version)) {
-        throw ethErrors.rpc.invalidParams(
+        throw rpcErrors.invalidParams(
           `Snap "${snapId}@${snap.version}" is already installed. Couldn't update to a version inside requested "${newVersionRange}" range.`,
         );
       }

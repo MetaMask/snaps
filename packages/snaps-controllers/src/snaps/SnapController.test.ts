@@ -833,7 +833,7 @@ describe('SnapController', () => {
         id: expect.any(String),
         requestState: {
           loading: false,
-          error: ethErrors.provider.userRejectedRequest().message,
+          error: providerErrors.userRejectedRequest().message,
           type: SNAP_APPROVAL_INSTALL,
         },
       }),
@@ -2064,7 +2064,7 @@ describe('SnapController', () => {
           },
         }),
       ).rejects.toThrow(
-        ethErrors.rpc.invalidRequest({
+        rpcErrors.invalidRequest({
           message:
             'Invalid JSON-RPC request: At path: jsonrpc -- Expected the literal `"2.0"`, but received: "kaplar".',
         }),
@@ -2669,7 +2669,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
-            error: ethErrors.provider.userRejectedRequest().message,
+            error: providerErrors.userRejectedRequest().message,
             type: SNAP_APPROVAL_INSTALL,
           },
         }),
@@ -3813,7 +3813,7 @@ describe('SnapController', () => {
             detectSnapLocation(),
           ),
       ).rejects.toThrow(
-        ethErrors.rpc.invalidParams(
+        rpcErrors.invalidParams(
           `Snap "${MOCK_SNAP_ID}@${snap.version}" is already installed. Couldn't update to a version inside requested "*" range.`,
         ),
       );
