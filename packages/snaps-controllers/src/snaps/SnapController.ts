@@ -24,6 +24,7 @@ import type {
   ValidPermission,
 } from '@metamask/permission-controller';
 import { SubjectType } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 import type { BlockReason } from '@metamask/snaps-registry';
 import type {
@@ -74,7 +75,6 @@ import {
 } from '@metamask/utils';
 import type { StateMachine } from '@xstate/fsm';
 import { createMachine, interpret } from '@xstate/fsm';
-import { rpcErrors } from '@metamask/rpc-errors';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
 

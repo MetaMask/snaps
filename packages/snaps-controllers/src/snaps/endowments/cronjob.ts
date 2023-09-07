@@ -7,6 +7,7 @@ import type {
   CaveatSpecificationConstraint,
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import type { CronjobSpecification } from '@metamask/snaps-utils';
 import {
   SnapCaveatType,
@@ -14,7 +15,6 @@ import {
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import { assert, hasProperty, isPlainObject } from '@metamask/utils';
-import { rpcErrors } from '@metamask/rpc-errors';
 
 import { SnapEndowments } from './enum';
 

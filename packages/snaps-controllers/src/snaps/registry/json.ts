@@ -3,7 +3,7 @@ import { BaseControllerV2 as BaseController } from '@metamask/base-controller';
 import type { SnapsRegistryDatabase } from '@metamask/snaps-registry';
 import { verify } from '@metamask/snaps-registry';
 import type { SnapId } from '@metamask/snaps-utils';
-import type { Hex } from '@metamask/utils';
+import type { Hex, SemVerRange } from '@metamask/utils';
 import {
   assert,
   Duration,
@@ -226,7 +226,10 @@ export class JsonSnapsRegistry extends BaseController<
       if ('id' in blocked) {
         return (
           blocked.id === snapId &&
-          satisfiesVersionRange(snapInfo.version, blocked.versionRange)
+          satisfiesVersionRange(
+            snapInfo.version,
+            blocked.versionRange as SemVerRange,
+          )
         );
       }
 
