@@ -1,7 +1,7 @@
 import { ControllerMessenger } from '@metamask/base-controller';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
-import pump from 'pump';
+import { pipeline } from 'stream';
 import type { Duplex } from 'stream';
 
 import type { ErrorMessageEvent } from '../services';
@@ -56,7 +56,7 @@ export const createService = <
         return next();
       });
       const providerStream = createEngineStream({ engine });
-      pump(stream, providerStream, stream);
+      pipeline(stream, providerStream, stream);
     },
     ...options,
   });

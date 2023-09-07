@@ -29,9 +29,9 @@ import { getSafeJson } from '@metamask/utils';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
-import pump from 'pump';
 import type { SagaIterator } from 'redux-saga';
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
+import { pipeline } from 'stream';
 
 import { runSaga } from '../../store/middleware';
 import { getSnapId, getSrp, setSnapId } from '../configuration';
@@ -168,11 +168,9 @@ export function* initSaga({ payload }: PayloadAction<string>) {
     }),
     setupSnapProvider: (_snapId, rpcStream) => {
       const mux = setupMultiplex(rpcStream, 'snapStream');
-      const stream = mux.createStream(
-        'metamask-provider',
-      ) as unknown as pump.Stream;
+      const stream = mux.createStream('metamask-provider');
       const providerStream = createEngineStream({ engine });
-      pump(stream, providerStream, stream);
+      pipeline(stream, providerStream, stream);
     },
   });
 
