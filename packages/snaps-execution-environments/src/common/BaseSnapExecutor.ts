@@ -2,6 +2,7 @@
 /// <reference path="../../../../node_modules/ses/types.d.ts" />
 import { StreamProvider } from '@metamask/providers';
 import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
+import { errorCodes, rpcErrors, serializeError } from '@metamask/rpc-errors';
 import type { SnapsGlobalObject } from '@metamask/rpc-methods';
 import type {
   SnapExports,
@@ -28,7 +29,6 @@ import {
   hasProperty,
   getSafeJson,
 } from '@metamask/utils';
-import { errorCodes, rpcErrors, serializeError } from '@metamask/rpc-errors';
 import { createIdRemapMiddleware } from 'json-rpc-engine';
 import type { Duplex } from 'stream';
 import { validate } from 'superstruct';
