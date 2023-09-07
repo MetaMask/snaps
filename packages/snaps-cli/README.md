@@ -66,7 +66,7 @@ directory of your npm package. Here's an example manifest:
 ```json
 {
   "version": "0.7.0",
-  "proposedName": "@metamask/template-snap",
+  "proposedName": "Dialog Example",
   "description": "A MetaMask Snap template.",
   "repository": {
     "type": "git",
@@ -84,7 +84,11 @@ directory of your npm package. Here's an example manifest:
     }
   },
   "initialPermissions": {
-    "snap_confirm": {}
+    "snap_dialog": {},
+    "endowment:rpc": {
+      "dapps": true,
+      "snaps": false
+    }
   },
   "manifestVersion": "0.1"
 }
