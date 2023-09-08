@@ -26,6 +26,11 @@ type Message = Infer<typeof SnapMessageStruct>;
 
 export const methodName = 'snap_manageAccounts';
 
+type AccountConfirmationResult = {
+  confirmed: boolean;
+  accountName?: string;
+};
+
 export type ManageAccountsMethodHooks = {
   /**
    * Gets the snap keyring implementation.
