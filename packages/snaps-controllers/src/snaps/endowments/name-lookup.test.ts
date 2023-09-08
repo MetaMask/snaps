@@ -19,6 +19,7 @@ describe('endowment:name-lookup', () => {
       endowmentGetter: expect.any(Function),
       allowedCaveats: [SnapCaveatType.ChainIds],
       subjectTypes: [SubjectType.Snap],
+      validator: expect.any(Function),
     });
 
     expect(specification.endowmentGetter()).toBeUndefined();
@@ -54,7 +55,7 @@ describe('endowment:name-lookup', () => {
 });
 
 describe('getChainIdsCaveat', () => {
-  it('returns the value from a transaction insight permission', () => {
+  it('returns the value from a name-lookup permission', () => {
     const permission: PermissionConstraint = {
       date: 0,
       parentCapability: 'foo',
@@ -67,7 +68,7 @@ describe('getChainIdsCaveat', () => {
         },
       ],
     };
-    expect(getChainIdsCaveat(permission)).toBe(['eip155:1']);
+    expect(getChainIdsCaveat(permission)).toStrictEqual(['eip155:1']);
   });
 
   it('returns null if the input is undefined', () => {
