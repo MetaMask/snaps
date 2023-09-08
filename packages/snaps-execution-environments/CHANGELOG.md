@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.38.3-flask.1]
+### Uncategorized
+- Bump @metamask/post-message-stream from 6.2.0 to 7.0.0 ([#1724](https://github.com/MetaMask/snaps/pull/1724))
+- Bump WebdriverIO ([#1702](https://github.com/MetaMask/snaps/pull/1702))
+- Bump @metamask/post-message-stream from 6.1.2 to 6.2.0 ([#1707](https://github.com/MetaMask/snaps/pull/1707))
+- Add hardening for Request, Headers and Response endowments ([#1695](https://github.com/MetaMask/snaps/pull/1695))
+- Bump `metamask/utils` and `metamask/snaps-registry` ([#1694](https://github.com/MetaMask/snaps/pull/1694))
+
 ## [0.38.2-flask.1]
 ### Changed
 - Bump `ses` to `0.18.7` ([#1666](https://github.com/MetaMask/snaps/pull/1666))
@@ -39,7 +47,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@0.38.2-flask.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@0.38.3-flask.1...HEAD
+[0.38.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@0.38.2-flask.1...@metamask/snaps-execution-environments@0.38.3-flask.1
 [0.38.2-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@0.38.1-flask.1...@metamask/snaps-execution-environments@0.38.2-flask.1
 [0.38.1-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@0.38.0-flask.1...@metamask/snaps-execution-environments@0.38.1-flask.1
 [0.38.0-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@0.37.3-flask.1...@metamask/snaps-execution-environments@0.38.0-flask.1
