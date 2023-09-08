@@ -19,7 +19,6 @@ class SnapKeyringMock {
   handleKeyringSnapMessage = async (
     _origin: string,
     _params: any,
-    _saveSnapKeyring: () => void,
   ): Promise<any> => {
     return true;
   };
@@ -29,7 +28,6 @@ describe('specification', () => {
   it('builds specification', () => {
     const methodHooks = {
       getSnapKeyring: jest.fn(),
-      saveSnapKeyring: jest.fn(),
     };
 
     expect(
@@ -54,7 +52,6 @@ describe('builder', () => {
       specificationBuilder: expect.any(Function),
       methodHooks: {
         getSnapKeyring: true,
-        saveSnapKeyring: true,
       },
     });
   });
@@ -64,7 +61,6 @@ describe('builder', () => {
       manageAccountsBuilder.specificationBuilder({
         methodHooks: {
           getSnapKeyring: jest.fn(),
-          saveSnapKeyring: jest.fn(),
         },
       }),
     ).toMatchObject({
@@ -87,11 +83,9 @@ describe('manageAccountsImplementation', () => {
   it('should throw params are not set', async () => {
     const mockKeyring = new SnapKeyringMock();
     const getSnapKeyring = jest.fn().mockResolvedValue(mockKeyring);
-    const saveSnapKeyring = jest.fn().mockResolvedValue(undefined);
 
     const manageAccounts = manageAccountsImplementation({
       getSnapKeyring,
-      saveSnapKeyring,
     });
 
     await expect(
@@ -111,11 +105,9 @@ describe('manageAccountsImplementation', () => {
   it('should throw params accountId is not set', async () => {
     const mockKeyring = new SnapKeyringMock();
     const getSnapKeyring = jest.fn().mockResolvedValue(mockKeyring);
-    const saveSnapKeyring = jest.fn().mockResolvedValue(undefined);
 
     const manageAccounts = manageAccountsImplementation({
       getSnapKeyring,
-      saveSnapKeyring,
     });
 
     await expect(
@@ -135,7 +127,6 @@ describe('manageAccountsImplementation', () => {
   it('should route request to snap keyring', async () => {
     const mockKeyring = new SnapKeyringMock();
     const getSnapKeyring = jest.fn().mockResolvedValue(mockKeyring);
-    const saveSnapKeyring = jest.fn().mockResolvedValue(undefined);
 
     const createAccountSpy = jest
       .spyOn(mockKeyring, 'handleKeyringSnapMessage')
@@ -143,7 +134,6 @@ describe('manageAccountsImplementation', () => {
 
     const manageAccounts = manageAccountsImplementation({
       getSnapKeyring,
-      saveSnapKeyring,
     });
 
     const requestResponse = await manageAccounts({
