@@ -988,6 +988,14 @@
         "@lavamoat/lavapack>readable-stream": true
       }
     },
+    "@wdio/cli>inquirer>through": {
+      "builtin": {
+        "stream": true
+      },
+      "globals": {
+        "process.nextTick": true
+      }
+    },
     "@wdio/mocha-framework>mocha>supports-color": {
       "builtin": {
         "os.release": true,
@@ -1148,21 +1156,13 @@
         "Buffer": true
       },
       "packages": {
-        "browserify>JSONStream>jsonparse": true,
-        "browserify>JSONStream>through": true
+        "@wdio/cli>inquirer>through": true,
+        "browserify>JSONStream>jsonparse": true
       }
     },
     "browserify>JSONStream>jsonparse": {
       "globals": {
         "Buffer": true
-      }
-    },
-    "browserify>JSONStream>through": {
-      "builtin": {
-        "stream": true
-      },
-      "globals": {
-        "process.nextTick": true
       }
     },
     "browserify>browser-pack": {
@@ -1244,13 +1244,18 @@
         "setImmediate": true
       },
       "packages": {
-        "browserify>duplexer2>readable-stream>isarray": true,
+        "browserify>duplexer2>readable-stream>process-nextick-args": true,
         "browserify>duplexer2>readable-stream>safe-buffer": true,
         "browserify>duplexer2>readable-stream>string_decoder": true,
         "browserify>inherits": true,
         "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>process-nextick-args": true,
+        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>util-deprecate": true
+      }
+    },
+    "browserify>duplexer2>readable-stream>process-nextick-args": {
+      "globals": {
+        "process": true
       }
     },
     "browserify>duplexer2>readable-stream>safe-buffer": {
@@ -1423,12 +1428,17 @@
       },
       "packages": {
         "browserify>inherits": true,
-        "browserify>labeled-stream-splicer>stream-splicer>readable-stream>isarray": true,
+        "browserify>labeled-stream-splicer>stream-splicer>readable-stream>process-nextick-args": true,
         "browserify>labeled-stream-splicer>stream-splicer>readable-stream>safe-buffer": true,
         "browserify>labeled-stream-splicer>stream-splicer>readable-stream>string_decoder": true,
         "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>process-nextick-args": true,
+        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>util-deprecate": true
+      }
+    },
+    "browserify>labeled-stream-splicer>stream-splicer>readable-stream>process-nextick-args": {
+      "globals": {
+        "process": true
       }
     },
     "browserify>labeled-stream-splicer>stream-splicer>readable-stream>safe-buffer": {
@@ -1508,12 +1518,17 @@
       },
       "packages": {
         "browserify>inherits": true,
-        "browserify>module-deps>readable-stream>isarray": true,
+        "browserify>module-deps>readable-stream>process-nextick-args": true,
         "browserify>module-deps>readable-stream>safe-buffer": true,
         "browserify>module-deps>readable-stream>string_decoder": true,
         "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>process-nextick-args": true,
+        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>util-deprecate": true
+      }
+    },
+    "browserify>module-deps>readable-stream>process-nextick-args": {
+      "globals": {
+        "process": true
       }
     },
     "browserify>module-deps>readable-stream>safe-buffer": {
@@ -1548,12 +1563,17 @@
       },
       "packages": {
         "browserify>inherits": true,
-        "browserify>module-deps>stream-combiner2>readable-stream>isarray": true,
+        "browserify>module-deps>stream-combiner2>readable-stream>process-nextick-args": true,
         "browserify>module-deps>stream-combiner2>readable-stream>safe-buffer": true,
         "browserify>module-deps>stream-combiner2>readable-stream>string_decoder": true,
         "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>process-nextick-args": true,
+        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>util-deprecate": true
+      }
+    },
+    "browserify>module-deps>stream-combiner2>readable-stream>process-nextick-args": {
+      "globals": {
+        "process": true
       }
     },
     "browserify>module-deps>stream-combiner2>readable-stream>safe-buffer": {
@@ -1608,12 +1628,17 @@
       },
       "packages": {
         "browserify>inherits": true,
-        "browserify>read-only-stream>readable-stream>isarray": true,
+        "browserify>read-only-stream>readable-stream>process-nextick-args": true,
         "browserify>read-only-stream>readable-stream>safe-buffer": true,
         "browserify>read-only-stream>readable-stream>string_decoder": true,
         "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>process-nextick-args": true,
+        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>util-deprecate": true
+      }
+    },
+    "browserify>read-only-stream>readable-stream>process-nextick-args": {
+      "globals": {
+        "process": true
       }
     },
     "browserify>read-only-stream>readable-stream>safe-buffer": {
@@ -1742,11 +1767,16 @@
       "packages": {
         "browserify>inherits": true,
         "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>process-nextick-args": true,
+        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>util-deprecate": true,
-        "browserify>through2>readable-stream>isarray": true,
+        "browserify>through2>readable-stream>process-nextick-args": true,
         "browserify>through2>readable-stream>safe-buffer": true,
         "browserify>through2>readable-stream>string_decoder": true
+      }
+    },
+    "browserify>through2>readable-stream>process-nextick-args": {
+      "globals": {
+        "process": true
       }
     },
     "browserify>through2>readable-stream>safe-buffer": {

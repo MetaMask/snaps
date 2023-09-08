@@ -7,11 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.38.3-flask.1]
-### Uncategorized
-- Bump @metamask/post-message-stream from 6.2.0 to 7.0.0 ([#1724](https://github.com/MetaMask/snaps/pull/1724))
-- Bump WebdriverIO ([#1702](https://github.com/MetaMask/snaps/pull/1702))
-- Bump @metamask/post-message-stream from 6.1.2 to 6.2.0 ([#1707](https://github.com/MetaMask/snaps/pull/1707))
-- Bump `metamask/utils` and `metamask/snaps-registry` ([#1694](https://github.com/MetaMask/snaps/pull/1694))
+### Changed
+- Bump `@metamask/post-message-stream` from 6.1.2 to 7.0.0 ([#1707](https://github.com/MetaMask/snaps/pull/1707), [#1724](https://github.com/MetaMask/snaps/pull/1724))
+- Bump `@metamask/utils` and `@metamask/snaps-registry` ([#1694](https://github.com/MetaMask/snaps/pull/1694))
 
 ## [0.38.2-flask.1]
 ### Fixed

@@ -7,10 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.38.2-flask.1]
-### Uncategorized
+### Changed
 - Remove business-logic callbacks from `manageAccounts` ([#1725](https://github.com/MetaMask/snaps/pull/1725))
-- Bump WebdriverIO ([#1702](https://github.com/MetaMask/snaps/pull/1702))
-- Bump `metamask/utils` and `metamask/snaps-registry` ([#1694](https://github.com/MetaMask/snaps/pull/1694))
+- Bump `@metamask/utils` and `@metamask/snaps-registry` ([#1694](https://github.com/MetaMask/snaps/pull/1694))
 
 ## [0.38.1-flask.1]
 ### Fixed

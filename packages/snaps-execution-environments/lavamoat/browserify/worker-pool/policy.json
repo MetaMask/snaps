@@ -1,16 +1,5 @@
 {
   "resources": {
-    "@lavamoat/lavapack>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>events": true,
-        "browserify>inherits": true,
-        "browserify>process": true,
-        "browserify>readable-stream>util-deprecate": true,
-        "browserify>string_decoder": true
-      }
-    },
     "@metamask/post-message-stream": {
       "globals": {
         "MessageEvent.prototype": true,
@@ -23,8 +12,8 @@
         "removeEventListener": true
       },
       "packages": {
-        "@lavamoat/lavapack>readable-stream": true,
-        "@metamask/post-message-stream>@metamask/utils": true
+        "@metamask/post-message-stream>@metamask/utils": true,
+        "@metamask/post-message-stream>readable-stream": true
       }
     },
     "@metamask/post-message-stream>@metamask/utils": {
@@ -37,6 +26,36 @@
         "browserify>buffer": true,
         "eslint>debug": true,
         "superstruct": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream": {
+      "packages": {
+        "@metamask/post-message-stream>readable-stream>process-nextick-args": true,
+        "@metamask/post-message-stream>readable-stream>safe-buffer": true,
+        "@metamask/post-message-stream>readable-stream>string_decoder": true,
+        "browserify>browser-resolve": true,
+        "browserify>events": true,
+        "browserify>inherits": true,
+        "browserify>process": true,
+        "browserify>readable-stream>core-util-is": true,
+        "browserify>readable-stream>isarray": true,
+        "browserify>readable-stream>util-deprecate": true,
+        "browserify>timers-browserify": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream>process-nextick-args": {
+      "packages": {
+        "browserify>process": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream>safe-buffer": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream>string_decoder": {
+      "packages": {
+        "@metamask/post-message-stream>readable-stream>safe-buffer": true
       }
     },
     "@metamask/utils": {
@@ -92,6 +111,11 @@
         "setTimeout": true
       }
     },
+    "browserify>readable-stream>core-util-is": {
+      "packages": {
+        "browserify>insert-module-globals>is-buffer": true
+      }
+    },
     "browserify>readable-stream>util-deprecate": {
       "globals": {
         "console.trace": true,
@@ -99,9 +123,15 @@
         "localStorage": true
       }
     },
-    "browserify>string_decoder": {
+    "browserify>timers-browserify": {
+      "globals": {
+        "clearInterval": true,
+        "clearTimeout": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
       "packages": {
-        "express>safe-buffer": true
+        "browserify>process": true
       }
     },
     "eslint>debug": {
@@ -115,11 +145,6 @@
       "packages": {
         "browserify>process": true,
         "eslint>debug>ms": true
-      }
-    },
-    "express>safe-buffer": {
-      "packages": {
-        "browserify>buffer": true
       }
     },
     "external:../snaps-utils/src/icon.ts": {
