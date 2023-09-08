@@ -44,7 +44,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
     validator: ({ caveats }) => {
       if (
-        caveats === null ||
+        Boolean(caveats) ||
         (caveats !== null && caveats?.length > 1) ||
         (caveats?.length === 1 && caveats[0].type !== SnapCaveatType.ChainIds)
       ) {
