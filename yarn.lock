@@ -5202,7 +5202,7 @@ __metadata:
     istanbul-reports: ^3.1.5
     jest: ^29.0.2
     jest-fetch-mock: ^3.0.3
-    json-rpc-middleware-stream: ^4.2.2
+    json-rpc-middleware-stream: ^5.0.0
     mkdirp: ^1.0.4
     nanoid: ^3.1.31
     prettier: ^2.7.1
@@ -16023,13 +16023,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-rpc-middleware-stream@npm:^4.2.0, json-rpc-middleware-stream@npm:^4.2.1, json-rpc-middleware-stream@npm:^4.2.2":
+"json-rpc-middleware-stream@npm:^4.2.0, json-rpc-middleware-stream@npm:^4.2.1":
   version: 4.2.2
   resolution: "json-rpc-middleware-stream@npm:4.2.2"
   dependencies:
     "@metamask/safe-event-emitter": ^3.0.0
     readable-stream: ^2.3.3
   checksum: 01ff3a23b501fde5c2abb8c3b4d100c4fd430b41cf5e7750235f860a02d5823f8a43b0e81150c1d3bb196737f2273af1c7a50ff179e95e3d59fb7fe172249de3
+  languageName: node
+  linkType: hard
+
+"json-rpc-middleware-stream@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "json-rpc-middleware-stream@npm:5.0.0"
+  dependencies:
+    "@metamask/json-rpc-engine": ^7.1.1
+    "@metamask/safe-event-emitter": ^3.0.0
+    "@metamask/utils": ^8.1.0
+    readable-stream: ^3.6.2
+  checksum: 9780a05550f0bf5c6fd55a7f90472bf919e7f1fc45969bd7a8ffdd7ec7a6b5bfdc08f606487184a4e75fea9e1fbf335add35f8f2eaf8ab975fb461985e57380e
   languageName: node
   linkType: hard
 
