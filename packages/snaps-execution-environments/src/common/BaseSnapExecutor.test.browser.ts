@@ -912,9 +912,8 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('supports onNameLookup export', async () => {
+  it('supports onNameLookup export for domain lookup', async () => {
     const CODE = `module.exports.onNameLookup = ({ chainId, domain }) => domain`;
-    const ALTCODE = `module.exports.onNameLookup = ({ chainId, address }) => address`;
 
     const executor = new TestSnapExecutor();
     await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
@@ -946,8 +945,13 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       result: 'foo.lens',
     });
+  });
 
-    await executor.executeSnap(2, MOCK_SNAP_ID, ALTCODE, []);
+  it('supports onNameLookup export for address lookup', async () => {
+    const CODE = `module.exports.onNameLookup = ({ chainId, address }) => address`;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
