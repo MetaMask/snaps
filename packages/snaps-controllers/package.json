@@ -59,7 +59,7 @@
     "concat-stream": "^2.0.0",
     "gunzip-maybe": "^1.4.2",
     "immer": "^9.0.6",
-    "json-rpc-middleware-stream": "^4.2.2",
+    "json-rpc-middleware-stream": "^5.0.0",
     "nanoid": "^3.1.31",
     "readable-web-to-node-stream": "^3.0.2",
     "tar-stream": "^2.2.0"
