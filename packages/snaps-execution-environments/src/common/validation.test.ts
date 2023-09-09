@@ -107,7 +107,7 @@ describe('assertIsOnNameLookupRequestArguments', () => {
   ])(
     'throws if the value is not a valid transaction params object',
     (value) => {
-      expect(() => assertIsOnNameLookupRequestArguments(value as any)).toThrow(
+      expect(() => assertIsOnNameLookupRequestArguments(value)).toThrow(
         'Invalid request params:',
       );
     },
