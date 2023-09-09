@@ -955,7 +955,7 @@ describe('BaseSnapExecutor', () => {
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
-      id: 2,
+      id: 1,
       result: 'OK',
     });
 
