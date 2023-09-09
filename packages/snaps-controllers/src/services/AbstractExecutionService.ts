@@ -2,14 +2,9 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 import type { BasePostMessageStream } from '@metamask/post-message-stream';
 import type { SnapRpcHook, SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { SNAP_STREAM_NAMES, logError } from '@metamask/snaps-utils';
-import type { Json, JsonRpcNotification } from '@metamask/utils';
+import type { Json, JsonRpcNotification, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import { Duration, isJsonRpcNotification, isObject } from '@metamask/utils';
-import type {
-  // TODO: Replace with @metamask/utils version after bumping json-rpc-engine
-  JsonRpcRequest,
-  PendingJsonRpcResponse,
-} from 'json-rpc-engine';
-import { JsonRpcEngine } from 'json-rpc-engine';
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import { pipeline } from 'stream';
@@ -377,6 +372,7 @@ export abstract class AbstractExecutionService<WorkerType>
 
     log('Parent: Sending Command', message);
     const response: PendingJsonRpcResponse<unknown> =
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await job.rpcEngine.handle(message);
     if (response.error) {
       throw new Error(response.error.message);
