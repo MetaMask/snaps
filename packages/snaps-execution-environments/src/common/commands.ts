@@ -6,6 +6,7 @@ import type {
   ExecuteSnap,
   JsonRpcRequestWithoutId,
   Ping,
+  PossibleLookupRequestArgs,
   SnapRpc,
   Terminate,
 } from './validation';
@@ -52,7 +53,8 @@ export function getHandlerArguments(
 
       // TS complains that domain/address are not part of the type
       // casting here as we've already validated the request args in the above step.
-      const { chainId, domain, address } = request.params as any;
+      const { chainId, domain, address } =
+        request.params as unknown as PossibleLookupRequestArgs;
 
       return domain
         ? {

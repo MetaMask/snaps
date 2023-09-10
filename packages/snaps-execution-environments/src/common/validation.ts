@@ -154,6 +154,11 @@ export type OnNameLookupRequestArguments = Infer<
   typeof OnNameLookupRequestArgumentsStruct
 >;
 
+export type PossibleLookupRequestArgs = typeof baseNameLookupArgs & {
+  address?: string;
+  domain?: string;
+};
+
 /**
  * Asserts that the given value is a valid {@link OnNameLookupRequestArguments}
  * object.
