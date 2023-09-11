@@ -1,7 +1,8 @@
 import { ControllerMessenger } from '@metamask/base-controller';
+import { logError } from '@metamask/snaps-utils';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
-import pump from 'pump';
+import { pipeline } from 'stream';
 import type { Duplex } from 'stream';
 
 import type { ErrorMessageEvent } from '../services';
@@ -56,7 +57,11 @@ export const createService = <
         return next();
       });
       const providerStream = createEngineStream({ engine });
-      pump(stream, providerStream, stream);
+      pipeline(stream, providerStream, stream, (error) => {
+        if (error) {
+          logError(`Provider stream failure.`, error);
+        }
+      });
     },
     ...options,
   });

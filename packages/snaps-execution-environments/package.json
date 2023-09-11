@@ -54,7 +54,6 @@
     "eth-rpc-errors": "^4.0.3",
     "json-rpc-engine": "^6.1.0",
     "nanoid": "^3.1.31",
-    "pump": "^3.0.0",
     "superstruct": "^1.0.3"
   },
   "devDependencies": {
