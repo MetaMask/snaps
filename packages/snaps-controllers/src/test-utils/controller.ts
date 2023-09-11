@@ -301,6 +301,7 @@ export const getSnapControllerMessenger = (
       'ExecutionService:unhandledError',
       'ExecutionService:outboundRequest',
       'ExecutionService:outboundResponse',
+      'ExecutionService:executionTimerRequest',
       'SnapController:snapAdded',
       'SnapController:snapBlocked',
       'SnapController:snapInstalled',

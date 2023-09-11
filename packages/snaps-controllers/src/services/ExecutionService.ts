@@ -47,10 +47,16 @@ export type OutboundResponse = {
   payload: [SnapId];
 };
 
+export type ExecutionTimerRequest = {
+  type: 'ExecutionService:executionTimerRequest';
+  payload: [SnapId];
+};
+
 export type ExecutionServiceEvents =
   | ErrorMessageEvent
   | OutboundRequest
-  | OutboundResponse;
+  | OutboundResponse
+  | ExecutionTimerRequest;
 
 /**
  * Handles RPC request.

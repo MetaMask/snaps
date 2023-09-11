@@ -243,6 +243,11 @@ export abstract class AbstractExecutionService<WorkerType>
         this.#messenger.publish('ExecutionService:outboundRequest', snapId);
       } else if (message.method === 'OutboundResponse') {
         this.#messenger.publish('ExecutionService:outboundResponse', snapId);
+      } else if (message.method === 'ExecutionTimerRequest') {
+        this.#messenger.publish(
+          'ExecutionService:executionTimerRequest',
+          JSON.stringify({ snapId, message }),
+        );
       } else if (message.method === 'UnhandledError') {
         if (isObject(message.params) && message.params.error) {
           this.#messenger.publish(

@@ -10,6 +10,7 @@ import buildCommonEndowments from './commonEndowmentFactory';
 import consoleEndowment from './console';
 import CryptoEndowment from './crypto';
 import date from './date';
+import extendRuntime from './extendRuntime';
 import interval from './interval';
 import math from './math';
 import network from './network';
@@ -60,6 +61,9 @@ describe('endowments', () => {
     const { console: consoleAttenuated } = consoleEndowment.factory({
       snapId: MOCK_SNAP_ID,
     });
+    const mockNotify = () => true;
+    const extendRuntimeHardened =
+      extendRuntime.factory(mockNotify).extendRuntime;
 
     const TEST_ENDOWMENTS = {
       // Constructor functions.
@@ -188,6 +192,10 @@ describe('endowments', () => {
       ResponseHardened: {
         endowments: { ResponseHardened },
         factory: () => new ResponseHardened(),
+      },
+      extendRuntimeHardened: {
+        endowments: { extendRuntimeHardened },
+        factory: () => extendRuntimeHardened,
       },
       setTimeoutAttenuated: {
         endowments: { setTimeoutAttenuated },
