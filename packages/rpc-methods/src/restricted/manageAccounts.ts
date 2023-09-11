@@ -33,11 +33,6 @@ export type ManageAccountsMethodHooks = {
       message: Message,
     ) => Promise<Json>;
   }>;
-
-  /**
-   * Saves the snap keyring, should be called after mutable operations.
-   */
-  saveSnapKeyring: () => Promise<void>;
 };
 
 type ManageAccountsSpecificationBuilderOptions = {
@@ -83,14 +78,12 @@ export const specificationBuilder: PermissionSpecificationBuilder<
  *
  * @param hooks - The RPC method hooks.
  * @param hooks.getSnapKeyring - A function to get the snap keyring.
- * @param hooks.saveSnapKeyring - A function to save the snap keyring.
  * @returns The method implementation which either returns `null` for a
  * successful state update/deletion or returns the decrypted state.
  * @throws If the params are invalid.
  */
 export function manageAccountsImplementation({
   getSnapKeyring,
-  saveSnapKeyring,
 }: ManageAccountsMethodHooks) {
   return async function manageAccounts(
     options: RestrictedMethodOptions<Message>,
@@ -102,14 +95,7 @@ export function manageAccountsImplementation({
 
     assert(params, SnapMessageStruct);
     const keyring = await getSnapKeyring(origin);
-    const result = await keyring.handleKeyringSnapMessage(origin, params);
-
-    const { method } = params;
-    if (['updateAccount', 'createAccount', 'deleteAccount'].includes(method)) {
-      await saveSnapKeyring();
-    }
-
-    return result;
+    return await keyring.handleKeyringSnapMessage(origin, params);
   };
 }
 
@@ -118,6 +104,5 @@ export const manageAccountsBuilder = Object.freeze({
   specificationBuilder,
   methodHooks: {
     getSnapKeyring: true,
-    saveSnapKeyring: true,
   },
 } as const);

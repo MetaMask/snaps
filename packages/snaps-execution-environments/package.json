@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-execution-environments",
-  "version": "0.38.2-flask.1",
+  "version": "0.38.3-flask.1",
   "description": "Snap sandbox environments for executing SES javascript",
   "repository": {
     "type": "git",
@@ -46,11 +46,11 @@
   },
   "dependencies": {
     "@metamask/object-multiplex": "^1.2.0",
-    "@metamask/post-message-stream": "^6.2.0",
+    "@metamask/post-message-stream": "^7.0.0",
     "@metamask/providers": "^11.1.1",
     "@metamask/rpc-methods": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^7.1.0",
+    "@metamask/utils": "^8.1.0",
     "eth-rpc-errors": "^4.0.3",
     "json-rpc-engine": "^6.1.0",
     "nanoid": "^3.1.31",
