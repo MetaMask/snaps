@@ -26,6 +26,16 @@ type Message = Infer<typeof SnapMessageStruct>;
 
 export const methodName = 'snap_manageAccounts';
 
+// from https://github.com/MetaMask/core/blob/main/packages/approval-controller/src/ApprovalController.ts#L157
+type AddApprovalOptions = {
+  id?: string;
+  origin: string;
+  type: string;
+  requestData?: Record<string, Json>;
+  requestState?: Record<string, Json>;
+  expectsResult?: boolean;
+};
+
 type AccountConfirmationResult = {
   confirmed: boolean;
   accountName?: string;
@@ -54,6 +64,14 @@ export type ManageAccountsMethodHooks = {
     content: any,
     placeholder: any,
   ) => Promise<AccountConfirmationResult>;
+  startApprovalFlow: () => string;
+  requestUserApproval: (
+    opts: AddApprovalOptions,
+  ) => Promise<AccountConfirmationResult>;
+  endApprovalFlow: (id: string) => Promise<void>;
+  setApprovalFlowLoadingText: () => Promise<void>;
+  showApprovalSuccess: () => Promise<void>;
+  showApprovalError: () => Promise<void>;
 };
 
 type ManageAccountsSpecificationBuilderOptions = {
@@ -100,7 +118,11 @@ export const specificationBuilder: PermissionSpecificationBuilder<
  * @param hooks - The RPC method hooks.
  * @param hooks.getSnapKeyring - A function to get the snap keyring.
  * @param hooks.saveSnapKeyring - A function to save the snap keyring.
- * @param hooks.showSnapAccountConfirmation - A function to show a dialog.
+ * @param hooks.startApprovalFlow - A function to start the approval flow.
+ * @param hooks.requestUserApproval - A function to request user approval to add an account.
+ * @param hooks.endApprovalFlow - A function to end the approval flow.
+ * @param hooks.showApprovalError - A function to show the approval error.
+ * @param hooks.showApprovalSuccess - A function to show the approval success.
  * @returns The method implementation which either returns `null` for a
  * successful state update/deletion or returns the decrypted state.
  * @throws If the params are invalid.
@@ -108,7 +130,11 @@ export const specificationBuilder: PermissionSpecificationBuilder<
 export function manageAccountsImplementation({
   getSnapKeyring,
   saveSnapKeyring,
-  showSnapAccountConfirmation,
+  startApprovalFlow,
+  requestUserApproval,
+  endApprovalFlow,
+  showApprovalSuccess,
+  showApprovalError,
 }: ManageAccountsMethodHooks) {
   return async function manageAccounts(
     options: RestrictedMethodOptions<Message>,
@@ -120,35 +146,31 @@ export function manageAccountsImplementation({
 
     assert(params, SnapMessageStruct);
     const keyring = await getSnapKeyring(origin);
-    const confirmationResult = await showSnapAccountConfirmation(
+    const addAccountApprovalId = startApprovalFlow();
+
+    const confirmationResult = await requestUserApproval({
       origin,
-      'snap_manageAccounts:confirmation',
-      {
-        type: 'panel',
-        children: [
-          {
-            type: 'heading',
-            value: 'We are adding an account to your wallet.',
-          },
-          {
-            type: 'text',
-            value: ':)',
-          },
-        ],
-      },
-      undefined,
-    );
+      type: 'snap_manageAccounts:confirmation',
+    });
     // eslint-disable-next-line no-console
     console.log(
       'SNAPS/ manageAccountsImplementation/ confirmationResult',
       confirmationResult,
     );
     if (confirmationResult.confirmed) {
-      return await keyring.handleKeyringSnapMessage(
-        origin,
-        params,
-        saveSnapKeyring,
-      );
+      try {
+        const account = await keyring.handleKeyringSnapMessage(
+          origin,
+          params,
+          saveSnapKeyring,
+        );
+        await showApprovalSuccess();
+        await endApprovalFlow(addAccountApprovalId);
+        return account;
+      } catch (error) {
+        await showApprovalError();
+        await endApprovalFlow(addAccountApprovalId);
+      }
     }
     throw new Error('User denied account addition');
   };
@@ -161,5 +183,11 @@ export const manageAccountsBuilder = Object.freeze({
     getSnapKeyring: true,
     saveSnapKeyring: true,
     showSnapAccountConfirmation: true,
+    startApprovalFlow: true,
+    requestUserApproval: true,
+    endApprovalFlow: true,
+    setApprovalFlowLoadingText: true,
+    showApprovalSuccess: true,
+    showApprovalError: true,
   },
 } as const);
