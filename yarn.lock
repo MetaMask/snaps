@@ -4835,6 +4835,7 @@ __metadata:
   resolution: "@metamask/rpc-methods@workspace:packages/rpc-methods"
   dependencies:
     "@lavamoat/allow-scripts": ^2.3.1
+    "@metamask/approval-controller": ^3.5.1
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/browser-passworder": ^4.1.0
     "@metamask/eslint-config": ^12.1.0
