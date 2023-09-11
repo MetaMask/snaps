@@ -39,8 +39,8 @@ import { ethErrors } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
 import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
-import { pipeline } from 'stream';
 import { nanoid } from 'nanoid';
+import { pipeline } from 'stream';
 import type { Duplex } from 'stream';
 
 import type { NodeThreadExecutionService } from '../services';
