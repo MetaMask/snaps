@@ -1,4 +1,14 @@
 import type {
+  AddApprovalOptions,
+  SuccessOptions,
+  EndFlowOptions,
+  ApprovalFlowStartResult,
+  StartFlowOptions,
+  SuccessResult,
+  ErrorResult,
+  ErrorOptions,
+} from '@metamask/approval-controller';
+import type {
   RestrictedMethodOptions,
   ValidPermissionSpecification,
   PermissionSpecificationBuilder,
@@ -25,16 +35,6 @@ const SnapMessageStruct = object({
 type Message = Infer<typeof SnapMessageStruct>;
 
 export const methodName = 'snap_manageAccounts';
-
-// from https://github.com/MetaMask/core/blob/main/packages/approval-controller/src/ApprovalController.ts#L157
-type AddApprovalOptions = {
-  id?: string;
-  origin: string;
-  type: string;
-  requestData?: Record<string, Json>;
-  requestState?: Record<string, Json>;
-  expectsResult?: boolean;
-};
 
 type AccountConfirmationResult = {
   confirmed: boolean;
@@ -64,14 +64,14 @@ export type ManageAccountsMethodHooks = {
     content: any,
     placeholder: any,
   ) => Promise<AccountConfirmationResult>;
-  startApprovalFlow: () => string;
+  startApprovalFlow: (opts?: StartFlowOptions) => ApprovalFlowStartResult;
   requestUserApproval: (
     opts: AddApprovalOptions,
   ) => Promise<AccountConfirmationResult>;
-  endApprovalFlow: (id: string) => Promise<void>;
-  setApprovalFlowLoadingText: () => Promise<void>;
-  showApprovalSuccess: () => Promise<void>;
-  showApprovalError: () => Promise<void>;
+  endApprovalFlow: ({ id }: EndFlowOptions) => Promise<void>;
+  // setApprovalFlowLoadingText: () => Promise<void>;
+  showApprovalSuccess: (opts?: SuccessOptions) => Promise<SuccessResult>;
+  showApprovalError: (opts?: ErrorOptions) => Promise<ErrorResult>;
 };
 
 type ManageAccountsSpecificationBuilderOptions = {
@@ -146,7 +146,7 @@ export function manageAccountsImplementation({
 
     assert(params, SnapMessageStruct);
     const keyring = await getSnapKeyring(origin);
-    const addAccountApprovalId = startApprovalFlow();
+    const { id: addAccountApprovalId } = startApprovalFlow();
 
     const confirmationResult = await requestUserApproval({
       origin,
@@ -164,12 +164,15 @@ export function manageAccountsImplementation({
           params,
           saveSnapKeyring,
         );
-        await showApprovalSuccess();
-        await endApprovalFlow(addAccountApprovalId);
+        await showApprovalSuccess({
+          flowToEnd: addAccountApprovalId,
+          message: 'Account added',
+        });
+        await endApprovalFlow({ id: addAccountApprovalId });
         return account;
       } catch (error) {
-        await showApprovalError();
-        await endApprovalFlow(addAccountApprovalId);
+        await showApprovalError({ error: error.message });
+        await endApprovalFlow({ id: addAccountApprovalId });
       }
     }
     throw new Error('User denied account addition');
