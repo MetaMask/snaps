@@ -147,7 +147,7 @@ describe('getNameLookupCaveatMapper', () => {
 
 describe('nameLookupCaveatSpecifications', () => {
   describe('validator', () => {
-    it('throws if the caveat values are invalid', () => {
+    it('throws if the caveat is missing a value key or is not an object', () => {
       expect(() =>
         nameLookupCaveatSpecifications[SnapCaveatType.ChainIds].validator?.(
           // @ts-expect-error Missing value type.
@@ -156,13 +156,32 @@ describe('nameLookupCaveatSpecifications', () => {
           },
         ),
       ).toThrow('Expected a plain object.');
+    });
 
+    it.each([
+      {
+        type: SnapCaveatType.ChainIds,
+        value: ['eip155'],
+      },
+      {
+        type: SnapCaveatType.ChainIds,
+        value: undefined,
+      },
+    ])('throws if the caveat values are invalid types', (val) => {
+      expect(() =>
+        nameLookupCaveatSpecifications[SnapCaveatType.ChainIds].validator?.(
+          val,
+        ),
+      ).toThrow('Expected caveat value to have type "string array"');
+    });
+
+    it('will not throw with a valid caveat value', () => {
       expect(() =>
         nameLookupCaveatSpecifications[SnapCaveatType.ChainIds].validator?.({
           type: SnapCaveatType.ChainIds,
-          value: undefined,
+          value: ['eip155:1'],
         }),
-      ).toThrow('Expected caveat value to have type "string array"');
+      ).not.toThrow();
     });
   });
 });

@@ -8,7 +8,7 @@ import type {
   PermissionConstraint,
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
-import { SnapCaveatType } from '@metamask/snaps-utils';
+import { SnapCaveatType, isChainId } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import { assert, hasProperty, isPlainObject } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
@@ -78,7 +78,7 @@ function validateCaveat(caveat: Caveat<string, any>): void {
   const { value } = caveat;
 
   assert(
-    Array.isArray(value) && value.every((val) => typeof val === 'string'),
+    Array.isArray(value) && value.every((val) => isChainId(val)),
     'Expected caveat value to have type "string array"',
   );
 }
