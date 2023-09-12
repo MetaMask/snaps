@@ -6,10 +6,14 @@ import type {
   ExecuteSnap,
   JsonRpcRequestWithoutId,
   Ping,
+  PossibleLookupRequestArgs,
   SnapRpc,
   Terminate,
 } from './validation';
-import { assertIsOnTransactionRequestArguments } from './validation';
+import {
+  assertIsOnTransactionRequestArguments,
+  assertIsOnNameLookupRequestArguments,
+} from './validation';
 
 export type CommandMethodsMapping = {
   ping: Ping;
@@ -44,7 +48,24 @@ export function getHandlerArguments(
         transactionOrigin,
       };
     }
+    case HandlerType.OnNameLookup: {
+      assertIsOnNameLookupRequestArguments(request.params);
 
+      // TS complains that domain/address are not part of the type
+      // casting here as we've already validated the request args in the above step.
+      const { chainId, domain, address } =
+        request.params as unknown as PossibleLookupRequestArgs;
+
+      return domain
+        ? {
+            chainId,
+            domain,
+          }
+        : {
+            chainId,
+            address,
+          };
+    }
     case HandlerType.OnRpcRequest:
       return { origin, request };
 

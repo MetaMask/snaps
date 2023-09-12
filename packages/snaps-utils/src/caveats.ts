@@ -28,4 +28,9 @@ export enum SnapCaveatType {
    * Caveat specifying the snap IDs that can be interacted with.
    */
   SnapIds = 'snapIds',
+
+  /**
+   * Caveat specifying the CAIP-2 chain IDs that a snap can service, currently limited to `endowment:name-lookup`.
+   */
+  ChainIds = 'chainIds',
 }

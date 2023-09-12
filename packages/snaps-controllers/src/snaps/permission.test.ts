@@ -46,6 +46,18 @@ describe('buildSnapEndowmentSpecifications', () => {
           ],
           "targetName": "endowment:long-running",
         },
+        "endowment:name-lookup": {
+          "allowedCaveats": [
+            "chainIds",
+          ],
+          "endowmentGetter": [Function],
+          "permissionType": "Endowment",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "endowment:name-lookup",
+          "validator": [Function],
+        },
         "endowment:network-access": {
           "allowedCaveats": null,
           "endowmentGetter": [Function],

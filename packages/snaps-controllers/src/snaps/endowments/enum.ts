@@ -6,5 +6,6 @@ export enum SnapEndowments {
   EthereumProvider = 'endowment:ethereum-provider',
   Rpc = 'endowment:rpc',
   WebAssemblyAccess = 'endowment:webassembly',
+  NameLookup = 'endowment:name-lookup',
   LifecycleHooks = 'endowment:lifecycle-hooks',
 }

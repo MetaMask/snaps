@@ -2,6 +2,7 @@ import type { Component } from '@metamask/snaps-ui';
 import type { Json, JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 
 import type { EnumToUnion } from './enum';
+import type { AccountAddress, Caip2ChainId } from './namespace';
 
 export enum HandlerType {
   OnRpcRequest = 'onRpcRequest',
@@ -9,6 +10,7 @@ export enum HandlerType {
   OnCronjob = 'onCronjob',
   OnInstall = 'onInstall',
   OnUpdate = 'onUpdate',
+  OnNameLookup = 'onNameLookup',
 }
 
 type SnapHandler = {
@@ -54,6 +56,13 @@ export const SNAP_EXPORTS = {
     type: HandlerType.OnCronjob,
     required: true,
     validator: (snapExport: unknown): snapExport is OnCronjobHandler => {
+      return typeof snapExport === 'function';
+    },
+  },
+  [HandlerType.OnNameLookup]: {
+    type: HandlerType.OnNameLookup,
+    required: true,
+    validator: (snapExport: unknown): snapExport is OnNameLookupHandler => {
       return typeof snapExport === 'function';
     },
   },
@@ -166,6 +175,41 @@ export type HandlerFunction<Type extends SnapHandler> =
   Type['validator'] extends (snapExport: unknown) => snapExport is infer Handler
     ? Handler
     : never;
+
+/**
+ * The response from a snap's `onNameLookup` handler.
+ *
+ * @property resolvedAddress - The resolved address for a given domain.
+ * @property resolvedDomain - The resolved domain for a given address.
+ *
+ *
+ * If the snap has no resolved address/domain from its lookup, this should be `null`.
+ */
+export type OnNameLookupResponse =
+  | {
+      resolvedAddress: AccountAddress;
+    }
+  | { resolvedDomain: string }
+  | null;
+
+export type OnNameLookupArgs = {
+  chainId: Caip2ChainId;
+} & ({ domain: string } | { address: string });
+
+/**
+ * The `onNameLookup` handler. This is called whenever content is entered
+ * into the send to field for sending assets to an EOA address.
+ *
+ * @param args - The request arguments.
+ * @param args.domain - The human-readable address that is to be resolved.
+ * @param args.chainId - The CAIP-2 chain ID of the network the transaction is
+ * being submitted to.
+ * @param args.address - The address that is to be resolved.
+ * @returns Resolved address/domain from the lookup. See {@link OnNameLookupResponse}.
+ */
+export type OnNameLookupHandler = (
+  args: OnNameLookupArgs,
+) => Promise<OnNameLookupResponse>;
 
 /**
  * All the function-based handlers that a snap can implement.

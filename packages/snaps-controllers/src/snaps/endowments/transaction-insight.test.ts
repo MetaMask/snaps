@@ -113,7 +113,7 @@ describe('getTransactionOriginCaveat', () => {
     );
   });
 
-  it('throws if the first caveat is not a "permittedCoinTypes" caveat', () => {
+  it('throws if the first caveat is not a "transactionOrigin" caveat', () => {
     const permission: PermissionConstraint = {
       date: 0,
       parentCapability: 'foo',

@@ -135,6 +135,48 @@ export function assertIsOnTransactionRequestArguments(
   );
 }
 
+const baseNameLookupArgs = { chainId: ChainIdStruct };
+const domainRequestStruct = object({
+  ...baseNameLookupArgs,
+  address: string(),
+});
+const addressRequestStruct = object({
+  ...baseNameLookupArgs,
+  domain: string(),
+});
+
+export const OnNameLookupRequestArgumentsStruct = union([
+  domainRequestStruct,
+  addressRequestStruct,
+]);
+
+export type OnNameLookupRequestArguments = Infer<
+  typeof OnNameLookupRequestArgumentsStruct
+>;
+
+export type PossibleLookupRequestArgs = typeof baseNameLookupArgs & {
+  address?: string;
+  domain?: string;
+};
+
+/**
+ * Asserts that the given value is a valid {@link OnNameLookupRequestArguments}
+ * object.
+ *
+ * @param value - The value to validate.
+ * @throws If the value is not a valid {@link OnNameLookupRequestArguments}
+ * object.
+ */
+export function assertIsOnNameLookupRequestArguments(
+  value: unknown,
+): asserts value is OnNameLookupRequestArguments {
+  assertStruct(
+    value,
+    OnNameLookupRequestArgumentsStruct,
+    'Invalid request params',
+  );
+}
+
 const OkResponseStruct = assign(
   JsonRpcSuccessStruct,
   object({

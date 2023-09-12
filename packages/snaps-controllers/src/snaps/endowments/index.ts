@@ -10,6 +10,11 @@ import {
 import { ethereumProviderEndowmentBuilder } from './ethereum-provider';
 import { lifecycleHooksEndowmentBuilder } from './lifecycle-hooks';
 import { longRunningEndowmentBuilder } from './long-running';
+import {
+  getNameLookupCaveatMapper,
+  nameLookupCaveatSpecifications,
+  nameLookupEndowmentBuilder,
+} from './name-lookup';
 import { networkAccessEndowmentBuilder } from './network-access';
 import {
   getRpcCaveatMapper,
@@ -33,6 +38,7 @@ export const endowmentPermissionBuilders = {
     ethereumProviderEndowmentBuilder,
   [rpcEndowmentBuilder.targetName]: rpcEndowmentBuilder,
   [webAssemblyEndowmentBuilder.targetName]: webAssemblyEndowmentBuilder,
+  [nameLookupEndowmentBuilder.targetName]: nameLookupEndowmentBuilder,
   [lifecycleHooksEndowmentBuilder.targetName]: lifecycleHooksEndowmentBuilder,
 } as const;
 
@@ -40,6 +46,7 @@ export const endowmentCaveatSpecifications = {
   ...cronjobCaveatSpecifications,
   ...transactionInsightCaveatSpecifications,
   ...rpcCaveatSpecifications,
+  ...nameLookupCaveatSpecifications,
 };
 
 export const endowmentCaveatMappers: Record<
@@ -50,12 +57,14 @@ export const endowmentCaveatMappers: Record<
   [transactionInsightEndowmentBuilder.targetName]:
     getTransactionInsightCaveatMapper,
   [rpcEndowmentBuilder.targetName]: getRpcCaveatMapper,
+  [nameLookupEndowmentBuilder.targetName]: getNameLookupCaveatMapper,
 };
 
 export const handlerEndowments: Record<HandlerType, string> = {
   [HandlerType.OnRpcRequest]: rpcEndowmentBuilder.targetName,
   [HandlerType.OnTransaction]: transactionInsightEndowmentBuilder.targetName,
   [HandlerType.OnCronjob]: cronjobEndowmentBuilder.targetName,
+  [HandlerType.OnNameLookup]: nameLookupEndowmentBuilder.targetName,
   [HandlerType.OnInstall]: lifecycleHooksEndowmentBuilder.targetName,
   [HandlerType.OnUpdate]: lifecycleHooksEndowmentBuilder.targetName,
 };
@@ -63,3 +72,4 @@ export const handlerEndowments: Record<HandlerType, string> = {
 export * from './enum';
 export { getRpcCaveatOrigins } from './rpc';
 export { getTransactionOriginCaveat } from './transaction-insight';
+export { getChainIdsCaveat } from './name-lookup';

@@ -912,6 +912,79 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('supports onNameLookup export for domain lookup', async () => {
+    const CODE = `module.exports.onNameLookup = ({ chainId, domain }) => domain`;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnNameLookup,
+        MOCK_ORIGIN,
+        {
+          jsonrpc: '2.0',
+          method: 'foo',
+          params: { chainId: 'eip155:1', domain: 'foo.lens' },
+        },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: 'foo.lens',
+    });
+  });
+
+  it('supports onNameLookup export for address lookup', async () => {
+    const CODE = `module.exports.onNameLookup = ({ chainId, address }) => address`;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnNameLookup,
+        MOCK_ORIGIN,
+        {
+          jsonrpc: '2.0',
+          method: 'foo',
+          params: {
+            chainId: 'eip155:1',
+            address: '0xab16a96D359eC26a11e2C2b3d8f8B8942d5Bfcdb',
+          },
+        },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: '0xab16a96D359eC26a11e2C2b3d8f8B8942d5Bfcdb',
+    });
+  });
+
   describe('lifecycle hooks', () => {
     const LIFECYCLE_HOOKS = [HandlerType.OnInstall, HandlerType.OnUpdate];
 
