@@ -1,8 +1,8 @@
-import type { SnapRpcHookArgs } from '@metamask/snaps-utils';
+import { logError, type SnapRpcHookArgs } from '@metamask/snaps-utils';
 import type { MockControllerMessenger } from '@metamask/snaps-utils/test-utils';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
-import pump from 'pump';
+import { pipeline } from 'stream';
 
 import type {
   ExecutionService,
@@ -58,7 +58,11 @@ export const getNodeEES = (messenger: ReturnType<typeof getNodeEESMessenger>) =>
         return next();
       });
       const providerStream = createEngineStream({ engine });
-      pump(stream, providerStream, stream);
+      pipeline(stream, providerStream, stream, (error) => {
+        if (error) {
+          logError(`Provider stream failure.`, error);
+        }
+      });
     }),
   });
 

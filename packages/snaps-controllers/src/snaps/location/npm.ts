@@ -18,8 +18,8 @@ import {
 } from '@metamask/utils';
 import concat from 'concat-stream';
 import createGunzipStream from 'gunzip-maybe';
-import pump from 'pump';
 import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
+import { pipeline } from 'stream';
 import type { Readable, Writable } from 'stream';
 import { extract as tarExtract } from 'tar-stream';
 
@@ -182,7 +182,7 @@ export class NpmLocation implements SnapLocation {
     //               We would need to replace tar-stream package because it requires immediate consumption of streams.
     await new Promise<void>((resolve, reject) => {
       this.files = new Map();
-      pump(
+      pipeline(
         getNodeStream(tarballResponse),
         // The "gz" in "tgz" stands for "gzip". The tarball needs to be decompressed
         // before we can actually grab any files from it.

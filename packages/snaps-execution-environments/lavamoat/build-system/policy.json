@@ -988,6 +988,19 @@
         "@lavamoat/lavapack>readable-stream": true
       }
     },
+    "@metamask/object-multiplex>end-of-stream": {
+      "globals": {
+        "process.nextTick": true
+      },
+      "packages": {
+        "@metamask/object-multiplex>once": true
+      }
+    },
+    "@metamask/object-multiplex>once": {
+      "packages": {
+        "@metamask/object-multiplex>once>wrappy": true
+      }
+    },
     "@wdio/mocha-framework>mocha>supports-color": {
       "builtin": {
         "os.release": true,
@@ -1279,12 +1292,12 @@
         "process.platform": true
       },
       "packages": {
+        "@metamask/object-multiplex>once": true,
         "browserify>glob>fs.realpath": true,
         "browserify>glob>inflight": true,
         "browserify>glob>minimatch": true,
         "browserify>glob>path-is-absolute": true,
-        "browserify>inherits": true,
-        "pump>once": true
+        "browserify>inherits": true
       }
     },
     "browserify>glob>fs.realpath": {
@@ -1317,8 +1330,8 @@
         "process.nextTick": true
       },
       "packages": {
-        "pump>once": true,
-        "pump>once>wrappy": true
+        "@metamask/object-multiplex>once": true,
+        "@metamask/object-multiplex>once>wrappy": true
       }
     },
     "browserify>glob>minimatch": {
@@ -1975,9 +1988,9 @@
       },
       "packages": {
         "@lavamoat/lavapack>readable-stream": true,
+        "@metamask/object-multiplex>end-of-stream": true,
         "browserify>inherits": true,
-        "lavamoat-browserify>duplexify>stream-shift": true,
-        "pump>end-of-stream": true
+        "lavamoat-browserify>duplexify>stream-shift": true
       }
     },
     "lavamoat-browserify>through2": {
@@ -2200,19 +2213,6 @@
       "packages": {
         "@babel/core>@babel/parser": true,
         "depcheck>@babel/traverse": true
-      }
-    },
-    "pump>end-of-stream": {
-      "globals": {
-        "process.nextTick": true
-      },
-      "packages": {
-        "pump>once": true
-      }
-    },
-    "pump>once": {
-      "packages": {
-        "pump>once>wrappy": true
       }
     },
     "terser": {
