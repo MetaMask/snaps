@@ -17,6 +17,8 @@ import { Duration, inMilliseconds } from '@metamask/utils';
 import type {
   GetAllSnaps,
   HandleSnapRequest,
+  SnapDisabled,
+  SnapEnabled,
   SnapInstalled,
   SnapRemoved,
   SnapUpdated,
@@ -30,7 +32,12 @@ export type CronjobControllerActions =
   | HandleSnapRequest
   | GetPermissions;
 
-export type CronjobControllerEvents = SnapInstalled | SnapRemoved | SnapUpdated;
+export type CronjobControllerEvents =
+  | SnapInstalled
+  | SnapRemoved
+  | SnapUpdated
+  | SnapEnabled
+  | SnapDisabled;
 
 export type CronjobControllerMessenger = RestrictedControllerMessenger<
   'CronjobController',
@@ -100,20 +107,31 @@ export class CronjobController extends BaseController<
     this.#snapIds = new Map();
     this.#messenger = messenger;
 
-    this._handleEventSnapInstalled = this._handleEventSnapInstalled.bind(this);
-    this._handleEventSnapRemoved = this._handleEventSnapRemoved.bind(this);
+    this._handleSnapRegisterEvent = this._handleSnapRegisterEvent.bind(this);
+    this._handleSnapUnregisterEvent =
+      this._handleSnapUnregisterEvent.bind(this);
     this._handleEventSnapUpdated = this._handleEventSnapUpdated.bind(this);
 
     // Subscribe to Snap events
     /* eslint-disable @typescript-eslint/unbound-method */
     this.messagingSystem.subscribe(
       'SnapController:snapInstalled',
-      this._handleEventSnapInstalled,
+      this._handleSnapRegisterEvent,
     );
 
     this.messagingSystem.subscribe(
       'SnapController:snapRemoved',
-      this._handleEventSnapRemoved,
+      this._handleSnapUnregisterEvent,
+    );
+
+    this.messagingSystem.subscribe(
+      'SnapController:snapEnabled',
+      this._handleSnapRegisterEvent,
+    );
+
+    this.messagingSystem.subscribe(
+      'SnapController:snapDisabled',
+      this._handleSnapUnregisterEvent,
     );
 
     this.messagingSystem.subscribe(
@@ -307,12 +325,22 @@ export class CronjobController extends BaseController<
     /* eslint-disable @typescript-eslint/unbound-method */
     this.messagingSystem.unsubscribe(
       'SnapController:snapInstalled',
-      this._handleEventSnapInstalled,
+      this._handleSnapRegisterEvent,
     );
 
     this.messagingSystem.unsubscribe(
       'SnapController:snapRemoved',
-      this._handleEventSnapRemoved,
+      this._handleSnapUnregisterEvent,
+    );
+
+    this.messagingSystem.unsubscribe(
+      'SnapController:snapEnabled',
+      this._handleSnapRegisterEvent,
+    );
+
+    this.messagingSystem.unsubscribe(
+      'SnapController:snapDisabled',
+      this._handleSnapUnregisterEvent,
     );
 
     this.messagingSystem.unsubscribe(
@@ -327,20 +355,20 @@ export class CronjobController extends BaseController<
   }
 
   /**
-   * Handle cron jobs on 'snapInstalled' event.
+   * Handle events that should cause cronjobs to be registered.
    *
    * @param snap - Basic Snap information.
    */
-  private _handleEventSnapInstalled(snap: TruncatedSnap) {
+  private _handleSnapRegisterEvent(snap: TruncatedSnap) {
     this.register(snap.id);
   }
 
   /**
-   * Handle cron jobs on 'snapRemoved' event.
+   * Handle events that should cause cronjobs to be unregistered.
    *
    * @param snap - Basic Snap information.
    */
-  private _handleEventSnapRemoved(snap: TruncatedSnap) {
+  private _handleSnapUnregisterEvent(snap: TruncatedSnap) {
     this.unregister(snap.id);
   }
 

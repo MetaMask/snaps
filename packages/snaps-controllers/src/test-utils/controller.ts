@@ -469,6 +469,8 @@ export const getRestrictedCronjobControllerMessenger = (
       'SnapController:snapInstalled',
       'SnapController:snapUpdated',
       'SnapController:snapRemoved',
+      'SnapController:snapEnabled',
+      'SnapController:snapDisabled',
     ],
     allowedActions: [
       'PermissionController:hasPermission',
