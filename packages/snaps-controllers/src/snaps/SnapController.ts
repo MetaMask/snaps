@@ -1226,15 +1226,13 @@ export class SnapController extends BaseController<
     });
 
     if (this.isRunning(snapId)) {
-      return this.stopSnap(snapId, SnapStatusEvents.Stop);
+      await this.stopSnap(snapId, SnapStatusEvents.Stop);
     }
 
     this.messagingSystem.publish(
       'SnapController:snapDisabled',
       this.getTruncatedExpect(snapId),
     );
-
-    return Promise.resolve();
   }
 
   /**
