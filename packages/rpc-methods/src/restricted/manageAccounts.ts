@@ -152,6 +152,7 @@ export function manageAccountsImplementation({
       origin,
       type: 'snap_manageAccounts:confirmation',
     });
+
     // eslint-disable-next-line no-console
     console.log(
       'SNAPS/ manageAccountsImplementation/ confirmationResult',
@@ -164,11 +165,14 @@ export function manageAccountsImplementation({
           params,
           saveSnapKeyring,
         );
+
+        const accountName = confirmationResult.accountName ?? '[Empty]';
+
         await showApprovalSuccess({
           flowToEnd: addAccountApprovalId,
-          message: 'Account added',
+          message: `Added Account: **${accountName}**`,
         });
-        await endApprovalFlow({ id: addAccountApprovalId });
+
         return account;
       } catch (error) {
         await showApprovalError({ error: error.message });
