@@ -354,6 +354,7 @@ export const getSnapControllerMessenger = (
   });
 
   jest.spyOn(snapControllerMessenger, 'call');
+  jest.spyOn(snapControllerMessenger, 'publish');
 
   return snapControllerMessenger;
 };
