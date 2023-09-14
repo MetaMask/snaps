@@ -17,29 +17,21 @@ import { SubjectType, PermissionType } from '@metamask/permission-controller';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import { JsonStruct } from '@metamask/utils';
 import type { Infer } from 'superstruct';
-import {
-  assert,
-  string,
-  object,
-  union,
-  array,
-  record,
-  optional,
-} from 'superstruct';
+import { assert, string, object, union, array, record } from 'superstruct';
 
-const SnapMessageStruct = object({
-  method: string(),
-  params: optional(union([array(JsonStruct), record(string(), JsonStruct)])),
-});
+const SnapMessageStruct = union([
+  object({
+    method: string(),
+  }),
+  object({
+    method: string(),
+    params: union([array(JsonStruct), record(string(), JsonStruct)]),
+  }),
+]);
 
 type Message = Infer<typeof SnapMessageStruct>;
 
 export const methodName = 'snap_manageAccounts';
-
-type AccountConfirmationResult = {
-  confirmed: boolean;
-  accountName?: string;
-};
 
 export type ManageAccountsMethodHooks = {
   /**
@@ -51,19 +43,9 @@ export type ManageAccountsMethodHooks = {
       message: Message,
     ) => Promise<Json>;
   }>;
-
-  showSnapAccountConfirmation: (
-    origin: any,
-    type: any,
-    content: any,
-    placeholder: any,
-  ) => Promise<AccountConfirmationResult>;
   startApprovalFlow: (opts?: StartFlowOptions) => ApprovalFlowStartResult;
-  requestUserApproval: (
-    opts: AddApprovalOptions,
-  ) => Promise<AccountConfirmationResult>;
+  requestUserApproval: (opts: AddApprovalOptions) => Promise<boolean>;
   endApprovalFlow: ({ id }: EndFlowOptions) => Promise<void>;
-  // setApprovalFlowLoadingText: () => Promise<void>;
   showApprovalSuccess: (opts?: SuccessOptions) => Promise<SuccessResult>;
   showApprovalError: (opts?: ErrorOptions) => Promise<ErrorResult>;
 };
@@ -145,22 +127,13 @@ export function manageAccountsImplementation({
       type: 'snap_manageAccounts:confirmation',
     });
 
-    // eslint-disable-next-line no-console
-    console.log(
-      'SNAPS/ manageAccountsImplementation/ confirmationResult',
-      confirmationResult,
-    );
-    if (confirmationResult.confirmed) {
+    if (confirmationResult) {
       try {
         const account = await keyring.handleKeyringSnapMessage(origin, params);
-        await showApprovalSuccess();
-        await endApprovalFlow(addAccountApprovalId);
-
-        const accountName = confirmationResult.accountName ?? '[Empty]';
 
         await showApprovalSuccess({
           flowToEnd: addAccountApprovalId,
-          message: `Added Account: **${accountName}**`,
+          message: 'Your account is ready!',
         });
 
         return account;
@@ -178,7 +151,6 @@ export const manageAccountsBuilder = Object.freeze({
   specificationBuilder,
   methodHooks: {
     getSnapKeyring: true,
-    showSnapAccountConfirmation: true,
     startApprovalFlow: true,
     requestUserApproval: true,
     endApprovalFlow: true,
