@@ -1,8 +1,6 @@
 import { expect } from '@jest/globals';
 import { installSnap } from '@metamask/snaps-jest';
 
-import { DEFAULT_URL } from './constants';
-
 describe('onRpcRequest', () => {
   it('throws an error if the requested method does not exist', async () => {
     const { request, close } = await installSnap();
@@ -29,8 +27,10 @@ describe('onRpcRequest', () => {
     it('fetches a URL and returns the JSON response', async () => {
       const { request, close, mock } = await installSnap();
 
+      const url = 'https://example.com/';
+
       await mock({
-        url: DEFAULT_URL,
+        url,
         response: {
           contentType: 'application/json',
           body: JSON.stringify({
@@ -41,37 +41,13 @@ describe('onRpcRequest', () => {
 
       const response = await request({
         method: 'fetch',
+        params: {
+          url,
+        },
       });
 
       expect(response).toRespondWith({
         hello: 'world',
-      });
-
-      await close();
-    });
-
-    it('fetches a custom URL and returns the JSON response', async () => {
-      const { request, close, mock } = await installSnap();
-
-      await mock({
-        url: 'https://example.com/',
-        response: {
-          contentType: 'application/json',
-          body: JSON.stringify({
-            foo: 'bar',
-          }),
-        },
-      });
-
-      const response = await request({
-        method: 'fetch',
-        params: {
-          url: 'https://example.com/',
-        },
-      });
-
-      expect(response).toRespondWith({
-        foo: 'bar',
       });
 
       await close();

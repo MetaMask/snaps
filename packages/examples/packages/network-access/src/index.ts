@@ -1,7 +1,7 @@
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { OnRpcRequestHandler } from '@metamask/snaps-types';
+import { assert } from '@metamask/utils';
 
-import { DEFAULT_URL } from './constants';
 import type { FetchParams } from './types';
 
 /**
@@ -13,12 +13,11 @@ import type { FetchParams } from './types';
  * permission.
  *
  * @param url - The URL to fetch the data from. This function assumes that the
- * provided URL is a JSON document. Defaults to
- * `https://metamask.github.io/snaps/test-snaps/latest/test-data.json`.
+ * provided URL is a JSON document.
  * @returns There response as JSON.
  * @throws If the provided URL is not a JSON document.
  */
-async function getJson(url = DEFAULT_URL) {
+async function getJson(url: string) {
   const response = await fetch(url);
   return await response.json();
 }
@@ -42,7 +41,8 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'fetch': {
       const params = request.params as FetchParams | undefined;
-      return await getJson(params?.url);
+      assert(params?.url, 'Required url parameter was not specified.');
+      return await getJson(params.url);
     }
 
     default:
