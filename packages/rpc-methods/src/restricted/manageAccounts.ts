@@ -142,6 +142,7 @@ export function manageAccountsImplementation({
         await endApprovalFlow({ id: addAccountApprovalId });
       }
     }
+    await endApprovalFlow({ id: addAccountApprovalId });
     throw new Error('User denied account addition');
   };
 }
