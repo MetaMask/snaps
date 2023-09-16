@@ -11,7 +11,6 @@ import {
   DEFAULT_REQUESTED_SNAP_VERSION,
   getSnapChecksum,
   HandlerType,
-  logError,
   SnapCaveatType,
   SnapStatus,
   VirtualFile,
@@ -36,7 +35,7 @@ import { ethErrors } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
 import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
-import { pipeline } from 'stream';
+import pump from 'pump';
 import type { Duplex } from 'stream';
 
 import type { NodeThreadExecutionService } from '../services';
@@ -1103,11 +1102,7 @@ describe('SnapController', () => {
         });
         engine.push(middleware);
         const providerStream = createEngineStream({ engine });
-        pipeline(stream, providerStream, stream, (error) => {
-          if (error) {
-            logError(`Provider stream failure.`, error);
-          }
-        });
+        pump(stream, providerStream, stream);
       });
 
     await snapController.startSnap(snap.id);
@@ -1188,11 +1183,7 @@ describe('SnapController', () => {
         });
         engine.push(middleware);
         const providerStream = createEngineStream({ engine });
-        pipeline(stream, providerStream, stream, (error) => {
-          if (error) {
-            logError(`Provider stream failure.`, error);
-          }
-        });
+        pump(stream, providerStream, stream);
       });
 
     await snapController.startSnap(snap.id);

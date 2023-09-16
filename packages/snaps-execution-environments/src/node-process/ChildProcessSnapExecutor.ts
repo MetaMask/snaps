@@ -1,7 +1,7 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { ProcessMessageStream } from '@metamask/post-message-stream';
 import { logError, SNAP_STREAM_NAMES } from '@metamask/snaps-utils';
-import { pipeline } from 'stream';
+import pump from 'pump';
 
 import { BaseSnapExecutor } from '../common/BaseSnapExecutor';
 import { log } from '../logging';
@@ -12,7 +12,7 @@ export class ChildProcessSnapExecutor extends BaseSnapExecutor {
 
     const parentStream = new ProcessMessageStream();
     const mux = new ObjectMultiplex();
-    pipeline(parentStream, mux as any, parentStream, (error) => {
+    pump(parentStream, mux as any, parentStream, (error) => {
       if (error) {
         logError(`Parent stream failure, closing worker.`, error);
       }

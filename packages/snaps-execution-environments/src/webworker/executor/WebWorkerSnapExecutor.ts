@@ -2,7 +2,7 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 import type { BasePostMessageStream } from '@metamask/post-message-stream';
 import { WebWorkerPostMessageStream } from '@metamask/post-message-stream';
 import { logError, SNAP_STREAM_NAMES } from '@metamask/snaps-utils';
-import { pipeline } from 'stream';
+import pump from 'pump';
 
 import { BaseSnapExecutor } from '../../common/BaseSnapExecutor';
 import { log } from '../../logging';
@@ -22,7 +22,7 @@ export class WebWorkerSnapExecutor extends BaseSnapExecutor {
     log('Worker: Connecting to parent.');
 
     const mux = new ObjectMultiplex();
-    pipeline(stream, mux, stream, (error) => {
+    pump(stream, mux, stream, (error) => {
       if (error) {
         logError(`Parent stream failure, closing worker.`, error);
       }

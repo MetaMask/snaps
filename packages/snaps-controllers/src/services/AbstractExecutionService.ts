@@ -12,7 +12,7 @@ import type {
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
-import { pipeline } from 'stream';
+import pump from 'pump';
 import type { Duplex } from 'stream';
 
 import { log } from '../logging';
@@ -182,16 +182,7 @@ export abstract class AbstractExecutionService<WorkerType>
 
     const jsonRpcConnection = createStreamMiddleware();
 
-    pipeline(
-      jsonRpcConnection.stream,
-      streams.command,
-      jsonRpcConnection.stream,
-      (error) => {
-        if (error) {
-          logError(`Command stream failure.`, error);
-        }
-      },
-    );
+    pump(jsonRpcConnection.stream, streams.command, jsonRpcConnection.stream);
 
     rpcEngine.push(jsonRpcConnection.middleware);
 
@@ -457,7 +448,7 @@ export function setupMultiplex(
   streamName: string,
 ): ObjectMultiplex {
   const mux = new ObjectMultiplex();
-  pipeline(
+  pump(
     connectionStream,
     // Typecast: stream type mismatch
     mux as unknown as Duplex,

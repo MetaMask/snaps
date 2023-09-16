@@ -61,6 +61,7 @@
     "json-rpc-engine": "^6.1.0",
     "json-rpc-middleware-stream": "^4.2.0",
     "nanoid": "^3.1.31",
+    "pump": "^3.0.0",
     "readable-web-to-node-stream": "^3.0.2",
     "tar-stream": "^2.2.0"
   },
@@ -83,6 +84,7 @@
     "@types/jest": "^27.5.1",
     "@types/mocha": "^10.0.1",
     "@types/node": "18.14.2",
+    "@types/pump": "^1.1.1",
     "@types/readable-stream": "^2.3.15",
     "@types/tar-stream": "^2.2.2",
     "@typescript-eslint/eslint-plugin": "^5.42.1",

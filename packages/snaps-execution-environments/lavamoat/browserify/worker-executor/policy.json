@@ -16,20 +16,9 @@
         "console.warn": true
       },
       "packages": {
-        "@metamask/object-multiplex>end-of-stream": true,
-        "@metamask/object-multiplex>once": true,
-        "@metamask/object-multiplex>readable-stream": true
-      }
-    },
-    "@metamask/object-multiplex>end-of-stream": {
-      "packages": {
-        "@metamask/object-multiplex>once": true,
-        "browserify>process": true
-      }
-    },
-    "@metamask/object-multiplex>once": {
-      "packages": {
-        "@metamask/object-multiplex>once>wrappy": true
+        "@metamask/object-multiplex>readable-stream": true,
+        "pump>end-of-stream": true,
+        "pump>once": true
       }
     },
     "@metamask/object-multiplex>readable-stream": {
@@ -106,10 +95,10 @@
         "@metamask/providers>extension-port-stream": true,
         "@metamask/providers>is-stream": true,
         "@metamask/providers>json-rpc-middleware-stream": true,
-        "@metamask/providers>pump": true,
         "eslint>fast-deep-equal": true,
         "eth-rpc-errors": true,
-        "json-rpc-engine": true
+        "json-rpc-engine": true,
+        "pump": true
       }
     },
     "@metamask/providers>@metamask/safe-event-emitter": {
@@ -168,14 +157,6 @@
     "@metamask/providers>json-rpc-middleware-stream>readable-stream>string_decoder": {
       "packages": {
         "@metamask/providers>json-rpc-middleware-stream>readable-stream>safe-buffer": true
-      }
-    },
-    "@metamask/providers>pump": {
-      "packages": {
-        "@metamask/object-multiplex>end-of-stream": true,
-        "@metamask/object-multiplex>once": true,
-        "browserify>browser-resolve": true,
-        "browserify>process": true
       }
     },
     "@metamask/utils": {
@@ -344,6 +325,25 @@
       },
       "packages": {
         "browserify>events": true
+      }
+    },
+    "pump": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>process": true,
+        "pump>end-of-stream": true,
+        "pump>once": true
+      }
+    },
+    "pump>end-of-stream": {
+      "packages": {
+        "browserify>process": true,
+        "pump>once": true
+      }
+    },
+    "pump>once": {
+      "packages": {
+        "pump>once>wrappy": true
       }
     },
     "superstruct": {
