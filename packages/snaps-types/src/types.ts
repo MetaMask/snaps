@@ -22,5 +22,6 @@ export type {
   OnTransactionResponse,
   OnInstallHandler,
   OnUpdateHandler,
+  OnNameLookupHandler,
 } from '@metamask/snaps-utils';
 export { SeverityLevel } from '@metamask/snaps-utils';

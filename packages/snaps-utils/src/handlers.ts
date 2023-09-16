@@ -188,13 +188,14 @@ export type HandlerFunction<Type extends SnapHandler> =
 export type OnNameLookupResponse =
   | {
       resolvedAddress: AccountAddress;
+      resolvedDomain?: never;
     }
-  | { resolvedDomain: string }
+  | { resolvedAddress?: never; resolvedDomain: string }
   | null;
 
 export type OnNameLookupArgs = {
   chainId: Caip2ChainId;
-} & ({ domain: string } | { address: string });
+} & ({ domain: string; address?: never } | { domain?: never; address: string });
 
 /**
  * The `onNameLookup` handler. This is called whenever content is entered

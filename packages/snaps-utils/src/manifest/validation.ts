@@ -23,6 +23,7 @@ import {
   string,
   type,
   union,
+  any,
 } from 'superstruct';
 
 import { isEqual } from '../array';
@@ -152,7 +153,7 @@ export const PermissionsStruct = type({
     object({ jobs: CronjobSpecificationArrayStruct }),
   ),
   'endowment:rpc': optional(RpcOriginsStruct),
-  'endowment:name-lookup': optional(object({})),
+  'endowment:name-lookup': optional(any()),
   snap_dialog: optional(object({})),
   // TODO: Remove
   snap_confirm: optional(object({})),
