@@ -29,7 +29,7 @@ import {
   hasProperty,
   getSafeJson,
 } from '@metamask/utils';
-import { createIdRemapMiddleware } from 'json-rpc-engine';
+import { createIdRemapMiddleware }from '@metamask/json-rpc-engine';
 import type { Duplex } from 'stream';
 import { validate } from 'superstruct';
 

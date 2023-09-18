@@ -4941,6 +4941,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
+    "@metamask/json-rpc-engine": ^7.1.1
     "@metamask/key-tree": ^9.0.0
     "@metamask/permission-controller": ^5.0.0
     "@metamask/rpc-errors": ^6.0.0
@@ -4968,7 +4969,6 @@ __metadata:
     expect-type: ^0.15.0
     jest: ^29.0.2
     jest-it-up: ^2.0.0
-    json-rpc-engine: ^6.1.0
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^4.1.2
@@ -5237,6 +5237,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
+    "@metamask/json-rpc-engine": ^7.1.1
     "@metamask/object-multiplex": ^1.2.0
     "@metamask/post-message-stream": ^7.0.0
     "@metamask/providers": ^11.1.1
@@ -5279,7 +5280,6 @@ __metadata:
     jest: ^29.0.2
     jest-environment-node: ^29.5.0
     jest-fetch-mock: ^3.0.3
-    json-rpc-engine: ^6.1.0
     lavamoat: ^7.3.1
     lavamoat-browserify: ^15.9.1
     nanoid: ^3.1.31
@@ -5421,6 +5421,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/eth-json-rpc-middleware": ^12.0.0
+    "@metamask/json-rpc-engine": ^7.1.1
     "@metamask/key-tree": ^9.0.0
     "@metamask/permission-controller": ^5.0.0
     "@metamask/rpc-errors": ^6.0.0
@@ -5473,7 +5474,6 @@ __metadata:
     jest-environment-jsdom: ^29.5.0
     jest-fetch-mock: ^3.0.3
     jest-it-up: ^2.0.0
-    json-rpc-engine: ^6.1.0
     json-rpc-middleware-stream: ^4.2.0
     monaco-editor: ^0.38.0
     monaco-editor-webpack-plugin: ^7.0.1
@@ -16034,14 +16034,14 @@ __metadata:
   linkType: hard
 
 "json-rpc-middleware-stream@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "json-rpc-middleware-stream@npm:5.0.0"
+  version: 5.0.1
+  resolution: "json-rpc-middleware-stream@npm:5.0.1"
   dependencies:
     "@metamask/json-rpc-engine": ^7.1.1
     "@metamask/safe-event-emitter": ^3.0.0
     "@metamask/utils": ^8.1.0
     readable-stream: ^3.6.2
-  checksum: 9780a05550f0bf5c6fd55a7f90472bf919e7f1fc45969bd7a8ffdd7ec7a6b5bfdc08f606487184a4e75fea9e1fbf335add35f8f2eaf8ab975fb461985e57380e
+  checksum: 1cfb8ef5fbb3daa15015213e380e79f043a4208d6ea5533a99b3f3c8aeb01270bfdce5b37003362745a059edbd418d9ca3548fab5fa83355641be2f392303084
   languageName: node
   linkType: hard
 

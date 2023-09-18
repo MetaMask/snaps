@@ -4,7 +4,7 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 import { StreamProvider } from '@metamask/providers';
 import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
 import { SNAP_STREAM_NAMES } from '@metamask/snaps-utils';
-import { createIdRemapMiddleware } from 'json-rpc-engine';
+import { createIdRemapMiddleware }from '@metamask/json-rpc-engine';
 
 import {
   assertEthereumOutboundRequest,

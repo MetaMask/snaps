@@ -27,7 +27,7 @@ import type {
 import { logError } from '@metamask/snaps-utils';
 import { getSafeJson } from '@metamask/utils';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { JsonRpcEngine } from 'json-rpc-engine';
+import { JsonRpcEngine }from '@metamask/json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import type { SagaIterator } from 'redux-saga';
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
