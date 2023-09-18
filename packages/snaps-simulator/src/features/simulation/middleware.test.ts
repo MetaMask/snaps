@@ -1,5 +1,5 @@
 import { mnemonicPhraseToBytes } from '@metamask/key-tree';
-import { JsonRpcEngine } from 'json-rpc-engine';
+import { JsonRpcEngine }from '@metamask/json-rpc-engine';
 
 import { DEFAULT_SRP } from '../configuration';
 import { createMiscMethodMiddleware } from './middleware';

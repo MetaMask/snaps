@@ -38,7 +38,7 @@ import {
 import type { SemVerRange, SemVerVersion } from '@metamask/utils';
 import { AssertionError } from '@metamask/utils';
 import fetchMock from 'jest-fetch-mock';
-import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
+import { createAsyncMiddleware, JsonRpcEngine }from '@metamask/json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { pipeline } from 'stream';
 import type { Duplex } from 'stream';

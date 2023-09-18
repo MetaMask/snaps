@@ -6,7 +6,7 @@ import type {
   JsonRpcMiddleware,
   JsonRpcRequest,
   PendingJsonRpcResponse,
-} from 'json-rpc-engine';
+}from '@metamask/json-rpc-engine';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 export const methodHandlers = {
