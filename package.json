@@ -61,7 +61,7 @@
     "jest-fetch-mock@^3.0.3": "patch:jest-fetch-mock@npm:3.0.3#.yarn/patches/jest-fetch-mock-npm-3.0.3-ac072ca8af.patch",
     "jest-util@^29.5.0": "patch:jest-util@npm%3A29.6.3#./.yarn/patches/jest-util-npm-29.6.3-6ffdea2c1c.patch",
     "jest-util@^29.6.3": "patch:jest-util@npm%3A29.6.3#./.yarn/patches/jest-util-npm-29.6.3-6ffdea2c1c.patch",
-    "lavamoat-browserify@^15.7.1": "patch:lavamoat-browserify@npm%3A15.7.1#./.yarn/patches/lavamoat-browserify-npm-15.7.1-c443b6ace1.patch",
+    "lavamoat-browserify@^15.9.1": "patch:lavamoat-browserify@npm%3A15.9.1#./.yarn/patches/lavamoat-browserify-npm-15.9.1-12130e68ce.patch",
     "luxon@^3.2.1": "patch:luxon@npm%3A3.3.0#./.yarn/patches/luxon-npm-3.3.0-bdbae9bfd5.patch"
   },
   "devDependencies": {
