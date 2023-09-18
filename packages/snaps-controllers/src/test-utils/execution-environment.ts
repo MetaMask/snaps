@@ -1,6 +1,6 @@
 import { logError, type SnapRpcHookArgs } from '@metamask/snaps-utils';
 import type { MockControllerMessenger } from '@metamask/snaps-utils/test-utils';
-import { JsonRpcEngine } from 'json-rpc-engine';
+import { JsonRpcEngine }from '@metamask/json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { pipeline } from 'stream';
 
