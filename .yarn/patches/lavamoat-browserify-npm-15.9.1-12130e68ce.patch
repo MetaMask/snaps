@@ -1,5 +1,5 @@
 diff --git a/src/index.js b/src/index.js
-index b0de0d6fea237ed3e11d393814174d5696cae3ff..130ac284eea62cb9e7f0d0da591ed836e5a39fd1 100644
+index d66172b5fc72ab24f9b6d825c8a4b4dd21ddba0f..6081b23b44b5e2e84c3674900c128f4e3fe2bcac 100644
 --- a/src/index.js
 +++ b/src/index.js
 @@ -8,6 +8,7 @@ const createLavaPack = require('@lavamoat/lavapack')
@@ -20,7 +20,7 @@ index b0de0d6fea237ed3e11d393814174d5696cae3ff..130ac284eea62cb9e7f0d0da591ed836
          includeDebugInfo: configuration.writeAutoPolicyDebug,
          // write policy files to disk
 @@ -280,7 +281,7 @@ function validatePolicy (policy) {
-   Object.entries(policy.resources).forEach(([packageName, packageOpts], index) => {
+   Object.entries(policy.resources).forEach(([, packageOpts]) => {
      const packageOptions = Object.keys(packageOpts)
      const packageEntries = Object.values(packageOpts)
 -    const optionsWhitelist = ['globals', 'packages']

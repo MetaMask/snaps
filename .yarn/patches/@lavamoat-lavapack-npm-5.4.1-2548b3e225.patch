@@ -9,11 +9,11 @@ index d6efa602147ed04938991724c058a0c906830878..5ba8c588afc6613324a7fff27af60210
 +      // prevent issues when dealing with the "override mistake"
 +      overrideTaming: 'severe',
      }
- 
+
      lockdown(lockdownOptions)
 @@ -12048,6 +12050,17 @@ module.exports = {
- 
- 
+
+
    function loadModuleData (moduleId) {
 +    if (typeof window === 'undefined' && typeof require === 'function' && require('node:module').isBuiltin(moduleId)) {
 +      return {
