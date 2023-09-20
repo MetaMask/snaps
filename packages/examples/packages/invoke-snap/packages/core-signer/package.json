@@ -1,6 +1,6 @@
 {
   "name": "@metamask/core-signer-example-snap",
-  "version": "0.38.2-flask.1",
+  "version": "0.38.1-flask.1",
   "description": "MetaMask example snap demonstrating how a snap can communicate with another snap to sign messages.",
   "repository": {
     "type": "git",
