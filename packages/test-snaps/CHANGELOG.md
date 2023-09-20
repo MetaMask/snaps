@@ -8,10 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.39.1-flask.1]
 ### Changed
-- Bump `metamask/utils` and `metamask/snaps-registry` ([#1738](https://github.com/MetaMask/snaps-skunkworks.git/pull/1738))
+- Bump `metamask/utils` and `metamask/snaps-registry` ([#1738](https://github.com/MetaMask/snaps/pull/1738))
 
 ### Fixed
-- Fix network access example snap ([#1747](https://github.com/MetaMask/snaps-skunkworks.git/pull/1747))
+- Fix network access example snap ([#1747](https://github.com/MetaMask/snaps/pull/1747))
 
 ## [0.39.0-flask.1]
 ### Added

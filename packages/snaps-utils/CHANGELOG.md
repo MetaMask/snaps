@@ -8,10 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.38.4-flask.1]
 ### Added
-- Add `onNameLookup` export ([#1394](https://github.com/MetaMask/snaps-skunkworks.git/pull/1394), [#1759](https://github.com/MetaMask/snaps-skunkworks.git/pull/1759))
+- Add `onNameLookup` export ([#1394](https://github.com/MetaMask/snaps/pull/1394), [#1759](https://github.com/MetaMask/snaps/pull/1759))
 
 ### Changed
-- Bump `metamask/utils` and `metamask/snaps-registry` ([#1738](https://github.com/MetaMask/snaps-skunkworks.git/pull/1738))
+- Bump `metamask/utils` and `metamask/snaps-registry` ([#1738](https://github.com/MetaMask/snaps/pull/1738))
 
 ## [0.38.3-flask.1]
 ### Changed

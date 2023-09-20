@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.38.2-flask.1]
 ### Fixed
-- Fix network access example snap ([#1747](https://github.com/MetaMask/snaps-skunkworks.git/pull/1747))
+- Fix network access example snap ([#1747](https://github.com/MetaMask/snaps/pull/1747))
 
 ## [0.38.1-flask.1]
 ### Changed
