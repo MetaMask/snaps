@@ -436,12 +436,30 @@ export type SnapRolledback = {
   type: `${typeof controllerName}:snapRolledback`;
   payload: [snap: TruncatedSnap, failedVersion: string];
 };
+
 /**
  * Emitted when a Snap is terminated. This is different from the snap being
  * stopped as it can also be triggered when a snap fails initialization.
  */
 export type SnapTerminated = {
   type: `${typeof controllerName}:snapTerminated`;
+  payload: [snap: TruncatedSnap];
+};
+
+/**
+ * Emitted when a Snap is enabled by a user.
+ * This is not emitted by default when installing a snap.
+ */
+export type SnapEnabled = {
+  type: `${typeof controllerName}:snapEnabled`;
+  payload: [snap: TruncatedSnap];
+};
+
+/**
+ * Emitted when a Snap is disabled by a user.
+ */
+export type SnapDisabled = {
+  type: `${typeof controllerName}:snapDisabled`;
   payload: [snap: TruncatedSnap];
 };
 
@@ -454,7 +472,9 @@ export type SnapControllerEvents =
   | SnapUnblocked
   | SnapUpdated
   | SnapRolledback
-  | SnapTerminated;
+  | SnapTerminated
+  | SnapEnabled
+  | SnapDisabled;
 
 export type AllowedActions =
   | GetEndowments
@@ -1183,6 +1203,11 @@ export class SnapController extends BaseController<
     this.update((state: any) => {
       state.snaps[snapId].enabled = true;
     });
+
+    this.messagingSystem.publish(
+      'SnapController:snapEnabled',
+      this.getTruncatedExpect(snapId),
+    );
   }
 
   /**
@@ -1201,10 +1226,13 @@ export class SnapController extends BaseController<
     });
 
     if (this.isRunning(snapId)) {
-      return this.stopSnap(snapId, SnapStatusEvents.Stop);
+      await this.stopSnap(snapId, SnapStatusEvents.Stop);
     }
 
-    return Promise.resolve();
+    this.messagingSystem.publish(
+      'SnapController:snapDisabled',
+      this.getTruncatedExpect(snapId),
+    );
   }
 
   /**

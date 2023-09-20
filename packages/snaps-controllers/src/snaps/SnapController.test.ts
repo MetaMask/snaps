@@ -4501,6 +4501,7 @@ describe('SnapController', () => {
 
   describe('enableSnap', () => {
     it('enables a disabled snap', () => {
+      const messenger = getSnapControllerMessenger();
       const snapController = getSnapController(
         getSnapControllerOptions({
           state: {
@@ -4508,6 +4509,7 @@ describe('SnapController', () => {
               getPersistedSnapObject({ enabled: false }),
             ),
           },
+          messenger,
         }),
       );
 
@@ -4515,6 +4517,10 @@ describe('SnapController', () => {
 
       snapController.enableSnap(MOCK_SNAP_ID);
       expect(snapController.get(MOCK_SNAP_ID)?.enabled).toBe(true);
+      expect(messenger.publish).toHaveBeenCalledWith(
+        'SnapController:snapEnabled',
+        getTruncatedSnap(),
+      );
 
       snapController.destroy();
     });
@@ -4549,11 +4555,13 @@ describe('SnapController', () => {
 
   describe('disableSnap', () => {
     it('disables a snap', async () => {
+      const messenger = getSnapControllerMessenger();
       const snapController = getSnapController(
         getSnapControllerOptions({
           state: {
             snaps: getPersistedSnapsState(),
           },
+          messenger,
         }),
       );
 
@@ -4561,6 +4569,10 @@ describe('SnapController', () => {
 
       await snapController.disableSnap(MOCK_SNAP_ID);
       expect(snapController.get(MOCK_SNAP_ID)?.enabled).toBe(false);
+      expect(messenger.publish).toHaveBeenCalledWith(
+        'SnapController:snapDisabled',
+        getTruncatedSnap({ enabled: false }),
+      );
 
       snapController.destroy();
     });

@@ -354,6 +354,7 @@ export const getSnapControllerMessenger = (
   });
 
   jest.spyOn(snapControllerMessenger, 'call');
+  jest.spyOn(snapControllerMessenger, 'publish');
 
   return snapControllerMessenger;
 };
@@ -468,6 +469,8 @@ export const getRestrictedCronjobControllerMessenger = (
       'SnapController:snapInstalled',
       'SnapController:snapUpdated',
       'SnapController:snapRemoved',
+      'SnapController:snapEnabled',
+      'SnapController:snapDisabled',
     ],
     allowedActions: [
       'PermissionController:hasPermission',
