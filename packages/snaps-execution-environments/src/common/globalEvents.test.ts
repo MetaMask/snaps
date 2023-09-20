@@ -10,7 +10,6 @@ globalThis.removeEventListener = () => undefined;
 describe('addEventListener', () => {
   afterEach(() => {
     Object.assign(globalThis, {
-      ...globalThis,
       addEventListener: originalAddEventListener,
       process: originalProcess,
     });
@@ -25,7 +24,7 @@ describe('addEventListener', () => {
 
   it('uses on in Node.js', () => {
     // Remove addEventListener
-    Object.assign(globalThis, { ...globalThis, addEventListener: undefined });
+    Object.assign(globalThis, { addEventListener: undefined });
     const spy = jest.spyOn(globalThis.process, 'on');
     const listener = () => undefined;
     addEventListener('foo', listener);
@@ -35,8 +34,7 @@ describe('addEventListener', () => {
   it('throws otherwise', () => {
     // Remove addEventListener
     Object.assign(globalThis, {
-      ...globalThis,
-      process: { ...globalThis.process, on: undefined },
+      process: { on: undefined },
       addEventListener: undefined,
     });
     const listener = () => undefined;
@@ -49,7 +47,6 @@ describe('addEventListener', () => {
 describe('removeEventListener', () => {
   afterEach(() => {
     Object.assign(globalThis, {
-      ...globalThis,
       removeEventListener: originalRemoveEventListener,
       process: originalProcess,
     });
@@ -65,7 +62,6 @@ describe('removeEventListener', () => {
   it('uses on in Node.js', () => {
     // Remove removeEventListener
     Object.assign(globalThis, {
-      ...globalThis,
       removeEventListener: undefined,
     });
     const spy = jest.spyOn(globalThis.process, 'removeListener');
@@ -77,8 +73,7 @@ describe('removeEventListener', () => {
   it('throws otherwise', () => {
     // Remove removeEventListener
     Object.assign(globalThis, {
-      ...globalThis,
-      process: { ...globalThis.process, removeListener: undefined },
+      process: { removeListener: undefined },
       removeEventListener: undefined,
     });
     const listener = () => undefined;
