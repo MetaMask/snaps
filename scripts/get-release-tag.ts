@@ -9,7 +9,7 @@ enum Tag {
 }
 
 /**
- * Get the release tag from the`package.json` version.
+ * Get the release tag from the `package.json` version.
  *
  * - If the version is a prerelease, the tag is `next`.
  * - Otherwise, the tag is `latest`.
