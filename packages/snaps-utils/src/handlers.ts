@@ -194,7 +194,7 @@ export type OnNameLookupResponse =
 
 export type OnNameLookupArgs = {
   chainId: Caip2ChainId;
-} & ({ domain: string } | { address: string });
+} & ({ domain: string; address?: never } | { address: string; domain?: never });
 
 /**
  * The `onNameLookup` handler. This is called whenever content is entered
