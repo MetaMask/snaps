@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - rc/1.0.0
   pull_request:
 
 jobs:
@@ -29,8 +28,6 @@ jobs:
   publish-staging-simulator:
     name: Publish Snaps Simulator to `staging` folder
     needs: lint-build-test
-    # The `rc/1.0.0` branch does not have the `snaps-simulator` package, so we
-    # only run this job on the `main` branch.
     if: ${{ github.ref_name == 'main' }}
     permissions:
       contents: write
