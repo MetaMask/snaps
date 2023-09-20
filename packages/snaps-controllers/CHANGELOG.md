@@ -7,11 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.39.0-flask.1]
-### Uncategorized
-- Fix cronjob running on disabled snaps ([#1743](https://github.com/MetaMask/snaps-skunkworks.git/pull/1743))
+
+### Added
 - Add `onNameLookup` export ([#1394](https://github.com/MetaMask/snaps-skunkworks.git/pull/1394))
+
+### Changed
 - Remove `pump` ([#1730](https://github.com/MetaMask/snaps-skunkworks.git/pull/1730))
 - Bump `metamask/utils` and `metamask/snaps-registry` ([#1738](https://github.com/MetaMask/snaps-skunkworks.git/pull/1738))
+
+### Fixed
+- Fix cronjob running on disabled snaps ([#1743](https://github.com/MetaMask/snaps-skunkworks.git/pull/1743))
 
 ## [0.38.3-flask.1]
 ### Changed

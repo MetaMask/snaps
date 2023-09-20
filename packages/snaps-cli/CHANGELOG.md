@@ -7,11 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.38.4-flask.1]
-### Uncategorized
-- Bump `metamask/utils` and `metamask/snaps-registry` ([#1738](https://github.com/MetaMask/snaps-skunkworks.git/pull/1738))
-- Correct documentation for proposedName and permissions ([#1722](https://github.com/MetaMask/snaps-skunkworks.git/pull/1722))
-- Bump WebdriverIO ([#1702](https://github.com/MetaMask/snaps-skunkworks.git/pull/1702))
-- Bump `metamask/utils` and `metamask/snaps-registry` ([#1694](https://github.com/MetaMask/snaps-skunkworks.git/pull/1694))
+### Changed
+- Bump `metamask/utils` and `metamask/snaps-registry` ([#1738](https://github.com/MetaMask/snaps-skunkworks.git/pull/1738), [#1694](https://github.com/MetaMask/snaps-skunkworks.git/pull/1694))
 
 ## [0.38.3-flask.1]
 ### Fixed

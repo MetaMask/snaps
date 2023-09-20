@@ -7,16 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.38.1-flask.1]
-### Uncategorized
-- Remove `pump` ([#1730](https://github.com/MetaMask/snaps-skunkworks.git/pull/1730))
-- Bump `metamask/utils` and `metamask/snaps-registry` ([#1738](https://github.com/MetaMask/snaps-skunkworks.git/pull/1738))
-- Bump @metamask/eth-json-rpc-middleware from 11.0.1 to 11.0.2 ([#1735](https://github.com/MetaMask/snaps-skunkworks.git/pull/1735))
-- Fix fallback icon in snaps simulator ([#1726](https://github.com/MetaMask/snaps-skunkworks.git/pull/1726))
-- Bump WebdriverIO ([#1702](https://github.com/MetaMask/snaps-skunkworks.git/pull/1702))
+
+### Added
 - Add basic support for account RPC methods in snaps simulator ([#1710](https://github.com/MetaMask/snaps-skunkworks.git/pull/1710))
+
+### Fixed
 - Fix error when using single quotes in UI builder ([#1709](https://github.com/MetaMask/snaps-skunkworks.git/pull/1709))
-- Bump `metamask/utils` and `metamask/snaps-registry` ([#1694](https://github.com/MetaMask/snaps-skunkworks.git/pull/1694))
-- Update README with link to simulator on GH Pages ([#1690](https://github.com/MetaMask/snaps-skunkworks.git/pull/1690))
+- Fix fallback icon in snaps simulator ([#1726](https://github.com/MetaMask/snaps-skunkworks.git/pull/1726))
+
+### Changed
+- Remove `pump` ([#1730](https://github.com/MetaMask/snaps-skunkworks.git/pull/1730))
+- Bump `metamask/utils` and `metamask/snaps-registry` ([#1738](https://github.com/MetaMask/snaps-skunkworks.git/pull/1738), [#1694](https://github.com/MetaMask/snaps-skunkworks.git/pull/1694))
+- Bump @metamask/eth-json-rpc-middleware from 11.0.1 to 11.0.2 ([#1735](https://github.com/MetaMask/snaps-skunkworks.git/pull/1735))
+
 
 ## [0.38.0-flask.1]
 ### Added
