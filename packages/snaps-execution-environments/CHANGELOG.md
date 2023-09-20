@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove `pump` ([#1730](https://github.com/MetaMask/snaps-skunkworks.git/pull/1730))
 - Bump `metamask/utils` and `metamask/snaps-registry` ([#1738](https://github.com/MetaMask/snaps-skunkworks.git/pull/1738))
 
+### Fixed
+- Sanitize JSON before checking for blocked methods ([#1762](https://github.com/MetaMask/snaps-skunkworks.git/pull/1762))
+
 ## [0.38.3-flask.1]
 ### Changed
 - Bump `@metamask/post-message-stream` from 6.1.2 to 7.0.0 ([#1707](https://github.com/MetaMask/snaps/pull/1707), [#1724](https://github.com/MetaMask/snaps/pull/1724))
