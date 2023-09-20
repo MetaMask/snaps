@@ -1,6 +1,7 @@
 import { logError } from '@metamask/snaps-utils';
-import type { FunctionComponent } from 'react';
-import { Button } from 'react-bootstrap';
+import type { ChangeEvent, FunctionComponent } from 'react';
+import { useState } from 'react';
+import { Button, Form } from 'react-bootstrap';
 
 import { useInvokeMutation } from '../../../api';
 import { Result, Snap } from '../../../components';
@@ -12,12 +13,18 @@ import {
 } from './constants';
 
 export const NetworkAccess: FunctionComponent = () => {
+  const [url, setUrl] = useState(`${window.location.href}test-data.json`);
   const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setUrl(event.target.value);
+  };
 
   const handleSubmit = () => {
     invokeSnap({
       snapId: getSnapId(NETWORK_ACCESS_SNAP_ID, NETWORK_ACCESS_PORT),
       method: 'fetch',
+      params: { url },
     }).catch(logError);
   };
 
@@ -29,6 +36,14 @@ export const NetworkAccess: FunctionComponent = () => {
       version={NETWORK_ACCESS_VERSION}
       testId="network-access"
     >
+      <Form.Control
+        type="text"
+        placeholder="URL"
+        value={url}
+        onChange={handleChange}
+        id="fetchUrl"
+        className="mb-3"
+      />
       <Button
         variant="primary"
         id="sendNetworkAccessTest"
