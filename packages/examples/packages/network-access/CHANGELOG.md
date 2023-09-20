@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.38.2-flask.1]
-### Uncategorized
+### Fixed
 - Fix network access example snap ([#1747](https://github.com/MetaMask/snaps-skunkworks.git/pull/1747))
-- Bump WebdriverIO ([#1702](https://github.com/MetaMask/snaps-skunkworks.git/pull/1702))
 
 ## [0.38.1-flask.1]
 ### Changed
