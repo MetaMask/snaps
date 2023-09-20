@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-browserify-plugin",
-  "version": "0.37.4-flask.1",
+  "version": "0.37.3-flask.1",
   "keywords": [
     "browserify-plugin"
   ],
