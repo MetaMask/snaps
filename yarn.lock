@@ -3612,7 +3612,7 @@ __metadata:
 
 "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A5.2.1#./.yarn/patches/@lavamoat-lavapack-npm-5.2.1-6ac9929a63.patch::locator=root%40workspace%3A.":
   version: 5.2.1
-  resolution: "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A5.2.1#./.yarn/patches/@lavamoat-lavapack-npm-5.2.1-6ac9929a63.patch::version=5.2.1&hash=b92d3b&locator=root%40workspace%3A."
+  resolution: "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A5.2.1#./.yarn/patches/@lavamoat-lavapack-npm-5.2.1-6ac9929a63.patch::version=5.2.1&hash=597205&locator=root%40workspace%3A."
   dependencies:
     JSONStream: ^1.3.5
     combine-source-map: ^0.8.0
@@ -3622,7 +3622,7 @@ __metadata:
     readable-stream: ^3.6.0
     through2: ^4.0.2
     umd: ^3.0.3
-  checksum: 533f57df67cc90f1ee597a233bdf2ce7ea323a9ab1016d696ea90a039bc08f14b64e39ecdf8b77c05b96bc9bb70f816956bbf8607f244333d55bd7f12a4c11f8
+  checksum: 7209fae7db42044b31192851bbe6eba331c25e80c1e0d797cd95f1a61ecf369c46355aad5475a8dc1a427108413c0765a15c69fade679d1ea729b6cdc166d0e4
   languageName: node
   linkType: hard
 
@@ -16189,7 +16189,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^14.1.1, lavamoat-core@npm:^14.2.1":
+"lavamoat-core@npm:14.2.1":
   version: 14.2.1
   resolution: "lavamoat-core@npm:14.2.1"
   dependencies:
@@ -16197,6 +16197,17 @@ __metadata:
     lavamoat-tofu: ^6.0.2
     merge-deep: ^3.0.3
   checksum: 84d52ed1ea4b240e8ed9ba63e33716b208d832a88c02ab25466efb91603713e0b8d829d5acea8e00bcff9f2d2d6c761e3be6d0c7fe6b3908e55918b8a2e223dc
+  languageName: node
+  linkType: hard
+
+"lavamoat-core@patch:lavamoat-core@npm%3A14.2.1#./.yarn/patches/lavamoat-core-npm-14.2.1-879311807b.patch::locator=root%40workspace%3A.":
+  version: 14.2.1
+  resolution: "lavamoat-core@patch:lavamoat-core@npm%3A14.2.1#./.yarn/patches/lavamoat-core-npm-14.2.1-879311807b.patch::version=14.2.1&hash=bf87bd&locator=root%40workspace%3A."
+  dependencies:
+    json-stable-stringify: ^1.0.2
+    lavamoat-tofu: ^6.0.2
+    merge-deep: ^3.0.3
+  checksum: 210bf3b7bcded18c3bd3ad2c645441943b55d62a5f9c0d959f4d1f872a03279c44ea3e9cbf72fb930f3c57eff2d275c24c9bb084f9e0ffe417d44fe9c5f2f5ed
   languageName: node
   linkType: hard
 
