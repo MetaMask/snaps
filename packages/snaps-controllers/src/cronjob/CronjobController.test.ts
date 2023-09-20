@@ -196,8 +196,46 @@ describe('CronjobController', () => {
       initialPermissions: {},
       version: MOCK_VERSION,
     };
-    // @ts-expect-error Accessing private property
-    cronjobController._handleEventSnapInstalled(snapInfo);
+
+    rootMessenger.publish('SnapController:snapInstalled', snapInfo);
+
+    jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
+
+    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+      4,
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_SNAP_ID,
+        origin: '',
+        handler: HandlerType.OnCronjob,
+        request: {
+          method: 'exampleMethodOne',
+          params: ['p1'],
+        },
+      },
+    );
+
+    cronjobController.destroy();
+  });
+
+  it('handles SnapEnabled event', () => {
+    const rootMessenger = getRootCronjobControllerMessenger();
+    const controllerMessenger =
+      getRestrictedCronjobControllerMessenger(rootMessenger);
+
+    const cronjobController = new CronjobController({
+      messenger: controllerMessenger,
+    });
+
+    const snapInfo: TruncatedSnap = {
+      blocked: false,
+      enabled: true,
+      id: MOCK_SNAP_ID,
+      initialPermissions: {},
+      version: MOCK_VERSION,
+    };
+
+    rootMessenger.publish('SnapController:snapEnabled', snapInfo);
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
 
@@ -227,7 +265,43 @@ describe('CronjobController', () => {
       messenger: controllerMessenger,
     });
 
-    cronjobController.register(MOCK_SNAP_ID);
+    const snapInfo: TruncatedSnap = {
+      blocked: false,
+      enabled: true,
+      id: MOCK_SNAP_ID,
+      initialPermissions: {},
+      version: MOCK_VERSION,
+    };
+
+    rootMessenger.publish('SnapController:snapInstalled', snapInfo);
+    rootMessenger.publish('SnapController:snapRemoved', snapInfo);
+
+    jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
+
+    expect(rootMessenger.call).not.toHaveBeenCalledWith(
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_SNAP_ID,
+        origin: '',
+        handler: HandlerType.OnCronjob,
+        request: {
+          method: 'exampleMethodOne',
+          params: ['p1'],
+        },
+      },
+    );
+
+    cronjobController.destroy();
+  });
+
+  it('handles SnapDisabled event', () => {
+    const rootMessenger = getRootCronjobControllerMessenger();
+    const controllerMessenger =
+      getRestrictedCronjobControllerMessenger(rootMessenger);
+
+    const cronjobController = new CronjobController({
+      messenger: controllerMessenger,
+    });
 
     const snapInfo: TruncatedSnap = {
       blocked: false,
@@ -237,8 +311,8 @@ describe('CronjobController', () => {
       version: MOCK_VERSION,
     };
 
-    // @ts-expect-error Accessing private property
-    cronjobController._handleEventSnapRemoved(snapInfo);
+    rootMessenger.publish('SnapController:snapInstalled', snapInfo);
+    rootMessenger.publish('SnapController:snapDisabled', snapInfo);
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
 
@@ -267,8 +341,6 @@ describe('CronjobController', () => {
       messenger: controllerMessenger,
     });
 
-    cronjobController.register(MOCK_SNAP_ID);
-
     const snapInfo: TruncatedSnap = {
       blocked: false,
       enabled: true,
@@ -277,8 +349,12 @@ describe('CronjobController', () => {
       version: MOCK_VERSION,
     };
 
-    // @ts-expect-error Accessing private property
-    cronjobController._handleEventSnapUpdated(snapInfo);
+    rootMessenger.publish('SnapController:snapInstalled', snapInfo);
+    rootMessenger.publish(
+      'SnapController:snapUpdated',
+      snapInfo,
+      snapInfo.version,
+    );
 
     jest.advanceTimersByTime(inMilliseconds(15, Duration.Minute));
 
