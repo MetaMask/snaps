@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.37.4-flask.1]
+### Uncategorized
+- Bump `metamask/utils` and `metamask/snaps-registry` ([#1738](https://github.com/MetaMask/snaps-skunkworks.git/pull/1738))
+- Bump `metamask/utils` and `metamask/snaps-registry` ([#1694](https://github.com/MetaMask/snaps-skunkworks.git/pull/1694))
+
 ## [0.37.3-flask.1]
 ### Fixed
 - Remove unused dependencies ([#1680](https://github.com/MetaMask/snaps/pull/1680))
@@ -16,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@0.37.3-flask.1...HEAD
-[0.37.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@0.37.2-flask.1...@metamask/snaps-webpack-plugin@0.37.3-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/snaps-webpack-plugin@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-webpack-plugin@0.37.4-flask.1...HEAD
+[0.37.4-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-webpack-plugin@0.37.3-flask.1...@metamask/snaps-webpack-plugin@0.37.4-flask.1
+[0.37.3-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-webpack-plugin@0.37.2-flask.1...@metamask/snaps-webpack-plugin@0.37.3-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/snaps-webpack-plugin@0.37.2-flask.1

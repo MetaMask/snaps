@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.39.1-flask.1]
+### Uncategorized
+- Fix network access example snap ([#1747](https://github.com/MetaMask/snaps-skunkworks.git/pull/1747))
+- Bump `metamask/utils` and `metamask/snaps-registry` ([#1738](https://github.com/MetaMask/snaps-skunkworks.git/pull/1738))
+
 ## [0.39.0-flask.1]
 ### Added
 - Add test snap for `snap_getLocale` ([#1684](https://github.com/MetaMask/snaps/pull/1684))
@@ -28,8 +33,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@0.39.0-flask.1...HEAD
-[0.39.0-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@0.38.0-flask.1...@metamask/test-snaps@0.39.0-flask.1
-[0.38.0-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@0.37.3-flask.1...@metamask/test-snaps@0.38.0-flask.1
-[0.37.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@0.37.2-flask.1...@metamask/test-snaps@0.37.3-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/test-snaps@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@0.39.1-flask.1...HEAD
+[0.39.1-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@0.39.0-flask.1...@metamask/test-snaps@0.39.1-flask.1
+[0.39.0-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@0.38.0-flask.1...@metamask/test-snaps@0.39.0-flask.1
+[0.38.0-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@0.37.3-flask.1...@metamask/test-snaps@0.38.0-flask.1
+[0.37.3-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@0.37.2-flask.1...@metamask/test-snaps@0.37.3-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/test-snaps@0.37.2-flask.1

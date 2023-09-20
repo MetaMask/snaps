@@ -1,6 +1,6 @@
 {
   "name": "@metamask/bip32-example-snap",
-  "version": "0.37.3-flask.1",
+  "version": "0.38.2-flask.1",
   "description": "MetaMask example snap demonstrating the use of `snap_getBip32Entropy`.",
   "repository": {
     "type": "git",
