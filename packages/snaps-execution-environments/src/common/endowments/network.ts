@@ -1,4 +1,7 @@
+import { assert } from '@metamask/utils';
+
 import { withTeardown } from '../utils';
+import type { EndowmentFactoryOptions } from './commonEndowmentFactory';
 
 /**
  * This class wraps a Response object.
@@ -89,10 +92,13 @@ class ResponseWrapper implements Response {
  * to ensure that a bad actor cannot get access to the original function, thus
  * potentially preventing the network requests from being torn down.
  *
+ * @param options - An options bag.
+ * @param options.notify - A reference to the notify function of the snap executor.
  * @returns An object containing a wrapped `fetch`
  * function, as well as a teardown function.
  */
-const createNetwork = () => {
+const createNetwork = ({ notify }: EndowmentFactoryOptions = {}) => {
+  assert(notify, 'Notify must be passed to network endowment factory');
   // Open fetch calls or open body streams
   const openConnections = new Set<{ cancel: () => Promise<void> }>();
   // Track last teardown count
@@ -124,6 +130,7 @@ const createNetwork = () => {
     let res: Response;
     let openFetchConnection: { cancel: () => Promise<void> } | undefined;
     try {
+      notify({ method: 'OutboundRequest' });
       const fetchPromise = fetch(input, {
         ...init,
         signal: abortController.signal,
@@ -149,6 +156,7 @@ const createNetwork = () => {
       if (openFetchConnection !== undefined) {
         openConnections.delete(openFetchConnection);
       }
+      notify({ method: 'OutboundResponse' });
     }
 
     if (res.body !== null) {

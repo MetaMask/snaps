@@ -56,7 +56,11 @@ describe('endowments', () => {
       Request: RequestHardened,
       Headers: HeadersHardened,
       Response: ResponseHardened,
-    } = network.factory();
+    } = network.factory({
+      notify: () => {
+        // no-op
+      },
+    });
     const { Date: DateAttenuated } = date.factory();
     const { console: consoleAttenuated } = consoleEndowment.factory({
       snapId: MOCK_SNAP_ID,

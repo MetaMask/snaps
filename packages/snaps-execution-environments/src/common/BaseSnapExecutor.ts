@@ -110,6 +110,8 @@ const EXECUTION_ENVIRONMENT_METHODS = {
 
 type Methods = typeof EXECUTION_ENVIRONMENT_METHODS;
 
+export type NotifyFunction = BaseSnapExecutor['notify'];
+
 export class BaseSnapExecutor {
   private readonly snapData: Map<string, SnapData>;
 
@@ -325,7 +327,7 @@ export class BaseSnapExecutor {
   protected async startSnap(
     snapId: string,
     sourceCode: string,
-    _endowments?: string[],
+    _endowments: string[],
   ): Promise<void> {
     log(`Starting snap '${snapId}' in worker.`);
     if (this.snapPromiseErrorHandler) {
@@ -359,12 +361,13 @@ export class BaseSnapExecutor {
     const snapModule: any = { exports: {} };
 
     try {
-      const { endowments, teardown: endowmentTeardown } = createEndowments(
+      const { endowments, teardown: endowmentTeardown } = createEndowments({
         snap,
         ethereum,
         snapId,
-        _endowments,
-      );
+        endowments: _endowments,
+        notify: this.notify.bind(this),
+      });
 
       // !!! Ensure that this is the only place the data is being set.
       // Other methods access the object value and mutate its properties.

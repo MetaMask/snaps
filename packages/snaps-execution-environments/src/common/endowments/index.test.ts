@@ -6,6 +6,14 @@ import { createEndowments } from '.';
 const mockSnapAPI = { foo: Symbol('bar') };
 const mockEthereum = { foo: Symbol('bar') };
 
+const mockOptions = {
+  snap: mockSnapAPI as any,
+  ethereum: mockEthereum as any,
+  snapId: MOCK_SNAP_ID,
+  notify: jest.fn(),
+  endowments: [],
+};
+
 describe('Endowment utils', () => {
   describe('createEndowments', () => {
     beforeAll(() => {
@@ -19,53 +27,41 @@ describe('Endowment utils', () => {
     });
 
     it('handles no endowments', () => {
-      const { endowments } = createEndowments(
-        mockSnapAPI as any,
-        mockEthereum as any,
-        MOCK_SNAP_ID,
-      );
+      const result = createEndowments(mockOptions);
 
-      expect(
-        createEndowments(mockSnapAPI as any, mockEthereum as any, MOCK_SNAP_ID),
-      ).toStrictEqual({
+      expect(result).toStrictEqual({
         endowments: {
           snap: mockSnapAPI,
         },
         teardown: expect.any(Function),
       });
-      expect(endowments.snap).toBe(mockSnapAPI);
+      expect(result.endowments.snap).toBe(mockSnapAPI);
     });
 
     it('handles special cases where endowment is not available as part of a factory', () => {
       const mockEndowment = {};
       Object.assign(globalThis, { mockEndowment });
-      const { endowments } = createEndowments(
-        mockSnapAPI as any,
-        mockEthereum as any,
-        MOCK_SNAP_ID,
-        ['mockEndowment'],
-      );
+      const { endowments } = createEndowments({
+        ...mockOptions,
+        endowments: ['mockEndowment'],
+      });
       expect(endowments.mockEndowment).toBeDefined();
     });
 
     it('handles special case for ethereum endowment', () => {
       Object.assign(globalThis, { ethereum: {} });
-      const { endowments } = createEndowments(
-        mockSnapAPI as any,
-        mockEthereum as any,
-        MOCK_SNAP_ID,
-        ['ethereum'],
-      );
+      const { endowments } = createEndowments({
+        ...mockOptions,
+        endowments: ['ethereum'],
+      });
       expect(endowments.ethereum).toBe(mockEthereum);
     });
 
     it('handles factory endowments', () => {
-      const { endowments } = createEndowments(
-        mockSnapAPI as any,
-        mockEthereum as any,
-        MOCK_SNAP_ID,
-        ['setTimeout'],
-      );
+      const { endowments } = createEndowments({
+        ...mockOptions,
+        endowments: ['setTimeout'],
+      });
 
       expect(endowments).toStrictEqual({
         snap: mockSnapAPI,
@@ -75,12 +71,10 @@ describe('Endowment utils', () => {
     });
 
     it('handles some endowments from the same factory', () => {
-      const { endowments } = createEndowments(
-        mockSnapAPI as any,
-        mockEthereum as any,
-        MOCK_SNAP_ID,
-        ['setTimeout'],
-      );
+      const { endowments } = createEndowments({
+        ...mockOptions,
+        endowments: ['setTimeout'],
+      });
 
       expect(endowments).toMatchObject({
         snap: mockSnapAPI,
@@ -90,12 +84,10 @@ describe('Endowment utils', () => {
     });
 
     it('handles all endowments from the same factory', () => {
-      const { endowments } = createEndowments(
-        mockSnapAPI as any,
-        mockEthereum as any,
-        MOCK_SNAP_ID,
-        ['setTimeout', 'clearTimeout'],
-      );
+      const { endowments } = createEndowments({
+        ...mockOptions,
+        endowments: ['setTimeout', 'clearTimeout'],
+      });
 
       expect(endowments).toMatchObject({
         snap: mockSnapAPI,
@@ -106,11 +98,9 @@ describe('Endowment utils', () => {
     });
 
     it('handles multiple endowments, factory and non-factory', () => {
-      const { endowments } = createEndowments(
-        mockSnapAPI as any,
-        mockEthereum as any,
-        MOCK_SNAP_ID,
-        [
+      const { endowments } = createEndowments({
+        ...mockOptions,
+        endowments: [
           'console',
           'Uint8Array',
           'Math',
@@ -118,7 +108,7 @@ describe('Endowment utils', () => {
           'clearTimeout',
           'WebAssembly',
         ],
-      );
+      });
 
       expect(endowments).toMatchObject({
         snap: mockSnapAPI,
@@ -142,22 +132,23 @@ describe('Endowment utils', () => {
 
     it('throws for unknown endowments', () => {
       expect(() =>
-        createEndowments(
-          mockSnapAPI as any,
-          mockEthereum as any,
-          MOCK_SNAP_ID,
-          ['foo'],
-        ),
+        createEndowments({
+          ...mockOptions,
+          endowments: ['foo'],
+        }),
       ).toThrow('Unknown endowment: "foo"');
     });
 
     it('teardown calls all teardown functions', async () => {
-      const { endowments, teardown } = createEndowments(
-        mockSnapAPI as any,
-        mockEthereum as any,
-        MOCK_SNAP_ID,
-        ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
-      );
+      const { endowments, teardown } = createEndowments({
+        ...mockOptions,
+        endowments: [
+          'setTimeout',
+          'clearTimeout',
+          'setInterval',
+          'clearInterval',
+        ],
+      });
 
       const clearTimeoutSpy = jest.spyOn(globalThis, 'clearTimeout');
       const clearIntervalSpy = jest.spyOn(globalThis, 'clearInterval');
@@ -190,12 +181,15 @@ describe('Endowment utils', () => {
     });
 
     it('teardown can be called multiple times', async () => {
-      const { endowments, teardown } = createEndowments(
-        mockSnapAPI as any,
-        mockEthereum as any,
-        MOCK_SNAP_ID,
-        ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
-      );
+      const { endowments, teardown } = createEndowments({
+        ...mockOptions,
+        endowments: [
+          'setTimeout',
+          'clearTimeout',
+          'setInterval',
+          'clearInterval',
+        ],
+      });
 
       const { setInterval, setTimeout } = endowments as {
         setInterval: typeof globalThis.setInterval;
