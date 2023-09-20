@@ -710,6 +710,116 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('sanitizes JSON before checking for blocked methods using snap global', async () => {
+    const CODE = `
+    const badToJSON = () => {
+      const x = []
+    
+      x.method = 'snap_dialog';
+    
+      x.toJSON = () => {
+        return {
+          method: 'wallet_requestSnaps',
+          params: [],
+        };
+      };
+    
+      return snap.request(x);
+    }
+    
+    module.exports.onRpcRequest = () => badToJSON()
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      error: {
+        code: -32601,
+        message: 'The method does not exist / is not available.',
+        data: {
+          method: 'wallet_requestSnaps',
+        },
+        stack: expect.any(String),
+      },
+      id: 2,
+    });
+  });
+
+  it('sanitizes JSON before checking for blocked methods using ethereum global', async () => {
+    const CODE = `
+    const badToJSON = () => {
+      const x = []
+    
+      x.method = 'eth_requestAccounts';
+    
+      x.toJSON = () => {
+        return {
+          method: 'wallet_requestSnaps',
+          params: [],
+        };
+      };
+    
+      return ethereum.request(x);
+    }
+    
+    module.exports.onRpcRequest = () => badToJSON()
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['ethereum']);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      error: {
+        code: -32601,
+        message: 'The method does not exist / is not available.',
+        data: {
+          method: 'wallet_requestSnaps',
+        },
+        stack: expect.any(String),
+      },
+      id: 2,
+    });
+  });
+
   it('notifies execution service of out of band errors via unhandledrejection', async () => {
     const CODE = `
       module.exports.onRpcRequest = async () => 'foo';
