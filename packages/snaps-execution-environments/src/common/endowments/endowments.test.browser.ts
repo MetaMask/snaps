@@ -33,10 +33,16 @@ lockdown({
 globalThis.atob = harden(originalAtob);
 globalThis.btoa = harden(originalBtoa);
 
+const mockNotify = () => {
+  // no-op
+};
+
 describe('endowments', () => {
   describe('hardening', () => {
     const modules = buildCommonEndowments();
-    modules.forEach((endowment) => endowment.factory({ snapId: MOCK_SNAP_ID }));
+    modules.forEach((endowment) =>
+      endowment.factory({ snapId: MOCK_SNAP_ID, notify: mockNotify }),
+    );
 
     // Specially attenuated endowments or endowments that require
     // to be imported in a different way
@@ -57,9 +63,7 @@ describe('endowments', () => {
       Headers: HeadersHardened,
       Response: ResponseHardened,
     } = network.factory({
-      notify: () => {
-        // no-op
-      },
+      notify: mockNotify,
     });
     const { Date: DateAttenuated } = date.factory();
     const { console: consoleAttenuated } = consoleEndowment.factory({
