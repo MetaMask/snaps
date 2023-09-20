@@ -786,7 +786,7 @@ describe('BaseSnapExecutor', () => {
     `;
 
     const executor = new TestSnapExecutor();
-    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['ethereum']);
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
