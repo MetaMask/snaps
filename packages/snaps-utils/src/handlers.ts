@@ -188,8 +188,9 @@ export type HandlerFunction<Type extends SnapHandler> =
 export type OnNameLookupResponse =
   | {
       resolvedAddress: AccountAddress;
+      resolvedDomain?: never;
     }
-  | { resolvedDomain: string }
+  | { resolvedDomain: string; resolvedAddress?: never }
   | null;
 
 export type OnNameLookupArgs = {
