@@ -5,7 +5,6 @@ import {
   VersionStruct,
   isValidSemVerRange,
 } from '@metamask/utils';
-import { ChainIdStruct } from 'src/namespace';
 import type { Infer, Struct } from 'superstruct';
 import {
   array,
@@ -30,6 +29,7 @@ import { isEqual } from '../array';
 import { CronjobSpecificationArrayStruct } from '../cronjob';
 import { SIP_6_MAGIC_VALUE, STATE_ENCRYPTION_MAGIC_VALUE } from '../entropy';
 import { RpcOriginsStruct } from '../json-rpc';
+import { ChainIdStruct } from '../namespace';
 import { SnapIdStruct } from '../snaps';
 import { NameStruct, NpmSnapFileNames } from '../types';
 
