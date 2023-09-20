@@ -30,14 +30,14 @@ describe('generateMockEndowments', () => {
 
   it('returns global function for functions', () => {
     const fetchMock = jest.fn().mockImplementationOnce(() => 'foo');
-    Object.assign(globalThis, { ...globalThis, fetch: fetchMock });
+    Object.assign(globalThis, { fetch: fetchMock });
     const endowments = generateMockEndowments();
     expect(endowments.fetch()).toBe('foo');
   });
 
   it('returns mock function for functions', () => {
     // Remove fetch from isomorphic-fetch if present
-    Object.assign(globalThis, { ...globalThis, fetch: undefined });
+    Object.assign(globalThis, { fetch: undefined });
     const endowments = generateMockEndowments();
     expect(endowments.fetch()).toBe(true);
   });
