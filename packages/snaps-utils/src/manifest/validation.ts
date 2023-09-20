@@ -5,6 +5,7 @@ import {
   VersionStruct,
   isValidSemVerRange,
 } from '@metamask/utils';
+import { ChainIdStruct } from 'src/namespace';
 import type { Infer, Struct } from 'superstruct';
 import {
   array,
@@ -138,6 +139,8 @@ export const SnapIdsStruct = refine(
 
 export type SnapIds = Infer<typeof SnapIdsStruct>;
 
+export const ChainIdsStruct = array(ChainIdStruct);
+
 /* eslint-disable @typescript-eslint/naming-convention */
 export const PermissionsStruct = type({
   'endowment:long-running': optional(object({})),
@@ -152,7 +155,7 @@ export const PermissionsStruct = type({
     object({ jobs: CronjobSpecificationArrayStruct }),
   ),
   'endowment:rpc': optional(RpcOriginsStruct),
-  'endowment:name-lookup': optional(object({})),
+  'endowment:name-lookup': optional(ChainIdsStruct),
   snap_dialog: optional(object({})),
   // TODO: Remove
   snap_confirm: optional(object({})),
