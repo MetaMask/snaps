@@ -17,9 +17,11 @@ export type {
   AccountId,
   ChainId,
   OnCronjobHandler,
+  OnNameLookupHandler,
   OnRpcRequestHandler,
   OnTransactionHandler,
   OnTransactionResponse,
+  OnNameLookupResponse,
   OnInstallHandler,
   OnUpdateHandler,
 } from '@metamask/snaps-utils';
