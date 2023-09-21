@@ -18,7 +18,7 @@ export const onNameLookup: OnNameLookupHandler = async (request) => {
     const shortAddress = `0x${address.substring(2, 5)}`;
     const chainIdDecimal = parseInt(chainId.split(':')[1], 10);
     const chainIdHex = numberToHex(chainIdDecimal);
-    const resolvedDomain = `test.domain - ${shortAddress} / ${chainIdHex}`;
+    const resolvedDomain = `example.domain - ${shortAddress} / ${chainIdHex}`;
     return { resolvedDomain };
   }
 
