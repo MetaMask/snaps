@@ -177,12 +177,9 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
     SnapControllerEvents | AllowedEvents
   >();
 
-  messenger.registerActionHandler(
-    'PermissionController:hasPermission',
-    (permission) => {
-      return permission !== SnapEndowments.LongRunning;
-    },
-  );
+  messenger.registerActionHandler('PermissionController:hasPermission', () => {
+    return true;
+  });
 
   messenger.registerActionHandler('PermissionController:hasPermissions', () => {
     return true;
@@ -483,8 +480,8 @@ export const getRestrictedCronjobControllerMessenger = (
   if (mocked) {
     messenger.registerActionHandler(
       'PermissionController:hasPermission',
-      (permission) => {
-        return permission !== SnapEndowments.LongRunning;
+      () => {
+        return true;
       },
     );
 
