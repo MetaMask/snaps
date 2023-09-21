@@ -26,7 +26,7 @@ describe('onNameLookup', () => {
     };
 
     expect(await onNameLookup(request)).toStrictEqual({
-      resolvedDomain: 'test.domain - 0xc0f / 0x1',
+      resolvedDomain: 'example.domain - 0xc0f / 0x1',
     });
   });
 
@@ -38,7 +38,7 @@ describe('onNameLookup', () => {
     } as any;
 
     expect(await onNameLookup(request)).toStrictEqual({
-      resolvedDomain: 'test.domain - 0xc0f / 0x1',
+      resolvedDomain: 'example.domain - 0xc0f / 0x1',
     });
   });
 
