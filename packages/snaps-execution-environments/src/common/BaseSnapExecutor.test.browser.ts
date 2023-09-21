@@ -1016,6 +1016,55 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('reports when outbound requests are made using fetch', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => fetch('https://metamask.io').then(res => res.text());
+    `;
+
+    const fetchSpy = spy(globalThis, 'fetch');
+
+    fetchSpy.mockImplementation(async () => {
+      return new Response('foo');
+    });
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['fetch']);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      method: 'OutboundRequest',
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      method: 'OutboundResponse',
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: 'foo',
+    });
+  });
+
   it('notifies execution service of out of band errors via unhandledrejection', async () => {
     const CODE = `
       module.exports.onRpcRequest = async () => 'foo';
