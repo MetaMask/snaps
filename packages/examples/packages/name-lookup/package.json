@@ -9,7 +9,6 @@
   "license": "(MIT-0 OR Apache-2.0)",
   "sideEffects": false,
   "main": "./dist/bundle.js",
-  "types": "dist/index.d.ts",
   "files": [
     "dist/",
     "images/icon.svg",
