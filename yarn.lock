@@ -22,13 +22,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.18.6, @babel/code-frame@npm:^7.21.4, @babel/code-frame@npm:^7.22.13, @babel/code-frame@npm:^7.22.5":
+"@babel/code-frame@npm:7.22.13":
   version: 7.22.13
   resolution: "@babel/code-frame@npm:7.22.13"
   dependencies:
     "@babel/highlight": ^7.22.13
     chalk: ^2.4.2
   checksum: 22e342c8077c8b77eeb11f554ecca2ba14153f707b85294fcf6070b6f6150aae88a7b7436dd88d8c9289970585f3fe5b9b941c5aa3aa26a6d5a8ef3f292da058
+  languageName: node
+  linkType: hard
+
+"@babel/code-frame@patch:@babel/code-frame@npm%3A7.22.13#./.yarn/patches/@babel-code-frame-npm-7.22.13-2782581d20.patch::locator=root%40workspace%3A.":
+  version: 7.22.13
+  resolution: "@babel/code-frame@patch:@babel/code-frame@npm%3A7.22.13#./.yarn/patches/@babel-code-frame-npm-7.22.13-2782581d20.patch::version=7.22.13&hash=f02aea&locator=root%40workspace%3A."
+  dependencies:
+    "@babel/highlight": ^7.22.13
+    chalk: ^2.4.2
+  checksum: aee22c777ad750cc3b5147815e4fb963d223b0d584eb5e50cd81667761fd6833e297eeb93fcac6f14f861ded15580d90baf7444e2e5a0f7a4cfd5988fe0dfdae
   languageName: node
   linkType: hard
 
@@ -346,7 +356,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/highlight@npm:^7.18.6, @babel/highlight@npm:^7.22.13":
+"@babel/highlight@npm:7.22.20":
   version: 7.22.20
   resolution: "@babel/highlight@npm:7.22.20"
   dependencies:
@@ -354,6 +364,17 @@ __metadata:
     chalk: ^2.4.2
     js-tokens: ^4.0.0
   checksum: 84bd034dca309a5e680083cd827a766780ca63cef37308404f17653d32366ea76262bd2364b2d38776232f2d01b649f26721417d507e8b4b6da3e4e739f6d134
+  languageName: node
+  linkType: hard
+
+"@babel/highlight@patch:@babel/highlight@npm%3A7.22.20#./.yarn/patches/@babel-highlight-npm-7.22.20-5de7aba88d.patch::locator=root%40workspace%3A.":
+  version: 7.22.20
+  resolution: "@babel/highlight@patch:@babel/highlight@npm%3A7.22.20#./.yarn/patches/@babel-highlight-npm-7.22.20-5de7aba88d.patch::version=7.22.20&hash=37df9b&locator=root%40workspace%3A."
+  dependencies:
+    "@babel/helper-validator-identifier": ^7.22.20
+    chalk: ^2.4.2
+    js-tokens: ^4.0.0
+  checksum: 273084c05d2761ac749efa2670e3b70ecf5dd9f338e123ae38c6707ce7b02a6e970f9ce59c29e49a8174af7e71fc310258092f10dc4cae1f2fdbe3ed541e28fb
   languageName: node
   linkType: hard
 

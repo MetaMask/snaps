@@ -49,7 +49,16 @@
     ]
   },
   "resolutions": {
+    "@babel/code-frame@^7.0.0": "patch:@babel/code-frame@npm%3A7.22.13#./.yarn/patches/@babel-code-frame-npm-7.22.13-2782581d20.patch",
+    "@babel/code-frame@^7.10.4": "patch:@babel/code-frame@npm%3A7.22.13#./.yarn/patches/@babel-code-frame-npm-7.22.13-2782581d20.patch",
+    "@babel/code-frame@^7.12.13": "patch:@babel/code-frame@npm%3A7.22.13#./.yarn/patches/@babel-code-frame-npm-7.22.13-2782581d20.patch",
+    "@babel/code-frame@^7.18.6": "patch:@babel/code-frame@npm%3A7.22.13#./.yarn/patches/@babel-code-frame-npm-7.22.13-2782581d20.patch",
+    "@babel/code-frame@^7.21.4": "patch:@babel/code-frame@npm%3A7.22.13#./.yarn/patches/@babel-code-frame-npm-7.22.13-2782581d20.patch",
+    "@babel/code-frame@^7.22.13": "patch:@babel/code-frame@npm%3A7.22.13#./.yarn/patches/@babel-code-frame-npm-7.22.13-2782581d20.patch",
+    "@babel/code-frame@^7.22.5": "patch:@babel/code-frame@npm%3A7.22.13#./.yarn/patches/@babel-code-frame-npm-7.22.13-2782581d20.patch",
     "@babel/core": "patch:@babel/core@npm%3A7.21.0#./.yarn/patches/@babel-core-npm-7.21.0-fb3817b0e5.patch",
+    "@babel/highlight@^7.18.6": "patch:@babel/highlight@npm%3A7.22.20#./.yarn/patches/@babel-highlight-npm-7.22.20-5de7aba88d.patch",
+    "@babel/highlight@^7.22.13": "patch:@babel/highlight@npm%3A7.22.20#./.yarn/patches/@babel-highlight-npm-7.22.20-5de7aba88d.patch",
     "@lavamoat/lavapack@^5.4.1": "patch:@lavamoat/lavapack@npm%3A5.4.1#./.yarn/patches/@lavamoat-lavapack-npm-5.4.1-2548b3e225.patch",
     "@types/glob@*": "patch:@types/glob@npm%3A7.1.4#./.yarn/patches/@types-glob-npm-7.1.4-d45247eaa2.patch",
     "@types/glob@^7.1.1": "patch:@types/glob@npm%3A7.1.4#./.yarn/patches/@types-glob-npm-7.1.4-d45247eaa2.patch",

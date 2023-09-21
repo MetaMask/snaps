@@ -1,0 +1,16 @@
+diff --git a/lib/index.js b/lib/index.js
+index cb718afd154ce0c93f3e50d8aeb243bc40983713..2e9ade29b460873bdcda6314770e85b4c3d507f1 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -9,7 +9,10 @@ var _jsTokens = require("js-tokens");
+ var _helperValidatorIdentifier = require("@babel/helper-validator-identifier");
+ var _chalk = _interopRequireWildcard(require("chalk"), true);
+ function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+-function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
++function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get ||   desc.set)) { Object.defineProperty(newObj, key, desc); } else { try { newObj[key] = obj[key]; } catch (err) { Object.defineProperty(newObj, key, desc); } } }   } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
++
++
++
+ const sometimesKeywords = new Set(["as", "async", "from", "get", "of", "set"]);
+ function getDefs(chalk) {
+   return {
