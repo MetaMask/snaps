@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [1.0.0]
-### Uncategorized
-- Bump WebdriverIO ([#1702](https://github.com/MetaMask/snaps/pull/1702))
+### Changed
+- Initial stable release from main branch
 
 ## [0.37.3-flask.1]
 ### Fixed
