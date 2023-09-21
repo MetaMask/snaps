@@ -37,15 +37,6 @@ describe('buildSnapEndowmentSpecifications', () => {
           ],
           "targetName": "endowment:lifecycle-hooks",
         },
-        "endowment:long-running": {
-          "allowedCaveats": null,
-          "endowmentGetter": [Function],
-          "permissionType": "Endowment",
-          "subjectTypes": [
-            "snap",
-          ],
-          "targetName": "endowment:long-running",
-        },
         "endowment:name-lookup": {
           "allowedCaveats": [
             "chainIds",

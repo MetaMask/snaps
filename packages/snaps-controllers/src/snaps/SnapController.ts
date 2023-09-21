@@ -52,7 +52,6 @@ import {
   getErrorMessage,
   HandlerType,
   logError,
-  logWarning,
   normalizeRelative,
   resolveVersionRange,
   SnapCaveatType,
@@ -2112,7 +2111,6 @@ export class SnapController extends BaseController<
 
     try {
       const result = await this.#executeWithTimeout(
-        snapId,
         this.messagingSystem.call('ExecutionService:executeSnap', {
           ...snapData,
           endowments: await this.#getEndowments(snapId),
@@ -2563,7 +2561,6 @@ export class SnapController extends BaseController<
       // This will either get the result or reject due to the timeout.
       try {
         const result = await this.#executeWithTimeout(
-          snapId,
           handleRpcRequestPromise,
           timer,
         );
@@ -2583,31 +2580,15 @@ export class SnapController extends BaseController<
    * Awaits the specified promise and rejects if the promise doesn't resolve
    * before the timeout.
    *
-   * @param snapId - The snap id.
    * @param promise - The promise to await.
    * @param timer - An optional timer object to control the timeout.
    * @returns The result of the promise or rejects if the promise times out.
    * @template PromiseValue - The value of the Promise.
    */
   async #executeWithTimeout<PromiseValue>(
-    snapId: ValidatedSnapId,
     promise: Promise<PromiseValue>,
     timer?: Timer,
   ): Promise<PromiseValue> {
-    const isLongRunning = this.messagingSystem.call(
-      'PermissionController:hasPermission',
-      snapId,
-      SnapEndowments.LongRunning,
-    );
-
-    // Long running snaps have timeouts disabled
-    if (isLongRunning) {
-      logWarning(
-        `${SnapEndowments.LongRunning} will soon be deprecated. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/945.`,
-      );
-      return promise;
-    }
-
     const result = await withTimeout(promise, timer ?? this.maxRequestTime);
     if (result === hasTimedOut) {
       throw new Error('The request timed out.');
