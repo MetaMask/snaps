@@ -58,7 +58,7 @@ export function createEndowments({
   snap,
   ethereum,
   snapId,
-  endowments = [],
+  endowments,
   notify,
 }: {
   snap: SnapsProvider;
