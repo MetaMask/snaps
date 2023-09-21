@@ -1,5 +1,5 @@
 {
-  "version": "0.38.1-flask.1",
+  "version": "1.0.0",
   "description": "MetaMask example snap demonstrating the use of the Ethereum Provider API and `endowment:ethereum-provider` permission.",
   "proposedName": "Ethereum Provider Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "Ok99AlKnmOdPmD+tfDMFqErAncVG5thpFrt/G9J8IrI=",
+    "shasum": "CwJGR0Jll1DjOt3kpxD6l4utazQFokN95bqWCOToFKI=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
