@@ -269,6 +269,8 @@ export class BaseSnapExecutor {
 
   protected respond(id: JsonRpcId, requestObject: Record<string, unknown>) {
     if (!isValidJson(requestObject) || !isObject(requestObject)) {
+      // Instead of throwing, we directly respond with an error.
+      // This prevents an issue where we wouldn't respond when errors were non-serializable
       this.respond(id, {
         error: serializeError(
           new Error('JSON-RPC responses must be JSON serializable objects.'),
