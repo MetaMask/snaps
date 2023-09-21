@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0]
 ### Uncategorized
-- Bump WebdriverIO ([#1702](https://github.com/MetaMask/snaps-skunkworks.git/pull/1702))
+- Bump WebdriverIO ([#1702](https://github.com/MetaMask/snaps/pull/1702))
 
 ## [0.37.3-flask.1]
 ### Fixed
@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/browserify-plugin-example-snap@1.0.0...HEAD
-[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/browserify-plugin-example-snap@0.37.3-flask.1...@metamask/browserify-plugin-example-snap@1.0.0
-[0.37.3-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/browserify-plugin-example-snap@0.37.2-flask.1...@metamask/browserify-plugin-example-snap@0.37.3-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/browserify-plugin-example-snap@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/browserify-plugin-example-snap@1.0.0...HEAD
+[1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/browserify-plugin-example-snap@0.37.3-flask.1...@metamask/browserify-plugin-example-snap@1.0.0
+[0.37.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/browserify-plugin-example-snap@0.37.2-flask.1...@metamask/browserify-plugin-example-snap@0.37.3-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/browserify-plugin-example-snap@0.37.2-flask.1
