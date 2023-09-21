@@ -24,7 +24,7 @@ export const MIN_RUNTIME_EXTEND = 1;
 /**
  * Maximum time in seconds that can be used for extended runtime.
  */
-export const MAX_RUNTIME_EXTEND = 3600;
+export const MAX_RUNTIME_EXTEND = 1800;
 
 /**
  * Creates a `extendRuntime` function which provides a mechanism for
