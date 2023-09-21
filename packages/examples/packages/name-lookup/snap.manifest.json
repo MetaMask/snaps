@@ -1,6 +1,6 @@
 {
   "version": "0.0.0",
-  "description": "An example snap to test name lookup handlers.",
+  "description": "MetaMask example snap demonstrating the use of the `endowment:name-lookup` permission.",
   "proposedName": "Name Lookup Example Snap",
   "repository": {
     "type": "git",

@@ -15,6 +15,6 @@ export const NameLookup: FunctionComponent = () => {
       port={NAME_LOOKUP_SNAP_PORT}
       version={NAME_LOOKUP_VERSION}
       testId="name-lookup"
-    ></Snap>
+    />
   );
 };
