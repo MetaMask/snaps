@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.0]
 ### Changed
-- Initial stable release from main branch
+- Initial stable release from main branch ([#1757](https://github.com/MetaMask/snaps/pull/1757))
 
 ## [0.37.3-flask.1]
 ### Fixed
