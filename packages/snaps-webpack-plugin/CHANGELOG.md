@@ -11,9 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial stable release from main branch ([#1757](https://github.com/MetaMask/snaps/pull/1757))
 
 ## [0.37.4-flask.1]
-### Uncategorized
-- Bump `metamask/utils` and `metamask/snaps-registry` ([#1738](https://github.com/MetaMask/snaps/pull/1738))
-- Bump `metamask/utils` and `metamask/snaps-registry` ([#1694](https://github.com/MetaMask/snaps/pull/1694))
+### Changed
+- Bump `metamask/utils` and `metamask/snaps-registry` ([#1738](https://github.com/MetaMask/snaps/pull/1738), [#1694](https://github.com/MetaMask/snaps/pull/1694))
 
 ## [0.37.3-flask.1]
 ### Fixed
