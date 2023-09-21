@@ -148,8 +148,8 @@
         "@metamask/providers>json-rpc-middleware-stream": true,
         "@metamask/providers>pump": true,
         "eslint>fast-deep-equal": true,
-        "eth-rpc-errors": true,
-        "json-rpc-engine": true
+        "json-rpc-engine": true,
+        "json-rpc-engine>eth-rpc-errors": true
       }
     },
     "@metamask/providers>@metamask/safe-event-emitter": {
@@ -186,8 +186,8 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/providers>json-rpc-middleware-stream>readable-stream": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
+        "@metamask/providers>@metamask/safe-event-emitter": true,
+        "@metamask/providers>json-rpc-middleware-stream>readable-stream": true
       }
     },
     "@metamask/providers>json-rpc-middleware-stream>readable-stream": {
@@ -242,6 +242,12 @@
         "@metamask/object-multiplex>end-of-stream": true,
         "@metamask/object-multiplex>once": true,
         "fs": true
+      }
+    },
+    "@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/utils": {
@@ -347,11 +353,6 @@
         "util": true
       }
     },
-    "eth-rpc-errors": {
-      "packages": {
-        "eth-rpc-errors>fast-safe-stringify": true
-      }
-    },
     "express>safe-buffer": {
       "builtin": {
         "buffer": true
@@ -405,8 +406,8 @@
     },
     "json-rpc-engine": {
       "packages": {
-        "eth-rpc-errors": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
+        "json-rpc-engine>@metamask/safe-event-emitter": true,
+        "json-rpc-engine>eth-rpc-errors": true
       }
     },
     "json-rpc-engine>@metamask/safe-event-emitter": {
@@ -418,6 +419,11 @@
       },
       "packages": {
         "events": true
+      }
+    },
+    "json-rpc-engine>eth-rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true
       }
     },
     "superstruct": {
