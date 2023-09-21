@@ -29,6 +29,7 @@ import { isEqual } from '../array';
 import { CronjobSpecificationArrayStruct } from '../cronjob';
 import { SIP_6_MAGIC_VALUE, STATE_ENCRYPTION_MAGIC_VALUE } from '../entropy';
 import { RpcOriginsStruct } from '../json-rpc';
+import { ChainIdStruct } from '../namespace';
 import { SnapIdStruct } from '../snaps';
 import { NameStruct, NpmSnapFileNames } from '../types';
 
@@ -138,9 +139,10 @@ export const SnapIdsStruct = refine(
 
 export type SnapIds = Infer<typeof SnapIdsStruct>;
 
+export const ChainIdsStruct = array(ChainIdStruct);
+
 /* eslint-disable @typescript-eslint/naming-convention */
 export const PermissionsStruct = type({
-  'endowment:long-running': optional(object({})),
   'endowment:network-access': optional(object({})),
   'endowment:webassembly': optional(object({})),
   'endowment:transaction-insight': optional(
@@ -152,7 +154,7 @@ export const PermissionsStruct = type({
     object({ jobs: CronjobSpecificationArrayStruct }),
   ),
   'endowment:rpc': optional(RpcOriginsStruct),
-  'endowment:name-lookup': optional(object({})),
+  'endowment:name-lookup': optional(ChainIdsStruct),
   snap_dialog: optional(object({})),
   // TODO: Remove
   snap_confirm: optional(object({})),

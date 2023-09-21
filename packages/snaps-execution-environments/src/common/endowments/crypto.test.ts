@@ -32,7 +32,6 @@ describe('Crypto endowment', () => {
     });
 
     Object.assign(globalThis, {
-      ...globalThis,
       crypto: undefined,
       SubtleCrypto: undefined,
     });

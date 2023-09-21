@@ -232,9 +232,7 @@ jobs:
   publish-test-snaps:
     name: Publish test snaps
     needs: is-test-snaps-release
-    # The `rc/1.0.0` branch does not have `test-snaps` package, so we only run
-    # this job on the `main` branch.
-    if: ${{ github.ref_name == 'main' && needs.is-test-snaps-release.outputs.IS_TEST_SNAPS_RELEASE == 'true' }}
+    if: ${{ needs.is-test-snaps-release.outputs.IS_TEST_SNAPS_RELEASE == 'true' }}
     permissions:
       contents: write
     uses: ./.github/workflows/publish-github-pages.yml
@@ -271,9 +269,7 @@ jobs:
   publish-simulator-versioned:
     name: Publish Snaps Simulator to `${{ needs.is-simulator-release.outputs.SIMULATOR_VERSION }}` folder
     needs: is-simulator-release
-    # The `rc/1.0.0` branch does not have the `snaps-simulator` package, so we
-    # only run this job on the `main` branch.
-    if: ${{ github.ref_name == 'main' && needs.is-simulator-release.outputs.IS_SIMULATOR_RELEASE == 'true' }}
+    if: ${{ needs.is-simulator-release.outputs.IS_SIMULATOR_RELEASE == 'true' }}
     permissions:
       contents: write
     uses: ./.github/workflows/publish-github-pages.yml
@@ -287,9 +283,7 @@ jobs:
   publish-simulator-latest:
     name: Publish Snaps Simulator to `latest` folder
     needs: is-simulator-release
-    # The `rc/1.0.0` branch does not have the `snaps-simulator` package, so we
-    # only run this job on the `main` branch.
-    if: ${{ github.ref_name == 'main' && needs.is-simulator-release.outputs.IS_SIMULATOR_RELEASE == 'true' }}
+    if: ${{ needs.is-simulator-release.outputs.IS_SIMULATOR_RELEASE == 'true' }}
     permissions:
       contents: write
     uses: ./.github/workflows/publish-github-pages.yml

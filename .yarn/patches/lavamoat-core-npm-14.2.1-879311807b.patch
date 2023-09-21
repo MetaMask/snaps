@@ -1,0 +1,13 @@
+diff --git a/src/kernelTemplate.js b/src/kernelTemplate.js
+index 195574d3c1aefb64ed0f9d7bcea05a5a3c2b434a..8050ca72314b70e71e6ac6ee3c6fc3b836465e4b 100644
+--- a/src/kernelTemplate.js
++++ b/src/kernelTemplate.js
+@@ -59,6 +59,8 @@
+       errorTaming: 'unsafe',
+       // shows the full call stack
+       stackFiltering: 'verbose',
++      // prevent issue when dealing with the "override mistake"
++      overrideTaming: 'severe',
+     }
+ 
+     lockdown(lockdownOptions)

@@ -177,12 +177,9 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
     SnapControllerEvents | AllowedEvents
   >();
 
-  messenger.registerActionHandler(
-    'PermissionController:hasPermission',
-    (permission) => {
-      return permission !== SnapEndowments.LongRunning;
-    },
-  );
+  messenger.registerActionHandler('PermissionController:hasPermission', () => {
+    return true;
+  });
 
   messenger.registerActionHandler('PermissionController:hasPermissions', () => {
     return true;
@@ -354,6 +351,7 @@ export const getSnapControllerMessenger = (
   });
 
   jest.spyOn(snapControllerMessenger, 'call');
+  jest.spyOn(snapControllerMessenger, 'publish');
 
   return snapControllerMessenger;
 };
@@ -468,6 +466,8 @@ export const getRestrictedCronjobControllerMessenger = (
       'SnapController:snapInstalled',
       'SnapController:snapUpdated',
       'SnapController:snapRemoved',
+      'SnapController:snapEnabled',
+      'SnapController:snapDisabled',
     ],
     allowedActions: [
       'PermissionController:hasPermission',
@@ -480,8 +480,8 @@ export const getRestrictedCronjobControllerMessenger = (
   if (mocked) {
     messenger.registerActionHandler(
       'PermissionController:hasPermission',
-      (permission) => {
-        return permission !== SnapEndowments.LongRunning;
+      () => {
+        return true;
       },
     );
 

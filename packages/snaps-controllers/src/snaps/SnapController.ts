@@ -52,7 +52,6 @@ import {
   getErrorMessage,
   HandlerType,
   logError,
-  logWarning,
   normalizeRelative,
   resolveVersionRange,
   SnapCaveatType,
@@ -436,12 +435,30 @@ export type SnapRolledback = {
   type: `${typeof controllerName}:snapRolledback`;
   payload: [snap: TruncatedSnap, failedVersion: string];
 };
+
 /**
  * Emitted when a Snap is terminated. This is different from the snap being
  * stopped as it can also be triggered when a snap fails initialization.
  */
 export type SnapTerminated = {
   type: `${typeof controllerName}:snapTerminated`;
+  payload: [snap: TruncatedSnap];
+};
+
+/**
+ * Emitted when a Snap is enabled by a user.
+ * This is not emitted by default when installing a snap.
+ */
+export type SnapEnabled = {
+  type: `${typeof controllerName}:snapEnabled`;
+  payload: [snap: TruncatedSnap];
+};
+
+/**
+ * Emitted when a Snap is disabled by a user.
+ */
+export type SnapDisabled = {
+  type: `${typeof controllerName}:snapDisabled`;
   payload: [snap: TruncatedSnap];
 };
 
@@ -454,7 +471,9 @@ export type SnapControllerEvents =
   | SnapUnblocked
   | SnapUpdated
   | SnapRolledback
-  | SnapTerminated;
+  | SnapTerminated
+  | SnapEnabled
+  | SnapDisabled;
 
 export type AllowedActions =
   | GetEndowments
@@ -1183,6 +1202,11 @@ export class SnapController extends BaseController<
     this.update((state: any) => {
       state.snaps[snapId].enabled = true;
     });
+
+    this.messagingSystem.publish(
+      'SnapController:snapEnabled',
+      this.getTruncatedExpect(snapId),
+    );
   }
 
   /**
@@ -1201,10 +1225,13 @@ export class SnapController extends BaseController<
     });
 
     if (this.isRunning(snapId)) {
-      return this.stopSnap(snapId, SnapStatusEvents.Stop);
+      await this.stopSnap(snapId, SnapStatusEvents.Stop);
     }
 
-    return Promise.resolve();
+    this.messagingSystem.publish(
+      'SnapController:snapDisabled',
+      this.getTruncatedExpect(snapId),
+    );
   }
 
   /**
@@ -2084,7 +2111,6 @@ export class SnapController extends BaseController<
 
     try {
       const result = await this.#executeWithTimeout(
-        snapId,
         this.messagingSystem.call('ExecutionService:executeSnap', {
           ...snapData,
           endowments: await this.#getEndowments(snapId),
@@ -2535,7 +2561,6 @@ export class SnapController extends BaseController<
       // This will either get the result or reject due to the timeout.
       try {
         const result = await this.#executeWithTimeout(
-          snapId,
           handleRpcRequestPromise,
           timer,
         );
@@ -2555,31 +2580,15 @@ export class SnapController extends BaseController<
    * Awaits the specified promise and rejects if the promise doesn't resolve
    * before the timeout.
    *
-   * @param snapId - The snap id.
    * @param promise - The promise to await.
    * @param timer - An optional timer object to control the timeout.
    * @returns The result of the promise or rejects if the promise times out.
    * @template PromiseValue - The value of the Promise.
    */
   async #executeWithTimeout<PromiseValue>(
-    snapId: ValidatedSnapId,
     promise: Promise<PromiseValue>,
     timer?: Timer,
   ): Promise<PromiseValue> {
-    const isLongRunning = this.messagingSystem.call(
-      'PermissionController:hasPermission',
-      snapId,
-      SnapEndowments.LongRunning,
-    );
-
-    // Long running snaps have timeouts disabled
-    if (isLongRunning) {
-      logWarning(
-        `${SnapEndowments.LongRunning} will soon be deprecated. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/945.`,
-      );
-      return promise;
-    }
-
     const result = await withTimeout(promise, timer ?? this.maxRequestTime);
     if (result === hasTimedOut) {
       throw new Error('The request timed out.');

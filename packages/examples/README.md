@@ -44,6 +44,9 @@ The following is a list of the snaps in this directory.
 - [**`packages/manage-state`**](./packages/manage-state): This snap
   demonstrates how to use the `snap_manageState` method to store and retrieve
   data in a snap.
+- [**`packages/name-lookup`**](./packages/name-lookup): This snap
+  demonstrates how to use the `endowment:name-lookup` permission to resolve
+  domains and addresses in a snap.
 - [**`packages/network-access`**](./packages/network-access): This
   snap demonstrates how to use the `endowment:network-access` permission to
   make network requests from a snap.
