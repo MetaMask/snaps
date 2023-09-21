@@ -42,6 +42,7 @@
     "@metamask/json-rpc-example-snap": "workspace:^",
     "@metamask/lifecycle-hooks-example-snap": "workspace:^",
     "@metamask/manage-state-example-snap": "workspace:^",
+    "@metamask/name-lookup-example-snap": "workspace:^",
     "@metamask/network-example-snap": "workspace:^",
     "@metamask/notification-example-snap": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
