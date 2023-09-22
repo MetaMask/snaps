@@ -6,6 +6,7 @@ import {
   spinner,
   text,
   image,
+  link,
 } from './builder';
 import { NodeType } from './nodes';
 
@@ -266,6 +267,25 @@ describe('image', () => {
       value: MOCK_SVG,
     });
   });
+});
+describe('link', () => {
+  it('creates a link component', () => {
+    expect(
+      link({ value: 'Hello, world!', url: 'https://foo.bar' }),
+    ).toStrictEqual({
+      type: NodeType.Link,
+      value: 'Hello, world!',
+      url: 'https://foo.bar',
+    });
+  });
+
+  it('creates a link component using the shorthand form', () => {
+    expect(link('Hello, world!', 'https://foo.bar')).toStrictEqual({
+      type: NodeType.Link,
+      value: 'Hello, world!',
+      url: 'https://foo.bar',
+    });
+  });
 
   it('validates the args', () => {
     expect(() => image({ value: 'foo' })).toThrow(
@@ -280,6 +300,25 @@ describe('image', () => {
     // @ts-expect-error - Invalid args.
     expect(() => image({})).toThrow(
       'Invalid image component: At path: value -- Expected a string, but received: undefined.',
+    );
+    expect(() =>
+      // @ts-expect-error - Invalid args.
+      link({ value: 'foo', url: 'https://foo.bar', bar: 'baz' }),
+    ).toThrow(
+      'Invalid link component: At path: bar -- Expected a value of type `never`, but received: `"baz"`.',
+    );
+
+    // @ts-expect-error - Invalid args.
+    expect(() => link({})).toThrow(
+      'Invalid link component: At path: value -- Expected a string, but received: undefined.',
+    );
+
+    expect(() => link({ value: 'foo', url: 'http://foo.bar' })).toThrow(
+      'Invalid link component: At path: url -- The URL must start with `https:` or `mailto:`.',
+    );
+
+    expect(() => link({ value: 'foo', url: 'https://test .com' })).toThrow(
+      'The URL is invalid.',
     );
   });
 });

@@ -1,4 +1,12 @@
-import type { Divider, Heading, Image, Panel, Spinner, Text } from './nodes';
+import type {
+  Divider,
+  Heading,
+  Link,
+  Panel,
+  Spinner,
+  Text,
+  Image,
+} from './nodes';
 import { NodeType } from './nodes';
 import { assertIsComponent, isComponent } from './validation';
 
@@ -77,6 +85,15 @@ describe('isComponent', () => {
     };
 
     expect(isComponent(image)).toBe(true);
+  });
+  it('returns true for a link component', () => {
+    const link: Link = {
+      type: NodeType.Link,
+      value: 'Hello, world!',
+      url: 'https://foo.bar',
+    };
+
+    expect(isComponent(link)).toBe(true);
   });
 
   it.each([
@@ -164,6 +181,16 @@ describe('assertIsComponent', () => {
     };
 
     expect(() => assertIsComponent(text)).not.toThrow();
+  });
+
+  it('does not throw for a link component', () => {
+    const link: Link = {
+      type: NodeType.Link,
+      value: 'Hello, world!',
+      url: 'https://foo.bar',
+    };
+
+    expect(() => assertIsComponent(link)).not.toThrow();
   });
 
   it.each([

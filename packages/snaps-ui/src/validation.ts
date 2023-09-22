@@ -1,5 +1,5 @@
 import { assertStruct } from '@metamask/utils';
-import { is } from 'superstruct';
+import { is, refine, string } from 'superstruct';
 
 import type { Component } from './nodes';
 import { ComponentStruct } from './nodes';
@@ -25,3 +25,23 @@ export function isComponent(value: unknown): value is Component {
 export function assertIsComponent(value: unknown): asserts value is Component {
   assertStruct(value, ComponentStruct, 'Invalid component');
 }
+
+/**
+ * Check if the given value is a valid URL on https or mailto protocol.
+ *
+ * @returns `true` if the value is a valid URL, the appropriate error message otherwise.
+ */
+export const url = () => {
+  return refine(string(), 'url', (value) => {
+    try {
+      const validUrl = new URL(value);
+      if (validUrl.protocol === 'https:' || validUrl.protocol === 'mailto:') {
+        return true;
+      }
+
+      return 'The URL must start with `https:` or `mailto:`.';
+    } catch {
+      return 'The URL is invalid.';
+    }
+  });
+};
