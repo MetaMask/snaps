@@ -269,7 +269,19 @@ export class BaseSnapExecutor {
 
   protected respond(id: JsonRpcId, requestObject: Record<string, unknown>) {
     if (!isValidJson(requestObject) || !isObject(requestObject)) {
-      throw new Error('JSON-RPC responses must be JSON serializable objects.');
+      // Instead of throwing, we directly respond with an error.
+      // This prevents an issue where we wouldn't respond when errors were non-serializable
+      this.commandStream.write({
+        error: serializeError(
+          new Error('JSON-RPC responses must be JSON serializable objects.'),
+          {
+            fallbackError,
+          },
+        ),
+        id,
+        jsonrpc: '2.0',
+      });
+      return;
     }
 
     this.commandStream.write({
