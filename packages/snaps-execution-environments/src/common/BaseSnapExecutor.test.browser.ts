@@ -1534,6 +1534,43 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('throws when trying to throw an unserializable value', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => { const error = new Error("foo"); error.data = BigInt(0); throw error; };
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 2,
+      error: {
+        code: -32603,
+        data: expect.any(Object),
+        message: 'JSON-RPC responses must be JSON serializable objects.',
+      },
+    });
+  });
+
   it('contains the self-referential global scopes', async () => {
     const CODE = `
       module.exports.onRpcRequest = () => globalThis !== undefined &&
