@@ -1,8 +1,8 @@
 diff --git a/src/runtime.js b/src/runtime.js
-index d6efa602147ed04938991724c058a0c906830878..5ba8c588afc6613324a7fff27af602104c4354a2 100644
+index 5bee3d6fc752ee133aff8b12e503b674d7f32d1a..8141bff31e30d73b2f8be334272d2e20a1e73e0c 100644
 --- a/src/runtime.js
 +++ b/src/runtime.js
-@@ -10934,6 +10934,8 @@ function observeImports(map, importName, importIndex) {
+@@ -11326,6 +11326,8 @@ function observeImports(map, importName, importIndex) {
        errorTaming: 'unsafe',
        // shows the full call stack
        stackFiltering: 'verbose',
@@ -11,7 +11,7 @@ index d6efa602147ed04938991724c058a0c906830878..5ba8c588afc6613324a7fff27af60210
      }
 
      lockdown(lockdownOptions)
-@@ -12048,6 +12050,17 @@ module.exports = {
+@@ -12451,6 +12453,17 @@ module.exports = {
 
 
    function loadModuleData (moduleId) {
