@@ -180,6 +180,19 @@ export async function getDefaultConfiguration(
           use: await getDefaultLoader(config),
         },
 
+        /**
+         * This allows importing modules that uses `.js` and not `.mjs` for the
+         * ES build.
+         *
+         * @see https://webpack.js.org/configuration/module/#resolvefullyspecified
+         */
+        {
+          test: /\.m?js/u,
+          resolve: {
+            fullySpecified: false,
+          },
+        },
+
         config.experimental.wasm && {
           test: /\.wasm$/u,
           use: {
