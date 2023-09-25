@@ -5136,6 +5136,7 @@ __metadata:
     "@metamask/rpc-errors": ^6.1.0
     "@metamask/snaps-registry": ^2.1.0
     "@metamask/snaps-rpc-methods": "workspace:^"
+    "@metamask/snaps-ui": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/template-snap": ^0.7.0
     "@metamask/utils": ^8.1.0

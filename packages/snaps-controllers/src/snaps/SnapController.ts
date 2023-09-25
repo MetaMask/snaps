@@ -27,6 +27,7 @@ import { SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { BlockReason } from '@metamask/snaps-registry';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
+import { assertLinksAreSafe } from '@metamask/snaps-ui';
 import type {
   FetchedSnapFiles,
   InstallSnapsResult,
@@ -56,6 +57,7 @@ import {
   isOriginAllowed,
   logError,
   normalizeRelative,
+  OnTransactionResponseStruct,
   resolveVersionRange,
   SnapCaveatType,
   SnapStatus,
@@ -67,6 +69,7 @@ import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
   assert,
   assertIsJsonRpcRequest,
+  assertStruct,
   Duration,
   gtRange,
   gtVersion,
@@ -2641,6 +2644,17 @@ export class SnapController extends BaseController<
 
     runtime.rpcHandler = rpcHandler;
     return rpcHandler;
+  }
+
+  async #assertSnapRpcRequestResult(handlerType: HandlerType, result: unknown) {
+    switch (handlerType) {
+      case HandlerType.OnTransaction:
+        assertStruct(result, OnTransactionResponseStruct);
+        assertLinksAreSafe(result.content, () => this.messagingSystem.call);
+        break;
+      default:
+        break;
+    }
   }
 
   /**

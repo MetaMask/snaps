@@ -1,5 +1,5 @@
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
-import { heading, panel, text } from '@metamask/snaps-ui';
+import { heading, link, panel, text } from '@metamask/snaps-ui';
 
 import type { DialogMethodHooks } from './dialog';
 import { dialogBuilder, DialogType, getDialogImplementation } from './dialog';
@@ -20,6 +20,7 @@ describe('builder', () => {
       dialogBuilder.specificationBuilder({
         methodHooks: {
           showDialog: jest.fn(),
+          isOnPhishingList: jest.fn(),
         },
       }),
     ).toStrictEqual({
@@ -36,6 +37,7 @@ describe('implementation', () => {
   const getMockDialogHooks = () =>
     ({
       showDialog: jest.fn(),
+      isOnPhishingList: jest.fn(),
     } as DialogMethodHooks);
 
   it('accepts string dialog types', async () => {
@@ -258,5 +260,23 @@ describe('implementation', () => {
         );
       },
     );
+
+    it('rejects phishing links', async () => {
+      const implementation = getDialogImplementation({
+        showDialog: jest.fn(),
+        isOnPhishingList: () => true,
+      });
+
+      await expect(
+        implementation({
+          context: { origin: 'foo' },
+          method: 'snap_dialog',
+          params: {
+            type: DialogType.Confirmation,
+            content: panel([heading('foo'), link('bar', 'https://foo.bar')]),
+          },
+        }),
+      ).rejects.toThrow('Invalid params: Phishing link detected.');
+    });
   });
 });

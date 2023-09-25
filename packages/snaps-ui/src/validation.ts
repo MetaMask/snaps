@@ -1,8 +1,8 @@
-import { assertStruct } from '@metamask/utils';
+import { assert, assertStruct } from '@metamask/utils';
 import { is, refine, string } from 'superstruct';
 
 import type { Component } from './nodes';
-import { ComponentStruct } from './nodes';
+import { ComponentStruct, NodeType } from './nodes';
 
 /**
  * Check if the given value is a {@link Component}. This performs recursive
@@ -45,3 +45,28 @@ export const url = () => {
     }
   });
 };
+
+/**
+ * Searches for {@link Links} components and checks that the URL they are trying to
+ * pass in not in the phishing list.
+ *
+ * @param component - The custom UI component.
+ * @param isOnPhishingList - The function that checks the link against the phishing list.
+ */
+export function assertLinksAreSafe(
+  component: Component,
+  isOnPhishingList: (url: string) => boolean,
+) {
+  if (component.type === NodeType.Panel) {
+    component.children.forEach((node) =>
+      assertLinksAreSafe(node, isOnPhishingList),
+    );
+  }
+
+  if (component.type === NodeType.Link) {
+    assert(
+      !isOnPhishingList(component.url),
+      'The provided URL is detected as phishing.',
+    );
+  }
+}

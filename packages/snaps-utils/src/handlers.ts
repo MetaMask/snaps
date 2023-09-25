@@ -1,7 +1,8 @@
-import type { Component } from '@metamask/snaps-ui';
+import { ComponentStruct } from '@metamask/snaps-ui';
 import type { Json, JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
+import type { Infer } from 'superstruct';
+import { literal, object, optional, union } from 'superstruct';
 
-import type { EnumToUnion } from './enum';
 import type { AccountAddress, Caip2ChainId } from './namespace';
 
 export enum HandlerType {
@@ -113,6 +114,11 @@ export enum SeverityLevel {
   Critical = 'critical',
 }
 
+export const OnTransactionResponseStruct = object({
+  content: ComponentStruct,
+  severity: optional(union([literal(SeverityLevel.Critical)])),
+});
+
 /**
  * The response from a snap's `onTransaction` handler.
  *
@@ -120,10 +126,7 @@ export enum SeverityLevel {
  *
  * If the snap has no insights about the transaction, this should be `null`.
  */
-export type OnTransactionResponse = {
-  content: Component | null;
-  severity?: EnumToUnion<SeverityLevel>;
-};
+export type OnTransactionResponse = Infer<typeof OnTransactionResponseStruct>;
 
 /**
  * The `onTransaction` handler. This is called whenever a transaction is

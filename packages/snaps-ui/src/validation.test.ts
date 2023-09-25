@@ -1,3 +1,4 @@
+import { link, panel, text } from './builder';
 import type {
   Divider,
   Heading,
@@ -8,7 +9,11 @@ import type {
   Image,
 } from './nodes';
 import { NodeType } from './nodes';
-import { assertIsComponent, isComponent } from './validation';
+import {
+  assertIsComponent,
+  assertLinksAreSafe,
+  isComponent,
+} from './validation';
 
 describe('isComponent', () => {
   it('returns true for a divider component', () => {
@@ -209,5 +214,43 @@ describe('assertIsComponent', () => {
     { type: 'foo' },
   ])(`throws for %p`, (value) => {
     expect(() => assertIsComponent(value)).toThrow('Invalid component:');
+  });
+});
+
+describe('assertLinksAreSafe', () => {
+  it('does not throw for a safe link', () => {
+    const isOnPhishingList = () => false;
+
+    expect(async () =>
+      assertLinksAreSafe(
+        link('Hello, world!', 'https://foo.bar'),
+        isOnPhishingList,
+      ),
+    ).not.toThrow();
+  });
+
+  it('throws for an unsafe link', () => {
+    const isOnPhishingList = () => true;
+
+    expect(async () =>
+      assertLinksAreSafe(
+        link('Hello, world!', 'https://foo.bar'),
+        isOnPhishingList,
+      ),
+    ).toThrow('The provided URL is detected as phishing.');
+  });
+
+  it('can crawl into nested components', () => {
+    const isOnPhishingList = () => true;
+
+    expect(async () =>
+      assertLinksAreSafe(
+        panel([
+          text('Hello, world!'),
+          link('Hello, world!', 'https://foo.bar'),
+        ]),
+        isOnPhishingList,
+      ),
+    ).toThrow('The provided URL is detected as phishing.');
   });
 });
