@@ -1,6 +1,6 @@
 import type { StreamProvider } from '@metamask/providers';
 import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
-import { assert, assertStruct, JsonStruct } from '@metamask/utils';
+import { assert, assertStruct, getSafeJson, JsonStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
 import { log } from '../logging';
@@ -169,4 +169,17 @@ export function assertEthereumOutboundRequest(args: RequestArguments) {
     }),
   );
   assertStruct(args, JsonStruct, 'Provided value is not JSON-RPC compatible');
+}
+
+/**
+ * Gets a sanitized value to be used for passing to the underlying MetaMask provider.
+ *
+ * @param value - An unsanitized value from a snap.
+ * @returns A sanitized value ready to be passed to a MetaMask provider.
+ */
+export function sanitizeRequestArguments(value: unknown): RequestArguments {
+  // Before passing to getSafeJson we run the value through JSON serialization.
+  // This lets request arguments contain undefined which is normally disallowed.
+  const json = JSON.parse(JSON.stringify(value));
+  return getSafeJson(json) as RequestArguments;
 }
