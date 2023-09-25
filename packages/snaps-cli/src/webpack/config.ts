@@ -181,8 +181,10 @@ export async function getDefaultConfiguration(
         },
 
         /**
-         * This allows importing modules that uses .js and not .mjs on ES build.
-         * ref. https://webpack.js.org/configuration/module/#resolvefullyspecified
+         * This allows importing modules that uses `.js` and not `.mjs` for the
+         * ES build.
+         *
+         * @see https://webpack.js.org/configuration/module/#resolvefullyspecified
          */
         {
           test: /\.m?js/u,
