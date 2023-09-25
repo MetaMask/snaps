@@ -43,6 +43,7 @@ import {
   assertEthereumOutboundRequest,
   assertSnapOutboundRequest,
   constructError,
+  sanitizeRequestArguments,
   proxyStreamProvider,
   withTeardown,
 } from './utils';
@@ -421,7 +422,7 @@ export class BaseSnapExecutor {
     const originalRequest = provider.request.bind(provider);
 
     const request = async (args: RequestArguments) => {
-      const sanitizedArgs = getSafeJson(args) as RequestArguments;
+      const sanitizedArgs = sanitizeRequestArguments(args);
       assertSnapOutboundRequest(sanitizedArgs);
       this.notify({ method: 'OutboundRequest' });
       try {
@@ -462,7 +463,7 @@ export class BaseSnapExecutor {
     const originalRequest = provider.request.bind(provider);
 
     const request = async (args: RequestArguments) => {
-      const sanitizedArgs = getSafeJson(args) as RequestArguments;
+      const sanitizedArgs = sanitizeRequestArguments(args);
       assertEthereumOutboundRequest(sanitizedArgs);
       this.notify({ method: 'OutboundRequest' });
       try {
