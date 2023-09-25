@@ -179,6 +179,12 @@ export async function getDefaultConfiguration(
           exclude: /node_modules/u,
           use: await getDefaultLoader(config),
         },
+        {
+          test: /\.m?js/u,
+          resolve: {
+            fullySpecified: false,
+          },
+        },
 
         config.experimental.wasm && {
           test: /\.wasm$/u,

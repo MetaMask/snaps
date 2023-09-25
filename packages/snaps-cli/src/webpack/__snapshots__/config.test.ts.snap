@@ -32,6 +32,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
           },
         },
       },
+      {
+        "resolve": {
+          "fullySpecified": false,
+        },
+        "test": /\\\\\\.m\\?js/u,
+      },
       false,
     ],
   },
@@ -166,6 +172,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "sync": false,
           },
         },
+      },
+      {
+        "resolve": {
+          "fullySpecified": false,
+        },
+        "test": /\\\\\\.m\\?js/u,
       },
       false,
     ],
@@ -302,6 +314,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
           },
         },
       },
+      {
+        "resolve": {
+          "fullySpecified": false,
+        },
+        "test": /\\\\\\.m\\?js/u,
+      },
       false,
     ],
   },
@@ -437,6 +455,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
           },
         },
       },
+      {
+        "resolve": {
+          "fullySpecified": false,
+        },
+        "test": /\\\\\\.m\\?js/u,
+      },
       false,
     ],
   },
@@ -563,6 +587,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "sync": false,
           },
         },
+      },
+      {
+        "resolve": {
+          "fullySpecified": false,
+        },
+        "test": /\\\\\\.m\\?js/u,
       },
       {
         "test": /\\\\\\.wasm\\$/u,
@@ -704,6 +734,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
           },
         },
       },
+      {
+        "resolve": {
+          "fullySpecified": false,
+        },
+        "test": /\\\\\\.m\\?js/u,
+      },
       false,
     ],
   },
@@ -839,6 +875,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
           },
         },
       },
+      {
+        "resolve": {
+          "fullySpecified": false,
+        },
+        "test": /\\\\\\.m\\?js/u,
+      },
       false,
     ],
   },
@@ -973,6 +1015,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "sync": false,
           },
         },
+      },
+      {
+        "resolve": {
+          "fullySpecified": false,
+        },
+        "test": /\\\\\\.m\\?js/u,
       },
       false,
     ],
@@ -1117,6 +1165,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
           },
         },
       },
+      {
+        "resolve": {
+          "fullySpecified": false,
+        },
+        "test": /\\\\\\.m\\?js/u,
+      },
       false,
     ],
   },
@@ -1259,6 +1313,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "sync": false,
           },
         },
+      },
+      {
+        "resolve": {
+          "fullySpecified": false,
+        },
+        "test": /\\\\\\.m\\?js/u,
       },
       false,
     ],
@@ -1404,6 +1464,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
           },
         },
       },
+      {
+        "resolve": {
+          "fullySpecified": false,
+        },
+        "test": /\\\\\\.m\\?js/u,
+      },
       false,
     ],
   },
@@ -1539,6 +1605,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
           },
         },
       },
+      {
+        "resolve": {
+          "fullySpecified": false,
+        },
+        "test": /\\\\\\.m\\?js/u,
+      },
       false,
     ],
   },
@@ -1673,6 +1745,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "sync": false,
           },
         },
+      },
+      {
+        "resolve": {
+          "fullySpecified": false,
+        },
+        "test": /\\\\\\.m\\?js/u,
       },
       false,
     ],
@@ -1817,6 +1895,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "sync": false,
           },
         },
+      },
+      {
+        "resolve": {
+          "fullySpecified": false,
+        },
+        "test": /\\\\\\.m\\?js/u,
       },
       false,
     ],
@@ -1965,6 +2049,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
           },
         },
       },
+      {
+        "resolve": {
+          "fullySpecified": false,
+        },
+        "test": /\\\\\\.m\\?js/u,
+      },
       false,
     ],
   },
@@ -2093,6 +2183,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
           },
         },
       },
+      {
+        "resolve": {
+          "fullySpecified": false,
+        },
+        "test": /\\\\\\.m\\?js/u,
+      },
       false,
     ],
   },
@@ -2220,6 +2316,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "writeManifest": true,
           },
         },
+      },
+      {
+        "resolve": {
+          "fullySpecified": false,
+        },
+        "test": /\\\\\\.m\\?js/u,
       },
       false,
     ],
