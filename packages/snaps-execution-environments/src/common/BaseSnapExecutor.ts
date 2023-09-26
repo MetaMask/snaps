@@ -33,7 +33,6 @@ import type { Duplex } from 'stream';
 import { validate } from 'superstruct';
 
 import { log } from '../logging';
-import EEOpenRPCDocument from '../openrpc.json';
 import type { CommandMethodsMapping } from './commands';
 import { getCommandMethodImplementations } from './commands';
 import { createEndowments } from './endowments';
@@ -202,12 +201,6 @@ export class BaseSnapExecutor {
     }
 
     const { id, method, params } = message;
-    if (method === 'rpc.discover') {
-      this.respond(id, {
-        result: EEOpenRPCDocument,
-      });
-      return;
-    }
 
     if (!hasProperty(EXECUTION_ENVIRONMENT_METHODS, method)) {
       this.respond(id, {
