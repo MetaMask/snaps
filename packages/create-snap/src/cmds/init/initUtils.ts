@@ -1,4 +1,4 @@
-import { execSync } from 'child_process';
+import { spawnSync } from 'child_process';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
 
@@ -45,7 +45,7 @@ export async function prepareWorkingDirectory(
  */
 export function cloneTemplate(directory: string) {
   try {
-    execSync(`git clone --depth=1 ${TEMPLATE_GIT_URL} ${directory}`, {
+    spawnSync('git', ['clone', '--depth=1', TEMPLATE_GIT_URL, directory], {
       stdio: [2],
     });
   } catch (error) {
@@ -60,7 +60,7 @@ export function cloneTemplate(directory: string) {
  */
 export function isGitInstalled() {
   try {
-    execSync('git --version', { stdio: 'ignore' });
+    spawnSync('git', ['--version'], { stdio: 'ignore' });
     return true;
   } catch (error) {
     return false;
@@ -75,7 +75,7 @@ export function isGitInstalled() {
  */
 export function isInGitRepository(directory: string) {
   try {
-    execSync('git rev-parse --is-inside-work-tree', {
+    spawnSync('git', ['rev-parse', '--is-inside-work-tree'], {
       stdio: 'ignore',
       cwd: pathUtils.resolve(__dirname, directory),
     });
@@ -92,7 +92,7 @@ export function isInGitRepository(directory: string) {
  */
 export function gitInit(directory: string) {
   try {
-    execSync('git init', {
+    spawnSync('git', ['init'], {
       stdio: 'ignore',
       cwd: pathUtils.resolve(__dirname, directory),
     });
@@ -108,7 +108,7 @@ export function gitInit(directory: string) {
  */
 export function yarnInstall(directory: string) {
   try {
-    execSync('yarn install', {
+    spawnSync('yarn', ['install'], {
       stdio: [0, 1, 2],
       cwd: directory,
     });
@@ -124,7 +124,7 @@ export function yarnInstall(directory: string) {
  */
 export function buildSnap(snapDirectory: string) {
   try {
-    execSync('yarn build', {
+    spawnSync('yarn', ['build'], {
       stdio: [0, 1, 2],
       cwd: pathUtils.resolve(__dirname, snapDirectory),
     });
