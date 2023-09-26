@@ -5526,6 +5526,7 @@ __metadata:
     eslint-plugin-n: ^15.7.0
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-promise: ^6.1.1
+    is-svg: ^4.4.0
     jest: ^29.0.2
     jest-it-up: ^2.0.0
     prettier: ^2.7.1

@@ -1,4 +1,12 @@
-import { copyable, divider, heading, panel, spinner, text } from './builder';
+import {
+  copyable,
+  divider,
+  heading,
+  panel,
+  spinner,
+  text,
+  image,
+} from './builder';
 import { NodeType } from './nodes';
 
 describe('copyable', () => {
@@ -239,6 +247,39 @@ describe('text', () => {
     // @ts-expect-error - Invalid args.
     expect(() => text({})).toThrow(
       'Invalid text component: At path: value -- Expected a string, but received: undefined.',
+    );
+  });
+});
+
+describe('image', () => {
+  const MOCK_SVG = '<svg />';
+  it('creates an image component', () => {
+    expect(image({ image: MOCK_SVG })).toStrictEqual({
+      type: NodeType.Image,
+      image: MOCK_SVG,
+    });
+  });
+
+  it('creates an image component using the shorthand form', () => {
+    expect(image(MOCK_SVG)).toStrictEqual({
+      type: NodeType.Image,
+      image: MOCK_SVG,
+    });
+  });
+
+  it('validates the args', () => {
+    expect(() => image({ image: 'foo' })).toThrow(
+      'Invalid image component: At path: image -- Expected a value of type `string`, but received: `"foo"`.',
+    );
+
+    // @ts-expect-error - Invalid args.
+    expect(() => image({ image: MOCK_SVG, bar: 'baz' })).toThrow(
+      'Invalid image component: At path: bar -- Expected a value of type `never`, but received: `"baz"`.',
+    );
+
+    // @ts-expect-error - Invalid args.
+    expect(() => image({})).toThrow(
+      'Invalid image component: At path: image -- Expected a string, but received: undefined.',
     );
   });
 });
