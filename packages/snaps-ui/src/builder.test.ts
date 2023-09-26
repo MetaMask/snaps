@@ -254,32 +254,32 @@ describe('text', () => {
 describe('image', () => {
   const MOCK_SVG = '<svg />';
   it('creates an image component', () => {
-    expect(image({ image: MOCK_SVG })).toStrictEqual({
+    expect(image({ value: MOCK_SVG })).toStrictEqual({
       type: NodeType.Image,
-      image: MOCK_SVG,
+      value: MOCK_SVG,
     });
   });
 
   it('creates an image component using the shorthand form', () => {
     expect(image(MOCK_SVG)).toStrictEqual({
       type: NodeType.Image,
-      image: MOCK_SVG,
+      value: MOCK_SVG,
     });
   });
 
   it('validates the args', () => {
-    expect(() => image({ image: 'foo' })).toThrow(
-      'Invalid image component: At path: image -- Expected a value of type `string`, but received: `"foo"`.',
+    expect(() => image({ value: 'foo' })).toThrow(
+      'Invalid image component: At path: value -- Expected a value of type `string`, but received: `"foo"`.',
     );
 
     // @ts-expect-error - Invalid args.
-    expect(() => image({ image: MOCK_SVG, bar: 'baz' })).toThrow(
+    expect(() => image({ value: MOCK_SVG, bar: 'baz' })).toThrow(
       'Invalid image component: At path: bar -- Expected a value of type `never`, but received: `"baz"`.',
     );
 
     // @ts-expect-error - Invalid args.
     expect(() => image({})).toThrow(
-      'Invalid image component: At path: image -- Expected a string, but received: undefined.',
+      'Invalid image component: At path: value -- Expected a string, but received: undefined.',
     );
   });
 });

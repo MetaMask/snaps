@@ -73,7 +73,7 @@ describe('isComponent', () => {
   it('returns true for an image component', () => {
     const image: Image = {
       type: NodeType.Image,
-      image: '<svg></svg>',
+      value: '<svg></svg>',
     };
 
     expect(isComponent(image)).toBe(true);

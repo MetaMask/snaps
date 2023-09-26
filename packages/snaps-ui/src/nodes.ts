@@ -169,7 +169,7 @@ export const ImageStruct = assign(
   NodeStruct,
   object({
     type: literal(NodeType.Image),
-    image: SvgStruct,
+    value: SvgStruct,
   }),
 );
 

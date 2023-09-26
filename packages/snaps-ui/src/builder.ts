@@ -194,4 +194,4 @@ export const text = createBuilder(NodeType.Text, TextStruct, [
   'markdown',
 ]);
 
-export const image = createBuilder(NodeType.Image, ImageStruct, ['image']);
+export const image = createBuilder(NodeType.Image, ImageStruct, ['value']);
