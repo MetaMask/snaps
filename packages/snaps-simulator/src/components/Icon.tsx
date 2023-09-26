@@ -167,6 +167,10 @@ const DEFAULT_ICONS = {
     alt: 'UI',
     src: uiIcon,
   },
+  image: {
+    alt: 'Image',
+    src: panelIcon,
+  },
 };
 
 export type IconName = keyof typeof DEFAULT_ICONS;
