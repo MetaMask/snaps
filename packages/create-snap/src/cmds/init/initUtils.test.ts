@@ -22,7 +22,7 @@ jest.mock('process', () => ({
 }));
 
 jest.mock('child_process', () => ({
-  execSync: jest.fn(),
+  spawnSync: jest.fn(),
 }));
 
 describe('initUtils', () => {
@@ -66,22 +66,22 @@ describe('initUtils', () => {
   });
 
   describe('buildSnap', () => {
-    it('calls execSync', () => {
-      const execSyncMock = jest
-        .spyOn(childProcess, 'execSync')
+    it('calls spawnSync', () => {
+      const spawnSyncMock = jest
+        .spyOn(childProcess, 'spawnSync')
         .mockImplementation();
 
       buildSnap('foo');
 
-      expect(execSyncMock).toHaveBeenCalledTimes(1);
-      expect(execSyncMock).toHaveBeenCalledWith('yarn build', {
+      expect(spawnSyncMock).toHaveBeenCalledTimes(1);
+      expect(spawnSyncMock).toHaveBeenCalledWith('yarn', ['build'], {
         stdio: [0, 1, 2],
         cwd: pathUtils.resolve(__dirname, 'foo'),
       });
     });
 
     it('throws an error when execution fails', () => {
-      jest.spyOn(childProcess, 'execSync').mockImplementation(() => {
+      jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => {
         throw new Error('failed');
       });
 
@@ -93,15 +93,23 @@ describe('initUtils', () => {
 
   describe('cloneTemplate', () => {
     it('passes if the command is ran successfully', () => {
-      const execSyncMock = jest
-        .spyOn(childProcess, 'execSync')
-        .mockImplementation(() => Buffer.from([]));
+      const spawnSyncMock = jest
+        .spyOn(childProcess, 'spawnSync')
+        .mockImplementation(() => ({
+          pid: 1,
+          output: [],
+          stdout: '',
+          stderr: '',
+          status: null,
+          signal: null,
+        }));
 
       cloneTemplate('foo');
 
-      expect(execSyncMock).toHaveBeenCalledTimes(1);
-      expect(execSyncMock).toHaveBeenCalledWith(
-        `git clone --depth=1 ${TEMPLATE_GIT_URL} foo`,
+      expect(spawnSyncMock).toHaveBeenCalledTimes(1);
+      expect(spawnSyncMock).toHaveBeenCalledWith(
+        'git',
+        ['clone', '--depth=1', TEMPLATE_GIT_URL, 'foo'],
         {
           stdio: [2],
         },
@@ -109,8 +117,8 @@ describe('initUtils', () => {
     });
 
     it('throws if the command fails', () => {
-      const execSyncMock = jest
-        .spyOn(childProcess, 'execSync')
+      const spawnSyncMock = jest
+        .spyOn(childProcess, 'spawnSync')
         .mockImplementation(() => {
           throw new Error('error message');
         });
@@ -118,28 +126,35 @@ describe('initUtils', () => {
       expect(() => cloneTemplate('foo')).toThrow(
         'Init Error: Failed to clone the template.',
       );
-      expect(execSyncMock).toHaveBeenCalledTimes(1);
+      expect(spawnSyncMock).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('isGitInstalled', () => {
     it('returns true if git is installed', () => {
-      const execSyncMock = jest
-        .spyOn(childProcess, 'execSync')
-        .mockImplementation(() => Buffer.from([]));
+      const spawnSyncMock = jest
+        .spyOn(childProcess, 'spawnSync')
+        .mockImplementation(() => ({
+          pid: 1,
+          output: [],
+          stdout: '',
+          stderr: '',
+          status: null,
+          signal: null,
+        }));
 
       const result = isGitInstalled();
 
       expect(result).toBe(true);
-      expect(execSyncMock).toHaveBeenCalledTimes(1);
-      expect(execSyncMock).toHaveBeenCalledWith('git --version', {
+      expect(spawnSyncMock).toHaveBeenCalledTimes(1);
+      expect(spawnSyncMock).toHaveBeenCalledWith('git', ['--version'], {
         stdio: 'ignore',
       });
     });
 
     it('returns false if git is not installed', () => {
-      const execSyncMock = jest
-        .spyOn(childProcess, 'execSync')
+      const spawnSyncMock = jest
+        .spyOn(childProcess, 'spawnSync')
         .mockImplementation(() => {
           throw new Error('error message');
         });
@@ -147,22 +162,30 @@ describe('initUtils', () => {
       const result = isGitInstalled();
 
       expect(result).toBe(false);
-      expect(execSyncMock).toHaveBeenCalledTimes(1);
+      expect(spawnSyncMock).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('isInGitRepository', () => {
     it('returns true if the directory is a git repository', () => {
-      const execSyncMock = jest
-        .spyOn(childProcess, 'execSync')
-        .mockImplementation(() => Buffer.from([]));
+      const spawnSyncMock = jest
+        .spyOn(childProcess, 'spawnSync')
+        .mockImplementation(() => ({
+          pid: 1,
+          output: [],
+          stdout: '',
+          stderr: '',
+          status: null,
+          signal: null,
+        }));
 
       const result = isInGitRepository('foo');
 
       expect(result).toBe(true);
-      expect(execSyncMock).toHaveBeenCalledTimes(1);
-      expect(execSyncMock).toHaveBeenCalledWith(
-        'git rev-parse --is-inside-work-tree',
+      expect(spawnSyncMock).toHaveBeenCalledTimes(1);
+      expect(spawnSyncMock).toHaveBeenCalledWith(
+        'git',
+        ['rev-parse', '--is-inside-work-tree'],
         {
           stdio: 'ignore',
           cwd: pathUtils.resolve(__dirname, 'foo'),
@@ -171,8 +194,8 @@ describe('initUtils', () => {
     });
 
     it('returns false if the directory is not a git repository', () => {
-      const execSyncMock = jest
-        .spyOn(childProcess, 'execSync')
+      const spawnSyncMock = jest
+        .spyOn(childProcess, 'spawnSync')
         .mockImplementation(() => {
           throw new Error('error message');
         });
@@ -180,28 +203,35 @@ describe('initUtils', () => {
       const result = isInGitRepository('foo');
 
       expect(result).toBe(false);
-      expect(execSyncMock).toHaveBeenCalledTimes(1);
+      expect(spawnSyncMock).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('gitInit', () => {
     it('init a new repository', () => {
-      const execSyncMock = jest
-        .spyOn(childProcess, 'execSync')
-        .mockImplementation(() => Buffer.from([]));
+      const spawnSyncMock = jest
+        .spyOn(childProcess, 'spawnSync')
+        .mockImplementation(() => ({
+          pid: 1,
+          output: [],
+          stdout: '',
+          stderr: '',
+          status: null,
+          signal: null,
+        }));
 
       gitInit('foo');
 
-      expect(execSyncMock).toHaveBeenCalledTimes(1);
-      expect(execSyncMock).toHaveBeenCalledWith('git init', {
+      expect(spawnSyncMock).toHaveBeenCalledTimes(1);
+      expect(spawnSyncMock).toHaveBeenCalledWith('git', ['init'], {
         stdio: 'ignore',
         cwd: pathUtils.resolve(__dirname, 'foo'),
       });
     });
 
     it('throws an error if it fails to init a new repository', () => {
-      const execSyncMock = jest
-        .spyOn(childProcess, 'execSync')
+      const spawnSyncMock = jest
+        .spyOn(childProcess, 'spawnSync')
         .mockImplementation(() => {
           throw new Error('error message');
         });
@@ -209,28 +239,35 @@ describe('initUtils', () => {
       expect(() => gitInit('foo')).toThrow(
         'Init Error: Failed to init a new git repository.',
       );
-      expect(execSyncMock).toHaveBeenCalledTimes(1);
+      expect(spawnSyncMock).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('yarnInstall', () => {
     it('run yarn and yarn install commands', () => {
-      const execSyncMock = jest
-        .spyOn(childProcess, 'execSync')
-        .mockImplementation(() => Buffer.from([]));
+      const spawnSyncMock = jest
+        .spyOn(childProcess, 'spawnSync')
+        .mockImplementation(() => ({
+          pid: 1,
+          output: [],
+          stdout: '',
+          stderr: '',
+          status: null,
+          signal: null,
+        }));
 
       yarnInstall('foo');
 
-      expect(execSyncMock).toHaveBeenCalledTimes(1);
-      expect(execSyncMock).toHaveBeenCalledWith('yarn install', {
+      expect(spawnSyncMock).toHaveBeenCalledTimes(1);
+      expect(spawnSyncMock).toHaveBeenCalledWith('yarn', ['install'], {
         stdio: [0, 1, 2],
         cwd: 'foo',
       });
     });
 
     it('throws an error if it fails to run a command', () => {
-      const execSyncMock = jest
-        .spyOn(childProcess, 'execSync')
+      const spawnSyncMock = jest
+        .spyOn(childProcess, 'spawnSync')
         .mockImplementation(() => {
           throw new Error('error message');
         });
@@ -238,7 +275,7 @@ describe('initUtils', () => {
       expect(() => yarnInstall('foo')).toThrow(
         'Init Error: Failed to install dependencies.',
       );
-      expect(execSyncMock).toHaveBeenCalledTimes(1);
+      expect(spawnSyncMock).toHaveBeenCalledTimes(1);
     });
   });
 });
