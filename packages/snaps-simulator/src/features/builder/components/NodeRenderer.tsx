@@ -1,11 +1,12 @@
-import { Box } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 import type { Component } from '@metamask/snaps-ui';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 import type { FunctionComponent } from 'react';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { Copyable } from 'src/features/renderer/components';
 
-import { Delineator, Window } from '../../../components';
+import { Delineator, DelineatorType, Window } from '../../../components';
 import { getSnapId } from '../../configuration';
 import { Renderer } from '../../renderer';
 import { getSnapName } from '../../simulation';
@@ -32,14 +33,29 @@ export const NodeRenderer: FunctionComponent<NodeRendererProps> = ({
   const node = useMemo(() => nodeModelsToComponent(items), [items]);
 
   return (
-    <ErrorBoundary fallback={<Box>Error</Box>}>
-      <Window snapName={snapName} snapId={snapId}>
-        <Box margin="4" marginTop="0" flex="1">
-          <Delineator snapName={snapName}>
+    <Window snapName={snapName} snapId={snapId}>
+      <Box margin="4" marginTop="0" flex="1">
+        <ErrorBoundary
+          fallback={
+            <Delineator type={DelineatorType.Error} snapName={snapName}>
+              <Text fontFamily="custom" fontSize="xs" marginBottom={4}>
+                Contact the creators of {snapName} for further support.
+              </Text>
+              <Copyable
+                id="1"
+                node={{
+                  type: 'copyable',
+                  value: 'The UI specified by the snap is invalid.',
+                }}
+              />
+            </Delineator>
+          }
+        >
+          <Delineator type={DelineatorType.Content} snapName={snapName}>
             <Renderer node={node} />
           </Delineator>
-        </Box>
-      </Window>
-    </ErrorBoundary>
+        </ErrorBoundary>
+      </Box>
+    </Window>
   );
 };

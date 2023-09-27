@@ -3,7 +3,7 @@ import type { Component } from '@metamask/snaps-ui';
 import type { FunctionComponent } from 'react';
 
 import { Renderer } from '../../features/renderer';
-import { Delineator } from '../Delineator';
+import { Delineator, DelineatorType } from '../Delineator';
 import { Window } from '../Window';
 
 export type ConfirmationDialogProps = {
@@ -34,7 +34,7 @@ export const ConfirmationDialog: FunctionComponent<ConfirmationDialogProps> = ({
 }) => (
   <Window snapName={snapName} snapId={snapId}>
     <Box margin="4" marginTop="0" flex="1">
-      <Delineator snapName={snapName}>
+      <Delineator type={DelineatorType.Content} snapName={snapName}>
         <Renderer node={node} />
       </Delineator>
     </Box>
