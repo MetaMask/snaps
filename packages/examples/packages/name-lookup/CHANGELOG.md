@@ -8,8 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0]
 ### Uncategorized
-- Update LavaMoat ([#1754](https://github.com/MetaMask/snaps-skunkworks.git/pull/1754))
-- Add name lookup example snap ([#1768](https://github.com/MetaMask/snaps-skunkworks.git/pull/1768))
+- Update LavaMoat ([#1754](https://github.com/MetaMask/snaps/pull/1754))
+- Add name lookup example snap ([#1768](https://github.com/MetaMask/snaps/pull/1768))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/name-lookup-example-snap@1.0.0...HEAD
-[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/name-lookup-example-snap@1.0.0
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/name-lookup-example-snap@1.0.0...HEAD
+[1.0.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/name-lookup-example-snap@1.0.0
