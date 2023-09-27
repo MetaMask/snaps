@@ -10,6 +10,7 @@ import { getSnapId } from '../../configuration';
 import { Renderer } from '../../renderer';
 import { getSnapName } from '../../simulation';
 import { nodeModelsToComponent } from '../utils';
+import { ErrorBoundary } from './ErrorBoundary';
 
 export type NodeRendererProps = {
   items: NodeModel<Component>[];
@@ -31,12 +32,14 @@ export const NodeRenderer: FunctionComponent<NodeRendererProps> = ({
   const node = useMemo(() => nodeModelsToComponent(items), [items]);
 
   return (
-    <Window snapName={snapName} snapId={snapId}>
-      <Box margin="4" marginTop="0" flex="1">
-        <Delineator snapName={snapName}>
-          <Renderer node={node} />
-        </Delineator>
-      </Box>
-    </Window>
+    <ErrorBoundary fallback={<Box>Error</Box>}>
+      <Window snapName={snapName} snapId={snapId}>
+        <Box margin="4" marginTop="0" flex="1">
+          <Delineator snapName={snapName}>
+            <Renderer node={node} />
+          </Delineator>
+        </Box>
+      </Window>
+    </ErrorBoundary>
   );
 };
