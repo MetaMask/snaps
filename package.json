@@ -1,6 +1,6 @@
 {
   "name": "root",
-  "version": "9.0.0",
+  "version": "10.0.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -50,7 +50,7 @@
   },
   "resolutions": {
     "@babel/core": "patch:@babel/core@npm%3A7.21.0#./.yarn/patches/@babel-core-npm-7.21.0-fb3817b0e5.patch",
-    "@lavamoat/lavapack@^5.2.1": "patch:@lavamoat/lavapack@npm%3A5.2.1#./.yarn/patches/@lavamoat-lavapack-npm-5.2.1-6ac9929a63.patch",
+    "@lavamoat/lavapack@^5.4.1": "patch:@lavamoat/lavapack@npm%3A5.4.1#./.yarn/patches/@lavamoat-lavapack-npm-5.4.1-2548b3e225.patch",
     "@types/glob@*": "patch:@types/glob@npm%3A7.1.4#./.yarn/patches/@types-glob-npm-7.1.4-d45247eaa2.patch",
     "@types/glob@^7.1.1": "patch:@types/glob@npm%3A7.1.4#./.yarn/patches/@types-glob-npm-7.1.4-d45247eaa2.patch",
     "@types/mocha@^10.0.1": "patch:@types/mocha@npm:10.0.1#.yarn/patches/@types-mocha-npm-10.0.1-7c94e9e170.patch",
@@ -61,13 +61,12 @@
     "jest-fetch-mock@^3.0.3": "patch:jest-fetch-mock@npm:3.0.3#.yarn/patches/jest-fetch-mock-npm-3.0.3-ac072ca8af.patch",
     "jest-util@^29.5.0": "patch:jest-util@npm%3A29.6.3#./.yarn/patches/jest-util-npm-29.6.3-6ffdea2c1c.patch",
     "jest-util@^29.6.3": "patch:jest-util@npm%3A29.6.3#./.yarn/patches/jest-util-npm-29.6.3-6ffdea2c1c.patch",
-    "lavamoat-browserify@^15.7.1": "patch:lavamoat-browserify@npm%3A15.7.1#./.yarn/patches/lavamoat-browserify-npm-15.7.1-c443b6ace1.patch",
-    "lavamoat-core@^14.1.1": "patch:lavamoat-core@npm%3A14.2.1#./.yarn/patches/lavamoat-core-npm-14.2.1-879311807b.patch",
-    "lavamoat-core@^14.2.1": "patch:lavamoat-core@npm%3A14.2.1#./.yarn/patches/lavamoat-core-npm-14.2.1-879311807b.patch",
+    "lavamoat-browserify@^15.9.1": "patch:lavamoat-browserify@npm%3A15.9.1#./.yarn/patches/lavamoat-browserify-npm-15.9.1-12130e68ce.patch",
+    "lavamoat-core@^14.4.1": "patch:lavamoat-core@npm%3A14.4.1#./.yarn/patches/lavamoat-core-npm-14.4.1-c4e8bbb016.patch",
     "luxon@^3.2.1": "patch:luxon@npm%3A3.3.0#./.yarn/patches/luxon-npm-3.3.0-bdbae9bfd5.patch"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "^2.3.1",
+    "@lavamoat/allow-scripts": "^2.5.1",
     "@metamask/auto-changelog": "^3.1.0",
     "@metamask/create-release-branch": "^1.1.0",
     "@metamask/eslint-config": "^12.1.0",

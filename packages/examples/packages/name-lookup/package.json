@@ -1,6 +1,6 @@
 {
   "name": "@metamask/name-lookup-example-snap",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "MetaMask example snap demonstrating the use of the `endowment:name-lookup` permission.",
   "repository": {
     "type": "git",
@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
-    "@lavamoat/allow-scripts": "^2.3.1",
+    "@lavamoat/allow-scripts": "^2.5.1",
     "@metamask/auto-changelog": "^3.1.0",
     "@metamask/eslint-config": "^12.1.0",
     "@metamask/eslint-config-jest": "^12.1.0",

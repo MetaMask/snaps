@@ -820,6 +820,153 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('allows passing undefined parameters to snap.request', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => snap.request({ method: 'snap_getEntropy', params: { version: 1, salt: undefined } });
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      method: 'OutboundRequest',
+    });
+
+    const request = await executor.readRpc();
+    expect(request).toStrictEqual({
+      name: 'metamask-provider',
+      data: {
+        id: expect.any(Number),
+        jsonrpc: '2.0',
+        method: 'snap_getEntropy',
+        params: {
+          version: 1,
+        },
+      },
+    });
+
+    // From getEntropy test vectors
+    const result =
+      '0x8bbb59ec55a4a8dd5429268e367ebbbe54eee7467c0090ca835c64d45c33a155';
+
+    await executor.writeRpc({
+      name: 'metamask-provider',
+      data: {
+        jsonrpc: '2.0',
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        id: request.data.id!,
+        result,
+      },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      method: 'OutboundResponse',
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result,
+    });
+  });
+
+  it('allows passing undefined parameters to ethereum.request', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => ethereum.request({ method: 'eth_call', params: [{
+        to: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        nonce: undefined,
+        gas: undefined,
+        data: '0x70a082310000000000000000000000004bbeeb066ed09b7aed07bf39eee0460dfa261520',
+      }] });
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['ethereum']);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      method: 'OutboundRequest',
+    });
+
+    const request = await executor.readRpc();
+    expect(request).toStrictEqual({
+      name: 'metamask-provider',
+      data: {
+        id: expect.any(Number),
+        jsonrpc: '2.0',
+        method: 'eth_call',
+        params: [
+          {
+            to: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+            data: '0x70a082310000000000000000000000004bbeeb066ed09b7aed07bf39eee0460dfa261520',
+          },
+        ],
+      },
+    });
+
+    const result =
+      '0x00000000000000000000000000000000000000000000000000000010a7a512a9';
+
+    await executor.writeRpc({
+      name: 'metamask-provider',
+      data: {
+        jsonrpc: '2.0',
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        id: request.data.id!,
+        result,
+      },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      method: 'OutboundResponse',
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result,
+    });
+  });
+
   it('notifies execution service of out of band errors via unhandledrejection', async () => {
     const CODE = `
       module.exports.onRpcRequest = async () => 'foo';
@@ -1530,6 +1677,43 @@ describe('BaseSnapExecutor', () => {
         data: expect.any(Object),
         message:
           'Received non-JSON-serializable value: Expected the value to satisfy a union of `literal | boolean | finite number | string | array | record`, but received: 0.',
+      },
+    });
+  });
+
+  it('throws when trying to throw an unserializable value', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => { const error = new Error("foo"); error.data = BigInt(0); throw error; };
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 2,
+      error: {
+        code: -32603,
+        data: expect.any(Object),
+        message: 'JSON-RPC responses must be JSON serializable objects.',
       },
     });
   });

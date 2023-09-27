@@ -1,4 +1,5 @@
 import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 
 import builders from './builders';
 import { init } from './cmds';
@@ -14,8 +15,7 @@ export async function cli(
   argv: string[],
   initCommand: typeof init = init,
 ): Promise<void> {
-  const rawArgv = argv.slice(2);
-  await yargs(rawArgv)
+  await yargs(hideBin(argv))
     .scriptName('create-snap')
     .usage('Usage: $0 [directory-name]')
 

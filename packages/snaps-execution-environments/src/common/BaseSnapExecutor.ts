@@ -33,7 +33,6 @@ import type { Duplex } from 'stream';
 import { validate } from 'superstruct';
 
 import { log } from '../logging';
-import EEOpenRPCDocument from '../openrpc.json';
 import type { CommandMethodsMapping } from './commands';
 import { getCommandMethodImplementations } from './commands';
 import { createEndowments } from './endowments';
@@ -43,6 +42,7 @@ import {
   assertEthereumOutboundRequest,
   assertSnapOutboundRequest,
   constructError,
+  sanitizeRequestArguments,
   proxyStreamProvider,
   withTeardown,
 } from './utils';
@@ -201,12 +201,6 @@ export class BaseSnapExecutor {
     }
 
     const { id, method, params } = message;
-    if (method === 'rpc.discover') {
-      this.respond(id, {
-        result: EEOpenRPCDocument,
-      });
-      return;
-    }
 
     if (!hasProperty(EXECUTION_ENVIRONMENT_METHODS, method)) {
       this.respond(id, {
@@ -269,7 +263,19 @@ export class BaseSnapExecutor {
 
   protected respond(id: JsonRpcId, requestObject: Record<string, unknown>) {
     if (!isValidJson(requestObject) || !isObject(requestObject)) {
-      throw new Error('JSON-RPC responses must be JSON serializable objects.');
+      // Instead of throwing, we directly respond with an error.
+      // This prevents an issue where we wouldn't respond when errors were non-serializable
+      this.commandStream.write({
+        error: serializeError(
+          new Error('JSON-RPC responses must be JSON serializable objects.'),
+          {
+            fallbackError,
+          },
+        ),
+        id,
+        jsonrpc: '2.0',
+      });
+      return;
     }
 
     this.commandStream.write({
@@ -409,7 +415,7 @@ export class BaseSnapExecutor {
     const originalRequest = provider.request.bind(provider);
 
     const request = async (args: RequestArguments) => {
-      const sanitizedArgs = getSafeJson(args) as RequestArguments;
+      const sanitizedArgs = sanitizeRequestArguments(args);
       assertSnapOutboundRequest(sanitizedArgs);
       this.notify({ method: 'OutboundRequest' });
       try {
@@ -450,7 +456,7 @@ export class BaseSnapExecutor {
     const originalRequest = provider.request.bind(provider);
 
     const request = async (args: RequestArguments) => {
-      const sanitizedArgs = getSafeJson(args) as RequestArguments;
+      const sanitizedArgs = sanitizeRequestArguments(args);
       assertEthereumOutboundRequest(sanitizedArgs);
       this.notify({ method: 'OutboundRequest' });
       try {
