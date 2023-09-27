@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.1]
 ### Fixed
-- Fix Shell command injection in `create-snap` ([#1784](https://github.com/MetaMask/snaps/pull/1784))
+- Fix shell command injection ([#1784](https://github.com/MetaMask/snaps/pull/1784))
 
 ## [1.0.0]
 ### Changed
