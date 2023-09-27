@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1]
+### Changed
+- Remove unmaintained OpenRPC doc for execution environment ([#1782](https://github.com/MetaMask/snaps/pull/1782))
+- Update LavaMoat ([#1754](https://github.com/MetaMask/snaps/pull/1754))
+
+### Fixed
+- Allow passing `undefined` parameters to `request()` ([#1776](https://github.com/MetaMask/snaps/pull/1776))
+- Fix an issue where errors would not correctly be returned ([#1772](https://github.com/MetaMask/snaps/pull/1772))
+
 ## [2.0.0]
 ### Changed
 - Initial stable release from main branch ([#1757](https://github.com/MetaMask/snaps/pull/1757))
@@ -62,7 +71,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@2.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@2.0.1...HEAD
+[2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@2.0.0...@metamask/snaps-execution-environments@2.0.1
 [2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@0.39.0-flask.1...@metamask/snaps-execution-environments@2.0.0
 [0.39.0-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@0.38.3-flask.1...@metamask/snaps-execution-environments@0.39.0-flask.1
 [0.38.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@0.38.2-flask.1...@metamask/snaps-execution-environments@0.38.3-flask.1
