@@ -126,6 +126,9 @@
       }
     },
     "@metamask/providers": {
+      "builtin": {
+        "stream.pipeline": true
+      },
       "globals": {
         "Event": true,
         "addEventListener": true,
@@ -141,15 +144,45 @@
       },
       "packages": {
         "@metamask/object-multiplex": true,
+        "@metamask/providers>@metamask/json-rpc-engine": true,
+        "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/providers>@metamask/safe-event-emitter": true,
         "@metamask/providers>detect-browser": true,
         "@metamask/providers>extension-port-stream": true,
         "@metamask/providers>is-stream": true,
         "@metamask/providers>json-rpc-middleware-stream": true,
-        "@metamask/providers>pump": true,
         "eslint>fast-deep-equal": true,
-        "eth-rpc-errors": true,
-        "json-rpc-engine": true
+        "stream": true
+      }
+    },
+    "@metamask/providers>@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/providers>@metamask/json-rpc-engine>@metamask/rpc-errors": true,
+        "@metamask/providers>@metamask/json-rpc-engine>@metamask/safe-event-emitter": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/providers>@metamask/json-rpc-engine>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/utils": true,
+        "eth-rpc-errors>fast-safe-stringify": true
+      }
+    },
+    "@metamask/providers>@metamask/json-rpc-engine>@metamask/safe-event-emitter": {
+      "builtin": {
+        "events.EventEmitter": true
+      },
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "events": true
+      }
+    },
+    "@metamask/providers>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/utils": true,
+        "eth-rpc-errors>fast-safe-stringify": true
       }
     },
     "@metamask/providers>@metamask/safe-event-emitter": {
@@ -229,19 +262,6 @@
     "@metamask/providers>json-rpc-middleware-stream>readable-stream>string_decoder": {
       "packages": {
         "@metamask/providers>json-rpc-middleware-stream>readable-stream>safe-buffer": true
-      }
-    },
-    "@metamask/providers>pump": {
-      "builtin": {
-        "fs": true
-      },
-      "globals": {
-        "process.version": true
-      },
-      "packages": {
-        "@metamask/object-multiplex>end-of-stream": true,
-        "@metamask/object-multiplex>once": true,
-        "fs": true
       }
     },
     "@metamask/utils": {

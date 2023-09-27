@@ -101,15 +101,42 @@
       },
       "packages": {
         "@metamask/object-multiplex": true,
+        "@metamask/providers>@metamask/json-rpc-engine": true,
+        "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/providers>@metamask/safe-event-emitter": true,
         "@metamask/providers>detect-browser": true,
         "@metamask/providers>extension-port-stream": true,
         "@metamask/providers>is-stream": true,
         "@metamask/providers>json-rpc-middleware-stream": true,
-        "@metamask/providers>pump": true,
-        "eslint>fast-deep-equal": true,
-        "eth-rpc-errors": true,
-        "json-rpc-engine": true
+        "browserify>stream-browserify": true,
+        "eslint>fast-deep-equal": true
+      }
+    },
+    "@metamask/providers>@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/providers>@metamask/json-rpc-engine>@metamask/rpc-errors": true,
+        "@metamask/providers>@metamask/json-rpc-engine>@metamask/safe-event-emitter": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/providers>@metamask/json-rpc-engine>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/utils": true,
+        "eth-rpc-errors>fast-safe-stringify": true
+      }
+    },
+    "@metamask/providers>@metamask/json-rpc-engine>@metamask/safe-event-emitter": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>events": true
+      }
+    },
+    "@metamask/providers>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/utils": true,
+        "eth-rpc-errors>fast-safe-stringify": true
       }
     },
     "@metamask/providers>@metamask/safe-event-emitter": {
@@ -168,14 +195,6 @@
     "@metamask/providers>json-rpc-middleware-stream>readable-stream>string_decoder": {
       "packages": {
         "@metamask/providers>json-rpc-middleware-stream>readable-stream>safe-buffer": true
-      }
-    },
-    "@metamask/providers>pump": {
-      "packages": {
-        "@metamask/object-multiplex>end-of-stream": true,
-        "@metamask/object-multiplex>once": true,
-        "browserify>browser-resolve": true,
-        "browserify>process": true
       }
     },
     "@metamask/utils": {
