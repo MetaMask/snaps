@@ -8,6 +8,7 @@ import {
   getCronjobCaveatMapper,
 } from './cronjob';
 import { ethereumProviderEndowmentBuilder } from './ethereum-provider';
+import { keyringEndowmentBuilder } from './keyring';
 import { lifecycleHooksEndowmentBuilder } from './lifecycle-hooks';
 import {
   getNameLookupCaveatMapper,
@@ -38,6 +39,7 @@ export const endowmentPermissionBuilders = {
   [webAssemblyEndowmentBuilder.targetName]: webAssemblyEndowmentBuilder,
   [nameLookupEndowmentBuilder.targetName]: nameLookupEndowmentBuilder,
   [lifecycleHooksEndowmentBuilder.targetName]: lifecycleHooksEndowmentBuilder,
+  [keyringEndowmentBuilder.targetName]: keyringEndowmentBuilder,
 } as const;
 
 export const endowmentCaveatSpecifications = {
@@ -65,6 +67,7 @@ export const handlerEndowments: Record<HandlerType, string> = {
   [HandlerType.OnNameLookup]: nameLookupEndowmentBuilder.targetName,
   [HandlerType.OnInstall]: lifecycleHooksEndowmentBuilder.targetName,
   [HandlerType.OnUpdate]: lifecycleHooksEndowmentBuilder.targetName,
+  [HandlerType.OnKeyringRequest]: keyringEndowmentBuilder.targetName,
 };
 
 export * from './enum';
