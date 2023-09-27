@@ -22,7 +22,7 @@ import {
   yarnInstall,
 } from './initUtils';
 
-const SATISFIED_VERSION = '>=16' as SemVerRange;
+const SATISFIED_VERSION = '>=18.6.0' as SemVerRange;
 
 /**
  * Creates a new snap package, based on one of the provided templates. This
