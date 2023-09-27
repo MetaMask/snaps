@@ -11,7 +11,7 @@ export enum HandlerType {
   OnInstall = 'onInstall',
   OnUpdate = 'onUpdate',
   OnNameLookup = 'onNameLookup',
-  OnKeyringRequest = 'OnKeyringRequest',
+  OnKeyringRequest = 'onKeyringRequest',
 }
 
 type SnapHandler = {
