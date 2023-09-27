@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [2.0.1]
-### Uncategorized
-- Disable fullySpecified rule for `.js` imports in the default Webpack config ([#1780](https://github.com/MetaMask/snaps/pull/1780))
-- Update LavaMoat ([#1754](https://github.com/MetaMask/snaps/pull/1754))
+### Fixed
+- Disable the `fullySpecified` rule for `.js` imports in the default Webpack config ([#1780](https://github.com/MetaMask/snaps/pull/1780))
 
 ## [2.0.0]
 ### Changed

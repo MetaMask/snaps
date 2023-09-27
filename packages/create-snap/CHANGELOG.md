@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [1.0.1]
-### Uncategorized
+### Fixed
 - Fix Shell command injection in `create-snap` ([#1784](https://github.com/MetaMask/snaps/pull/1784))
-- Update LavaMoat ([#1754](https://github.com/MetaMask/snaps/pull/1754))
 
 ## [1.0.0]
 ### Changed

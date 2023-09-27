@@ -7,10 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [2.0.1]
-### Uncategorized
-- Bump SES ([#1777](https://github.com/MetaMask/snaps/pull/1777))
-- Update LavaMoat ([#1754](https://github.com/MetaMask/snaps/pull/1754))
-- Remove endowment:long-running ([#1751](https://github.com/MetaMask/snaps/pull/1751))
+### Changed
+- Remove deprecated `endowment:long-running` ([#1751](https://github.com/MetaMask/snaps/pull/1751))
 
 ## [2.0.0]
 ### Changed
