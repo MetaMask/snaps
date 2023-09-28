@@ -15,6 +15,8 @@ import { CronjobController } from './CronjobController';
 const MOCK_VERSION = '1.0' as SemVerVersion;
 
 describe('CronjobController', () => {
+  const originalProcessNextTick = process.nextTick;
+
   beforeEach(() => {
     jest.useFakeTimers().setSystemTime(new Date('2022-01-01'));
   });
@@ -133,6 +135,66 @@ describe('CronjobController', () => {
     );
 
     cronjobController.destroy();
+  });
+
+  it('executes cronjobs that were missed during daily check in but doesnt repeat every init', async () => {
+    const rootMessenger = getRootCronjobControllerMessenger();
+    const controllerMessenger =
+      getRestrictedCronjobControllerMessenger(rootMessenger);
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => {
+        return {
+          [SnapEndowments.Cronjob]: getCronjobPermission({
+            expression: '30 * * * *',
+          }),
+        };
+      },
+    );
+
+    const handleRequest = jest.fn();
+
+    rootMessenger.registerActionHandler(
+      'SnapController:handleRequest',
+      handleRequest,
+    );
+
+    const cronjobController = new CronjobController({
+      messenger: controllerMessenger,
+      state: {
+        jobs: {
+          [`${MOCK_SNAP_ID}-0`]: { lastRun: 0 },
+        },
+      },
+    });
+
+    await new Promise((resolve) => originalProcessNextTick(resolve));
+
+    expect(rootMessenger.call).toHaveBeenCalledWith(
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_SNAP_ID,
+        origin: '',
+        handler: HandlerType.OnCronjob,
+        request: {
+          method: 'exampleMethod',
+          params: ['p1'],
+        },
+      },
+    );
+
+    const cronjobController2 = new CronjobController({
+      messenger: controllerMessenger,
+      state: cronjobController.state,
+    });
+
+    await new Promise((resolve) => originalProcessNextTick(resolve));
+
+    expect(handleRequest).toHaveBeenCalledTimes(1);
+
+    cronjobController.destroy();
+    cronjobController2.destroy();
   });
 
   it('does not schedule cronjob that is too far in the future', () => {
