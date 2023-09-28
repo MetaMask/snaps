@@ -227,7 +227,10 @@ export class CronjobController extends BaseController<
       this.schedule(job);
     });
 
-    this.updateJobLastRunState(job.id, 0); // 0 for init, never ran actually
+    if (!this.state.jobs[job.id]?.lastRun) {
+      this.updateJobLastRunState(job.id, 0); // 0 for init, never ran actually
+    }
+
     this.#timers.set(job.id, timer);
     this.#snapIds.set(job.id, job.snapId);
   }
