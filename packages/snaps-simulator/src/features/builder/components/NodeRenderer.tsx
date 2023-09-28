@@ -4,11 +4,11 @@ import type { NodeModel } from '@minoru/react-dnd-treeview';
 import type { FunctionComponent } from 'react';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { Copyable } from 'src/features/renderer/components';
 
 import { Delineator, DelineatorType, Window } from '../../../components';
 import { getSnapId } from '../../configuration';
 import { Renderer } from '../../renderer';
+import { Copyable } from '../../renderer/components';
 import { getSnapName } from '../../simulation';
 import { nodeModelsToComponent } from '../utils';
 import { ErrorBoundary } from './ErrorBoundary';
