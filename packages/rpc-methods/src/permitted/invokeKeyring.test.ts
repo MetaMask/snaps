@@ -1,8 +1,12 @@
 import { HandlerType } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID, getSnapObject } from '@metamask/snaps-utils/test-utils';
-import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/types';
+import type {
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+  JsonRpcFailure,
+  JsonRpcSuccess,
+} from '@metamask/types';
 import { ethErrors } from 'eth-rpc-errors';
-import type { JsonRpcFailure, JsonRpcSuccess } from 'json-rpc-engine';
 import { JsonRpcEngine } from 'json-rpc-engine';
 
 import { invokeKeyringHandler } from './invokeKeyring';
@@ -22,6 +26,14 @@ describe('wallet_invokeKeyring', () => {
     });
   });
   describe('invokeKeyringImplementation', () => {
+    // Mirror the origin middleware in the extension
+    const createOriginMiddleware =
+      (origin: string) =>
+      (request: any, _response: unknown, next: () => void, _end: unknown) => {
+        request.origin = origin;
+        next();
+      };
+
     const getMockHooks = () =>
       ({
         getSnap: jest.fn(),
@@ -39,9 +51,10 @@ describe('wallet_invokeKeyring', () => {
       hooks.handleSnapRpcRequest.mockImplementation(() => 'bar');
 
       const engine = new JsonRpcEngine();
+      engine.push(createOriginMiddleware('metamask.io'));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<unknown>,
+          req as JsonRpcRequest<JsonRpcRequest<unknown>>,
           res as PendingJsonRpcResponse<unknown>,
           next,
           end,
@@ -59,7 +72,6 @@ describe('wallet_invokeKeyring', () => {
           snapId: MOCK_SNAP_ID,
           request: { method: 'foo' },
         },
-        origin: 'metamask.io',
       })) as JsonRpcSuccess<string>;
 
       expect(response.result).toBe('bar');
@@ -85,9 +97,10 @@ describe('wallet_invokeKeyring', () => {
       });
 
       const engine = new JsonRpcEngine();
+      engine.push(createOriginMiddleware('metamask.io'));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<unknown>,
+          req as JsonRpcRequest<JsonRpcRequest<unknown>>,
           res as PendingJsonRpcResponse<unknown>,
           next,
           end,
@@ -105,13 +118,12 @@ describe('wallet_invokeKeyring', () => {
           snapId: MOCK_SNAP_ID,
           request: { method: 'foo' },
         },
-        origin: 'metamask.io',
-      })) as JsonRpcSuccess<string>;
+      })) as JsonRpcFailure;
 
       expect(response.error).toStrictEqual({
         ...ethErrors.rpc
           .invalidRequest({
-            message: "Failed to start snap.",
+            message: 'Failed to start snap.',
           })
           .serialize(),
         stack: expect.any(String),
@@ -126,9 +138,10 @@ describe('wallet_invokeKeyring', () => {
       hooks.hasPermission.mockImplementation(() => false);
 
       const engine = new JsonRpcEngine();
+      engine.push(createOriginMiddleware('metamask.io'));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<unknown>,
+          req as JsonRpcRequest<JsonRpcRequest<unknown>>,
           res as PendingJsonRpcResponse<unknown>,
           next,
           end,
@@ -146,7 +159,6 @@ describe('wallet_invokeKeyring', () => {
           snapId: MOCK_SNAP_ID,
           request: { method: 'foo' },
         },
-        origin: 'metamask.io',
       })) as JsonRpcFailure;
 
       expect(response.error).toStrictEqual({
@@ -168,9 +180,10 @@ describe('wallet_invokeKeyring', () => {
       hooks.getSnap.mockImplementation(() => undefined);
 
       const engine = new JsonRpcEngine();
+      engine.push(createOriginMiddleware('metamask.io'));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<unknown>,
+          req as JsonRpcRequest<JsonRpcRequest<unknown>>,
           res as PendingJsonRpcResponse<unknown>,
           next,
           end,
@@ -188,7 +201,6 @@ describe('wallet_invokeKeyring', () => {
           snapId: MOCK_SNAP_ID,
           request: { method: 'foo' },
         },
-        origin: 'metamask.io',
       })) as JsonRpcFailure;
 
       expect(response.error).toStrictEqual({
@@ -209,7 +221,7 @@ describe('wallet_invokeKeyring', () => {
       const engine = new JsonRpcEngine();
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<unknown>,
+          req as JsonRpcRequest<JsonRpcRequest<unknown>>,
           res as PendingJsonRpcResponse<unknown>,
           next,
           end,

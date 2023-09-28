@@ -2,7 +2,6 @@ import type { Snap } from '@metamask/snaps-utils';
 import {
   HandlerType,
   WALLET_SNAP_PERMISSION_KEY,
-  type InstallSnapsResult,
   type SnapId,
   type SnapRpcHookArgs,
 } from '@metamask/snaps-utils';
@@ -68,7 +67,7 @@ export type InvokeKeyringHooks = {
  */
 async function invokeKeyringImplementation(
   req: JsonRpcRequest<unknown>,
-  res: PendingJsonRpcResponse<InstallSnapsResult>,
+  res: PendingJsonRpcResponse<unknown>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
   { handleSnapRpcRequest, hasPermission, getSnap }: InvokeKeyringHooks,
@@ -81,7 +80,7 @@ async function invokeKeyringImplementation(
   }
 
   // We expect the MM middleware stack to always add the origin to requests
-  const { origin } = req;
+  const { origin } = req as JsonRpcRequest<unknown> & { origin: string };
   const { snapId, request } = params;
 
   if (!origin || !hasPermission(origin, WALLET_SNAP_PERMISSION_KEY)) {
