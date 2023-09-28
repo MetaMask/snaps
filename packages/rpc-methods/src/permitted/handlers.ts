@@ -1,4 +1,5 @@
 import { getSnapsHandler } from './getSnaps';
+import { invokeKeyringHandler } from './invokeKeyring';
 import { invokeSnapSugarHandler } from './invokeSnapSugar';
 import { requestSnapsHandler } from './requestSnaps';
 
@@ -7,6 +8,7 @@ export const methodHandlers = {
   wallet_getSnaps: getSnapsHandler,
   wallet_requestSnaps: requestSnapsHandler,
   wallet_invokeSnap: invokeSnapSugarHandler,
+  wallet_invokeKeyring: invokeKeyringHandler,
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 
