@@ -9,6 +9,7 @@ const {
 const { resolve } = require('path');
 const { default: tsconfigPaths } = require('vite-tsconfig-paths');
 
+// eslint-disable-next-line n/no-process-env
 const IS_CI = Boolean(process.env.CI);
 const MAX_WORKERS = IS_CI ? 1 : 5;
 
@@ -25,6 +26,7 @@ const config = {
               NodeModulesPolyfillPlugin(),
               NodeGlobalsPolyfillPlugin({
                 buffer: true,
+                process: true,
               }),
             ],
           },
@@ -68,14 +70,39 @@ const config = {
     [
       'static-server',
       {
-        port: 4569,
+        port: 4567,
         folders: [
+          // The iframe execution service bundle.
           {
             mount: '/',
             path: resolve(
               __dirname,
               '../snaps-execution-environments/dist/browserify/iframe',
             ),
+          },
+
+          // The web worker execution service bundle.
+          {
+            mount: '/worker/executor',
+            path: resolve(
+              __dirname,
+              '../snaps-execution-environments/dist/browserify/worker-executor',
+            ),
+          },
+
+          // The web worker pool.
+          {
+            mount: '/worker/pool',
+            path: resolve(
+              __dirname,
+              '../snaps-execution-environments/dist/browserify/worker-pool',
+            ),
+          },
+
+          // A test page used for testing the sandboxing.
+          {
+            mount: '/test/sandbox',
+            path: resolve(__dirname, './src/services/iframe/test'),
           },
         ],
       },

@@ -1,0 +1,103 @@
+/* eslint-disable import/unambiguous, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+
+const {
+  NodeGlobalsPolyfillPlugin,
+} = require('@esbuild-plugins/node-globals-polyfill');
+const {
+  NodeModulesPolyfillPlugin,
+} = require('@esbuild-plugins/node-modules-polyfill');
+const { resolve } = require('path');
+const { default: tsconfigPaths } = require('vite-tsconfig-paths');
+
+// eslint-disable-next-line n/no-process-env
+const IS_CI = Boolean(process.env.CI);
+const MAX_WORKERS = IS_CI ? 1 : 5;
+
+const config = {
+  runner: [
+    'browser',
+    {
+      headless: true,
+      viteConfig: {
+        plugins: [tsconfigPaths()],
+        optimizeDeps: {
+          esbuildOptions: {
+            plugins: [
+              NodeModulesPolyfillPlugin(),
+              NodeGlobalsPolyfillPlugin({
+                buffer: true,
+              }),
+            ],
+          },
+        },
+      },
+
+      coverage: {
+        enabled: true,
+        exclude: ['**/*.test.browser.ts', '**/test-utils/**'],
+        reporter: ['html', 'json-summary', 'text', 'json'],
+        reportsDirectory: './coverage/wdio',
+      },
+    },
+  ],
+
+  autoCompileOpts: {
+    tsNodeOpts: {
+      project: './tsconfig.json',
+    },
+  },
+
+  specs: ['./src/**/*.test.browser.ts'],
+
+  maxInstances: MAX_WORKERS,
+  capabilities: [
+    {
+      maxInstances: MAX_WORKERS,
+      browserName: 'chrome',
+    },
+    {
+      maxInstances: MAX_WORKERS,
+      browserName: 'firefox',
+    },
+  ],
+
+  logLevel: 'error',
+
+  services: [
+    'chromedriver',
+    'geckodriver',
+    [
+      'static-server',
+      {
+        port: 4569,
+        folders: [
+          {
+            mount: '/',
+            path: resolve(
+              __dirname,
+              '../snaps-execution-environments/dist/browserify/iframe',
+            ),
+          },
+        ],
+      },
+    ],
+  ],
+
+  framework: 'mocha',
+  reporters: [
+    [
+      'spec',
+      {
+        addConsoleLogs: true,
+        showPreface: false,
+        realtimeReporting: true,
+      },
+    ],
+  ],
+  mochaOpts: {
+    ui: 'bdd',
+    timeout: 120000,
+  },
+};
+
+module.exports.config = config;
