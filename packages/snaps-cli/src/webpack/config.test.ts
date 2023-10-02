@@ -2,7 +2,7 @@ import { promises as fs } from 'fs';
 import ora from 'ora';
 import { dirname } from 'path';
 
-import { getMockConfig, fakePolyfillPaths } from '../test-utils';
+import { getMockConfig, normalizeConfig } from '../test-utils';
 import { getDefaultConfiguration } from './config';
 
 jest.mock('fs');
@@ -158,7 +158,7 @@ describe('getDefaultConfiguration', () => {
       const output = await getDefaultConfiguration(config);
 
       // eslint-disable-next-line jest/no-restricted-matchers
-      expect(fakePolyfillPaths(output)).toMatchSnapshot();
+      expect(normalizeConfig(output)).toMatchSnapshot();
     },
   );
 
@@ -231,8 +231,10 @@ describe('getDefaultConfiguration', () => {
         },
       });
 
+      const output = await getDefaultConfiguration(config, options);
+
       // eslint-disable-next-line jest/no-restricted-matchers
-      expect(await getDefaultConfiguration(config, options)).toMatchSnapshot();
+      expect(normalizeConfig(output)).toMatchSnapshot();
     },
   );
 });

@@ -2,6 +2,7 @@ import type { PostProcessOptions, SourceMap } from '@metamask/snaps-utils';
 import {
   checkManifest,
   evalBundle,
+  getErrorMessage,
   postProcessBundle,
   useTemporaryFile,
 } from '@metamask/snaps-utils';
@@ -73,35 +74,43 @@ export default class SnapsWebpackPlugin {
               const source = asset.source() as string;
               const sourceMap = asset.map();
 
-              const processed = postProcessBundle(source, {
-                ...this.options,
-                sourceMap: Boolean(devtool),
-                inputSourceMap: devtool ? (sourceMap as SourceMap) : undefined,
-              });
+              try {
+                const processed = postProcessBundle(source, {
+                  ...this.options,
+                  sourceMap: Boolean(devtool),
+                  inputSourceMap: devtool
+                    ? (sourceMap as SourceMap)
+                    : undefined,
+                });
 
-              if (processed.warnings.length > 0) {
-                compilation.warnings.push(
-                  new WebpackError(
-                    `${PLUGIN_NAME}: Bundle Warning: Processing of the Snap bundle completed with warnings.\n${processed.warnings.join(
-                      '\n',
-                    )}`,
-                  ),
+                if (processed.warnings.length > 0) {
+                  compilation.warnings.push(
+                    new WebpackError(
+                      `${PLUGIN_NAME}: Bundle Warning: Processing of the Snap bundle completed with warnings.\n${processed.warnings.join(
+                        '\n',
+                      )}`,
+                    ),
+                  );
+                }
+
+                const replacement = processed.sourceMap
+                  ? new SourceMapSource(
+                      processed.code,
+                      assetName,
+                      processed.sourceMap,
+                      source,
+                      sourceMap as SourceMap,
+                    )
+                  : new RawSource(processed.code);
+
+                // For some reason the type of `RawSource` is not compatible with
+                // Webpack's own `Source`, but works fine when casting it to `any`.
+                compilation.updateAsset(assetName, replacement as any);
+              } catch (error) {
+                compilation.errors.push(
+                  new WebpackError(getErrorMessage(error)),
                 );
               }
-
-              const replacement = processed.sourceMap
-                ? new SourceMapSource(
-                    processed.code,
-                    assetName,
-                    processed.sourceMap,
-                    source,
-                    sourceMap as SourceMap,
-                  )
-                : new RawSource(processed.code);
-
-              // For some reason the type of `RawSource` is not compatible with
-              // Webpack's own `Source`, but works fine when casting it to `any`.
-              compilation.updateAsset(assetName, replacement as any);
             });
         },
       );

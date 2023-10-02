@@ -159,6 +159,16 @@ describe('SnapsWebpackPlugin', () => {
     );
   });
 
+  it('logs post processing errors', async () => {
+    const { stats } = await bundle({
+      code: '<!-- Hello, world! -->',
+    });
+
+    expect(stats.toJson().errors?.[0].message).toMatch(
+      `Failed to post process code:`,
+    );
+  });
+
   it('generates a source map', async () => {
     const { fs } = await bundle({
       webpackOptions: {
