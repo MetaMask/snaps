@@ -2,6 +2,7 @@ import type { PostProcessOptions, SourceMap } from '@metamask/snaps-utils';
 import {
   checkManifest,
   evalBundle,
+  getErrorMessage,
   postProcessBundle,
   useTemporaryFile,
 } from '@metamask/snaps-utils';
@@ -107,9 +108,7 @@ export default class SnapsWebpackPlugin {
                 compilation.updateAsset(assetName, replacement as any);
               } catch (error) {
                 compilation.errors.push(
-                  new WebpackError(
-                    `Processing of the Snap bundle failed. This is likely a bug. Please report it to the MetaMask Snaps team at https://github.com/MetaMask/snaps/issues/new.\n${error.message}`,
-                  ),
+                  new WebpackError(getErrorMessage(error)),
                 );
               }
             });
