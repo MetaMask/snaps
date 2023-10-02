@@ -11,6 +11,10 @@ jest.mock('../../webpack');
 jest.mock('./implementation');
 
 describe('watchHandler', () => {
+  beforeEach(() => {
+    process.exitCode = 0;
+  });
+
   it('builds the snap and watches for changes', async () => {
     await fs.promises.writeFile('/input.js', DEFAULT_SNAP_BUNDLE);
 

@@ -11,6 +11,10 @@ jest.mock('../eval');
 jest.mock('./implementation');
 
 describe('buildHandler', () => {
+  beforeEach(() => {
+    process.exitCode = 0;
+  });
+
   it('builds a snap', async () => {
     await fs.promises.writeFile('/input.js', DEFAULT_SNAP_BUNDLE);
 
