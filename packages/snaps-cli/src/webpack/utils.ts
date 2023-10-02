@@ -95,7 +95,7 @@ export async function getDefaultLoader({
      * This is a Webpack loader that uses the `SWC` compiler, which is a much
      * faster alternative to Babel and TypeScript's own compiler.
      */
-    loader: 'swc-loader',
+    loader: require.resolve('swc-loader'),
 
     /**
      * The options for the `swc-loader`. These can be overridden in the
