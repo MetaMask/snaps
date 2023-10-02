@@ -15,6 +15,10 @@ describe('watchHandler', () => {
     process.exitCode = 0;
   });
 
+  afterEach(() => {
+    process.exitCode = 0;
+  });
+
   it('builds the snap and watches for changes', async () => {
     await fs.promises.writeFile('/input.js', DEFAULT_SNAP_BUNDLE);
 

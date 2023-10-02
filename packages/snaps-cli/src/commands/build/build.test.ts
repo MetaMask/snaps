@@ -11,7 +11,7 @@ jest.mock('../eval');
 jest.mock('./implementation');
 
 describe('buildHandler', () => {
-  beforeEach(() => {
+  afterEach(() => {
     process.exitCode = 0;
   });
 

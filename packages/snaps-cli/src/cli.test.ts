@@ -78,6 +78,10 @@ describe('checkNodeVersion', () => {
 });
 
 describe('cli', () => {
+  afterEach(() => {
+    process.exitCode = 0;
+  });
+
   it('exits if no argument was provided', async () => {
     expect.assertions(2);
 

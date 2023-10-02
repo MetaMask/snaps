@@ -5,7 +5,7 @@ import { serveHandler } from './serve';
 jest.mock('../../webpack');
 
 describe('serveHandler', () => {
-  beforeEach(() => {
+  afterEach(() => {
     process.exitCode = 0;
   });
 
