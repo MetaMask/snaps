@@ -11,8 +11,10 @@ describe('generateMockEndowments', () => {
 
   it('includes mocked classes', async () => {
     const endowments = generateMockEndowments();
-    const subtle = new endowments.SubtleCrypto();
-    expect(subtle.encrypt()).toBe(true);
+    const textEncoder = new endowments.TextEncoder();
+    expect(textEncoder.encode('foo')).toStrictEqual(
+      new Uint8Array([102, 111, 111]),
+    );
   });
 
   it('includes mock ethereum provider', async () => {
@@ -25,7 +27,7 @@ describe('generateMockEndowments', () => {
     const endowments = generateMockEndowments();
     expect(endowments.Math).toBe(Math);
     expect(endowments.console).toBe(console);
-    expect(endowments.crypto).toBe(crypto);
+    expect(endowments.crypto).toBe(globalThis.crypto ?? crypto);
   });
 
   it('returns global function for functions', () => {
