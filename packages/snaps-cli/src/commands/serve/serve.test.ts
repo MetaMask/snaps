@@ -5,10 +5,6 @@ import { serveHandler } from './serve';
 jest.mock('../../webpack');
 
 describe('serveHandler', () => {
-  afterEach(() => {
-    process.exitCode = 0;
-  });
-
   it('starts a server', async () => {
     const config = getMockConfig('webpack', {
       input: '/input.js',
