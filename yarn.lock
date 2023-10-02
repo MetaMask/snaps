@@ -5068,6 +5068,7 @@ __metadata:
     querystring-es3: ^0.2.1
     readable-stream: ^3.6.2
     rimraf: ^4.1.2
+    semver: ^7.5.4
     serve-handler: ^6.1.5
     stream-browserify: ^3.0.0
     stream-http: ^3.2.0

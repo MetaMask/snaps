@@ -1,6 +1,6 @@
 import type yargs from 'yargs';
 
-import { cli } from './cli';
+import { checkNodeVersion, cli } from './cli';
 import commands from './commands';
 
 jest.mock('./config');
@@ -26,6 +26,56 @@ const getMockArgv = (...args: string[]) => {
 // In Jest, that's sometimes "childProcess.js", sometimes other things.
 // In practice, it should always be "mm-snap".
 const HELP_TEXT_REGEX = /^\s*Usage: .+ <command> \[options\]/u;
+
+describe('checkNodeVersion', () => {
+  it.each(['16.17.0', '16.18.0', '18.6.0', '18.7.0', '20.0.0'])(
+    'does not exit if the Node version is %s',
+    (version) => {
+      const spy = jest.spyOn(process, 'exit').mockImplementation();
+      checkNodeVersion(version);
+
+      expect(spy).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each(['14.0.0', '16.0.0', '16.16.1'])(
+    'logs a message and exists if the Node version is %s',
+    (version) => {
+      const spy = jest.spyOn(process, 'exit').mockImplementation();
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+      checkNodeVersion(version);
+
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(1);
+      expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect.stringContaining(
+          `Node version ${version} is not supported. Please use Node 16.17.0 or later.`,
+        ),
+      );
+    },
+  );
+
+  it.each(['18.0.0', '18.5.0'])(
+    'logs a message and exists if the Node version is %s',
+    (version) => {
+      const spy = jest.spyOn(process, 'exit').mockImplementation();
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+      checkNodeVersion(version);
+
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(1);
+      expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect.stringContaining(
+          `Node version ${version} is not supported. Please use Node 18.6.0 or later.`,
+        ),
+      );
+    },
+  );
+});
 
 describe('cli', () => {
   it('exits if no argument was provided', async () => {
