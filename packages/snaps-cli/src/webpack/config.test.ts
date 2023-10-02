@@ -231,8 +231,10 @@ describe('getDefaultConfiguration', () => {
         },
       });
 
+      const output = await getDefaultConfiguration(config, options);
+
       // eslint-disable-next-line jest/no-restricted-matchers
-      expect(await getDefaultConfiguration(config, options)).toMatchSnapshot();
+      expect(normalizeConfig(output)).toMatchSnapshot();
     },
   );
 });

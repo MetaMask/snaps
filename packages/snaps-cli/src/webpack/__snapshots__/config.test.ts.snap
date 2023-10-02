@@ -1296,7 +1296,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
-          "loader": "/Users/morten/Development/MetaMask/snaps/node_modules/swc-loader/src/index.js",
+          "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
             "env": {
               "targets": "chrome >= 90, firefox >= 91",
@@ -1446,7 +1446,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
-          "loader": "/Users/morten/Development/MetaMask/snaps/node_modules/swc-loader/src/index.js",
+          "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
             "env": {
               "targets": "chrome >= 90, firefox >= 91",
@@ -1587,7 +1587,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
-          "loader": "/Users/morten/Development/MetaMask/snaps/node_modules/swc-loader/src/index.js",
+          "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
             "env": {
               "targets": "chrome >= 90, firefox >= 91",
@@ -1728,7 +1728,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
-          "loader": "/Users/morten/Development/MetaMask/snaps/node_modules/swc-loader/src/index.js",
+          "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
             "env": {
               "targets": "chrome >= 90, firefox >= 91",
@@ -1878,7 +1878,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
-          "loader": "/Users/morten/Development/MetaMask/snaps/node_modules/swc-loader/src/index.js",
+          "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
             "env": {
               "targets": "chrome >= 90, firefox >= 91",
