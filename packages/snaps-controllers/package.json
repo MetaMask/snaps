@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@metamask/approval-controller": "^3.5.0",
-    "@metamask/base-controller": "^3.2.0",
+    "@metamask/base-controller": "^3.2.2",
     "@metamask/object-multiplex": "^1.2.0",
     "@metamask/permission-controller": "^4.1.0",
     "@metamask/post-message-stream": "^7.0.0",
