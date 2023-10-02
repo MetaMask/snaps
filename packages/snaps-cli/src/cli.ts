@@ -1,9 +1,48 @@
+import semver from 'semver';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
 import builders from './builders';
 import { getConfigByArgv } from './config';
 import { error, getYargsErrorMessage, sanitizeInputs } from './utils';
+
+const MINIMUM_NODE_16_VERSION = '16.17.0';
+const MINIMUM_NODE_18_VERSION = '18.6.0';
+
+/**
+ * Check the Node version. If the Node version is less than the minimum required
+ * version, this logs an error and exits the process.
+ *
+ * @param nodeVersion - The Node version to check.
+ */
+export function checkNodeVersion(
+  nodeVersion: string = process.version.slice(1),
+) {
+  const majorVersion = semver.major(nodeVersion);
+  const message = `Node version ${nodeVersion} is not supported. Please use Node ${MINIMUM_NODE_16_VERSION} or later.`;
+
+  if (majorVersion < 16) {
+    error(message);
+    // eslint-disable-next-line n/no-process-exit
+    process.exit(1);
+  }
+
+  // Node 16 and 18 have a different minimum version requirement, so we need to
+  // check for both.
+  if (majorVersion === 16 && semver.lt(nodeVersion, MINIMUM_NODE_16_VERSION)) {
+    error(message);
+    // eslint-disable-next-line n/no-process-exit
+    process.exit(1);
+  }
+
+  if (majorVersion === 18 && semver.lt(nodeVersion, MINIMUM_NODE_18_VERSION)) {
+    error(
+      `Node version ${nodeVersion} is not supported. Please use Node ${MINIMUM_NODE_18_VERSION} or later.`,
+    );
+    // eslint-disable-next-line n/no-process-exit
+    process.exit(1);
+  }
+}
 
 /**
  * The main CLI entry point function. This processes the command line args, and
@@ -13,6 +52,8 @@ import { error, getYargsErrorMessage, sanitizeInputs } from './utils';
  * @param commands - The list of commands to use.
  */
 export async function cli(argv: string[], commands: any) {
+  checkNodeVersion();
+
   await yargs(hideBin(argv))
     .scriptName('mm-snap')
     .usage('Usage: $0 <command> [options]')
