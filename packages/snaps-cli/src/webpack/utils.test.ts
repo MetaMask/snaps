@@ -24,7 +24,7 @@ describe('getDefaultLoader', () => {
   it('returns the SWC loader if `legacy` is not set', async () => {
     const config = getMockConfig('webpack');
     expect(await getDefaultLoader(config)).toStrictEqual({
-      loader: 'swc-loader',
+      loader: expect.stringContaining('swc-loader'),
       options: expect.any(Object),
     });
   });

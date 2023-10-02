@@ -1,5 +1,6 @@
 import { logError } from '@metamask/snaps-utils';
 import { DEFAULT_SNAP_BUNDLE } from '@metamask/snaps-utils/test-utils';
+import { hasProperty, isPlainObject } from '@metamask/utils';
 import type { IFs } from 'memfs';
 import { createFsFromVolume, Volume } from 'memfs';
 import { promisify } from 'util';
@@ -92,20 +93,49 @@ export async function compile(
 }
 
 /**
- * Fakes the fallback modules path to ensure that snapshots have the same path on different systems.
+ * Normalize the configuration to make the snapshots deterministic. This will:
+ *
+ * - Fake the fallback modules path to ensure that snapshots have the same path
+ * on different systems.
+ * - Change the `loader` path to ensure that snapshots have the same path on
+ * different systems.
  *
  * @param config - The webpack configuration.
  * @returns The webpack configuration with the fallback paths normalized.
  */
-export function fakePolyfillPaths(config: Configuration): Configuration {
-  if (!config.resolve?.fallback) {
+export function normalizeConfig(config: Configuration): Configuration {
+  if (!config.resolve?.fallback || !config.module?.rules) {
     return config;
   }
 
   const {
+    module: { rules },
     resolve: { fallback, ...resolveRest },
     ...rest
   } = config;
+
+  const normalizedRules = rules.map((rule) => {
+    if (
+      !isPlainObject(rule) ||
+      !isPlainObject(rule.use) ||
+      !hasProperty(rule.use, 'loader') ||
+      typeof rule.use.loader !== 'string'
+    ) {
+      return rule;
+    }
+
+    if (rule.use.loader.includes('swc-loader')) {
+      return {
+        ...rule,
+        use: {
+          ...rule.use,
+          loader: '/foo/bar/node_modules/swc-loader/index.js',
+        },
+      };
+    }
+
+    return rule;
+  });
 
   const normalizedFallbacks = Object.keys(fallback).reduce((acc, index) => {
     if (typeof (fallback as Record<string, string>)[index] === 'string') {
@@ -117,6 +147,7 @@ export function fakePolyfillPaths(config: Configuration): Configuration {
 
   return {
     ...rest,
+    module: { ...config.module, rules: normalizedRules },
     resolve: { ...resolveRest, fallback: normalizedFallbacks },
   };
 }
