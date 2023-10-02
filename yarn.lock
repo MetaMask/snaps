@@ -3686,7 +3686,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^3.5.0, @metamask/approval-controller@npm:^3.5.1":
+"@metamask/approval-controller@npm:^3.5.1":
   version: 3.5.1
   resolution: "@metamask/approval-controller@npm:3.5.1"
   dependencies:
@@ -3696,6 +3696,19 @@ __metadata:
     immer: ^9.0.6
     nanoid: ^3.1.31
   checksum: 5d4d1425d44b3848b4486744472fb8eeb31ca9a70d58c6ca6e0603bcbba32f1c5dcd04a8fb2ab6b4bdbf2b4e3309f75387d7d345cd2aedee5e3d6b5d4af4dbad
+  languageName: node
+  linkType: hard
+
+"@metamask/approval-controller@npm:^3.5.2":
+  version: 3.5.2
+  resolution: "@metamask/approval-controller@npm:3.5.2"
+  dependencies:
+    "@metamask/base-controller": ^3.2.2
+    "@metamask/utils": ^6.2.0
+    eth-rpc-errors: ^4.0.2
+    immer: ^9.0.6
+    nanoid: ^3.1.31
+  checksum: 70436be566952b8aa42de48aff36655a42611478a5beee4e5ea9cf019ef386db202c464d73057df4e9cce22ebdb7517f5eb71a9def6bd7672f48a2d714ad1f2c
   languageName: node
   linkType: hard
 
@@ -3720,6 +3733,16 @@ __metadata:
     "@metamask/utils": ^6.2.0
     immer: ^9.0.6
   checksum: 73723a275ad2c8c6f9fcfcd69fd8b469bf8f4455fc572fc19ac9a8d76e5b65152cb111d95bfb9a4b9443298147e03a5f9778747dec2ca2203495ace54c97688c
+  languageName: node
+  linkType: hard
+
+"@metamask/base-controller@npm:^3.2.2":
+  version: 3.2.2
+  resolution: "@metamask/base-controller@npm:3.2.2"
+  dependencies:
+    "@metamask/utils": ^6.2.0
+    immer: ^9.0.6
+  checksum: 90e639b4415bd9e0f8c86b5fdfa9e164c2615bc69f85c5028dc3657883aa20b66d0ecb00850e703d0f2495c3deda2e17bb18e5f2a4b24aca7943b61b67bff82e
   languageName: node
   linkType: hard
 
@@ -5098,7 +5121,7 @@ __metadata:
     "@esbuild-plugins/node-globals-polyfill": ^0.2.3
     "@esbuild-plugins/node-modules-polyfill": ^0.2.2
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/approval-controller": ^3.5.0
+    "@metamask/approval-controller": ^3.5.2
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/base-controller": ^3.2.0
     "@metamask/eslint-config": ^12.1.0
