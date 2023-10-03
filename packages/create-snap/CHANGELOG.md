@@ -6,9 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.2]
+## [2.0.0]
 ### Changed
-- Bump Node.js satisfied version in `create-snap` ([#1789](https://github.com/MetaMask/snaps/pull/1789))
+- **BREAKING:** Bump Node.js satisfied version in `create-snap` ([#1789](https://github.com/MetaMask/snaps/pull/1789))
 
 ## [1.0.1]
 ### Fixed
@@ -32,8 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@1.0.2...HEAD
-[1.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@1.0.1...@metamask/create-snap@1.0.2
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@2.0.0...HEAD
+[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@1.0.1...@metamask/create-snap@2.0.0
 [1.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@1.0.0...@metamask/create-snap@1.0.1
 [1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@0.37.4-flask.1...@metamask/create-snap@1.0.0
 [0.37.4-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@0.37.3-flask.1...@metamask/create-snap@0.37.4-flask.1
