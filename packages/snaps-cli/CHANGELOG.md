@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.2]
 ### Fixed
-- Use `require.resolve` for `swc-loader` to fix build issue ([#1798](https://github.com/MetaMask/snaps/pull/1798))
+- Fix Webpack being unable to find `swc-loader` in some cases ([#1798](https://github.com/MetaMask/snaps/pull/1798))
 - Check minimum Node version in CLI ([#1797](https://github.com/MetaMask/snaps/pull/1797))
 
 ## [2.0.1]
