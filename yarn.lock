@@ -3686,20 +3686,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^3.5.0":
-  version: 3.5.1
-  resolution: "@metamask/approval-controller@npm:3.5.1"
-  dependencies:
-    "@metamask/base-controller": ^3.2.1
-    "@metamask/utils": ^6.2.0
-    eth-rpc-errors: ^4.0.2
-    immer: ^9.0.6
-    nanoid: ^3.1.31
-  checksum: 5d4d1425d44b3848b4486744472fb8eeb31ca9a70d58c6ca6e0603bcbba32f1c5dcd04a8fb2ab6b4bdbf2b4e3309f75387d7d345cd2aedee5e3d6b5d4af4dbad
-  languageName: node
-  linkType: hard
-
-"@metamask/approval-controller@npm:^3.5.2":
+"@metamask/approval-controller@npm:^3.5.0, @metamask/approval-controller@npm:^3.5.2":
   version: 3.5.2
   resolution: "@metamask/approval-controller@npm:3.5.2"
   dependencies:
@@ -3726,17 +3713,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^3.2.0, @metamask/base-controller@npm:^3.2.1":
-  version: 3.2.1
-  resolution: "@metamask/base-controller@npm:3.2.1"
-  dependencies:
-    "@metamask/utils": ^6.2.0
-    immer: ^9.0.6
-  checksum: 73723a275ad2c8c6f9fcfcd69fd8b469bf8f4455fc572fc19ac9a8d76e5b65152cb111d95bfb9a4b9443298147e03a5f9778747dec2ca2203495ace54c97688c
-  languageName: node
-  linkType: hard
-
-"@metamask/base-controller@npm:^3.2.2":
+"@metamask/base-controller@npm:^3.2.0, @metamask/base-controller@npm:^3.2.2":
   version: 3.2.2
   resolution: "@metamask/base-controller@npm:3.2.2"
   dependencies:
