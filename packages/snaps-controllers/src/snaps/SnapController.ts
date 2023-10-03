@@ -413,7 +413,8 @@ export type SnapUninstalled = {
 };
 
 /**
- * Emitted when a snap is removed.
+ * Emitted when a snap is removed from state, this may happen even
+ * if a snap has not fully completed installation.
  */
 export type SnapRemoved = {
   type: `${typeof controllerName}:snapRemoved`;
