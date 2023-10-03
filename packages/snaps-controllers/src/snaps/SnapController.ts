@@ -405,6 +405,14 @@ export type SnapInstalled = {
 };
 
 /**
+ * Emitted when a snap that has previously been fully installed, is uninstalled.
+ */
+export type SnapUninstalled = {
+  type: `${typeof controllerName}:snapUninstalled`;
+  payload: [snap: TruncatedSnap];
+};
+
+/**
  * Emitted when a snap is removed.
  */
 export type SnapRemoved = {
@@ -466,6 +474,7 @@ export type SnapControllerEvents =
   | SnapAdded
   | SnapBlocked
   | SnapInstalled
+  | SnapUninstalled
   | SnapRemoved
   | SnapStateChange
   | SnapUnblocked
@@ -1475,6 +1484,7 @@ export class SnapController extends BaseController<
 
     await Promise.all(
       snapIds.map(async (snapId) => {
+        const snap = this.getExpect(snapId);
         const truncated = this.getTruncatedExpect(snapId);
         // Disable the snap and revoke all of its permissions before deleting
         // it. This ensures that the snap will not be restarted or otherwise
@@ -1492,6 +1502,14 @@ export class SnapController extends BaseController<
         });
 
         this.messagingSystem.publish(`SnapController:snapRemoved`, truncated);
+
+        // If the snap has been fully installed before, also emit snapUninstalled.
+        if (snap.status !== SnapStatus.Installing) {
+          this.messagingSystem.publish(
+            `SnapController:snapUninstalled`,
+            truncated,
+          );
+        }
       }),
     );
   }

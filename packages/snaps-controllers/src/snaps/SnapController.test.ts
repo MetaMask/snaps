@@ -835,6 +835,15 @@ describe('SnapController', () => {
     );
 
     expect(controller.get(MOCK_SNAP_ID)).toBeUndefined();
+    expect(messenger.publish).toHaveBeenCalledWith(
+      'SnapController:snapRemoved',
+      getTruncatedSnap(),
+    );
+
+    expect(messenger.publish).not.toHaveBeenCalledWith(
+      'SnapController:snapUninstalled',
+      getTruncatedSnap(),
+    );
 
     controller.destroy();
   });
@@ -895,6 +904,16 @@ describe('SnapController', () => {
     );
 
     await eventSubscriptionPromise;
+
+    expect(messenger.publish).toHaveBeenCalledWith(
+      'SnapController:snapRemoved',
+      getTruncatedSnap(),
+    );
+
+    expect(messenger.publish).not.toHaveBeenCalledWith(
+      'SnapController:snapUninstalled',
+      getTruncatedSnap(),
+    );
 
     snapController.destroy();
   });
@@ -1350,6 +1369,8 @@ describe('SnapController', () => {
       },
     });
 
+    const { messenger } = options;
+
     const [snapController, service] = getSnapControllerWithEES(
       options,
       new ExecutionEnvironmentStub(
@@ -1391,6 +1412,16 @@ describe('SnapController', () => {
     await snapController.removeSnap(snap.id);
 
     expect(snapController.state.snaps[snap.id]).toBeUndefined();
+
+    expect(messenger.publish).toHaveBeenCalledWith(
+      'SnapController:snapRemoved',
+      getTruncatedSnap(),
+    );
+
+    expect(messenger.publish).toHaveBeenCalledWith(
+      'SnapController:snapUninstalled',
+      getTruncatedSnap(),
+    );
 
     snapController.destroy();
     await service.terminateAllSnaps();
