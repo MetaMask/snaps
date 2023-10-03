@@ -78,7 +78,7 @@
     "webpack": "^5.88.0"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": "^18.16 || >=20"
   },
   "publishConfig": {
     "access": "public",
