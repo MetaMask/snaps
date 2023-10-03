@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.0]
 ### Changed
-- **BREAKING:** Bump Node.js satisfied version in `create-snap` ([#1789](https://github.com/MetaMask/snaps/pull/1789))
+- **BREAKING:** Bump minimum Node.js version to `18.6.0` ([#1789](https://github.com/MetaMask/snaps/pull/1789))
 
 ## [1.0.1]
 ### Fixed
