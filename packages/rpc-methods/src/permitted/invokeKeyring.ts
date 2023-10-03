@@ -11,7 +11,7 @@ import type {
   JsonRpcEngineEndCallback,
   JsonRpcRequest,
 } from '@metamask/types';
-import type { Json } from '@metamask/utils';
+import { hasProperty, type Json } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 
 import type { MethodHooksObject } from '../utils';
@@ -22,6 +22,7 @@ const hookNames: MethodHooksObject<InvokeKeyringHooks> = {
   hasPermission: true,
   handleSnapRpcRequest: true,
   getSnap: true,
+  getAllowedKeyringMethodsForOrigin: true,
 };
 
 /**
@@ -48,6 +49,8 @@ export type InvokeKeyringHooks = {
   }: SnapRpcHookArgs & { snapId: SnapId }) => Promise<unknown>;
 
   getSnap: (snapId: SnapId) => Snap | undefined;
+
+  getAllowedKeyringMethodsForOrigin: (origin: string) => string[];
 };
 
 /**
@@ -63,6 +66,8 @@ export type InvokeKeyringHooks = {
  * @param hooks.handleSnapRpcRequest - Invokes a snap with a given RPC request.
  * @param hooks.hasPermission - Checks whether a given origin has a given permission.
  * @param hooks.getSnap - Gets information about a given snap.
+ * @param hooks.getAllowedKeyringMethodsForOrigin - Get the list of allowed
+ * Keyring methods for a given origin.
  * @returns Nothing.
  */
 async function invokeKeyringImplementation(
@@ -70,7 +75,12 @@ async function invokeKeyringImplementation(
   res: PendingJsonRpcResponse<unknown>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { handleSnapRpcRequest, hasPermission, getSnap }: InvokeKeyringHooks,
+  {
+    handleSnapRpcRequest,
+    hasPermission,
+    getSnap,
+    getAllowedKeyringMethodsForOrigin,
+  }: InvokeKeyringHooks,
 ): Promise<void> {
   let params: InvokeSnapSugarArgs;
   try {
@@ -99,7 +109,22 @@ async function invokeKeyringImplementation(
     );
   }
 
-  // TODO: RPC origin / method filtering?
+  if (!hasProperty(request, 'method') || typeof request.method !== 'string') {
+    return end(
+      ethErrors.rpc.invalidRequest({
+        message: `The request must specify a method.`,
+      }),
+    );
+  }
+
+  const allowedMethods = getAllowedKeyringMethodsForOrigin(origin);
+  if (!allowedMethods.includes(request.method)) {
+    return end(
+      ethErrors.rpc.invalidRequest({
+        message: `The origin "${origin}" is not allowed to invoke the method "${request.method}".`,
+      }),
+    );
+  }
 
   try {
     res.result = (await handleSnapRpcRequest({
