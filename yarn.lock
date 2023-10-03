@@ -3699,7 +3699,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/auto-changelog@npm:^3.1.0, @metamask/auto-changelog@npm:^3.3.0":
+"@metamask/auto-changelog@npm:^3.3.0":
   version: 3.3.0
   resolution: "@metamask/auto-changelog@npm:3.3.0"
   dependencies:
@@ -3730,7 +3730,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -3772,7 +3772,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -3821,7 +3821,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -3859,7 +3859,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -3898,7 +3898,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -3954,7 +3954,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4062,7 +4062,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4101,7 +4101,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4140,7 +4140,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4288,7 +4288,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4326,7 +4326,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4395,7 +4395,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4435,7 +4435,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4474,7 +4474,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4511,7 +4511,7 @@ __metadata:
   resolution: "@metamask/invoke-snap-example-snap@workspace:packages/examples/packages/invoke-snap"
   dependencies:
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4540,7 +4540,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4591,7 +4591,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4628,7 +4628,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4665,7 +4665,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4702,7 +4702,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4740,7 +4740,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4840,7 +4840,7 @@ __metadata:
     "@babel/preset-typescript": ^7.20.12
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5810,7 +5810,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5848,7 +5848,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
