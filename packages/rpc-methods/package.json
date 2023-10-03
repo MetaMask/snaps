@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@metamask/key-tree": "^9.0.0",
-    "@metamask/permission-controller": "^4.1.0",
+    "@metamask/permission-controller": "^4.1.2",
     "@metamask/snaps-ui": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/types": "^1.1.0",
