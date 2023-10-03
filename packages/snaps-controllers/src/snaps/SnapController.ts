@@ -520,14 +520,6 @@ type SnapControllerMessenger = RestrictedControllerMessenger<
 >;
 
 type FeatureFlags = {
-  /**
-   * We still need to implement new UI approval page in metamask-extension before we can allow
-   * DApps to update Snaps. After it's added, this flag can be removed.
-   *
-   * @see {SNAP_APPROVAL_UPDATE}
-   * @see {SnapController.processRequestedSnap}
-   */
-  dappsCanUpdateSnaps?: true;
   requireAllowlist?: true;
   allowLocalSnaps?: true;
 };
@@ -1721,7 +1713,8 @@ export class SnapController extends BaseController<
         const isUpdate = this.has(snapId) && !location.shouldAlwaysReload;
 
         if (isUpdate && this.#isValidUpdate(snapId, version)) {
-          pendingUpdates.push(snapId);
+          const existingSnap = this.getExpect(snapId);
+          pendingUpdates.push({ snapId, oldVersion: existingSnap.version });
           let rollbackSnapshot = this.#getRollbackSnapshot(snapId);
           if (rollbackSnapshot === undefined) {
             rollbackSnapshot = this.#createRollbackSnapshot(snapId);
@@ -1740,14 +1733,31 @@ export class SnapController extends BaseController<
           version,
         );
       }
+
+      // Once we finish all installs / updates, emit events.
+      pendingInstalls.forEach((snapId) =>
+        this.messagingSystem.publish(
+          `SnapController:snapInstalled`,
+          this.getTruncatedExpect(snapId),
+        ),
+      );
+
+      pendingUpdates.forEach(({ snapId, oldVersion }) =>
+        this.messagingSystem.publish(
+          `SnapController:snapUpdated`,
+          this.getTruncatedExpect(snapId),
+          oldVersion,
+        ),
+      );
+
       snapIds.forEach((snapId) => this.#rollbackSnapshots.delete(snapId));
     } catch (error) {
       const installed = pendingInstalls.filter((snapId) => this.has(snapId));
       await this.removeSnaps(installed);
       const snapshottedSnaps = [...this.#rollbackSnapshots.keys()];
-      const snapsToRollback = pendingUpdates.filter((snapId) =>
-        snapshottedSnaps.includes(snapId),
-      );
+      const snapsToRollback = pendingUpdates
+        .map(({ snapId }) => snapId)
+        .filter((snapId) => snapshottedSnaps.includes(snapId));
       await this.#rollbackSnaps(snapsToRollback);
 
       throw error;
@@ -1780,11 +1790,12 @@ export class SnapController extends BaseController<
         return existingSnap;
       }
 
-      if (this.#featureFlags.dappsCanUpdateSnaps === true) {
-        return await this.updateSnap(origin, snapId, location, versionRange);
-      }
-      throw ethErrors.rpc.invalidParams(
-        `Version mismatch with already installed snap. ${snapId}@${existingSnap.version} doesn't satisfy requested version ${versionRange}.`,
+      return await this.updateSnap(
+        origin,
+        snapId,
+        location,
+        versionRange,
+        false,
       );
     }
 
@@ -1831,8 +1842,6 @@ export class SnapController extends BaseController<
         loading: false,
         type: SNAP_APPROVAL_INSTALL,
       });
-
-      this.messagingSystem.publish(`SnapController:snapInstalled`, truncated);
 
       return truncated;
     } catch (error) {
@@ -1906,6 +1915,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap to be updated.
    * @param location - The location implementation of the snap.
    * @param newVersionRange - A semver version range in which the maximum version will be chosen.
+   * @param emitEvent - An optional boolean flag to indicate whether this update should emit an event.
    * @returns The snap metadata if updated, `null` otherwise.
    */
   async updateSnap(
@@ -1913,6 +1923,7 @@ export class SnapController extends BaseController<
     snapId: ValidatedSnapId,
     location: SnapLocation,
     newVersionRange: string = DEFAULT_REQUESTED_SNAP_VERSION,
+    emitEvent = true,
   ): Promise<TruncatedSnap> {
     if (!isValidSemVerRange(newVersionRange)) {
       throw new Error(
@@ -2034,11 +2045,14 @@ export class SnapController extends BaseController<
       }
 
       const truncatedSnap = this.getTruncatedExpect(snapId);
-      this.messagingSystem.publish(
-        'SnapController:snapUpdated',
-        truncatedSnap,
-        snap.version,
-      );
+
+      if (emitEvent) {
+        this.messagingSystem.publish(
+          'SnapController:snapUpdated',
+          truncatedSnap,
+          snap.version,
+        );
+      }
 
       this.#updateApproval(pendingApproval.id, {
         loading: false,
