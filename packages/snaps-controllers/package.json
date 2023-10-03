@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-controllers",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Controllers for MetaMask Snaps.",
   "repository": {
     "type": "git",
