@@ -20,7 +20,7 @@ export async function readVirtualFile(
 }
 
 type WriteVFileOptions = Exclude<
-  Parameters<typeof fsPromises['writeFile']>[2],
+  Parameters<(typeof fsPromises)['writeFile']>[2],
   undefined
 >;
 

@@ -34,7 +34,7 @@ export const {
 
 export const getCronjobRequest = createSelector(
   (state: {
-    [HandlerType.OnCronjob]: ReturnType<typeof slice['getInitialState']>;
+    [HandlerType.OnCronjob]: ReturnType<(typeof slice)['getInitialState']>;
   }) => state[HandlerType.OnCronjob],
   (state) => state.request,
 );

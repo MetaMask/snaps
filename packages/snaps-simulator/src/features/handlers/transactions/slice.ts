@@ -35,7 +35,7 @@ export const {
 
 export const getTransactionRequest = createSelector(
   (state: {
-    [HandlerType.OnTransaction]: ReturnType<typeof slice['getInitialState']>;
+    [HandlerType.OnTransaction]: ReturnType<(typeof slice)['getInitialState']>;
   }) => state[HandlerType.OnTransaction],
   (state) => state.request,
 );

@@ -34,7 +34,7 @@ export const {
 
 export const getJsonRpcRequest = createSelector(
   (state: {
-    [HandlerType.OnRpcRequest]: ReturnType<typeof slice['getInitialState']>;
+    [HandlerType.OnRpcRequest]: ReturnType<(typeof slice)['getInitialState']>;
   }) => state[HandlerType.OnRpcRequest],
   (state) => state.request,
 );
