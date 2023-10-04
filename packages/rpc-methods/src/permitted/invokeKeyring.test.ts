@@ -39,7 +39,7 @@ describe('wallet_invokeKeyring', () => {
         getSnap: jest.fn(),
         hasPermission: jest.fn(),
         handleSnapRpcRequest: jest.fn(),
-        getAllowedKeyringMethodsForOrigin: jest.fn(),
+        getAllowedKeyringMethods: jest.fn(),
       } as any);
 
     it('invokes the snap and returns the result', async () => {
@@ -50,7 +50,7 @@ describe('wallet_invokeKeyring', () => {
       hooks.hasPermission.mockImplementation(() => true);
       hooks.getSnap.mockImplementation(() => getSnapObject());
       hooks.handleSnapRpcRequest.mockImplementation(() => 'bar');
-      hooks.getAllowedKeyringMethodsForOrigin.mockImplementation(() => ['foo']);
+      hooks.getAllowedKeyringMethods.mockImplementation(() => ['foo']);
 
       const engine = new JsonRpcEngine();
       engine.push(createOriginMiddleware('metamask.io'));
@@ -97,7 +97,7 @@ describe('wallet_invokeKeyring', () => {
           message: 'Failed to start snap.',
         });
       });
-      hooks.getAllowedKeyringMethodsForOrigin.mockImplementation(() => ['foo']);
+      hooks.getAllowedKeyringMethods.mockImplementation(() => ['foo']);
 
       const engine = new JsonRpcEngine();
       engine.push(createOriginMiddleware('metamask.io'));
@@ -145,7 +145,7 @@ describe('wallet_invokeKeyring', () => {
           message: 'Failed to start snap.',
         });
       });
-      hooks.getAllowedKeyringMethodsForOrigin.mockImplementation(() => ['bar']);
+      hooks.getAllowedKeyringMethods.mockImplementation(() => ['bar']);
 
       const engine = new JsonRpcEngine();
       engine.push(createOriginMiddleware('metamask.io'));
@@ -194,7 +194,7 @@ describe('wallet_invokeKeyring', () => {
           message: 'Failed to start snap.',
         });
       });
-      hooks.getAllowedKeyringMethodsForOrigin.mockImplementation(() => ['foo']);
+      hooks.getAllowedKeyringMethods.mockImplementation(() => ['foo']);
 
       const engine = new JsonRpcEngine();
       engine.push(createOriginMiddleware('metamask.io'));

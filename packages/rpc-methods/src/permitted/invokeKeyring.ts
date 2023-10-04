@@ -22,7 +22,7 @@ const hookNames: MethodHooksObject<InvokeKeyringHooks> = {
   hasPermission: true,
   handleSnapRpcRequest: true,
   getSnap: true,
-  getAllowedKeyringMethodsForOrigin: true,
+  getAllowedKeyringMethods: true,
 };
 
 /**
@@ -50,7 +50,7 @@ export type InvokeKeyringHooks = {
 
   getSnap: (snapId: SnapId) => Snap | undefined;
 
-  getAllowedKeyringMethodsForOrigin: (origin: string) => string[];
+  getAllowedKeyringMethods: (origin: string) => string[];
 };
 
 /**
@@ -66,8 +66,8 @@ export type InvokeKeyringHooks = {
  * @param hooks.handleSnapRpcRequest - Invokes a snap with a given RPC request.
  * @param hooks.hasPermission - Checks whether a given origin has a given permission.
  * @param hooks.getSnap - Gets information about a given snap.
- * @param hooks.getAllowedKeyringMethodsForOrigin - Get the list of allowed
- * Keyring methods for a given origin.
+ * @param hooks.getAllowedKeyringMethods - Get the list of allowed Keyring
+ * methods for a given origin.
  * @returns Nothing.
  */
 async function invokeKeyringImplementation(
@@ -79,7 +79,7 @@ async function invokeKeyringImplementation(
     handleSnapRpcRequest,
     hasPermission,
     getSnap,
-    getAllowedKeyringMethodsForOrigin,
+    getAllowedKeyringMethods,
   }: InvokeKeyringHooks,
 ): Promise<void> {
   let params: InvokeSnapSugarArgs;
@@ -117,7 +117,7 @@ async function invokeKeyringImplementation(
     );
   }
 
-  const allowedMethods = getAllowedKeyringMethodsForOrigin(origin);
+  const allowedMethods = getAllowedKeyringMethods(origin);
   if (!allowedMethods.includes(request.method)) {
     return end(
       ethErrors.rpc.invalidRequest({
