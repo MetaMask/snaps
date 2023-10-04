@@ -163,7 +163,13 @@ export const TextStruct = assign(
  */
 export type Text = Infer<typeof TextStruct>;
 
-const SvgStruct = refine(string(), 'SVG', isSvg);
+const SvgStruct = refine(string(), 'SVG', (value) => {
+  if (!isSvg(value)) {
+    return 'Value is not a valid SVG.';
+  }
+
+  return true;
+});
 
 export const ImageStruct = assign(
   NodeStruct,

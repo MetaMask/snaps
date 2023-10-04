@@ -269,7 +269,7 @@ describe('image', () => {
 
   it('validates the args', () => {
     expect(() => image({ value: 'foo' })).toThrow(
-      'Invalid image component: At path: value -- Expected a value of type `string`, but received: `"foo"`.',
+      'Invalid image component: At path: value -- Value is not a valid SVG.',
     );
 
     // @ts-expect-error - Invalid args.
