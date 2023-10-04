@@ -13,3 +13,4 @@ export * from './Root';
 export * from './Link';
 export * from './TestConditional';
 export * from './Window';
+export * from './Copyable';

@@ -1,15 +1,21 @@
-import { Box } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 import type { Component } from '@metamask/snaps-ui';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 import type { FunctionComponent } from 'react';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Delineator, Window } from '../../../components';
+import {
+  Delineator,
+  DelineatorType,
+  Window,
+  Copyable,
+} from '../../../components';
 import { getSnapId } from '../../configuration';
 import { Renderer } from '../../renderer';
 import { getSnapName } from '../../simulation';
 import { nodeModelsToComponent } from '../utils';
+import { ErrorBoundary } from './ErrorBoundary';
 
 export type NodeRendererProps = {
   items: NodeModel<Component>[];
@@ -33,9 +39,20 @@ export const NodeRenderer: FunctionComponent<NodeRendererProps> = ({
   return (
     <Window snapName={snapName} snapId={snapId}>
       <Box margin="4" marginTop="0" flex="1">
-        <Delineator snapName={snapName}>
-          <Renderer node={node} />
-        </Delineator>
+        <ErrorBoundary
+          fallback={
+            <Delineator type={DelineatorType.Error} snapName={snapName}>
+              <Text fontFamily="custom" fontSize="xs" marginBottom={4}>
+                Contact the creators of <b>{snapName}</b> for further support.
+              </Text>
+              <Copyable value="The UI specified by the snap is invalid." />
+            </Delineator>
+          }
+        >
+          <Delineator type={DelineatorType.Content} snapName={snapName}>
+            <Renderer node={node} />
+          </Delineator>
+        </ErrorBoundary>
       </Box>
     </Window>
   );

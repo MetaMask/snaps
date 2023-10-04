@@ -1,7 +1,13 @@
 import { Center, Heading, Text, Box, Skeleton } from '@chakra-ui/react';
 import { HandlerType } from '@metamask/snaps-utils';
 
-import { Delineator, Editor, Icon, Window } from '../../../components';
+import {
+  Delineator,
+  DelineatorType,
+  Editor,
+  Icon,
+  Window,
+} from '../../../components';
 import { useSelector, useHandler } from '../../../hooks';
 import { getSnapId } from '../../configuration';
 import { Renderer } from '../../renderer';
@@ -50,7 +56,7 @@ export const Response = () => {
           <Box margin="4" flex="1">
             <Skeleton height="38px" mb="4" speed={3} />
             <Skeleton height="285px" mb="4" speed={3} />
-            <Delineator snapName={snapName}>
+            <Delineator type={DelineatorType.Insights} snapName={snapName}>
               <Renderer node={content} />
             </Delineator>
           </Box>

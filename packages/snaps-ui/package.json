@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "@metamask/utils": "^8.1.0",
+    "is-svg": "^4.4.0",
     "superstruct": "^1.0.3"
   },
   "devDependencies": {

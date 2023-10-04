@@ -4,7 +4,7 @@ import type { FunctionComponent } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Renderer } from '../../features/renderer';
-import { Delineator } from '../Delineator';
+import { Delineator, DelineatorType } from '../Delineator';
 import { Window } from '../Window';
 
 export type PromptDialogProps = {
@@ -58,7 +58,7 @@ export const PromptDialog: FunctionComponent<PromptDialogProps> = ({
   return (
     <Window snapName={snapName} snapId={snapId}>
       <Box margin="4" marginTop="0" flex="1">
-        <Delineator snapName={snapName}>
+        <Delineator type={DelineatorType.Content} snapName={snapName}>
           <Renderer node={node} />
           {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
           <form onSubmit={handleSubmit(onFormSubmit)} id="prompt-form">

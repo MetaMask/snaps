@@ -6,6 +6,7 @@ import {
   CopyableStruct,
   DividerStruct,
   HeadingStruct,
+  ImageStruct,
   NodeType,
   PanelStruct,
   SpinnerStruct,
@@ -192,3 +193,5 @@ export const text = createBuilder(NodeType.Text, TextStruct, [
   'value',
   'markdown',
 ]);
+
+export const image = createBuilder(NodeType.Image, ImageStruct, ['value']);
