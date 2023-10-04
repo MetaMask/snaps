@@ -5214,9 +5214,11 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
+    "@metamask/json-rpc-engine": ^7.1.1
     "@metamask/object-multiplex": ^1.2.0
     "@metamask/post-message-stream": ^7.0.0
     "@metamask/providers": ^13.0.0
+    "@metamask/rpc-errors": ^6.0.0
     "@metamask/rpc-methods": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/utils": ^8.1.0
@@ -5248,7 +5250,6 @@ __metadata:
     eslint-plugin-n: ^15.7.0
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-promise: ^6.1.1
-    eth-rpc-errors: ^4.0.3
     expect-webdriverio: ^4.1.2
     istanbul-lib-coverage: ^3.2.0
     istanbul-lib-report: ^3.0.0
@@ -5256,7 +5257,6 @@ __metadata:
     jest: ^29.0.2
     jest-environment-node: ^29.5.0
     jest-fetch-mock: ^3.0.3
-    json-rpc-engine: ^6.1.0
     lavamoat: ^7.3.1
     lavamoat-browserify: ^15.9.1
     nanoid: ^3.1.31

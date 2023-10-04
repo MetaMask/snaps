@@ -1,7 +1,7 @@
 import type { StreamProvider } from '@metamask/providers';
 import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { assert, assertStruct, getSafeJson, JsonStruct } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 
 import { log } from '../logging';
 
@@ -136,7 +136,7 @@ export function assertSnapOutboundRequest(args: RequestArguments) {
   );
   assert(
     !BLOCKED_RPC_METHODS.includes(args.method),
-    ethErrors.rpc.methodNotFound({
+    rpcErrors.methodNotFound({
       data: {
         method: args.method,
       },
@@ -154,7 +154,7 @@ export function assertEthereumOutboundRequest(args: RequestArguments) {
   // Disallow snaps methods for separation of concerns.
   assert(
     !String.prototype.startsWith.call(args.method, 'snap_'),
-    ethErrors.rpc.methodNotFound({
+    rpcErrors.methodNotFound({
       data: {
         method: args.method,
       },
@@ -162,7 +162,7 @@ export function assertEthereumOutboundRequest(args: RequestArguments) {
   );
   assert(
     !BLOCKED_RPC_METHODS.includes(args.method),
-    ethErrors.rpc.methodNotFound({
+    rpcErrors.methodNotFound({
       data: {
         method: args.method,
       },

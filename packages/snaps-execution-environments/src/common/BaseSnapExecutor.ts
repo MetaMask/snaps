@@ -1,7 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 /// <reference path="../../../../node_modules/ses/types.d.ts" />
+import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import { StreamProvider } from '@metamask/providers';
 import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
+import { errorCodes, rpcErrors, serializeError } from '@metamask/rpc-errors';
 import type { SnapsGlobalObject } from '@metamask/rpc-methods';
 import type {
   SnapExports,
@@ -27,8 +29,6 @@ import {
   hasProperty,
   getSafeJson,
 } from '@metamask/utils';
-import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
-import { createIdRemapMiddleware } from 'json-rpc-engine';
 import type { Duplex } from 'stream';
 import { validate } from 'superstruct';
 
@@ -204,7 +204,7 @@ export class BaseSnapExecutor {
 
     if (!hasProperty(EXECUTION_ENVIRONMENT_METHODS, method)) {
       this.respond(id, {
-        error: ethErrors.rpc
+        error: rpcErrors
           .methodNotFound({
             data: {
               method,
@@ -223,7 +223,7 @@ export class BaseSnapExecutor {
     const [error] = validate<any, any>(paramsAsArray, methodObject.struct);
     if (error) {
       this.respond(id, {
-        error: ethErrors.rpc
+        error: rpcErrors
           .invalidParams({
             message: `Invalid parameters for method "${method}": ${error.message}.`,
             data: {
@@ -508,7 +508,7 @@ export class BaseSnapExecutor {
         (stop = () =>
           reject(
             // TODO(rekmarks): Specify / standardize error code for this case.
-            ethErrors.rpc.internal(
+            rpcErrors.internal(
               `The snap "${snapId}" has been terminated during execution.`,
             ),
           )),
