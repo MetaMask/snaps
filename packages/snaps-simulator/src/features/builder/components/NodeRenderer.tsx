@@ -39,7 +39,7 @@ export const NodeRenderer: FunctionComponent<NodeRendererProps> = ({
           fallback={
             <Delineator type={DelineatorType.Error} snapName={snapName}>
               <Text fontFamily="custom" fontSize="xs" marginBottom={4}>
-                Contact the creators of {snapName} for further support.
+                Contact the creators of <b>{snapName}</b> for further support.
               </Text>
               <Copyable
                 id="1"

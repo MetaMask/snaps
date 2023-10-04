@@ -34,6 +34,7 @@ import playErrorIcon from '../assets/icons/play-error.svg';
 import playMutedIcon from '../assets/icons/play-muted.svg';
 import playSuccessIcon from '../assets/icons/play-success.svg';
 import playIcon from '../assets/icons/play.svg';
+import snapErrorIcon from '../assets/icons/snap-error.svg';
 import snapIcon from '../assets/icons/snap.svg';
 import textBubbleIcon from '../assets/icons/text-bubble.svg';
 import textIcon from '../assets/icons/text.svg';
@@ -100,6 +101,10 @@ const DEFAULT_ICONS = {
   snap: {
     alt: 'Snap',
     src: snapIcon,
+  },
+  snapError: {
+    alt: 'Snap Error',
+    src: snapErrorIcon,
   },
   copy: {
     alt: 'Copy',

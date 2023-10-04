@@ -46,7 +46,11 @@ export const Delineator: FunctionComponent<DelineatorProps> = ({
         borderBottom="1px solid"
         borderColor="border.default"
       >
-        <Icon icon="snap" width="16px" marginRight="1" />
+        <Icon
+          icon={isError ? 'snapError' : 'snap'}
+          width="16px"
+          marginRight="1"
+        />
         <Text
           fontFamily="custom"
           fontSize="xs"
