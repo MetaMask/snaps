@@ -11,10 +11,8 @@ describe('generateMockEndowments', () => {
 
   it('includes mocked classes', async () => {
     const endowments = generateMockEndowments();
-    const textEncoder = new endowments.TextEncoder();
-    expect(textEncoder.encode('foo')).toStrictEqual(
-      new Uint8Array([102, 111, 111]),
-    );
+    const request = new endowments.Request('https://metamask.io');
+    expect(request.blob()).toBe(true);
   });
 
   it('includes mock ethereum provider', async () => {
