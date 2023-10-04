@@ -1,15 +1,19 @@
-import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
-import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
-import type { Options } from '@wdio/types';
-// eslint-disable-next-line @typescript-eslint/no-shadow
-import type { Request, Response } from 'express';
-import { resolve } from 'path';
-import tsconfigPaths from 'vite-tsconfig-paths';
+/* eslint-disable import/unambiguous, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 
+const {
+  NodeGlobalsPolyfillPlugin,
+} = require('@esbuild-plugins/node-globals-polyfill');
+const {
+  NodeModulesPolyfillPlugin,
+} = require('@esbuild-plugins/node-modules-polyfill');
+const { resolve } = require('path');
+const { default: tsconfigPaths } = require('vite-tsconfig-paths');
+
+// eslint-disable-next-line n/no-process-env
 const IS_CI = Boolean(process.env.CI);
 const MAX_WORKERS = IS_CI ? 1 : 5;
 
-export const config: Options.Testrunner = {
+const config = {
   runner: [
     'browser',
     {
@@ -22,6 +26,7 @@ export const config: Options.Testrunner = {
               NodeModulesPolyfillPlugin(),
               NodeGlobalsPolyfillPlugin({
                 buffer: true,
+                process: true,
               }),
             ],
           },
@@ -65,38 +70,39 @@ export const config: Options.Testrunner = {
     [
       'static-server',
       {
-        port: 4568,
-        middleware: [
-          {
-            mount: '/worker/executor/',
-
-            // This is a workaround to add the `Access-Control-Allow-Origin`
-            // header to the worker bundle, which is required because it is
-            // loaded from a different origin than the test page.
-            middleware: (_: Request, response: Response) => {
-              response.setHeader('Access-Control-Allow-Origin', '*');
-
-              response.type('application/javascript');
-              response.sendFile(
-                resolve(
-                  __dirname,
-                  './dist/browserify/worker-executor/bundle.js',
-                ),
-              );
-            },
-          },
-        ],
+        port: 4567,
         folders: [
           // The iframe execution service bundle.
           {
             mount: '/',
-            path: resolve(__dirname, './dist/browserify/iframe'),
+            path: resolve(
+              __dirname,
+              '../snaps-execution-environments/dist/browserify/iframe',
+            ),
           },
 
           // The web worker execution service bundle.
           {
             mount: '/worker/executor',
-            path: resolve(__dirname, './dist/browserify/worker-executor'),
+            path: resolve(
+              __dirname,
+              '../snaps-execution-environments/dist/browserify/worker-executor',
+            ),
+          },
+
+          // The web worker pool.
+          {
+            mount: '/worker/pool',
+            path: resolve(
+              __dirname,
+              '../snaps-execution-environments/dist/browserify/worker-pool',
+            ),
+          },
+
+          // A test page used for testing the sandboxing.
+          {
+            mount: '/test/sandbox',
+            path: resolve(__dirname, './src/services/iframe/test'),
           },
         ],
       },
@@ -119,3 +125,5 @@ export const config: Options.Testrunner = {
     timeout: 120000,
   },
 };
+
+module.exports.config = config;

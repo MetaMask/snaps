@@ -19,7 +19,7 @@
   "scripts": {
     "test": "rimraf coverage && jest && yarn test:browser && yarn posttest",
     "posttest": "ts-node scripts/coverage.ts && rimraf coverage/jest coverage/wdio",
-    "test:browser": "wdio run wdio.config.ts",
+    "test:browser": "wdio run wdio.config.js",
     "test:ci": "yarn test",
     "test:watch": "jest --watch",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
@@ -99,7 +99,6 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-promise": "^6.1.1",
     "expect-webdriverio": "^4.1.2",
-    "express": "^4.18.2",
     "istanbul-lib-coverage": "^3.2.0",
     "istanbul-lib-report": "^3.0.0",
     "istanbul-reports": "^3.1.5",
@@ -124,7 +123,7 @@
     "yargs": "^17.7.1"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": "^18.16 || >=20"
   },
   "publishConfig": {
     "access": "public",

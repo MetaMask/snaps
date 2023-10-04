@@ -5,6 +5,7 @@ import {
   MOCK_SNAP_ID,
   TEST_SECRET_RECOVERY_PHRASE_BYTES,
 } from '@metamask/snaps-utils/test-utils';
+import { webcrypto } from 'crypto';
 import { ethErrors } from 'eth-rpc-errors';
 
 import {
@@ -14,15 +15,16 @@ import {
   specificationBuilder,
 } from './manageState';
 
-Object.defineProperty(global, 'crypto', {
-  value: {
-    /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
-    ...require('crypto').webcrypto,
-    subtle: require('crypto').webcrypto.subtle,
-    /* eslint-enable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
-    getRandomValues: (input: Uint8Array) => input.fill(0),
-  },
-});
+globalThis.crypto ??= webcrypto as typeof globalThis.crypto;
+globalThis.crypto.getRandomValues = <Type extends ArrayBufferView | null>(
+  array: Type,
+) => {
+  if (array === null) {
+    return null as Type;
+  }
+
+  return new Uint8Array(array.buffer).fill(0) as unknown as Type;
+};
 
 // Encryption key for `MOCK_SNAP_ID`.
 const ENCRYPTION_KEY =

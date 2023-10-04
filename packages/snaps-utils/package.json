@@ -46,7 +46,7 @@
   "scripts": {
     "test": "rimraf coverage && jest && yarn test:browser && yarn posttest",
     "posttest": "ts-node scripts/coverage.ts && rimraf coverage/jest coverage/wdio",
-    "test:browser": "wdio run wdio.config.ts",
+    "test:browser": "wdio run wdio.config.js",
     "test:ci": "yarn test",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
@@ -144,7 +144,7 @@
     "webdriverio": "^8.15.9"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": "^18.16 || >=20"
   },
   "publishConfig": {
     "access": "public",
