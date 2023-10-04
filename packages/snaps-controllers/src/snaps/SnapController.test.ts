@@ -835,6 +835,15 @@ describe('SnapController', () => {
     );
 
     expect(controller.get(MOCK_SNAP_ID)).toBeUndefined();
+    expect(messenger.publish).toHaveBeenCalledWith(
+      'SnapController:snapRemoved',
+      getTruncatedSnap(),
+    );
+
+    expect(messenger.publish).not.toHaveBeenCalledWith(
+      'SnapController:snapUninstalled',
+      getTruncatedSnap(),
+    );
 
     controller.destroy();
   });
@@ -895,6 +904,16 @@ describe('SnapController', () => {
     );
 
     await eventSubscriptionPromise;
+
+    expect(messenger.publish).toHaveBeenCalledWith(
+      'SnapController:snapRemoved',
+      getTruncatedSnap(),
+    );
+
+    expect(messenger.publish).not.toHaveBeenCalledWith(
+      'SnapController:snapUninstalled',
+      getTruncatedSnap(),
+    );
 
     snapController.destroy();
   });
@@ -1350,6 +1369,8 @@ describe('SnapController', () => {
       },
     });
 
+    const { messenger } = options;
+
     const [snapController, service] = getSnapControllerWithEES(
       options,
       new ExecutionEnvironmentStub(
@@ -1391,6 +1412,16 @@ describe('SnapController', () => {
     await snapController.removeSnap(snap.id);
 
     expect(snapController.state.snaps[snap.id]).toBeUndefined();
+
+    expect(messenger.publish).toHaveBeenCalledWith(
+      'SnapController:snapRemoved',
+      getTruncatedSnap(),
+    );
+
+    expect(messenger.publish).toHaveBeenCalledWith(
+      'SnapController:snapUninstalled',
+      getTruncatedSnap(),
+    );
 
     snapController.destroy();
     await service.terminateAllSnaps();
@@ -2779,6 +2810,10 @@ describe('SnapController', () => {
       await controller.installSnaps(MOCK_ORIGIN, { [MOCK_SNAP_ID]: {} });
       await controller.stopSnap(MOCK_SNAP_ID);
 
+      (
+        messenger.publish as jest.MockedFn<typeof messenger.publish>
+      ).mockClear();
+
       const result = await controller.installSnaps(MOCK_ORIGIN, {
         [MOCK_SNAP_ID]: { version: newVersionRange },
       });
@@ -2857,7 +2892,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        20,
+        18,
         'ApprovalController:updateRequestState',
         expect.objectContaining({
           id: expect.any(String),
@@ -2880,6 +2915,16 @@ describe('SnapController', () => {
           version: newVersion,
         }),
       });
+
+      expect(messenger.publish).not.toHaveBeenCalledWith(
+        'SnapController:snapInstalled',
+        expect.anything(),
+      );
+
+      expect(messenger.publish).not.toHaveBeenCalledWith(
+        'SnapController:snapUpdated',
+        expect.anything(),
+      );
 
       controller.destroy();
     });
@@ -3019,9 +3064,13 @@ describe('SnapController', () => {
             }),
         );
 
-      const [controller, service] = getSnapControllerWithEES(
-        getSnapControllerWithEESOptions({ detectSnapLocation: detect }),
-      );
+      const options = getSnapControllerWithEESOptions({
+        detectSnapLocation: detect,
+      });
+
+      const { messenger } = options;
+
+      const [controller, service] = getSnapControllerWithEES(options);
 
       await controller.installSnaps(MOCK_ORIGIN, { [snapId1]: {} });
       await controller.installSnaps(MOCK_ORIGIN, { [snapId2]: {} });
@@ -3030,6 +3079,10 @@ describe('SnapController', () => {
 
       expect(controller.get(snapId1)).toBeDefined();
       expect(controller.get(snapId2)).toBeDefined();
+
+      (
+        messenger.publish as jest.MockedFn<typeof messenger.publish>
+      ).mockClear();
 
       await expect(
         controller.installSnaps(MOCK_ORIGIN, {
@@ -3046,6 +3099,16 @@ describe('SnapController', () => {
       expect(controller.get(snapId2)?.manifest.version).toBe(oldVersion);
       expect(controller.get(snapId1)?.status).toBe('stopped');
       expect(controller.get(snapId2)?.status).toBe('stopped');
+
+      expect(messenger.publish).not.toHaveBeenCalledWith(
+        'SnapController:snapInstalled',
+        expect.anything(),
+      );
+
+      expect(messenger.publish).not.toHaveBeenCalledWith(
+        'SnapController:snapUpdated',
+        expect.anything(),
+      );
 
       controller.destroy();
       await service.terminateAllSnaps();

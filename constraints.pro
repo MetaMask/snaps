@@ -198,6 +198,9 @@ gen_enforced_field(WorkspaceCwd, 'scripts.lint:changelog', ChangelogValidationSc
 gen_enforced_field(WorkspaceCwd, 'scripts.lint:dependencies', 'depcheck') :-
   WorkspaceCwd \= '.'.
 
+% The "engines.node" field must be the same for all packages.
+gen_enforced_field(WorkspaceCwd, 'engines.node', '^18.16 || >=20').
+
 % Ensure all examples have the same scripts.
 gen_enforced_field(WorkspaceCwd, 'scripts.build', 'mm-snap build') :-
   is_example(WorkspaceCwd),

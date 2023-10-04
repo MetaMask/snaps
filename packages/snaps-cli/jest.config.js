@@ -16,4 +16,5 @@ module.exports = deepmerge(baseConfig, {
   clearMocks: true,
   resetMocks: false,
   restoreMocks: false,
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 });

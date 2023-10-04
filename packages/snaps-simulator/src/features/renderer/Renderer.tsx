@@ -2,7 +2,15 @@ import type { Component } from '@metamask/snaps-ui';
 import { NodeType } from '@metamask/snaps-ui';
 import type { FunctionComponent } from 'react';
 
-import { Copyable, Panel, Text, Divider, Heading, Spinner } from './components';
+import {
+  Copyable,
+  Panel,
+  Text,
+  Divider,
+  Heading,
+  Spinner,
+  Image,
+} from './components';
 
 export const components: Record<
   NodeType,
@@ -14,6 +22,7 @@ export const components: Record<
   [NodeType.Panel]: Panel,
   [NodeType.Spinner]: Spinner,
   [NodeType.Text]: Text,
+  [NodeType.Image]: Image,
 };
 
 type RendererProps = {

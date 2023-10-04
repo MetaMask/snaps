@@ -3686,40 +3686,41 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^3.5.0, @metamask/approval-controller@npm:^3.5.1":
-  version: 3.5.1
-  resolution: "@metamask/approval-controller@npm:3.5.1"
+"@metamask/approval-controller@npm:^3.5.0, @metamask/approval-controller@npm:^3.5.2":
+  version: 3.5.2
+  resolution: "@metamask/approval-controller@npm:3.5.2"
   dependencies:
-    "@metamask/base-controller": ^3.2.1
+    "@metamask/base-controller": ^3.2.2
     "@metamask/utils": ^6.2.0
     eth-rpc-errors: ^4.0.2
     immer: ^9.0.6
     nanoid: ^3.1.31
-  checksum: 5d4d1425d44b3848b4486744472fb8eeb31ca9a70d58c6ca6e0603bcbba32f1c5dcd04a8fb2ab6b4bdbf2b4e3309f75387d7d345cd2aedee5e3d6b5d4af4dbad
+  checksum: 70436be566952b8aa42de48aff36655a42611478a5beee4e5ea9cf019ef386db202c464d73057df4e9cce22ebdb7517f5eb71a9def6bd7672f48a2d714ad1f2c
   languageName: node
   linkType: hard
 
-"@metamask/auto-changelog@npm:^3.1.0":
-  version: 3.2.0
-  resolution: "@metamask/auto-changelog@npm:3.2.0"
+"@metamask/auto-changelog@npm:^3.3.0":
+  version: 3.3.0
+  resolution: "@metamask/auto-changelog@npm:3.3.0"
   dependencies:
     diff: ^5.0.0
     execa: ^5.1.1
+    prettier: ^2.8.8
     semver: ^7.3.5
     yargs: ^17.0.1
   bin:
     auto-changelog: dist/cli.js
-  checksum: 7cd19400bb60d478455fbf9ffe7c295b21df64764a01f90776beda04bfa46242f34751112b862b4bd5955f04a7d28cfa7d6b2e745f3d3baaccda7c493f761658
+  checksum: 1b308f0f6beafb479da19398bc51315888c8fa7e1688ee835a96d5e2ca8dccf2edac80ac835335122b2c3ff6c76f03d202a35316122bbfa7c071954d5227f732
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^3.2.0, @metamask/base-controller@npm:^3.2.1":
-  version: 3.2.1
-  resolution: "@metamask/base-controller@npm:3.2.1"
+"@metamask/base-controller@npm:^3.2.0, @metamask/base-controller@npm:^3.2.2":
+  version: 3.2.2
+  resolution: "@metamask/base-controller@npm:3.2.2"
   dependencies:
     "@metamask/utils": ^6.2.0
     immer: ^9.0.6
-  checksum: 73723a275ad2c8c6f9fcfcd69fd8b469bf8f4455fc572fc19ac9a8d76e5b65152cb111d95bfb9a4b9443298147e03a5f9778747dec2ca2203495ace54c97688c
+  checksum: 90e639b4415bd9e0f8c86b5fdfa9e164c2615bc69f85c5028dc3657883aa20b66d0ecb00850e703d0f2495c3deda2e17bb18e5f2a4b24aca7943b61b67bff82e
   languageName: node
   linkType: hard
 
@@ -3729,7 +3730,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -3771,7 +3772,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -3820,7 +3821,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -3858,7 +3859,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -3897,7 +3898,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -3931,9 +3932,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/controller-utils@npm:^4.3.2":
-  version: 4.3.2
-  resolution: "@metamask/controller-utils@npm:4.3.2"
+"@metamask/controller-utils@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "@metamask/controller-utils@npm:5.0.1"
   dependencies:
     "@metamask/eth-query": ^3.0.1
     "@metamask/utils": ^6.2.0
@@ -3943,7 +3944,7 @@ __metadata:
     ethereumjs-util: ^7.0.10
     ethjs-unit: ^0.1.6
     fast-deep-equal: ^3.1.3
-  checksum: 0af7de11bee8cea81946c424d51e2f0a27f3deeebb491aed00262b2f76b4b1e16ff8fa129309944b3e16a6531b0d153dde6794011bf355234fdebb965261372e
+  checksum: bf1566448674a9443a9f40ad46aa152164256dfbfbf3aacf80ef7b2df99e790f17f655ee2fede2a52ff9626828c99cc32121637661d8f496a844a48d8237cc08
   languageName: node
   linkType: hard
 
@@ -3953,7 +3954,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4014,7 +4015,7 @@ __metadata:
   resolution: "@metamask/create-snap@workspace:packages/create-snap"
   dependencies:
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4061,7 +4062,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4100,7 +4101,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4139,7 +4140,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4287,7 +4288,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4325,7 +4326,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4365,7 +4366,7 @@ __metadata:
   resolution: "@metamask/example-snaps@workspace:packages/examples"
   dependencies:
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4394,7 +4395,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4434,7 +4435,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4473,7 +4474,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4510,7 +4511,7 @@ __metadata:
   resolution: "@metamask/invoke-snap-example-snap@workspace:packages/examples/packages/invoke-snap"
   dependencies:
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4550,7 +4551,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4601,7 +4602,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4638,7 +4639,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4675,7 +4676,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4712,7 +4713,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4750,7 +4751,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4792,13 +4793,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^4.1.0":
-  version: 4.1.1
-  resolution: "@metamask/permission-controller@npm:4.1.1"
+"@metamask/permission-controller@npm:^4.1.2":
+  version: 4.1.2
+  resolution: "@metamask/permission-controller@npm:4.1.2"
   dependencies:
-    "@metamask/approval-controller": ^3.5.1
-    "@metamask/base-controller": ^3.2.1
-    "@metamask/controller-utils": ^4.3.2
+    "@metamask/approval-controller": ^3.5.2
+    "@metamask/base-controller": ^3.2.2
+    "@metamask/controller-utils": ^5.0.1
     "@metamask/utils": ^6.2.0
     "@types/deep-freeze-strict": ^1.1.0
     deep-freeze-strict: ^1.1.1
@@ -4807,8 +4808,8 @@ __metadata:
     json-rpc-engine: ^6.1.0
     nanoid: ^3.1.31
   peerDependencies:
-    "@metamask/approval-controller": ^3.5.1
-  checksum: 45f94c805302256d54f4e25d7f15fd22ea8c9c8548cca4514babeccfe31cfef47ca79dacd5fc45013120a0ad22eaa0ded4b56d37bf59f4dc2712d58edcc0aaca
+    "@metamask/approval-controller": ^3.5.2
+  checksum: 743536cc127b4f8ee85c23c79f92e9fa635d4ce5a3e01f7e24e519e507dd1461282b854d97e147312b15e94f08309cd8144b03174dc793f725b85a1db2c9eb2a
   languageName: node
   linkType: hard
 
@@ -4850,7 +4851,7 @@ __metadata:
     "@babel/preset-typescript": ^7.20.12
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4911,14 +4912,14 @@ __metadata:
   resolution: "@metamask/rpc-methods@workspace:packages/rpc-methods"
   dependencies:
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/browser-passworder": ^4.1.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/key-tree": ^9.0.0
-    "@metamask/permission-controller": ^4.1.0
+    "@metamask/permission-controller": ^4.1.2
     "@metamask/snaps-ui": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/types": ^1.1.0
@@ -4968,12 +4969,12 @@ __metadata:
   linkType: hard
 
 "@metamask/scure-bip39@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@metamask/scure-bip39@npm:2.1.0"
+  version: 2.1.1
+  resolution: "@metamask/scure-bip39@npm:2.1.1"
   dependencies:
-    "@noble/hashes": ~1.1.1
-    "@scure/base": ~1.1.0
-  checksum: 13e07f03077472e9b230f702cbba7848ecac752028396647ccdeedd7bc280ceb50ee15203e25603f05c4c6ca5d4dc7277825f7004beb113e1a415adc91f059f9
+    "@noble/hashes": ~1.3.2
+    "@scure/base": ~1.1.3
+  checksum: d03b4d0b3dba0e5c2014038b746ec86cc9c4420b4c6b9a224e3b4ebdb266b9170c968a3ad9693c6f5d1e76ce3c198479e9398bd30f1dc0f0920d7e9401612365
   languageName: node
   linkType: hard
 
@@ -4982,7 +4983,7 @@ __metadata:
   resolution: "@metamask/snaps-browserify-plugin@workspace:packages/snaps-browserify-plugin"
   dependencies:
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5032,7 +5033,7 @@ __metadata:
     "@babel/preset-env": ^7.20.12
     "@babel/preset-typescript": ^7.20.12
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5089,6 +5090,7 @@ __metadata:
     querystring-es3: ^0.2.1
     readable-stream: ^3.6.2
     rimraf: ^4.1.2
+    semver: ^7.5.4
     serve-handler: ^6.1.5
     stream-browserify: ^3.0.0
     stream-http: ^3.2.0
@@ -5120,14 +5122,14 @@ __metadata:
     "@esbuild-plugins/node-modules-polyfill": ^0.2.2
     "@lavamoat/allow-scripts": ^2.5.1
     "@metamask/approval-controller": ^3.5.0
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/base-controller": ^3.2.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/object-multiplex": ^1.2.0
-    "@metamask/permission-controller": ^4.1.0
+    "@metamask/permission-controller": ^4.1.2
     "@metamask/post-message-stream": ^7.0.0
     "@metamask/rpc-methods": "workspace:^"
     "@metamask/snaps-execution-environments": "workspace:^"
@@ -5207,7 +5209,7 @@ __metadata:
     "@lavamoat/allow-scripts": ^2.5.1
     "@lavamoat/lavapack": ^5.4.1
     "@lavamoat/lavatube": ^0.2.3
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5248,7 +5250,6 @@ __metadata:
     eslint-plugin-promise: ^6.1.1
     eth-rpc-errors: ^4.0.3
     expect-webdriverio: ^4.1.2
-    express: ^4.18.2
     istanbul-lib-coverage: ^3.2.0
     istanbul-lib-report: ^3.0.0
     istanbul-reports: ^3.1.5
@@ -5285,7 +5286,7 @@ __metadata:
     "@jest/expect": ^29.5.0
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5345,7 +5346,7 @@ __metadata:
   resolution: "@metamask/snaps-rollup-plugin@workspace:packages/snaps-rollup-plugin"
   dependencies:
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5388,7 +5389,7 @@ __metadata:
     "@emotion/react": ^11.10.8
     "@emotion/styled": ^11.10.8
     "@ethersproject/units": ^5.7.0
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/base-controller": ^3.2.0
     "@metamask/browser-passworder": ^4.1.0
     "@metamask/eslint-config": ^12.1.0
@@ -5398,7 +5399,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/eth-json-rpc-middleware": ^11.0.2
     "@metamask/key-tree": ^9.0.0
-    "@metamask/permission-controller": ^4.1.0
+    "@metamask/permission-controller": ^4.1.2
     "@metamask/rpc-errors": ^5.1.1
     "@metamask/rpc-methods": "workspace:^"
     "@metamask/snaps-controllers": "workspace:^"
@@ -5489,7 +5490,7 @@ __metadata:
   resolution: "@metamask/snaps-types@workspace:packages/snaps-types"
   dependencies:
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5523,7 +5524,7 @@ __metadata:
   resolution: "@metamask/snaps-ui@workspace:packages/snaps-ui"
   dependencies:
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5546,6 +5547,7 @@ __metadata:
     eslint-plugin-n: ^15.7.0
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-promise: ^6.1.1
+    is-svg: ^4.4.0
     jest: ^29.0.2
     jest-it-up: ^2.0.0
     prettier: ^2.7.1
@@ -5565,14 +5567,14 @@ __metadata:
     "@esbuild-plugins/node-globals-polyfill": ^0.2.3
     "@esbuild-plugins/node-modules-polyfill": ^0.2.2
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/base-controller": ^3.2.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/key-tree": ^9.0.0
-    "@metamask/permission-controller": ^4.1.0
+    "@metamask/permission-controller": ^4.1.2
     "@metamask/post-message-stream": ^7.0.0
     "@metamask/snaps-registry": ^2.0.0
     "@metamask/snaps-ui": "workspace:^"
@@ -5642,7 +5644,7 @@ __metadata:
   resolution: "@metamask/snaps-webpack-plugin@workspace:packages/snaps-webpack-plugin"
   dependencies:
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5689,7 +5691,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/test-snaps@workspace:packages/test-snaps"
   dependencies:
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/bip32-example-snap": "workspace:^"
     "@metamask/bip44-example-snap": "workspace:^"
     "@metamask/cronjob-example-snap": "workspace:^"
@@ -5829,7 +5831,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5867,7 +5869,7 @@ __metadata:
   dependencies:
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -6039,17 +6041,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:^1.0.0, @noble/hashes@npm:^1.3.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:~1.3.0, @noble/hashes@npm:~1.3.1":
+"@noble/hashes@npm:^1.0.0, @noble/hashes@npm:^1.3.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:~1.3.0, @noble/hashes@npm:~1.3.1, @noble/hashes@npm:~1.3.2":
   version: 1.3.2
   resolution: "@noble/hashes@npm:1.3.2"
   checksum: fe23536b436539d13f90e4b9be843cc63b1b17666a07634a2b1259dded6f490be3d050249e6af98076ea8f2ea0d56f578773c2197f2aa0eeaa5fba5bc18ba474
-  languageName: node
-  linkType: hard
-
-"@noble/hashes@npm:~1.1.1":
-  version: 1.1.3
-  resolution: "@noble/hashes@npm:1.1.3"
-  checksum: a6f9783d2a33fc528c8709532b1c26cc3f5866f79c66256e881b28c61a1585be3899b008aa4e5e2b4e01b95c713722f52591cbb18ec51aa0ec63e7eaece1b89c
   languageName: node
   linkType: hard
 
@@ -6493,10 +6488,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/base@npm:^1.0.0, @scure/base@npm:^1.1.1, @scure/base@npm:~1.1.0":
-  version: 1.1.1
-  resolution: "@scure/base@npm:1.1.1"
-  checksum: b4fc810b492693e7e8d0107313ac74c3646970c198bbe26d7332820886fa4f09441991023ec9aa3a2a51246b74409ab5ebae2e8ef148bbc253da79ac49130309
+"@scure/base@npm:^1.0.0, @scure/base@npm:^1.1.1, @scure/base@npm:~1.1.0, @scure/base@npm:~1.1.3":
+  version: 1.1.3
+  resolution: "@scure/base@npm:1.1.3"
+  checksum: 1606ab8a4db898cb3a1ada16c15437c3bce4e25854fadc8eb03ae93cbbbac1ed90655af4b0be3da37e12056fef11c0374499f69b9e658c9e5b7b3e06353c630c
   languageName: node
   linkType: hard
 
@@ -18673,13 +18668,13 @@ __metadata:
   linkType: hard
 
 "postcss@npm:^8.1.10, postcss@npm:^8.4.21, postcss@npm:^8.4.27":
-  version: 8.4.28
-  resolution: "postcss@npm:8.4.28"
+  version: 8.4.31
+  resolution: "postcss@npm:8.4.31"
   dependencies:
     nanoid: ^3.3.6
     picocolors: ^1.0.0
     source-map-js: ^1.0.2
-  checksum: f605c24a36f7e400bad379735fbfc893ccb8d293ad6d419bb824db77cdcb69f43d614ef35f9f7091f32ca588d130ec60dbcf53b366e6bf88a8a64bbeb3c05f6d
+  checksum: 1d8611341b073143ad90486fcdfeab49edd243377b1f51834dc4f6d028e82ce5190e4f11bb2633276864503654fb7cab28e67abdc0fbf9d1f88cad4a0ff0beea
   languageName: node
   linkType: hard
 
@@ -18744,12 +18739,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.7.1":
-  version: 2.7.1
-  resolution: "prettier@npm:2.7.1"
+"prettier@npm:^2.7.1, prettier@npm:^2.8.8":
+  version: 2.8.8
+  resolution: "prettier@npm:2.8.8"
   bin:
     prettier: bin-prettier.js
-  checksum: 55a4409182260866ab31284d929b3cb961e5fdb91fe0d2e099dac92eaecec890f36e524b4c19e6ceae839c99c6d7195817579cdffc8e2c80da0cb794463a748b
+  checksum: b49e409431bf129dd89238d64299ba80717b57ff5a6d1c1a8b1a28b590d998a34e083fa13573bc732bb8d2305becb4c9a4407f8486c81fa7d55100eb08263cf8
   languageName: node
   linkType: hard
 
@@ -20157,7 +20152,7 @@ __metadata:
   resolution: "root@workspace:."
   dependencies:
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.1.0
+    "@metamask/auto-changelog": ^3.3.0
     "@metamask/create-release-branch": ^1.1.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0

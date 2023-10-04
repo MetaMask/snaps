@@ -1,3 +1,4 @@
+import isSvg from 'is-svg';
 import type { Infer, Struct } from 'superstruct';
 import {
   array,
@@ -7,6 +8,7 @@ import {
   literal,
   object,
   optional,
+  refine,
   string,
   union,
   unknown,
@@ -62,6 +64,7 @@ export enum NodeType {
   Panel = 'panel',
   Spinner = 'spinner',
   Text = 'text',
+  Image = 'image',
 }
 
 export const CopyableStruct = assign(
@@ -160,6 +163,24 @@ export const TextStruct = assign(
  */
 export type Text = Infer<typeof TextStruct>;
 
+const SvgStruct = refine(string(), 'SVG', (value) => {
+  if (!isSvg(value)) {
+    return 'Value is not a valid SVG.';
+  }
+
+  return true;
+});
+
+export const ImageStruct = assign(
+  NodeStruct,
+  object({
+    type: literal(NodeType.Image),
+    value: SvgStruct,
+  }),
+);
+
+export type Image = Infer<typeof ImageStruct>;
+
 export const ComponentStruct = union([
   CopyableStruct,
   DividerStruct,
@@ -167,6 +188,7 @@ export const ComponentStruct = union([
   PanelStruct,
   SpinnerStruct,
   TextStruct,
+  ImageStruct,
 ]);
 
 /**

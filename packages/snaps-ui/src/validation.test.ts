@@ -1,4 +1,4 @@
-import type { Divider, Heading, Panel, Spinner, Text } from './nodes';
+import type { Divider, Heading, Image, Panel, Spinner, Text } from './nodes';
 import { NodeType } from './nodes';
 import { assertIsComponent, isComponent } from './validation';
 
@@ -68,6 +68,15 @@ describe('isComponent', () => {
     };
 
     expect(isComponent(text)).toBe(true);
+  });
+
+  it('returns true for an image component', () => {
+    const image: Image = {
+      type: NodeType.Image,
+      value: '<svg></svg>',
+    };
+
+    expect(isComponent(image)).toBe(true);
   });
 
   it.each([

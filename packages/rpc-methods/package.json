@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@metamask/key-tree": "^9.0.0",
-    "@metamask/permission-controller": "^4.1.0",
+    "@metamask/permission-controller": "^4.1.2",
     "@metamask/snaps-ui": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/types": "^1.1.0",
@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.5.1",
-    "@metamask/auto-changelog": "^3.1.0",
+    "@metamask/auto-changelog": "^3.3.0",
     "@metamask/browser-passworder": "^4.1.0",
     "@metamask/eslint-config": "^12.1.0",
     "@metamask/eslint-config-jest": "^12.1.0",
@@ -81,7 +81,7 @@
     "typescript": "~4.8.4"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": "^18.16 || >=20"
   },
   "publishConfig": {
     "access": "public",

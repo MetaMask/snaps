@@ -42,7 +42,7 @@ export function validateMachine<
       })
       .forEach(allActions.add.bind(allActions));
 
-  for (const state of Object.values<typeof typed.config.states[string]>(
+  for (const state of Object.values<(typeof typed.config.states)[string]>(
     typed.config.states,
   )) {
     addActions(state.entry);

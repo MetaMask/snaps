@@ -6,7 +6,7 @@ on:
       slack-channel:
         required: false
         type: string
-        default: 'metamask-dev'
+        default: 'metamask-snaps'
       slack-icon-url:
         required: false
         type: string
@@ -96,6 +96,10 @@ jobs:
       - run: npm config set ignore-scripts true
       - name: Dry Run Publish
         uses: MetaMask/action-npm-publish@v4
+        with:
+          slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          subteam: ${{ inputs.slack-subteam }}
+          channel: metamask-snaps
 
   npm-publish:
     name: Publish to NPM

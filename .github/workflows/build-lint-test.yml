@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16.x, 18.x]
+        node-version: [18.x, 20.x]
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -254,7 +254,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16.x, 18.x]
+        node-version: [18.x, 20.x]
         package-name: ${{ fromJson(needs.prepare.outputs.test-workspace-package-names) }}
     steps:
       - uses: actions/checkout@v3
@@ -281,7 +281,7 @@ jobs:
           echo "coverage-folder=$(yarn workspaces list --json | grep ${{ matrix.package-name }} | jq -r '.location')/coverage" >> "$GITHUB_OUTPUT"
         shell: bash
       - name: Upload coverage artifact
-        if: ${{ matrix.node-version == '16.x' }}
+        if: ${{ matrix.node-version == '18.x' }}
         uses: actions/upload-artifact@v3
         with:
           name: coverage
@@ -324,7 +324,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16.x, 18.x]
+        node-version: [18.x, 20.x]
         package-name: ${{ fromJson(needs.prepare.outputs.e2e-workspace-package-names) }}
     steps:
       - uses: actions/checkout@v3

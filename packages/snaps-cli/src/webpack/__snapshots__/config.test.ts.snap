@@ -14,7 +14,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
-          "loader": "swc-loader",
+          "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
             "env": {
               "targets": "chrome >= 90, firefox >= 91",
@@ -155,7 +155,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
-          "loader": "swc-loader",
+          "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
             "env": {
               "targets": "chrome >= 90, firefox >= 91",
@@ -296,7 +296,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
-          "loader": "swc-loader",
+          "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
             "env": {
               "targets": "chrome >= 90, firefox >= 91",
@@ -437,7 +437,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
-          "loader": "swc-loader",
+          "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
             "env": {
               "targets": "chrome >= 90, firefox >= 91",
@@ -570,7 +570,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
-          "loader": "swc-loader",
+          "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
             "env": {
               "targets": "chrome >= 90, firefox >= 91",
@@ -716,7 +716,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
-          "loader": "swc-loader",
+          "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
             "env": {
               "targets": "chrome >= 90, firefox >= 91",
@@ -857,7 +857,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
-          "loader": "swc-loader",
+          "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
             "env": {
               "targets": "chrome >= 90, firefox >= 91",
@@ -998,7 +998,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
-          "loader": "swc-loader",
+          "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
             "env": {
               "targets": "chrome >= 90, firefox >= 91",
@@ -1147,7 +1147,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
-          "loader": "swc-loader",
+          "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
             "env": {
               "targets": "chrome >= 90, firefox >= 91",
@@ -1296,7 +1296,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
-          "loader": "swc-loader",
+          "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
             "env": {
               "targets": "chrome >= 90, firefox >= 91",
@@ -1446,7 +1446,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
-          "loader": "swc-loader",
+          "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
             "env": {
               "targets": "chrome >= 90, firefox >= 91",
@@ -1587,7 +1587,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
-          "loader": "swc-loader",
+          "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
             "env": {
               "targets": "chrome >= 90, firefox >= 91",
@@ -1728,7 +1728,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
-          "loader": "swc-loader",
+          "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
             "env": {
               "targets": "chrome >= 90, firefox >= 91",
@@ -1878,7 +1878,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\[tj\\]sx\\?\\$/u,
         "use": {
-          "loader": "swc-loader",
+          "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
             "env": {
               "targets": "chrome >= 90, firefox >= 91",

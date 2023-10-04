@@ -217,7 +217,7 @@ export type OnNameLookupHandler = (
  */
 export type SnapFunctionExports = {
   [Key in keyof typeof SNAP_EXPORTS]?: HandlerFunction<
-    typeof SNAP_EXPORTS[Key]
+    (typeof SNAP_EXPORTS)[Key]
   >;
 };
 

@@ -315,6 +315,14 @@
         "tty": true
       }
     },
+    "browserify>browser-pack>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      },
+      "packages": {
+        "buffer": true
+      }
+    },
     "browserify>inherits": {
       "builtin": {
         "util.inherits": true
@@ -343,7 +351,7 @@
     },
     "browserify>string_decoder": {
       "packages": {
-        "express>safe-buffer": true
+        "browserify>browser-pack>safe-buffer": true
       }
     },
     "eslint>debug": {
@@ -370,14 +378,6 @@
     "eth-rpc-errors": {
       "packages": {
         "eth-rpc-errors>fast-safe-stringify": true
-      }
-    },
-    "express>safe-buffer": {
-      "builtin": {
-        "buffer": true
-      },
-      "packages": {
-        "buffer": true
       }
     },
     "external:../snaps-utils/src/icon.ts": {

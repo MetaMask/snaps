@@ -14,5 +14,8 @@ describe('main', () => {
     expect(cli).toHaveBeenCalledTimes(1);
     expect(cli).toHaveBeenCalledWith(process.argv);
     expect(process.exitCode).toBe(1);
+
+    // Reset the exit code so that the test doesn't fail.
+    process.exitCode = 0;
   });
 });

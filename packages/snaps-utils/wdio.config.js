@@ -1,13 +1,19 @@
-import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
-import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
-import type { Options } from '@wdio/types';
-import { resolve } from 'path';
-import tsconfigPaths from 'vite-tsconfig-paths';
+/* eslint-disable import/unambiguous, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 
+const {
+  NodeGlobalsPolyfillPlugin,
+} = require('@esbuild-plugins/node-globals-polyfill');
+const {
+  NodeModulesPolyfillPlugin,
+} = require('@esbuild-plugins/node-modules-polyfill');
+const { resolve } = require('path');
+const { default: tsconfigPaths } = require('vite-tsconfig-paths');
+
+// eslint-disable-next-line n/no-process-env
 const IS_CI = Boolean(process.env.CI);
 const MAX_WORKERS = IS_CI ? 1 : 5;
 
-export const config: Options.Testrunner = {
+const config = {
   runner: [
     'browser',
     {
@@ -93,3 +99,5 @@ export const config: Options.Testrunner = {
     timeout: 120000,
   },
 };
+
+module.exports.config = config;

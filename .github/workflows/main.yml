@@ -61,7 +61,7 @@ jobs:
       contents: write
     uses: ./.github/workflows/publish-release.yml
     with:
-      slack-subteam: S042S7RE4AE # @metamask-npm-publishers
+      slack-subteam: S05RL9W7H54 # @metamask-snaps-publishers
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}

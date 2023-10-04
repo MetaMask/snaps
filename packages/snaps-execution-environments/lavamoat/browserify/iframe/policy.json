@@ -230,6 +230,11 @@
         "@swc/cli>semver>lru-cache>yallist": true
       }
     },
+    "browserify>browser-pack>safe-buffer": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
     "browserify>buffer": {
       "globals": {
         "console": true
@@ -276,7 +281,7 @@
     },
     "browserify>string_decoder": {
       "packages": {
-        "express>safe-buffer": true
+        "browserify>browser-pack>safe-buffer": true
       }
     },
     "browserify>timers-browserify": {
@@ -306,11 +311,6 @@
     "eth-rpc-errors": {
       "packages": {
         "eth-rpc-errors>fast-safe-stringify": true
-      }
-    },
-    "express>safe-buffer": {
-      "packages": {
-        "browserify>buffer": true
       }
     },
     "external:../snaps-utils/src/icon.ts": {

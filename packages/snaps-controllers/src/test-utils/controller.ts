@@ -301,6 +301,7 @@ export const getSnapControllerMessenger = (
       'SnapController:snapAdded',
       'SnapController:snapBlocked',
       'SnapController:snapInstalled',
+      'SnapController:snapUninstalled',
       'SnapController:snapUnblocked',
       'SnapController:snapUpdated',
       'SnapController:snapRemoved',

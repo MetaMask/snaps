@@ -1211,9 +1211,14 @@
         "@lavamoat/lavapack>combine-source-map": true,
         "@lavamoat/lavapack>umd": true,
         "browserify>JSONStream": true,
+        "browserify>browser-pack>safe-buffer": true,
         "browserify>defined": true,
-        "browserify>through2": true,
-        "express>safe-buffer": true
+        "browserify>through2": true
+      }
+    },
+    "browserify>browser-pack>safe-buffer": {
+      "builtin": {
+        "buffer": true
       }
     },
     "browserify>browser-resolve": {
@@ -1720,7 +1725,7 @@
     },
     "browserify>string_decoder": {
       "packages": {
-        "express>safe-buffer": true
+        "browserify>browser-pack>safe-buffer": true
       }
     },
     "browserify>syntax-error": {
@@ -1942,11 +1947,6 @@
     "eslint>strip-ansi": {
       "packages": {
         "eslint>strip-ansi>ansi-regex": true
-      }
-    },
-    "express>safe-buffer": {
-      "builtin": {
-        "buffer": true
       }
     },
     "istanbul-lib-report>supports-color>has-flag": {

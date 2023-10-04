@@ -25,6 +25,7 @@ import errorTriangleIcon from '../assets/icons/error-triangle.svg';
 import gitHubDarkIcon from '../assets/icons/github-dark.svg';
 import gitHubIcon from '../assets/icons/github.svg';
 import headingIcon from '../assets/icons/heading.svg';
+import imageIcon from '../assets/icons/image.svg';
 import insightsIcon from '../assets/icons/insights.svg';
 import jsonRpcIcon from '../assets/icons/json-rpc.svg';
 import manifestIcon from '../assets/icons/manifest.svg';
@@ -34,6 +35,7 @@ import playErrorIcon from '../assets/icons/play-error.svg';
 import playMutedIcon from '../assets/icons/play-muted.svg';
 import playSuccessIcon from '../assets/icons/play-success.svg';
 import playIcon from '../assets/icons/play.svg';
+import snapErrorIcon from '../assets/icons/snap-error.svg';
 import snapIcon from '../assets/icons/snap.svg';
 import textBubbleIcon from '../assets/icons/text-bubble.svg';
 import textIcon from '../assets/icons/text.svg';
@@ -101,6 +103,10 @@ const DEFAULT_ICONS = {
     alt: 'Snap',
     src: snapIcon,
   },
+  snapError: {
+    alt: 'Snap Error',
+    src: snapErrorIcon,
+  },
   copy: {
     alt: 'Copy',
     src: copyIcon,
@@ -166,6 +172,10 @@ const DEFAULT_ICONS = {
   ui: {
     alt: 'UI',
     src: uiIcon,
+  },
+  image: {
+    alt: 'Image',
+    src: imageIcon,
   },
 };
 
