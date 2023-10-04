@@ -71,7 +71,7 @@ type RestrictedMethod<Builder extends { targetName: string }> =
 type PermittedMethodFunction = {
   [MethodName in keyof typeof methodHandlers]: PermittedMethod<
     MethodName,
-    typeof methodHandlers[MethodName]
+    (typeof methodHandlers)[MethodName]
   >;
 };
 
@@ -80,7 +80,7 @@ type PermittedMethodFunction = {
  */
 type RestrictedMethodFunction = {
   [Builder in keyof typeof restrictedMethodPermissionBuilders]: RestrictedMethod<
-    typeof restrictedMethodPermissionBuilders[Builder]
+    (typeof restrictedMethodPermissionBuilders)[Builder]
   >;
 };
 

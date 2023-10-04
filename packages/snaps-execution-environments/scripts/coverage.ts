@@ -26,7 +26,7 @@ const WDIO_COVERAGE_FILE = resolve(
 );
 
 const COVERAGE_KEYS = ['branches', 'functions', 'lines', 'statements'] as const;
-type CoverageKey = typeof COVERAGE_KEYS[number];
+type CoverageKey = (typeof COVERAGE_KEYS)[number];
 
 /**
  * Given a target directory and a coverageMap generates a finalized coverage
