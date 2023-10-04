@@ -25,6 +25,7 @@ import errorTriangleIcon from '../assets/icons/error-triangle.svg';
 import gitHubDarkIcon from '../assets/icons/github-dark.svg';
 import gitHubIcon from '../assets/icons/github.svg';
 import headingIcon from '../assets/icons/heading.svg';
+import imageIcon from '../assets/icons/image.svg';
 import insightsIcon from '../assets/icons/insights.svg';
 import jsonRpcIcon from '../assets/icons/json-rpc.svg';
 import manifestIcon from '../assets/icons/manifest.svg';
@@ -174,7 +175,7 @@ const DEFAULT_ICONS = {
   },
   image: {
     alt: 'Image',
-    src: panelIcon,
+    src: imageIcon,
   },
 };
 
