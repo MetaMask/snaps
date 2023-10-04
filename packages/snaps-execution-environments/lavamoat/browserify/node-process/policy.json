@@ -23,6 +23,30 @@
         "util": true
       }
     },
+    "@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/json-rpc-engine>@metamask/rpc-errors": true,
+        "@metamask/json-rpc-engine>@metamask/safe-event-emitter": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/json-rpc-engine>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/json-rpc-engine>@metamask/safe-event-emitter": {
+      "builtin": {
+        "events.EventEmitter": true
+      },
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "events": true
+      }
+    },
     "@metamask/object-multiplex": {
       "globals": {
         "console.warn": true
@@ -143,8 +167,8 @@
         "web3": true
       },
       "packages": {
+        "@metamask/json-rpc-engine": true,
         "@metamask/object-multiplex": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/providers>@metamask/safe-event-emitter": true,
         "@metamask/providers>detect-browser": true,
@@ -155,34 +179,10 @@
         "stream": true
       }
     },
-    "@metamask/providers>@metamask/json-rpc-engine": {
-      "packages": {
-        "@metamask/providers>@metamask/json-rpc-engine>@metamask/rpc-errors": true,
-        "@metamask/providers>@metamask/json-rpc-engine>@metamask/safe-event-emitter": true,
-        "@metamask/utils": true
-      }
-    },
-    "@metamask/providers>@metamask/json-rpc-engine>@metamask/rpc-errors": {
-      "packages": {
-        "@metamask/utils": true,
-        "eth-rpc-errors>fast-safe-stringify": true
-      }
-    },
-    "@metamask/providers>@metamask/json-rpc-engine>@metamask/safe-event-emitter": {
-      "builtin": {
-        "events.EventEmitter": true
-      },
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "events": true
-      }
-    },
     "@metamask/providers>@metamask/rpc-errors": {
       "packages": {
-        "@metamask/utils": true,
-        "eth-rpc-errors>fast-safe-stringify": true
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/providers>@metamask/safe-event-emitter": {
@@ -219,8 +219,19 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/providers>json-rpc-middleware-stream>readable-stream": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
+        "@metamask/providers>json-rpc-middleware-stream>@metamask/safe-event-emitter": true,
+        "@metamask/providers>json-rpc-middleware-stream>readable-stream": true
+      }
+    },
+    "@metamask/providers>json-rpc-middleware-stream>@metamask/safe-event-emitter": {
+      "builtin": {
+        "events.EventEmitter": true
+      },
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "events": true
       }
     },
     "@metamask/providers>json-rpc-middleware-stream>readable-stream": {
@@ -262,6 +273,12 @@
     "@metamask/providers>json-rpc-middleware-stream>readable-stream>string_decoder": {
       "packages": {
         "@metamask/providers>json-rpc-middleware-stream>readable-stream>safe-buffer": true
+      }
+    },
+    "@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/utils": {
@@ -375,11 +392,6 @@
         "util": true
       }
     },
-    "eth-rpc-errors": {
-      "packages": {
-        "eth-rpc-errors>fast-safe-stringify": true
-      }
-    },
     "external:../snaps-utils/src/icon.ts": {
       "builtin": {
         "buffer": true
@@ -421,23 +433,6 @@
     "istanbul-lib-report>supports-color>has-flag": {
       "globals": {
         "process.argv": true
-      }
-    },
-    "json-rpc-engine": {
-      "packages": {
-        "eth-rpc-errors": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
-      }
-    },
-    "json-rpc-engine>@metamask/safe-event-emitter": {
-      "builtin": {
-        "events.EventEmitter": true
-      },
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "events": true
       }
     },
     "superstruct": {
