@@ -5,10 +5,14 @@ import type { FunctionComponent } from 'react';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Delineator, DelineatorType, Window } from '../../../components';
+import {
+  Delineator,
+  DelineatorType,
+  Window,
+  Copyable,
+} from '../../../components';
 import { getSnapId } from '../../configuration';
 import { Renderer } from '../../renderer';
-import { Copyable } from '../../renderer/components';
 import { getSnapName } from '../../simulation';
 import { nodeModelsToComponent } from '../utils';
 import { ErrorBoundary } from './ErrorBoundary';
@@ -41,13 +45,7 @@ export const NodeRenderer: FunctionComponent<NodeRendererProps> = ({
               <Text fontFamily="custom" fontSize="xs" marginBottom={4}>
                 Contact the creators of <b>{snapName}</b> for further support.
               </Text>
-              <Copyable
-                id="1"
-                node={{
-                  type: 'copyable',
-                  value: 'The UI specified by the snap is invalid.',
-                }}
-              />
+              <Copyable value="The UI specified by the snap is invalid." />
             </Delineator>
           }
         >
