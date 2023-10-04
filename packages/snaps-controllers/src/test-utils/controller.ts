@@ -292,6 +292,16 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
     registry.update.bind(registry),
   );
 
+  messenger.registerActionHandler(
+    'PhishingController:maybeUpdateState',
+    async () => Promise.resolve(),
+  );
+
+  messenger.registerActionHandler('PhishingController:testOrigin', () => ({
+    result: false,
+    type: 'all',
+  }));
+
   jest.spyOn(messenger, 'call');
 
   return messenger;
@@ -339,6 +349,8 @@ export const getSnapControllerMessenger = (
       'PermissionController:revokePermissionForAllSubjects',
       'PermissionController:updateCaveat',
       'PermissionController:getSubjectNames',
+      'PhishingController:maybeUpdateState',
+      'PhishingController:testOrigin',
       'SnapController:get',
       'SnapController:handleRequest',
       'SnapController:getSnapState',

@@ -44,7 +44,7 @@ type ShowDialog = (
   placeholder?: Placeholder,
 ) => Promise<null | boolean | string>;
 
-type IsOnPhishingList = (url: string) => boolean;
+type IsOnPhishingList = (url: string) => Promise<boolean>;
 
 export type DialogMethodHooks = {
   /**
@@ -178,7 +178,7 @@ export function getDialogImplementation({
 
     const { content } = validatedParams;
 
-    assertLinksAreSafe(content, isOnPhishingList);
+    await assertLinksAreSafe(content, isOnPhishingList);
 
     const placeholder =
       validatedParams.type === DialogType.Prompt

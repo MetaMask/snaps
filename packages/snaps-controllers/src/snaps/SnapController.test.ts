@@ -10,11 +10,8 @@ import type {
 } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
-import type {
-  RpcOrigins,
-  SnapPermissions,
-  ValidatedSnapId,
-} from '@metamask/snaps-utils';
+import { link } from '@metamask/snaps-ui';
+import type { SnapPermissions, ValidatedSnapId, RpcOrigins } from '@metamask/snaps-utils';
 import {
   AuxiliaryFileEncoding,
   DEFAULT_ENDOWMENTS,
@@ -2066,6 +2063,129 @@ describe('SnapController', () => {
         }),
       ).rejects.toThrow(
         'Snap "npm:@metamask/example-snap" is not permitted to handle requests from "bar.com".',
+      );
+
+      snapController.destroy();
+    });
+
+    it('throws if onTransaction handler returns a phishing link', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.TransactionInsight]: {
+            caveats: [{ type: SnapCaveatType.TransactionOrigin, value: false }],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.TransactionInsight,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () =>
+          Promise.resolve({
+            content: link('Foo bar', 'https://foo.bar'),
+          }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PhishingController:testOrigin',
+        async () =>
+          // @ts-expect-error will deal with it later.
+          Promise.resolve({
+            result: true,
+            type: 'fuzzy',
+          }),
+      );
+
+      await expect(
+        snapController.handleRequest({
+          snapId: MOCK_SNAP_ID,
+          origin: 'foo.com',
+          handler: HandlerType.OnTransaction,
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {},
+            id: 1,
+          },
+        }),
+      ).rejects.toThrow(`The provided URL is detected as phishing.`);
+
+      snapController.destroy();
+    });
+
+    it('throws if onTransaction returns an invalid value', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.TransactionInsight]: {
+            caveats: [{ type: SnapCaveatType.TransactionOrigin, value: false }],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.TransactionInsight,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () =>
+          Promise.resolve({
+            content: link('Foo bar', 'https://foo.bar'),
+            foo: 'bar',
+          }),
+      );
+
+      await expect(
+        snapController.handleRequest({
+          snapId: MOCK_SNAP_ID,
+          origin: 'foo.com',
+          handler: HandlerType.OnTransaction,
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {},
+            id: 1,
+          },
+        }),
+      ).rejects.toThrow(
+        'Assertion failed: At path: foo -- Expected a value of type `never`, but received: `"bar"`.',
       );
 
       snapController.destroy();

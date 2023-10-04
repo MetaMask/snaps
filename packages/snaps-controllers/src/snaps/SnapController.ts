@@ -24,6 +24,10 @@ import type {
   ValidPermission,
 } from '@metamask/permission-controller';
 import { SubjectType } from '@metamask/permission-controller';
+import type {
+  MaybeUpdateState,
+  TestOrigin,
+} from '@metamask/phishing-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { BlockReason } from '@metamask/snaps-registry';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
@@ -506,7 +510,9 @@ export type AllowedActions =
   | GetResult
   | GetMetadata
   | Update
-  | ResolveVersion;
+  | ResolveVersion
+  | TestOrigin
+  | MaybeUpdateState;
 
 export type AllowedEvents =
   | ExecutionServiceEvents
@@ -2629,6 +2635,9 @@ export class SnapController extends BaseController<
           handleRpcRequestPromise,
           timer,
         );
+
+        await this.#assertSnapRpcRequestResult(handlerType, result);
+
         this.#recordSnapRpcRequestFinish(snapId, request.id);
         return result;
       } catch (error) {
@@ -2646,11 +2655,29 @@ export class SnapController extends BaseController<
     return rpcHandler;
   }
 
+  /**
+   * Asserts that the returned result of a Snap RPC call is the expected shape.
+   *
+   * @param handlerType - The handler type of the RPC Request.
+   * @param result - The result of the RPC request.
+   */
   async #assertSnapRpcRequestResult(handlerType: HandlerType, result: unknown) {
     switch (handlerType) {
       case HandlerType.OnTransaction:
         assertStruct(result, OnTransactionResponseStruct);
-        assertLinksAreSafe(result.content, () => this.messagingSystem.call);
+
+        await assertLinksAreSafe(result.content, async (origin: string) => {
+          await this.messagingSystem.call(
+            'PhishingController:maybeUpdateState',
+          );
+
+          const { result: testResult } = this.messagingSystem.call(
+            'PhishingController:testOrigin',
+            origin,
+          );
+
+          return testResult;
+        });
         break;
       default:
         break;
