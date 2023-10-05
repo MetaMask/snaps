@@ -39,7 +39,7 @@ describe('Network endowments', () => {
       expect(factoryOptions.notify).toHaveBeenCalledWith({
         method: 'OutboundResponse',
       });
-      expect(factoryOptions.notify).toHaveBeenCalledTimes(2);
+      expect(factoryOptions.notify).toHaveBeenCalledTimes(4);
     });
 
     it('can use AbortController normally', async () => {

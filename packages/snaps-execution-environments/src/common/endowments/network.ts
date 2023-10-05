@@ -12,9 +12,20 @@ class ResponseWrapper implements Response {
 
   #ogResponse: Response;
 
-  constructor(ogResponse: Response, teardownRef: { lastTeardown: number }) {
+  #onStart: () => void;
+
+  #onFinish: () => void;
+
+  constructor(
+    ogResponse: Response,
+    teardownRef: { lastTeardown: number },
+    onStart: () => void,
+    onFinish: () => void,
+  ) {
     this.#ogResponse = ogResponse;
     this.#teardownRef = teardownRef;
+    this.#onStart = onStart;
+    this.#onFinish = onFinish;
   }
 
   get body(): ReadableStream<Uint8Array> | null {
@@ -54,31 +65,64 @@ class ResponseWrapper implements Response {
   }
 
   async text() {
-    return withTeardown<string>(this.#ogResponse.text(), this as any);
+    await this.#onStart();
+    try {
+      return await withTeardown<string>(this.#ogResponse.text(), this as any);
+    } finally {
+      await this.#onFinish();
+    }
   }
 
   async arrayBuffer(): Promise<ArrayBuffer> {
-    return withTeardown<ArrayBuffer>(
-      this.#ogResponse.arrayBuffer(),
-      this as any,
-    );
+    await this.#onStart();
+    try {
+      return await withTeardown<ArrayBuffer>(
+        this.#ogResponse.arrayBuffer(),
+        this as any,
+      );
+    } finally {
+      await this.#onFinish();
+    }
   }
 
   async blob(): Promise<Blob> {
-    return withTeardown<Blob>(this.#ogResponse.blob(), this as any);
+    await this.#onStart();
+    try {
+      return await withTeardown<Blob>(this.#ogResponse.blob(), this as any);
+    } finally {
+      await this.#onFinish();
+    }
   }
 
   clone(): Response {
     const newResponse = this.#ogResponse.clone();
-    return new ResponseWrapper(newResponse, this.#teardownRef);
+    return new ResponseWrapper(
+      newResponse,
+      this.#teardownRef,
+      this.#onStart,
+      this.#onFinish,
+    );
   }
 
   async formData(): Promise<FormData> {
-    return withTeardown<FormData>(this.#ogResponse.formData(), this as any);
+    await this.#onStart();
+    try {
+      return await withTeardown<FormData>(
+        this.#ogResponse.formData(),
+        this as any,
+      );
+    } finally {
+      await this.#onFinish();
+    }
   }
 
   async json(): Promise<any> {
-    return withTeardown(this.#ogResponse.json(), this as any);
+    await this.#onStart();
+    try {
+      return await withTeardown(this.#ogResponse.json(), this as any);
+    } finally {
+      await this.#onFinish();
+    }
   }
 }
 
@@ -127,10 +171,26 @@ const createNetwork = ({ notify }: EndowmentFactoryOptions = {}) => {
       );
     }
 
+    let started = false;
+    const onStart = async () => {
+      if (!started) {
+        started = true;
+        await notify({ method: 'OutboundRequest' });
+      }
+    };
+
+    let finished = false;
+    const onFinish = async () => {
+      if (!finished) {
+        finished = true;
+        await notify({ method: 'OutboundResponse' });
+      }
+    };
+
     let res: Response;
     let openFetchConnection: { cancel: () => Promise<void> } | undefined;
     try {
-      notify({ method: 'OutboundRequest' });
+      await notify({ method: 'OutboundRequest' });
       const fetchPromise = fetch(input, {
         ...init,
         signal: abortController.signal,
@@ -151,12 +211,14 @@ const createNetwork = ({ notify }: EndowmentFactoryOptions = {}) => {
       res = new ResponseWrapper(
         await withTeardown(fetchPromise, teardownRef),
         teardownRef,
+        onStart,
+        onFinish,
       );
     } finally {
       if (openFetchConnection !== undefined) {
         openConnections.delete(openFetchConnection);
       }
-      notify({ method: 'OutboundResponse' });
+      await notify({ method: 'OutboundResponse' });
     }
 
     if (res.body !== null) {

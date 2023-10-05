@@ -110,7 +110,7 @@ const EXECUTION_ENVIRONMENT_METHODS = {
 
 type Methods = typeof EXECUTION_ENVIRONMENT_METHODS;
 
-export type NotifyFunction = BaseSnapExecutor['notify'];
+export type NotifyFunction = (notification:  Omit<JsonRpcNotification, 'jsonrpc'>) => Promise<void>;
 
 export class BaseSnapExecutor {
   private readonly snapData: Map<string, SnapData>;
@@ -366,7 +366,7 @@ export class BaseSnapExecutor {
         ethereum,
         snapId,
         endowments: _endowments,
-        notify: this.notify.bind(this),
+        notify: this.#notify.bind(this),
       });
 
       // !!! Ensure that this is the only place the data is being set.
