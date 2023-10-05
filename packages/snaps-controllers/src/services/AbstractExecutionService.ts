@@ -1,10 +1,15 @@
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import type { BasePostMessageStream } from '@metamask/post-message-stream';
 import type { SnapRpcHook, SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { SNAP_STREAM_NAMES, logError } from '@metamask/snaps-utils';
-import type { Json, JsonRpcNotification, JsonRpcParams, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import type {
+  Json,
+  JsonRpcNotification,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from '@metamask/utils';
 import { Duration, isJsonRpcNotification, isObject } from '@metamask/utils';
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import { pipeline } from 'stream';
@@ -214,10 +219,7 @@ export abstract class AbstractExecutionService<WorkerType>
   ): Promise<{ streams: JobStreams; worker: WorkerType }> {
     const { worker, stream: envStream } = await this.initEnvStream(jobId);
     // Typecast justification: stream type mismatch
-    const mux = setupMultiplex(
-      envStream,
-      `Job: "${jobId}"`,
-    );
+    const mux = setupMultiplex(envStream, `Job: "${jobId}"`);
 
     const commandStream = mux.createStream(SNAP_STREAM_NAMES.COMMAND);
 
@@ -225,7 +227,7 @@ export abstract class AbstractExecutionService<WorkerType>
     // Also keep track of outbound request/responses
     const notificationHandler = (
       message:
-        | JsonRpcRequest<JsonRpcParams>
+        | JsonRpcRequest
         | JsonRpcNotification<Json[] | Record<string, Json>>,
     ) => {
       if (!isJsonRpcNotification(message)) {
@@ -360,7 +362,7 @@ export abstract class AbstractExecutionService<WorkerType>
   private async command(
     jobId: string,
     message: JsonRpcRequest,
-  ): Promise<Json|undefined> {
+  ): Promise<Json | undefined> {
     if (typeof message !== 'object') {
       throw new Error('Must send object.');
     }
@@ -453,17 +455,12 @@ export function setupMultiplex(
   streamName: string,
 ): ObjectMultiplex {
   const mux = new ObjectMultiplex();
-  pipeline(
-    connectionStream,
-    mux,
-    connectionStream,
-    (error) => {
-      if (error) {
-        streamName
-          ? logError(`"${streamName}" stream failure.`, error)
-          : logError(error);
-      }
-    },
-  );
+  pipeline(connectionStream, mux, connectionStream, (error) => {
+    if (error) {
+      streamName
+        ? logError(`"${streamName}" stream failure.`, error)
+        : logError(error);
+    }
+  });
   return mux;
 }

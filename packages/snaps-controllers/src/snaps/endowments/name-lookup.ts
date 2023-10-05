@@ -8,10 +8,10 @@ import type {
   PermissionConstraint,
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { SnapCaveatType, isChainId } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import { assert, hasProperty, isPlainObject } from '@metamask/utils';
-import { rpcErrors } from '@metamask/rpc-errors';
 
 import { SnapEndowments } from './enum';
 

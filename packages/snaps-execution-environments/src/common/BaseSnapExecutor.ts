@@ -1,5 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 /// <reference path="../../../../node_modules/ses/types.d.ts" />
+import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import { StreamProvider } from '@metamask/providers';
 import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
 import { errorCodes, rpcErrors, serializeError } from '@metamask/rpc-errors';
@@ -29,7 +30,6 @@ import {
   hasProperty,
   getSafeJson,
 } from '@metamask/utils';
-import { createIdRemapMiddleware }from '@metamask/json-rpc-engine';
 import type { Duplex } from 'stream';
 import { validate } from 'superstruct';
 
