@@ -5474,7 +5474,7 @@ __metadata:
     jest-environment-jsdom: ^29.5.0
     jest-fetch-mock: ^3.0.3
     jest-it-up: ^2.0.0
-    json-rpc-middleware-stream: ^4.2.0
+    json-rpc-middleware-stream: ^5.0.0
     monaco-editor: ^0.38.0
     monaco-editor-webpack-plugin: ^7.0.1
     prettier: ^2.7.1
@@ -16023,7 +16023,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-rpc-middleware-stream@npm:^4.2.0, json-rpc-middleware-stream@npm:^4.2.1":
+"json-rpc-middleware-stream@npm:^4.2.1":
   version: 4.2.2
   resolution: "json-rpc-middleware-stream@npm:4.2.2"
   dependencies:
