@@ -1,12 +1,16 @@
-import { BIP44Node } from '@metamask/key-tree';
-import { logError } from '@metamask/snaps-utils';
 import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
   JsonRpcMiddleware,
+} from '@metamask/json-rpc-engine';
+import { BIP44Node } from '@metamask/key-tree';
+import { logError } from '@metamask/snaps-utils';
+import type {
+  Json,
+  JsonRpcParams,
   JsonRpcRequest,
   PendingJsonRpcResponse,
-}from '@metamask/json-rpc-engine';
+} from '@metamask/utils';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 export const methodHandlers = {
@@ -30,8 +34,8 @@ export type MiscMiddlewareHooks = {
  * @param hooks - Any hooks required by this handler.
  */
 async function getAccountsHandler(
-  _request: JsonRpcRequest<unknown>,
-  response: PendingJsonRpcResponse<unknown>,
+  _request: JsonRpcRequest,
+  response: PendingJsonRpcResponse<Json>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
   hooks: MiscMiddlewareHooks,
@@ -62,8 +66,8 @@ async function getAccountsHandler(
  * @param end - The json-rpc-engine middleware end handler.
  */
 async function getProviderStateHandler(
-  _request: JsonRpcRequest<unknown>,
-  response: PendingJsonRpcResponse<unknown>,
+  _request: JsonRpcRequest,
+  response: PendingJsonRpcResponse<Json>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
 ) {
@@ -87,7 +91,7 @@ async function getProviderStateHandler(
  */
 export function createMiscMethodMiddleware(
   hooks: MiscMiddlewareHooks,
-): JsonRpcMiddleware<unknown, unknown> {
+): JsonRpcMiddleware<JsonRpcParams, Json> {
   // This should probably use createAsyncMiddleware
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async function methodMiddleware(request, response, next, end) {
