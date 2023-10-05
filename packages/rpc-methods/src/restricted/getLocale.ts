@@ -68,7 +68,7 @@ export const getLocaleBuilder = Object.freeze({
  */
 export function getImplementation({ getLocale }: GetLocaleMethodHooks) {
   return async function implementation(
-    _args: RestrictedMethodOptions<void>,
+    _args: RestrictedMethodOptions<any>,
   ): Promise<string> {
     return getLocale();
   };
