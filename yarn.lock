@@ -3686,19 +3686,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^3.5.0":
-  version: 3.5.2
-  resolution: "@metamask/approval-controller@npm:3.5.2"
-  dependencies:
-    "@metamask/base-controller": ^3.2.2
-    "@metamask/utils": ^6.2.0
-    eth-rpc-errors: ^4.0.2
-    immer: ^9.0.6
-    nanoid: ^3.1.31
-  checksum: 70436be566952b8aa42de48aff36655a42611478a5beee4e5ea9cf019ef386db202c464d73057df4e9cce22ebdb7517f5eb71a9def6bd7672f48a2d714ad1f2c
-  languageName: node
-  linkType: hard
-
 "@metamask/approval-controller@npm:^4.0.0":
   version: 4.0.0
   resolution: "@metamask/approval-controller@npm:4.0.0"
@@ -3727,17 +3714,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^3.2.0, @metamask/base-controller@npm:^3.2.2":
-  version: 3.2.2
-  resolution: "@metamask/base-controller@npm:3.2.2"
-  dependencies:
-    "@metamask/utils": ^6.2.0
-    immer: ^9.0.6
-  checksum: 90e639b4415bd9e0f8c86b5fdfa9e164c2615bc69f85c5028dc3657883aa20b66d0ecb00850e703d0f2495c3deda2e17bb18e5f2a4b24aca7943b61b67bff82e
-  languageName: node
-  linkType: hard
-
-"@metamask/base-controller@npm:^3.2.3":
+"@metamask/base-controller@npm:^3.2.0, @metamask/base-controller@npm:^3.2.3":
   version: 3.2.3
   resolution: "@metamask/base-controller@npm:3.2.3"
   dependencies:
@@ -3759,7 +3736,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/key-tree": ^9.0.0
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^6.0.0
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
@@ -3801,7 +3778,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/key-tree": ^9.0.0
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^6.0.0
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
@@ -3849,7 +3826,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^6.0.0
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
@@ -3887,7 +3864,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^6.0.0
     "@metamask/snaps-browserify-plugin": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
@@ -3927,7 +3904,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/key-tree": ^9.0.0
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^6.0.0
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
@@ -3982,7 +3959,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/key-tree": ^9.0.0
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^6.0.0
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
@@ -4089,7 +4066,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^6.0.0
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
@@ -4128,7 +4105,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^6.0.0
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
@@ -4315,7 +4292,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^6.0.0
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
@@ -4353,7 +4330,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^6.0.0
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
@@ -4422,7 +4399,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^6.0.0
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
@@ -4462,7 +4439,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^6.0.0
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
@@ -4578,7 +4555,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^6.0.0
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
@@ -4666,7 +4643,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^6.0.0
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
@@ -4740,7 +4717,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^6.0.0
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
@@ -4778,7 +4755,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^6.0.0
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
@@ -4878,7 +4855,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^6.0.0
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-rollup-plugin": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
@@ -4908,16 +4885,6 @@ __metadata:
     typescript: ~4.8.4
   languageName: unknown
   linkType: soft
-
-"@metamask/rpc-errors@npm:^5.1.1":
-  version: 5.1.1
-  resolution: "@metamask/rpc-errors@npm:5.1.1"
-  dependencies:
-    "@metamask/utils": ^5.0.0
-    fast-safe-stringify: ^2.0.6
-  checksum: ccd1b24da66af3ae63960b79c04b86efb8b96acb89ca6f7e0bbfe636d23ba5cddeba533c0692eafb87c44ec6f840085372d0f21b39e05df9a80700ff61538a30
-  languageName: node
-  linkType: hard
 
 "@metamask/rpc-errors@npm:^6.0.0":
   version: 6.0.0
@@ -5143,7 +5110,7 @@ __metadata:
     "@esbuild-plugins/node-globals-polyfill": ^0.2.3
     "@esbuild-plugins/node-modules-polyfill": ^0.2.2
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/approval-controller": ^3.5.0
+    "@metamask/approval-controller": ^4.0.0
     "@metamask/auto-changelog": ^3.3.0
     "@metamask/base-controller": ^3.2.0
     "@metamask/eslint-config": ^12.1.0
@@ -5422,7 +5389,7 @@ __metadata:
     "@metamask/eth-json-rpc-middleware": ^11.0.2
     "@metamask/key-tree": ^9.0.0
     "@metamask/permission-controller": ^5.0.0
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^6.0.0
     "@metamask/rpc-methods": "workspace:^"
     "@metamask/snaps-controllers": "workspace:^"
     "@metamask/snaps-execution-environments": "workspace:^"
@@ -5819,7 +5786,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^6.0.1, @metamask/utils@npm:^6.2.0":
+"@metamask/utils@npm:^6.0.1":
   version: 6.2.0
   resolution: "@metamask/utils@npm:6.2.0"
   dependencies:
@@ -5858,7 +5825,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^6.0.0
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
@@ -5896,7 +5863,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^6.0.0
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
     "@metamask/snaps-webpack-plugin": "workspace:^"
