@@ -54,9 +54,9 @@ describe('createSnapsMethodMiddleware', () => {
       error: {
         code: -32603,
         data: {
-          originalError: {},
+          cause: expect.objectContaining({ message: 'foo' }),
         },
-        message: 'foo',
+        message: 'Internal JSON-RPC error.',
       },
     });
   });
@@ -82,6 +82,7 @@ describe('createSnapsMethodMiddleware', () => {
       error: {
         code: -32603,
         data: {
+          cause: null,
           request: {
             id: 1,
             jsonrpc: '2.0',
