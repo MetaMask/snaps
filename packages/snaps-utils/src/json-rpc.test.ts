@@ -3,6 +3,7 @@ import { SubjectType } from '@metamask/permission-controller';
 import type { RpcOrigins } from './json-rpc';
 import {
   assertIsJsonRpcSuccess,
+  assertIsKeyringOrigins,
   assertIsRpcOrigins,
   isOriginAllowed,
 } from './json-rpc';
@@ -64,6 +65,48 @@ describe('assertIsRpcOrigins', () => {
       'Invalid JSON-RPC origins: Must specify at least one JSON-RPC origin.',
     );
   });
+});
+
+describe('assertIsKeyringOrigin', () => {
+  it.each([
+    {
+      allowedOrigins: ['foo', 'bar'],
+    },
+    {
+      allowedOrigins: ['foo'],
+    },
+  ])('does not throw for %p', (origins) => {
+    expect(() => assertIsKeyringOrigins(origins)).not.toThrow();
+  });
+
+  it.each([
+    true,
+    false,
+    null,
+    undefined,
+    0,
+    1,
+    '',
+    'foo',
+    [],
+    ['foo'],
+    {},
+    { foo: true },
+    { dapps: false, snaps: false },
+  ])('throws for %p', (origins) => {
+    expect(() => assertIsKeyringOrigins(origins)).toThrow(
+      'Invalid keyring origins:',
+    );
+  });
+
+  it.each([{ allowedOrigins: [] }, { allowedOrigins: [] }])(
+    'throws if no origins are allowed',
+    (value) => {
+      expect(() => assertIsKeyringOrigins(value)).toThrow(
+        'Invalid keyring origins: Must specify at least one keyring origin.',
+      );
+    },
+  );
 });
 
 describe('isOriginAllowed', () => {
