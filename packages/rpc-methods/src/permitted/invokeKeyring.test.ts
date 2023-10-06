@@ -39,6 +39,7 @@ describe('wallet_invokeKeyring', () => {
         getSnap: jest.fn(),
         hasPermission: jest.fn(),
         handleSnapRpcRequest: jest.fn(),
+        getAllowedKeyringMethods: jest.fn(),
       } as any);
 
     it('invokes the snap and returns the result', async () => {
@@ -49,6 +50,7 @@ describe('wallet_invokeKeyring', () => {
       hooks.hasPermission.mockImplementation(() => true);
       hooks.getSnap.mockImplementation(() => getSnapObject());
       hooks.handleSnapRpcRequest.mockImplementation(() => 'bar');
+      hooks.getAllowedKeyringMethods.mockImplementation(() => ['foo']);
 
       const engine = new JsonRpcEngine();
       engine.push(createOriginMiddleware('metamask.io'));
@@ -95,6 +97,7 @@ describe('wallet_invokeKeyring', () => {
           message: 'Failed to start snap.',
         });
       });
+      hooks.getAllowedKeyringMethods.mockImplementation(() => ['foo']);
 
       const engine = new JsonRpcEngine();
       engine.push(createOriginMiddleware('metamask.io'));
@@ -130,7 +133,102 @@ describe('wallet_invokeKeyring', () => {
       });
     });
 
-    it('fails if the origin doesnt have the permission to invoke the snap', async () => {
+    it('fails if origin is not authorized to call the method', async () => {
+      const { implementation } = invokeKeyringHandler;
+
+      const hooks = getMockHooks();
+
+      hooks.hasPermission.mockImplementation(() => true);
+      hooks.getSnap.mockImplementation(() => getSnapObject());
+      hooks.handleSnapRpcRequest.mockImplementation(() => {
+        throw ethErrors.rpc.invalidRequest({
+          message: 'Failed to start snap.',
+        });
+      });
+      hooks.getAllowedKeyringMethods.mockImplementation(() => ['bar']);
+
+      const engine = new JsonRpcEngine();
+      engine.push(createOriginMiddleware('metamask.io'));
+      engine.push((req, res, next, end) => {
+        const result = implementation(
+          req as JsonRpcRequest<JsonRpcRequest<unknown>>,
+          res as PendingJsonRpcResponse<unknown>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = (await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'wallet_invokeKeyring',
+        params: {
+          snapId: MOCK_SNAP_ID,
+          request: { method: 'foo' },
+        },
+      })) as JsonRpcFailure;
+
+      expect(response.error).toStrictEqual({
+        ...ethErrors.rpc
+          .invalidRequest({
+            message:
+              'The origin "metamask.io" is not allowed to invoke the method "foo".',
+          })
+          .serialize(),
+        stack: expect.any(String),
+      });
+    });
+
+    it("fails if the request doesn't have a method name", async () => {
+      const { implementation } = invokeKeyringHandler;
+
+      const hooks = getMockHooks();
+
+      hooks.hasPermission.mockImplementation(() => true);
+      hooks.getSnap.mockImplementation(() => getSnapObject());
+      hooks.handleSnapRpcRequest.mockImplementation(() => {
+        throw ethErrors.rpc.invalidRequest({
+          message: 'Failed to start snap.',
+        });
+      });
+      hooks.getAllowedKeyringMethods.mockImplementation(() => ['foo']);
+
+      const engine = new JsonRpcEngine();
+      engine.push(createOriginMiddleware('metamask.io'));
+      engine.push((req, res, next, end) => {
+        const result = implementation(
+          req as JsonRpcRequest<JsonRpcRequest<unknown>>,
+          res as PendingJsonRpcResponse<unknown>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = (await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'wallet_invokeKeyring',
+        params: {
+          snapId: MOCK_SNAP_ID,
+          request: { something: 'foo' },
+        },
+      })) as JsonRpcFailure;
+
+      expect(response.error).toStrictEqual({
+        ...ethErrors.rpc
+          .invalidRequest({ message: 'The request must have a method.' })
+          .serialize(),
+        stack: expect.any(String),
+      });
+    });
+
+    it("fails if the origin doesn't have the permission to invoke the snap", async () => {
       const { implementation } = invokeKeyringHandler;
 
       const hooks = getMockHooks();

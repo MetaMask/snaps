@@ -67,12 +67,12 @@ export function getHandlerArguments(
           };
     }
     case HandlerType.OnRpcRequest:
+    case HandlerType.OnKeyringRequest:
       return { origin, request };
 
     case HandlerType.OnCronjob:
     case HandlerType.OnInstall:
     case HandlerType.OnUpdate:
-    case HandlerType.OnKeyringRequest:
       return { request };
 
     default:
