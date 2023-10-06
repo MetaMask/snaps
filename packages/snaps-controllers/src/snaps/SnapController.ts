@@ -92,6 +92,7 @@ import type {
 } from '../services';
 import { hasTimedOut, setDiff, withTimeout } from '../utils';
 import { handlerEndowments, SnapEndowments } from './endowments';
+import { getKeyringCaveatOrigins } from './endowments/keyring';
 import { getRpcCaveatOrigins } from './endowments/rpc';
 import type { SnapLocation } from './location';
 import { detectSnapLocation } from './location';
@@ -2497,7 +2498,10 @@ export class SnapController extends BaseController<
       );
     }
 
-    if (permissionName === SnapEndowments.Rpc) {
+    if (
+      permissionName === SnapEndowments.Rpc ||
+      permissionName === SnapEndowments.Keyring
+    ) {
       const subject = this.messagingSystem.call(
         'SubjectMetadataController:getSubjectMetadata',
         origin,
@@ -2508,10 +2512,13 @@ export class SnapController extends BaseController<
         snapId,
       );
 
-      const rpcPermission = permissions?.[SnapEndowments.Rpc];
-      assert(rpcPermission);
+      const handlerPermissions = permissions?.[permissionName];
+      assert(handlerPermissions);
 
-      const origins = getRpcCaveatOrigins(rpcPermission);
+      const origins =
+        permissionName === SnapEndowments.Rpc
+          ? getRpcCaveatOrigins(handlerPermissions)
+          : getKeyringCaveatOrigins(handlerPermissions);
       assert(origins);
 
       if (
@@ -2522,7 +2529,7 @@ export class SnapController extends BaseController<
         )
       ) {
         throw new Error(
-          `Snap "${snapId}" is not permitted to handle JSON-RPC requests from "${origin}".`,
+          `Snap "${snapId}" is not permitted to handle requests from "${origin}".`,
         );
       }
     }

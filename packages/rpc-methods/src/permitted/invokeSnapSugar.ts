@@ -9,7 +9,7 @@ import { ethErrors } from 'eth-rpc-errors';
 
 export type InvokeSnapSugarArgs = {
   snapId: string;
-  request: JsonRpcRequest<unknown>;
+  request: Record<string, unknown>;
 };
 
 /**

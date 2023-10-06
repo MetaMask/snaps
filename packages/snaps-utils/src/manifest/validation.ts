@@ -28,7 +28,7 @@ import {
 import { isEqual } from '../array';
 import { CronjobSpecificationArrayStruct } from '../cronjob';
 import { SIP_6_MAGIC_VALUE, STATE_ENCRYPTION_MAGIC_VALUE } from '../entropy';
-import { RpcOriginsStruct } from '../json-rpc';
+import { KeyringOriginsStruct, RpcOriginsStruct } from '../json-rpc';
 import { ChainIdStruct } from '../namespace';
 import { SnapIdStruct } from '../snaps';
 import { NameStruct, NpmSnapFileNames } from '../types';
@@ -155,6 +155,7 @@ export const PermissionsStruct = type({
   ),
   'endowment:rpc': optional(RpcOriginsStruct),
   'endowment:name-lookup': optional(ChainIdsStruct),
+  'endowment:keyring': optional(KeyringOriginsStruct),
   snap_dialog: optional(object({})),
   // TODO: Remove
   snap_confirm: optional(object({})),

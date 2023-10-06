@@ -67,6 +67,7 @@ export function getHandlerArguments(
           };
     }
     case HandlerType.OnRpcRequest:
+    case HandlerType.OnKeyringRequest:
       return { origin, request };
 
     case HandlerType.OnCronjob:

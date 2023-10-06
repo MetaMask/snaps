@@ -61,6 +61,7 @@ import {
   MOCK_BLOCK_NUMBER,
   MOCK_DAPP_SUBJECT_METADATA,
   MOCK_DAPPS_RPC_ORIGINS_PERMISSION,
+  MOCK_KEYRING_ORIGINS_PERMISSION,
   MOCK_ORIGIN_PERMISSIONS,
   MOCK_RPC_ORIGINS_PERMISSION,
   MOCK_SNAP_PERMISSIONS,
@@ -1467,6 +1468,100 @@ describe('SnapController', () => {
       },
     );
 
+    it('allows MetaMask to send a JSON-RPC request', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Rpc]: {
+            ...MOCK_RPC_ORIGINS_PERMISSION,
+            caveats: [
+              {
+                type: SnapCaveatType.RpcOrigin,
+                value: {
+                  allowedOrigins: ['foo.com'],
+                },
+              },
+            ],
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => undefined,
+      );
+
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
+      expect(
+        await snapController.handleRequest({
+          snapId: snap.id,
+          origin: 'metamask',
+          handler: HandlerType.OnRpcRequest,
+          request: { jsonrpc: '2.0', method: 'test' },
+        }),
+      ).toBeUndefined();
+
+      snapController.destroy();
+    });
+
+    it('allows MetaMask to send a keyring request', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Keyring]: {
+            ...MOCK_KEYRING_ORIGINS_PERMISSION,
+            caveats: [
+              {
+                type: SnapCaveatType.KeyringOrigin,
+                value: {
+                  allowedOrigins: ['foo.com'],
+                },
+              },
+            ],
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => undefined,
+      );
+
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
+      expect(
+        await snapController.handleRequest({
+          snapId: snap.id,
+          origin: 'metamask',
+          handler: HandlerType.OnKeyringRequest,
+          request: { jsonrpc: '2.0', method: 'test' },
+        }),
+      ).toBeUndefined();
+
+      snapController.destroy();
+    });
+
     it('allows a website origin if it is in the `allowedOrigins` list', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
@@ -1507,6 +1602,53 @@ describe('SnapController', () => {
           snapId: snap.id,
           origin: 'foo.com',
           handler: HandlerType.OnRpcRequest,
+          request: { jsonrpc: '2.0', method: 'test' },
+        }),
+      ).toBeUndefined();
+
+      snapController.destroy();
+    });
+
+    it('allows a website origin if it is in the `allowedOrigins` list for keyring requests', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Keyring]: {
+            ...MOCK_KEYRING_ORIGINS_PERMISSION,
+            caveats: [
+              {
+                type: SnapCaveatType.KeyringOrigin,
+                value: {
+                  allowedOrigins: ['foo.com'],
+                },
+              },
+            ],
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_DAPP_SUBJECT_METADATA,
+      );
+
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
+      expect(
+        await snapController.handleRequest({
+          snapId: snap.id,
+          origin: 'foo.com',
+          handler: HandlerType.OnKeyringRequest,
           request: { jsonrpc: '2.0', method: 'test' },
         }),
       ).toBeUndefined();
@@ -1711,7 +1853,7 @@ describe('SnapController', () => {
             request: { jsonrpc: '2.0', method: 'test' },
           }),
         ).rejects.toThrow(
-          `Snap "${snap.id}" is not permitted to handle JSON-RPC requests from "bar.com".`,
+          `Snap "${snap.id}" is not permitted to handle requests from "bar.com".`,
         );
 
         snapController.destroy();
@@ -1752,7 +1894,7 @@ describe('SnapController', () => {
           request: { jsonrpc: '2.0', method: 'test' },
         }),
       ).rejects.toThrow(
-        `Snap "${snap.id}" is not permitted to handle JSON-RPC requests from "${MOCK_ORIGIN}".`,
+        `Snap "${snap.id}" is not permitted to handle requests from "${MOCK_ORIGIN}".`,
       );
 
       snapController.destroy();
@@ -1792,7 +1934,56 @@ describe('SnapController', () => {
           request: { jsonrpc: '2.0', method: 'test' },
         }),
       ).rejects.toThrow(
-        `Snap "${snap.id}" is not permitted to handle JSON-RPC requests from "${MOCK_SNAP_ID}".`,
+        `Snap "${snap.id}" is not permitted to handle requests from "${MOCK_SNAP_ID}".`,
+      );
+
+      snapController.destroy();
+    });
+
+    it('throws if the website origin is not in the `allowedOrigins` list for keyring requests', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Keyring]: {
+            ...MOCK_KEYRING_ORIGINS_PERMISSION,
+            caveats: [
+              {
+                type: SnapCaveatType.KeyringOrigin,
+                value: {
+                  allowedOrigins: ['foo.com'],
+                },
+              },
+            ],
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_DAPP_SUBJECT_METADATA,
+      );
+
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
+      await expect(
+        snapController.handleRequest({
+          snapId: snap.id,
+          origin: 'bar.com',
+          handler: HandlerType.OnKeyringRequest,
+          request: { jsonrpc: '2.0', method: 'test' },
+        }),
+      ).rejects.toThrow(
+        'Snap "npm:@metamask/example-snap" is not permitted to handle requests from "bar.com".',
       );
 
       snapController.destroy();
@@ -2708,7 +2899,7 @@ describe('SnapController', () => {
           [MOCK_SNAP_ID]: {},
         }),
       ).rejects.toThrow(
-        'A snap must request at least one of the following permissions: endowment:rpc, endowment:transaction-insight, endowment:cronjob, endowment:name-lookup, endowment:lifecycle-hooks.',
+        'A snap must request at least one of the following permissions: endowment:rpc, endowment:transaction-insight, endowment:cronjob, endowment:name-lookup, endowment:lifecycle-hooks, endowment:keyring.',
       );
 
       controller.destroy();

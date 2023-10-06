@@ -3,6 +3,7 @@ import { SubjectType } from '@metamask/permission-controller';
 import type { RpcOrigins } from './json-rpc';
 import {
   assertIsJsonRpcSuccess,
+  assertIsKeyringOrigins,
   assertIsRpcOrigins,
   isOriginAllowed,
 } from './json-rpc';
@@ -66,6 +67,41 @@ describe('assertIsRpcOrigins', () => {
   });
 });
 
+describe('assertIsKeyringOrigin', () => {
+  it.each([
+    {
+      allowedOrigins: ['foo', 'bar'],
+    },
+    {
+      allowedOrigins: ['foo'],
+    },
+    {
+      allowedOrigins: [],
+    },
+    {},
+  ])('does not throw for %p', (origins) => {
+    expect(() => assertIsKeyringOrigins(origins)).not.toThrow();
+  });
+
+  it.each([
+    true,
+    false,
+    null,
+    undefined,
+    0,
+    1,
+    '',
+    'foo',
+    ['foo'],
+    { foo: true },
+    { dapps: false, snaps: false },
+  ])('throws for %p', (origins) => {
+    expect(() => assertIsKeyringOrigins(origins)).toThrow(
+      'Invalid keyring origins:',
+    );
+  });
+});
+
 describe('isOriginAllowed', () => {
   it('returns `true` if all origins are allowed', () => {
     const origins: RpcOrigins = {
@@ -75,6 +111,18 @@ describe('isOriginAllowed', () => {
 
     expect(isOriginAllowed(origins, SubjectType.Snap, 'foo')).toBe(true);
     expect(isOriginAllowed(origins, SubjectType.Website, 'bar')).toBe(true);
+  });
+
+  it('returns `true` if the origin is `metamask`', () => {
+    const origins: RpcOrigins = {
+      dapps: false,
+      snaps: false,
+    };
+
+    // In reality we would fallback to SubjectType.Website in this case
+    expect(isOriginAllowed(origins, SubjectType.Website, 'metamask')).toBe(
+      true,
+    );
   });
 
   it('returns `false` if no origins are allowed', () => {

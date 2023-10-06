@@ -124,6 +124,16 @@ export const MOCK_RPC_ORIGINS_PERMISSION: PermissionConstraint = {
   parentCapability: SnapEndowments.Rpc,
 };
 
+export const MOCK_KEYRING_ORIGINS_PERMISSION: PermissionConstraint = {
+  caveats: [
+    { type: SnapCaveatType.KeyringOrigin, value: { allowedOrigins: [] } },
+  ],
+  date: 1664187844588,
+  id: 'izn0WGUO8cvq_jqvLQuQP',
+  invoker: MOCK_SNAP_ID,
+  parentCapability: SnapEndowments.Keyring,
+};
+
 export const MOCK_DAPPS_RPC_ORIGINS_PERMISSION: PermissionConstraint = {
   caveats: [
     { type: SnapCaveatType.RpcOrigin, value: { snaps: false, dapps: true } },

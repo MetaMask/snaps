@@ -25,6 +25,11 @@ export enum SnapCaveatType {
   RpcOrigin = 'rpcOrigin',
 
   /**
+   * The origins that a Snap can receive keyring messages from.
+   */
+  KeyringOrigin = 'keyringOrigin',
+
+  /**
    * Caveat specifying the snap IDs that can be interacted with.
    */
   SnapIds = 'snapIds',

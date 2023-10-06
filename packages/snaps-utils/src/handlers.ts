@@ -11,6 +11,7 @@ export enum HandlerType {
   OnInstall = 'onInstall',
   OnUpdate = 'onUpdate',
   OnNameLookup = 'onNameLookup',
+  OnKeyringRequest = 'onKeyringRequest',
 }
 
 type SnapHandler = {
@@ -77,6 +78,13 @@ export const SNAP_EXPORTS = {
     type: HandlerType.OnUpdate,
     required: false,
     validator: (snapExport: unknown): snapExport is OnUpdateHandler => {
+      return typeof snapExport === 'function';
+    },
+  },
+  [HandlerType.OnKeyringRequest]: {
+    type: HandlerType.OnKeyringRequest,
+    required: true,
+    validator: (snapExport: unknown): snapExport is OnKeyringRequestHandler => {
       return typeof snapExport === 'function';
     },
   },
@@ -167,6 +175,22 @@ export type OnInstallHandler = LifecycleEventHandler;
  * This type is an alias for {@link LifecycleEventHandler}.
  */
 export type OnUpdateHandler = LifecycleEventHandler;
+
+/**
+ * The `onKeyringRequest` handler. This is called by the MetaMask client for
+ * privileged keyring actions.
+ *
+ * @param args - The request arguments.
+ * @param args.origin - The origin of the request. This can be the ID of
+ * another snap, or the URL of a dapp.
+ * @param args.request - The JSON-RPC request sent to the snap.
+ */
+export type OnKeyringRequestHandler<
+  Params extends JsonRpcParams = JsonRpcParams,
+> = (args: {
+  origin: string;
+  request: JsonRpcRequest<Params>;
+}) => Promise<unknown>;
 
 /**
  * Utility type for getting the handler function type from a handler type.
