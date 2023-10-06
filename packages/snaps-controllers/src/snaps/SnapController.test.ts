@@ -1467,7 +1467,7 @@ describe('SnapController', () => {
       },
     );
 
-    it('allows an origin if it is in the `allowedOrigins` list for websites', async () => {
+    it('allows a website origin if it is in the `allowedOrigins` list', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
       const snapController = getSnapController(
@@ -1488,9 +1488,7 @@ describe('SnapController', () => {
               {
                 type: SnapCaveatType.RpcOrigin,
                 value: {
-                  dapps: {
-                    allowedOrigins: ['foo.com'],
-                  },
+                  allowedOrigins: ['foo.com'],
                 },
               },
             ],
@@ -1516,7 +1514,7 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
-    it('allows an origin if it is in the `allowedOrigins` list for Snaps', async () => {
+    it('allows a website origin if `dapps` is `true`', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
       const snapController = getSnapController(
@@ -1537,9 +1535,103 @@ describe('SnapController', () => {
               {
                 type: SnapCaveatType.RpcOrigin,
                 value: {
-                  snaps: {
-                    allowedOrigins: [MOCK_SNAP_ID],
-                  },
+                  dapps: true,
+                  allowedOrigins: [],
+                },
+              },
+            ],
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_DAPP_SUBJECT_METADATA,
+      );
+
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
+      expect(
+        await snapController.handleRequest({
+          snapId: snap.id,
+          origin: 'foo.com',
+          handler: HandlerType.OnRpcRequest,
+          request: { jsonrpc: '2.0', method: 'test' },
+        }),
+      ).toBeUndefined();
+
+      snapController.destroy();
+    });
+
+    it('allows a Snap origin if it is in the `allowedOrigins` list', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Rpc]: {
+            ...MOCK_RPC_ORIGINS_PERMISSION,
+            caveats: [
+              {
+                type: SnapCaveatType.RpcOrigin,
+                value: {
+                  allowedOrigins: [MOCK_SNAP_ID],
+                },
+              },
+            ],
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
+      expect(
+        await snapController.handleRequest({
+          snapId: snap.id,
+          origin: MOCK_SNAP_ID,
+          handler: HandlerType.OnRpcRequest,
+          request: { jsonrpc: '2.0', method: 'test' },
+        }),
+      ).toBeUndefined();
+
+      snapController.destroy();
+    });
+
+    it('allows a Snap origin if `snaps` is `true`', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Rpc]: {
+            ...MOCK_RPC_ORIGINS_PERMISSION,
+            caveats: [
+              {
+                type: SnapCaveatType.RpcOrigin,
+                value: {
+                  snaps: true,
+                  allowedOrigins: [],
                 },
               },
             ],
@@ -1570,31 +1662,14 @@ describe('SnapController', () => {
         snaps: true,
       },
       {
-        dapps: {
-          allowedOrigins: ['foo.com'],
-        },
+        allowedOrigins: ['foo.com'],
       },
       {
         snaps: true,
-        dapps: {
-          allowedOrigins: ['foo.com'],
-        },
-      },
-      {
-        snaps: {
-          allowedOrigins: ['foo.com', 'bar.com'],
-        },
-      },
-      {
-        snaps: {
-          allowedOrigins: ['foo.com'],
-        },
-        dapps: {
-          allowedOrigins: ['foo.com'],
-        },
+        allowedOrigins: ['foo.com'],
       },
     ])(
-      'throws if the origin is in the `allowedOrigins` list for websites (%p)',
+      'throws if the origin is not in the `allowedOrigins` list (%p)',
       async (value: RpcOrigins) => {
         const rootMessenger = getControllerMessenger();
         const messenger = getSnapControllerMessenger(rootMessenger);
@@ -1637,84 +1712,6 @@ describe('SnapController', () => {
           }),
         ).rejects.toThrow(
           `Snap "${snap.id}" is not permitted to handle JSON-RPC requests from "bar.com".`,
-        );
-
-        snapController.destroy();
-      },
-    );
-
-    it.each([
-      {
-        dapps: true,
-      },
-      {
-        snaps: {
-          allowedOrigins: ['foo.com'],
-        },
-      },
-      {
-        dapps: true,
-        snaps: {
-          allowedOrigins: ['foo.com'],
-        },
-      },
-      {
-        dapps: {
-          allowedOrigins: ['foo.com', 'bar.com'],
-        },
-      },
-      {
-        dapps: {
-          allowedOrigins: ['foo.com'],
-        },
-        snaps: {
-          allowedOrigins: ['foo.com'],
-        },
-      },
-    ])(
-      'throws if the origin is in the `allowedOrigins` list for snaps (%p)',
-      async (value: RpcOrigins) => {
-        const rootMessenger = getControllerMessenger();
-        const messenger = getSnapControllerMessenger(rootMessenger);
-        const snapController = getSnapController(
-          getSnapControllerOptions({
-            messenger,
-            state: {
-              snaps: getPersistedSnapsState(),
-            },
-          }),
-        );
-
-        rootMessenger.registerActionHandler(
-          'PermissionController:getPermissions',
-          () => ({
-            [SnapEndowments.Rpc]: {
-              ...MOCK_RPC_ORIGINS_PERMISSION,
-              caveats: [
-                {
-                  type: SnapCaveatType.RpcOrigin,
-                  value,
-                },
-              ],
-            },
-          }),
-        );
-
-        rootMessenger.registerActionHandler(
-          'SubjectMetadataController:getSubjectMetadata',
-          () => MOCK_SNAP_SUBJECT_METADATA,
-        );
-
-        const snap = snapController.getExpect(MOCK_SNAP_ID);
-        await expect(
-          snapController.handleRequest({
-            snapId: snap.id,
-            origin: MOCK_SNAP_ID,
-            handler: HandlerType.OnRpcRequest,
-            request: { jsonrpc: '2.0', method: 'test' },
-          }),
-        ).rejects.toThrow(
-          `Snap "${snap.id}" is not permitted to handle JSON-RPC requests from "${MOCK_SNAP_ID}".`,
         );
 
         snapController.destroy();

@@ -1,43 +1,36 @@
-import { SubjectType } from '@metamask/permission-controller/dist/SubjectMetadataController';
+import { SubjectType } from '@metamask/permission-controller';
 import type {
+  AssertionErrorConstructor,
   Json,
   JsonRpcSuccess,
-  AssertionErrorConstructor,
 } from '@metamask/utils';
 import {
+  assertStruct,
   isJsonRpcFailure,
   isJsonRpcSuccess,
-  assertStruct,
 } from '@metamask/utils';
 import type { Infer } from 'superstruct';
 import { array, boolean, object, optional, refine, string } from 'superstruct';
 
-import { union } from './structs';
-
-export const AllowedOriginsStruct = object({
-  allowedOrigins: array(string()),
-});
-
 export const RpcOriginsStruct = refine(
   object({
-    dapps: optional(union([boolean(), AllowedOriginsStruct])),
-    snaps: optional(union([boolean(), AllowedOriginsStruct])),
+    dapps: optional(boolean()),
+    snaps: optional(boolean()),
+    allowedOrigins: optional(array(string())),
   }),
   'RPC origins',
   (value) => {
-    if (
-      !Object.values(value).some((originType) => {
-        if (typeof originType === 'boolean') {
-          return originType;
-        }
+    const hasOrigins = Boolean(
+      value.snaps === true ||
+        value.dapps === true ||
+        (value.allowedOrigins && value.allowedOrigins.length > 0),
+    );
 
-        return originType?.allowedOrigins?.length > 0;
-      })
-    ) {
-      throw new Error('Must specify at least one JSON-RPC origin.');
+    if (hasOrigins) {
+      return true;
     }
 
-    return true;
+    return 'Must specify at least one JSON-RPC origin.';
   },
 );
 
@@ -77,21 +70,18 @@ export function isOriginAllowed(
   subjectType: SubjectType,
   origin: string,
 ) {
-  const allowedOrigins =
-    subjectType === SubjectType.Snap ? origins.snaps : origins.dapps;
-
-  // If `allowedOrigins` is true, all origins are allowed.
-  if (allowedOrigins === true) {
+  // If the origin is in the `allowedOrigins` list, it is allowed.
+  if (origins.allowedOrigins?.includes(origin)) {
     return true;
   }
 
-  // If `allowedOrigins` is false or undefined, the origin is not allowed.
-  if (!allowedOrigins) {
-    return false;
+  // If the origin is a website and `dapps` is true, it is allowed.
+  if (subjectType === SubjectType.Website && origins.dapps) {
+    return true;
   }
 
-  // Otherwise, check if the origin is in the list of allowed origins.
-  return allowedOrigins.allowedOrigins.includes(origin);
+  // If the origin is a snap and `snaps` is true, it is allowed.
+  return Boolean(subjectType === SubjectType.Snap && origins.snaps);
 }
 
 /**
