@@ -57,6 +57,43 @@ export function assertIsRpcOrigins(
   );
 }
 
+export const KeyringOriginsStruct = refine(
+  object({
+    allowedOrigins: optional(array(string())),
+  }),
+  'Keyring origins',
+  (value) => {
+    if (value.allowedOrigins && value.allowedOrigins.length > 0) {
+      return true;
+    }
+
+    return 'Must specify at least one keyring origin.';
+  },
+);
+
+export type KeyringOrigins = Infer<typeof KeyringOriginsStruct>;
+
+/**
+ * Assert that the given value is a valid {@link KeyringOrigins} object.
+ *
+ * @param value - The value to assert.
+ * @param ErrorWrapper - An optional error wrapper to use. Defaults to
+ * {@link AssertionError}.
+ * @throws If the value is not a valid {@link KeyringOrigins} object.
+ */
+export function assertIsKeyringOrigins(
+  value: unknown,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  ErrorWrapper?: AssertionErrorConstructor,
+): asserts value is KeyringOrigins {
+  assertStruct(
+    value,
+    KeyringOriginsStruct,
+    'Invalid keyring origins',
+    ErrorWrapper,
+  );
+}
+
 /**
  * Check if the given origin is allowed by the given JSON-RPC origins object.
  *

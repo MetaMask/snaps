@@ -8,7 +8,11 @@ import {
   getCronjobCaveatMapper,
 } from './cronjob';
 import { ethereumProviderEndowmentBuilder } from './ethereum-provider';
-import { keyringEndowmentBuilder } from './keyring';
+import {
+  getKeyringCaveatMapper,
+  keyringCaveatSpecifications,
+  keyringEndowmentBuilder,
+} from './keyring';
 import { lifecycleHooksEndowmentBuilder } from './lifecycle-hooks';
 import {
   getNameLookupCaveatMapper,
@@ -47,6 +51,7 @@ export const endowmentCaveatSpecifications = {
   ...transactionInsightCaveatSpecifications,
   ...rpcCaveatSpecifications,
   ...nameLookupCaveatSpecifications,
+  ...keyringCaveatSpecifications,
 };
 
 export const endowmentCaveatMappers: Record<
@@ -58,6 +63,7 @@ export const endowmentCaveatMappers: Record<
     getTransactionInsightCaveatMapper,
   [rpcEndowmentBuilder.targetName]: getRpcCaveatMapper,
   [nameLookupEndowmentBuilder.targetName]: getNameLookupCaveatMapper,
+  [keyringEndowmentBuilder.targetName]: getKeyringCaveatMapper,
 };
 
 export const handlerEndowments: Record<HandlerType, string> = {
