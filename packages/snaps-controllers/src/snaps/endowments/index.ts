@@ -80,3 +80,4 @@ export * from './enum';
 export { getRpcCaveatOrigins } from './rpc';
 export { getTransactionOriginCaveat } from './transaction-insight';
 export { getChainIdsCaveat } from './name-lookup';
+export { getKeyringCaveatOrigins } from './keyring';

@@ -62,6 +62,7 @@ import {
   MOCK_DAPP_SUBJECT_METADATA,
   MOCK_DAPPS_RPC_ORIGINS_PERMISSION,
   MOCK_KEYRING_ORIGINS_PERMISSION,
+  MOCK_METAMASK_SUBJECT_METADATA,
   MOCK_ORIGIN_PERMISSIONS,
   MOCK_RPC_ORIGINS_PERMISSION,
   MOCK_SNAP_PERMISSIONS,
@@ -1467,6 +1468,100 @@ describe('SnapController', () => {
         snapController.destroy();
       },
     );
+
+    it('allows MetaMask to send a JSON-RPC request', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Rpc]: {
+            ...MOCK_RPC_ORIGINS_PERMISSION,
+            caveats: [
+              {
+                type: SnapCaveatType.RpcOrigin,
+                value: {
+                  allowedOrigins: ['foo.com'],
+                },
+              },
+            ],
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_METAMASK_SUBJECT_METADATA,
+      );
+
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
+      expect(
+        await snapController.handleRequest({
+          snapId: snap.id,
+          origin: 'bar.com',
+          handler: HandlerType.OnRpcRequest,
+          request: { jsonrpc: '2.0', method: 'test' },
+        }),
+      ).toBeUndefined();
+
+      snapController.destroy();
+    });
+
+    it('allows MetaMask to send a keyring request', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Keyring]: {
+            ...MOCK_KEYRING_ORIGINS_PERMISSION,
+            caveats: [
+              {
+                type: SnapCaveatType.KeyringOrigin,
+                value: {
+                  allowedOrigins: ['foo.com'],
+                },
+              },
+            ],
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_METAMASK_SUBJECT_METADATA,
+      );
+
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
+      expect(
+        await snapController.handleRequest({
+          snapId: snap.id,
+          origin: 'bar.com',
+          handler: HandlerType.OnKeyringRequest,
+          request: { jsonrpc: '2.0', method: 'test' },
+        }),
+      ).toBeUndefined();
+
+      snapController.destroy();
+    });
 
     it('allows a website origin if it is in the `allowedOrigins` list', async () => {
       const rootMessenger = getControllerMessenger();

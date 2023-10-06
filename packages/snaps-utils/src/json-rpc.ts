@@ -107,6 +107,11 @@ export function isOriginAllowed(
   subjectType: SubjectType,
   origin: string,
 ) {
+  // The extension is always allowed.
+  if (subjectType === SubjectType.Extension) {
+    return true;
+  }
+
   // If the origin is in the `allowedOrigins` list, it is allowed.
   if (origins.allowedOrigins?.includes(origin)) {
     return true;

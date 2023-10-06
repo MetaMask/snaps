@@ -99,7 +99,7 @@ describe('assertIsKeyringOrigin', () => {
     );
   });
 
-  it.each([{ allowedOrigins: [] }, { allowedOrigins: [] }])(
+  it.each([{ allowedOrigins: [] }, {}])(
     'throws if no origins are allowed',
     (value) => {
       expect(() => assertIsKeyringOrigins(value)).toThrow(
@@ -118,6 +118,16 @@ describe('isOriginAllowed', () => {
 
     expect(isOriginAllowed(origins, SubjectType.Snap, 'foo')).toBe(true);
     expect(isOriginAllowed(origins, SubjectType.Website, 'bar')).toBe(true);
+  });
+
+  it('returns `true` if the subject type is `extension`', () => {
+    const origins: RpcOrigins = {
+      dapps: false,
+      snaps: false,
+    };
+
+    expect(isOriginAllowed(origins, SubjectType.Extension, 'foo')).toBe(true);
+    expect(isOriginAllowed(origins, SubjectType.Extension, 'bar')).toBe(true);
   });
 
   it('returns `false` if no origins are allowed', () => {
