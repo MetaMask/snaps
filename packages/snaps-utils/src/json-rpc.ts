@@ -107,8 +107,8 @@ export function isOriginAllowed(
   subjectType: SubjectType,
   origin: string,
 ) {
-  // The extension is always allowed.
-  if (subjectType === SubjectType.Extension) {
+  // The MetaMask client is always allowed.
+  if (origin === 'metamask') {
     return true;
   }
 

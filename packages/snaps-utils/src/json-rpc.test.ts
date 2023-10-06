@@ -120,14 +120,16 @@ describe('isOriginAllowed', () => {
     expect(isOriginAllowed(origins, SubjectType.Website, 'bar')).toBe(true);
   });
 
-  it('returns `true` if the subject type is `extension`', () => {
+  it('returns `true` if the origin is `metamask`', () => {
     const origins: RpcOrigins = {
       dapps: false,
       snaps: false,
     };
 
-    expect(isOriginAllowed(origins, SubjectType.Extension, 'foo')).toBe(true);
-    expect(isOriginAllowed(origins, SubjectType.Extension, 'bar')).toBe(true);
+    // In reality we would fallback to SubjectType.Website in this case
+    expect(isOriginAllowed(origins, SubjectType.Website, 'metamask')).toBe(
+      true,
+    );
   });
 
   it('returns `false` if no origins are allowed', () => {

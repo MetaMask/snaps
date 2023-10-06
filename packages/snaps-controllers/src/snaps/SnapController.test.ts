@@ -62,7 +62,6 @@ import {
   MOCK_DAPP_SUBJECT_METADATA,
   MOCK_DAPPS_RPC_ORIGINS_PERMISSION,
   MOCK_KEYRING_ORIGINS_PERMISSION,
-  MOCK_METAMASK_SUBJECT_METADATA,
   MOCK_ORIGIN_PERMISSIONS,
   MOCK_RPC_ORIGINS_PERMISSION,
   MOCK_SNAP_PERMISSIONS,
@@ -1500,14 +1499,14 @@ describe('SnapController', () => {
 
       rootMessenger.registerActionHandler(
         'SubjectMetadataController:getSubjectMetadata',
-        () => MOCK_METAMASK_SUBJECT_METADATA,
+        () => undefined,
       );
 
       const snap = snapController.getExpect(MOCK_SNAP_ID);
       expect(
         await snapController.handleRequest({
           snapId: snap.id,
-          origin: 'bar.com',
+          origin: 'metamask',
           handler: HandlerType.OnRpcRequest,
           request: { jsonrpc: '2.0', method: 'test' },
         }),
@@ -1547,14 +1546,14 @@ describe('SnapController', () => {
 
       rootMessenger.registerActionHandler(
         'SubjectMetadataController:getSubjectMetadata',
-        () => MOCK_METAMASK_SUBJECT_METADATA,
+        () => undefined,
       );
 
       const snap = snapController.getExpect(MOCK_SNAP_ID);
       expect(
         await snapController.handleRequest({
           snapId: snap.id,
-          origin: 'bar.com',
+          origin: 'metamask',
           handler: HandlerType.OnKeyringRequest,
           request: { jsonrpc: '2.0', method: 'test' },
         }),

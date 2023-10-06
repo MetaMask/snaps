@@ -114,14 +114,6 @@ export const MOCK_DAPP_SUBJECT_METADATA: SubjectMetadata = {
   iconUrl: 'baz',
 };
 
-export const MOCK_METAMASK_SUBJECT_METADATA: SubjectMetadata = {
-  origin: MOCK_ORIGIN,
-  subjectType: SubjectType.Extension,
-  name: 'foo',
-  extensionId: 'bar',
-  iconUrl: 'baz',
-};
-
 export const MOCK_RPC_ORIGINS_PERMISSION: PermissionConstraint = {
   caveats: [
     { type: SnapCaveatType.RpcOrigin, value: { snaps: true, dapps: false } },
