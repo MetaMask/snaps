@@ -112,7 +112,7 @@ async function invokeKeyringImplementation(
   if (!hasProperty(request, 'method') || typeof request.method !== 'string') {
     return end(
       ethErrors.rpc.invalidRequest({
-        message: `The request must specify a method.`,
+        message: 'The request must have a method.',
       }),
     );
   }

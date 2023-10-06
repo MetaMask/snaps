@@ -222,7 +222,7 @@ describe('wallet_invokeKeyring', () => {
 
       expect(response.error).toStrictEqual({
         ...ethErrors.rpc
-          .invalidRequest({ message: 'The request must specify a method.' })
+          .invalidRequest({ message: 'The request must have a method.' })
           .serialize(),
         stack: expect.any(String),
       });
