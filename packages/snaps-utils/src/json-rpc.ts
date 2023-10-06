@@ -1,28 +1,36 @@
+import { SubjectType } from '@metamask/permission-controller';
 import type {
+  AssertionErrorConstructor,
   Json,
   JsonRpcSuccess,
-  AssertionErrorConstructor,
 } from '@metamask/utils';
 import {
+  assertStruct,
   isJsonRpcFailure,
   isJsonRpcSuccess,
-  assertStruct,
 } from '@metamask/utils';
 import type { Infer } from 'superstruct';
-import { boolean, object, optional, refine } from 'superstruct';
+import { array, boolean, object, optional, refine, string } from 'superstruct';
 
 export const RpcOriginsStruct = refine(
   object({
     dapps: optional(boolean()),
     snaps: optional(boolean()),
+    allowedOrigins: optional(array(string())),
   }),
   'RPC origins',
   (value) => {
-    if (!Object.values(value).some(Boolean)) {
-      throw new Error('Must specify at least one JSON-RPC origin');
+    const hasOrigins = Boolean(
+      value.snaps === true ||
+        value.dapps === true ||
+        (value.allowedOrigins && value.allowedOrigins.length > 0),
+    );
+
+    if (hasOrigins) {
+      return true;
     }
 
-    return true;
+    return 'Must specify at least one JSON-RPC origin.';
   },
 );
 
@@ -47,6 +55,33 @@ export function assertIsRpcOrigins(
     'Invalid JSON-RPC origins',
     ErrorWrapper,
   );
+}
+
+/**
+ * Check if the given origin is allowed by the given JSON-RPC origins object.
+ *
+ * @param origins - The JSON-RPC origins object.
+ * @param subjectType - The type of the origin.
+ * @param origin - The origin to check.
+ * @returns Whether the origin is allowed.
+ */
+export function isOriginAllowed(
+  origins: RpcOrigins,
+  subjectType: SubjectType,
+  origin: string,
+) {
+  // If the origin is in the `allowedOrigins` list, it is allowed.
+  if (origins.allowedOrigins?.includes(origin)) {
+    return true;
+  }
+
+  // If the origin is a website and `dapps` is true, it is allowed.
+  if (subjectType === SubjectType.Website && origins.dapps) {
+    return true;
+  }
+
+  // If the origin is a snap and `snaps` is true, it is allowed.
+  return Boolean(subjectType === SubjectType.Snap && origins.snaps);
 }
 
 /**

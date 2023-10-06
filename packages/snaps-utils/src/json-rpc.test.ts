@@ -1,12 +1,37 @@
-import { assertIsJsonRpcSuccess, assertIsRpcOrigins } from './json-rpc';
+import { SubjectType } from '@metamask/permission-controller';
+
+import type { RpcOrigins } from './json-rpc';
+import {
+  assertIsJsonRpcSuccess,
+  assertIsRpcOrigins,
+  isOriginAllowed,
+} from './json-rpc';
 
 describe('assertIsRpcOrigins', () => {
-  it.each([{ dapps: true }, { snaps: true }, { dapps: true, snaps: true }])(
-    'does not throw for %p',
-    (origins) => {
-      expect(() => assertIsRpcOrigins(origins)).not.toThrow();
+  it.each([
+    { dapps: true },
+    { snaps: true },
+    { dapps: true, snaps: true },
+    {
+      dapps: true,
+      snaps: true,
+      allowedOrigins: ['foo', 'bar'],
     },
-  );
+    {
+      dapps: false,
+      snaps: true,
+      allowedOrigins: ['foo', 'bar'],
+    },
+    {
+      dapps: true,
+      allowedOrigins: ['foo', 'bar'],
+    },
+    {
+      allowedOrigins: ['foo', 'bar'],
+    },
+  ])('does not throw for %p', (origins) => {
+    expect(() => assertIsRpcOrigins(origins)).not.toThrow();
+  });
 
   it.each([
     true,
@@ -28,10 +53,56 @@ describe('assertIsRpcOrigins', () => {
     );
   });
 
-  it('throws if neither value is true', () => {
-    expect(() => assertIsRpcOrigins({ dapps: false, snaps: false })).toThrow(
+  it.each([
+    { dapps: false },
+    { snaps: false },
+    { allowedOrigins: [] },
+    { dapps: false, snaps: false },
+    { dapps: false, snaps: false, allowedOrigins: [] },
+  ])('throws if no origins are allowed', (value) => {
+    expect(() => assertIsRpcOrigins(value)).toThrow(
       'Invalid JSON-RPC origins: Must specify at least one JSON-RPC origin.',
     );
+  });
+});
+
+describe('isOriginAllowed', () => {
+  it('returns `true` if all origins are allowed', () => {
+    const origins: RpcOrigins = {
+      dapps: true,
+      snaps: true,
+    };
+
+    expect(isOriginAllowed(origins, SubjectType.Snap, 'foo')).toBe(true);
+    expect(isOriginAllowed(origins, SubjectType.Website, 'bar')).toBe(true);
+  });
+
+  it('returns `false` if no origins are allowed', () => {
+    const origins: RpcOrigins = {
+      dapps: false,
+      snaps: false,
+    };
+
+    expect(isOriginAllowed(origins, SubjectType.Snap, 'foo')).toBe(false);
+    expect(isOriginAllowed(origins, SubjectType.Website, 'bar')).toBe(false);
+  });
+
+  it('returns `true` if the origin is allowed', () => {
+    const origins: RpcOrigins = {
+      allowedOrigins: ['foo', 'bar'],
+    };
+
+    expect(isOriginAllowed(origins, SubjectType.Snap, 'bar')).toBe(true);
+    expect(isOriginAllowed(origins, SubjectType.Website, 'foo')).toBe(true);
+  });
+
+  it('returns `false` if the origin is not allowed', () => {
+    const origins: RpcOrigins = {
+      allowedOrigins: [],
+    };
+
+    expect(isOriginAllowed(origins, SubjectType.Snap, 'foo')).toBe(false);
+    expect(isOriginAllowed(origins, SubjectType.Website, 'bar')).toBe(false);
   });
 });
 

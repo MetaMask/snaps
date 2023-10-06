@@ -51,6 +51,7 @@ import {
   DEFAULT_REQUESTED_SNAP_VERSION,
   getErrorMessage,
   HandlerType,
+  isOriginAllowed,
   logError,
   normalizeRelative,
   resolveVersionRange,
@@ -2501,7 +2502,6 @@ export class SnapController extends BaseController<
         'SubjectMetadataController:getSubjectMetadata',
         origin,
       );
-      const isSnap = subject?.subjectType === SubjectType.Snap;
 
       const permissions = this.messagingSystem.call(
         'PermissionController:getPermissions',
@@ -2514,7 +2514,13 @@ export class SnapController extends BaseController<
       const origins = getRpcCaveatOrigins(rpcPermission);
       assert(origins);
 
-      if ((isSnap && !origins.snaps) || (!isSnap && !origins.dapps)) {
+      if (
+        !isOriginAllowed(
+          origins,
+          subject?.subjectType ?? SubjectType.Website,
+          origin,
+        )
+      ) {
         throw new Error(
           `Snap "${snapId}" is not permitted to handle JSON-RPC requests from "${origin}".`,
         );
