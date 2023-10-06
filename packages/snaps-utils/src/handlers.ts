@@ -181,11 +181,16 @@ export type OnUpdateHandler = LifecycleEventHandler;
  * privileged keyring actions.
  *
  * @param args - The request arguments.
+ * @param args.origin - The origin of the request. This can be the ID of
+ * another snap, or the URL of a dapp.
  * @param args.request - The JSON-RPC request sent to the snap.
  */
 export type OnKeyringRequestHandler<
   Params extends JsonRpcParams = JsonRpcParams,
-> = (args: { request: JsonRpcRequest<Params> }) => Promise<unknown>;
+> = (args: {
+  origin: string;
+  request: JsonRpcRequest<Params>;
+}) => Promise<unknown>;
 
 /**
  * Utility type for getting the handler function type from a handler type.
