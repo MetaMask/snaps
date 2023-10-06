@@ -75,6 +75,10 @@ describe('assertIsKeyringOrigin', () => {
     {
       allowedOrigins: ['foo'],
     },
+    {
+      allowedOrigins: [],
+    },
+    {},
   ])('does not throw for %p', (origins) => {
     expect(() => assertIsKeyringOrigins(origins)).not.toThrow();
   });
@@ -88,9 +92,7 @@ describe('assertIsKeyringOrigin', () => {
     1,
     '',
     'foo',
-    [],
     ['foo'],
-    {},
     { foo: true },
     { dapps: false, snaps: false },
   ])('throws for %p', (origins) => {
@@ -98,15 +100,6 @@ describe('assertIsKeyringOrigin', () => {
       'Invalid keyring origins:',
     );
   });
-
-  it.each([{ allowedOrigins: [] }, {}])(
-    'throws if no origins are allowed',
-    (value) => {
-      expect(() => assertIsKeyringOrigins(value)).toThrow(
-        'Invalid keyring origins: Must specify at least one keyring origin.',
-      );
-    },
-  );
 });
 
 describe('isOriginAllowed', () => {

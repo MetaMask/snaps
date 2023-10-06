@@ -57,19 +57,9 @@ export function assertIsRpcOrigins(
   );
 }
 
-export const KeyringOriginsStruct = refine(
-  object({
-    allowedOrigins: optional(array(string())),
-  }),
-  'Keyring origins',
-  (value) => {
-    if (value.allowedOrigins && value.allowedOrigins.length > 0) {
-      return true;
-    }
-
-    return 'Must specify at least one keyring origin.';
-  },
-);
+export const KeyringOriginsStruct = object({
+  allowedOrigins: optional(array(string())),
+});
 
 export type KeyringOrigins = Infer<typeof KeyringOriginsStruct>;
 
