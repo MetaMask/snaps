@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../src/snaps/registry/index.ts"],"sourcesContent":["export * from './registry';\nexport * from './json';\n"],"names":[],"mappings":"AAAA,cAAc,aAAa;AAC3B,cAAc,SAAS"}

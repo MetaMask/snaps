@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/permitted/index.ts"],"sourcesContent":["import type { GetSnapsHooks } from './getSnaps';\nimport type { RequestSnapsHooks } from './requestSnaps';\n\nexport type PermittedRpcMethodHooks = GetSnapsHooks & RequestSnapsHooks;\n\nexport * from './handlers';\nexport * from './middleware';\n"],"names":[],"mappings":"AAKA,cAAc,aAAa;AAC3B,cAAc,eAAe"}

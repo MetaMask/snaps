@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/snaps/index.ts"],"sourcesContent":["export * from './location';\nexport * from './SnapController';\nexport * from './endowments';\nexport * from './selectors';\nexport * from './registry';\nexport * from './permissions';\n"],"names":[],"mappings":";;;;qBAAc;qBACA;qBACA;qBACA;qBACA;qBACA"}

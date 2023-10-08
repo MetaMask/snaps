@@ -1,0 +1,10 @@
+import type { StreamProvider } from '@metamask/providers';
+/**
+ * The type of `window.ethereum`.
+ */
+export declare type Ethereum = StreamProvider;
+export type { Json, JsonRpcRequest } from '@metamask/utils';
+export { DialogType, NotificationType, ManageStateOperation, } from '@metamask/rpc-methods';
+export type { SnapsGlobalObject } from '@metamask/rpc-methods';
+export type { AccountId, ChainId, OnCronjobHandler, OnNameLookupHandler, OnRpcRequestHandler, OnTransactionHandler, OnTransactionResponse, OnNameLookupResponse, OnInstallHandler, OnUpdateHandler, OnKeyringRequestHandler, } from '@metamask/snaps-utils';
+export { SeverityLevel } from '@metamask/snaps-utils';

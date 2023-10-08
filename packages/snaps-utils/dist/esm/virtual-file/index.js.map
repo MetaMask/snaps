@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/virtual-file/index.ts"],"sourcesContent":["export * from './toVirtualFile';\nexport * from './VirtualFile';\n"],"names":[],"mappings":"AAAA,cAAc,kBAAkB;AAChC,cAAc,gBAAgB"}

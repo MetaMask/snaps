@@ -1,0 +1,7 @@
+export declare const methodHandlers: {
+    wallet_getSnaps: import("@metamask/types").PermittedHandlerExport<import("./getSnaps").GetSnapsHooks, void, import("@metamask/snaps-utils").InstallSnapsResult>;
+    wallet_requestSnaps: import("@metamask/types").PermittedHandlerExport<import("./requestSnaps").RequestSnapsHooks, import("@metamask/permission-controller").RequestedPermissions, import("@metamask/snaps-utils").InstallSnapsResult>;
+    wallet_invokeSnap: import("@metamask/types").PermittedHandlerExport<void, import("@metamask/types").JsonRpcRequest<unknown>, unknown>;
+    wallet_invokeKeyring: import("@metamask/types").PermittedHandlerExport<import("./invokeKeyring").InvokeKeyringHooks, import("@metamask/types").JsonRpcRequest<unknown>, unknown>;
+};
+export declare const handlers: (import("@metamask/types").PermittedHandlerExport<import("./getSnaps").GetSnapsHooks, void, import("@metamask/snaps-utils").InstallSnapsResult> | import("@metamask/types").PermittedHandlerExport<import("./requestSnaps").RequestSnapsHooks, import("@metamask/permission-controller").RequestedPermissions, import("@metamask/snaps-utils").InstallSnapsResult> | import("@metamask/types").PermittedHandlerExport<void, import("@metamask/types").JsonRpcRequest<unknown>, unknown> | import("@metamask/types").PermittedHandlerExport<import("./invokeKeyring").InvokeKeyringHooks, import("@metamask/types").JsonRpcRequest<unknown>, unknown>)[];

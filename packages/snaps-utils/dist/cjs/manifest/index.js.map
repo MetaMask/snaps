@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/manifest/index.ts"],"sourcesContent":["export * from './manifest';\nexport * from './validation';\n"],"names":[],"mappings":";;;;qBAAc;qBACA"}

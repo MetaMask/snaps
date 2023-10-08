@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/manifest/index.browser.ts"],"sourcesContent":["export * from './validation';\n"],"names":[],"mappings":"AAAA,cAAc,eAAe"}

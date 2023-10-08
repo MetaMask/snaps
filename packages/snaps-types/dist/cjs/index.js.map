@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/index.ts"],"sourcesContent":["// eslint-disable-next-line import/no-unassigned-import\nimport './global';\n\nexport * from './types';\n"],"names":[],"mappings":"AAAA,uDAAuD;;;;;QAChD;qBAEO"}

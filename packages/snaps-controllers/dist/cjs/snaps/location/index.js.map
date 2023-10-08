@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../src/snaps/location/index.ts"],"sourcesContent":["export * from './location';\nexport * from './npm';\nexport * from './local';\nexport * from './http';\n"],"names":[],"mappings":";;;;qBAAc;qBACA;qBACA;qBACA"}

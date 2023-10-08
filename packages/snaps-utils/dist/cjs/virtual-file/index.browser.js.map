@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/virtual-file/index.browser.ts"],"sourcesContent":["export * from './VirtualFile';\n"],"names":[],"mappings":";;;;qBAAc"}
