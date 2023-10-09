@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "MetaMask example snap demonstrating the use of the `onInstall` and `onUpdate` lifecycle hooks.",
   "proposedName": "Lifecycle Hooks Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "WR+0BkxjQYQxm3GObO6S+C0v2vZYUZmL0l+TQEcZGCs=",
+    "shasum": "Hd1E//zEPjWq+zaUC7JNedz69gnNfENKo2YbIJciSTI=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

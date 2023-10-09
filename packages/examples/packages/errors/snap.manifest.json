@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "MetaMask example snap demonstrating the use of error handling in snaps.",
   "proposedName": "Error Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "Wa5LuPosJ5nAXu55PlzY9nk41VRuVmo3LcOdLaIbjq0=",
+    "shasum": "jB4Jls6W3nLiOfUh/USp0MARgcrT2jUiLN9p9cjYmGM=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
