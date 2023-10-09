@@ -12,6 +12,7 @@ import {
   SNAP_EXPORT_NAMES,
   logError,
   SNAP_EXPORTS,
+  getErrorMessage,
 } from '@metamask/snaps-utils';
 import type {
   JsonRpcNotification,
@@ -140,6 +141,7 @@ export class BaseSnapExecutor {
         assert(
           !required || handler !== undefined,
           `No ${handlerType} handler exported for snap "${target}`,
+          ethErrors.rpc.methodNotSupported,
         );
 
         // Certain handlers are not required. If they are not exported, we
@@ -162,7 +164,7 @@ export class BaseSnapExecutor {
         try {
           return getSafeJson(result);
         } catch (error) {
-          throw new TypeError(
+          throw ethErrors.rpc.internal(
             `Received non-JSON-serializable value: ${error.message.replace(
               /^Assertion failed: /u,
               '',
@@ -197,7 +199,10 @@ export class BaseSnapExecutor {
 
   private async onCommandRequest(message: JsonRpcRequest) {
     if (!isJsonRpcRequest(message)) {
-      throw new Error('Command stream received a non-JSON-RPC request.');
+      throw ethErrors.rpc.invalidRequest({
+        message: 'Command stream received a non-JSON-RPC request.',
+        data: message,
+      });
     }
 
     const { id, method, params } = message;
@@ -250,7 +255,7 @@ export class BaseSnapExecutor {
 
   protected notify(requestObject: Omit<JsonRpcNotification, 'jsonrpc'>) {
     if (!isValidJson(requestObject) || !isObject(requestObject)) {
-      throw new Error(
+      throw ethErrors.rpc.internal(
         'JSON-RPC notifications must be JSON serializable objects',
       );
     }
@@ -368,9 +373,16 @@ export class BaseSnapExecutor {
       });
     } catch (error) {
       this.removeSnap(snapId);
-      throw new Error(
-        `Error while running snap '${snapId}': ${(error as Error).message}`,
-      );
+      throw ethErrors.rpc.internal({
+        message: `Error while running snap '${snapId}': ${getErrorMessage(
+          error,
+        )}`,
+        data: {
+          cause: serializeError(error, {
+            fallbackError,
+          }),
+        },
+      });
     }
   }
 
@@ -497,7 +509,7 @@ export class BaseSnapExecutor {
   ): Promise<Result> {
     const data = this.snapData.get(snapId);
     if (data === undefined) {
-      throw new Error(
+      throw ethErrors.rpc.internal(
         `Tried to execute in context of unknown snap: "${snapId}".`,
       );
     }

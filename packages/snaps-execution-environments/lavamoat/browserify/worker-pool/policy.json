@@ -122,6 +122,11 @@
         "eslint>debug>ms": true
       }
     },
+    "external:../snaps-utils/src/errors.ts": {
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
     "external:../snaps-utils/src/icon.ts": {
       "builtin": {
         "buffer": true
@@ -129,6 +134,7 @@
     },
     "external:../snaps-utils/src/index.executionenv.ts": {
       "packages": {
+        "external:../snaps-utils/src/errors.ts": true,
         "external:../snaps-utils/src/handlers.ts": true,
         "external:../snaps-utils/src/logging.ts": true,
         "external:../snaps-utils/src/namespace.ts": true,

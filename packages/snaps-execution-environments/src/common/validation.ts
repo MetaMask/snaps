@@ -7,6 +7,7 @@ import {
   JsonRpcSuccessStruct,
   JsonStruct,
 } from '@metamask/utils';
+import { ethErrors } from 'eth-rpc-errors';
 import type { Infer } from 'superstruct';
 import {
   array,
@@ -132,6 +133,7 @@ export function assertIsOnTransactionRequestArguments(
     value,
     OnTransactionRequestArgumentsStruct,
     'Invalid request params',
+    ethErrors.rpc.invalidParams,
   );
 }
 
@@ -174,6 +176,7 @@ export function assertIsOnNameLookupRequestArguments(
     value,
     OnNameLookupRequestArgumentsStruct,
     'Invalid request params',
+    ethErrors.rpc.invalidParams,
   );
 }
 
