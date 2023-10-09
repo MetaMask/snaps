@@ -122,6 +122,11 @@
         "eslint>debug>ms": true
       }
     },
+    "eth-rpc-errors": {
+      "packages": {
+        "eth-rpc-errors>fast-safe-stringify": true
+      }
+    },
     "external:../snaps-utils/src/icon.ts": {
       "builtin": {
         "buffer": true
