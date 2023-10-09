@@ -1,6 +1,6 @@
 {
   "name": "@metamask/invoke-snap-example-snap",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "description": "MetaMask example snaps demonstrating the use of `wallet_invokeSnap` to call a snap from another snap.",
   "repository": {

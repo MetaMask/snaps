@@ -1,6 +1,6 @@
 {
   "name": "@metamask/dialog-example-snap",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "MetaMask example snap demonstrating the use of `snap_dialog`.",
   "repository": {
     "type": "git",

@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0]
+### Uncategorized
+- BREAKING: Bump minimum Node.js version to `^18.16.0` ([#1741](https://github.com/MetaMask/snaps-skunkworks.git/pull/1741))
+- Bump @metamask/auto-changelog from 3.2.0 to 3.3.0 ([#1791](https://github.com/MetaMask/snaps-skunkworks.git/pull/1791))
+- Update LavaMoat ([#1754](https://github.com/MetaMask/snaps-skunkworks.git/pull/1754))
+
 ## [2.0.0]
 ### Changed
 - Initial stable release from main branch ([#1757](https://github.com/MetaMask/snaps/pull/1757))
@@ -20,7 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-browserify-plugin@2.0.0...HEAD
-[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-browserify-plugin@0.37.3-flask.1...@metamask/snaps-browserify-plugin@2.0.0
-[0.37.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-browserify-plugin@0.37.2-flask.1...@metamask/snaps-browserify-plugin@0.37.3-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/snaps-browserify-plugin@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@3.0.0...HEAD
+[3.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@2.0.0...@metamask/snaps-browserify-plugin@3.0.0
+[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@0.37.3-flask.1...@metamask/snaps-browserify-plugin@2.0.0
+[0.37.3-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@0.37.2-flask.1...@metamask/snaps-browserify-plugin@0.37.3-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/snaps-browserify-plugin@0.37.2-flask.1
