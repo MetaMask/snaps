@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0]
+### Changed
+- **BREAKING:** Bump minimum Node.js version to `^18.16.0` ([#1741](https://github.com/MetaMask/snaps/pull/1741))
+
 ## [1.1.0]
 ### Added
 - Add name lookup example snap ([#1768](https://github.com/MetaMask/snaps/pull/1768))
@@ -43,7 +47,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@1.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.0.0...HEAD
+[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@1.1.0...@metamask/test-snaps@2.0.0
 [1.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@1.0.0...@metamask/test-snaps@1.1.0
 [1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@0.39.1-flask.1...@metamask/test-snaps@1.0.0
 [0.39.1-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@0.39.0-flask.1...@metamask/test-snaps@0.39.1-flask.1

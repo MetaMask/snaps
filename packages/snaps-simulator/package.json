@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-simulator",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A simulator for MetaMask Snaps, to be used for testing and development",
   "homepage": "https://github.com/MetaMask/snaps#readme",
   "bugs": {

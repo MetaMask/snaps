@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0]
+### Changed
+- **BREAKING:** Bump minimum Node.js version to `^18.16.0` ([#1741](https://github.com/MetaMask/snaps/pull/1741))
+
 ## [1.0.0]
 ### Changed
 - Initial stable release from main branch ([#1757](https://github.com/MetaMask/snaps/pull/1757))
@@ -14,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add example snap for `snap_getLocale` ([#1684](https://github.com/MetaMask/snaps/pull/1684))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/get-locale-example-snap@1.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/get-locale-example-snap@2.0.0...HEAD
+[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/get-locale-example-snap@1.0.0...@metamask/get-locale-example-snap@2.0.0
 [1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/get-locale-example-snap@0.38.1-flask.1...@metamask/get-locale-example-snap@1.0.0
 [0.38.1-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/get-locale-example-snap@0.38.1-flask.1
