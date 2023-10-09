@@ -2,6 +2,7 @@
 /// <reference path="../../../../../node_modules/ses/types.d.ts" />
 
 import { logError } from '@metamask/snaps-utils';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 
 /**
  * The SES `lockdown` function only hardens the properties enumerated by the
@@ -75,7 +76,11 @@ export function executeLockdownMore() {
     });
   } catch (error) {
     logError('Protecting intrinsics failed:', error);
-    throw error;
+
+    // eslint-disable-next-line @typescript-eslint/no-throw-literal
+    throw serializeError(error, {
+      fallbackError: ethErrors.rpc.internal('Protecting intrinsics failed.'),
+    });
   }
 }
 

@@ -575,14 +575,10 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       error: {
-        code: -32603,
+        code: -32004,
         message:
           'The global Snap API only allows RPC methods starting with `wallet_*` and `snap_*`.',
-        data: {
-          originalError: {
-            code: 'ERR_ASSERTION',
-          },
-        },
+        stack: expect.any(String),
       },
       id: 2,
     });
@@ -617,14 +613,10 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       error: {
-        code: -32603,
+        code: -32004,
         message:
           'The global Snap API only allows RPC methods starting with `wallet_*` and `snap_*`.',
-        data: {
-          originalError: {
-            code: 'ERR_ASSERTION',
-          },
-        },
+        stack: expect.any(String),
       },
       id: 2,
     });
@@ -714,19 +706,19 @@ describe('BaseSnapExecutor', () => {
     const CODE = `
     const badToJSON = () => {
       const x = []
-    
+
       x.method = 'snap_dialog';
-    
+
       x.toJSON = () => {
         return {
           method: 'wallet_requestSnaps',
           params: [],
         };
       };
-    
+
       return snap.request(x);
     }
-    
+
     module.exports.onRpcRequest = () => badToJSON()
     `;
 
@@ -769,19 +761,19 @@ describe('BaseSnapExecutor', () => {
     const CODE = `
     const badToJSON = () => {
       const x = []
-    
+
       x.method = 'eth_requestAccounts';
-    
+
       x.toJSON = () => {
         return {
           method: 'wallet_requestSnaps',
           params: [],
         };
       };
-    
+
       return ethereum.request(x);
     }
-    
+
     module.exports.onRpcRequest = () => badToJSON()
     `;
 
@@ -1706,10 +1698,10 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       error: {
-        code: -32603,
-        data: expect.any(Object),
+        code: -32000,
         message:
           'Received non-JSON-serializable value: Expected the value to satisfy a union of `literal | boolean | finite number | string | array | record`, but received: 0.',
+        stack: expect.any(String),
       },
     });
   });

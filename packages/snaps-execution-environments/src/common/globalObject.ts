@@ -7,7 +7,7 @@ enum GlobalObjectNames {
   global = 'global',
   self = 'self',
   window = 'window',
-  /* eslint-enavle @typescript-eslint/naming-convention */
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 let _rootRealmGlobal: typeof globalThis;
