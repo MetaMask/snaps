@@ -378,7 +378,7 @@ export class BaseSnapExecutor {
           error,
         )}`,
         data: {
-          error: serializeError(error, {
+          cause: serializeError(error, {
             fallbackError,
           }),
         },
