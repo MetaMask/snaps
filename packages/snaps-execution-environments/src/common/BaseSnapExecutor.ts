@@ -164,7 +164,7 @@ export class BaseSnapExecutor {
         try {
           return getSafeJson(result);
         } catch (error) {
-          throw ethErrors.rpc.invalidInput(
+          throw ethErrors.rpc.internal(
             `Received non-JSON-serializable value: ${error.message.replace(
               /^Assertion failed: /u,
               '',

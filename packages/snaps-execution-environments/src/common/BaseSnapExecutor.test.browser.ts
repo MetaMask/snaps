@@ -1698,7 +1698,7 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       error: {
-        code: -32000,
+        code: -32603,
         message:
           'Received non-JSON-serializable value: Expected the value to satisfy a union of `literal | boolean | finite number | string | array | record`, but received: 0.',
         stack: expect.any(String),
