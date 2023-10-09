@@ -1,3 +1,4 @@
+import { rpcErrors } from '@metamask/rpc-errors';
 import { ChainIdStruct, HandlerType } from '@metamask/snaps-utils';
 import type { Json, JsonRpcSuccess } from '@metamask/utils';
 import {
@@ -7,7 +8,6 @@ import {
   JsonRpcSuccessStruct,
   JsonStruct,
 } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 import type { Infer } from 'superstruct';
 import {
   array,
@@ -133,7 +133,7 @@ export function assertIsOnTransactionRequestArguments(
     value,
     OnTransactionRequestArgumentsStruct,
     'Invalid request params',
-    ethErrors.rpc.invalidParams,
+    rpcErrors.invalidParams,
   );
 }
 
@@ -176,7 +176,7 @@ export function assertIsOnNameLookupRequestArguments(
     value,
     OnNameLookupRequestArgumentsStruct,
     'Invalid request params',
-    ethErrors.rpc.invalidParams,
+    rpcErrors.invalidParams,
   );
 }
 

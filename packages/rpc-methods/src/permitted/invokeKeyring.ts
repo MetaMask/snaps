@@ -1,3 +1,4 @@
+import { rpcErrors } from '@metamask/rpc-errors';
 import type { Snap } from '@metamask/snaps-utils';
 import {
   HandlerType,
@@ -12,7 +13,6 @@ import type {
   JsonRpcRequest,
 } from '@metamask/types';
 import { hasProperty, type Json } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 
 import type { MethodHooksObject } from '../utils';
 import type { InvokeSnapSugarArgs } from './invokeSnapSugar';
@@ -95,7 +95,7 @@ async function invokeKeyringImplementation(
 
   if (!origin || !hasPermission(origin, WALLET_SNAP_PERMISSION_KEY)) {
     return end(
-      ethErrors.rpc.invalidRequest({
+      rpcErrors.invalidRequest({
         message: `The snap "${snapId}" is not connected to "${origin}". Please connect before invoking the snap.`,
       }),
     );
@@ -103,7 +103,7 @@ async function invokeKeyringImplementation(
 
   if (!getSnap(snapId)) {
     return end(
-      ethErrors.rpc.invalidRequest({
+      rpcErrors.invalidRequest({
         message: `The snap "${snapId}" is not installed. Please install it first, before invoking the snap.`,
       }),
     );
@@ -111,7 +111,7 @@ async function invokeKeyringImplementation(
 
   if (!hasProperty(request, 'method') || typeof request.method !== 'string') {
     return end(
-      ethErrors.rpc.invalidRequest({
+      rpcErrors.invalidRequest({
         message: 'The request must have a method.',
       }),
     );
@@ -120,7 +120,7 @@ async function invokeKeyringImplementation(
   const allowedMethods = getAllowedKeyringMethods(origin);
   if (!allowedMethods.includes(request.method)) {
     return end(
-      ethErrors.rpc.invalidRequest({
+      rpcErrors.invalidRequest({
         message: `The origin "${origin}" is not allowed to invoke the method "${request.method}".`,
       }),
     );

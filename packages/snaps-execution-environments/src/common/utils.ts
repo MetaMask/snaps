@@ -133,7 +133,7 @@ export function assertSnapOutboundRequest(args: RequestArguments) {
     String.prototype.startsWith.call(args.method, 'wallet_') ||
       String.prototype.startsWith.call(args.method, 'snap_'),
     'The global Snap API only allows RPC methods starting with `wallet_*` and `snap_*`.',
-    ethErrors.rpc.methodNotSupported,
+    rpcErrors.methodNotSupported,
   );
   assert(
     !BLOCKED_RPC_METHODS.includes(args.method),
@@ -147,7 +147,7 @@ export function assertSnapOutboundRequest(args: RequestArguments) {
     args,
     JsonStruct,
     'Provided value is not JSON-RPC compatible',
-    ethErrors.rpc.invalidParams,
+    rpcErrors.invalidParams,
   );
 }
 
@@ -178,7 +178,7 @@ export function assertEthereumOutboundRequest(args: RequestArguments) {
     args,
     JsonStruct,
     'Provided value is not JSON-RPC compatible',
-    ethErrors.rpc.invalidParams,
+    rpcErrors.invalidParams,
   );
 }
 
