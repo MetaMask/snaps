@@ -317,6 +317,7 @@ describe('BaseSnapExecutor', () => {
         code: -32601,
         message: 'The method does not exist / is not available.',
         data: {
+          cause: null,
           method: 'snap_confirm',
         },
         stack: expect.any(String),
@@ -357,6 +358,7 @@ describe('BaseSnapExecutor', () => {
         code: -32601,
         message: 'The method does not exist / is not available.',
         data: {
+          cause: null,
           method: 'wallet_requestSnaps',
         },
         stack: expect.any(String),
@@ -654,6 +656,7 @@ describe('BaseSnapExecutor', () => {
         code: -32601,
         message: 'The method does not exist / is not available.',
         data: {
+          cause: null,
           method: 'wallet_requestSnaps',
         },
         stack: expect.any(String),
@@ -694,6 +697,7 @@ describe('BaseSnapExecutor', () => {
         code: -32601,
         message: 'The method does not exist / is not available.',
         data: {
+          cause: null,
           method: 'snap_dialog',
         },
         stack: expect.anything(),
@@ -749,6 +753,7 @@ describe('BaseSnapExecutor', () => {
         code: -32601,
         message: 'The method does not exist / is not available.',
         data: {
+          cause: null,
           method: 'wallet_requestSnaps',
         },
         stack: expect.any(String),
@@ -804,6 +809,7 @@ describe('BaseSnapExecutor', () => {
         code: -32601,
         message: 'The method does not exist / is not available.',
         data: {
+          cause: null,
           method: 'wallet_requestSnaps',
         },
         stack: expect.any(String),
