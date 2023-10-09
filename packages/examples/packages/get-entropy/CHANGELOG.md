@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.0.0]
 ### Changed
 - **BREAKING:** Bump minimum Node.js version to `^18.16.0` ([#1741](https://github.com/MetaMask/snaps/pull/1741))
+
 ## [1.0.0]
 ### Changed
 - Initial stable release from main branch ([#1757](https://github.com/MetaMask/snaps/pull/1757))
