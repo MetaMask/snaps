@@ -141,7 +141,7 @@ export class BaseSnapExecutor {
         assert(
           !required || handler !== undefined,
           `No ${handlerType} handler exported for snap "${target}`,
-          ethErrors.rpc.methodNotSupported,
+          rpcErrors.methodNotSupported,
         );
 
         // Certain handlers are not required. If they are not exported, we
@@ -164,7 +164,7 @@ export class BaseSnapExecutor {
         try {
           return getSafeJson(result);
         } catch (error) {
-          throw ethErrors.rpc.internal(
+          throw rpcErrors.internal(
             `Received non-JSON-serializable value: ${error.message.replace(
               /^Assertion failed: /u,
               '',
@@ -199,7 +199,7 @@ export class BaseSnapExecutor {
 
   private async onCommandRequest(message: JsonRpcRequest) {
     if (!isJsonRpcRequest(message)) {
-      throw ethErrors.rpc.invalidRequest({
+      throw rpcErrors.invalidRequest({
         message: 'Command stream received a non-JSON-RPC request.',
         data: message,
       });
@@ -255,7 +255,7 @@ export class BaseSnapExecutor {
 
   protected notify(requestObject: Omit<JsonRpcNotification, 'jsonrpc'>) {
     if (!isValidJson(requestObject) || !isObject(requestObject)) {
-      throw ethErrors.rpc.internal(
+      throw rpcErrors.internal(
         'JSON-RPC notifications must be JSON serializable objects',
       );
     }
@@ -373,7 +373,7 @@ export class BaseSnapExecutor {
       });
     } catch (error) {
       this.removeSnap(snapId);
-      throw ethErrors.rpc.internal({
+      throw rpcErrors.internal({
         message: `Error while running snap '${snapId}': ${getErrorMessage(
           error,
         )}`,
@@ -509,7 +509,7 @@ export class BaseSnapExecutor {
   ): Promise<Result> {
     const data = this.snapData.get(snapId);
     if (data === undefined) {
-      throw ethErrors.rpc.internal(
+      throw rpcErrors.internal(
         `Tried to execute in context of unknown snap: "${snapId}".`,
       );
     }

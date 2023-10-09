@@ -1,9 +1,9 @@
 import type { StreamProvider } from '@metamask/providers';
+import { rpcErrors } from '@metamask/rpc-errors';
 import type { SnapsGlobalObject } from '@metamask/rpc-methods';
 import type { SnapId } from '@metamask/snaps-utils';
 import { logWarning } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 
 import { rootRealmGlobal } from '../globalObject';
 import type { EndowmentFactoryOptions } from './commonEndowmentFactory';
@@ -102,7 +102,7 @@ export function createEndowments(
       } else {
         // If we get to this point, we've been passed an endowment that doesn't
         // exist in our current environment.
-        throw ethErrors.rpc.internal(`Unknown endowment: "${endowmentName}".`);
+        throw rpcErrors.internal(`Unknown endowment: "${endowmentName}".`);
       }
       return { allEndowments, teardowns };
     },

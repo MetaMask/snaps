@@ -1,4 +1,4 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 
 import { rootRealmGlobal } from './globalObject';
 
@@ -29,7 +29,7 @@ export function addEventListener(
     return rootRealmGlobal.process.on(event, listener);
   }
 
-  throw ethErrors.rpc.internal('Platform agnostic addEventListener failed.');
+  throw rpcErrors.internal('Platform agnostic addEventListener failed.');
 }
 
 /**
