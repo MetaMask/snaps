@@ -31,7 +31,7 @@ describe('onRpcRequest', () => {
         method: 'getFile',
       });
 
-      expect(await response).toRespondWith(JSON.stringify({ foo: 'bar' }));
+      expect(await response).toRespondWith({ foo: 'bar' });
 
       await close();
     });

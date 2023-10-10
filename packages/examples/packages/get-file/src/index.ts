@@ -24,7 +24,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         params: { path: './src/foo.json' },
       });
       const bytes = hexToBytes(fileInHexadecimal);
-      return bytesToString(bytes);
+      return JSON.parse(bytesToString(bytes));
     }
 
     default:
