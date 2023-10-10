@@ -390,7 +390,8 @@ export abstract class AbstractExecutionService<WorkerType>
       const error = new ExecutionEnvironmentError(response.error.message);
       if (
         isObject(response.error.data) &&
-        hasProperty(response.error.data, 'cause')
+        hasProperty(response.error.data, 'cause') &&
+        response.error.data.cause !== null
       ) {
         error.cause = response.error.data.cause;
       }
