@@ -1,7 +1,7 @@
 import { assertIsSnapIcon } from './icon';
 import { assertIsSnapManifest } from './manifest/validation';
 import { validateSnapShasum } from './snaps';
-import type { SnapFiles } from './types';
+import type { FetchedSnapFiles } from './types';
 
 /**
  * Validates the files contained in a fetched snap.
@@ -9,9 +9,7 @@ import type { SnapFiles } from './types';
  * @param files - All potentially included files in a fetched snap.
  * @throws If any of the files are considered invalid.
  */
-export function validateFetchedSnap(
-  files: Pick<SnapFiles, 'manifest' | 'sourceCode' | 'svgIcon'>,
-): void {
+export function validateFetchedSnap(files: FetchedSnapFiles): void {
   assertIsSnapManifest(files.manifest.result);
   validateSnapShasum(files);
 

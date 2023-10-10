@@ -102,6 +102,14 @@ export type SnapFiles = {
 };
 
 /**
+ * A subset of snap files extracted from a fetched snap.
+ */
+export type FetchedSnapFiles = Pick<
+  SnapFiles,
+  'manifest' | 'sourceCode' | 'svgIcon'
+>;
+
+/**
  * The possible prefixes for snap ids.
  */
 /* eslint-disable @typescript-eslint/naming-convention */

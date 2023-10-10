@@ -26,7 +26,7 @@ import validateNPMPackage from 'validate-npm-package-name';
 import { SnapCaveatType } from './caveats';
 import { checksumFiles } from './checksum';
 import type { SnapManifest, SnapPermissions } from './manifest/validation';
-import type { SnapFiles, SnapId, SnapsPermissionRequest } from './types';
+import type { FetchedSnapFiles, SnapId, SnapsPermissionRequest } from './types';
 import { SnapIdPrefixes, SnapValidationFailureReason, uri } from './types';
 import type { VirtualFile } from './virtual-file';
 
@@ -196,9 +196,7 @@ function getChecksummableManifest(
  * @param files - All required Snap files to be included in the checksum.
  * @returns The Base64-encoded SHA-256 digest of the source code.
  */
-export function getSnapChecksum(
-  files: Pick<SnapFiles, 'manifest' | 'sourceCode' | 'svgIcon'>,
-): string {
+export function getSnapChecksum(files: FetchedSnapFiles): string {
   const { manifest, sourceCode, svgIcon } = files;
   const all = [getChecksummableManifest(manifest), sourceCode, svgIcon].filter(
     (file) => file !== undefined,
@@ -214,7 +212,7 @@ export function getSnapChecksum(
  * @param errorMessage - The error message to throw if validation fails.
  */
 export function validateSnapShasum(
-  files: Pick<SnapFiles, 'manifest' | 'sourceCode' | 'svgIcon'>,
+  files: FetchedSnapFiles,
   errorMessage = 'Invalid Snap manifest: manifest shasum does not match computed shasum.',
 ): void {
   if (files.manifest.result.source.shasum !== getSnapChecksum(files)) {
