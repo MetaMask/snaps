@@ -1,0 +1,28 @@
+{
+  "version": "2.0.0",
+  "description": "MetaMask example snap demonstrating the use of `snap_getFile`.",
+  "proposedName": "Get File Example Snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps.git"
+  },
+  "source": {
+    "shasum": "Zp6oigm17JiFGb1N0+lekZq4HrjqWQUsutq92PhDGwM=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "@metamask/get-file-example-snap",
+        "registry": "https://registry.npmjs.org"
+      }
+    },
+    "files": [
+      "./src/foo.json"
+    ]
+  },
+  "initialPermissions": {
+    "endowment:rpc": {
+      "dapps": true
+    }
+  },
+  "manifestVersion": "0.1"
+}
