@@ -88,6 +88,7 @@ export type UnvalidatedSnapFiles = {
   packageJson?: VirtualFile<Json>;
   sourceCode?: VirtualFile;
   svgIcon?: VirtualFile;
+  auxiliaryFiles: VirtualFile[];
 };
 
 /**

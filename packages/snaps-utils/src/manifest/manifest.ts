@@ -91,6 +91,8 @@ export async function checkManifest(
       sourceCode,
     ),
     svgIcon: await getSnapIcon(basePath, unvalidatedManifest),
+    auxiliaryFiles:
+      (await getSnapAuxiliaryFiles(basePath, unvalidatedManifest)) ?? [],
   };
 
   let manifest: VirtualFile<SnapManifest> | undefined;
@@ -319,6 +321,39 @@ export async function getSnapIcon(
 }
 
 /**
+ * Given an unvalidated Snap manifest, attempts to extract the auxiliary files
+ * and read them.
+ *
+ * @param basePath - The path to the folder with the manifest files.
+ * @param manifest - The unvalidated Snap manifest file contents.
+ * @returns The contents of the icon, if any.
+ */
+export async function getSnapAuxiliaryFiles(
+  basePath: string,
+  manifest: Json,
+): Promise<VirtualFile[] | undefined> {
+  if (!isPlainObject(manifest)) {
+    return undefined;
+  }
+
+  const filePaths = (manifest as Partial<SnapManifest>).source?.files;
+
+  if (!filePaths) {
+    return undefined;
+  }
+
+  try {
+    return await Promise.all(
+      filePaths.map(async (filePath) =>
+        readVirtualFile(pathUtils.join(basePath, filePath), 'utf8'),
+      ),
+    );
+  } catch (error) {
+    throw new Error(`Failed to read snap files: ${error.message}`);
+  }
+}
+
+/**
  * Sorts the given manifest in our preferred sort order and removes the
  * `repository` field if it is falsy (it may be `null`).
  *
@@ -354,12 +389,14 @@ export function getWritableManifest(manifest: SnapManifest): SnapManifest {
  * @param snapFiles.packageJson - The npm Snap's `package.json`.
  * @param snapFiles.sourceCode - The Snap's source code.
  * @param snapFiles.svgIcon - The Snap's optional icon.
+ * @param snapFiles.auxiliaryFiles - Any auxiliary files required by the snap at runtime.
  */
 export function validateNpmSnapManifest({
   manifest,
   packageJson,
   sourceCode,
   svgIcon,
+  auxiliaryFiles,
 }: SnapFiles) {
   const packageJsonName = packageJson.result.name;
   const packageJsonVersion = packageJson.result.version;
@@ -396,7 +433,7 @@ export function validateNpmSnapManifest({
   }
 
   validateSnapShasum(
-    { manifest, sourceCode, svgIcon },
+    { manifest, sourceCode, svgIcon, auxiliaryFiles },
     `"${NpmSnapFileNames.Manifest}" "shasum" field does not match computed shasum.`,
   );
 }
