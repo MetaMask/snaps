@@ -17,7 +17,7 @@ export const onNameLookup: OnNameLookupHandler = async (request) => {
   console.log(`Resolving for CAIP-2 chainId of: ${chainId}`);
 
   if (address) {
-    const resolvedDomain = 'example.domain';
+    const resolvedDomain = 'test.domain';
     return { resolvedDomain };
   }
 
