@@ -9,7 +9,12 @@ import type {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
-import { Duration, isJsonRpcNotification, isObject } from '@metamask/utils';
+import {
+  Duration,
+  hasProperty,
+  isJsonRpcNotification,
+  isObject,
+} from '@metamask/utils';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import { pipeline } from 'stream';
@@ -46,6 +51,10 @@ export type Job<WorkerType> = {
   rpcEngine: JsonRpcEngine;
   worker: WorkerType;
 };
+
+export class ExecutionEnvironmentError extends Error {
+  cause?: Json;
+}
 
 export abstract class AbstractExecutionService<WorkerType>
   implements ExecutionService
@@ -373,12 +382,22 @@ export abstract class AbstractExecutionService<WorkerType>
     }
 
     log('Parent: Sending Command', message);
-    const response: PendingJsonRpcResponse<Json> =
-      // eslint-disable-next-line @typescript-eslint/await-thenable
-      await job.rpcEngine.handle(message);
+    const response: PendingJsonRpcResponse<Json> = await job.rpcEngine.handle(
+      message,
+    );
+
     if (response.error) {
-      throw new Error(response.error.message);
+      const error = new ExecutionEnvironmentError(response.error.message);
+      if (
+        isObject(response.error.data) &&
+        hasProperty(response.error.data, 'cause')
+      ) {
+        error.cause = response.error.data.cause;
+      }
+
+      throw error;
     }
+
     return response.result;
   }
 

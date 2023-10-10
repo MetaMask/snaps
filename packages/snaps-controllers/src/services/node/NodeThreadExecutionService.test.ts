@@ -2,6 +2,7 @@ import type { SnapId } from '@metamask/snaps-utils';
 import { HandlerType } from '@metamask/snaps-utils';
 
 import { createService, MOCK_BLOCK_NUMBER } from '../../test-utils';
+import { ExecutionEnvironmentError } from '../AbstractExecutionService';
 import type { SnapErrorJson } from '../ExecutionService';
 import { NodeThreadExecutionService } from './NodeThreadExecutionService';
 
@@ -47,7 +48,7 @@ describe('NodeThreadExecutionService', () => {
   });
 
   it('can handle errors in request handler', async () => {
-    expect.assertions(1);
+    expect.assertions(2);
     const { service } = createService(NodeThreadExecutionService);
     const snapId = 'TestSnap';
     await service.executeSnap({
@@ -58,8 +59,8 @@ describe('NodeThreadExecutionService', () => {
       endowments: [],
     });
 
-    await expect(
-      service.handleRpcRequest(snapId, {
+    const result = await service
+      .handleRpcRequest(snapId, {
         origin: 'fooOrigin',
         handler: ON_RPC_REQUEST,
         request: {
@@ -68,8 +69,17 @@ describe('NodeThreadExecutionService', () => {
           params: {},
           id: 1,
         },
-      }),
-    ).rejects.toThrow('foobar');
+      })
+      .catch((error) => error);
+
+    expect(result).toBeInstanceOf(ExecutionEnvironmentError);
+
+    // eslint-disable-next-line jest/prefer-strict-equal
+    expect((result as ExecutionEnvironmentError).cause).toEqual({
+      message: 'foobar',
+      stack: expect.any(String),
+    });
+
     await service.terminateAllSnaps();
   });
 
@@ -126,9 +136,9 @@ describe('NodeThreadExecutionService', () => {
       code: -32603,
       data: {
         snapId: 'TestSnap',
-        stack: expect.any(String),
+        stack: expect.stringContaining('Error: random error inside'),
       },
-      message: 'random error inside',
+      message: 'Execution Environment Error',
     });
 
     await service.terminateAllSnaps();
