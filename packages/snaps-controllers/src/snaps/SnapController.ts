@@ -203,9 +203,6 @@ type StoredSnaps = Record<ValidatedSnapId, Snap>;
 export type SnapControllerState = {
   snaps: StoredSnaps;
   snapStates: Record<ValidatedSnapId, string | null>;
-  snapErrors: {
-    [internalID: string]: SnapError & { internalID: string };
-  };
 };
 
 export type PersistedSnapControllerState = SnapControllerState & {
@@ -326,11 +323,6 @@ export type InstallSnaps = {
   handler: SnapController['installSnaps'];
 };
 
-export type RemoveSnapError = {
-  type: `${typeof controllerName}:removeSnapError`;
-  handler: SnapController['removeSnapError'];
-};
-
 export type GetRegistryMetadata = {
   type: `${typeof controllerName}:getRegistryMetadata`;
   handler: SnapController['getRegistryMetadata'];
@@ -359,7 +351,6 @@ export type SnapControllerActions =
   | RemoveSnap
   | GetPermittedSnaps
   | InstallSnaps
-  | RemoveSnapError
   | GetAllSnaps
   | IncrementActiveReferences
   | DecrementActiveReferences
@@ -608,7 +599,6 @@ type SetSnapArgs = Omit<AddSnapArgs, 'location' | 'versionRange'> & {
 };
 
 const defaultState: SnapControllerState = {
-  snapErrors: {},
   snaps: {},
   snapStates: {},
 };
@@ -701,10 +691,6 @@ export class SnapController extends BaseController<
     super({
       messenger,
       metadata: {
-        snapErrors: {
-          persist: false,
-          anonymous: false,
-        },
         snapStates: {
           persist: true,
           anonymous: false,
@@ -933,11 +919,6 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:removeSnapError`,
-      (...args) => this.removeSnapError(...args),
-    );
-
-    this.messagingSystem.registerActionHandler(
       `${controllerName}:getAll`,
       (...args) => this.getAllSnaps(...args),
     );
@@ -1111,13 +1092,13 @@ export class SnapController extends BaseController<
     );
   }
 
-  _onUnhandledSnapError(snapId: SnapId, error: SnapErrorJson) {
-    this.stopSnap(snapId as ValidatedSnapId, SnapStatusEvents.Crash)
-      .then(() => this.addSnapError(error))
-      .catch((stopSnapError) => {
+  _onUnhandledSnapError(snapId: SnapId, _error: SnapErrorJson) {
+    this.stopSnap(snapId as ValidatedSnapId, SnapStatusEvents.Crash).catch(
+      (stopSnapError) => {
         // TODO: Decide how to handle errors.
         logError(stopSnapError);
-      });
+      },
+    );
   }
 
   _onOutboundRequest(snapId: SnapId) {
@@ -1377,41 +1358,6 @@ export class SnapController extends BaseController<
   clearSnapState(snapId: ValidatedSnapId) {
     this.update((state) => {
       state.snapStates[snapId] = null;
-    });
-  }
-
-  /**
-   * Adds error from a snap to the SnapController state.
-   *
-   * @param snapError - The error to store on the SnapController.
-   */
-  addSnapError(snapError: SnapError): void {
-    this.update((state: any) => {
-      const id = nanoid();
-      state.snapErrors[id] = {
-        ...snapError,
-        internalID: id,
-      };
-    });
-  }
-
-  /**
-   * Removes an error by internalID from the SnapControllers state.
-   *
-   * @param internalID - The internal error ID to remove on the SnapController.
-   */
-  removeSnapError(internalID: string) {
-    this.update((state: any) => {
-      delete state.snapErrors[internalID];
-    });
-  }
-
-  /**
-   * Clears all errors from the SnapControllers state.
-   */
-  clearSnapErrors() {
-    this.update((state: any) => {
-      state.snapErrors = {};
     });
   }
 

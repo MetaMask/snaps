@@ -392,7 +392,6 @@ export const getSnapControllerOptions = (
 
   options.state = {
     snaps: {},
-    snapErrors: {},
     snapStates: {},
     ...options.state,
   };

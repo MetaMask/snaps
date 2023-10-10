@@ -312,58 +312,6 @@ describe('SnapController', () => {
     secondSnapController.destroy();
   });
 
-  it(`adds errors to the controller's state`, () => {
-    const rootMessenger = getControllerMessenger();
-    const executionEnvironmentStub = new ExecutionEnvironmentStub(
-      getNodeEESMessenger(rootMessenger),
-    ) as unknown as NodeThreadExecutionService;
-
-    const [snapController] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions({ rootMessenger }),
-      executionEnvironmentStub,
-    );
-
-    snapController.addSnapError({
-      code: 1,
-      data: {},
-      message: 'error happened',
-    });
-
-    const arrayOfErrors = Object.entries(snapController.state.snapErrors);
-
-    expect(arrayOfErrors.length > 0).toBe(true);
-
-    snapController.removeSnapError(arrayOfErrors[0][0]);
-
-    expect(Object.entries(snapController.state.snapErrors)).toHaveLength(0);
-
-    snapController.addSnapError({
-      code: 1,
-      data: {},
-      message: 'error happened',
-    });
-
-    snapController.addSnapError({
-      code: 2,
-      data: {},
-      message: 'error 2',
-    });
-
-    snapController.removeSnapError(
-      Object.entries(snapController.state.snapErrors)[0][0],
-    );
-
-    expect(Object.entries(snapController.state.snapErrors)).toHaveLength(1);
-    expect(Object.entries(snapController.state.snapErrors)[0][1]).toStrictEqual(
-      expect.objectContaining({
-        code: 2,
-        data: {},
-        message: 'error 2',
-      }),
-    );
-    snapController.destroy();
-  });
-
   it('handles an error event on the controller messenger', async () => {
     const options = getSnapControllerWithEESOptions({
       state: {
@@ -5667,27 +5615,6 @@ describe('SnapController', () => {
       await messenger.call('SnapController:install', 'foo', snaps);
       expect(installSnapsSpy).toHaveBeenCalledTimes(1);
       expect(installSnapsSpy).toHaveBeenCalledWith('foo', snaps);
-
-      snapController.destroy();
-    });
-  });
-
-  describe('SnapController:removeSnapError', () => {
-    it('calls SnapController.removeSnapError()', () => {
-      const messenger = getSnapControllerMessenger();
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          messenger,
-          state: {
-            snapErrors: {
-              foo: { internalID: 'foo', message: 'bar', code: -1 },
-            },
-          },
-        }),
-      );
-
-      messenger.call('SnapController:removeSnapError', 'foo');
-      expect(snapController.state.snapErrors.foo).toBeUndefined();
 
       snapController.destroy();
     });
