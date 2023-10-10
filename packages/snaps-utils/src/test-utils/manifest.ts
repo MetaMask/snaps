@@ -13,6 +13,7 @@ type GetSnapManifestOptions = Partial<MakeSemVer<SnapManifest>> & {
   packageName?: string;
   registry?: string;
   iconPath?: string;
+  files?: string[];
 };
 
 type GetPackageJsonOptions = Partial<MakeSemVer<NpmSnapPackageJson>>;
@@ -97,6 +98,7 @@ export const DEFAULT_SNAP_SHASUM = getSnapChecksum({
     result: SHASUM_MANIFEST,
     path: DEFAULT_MANIFEST_PATH,
   }),
+  auxiliaryFiles: [],
 });
 
 /**
@@ -114,6 +116,7 @@ export const DEFAULT_SNAP_SHASUM = getSnapChecksum({
  * @param manifest.packageName - The name of the snap.
  * @param manifest.repository - The repository of the snap.
  * @param manifest.iconPath - The path to the icon of the snap.
+ * @param manifest.files - Auxiliary files loaded at runtime by the snap.
  * @returns The snap manifest.
  */
 export const getSnapManifest = ({
@@ -126,6 +129,7 @@ export const getSnapManifest = ({
   packageName = MOCK_SNAP_NAME,
   repository = getDefaultRepository(),
   iconPath = DEFAULT_ICON_PATH,
+  files = undefined,
 }: GetSnapManifestOptions = {}): SnapManifest => {
   return {
     version: version as SemVerVersion,
@@ -142,6 +146,7 @@ export const getSnapManifest = ({
           iconPath,
         } as const,
       },
+      files,
     },
     initialPermissions,
     manifestVersion: '0.1' as const,
@@ -182,12 +187,14 @@ export const getSnapFiles = ({
   packageJson = getPackageJson(),
   sourceCode = DEFAULT_SNAP_BUNDLE,
   svgIcon = DEFAULT_SNAP_ICON,
+  auxiliaryFiles = [],
   updateChecksum = true,
 }: {
   manifest?: SnapManifest | VirtualFile<SnapManifest>;
   sourceCode?: string | VirtualFile;
   packageJson?: NpmSnapPackageJson;
   svgIcon?: string | VirtualFile;
+  auxiliaryFiles?: VirtualFile[];
   updateChecksum?: boolean;
 } = {}): SnapFiles => {
   const files = {
@@ -220,6 +227,7 @@ export const getSnapFiles = ({
             path: DEFAULT_ICON_PATH,
           })
       : undefined,
+    auxiliaryFiles,
   };
   if (updateChecksum) {
     files.manifest.result.source.shasum = getSnapChecksum(files);

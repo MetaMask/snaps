@@ -340,7 +340,7 @@ export type RevokeDynamicPermissions = {
 };
 
 export type GetSnapFile = {
-  type: `${typeof controllerName}:getSnapFile`;
+  type: `${typeof controllerName}:getFile`;
   handler: SnapController['getSnapFile'];
 };
 
@@ -953,6 +953,11 @@ export class SnapController extends BaseController<
     this.messagingSystem.registerActionHandler(
       `${controllerName}:revokeDynamicPermissions`,
       (...args) => this.revokeDynamicSnapPermissions(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:getFile`,
+      (...args) => this.getSnapFile(...args),
     );
   }
 
@@ -2299,11 +2304,13 @@ export class SnapController extends BaseController<
       const { iconPath } = manifest.result.source.location.npm;
       const svgIcon = iconPath ? await location.fetch(iconPath) : undefined;
 
-      const auxiliaryFiles = await Promise.all(
-        manifest.result.source.files.map(async (filePath) =>
-          location.fetch(filePath),
-        ),
-      );
+      const auxiliaryFiles = manifest.result.source.files
+        ? await Promise.all(
+            manifest.result.source.files.map(async (filePath) =>
+              location.fetch(filePath),
+            ),
+          )
+        : [];
 
       const files = { manifest, sourceCode, svgIcon, auxiliaryFiles };
 

@@ -35,7 +35,7 @@ import {
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 import type { SemVerRange, SemVerVersion } from '@metamask/utils';
-import { AssertionError } from '@metamask/utils';
+import { AssertionError, stringToBytes } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
 import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
@@ -5747,6 +5747,72 @@ describe('SnapController', () => {
           ['snap_notify'],
         ),
       ).toThrow('Non-dynamic permissions cannot be revoked');
+
+      snapController.destroy();
+    });
+  });
+
+  describe('SnapController:getFile', () => {
+    it('calls SnapController.getSnapFile()', async () => {
+      const auxiliaryFile = new VirtualFile({
+        path: 'src/foo.json',
+        value: stringToBytes('{ "foo" : "bar" }'),
+      });
+      const { manifest, sourceCode, svgIcon, auxiliaryFiles } = getSnapFiles({
+        manifest: getSnapManifest({ files: ['./src/foo.json'] }),
+        auxiliaryFiles: [auxiliaryFile],
+      });
+
+      const messenger = getSnapControllerMessenger();
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          detectSnapLocation: loopbackDetect({
+            manifest,
+            files: [sourceCode, svgIcon as VirtualFile, ...auxiliaryFiles],
+          }),
+        }),
+      );
+
+      // By installing we also indirectly test that the unpacking of the file works.
+      await snapController.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: {},
+      });
+
+      expect(
+        await messenger.call(
+          'SnapController:getFile',
+          MOCK_SNAP_ID,
+          './src/foo.json',
+        ),
+      ).toStrictEqual(auxiliaryFile.toString('hex'));
+
+      snapController.destroy();
+    });
+
+    it('returns null if file does not exist', async () => {
+      const messenger = getSnapControllerMessenger();
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          detectSnapLocation: loopbackDetect(),
+        }),
+      );
+
+      // By installing we also indirectly test that the unpacking of the file works.
+      await snapController.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: {},
+      });
+
+      expect(
+        await messenger.call(
+          'SnapController:getFile',
+          MOCK_SNAP_ID,
+          './foo.json',
+        ),
+      ).toBeNull();
 
       snapController.destroy();
     });

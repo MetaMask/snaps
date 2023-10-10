@@ -61,6 +61,7 @@ export const getSnapObject = ({
   versionHistory = [
     { origin: MOCK_ORIGIN, version: '1.0.0', date: expect.any(Number) },
   ],
+  auxiliaryFiles = [],
 }: GetSnapObjectOptions = {}): Snap => {
   return {
     blocked,
@@ -72,6 +73,7 @@ export const getSnapObject = ({
     status,
     enabled,
     versionHistory,
+    auxiliaryFiles,
   } as const;
 };
 

@@ -210,7 +210,7 @@ export const SnapManifestStruct = object({
         ]),
       }),
     }),
-    files: SnapAuxilaryFilesStruct,
+    files: optional(SnapAuxilaryFilesStruct),
   }),
   initialPermissions: PermissionsStruct,
   manifestVersion: literal('0.1'),
