@@ -6,7 +6,7 @@
 // Using https://github.com/vfile/vfile would be helpful, but they only support ESM and we need to support CommonJS.
 // https://github.com/gulpjs/vinyl is also good, but they normalize paths, which we can't do, because
 // we're calculating checksums based on original path.
-import { assert } from '@metamask/utils';
+import { assert, bytesToHex } from '@metamask/utils';
 
 import { deepClone } from '../deep-clone';
 
@@ -75,6 +75,8 @@ export class VirtualFile<Result = unknown> {
     if (typeof this.value === 'string') {
       assert(encoding === undefined, 'Tried to encode string.');
       return this.value;
+    } else if (this.value instanceof Uint8Array && encoding === 'hex') {
+      return bytesToHex(this.value);
     }
     const decoder = new TextDecoder(encoding);
     return decoder.decode(this.value);

@@ -52,13 +52,14 @@ import {
   HandlerType,
   isOriginAllowed,
   logError,
+  normalizeRelative,
   resolveVersionRange,
   SnapCaveatType,
   SnapStatus,
   SnapStatusEvents,
   validateFetchedSnap,
 } from '@metamask/snaps-utils';
-import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
+import type { Hex, Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
   assert,
   assertIsJsonRpcRequest,
@@ -338,6 +339,11 @@ export type RevokeDynamicPermissions = {
   handler: SnapController['revokeDynamicSnapPermissions'];
 };
 
+export type GetSnapFile = {
+  type: `${typeof controllerName}:getSnapFile`;
+  handler: SnapController['getSnapFile'];
+};
+
 export type SnapControllerActions =
   | ClearSnapState
   | GetSnap
@@ -356,7 +362,8 @@ export type SnapControllerActions =
   | DecrementActiveReferences
   | GetRegistryMetadata
   | DisconnectOrigin
-  | RevokeDynamicPermissions;
+  | RevokeDynamicPermissions
+  | GetSnapFile;
 
 // Controller Messenger Events
 
@@ -1375,6 +1382,22 @@ export class SnapController extends BaseController<
   }
 
   /**
+   * Gets a static auxiliary snap file in hex.
+   *
+   * @param snapId - The id of the Snap whose state to get.
+   * @param path - The path to the requested file.
+   * @returns The file requested in hex or null if the file is not found.
+   */
+  getSnapFile(snapId: ValidatedSnapId, path: string): Hex | null {
+    const snap = this.getExpect(snapId);
+    const normalizedPath = normalizeRelative(path);
+    return (
+      snap.auxiliaryFiles?.find((file) => file.path === normalizedPath)
+        ?.value ?? null
+    );
+  }
+
+  /**
    * Completely clear the controller's state: delete all associated data,
    * handlers, event listeners, and permissions; tear down all snap providers.
    */
@@ -2178,7 +2201,12 @@ export class SnapController extends BaseController<
   #set(args: SetSnapArgs): PersistedSnap {
     const { id: snapId, origin, files, isUpdate = false } = args;
 
-    const { manifest, sourceCode: sourceCodeFile, svgIcon } = files;
+    const {
+      manifest,
+      sourceCode: sourceCodeFile,
+      svgIcon,
+      auxiliaryFiles: rawAuxiliaryFiles,
+    } = files;
 
     assertIsSnapManifest(manifest.result);
     const { version } = manifest.result;
@@ -2189,6 +2217,11 @@ export class SnapController extends BaseController<
       typeof sourceCode === 'string' && sourceCode.length > 0,
       `Invalid source code for snap "${snapId}".`,
     );
+
+    const auxiliaryFiles = rawAuxiliaryFiles.map((file) => ({
+      path: file.path,
+      value: file.toString('hex') as Hex,
+    }));
 
     const snapsState = this.state.snaps;
 
@@ -2220,6 +2253,7 @@ export class SnapController extends BaseController<
       sourceCode,
       version,
       versionHistory,
+      auxiliaryFiles,
     };
     // If the snap was blocked, it isn't any longer
     delete snap.blockInformation;
@@ -2265,7 +2299,13 @@ export class SnapController extends BaseController<
       const { iconPath } = manifest.result.source.location.npm;
       const svgIcon = iconPath ? await location.fetch(iconPath) : undefined;
 
-      const files = { manifest, sourceCode, svgIcon };
+      const auxiliaryFiles = await Promise.all(
+        manifest.result.source.files.map(async (filePath) =>
+          location.fetch(filePath),
+        ),
+      );
+
+      const files = { manifest, sourceCode, svgIcon, auxiliaryFiles };
 
       validateFetchedSnap(files);
 

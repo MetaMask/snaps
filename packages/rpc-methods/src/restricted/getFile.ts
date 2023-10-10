@@ -4,7 +4,7 @@ import type {
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
-import type { NonEmptyArray } from '@metamask/utils';
+import type { Hex, NonEmptyArray } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import type { Infer } from 'superstruct';
@@ -60,7 +60,7 @@ export const getFileBuilder = Object.freeze({
 } as const);
 
 export type GetFileHooks = {
-  getSnapFile: (path: string) => Promise<Uint8Array>;
+  getSnapFile: (path: string) => Promise<Hex>;
 };
 
 /**
@@ -73,7 +73,7 @@ export type GetFileHooks = {
 export function getImplementation({ getSnapFile }: GetFileHooks) {
   return async function getFile(
     options: RestrictedMethodOptions<GetFileArgs>,
-  ): Promise<Uint8Array> {
+  ): Promise<Hex> {
     const { params } = options;
 
     assertStruct(

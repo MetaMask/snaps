@@ -4,7 +4,7 @@ import type {
   PermissionConstraint,
 } from '@metamask/permission-controller';
 import type { BlockReason } from '@metamask/snaps-registry';
-import type { Json, SemVerVersion, Opaque } from '@metamask/utils';
+import type { Json, SemVerVersion, Opaque, Hex } from '@metamask/utils';
 import { assert, isObject, assertStruct } from '@metamask/utils';
 import { base64 } from '@scure/base';
 import type { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';
@@ -81,6 +81,11 @@ export type VersionHistory = {
   date: number;
 };
 
+export type SnapAuxilaryFile = {
+  path: string;
+  value: Hex;
+};
+
 export type PersistedSnap = Snap;
 
 /**
@@ -138,6 +143,11 @@ export type Snap = {
    * Can be used to derive when the Snap was installed, when it was updated to a certain version and who requested the change.
    */
   versionHistory: VersionHistory[];
+
+  /**
+   * Static auxiliary files that can be loaded at runtime.
+   */
+  auxiliaryFiles?: SnapAuxilaryFile[];
 };
 
 export type TruncatedSnapFields =
@@ -197,10 +207,13 @@ function getChecksummableManifest(
  * @returns The Base64-encoded SHA-256 digest of the source code.
  */
 export function getSnapChecksum(files: FetchedSnapFiles): string {
-  const { manifest, sourceCode, svgIcon } = files;
-  const all = [getChecksummableManifest(manifest), sourceCode, svgIcon].filter(
-    (file) => file !== undefined,
-  );
+  const { manifest, sourceCode, svgIcon, auxiliaryFiles } = files;
+  const all = [
+    getChecksummableManifest(manifest),
+    sourceCode,
+    svgIcon,
+    ...auxiliaryFiles,
+  ].filter((file) => file !== undefined);
   return base64.encode(checksumFiles(all as VirtualFile[]));
 }
 

@@ -99,6 +99,7 @@ export type SnapFiles = {
   packageJson: VirtualFile<NpmSnapPackageJson>;
   sourceCode: VirtualFile;
   svgIcon?: VirtualFile;
+  auxiliaryFiles: VirtualFile[];
 };
 
 /**
@@ -106,7 +107,7 @@ export type SnapFiles = {
  */
 export type FetchedSnapFiles = Pick<
   SnapFiles,
-  'manifest' | 'sourceCode' | 'svgIcon'
+  'manifest' | 'sourceCode' | 'svgIcon' | 'auxiliaryFiles'
 >;
 
 /**
