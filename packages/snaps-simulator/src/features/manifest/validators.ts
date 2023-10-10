@@ -4,6 +4,7 @@ import { SnapManifestStruct, getSnapChecksum } from '@metamask/snaps-utils';
 type ValidatorContext = {
   sourceCode: VirtualFile<string>;
   icon: VirtualFile<string>;
+  auxiliaryFiles: VirtualFile[];
 };
 
 type ValidatorFunction = (
@@ -73,7 +74,7 @@ export const validators: Validator[] = [
     manifestName: 'source.shasum',
     validator: async (
       manifest: VirtualFile<SnapManifest>,
-      { sourceCode, icon },
+      { sourceCode, icon, auxiliaryFiles },
     ) => {
       if (manifest) {
         const manifestShasum = manifest.result?.source.shasum;
@@ -81,6 +82,7 @@ export const validators: Validator[] = [
           manifest,
           sourceCode,
           svgIcon: icon,
+          auxiliaryFiles,
         });
 
         if (manifestShasum !== calculatedShasum) {

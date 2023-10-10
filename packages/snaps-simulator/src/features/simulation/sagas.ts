@@ -9,7 +9,10 @@ import {
   SubjectType,
 } from '@metamask/permission-controller';
 import { serializeError } from '@metamask/rpc-errors';
-import { caveatSpecifications as snapsCaveatsSpecifications } from '@metamask/rpc-methods';
+import {
+  createSnapsMethodMiddleware,
+  caveatSpecifications as snapsCaveatsSpecifications,
+} from '@metamask/rpc-methods';
 import {
   IframeExecutionService,
   setupMultiplex,
@@ -39,6 +42,7 @@ import { addError } from '../console';
 import { ManifestStatus, setValid } from '../manifest';
 import { JSON_RPC_ENDPOINT } from './constants';
 import {
+  getSnapFile,
   getSnapState,
   showDialog,
   showInAppNotification,
@@ -142,6 +146,13 @@ export function* initSaga({ payload }: PayloadAction<string>) {
   const engine = new JsonRpcEngine();
 
   engine.push(createMiscMethodMiddleware(sharedHooks));
+
+  engine.push(
+    createSnapsMethodMiddleware(true, {
+      getSnapFile: async (...args: Parameters<typeof getSnapFile>) =>
+        await runSaga(getSnapFile, ...args).toPromise(),
+    }),
+  );
 
   engine.push(
     permissionController.createPermissionMiddleware({

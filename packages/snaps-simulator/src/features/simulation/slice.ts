@@ -38,6 +38,7 @@ type SimulationState = {
   subjectMetadataController: SubjectMetadataController | null;
   manifest: VirtualFile<SnapManifest> | null;
   sourceCode: VirtualFile<string> | null;
+  auxiliaryFiles: VirtualFile[] | null;
   icon?: VirtualFile<string>;
   ui?: HandlerUserInterface | null;
   snapState: string | null;
@@ -51,6 +52,7 @@ export const INITIAL_STATE: SimulationState = {
   subjectMetadataController: null,
   manifest: null,
   sourceCode: null,
+  auxiliaryFiles: null,
   snapState: null,
 };
 
@@ -83,6 +85,9 @@ const slice = createSlice({
     setSourceCode(state, action: PayloadAction<VirtualFile<string>>) {
       state.sourceCode = action.payload;
     },
+    setAuxiliaryFiles(state, action: PayloadAction<VirtualFile[]>) {
+      state.auxiliaryFiles = action.payload;
+    },
     setIcon(state, action: PayloadAction<VirtualFile<string>>) {
       state.icon = action.payload;
     },
@@ -113,6 +118,7 @@ export const {
   setManifest,
   setSourceCode,
   setIcon,
+  setAuxiliaryFiles,
   showUserInterface,
   closeUserInterface,
   setSnapState,
@@ -169,6 +175,11 @@ export const getSnapManifest = createSelector(
 export const getSourceCode = createSelector(
   (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
   (state) => state.sourceCode,
+);
+
+export const getAuxiliaryFiles = createSelector(
+  (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
+  (state) => state.auxiliaryFiles,
 );
 
 export const getRequestId = createSelector(
