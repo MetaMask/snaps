@@ -146,7 +146,7 @@ export const getSnapManifest = ({
           iconPath,
         } as const,
       },
-      files,
+      ...(files ? { files } : {}),
     },
     initialPermissions,
     manifestVersion: '0.1' as const,
