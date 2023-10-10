@@ -1792,6 +1792,47 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('handles `SnapError`s', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => {
+        throw new SnapError('foo');
+      };
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['SnapError']);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: 'foo', params: {} },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      error: {
+        code: -32603,
+        message: 'foo',
+        data: {
+          originalError: {},
+        },
+      },
+    });
+  });
+
   describe('executeSnap', () => {
     [
       {

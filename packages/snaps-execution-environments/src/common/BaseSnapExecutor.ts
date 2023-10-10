@@ -69,6 +69,10 @@ const fallbackError = {
   message: 'Execution Environment Error',
 };
 
+const unhandledError = ethErrors.rpc.internal({
+  message: 'Unhandled Snap Error',
+});
+
 export type InvokeSnapArgs = Omit<SnapExportsParameters[0], 'chainId'>;
 
 export type InvokeSnap = (
@@ -179,7 +183,7 @@ export class BaseSnapExecutor {
   private errorHandler(error: unknown, data: Record<string, Json>) {
     const constructedError = constructError(error);
     const serializedError = serializeError(constructedError, {
-      fallbackError,
+      fallbackError: unhandledError,
       shouldIncludeStack: false,
     });
 
@@ -358,6 +362,7 @@ export class BaseSnapExecutor {
         module: snapModule,
         exports: snapModule.exports,
       });
+
       // All of those are JavaScript runtime specific and self referential,
       // but we add them for compatibility sake with external libraries.
       //
