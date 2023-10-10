@@ -1,5 +1,4 @@
 import type { OnNameLookupHandler } from '@metamask/snaps-types';
-import { numberToHex } from '@metamask/utils';
 
 /**
  * Handle incoming name lookup requests from the MetaMask clients.
@@ -14,11 +13,11 @@ import { numberToHex } from '@metamask/utils';
 export const onNameLookup: OnNameLookupHandler = async (request) => {
   const { chainId, address, domain } = request;
 
+  // eslint-disable-next-line no-console
+  console.log(`Resolving for CAIP-2 chainId of: ${chainId}`);
+
   if (address) {
-    const shortAddress = `0x${address.substring(2, 5)}`;
-    const chainIdDecimal = parseInt(chainId.split(':')[1], 10);
-    const chainIdHex = numberToHex(chainIdDecimal);
-    const resolvedDomain = `example.domain - ${shortAddress} / ${chainIdHex}`;
+    const resolvedDomain = 'example.domain';
     return { resolvedDomain };
   }
 
