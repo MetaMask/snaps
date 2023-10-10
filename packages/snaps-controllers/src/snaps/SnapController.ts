@@ -27,13 +27,13 @@ import { SubjectType } from '@metamask/permission-controller';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 import type { BlockReason } from '@metamask/snaps-registry';
 import type {
+  FetchedSnapFiles,
   InstallSnapsResult,
   PersistedSnap,
   ProcessSnapResult,
   RequestedSnapPermissions,
   Snap,
   SnapId,
-  SnapManifest,
   SnapRpcHook,
   SnapRpcHookArgs,
   StatusContext,
@@ -42,7 +42,6 @@ import type {
   TruncatedSnap,
   TruncatedSnapFields,
   ValidatedSnapId,
-  VirtualFile,
 } from '@metamask/snaps-utils';
 import {
   assertIsSnapManifest,
@@ -53,7 +52,6 @@ import {
   HandlerType,
   isOriginAllowed,
   logError,
-  normalizeRelative,
   resolveVersionRange,
   SnapCaveatType,
   SnapStatus,
@@ -186,14 +184,9 @@ export type SnapError = {
  */
 type FetchSnapResult = {
   /**
-   * The manifest of the fetched Snap.
+   * All files referenced in the manifest, including the manifest itself.
    */
-  manifest: VirtualFile<SnapManifest>;
-
-  /**
-   * Auxillary files references in manifest.
-   */
-  files: VirtualFile[];
+  files: FetchedSnapFiles;
 
   /**
    * Location that was used to fetch the snap.
@@ -610,8 +603,7 @@ type AddSnapArgs = {
 // When we set a snap, we need all required properties to be present and
 // validated.
 type SetSnapArgs = Omit<AddSnapArgs, 'location' | 'versionRange'> & {
-  manifest: VirtualFile<SnapManifest>;
-  files: VirtualFile[];
+  files: FetchedSnapFiles;
   isUpdate?: boolean;
 };
 
@@ -1950,7 +1942,12 @@ export class SnapController extends BaseController<
 
       const newSnap = await this.#fetchSnap(snapId, location);
 
-      const newVersion = newSnap.manifest.result.version;
+      const { sourceCode: sourceCodeFile, manifest: manifestFile } =
+        newSnap.files;
+
+      const manifest = manifestFile.result;
+
+      const newVersion = manifest.version;
       if (!gtVersion(newVersion, snap.version)) {
         throw ethErrors.rpc.invalidParams(
           `Snap "${snapId}@${snap.version}" is already installed. Couldn't update to a version inside requested "${newVersionRange}" range.`,
@@ -1965,11 +1962,11 @@ export class SnapController extends BaseController<
 
       await this.#assertIsInstallAllowed(snapId, {
         version: newVersion,
-        checksum: newSnap.manifest.result.source.shasum,
+        checksum: manifest.source.shasum,
       });
 
       const processedPermissions = processSnapPermissions(
-        newSnap.manifest.result.initialPermissions,
+        manifest.initialPermissions,
       );
 
       this.#validateSnapPermissions(processedPermissions);
@@ -1979,7 +1976,7 @@ export class SnapController extends BaseController<
 
       this.#updateApproval(pendingApproval.id, {
         permissions: newPermissions,
-        newVersion: newSnap.manifest.result.version,
+        newVersion: manifest.version,
         newPermissions,
         approvedPermissions,
         unusedPermissions,
@@ -2004,7 +2001,6 @@ export class SnapController extends BaseController<
       this.#set({
         origin,
         id: snapId,
-        manifest: newSnap.manifest,
         files: newSnap.files,
         isUpdate: true,
       });
@@ -2033,13 +2029,7 @@ export class SnapController extends BaseController<
         rollbackSnapshot.permissions.requestData = requestData;
       }
 
-      const normalizedSourcePath = normalizeRelative(
-        newSnap.manifest.result.source.location.npm.filePath,
-      );
-
-      const sourceCode = newSnap.files
-        .find((file) => file.path === normalizedSourcePath)
-        ?.toString();
+      const sourceCode = sourceCodeFile.toString();
 
       assert(
         typeof sourceCode === 'string' && sourceCode.length > 0,
@@ -2114,7 +2104,7 @@ export class SnapController extends BaseController<
       // to null in the authorize() method.
       runtime.installPromise = (async () => {
         const fetchedSnap = await this.#fetchSnap(snapId, location);
-        const manifest = fetchedSnap.manifest.result;
+        const manifest = fetchedSnap.files.manifest.result;
         if (!satisfiesVersionRange(manifest.version, versionRange)) {
           throw new Error(
             `Version mismatch. Manifest for "${snapId}" specifies version "${manifest.version}" which doesn't satisfy requested version range "${versionRange}".`,
@@ -2240,25 +2230,14 @@ export class SnapController extends BaseController<
    * @returns The resulting snap object.
    */
   #set(args: SetSnapArgs): PersistedSnap {
-    const { id: snapId, origin, manifest, files, isUpdate = false } = args;
+    const { id: snapId, origin, files, isUpdate = false } = args;
+
+    const { manifest, sourceCode: sourceCodeFile, svgIcon } = files;
 
     assertIsSnapManifest(manifest.result);
     const { version } = manifest.result;
 
-    const normalizedSourcePath = normalizeRelative(
-      manifest.result.source.location.npm.filePath,
-    );
-
-    const { iconPath } = manifest.result.source.location.npm;
-    const normalizedIconPath = iconPath && normalizeRelative(iconPath);
-
-    const sourceCode = files
-      .find((file) => file.path === normalizedSourcePath)
-      ?.toString();
-
-    const svgIcon = normalizedIconPath
-      ? files.find((file) => file.path === normalizedIconPath)
-      : undefined;
+    const sourceCode = sourceCodeFile.toString();
 
     assert(
       typeof sourceCode === 'string' && sourceCode.length > 0,
@@ -2324,8 +2303,6 @@ export class SnapController extends BaseController<
   /**
    * Fetches the manifest and source code of a snap.
    *
-   * This function is not hash private yet because of tests.
-   *
    * @param snapId - The id of the Snap.
    * @param location - Source from which snap will be fetched.
    * @returns A tuple of the Snap manifest object and the Snap source code.
@@ -2342,14 +2319,11 @@ export class SnapController extends BaseController<
       const { iconPath } = manifest.result.source.location.npm;
       const svgIcon = iconPath ? await location.fetch(iconPath) : undefined;
 
-      const files = [sourceCode];
-      if (svgIcon) {
-        files.push(svgIcon);
-      }
+      const files = { manifest, sourceCode, svgIcon };
 
-      validateFetchedSnap({ manifest, sourceCode, svgIcon });
+      validateFetchedSnap(files);
 
-      return { manifest, files, location };
+      return { files, location };
     } catch (error) {
       throw new Error(
         `Failed to fetch snap "${snapId}": ${getErrorMessage(error)}.`,
