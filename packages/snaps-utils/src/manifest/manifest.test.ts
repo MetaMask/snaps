@@ -9,6 +9,7 @@ import {
   DEFAULT_SNAP_BUNDLE,
   DEFAULT_SNAP_ICON,
   DEFAULT_SNAP_SHASUM,
+  MOCK_AUXILIARY_FILE,
   getPackageJson,
   getSnapFiles,
   getSnapManifest,
@@ -18,6 +19,7 @@ import { NpmSnapFileNames, SnapValidationFailureReason } from '../types';
 import {
   checkManifest,
   fixManifest,
+  getSnapAuxiliaryFiles,
   getSnapIcon,
   getSnapSourceCode,
   getWritableManifest,
@@ -40,15 +42,17 @@ const PACKAGE_JSON_PATH = join(BASE_PATH, NpmSnapFileNames.PackageJson);
 async function resetFileSystem() {
   await fs.rm(BASE_PATH, { recursive: true, force: true });
 
-  // Create `dist` and `images` folders.
+  // Create `dist`, `src` and `images` folders.
   await fs.mkdir(join(BASE_PATH, 'dist'), { recursive: true });
   await fs.mkdir(join(BASE_PATH, 'images'), { recursive: true });
+  await fs.mkdir(join(BASE_PATH, 'src'), { recursive: true });
 
   // Write default files.
   await fs.writeFile(MANIFEST_PATH, JSON.stringify(getSnapManifest()));
   await fs.writeFile(PACKAGE_JSON_PATH, JSON.stringify(getPackageJson()));
   await fs.writeFile(join(BASE_PATH, 'dist/bundle.js'), DEFAULT_SNAP_BUNDLE);
   await fs.writeFile(join(BASE_PATH, 'images/icon.svg'), DEFAULT_SNAP_ICON);
+  await fs.writeFile(join(BASE_PATH, 'src/foo.json'), MOCK_AUXILIARY_FILE);
 }
 
 describe('checkManifest', () => {
@@ -321,6 +325,46 @@ describe('getSnapIcon', () => {
     await expect(getSnapIcon(BASE_PATH, getSnapManifest())).rejects.toThrow(
       'Failed to read snap icon file: foo',
     );
+  });
+});
+
+describe('getSnapAuxiliaryFiles', () => {
+  beforeEach(async () => {
+    await resetFileSystem();
+  });
+
+  it('returns the auxiliary files for a snap', async () => {
+    const files = await getSnapAuxiliaryFiles(
+      BASE_PATH,
+      getSnapManifest({ files: ['./src/foo.json'] }),
+    );
+    expect(files?.[0]?.value).toBe(MOCK_AUXILIARY_FILE);
+  });
+
+  it.each([
+    [],
+    {},
+    undefined,
+    null,
+    { source: {} },
+    { source: { location: {} } },
+    { source: { location: { npm: {} } } },
+  ])('returns undefined if an invalid manifest is passed', async (manifest) => {
+    // @ts-expect-error Invalid manifest type.
+    expect(await getSnapAuxiliaryFiles(BASE_PATH, manifest)).toBeUndefined();
+  });
+
+  it('throws an error if the file cannot be read', async () => {
+    jest.spyOn(fs, 'readFile').mockImplementation(() => {
+      throw new Error('foo');
+    });
+
+    await expect(
+      getSnapAuxiliaryFiles(
+        BASE_PATH,
+        getSnapManifest({ files: ['./src/foo.json'] }),
+      ),
+    ).rejects.toThrow('Failed to read snap files: foo');
   });
 });
 

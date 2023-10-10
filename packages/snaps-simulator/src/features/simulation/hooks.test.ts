@@ -1,9 +1,12 @@
 import { DialogType } from '@metamask/rpc-methods';
 import { text } from '@metamask/snaps-ui';
+import { VirtualFile, normalizeRelative } from '@metamask/snaps-utils';
+import { stringToBytes } from '@metamask/utils';
 import { expectSaga } from 'redux-saga-test-plan';
 
 import { addNotification } from '../notifications';
 import {
+  getSnapFile,
   getSnapState,
   showDialog,
   showInAppNotification,
@@ -12,6 +15,7 @@ import {
 } from './hooks';
 import {
   closeUserInterface,
+  getAuxiliaryFiles,
   getSnapName,
   getSnapStateSelector,
   resolveUserInterface,
@@ -145,6 +149,26 @@ describe('getSnapState', () => {
       })
       .select(getSnapStateSelector)
       .returns('foo')
+      .silentRun();
+  });
+});
+
+describe('getSnapFile', () => {
+  it('returns the requested file in hexadecimal', async () => {
+    const path = './src/foo.json';
+    await expectSaga(getSnapFile, path)
+      .withState({
+        simulation: {
+          auxiliaryFiles: [
+            new VirtualFile({
+              path: normalizeRelative(path),
+              value: stringToBytes(JSON.stringify({ foo: 'bar' })),
+            }),
+          ],
+        },
+      })
+      .select(getAuxiliaryFiles)
+      .returns('0x7b22666f6f223a22626172227d')
       .silentRun();
   });
 });

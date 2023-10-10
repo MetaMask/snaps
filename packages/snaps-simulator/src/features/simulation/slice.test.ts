@@ -9,6 +9,7 @@ import {
   setSourceCode,
   setStatus,
   INITIAL_STATE,
+  setAuxiliaryFiles,
 } from './slice';
 import { MockExecutionService } from './test/mockExecutionService';
 import { MOCK_MANIFEST, MOCK_MANIFEST_FILE } from './test/mockManifest';
@@ -43,6 +44,17 @@ describe('simulation slice', () => {
       );
 
       expect(result.sourceCode?.value).toBe('foo');
+    });
+  });
+
+  describe('setAuxiliaryFiles', () => {
+    it('sets the source code', () => {
+      const result = reducer(
+        INITIAL_STATE,
+        setAuxiliaryFiles([new VirtualFile('foo')]),
+      );
+
+      expect(result.auxiliaryFiles?.[0].value).toBe('foo');
     });
   });
 
