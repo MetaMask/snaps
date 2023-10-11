@@ -1,8 +1,8 @@
 # `@metamask/rollup-plugin-example-snap`
 
-This snap demonstrates how to use Rollup and the
+This Snap demonstrates how to use Rollup and the
 [`@metamask/snaps-rollup-plugin`](../../../snaps-rollup-plugin) to bundle a
-snap. The MetaMask Snap CLI uses Browserify to bundle snaps by default, but
+Snap. The MetaMask Snap CLI uses Browserify to bundle Snaps by default, but
 if you prefer to use Rollup, you can use `@metamask/snaps-rollup-plugin` to do
 so.
 

@@ -34,7 +34,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
           content: panel([
             heading('Signature request'),
             text(
-              'Do you want to sign the following message with snap entropy?',
+              'Do you want to sign the following message with Snap entropy?',
             ),
             copyable(message),
           ]),

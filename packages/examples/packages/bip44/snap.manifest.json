@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "description": "MetaMask example snap demonstrating the use of `snap_getBip44Entropy`.",
+  "description": "MetaMask example Snap demonstrating the use of `snap_getBip44Entropy`.",
   "proposedName": "BIP-44 Example Snap",
   "repository": {
     "type": "git",

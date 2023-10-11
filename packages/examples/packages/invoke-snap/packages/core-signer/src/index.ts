@@ -9,7 +9,7 @@ import type { GetAccountParams, SignMessageParams } from './types';
 import { getEntropy } from './utils';
 
 /**
- * Handle incoming JSON-RPC requests from the other snaps, sent through the
+ * Handle incoming JSON-RPC requests from the other Snaps, sent through the
  * `wallet_invokeSnap` method. This handler handles two methods:
  *
  * - `getAccount`: Derive an account using the provided path, and return the

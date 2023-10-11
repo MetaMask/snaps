@@ -1,7 +1,7 @@
 {
   "name": "@metamask/lifecycle-hooks-example-snap",
   "version": "2.0.0",
-  "description": "MetaMask example snap demonstrating the use of the `onInstall` and `onUpdate` lifecycle hooks.",
+  "description": "MetaMask example Snap demonstrating the use of the `onInstall` and `onUpdate` lifecycle hooks.",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"

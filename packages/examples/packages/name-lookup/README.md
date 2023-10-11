@@ -1,6 +1,6 @@
 # `@metamask/name-lookup-example-snap`
 
-This snap demonstrates how to use the `onNameLookup` handler.
+This Snap demonstrates how to use the `onNameLookup` handler.
 
 ## Snap manifest
 
@@ -8,7 +8,7 @@ This snap demonstrates how to use the `onNameLookup` handler.
 > Refer to [the documentation](https://docs.metamask.io/snaps/reference/permissions/#endowmentname-lookup)
 > for more information.
 
-The manifest of this snap includes the `endowment:name-lookup` permission:
+The manifest of this Snap includes the `endowment:name-lookup` permission:
 
 ```json
 {

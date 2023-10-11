@@ -2,11 +2,11 @@ import { remove0x } from '@metamask/utils';
 
 /**
  * Derive entropy which can be used as private key using the `snap_getEntropy`
- * JSON-RPC method. This method returns entropy which is specific to the snap,
- * so other snaps cannot replicate this entropy. This entropy is deterministic,
+ * JSON-RPC method. This method returns entropy which is specific to the Snap,
+ * so other Snaps cannot replicate this entropy. This entropy is deterministic,
  * meaning that it will always be the same.
  *
- * The entropy is derived from the snap ID and the salt. The salt is used to
+ * The entropy is derived from the Snap ID and the salt. The salt is used to
  * generate different entropy for different use cases. For example, in this
  * example we use the salt "Signing key" to generate entropy which can be used
  * as a private key.

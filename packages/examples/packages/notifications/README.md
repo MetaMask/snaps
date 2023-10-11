@@ -1,6 +1,6 @@
 # `@metamask/notifications-example-snap`
 
-This snap demonstrates how to use `snap_notify` to send in-app and desktop
+This Snap demonstrates how to use `snap_notify` to send in-app and desktop
 notifications to the user.
 
 ## Snap manifest
@@ -9,7 +9,7 @@ notifications to the user.
 > permissions. Refer to [the documentation](https://docs.metamask.io/snaps/reference/rpc-api/#snap_notify)
 > for more information.
 
-Along with other permissions, the manifest of this snap includes the
+Along with other permissions, the manifest of this Snap includes the
 `snap_notify` permission:
 
 ```json
@@ -24,7 +24,7 @@ This permission does not require any additional configuration.
 
 ## Snap usage
 
-This snap exposes an `onRpcRequest` handler, which supports the following
+This Snap exposes an `onRpcRequest` handler, which supports the following
 JSON-RPC methods:
 
 - `inApp` - Send an in-app notification to the user.

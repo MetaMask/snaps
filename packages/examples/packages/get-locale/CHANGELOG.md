@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.38.1-flask.1]
 ### Added
-- Add example snap for `snap_getLocale` ([#1684](https://github.com/MetaMask/snaps/pull/1684))
+- Add example Snap for `snap_getLocale` ([#1684](https://github.com/MetaMask/snaps/pull/1684))
 
 [Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/get-locale-example-snap@2.0.0...HEAD
 [2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/get-locale-example-snap@1.0.0...@metamask/get-locale-example-snap@2.0.0

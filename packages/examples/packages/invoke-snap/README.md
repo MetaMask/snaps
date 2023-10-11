@@ -1,26 +1,26 @@
 # `@metamask/invoke-snap-example-snap`
 
-These snaps demonstrate how to use the `wallet_invokeSnap` JSON-RPC method
-to call a snap from within another snap.
+These Snaps demonstrate how to use the `wallet_invokeSnap` JSON-RPC method
+to call a Snap from within another Snap.
 
-This directory is not a standalone package, but rather a collection of snaps
+This directory is not a standalone package, but rather a collection of Snaps
 using the `wallet_invokeSnap` method to call each other. It consists of two
-snaps:
+Snaps:
 
-- [**`packages/core-signer`**](./packages/core-signer): A snap that generates
+- [**`packages/core-signer`**](./packages/core-signer): A Snap that generates
   entropy using the WebCrypto API, and uses it to derive a key pair. It exposes
   the public key and signs messages using the private key.
-- [**`packages/consumer-signer`**](./packages/consumer-signer): A snap that
+- [**`packages/consumer-signer`**](./packages/consumer-signer): A Snap that
   signs messages using an Ethereum private key. The Ethereum public key is
-  requested from the core signer snap, using the `wallet_invokeSnap` method, and
-  it uses the `signMessage` method of the core signer snap to sign messages.
+  requested from the core signer Snap, using the `wallet_invokeSnap` method, and
+  it uses the `signMessage` method of the core signer Snap to sign messages.
 
 ## Snap manifest
 
-> **Note**: Calling snaps from other snaps requires the `endowment:rpc`
+> **Note**: Calling Snaps from other Snaps requires the `endowment:rpc`
 > permission, with the `snaps` option set to `true`.
 
-Along with other permissions, the core signer snap in this example has the
+Along with other permissions, the core signer Snap in this example has the
 `endowment:rpc` permission with the `snaps` option set to `true`.
 
 ```json
@@ -33,14 +33,14 @@ Along with other permissions, the core signer snap in this example has the
 }
 ```
 
-The other snap in this example does not have any special permissions, as it is
-not called from other snaps.
+The other Snap in this example does not have any special permissions, as it is
+not called from other Snaps.
 
 ## Caveats
 
-- The `wallet_invokeSnap` method does not install a snap. It only calls a snap
-  that is already installed. If the snap is not installed, the method will
+- The `wallet_invokeSnap` method does not install a Snap. It only calls a Snap
+  that is already installed. If the Snap is not installed, the method will
   return an error.
-  - Right now there is no way to install a snap from within another snap. This
+  - Right now there is no way to install a Snap from within another Snap. This
     is a limitation of the current implementation of the `wallet_invokeSnap`
     method.

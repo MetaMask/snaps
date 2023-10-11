@@ -1,6 +1,6 @@
 # `@metamask/get-entropy-example-snap`
 
-This snap demonstrates how to use `snap_getEntropy` JSON-RPC method to get
+This Snap demonstrates how to use `snap_getEntropy` JSON-RPC method to get
 entropy from the MetaMask extension, and use it to sign a message.
 
 ## Snap manifest
@@ -9,7 +9,7 @@ entropy from the MetaMask extension, and use it to sign a message.
 > permissions. Refer to [the documentation](https://docs.metamask.io/snaps/reference/rpc-api/#snap_getentropy)
 > for more information.
 
-Along with other permissions, the manifest of this snap includes the
+Along with other permissions, the manifest of this Snap includes the
 `snap_getEntropy` permission:
 
 ```json
@@ -24,7 +24,7 @@ This permission does not require any additional configuration.
 
 ## Snap usage
 
-This snap exposes an `onRpcRequest` handler, which supports the following
+This Snap exposes an `onRpcRequest` handler, which supports the following
 JSON-RPC methods:
 
 - `signMessage`: Derives a private key using the `snap_getEntropy` method, and

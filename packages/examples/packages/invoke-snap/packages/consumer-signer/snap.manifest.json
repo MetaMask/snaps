@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "description": "MetaMask example snap demonstrating how a snap can communicate with another snap to sign messages.",
+  "description": "MetaMask example Snap demonstrating how a Snap can communicate with another Snap to sign messages.",
   "proposedName": "Consumer Signer Example Snap",
   "repository": {
     "type": "git",

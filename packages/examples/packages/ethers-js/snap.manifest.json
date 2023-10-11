@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "description": "MetaMask example snap demonstrating how to use Ethers.js inside a snap.",
+  "description": "MetaMask example Snap demonstrating how to use Ethers.js inside a Snaps.",
   "proposedName": "Ethers.js Example Snap",
   "repository": {
     "type": "git",

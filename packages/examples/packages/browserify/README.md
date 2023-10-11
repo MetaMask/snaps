@@ -1,6 +1,6 @@
 # `@metamask/browserify-example-snap`
 
-This snap demonstrates how to use the MetaMask Snaps CLI with the legacy
+This Snap demonstrates how to use the MetaMask Snaps CLI with the legacy
 Browserify bundler.
 
 > **Warning**: The Browserify bundler in the MetaMask Snaps CLI is deprecated
@@ -9,7 +9,7 @@ Browserify bundler.
 
 ## Snap usage
 
-This snap exposes an `onRpcRequest` handler, which supports the following
+This Snap exposes an `onRpcRequest` handler, which supports the following
 JSON-RPC method:
 
 - `hello`: Returns a message for demonstration purposes.

@@ -4,7 +4,7 @@
 export type GetAccountParams = {
   /**
    * The coin type to get the account for. This must be one of the coin types
-   * registered in the snap manifest. If this is not specified, it defaults to
+   * registered in the Snap manifest. If this is not specified, it defaults to
    * the Bitcoin coin type (1).
    */
   coinType?: number;

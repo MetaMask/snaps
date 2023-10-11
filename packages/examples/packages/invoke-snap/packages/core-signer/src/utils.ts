@@ -6,18 +6,18 @@ import { Mutex } from 'async-mutex';
 const mutex = new Mutex();
 
 /**
- * Get a root BIP-32 node, based on the snap's own entropy. If the snap has not
+ * Get a root BIP-32 node, based on the snap's own entropy. If the Snap has not
  * stored entropy yet, it will generate some entropy using the WebCrypto API,
  * and store it in the state using `snap_manageState`. On subsequent calls to
  * this function, it will get the entropy from the state, and use that instead.
  *
  * We could use `snap_getEntropy` as well, but this way we can demonstrate that
- * a snap can manage its own entropy, and allow other snaps to consume it.
+ * a Snap can manage its own entropy, and allow other Snaps to consume it.
  *
  * @returns The root BIP-32 node as {@link SLIP10Node}.
  */
 export async function getEntropy(): Promise<SLIP10Node> {
-  // In theory two snaps can call this function at the same time, resulting in
+  // In theory two Snaps can call this function at the same time, resulting in
   // entropy being generated twice. To prevent this, we wrap it in an async
   // mutex, which will block execution until the first call has finished.
   return await mutex.runExclusive(async () => {

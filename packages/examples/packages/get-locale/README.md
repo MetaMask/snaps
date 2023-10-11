@@ -1,7 +1,8 @@
 # `@metamask/get-locale-example-snap`
 
-This snap demonstrates how to use `snap_getLocale` JSON-RPC method to get
-the currently selected user locale from the MetaMask extension, and use it in a snap.
+This Snap demonstrates how to use `snap_getLocale` JSON-RPC method to get
+the currently selected user locale from the MetaMask extension, and use it in a
+Snap.
 
 ## Snap manifest
 
@@ -9,7 +10,7 @@ the currently selected user locale from the MetaMask extension, and use it in a 
 > permissions. Refer to [the documentation](https://docs.metamask.io/snaps/reference/rpc-api/#snap_getlocale)
 > for more information.
 
-Along with other permissions, the manifest of this snap includes the
+Along with other permissions, the manifest of this Snap includes the
 `snap_getLocale` permission:
 
 ```json
@@ -24,7 +25,7 @@ This permission does not require any additional configuration.
 
 ## Snap usage
 
-This snap exposes an `onRpcRequest` handler, which supports the following
+This Snap exposes an `onRpcRequest` handler, which supports the following
 JSON-RPC methods:
 
 - `hello`: Shows an alert dialog with a localized message, using both `snap_dialog`

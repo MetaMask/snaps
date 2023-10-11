@@ -1,8 +1,8 @@
 # `@metamask/webpack-plugin-example-snap`
 
-This snap demonstrates how to use Webpack and the
+This Snap demonstrates how to use Webpack and the
 [`@metamask/snaps-webpack-plugin`](../../../snaps-webpack-plugin) to bundle a
-snap. The MetaMask Snap CLI uses Browserify to bundle snaps by default, but
+Snap. The MetaMask Snap CLI uses Browserify to bundle Snaps by default, but
 if you prefer to use Webpack, you can use `@metamask/snaps-webpack-plugin` to do
 so.
 

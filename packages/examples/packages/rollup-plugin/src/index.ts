@@ -6,7 +6,7 @@ import type { OnRpcRequestHandler } from '@metamask/snaps-types';
  * `wallet_invokeSnap` method. This handler handles a single method:
  *
  * - `hello`: Returns a static message, "Hello from Rollup!". This is just
- * for demonstration purposes, showing that a snap can be built with
+ * for demonstration purposes, showing that a Snap can be built with
  * Rollup.
  *
  * @param params - The request parameters.

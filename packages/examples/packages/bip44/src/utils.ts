@@ -9,7 +9,7 @@ import type { GetAccountParams } from './types';
  * @param params - The parameters for getting the BIP-44 private key. These are
  * passed directly to the method, and are not validated beforehand.
  * @param params.coinType - The coin type to get the account for. This must be
- * one of the coin types registered in the snap manifest. If this is not
+ * one of the coin types registered in the Snap manifest. If this is not
  * specified, it defaults to the Bitcoin coin type (1).
  * @param params.addressIndex - The address index to get the account for. If
  * this is not specified, it defaults to the first address (`address_index` = 0).

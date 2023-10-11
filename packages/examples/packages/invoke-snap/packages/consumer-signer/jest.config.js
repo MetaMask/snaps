@@ -6,7 +6,7 @@ module.exports = deepmerge(baseConfig, {
   preset: '@metamask/snaps-jest',
   testEnvironmentOptions: {
     server: {
-      // For this particular example we have to configure a port, as the snap
+      // For this particular example we have to configure a port, as the Snap
       // uses `snap_getEntropy`, which uses the snap ID
       // (`local:http://localhost:PORT`) to derive entropy. If we were to use a
       // random port every time, the derived entropy would be different for
