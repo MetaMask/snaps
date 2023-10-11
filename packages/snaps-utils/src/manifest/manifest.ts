@@ -5,6 +5,7 @@ import { promises as fs } from 'fs';
 import pathUtils from 'path';
 
 import { deepClone } from '../deep-clone';
+import { getErrorMessage } from '../errors';
 import { readJsonFile } from '../fs';
 import { validateNpmSnap } from '../npm';
 import {
@@ -282,7 +283,9 @@ export async function getSnapSourceCode(
     );
     return virtualFile;
   } catch (error) {
-    throw new Error(`Failed to read snap bundle file: ${error.message}`);
+    throw new Error(
+      `Failed to read snap bundle file: ${getErrorMessage(error)}`,
+    );
   }
 }
 
@@ -316,7 +319,7 @@ export async function getSnapIcon(
     );
     return virtualFile;
   } catch (error) {
-    throw new Error(`Failed to read snap icon file: ${error.message}`);
+    throw new Error(`Failed to read snap icon file: ${getErrorMessage(error)}`);
   }
 }
 
@@ -326,7 +329,7 @@ export async function getSnapIcon(
  *
  * @param basePath - The path to the folder with the manifest files.
  * @param manifest - The unvalidated Snap manifest file contents.
- * @returns The contents of the icon, if any.
+ * @returns A list of auxiliary files and their contents, if any.
  */
 export async function getSnapAuxiliaryFiles(
   basePath: string,
@@ -349,7 +352,7 @@ export async function getSnapAuxiliaryFiles(
       ),
     );
   } catch (error) {
-    throw new Error(`Failed to read snap files: ${error.message}`);
+    throw new Error(`Failed to read snap files: ${getErrorMessage(error)}`);
   }
 }
 

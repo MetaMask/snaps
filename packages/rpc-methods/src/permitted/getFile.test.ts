@@ -7,6 +7,7 @@ import type {
 import { stringToBytes, bytesToHex } from '@metamask/utils';
 import { JsonRpcEngine } from 'json-rpc-engine';
 
+import type { GetFileHooks } from './getFile';
 import { getFileHandler } from './getFile';
 
 describe('snap_getFile', () => {
@@ -21,11 +22,12 @@ describe('snap_getFile', () => {
       });
     });
   });
+
   describe('implementation', () => {
     const getMockHooks = () =>
       ({
         getSnapFile: jest.fn(),
-      } as any);
+      } as GetFileHooks);
 
     it('returns the result received from the getSnapFile hook', async () => {
       const { implementation } = getFileHandler;
@@ -35,7 +37,9 @@ describe('snap_getFile', () => {
       const hexadecimal = bytesToHex(
         stringToBytes(JSON.stringify({ foo: 'bar' })),
       );
-      hooks.getSnapFile.mockImplementation(() => hexadecimal);
+      (
+        hooks.getSnapFile as jest.MockedFunction<typeof hooks.getSnapFile>
+      ).mockImplementation(async (_path: string) => hexadecimal);
 
       const engine = new JsonRpcEngine();
       engine.push((req, res, next, end) => {
@@ -68,7 +72,9 @@ describe('snap_getFile', () => {
 
       const hooks = getMockHooks();
 
-      hooks.getSnapFile.mockImplementation(() => {
+      (
+        hooks.getSnapFile as jest.MockedFunction<typeof hooks.getSnapFile>
+      ).mockImplementation(async (_path: string) => {
         throw new Error('foo bar');
       });
 
