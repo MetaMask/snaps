@@ -32,8 +32,7 @@
     "lint:dependencies": "depcheck"
   },
   "dependencies": {
-    "@metamask/snaps-types": "workspace:^",
-    "@metamask/utils": "^8.1.0"
+    "@metamask/snaps-types": "workspace:^"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
