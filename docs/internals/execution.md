@@ -1,19 +1,19 @@
-# Secure snap execution in SES
+# Secure Snap execution in SES
 
-To avoid snaps from getting access to the client, dangerous APIs, and such,
-we run snaps in a different "realm," which is a separate JavaScript execution
+To avoid Snaps from getting access to the client, dangerous APIs, and such,
+we run Snaps in a different "realm," which is a separate JavaScript execution
 environment. Inside this realm we use [SES]'s lockdown feature to harden the
-realm, and prevent the snap from breaking out of the sandbox. For certain APIs,
+realm, and prevent the Snap from breaking out of the sandbox. For certain APIs,
 such as the events API, we must do an extra lockdown, to make sure that the
-snap can't break out of the sandbox.
+Snap can't break out of the sandbox.
 
 Inside this realm, we create an [SES] compartment, which is a sandboxed
 JavaScript environment that limits access to global APIs, letting us control
-what the snap can do.
+what the Snap can do.
 
 ## Endowments
 
-The endowments are the global APIs that are available to the snap, such as the
+The endowments are the global APIs that are available to the Snap, such as the
 `console` API, the `fetch` function, and so on. To avoid the snap
 breaking out of the sandbox, we only give it access to a limited set of APIs,
 and we make sure that the APIs we give it are safe to use. For example, snaps

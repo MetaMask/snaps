@@ -1,13 +1,13 @@
 # Snaps Registry
 
-The Snaps Registry contains a list of snaps that are available to be installed
-(allow-listed) and snaps that are blocked from being installed (block-listed).
+The Snaps Registry contains a list of Snaps that are available to be installed
+(allow-listed) and Snaps that are blocked from being installed (block-listed).
 At the moment, the registry is a JSON file that is hosted on the MetaMask
 infrastructure. In the future, we may move to a smart contract based registry.
 
-The registry is used by the [Snap Controller] to determine which snaps are
+The registry is used by the [Snap Controller] to determine which Snaps are
 allowed to be installed. The [Snap Controller] will check the registry when a
-snap is installed, and if the snap is not in the registry, it will not be
+Snap is installed, and if the snap is not in the registry, it will not be
 installed.
 
 ## JSON-based registry

@@ -27,7 +27,7 @@ async function getJson(url: string) {
  * `wallet_invokeSnap` method. This handler handles a single method:
  *
  * - `fetch`: Fetch a JSON document from the provided URL. This demonstrates
- * that a snap can make network requests through the `fetch` function. Note that
+ * that a Snap can make network requests through the `fetch` function. Note that
  * the `endowment:network-access` permission must be enabled for this to work.
  *
  * @param params - The request parameters.

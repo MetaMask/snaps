@@ -8,7 +8,7 @@ responsible for managing these execution environments.
 Currently, the execution service supports the following execution environments:
 
 - Iframe (Manifest V2), which creates an iframe in the extension background DOM.
-- Node.js process, which spawns a new process for each snap execution.
+- Node.js process, which spawns a new process for each Snap execution.
 - Node.js worker threads, which creates a new worker thread for each snap
   execution.
 - Offscreen (Manifest V3), which uses the [Offscreen Document API] to create a

@@ -18,7 +18,7 @@ implemented in the [json-rpc-engine] package.
 
 Each connection to MetaMask creates a new instance of the engine with a
 potentially unique configuration. This allows us to have different middlewares
-for different connections. For example, requests from snaps are handled
+for different connections. For example, requests from Snaps are handled
 differently than requests from dapps.
 
 ## Middlewares
@@ -73,7 +73,7 @@ case of issues processing a request.
 ## JSON-RPC in MetaMask Snaps
 
 Snaps are executed in a separate environment, and communicate with the extension
-through JSON-RPC. The JSON-RPC stack for snaps is different from the JSON-RPC
+through JSON-RPC. The JSON-RPC stack for Snaps is different from the JSON-RPC
 stack for dapps: Snaps don't have the same capabilities as dapps, and they
 shouldn't be able to access the same APIs.
 

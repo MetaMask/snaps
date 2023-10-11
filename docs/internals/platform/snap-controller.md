@@ -3,13 +3,13 @@
 The [Snap Controller] is the brain of the MetaMask Snaps platform. It is
 responsible for:
 
-- Starting and stopping snaps.
+- Starting and stopping Snaps.
 - Managing permissions.
-- Managing snap state.
+- Managing Snap state.
 - Handling incoming requests from dapps, and routing them to the correct
-  snap (through the [Execution Service]).
-- Installing and uninstalling snaps.
-- Checking if snaps are allowed to be installed (through the [Snaps Registry]).
+  Snap (through the [Execution Service]).
+- Installing and uninstalling Snaps.
+- Checking if Snaps are allowed to be installed (through the [Snaps Registry]).
 
 As such, it is the main entry point for the MetaMask Snaps platform. It is
 hooked up to the controller messaging system in the MetaMask extension, so it

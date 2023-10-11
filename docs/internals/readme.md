@@ -2,7 +2,7 @@
 
 In this documentation we will describe the internals of MetaMask Snaps, for
 reference while developing or debugging. This document is not intended for
-developers using snaps, but for developers working on the MetaMask Snaps
+developers using Snaps, but for developers working on the MetaMask Snaps
 platform itself.
 
 It is recommended to read the [architecture](./architecture.md)
