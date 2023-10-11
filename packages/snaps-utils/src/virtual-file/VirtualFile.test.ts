@@ -1,3 +1,5 @@
+import { bytesToHex, stringToBytes } from '@metamask/utils';
+
 import { VirtualFile } from './VirtualFile';
 
 const VALUE = 'foo\nbar';
@@ -33,6 +35,12 @@ describe('VirtualFile', () => {
       ]);
       const file = new VirtualFile({ value: array });
       expect(file.toString('utf-16be')).toStrictEqual(VALUE);
+    });
+
+    it('supports hex', () => {
+      const value = stringToBytes('foo');
+      const file = new VirtualFile({ value });
+      expect(file.toString('hex')).toStrictEqual(bytesToHex(value));
     });
   });
 
