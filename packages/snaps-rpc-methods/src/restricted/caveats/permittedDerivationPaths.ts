@@ -3,6 +3,7 @@ import type {
   PermissionConstraint,
   RestrictedMethodCaveatSpecificationConstraint,
 } from '@metamask/permission-controller';
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type { Bip32Entropy } from '@metamask/snaps-utils';
 import {
   SnapCaveatType,
@@ -11,7 +12,6 @@ import {
 } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 import { array, size, type } from 'superstruct';
 
 /**
@@ -51,7 +51,7 @@ export function validateBIP32Path(
     value,
     Bip32EntropyStruct,
     'Invalid BIP-32 entropy path definition',
-    ethErrors.rpc.invalidParams,
+    rpcErrors.invalidParams,
   );
 }
 
@@ -69,7 +69,7 @@ export function validateBIP32CaveatPaths(
     caveat,
     type({ value: size(array(Bip32EntropyStruct), 1, Infinity) }),
     'Invalid BIP-32 entropy caveat',
-    ethErrors.rpc.internal,
+    rpcErrors.internal,
   );
 }
 
@@ -96,7 +96,7 @@ export const PermittedDerivationPathsCaveatSpecification: Record<
         );
 
         if (!path) {
-          throw ethErrors.provider.unauthorized({
+          throw providerErrors.unauthorized({
             message:
               'The requested path is not permitted. Allowed paths must be specified in the snap manifest.',
           });

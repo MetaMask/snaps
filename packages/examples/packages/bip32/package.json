@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@metamask/key-tree": "^9.0.0",
-    "@metamask/rpc-errors": "^5.1.1",
+    "@metamask/rpc-errors": "^6.1.0",
     "@metamask/snaps-types": "workspace:^",
     "@metamask/snaps-ui": "workspace:^",
     "@metamask/utils": "^8.1.0",

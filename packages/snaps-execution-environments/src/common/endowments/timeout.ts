@@ -1,4 +1,4 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 
 const MINIMUM_TIMEOUT = 10;
 
@@ -16,7 +16,7 @@ const createTimeout = () => {
   const registeredHandles = new Map<unknown, unknown>();
   const _setTimeout = (handler: TimerHandler, timeout?: number): unknown => {
     if (typeof handler !== 'function') {
-      throw ethErrors.rpc.internal(
+      throw rpcErrors.internal(
         `The timeout handler must be a function. Received: ${typeof handler}.`,
       );
     }

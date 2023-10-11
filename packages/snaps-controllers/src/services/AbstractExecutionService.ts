@@ -1,15 +1,20 @@
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import type { BasePostMessageStream } from '@metamask/post-message-stream';
 import type { SnapRpcHook, SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { SNAP_STREAM_NAMES, logError } from '@metamask/snaps-utils';
-import type { Json, JsonRpcNotification } from '@metamask/utils';
-import { Duration, isJsonRpcNotification, isObject } from '@metamask/utils';
 import type {
-  // TODO: Replace with @metamask/utils version after bumping json-rpc-engine
+  Json,
+  JsonRpcNotification,
   JsonRpcRequest,
   PendingJsonRpcResponse,
-} from 'json-rpc-engine';
-import { JsonRpcEngine } from 'json-rpc-engine';
+} from '@metamask/utils';
+import {
+  Duration,
+  hasProperty,
+  isJsonRpcNotification,
+  isObject,
+} from '@metamask/utils';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import { pipeline } from 'stream';
@@ -46,6 +51,10 @@ export type Job<WorkerType> = {
   rpcEngine: JsonRpcEngine;
   worker: WorkerType;
 };
+
+export class ExecutionEnvironmentError extends Error {
+  cause?: Json;
+}
 
 export abstract class AbstractExecutionService<WorkerType>
   implements ExecutionService
@@ -219,10 +228,7 @@ export abstract class AbstractExecutionService<WorkerType>
   ): Promise<{ streams: JobStreams; worker: WorkerType }> {
     const { worker, stream: envStream } = await this.initEnvStream(jobId);
     // Typecast justification: stream type mismatch
-    const mux = setupMultiplex(
-      envStream as unknown as Duplex,
-      `Job: "${jobId}"`,
-    );
+    const mux = setupMultiplex(envStream, `Job: "${jobId}"`);
 
     const commandStream = mux.createStream(SNAP_STREAM_NAMES.COMMAND);
 
@@ -230,7 +236,7 @@ export abstract class AbstractExecutionService<WorkerType>
     // Also keep track of outbound request/responses
     const notificationHandler = (
       message:
-        | JsonRpcRequest<unknown>
+        | JsonRpcRequest
         | JsonRpcNotification<Json[] | Record<string, Json>>,
     ) => {
       if (!isJsonRpcNotification(message)) {
@@ -273,7 +279,7 @@ export abstract class AbstractExecutionService<WorkerType>
     // Typecast: stream type mismatch
     return {
       streams: {
-        command: commandStream as unknown as Duplex,
+        command: commandStream,
         rpc: rpcStream,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         _connection: envStream,
@@ -347,7 +353,7 @@ export abstract class AbstractExecutionService<WorkerType>
       id: nanoid(),
     });
 
-    const rpcStream = job.streams.rpc as unknown as Duplex;
+    const rpcStream = job.streams.rpc;
 
     this.setupSnapProvider(snapData.snapId, rpcStream);
 
@@ -364,8 +370,8 @@ export abstract class AbstractExecutionService<WorkerType>
   // Cannot be hash private yet because of tests.
   private async command(
     jobId: string,
-    message: JsonRpcRequest<unknown>,
-  ): Promise<unknown> {
+    message: JsonRpcRequest,
+  ): Promise<Json | undefined> {
     if (typeof message !== 'object') {
       throw new Error('Must send object.');
     }
@@ -376,11 +382,23 @@ export abstract class AbstractExecutionService<WorkerType>
     }
 
     log('Parent: Sending Command', message);
-    const response: PendingJsonRpcResponse<unknown> =
-      await job.rpcEngine.handle(message);
+    const response: PendingJsonRpcResponse<Json> = await job.rpcEngine.handle(
+      message,
+    );
+
     if (response.error) {
-      throw new Error(response.error.message);
+      const error = new ExecutionEnvironmentError(response.error.message);
+      if (
+        isObject(response.error.data) &&
+        hasProperty(response.error.data, 'cause') &&
+        response.error.data.cause !== null
+      ) {
+        error.cause = response.error.data.cause;
+      }
+
+      throw error;
     }
+
     return response.result;
   }
 
@@ -397,7 +415,7 @@ export abstract class AbstractExecutionService<WorkerType>
         params: {
           origin,
           handler,
-          request,
+          request: request as JsonRpcRequest,
           target: snapId,
         },
       });
@@ -433,7 +451,7 @@ export abstract class AbstractExecutionService<WorkerType>
     snapId: string,
     options: SnapRpcHookArgs,
   ): Promise<unknown> {
-    const rpcRequestHandler = await this.getRpcRequestHandler(snapId);
+    const rpcRequestHandler = this.getRpcRequestHandler(snapId);
 
     if (!rpcRequestHandler) {
       throw new Error(
@@ -457,18 +475,12 @@ export function setupMultiplex(
   streamName: string,
 ): ObjectMultiplex {
   const mux = new ObjectMultiplex();
-  pipeline(
-    connectionStream,
-    // Typecast: stream type mismatch
-    mux as unknown as Duplex,
-    connectionStream,
-    (error) => {
-      if (error) {
-        streamName
-          ? logError(`"${streamName}" stream failure.`, error)
-          : logError(error);
-      }
-    },
-  );
+  pipeline(connectionStream, mux, connectionStream, (error) => {
+    if (error) {
+      streamName
+        ? logError(`"${streamName}" stream failure.`, error)
+        : logError(error);
+    }
+  });
   return mux;
 }

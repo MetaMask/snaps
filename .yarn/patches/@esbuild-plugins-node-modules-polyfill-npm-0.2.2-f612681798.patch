@@ -1,0 +1,26 @@
+diff --git a/dist/polyfills.js b/dist/polyfills.js
+index 4f4f95302a6da4643b822262921f668abc8c3db1..78202915fa5c952222aa1751442f7a9410d73dc4 100644
+--- a/dist/polyfills.js
++++ b/dist/polyfills.js
+@@ -10,7 +10,7 @@ function builtinsPolyfills() {
+     libs.set('util', require.resolve('rollup-plugin-node-polyfills/polyfills/util'));
+     libs.set('sys', libs.get('util'));
+     libs.set('events', require.resolve('rollup-plugin-node-polyfills/polyfills/events'));
+-    libs.set('stream', require.resolve('rollup-plugin-node-polyfills/polyfills/stream'));
++    libs.set('stream', require.resolve('stream-browserify'));
+     libs.set('path', require.resolve('rollup-plugin-node-polyfills/polyfills/path'));
+     libs.set('querystring', require.resolve('rollup-plugin-node-polyfills/polyfills/qs'));
+     libs.set('punycode', require.resolve('rollup-plugin-node-polyfills/polyfills/punycode'));
+diff --git a/esm/polyfills.js b/esm/polyfills.js
+index 28b0ea77e1f7bc5766737caaa8cb5c5db25a279e..ae71645a1d24c46fc7987135aff0332e89017ec1 100644
+--- a/esm/polyfills.js
++++ b/esm/polyfills.js
+@@ -7,7 +7,7 @@ export function builtinsPolyfills() {
+     libs.set('util', require.resolve('rollup-plugin-node-polyfills/polyfills/util'));
+     libs.set('sys', libs.get('util'));
+     libs.set('events', require.resolve('rollup-plugin-node-polyfills/polyfills/events'));
+-    libs.set('stream', require.resolve('rollup-plugin-node-polyfills/polyfills/stream'));
++    libs.set('stream', require.resolve('stream-browserify'));
+     libs.set('path', require.resolve('rollup-plugin-node-polyfills/polyfills/path'));
+     libs.set('querystring', require.resolve('rollup-plugin-node-polyfills/polyfills/qs'));
+     libs.set('punycode', require.resolve('rollup-plugin-node-polyfills/polyfills/punycode'));

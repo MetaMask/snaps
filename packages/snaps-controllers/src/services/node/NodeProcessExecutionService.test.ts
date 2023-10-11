@@ -2,6 +2,7 @@ import type { SnapId } from '@metamask/snaps-utils';
 import { HandlerType } from '@metamask/snaps-utils';
 
 import { createService, MOCK_BLOCK_NUMBER } from '../../test-utils';
+import { ExecutionEnvironmentError } from '../AbstractExecutionService';
 import type { SnapErrorJson } from '../ExecutionService';
 import { NodeProcessExecutionService } from './NodeProcessExecutionService';
 
@@ -47,7 +48,7 @@ describe('NodeProcessExecutionService', () => {
   });
 
   it('can handle errors in request handler', async () => {
-    expect.assertions(1);
+    expect.assertions(2);
     const { service } = createService(NodeProcessExecutionService);
     const snapId = 'TestSnap';
     await service.executeSnap({
@@ -58,8 +59,8 @@ describe('NodeProcessExecutionService', () => {
       endowments: [],
     });
 
-    await expect(
-      service.handleRpcRequest(snapId, {
+    const result = await service
+      .handleRpcRequest(snapId, {
         origin: 'fooOrigin',
         handler: ON_RPC_REQUEST,
         request: {
@@ -68,8 +69,18 @@ describe('NodeProcessExecutionService', () => {
           params: {},
           id: 1,
         },
-      }),
-    ).rejects.toThrow('foobar');
+      })
+      .catch((error) => error);
+
+    expect(result).toBeInstanceOf(ExecutionEnvironmentError);
+
+    // eslint-disable-next-line jest/prefer-strict-equal
+    expect((result as ExecutionEnvironmentError).cause).toEqual({
+      // TODO: Unwrap errors, and change this to the actual error message.
+      message: 'foobar',
+      stack: expect.any(String),
+    });
+
     await service.terminateAllSnaps();
   });
 
@@ -126,9 +137,10 @@ describe('NodeProcessExecutionService', () => {
       code: -32603,
       data: {
         snapId: 'TestSnap',
-        stack: expect.any(String),
+        stack: expect.stringContaining('Error: random error inside'),
       },
-      message: 'random error inside',
+      // TODO: Unwrap errors, and change this to the actual error message.
+      message: 'Execution Environment Error',
     });
 
     await service.terminateAllSnaps();

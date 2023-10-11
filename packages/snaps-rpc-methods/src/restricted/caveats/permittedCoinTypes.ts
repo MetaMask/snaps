@@ -3,10 +3,10 @@ import type {
   RestrictedMethodCaveatSpecificationConstraint,
   Caveat,
 } from '@metamask/permission-controller';
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import { FORBIDDEN_COIN_TYPES, SnapCaveatType } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
 import { hasProperty, isPlainObject } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 
 import type { GetBip44EntropyParams } from '../getBip44Entropy';
 
@@ -41,7 +41,7 @@ export function validateBIP44Params(
   value: unknown,
 ): asserts value is GetBip44EntropyParams {
   if (!isPlainObject(value) || !hasProperty(value, 'coinType')) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: 'Expected a plain object containing a coin type.',
     });
   }
@@ -52,14 +52,14 @@ export function validateBIP44Params(
     value.coinType < 0 ||
     value.coinType > 0x7fffffff
   ) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message:
         'Invalid "coinType" parameter. Coin type must be a non-negative integer.',
     });
   }
 
   if (FORBIDDEN_COIN_TYPES.includes(value.coinType)) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Coin type ${value.coinType} is forbidden.`,
     });
   }
@@ -78,7 +78,7 @@ export function validateBIP44Caveat(caveat: Caveat<string, any>) {
     !Array.isArray(caveat.value) ||
     caveat.value.length === 0
   ) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: 'Expected non-empty array of coin types.',
     });
   }
@@ -108,7 +108,7 @@ export const PermittedCoinTypesCaveatSpecification: Record<
         );
 
         if (!coinType) {
-          throw ethErrors.provider.unauthorized({
+          throw providerErrors.unauthorized({
             message:
               'The requested coin type is not permitted. Allowed coin types must be specified in the snap manifest.',
           });

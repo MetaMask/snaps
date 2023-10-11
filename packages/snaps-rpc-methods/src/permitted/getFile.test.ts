@@ -1,14 +1,14 @@
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { AuxiliaryFileEncoding, VirtualFile } from '@metamask/snaps-utils';
 import type {
   JsonRpcRequest,
   PendingJsonRpcResponse,
   JsonRpcFailure,
   JsonRpcSuccess,
-} from '@metamask/types';
+} from '@metamask/utils';
 import { stringToBytes } from '@metamask/utils';
-import { JsonRpcEngine } from 'json-rpc-engine';
 
-import type { GetFileHooks } from './getFile';
+import type { GetFileHooks, GetFileArgs } from './getFile';
 import { getFileHandler } from './getFile';
 
 describe('snap_getFile', () => {
@@ -46,7 +46,7 @@ describe('snap_getFile', () => {
       const engine = new JsonRpcEngine();
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<JsonRpcRequest<unknown>>,
+          req as JsonRpcRequest<GetFileArgs>,
           res as PendingJsonRpcResponse<string>,
           next,
           end,
@@ -88,7 +88,7 @@ describe('snap_getFile', () => {
       const engine = new JsonRpcEngine();
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<JsonRpcRequest<unknown>>,
+          req as JsonRpcRequest<GetFileArgs>,
           res as PendingJsonRpcResponse<string>,
           next,
           end,
@@ -129,7 +129,7 @@ describe('snap_getFile', () => {
       const engine = new JsonRpcEngine();
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<JsonRpcRequest<unknown>>,
+          req as JsonRpcRequest<GetFileArgs>,
           res as PendingJsonRpcResponse<string>,
           next,
           end,
@@ -148,7 +148,17 @@ describe('snap_getFile', () => {
         },
       })) as JsonRpcFailure;
 
-      expect(response.error.message).toBe('foo bar');
+      expect(response.error).toStrictEqual({
+        code: -32603,
+        message: 'Internal JSON-RPC error.',
+        data: {
+          cause: {
+            message: 'foo bar',
+            stack: expect.any(String),
+          },
+        },
+      });
+
       expect(hooks.getSnapFile).toHaveBeenCalledWith(
         './src/foo.json',
         AuxiliaryFileEncoding.Base64,

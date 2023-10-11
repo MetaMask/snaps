@@ -1,3 +1,5 @@
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { HandlerType } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID, getSnapObject } from '@metamask/snaps-utils/test-utils';
 import type {
@@ -6,8 +8,6 @@ import type {
   JsonRpcFailure,
   JsonRpcSuccess,
 } from '@metamask/types';
-import { ethErrors } from 'eth-rpc-errors';
-import { JsonRpcEngine } from 'json-rpc-engine';
 
 import { invokeKeyringHandler } from './invokeKeyring';
 
@@ -93,7 +93,7 @@ describe('wallet_invokeKeyring', () => {
       hooks.hasPermission.mockImplementation(() => true);
       hooks.getSnap.mockImplementation(() => getSnapObject());
       hooks.handleSnapRpcRequest.mockImplementation(() => {
-        throw ethErrors.rpc.invalidRequest({
+        throw rpcErrors.invalidRequest({
           message: 'Failed to start snap.',
         });
       });
@@ -124,7 +124,7 @@ describe('wallet_invokeKeyring', () => {
       })) as JsonRpcFailure;
 
       expect(response.error).toStrictEqual({
-        ...ethErrors.rpc
+        ...rpcErrors
           .invalidRequest({
             message: 'Failed to start snap.',
           })
@@ -141,7 +141,7 @@ describe('wallet_invokeKeyring', () => {
       hooks.hasPermission.mockImplementation(() => true);
       hooks.getSnap.mockImplementation(() => getSnapObject());
       hooks.handleSnapRpcRequest.mockImplementation(() => {
-        throw ethErrors.rpc.invalidRequest({
+        throw rpcErrors.invalidRequest({
           message: 'Failed to start snap.',
         });
       });
@@ -172,7 +172,7 @@ describe('wallet_invokeKeyring', () => {
       })) as JsonRpcFailure;
 
       expect(response.error).toStrictEqual({
-        ...ethErrors.rpc
+        ...rpcErrors
           .invalidRequest({
             message:
               'The origin "metamask.io" is not allowed to invoke the method "foo".',
@@ -190,7 +190,7 @@ describe('wallet_invokeKeyring', () => {
       hooks.hasPermission.mockImplementation(() => true);
       hooks.getSnap.mockImplementation(() => getSnapObject());
       hooks.handleSnapRpcRequest.mockImplementation(() => {
-        throw ethErrors.rpc.invalidRequest({
+        throw rpcErrors.invalidRequest({
           message: 'Failed to start snap.',
         });
       });
@@ -221,7 +221,7 @@ describe('wallet_invokeKeyring', () => {
       })) as JsonRpcFailure;
 
       expect(response.error).toStrictEqual({
-        ...ethErrors.rpc
+        ...rpcErrors
           .invalidRequest({ message: 'The request must have a method.' })
           .serialize(),
         stack: expect.any(String),
@@ -260,7 +260,7 @@ describe('wallet_invokeKeyring', () => {
       })) as JsonRpcFailure;
 
       expect(response.error).toStrictEqual({
-        ...ethErrors.rpc
+        ...rpcErrors
           .invalidRequest({
             message: `The snap "${MOCK_SNAP_ID}" is not connected to "metamask.io". Please connect before invoking the snap.`,
           })
@@ -302,7 +302,7 @@ describe('wallet_invokeKeyring', () => {
       })) as JsonRpcFailure;
 
       expect(response.error).toStrictEqual({
-        ...ethErrors.rpc
+        ...rpcErrors
           .invalidRequest({
             message: `The snap "${MOCK_SNAP_ID}" is not installed. Please install it first, before invoking the snap.`,
           })
@@ -334,13 +334,12 @@ describe('wallet_invokeKeyring', () => {
         id: 1,
         method: 'wallet_invokeKeyring',
         params: {
-          snapId: undefined,
           request: [],
         },
       })) as JsonRpcFailure;
 
       expect(response.error).toStrictEqual({
-        ...ethErrors.rpc
+        ...rpcErrors
           .invalidParams({
             message: 'Must specify a valid snap ID.',
           })

@@ -8,6 +8,7 @@ describe('browser entrypoint', () => {
     'OffscreenExecutionService',
     'WebWorkerExecutionService',
     'ProxyPostMessageStream',
+    'ExecutionEnvironmentError',
   ];
 
   it('entrypoint has expected exports', () => {
