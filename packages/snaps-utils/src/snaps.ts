@@ -119,7 +119,7 @@ export type Snap = {
   blocked: boolean;
 
   /**
-   * Information detailing why the snap is blocked.
+   * Information detailing why the Snap is blocked.
    */
   blockInformation?: BlockReason;
 
@@ -206,7 +206,7 @@ export function getSnapChecksum(files: FetchedSnapFiles): string {
 
 /**
  * Checks whether the `source.shasum` property of a Snap manifest matches the
- * shasum of the snap.
+ * shasum of the Snap.
  *
  * @param files - All required Snap files to be included in the checksum.
  * @param errorMessage - The error message to throw if validation fails.

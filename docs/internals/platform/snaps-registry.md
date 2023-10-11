@@ -7,7 +7,7 @@ infrastructure. In the future, we may move to a smart contract based registry.
 
 The registry is used by the [Snap Controller] to determine which Snaps are
 allowed to be installed. The [Snap Controller] will check the registry when a
-Snap is installed, and if the snap is not in the registry, it will not be
+Snap is installed, and if the Snap is not in the registry, it will not be
 installed.
 
 ## JSON-based registry
@@ -16,7 +16,7 @@ For the current implementation, the registry is a JSON file that is hosted on
 the MetaMask infrastructure. The registry file can be found in a separate
 repository: [Snaps Registry]. The hosted version consists of two files:
 
-- `registry.json`: The main registry file. This file contains a list of snaps
+- `registry.json`: The main registry file. This file contains a list of Snaps
   that are allowed to be installed, or blocked from being installed.
 - `signature.json`: The signature file. This file contains the signature of
   the registry file, signed when the registry is updated. This allows us to
@@ -30,15 +30,15 @@ These files are fetched by the [JsonSnapsRegistry] class, which is an
 implementation of the registry interface. It checks the signature of the
 registry file, by checking it against a known public key. If the signature is
 not valid, the registry will not be loaded. Depending on the `requireAllowlist`
-feature flag, the [Snap Controller] will not allow any snaps to be installed if
+feature flag, the [Snap Controller] will not allow any Snaps to be installed if
 the registry is not loaded. This feature flag is enabled by default in the
 stable version of the MetaMask extension.
 
 ## Smart contract based registry
 
 In the future, we may move to a smart contract based registry. This would allow
-us to have a decentralized registry, and allow snap developers to register their
-snaps themselves. This is currently a work in progress. Progress can be tracked
+us to have a decentralized registry, and allow Snap developers to register their
+Snaps themselves. This is currently a work in progress. Progress can be tracked
 in the [Permissionless Snaps Registry] repository.
 
 [snap controller]: ./snap-controller.md

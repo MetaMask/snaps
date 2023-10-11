@@ -9,26 +9,26 @@ Currently, the execution service supports the following execution environments:
 
 - Iframe (Manifest V2), which creates an iframe in the extension background DOM.
 - Node.js process, which spawns a new process for each Snap execution.
-- Node.js worker threads, which creates a new worker thread for each snap
+- Node.js worker threads, which creates a new worker thread for each Snap
   execution.
 - Offscreen (Manifest V3), which uses the [Offscreen Document API] to create a
   proxy to the iframe execution environment.
-- WebWorker (Manifest V2), which creates a web worker for each snap execution.
+- WebWorker (Manifest V2), which creates a web worker for each Snap execution.
 
 Generally, these execution services work as follows:
 
-1. The [Snap Controller] calls the execution service to execute a snap.
-2. The execution service creates an [Execution Environment] for the snap, e.g.,
+1. The [Snap Controller] calls the execution service to execute a Snap.
+2. The execution service creates an [Execution Environment] for the Snap, e.g.,
    it creates an iframe in the extension.
 3. The execution service sets up a stream using one of the [post message
    stream]s, depending on the environment.
-4. The execution service calls the [Execution Environment] to execute the snap
+4. The execution service calls the [Execution Environment] to execute the Snap
    code in the [Execution Environment].
-5. The snap is now running and ready to service requests.
+5. The Snap is now running and ready to service requests.
 
 ```mermaid
 sequenceDiagram
-    Controller->>+Service: Execute snap
+    Controller->>+Service: Execute Snap
     activate Service
     Service->>Service: Set up stream
     Service-->>Environment: Create environment
@@ -44,7 +44,7 @@ sequenceDiagram
     deactivate Service
 ```
 
-After this initial boot-up, the snap is now ready to service requests, also via
+After this initial boot-up, the Snap is now ready to service requests, also via
 JSON-RPC.
 
 ```mermaid

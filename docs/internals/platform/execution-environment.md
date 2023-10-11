@@ -12,12 +12,12 @@ with a specific [Execution Service].
 Currently, the following execution environments are supported:
 
 - Iframe (Manifest V2), which creates an iframe in the extension background DOM.
-- Node.js process, which spawns a new process for each snap execution.
-- Node.js worker threads, which creates a new worker thread for each snap
+- Node.js process, which spawns a new process for each Snap execution.
+- Node.js worker threads, which creates a new worker thread for each Snap
   execution.
 - Offscreen (Manifest V3), which uses the [Offscreen Document API] to create a
   proxy to the iframe execution environment.
-- WebWorker (Manifest V2), which creates a web worker for each snap execution.
+- WebWorker (Manifest V2), which creates a web worker for each Snap execution.
 
 ## Proxy execution environments
 
