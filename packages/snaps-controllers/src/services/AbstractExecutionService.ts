@@ -415,9 +415,9 @@ export abstract class AbstractExecutionService<WorkerType>
         params: {
           origin,
           handler,
-          request,
+          request: request as JsonRpcRequest,
           target: snapId,
-        } as Record<string, Json>,
+        },
       });
     };
 
