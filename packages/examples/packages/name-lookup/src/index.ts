@@ -13,11 +13,10 @@ import type { OnNameLookupHandler } from '@metamask/snaps-types';
 export const onNameLookup: OnNameLookupHandler = async (request) => {
   const { chainId, address, domain } = request;
 
-  // eslint-disable-next-line no-console
-  console.log(`Resolving for CAIP-2 chainId of: ${chainId}`);
-
   if (address) {
-    const resolvedDomain = 'test.domain';
+    const shortAddress = address.substring(2, 5);
+    const chainIdDecimal = parseInt(chainId.split(':')[1], 10);
+    const resolvedDomain = `${shortAddress}.${chainIdDecimal}.test.domain`;
     return { resolvedDomain };
   }
 
