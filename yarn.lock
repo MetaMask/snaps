@@ -4886,6 +4886,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/rpc-errors@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "@metamask/rpc-errors@npm:6.1.0"
+  dependencies:
+    "@metamask/utils": ^8.1.0
+    fast-safe-stringify: ^2.0.6
+  checksum: 9f4821d804e2fcaa8987b0958d02c6d829b7c7db49740c811cb593f381d0c4b00dabb7f1802907f1b2f6126f7c0d83ec34219183d29650f5d24df014ac72906a
+  languageName: node
+  linkType: hard
+
 "@metamask/rpc-methods@workspace:^, @metamask/rpc-methods@workspace:packages/rpc-methods":
   version: 0.0.0-use.local
   resolution: "@metamask/rpc-methods@workspace:packages/rpc-methods"
@@ -5379,7 +5389,7 @@ __metadata:
     "@metamask/eth-json-rpc-middleware": ^11.0.2
     "@metamask/key-tree": ^9.0.0
     "@metamask/permission-controller": ^4.1.2
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^6.1.0
     "@metamask/rpc-methods": "workspace:^"
     "@metamask/snaps-controllers": "workspace:^"
     "@metamask/snaps-execution-environments": "workspace:^"
