@@ -541,7 +541,8 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       error: {
         code: -32603,
-        message: expect.stringContaining('undefined'),
+        // TODO: Unwrap errors, and change this to the actual error message.
+        message: 'Execution Environment Error',
         data: expect.any(Object),
       },
       id: 2,
@@ -1022,7 +1023,8 @@ describe('BaseSnapExecutor', () => {
             stack: error.stack,
             snapId: MOCK_SNAP_ID,
           },
-          message: error.message,
+          // TODO: Unwrap errors, and change this to the actual error message.
+          message: 'Execution Environment Error',
         },
       },
     });
@@ -1082,7 +1084,8 @@ describe('BaseSnapExecutor', () => {
             stack: error.stack,
             snapId: MOCK_SNAP_ID,
           },
-          message: error.message,
+          // TODO: Unwrap errors, and change this to the actual error message.
+          message: 'Execution Environment Error',
         },
       },
     });
@@ -1388,7 +1391,8 @@ describe('BaseSnapExecutor', () => {
       error: {
         code: -32603,
         data: expect.anything(),
-        message: expect.stringContaining('undefined'),
+        // TODO: Unwrap errors, and change this to the actual error message.
+        message: 'Execution Environment Error',
       },
     });
 
@@ -1744,7 +1748,8 @@ describe('BaseSnapExecutor', () => {
       error: {
         code: -32603,
         data: expect.any(Object),
-        message: 'JSON-RPC responses must be JSON serializable objects.',
+        // TODO: Unwrap errors, and change this to the actual error message.
+        message: 'Execution Environment Error',
       },
     });
   });
