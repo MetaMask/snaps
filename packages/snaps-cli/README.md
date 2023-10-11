@@ -7,7 +7,7 @@ A CLI for developing MetaMask Snaps.
 Use Node.js `16.0.0` or later.
 We recommend [nvm](https://github.com/nvm-sh/nvm) for managing Node.js versions.
 
-Install a dev dependency in your snap project using `yarn` or `npm`:
+Install a dev dependency in your Snap project using `yarn` or `npm`:
 
 - `npm install --save-dev @metamask/snaps-cli`
 - `yarn add -D @metamask/snaps-cli`
@@ -18,8 +18,8 @@ Install a dev dependency in your snap project using `yarn` or `npm`:
 Usage: mm-snap <command> [options]
 
 Commands:
-  mm-snap build     Build snap from source                          [aliases: b]
-  mm-snap eval      Attempt to evaluate snap bundle in SES          [aliases: e]
+  mm-snap build     Build Snap from source                          [aliases: b]
+  mm-snap eval      Attempt to evaluate Snap bundle in SES          [aliases: e]
   mm-snap manifest  Validate the snap.manifest.json file            [aliases: m]
   mm-snap serve     Locally serve Snap file(s) for testing          [aliases: s]
   mm-snap watch     Build Snap on change                            [aliases: w]
@@ -37,26 +37,26 @@ Examples:
   mm-snap build --config                    Build './src/index.js' as
   ./snap.config.build.ts                    './dist/bundle.js' using the config
                                             in './snap.config.build.ts'
-  mm-snap manifest --fix                    Check the snap manifest, and fix any
+  mm-snap manifest --fix                    Check the Snap manifest, and fix any
                                             errors
-  mm-snap watch --port 8000                 The snap input file for changes, and
+  mm-snap watch --port 8000                 The Snap input file for changes, and
                                             serve it on port 8000
-  mm-snap serve --port 8000                 Serve the snap bundle on port 8000
+  mm-snap serve --port 8000                 Serve the Snap bundle on port 8000
 ```
 
 ## MetaMask Snaps
 
 MetaMask Snaps enables trustlessly extending the functionality of MetaMask at
-runtime. A snap consist of two things: a JSON manifest and a JavaScript bundle.
-At present, snaps can be published as npm packages on the public npm registry,
+runtime. A Snap consist of two things: a JSON manifest and a JavaScript bundle.
+At present, Snaps can be published as npm packages on the public npm registry,
 or hosted locally during development. In the future, it will be possible to
-publish snaps on many different platforms, including arbitrary npm registries
+publish Snaps on many different platforms, including arbitrary npm registries
 and IPFS.
 
-We recommend building your snap using this tool. You can bundle your snap using
+We recommend building your Snap using this tool. You can bundle your Snap using
 your own tools, but it must run in SES and only use the global APIs that
-MetaMask exposes at runtime. Although snaps currently execute in the browser,
-some browser APIs are not available to snaps, and snaps do not have DOM access.
+MetaMask exposes at runtime. Although Snaps currently execute in the browser,
+some browser APIs are not available to Snaps, and Snaps do not have DOM access.
 
 ### The Snap Manifest
 
@@ -97,8 +97,8 @@ directory of your npm package. Here's an example manifest:
 Refer to [the Snaps publishing specification](https://github.com/MetaMask/specifications/blob/main/snaps/publishing.md)
 for more information about the manifest.
 
-> **Note**: If your snap is not compatible with the publishing specification,
-> your snap may not work properly or install at all.
+> **Note**: If your Snap is not compatible with the publishing specification,
+> your Snap may not work properly or install at all.
 
 ### Assumed Project Structure
 
@@ -208,7 +208,7 @@ refer to the [legacy options](#legacy-options) section.
 - Type: `string`
 - Default: `"src/index.js"`
 
-The entry point of your snap. This is the file that will be bundled.
+The entry point of your Snap. This is the file that will be bundled.
 
 #### `output`
 
@@ -265,14 +265,14 @@ exit with an error.
 
 - Type: `object`
 
-The snap manifest configuration.
+The Snap manifest configuration.
 
 ##### `manifest.path`
 
 - Type: `string`
 - Default: `"snap.manifest.json"`
 
-The path to the snap manifest, i.e., `snap.manifest.json`.
+The path to the Snap manifest, i.e., `snap.manifest.json`.
 
 ##### `manifest.update`
 
@@ -288,7 +288,7 @@ thrown if the manifest is not up-to-date.
 - Type: `object`
 
 The development server configuration. The development server is used to test
-your snap during development, using the `watch` and `serve` commands.
+your Snap during development, using the `watch` and `serve` commands.
 
 ##### `server.enabled`
 
@@ -320,7 +320,7 @@ be used.
 - Type: `Record<string, unknown>`
 
 The environment configuration. This is used to set environment variables for
-the snap, which can be accessed using `process.env`.
+the Snap, which can be accessed using `process.env`.
 
 In addition to the environment variables set by the user, the following
 environment variables are set by the CLI:
@@ -358,7 +358,7 @@ shows a warning if a built-in module is used, but not provided.
 - Type: `string[]`
 
 A list of built-in modules to ignore. This is useful if the built-in module is
-not actually used in the snap, but is added by a dependency.
+not actually used in the Snap, but is added by a dependency.
 
 ###### `stats.buffer`
 
@@ -417,7 +417,7 @@ future.
 - Type: `boolean`
 
 Whether to enable WebAssembly support. When this is enabled, WebAssembly files
-can be imported in the snap, for example:
+can be imported in the Snap, for example:
 
 ```typescript
 import program from './program.wasm';
@@ -517,7 +517,7 @@ MetaMask Snaps runtime, to check for any compatibility issues.
 - Type: `boolean`
 - Default: `true`
 
-Whether to validate the snap manifest. If `true`, the snap manifest will be
+Whether to validate the Snap manifest. If `true`, the Snap manifest will be
 validated, and any errors or warnings will be shown.
 
 ##### `cliOptions.outfileName`
@@ -542,7 +542,7 @@ The port to use for the development server.
 - Type: `string`
 - Default: `.`
 
-The root directory. This should be the directory that contains the snap
+The root directory. This should be the directory that contains the Snap
 manifest, and the `dist` directory. This will be served by the development
 server.
 
@@ -595,7 +595,7 @@ a limited set of dependencies, but not all of them.
 - Type: `boolean`
 - Default: `true`
 
-Whether to write the snap manifest. If `true`, the snap manifest will be written
+Whether to write the Snap manifest. If `true`, the Snap manifest will be written
 with any changes made by the CLI, if the manifest is invalid.
 
 ##### `cliOptions.serve`
@@ -603,7 +603,7 @@ with any changes made by the CLI, if the manifest is invalid.
 - Type: `boolean`
 - Default: `true`
 
-Whether to serve the snap. If `true`, the snap will be served by the development
+Whether to serve the Snap. If `true`, the Snap will be served by the development
 server, when running `mm-snap watch`.
 
 ##### `cliOptions.suppressWarnings`

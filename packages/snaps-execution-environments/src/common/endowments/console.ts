@@ -14,7 +14,7 @@ export const consoleAttenuatedMethods = new Set([
 ]);
 
 /**
- * A set of all the `console` values that will be passed to the snap. This has
+ * A set of all the `console` values that will be passed to the Snap. This has
  * all the values that are available in both the browser and Node.js.
  */
 export const consoleMethods = new Set([

@@ -227,6 +227,6 @@ jobs:
       - name: Commit examples
         run: |
           git add packages/examples/packages
-          git commit -m "Update example snaps" || true
+          git commit -m "Update example Snaps" || true
       - name: Push changes
         run: git push

@@ -9,7 +9,7 @@ export const SVG_MAX_BYTE_SIZE_TEXT = `${Math.floor(
 )}kb`;
 
 export const assertIsSnapIcon = (icon: VirtualFile) => {
-  assert(icon.path.endsWith('.svg'), 'Expected snap icon to end in ".svg".');
+  assert(icon.path.endsWith('.svg'), 'Expected Snap icon to end in ".svg".');
 
   assert(
     Buffer.byteLength(icon.value, 'utf8') <= SVG_MAX_BYTE_SIZE,

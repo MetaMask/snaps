@@ -14,7 +14,7 @@ describe('NodeProcessExecutionService', () => {
     await service.terminateAllSnaps();
   });
 
-  it('can create a snap worker and start the snap', async () => {
+  it('can create a Snap worker and start the Snap', async () => {
     const { service } = createService(NodeProcessExecutionService);
     const response = await service.executeSnap({
       snapId: 'TestSnap',
@@ -27,7 +27,7 @@ describe('NodeProcessExecutionService', () => {
     await service.terminateAllSnaps();
   });
 
-  it('can handle a crashed snap', async () => {
+  it('can handle a crashed Snap', async () => {
     expect.assertions(1);
     const { service } = createService(NodeProcessExecutionService);
     const action = async () => {

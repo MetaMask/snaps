@@ -27,7 +27,7 @@ const steps: Steps<WatchContext> = [
 
       if (!(await isFile(input))) {
         throw new CommandError(
-          `Input file not found: "${input}". Make sure that the "input" field in your snap config is correct.`,
+          `Input file not found: "${input}". Make sure that the "input" field in your Snap config is correct.`,
         );
       }
     },
@@ -43,7 +43,7 @@ const steps: Steps<WatchContext> = [
     },
   },
   {
-    name: 'Building the snap bundle.',
+    name: 'Building the Snap bundle.',
     task: async ({ config, spinner }) => {
       await watch(config, { spinner });
     },

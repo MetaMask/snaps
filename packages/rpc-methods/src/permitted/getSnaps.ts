@@ -26,14 +26,14 @@ export const getSnapsHandler: PermittedHandlerExport<
 
 export type GetSnapsHooks = {
   /**
-   * @returns The permitted and installed snaps for the requesting origin.
+   * @returns The permitted and installed Snaps for the requesting origin.
    */
   getSnaps: () => Promise<InstallSnapsResult>;
 };
 
 /**
  * The `wallet_getSnaps` method implementation.
- * Fetches available snaps for the requesting origin and adds them to the JSON-RPC response.
+ * Fetches available Snaps for the requesting origin and adds them to the JSON-RPC response.
  *
  * @param _req - The JSON-RPC request object. Not used by this function.
  * @param res - The JSON-RPC response object.
@@ -41,7 +41,7 @@ export type GetSnapsHooks = {
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
- * @param hooks.getSnaps - A function that returns the snaps available for the requesting origin.
+ * @param hooks.getSnaps - A function that returns the Snaps available for the requesting origin.
  * @returns Nothing.
  */
 async function getSnapsImplementation(

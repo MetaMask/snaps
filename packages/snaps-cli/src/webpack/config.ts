@@ -41,7 +41,7 @@ export type WebpackOptions = {
 /**
  * Get the default Webpack configuration. This is the configuration that will
  * be used if the user doesn't provide a custom Webpack configuration. The
- * configuration is based on the snap config.
+ * configuration is based on the Snap config.
  *
  * The default configuration includes:
  *
@@ -50,9 +50,9 @@ export type WebpackOptions = {
  * - `SnapsWebpackPlugin` to validate the bundle and update the manifest.
  *
  * It can be customized through the `customizeWebpackConfig` function in the
- * snap config, but in most cases, you shouldn't need to do that.
+ * Snap config, but in most cases, you shouldn't need to do that.
  *
- * @param config - The processed snap Webpack config.
+ * @param config - The processed Snap Webpack config.
  * @param options - The Webpack options.
  * @returns The default Webpack configuration.
  */

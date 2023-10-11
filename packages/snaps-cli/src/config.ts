@@ -50,7 +50,7 @@ const CONFIG_FILES = [CONFIG_FILE, TS_CONFIG_FILE];
  */
 export type SnapBrowserifyConfig = {
   /**
-   * The bundler to use to build the snap. For backwards compatibility, if not
+   * The bundler to use to build the Snap. For backwards compatibility, if not
    * specified, Browserify will be used. However, the Browserify bundler is
    * deprecated and will be removed in a future release, so it's recommended to
    * use the Webpack bundler instead.
@@ -66,14 +66,14 @@ export type SnapBrowserifyConfig = {
    */
   cliOptions?: {
     /**
-     * The path to the snap bundle file.
+     * The path to the Snap bundle file.
      *
      * @default 'dist/bundle.js'
      */
     bundle?: string;
 
     /**
-     * The directory to output the snap to. This is only used if `bundle` is
+     * The directory to output the Snap to. This is only used if `bundle` is
      * not specified.
      *
      * @default 'dist'
@@ -81,7 +81,7 @@ export type SnapBrowserifyConfig = {
     dist?: string;
 
     /**
-     * Whether to attempt to evaluate the snap in SES. This can catch some errors
+     * Whether to attempt to evaluate the Snap in SES. This can catch some errors
      * that would otherwise only be caught at runtime.
      *
      * @default true
@@ -89,7 +89,7 @@ export type SnapBrowserifyConfig = {
     eval?: boolean;
 
     /**
-     * Whether to validate the snap manifest.
+     * Whether to validate the Snap manifest.
      *
      * @default true
      */
@@ -111,21 +111,21 @@ export type SnapBrowserifyConfig = {
     port?: number;
 
     /**
-     * The root directory to serve the snap from.
+     * The root directory to serve the Snap from.
      *
      * @default `process.cwd()`
      */
     root?: string;
 
     /**
-     * Whether to generate source maps for the snap bundle.
+     * Whether to generate source maps for the Snap bundle.
      *
      * @default false
      */
     sourceMaps?: boolean;
 
     /**
-     * The path to the snap entry point.
+     * The path to the Snap entry point.
      *
      * @default 'src/index.js'
      */
@@ -149,8 +149,8 @@ export type SnapBrowserifyConfig = {
      * The transpilation mode to use, which determines which files are
      * transpiled.
      *
-     * - `'localAndDeps'`: Transpile the snap entry point and all dependencies.
-     * - `'localOnly'`: Transpile only the snap entry point.
+     * - `'localAndDeps'`: Transpile the Snap entry point and all dependencies.
+     * - `'localOnly'`: Transpile only the Snap entry point.
      * - `'none'`: Don't transpile any files.
      *
      * @default 'localOnly'
@@ -178,7 +178,7 @@ export type SnapBrowserifyConfig = {
     writeManifest?: boolean;
 
     /**
-     * Whether to serve the snap locally.
+     * Whether to serve the Snap locally.
      *
      * @default true
      */
@@ -187,7 +187,7 @@ export type SnapBrowserifyConfig = {
 
   /**
    * A function that can be used to customize the Browserify instance used to
-   * build the snap.
+   * build the Snap.
    *
    * @param bundler - The Browserify instance.
    * @deprecated The Browserify bundler is deprecated and will be removed in a
@@ -202,7 +202,7 @@ export type SnapBrowserifyConfig = {
  */
 export type SnapWebpackConfig = {
   /**
-   * The bundler to use to build the snap. For backwards compatibility, if not
+   * The bundler to use to build the Snap. For backwards compatibility, if not
    * specified, Browserify will be used. However, the Browserify bundler is
    * deprecated and will be removed in a future release, so it's recommended to
    * use the Webpack bundler instead.
@@ -210,13 +210,13 @@ export type SnapWebpackConfig = {
   bundler: 'webpack';
 
   /**
-   * The path to the snap entry point. This should be a JavaScript or TypeScript
+   * The path to the Snap entry point. This should be a JavaScript or TypeScript
    * file.
    */
   input: string;
 
   /**
-   * Whether to generate source maps for the snap. If `true`, source maps will
+   * Whether to generate source maps for the Snap. If `true`, source maps will
    * be generated as separate files. If `'inline'`, source maps will be
    * inlined in the generated JavaScript bundle.
    *
@@ -225,7 +225,7 @@ export type SnapWebpackConfig = {
   sourceMap?: boolean | 'inline';
 
   /**
-   * Whether to attempt to evaluate the snap in SES. This can catch some errors
+   * Whether to attempt to evaluate the Snap in SES. This can catch some errors
    * that would otherwise only be caught at runtime.
    *
    * @default true
@@ -234,7 +234,7 @@ export type SnapWebpackConfig = {
 
   output?: {
     /**
-     * The path to the directory where the snap will be built. This directory
+     * The path to the directory where the Snap will be built. This directory
      * will be created if it doesn't exist.
      *
      * If the path is relative, it will be resolved relative to the current
@@ -252,7 +252,7 @@ export type SnapWebpackConfig = {
     filename?: string;
 
     /**
-     * Whether to clean the output directory before building the snap. If
+     * Whether to clean the output directory before building the Snap. If
      * `true`, the output directory will be deleted and recreated. Otherwise,
      * the output directory will be left as-is.
      *
@@ -261,7 +261,7 @@ export type SnapWebpackConfig = {
     clean?: boolean;
 
     /**
-     * Whether to minimize the snap bundle. If `true`, the bundle will be
+     * Whether to minimize the Snap bundle. If `true`, the bundle will be
      * minified. Otherwise, the bundle will be left as-is.
      *
      * @default true
@@ -271,7 +271,7 @@ export type SnapWebpackConfig = {
 
   manifest?: {
     /**
-     * The path to the snap manifest file. If the path is relative, it will be
+     * The path to the Snap manifest file. If the path is relative, it will be
      * resolved relative to the current working directory.
      *
      * @default 'snap.manifest.json'
@@ -280,7 +280,7 @@ export type SnapWebpackConfig = {
 
     /**
      * Whether to automatically update the manifest. If `true`, the manifest
-     * will be updated with the latest shasum of the snap bundle, and some
+     * will be updated with the latest shasum of the Snap bundle, and some
      * common fields will be updated if they are missing or incorrect. If
      * `false`, the manifest will be left as-is.
      *
@@ -291,16 +291,16 @@ export type SnapWebpackConfig = {
 
   server?: {
     /**
-     * Whether to enable the local server. If `true`, the snap will be served
+     * Whether to enable the local server. If `true`, the Snap will be served
      * from a local server, when running the `watch` command. If `false`, the
-     * snap will not be served.
+     * Snap will not be served.
      *
      * @default true
      */
     enabled?: boolean;
 
     /**
-     * The root directory to serve the snap from. If the path is relative, it
+     * The root directory to serve the Snap from. If the path is relative, it
      * will be resolved relative to the current working directory.
      *
      * @default `process.cwd()`
@@ -316,8 +316,8 @@ export type SnapWebpackConfig = {
   };
 
   /**
-   * The environment variables to set when building the snap. These will be
-   * available in the snap as `process.env`. In addition to these environment
+   * The environment variables to set when building the Snap. These will be
+   * available in the Snap as `process.env`. In addition to these environment
    * variables, the following environment variables will always be set:
    *
    * - `NODE_DEBUG`: `false`
@@ -417,7 +417,7 @@ export type SnapWebpackConfig = {
       };
 
   /**
-   * A function to customize the Webpack configuration used to build the snap.
+   * A function to customize the Webpack configuration used to build the Snap.
    * This function will be called with the default Webpack configuration, and
    * should return the modified configuration. If not specified, the default
    * configuration will be used.
@@ -687,7 +687,7 @@ export type ProcessedWebpackConfig = Infer<typeof SnapsWebpackConfigStruct> & {
 export type ProcessedConfig = ProcessedWebpackConfig;
 
 /**
- * Get a validated snap config. This validates the config and adds default
+ * Get a validated Snap config. This validates the config and adds default
  * values for any missing properties.
  *
  * @param config - The config to validate.
@@ -695,7 +695,7 @@ export type ProcessedConfig = ProcessedWebpackConfig;
  * @returns The validated config.
  */
 export function getConfig(config: unknown, argv: YargsArgs): ProcessedConfig {
-  const prefix = 'The snap config file is invalid';
+  const prefix = 'The Snap config file is invalid';
   const suffix = dim(
     // TODO: Link to `docs.metamask.io` once the docs are published.
     'Refer to the documentation for more information: https://github.com/MetaMask/snaps/tree/main/packages/snaps-cli/',
@@ -723,7 +723,7 @@ export function getConfig(config: unknown, argv: YargsArgs): ProcessedConfig {
 }
 
 /**
- * Load a snap config from a file. This supports both JavaScript and TypeScript
+ * Load a Snap config from a file. This supports both JavaScript and TypeScript
  * config files, in the CommonJS module format and the ES module format.
  *
  * This assumes that the config file exports a default object, either through
@@ -769,7 +769,7 @@ export async function loadConfig(path: string, argv: YargsArgs) {
     }
 
     throw new ConfigError(
-      `Unable to load snap config file at "${path}".\n\n${indent(
+      `Unable to load Snap config file at "${path}".\n\n${indent(
         error.message,
       )}`,
     );
@@ -777,14 +777,14 @@ export async function loadConfig(path: string, argv: YargsArgs) {
 }
 
 /**
- * Resolve a snap config. This function will look for a `snap.config.js` or
+ * Resolve a Snap config. This function will look for a `snap.config.js` or
  * `snap.config.ts` file in the current or specified directory.
  *
- * @param path - The path to resolve the snap config from. Defaults to the
+ * @param path - The path to resolve the Snap config from. Defaults to the
  * current working directory.
  * @param argv - The CLI arguments.
- * @returns The resolved and validated snap config.
- * @throws If a snap config could not be found.
+ * @returns The resolved and validated Snap config.
+ * @throws If a Snap config could not be found.
  */
 export async function resolveConfig(path: string, argv: YargsArgs) {
   for (const configFile of CONFIG_FILES) {
@@ -800,13 +800,13 @@ export async function resolveConfig(path: string, argv: YargsArgs) {
 }
 
 /**
- * Get a snap config from the CLI arguments. This will either load the config
+ * Get a Snap config from the CLI arguments. This will either load the config
  * from the specified config file, or resolve the config from the current
  * working directory.
  *
  * @param argv - The CLI arguments.
  * @param cwd - The current working directory. Defaults to `process.cwd()`.
- * @returns The resolved and validated snap config.
+ * @returns The resolved and validated Snap config.
  */
 export async function getConfigByArgv(
   argv: YargsArgs,

@@ -1,14 +1,14 @@
 import { assert } from '@metamask/utils';
 
 /**
- * Get the actual snap ID to use, for a given NPM snap ID and port.
+ * Get the actual Snap ID to use, for a given NPM Snap ID and port.
  *
- * If the current environment is production, the NPM snap ID is used. Otherwise,
+ * If the current environment is production, the NPM Snap ID is used. Otherwise,
  * the local ID, based on the port, is used.
  *
- * @param snapId - The NPM snap ID, if any.
+ * @param snapId - The NPM Snap ID, if any.
  * @param port - The port to use for the local ID, if any.
- * @returns The snap ID to use.
+ * @returns The Snap ID to use.
  */
 export function getSnapId(
   snapId: `npm:${string}` | undefined,

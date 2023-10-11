@@ -69,7 +69,7 @@ export type InvokeSnapParams = {
 };
 
 /**
- * The side-effect method to handle the snap install.
+ * The side-effect method to handle the Snap install.
  *
  * @param params - The side-effect params.
  * @param params.requestData - The request data associated to the requested permission.

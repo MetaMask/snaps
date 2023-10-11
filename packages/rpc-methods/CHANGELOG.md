@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.38.0-flask.1]
 ### Added
 - Add `snap_getLocale` JSON-RPC method ([#1557](https://github.com/MetaMask/snaps/pull/1557))
-   - This will let snaps get the user locale from the client.
+   - This will let Snaps get the user locale from the client.
 
 ### Fixed
 - Fix ed25519 public key derivation ([#1678](https://github.com/MetaMask/snaps/pull/1678))

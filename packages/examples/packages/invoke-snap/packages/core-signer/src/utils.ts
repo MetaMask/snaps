@@ -6,7 +6,7 @@ import { Mutex } from 'async-mutex';
 const mutex = new Mutex();
 
 /**
- * Get a root BIP-32 node, based on the snap's own entropy. If the Snap has not
+ * Get a root BIP-32 node, based on the Snap's own entropy. If the Snap has not
  * stored entropy yet, it will generate some entropy using the WebCrypto API,
  * and store it in the state using `snap_manageState`. On subsequent calls to
  * this function, it will get the entropy from the state, and use that instead.

@@ -20,13 +20,13 @@ const steps: Steps<BuildContext> = [
 
       if (!(await isFile(input))) {
         throw new CommandError(
-          `Input file not found: "${input}". Make sure that the "input" field in your snap config is correct.`,
+          `Input file not found: "${input}". Make sure that the "input" field in your Snap config is correct.`,
         );
       }
     },
   },
   {
-    name: 'Building the snap bundle.',
+    name: 'Building the Snap bundle.',
     task: async ({ config, spinner }) => {
       // We don't evaluate the bundle here, because it's done in a separate
       // step.
@@ -34,7 +34,7 @@ const steps: Steps<BuildContext> = [
     },
   },
   {
-    name: 'Evaluating the snap bundle.',
+    name: 'Evaluating the Snap bundle.',
     condition: ({ config }) => config.evaluate,
     task: async ({ config, spinner }) => {
       const path = pathResolve(

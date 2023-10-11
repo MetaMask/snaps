@@ -17,7 +17,7 @@ import { fetchingSaga, pollingSaga } from './sagas';
 fetchMock.enableMocks();
 
 describe('pollingSaga', () => {
-  it('calls the fetching saga and delay for local snaps', async () => {
+  it('calls the fetching saga and delay for local Snaps', async () => {
     await expectSaga(pollingSaga)
       .withState({
         configuration: {
@@ -29,7 +29,7 @@ describe('pollingSaga', () => {
       .silentRun();
   });
 
-  it('calls the fetching saga and not delay for npm snaps', async () => {
+  it('calls the fetching saga and not delay for npm Snaps', async () => {
     await expectSaga(pollingSaga)
       .withState({
         configuration: {

@@ -63,12 +63,12 @@ export async function cli(argv: string[], commands: any) {
       '$0 build --config ./snap.config.build.ts',
       `Build './src/index.js' as './dist/bundle.js' using the config in './snap.config.build.ts'`,
     )
-    .example('$0 manifest --fix', `Check the snap manifest, and fix any errors`)
+    .example('$0 manifest --fix', `Check the Snap manifest, and fix any errors`)
     .example(
       '$0 watch --port 8000',
-      `The snap input file for changes, and serve it on port 8000`,
+      `The Snap input file for changes, and serve it on port 8000`,
     )
-    .example('$0 serve --port 8000', `Serve the snap bundle on port 8000`)
+    .example('$0 serve --port 8000', `Serve the Snap bundle on port 8000`)
 
     .command(commands)
 

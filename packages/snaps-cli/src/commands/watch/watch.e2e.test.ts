@@ -10,8 +10,8 @@ describe('mm-snap watch', () => {
   let runner: TestRunner;
 
   beforeEach(async () => {
-    // Since this is an end-to-end test, and we're working with a "real" snap,
-    // we have to make a copy of the original snap file, so we can modify it
+    // Since this is an end-to-end test, and we're working with a "real" Snap,
+    // we have to make a copy of the original Snap file, so we can modify it
     // and reset it after the test.
     originalFile = await fs.readFile(SNAP_FILE, 'utf-8');
   });
@@ -44,7 +44,7 @@ describe('mm-snap watch', () => {
         ),
       );
       expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Building the snap bundle\./u),
+        expect.stringMatching(/Building the Snap bundle\./u),
       );
       expect(runner.stdout).toContainEqual(
         expect.stringMatching(/Compiled \d+ files? in \d+ms\./u),

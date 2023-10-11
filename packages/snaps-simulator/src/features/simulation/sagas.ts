@@ -68,11 +68,11 @@ import {
 const DEFAULT_ENVIRONMENT_URL = `https://execution.metamask.io/${packageJson.version}/index.html`;
 
 /**
- * The initialization saga is run on when the snap ID is changed and initializes the snaps execution environment.
- * This saga also creates the JSON-RPC engine and middlewares used to process RPC requests from the executing snap.
+ * The initialization saga is run on when the Snap ID is changed and initializes the Snaps execution environment.
+ * This saga also creates the JSON-RPC engine and middlewares used to process RPC requests from the executing Snap.
  *
  * @param action - The action itself.
- * @param action.payload - The payload of the action, in this case the snap ID.
+ * @param action.payload - The payload of the action, in this case the Snap ID.
  * @yields Puts the execution environment after creation.
  */
 export function* initSaga({ payload }: PayloadAction<string>) {
@@ -185,7 +185,7 @@ export function* initSaga({ payload }: PayloadAction<string>) {
 
 /**
  * The reboot saga, which should run when the setSourceCode action is emitted.
- * This saga will terminate existing snaps and reboot the snap with the latest source code.
+ * This saga will terminate existing Snaps and reboot the Snap with the latest source code.
  *
  * @param action - The action itself.
  * @param action.payload - The payload of the action, in this case the source code.
@@ -223,7 +223,7 @@ export function* rebootSaga({ payload }: PayloadAction<VirtualFile<string>>) {
 
 /**
  * The request saga, which should run when the sendRequest action is emitted.
- * This saga will send an RPC request to the snap and capture the response.
+ * This saga will send an RPC request to the Snap and capture the response.
  *
  * @param action - The action itself.
  * @param action.payload - The payload of the action, in this case the RPC request.
@@ -260,10 +260,10 @@ export function* requestSaga({ payload }: PayloadAction<SnapRpcHookArgs>) {
 
 /**
  * The permissions saga, which should run when the setManifest action is emitted.
- * This saga will automatically grant the active snap all permissions defined in the snap manifest.
+ * This saga will automatically grant the active Snap all permissions defined in the Snap manifest.
  *
  * @param action - The action itself.
- * @param action.payload - The payload of the action, in this case a snap manifest.
+ * @param action.payload - The payload of the action, in this case a Snap manifest.
  * @yields Selects the permission controller
  */
 export function* permissionsSaga({

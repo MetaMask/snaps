@@ -48,7 +48,7 @@ async function main() {
     argv: { writeAutoPolicy },
   } = yargs(process.argv.slice(2)).usage(
     '$0 [options]',
-    'Build snaps execution environments',
+    'Build Snaps execution environments',
     (yargsInstance) =>
       yargsInstance.option('writeAutoPolicy', {
         alias: ['p'],

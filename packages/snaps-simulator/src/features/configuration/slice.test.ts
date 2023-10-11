@@ -29,7 +29,7 @@ describe('configuration slice', () => {
   });
 
   describe('setSnapId', () => {
-    it('sets the snap URL', () => {
+    it('sets the Snap URL', () => {
       const id = 'local:http://localhost:9090';
       const result = reducer(INITIAL_CONFIGURATION_STATE, setSnapId(id));
 

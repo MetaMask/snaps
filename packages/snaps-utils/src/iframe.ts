@@ -30,7 +30,7 @@ export async function createWindow(
 
     // In the past, we've had problems that appear to be symptomatic of the
     // iframe firing the `load` event before its scripts are actually loaded,
-    // which has prevented snaps from executing properly. Therefore, we set
+    // which has prevented Snaps from executing properly. Therefore, we set
     // the `src` attribute and append the iframe to the DOM before attaching
     // the `load` listener.
     //

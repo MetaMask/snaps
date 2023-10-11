@@ -60,18 +60,18 @@ export function detectSnapLocation(
     case 'npm:':
       return new NpmLocation(root, opts);
     case 'local:':
-      assert(allowLocal, new TypeError('Fetching local snaps is disabled.'));
+      assert(allowLocal, new TypeError('Fetching local Snaps is disabled.'));
       return new LocalLocation(root, opts);
     case 'http:':
     case 'https:':
       assert(
         allowHttp,
-        new TypeError('Fetching snaps through http/https is disabled.'),
+        new TypeError('Fetching Snaps through http/https is disabled.'),
       );
       return new HttpLocation(root, opts);
     default:
       throw new TypeError(
-        `Unrecognized "${root.protocol}" snap location protocol.`,
+        `Unrecognized "${root.protocol}" Snap location protocol.`,
       );
   }
 }

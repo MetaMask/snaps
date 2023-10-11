@@ -19,7 +19,7 @@ describe('mm-snap serve', () => {
       port: '8087',
     },
   ])(
-    'serves a snap over HTTP on port $port using "mm-snap $command --port $port"',
+    'serves a Snap over HTTP on port $port using "mm-snap $command --port $port"',
     async ({ command, port }) => {
       runner = getCommandRunner(command, ['--port', port]);
       await runner.waitForStdout();

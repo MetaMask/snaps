@@ -365,7 +365,7 @@ jobs:
       - run: yarn --immutable --immutable-cache
       - name: Install Google Chrome
         run: yarn install-chrome
-      - name: Build snap
+      - name: Build Snap
         run: yarn workspace ${{ matrix.package-name }} run build
       - name: Run E2E test
         run: yarn workspace ${{ matrix.package-name }} run test:e2e

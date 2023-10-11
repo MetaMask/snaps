@@ -27,7 +27,7 @@ type TransactionInsightEndowmentSpecification = ValidPermissionSpecification<{
 
 /**
  * `endowment:transaction-insight` returns nothing; it is intended to be used as a flag
- * by the extension to detect whether the snap has the capability to show information on the transaction confirmation screen.
+ * by the extension to detect whether the Snap has the capability to show information on the transaction confirmation screen.
  *
  * @param _builderOptions - Optional specification builder options.
  * @returns The specification for the transaction-insight endowment.

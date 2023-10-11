@@ -33,10 +33,10 @@ A Snap can schedule one or more cronjobs by specifying an array of `jobs` in
 the `endowment:cronjob` permission. Each job is defined by an `expression` and
 a `request` object. The `expression` is a cron expression that defines the
 schedule of the job. The `request` object defines the JSON-RPC request that
-will be sent to the snap's `onCronjob` handler when the job is executed.
+will be sent to the Snap's `onCronjob` handler when the job is executed.
 
 In this example, we schedule a job that executes every minute. When the job is
-executed, the snap's `onCronjob` handler is called with the following JSON-RPC
+executed, the Snap's `onCronjob` handler is called with the following JSON-RPC
 request:
 
 ```json

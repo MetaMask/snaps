@@ -20,9 +20,9 @@ type MockEthereumProvider = EventEmitter & {
 };
 
 /**
- * Get a mock snap API, that always returns `true` for requests.
+ * Get a mock Snap API, that always returns `true` for requests.
  *
- * @returns A mocked snap provider.
+ * @returns A mocked Snap provider.
  */
 function getMockSnapGlobal(): MockSnapGlobal {
   // eslint-disable-next-line @typescript-eslint/require-await

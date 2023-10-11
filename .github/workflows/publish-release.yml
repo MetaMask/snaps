@@ -211,7 +211,7 @@ jobs:
       destination_dir: ${{ needs.configure-environment-publish.outputs.version }}
 
   is-test-snaps-release:
-    name: Determine whether this release updates test snaps
+    name: Determine whether this release updates test Snaps
     runs-on: ubuntu-latest
     needs: publish-release
     outputs:
@@ -222,7 +222,7 @@ jobs:
         with:
           ref: ${{ github.sha }}
           fetch-depth: 2
-      - name: Check if this is a test snaps release
+      - name: Check if this is a test Snaps release
         id: is-test-snaps-release
         shell: bash
         run: ./scripts/is-release.sh "packages/test-snaps/package.json" "${{ github.event.before }}" "IS_TEST_SNAPS_RELEASE"
@@ -234,7 +234,7 @@ jobs:
           echo "TEST_SNAPS_VERSION=$(jq --raw-output '.version' packages/test-snaps/package.json)" >> "$GITHUB_OUTPUT"
 
   publish-test-snaps:
-    name: Publish test snaps
+    name: Publish test Snaps
     needs: is-test-snaps-release
     if: ${{ needs.is-test-snaps-release.outputs.IS_TEST_SNAPS_RELEASE == 'true' }}
     permissions:

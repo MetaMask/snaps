@@ -63,7 +63,7 @@ const SnapsEnvironmentOptionsStruct = type({
  * is not provided, a random available port will be used.
  * @property server.root - The root directory to serve from the built-in HTTP
  * server. Defaults to the current working directory. This is assumed to be the
- * directory containing the snap manifest and `dist` files. If this is a
+ * directory containing the Snap manifest and `dist` files. If this is a
  * relative path, it will be resolved relative to the current working directory.
  * @property browser - The options for the browser.
  * @property browser.headless - Whether to run the browser in headless mode.

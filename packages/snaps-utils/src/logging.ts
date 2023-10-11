@@ -29,7 +29,7 @@ export function logInfo(message: string, ...optionalParams: unknown[]): void {
  *
  * These logs should always be visible, without requiring the user to enable
  * verbose logging (like setting a `DEBUG` environment variable), as they are
- * important for debugging snaps.
+ * important for debugging Snaps.
  *
  * This function makes it easy to swap out the logging implementation in all
  * files at once.
@@ -50,7 +50,7 @@ export function logError(error: unknown, ...optionalParams: unknown[]): void {
  *
  * These logs should always be visible, without requiring the user to enable
  * verbose logging (like setting a `DEBUG` environment variable), as they are
- * important for debugging snaps.
+ * important for debugging Snaps.
  *
  * This function makes it easy to swap out the logging implementation in all
  * files at once.

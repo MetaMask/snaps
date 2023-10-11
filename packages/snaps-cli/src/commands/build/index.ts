@@ -6,7 +6,7 @@ import { buildHandler } from './build';
 
 const command = {
   command: ['build', 'b'],
-  desc: 'Build snap from source',
+  desc: 'Build Snap from source',
   builder: (yarg: yargs.Argv) => {
     yarg
       .option('dist', builders.dist)

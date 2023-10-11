@@ -104,7 +104,7 @@ describe('evaluateHandler', () => {
 
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(
-        /Input file not found: ".*"\. Make sure that the "input" field in your snap config or the specified input file is correct\./u,
+        /Input file not found: ".*"\. Make sure that the "input" field in your Snap config or the specified input file is correct\./u,
       ),
     );
   });

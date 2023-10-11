@@ -98,7 +98,7 @@ describe('AbstractExecutionService', () => {
         },
       }),
     ).rejects.toThrow(
-      `Snap execution service returned no RPC handler for running snap "${snapId}".`,
+      `Snap execution service returned no RPC handler for running Snap "${snapId}".`,
     );
   });
 });

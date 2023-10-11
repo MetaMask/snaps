@@ -86,7 +86,7 @@ describe('initUtils', () => {
       });
 
       expect(() => buildSnap('foo')).toThrow(
-        'Init Error: Failed to build snap.',
+        'Init Error: Failed to build Snap.',
       );
     });
   });

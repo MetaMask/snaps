@@ -20,5 +20,5 @@ The manifest of this Snap includes the `endowment:name-lookup` permission:
 
 ## Snap usage
 
-This snap exposes the `onNameLookup` handler. This is called when a MetaMask client
+This Snap exposes the `onNameLookup` handler. This is called when a MetaMask client
 requests the resolution of a domain or address, and cannot be called manually.

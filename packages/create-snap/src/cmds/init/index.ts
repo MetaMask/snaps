@@ -17,8 +17,8 @@ export const initCommand = {
 
 /**
  * The main entrypoint for the init command. This calls the init handler to
- * initialize the snap package, builds the snap, and then updates the manifest
- * with the shasum of the built snap.
+ * initialize the Snap package, builds the Snap, and then updates the manifest
+ * with the shasum of the built Snap.
  *
  * @param argv - The Yargs arguments object.
  */

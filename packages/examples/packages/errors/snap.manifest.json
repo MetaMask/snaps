@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "description": "MetaMask example Snap demonstrating the use of error handling in snaps.",
+  "description": "MetaMask example Snap demonstrating the use of error handling in Snaps.",
   "proposedName": "Error Example Snap",
   "repository": {
     "type": "git",

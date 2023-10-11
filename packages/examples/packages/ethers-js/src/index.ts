@@ -10,9 +10,9 @@ import { getPrivateKey } from './utils';
  * Handle incoming JSON-RPC requests from the dapp, sent through the
  * `wallet_invokeSnap` method. This handler handles two methods:
  *
- * - `getAddress`: Derive a private key using the snap's own entropy, and return
+ * - `getAddress`: Derive a private key using the Snap's own entropy, and return
  * the public address for that private key.
- * - `signMessage`: Derive a private key using the snap's own entropy, and sign
+ * - `signMessage`: Derive a private key using the Snap's own entropy, and sign
  * a message using it. The signature is returned in hex format.
  *
  * @param params - The request parameters.

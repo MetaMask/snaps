@@ -98,7 +98,7 @@ describe('SnapController', () => {
     });
   });
 
-  it('creates a snap controller and execution service', async () => {
+  it('creates a Snap controller and execution service', async () => {
     const [snapController, service] = getSnapControllerWithEES();
     expect(service).toBeDefined();
     expect(snapController).toBeDefined();
@@ -106,7 +106,7 @@ describe('SnapController', () => {
     await service.terminateAllSnaps();
   });
 
-  it('creates a worker and snap controller, adds a snap, and update its state', async () => {
+  it('creates a worker and Snap controller, adds a Snap, and update its state', async () => {
     const [snapController, service] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
         state: {
@@ -128,7 +128,7 @@ describe('SnapController', () => {
     await service.terminateAllSnaps();
   });
 
-  it('adds a snap and uses its JSON-RPC api with a NodeThreadExecutionService', async () => {
+  it('adds a Snap and uses its JSON-RPC api with a NodeThreadExecutionService', async () => {
     const [snapController, service] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
         state: {
@@ -1203,7 +1203,7 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
-  it('does not kill snaps with open sessions', async () => {
+  it('does not kill Snaps with open sessions', async () => {
     const sourceCode = `
       module.exports.onRpcRequest = () => 'foo bar';
     `;
@@ -1848,7 +1848,7 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
-    it('throws if the snap does not have permission to handle JSON-RPC requests from snaps', async () => {
+    it('throws if the snap does not have permission to handle JSON-RPC requests from Snaps', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
       const snapController = getSnapController(

@@ -61,7 +61,7 @@ export type HandleRpcRequestAction = {
 };
 
 /**
- * Executes a given snap.
+ * Executes a given Snap.
  */
 export type ExecuteSnapAction = {
   type: `${typeof controllerName}:executeSnap`;
@@ -77,7 +77,7 @@ export type TerminateSnapAction = {
 };
 
 /**
- * Terminates all snaps.
+ * Terminates all Snaps.
  */
 export type TerminateAllSnapsAction = {
   type: `${typeof controllerName}:terminateAllSnaps`;

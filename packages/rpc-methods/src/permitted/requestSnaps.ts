@@ -47,7 +47,7 @@ export const requestSnapsHandler: PermittedHandlerExport<
 
 export type RequestSnapsHooks = {
   /**
-   * Installs the requested snaps if they are permitted.
+   * Installs the requested Snaps if they are permitted.
    */
   installSnaps: InstallSnapsHook;
 
@@ -80,8 +80,8 @@ export type RequestSnapsHooks = {
  * whether or not it has the requested snapIds caveat.
  *
  * @param existingPermissions - The existing permissions for the origin.
- * @param requestedSnaps - The requested snaps.
- * @returns True if the existing permissions satisfy the requested snaps, otherwise false.
+ * @param requestedSnaps - The requested Snaps.
+ * @returns True if the existing permissions satisfy the requested Snaps, otherwise false.
  */
 export function hasRequestedSnaps(
   existingPermissions: Record<string, PermissionConstraint>,
@@ -104,7 +104,7 @@ export function hasRequestedSnaps(
 
 /**
  * Constructs a valid permission request with merged caveats based on existing permissions
- * and the requested snaps.
+ * and the requested Snaps.
  *
  * @param existingPermissions - The existing permissions for the origin.
  * @param requestedPermissions - The permission request passed into `requestPermissions`.
@@ -152,7 +152,7 @@ export function getSnapPermissionsRequest(
 
 /**
  * The `wallet_requestSnaps` method implementation.
- * Tries to install the requested snaps and adds them to the JSON-RPC response.
+ * Tries to install the requested Snaps and adds them to the JSON-RPC response.
  *
  * @param req - The JSON-RPC request object.
  * @param res - The JSON-RPC response object.
@@ -160,7 +160,7 @@ export function getSnapPermissionsRequest(
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
- * @param hooks.installSnaps - A function that tries to install a given snap, prompting the user if necessary.
+ * @param hooks.installSnaps - A function that tries to install a given Snap, prompting the user if necessary.
  * @param hooks.requestPermissions - A function that requests permissions on
  * behalf of a subject.
  * @param hooks.getPermissions - A function that gets the current permissions.
@@ -185,7 +185,7 @@ async function requestSnapsImplementation(
 
   try {
     if (!Object.keys(requestedSnaps).length) {
-      throw new Error('Request must have at least one requested snap.');
+      throw new Error('Request must have at least one requested Snap.');
     }
 
     const requestedPermissions = {

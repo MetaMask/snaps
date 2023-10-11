@@ -140,7 +140,7 @@ export const TransactionOptionsStruct = object({
 
 export const SnapOptionsStruct = object({
   /**
-   * The timeout in milliseconds to use for requests to the snap. Defaults to
+   * The timeout in milliseconds to use for requests to the Snap. Defaults to
    * `1000`.
    */
   timeout: defaulted(optional(number()), 1000),

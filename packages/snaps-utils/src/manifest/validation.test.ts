@@ -131,16 +131,16 @@ describe('Bip32EntropyStruct', () => {
 });
 
 describe('SnapIdsStruct', () => {
-  it('requires at least one snap ID', () => {
+  it('requires at least one Snap ID', () => {
     expect(is({}, SnapIdsStruct)).toBe(false);
   });
 
-  it('requires valid snap IDs', () => {
+  it('requires valid Snap IDs', () => {
     expect(is({ [MOCK_SNAP_ID]: {} }, SnapIdsStruct)).toBe(true);
     expect(is({ fooBar: {} }, SnapIdsStruct)).toBe(false);
   });
 
-  it('requires a valid snap ID object', () => {
+  it('requires a valid Snap ID object', () => {
     expect(is({ [MOCK_SNAP_ID]: {} }, SnapIdsStruct)).toBe(true);
     expect(is({ [MOCK_SNAP_ID]: { version: '2.0.0' } }, SnapIdsStruct)).toBe(
       true,
@@ -153,7 +153,7 @@ describe('SnapIdsStruct', () => {
 });
 
 describe('isSnapManifest', () => {
-  it('returns true for a valid snap manifest', () => {
+  it('returns true for a valid Snap manifest', () => {
     expect(isSnapManifest(getSnapManifest())).toBe(true);
   });
 
@@ -180,13 +180,13 @@ describe('isSnapManifest', () => {
     { name: 'foo' },
     { version: '1.0.0' },
     getSnapManifest({ version: 'foo bar' }),
-  ])('returns false for an invalid snap manifest', (value) => {
+  ])('returns false for an invalid Snap manifest', (value) => {
     expect(isSnapManifest(value)).toBe(false);
   });
 });
 
 describe('assertIsSnapManifest', () => {
-  it('does not throw for a valid snap manifest', () => {
+  it('does not throw for a valid Snap manifest', () => {
     expect(() => assertIsSnapManifest(getSnapManifest())).not.toThrow();
   });
 
@@ -204,7 +204,7 @@ describe('assertIsSnapManifest', () => {
     { name: 'foo' },
     { version: '1.0.0' },
     getSnapManifest({ version: 'foo bar' }),
-  ])('throws for an invalid snap manifest', (value) => {
+  ])('throws for an invalid Snap manifest', (value) => {
     expect(() => assertIsSnapManifest(value)).toThrow(
       '"snap.manifest.json" is invalid:',
     );
@@ -212,7 +212,7 @@ describe('assertIsSnapManifest', () => {
 });
 
 describe('createSnapManifest', () => {
-  it('does not throw for a valid snap manifest', () => {
+  it('does not throw for a valid Snap manifest', () => {
     expect(() => createSnapManifest(getSnapManifest())).not.toThrow();
   });
 
@@ -230,7 +230,7 @@ describe('createSnapManifest', () => {
     { name: 'foo' },
     { version: '1.0.0' },
     getSnapManifest({ version: 'foo bar' }),
-  ])('throws for an invalid snap manifest', (value) => {
+  ])('throws for an invalid Snap manifest', (value) => {
     expect(() => createSnapManifest(value)).toThrow(StructError);
   });
 });

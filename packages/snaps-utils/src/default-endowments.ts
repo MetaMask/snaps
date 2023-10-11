@@ -1,5 +1,5 @@
 /**
- * Global JavaScript APIs exposed by default to all snaps.
+ * Global JavaScript APIs exposed by default to all Snaps.
  */
 export const DEFAULT_ENDOWMENTS: readonly string[] = Object.freeze([
   'atob',

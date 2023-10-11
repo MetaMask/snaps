@@ -193,7 +193,7 @@ describe('handleSnapInstall', () => {
     expect(result).toBe(expectedResult);
   });
 
-  it('dedupes snaps before calling installSnaps', async () => {
+  it('dedupes Snaps before calling installSnaps', async () => {
     const messenger = new MockControllerMessenger<
       InstallSnaps | GetPermittedSnaps,
       never

@@ -104,7 +104,7 @@ export class TestSnapExecutor extends BaseSnapExecutor {
     return this.#commandBuffer;
   }
 
-  // Utility function for executing snaps
+  // Utility function for executing Snaps
   public async executeSnap(
     id: number,
     name: string,

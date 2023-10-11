@@ -87,7 +87,7 @@ export const Configuration = () => {
     let cancelled = false;
 
     /**
-     * Fetches the versions of the NPM snap.
+     * Fetches the versions of the NPM Snap.
      */
     async function fetchNpmVersions() {
       const metadata = await fetchNpmMetadata(
@@ -105,7 +105,7 @@ export const Configuration = () => {
     setSelectedNpmVersion(undefined);
     setNpmVersions([]);
 
-    // If input is an NPM snap, try to repopulate the version state
+    // If input is an NPM Snap, try to repopulate the version state
     if (isNPM) {
       fetchNpmVersions().catch((error) => {
         // eslint-disable-next-line no-console

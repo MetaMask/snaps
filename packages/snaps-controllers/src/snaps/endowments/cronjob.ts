@@ -28,7 +28,7 @@ type CronjobEndowmentSpecification = ValidPermissionSpecification<{
 }>;
 
 /**
- * `endowment:cronjob` returns nothing; it is intended to be used as a flag to determine whether the snap wants to run cronjobs.
+ * `endowment:cronjob` returns nothing; it is intended to be used as a flag to determine whether the Snap wants to run cronjobs.
  *
  * @param _builderOptions - Optional specification builder options.
  * @returns The specification for the cronjob endowment.

@@ -84,7 +84,7 @@ export function getHandlerArguments(
  * Gets an object mapping internal, "command" JSON-RPC method names to their
  * implementations.
  *
- * @param startSnap - A function that starts a snap.
+ * @param startSnap - A function that starts a Snap.
  * @param invokeSnap - A function that invokes the RPC method handler of a
  * snap.
  * @param onTerminate - A function that will be called when this executor is

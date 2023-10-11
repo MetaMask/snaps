@@ -5,7 +5,7 @@ import { assert, stringToBytes } from '@metamask/utils';
  * it possible to import the WASM module directly, and use it with the
  * `WebAssembly.instantiate` function.
  *
- * This is useful, because snaps are not allowed to import assets from outside
+ * This is useful, because Snaps are not allowed to import assets from outside
  * of their package. This loader allows you to inline the WASM module as a
  * `Uint8Array`, which can then be passed to `WebAssembly.instantiate`.
  *

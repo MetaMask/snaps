@@ -25,14 +25,14 @@ import {
 const SATISFIED_VERSION = '>=18.6.0' as SemVerRange;
 
 /**
- * Creates a new snap package, based on one of the provided templates. This
+ * Creates a new Snap package, based on one of the provided templates. This
  * creates all the necessary files, like `package.json`, `snap.config.js`, etc.
- * to start developing a snap.
+ * to start developing a Snap.
  *
  * @param argv - The Yargs arguments object.
  * @returns The Yargs arguments augmented with the new `dist`, `outfileName` and
  * `src` properties.
- * @throws If initialization of the snap package failed.
+ * @throws If initialization of the Snap package failed.
  */
 export async function initHandler(argv: YargsArgs) {
   const { directory } = argv;

@@ -17,7 +17,7 @@ export async function evaluate(path: string) {
   } catch (evalError) {
     if (evalError instanceof SnapEvalError) {
       throw new CommandError(
-        `Failed to evaluate snap bundle in SES. This is likely due to an incompatibility with the SES environment in your snap.\nReceived the following error from the SES environment:\n\n${indent(
+        `Failed to evaluate Snap bundle in SES. This is likely due to an incompatibility with the SES environment in your Snap.\nReceived the following error from the SES environment:\n\n${indent(
           red(evalError.output.stderr),
           2,
         )}`,

@@ -97,7 +97,7 @@ describe('JsonSnapsRegistry', () => {
     });
   });
 
-  it('returns unverified for non existing snaps', async () => {
+  it('returns unverified for non existing Snaps', async () => {
     // Empty database
     fetchMock
       .mockResponseOnce(JSON.stringify({ verifiedSnaps: {}, blockedSnaps: [] }))
@@ -138,7 +138,7 @@ describe('JsonSnapsRegistry', () => {
     });
   });
 
-  it('returns unverified if existing snap doesnt match checksum', async () => {
+  it('returns unverified if existing Snap doesnt match checksum', async () => {
     fetchMock
       .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
       .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
@@ -158,7 +158,7 @@ describe('JsonSnapsRegistry', () => {
     });
   });
 
-  it('returns blocked if snap checksum is on blocklist', async () => {
+  it('returns blocked if Snap checksum is on blocklist', async () => {
     fetchMock
       .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
       .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
@@ -179,7 +179,7 @@ describe('JsonSnapsRegistry', () => {
     });
   });
 
-  it('returns blocked if snap version range is on blocklist', async () => {
+  it('returns blocked if Snap version range is on blocklist', async () => {
     fetchMock
       .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
       .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
@@ -325,7 +325,7 @@ describe('JsonSnapsRegistry', () => {
   });
 
   describe('getMetadata', () => {
-    it('returns the metadata for a verified snap', async () => {
+    it('returns the metadata for a verified Snap', async () => {
       fetchMock
         .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
         .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
@@ -341,7 +341,7 @@ describe('JsonSnapsRegistry', () => {
       });
     });
 
-    it('returns null for a non-verified snap', async () => {
+    it('returns null for a non-verified Snap', async () => {
       fetchMock
         .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
         .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));

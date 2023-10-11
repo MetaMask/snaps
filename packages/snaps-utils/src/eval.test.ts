@@ -35,7 +35,7 @@ describe('evalBundle', () => {
     await fs.rm(TEMPORARY_FOLDER, { recursive: true });
   });
 
-  it('successfully executes a snap and captures the stdout', async () => {
+  it('successfully executes a Snap and captures the stdout', async () => {
     expect(await evalBundle(BUNDLE_PATH)).toStrictEqual({
       stdout: 'Hello, world!\n',
       stderr: '',

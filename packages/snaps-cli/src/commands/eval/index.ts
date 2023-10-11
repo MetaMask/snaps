@@ -6,7 +6,7 @@ import { evaluateHandler } from './eval';
 
 const command = {
   command: ['eval', 'e'],
-  desc: 'Attempt to evaluate snap bundle in SES',
+  desc: 'Attempt to evaluate Snap bundle in SES',
   builder: (yarg: yargs.Argv) => {
     // Browserify options. These are merged into the config object.
     yarg.option('bundle', builders.bundle);

@@ -22,7 +22,7 @@ type SnapHandler = {
 
   /**
    * Whether the handler is required, i.e., whether the request will fail if the
-   * handler is called, but the snap does not export it.
+   * handler is called, but the Snap does not export it.
    *
    * This is primarily used for the lifecycle handlers, which are optional.
    */

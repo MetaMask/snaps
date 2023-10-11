@@ -142,7 +142,7 @@ export const toRespondWithError: MatcherFunction<[expected: Json]> = function (
 };
 
 /**
- * Check if the snap sent a notification with the expected message. This matcher
+ * Check if the Snap sent a notification with the expected message. This matcher
  * is intended to be used with the `expect` global.
  *
  * @param actual - The actual response.

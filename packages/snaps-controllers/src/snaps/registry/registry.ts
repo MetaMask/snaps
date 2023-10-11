@@ -30,10 +30,10 @@ export type SnapsRegistry = {
   update(): Promise<void>;
 
   /**
-   * Get metadata for the given snap ID.
+   * Get metadata for the given Snap ID.
    *
-   * @param snapId - The ID of the snap to get metadata for.
-   * @returns The metadata for the given snap ID, or `null` if the snap is not
+   * @param snapId - The ID of the Snap to get metadata for.
+   * @returns The metadata for the given Snap ID, or `null` if the Snap is not
    * verified.
    */
   getMetadata(snapId: SnapId): Promise<SnapsRegistryMetadata | null>;

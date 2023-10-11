@@ -27,7 +27,7 @@ describe('mm-snap eval', () => {
       bundler: 'browserify',
     },
   ])(
-    'evaluates a $bundler snap using "mm-snap $command"',
+    'evaluates a $bundler Snap using "mm-snap $command"',
     async ({ command, bundler }) => {
       runner = getCommandRunner(
         command,
@@ -42,7 +42,7 @@ describe('mm-snap eval', () => {
         expect.stringMatching(/Checking the input file\./u),
       );
       expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Evaluating the snap bundle\./u),
+        expect.stringMatching(/Evaluating the Snap bundle\./u),
       );
       expect(runner.stdout).toContainEqual(
         expect.stringMatching(/Snap bundle evaluated successfully\./u),
@@ -52,7 +52,7 @@ describe('mm-snap eval', () => {
   );
 
   it.each(['eval', 'e'])(
-    'evaluates a snap using "mm-snap %s --input eval.js"',
+    'evaluates a Snap using "mm-snap %s --input eval.js"',
     async (command) => {
       runner = getCommandRunner(
         command,
@@ -67,7 +67,7 @@ describe('mm-snap eval', () => {
         expect.stringMatching(/Checking the input file\./u),
       );
       expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Evaluating the snap bundle\./u),
+        expect.stringMatching(/Evaluating the Snap bundle\./u),
       );
       expect(runner.stdout).toContainEqual(
         expect.stringMatching(/Snap bundle evaluated successfully\./u),
@@ -77,7 +77,7 @@ describe('mm-snap eval', () => {
   );
 
   it.each(['eval', 'e'])(
-    'evaluates a snap using "mm-snap %s -i eval.js"',
+    'evaluates a Snap using "mm-snap %s -i eval.js"',
     async (command) => {
       runner = getCommandRunner(
         command,
@@ -92,7 +92,7 @@ describe('mm-snap eval', () => {
         expect.stringMatching(/Checking the input file\./u),
       );
       expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Evaluating the snap bundle\./u),
+        expect.stringMatching(/Evaluating the Snap bundle\./u),
       );
       expect(runner.stdout).toContainEqual(
         expect.stringMatching(/Snap bundle evaluated successfully\./u),
@@ -114,11 +114,11 @@ describe('mm-snap eval', () => {
       expect.stringMatching(/Checking the input file\./u),
     );
     expect(runner.stdout).toContainEqual(
-      expect.stringMatching(/Evaluating the snap bundle\./u),
+      expect.stringMatching(/Evaluating the Snap bundle\./u),
     );
     expect(runner.stderr).toContainEqual(
       expect.stringMatching(
-        /Failed to evaluate snap bundle in SES\. This is likely due to an incompatibility with the SES environment in your snap\./u,
+        /Failed to evaluate Snap bundle in SES\. This is likely due to an incompatibility with the SES environment in your Snap\./u,
       ),
     );
     expect(runner.exitCode).toBe(1);

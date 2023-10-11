@@ -6,7 +6,7 @@ import type { WebpackOptions } from '../../webpack';
 import { getCompiler } from '../../webpack';
 
 /**
- * Build the snap bundle and watch for changes. This uses Webpack to build the
+ * Build the Snap bundle and watch for changes. This uses Webpack to build the
  * bundle.
  *
  * @param config - The config object.

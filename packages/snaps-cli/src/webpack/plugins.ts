@@ -322,7 +322,7 @@ export type SnapsBundleWarningsPluginOptions = {
  * - A built-in module is not resolved. The MetaMask Snaps CLI does not support
  * built-in modules by default, and this plugin is used to warn the user when
  * they try to import a built-in module, when no fallback is configured.
- * - A snap uses the `Buffer` global. The MetaMask Snaps CLI does not support
+ * - A Snap uses the `Buffer` global. The MetaMask Snaps CLI does not support
  * the `Buffer` global by default, and this plugin is used to warn the user when
  * they try to use the `Buffer` global.
  *
@@ -392,7 +392,7 @@ export class SnapsBundleWarningsPlugin implements WebpackPluginInstance {
         .join('\n');
 
       warn(
-        `The snap attempted to use one or more Node.js builtins, but no browser fallback has been provided.\n` +
+        `The Snap attempted to use one or more Node.js builtins, but no browser fallback has been provided.\n` +
           `The MetaMask Snaps CLI does not support Node.js builtins by default. If you want to use this module, you must set ${yellow(
             `polyfills`,
           )} to ${yellow(
@@ -404,7 +404,7 @@ export class SnapsBundleWarningsPlugin implements WebpackPluginInstance {
             '`stats.builtIns`',
           )} to ${yellow(
             '`false`',
-          )} in your snap config file, or add the module to the ${yellow(
+          )} in your Snap config file, or add the module to the ${yellow(
             '`stats.builtIns.ignore`',
           )} array.\n\n${formattedModules}\n`,
         this.#spinner,
@@ -464,15 +464,15 @@ export class SnapsBundleWarningsPlugin implements WebpackPluginInstance {
           }
 
           warn(
-            `The snap attempted to use the Node.js Buffer global, which is not supported in the MetaMask Snaps CLI by default.\n` +
+            `The Snap attempted to use the Node.js Buffer global, which is not supported in the MetaMask Snaps CLI by default.\n` +
               `To use the Buffer global, you must polyfill Buffer by setting ${yellow(
                 `buffer`,
               )} to ${yellow(`true`)} in the ${yellow(
                 `polyfills`,
-              )} config object in your snap config.\n` +
+              )} config object in your Snap config.\n` +
               `To disable this warning, set ${yellow(
                 '`stats.buffer`',
-              )} to ${yellow('`false`')} in your snap config file.`,
+              )} to ${yellow('`false`')} in your Snap config file.`,
             this.#spinner,
           );
         },

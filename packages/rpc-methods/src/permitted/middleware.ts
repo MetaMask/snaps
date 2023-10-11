@@ -6,9 +6,9 @@ import { selectHooks } from '../utils';
 import { methodHandlers } from './handlers';
 
 /**
- * Creates a middleware that handles permitted snap RPC methods.
+ * Creates a middleware that handles permitted Snap RPC methods.
  *
- * @param isSnap - A flag that should indicate whether the requesting origin is a snap or not.
+ * @param isSnap - A flag that should indicate whether the requesting origin is a Snap or not.
  * @param hooks - An object containing the hooks made available to the permitted RPC methods.
  * @returns The middleware.
  */

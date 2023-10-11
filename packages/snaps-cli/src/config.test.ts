@@ -152,7 +152,7 @@ describe('loadConfig', () => {
     await expect(
       loadConfig(resolve(CONFIG_PATH, 'invalid.json'), MOCK_ARGV),
     ).rejects.toThrow(
-      `Unable to load snap config file at "${resolve(
+      `Unable to load Snap config file at "${resolve(
         CONFIG_PATH,
         'invalid.json',
       )}".`,

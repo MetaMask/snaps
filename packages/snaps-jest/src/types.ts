@@ -117,7 +117,7 @@ export type CronjobOptions = Omit<RequestOptions, 'origin'>;
 export type TransactionOptions = Infer<typeof TransactionOptionsStruct>;
 
 /**
- * The options to use for requests to the snap.
+ * The options to use for requests to the Snap.
  *
  * @property timeout - The timeout in milliseconds to use. Defaults to `1000`.
  */
@@ -202,8 +202,8 @@ export type SnapInterface =
 
 export type SnapRequestObject = {
   /**
-   * Get a user interface object from a snap. This will throw an error if the
-   * snap does not show a user interface within the timeout.
+   * Get a user interface object from a Snap. This will throw an error if the
+   * Snap does not show a user interface within the timeout.
    *
    * @param options - The options to use.
    * @param options.timeout - The timeout in milliseconds to use. Defaults to
@@ -220,8 +220,8 @@ export type SnapRequestObject = {
 export type SnapRequest = Promise<SnapResponse> & SnapRequestObject;
 
 /**
- * This is the main entry point to interact with the snap. It is returned by
- * {@link installSnap}, and has methods to send requests to the snap.
+ * This is the main entry point to interact with the Snap. It is returned by
+ * {@link installSnap}, and has methods to send requests to the Snap.
  *
  * @example
  * ```ts
@@ -235,7 +235,7 @@ export type SnapRequest = Promise<SnapResponse> & SnapRequestObject;
  */
 export type Snap = {
   /**
-   * Send a JSON-RPC request to the snap.
+   * Send a JSON-RPC request to the Snap.
    *
    * @param request - The request. This is similar to a JSON-RPC request, but
    * has an extra `origin` field.
@@ -244,7 +244,7 @@ export type Snap = {
   request(request: RequestOptions): SnapRequest;
 
   /**
-   * Send a transaction to the snap.
+   * Send a transaction to the Snap.
    *
    * @param transaction - The transaction. This is similar to an Ethereum
    * transaction object, but has an extra `origin` field. Any missing fields
@@ -256,18 +256,18 @@ export type Snap = {
   ): Promise<SnapResponse>;
 
   /**
-   * Run a cronjob in the snap. This is similar to {@link request}, but the
-   * request will be sent to the `onCronjob` method of the snap.
+   * Run a cronjob in the Snap. This is similar to {@link request}, but the
+   * request will be sent to the `onCronjob` method of the Snap.
    *
    * @param cronjob - The cronjob request. This is similar to a JSON-RPC
-   * request, and is normally specified in the snap manifest, under the
+   * request, and is normally specified in the Snap manifest, under the
    * `endowment:cronjob` permission.
    * @returns The response promise, with extra {@link SnapRequestObject} fields.
    */
   runCronjob(cronjob: CronjobOptions): SnapRequest;
 
   /**
-   * Close the page running the snap. This is mainly useful for cleaning up
+   * Close the page running the Snap. This is mainly useful for cleaning up
    * the test environment, and calling it is not strictly necessary.
    *
    * @returns A promise that resolves when the page is closed.
@@ -276,7 +276,7 @@ export type Snap = {
   close(): Promise<void>;
 
   /**
-   * Enable network mocking for the snap.
+   * Enable network mocking for the Snap.
    *
    * @param options - The options for the network mocking.
    * @returns A {@link Mock} object, with an `unmock` function.
@@ -284,7 +284,7 @@ export type Snap = {
   mock(options: DeepPartial<MockOptions>): Promise<Mock>;
 
   /**
-   * Enable JSON-RPC provider mocking for the snap. This will mock any requests
+   * Enable JSON-RPC provider mocking for the Snap. This will mock any requests
    * sent through the `ethereum` global, with the specified `method`.
    *
    * @param options - The options for the JSON-RPC mocking.

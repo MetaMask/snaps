@@ -28,13 +28,13 @@ const steps: Steps<ManifestContext> = [
     },
   },
   {
-    name: 'Validating the snap manifest.',
+    name: 'Validating the Snap manifest.',
     task: async ({ input, config, options, spinner }) => {
       const write = getWriteManifest(config, options);
       const valid = await manifest(input, write, spinner);
 
       if (valid) {
-        spinner.succeed('The snap manifest file is valid.');
+        spinner.succeed('The Snap manifest file is valid.');
       }
     },
   },

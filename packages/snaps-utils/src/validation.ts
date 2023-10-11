@@ -4,9 +4,9 @@ import { validateSnapShasum } from './snaps';
 import type { FetchedSnapFiles } from './types';
 
 /**
- * Validates the files contained in a fetched snap.
+ * Validates the files contained in a fetched Snap.
  *
- * @param files - All potentially included files in a fetched snap.
+ * @param files - All potentially included files in a fetched Snap.
  * @throws If any of the files are considered invalid.
  */
 export function validateFetchedSnap(files: FetchedSnapFiles): void {

@@ -36,7 +36,7 @@ export function getTargetVersion(
 }
 
 /**
- * Parse a version received by some subject attempting to access a snap.
+ * Parse a version received by some subject attempting to access a Snap.
  *
  * @param version - The received version value.
  * @returns `*` if the version is `undefined` or `latest", otherwise returns

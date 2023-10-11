@@ -102,7 +102,7 @@ export type SnapFiles = {
 };
 
 /**
- * A subset of snap files extracted from a fetched snap.
+ * A subset of Snap files extracted from a fetched snap.
  */
 export type FetchedSnapFiles = Pick<
   SnapFiles,
