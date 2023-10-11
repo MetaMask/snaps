@@ -32,13 +32,16 @@ export function assertIsComponent(value: unknown): asserts value is Component {
  * @param value - The value to test.
  * @returns True if it is, ortherwise false.
  */
-export function isLink(value: string) {
-  const validUrl = new URL(value);
-  if (validUrl.protocol === 'https:' || validUrl.protocol === 'mailto:') {
-    return true;
+export function isValidUrl(value: string) {
+  try {
+    const validUrl = new URL(value);
+    if (validUrl.protocol === 'https:' || validUrl.protocol === 'mailto:') {
+      return true;
+    }
+    return false;
+  } catch {
+    return false;
   }
-
-  return false;
 }
 
 /**
@@ -48,17 +51,16 @@ export function isLink(value: string) {
  */
 export const url = () => {
   return refine(string(), 'url', (value) => {
-    try {
-      if (isLink(value)) {
-        return true;
-      }
-
-      return 'The URL must start with `https:` or `mailto:`.';
-    } catch {
-      return 'The URL is invalid.';
+    if (isValidUrl(value)) {
+      return true;
     }
+
+    return 'The URL is invalid.';
   });
 };
+
+const LINK_REGEX =
+  /(?:https:\/\/|mailto:).?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9@:%_+.~#?&/=]*)/iu;
 
 /**
  * Searches for {@link Links} components and checks that the URL they are trying to
@@ -73,34 +75,28 @@ export async function assertLinksAreSafe(
 ) {
   const { type } = component;
   if (type === NodeType.Panel) {
-    await Promise.all(
-      component.children.map(
-        async (node) => await assertLinksAreSafe(node, isOnPhishingList),
-      ),
-    );
+    for (const node of component.children) {
+      await assertLinksAreSafe(node, isOnPhishingList);
+    }
   }
 
   if (component.type === NodeType.Link) {
     assert(
-      await isOnPhishingList(component.url),
+      !(await isOnPhishingList(component.url)),
       'The provided URL is detected as phishing.',
     );
   }
 
   if (component.type === NodeType.Text) {
-    const links = component.value.match(
-      /(?:https:\/\/|mailto:).?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9@:%_+.~#?&/=]*)/iu,
-    );
+    const links = component.value.match(LINK_REGEX);
 
     if (links) {
-      await Promise.all(
-        links.map(async (link) =>
-          assert(
-            await isOnPhishingList(link),
-            'The provided URL is detected as phishing.',
-          ),
-        ),
-      );
+      for (const link of links) {
+        assert(
+          !(await isOnPhishingList(link)),
+          'The provided URL is detected as phishing.',
+        );
+      }
     }
   }
 }

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-shadow */
+
 import { link, panel, text } from './builder';
 import type {
   Divider,
@@ -13,6 +15,7 @@ import {
   assertIsComponent,
   assertLinksAreSafe,
   isComponent,
+  isValidUrl,
 } from './validation';
 
 describe('isComponent', () => {
@@ -218,8 +221,8 @@ describe('assertIsComponent', () => {
 });
 
 describe('assertLinksAreSafe', () => {
-  it('does not throw for a safe link', () => {
-    const isOnPhishingList = () => false;
+  it('does not throw for a safe link', async () => {
+    const isOnPhishingList = async () => Promise.resolve(false);
 
     expect(async () =>
       assertLinksAreSafe(
@@ -229,19 +232,33 @@ describe('assertLinksAreSafe', () => {
     ).not.toThrow();
   });
 
-  it('throws for an unsafe link', () => {
-    const isOnPhishingList = () => true;
+  it('throws for an unsafe link component', async () => {
+    const isOnPhishingList = async () => Promise.resolve(true);
 
     expect(async () =>
       assertLinksAreSafe(
         link('Hello, world!', 'https://foo.bar'),
         isOnPhishingList,
       ),
-    ).toThrow('The provided URL is detected as phishing.');
+    ).rejects.toThrow('The provided URL is detected as phishing.');
+
+    await expect(
+      assertLinksAreSafe(
+        text('This tests a link: https://foo.bar'),
+        isOnPhishingList,
+      ),
+    ).rejects.toThrow('The provided URL is detected as phishing.');
+
+    await expect(
+      assertLinksAreSafe(
+        text('This tests a [link](https://foo.bar)'),
+        isOnPhishingList,
+      ),
+    ).rejects.toThrow('The provided URL is detected as phishing.');
   });
 
-  it('can crawl into nested components', () => {
-    const isOnPhishingList = () => true;
+  it('throws for an unsafe text component', async () => {
+    const isOnPhishingList = async () => Promise.resolve(true);
 
     expect(async () =>
       assertLinksAreSafe(
@@ -251,6 +268,18 @@ describe('assertLinksAreSafe', () => {
         ]),
         isOnPhishingList,
       ),
-    ).toThrow('The provided URL is detected as phishing.');
+    ).rejects.toThrow('The provided URL is detected as phishing.');
+  });
+});
+
+describe('isValidUrl', () => {
+  it('returns true for a valid URL', () => {
+    expect(isValidUrl('https://foo.bar')).toBe(true);
+    expect(isValidUrl('mailto:foo@bar.baz')).toBe(true);
+  });
+
+  it('returns false for an invalid URL', () => {
+    expect(isValidUrl('https://foo bar.baz')).toBe(false);
+    expect(isValidUrl('http://foo.bar')).toBe(false);
   });
 });

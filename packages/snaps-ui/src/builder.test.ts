@@ -314,7 +314,7 @@ describe('link', () => {
     );
 
     expect(() => link({ value: 'foo', url: 'http://foo.bar' })).toThrow(
-      'Invalid link component: At path: url -- The URL must start with `https:` or `mailto:`.',
+      'Invalid link component: At path: url -- The URL is invalid.',
     );
 
     expect(() => link({ value: 'foo', url: 'https://test .com' })).toThrow(

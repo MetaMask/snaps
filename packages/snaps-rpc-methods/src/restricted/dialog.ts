@@ -178,7 +178,13 @@ export function getDialogImplementation({
 
     const { content } = validatedParams;
 
-    await assertLinksAreSafe(content, isOnPhishingList);
+    try {
+      await assertLinksAreSafe(content, isOnPhishingList);
+    } catch (error) {
+      throw ethErrors.rpc.invalidParams({
+        message: `Invalid params: ${error.message}`,
+      });
+    }
 
     const placeholder =
       validatedParams.type === DialogType.Prompt

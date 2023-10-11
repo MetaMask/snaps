@@ -4,7 +4,7 @@ import type {
   SLIP10PathNode,
 } from '@metamask/key-tree';
 import { SLIP10Node } from '@metamask/key-tree';
-import type { MagicValue } from '@metamask/snaps-utils';
+import { isValidUrl, type MagicValue } from '@metamask/snaps-utils';
 import type { Hex } from '@metamask/utils';
 import {
   add0x,
@@ -14,6 +14,8 @@ import {
   stringToBytes,
 } from '@metamask/utils';
 import { keccak_256 as keccak256 } from '@noble/hashes/sha3';
+import { ethErrors } from 'eth-rpc-errors';
+import { literal, union } from 'superstruct';
 
 const HARDENED_VALUE = 0x80000000;
 
@@ -209,3 +211,32 @@ export async function getNode({
     ],
   });
 }
+
+const LINK_REGEX = /(?<protocol>[a-z]+:\/\/)?(?<host>\S+?(?:\.\S+)+)/giu;
+
+export const verifyLinks = async (
+  content: string,
+  isOnPhishingList: (url: string) => Promise<boolean>,
+) => {
+  const links = content.match(LINK_REGEX);
+
+  if (links) {
+    for (const link of links) {
+      assert(
+        isValidUrl(link, {
+          protocol: union([literal('https:'), literal('mailto:')]),
+        }),
+        ethErrors.rpc.invalidParams({
+          message: 'The provided URL is invalid.',
+        }),
+      );
+
+      assert(
+        !(await isOnPhishingList(link)),
+        ethErrors.rpc.invalidParams({
+          message: 'The provided URL is detected as phishing.',
+        }),
+      );
+    }
+  }
+};

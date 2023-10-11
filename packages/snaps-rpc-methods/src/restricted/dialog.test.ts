@@ -276,7 +276,9 @@ describe('implementation', () => {
             content: panel([heading('foo'), link('bar', 'https://foo.bar')]),
           },
         }),
-      ).rejects.toThrow('Invalid params: Phishing link detected.');
+      ).rejects.toThrow(
+        'Invalid params: The provided URL is detected as phishing.',
+      );
     });
   });
 });

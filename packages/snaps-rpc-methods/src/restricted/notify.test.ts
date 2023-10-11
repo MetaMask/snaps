@@ -18,6 +18,7 @@ describe('snap_notify', () => {
       const methodHooks = {
         showNativeNotification: jest.fn(),
         showInAppNotification: jest.fn(),
+        isOnPhishingList: jest.fn(),
       };
 
       expect(
@@ -38,10 +39,12 @@ describe('snap_notify', () => {
     it('shows inApp notification', async () => {
       const showNativeNotification = jest.fn().mockResolvedValueOnce(true);
       const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
+      const isOnPhishingList = jest.fn().mockResolvedValueOnce(false);
 
       const notificationImplementation = getImplementation({
         showNativeNotification,
         showInAppNotification,
+        isOnPhishingList,
       });
 
       await notificationImplementation({
@@ -64,10 +67,12 @@ describe('snap_notify', () => {
     it('shows native notification', async () => {
       const showNativeNotification = jest.fn().mockResolvedValueOnce(true);
       const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
+      const isOnPhishingList = jest.fn().mockResolvedValueOnce(false);
 
       const notificationImplementation = getImplementation({
         showNativeNotification,
         showInAppNotification,
+        isOnPhishingList,
       });
 
       await notificationImplementation({
@@ -90,10 +95,12 @@ describe('snap_notify', () => {
     it('accepts string notification types', async () => {
       const showNativeNotification = jest.fn().mockResolvedValueOnce(true);
       const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
+      const isOnPhishingList = jest.fn().mockResolvedValueOnce(false);
 
       const notificationImplementation = getImplementation({
         showNativeNotification,
         showInAppNotification,
+        isOnPhishingList,
       });
 
       await notificationImplementation({
@@ -116,10 +123,12 @@ describe('snap_notify', () => {
     it('throws an error if the notification type is invalid', async () => {
       const showNativeNotification = jest.fn().mockResolvedValueOnce(true);
       const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
+      const isOnPhishingList = jest.fn().mockResolvedValueOnce(false);
 
       const notificationImplementation = getImplementation({
         showNativeNotification,
         showInAppNotification,
+        isOnPhishingList,
       });
 
       await expect(
@@ -135,6 +144,56 @@ describe('snap_notify', () => {
           },
         }),
       ).rejects.toThrow('Must specify a valid notification "type".');
+    });
+
+    it('throws an error if a link is on the phishing list', async () => {
+      const showNativeNotification = jest.fn().mockResolvedValueOnce(true);
+      const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
+      const isOnPhishingList = jest.fn().mockResolvedValueOnce(true);
+
+      const notificationImplementation = getImplementation({
+        showNativeNotification,
+        showInAppNotification,
+        isOnPhishingList,
+      });
+
+      await expect(
+        notificationImplementation({
+          context: {
+            origin: 'extension',
+          },
+          method: 'snap_notify',
+          params: {
+            type: 'native',
+            message: 'https://foo.bar',
+          },
+        }),
+      ).rejects.toThrow('The provided URL is detected as phishing.');
+    });
+
+    it('throws an error if a link is invalid', async () => {
+      const showNativeNotification = jest.fn().mockResolvedValueOnce(true);
+      const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
+      const isOnPhishingList = jest.fn().mockResolvedValueOnce(true);
+
+      const notificationImplementation = getImplementation({
+        showNativeNotification,
+        showInAppNotification,
+        isOnPhishingList,
+      });
+
+      await expect(
+        notificationImplementation({
+          context: {
+            origin: 'extension',
+          },
+          method: 'snap_notify',
+          params: {
+            type: 'native',
+            message: 'http://foo.bar',
+          },
+        }),
+      ).rejects.toThrow('The provided URL is invalid.');
     });
   });
 
