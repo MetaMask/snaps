@@ -8,11 +8,11 @@ import type {
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import type { KeyringOrigins } from '@metamask/snaps-utils';
 import { assertIsKeyringOrigins, SnapCaveatType } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import { assert, hasProperty, isPlainObject } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 
 import { SnapEndowments } from './enum';
 
@@ -49,7 +49,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
         caveats?.length !== 1 ||
         caveats[0].type !== SnapCaveatType.KeyringOrigin
       ) {
-        throw ethErrors.rpc.invalidParams({
+        throw rpcErrors.invalidParams({
           message: `Expected a single "${SnapCaveatType.KeyringOrigin}" caveat.`,
         });
       }
@@ -72,13 +72,13 @@ export const keyringEndowmentBuilder = Object.freeze({
  */
 function validateCaveatOrigins(caveat: Caveat<string, any>) {
   if (!hasProperty(caveat, 'value') || !isPlainObject(caveat.value)) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: 'Invalid keyring origins: Expected a plain object.',
     });
   }
 
   const { value } = caveat;
-  assertIsKeyringOrigins(value, ethErrors.rpc.invalidParams);
+  assertIsKeyringOrigins(value, rpcErrors.invalidParams);
 }
 
 /**

@@ -7,6 +7,7 @@ import type {
   CaveatSpecificationConstraint,
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import type { CronjobSpecification } from '@metamask/snaps-utils';
 import {
   SnapCaveatType,
@@ -14,7 +15,6 @@ import {
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import { assert, hasProperty, isPlainObject } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 
 import { SnapEndowments } from './enum';
 
@@ -109,7 +109,7 @@ export function getCronjobCaveatJobs(
  */
 export function validateCronjobCaveat(caveat: Caveat<string, any>) {
   if (!hasProperty(caveat, 'value') || !isPlainObject(caveat.value)) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: 'Expected a plain object.',
     });
   }
@@ -117,13 +117,13 @@ export function validateCronjobCaveat(caveat: Caveat<string, any>) {
   const { value } = caveat;
 
   if (!hasProperty(value, 'jobs') || !isPlainObject(value)) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: 'Expected a plain object.',
     });
   }
 
   if (!isCronjobSpecificationArray(value.jobs)) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: 'Expected a valid cronjob specification array.',
     });
   }

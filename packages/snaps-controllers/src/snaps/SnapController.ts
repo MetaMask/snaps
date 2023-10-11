@@ -24,6 +24,7 @@ import type {
   ValidPermission,
 } from '@metamask/permission-controller';
 import { SubjectType } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import type { BlockReason } from '@metamask/snaps-registry';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import type {
@@ -77,7 +78,6 @@ import {
 } from '@metamask/utils';
 import type { StateMachine } from '@xstate/fsm';
 import { createMachine, interpret } from '@xstate/fsm';
-import { ethErrors } from 'eth-rpc-errors';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
 
@@ -1683,7 +1683,7 @@ export class SnapController extends BaseController<
         const [error, version] = resolveVersionRange(rawVersion);
 
         if (error) {
-          throw ethErrors.rpc.invalidParams(
+          throw rpcErrors.invalidParams(
             `The "version" field must be a valid SemVer version range if specified. Received: "${rawVersion}".`,
           );
         }
@@ -1942,7 +1942,7 @@ export class SnapController extends BaseController<
 
       const newVersion = manifest.version;
       if (!gtVersion(newVersion, snap.version)) {
-        throw ethErrors.rpc.invalidParams(
+        throw rpcErrors.invalidParams(
           `Snap "${snapId}@${snap.version}" is already installed. Couldn't update to a version inside requested "${newVersionRange}" range.`,
         );
       }

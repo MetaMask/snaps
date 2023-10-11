@@ -7,6 +7,7 @@ import type {
   SubjectMetadata,
 } from '@metamask/permission-controller';
 import { SubjectType } from '@metamask/permission-controller';
+import { providerErrors } from '@metamask/rpc-errors';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import type { ValidatedSnapId } from '@metamask/snaps-utils';
 import { SnapCaveatType } from '@metamask/snaps-utils';
@@ -19,7 +20,6 @@ import {
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 import type { Json } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 
 import type {
   CronjobControllerActions,
@@ -88,7 +88,7 @@ export class MockApprovalController {
   }) {
     if (this.#approval) {
       if (requestState.loading === false && !requestState.error) {
-        this.#approval.promise.reject(ethErrors.provider.userRejectedRequest());
+        this.#approval.promise.reject(providerErrors.userRejectedRequest());
       }
     }
   }

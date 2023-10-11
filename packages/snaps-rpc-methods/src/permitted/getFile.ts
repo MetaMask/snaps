@@ -1,12 +1,13 @@
+import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type { PermittedHandlerExport } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { enumValue, AuxiliaryFileEncoding } from '@metamask/snaps-utils';
 import type {
-  PermittedHandlerExport,
   PendingJsonRpcResponse,
-  JsonRpcEngineEndCallback,
   JsonRpcRequest,
-} from '@metamask/types';
+  Json,
+} from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 import type { Infer } from 'superstruct';
 import { object, optional, string, union } from 'superstruct';
 
@@ -60,7 +61,7 @@ export type GetFileHooks = {
  */
 async function implementation(
   req: JsonRpcRequest<GetFileArgs>,
-  res: PendingJsonRpcResponse<unknown>,
+  res: PendingJsonRpcResponse<Json>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
   { getSnapFile }: GetFileHooks,
@@ -71,7 +72,7 @@ async function implementation(
     params,
     GetFileArgsStruct,
     'Invalid "snap_getFile" parameters',
-    ethErrors.rpc.invalidParams,
+    rpcErrors.invalidParams,
   );
 
   try {

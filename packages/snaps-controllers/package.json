@@ -42,22 +42,23 @@
     "lint:dependencies": "depcheck"
   },
   "dependencies": {
-    "@metamask/approval-controller": "^3.5.0",
+    "@metamask/approval-controller": "^4.0.0",
     "@metamask/base-controller": "^3.2.0",
+    "@metamask/json-rpc-engine": "^7.1.1",
     "@metamask/object-multiplex": "^1.2.0",
-    "@metamask/permission-controller": "^4.1.2",
+    "@metamask/permission-controller": "^5.0.0",
     "@metamask/post-message-stream": "^7.0.0",
+    "@metamask/rpc-errors": "^6.1.0",
+    "@metamask/snaps-execution-environments": "workspace:^",
     "@metamask/snaps-registry": "^2.1.0",
     "@metamask/snaps-rpc-methods": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/utils": "^8.1.0",
     "@xstate/fsm": "^2.0.0",
     "concat-stream": "^2.0.0",
-    "eth-rpc-errors": "^4.0.3",
     "gunzip-maybe": "^1.4.2",
     "immer": "^9.0.6",
-    "json-rpc-engine": "^6.1.0",
-    "json-rpc-middleware-stream": "^4.2.0",
+    "json-rpc-middleware-stream": "^5.0.0",
     "nanoid": "^3.1.31",
     "readable-web-to-node-stream": "^3.0.2",
     "tar-stream": "^3.1.6"
@@ -134,5 +135,17 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
+  },
+  "lavamoat": {
+    "allowScripts": {
+      "@metamask/permission-controller>@metamask/controller-utils>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "@metamask/permission-controller>@metamask/controller-utils>ethereumjs-util>ethereum-cryptography>secp256k1": false,
+      "@swc/core": false,
+      "@wdio/browser-runner>@originjs/vite-plugin-commonjs>esbuild": false,
+      "@wdio/cli>@wdio/utils>edgedriver": false,
+      "esbuild": false,
+      "wdio-chromedriver-service>chromedriver": false,
+      "wdio-geckodriver-service>geckodriver": false
+    }
   }
 }

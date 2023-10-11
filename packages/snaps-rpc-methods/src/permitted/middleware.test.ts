@@ -1,8 +1,8 @@
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import {
   MOCK_SNAP_ID,
   getTruncatedSnap,
 } from '@metamask/snaps-utils/test-utils';
-import { JsonRpcEngine } from 'json-rpc-engine';
 
 import { createSnapsMethodMiddleware } from './middleware';
 
@@ -54,9 +54,9 @@ describe('createSnapsMethodMiddleware', () => {
       error: {
         code: -32603,
         data: {
-          originalError: {},
+          cause: expect.objectContaining({ message: 'foo' }),
         },
-        message: 'foo',
+        message: 'Internal JSON-RPC error.',
       },
     });
   });
@@ -82,6 +82,7 @@ describe('createSnapsMethodMiddleware', () => {
       error: {
         code: -32603,
         data: {
+          cause: null,
           request: {
             id: 1,
             jsonrpc: '2.0',
