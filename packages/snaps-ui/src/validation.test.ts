@@ -235,7 +235,7 @@ describe('assertLinksAreSafe', () => {
   it('throws for an unsafe link component', async () => {
     const isOnPhishingList = async () => Promise.resolve(true);
 
-    expect(async () =>
+    await expect(async () =>
       assertLinksAreSafe(
         link('Hello, world!', 'https://foo.bar'),
         isOnPhishingList,
@@ -260,7 +260,7 @@ describe('assertLinksAreSafe', () => {
   it('throws for an unsafe text component', async () => {
     const isOnPhishingList = async () => Promise.resolve(true);
 
-    expect(async () =>
+    await expect(async () =>
       assertLinksAreSafe(
         panel([
           text('Hello, world!'),

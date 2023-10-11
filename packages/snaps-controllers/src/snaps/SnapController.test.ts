@@ -11,7 +11,11 @@ import type {
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { link } from '@metamask/snaps-ui';
-import type { SnapPermissions, ValidatedSnapId, RpcOrigins } from '@metamask/snaps-utils';
+import type {
+  SnapPermissions,
+  ValidatedSnapId,
+  RpcOrigins,
+} from '@metamask/snaps-utils';
 import {
   AuxiliaryFileEncoding,
   DEFAULT_ENDOWMENTS,
