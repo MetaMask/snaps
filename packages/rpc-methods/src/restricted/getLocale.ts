@@ -2,6 +2,7 @@ import type {
   PermissionSpecificationBuilder,
   ValidPermissionSpecification,
   RestrictedMethodOptions,
+  RestrictedMethodParameters,
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import type { NonEmptyArray } from '@metamask/utils';
@@ -68,7 +69,7 @@ export const getLocaleBuilder = Object.freeze({
  */
 export function getImplementation({ getLocale }: GetLocaleMethodHooks) {
   return async function implementation(
-    _args: RestrictedMethodOptions<any>,
+    _args: RestrictedMethodOptions<RestrictedMethodParameters>,
   ): Promise<string> {
     return getLocale();
   };
