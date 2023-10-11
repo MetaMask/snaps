@@ -49,7 +49,7 @@
     "@metamask/object-multiplex": "^1.2.0",
     "@metamask/permission-controller": "^5.0.0",
     "@metamask/post-message-stream": "^7.0.0",
-    "@metamask/rpc-errors": "^6.0.0",
+    "@metamask/rpc-errors": "^6.1.0",
     "@metamask/rpc-methods": "workspace:^",
     "@metamask/snaps-execution-environments": "workspace:^",
     "@metamask/snaps-registry": "^2.0.0",
