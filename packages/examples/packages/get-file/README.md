@@ -9,13 +9,13 @@ To define a static file you'll need to define it in the manifest:
 
 ```json
 {
-"source": {
-    "shasum": ...,
-    "location": ...,
-    "files": [
-      "./src/foo.json"
-    ]
-  },
+   "source": {
+      "shasum": ...,
+      "location": ...,
+      "files": [
+         "./src/foo.json"
+      ]
+   }
 }
 ```
 
