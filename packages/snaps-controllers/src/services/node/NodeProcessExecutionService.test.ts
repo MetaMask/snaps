@@ -76,6 +76,7 @@ describe('NodeProcessExecutionService', () => {
 
     // eslint-disable-next-line jest/prefer-strict-equal
     expect((result as ExecutionEnvironmentError).cause).toEqual({
+      // TODO: Unwrap errors, and change this to the actual error message.
       message: 'foobar',
       stack: expect.any(String),
     });
@@ -138,6 +139,7 @@ describe('NodeProcessExecutionService', () => {
         snapId: 'TestSnap',
         stack: expect.stringContaining('Error: random error inside'),
       },
+      // TODO: Unwrap errors, and change this to the actual error message.
       message: 'Execution Environment Error',
     });
 
