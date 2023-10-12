@@ -5110,7 +5110,6 @@ __metadata:
     "@metamask/permission-controller": ^4.1.2
     "@metamask/post-message-stream": ^7.0.0
     "@metamask/rpc-methods": "workspace:^"
-    "@metamask/snaps-execution-environments": "workspace:^"
     "@metamask/snaps-registry": ^2.0.0
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/template-snap": ^0.7.0
@@ -5172,6 +5171,11 @@ __metadata:
     wdio-chromedriver-service: ^8.1.1
     wdio-geckodriver-service: ^5.0.2
     webdriverio: ^8.15.9
+  peerDependencies:
+    "@metamask/snaps-execution-environments": "workspace:^"
+  peerDependenciesMeta:
+    "@metamask/snaps-execution-environments":
+      optional: true
   languageName: unknown
   linkType: soft
 
