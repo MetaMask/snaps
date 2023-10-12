@@ -24,7 +24,7 @@ lockdown({
 
 /**
  * Get mock endowments that don't do anything. This is useful for running the
- * eval, for snaps that try to communicate with the extension on initialisation,
+ * eval, for Snaps that try to communicate with the extension on initialisation,
  * for example.
  *
  * @returns The mock endowments.
@@ -54,7 +54,7 @@ const invalidExports = Object.keys(snapModule.exports).filter(
 
 if (invalidExports.length > 0) {
   // eslint-disable-next-line no-console
-  console.warn(`Invalid snap exports detected:\n${invalidExports.join('\n')}`);
+  console.warn(`Invalid Snap exports detected:\n${invalidExports.join('\n')}`);
 }
 
 setTimeout(() => process.exit(0), 1000); // Hack to ensure worker exits

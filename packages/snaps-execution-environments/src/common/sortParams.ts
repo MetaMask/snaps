@@ -5,7 +5,7 @@ import type { JsonRpcParams } from '@metamask/utils';
 /**
  * Deterministically sort JSON-RPC parameter keys. This makes it possible to
  * support both arrays and objects as parameters. Objects are sorted and turned
- * into arrays, for easier consumption by the snap.
+ * into arrays, for easier consumption by the Snap.
  *
  * The order is defined by the `method` parameter.
  *

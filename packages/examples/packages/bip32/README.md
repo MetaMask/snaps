@@ -1,6 +1,6 @@
 # `@metamask/bip32-example-snap`
 
-This snap demonstrates the use of `snap_getBip32Entropy` and
+This Snap demonstrates the use of `snap_getBip32Entropy` and
 `snap_getBip32PublicKey` to derive a BIP-32 public key and private key from the
 user's secret recovery phrase.
 
@@ -11,7 +11,7 @@ user's secret recovery phrase.
 > permissions. Refer to [the documentation](https://docs.metamask.io/snaps/reference/rpc-api/#snap_getbip32entropy)
 > for more information.
 
-Along with other permissions, the manifest of this snap includes the
+Along with other permissions, the manifest of this Snap includes the
 `snap_getBip32Entropy` and `snap_getBip32PublicKey` permissions:
 
 ```json
@@ -46,7 +46,7 @@ permissions is an object with the following properties:
 
 ## Snap usage
 
-This snap exposes an `onRpcRequest` handler, which supports the following
+This Snap exposes an `onRpcRequest` handler, which supports the following
 JSON-RPC methods:
 
 - `getPublicKey`: Get the public key for the given `path` and

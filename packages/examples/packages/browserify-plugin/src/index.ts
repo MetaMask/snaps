@@ -6,7 +6,7 @@ import type { OnRpcRequestHandler } from '@metamask/snaps-types';
  * `wallet_invokeSnap` method. This handler handles a single method:
  *
  * - `hello`: Returns a static message, "Hello from Browserify!". This is just
- * for demonstration purposes, showing that a snap can be built with
+ * for demonstration purposes, showing that a Snap can be built with
  * Browserify.
  *
  * @param params - The request parameters.

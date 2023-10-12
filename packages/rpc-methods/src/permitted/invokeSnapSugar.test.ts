@@ -9,7 +9,7 @@ import { getValidatedParams, invokeSnapSugar } from './invokeSnapSugar';
 
 describe('wallet_invokeSnap', () => {
   describe('invokeSnapSugar', () => {
-    it('invokes snap with next()', () => {
+    it('invokes Snap with next()', () => {
       const req: JsonRpcRequest<unknown> = {
         id: 'some-id',
         jsonrpc: '2.0',
@@ -50,7 +50,7 @@ describe('wallet_invokeSnap', () => {
 
       expect(end).toHaveBeenCalledWith(
         ethErrors.rpc.invalidParams({
-          message: 'Must specify a valid snap ID.',
+          message: 'Must specify a valid Snap ID.',
         }),
       );
       expect(next).not.toHaveBeenCalled();
@@ -64,10 +64,10 @@ describe('wallet_invokeSnap', () => {
       );
     });
 
-    it('throws an error if the snap ID is missing from params object', () => {
+    it('throws an error if the Snap ID is missing from params object', () => {
       expect(() =>
         getValidatedParams({ snapId: undefined, request: {} }),
-      ).toThrow('Must specify a valid snap ID.');
+      ).toThrow('Must specify a valid Snap ID.');
     });
 
     it('throws an error if the request is not a plain object', () => {

@@ -15,9 +15,9 @@ type ExecutorJob = {
 };
 
 /**
- * A snap executor using the WebWorker API.
+ * A Snap executor using the WebWorker API.
  *
- * This is not a traditional snap executor, as it does not execute snaps itself.
+ * This is not a traditional snap executor, as it does not execute Snaps itself.
  * Instead, it creates a pool of webworkers for each snap execution, and sends
  * the snap execution request to the webworker. The webworker is responsible for
  * executing the snap.

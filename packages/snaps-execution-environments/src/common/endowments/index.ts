@@ -11,9 +11,9 @@ import buildCommonEndowments from './commonEndowmentFactory';
 
 type EndowmentFactoryResult = {
   /**
-   * A function that performs any necessary teardown when the snap becomes idle.
+   * A function that performs any necessary teardown when the Snap becomes idle.
    *
-   * NOTE:** The endowments are not reconstructed if the snap is re-invoked
+   * NOTE:** The endowments are not reconstructed if the Snap is re-invoked
    * before being terminated, so the teardown operation must not render the
    * endowments unusable; it should simply restore the endowments to their
    * original state.
@@ -29,7 +29,7 @@ const registeredEndowments = buildCommonEndowments();
 
 /**
  * A map of endowment names to their factory functions. Some endowments share
- * the same factory function, but we only call each factory once for each snap.
+ * the same factory function, but we only call each factory once for each Snap.
  * See {@link createEndowments} for details.
  */
 const endowmentFactories = registeredEndowments.reduce((factories, builder) => {
@@ -48,8 +48,8 @@ const endowmentFactories = registeredEndowments.reduce((factories, builder) => {
  *
  * @param snap - The Snaps global API object.
  * @param ethereum - The Snap's EIP-1193 provider object.
- * @param snapId - The id of the snap that will use the created endowments.
- * @param endowments - The list of endowments to provide to the snap.
+ * @param snapId - The id of the Snap that will use the created endowments.
+ * @param endowments - The list of endowments to provide to the Snap.
  * @returns An object containing the Snap's endowments.
  */
 export function createEndowments(
@@ -73,7 +73,7 @@ export function createEndowments(
         if (!hasProperty(attenuatedEndowments, endowmentName)) {
           // Call the endowment factory for the current endowment. If the factory
           // creates multiple endowments, they will all be assigned to the
-          // `attenuatedEndowments` object, but will only be passed on to the snap
+          // `attenuatedEndowments` object, but will only be passed on to the Snap
           // if explicitly listed among its endowment.
           // This may not have an actual use case, but, safety first.
 

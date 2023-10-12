@@ -2,7 +2,7 @@
 
 This folder contains the documentation for the project. It is intended for
 developers working on the MetaMask Snaps platform itself, and not for developers
-building snaps.
+building Snaps.
 
 ## Table of contents
 

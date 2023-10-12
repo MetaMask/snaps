@@ -27,7 +27,7 @@ export const invokeSnapSugarHandler: PermittedHandlerExport<
 
 /**
  * The `wallet_invokeSnap` method implementation.
- * Reroutes incoming JSON-RPC requests that are targeting snaps, by modifying the method and params.
+ * Reroutes incoming JSON-RPC requests that are targeting Snaps, by modifying the method and params.
  *
  * @param req - The JSON-RPC request object.
  * @param _res - The JSON-RPC response object. Not used by this
@@ -73,7 +73,7 @@ export function getValidatedParams(params: unknown): InvokeSnapSugarArgs {
 
   if (!snapId || typeof snapId !== 'string' || snapId === '') {
     throw ethErrors.rpc.invalidParams({
-      message: 'Must specify a valid snap ID.',
+      message: 'Must specify a valid Snap ID.',
     });
   }
 

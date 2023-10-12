@@ -23,7 +23,7 @@ export const DEFAULT_MANIFEST_PATH = 'snap.manifest.json';
 export const DEFAULT_PACKAGE_JSON_PATH = 'package.json';
 
 export const MOCK_SNAP_NAME = '@metamask/example-snap';
-export const MOCK_SNAP_DESCRIPTION = 'The test example snap!';
+export const MOCK_SNAP_DESCRIPTION = 'The test example Snap!';
 export const MOCK_SNAP_VERSION = '1.0.0' as SemVerVersion;
 /* eslint-disable @typescript-eslint/naming-convention */
 export const MOCK_INITIAL_PERMISSIONS = {
@@ -46,7 +46,7 @@ export const getDefaultRepository = () => {
 };
 
 /**
- * A mock snap source and its shasum.
+ * A mock Snap source and its shasum.
  */
 export const DEFAULT_SNAP_BUNDLE = `
   module.exports.onRpcRequest = ({ request }) => {
@@ -100,17 +100,17 @@ export const DEFAULT_SNAP_SHASUM = getSnapChecksum({
 });
 
 /**
- * Get a mock snap manifest, based on the provided options. This is useful for
+ * Get a mock Snap manifest, based on the provided options. This is useful for
  * quickly generating a manifest file, while being able to override any of the
  * values.
  *
  * @param manifest - The optional manifest overrides.
- * @param manifest.version - The version of the snap.
- * @param manifest.description - The description of the snap.
- * @param manifest.proposedName - The proposed name of the snap.
- * @param manifest.initialPermissions - The initial permissions of the snap.
- * @param manifest.shasum - The shasum of the snap.
- * @param manifest.filePath - The path to the snap.
+ * @param manifest.version - The version of the Snap.
+ * @param manifest.description - The description of the Snap.
+ * @param manifest.proposedName - The proposed name of the Snap.
+ * @param manifest.initialPermissions - The initial permissions of the Snap.
+ * @param manifest.shasum - The shasum of the Snap.
+ * @param manifest.filePath - The path to the Snap.
  * @param manifest.packageName - The name of the snap.
  * @param manifest.repository - The repository of the snap.
  * @param manifest.iconPath - The path to the icon of the snap.

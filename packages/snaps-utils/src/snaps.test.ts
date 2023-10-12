@@ -23,7 +23,7 @@ describe('assertIsValidSnapId', () => {
     (value) => {
       expect(() => assertIsValidSnapId(value)).toThrow(
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        `Invalid snap ID: Expected the value to satisfy a union of \`intersection | string\`, but received: ${value}.`,
+        `Invalid Snap ID: Expected the value to satisfy a union of \`intersection | string\`, but received: ${value}.`,
       );
     },
   );

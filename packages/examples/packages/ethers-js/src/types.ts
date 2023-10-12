@@ -3,7 +3,7 @@
  */
 export type SignMessageParams = {
   /**
-   * The message to sign. It will be signed using the snap's signing key,
+   * The message to sign. It will be signed using the Snap's signing key,
    * derived with the [`snap_getEntropy`](https://docs.metamask.io/snaps/reference/rpc-api/#snap_getentropy)
    * method.
    */

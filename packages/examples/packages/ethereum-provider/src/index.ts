@@ -42,13 +42,13 @@ async function getVersion() {
 }
 
 /**
- * Get the Ethereum accounts that the snap has access to using the `ethereum`
+ * Get the Ethereum accounts that the Snap has access to using the `ethereum`
  * global. This is essentially the same as the `window.ethereum` global, but
  * does not have access to all methods.
  *
- * If the user hasn't given the snap access to any accounts yet, this JSON-RPC
+ * If the user hasn't given the Snap access to any accounts yet, this JSON-RPC
  * method will show a prompt to the user, asking them to select the accounts to
- * give the snap access to.
+ * give the Snap access to.
  *
  * Note that using the `ethereum` global requires the
  * `endowment:ethereum-provider` permission.
@@ -95,7 +95,7 @@ async function personalSign(message: string, from: string) {
  *
  * - `getGasPrice`: Get the current Ethereum gas price as a hexadecimal string.
  * - `getVersion`: Get the current Ethereum network version as a string.
- * - `getAccounts`: Get the Ethereum accounts that the snap has access to.
+ * - `getAccounts`: Get the Ethereum accounts that the Snap has access to.
  *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.

@@ -115,17 +115,17 @@ export class SnapsEnvironment extends NodeEnvironment {
   }
 
   /**
-   * Get the snap ID for the current environment, which is used if no snap ID is
+   * Get the Snap ID for the current environment, which is used if no Snap ID is
    * passed to {@link installSnap}. This assumes that the built-in server is
    * running.
    *
-   * @returns The snap ID.
+   * @returns The Snap ID.
    * @throws If the server is not running.
    */
   get snapId() {
     assert(
       this.#server,
-      'You must specify a snap ID, because the built-in server is not running.',
+      'You must specify a Snap ID, because the built-in server is not running.',
     );
 
     const { port } = this.#server.address() as AddressInfo;

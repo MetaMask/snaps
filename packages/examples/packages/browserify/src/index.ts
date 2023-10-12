@@ -6,11 +6,11 @@ import type { OnRpcRequestHandler } from '@metamask/snaps-types';
  * `wallet_invokeSnap` method. This handler handles a single method:
  *
  * - `hello`: Returns a static message, "Hello from the MetaMask Snaps CLI using
- * Browserify!". This is just for demonstration purposes, showing that a snap
+ * Browserify!". This is just for demonstration purposes, showing that a Snap
  * can be built with the MetaMask Snaps CLI using Browserify.
  *
  * Note that Browserify is not recommended, and only exists for backwards
- * compatibility with existing snaps. New snaps should be built with Webpack.
+ * compatibility with existing Snaps. New Snaps should be built with Webpack.
  *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.

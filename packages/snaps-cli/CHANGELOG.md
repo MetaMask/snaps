@@ -46,14 +46,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add support for bundling with Webpack ([#1521](https://github.com/MetaMask/snaps/pull/1521))
   - For backwards compatibility, the Webpack bundler is opt-in. To use it, add
-    `"bundler": "webpack"` to your snap configuration file, and follow the new
+    `"bundler": "webpack"` to your Snap configuration file, and follow the new
     configuration format described in the documentation.
   - The new configuration format also adds support for:
     - Setting environment variables, which are set as `process.env` values in
       the bundled code.
     - Importing WebAssembly modules (if `experimental.wasm` is enabled in the
       snap configuration file).
-- Support TypeScript snap configuration files ([#1521](https://github.com/MetaMask/snaps/pull/1521))
+- Support TypeScript Snap configuration files ([#1521](https://github.com/MetaMask/snaps/pull/1521))
 
 ### Changed
 - Release package independently ([#1600](https://github.com/MetaMask/snaps/pull/1600))

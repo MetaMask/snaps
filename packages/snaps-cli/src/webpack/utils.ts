@@ -60,7 +60,7 @@ export const WEBPACK_FALLBACKS = {
  * `SWC` compiler, which is a much faster alternative to Babel and TypeScript's
  * own compiler.
  *
- * @param config - The processed snap Webpack config.
+ * @param config - The processed Snap Webpack config.
  * @param config.legacy - The legacy config object, if any.
  * @param config.sourceMap - Whether to generate source maps.
  * @see https://swc.rs/docs/usage/swc-loader
@@ -73,7 +73,7 @@ export async function getDefaultLoader({
   if (legacy) {
     return {
       /**
-       * If the snap uses the legacy config, we use the custom `browserify`
+       * If the Snap uses the legacy config, we use the custom `browserify`
        * loader. This uses the legacy Browserify config to transpile the code.
        * This is necessary for backwards compatibility with the
        * `bundlerCustomizer` function.
@@ -82,7 +82,7 @@ export async function getDefaultLoader({
 
       /**
        * The options for the `browserify` loader. These can be overridden in the
-       * snap config.
+       * Snap config.
        */
       options: legacy,
     };
@@ -152,13 +152,13 @@ export async function getDefaultLoader({
 }
 
 /**
- * Get the Webpack devtool configuration based on the given snap config.
+ * Get the Webpack devtool configuration based on the given Snap config.
  *
  * - If `sourceMap` is `inline`, return `inline-source-map`.
  * - If `sourceMap` is `true`, return `source-map`.
  * - Otherwise, return `false`.
  *
- * @param sourceMap - The `sourceMap` value from the snap config.
+ * @param sourceMap - The `sourceMap` value from the Snap config.
  * @returns The Webpack devtool configuration.
  */
 export function getDevTool(
@@ -241,7 +241,7 @@ export function pluralize(
  * Get an object that can be used as fallback config for Webpack's
  * `fallback` config.
  *
- * @param polyfills - The polyfill object from the snap config.
+ * @param polyfills - The polyfill object from the Snap config.
  * @returns The webpack fallback config.
  */
 export function getFallbacks(polyfills: ProcessedWebpackConfig['polyfills']): {

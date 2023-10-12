@@ -2,7 +2,7 @@
  * Get a fibonacci number after `n` iterations (Fₙ), starting from 1. This is a
  * TypeScript function that will be compiled to WebAssembly, using
  * AssemblyScript. This function is exported, so that it can be called from the
- * snap.
+ * Snap.
  *
  * @param iterations - The number of iterations.
  * @returns The `nth` fibonacci number (Fₙ).

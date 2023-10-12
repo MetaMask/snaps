@@ -12,7 +12,7 @@ import { getEntropy } from './utils';
  * Handle incoming JSON-RPC requests from the dapp, sent through the
  * `wallet_invokeSnap` method. This handler handles a single method:
  *
- * - `signMessage`: Derive a private key using the snap's own entropy, and sign
+ * - `signMessage`: Derive a private key using the Snap's own entropy, and sign
  * a message using it. The signature is returned in hex format.
  *
  * @param params - The request parameters.
@@ -34,7 +34,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
           content: panel([
             heading('Signature request'),
             text(
-              'Do you want to sign the following message with snap entropy?',
+              'Do you want to sign the following message with Snap entropy?',
             ),
             copyable(message),
           ]),

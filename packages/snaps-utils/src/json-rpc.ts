@@ -112,7 +112,7 @@ export function isOriginAllowed(
     return true;
   }
 
-  // If the origin is a snap and `snaps` is true, it is allowed.
+  // If the origin is a Snap and `snaps` is true, it is allowed.
   return Boolean(subjectType === SubjectType.Snap && origins.snaps);
 }
 

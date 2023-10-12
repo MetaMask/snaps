@@ -21,7 +21,7 @@ export async function cli(
 
     .example(
       '$0 my-new-snap',
-      `\tInitialize a snap project in the 'my-new-snap' directory`,
+      `\tInitialize a Snap project in the 'my-new-snap' directory`,
     )
     .command(initCommand)
 

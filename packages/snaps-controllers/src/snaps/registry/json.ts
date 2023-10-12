@@ -267,7 +267,7 @@ export class JsonSnapsRegistry extends BaseController<
   }
 
   /**
-   * Get metadata for the given snap ID.
+   * Get metadata for the given Snap ID.
    *
    * @param snapId - The ID of the snap to get metadata for.
    * @returns The metadata for the given snap ID, or `null` if the snap is not

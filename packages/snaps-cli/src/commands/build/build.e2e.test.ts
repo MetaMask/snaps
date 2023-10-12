@@ -9,8 +9,8 @@ describe('mm-snap build', () => {
   let originalManifest: string;
 
   beforeEach(async () => {
-    // Since this is an end-to-end test, and we're working with a "real" snap,
-    // we have to make a copy of the original snap manifest, so we can modify it
+    // Since this is an end-to-end test, and we're working with a "real" Snap,
+    // we have to make a copy of the original Snap manifest, so we can modify it
     // and reset it after the test.
     originalManifest = await fs.readFile(
       join(SNAP_BROWSERIFY_DIR, 'snap.manifest.json'),
@@ -27,7 +27,7 @@ describe('mm-snap build', () => {
   });
 
   it.each(['build', 'b'])(
-    'builds a snap using "mm-snap %s"',
+    'builds a Snap using "mm-snap %s"',
     async (command) => {
       runner = getCommandRunner(command, []);
       await runner.wait();
@@ -37,20 +37,20 @@ describe('mm-snap build', () => {
         expect.stringMatching(/Checking the input file\./u),
       );
       expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Building the snap bundle\./u),
+        expect.stringMatching(/Building the Snap bundle\./u),
       );
       expect(runner.stdout).toContainEqual(
         expect.stringMatching(/Compiled \d+ files? in \d+ms\./u),
       );
       expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Evaluating the snap bundle\./u),
+        expect.stringMatching(/Evaluating the Snap bundle\./u),
       );
       expect(runner.exitCode).toBe(0);
     },
   );
 
   it.each(['build', 'b'])(
-    'builds a snap using "mm-snap %s" using a legacy config',
+    'builds a Snap using "mm-snap %s" using a legacy config',
     async (command) => {
       runner = getCommandRunner(command, [], SNAP_BROWSERIFY_DIR);
       await runner.wait();
@@ -60,13 +60,13 @@ describe('mm-snap build', () => {
         expect.stringMatching(/Checking the input file\./u),
       );
       expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Building the snap bundle\./u),
+        expect.stringMatching(/Building the Snap bundle\./u),
       );
       expect(runner.stdout).toContainEqual(
         expect.stringMatching(/Compiled \d+ files? in \d+ms\./u),
       );
       expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Evaluating the snap bundle\./u),
+        expect.stringMatching(/Evaluating the Snap bundle\./u),
       );
       expect(runner.exitCode).toBe(0);
     },

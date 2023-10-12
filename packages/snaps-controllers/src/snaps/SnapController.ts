@@ -149,12 +149,12 @@ export interface SnapRuntimeData {
   activeReferences: number;
 
   /**
-   * The current pending inbound requests, meaning requests that are processed by snaps.
+   * The current pending inbound requests, meaning requests that are processed by Snaps.
    */
   pendingInboundRequests: PendingRequest[];
 
   /**
-   * The current pending outbound requests, meaning requests made from snaps towards the MetaMask
+   * The current pending outbound requests, meaning requests made from Snaps towards the MetaMask
    * extension.
    */
   pendingOutboundRequests: number;
@@ -189,7 +189,7 @@ type FetchSnapResult = {
   files: FetchedSnapFiles;
 
   /**
-   * Location that was used to fetch the snap.
+   * Location that was used to fetch the Snap.
    *
    * Helpful if you want to pass it forward since files will be still cached.
    */
@@ -236,7 +236,7 @@ export type GetSnap = {
 };
 
 /**
- * Handles sending an inbound request to a snap and returns its result.
+ * Handles sending an inbound request to a Snap and returns its result.
  */
 export type HandleSnapRequest = {
   type: `${typeof controllerName}:handleRequest`;
@@ -252,7 +252,7 @@ export type GetSnapState = {
 };
 
 /**
- * Checks if the specified snap exists in state.
+ * Checks if the specified Snap exists in state.
  */
 export type HasSnap = {
   type: `${typeof controllerName}:has`;
@@ -276,7 +276,7 @@ export type ClearSnapState = {
 };
 
 /**
- * Checks all installed snaps against the blocklist.
+ * Checks all installed Snaps against the blocklist.
  */
 export type UpdateBlockedSnaps = {
   type: `${typeof controllerName}:updateBlockedSnaps`;
@@ -374,7 +374,7 @@ export type SnapAdded = {
 };
 
 /**
- * Emitted when an installed snap has been blocked.
+ * Emitted when an installed Snap has been blocked.
  */
 export type SnapBlocked = {
   type: `${typeof controllerName}:snapBlocked`;
@@ -382,7 +382,7 @@ export type SnapBlocked = {
 };
 
 /**
- * Emitted when a snap has been started after being added and authorized during
+ * Emitted when a Snap has been started after being added and authorized during
  * installation.
  */
 export type SnapInstalled = {
@@ -391,7 +391,7 @@ export type SnapInstalled = {
 };
 
 /**
- * Emitted when a snap that has previously been fully installed, is uninstalled.
+ * Emitted when a Snap that has previously been fully installed, is uninstalled.
  */
 export type SnapUninstalled = {
   type: `${typeof controllerName}:snapUninstalled`;
@@ -399,8 +399,8 @@ export type SnapUninstalled = {
 };
 
 /**
- * Emitted when a snap is removed from state, this may happen even
- * if a snap has not fully completed installation.
+ * Emitted when a Snap is removed from state, this may happen even
+ * if a Snap has not fully completed installation.
  */
 export type SnapRemoved = {
   type: `${typeof controllerName}:snapRemoved`;
@@ -408,7 +408,7 @@ export type SnapRemoved = {
 };
 
 /**
- * Emitted when an installed snap has been unblocked.
+ * Emitted when an installed Snap has been unblocked.
  */
 export type SnapUnblocked = {
   type: `${typeof controllerName}:snapUnblocked`;
@@ -416,7 +416,7 @@ export type SnapUnblocked = {
 };
 
 /**
- * Emitted when a snap is updated.
+ * Emitted when a Snap is updated.
  */
 export type SnapUpdated = {
   type: `${typeof controllerName}:snapUpdated`;
@@ -424,7 +424,7 @@ export type SnapUpdated = {
 };
 
 /**
- * Emitted when a snap is rolled back.
+ * Emitted when a Snap is rolled back.
  */
 export type SnapRolledback = {
   type: `${typeof controllerName}:snapRolledback`;
@@ -432,8 +432,8 @@ export type SnapRolledback = {
 };
 
 /**
- * Emitted when a Snap is terminated. This is different from the snap being
- * stopped as it can also be triggered when a snap fails initialization.
+ * Emitted when a Snap is terminated. This is different from the Snap being
+ * stopped as it can also be triggered when a Snap fails initialization.
  */
 export type SnapTerminated = {
   type: `${typeof controllerName}:snapTerminated`;
@@ -442,7 +442,7 @@ export type SnapTerminated = {
 
 /**
  * Emitted when a Snap is enabled by a user.
- * This is not emitted by default when installing a snap.
+ * This is not emitted by default when installing a Snap.
  */
 export type SnapEnabled = {
   type: `${typeof controllerName}:snapEnabled`;
@@ -514,7 +514,7 @@ type FeatureFlags = {
 type SnapControllerArgs = {
   /**
    * A teardown function that allows the host to clean up its instrumentation
-   * for a running snap.
+   * for a running Snap.
    */
   closeAllConnections: CloseAllConnectionsFunction;
 
@@ -568,7 +568,7 @@ type SnapControllerArgs = {
   maxRequestTime?: number;
 
   /**
-   * The npm registry URL that will be used to fetch published snaps.
+   * The npm registry URL that will be used to fetch published Snaps.
    */
   npmRegistryUrl?: string;
 
@@ -961,8 +961,8 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Checks all installed snaps against the block list and
-   * blocks/unblocks snaps as appropriate. See {@link SnapController.blockSnap}
+   * Checks all installed Snaps against the block list and
+   * blocks/unblocks Snaps as appropriate. See {@link SnapController.blockSnap}
    * for more information.
    */
   async updateBlockedSnaps(): Promise<void> {
@@ -1335,7 +1335,7 @@ export class SnapController extends BaseController<
 
   /**
    * Updates the own state of the snap with the given id.
-   * This is distinct from the state MetaMask uses to manage snaps.
+   * This is distinct from the state MetaMask uses to manage Snaps.
    *
    * @param snapId - The id of the Snap whose state should be updated.
    * @param newSnapState - The new state of the snap.
@@ -1351,7 +1351,7 @@ export class SnapController extends BaseController<
 
   /**
    * Clears the state of the snap with the given id.
-   * This is distinct from the state MetaMask uses to manage snaps.
+   * This is distinct from the state MetaMask uses to manage Snaps.
    *
    * @param snapId - The id of the Snap whose state should be cleared.
    */
@@ -1363,7 +1363,7 @@ export class SnapController extends BaseController<
 
   /**
    * Gets the own state of the snap with the given id.
-   * This is distinct from the state MetaMask uses to manage snaps.
+   * This is distinct from the state MetaMask uses to manage Snaps.
    *
    * @param snapId - The id of the Snap whose state to get.
    * @returns A promise that resolves with the decrypted snap state or null if no state exists.
@@ -1405,7 +1405,7 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Stops the given snaps, removes them from state, and clears all associated
+   * Stops the given Snaps, removes them from state, and clears all associated
    * permissions, handlers, and listeners.
    *
    * @param snapIds - The ids of the Snaps.
@@ -1570,19 +1570,19 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Gets all snaps in their truncated format.
+   * Gets all Snaps in their truncated format.
    *
-   * @returns All installed snaps in their truncated format.
+   * @returns All installed Snaps in their truncated format.
    */
   getAllSnaps(): TruncatedSnap[] {
     return Object.values(this.state.snaps).map(truncateSnap);
   }
 
   /**
-   * Gets the serialized permitted snaps of the given origin, if any.
+   * Gets the serialized permitted Snaps of the given origin, if any.
    *
-   * @param origin - The origin whose permitted snaps to retrieve.
-   * @returns The serialized permitted snaps for the origin.
+   * @param origin - The origin whose permitted Snaps to retrieve.
+   * @returns The serialized permitted Snaps for the origin.
    */
   getPermittedSnaps(origin: string): InstallSnapsResult {
     const permissions =
@@ -1609,12 +1609,12 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Installs the snaps requested by the given origin, returning the snap
+   * Installs the Snaps requested by the given origin, returning the snap
    * object if the origin is permitted to install it, and an authorization error
    * otherwise.
    *
-   * @param origin - The origin that requested to install the snaps.
-   * @param requestedSnaps - The snaps to install.
+   * @param origin - The origin that requested to install the Snaps.
+   * @param requestedSnaps - The Snaps to install.
    * @returns An object of snap ids and snap objects, or errors if a
    * snap couldn't be installed.
    */
@@ -1649,7 +1649,7 @@ export class SnapController extends BaseController<
           allowLocal: this.#featureFlags.allowLocalSnaps,
         });
 
-        // Existing snaps may need to be updated, unless they should be re-installed (e.g. local snaps)
+        // Existing Snaps may need to be updated, unless they should be re-installed (e.g. local snaps)
         // Everything else is treated as an install
         const isUpdate = this.has(snapId) && !location.shouldAlwaysReload;
 

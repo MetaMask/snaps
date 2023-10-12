@@ -7,9 +7,9 @@ export type State = {
 };
 
 /**
- * Hook to retrieve the state of the snap.
+ * Hook to retrieve the state of the Snap.
  *
- * @returns The state of the snap.
+ * @returns The state of the Snap.
  */
 export function useSnapState() {
   const snapId = getSnapId(MANAGE_STATE_SNAP_ID, MANAGE_STATE_PORT);

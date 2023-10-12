@@ -15,7 +15,7 @@ import { getSnapManifest } from '../simulation';
 import { Validation } from './components';
 
 /**
- * Manifest page, which displays the manifest of a snap, and any errors that
+ * Manifest page, which displays the manifest of a Snap, and any errors that
  * may be present.
  *
  * @returns The Manifest component.

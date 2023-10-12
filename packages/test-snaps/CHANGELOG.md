@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.0]
 ### Added
-- Add name lookup example snap ([#1768](https://github.com/MetaMask/snaps/pull/1768))
+- Add name lookup example Snap ([#1768](https://github.com/MetaMask/snaps/pull/1768))
 
 ## [1.0.0]
 ### Changed
@@ -23,20 +23,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump `metamask/utils` and `metamask/snaps-registry` ([#1738](https://github.com/MetaMask/snaps/pull/1738))
 
 ### Fixed
-- Fix network access example snap ([#1747](https://github.com/MetaMask/snaps/pull/1747))
+- Fix network access example Snap ([#1747](https://github.com/MetaMask/snaps/pull/1747))
 
 ## [0.39.0-flask.1]
 ### Added
-- Add test snap for `snap_getLocale` ([#1684](https://github.com/MetaMask/snaps/pull/1684))
+- Add test Snap for `snap_getLocale` ([#1684](https://github.com/MetaMask/snaps/pull/1684))
 
 ## [0.38.0-flask.1]
 ### Added
-- Add lifecycle hooks example snap ([#1645](https://github.com/MetaMask/snaps/pull/1645))
-- Add `personal_sign` test to the Ethereum Provider example snap ([#1601](https://github.com/MetaMask/snaps/pull/1601))
+- Add lifecycle hooks example Snap ([#1645](https://github.com/MetaMask/snaps/pull/1645))
+- Add `personal_sign` test to the Ethereum Provider example Snap ([#1601](https://github.com/MetaMask/snaps/pull/1601))
 
 ## [0.37.3-flask.1]
 ### Fixed
-- Fix transaction insights example snap NPM package name ([#1628](https://github.com/MetaMask/snaps/pull/1628))
+- Fix transaction insights example Snap NPM package name ([#1628](https://github.com/MetaMask/snaps/pull/1628))
 
 ## [0.37.2-flask.1]
 ### Changed
@@ -45,7 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     MetaMask Snaps packages.
 
 ### Fixed
-- Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
+- Fix NPM package name of the network access Snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
 [Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.0.0...HEAD
 [2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@1.1.0...@metamask/test-snaps@2.0.0

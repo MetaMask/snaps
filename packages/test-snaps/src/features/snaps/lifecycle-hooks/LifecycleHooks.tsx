@@ -8,7 +8,7 @@ import {
 } from './constants';
 
 export const LifecycleHooks: FunctionComponent = () => {
-  // TODO: Right now there isn't any published version of this snap, so we can't
+  // TODO: Right now there isn't any published version of this Snap, so we can't
   // test the update functionality. Once there is, we should add a button to
   // trigger the update.
   return (

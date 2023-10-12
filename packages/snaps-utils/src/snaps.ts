@@ -119,7 +119,7 @@ export type Snap = {
   blocked: boolean;
 
   /**
-   * Information detailing why the snap is blocked.
+   * Information detailing why the Snap is blocked.
    */
   blockInformation?: BlockReason;
 
@@ -206,7 +206,7 @@ export function getSnapChecksum(files: FetchedSnapFiles): string {
 
 /**
  * Checks whether the `source.shasum` property of a Snap manifest matches the
- * shasum of the snap.
+ * shasum of the Snap.
  *
  * @param files - All required Snap files to be included in the checksum.
  * @param errorMessage - The error message to throw if validation fails.
@@ -225,7 +225,7 @@ export function validateSnapShasum(
 
 export const LOCALHOST_HOSTNAMES = ['localhost', '127.0.0.1', '[::1]'] as const;
 
-// Require snap ids to only consist of printable ASCII characters
+// Require Snap IDs to only consist of printable ASCII characters.
 export const BaseSnapIdStruct = pattern(string(), /^[\x21-\x7E]*$/u);
 
 const LocalSnapIdSubUrlStruct = uri({
@@ -239,7 +239,7 @@ export const LocalSnapIdStruct = refine(
   'local Snap Id',
   (value) => {
     if (!value.startsWith(SnapIdPrefixes.local)) {
-      return `Expected local snap ID, got "${value}".`;
+      return `Expected local Snap ID, got "${value}".`;
     }
 
     const [error] = validate(
@@ -287,10 +287,10 @@ export type ValidatedSnapId = Opaque<string, typeof snapIdSymbol>;
 declare const snapIdSymbol: unique symbol;
 
 /**
- * Extracts the snap prefix from a snap ID.
+ * Extracts the Snap prefix from a Snap ID.
  *
- * @param snapId - The snap ID to extract the prefix from.
- * @returns The snap prefix from a snap id, e.g. `npm:`.
+ * @param snapId - The Snap ID to extract the prefix from.
+ * @returns The Snap prefix from a Snap id, e.g. `npm:`.
  */
 export function getSnapPrefix(snapId: string): SnapIdPrefixes {
   const prefix = Object.values(SnapIdPrefixes).find((possiblePrefix) =>
@@ -303,25 +303,25 @@ export function getSnapPrefix(snapId: string): SnapIdPrefixes {
 }
 
 /**
- * Strips snap prefix from a full snap ID.
+ * Strips Snap prefix from a full Snap ID.
  *
- * @param snapId - The snap ID to strip.
- * @returns The stripped snap ID.
+ * @param snapId - The Snap ID to strip.
+ * @returns The stripped Snap ID.
  */
 export function stripSnapPrefix(snapId: string): string {
   return snapId.replace(getSnapPrefix(snapId), '');
 }
 
 /**
- * Assert that the given value is a valid snap ID.
+ * Assert that the given value is a valid Snap ID.
  *
  * @param value - The value to check.
- * @throws If the value is not a valid snap ID.
+ * @throws If the value is not a valid Snap ID.
  */
 export function assertIsValidSnapId(
   value: unknown,
 ): asserts value is ValidatedSnapId {
-  assertStruct(value, SnapIdStruct, 'Invalid snap ID');
+  assertStruct(value, SnapIdStruct, 'Invalid Snap ID');
 }
 
 /**
@@ -340,11 +340,11 @@ export function isCaipChainId(chainId: unknown): chainId is string {
 }
 
 /**
- * Utility function to check if an origin has permission (and caveat) for a particular snap.
+ * Utility function to check if an origin has permission (and caveat) for a particular Snap.
  *
  * @param permissions - An origin's permissions object.
- * @param snapId - The id of the snap.
- * @returns A boolean based on if an origin has the specified snap.
+ * @param snapId - The id of the Snap.
+ * @returns A boolean based on if an origin has the specified Snap.
  */
 export function isSnapPermitted(
   permissions: SubjectPermissions<PermissionConstraint>,

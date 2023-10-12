@@ -280,7 +280,7 @@ export async function getSnapSourceCode(
     );
     return virtualFile;
   } catch (error) {
-    throw new Error(`Failed to read snap bundle file: ${error.message}`);
+    throw new Error(`Failed to read Snap bundle file: ${error.message}`);
   }
 }
 
@@ -314,7 +314,7 @@ export async function getSnapIcon(
     );
     return virtualFile;
   } catch (error) {
-    throw new Error(`Failed to read snap icon file: ${error.message}`);
+    throw new Error(`Failed to read Snap icon file: ${error.message}`);
   }
 }
 
@@ -349,7 +349,7 @@ export function getWritableManifest(manifest: SnapManifest): SnapManifest {
  * Validates the fields of an npm Snap manifest that has already passed JSON
  * Schema validation.
  *
- * @param snapFiles - The relevant snap files to validate.
+ * @param snapFiles - The relevant Snap files to validate.
  * @param snapFiles.manifest - The npm Snap manifest to validate.
  * @param snapFiles.packageJson - The npm Snap's `package.json`.
  * @param snapFiles.sourceCode - The Snap's source code.

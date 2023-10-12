@@ -26,7 +26,7 @@ import { waitForResponse } from './wait-for';
 const log = createModuleLogger(rootLogger, 'request');
 
 /**
- * Send a request to the snap.
+ * Send a request to the Snap.
  *
  * @param page - The page to send the request from.
  * @param args - The request arguments.
@@ -53,7 +53,7 @@ async function sendRequest(page: Page, args: SnapRpcHookArgs) {
 }
 
 /**
- * Send a request to the snap.
+ * Send a request to the Snap.
  *
  * @param page - The page to send the request from.
  * @param options - The request options.
@@ -104,7 +104,7 @@ export function request(
 }
 
 /**
- * Send a transaction to the snap.
+ * Send a transaction to the Snap.
  *
  * @param page - The page to send the transaction from.
  * @param options - The transaction options.

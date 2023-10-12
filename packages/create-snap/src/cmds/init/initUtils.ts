@@ -118,7 +118,7 @@ export function yarnInstall(directory: string) {
 }
 
 /**
- * Build the snap project.
+ * Build the Snap project.
  *
  * @param snapDirectory - The directory containing the snap.
  */
@@ -129,6 +129,6 @@ export function buildSnap(snapDirectory: string) {
       cwd: pathUtils.resolve(__dirname, snapDirectory),
     });
   } catch (error) {
-    throw new Error('Init Error: Failed to build snap.');
+    throw new Error('Init Error: Failed to build Snap.');
   }
 }

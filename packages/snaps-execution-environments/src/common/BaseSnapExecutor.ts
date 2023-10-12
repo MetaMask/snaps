@@ -140,7 +140,7 @@ export class BaseSnapExecutor {
 
         assert(
           !required || handler !== undefined,
-          `No ${handlerType} handler exported for snap "${target}`,
+          `No ${handlerType} handler exported for Snap "${target}`,
           ethErrors.rpc.methodNotSupported,
         );
 
@@ -291,11 +291,11 @@ export class BaseSnapExecutor {
   }
 
   /**
-   * Attempts to evaluate a snap in SES. Generates APIs for the snap. May throw
+   * Attempts to evaluate a Snap in SES. Generates APIs for the Snap. May throw
    * on errors.
    *
-   * @param snapId - The id of the snap.
-   * @param sourceCode - The source code of the snap, in IIFE format.
+   * @param snapId - The id of the Snap.
+   * @param sourceCode - The source code of the Snap, in IIFE format.
    * @param _endowments - An array of the names of the endowments.
    */
   protected async startSnap(
@@ -374,7 +374,7 @@ export class BaseSnapExecutor {
     } catch (error) {
       this.removeSnap(snapId);
       throw ethErrors.rpc.internal({
-        message: `Error while running snap '${snapId}': ${getErrorMessage(
+        message: `Error while running Snap '${snapId}': ${getErrorMessage(
           error,
         )}`,
         data: {
@@ -387,7 +387,7 @@ export class BaseSnapExecutor {
   }
 
   /**
-   * Cancels all running evaluations of all snaps and clears all snap data.
+   * Cancels all running evaluations of all Snaps and clears all Snap data.
    * NOTE:** Should only be called in response to the `terminate` RPC command.
    */
   protected onTerminate() {

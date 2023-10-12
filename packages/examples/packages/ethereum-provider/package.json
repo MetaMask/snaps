@@ -1,7 +1,7 @@
 {
   "name": "@metamask/ethereum-provider-example-snap",
   "version": "2.0.0",
-  "description": "MetaMask example snap demonstrating the use of the Ethereum Provider API and `endowment:ethereum-provider` permission.",
+  "description": "MetaMask example Snap demonstrating the use of the Ethereum Provider API and `endowment:ethereum-provider` permission.",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"

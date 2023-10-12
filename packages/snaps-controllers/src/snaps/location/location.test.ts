@@ -8,7 +8,7 @@ describe('detectSnapLocation', () => {
     'disallows http like protocols by default',
     (protocol) => {
       expect(() => detectSnapLocation(`${protocol}//127.0.0.1/`)).toThrow(
-        'Fetching snaps through http/https is disabled.',
+        'Fetching Snaps through http/https is disabled.',
       );
     },
   );
@@ -21,10 +21,10 @@ describe('detectSnapLocation', () => {
     );
   });
 
-  it('disallows local snaps by default', () => {
+  it('disallows local Snaps by default', () => {
     expect(() =>
       detectSnapLocation('local:http://localhost', { fetch: jest.fn() }),
-    ).toThrow('Fetching local snaps is disabled.');
+    ).toThrow('Fetching local Snaps is disabled.');
   });
 
   it.each([
@@ -45,7 +45,7 @@ describe('detectSnapLocation', () => {
 
   it('throws on unrecognized protocol', () => {
     expect(() => detectSnapLocation('foo://bar.com/asd')).toThrow(
-      `Unrecognized "foo:" snap location protocol.`,
+      `Unrecognized "foo:" Snap location protocol.`,
     );
   });
 });

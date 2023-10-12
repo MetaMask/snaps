@@ -28,7 +28,7 @@ type Specification = ValidPermissionSpecification<{
 
 /**
  * The specification builder for the `snap_getLocale` permission.
- * `snap_getLocale` allows snaps to get the user selected locale.
+ * `snap_getLocale` allows Snaps to get the user selected locale.
  *
  * @param options - The specification builder options.
  * @param options.allowedCaveats - The optional allowed caveats for the permission.

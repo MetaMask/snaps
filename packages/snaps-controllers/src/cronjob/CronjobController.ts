@@ -146,7 +146,7 @@ export class CronjobController extends BaseController<
   }
 
   /**
-   * Retrieve all cronjob specifications for all runnable snaps.
+   * Retrieve all cronjob specifications for all runnable Snaps.
    *
    * @returns Array of Cronjob specifications.
    */

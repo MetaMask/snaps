@@ -40,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump `metamask/utils` and `metamask/snaps-registry` ([#1738](https://github.com/MetaMask/snaps/pull/1738))
 
 ### Fixed
-- Fix cronjob running on disabled snaps ([#1743](https://github.com/MetaMask/snaps/pull/1743))
+- Fix cronjob running on disabled Snaps ([#1743](https://github.com/MetaMask/snaps/pull/1743))
 
 ## [0.38.3-flask.1]
 ### Changed
@@ -64,7 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Make `updateBlockedSnaps` update the registry ([#1625](https://github.com/MetaMask/snaps/pull/1625))
-- Move source code and snap state back to controller state ([#1634](https://github.com/MetaMask/snaps/pull/1634))
+- Move source code and Snap state back to controller state ([#1634](https://github.com/MetaMask/snaps/pull/1634))
 
 ## [0.37.2-flask.1]
 ### Changed

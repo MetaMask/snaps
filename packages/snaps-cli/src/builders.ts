@@ -16,7 +16,7 @@ const builders: Record<string, Readonly<Options>> = {
   },
 
   fix: {
-    describe: 'Attempt to fix snap.manifest.json',
+    describe: 'Attempt to fix Snap.manifest.json',
     type: 'boolean',
   },
 
@@ -53,7 +53,7 @@ const builders: Record<string, Readonly<Options>> = {
 
   manifest: {
     alias: 'm',
-    describe: 'Validate snap.manifest.json',
+    describe: 'Validate Snap.manifest.json',
     type: 'boolean',
     deprecated: true,
   },
@@ -136,13 +136,13 @@ const builders: Record<string, Readonly<Options>> = {
   },
 
   writeManifest: {
-    describe: 'Make necessary changes to the snap manifest file',
+    describe: 'Make necessary changes to the Snap manifest file',
     type: 'boolean',
     deprecated: true,
   },
 
   serve: {
-    describe: 'Serve snap file(s) locally for testing',
+    describe: 'Serve Snap file(s) locally for testing',
     type: 'boolean',
     deprecated: true,
   },

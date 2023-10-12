@@ -436,7 +436,7 @@ describe('SnapsBundleWarningsPlugin', () => {
     expect(log).toHaveBeenCalledWith(expect.stringContaining('path'));
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(
-        /The snap attempted to use one or more Node.js builtins, but no browser fallback has been provided\./u,
+        /The Snap attempted to use one or more Node.js builtins, but no browser fallback has been provided\./u,
       ),
     );
   });
@@ -515,7 +515,7 @@ describe('SnapsBundleWarningsPlugin', () => {
 
     expect(log).toHaveBeenCalledWith(
       expect.stringContaining(
-        'The snap attempted to use the Node.js Buffer global, which is not supported in the MetaMask Snaps CLI by default.',
+        'The Snap attempted to use the Node.js Buffer global, which is not supported in the MetaMask Snaps CLI by default.',
       ),
     );
   });

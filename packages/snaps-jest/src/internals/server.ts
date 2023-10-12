@@ -64,7 +64,7 @@ async function assertRoot(root: string) {
 
   if (!(await isFile(filePath))) {
     throw new Error(
-      `File "${filePath}" does not exist, or is not a file. Did you forget to build your snap?`,
+      `File "${filePath}" does not exist, or is not a file. Did you forget to build your Snap?`,
     );
   }
 }

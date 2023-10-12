@@ -82,7 +82,7 @@ class ResponseWrapper implements Response {
 /**
  * Create a network endowment, consisting of a `fetch` function.
  * This allows us to provide a teardown function, so that we can cancel
- * any pending requests, connections, streams, etc. that may be open when a snap
+ * any pending requests, connections, streams, etc. that may be open when a Snap
  * is terminated.
  *
  * This wraps the original implementation of `fetch`,

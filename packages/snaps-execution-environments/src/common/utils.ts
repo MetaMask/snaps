@@ -28,7 +28,7 @@ export function constructError(originalError: unknown) {
 /**
  * Make proxy for Promise and handle the teardown process properly.
  * If the teardown is called in the meanwhile, Promise result will not be
- * exposed to the snap anymore and warning will be logged to the console.
+ * exposed to the Snap anymore and warning will be logged to the console.
  *
  * @param originalPromise - Original promise.
  * @param teardownRef - Reference containing teardown count.
@@ -123,7 +123,7 @@ export const BLOCKED_RPC_METHODS = Object.freeze([
 ]);
 
 /**
- * Asserts the validity of request arguments for a snap outbound request using the `snap.request` API.
+ * Asserts the validity of request arguments for a Snap outbound request using the `snap.request` API.
  *
  * @param args - The arguments to validate.
  */
@@ -157,7 +157,7 @@ export function assertSnapOutboundRequest(args: RequestArguments) {
  * @param args - The arguments to validate.
  */
 export function assertEthereumOutboundRequest(args: RequestArguments) {
-  // Disallow snaps methods for separation of concerns.
+  // Disallow Snaps methods for separation of concerns.
   assert(
     !String.prototype.startsWith.call(args.method, 'snap_'),
     ethErrors.rpc.methodNotFound({
@@ -185,7 +185,7 @@ export function assertEthereumOutboundRequest(args: RequestArguments) {
 /**
  * Gets a sanitized value to be used for passing to the underlying MetaMask provider.
  *
- * @param value - An unsanitized value from a snap.
+ * @param value - An unsanitized value from a Snap.
  * @returns A sanitized value ready to be passed to a MetaMask provider.
  */
 export function sanitizeRequestArguments(value: unknown): RequestArguments {

@@ -15,7 +15,7 @@ describe('assertIsSnapIcon', () => {
       path: 'foo.png',
     });
     expect(() => assertIsSnapIcon(icon)).toThrow(
-      'Expected snap icon to end in ".svg".',
+      'Expected Snap icon to end in ".svg".',
     );
   });
 

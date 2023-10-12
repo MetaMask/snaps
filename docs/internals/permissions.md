@@ -4,7 +4,7 @@
 > originally written by Erik Marks.
 
 MetaMask Snaps uses the [PermissionController] for managing permissions for
-snaps, just like the extension uses it to manage permissions for websites. The
+Snaps, just like the extension uses it to manage permissions for websites. The
 [PermissionController] is the heart of an object capability-inspired permission
 system. It is a stateful system that mediates access to resources, and it
 provides a mechanism for attenuating the authority granted by a permission.
@@ -40,7 +40,7 @@ stack as follows:
 | Concept           | Implementation                                                  |
 | :---------------- | :-------------------------------------------------------------- |
 | Host              | The MetaMask application                                        |
-| Subjects          | Websites, snaps, or other extensions                            |
+| Subjects          | Websites, Snaps, or other extensions                            |
 | Targets           | JSON-RPC methods, endowments                                    |
 | Invocations       | JSON-RPC requests, endowment retrieval                          |
 | Permissions       | Permission objects                                              |
@@ -106,7 +106,7 @@ caveat types and their implementations.
 For MetaMask Snaps specifically, each permission that uses caveats has a
 "caveat mapper," which is a function that maps a certain value to a valid
 caveat. For example, the `snap_getBip32Entropy` permission has a caveat mapper
-that maps the value in the snap's manifest to a `PermittedDerivationPaths`
+that maps the value in the Snap's manifest to a `PermittedDerivationPaths`
 object:
 
 ```ts
@@ -124,7 +124,7 @@ export function permittedDerivationPathsCaveatMapper(
 }
 ```
 
-This makes it easier for snap developers to specify caveats, since they
+This makes it easier for Snap developers to specify caveats, since they
 don't have to know the exact format of the caveats.
 
 ## Examples

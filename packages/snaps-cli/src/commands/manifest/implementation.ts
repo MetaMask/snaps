@@ -6,7 +6,7 @@ import { dirname } from 'path';
 import { error, info, warn } from '../../utils';
 
 /**
- * Check the snap manifest file at the given path. If `write` is `true`, the
+ * Check the Snap manifest file at the given path. If `write` is `true`, the
  * manifest will be written to disk if it is invalid. If `write` is `false`,
  * the manifest will not be written to disk, and the function will log any
  * errors and warnings to the console.
@@ -26,7 +26,7 @@ export async function manifest(
   );
 
   if (write && updated) {
-    info('The snap manifest file has been updated.', spinner);
+    info('The Snap manifest file has been updated.', spinner);
   }
 
   if (!write && errors.length > 0) {
@@ -35,7 +35,7 @@ export async function manifest(
       .join('\n');
 
     error(
-      `The snap manifest file is invalid.\n\n${formattedErrors}\n\nRun the command with the \`--fix\` flag to attempt to fix the manifest.`,
+      `The Snap manifest file is invalid.\n\n${formattedErrors}\n\nRun the command with the \`--fix\` flag to attempt to fix the manifest.`,
       spinner,
     );
 
@@ -50,7 +50,7 @@ export async function manifest(
     );
 
     warn(
-      `The snap manifest file has warnings.\n\n${formattedWarnings.join('\n')}`,
+      `The Snap manifest file has warnings.\n\n${formattedWarnings.join('\n')}`,
       spinner,
     );
   }

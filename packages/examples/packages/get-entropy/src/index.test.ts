@@ -25,7 +25,7 @@ describe('onRpcRequest', () => {
   });
 
   describe('signMessage', () => {
-    it('signs a message with the snap entropy', async () => {
+    it('signs a message with the Snap entropy', async () => {
       const { request, close } = await installSnap();
 
       const response = request({
@@ -39,7 +39,7 @@ describe('onRpcRequest', () => {
       expect(ui).toRender(
         panel([
           heading('Signature request'),
-          text('Do you want to sign the following message with snap entropy?'),
+          text('Do you want to sign the following message with Snap entropy?'),
           copyable('Hello, world!'),
         ]),
       );
@@ -68,7 +68,7 @@ describe('onRpcRequest', () => {
       expect(ui).toRender(
         panel([
           heading('Signature request'),
-          text('Do you want to sign the following message with snap entropy?'),
+          text('Do you want to sign the following message with Snap entropy?'),
           copyable('Hello, world!'),
         ]),
       );

@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "description": "An example snap to test JSON-RPC permissions.",
+  "description": "An example Snap to test JSON-RPC permissions.",
   "proposedName": "JSON-RPC Example Snap",
   "repository": {
     "type": "git",

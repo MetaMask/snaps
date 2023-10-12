@@ -7,7 +7,7 @@ import { panel, text, heading } from '@metamask/snaps-ui';
  * method:
  *
  * - `execute`: The JSON-RPC method that is called by MetaMask when the cronjob
- * is triggered. This method is specified in the snap manifest under the
+ * is triggered. This method is specified in the Snap manifest under the
  * `endowment:cronjob` permission. If you want to support more methods (e.g.,
  * with different times), you can add them to the manifest there.
  *
@@ -19,7 +19,7 @@ import { panel, text, heading } from '@metamask/snaps-ui';
 export const onCronjob: OnCronjobHandler = async ({ request }) => {
   switch (request.method) {
     case 'execute':
-      // Cronjobs can execute any method that is available to the snap.
+      // Cronjobs can execute any method that is available to the Snap.
       return snap.request({
         method: 'snap_dialog',
         params: {

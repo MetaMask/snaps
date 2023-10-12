@@ -1,7 +1,7 @@
 /**
  * The parameters for calling the `getPublicKey` JSON-RPC method.
  *
- * Note: For simplicity, these are not validated by the snap. In production, you
+ * Note: For simplicity, these are not validated by the Snap. In production, you
  * should validate that the request object matches this type before using it.
  */
 export type GetBip32PublicKeyParams = {
@@ -29,7 +29,7 @@ export type GetBip32PublicKeyParams = {
 /**
  * The parameters for calling the `signMessage` JSON-RPC method.
  *
- * Note: For simplicity, these are not validated by the snap. In production, you
+ * Note: For simplicity, these are not validated by the Snap. In production, you
  * should validate that the request object matches this type before using it.
  */
 export type SignMessageParams = {

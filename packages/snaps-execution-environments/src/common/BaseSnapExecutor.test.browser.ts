@@ -149,7 +149,7 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       error: {
         code: -32603,
-        message: `The snap "${MOCK_SNAP_ID}" has been terminated during execution.`,
+        message: `The Snap "${MOCK_SNAP_ID}" has been terminated during execution.`,
         stack: expect.anything(),
       },
       id: 2,
@@ -221,7 +221,7 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('reports when outbound requests are made using snap API', async () => {
+  it('reports when outbound requests are made using Snap API', async () => {
     const CODE = `
       module.exports.onRpcRequest = () => snap.request({ method: 'wallet_getPermissions', params: [] });
     `;
@@ -285,7 +285,7 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it("doesn't allow snap APIs in the Ethereum provider", async () => {
+  it("doesn't allow Snap APIs in the Ethereum provider", async () => {
     const CODE = `
       module.exports.onRpcRequest = () => ethereum.request({ method: 'snap_confirm', params: [] });
     `;
@@ -434,7 +434,7 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('allows direct access to snap public properties', async () => {
+  it('allows direct access to Snap public properties', async () => {
     const CODE = `
       module.exports.onRpcRequest = () => {
         snap.request;
@@ -546,7 +546,7 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('only allows certain methods in snap API', async () => {
+  it('only allows certain methods in Snap API', async () => {
     const CODE = `
       module.exports.onRpcRequest = () => snap.request({ method: 'eth_blockNumber', params: [] });
     `;
@@ -702,7 +702,7 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('sanitizes JSON before checking for blocked methods using snap global', async () => {
+  it('sanitizes JSON before checking for blocked methods using Snap global', async () => {
     const CODE = `
     const badToJSON = () => {
       const x = []
@@ -1341,7 +1341,7 @@ describe('BaseSnapExecutor', () => {
     }
   });
 
-  it('blocks snaps from escaping confinement by using unbound this', async () => {
+  it('blocks Snaps from escaping confinement by using unbound this', async () => {
     const consoleSpy = spy(console, 'log');
 
     const PAYLOAD = `

@@ -1,7 +1,7 @@
 # Architecture
 
 Below is a sequence diagram of the architecture of the Metamask Snaps system. It
-shows the flow of a request from a dapp to a snap, and back.
+shows the flow of a request from a dapp to a Snap, and back.
 
 ```mermaid
 sequenceDiagram
@@ -49,7 +49,7 @@ sequenceDiagram
   ex-->>sc: OK
   Note over sc: Remember: We received a request.<br>It can now be sent to snapRpc
   sc->>ex: handleRpcRequest
-  Note over sc,ex: Request from dapp is wrapped in<br>another RPC for snap command
+  Note over sc,ex: Request from dapp is wrapped in<br>another RPC for Snap command
   sc->>sc: Set up timer
   ex->>exe: Handle RPC
   exe->s: Handle RPC

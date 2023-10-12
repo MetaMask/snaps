@@ -6,7 +6,7 @@ A plugin for developing [MetaMask Snaps](https://docs.metamask.io/guide/snaps.ht
 
 Use Node.js `16.0.0` or later. We recommend using [nvm](https://github.com/nvm-sh/nvm) for managing Node.js versions.
 
-Install a dependency in your snap project using `yarn` or `npm`:
+Install a dependency in your Snap project using `yarn` or `npm`:
 
 - `npm install @metamask/snaps-rollup-plugin`
 - `yarn add @metamask/snaps-rollup-plugin`

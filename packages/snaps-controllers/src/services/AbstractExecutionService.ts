@@ -169,7 +169,7 @@ export abstract class AbstractExecutionService<WorkerType>
   }
 
   /**
-   * Initiates a job for a snap.
+   * Initiates a job for a Snap.
    *
    * Depending on the execution environment, this may run forever if the Snap fails to start up properly, therefore any call to this function should be wrapped in a timeout.
    *
@@ -226,7 +226,7 @@ export abstract class AbstractExecutionService<WorkerType>
 
     const commandStream = mux.createStream(SNAP_STREAM_NAMES.COMMAND);
 
-    // Handle out-of-band errors, i.e. errors thrown from the snap outside of the req/res cycle.
+    // Handle out-of-band errors, i.e. errors thrown from the Snap outside of the req/res cycle.
     // Also keep track of outbound request/responses
     const notificationHandler = (
       message:

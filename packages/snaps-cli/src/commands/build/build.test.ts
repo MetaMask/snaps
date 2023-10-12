@@ -11,7 +11,7 @@ jest.mock('../eval');
 jest.mock('./implementation');
 
 describe('buildHandler', () => {
-  it('builds a snap', async () => {
+  it('builds a Snap', async () => {
     await fs.promises.writeFile('/input.js', DEFAULT_SNAP_BUNDLE);
 
     jest.spyOn(console, 'log').mockImplementation();
@@ -67,7 +67,7 @@ describe('buildHandler', () => {
     expect(process.exitCode).toBe(1);
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(
-        /Input file not found: ".+"\. Make sure that the "input" field in your snap config is correct\./u,
+        /Input file not found: ".+"\. Make sure that the "input" field in your Snap config is correct\./u,
       ),
     );
   });

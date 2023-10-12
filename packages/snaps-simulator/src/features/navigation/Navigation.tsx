@@ -64,7 +64,7 @@ export const Navigation: FunctionComponent = () => {
               <NavigationTag path="/manifest">snap.manifest.json</NavigationTag>
             </Text>
             <Text fontSize="sm" marginTop="1">
-              Validate the snap manifest
+              Validate the Snap manifest
             </Text>
           </Box>
         </Item>

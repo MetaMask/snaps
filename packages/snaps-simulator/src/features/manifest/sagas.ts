@@ -14,10 +14,10 @@ import {
 import { validators } from './validators';
 
 /**
- * Validate the snap manifest.
+ * Validate the Snap manifest.
  *
- * @param action - The action with the snap manifest.
- * @param action.payload - The snap manifest.
+ * @param action - The action with the Snap manifest.
+ * @param action.payload - The Snap manifest.
  * @yields Selects the state, calls the validators, and dispatches the results.
  */
 export function* validationSaga({

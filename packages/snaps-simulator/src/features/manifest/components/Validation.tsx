@@ -29,7 +29,7 @@ export const Validation: FunctionComponent = () => {
           Manifest can&apos;t be found
         </Heading>
         <Text fontSize="xs" textAlign="center" color="text.muted">
-          Make sure you’re connected to the snap
+          Make sure you’re connected to the Snap
           <br />
           and have a <i>snap.manifest.json</i>
           <br />

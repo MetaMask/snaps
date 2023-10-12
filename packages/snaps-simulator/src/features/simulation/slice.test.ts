@@ -15,7 +15,7 @@ import { MOCK_MANIFEST, MOCK_MANIFEST_FILE } from './test/mockManifest';
 
 describe('simulation slice', () => {
   describe('setStatus', () => {
-    it('sets the snap status', () => {
+    it('sets the Snap status', () => {
       const result = reducer(INITIAL_STATE, setStatus(SnapStatus.Ok));
 
       expect(result.status).toStrictEqual(SnapStatus.Ok);

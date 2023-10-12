@@ -91,7 +91,7 @@ describe('build', () => {
     await fs.rm('/snap', { force: true, recursive: true });
   });
 
-  it('builds the snap bundle using Webpack', async () => {
+  it('builds the Snap bundle using Webpack', async () => {
     jest.spyOn(process, 'cwd').mockReturnValue('/snap');
     const log = jest.spyOn(console, 'log').mockImplementation();
 
@@ -124,7 +124,7 @@ describe('build', () => {
     `);
   });
 
-  it('builds an unminimized snap bundle using Webpack', async () => {
+  it('builds an unminimized Snap bundle using Webpack', async () => {
     jest.spyOn(process, 'cwd').mockReturnValue('/snap');
     const log = jest.spyOn(console, 'log').mockImplementation();
 
@@ -191,7 +191,7 @@ describe('build', () => {
     `);
   });
 
-  it('builds the snap bundle using a legacy config', async () => {
+  it('builds the Snap bundle using a legacy config', async () => {
     jest.spyOn(process, 'cwd').mockReturnValue('/snap');
     const log = jest.spyOn(console, 'log').mockImplementation();
 
@@ -224,7 +224,7 @@ describe('build', () => {
     );
   });
 
-  it('builds an unminimized snap bundle using a legacy config', async () => {
+  it('builds an unminimized Snap bundle using a legacy config', async () => {
     jest.spyOn(process, 'cwd').mockReturnValue('/snap');
     const log = jest.spyOn(console, 'log').mockImplementation();
 

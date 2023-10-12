@@ -41,7 +41,7 @@ describe('manifestHandler', () => {
     );
 
     expect(spinner.succeed).toHaveBeenCalledWith(
-      'The snap manifest file is valid.',
+      'The Snap manifest file is valid.',
     );
   });
 
@@ -70,7 +70,7 @@ describe('manifestHandler', () => {
     );
 
     expect(spinner.succeed).toHaveBeenCalledWith(
-      'The snap manifest file is valid.',
+      'The Snap manifest file is valid.',
     );
   });
 
@@ -97,7 +97,7 @@ describe('manifestHandler', () => {
     );
 
     expect(spinner.succeed).toHaveBeenCalledWith(
-      'The snap manifest file is valid.',
+      'The Snap manifest file is valid.',
     );
   });
 
@@ -144,7 +144,7 @@ describe('manifestHandler', () => {
     );
 
     expect(spinner.succeed).not.toHaveBeenCalledWith(
-      'The snap manifest file is valid.',
+      'The Snap manifest file is valid.',
     );
   });
 });

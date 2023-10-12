@@ -4,7 +4,7 @@ A CLI for creating MetaMask Snaps.
 
 ## Usage
 
-Use this command line tool directly with `yarn create` or `npx` to create a new snap project:
+Use this command line tool directly with `yarn create` or `npx` to create a new Snap project:
 
 ```sh
 yarn create @metamask/snap your-snap-name
@@ -19,9 +19,9 @@ npm create @metamask/snap your-snap-name
 MetaMask Snaps enables trustlessly extending the functionality of MetaMask at runtime.
 A Snap consist of two things: a JSON manifest and a JavaScript bundle.
 At present, Snaps can be published as npm packages on the public npm registry, or hosted locally during development.
-In the future, it will be possible to publish snaps on many different platforms, including arbitrary npm registries and IPFS.
+In the future, it will be possible to publish Snaps on many different platforms, including arbitrary npm registries and IPFS.
 
-We recommend creating your snap using this tool.
+We recommend creating your Snap using this tool.
 
 ## How to start developing with MetaMask Snaps?
 

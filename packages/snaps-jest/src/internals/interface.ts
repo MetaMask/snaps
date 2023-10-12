@@ -8,8 +8,8 @@ import { SnapOptionsStruct } from './structs';
 import { waitFor } from './wait-for';
 
 /**
- * Get the current snap user interface (i.e., dialog). This will throw an error
- * if the snap does not show a user interface within the timeout.
+ * Get the current Snap user interface (i.e., dialog). This will throw an error
+ * if the Snap does not show a user interface within the timeout.
  *
  * @param page - The page to get the interface from.
  * @param options - The options to use.
@@ -35,7 +35,7 @@ export async function getInterface(
     },
     {
       timeout,
-      message: 'Timed out waiting for snap interface to be shown.',
+      message: 'Timed out waiting for Snap interface to be shown.',
     },
   );
 

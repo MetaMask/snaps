@@ -1,10 +1,10 @@
 # `@metamask/wasm-example-snap`
 
-This snap demonstrates how to use the `endowment:webassembly` permission to get
-access to the `WebAssembly` global from a snap, and use it to execute a
+This Snap demonstrates how to use the `endowment:webassembly` permission to get
+access to the `WebAssembly` global from a Snap, and use it to execute a
 WebAssembly module.
 
-This example consists of the usual snap files, as well as a `program` directory
+This example consists of the usual Snap files, as well as a `program` directory
 that contains the WebAssembly module. This is an
 [AssemblyScript](https://www.assemblyscript.org/) module that exports a
 `fibonacci` function, which calculates the Fibonacci sequence.
@@ -19,7 +19,7 @@ WebAssembly.
 > permissions. Refer to [the documentation](https://docs.metamask.io/snaps/reference/rpc-api/#endowmentwebassembly)
 > for more information.
 
-Along with other permissions, the manifest of this snap includes the
+Along with other permissions, the manifest of this Snap includes the
 `endowment:webassembly` permission:
 
 ```json
@@ -34,7 +34,7 @@ This permission does not require any additional configuration.
 
 ## Snap usage
 
-This snap exposes an `onRpcRequest` handler, which supports the following
+This Snap exposes an `onRpcRequest` handler, which supports the following
 JSON-RPC methods:
 
 - `fibonacci` - Use the `WebAssembly` global to execute a WebAssembly module

@@ -3,7 +3,7 @@ import { NpmSnapFileNames } from './types';
 import { validateFetchedSnap } from './validation';
 
 describe('validateFetchedSnap', () => {
-  it('asserts the snap manifest is valid', () => {
+  it('asserts the Snap manifest is valid', () => {
     const manifest = getSnapManifest({ version: 'foo' });
     const files = getSnapFiles({ manifest });
     expect(() => validateFetchedSnap(files)).toThrow(
@@ -11,7 +11,7 @@ describe('validateFetchedSnap', () => {
     );
   });
 
-  it('asserts the snap checksum is valid', () => {
+  it('asserts the Snap checksum is valid', () => {
     const manifest = getSnapManifest();
     const files = getSnapFiles({
       manifest,
@@ -23,7 +23,7 @@ describe('validateFetchedSnap', () => {
     );
   });
 
-  it('asserts the snap icon is valid', () => {
+  it('asserts the Snap icon is valid', () => {
     const files = getSnapFiles({ svgIcon: 'foo' });
     expect(() => validateFetchedSnap(files)).toThrow(
       'Snap icon must be a valid SVG',

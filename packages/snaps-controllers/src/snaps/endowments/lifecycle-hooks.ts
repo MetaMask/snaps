@@ -19,7 +19,7 @@ type LifecycleHooksEndowmentSpecification = ValidPermissionSpecification<{
 
 /**
  * `endowment:lifecycle-hooks` returns nothing; it is intended to be used as a
- * flag by the snap controller to detect whether the snap has the capability to
+ * flag by the Snap controller to detect whether the Snap has the capability to
  * use lifecycle hooks.
  *
  * @param _builderOptions - Optional specification builder options.

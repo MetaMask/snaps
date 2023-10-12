@@ -1,7 +1,7 @@
 # Platform
 
 This folder contains documentation about the MetaMask Snaps platform, such as
-the snap controller, execution service, and execution environment.
+the Snap controller, execution service, and execution environment.
 
 ## Table of contents
 

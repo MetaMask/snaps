@@ -39,7 +39,7 @@ describe('requestSnapsHandler', () => {
 });
 
 describe('hasRequestedSnaps', () => {
-  it('returns true if an origin has the requested snaps in its permissions', () => {
+  it('returns true if an origin has the requested Snaps in its permissions', () => {
     const existingPermission = {
       [WALLET_SNAP_PERMISSION_KEY]: {
         caveats: [
@@ -57,7 +57,7 @@ describe('hasRequestedSnaps', () => {
     expect(hasRequestedSnaps(existingPermission, requestedSnaps)).toBe(true);
   });
 
-  it('returns false if an origin does not have the requested snaps in its permissions', () => {
+  it('returns false if an origin does not have the requested Snaps in its permissions', () => {
     const existingPermission = {
       [WALLET_SNAP_PERMISSION_KEY]: {
         caveats: [{ type: SnapCaveatType.SnapIds, value: { baz: {} } }],
@@ -303,7 +303,7 @@ describe('implementation', () => {
     });
   });
 
-  it('merges permission requests when missing snaps', async () => {
+  it('merges permission requests when missing Snaps', async () => {
     const { implementation } = requestSnapsHandler;
 
     const hooks = getMockHooks();

@@ -4,7 +4,7 @@ import { EventEmitter } from 'stream';
 import { generateMockEndowments, isConstructor } from './mock';
 
 describe('generateMockEndowments', () => {
-  it('includes mock snap API', async () => {
+  it('includes mock Snap API', async () => {
     const endowments = generateMockEndowments();
     expect(await endowments.snap.request()).toBe(true);
   });

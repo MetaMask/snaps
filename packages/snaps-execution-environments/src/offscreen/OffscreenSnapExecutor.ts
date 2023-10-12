@@ -11,9 +11,9 @@ type ExecutorJob = {
 };
 
 /**
- * A snap executor using the Offscreen Documents API.
+ * A Snap executor using the Offscreen Documents API.
  *
- * This is not a traditional snap executor, as it does not execute snaps itself.
+ * This is not a traditional snap executor, as it does not execute Snaps itself.
  * Instead, it creates an iframe window for each snap execution, and sends the
  * snap execution request to the iframe window. The iframe window is responsible
  * for executing the snap.

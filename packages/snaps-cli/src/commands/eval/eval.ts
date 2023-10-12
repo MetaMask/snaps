@@ -20,13 +20,13 @@ const steps: Steps<EvalContext> = [
       if (!(await isFile(input))) {
         const relativePath = getRelativePath(input);
         throw new CommandError(
-          `Input file not found: "${relativePath}". Make sure that the "input" field in your snap config or the specified input file is correct.`,
+          `Input file not found: "${relativePath}". Make sure that the "input" field in your Snap config or the specified input file is correct.`,
         );
       }
     },
   },
   {
-    name: 'Evaluating the snap bundle.',
+    name: 'Evaluating the Snap bundle.',
     task: async ({ input, spinner }) => {
       await evaluate(input);
       spinner.succeed('Snap bundle evaluated successfully.');
@@ -54,7 +54,7 @@ function getBundlePath(config: ProcessedConfig, options: EvalOptions): string {
 }
 
 /**
- * Runs the snap in a worker, to ensure SES compatibility.
+ * Runs the Snap in a worker, to ensure SES compatibility.
  *
  * @param config - The processed config object.
  * @param options - The eval options.

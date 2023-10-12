@@ -66,7 +66,7 @@ type Specification = ValidPermissionSpecification<{
 
 /**
  * The specification builder for the `snap_notify` permission.
- * `snap_notify` allows snaps to send multiple types of notifications to its users.
+ * `snap_notify` allows Snaps to send multiple types of notifications to its users.
  *
  * @param options - The specification builder options.
  * @param options.allowedCaveats - The optional allowed caveats for the permission.

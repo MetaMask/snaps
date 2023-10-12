@@ -19,9 +19,9 @@ const { getByTestId } = queries;
 const log = createModuleLogger(rootLogger, 'helpers');
 
 /**
- * Load a snap into the environment. This is the main entry point for testing
- * snaps: It returns a {@link Snap} object that can be used to interact with the
- * snap.
+ * Load a Snap into the environment. This is the main entry point for testing
+ * Snaps: It returns a {@link Snap} object that can be used to interact with the
+ * Snap.
  *
  * @example
  * ```ts
@@ -38,23 +38,23 @@ const log = createModuleLogger(rootLogger, 'helpers');
  *   });
  * });
  * ```
- * @param snapId - The ID of the snap, including the prefix (`local:`). Defaults
+ * @param snapId - The ID of the Snap, including the prefix (`local:`). Defaults
  * to the URL of the built-in server, if it is running. This supports both
- * local snap IDs and NPM snap IDs.
- * @returns The snap.
- * @throws If the built-in server is not running, and no snap ID is provided.
+ * local snap IDs and NPM Snap IDs.
+ * @returns The Snap.
+ * @throws If the built-in server is not running, and no Snap ID is provided.
  */
 export async function installSnap(
   snapId: string = getEnvironment().snapId,
 ): Promise<Snap> {
   const environment = getEnvironment();
 
-  log('Installing snap %s.', snapId);
+  log('Installing Snap %s.', snapId);
 
   const page = await environment.createPage();
   const document = await getDocument(page);
 
-  log('Setting snap ID to %s.', snapId);
+  log('Setting Snap ID to %s.', snapId);
   await page.evaluate((payload) => {
     window.__SIMULATOR_API__.dispatch({
       type: 'configuration/setSnapId',
@@ -62,11 +62,11 @@ export async function installSnap(
     });
   }, snapId);
 
-  log('Waiting for snap to install.');
+  log('Waiting for Snap to install.');
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   await waitFor(async () => await getByTestId(document, 'status-ok'), {
     timeout: 10000,
-    message: `Timed out waiting for snap to install. Make sure the snap ID ("${snapId}") is correct, and the server is running.`,
+    message: `Timed out waiting for Snap to install. Make sure the Snap ID ("${snapId}") is correct, and the server is running.`,
   });
 
   return {

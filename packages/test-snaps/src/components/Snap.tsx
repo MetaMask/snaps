@@ -7,27 +7,27 @@ import { Connect } from './Connect';
 
 export type SnapProps = {
   /**
-   * The name of the snap.
+   * The name of the Snap.
    */
   name: string;
 
   /**
-   * The `data-testid` of the snap.
+   * The `data-testid` of the Snap.
    */
   testId: string;
 
   /**
-   * The snap ID. This is only used in production.
+   * The Snap ID. This is only used in production.
    */
   snapId?: `npm:${string}`;
 
   /**
-   * The port that the snap is listening on. This is only used in development.
+   * The port that the Snap is listening on. This is only used in development.
    */
   port?: number;
 
   /**
-   * The version of the snap. This should be the version that is used in the
+   * The version of the Snap. This should be the version that is used in the
    * snap's `package.json`.
    */
   version: string;

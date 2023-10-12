@@ -10,7 +10,7 @@ export enum SnapCaveatType {
   PermittedCoinTypes = 'permittedCoinTypes',
 
   /**
-   * Caveat specifying a snap cronjob.
+   * Caveat specifying a Snap cronjob.
    */
   SnapCronjob = 'snapCronjob',
 
@@ -30,12 +30,12 @@ export enum SnapCaveatType {
   KeyringOrigin = 'keyringOrigin',
 
   /**
-   * Caveat specifying the snap IDs that can be interacted with.
+   * Caveat specifying the Snap IDs that can be interacted with.
    */
   SnapIds = 'snapIds',
 
   /**
-   * Caveat specifying the CAIP-2 chain IDs that a snap can service, currently limited to `endowment:name-lookup`.
+   * Caveat specifying the CAIP-2 chain IDs that a Snap can service, currently limited to `endowment:name-lookup`.
    */
   ChainIds = 'chainIds',
 }

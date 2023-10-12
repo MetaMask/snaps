@@ -23,10 +23,10 @@ import {
 } from '../simulation';
 
 /**
- * The fetching saga, fetches the snap manifest from the selected snap URL and checks if the checksum matches the cached value.
- * If the checksum doesn't match, it fetches the snap source code and updates that in the simulation slice.
+ * The fetching saga, fetches the Snap manifest from the selected Snap URL and checks if the checksum matches the cached value.
+ * If the checksum doesn't match, it fetches the Snap source code and updates that in the simulation slice.
  *
- * @yields Selects the snap URL and checksum, calls fetch to fetch the manifest, puts updates to the manifest and source code.
+ * @yields Selects the Snap URL and checksum, calls fetch to fetch the manifest, puts updates to the manifest and source code.
  */
 export function* fetchingSaga() {
   const snapId: string = yield select(getSnapId);

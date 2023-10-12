@@ -1,9 +1,9 @@
 # RPC Methods
 
-Apart from the execution of snaps itself, the Snaps platform is also a
+Apart from the execution of Snaps itself, the Snaps platform is also a
 collection of JSON-RPC method implementations that are available to websites and
-snaps, though some are restricted to be snap-exclusive, i.e., only available to
-snaps.
+Snaps, though some are restricted to be Snap-exclusive, i.e., only available to
+Snaps.
 
 The JSON-RPC methods are split into two groups: **restricted** and
 **permitted**. All permitted RPC method handlers are included in an exported
@@ -16,7 +16,7 @@ the [PermissionController] configuration.
 
 These RPC methods implement both globally available APIs that are required to
 use the Snaps platform, e.g., `wallet_requestSnaps` as well as more dangerous
-APIs that should only be available to specific snaps with specific permissions,
+APIs that should only be available to specific Snaps with specific permissions,
 e.g., `snap_getBip44Entropy`.
 
 [createsnapsmethodmiddleware]: ../../../packages/rpc-methods/src/permitted/middleware.ts

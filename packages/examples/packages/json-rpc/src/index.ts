@@ -7,15 +7,15 @@ import type { OnRpcRequestHandler } from '@metamask/snaps-types';
  *
  * - `invokeSnap`: Call the `getPublicKey` method of the
  * `@metamask/bip32-example-snap`, and return the response. This demonstrates
- * that a snap can invoke another snap through the `wallet_invokeSnap` method.
+ * that a Snap can invoke another Snap through the `wallet_invokeSnap` method.
  * Note that the `@metamask/bip32-example-snap` must be installed in the
  * extension, and it must have the `endowment:rpc` permission, with the "snaps"
  * option enabled.
  *
  * - `invokeOtherSnap`: Call the `getPublicKey` method of the
  * `@metamask/bip44-example-snap`, and return the response. This demonstrates
- * that snaps can specify a list of `allowedOrigins` in their manifest, which
- * restricts which snaps can invoke them through the `wallet_invokeSnap` method.
+ * that Snaps can specify a list of `allowedOrigins` in their manifest, which
+ * restricts which Snaps can invoke them through the `wallet_invokeSnap` method.
  *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.

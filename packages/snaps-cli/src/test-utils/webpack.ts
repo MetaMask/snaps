@@ -15,10 +15,10 @@ export type CompileOptions = {
 };
 
 /**
- * Compile a snap bundle using webpack.
+ * Compile a Snap bundle using webpack.
  *
  * @param options - Options to configure the compilation.
- * @param options.code - The snap bundle code.
+ * @param options.code - The Snap bundle code.
  * @param options.fileSystem - The file system to use. Defaults to an in-memory
  * file system.
  * @param options.config - The webpack configuration to use. Defaults to a
@@ -53,10 +53,10 @@ export async function getCompiler({
 }
 
 /**
- * Compile a snap bundle using webpack.
+ * Compile a Snap bundle using webpack.
  *
  * @param options - Options to configure the compilation.
- * @param options.code - The snap bundle code.
+ * @param options.code - The Snap bundle code.
  * @param options.fileSystem - The file system to use. Defaults to an in-memory
  * file system.
  * @param options.config - The webpack configuration to use. Defaults to a

@@ -6,7 +6,7 @@ import { stringToBytes } from '@metamask/utils';
 
 export const MOCK_MANIFEST = {
   version: '1.0.0' as SemVerVersion,
-  description: 'The test example snap!',
+  description: 'The test example Snap!',
   proposedName: '@metamask/example-snap',
   repository: {
     type: 'git' as const,

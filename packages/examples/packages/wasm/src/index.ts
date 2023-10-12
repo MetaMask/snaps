@@ -70,8 +70,8 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   }
 
   // For this example, we don't validate the request. We assume that the
-  // request is valid, and that the snap is only called with valid requests. In
-  // a real snap, you should validate the request before calling the WASM
+  // request is valid, and that the Snap is only called with valid requests. In
+  // a real Snap, you should validate the request before calling the WASM
   // module.
   const method = request.method as Method;
   const params = request.params as Parameters<Program[typeof method]>;

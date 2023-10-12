@@ -63,7 +63,7 @@ describe('onRpcRequest', () => {
       await close();
     });
 
-    it('throws an error when trying to use an secp256k1 derivation path that is not in the snap manifest', async () => {
+    it('throws an error when trying to use an secp256k1 derivation path that is not in the Snap manifest', async () => {
       const { request, close } = await installSnap();
 
       const response = await request({
@@ -80,7 +80,7 @@ describe('onRpcRequest', () => {
         data: {
           cause: {
             message:
-              'The requested path is not permitted. Allowed paths must be specified in the snap manifest.',
+              'The requested path is not permitted. Allowed paths must be specified in the Snap manifest.',
             stack: expect.any(String),
           },
         },
@@ -106,7 +106,7 @@ describe('onRpcRequest', () => {
         data: {
           cause: {
             message:
-              'The requested path is not permitted. Allowed paths must be specified in the snap manifest.',
+              'The requested path is not permitted. Allowed paths must be specified in the Snap manifest.',
             stack: expect.any(String),
           },
         },

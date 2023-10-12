@@ -92,7 +92,7 @@ export const getTruncatedSnap = ({
 };
 
 /**
- * Gets a whole suite of associated snap data, including the snap's id, origin,
+ * Gets a whole suite of associated Snap data, including the snap's id, origin,
  * package name, source code, shasum, manifest, and SnapController state object.
  *
  * @param options - Options bag.

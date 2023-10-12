@@ -130,7 +130,7 @@ export async function deriveEntropy({
   const inputBytes = stringToBytes(input);
   const saltBytes = stringToBytes(salt);
 
-  // Get the derivation path from the snap ID.
+  // Get the derivation path from the Snap ID.
   const hash = keccak256(concatBytes([inputBytes, keccak256(saltBytes)]));
   const computedDerivationPath = getDerivationPathArray(hash);
 

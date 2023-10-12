@@ -5,7 +5,7 @@ import { promisify } from 'util';
 
 import babelConfig from '../babel.config.json';
 
-// The entry point for the snap, i.e., the file that exports the snap
+// The entry point for the Snap, i.e., the file that exports the Snap
 // implementation.
 const ENTRY_POINT = 'src/index.ts';
 
@@ -14,12 +14,12 @@ const OUTPUT_PATH = './dist';
 const OUTPUT_BUNDLE = 'bundle.js';
 
 /**
- * Build the snap bundle. This script uses Browserify to bundle the snap, and
+ * Build the Snap bundle. This script uses Browserify to bundle the Snap, and
  * uses Babel to transpile the TypeScript code to JavaScript. The bundle is
  * written to the {@link OUTPUT_PATH} directory.
  *
  * This uses the `@metamask/snaps-browserify-plugin` plugin to process the
- * bundle, update the snap manifest, and check for any compatibility issues.
+ * bundle, update the Snap manifest, and check for any compatibility issues.
  */
 async function main() {
   const bundler = browserify(ENTRY_POINT, {
@@ -40,7 +40,7 @@ async function main() {
   // Add the Snaps Browserify Plugin to the bundler.
   bundler.plugin('@metamask/snaps-browserify-plugin');
 
-  // Bundle the snap.
+  // Bundle the Snap.
   const buffer = await promisify(bundler.bundle.bind(bundler))();
 
   // Write the bundle to the output path.

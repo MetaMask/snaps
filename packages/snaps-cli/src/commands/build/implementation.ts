@@ -3,7 +3,7 @@ import type { WebpackOptions } from '../../webpack';
 import { getCompiler } from '../../webpack';
 
 /**
- * Build the snap bundle. This uses Webpack to build the bundle.
+ * Build the Snap bundle. This uses Webpack to build the bundle.
  *
  * @param config - The config object.
  * @param options - The Webpack options.

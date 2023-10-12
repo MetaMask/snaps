@@ -11,7 +11,7 @@ jest.mock('../../webpack');
 jest.mock('./implementation');
 
 describe('watchHandler', () => {
-  it('builds the snap and watches for changes', async () => {
+  it('builds the Snap and watches for changes', async () => {
     await fs.promises.writeFile('/input.js', DEFAULT_SNAP_BUNDLE);
 
     const config = getMockConfig('webpack', {
@@ -54,7 +54,7 @@ describe('watchHandler', () => {
     expect(process.exitCode).toBe(1);
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(
-        /Input file not found: ".*"\. Make sure that the "input" field in your snap config is correct\./u,
+        /Input file not found: ".*"\. Make sure that the "input" field in your Snap config is correct\./u,
       ),
     );
   });

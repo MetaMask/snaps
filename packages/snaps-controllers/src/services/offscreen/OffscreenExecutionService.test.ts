@@ -132,7 +132,7 @@ describe('OffscreenExecutionService', () => {
     expect(hasDocument).not.toHaveBeenCalled();
     expect(createDocument).not.toHaveBeenCalled();
 
-    // Run two snaps to ensure that the document is created only once.
+    // Run two Snaps to ensure that the document is created only once.
     expect(
       await service.executeSnap({
         snapId: MOCK_SNAP_ID,

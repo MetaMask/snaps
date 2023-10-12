@@ -45,7 +45,7 @@ describe('evaluate', () => {
     });
 
     await expect(evaluate(BUNDLE_PATH)).rejects.toThrow(
-      'Failed to evaluate snap bundle in SES. This is likely due to an incompatibility with the SES environment in your snap.',
+      'Failed to evaluate Snap bundle in SES. This is likely due to an incompatibility with the SES environment in your Snap.',
     );
   });
 

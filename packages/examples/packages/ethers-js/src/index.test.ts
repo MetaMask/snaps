@@ -26,7 +26,7 @@ describe('onRpcRequest', () => {
   });
 
   describe('getAddress', () => {
-    it('returns the address for the snap private key', async () => {
+    it('returns the address for the Snap private key', async () => {
       const { request, close } = await installSnap();
 
       const response = await request({

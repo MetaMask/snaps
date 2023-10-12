@@ -130,9 +130,9 @@ export function* showInAppNotification(
 }
 
 /**
- * Updates the snap state in the simulation slice.
+ * Updates the Snap state in the simulation slice.
  *
- * @param _snapId - The snap id, unused for now.
+ * @param _snapId - The Snap id, unused for now.
  * @param newSnapState - The new state.
  * @yields Puts the newSnapState
  */
@@ -144,11 +144,11 @@ export function* updateSnapState(
 }
 
 /**
- * Gets the snap state from the simulation slice.
+ * Gets the Snap state from the simulation slice.
  *
- * @param _snapId - The snap id, unused for now.
- * @returns The snap state.
- * @yields Selects the snap state from the simulation slice.
+ * @param _snapId - The Snap id, unused for now.
+ * @returns The Snap state.
+ * @yields Selects the Snap state from the simulation slice.
  */
 export function* getSnapState(_snapId: string): SagaIterator {
   const state: string = yield select(getSnapStateSelector);
