@@ -1,4 +1,4 @@
-/* eslint-disable import/unambiguous, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+/* eslint-disable import/unambiguous, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/no-process-env */
 
 const {
   NodeGlobalsPolyfillPlugin,
@@ -9,9 +9,10 @@ const {
 const { resolve } = require('path');
 const { default: tsconfigPaths } = require('vite-tsconfig-paths');
 
-// eslint-disable-next-line n/no-process-env
 const IS_CI = Boolean(process.env.CI);
-const MAX_WORKERS = IS_CI ? 1 : 5;
+const MAX_WORKERS = process.env.MAX_WORKERS
+  ? parseInt(process.env.MAX_WORKERS, 10)
+  : 1;
 
 const config = {
   runner: [
@@ -55,10 +56,14 @@ const config = {
       maxInstances: MAX_WORKERS,
       browserName: 'chrome',
     },
-    {
-      maxInstances: MAX_WORKERS,
-      browserName: 'firefox',
-    },
+    ...(IS_CI
+      ? [
+          {
+            maxInstances: MAX_WORKERS,
+            browserName: 'firefox',
+          },
+        ]
+      : []),
   ],
 
   logLevel: 'error',
