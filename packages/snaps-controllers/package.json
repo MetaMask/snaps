@@ -61,7 +61,7 @@
     "json-rpc-middleware-stream": "^4.2.0",
     "nanoid": "^3.1.31",
     "readable-web-to-node-stream": "^3.0.2",
-    "tar-stream": "^2.2.0"
+    "tar-stream": "^3.1.6"
   },
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
@@ -83,7 +83,7 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "18.14.2",
     "@types/readable-stream": "^2.3.15",
-    "@types/tar-stream": "^2.2.2",
+    "@types/tar-stream": "^3.1.1",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "@wdio/browser-runner": "^8.15.9",
