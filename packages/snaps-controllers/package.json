@@ -61,7 +61,7 @@
     "json-rpc-middleware-stream": "^4.2.0",
     "nanoid": "^3.1.31",
     "readable-web-to-node-stream": "^3.0.2",
-    "tar-stream": "^2.2.0"
+    "tar-stream": "^3.1.6"
   },
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
