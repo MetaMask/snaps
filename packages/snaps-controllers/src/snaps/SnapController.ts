@@ -1739,7 +1739,7 @@ export class SnapController extends BaseController<
         // Since we are requesting an update from within processRequestedSnap,
         // we disable the emitting of the snapUpdated event and rely on the caller
         // to publish this event after the update is complete.
-        // This is necesary as installSnaps may be installing multiple snaps
+        // This is necessary as installSnaps may be installing multiple snaps
         // and we don't want to emit events prematurely.
         false,
       );
