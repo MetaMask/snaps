@@ -3686,7 +3686,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^3.5.0, @metamask/approval-controller@npm:^3.5.2":
+"@metamask/approval-controller@npm:^3.5.2":
   version: 3.5.2
   resolution: "@metamask/approval-controller@npm:3.5.2"
   dependencies:
@@ -3696,6 +3696,19 @@ __metadata:
     immer: ^9.0.6
     nanoid: ^3.1.31
   checksum: 70436be566952b8aa42de48aff36655a42611478a5beee4e5ea9cf019ef386db202c464d73057df4e9cce22ebdb7517f5eb71a9def6bd7672f48a2d714ad1f2c
+  languageName: node
+  linkType: hard
+
+"@metamask/approval-controller@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "@metamask/approval-controller@npm:4.0.1"
+  dependencies:
+    "@metamask/base-controller": ^3.2.3
+    "@metamask/rpc-errors": ^6.1.0
+    "@metamask/utils": ^8.1.0
+    immer: ^9.0.6
+    nanoid: ^3.1.31
+  checksum: 104f78f226b7a30821d4f7aa1a354659b32c812ab965691552177a6559bde89e5bce598239c99f0e83ef09c9a8d0aaab35f3ddbd07a45b34a0b08ad2066f46e6
   languageName: node
   linkType: hard
 
@@ -3721,6 +3734,16 @@ __metadata:
     "@metamask/utils": ^6.2.0
     immer: ^9.0.6
   checksum: 90e639b4415bd9e0f8c86b5fdfa9e164c2615bc69f85c5028dc3657883aa20b66d0ecb00850e703d0f2495c3deda2e17bb18e5f2a4b24aca7943b61b67bff82e
+  languageName: node
+  linkType: hard
+
+"@metamask/base-controller@npm:^3.2.3":
+  version: 3.2.3
+  resolution: "@metamask/base-controller@npm:3.2.3"
+  dependencies:
+    "@metamask/utils": ^8.1.0
+    immer: ^9.0.6
+  checksum: f49fcf2bf892ec25657c2d72a50b3c4f3cad59acb1b74d9fdcdf564107b8f38f73647c696aaa9699d94828b5797d8f1479dab44a2dbcda987c268b0088bb3b76
   languageName: node
   linkType: hard
 
@@ -4885,6 +4908,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/rpc-errors@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "@metamask/rpc-errors@npm:6.1.0"
+  dependencies:
+    "@metamask/utils": ^8.1.0
+    fast-safe-stringify: ^2.0.6
+  checksum: 9f4821d804e2fcaa8987b0958d02c6d829b7c7db49740c811cb593f381d0c4b00dabb7f1802907f1b2f6126f7c0d83ec34219183d29650f5d24df014ac72906a
+  languageName: node
+  linkType: hard
+
 "@metamask/rpc-methods@workspace:^, @metamask/rpc-methods@workspace:packages/rpc-methods":
   version: 0.0.0-use.local
   resolution: "@metamask/rpc-methods@workspace:packages/rpc-methods"
@@ -5099,7 +5132,7 @@ __metadata:
     "@esbuild-plugins/node-globals-polyfill": ^0.2.3
     "@esbuild-plugins/node-modules-polyfill": ^0.2.2
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/approval-controller": ^3.5.0
+    "@metamask/approval-controller": ^4.0.1
     "@metamask/auto-changelog": ^3.3.0
     "@metamask/base-controller": ^3.2.0
     "@metamask/eslint-config": ^12.1.0
