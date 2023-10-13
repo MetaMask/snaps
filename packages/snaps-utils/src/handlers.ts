@@ -1,3 +1,4 @@
+import type { Component } from '@metamask/snaps-ui';
 import { ComponentStruct } from '@metamask/snaps-ui';
 import type { Json, JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 import type { Infer } from 'superstruct';
@@ -58,6 +59,13 @@ export const SNAP_EXPORTS = {
   },
   [HandlerType.OnKeyringRequest]: {
     type: HandlerType.OnKeyringRequest,
+    required: true,
+    validator: (snapExport: unknown): snapExport is OnKeyringRequestHandler => {
+      return typeof snapExport === 'function';
+    },
+  },
+  [HandlerType.OnSnapPage]: {
+    type: HandlerType.OnSnapPage,
     required: true,
     validator: (snapExport: unknown): snapExport is OnKeyringRequestHandler => {
       return typeof snapExport === 'function';
@@ -168,6 +176,12 @@ export type OnKeyringRequestHandler<
   origin: string;
   request: JsonRpcRequest<Params>;
 }) => Promise<unknown>;
+
+export type OnSnapPageHandler = () => Promise<OnSnapPageResponse>;
+
+export type OnSnapPageResponse = {
+  content: Component | null;
+};
 
 /**
  * Utility type for getting the handler function type from a handler type.

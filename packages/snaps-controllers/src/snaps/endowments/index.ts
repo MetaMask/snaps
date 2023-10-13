@@ -25,6 +25,7 @@ import {
   rpcCaveatSpecifications,
   rpcEndowmentBuilder,
 } from './rpc';
+import { snapPagesEndowmentBuilder } from './snap-pages';
 import {
   getTransactionInsightCaveatMapper,
   transactionInsightCaveatSpecifications,
@@ -44,6 +45,7 @@ export const endowmentPermissionBuilders = {
   [nameLookupEndowmentBuilder.targetName]: nameLookupEndowmentBuilder,
   [lifecycleHooksEndowmentBuilder.targetName]: lifecycleHooksEndowmentBuilder,
   [keyringEndowmentBuilder.targetName]: keyringEndowmentBuilder,
+  [snapPagesEndowmentBuilder.targetName]: snapPagesEndowmentBuilder,
 } as const;
 
 export const endowmentCaveatSpecifications = {
@@ -74,6 +76,7 @@ export const handlerEndowments: Record<HandlerType, string> = {
   [HandlerType.OnInstall]: lifecycleHooksEndowmentBuilder.targetName,
   [HandlerType.OnUpdate]: lifecycleHooksEndowmentBuilder.targetName,
   [HandlerType.OnKeyringRequest]: keyringEndowmentBuilder.targetName,
+  [HandlerType.OnSnapPage]: snapPagesEndowmentBuilder.targetName,
 };
 
 export * from './enum';
