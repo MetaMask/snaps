@@ -47,7 +47,7 @@ describe('snap_getFile', () => {
       engine.push((req, res, next, end) => {
         const result = implementation(
           req as JsonRpcRequest<JsonRpcRequest<unknown>>,
-          res as PendingJsonRpcResponse<unknown>,
+          res as PendingJsonRpcResponse<string>,
           next,
           end,
           hooks,
@@ -89,7 +89,7 @@ describe('snap_getFile', () => {
       engine.push((req, res, next, end) => {
         const result = implementation(
           req as JsonRpcRequest<JsonRpcRequest<unknown>>,
-          res as PendingJsonRpcResponse<unknown>,
+          res as PendingJsonRpcResponse<string>,
           next,
           end,
           hooks,
@@ -130,7 +130,7 @@ describe('snap_getFile', () => {
       engine.push((req, res, next, end) => {
         const result = implementation(
           req as JsonRpcRequest<JsonRpcRequest<unknown>>,
-          res as PendingJsonRpcResponse<unknown>,
+          res as PendingJsonRpcResponse<string>,
           next,
           end,
           hooks,

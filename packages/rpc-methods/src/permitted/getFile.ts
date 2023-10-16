@@ -31,7 +31,7 @@ const hookNames: MethodHooksObject<GetFileHooks> = {
 export const getFileHandler: PermittedHandlerExport<
   GetFileHooks,
   JsonRpcRequest<unknown>,
-  unknown
+  string
 > = {
   methodNames: ['snap_getFile'],
   implementation,
