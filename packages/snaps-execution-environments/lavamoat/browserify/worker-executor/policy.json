@@ -183,6 +183,20 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/snaps-utils>is-svg": {
+      "packages": {
+        "@metamask/snaps-utils>is-svg>fast-xml-parser": true
+      }
+    },
+    "@metamask/snaps-utils>is-svg>fast-xml-parser": {
+      "globals": {
+        "entityName": true,
+        "val": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>is-svg>fast-xml-parser>strnum": true
+      }
+    },
     "@metamask/utils": {
       "globals": {
         "TextDecoder": true,
@@ -298,6 +312,12 @@
       "packages": {
         "@metamask/rpc-errors": true,
         "@metamask/utils": true
+      }
+    },
+    "external:../snaps-utils/src/handlers.ts": {
+      "packages": {
+        "external:../snaps-ui/src/index.ts": true,
+        "superstruct": true
       }
     },
     "external:../snaps-utils/src/icon.ts": {

@@ -128,10 +128,46 @@
         "eslint>debug>ms": true
       }
     },
+    "external:../snaps-ui/src/builder.ts": {
+      "packages": {
+        "@metamask/utils": true,
+        "external:../snaps-ui/src/nodes.ts": true
+      }
+    },
+    "external:../snaps-ui/src/index.ts": {
+      "packages": {
+        "external:../snaps-ui/src/builder.ts": true,
+        "external:../snaps-ui/src/nodes.ts": true,
+        "external:../snaps-ui/src/validation.ts": true
+      }
+    },
+    "external:../snaps-ui/src/nodes.ts": {
+      "packages": {
+        "@metamask/snaps-utils>is-svg": true,
+        "external:../snaps-ui/src/validation.ts": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-ui/src/validation.ts": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/utils": true,
+        "external:../snaps-ui/src/nodes.ts": true,
+        "superstruct": true
+      }
+    },
     "external:../snaps-utils/src/errors.ts": {
       "packages": {
         "@metamask/rpc-errors": true,
         "@metamask/utils": true
+      }
+    },
+    "external:../snaps-utils/src/handlers.ts": {
+      "packages": {
+        "external:../snaps-ui/src/index.ts": true,
+        "superstruct": true
       }
     },
     "external:../snaps-utils/src/icon.ts": {
