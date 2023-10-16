@@ -3961,7 +3961,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+<<<<<<< HEAD
 "@metamask/controller-utils@npm:^5.0.2":
+=======
+"@metamask/controller-utils@npm:^5.0.1, @metamask/controller-utils@npm:^5.0.2":
+>>>>>>> aa14ffbf (update yarn.lock)
   version: 5.0.2
   resolution: "@metamask/controller-utils@npm:5.0.2"
   dependencies:
@@ -4879,15 +4883,15 @@ __metadata:
   linkType: hard
 
 "@metamask/phishing-controller@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@metamask/phishing-controller@npm:7.0.0"
+  version: 7.0.1
+  resolution: "@metamask/phishing-controller@npm:7.0.1"
   dependencies:
-    "@metamask/base-controller": ^3.2.2
-    "@metamask/controller-utils": ^5.0.1
+    "@metamask/base-controller": ^3.2.3
+    "@metamask/controller-utils": ^5.0.2
     "@types/punycode": ^2.1.0
     eth-phishing-detect: ^1.2.0
     punycode: ^2.1.1
-  checksum: a64e3296b5c46bb7ba91916ec13c9883139db0253bfa5271a26b7cf7422ea92c89fde0e503d0fce06ec56d6dd8a75a5b621ff652eb7ba83458aa0086a7aa22c6
+  checksum: 9d7b4db829ce78163bc308ef520382a4d3eb43597acf05b56e1f712c56dfc60b504f61f532ebdc656f9fbeb8c26f62b7cf075aef3c5d8263b993c628cc485d81
   languageName: node
   linkType: hard
 
