@@ -49,7 +49,10 @@
     "@metamask/permission-controller": "^5.0.0",
     "@metamask/phishing-controller": "^7.0.0",
     "@metamask/post-message-stream": "^7.0.0",
+<<<<<<< HEAD
     "@metamask/rpc-errors": "^6.1.0",
+=======
+>>>>>>> 5ed41b40 (remove dep)
     "@metamask/snaps-registry": "^2.1.0",
     "@metamask/snaps-rpc-methods": "workspace:^",
     "@metamask/snaps-ui": "workspace:^",
