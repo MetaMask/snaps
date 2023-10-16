@@ -1,4 +1,4 @@
-import { enumValue } from '@metamask/snaps-utils';
+import { enumValue, AuxiliaryFileEncoding } from '@metamask/snaps-utils';
 import type {
   PermittedHandlerExport,
   PendingJsonRpcResponse,
@@ -12,15 +12,13 @@ import { object, optional, string, union } from 'superstruct';
 
 import type { MethodHooksObject } from '../utils';
 
-export enum FileEncoding {
-  Base64 = 'base64',
-  Hex = 'hex',
-}
-
 export const GetFileArgsStruct = object({
   path: string(),
   encoding: optional(
-    union([enumValue(FileEncoding.Base64), enumValue(FileEncoding.Hex)]),
+    union([
+      enumValue(AuxiliaryFileEncoding.Base64),
+      enumValue(AuxiliaryFileEncoding.Hex),
+    ]),
   ),
 });
 
@@ -76,7 +74,10 @@ async function implementation(
   );
 
   try {
-    res.result = await getSnapFile(params.path, params.encoding);
+    res.result = await getSnapFile(
+      params.path,
+      params.encoding ?? AuxiliaryFileEncoding.Base64,
+    );
   } catch (error) {
     return end(error);
   }

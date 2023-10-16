@@ -4,7 +4,7 @@ import type {
   PermissionConstraint,
 } from '@metamask/permission-controller';
 import type { BlockReason } from '@metamask/snaps-registry';
-import type { Json, SemVerVersion, Opaque, Hex } from '@metamask/utils';
+import type { Json, SemVerVersion, Opaque } from '@metamask/utils';
 import { assert, isObject, assertStruct } from '@metamask/utils';
 import { base64 } from '@scure/base';
 import type { SerializedEthereumRpcError } from 'eth-rpc-errors/dist/classes';

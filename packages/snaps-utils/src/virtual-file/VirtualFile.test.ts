@@ -1,7 +1,7 @@
 import { bytesToHex, stringToBytes } from '@metamask/utils';
+import { base64 } from '@scure/base';
 
 import { VirtualFile } from './VirtualFile';
-import { base64 } from '@scure/base';
 
 const VALUE = 'foo\nbar';
 

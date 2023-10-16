@@ -1,7 +1,11 @@
 import type { DialogType, NotificationArgs } from '@metamask/rpc-methods';
 import type { Component } from '@metamask/snaps-ui';
 import type { VirtualFile } from '@metamask/snaps-utils';
-import { normalizeRelative } from '@metamask/snaps-utils';
+import {
+  AuxiliaryFileEncoding,
+  encodeAuxiliaryFile,
+  normalizeRelative,
+} from '@metamask/snaps-utils';
 import { nanoid } from '@reduxjs/toolkit';
 import type { SagaIterator } from 'redux-saga';
 import { call, put, select, take } from 'redux-saga/effects';
@@ -164,13 +168,21 @@ export function* getSnapState(_snapId: string): SagaIterator {
  * Usually these would be stored in the SnapController.
  *
  * @param path - The file path.
+ * @param encoding - The requested file encoding.
  * @returns The file in hexadecimal if found, otherwise null.
  * @yields Selects the state from the simulation slice.
  */
-export function* getSnapFile(path: string): SagaIterator {
+export function* getSnapFile(
+  path: string,
+  encoding: AuxiliaryFileEncoding = AuxiliaryFileEncoding.Base64,
+): SagaIterator {
   const files: VirtualFile[] = yield select(getAuxiliaryFiles);
   const normalizedPath = normalizeRelative(path);
-  return (
-    files.find((file) => file.path === normalizedPath)?.toString('hex') ?? null
-  );
+  const base64 = files
+    .find((file) => file.path === normalizedPath)
+    ?.toString('base64');
+  if (!base64) {
+    return null;
+  }
+  return encodeAuxiliaryFile(base64, encoding);
 }

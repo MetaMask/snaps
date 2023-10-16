@@ -1,10 +1,11 @@
+import { AuxiliaryFileEncoding, VirtualFile } from '@metamask/snaps-utils';
 import type {
   JsonRpcRequest,
   PendingJsonRpcResponse,
   JsonRpcFailure,
   JsonRpcSuccess,
 } from '@metamask/types';
-import { stringToBytes, bytesToHex } from '@metamask/utils';
+import { stringToBytes } from '@metamask/utils';
 import { JsonRpcEngine } from 'json-rpc-engine';
 
 import type { GetFileHooks } from './getFile';
@@ -34,12 +35,13 @@ describe('snap_getFile', () => {
 
       const hooks = getMockHooks();
 
-      const hexadecimal = bytesToHex(
+      const vfile = new VirtualFile(
         stringToBytes(JSON.stringify({ foo: 'bar' })),
       );
+      const base64 = vfile.toString('base64');
       (
         hooks.getSnapFile as jest.MockedFunction<typeof hooks.getSnapFile>
-      ).mockImplementation(async (_path: string) => hexadecimal);
+      ).mockImplementation(async (_path: string) => base64);
 
       const engine = new JsonRpcEngine();
       engine.push((req, res, next, end) => {
@@ -63,8 +65,54 @@ describe('snap_getFile', () => {
         },
       })) as JsonRpcSuccess<string>;
 
+      expect(response.result).toBe(base64);
+      expect(hooks.getSnapFile).toHaveBeenCalledWith(
+        './src/foo.json',
+        AuxiliaryFileEncoding.Base64,
+      );
+    });
+
+    it('supports hex in encoding parameter', async () => {
+      const { implementation } = getFileHandler;
+
+      const hooks = getMockHooks();
+
+      const vfile = new VirtualFile(
+        stringToBytes(JSON.stringify({ foo: 'bar' })),
+      );
+      const hexadecimal = vfile.toString('hex');
+      (
+        hooks.getSnapFile as jest.MockedFunction<typeof hooks.getSnapFile>
+      ).mockImplementation(async (_path: string) => hexadecimal);
+
+      const engine = new JsonRpcEngine();
+      engine.push((req, res, next, end) => {
+        const result = implementation(
+          req as JsonRpcRequest<JsonRpcRequest<unknown>>,
+          res as PendingJsonRpcResponse<unknown>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = (await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_getFile',
+        params: {
+          path: './src/foo.json',
+          encoding: 'hex',
+        },
+      })) as JsonRpcSuccess<string>;
+
       expect(response.result).toBe(hexadecimal);
-      expect(hooks.getSnapFile).toHaveBeenCalledWith('./src/foo.json');
+      expect(hooks.getSnapFile).toHaveBeenCalledWith(
+        './src/foo.json',
+        AuxiliaryFileEncoding.Hex,
+      );
     });
 
     it('ends with error if hook throws', async () => {
@@ -101,7 +149,10 @@ describe('snap_getFile', () => {
       })) as JsonRpcFailure;
 
       expect(response.error.message).toBe('foo bar');
-      expect(hooks.getSnapFile).toHaveBeenCalledWith('./src/foo.json');
+      expect(hooks.getSnapFile).toHaveBeenCalledWith(
+        './src/foo.json',
+        AuxiliaryFileEncoding.Base64,
+      );
     });
   });
 });

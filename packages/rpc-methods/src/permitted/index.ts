@@ -5,4 +5,3 @@ export type PermittedRpcMethodHooks = GetSnapsHooks & RequestSnapsHooks;
 
 export * from './handlers';
 export * from './middleware';
-export { FileEncoding } from './getFile';

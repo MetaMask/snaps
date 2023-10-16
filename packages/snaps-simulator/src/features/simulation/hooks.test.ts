@@ -1,6 +1,10 @@
 import { DialogType } from '@metamask/rpc-methods';
 import { text } from '@metamask/snaps-ui';
-import { VirtualFile, normalizeRelative } from '@metamask/snaps-utils';
+import {
+  AuxiliaryFileEncoding,
+  VirtualFile,
+  normalizeRelative,
+} from '@metamask/snaps-utils';
 import { stringToBytes } from '@metamask/utils';
 import { expectSaga } from 'redux-saga-test-plan';
 
@@ -154,9 +158,27 @@ describe('getSnapState', () => {
 });
 
 describe('getSnapFile', () => {
-  it('returns the requested file in hexadecimal', async () => {
+  it('returns the requested file in base64 by default', async () => {
     const path = './src/foo.json';
     await expectSaga(getSnapFile, path)
+      .withState({
+        simulation: {
+          auxiliaryFiles: [
+            new VirtualFile({
+              path: normalizeRelative(path),
+              value: stringToBytes(JSON.stringify({ foo: 'bar' })),
+            }),
+          ],
+        },
+      })
+      .select(getAuxiliaryFiles)
+      .returns('eyJmb28iOiJiYXIifQ==')
+      .silentRun();
+  });
+
+  it('returns the requested file in hex when requested', async () => {
+    const path = './src/foo.json';
+    await expectSaga(getSnapFile, path, AuxiliaryFileEncoding.Hex)
       .withState({
         simulation: {
           auxiliaryFiles: [

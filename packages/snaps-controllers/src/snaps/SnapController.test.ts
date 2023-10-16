@@ -11,6 +11,7 @@ import type {
   ValidatedSnapId,
 } from '@metamask/snaps-utils';
 import {
+  AuxiliaryFileEncoding,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
   getSnapChecksum,
@@ -5785,6 +5786,45 @@ describe('SnapController', () => {
           'SnapController:getFile',
           MOCK_SNAP_ID,
           './src/foo.json',
+        ),
+      ).toStrictEqual(auxiliaryFile.toString('base64'));
+
+      snapController.destroy();
+    });
+
+    it('supports hex encoding', async () => {
+      const auxiliaryFile = new VirtualFile({
+        path: 'src/foo.json',
+        value: stringToBytes('{ "foo" : "bar" }'),
+      });
+      const { manifest, sourceCode, svgIcon, auxiliaryFiles } = getSnapFiles({
+        manifest: getSnapManifest({ files: ['./src/foo.json'] }),
+        auxiliaryFiles: [auxiliaryFile],
+      });
+
+      const messenger = getSnapControllerMessenger();
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          detectSnapLocation: loopbackDetect({
+            manifest,
+            files: [sourceCode, svgIcon as VirtualFile, ...auxiliaryFiles],
+          }),
+        }),
+      );
+
+      // By installing we also indirectly test that the unpacking of the file works.
+      await snapController.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: {},
+      });
+
+      expect(
+        await messenger.call(
+          'SnapController:getFile',
+          MOCK_SNAP_ID,
+          './src/foo.json',
+          AuxiliaryFileEncoding.Hex,
         ),
       ).toStrictEqual(auxiliaryFile.toString('hex'));
 
