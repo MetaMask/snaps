@@ -4711,7 +4711,6 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
-    "@metamask/utils": ^8.1.0
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -5149,8 +5148,7 @@ __metadata:
     "@metamask/permission-controller": ^4.1.2
     "@metamask/post-message-stream": ^7.0.0
     "@metamask/rpc-methods": "workspace:^"
-    "@metamask/snaps-execution-environments": "workspace:^"
-    "@metamask/snaps-registry": ^2.0.0
+    "@metamask/snaps-registry": ^2.1.0
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/template-snap": ^0.7.0
     "@metamask/utils": ^8.1.0
@@ -5164,7 +5162,7 @@ __metadata:
     "@types/mocha": ^10.0.1
     "@types/node": 18.14.2
     "@types/readable-stream": ^2.3.15
-    "@types/tar-stream": ^2.2.2
+    "@types/tar-stream": ^3.1.1
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
     "@wdio/browser-runner": ^8.15.9
@@ -5203,7 +5201,7 @@ __metadata:
     prettier-plugin-packagejson: ^2.2.11
     readable-web-to-node-stream: ^3.0.2
     rimraf: ^4.1.2
-    tar-stream: ^2.2.0
+    tar-stream: ^3.1.6
     ts-node: ^10.9.1
     typescript: ~4.8.4
     vite: ^4.3.9
@@ -5211,6 +5209,11 @@ __metadata:
     wdio-chromedriver-service: ^8.1.1
     wdio-geckodriver-service: ^5.0.2
     webdriverio: ^8.15.9
+  peerDependencies:
+    "@metamask/snaps-execution-environments": "workspace:^"
+  peerDependenciesMeta:
+    "@metamask/snaps-execution-environments":
+      optional: true
   languageName: unknown
   linkType: soft
 
@@ -5347,14 +5350,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snaps-registry@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/snaps-registry@npm:2.0.0"
+"@metamask/snaps-registry@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/snaps-registry@npm:2.1.0"
   dependencies:
     "@metamask/utils": ^8.1.0
     "@noble/secp256k1": ^1.7.1
     superstruct: ^1.0.3
-  checksum: 621baf98c53c490d4bf8bf784910943e3c147cc2abdbcf5ea56ae6fcd45a1a412da79b0ef778b8f9d8c46b9272068d3dd5909be6691579590d2632c6baee8992
+  checksum: 652e8c5cc0be43325ba6cf9382db982380f34d1710bfbcc27c9d58cf0e0c14bd354e112b2feb27c1ca7264a0793795d9020a4315ffcf10fa6fed8f38cf18fcde
   languageName: node
   linkType: hard
 
@@ -5593,7 +5596,7 @@ __metadata:
     "@metamask/key-tree": ^9.0.0
     "@metamask/permission-controller": ^4.1.2
     "@metamask/post-message-stream": ^7.0.0
-    "@metamask/snaps-registry": ^2.0.0
+    "@metamask/snaps-registry": ^2.1.0
     "@metamask/snaps-ui": "workspace:^"
     "@metamask/utils": ^8.1.0
     "@noble/hashes": ^1.3.1
@@ -7510,12 +7513,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/tar-stream@npm:^2.2.2":
-  version: 2.2.2
-  resolution: "@types/tar-stream@npm:2.2.2"
+"@types/tar-stream@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "@types/tar-stream@npm:3.1.1"
   dependencies:
     "@types/node": "*"
-  checksum: 4b33bc0d53770e952d6e2e8acb8889190510326a3e255d0c6edd94136d6027ecae939a7b49188d1d02d774328d9a3742ff633d505709d1a1200b3413c88d793d
+  checksum: ba9e5c3bc31a4eefe2c519d06bd9f563d1ddadb83ea272d23390276aeeda4766cb74ba5217a765994a65c86bdf0ba41fa731633c0b3dc63e6c4d959f4672cf86
   languageName: node
   linkType: hard
 
@@ -21541,7 +21544,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar-stream@npm:^3.1.5":
+"tar-stream@npm:^3.1.5, tar-stream@npm:^3.1.6":
   version: 3.1.6
   resolution: "tar-stream@npm:3.1.6"
   dependencies:

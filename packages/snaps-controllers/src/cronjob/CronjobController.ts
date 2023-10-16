@@ -289,7 +289,7 @@ export class CronjobController extends BaseController<
   /**
    * Runs every 24 hours to check if new jobs need to be scheduled.
    *
-   * This is necesary for longer running jobs that execute with more than 24 hours between them.
+   * This is necessary for longer running jobs that execute with more than 24 hours between them.
    */
   async dailyCheckIn() {
     const jobs = this.getAllJobs();

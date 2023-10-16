@@ -49,8 +49,7 @@
     "@metamask/permission-controller": "^4.1.2",
     "@metamask/post-message-stream": "^7.0.0",
     "@metamask/rpc-methods": "workspace:^",
-    "@metamask/snaps-execution-environments": "workspace:^",
-    "@metamask/snaps-registry": "^2.0.0",
+    "@metamask/snaps-registry": "^2.1.0",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/utils": "^8.1.0",
     "@xstate/fsm": "^2.0.0",
@@ -62,7 +61,7 @@
     "json-rpc-middleware-stream": "^4.2.0",
     "nanoid": "^3.1.31",
     "readable-web-to-node-stream": "^3.0.2",
-    "tar-stream": "^2.2.0"
+    "tar-stream": "^3.1.6"
   },
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
@@ -84,7 +83,7 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "18.14.2",
     "@types/readable-stream": "^2.3.15",
-    "@types/tar-stream": "^2.2.2",
+    "@types/tar-stream": "^3.1.1",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "@wdio/browser-runner": "^8.15.9",
@@ -121,6 +120,14 @@
     "wdio-chromedriver-service": "^8.1.1",
     "wdio-geckodriver-service": "^5.0.2",
     "webdriverio": "^8.15.9"
+  },
+  "peerDependencies": {
+    "@metamask/snaps-execution-environments": "workspace:^"
+  },
+  "peerDependenciesMeta": {
+    "@metamask/snaps-execution-environments": {
+      "optional": true
+    }
   },
   "engines": {
     "node": "^18.16 || >=20"
