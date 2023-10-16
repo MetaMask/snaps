@@ -1,9 +1,10 @@
-import { bytesToHex } from '@metamask/utils';
+import { bytesToHex, bytesToString } from '@metamask/utils';
 import { base64 } from '@scure/base';
 
 export enum AuxiliaryFileEncoding {
   Base64 = 'base64',
   Hex = 'hex',
+  Plaintext = 'plaintext',
 }
 
 /**
@@ -23,7 +24,9 @@ export function encodeAuxiliaryFile(
   }
 
   // TODO: Use @metamask/utils for this
-  // For now, the requested encoding here will always be hex.
   const decoded = base64.decode(value);
+  if (encoding === AuxiliaryFileEncoding.Plaintext) {
+    return bytesToString(decoded);
+  }
   return bytesToHex(decoded);
 }

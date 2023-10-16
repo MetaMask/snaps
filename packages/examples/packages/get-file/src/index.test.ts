@@ -50,4 +50,20 @@ describe('onRpcRequest', () => {
       await close();
     });
   });
+
+  describe('getFileInHex', () => {
+    it('returns the file in hex', async () => {
+      const { request, close } = await installSnap();
+
+      const response = request({
+        method: 'getFileInHex',
+      });
+
+      expect(await response).toRespondWith(
+        '0x7b0a202022666f6f223a2022626172220a7d0a',
+      );
+
+      await close();
+    });
+  });
 });
