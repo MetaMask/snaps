@@ -181,8 +181,10 @@ export function* getSnapFile(
   const base64 = files
     .find((file) => file.path === normalizedPath)
     ?.toString('base64');
+
   if (!base64) {
     return null;
   }
+
   return encodeAuxiliaryFile(base64, encoding);
 }

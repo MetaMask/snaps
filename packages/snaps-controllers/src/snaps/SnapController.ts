@@ -1406,9 +1406,11 @@ export class SnapController extends BaseController<
     const value = snap.auxiliaryFiles?.find(
       (file) => file.path === normalizedPath,
     )?.value;
+
     if (!value) {
       return null;
     }
+
     return encodeAuxiliaryFile(value, encoding);
   }
 

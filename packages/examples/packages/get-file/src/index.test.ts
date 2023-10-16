@@ -36,4 +36,18 @@ describe('onRpcRequest', () => {
       await close();
     });
   });
+
+  describe('getFileInBase64', () => {
+    it('returns the file in base64', async () => {
+      const { request, close } = await installSnap();
+
+      const response = request({
+        method: 'getFileInBase64',
+      });
+
+      expect(await response).toRespondWith('ewogICJmb28iOiAiYmFyIgp9Cg==');
+
+      await close();
+    });
+  });
 });
