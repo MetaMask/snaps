@@ -1,18 +1,27 @@
+import { enumValue } from '@metamask/snaps-utils';
 import type {
   PermittedHandlerExport,
   PendingJsonRpcResponse,
   JsonRpcEngineEndCallback,
   JsonRpcRequest,
 } from '@metamask/types';
-import { assertStruct, type Hex } from '@metamask/utils';
+import { assertStruct } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import type { Infer } from 'superstruct';
-import { object, string } from 'superstruct';
+import { object, optional, string, union } from 'superstruct';
 
 import type { MethodHooksObject } from '../utils';
 
+export enum FileEncoding {
+  Base64 = 'base64',
+  Hex = 'hex',
+}
+
 export const GetFileArgsStruct = object({
   path: string(),
+  encoding: optional(
+    union([enumValue(FileEncoding.Base64), enumValue(FileEncoding.Hex)]),
+  ),
 });
 
 export type GetFileArgs = Infer<typeof GetFileArgsStruct>;
@@ -32,7 +41,10 @@ export const getFileHandler: PermittedHandlerExport<
 };
 
 export type GetFileHooks = {
-  getSnapFile: (path: string) => Promise<Hex>;
+  getSnapFile: (
+    path: GetFileArgs['path'],
+    encoding: GetFileArgs['encoding'],
+  ) => Promise<string>;
 };
 
 /**
@@ -64,7 +76,7 @@ async function implementation(
   );
 
   try {
-    res.result = await getSnapFile(params.path);
+    res.result = await getSnapFile(params.path, params.encoding);
   } catch (error) {
     return end(error);
   }

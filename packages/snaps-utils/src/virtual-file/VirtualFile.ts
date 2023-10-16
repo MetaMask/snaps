@@ -7,6 +7,7 @@
 // https://github.com/gulpjs/vinyl is also good, but they normalize paths, which we can't do, because
 // we're calculating checksums based on original path.
 import { assert, bytesToHex } from '@metamask/utils';
+import { base64 } from '@scure/base';
 
 import { deepClone } from '../deep-clone';
 
@@ -77,6 +78,8 @@ export class VirtualFile<Result = unknown> {
       return this.value;
     } else if (this.value instanceof Uint8Array && encoding === 'hex') {
       return bytesToHex(this.value);
+    } else if (this.value instanceof Uint8Array && encoding === 'base64') {
+      return base64.encode(this.value);
     }
     const decoder = new TextDecoder(encoding);
     return decoder.decode(this.value);

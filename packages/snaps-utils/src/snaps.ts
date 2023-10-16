@@ -83,7 +83,8 @@ export type VersionHistory = {
 
 export type SnapAuxilaryFile = {
   path: string;
-  value: Hex;
+  // Value here should be stored as base64
+  value: string;
 };
 
 export type PersistedSnap = Snap;

@@ -24,7 +24,10 @@ import type {
   ValidPermission,
 } from '@metamask/permission-controller';
 import { SubjectType } from '@metamask/permission-controller';
-import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
+import {
+  WALLET_SNAP_PERMISSION_KEY,
+  FileEncoding,
+} from '@metamask/rpc-methods';
 import type { BlockReason } from '@metamask/snaps-registry';
 import type {
   FetchedSnapFiles,
@@ -59,7 +62,7 @@ import {
   SnapStatusEvents,
   validateFetchedSnap,
 } from '@metamask/snaps-utils';
-import type { Hex, Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
+import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
   assert,
   assertIsJsonRpcRequest,
@@ -89,7 +92,12 @@ import type {
   TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '../services';
-import { hasTimedOut, setDiff, withTimeout } from '../utils';
+import {
+  encodeAuxiliaryFile,
+  hasTimedOut,
+  setDiff,
+  withTimeout,
+} from '../utils';
 import { handlerEndowments, SnapEndowments } from './endowments';
 import { getKeyringCaveatOrigins } from './endowments/keyring';
 import { getRpcCaveatOrigins } from './endowments/rpc';
@@ -1387,19 +1395,27 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Gets a static auxiliary snap file in hex.
+   * Gets a static auxiliary snap file in a chosen file encoding.
    *
    * @param snapId - The id of the Snap whose state to get.
    * @param path - The path to the requested file.
-   * @returns The file requested in hex or null if the file is not found.
+   * @param encoding - An optional requested file encoding.
+   * @returns The file requested in the chosen file encoding or null if the file is not found.
    */
-  getSnapFile(snapId: ValidatedSnapId, path: string): Hex | null {
+  getSnapFile(
+    snapId: ValidatedSnapId,
+    path: string,
+    encoding: FileEncoding = FileEncoding.Base64,
+  ): string | null {
     const snap = this.getExpect(snapId);
     const normalizedPath = normalizeRelative(path);
-    return (
-      snap.auxiliaryFiles?.find((file) => file.path === normalizedPath)
-        ?.value ?? null
-    );
+    const value = snap.auxiliaryFiles?.find(
+      (file) => file.path === normalizedPath,
+    )?.value;
+    if (!value) {
+      return null;
+    }
+    return encodeAuxiliaryFile(value, encoding);
   }
 
   /**
@@ -2225,7 +2241,7 @@ export class SnapController extends BaseController<
 
     const auxiliaryFiles = rawAuxiliaryFiles.map((file) => ({
       path: file.path,
-      value: file.toString('hex') as Hex,
+      value: file.toString('base64'),
     }));
 
     const snapsState = this.state.snaps;
