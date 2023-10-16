@@ -21,7 +21,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     case 'getFile': {
       const fileInHexadecimal = await snap.request({
         method: 'snap_getFile',
-        params: { path: './src/foo.json' },
+        params: { path: './src/foo.json', encoding: 'hex' },
       });
       const bytes = hexToBytes(fileInHexadecimal);
       return JSON.parse(bytesToString(bytes));

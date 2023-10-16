@@ -30,7 +30,7 @@ const hookNames: MethodHooksObject<GetFileHooks> = {
 
 export const getFileHandler: PermittedHandlerExport<
   GetFileHooks,
-  JsonRpcRequest<unknown>,
+  GetFileArgs,
   string
 > = {
   methodNames: ['snap_getFile'],
@@ -58,7 +58,7 @@ export type GetFileHooks = {
  * @returns Nothing.
  */
 async function implementation(
-  req: JsonRpcRequest<unknown>,
+  req: JsonRpcRequest<GetFileArgs>,
   res: PendingJsonRpcResponse<unknown>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
