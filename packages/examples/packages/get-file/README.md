@@ -25,6 +25,7 @@ This snap exposes an `onRpcRequest` handler, which supports the following
 JSON-RPC methods:
 
 - `getFile`: Returns a static JSON file.
+- `getFileInBase64`: Returns the same static JSON file in Base64.
 
 For more information, you can refer to
 [the end-to-end tests](./src/index.test.ts).
