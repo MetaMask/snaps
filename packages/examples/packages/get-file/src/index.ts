@@ -24,7 +24,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     case 'getFile': {
       const fileInPlaintext = await snap.request({
         method: 'snap_getFile',
-        params: { path: './src/foo.json', encoding: 'plaintext' },
+        params: { path: './src/foo.json', encoding: 'utf8' },
       });
       return JSON.parse(fileInPlaintext);
     }

@@ -4,7 +4,7 @@ import { base64 } from '@scure/base';
 export enum AuxiliaryFileEncoding {
   Base64 = 'base64',
   Hex = 'hex',
-  Plaintext = 'plaintext',
+  Utf8 = 'utf8',
 }
 
 /**
@@ -25,7 +25,7 @@ export function encodeAuxiliaryFile(
 
   // TODO: Use @metamask/utils for this
   const decoded = base64.decode(value);
-  if (encoding === AuxiliaryFileEncoding.Plaintext) {
+  if (encoding === AuxiliaryFileEncoding.Utf8) {
     return bytesToString(decoded);
   }
   return bytesToHex(decoded);

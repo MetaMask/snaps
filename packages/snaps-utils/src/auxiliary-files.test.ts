@@ -22,8 +22,6 @@ describe('encodeAuxiliaryFile', () => {
   it('returns plaintext when requested', () => {
     const bytes = stringToBytes('foo');
     const value = base64.encode(bytes);
-    expect(encodeAuxiliaryFile(value, AuxiliaryFileEncoding.Plaintext)).toBe(
-      'foo',
-    );
+    expect(encodeAuxiliaryFile(value, AuxiliaryFileEncoding.Utf8)).toBe('foo');
   });
 });
