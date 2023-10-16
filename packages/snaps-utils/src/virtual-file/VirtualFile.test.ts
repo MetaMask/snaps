@@ -1,3 +1,6 @@
+import { bytesToHex, stringToBytes } from '@metamask/utils';
+import { base64 } from '@scure/base';
+
 import { VirtualFile } from './VirtualFile';
 
 const VALUE = 'foo\nbar';
@@ -33,6 +36,18 @@ describe('VirtualFile', () => {
       ]);
       const file = new VirtualFile({ value: array });
       expect(file.toString('utf-16be')).toStrictEqual(VALUE);
+    });
+
+    it('supports hex', () => {
+      const value = stringToBytes('foo');
+      const file = new VirtualFile({ value });
+      expect(file.toString('hex')).toStrictEqual(bytesToHex(value));
+    });
+
+    it('supports base64', () => {
+      const value = stringToBytes('foo');
+      const file = new VirtualFile({ value });
+      expect(file.toString('base64')).toStrictEqual(base64.encode(value));
     });
   });
 

@@ -13,6 +13,7 @@ type GetSnapManifestOptions = Partial<MakeSemVer<SnapManifest>> & {
   packageName?: string;
   registry?: string;
   iconPath?: string;
+  files?: string[];
 };
 
 type GetPackageJsonOptions = Partial<MakeSemVer<NpmSnapPackageJson>>;
@@ -59,6 +60,8 @@ export const DEFAULT_SNAP_BUNDLE = `
 
 export const DEFAULT_SNAP_ICON = '<svg />';
 
+export const MOCK_AUXILIARY_FILE = '{ "foo": "bar" }';
+
 export const ALTERNATIVE_SNAP_ICON =
   '<svg width="24" height="25" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.037 0H6.975C2.605 0 0 2.617 0 6.987v10.05c0 4.37 2.605 6.975 6.975 6.975h10.05c4.37 0 6.975-2.605 6.975-6.976V6.988C24.012 2.617 21.407 0 17.037 0ZM11.49 17.757c0 .36-.18.684-.492.876a.975.975 0 0 1-.54.156 1.11 1.11 0 0 1-.469-.108l-4.202-2.1a1.811 1.811 0 0 1-.985-1.61v-3.973c0-.36.18-.685.493-.877a1.04 1.04 0 0 1 1.008-.048l4.202 2.101a1.8 1.8 0 0 1 .997 1.609v3.974h-.012Zm-.252-6.423L6.723 8.896a1.045 1.045 0 0 1-.528-.924c0-.384.204-.744.528-.924l4.515-2.438a1.631 1.631 0 0 1 1.524 0l4.515 2.438c.324.18.528.528.528.924s-.204.744-.528.924l-4.515 2.438c-.24.132-.504.192-.768.192a1.54 1.54 0 0 1-.756-.192Zm7.972 3.638c0 .684-.385 1.308-.997 1.608l-4.202 2.101c-.144.072-.3.108-.468.108a.975.975 0 0 1-.54-.156 1.017 1.017 0 0 1-.493-.876v-3.974c0-.684.384-1.309.997-1.609l4.202-2.101a1.04 1.04 0 0 1 1.008.048c.313.192.493.516.493.877v3.974Z" fill="#24272A"/></svg>';
 
@@ -97,6 +100,7 @@ export const DEFAULT_SNAP_SHASUM = getSnapChecksum({
     result: SHASUM_MANIFEST,
     path: DEFAULT_MANIFEST_PATH,
   }),
+  auxiliaryFiles: [],
 });
 
 /**
@@ -114,6 +118,7 @@ export const DEFAULT_SNAP_SHASUM = getSnapChecksum({
  * @param manifest.packageName - The name of the snap.
  * @param manifest.repository - The repository of the snap.
  * @param manifest.iconPath - The path to the icon of the snap.
+ * @param manifest.files - Auxiliary files loaded at runtime by the snap.
  * @returns The snap manifest.
  */
 export const getSnapManifest = ({
@@ -126,6 +131,7 @@ export const getSnapManifest = ({
   packageName = MOCK_SNAP_NAME,
   repository = getDefaultRepository(),
   iconPath = DEFAULT_ICON_PATH,
+  files = undefined,
 }: GetSnapManifestOptions = {}): SnapManifest => {
   return {
     version: version as SemVerVersion,
@@ -142,6 +148,7 @@ export const getSnapManifest = ({
           iconPath,
         } as const,
       },
+      ...(files ? { files } : {}),
     },
     initialPermissions,
     manifestVersion: '0.1' as const,
@@ -182,12 +189,14 @@ export const getSnapFiles = ({
   packageJson = getPackageJson(),
   sourceCode = DEFAULT_SNAP_BUNDLE,
   svgIcon = DEFAULT_SNAP_ICON,
+  auxiliaryFiles = [],
   updateChecksum = true,
 }: {
   manifest?: SnapManifest | VirtualFile<SnapManifest>;
   sourceCode?: string | VirtualFile;
   packageJson?: NpmSnapPackageJson;
   svgIcon?: string | VirtualFile;
+  auxiliaryFiles?: VirtualFile[];
   updateChecksum?: boolean;
 } = {}): SnapFiles => {
   const files = {
@@ -220,6 +229,7 @@ export const getSnapFiles = ({
             path: DEFAULT_ICON_PATH,
           })
       : undefined,
+    auxiliaryFiles,
   };
   if (updateChecksum) {
     files.manifest.result.source.shasum = getSnapChecksum(files);

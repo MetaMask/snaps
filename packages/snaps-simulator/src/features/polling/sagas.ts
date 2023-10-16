@@ -1,3 +1,4 @@
+import type { SnapLocation } from '@metamask/snaps-controllers';
 import { detectSnapLocation } from '@metamask/snaps-controllers';
 import type { SnapManifest, VirtualFile } from '@metamask/snaps-utils';
 import {
@@ -15,12 +16,30 @@ import { addDefault, addError } from '../console';
 import { ManifestStatus, setValid, validateManifest } from '../manifest';
 import {
   getSnapManifest,
+  setAuxiliaryFiles,
   setIcon,
   setManifest,
   setSourceCode,
   setStatus,
   SnapStatus,
 } from '../simulation';
+
+/**
+ * Utility function for fetching auxiliary snap files.
+ *
+ * @param location - The snap location class.
+ * @param manifest - The parsed manifest.
+ */
+async function fetchAuxiliaryFiles(
+  location: SnapLocation,
+  manifest: SnapManifest,
+): Promise<VirtualFile[]> {
+  return manifest.source.files
+    ? await Promise.all(
+        manifest.source.files.map(async (filePath) => location.fetch(filePath)),
+      )
+    : [];
+}
 
 /**
  * The fetching saga, fetches the snap manifest from the selected snap URL and checks if the checksum matches the cached value.
@@ -60,6 +79,14 @@ export function* fetchingSaga() {
       bundlePath,
     );
     yield put(setSourceCode(bundle));
+
+    const auxiliaryFiles: VirtualFile[] = yield call(
+      fetchAuxiliaryFiles,
+      location,
+      parsedManifest,
+    );
+
+    yield put(setAuxiliaryFiles(auxiliaryFiles));
 
     const { iconPath } = parsedManifest.source.location.npm;
     if (iconPath) {

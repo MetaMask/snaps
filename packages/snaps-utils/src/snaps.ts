@@ -81,6 +81,12 @@ export type VersionHistory = {
   date: number;
 };
 
+export type SnapAuxilaryFile = {
+  path: string;
+  // Value here should be stored as base64
+  value: string;
+};
+
 export type PersistedSnap = Snap;
 
 /**
@@ -138,6 +144,11 @@ export type Snap = {
    * Can be used to derive when the Snap was installed, when it was updated to a certain version and who requested the change.
    */
   versionHistory: VersionHistory[];
+
+  /**
+   * Static auxiliary files that can be loaded at runtime.
+   */
+  auxiliaryFiles?: SnapAuxilaryFile[];
 };
 
 export type TruncatedSnapFields =
@@ -197,10 +208,13 @@ function getChecksummableManifest(
  * @returns The Base64-encoded SHA-256 digest of the source code.
  */
 export function getSnapChecksum(files: FetchedSnapFiles): string {
-  const { manifest, sourceCode, svgIcon } = files;
-  const all = [getChecksummableManifest(manifest), sourceCode, svgIcon].filter(
-    (file) => file !== undefined,
-  );
+  const { manifest, sourceCode, svgIcon, auxiliaryFiles } = files;
+  const all = [
+    getChecksummableManifest(manifest),
+    sourceCode,
+    svgIcon,
+    ...auxiliaryFiles,
+  ].filter((file) => file !== undefined);
   return base64.encode(checksumFiles(all as VirtualFile[]));
 }
 

@@ -1,27 +1,29 @@
 {
   "version": "2.0.0",
-  "description": "MetaMask example snap demonstrating the use of `snap_manageState`.",
-  "proposedName": "Manage State Example Snap",
+  "description": "MetaMask example snap demonstrating the use of `snap_getFile`.",
+  "proposedName": "Get File Example Snap",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "TO6zLIG+k6OIa6iJ951A0R4kmQ28kT4A67Jaa87ElLY=",
+    "shasum": "IsVfJYwK/RvI9RZKZyuhYfNCE+eVG2rL6/Hyjjt9hJw=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
         "iconPath": "images/icon.svg",
-        "packageName": "@metamask/manage-state-example-snap",
-        "registry": "https://registry.npmjs.org/"
+        "packageName": "@metamask/get-file-example-snap",
+        "registry": "https://registry.npmjs.org"
       }
-    }
+    },
+    "files": [
+      "./src/foo.json"
+    ]
   },
   "initialPermissions": {
     "endowment:rpc": {
       "dapps": true
-    },
-    "snap_manageState": {}
+    }
   },
   "manifestVersion": "0.1"
 }

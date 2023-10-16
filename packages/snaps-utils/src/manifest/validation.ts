@@ -178,6 +178,8 @@ export const PermissionsStruct = type({
 
 export type SnapPermissions = Infer<typeof PermissionsStruct>;
 
+export const SnapAuxilaryFilesStruct = array(string());
+
 export const SnapManifestStruct = object({
   version: VersionStruct,
   description: size(string(), 1, 280),
@@ -208,6 +210,7 @@ export const SnapManifestStruct = object({
         ]),
       }),
     }),
+    files: optional(SnapAuxilaryFilesStruct),
   }),
   initialPermissions: PermissionsStruct,
   manifestVersion: literal('0.1'),

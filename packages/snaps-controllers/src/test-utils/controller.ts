@@ -358,6 +358,7 @@ export const getSnapControllerMessenger = (
       'SnapsRegistry:update',
       'SnapController:disconnectOrigin',
       'SnapController:revokeDynamicPermissions',
+      'SnapController:getFile',
     ],
   });
 

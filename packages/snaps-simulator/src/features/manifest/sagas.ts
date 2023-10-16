@@ -3,7 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import type { SagaIterator } from 'redux-saga';
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
 
-import { getIcon, getSourceCode } from '../simulation';
+import { getAuxiliaryFiles, getIcon, getSourceCode } from '../simulation';
 import type { ValidationResult } from './slice';
 import {
   ManifestStatus,
@@ -25,6 +25,7 @@ export function* validationSaga({
 }: PayloadAction<VirtualFile<SnapManifest>>): SagaIterator {
   const sourceCode: VirtualFile<string> = yield select(getSourceCode);
   const icon: VirtualFile<string> = yield select(getIcon);
+  const auxiliaryFiles: VirtualFile[] | null = yield select(getAuxiliaryFiles);
 
   const results: ValidationResult[] = [];
 
@@ -32,6 +33,7 @@ export function* validationSaga({
     const result = yield call(validator, manifest, {
       sourceCode,
       icon,
+      auxiliaryFiles: auxiliaryFiles ?? [],
     });
 
     const message = typeof result === 'string' ? result : undefined;

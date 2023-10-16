@@ -46,12 +46,15 @@ import type {
 import {
   assertIsSnapManifest,
   assertIsValidSnapId,
+  AuxiliaryFileEncoding,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
+  encodeAuxiliaryFile,
   getErrorMessage,
   HandlerType,
   isOriginAllowed,
   logError,
+  normalizeRelative,
   resolveVersionRange,
   SnapCaveatType,
   SnapStatus,
@@ -338,6 +341,11 @@ export type RevokeDynamicPermissions = {
   handler: SnapController['revokeDynamicSnapPermissions'];
 };
 
+export type GetSnapFile = {
+  type: `${typeof controllerName}:getFile`;
+  handler: SnapController['getSnapFile'];
+};
+
 export type SnapControllerActions =
   | ClearSnapState
   | GetSnap
@@ -356,7 +364,8 @@ export type SnapControllerActions =
   | DecrementActiveReferences
   | GetRegistryMetadata
   | DisconnectOrigin
-  | RevokeDynamicPermissions;
+  | RevokeDynamicPermissions
+  | GetSnapFile;
 
 // Controller Messenger Events
 
@@ -947,6 +956,11 @@ export class SnapController extends BaseController<
       `${controllerName}:revokeDynamicPermissions`,
       (...args) => this.revokeDynamicSnapPermissions(...args),
     );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:getFile`,
+      (...args) => this.getSnapFile(...args),
+    );
   }
 
   #pollForLastRequestStatus() {
@@ -1372,6 +1386,32 @@ export class SnapController extends BaseController<
   async getSnapState(snapId: ValidatedSnapId): Promise<Json> {
     const state = this.state.snapStates[snapId];
     return state ?? null;
+  }
+
+  /**
+   * Gets a static auxiliary snap file in a chosen file encoding.
+   *
+   * @param snapId - The id of the Snap whose state to get.
+   * @param path - The path to the requested file.
+   * @param encoding - An optional requested file encoding.
+   * @returns The file requested in the chosen file encoding or null if the file is not found.
+   */
+  getSnapFile(
+    snapId: ValidatedSnapId,
+    path: string,
+    encoding: AuxiliaryFileEncoding = AuxiliaryFileEncoding.Base64,
+  ): string | null {
+    const snap = this.getExpect(snapId);
+    const normalizedPath = normalizeRelative(path);
+    const value = snap.auxiliaryFiles?.find(
+      (file) => file.path === normalizedPath,
+    )?.value;
+
+    if (!value) {
+      return null;
+    }
+
+    return encodeAuxiliaryFile(value, encoding);
   }
 
   /**
@@ -2178,7 +2218,12 @@ export class SnapController extends BaseController<
   #set(args: SetSnapArgs): PersistedSnap {
     const { id: snapId, origin, files, isUpdate = false } = args;
 
-    const { manifest, sourceCode: sourceCodeFile, svgIcon } = files;
+    const {
+      manifest,
+      sourceCode: sourceCodeFile,
+      svgIcon,
+      auxiliaryFiles: rawAuxiliaryFiles,
+    } = files;
 
     assertIsSnapManifest(manifest.result);
     const { version } = manifest.result;
@@ -2189,6 +2234,11 @@ export class SnapController extends BaseController<
       typeof sourceCode === 'string' && sourceCode.length > 0,
       `Invalid source code for snap "${snapId}".`,
     );
+
+    const auxiliaryFiles = rawAuxiliaryFiles.map((file) => ({
+      path: file.path,
+      value: file.toString('base64'),
+    }));
 
     const snapsState = this.state.snaps;
 
@@ -2220,6 +2270,7 @@ export class SnapController extends BaseController<
       sourceCode,
       version,
       versionHistory,
+      auxiliaryFiles,
     };
     // If the snap was blocked, it isn't any longer
     delete snap.blockInformation;
@@ -2265,7 +2316,15 @@ export class SnapController extends BaseController<
       const { iconPath } = manifest.result.source.location.npm;
       const svgIcon = iconPath ? await location.fetch(iconPath) : undefined;
 
-      const files = { manifest, sourceCode, svgIcon };
+      const auxiliaryFiles = manifest.result.source.files
+        ? await Promise.all(
+            manifest.result.source.files.map(async (filePath) =>
+              location.fetch(filePath),
+            ),
+          )
+        : [];
+
+      const files = { manifest, sourceCode, svgIcon, auxiliaryFiles };
 
       validateFetchedSnap(files);
 

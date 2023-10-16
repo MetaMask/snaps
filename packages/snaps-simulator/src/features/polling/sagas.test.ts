@@ -1,7 +1,14 @@
+import { VirtualFile } from '@metamask/snaps-utils';
+import { stringToBytes } from '@metamask/utils';
 import fetchMock from 'jest-fetch-mock';
 import { expectSaga } from 'redux-saga-test-plan';
 
-import { setIcon, setManifest, setSourceCode } from '../simulation';
+import {
+  setAuxiliaryFiles,
+  setIcon,
+  setManifest,
+  setSourceCode,
+} from '../simulation';
 import {
   MOCK_MANIFEST,
   MOCK_MANIFEST_FILE,
@@ -64,6 +71,39 @@ describe('fetchingSaga', () => {
       })
       .put(setManifest(MOCK_MANIFEST_FILE))
       .put(setSourceCode(MOCK_SNAP_SOURCE_FILE))
+      .put(setAuxiliaryFiles([]))
+      .put(setIcon(MOCK_SNAP_ICON_FILE))
+      .silentRun();
+  });
+
+  it('fetches the snap and updates auxiliary files', async () => {
+    const manifest = {
+      ...MOCK_MANIFEST,
+      source: { ...MOCK_MANIFEST.source, files: ['./src/foo.json'] },
+    };
+    const json = JSON.stringify({ foo: 'bar' });
+    const auxiliaryFile = new VirtualFile({
+      path: 'src/foo.json',
+      value: stringToBytes(json),
+      data: { canonicalPath: 'local:http://localhost:8080/src/foo.json' },
+    });
+    fetchMock.mockResponses(
+      JSON.stringify(manifest),
+      MOCK_SNAP_SOURCE,
+      json,
+      MOCK_SNAP_ICON,
+    );
+    await expectSaga(fetchingSaga)
+      .withState({
+        configuration: {
+          snapId: 'local:http://localhost:8080',
+        },
+        simulation: {
+          manifest: null,
+        },
+      })
+      .put(setSourceCode(MOCK_SNAP_SOURCE_FILE))
+      .put(setAuxiliaryFiles([auxiliaryFile]))
       .put(setIcon(MOCK_SNAP_ICON_FILE))
       .silentRun();
   });

@@ -41,7 +41,8 @@ export function validateNpmSnap(
   });
 
   // Typecast: We are assured that the required files exist if we get here.
-  const { manifest, packageJson, sourceCode, svgIcon } = snapFiles as SnapFiles;
+  const { manifest, packageJson, sourceCode, svgIcon, auxiliaryFiles } =
+    snapFiles as SnapFiles;
   try {
     assertIsSnapManifest(manifest.result);
   } catch (error) {
@@ -66,6 +67,7 @@ export function validateNpmSnap(
     packageJson: validatedPackageJson,
     sourceCode,
     svgIcon,
+    auxiliaryFiles,
   });
 
   if (svgIcon) {
@@ -81,5 +83,6 @@ export function validateNpmSnap(
     packageJson: validatedPackageJson,
     sourceCode,
     svgIcon,
+    auxiliaryFiles,
   };
 }
