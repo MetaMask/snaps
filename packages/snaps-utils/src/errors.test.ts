@@ -1,6 +1,14 @@
 import { rpcErrors } from '@metamask/rpc-errors';
 
-import { BaseSnapError, getErrorMessage, SnapError } from './errors';
+import {
+  getErrorMessage,
+  SNAP_ERROR_CODE,
+  SNAP_ERROR_MESSAGE,
+  SNAP_ERROR_WRAPPER_CODE,
+  SNAP_ERROR_WRAPPER_MESSAGE,
+  SnapError,
+  UnhandledSnapError,
+} from './errors';
 
 describe('getErrorMessage', () => {
   it('returns the error message if the error is an object with a message property', () => {
@@ -19,12 +27,62 @@ describe('getErrorMessage', () => {
   });
 });
 
+describe('SnapErrorWrapper', () => {
+  it('wraps an error', () => {
+    const error = new Error('foo');
+    const wrapped = new UnhandledSnapError(error);
+
+    expect(wrapped).toBeInstanceOf(Error);
+    expect(wrapped).toBeInstanceOf(UnhandledSnapError);
+    expect(wrapped.message).toBe('foo');
+    expect(wrapped.stack).toBeDefined();
+    expect(wrapped.toJSON()).toStrictEqual({
+      code: SNAP_ERROR_WRAPPER_CODE,
+      message: SNAP_ERROR_WRAPPER_MESSAGE,
+      data: {
+        cause: {
+          message: 'foo',
+          stack: error.stack,
+        },
+      },
+    });
+  });
+
+  it('wraps a Snap error', () => {
+    const error = new SnapError('foo');
+    const wrapped = new UnhandledSnapError(error);
+
+    expect(wrapped).toBeInstanceOf(Error);
+    expect(wrapped).toBeInstanceOf(UnhandledSnapError);
+    expect(wrapped.message).toBe('foo');
+    expect(wrapped.stack).toBeDefined();
+    expect(wrapped.toJSON()).toStrictEqual({
+      code: SNAP_ERROR_WRAPPER_CODE,
+      message: SNAP_ERROR_WRAPPER_MESSAGE,
+      data: {
+        cause: {
+          code: SNAP_ERROR_CODE,
+          message: SNAP_ERROR_MESSAGE,
+          data: {
+            cause: {
+              code: -32603,
+              message: 'foo',
+              data: {
+                stack: error.stack,
+              },
+            },
+          },
+        },
+      },
+    });
+  });
+});
+
 describe('SnapError', () => {
   it('creates an error from a message', () => {
     const error = new SnapError('foo');
 
     expect(error).toBeInstanceOf(Error);
-    expect(error).toBeInstanceOf(BaseSnapError);
     expect(error).toBeInstanceOf(SnapError);
     expect(error.message).toBe('foo');
     expect(error.code).toBe(-32603);
@@ -46,7 +104,6 @@ describe('SnapError', () => {
     });
 
     expect(error).toBeInstanceOf(Error);
-    expect(error).toBeInstanceOf(BaseSnapError);
     expect(error).toBeInstanceOf(SnapError);
     expect(error.message).toBe('foo');
     expect(error.code).toBe(-32000);
@@ -65,7 +122,6 @@ describe('SnapError', () => {
     const error = new SnapError('foo', { foo: 'bar' });
 
     expect(error).toBeInstanceOf(Error);
-    expect(error).toBeInstanceOf(BaseSnapError);
     expect(error).toBeInstanceOf(SnapError);
     expect(error.message).toBe('foo');
     expect(error.code).toBe(-32603);
@@ -83,7 +139,6 @@ describe('SnapError', () => {
     );
 
     expect(error).toBeInstanceOf(Error);
-    expect(error).toBeInstanceOf(BaseSnapError);
     expect(error).toBeInstanceOf(SnapError);
     expect(error.message).toBe('foo');
     expect(error.code).toBe(-32000);
@@ -103,7 +158,6 @@ describe('SnapError', () => {
     const error = new SnapError(new Error('foo'));
 
     expect(error).toBeInstanceOf(Error);
-    expect(error).toBeInstanceOf(BaseSnapError);
     expect(error).toBeInstanceOf(SnapError);
     expect(error.message).toBe('foo');
     expect(error.code).toBe(-32603);
@@ -122,7 +176,6 @@ describe('SnapError', () => {
     const error = new SnapError(new Error('foo'), { foo: 'bar' });
 
     expect(error).toBeInstanceOf(Error);
-    expect(error).toBeInstanceOf(BaseSnapError);
     expect(error).toBeInstanceOf(SnapError);
     expect(error.message).toBe('foo');
     expect(error.code).toBe(-32603);
@@ -139,10 +192,9 @@ describe('SnapError', () => {
   });
 
   it('creates an error from a JsonRpcError', () => {
-    const error = new SnapError(ethErrors.rpc.invalidParams('foo'));
+    const error = new SnapError(rpcErrors.invalidParams('foo'));
 
     expect(error).toBeInstanceOf(Error);
-    expect(error).toBeInstanceOf(BaseSnapError);
     expect(error).toBeInstanceOf(SnapError);
     expect(error.message).toBe('foo');
     expect(error.code).toBe(-32602);
@@ -158,12 +210,11 @@ describe('SnapError', () => {
   });
 
   it('creates an error from a JsonRpcError and data', () => {
-    const error = new SnapError(ethErrors.rpc.invalidParams('foo'), {
+    const error = new SnapError(rpcErrors.invalidParams('foo'), {
       foo: 'bar',
     });
 
     expect(error).toBeInstanceOf(Error);
-    expect(error).toBeInstanceOf(BaseSnapError);
     expect(error).toBeInstanceOf(SnapError);
     expect(error.message).toBe('foo');
     expect(error.code).toBe(-32602);
@@ -186,7 +237,6 @@ describe('SnapError', () => {
     });
 
     expect(error).toBeInstanceOf(Error);
-    expect(error).toBeInstanceOf(BaseSnapError);
     expect(error).toBeInstanceOf(SnapError);
     expect(error.message).toBe('foo');
     expect(error.code).toBe(0);
@@ -211,7 +261,6 @@ describe('SnapError', () => {
     );
 
     expect(error).toBeInstanceOf(Error);
-    expect(error).toBeInstanceOf(BaseSnapError);
     expect(error).toBeInstanceOf(SnapError);
     expect(error.message).toBe('foo');
     expect(error.code).toBe(0);
@@ -241,7 +290,6 @@ describe('SnapError', () => {
     );
 
     expect(error).toBeInstanceOf(Error);
-    expect(error).toBeInstanceOf(BaseSnapError);
     expect(error).toBeInstanceOf(SnapError);
     expect(error.message).toBe('foo');
     expect(error.code).toBe(0);

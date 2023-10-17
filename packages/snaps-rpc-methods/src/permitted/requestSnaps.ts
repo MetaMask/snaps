@@ -1,7 +1,9 @@
+import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type {
   PermissionConstraint,
   RequestedPermissions,
   Caveat,
+  PermittedHandlerExport,
 } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { SnapsPermissionRequest } from '@metamask/snaps-utils';
@@ -10,12 +12,10 @@ import {
   verifyRequestedSnapPermissions,
 } from '@metamask/snaps-utils';
 import type {
-  PermittedHandlerExport,
   JsonRpcRequest,
   PendingJsonRpcResponse,
-  JsonRpcEngineEndCallback,
-} from '@metamask/types';
-import type { Json } from '@metamask/utils';
+  Json,
+} from '@metamask/utils';
 import { hasProperty, isObject } from '@metamask/utils';
 
 import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';

@@ -1795,7 +1795,7 @@ describe('BaseSnapExecutor', () => {
   it('handles `SnapError`s', async () => {
     const CODE = `
       module.exports.onRpcRequest = () => {
-        throw new SnapError('foo');
+        throw new SnapError('Snap error message.');
       };
     `;
 
@@ -1825,9 +1825,15 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       error: {
         code: -32603,
-        message: 'foo',
+        message: 'Handled Snap Error',
         data: {
-          originalError: {},
+          cause: {
+            code: -32603,
+            message: 'Snap error message.',
+            data: {
+              stack: expect.any(String),
+            },
+          },
         },
       },
     });

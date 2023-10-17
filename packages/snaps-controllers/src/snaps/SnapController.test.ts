@@ -2149,6 +2149,90 @@ describe('SnapController', () => {
 
       snapController.destroy();
     });
+
+    it('crashes the Snap on unhandled errors', async () => {
+      const { manifest, sourceCode, svgIcon } = getSnapFiles({
+        updateChecksum: true,
+        sourceCode: `
+          module.exports.onRpcRequest = () => {
+            throw new Error('foo');
+          };
+        `,
+      });
+
+      const [snapController] = getSnapControllerWithEES(
+        getSnapControllerWithEESOptions({
+          detectSnapLocation: loopbackDetect({
+            manifest,
+            files: [sourceCode, svgIcon as VirtualFile],
+          }),
+        }),
+      );
+
+      // By installing we also indirectly test that the unpacking of the file works.
+      await snapController.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: {},
+      });
+
+      await expect(
+        snapController.handleRequest({
+          origin: MOCK_ORIGIN,
+          snapId: MOCK_SNAP_ID,
+          handler: HandlerType.OnRpcRequest,
+          request: {
+            jsonrpc: '2.0',
+            method: 'foo',
+            params: {},
+          },
+        }),
+      ).rejects.toThrow('foo');
+
+      expect(snapController.state.snaps[MOCK_SNAP_ID].status).toBe('crashed');
+
+      snapController.destroy();
+    });
+
+    it('does not crash the Snap on handled errors', async () => {
+      const { manifest, sourceCode, svgIcon } = getSnapFiles({
+        updateChecksum: true,
+        sourceCode: `
+          module.exports.onRpcRequest = () => {
+            throw new SnapError('foo');
+          };
+        `,
+      });
+
+      const [snapController] = getSnapControllerWithEES(
+        getSnapControllerWithEESOptions({
+          detectSnapLocation: loopbackDetect({
+            manifest,
+            files: [sourceCode, svgIcon as VirtualFile],
+          }),
+        }),
+      );
+
+      // By installing we also indirectly test that the unpacking of the file works.
+      await snapController.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: {},
+      });
+
+      await expect(
+        snapController.handleRequest({
+          origin: MOCK_ORIGIN,
+          snapId: MOCK_SNAP_ID,
+          handler: HandlerType.OnRpcRequest,
+          request: {
+            jsonrpc: '2.0',
+            method: 'foo',
+            params: {},
+          },
+        }),
+      ).rejects.toThrow('foo');
+
+      expect(snapController.state.snaps[MOCK_SNAP_ID].status).toBe('running');
+
+      snapController.destroy();
+    });
   });
 
   describe('installSnaps', () => {

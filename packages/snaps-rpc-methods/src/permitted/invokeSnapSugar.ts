@@ -1,15 +1,15 @@
-import { rpcErrors } from '@metamask/rpc-errors';
 import type {
-  PermittedHandlerExport,
-  JsonRpcRequest,
-  JsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
-} from '@metamask/types';
+  JsonRpcEngineNextCallback,
+} from '@metamask/json-rpc-engine';
+import type { PermittedHandlerExport } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
+import type { Json, JsonRpcRequest } from '@metamask/utils';
 import { isObject } from '@metamask/utils';
 
 export type InvokeSnapSugarArgs = {
   snapId: string;
-  request: Record<string, unknown>;
+  request: Record<string, Json>;
 };
 
 /**
@@ -17,8 +17,8 @@ export type InvokeSnapSugarArgs = {
  */
 export const invokeSnapSugarHandler: PermittedHandlerExport<
   void,
-  JsonRpcRequest<unknown>,
-  unknown
+  InvokeSnapSugarArgs,
+  Json
 > = {
   methodNames: ['wallet_invokeSnap'],
   implementation: invokeSnapSugar,
@@ -38,7 +38,7 @@ export const invokeSnapSugarHandler: PermittedHandlerExport<
  * @throws If the params are invalid.
  */
 export function invokeSnapSugar(
-  req: JsonRpcRequest<unknown>,
+  req: JsonRpcRequest<InvokeSnapSugarArgs>,
   _res: unknown,
   next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,

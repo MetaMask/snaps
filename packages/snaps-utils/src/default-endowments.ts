@@ -30,6 +30,7 @@ export const DEFAULT_ENDOWMENTS: readonly string[] = Object.freeze([
   'BigUint64Array',
   'DataView',
   'ArrayBuffer',
+  'SnapError',
   // Used by fetch, but also as API for some packages that don't do network connections
   // https://github.com/MetaMask/snaps-monorepo/issues/662
   // https://github.com/MetaMask/snaps-monorepo/discussions/678

@@ -2,8 +2,8 @@ import type {
   PermissionSpecificationBuilder,
   PermissionType,
   RestrictedMethodOptions,
+  PermittedHandlerExport,
 } from '@metamask/permission-controller';
-import type { PermittedHandlerExport } from '@metamask/types';
 import type { JsonRpcParams } from '@metamask/utils';
 
 import type { methodHandlers } from './permitted';

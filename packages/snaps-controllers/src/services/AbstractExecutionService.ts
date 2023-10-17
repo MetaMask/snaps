@@ -1,6 +1,7 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import type { BasePostMessageStream } from '@metamask/post-message-stream';
+import { JsonRpcError } from '@metamask/rpc-errors';
 import type { SnapRpcHook, SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { SNAP_STREAM_NAMES, logError } from '@metamask/snaps-utils';
 import type {
@@ -9,12 +10,7 @@ import type {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
-import {
-  Duration,
-  hasProperty,
-  isJsonRpcNotification,
-  isObject,
-} from '@metamask/utils';
+import { Duration, isJsonRpcNotification, isObject } from '@metamask/utils';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import { pipeline } from 'stream';
@@ -387,16 +383,11 @@ export abstract class AbstractExecutionService<WorkerType>
     );
 
     if (response.error) {
-      const error = new ExecutionEnvironmentError(response.error.message);
-      if (
-        isObject(response.error.data) &&
-        hasProperty(response.error.data, 'cause') &&
-        response.error.data.cause !== null
-      ) {
-        error.cause = response.error.data.cause;
-      }
-
-      throw error;
+      throw new JsonRpcError(
+        response.error.code,
+        response.error.message,
+        response.error.data,
+      );
     }
 
     return response.result;

@@ -360,6 +360,7 @@
     },
     "external:../snaps-utils/src/errors.ts": {
       "packages": {
+        "@metamask/rpc-errors": true,
         "@metamask/utils": true
       }
     },

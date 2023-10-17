@@ -15,6 +15,7 @@ import {
   logError,
   SNAP_EXPORTS,
   getErrorMessage,
+  UnhandledSnapError,
 } from '@metamask/snaps-utils';
 import type {
   JsonRpcNotification,
@@ -69,7 +70,7 @@ const fallbackError = {
   message: 'Execution Environment Error',
 };
 
-const unhandledError = ethErrors.rpc.internal({
+const unhandledError = rpcErrors.internal<Json>({
   message: 'Unhandled Snap Error',
 });
 
@@ -155,25 +156,29 @@ export class BaseSnapExecutor {
         }
 
         // TODO: fix handler args type cast
-        let result = await this.executeInSnapContext(target, () =>
-          handler(args as any),
-        );
-
-        // The handler might not return anything, but undefined is not valid JSON.
-        if (result === undefined) {
-          result = null;
-        }
-
-        // /!\ Always return only sanitized JSON to prevent security flaws. /!\
         try {
-          return getSafeJson(result);
-        } catch (error) {
-          throw rpcErrors.internal(
-            `Received non-JSON-serializable value: ${error.message.replace(
-              /^Assertion failed: /u,
-              '',
-            )}`,
+          let result = await this.executeInSnapContext(target, () =>
+            handler(args as any),
           );
+
+          // The handler might not return anything, but undefined is not valid JSON.
+          if (result === undefined) {
+            result = null;
+          }
+
+          // /!\ Always return only sanitized JSON to prevent security flaws. /!\
+          try {
+            return getSafeJson(result);
+          } catch (error) {
+            throw rpcErrors.internal(
+              `Received non-JSON-serializable value: ${error.message.replace(
+                /^Assertion failed: /u,
+                '',
+              )}`,
+            );
+          }
+        } catch (error) {
+          throw new UnhandledSnapError(error);
         }
       },
       this.onTerminate.bind(this),
