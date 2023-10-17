@@ -28,5 +28,6 @@ export function encodeAuxiliaryFile(
   if (encoding === AuxiliaryFileEncoding.Utf8) {
     return bytesToString(decoded);
   }
+
   return bytesToHex(decoded);
 }
