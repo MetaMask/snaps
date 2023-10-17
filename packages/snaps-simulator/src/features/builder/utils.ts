@@ -86,6 +86,7 @@ function getComponentArgs(component: Component): string {
   switch (component.type) {
     case NodeType.Panel:
       return component.children.map(getComponentArgs).join(',\n');
+    case NodeType.Link:
     case NodeType.Text:
     case NodeType.Heading:
     case NodeType.Copyable:

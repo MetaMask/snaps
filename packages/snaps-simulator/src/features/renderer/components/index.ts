@@ -5,3 +5,4 @@ export * from './Panel';
 export * from './Spinner';
 export * from './Text';
 export * from './Image';
+export * from './Link';

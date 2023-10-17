@@ -2112,12 +2112,10 @@ describe('SnapController', () => {
 
       rootMessenger.registerActionHandler(
         'PhishingController:testOrigin',
-        async () =>
-          // @ts-expect-error will deal with it later.
-          Promise.resolve({
-            result: true,
-            type: 'fuzzy',
-          }),
+        () => ({
+          result: true,
+          type: 'fuzzy',
+        }),
       );
 
       await expect(

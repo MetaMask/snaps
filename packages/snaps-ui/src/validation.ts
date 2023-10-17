@@ -59,8 +59,7 @@ export const url = () => {
   });
 };
 
-const LINK_REGEX =
-  /(?:https:\/\/|mailto:).?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9@:%_+.~#?&/=]*)/iu;
+const LINK_REGEX = /(?<protocol>[a-z]+:\/\/)?(?<host>\S+?(?:\.\S+)+)/giu;
 
 /**
  * Searches for {@link Links} components and checks that the URL they are trying to

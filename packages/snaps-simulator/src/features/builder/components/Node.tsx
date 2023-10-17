@@ -14,6 +14,7 @@ export const EDITABLE_NODES = [
   NodeType.Text,
   NodeType.Copyable,
   NodeType.Image,
+  NodeType.Link,
 ];
 
 type NodeProps = {
