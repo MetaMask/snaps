@@ -18,6 +18,7 @@ export const GetFileArgsStruct = object({
     union([
       enumValue(AuxiliaryFileEncoding.Base64),
       enumValue(AuxiliaryFileEncoding.Hex),
+      enumValue(AuxiliaryFileEncoding.Utf8),
     ]),
   ),
 });

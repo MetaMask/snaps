@@ -1,6 +1,5 @@
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { OnRpcRequestHandler } from '@metamask/snaps-types';
-import { bytesToString, hexToBytes } from '@metamask/utils';
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
@@ -9,6 +8,8 @@ import { bytesToString, hexToBytes } from '@metamask/utils';
  * - `getFile`: Returns a statically defined JSON file. This uses the
  * `snap_getFile` JSON-RPC method to get this file and parses it before returning.
  * - `getFileInBase64`: Returns a statically defined JSON file in Base64.
+ * This uses the `snap_getFile` JSON-RPC method to get this file returns it directly.
+ * - `getFileInHex`: Returns a statically defined JSON file in hexadecimal.
  * This uses the `snap_getFile` JSON-RPC method to get this file returns it directly.
  *
  * @param params - The request parameters.
@@ -21,12 +22,11 @@ import { bytesToString, hexToBytes } from '@metamask/utils';
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'getFile': {
-      const fileInHexadecimal = await snap.request({
+      const fileInPlaintext = await snap.request({
         method: 'snap_getFile',
-        params: { path: './src/foo.json', encoding: 'hex' },
+        params: { path: './src/foo.json', encoding: 'utf8' },
       });
-      const bytes = hexToBytes(fileInHexadecimal);
-      return JSON.parse(bytesToString(bytes));
+      return JSON.parse(fileInPlaintext);
     }
 
     case 'getFileInBase64': {
@@ -34,6 +34,13 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         method: 'snap_getFile',
         // Encoding is optional and defaults to base64
         params: { path: './src/foo.json' },
+      });
+    }
+
+    case 'getFileInHex': {
+      return await snap.request({
+        method: 'snap_getFile',
+        params: { path: './src/foo.json', encoding: 'hex' },
       });
     }
 
