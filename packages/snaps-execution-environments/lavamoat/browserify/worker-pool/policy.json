@@ -167,6 +167,7 @@
     "external:../snaps-utils/src/handlers.ts": {
       "packages": {
         "external:../snaps-ui/src/index.ts": true,
+        "external:../snaps-utils/src/handler-types.ts": true,
         "superstruct": true
       }
     },
@@ -205,7 +206,6 @@
       },
       "packages": {
         "@metamask/utils": true,
-        "external:../snaps-utils/src/handlers.ts": true,
         "superstruct": true
       }
     },
