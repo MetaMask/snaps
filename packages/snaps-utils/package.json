@@ -66,8 +66,8 @@
     "lint:dependencies": "depcheck"
   },
   "dependencies": {
-    "@babel/core": "^7.20.12",
-    "@babel/types": "^7.18.7",
+    "@babel/core": "^7.23.2",
+    "@babel/types": "^7.23.0",
     "@metamask/base-controller": "^3.2.0",
     "@metamask/key-tree": "^9.0.0",
     "@metamask/permission-controller": "^4.1.2",

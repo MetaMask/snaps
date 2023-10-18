@@ -36,9 +36,9 @@
     "@metamask/snaps-types": "workspace:^"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.12",
-    "@babel/preset-env": "^7.20.12",
-    "@babel/preset-typescript": "^7.20.12",
+    "@babel/core": "^7.23.2",
+    "@babel/preset-env": "^7.23.2",
+    "@babel/preset-typescript": "^7.23.2",
     "@jest/globals": "^29.5.0",
     "@lavamoat/allow-scripts": "^2.5.1",
     "@metamask/auto-changelog": "^3.3.0",

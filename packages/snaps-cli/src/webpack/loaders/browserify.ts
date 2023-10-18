@@ -55,10 +55,10 @@ const loader: LoaderDefinitionFunction<LegacyOptions> = async function (
       ],
       plugins: [
         require('@babel/plugin-transform-runtime'),
-        require('@babel/plugin-proposal-class-properties'),
-        require('@babel/plugin-proposal-private-methods'),
-        require('@babel/plugin-proposal-class-static-block'),
-        require('@babel/plugin-proposal-private-property-in-object'),
+        require('@babel/plugin-transform-class-properties'),
+        require('@babel/plugin-transform-private-methods'),
+        require('@babel/plugin-transform-class-static-block'),
+        require('@babel/plugin-transform-private-property-in-object'),
       ],
       ...(babelifyOptions as any),
     });
