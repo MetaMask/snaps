@@ -3,40 +3,14 @@ import type { Json, JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 import type { Infer } from 'superstruct';
 import { literal, object, optional, union } from 'superstruct';
 
+import type { SnapHandler } from './handler-types';
+import { HandlerType } from './handler-types';
 import type { AccountAddress, Caip2ChainId } from './namespace';
 
-export enum HandlerType {
-  OnRpcRequest = 'onRpcRequest',
-  OnTransaction = 'onTransaction',
-  OnCronjob = 'onCronjob',
-  OnInstall = 'onInstall',
-  OnUpdate = 'onUpdate',
-  OnNameLookup = 'onNameLookup',
-  OnKeyringRequest = 'onKeyringRequest',
-}
-
-type SnapHandler = {
-  /**
-   * The type of handler.
-   */
-  type: HandlerType;
-
-  /**
-   * Whether the handler is required, i.e., whether the request will fail if the
-   * handler is called, but the snap does not export it.
-   *
-   * This is primarily used for the lifecycle handlers, which are optional.
-   */
-  required: boolean;
-
-  /**
-   * Validate the given snap export. This should return a type guard for the
-   * handler type.
-   *
-   * @param snapExport - The export to validate.
-   * @returns Whether the export is valid.
-   */
-  validator: (snapExport: unknown) => boolean;
+export type SnapRpcHookArgs = {
+  origin: string;
+  handler: HandlerType;
+  request: Record<string, unknown>;
 };
 
 export const SNAP_EXPORTS = {
