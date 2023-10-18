@@ -507,10 +507,14 @@ describe('SnapController', () => {
         });
       }),
       new Promise<void>((resolve) => {
-        messenger.subscribe('SnapController:snapInstalled', (truncatedSnap) => {
-          expect(truncatedSnap).toStrictEqual(getTruncatedSnap());
-          resolve();
-        });
+        messenger.subscribe(
+          'SnapController:snapInstalled',
+          (truncatedSnap, origin) => {
+            expect(truncatedSnap).toStrictEqual(getTruncatedSnap());
+            expect(origin).toStrictEqual(MOCK_ORIGIN);
+            resolve();
+          },
+        );
       }),
     ]);
 
@@ -3912,6 +3916,11 @@ describe('SnapController', () => {
       );
 
       expect(onSnapUpdated).toHaveBeenCalledTimes(1);
+      expect(onSnapUpdated).toHaveBeenCalledWith(
+        newSnapTruncated,
+        '1.0.0',
+        MOCK_ORIGIN,
+      );
       expect(onSnapAdded).toHaveBeenCalledTimes(1);
 
       controller.destroy();
@@ -5993,6 +6002,7 @@ describe('SnapController', () => {
         'SnapController:snapUpdated',
         getTruncatedSnap(),
         '0.9.0',
+        MOCK_ORIGIN,
       );
 
       await new Promise((resolve) => setTimeout(resolve, 10));
@@ -6045,7 +6055,11 @@ describe('SnapController', () => {
         () => false,
       );
 
-      messenger.publish('SnapController:snapInstalled', getTruncatedSnap());
+      messenger.publish(
+        'SnapController:snapInstalled',
+        getTruncatedSnap(),
+        MOCK_ORIGIN,
+      );
 
       await new Promise((resolve) => setTimeout(resolve, 10));
 
@@ -6093,6 +6107,7 @@ describe('SnapController', () => {
         'SnapController:snapUpdated',
         getTruncatedSnap(),
         '0.9.0',
+        MOCK_ORIGIN,
       );
       await new Promise((resolve) => setTimeout(resolve, 10));
 

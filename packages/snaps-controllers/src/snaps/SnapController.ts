@@ -396,7 +396,7 @@ export type SnapBlocked = {
  */
 export type SnapInstalled = {
   type: `${typeof controllerName}:snapInstalled`;
-  payload: [snap: TruncatedSnap];
+  payload: [snap: TruncatedSnap, origin: string];
 };
 
 /**
@@ -429,7 +429,7 @@ export type SnapUnblocked = {
  */
 export type SnapUpdated = {
   type: `${typeof controllerName}:snapUpdated`;
-  payload: [snap: TruncatedSnap, oldVersion: string];
+  payload: [snap: TruncatedSnap, oldVersion: string, origin: string];
 };
 
 /**
@@ -1720,6 +1720,7 @@ export class SnapController extends BaseController<
         this.messagingSystem.publish(
           `SnapController:snapInstalled`,
           this.getTruncatedExpect(snapId),
+          origin,
         ),
       );
 
@@ -1728,6 +1729,7 @@ export class SnapController extends BaseController<
           `SnapController:snapUpdated`,
           this.getTruncatedExpect(snapId),
           oldVersion,
+          origin,
         ),
       );
 
@@ -2035,6 +2037,7 @@ export class SnapController extends BaseController<
           'SnapController:snapUpdated',
           truncatedSnap,
           snap.version,
+          origin,
         );
       }
 
