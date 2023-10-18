@@ -1,4 +1,9 @@
-import { serializeCause } from '@metamask/rpc-errors';
+import {
+  errorCodes,
+  JsonRpcError as RpcError,
+  serializeCause,
+} from '@metamask/rpc-errors';
+import type { OptionalDataWithOptionalCause } from '@metamask/rpc-errors/dist/utils';
 import type { Json, JsonRpcError } from '@metamask/utils';
 import {
   hasProperty,
@@ -360,10 +365,55 @@ export function isSerializedSnapError(
  * @returns Whether the object is a `WrappedSnapError`.
  */
 export function isSnapErrorWrapper(
-  error: JsonRpcError,
+  error: unknown,
 ): error is SerializedSnapErrorWrapper {
   return (
+    isJsonRpcError(error) &&
     error.code === SNAP_ERROR_WRAPPER_CODE &&
     error.message === SNAP_ERROR_WRAPPER_MESSAGE
   );
+}
+
+/**
+ * Attempt to unwrap an unknown error to a `JsonRpcError`. This function will
+ * try to get the error code, message, and data from the error, and return a
+ * `JsonRpcError` with those properties.
+ *
+ * @param error - The error to unwrap.
+ * @returns A tuple containing the unwrapped error and a boolean indicating
+ * whether the error was handled.
+ */
+export function unwrapError(
+  error: unknown,
+): [error: RpcError<OptionalDataWithOptionalCause>, isHandled: boolean] {
+  // This logic is a bit complicated, but it's necessary to handle all the
+  // different types of errors that can be thrown by a Snap.
+
+  // If the error is a wrapped Snap error, unwrap it.
+  if (isSnapErrorWrapper(error)) {
+    // The wrapped error can be a JSON-RPC error, or an unknown error. If it's
+    // a JSON-RPC error, we can unwrap it further.
+    if (isJsonRpcError(error.data.cause)) {
+      // If the JSON-RPC error is a wrapped Snap error, unwrap it further.
+      if (isSerializedSnapError(error.data.cause)) {
+        const { code, message, data } = error.data.cause.data.cause;
+        return [new RpcError(code, message, data), true];
+      }
+
+      // Otherwise, we use the original JSON-RPC error.
+      const { code, message, data } = error.data.cause;
+      return [new RpcError(code, message, data), true];
+    }
+
+    // Otherwise, we throw an internal error with the wrapped error as the
+    // message.
+    return [
+      new RpcError(errorCodes.rpc.internal, getErrorMessage(error.data.cause)),
+      false,
+    ];
+  }
+
+  // If the error is not a wrapped error, we don't know how to handle it, so we
+  // throw an internal error with the error as the message.
+  return [new RpcError(errorCodes.rpc.internal, getErrorMessage(error)), false];
 }

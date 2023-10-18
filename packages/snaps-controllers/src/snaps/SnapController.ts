@@ -45,7 +45,6 @@ import type {
   ValidatedSnapId,
 } from '@metamask/snaps-utils';
 import {
-  SnapError as ExecutionEnvironmentSnapError,
   assertIsSnapManifest,
   assertIsValidSnapId,
   AuxiliaryFileEncoding,
@@ -55,7 +54,6 @@ import {
   getErrorMessage,
   HandlerType,
   isOriginAllowed,
-  isSnapErrorWrapper,
   logError,
   normalizeRelative,
   resolveVersionRange,
@@ -63,7 +61,7 @@ import {
   SnapStatus,
   SnapStatusEvents,
   validateFetchedSnap,
-  UnhandledSnapError,
+  unwrapError,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
@@ -74,7 +72,6 @@ import {
   gtVersion,
   hasProperty,
   inMilliseconds,
-  isJsonRpcError,
   isNonEmptyArray,
   isValidSemVerRange,
   satisfiesVersionRange,
@@ -2604,26 +2601,13 @@ export class SnapController extends BaseController<
         this.#recordSnapRpcRequestFinish(snapId, request.id);
         return result;
       } catch (error) {
-        // First we check if the error is a SnapErrorWrapper, which means that
-        // the error was thrown by the Snap itself.
-        if (isSnapErrorWrapper(error)) {
-          // If the error is a SnapErrorWrapper, we can check if it is a
-          // SnapError or JSON-RPC error, which means that the Snap threw an
-          // error in response to a request.
-          if (isJsonRpcError(error.data.cause)) {
-            throw new ExecutionEnvironmentSnapError(error.data.cause);
-          }
+        const [jsonRpcError, handled] = unwrapError(error);
 
-          // Otherwise, the Snap threw an error outside of a request, so we
-          // need to crash the Snap.
+        if (!handled) {
           await this.stopSnap(snapId, SnapStatusEvents.Crash);
-          throw new UnhandledSnapError(error.data.cause);
         }
 
-        // If the error is not a SnapErrorWrapper, then it is an unknown error
-        // and we need to crash the Snap.
-        await this.stopSnap(snapId, SnapStatusEvents.Crash);
-        throw error;
+        throw jsonRpcError;
       }
     };
 
