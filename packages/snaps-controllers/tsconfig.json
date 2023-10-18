@@ -6,7 +6,7 @@
   "include": ["./src", "scripts"],
   "references": [
     { "path": "../snaps-execution-environments" },
-    { "path": "../rpc-methods" },
+    { "path": "../snaps-rpc-methods" },
     { "path": "../snaps-utils" }
   ]
 }

@@ -5,7 +5,7 @@
 
 import type { MatcherFunction } from '@jest/expect';
 import { expect } from '@jest/globals';
-import type { NotificationType } from '@metamask/rpc-methods';
+import type { NotificationType } from '@metamask/snaps-rpc-methods';
 import type { Component } from '@metamask/snaps-ui';
 import type { EnumToUnion } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';

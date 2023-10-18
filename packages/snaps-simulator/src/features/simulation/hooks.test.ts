@@ -1,4 +1,4 @@
-import { DialogType } from '@metamask/rpc-methods';
+import { DialogType } from '@metamask/snaps-rpc-methods';
 import { text } from '@metamask/snaps-ui';
 import {
   AuxiliaryFileEncoding,

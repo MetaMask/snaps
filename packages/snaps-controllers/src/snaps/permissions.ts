@@ -6,7 +6,7 @@ import {
   caveatMappers,
   restrictedMethodPermissionBuilders,
   selectHooks,
-} from '@metamask/rpc-methods';
+} from '@metamask/snaps-rpc-methods';
 import type { SnapPermissions } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
 

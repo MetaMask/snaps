@@ -7,7 +7,7 @@
   },
   "include": ["./src", "webpack.config.ts", "package.json"],
   "references": [
-    { "path": "../rpc-methods" },
+    { "path": "../snaps-rpc-methods" },
     { "path": "../snaps-controllers" },
     { "path": "../snaps-utils" },
     { "path": "../snaps-ui" }
