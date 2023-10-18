@@ -39,7 +39,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:*, @babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.23.2":
+"@babel/core@npm:7.23.2":
   version: 7.23.2
   resolution: "@babel/core@npm:7.23.2"
   dependencies:
@@ -59,6 +59,29 @@ __metadata:
     json5: ^2.2.3
     semver: ^6.3.1
   checksum: 003897718ded16f3b75632d63cd49486bf67ff206cc7ebd1a10d49e2456f8d45740910d5ec7e42e3faf0deec7a2e96b1a02e766d19a67a8309053f0d4e57c0fe
+  languageName: node
+  linkType: hard
+
+"@babel/core@patch:@babel/core@npm%3A7.23.2#./.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch::locator=root%40workspace%3A.":
+  version: 7.23.2
+  resolution: "@babel/core@patch:@babel/core@npm%3A7.23.2#./.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch::version=7.23.2&hash=a78815&locator=root%40workspace%3A."
+  dependencies:
+    "@ampproject/remapping": ^2.2.0
+    "@babel/code-frame": ^7.22.13
+    "@babel/generator": ^7.23.0
+    "@babel/helper-compilation-targets": ^7.22.15
+    "@babel/helper-module-transforms": ^7.23.0
+    "@babel/helpers": ^7.23.2
+    "@babel/parser": ^7.23.0
+    "@babel/template": ^7.22.15
+    "@babel/traverse": ^7.23.2
+    "@babel/types": ^7.23.0
+    convert-source-map: ^2.0.0
+    debug: ^4.1.0
+    gensync: ^1.0.0-beta.2
+    json5: ^2.2.3
+    semver: ^6.3.1
+  checksum: 70a85307b331b0803aa60a1f7e5cb799c79c9d3d49c725bb38fedd999a9f83bef7755385e60b4440e514ea8642f149543bb35ae03d3908bda030fd52e8eb122e
   languageName: node
   linkType: hard
 
