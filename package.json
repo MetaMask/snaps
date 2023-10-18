@@ -49,7 +49,6 @@
     ]
   },
   "resolutions": {
-    "@babel/core": "patch:@babel/core@npm%3A7.21.0#./.yarn/patches/@babel-core-npm-7.21.0-fb3817b0e5.patch",
     "@lavamoat/lavapack@^5.4.1": "patch:@lavamoat/lavapack@npm%3A5.4.1#./.yarn/patches/@lavamoat-lavapack-npm-5.4.1-2548b3e225.patch",
     "@types/glob@*": "patch:@types/glob@npm%3A7.1.4#./.yarn/patches/@types-glob-npm-7.1.4-d45247eaa2.patch",
     "@types/glob@^7.1.1": "patch:@types/glob@npm%3A7.1.4#./.yarn/patches/@types-glob-npm-7.1.4-d45247eaa2.patch",
