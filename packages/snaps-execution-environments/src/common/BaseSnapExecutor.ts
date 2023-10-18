@@ -15,7 +15,7 @@ import {
   logError,
   SNAP_EXPORTS,
   getErrorMessage,
-  UnhandledSnapError,
+  WrappedSnapError,
 } from '@metamask/snaps-utils';
 import type {
   JsonRpcNotification,
@@ -178,7 +178,7 @@ export class BaseSnapExecutor {
             );
           }
         } catch (error) {
-          throw new UnhandledSnapError(error);
+          throw new WrappedSnapError(error);
         }
       },
       this.onTerminate.bind(this),

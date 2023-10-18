@@ -1,4 +1,4 @@
-import { rpcErrors } from '@metamask/rpc-errors';
+import { errorCodes, JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 
 import {
   getErrorMessage,
@@ -7,7 +7,8 @@ import {
   SNAP_ERROR_WRAPPER_CODE,
   SNAP_ERROR_WRAPPER_MESSAGE,
   SnapError,
-  UnhandledSnapError,
+  unwrapError,
+  WrappedSnapError,
 } from './errors';
 
 describe('getErrorMessage', () => {
@@ -30,10 +31,10 @@ describe('getErrorMessage', () => {
 describe('SnapErrorWrapper', () => {
   it('wraps an error', () => {
     const error = new Error('foo');
-    const wrapped = new UnhandledSnapError(error);
+    const wrapped = new WrappedSnapError(error);
 
     expect(wrapped).toBeInstanceOf(Error);
-    expect(wrapped).toBeInstanceOf(UnhandledSnapError);
+    expect(wrapped).toBeInstanceOf(WrappedSnapError);
     expect(wrapped.message).toBe('foo');
     expect(wrapped.stack).toBeDefined();
     expect(wrapped.toJSON()).toStrictEqual({
@@ -48,12 +49,33 @@ describe('SnapErrorWrapper', () => {
     });
   });
 
-  it('wraps a Snap error', () => {
-    const error = new SnapError('foo');
-    const wrapped = new UnhandledSnapError(error);
+  it('wraps a JSON-RPC error', () => {
+    const error = new JsonRpcError(-1, 'foo');
+    const wrapped = new WrappedSnapError(error);
 
     expect(wrapped).toBeInstanceOf(Error);
-    expect(wrapped).toBeInstanceOf(UnhandledSnapError);
+    expect(wrapped).toBeInstanceOf(WrappedSnapError);
+    expect(wrapped.message).toBe('foo');
+    expect(wrapped.stack).toBeDefined();
+    expect(wrapped.toJSON()).toStrictEqual({
+      code: SNAP_ERROR_WRAPPER_CODE,
+      message: SNAP_ERROR_WRAPPER_MESSAGE,
+      data: {
+        cause: {
+          code: -1,
+          message: 'foo',
+          stack: error.stack,
+        },
+      },
+    });
+  });
+
+  it('wraps a Snap error', () => {
+    const error = new SnapError('foo');
+    const wrapped = new WrappedSnapError(error);
+
+    expect(wrapped).toBeInstanceOf(Error);
+    expect(wrapped).toBeInstanceOf(WrappedSnapError);
     expect(wrapped.message).toBe('foo');
     expect(wrapped.stack).toBeDefined();
     expect(wrapped.toJSON()).toStrictEqual({
@@ -89,10 +111,16 @@ describe('SnapError', () => {
     expect(error.data).toStrictEqual({});
     expect(error.stack).toBeDefined();
     expect(error.toJSON()).toStrictEqual({
-      code: -32603,
-      message: 'foo',
+      code: -31002,
+      message: 'Snap Error',
       data: {
-        stack: error.stack,
+        cause: {
+          code: -32603,
+          message: 'foo',
+          data: {
+            stack: error.stack,
+          },
+        },
       },
     });
   });
@@ -110,10 +138,16 @@ describe('SnapError', () => {
     expect(error.data).toStrictEqual({});
     expect(error.stack).toBeDefined();
     expect(error.toJSON()).toStrictEqual({
-      code: -32000,
-      message: 'foo',
+      code: -31002,
+      message: 'Snap Error',
       data: {
-        stack: error.stack,
+        cause: {
+          code: -32000,
+          message: 'foo',
+          data: {
+            stack: error.stack,
+          },
+        },
       },
     });
   });
@@ -145,11 +179,17 @@ describe('SnapError', () => {
     expect(error.data).toStrictEqual({ foo: 'bar' });
     expect(error.stack).toBeDefined();
     expect(error.toJSON()).toStrictEqual({
-      code: -32000,
-      message: 'foo',
+      code: -31002,
+      message: 'Snap Error',
       data: {
-        foo: 'bar',
-        stack: error.stack,
+        cause: {
+          code: -32000,
+          message: 'foo',
+          data: {
+            foo: 'bar',
+            stack: error.stack,
+          },
+        },
       },
     });
   });
@@ -164,10 +204,16 @@ describe('SnapError', () => {
     expect(error.data).toStrictEqual({});
     expect(error.stack).toBeDefined();
     expect(error.toJSON()).toStrictEqual({
-      code: -32603,
-      message: 'foo',
+      code: -31002,
+      message: 'Snap Error',
       data: {
-        stack: error.stack,
+        cause: {
+          code: -32603,
+          message: 'foo',
+          data: {
+            stack: error.stack,
+          },
+        },
       },
     });
   });
@@ -182,11 +228,17 @@ describe('SnapError', () => {
     expect(error.data).toStrictEqual({ foo: 'bar' });
     expect(error.stack).toBeDefined();
     expect(error.toJSON()).toStrictEqual({
-      code: -32603,
-      message: 'foo',
+      code: -31002,
+      message: 'Snap Error',
       data: {
-        foo: 'bar',
-        stack: error.stack,
+        cause: {
+          code: -32603,
+          message: 'foo',
+          data: {
+            foo: 'bar',
+            stack: error.stack,
+          },
+        },
       },
     });
   });
@@ -201,10 +253,16 @@ describe('SnapError', () => {
     expect(error.data).toStrictEqual({});
     expect(error.stack).toBeDefined();
     expect(error.toJSON()).toStrictEqual({
-      code: -32602,
-      message: 'foo',
+      code: -31002,
+      message: 'Snap Error',
       data: {
-        stack: error.stack,
+        cause: {
+          code: -32602,
+          message: 'foo',
+          data: {
+            stack: error.stack,
+          },
+        },
       },
     });
   });
@@ -221,11 +279,17 @@ describe('SnapError', () => {
     expect(error.data).toStrictEqual({ foo: 'bar' });
     expect(error.stack).toBeDefined();
     expect(error.toJSON()).toStrictEqual({
-      code: -32602,
-      message: 'foo',
+      code: -31002,
+      message: 'Snap Error',
       data: {
-        foo: 'bar',
-        stack: error.stack,
+        cause: {
+          code: -32602,
+          message: 'foo',
+          data: {
+            foo: 'bar',
+            stack: error.stack,
+          },
+        },
       },
     });
   });
@@ -243,10 +307,16 @@ describe('SnapError', () => {
     expect(error.data).toStrictEqual({});
     expect(error.stack).toBeDefined();
     expect(error.toJSON()).toStrictEqual({
-      code: 0,
-      message: 'foo',
+      code: -31002,
+      message: 'Snap Error',
       data: {
-        stack: error.stack,
+        cause: {
+          code: 0,
+          message: 'foo',
+          data: {
+            stack: error.stack,
+          },
+        },
       },
     });
   });
@@ -267,11 +337,17 @@ describe('SnapError', () => {
     expect(error.data).toStrictEqual({ foo: 'bar' });
     expect(error.stack).toBeDefined();
     expect(error.toJSON()).toStrictEqual({
-      code: 0,
-      message: 'foo',
+      code: -31002,
+      message: 'Snap Error',
       data: {
-        foo: 'bar',
-        stack: error.stack,
+        cause: {
+          code: 0,
+          message: 'foo',
+          data: {
+            foo: 'bar',
+            stack: error.stack,
+          },
+        },
       },
     });
   });
@@ -296,13 +372,93 @@ describe('SnapError', () => {
     expect(error.data).toStrictEqual({ foo: 'bar', bar: 'qux' });
     expect(error.stack).toBeDefined();
     expect(error.toJSON()).toStrictEqual({
-      code: 0,
-      message: 'foo',
+      code: -31002,
+      message: 'Snap Error',
       data: {
-        foo: 'bar',
-        bar: 'qux',
-        stack: error.stack,
+        cause: {
+          code: 0,
+          message: 'foo',
+          data: {
+            foo: 'bar',
+            bar: 'qux',
+            stack: error.stack,
+          },
+        },
       },
     });
+  });
+});
+
+describe('unwrapError', () => {
+  it('unwraps a wrapped Snap error with an unknown error', () => {
+    const error = new Error('foo');
+    const wrapped = new WrappedSnapError(error).toJSON();
+
+    const [unwrappedError, handled] = unwrapError(wrapped);
+
+    expect(unwrappedError).toBeInstanceOf(Error);
+    expect(unwrappedError.code).toBe(errorCodes.rpc.internal);
+    expect(unwrappedError.message).toBe('foo');
+    expect(unwrappedError.stack).toBeDefined();
+    expect(handled).toBe(false);
+  });
+
+  it('unwraps a wrapped Snap error with a JSON-RPC error', () => {
+    const error = new JsonRpcError(-1, 'foo');
+    const wrapped = new WrappedSnapError(error).toJSON();
+
+    const [unwrappedError, handled] = unwrapError(wrapped);
+
+    expect(unwrappedError).toBeInstanceOf(Error);
+    expect(unwrappedError.code).toBe(-1);
+    expect(unwrappedError.message).toBe('foo');
+    expect(unwrappedError.stack).toBeDefined();
+    expect(handled).toBe(true);
+  });
+
+  it('unwraps a wrapped Snap error with a wrapped Snap error', () => {
+    const error = new SnapError('foo');
+    const wrapped = new WrappedSnapError(error).toJSON();
+
+    const [unwrappedError, handled] = unwrapError(wrapped);
+
+    expect(unwrappedError).toBeInstanceOf(Error);
+    expect(unwrappedError.code).toBe(-32603);
+    expect(unwrappedError.message).toBe('foo');
+    expect(unwrappedError.stack).toBeDefined();
+    expect(handled).toBe(true);
+  });
+
+  it('unwraps a wrapped Snap error with a wrapped Snap error and code', () => {
+    const error = new SnapError({
+      message: 'foo',
+      code: -32000,
+    });
+
+    const wrapped = new WrappedSnapError(error).toJSON();
+    const [unwrappedError, handled] = unwrapError(wrapped);
+
+    expect(unwrappedError).toBeInstanceOf(Error);
+    expect(unwrappedError.code).toBe(-32000);
+    expect(unwrappedError.message).toBe('foo');
+    expect(unwrappedError.stack).toBeDefined();
+    expect(handled).toBe(true);
+  });
+
+  it('unwraps a wrapped Snap error with a wrapped Snap error and data', () => {
+    const error = new SnapError('foo', { foo: 'bar' });
+
+    const wrapped = new WrappedSnapError(error).toJSON();
+    const [unwrappedError, handled] = unwrapError(wrapped);
+
+    expect(unwrappedError).toBeInstanceOf(Error);
+    expect(unwrappedError.code).toBe(-32603);
+    expect(unwrappedError.message).toBe('foo');
+    expect(unwrappedError.stack).toBeDefined();
+    expect(unwrappedError.data).toStrictEqual({
+      foo: 'bar',
+      stack: expect.any(String),
+    });
+    expect(handled).toBe(true);
   });
 });

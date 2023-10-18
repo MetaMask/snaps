@@ -3,7 +3,7 @@ import {
   JsonRpcError as RpcError,
   serializeCause,
 } from '@metamask/rpc-errors';
-import type { OptionalDataWithOptionalCause } from '@metamask/rpc-errors/dist/utils';
+import type { DataWithOptionalCause } from '@metamask/rpc-errors';
 import type { Json, JsonRpcError } from '@metamask/utils';
 import {
   hasProperty,
@@ -116,7 +116,7 @@ export type SerializedSnapError = {
   };
 };
 
-export class UnhandledSnapError extends Error {
+export class WrappedSnapError extends Error {
   readonly #error: unknown;
 
   readonly #message: string;
@@ -124,9 +124,9 @@ export class UnhandledSnapError extends Error {
   readonly #stack?: string;
 
   /**
-   * Create a new `UnhandledSnapError`.
+   * Create a new `WrappedSnapError`.
    *
-   * @param error - The error to create the `UnhandledSnapError` from.
+   * @param error - The error to create the `WrappedSnapError` from.
    */
   constructor(error: unknown) {
     const message = getErrorMessage(error);
@@ -143,7 +143,7 @@ export class UnhandledSnapError extends Error {
    * @returns The error name.
    */
   get name() {
-    return 'UnhandledSnapError';
+    return 'WrappedSnapError';
   }
 
   /**
@@ -385,7 +385,7 @@ export function isSnapErrorWrapper(
  */
 export function unwrapError(
   error: unknown,
-): [error: RpcError<OptionalDataWithOptionalCause>, isHandled: boolean] {
+): [error: RpcError<DataWithOptionalCause>, isHandled: boolean] {
   // This logic is a bit complicated, but it's necessary to handle all the
   // different types of errors that can be thrown by a Snap.
 
