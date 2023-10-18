@@ -1,4 +1,4 @@
-import type { DialogType, NotificationArgs } from '@metamask/rpc-methods';
+import type { DialogType, NotificationArgs } from '@metamask/snaps-rpc-methods';
 import type { Component } from '@metamask/snaps-ui';
 import type { VirtualFile } from '@metamask/snaps-utils';
 import {

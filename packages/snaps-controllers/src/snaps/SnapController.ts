@@ -24,8 +24,8 @@ import type {
   ValidPermission,
 } from '@metamask/permission-controller';
 import { SubjectType } from '@metamask/permission-controller';
-import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 import type { BlockReason } from '@metamask/snaps-registry';
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import type {
   FetchedSnapFiles,
   InstallSnapsResult,

@@ -2,7 +2,7 @@
 /// <reference path="../../../../node_modules/ses/types.d.ts" />
 import { StreamProvider } from '@metamask/providers';
 import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
-import type { SnapsGlobalObject } from '@metamask/rpc-methods';
+import type { SnapsGlobalObject } from '@metamask/snaps-rpc-methods';
 import type {
   SnapExports,
   HandlerType,

@@ -19,6 +19,6 @@ use the Snaps platform, e.g., `wallet_requestSnaps` as well as more dangerous
 APIs that should only be available to specific snaps with specific permissions,
 e.g., `snap_getBip44Entropy`.
 
-[createsnapsmethodmiddleware]: ../../../packages/rpc-methods/src/permitted/middleware.ts
-[restrictedmethodpermissionbuilders]: ../../../packages/rpc-methods/src/restricted/index.ts
+[createsnapsmethodmiddleware]: ../../../packages/snaps-rpc-methods/src/permitted/middleware.ts
+[restrictedmethodpermissionbuilders]: ../../../packages/snaps-rpc-methods/src/restricted/index.ts
 [permissioncontroller]: ../permissions.md

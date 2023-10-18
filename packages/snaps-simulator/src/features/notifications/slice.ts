@@ -1,4 +1,4 @@
-import { NotificationType } from '@metamask/rpc-methods';
+import { NotificationType } from '@metamask/snaps-rpc-methods';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSelector, createSlice } from '@reduxjs/toolkit';
 

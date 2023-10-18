@@ -11,8 +11,8 @@ export {
   DialogType,
   NotificationType,
   ManageStateOperation,
-} from '@metamask/rpc-methods';
-export type { SnapsGlobalObject } from '@metamask/rpc-methods';
+} from '@metamask/snaps-rpc-methods';
+export type { SnapsGlobalObject } from '@metamask/snaps-rpc-methods';
 export type {
   AccountId,
   ChainId,

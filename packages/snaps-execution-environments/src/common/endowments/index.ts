@@ -1,5 +1,5 @@
 import type { StreamProvider } from '@metamask/providers';
-import type { SnapsGlobalObject } from '@metamask/rpc-methods';
+import type { SnapsGlobalObject } from '@metamask/snaps-rpc-methods';
 import type { SnapId } from '@metamask/snaps-utils';
 import { logWarning } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';

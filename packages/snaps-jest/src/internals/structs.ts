@@ -1,4 +1,4 @@
-import { NotificationType } from '@metamask/rpc-methods';
+import { NotificationType } from '@metamask/snaps-rpc-methods';
 import { ComponentStruct } from '@metamask/snaps-ui';
 import { enumValue } from '@metamask/snaps-utils';
 import {

@@ -10,10 +10,6 @@ import {
 } from '@metamask/permission-controller';
 import { serializeError } from '@metamask/rpc-errors';
 import {
-  createSnapsMethodMiddleware,
-  caveatSpecifications as snapsCaveatsSpecifications,
-} from '@metamask/rpc-methods';
-import {
   IframeExecutionService,
   setupMultiplex,
   endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications,
@@ -22,6 +18,10 @@ import {
   buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-controllers';
 import packageJson from '@metamask/snaps-execution-environments/package.json';
+import {
+  createSnapsMethodMiddleware,
+  caveatSpecifications as snapsCaveatsSpecifications,
+} from '@metamask/snaps-rpc-methods';
 import type {
   SnapManifest,
   SnapRpcHookArgs,

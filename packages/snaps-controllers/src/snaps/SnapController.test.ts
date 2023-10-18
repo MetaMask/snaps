@@ -4,7 +4,7 @@ import type {
   SubjectPermissions,
   ValidPermission,
 } from '@metamask/permission-controller';
-import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import type {
   RpcOrigins,
   SnapPermissions,

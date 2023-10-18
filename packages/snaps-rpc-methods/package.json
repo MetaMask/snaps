@@ -1,7 +1,7 @@
 {
-  "name": "@metamask/rpc-methods",
+  "name": "@metamask/snaps-rpc-methods",
   "version": "3.0.0",
-  "description": "MetaMask Snap RPC method implementations.",
+  "description": "MetaMask Snaps JSON-RPC method implementations.",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
@@ -23,7 +23,7 @@
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog && yarn lint:dependencies",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
-    "lint:changelog": "../../scripts/validate-changelog.sh @metamask/rpc-methods",
+    "lint:changelog": "../../scripts/validate-changelog.sh @metamask/snaps-rpc-methods",
     "build": "yarn build:source && yarn build:types",
     "build:source": "yarn build:esm && yarn build:cjs",
     "build:types": "tsc --project tsconfig.build.json",

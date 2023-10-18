@@ -2,8 +2,8 @@ import type {
   GenericPermissionController,
   SubjectMetadataController,
 } from '@metamask/permission-controller';
-import type { DialogType } from '@metamask/rpc-methods';
 import type { IframeExecutionService } from '@metamask/snaps-controllers';
+import type { DialogType } from '@metamask/snaps-rpc-methods';
 import type { Component } from '@metamask/snaps-ui';
 import type {
   SnapManifest,

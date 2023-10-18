@@ -1,4 +1,4 @@
-import type { NotificationType } from '@metamask/rpc-methods';
+import type { NotificationType } from '@metamask/snaps-rpc-methods';
 import type { Component } from '@metamask/snaps-ui';
 import type { EnumToUnion } from '@metamask/snaps-utils';
 import type { JsonRpcId, JsonRpcParams } from '@metamask/utils';
@@ -298,4 +298,4 @@ export type Snap = {
 
 export type SnapResponse = Infer<typeof SnapResponseStruct>;
 
-export { NotificationType } from '@metamask/rpc-methods';
+export { NotificationType } from '@metamask/snaps-rpc-methods';

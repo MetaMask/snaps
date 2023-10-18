@@ -91,7 +91,7 @@ type MethodFunction = RestrictedMethodFunction & PermittedMethodFunction;
 
 /**
  * Fallback method name. `wallet_*` is supported by Snaps, but these functions
- * are not implemented in `@metamask/rpc-methods`, so we don't have a type for
+ * are not implemented in `@metamask/snaps-rpc-methods`, so we don't have a type for
  * them.
  */
 type WalletMethodName = `wallet_${string}`;
