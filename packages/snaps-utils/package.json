@@ -108,13 +108,13 @@
     "@types/validate-npm-package-name": "^4.0.0",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
-    "@wdio/browser-runner": "^8.15.9",
-    "@wdio/cli": "^8.15.9",
-    "@wdio/globals": "^8.15.9",
-    "@wdio/mocha-framework": "^8.15.9",
-    "@wdio/spec-reporter": "^8.15.7",
-    "@wdio/static-server-service": "^8.15.7",
-    "@wdio/types": "^8.15.7",
+    "@wdio/browser-runner": "^8.19.0",
+    "@wdio/cli": "^8.19.0",
+    "@wdio/globals": "^8.19.0",
+    "@wdio/mocha-framework": "^8.19.0",
+    "@wdio/spec-reporter": "^8.19.0",
+    "@wdio/static-server-service": "^8.19.0",
+    "@wdio/types": "^8.19.0",
     "deepmerge": "^4.2.2",
     "depcheck": "^1.4.5",
     "esbuild": "^0.18.10",
@@ -126,7 +126,7 @@
     "eslint-plugin-n": "^15.7.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-promise": "^6.1.1",
-    "expect-webdriverio": "^4.1.2",
+    "expect-webdriverio": "^4.4.1",
     "istanbul-lib-coverage": "^3.2.0",
     "istanbul-lib-report": "^3.0.0",
     "istanbul-reports": "^3.1.5",
@@ -141,7 +141,7 @@
     "vite-tsconfig-paths": "^4.0.5",
     "wdio-chromedriver-service": "^8.1.1",
     "wdio-geckodriver-service": "^5.0.2",
-    "webdriverio": "^8.15.9"
+    "webdriverio": "^8.19.0"
   },
   "engines": {
     "node": "^18.16 || >=20"

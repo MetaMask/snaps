@@ -49,7 +49,7 @@
     "pptr-testing-library": "^0.7.0",
     "puppeteer": "21.1.1",
     "superstruct": "^1.0.3",
-    "webdriverio": "^8.15.9"
+    "webdriverio": "^8.19.0"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.5.1",
