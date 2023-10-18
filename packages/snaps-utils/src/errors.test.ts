@@ -1,7 +1,13 @@
 import { errorCodes, JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 
 import {
+  getErrorCode,
+  getErrorData,
   getErrorMessage,
+  getErrorStack,
+  isSerializedSnapError,
+  isSnapError,
+  isWrappedSnapError,
   SNAP_ERROR_CODE,
   SNAP_ERROR_MESSAGE,
   SNAP_ERROR_WRAPPER_CODE,
@@ -28,13 +34,68 @@ describe('getErrorMessage', () => {
   });
 });
 
-describe('SnapErrorWrapper', () => {
+describe('getErrorStack', () => {
+  it('returns the error stack if the error is an object with a stack property', () => {
+    const error = new Error('foo');
+
+    expect(getErrorStack(error)).toBe(error.stack);
+    expect(getErrorStack({ stack: 'foo' })).toBe('foo');
+    expect(getErrorStack(rpcErrors.invalidParams('foo'))).toBeDefined();
+  });
+
+  it('returns undefined if the error does not have a stack property', () => {
+    expect(getErrorStack('foo')).toBeUndefined();
+    expect(getErrorStack(123)).toBeUndefined();
+    expect(getErrorStack(true)).toBeUndefined();
+    expect(getErrorStack(null)).toBeUndefined();
+    expect(getErrorStack(undefined)).toBeUndefined();
+    expect(getErrorStack({ foo: 'bar' })).toBeUndefined();
+  });
+});
+
+describe('getErrorCode', () => {
+  it('returns the error code if the error is an object with a code property', () => {
+    expect(getErrorCode({ code: 123 })).toBe(123);
+    expect(getErrorCode(rpcErrors.invalidParams('foo'))).toBe(-32602);
+  });
+
+  it('returns `errorCodes.rpc.internal` if the error does not have a code property', () => {
+    expect(getErrorCode('foo')).toBe(errorCodes.rpc.internal);
+    expect(getErrorCode(123)).toBe(errorCodes.rpc.internal);
+    expect(getErrorCode(true)).toBe(errorCodes.rpc.internal);
+    expect(getErrorCode(null)).toBe(errorCodes.rpc.internal);
+    expect(getErrorCode(undefined)).toBe(errorCodes.rpc.internal);
+    expect(getErrorCode({ foo: 'bar' })).toBe(errorCodes.rpc.internal);
+  });
+});
+
+describe('getErrorData', () => {
+  it('returns the error data if the error is an object with a data property', () => {
+    expect(getErrorData({ data: { foo: 'bar' } })).toStrictEqual({
+      foo: 'bar',
+    });
+
+    expect(getErrorData(rpcErrors.invalidParams('foo'))).toStrictEqual({});
+  });
+
+  it('returns an empty object if the error does not have a data property', () => {
+    expect(getErrorData('foo')).toStrictEqual({});
+    expect(getErrorData(123)).toStrictEqual({});
+    expect(getErrorData(true)).toStrictEqual({});
+    expect(getErrorData(null)).toStrictEqual({});
+    expect(getErrorData(undefined)).toStrictEqual({});
+    expect(getErrorData({ foo: 'bar' })).toStrictEqual({});
+  });
+});
+
+describe('WrappedSnapError', () => {
   it('wraps an error', () => {
     const error = new Error('foo');
     const wrapped = new WrappedSnapError(error);
 
     expect(wrapped).toBeInstanceOf(Error);
     expect(wrapped).toBeInstanceOf(WrappedSnapError);
+    expect(wrapped.name).toBe('WrappedSnapError');
     expect(wrapped.message).toBe('foo');
     expect(wrapped.stack).toBeDefined();
     expect(wrapped.toJSON()).toStrictEqual({
@@ -55,6 +116,7 @@ describe('SnapErrorWrapper', () => {
 
     expect(wrapped).toBeInstanceOf(Error);
     expect(wrapped).toBeInstanceOf(WrappedSnapError);
+    expect(wrapped.name).toBe('WrappedSnapError');
     expect(wrapped.message).toBe('foo');
     expect(wrapped.stack).toBeDefined();
     expect(wrapped.toJSON()).toStrictEqual({
@@ -96,6 +158,33 @@ describe('SnapErrorWrapper', () => {
           },
         },
       },
+    });
+  });
+
+  describe('serialize', () => {
+    it('serializes the wrapped error', () => {
+      const error = new SnapError('foo');
+      const wrapped = new WrappedSnapError(error);
+
+      expect(wrapped.serialize()).toStrictEqual({
+        code: SNAP_ERROR_WRAPPER_CODE,
+        message: SNAP_ERROR_WRAPPER_MESSAGE,
+        data: {
+          cause: {
+            code: SNAP_ERROR_CODE,
+            message: SNAP_ERROR_MESSAGE,
+            data: {
+              cause: {
+                code: -32603,
+                message: 'foo',
+                data: {
+                  stack: error.stack,
+                },
+              },
+            },
+          },
+        },
+      });
     });
   });
 });
@@ -389,6 +478,51 @@ describe('SnapError', () => {
   });
 });
 
+describe('isSnapError', () => {
+  it('returns true if the error is a Snap error', () => {
+    const error = new SnapError('foo');
+
+    expect(isSnapError(error)).toBe(true);
+  });
+
+  it('returns false if the error is not a Snap error', () => {
+    const error = new Error('foo');
+
+    expect(isSnapError(error)).toBe(false);
+  });
+});
+
+describe('isSerializedSnapError', () => {
+  it('returns true if the error is a serialized Snap error', () => {
+    const error = new SnapError('foo').toJSON();
+
+    expect(isSerializedSnapError(error)).toBe(true);
+  });
+
+  it('returns false if the error is not a serialized Snap error', () => {
+    const error = {
+      code: -32603,
+      message: 'foo',
+    };
+
+    expect(isSerializedSnapError(error)).toBe(false);
+  });
+});
+
+describe('isWrappedSnapError', () => {
+  it('returns true if the error is a Snap error wrapper', () => {
+    const error = new WrappedSnapError(new Error('foo')).toJSON();
+
+    expect(isWrappedSnapError(error)).toBe(true);
+  });
+
+  it('returns false if the error is not a Snap error wrapper', () => {
+    const error = new Error('foo');
+
+    expect(isWrappedSnapError(error)).toBe(false);
+  });
+});
+
 describe('unwrapError', () => {
   it('unwraps a wrapped Snap error with an unknown error', () => {
     const error = new Error('foo');
@@ -460,5 +594,17 @@ describe('unwrapError', () => {
       stack: expect.any(String),
     });
     expect(handled).toBe(true);
+  });
+
+  it('unwraps an unknown error', () => {
+    const error = new Error('foo');
+
+    const [unwrappedError, handled] = unwrapError(error);
+
+    expect(unwrappedError).toBeInstanceOf(Error);
+    expect(unwrappedError.code).toBe(errorCodes.rpc.internal);
+    expect(unwrappedError.message).toBe('foo');
+    expect(unwrappedError.stack).toBeDefined();
+    expect(handled).toBe(false);
   });
 });

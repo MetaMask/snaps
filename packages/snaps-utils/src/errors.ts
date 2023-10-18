@@ -68,7 +68,7 @@ export function getErrorCode(error: unknown) {
     return error.code;
   }
 
-  return -32603;
+  return errorCodes.rpc.internal;
 }
 
 /**
@@ -220,20 +220,11 @@ export class SnapError extends Error {
    * with the error data, if any.
    */
   constructor(
-    error: string | Error | JsonRpcError | SerializedSnapError,
+    error: string | Error | JsonRpcError,
     data: Record<string, Json> = {},
   ) {
     const message = getErrorMessage(error);
     super(message);
-
-    if (isJsonRpcError(error) && isSerializedSnapError(error)) {
-      this.#message = error.data.cause.message;
-      this.#code = error.data.cause.code;
-      this.#data = error.data.cause.data;
-      this.#stack = error.data.cause.stack;
-
-      return;
-    }
 
     this.#message = message;
     this.#code = getErrorCode(error);
@@ -364,7 +355,7 @@ export function isSerializedSnapError(
  * @param error - The object to check.
  * @returns Whether the object is a `WrappedSnapError`.
  */
-export function isSnapErrorWrapper(
+export function isWrappedSnapError(
   error: unknown,
 ): error is SerializedSnapErrorWrapper {
   return (
@@ -390,7 +381,7 @@ export function unwrapError(
   // different types of errors that can be thrown by a Snap.
 
   // If the error is a wrapped Snap error, unwrap it.
-  if (isSnapErrorWrapper(error)) {
+  if (isWrappedSnapError(error)) {
     // The wrapped error can be a JSON-RPC error, or an unknown error. If it's
     // a JSON-RPC error, we can unwrap it further.
     if (isJsonRpcError(error.data.cause)) {
