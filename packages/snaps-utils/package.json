@@ -116,7 +116,7 @@
     "@wdio/static-server-service": "^8.19.0",
     "@wdio/types": "^8.19.0",
     "deepmerge": "^4.2.2",
-    "depcheck": "^1.4.5",
+    "depcheck": "^1.4.7",
     "esbuild": "^0.18.10",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",
