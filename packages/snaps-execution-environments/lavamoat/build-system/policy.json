@@ -6,13 +6,19 @@
         "fs": true,
         "module": true,
         "path": true,
+        "process": true,
         "url": true,
-        "util": true
+        "util": true,
+        "v8": true
       },
       "globals": {
         "console.error": true,
         "console.log": true,
-        "process": true
+        "process.env.BABEL_ENV": true,
+        "process.env.BABEL_SHOW_CONFIG_FOR": true,
+        "process.env.NODE_ENV": true,
+        "process.versions.node": true,
+        "process.versions.pnp": true
       },
       "packages": {
         "@babel/core>@ampproject/remapping": true,
@@ -120,11 +126,9 @@
         "path.extname": true
       },
       "packages": {
+        "@babel/core": true,
         "@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
         "@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
-        "@babel/core>@babel/template": true,
-        "@babel/core>@babel/traverse": true,
-        "@babel/core>@babel/types": true,
         "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
         "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
         "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
@@ -186,10 +190,6 @@
       }
     },
     "@babel/core>convert-source-map": {
-      "builtin": {
-        "fs.readFileSync": true,
-        "path.resolve": true
-      },
       "globals": {
         "Buffer": true,
         "atob": true,
@@ -218,27 +218,14 @@
         "@babel/preset-env>@babel/helper-validator-option": true,
         "@babel/preset-env>@babel/plugin-bugfix-safari-id-destructuring-collision-in-function-expression": true,
         "@babel/preset-env>@babel/plugin-bugfix-v8-spread-parameters-in-optional-chaining": true,
-        "@babel/preset-env>@babel/plugin-proposal-async-generator-functions": true,
-        "@babel/preset-env>@babel/plugin-proposal-class-properties": true,
-        "@babel/preset-env>@babel/plugin-proposal-class-static-block": true,
-        "@babel/preset-env>@babel/plugin-proposal-dynamic-import": true,
-        "@babel/preset-env>@babel/plugin-proposal-export-namespace-from": true,
-        "@babel/preset-env>@babel/plugin-proposal-json-strings": true,
-        "@babel/preset-env>@babel/plugin-proposal-logical-assignment-operators": true,
-        "@babel/preset-env>@babel/plugin-proposal-nullish-coalescing-operator": true,
-        "@babel/preset-env>@babel/plugin-proposal-numeric-separator": true,
-        "@babel/preset-env>@babel/plugin-proposal-object-rest-spread": true,
-        "@babel/preset-env>@babel/plugin-proposal-optional-catch-binding": true,
-        "@babel/preset-env>@babel/plugin-proposal-optional-chaining": true,
-        "@babel/preset-env>@babel/plugin-proposal-private-methods": true,
-        "@babel/preset-env>@babel/plugin-proposal-private-property-in-object": true,
-        "@babel/preset-env>@babel/plugin-proposal-unicode-property-regex": true,
         "@babel/preset-env>@babel/plugin-syntax-async-generators": true,
         "@babel/preset-env>@babel/plugin-syntax-class-properties": true,
         "@babel/preset-env>@babel/plugin-syntax-class-static-block": true,
         "@babel/preset-env>@babel/plugin-syntax-dynamic-import": true,
         "@babel/preset-env>@babel/plugin-syntax-export-namespace-from": true,
         "@babel/preset-env>@babel/plugin-syntax-import-assertions": true,
+        "@babel/preset-env>@babel/plugin-syntax-import-attributes": true,
+        "@babel/preset-env>@babel/plugin-syntax-import-meta": true,
         "@babel/preset-env>@babel/plugin-syntax-json-strings": true,
         "@babel/preset-env>@babel/plugin-syntax-logical-assignment-operators": true,
         "@babel/preset-env>@babel/plugin-syntax-nullish-coalescing-operator": true,
@@ -248,19 +235,27 @@
         "@babel/preset-env>@babel/plugin-syntax-optional-chaining": true,
         "@babel/preset-env>@babel/plugin-syntax-private-property-in-object": true,
         "@babel/preset-env>@babel/plugin-syntax-top-level-await": true,
+        "@babel/preset-env>@babel/plugin-syntax-unicode-sets-regex": true,
         "@babel/preset-env>@babel/plugin-transform-arrow-functions": true,
+        "@babel/preset-env>@babel/plugin-transform-async-generator-functions": true,
         "@babel/preset-env>@babel/plugin-transform-async-to-generator": true,
         "@babel/preset-env>@babel/plugin-transform-block-scoped-functions": true,
         "@babel/preset-env>@babel/plugin-transform-block-scoping": true,
+        "@babel/preset-env>@babel/plugin-transform-class-properties": true,
+        "@babel/preset-env>@babel/plugin-transform-class-static-block": true,
         "@babel/preset-env>@babel/plugin-transform-classes": true,
         "@babel/preset-env>@babel/plugin-transform-computed-properties": true,
         "@babel/preset-env>@babel/plugin-transform-destructuring": true,
         "@babel/preset-env>@babel/plugin-transform-dotall-regex": true,
         "@babel/preset-env>@babel/plugin-transform-duplicate-keys": true,
+        "@babel/preset-env>@babel/plugin-transform-dynamic-import": true,
         "@babel/preset-env>@babel/plugin-transform-exponentiation-operator": true,
+        "@babel/preset-env>@babel/plugin-transform-export-namespace-from": true,
         "@babel/preset-env>@babel/plugin-transform-for-of": true,
         "@babel/preset-env>@babel/plugin-transform-function-name": true,
+        "@babel/preset-env>@babel/plugin-transform-json-strings": true,
         "@babel/preset-env>@babel/plugin-transform-literals": true,
+        "@babel/preset-env>@babel/plugin-transform-logical-assignment-operators": true,
         "@babel/preset-env>@babel/plugin-transform-member-expression-literals": true,
         "@babel/preset-env>@babel/plugin-transform-modules-amd": true,
         "@babel/preset-env>@babel/plugin-transform-modules-commonjs": true,
@@ -268,8 +263,15 @@
         "@babel/preset-env>@babel/plugin-transform-modules-umd": true,
         "@babel/preset-env>@babel/plugin-transform-named-capturing-groups-regex": true,
         "@babel/preset-env>@babel/plugin-transform-new-target": true,
+        "@babel/preset-env>@babel/plugin-transform-nullish-coalescing-operator": true,
+        "@babel/preset-env>@babel/plugin-transform-numeric-separator": true,
+        "@babel/preset-env>@babel/plugin-transform-object-rest-spread": true,
         "@babel/preset-env>@babel/plugin-transform-object-super": true,
+        "@babel/preset-env>@babel/plugin-transform-optional-catch-binding": true,
+        "@babel/preset-env>@babel/plugin-transform-optional-chaining": true,
         "@babel/preset-env>@babel/plugin-transform-parameters": true,
+        "@babel/preset-env>@babel/plugin-transform-private-methods": true,
+        "@babel/preset-env>@babel/plugin-transform-private-property-in-object": true,
         "@babel/preset-env>@babel/plugin-transform-property-literals": true,
         "@babel/preset-env>@babel/plugin-transform-regenerator": true,
         "@babel/preset-env>@babel/plugin-transform-reserved-words": true,
@@ -279,7 +281,9 @@
         "@babel/preset-env>@babel/plugin-transform-template-literals": true,
         "@babel/preset-env>@babel/plugin-transform-typeof-symbol": true,
         "@babel/preset-env>@babel/plugin-transform-unicode-escapes": true,
+        "@babel/preset-env>@babel/plugin-transform-unicode-property-regex": true,
         "@babel/preset-env>@babel/plugin-transform-unicode-regex": true,
+        "@babel/preset-env>@babel/plugin-transform-unicode-sets-regex": true,
         "@babel/preset-env>@babel/preset-modules": true,
         "@babel/preset-env>babel-plugin-polyfill-corejs2": true,
         "@babel/preset-env>babel-plugin-polyfill-corejs3": true,
@@ -297,129 +301,8 @@
       "packages": {
         "@babel/core": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-proposal-optional-chaining": true,
+        "@babel/preset-env>@babel/plugin-transform-optional-chaining": true,
         "@babel/preset-env>@babel/plugin-transform-spread>@babel/helper-skip-transparent-expression-wrappers": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-proposal-async-generator-functions": {
-      "packages": {
-        "@babel/core": true,
-        "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-syntax-async-generators": true,
-        "@babel/preset-env>@babel/plugin-transform-async-to-generator>@babel/helper-remap-async-to-generator": true,
-        "depcheck>@babel/traverse>@babel/helper-environment-visitor": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-proposal-class-properties": {
-      "packages": {
-        "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-proposal-private-methods>@babel/helper-create-class-features-plugin": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-proposal-class-static-block": {
-      "packages": {
-        "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-proposal-private-methods>@babel/helper-create-class-features-plugin": true,
-        "@babel/preset-env>@babel/plugin-syntax-class-static-block": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-proposal-dynamic-import": {
-      "packages": {
-        "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-syntax-dynamic-import": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-proposal-export-namespace-from": {
-      "packages": {
-        "@babel/core": true,
-        "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-syntax-export-namespace-from": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-proposal-json-strings": {
-      "packages": {
-        "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-syntax-json-strings": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-proposal-logical-assignment-operators": {
-      "packages": {
-        "@babel/core": true,
-        "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-syntax-logical-assignment-operators": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-proposal-nullish-coalescing-operator": {
-      "packages": {
-        "@babel/core": true,
-        "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-syntax-nullish-coalescing-operator": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-proposal-numeric-separator": {
-      "packages": {
-        "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-syntax-numeric-separator": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-proposal-object-rest-spread": {
-      "packages": {
-        "@babel/core": true,
-        "@babel/core>@babel/helper-compilation-targets": true,
-        "@babel/preset-env>@babel/compat-data": true,
-        "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-syntax-object-rest-spread": true,
-        "@babel/preset-env>@babel/plugin-transform-parameters": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-proposal-optional-catch-binding": {
-      "packages": {
-        "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-syntax-optional-catch-binding": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-proposal-optional-chaining": {
-      "packages": {
-        "@babel/core": true,
-        "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-syntax-optional-chaining": true,
-        "@babel/preset-env>@babel/plugin-transform-spread>@babel/helper-skip-transparent-expression-wrappers": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-proposal-private-methods": {
-      "packages": {
-        "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-proposal-private-methods>@babel/helper-create-class-features-plugin": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-proposal-private-methods>@babel/helper-create-class-features-plugin": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@babel/core": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-optimise-call-expression": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-member-expression-to-functions": true,
-        "@babel/preset-env>@babel/plugin-transform-spread>@babel/helper-skip-transparent-expression-wrappers": true,
-        "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
-        "depcheck>@babel/traverse>@babel/helper-function-name": true,
-        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-proposal-private-property-in-object": {
-      "packages": {
-        "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-proposal-private-methods>@babel/helper-create-class-features-plugin": true,
-        "@babel/preset-env>@babel/plugin-syntax-private-property-in-object": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-proposal-unicode-property-regex": {
-      "packages": {
-        "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin": true
       }
     },
     "@babel/preset-env>@babel/plugin-syntax-async-generators": {
@@ -448,6 +331,16 @@
       }
     },
     "@babel/preset-env>@babel/plugin-syntax-import-assertions": {
+      "packages": {
+        "@babel/preset-env>@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-syntax-import-attributes": {
+      "packages": {
+        "@babel/preset-env>@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-syntax-import-meta": {
       "packages": {
         "@babel/preset-env>@babel/helper-plugin-utils": true
       }
@@ -497,9 +390,24 @@
         "@babel/preset-env>@babel/helper-plugin-utils": true
       }
     },
+    "@babel/preset-env>@babel/plugin-syntax-unicode-sets-regex": {
+      "packages": {
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin": true
+      }
+    },
     "@babel/preset-env>@babel/plugin-transform-arrow-functions": {
       "packages": {
         "@babel/preset-env>@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-transform-async-generator-functions": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-env>@babel/plugin-syntax-async-generators": true,
+        "@babel/preset-env>@babel/plugin-transform-async-to-generator>@babel/helper-remap-async-to-generator": true,
+        "depcheck>@babel/traverse>@babel/helper-environment-visitor": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-async-to-generator": {
@@ -513,7 +421,6 @@
     "@babel/preset-env>@babel/plugin-transform-async-to-generator>@babel/helper-remap-async-to-generator": {
       "packages": {
         "@babel/core": true,
-        "@babel/core>@babel/types": true,
         "@babel/preset-env>@babel/plugin-transform-async-to-generator>@babel/helper-remap-async-to-generator>@babel/helper-wrap-function": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
         "depcheck>@babel/traverse>@babel/helper-environment-visitor": true
@@ -536,6 +443,19 @@
       "packages": {
         "@babel/core": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-transform-class-properties": {
+      "packages": {
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-transform-class-static-block": {
+      "packages": {
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-env>@babel/plugin-syntax-class-static-block": true,
+        "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-classes": {
@@ -564,9 +484,7 @@
     },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": {
       "packages": {
-        "@babel/core>@babel/template": true,
-        "@babel/core>@babel/traverse": true,
-        "@babel/core>@babel/types": true,
+        "@babel/core": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-optimise-call-expression": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-member-expression-to-functions": true,
         "depcheck>@babel/traverse>@babel/helper-environment-visitor": true
@@ -600,7 +518,8 @@
       "packages": {
         "@babel/core": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
-        "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin>regexpu-core": true
+        "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin>regexpu-core": true,
+        "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin>semver": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin>regexpu-core": {
@@ -636,10 +555,22 @@
         "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin>regexpu-core>unicode-match-property-ecmascript>unicode-property-aliases-ecmascript": true
       }
     },
+    "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin>semver": {
+      "globals": {
+        "console": true,
+        "process": true
+      }
+    },
     "@babel/preset-env>@babel/plugin-transform-duplicate-keys": {
       "packages": {
         "@babel/core": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-transform-dynamic-import": {
+      "packages": {
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-env>@babel/plugin-syntax-dynamic-import": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-exponentiation-operator": {
@@ -651,13 +582,14 @@
     },
     "@babel/preset-env>@babel/plugin-transform-exponentiation-operator>@babel/helper-builder-binary-assignment-operator-visitor": {
       "packages": {
-        "@babel/core>@babel/types": true,
-        "@babel/preset-env>@babel/plugin-transform-exponentiation-operator>@babel/helper-builder-binary-assignment-operator-visitor>@babel/helper-explode-assignable-expression": true
+        "@babel/core>@babel/types": true
       }
     },
-    "@babel/preset-env>@babel/plugin-transform-exponentiation-operator>@babel/helper-builder-binary-assignment-operator-visitor>@babel/helper-explode-assignable-expression": {
+    "@babel/preset-env>@babel/plugin-transform-export-namespace-from": {
       "packages": {
-        "@babel/core>@babel/types": true
+        "@babel/core": true,
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-env>@babel/plugin-syntax-export-namespace-from": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-for-of": {
@@ -673,9 +605,22 @@
         "depcheck>@babel/traverse>@babel/helper-function-name": true
       }
     },
+    "@babel/preset-env>@babel/plugin-transform-json-strings": {
+      "packages": {
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-env>@babel/plugin-syntax-json-strings": true
+      }
+    },
     "@babel/preset-env>@babel/plugin-transform-literals": {
       "packages": {
         "@babel/preset-env>@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-transform-logical-assignment-operators": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-env>@babel/plugin-syntax-logical-assignment-operators": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-member-expression-literals": {
@@ -734,6 +679,29 @@
         "@babel/preset-env>@babel/helper-plugin-utils": true
       }
     },
+    "@babel/preset-env>@babel/plugin-transform-nullish-coalescing-operator": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-env>@babel/plugin-syntax-nullish-coalescing-operator": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-transform-numeric-separator": {
+      "packages": {
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-env>@babel/plugin-syntax-numeric-separator": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-transform-object-rest-spread": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/core>@babel/helper-compilation-targets": true,
+        "@babel/preset-env>@babel/compat-data": true,
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-env>@babel/plugin-syntax-object-rest-spread": true,
+        "@babel/preset-env>@babel/plugin-transform-parameters": true
+      }
+    },
     "@babel/preset-env>@babel/plugin-transform-object-super": {
       "packages": {
         "@babel/core": true,
@@ -741,10 +709,61 @@
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": true
       }
     },
+    "@babel/preset-env>@babel/plugin-transform-optional-catch-binding": {
+      "packages": {
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-env>@babel/plugin-syntax-optional-catch-binding": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-transform-optional-chaining": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-env>@babel/plugin-syntax-optional-chaining": true,
+        "@babel/preset-env>@babel/plugin-transform-spread>@babel/helper-skip-transparent-expression-wrappers": true
+      }
+    },
     "@babel/preset-env>@babel/plugin-transform-parameters": {
       "packages": {
         "@babel/core": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-transform-private-methods": {
+      "packages": {
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@babel/core": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-optimise-call-expression": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-member-expression-to-functions": true,
+        "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>semver": true,
+        "@babel/preset-env>@babel/plugin-transform-spread>@babel/helper-skip-transparent-expression-wrappers": true,
+        "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
+        "depcheck>@babel/traverse>@babel/helper-function-name": true,
+        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>semver": {
+      "globals": {
+        "console": true,
+        "process": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-transform-private-property-in-object": {
+      "packages": {
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-env>@babel/plugin-syntax-private-property-in-object": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
+        "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-property-literals": {
@@ -816,7 +835,19 @@
         "@babel/preset-env>@babel/helper-plugin-utils": true
       }
     },
+    "@babel/preset-env>@babel/plugin-transform-unicode-property-regex": {
+      "packages": {
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin": true
+      }
+    },
     "@babel/preset-env>@babel/plugin-transform-unicode-regex": {
+      "packages": {
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-transform-unicode-sets-regex": {
       "packages": {
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin": true
@@ -903,8 +934,8 @@
       "packages": {
         "@babel/core": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-proposal-private-methods>@babel/helper-create-class-features-plugin": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
+        "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin": true,
         "@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/plugin-syntax-typescript": true
       }
     },
