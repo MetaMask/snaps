@@ -9,7 +9,6 @@ import {
   SubjectMetadataController,
   SubjectType,
 } from '@metamask/permission-controller';
-import { serializeError } from '@metamask/rpc-errors';
 import {
   IframeExecutionService,
   setupMultiplex,
@@ -28,7 +27,7 @@ import type {
   SnapRpcHookArgs,
   VirtualFile,
 } from '@metamask/snaps-utils';
-import { logError } from '@metamask/snaps-utils';
+import { logError, unwrapError } from '@metamask/snaps-utils';
 import { getSafeJson } from '@metamask/utils';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createEngineStream } from 'json-rpc-middleware-stream';
@@ -262,9 +261,13 @@ export function* requestSaga({ payload }: PayloadAction<SnapRpcHookArgs>) {
       },
     });
   } catch (error) {
+    const [unwrappedError] = unwrapError(error);
+
     yield put({
       type: `${payload.handler}/setResponse`,
-      payload: { error: serializeError(error) },
+      payload: {
+        error: unwrappedError.serialize(),
+      },
     });
   }
 }

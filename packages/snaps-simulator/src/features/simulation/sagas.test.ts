@@ -1,6 +1,11 @@
 import type { GenericPermissionController } from '@metamask/permission-controller';
 import { processSnapPermissions } from '@metamask/snaps-controllers';
-import { DEFAULT_ENDOWMENTS, HandlerType } from '@metamask/snaps-utils';
+import {
+  DEFAULT_ENDOWMENTS,
+  HandlerType,
+  SnapError,
+  WrappedSnapError,
+} from '@metamask/snaps-utils';
 import { expectSaga } from 'redux-saga-test-plan';
 
 import { DEFAULT_SRP, setSnapId } from '../configuration';
@@ -76,6 +81,48 @@ describe('requestSaga', () => {
         type: `${HandlerType.OnRpcRequest}/setResponse`,
         payload: {
           result: 'foobar',
+        },
+      })
+      .silentRun();
+  });
+
+  it('unwraps error responses', async () => {
+    const sourceCode = 'foo';
+    const executionService = new MockExecutionService();
+
+    const error = new SnapError('foo');
+    jest.spyOn(executionService, 'handleRpcRequest').mockImplementation(() => {
+      throw new WrappedSnapError(error);
+    });
+
+    const request = {
+      origin: 'Snaps Simulator',
+      handler: HandlerType.OnRpcRequest,
+      request: {
+        jsonrpc: '2.0',
+        method: 'bar',
+      },
+    };
+
+    await expectSaga(requestSaga, sendRequest(request))
+      .withState({
+        configuration: { snapId },
+        simulation: { sourceCode, executionService },
+      })
+      .put({
+        type: `${HandlerType.OnRpcRequest}/setRequest`,
+        payload: request,
+      })
+      .call([executionService, 'handleRpcRequest'], snapId, request)
+      .put.like({
+        action: {
+          type: `${HandlerType.OnRpcRequest}/setResponse`,
+          payload: {
+            error: {
+              code: -32603,
+              message: 'foo',
+            },
+          },
         },
       })
       .silentRun();
