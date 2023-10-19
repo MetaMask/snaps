@@ -550,6 +550,19 @@ describe('unwrapError', () => {
     expect(handled).toBe(true);
   });
 
+  it('unwraps a wrapped Snap error with a `rpc-errors` error', () => {
+    const error = rpcErrors.invalidParams('foo');
+    const wrapped = new WrappedSnapError(error).toJSON();
+
+    const [unwrappedError, handled] = unwrapError(wrapped);
+
+    expect(unwrappedError).toBeInstanceOf(Error);
+    expect(unwrappedError.code).toBe(errorCodes.rpc.invalidParams);
+    expect(unwrappedError.message).toBe('foo');
+    expect(unwrappedError.stack).toBeDefined();
+    expect(handled).toBe(true);
+  });
+
   it('unwraps a wrapped Snap error with a wrapped Snap error', () => {
     const error = new SnapError('foo');
     const wrapped = new WrappedSnapError(error).toJSON();
