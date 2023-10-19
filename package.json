@@ -31,8 +31,8 @@
     "test": "yarn workspaces foreach --parallel --verbose run test",
     "test:browser": "yarn workspaces foreach --verbose run test:browser",
     "child-workspace-package-names-as-json": "ts-node scripts/child-workspace-package-names-as-json.ts",
-    "prepare-preview-builds": "yarn workspaces foreach --parallel run prepare-manifest:preview",
-    "publish-previews": "yarn workspaces foreach --parallel run publish:preview",
+    "prepare-preview-builds": "./scripts/prepare-preview-builds.sh",
+    "publish-previews": "yarn workspaces foreach --parallel --verbose run publish:preview",
     "install-chrome": "./scripts/install-chrome.sh",
     "get-release-tag": "ts-node --swc scripts/get-release-tag.ts",
     "test:e2e": "yarn workspaces foreach --verbose --exclude root run test:e2e"

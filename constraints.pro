@@ -171,10 +171,6 @@ gen_enforced_field(WorkspaceCwd, 'module', './dist/esm/index.js') :-
   WorkspaceCwd \= '.'.
 
 % Dependencies must have preview scripts.
-gen_enforced_field(WorkspaceCwd, 'scripts.prepare-manifest:preview', PrepareManifestScript) :-
-  \+ workspace_field(WorkspaceCwd, 'private', true),
-  relative_path(WorkspaceCwd, 'scripts/prepare-preview-manifest.sh', PrepareManifestScript),
-  WorkspaceCwd \= '.'.
 gen_enforced_field(WorkspaceCwd, 'scripts.publish:preview', 'yarn npm publish --tag preview') :-
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.

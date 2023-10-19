@@ -39,7 +39,6 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "publish:package": "../../scripts/publish-package.sh",
     "lint:ci": "yarn lint",
-    "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
     "publish:preview": "yarn npm publish --tag preview",
     "lint:dependencies": "depcheck"
   },
