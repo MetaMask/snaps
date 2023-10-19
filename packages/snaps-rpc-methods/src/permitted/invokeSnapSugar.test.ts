@@ -1,16 +1,17 @@
-import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
-  JsonRpcRequest,
-} from '@metamask/types';
+} from '@metamask/json-rpc-engine';
+import { rpcErrors } from '@metamask/rpc-errors';
+import type { JsonRpcRequest } from '@metamask/utils';
 
+import type { InvokeSnapSugarArgs } from './invokeSnapSugar';
 import { getValidatedParams, invokeSnapSugar } from './invokeSnapSugar';
 
 describe('wallet_invokeSnap', () => {
   describe('invokeSnapSugar', () => {
     it('invokes snap with next()', () => {
-      const req: JsonRpcRequest<unknown> = {
+      const req: JsonRpcRequest<InvokeSnapSugarArgs> = {
         id: 'some-id',
         jsonrpc: '2.0',
         method: 'wallet_invokeSnap',
@@ -31,12 +32,15 @@ describe('wallet_invokeSnap', () => {
     });
 
     it('ends with an error if params are invalid', () => {
-      const req: JsonRpcRequest<unknown> = {
+      const req: JsonRpcRequest<InvokeSnapSugarArgs> = {
         id: 'some-id',
         jsonrpc: '2.0',
         method: 'wallet_invokeSnap',
         params: {
+          // @ts-expect-error - Invalid params.
           snapId: undefined,
+
+          // @ts-expect-error - Invalid params.
           request: [],
         },
       };
