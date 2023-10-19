@@ -7384,9 +7384,9 @@ __metadata:
   linkType: hard
 
 "@types/punycode@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@types/punycode@npm:2.1.0"
-  checksum: 6835698becab395eb9ac186970fd7879aeb522ea72d516ef9d681d787989653fcc2439ecc07d48280e1ca11862773b806efeec3fdbd1207528829a83b65d4275
+  version: 2.1.1
+  resolution: "@types/punycode@npm:2.1.1"
+  checksum: a1fdbb0d4d22ceb8fd901995d72d66b096e4c46bd603faf192085f04113afc42a6a76403f7806a2c31d45a2f70d57c042d68329ba6affc202c15fa34870b51fa
   languageName: node
   linkType: hard
 
