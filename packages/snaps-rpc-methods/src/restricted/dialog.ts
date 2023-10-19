@@ -44,7 +44,8 @@ type ShowDialog = (
   placeholder?: Placeholder,
 ) => Promise<null | boolean | string>;
 
-type IsOnPhishingList = (url: string) => Promise<boolean>;
+type MaybeUpdatePhisingList = () => Promise<void>;
+type IsOnPhishingList = (url: string) => boolean;
 
 export type DialogMethodHooks = {
   /**
@@ -54,6 +55,9 @@ export type DialogMethodHooks = {
    * @param placeholder - The placeholder for the Prompt dialog input.
    */
   showDialog: ShowDialog;
+
+  maybeUpdatePhishingList: MaybeUpdatePhisingList;
+
   /**
    * @param url - The URL to check against the phishing list.
    */
@@ -106,6 +110,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 const methodHooks: MethodHooksObject<DialogMethodHooks> = {
   showDialog: true,
   isOnPhishingList: true,
+  maybeUpdatePhishingList: true,
 };
 
 export const dialogBuilder = Object.freeze({
@@ -158,12 +163,14 @@ const structs = {
  * MetaMask UI and returns the appropriate value for the dialog type.
  * @param hooks.isOnPhishingList - A function that checks a link against the
  * phishing list and return true if it's in, otherwise false.
+ * @param hooks.maybeUpdatePhishingList - A function that updates the phishing list if needed.
  * @returns The method implementation which return value depends on the dialog
  * type, valid return types are: string, boolean, null.
  */
 export function getDialogImplementation({
   showDialog,
   isOnPhishingList,
+  maybeUpdatePhishingList,
 }: DialogMethodHooks) {
   return async function dialogImplementation(
     args: RestrictedMethodOptions<DialogParameters>,
@@ -178,13 +185,9 @@ export function getDialogImplementation({
 
     const { content } = validatedParams;
 
-    try {
-      await assertLinksAreSafe(content, isOnPhishingList);
-    } catch (error) {
-      throw ethErrors.rpc.invalidParams({
-        message: `Invalid params: ${error.message}`,
-      });
-    }
+    await maybeUpdatePhishingList();
+
+    assertLinksAreSafe(content, isOnPhishingList);
 
     const placeholder =
       validatedParams.type === DialogType.Prompt

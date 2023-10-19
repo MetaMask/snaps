@@ -214,9 +214,9 @@ export async function getNode({
 
 const LINK_REGEX = /(?<protocol>[a-z]+:\/\/)?(?<host>\S+?(?:\.\S+)+)/giu;
 
-export const verifyLinks = async (
+export const verifyLinks = (
   content: string,
-  isOnPhishingList: (url: string) => Promise<boolean>,
+  isOnPhishingList: (url: string) => boolean,
 ) => {
   const links = content.match(LINK_REGEX);
 
@@ -232,7 +232,7 @@ export const verifyLinks = async (
       );
 
       assert(
-        !(await isOnPhishingList(link)),
+        !isOnPhishingList(link),
         ethErrors.rpc.invalidParams({
           message: 'The provided URL is detected as phishing.',
         }),

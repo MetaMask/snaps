@@ -21,6 +21,7 @@ describe('builder', () => {
         methodHooks: {
           showDialog: jest.fn(),
           isOnPhishingList: jest.fn(),
+          maybeUpdatePhishingList: jest.fn(),
         },
       }),
     ).toStrictEqual({
@@ -38,6 +39,7 @@ describe('implementation', () => {
     ({
       showDialog: jest.fn(),
       isOnPhishingList: jest.fn(),
+      maybeUpdatePhishingList: jest.fn(),
     } as DialogMethodHooks);
 
   it('accepts string dialog types', async () => {
@@ -265,6 +267,7 @@ describe('implementation', () => {
       const implementation = getDialogImplementation({
         showDialog: jest.fn(),
         isOnPhishingList: () => true,
+        maybeUpdatePhishingList: jest.fn(),
       });
 
       await expect(
@@ -276,9 +279,7 @@ describe('implementation', () => {
             content: panel([heading('foo'), link('bar', 'https://foo.bar')]),
           },
         }),
-      ).rejects.toThrow(
-        'Invalid params: The provided URL is detected as phishing.',
-      );
+      ).rejects.toThrow('The provided URL is detected as phishing.');
     });
   });
 });

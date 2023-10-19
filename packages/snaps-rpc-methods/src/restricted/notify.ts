@@ -51,7 +51,9 @@ export type NotifyMethodHooks = {
     args: NotificationArgs,
   ) => Promise<null>;
 
-  isOnPhishingList: (url: string) => Promise<boolean>;
+  isOnPhishingList: (url: string) => boolean;
+
+  maybeUpdatePhishingList: () => Promise<void>;
 };
 
 type SpecificationBuilderOptions = {
@@ -93,6 +95,7 @@ const methodHooks: MethodHooksObject<NotifyMethodHooks> = {
   showNativeNotification: true,
   showInAppNotification: true,
   isOnPhishingList: true,
+  maybeUpdatePhishingList: true,
 };
 
 export const notifyBuilder = Object.freeze({
@@ -108,6 +111,7 @@ export const notifyBuilder = Object.freeze({
  * @param hooks.showNativeNotification - A function that shows a native browser notification.
  * @param hooks.showInAppNotification - A function that shows a notification in the MetaMask UI.
  * @param hooks.isOnPhishingList - A function that checks for links against the phishing list.
+ * @param hooks.maybeUpdatePhishingList - A function that updates the phishing list if needed.
  * @returns The method implementation which returns `null` on success.
  * @throws If the params are invalid.
  */
@@ -115,6 +119,7 @@ export function getImplementation({
   showNativeNotification,
   showInAppNotification,
   isOnPhishingList,
+  maybeUpdatePhishingList,
 }: NotifyMethodHooks) {
   return async function implementation(
     args: RestrictedMethodOptions<NotificationArgs>,
@@ -126,7 +131,9 @@ export function getImplementation({
 
     const validatedParams = getValidatedParams(params);
 
-    await verifyLinks(validatedParams.message, isOnPhishingList);
+    await maybeUpdatePhishingList();
+
+    verifyLinks(validatedParams.message, isOnPhishingList);
 
     switch (validatedParams.type) {
       case NotificationType.Native:

@@ -68,20 +68,20 @@ const LINK_REGEX = /(?<protocol>[a-z]+:\/\/)?(?<host>\S+?(?:\.\S+)+)/giu;
  * @param component - The custom UI component.
  * @param isOnPhishingList - The function that checks the link against the phishing list.
  */
-export async function assertLinksAreSafe(
+export function assertLinksAreSafe(
   component: Component,
-  isOnPhishingList: (url: string) => Promise<boolean>,
+  isOnPhishingList: (url: string) => boolean,
 ) {
   const { type } = component;
   if (type === NodeType.Panel) {
-    for (const node of component.children) {
-      await assertLinksAreSafe(node, isOnPhishingList);
-    }
+    component.children.forEach((node) =>
+      assertLinksAreSafe(node, isOnPhishingList),
+    );
   }
 
   if (component.type === NodeType.Link) {
     assert(
-      !(await isOnPhishingList(component.url)),
+      !isOnPhishingList(component.url),
       'The provided URL is detected as phishing.',
     );
   }
@@ -90,12 +90,12 @@ export async function assertLinksAreSafe(
     const links = component.value.match(LINK_REGEX);
 
     if (links) {
-      for (const link of links) {
+      links.forEach((link) =>
         assert(
-          !(await isOnPhishingList(link)),
+          !isOnPhishingList(link),
           'The provided URL is detected as phishing.',
-        );
-      }
+        ),
+      );
     }
   }
 }

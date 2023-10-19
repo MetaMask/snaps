@@ -2666,18 +2666,14 @@ export class SnapController extends BaseController<
       case HandlerType.OnTransaction:
         assertStruct(result, OnTransactionResponseStruct);
 
-        await assertLinksAreSafe(result.content, async (origin: string) => {
-          await this.messagingSystem.call(
-            'PhishingController:maybeUpdateState',
-          );
+        await this.messagingSystem.call('PhishingController:maybeUpdateState');
 
-          const { result: testResult } = this.messagingSystem.call(
-            'PhishingController:testOrigin',
-            origin,
-          );
-
-          return testResult;
-        });
+        await assertLinksAreSafe(
+          result.content,
+          (url: string) =>
+            this.messagingSystem.call('PhishingController:testOrigin', url)
+              .result,
+        );
         break;
       default:
         break;

@@ -76,20 +76,18 @@ describe('getNode', () => {
 
 describe('verifyLinks', () => {
   it('passes if all the links are valid and not on the phishing list', async () => {
-    const isOnPhishingList = async () => Promise.resolve(false);
-    await expect(
+    const isOnPhishingList = () => false;
+    expect(() =>
       verifyLinks('testing https://foo.bar.', isOnPhishingList),
-      // eslint-disable-next-line jest/no-restricted-matchers
-    ).resolves.not.toThrow();
+    ).not.toThrow();
 
-    await expect(
+    expect(() =>
       verifyLinks('testing mailto:foo@bar.baz', isOnPhishingList),
-      // eslint-disable-next-line jest/no-restricted-matchers
-    ).resolves.not.toThrow();
+    ).not.toThrow();
   });
 
   it('throws an error if a link is invalid', async () => {
-    const isOnPhishingList = async () => Promise.resolve(false);
+    const isOnPhishingList = () => false;
 
     await expect(async () =>
       verifyLinks('an invalid link http://foo.bar', isOnPhishingList),
@@ -97,7 +95,7 @@ describe('verifyLinks', () => {
   });
 
   it('throws an error if a link is on the phishing list.', async () => {
-    const isOnPhishingList = async () => Promise.resolve(true);
+    const isOnPhishingList = () => true;
 
     await expect(async () =>
       verifyLinks('https://foo.bar', isOnPhishingList),
