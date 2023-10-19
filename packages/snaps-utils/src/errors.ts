@@ -75,7 +75,8 @@ export function getErrorCode(error: unknown) {
  * Get the error data from an unknown error type.
  *
  * @param error - The error to get the data from.
- * @returns The error data, or null if the error does not have valid data.
+ * @returns The error data, or an empty object if the error does not have valid
+ * data.
  */
 export function getErrorData(error: unknown) {
   if (
@@ -327,11 +328,7 @@ export function isSnapError(error: unknown): error is SnapError {
     typeof error.serialize === 'function'
   ) {
     const serialized = error.serialize();
-    return (
-      isJsonRpcError(serialized) &&
-      serialized.code === SNAP_ERROR_CODE &&
-      serialized.message === SNAP_ERROR_MESSAGE
-    );
+    return isJsonRpcError(serialized) && isSerializedSnapError(serialized);
   }
 
   return false;
@@ -404,6 +401,8 @@ export function unwrapError(
     ];
   }
 
+  // The error can be a non-wrapped JSON-RPC error, in which case we can just
+  // re-throw it with the same code, message, and data.
   if (isJsonRpcError(error)) {
     const { code, message, data } = error;
     return [new RpcError(code, message, data), false];

@@ -70,9 +70,11 @@ const fallbackError = {
   message: 'Execution Environment Error',
 };
 
-const unhandledError = rpcErrors.internal<Json>({
-  message: 'Unhandled Snap Error',
-});
+const unhandledError = rpcErrors
+  .internal<Json>({
+    message: 'Unhandled Snap Error',
+  })
+  .serialize();
 
 export type InvokeSnapArgs = Omit<SnapExportsParameters[0], 'chainId'>;
 
@@ -183,7 +185,7 @@ export class BaseSnapExecutor {
 
   private errorHandler(error: unknown, data: Record<string, Json>) {
     const serializedError = serializeError(error, {
-      fallbackError: unhandledError.serialize(),
+      fallbackError: unhandledError,
       shouldIncludeStack: false,
     });
 

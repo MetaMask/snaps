@@ -5887,7 +5887,6 @@ describe('SnapController', () => {
         }),
       );
 
-      // By installing we also indirectly test that the unpacking of the file works.
       await snapController.installSnaps(MOCK_ORIGIN, {
         [MOCK_SNAP_ID]: {},
       });
@@ -5925,7 +5924,6 @@ describe('SnapController', () => {
         }),
       );
 
-      // By installing we also indirectly test that the unpacking of the file works.
       await snapController.installSnaps(MOCK_ORIGIN, {
         [MOCK_SNAP_ID]: {},
       });
