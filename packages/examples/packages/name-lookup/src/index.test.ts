@@ -1,5 +1,5 @@
 import { describe, it } from '@jest/globals';
-import type { OnNameLookupArgs } from '@metamask/snaps-utils';
+import type { OnNameLookupArgs } from '@metamask/snaps-types';
 
 import { onNameLookup } from '.';
 

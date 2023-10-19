@@ -21,6 +21,7 @@ export type {
   OnRpcRequestHandler,
   OnTransactionHandler,
   OnTransactionResponse,
+  OnNameLookupArgs,
   OnNameLookupResponse,
   OnInstallHandler,
   OnUpdateHandler,
