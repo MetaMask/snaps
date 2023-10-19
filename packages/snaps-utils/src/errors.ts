@@ -393,7 +393,7 @@ export function unwrapError(
 
       // Otherwise, we use the original JSON-RPC error.
       const { code, message, data } = error.data.cause;
-      return [new RpcError(code, message, data), true];
+      return [new RpcError(code, message, data), false];
     }
 
     // Otherwise, we throw an internal error with the wrapped error as the
@@ -402,6 +402,11 @@ export function unwrapError(
       new RpcError(errorCodes.rpc.internal, getErrorMessage(error.data.cause)),
       false,
     ];
+  }
+
+  if (isJsonRpcError(error)) {
+    const { code, message, data } = error;
+    return [new RpcError(code, message, data), false];
   }
 
   // If the error is not a wrapped error, we don't know how to handle it, so we

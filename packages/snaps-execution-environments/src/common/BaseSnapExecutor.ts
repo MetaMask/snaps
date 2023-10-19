@@ -16,6 +16,7 @@ import {
   SNAP_EXPORTS,
   getErrorMessage,
   WrappedSnapError,
+  getErrorData,
 } from '@metamask/snaps-utils';
 import type {
   JsonRpcNotification,
@@ -43,7 +44,6 @@ import { sortParamKeys } from './sortParams';
 import {
   assertEthereumOutboundRequest,
   assertSnapOutboundRequest,
-  constructError,
   sanitizeRequestArguments,
   proxyStreamProvider,
   withTeardown,
@@ -155,30 +155,26 @@ export class BaseSnapExecutor {
           return null;
         }
 
-        // TODO: fix handler args type cast
+        let result = await this.executeInSnapContext(target, () =>
+          // TODO: fix handler args type cast
+          handler(args as any),
+        );
+
+        // The handler might not return anything, but undefined is not valid JSON.
+        if (result === undefined) {
+          result = null;
+        }
+
+        // /!\ Always return only sanitized JSON to prevent security flaws. /!\
         try {
-          let result = await this.executeInSnapContext(target, () =>
-            handler(args as any),
-          );
-
-          // The handler might not return anything, but undefined is not valid JSON.
-          if (result === undefined) {
-            result = null;
-          }
-
-          // /!\ Always return only sanitized JSON to prevent security flaws. /!\
-          try {
-            return getSafeJson(result);
-          } catch (error) {
-            throw rpcErrors.internal(
-              `Received non-JSON-serializable value: ${error.message.replace(
-                /^Assertion failed: /u,
-                '',
-              )}`,
-            );
-          }
+          return getSafeJson(result);
         } catch (error) {
-          throw new WrappedSnapError(error);
+          throw rpcErrors.internal(
+            `Received non-JSON-serializable value: ${error.message.replace(
+              /^Assertion failed: /u,
+              '',
+            )}`,
+          );
         }
       },
       this.onTerminate.bind(this),
@@ -186,21 +182,22 @@ export class BaseSnapExecutor {
   }
 
   private errorHandler(error: unknown, data: Record<string, Json>) {
-    const constructedError = constructError(error);
-    const serializedError = serializeError(constructedError, {
-      fallbackError: unhandledError,
+    const serializedError = serializeError(error, {
+      fallbackError: unhandledError.serialize(),
       shouldIncludeStack: false,
     });
 
-    // We're setting it this way to avoid sentData.stack = undefined
-    const sentData: Json = { ...data, stack: constructedError?.stack ?? null };
+    const errorData = getErrorData(serializedError);
 
     this.notify({
       method: 'UnhandledError',
       params: {
         error: {
           ...serializedError,
-          data: sentData,
+          data: {
+            ...errorData,
+            ...data,
+          },
         },
       },
     });
@@ -281,10 +278,9 @@ export class BaseSnapExecutor {
       // This prevents an issue where we wouldn't respond when errors were non-serializable
       this.commandStream.write({
         error: serializeError(
-          new Error('JSON-RPC responses must be JSON serializable objects.'),
-          {
-            fallbackError,
-          },
+          rpcErrors.internal(
+            'JSON-RPC responses must be JSON serializable objects.',
+          ),
         ),
         id,
         jsonrpc: '2.0',
@@ -545,6 +541,8 @@ export class BaseSnapExecutor {
       // If we didn't, we would decrease the amount of running evaluations
       // before the promise actually resolves
       return await Promise.race([executor(), stopPromise]);
+    } catch (error) {
+      throw new WrappedSnapError(error);
     } finally {
       data.runningEvaluations.delete(evaluationData);
 

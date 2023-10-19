@@ -547,7 +547,7 @@ describe('unwrapError', () => {
     expect(unwrappedError.code).toBe(-1);
     expect(unwrappedError.message).toBe('foo');
     expect(unwrappedError.stack).toBeDefined();
-    expect(handled).toBe(true);
+    expect(handled).toBe(false);
   });
 
   it('unwraps a wrapped Snap error with a `rpc-errors` error', () => {
@@ -560,7 +560,7 @@ describe('unwrapError', () => {
     expect(unwrappedError.code).toBe(errorCodes.rpc.invalidParams);
     expect(unwrappedError.message).toBe('foo');
     expect(unwrappedError.stack).toBeDefined();
-    expect(handled).toBe(true);
+    expect(handled).toBe(false);
   });
 
   it('unwraps a wrapped Snap error with a wrapped Snap error', () => {
@@ -607,6 +607,30 @@ describe('unwrapError', () => {
       stack: expect.any(String),
     });
     expect(handled).toBe(true);
+  });
+
+  it('unwraps an unwrapped JSON-RPC error', () => {
+    const error = new JsonRpcError(-1, 'foo');
+
+    const [unwrappedError, handled] = unwrapError(error);
+
+    expect(unwrappedError).toBeInstanceOf(Error);
+    expect(unwrappedError.code).toBe(-1);
+    expect(unwrappedError.message).toBe('foo');
+    expect(unwrappedError.stack).toBeDefined();
+    expect(handled).toBe(false);
+  });
+
+  it('unwraps an unwrapped `rpc-errors` error', () => {
+    const error = rpcErrors.invalidParams('foo');
+
+    const [unwrappedError, handled] = unwrapError(error);
+
+    expect(unwrappedError).toBeInstanceOf(Error);
+    expect(unwrappedError.code).toBe(errorCodes.rpc.invalidParams);
+    expect(unwrappedError.message).toBe('foo');
+    expect(unwrappedError.stack).toBeDefined();
+    expect(handled).toBe(false);
   });
 
   it('unwraps an unknown error', () => {

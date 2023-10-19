@@ -48,10 +48,6 @@ export type Job<WorkerType> = {
   worker: WorkerType;
 };
 
-export class ExecutionEnvironmentError extends Error {
-  cause?: Json;
-}
-
 export abstract class AbstractExecutionService<WorkerType>
   implements ExecutionService
 {

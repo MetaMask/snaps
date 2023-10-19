@@ -26,4 +26,4 @@ export type {
   OnUpdateHandler,
   OnKeyringRequestHandler,
 } from '@metamask/snaps-utils';
-export { SeverityLevel } from '@metamask/snaps-utils';
+export { SeverityLevel, SnapError } from '@metamask/snaps-utils';

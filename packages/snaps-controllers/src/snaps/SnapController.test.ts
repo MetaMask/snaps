@@ -2197,7 +2197,22 @@ describe('SnapController', () => {
         updateChecksum: true,
         sourceCode: `
           module.exports.onRpcRequest = () => {
-            throw new SnapError('foo');
+            class SnapError {
+              serialize() {
+                return {
+                  code: -31002,
+                  message: 'Snap Error',
+                  data: {
+                    cause: {
+                      code: -1,
+                      message: 'foo',
+                    },
+                  },
+                };
+              }
+            }
+
+            throw new SnapError();
           };
         `,
       });
