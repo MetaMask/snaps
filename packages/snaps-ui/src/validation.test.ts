@@ -222,7 +222,7 @@ describe('assertIsComponent', () => {
 
 describe('assertLinksAreSafe', () => {
   it('does not throw for a safe link', async () => {
-    const isOnPhishingList = async () => Promise.resolve(false);
+    const isOnPhishingList = () => false;
 
     expect(async () =>
       assertLinksAreSafe(
@@ -233,7 +233,7 @@ describe('assertLinksAreSafe', () => {
   });
 
   it('throws for an unsafe link component', async () => {
-    const isOnPhishingList = async () => Promise.resolve(true);
+    const isOnPhishingList = () => true;
 
     await expect(async () =>
       assertLinksAreSafe(
@@ -242,30 +242,30 @@ describe('assertLinksAreSafe', () => {
       ),
     ).rejects.toThrow('The provided URL is detected as phishing.');
 
-    await expect(
-      assertLinksAreSafe(
-        text('This tests a link: https://foo.bar'),
-        isOnPhishingList,
-      ),
-    ).rejects.toThrow('The provided URL is detected as phishing.');
-
-    await expect(
-      assertLinksAreSafe(
-        text('This tests a [link](https://foo.bar)'),
-        isOnPhishingList,
-      ),
-    ).rejects.toThrow('The provided URL is detected as phishing.');
-  });
-
-  it('throws for an unsafe text component', async () => {
-    const isOnPhishingList = async () => Promise.resolve(true);
-
     await expect(async () =>
       assertLinksAreSafe(
         panel([
           text('Hello, world!'),
           link('Hello, world!', 'https://foo.bar'),
         ]),
+        isOnPhishingList,
+      ),
+    ).rejects.toThrow('The provided URL is detected as phishing.');
+  });
+
+  it('throws for an unsafe text component', async () => {
+    const isOnPhishingList = () => true;
+
+    await expect(async () =>
+      assertLinksAreSafe(
+        text('This tests a link: https://foo.bar'),
+        isOnPhishingList,
+      ),
+    ).rejects.toThrow('The provided URL is detected as phishing.');
+
+    await expect(async () =>
+      assertLinksAreSafe(
+        text('This tests a [link](https://foo.bar)'),
         isOnPhishingList,
       ),
     ).rejects.toThrow('The provided URL is detected as phishing.');
