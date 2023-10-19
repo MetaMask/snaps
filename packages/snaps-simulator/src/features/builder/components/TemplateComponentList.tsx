@@ -5,7 +5,6 @@ import {
   divider,
   heading,
   image,
-  link,
   panel,
   text,
 } from '@metamask/snaps-ui';
@@ -46,12 +45,6 @@ const TEMPLATE_COMPONENTS: TemplateComponent[] = [
     icon: 'text',
     text: 'Text',
     data: text('Text'),
-    droppable: false,
-  },
-  {
-    icon: 'link',
-    text: 'Link',
-    data: link('Link', 'https://foo.bar'),
     droppable: false,
   },
   {

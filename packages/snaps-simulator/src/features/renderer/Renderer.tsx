@@ -10,7 +10,6 @@ import {
   Heading,
   Spinner,
   Image,
-  Link,
 } from './components';
 
 export const components: Record<
@@ -24,7 +23,6 @@ export const components: Record<
   [NodeType.Spinner]: Spinner,
   [NodeType.Text]: Text,
   [NodeType.Image]: Image,
-  [NodeType.Link]: Link,
 };
 
 type RendererProps = {

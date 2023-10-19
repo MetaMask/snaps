@@ -157,10 +157,6 @@ const DEFAULT_ICONS = {
     alt: 'Text',
     src: textIcon,
   },
-  link: {
-    alt: 'Link',
-    src: textIcon,
-  },
   copyable: {
     alt: 'Copyable',
     src: copyableIcon,
