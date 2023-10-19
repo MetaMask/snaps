@@ -33,7 +33,7 @@ echo "Preparing manifests..."
 while IFS=$'\t' read -r location name; do
   echo "- $name"
   prepare-preview-manifest "$location/package.json"
-done < <(yarn workspaces list --no-private --json | jq --slurp --raw-output 'map(select(.location != ".")) | map([.location, .name]) | map(@tsv) | .[]')
+done < <(yarn workspaces list --json | jq --slurp --raw-output 'map(select(.location != ".")) | map([.location, .name]) | map(@tsv) | .[]')
 
 echo "Installing dependencies..."
 yarn install --no-immutable
