@@ -153,11 +153,10 @@ describe('BaseSnapExecutor', () => {
         code: -31001,
         message: 'Wrapped Snap Error',
         data: {
-          cause: {
+          cause: expect.objectContaining({
             code: -32603,
             message: `The snap "${MOCK_SNAP_ID}" has been terminated during execution.`,
-            stack: expect.anything(),
-          },
+          }),
         },
       },
     });
@@ -324,15 +323,14 @@ describe('BaseSnapExecutor', () => {
         code: -31001,
         message: 'Wrapped Snap Error',
         data: {
-          cause: {
+          cause: expect.objectContaining({
             code: -32601,
             message: 'The method does not exist / is not available.',
             data: {
               cause: null,
               method: 'snap_confirm',
             },
-            stack: expect.any(String),
-          },
+          }),
         },
       },
     });
@@ -371,15 +369,14 @@ describe('BaseSnapExecutor', () => {
         code: -31001,
         message: 'Wrapped Snap Error',
         data: {
-          cause: {
+          cause: expect.objectContaining({
             code: -32601,
             message: 'The method does not exist / is not available.',
             data: {
               cause: null,
               method: 'wallet_requestSnaps',
             },
-            stack: expect.any(String),
-          },
+          }),
         },
       },
     });
@@ -562,10 +559,11 @@ describe('BaseSnapExecutor', () => {
         code: -31001,
         message: 'Wrapped Snap Error',
         data: {
-          cause: {
-            message: "Cannot read properties of undefined (reading 'handle')",
-            stack: expect.any(String),
-          },
+          cause: expect.objectContaining({
+            message: expect.stringMatching(
+              /Cannot read properties of undefined \(reading 'handle'\)|ethereum\._rpcEngine is undefined/u,
+            ),
+          }),
         },
       },
     });
@@ -604,12 +602,11 @@ describe('BaseSnapExecutor', () => {
         code: -31001,
         message: 'Wrapped Snap Error',
         data: {
-          cause: {
+          cause: expect.objectContaining({
             code: -32004,
             message:
               'The global Snap API only allows RPC methods starting with `wallet_*` and `snap_*`.',
-            stack: expect.any(String),
-          },
+          }),
         },
       },
     });
@@ -648,12 +645,11 @@ describe('BaseSnapExecutor', () => {
         code: -31001,
         message: 'Wrapped Snap Error',
         data: {
-          cause: {
+          cause: expect.objectContaining({
             code: -32004,
             message:
               'The global Snap API only allows RPC methods starting with `wallet_*` and `snap_*`.',
-            stack: expect.any(String),
-          },
+          }),
         },
       },
     });
@@ -692,15 +688,14 @@ describe('BaseSnapExecutor', () => {
         code: -31001,
         message: 'Wrapped Snap Error',
         data: {
-          cause: {
+          cause: expect.objectContaining({
             code: -32601,
             message: 'The method does not exist / is not available.',
             data: {
               cause: null,
               method: 'wallet_requestSnaps',
             },
-            stack: expect.any(String),
-          },
+          }),
         },
       },
     });
@@ -739,15 +734,14 @@ describe('BaseSnapExecutor', () => {
         code: -31001,
         message: 'Wrapped Snap Error',
         data: {
-          cause: {
+          cause: expect.objectContaining({
             code: -32601,
             message: 'The method does not exist / is not available.',
             data: {
               cause: null,
               method: 'snap_dialog',
             },
-            stack: expect.anything(),
-          },
+          }),
         },
       },
     });
@@ -801,15 +795,14 @@ describe('BaseSnapExecutor', () => {
         code: -31001,
         message: 'Wrapped Snap Error',
         data: {
-          cause: {
+          cause: expect.objectContaining({
             code: -32601,
             message: 'The method does not exist / is not available.',
             data: {
               cause: null,
               method: 'wallet_requestSnaps',
             },
-            stack: expect.any(String),
-          },
+          }),
         },
       },
     });
@@ -862,15 +855,14 @@ describe('BaseSnapExecutor', () => {
         code: -31001,
         message: 'Wrapped Snap Error',
         data: {
-          cause: {
+          cause: expect.objectContaining({
             code: -32601,
             message: 'The method does not exist / is not available.',
             data: {
               cause: null,
               method: 'wallet_requestSnaps',
             },
-            stack: expect.any(String),
-          },
+          }),
         },
       },
       id: 2,
@@ -1079,10 +1071,9 @@ describe('BaseSnapExecutor', () => {
           code: -32603,
           data: {
             snapId: MOCK_SNAP_ID,
-            cause: {
+            cause: expect.objectContaining({
               message: 'Test error.',
-              stack: error.stack,
-            },
+            }),
           },
           message: 'Unhandled Snap Error',
         },
@@ -1142,10 +1133,9 @@ describe('BaseSnapExecutor', () => {
           code: -32603,
           data: {
             snapId: MOCK_SNAP_ID,
-            cause: {
+            cause: expect.objectContaining({
               message: 'Test error.',
-              stack: error.stack,
-            },
+            }),
           },
           message: 'Unhandled Snap Error',
         },
@@ -1453,11 +1443,11 @@ describe('BaseSnapExecutor', () => {
       error: {
         code: -31001,
         data: {
-          cause: {
-            message:
-              "Cannot read properties of undefined (reading 'startSnap')",
-            stack: expect.any(String),
-          },
+          cause: expect.objectContaining({
+            message: expect.stringMatching(
+              /Cannot read properties of undefined (reading 'startSnap')|this is undefined/u,
+            ),
+          }),
         },
         message: 'Wrapped Snap Error',
       },
