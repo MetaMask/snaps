@@ -2441,6 +2441,12 @@ export class SnapController extends BaseController<
       'ExecutionService:outboundResponse',
       this._onOutboundResponse,
     );
+
+    this.messagingSystem.clearEventSubscriptions(
+      'SnapController:snapInstalled',
+    );
+
+    this.messagingSystem.clearEventSubscriptions('SnapController:snapUpdated');
     /* eslint-enable @typescript-eslint/unbound-method */
   }
 

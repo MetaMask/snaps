@@ -2160,7 +2160,7 @@ describe('SnapController', () => {
         `,
       });
 
-      const [snapController] = getSnapControllerWithEES(
+      const [snapController, service] = getSnapControllerWithEES(
         getSnapControllerWithEESOptions({
           detectSnapLocation: loopbackDetect({
             manifest,
@@ -2190,6 +2190,7 @@ describe('SnapController', () => {
       expect(snapController.state.snaps[MOCK_SNAP_ID].status).toBe('crashed');
 
       snapController.destroy();
+      await service.terminateAllSnaps();
     });
 
     it('does not crash the Snap on handled errors', async () => {
@@ -2217,7 +2218,7 @@ describe('SnapController', () => {
         `,
       });
 
-      const [snapController] = getSnapControllerWithEES(
+      const [snapController, service] = getSnapControllerWithEES(
         getSnapControllerWithEESOptions({
           detectSnapLocation: loopbackDetect({
             manifest,
@@ -2247,6 +2248,7 @@ describe('SnapController', () => {
       expect(snapController.state.snaps[MOCK_SNAP_ID].status).toBe('running');
 
       snapController.destroy();
+      await service.terminateAllSnaps();
     });
   });
 
