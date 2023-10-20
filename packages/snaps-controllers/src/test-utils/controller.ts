@@ -348,7 +348,6 @@ export const getSnapControllerMessenger = (
       'SnapController:getAll',
       'SnapController:getPermitted',
       'SnapController:install',
-      'SnapController:removeSnapError',
       'SnapController:incrementActiveReferences',
       'SnapController:decrementActiveReferences',
       'SnapController:getRegistryMetadata',
@@ -359,6 +358,7 @@ export const getSnapControllerMessenger = (
       'SnapController:disconnectOrigin',
       'SnapController:revokeDynamicPermissions',
       'SnapController:getFile',
+      'SnapsRegistry:resolveVersion',
     ],
   });
 
