@@ -102,6 +102,69 @@ describe('NpmLocation', () => {
     );
   });
 
+  it('fetches a package tarball directly without fetching the metadata when possible', async () => {
+    const { version: templateSnapVersion } = JSON.parse(
+      (
+        await readFile(require.resolve('@metamask/template-snap/package.json'))
+      ).toString('utf8'),
+    );
+
+    const tarballUrl = `https://registry.npmjs.org/@metamask/template-snap/-/template-snap-${templateSnapVersion}.tgz`;
+    fetchMock.mockResponseOnce(
+      (_req) =>
+        Promise.resolve({
+          ok: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          headers: new Headers({ 'content-length': '5477' }),
+          body: createReadStream(
+            path.resolve(
+              __dirname,
+              `../../../test/fixtures/metamask-template-snap-${templateSnapVersion}.tgz`,
+            ),
+          ),
+        }) as any,
+    );
+
+    const location = new NpmLocation(new URL('npm:@metamask/template-snap'), {
+      versionRange: templateSnapVersion,
+      fetch: fetchMock as typeof fetch,
+    });
+
+    const manifest = await location.manifest();
+    const sourceCode = (
+      await location.fetch(manifest.result.source.location.npm.filePath)
+    ).toString();
+    assert(manifest.result.source.location.npm.iconPath);
+    const svgIcon = (
+      await location.fetch(manifest.result.source.location.npm.iconPath)
+    ).toString();
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenNthCalledWith(1, tarballUrl);
+
+    expect(manifest.result).toStrictEqual(
+      JSON.parse(
+        (
+          await readFile(
+            require.resolve('@metamask/template-snap/snap.manifest.json'),
+          )
+        ).toString('utf8'),
+      ),
+    );
+
+    expect(sourceCode).toStrictEqual(
+      (
+        await readFile(
+          require.resolve('@metamask/template-snap/dist/bundle.js'),
+        )
+      ).toString('utf8'),
+    );
+
+    expect(svgIcon?.startsWith('<svg') && svgIcon.endsWith('</svg>')).toBe(
+      true,
+    );
+  });
+
   it('throws if fetch fails', async () => {
     fetchMock.mockResponse(async () => ({ status: 404, body: 'Not found' }));
     const location = new NpmLocation(new URL('npm:@metamask/template-snap'));
