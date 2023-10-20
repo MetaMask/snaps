@@ -706,18 +706,23 @@ export class SnapController extends BaseController<
         },
         snaps: {
           persist: (snaps) => {
-            return Object.values(snaps)
-              .map((snap) => {
-                return {
-                  ...snap,
-                  // At the time state is rehydrated, no snap will be running.
-                  status: SnapStatus.Stopped,
-                };
-              })
-              .reduce((memo: Record<ValidatedSnapId, Snap>, snap) => {
-                memo[snap.id] = snap;
-                return memo;
-              }, {});
+            return (
+              Object.values(snaps)
+                // We should not persist snaps that are in the installing state,
+                // since they haven't completed installation and would be unusable
+                .filter((snap) => snap.status !== SnapStatus.Installing)
+                .map((snap) => {
+                  return {
+                    ...snap,
+                    // At the time state is rehydrated, no snap will be running.
+                    status: SnapStatus.Stopped,
+                  };
+                })
+                .reduce((memo: Record<ValidatedSnapId, Snap>, snap) => {
+                  memo[snap.id] = snap;
+                  return memo;
+                }, {})
+            );
           },
           anonymous: false,
         },

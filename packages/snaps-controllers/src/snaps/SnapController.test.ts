@@ -284,7 +284,7 @@ describe('SnapController', () => {
               version: '0.0.1',
               sourceCode: DEFAULT_SNAP_BUNDLE,
               id,
-              status: SnapStatus.Installing,
+              status: SnapStatus.Stopped,
             }),
           ),
         },
@@ -309,6 +309,41 @@ describe('SnapController', () => {
 
     expect(secondSnapController.state.snaps[id]).toBeDefined();
     expect(secondSnapController.isRunning(id)).toBe(true);
+    firstSnapController.destroy();
+    secondSnapController.destroy();
+  });
+
+  it('does not persist snaps in the installing state', async () => {
+    const firstSnapController = getSnapController(
+      getSnapControllerOptions({
+        state: {
+          snaps: getPersistedSnapsState(
+            getPersistedSnapObject({
+              version: '0.0.1',
+              sourceCode: DEFAULT_SNAP_BUNDLE,
+              status: SnapStatus.Installing,
+            }),
+          ),
+        },
+      }),
+    );
+
+    expect(firstSnapController.state.snaps[MOCK_SNAP_ID]).toBeDefined();
+
+    // persist the state somewhere
+    const persistedState = getPersistentState<SnapControllerState>(
+      firstSnapController.state,
+      firstSnapController.metadata,
+    );
+
+    // create a new controller
+    const secondSnapController = getSnapController(
+      getSnapControllerOptions({
+        state: persistedState,
+      }),
+    );
+
+    expect(secondSnapController.state.snaps[MOCK_SNAP_ID]).toBeUndefined();
     firstSnapController.destroy();
     secondSnapController.destroy();
   });
