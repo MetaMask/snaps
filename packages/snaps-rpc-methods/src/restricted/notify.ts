@@ -6,10 +6,11 @@ import type {
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { EnumToUnion } from '@metamask/snaps-utils';
+import { assertLinksAreSafe } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 import { isObject } from '@metamask/utils';
 
-import { verifyLinks, type MethodHooksObject } from '../utils';
+import { type MethodHooksObject } from '../utils';
 
 const methodName = 'snap_notify';
 
@@ -133,7 +134,7 @@ export function getImplementation({
 
     await maybeUpdatePhishingList();
 
-    verifyLinks(validatedParams.message, isOnPhishingList);
+    assertLinksAreSafe(validatedParams.message, isOnPhishingList);
 
     switch (validatedParams.type) {
       case NotificationType.Native:

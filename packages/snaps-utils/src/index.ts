@@ -29,3 +29,4 @@ export * from './types';
 export * from './validation';
 export * from './versions';
 export * from './virtual-file';
+export { assertLinksAreSafe } from '@metamask/snaps-ui';

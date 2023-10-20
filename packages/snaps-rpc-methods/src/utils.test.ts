@@ -2,7 +2,7 @@ import { SIP_6_MAGIC_VALUE } from '@metamask/snaps-utils';
 import { TEST_SECRET_RECOVERY_PHRASE_BYTES } from '@metamask/snaps-utils/test-utils';
 
 import { ENTROPY_VECTORS } from './__fixtures__';
-import { deriveEntropy, getNode, getPathPrefix, verifyLinks } from './utils';
+import { deriveEntropy, getNode, getPathPrefix } from './utils';
 
 describe('deriveEntropy', () => {
   it.each(ENTROPY_VECTORS)(
@@ -71,34 +71,5 @@ describe('getNode', () => {
         "publicKey": "0x00c9aaf347832dc3b1dbb7aab4f41e5e04c64446b819c0761571c27b9f90eacb27",
       }
     `);
-  });
-});
-
-describe('verifyLinks', () => {
-  it('passes if all the links are valid and not on the phishing list', async () => {
-    const isOnPhishingList = () => false;
-    expect(() =>
-      verifyLinks('testing https://foo.bar.', isOnPhishingList),
-    ).not.toThrow();
-
-    expect(() =>
-      verifyLinks('testing mailto:foo@bar.baz', isOnPhishingList),
-    ).not.toThrow();
-  });
-
-  it('throws an error if a link is invalid', async () => {
-    const isOnPhishingList = () => false;
-
-    await expect(async () =>
-      verifyLinks('an invalid link http://foo.bar', isOnPhishingList),
-    ).rejects.toThrow('The provided URL is invalid.');
-  });
-
-  it('throws an error if a link is on the phishing list.', async () => {
-    const isOnPhishingList = () => true;
-
-    await expect(async () =>
-      verifyLinks('https://foo.bar', isOnPhishingList),
-    ).rejects.toThrow('The provided URL is detected as phishing.');
   });
 });

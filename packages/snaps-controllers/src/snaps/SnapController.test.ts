@@ -10,7 +10,7 @@ import type {
 } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
-import { link } from '@metamask/snaps-ui';
+import { text } from '@metamask/snaps-ui';
 import type {
   SnapPermissions,
   ValidatedSnapId,
@@ -2106,7 +2106,7 @@ describe('SnapController', () => {
         'ExecutionService:handleRpcRequest',
         async () =>
           Promise.resolve({
-            content: link('Foo bar', 'https://foo.bar'),
+            content: text('[Foo bar](https://foo.bar)'),
           }),
       );
 
@@ -2130,7 +2130,7 @@ describe('SnapController', () => {
             id: 1,
           },
         }),
-      ).rejects.toThrow(`The provided URL is detected as phishing.`);
+      ).rejects.toThrow(`Invalid URL: detected as phishing.`);
 
       snapController.destroy();
     });
@@ -2169,7 +2169,7 @@ describe('SnapController', () => {
         'ExecutionService:handleRpcRequest',
         async () =>
           Promise.resolve({
-            content: link('Foo bar', 'https://foo.bar'),
+            content: text('[Foo bar](https://foo.bar)'),
             foo: 'bar',
           }),
       );
@@ -2205,7 +2205,7 @@ describe('SnapController', () => {
         }),
       );
 
-      const handlerResponse = { content: link('foobar', 'https://foo.bar') };
+      const handlerResponse = { content: text('[foobar](https://foo.bar)') };
 
       rootMessenger.registerActionHandler(
         'PermissionController:getPermissions',

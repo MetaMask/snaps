@@ -14,8 +14,6 @@ import {
   unknown,
 } from 'superstruct';
 
-import { url } from './validation';
-
 const NodeStruct = object({
   type: string(),
 });
@@ -67,7 +65,6 @@ export enum NodeType {
   Spinner = 'spinner',
   Text = 'text',
   Image = 'image',
-  Link = 'link',
 }
 
 export const CopyableStruct = assign(
@@ -184,24 +181,6 @@ export const ImageStruct = assign(
 
 export type Image = Infer<typeof ImageStruct>;
 
-export const LinkStruct = assign(
-  LiteralStruct,
-  object({
-    type: literal(NodeType.Link),
-    value: string(),
-    url: url(),
-  }),
-);
-
-/**
- * A link node, that renders a link.
- *
- * @property type - The type of the node, must be the string 'link'.
- * @property value - The text content of the node as plain text.
- * @property url - The URL of the link.
- */
-export type Link = Infer<typeof LinkStruct>;
-
 export const ComponentStruct = union([
   CopyableStruct,
   DividerStruct,
@@ -210,7 +189,6 @@ export const ComponentStruct = union([
   SpinnerStruct,
   TextStruct,
   ImageStruct,
-  LinkStruct,
 ]);
 
 /**

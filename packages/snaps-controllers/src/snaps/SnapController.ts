@@ -31,7 +31,7 @@ import type {
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { BlockReason } from '@metamask/snaps-registry';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
-import { assertLinksAreSafe } from '@metamask/snaps-ui';
+import { assertUILinksAreSafe } from '@metamask/snaps-ui';
 import type {
   FetchedSnapFiles,
   InstallSnapsResult,
@@ -2668,7 +2668,7 @@ export class SnapController extends BaseController<
 
         await this.messagingSystem.call('PhishingController:maybeUpdateState');
 
-        await assertLinksAreSafe(
+        await assertUILinksAreSafe(
           result.content,
           (url: string) =>
             this.messagingSystem.call('PhishingController:testOrigin', url)

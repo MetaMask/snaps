@@ -6,7 +6,7 @@ import type {
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { Component } from '@metamask/snaps-ui';
-import { ComponentStruct, assertLinksAreSafe } from '@metamask/snaps-ui';
+import { ComponentStruct, assertUILinksAreSafe } from '@metamask/snaps-ui';
 import type { EnumToUnion } from '@metamask/snaps-utils';
 import { enumValue } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
@@ -187,7 +187,7 @@ export function getDialogImplementation({
 
     await maybeUpdatePhishingList();
 
-    assertLinksAreSafe(content, isOnPhishingList);
+    assertUILinksAreSafe(content, isOnPhishingList);
 
     const placeholder =
       validatedParams.type === DialogType.Prompt

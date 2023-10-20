@@ -1,4 +1,4 @@
-import type { Component, Link } from '@metamask/snaps-ui';
+import type { Component } from '@metamask/snaps-ui';
 import { NodeType } from '@metamask/snaps-ui';
 import type { FunctionComponent } from 'react';
 
@@ -13,7 +13,7 @@ import {
 } from './components';
 
 export const components: Record<
-  Exclude<NodeType, NodeType.Link>,
+  NodeType,
   FunctionComponent<{ id: string; node: unknown }>
 > = {
   [NodeType.Copyable]: Copyable,
@@ -26,7 +26,7 @@ export const components: Record<
 };
 
 type RendererProps = {
-  node: Exclude<Component, Link>;
+  node: Component;
   id?: string;
 };
 

@@ -1,5 +1,5 @@
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
-import { heading, link, panel, text } from '@metamask/snaps-ui';
+import { heading, panel, text } from '@metamask/snaps-ui';
 
 import type { DialogMethodHooks } from './dialog';
 import { dialogBuilder, DialogType, getDialogImplementation } from './dialog';
@@ -276,10 +276,10 @@ describe('implementation', () => {
           method: 'snap_dialog',
           params: {
             type: DialogType.Confirmation,
-            content: panel([heading('foo'), link('bar', 'https://foo.bar')]),
+            content: panel([heading('foo'), text('[bar](https://foo.bar)')]),
           },
         }),
-      ).rejects.toThrow('The provided URL is detected as phishing.');
+      ).rejects.toThrow('Invalid URL: detected as phishing.');
     });
   });
 });

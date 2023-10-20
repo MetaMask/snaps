@@ -1,5 +1,5 @@
-import { assert, assertStruct } from '@metamask/utils';
-import { is, refine, string } from 'superstruct';
+import { AssertionError, assert, assertStruct } from '@metamask/utils';
+import { is } from 'superstruct';
 
 import type { Component } from './nodes';
 import { ComponentStruct, NodeType } from './nodes';
@@ -26,76 +26,71 @@ export function assertIsComponent(value: unknown): asserts value is Component {
   assertStruct(value, ComponentStruct, 'Invalid component');
 }
 
+const LINK_REGEX = /(?<protocol>[a-z]+:\/?\/?)(?<host>\S+?(?:\.[a-z]+)+)/giu;
+
+enum AlloweProtocols {
+  Https = 'https:',
+  Mailto = 'mailto:',
+}
+
+const ALLOWED_PROTOCOLS = Object.values(AlloweProtocols);
+
 /**
- * Test if a given string is a valid URL.
+ * Searches for links in a sting and checks them against the phishing list.
  *
- * @param value - The value to test.
- * @returns True if it is, ortherwise false.
+ * @param text - The text to verify.
+ * @param isOnPhishingList - The function that checks the link against the phishing list.
  */
-export function isValidUrl(value: string) {
-  try {
-    const validUrl = new URL(value);
-    if (validUrl.protocol === 'https:' || validUrl.protocol === 'mailto:') {
-      return true;
-    }
-    return false;
-  } catch {
-    return false;
+export function assertLinksAreSafe(
+  text: string,
+  isOnPhishingList: (url: string) => boolean,
+) {
+  const links = text.match(LINK_REGEX);
+  if (links) {
+    links.forEach((link) => {
+      try {
+        const url = new URL(link);
+        assert(
+          ALLOWED_PROTOCOLS.includes(url.protocol as AlloweProtocols),
+          `protocol must be one of: ${ALLOWED_PROTOCOLS.join(', ')}`,
+        );
+
+        const hostname =
+          url.protocol === AlloweProtocols.Mailto
+            ? url.pathname.split('@')[1]
+            : url.hostname;
+
+        assert(!isOnPhishingList(hostname), 'detected as phishing');
+      } catch (error) {
+        throw new Error(
+          `Invalid URL: ${
+            error instanceof AssertionError ? error.message : 'invalid sintax'
+          }.`,
+        );
+      }
+    });
   }
 }
 
 /**
- * Check if the given value is a valid URL on https or mailto protocol.
- *
- * @returns `true` if the value is a valid URL, the appropriate error message otherwise.
- */
-export const url = () => {
-  return refine(string(), 'url', (value) => {
-    if (isValidUrl(value)) {
-      return true;
-    }
-
-    return 'The URL is invalid.';
-  });
-};
-
-const LINK_REGEX = /(?<protocol>[a-z]+:\/\/)?(?<host>\S+?(?:\.\S+)+)/giu;
-
-/**
- * Searches for {@link Links} components and checks that the URL they are trying to
+ * Searches for links in UI components and checks that the URL they are trying to
  * pass in not in the phishing list.
  *
  * @param component - The custom UI component.
  * @param isOnPhishingList - The function that checks the link against the phishing list.
  */
-export function assertLinksAreSafe(
+export function assertUILinksAreSafe(
   component: Component,
   isOnPhishingList: (url: string) => boolean,
 ) {
   const { type } = component;
   if (type === NodeType.Panel) {
     component.children.forEach((node) =>
-      assertLinksAreSafe(node, isOnPhishingList),
-    );
-  }
-
-  if (component.type === NodeType.Link) {
-    assert(
-      !isOnPhishingList(component.url),
-      'The provided URL is detected as phishing.',
+      assertUILinksAreSafe(node, isOnPhishingList),
     );
   }
 
   if (component.type === NodeType.Text) {
-    const links = component.value.match(LINK_REGEX);
-
-    if (links) {
-      links.forEach((link) =>
-        assert(
-          !isOnPhishingList(link),
-          'The provided URL is detected as phishing.',
-        ),
-      );
-    }
+    assertLinksAreSafe(component.value, isOnPhishingList);
   }
 }

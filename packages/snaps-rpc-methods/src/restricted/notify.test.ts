@@ -179,7 +179,7 @@ describe('snap_notify', () => {
             message: 'https://foo.bar',
           },
         }),
-      ).rejects.toThrow('The provided URL is detected as phishing.');
+      ).rejects.toThrow('Invalid URL: detected as phishing.');
     });
 
     it('throws an error if a link is invalid', async () => {
@@ -206,7 +206,9 @@ describe('snap_notify', () => {
             message: 'http://foo.bar',
           },
         }),
-      ).rejects.toThrow('The provided URL is invalid.');
+      ).rejects.toThrow(
+        'Invalid URL: protocol must be one of: https:, mailto:.',
+      );
     });
   });
 

@@ -7,7 +7,6 @@ import {
   DividerStruct,
   HeadingStruct,
   ImageStruct,
-  LinkStruct,
   NodeType,
   PanelStruct,
   SpinnerStruct,
@@ -196,19 +195,3 @@ export const text = createBuilder(NodeType.Text, TextStruct, [
 ]);
 
 export const image = createBuilder(NodeType.Image, ImageStruct, ['value']);
-
-/**
- * Create a {@link Link} node.
- *
- * @param args - The node arguments. This can be either a string
- * and a boolean, or an object with a `value` and `url` property
- * @param args.value - The text content of the node.
- * @param args.url - The URL of the link.
- * @returns The text node as object.
- * @example
- * ```typescript
- * const node = link({ value: 'Hello, world!', url: 'https://foo.bar'});
- * const node = link('Hello, world!', 'https://foo.bar');
- * ```
- */
-export const link = createBuilder(NodeType.Link, LinkStruct, ['value', 'url']);
