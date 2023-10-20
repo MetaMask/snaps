@@ -15,7 +15,7 @@ import type {
   JsonRpcRequest,
   JsonRpcSuccess,
   PendingJsonRpcResponse,
-} from '@metamask/types';
+} from '@metamask/utils';
 
 import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
 import {

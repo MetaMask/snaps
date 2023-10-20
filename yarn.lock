@@ -4469,7 +4469,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/rpc-errors": ^5.1.1
+    "@metamask/rpc-errors": ^6.1.0
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-types": "workspace:^"
@@ -4951,16 +4951,6 @@ __metadata:
     typescript: ~4.8.4
   languageName: unknown
   linkType: soft
-
-"@metamask/rpc-errors@npm:^5.1.1":
-  version: 5.1.1
-  resolution: "@metamask/rpc-errors@npm:5.1.1"
-  dependencies:
-    "@metamask/utils": ^5.0.0
-    fast-safe-stringify: ^2.0.6
-  checksum: ccd1b24da66af3ae63960b79c04b86efb8b96acb89ca6f7e0bbfe636d23ba5cddeba533c0692eafb87c44ec6f840085372d0f21b39e05df9a80700ff61538a30
-  languageName: node
-  linkType: hard
 
 "@metamask/rpc-errors@npm:^6.0.0, @metamask/rpc-errors@npm:^6.1.0":
   version: 6.1.0
@@ -5463,7 +5453,6 @@ __metadata:
     "@metamask/json-rpc-engine": ^7.1.1
     "@metamask/key-tree": ^9.0.0
     "@metamask/permission-controller": ^5.0.0
-    "@metamask/rpc-errors": ^6.1.0
     "@metamask/snaps-controllers": "workspace:^"
     "@metamask/snaps-execution-environments": "workspace:^"
     "@metamask/snaps-rpc-methods": "workspace:^"

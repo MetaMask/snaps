@@ -14,7 +14,9 @@ import {
   SNAP_EXPORT_NAMES,
   logError,
   SNAP_EXPORTS,
-  getErrorMessage,
+  WrappedSnapError,
+  getErrorData,
+  unwrapError,
 } from '@metamask/snaps-utils';
 import type {
   JsonRpcNotification,
@@ -42,7 +44,6 @@ import { sortParamKeys } from './sortParams';
 import {
   assertEthereumOutboundRequest,
   assertSnapOutboundRequest,
-  constructError,
   sanitizeRequestArguments,
   proxyStreamProvider,
   withTeardown,
@@ -68,6 +69,12 @@ const fallbackError = {
   code: errorCodes.rpc.internal,
   message: 'Execution Environment Error',
 };
+
+const unhandledError = rpcErrors
+  .internal<Json>({
+    message: 'Unhandled Snap Error',
+  })
+  .serialize();
 
 export type InvokeSnapArgs = Omit<SnapExportsParameters[0], 'chainId'>;
 
@@ -150,8 +157,8 @@ export class BaseSnapExecutor {
           return null;
         }
 
-        // TODO: fix handler args type cast
         let result = await this.executeInSnapContext(target, () =>
+          // TODO: fix handler args type cast
           handler(args as any),
         );
 
@@ -177,21 +184,22 @@ export class BaseSnapExecutor {
   }
 
   private errorHandler(error: unknown, data: Record<string, Json>) {
-    const constructedError = constructError(error);
-    const serializedError = serializeError(constructedError, {
-      fallbackError,
+    const serializedError = serializeError(error, {
+      fallbackError: unhandledError,
       shouldIncludeStack: false,
     });
 
-    // We're setting it this way to avoid sentData.stack = undefined
-    const sentData: Json = { ...data, stack: constructedError?.stack ?? null };
+    const errorData = getErrorData(serializedError);
 
     this.notify({
       method: 'UnhandledError',
       params: {
         error: {
           ...serializedError,
-          data: sentData,
+          data: {
+            ...errorData,
+            ...data,
+          },
         },
       },
     });
@@ -272,10 +280,9 @@ export class BaseSnapExecutor {
       // This prevents an issue where we wouldn't respond when errors were non-serializable
       this.commandStream.write({
         error: serializeError(
-          new Error('JSON-RPC responses must be JSON serializable objects.'),
-          {
-            fallbackError,
-          },
+          rpcErrors.internal(
+            'JSON-RPC responses must be JSON serializable objects.',
+          ),
         ),
         id,
         jsonrpc: '2.0',
@@ -358,6 +365,7 @@ export class BaseSnapExecutor {
         module: snapModule,
         exports: snapModule.exports,
       });
+
       // All of those are JavaScript runtime specific and self referential,
       // but we add them for compatibility sake with external libraries.
       //
@@ -373,14 +381,12 @@ export class BaseSnapExecutor {
       });
     } catch (error) {
       this.removeSnap(snapId);
+
+      const [cause] = unwrapError(error);
       throw rpcErrors.internal({
-        message: `Error while running snap '${snapId}': ${getErrorMessage(
-          error,
-        )}`,
+        message: `Error while running snap '${snapId}': ${cause.message}`,
         data: {
-          cause: serializeError(error, {
-            fallbackError,
-          }),
+          cause: cause.serialize(),
         },
       });
     }
@@ -535,6 +541,8 @@ export class BaseSnapExecutor {
       // If we didn't, we would decrease the amount of running evaluations
       // before the promise actually resolves
       return await Promise.race([executor(), stopPromise]);
+    } catch (error) {
+      throw new WrappedSnapError(error);
     } finally {
       data.runningEvaluations.delete(evaluationData);
 

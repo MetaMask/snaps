@@ -12,13 +12,12 @@ describe('onRpcRequest', () => {
     });
 
     expect(response).toRespondWithError({
-      code: -32603,
-      message: 'Internal JSON-RPC error.',
+      code: -32601,
+      message: 'The method does not exist / is not available.',
+      stack: expect.any(String),
       data: {
-        cause: {
-          message: 'The method does not exist / is not available.',
-          stack: expect.any(String),
-        },
+        method: 'foo',
+        cause: null,
       },
     });
 
@@ -75,15 +74,10 @@ describe('onRpcRequest', () => {
       });
 
       expect(response).toRespondWithError({
-        code: -32603,
-        message: 'Internal JSON-RPC error.',
-        data: {
-          cause: {
-            message:
-              'The requested path is not permitted. Allowed paths must be specified in the snap manifest.',
-            stack: expect.any(String),
-          },
-        },
+        code: 4100,
+        message:
+          'The requested path is not permitted. Allowed paths must be specified in the snap manifest.',
+        stack: expect.any(String),
       });
 
       await close();
@@ -101,15 +95,10 @@ describe('onRpcRequest', () => {
       });
 
       expect(response).toRespondWithError({
-        code: -32603,
-        message: 'Internal JSON-RPC error.',
-        data: {
-          cause: {
-            message:
-              'The requested path is not permitted. Allowed paths must be specified in the snap manifest.',
-            stack: expect.any(String),
-          },
-        },
+        code: 4100,
+        message:
+          'The requested path is not permitted. Allowed paths must be specified in the snap manifest.',
+        stack: expect.any(String),
       });
 
       await close();
@@ -202,14 +191,9 @@ describe('onRpcRequest', () => {
       await ui.cancel();
 
       expect(await response).toRespondWithError({
-        code: -32603,
-        message: 'Internal JSON-RPC error.',
-        data: {
-          cause: {
-            message: 'User rejected the request.',
-            stack: expect.any(String),
-          },
-        },
+        code: 4001,
+        message: 'User rejected the request.',
+        stack: expect.any(String),
       });
 
       await close();

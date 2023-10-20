@@ -1,3 +1,5 @@
+import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { Snap } from '@metamask/snaps-utils';
 import {
@@ -6,12 +8,7 @@ import {
   type SnapId,
   type SnapRpcHookArgs,
 } from '@metamask/snaps-utils';
-import type {
-  PermittedHandlerExport,
-  PendingJsonRpcResponse,
-  JsonRpcEngineEndCallback,
-  JsonRpcRequest,
-} from '@metamask/types';
+import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
 import { hasProperty, type Json } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
@@ -30,8 +27,8 @@ const hookNames: MethodHooksObject<InvokeKeyringHooks> = {
  */
 export const invokeKeyringHandler: PermittedHandlerExport<
   InvokeKeyringHooks,
-  JsonRpcRequest<unknown>,
-  unknown
+  JsonRpcRequest,
+  Json
 > = {
   methodNames: ['wallet_invokeKeyring'],
   implementation: invokeKeyringImplementation,
@@ -71,8 +68,8 @@ export type InvokeKeyringHooks = {
  * @returns Nothing.
  */
 async function invokeKeyringImplementation(
-  req: JsonRpcRequest<unknown>,
-  res: PendingJsonRpcResponse<unknown>,
+  req: JsonRpcRequest,
+  res: PendingJsonRpcResponse<Json>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
   {
@@ -90,7 +87,7 @@ async function invokeKeyringImplementation(
   }
 
   // We expect the MM middleware stack to always add the origin to requests
-  const { origin } = req as JsonRpcRequest<unknown> & { origin: string };
+  const { origin } = req as JsonRpcRequest & { origin: string };
   const { snapId, request } = params;
 
   if (!origin || !hasPermission(origin, WALLET_SNAP_PERMISSION_KEY)) {

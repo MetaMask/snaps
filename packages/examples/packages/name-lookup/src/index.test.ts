@@ -1,7 +1,7 @@
 import { describe, it } from '@jest/globals';
+import type { OnNameLookupArgs } from '@metamask/snaps-types';
 
 import { onNameLookup } from '.';
-import type { OnNameLookupArgs } from '../../../../snaps-utils/src';
 
 const DOMAIN_MOCK = 'test.domain';
 const ADDRESS_MOCK = '0xc0ffee254729296a45a3885639AC7E10F9d54979';

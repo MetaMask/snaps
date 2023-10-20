@@ -61,6 +61,7 @@ import {
   SnapStatus,
   SnapStatusEvents,
   validateFetchedSnap,
+  unwrapError,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
@@ -2445,6 +2446,12 @@ export class SnapController extends BaseController<
       'ExecutionService:outboundResponse',
       this._onOutboundResponse,
     );
+
+    this.messagingSystem.clearEventSubscriptions(
+      'SnapController:snapInstalled',
+    );
+
+    this.messagingSystem.clearEventSubscriptions('SnapController:snapUpdated');
     /* eslint-enable @typescript-eslint/unbound-method */
   }
 
@@ -2605,8 +2612,13 @@ export class SnapController extends BaseController<
         this.#recordSnapRpcRequestFinish(snapId, request.id);
         return result;
       } catch (error) {
-        await this.stopSnap(snapId, SnapStatusEvents.Crash);
-        throw error;
+        const [jsonRpcError, handled] = unwrapError(error);
+
+        if (!handled) {
+          await this.stopSnap(snapId, SnapStatusEvents.Crash);
+        }
+
+        throw jsonRpcError;
       }
     };
 

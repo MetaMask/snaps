@@ -147,13 +147,18 @@ describe('BaseSnapExecutor', () => {
     });
 
     expect(await executor.readCommand()).toStrictEqual({
-      error: {
-        code: -32603,
-        message: `The snap "${MOCK_SNAP_ID}" has been terminated during execution.`,
-        stack: expect.anything(),
-      },
-      id: 2,
       jsonrpc: '2.0',
+      id: 2,
+      error: {
+        code: -31001,
+        message: 'Wrapped Snap Error',
+        data: {
+          cause: expect.objectContaining({
+            code: -32603,
+            message: `The snap "${MOCK_SNAP_ID}" has been terminated during execution.`,
+          }),
+        },
+      },
     });
   });
 
@@ -313,16 +318,21 @@ describe('BaseSnapExecutor', () => {
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
-      error: {
-        code: -32601,
-        message: 'The method does not exist / is not available.',
-        data: {
-          cause: null,
-          method: 'snap_confirm',
-        },
-        stack: expect.any(String),
-      },
       id: 2,
+      error: {
+        code: -31001,
+        message: 'Wrapped Snap Error',
+        data: {
+          cause: expect.objectContaining({
+            code: -32601,
+            message: 'The method does not exist / is not available.',
+            data: {
+              cause: null,
+              method: 'snap_confirm',
+            },
+          }),
+        },
+      },
     });
   });
 
@@ -354,16 +364,21 @@ describe('BaseSnapExecutor', () => {
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
-      error: {
-        code: -32601,
-        message: 'The method does not exist / is not available.',
-        data: {
-          cause: null,
-          method: 'wallet_requestSnaps',
-        },
-        stack: expect.any(String),
-      },
       id: 2,
+      error: {
+        code: -31001,
+        message: 'Wrapped Snap Error',
+        data: {
+          cause: expect.objectContaining({
+            code: -32601,
+            message: 'The method does not exist / is not available.',
+            data: {
+              cause: null,
+              method: 'wallet_requestSnaps',
+            },
+          }),
+        },
+      },
     });
   });
 
@@ -539,13 +554,18 @@ describe('BaseSnapExecutor', () => {
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
-      error: {
-        code: -32603,
-        // TODO: Unwrap errors, and change this to the actual error message.
-        message: 'Execution Environment Error',
-        data: expect.any(Object),
-      },
       id: 2,
+      error: {
+        code: -31001,
+        message: 'Wrapped Snap Error',
+        data: {
+          cause: expect.objectContaining({
+            message: expect.stringMatching(
+              /Cannot read properties of undefined \(reading 'handle'\)|ethereum\._rpcEngine is undefined/u,
+            ),
+          }),
+        },
+      },
     });
   });
 
@@ -577,13 +597,18 @@ describe('BaseSnapExecutor', () => {
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
-      error: {
-        code: -32004,
-        message:
-          'The global Snap API only allows RPC methods starting with `wallet_*` and `snap_*`.',
-        stack: expect.any(String),
-      },
       id: 2,
+      error: {
+        code: -31001,
+        message: 'Wrapped Snap Error',
+        data: {
+          cause: expect.objectContaining({
+            code: -32004,
+            message:
+              'The global Snap API only allows RPC methods starting with `wallet_*` and `snap_*`.',
+          }),
+        },
+      },
     });
   });
 
@@ -615,13 +640,18 @@ describe('BaseSnapExecutor', () => {
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
-      error: {
-        code: -32004,
-        message:
-          'The global Snap API only allows RPC methods starting with `wallet_*` and `snap_*`.',
-        stack: expect.any(String),
-      },
       id: 2,
+      error: {
+        code: -31001,
+        message: 'Wrapped Snap Error',
+        data: {
+          cause: expect.objectContaining({
+            code: -32004,
+            message:
+              'The global Snap API only allows RPC methods starting with `wallet_*` and `snap_*`.',
+          }),
+        },
+      },
     });
   });
 
@@ -653,16 +683,21 @@ describe('BaseSnapExecutor', () => {
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
-      error: {
-        code: -32601,
-        message: 'The method does not exist / is not available.',
-        data: {
-          cause: null,
-          method: 'wallet_requestSnaps',
-        },
-        stack: expect.any(String),
-      },
       id: 2,
+      error: {
+        code: -31001,
+        message: 'Wrapped Snap Error',
+        data: {
+          cause: expect.objectContaining({
+            code: -32601,
+            message: 'The method does not exist / is not available.',
+            data: {
+              cause: null,
+              method: 'wallet_requestSnaps',
+            },
+          }),
+        },
+      },
     });
   });
 
@@ -694,16 +729,21 @@ describe('BaseSnapExecutor', () => {
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
-      error: {
-        code: -32601,
-        message: 'The method does not exist / is not available.',
-        data: {
-          cause: null,
-          method: 'snap_dialog',
-        },
-        stack: expect.anything(),
-      },
       id: 2,
+      error: {
+        code: -31001,
+        message: 'Wrapped Snap Error',
+        data: {
+          cause: expect.objectContaining({
+            code: -32601,
+            message: 'The method does not exist / is not available.',
+            data: {
+              cause: null,
+              method: 'snap_dialog',
+            },
+          }),
+        },
+      },
     });
   });
 
@@ -750,16 +790,21 @@ describe('BaseSnapExecutor', () => {
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
-      error: {
-        code: -32601,
-        message: 'The method does not exist / is not available.',
-        data: {
-          cause: null,
-          method: 'wallet_requestSnaps',
-        },
-        stack: expect.any(String),
-      },
       id: 2,
+      error: {
+        code: -31001,
+        message: 'Wrapped Snap Error',
+        data: {
+          cause: expect.objectContaining({
+            code: -32601,
+            message: 'The method does not exist / is not available.',
+            data: {
+              cause: null,
+              method: 'wallet_requestSnaps',
+            },
+          }),
+        },
+      },
     });
   });
 
@@ -807,13 +852,18 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       error: {
-        code: -32601,
-        message: 'The method does not exist / is not available.',
+        code: -31001,
+        message: 'Wrapped Snap Error',
         data: {
-          cause: null,
-          method: 'wallet_requestSnaps',
+          cause: expect.objectContaining({
+            code: -32601,
+            message: 'The method does not exist / is not available.',
+            data: {
+              cause: null,
+              method: 'wallet_requestSnaps',
+            },
+          }),
         },
-        stack: expect.any(String),
       },
       id: 2,
     });
@@ -1020,11 +1070,12 @@ describe('BaseSnapExecutor', () => {
         error: {
           code: -32603,
           data: {
-            stack: error.stack,
             snapId: MOCK_SNAP_ID,
+            cause: expect.objectContaining({
+              message: 'Test error.',
+            }),
           },
-          // TODO: Unwrap errors, and change this to the actual error message.
-          message: 'Execution Environment Error',
+          message: 'Unhandled Snap Error',
         },
       },
     });
@@ -1081,16 +1132,41 @@ describe('BaseSnapExecutor', () => {
         error: {
           code: -32603,
           data: {
-            stack: error.stack,
             snapId: MOCK_SNAP_ID,
+            cause: expect.objectContaining({
+              message: 'Test error.',
+            }),
           },
-          // TODO: Unwrap errors, and change this to the actual error message.
-          message: 'Execution Environment Error',
+          message: 'Unhandled Snap Error',
         },
       },
     });
 
     addEventListenerSpy.reset();
+  });
+
+  it('throws an internal error if the Snap fails to start', async () => {
+    const CODE = `
+      throw new Error('Failed to start.');
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['ethereum']);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      error: expect.objectContaining({
+        code: -32603,
+        message: `Error while running snap '${MOCK_SNAP_ID}': Failed to start.`,
+        data: {
+          cause: expect.objectContaining({
+            code: -32603,
+            message: 'Failed to start.',
+          }),
+        },
+      }),
+    });
   });
 
   it('supports onTransaction export', async () => {
@@ -1389,10 +1465,15 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       error: {
-        code: -32603,
-        data: expect.anything(),
-        // TODO: Unwrap errors, and change this to the actual error message.
-        message: 'Execution Environment Error',
+        code: -31001,
+        data: {
+          cause: expect.objectContaining({
+            message: expect.stringMatching(
+              /Cannot read properties of undefined \(reading 'startSnap'\)|this is undefined/u,
+            ),
+          }),
+        },
+        message: 'Wrapped Snap Error',
       },
     });
 
@@ -1716,44 +1797,6 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('throws when trying to throw an unserializable value', async () => {
-    const CODE = `
-      module.exports.onRpcRequest = () => { const error = new Error("foo"); error.data = BigInt(0); throw error; };
-    `;
-
-    const executor = new TestSnapExecutor();
-    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
-
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      id: 1,
-      result: 'OK',
-    });
-
-    await executor.writeCommand({
-      jsonrpc: '2.0',
-      id: 2,
-      method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
-    });
-
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      id: 2,
-      error: {
-        code: -32603,
-        data: expect.any(Object),
-        // TODO: Unwrap errors, and change this to the actual error message.
-        message: 'Execution Environment Error',
-      },
-    });
-  });
-
   it('contains the self-referential global scopes', async () => {
     const CODE = `
       module.exports.onRpcRequest = () => globalThis !== undefined &&
@@ -1789,6 +1832,71 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       result: true,
+    });
+  });
+
+  it('handles `SnapError`s', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => {
+        class SnapError {
+          serialize() {
+            return {
+              code: -31002,
+              message: 'Snap Error',
+              data: {
+                cause: {
+                  code: -1,
+                  message: 'Snap error message.',
+                },
+              },
+            };
+          }
+        }
+
+        throw new SnapError();
+      };
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: 'foo', params: {} },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      error: {
+        code: -31001,
+        message: 'Wrapped Snap Error',
+        data: {
+          cause: {
+            code: -31002,
+            message: 'Snap Error',
+            data: {
+              cause: {
+                code: -1,
+                message: 'Snap error message.',
+              },
+            },
+          },
+        },
+      },
     });
   });
 

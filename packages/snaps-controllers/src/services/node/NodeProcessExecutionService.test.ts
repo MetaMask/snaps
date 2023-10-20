@@ -1,8 +1,8 @@
+import { JsonRpcError } from '@metamask/rpc-errors';
 import type { SnapId } from '@metamask/snaps-utils';
 import { HandlerType } from '@metamask/snaps-utils';
 
 import { createService, MOCK_BLOCK_NUMBER } from '../../test-utils';
-import { ExecutionEnvironmentError } from '../AbstractExecutionService';
 import type { SnapErrorJson } from '../ExecutionService';
 import { NodeProcessExecutionService } from './NodeProcessExecutionService';
 
@@ -72,13 +72,20 @@ describe('NodeProcessExecutionService', () => {
       })
       .catch((error) => error);
 
-    expect(result).toBeInstanceOf(ExecutionEnvironmentError);
+    expect(result).toBeInstanceOf(JsonRpcError);
 
+    // @ts-expect-error - This is a `JsonRpcError`.
     // eslint-disable-next-line jest/prefer-strict-equal
-    expect((result as ExecutionEnvironmentError).cause).toEqual({
-      // TODO: Unwrap errors, and change this to the actual error message.
-      message: 'foobar',
+    expect(result.serialize()).toEqual({
+      code: -31001,
+      message: 'Wrapped Snap Error',
       stack: expect.any(String),
+      data: {
+        cause: {
+          message: 'foobar',
+          stack: expect.any(String),
+        },
+      },
     });
 
     await service.terminateAllSnaps();
@@ -137,10 +144,12 @@ describe('NodeProcessExecutionService', () => {
       code: -32603,
       data: {
         snapId: 'TestSnap',
-        stack: expect.stringContaining('Error: random error inside'),
+        cause: {
+          message: 'random error inside',
+          stack: expect.any(String),
+        },
       },
-      // TODO: Unwrap errors, and change this to the actual error message.
-      message: 'Execution Environment Error',
+      message: 'Unhandled Snap Error',
     });
 
     await service.terminateAllSnaps();
