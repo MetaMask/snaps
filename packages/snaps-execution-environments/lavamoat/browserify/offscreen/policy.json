@@ -144,7 +144,6 @@
     "external:../snaps-ui/src/nodes.ts": {
       "packages": {
         "@metamask/snaps-utils>is-svg": true,
-        "external:../snaps-ui/src/validation.ts": true,
         "superstruct": true
       }
     },
