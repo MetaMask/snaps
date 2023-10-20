@@ -22,6 +22,7 @@ export const Text: FunctionComponent<TextProps> = ({ node, id }) => {
             {value}
           </ChakraText>
         ),
+        // TODO: Update styling
         a: ({ children: value, href }) => (
           <ChakraLink
             href={href}

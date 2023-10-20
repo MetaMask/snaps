@@ -112,6 +112,7 @@ export function* initSaga({ payload }: PayloadAction<string>) {
       clearSnapState: async (...args: Parameters<typeof updateSnapState>) =>
         await runSaga(updateSnapState, args[0], null).toPromise(),
       maybeUpdatePhishingList: async () => Promise.resolve(),
+      // TODO: Allow changing this ?
       isOnPhishingList: () => false,
     }),
   };
