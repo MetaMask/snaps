@@ -1445,7 +1445,7 @@ describe('BaseSnapExecutor', () => {
         data: {
           cause: expect.objectContaining({
             message: expect.stringMatching(
-              /Cannot read properties of undefined (reading 'startSnap')|this is undefined/u,
+              /Cannot read properties of undefined \(reading 'startSnap'\)|this is undefined/u,
             ),
           }),
         },
