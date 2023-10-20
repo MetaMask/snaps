@@ -1145,6 +1145,30 @@ describe('BaseSnapExecutor', () => {
     addEventListenerSpy.reset();
   });
 
+  it('throws an internal error if the Snap fails to start', async () => {
+    const CODE = `
+      throw new Error('Failed to start.');
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['ethereum']);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      error: expect.objectContaining({
+        code: -32603,
+        message: `Error while running snap '${MOCK_SNAP_ID}': Failed to start.`,
+        data: {
+          cause: expect.objectContaining({
+            code: -32603,
+            message: 'Failed to start.',
+          }),
+        },
+      }),
+    });
+  });
+
   it('supports onTransaction export', async () => {
     const CODE = `
       module.exports.onTransaction = ({ transaction, chainId, transactionOrigin }) =>

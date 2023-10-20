@@ -17,6 +17,7 @@ import {
   getErrorMessage,
   WrappedSnapError,
   getErrorData,
+  unwrapError,
 } from '@metamask/snaps-utils';
 import type {
   JsonRpcNotification,
@@ -381,14 +382,14 @@ export class BaseSnapExecutor {
       });
     } catch (error) {
       this.removeSnap(snapId);
+
+      const [cause] = unwrapError(error);
       throw rpcErrors.internal({
         message: `Error while running snap '${snapId}': ${getErrorMessage(
           error,
         )}`,
         data: {
-          cause: serializeError(error, {
-            fallbackError,
-          }),
+          cause: cause.serialize(),
         },
       });
     }
