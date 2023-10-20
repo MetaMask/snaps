@@ -84,14 +84,9 @@ describe('onRpcRequest', () => {
       await ui.cancel();
 
       expect(await response).toRespondWithError({
-        code: -32603,
-        message: 'Internal JSON-RPC error.',
-        data: {
-          cause: {
-            message: 'User rejected the request.',
-            stack: expect.any(String),
-          },
-        },
+        code: 4001,
+        message: 'User rejected the request.',
+        stack: expect.any(String),
       });
 
       await close();
