@@ -5134,7 +5134,6 @@ __metadata:
     "@metamask/permission-controller": ^5.0.0
     "@metamask/post-message-stream": ^7.0.0
     "@metamask/rpc-errors": ^6.1.0
-    "@metamask/snaps-execution-environments": "workspace:^"
     "@metamask/snaps-registry": ^2.1.0
     "@metamask/snaps-rpc-methods": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
