@@ -65,7 +65,7 @@
     "@lavamoat/allow-scripts": "^2.5.1",
     "@lavamoat/lavapack": "^5.4.1",
     "@lavamoat/lavatube": "^0.2.3",
-    "@metamask/auto-changelog": "^3.3.0",
+    "@metamask/auto-changelog": "^3.4.0",
     "@metamask/eslint-config": "^12.1.0",
     "@metamask/eslint-config-jest": "^12.1.0",
     "@metamask/eslint-config-nodejs": "^12.1.0",

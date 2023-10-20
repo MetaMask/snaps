@@ -3731,6 +3731,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/auto-changelog@npm:^3.4.0":
+  version: 3.4.0
+  resolution: "@metamask/auto-changelog@npm:3.4.0"
+  dependencies:
+    diff: ^5.0.0
+    execa: ^5.1.1
+    prettier: ^2.8.8
+    semver: ^7.3.5
+    yargs: ^17.0.1
+  bin:
+    auto-changelog: dist/cli.js
+  checksum: 7f87012c25d35ca50429535c0a71bed5675e9e5d9449ed9a7a5ce58c6558db80da5375223557fc4c6d5a13062a9e294860386ee196815bf5ef933062ea77f3dc
+  languageName: node
+  linkType: hard
+
 "@metamask/base-controller@npm:^3.2.0, @metamask/base-controller@npm:^3.2.2":
   version: 3.2.2
   resolution: "@metamask/base-controller@npm:3.2.2"
@@ -4032,7 +4047,7 @@ __metadata:
   resolution: "@metamask/create-snap@workspace:packages/create-snap"
   dependencies:
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.3.0
+    "@metamask/auto-changelog": ^3.4.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4383,7 +4398,7 @@ __metadata:
   resolution: "@metamask/example-snaps@workspace:packages/examples"
   dependencies:
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.3.0
+    "@metamask/auto-changelog": ^3.4.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -4968,7 +4983,7 @@ __metadata:
   resolution: "@metamask/snaps-browserify-plugin@workspace:packages/snaps-browserify-plugin"
   dependencies:
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.3.0
+    "@metamask/auto-changelog": ^3.4.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5018,7 +5033,7 @@ __metadata:
     "@babel/preset-env": ^7.23.2
     "@babel/preset-typescript": ^7.23.2
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.3.0
+    "@metamask/auto-changelog": ^3.4.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5107,7 +5122,7 @@ __metadata:
     "@esbuild-plugins/node-modules-polyfill": ^0.2.2
     "@lavamoat/allow-scripts": ^2.5.1
     "@metamask/approval-controller": ^3.5.0
-    "@metamask/auto-changelog": ^3.3.0
+    "@metamask/auto-changelog": ^3.4.0
     "@metamask/base-controller": ^3.2.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -5198,7 +5213,7 @@ __metadata:
     "@lavamoat/allow-scripts": ^2.5.1
     "@lavamoat/lavapack": ^5.4.1
     "@lavamoat/lavatube": ^0.2.3
-    "@metamask/auto-changelog": ^3.3.0
+    "@metamask/auto-changelog": ^3.4.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5275,7 +5290,7 @@ __metadata:
     "@jest/expect": ^29.5.0
     "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.3.0
+    "@metamask/auto-changelog": ^3.4.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5335,7 +5350,7 @@ __metadata:
   resolution: "@metamask/snaps-rollup-plugin@workspace:packages/snaps-rollup-plugin"
   dependencies:
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.3.0
+    "@metamask/auto-changelog": ^3.4.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5374,7 +5389,7 @@ __metadata:
   resolution: "@metamask/snaps-rpc-methods@workspace:packages/snaps-rpc-methods"
   dependencies:
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.3.0
+    "@metamask/auto-changelog": ^3.4.0
     "@metamask/browser-passworder": ^4.1.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -5425,7 +5440,7 @@ __metadata:
     "@emotion/react": ^11.10.8
     "@emotion/styled": ^11.10.8
     "@ethersproject/units": ^5.7.0
-    "@metamask/auto-changelog": ^3.3.0
+    "@metamask/auto-changelog": ^3.4.0
     "@metamask/base-controller": ^3.2.0
     "@metamask/browser-passworder": ^4.1.0
     "@metamask/eslint-config": ^12.1.0
@@ -5526,7 +5541,7 @@ __metadata:
   resolution: "@metamask/snaps-types@workspace:packages/snaps-types"
   dependencies:
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.3.0
+    "@metamask/auto-changelog": ^3.4.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5560,7 +5575,7 @@ __metadata:
   resolution: "@metamask/snaps-ui@workspace:packages/snaps-ui"
   dependencies:
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.3.0
+    "@metamask/auto-changelog": ^3.4.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5603,7 +5618,7 @@ __metadata:
     "@esbuild-plugins/node-globals-polyfill": ^0.2.3
     "@esbuild-plugins/node-modules-polyfill": ^0.2.2
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.3.0
+    "@metamask/auto-changelog": ^3.4.0
     "@metamask/base-controller": ^3.2.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -5680,7 +5695,7 @@ __metadata:
   resolution: "@metamask/snaps-webpack-plugin@workspace:packages/snaps-webpack-plugin"
   dependencies:
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.3.0
+    "@metamask/auto-changelog": ^3.4.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5727,7 +5742,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/test-snaps@workspace:packages/test-snaps"
   dependencies:
-    "@metamask/auto-changelog": ^3.3.0
+    "@metamask/auto-changelog": ^3.4.0
     "@metamask/bip32-example-snap": "workspace:^"
     "@metamask/bip44-example-snap": "workspace:^"
     "@metamask/cronjob-example-snap": "workspace:^"
@@ -20096,7 +20111,7 @@ __metadata:
   resolution: "root@workspace:."
   dependencies:
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/auto-changelog": ^3.3.0
+    "@metamask/auto-changelog": ^3.4.0
     "@metamask/create-release-branch": ^1.1.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
