@@ -282,6 +282,10 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
     'SnapsRegistry:getMetadata',
     registry.getMetadata.bind(registry),
   );
+  messenger.registerActionHandler(
+    'SnapsRegistry:resolveVersion',
+    registry.resolveVersion.bind(registry),
+  );
 
   messenger.registerActionHandler(
     'SnapsRegistry:update',
@@ -541,6 +545,7 @@ export const getRestrictedSnapsRegistryControllerMessenger = (
       'SnapsRegistry:get',
       'SnapsRegistry:getMetadata',
       'SnapsRegistry:update',
+      'SnapsRegistry:resolveVersion',
     ],
   });
 

@@ -324,6 +324,117 @@ describe('JsonSnapsRegistry', () => {
     ).rejects.toThrow('Snaps registry is unavailable, installation blocked.');
   });
 
+  describe('resolveVersion', () => {
+    it('resolves to an allowlisted version', async () => {
+      fetchMock
+        .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+        .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
+
+      const { messenger } = getRegistry();
+      const result = await messenger.call(
+        'SnapsRegistry:resolveVersion',
+        MOCK_SNAP_ID,
+        '^1.0.0' as SemVerRange,
+      );
+
+      expect(result).toBe('1.0.0');
+    });
+
+    it('throws if snap is not on the allowlist', async () => {
+      fetchMock
+        .mockResponseOnce(
+          JSON.stringify({ verifiedSnaps: {}, blockedSnaps: [] }),
+        )
+        .mockResponseOnce(JSON.stringify(MOCK_EMPTY_SIGNATURE_FILE));
+
+      const { messenger } = getRegistry();
+      await expect(
+        messenger.call(
+          'SnapsRegistry:resolveVersion',
+          MOCK_SNAP_ID,
+          '^1.0.0' as SemVerRange,
+        ),
+      ).rejects.toThrow(
+        'Cannot install version "^1.0.0" of snap "npm:@metamask/example-snap": The snap is not on the allow list.',
+      );
+    });
+
+    it('throws if resolved version is not on the allowlist', async () => {
+      fetchMock
+        .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+        .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
+
+      const { messenger } = getRegistry();
+      await expect(
+        messenger.call(
+          'SnapsRegistry:resolveVersion',
+          MOCK_SNAP_ID,
+          '^1.2.0' as SemVerRange,
+        ),
+      ).rejects.toThrow(
+        'Cannot install version "^1.2.0" of snap "npm:@metamask/example-snap": No matching versions of the snap are on the allow list.',
+      );
+    });
+
+    it('refetches the database on allowlist miss if configured', async () => {
+      fetchMock
+        .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+        .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
+
+      const { messenger } = getRegistry({
+        refetchOnAllowlistMiss: true,
+        state: {
+          lastUpdated: 0,
+          database: { verifiedSnaps: {}, blockedSnaps: [] },
+        },
+      });
+      const result = await messenger.call(
+        'SnapsRegistry:resolveVersion',
+        MOCK_SNAP_ID,
+        '^1.0.0' as SemVerRange,
+      );
+
+      expect(result).toBe('1.0.0');
+    });
+
+    it('refetches the database on allowlist version miss if configured', async () => {
+      fetchMock
+        .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+        .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
+
+      const { messenger } = getRegistry({
+        refetchOnAllowlistMiss: true,
+        state: {
+          lastUpdated: 0,
+          database: {
+            verifiedSnaps: {
+              [MOCK_SNAP_ID]: {
+                id: MOCK_SNAP_ID,
+                metadata: {
+                  name: 'Mock Snap',
+                },
+                versions: {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  ['0.0.1' as SemVerVersion]: {
+                    checksum: DEFAULT_SNAP_SHASUM,
+                  },
+                },
+              },
+            },
+            blockedSnaps: [],
+          },
+        },
+      });
+      const result = await messenger.call(
+        'SnapsRegistry:resolveVersion',
+        MOCK_SNAP_ID,
+        '^1.0.0' as SemVerRange,
+      );
+
+      expect(result).toBe('1.0.0');
+    });
+  });
+
   describe('getMetadata', () => {
     it('returns the metadata for a verified snap', async () => {
       fetchMock

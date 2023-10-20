@@ -320,7 +320,7 @@ export class JsonSnapsRegistry extends BaseController<
 
     assert(
       targetVersion,
-      `Cannot install version "${targetVersion}" of snap "${snapId}": No matching versions of the snap are on the allow list.`,
+      `Cannot install version "${versionRange}" of snap "${snapId}": No matching versions of the snap are on the allow list.`,
     );
 
     // A semver version is technically also a valid semver range.
