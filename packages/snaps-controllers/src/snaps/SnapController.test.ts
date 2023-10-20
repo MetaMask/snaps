@@ -328,6 +328,8 @@ describe('SnapController', () => {
       }),
     );
 
+    expect(firstSnapController.state.snaps[MOCK_SNAP_ID]).toBeDefined();
+
     // persist the state somewhere
     const persistedState = getPersistentState<SnapControllerState>(
       firstSnapController.state,
