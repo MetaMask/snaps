@@ -40,13 +40,11 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@MetaMask'
       - run: yarn --immutable
       - name: Get commit SHA
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
-      - run: yarn prepare-preview-builds ${{ steps.commit-sha.outputs.COMMIT_SHA }}
+      - run: yarn prepare-preview-builds @metamask-previews ${{ steps.commit-sha.outputs.COMMIT_SHA }}
       - run: yarn build
       - name: Publish preview build
         run: yarn publish-previews

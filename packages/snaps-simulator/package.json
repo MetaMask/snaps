@@ -42,7 +42,6 @@
     "test:watch": "jest --watch",
     "clean": "rimraf '*.tsbuildinfo' 'dist'",
     "lint:ci": "yarn lint",
-    "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
     "publish:preview": "yarn npm publish --tag preview",
     "lint:dependencies": "depcheck"
   },

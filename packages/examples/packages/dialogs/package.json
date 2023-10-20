@@ -27,7 +27,6 @@
     "start": "mm-snap watch",
     "test": "yarn test:e2e",
     "test:e2e": "jest",
-    "prepare-manifest:preview": "../../../../scripts/prepare-preview-manifest.sh",
     "publish:preview": "yarn npm publish --tag preview",
     "lint:dependencies": "depcheck"
   },
