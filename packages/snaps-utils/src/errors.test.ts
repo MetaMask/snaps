@@ -151,9 +151,8 @@ describe('WrappedSnapError', () => {
             cause: {
               code: -32603,
               message: 'foo',
-              data: {
-                stack: error.stack,
-              },
+              stack: error.stack,
+              data: {},
             },
           },
         },
@@ -177,9 +176,8 @@ describe('WrappedSnapError', () => {
               cause: {
                 code: -32603,
                 message: 'foo',
-                data: {
-                  stack: error.stack,
-                },
+                stack: error.stack,
+                data: {},
               },
             },
           },
@@ -206,9 +204,8 @@ describe('SnapError', () => {
         cause: {
           code: -32603,
           message: 'foo',
-          data: {
-            stack: error.stack,
-          },
+          stack: error.stack,
+          data: {},
         },
       },
     });
@@ -233,9 +230,8 @@ describe('SnapError', () => {
         cause: {
           code: -32000,
           message: 'foo',
-          data: {
-            stack: error.stack,
-          },
+          stack: error.stack,
+          data: {},
         },
       },
     });
@@ -274,9 +270,9 @@ describe('SnapError', () => {
         cause: {
           code: -32000,
           message: 'foo',
+          stack: error.stack,
           data: {
             foo: 'bar',
-            stack: error.stack,
           },
         },
       },
@@ -299,9 +295,8 @@ describe('SnapError', () => {
         cause: {
           code: -32603,
           message: 'foo',
-          data: {
-            stack: error.stack,
-          },
+          stack: error.stack,
+          data: {},
         },
       },
     });
@@ -323,9 +318,9 @@ describe('SnapError', () => {
         cause: {
           code: -32603,
           message: 'foo',
+          stack: error.stack,
           data: {
             foo: 'bar',
-            stack: error.stack,
           },
         },
       },
@@ -348,9 +343,8 @@ describe('SnapError', () => {
         cause: {
           code: -32602,
           message: 'foo',
-          data: {
-            stack: error.stack,
-          },
+          stack: error.stack,
+          data: {},
         },
       },
     });
@@ -374,9 +368,9 @@ describe('SnapError', () => {
         cause: {
           code: -32602,
           message: 'foo',
+          stack: error.stack,
           data: {
             foo: 'bar',
-            stack: error.stack,
           },
         },
       },
@@ -402,9 +396,8 @@ describe('SnapError', () => {
         cause: {
           code: 0,
           message: 'foo',
-          data: {
-            stack: error.stack,
-          },
+          stack: error.stack,
+          data: {},
         },
       },
     });
@@ -432,9 +425,9 @@ describe('SnapError', () => {
         cause: {
           code: 0,
           message: 'foo',
+          stack: error.stack,
           data: {
             foo: 'bar',
-            stack: error.stack,
           },
         },
       },
@@ -467,10 +460,10 @@ describe('SnapError', () => {
         cause: {
           code: 0,
           message: 'foo',
+          stack: error.stack,
           data: {
             foo: 'bar',
             bar: 'qux',
-            stack: error.stack,
           },
         },
       },
@@ -604,7 +597,6 @@ describe('unwrapError', () => {
     expect(unwrappedError.stack).toBeDefined();
     expect(unwrappedError.data).toStrictEqual({
       foo: 'bar',
-      stack: expect.any(String),
     });
     expect(handled).toBe(true);
   });

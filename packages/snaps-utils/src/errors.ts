@@ -284,13 +284,6 @@ export class SnapError extends Error {
    * @returns The JSON object.
    */
   toJSON(): SerializedSnapError {
-    const data = this.stack
-      ? {
-          ...this.data,
-          stack: this.stack,
-        }
-      : this.data;
-
     return {
       code: SNAP_ERROR_CODE,
       message: SNAP_ERROR_MESSAGE,
@@ -298,7 +291,8 @@ export class SnapError extends Error {
         cause: {
           code: this.code,
           message: this.message,
-          data,
+          stack: this.stack,
+          data: this.data,
         },
       },
     };
@@ -363,6 +357,27 @@ export function isWrappedSnapError(
 }
 
 /**
+ * Get a JSON-RPC error with the given code, message, stack, and data.
+ *
+ * @param code - The error code.
+ * @param message - The error message.
+ * @param stack - The error stack.
+ * @param data - Additional data for the error.
+ * @returns The JSON-RPC error.
+ */
+function getJsonRpcError(
+  code: number,
+  message: string,
+  stack?: string,
+  data?: Json,
+) {
+  const error = new RpcError(code, message, data);
+  error.stack = stack;
+
+  return error;
+}
+
+/**
  * Attempt to unwrap an unknown error to a `JsonRpcError`. This function will
  * try to get the error code, message, and data from the error, and return a
  * `JsonRpcError` with those properties.
@@ -384,19 +399,23 @@ export function unwrapError(
     if (isJsonRpcError(error.data.cause)) {
       // If the JSON-RPC error is a wrapped Snap error, unwrap it further.
       if (isSerializedSnapError(error.data.cause)) {
-        const { code, message, data } = error.data.cause.data.cause;
-        return [new RpcError(code, message, data), true];
+        const { code, message, stack, data } = error.data.cause.data.cause;
+        return [getJsonRpcError(code, message, stack, data), true];
       }
 
       // Otherwise, we use the original JSON-RPC error.
-      const { code, message, data } = error.data.cause;
-      return [new RpcError(code, message, data), false];
+      const { code, message, stack, data } = error.data.cause;
+      return [getJsonRpcError(code, message, stack, data), false];
     }
 
     // Otherwise, we throw an internal error with the wrapped error as the
     // message.
     return [
-      new RpcError(errorCodes.rpc.internal, getErrorMessage(error.data.cause)),
+      getJsonRpcError(
+        errorCodes.rpc.internal,
+        getErrorMessage(error.data.cause),
+        getErrorStack(error.data.cause),
+      ),
       false,
     ];
   }
@@ -404,11 +423,18 @@ export function unwrapError(
   // The error can be a non-wrapped JSON-RPC error, in which case we can just
   // re-throw it with the same code, message, and data.
   if (isJsonRpcError(error)) {
-    const { code, message, data } = error;
-    return [new RpcError(code, message, data), false];
+    const { code, message, stack, data } = error;
+    return [getJsonRpcError(code, message, stack, data), false];
   }
 
   // If the error is not a wrapped error, we don't know how to handle it, so we
   // throw an internal error with the error as the message.
-  return [new RpcError(errorCodes.rpc.internal, getErrorMessage(error)), false];
+  return [
+    getJsonRpcError(
+      errorCodes.rpc.internal,
+      getErrorMessage(error),
+      getErrorStack(error),
+    ),
+    false,
+  ];
 }
