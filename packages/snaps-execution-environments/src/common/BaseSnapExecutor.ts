@@ -14,7 +14,6 @@ import {
   SNAP_EXPORT_NAMES,
   logError,
   SNAP_EXPORTS,
-  getErrorMessage,
   WrappedSnapError,
   getErrorData,
   unwrapError,
@@ -385,9 +384,7 @@ export class BaseSnapExecutor {
 
       const [cause] = unwrapError(error);
       throw rpcErrors.internal({
-        message: `Error while running snap '${snapId}': ${getErrorMessage(
-          error,
-        )}`,
+        message: `Error while running snap '${snapId}': ${cause.message}`,
         data: {
           cause: cause.serialize(),
         },
