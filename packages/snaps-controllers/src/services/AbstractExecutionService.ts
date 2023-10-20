@@ -219,9 +219,7 @@ export abstract class AbstractExecutionService<WorkerType>
     jobId: string,
   ): Promise<{ streams: JobStreams; worker: WorkerType }> {
     const { worker, stream: envStream } = await this.initEnvStream(jobId);
-    // Typecast justification: stream type mismatch
     const mux = setupMultiplex(envStream, `Job: "${jobId}"`);
-
     const commandStream = mux.createStream(SNAP_STREAM_NAMES.COMMAND);
 
     // Handle out-of-band errors, i.e. errors thrown from the snap outside of the req/res cycle.
