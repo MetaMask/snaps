@@ -1,4 +1,4 @@
-import { Text as ChakraText } from '@chakra-ui/react';
+import { Text as ChakraText, Link as ChakraLink } from '@chakra-ui/react';
 import { isComponent } from '@metamask/snaps-ui';
 import { assert } from '@metamask/utils';
 import type { FunctionComponent } from 'react';
@@ -15,12 +15,24 @@ export const Text: FunctionComponent<TextProps> = ({ node, id }) => {
 
   return (
     <ReactMarkdown
-      allowedElements={['p', 'strong', 'em']}
+      allowedElements={['p', 'strong', 'em', 'a']}
       components={{
         p: ({ children: value }) => (
           <ChakraText fontFamily="custom" fontSize="sm" paddingBottom="1">
             {value}
           </ChakraText>
+        ),
+        a: ({ children: value, href }) => (
+          <ChakraLink
+            href={href}
+            target="_blank"
+            fontFamily="custom"
+            fontSize="sm"
+            isExternal
+            color="link.default"
+          >
+            {value}
+          </ChakraLink>
         ),
       }}
       key={`${id}-text`}
