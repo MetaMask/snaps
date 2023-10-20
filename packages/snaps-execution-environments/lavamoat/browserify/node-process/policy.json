@@ -23,6 +23,13 @@
         "util": true
       }
     },
+    "@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/providers>@metamask/safe-event-emitter": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/object-multiplex": {
       "globals": {
         "console.warn": true
@@ -126,6 +133,9 @@
       }
     },
     "@metamask/providers": {
+      "builtin": {
+        "stream.pipeline": true
+      },
       "globals": {
         "Event": true,
         "addEventListener": true,
@@ -140,16 +150,16 @@
         "web3": true
       },
       "packages": {
+        "@metamask/json-rpc-engine": true,
         "@metamask/object-multiplex": true,
         "@metamask/providers>@metamask/safe-event-emitter": true,
         "@metamask/providers>detect-browser": true,
         "@metamask/providers>extension-port-stream": true,
         "@metamask/providers>is-stream": true,
         "@metamask/providers>json-rpc-middleware-stream": true,
-        "@metamask/providers>pump": true,
+        "@metamask/rpc-errors": true,
         "eslint>fast-deep-equal": true,
-        "eth-rpc-errors": true,
-        "json-rpc-engine": true
+        "stream": true
       }
     },
     "@metamask/providers>@metamask/safe-event-emitter": {
@@ -186,8 +196,8 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/providers>json-rpc-middleware-stream>readable-stream": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
+        "@metamask/providers>@metamask/safe-event-emitter": true,
+        "@metamask/providers>json-rpc-middleware-stream>readable-stream": true
       }
     },
     "@metamask/providers>json-rpc-middleware-stream>readable-stream": {
@@ -231,17 +241,10 @@
         "@metamask/providers>json-rpc-middleware-stream>readable-stream>safe-buffer": true
       }
     },
-    "@metamask/providers>pump": {
-      "builtin": {
-        "fs": true
-      },
-      "globals": {
-        "process.version": true
-      },
+    "@metamask/rpc-errors": {
       "packages": {
-        "@metamask/object-multiplex>end-of-stream": true,
-        "@metamask/object-multiplex>once": true,
-        "fs": true
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/utils": {
@@ -355,13 +358,9 @@
         "util": true
       }
     },
-    "eth-rpc-errors": {
-      "packages": {
-        "eth-rpc-errors>fast-safe-stringify": true
-      }
-    },
     "external:../snaps-utils/src/errors.ts": {
       "packages": {
+        "@metamask/rpc-errors": true,
         "@metamask/utils": true
       }
     },
@@ -407,23 +406,6 @@
     "istanbul-lib-report>supports-color>has-flag": {
       "globals": {
         "process.argv": true
-      }
-    },
-    "json-rpc-engine": {
-      "packages": {
-        "eth-rpc-errors": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true
-      }
-    },
-    "json-rpc-engine>@metamask/safe-event-emitter": {
-      "builtin": {
-        "events.EventEmitter": true
-      },
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "events": true
       }
     },
     "superstruct": {

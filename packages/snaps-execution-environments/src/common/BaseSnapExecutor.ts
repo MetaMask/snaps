@@ -1,7 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 /// <reference path="../../../../node_modules/ses/types.d.ts" />
+import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import { StreamProvider } from '@metamask/providers';
 import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
+import { errorCodes, rpcErrors, serializeError } from '@metamask/rpc-errors';
 import type { SnapsGlobalObject } from '@metamask/snaps-rpc-methods';
 import type {
   SnapExports,
@@ -12,7 +14,9 @@ import {
   SNAP_EXPORT_NAMES,
   logError,
   SNAP_EXPORTS,
-  getErrorMessage,
+  WrappedSnapError,
+  getErrorData,
+  unwrapError,
 } from '@metamask/snaps-utils';
 import type {
   JsonRpcNotification,
@@ -28,8 +32,6 @@ import {
   hasProperty,
   getSafeJson,
 } from '@metamask/utils';
-import { errorCodes, ethErrors, serializeError } from 'eth-rpc-errors';
-import { createIdRemapMiddleware } from 'json-rpc-engine';
 import type { Duplex } from 'stream';
 import { validate } from 'superstruct';
 
@@ -42,7 +44,6 @@ import { sortParamKeys } from './sortParams';
 import {
   assertEthereumOutboundRequest,
   assertSnapOutboundRequest,
-  constructError,
   sanitizeRequestArguments,
   proxyStreamProvider,
   withTeardown,
@@ -68,6 +69,12 @@ const fallbackError = {
   code: errorCodes.rpc.internal,
   message: 'Execution Environment Error',
 };
+
+const unhandledError = rpcErrors
+  .internal<Json>({
+    message: 'Unhandled Snap Error',
+  })
+  .serialize();
 
 export type InvokeSnapArgs = Omit<SnapExportsParameters[0], 'chainId'>;
 
@@ -141,7 +148,7 @@ export class BaseSnapExecutor {
         assert(
           !required || handler !== undefined,
           `No ${handlerType} handler exported for snap "${target}`,
-          ethErrors.rpc.methodNotSupported,
+          rpcErrors.methodNotSupported,
         );
 
         // Certain handlers are not required. If they are not exported, we
@@ -150,8 +157,8 @@ export class BaseSnapExecutor {
           return null;
         }
 
-        // TODO: fix handler args type cast
         let result = await this.executeInSnapContext(target, () =>
+          // TODO: fix handler args type cast
           handler(args as any),
         );
 
@@ -164,7 +171,7 @@ export class BaseSnapExecutor {
         try {
           return getSafeJson(result);
         } catch (error) {
-          throw ethErrors.rpc.internal(
+          throw rpcErrors.internal(
             `Received non-JSON-serializable value: ${error.message.replace(
               /^Assertion failed: /u,
               '',
@@ -177,21 +184,22 @@ export class BaseSnapExecutor {
   }
 
   private errorHandler(error: unknown, data: Record<string, Json>) {
-    const constructedError = constructError(error);
-    const serializedError = serializeError(constructedError, {
-      fallbackError,
+    const serializedError = serializeError(error, {
+      fallbackError: unhandledError,
       shouldIncludeStack: false,
     });
 
-    // We're setting it this way to avoid sentData.stack = undefined
-    const sentData: Json = { ...data, stack: constructedError?.stack ?? null };
+    const errorData = getErrorData(serializedError);
 
     this.notify({
       method: 'UnhandledError',
       params: {
         error: {
           ...serializedError,
-          data: sentData,
+          data: {
+            ...errorData,
+            ...data,
+          },
         },
       },
     });
@@ -199,7 +207,7 @@ export class BaseSnapExecutor {
 
   private async onCommandRequest(message: JsonRpcRequest) {
     if (!isJsonRpcRequest(message)) {
-      throw ethErrors.rpc.invalidRequest({
+      throw rpcErrors.invalidRequest({
         message: 'Command stream received a non-JSON-RPC request.',
         data: message,
       });
@@ -209,7 +217,7 @@ export class BaseSnapExecutor {
 
     if (!hasProperty(EXECUTION_ENVIRONMENT_METHODS, method)) {
       this.respond(id, {
-        error: ethErrors.rpc
+        error: rpcErrors
           .methodNotFound({
             data: {
               method,
@@ -228,7 +236,7 @@ export class BaseSnapExecutor {
     const [error] = validate<any, any>(paramsAsArray, methodObject.struct);
     if (error) {
       this.respond(id, {
-        error: ethErrors.rpc
+        error: rpcErrors
           .invalidParams({
             message: `Invalid parameters for method "${method}": ${error.message}.`,
             data: {
@@ -255,7 +263,7 @@ export class BaseSnapExecutor {
 
   protected notify(requestObject: Omit<JsonRpcNotification, 'jsonrpc'>) {
     if (!isValidJson(requestObject) || !isObject(requestObject)) {
-      throw ethErrors.rpc.internal(
+      throw rpcErrors.internal(
         'JSON-RPC notifications must be JSON serializable objects',
       );
     }
@@ -272,10 +280,9 @@ export class BaseSnapExecutor {
       // This prevents an issue where we wouldn't respond when errors were non-serializable
       this.commandStream.write({
         error: serializeError(
-          new Error('JSON-RPC responses must be JSON serializable objects.'),
-          {
-            fallbackError,
-          },
+          rpcErrors.internal(
+            'JSON-RPC responses must be JSON serializable objects.',
+          ),
         ),
         id,
         jsonrpc: '2.0',
@@ -358,6 +365,7 @@ export class BaseSnapExecutor {
         module: snapModule,
         exports: snapModule.exports,
       });
+
       // All of those are JavaScript runtime specific and self referential,
       // but we add them for compatibility sake with external libraries.
       //
@@ -373,14 +381,12 @@ export class BaseSnapExecutor {
       });
     } catch (error) {
       this.removeSnap(snapId);
-      throw ethErrors.rpc.internal({
-        message: `Error while running snap '${snapId}': ${getErrorMessage(
-          error,
-        )}`,
+
+      const [cause] = unwrapError(error);
+      throw rpcErrors.internal({
+        message: `Error while running snap '${snapId}': ${cause.message}`,
         data: {
-          cause: serializeError(error, {
-            fallbackError,
-          }),
+          cause: cause.serialize(),
         },
       });
     }
@@ -509,7 +515,7 @@ export class BaseSnapExecutor {
   ): Promise<Result> {
     const data = this.snapData.get(snapId);
     if (data === undefined) {
-      throw ethErrors.rpc.internal(
+      throw rpcErrors.internal(
         `Tried to execute in context of unknown snap: "${snapId}".`,
       );
     }
@@ -520,7 +526,7 @@ export class BaseSnapExecutor {
         (stop = () =>
           reject(
             // TODO(rekmarks): Specify / standardize error code for this case.
-            ethErrors.rpc.internal(
+            rpcErrors.internal(
               `The snap "${snapId}" has been terminated during execution.`,
             ),
           )),
@@ -535,6 +541,8 @@ export class BaseSnapExecutor {
       // If we didn't, we would decrease the amount of running evaluations
       // before the promise actually resolves
       return await Promise.race([executor(), stopPromise]);
+    } catch (error) {
+      throw new WrappedSnapError(error);
     } finally {
       data.runningEvaluations.delete(evaluationData);
 

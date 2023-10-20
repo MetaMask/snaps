@@ -1,6 +1,7 @@
 import { ControllerMessenger } from '@metamask/base-controller';
 import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { createFetchMiddleware } from '@metamask/eth-json-rpc-middleware';
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { mnemonicPhraseToBytes } from '@metamask/key-tree';
 import type { GenericPermissionController } from '@metamask/permission-controller';
 import {
@@ -8,7 +9,6 @@ import {
   SubjectMetadataController,
   SubjectType,
 } from '@metamask/permission-controller';
-import { serializeError } from '@metamask/rpc-errors';
 import {
   IframeExecutionService,
   setupMultiplex,
@@ -27,10 +27,9 @@ import type {
   SnapRpcHookArgs,
   VirtualFile,
 } from '@metamask/snaps-utils';
-import { logError } from '@metamask/snaps-utils';
+import { logError, unwrapError } from '@metamask/snaps-utils';
 import { getSafeJson } from '@metamask/utils';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import type { SagaIterator } from 'redux-saga';
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
@@ -262,9 +261,13 @@ export function* requestSaga({ payload }: PayloadAction<SnapRpcHookArgs>) {
       },
     });
   } catch (error) {
+    const [unwrappedError] = unwrapError(error);
+
     yield put({
       type: `${payload.handler}/setResponse`,
-      payload: { error: serializeError(error) },
+      payload: {
+        error: unwrappedError.serialize(),
+      },
     });
   }
 }

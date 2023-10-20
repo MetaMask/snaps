@@ -25,6 +25,7 @@ lockdown({
   domainTaming: 'unsafe',
   errorTaming: 'unsafe',
   stackFiltering: 'verbose',
+  overrideTaming: 'severe',
 });
 
 // This is a hack to make `atob`, and `btoa` hardening work. This needs to be

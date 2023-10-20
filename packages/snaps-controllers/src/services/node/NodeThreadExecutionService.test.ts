@@ -1,3 +1,4 @@
+import { JsonRpcError } from '@metamask/rpc-errors';
 import type { SnapId } from '@metamask/snaps-utils';
 import { HandlerType } from '@metamask/snaps-utils';
 
@@ -47,7 +48,7 @@ describe('NodeThreadExecutionService', () => {
   });
 
   it('can handle errors in request handler', async () => {
-    expect.assertions(1);
+    expect.assertions(2);
     const { service } = createService(NodeThreadExecutionService);
     const snapId = 'TestSnap';
     await service.executeSnap({
@@ -58,8 +59,8 @@ describe('NodeThreadExecutionService', () => {
       endowments: [],
     });
 
-    await expect(
-      service.handleRpcRequest(snapId, {
+    const result = await service
+      .handleRpcRequest(snapId, {
         origin: 'fooOrigin',
         handler: ON_RPC_REQUEST,
         request: {
@@ -68,8 +69,25 @@ describe('NodeThreadExecutionService', () => {
           params: {},
           id: 1,
         },
-      }),
-    ).rejects.toThrow('foobar');
+      })
+      .catch((error) => error);
+
+    expect(result).toBeInstanceOf(JsonRpcError);
+
+    // @ts-expect-error - This is a `JsonRpcError`.
+    // eslint-disable-next-line jest/prefer-strict-equal
+    expect(result.serialize()).toEqual({
+      code: -31001,
+      message: 'Wrapped Snap Error',
+      stack: expect.any(String),
+      data: {
+        cause: {
+          message: 'foobar',
+          stack: expect.any(String),
+        },
+      },
+    });
+
     await service.terminateAllSnaps();
   });
 
@@ -126,9 +144,12 @@ describe('NodeThreadExecutionService', () => {
       code: -32603,
       data: {
         snapId: 'TestSnap',
-        stack: expect.any(String),
+        cause: {
+          message: 'random error inside',
+          stack: expect.any(String),
+        },
       },
-      message: 'random error inside',
+      message: 'Unhandled Snap Error',
     });
 
     await service.terminateAllSnaps();

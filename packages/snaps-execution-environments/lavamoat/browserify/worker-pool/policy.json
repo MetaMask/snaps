@@ -39,6 +39,12 @@
         "superstruct": true
       }
     },
+    "@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/utils": {
       "globals": {
         "TextDecoder": true,
@@ -124,6 +130,7 @@
     },
     "external:../snaps-utils/src/errors.ts": {
       "packages": {
+        "@metamask/rpc-errors": true,
         "@metamask/utils": true
       }
     },

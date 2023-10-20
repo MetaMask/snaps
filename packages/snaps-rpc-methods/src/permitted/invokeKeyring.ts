@@ -1,3 +1,6 @@
+import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type { PermittedHandlerExport } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import type { Snap } from '@metamask/snaps-utils';
 import {
   HandlerType,
@@ -5,14 +8,8 @@ import {
   type SnapId,
   type SnapRpcHookArgs,
 } from '@metamask/snaps-utils';
-import type {
-  PermittedHandlerExport,
-  PendingJsonRpcResponse,
-  JsonRpcEngineEndCallback,
-  JsonRpcRequest,
-} from '@metamask/types';
+import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
 import { hasProperty, type Json } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 
 import type { MethodHooksObject } from '../utils';
 import type { InvokeSnapSugarArgs } from './invokeSnapSugar';
@@ -30,8 +27,8 @@ const hookNames: MethodHooksObject<InvokeKeyringHooks> = {
  */
 export const invokeKeyringHandler: PermittedHandlerExport<
   InvokeKeyringHooks,
-  JsonRpcRequest<unknown>,
-  unknown
+  JsonRpcRequest,
+  Json
 > = {
   methodNames: ['wallet_invokeKeyring'],
   implementation: invokeKeyringImplementation,
@@ -71,8 +68,8 @@ export type InvokeKeyringHooks = {
  * @returns Nothing.
  */
 async function invokeKeyringImplementation(
-  req: JsonRpcRequest<unknown>,
-  res: PendingJsonRpcResponse<unknown>,
+  req: JsonRpcRequest,
+  res: PendingJsonRpcResponse<Json>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
   {
@@ -90,12 +87,12 @@ async function invokeKeyringImplementation(
   }
 
   // We expect the MM middleware stack to always add the origin to requests
-  const { origin } = req as JsonRpcRequest<unknown> & { origin: string };
+  const { origin } = req as JsonRpcRequest & { origin: string };
   const { snapId, request } = params;
 
   if (!origin || !hasPermission(origin, WALLET_SNAP_PERMISSION_KEY)) {
     return end(
-      ethErrors.rpc.invalidRequest({
+      rpcErrors.invalidRequest({
         message: `The snap "${snapId}" is not connected to "${origin}". Please connect before invoking the snap.`,
       }),
     );
@@ -103,7 +100,7 @@ async function invokeKeyringImplementation(
 
   if (!getSnap(snapId)) {
     return end(
-      ethErrors.rpc.invalidRequest({
+      rpcErrors.invalidRequest({
         message: `The snap "${snapId}" is not installed. Please install it first, before invoking the snap.`,
       }),
     );
@@ -111,7 +108,7 @@ async function invokeKeyringImplementation(
 
   if (!hasProperty(request, 'method') || typeof request.method !== 'string') {
     return end(
-      ethErrors.rpc.invalidRequest({
+      rpcErrors.invalidRequest({
         message: 'The request must have a method.',
       }),
     );
@@ -120,7 +117,7 @@ async function invokeKeyringImplementation(
   const allowedMethods = getAllowedKeyringMethods(origin);
   if (!allowedMethods.includes(request.method)) {
     return end(
-      ethErrors.rpc.invalidRequest({
+      rpcErrors.invalidRequest({
         message: `The origin "${origin}" is not allowed to invoke the method "${request.method}".`,
       }),
     );

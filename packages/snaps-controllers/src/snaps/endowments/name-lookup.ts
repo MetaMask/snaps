@@ -8,10 +8,10 @@ import type {
   PermissionConstraint,
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { SnapCaveatType, isChainId } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import { assert, hasProperty, isPlainObject } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 
 import { SnapEndowments } from './enum';
 
@@ -48,7 +48,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
         (caveats !== null && caveats?.length > 1) ||
         (caveats?.length === 1 && caveats[0].type !== SnapCaveatType.ChainIds)
       ) {
-        throw ethErrors.rpc.invalidParams({
+        throw rpcErrors.invalidParams({
           message: `Expected a single "${SnapCaveatType.ChainIds}" caveat.`,
         });
       }
@@ -70,7 +70,7 @@ export const nameLookupEndowmentBuilder = Object.freeze({
  */
 function validateCaveat(caveat: Caveat<string, any>): void {
   if (!hasProperty(caveat, 'value') || !isPlainObject(caveat)) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: 'Expected a plain object.',
     });
   }

@@ -1,3 +1,4 @@
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import type {
   RequestedPermissions,
   PermissionConstraint,
@@ -14,8 +15,7 @@ import type {
   JsonRpcRequest,
   JsonRpcSuccess,
   PendingJsonRpcResponse,
-} from '@metamask/types';
-import { JsonRpcEngine } from 'json-rpc-engine';
+} from '@metamask/utils';
 
 import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
 import {
@@ -435,7 +435,11 @@ describe('implementation', () => {
     });
 
     expect(response).toStrictEqual({
-      error: { code: -32603, data: { originalError: {} }, message: 'error' },
+      error: {
+        code: -32603,
+        data: { cause: expect.objectContaining({ message: 'error' }) },
+        message: 'Internal JSON-RPC error.',
+      },
       id: 1,
       jsonrpc: '2.0',
     });

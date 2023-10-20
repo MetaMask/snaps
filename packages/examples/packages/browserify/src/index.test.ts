@@ -10,13 +10,12 @@ describe('onRpcRequest', () => {
     });
 
     expect(response).toRespondWithError({
-      code: -32603,
-      message: 'Internal JSON-RPC error.',
+      code: -32601,
+      message: 'The method does not exist / is not available.',
+      stack: expect.any(String),
       data: {
-        cause: {
-          message: 'The method does not exist / is not available.',
-          stack: expect.any(String),
-        },
+        method: 'foo',
+        cause: null,
       },
     });
 

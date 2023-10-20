@@ -80,5 +80,5 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     return wasm[method](...params);
   }
 
-  throw rpcErrors.methodNotFound({ data: { request } });
+  throw rpcErrors.methodNotFound({ data: { method } });
 };

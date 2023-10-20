@@ -1,4 +1,4 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 
 const MINIMUM_INTERVAL = 10;
 
@@ -17,7 +17,7 @@ const createInterval = () => {
 
   const _setInterval = (handler: TimerHandler, timeout?: number): unknown => {
     if (typeof handler !== 'function') {
-      throw ethErrors.rpc.invalidInput(
+      throw rpcErrors.invalidInput(
         `The interval handler must be a function. Received: ${typeof handler}.`,
       );
     }

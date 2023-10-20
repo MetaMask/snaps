@@ -1,30 +1,9 @@
 import type { StreamProvider } from '@metamask/providers';
 import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { assert, assertStruct, getSafeJson, JsonStruct } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 
 import { log } from '../logging';
-
-/**
- * Takes an error that was thrown, determines if it is
- * an error object. If it is then it will return that. Otherwise,
- * an error object is created with the original error message.
- *
- * @param originalError - The error that was originally thrown.
- * @returns An error object.
- */
-export function constructError(originalError: unknown) {
-  let _originalError: Error | undefined;
-  if (originalError instanceof Error) {
-    _originalError = originalError;
-  } else if (typeof originalError === 'string') {
-    _originalError = new Error(originalError);
-    // The stack is useless in this case.
-    delete _originalError.stack;
-  }
-  return _originalError;
-}
-
 /**
  * Make proxy for Promise and handle the teardown process properly.
  * If the teardown is called in the meanwhile, Promise result will not be
@@ -133,11 +112,11 @@ export function assertSnapOutboundRequest(args: RequestArguments) {
     String.prototype.startsWith.call(args.method, 'wallet_') ||
       String.prototype.startsWith.call(args.method, 'snap_'),
     'The global Snap API only allows RPC methods starting with `wallet_*` and `snap_*`.',
-    ethErrors.rpc.methodNotSupported,
+    rpcErrors.methodNotSupported,
   );
   assert(
     !BLOCKED_RPC_METHODS.includes(args.method),
-    ethErrors.rpc.methodNotFound({
+    rpcErrors.methodNotFound({
       data: {
         method: args.method,
       },
@@ -147,7 +126,7 @@ export function assertSnapOutboundRequest(args: RequestArguments) {
     args,
     JsonStruct,
     'Provided value is not JSON-RPC compatible',
-    ethErrors.rpc.invalidParams,
+    rpcErrors.invalidParams,
   );
 }
 
@@ -160,7 +139,7 @@ export function assertEthereumOutboundRequest(args: RequestArguments) {
   // Disallow snaps methods for separation of concerns.
   assert(
     !String.prototype.startsWith.call(args.method, 'snap_'),
-    ethErrors.rpc.methodNotFound({
+    rpcErrors.methodNotFound({
       data: {
         method: args.method,
       },
@@ -168,7 +147,7 @@ export function assertEthereumOutboundRequest(args: RequestArguments) {
   );
   assert(
     !BLOCKED_RPC_METHODS.includes(args.method),
-    ethErrors.rpc.methodNotFound({
+    rpcErrors.methodNotFound({
       data: {
         method: args.method,
       },
@@ -178,7 +157,7 @@ export function assertEthereumOutboundRequest(args: RequestArguments) {
     args,
     JsonStruct,
     'Provided value is not JSON-RPC compatible',
-    ethErrors.rpc.invalidParams,
+    rpcErrors.invalidParams,
   );
 }
 

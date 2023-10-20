@@ -1,9 +1,14 @@
 import { getPersistentState } from '@metamask/base-controller';
+import {
+  createAsyncMiddleware,
+  JsonRpcEngine,
+} from '@metamask/json-rpc-engine';
 import type {
   Caveat,
   SubjectPermissions,
   ValidPermission,
 } from '@metamask/permission-controller';
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import type {
   RpcOrigins,
@@ -37,9 +42,7 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 import type { SemVerRange, SemVerVersion } from '@metamask/utils';
 import { AssertionError, stringToBytes } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
 import fetchMock from 'jest-fetch-mock';
-import { createAsyncMiddleware, JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { pipeline } from 'stream';
 import type { Duplex } from 'stream';
@@ -821,7 +824,7 @@ describe('SnapController', () => {
         id: expect.any(String),
         requestState: {
           loading: false,
-          error: ethErrors.provider.userRejectedRequest().message,
+          error: providerErrors.userRejectedRequest().message,
           type: SNAP_APPROVAL_INSTALL,
         },
       }),
@@ -2052,7 +2055,7 @@ describe('SnapController', () => {
           },
         }),
       ).rejects.toThrow(
-        ethErrors.rpc.invalidRequest({
+        rpcErrors.invalidRequest({
           message:
             'Invalid JSON-RPC request: At path: jsonrpc -- Expected the literal `"2.0"`, but received: "kaplar".',
         }),
@@ -2180,6 +2183,105 @@ describe('SnapController', () => {
       await finishPromise;
 
       snapController.destroy();
+    });
+
+    it('crashes the Snap on unhandled errors', async () => {
+      const { manifest, sourceCode, svgIcon } = getSnapFiles({
+        updateChecksum: true,
+        sourceCode: `
+          module.exports.onRpcRequest = () => {
+            throw new Error('foo');
+          };
+        `,
+      });
+
+      const [snapController, service] = getSnapControllerWithEES(
+        getSnapControllerWithEESOptions({
+          detectSnapLocation: loopbackDetect({
+            manifest,
+            files: [sourceCode, svgIcon as VirtualFile],
+          }),
+        }),
+      );
+
+      await snapController.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: {},
+      });
+
+      await expect(
+        snapController.handleRequest({
+          origin: MOCK_ORIGIN,
+          snapId: MOCK_SNAP_ID,
+          handler: HandlerType.OnRpcRequest,
+          request: {
+            jsonrpc: '2.0',
+            method: 'foo',
+            params: {},
+          },
+        }),
+      ).rejects.toThrow('foo');
+
+      expect(snapController.state.snaps[MOCK_SNAP_ID].status).toBe('crashed');
+
+      snapController.destroy();
+      await service.terminateAllSnaps();
+    });
+
+    it('does not crash the Snap on handled errors', async () => {
+      const { manifest, sourceCode, svgIcon } = getSnapFiles({
+        updateChecksum: true,
+        sourceCode: `
+          module.exports.onRpcRequest = () => {
+            class SnapError {
+              serialize() {
+                return {
+                  code: -31002,
+                  message: 'Snap Error',
+                  data: {
+                    cause: {
+                      code: -1,
+                      message: 'foo',
+                    },
+                  },
+                };
+              }
+            }
+
+            throw new SnapError();
+          };
+        `,
+      });
+
+      const [snapController, service] = getSnapControllerWithEES(
+        getSnapControllerWithEESOptions({
+          detectSnapLocation: loopbackDetect({
+            manifest,
+            files: [sourceCode, svgIcon as VirtualFile],
+          }),
+        }),
+      );
+
+      await snapController.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: {},
+      });
+
+      await expect(
+        snapController.handleRequest({
+          origin: MOCK_ORIGIN,
+          snapId: MOCK_SNAP_ID,
+          handler: HandlerType.OnRpcRequest,
+          request: {
+            jsonrpc: '2.0',
+            method: 'foo',
+            params: {},
+          },
+        }),
+      ).rejects.toThrow('foo');
+
+      expect(snapController.state.snaps[MOCK_SNAP_ID].status).toBe('running');
+
+      snapController.destroy();
+      await service.terminateAllSnaps();
     });
   });
 
@@ -2657,7 +2759,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
-            error: ethErrors.provider.userRejectedRequest().message,
+            error: providerErrors.userRejectedRequest().message,
             type: SNAP_APPROVAL_INSTALL,
           },
         }),
@@ -3801,7 +3903,7 @@ describe('SnapController', () => {
             detectSnapLocation(),
           ),
       ).rejects.toThrow(
-        ethErrors.rpc.invalidParams(
+        rpcErrors.invalidParams(
           `Snap "${MOCK_SNAP_ID}@${snap.version}" is already installed. Couldn't update to a version inside requested "*" range.`,
         ),
       );

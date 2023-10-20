@@ -1,9 +1,7 @@
+import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import type { InstallSnapsResult } from '@metamask/snaps-utils';
-import type {
-  PermittedHandlerExport,
-  PendingJsonRpcResponse,
-  JsonRpcEngineEndCallback,
-} from '@metamask/types';
+import type { JsonRpcParams, PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
 
@@ -16,7 +14,7 @@ const hookNames: MethodHooksObject<GetSnapsHooks> = {
  */
 export const getSnapsHandler: PermittedHandlerExport<
   GetSnapsHooks,
-  void,
+  JsonRpcParams,
   InstallSnapsResult
 > = {
   methodNames: ['wallet_getSnaps'],
