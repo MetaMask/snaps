@@ -9,13 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.1.0]
 ### Added
 - Add static file API ([#1836](https://github.com/MetaMask/snaps/pull/1836))
+  - This adds a `snap_getFile` method, which Snaps can use to load files.
 - Add `origin` parameter to `snapInstalled` and `snapUpdated` events ([#1867](https://github.com/MetaMask/snaps/pull/1867))
 
 ### Changed
 - Make `snaps-execution-environments` an optional peer dependency ([#1845](https://github.com/MetaMask/snaps/pull/1845))
 - Remove snap errors from state ([#1837](https://github.com/MetaMask/snaps/pull/1837))
 - Improve error handling ([#1841](https://github.com/MetaMask/snaps/pull/1841))
-- Bump `tar-stream` to the latest version ([#1853](https://github.com/MetaMask/snaps/pull/1853))
+  - Snaps can now throw a `SnapError`, without causing the Snap to crash.
+- Bump `tar-stream` from `^2.2.0` to `^3.1.6` ([#1853](https://github.com/MetaMask/snaps/pull/1853))
 - Rename `rpc-methods` to `snaps-rpc-methods` ([#1864](https://github.com/MetaMask/snaps/pull/1864))
 
 ### Fixed

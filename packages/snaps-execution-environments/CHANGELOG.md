@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.1.0]
 ### Changed
 - Improve error handling ([#1841](https://github.com/MetaMask/snaps/pull/1841))
+  - Snaps can now throw a `SnapError`, without causing the Snap to crash.
 - Standardise all errors thrown in execution environments ([#1830](https://github.com/MetaMask/snaps/pull/1830))
 
 ## [3.0.0]

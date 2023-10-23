@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Improve error handling ([#1841](https://github.com/MetaMask/snaps/pull/1841))
+  - Errors shown in the simulator now more accurately reflect the error thrown by the Snap.
 
 ## [2.0.0]
 ### Added

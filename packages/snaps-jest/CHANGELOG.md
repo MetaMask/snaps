@@ -9,7 +9,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.0.0]
 ### Changed
 - **BREAKING:** Improve error handling ([#1841](https://github.com/MetaMask/snaps/pull/1841))
-  - Due to changes in the error handling previous assertions may need to be rewritten.
+  - This is a breaking change, because errors returned by the Snap now have a different format. For example, if the Snap throws a JSON-RPC method not found error, previously, the following error would be returned:
+    ```ts
+    {
+      code: -32603,
+      message: 'Internal JSON-RPC error.',
+      data: {
+        cause: {
+          message: 'The method does not exist / is not available.',
+          stack: expect.any(String),
+        },
+      },
+    }
+    ```
+    Now, the following error is returned instead:
+    ```
+    {
+      code: -32601,
+      message: 'The method does not exist / is not available.',
+      stack: expect.any(String),
+      data: {
+        method: 'foo',
+        cause: null,
+      },
+    }
+    ```
 
 ## [2.0.0]
 ### Changed
