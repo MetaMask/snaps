@@ -14,9 +14,9 @@ export class MockSnapsRegistry implements SnapsRegistry {
     );
   });
 
-  resolveVersion = jest.fn().mockImplementation((snapId, versionRange) => {
+  resolveVersion = jest.fn().mockImplementation((snapId) => {
     throw new Error(
-      `Cannot install version "${versionRange}" of snap "${snapId}": The snap is not on the allow list.`,
+      `Cannot install snap "${snapId}": The snap is not on the allowlist.`,
     );
   });
 

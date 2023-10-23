@@ -746,7 +746,7 @@ describe('SnapController', () => {
         [MOCK_SNAP_ID]: { version: DEFAULT_REQUESTED_SNAP_VERSION },
       }),
     ).rejects.toThrow(
-      'Cannot install version "1.0.0" of snap "npm:@metamask/example-snap": The snap is not on the allow list.',
+      'Cannot install version "1.0.0" of snap "npm:@metamask/example-snap": The snap is not on the allowlist.',
     );
 
     controller.destroy();
@@ -765,7 +765,7 @@ describe('SnapController', () => {
         [MOCK_SNAP_ID]: { version: DEFAULT_REQUESTED_SNAP_VERSION },
       }),
     ).rejects.toThrow(
-      'Cannot install version "*" of snap "npm:@metamask/example-snap": The snap is not on the allow list.',
+      'Cannot install snap "npm:@metamask/example-snap": The snap is not on the allowlist.',
     );
 
     controller.destroy();

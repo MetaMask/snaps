@@ -6,6 +6,7 @@ import { getTargetVersion, type SnapId } from '@metamask/snaps-utils';
 import type { Hex, SemVerRange, SemVerVersion } from '@metamask/utils';
 import {
   assert,
+  assertIsSemVerRange,
   Duration,
   inMilliseconds,
   satisfiesVersionRange,
@@ -305,7 +306,7 @@ export class JsonSnapsRegistry extends BaseController<
 
     assert(
       versions,
-      `Cannot install version "${versionRange}" of snap "${snapId}": The snap is not on the allow list.`,
+      `Cannot install snap "${snapId}": The snap is not on the allowlist.`,
     );
 
     const targetVersion = getTargetVersion(
@@ -320,11 +321,12 @@ export class JsonSnapsRegistry extends BaseController<
 
     assert(
       targetVersion,
-      `Cannot install version "${versionRange}" of snap "${snapId}": No matching versions of the snap are on the allow list.`,
+      `Cannot install version "${versionRange}" of snap "${snapId}": No matching versions of the snap are on the allowlist.`,
     );
 
     // A semver version is technically also a valid semver range.
-    return targetVersion as unknown as SemVerRange;
+    assertIsSemVerRange(targetVersion);
+    return targetVersion;
   }
 
   /**

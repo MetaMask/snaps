@@ -1092,7 +1092,7 @@ export class SnapController extends BaseController<
       result.status !== SnapsRegistryStatus.Verified
     ) {
       throw new Error(
-        `Cannot install version "${snapInfo.version}" of snap "${snapId}": The snap is not on the allow list.`,
+        `Cannot install version "${snapInfo.version}" of snap "${snapId}": The snap is not on the allowlist.`,
       );
     }
   }
