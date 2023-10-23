@@ -6,6 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0]
+### Added
+- Add static file API ([#1836](https://github.com/MetaMask/snaps/pull/1836))
+  - This adds a `snap_getFile` method, which Snaps can use to load files.
+- Add `origin` parameter to `snapInstalled` and `snapUpdated` events ([#1867](https://github.com/MetaMask/snaps/pull/1867))
+
+### Changed
+- Improve error handling ([#1841](https://github.com/MetaMask/snaps/pull/1841))
+  - Snaps can now throw a `SnapError`, without causing the Snap to crash.
+- Bump `tar-stream` from `^2.2.0` to `^3.1.6` ([#1853](https://github.com/MetaMask/snaps/pull/1853))
+- Make `snaps-execution-environments` an optional peer dependency ([#1845](https://github.com/MetaMask/snaps/pull/1845))
+- Remove snap errors from state ([#1837](https://github.com/MetaMask/snaps/pull/1837))
+
+### Fixed
+- Try to match requested versions with an allowlisted version ([#1877](https://github.com/MetaMask/snaps/pull/1877))
+- Improve performance when installing snaps with a static version ([#1878](https://github.com/MetaMask/snaps/pull/1878))
+- Stop persisting snaps in the installing state ([#1876](https://github.com/MetaMask/snaps/pull/1876))
+
 ## [3.0.0]
 ### Added
 - Add keyring export and endowment ([#1787](https://github.com/MetaMask/snaps/pull/1787))
@@ -72,7 +90,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@3.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@3.1.0...HEAD
+[3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@3.0.0...@metamask/snaps-controllers@3.1.0
 [3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@2.0.2...@metamask/snaps-controllers@3.0.0
 [2.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@2.0.1...@metamask/snaps-controllers@2.0.2
 [2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@2.0.0...@metamask/snaps-controllers@2.0.1

@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0]
+### Added
+- Add static file API ([#1836](https://github.com/MetaMask/snaps/pull/1836), [#1858](https://github.com/MetaMask/snaps/pull/1858))
+
+### Changed
+- Update multiple MetaMask dependencies ([#1841](https://github.com/MetaMask/snaps/pull/1841))
+- Bump Babel packages from `^7.20.12` to `^7.23.2` ([#1862](https://github.com/MetaMask/snaps/pull/1862))
+
 ## [3.0.0]
 ### Added
 - Add keyring export and endowment ([#1787](https://github.com/MetaMask/snaps/pull/1787))
@@ -59,7 +67,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@3.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@3.1.0...HEAD
+[3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@3.0.0...@metamask/snaps-utils@3.1.0
 [3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@2.0.1...@metamask/snaps-utils@3.0.0
 [2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@2.0.0...@metamask/snaps-utils@2.0.1
 [2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@0.38.4-flask.1...@metamask/snaps-utils@2.0.0

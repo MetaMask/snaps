@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0]
+### Changed
+- Improve error handling ([#1841](https://github.com/MetaMask/snaps/pull/1841))
+  - Snaps can now throw a `SnapError`, without causing the Snap to crash.
+- Standardise all errors thrown in execution environments ([#1830](https://github.com/MetaMask/snaps/pull/1830))
+
 ## [3.0.0]
 ### Added
 - Add keyring export and endowment ([#1787](https://github.com/MetaMask/snaps/pull/1787))
@@ -78,7 +84,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@3.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@3.1.0...HEAD
+[3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@3.0.0...@metamask/snaps-execution-environments@3.1.0
 [3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@2.0.1...@metamask/snaps-execution-environments@3.0.0
 [2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@2.0.0...@metamask/snaps-execution-environments@2.0.1
 [2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@0.39.0-flask.1...@metamask/snaps-execution-environments@2.0.0

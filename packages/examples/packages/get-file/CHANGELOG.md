@@ -6,4 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-[Unreleased]: https://github.com/MetaMask/snaps/
+## [1.0.0]
+### Added
+- Add `snap_getFile` example Snap ([#1836](https://github.com/MetaMask/snaps/pull/1836), [#1858](https://github.com/MetaMask/snaps/pull/1858))
+
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/get-file-example-snap@1.0.0...HEAD
+[1.0.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/get-file-example-snap@1.0.0

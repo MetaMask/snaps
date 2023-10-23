@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "MetaMask example snap demonstrating the use of the `endowment:name-lookup` permission.",
   "proposedName": "Name Lookup Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "7aIi2VIfpdpkMONT21Q/1m1mx9Mu7qYVmTy0Jkb+O9s=",
+    "shasum": "8FCvQNr6MWNIvp8/EulbPsB7qfuftWZ84txJd9NgvMk=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

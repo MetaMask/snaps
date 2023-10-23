@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1]
+### Changed
+- Update multiple MetaMask dependencies ([#1841](https://github.com/MetaMask/snaps/pull/1841))
+
 ## [2.0.0]
 ### Changed
 - **BREAKING:** Bump minimum Node.js version to `^18.16.0` ([#1741](https://github.com/MetaMask/snaps/pull/1741))
@@ -32,7 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/ethereum-provider-example-snap@2.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/ethereum-provider-example-snap@2.0.1...HEAD
+[2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/ethereum-provider-example-snap@2.0.0...@metamask/ethereum-provider-example-snap@2.0.1
 [2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/ethereum-provider-example-snap@1.0.0...@metamask/ethereum-provider-example-snap@2.0.0
 [1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/ethereum-provider-example-snap@0.38.1-flask.1...@metamask/ethereum-provider-example-snap@1.0.0
 [0.38.1-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/ethereum-provider-example-snap@0.38.0-flask.1...@metamask/ethereum-provider-example-snap@0.38.1-flask.1

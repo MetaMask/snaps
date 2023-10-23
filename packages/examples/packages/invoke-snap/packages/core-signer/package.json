@@ -1,6 +1,6 @@
 {
   "name": "@metamask/core-signer-example-snap",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "MetaMask example snap demonstrating how a snap can communicate with another snap to sign messages.",
   "repository": {
     "type": "git",

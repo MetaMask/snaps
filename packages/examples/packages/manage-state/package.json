@@ -1,6 +1,6 @@
 {
   "name": "@metamask/manage-state-example-snap",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "MetaMask example snap demonstrating the use of `snap_manageState`.",
   "repository": {
     "type": "git",

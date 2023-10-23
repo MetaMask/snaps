@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0]
+### Changed
+- Rename package to `@metamask/snaps-rpc-methods` ([#1864](https://github.com/MetaMask/snaps/pull/1864))
+- Update multiple MetaMask dependencies ([#1841](https://github.com/MetaMask/snaps/pull/1841))
+
 ## [3.0.0]
 ### Added
 - Add keyring export and endowment ([#1787](https://github.com/MetaMask/snaps/pull/1787))
@@ -44,7 +49,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@3.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@3.1.0...HEAD
+[3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@3.0.0...@metamask/snaps-rpc-methods@3.1.0
 [3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@2.0.0...@metamask/snaps-rpc-methods@3.0.0
 [2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@0.38.3-flask.1...@metamask/snaps-rpc-methods@2.0.0
 [0.38.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@0.38.2-flask.1...@metamask/snaps-rpc-methods@0.38.3-flask.1

@@ -1,6 +1,6 @@
 {
   "name": "@metamask/name-lookup-example-snap",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "MetaMask example snap demonstrating the use of the `endowment:name-lookup` permission.",
   "repository": {
     "type": "git",
