@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "MetaMask example snap demonstrating the use of `snap_getLocale`.",
   "proposedName": "Get Locale Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "2QfwCIrEzDTNhxaArUJS0XFKmZGqsZpRhR0X7ntKnNM=",
+    "shasum": "ttZu/V293nj2AVppqkocM+HMGuUmslWpiW18XrMovl8=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
