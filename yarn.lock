@@ -3961,11 +3961,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-<<<<<<< HEAD
 "@metamask/controller-utils@npm:^5.0.2":
-=======
-"@metamask/controller-utils@npm:^5.0.1, @metamask/controller-utils@npm:^5.0.2":
->>>>>>> aa14ffbf (update yarn.lock)
   version: 5.0.2
   resolution: "@metamask/controller-utils@npm:5.0.2"
   dependencies:
@@ -12593,15 +12589,6 @@ __metadata:
   dependencies:
     fast-levenshtein: ^2.0.6
   checksum: 66a6a7c249ec8494e0360663596ce980ca75747cd202c47732eca0bfc7a97c6debbae359842e4f3e4ac7e6c44ab1f7f091c3aa7baa330449d3c1b7cc58608b71
-  languageName: node
-  linkType: hard
-
-"eth-rpc-errors@npm:^4.0.2, eth-rpc-errors@npm:^4.0.3":
-  version: 4.0.3
-  resolution: "eth-rpc-errors@npm:4.0.3"
-  dependencies:
-    fast-safe-stringify: ^2.0.6
-  checksum: 5fa31d1a10fdb340733b9a55e38e7687222c501052ca20743cef4d0c911a9bbcc0cad54aa6bf3e4b428604c071ff519803060e1cbc79ddb7c9257c11d407d32a
   languageName: node
   linkType: hard
 
