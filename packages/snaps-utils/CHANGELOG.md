@@ -7,18 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [3.1.0]
-### Uncategorized
-- Improve error handling ([#1841](https://github.com/MetaMask/snaps/pull/1841))
-- Publish preview builds to public NPM registry ([#1873](https://github.com/MetaMask/snaps/pull/1873))
-- Bump `depcheck` ([#1868](https://github.com/MetaMask/snaps/pull/1868))
-- Bump WebdriverIO ([#1863](https://github.com/MetaMask/snaps/pull/1863))
-- Bump Babel ([#1862](https://github.com/MetaMask/snaps/pull/1862))
-- Support `utf8` encoding for `snap_getFile` ([#1858](https://github.com/MetaMask/snaps/pull/1858))
-- Add static file API ([#1836](https://github.com/MetaMask/snaps/pull/1836))
-- Bump @metamask/snaps-registry from 2.0.0 to 2.1.0 ([#1846](https://github.com/MetaMask/snaps/pull/1846))
-- Tweak WDIO config ([#1840](https://github.com/MetaMask/snaps/pull/1840))
-- Refactor snap fetching slightly ([#1834](https://github.com/MetaMask/snaps/pull/1834))
-- Standardise all errors thrown in execution environments ([#1830](https://github.com/MetaMask/snaps/pull/1830))
+### Added
+- Add static file API ([#1836](https://github.com/MetaMask/snaps/pull/1836), [#1858](https://github.com/MetaMask/snaps/pull/1858))
+
+### Changed
+- Update multiple MetaMask dependencies ([#1841](https://github.com/MetaMask/snaps/pull/1841))
+- Bump Babel packages from `^7.20.12` to `^7.23.2` ([#1862](https://github.com/MetaMask/snaps/pull/1862))
 
 ## [3.0.0]
 ### Added
