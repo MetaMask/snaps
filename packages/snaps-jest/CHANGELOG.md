@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     }
     ```
     Now, the following error is returned instead:
-    ```
+    ```ts
     {
       code: -32601,
       message: 'The method does not exist / is not available.',
