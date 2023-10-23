@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.1]
+### Uncategorized
+- Publish preview builds to public NPM registry ([#1873](https://github.com/MetaMask/snaps-skunkworks.git/pull/1873))
+- Bump `depcheck` ([#1868](https://github.com/MetaMask/snaps-skunkworks.git/pull/1868))
+
 ## [3.0.0]
 ### Changed
 - **BREAKING:** Bump minimum Node.js version to `^18.16.0` ([#1741](https://github.com/MetaMask/snaps/pull/1741))
@@ -32,10 +37,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@3.0.0...HEAD
-[3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@2.0.1...@metamask/snaps-webpack-plugin@3.0.0
-[2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@2.0.0...@metamask/snaps-webpack-plugin@2.0.1
-[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@0.37.4-flask.1...@metamask/snaps-webpack-plugin@2.0.0
-[0.37.4-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@0.37.3-flask.1...@metamask/snaps-webpack-plugin@0.37.4-flask.1
-[0.37.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@0.37.2-flask.1...@metamask/snaps-webpack-plugin@0.37.3-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/snaps-webpack-plugin@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-webpack-plugin@3.0.1...HEAD
+[3.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-webpack-plugin@3.0.0...@metamask/snaps-webpack-plugin@3.0.1
+[3.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-webpack-plugin@2.0.1...@metamask/snaps-webpack-plugin@3.0.0
+[2.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-webpack-plugin@2.0.0...@metamask/snaps-webpack-plugin@2.0.1
+[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-webpack-plugin@0.37.4-flask.1...@metamask/snaps-webpack-plugin@2.0.0
+[0.37.4-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-webpack-plugin@0.37.3-flask.1...@metamask/snaps-webpack-plugin@0.37.4-flask.1
+[0.37.3-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-webpack-plugin@0.37.2-flask.1...@metamask/snaps-webpack-plugin@0.37.3-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/snaps-webpack-plugin@0.37.2-flask.1

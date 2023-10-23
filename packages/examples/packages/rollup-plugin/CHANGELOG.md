@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1]
+### Uncategorized
+- Improve error handling ([#1841](https://github.com/MetaMask/snaps-skunkworks.git/pull/1841))
+- Publish preview builds to public NPM registry ([#1873](https://github.com/MetaMask/snaps-skunkworks.git/pull/1873))
+- Bump `depcheck` ([#1868](https://github.com/MetaMask/snaps-skunkworks.git/pull/1868))
+- Bump Babel ([#1862](https://github.com/MetaMask/snaps-skunkworks.git/pull/1862))
+
 ## [2.0.0]
 ### Changed
 - **BREAKING:** Bump minimum Node.js version to `^18.16.0` ([#1741](https://github.com/MetaMask/snaps/pull/1741))
@@ -24,8 +31,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/rollup-plugin-example-snap@2.0.0...HEAD
-[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/rollup-plugin-example-snap@1.0.0...@metamask/rollup-plugin-example-snap@2.0.0
-[1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/rollup-plugin-example-snap@0.37.3-flask.1...@metamask/rollup-plugin-example-snap@1.0.0
-[0.37.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/rollup-plugin-example-snap@0.37.2-flask.1...@metamask/rollup-plugin-example-snap@0.37.3-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/rollup-plugin-example-snap@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/rollup-plugin-example-snap@2.0.1...HEAD
+[2.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/rollup-plugin-example-snap@2.0.0...@metamask/rollup-plugin-example-snap@2.0.1
+[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/rollup-plugin-example-snap@1.0.0...@metamask/rollup-plugin-example-snap@2.0.0
+[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/rollup-plugin-example-snap@0.37.3-flask.1...@metamask/rollup-plugin-example-snap@1.0.0
+[0.37.3-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/rollup-plugin-example-snap@0.37.2-flask.1...@metamask/rollup-plugin-example-snap@0.37.3-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/rollup-plugin-example-snap@0.37.2-flask.1
