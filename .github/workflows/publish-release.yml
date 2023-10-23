@@ -247,6 +247,20 @@ jobs:
     secrets:
       PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
 
+  publish-test-snaps-latest:
+    name: Publish test snaps to `latest` folder
+    needs: is-test-snaps-release
+    if: ${{ needs.is-test-snaps-release.outputs.IS_TEST_SNAPS_RELEASE == 'true' }}
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-github-pages.yml
+    with:
+      build_script: yarn workspace @metamask/test-snaps build
+      destination_dir: test-snaps/latest
+      publish_dir: ./packages/test-snaps/dist
+    secrets:
+      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
+
   is-simulator-release:
     name: Determine whether this release updates the simulator
     runs-on: ubuntu-latest
