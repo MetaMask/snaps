@@ -14,7 +14,7 @@ import type {
   RequestedSnapPermissions,
   InstallSnapsResult,
 } from '@metamask/snaps-utils';
-import { SnapCaveatType, HandlerType } from '@metamask/snaps-utils';
+import { HandlerType, SnapCaveatType } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';

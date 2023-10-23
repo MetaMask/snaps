@@ -279,7 +279,7 @@ describe('implementation', () => {
             content: panel([heading('foo'), text('[bar](https://foo.bar)')]),
           },
         }),
-      ).rejects.toThrow('Invalid URL: detected as phishing.');
+      ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
     });
   });
 });

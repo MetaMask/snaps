@@ -179,7 +179,7 @@ describe('snap_notify', () => {
             message: 'https://foo.bar',
           },
         }),
-      ).rejects.toThrow('Invalid URL: detected as phishing.');
+      ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
     });
 
     it('throws an error if a link is invalid', async () => {

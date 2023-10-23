@@ -4,7 +4,7 @@ import type {
   SLIP10PathNode,
 } from '@metamask/key-tree';
 import { SLIP10Node } from '@metamask/key-tree';
-import { type MagicValue } from '@metamask/snaps-utils';
+import type { MagicValue } from '@metamask/snaps-utils';
 import type { Hex } from '@metamask/utils';
 import {
   add0x,

@@ -206,12 +206,12 @@ describe('assertLinksAreSafe', () => {
 
   it('throws an error if an invalid link is found in text', () => {
     expect(() => assertLinksAreSafe('http://foo.bar', () => false)).toThrow(
-      'Invalid URL: protocol must be one of: https:, mailto:.',
+      'Invalid URL: Protocol must be one of: https:, mailto:.',
     );
 
     expect(() =>
       assertLinksAreSafe('https://foo^bar.bar', () => false),
-    ).toThrow('Invalid URL: invalid sintax.');
+    ).toThrow('Invalid URL: invalid syntax.');
   });
 });
 
@@ -239,20 +239,20 @@ describe('assertUILinksAreSafe', () => {
         text('This tests a link: https://foo.bar'),
         isOnPhishingList,
       ),
-    ).toThrow('Invalid URL: detected as phishing.');
+    ).toThrow('Invalid URL: The specified URL is not allowed.');
 
     expect(() =>
       assertUILinksAreSafe(
         text('This tests a [link](https://foo.bar)'),
         isOnPhishingList,
       ),
-    ).toThrow('Invalid URL: detected as phishing.');
+    ).toThrow('Invalid URL: The specified URL is not allowed.');
 
     expect(() =>
       assertUILinksAreSafe(
         panel([text('foobar'), text('This tests a [link](https://foo.bar)')]),
         isOnPhishingList,
       ),
-    ).toThrow('Invalid URL: detected as phishing.');
+    ).toThrow('Invalid URL: The specified URL is not allowed.');
   });
 });

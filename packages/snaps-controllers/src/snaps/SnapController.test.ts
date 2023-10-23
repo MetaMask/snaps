@@ -2130,7 +2130,7 @@ describe('SnapController', () => {
             id: 1,
           },
         }),
-      ).rejects.toThrow(`Invalid URL: detected as phishing.`);
+      ).rejects.toThrow(`Invalid URL: The specified URL is not allowed.`);
 
       snapController.destroy();
     });

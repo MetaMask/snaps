@@ -1,7 +1,7 @@
 import { ComponentStruct } from '@metamask/snaps-ui';
 import type { Json, JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 import type { Infer } from 'superstruct';
-import { literal, object, optional, union } from 'superstruct';
+import { literal, object, optional } from 'superstruct';
 
 import type { SnapHandler } from './handler-types';
 import { HandlerType } from './handler-types';
@@ -90,7 +90,7 @@ export enum SeverityLevel {
 
 export const OnTransactionResponseStruct = object({
   content: ComponentStruct,
-  severity: optional(union([literal(SeverityLevel.Critical)])),
+  severity: optional(literal(SeverityLevel.Critical)),
 });
 
 /**

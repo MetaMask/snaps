@@ -1,4 +1,9 @@
-import { AssertionError, assert, assertStruct } from '@metamask/utils';
+import {
+  AssertionError,
+  assert,
+  assertStruct,
+  hasProperty,
+} from '@metamask/utils';
 import { is } from 'superstruct';
 
 import type { Component } from './nodes';
@@ -28,12 +33,7 @@ export function assertIsComponent(value: unknown): asserts value is Component {
 
 const LINK_REGEX = /(?<protocol>[a-z]+:\/?\/?)(?<host>\S+?(?:\.[a-z]+)+)/giu;
 
-enum AlloweProtocols {
-  Https = 'https:',
-  Mailto = 'mailto:',
-}
-
-const ALLOWED_PROTOCOLS = Object.values(AlloweProtocols);
+const ALLOWED_PROTOCOLS = ['https:', 'mailto:'];
 
 /**
  * Searches for links in a sting and checks them against the phishing list.
@@ -51,21 +51,24 @@ export function assertLinksAreSafe(
       try {
         const url = new URL(link);
         assert(
-          ALLOWED_PROTOCOLS.includes(url.protocol as AlloweProtocols),
-          `protocol must be one of: ${ALLOWED_PROTOCOLS.join(', ')}`,
+          ALLOWED_PROTOCOLS.includes(url.protocol),
+          `Protocol must be one of: ${ALLOWED_PROTOCOLS.join(', ')}.`,
         );
 
         const hostname =
-          url.protocol === AlloweProtocols.Mailto
+          url.protocol === 'mailto:'
             ? url.pathname.split('@')[1]
             : url.hostname;
 
-        assert(!isOnPhishingList(hostname), 'detected as phishing');
+        assert(
+          !isOnPhishingList(hostname),
+          'The specified URL is not allowed.',
+        );
       } catch (error) {
         throw new Error(
           `Invalid URL: ${
-            error instanceof AssertionError ? error.message : 'invalid sintax'
-          }.`,
+            error instanceof AssertionError ? error.message : 'Invalid syntax.'
+          }`,
         );
       }
     });
@@ -90,7 +93,7 @@ export function assertUILinksAreSafe(
     );
   }
 
-  if (component.type === NodeType.Text) {
+  if (hasProperty(component, 'value') && typeof component.value === 'string') {
     assertLinksAreSafe(component.value, isOnPhishingList);
   }
 }
