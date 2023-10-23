@@ -45,6 +45,20 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/snaps-utils>is-svg": {
+      "packages": {
+        "@metamask/snaps-utils>is-svg>fast-xml-parser": true
+      }
+    },
+    "@metamask/snaps-utils>is-svg>fast-xml-parser": {
+      "globals": {
+        "entityName": true,
+        "val": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>is-svg>fast-xml-parser>strnum": true
+      }
+    },
     "@metamask/utils": {
       "globals": {
         "TextDecoder": true,

@@ -372,6 +372,35 @@
         "util": true
       }
     },
+    "external:../snaps-ui/src/builder.ts": {
+      "packages": {
+        "@metamask/utils": true,
+        "external:../snaps-ui/src/nodes.ts": true
+      }
+    },
+    "external:../snaps-ui/src/index.ts": {
+      "packages": {
+        "external:../snaps-ui/src/builder.ts": true,
+        "external:../snaps-ui/src/nodes.ts": true,
+        "external:../snaps-ui/src/validation.ts": true
+      }
+    },
+    "external:../snaps-ui/src/nodes.ts": {
+      "packages": {
+        "@metamask/snaps-utils>is-svg": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-ui/src/validation.ts": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/utils": true,
+        "external:../snaps-ui/src/nodes.ts": true,
+        "superstruct": true
+      }
+    },
     "external:../snaps-utils/src/errors.ts": {
       "packages": {
         "@metamask/rpc-errors": true,
