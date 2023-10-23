@@ -211,7 +211,7 @@ describe('assertLinksAreSafe', () => {
 
     expect(() =>
       assertLinksAreSafe('https://foo^bar.bar', () => false),
-    ).toThrow('Invalid URL: invalid syntax.');
+    ).toThrow('Invalid URL: Invalid syntax.');
   });
 });
 
