@@ -5172,6 +5172,7 @@ __metadata:
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-promise: ^6.1.1
     expect-webdriverio: ^4.4.1
+    get-npm-tarball-url: ^2.0.3
     gunzip-maybe: ^1.4.2
     immer: ^9.0.6
     istanbul-lib-coverage: ^3.2.0
@@ -13632,6 +13633,13 @@ __metadata:
   version: 1.0.1
   resolution: "get-nonce@npm:1.0.1"
   checksum: e2614e43b4694c78277bb61b0f04583d45786881289285c73770b07ded246a98be7e1f78b940c80cbe6f2b07f55f0b724e6db6fd6f1bcbd1e8bdac16521074ed
+  languageName: node
+  linkType: hard
+
+"get-npm-tarball-url@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "get-npm-tarball-url@npm:2.0.3"
+  checksum: 8ad48a6f1126697665e12ebf053e0d1c3b15b3c4f29ea6c458387ac68d044ea1c08f0f2eb5c0fe35447fdd2da4f2fb5c9882feb5a2ea195c773f94e762c9b886
   languageName: node
   linkType: hard
 
