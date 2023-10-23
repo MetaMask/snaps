@@ -67,7 +67,9 @@ export function assertLinksAreSafe(
       } catch (error) {
         throw new Error(
           `Invalid URL: ${
-            error instanceof AssertionError ? error.message : 'Invalid syntax.'
+            error instanceof AssertionError
+              ? error.message
+              : 'Unable to parse URL.'
           }`,
         );
       }
