@@ -22,7 +22,7 @@ export const Text: FunctionComponent<TextProps> = ({ node, id }) => {
             {value}
           </ChakraText>
         ),
-        // TODO: Update styling
+        // TODO: Update styling - https://github.com/MetaMask/snaps/issues/1881
         a: ({ children: value, href }) => (
           <ChakraLink
             href={href}
