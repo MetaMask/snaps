@@ -1,4 +1,7 @@
-import type { ApprovalRequest } from '@metamask/approval-controller';
+import type {
+  ApprovalRequest,
+  StartFlowOptions,
+} from '@metamask/approval-controller';
 import type {
   PermissionConstraint,
   SubjectPermissions,
@@ -20,6 +23,7 @@ import {
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 import type { Json } from '@metamask/utils';
+import { nanoid } from 'nanoid';
 
 import type {
   CronjobControllerActions,
@@ -91,6 +95,14 @@ export class MockApprovalController {
         this.#approval.promise.reject(providerErrors.userRejectedRequest());
       }
     }
+  }
+
+  startFlow(_opts: StartFlowOptions = {}) {
+    return { id: nanoid(), loadingText: null };
+  }
+
+  endFlow() {
+    // no-op
   }
 }
 
@@ -205,6 +217,16 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
     approvalControllerMock.updateRequestStateAndApprove.bind(
       approvalControllerMock,
     ),
+  );
+
+  messenger.registerActionHandler(
+    'ApprovalController:startFlow',
+    approvalControllerMock.startFlow.bind(approvalControllerMock),
+  );
+
+  messenger.registerActionHandler(
+    'ApprovalController:endFlow',
+    approvalControllerMock.endFlow.bind(approvalControllerMock),
   );
 
   messenger.registerActionHandler(
@@ -325,6 +347,8 @@ export const getSnapControllerMessenger = (
     allowedActions: [
       'ApprovalController:addRequest',
       'ApprovalController:updateRequestState',
+      'ApprovalController:startFlow',
+      'ApprovalController:endFlow',
       'ExecutionService:executeSnap',
       'ExecutionService:terminateAllSnaps',
       'ExecutionService:terminateSnap',

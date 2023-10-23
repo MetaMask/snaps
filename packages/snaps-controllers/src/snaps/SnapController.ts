@@ -1,5 +1,7 @@
 import type {
   AddApprovalRequest,
+  EndFlow,
+  StartFlow,
   UpdateRequestState,
 } from '@metamask/approval-controller';
 import type { RestrictedControllerMessenger } from '@metamask/base-controller';
@@ -503,7 +505,9 @@ export type AllowedActions =
   | GetResult
   | GetMetadata
   | Update
-  | ResolveVersion;
+  | ResolveVersion
+  | StartFlow
+  | EndFlow;
 
 export type AllowedEvents =
   | ExecutionServiceEvents
@@ -1672,6 +1676,11 @@ export class SnapController extends BaseController<
   ): Promise<InstallSnapsResult> {
     const result: InstallSnapsResult = {};
 
+    const { id: flowId } = this.messagingSystem.call(
+      'ApprovalController:startFlow',
+      { showOnFirstRequest: true },
+    );
+
     const snapIds = Object.keys(requestedSnaps);
 
     const pendingUpdates = [];
@@ -1757,6 +1766,8 @@ export class SnapController extends BaseController<
       await this.#rollbackSnaps(snapsToRollback);
 
       throw error;
+    } finally {
+      this.messagingSystem.call('ApprovalController:endFlow', { id: flowId });
     }
 
     return result;
