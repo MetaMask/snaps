@@ -7,13 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [2.0.1]
-### Uncategorized
-- Improve error handling ([#1841](https://github.com/MetaMask/snaps-skunkworks.git/pull/1841))
-- Publish preview builds to public NPM registry ([#1873](https://github.com/MetaMask/snaps-skunkworks.git/pull/1873))
-- Bump `depcheck` ([#1868](https://github.com/MetaMask/snaps-skunkworks.git/pull/1868))
-- Rename `rpc-methods` to `snaps-rpc-methods` ([#1864](https://github.com/MetaMask/snaps-skunkworks.git/pull/1864))
-- Support `utf8` encoding for `snap_getFile` ([#1858](https://github.com/MetaMask/snaps-skunkworks.git/pull/1858))
-- Add static file API ([#1836](https://github.com/MetaMask/snaps-skunkworks.git/pull/1836))
+### Changed
+- Update multiple MetaMask dependencies ([#1841](https://github.com/MetaMask/snaps/pull/1841))
 
 ## [2.0.0]
 ### Changed
@@ -41,10 +36,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/dialog-example-snap@2.0.1...HEAD
-[2.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/dialog-example-snap@2.0.0...@metamask/dialog-example-snap@2.0.1
-[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/dialog-example-snap@1.0.0...@metamask/dialog-example-snap@2.0.0
-[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/dialog-example-snap@0.38.1-flask.1...@metamask/dialog-example-snap@1.0.0
-[0.38.1-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/dialog-example-snap@0.38.0-flask.1...@metamask/dialog-example-snap@0.38.1-flask.1
-[0.38.0-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/dialog-example-snap@0.37.2-flask.1...@metamask/dialog-example-snap@0.38.0-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/dialog-example-snap@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/dialog-example-snap@2.0.1...HEAD
+[2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/dialog-example-snap@2.0.0...@metamask/dialog-example-snap@2.0.1
+[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/dialog-example-snap@1.0.0...@metamask/dialog-example-snap@2.0.0
+[1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/dialog-example-snap@0.38.1-flask.1...@metamask/dialog-example-snap@1.0.0
+[0.38.1-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/dialog-example-snap@0.38.0-flask.1...@metamask/dialog-example-snap@0.38.1-flask.1
+[0.38.0-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/dialog-example-snap@0.37.2-flask.1...@metamask/dialog-example-snap@0.38.0-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/dialog-example-snap@0.37.2-flask.1

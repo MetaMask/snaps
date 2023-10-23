@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [2.0.1]
-### Uncategorized
-- Publish preview builds to public NPM registry ([#1873](https://github.com/MetaMask/snaps-skunkworks.git/pull/1873))
-- Bump `depcheck` ([#1868](https://github.com/MetaMask/snaps-skunkworks.git/pull/1868))
+### Changed
+- Update multiple MetaMask dependencies ([#1841](https://github.com/MetaMask/snaps/pull/1841))
 
 ## [2.0.0]
 ### Changed
@@ -28,9 +27,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add lifecycle hooks example snap ([#1645](https://github.com/MetaMask/snaps/pull/1645))
   - This snap demonstrates how to use the `onInstall` and `onUpdate` lifecycle hooks.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/lifecycle-hooks-example-snap@2.0.1...HEAD
-[2.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/lifecycle-hooks-example-snap@2.0.0...@metamask/lifecycle-hooks-example-snap@2.0.1
-[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/lifecycle-hooks-example-snap@1.0.0...@metamask/lifecycle-hooks-example-snap@2.0.0
-[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/lifecycle-hooks-example-snap@0.38.1-flask.1...@metamask/lifecycle-hooks-example-snap@1.0.0
-[0.38.1-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/lifecycle-hooks-example-snap@0.38.0-flask.1...@metamask/lifecycle-hooks-example-snap@0.38.1-flask.1
-[0.38.0-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/lifecycle-hooks-example-snap@0.38.0-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/lifecycle-hooks-example-snap@2.0.1...HEAD
+[2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/lifecycle-hooks-example-snap@2.0.0...@metamask/lifecycle-hooks-example-snap@2.0.1
+[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/lifecycle-hooks-example-snap@1.0.0...@metamask/lifecycle-hooks-example-snap@2.0.0
+[1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/lifecycle-hooks-example-snap@0.38.1-flask.1...@metamask/lifecycle-hooks-example-snap@1.0.0
+[0.38.1-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/lifecycle-hooks-example-snap@0.38.0-flask.1...@metamask/lifecycle-hooks-example-snap@0.38.1-flask.1
+[0.38.0-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/lifecycle-hooks-example-snap@0.38.0-flask.1
