@@ -102,6 +102,7 @@ import { processSnapPermissions } from './permissions';
 import type {
   GetMetadata,
   GetResult,
+  ResolveVersion,
   SnapsRegistryInfo,
   SnapsRegistryMetadata,
   SnapsRegistryRequest,
@@ -501,7 +502,8 @@ export type AllowedActions =
   | UpdateRequestState
   | GetResult
   | GetMetadata
-  | Update;
+  | Update
+  | ResolveVersion;
 
 export type AllowedEvents =
   | ExecutionServiceEvents
@@ -1090,7 +1092,7 @@ export class SnapController extends BaseController<
       result.status !== SnapsRegistryStatus.Verified
     ) {
       throw new Error(
-        `Cannot install version "${snapInfo.version}" of snap "${snapId}": The snap is not on the allow list.`,
+        `Cannot install version "${snapInfo.version}" of snap "${snapId}": The snap is not on the allowlist.`,
       );
     }
   }
@@ -1681,13 +1683,18 @@ export class SnapController extends BaseController<
       )) {
         assertIsValidSnapId(snapId);
 
-        const [error, version] = resolveVersionRange(rawVersion);
+        const [error, resolvedVersion] = resolveVersionRange(rawVersion);
 
         if (error) {
           throw rpcErrors.invalidParams(
             `The "version" field must be a valid SemVer version range if specified. Received: "${rawVersion}".`,
           );
         }
+
+        // If we are running in allowlist mode, try to match the version with an allowlist version.
+        const version = this.#featureFlags.requireAllowlist
+          ? await this.#resolveAllowlistVersion(snapId, resolvedVersion)
+          : resolvedVersion;
 
         const location = this.#detectSnapLocation(snapId, {
           versionRange: version,
@@ -2063,6 +2070,17 @@ export class SnapController extends BaseController<
       });
       throw error;
     }
+  }
+
+  async #resolveAllowlistVersion(
+    snapId: ValidatedSnapId,
+    versionRange: SemVerRange,
+  ): Promise<SemVerRange> {
+    return await this.messagingSystem.call(
+      'SnapsRegistry:resolveVersion',
+      snapId,
+      versionRange,
+    );
   }
 
   /**

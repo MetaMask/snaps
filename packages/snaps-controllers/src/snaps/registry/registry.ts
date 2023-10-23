@@ -3,7 +3,7 @@ import type {
   SnapsRegistryDatabase,
 } from '@metamask/snaps-registry';
 import type { SnapId, ValidatedSnapId } from '@metamask/snaps-utils';
-import type { SemVerVersion } from '@metamask/utils';
+import type { SemVerRange, SemVerVersion } from '@metamask/utils';
 
 export type SnapsRegistryInfo = { version: SemVerVersion; checksum: string };
 export type SnapsRegistryRequest = Record<SnapId, SnapsRegistryInfo>;
@@ -28,6 +28,20 @@ export type SnapsRegistry = {
   ): Promise<Record<ValidatedSnapId, SnapsRegistryResult>>;
 
   update(): Promise<void>;
+
+  /**
+   * Find an allowlisted version within a specified version range.
+   *
+   * @param snapId - The ID of the snap we are trying to resolve a version for.
+   * @param versionRange - The version range.
+   * @param refetch - An optional flag used to determine if we are refetching the registry.
+   * @returns An allowlisted version within the specified version range.
+   * @throws If an allowlisted version does not exist within the version range.
+   */
+  resolveVersion(
+    snapId: SnapId,
+    versionRange: SemVerRange,
+  ): Promise<SemVerRange>;
 
   /**
    * Get metadata for the given snap ID.

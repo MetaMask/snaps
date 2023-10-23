@@ -2,10 +2,11 @@ import type { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { BaseControllerV2 as BaseController } from '@metamask/base-controller';
 import type { SnapsRegistryDatabase } from '@metamask/snaps-registry';
 import { verify } from '@metamask/snaps-registry';
-import type { SnapId } from '@metamask/snaps-utils';
-import type { Hex } from '@metamask/utils';
+import { getTargetVersion, type SnapId } from '@metamask/snaps-utils';
+import type { Hex, SemVerRange, SemVerVersion } from '@metamask/utils';
 import {
   assert,
+  assertIsSemVerRange,
   Duration,
   inMilliseconds,
   satisfiesVersionRange,
@@ -48,6 +49,11 @@ export type GetResult = {
   handler: SnapsRegistry['get'];
 };
 
+export type ResolveVersion = {
+  type: `${typeof controllerName}:resolveVersion`;
+  handler: SnapsRegistry['resolveVersion'];
+};
+
 export type GetMetadata = {
   type: `${typeof controllerName}:getMetadata`;
   handler: SnapsRegistry['getMetadata'];
@@ -58,7 +64,11 @@ export type Update = {
   handler: SnapsRegistry['update'];
 };
 
-export type SnapsRegistryActions = GetResult | GetMetadata | Update;
+export type SnapsRegistryActions =
+  | GetResult
+  | GetMetadata
+  | Update
+  | ResolveVersion;
 
 export type SnapsRegistryEvents = never;
 
@@ -138,9 +148,15 @@ export class JsonSnapsRegistry extends BaseController<
       'SnapsRegistry:get',
       async (...args) => this.#get(...args),
     );
+
     this.messagingSystem.registerActionHandler(
       'SnapsRegistry:getMetadata',
       async (...args) => this.#getMetadata(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'SnapsRegistry:resolveVersion',
+      async (...args) => this.#resolveVersion(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -264,6 +280,53 @@ export class JsonSnapsRegistry extends BaseController<
       acc[snapId] = result;
       return acc;
     }, Promise.resolve({}));
+  }
+
+  /**
+   * Find an allowlisted version within a specified version range.
+   *
+   * @param snapId - The ID of the snap we are trying to resolve a version for.
+   * @param versionRange - The version range.
+   * @param refetch - An optional flag used to determine if we are refetching the registry.
+   * @returns An allowlisted version within the specified version range.
+   * @throws If an allowlisted version does not exist within the version range.
+   */
+  async #resolveVersion(
+    snapId: SnapId,
+    versionRange: SemVerRange,
+    refetch = false,
+  ): Promise<SemVerRange> {
+    const database = await this.#getDatabase();
+    const versions = database?.verifiedSnaps[snapId]?.versions ?? null;
+
+    if (!versions && this.#refetchOnAllowlistMiss && !refetch) {
+      await this.#triggerUpdate();
+      return this.#resolveVersion(snapId, versionRange, true);
+    }
+
+    assert(
+      versions,
+      `Cannot install snap "${snapId}": The snap is not on the allowlist.`,
+    );
+
+    const targetVersion = getTargetVersion(
+      Object.keys(versions) as SemVerVersion[],
+      versionRange,
+    );
+
+    if (!targetVersion && this.#refetchOnAllowlistMiss && !refetch) {
+      await this.#triggerUpdate();
+      return this.#resolveVersion(snapId, versionRange, true);
+    }
+
+    assert(
+      targetVersion,
+      `Cannot install version "${versionRange}" of snap "${snapId}": No matching versions of the snap are on the allowlist.`,
+    );
+
+    // A semver version is technically also a valid semver range.
+    assertIsSemVerRange(targetVersion);
+    return targetVersion;
   }
 
   /**

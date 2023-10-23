@@ -726,6 +726,32 @@ describe('SnapController', () => {
     controller.destroy();
   });
 
+  it('throws an error if snap is not on allowlist and allowlisting is required but resolve succeeds', async () => {
+    const registry = new MockSnapsRegistry();
+    const rootMessenger = getControllerMessenger(registry);
+    const messenger = getSnapControllerMessenger(rootMessenger);
+    const controller = getSnapController(
+      getSnapControllerOptions({
+        featureFlags: { requireAllowlist: true },
+        messenger,
+        detectSnapLocation: loopbackDetect(),
+      }),
+    );
+
+    // Mock resolve to succeed, but registry.get() will fail later
+    registry.resolveVersion.mockReturnValue('1.0.0');
+
+    await expect(
+      controller.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: { version: DEFAULT_REQUESTED_SNAP_VERSION },
+      }),
+    ).rejects.toThrow(
+      'Cannot install version "1.0.0" of snap "npm:@metamask/example-snap": The snap is not on the allowlist.',
+    );
+
+    controller.destroy();
+  });
+
   it('throws an error if snap is not on allowlist and allowlisting is required', async () => {
     const controller = getSnapController(
       getSnapControllerOptions({
@@ -739,8 +765,45 @@ describe('SnapController', () => {
         [MOCK_SNAP_ID]: { version: DEFAULT_REQUESTED_SNAP_VERSION },
       }),
     ).rejects.toThrow(
-      'Cannot install version "1.0.0" of snap "npm:@metamask/example-snap": The snap is not on the allow list.',
+      'Cannot install snap "npm:@metamask/example-snap": The snap is not on the allowlist.',
     );
+
+    controller.destroy();
+  });
+
+  it('resolves to allowlisted version when allowlisting is required', async () => {
+    const registry = new MockSnapsRegistry();
+    const rootMessenger = getControllerMessenger(registry);
+    const messenger = getSnapControllerMessenger(rootMessenger);
+
+    const { manifest, sourceCode, svgIcon } = getSnapFiles({
+      manifest: getSnapManifest({
+        version: '1.1.0' as SemVerVersion,
+      }),
+    });
+
+    registry.get.mockResolvedValueOnce({
+      [MOCK_SNAP_ID]: { status: SnapsRegistryStatus.Verified },
+    });
+
+    registry.resolveVersion.mockReturnValue('1.1.0');
+
+    const controller = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        featureFlags: { requireAllowlist: true },
+        detectSnapLocation: loopbackDetect({
+          manifest,
+          files: [sourceCode, svgIcon as VirtualFile],
+        }),
+      }),
+    );
+
+    await controller.installSnaps(MOCK_ORIGIN, {
+      [MOCK_SNAP_ID]: { version: '^1.0.0' },
+    });
+
+    expect(controller.get(MOCK_SNAP_ID)?.version).toBe('1.1.0');
 
     controller.destroy();
   });

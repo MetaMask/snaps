@@ -282,6 +282,10 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
     'SnapsRegistry:getMetadata',
     registry.getMetadata.bind(registry),
   );
+  messenger.registerActionHandler(
+    'SnapsRegistry:resolveVersion',
+    registry.resolveVersion.bind(registry),
+  );
 
   messenger.registerActionHandler(
     'SnapsRegistry:update',
@@ -348,7 +352,6 @@ export const getSnapControllerMessenger = (
       'SnapController:getAll',
       'SnapController:getPermitted',
       'SnapController:install',
-      'SnapController:removeSnapError',
       'SnapController:incrementActiveReferences',
       'SnapController:decrementActiveReferences',
       'SnapController:getRegistryMetadata',
@@ -359,6 +362,7 @@ export const getSnapControllerMessenger = (
       'SnapController:disconnectOrigin',
       'SnapController:revokeDynamicPermissions',
       'SnapController:getFile',
+      'SnapsRegistry:resolveVersion',
     ],
   });
 
@@ -541,6 +545,7 @@ export const getRestrictedSnapsRegistryControllerMessenger = (
       'SnapsRegistry:get',
       'SnapsRegistry:getMetadata',
       'SnapsRegistry:update',
+      'SnapsRegistry:resolveVersion',
     ],
   });
 
