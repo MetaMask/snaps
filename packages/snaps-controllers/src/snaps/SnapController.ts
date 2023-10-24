@@ -1678,7 +1678,7 @@ export class SnapController extends BaseController<
 
     const { id: flowId } = this.messagingSystem.call(
       'ApprovalController:startFlow',
-      { showOnFirstRequest: true },
+      { show: false },
     );
 
     const snapIds = Object.keys(requestedSnaps);

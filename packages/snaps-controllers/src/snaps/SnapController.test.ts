@@ -577,7 +577,7 @@ describe('SnapController', () => {
     expect(messenger.call).toHaveBeenNthCalledWith(
       1,
       'ApprovalController:startFlow',
-      { showOnFirstRequest: true },
+      { show: false },
     );
 
     expect(messenger.call).toHaveBeenNthCalledWith(
@@ -839,7 +839,7 @@ describe('SnapController', () => {
     expect(messenger.call).toHaveBeenNthCalledWith(
       1,
       'ApprovalController:startFlow',
-      { showOnFirstRequest: true },
+      { show: false },
     );
     expect(messenger.call).toHaveBeenNthCalledWith(
       2,
@@ -878,7 +878,7 @@ describe('SnapController', () => {
     expect(messenger.call).toHaveBeenNthCalledWith(
       1,
       'ApprovalController:startFlow',
-      { showOnFirstRequest: true },
+      { show: false },
     );
 
     expect(messenger.call).toHaveBeenNthCalledWith(
@@ -2823,7 +2823,7 @@ describe('SnapController', () => {
       expect(messenger.call).toHaveBeenNthCalledWith(
         1,
         'ApprovalController:startFlow',
-        { showOnFirstRequest: true },
+        { show: false },
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
@@ -2934,7 +2934,7 @@ describe('SnapController', () => {
       expect(messenger.call).toHaveBeenNthCalledWith(
         1,
         'ApprovalController:startFlow',
-        { showOnFirstRequest: true },
+        { show: false },
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
@@ -3125,7 +3125,7 @@ describe('SnapController', () => {
       expect(messenger.call).toHaveBeenNthCalledWith(
         1,
         'ApprovalController:startFlow',
-        { showOnFirstRequest: true },
+        { show: false },
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
@@ -3256,7 +3256,7 @@ describe('SnapController', () => {
       expect(messenger.call).toHaveBeenNthCalledWith(
         1,
         'ApprovalController:startFlow',
-        { showOnFirstRequest: true },
+        { show: false },
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
