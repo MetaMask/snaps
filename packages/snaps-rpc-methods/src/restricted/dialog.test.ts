@@ -20,6 +20,8 @@ describe('builder', () => {
       dialogBuilder.specificationBuilder({
         methodHooks: {
           showDialog: jest.fn(),
+          isOnPhishingList: jest.fn(),
+          maybeUpdatePhishingList: jest.fn(),
         },
       }),
     ).toStrictEqual({
@@ -36,6 +38,8 @@ describe('implementation', () => {
   const getMockDialogHooks = () =>
     ({
       showDialog: jest.fn(),
+      isOnPhishingList: jest.fn(),
+      maybeUpdatePhishingList: jest.fn(),
     } as DialogMethodHooks);
 
   it('accepts string dialog types', async () => {
@@ -258,5 +262,24 @@ describe('implementation', () => {
         );
       },
     );
+
+    it('rejects phishing links', async () => {
+      const implementation = getDialogImplementation({
+        showDialog: jest.fn(),
+        isOnPhishingList: () => true,
+        maybeUpdatePhishingList: jest.fn(),
+      });
+
+      await expect(
+        implementation({
+          context: { origin: 'foo' },
+          method: 'snap_dialog',
+          params: {
+            type: DialogType.Confirmation,
+            content: panel([heading('foo'), text('[bar](https://foo.bar)')]),
+          },
+        }),
+      ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
+    });
   });
 });

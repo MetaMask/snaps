@@ -183,6 +183,20 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/snaps-utils>is-svg": {
+      "packages": {
+        "@metamask/snaps-utils>is-svg>fast-xml-parser": true
+      }
+    },
+    "@metamask/snaps-utils>is-svg>fast-xml-parser": {
+      "globals": {
+        "entityName": true,
+        "val": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>is-svg>fast-xml-parser>strnum": true
+      }
+    },
     "@metamask/utils": {
       "globals": {
         "TextDecoder": true,
@@ -294,10 +308,46 @@
         "eslint>debug>ms": true
       }
     },
+    "external:../snaps-ui/src/builder.ts": {
+      "packages": {
+        "@metamask/utils": true,
+        "external:../snaps-ui/src/nodes.ts": true
+      }
+    },
+    "external:../snaps-ui/src/index.ts": {
+      "packages": {
+        "external:../snaps-ui/src/builder.ts": true,
+        "external:../snaps-ui/src/nodes.ts": true,
+        "external:../snaps-ui/src/validation.ts": true
+      }
+    },
+    "external:../snaps-ui/src/nodes.ts": {
+      "packages": {
+        "@metamask/snaps-utils>is-svg": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-ui/src/validation.ts": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/utils": true,
+        "external:../snaps-ui/src/nodes.ts": true,
+        "superstruct": true
+      }
+    },
     "external:../snaps-utils/src/errors.ts": {
       "packages": {
         "@metamask/rpc-errors": true,
         "@metamask/utils": true
+      }
+    },
+    "external:../snaps-utils/src/handlers.ts": {
+      "packages": {
+        "external:../snaps-ui/src/index.ts": true,
+        "external:../snaps-utils/src/handler-types.ts": true,
+        "superstruct": true
       }
     },
     "external:../snaps-utils/src/icon.ts": {
@@ -308,6 +358,7 @@
     "external:../snaps-utils/src/index.executionenv.ts": {
       "packages": {
         "external:../snaps-utils/src/errors.ts": true,
+        "external:../snaps-utils/src/handler-types.ts": true,
         "external:../snaps-utils/src/handlers.ts": true,
         "external:../snaps-utils/src/logging.ts": true,
         "external:../snaps-utils/src/namespace.ts": true,
@@ -335,7 +386,6 @@
       },
       "packages": {
         "@metamask/utils": true,
-        "external:../snaps-utils/src/handlers.ts": true,
         "superstruct": true
       }
     },

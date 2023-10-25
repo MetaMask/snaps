@@ -6,7 +6,7 @@ import type {
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { Component } from '@metamask/snaps-ui';
-import { ComponentStruct } from '@metamask/snaps-ui';
+import { ComponentStruct, assertUILinksAreSafe } from '@metamask/snaps-ui';
 import type { EnumToUnion } from '@metamask/snaps-utils';
 import { enumValue } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
@@ -23,7 +23,7 @@ import {
   union,
 } from 'superstruct';
 
-import type { MethodHooksObject } from '../utils';
+import { type MethodHooksObject } from '../utils';
 
 const methodName = 'snap_dialog';
 
@@ -44,6 +44,9 @@ type ShowDialog = (
   placeholder?: Placeholder,
 ) => Promise<null | boolean | string>;
 
+type MaybeUpdatePhisingList = () => Promise<void>;
+type IsOnPhishingList = (url: string) => boolean;
+
 export type DialogMethodHooks = {
   /**
    * @param snapId - The ID of the Snap that created the alert.
@@ -52,6 +55,13 @@ export type DialogMethodHooks = {
    * @param placeholder - The placeholder for the Prompt dialog input.
    */
   showDialog: ShowDialog;
+
+  maybeUpdatePhishingList: MaybeUpdatePhisingList;
+
+  /**
+   * @param url - The URL to check against the phishing list.
+   */
+  isOnPhishingList: IsOnPhishingList;
 };
 
 type DialogSpecificationBuilderOptions = {
@@ -99,6 +109,8 @@ const specificationBuilder: PermissionSpecificationBuilder<
 
 const methodHooks: MethodHooksObject<DialogMethodHooks> = {
   showDialog: true,
+  isOnPhishingList: true,
+  maybeUpdatePhishingList: true,
 };
 
 export const dialogBuilder = Object.freeze({
@@ -149,10 +161,17 @@ const structs = {
  * @param hooks - The RPC method hooks.
  * @param hooks.showDialog - A function that shows the specified dialog in the
  * MetaMask UI and returns the appropriate value for the dialog type.
+ * @param hooks.isOnPhishingList - A function that checks a link against the
+ * phishing list and return true if it's in, otherwise false.
+ * @param hooks.maybeUpdatePhishingList - A function that updates the phishing list if needed.
  * @returns The method implementation which return value depends on the dialog
  * type, valid return types are: string, boolean, null.
  */
-export function getDialogImplementation({ showDialog }: DialogMethodHooks) {
+export function getDialogImplementation({
+  showDialog,
+  isOnPhishingList,
+  maybeUpdatePhishingList,
+}: DialogMethodHooks) {
   return async function dialogImplementation(
     args: RestrictedMethodOptions<DialogParameters>,
   ): Promise<boolean | null | string> {
@@ -165,6 +184,10 @@ export function getDialogImplementation({ showDialog }: DialogMethodHooks) {
     const validatedParams = getValidatedParams(params, structs[validatedType]);
 
     const { content } = validatedParams;
+
+    await maybeUpdatePhishingList();
+
+    assertUILinksAreSafe(content, isOnPhishingList);
 
     const placeholder =
       validatedParams.type === DialogType.Prompt

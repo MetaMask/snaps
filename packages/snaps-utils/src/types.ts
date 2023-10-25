@@ -16,8 +16,7 @@ import {
 } from 'superstruct';
 
 import type { SnapCaveatType } from './caveats';
-import type { SnapFunctionExports } from './handlers';
-import { HandlerType } from './handlers';
+import type { SnapFunctionExports, SnapRpcHookArgs } from './handlers';
 import type { SnapManifest } from './manifest';
 import type { VirtualFile } from './virtual-file';
 
@@ -140,14 +139,6 @@ export enum SNAP_STREAM_NAMES {
   COMMAND = 'command',
 }
 /* eslint-enable @typescript-eslint/naming-convention */
-
-export const SNAP_EXPORT_NAMES = Object.values(HandlerType);
-
-export type SnapRpcHookArgs = {
-  origin: string;
-  handler: HandlerType;
-  request: Record<string, unknown>;
-};
 
 // The snap is the callee
 export type SnapRpcHook = (options: SnapRpcHookArgs) => Promise<unknown>;

@@ -6,10 +6,11 @@ import type {
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { EnumToUnion } from '@metamask/snaps-utils';
+import { assertLinksAreSafe } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 import { isObject } from '@metamask/utils';
 
-import type { MethodHooksObject } from '../utils';
+import { type MethodHooksObject } from '../utils';
 
 const methodName = 'snap_notify';
 
@@ -50,6 +51,10 @@ export type NotifyMethodHooks = {
     snapId: string,
     args: NotificationArgs,
   ) => Promise<null>;
+
+  isOnPhishingList: (url: string) => boolean;
+
+  maybeUpdatePhishingList: () => Promise<void>;
 };
 
 type SpecificationBuilderOptions = {
@@ -90,6 +95,8 @@ export const specificationBuilder: PermissionSpecificationBuilder<
 const methodHooks: MethodHooksObject<NotifyMethodHooks> = {
   showNativeNotification: true,
   showInAppNotification: true,
+  isOnPhishingList: true,
+  maybeUpdatePhishingList: true,
 };
 
 export const notifyBuilder = Object.freeze({
@@ -104,12 +111,16 @@ export const notifyBuilder = Object.freeze({
  * @param hooks - The RPC method hooks.
  * @param hooks.showNativeNotification - A function that shows a native browser notification.
  * @param hooks.showInAppNotification - A function that shows a notification in the MetaMask UI.
+ * @param hooks.isOnPhishingList - A function that checks for links against the phishing list.
+ * @param hooks.maybeUpdatePhishingList - A function that updates the phishing list if needed.
  * @returns The method implementation which returns `null` on success.
  * @throws If the params are invalid.
  */
 export function getImplementation({
   showNativeNotification,
   showInAppNotification,
+  isOnPhishingList,
+  maybeUpdatePhishingList,
 }: NotifyMethodHooks) {
   return async function implementation(
     args: RestrictedMethodOptions<NotificationArgs>,
@@ -120,6 +131,10 @@ export function getImplementation({
     } = args;
 
     const validatedParams = getValidatedParams(params);
+
+    await maybeUpdatePhishingList();
+
+    assertLinksAreSafe(validatedParams.message, isOnPhishingList);
 
     switch (validatedParams.type) {
       case NotificationType.Native:

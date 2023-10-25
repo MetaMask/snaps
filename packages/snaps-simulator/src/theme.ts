@@ -77,6 +77,7 @@ export const theme = extendTheme({
           _dark: '#141618',
         },
       },
+
       info: {
         default: {
           default: '#0376C9',
@@ -119,6 +120,9 @@ export const theme = extendTheme({
       success: '#579F6E',
       error: '#D34C46',
       muted: '#BBC0C5',
+    },
+    link: {
+      default: '#0376C9',
     },
     error: {
       default: '#D34C46',

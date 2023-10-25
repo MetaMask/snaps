@@ -4878,6 +4878,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/phishing-controller@npm:^7.0.0":
+  version: 7.0.1
+  resolution: "@metamask/phishing-controller@npm:7.0.1"
+  dependencies:
+    "@metamask/base-controller": ^3.2.3
+    "@metamask/controller-utils": ^5.0.2
+    "@types/punycode": ^2.1.0
+    eth-phishing-detect: ^1.2.0
+    punycode: ^2.1.1
+  checksum: 9d7b4db829ce78163bc308ef520382a4d3eb43597acf05b56e1f712c56dfc60b504f61f532ebdc656f9fbeb8c26f62b7cf075aef3c5d8263b993c628cc485d81
+  languageName: node
+  linkType: hard
+
 "@metamask/post-message-stream@npm:^7.0.0":
   version: 7.0.0
   resolution: "@metamask/post-message-stream@npm:7.0.0"
@@ -5132,10 +5145,12 @@ __metadata:
     "@metamask/json-rpc-engine": ^7.1.1
     "@metamask/object-multiplex": ^1.2.0
     "@metamask/permission-controller": ^5.0.0
+    "@metamask/phishing-controller": ^7.0.0
     "@metamask/post-message-stream": ^7.0.0
     "@metamask/rpc-errors": ^6.1.0
     "@metamask/snaps-registry": ^2.1.0
     "@metamask/snaps-rpc-methods": "workspace:^"
+    "@metamask/snaps-ui": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/template-snap": ^0.7.0
     "@metamask/utils": ^8.1.0
@@ -7361,6 +7376,13 @@ __metadata:
   version: 15.7.5
   resolution: "@types/prop-types@npm:15.7.5"
   checksum: 5b43b8b15415e1f298243165f1d44390403bb2bd42e662bca3b5b5633fdd39c938e91b7fce3a9483699db0f7a715d08cef220c121f723a634972fdf596aec980
+  languageName: node
+  linkType: hard
+
+"@types/punycode@npm:^2.1.0":
+  version: 2.1.1
+  resolution: "@types/punycode@npm:2.1.1"
+  checksum: a1fdbb0d4d22ceb8fd901995d72d66b096e4c46bd603faf192085f04113afc42a6a76403f7806a2c31d45a2f70d57c042d68329ba6affc202c15fa34870b51fa
   languageName: node
   linkType: hard
 
@@ -12558,6 +12580,15 @@ __metadata:
     idna-uts46-hx: ^2.3.1
     js-sha3: ^0.5.7
   checksum: 40ce4aeedaa4e7eb4485c8d8857457ecc46a4652396981d21b7e3a5f922d5beff63c71cb4b283c935293e530eba50b329d9248be3c433949c6bc40c850c202a3
+  languageName: node
+  linkType: hard
+
+"eth-phishing-detect@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "eth-phishing-detect@npm:1.2.0"
+  dependencies:
+    fast-levenshtein: ^2.0.6
+  checksum: 66a6a7c249ec8494e0360663596ce980ca75747cd202c47732eca0bfc7a97c6debbae359842e4f3e4ac7e6c44ab1f7f091c3aa7baa330449d3c1b7cc58608b71
   languageName: node
   linkType: hard
 
