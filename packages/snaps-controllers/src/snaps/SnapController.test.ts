@@ -734,7 +734,8 @@ describe('SnapController', () => {
       getSnapControllerOptions({
         featureFlags: { requireAllowlist: true },
         messenger,
-        detectSnapLocation: loopbackDetect(),
+        detectSnapLocation: (_location, options) =>
+          new LoopbackLocation(options),
       }),
     );
 
@@ -749,6 +750,8 @@ describe('SnapController', () => {
       'Cannot install version "1.0.0" of snap "npm:@metamask/example-snap": The snap is not on the allowlist.',
     );
 
+    expect(registry.resolveVersion).toHaveBeenCalled();
+
     controller.destroy();
   });
 
@@ -756,7 +759,8 @@ describe('SnapController', () => {
     const controller = getSnapController(
       getSnapControllerOptions({
         featureFlags: { requireAllowlist: true },
-        detectSnapLocation: loopbackDetect(),
+        detectSnapLocation: (_location, options) =>
+          new LoopbackLocation(options),
       }),
     );
 
@@ -765,7 +769,7 @@ describe('SnapController', () => {
         [MOCK_SNAP_ID]: { version: DEFAULT_REQUESTED_SNAP_VERSION },
       }),
     ).rejects.toThrow(
-      'Cannot install snap "npm:@metamask/example-snap": The snap is not on the allowlist.',
+      'Failed to fetch snap "npm:@metamask/example-snap": Cannot install snap "npm:@metamask/example-snap": The snap is not on the allowlist.',
     );
 
     controller.destroy();
@@ -792,10 +796,12 @@ describe('SnapController', () => {
       getSnapControllerOptions({
         messenger,
         featureFlags: { requireAllowlist: true },
-        detectSnapLocation: loopbackDetect({
-          manifest,
-          files: [sourceCode, svgIcon as VirtualFile],
-        }),
+        detectSnapLocation: (_location, options) =>
+          new LoopbackLocation({
+            ...options,
+            manifest,
+            files: [sourceCode, svgIcon as VirtualFile],
+          }),
       }),
     );
 
@@ -804,6 +810,28 @@ describe('SnapController', () => {
     });
 
     expect(controller.get(MOCK_SNAP_ID)?.version).toBe('1.1.0');
+    expect(registry.resolveVersion).toHaveBeenCalled();
+
+    controller.destroy();
+  });
+
+  it('does not use registry resolving when allowlist is not required', async () => {
+    const registry = new MockSnapsRegistry();
+    const rootMessenger = getControllerMessenger(registry);
+    const messenger = getSnapControllerMessenger(rootMessenger);
+    const controller = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        detectSnapLocation: (_location, options) =>
+          new LoopbackLocation(options),
+      }),
+    );
+
+    await controller.installSnaps(MOCK_ORIGIN, {
+      [MOCK_SNAP_ID]: { version: DEFAULT_REQUESTED_SNAP_VERSION },
+    });
+
+    expect(registry.resolveVersion).not.toHaveBeenCalled();
 
     controller.destroy();
   });

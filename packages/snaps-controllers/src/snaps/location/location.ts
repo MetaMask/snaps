@@ -1,4 +1,5 @@
 import type { SnapManifest, VirtualFile } from '@metamask/snaps-utils';
+import type { SemVerRange } from '@metamask/utils';
 import { assert } from '@metamask/utils';
 
 import { HttpLocation } from './http';
@@ -40,6 +41,8 @@ export type DetectSnapLocationOptions = NpmOptions & {
    * @default false
    */
   allowLocal?: boolean;
+
+  resolveVersion?: (range: SemVerRange) => Promise<SemVerRange>;
 };
 
 /**

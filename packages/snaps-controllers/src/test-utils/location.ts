@@ -1,5 +1,6 @@
 import type { SnapManifest } from '@metamask/snaps-utils';
 import {
+  DEFAULT_REQUESTED_SNAP_VERSION,
   VirtualFile,
   createSnapManifest,
   normalizeRelative,
@@ -9,7 +10,8 @@ import {
   DEFAULT_SNAP_ICON,
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
-import { assert } from '@metamask/utils';
+import type { SemVerRange } from '@metamask/utils';
+import { assert, satisfiesVersionRange } from '@metamask/utils';
 
 import type { SnapLocation } from '../snaps/location';
 
@@ -28,6 +30,12 @@ type LoopbackOptions = {
    * @default false
    */
   shouldAlwaysReload?: boolean;
+  /**
+   * @default DEFAULT_REQUESTED_SNAP_VERSION
+   */
+  versionRange?: SemVerRange;
+
+  resolveVersion?: (range: SemVerRange) => Promise<SemVerRange>;
 };
 
 // Mirror NPM and HTTP implementation
@@ -43,7 +51,14 @@ export class LoopbackLocation implements SnapLocation {
 
   #shouldAlwaysReload: boolean;
 
+  #requestedRange: SemVerRange;
+
+  #resolveVersion: (range: SemVerRange) => Promise<SemVerRange>;
+
   constructor(opts: LoopbackOptions = {}) {
+    this.#requestedRange = opts.versionRange ?? DEFAULT_REQUESTED_SNAP_VERSION;
+    const defaultResolve = async (range: SemVerRange) => range;
+    this.#resolveVersion = opts.resolveVersion ?? defaultResolve;
     const shouldAlwaysReload = opts.shouldAlwaysReload ?? false;
     const manifest = coerceManifest(
       opts.manifest instanceof VirtualFile
@@ -112,6 +127,12 @@ export class LoopbackLocation implements SnapLocation {
   manifest = jest.fn(async () => this.#manifest);
 
   fetch = jest.fn(async (path: string) => {
+    // Simulate version resolving
+    const range = await this.#resolveVersion(this.#requestedRange);
+    assert(
+      satisfiesVersionRange(this.#manifest.result.version, range),
+      'Snap does not satisfy requested version range',
+    );
     const relativePath = normalizeRelative(path);
     const file = this.#files.find(
       (candidate) => candidate.path === relativePath,

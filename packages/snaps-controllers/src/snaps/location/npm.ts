@@ -35,6 +35,7 @@ interface NpmMeta {
   requestedRange: SemVerRange;
   version?: string;
   fetch: typeof fetch;
+  resolveVersion: (range: SemVerRange) => Promise<SemVerRange>;
 }
 export interface NpmOptions {
   /**
@@ -60,6 +61,8 @@ export class NpmLocation implements SnapLocation {
     const allowCustomRegistries = opts.allowCustomRegistries ?? false;
     const fetchFunction = opts.fetch ?? globalThis.fetch.bind(globalThis);
     const requestedRange = opts.versionRange ?? DEFAULT_REQUESTED_SNAP_VERSION;
+    const defaultResolve = async (range: SemVerRange) => range;
+    const resolveVersion = opts.resolveVersion ?? defaultResolve;
 
     assertStruct(url.toString(), NpmSnapIdStruct, 'Invalid Snap Id: ');
 
@@ -110,6 +113,7 @@ export class NpmLocation implements SnapLocation {
       registry,
       packageName,
       fetch: fetchFunction,
+      resolveVersion,
     };
   }
 
@@ -162,9 +166,12 @@ export class NpmLocation implements SnapLocation {
 
   async #lazyInit() {
     assert(this.files === undefined);
+    const resolvedVersion = await this.meta.resolveVersion(
+      this.meta.requestedRange,
+    );
     const [tarballResponse, actualVersion] = await fetchNpmTarball(
       this.meta.packageName,
-      this.meta.requestedRange,
+      resolvedVersion,
       this.meta.registry,
       this.meta.fetch,
     );
