@@ -354,9 +354,7 @@ describe('JsonSnapsRegistry', () => {
           MOCK_SNAP_ID,
           '^1.0.0' as SemVerRange,
         ),
-      ).rejects.toThrow(
-        'Cannot install snap "npm:@metamask/example-snap": The snap is not on the allowlist.',
-      );
+      ).rejects.toThrow('The snap is not on the allowlist');
     });
 
     it('throws if resolved version is not on the allowlist', async () => {
@@ -372,7 +370,7 @@ describe('JsonSnapsRegistry', () => {
           '^1.2.0' as SemVerRange,
         ),
       ).rejects.toThrow(
-        'Cannot install version "^1.2.0" of snap "npm:@metamask/example-snap": No matching versions of the snap are on the allowlist.',
+        'No matching versions of the snap are on the allowlist',
       );
     });
 

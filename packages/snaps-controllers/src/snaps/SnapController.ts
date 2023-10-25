@@ -1683,7 +1683,7 @@ export class SnapController extends BaseController<
       )) {
         assertIsValidSnapId(snapId);
 
-        const [error, resolvedVersion] = resolveVersionRange(rawVersion);
+        const [error, version] = resolveVersionRange(rawVersion);
 
         if (error) {
           throw rpcErrors.invalidParams(
@@ -1691,15 +1691,14 @@ export class SnapController extends BaseController<
           );
         }
 
-        // If we are running in allowlist mode, try to match the version with an allowlist version.
-        const version = this.#featureFlags.requireAllowlist
-          ? await this.#resolveAllowlistVersion(snapId, resolvedVersion)
-          : resolvedVersion;
-
         const location = this.#detectSnapLocation(snapId, {
           versionRange: version,
           fetch: this.#fetchFunction,
           allowLocal: this.#featureFlags.allowLocalSnaps,
+          resolveVersion: async (range) =>
+            this.#featureFlags.requireAllowlist
+              ? await this.#resolveAllowlistVersion(snapId, range)
+              : range,
         });
 
         // Existing snaps may need to be updated, unless they should be re-installed (e.g. local snaps)
