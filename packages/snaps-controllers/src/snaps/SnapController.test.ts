@@ -769,7 +769,7 @@ describe('SnapController', () => {
         [MOCK_SNAP_ID]: { version: DEFAULT_REQUESTED_SNAP_VERSION },
       }),
     ).rejects.toThrow(
-      'Failed to fetch snap "npm:@metamask/example-snap": Cannot install snap "npm:@metamask/example-snap": The snap is not on the allowlist.',
+      'Failed to fetch snap "npm:@metamask/example-snap": The snap is not on the allowlist.',
     );
 
     controller.destroy();

@@ -304,10 +304,7 @@ export class JsonSnapsRegistry extends BaseController<
       return this.#resolveVersion(snapId, versionRange, true);
     }
 
-    assert(
-      versions,
-      `Cannot install snap "${snapId}": The snap is not on the allowlist.`,
-    );
+    assert(versions, 'The snap is not on the allowlist');
 
     const targetVersion = getTargetVersion(
       Object.keys(versions) as SemVerVersion[],
@@ -321,7 +318,7 @@ export class JsonSnapsRegistry extends BaseController<
 
     assert(
       targetVersion,
-      `Cannot install version "${versionRange}" of snap "${snapId}": No matching versions of the snap are on the allowlist.`,
+      'No matching versions of the snap are on the allowlist',
     );
 
     // A semver version is technically also a valid semver range.
