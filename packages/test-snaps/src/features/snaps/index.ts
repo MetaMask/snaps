@@ -6,6 +6,7 @@ export * from './errors';
 export * from './ethereum-provider';
 export * from './ethers-js';
 export * from './get-entropy';
+export * from './get-file';
 export * from './get-locale';
 export * from './json-rpc';
 export * from './lifecycle-hooks';
