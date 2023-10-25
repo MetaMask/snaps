@@ -4458,7 +4458,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/get-file-example-snap@workspace:packages/examples/packages/get-file":
+"@metamask/get-file-example-snap@workspace:^, @metamask/get-file-example-snap@workspace:packages/examples/packages/get-file":
   version: 0.0.0-use.local
   resolution: "@metamask/get-file-example-snap@workspace:packages/examples/packages/get-file"
   dependencies:
@@ -5770,6 +5770,7 @@ __metadata:
     "@metamask/ethereum-provider-example-snap": "workspace:^"
     "@metamask/ethers-js-example-snap": "workspace:^"
     "@metamask/get-entropy-example-snap": "workspace:^"
+    "@metamask/get-file-example-snap": "workspace:^"
     "@metamask/get-locale-example-snap": "workspace:^"
     "@metamask/insights-example-snap": "workspace:^"
     "@metamask/json-rpc-example-snap": "workspace:^"
