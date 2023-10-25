@@ -22,6 +22,20 @@ export const GetFile: FunctionComponent = () => {
     }).catch(logError);
   };
 
+  const handleSubmit2 = () => {
+    invokeSnap({
+      snapId,
+      method: 'getFileInBase64',
+    }).catch(logError);
+  };
+
+  const handleSubmit3 = () => {
+    invokeSnap({
+      snapId,
+      method: 'getFileInHex',
+    }).catch(logError);
+  };
+
   return (
     <Snap
       name="Get File Snap"
@@ -32,11 +46,25 @@ export const GetFile: FunctionComponent = () => {
     >
       <ButtonGroup className="mb-3">
         <Button
-          id="sendGetFileHelloButton"
+          id="sendGetFileTextButton"
           onClick={handleSubmit}
           disabled={isLoading}
         >
-          Submit
+          Get Text
+        </Button>
+        <Button
+          id="sendGetFileBase64Button"
+          onClick={handleSubmit2}
+          disabled={isLoading}
+        >
+          Get Base64
+        </Button>
+        <Button
+          id="sendGetFileHexButton"
+          onClick={handleSubmit3}
+          disabled={isLoading}
+        >
+          Get Hex
         </Button>
       </ButtonGroup>
 
