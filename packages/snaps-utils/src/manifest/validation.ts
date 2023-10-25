@@ -16,7 +16,6 @@ import {
   literal,
   object,
   optional,
-  pattern,
   refine,
   record,
   size,
@@ -183,14 +182,7 @@ export const SnapAuxilaryFilesStruct = array(string());
 export const SnapManifestStruct = object({
   version: VersionStruct,
   description: size(string(), 1, 280),
-  proposedName: size(
-    pattern(
-      string(),
-      /^(?:[A-Za-z0-9-_]+( [A-Za-z0-9-_]+)*)|(?:(?:@[A-Za-z0-9-*~][A-Za-z0-9-*._~]*\/)?[A-Za-z0-9-~][A-Za-z0-9-._~]*)$/u,
-    ),
-    1,
-    214,
-  ),
+  proposedName: size(string(), 1, 214),
   repository: optional(
     object({
       type: size(string(), 1, Infinity),
@@ -211,6 +203,7 @@ export const SnapManifestStruct = object({
       }),
     }),
     files: optional(SnapAuxilaryFilesStruct),
+    locales: optional(SnapAuxilaryFilesStruct),
   }),
   initialPermissions: PermissionsStruct,
   manifestVersion: literal('0.1'),

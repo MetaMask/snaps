@@ -11,7 +11,7 @@ import {
   DEFAULT_SNAP_SHASUM,
   MOCK_AUXILIARY_FILE,
   getPackageJson,
-  getSnapFiles,
+  getMockSnapFiles,
   getSnapManifest,
 } from '../test-utils';
 import type { SnapFiles } from '../types';
@@ -172,7 +172,7 @@ describe('checkManifest', () => {
 
 describe('fixManifest', () => {
   it('fixes a name mismatch in the manifest', () => {
-    const files: SnapFiles = getSnapFiles({
+    const files: SnapFiles = getMockSnapFiles({
       manifest: getSnapManifest({ packageName: 'foo' }),
       packageJson: getPackageJson({ name: 'bar' }),
       sourceCode: DEFAULT_SNAP_BUNDLE,
@@ -193,7 +193,7 @@ describe('fixManifest', () => {
   });
 
   it('fixes a version mismatch in the manifest', () => {
-    const files: SnapFiles = getSnapFiles({
+    const files: SnapFiles = getMockSnapFiles({
       manifest: getSnapManifest({ version: '1' }),
       packageJson: getPackageJson({ version: '2' }),
       sourceCode: DEFAULT_SNAP_BUNDLE,
@@ -212,7 +212,7 @@ describe('fixManifest', () => {
   });
 
   it('fixes a repository mismatch in the manifest', () => {
-    const files: SnapFiles = getSnapFiles({
+    const files: SnapFiles = getMockSnapFiles({
       manifest: getSnapManifest({ repository: { type: 'git', url: 'foo' } }),
       packageJson: getPackageJson({ repository: { type: 'git', url: 'bar' } }),
       sourceCode: DEFAULT_SNAP_BUNDLE,
@@ -233,7 +233,7 @@ describe('fixManifest', () => {
   });
 
   it('fixes a shasum mismatch in the manifest', () => {
-    const files: SnapFiles = getSnapFiles({
+    const files: SnapFiles = getMockSnapFiles({
       manifest: getSnapManifest({
         shasum: '29MYwcRiruhy9BEJpN/TBIhxoD3t0P4OdXztV9rW8tc=',
       }),

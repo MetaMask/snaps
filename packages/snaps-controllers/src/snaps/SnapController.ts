@@ -40,6 +40,7 @@ import type {
   RequestedSnapPermissions,
   Snap,
   SnapId,
+  SnapManifest,
   SnapRpcHook,
   SnapRpcHookArgs,
   StatusContext,
@@ -69,6 +70,8 @@ import {
   validateFetchedSnap,
   unwrapError,
   OnHomePageResponseStruct,
+  getLocalizedSnapManifest,
+  getValidatedLocalizationFiles,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
@@ -100,7 +103,7 @@ import type {
   TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '../services';
-import { hasTimedOut, setDiff, withTimeout } from '../utils';
+import { getSnapFiles, hasTimedOut, setDiff, withTimeout } from '../utils';
 import { handlerEndowments, SnapEndowments } from './endowments';
 import { getKeyringCaveatOrigins } from './endowments/keyring';
 import { getRpcCaveatOrigins } from './endowments/rpc';
@@ -357,6 +360,11 @@ export type GetSnapFile = {
   handler: SnapController['getSnapFile'];
 };
 
+export type GetSnapManifest = {
+  type: `${typeof controllerName}:getManifest`;
+  handler: SnapController['getSnapManifest'];
+};
+
 export type SnapControllerActions =
   | ClearSnapState
   | GetSnap
@@ -376,7 +384,8 @@ export type SnapControllerActions =
   | GetRegistryMetadata
   | DisconnectOrigin
   | RevokeDynamicPermissions
-  | GetSnapFile;
+  | GetSnapFile
+  | GetSnapManifest;
 
 // Controller Messenger Events
 
@@ -985,6 +994,11 @@ export class SnapController extends BaseController<
       `${controllerName}:getFile`,
       (...args) => this.getSnapFile(...args),
     );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:getManifest`,
+      (...args) => this.getSnapManifest(...args),
+    );
   }
 
   #pollForLastRequestStatus() {
@@ -1449,6 +1463,11 @@ export class SnapController extends BaseController<
     }
 
     return encodeAuxiliaryFile(value, encoding);
+  }
+
+  getSnapManifest(snapId: ValidatedSnapId, locale = 'en'): SnapManifest {
+    const { manifest, localizationFiles = [] } = this.getExpect(snapId);
+    return getLocalizedSnapManifest(manifest, locale, localizationFiles);
   }
 
   /**
@@ -2151,6 +2170,7 @@ export class SnapController extends BaseController<
             `Version mismatch. Manifest for "${snapId}" specifies version "${manifest.version}" which doesn't satisfy requested version range "${versionRange}".`,
           );
         }
+
         await this.#assertIsInstallAllowed(snapId, {
           version: manifest.version,
           checksum: manifest.source.shasum,
@@ -2278,6 +2298,7 @@ export class SnapController extends BaseController<
       sourceCode: sourceCodeFile,
       svgIcon,
       auxiliaryFiles: rawAuxiliaryFiles,
+      localizationFiles,
     } = files;
 
     assertIsSnapManifest(manifest.result);
@@ -2326,7 +2347,9 @@ export class SnapController extends BaseController<
       version,
       versionHistory,
       auxiliaryFiles,
+      localizationFiles: localizationFiles.map((file) => file.result),
     };
+
     // If the snap was blocked, it isn't any longer
     delete snap.blockInformation;
 
@@ -2349,6 +2372,7 @@ export class SnapController extends BaseController<
       snap,
       svgIcon?.toString(),
     );
+
     return { ...snap, sourceCode };
   }
 
@@ -2371,15 +2395,23 @@ export class SnapController extends BaseController<
       const { iconPath } = manifest.result.source.location.npm;
       const svgIcon = iconPath ? await location.fetch(iconPath) : undefined;
 
-      const auxiliaryFiles = manifest.result.source.files
-        ? await Promise.all(
-            manifest.result.source.files.map(async (filePath) =>
-              location.fetch(filePath),
-            ),
-          )
-        : [];
+      const auxiliaryFiles = await getSnapFiles(
+        location,
+        manifest.result.source.files,
+      );
 
-      const files = { manifest, sourceCode, svgIcon, auxiliaryFiles };
+      const localizationFiles = await getSnapFiles(
+        location,
+        manifest.result.source.locales,
+      );
+
+      const files = {
+        manifest,
+        sourceCode,
+        svgIcon,
+        auxiliaryFiles,
+        localizationFiles: getValidatedLocalizationFiles(localizationFiles),
+      };
 
       validateFetchedSnap(files);
 

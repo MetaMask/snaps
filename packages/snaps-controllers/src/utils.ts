@@ -1,3 +1,4 @@
+import type { SnapLocation } from './snaps';
 import { Timer } from './snaps/Timer';
 
 /**
@@ -198,3 +199,23 @@ export type Mutable<
 } & {
   [Key in keyof Omit<Type, TargetKey>]: Type[Key];
 };
+
+/**
+ * Get all files in a Snap from an array of file paths.
+ *
+ * @param location - The location of the Snap.
+ * @param files - The array of file paths.
+ * @returns The array of files as {@link VirtualFile}s.
+ */
+export async function getSnapFiles(
+  location: SnapLocation,
+  files?: string[] | undefined,
+) {
+  if (!files || files.length === 0) {
+    return [];
+  }
+
+  return await Promise.all(
+    files.map(async (filePath) => location.fetch(filePath)),
+  );
+}

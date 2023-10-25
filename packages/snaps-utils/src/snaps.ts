@@ -29,6 +29,7 @@ import validateNPMPackage from 'validate-npm-package-name';
 
 import { SnapCaveatType } from './caveats';
 import { checksumFiles } from './checksum';
+import type { LocalizationFile } from './localization';
 import type { SnapManifest, SnapPermissions } from './manifest/validation';
 import type { FetchedSnapFiles, SnapId, SnapsPermissionRequest } from './types';
 import { SnapIdPrefixes, SnapValidationFailureReason, uri } from './types';
@@ -153,6 +154,11 @@ export type Snap = {
    * Static auxiliary files that can be loaded at runtime.
    */
   auxiliaryFiles?: SnapAuxilaryFile[];
+
+  /**
+   * Localization files which are used to translate the manifest.
+   */
+  localizationFiles?: LocalizationFile[];
 };
 
 export type TruncatedSnapFields =

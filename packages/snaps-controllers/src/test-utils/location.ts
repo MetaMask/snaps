@@ -69,6 +69,7 @@ export class LoopbackLocation implements SnapLocation {
             path: 'snap.manifest.json',
           }),
     );
+
     let files;
     if (opts.files === undefined) {
       files = [
@@ -160,5 +161,6 @@ export const loopbackDetect = (
   if (opts instanceof LoopbackLocation) {
     return jest.fn(() => opts);
   }
+
   return jest.fn(() => new LoopbackLocation(opts));
 };
