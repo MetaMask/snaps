@@ -12,7 +12,8 @@
   "files": [
     "dist/",
     "images/icon.svg",
-    "snap.manifest.json"
+    "snap.manifest.json",
+    "src/foo.json"
   ],
   "scripts": {
     "build": "mm-snap build",
