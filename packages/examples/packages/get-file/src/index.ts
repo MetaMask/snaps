@@ -24,7 +24,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     case 'getFile': {
       const fileInPlaintext = await snap.request({
         method: 'snap_getFile',
-        params: { path: './src/foo.json', encoding: 'utf8' },
+        params: { path: './files/foo.json', encoding: 'utf8' },
       });
       return JSON.parse(fileInPlaintext);
     }
@@ -33,14 +33,14 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       return await snap.request({
         method: 'snap_getFile',
         // Encoding is optional and defaults to base64
-        params: { path: './src/foo.json' },
+        params: { path: './files/foo.json' },
       });
     }
 
     case 'getFileInHex': {
       return await snap.request({
         method: 'snap_getFile',
-        params: { path: './src/foo.json', encoding: 'hex' },
+        params: { path: './files/foo.json', encoding: 'hex' },
       });
     }
 

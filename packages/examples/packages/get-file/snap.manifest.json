@@ -17,7 +17,7 @@
       }
     },
     "files": [
-      "./src/foo.json"
+      "./files/foo.json"
     ]
   },
   "initialPermissions": {
