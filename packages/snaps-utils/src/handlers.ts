@@ -67,7 +67,7 @@ export const SNAP_EXPORTS = {
   [HandlerType.OnSnapPage]: {
     type: HandlerType.OnSnapPage,
     required: true,
-    validator: (snapExport: unknown): snapExport is OnKeyringRequestHandler => {
+    validator: (snapExport: unknown): snapExport is OnSnapPageHandler => {
       return typeof snapExport === 'function';
     },
   },
