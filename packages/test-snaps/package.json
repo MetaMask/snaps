@@ -37,6 +37,7 @@
     "@metamask/ethereum-provider-example-snap": "workspace:^",
     "@metamask/ethers-js-example-snap": "workspace:^",
     "@metamask/get-entropy-example-snap": "workspace:^",
+    "@metamask/get-file-example-snap": "workspace:^",
     "@metamask/get-locale-example-snap": "workspace:^",
     "@metamask/insights-example-snap": "workspace:^",
     "@metamask/json-rpc-example-snap": "workspace:^",
