@@ -1,4 +1,3 @@
-import type { Component } from '@metamask/snaps-ui';
 import { ComponentStruct } from '@metamask/snaps-ui';
 import type { Json, JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 import type { Infer } from 'superstruct';
@@ -179,9 +178,11 @@ export type OnKeyringRequestHandler<
 
 export type OnSnapPageHandler = () => Promise<OnSnapPageResponse>;
 
-export type OnSnapPageResponse = {
-  content: Component | null;
-};
+export const OnSnapPageResponseStruct = object({
+  content: ComponentStruct,
+});
+
+export type OnSnapPageResponse = Infer<typeof OnSnapPageResponseStruct>;
 
 /**
  * Utility type for getting the handler function type from a handler type.

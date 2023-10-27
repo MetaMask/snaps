@@ -2248,6 +2248,123 @@ describe('SnapController', () => {
     });
   });
 
+  it('throws if onSnapPage handler returns a phishing link', async () => {
+    const rootMessenger = getControllerMessenger();
+    const messenger = getSnapControllerMessenger(rootMessenger);
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        state: {
+          snaps: getPersistedSnapsState(),
+        },
+      }),
+    );
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => ({
+        [SnapEndowments.HomePage]: {
+          caveats: null,
+          date: 1664187844588,
+          id: 'izn0WGUO8cvq_jqvLQuQP',
+          invoker: MOCK_SNAP_ID,
+          parentCapability: SnapEndowments.HomePage,
+        },
+      }),
+    );
+
+    rootMessenger.registerActionHandler(
+      'SubjectMetadataController:getSubjectMetadata',
+      () => MOCK_SNAP_SUBJECT_METADATA,
+    );
+
+    rootMessenger.registerActionHandler(
+      'ExecutionService:handleRpcRequest',
+      async () =>
+        Promise.resolve({
+          content: text('[Foo bar](https://foo.bar)'),
+        }),
+    );
+
+    rootMessenger.registerActionHandler(
+      'PhishingController:testOrigin',
+      () => ({
+        result: true,
+        type: 'fuzzy',
+      }),
+    );
+
+    await expect(
+      snapController.handleRequest({
+        snapId: MOCK_SNAP_ID,
+        origin: 'foo.com',
+        handler: HandlerType.OnSnapPage,
+        request: {
+          jsonrpc: '2.0',
+          method: ' ',
+          params: {},
+          id: 1,
+        },
+      }),
+    ).rejects.toThrow(`Invalid URL: The specified URL is not allowed.`);
+
+    snapController.destroy();
+  });
+
+  it("doesn't throw if onSnapPage return value is valid", async () => {
+    const rootMessenger = getControllerMessenger();
+    const messenger = getSnapControllerMessenger(rootMessenger);
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        state: {
+          snaps: getPersistedSnapsState(),
+        },
+      }),
+    );
+
+    const handlerResponse = { content: text('[foobar](https://foo.bar)') };
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => ({
+        [SnapEndowments.HomePage]: {
+          caveats: null,
+          date: 1664187844588,
+          id: 'izn0WGUO8cvq_jqvLQuQP',
+          invoker: MOCK_SNAP_ID,
+          parentCapability: SnapEndowments.HomePage,
+        },
+      }),
+    );
+
+    rootMessenger.registerActionHandler(
+      'SubjectMetadataController:getSubjectMetadata',
+      () => MOCK_SNAP_SUBJECT_METADATA,
+    );
+
+    rootMessenger.registerActionHandler(
+      'ExecutionService:handleRpcRequest',
+      async () => Promise.resolve(handlerResponse),
+    );
+
+    const result = await snapController.handleRequest({
+      snapId: MOCK_SNAP_ID,
+      origin: 'foo.com',
+      handler: HandlerType.OnSnapPage,
+      request: {
+        jsonrpc: '2.0',
+        method: ' ',
+        params: {},
+        id: 1,
+      },
+    });
+
+    expect(result).toBe(handlerResponse);
+
+    snapController.destroy();
+  });
+
   describe('getRpcRequestHandler', () => {
     it('handlers populate the "jsonrpc" property if missing', async () => {
       const rootMessenger = getControllerMessenger();
