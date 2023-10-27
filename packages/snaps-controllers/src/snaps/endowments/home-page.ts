@@ -8,9 +8,9 @@ import type { NonEmptyArray } from '@metamask/utils';
 
 import { SnapEndowments } from './enum';
 
-const permissionName = SnapEndowments.SnapPages;
+const permissionName = SnapEndowments.HomePage;
 
-type SnapPagesEndowmentSpecification = ValidPermissionSpecification<{
+type HomePageEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetName: typeof permissionName;
   endowmentGetter: (_options?: EndowmentGetterParams) => undefined;
@@ -18,9 +18,9 @@ type SnapPagesEndowmentSpecification = ValidPermissionSpecification<{
 }>;
 
 /**
- * `endowment:snap-pages` returns nothing; it is intended to be used as a
+ * `endowment:home-page` returns nothing; it is intended to be used as a
  * flag by the snap controller to detect whether the snap has the capability to
- * use snap pages.
+ * use the snap home page feature.
  *
  * @param _builderOptions - Optional specification builder options.
  * @returns The specification for the `snap-pages` endowment.
@@ -28,7 +28,7 @@ type SnapPagesEndowmentSpecification = ValidPermissionSpecification<{
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.Endowment,
   any,
-  SnapPagesEndowmentSpecification
+  HomePageEndowmentSpecification
 > = (_builderOptions?: unknown) => {
   return {
     permissionType: PermissionType.Endowment,
@@ -39,7 +39,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
   };
 };
 
-export const snapPagesEndowmentBuilder = Object.freeze({
+export const homePageEndowmentBuilder = Object.freeze({
   targetName: permissionName,
   specificationBuilder,
 } as const);

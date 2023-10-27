@@ -8,6 +8,7 @@ import {
   getCronjobCaveatMapper,
 } from './cronjob';
 import { ethereumProviderEndowmentBuilder } from './ethereum-provider';
+import { homePageEndowmentBuilder } from './home-page';
 import {
   getKeyringCaveatMapper,
   keyringCaveatSpecifications,
@@ -25,7 +26,6 @@ import {
   rpcCaveatSpecifications,
   rpcEndowmentBuilder,
 } from './rpc';
-import { snapPagesEndowmentBuilder } from './snap-pages';
 import {
   getTransactionInsightCaveatMapper,
   transactionInsightCaveatSpecifications,
@@ -45,7 +45,7 @@ export const endowmentPermissionBuilders = {
   [nameLookupEndowmentBuilder.targetName]: nameLookupEndowmentBuilder,
   [lifecycleHooksEndowmentBuilder.targetName]: lifecycleHooksEndowmentBuilder,
   [keyringEndowmentBuilder.targetName]: keyringEndowmentBuilder,
-  [snapPagesEndowmentBuilder.targetName]: snapPagesEndowmentBuilder,
+  [homePageEndowmentBuilder.targetName]: homePageEndowmentBuilder,
 } as const;
 
 export const endowmentCaveatSpecifications = {
