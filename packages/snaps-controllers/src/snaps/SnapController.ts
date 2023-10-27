@@ -2638,7 +2638,6 @@ export class SnapController extends BaseController<
 
         await this.#assertSnapRpcRequestResult(handlerType, result);
 
-        this.#recordSnapRpcRequestFinish(snapId, request.id);
         return result;
       } catch (error) {
         const [jsonRpcError, handled] = unwrapError(error);
@@ -2648,6 +2647,8 @@ export class SnapController extends BaseController<
         }
 
         throw jsonRpcError;
+      } finally {
+        this.#recordSnapRpcRequestFinish(snapId, request.id);
       }
     };
 
