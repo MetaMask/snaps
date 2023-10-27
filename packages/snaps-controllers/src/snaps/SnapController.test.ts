@@ -2521,6 +2521,8 @@ describe('SnapController', () => {
 
       const [snapController, service] = getSnapControllerWithEES(
         getSnapControllerWithEESOptions({
+          idleTimeCheckInterval: 10,
+          maxIdleTime: 50,
           detectSnapLocation: loopbackDetect({
             manifest,
             files: [sourceCode, svgIcon as VirtualFile],
@@ -2546,6 +2548,11 @@ describe('SnapController', () => {
       ).rejects.toThrow('foo');
 
       expect(snapController.state.snaps[MOCK_SNAP_ID].status).toBe('running');
+
+      await sleep(100);
+
+      // Should be terminated by idle timeout now
+      expect(snapController.state.snaps[MOCK_SNAP_ID].status).toBe('stopped');
 
       snapController.destroy();
       await service.terminateAllSnaps();
