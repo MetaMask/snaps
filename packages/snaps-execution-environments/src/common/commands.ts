@@ -75,7 +75,7 @@ export function getHandlerArguments(
     case HandlerType.OnUpdate:
       return { request };
 
-    case HandlerType.OnSnapPage:
+    case HandlerType.OnHomePage:
       return {};
 
     default:

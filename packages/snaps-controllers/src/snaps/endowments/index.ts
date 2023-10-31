@@ -76,7 +76,7 @@ export const handlerEndowments: Record<HandlerType, string> = {
   [HandlerType.OnInstall]: lifecycleHooksEndowmentBuilder.targetName,
   [HandlerType.OnUpdate]: lifecycleHooksEndowmentBuilder.targetName,
   [HandlerType.OnKeyringRequest]: keyringEndowmentBuilder.targetName,
-  [HandlerType.OnSnapPage]: homePageEndowmentBuilder.targetName,
+  [HandlerType.OnHomePage]: homePageEndowmentBuilder.targetName,
 };
 
 export * from './enum';

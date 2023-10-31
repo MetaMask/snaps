@@ -18,7 +18,7 @@ type HomePageEndowmentSpecification = ValidPermissionSpecification<{
 }>;
 
 /**
- * `endowment:home-page` returns nothing; it is intended to be used as a
+ * `endowment:page-home` returns nothing; it is intended to be used as a
  * flag by the snap controller to detect whether the snap has the capability to
  * use the snap home page feature.
  *

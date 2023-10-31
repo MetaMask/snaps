@@ -6,7 +6,7 @@ export enum HandlerType {
   OnUpdate = 'onUpdate',
   OnNameLookup = 'onNameLookup',
   OnKeyringRequest = 'onKeyringRequest',
-  OnSnapPage = 'onSnapPage',
+  OnHomePage = 'onHomePage',
 }
 
 export type SnapHandler = {

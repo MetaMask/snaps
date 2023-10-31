@@ -63,10 +63,10 @@ export const SNAP_EXPORTS = {
       return typeof snapExport === 'function';
     },
   },
-  [HandlerType.OnSnapPage]: {
-    type: HandlerType.OnSnapPage,
+  [HandlerType.OnHomePage]: {
+    type: HandlerType.OnHomePage,
     required: true,
-    validator: (snapExport: unknown): snapExport is OnSnapPageHandler => {
+    validator: (snapExport: unknown): snapExport is OnHomePageHandler => {
       return typeof snapExport === 'function';
     },
   },
@@ -176,13 +176,13 @@ export type OnKeyringRequestHandler<
   request: JsonRpcRequest<Params>;
 }) => Promise<unknown>;
 
-export type OnSnapPageHandler = () => Promise<OnSnapPageResponse>;
+export type OnHomePageHandler = () => Promise<OnHomePageResponse>;
 
-export const OnSnapPageResponseStruct = object({
+export const OnHomePageResponseStruct = object({
   content: ComponentStruct,
 });
 
-export type OnSnapPageResponse = Infer<typeof OnSnapPageResponseStruct>;
+export type OnHomePageResponse = Infer<typeof OnHomePageResponseStruct>;
 
 /**
  * Utility type for getting the handler function type from a handler type.

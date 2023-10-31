@@ -68,7 +68,7 @@ import {
   SnapStatusEvents,
   validateFetchedSnap,
   unwrapError,
-  OnSnapPageResponseStruct,
+  OnHomePageResponseStruct,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
@@ -2684,8 +2684,8 @@ export class SnapController extends BaseController<
           this.#checkPhishingList.bind(this),
         );
         break;
-      case HandlerType.OnSnapPage:
-        assertStruct(result, OnSnapPageResponseStruct);
+      case HandlerType.OnHomePage:
+        assertStruct(result, OnHomePageResponseStruct);
 
         await this.#triggerPhishingListUpdate();
 

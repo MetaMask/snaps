@@ -3,7 +3,7 @@ import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { SnapEndowments } from './enum';
 import { homePageEndowmentBuilder } from './home-page';
 
-describe('endowment:home-page', () => {
+describe('endowment:page-home', () => {
   it('builds the expected permission specification', () => {
     const specification = homePageEndowmentBuilder.specificationBuilder({});
     expect(specification).toStrictEqual({

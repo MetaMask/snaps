@@ -2248,7 +2248,7 @@ describe('SnapController', () => {
     });
   });
 
-  it('throws if onSnapPage handler returns a phishing link', async () => {
+  it('throws if OnHomePage handler returns a phishing link', async () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
     const snapController = getSnapController(
@@ -2298,7 +2298,7 @@ describe('SnapController', () => {
       snapController.handleRequest({
         snapId: MOCK_SNAP_ID,
         origin: 'foo.com',
-        handler: HandlerType.OnSnapPage,
+        handler: HandlerType.OnHomePage,
         request: {
           jsonrpc: '2.0',
           method: ' ',
@@ -2311,7 +2311,7 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
-  it("doesn't throw if onSnapPage return value is valid", async () => {
+  it("doesn't throw if OnHomePage return value is valid", async () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
     const snapController = getSnapController(
@@ -2351,7 +2351,7 @@ describe('SnapController', () => {
     const result = await snapController.handleRequest({
       snapId: MOCK_SNAP_ID,
       origin: 'foo.com',
-      handler: HandlerType.OnSnapPage,
+      handler: HandlerType.OnHomePage,
       request: {
         jsonrpc: '2.0',
         method: ' ',
@@ -3380,7 +3380,7 @@ describe('SnapController', () => {
           [MOCK_SNAP_ID]: {},
         }),
       ).rejects.toThrow(
-        'A snap must request at least one of the following permissions: endowment:rpc, endowment:transaction-insight, endowment:cronjob, endowment:name-lookup, endowment:lifecycle-hooks, endowment:keyring, endowment:home-page.',
+        'A snap must request at least one of the following permissions: endowment:rpc, endowment:transaction-insight, endowment:cronjob, endowment:name-lookup, endowment:lifecycle-hooks, endowment:keyring, endowment:page-home.',
       );
 
       controller.destroy();

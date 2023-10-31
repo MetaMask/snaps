@@ -1352,9 +1352,9 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('supports onSnapPage export', async () => {
+  it('supports OnHomePage export', async () => {
     const CODE = `
-      module.exports.onSnapPage = () => ({ content: { type: 'panel', children: [] }});
+      module.exports.OnHomePage = () => ({ content: { type: 'panel', children: [] }});
     `;
 
     const executor = new TestSnapExecutor();
@@ -1372,7 +1372,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         MOCK_SNAP_ID,
-        HandlerType.OnSnapPage,
+        HandlerType.OnHomePage,
         MOCK_ORIGIN,
         { jsonrpc: '2.0', method: '' },
       ],
