@@ -216,6 +216,7 @@ type StoredSnaps = Record<ValidatedSnapId, Snap>;
 export type SnapControllerState = {
   snaps: StoredSnaps;
   snapStates: Record<ValidatedSnapId, string | null>;
+  unencryptedSnapStates: Record<ValidatedSnapId, string | null>;
 };
 
 export type PersistedSnapControllerState = SnapControllerState & {
@@ -623,6 +624,7 @@ type SetSnapArgs = Omit<AddSnapArgs, 'location' | 'versionRange'> & {
 const defaultState: SnapControllerState = {
   snaps: {},
   snapStates: {},
+  unencryptedSnapStates: {},
 };
 
 /**
@@ -714,6 +716,10 @@ export class SnapController extends BaseController<
       messenger,
       metadata: {
         snapStates: {
+          persist: true,
+          anonymous: false,
+        },
+        unencryptedSnapStates: {
           persist: true,
           anonymous: false,
         },
@@ -897,7 +903,7 @@ export class SnapController extends BaseController<
 
     this.messagingSystem.registerActionHandler(
       `${controllerName}:getSnapState`,
-      async (...args) => this.getSnapState(...args),
+      (...args) => this.getSnapState(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -917,7 +923,7 @@ export class SnapController extends BaseController<
 
     this.messagingSystem.registerActionHandler(
       `${controllerName}:updateSnapState`,
-      async (...args) => this.updateSnapState(...args),
+      (...args) => this.updateSnapState(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -1371,13 +1377,19 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap whose state should be updated.
    * @param newSnapState - The new state of the snap.
+   * @param encrypted - A flag to indicate whether to use encrypted storage or not.
    */
-  async updateSnapState(
+  updateSnapState(
     snapId: ValidatedSnapId,
     newSnapState: string,
-  ): Promise<void> {
+    encrypted: boolean,
+  ) {
     this.update((state) => {
-      state.snapStates[snapId] = newSnapState;
+      if (encrypted) {
+        state.snapStates[snapId] = newSnapState;
+      } else {
+        state.unencryptedSnapStates[snapId] = newSnapState;
+      }
     });
   }
 
@@ -1386,10 +1398,15 @@ export class SnapController extends BaseController<
    * This is distinct from the state MetaMask uses to manage snaps.
    *
    * @param snapId - The id of the Snap whose state should be cleared.
+   * @param encrypted - A flag to indicate whether to use encrypted storage or not.
    */
-  clearSnapState(snapId: ValidatedSnapId) {
+  clearSnapState(snapId: ValidatedSnapId, encrypted: boolean) {
     this.update((state) => {
-      state.snapStates[snapId] = null;
+      if (encrypted) {
+        state.snapStates[snapId] = null;
+      } else {
+        state.unencryptedSnapStates[snapId] = null;
+      }
     });
   }
 
@@ -1398,11 +1415,13 @@ export class SnapController extends BaseController<
    * This is distinct from the state MetaMask uses to manage snaps.
    *
    * @param snapId - The id of the Snap whose state to get.
-   * @returns A promise that resolves with the decrypted snap state or null if no state exists.
-   * @throws If the snap state decryption fails.
+   * @param encrypted - A flag to indicate whether to use encrypted storage or not.
+   * @returns The requested snap state or null if no state exists.
    */
-  async getSnapState(snapId: ValidatedSnapId): Promise<Json> {
-    const state = this.state.snapStates[snapId];
+  getSnapState(snapId: ValidatedSnapId, encrypted: boolean): Json {
+    const state = encrypted
+      ? this.state.snapStates[snapId]
+      : this.state.unencryptedSnapStates[snapId];
     return state ?? null;
   }
 
