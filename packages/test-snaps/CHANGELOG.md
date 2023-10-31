@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.1.0]
 ### Added
-- Add Get File Snap to test-snaps page ([#1893](https://github.com/MetaMask/snaps/pull/1893))
+- Add `snap_getFile` example snap ([#1893](https://github.com/MetaMask/snaps/pull/1893))
 
 ## [2.0.1]
 ### Changed

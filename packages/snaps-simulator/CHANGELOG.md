@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.2.0]
 ### Added
-- Add support for links in Custom UI ([#1814](https://github.com/MetaMask/snaps/pull/1814))
+- Add support for links in custom UI ([#1814](https://github.com/MetaMask/snaps/pull/1814))
 
 ## [2.1.0]
 ### Added

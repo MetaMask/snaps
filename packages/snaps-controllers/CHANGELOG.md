@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.2.0]
 ### Added
-- Add support for links in Custom UI and Notifications ([#1814](https://github.com/MetaMask/snaps/pull/1814))
+- Add support for links in custom UI and notifications ([#1814](https://github.com/MetaMask/snaps/pull/1814))
 
 ### Fixed
 - Fix an issue with throwing snaps running long ([#1897](https://github.com/MetaMask/snaps/pull/1897))
