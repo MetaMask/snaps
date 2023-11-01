@@ -5,8 +5,8 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
+import { assertLinksAreSafe } from '@metamask/snaps-ui';
 import type { EnumToUnion } from '@metamask/snaps-utils';
-import { assertLinksAreSafe } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 import { isObject } from '@metamask/utils';
 
