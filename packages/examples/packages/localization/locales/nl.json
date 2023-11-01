@@ -1,0 +1,17 @@
+{
+  "locale": "nl",
+  "messages": {
+    "name": {
+      "message": "Lokalisatie Voorbeeld Snap",
+      "description": "The name of the snap, which is used in the Snap manifest."
+    },
+    "description": {
+      "message": "MetaMask voorbeeld snap die demonstreert hoe je een Snap kan lokaliseren.",
+      "description": "The description of the snap, which is used in the Snap manifest."
+    },
+    "hello": {
+      "message": "Hallo, wereld!",
+      "description": "The message that is returned when the `hello` method is called."
+    }
+  }
+}

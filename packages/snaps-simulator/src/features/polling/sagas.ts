@@ -1,16 +1,12 @@
 import type { SnapLocation } from '@metamask/snaps-controllers';
 import { detectSnapLocation } from '@metamask/snaps-controllers';
-import type {
-  LocalizationFile,
-  SnapManifest,
-  VirtualFile,
-} from '@metamask/snaps-utils';
+import type { LocalizationFile, SnapManifest } from '@metamask/snaps-utils';
 import {
-  getLocalizedSnapManifest,
   getSnapPrefix,
   logError,
   parseJson,
   SnapIdPrefixes,
+  VirtualFile,
 } from '@metamask/snaps-utils';
 import type { SemVerRange } from '@metamask/utils';
 import equal from 'fast-deep-equal/es6';
@@ -23,6 +19,7 @@ import {
   getSnapManifest,
   setAuxiliaryFiles,
   setIcon,
+  setLocalizationFiles,
   setManifest,
   setSourceCode,
   setStatus,
@@ -56,13 +53,17 @@ async function fetchAuxiliaryFiles(
 async function fetchLocalizationFiles(
   location: SnapLocation,
   manifest: SnapManifest,
-): Promise<LocalizationFile[]> {
+): Promise<VirtualFile<LocalizationFile>[]> {
   return manifest.source.locales
     ? await Promise.all(
         manifest.source.locales.map(async (filePath) =>
-          location
-            .fetch(filePath)
-            .then((file) => parseJson<LocalizationFile>(file.toString())),
+          location.fetch(filePath).then((file) => {
+            return new VirtualFile<LocalizationFile>({
+              path: file.path,
+              value: file.value,
+              result: parseJson<LocalizationFile>(file.toString('utf8')),
+            });
+          }),
         ),
       )
     : [];
@@ -89,17 +90,7 @@ export function* fetchingSaga() {
   );
 
   const parsedManifest = parseJson<SnapManifest>(manifestFile.toString('utf8'));
-  const localizationFiles: LocalizationFile[] = yield call(
-    fetchLocalizationFiles,
-    location,
-    parsedManifest,
-  );
-
-  manifestFile.result = getLocalizedSnapManifest(
-    parsedManifest,
-    'en',
-    localizationFiles,
-  );
+  manifestFile.result = parsedManifest;
 
   const currentManifest: SnapManifest = yield select(getSnapManifest);
   if (equal(parsedManifest, currentManifest)) {
@@ -126,6 +117,14 @@ export function* fetchingSaga() {
     );
 
     yield put(setAuxiliaryFiles(auxiliaryFiles));
+
+    const localizationFiles: VirtualFile<LocalizationFile>[] = yield call(
+      fetchLocalizationFiles,
+      location,
+      parsedManifest,
+    );
+
+    yield put(setLocalizationFiles(localizationFiles));
 
     const { iconPath } = parsedManifest.source.location.npm;
     if (iconPath) {

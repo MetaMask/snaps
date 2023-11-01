@@ -5,7 +5,9 @@ import type {
 import type { IframeExecutionService } from '@metamask/snaps-controllers';
 import type { DialogType } from '@metamask/snaps-rpc-methods';
 import type { Component } from '@metamask/snaps-ui';
+import { getLocalizedSnapManifest as localizeSnapManifest } from '@metamask/snaps-utils';
 import type {
+  LocalizationFile,
   SnapManifest,
   SnapRpcHookArgs,
   VirtualFile,
@@ -39,6 +41,7 @@ type SimulationState = {
   manifest: VirtualFile<SnapManifest> | null;
   sourceCode: VirtualFile<string> | null;
   auxiliaryFiles: VirtualFile[] | null;
+  localizationFiles: VirtualFile<LocalizationFile>[] | null;
   icon?: VirtualFile<string>;
   ui?: HandlerUserInterface | null;
   snapState: string | null;
@@ -54,6 +57,7 @@ export const INITIAL_STATE: SimulationState = {
   manifest: null,
   sourceCode: null,
   auxiliaryFiles: null,
+  localizationFiles: null,
   snapState: null,
   unencryptedSnapState: null,
 };
@@ -90,6 +94,12 @@ const slice = createSlice({
     setAuxiliaryFiles(state, action: PayloadAction<VirtualFile[]>) {
       state.auxiliaryFiles = action.payload;
     },
+    setLocalizationFiles(
+      state,
+      action: PayloadAction<VirtualFile<LocalizationFile>[]>,
+    ) {
+      state.localizationFiles = action.payload;
+    },
     setIcon(state, action: PayloadAction<VirtualFile<string>>) {
       state.icon = action.payload;
     },
@@ -124,6 +134,7 @@ export const {
   setSourceCode,
   setIcon,
   setAuxiliaryFiles,
+  setLocalizationFiles,
   showUserInterface,
   closeUserInterface,
   setSnapState,
@@ -183,6 +194,17 @@ export const getSnapManifest = createSelector(
   (state) => state.manifest?.result,
 );
 
+export const getLocalizedSnapManifest = createSelector(
+  (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
+  ({ manifest, localizationFiles }) =>
+    manifest?.result &&
+    localizeSnapManifest(
+      manifest.result,
+      'en',
+      localizationFiles?.map((file) => file.result) ?? [],
+    ),
+);
+
 export const getSourceCode = createSelector(
   (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
   (state) => state.sourceCode,
@@ -191,6 +213,11 @@ export const getSourceCode = createSelector(
 export const getAuxiliaryFiles = createSelector(
   (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
   (state) => state.auxiliaryFiles,
+);
+
+export const getLocalizationFiles = createSelector(
+  (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
+  (state) => state.localizationFiles,
 );
 
 export const getRequestId = createSelector(

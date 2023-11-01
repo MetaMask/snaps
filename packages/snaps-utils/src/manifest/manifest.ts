@@ -384,7 +384,7 @@ export function getWritableManifest(manifest: SnapManifest): SnapManifest {
 }
 
 /**
- * Validates the fields of an npm Snap manifest that has already passed JSON
+ * Validates the fields of an NPM Snap manifest that has already passed JSON
  * Schema validation.
  *
  * @param snapFiles - The relevant snap files to validate.
@@ -393,6 +393,7 @@ export function getWritableManifest(manifest: SnapManifest): SnapManifest {
  * @param snapFiles.sourceCode - The Snap's source code.
  * @param snapFiles.svgIcon - The Snap's optional icon.
  * @param snapFiles.auxiliaryFiles - Any auxiliary files required by the snap at runtime.
+ * @param snapFiles.localizationFiles - The Snap's localization files.
  */
 export function validateNpmSnapManifest({
   manifest,
@@ -400,6 +401,7 @@ export function validateNpmSnapManifest({
   sourceCode,
   svgIcon,
   auxiliaryFiles,
+  localizationFiles,
 }: SnapFiles) {
   const packageJsonName = packageJson.result.name;
   const packageJsonVersion = packageJson.result.version;
@@ -436,7 +438,7 @@ export function validateNpmSnapManifest({
   }
 
   validateSnapShasum(
-    { manifest, sourceCode, svgIcon, auxiliaryFiles },
+    { manifest, sourceCode, svgIcon, auxiliaryFiles, localizationFiles },
     `"${NpmSnapFileNames.Manifest}" "shasum" field does not match computed shasum.`,
   );
 }
