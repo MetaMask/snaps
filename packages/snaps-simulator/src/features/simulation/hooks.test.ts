@@ -22,8 +22,10 @@ import {
   getAuxiliaryFiles,
   getSnapName,
   getSnapStateSelector,
+  getUnencryptedSnapStateSelector,
   resolveUserInterface,
   setSnapState,
+  setUnencryptedSnapState,
   showUserInterface,
 } from './slice';
 import { MOCK_MANIFEST_FILE } from './test/mockManifest';
@@ -132,7 +134,7 @@ describe('showInAppNotification', () => {
 
 describe('updateSnapState', () => {
   it('puts the new snap state', async () => {
-    await expectSaga(updateSnapState, snapId, 'foo')
+    await expectSaga(updateSnapState, snapId, 'foo', true)
       .withState({
         simulation: {
           snapState: null,
@@ -141,11 +143,22 @@ describe('updateSnapState', () => {
       .put(setSnapState('foo'))
       .silentRun();
   });
+
+  it('puts the new unencrypted snap state', async () => {
+    await expectSaga(updateSnapState, snapId, 'bar', false)
+      .withState({
+        simulation: {
+          unencryptedSnapState: null,
+        },
+      })
+      .put(setUnencryptedSnapState('bar'))
+      .silentRun();
+  });
 });
 
 describe('getSnapState', () => {
   it('returns the selected snap state', async () => {
-    await expectSaga(getSnapState, snapId)
+    await expectSaga(getSnapState, snapId, true)
       .withState({
         simulation: {
           snapState: 'foo',
@@ -153,6 +166,18 @@ describe('getSnapState', () => {
       })
       .select(getSnapStateSelector)
       .returns('foo')
+      .silentRun();
+  });
+
+  it('returns the selected unencrypted snap state', async () => {
+    await expectSaga(getSnapState, snapId, false)
+      .withState({
+        simulation: {
+          unencryptedSnapState: 'bar',
+        },
+      })
+      .select(getUnencryptedSnapStateSelector)
+      .returns('bar')
       .silentRun();
   });
 });

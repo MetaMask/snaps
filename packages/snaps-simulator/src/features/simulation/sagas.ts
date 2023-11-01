@@ -105,12 +105,12 @@ export function* initSaga({ payload }: PayloadAction<string>) {
       showInAppNotification: async (
         ...args: Parameters<typeof showInAppNotification>
       ) => await runSaga(showInAppNotification, ...args).toPromise(),
-      getSnapState: async (...args: Parameters<typeof getSnapState>) =>
-        await runSaga(getSnapState, ...args).toPromise(),
+      getSnapState: (...args: Parameters<typeof getSnapState>) =>
+        runSaga(getSnapState, ...args).result(),
       updateSnapState: async (...args: Parameters<typeof updateSnapState>) =>
-        await runSaga(updateSnapState, ...args).toPromise(),
-      clearSnapState: async (...args: Parameters<typeof updateSnapState>) =>
-        await runSaga(updateSnapState, args[0], null).toPromise(),
+        runSaga(updateSnapState, ...args).result(),
+      clearSnapState: (...args: [_snapId: string, encrypted: boolean]) =>
+        runSaga(updateSnapState, args[0], null, args[1]).result(),
       maybeUpdatePhishingList: async () => Promise.resolve(),
       // TODO: Allow changing this ?
       isOnPhishingList: () => false,

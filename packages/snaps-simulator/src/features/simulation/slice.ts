@@ -42,6 +42,7 @@ type SimulationState = {
   icon?: VirtualFile<string>;
   ui?: HandlerUserInterface | null;
   snapState: string | null;
+  unencryptedSnapState: string | null;
   requestId?: string;
 };
 
@@ -54,6 +55,7 @@ export const INITIAL_STATE: SimulationState = {
   sourceCode: null,
   auxiliaryFiles: null,
   snapState: null,
+  unencryptedSnapState: null,
 };
 
 const slice = createSlice({
@@ -100,6 +102,9 @@ const slice = createSlice({
     setSnapState: (state, action: PayloadAction<string | null>) => {
       state.snapState = action.payload;
     },
+    setUnencryptedSnapState: (state, action: PayloadAction<string | null>) => {
+      state.unencryptedSnapState = action.payload;
+    },
     sendRequest: (state, _: PayloadAction<SnapRpcHookArgs>) => {
       state.requestId = nanoid();
     },
@@ -122,6 +127,7 @@ export const {
   showUserInterface,
   closeUserInterface,
   setSnapState,
+  setUnencryptedSnapState,
   sendRequest,
 } = slice.actions;
 
@@ -165,6 +171,11 @@ export const getUserInterface = createSelector(
 export const getSnapStateSelector = createSelector(
   (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
   (state) => state.snapState,
+);
+
+export const getUnencryptedSnapStateSelector = createSelector(
+  (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
+  (state) => state.unencryptedSnapState,
 );
 
 export const getSnapManifest = createSelector(

@@ -10,6 +10,8 @@ import {
   setStatus,
   INITIAL_STATE,
   setAuxiliaryFiles,
+  setSnapState,
+  setUnencryptedSnapState,
 } from './slice';
 import { MockExecutionService } from './test/mockExecutionService';
 import { MOCK_MANIFEST, MOCK_MANIFEST_FILE } from './test/mockManifest';
@@ -44,6 +46,24 @@ describe('simulation slice', () => {
       );
 
       expect(result.sourceCode?.value).toBe('foo');
+    });
+  });
+
+  describe('setSnapState', () => {
+    it('sets snap state', () => {
+      const json = JSON.stringify({ foo: 'bar' });
+      const result = reducer(INITIAL_STATE, setSnapState(json));
+
+      expect(result.snapState).toBe(json);
+    });
+  });
+
+  describe('setUnencryptedSnapState', () => {
+    it('sets snap state', () => {
+      const json = JSON.stringify({ foo: 'bar' });
+      const result = reducer(INITIAL_STATE, setUnencryptedSnapState(json));
+
+      expect(result.unencryptedSnapState).toBe(json);
     });
   });
 
