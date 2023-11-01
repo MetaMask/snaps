@@ -30,11 +30,11 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
     typeof transaction.data === 'string'
   ) {
     const type = decodeData(transaction.data);
-    return { content: panel([text('**Transaction type:**'), text(type)]) };
+    return {
+      content: panel([text('**Transaction type:**'), text(type)]),
+      severity: SeverityLevel.Critical,
+    };
   }
 
-  return {
-    content: panel([text('**Transaction type:**'), text('Unknown')]),
-    severity: SeverityLevel.Critical,
-  };
+  return { content: panel([text('**Transaction type:**'), text('Unknown')]) };
 };
