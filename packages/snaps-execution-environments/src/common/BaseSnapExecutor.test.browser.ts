@@ -1352,9 +1352,9 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('supports OnHomePage export', async () => {
+  it('supports onHomePage export', async () => {
     const CODE = `
-      module.exports.OnHomePage = () => ({ content: { type: 'panel', children: [] }});
+      module.exports.onHomePage = () => ({ content: { type: 'panel', children: [] }});
     `;
 
     const executor = new TestSnapExecutor();

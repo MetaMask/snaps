@@ -2248,7 +2248,7 @@ describe('SnapController', () => {
     });
   });
 
-  it('throws if OnHomePage handler returns a phishing link', async () => {
+  it('throws if onHomePage handler returns a phishing link', async () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
     const snapController = getSnapController(
@@ -2311,7 +2311,7 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
-  it("doesn't throw if OnHomePage return value is valid", async () => {
+  it("doesn't throw if onHomePage return value is valid", async () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
     const snapController = getSnapController(
