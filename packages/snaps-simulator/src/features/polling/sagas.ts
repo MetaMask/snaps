@@ -1,7 +1,12 @@
 import type { SnapLocation } from '@metamask/snaps-controllers';
 import { detectSnapLocation } from '@metamask/snaps-controllers';
-import type { SnapManifest, VirtualFile } from '@metamask/snaps-utils';
+import type {
+  LocalizationFile,
+  SnapManifest,
+  VirtualFile,
+} from '@metamask/snaps-utils';
 import {
+  getLocalizedSnapManifest,
   getSnapPrefix,
   logError,
   parseJson,
@@ -42,6 +47,28 @@ async function fetchAuxiliaryFiles(
 }
 
 /**
+ * Fetch the localization files for the snap.
+ *
+ * @param location - The snap location.
+ * @param manifest - The parsed manifest.
+ * @returns The localization files.
+ */
+async function fetchLocalizationFiles(
+  location: SnapLocation,
+  manifest: SnapManifest,
+): Promise<LocalizationFile[]> {
+  return manifest.source.locales
+    ? await Promise.all(
+        manifest.source.locales.map(async (filePath) =>
+          location
+            .fetch(filePath)
+            .then((file) => parseJson<LocalizationFile>(file.toString())),
+        ),
+      )
+    : [];
+}
+
+/**
  * The fetching saga, fetches the snap manifest from the selected snap URL and checks if the checksum matches the cached value.
  * If the checksum doesn't match, it fetches the snap source code and updates that in the simulation slice.
  *
@@ -55,12 +82,24 @@ export function* fetchingSaga() {
     allowLocal: true,
     versionRange: snapVersion as SemVerRange,
   });
+
   const manifestFile: VirtualFile<SnapManifest> = yield call(
     [location, 'fetch'],
     'snap.manifest.json',
   );
+
   const parsedManifest = parseJson<SnapManifest>(manifestFile.toString('utf8'));
-  manifestFile.result = parsedManifest;
+  const localizationFiles: LocalizationFile[] = yield call(
+    fetchLocalizationFiles,
+    location,
+    parsedManifest,
+  );
+
+  manifestFile.result = getLocalizedSnapManifest(
+    parsedManifest,
+    'en',
+    localizationFiles,
+  );
 
   const currentManifest: SnapManifest = yield select(getSnapManifest);
   if (equal(parsedManifest, currentManifest)) {
