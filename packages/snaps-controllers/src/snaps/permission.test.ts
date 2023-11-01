@@ -70,6 +70,15 @@ describe('buildSnapEndowmentSpecifications', () => {
           ],
           "targetName": "endowment:network-access",
         },
+        "endowment:page-home": {
+          "allowedCaveats": null,
+          "endowmentGetter": [Function],
+          "permissionType": "Endowment",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "endowment:page-home",
+        },
         "endowment:rpc": {
           "allowedCaveats": [
             "rpcOrigin",

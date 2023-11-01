@@ -8,4 +8,5 @@ export enum SnapEndowments {
   NameLookup = 'endowment:name-lookup',
   LifecycleHooks = 'endowment:lifecycle-hooks',
   Keyring = 'endowment:keyring',
+  HomePage = 'endowment:page-home',
 }

@@ -75,6 +75,9 @@ export function getHandlerArguments(
     case HandlerType.OnUpdate:
       return { request };
 
+    case HandlerType.OnHomePage:
+      return {};
+
     default:
       return assertExhaustive(handler);
   }

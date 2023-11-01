@@ -68,6 +68,7 @@ import {
   SnapStatusEvents,
   validateFetchedSnap,
   unwrapError,
+  OnHomePageResponseStruct,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
@@ -2656,6 +2657,15 @@ export class SnapController extends BaseController<
     return rpcHandler;
   }
 
+  async #triggerPhishingListUpdate() {
+    return this.messagingSystem.call('PhishingController:maybeUpdateState');
+  }
+
+  #checkPhishingList(origin: string) {
+    return this.messagingSystem.call('PhishingController:testOrigin', origin)
+      .result;
+  }
+
   /**
    * Asserts that the returned result of a Snap RPC call is the expected shape.
    *
@@ -2667,13 +2677,21 @@ export class SnapController extends BaseController<
       case HandlerType.OnTransaction:
         assertStruct(result, OnTransactionResponseStruct);
 
-        await this.messagingSystem.call('PhishingController:maybeUpdateState');
+        await this.#triggerPhishingListUpdate();
 
-        await assertUILinksAreSafe(
+        assertUILinksAreSafe(
           result.content,
-          (url: string) =>
-            this.messagingSystem.call('PhishingController:testOrigin', url)
-              .result,
+          this.#checkPhishingList.bind(this),
+        );
+        break;
+      case HandlerType.OnHomePage:
+        assertStruct(result, OnHomePageResponseStruct);
+
+        await this.#triggerPhishingListUpdate();
+
+        assertUILinksAreSafe(
+          result.content,
+          this.#checkPhishingList.bind(this),
         );
         break;
       default:
