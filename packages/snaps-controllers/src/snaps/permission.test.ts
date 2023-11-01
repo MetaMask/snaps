@@ -28,15 +28,6 @@ describe('buildSnapEndowmentSpecifications', () => {
           ],
           "targetName": "endowment:ethereum-provider",
         },
-        "endowment:page-home": {
-          "allowedCaveats": null,
-          "endowmentGetter": [Function],
-          "permissionType": "Endowment",
-          "subjectTypes": [
-            "snap",
-          ],
-          "targetName": "endowment:page-home",
-        },
         "endowment:keyring": {
           "allowedCaveats": [
             "keyringOrigin",
@@ -78,6 +69,15 @@ describe('buildSnapEndowmentSpecifications', () => {
             "snap",
           ],
           "targetName": "endowment:network-access",
+        },
+        "endowment:page-home": {
+          "allowedCaveats": null,
+          "endowmentGetter": [Function],
+          "permissionType": "Endowment",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "endowment:page-home",
         },
         "endowment:rpc": {
           "allowedCaveats": [
