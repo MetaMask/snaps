@@ -12,7 +12,6 @@ describe('Network endowments', () => {
   describe('fetch', () => {
     beforeEach(() => {
       fetchMock.enableMocks();
-      factoryOptions.notify.mockClear();
     });
 
     afterEach(() => {
@@ -28,18 +27,19 @@ describe('Network endowments', () => {
     });
 
     it('send notification about outbound request and response', async () => {
+      const notify = jest.fn();
       const RESULT = 'OK';
       fetchMock.mockOnce(async () => Promise.resolve(RESULT));
-      const { fetch } = network.factory(factoryOptions);
+      const { fetch } = network.factory({ notify });
       const result = await (await fetch('foo.com')).text();
       expect(result).toStrictEqual(RESULT);
-      expect(factoryOptions.notify).toHaveBeenCalledWith({
+      expect(notify).toHaveBeenCalledWith({
         method: 'OutboundRequest',
       });
-      expect(factoryOptions.notify).toHaveBeenCalledWith({
+      expect(notify).toHaveBeenCalledWith({
         method: 'OutboundResponse',
       });
-      expect(factoryOptions.notify).toHaveBeenCalledTimes(4);
+      expect(notify).toHaveBeenCalledTimes(4);
     });
 
     it('can use AbortController normally', async () => {
