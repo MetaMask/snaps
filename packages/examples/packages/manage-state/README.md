@@ -44,5 +44,9 @@ JSON-RPC methods:
   if one is set, or a default state otherwise.
 - `clearState` - Reset the state to the default state.
 
+Each of the methods also takes an `encrypted` parameter.
+This parameter can be used to choose between using encrypted or unencrypted storage.
+Encrypted storage requires MetaMask to be unlocked, unencrypted storage does not.
+
 For more information, you can refer to
 [the end-to-end tests](./src/index.test.ts).
