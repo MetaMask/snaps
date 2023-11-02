@@ -27,13 +27,13 @@ export function validateTextLinks(
           `Protocol must be one of: ${ALLOWED_PROTOCOLS.join(', ')}.`,
         );
 
-        const hostname =
+        const targetUrl =
           url.protocol === 'mailto:'
             ? url.pathname.split('@')[1]
-            : url.hostname;
+            : url.toString();
 
         assert(
-          !isOnPhishingList(hostname),
+          !isOnPhishingList(targetUrl),
           'The specified URL is not allowed.',
         );
       } catch (error) {
