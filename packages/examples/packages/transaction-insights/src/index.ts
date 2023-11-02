@@ -1,4 +1,5 @@
 import type { OnTransactionHandler } from '@metamask/snaps-types';
+import { SeverityLevel } from '@metamask/snaps-types';
 import { panel, text } from '@metamask/snaps-ui';
 import { hasProperty } from '@metamask/utils';
 
@@ -29,7 +30,10 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
     typeof transaction.data === 'string'
   ) {
     const type = decodeData(transaction.data);
-    return { content: panel([text('**Transaction type:**'), text(type)]) };
+    return {
+      content: panel([text('**Transaction type:**'), text(type)]),
+      severity: SeverityLevel.Critical,
+    };
   }
 
   return { content: panel([text('**Transaction type:**'), text('Unknown')]) };
