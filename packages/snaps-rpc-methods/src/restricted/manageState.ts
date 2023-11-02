@@ -283,7 +283,7 @@ export function getManageStateImplementation({
     const shouldEncrypt = encrypted ?? true;
 
     // We only need to prompt the user when the mnemonic is needed
-    // which it isnt for the clear operation or unencrypted storage.
+    // which it isn't for the clear operation or unencrypted storage.
     if (shouldEncrypt && operation !== ManageStateOperation.ClearState) {
       await getUnlockPromise(true);
     }
