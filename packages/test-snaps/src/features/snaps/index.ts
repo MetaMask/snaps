@@ -7,7 +7,7 @@ export * from './ethereum-provider';
 export * from './ethers-js';
 export * from './get-entropy';
 export * from './get-file';
-export * from './get-locale';
+export * from './localization';
 export * from './json-rpc';
 export * from './lifecycle-hooks';
 export * from './manage-state';

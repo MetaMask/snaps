@@ -6,14 +6,14 @@ import { useInvokeMutation } from '../../../api';
 import { Result, Snap } from '../../../components';
 import { getSnapId } from '../../../utils';
 import {
-  GET_LOCALE_SNAP_ID,
-  GET_LOCALE_SNAP_PORT,
-  GET_LOCALE_VERSION,
+  LOCALIZATION_SNAP_ID,
+  LOCALIZATION_SNAP_PORT,
+  LOCALIZATION_VERSION,
 } from './constants';
 
-export const GetLocale: FunctionComponent = () => {
+export const Localization: FunctionComponent = () => {
   const [invokeSnap, { isLoading, data }] = useInvokeMutation();
-  const snapId = getSnapId(GET_LOCALE_SNAP_ID, GET_LOCALE_SNAP_PORT);
+  const snapId = getSnapId(LOCALIZATION_SNAP_ID, LOCALIZATION_SNAP_PORT);
 
   const handleSubmit = () => {
     invokeSnap({
@@ -24,10 +24,10 @@ export const GetLocale: FunctionComponent = () => {
 
   return (
     <Snap
-      name="Get Locale Snap"
-      snapId={GET_LOCALE_SNAP_ID}
-      port={GET_LOCALE_SNAP_PORT}
-      version={GET_LOCALE_VERSION}
+      name="Localization Snap"
+      snapId={LOCALIZATION_SNAP_ID}
+      port={LOCALIZATION_SNAP_PORT}
+      version={LOCALIZATION_VERSION}
       testId="getlocale"
     >
       <ButtonGroup className="mb-3">

@@ -33,14 +33,16 @@ The following is a list of the snaps in this directory.
   and corresponding `ethereum` provider to interact with the Ethereum blockchain
   from a snap. This also demonstrates how a snap can access a user's existing
   Ethereum accounts.
-- [**`packages/get-locale`**](./packages/get-locale): This snap demonstrates how
-  to use the `snap_getLocale` method to get the user's locale and translate
-  messages.
 - [**`packages/invoke-snap`**](./packages/invoke-snap): These snaps demonstrate
   how to use the `snap_invokeSnap` method to invoke another snap.
 - [**`packages/json-rpc`**](./packages/json-rpc): This snap demonstrates how to
   use the `endowment:json-rpc` permission to make requests from snaps and/or
   dapps.
+- [**`packages/lifecycle-hooks`**](./packages/lifecycle-hooks): This snap
+  demonstrates how to use the `onInstall` and `onUpdate` lifecycle hooks.
+- [**`packages/localization`**](./packages/get-locale): This snap demonstrates how to use the
+  `snap_getLocale` method to get the user's locale, translate messages, and
+  localize the snap manifest.
 - [**`packages/manage-state`**](./packages/manage-state): This snap
   demonstrates how to use the `snap_manageState` method to store and retrieve
   data in a snap.

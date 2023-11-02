@@ -4,7 +4,7 @@ const config: SnapConfig = {
   bundler: 'webpack',
   input: './src/index.ts',
   server: {
-    port: 8024,
+    port: 8020,
   },
   stats: {
     buffer: false,

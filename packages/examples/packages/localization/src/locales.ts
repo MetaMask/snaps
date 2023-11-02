@@ -26,7 +26,7 @@ export type Locale = keyof typeof locales;
  */
 export async function getMessage(id: keyof (typeof locales)[Locale]) {
   const locale = (await snap.request({ method: 'snap_getLocale' })) as Locale;
-  const { message } = locales[locale][id] ?? locales[FALLBACK_LANGUAGE][id];
+  const { message } = locales[locale]?.[id] ?? locales[FALLBACK_LANGUAGE][id];
 
   return message;
 }
