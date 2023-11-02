@@ -12,15 +12,15 @@ class ResponseWrapper implements Response {
 
   #ogResponse: Response;
 
-  #onStart: () => void;
+  #onStart: () => Promise<void>;
 
-  #onFinish: () => void;
+  #onFinish: () => Promise<void>;
 
   constructor(
     ogResponse: Response,
     teardownRef: { lastTeardown: number },
-    onStart: () => void,
-    onFinish: () => void,
+    onStart: () => Promise<void>,
+    onFinish: () => Promise<void>,
   ) {
     this.#ogResponse = ogResponse;
     this.#teardownRef = teardownRef;
@@ -175,7 +175,10 @@ const createNetwork = ({ notify }: EndowmentFactoryOptions = {}) => {
     const onStart = async () => {
       if (!started) {
         started = true;
-        await notify({ method: 'OutboundRequest' });
+        await notify({
+          method: 'OutboundRequest',
+          params: { source: 'fetch' },
+        });
       }
     };
 
@@ -183,14 +186,17 @@ const createNetwork = ({ notify }: EndowmentFactoryOptions = {}) => {
     const onFinish = async () => {
       if (!finished) {
         finished = true;
-        await notify({ method: 'OutboundResponse' });
+        await notify({
+          method: 'OutboundResponse',
+          params: { source: 'fetch' },
+        });
       }
     };
 
     let res: Response;
     let openFetchConnection: { cancel: () => Promise<void> } | undefined;
     try {
-      await notify({ method: 'OutboundRequest' });
+      await notify({ method: 'OutboundRequest', params: { source: 'fetch' } });
       const fetchPromise = fetch(input, {
         ...init,
         signal: abortController.signal,
@@ -218,7 +224,7 @@ const createNetwork = ({ notify }: EndowmentFactoryOptions = {}) => {
       if (openFetchConnection !== undefined) {
         openConnections.delete(openFetchConnection);
       }
-      await notify({ method: 'OutboundResponse' });
+      await notify({ method: 'OutboundResponse', params: { source: 'fetch' } });
     }
 
     if (res.body !== null) {

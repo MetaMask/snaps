@@ -33,11 +33,21 @@ describe('Network endowments', () => {
       const { fetch } = network.factory({ notify });
       const result = await (await fetch('foo.com')).text();
       expect(result).toStrictEqual(RESULT);
-      expect(notify).toHaveBeenCalledWith({
+      expect(notify).toHaveBeenNthCalledWith(1, {
         method: 'OutboundRequest',
+        params: { source: 'fetch' },
       });
-      expect(notify).toHaveBeenCalledWith({
+      expect(notify).toHaveBeenNthCalledWith(2, {
         method: 'OutboundResponse',
+        params: { source: 'fetch' },
+      });
+      expect(notify).toHaveBeenNthCalledWith(3, {
+        method: 'OutboundRequest',
+        params: { source: 'fetch' },
+      });
+      expect(notify).toHaveBeenNthCalledWith(4, {
+        method: 'OutboundResponse',
+        params: { source: 'fetch' },
       });
       expect(notify).toHaveBeenCalledTimes(4);
     });

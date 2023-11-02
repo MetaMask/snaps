@@ -110,7 +110,9 @@ const EXECUTION_ENVIRONMENT_METHODS = {
 
 type Methods = typeof EXECUTION_ENVIRONMENT_METHODS;
 
-export type NotifyFunction = (notification:  Omit<JsonRpcNotification, 'jsonrpc'>) => Promise<void>;
+export type NotifyFunction = (
+  notification: Omit<JsonRpcNotification, 'jsonrpc'>,
+) => Promise<void>;
 
 export class BaseSnapExecutor {
   private readonly snapData: Map<string, SnapData>;
@@ -457,11 +459,17 @@ export class BaseSnapExecutor {
       assertSnapOutboundRequest(sanitizedArgs);
       return await withTeardown(
         (async () => {
-          await this.#notify({ method: 'OutboundRequest' });
+          await this.#notify({
+            method: 'OutboundRequest',
+            params: { source: 'snap.request' },
+          });
           try {
             return await originalRequest(sanitizedArgs);
           } finally {
-            await this.#notify({ method: 'OutboundResponse' });
+            await this.#notify({
+              method: 'OutboundResponse',
+              params: { source: 'snap.request' },
+            });
           }
         })(),
         this as any,
@@ -503,11 +511,17 @@ export class BaseSnapExecutor {
       assertEthereumOutboundRequest(sanitizedArgs);
       return await withTeardown(
         (async () => {
-          await this.#notify({ method: 'OutboundRequest' });
+          await this.#notify({
+            method: 'OutboundRequest',
+            params: { source: 'ethereum.request' },
+          });
           try {
             return await originalRequest(sanitizedArgs);
           } finally {
-            await this.#notify({ method: 'OutboundResponse' });
+            await this.#notify({
+              method: 'OutboundResponse',
+              params: { source: 'ethereum.request' },
+            });
           }
         })(),
         this as any,

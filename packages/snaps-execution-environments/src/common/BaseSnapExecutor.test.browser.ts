@@ -191,6 +191,7 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundRequest',
+      params: { source: 'ethereum.request' },
     });
 
     const blockNumRequest = await executor.readRpc();
@@ -217,6 +218,7 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundResponse',
+      params: { source: 'ethereum.request' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -255,6 +257,7 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundRequest',
+      params: { source: 'snap.request' },
     });
 
     const walletRequest = await executor.readRpc();
@@ -281,6 +284,7 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundResponse',
+      params: { source: 'snap.request' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -416,6 +420,7 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundRequest',
+      params: { source: 'ethereum.request' },
     });
 
     const blockNumRequest = await executor.readRpc();
@@ -442,6 +447,7 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundResponse',
+      params: { source: 'ethereum.request' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -482,6 +488,7 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundRequest',
+      params: { source: 'snap.request' },
     });
 
     const getSnapsRequest = await executor.readRpc();
@@ -516,6 +523,7 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundResponse',
+      params: { source: 'snap.request' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -898,6 +906,7 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundRequest',
+      params: { source: 'snap.request' },
     });
 
     const request = await executor.readRpc();
@@ -930,6 +939,7 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundResponse',
+      params: { source: 'snap.request' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -973,6 +983,7 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundRequest',
+      params: { source: 'ethereum.request' },
     });
 
     const request = await executor.readRpc();
@@ -1007,6 +1018,7 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundResponse',
+      params: { source: 'ethereum.request' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1051,21 +1063,25 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundRequest',
+      params: { source: 'fetch' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundResponse',
+      params: { source: 'fetch' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundRequest',
+      params: { source: 'fetch' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundResponse',
+      params: { source: 'fetch' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1624,6 +1640,7 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundRequest',
+      params: { source: 'ethereum.request' },
     });
 
     const blockNumRequest = await executor.readRpc();
@@ -1731,6 +1748,7 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundRequest',
+      params: { source: 'ethereum.request' },
     });
 
     const blockNumRequest = await executor.readRpc();
@@ -1823,6 +1841,7 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundRequest',
+      params: { source: 'ethereum.request' },
     });
 
     const blockNumRequest = await executor.readRpc();
@@ -1852,6 +1871,7 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundResponse',
+      params: { source: 'ethereum.request' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
