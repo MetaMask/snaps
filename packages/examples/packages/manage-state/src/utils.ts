@@ -30,9 +30,10 @@ export async function getState(encrypted?: boolean): Promise<State> {
       // For this particular example, we use the `ManageStateOperation.GetState`
       // enum value, but you can also use the string value `'get'` instead.
       operation: ManageStateOperation.GetState,
-      // By default all state is encrypted, but you can choose to not encrypt it
-      // To do this you may set this flag to false
-      // This will use a separate unencrypted storage from the encrypted state
+
+      // By default all state is encrypted, but you can choose to not encrypt it.
+      // To do this you may set this flag to false.
+      // This will use a separate unencrypted storage from the encrypted state.
       encrypted,
     },
   });
@@ -50,7 +51,10 @@ export async function getState(encrypted?: boolean): Promise<State> {
  * browser.
  *
  * @param newState - The new state of the snap.
- * @param encrypted - An optional flag to indicate whether to use encrypted storage or not.
+ * @param encrypted - An optional flag to indicate whether to use encrypted
+ * storage or not. Unencrypted storage does not require the user to unlock
+ * MetaMask in order to access it, but it should not be used for sensitive data.
+ * Defaults to true.
  * @see https://docs.metamask.io/snaps/reference/rpc-api/#snap_managestate
  */
 export async function setState(newState: State, encrypted?: boolean) {
@@ -62,9 +66,10 @@ export async function setState(newState: State, encrypted?: boolean) {
       // enum value, but you can also use the string value `'update'` instead.
       operation: ManageStateOperation.UpdateState,
       newState,
-      // By default all state is encrypted, but you can choose to not encrypt it
-      // To do this you may set this flag to false
-      // This will use a separate unencrypted storage from the encrypted state
+
+      // By default all state is encrypted, but you can choose to not encrypt it.
+      // To do this you may set this flag to false.
+      // This will use a separate unencrypted storage from the encrypted state.
       encrypted,
     },
   });
@@ -87,9 +92,10 @@ export async function clearState(encrypted?: boolean) {
     // enum value, but you can also use the string value `'clear'` instead.
     params: {
       operation: ManageStateOperation.ClearState,
-      // By default all state is encrypted, but you can choose to not encrypt it
-      // To do this you may set this flag to false
-      // This will use a separate unencrypted storage from the encrypted state
+
+      // By default all state is encrypted, but you can choose to not encrypt it.
+      // To do this you may set this flag to false.
+      // This will use a separate unencrypted storage from the encrypted state.
       encrypted,
     },
   });
