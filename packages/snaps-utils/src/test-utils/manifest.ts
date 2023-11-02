@@ -1,6 +1,6 @@
-import type { LocalizationFile } from '@metamask/snaps-utils';
 import type { SemVerVersion } from '@metamask/utils';
 
+import type { LocalizationFile } from '../localization';
 import type { SnapManifest } from '../manifest/validation';
 import type { Chain, Namespace } from '../namespace';
 import { getSnapChecksum } from '../snaps';

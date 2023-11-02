@@ -1,4 +1,3 @@
-import { LoopbackLocation } from '@metamask/snaps-controllers/test-utils';
 import { VirtualFile } from '@metamask/snaps-utils';
 import {
   getMockSnapFiles,
@@ -6,6 +5,7 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 import { assert } from '@metamask/utils';
 
+import { LoopbackLocation } from './test-utils';
 import { getSnapFiles, setDiff } from './utils';
 
 describe('setDiff', () => {
