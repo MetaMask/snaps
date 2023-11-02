@@ -38,6 +38,7 @@ export const MOCK_MANIFEST = {
 export const MOCK_MANIFEST_FILE = new VirtualFile<SnapManifest>(
   stringToBytes(JSON.stringify(MOCK_MANIFEST)),
 );
+
 MOCK_MANIFEST_FILE.result = MOCK_MANIFEST;
 MOCK_MANIFEST_FILE.path = 'snap.manifest.json';
 MOCK_MANIFEST_FILE.data = {

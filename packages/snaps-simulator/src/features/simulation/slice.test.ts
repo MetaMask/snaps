@@ -12,6 +12,7 @@ import {
   setAuxiliaryFiles,
   setSnapState,
   setUnencryptedSnapState,
+  setLocalizationFiles,
 } from './slice';
 import { MockExecutionService } from './test/mockExecutionService';
 import { MOCK_MANIFEST, MOCK_MANIFEST_FILE } from './test/mockManifest';
@@ -68,13 +69,24 @@ describe('simulation slice', () => {
   });
 
   describe('setAuxiliaryFiles', () => {
-    it('sets the source code', () => {
+    it('sets the auxiliary files', () => {
       const result = reducer(
         INITIAL_STATE,
         setAuxiliaryFiles([new VirtualFile('foo')]),
       );
 
       expect(result.auxiliaryFiles?.[0].value).toBe('foo');
+    });
+  });
+
+  describe('setLocalizationFiles', () => {
+    it('sets the localization files', () => {
+      const result = reducer(
+        INITIAL_STATE,
+        setLocalizationFiles([new VirtualFile('foo')]),
+      );
+
+      expect(result.localizationFiles?.[0].value).toBe('foo');
     });
   });
 

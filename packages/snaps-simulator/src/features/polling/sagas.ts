@@ -62,6 +62,9 @@ async function fetchLocalizationFiles(
               path: file.path,
               value: file.value,
               result: parseJson<LocalizationFile>(file.toString('utf8')),
+              data: {
+                canonicalPath: file.data.canonicalPath,
+              },
             });
           }),
         ),
