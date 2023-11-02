@@ -6542,6 +6542,8 @@ describe('SnapController', () => {
       expect(snapController.getSnapManifest(MOCK_SNAP_ID)).toStrictEqual(
         getSnapManifest(),
       );
+
+      snapController.destroy();
     });
 
     it('returns the manifest of a snap with localizations', async () => {
@@ -6576,6 +6578,8 @@ describe('SnapController', () => {
           proposedName: 'Bar Snap',
         }),
       );
+
+      snapController.destroy();
     });
 
     it('returns the manifest of a snap with localizations in a different language', async () => {
@@ -6624,6 +6628,8 @@ describe('SnapController', () => {
           proposedName: 'Mijn Snap',
         }),
       );
+
+      snapController.destroy();
     });
   });
 
