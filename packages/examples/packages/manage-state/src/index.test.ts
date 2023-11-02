@@ -45,6 +45,41 @@ describe('onRpcRequest', () => {
 
       await close();
     });
+
+    it('sets the unencrypted state to the params', async () => {
+      const { request, close } = await installSnap();
+
+      expect(
+        await request({
+          method: 'setState',
+          params: {
+            items: ['foo'],
+            encrypted: false,
+          },
+        }),
+      ).toRespondWith(true);
+
+      expect(
+        await request({
+          method: 'getState',
+        }),
+      ).toRespondWith({
+        items: [],
+      });
+
+      expect(
+        await request({
+          method: 'getState',
+          params: {
+            encrypted: false,
+          },
+        }),
+      ).toRespondWith({
+        items: ['foo'],
+      });
+
+      await close();
+    });
   });
 
   describe('getState', () => {
@@ -82,6 +117,31 @@ describe('onRpcRequest', () => {
 
       await close();
     });
+
+    it('returns the unencrypted state', async () => {
+      const { request, close } = await installSnap();
+
+      await request({
+        method: 'setState',
+        params: {
+          items: ['foo'],
+          encrypted: false,
+        },
+      });
+
+      const response = await request({
+        method: 'getState',
+        params: {
+          encrypted: false,
+        },
+      });
+
+      expect(response).toRespondWith({
+        items: ['foo'],
+      });
+
+      await close();
+    });
   });
 
   describe('clearState', () => {
@@ -104,6 +164,40 @@ describe('onRpcRequest', () => {
       expect(
         await request({
           method: 'getState',
+        }),
+      ).toRespondWith({
+        items: [],
+      });
+
+      await close();
+    });
+
+    it('clears the unencrypted state', async () => {
+      const { request, close } = await installSnap();
+
+      await request({
+        method: 'setState',
+        params: {
+          items: ['foo'],
+          encrypted: false,
+        },
+      });
+
+      expect(
+        await request({
+          method: 'clearState',
+          params: {
+            encrypted: false,
+          },
+        }),
+      ).toRespondWith(true);
+
+      expect(
+        await request({
+          method: 'getState',
+          params: {
+            encrypted: false,
+          },
         }),
       ).toRespondWith({
         items: [],
