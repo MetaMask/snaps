@@ -6539,9 +6539,9 @@ describe('SnapController', () => {
         }),
       );
 
-      expect(snapController.getSnapManifest(MOCK_SNAP_ID)).toStrictEqual(
-        getSnapManifest(),
-      );
+      expect(
+        messenger.call('SnapController:getManifest', MOCK_SNAP_ID),
+      ).toStrictEqual(getSnapManifest());
 
       snapController.destroy();
     });
@@ -6573,7 +6573,9 @@ describe('SnapController', () => {
         }),
       );
 
-      expect(snapController.getSnapManifest(MOCK_SNAP_ID)).toStrictEqual(
+      expect(
+        messenger.call('SnapController:getManifest', MOCK_SNAP_ID),
+      ).toStrictEqual(
         getSnapManifest({
           proposedName: 'Bar Snap',
         }),
@@ -6617,13 +6619,17 @@ describe('SnapController', () => {
         }),
       );
 
-      expect(snapController.getSnapManifest(MOCK_SNAP_ID, 'en')).toStrictEqual(
+      expect(
+        messenger.call('SnapController:getManifest', MOCK_SNAP_ID, 'en'),
+      ).toStrictEqual(
         getSnapManifest({
           proposedName: 'My Snap',
         }),
       );
 
-      expect(snapController.getSnapManifest(MOCK_SNAP_ID, 'nl')).toStrictEqual(
+      expect(
+        messenger.call('SnapController:getManifest', MOCK_SNAP_ID, 'nl'),
+      ).toStrictEqual(
         getSnapManifest({
           proposedName: 'Mijn Snap',
         }),

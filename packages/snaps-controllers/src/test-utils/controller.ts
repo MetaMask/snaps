@@ -374,6 +374,7 @@ export const getSnapControllerMessenger = (
       'SnapController:disconnectOrigin',
       'SnapController:revokeDynamicPermissions',
       'SnapController:getFile',
+      'SnapController:getManifest',
       'SnapsRegistry:resolveVersion',
     ],
   });
