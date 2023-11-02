@@ -6,7 +6,7 @@ import type {
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { EnumToUnion } from '@metamask/snaps-utils';
-import { STATE_ENCRYPTION_MAGIC_VALUE } from '@metamask/snaps-utils';
+import { STATE_ENCRYPTION_MAGIC_VALUE, parseJson } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, Hex } from '@metamask/utils';
 import { isObject, getJsonSize, assert, isValidJson } from '@metamask/utils';
 
@@ -34,21 +34,25 @@ export type ManageStateMethodHooks = {
   /**
    * A function that clears the state of the requesting Snap.
    */
-  clearSnapState: (snapId: string) => Promise<void>;
+  clearSnapState: (snapId: string, encrypted: boolean) => void;
 
   /**
    * A function that gets the encrypted state of the requesting Snap.
    *
    * @returns The current state of the Snap.
    */
-  getSnapState: (snapId: string) => Promise<string>;
+  getSnapState: (snapId: string, encrypted: boolean) => string;
 
   /**
    * A function that updates the state of the requesting Snap.
    *
    * @param newState - The new state of the Snap.
    */
-  updateSnapState: (snapId: string, newState: string) => Promise<void>;
+  updateSnapState: (
+    snapId: string,
+    newState: string,
+    encrypted: boolean,
+  ) => void;
 
   /**
    * Encrypts data with a key. This is assumed to perform symmetric encryption.
@@ -135,6 +139,7 @@ export enum ManageStateOperation {
 export type ManageStateArgs = {
   operation: EnumToUnion<ManageStateOperation>;
   newState?: Record<string, Json>;
+  encrypted?: boolean;
 };
 
 export const STORAGE_SIZE_LIMIT = 104857600; // In bytes (100MB)
@@ -269,40 +274,53 @@ export function getManageStateImplementation({
       method,
       context: { origin },
     } = options;
-    const { operation, newState } = getValidatedParams(params, method);
+    const { operation, newState, encrypted } = getValidatedParams(
+      params,
+      method,
+    );
 
-    await getUnlockPromise(true);
-    const mnemonicPhrase = await getMnemonic();
+    // If the encrypted param is undefined or null we default to true.
+    const shouldEncrypt = encrypted ?? true;
+
+    // We only need to prompt the user when the mnemonic is needed
+    // which it isn't for the clear operation or unencrypted storage.
+    if (shouldEncrypt && operation !== ManageStateOperation.ClearState) {
+      await getUnlockPromise(true);
+    }
 
     switch (operation) {
       case ManageStateOperation.ClearState:
-        await clearSnapState(origin);
+        clearSnapState(origin, shouldEncrypt);
         return null;
 
       case ManageStateOperation.GetState: {
-        const state = await getSnapState(origin);
+        const state = getSnapState(origin, shouldEncrypt);
         if (state === null) {
           return state;
         }
-        return await decryptState({
-          state,
-          decryptFunction: decrypt,
-          mnemonicPhrase,
-          snapId: origin,
-        });
+        return shouldEncrypt
+          ? await decryptState({
+              state,
+              decryptFunction: decrypt,
+              mnemonicPhrase: await getMnemonic(),
+              snapId: origin,
+            })
+          : parseJson<Record<string, Json>>(state);
       }
 
       case ManageStateOperation.UpdateState: {
         assert(newState);
 
-        const encryptedState = await encryptState({
-          state: newState,
-          encryptFunction: encrypt,
-          mnemonicPhrase,
-          snapId: origin,
-        });
+        const finalizedState = shouldEncrypt
+          ? await encryptState({
+              state: newState,
+              encryptFunction: encrypt,
+              mnemonicPhrase: await getMnemonic(),
+              snapId: origin,
+            })
+          : JSON.stringify(newState);
 
-        await updateSnapState(origin, encryptedState);
+        updateSnapState(origin, finalizedState, shouldEncrypt);
         return null;
       }
 
@@ -334,7 +352,7 @@ export function getValidatedParams(
     });
   }
 
-  const { operation, newState } = params;
+  const { operation, newState, encrypted } = params;
 
   if (
     !operation ||
@@ -343,6 +361,12 @@ export function getValidatedParams(
   ) {
     throw rpcErrors.invalidParams({
       message: 'Must specify a valid manage state "operation".',
+    });
+  }
+
+  if (encrypted !== undefined && typeof encrypted !== 'boolean') {
+    throw rpcErrors.invalidParams({
+      message: '"encrypted" parameter must be a boolean if specified.',
     });
   }
 

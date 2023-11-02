@@ -124,8 +124,8 @@ describe('SnapController', () => {
     const state = 'foo';
 
     await snapController.startSnap(snap.id);
-    await snapController.updateSnapState(snap.id, state);
-    const snapState = await snapController.getSnapState(snap.id);
+    snapController.updateSnapState(snap.id, state, true);
+    const snapState = snapController.getSnapState(snap.id, true);
     expect(snapState).toStrictEqual(state);
 
     expect(snapController.state.snapStates[MOCK_SNAP_ID]).toStrictEqual(state);
@@ -5884,9 +5884,42 @@ describe('SnapController', () => {
       );
 
       const getSnapStateSpy = jest.spyOn(snapController, 'getSnapState');
-      const result = await messenger.call(
+      const result = messenger.call(
         'SnapController:getSnapState',
         MOCK_SNAP_ID,
+        true,
+      );
+
+      expect(getSnapStateSpy).toHaveBeenCalledTimes(1);
+      expect(result).toStrictEqual(state);
+
+      snapController.destroy();
+    });
+
+    it(`gets the snap's unencrypted state`, async () => {
+      const messenger = getSnapControllerMessenger();
+
+      const state = 'foo';
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: {
+              [MOCK_SNAP_ID]: getPersistedSnapObject(),
+            },
+            unencryptedSnapStates: {
+              [MOCK_SNAP_ID]: state,
+            },
+          },
+        }),
+      );
+
+      const getSnapStateSpy = jest.spyOn(snapController, 'getSnapState');
+      const result = messenger.call(
+        'SnapController:getSnapState',
+        MOCK_SNAP_ID,
+        false,
       );
 
       expect(getSnapStateSpy).toHaveBeenCalledTimes(1);
@@ -5943,16 +5976,46 @@ describe('SnapController', () => {
 
       const updateSnapStateSpy = jest.spyOn(snapController, 'updateSnapState');
       const state = 'bar';
-      await messenger.call(
+      messenger.call(
         'SnapController:updateSnapState',
         MOCK_SNAP_ID,
         state,
+        true,
       );
 
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(1);
       expect(snapController.state.snapStates[MOCK_SNAP_ID]).toStrictEqual(
         state,
       );
+
+      snapController.destroy();
+    });
+
+    it(`updates the snap's unencrypted state`, async () => {
+      const messenger = getSnapControllerMessenger();
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      const updateSnapStateSpy = jest.spyOn(snapController, 'updateSnapState');
+      const state = 'bar';
+      messenger.call(
+        'SnapController:updateSnapState',
+        MOCK_SNAP_ID,
+        state,
+        false,
+      );
+
+      expect(updateSnapStateSpy).toHaveBeenCalledTimes(1);
+      expect(
+        snapController.state.unencryptedSnapStates[MOCK_SNAP_ID],
+      ).toStrictEqual(state);
 
       snapController.destroy();
     });
@@ -5976,10 +6039,39 @@ describe('SnapController', () => {
         }),
       );
 
-      messenger.call('SnapController:clearSnapState', MOCK_SNAP_ID);
-      const clearedState = await messenger.call(
+      messenger.call('SnapController:clearSnapState', MOCK_SNAP_ID, true);
+      const clearedState = messenger.call(
         'SnapController:getSnapState',
         MOCK_SNAP_ID,
+        true,
+      );
+      expect(clearedState).toBeNull();
+
+      snapController.destroy();
+    });
+
+    it('clears the unencrypted state of a snap', async () => {
+      const messenger = getSnapControllerMessenger();
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snapStates: { [MOCK_SNAP_ID]: 'foo' },
+            snaps: getPersistedSnapsState(
+              getPersistedSnapObject({
+                status: SnapStatus.Installing,
+              }),
+            ),
+          },
+        }),
+      );
+
+      messenger.call('SnapController:clearSnapState', MOCK_SNAP_ID, false);
+      const clearedState = messenger.call(
+        'SnapController:getSnapState',
+        MOCK_SNAP_ID,
+        false,
       );
       expect(clearedState).toBeNull();
 

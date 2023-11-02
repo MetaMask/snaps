@@ -17,8 +17,10 @@ import {
   getRequestId,
   getSnapName,
   getSnapStateSelector,
+  getUnencryptedSnapStateSelector,
   resolveUserInterface,
   setSnapState,
+  setUnencryptedSnapState,
   showUserInterface,
 } from './slice';
 
@@ -141,24 +143,36 @@ export function* showInAppNotification(
  *
  * @param _snapId - The snap id, unused for now.
  * @param newSnapState - The new state.
+ * @param encrypted - A flag to signal whether to use the encrypted storage or not.
  * @yields Puts the newSnapState
  */
 export function* updateSnapState(
   _snapId: string,
   newSnapState: string | null,
+  encrypted: boolean,
 ): SagaIterator {
-  yield put(setSnapState(newSnapState));
+  yield put(
+    encrypted
+      ? setSnapState(newSnapState)
+      : setUnencryptedSnapState(newSnapState),
+  );
 }
 
 /**
  * Gets the snap state from the simulation slice.
  *
  * @param _snapId - The snap id, unused for now.
+ * @param encrypted - A flag to signal whether to use the encrypted storage or not.
  * @returns The snap state.
  * @yields Selects the snap state from the simulation slice.
  */
-export function* getSnapState(_snapId: string): SagaIterator {
-  const state: string = yield select(getSnapStateSelector);
+export function* getSnapState(
+  _snapId: string,
+  encrypted: boolean,
+): SagaIterator {
+  const state: string = yield select(
+    encrypted ? getSnapStateSelector : getUnencryptedSnapStateSelector,
+  );
   return state;
 }
 
