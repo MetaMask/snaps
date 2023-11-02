@@ -16,6 +16,7 @@ export enum Tag {
   Accounts = 'Accounts',
   InstalledSnaps = 'Installed Snaps',
   TestState = 'Test State',
+  UnencryptedTestState = 'Unencrypted Test State',
 }
 
 /**
