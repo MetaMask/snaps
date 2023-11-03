@@ -14,7 +14,7 @@ import type { YargsArgs } from '../../types/yargs';
 import {
   buildSnap,
   cloneTemplate,
-  gitInit,
+  gitInitWithCommit,
   isGitInstalled,
   isInGitRepository,
   prepareWorkingDirectory,
@@ -80,7 +80,7 @@ export async function initHandler(argv: YargsArgs) {
 
   if (!isInGitRepository(directoryToUse)) {
     logInfo('Initializing git repository...');
-    gitInit(directoryToUse);
+    gitInitWithCommit(directoryToUse);
   }
 
   const snapLocation = pathUtils.join(directoryToUse, SNAP_LOCATION);

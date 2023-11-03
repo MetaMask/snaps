@@ -7,7 +7,7 @@ import { resetFileSystem } from '../../test-utils';
 import {
   buildSnap,
   cloneTemplate,
-  gitInit,
+  gitInitWithCommit,
   isGitInstalled,
   isInGitRepository,
   prepareWorkingDirectory,
@@ -190,19 +190,32 @@ describe('initUtils', () => {
     });
   });
 
-  describe('gitInit', () => {
+  describe('gitInitWithCommit', () => {
     it('init a new repository', () => {
       const spawnSyncMock = jest
         .spyOn(childProcess, 'spawnSync')
         .mockImplementation(() => spawnReturnWithStatus(0));
 
-      gitInit('foo');
+      gitInitWithCommit('foo');
 
-      expect(spawnSyncMock).toHaveBeenCalledTimes(1);
-      expect(spawnSyncMock).toHaveBeenCalledWith('git', ['init'], {
+      expect(spawnSyncMock).toHaveBeenCalledTimes(3);
+      expect(spawnSyncMock).toHaveBeenNthCalledWith(1, 'git', ['init'], {
         stdio: 'ignore',
         cwd: pathUtils.resolve(__dirname, 'foo'),
       });
+      expect(spawnSyncMock).toHaveBeenNthCalledWith(2, 'git', ['add', '.'], {
+        stdio: 'ignore',
+        cwd: pathUtils.resolve(__dirname, 'foo'),
+      });
+      expect(spawnSyncMock).toHaveBeenNthCalledWith(
+        3,
+        'git',
+        ['commit', '-m', 'Initial commit from @metamask/create-snap'],
+        {
+          stdio: 'ignore',
+          cwd: pathUtils.resolve(__dirname, 'foo'),
+        },
+      );
     });
 
     it('throws an error if it fails to init a new repository', () => {
@@ -210,7 +223,7 @@ describe('initUtils', () => {
         .spyOn(childProcess, 'spawnSync')
         .mockImplementation(() => spawnReturnWithStatus(1));
 
-      expect(() => gitInit('foo')).toThrow(
+      expect(() => gitInitWithCommit('foo')).toThrow(
         'Init Error: Failed to init a new git repository.',
       );
       expect(spawnSyncMock).toHaveBeenCalledTimes(1);
