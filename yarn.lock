@@ -4495,7 +4495,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/home-page-example-snap@workspace:packages/examples/packages/home-page":
+"@metamask/home-page-example-snap@workspace:^, @metamask/home-page-example-snap@workspace:packages/examples/packages/home-page":
   version: 0.0.0-use.local
   resolution: "@metamask/home-page-example-snap@workspace:packages/examples/packages/home-page"
   dependencies:
@@ -5841,6 +5841,7 @@ __metadata:
     "@metamask/ethers-js-example-snap": "workspace:^"
     "@metamask/get-entropy-example-snap": "workspace:^"
     "@metamask/get-file-example-snap": "workspace:^"
+    "@metamask/home-page-example-snap": "workspace:^"
     "@metamask/insights-example-snap": "workspace:^"
     "@metamask/json-rpc-example-snap": "workspace:^"
     "@metamask/lifecycle-hooks-example-snap": "workspace:^"
