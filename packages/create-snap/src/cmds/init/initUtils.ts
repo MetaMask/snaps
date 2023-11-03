@@ -44,11 +44,15 @@ export async function prepareWorkingDirectory(
  * @param directory - The directory to clone the template in.
  */
 export function cloneTemplate(directory: string) {
-  try {
-    spawnSync('git', ['clone', '--depth=1', TEMPLATE_GIT_URL, directory], {
+  const result = spawnSync(
+    'git',
+    ['clone', '--depth=1', TEMPLATE_GIT_URL, directory],
+    {
       stdio: [2],
-    });
-  } catch (error) {
+    },
+  );
+
+  if (result.error || result.status !== 0) {
     throw new Error('Init Error: Failed to clone the template.');
   }
 }
@@ -59,12 +63,8 @@ export function cloneTemplate(directory: string) {
  * @returns True if git is installed, or false otherwise.
  */
 export function isGitInstalled() {
-  try {
-    spawnSync('git', ['--version'], { stdio: 'ignore' });
-    return true;
-  } catch (error) {
-    return false;
-  }
+  const result = spawnSync('git', ['--version'], { stdio: 'ignore' });
+  return result.status === 0;
 }
 
 /**
@@ -74,15 +74,12 @@ export function isGitInstalled() {
  * @returns True if it's a git repository otherwise false.
  */
 export function isInGitRepository(directory: string) {
-  try {
-    spawnSync('git', ['rev-parse', '--is-inside-work-tree'], {
-      stdio: 'ignore',
-      cwd: pathUtils.resolve(__dirname, directory),
-    });
-    return true;
-  } catch (error) {
-    return false;
-  }
+  const result = spawnSync('git', ['rev-parse', '--is-inside-work-tree'], {
+    stdio: 'ignore',
+    cwd: pathUtils.resolve(__dirname, directory),
+  });
+
+  return result.status === 0;
 }
 
 /**
@@ -91,12 +88,12 @@ export function isInGitRepository(directory: string) {
  * @param directory - The directory to init.
  */
 export function gitInit(directory: string) {
-  try {
-    spawnSync('git', ['init'], {
-      stdio: 'ignore',
-      cwd: pathUtils.resolve(__dirname, directory),
-    });
-  } catch (error) {
+  const result = spawnSync('git', ['init'], {
+    stdio: 'ignore',
+    cwd: pathUtils.resolve(__dirname, directory),
+  });
+
+  if (result.error || result.status !== 0) {
     throw new Error('Init Error: Failed to init a new git repository.');
   }
 }
@@ -107,12 +104,12 @@ export function gitInit(directory: string) {
  * @param directory - The directory containing the project.
  */
 export function yarnInstall(directory: string) {
-  try {
-    spawnSync('yarn', ['install'], {
-      stdio: [0, 1, 2],
-      cwd: directory,
-    });
-  } catch (error) {
+  const result = spawnSync('yarn', ['install'], {
+    stdio: [0, 1, 2],
+    cwd: directory,
+  });
+
+  if (result.error || result.status !== 0) {
     throw new Error('Init Error: Failed to install dependencies.');
   }
 }
@@ -123,12 +120,12 @@ export function yarnInstall(directory: string) {
  * @param snapDirectory - The directory containing the snap.
  */
 export function buildSnap(snapDirectory: string) {
-  try {
-    spawnSync('yarn', ['build'], {
-      stdio: [0, 1, 2],
-      cwd: pathUtils.resolve(__dirname, snapDirectory),
-    });
-  } catch (error) {
+  const result = spawnSync('yarn', ['build'], {
+    stdio: [0, 1, 2],
+    cwd: pathUtils.resolve(__dirname, snapDirectory),
+  });
+
+  if (result.error || result.status !== 0) {
     throw new Error('Init Error: Failed to build snap.');
   }
 }
