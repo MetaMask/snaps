@@ -287,13 +287,32 @@ describe('translate', () => {
       }),
     ).toBe('This is a test. This is a second test.');
   });
+
+  it('throws when using a translation without specifying a file', () => {
+    expect(() => translate('This is a {{ test }}.', undefined)).toThrow(
+      'Failed to translate "This is a {{ test }}.": No localization file found.',
+    );
+  });
+
+  it('throws when using a translation and the message is missing', () => {
+    expect(() =>
+      translate('This is a {{ test }}.', {
+        locale: 'en',
+        messages: {},
+      }),
+    ).toThrow(
+      'Failed to translate "This is a {{ test }}.": No translation found for "test".',
+    );
+  });
 });
 
 describe('getLocalizedSnapManifest', () => {
   it('returns the original manifest if no localization files are provided', () => {
     const manifest = getSnapManifest();
 
-    expect(getLocalizedSnapManifest(manifest, 'en', [])).toBe(manifest);
+    expect(getLocalizedSnapManifest(manifest, 'en', [])).toStrictEqual(
+      manifest,
+    );
   });
 
   it('returns the original manifest if no localization file is found', () => {
@@ -306,7 +325,7 @@ describe('getLocalizedSnapManifest', () => {
           messages: {},
         },
       ]),
-    ).toBe(manifest);
+    ).toStrictEqual(manifest);
   });
 
   it('translates the proposed name', () => {

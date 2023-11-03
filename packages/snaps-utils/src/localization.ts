@@ -89,24 +89,34 @@ export const TRANSLATION_REGEX = /\{\{\s?([a-zA-Z0-9-_\s]+)\s?\}\}/gu;
 
 /**
  * Translate a string using a localization file. This will replace all instances
- * of `{{key}}` with the localized version of `key`. If the key is not found,
- * the original string will be returned.
+ * of `{{key}}` with the localized version of `key`.
  *
  * @param value - The string to translate.
- * @param file - The localization file to use.
+ * @param file - The localization file to use, or `undefined` if no localization
+ * file was found.
  * @returns The translated string.
+ * @throws If the string contains a key that is not present in the localization
+ * file, or if no localization file was found.
  */
-export function translate(value: string, file: LocalizationFile) {
+export function translate(value: string, file: LocalizationFile | undefined) {
   const matches = value.matchAll(TRANSLATION_REGEX);
   const array = Array.from(matches);
 
   return array.reduce<string>((result, [match, key]) => {
-    const translation = file.messages[key.trim()];
-    if (translation) {
-      return result.replace(match, translation.message);
+    if (!file) {
+      throw new Error(
+        `Failed to translate "${value}": No localization file found.`,
+      );
     }
 
-    return result;
+    const translation = file.messages[key.trim()];
+    if (!translation) {
+      throw new Error(
+        `Failed to translate "${value}": No translation found for "${key.trim()}".`,
+      );
+    }
+
+    return result.replace(match, translation.message);
   }, value);
 }
 
@@ -125,9 +135,6 @@ export function getLocalizedSnapManifest(
   localizationFiles: LocalizationFile[],
 ) {
   const file = getLocalizationFile(locale, localizationFiles);
-  if (!file) {
-    return snapManifest;
-  }
 
   return LOCALIZABLE_FIELDS.reduce((manifest, field) => {
     const translation = translate(manifest[field], file);
