@@ -16,12 +16,6 @@ type ValidatorContext = {
   localizationFiles: VirtualFile<LocalizationFile>[];
 };
 
-/**
- * @param encrypted - An optional flag to indicate whether to use encrypted
- * storage or not. Unencrypted storage does not require the user to unlock
- * MetaMask in order to access it, but it should not be used for sensitive data.
- * Defaults to true.
- */
 type ValidatorFunction = (
   value: VirtualFile<SnapManifest>,
   context: ValidatorContext,

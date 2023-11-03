@@ -38,8 +38,7 @@ in the manifest.
 This snap exposes an `onRpcRequest` handler, which supports the following
 JSON-RPC methods:
 
-- `hello`: Shows an alert dialog with a localized message, using both
-  `snap_dialog` and `snap_getLocale`.
+- `hello`: Responds with "Hello, world!", localized to the user's locale.
 
 For more information, you can refer to
 [the end-to-end tests](./src/index.test.ts).

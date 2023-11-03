@@ -89,7 +89,7 @@ export const TRANSLATION_REGEX = /\{\{\s?([a-zA-Z0-9-_\s]+)\s?\}\}/gu;
 
 /**
  * Translate a string using a localization file. This will replace all instances
- * of `${key}` with the localized version of `key`. If the key is not found,
+ * of `{{key}}` with the localized version of `key`. If the key is not found,
  * the original string will be returned.
  *
  * @param value - The string to translate.

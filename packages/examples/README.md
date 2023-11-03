@@ -40,9 +40,9 @@ The following is a list of the snaps in this directory.
   dapps.
 - [**`packages/lifecycle-hooks`**](./packages/lifecycle-hooks): This snap
   demonstrates how to use the `onInstall` and `onUpdate` lifecycle hooks.
-- [**`packages/localization`**](./packages/get-locale): This snap demonstrates how to use the
-  `snap_getLocale` method to get the user's locale, translate messages, and
-  localize the snap manifest.
+- [**`packages/localization`**](./packages/localization): This snap demonstrates
+- how to use the `snap_getLocale` method to get the user's locale, translate
+  messages, and localize the snap manifest.
 - [**`packages/manage-state`**](./packages/manage-state): This snap
   demonstrates how to use the `snap_manageState` method to store and retrieve
   data in a snap.
