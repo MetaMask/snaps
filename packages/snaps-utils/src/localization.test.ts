@@ -1,9 +1,66 @@
 import {
   getLocalizationFile,
   getLocalizedSnapManifest,
+  getValidatedLocalizationFiles,
   translate,
 } from './localization';
 import { getSnapManifest } from './test-utils';
+import { VirtualFile } from './virtual-file';
+
+describe('getValidatedLocalizationFiles', () => {
+  it.each([
+    null,
+    true,
+    false,
+    0,
+    1,
+    0.5,
+    'foo',
+    ['foo'],
+    { foo: 'bar' },
+    {
+      locale: 'en',
+    },
+    {
+      messages: {},
+    },
+    {
+      locale: 'en',
+      messages: {
+        foo: 'bar',
+      },
+    },
+    {
+      locale: 'en',
+      messages: {
+        foo: {
+          message: 'bar',
+          baz: 'qux',
+        },
+      },
+    },
+  ])('throws if the file is not a valid localization file', (value) => {
+    const file = new VirtualFile({
+      path: 'foo.json',
+      value: JSON.stringify(value),
+    });
+
+    expect(() => getValidatedLocalizationFiles([file])).toThrow(
+      /Failed to validate localization file "foo.json": .*\./u,
+    );
+  });
+
+  it('throws if the file is not a valid JSON file', () => {
+    const file = new VirtualFile({
+      path: 'foo.json',
+      value: 'foo',
+    });
+
+    expect(() => getValidatedLocalizationFiles([file])).toThrow(
+      'Failed to parse localization file "foo.json" as JSON.',
+    );
+  });
+});
 
 describe('getLocalizationFile', () => {
   it('returns the correct file', () => {
