@@ -280,7 +280,7 @@ export const getMockLocalizationFile = ({
       message: 'Example Snap',
     },
   },
-} = {}): LocalizationFile => {
+}: Partial<LocalizationFile> = {}): LocalizationFile => {
   return {
     locale,
     messages,

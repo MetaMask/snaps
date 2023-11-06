@@ -8,6 +8,7 @@ import {
   StructError,
 } from 'superstruct';
 
+import { getErrorMessage } from './errors';
 import type { SnapManifest } from './manifest';
 import type { VirtualFile } from './virtual-file';
 
@@ -112,7 +113,9 @@ export function translate(value: string, file: LocalizationFile | undefined) {
     const translation = file.messages[key.trim()];
     if (!translation) {
       throw new Error(
-        `Failed to translate "${value}": No translation found for "${key.trim()}".`,
+        `Failed to translate "${value}": No translation found for "${key.trim()}" in "${
+          file.locale
+        }" file.`,
       );
     }
 
@@ -143,4 +146,33 @@ export function getLocalizedSnapManifest(
       [field]: translation,
     };
   }, snapManifest);
+}
+
+/**
+ * Validate the localization files for a Snap manifest.
+ *
+ * @param snapManifest - The Snap manifest to validate.
+ * @param localizationFiles - The localization files to validate.
+ * @throws If the manifest cannot be localized.
+ */
+export function validateSnapManifestLocalizations(
+  snapManifest: SnapManifest,
+  localizationFiles: LocalizationFile[],
+) {
+  try {
+    // `translate` throws if the manifest cannot be localized, so we just attempt
+    // to translate the manifest using all localization files.
+    localizationFiles
+      .filter((file) => file.locale !== 'en')
+      .forEach((file) => {
+        getLocalizedSnapManifest(snapManifest, file.locale, localizationFiles);
+      });
+
+    // The manifest must be localizable in English.
+    getLocalizedSnapManifest(snapManifest, 'en', localizationFiles);
+  } catch (error) {
+    throw new Error(
+      `Failed to localize Snap manifest: ${getErrorMessage(error)}`,
+    );
+  }
 }

@@ -1,4 +1,8 @@
 import { assertIsSnapIcon } from './icon';
+import {
+  getValidatedLocalizationFiles,
+  validateSnapManifestLocalizations,
+} from './localization';
 import { validateNpmSnapManifest } from './manifest/manifest';
 import { assertIsSnapManifest } from './manifest/validation';
 import type { SnapFiles, UnvalidatedSnapFiles } from './types';
@@ -81,6 +85,18 @@ export function validateNpmSnap(
   if (svgIcon) {
     try {
       assertIsSnapIcon(svgIcon);
+    } catch (error) {
+      throw new Error(`${errorPrefix ?? ''}${error.message}`);
+    }
+  }
+
+  if (localizationFiles) {
+    try {
+      getValidatedLocalizationFiles(localizationFiles);
+      validateSnapManifestLocalizations(
+        manifest.result,
+        localizationFiles.map((file) => file.result),
+      );
     } catch (error) {
       throw new Error(`${errorPrefix ?? ''}${error.message}`);
     }

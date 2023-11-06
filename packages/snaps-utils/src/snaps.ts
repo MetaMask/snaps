@@ -256,6 +256,7 @@ const LocalSnapIdSubUrlStruct = uri({
   hash: empty(string()),
   search: empty(string()),
 });
+
 export const LocalSnapIdStruct = refine(
   BaseSnapIdStruct,
   'local Snap Id',

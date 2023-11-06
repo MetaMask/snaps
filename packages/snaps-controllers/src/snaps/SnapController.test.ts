@@ -4173,6 +4173,38 @@ describe('SnapController', () => {
 
       snapController.destroy();
     });
+
+    it('throws if the snap localization files are invalid', async () => {
+      const messenger = getSnapControllerMessenger();
+      const { manifest, sourceCode, svgIcon, localizationFiles } =
+        getMockSnapFiles({
+          manifest: getSnapManifest({
+            proposedName: '{{ proposedName }}',
+            locales: ['locales/en.json'],
+          }),
+          localizationFiles: [getMockLocalizationFile({ messages: {} })],
+        });
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          detectSnapLocation: loopbackDetect({
+            manifest,
+            files: [sourceCode, svgIcon as VirtualFile, ...localizationFiles],
+          }),
+        }),
+      );
+
+      await expect(
+        snapController.installSnaps(MOCK_ORIGIN, {
+          [MOCK_SNAP_ID]: {},
+        }),
+      ).rejects.toThrow(
+        'Failed to fetch snap "npm:@metamask/example-snap": Failed to localize Snap manifest: Failed to translate "{{ proposedName }}": No translation found for "proposedName" in "en" file.',
+      );
+
+      snapController.destroy();
+    });
   });
 
   describe('updateSnap', () => {

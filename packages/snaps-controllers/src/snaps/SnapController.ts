@@ -72,6 +72,7 @@ import {
   OnHomePageResponseStruct,
   getLocalizedSnapManifest,
   getValidatedLocalizationFiles,
+  validateSnapManifestLocalizations,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
@@ -2405,15 +2406,22 @@ export class SnapController extends BaseController<
         manifest.result.source.locales,
       );
 
+      const validatedLocalizationFiles =
+        getValidatedLocalizationFiles(localizationFiles);
+
       const files = {
         manifest,
         sourceCode,
         svgIcon,
         auxiliaryFiles,
-        localizationFiles: getValidatedLocalizationFiles(localizationFiles),
+        localizationFiles: validatedLocalizationFiles,
       };
 
       validateFetchedSnap(files);
+      validateSnapManifestLocalizations(
+        files.manifest.result,
+        validatedLocalizationFiles.map((file) => file.result),
+      );
 
       return { files, location };
     } catch (error) {

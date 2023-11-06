@@ -3,11 +3,26 @@ import {
   getLocalizedSnapManifest,
   getValidatedLocalizationFiles,
   translate,
+  validateSnapManifestLocalizations,
 } from './localization';
-import { getSnapManifest } from './test-utils';
+import { getMockLocalizationFile, getSnapManifest } from './test-utils';
 import { VirtualFile } from './virtual-file';
 
 describe('getValidatedLocalizationFiles', () => {
+  it('returns the correct files', () => {
+    const files = getValidatedLocalizationFiles([
+      new VirtualFile({
+        path: 'foo.json',
+        value: JSON.stringify({
+          locale: 'en',
+          messages: {},
+        }),
+      }),
+    ]);
+
+    expect(files[0].result.locale).toBe('en');
+  });
+
   it.each([
     null,
     true,
@@ -59,6 +74,22 @@ describe('getValidatedLocalizationFiles', () => {
     expect(() => getValidatedLocalizationFiles([file])).toThrow(
       'Failed to parse localization file "foo.json" as JSON.',
     );
+  });
+
+  it('throws if an unknown error occurs', () => {
+    const file = new VirtualFile({
+      path: 'foo.json',
+      value: JSON.stringify({
+        locale: 'en',
+        messages: {},
+      }),
+    });
+
+    jest.spyOn(JSON, 'parse').mockImplementationOnce(() => {
+      throw new Error('foo');
+    });
+
+    expect(() => getValidatedLocalizationFiles([file])).toThrow('foo');
   });
 });
 
@@ -301,7 +332,7 @@ describe('translate', () => {
         messages: {},
       }),
     ).toThrow(
-      'Failed to translate "This is a {{ test }}.": No translation found for "test".',
+      'Failed to translate "This is a {{ test }}.": No translation found for "test" in "en" file.',
     );
   });
 });
@@ -477,6 +508,49 @@ describe('getLocalizedSnapManifest', () => {
         proposedName: 'This is the proposed name.',
         description: 'This is the description.',
       }),
+    );
+  });
+});
+
+describe('validateSnapManifestLocalizations', () => {
+  it('does not throw if the manifest can be localized', () => {
+    const manifest = getSnapManifest({
+      proposedName: '{{ proposedName }}',
+    });
+
+    expect(() =>
+      validateSnapManifestLocalizations(manifest, [
+        getMockLocalizationFile({ locale: 'en' }),
+        getMockLocalizationFile({ locale: 'nl' }),
+      ]),
+    ).not.toThrow();
+  });
+
+  it('throws if one of  the localization files is missing a translation', () => {
+    const manifest = getSnapManifest({
+      proposedName: '{{ proposedName }}',
+    });
+
+    expect(() =>
+      validateSnapManifestLocalizations(manifest, [
+        getMockLocalizationFile({ locale: 'en' }),
+        getMockLocalizationFile({
+          locale: 'nl',
+          messages: {},
+        }),
+      ]),
+    ).toThrow(
+      'Failed to localize Snap manifest: Failed to translate "{{ proposedName }}": No translation found for "proposedName" in "nl" file.',
+    );
+  });
+
+  it('throws if the manifest is using translations without specifying a file', () => {
+    const manifest = getSnapManifest({
+      proposedName: '{{ proposedName }}',
+    });
+
+    expect(() => validateSnapManifestLocalizations(manifest, [])).toThrow(
+      'Failed to localize Snap manifest: Failed to translate "{{ proposedName }}": No localization file found.',
     );
   });
 });
