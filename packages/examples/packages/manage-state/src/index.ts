@@ -1,7 +1,7 @@
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { OnRpcRequestHandler } from '@metamask/snaps-types';
 
-import type { SetStateParams } from './types';
+import type { BaseParams, SetStateParams } from './types';
 import { clearState, getState, setState } from './utils';
 
 /**
@@ -17,6 +17,10 @@ import { clearState, getState, setState } from './utils';
  * extension's local storage, so the next `getState` request will return the
  * default state.
  *
+ * Each of the methods also takes an `encrypted` parameter.
+ * This parameter can be used to choose between using encrypted or unencrypted storage.
+ * Encrypted storage requires MetaMask to be unlocked, unencrypted storage does not.
+ *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.
  * @returns The JSON-RPC response.
@@ -28,18 +32,23 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'setState': {
       const params = request.params as SetStateParams;
-      const state = await getState();
 
-      await setState({ ...state, ...params });
+      if (params.items) {
+        await setState({ items: params.items }, params.encrypted);
+      }
       return true;
     }
 
-    case 'getState':
-      return await getState();
+    case 'getState': {
+      const params = request.params as BaseParams;
+      return await getState(params?.encrypted);
+    }
 
-    case 'clearState':
-      await clearState();
+    case 'clearState': {
+      const params = request.params as BaseParams;
+      await clearState(params?.encrypted);
       return true;
+    }
 
     default:
       throw rpcErrors.methodNotFound({

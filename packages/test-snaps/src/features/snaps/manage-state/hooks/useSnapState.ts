@@ -9,9 +9,10 @@ export type State = {
 /**
  * Hook to retrieve the state of the snap.
  *
+ * @param encrypted - A flag to indicate whether to use encrypted storage or not.
  * @returns The state of the snap.
  */
-export function useSnapState() {
+export function useSnapState(encrypted: boolean) {
   const snapId = getSnapId(MANAGE_STATE_SNAP_ID, MANAGE_STATE_PORT);
   const isInstalled = useInstalled(snapId);
 
@@ -19,7 +20,8 @@ export function useSnapState() {
     {
       snapId,
       method: 'getState',
-      tags: [Tag.TestState],
+      params: { encrypted },
+      tags: [encrypted ? Tag.TestState : Tag.UnencryptedTestState],
     },
     {
       skip: !isInstalled,

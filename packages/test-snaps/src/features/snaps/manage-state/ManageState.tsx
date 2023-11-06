@@ -10,7 +10,8 @@ import {
 import { useSnapState } from './hooks';
 
 export const ManageState: FunctionComponent = () => {
-  const state = useSnapState();
+  const encryptedState = useSnapState(true);
+  const unencryptedState = useSnapState(false);
 
   return (
     <Snap
@@ -22,12 +23,21 @@ export const ManageState: FunctionComponent = () => {
     >
       <Result className="mb-3">
         <span id="retrieveManageStateResult">
-          {JSON.stringify(state, null, 2)}
+          {JSON.stringify(encryptedState, null, 2)}
         </span>
       </Result>
 
-      <SendData />
-      <ClearData />
+      <SendData encrypted={true} />
+      <ClearData encrypted={true} />
+
+      <Result className="mb-3">
+        <span id="retrieveManageStateUnencryptedResult">
+          {JSON.stringify(unencryptedState, null, 2)}
+        </span>
+      </Result>
+
+      <SendData encrypted={false} />
+      <ClearData encrypted={false} />
     </Snap>
   );
 };

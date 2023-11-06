@@ -9,10 +9,12 @@ import { getSnapId } from '../../../../utils';
 import { MANAGE_STATE_PORT, MANAGE_STATE_SNAP_ID } from '../constants';
 import { useSnapState } from '../hooks';
 
-export const SendData: FunctionComponent = () => {
+export const SendData: FunctionComponent<{ encrypted: boolean }> = ({
+  encrypted,
+}) => {
   const [value, setValue] = useState('');
   const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
-  const snapState = useSnapState();
+  const snapState = useSnapState(encrypted);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
@@ -25,8 +27,9 @@ export const SendData: FunctionComponent = () => {
       method: 'setState',
       params: {
         items: [...snapState.items, value],
+        encrypted,
       },
-      tags: [Tag.TestState],
+      tags: [encrypted ? Tag.TestState : Tag.UnencryptedTestState],
     }).catch(logError);
   };
 
@@ -40,18 +43,28 @@ export const SendData: FunctionComponent = () => {
             placeholder="Value"
             value={value}
             onChange={handleChange}
-            id="dataManageState"
+            id={encrypted ? 'dataManageState' : 'dataUnencryptedManageState'}
             className="mb-3"
           />
         </Form.Group>
 
-        <Button type="submit" id="sendManageState" disabled={isLoading}>
+        <Button
+          type="submit"
+          id={encrypted ? 'sendManageState' : 'sendUnencryptedManageState'}
+          disabled={isLoading}
+        >
           Send Data
         </Button>
       </Form>
 
       <Result className="mb-3">
-        <span id="sendManageStateResult">
+        <span
+          id={
+            encrypted
+              ? 'sendManageStateResult'
+              : 'sendUnencryptedManageStateResult'
+          }
+        >
           {JSON.stringify(data, null, 2)}
           {JSON.stringify(error, null, 2)}
         </span>
