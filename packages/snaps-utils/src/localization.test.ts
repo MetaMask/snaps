@@ -534,7 +534,7 @@ describe('validateSnapManifestLocalizations', () => {
     ).not.toThrow();
   });
 
-  it('throws if one of  the localization files is missing a translation', () => {
+  it('throws if one of the localization files is missing a translation', () => {
     const manifest = getSnapManifest({
       proposedName: '{{ proposedName }}',
     });
