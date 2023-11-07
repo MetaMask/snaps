@@ -40,7 +40,6 @@ import type {
   RequestedSnapPermissions,
   Snap,
   SnapId,
-  SnapManifest,
   SnapRpcHook,
   SnapRpcHookArgs,
   StatusContext,
@@ -70,7 +69,6 @@ import {
   validateFetchedSnap,
   unwrapError,
   OnHomePageResponseStruct,
-  getLocalizedSnapManifest,
   getValidatedLocalizationFiles,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
@@ -360,11 +358,6 @@ export type GetSnapFile = {
   handler: SnapController['getSnapFile'];
 };
 
-export type GetSnapManifest = {
-  type: `${typeof controllerName}:getManifest`;
-  handler: SnapController['getSnapManifest'];
-};
-
 export type SnapControllerActions =
   | ClearSnapState
   | GetSnap
@@ -384,8 +377,7 @@ export type SnapControllerActions =
   | GetRegistryMetadata
   | DisconnectOrigin
   | RevokeDynamicPermissions
-  | GetSnapFile
-  | GetSnapManifest;
+  | GetSnapFile;
 
 // Controller Messenger Events
 
@@ -994,11 +986,6 @@ export class SnapController extends BaseController<
       `${controllerName}:getFile`,
       (...args) => this.getSnapFile(...args),
     );
-
-    this.messagingSystem.registerActionHandler(
-      `${controllerName}:getManifest`,
-      (...args) => this.getSnapManifest(...args),
-    );
   }
 
   #pollForLastRequestStatus() {
@@ -1463,11 +1450,6 @@ export class SnapController extends BaseController<
     }
 
     return encodeAuxiliaryFile(value, encoding);
-  }
-
-  getSnapManifest(snapId: ValidatedSnapId, locale = 'en'): SnapManifest {
-    const { manifest, localizationFiles = [] } = this.getExpect(snapId);
-    return getLocalizedSnapManifest(manifest, locale, localizationFiles);
   }
 
   /**

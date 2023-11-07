@@ -20,6 +20,7 @@ import {
   AuxiliaryFileEncoding,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
+  getLocalizedSnapManifest,
   getSnapChecksum,
   HandlerType,
   logError,
@@ -43,7 +44,7 @@ import {
   getMockLocalizationFile,
 } from '@metamask/snaps-utils/test-utils';
 import type { SemVerRange, SemVerVersion } from '@metamask/utils';
-import { AssertionError, stringToBytes } from '@metamask/utils';
+import { assert, AssertionError, stringToBytes } from '@metamask/utils';
 import fetchMock from 'jest-fetch-mock';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { pipeline } from 'stream';
@@ -4163,7 +4164,19 @@ describe('SnapController', () => {
         [MOCK_SNAP_ID]: {},
       });
 
-      expect(snapController.getSnapManifest(MOCK_SNAP_ID)).toStrictEqual(
+      const {
+        manifest: installedManifest,
+        localizationFiles: installedLocalizationFiles,
+      } = snapController.state.snaps[MOCK_SNAP_ID];
+
+      assert(installedLocalizationFiles);
+      const localizedManifest = getLocalizedSnapManifest(
+        installedManifest,
+        'en',
+        installedLocalizationFiles,
+      );
+
+      expect(localizedManifest).toStrictEqual(
         getSnapManifest({
           proposedName: 'Example Snap',
           locales: ['locales/en.json'],
@@ -6554,118 +6567,6 @@ describe('SnapController', () => {
           './foo.json',
         ),
       ).toBeNull();
-
-      snapController.destroy();
-    });
-  });
-
-  describe('SnapController:getManifest', () => {
-    it('returns the manifest of a snap', async () => {
-      const messenger = getSnapControllerMessenger();
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          messenger,
-          state: {
-            snaps: getPersistedSnapsState(getPersistedSnapObject()),
-          },
-        }),
-      );
-
-      expect(
-        messenger.call('SnapController:getManifest', MOCK_SNAP_ID),
-      ).toStrictEqual(getSnapManifest());
-
-      snapController.destroy();
-    });
-
-    it('returns the manifest of a snap with localizations', async () => {
-      const messenger = getSnapControllerMessenger();
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          messenger,
-          state: {
-            snaps: getPersistedSnapsState(
-              getPersistedSnapObject({
-                manifest: getSnapManifest({
-                  proposedName: '{{ foo }} Snap',
-                }),
-                localizationFiles: [
-                  {
-                    locale: 'en',
-                    messages: {
-                      foo: {
-                        message: 'Bar',
-                      },
-                    },
-                  },
-                ],
-              }),
-            ),
-          },
-        }),
-      );
-
-      expect(
-        messenger.call('SnapController:getManifest', MOCK_SNAP_ID),
-      ).toStrictEqual(
-        getSnapManifest({
-          proposedName: 'Bar Snap',
-        }),
-      );
-
-      snapController.destroy();
-    });
-
-    it('returns the manifest of a snap with localizations in a different language', async () => {
-      const messenger = getSnapControllerMessenger();
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          messenger,
-          state: {
-            snaps: getPersistedSnapsState(
-              getPersistedSnapObject({
-                manifest: getSnapManifest({
-                  proposedName: '{{ my }} Snap',
-                }),
-                localizationFiles: [
-                  {
-                    locale: 'en',
-                    messages: {
-                      my: {
-                        message: 'My',
-                      },
-                    },
-                  },
-                  {
-                    locale: 'nl',
-                    messages: {
-                      my: {
-                        message: 'Mijn',
-                      },
-                    },
-                  },
-                ],
-              }),
-            ),
-          },
-        }),
-      );
-
-      expect(
-        messenger.call('SnapController:getManifest', MOCK_SNAP_ID, 'en'),
-      ).toStrictEqual(
-        getSnapManifest({
-          proposedName: 'My Snap',
-        }),
-      );
-
-      expect(
-        messenger.call('SnapController:getManifest', MOCK_SNAP_ID, 'nl'),
-      ).toStrictEqual(
-        getSnapManifest({
-          proposedName: 'Mijn Snap',
-        }),
-      );
 
       snapController.destroy();
     });
