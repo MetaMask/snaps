@@ -9,6 +9,7 @@ import {
 } from 'superstruct';
 
 import { getErrorMessage } from './errors';
+import { parseJson } from './json';
 import type { SnapManifest } from './manifest';
 import type { VirtualFile } from './virtual-file';
 
@@ -39,7 +40,7 @@ export function getValidatedLocalizationFiles(
 ): VirtualFile<LocalizationFile>[] {
   for (const file of localizationFiles) {
     try {
-      file.result = create(JSON.parse(file.toString()), LocalizationFileStruct);
+      file.result = create(parseJson(file.toString()), LocalizationFileStruct);
     } catch (error) {
       if (error instanceof StructError) {
         throw new Error(
