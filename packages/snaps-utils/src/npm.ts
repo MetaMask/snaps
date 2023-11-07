@@ -92,7 +92,10 @@ export function validateNpmSnap(
 
   if (localizationFiles) {
     try {
+      // This function validates and returns the localization files. We don't
+      // use the return value here, but we do want to validate the files.
       getValidatedLocalizationFiles(localizationFiles);
+
       validateSnapManifestLocalizations(
         manifest.result,
         localizationFiles.map((file) => file.result),
