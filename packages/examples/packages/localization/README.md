@@ -33,6 +33,10 @@ for the JSON-RPC response, the locale files in this example contain a `name` and
 `description` field, which are used to localize the snap's name and description
 in the manifest.
 
+Note that if your Snap is using manifest localization, you must at a minimum
+provide an English locale file. If the user's locale is not available in the
+`locales` field, the snap will fall back to the `en` locale.
+
 ## Snap usage
 
 This snap exposes an `onRpcRequest` handler, which supports the following
