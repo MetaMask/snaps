@@ -72,7 +72,6 @@ import {
   OnHomePageResponseStruct,
   getLocalizedSnapManifest,
   getValidatedLocalizationFiles,
-  validateSnapManifestLocalizations,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
@@ -2418,10 +2417,6 @@ export class SnapController extends BaseController<
       };
 
       validateFetchedSnap(files);
-      validateSnapManifestLocalizations(
-        files.manifest.result,
-        validatedLocalizationFiles.map((file) => file.result),
-      );
 
       return { files, location };
     } catch (error) {

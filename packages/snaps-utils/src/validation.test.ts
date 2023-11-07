@@ -31,4 +31,19 @@ describe('validateFetchedSnap', () => {
       'Snap icon must be a valid SVG',
     );
   });
+
+  it('asserts the localization files are valid', () => {
+    const manifest = getSnapManifest({
+      proposedName: '{{ proposedName }}',
+    });
+
+    const files = getMockSnapFiles({
+      manifest,
+      localizationFiles: [{ locale: 'en', messages: {} }],
+    });
+
+    expect(() => validateFetchedSnap(files)).toThrow(
+      'Failed to localize Snap manifest: Failed to translate "{{ proposedName }}": No translation found for "proposedName" in "en" file.',
+    );
+  });
 });
