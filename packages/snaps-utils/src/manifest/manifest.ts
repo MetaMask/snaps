@@ -83,6 +83,16 @@ export async function checkManifest(
     pathUtils.join(basePath, NpmSnapFileNames.PackageJson),
   );
 
+  const auxiliaryFilePaths = getSnapFilePaths(
+    unvalidatedManifest,
+    (manifest) => manifest?.source?.files,
+  );
+
+  const localizationFilePaths = getSnapFilePaths(
+    unvalidatedManifest,
+    (manifest) => manifest?.source?.locales,
+  );
+
   const snapFiles: UnvalidatedSnapFiles = {
     manifest: manifestFile,
     packageJson: packageFile,
@@ -92,8 +102,9 @@ export async function checkManifest(
       sourceCode,
     ),
     svgIcon: await getSnapIcon(basePath, unvalidatedManifest),
-    auxiliaryFiles:
-      (await getSnapAuxiliaryFiles(basePath, unvalidatedManifest)) ?? [],
+    auxiliaryFiles: (await getSnapFiles(basePath, auxiliaryFilePaths)) ?? [],
+    localizationFiles:
+      (await getSnapFiles(basePath, localizationFilePaths)) ?? [],
   };
 
   let manifest: VirtualFile<SnapManifest> | undefined;
@@ -324,30 +335,49 @@ export async function getSnapIcon(
 }
 
 /**
- * Given an unvalidated Snap manifest, attempts to extract the auxiliary files
- * and read them.
+ * Get an array of paths from an unvalidated Snap manifest.
  *
- * @param basePath - The path to the folder with the manifest files.
  * @param manifest - The unvalidated Snap manifest file contents.
- * @returns A list of auxiliary files and their contents, if any.
+ * @param selector - A function that returns the paths to the files.
+ * @returns The paths to the files, if any.
  */
-export async function getSnapAuxiliaryFiles(
-  basePath: string,
+export function getSnapFilePaths(
   manifest: Json,
-): Promise<VirtualFile[] | undefined> {
+  selector: (manifest: Partial<SnapManifest>) => string[] | undefined,
+) {
   if (!isPlainObject(manifest)) {
     return undefined;
   }
 
-  const filePaths = (manifest as Partial<SnapManifest>).source?.files;
+  const snapManifest = manifest as Partial<SnapManifest>;
+  const paths = selector(snapManifest);
 
-  if (!filePaths) {
+  if (!Array.isArray(paths)) {
+    return undefined;
+  }
+
+  return paths;
+}
+
+/**
+ * Given an unvalidated Snap manifest, attempts to extract the files with the
+ * given paths and read them.
+ *
+ * @param basePath - The path to the folder with the manifest files.
+ * @param paths - The paths to the files.
+ * @returns A list of auxiliary files and their contents, if any.
+ */
+export async function getSnapFiles(
+  basePath: string,
+  paths: string[] | undefined,
+): Promise<VirtualFile[] | undefined> {
+  if (!paths) {
     return undefined;
   }
 
   try {
     return await Promise.all(
-      filePaths.map(async (filePath) =>
+      paths.map(async (filePath) =>
         readVirtualFile(pathUtils.join(basePath, filePath), 'utf8'),
       ),
     );
@@ -384,7 +414,7 @@ export function getWritableManifest(manifest: SnapManifest): SnapManifest {
 }
 
 /**
- * Validates the fields of an npm Snap manifest that has already passed JSON
+ * Validates the fields of an NPM Snap manifest that has already passed JSON
  * Schema validation.
  *
  * @param snapFiles - The relevant snap files to validate.
@@ -393,6 +423,7 @@ export function getWritableManifest(manifest: SnapManifest): SnapManifest {
  * @param snapFiles.sourceCode - The Snap's source code.
  * @param snapFiles.svgIcon - The Snap's optional icon.
  * @param snapFiles.auxiliaryFiles - Any auxiliary files required by the snap at runtime.
+ * @param snapFiles.localizationFiles - The Snap's localization files.
  */
 export function validateNpmSnapManifest({
   manifest,
@@ -400,6 +431,7 @@ export function validateNpmSnapManifest({
   sourceCode,
   svgIcon,
   auxiliaryFiles,
+  localizationFiles,
 }: SnapFiles) {
   const packageJsonName = packageJson.result.name;
   const packageJsonVersion = packageJson.result.version;
@@ -436,7 +468,7 @@ export function validateNpmSnapManifest({
   }
 
   validateSnapShasum(
-    { manifest, sourceCode, svgIcon, auxiliaryFiles },
+    { manifest, sourceCode, svgIcon, auxiliaryFiles, localizationFiles },
     `"${NpmSnapFileNames.Manifest}" "shasum" field does not match computed shasum.`,
   );
 }

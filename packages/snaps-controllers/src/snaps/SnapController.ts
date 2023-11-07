@@ -69,6 +69,7 @@ import {
   validateFetchedSnap,
   unwrapError,
   OnHomePageResponseStruct,
+  getValidatedLocalizationFiles,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
@@ -100,7 +101,7 @@ import type {
   TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '../services';
-import { hasTimedOut, setDiff, withTimeout } from '../utils';
+import { getSnapFiles, hasTimedOut, setDiff, withTimeout } from '../utils';
 import { handlerEndowments, SnapEndowments } from './endowments';
 import { getKeyringCaveatOrigins } from './endowments/keyring';
 import { getRpcCaveatOrigins } from './endowments/rpc';
@@ -2151,6 +2152,7 @@ export class SnapController extends BaseController<
             `Version mismatch. Manifest for "${snapId}" specifies version "${manifest.version}" which doesn't satisfy requested version range "${versionRange}".`,
           );
         }
+
         await this.#assertIsInstallAllowed(snapId, {
           version: manifest.version,
           checksum: manifest.source.shasum,
@@ -2278,6 +2280,7 @@ export class SnapController extends BaseController<
       sourceCode: sourceCodeFile,
       svgIcon,
       auxiliaryFiles: rawAuxiliaryFiles,
+      localizationFiles,
     } = files;
 
     assertIsSnapManifest(manifest.result);
@@ -2326,7 +2329,9 @@ export class SnapController extends BaseController<
       version,
       versionHistory,
       auxiliaryFiles,
+      localizationFiles: localizationFiles.map((file) => file.result),
     };
+
     // If the snap was blocked, it isn't any longer
     delete snap.blockInformation;
 
@@ -2349,6 +2354,7 @@ export class SnapController extends BaseController<
       snap,
       svgIcon?.toString(),
     );
+
     return { ...snap, sourceCode };
   }
 
@@ -2371,15 +2377,26 @@ export class SnapController extends BaseController<
       const { iconPath } = manifest.result.source.location.npm;
       const svgIcon = iconPath ? await location.fetch(iconPath) : undefined;
 
-      const auxiliaryFiles = manifest.result.source.files
-        ? await Promise.all(
-            manifest.result.source.files.map(async (filePath) =>
-              location.fetch(filePath),
-            ),
-          )
-        : [];
+      const auxiliaryFiles = await getSnapFiles(
+        location,
+        manifest.result.source.files,
+      );
 
-      const files = { manifest, sourceCode, svgIcon, auxiliaryFiles };
+      const localizationFiles = await getSnapFiles(
+        location,
+        manifest.result.source.locales,
+      );
+
+      const validatedLocalizationFiles =
+        getValidatedLocalizationFiles(localizationFiles);
+
+      const files = {
+        manifest,
+        sourceCode,
+        svgIcon,
+        auxiliaryFiles,
+        localizationFiles: validatedLocalizationFiles,
+      };
 
       validateFetchedSnap(files);
 

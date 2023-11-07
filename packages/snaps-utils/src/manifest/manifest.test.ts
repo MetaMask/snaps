@@ -11,15 +11,17 @@ import {
   DEFAULT_SNAP_SHASUM,
   MOCK_AUXILIARY_FILE,
   getPackageJson,
-  getSnapFiles,
+  getMockSnapFiles,
   getSnapManifest,
+  getMockLocalizationFile,
 } from '../test-utils';
 import type { SnapFiles } from '../types';
 import { NpmSnapFileNames, SnapValidationFailureReason } from '../types';
 import {
   checkManifest,
   fixManifest,
-  getSnapAuxiliaryFiles,
+  getSnapFilePaths,
+  getSnapFiles,
   getSnapIcon,
   getSnapSourceCode,
   getWritableManifest,
@@ -159,6 +161,68 @@ describe('checkManifest', () => {
     await expect(checkManifest(BASE_PATH)).rejects.toThrow('foo');
   });
 
+  it('throws an error if the localization files cannot be loaded', async () => {
+    await fs.writeFile(
+      MANIFEST_PATH,
+      JSON.stringify(
+        getSnapManifest({
+          locales: ['foo.json'],
+        }),
+      ),
+    );
+
+    await expect(checkManifest(BASE_PATH)).rejects.toThrow(
+      "Failed to read snap files: ENOENT: no such file or directory, open '/snap/foo.json'",
+    );
+  });
+
+  it('throws an error if the localization files are invalid', async () => {
+    const localizationFile = getMockLocalizationFile({ locale: 'en' });
+    const { manifest } = getMockSnapFiles({
+      manifest: getSnapManifest({
+        locales: ['locales/en.json'],
+      }),
+      localizationFiles: [localizationFile],
+    });
+
+    await fs.writeFile(MANIFEST_PATH, JSON.stringify(manifest.result));
+    await fs.mkdir(join(BASE_PATH, 'locales'));
+    await fs.writeFile(
+      join(BASE_PATH, 'locales/en.json'),
+      JSON.stringify('[]'),
+    );
+
+    await expect(checkManifest(BASE_PATH)).rejects.toThrow(
+      'Failed to validate localization file "/snap/locales/en.json": Expected an object, but received: "[]".',
+    );
+  });
+
+  it('throws an error if the localization files are missing translations', async () => {
+    const localizationFile = getMockLocalizationFile({
+      locale: 'en',
+      messages: {},
+    });
+
+    const { manifest } = getMockSnapFiles({
+      manifest: getSnapManifest({
+        proposedName: '{{ name }}',
+        locales: ['locales/en.json'],
+      }),
+      localizationFiles: [localizationFile],
+    });
+
+    await fs.writeFile(MANIFEST_PATH, JSON.stringify(manifest.result));
+    await fs.mkdir(join(BASE_PATH, 'locales'));
+    await fs.writeFile(
+      join(BASE_PATH, 'locales/en.json'),
+      JSON.stringify(localizationFile),
+    );
+
+    await expect(checkManifest(BASE_PATH)).rejects.toThrow(
+      'Failed to localize Snap manifest: Failed to translate "{{ name }}": No translation found for "name" in "en" file.',
+    );
+  });
+
   it('throws an error if writing the manifest fails', async () => {
     jest.spyOn(fs, 'writeFile').mockImplementation(() => {
       throw new Error('foo');
@@ -172,7 +236,7 @@ describe('checkManifest', () => {
 
 describe('fixManifest', () => {
   it('fixes a name mismatch in the manifest', () => {
-    const files: SnapFiles = getSnapFiles({
+    const files: SnapFiles = getMockSnapFiles({
       manifest: getSnapManifest({ packageName: 'foo' }),
       packageJson: getPackageJson({ name: 'bar' }),
       sourceCode: DEFAULT_SNAP_BUNDLE,
@@ -193,7 +257,7 @@ describe('fixManifest', () => {
   });
 
   it('fixes a version mismatch in the manifest', () => {
-    const files: SnapFiles = getSnapFiles({
+    const files: SnapFiles = getMockSnapFiles({
       manifest: getSnapManifest({ version: '1' }),
       packageJson: getPackageJson({ version: '2' }),
       sourceCode: DEFAULT_SNAP_BUNDLE,
@@ -212,7 +276,7 @@ describe('fixManifest', () => {
   });
 
   it('fixes a repository mismatch in the manifest', () => {
-    const files: SnapFiles = getSnapFiles({
+    const files: SnapFiles = getMockSnapFiles({
       manifest: getSnapManifest({ repository: { type: 'git', url: 'foo' } }),
       packageJson: getPackageJson({ repository: { type: 'git', url: 'bar' } }),
       sourceCode: DEFAULT_SNAP_BUNDLE,
@@ -233,7 +297,7 @@ describe('fixManifest', () => {
   });
 
   it('fixes a shasum mismatch in the manifest', () => {
-    const files: SnapFiles = getSnapFiles({
+    const files: SnapFiles = getMockSnapFiles({
       manifest: getSnapManifest({
         shasum: '29MYwcRiruhy9BEJpN/TBIhxoD3t0P4OdXztV9rW8tc=',
       }),
@@ -328,30 +392,47 @@ describe('getSnapIcon', () => {
   });
 });
 
-describe('getSnapAuxiliaryFiles', () => {
-  beforeEach(async () => {
-    await resetFileSystem();
-  });
-
-  it('returns the auxiliary files for a snap', async () => {
-    const files = await getSnapAuxiliaryFiles(
-      BASE_PATH,
-      getSnapManifest({ files: ['./src/foo.json'] }),
-    );
-    expect(files?.[0]?.value).toBe(MOCK_AUXILIARY_FILE);
-  });
-
+describe('getSnapFilePaths', () => {
   it.each([
     [],
     {},
     undefined,
     null,
     { source: {} },
+    {
+      source: {
+        files: {},
+      },
+    },
     { source: { location: {} } },
     { source: { location: { npm: {} } } },
   ])('returns undefined if an invalid manifest is passed', async (manifest) => {
-    // @ts-expect-error Invalid manifest type.
-    expect(await getSnapAuxiliaryFiles(BASE_PATH, manifest)).toBeUndefined();
+    expect(
+      // @ts-expect-error - Invalid manifest type.
+      getSnapFilePaths(manifest, ({ source }) => source?.files),
+    ).toBeUndefined();
+  });
+
+  it('returns the snap file paths', async () => {
+    expect(
+      getSnapFilePaths(
+        getSnapManifest({
+          files: ['./src/foo.json'],
+        }),
+        ({ source }) => source?.files,
+      ),
+    ).toStrictEqual(['./src/foo.json']);
+  });
+});
+
+describe('getSnapFiles', () => {
+  beforeEach(async () => {
+    await resetFileSystem();
+  });
+
+  it('returns the auxiliary files for a snap', async () => {
+    const files = await getSnapFiles(BASE_PATH, ['./src/foo.json']);
+    expect(files?.[0]?.value).toBe(MOCK_AUXILIARY_FILE);
   });
 
   it('throws an error if the file cannot be read', async () => {
@@ -359,12 +440,9 @@ describe('getSnapAuxiliaryFiles', () => {
       throw new Error('foo');
     });
 
-    await expect(
-      getSnapAuxiliaryFiles(
-        BASE_PATH,
-        getSnapManifest({ files: ['./src/foo.json'] }),
-      ),
-    ).rejects.toThrow('Failed to read snap files: foo');
+    await expect(getSnapFiles(BASE_PATH, ['./src/foo.json'])).rejects.toThrow(
+      'Failed to read snap files: foo',
+    );
   });
 });
 

@@ -11,7 +11,7 @@ import type { FunctionComponent } from 'react';
 
 import { Editor } from '../../components';
 import { useSelector } from '../../hooks';
-import { getSnapManifest } from '../simulation';
+import { getLocalizedSnapManifest } from '../simulation';
 import { Validation } from './components';
 
 /**
@@ -21,7 +21,7 @@ import { Validation } from './components';
  * @returns The Manifest component.
  */
 export const Manifest: FunctionComponent = () => {
-  const manifest = useSelector(getSnapManifest);
+  const manifest = useSelector(getLocalizedSnapManifest);
 
   return (
     <Flex width="100%" direction="column" overflow="hidden">

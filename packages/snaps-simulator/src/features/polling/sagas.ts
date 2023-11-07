@@ -1,11 +1,12 @@
 import type { SnapLocation } from '@metamask/snaps-controllers';
 import { detectSnapLocation } from '@metamask/snaps-controllers';
-import type { SnapManifest, VirtualFile } from '@metamask/snaps-utils';
+import type { LocalizationFile, SnapManifest } from '@metamask/snaps-utils';
 import {
   getSnapPrefix,
   logError,
   parseJson,
   SnapIdPrefixes,
+  VirtualFile,
 } from '@metamask/snaps-utils';
 import type { SemVerRange } from '@metamask/utils';
 import equal from 'fast-deep-equal/es6';
@@ -18,6 +19,7 @@ import {
   getSnapManifest,
   setAuxiliaryFiles,
   setIcon,
+  setLocalizationFiles,
   setManifest,
   setSourceCode,
   setStatus,
@@ -42,6 +44,35 @@ async function fetchAuxiliaryFiles(
 }
 
 /**
+ * Fetch the localization files for the snap.
+ *
+ * @param location - The snap location.
+ * @param manifest - The parsed manifest.
+ * @returns The localization files.
+ */
+async function fetchLocalizationFiles(
+  location: SnapLocation,
+  manifest: SnapManifest,
+): Promise<VirtualFile<LocalizationFile>[]> {
+  return manifest.source.locales
+    ? await Promise.all(
+        manifest.source.locales.map(async (filePath) =>
+          location.fetch(filePath).then((file) => {
+            return new VirtualFile<LocalizationFile>({
+              path: file.path,
+              value: file.value,
+              result: parseJson<LocalizationFile>(file.toString('utf8')),
+              data: {
+                canonicalPath: file.data.canonicalPath,
+              },
+            });
+          }),
+        ),
+      )
+    : [];
+}
+
+/**
  * The fetching saga, fetches the snap manifest from the selected snap URL and checks if the checksum matches the cached value.
  * If the checksum doesn't match, it fetches the snap source code and updates that in the simulation slice.
  *
@@ -55,10 +86,12 @@ export function* fetchingSaga() {
     allowLocal: true,
     versionRange: snapVersion as SemVerRange,
   });
+
   const manifestFile: VirtualFile<SnapManifest> = yield call(
     [location, 'fetch'],
     'snap.manifest.json',
   );
+
   const parsedManifest = parseJson<SnapManifest>(manifestFile.toString('utf8'));
   manifestFile.result = parsedManifest;
 
@@ -87,6 +120,14 @@ export function* fetchingSaga() {
     );
 
     yield put(setAuxiliaryFiles(auxiliaryFiles));
+
+    const localizationFiles: VirtualFile<LocalizationFile>[] = yield call(
+      fetchLocalizationFiles,
+      location,
+      parsedManifest,
+    );
+
+    yield put(setLocalizationFiles(localizationFiles));
 
     const { iconPath } = parsedManifest.source.location.npm;
     if (iconPath) {

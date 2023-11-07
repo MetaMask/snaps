@@ -1,4 +1,8 @@
-import type { SnapManifest, VirtualFile } from '@metamask/snaps-utils';
+import type {
+  LocalizationFile,
+  SnapManifest,
+  VirtualFile,
+} from '@metamask/snaps-utils';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { SagaIterator } from 'redux-saga';
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
@@ -26,6 +30,8 @@ export function* validationSaga({
   const sourceCode: VirtualFile<string> = yield select(getSourceCode);
   const icon: VirtualFile<string> = yield select(getIcon);
   const auxiliaryFiles: VirtualFile[] | null = yield select(getAuxiliaryFiles);
+  const localizationFiles: VirtualFile<LocalizationFile>[] | null =
+    yield select((state) => state.simulation.localizationFiles);
 
   const results: ValidationResult[] = [];
 
@@ -34,6 +40,7 @@ export function* validationSaga({
       sourceCode,
       icon,
       auxiliaryFiles: auxiliaryFiles ?? [],
+      localizationFiles: localizationFiles ?? [],
     });
 
     const message = typeof result === 'string' ? result : undefined;

@@ -1,0 +1,17 @@
+{
+  "locale": "da",
+  "messages": {
+    "name": {
+      "message": "Oversættelses Eksempel Snap",
+      "description": "The name of the snap, which is used in the Snap manifest."
+    },
+    "description": {
+      "message": "MetaMask eksempel snap der demonstrerer hvordan man kan oversætte en Snap.",
+      "description": "The description of the snap, which is used in the Snap manifest."
+    },
+    "hello": {
+      "message": "Hej, verden!",
+      "description": "The message that is returned when the `hello` method is called."
+    }
+  }
+}

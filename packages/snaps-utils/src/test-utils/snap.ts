@@ -36,6 +36,7 @@ export const getPersistedSnapObject = ({
     { origin: MOCK_ORIGIN, version: '1.0.0', date: expect.any(Number) },
   ],
   auxiliaryFiles = [],
+  localizationFiles = [],
 }: GetPersistedSnapObjectOptions = {}): PersistedSnap => {
   return {
     blocked,
@@ -48,6 +49,7 @@ export const getPersistedSnapObject = ({
     sourceCode,
     versionHistory,
     auxiliaryFiles,
+    localizationFiles,
   } as const;
 };
 
@@ -64,6 +66,7 @@ export const getSnapObject = ({
     { origin: MOCK_ORIGIN, version: '1.0.0', date: expect.any(Number) },
   ],
   auxiliaryFiles = [],
+  localizationFiles = [],
 }: GetSnapObjectOptions = {}): Snap => {
   return {
     blocked,
@@ -76,6 +79,7 @@ export const getSnapObject = ({
     enabled,
     versionHistory,
     auxiliaryFiles,
+    localizationFiles,
   } as const;
 };
 

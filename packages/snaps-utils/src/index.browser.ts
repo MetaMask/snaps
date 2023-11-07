@@ -13,6 +13,7 @@ export * from './handler-types';
 export * from './iframe';
 export * from './json';
 export * from './json-rpc';
+export * from './localization';
 export * from './logging';
 export * from './manifest/index.browser';
 export * from './namespace';

@@ -1,10 +1,19 @@
-import type { SnapManifest, VirtualFile } from '@metamask/snaps-utils';
-import { SnapManifestStruct, getSnapChecksum } from '@metamask/snaps-utils';
+import type {
+  LocalizationFile,
+  SnapManifest,
+  VirtualFile,
+} from '@metamask/snaps-utils';
+import {
+  SnapManifestStruct,
+  getSnapChecksum,
+  LocalizationFileStruct,
+} from '@metamask/snaps-utils';
 
 type ValidatorContext = {
   sourceCode: VirtualFile<string>;
   icon: VirtualFile<string>;
   auxiliaryFiles: VirtualFile[];
+  localizationFiles: VirtualFile<LocalizationFile>[];
 };
 
 type ValidatorFunction = (
@@ -70,11 +79,33 @@ export const validators: Validator[] = [
     },
   },
   {
+    name: 'Localizations',
+    manifestName: 'source.locales',
+    validator: async (_: VirtualFile<SnapManifest>, { localizationFiles }) => {
+      const errors = localizationFiles
+        .map((file) => {
+          const [error] = LocalizationFileStruct.validate(file.result);
+          if (error) {
+            return `Failed to validate ${file.path}: ${error?.message}`;
+          }
+
+          return null;
+        })
+        .filter(Boolean);
+
+      if (errors.length > 0) {
+        return errors.join('\n');
+      }
+
+      return true;
+    },
+  },
+  {
     name: 'Checksum',
     manifestName: 'source.shasum',
     validator: async (
       manifest: VirtualFile<SnapManifest>,
-      { sourceCode, icon, auxiliaryFiles },
+      { sourceCode, icon, auxiliaryFiles, localizationFiles },
     ) => {
       if (manifest) {
         const manifestShasum = manifest.result?.source.shasum;
@@ -83,6 +114,7 @@ export const validators: Validator[] = [
           sourceCode,
           svgIcon: icon,
           auxiliaryFiles,
+          localizationFiles,
         });
 
         if (manifestShasum !== calculatedShasum) {

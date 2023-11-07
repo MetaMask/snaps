@@ -1,4 +1,5 @@
 import { assertIsSnapIcon } from './icon';
+import { validateSnapManifestLocalizations } from './localization';
 import { assertIsSnapManifest } from './manifest/validation';
 import { validateSnapShasum } from './snaps';
 import type { FetchedSnapFiles } from './types';
@@ -12,6 +13,10 @@ import type { FetchedSnapFiles } from './types';
 export function validateFetchedSnap(files: FetchedSnapFiles): void {
   assertIsSnapManifest(files.manifest.result);
   validateSnapShasum(files);
+  validateSnapManifestLocalizations(
+    files.manifest.result,
+    files.localizationFiles.map((file) => file.result),
+  );
 
   if (files.svgIcon) {
     assertIsSnapIcon(files.svgIcon);

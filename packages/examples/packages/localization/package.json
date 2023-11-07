@@ -1,7 +1,7 @@
 {
-  "name": "@metamask/get-locale-example-snap",
-  "version": "2.0.1",
-  "description": "MetaMask example snap demonstrating the use of `snap_getLocale`.",
+  "name": "@metamask/localization-example-snap",
+  "version": "2.0.0",
+  "description": "MetaMask example snap demonstrating how to localize a snap.",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
@@ -11,15 +11,15 @@
   "main": "./dist/bundle.js",
   "files": [
     "dist/",
-    "images/icon.svg",
-    "snap.manifest.json"
+    "snap.manifest.json",
+    "images/icon.svg"
   ],
   "scripts": {
     "build": "mm-snap build",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf \"dist\"",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog && yarn lint:dependencies",
-    "lint:changelog": "../../../../scripts/validate-changelog.sh @metamask/get-locale-example-snap",
+    "lint:changelog": "../../../../scripts/validate-changelog.sh @metamask/localization-example-snap",
     "lint:ci": "yarn lint",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
@@ -32,9 +32,7 @@
   },
   "dependencies": {
     "@metamask/rpc-errors": "^6.1.0",
-    "@metamask/snaps-types": "workspace:^",
-    "@metamask/snaps-ui": "workspace:^",
-    "@metamask/utils": "^8.1.0"
+    "@metamask/snaps-types": "workspace:^"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",

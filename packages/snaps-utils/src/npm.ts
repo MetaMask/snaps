@@ -1,4 +1,8 @@
 import { assertIsSnapIcon } from './icon';
+import {
+  getValidatedLocalizationFiles,
+  validateSnapManifestLocalizations,
+} from './localization';
 import { validateNpmSnapManifest } from './manifest/manifest';
 import { assertIsSnapManifest } from './manifest/validation';
 import type { SnapFiles, UnvalidatedSnapFiles } from './types';
@@ -41,8 +45,15 @@ export function validateNpmSnap(
   });
 
   // Typecast: We are assured that the required files exist if we get here.
-  const { manifest, packageJson, sourceCode, svgIcon, auxiliaryFiles } =
-    snapFiles as SnapFiles;
+  const {
+    manifest,
+    packageJson,
+    sourceCode,
+    svgIcon,
+    auxiliaryFiles,
+    localizationFiles,
+  } = snapFiles as SnapFiles;
+
   try {
     assertIsSnapManifest(manifest.result);
   } catch (error) {
@@ -60,19 +71,35 @@ export function validateNpmSnap(
   } catch (error) {
     throw new Error(`${errorPrefix ?? ''}${error.message}`);
   }
-  const validatedPackageJson = packageJson;
 
+  const validatedPackageJson = packageJson;
   validateNpmSnapManifest({
     manifest: validatedManifest,
     packageJson: validatedPackageJson,
     sourceCode,
     svgIcon,
     auxiliaryFiles,
+    localizationFiles,
   });
 
   if (svgIcon) {
     try {
       assertIsSnapIcon(svgIcon);
+    } catch (error) {
+      throw new Error(`${errorPrefix ?? ''}${error.message}`);
+    }
+  }
+
+  if (localizationFiles) {
+    try {
+      // This function validates and returns the localization files. We don't
+      // use the return value here, but we do want to validate the files.
+      getValidatedLocalizationFiles(localizationFiles);
+
+      validateSnapManifestLocalizations(
+        manifest.result,
+        localizationFiles.map((file) => file.result),
+      );
     } catch (error) {
       throw new Error(`${errorPrefix ?? ''}${error.message}`);
     }
@@ -84,5 +111,6 @@ export function validateNpmSnap(
     sourceCode,
     svgIcon,
     auxiliaryFiles,
+    localizationFiles,
   };
 }

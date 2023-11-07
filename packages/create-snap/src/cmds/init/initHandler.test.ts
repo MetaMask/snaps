@@ -1,5 +1,8 @@
 import * as snapUtils from '@metamask/snaps-utils';
-import { getPackageJson, getSnapFiles } from '@metamask/snaps-utils/test-utils';
+import {
+  getPackageJson,
+  getMockSnapFiles,
+} from '@metamask/snaps-utils/test-utils';
 import * as utils from '@metamask/utils';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
@@ -55,7 +58,7 @@ describe('initialize', () => {
         .mockImplementation(() => false);
       jest.spyOn(initUtils, 'gitInit').mockImplementation();
 
-      const { manifest, packageJson } = getSnapFiles();
+      const { manifest, packageJson } = getMockSnapFiles();
 
       jest
         .spyOn(snapUtils, 'readJsonFile')
@@ -92,7 +95,7 @@ describe('initialize', () => {
 
       jest.spyOn(initUtils, 'gitInit').mockImplementation();
 
-      const { manifest, packageJson } = getSnapFiles();
+      const { manifest, packageJson } = getMockSnapFiles();
 
       jest
         .spyOn(snapUtils, 'readJsonFile')
@@ -129,7 +132,7 @@ describe('initialize', () => {
         .mockImplementation(() => false);
       jest.spyOn(initUtils, 'gitInit').mockImplementation();
 
-      const { manifest, packageJson } = getSnapFiles({
+      const { manifest, packageJson } = getMockSnapFiles({
         packageJson: { ...getPackageJson(), main: undefined },
       });
 
@@ -165,7 +168,7 @@ describe('initialize', () => {
       jest.spyOn(fs, 'rm').mockImplementation();
       jest.spyOn(initUtils, 'yarnInstall').mockImplementation();
 
-      const { manifest, packageJson } = getSnapFiles();
+      const { manifest, packageJson } = getMockSnapFiles();
 
       jest
         .spyOn(snapUtils, 'readJsonFile')

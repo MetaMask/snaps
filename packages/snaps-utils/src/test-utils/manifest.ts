@@ -1,5 +1,6 @@
 import type { SemVerVersion } from '@metamask/utils';
 
+import type { LocalizationFile } from '../localization';
 import type { SnapManifest } from '../manifest/validation';
 import type { Chain, Namespace } from '../namespace';
 import { getSnapChecksum } from '../snaps';
@@ -14,6 +15,7 @@ type GetSnapManifestOptions = Partial<MakeSemVer<SnapManifest>> & {
   registry?: string;
   iconPath?: string;
   files?: string[];
+  locales?: string[];
 };
 
 type GetPackageJsonOptions = Partial<MakeSemVer<NpmSnapPackageJson>>;
@@ -101,6 +103,7 @@ export const DEFAULT_SNAP_SHASUM = getSnapChecksum({
     path: DEFAULT_MANIFEST_PATH,
   }),
   auxiliaryFiles: [],
+  localizationFiles: [],
 });
 
 /**
@@ -119,6 +122,7 @@ export const DEFAULT_SNAP_SHASUM = getSnapChecksum({
  * @param manifest.repository - The repository of the snap.
  * @param manifest.iconPath - The path to the icon of the snap.
  * @param manifest.files - Auxiliary files loaded at runtime by the snap.
+ * @param manifest.locales - Localization files of the snap.
  * @returns The snap manifest.
  */
 export const getSnapManifest = ({
@@ -132,6 +136,7 @@ export const getSnapManifest = ({
   repository = getDefaultRepository(),
   iconPath = DEFAULT_ICON_PATH,
   files = undefined,
+  locales = undefined,
 }: GetSnapManifestOptions = {}): SnapManifest => {
   return {
     version: version as SemVerVersion,
@@ -149,6 +154,7 @@ export const getSnapManifest = ({
         } as const,
       },
       ...(files ? { files } : {}),
+      ...(locales ? { locales } : {}),
     },
     initialPermissions,
     manifestVersion: '0.1' as const,
@@ -184,12 +190,13 @@ export const getPackageJson = ({
   };
 };
 
-export const getSnapFiles = ({
+export const getMockSnapFiles = ({
   manifest = SHASUM_MANIFEST,
   packageJson = getPackageJson(),
   sourceCode = DEFAULT_SNAP_BUNDLE,
   svgIcon = DEFAULT_SNAP_ICON,
   auxiliaryFiles = [],
+  localizationFiles = [],
   updateChecksum = true,
 }: {
   manifest?: SnapManifest | VirtualFile<SnapManifest>;
@@ -197,6 +204,7 @@ export const getSnapFiles = ({
   packageJson?: NpmSnapPackageJson;
   svgIcon?: string | VirtualFile;
   auxiliaryFiles?: VirtualFile[];
+  localizationFiles?: LocalizationFile[];
   updateChecksum?: boolean;
 } = {}): SnapFiles => {
   const files = {
@@ -220,6 +228,13 @@ export const getSnapFiles = ({
             value: sourceCode,
             path: DEFAULT_SOURCE_PATH,
           }),
+    localizationFiles: localizationFiles.map((file) => {
+      return new VirtualFile({
+        value: JSON.stringify(file),
+        result: file,
+        path: `locales/${file.locale}.json`,
+      });
+    }),
     // eslint-disable-next-line no-nested-ternary
     svgIcon: svgIcon
       ? svgIcon instanceof VirtualFile
@@ -231,10 +246,12 @@ export const getSnapFiles = ({
       : undefined,
     auxiliaryFiles,
   };
+
   if (updateChecksum) {
     files.manifest.result.source.shasum = getSnapChecksum(files);
     files.manifest.value = JSON.stringify(files.manifest.result);
   }
+
   return files;
 };
 
@@ -255,3 +272,17 @@ export const getNamespace = ({
   methods,
   events,
 });
+
+export const getMockLocalizationFile = ({
+  locale = 'en',
+  messages = {
+    proposedName: {
+      message: 'Example Snap',
+    },
+  },
+}: Partial<LocalizationFile> = {}): LocalizationFile => {
+  return {
+    locale,
+    messages,
+  };
+};

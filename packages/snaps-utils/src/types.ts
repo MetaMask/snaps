@@ -17,6 +17,7 @@ import {
 
 import type { SnapCaveatType } from './caveats';
 import type { SnapFunctionExports, SnapRpcHookArgs } from './handlers';
+import type { LocalizationFile } from './localization';
 import type { SnapManifest } from './manifest';
 import type { VirtualFile } from './virtual-file';
 
@@ -88,6 +89,7 @@ export type UnvalidatedSnapFiles = {
   sourceCode?: VirtualFile;
   svgIcon?: VirtualFile;
   auxiliaryFiles: VirtualFile[];
+  localizationFiles: VirtualFile[];
 };
 
 /**
@@ -100,6 +102,7 @@ export type SnapFiles = {
   sourceCode: VirtualFile;
   svgIcon?: VirtualFile;
   auxiliaryFiles: VirtualFile[];
+  localizationFiles: VirtualFile<LocalizationFile>[];
 };
 
 /**
@@ -107,7 +110,7 @@ export type SnapFiles = {
  */
 export type FetchedSnapFiles = Pick<
   SnapFiles,
-  'manifest' | 'sourceCode' | 'svgIcon' | 'auxiliaryFiles'
+  'manifest' | 'sourceCode' | 'svgIcon' | 'auxiliaryFiles' | 'localizationFiles'
 >;
 
 /**

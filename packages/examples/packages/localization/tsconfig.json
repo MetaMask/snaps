@@ -6,7 +6,7 @@
       "@metamask/*": ["../../../*/src"]
     }
   },
-  "include": ["src", "snap.config.ts"],
+  "include": ["src", "locales/*.json", "snap.config.ts"],
   "references": [
     {
       "path": "../../../snaps-types"
