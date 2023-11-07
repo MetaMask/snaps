@@ -142,6 +142,10 @@ describe('getLocalizationFile', () => {
         messages: {},
       },
       {
+        locale: 'da',
+        messages: {},
+      },
+      {
         locale: 'en',
         messages: {},
       },
@@ -152,6 +156,10 @@ describe('getLocalizationFile', () => {
 
   it('returns the correct file with multiple files with different locales in a different order', () => {
     const file = getLocalizationFile('en', [
+      {
+        locale: 'da',
+        messages: {},
+      },
       {
         locale: 'en',
         messages: {},
