@@ -4850,6 +4850,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/object-multiplex@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/object-multiplex@npm:2.0.0"
+  dependencies:
+    once: ^1.4.0
+    readable-stream: ^3.6.2
+  checksum: 54baea752a3ac7c2742c376512e00d4902d383e9da8787574d3b21eb0081523309e24e3915a98f3ae0341d65712b6832d2eb7eeb862f4ef0da1ead52dcde5387
+  languageName: node
+  linkType: hard
+
 "@metamask/permission-controller@npm:^5.0.0":
   version: 5.0.0
   resolution: "@metamask/permission-controller@npm:5.0.0"
@@ -5135,7 +5145,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/json-rpc-engine": ^7.1.1
-    "@metamask/object-multiplex": ^1.2.0
+    "@metamask/object-multiplex": ^2.0.0
     "@metamask/permission-controller": ^5.0.0
     "@metamask/phishing-controller": ^7.0.0
     "@metamask/post-message-stream": ^7.0.0
