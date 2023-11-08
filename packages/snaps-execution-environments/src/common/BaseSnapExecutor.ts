@@ -264,6 +264,8 @@ export class BaseSnapExecutor {
   }
 
   // Awaitable function that writes back to the command stream
+  // To prevent snap execution from blocking writing we wrap in a promise
+  // and await it before continuing execution
   async #write(chunk: Json) {
     return new Promise<void>((resolve, reject) => {
       this.commandStream.write(chunk, (error) => {
