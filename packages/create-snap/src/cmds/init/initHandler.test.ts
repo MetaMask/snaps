@@ -56,7 +56,7 @@ describe('initialize', () => {
       jest
         .spyOn(initUtils, 'isInGitRepository')
         .mockImplementation(() => false);
-      jest.spyOn(initUtils, 'gitInit').mockImplementation();
+      jest.spyOn(initUtils, 'gitInitWithCommit').mockImplementation();
 
       const { manifest, packageJson } = getMockSnapFiles();
 
@@ -93,7 +93,7 @@ describe('initialize', () => {
         .spyOn(initUtils, 'isInGitRepository')
         .mockImplementation(() => false);
 
-      jest.spyOn(initUtils, 'gitInit').mockImplementation();
+      jest.spyOn(initUtils, 'gitInitWithCommit').mockImplementation();
 
       const { manifest, packageJson } = getMockSnapFiles();
 
@@ -130,7 +130,7 @@ describe('initialize', () => {
       jest
         .spyOn(initUtils, 'isInGitRepository')
         .mockImplementation(() => false);
-      jest.spyOn(initUtils, 'gitInit').mockImplementation();
+      jest.spyOn(initUtils, 'gitInitWithCommit').mockImplementation();
 
       const { manifest, packageJson } = getMockSnapFiles({
         packageJson: { ...getPackageJson(), main: undefined },
@@ -182,7 +182,7 @@ describe('initialize', () => {
         .spyOn(initUtils, 'isInGitRepository')
         .mockImplementation(() => true);
 
-      const gitInitMock = jest.spyOn(initUtils, 'gitInit');
+      const gitInitMock = jest.spyOn(initUtils, 'gitInitWithCommit');
 
       const expected = {
         ...getMockArgv(),

@@ -83,18 +83,35 @@ export function isInGitRepository(directory: string) {
 }
 
 /**
- * Init a git repository.
+ * Init a git repository and make the first commit.
  *
  * @param directory - The directory to init.
  */
-export function gitInit(directory: string) {
-  const result = spawnSync('git', ['init'], {
-    stdio: 'ignore',
-    cwd: pathUtils.resolve(__dirname, directory),
-  });
+export function gitInitWithCommit(directory: string) {
+  const commands = [
+    {
+      cmd: 'git',
+      params: ['init'],
+    },
+    {
+      cmd: 'git',
+      params: ['add', '.'],
+    },
+    {
+      cmd: 'git',
+      params: ['commit', '-m', 'Initial commit from @metamask/create-snap'],
+    },
+  ];
 
-  if (result.error || result.status !== 0) {
-    throw new Error('Init Error: Failed to init a new git repository.');
+  for (const command of commands) {
+    const result = spawnSync(command.cmd, command.params, {
+      stdio: 'ignore',
+      cwd: pathUtils.resolve(__dirname, directory),
+    });
+
+    if (result.error || result.status !== 0) {
+      throw new Error('Init Error: Failed to init a new git repository.');
+    }
   }
 }
 
