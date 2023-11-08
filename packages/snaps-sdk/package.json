@@ -34,6 +34,10 @@
     "lint:ci": "yarn lint",
     "lint:dependencies": "depcheck"
   },
+  "dependencies": {
+    "@metamask/providers": "^14.0.0",
+    "@metamask/snaps-rpc-methods": "workspace:^"
+  },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.5.1",
     "@metamask/auto-changelog": "^3.3.0",
