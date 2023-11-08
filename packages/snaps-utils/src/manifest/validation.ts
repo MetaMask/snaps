@@ -1,6 +1,5 @@
 import { isValidBIP32PathSegment } from '@metamask/key-tree';
-import type { InitialPermissions } from '@metamask/snaps-sdk/src/types';
-import type { InferMatching } from '@metamask/snaps-utils';
+import type { InitialPermissions } from '@metamask/snaps-sdk';
 import {
   assertStruct,
   ChecksumStruct,
@@ -32,6 +31,7 @@ import { SIP_6_MAGIC_VALUE, STATE_ENCRYPTION_MAGIC_VALUE } from '../entropy';
 import { KeyringOriginsStruct, RpcOriginsStruct } from '../json-rpc';
 import { ChainIdStruct } from '../namespace';
 import { SnapIdStruct } from '../snaps';
+import type { InferMatching } from '../structs';
 import { NameStruct, NpmSnapFileNames } from '../types';
 
 // BIP-43 purposes that cannot be used for entropy derivation. These are in the

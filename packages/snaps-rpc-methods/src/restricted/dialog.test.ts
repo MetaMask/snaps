@@ -1,8 +1,9 @@
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import { DialogType } from '@metamask/snaps-sdk';
 import { heading, panel, text } from '@metamask/snaps-ui';
 
 import type { DialogMethodHooks } from './dialog';
-import { dialogBuilder, DialogType, getDialogImplementation } from './dialog';
+import { dialogBuilder, getDialogImplementation } from './dialog';
 
 describe('builder', () => {
   it('has the expected shape', () => {

@@ -49,9 +49,9 @@
     "@metamask/post-message-stream": "^7.0.0",
     "@metamask/providers": "^13.0.0",
     "@metamask/rpc-errors": "^6.1.0",
-    "@metamask/snaps-rpc-methods": "workspace:^",
+    "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^8.1.0",
+    "@metamask/utils": "^8.2.1",
     "nanoid": "^3.1.31",
     "superstruct": "^1.0.3"
   },

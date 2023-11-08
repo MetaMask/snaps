@@ -35,9 +35,8 @@
     "lint:dependencies": "depcheck"
   },
   "dependencies": {
-    "@metamask/snaps-rpc-methods": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^8.1.0"
+    "@metamask/utils": "^8.2.1"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.5.1",
