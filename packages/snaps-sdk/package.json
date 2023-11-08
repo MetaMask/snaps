@@ -35,7 +35,7 @@
     "lint:dependencies": "depcheck"
   },
   "dependencies": {
-    "@metamask/providers": "^14.0.0",
+    "@metamask/providers": "^13.0.0",
     "@metamask/snaps-rpc-methods": "workspace:^"
   },
   "devDependencies": {
