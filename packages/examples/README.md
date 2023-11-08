@@ -58,6 +58,9 @@ The following is a list of the snaps in this directory.
 - [**`packages/transaction-insights`**](./packages/transaction-insights):
   This snap demonstrates how to use `endowment:transaction-insights` permission,
   and provide transaction insights to the user.
+- [**`packages/home-page`**](./packages/home-page):
+  This snap demonstrates how to use `endowment:page-home` permission,
+  showing a home page to the user.
 
 ### 3rd party integrations
 
