@@ -2,11 +2,12 @@ import type { Component } from '@metamask/snaps-sdk';
 import { NodeType } from '@metamask/snaps-sdk';
 import { assert, AssertionError, hasProperty } from '@metamask/utils';
 
-const LINK_REGEX = /(?<protocol>[a-z]+:\/?\/?)(?<host>\S+?(?:\.[a-z]+)+)/giu;
+const MARKDOWN_LINK_REGEX = /!?\[(?<name>[^\]]*)\]\((?<url>[^)]+)\)/giu;
+
 const ALLOWED_PROTOCOLS = ['https:', 'mailto:'];
 
 /**
- * Search for links in a sting and check them against the phishing list.
+ * Searches for markdown links in a sting and checks them against the phishing list.
  *
  * @param text - The text to verify.
  * @param isOnPhishingList - The function that checks the link against the
@@ -17,9 +18,11 @@ export function validateTextLinks(
   text: string,
   isOnPhishingList: (url: string) => boolean,
 ) {
-  const links = text.match(LINK_REGEX);
-  if (links) {
-    links.forEach((link) => {
+  const matches = text.matchAll(MARKDOWN_LINK_REGEX);
+  if (matches) {
+    for (const { groups } of matches) {
+      const link: string = groups?.url ?? '';
+
       try {
         const url = new URL(link);
         assert(
@@ -27,13 +30,13 @@ export function validateTextLinks(
           `Protocol must be one of: ${ALLOWED_PROTOCOLS.join(', ')}.`,
         );
 
-        const targetUrl =
+        const hostname =
           url.protocol === 'mailto:'
             ? url.pathname.split('@')[1]
-            : url.toString();
+            : url.hostname;
 
         assert(
-          !isOnPhishingList(targetUrl),
+          !isOnPhishingList(hostname),
           'The specified URL is not allowed.',
         );
       } catch (error) {
@@ -45,7 +48,7 @@ export function validateTextLinks(
           }`,
         );
       }
-    });
+    }
   }
 }
 
