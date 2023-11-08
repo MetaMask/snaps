@@ -202,6 +202,8 @@ export class BaseSnapExecutor {
           },
         },
       },
+    }).catch((notifyError) => {
+      logError(notifyError);
     });
   }
 
@@ -261,16 +263,27 @@ export class BaseSnapExecutor {
     }
   }
 
-  protected notify(requestObject: Omit<JsonRpcNotification, 'jsonrpc'>) {
+  protected async notify(requestObject: Omit<JsonRpcNotification, 'jsonrpc'>) {
     if (!isValidJson(requestObject) || !isObject(requestObject)) {
       throw rpcErrors.internal(
         'JSON-RPC notifications must be JSON serializable objects',
       );
     }
 
-    this.commandStream.write({
-      ...requestObject,
-      jsonrpc: '2.0',
+    return new Promise<void>((resolve, reject) => {
+      this.commandStream.write(
+        {
+          ...requestObject,
+          jsonrpc: '2.0',
+        },
+        (error) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          resolve();
+        },
+      );
     });
   }
 
@@ -435,11 +448,11 @@ export class BaseSnapExecutor {
     const request = async (args: RequestArguments) => {
       const sanitizedArgs = sanitizeRequestArguments(args);
       assertSnapOutboundRequest(sanitizedArgs);
-      this.notify({ method: 'OutboundRequest' });
+      await this.notify({ method: 'OutboundRequest' });
       try {
         return await withTeardown(originalRequest(sanitizedArgs), this as any);
       } finally {
-        this.notify({ method: 'OutboundResponse' });
+        await this.notify({ method: 'OutboundResponse' });
       }
     };
 
@@ -476,11 +489,11 @@ export class BaseSnapExecutor {
     const request = async (args: RequestArguments) => {
       const sanitizedArgs = sanitizeRequestArguments(args);
       assertEthereumOutboundRequest(sanitizedArgs);
-      this.notify({ method: 'OutboundRequest' });
+      await this.notify({ method: 'OutboundRequest' });
       try {
         return await withTeardown(originalRequest(sanitizedArgs), this as any);
       } finally {
-        this.notify({ method: 'OutboundResponse' });
+        await this.notify({ method: 'OutboundResponse' });
       }
     };
 
