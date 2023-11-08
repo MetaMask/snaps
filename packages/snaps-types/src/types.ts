@@ -26,5 +26,7 @@ export type {
   OnInstallHandler,
   OnUpdateHandler,
   OnKeyringRequestHandler,
+  OnHomePageHandler,
+  OnHomePageResponse,
 } from '@metamask/snaps-utils';
 export { SeverityLevel, SnapError } from '@metamask/snaps-utils';

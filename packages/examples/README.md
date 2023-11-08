@@ -33,6 +33,9 @@ The following is a list of the snaps in this directory.
   and corresponding `ethereum` provider to interact with the Ethereum blockchain
   from a snap. This also demonstrates how a snap can access a user's existing
   Ethereum accounts.
+- [**`packages/home-page`**](./packages/home-page):
+  This snap demonstrates how to use `endowment:page-home` permission,
+  showing a home page to the user.
 - [**`packages/invoke-snap`**](./packages/invoke-snap): These snaps demonstrate
   how to use the `snap_invokeSnap` method to invoke another snap.
 - [**`packages/json-rpc`**](./packages/json-rpc): This snap demonstrates how to
