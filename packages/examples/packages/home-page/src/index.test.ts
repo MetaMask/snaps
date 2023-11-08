@@ -3,7 +3,8 @@ import { panel, text, heading } from '@metamask/snaps-ui';
 
 import { onHomePage } from '.';
 
-// snaps-jest doesn't currently support onHomePage, so we test it manually.
+// The Snaps E2E testing framework doesn't currently support onHomePage, so we unit
+// test it instead.
 describe('onHomePage', () => {
   it('returns custom UI', async () => {
     expect(await onHomePage()).toStrictEqual({
