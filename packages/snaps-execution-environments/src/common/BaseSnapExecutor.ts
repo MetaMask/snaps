@@ -191,7 +191,7 @@ export class BaseSnapExecutor {
 
     const errorData = getErrorData(serializedError);
 
-    this.notify({
+    this.#notify({
       method: 'UnhandledError',
       params: {
         error: {
@@ -218,7 +218,7 @@ export class BaseSnapExecutor {
     const { id, method, params } = message;
 
     if (!hasProperty(EXECUTION_ENVIRONMENT_METHODS, method)) {
-      await this.respond(id, {
+      await this.#respond(id, {
         error: rpcErrors
           .methodNotFound({
             data: {
@@ -237,7 +237,7 @@ export class BaseSnapExecutor {
 
     const [error] = validate<any, any>(paramsAsArray, methodObject.struct);
     if (error) {
-      await this.respond(id, {
+      await this.#respond(id, {
         error: rpcErrors
           .invalidParams({
             message: `Invalid parameters for method "${method}": ${error.message}.`,
@@ -253,9 +253,9 @@ export class BaseSnapExecutor {
 
     try {
       const result = await (this.methods as any)[method](...paramsAsArray);
-      await this.respond(id, { result });
+      await this.#respond(id, { result });
     } catch (rpcError) {
-      await this.respond(id, {
+      await this.#respond(id, {
         error: serializeError(rpcError, {
           fallbackError,
         }),
@@ -276,7 +276,7 @@ export class BaseSnapExecutor {
     });
   }
 
-  protected async notify(requestObject: Omit<JsonRpcNotification, 'jsonrpc'>) {
+  async #notify(requestObject: Omit<JsonRpcNotification, 'jsonrpc'>) {
     if (!isValidJson(requestObject) || !isObject(requestObject)) {
       throw rpcErrors.internal(
         'JSON-RPC notifications must be JSON serializable objects',
@@ -289,10 +289,7 @@ export class BaseSnapExecutor {
     });
   }
 
-  protected async respond(
-    id: JsonRpcId,
-    requestObject: Record<string, unknown>,
-  ) {
+  async #respond(id: JsonRpcId, requestObject: Record<string, unknown>) {
     if (!isValidJson(requestObject) || !isObject(requestObject)) {
       // Instead of throwing, we directly respond with an error.
       // This prevents an issue where we wouldn't respond when errors were non-serializable
@@ -453,11 +450,11 @@ export class BaseSnapExecutor {
     const request = async (args: RequestArguments) => {
       const sanitizedArgs = sanitizeRequestArguments(args);
       assertSnapOutboundRequest(sanitizedArgs);
-      await this.notify({ method: 'OutboundRequest' });
+      await this.#notify({ method: 'OutboundRequest' });
       try {
         return await withTeardown(originalRequest(sanitizedArgs), this as any);
       } finally {
-        await this.notify({ method: 'OutboundResponse' });
+        await this.#notify({ method: 'OutboundResponse' });
       }
     };
 
@@ -494,11 +491,11 @@ export class BaseSnapExecutor {
     const request = async (args: RequestArguments) => {
       const sanitizedArgs = sanitizeRequestArguments(args);
       assertEthereumOutboundRequest(sanitizedArgs);
-      await this.notify({ method: 'OutboundRequest' });
+      await this.#notify({ method: 'OutboundRequest' });
       try {
         return await withTeardown(originalRequest(sanitizedArgs), this as any);
       } finally {
-        await this.notify({ method: 'OutboundResponse' });
+        await this.#notify({ method: 'OutboundResponse' });
       }
     };
 
