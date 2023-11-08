@@ -1,5 +1,3 @@
-import type { SnapId } from '@metamask/snaps-utils';
-
 import { rootRealmGlobal } from '../globalObject';
 import consoleEndowment from './console';
 import crypto from './crypto';
@@ -12,7 +10,7 @@ import textEncoder from './textEncoder';
 import timeout from './timeout';
 
 export type EndowmentFactoryOptions = {
-  snapId?: SnapId;
+  snapId?: string;
 };
 
 export type EndowmentFactory = {

@@ -5,7 +5,12 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { EnumToUnion } from '@metamask/snaps-utils';
+import type {
+  ManageStateParams,
+  ManageStateResult,
+  UpdateStateOperation,
+} from '@metamask/snaps-sdk';
+import { ManageStateOperation } from '@metamask/snaps-sdk';
 import { STATE_ENCRYPTION_MAGIC_VALUE, parseJson } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, Hex } from '@metamask/utils';
 import { isObject, getJsonSize, assert, isValidJson } from '@metamask/utils';
@@ -129,18 +134,6 @@ export const manageStateBuilder = Object.freeze({
   specificationBuilder,
   methodHooks,
 } as const);
-
-export enum ManageStateOperation {
-  ClearState = 'clear',
-  GetState = 'get',
-  UpdateState = 'update',
-}
-
-export type ManageStateArgs = {
-  operation: EnumToUnion<ManageStateOperation>;
-  newState?: Record<string, Json>;
-  encrypted?: boolean;
-};
 
 export const STORAGE_SIZE_LIMIT = 104857600; // In bytes (100MB)
 
@@ -267,17 +260,14 @@ export function getManageStateImplementation({
   decrypt,
 }: ManageStateMethodHooks) {
   return async function manageState(
-    options: RestrictedMethodOptions<ManageStateArgs>,
-  ): Promise<null | Record<string, Json>> {
+    options: RestrictedMethodOptions<ManageStateParams>,
+  ): Promise<ManageStateResult> {
     const {
       params = {},
       method,
       context: { origin },
     } = options;
-    const { operation, newState, encrypted } = getValidatedParams(
-      params,
-      method,
-    );
+    const { operation, encrypted } = getValidatedParams(params, method);
 
     // If the encrypted param is undefined or null we default to true.
     const shouldEncrypt = encrypted ?? true;
@@ -309,6 +299,7 @@ export function getManageStateImplementation({
       }
 
       case ManageStateOperation.UpdateState: {
+        const { newState } = params as UpdateStateOperation;
         assert(newState);
 
         const finalizedState = shouldEncrypt
@@ -345,7 +336,7 @@ export function getValidatedParams(
   params: unknown,
   method: string,
   storageSizeLimit = STORAGE_SIZE_LIMIT,
-): ManageStateArgs {
+): ManageStateParams {
   if (!isObject(params)) {
     throw rpcErrors.invalidParams({
       message: 'Expected params to be a single object.',
@@ -357,7 +348,9 @@ export function getValidatedParams(
   if (
     !operation ||
     typeof operation !== 'string' ||
-    !(Object.values(ManageStateOperation) as string[]).includes(operation)
+    !Object.values(ManageStateOperation).includes(
+      operation as ManageStateOperation,
+    )
   ) {
     throw rpcErrors.invalidParams({
       message: 'Must specify a valid manage state "operation".',
@@ -406,5 +399,5 @@ export function getValidatedParams(
     }
   }
 
-  return params as ManageStateArgs;
+  return params as ManageStateParams;
 }

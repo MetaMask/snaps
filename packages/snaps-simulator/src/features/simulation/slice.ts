@@ -3,7 +3,7 @@ import type {
   SubjectMetadataController,
 } from '@metamask/permission-controller';
 import type { IframeExecutionService } from '@metamask/snaps-controllers';
-import type { DialogType } from '@metamask/snaps-rpc-methods';
+import type { DialogType } from '@metamask/snaps-sdk';
 import type { Component } from '@metamask/snaps-ui';
 import { getLocalizedSnapManifest as localizeSnapManifest } from '@metamask/snaps-utils';
 import type {

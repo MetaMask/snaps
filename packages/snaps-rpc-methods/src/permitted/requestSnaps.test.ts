@@ -3,7 +3,10 @@ import type {
   RequestedPermissions,
   PermissionConstraint,
 } from '@metamask/permission-controller';
-import type { InstallSnapsResult } from '@metamask/snaps-utils';
+import type {
+  RequestSnapsParams,
+  RequestSnapsResult,
+} from '@metamask/snaps-sdk';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MOCK_SNAP_ID,
@@ -205,8 +208,8 @@ describe('implementation', () => {
     const engine = new JsonRpcEngine();
     engine.push((req, res, next, end) => {
       const result = implementation(
-        req as JsonRpcRequest<RequestedPermissions>,
-        res as PendingJsonRpcResponse<InstallSnapsResult>,
+        req as JsonRpcRequest<RequestSnapsParams>,
+        res as PendingJsonRpcResponse<RequestSnapsResult>,
         next,
         end,
         hooks,
@@ -222,7 +225,7 @@ describe('implementation', () => {
       params: {
         [MOCK_SNAP_ID]: { version: '^1.0.0' },
       },
-    })) as JsonRpcSuccess<InstallSnapsResult>;
+    })) as JsonRpcSuccess<RequestSnapsResult>;
 
     expect(hooks.requestPermissions).toHaveBeenCalledWith({
       [WALLET_SNAP_PERMISSION_KEY]: {
@@ -267,8 +270,8 @@ describe('implementation', () => {
     const engine = new JsonRpcEngine();
     engine.push((req, res, next, end) => {
       const result = implementation(
-        req as JsonRpcRequest<RequestedPermissions>,
-        res as PendingJsonRpcResponse<InstallSnapsResult>,
+        req as JsonRpcRequest<RequestSnapsParams>,
+        res as PendingJsonRpcResponse<RequestSnapsResult>,
         next,
         end,
         hooks,
@@ -284,7 +287,7 @@ describe('implementation', () => {
       params: {
         [MOCK_SNAP_ID]: { version: '^1.0.0' },
       },
-    })) as JsonRpcSuccess<InstallSnapsResult>;
+    })) as JsonRpcSuccess<RequestSnapsResult>;
 
     expect(hooks.requestPermissions).not.toHaveBeenCalledWith({
       [WALLET_SNAP_PERMISSION_KEY]: {
@@ -352,8 +355,8 @@ describe('implementation', () => {
     const engine = new JsonRpcEngine();
     engine.push((req, res, next, end) => {
       const result = implementation(
-        req as JsonRpcRequest<RequestedPermissions>,
-        res as PendingJsonRpcResponse<InstallSnapsResult>,
+        req as JsonRpcRequest<RequestSnapsParams>,
+        res as PendingJsonRpcResponse<RequestSnapsResult>,
         next,
         end,
         hooks,
@@ -370,7 +373,7 @@ describe('implementation', () => {
         [MOCK_SNAP_ID]: { version: '^1.0.0' },
         [MOCK_LOCAL_SNAP_ID]: { version: '^1.0.0' },
       },
-    })) as JsonRpcSuccess<InstallSnapsResult>;
+    })) as JsonRpcSuccess<RequestSnapsResult>;
 
     expect(hooks.requestPermissions).toHaveBeenCalledWith({
       [WALLET_SNAP_PERMISSION_KEY]: {
@@ -404,8 +407,8 @@ describe('implementation', () => {
     const engine = new JsonRpcEngine();
     engine.push((req, res, next, end) => {
       const result = implementation(
-        req as JsonRpcRequest<RequestedPermissions>,
-        res as PendingJsonRpcResponse<InstallSnapsResult>,
+        req as JsonRpcRequest<RequestSnapsParams>,
+        res as PendingJsonRpcResponse<RequestSnapsResult>,
         next,
         end,
         hooks,
@@ -421,7 +424,7 @@ describe('implementation', () => {
       params: {
         [MOCK_SNAP_ID]: { version: '^1.0.0' },
       },
-    })) as JsonRpcSuccess<InstallSnapsResult>;
+    })) as JsonRpcSuccess<RequestSnapsResult>;
 
     expect(hooks.requestPermissions).toHaveBeenCalledWith({
       [WALLET_SNAP_PERMISSION_KEY]: {

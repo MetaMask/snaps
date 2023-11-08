@@ -1,7 +1,6 @@
 import type { StreamProvider } from '@metamask/providers';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { SnapsGlobalObject } from '@metamask/snaps-rpc-methods';
-import type { SnapId } from '@metamask/snaps-utils';
+import type { SnapsProvider } from '@metamask/snaps-sdk';
 import { logWarning } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
 
@@ -53,9 +52,9 @@ const endowmentFactories = registeredEndowments.reduce((factories, builder) => {
  * @returns An object containing the Snap's endowments.
  */
 export function createEndowments(
-  snap: SnapsGlobalObject,
+  snap: SnapsProvider,
   ethereum: StreamProvider,
-  snapId: SnapId,
+  snapId: string,
   endowments: string[] = [],
 ): { endowments: Record<string, unknown>; teardown: () => Promise<void> } {
   const attenuatedEndowments: Record<string, unknown> = {};

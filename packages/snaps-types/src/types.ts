@@ -1,10 +1,5 @@
 // Exported again for convenience.
 export type { Json, JsonRpcRequest } from '@metamask/utils';
-export {
-  DialogType,
-  NotificationType,
-  ManageStateOperation,
-} from '@metamask/snaps-rpc-methods';
 export type {
   AccountId,
   ChainId,

@@ -14,7 +14,7 @@
   ],
   "references": [
     {
-      "path": "../snaps-rpc-methods/tsconfig.build.json"
+      "path": "../snaps-ui/tsconfig.build.json"
     }
   ]
 }

@@ -1,4 +1,3 @@
-import type { SnapId } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 
 import { rootRealmGlobal } from '../globalObject';
@@ -58,7 +57,7 @@ type ConsoleFunctions = {
  * @param args - The array of additional arguments.
  * @returns An array of arguments to be passed into an attenuated console method call.
  */
-function getMessage(snapId: SnapId, message: unknown, ...args: unknown[]) {
+function getMessage(snapId: string, message: unknown, ...args: unknown[]) {
   const prefix = `[Snap: ${snapId}]`;
 
   // If the first argument is a string, prepend the prefix to the message, and keep the

@@ -1,11 +1,8 @@
-import type { DialogType, NotificationArgs } from '@metamask/snaps-rpc-methods';
+import type { DialogType, NotifyParams } from '@metamask/snaps-sdk';
+import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
 import type { Component } from '@metamask/snaps-ui';
 import type { VirtualFile } from '@metamask/snaps-utils';
-import {
-  AuxiliaryFileEncoding,
-  encodeAuxiliaryFile,
-  normalizeRelative,
-} from '@metamask/snaps-utils';
+import { encodeAuxiliaryFile, normalizeRelative } from '@metamask/snaps-utils';
 import { nanoid } from '@reduxjs/toolkit';
 import type { SagaIterator } from 'redux-saga';
 import { call, put, select, take } from 'redux-saga/effects';
@@ -69,7 +66,7 @@ export function* showDialog(
  */
 export function* showNativeNotification(
   _snapId: string,
-  { message }: NotificationArgs,
+  { message }: NotifyParams,
 ): SagaIterator {
   const id = yield select(getRequestId);
   yield put(
@@ -125,7 +122,7 @@ export function* showNativeNotification(
  */
 export function* showInAppNotification(
   _snapId: string,
-  { message }: NotificationArgs,
+  { message }: NotifyParams,
 ): SagaIterator {
   const id = yield select(getRequestId);
   yield put(

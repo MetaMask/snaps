@@ -1,5 +1,7 @@
 import type { BaseProvider } from '@metamask/providers';
 
+import type { RequestFunction } from './methods';
+
 type BaseProviderInstance = InstanceType<typeof BaseProvider>;
 
 /**
@@ -15,4 +17,6 @@ export type SnapsEthereumProvider = Pick<
 /**
  * The `window.snap` provider.
  */
-export { SnapsGlobalObject as SnapsProvider } from '@metamask/snaps-rpc-methods';
+export type SnapsProvider = {
+  request: RequestFunction;
+};

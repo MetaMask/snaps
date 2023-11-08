@@ -1,4 +1,3 @@
-import type { JsonSLIP10Node } from '@metamask/key-tree';
 import type {
   PermissionSpecificationBuilder,
   PermissionValidatorConstraint,
@@ -7,7 +6,10 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { Bip32Entropy } from '@metamask/snaps-utils';
+import type {
+  GetBip32EntropyParams,
+  GetBip32EntropyResult,
+} from '@metamask/snaps-sdk';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 import { assert } from '@metamask/utils';
@@ -102,8 +104,8 @@ export function getBip32EntropyImplementation({
   getUnlockPromise,
 }: GetBip32EntropyMethodHooks) {
   return async function getBip32Entropy(
-    args: RestrictedMethodOptions<Bip32Entropy>,
-  ): Promise<JsonSLIP10Node> {
+    args: RestrictedMethodOptions<GetBip32EntropyParams>,
+  ): Promise<GetBip32EntropyResult> {
     await getUnlockPromise(true);
 
     const { params } = args;

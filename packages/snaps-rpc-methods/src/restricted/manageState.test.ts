@@ -1,6 +1,7 @@
 import { decrypt, encrypt } from '@metamask/browser-passworder';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
+import { ManageStateOperation } from '@metamask/snaps-sdk';
 import {
   MOCK_LOCAL_SNAP_ID,
   MOCK_SNAP_ID,
@@ -11,7 +12,6 @@ import { webcrypto } from 'crypto';
 import {
   getManageStateImplementation,
   getValidatedParams,
-  ManageStateOperation,
   specificationBuilder,
 } from './manageState';
 

@@ -4,12 +4,8 @@ import type {
   PermissionConstraint,
 } from '@metamask/permission-controller';
 import type { BlockReason } from '@metamask/snaps-registry';
-import type {
-  Json,
-  JsonRpcError,
-  Opaque,
-  SemVerVersion,
-} from '@metamask/utils';
+import type { SnapId, Snap as TruncatedSnap } from '@metamask/snaps-sdk';
+import type { Json } from '@metamask/utils';
 import { assert, isObject, assertStruct } from '@metamask/utils';
 import { base64 } from '@scure/base';
 import stableStringify from 'fast-json-stable-stringify';
@@ -31,7 +27,7 @@ import { SnapCaveatType } from './caveats';
 import { checksumFiles } from './checksum';
 import type { LocalizationFile } from './localization';
 import type { SnapManifest, SnapPermissions } from './manifest/validation';
-import type { FetchedSnapFiles, SnapId, SnapsPermissionRequest } from './types';
+import type { FetchedSnapFiles, SnapsPermissionRequest } from './types';
 import { SnapIdPrefixes, SnapValidationFailureReason, uri } from './types';
 import type { VirtualFile } from './virtual-file';
 
@@ -71,7 +67,7 @@ export enum SnapStatusEvents {
   Update = 'UPDATE',
 }
 
-export type StatusContext = { snapId: ValidatedSnapId };
+export type StatusContext = { snapId: SnapId };
 export type StatusEvents = { type: SnapStatusEvents };
 export type StatusStates = {
   value: SnapStatus;
@@ -97,17 +93,7 @@ export type PersistedSnap = Snap;
 /**
  * A Snap as it exists in {@link SnapController} state.
  */
-export type Snap = {
-  /**
-   * Whether the Snap is enabled, which determines if it can be started.
-   */
-  enabled: boolean;
-
-  /**
-   * The ID of the Snap.
-   */
-  id: ValidatedSnapId;
-
+export type Snap = TruncatedSnap & {
   /**
    * The initial permissions of the Snap, which will be requested when it is
    * installed.
@@ -125,11 +111,6 @@ export type Snap = {
   manifest: SnapManifest;
 
   /**
-   * Whether the Snap is blocked.
-   */
-  blocked: boolean;
-
-  /**
    * Information detailing why the snap is blocked.
    */
   blockInformation?: BlockReason;
@@ -138,11 +119,6 @@ export type Snap = {
    * The current status of the Snap, e.g. whether it's running or stopped.
    */
   status: Status;
-
-  /**
-   * The version of the Snap.
-   */
-  version: SemVerVersion;
 
   /**
    * The version history of the Snap.
@@ -167,16 +143,6 @@ export type TruncatedSnapFields =
   | 'version'
   | 'enabled'
   | 'blocked';
-
-/**
- * A {@link Snap} object with the fields that are relevant to an external
- * caller.
- */
-export type TruncatedSnap = Pick<Snap, TruncatedSnapFields>;
-
-export type ProcessSnapResult = TruncatedSnap | { error: JsonRpcError };
-
-export type InstallSnapsResult = Record<SnapId, ProcessSnapResult>;
 
 /**
  * An error indicating that a Snap validation failure is programmatically
@@ -306,9 +272,6 @@ export const HttpSnapIdStruct = intersection([
 
 export const SnapIdStruct = union([NpmSnapIdStruct, LocalSnapIdStruct]);
 
-export type ValidatedSnapId = Opaque<string, typeof snapIdSymbol>;
-declare const snapIdSymbol: unique symbol;
-
 /**
  * Extracts the snap prefix from a snap ID.
  *
@@ -341,9 +304,7 @@ export function stripSnapPrefix(snapId: string): string {
  * @param value - The value to check.
  * @throws If the value is not a valid snap ID.
  */
-export function assertIsValidSnapId(
-  value: unknown,
-): asserts value is ValidatedSnapId {
+export function assertIsValidSnapId(value: unknown): asserts value is SnapId {
   assertStruct(value, SnapIdStruct, 'Invalid snap ID');
 }
 
@@ -422,3 +383,5 @@ export function verifyRequestedSnapPermissions(
     `The requested permissions do not have a valid ${SnapCaveatType.SnapIds} caveat.`,
   );
 }
+
+export type { Snap as TruncatedSnap } from '@metamask/snaps-sdk';

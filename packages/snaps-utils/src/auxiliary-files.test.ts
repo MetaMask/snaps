@@ -1,7 +1,8 @@
+import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
 import { bytesToHex, stringToBytes } from '@metamask/utils';
 import { base64 } from '@scure/base';
 
-import { AuxiliaryFileEncoding, encodeAuxiliaryFile } from './auxiliary-files';
+import { encodeAuxiliaryFile } from './auxiliary-files';
 
 describe('encodeAuxiliaryFile', () => {
   it('returns value without modifying it for base64', () => {

@@ -4,7 +4,7 @@ import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import { StreamProvider } from '@metamask/providers';
 import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
 import { errorCodes, rpcErrors, serializeError } from '@metamask/rpc-errors';
-import type { SnapsGlobalObject } from '@metamask/snaps-rpc-methods';
+import type { SnapsProvider } from '@metamask/snaps-sdk';
 import type {
   SnapExports,
   HandlerType,
@@ -446,7 +446,7 @@ export class BaseSnapExecutor {
    * @param provider - A StreamProvider connected to MetaMask.
    * @returns The snap provider object.
    */
-  private createSnapGlobal(provider: StreamProvider): SnapsGlobalObject {
+  private createSnapGlobal(provider: StreamProvider): SnapsProvider {
     const originalRequest = provider.request.bind(provider);
 
     const request = async (args: RequestArguments) => {
@@ -481,7 +481,7 @@ export class BaseSnapExecutor {
           return undefined;
         },
       },
-    ) as SnapsGlobalObject;
+    ) as SnapsProvider;
 
     return harden(snapGlobalProxy);
   }

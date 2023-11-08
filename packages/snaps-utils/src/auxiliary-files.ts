@@ -1,11 +1,6 @@
+import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
 import { bytesToHex, bytesToString } from '@metamask/utils';
 import { base64 } from '@scure/base';
-
-export enum AuxiliaryFileEncoding {
-  Base64 = 'base64',
-  Hex = 'hex',
-  Utf8 = 'utf8',
-}
 
 /**
  * Re-encodes an auxiliary file if needed depending on the requested file encoding.

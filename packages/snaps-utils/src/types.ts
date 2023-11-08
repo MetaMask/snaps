@@ -123,8 +123,6 @@ export enum SnapIdPrefixes {
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
-export type SnapId = string;
-
 /**
  * Snap validation failure reason codes that are programmatically fixable
  * if validation occurs during development.

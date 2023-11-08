@@ -6,6 +6,10 @@ import type {
   PermittedHandlerExport,
 } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
+import type {
+  RequestSnapsParams,
+  RequestSnapsResult,
+} from '@metamask/snaps-sdk';
 import type { SnapsPermissionRequest } from '@metamask/snaps-utils';
 import {
   SnapCaveatType,
@@ -20,10 +24,7 @@ import { hasProperty, isObject } from '@metamask/utils';
 
 import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
 import type { MethodHooksObject } from '../utils';
-import type {
-  InstallSnapsHook,
-  InstallSnapsResult,
-} from './common/snapInstallation';
+import type { InstallSnapsHook } from './common/snapInstallation';
 import { handleInstallSnaps } from './common/snapInstallation';
 
 const hookNames: MethodHooksObject<RequestSnapsHooks> = {
@@ -37,8 +38,8 @@ const hookNames: MethodHooksObject<RequestSnapsHooks> = {
  */
 export const requestSnapsHandler: PermittedHandlerExport<
   RequestSnapsHooks,
-  RequestedPermissions,
-  InstallSnapsResult
+  RequestSnapsParams,
+  RequestSnapsResult
 > = {
   methodNames: ['wallet_requestSnaps'],
   implementation: requestSnapsImplementation,
@@ -168,8 +169,8 @@ export function getSnapPermissionsRequest(
  * @throws If the params are invalid.
  */
 async function requestSnapsImplementation(
-  req: JsonRpcRequest<RequestedPermissions>,
-  res: PendingJsonRpcResponse<InstallSnapsResult>,
+  req: JsonRpcRequest<RequestSnapsParams>,
+  res: PendingJsonRpcResponse<RequestSnapsResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
   { installSnaps, requestPermissions, getPermissions }: RequestSnapsHooks,
@@ -199,7 +200,7 @@ async function requestSnapsImplementation(
       const [, metadata] = await requestPermissions(requestedPermissions);
       res.result = metadata.data[
         WALLET_SNAP_PERMISSION_KEY
-      ] as InstallSnapsResult;
+      ] as RequestSnapsResult;
     } else if (hasRequestedSnaps(existingPermissions, requestedSnaps)) {
       res.result = await handleInstallSnaps(requestedSnaps, installSnaps);
     } else {
@@ -211,7 +212,7 @@ async function requestSnapsImplementation(
       const [, metadata] = await requestPermissions(mergedPermissionsRequest);
       res.result = metadata.data[
         WALLET_SNAP_PERMISSION_KEY
-      ] as InstallSnapsResult;
+      ] as RequestSnapsResult;
     }
   } catch (error) {
     res.error = error;

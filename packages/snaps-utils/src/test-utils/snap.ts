@@ -1,11 +1,7 @@
+import type { SnapId } from '@metamask/snaps-sdk';
 import type { SemVerVersion } from '@metamask/utils';
 
-import type {
-  PersistedSnap,
-  Snap,
-  TruncatedSnap,
-  ValidatedSnapId,
-} from '../snaps';
+import type { PersistedSnap, Snap, TruncatedSnap } from '../snaps';
 import { SnapStatus } from '../snaps';
 import type { MakeSemVer } from './common';
 import {
@@ -14,9 +10,8 @@ import {
   getSnapManifest,
 } from './manifest';
 
-export const MOCK_SNAP_ID = 'npm:@metamask/example-snap' as ValidatedSnapId;
-export const MOCK_LOCAL_SNAP_ID =
-  'local:http://localhost:8080' as ValidatedSnapId;
+export const MOCK_SNAP_ID = 'npm:@metamask/example-snap' as SnapId;
+export const MOCK_LOCAL_SNAP_ID = 'local:http://localhost:8080' as SnapId;
 export const MOCK_ORIGIN = 'example.com';
 
 type GetPersistedSnapObjectOptions = Partial<MakeSemVer<PersistedSnap>>;
@@ -122,7 +117,7 @@ export const getMockSnapData = ({
   origin,
   sourceCode,
 }: {
-  id: ValidatedSnapId;
+  id: SnapId;
   origin: string;
   sourceCode?: string;
   blocked?: boolean;

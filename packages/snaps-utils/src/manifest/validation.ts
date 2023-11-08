@@ -1,4 +1,6 @@
 import { isValidBIP32PathSegment } from '@metamask/key-tree';
+import type { InitialPermissions } from '@metamask/snaps-sdk/src/types';
+import type { InferMatching } from '@metamask/snaps-utils';
 import {
   assertStruct,
   ChecksumStruct,
@@ -175,7 +177,10 @@ export const PermissionsStruct = type({
 });
 /* eslint-enable @typescript-eslint/naming-convention */
 
-export type SnapPermissions = Infer<typeof PermissionsStruct>;
+export type SnapPermissions = InferMatching<
+  typeof PermissionsStruct,
+  InitialPermissions
+>;
 
 export const SnapAuxilaryFilesStruct = array(string());
 

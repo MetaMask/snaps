@@ -7,6 +7,7 @@
   "references": [
     { "path": "../snaps-execution-environments" },
     { "path": "../snaps-rpc-methods" },
+    { "path": "../snaps-sdk" },
     { "path": "../snaps-utils" },
     { "path": "../snaps-ui" }
   ]

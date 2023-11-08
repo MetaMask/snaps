@@ -7,12 +7,11 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
+import type { InvokeSnapResult, RequestSnapsResult } from '@metamask/snaps-sdk';
 import type {
   Snap,
-  SnapId,
   SnapRpcHookArgs,
   RequestedSnapPermissions,
-  InstallSnapsResult,
 } from '@metamask/snaps-utils';
 import { HandlerType, SnapCaveatType } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
@@ -27,24 +26,24 @@ export type InstallSnaps = {
   handler: (
     origin: string,
     requestedSnaps: RequestedSnapPermissions,
-  ) => Promise<InstallSnapsResult>;
+  ) => Promise<RequestSnapsResult>;
 };
 
 export type GetPermittedSnaps = {
   type: `SnapController:getPermitted`;
-  handler: (origin: string) => InstallSnapsResult;
+  handler: (origin: string) => RequestSnapsResult;
 };
 
 type AllowedActions = InstallSnaps | GetPermittedSnaps;
 
 export type InvokeSnapMethodHooks = {
-  getSnap: (snapId: SnapId) => Snap | undefined;
+  getSnap: (snapId: string) => Snap | undefined;
   handleSnapRpcRequest: ({
     snapId,
     origin,
     handler,
     request,
-  }: SnapRpcHookArgs & { snapId: SnapId }) => Promise<unknown>;
+  }: SnapRpcHookArgs & { snapId: string }) => Promise<unknown>;
 };
 
 type InvokeSnapSpecificationBuilderOptions = {
@@ -65,7 +64,7 @@ type InvokeSnapSpecification = ValidPermissionSpecification<{
 
 export type InvokeSnapParams = {
   snapId: string;
-  request: Record<string, unknown>;
+  request: Record<string, Json>;
 };
 
 /**
@@ -163,8 +162,8 @@ export function getInvokeSnapImplementation({
   handleSnapRpcRequest,
 }: InvokeSnapMethodHooks) {
   return async function invokeSnap(
-    options: RestrictedMethodOptions<Record<string, Json>>,
-  ): Promise<Json> {
+    options: RestrictedMethodOptions<InvokeSnapParams>,
+  ): Promise<InvokeSnapResult> {
     const { params = {}, context } = options;
 
     const { snapId, request } = params as InvokeSnapParams;

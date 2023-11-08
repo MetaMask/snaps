@@ -4,9 +4,13 @@ import type {
   PermissionSpecificationBuilder,
 } from '@metamask/permission-controller';
 import { SubjectType, PermissionType } from '@metamask/permission-controller';
+import type {
+  ManageAccountsParams,
+  ManageAccountsResult,
+} from '@metamask/snaps-sdk';
+import type { InferMatching } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import { JsonStruct } from '@metamask/utils';
-import type { Infer } from 'superstruct';
 import { assert, string, object, union, array, record } from 'superstruct';
 
 const SnapMessageStruct = union([
@@ -19,7 +23,7 @@ const SnapMessageStruct = union([
   }),
 ]);
 
-type Message = Infer<typeof SnapMessageStruct>;
+type Message = InferMatching<typeof SnapMessageStruct, ManageAccountsParams>;
 
 export const methodName = 'snap_manageAccounts';
 
@@ -86,8 +90,8 @@ export function manageAccountsImplementation({
   getSnapKeyring,
 }: ManageAccountsMethodHooks) {
   return async function manageAccounts(
-    options: RestrictedMethodOptions<Message>,
-  ): Promise<Json> {
+    options: RestrictedMethodOptions<ManageAccountsParams>,
+  ): Promise<ManageAccountsResult> {
     const {
       context: { origin },
       params,

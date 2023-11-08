@@ -1,13 +1,11 @@
 import type { RequestedPermissions } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { InstallSnapsResult } from '@metamask/snaps-utils';
+import type { RequestSnapsResult } from '@metamask/snaps-sdk';
 import { isObject } from '@metamask/utils';
-
-export type { InstallSnapsResult } from '@metamask/snaps-utils';
 
 export type InstallSnapsHook = (
   requestedSnaps: RequestedPermissions,
-) => Promise<InstallSnapsResult>;
+) => Promise<RequestSnapsResult>;
 
 /**
  * Typechecks the requested snaps and passes them to the permissions
@@ -23,7 +21,7 @@ export type InstallSnapsHook = (
 export async function handleInstallSnaps(
   requestedSnaps: RequestedPermissions,
   installSnaps: InstallSnapsHook,
-): Promise<InstallSnapsResult> {
+): Promise<RequestSnapsResult> {
   if (!isObject(requestedSnaps)) {
     throw rpcErrors.invalidParams({
       message: `Invalid snap installation params.`,

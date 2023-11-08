@@ -5,6 +5,7 @@ import type {
   RestrictedMethodParameters,
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import type { GetLocaleResult } from '@metamask/snaps-sdk';
 import type { NonEmptyArray } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
@@ -70,7 +71,7 @@ export const getLocaleBuilder = Object.freeze({
 export function getImplementation({ getLocale }: GetLocaleMethodHooks) {
   return async function implementation(
     _args: RestrictedMethodOptions<RestrictedMethodParameters>,
-  ): Promise<string> {
+  ): Promise<GetLocaleResult> {
     return getLocale();
   };
 }
