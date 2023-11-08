@@ -218,7 +218,7 @@ export class BaseSnapExecutor {
     const { id, method, params } = message;
 
     if (!hasProperty(EXECUTION_ENVIRONMENT_METHODS, method)) {
-      this.respond(id, {
+      await this.respond(id, {
         error: rpcErrors
           .methodNotFound({
             data: {
@@ -237,7 +237,7 @@ export class BaseSnapExecutor {
 
     const [error] = validate<any, any>(paramsAsArray, methodObject.struct);
     if (error) {
-      this.respond(id, {
+      await this.respond(id, {
         error: rpcErrors
           .invalidParams({
             message: `Invalid parameters for method "${method}": ${error.message}.`,
@@ -253,14 +253,27 @@ export class BaseSnapExecutor {
 
     try {
       const result = await (this.methods as any)[method](...paramsAsArray);
-      this.respond(id, { result });
+      await this.respond(id, { result });
     } catch (rpcError) {
-      this.respond(id, {
+      await this.respond(id, {
         error: serializeError(rpcError, {
           fallbackError,
         }),
       });
     }
+  }
+
+  // Awaitable function that writes back to the command stream
+  async #write(chunk: Json) {
+    return new Promise<void>((resolve, reject) => {
+      this.commandStream.write(chunk, (error) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve();
+      });
+    });
   }
 
   protected async notify(requestObject: Omit<JsonRpcNotification, 'jsonrpc'>) {
@@ -270,28 +283,20 @@ export class BaseSnapExecutor {
       );
     }
 
-    return new Promise<void>((resolve, reject) => {
-      this.commandStream.write(
-        {
-          ...requestObject,
-          jsonrpc: '2.0',
-        },
-        (error) => {
-          if (error) {
-            reject(error);
-            return;
-          }
-          resolve();
-        },
-      );
+    await this.#write({
+      ...requestObject,
+      jsonrpc: '2.0',
     });
   }
 
-  protected respond(id: JsonRpcId, requestObject: Record<string, unknown>) {
+  protected async respond(
+    id: JsonRpcId,
+    requestObject: Record<string, unknown>,
+  ) {
     if (!isValidJson(requestObject) || !isObject(requestObject)) {
       // Instead of throwing, we directly respond with an error.
       // This prevents an issue where we wouldn't respond when errors were non-serializable
-      this.commandStream.write({
+      await this.#write({
         error: serializeError(
           rpcErrors.internal(
             'JSON-RPC responses must be JSON serializable objects.',
@@ -303,7 +308,7 @@ export class BaseSnapExecutor {
       return;
     }
 
-    this.commandStream.write({
+    await this.#write({
       ...requestObject,
       id,
       jsonrpc: '2.0',
