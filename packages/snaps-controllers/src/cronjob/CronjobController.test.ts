@@ -1,6 +1,6 @@
 import type { TruncatedSnap } from '@metamask/snaps-utils';
 import { HandlerType } from '@metamask/snaps-utils';
-import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
+import { MOCK_ORIGIN, MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 import type { SemVerVersion } from '@metamask/utils';
 import { Duration, inMilliseconds } from '@metamask/utils';
 
@@ -259,7 +259,11 @@ describe('CronjobController', () => {
       version: MOCK_VERSION,
     };
 
-    rootMessenger.publish('SnapController:snapInstalled', snapInfo);
+    rootMessenger.publish(
+      'SnapController:snapInstalled',
+      snapInfo,
+      MOCK_ORIGIN,
+    );
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
 
@@ -335,7 +339,12 @@ describe('CronjobController', () => {
       version: MOCK_VERSION,
     };
 
-    rootMessenger.publish('SnapController:snapInstalled', snapInfo);
+    rootMessenger.publish(
+      'SnapController:snapInstalled',
+      snapInfo,
+      MOCK_ORIGIN,
+    );
+
     rootMessenger.publish('SnapController:snapRemoved', snapInfo);
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
@@ -373,7 +382,12 @@ describe('CronjobController', () => {
       version: MOCK_VERSION,
     };
 
-    rootMessenger.publish('SnapController:snapInstalled', snapInfo);
+    rootMessenger.publish(
+      'SnapController:snapInstalled',
+      snapInfo,
+      MOCK_ORIGIN,
+    );
+
     rootMessenger.publish('SnapController:snapDisabled', snapInfo);
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
@@ -411,11 +425,17 @@ describe('CronjobController', () => {
       version: MOCK_VERSION,
     };
 
-    rootMessenger.publish('SnapController:snapInstalled', snapInfo);
+    rootMessenger.publish(
+      'SnapController:snapInstalled',
+      snapInfo,
+      MOCK_ORIGIN,
+    );
+
     rootMessenger.publish(
       'SnapController:snapUpdated',
       snapInfo,
       snapInfo.version,
+      MOCK_ORIGIN,
     );
 
     jest.advanceTimersByTime(inMilliseconds(15, Duration.Minute));
