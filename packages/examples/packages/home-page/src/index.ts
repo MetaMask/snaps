@@ -5,7 +5,7 @@ export const onHomePage: OnHomePageHandler = async () => {
   return {
     content: panel([
       heading('Hello world!'),
-      text('Welcome to my snap home page!'),
+      text('Welcome to my Snap home page!'),
     ]),
   };
 };
