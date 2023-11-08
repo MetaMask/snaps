@@ -450,12 +450,17 @@ export class BaseSnapExecutor {
     const request = async (args: RequestArguments) => {
       const sanitizedArgs = sanitizeRequestArguments(args);
       assertSnapOutboundRequest(sanitizedArgs);
-      await this.#notify({ method: 'OutboundRequest' });
-      try {
-        return await withTeardown(originalRequest(sanitizedArgs), this as any);
-      } finally {
-        await this.#notify({ method: 'OutboundResponse' });
-      }
+      return await withTeardown(
+        (async () => {
+          await this.#notify({ method: 'OutboundRequest' });
+          try {
+            return await originalRequest(sanitizedArgs);
+          } finally {
+            await this.#notify({ method: 'OutboundResponse' });
+          }
+        })(),
+        this as any,
+      );
     };
 
     // Proxy target is intentionally set to be an empty object, to ensure
@@ -491,12 +496,17 @@ export class BaseSnapExecutor {
     const request = async (args: RequestArguments) => {
       const sanitizedArgs = sanitizeRequestArguments(args);
       assertEthereumOutboundRequest(sanitizedArgs);
-      await this.#notify({ method: 'OutboundRequest' });
-      try {
-        return await withTeardown(originalRequest(sanitizedArgs), this as any);
-      } finally {
-        await this.#notify({ method: 'OutboundResponse' });
-      }
+      return await withTeardown(
+        (async () => {
+          await this.#notify({ method: 'OutboundRequest' });
+          try {
+            return await originalRequest(sanitizedArgs);
+          } finally {
+            await this.#notify({ method: 'OutboundResponse' });
+          }
+        })(),
+        this as any,
+      );
     };
 
     const streamProviderProxy = proxyStreamProvider(provider, request);
