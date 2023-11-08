@@ -1,6 +1,7 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import type { GetFileParams } from '@metamask/snaps-sdk';
-import { AuxiliaryFileEncoding, VirtualFile } from '@metamask/snaps-utils';
+import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
+import { VirtualFile } from '@metamask/snaps-utils';
 import type {
   JsonRpcRequest,
   PendingJsonRpcResponse,
