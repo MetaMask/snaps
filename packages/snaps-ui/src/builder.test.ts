@@ -21,6 +21,12 @@ describe('copyable', () => {
       value: 'foo bar',
       sensitive: true,
     });
+
+    expect(copyable({ value: 'foo bar', sensitive: false })).toStrictEqual({
+      type: NodeType.Copyable,
+      value: 'foo bar',
+      sensitive: false,
+    });
   });
 
   it('creates a copyable component using the shorthand form', () => {
@@ -33,6 +39,12 @@ describe('copyable', () => {
       type: NodeType.Copyable,
       value: 'foo bar',
       sensitive: true,
+    });
+
+    expect(copyable('foo bar', false)).toStrictEqual({
+      type: NodeType.Copyable,
+      value: 'foo bar',
+      sensitive: false,
     });
   });
 
