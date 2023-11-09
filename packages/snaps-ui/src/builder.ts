@@ -102,10 +102,12 @@ function createBuilder<
  * @param args - The node arguments. This can either be a string, or an object
  * with the `text` property.
  * @param args.text - The text to copy.
+ * @param args.sensitive - Whether the value is sensitive or not. Defaults to false.
  * @returns A {@link Copyable} component.
  */
 export const copyable = createBuilder(NodeType.Copyable, CopyableStruct, [
   'value',
+  'sensitive',
 ]);
 
 /**
