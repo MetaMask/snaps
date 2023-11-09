@@ -23,9 +23,14 @@ import type { AuxiliaryFileEncoding } from './get-file';
 type Method<
   MethodName extends string,
   Params extends JsonRpcParams,
-> = JsonRpcRequest<Params> & {
-  method: MethodName;
-};
+> = Partial<JsonRpcRequest> & Params extends never
+  ? {
+      method: MethodName;
+    }
+  : {
+      method: MethodName;
+      params: Params;
+    };
 
 /**
  * The request parameters for the `snap_dialog` method.
@@ -258,39 +263,30 @@ export type RequestSnapsParams = EmptyObject;
  */
 export type RequestSnapsResult = Record<string, { error: JsonRpcError } | Snap>;
 
-export type RequestFunction = {
-  (request: Method<'snap_dialog', DialogParams>): Promise<DialogResult>;
-  (
-    request: Method<'snap_getBip32Entropy', GetBip32EntropyParams>,
-  ): Promise<GetBip32EntropyResult>;
-  (
-    request: Method<'snap_getBip32PublicKey', GetBip32PublicKeyParams>,
-  ): Promise<GetBip32PublicKeyResult>;
-  (
-    request: Method<'snap_getBip44Entropy', GetBip44EntropyParams>,
-  ): Promise<GetBip44EntropyResult>;
-  (
-    request: Method<'snap_getEntropy', GetEntropyParams>,
-  ): Promise<GetEntropyResult>;
-  (request: Method<'snap_getFile', GetFileParams>): Promise<GetFileResult>;
-  (
-    request: Method<'snap_getLocale', GetLocaleParams>,
-  ): Promise<GetLocaleResult>;
-  (
-    request: Method<'snap_manageAccounts', ManageAccountsParams>,
-  ): Promise<ManageAccountsResult>;
-  (
-    request: Method<'snap_manageState', ManageStateParams>,
-  ): Promise<ManageStateResult>;
-  (request: Method<'snap_notify', NotifyParams>): Promise<NotifyResult>;
-  (request: Method<'wallet_getSnaps', GetSnapsParams>): Promise<GetSnapsResult>;
-  (
-    request: Method<'wallet_invokeKeyring', InvokeKeyringParams>,
-  ): Promise<InvokeKeyringResult>;
-  (
-    request: Method<'wallet_invokeSnap' | 'wallet_snap', InvokeSnapParams>,
-  ): Promise<InvokeSnapResult>;
-  (
-    request: Method<'wallet_requestSnaps', RequestSnapsParams>,
-  ): Promise<RequestSnapsResult>;
+/**
+ * The methods that are available to the Snap. Each method is a tuple of the
+ * request parameters and the result returned by the method.
+ */
+export type SnapMethods = {
+  /* eslint-disable @typescript-eslint/naming-convention */
+  snap_dialog: [DialogParams, DialogResult];
+  snap_getBip32Entropy: [GetBip32EntropyParams, GetBip32EntropyResult];
+  snap_getBip32PublicKey: [GetBip32PublicKeyParams, GetBip32PublicKeyResult];
+  snap_getBip44Entropy: [GetBip44EntropyParams, GetBip44EntropyResult];
+  snap_getEntropy: [GetEntropyParams, GetEntropyResult];
+  snap_getFile: [GetFileParams, GetFileResult];
+  snap_getLocale: [GetLocaleParams, GetLocaleResult];
+  snap_manageAccounts: [ManageAccountsParams, ManageAccountsResult];
+  snap_manageState: [ManageStateParams, ManageStateResult];
+  snap_notify: [NotifyParams, NotifyResult];
+  wallet_getSnaps: [GetSnapsParams, GetSnapsResult];
+  wallet_invokeKeyring: [InvokeKeyringParams, InvokeKeyringResult];
+  wallet_invokeSnap: [InvokeSnapParams, InvokeSnapResult];
+  wallet_snap: [InvokeSnapParams, InvokeSnapResult];
+  wallet_requestSnaps: [RequestSnapsParams, RequestSnapsResult];
+  /* eslint-enable @typescript-eslint/naming-convention */
 };
+
+export type RequestFunction = <MethodName extends keyof SnapMethods>(
+  request: Method<MethodName, SnapMethods[MethodName][0]>,
+) => Promise<SnapMethods[MethodName][1]>;

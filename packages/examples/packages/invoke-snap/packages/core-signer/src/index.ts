@@ -1,6 +1,6 @@
 import { rpcErrors, providerErrors } from '@metamask/rpc-errors';
+import { DialogType } from '@metamask/snaps-sdk';
 import type { OnRpcRequestHandler } from '@metamask/snaps-types';
-import { DialogType } from '@metamask/snaps-types';
 import { panel, text, heading, copyable } from '@metamask/snaps-ui';
 import { add0x, assert, hexToBytes } from '@metamask/utils';
 import { secp256k1 } from '@noble/curves/secp256k1';
