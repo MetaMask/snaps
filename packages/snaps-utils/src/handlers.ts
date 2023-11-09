@@ -1,11 +1,19 @@
+import type {
+  OnCronjobHandler,
+  OnHomePageHandler,
+  OnInstallHandler,
+  OnKeyringRequestHandler,
+  OnNameLookupHandler,
+  OnRpcRequestHandler,
+  OnTransactionHandler,
+  OnUpdateHandler,
+} from '@metamask/snaps-sdk';
+import { SeverityLevel } from '@metamask/snaps-sdk';
 import { ComponentStruct } from '@metamask/snaps-ui';
-import type { Json, JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
-import type { Infer } from 'superstruct';
 import { literal, object, optional } from 'superstruct';
 
 import type { SnapHandler } from './handler-types';
 import { HandlerType } from './handler-types';
-import type { AccountAddress, Caip2ChainId } from './namespace';
 
 export type SnapRpcHookArgs = {
   origin: string;
@@ -72,117 +80,14 @@ export const SNAP_EXPORTS = {
   },
 } as const;
 
-/**
- * The `onRpcRequest` handler. This is called whenever a JSON-RPC request is
- * made to the snap.
- *
- * @param args - The request arguments.
- * @param args.origin - The origin of the request. This can be the ID of another
- * snap, or the URL of a dapp.
- * @param args.request - The JSON-RPC request sent to the snap.
- * @returns The JSON-RPC response. This must be a JSON-serializable value.
- */
-export type OnRpcRequestHandler<Params extends JsonRpcParams = JsonRpcParams> =
-  (args: {
-    origin: string;
-    request: JsonRpcRequest<Params>;
-  }) => Promise<unknown>;
-
-/**
- * Enum used to specify the severity level of content being returned from a transaction insight.
- */
-export enum SeverityLevel {
-  Critical = 'critical',
-}
-
 export const OnTransactionResponseStruct = object({
   content: ComponentStruct,
   severity: optional(literal(SeverityLevel.Critical)),
 });
 
-/**
- * The response from a snap's `onTransaction` handler.
- *
- * @property content - A custom UI component, that will be shown in MetaMask. Can be created using `@metamask/snaps-ui`.
- *
- * If the snap has no insights about the transaction, this should be `null`.
- */
-export type OnTransactionResponse = Infer<typeof OnTransactionResponseStruct>;
-
-/**
- * The `onTransaction` handler. This is called whenever a transaction is
- * submitted to the snap. It can return insights about the transaction, which
- * will be displayed to the user.
- *
- * @param args - The request arguments.
- * @param args.transaction - The transaction object.
- * @param args.chainId - The CAIP-2 chain ID of the network the transaction is
- * being submitted to.
- * @param args.transactionOrigin - The origin of the transaction. This is the
- * URL of the dapp that submitted the transaction.
- * @returns Insights about the transaction. See {@link OnTransactionResponse}.
- */
-// TODO: Improve type.
-export type OnTransactionHandler = (args: {
-  transaction: { [key: string]: Json };
-  chainId: string;
-  transactionOrigin?: string;
-}) => Promise<OnTransactionResponse>;
-
-/**
- * The `onCronjob` handler. This is called on a regular interval, as defined by
- * the snap's manifest.
- *
- * @param args - The request arguments.
- * @param args.request - The JSON-RPC request sent to the snap.
- */
-export type OnCronjobHandler<Params extends JsonRpcParams = JsonRpcParams> =
-  (args: { request: JsonRpcRequest<Params> }) => Promise<unknown>;
-
-/**
- * A handler that can be used for the lifecycle hooks.
- */
-export type LifecycleEventHandler = (args: {
-  request: JsonRpcRequest;
-}) => Promise<unknown>;
-
-/**
- * The `onInstall` handler. This is called after the snap is installed.
- *
- * This type is an alias for {@link LifecycleEventHandler}.
- */
-export type OnInstallHandler = LifecycleEventHandler;
-
-/**
- * The `onUpdate` handler. This is called after the snap is updated.
- *
- * This type is an alias for {@link LifecycleEventHandler}.
- */
-export type OnUpdateHandler = LifecycleEventHandler;
-
-/**
- * The `onKeyringRequest` handler. This is called by the MetaMask client for
- * privileged keyring actions.
- *
- * @param args - The request arguments.
- * @param args.origin - The origin of the request. This can be the ID of
- * another snap, or the URL of a dapp.
- * @param args.request - The JSON-RPC request sent to the snap.
- */
-export type OnKeyringRequestHandler<
-  Params extends JsonRpcParams = JsonRpcParams,
-> = (args: {
-  origin: string;
-  request: JsonRpcRequest<Params>;
-}) => Promise<unknown>;
-
-export type OnHomePageHandler = () => Promise<OnHomePageResponse>;
-
 export const OnHomePageResponseStruct = object({
   content: ComponentStruct,
 });
-
-export type OnHomePageResponse = Infer<typeof OnHomePageResponseStruct>;
 
 /**
  * Utility type for getting the handler function type from a handler type.
@@ -191,42 +96,6 @@ export type HandlerFunction<Type extends SnapHandler> =
   Type['validator'] extends (snapExport: unknown) => snapExport is infer Handler
     ? Handler
     : never;
-
-/**
- * The response from a snap's `onNameLookup` handler.
- *
- * @property resolvedAddress - The resolved address for a given domain.
- * @property resolvedDomain - The resolved domain for a given address.
- *
- *
- * If the snap has no resolved address/domain from its lookup, this should be `null`.
- */
-export type OnNameLookupResponse =
-  | {
-      resolvedAddress: AccountAddress;
-      resolvedDomain?: never;
-    }
-  | { resolvedDomain: string; resolvedAddress?: never }
-  | null;
-
-export type OnNameLookupArgs = {
-  chainId: Caip2ChainId;
-} & ({ domain: string; address?: never } | { address: string; domain?: never });
-
-/**
- * The `onNameLookup` handler. This is called whenever content is entered
- * into the send to field for sending assets to an EOA address.
- *
- * @param args - The request arguments.
- * @param args.domain - The human-readable address that is to be resolved.
- * @param args.chainId - The CAIP-2 chain ID of the network the transaction is
- * being submitted to.
- * @param args.address - The address that is to be resolved.
- * @returns Resolved address/domain from the lookup. See {@link OnNameLookupResponse}.
- */
-export type OnNameLookupHandler = (
-  args: OnNameLookupArgs,
-) => Promise<OnNameLookupResponse>;
 
 /**
  * All the function-based handlers that a snap can implement.

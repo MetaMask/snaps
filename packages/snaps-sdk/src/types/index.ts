@@ -3,6 +3,7 @@
 import './global';
 
 export * from './caip';
+export * from './handlers';
 export * from './methods';
 export * from './permissions';
 export * from './provider';
