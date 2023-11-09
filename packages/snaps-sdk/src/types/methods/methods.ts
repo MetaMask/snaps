@@ -58,6 +58,10 @@ export type SnapMethods = {
  * object and returns a promise that resolves to the result of the request.
  *
  * @param request - The request object.
+ * @param request.method - The method to call.
+ * @param request.params - The parameters to pass to the method. This is
+ * inferred from the method, based on the {@link SnapMethods} type, and may be
+ * optional.
  * @returns A promise that resolves to the result of the request. This is
  * inferred from the request method, based on the {@link SnapMethods} type.
  * @example

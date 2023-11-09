@@ -1,5 +1,8 @@
 import type { EnumToUnion } from '../../internals';
 
+/**
+ * The encoding to use when retrieving the file. Defaults to `Base64`.
+ */
 export enum AuxiliaryFileEncoding {
   Base64 = 'base64',
   Hex = 'hex',

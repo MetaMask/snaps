@@ -1,14 +1,15 @@
 import type { EnumToUnion } from '../../internals';
 
+/**
+ * The types of notifications that can be displayed.
+ *
+ * - `InApp` - A notification that is displayed in by the MetaMask extension.
+ * - `Native` - A notification that is displayed by the operating system.
+ */
 export enum NotificationType {
   InApp = 'inApp',
   Native = 'native',
 }
-
-export type Notify = {
-  type: EnumToUnion<NotificationType>;
-  message: string;
-};
 
 /**
  * The request parameters for the `snap_notify` method.
@@ -16,7 +17,10 @@ export type Notify = {
  * @property type - The type of notification to display.
  * @property message - The message to display in the notification.
  */
-export type NotifyParams = Notify;
+export type NotifyParams = {
+  type: EnumToUnion<NotificationType>;
+  message: string;
+};
 
 /**
  * The result returned by the `snap_notify` method.
