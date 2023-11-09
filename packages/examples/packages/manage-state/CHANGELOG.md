@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0]
+### Changed
+- Add support for unencrypted storage ([#1915](https://github.com/MetaMask/snaps/pull/1915))
+
 ## [2.0.1]
 ### Changed
 - Update multiple MetaMask dependencies ([#1841](https://github.com/MetaMask/snaps/pull/1841))
@@ -36,7 +40,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/manage-state-example-snap@2.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/manage-state-example-snap@2.1.0...HEAD
+[2.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/manage-state-example-snap@2.0.1...@metamask/manage-state-example-snap@2.1.0
 [2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/manage-state-example-snap@2.0.0...@metamask/manage-state-example-snap@2.0.1
 [2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/manage-state-example-snap@1.0.0...@metamask/manage-state-example-snap@2.0.0
 [1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/manage-state-example-snap@0.38.1-flask.1...@metamask/manage-state-example-snap@1.0.0
