@@ -5,11 +5,7 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type {
-  ManageStateParams,
-  ManageStateResult,
-  UpdateStateOperation,
-} from '@metamask/snaps-sdk';
+import type { ManageStateParams, ManageStateResult } from '@metamask/snaps-sdk';
 import { ManageStateOperation } from '@metamask/snaps-sdk';
 import { STATE_ENCRYPTION_MAGIC_VALUE, parseJson } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, Hex } from '@metamask/utils';
@@ -267,18 +263,21 @@ export function getManageStateImplementation({
       method,
       context: { origin },
     } = options;
-    const { operation, encrypted } = getValidatedParams(params, method);
+    const validatedParams = getValidatedParams(params, method);
 
     // If the encrypted param is undefined or null we default to true.
-    const shouldEncrypt = encrypted ?? true;
+    const shouldEncrypt = validatedParams.encrypted ?? true;
 
     // We only need to prompt the user when the mnemonic is needed
     // which it isn't for the clear operation or unencrypted storage.
-    if (shouldEncrypt && operation !== ManageStateOperation.ClearState) {
+    if (
+      shouldEncrypt &&
+      validatedParams.operation !== ManageStateOperation.ClearState
+    ) {
       await getUnlockPromise(true);
     }
 
-    switch (operation) {
+    switch (validatedParams.operation) {
       case ManageStateOperation.ClearState:
         clearSnapState(origin, shouldEncrypt);
         return null;
@@ -299,17 +298,14 @@ export function getManageStateImplementation({
       }
 
       case ManageStateOperation.UpdateState: {
-        const { newState } = params as UpdateStateOperation;
-        assert(newState);
-
         const finalizedState = shouldEncrypt
           ? await encryptState({
-              state: newState,
+              state: validatedParams.newState,
               encryptFunction: encrypt,
               mnemonicPhrase: await getMnemonic(),
               snapId: origin,
             })
-          : JSON.stringify(newState);
+          : JSON.stringify(validatedParams.newState);
 
         updateSnapState(origin, finalizedState, shouldEncrypt);
         return null;
@@ -317,7 +313,9 @@ export function getManageStateImplementation({
 
       default:
         throw rpcErrors.invalidParams(
-          `Invalid ${method} operation: "${operation as string}"`,
+          `Invalid ${method} operation: "${
+            validatedParams.operation as string
+          }"`,
         );
     }
   };
