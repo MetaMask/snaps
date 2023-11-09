@@ -31,7 +31,11 @@ import type {
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { BlockReason } from '@metamask/snaps-registry';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
-import type { RequestSnapsResult, SnapId } from '@metamask/snaps-sdk';
+import type {
+  RequestSnapsParams,
+  RequestSnapsResult,
+  SnapId,
+} from '@metamask/snaps-sdk';
 import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
 import { assertUILinksAreSafe } from '@metamask/snaps-ui';
 import type {
@@ -1685,7 +1689,7 @@ export class SnapController extends BaseController<
    */
   async installSnaps(
     origin: string,
-    requestedSnaps: RequestedSnapPermissions,
+    requestedSnaps: RequestSnapsParams,
   ): Promise<RequestSnapsResult> {
     const result: RequestSnapsResult = {};
 
@@ -1704,7 +1708,9 @@ export class SnapController extends BaseController<
 
         if (error) {
           throw rpcErrors.invalidParams(
-            `The "version" field must be a valid SemVer version range if specified. Received: "${rawVersion}".`,
+            `The "version" field must be a valid SemVer version range if specified. Received: "${
+              rawVersion as string
+            }".`,
           );
         }
 
