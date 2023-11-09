@@ -4850,6 +4850,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/object-multiplex@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/object-multiplex@npm:2.0.0"
+  dependencies:
+    once: ^1.4.0
+    readable-stream: ^3.6.2
+  checksum: 54baea752a3ac7c2742c376512e00d4902d383e9da8787574d3b21eb0081523309e24e3915a98f3ae0341d65712b6832d2eb7eeb862f4ef0da1ead52dcde5387
+  languageName: node
+  linkType: hard
+
 "@metamask/permission-controller@npm:^5.0.0":
   version: 5.0.0
   resolution: "@metamask/permission-controller@npm:5.0.0"
@@ -4909,6 +4919,26 @@ __metadata:
     json-rpc-middleware-stream: ^4.2.1
     webextension-polyfill: ^0.10.0
   checksum: b41748cf179794bf7a68d3028e84234e876498611221ba40846ed0859b4470a806c4cf99ff9fcdc60fde1af2f0d999281e6edbdd42113223d8f7018a009ff0ab
+  languageName: node
+  linkType: hard
+
+"@metamask/providers@npm:^14.0.0":
+  version: 14.0.0
+  resolution: "@metamask/providers@npm:14.0.0"
+  dependencies:
+    "@metamask/json-rpc-engine": ^7.1.1
+    "@metamask/object-multiplex": ^2.0.0
+    "@metamask/rpc-errors": ^6.0.0
+    "@metamask/safe-event-emitter": ^3.0.0
+    "@metamask/utils": ^8.1.0
+    detect-browser: ^5.2.0
+    extension-port-stream: ^3.0.0
+    fast-deep-equal: ^3.1.3
+    is-stream: ^2.0.0
+    json-rpc-middleware-stream: ^5.0.1
+    readable-stream: ^3.6.2
+    webextension-polyfill: ^0.10.0
+  checksum: 32c2695cf49ef6445c6e3bc8d6be30e64a16cf2b28d32369e315e841fbf29103dbb8e6da9d37b412ec119998feb1cce1fdc1f48ec46dfe96028018e69198c4e8
   languageName: node
   linkType: hard
 
@@ -5230,7 +5260,7 @@ __metadata:
     "@metamask/json-rpc-engine": ^7.1.1
     "@metamask/object-multiplex": ^1.2.0
     "@metamask/post-message-stream": ^7.0.0
-    "@metamask/providers": ^13.0.0
+    "@metamask/providers": ^14.0.0
     "@metamask/rpc-errors": ^6.1.0
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
@@ -5739,7 +5769,7 @@ __metadata:
     "@metamask/name-lookup-example-snap": "workspace:^"
     "@metamask/network-example-snap": "workspace:^"
     "@metamask/notification-example-snap": "workspace:^"
-    "@metamask/providers": ^13.0.0
+    "@metamask/providers": ^14.0.0
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/utils": ^8.1.0
     "@metamask/wasm-example-snap": "workspace:^"
@@ -8322,6 +8352,15 @@ __metadata:
   version: 1.1.1
   resolution: "abbrev@npm:1.1.1"
   checksum: a4a97ec07d7ea112c517036882b2ac22f3109b7b19077dc656316d07d308438aac28e4d9746dc4d84bf6b1e75b4a7b0a5f3cb30592419f128ca9a8cee3bcfa17
+  languageName: node
+  linkType: hard
+
+"abort-controller@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "abort-controller@npm:3.0.0"
+  dependencies:
+    event-target-shim: ^5.0.0
+  checksum: 170bdba9b47b7e65906a28c8ce4f38a7a369d78e2271706f020849c1bfe0ee2067d4261df8bbb66eb84f79208fd5b710df759d64191db58cfba7ce8ef9c54b75
   languageName: node
   linkType: hard
 
@@ -12650,6 +12689,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"event-target-shim@npm:^5.0.0":
+  version: 5.0.1
+  resolution: "event-target-shim@npm:5.0.1"
+  checksum: 1ffe3bb22a6d51bdeb6bf6f7cf97d2ff4a74b017ad12284cc9e6a279e727dc30a5de6bb613e5596ff4dc3e517841339ad09a7eec44266eccb1aa201a30448166
+  languageName: node
+  linkType: hard
+
 "eventemitter3@npm:^4.0.0":
   version: 4.0.7
   resolution: "eventemitter3@npm:4.0.7"
@@ -12858,6 +12904,16 @@ __metadata:
   dependencies:
     webextension-polyfill: ">=0.10.0 <1.0"
   checksum: aee8bbeb2ed6f69a62f58a89580e0e9002dadb11062edbaedb7bb04cfc5a5e0b0d3980bfeaa1c3ee7e08dec7e5fac26e25497fc2f82000db7653442bd5eca157
+  languageName: node
+  linkType: hard
+
+"extension-port-stream@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "extension-port-stream@npm:3.0.0"
+  dependencies:
+    readable-stream: ^3.6.2 || ^4.4.2
+    webextension-polyfill: ">=0.10.0 <1.0"
+  checksum: 4f51d2258a96154c2d916a8a5425636a2b0817763e9277f7dc378d08b6f050c90d185dbde4313d27cf66ad99d4b3116479f9f699c40358c64cccfa524d2b55bf
   languageName: node
   linkType: hard
 
@@ -15974,7 +16030,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-rpc-middleware-stream@npm:^5.0.0":
+"json-rpc-middleware-stream@npm:^5.0.0, json-rpc-middleware-stream@npm:^5.0.1":
   version: 5.0.1
   resolution: "json-rpc-middleware-stream@npm:5.0.1"
   dependencies:
@@ -19550,6 +19606,19 @@ __metadata:
     string_decoder: ~1.1.1
     util-deprecate: ~1.0.1
   checksum: e4920cf7549a60f8aaf694d483a0e61b2a878b969d224f89b3bc788b8d920075132c4b55a7494ee944c7b6a9a0eada28a7f6220d80b0312ece70bbf08eeca755
+  languageName: node
+  linkType: hard
+
+"readable-stream@npm:^3.6.2 || ^4.4.2":
+  version: 4.4.2
+  resolution: "readable-stream@npm:4.4.2"
+  dependencies:
+    abort-controller: ^3.0.0
+    buffer: ^6.0.3
+    events: ^3.3.0
+    process: ^0.11.10
+    string_decoder: ^1.3.0
+  checksum: 6f4063763dbdb52658d22d3f49ca976420e1fbe16bbd241f744383715845350b196a2f08b8d6330f8e219153dff34b140aeefd6296da828e1041a7eab1f20d5e
   languageName: node
   linkType: hard
 
