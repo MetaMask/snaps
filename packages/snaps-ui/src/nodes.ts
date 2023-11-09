@@ -81,7 +81,7 @@ export const CopyableStruct = assign(
  *
  * @property type - The type of the node, must be the string 'copyable'.
  * @property value - The text to be copied.
- * @property sensitive - Wether if the value is sensitive or not. Defaults to false.
+ * @property sensitive - Whether the value is sensitive or not. Defaults to false.
  */
 export type Copyable = Infer<typeof CopyableStruct>;
 
