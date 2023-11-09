@@ -1,4 +1,4 @@
-import type { ChainId } from '@metamask/snaps-sdk';
+import type { ChainId } from '../caip';
 
 type BaseOnNameLookupArgs = {
   chainId: ChainId;
