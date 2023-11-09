@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.2]
+### Uncategorized
+- Add manifest localization functionality ([#1889](https://github.com/MetaMask/snaps-skunkworks.git/pull/1889))
+- Add support for unencrypted storage ([#1902](https://github.com/MetaMask/snaps-skunkworks.git/pull/1902))
+- Update example insight snap ([#1911](https://github.com/MetaMask/snaps-skunkworks.git/pull/1911))
+- Handle links in Custom UI and Notifications ([#1814](https://github.com/MetaMask/snaps-skunkworks.git/pull/1814))
+
 ## [2.0.1]
 ### Changed
 - Update multiple MetaMask dependencies ([#1841](https://github.com/MetaMask/snaps/pull/1841))
@@ -36,10 +43,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/insights-example-snap@2.0.1...HEAD
-[2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/insights-example-snap@2.0.0...@metamask/insights-example-snap@2.0.1
-[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/insights-example-snap@1.0.0...@metamask/insights-example-snap@2.0.0
-[1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/insights-example-snap@0.38.1-flask.1...@metamask/insights-example-snap@1.0.0
-[0.38.1-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/insights-example-snap@0.38.0-flask.1...@metamask/insights-example-snap@0.38.1-flask.1
-[0.38.0-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/insights-example-snap@0.37.2-flask.1...@metamask/insights-example-snap@0.38.0-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/insights-example-snap@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/insights-example-snap@2.0.2...HEAD
+[2.0.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/insights-example-snap@2.0.1...@metamask/insights-example-snap@2.0.2
+[2.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/insights-example-snap@2.0.0...@metamask/insights-example-snap@2.0.1
+[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/insights-example-snap@1.0.0...@metamask/insights-example-snap@2.0.0
+[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/insights-example-snap@0.38.1-flask.1...@metamask/insights-example-snap@1.0.0
+[0.38.1-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/insights-example-snap@0.38.0-flask.1...@metamask/insights-example-snap@0.38.1-flask.1
+[0.38.0-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/insights-example-snap@0.37.2-flask.1...@metamask/insights-example-snap@0.38.0-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/insights-example-snap@0.37.2-flask.1
