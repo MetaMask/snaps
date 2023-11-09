@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@metamask/rpc-errors": "^6.1.0",
-    "@metamask/snaps-types": "workspace:^"
+    "@metamask/snaps-sdk": "workspace:^"
   },
   "devDependencies": {
     "@babel/core": "^7.23.2",

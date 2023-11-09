@@ -10,7 +10,7 @@
   "include": ["src", "scripts", "babel.config.json"],
   "references": [
     {
-      "path": "../../../snaps-types"
+      "path": "../../../snaps-sdk"
     },
     {
       "path": "../../../snaps-browserify-plugin"

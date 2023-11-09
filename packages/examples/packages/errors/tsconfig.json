@@ -9,10 +9,7 @@
   "include": ["src", "snap.config.ts"],
   "references": [
     {
-      "path": "../../../snaps-types"
-    },
-    {
-      "path": "../../../snaps-ui"
+      "path": "../../../snaps-sdk"
     },
     {
       "path": "../../../snaps-jest"

@@ -1,6 +1,6 @@
 import { rpcErrors } from '@metamask/rpc-errors';
 import { NotificationType } from '@metamask/snaps-sdk';
-import type { OnRpcRequestHandler } from '@metamask/snaps-types';
+import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the

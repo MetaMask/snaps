@@ -61,7 +61,6 @@ export type AddressLookupResult = {
  * {@link AddressLookupResult}, {@link DomainLookupResult}, or `null` if the
  * address or domain could not be resolved.
  */
-export type OnNameLookupHandler = {
-  (args: AddressLookupArgs): Promise<AddressLookupResult | null>;
-  (args: DomainLookupArgs): Promise<DomainLookupResult | null>;
-};
+export type OnNameLookupHandler = (
+  args: AddressLookupArgs | DomainLookupArgs,
+) => Promise<AddressLookupResult | DomainLookupResult | null>;

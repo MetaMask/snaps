@@ -1,4 +1,4 @@
-import type { JsonBIP44Node } from '@metamask/key-tree';
+import type { JsonBIP44CoinTypeNode } from '@metamask/key-tree';
 
 import type { Bip44Entropy } from '../permissions';
 
@@ -14,4 +14,4 @@ export type GetBip44EntropyParams = Bip44Entropy;
  *
  * @see https://github.com/MetaMask/key-tree#usage
  */
-export type GetBip44EntropyResult = JsonBIP44Node;
+export type GetBip44EntropyResult = JsonBIP44CoinTypeNode;

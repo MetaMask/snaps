@@ -1,4 +1,4 @@
-import type { OnRpcRequestHandler } from '@metamask/snaps-types';
+import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
 
 export const onRpcRequest: OnRpcRequestHandler = async () => {
   // eslint-disable-next-line no-new, @typescript-eslint/no-floating-promises

@@ -32,8 +32,7 @@
   },
   "dependencies": {
     "@metamask/rpc-errors": "^6.1.0",
-    "@metamask/snaps-sdk": "workspace:^",
-    "@metamask/snaps-types": "workspace:^"
+    "@metamask/snaps-sdk": "workspace:^"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",

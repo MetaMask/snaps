@@ -111,6 +111,6 @@ export type OnTransactionHandler = (args: {
  * level is supported: `critical`.
  */
 export type OnTransactionResponse = {
-  component: Component;
+  content: Component;
   severity?: EnumToUnion<SeverityLevel>;
 };
