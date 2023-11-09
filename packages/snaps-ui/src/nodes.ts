@@ -72,6 +72,7 @@ export const CopyableStruct = assign(
   object({
     type: literal(NodeType.Copyable),
     value: string(),
+    sensitive: optional(boolean()),
   }),
 );
 

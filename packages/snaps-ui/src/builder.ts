@@ -106,6 +106,7 @@ function createBuilder<
  */
 export const copyable = createBuilder(NodeType.Copyable, CopyableStruct, [
   'value',
+  'sensitive',
 ]);
 
 /**

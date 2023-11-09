@@ -16,9 +16,10 @@ describe('copyable', () => {
       value: 'Hello, world!',
     });
 
-    expect(copyable({ value: 'foo bar' })).toStrictEqual({
+    expect(copyable({ value: 'foo bar', sensitive: true })).toStrictEqual({
       type: NodeType.Copyable,
       value: 'foo bar',
+      sensitive: true,
     });
   });
 
@@ -28,9 +29,10 @@ describe('copyable', () => {
       value: 'Hello, world!',
     });
 
-    expect(copyable('foo bar')).toStrictEqual({
+    expect(copyable('foo bar', true)).toStrictEqual({
       type: NodeType.Copyable,
       value: 'foo bar',
+      sensitive: true,
     });
   });
 
