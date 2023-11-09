@@ -1,6 +1,7 @@
-import type { ChainId } from '@metamask/snaps-sdk';
-import type { EnumToUnion } from '@metamask/snaps-sdk/internals';
 import type { Component } from '@metamask/snaps-ui';
+
+import type { EnumToUnion } from '../../internals';
+import type { ChainId } from '../caip';
 
 /**
  * The severity level of content being returned from a transaction insight.

@@ -1,11 +1,11 @@
 import { describe, it } from '@jest/globals';
-import type { OnNameLookupArgs } from '@metamask/snaps-types';
+import type { ChainId } from '@metamask/snaps-sdk';
 
 import { onNameLookup } from '.';
 
 const DOMAIN_MOCK = 'test.domain';
 const ADDRESS_MOCK = '0xc0ffee254729296a45a3885639AC7E10F9d54979';
-const CHAIN_ID_MOCK = 'eip155:1';
+const CHAIN_ID_MOCK = 'eip155:1' as ChainId;
 
 describe('onNameLookup', () => {
   it('returns resolved address if domain', async () => {
@@ -45,8 +45,9 @@ describe('onNameLookup', () => {
   it('returns null if no domain or address', async () => {
     const request = {
       chainId: CHAIN_ID_MOCK,
-    } as OnNameLookupArgs;
+    };
 
+    // @ts-expect-error - Testing invalid request.
     expect(await onNameLookup(request)).toBeNull();
   });
 });
