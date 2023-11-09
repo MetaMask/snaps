@@ -28,3 +28,22 @@ export type ManageState =
   | ClearStateOperation
   | GetStateOperation
   | UpdateStateOperation;
+
+/**
+ * The request parameters for the `snap_manageState` method.
+ *
+ * @property operation - The operation to perform on the state.
+ * @property encrypted - Whether to use the separate encrypted state, or the
+ * unencrypted state. Defaults to the encrypted state.
+ * @property newState - The new state to set. Only applicable for the `set`
+ * operation.
+ */
+export type ManageStateParams = ManageState;
+
+/**
+ * The result returned by the `snap_manageState` method.
+ *
+ * If the operation is `get`, the result is the state. Otherwise, the result is
+ * `null`.
+ */
+export type ManageStateResult = Record<string, Json> | null;
