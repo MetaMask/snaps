@@ -65,33 +65,45 @@ class ResponseWrapper implements Response {
   }
 
   async text() {
-    await this.#onStart();
-    try {
-      return await withTeardown<string>(this.#ogResponse.text(), this as any);
-    } finally {
-      await this.#onFinish();
-    }
+    return await withTeardown<string>(
+      (async () => {
+        await this.#onStart();
+        try {
+          return await this.#ogResponse.text();
+        } finally {
+          await this.#onFinish();
+        }
+      })(),
+      this.#teardownRef,
+    );
   }
 
   async arrayBuffer(): Promise<ArrayBuffer> {
-    await this.#onStart();
-    try {
-      return await withTeardown<ArrayBuffer>(
-        this.#ogResponse.arrayBuffer(),
-        this as any,
-      );
-    } finally {
-      await this.#onFinish();
-    }
+    return await withTeardown<ArrayBuffer>(
+      (async () => {
+        await this.#onStart();
+        try {
+          return await this.#ogResponse.arrayBuffer();
+        } finally {
+          await this.#onFinish();
+        }
+      })(),
+      this.#teardownRef,
+    );
   }
 
   async blob(): Promise<Blob> {
-    await this.#onStart();
-    try {
-      return await withTeardown<Blob>(this.#ogResponse.blob(), this as any);
-    } finally {
-      await this.#onFinish();
-    }
+    return await withTeardown<Blob>(
+      (async () => {
+        await this.#onStart();
+        try {
+          return await this.#ogResponse.blob();
+        } finally {
+          await this.#onFinish();
+        }
+      })(),
+      this.#teardownRef,
+    );
   }
 
   clone(): Response {
@@ -105,24 +117,31 @@ class ResponseWrapper implements Response {
   }
 
   async formData(): Promise<FormData> {
-    await this.#onStart();
-    try {
-      return await withTeardown<FormData>(
-        this.#ogResponse.formData(),
-        this as any,
-      );
-    } finally {
-      await this.#onFinish();
-    }
+    return await withTeardown<FormData>(
+      (async () => {
+        await this.#onStart();
+        try {
+          return await this.#ogResponse.formData();
+        } finally {
+          await this.#onFinish();
+        }
+      })(),
+      this.#teardownRef,
+    );
   }
 
   async json(): Promise<any> {
-    await this.#onStart();
-    try {
-      return await withTeardown(this.#ogResponse.json(), this as any);
-    } finally {
-      await this.#onFinish();
-    }
+    return await withTeardown(
+      (async () => {
+        await this.#onStart();
+        try {
+          return await this.#ogResponse.json();
+        } finally {
+          await this.#onFinish();
+        }
+      })(),
+      this.#teardownRef,
+    );
   }
 }
 
@@ -195,60 +214,71 @@ const createNetwork = ({ notify }: EndowmentFactoryOptions = {}) => {
 
     let res: Response;
     let openFetchConnection: { cancel: () => Promise<void> } | undefined;
-    try {
-      await notify({ method: 'OutboundRequest', params: { source: 'fetch' } });
-      const fetchPromise = fetch(input, {
-        ...init,
-        signal: abortController.signal,
-      });
+    return await withTeardown(
+      (async () => {
+        try {
+          await notify({
+            method: 'OutboundRequest',
+            params: { source: 'fetch' },
+          });
+          const fetchPromise = fetch(input, {
+            ...init,
+            signal: abortController.signal,
+          });
 
-      openFetchConnection = {
-        cancel: async () => {
-          abortController.abort();
-          try {
-            await fetchPromise;
-          } catch {
-            /* do nothing */
+          openFetchConnection = {
+            cancel: async () => {
+              abortController.abort();
+              try {
+                await fetchPromise;
+              } catch {
+                /* do nothing */
+              }
+            },
+          };
+          openConnections.add(openFetchConnection);
+
+          res = new ResponseWrapper(
+            await fetchPromise,
+            teardownRef,
+            onStart,
+            onFinish,
+          );
+        } finally {
+          if (openFetchConnection !== undefined) {
+            openConnections.delete(openFetchConnection);
           }
-        },
-      };
-      openConnections.add(openFetchConnection);
+          await notify({
+            method: 'OutboundResponse',
+            params: { source: 'fetch' },
+          });
+        }
 
-      res = new ResponseWrapper(
-        await withTeardown(fetchPromise, teardownRef),
-        teardownRef,
-        onStart,
-        onFinish,
-      );
-    } finally {
-      if (openFetchConnection !== undefined) {
-        openConnections.delete(openFetchConnection);
-      }
-      await notify({ method: 'OutboundResponse', params: { source: 'fetch' } });
-    }
+        if (res.body !== null) {
+          const body = new WeakRef<ReadableStream>(res.body);
 
-    if (res.body !== null) {
-      const body = new WeakRef<ReadableStream>(res.body);
-
-      const openBodyConnection = {
-        cancel:
-          /* istanbul ignore next: see it.todo('can be torn down during body read') test */
-          async () => {
-            try {
-              await body.deref()?.cancel();
-            } catch {
-              /* do nothing */
-            }
-          },
-      };
-      openConnections.add(openBodyConnection);
-      cleanup.register(
-        res.body,
-        /* istanbul ignore next: can't test garbage collection without modifying node parameters */
-        () => openConnections.delete(openBodyConnection),
-      );
-    }
-    return harden(res);
+          const openBodyConnection = {
+            cancel:
+              /* istanbul ignore next: see it.todo('can be torn down during body read') test */
+              async () => {
+                try {
+                  await body.deref()?.cancel();
+                } catch {
+                  /* do nothing */
+                }
+              },
+          };
+          openConnections.add(openBodyConnection);
+          cleanup.register(
+            res.body,
+            /* istanbul ignore next: can't test garbage collection without modifying node parameters */
+            () => openConnections.delete(openBodyConnection),
+          );
+        }
+        return harden(res);
+      })(),
+      teardownRef,
+    );
   };
 
   const teardownFunction = async () => {

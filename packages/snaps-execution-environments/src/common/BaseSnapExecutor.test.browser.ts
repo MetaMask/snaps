@@ -1685,6 +1685,7 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundResponse',
+      params: { source: 'ethereum.request' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1796,6 +1797,7 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       jsonrpc: '2.0',
       method: 'OutboundResponse',
+      params: { source: 'ethereum.request' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({

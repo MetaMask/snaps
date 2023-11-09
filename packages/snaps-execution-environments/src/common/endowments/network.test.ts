@@ -53,13 +53,7 @@ describe('Network endowments', () => {
     });
 
     it('can use AbortController normally', async () => {
-      let resolve: ((result: string) => void) | null = null;
-      fetchMock.mockOnce(
-        async () =>
-          new Promise((_resolve) => {
-            resolve = _resolve;
-          }),
-      );
+      fetchMock.mockOnce(async () => 'FAIL');
 
       const { fetch } = network.factory(factoryOptions);
 
@@ -67,7 +61,6 @@ describe('Network endowments', () => {
 
       const fetchPromise = fetch('foo.com', { signal: controller.signal });
       controller.abort();
-      (resolve as any)('FAIL');
       await expect(fetchPromise).rejects.toThrow('The operation was aborted');
     });
 
@@ -86,10 +79,7 @@ describe('Network endowments', () => {
     it.todo('reason from AbortController.abort() is passed down');
 
     it('should not expose then or catch after teardown has been called', async () => {
-      let fetchResolve: ((result: string) => void) | null = null;
-      fetchMock.mockOnce(
-        async () => new Promise((resolve) => (fetchResolve = resolve)),
-      );
+      fetchMock.mockOnce(async () => 'Resolved');
 
       const { fetch, teardownFunction } = network.factory(factoryOptions);
       const ErrorProxy = jest
@@ -107,7 +97,6 @@ describe('Network endowments', () => {
         .catch((error) => console.log(error));
 
       const teardownPromise = teardownFunction();
-      (fetchResolve as any)('Resolved');
       await teardownPromise;
       await new Promise((resolve) => setTimeout(() => resolve('Resolved'), 0));
 
