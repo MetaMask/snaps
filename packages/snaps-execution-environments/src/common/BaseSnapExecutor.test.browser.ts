@@ -1607,6 +1607,11 @@ describe('BaseSnapExecutor', () => {
     });
 
     expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      method: 'OutboundResponse',
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
       id: 3,
       jsonrpc: '2.0',
       result: 'Timeout resolved for second call.',
@@ -1709,6 +1714,11 @@ describe('BaseSnapExecutor', () => {
           code: -1000,
         },
       },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      method: 'OutboundResponse',
     });
 
     expect(await executor.readCommand()).toStrictEqual({

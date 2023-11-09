@@ -191,7 +191,7 @@ export class BaseSnapExecutor {
 
     const errorData = getErrorData(serializedError);
 
-    this.notify({
+    this.#notify({
       method: 'UnhandledError',
       params: {
         error: {
@@ -202,6 +202,8 @@ export class BaseSnapExecutor {
           },
         },
       },
+    }).catch((notifyError) => {
+      logError(notifyError);
     });
   }
 
@@ -216,7 +218,7 @@ export class BaseSnapExecutor {
     const { id, method, params } = message;
 
     if (!hasProperty(EXECUTION_ENVIRONMENT_METHODS, method)) {
-      this.respond(id, {
+      await this.#respond(id, {
         error: rpcErrors
           .methodNotFound({
             data: {
@@ -235,7 +237,7 @@ export class BaseSnapExecutor {
 
     const [error] = validate<any, any>(paramsAsArray, methodObject.struct);
     if (error) {
-      this.respond(id, {
+      await this.#respond(id, {
         error: rpcErrors
           .invalidParams({
             message: `Invalid parameters for method "${method}": ${error.message}.`,
@@ -251,9 +253,9 @@ export class BaseSnapExecutor {
 
     try {
       const result = await (this.methods as any)[method](...paramsAsArray);
-      this.respond(id, { result });
+      await this.#respond(id, { result });
     } catch (rpcError) {
-      this.respond(id, {
+      await this.#respond(id, {
         error: serializeError(rpcError, {
           fallbackError,
         }),
@@ -261,24 +263,39 @@ export class BaseSnapExecutor {
     }
   }
 
-  protected notify(requestObject: Omit<JsonRpcNotification, 'jsonrpc'>) {
+  // Awaitable function that writes back to the command stream
+  // To prevent snap execution from blocking writing we wrap in a promise
+  // and await it before continuing execution
+  async #write(chunk: Json) {
+    return new Promise<void>((resolve, reject) => {
+      this.commandStream.write(chunk, (error) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve();
+      });
+    });
+  }
+
+  async #notify(requestObject: Omit<JsonRpcNotification, 'jsonrpc'>) {
     if (!isValidJson(requestObject) || !isObject(requestObject)) {
       throw rpcErrors.internal(
         'JSON-RPC notifications must be JSON serializable objects',
       );
     }
 
-    this.commandStream.write({
+    await this.#write({
       ...requestObject,
       jsonrpc: '2.0',
     });
   }
 
-  protected respond(id: JsonRpcId, requestObject: Record<string, unknown>) {
+  async #respond(id: JsonRpcId, requestObject: Record<string, unknown>) {
     if (!isValidJson(requestObject) || !isObject(requestObject)) {
       // Instead of throwing, we directly respond with an error.
       // This prevents an issue where we wouldn't respond when errors were non-serializable
-      this.commandStream.write({
+      await this.#write({
         error: serializeError(
           rpcErrors.internal(
             'JSON-RPC responses must be JSON serializable objects.',
@@ -290,7 +307,7 @@ export class BaseSnapExecutor {
       return;
     }
 
-    this.commandStream.write({
+    await this.#write({
       ...requestObject,
       id,
       jsonrpc: '2.0',
@@ -435,12 +452,17 @@ export class BaseSnapExecutor {
     const request = async (args: RequestArguments) => {
       const sanitizedArgs = sanitizeRequestArguments(args);
       assertSnapOutboundRequest(sanitizedArgs);
-      this.notify({ method: 'OutboundRequest' });
-      try {
-        return await withTeardown(originalRequest(sanitizedArgs), this as any);
-      } finally {
-        this.notify({ method: 'OutboundResponse' });
-      }
+      return await withTeardown(
+        (async () => {
+          await this.#notify({ method: 'OutboundRequest' });
+          try {
+            return await originalRequest(sanitizedArgs);
+          } finally {
+            await this.#notify({ method: 'OutboundResponse' });
+          }
+        })(),
+        this as any,
+      );
     };
 
     // Proxy target is intentionally set to be an empty object, to ensure
@@ -476,12 +498,17 @@ export class BaseSnapExecutor {
     const request = async (args: RequestArguments) => {
       const sanitizedArgs = sanitizeRequestArguments(args);
       assertEthereumOutboundRequest(sanitizedArgs);
-      this.notify({ method: 'OutboundRequest' });
-      try {
-        return await withTeardown(originalRequest(sanitizedArgs), this as any);
-      } finally {
-        this.notify({ method: 'OutboundResponse' });
-      }
+      return await withTeardown(
+        (async () => {
+          await this.#notify({ method: 'OutboundRequest' });
+          try {
+            return await originalRequest(sanitizedArgs);
+          } finally {
+            await this.#notify({ method: 'OutboundResponse' });
+          }
+        })(),
+        this as any,
+      );
     };
 
     const streamProviderProxy = proxyStreamProvider(provider, request);
