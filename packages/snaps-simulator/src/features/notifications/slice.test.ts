@@ -1,4 +1,4 @@
-import { NotificationType } from '@metamask/snaps-rpc-methods';
+import { NotificationType } from '@metamask/snaps-sdk';
 
 import {
   addNativeNotification,

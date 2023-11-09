@@ -1,4 +1,4 @@
-import { DialogType } from '@metamask/snaps-rpc-methods';
+import { DialogType } from '@metamask/snaps-sdk';
 import { assert } from '@metamask/utils';
 import type { Page } from 'puppeteer';
 import { create } from 'superstruct';

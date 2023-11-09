@@ -5,8 +5,9 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
+import type { GetEntropyParams, GetEntropyResult } from '@metamask/snaps-sdk';
 import { SIP_6_MAGIC_VALUE } from '@metamask/snaps-utils';
-import type { Hex, NonEmptyArray } from '@metamask/utils';
+import type { NonEmptyArray } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
 import type { Infer } from 'superstruct';
 import { literal, object, optional, string } from 'superstruct';
@@ -100,8 +101,8 @@ function getEntropyImplementation({
   getUnlockPromise,
 }: GetEntropyHooks) {
   return async function getEntropy(
-    options: RestrictedMethodOptions<GetEntropyArgs>,
-  ): Promise<Hex> {
+    options: RestrictedMethodOptions<GetEntropyParams>,
+  ): Promise<GetEntropyResult> {
     const {
       params,
       context: { origin },

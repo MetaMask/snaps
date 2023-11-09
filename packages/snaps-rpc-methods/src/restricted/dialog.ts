@@ -5,9 +5,12 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
+import type { DialogParams } from '@metamask/snaps-sdk';
+import { DialogType } from '@metamask/snaps-sdk';
+import type { EnumToUnion } from '@metamask/snaps-sdk/internals';
 import type { Component } from '@metamask/snaps-ui';
 import { ComponentStruct, assertUILinksAreSafe } from '@metamask/snaps-ui';
-import type { EnumToUnion } from '@metamask/snaps-utils';
+import type { InferMatching } from '@metamask/snaps-utils';
 import { enumValue } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 import type { Infer, Struct } from 'superstruct';
@@ -26,12 +29,6 @@ import {
 import { type MethodHooksObject } from '../utils';
 
 const methodName = 'snap_dialog';
-
-export enum DialogType {
-  Alert = 'alert',
-  Confirmation = 'confirmation',
-  Prompt = 'prompt',
-}
 
 const PlaceholderStruct = optional(size(string(), 1, 40));
 
@@ -147,7 +144,10 @@ const DialogParametersStruct = union([
   PromptParametersStruct,
 ]);
 
-export type DialogParameters = Infer<typeof DialogParametersStruct>;
+export type DialogParameters = InferMatching<
+  typeof DialogParametersStruct,
+  DialogParams
+>;
 
 const structs = {
   [DialogType.Alert]: AlertParametersStruct,

@@ -6,6 +6,10 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
+import type {
+  GetBip32PublicKeyParams,
+  GetBip32PublicKeyResult,
+} from '@metamask/snaps-sdk';
 import {
   bip32entropy,
   Bip32PathStruct,
@@ -45,12 +49,6 @@ type GetBip32PublicKeySpecification = ValidPermissionSpecification<{
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
 }>;
-
-type GetBip32PublicKeyParameters = {
-  path: ['m', ...(`${number}` | `${number}'`)[]];
-  curve: 'secp256k1' | 'ed25519';
-  compressed?: boolean;
-};
 
 export const Bip32PublicKeyArgsStruct = bip32entropy(
   object({
@@ -119,8 +117,8 @@ export function getBip32PublicKeyImplementation({
   getUnlockPromise,
 }: GetBip32PublicKeyMethodHooks) {
   return async function getBip32PublicKey(
-    args: RestrictedMethodOptions<GetBip32PublicKeyParameters>,
-  ): Promise<string> {
+    args: RestrictedMethodOptions<GetBip32PublicKeyParams>,
+  ): Promise<GetBip32PublicKeyResult> {
     await getUnlockPromise(true);
 
     assertStruct(

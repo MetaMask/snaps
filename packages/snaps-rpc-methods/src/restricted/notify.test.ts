@@ -1,9 +1,9 @@
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import { NotificationType } from '@metamask/snaps-sdk';
 
 import {
   getImplementation,
   getValidatedParams,
-  NotificationType,
   specificationBuilder,
 } from './notify';
 

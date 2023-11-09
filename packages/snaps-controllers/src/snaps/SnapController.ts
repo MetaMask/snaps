@@ -31,15 +31,17 @@ import type {
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { BlockReason } from '@metamask/snaps-registry';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
+import type {
+  RequestSnapsParams,
+  RequestSnapsResult,
+  SnapId,
+} from '@metamask/snaps-sdk';
+import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
 import { assertUILinksAreSafe } from '@metamask/snaps-ui';
 import type {
   FetchedSnapFiles,
-  InstallSnapsResult,
   PersistedSnap,
-  ProcessSnapResult,
-  RequestedSnapPermissions,
   Snap,
-  SnapId,
   SnapRpcHook,
   SnapRpcHookArgs,
   StatusContext,
@@ -47,12 +49,10 @@ import type {
   StatusStates,
   TruncatedSnap,
   TruncatedSnapFields,
-  ValidatedSnapId,
 } from '@metamask/snaps-utils';
 import {
   assertIsSnapManifest,
   assertIsValidSnapId,
-  AuxiliaryFileEncoding,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
   encodeAuxiliaryFile,
@@ -212,17 +212,17 @@ type FetchSnapResult = {
 
 // Types that probably should be defined elsewhere in prod
 type CloseAllConnectionsFunction = (origin: string) => void;
-type StoredSnaps = Record<ValidatedSnapId, Snap>;
+type StoredSnaps = Record<SnapId, Snap>;
 
 export type SnapControllerState = {
   snaps: StoredSnaps;
-  snapStates: Record<ValidatedSnapId, string | null>;
-  unencryptedSnapStates: Record<ValidatedSnapId, string | null>;
+  snapStates: Record<SnapId, string | null>;
+  unencryptedSnapStates: Record<SnapId, string | null>;
 };
 
 export type PersistedSnapControllerState = SnapControllerState & {
-  snaps: Record<ValidatedSnapId, PersistedSnap>;
-  snapStates: Record<ValidatedSnapId, string>;
+  snaps: Record<SnapId, PersistedSnap>;
+  snapStates: Record<SnapId, string>;
 };
 
 type RollbackSnapshot = {
@@ -609,7 +609,7 @@ type SnapControllerArgs = {
   detectSnapLocation?: typeof detectSnapLocation;
 };
 type AddSnapArgs = {
-  id: ValidatedSnapId;
+  id: SnapId;
   origin: string;
   location: SnapLocation;
   versionRange: SemVerRange;
@@ -687,9 +687,9 @@ export class SnapController extends BaseController<
 
   #detectSnapLocation: typeof detectSnapLocation;
 
-  #snapsRuntimeData: Map<ValidatedSnapId, SnapRuntimeData>;
+  #snapsRuntimeData: Map<SnapId, SnapRuntimeData>;
 
-  #rollbackSnapshots: Map<SnapId, RollbackSnapshot>;
+  #rollbackSnapshots: Map<string, RollbackSnapshot>;
 
   #timeoutForLastRequestStatus?: number;
 
@@ -738,7 +738,7 @@ export class SnapController extends BaseController<
                     status: SnapStatus.Stopped,
                   };
                 })
-                .reduce((memo: Record<ValidatedSnapId, Snap>, snap) => {
+                .reduce((memo: Record<SnapId, Snap>, snap) => {
                   memo[snap.id] = snap;
                   return memo;
                 }, {})
@@ -1024,10 +1024,10 @@ export class SnapController extends BaseController<
     await Promise.all(
       Object.entries(blockedSnaps).map(async ([snapId, { status, reason }]) => {
         if (status === SnapsRegistryStatus.Blocked) {
-          return this.#blockSnap(snapId as ValidatedSnapId, reason);
+          return this.#blockSnap(snapId as SnapId, reason);
         }
 
-        return this.#unblockSnap(snapId as ValidatedSnapId);
+        return this.#unblockSnap(snapId as SnapId);
       }),
     );
   }
@@ -1040,7 +1040,7 @@ export class SnapController extends BaseController<
    * @param blockedSnapInfo - Information detailing why the snap is blocked.
    */
   async #blockSnap(
-    snapId: ValidatedSnapId,
+    snapId: SnapId,
     blockedSnapInfo?: BlockReason,
   ): Promise<void> {
     if (!this.has(snapId)) {
@@ -1075,7 +1075,7 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the snap to unblock.
    */
-  #unblockSnap(snapId: ValidatedSnapId) {
+  #unblockSnap(snapId: SnapId) {
     if (!this.has(snapId) || !this.state.snaps[snapId].blocked) {
       return;
     }
@@ -1088,10 +1088,7 @@ export class SnapController extends BaseController<
     this.messagingSystem.publish(`${controllerName}:snapUnblocked`, snapId);
   }
 
-  async #assertIsInstallAllowed(
-    snapId: ValidatedSnapId,
-    snapInfo: SnapsRegistryInfo,
-  ) {
+  async #assertIsInstallAllowed(snapId: SnapId, snapInfo: SnapsRegistryInfo) {
     const results = await this.messagingSystem.call('SnapsRegistry:get', {
       [snapId]: snapInfo,
     });
@@ -1131,8 +1128,8 @@ export class SnapController extends BaseController<
     );
   }
 
-  _onUnhandledSnapError(snapId: SnapId, _error: SnapErrorJson) {
-    this.stopSnap(snapId as ValidatedSnapId, SnapStatusEvents.Crash).catch(
+  _onUnhandledSnapError(snapId: string, _error: SnapErrorJson) {
+    this.stopSnap(snapId as SnapId, SnapStatusEvents.Crash).catch(
       (stopSnapError) => {
         // TODO: Decide how to handle errors.
         logError(stopSnapError);
@@ -1140,8 +1137,8 @@ export class SnapController extends BaseController<
     );
   }
 
-  _onOutboundRequest(snapId: SnapId) {
-    const runtime = this.#getRuntimeExpect(snapId as ValidatedSnapId);
+  _onOutboundRequest(snapId: string) {
+    const runtime = this.#getRuntimeExpect(snapId as SnapId);
     // Ideally we would only pause the pending request that is making the outbound request
     // but right now we don't have a way to know which request initiated the outbound request
     runtime.pendingInboundRequests
@@ -1150,8 +1147,8 @@ export class SnapController extends BaseController<
     runtime.pendingOutboundRequests += 1;
   }
 
-  _onOutboundResponse(snapId: SnapId) {
-    const runtime = this.#getRuntimeExpect(snapId as ValidatedSnapId);
+  _onOutboundResponse(snapId: string) {
+    const runtime = this.#getRuntimeExpect(snapId as SnapId);
     runtime.pendingOutboundRequests -= 1;
     if (runtime.pendingOutboundRequests === 0) {
       runtime.pendingInboundRequests
@@ -1172,10 +1169,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the snap to transition.
    * @param event - The event enum to use to transition.
    */
-  #transition(
-    snapId: ValidatedSnapId,
-    event: StatusEvents | StatusEvents['type'],
-  ) {
+  #transition(snapId: SnapId, event: StatusEvents | StatusEvents['type']) {
     const { interpreter } = this.#getRuntimeExpect(snapId);
     interpreter.send(event);
     this.update((state: any) => {
@@ -1189,7 +1183,7 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap to start.
    */
-  async startSnap(snapId: ValidatedSnapId): Promise<void> {
+  async startSnap(snapId: SnapId): Promise<void> {
     const snap = this.state.snaps[snapId];
 
     if (snap.enabled === false) {
@@ -1208,7 +1202,7 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap to enable.
    */
-  enableSnap(snapId: ValidatedSnapId): void {
+  enableSnap(snapId: SnapId): void {
     this.getExpect(snapId);
 
     if (this.state.snaps[snapId].blocked) {
@@ -1231,7 +1225,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap to disable.
    * @returns A promise that resolves once the snap has been disabled.
    */
-  async disableSnap(snapId: ValidatedSnapId): Promise<void> {
+  async disableSnap(snapId: SnapId): Promise<void> {
     if (!this.has(snapId)) {
       throw new Error(`Snap "${snapId}" not found.`);
     }
@@ -1259,7 +1253,7 @@ export class SnapController extends BaseController<
    * stopped.
    */
   public async stopSnap(
-    snapId: ValidatedSnapId,
+    snapId: SnapId,
     statusEvent:
       | SnapStatusEvents.Stop
       | SnapStatusEvents.Crash = SnapStatusEvents.Stop,
@@ -1290,7 +1284,7 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The snap to terminate.
    */
-  async #terminateSnap(snapId: ValidatedSnapId) {
+  async #terminateSnap(snapId: SnapId) {
     await this.messagingSystem.call('ExecutionService:terminateSnap', snapId);
     this.messagingSystem.publish(
       'SnapController:snapTerminated',
@@ -1305,7 +1299,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap to check.
    * @returns `true` if the snap is running, otherwise `false`.
    */
-  isRunning(snapId: ValidatedSnapId): boolean {
+  isRunning(snapId: SnapId): boolean {
     return this.getExpect(snapId).status === 'running';
   }
 
@@ -1315,7 +1309,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap to check for.
    * @returns `true` if the snap exists in the controller state, otherwise `false`.
    */
-  has(snapId: ValidatedSnapId): boolean {
+  has(snapId: SnapId): boolean {
     return Boolean(this.get(snapId));
   }
 
@@ -1327,8 +1321,8 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap to get.
    * @returns The entire snap object from the controller state.
    */
-  get(snapId: SnapId): Snap | undefined {
-    return this.state.snaps[snapId as ValidatedSnapId];
+  get(snapId: string): Snap | undefined {
+    return this.state.snaps[snapId as SnapId];
   }
 
   /**
@@ -1341,7 +1335,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the snap to get.
    * @returns The entire snap object.
    */
-  getExpect(snapId: ValidatedSnapId): Snap {
+  getExpect(snapId: SnapId): Snap {
     const snap = this.get(snapId);
     assert(snap !== undefined, new Error(`Snap "${snapId}" not found.`));
     return snap;
@@ -1355,7 +1349,7 @@ export class SnapController extends BaseController<
    * @returns A truncated version of the snap state, that is less expensive to serialize.
    */
   // TODO(ritave): this.get returns undefined, this.getTruncated returns null
-  getTruncated(snapId: ValidatedSnapId): TruncatedSnap | null {
+  getTruncated(snapId: SnapId): TruncatedSnap | null {
     const snap = this.get(snapId);
 
     return snap ? truncateSnap(snap) : null;
@@ -1368,7 +1362,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the snap to get.
    * @returns A truncated version of the snap state, that is less expensive to serialize.
    */
-  getTruncatedExpect(snapId: ValidatedSnapId): TruncatedSnap {
+  getTruncatedExpect(snapId: SnapId): TruncatedSnap {
     return truncateSnap(this.getExpect(snapId));
   }
 
@@ -1380,11 +1374,7 @@ export class SnapController extends BaseController<
    * @param newSnapState - The new state of the snap.
    * @param encrypted - A flag to indicate whether to use encrypted storage or not.
    */
-  updateSnapState(
-    snapId: ValidatedSnapId,
-    newSnapState: string,
-    encrypted: boolean,
-  ) {
+  updateSnapState(snapId: SnapId, newSnapState: string, encrypted: boolean) {
     this.update((state) => {
       if (encrypted) {
         state.snapStates[snapId] = newSnapState;
@@ -1401,7 +1391,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap whose state should be cleared.
    * @param encrypted - A flag to indicate whether to use encrypted storage or not.
    */
-  clearSnapState(snapId: ValidatedSnapId, encrypted: boolean) {
+  clearSnapState(snapId: SnapId, encrypted: boolean) {
     this.update((state) => {
       if (encrypted) {
         state.snapStates[snapId] = null;
@@ -1419,7 +1409,7 @@ export class SnapController extends BaseController<
    * @param encrypted - A flag to indicate whether to use encrypted storage or not.
    * @returns The requested snap state or null if no state exists.
    */
-  getSnapState(snapId: ValidatedSnapId, encrypted: boolean): Json {
+  getSnapState(snapId: SnapId, encrypted: boolean): Json {
     const state = encrypted
       ? this.state.snapStates[snapId]
       : this.state.unencryptedSnapStates[snapId];
@@ -1435,7 +1425,7 @@ export class SnapController extends BaseController<
    * @returns The file requested in the chosen file encoding or null if the file is not found.
    */
   getSnapFile(
-    snapId: ValidatedSnapId,
+    snapId: SnapId,
     path: string,
     encoding: AuxiliaryFileEncoding = AuxiliaryFileEncoding.Base64,
   ): string | null {
@@ -1478,7 +1468,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap.
    * @returns A promise that resolves once the snap has been removed.
    */
-  async removeSnap(snapId: ValidatedSnapId): Promise<void> {
+  async removeSnap(snapId: SnapId): Promise<void> {
     return this.removeSnaps([snapId]);
   }
 
@@ -1488,7 +1478,7 @@ export class SnapController extends BaseController<
    *
    * @param snapIds - The ids of the Snaps.
    */
-  async removeSnaps(snapIds: ValidatedSnapId[]): Promise<void> {
+  async removeSnaps(snapIds: SnapId[]): Promise<void> {
     if (!Array.isArray(snapIds)) {
       throw new Error('Expected array of snap ids.');
     }
@@ -1531,7 +1521,7 @@ export class SnapController extends BaseController<
    * @param origin - The origin from which to remove the snap.
    * @param snapId - The id of the snap to remove.
    */
-  removeSnapFromSubject(origin: string, snapId: ValidatedSnapId) {
+  removeSnapFromSubject(origin: string, snapId: SnapId) {
     const subjectPermissions = this.messagingSystem.call(
       'PermissionController:getPermissions',
       origin,
@@ -1598,7 +1588,7 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The id of the Snap.
    */
-  #removeSnapFromSubjects(snapId: ValidatedSnapId) {
+  #removeSnapFromSubjects(snapId: SnapId) {
     const subjects = this.messagingSystem.call(
       'PermissionController:getSubjectNames',
     );
@@ -1628,7 +1618,7 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The snap id of the snap that was referenced.
    */
-  incrementActiveReferences(snapId: ValidatedSnapId) {
+  incrementActiveReferences(snapId: SnapId) {
     const runtime = this.#getRuntimeExpect(snapId);
     runtime.activeReferences += 1;
   }
@@ -1638,7 +1628,7 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The snap id of the snap that was referenced..
    */
-  decrementActiveReferences(snapId: ValidatedSnapId) {
+  decrementActiveReferences(snapId: SnapId) {
     const runtime = this.#getRuntimeExpect(snapId);
     assert(
       runtime.activeReferences > 0,
@@ -1662,7 +1652,7 @@ export class SnapController extends BaseController<
    * @param origin - The origin whose permitted snaps to retrieve.
    * @returns The serialized permitted snaps for the origin.
    */
-  getPermittedSnaps(origin: string): InstallSnapsResult {
+  getPermittedSnaps(origin: string): RequestSnapsResult {
     const permissions =
       this.messagingSystem.call(
         'PermissionController:getPermissions',
@@ -1672,10 +1662,10 @@ export class SnapController extends BaseController<
       permissions[WALLET_SNAP_PERMISSION_KEY]?.caveats?.find(
         (caveat) => caveat.type === SnapCaveatType.SnapIds,
       )?.value ?? {};
-    return Object.keys(snaps).reduce<InstallSnapsResult>(
+    return Object.keys(snaps).reduce<RequestSnapsResult>(
       (permittedSnaps, snapId) => {
         const snap = this.get(snapId);
-        const truncatedSnap = this.getTruncated(snapId as ValidatedSnapId);
+        const truncatedSnap = this.getTruncated(snapId as SnapId);
 
         if (truncatedSnap && snap?.status !== SnapStatus.Installing) {
           permittedSnaps[snapId] = truncatedSnap;
@@ -1698,9 +1688,9 @@ export class SnapController extends BaseController<
    */
   async installSnaps(
     origin: string,
-    requestedSnaps: RequestedSnapPermissions,
-  ): Promise<InstallSnapsResult> {
-    const result: InstallSnapsResult = {};
+    requestedSnaps: RequestSnapsParams,
+  ): Promise<RequestSnapsResult> {
+    const result: RequestSnapsResult = {};
 
     const snapIds = Object.keys(requestedSnaps);
 
@@ -1717,7 +1707,9 @@ export class SnapController extends BaseController<
 
         if (error) {
           throw rpcErrors.invalidParams(
-            `The "version" field must be a valid SemVer version range if specified. Received: "${rawVersion}".`,
+            `The "version" field must be a valid SemVer version range if specified. Received: "${
+              rawVersion as string
+            }".`,
           );
         }
 
@@ -1803,10 +1795,10 @@ export class SnapController extends BaseController<
    */
   private async processRequestedSnap(
     origin: string,
-    snapId: ValidatedSnapId,
+    snapId: SnapId,
     location: SnapLocation,
     versionRange: SemVerRange,
-  ): Promise<ProcessSnapResult> {
+  ): Promise<TruncatedSnap> {
     const existingSnap = this.getTruncated(snapId);
 
     // For devX we always re-install local snaps.
@@ -1893,7 +1885,7 @@ export class SnapController extends BaseController<
     type,
   }: {
     origin: string;
-    snapId: ValidatedSnapId;
+    snapId: SnapId;
     type: string;
   }): PendingApproval {
     const id = nanoid();
@@ -1950,7 +1942,7 @@ export class SnapController extends BaseController<
    */
   async updateSnap(
     origin: string,
-    snapId: ValidatedSnapId,
+    snapId: SnapId,
     location: SnapLocation,
     newVersionRange: string = DEFAULT_REQUESTED_SNAP_VERSION,
     emitEvent = true,
@@ -2102,7 +2094,7 @@ export class SnapController extends BaseController<
   }
 
   async #resolveAllowlistVersion(
-    snapId: ValidatedSnapId,
+    snapId: SnapId,
     versionRange: SemVerRange,
   ): Promise<SemVerRange> {
     return await this.messagingSystem.call(
@@ -2120,7 +2112,7 @@ export class SnapController extends BaseController<
    * verified.
    */
   async getRegistryMetadata(
-    snapId: ValidatedSnapId,
+    snapId: SnapId,
   ): Promise<SnapsRegistryMetadata | null> {
     return await this.messagingSystem.call('SnapsRegistry:getMetadata', snapId);
   }
@@ -2176,7 +2168,7 @@ export class SnapController extends BaseController<
     }
   }
 
-  async #startSnap(snapData: { snapId: ValidatedSnapId; sourceCode: string }) {
+  async #startSnap(snapData: { snapId: SnapId; sourceCode: string }) {
     const { snapId } = snapData;
     if (this.isRunning(snapId)) {
       throw new Error(`Snap "${snapId}" is already started.`);
@@ -2366,7 +2358,7 @@ export class SnapController extends BaseController<
    * @returns A tuple of the Snap manifest object and the Snap source code.
    */
   async #fetchSnap(
-    snapId: ValidatedSnapId,
+    snapId: SnapId,
     location: SnapLocation,
   ): Promise<FetchSnapResult> {
     try {
@@ -2453,7 +2445,7 @@ export class SnapController extends BaseController<
    * @returns The snap's approvedPermissions.
    */
   private async authorize(
-    snapId: ValidatedSnapId,
+    snapId: SnapId,
     pendingApproval: PendingApproval,
   ): Promise<void> {
     log(`Authorizing snap: ${snapId}`);
@@ -2533,7 +2525,7 @@ export class SnapController extends BaseController<
     origin,
     handler: handlerType,
     request: rawRequest,
-  }: SnapRpcHookArgs & { snapId: ValidatedSnapId }): Promise<unknown> {
+  }: SnapRpcHookArgs & { snapId: SnapId }): Promise<unknown> {
     const request = {
       jsonrpc: '2.0',
       id: nanoid(),
@@ -2607,7 +2599,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap whose message handler to get.
    * @returns The RPC handler for the given snap.
    */
-  #getRpcRequestHandler(snapId: ValidatedSnapId): SnapRpcHook {
+  #getRpcRequestHandler(snapId: SnapId): SnapRpcHook {
     const runtime = this.#getRuntimeExpect(snapId);
     const existingHandler = runtime.rpcHandler;
     if (existingHandler) {
@@ -2755,17 +2747,13 @@ export class SnapController extends BaseController<
     return result;
   }
 
-  #recordSnapRpcRequestStart(
-    snapId: ValidatedSnapId,
-    requestId: unknown,
-    timer: Timer,
-  ) {
+  #recordSnapRpcRequestStart(snapId: SnapId, requestId: unknown, timer: Timer) {
     const runtime = this.#getRuntimeExpect(snapId);
     runtime.pendingInboundRequests.push({ requestId, timer });
     runtime.lastRequest = null;
   }
 
-  #recordSnapRpcRequestFinish(snapId: ValidatedSnapId, requestId: unknown) {
+  #recordSnapRpcRequestFinish(snapId: SnapId, requestId: unknown) {
     const runtime = this.#getRuntimeExpect(snapId);
     runtime.pendingInboundRequests = runtime.pendingInboundRequests.filter(
       (request) => request.requestId !== requestId,
@@ -2782,7 +2770,7 @@ export class SnapController extends BaseController<
    * @param snapId - The snap id.
    * @returns A `RollbackSnapshot` or `undefined` if one doesn't exist.
    */
-  #getRollbackSnapshot(snapId: ValidatedSnapId): RollbackSnapshot | undefined {
+  #getRollbackSnapshot(snapId: SnapId): RollbackSnapshot | undefined {
     return this.#rollbackSnapshots.get(snapId);
   }
 
@@ -2794,7 +2782,7 @@ export class SnapController extends BaseController<
    * @throws {@link Error}. If the snap exists before creation or if creation fails.
    * @returns A `RollbackSnapshot`.
    */
-  #createRollbackSnapshot(snapId: ValidatedSnapId): RollbackSnapshot {
+  #createRollbackSnapshot(snapId: SnapId): RollbackSnapshot {
     assert(
       this.#rollbackSnapshots.get(snapId) === undefined,
       new Error(`Snap "${snapId}" rollback snapshot already exists.`),
@@ -2826,7 +2814,7 @@ export class SnapController extends BaseController<
    * @param snapId - The snap id.
    * @throws {@link Error}. If a snapshot does not exist.
    */
-  async #rollbackSnap(snapId: ValidatedSnapId) {
+  async #rollbackSnap(snapId: SnapId) {
     const rollbackSnapshot = this.#getRollbackSnapshot(snapId);
     if (!rollbackSnapshot) {
       throw new Error('A snapshot does not exist for this snap.');
@@ -2883,17 +2871,17 @@ export class SnapController extends BaseController<
    *
    * @param snapIds - An array of snap ids.
    */
-  async #rollbackSnaps(snapIds: ValidatedSnapId[]) {
+  async #rollbackSnaps(snapIds: SnapId[]) {
     for (const snapId of snapIds) {
       await this.#rollbackSnap(snapId);
     }
   }
 
-  #getRuntime(snapId: ValidatedSnapId): SnapRuntimeData | undefined {
+  #getRuntime(snapId: SnapId): SnapRuntimeData | undefined {
     return this.#snapsRuntimeData.get(snapId);
   }
 
-  #getRuntimeExpect(snapId: ValidatedSnapId): SnapRuntimeData {
+  #getRuntimeExpect(snapId: SnapId): SnapRuntimeData {
     const runtime = this.#getRuntime(snapId);
     assert(
       runtime !== undefined,
@@ -2903,7 +2891,7 @@ export class SnapController extends BaseController<
   }
 
   #setupRuntime(
-    snapId: ValidatedSnapId,
+    snapId: SnapId,
     data: { sourceCode: string | null; state: string | null },
   ) {
     if (this.#snapsRuntimeData.has(snapId)) {
@@ -2934,10 +2922,13 @@ export class SnapController extends BaseController<
   }
 
   #calculatePermissionsChange(
-    snapId: ValidatedSnapId,
-    desiredPermissionsSet: RequestedSnapPermissions,
+    snapId: SnapId,
+    desiredPermissionsSet: Record<
+      string,
+      Pick<PermissionConstraint, 'caveats'>
+    >,
   ): {
-    newPermissions: RequestedSnapPermissions;
+    newPermissions: Record<string, Pick<PermissionConstraint, 'caveats'>>;
     unusedPermissions: SubjectPermissions<
       ValidPermission<string, Caveat<string, any>>
     >;
@@ -2978,10 +2969,7 @@ export class SnapController extends BaseController<
    * @param newVersionRange - The new version range being requsted.
    * @returns `true` if validation checks pass and `false` if they do not.
    */
-  #isValidUpdate(
-    snapId: ValidatedSnapId,
-    newVersionRange: SemVerRange,
-  ): boolean {
+  #isValidUpdate(snapId: SnapId, newVersionRange: SemVerRange): boolean {
     const existingSnap = this.getExpect(snapId);
 
     if (satisfiesVersionRange(existingSnap.version, newVersionRange)) {
@@ -3005,7 +2993,7 @@ export class SnapController extends BaseController<
    * supported lifecycle hooks.
    * @private
    */
-  async #callLifecycleHook(snapId: ValidatedSnapId, handler: HandlerType) {
+  async #callLifecycleHook(snapId: SnapId, handler: HandlerType) {
     const permissionName = handlerEndowments[handler];
     const hasPermission = this.messagingSystem.call(
       'PermissionController:hasPermission',

@@ -12,6 +12,9 @@
       "path": "../../../snaps-types"
     },
     {
+      "path": "../../../snaps-sdk"
+    },
+    {
       "path": "../../../snaps-jest"
     },
     {

@@ -1,6 +1,6 @@
 import { expect } from '@jest/globals';
 import { installSnap } from '@metamask/snaps-jest';
-import { NotificationType } from '@metamask/snaps-types';
+import { NotificationType } from '@metamask/snaps-sdk';
 
 describe('onRpcRequest', () => {
   it('throws an error if the requested method does not exist', async () => {

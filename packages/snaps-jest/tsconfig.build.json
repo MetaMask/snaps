@@ -21,6 +21,9 @@
       "path": "../snaps-ui/tsconfig.build.json"
     },
     {
+      "path": "../snaps-sdk/tsconfig.build.json"
+    },
+    {
       "path": "../snaps-simulator/tsconfig.build.json"
     }
   ]

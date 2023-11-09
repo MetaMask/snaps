@@ -17,6 +17,33 @@ import type { AnyStruct, InferStructTuple } from 'superstruct/dist/utils';
 import { indent } from './strings';
 
 /**
+ * Infer a struct type, only if it matches the specified type. This is useful
+ * for defining types and structs that are related to each other in separate
+ * files.
+ *
+ * @example
+ * ```typescript
+ * // In file A
+ * export type GetFileArgs = {
+ *   path: string;
+ *   encoding?: EnumToUnion<AuxiliaryFileEncoding>;
+ * };
+ *
+ * // In file B
+ * export const GetFileArgsStruct = object(...);
+ *
+ * // If the type and struct are in the same file, this will return the type.
+ * // Otherwise, it will return `never`.
+ * export type GetFileArgs =
+ *   InferMatching<typeof GetFileArgsStruct, GetFileArgs>;
+ * ```
+ */
+export type InferMatching<
+  StructType extends Struct<any, any>,
+  Type,
+> = StructType['TYPE'] extends Type ? Type : never;
+
+/**
  * A wrapper of `superstruct`'s `literal` struct that also defines the name of
  * the struct as the literal value.
  *

@@ -19,12 +19,7 @@ import { manageStateBuilder } from './manageState';
 import type { NotifyMethodHooks } from './notify';
 import { notifyBuilder } from './notify';
 
-export type { DialogParameters } from './dialog';
-export { DialogType } from './dialog';
-export { ManageStateOperation } from './manageState';
 export { WALLET_SNAP_PERMISSION_KEY } from './invokeSnap';
-export type { NotificationArgs } from './notify';
-export { NotificationType } from './notify';
 
 export type RestrictedMethodHooks = DialogMethodHooks &
   GetBip32EntropyMethodHooks &

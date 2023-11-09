@@ -2,15 +2,15 @@ import { JsonRpcRequestStruct } from '@metamask/utils';
 import { parseExpression } from 'cron-parser';
 import type { Infer } from 'superstruct';
 import {
-  array,
   assign,
+  omit,
+  partial,
+  pick,
+  array,
   coerce,
   create,
   object,
-  omit,
   optional,
-  partial,
-  pick,
   refine,
   string,
 } from 'superstruct';

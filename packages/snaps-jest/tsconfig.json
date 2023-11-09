@@ -7,9 +7,6 @@
   "include": ["./src"],
   "references": [
     {
-      "path": "../snaps-rpc-methods"
-    },
-    {
       "path": "../snaps-utils"
     },
     {
@@ -17,6 +14,9 @@
     },
     {
       "path": "../snaps-ui"
+    },
+    {
+      "path": "../snaps-sdk"
     }
   ]
 }

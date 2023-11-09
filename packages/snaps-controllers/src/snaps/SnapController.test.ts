@@ -10,14 +10,11 @@ import type {
 } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
+import type { SnapId } from '@metamask/snaps-sdk';
+import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
 import { text } from '@metamask/snaps-ui';
-import type {
-  SnapPermissions,
-  ValidatedSnapId,
-  RpcOrigins,
-} from '@metamask/snaps-utils';
+import type { SnapPermissions, RpcOrigins } from '@metamask/snaps-utils';
 import {
-  AuxiliaryFileEncoding,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
   getLocalizedSnapManifest,
@@ -281,7 +278,7 @@ describe('SnapController', () => {
   });
 
   it('can rehydrate state', async () => {
-    const id = 'npm:foo' as ValidatedSnapId;
+    const id = 'npm:foo' as SnapId;
     const firstSnapController = getSnapController(
       getSnapControllerOptions({
         state: {
@@ -3949,8 +3946,8 @@ describe('SnapController', () => {
     });
 
     it('rolls back any updates and installs made during a failure scenario', async () => {
-      const snapId1 = 'npm:@metamask/example-snap1' as ValidatedSnapId;
-      const snapId2 = 'npm:@metamask/example-snap2' as ValidatedSnapId;
+      const snapId1 = 'npm:@metamask/example-snap1' as SnapId;
+      const snapId2 = 'npm:@metamask/example-snap2' as SnapId;
       const snapId3 = 'npm:@metamask/example-snap3';
       const oldVersion = '1.0.0';
       const newVersion = '1.0.1';
@@ -4044,8 +4041,8 @@ describe('SnapController', () => {
     });
 
     it('will not create snapshots for already installed snaps that have invalid requested ranges', async () => {
-      const snapId1 = 'npm:@metamask/example-snap1' as ValidatedSnapId;
-      const snapId2 = 'npm:@metamask/example-snap2' as ValidatedSnapId;
+      const snapId1 = 'npm:@metamask/example-snap1' as SnapId;
+      const snapId2 = 'npm:@metamask/example-snap2' as SnapId;
       const snapId3 = 'npm:@metamask/example-snap3';
       const oldVersion = '1.0.0';
       const newVersion = '1.0.1';
@@ -5294,7 +5291,7 @@ describe('SnapController', () => {
             snaps: getPersistedSnapsState(
               getPersistedSnapObject(),
               getPersistedSnapObject({
-                id: `${MOCK_SNAP_ID}2` as ValidatedSnapId,
+                id: `${MOCK_SNAP_ID}2` as SnapId,
               }),
             ),
           },
@@ -5536,12 +5533,12 @@ describe('SnapController', () => {
       const publishMock = jest.spyOn(messenger, 'publish');
 
       const mockSnapA = getMockSnapData({
-        id: 'npm:exampleA' as ValidatedSnapId,
+        id: 'npm:exampleA' as SnapId,
         origin: 'foo.com',
       });
 
       const mockSnapB = getMockSnapData({
-        id: 'npm:exampleB' as ValidatedSnapId,
+        id: 'npm:exampleB' as SnapId,
         origin: 'bar.io',
       });
 
@@ -5606,7 +5603,7 @@ describe('SnapController', () => {
       const messenger = getSnapControllerMessenger(rootMessenger);
 
       const mockSnap = getMockSnapData({
-        id: 'npm:example' as ValidatedSnapId,
+        id: 'npm:example' as SnapId,
         origin: 'foo.com',
       });
 
@@ -5642,14 +5639,14 @@ describe('SnapController', () => {
       const publishMock = jest.spyOn(messenger, 'publish');
 
       const mockSnapA = getMockSnapData({
-        id: 'npm:exampleA' as ValidatedSnapId,
+        id: 'npm:exampleA' as SnapId,
         origin: 'foo.com',
         blocked: true,
         enabled: false,
       });
 
       const mockSnapB = getMockSnapData({
-        id: 'npm:exampleB' as ValidatedSnapId,
+        id: 'npm:exampleB' as SnapId,
         origin: 'bar.io',
       });
 
@@ -5704,7 +5701,7 @@ describe('SnapController', () => {
       const messenger = getSnapControllerMessenger(rootMessenger);
 
       const mockSnap = getMockSnapData({
-        id: 'npm:example' as ValidatedSnapId,
+        id: 'npm:example' as SnapId,
         origin: 'foo.com',
       });
 
@@ -5748,7 +5745,7 @@ describe('SnapController', () => {
       const messenger = getSnapControllerMessenger(rootMessenger);
 
       const mockSnap = getMockSnapData({
-        id: 'npm:example' as ValidatedSnapId,
+        id: 'npm:example' as SnapId,
         origin: 'foo.com',
       });
 
@@ -6015,7 +6012,7 @@ describe('SnapController', () => {
   describe('SnapController:has', () => {
     it('checks if a snap exists in state', () => {
       const messenger = getSnapControllerMessenger();
-      const id = 'npm:fooSnap' as ValidatedSnapId;
+      const id = 'npm:fooSnap' as SnapId;
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -6186,7 +6183,7 @@ describe('SnapController', () => {
     it('calls SnapController.enableSnap()', () => {
       const messenger = getSnapControllerMessenger();
       const mockSnap = getMockSnapData({
-        id: 'npm:example' as ValidatedSnapId,
+        id: 'npm:example' as SnapId,
         origin: 'foo.com',
         enabled: false,
       });
@@ -6211,7 +6208,7 @@ describe('SnapController', () => {
     it('calls SnapController.disableSnap()', async () => {
       const messenger = getSnapControllerMessenger();
       const mockSnap = getMockSnapData({
-        id: 'npm:example' as ValidatedSnapId,
+        id: 'npm:example' as SnapId,
         origin: 'foo.com',
         enabled: true,
       });
@@ -6236,7 +6233,7 @@ describe('SnapController', () => {
     it('calls SnapController.removeSnap()', async () => {
       const messenger = getSnapControllerMessenger();
       const mockSnap = getMockSnapData({
-        id: 'npm:example' as ValidatedSnapId,
+        id: 'npm:example' as SnapId,
         origin: 'foo.com',
         enabled: true,
       });
@@ -6374,7 +6371,7 @@ describe('SnapController', () => {
         `${MOCK_SNAP_ID}3`,
       ];
       const snapObjects = permittedSnaps.map((snapId) =>
-        getPersistedSnapObject({ id: snapId as ValidatedSnapId }),
+        getPersistedSnapObject({ id: snapId as SnapId }),
       );
       const snaps = getPersistedSnapsState(...snapObjects);
       const snapController = getSnapController(

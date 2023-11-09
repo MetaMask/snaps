@@ -1,6 +1,6 @@
 import { rpcErrors } from '@metamask/rpc-errors';
+import { DialogType } from '@metamask/snaps-sdk';
 import type { OnRpcRequestHandler } from '@metamask/snaps-types';
-import { DialogType } from '@metamask/snaps-types';
 import { panel, text, heading } from '@metamask/snaps-ui';
 
 /**

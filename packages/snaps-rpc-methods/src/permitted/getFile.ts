@@ -1,14 +1,12 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { enumValue, AuxiliaryFileEncoding } from '@metamask/snaps-utils';
-import type {
-  PendingJsonRpcResponse,
-  JsonRpcRequest,
-  Json,
-} from '@metamask/utils';
+import type { GetFileParams, GetFileResult } from '@metamask/snaps-sdk';
+import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
+import type { InferMatching } from '@metamask/snaps-utils';
+import { enumValue } from '@metamask/snaps-utils';
+import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
-import type { Infer } from 'superstruct';
 import { object, optional, string, union } from 'superstruct';
 
 import type { MethodHooksObject } from '../utils';
@@ -24,7 +22,10 @@ export const GetFileArgsStruct = object({
   ),
 });
 
-export type GetFileArgs = Infer<typeof GetFileArgsStruct>;
+export type InferredGetFileParams = InferMatching<
+  typeof GetFileArgsStruct,
+  GetFileParams
+>;
 
 const hookNames: MethodHooksObject<GetFileHooks> = {
   getSnapFile: true,
@@ -32,7 +33,7 @@ const hookNames: MethodHooksObject<GetFileHooks> = {
 
 export const getFileHandler: PermittedHandlerExport<
   GetFileHooks,
-  GetFileArgs,
+  InferredGetFileParams,
   string
 > = {
   methodNames: ['snap_getFile'],
@@ -42,8 +43,8 @@ export const getFileHandler: PermittedHandlerExport<
 
 export type GetFileHooks = {
   getSnapFile: (
-    path: GetFileArgs['path'],
-    encoding: GetFileArgs['encoding'],
+    path: InferredGetFileParams['path'],
+    encoding: InferredGetFileParams['encoding'],
   ) => Promise<string>;
 };
 
@@ -60,8 +61,8 @@ export type GetFileHooks = {
  * @returns Nothing.
  */
 async function implementation(
-  req: JsonRpcRequest<GetFileArgs>,
-  res: PendingJsonRpcResponse<Json>,
+  req: JsonRpcRequest<InferredGetFileParams>,
+  res: PendingJsonRpcResponse<GetFileResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
   { getSnapFile }: GetFileHooks,

@@ -5,21 +5,16 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
+import type { NotifyParams, NotifyResult } from '@metamask/snaps-sdk';
+import { NotificationType } from '@metamask/snaps-sdk';
+import type { EnumToUnion } from '@metamask/snaps-sdk/internals';
 import { assertLinksAreSafe } from '@metamask/snaps-ui';
-import type { EnumToUnion } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 import { isObject } from '@metamask/utils';
 
 import { type MethodHooksObject } from '../utils';
 
 const methodName = 'snap_notify';
-
-// TODO: Move all the types to a shared place when implementing more
-//  notifications.
-export enum NotificationType {
-  InApp = 'inApp',
-  Native = 'native',
-}
 
 export type NotificationArgs = {
   /**
@@ -123,8 +118,8 @@ export function getImplementation({
   maybeUpdatePhishingList,
 }: NotifyMethodHooks) {
   return async function implementation(
-    args: RestrictedMethodOptions<NotificationArgs>,
-  ): Promise<null> {
+    args: RestrictedMethodOptions<NotifyParams>,
+  ): Promise<NotifyResult> {
     const {
       params,
       context: { origin },
@@ -156,7 +151,7 @@ export function getImplementation({
  * @param params - The unvalidated params object from the method request.
  * @returns The validated method parameter object.
  */
-export function getValidatedParams(params: unknown): NotificationArgs {
+export function getValidatedParams(params: unknown): NotifyParams {
   if (!isObject(params)) {
     throw rpcErrors.invalidParams({
       message: 'Expected params to be a single object.',

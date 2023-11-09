@@ -1,6 +1,7 @@
 import type { Infer } from 'superstruct';
 import {
   array,
+  define,
   is,
   object,
   optional,
@@ -72,10 +73,18 @@ export function parseAccountId(accountId: AccountId): {
  */
 export const LimitedString = size(string(), 1, 40);
 
+export const ChainIdStringStruct = define<ChainId>(
+  'Chain ID',
+  string().validator,
+);
+
 /**
  * A CAIP-2 chain ID, i.e., a human-readable namespace and reference.
  */
-export const ChainIdStruct = pattern(string(), CHAIN_ID_REGEX);
+export const ChainIdStruct = pattern<ChainId, null>(
+  ChainIdStringStruct,
+  CHAIN_ID_REGEX,
+);
 export type ChainId = `${string}:${string}`;
 export type Caip2ChainId = Infer<typeof ChainIdStruct>;
 

@@ -8,12 +8,11 @@ import type {
 import { PermissionType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
-  Snap,
-  SnapId,
-  SnapRpcHookArgs,
-  RequestedSnapPermissions,
-  InstallSnapsResult,
-} from '@metamask/snaps-utils';
+  InvokeSnapResult,
+  RequestSnapsParams,
+  RequestSnapsResult,
+} from '@metamask/snaps-sdk';
+import type { Snap, SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { HandlerType, SnapCaveatType } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 
@@ -26,25 +25,25 @@ export type InstallSnaps = {
   type: `SnapController:install`;
   handler: (
     origin: string,
-    requestedSnaps: RequestedSnapPermissions,
-  ) => Promise<InstallSnapsResult>;
+    requestedSnaps: RequestSnapsParams,
+  ) => Promise<RequestSnapsResult>;
 };
 
 export type GetPermittedSnaps = {
   type: `SnapController:getPermitted`;
-  handler: (origin: string) => InstallSnapsResult;
+  handler: (origin: string) => RequestSnapsResult;
 };
 
 type AllowedActions = InstallSnaps | GetPermittedSnaps;
 
 export type InvokeSnapMethodHooks = {
-  getSnap: (snapId: SnapId) => Snap | undefined;
+  getSnap: (snapId: string) => Snap | undefined;
   handleSnapRpcRequest: ({
     snapId,
     origin,
     handler,
     request,
-  }: SnapRpcHookArgs & { snapId: SnapId }) => Promise<unknown>;
+  }: SnapRpcHookArgs & { snapId: string }) => Promise<unknown>;
 };
 
 type InvokeSnapSpecificationBuilderOptions = {
@@ -65,7 +64,7 @@ type InvokeSnapSpecification = ValidPermissionSpecification<{
 
 export type InvokeSnapParams = {
   snapId: string;
-  request: Record<string, unknown>;
+  request: Record<string, Json>;
 };
 
 /**
@@ -80,14 +79,14 @@ export const handleSnapInstall: PermissionSideEffect<
   never
 >['onPermitted'] = async ({ requestData, messagingSystem }) => {
   const snaps = requestData.permissions[WALLET_SNAP_PERMISSION_KEY].caveats?.[0]
-    .value as RequestedSnapPermissions;
+    .value as RequestSnapsParams;
 
   const permittedSnaps = messagingSystem.call(
     `SnapController:getPermitted`,
     requestData.metadata.origin,
   );
 
-  const dedupedSnaps = Object.keys(snaps).reduce<RequestedSnapPermissions>(
+  const dedupedSnaps = Object.keys(snaps).reduce<RequestSnapsParams>(
     (filteredSnaps, snap) => {
       if (!permittedSnaps[snap]) {
         filteredSnaps[snap] = snaps[snap];
@@ -163,8 +162,8 @@ export function getInvokeSnapImplementation({
   handleSnapRpcRequest,
 }: InvokeSnapMethodHooks) {
   return async function invokeSnap(
-    options: RestrictedMethodOptions<Record<string, Json>>,
-  ): Promise<Json> {
+    options: RestrictedMethodOptions<InvokeSnapParams>,
+  ): Promise<InvokeSnapResult> {
     const { params = {}, context } = options;
 
     const { snapId, request } = params as InvokeSnapParams;

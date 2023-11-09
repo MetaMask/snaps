@@ -1,18 +1,17 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { Snap } from '@metamask/snaps-utils';
-import {
-  HandlerType,
-  WALLET_SNAP_PERMISSION_KEY,
-  type SnapId,
-  type SnapRpcHookArgs,
-} from '@metamask/snaps-utils';
+import type {
+  InvokeKeyringParams,
+  InvokeKeyringResult,
+  InvokeSnapParams,
+} from '@metamask/snaps-sdk';
+import type { Snap, SnapRpcHookArgs } from '@metamask/snaps-utils';
+import { HandlerType, WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
 import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
 import { hasProperty, type Json } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
-import type { InvokeSnapSugarArgs } from './invokeSnapSugar';
 import { getValidatedParams } from './invokeSnapSugar';
 
 const hookNames: MethodHooksObject<InvokeKeyringHooks> = {
@@ -27,8 +26,8 @@ const hookNames: MethodHooksObject<InvokeKeyringHooks> = {
  */
 export const invokeKeyringHandler: PermittedHandlerExport<
   InvokeKeyringHooks,
-  JsonRpcRequest,
-  Json
+  InvokeSnapParams,
+  InvokeKeyringResult
 > = {
   methodNames: ['wallet_invokeKeyring'],
   implementation: invokeKeyringImplementation,
@@ -43,9 +42,9 @@ export type InvokeKeyringHooks = {
     origin,
     handler,
     request,
-  }: SnapRpcHookArgs & { snapId: SnapId }) => Promise<unknown>;
+  }: SnapRpcHookArgs & { snapId: string }) => Promise<unknown>;
 
-  getSnap: (snapId: SnapId) => Snap | undefined;
+  getSnap: (snapId: string) => Snap | undefined;
 
   getAllowedKeyringMethods: (origin: string) => string[];
 };
@@ -68,8 +67,8 @@ export type InvokeKeyringHooks = {
  * @returns Nothing.
  */
 async function invokeKeyringImplementation(
-  req: JsonRpcRequest,
-  res: PendingJsonRpcResponse<Json>,
+  req: JsonRpcRequest<InvokeKeyringParams>,
+  res: PendingJsonRpcResponse<InvokeKeyringResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
   {
@@ -79,7 +78,7 @@ async function invokeKeyringImplementation(
     getAllowedKeyringMethods,
   }: InvokeKeyringHooks,
 ): Promise<void> {
-  let params: InvokeSnapSugarArgs;
+  let params: InvokeSnapParams;
   try {
     params = getValidatedParams(req.params);
   } catch (error) {

@@ -1,9 +1,8 @@
 import type { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { BaseControllerV2 as BaseController } from '@metamask/base-controller';
 import type { GetPermissions } from '@metamask/permission-controller';
+import type { SnapId } from '@metamask/snaps-sdk';
 import type {
-  SnapId,
-  ValidatedSnapId,
   TruncatedSnap,
   CronjobSpecification,
 } from '@metamask/snaps-utils';
@@ -60,7 +59,7 @@ export type CronjobControllerArgs = {
 export type Cronjob = {
   timer?: Timer;
   id: string;
-  snapId: ValidatedSnapId;
+  snapId: SnapId;
 } & CronjobSpecification;
 
 export type StoredJobInformation = {
@@ -165,7 +164,7 @@ export class CronjobController extends BaseController<
    * @param snapId - ID of a Snap.
    * @returns Array of Cronjob specifications.
    */
-  private getSnapJobs(snapId: ValidatedSnapId): Cronjob[] | undefined {
+  private getSnapJobs(snapId: SnapId): Cronjob[] | undefined {
     const permissions = this.#messenger.call(
       'PermissionController:getPermissions',
       snapId,
@@ -185,7 +184,7 @@ export class CronjobController extends BaseController<
    *
    * @param snapId - ID of a snap.
    */
-  register(snapId: ValidatedSnapId) {
+  register(snapId: SnapId) {
     const jobs = this.getSnapJobs(snapId);
     jobs?.forEach((job) => this.schedule(job));
   }
@@ -255,7 +254,7 @@ export class CronjobController extends BaseController<
    *
    * @param snapId - ID of a snap.
    */
-  unregister(snapId: SnapId) {
+  unregister(snapId: string) {
     const jobs = [...this.#snapIds.entries()].filter(
       ([_, jobSnapId]) => jobSnapId === snapId,
     );

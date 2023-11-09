@@ -1,5 +1,7 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
-import { AuxiliaryFileEncoding, VirtualFile } from '@metamask/snaps-utils';
+import type { GetFileParams } from '@metamask/snaps-sdk';
+import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
+import { VirtualFile } from '@metamask/snaps-utils';
 import type {
   JsonRpcRequest,
   PendingJsonRpcResponse,
@@ -8,7 +10,7 @@ import type {
 } from '@metamask/utils';
 import { stringToBytes } from '@metamask/utils';
 
-import type { GetFileHooks, GetFileArgs } from './getFile';
+import type { GetFileHooks } from './getFile';
 import { getFileHandler } from './getFile';
 
 describe('snap_getFile', () => {
@@ -46,7 +48,7 @@ describe('snap_getFile', () => {
       const engine = new JsonRpcEngine();
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<GetFileArgs>,
+          req as JsonRpcRequest<GetFileParams>,
           res as PendingJsonRpcResponse<string>,
           next,
           end,
@@ -88,7 +90,7 @@ describe('snap_getFile', () => {
       const engine = new JsonRpcEngine();
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<GetFileArgs>,
+          req as JsonRpcRequest<GetFileParams>,
           res as PendingJsonRpcResponse<string>,
           next,
           end,
@@ -129,7 +131,7 @@ describe('snap_getFile', () => {
       const engine = new JsonRpcEngine();
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<GetFileArgs>,
+          req as JsonRpcRequest<GetFileParams>,
           res as PendingJsonRpcResponse<string>,
           next,
           end,

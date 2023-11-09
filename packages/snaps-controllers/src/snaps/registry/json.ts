@@ -2,7 +2,7 @@ import type { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { BaseControllerV2 as BaseController } from '@metamask/base-controller';
 import type { SnapsRegistryDatabase } from '@metamask/snaps-registry';
 import { verify } from '@metamask/snaps-registry';
-import { getTargetVersion, type SnapId } from '@metamask/snaps-utils';
+import { getTargetVersion } from '@metamask/snaps-utils';
 import type { Hex, SemVerRange, SemVerVersion } from '@metamask/utils';
 import {
   assert,
@@ -232,7 +232,7 @@ export class JsonSnapsRegistry extends BaseController<
   }
 
   async #getSingle(
-    snapId: SnapId,
+    snapId: string,
     snapInfo: SnapsRegistryInfo,
     refetch = false,
   ): Promise<SnapsRegistryResult> {
@@ -271,9 +271,9 @@ export class JsonSnapsRegistry extends BaseController<
 
   async #get(
     snaps: SnapsRegistryRequest,
-  ): Promise<Record<SnapId, SnapsRegistryResult>> {
+  ): Promise<Record<string, SnapsRegistryResult>> {
     return Object.entries(snaps).reduce<
-      Promise<Record<SnapId, SnapsRegistryResult>>
+      Promise<Record<string, SnapsRegistryResult>>
     >(async (previousPromise, [snapId, snapInfo]) => {
       const result = await this.#getSingle(snapId, snapInfo);
       const acc = await previousPromise;
@@ -292,7 +292,7 @@ export class JsonSnapsRegistry extends BaseController<
    * @throws If an allowlisted version does not exist within the version range.
    */
   async #resolveVersion(
-    snapId: SnapId,
+    snapId: string,
     versionRange: SemVerRange,
     refetch = false,
   ): Promise<SemVerRange> {
@@ -333,7 +333,7 @@ export class JsonSnapsRegistry extends BaseController<
    * @returns The metadata for the given snap ID, or `null` if the snap is not
    * verified.
    */
-  async #getMetadata(snapId: SnapId): Promise<SnapsRegistryMetadata | null> {
+  async #getMetadata(snapId: string): Promise<SnapsRegistryMetadata | null> {
     const database = await this.#getDatabase();
     return database?.verifiedSnaps[snapId]?.metadata ?? null;
   }

@@ -1,4 +1,3 @@
-import type { JsonBIP44CoinTypeNode } from '@metamask/key-tree';
 import { BIP44CoinTypeNode } from '@metamask/key-tree';
 import type {
   PermissionSpecificationBuilder,
@@ -8,6 +7,10 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
+import type {
+  GetBip44EntropyParams,
+  GetBip44EntropyResult,
+} from '@metamask/snaps-sdk';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 
@@ -40,10 +43,6 @@ type GetBip44EntropySpecification = ValidPermissionSpecification<{
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
 }>;
-
-export type GetBip44EntropyParams = {
-  coinType: number;
-};
 
 /**
  * The specification builder for the `snap_getBip44Entropy` permission.
@@ -108,12 +107,11 @@ export function getBip44EntropyImplementation({
 }: GetBip44EntropyMethodHooks) {
   return async function getBip44Entropy(
     args: RestrictedMethodOptions<GetBip44EntropyParams>,
-  ): Promise<JsonBIP44CoinTypeNode> {
+  ): Promise<GetBip44EntropyResult> {
     await getUnlockPromise(true);
 
     // `args.params` is validated by the decorator, so it's safe to assert here.
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const params = args.params!;
+    const params = args.params as GetBip44EntropyParams;
 
     const node = await BIP44CoinTypeNode.fromDerivationPath([
       await getMnemonic(),

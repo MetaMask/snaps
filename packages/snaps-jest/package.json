@@ -37,7 +37,7 @@
     "@jest/expect": "^29.5.0",
     "@jest/globals": "^29.5.0",
     "@metamask/snaps-execution-environments": "workspace:^",
-    "@metamask/snaps-rpc-methods": "workspace:^",
+    "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-simulator": "workspace:^",
     "@metamask/snaps-ui": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",

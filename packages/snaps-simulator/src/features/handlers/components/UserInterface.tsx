@@ -1,5 +1,5 @@
 import { useTabsContext } from '@chakra-ui/react';
-import { DialogType } from '@metamask/snaps-rpc-methods';
+import { DialogType } from '@metamask/snaps-sdk';
 import type { FunctionComponent } from 'react';
 import { useEffect } from 'react';
 

@@ -4,21 +4,17 @@ import type {
 } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { Json, JsonRpcRequest } from '@metamask/utils';
+import type { InvokeSnapParams, InvokeSnapResult } from '@metamask/snaps-sdk';
+import type { JsonRpcRequest } from '@metamask/utils';
 import { isObject } from '@metamask/utils';
-
-export type InvokeSnapSugarArgs = {
-  snapId: string;
-  request: Record<string, Json>;
-};
 
 /**
  * `wallet_invokeSnap` attempts to invoke an RPC method of the specified Snap.
  */
 export const invokeSnapSugarHandler: PermittedHandlerExport<
   void,
-  InvokeSnapSugarArgs,
-  Json
+  InvokeSnapParams,
+  InvokeSnapResult
 > = {
   methodNames: ['wallet_invokeSnap'],
   implementation: invokeSnapSugar,
@@ -38,12 +34,12 @@ export const invokeSnapSugarHandler: PermittedHandlerExport<
  * @throws If the params are invalid.
  */
 export function invokeSnapSugar(
-  req: JsonRpcRequest<InvokeSnapSugarArgs>,
+  req: JsonRpcRequest<InvokeSnapParams>,
   _res: unknown,
   next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
 ): void {
-  let params: InvokeSnapSugarArgs;
+  let params: InvokeSnapParams;
   try {
     params = getValidatedParams(req.params);
   } catch (error) {
@@ -62,7 +58,7 @@ export function invokeSnapSugar(
  * @param params - The unvalidated params object from the method request.
  * @returns The validated method parameter object.
  */
-export function getValidatedParams(params: unknown): InvokeSnapSugarArgs {
+export function getValidatedParams(params: unknown): InvokeSnapParams {
   if (!isObject(params)) {
     throw rpcErrors.invalidParams({
       message: 'Expected params to be a single object.',
@@ -83,5 +79,5 @@ export function getValidatedParams(params: unknown): InvokeSnapSugarArgs {
     });
   }
 
-  return params as InvokeSnapSugarArgs;
+  return params as InvokeSnapParams;
 }

@@ -1,4 +1,4 @@
-import { ManageStateOperation } from '@metamask/snaps-types';
+import { ManageStateOperation } from '@metamask/snaps-sdk';
 
 export type State = {
   items: string[];

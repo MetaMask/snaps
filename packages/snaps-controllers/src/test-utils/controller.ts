@@ -9,7 +9,6 @@ import type {
 import { SubjectType } from '@metamask/permission-controller';
 import { providerErrors } from '@metamask/rpc-errors';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
-import type { ValidatedSnapId } from '@metamask/snaps-utils';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MockControllerMessenger,

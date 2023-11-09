@@ -1,5 +1,6 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { rpcErrors } from '@metamask/rpc-errors';
+import type { InvokeKeyringParams } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID, getSnapObject } from '@metamask/snaps-utils/test-utils';
 import type {
@@ -55,7 +56,7 @@ describe('wallet_invokeKeyring', () => {
       engine.push(createOriginMiddleware('metamask.io'));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<JsonRpcRequest>,
+          req as JsonRpcRequest<InvokeKeyringParams>,
           res,
           next,
           end,
@@ -102,7 +103,7 @@ describe('wallet_invokeKeyring', () => {
       engine.push(createOriginMiddleware('metamask.io'));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<JsonRpcRequest>,
+          req as JsonRpcRequest<InvokeKeyringParams>,
           res,
           next,
           end,
@@ -150,7 +151,7 @@ describe('wallet_invokeKeyring', () => {
       engine.push(createOriginMiddleware('metamask.io'));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<JsonRpcRequest>,
+          req as JsonRpcRequest<InvokeKeyringParams>,
           res,
           next,
           end,
@@ -199,7 +200,7 @@ describe('wallet_invokeKeyring', () => {
       engine.push(createOriginMiddleware('metamask.io'));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<JsonRpcRequest>,
+          req as JsonRpcRequest<InvokeKeyringParams>,
           res,
           next,
           end,
@@ -238,7 +239,7 @@ describe('wallet_invokeKeyring', () => {
       engine.push(createOriginMiddleware('metamask.io'));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<JsonRpcRequest>,
+          req as JsonRpcRequest<InvokeKeyringParams>,
           res,
           next,
           end,
@@ -280,7 +281,7 @@ describe('wallet_invokeKeyring', () => {
       engine.push(createOriginMiddleware('metamask.io'));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<JsonRpcRequest>,
+          req as JsonRpcRequest<InvokeKeyringParams>,
           res,
           next,
           end,
@@ -318,7 +319,7 @@ describe('wallet_invokeKeyring', () => {
       const engine = new JsonRpcEngine();
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<JsonRpcRequest>,
+          req as JsonRpcRequest<InvokeKeyringParams>,
           res,
           next,
           end,
