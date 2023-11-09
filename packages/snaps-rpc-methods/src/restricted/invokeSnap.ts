@@ -7,12 +7,12 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { InvokeSnapResult, RequestSnapsResult } from '@metamask/snaps-sdk';
 import type {
-  Snap,
-  SnapRpcHookArgs,
-  RequestedSnapPermissions,
-} from '@metamask/snaps-utils';
+  InvokeSnapResult,
+  RequestSnapsParams,
+  RequestSnapsResult,
+} from '@metamask/snaps-sdk';
+import type { Snap, SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { HandlerType, SnapCaveatType } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 
@@ -25,7 +25,7 @@ export type InstallSnaps = {
   type: `SnapController:install`;
   handler: (
     origin: string,
-    requestedSnaps: RequestedSnapPermissions,
+    requestedSnaps: RequestSnapsParams,
   ) => Promise<RequestSnapsResult>;
 };
 
@@ -79,14 +79,14 @@ export const handleSnapInstall: PermissionSideEffect<
   never
 >['onPermitted'] = async ({ requestData, messagingSystem }) => {
   const snaps = requestData.permissions[WALLET_SNAP_PERMISSION_KEY].caveats?.[0]
-    .value as RequestedSnapPermissions;
+    .value as RequestSnapsParams;
 
   const permittedSnaps = messagingSystem.call(
     `SnapController:getPermitted`,
     requestData.metadata.origin,
   );
 
-  const dedupedSnaps = Object.keys(snaps).reduce<RequestedSnapPermissions>(
+  const dedupedSnaps = Object.keys(snaps).reduce<RequestSnapsParams>(
     (filteredSnaps, snap) => {
       if (!permittedSnaps[snap]) {
         filteredSnaps[snap] = snaps[snap];

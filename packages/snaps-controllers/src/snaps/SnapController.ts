@@ -41,7 +41,6 @@ import { assertUILinksAreSafe } from '@metamask/snaps-ui';
 import type {
   FetchedSnapFiles,
   PersistedSnap,
-  RequestedSnapPermissions,
   Snap,
   SnapRpcHook,
   SnapRpcHookArgs,
@@ -2924,9 +2923,12 @@ export class SnapController extends BaseController<
 
   #calculatePermissionsChange(
     snapId: SnapId,
-    desiredPermissionsSet: RequestedSnapPermissions,
+    desiredPermissionsSet: Record<
+      string,
+      Pick<PermissionConstraint, 'caveats'>
+    >,
   ): {
-    newPermissions: RequestedSnapPermissions;
+    newPermissions: Record<string, Pick<PermissionConstraint, 'caveats'>>;
     unusedPermissions: SubjectPermissions<
       ValidPermission<string, Caveat<string, any>>
     >;

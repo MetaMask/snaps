@@ -43,15 +43,6 @@ import type { VirtualFile } from './virtual-file';
 export const PROPOSED_NAME_REGEX =
   /^(?:[A-Za-z0-9-_]+( [A-Za-z0-9-_]+)*)|(?:(?:@[A-Za-z0-9-*~][A-Za-z0-9-*._~]*\/)?[A-Za-z0-9-~][A-Za-z0-9-._~]*)$/u;
 
-/**
- * wallet_enable / wallet_installSnaps permission typing.
- *
- * @deprecated This type is confusing and not descriptive, people confused it with typing initialPermissions, remove when removing wallet_enable.
- */
-export type RequestedSnapPermissions = {
-  [permission: string]: Record<string, Json>;
-};
-
 export enum SnapStatus {
   Installing = 'installing',
   Updating = 'updating',
