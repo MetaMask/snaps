@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [3.1.0]
-### Uncategorized
-- Make an initial commit when creating a Snap from template ([#1917](https://github.com/MetaMask/snaps-skunkworks.git/pull/1917))
-- Add manifest localization functionality ([#1889](https://github.com/MetaMask/snaps-skunkworks.git/pull/1889))
-- Handle spawnSync errors in create-snap ([#1916](https://github.com/MetaMask/snaps-skunkworks.git/pull/1916))
+### Added
+- Create an initial commit when creating a Snap from the template ([#1917](https://github.com/MetaMask/snaps/pull/1917))
+
+### Fixed
+- Handle unhandled errors in create-snap ([#1916](https://github.com/MetaMask/snaps/pull/1916))
 
 ## [3.0.1]
 ### Changed
@@ -46,13 +47,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@3.1.0...HEAD
-[3.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@3.0.1...@metamask/create-snap@3.1.0
-[3.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@3.0.0...@metamask/create-snap@3.0.1
-[3.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@2.0.0...@metamask/create-snap@3.0.0
-[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@1.0.1...@metamask/create-snap@2.0.0
-[1.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@1.0.0...@metamask/create-snap@1.0.1
-[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@0.37.4-flask.1...@metamask/create-snap@1.0.0
-[0.37.4-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@0.37.3-flask.1...@metamask/create-snap@0.37.4-flask.1
-[0.37.3-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@0.37.2-flask.1...@metamask/create-snap@0.37.3-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/create-snap@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@3.1.0...HEAD
+[3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@3.0.1...@metamask/create-snap@3.1.0
+[3.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@3.0.0...@metamask/create-snap@3.0.1
+[3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@2.0.0...@metamask/create-snap@3.0.0
+[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@1.0.1...@metamask/create-snap@2.0.0
+[1.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@1.0.0...@metamask/create-snap@1.0.1
+[1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@0.37.4-flask.1...@metamask/create-snap@1.0.0
+[0.37.4-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@0.37.3-flask.1...@metamask/create-snap@0.37.4-flask.1
+[0.37.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@0.37.2-flask.1...@metamask/create-snap@0.37.3-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/create-snap@0.37.2-flask.1
