@@ -1,6 +1,5 @@
 import type { JsonRpcError } from '@metamask/utils';
 
-import type { EmptyObject } from '../permissions';
 import type { Snap } from '../snap';
 
 /**
@@ -8,7 +7,7 @@ import type { Snap } from '../snap';
  *
  * It consists of a map of Snap IDs to optional version strings to request.
  */
-export type RequestSnapsParams = EmptyObject;
+export type RequestSnapsParams = Record<string, { version?: string }>;
 
 /**
  * The result returned by the `wallet_requestSnaps` method.
