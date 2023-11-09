@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "{{ description }}",
   "proposedName": "{{ name }}",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "RJaMLctawZfKf8pgIVsEMs0mL+uFSN/z9EiaCcHs7rM=",
+    "shasum": "oTKaUSb5S2GF/j+yCW1it4KIOrk3Mr0lXMUKM1CK7fA=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
