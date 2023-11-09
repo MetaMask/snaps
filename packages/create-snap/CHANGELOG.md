@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Create an initial commit when creating a Snap from the template ([#1917](https://github.com/MetaMask/snaps/pull/1917))
 
 ### Fixed
-- Handle unhandled errors in create-snap ([#1916](https://github.com/MetaMask/snaps/pull/1916))
+- Handle unhandled errors ([#1916](https://github.com/MetaMask/snaps/pull/1916))
 
 ## [3.0.1]
 ### Changed
