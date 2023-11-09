@@ -35,7 +35,7 @@
     "lint:dependencies": "depcheck"
   },
   "dependencies": {
-    "@metamask/utils": "^8.2.1",
+    "@metamask/utils": "^8.1.0",
     "is-svg": "^4.4.0",
     "superstruct": "^1.0.3"
   },

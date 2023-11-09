@@ -1,24 +1,24 @@
-import { JsonStruct } from '@metamask/utils';
+import { JsonRpcRequestStruct } from '@metamask/utils';
 import { parseExpression } from 'cron-parser';
 import type { Infer } from 'superstruct';
 import {
+  assign,
+  omit,
+  partial,
+  pick,
   array,
   coerce,
   create,
   object,
   optional,
-  record,
   refine,
   string,
-  union,
 } from 'superstruct';
 
-// TODO: Fix "TS2345: Argument of type [...] is not assignable...".
-export const CronjobRpcRequestStruct = object({
-  method: string(),
-  params: union([array(JsonStruct), record(string(), JsonStruct)]),
-});
-
+export const CronjobRpcRequestStruct = assign(
+  partial(pick(JsonRpcRequestStruct, ['id', 'jsonrpc'])),
+  omit(JsonRpcRequestStruct, ['id', 'jsonrpc']),
+);
 export type CronjobRpcRequest = Infer<typeof CronjobRpcRequestStruct>;
 
 export const CronExpressionStruct = refine(

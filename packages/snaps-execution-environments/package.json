@@ -51,7 +51,7 @@
     "@metamask/rpc-errors": "^6.1.0",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^8.2.1",
+    "@metamask/utils": "^8.1.0",
     "nanoid": "^3.1.31",
     "superstruct": "^1.0.3"
   },

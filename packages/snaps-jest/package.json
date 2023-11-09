@@ -41,7 +41,7 @@
     "@metamask/snaps-simulator": "workspace:^",
     "@metamask/snaps-ui": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^8.2.1",
+    "@metamask/utils": "^8.1.0",
     "express": "^4.18.2",
     "jest-environment-node": "^29.5.0",
     "jest-matcher-utils": "^29.5.0",
