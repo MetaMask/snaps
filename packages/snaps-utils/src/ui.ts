@@ -1,6 +1,6 @@
 import type { Component } from '@metamask/snaps-sdk';
 import { NodeType } from '@metamask/snaps-sdk';
-import { assert, AssertionError, hasProperty } from '@metamask/utils';
+import { assert, AssertionError } from '@metamask/utils';
 
 const MARKDOWN_LINK_REGEX = /!?\[(?<name>[^\]]*)\]\((?<url>[^)]+)\)/giu;
 
@@ -21,32 +21,34 @@ export function validateTextLinks(
   const matches = text.matchAll(MARKDOWN_LINK_REGEX);
   if (matches) {
     for (const { groups } of matches) {
-      const link: string = groups?.url ?? '';
+      const link = groups?.url;
 
-      try {
-        const url = new URL(link);
-        assert(
-          ALLOWED_PROTOCOLS.includes(url.protocol),
-          `Protocol must be one of: ${ALLOWED_PROTOCOLS.join(', ')}.`,
-        );
+      if (link) {
+        try {
+          const url = new URL(link);
+          assert(
+            ALLOWED_PROTOCOLS.includes(url.protocol),
+            `Protocol must be one of: ${ALLOWED_PROTOCOLS.join(', ')}.`,
+          );
 
-        const hostname =
-          url.protocol === 'mailto:'
-            ? url.pathname.split('@')[1]
-            : url.hostname;
+          const hostname =
+            url.protocol === 'mailto:'
+              ? url.pathname.split('@')[1]
+              : url.hostname;
 
-        assert(
-          !isOnPhishingList(hostname),
-          'The specified URL is not allowed.',
-        );
-      } catch (error) {
-        throw new Error(
-          `Invalid URL: ${
-            error instanceof AssertionError
-              ? error.message
-              : 'Unable to parse URL.'
-          }`,
-        );
+          assert(
+            !isOnPhishingList(hostname),
+            'The specified URL is not allowed.',
+          );
+        } catch (error) {
+          throw new Error(
+            `Invalid URL: ${
+              error instanceof AssertionError
+                ? error.message
+                : 'Unable to parse URL.'
+            }`,
+          );
+        }
       }
     }
   }
@@ -72,7 +74,7 @@ export function validateComponentLinks(
     );
   }
 
-  if (hasProperty(component, 'value') && typeof component.value === 'string') {
+  if (type === NodeType.Text) {
     validateTextLinks(component.value, isOnPhishingList);
   }
 }
