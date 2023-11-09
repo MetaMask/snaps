@@ -6,10 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.2]
-### Changed
-- Update example insight snap to support transaction insights v2 ([#1911](https://github.com/MetaMask/snaps/pull/1911))
-
 ## [2.0.1]
 ### Changed
 - Update multiple MetaMask dependencies ([#1841](https://github.com/MetaMask/snaps/pull/1841))
@@ -40,8 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/insights-example-snap@2.0.2...HEAD
-[2.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/insights-example-snap@2.0.1...@metamask/insights-example-snap@2.0.2
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/insights-example-snap@2.0.1...HEAD
 [2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/insights-example-snap@2.0.0...@metamask/insights-example-snap@2.0.1
 [2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/insights-example-snap@1.0.0...@metamask/insights-example-snap@2.0.0
 [1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/insights-example-snap@0.38.1-flask.1...@metamask/insights-example-snap@1.0.0
