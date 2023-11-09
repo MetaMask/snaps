@@ -1,5 +1,6 @@
 import type { JsonSLIP10Node } from '@metamask/key-tree';
-import type { Bip32Entropy } from '@metamask/snaps-sdk';
+
+import type { Bip32Entropy } from '../permissions';
 
 /**
  * The request parameters for the `snap_getBip32Entropy` method.
