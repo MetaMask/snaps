@@ -7,7 +7,6 @@
   "references": [
     { "path": "../snaps-utils" },
     { "path": "../snaps-browserify-plugin" },
-    { "path": "../snaps-types" },
     { "path": "../snaps-webpack-plugin" }
   ]
 }
