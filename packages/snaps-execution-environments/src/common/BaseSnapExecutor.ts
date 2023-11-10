@@ -5,6 +5,7 @@ import { StreamProvider } from '@metamask/providers';
 import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
 import { errorCodes, rpcErrors, serializeError } from '@metamask/rpc-errors';
 import type { SnapsProvider } from '@metamask/snaps-sdk';
+import { getErrorData } from '@metamask/snaps-sdk';
 import type {
   SnapExports,
   HandlerType,
@@ -15,7 +16,6 @@ import {
   logError,
   SNAP_EXPORTS,
   WrappedSnapError,
-  getErrorData,
   unwrapError,
 } from '@metamask/snaps-utils';
 import type {

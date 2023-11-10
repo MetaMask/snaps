@@ -1,9 +1,9 @@
 import type { GenericPermissionController } from '@metamask/permission-controller';
 import { processSnapPermissions } from '@metamask/snaps-controllers';
+import { SnapError } from '@metamask/snaps-sdk';
 import {
   DEFAULT_ENDOWMENTS,
   HandlerType,
-  SnapError,
   WrappedSnapError,
 } from '@metamask/snaps-utils';
 import { expectSaga } from 'redux-saga-test-plan';

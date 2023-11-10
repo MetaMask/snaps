@@ -6,6 +6,9 @@
   "include": ["./src"],
   "references": [
     {
+      "path": "../snaps-sdk"
+    },
+    {
       "path": "../snaps-utils"
     }
   ]

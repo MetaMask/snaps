@@ -1,3 +1,4 @@
+import { getErrorMessage } from '@metamask/snaps-sdk';
 import type { Infer } from 'superstruct';
 import {
   create,
@@ -8,7 +9,6 @@ import {
   StructError,
 } from 'superstruct';
 
-import { getErrorMessage } from './errors';
 import { parseJson } from './json';
 import type { SnapManifest } from './manifest';
 import type { VirtualFile } from './virtual-file';
