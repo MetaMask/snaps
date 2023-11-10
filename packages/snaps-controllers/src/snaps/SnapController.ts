@@ -2701,8 +2701,12 @@ export class SnapController extends BaseController<
    */
   async #assertSnapRpcRequestResult(handlerType: HandlerType, result: unknown) {
     switch (handlerType) {
-      case HandlerType.OnTransaction:
+      case HandlerType.OnTransaction: {
         assertStruct(result, OnTransactionResponseStruct);
+        // Null is an allowed return value here
+        if (result === null) {
+          return;
+        }
 
         await this.#triggerPhishingListUpdate();
 
@@ -2711,6 +2715,7 @@ export class SnapController extends BaseController<
           this.#checkPhishingList.bind(this),
         );
         break;
+      }
       case HandlerType.OnHomePage:
         assertStruct(result, OnHomePageResponseStruct);
 
