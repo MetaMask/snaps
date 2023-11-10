@@ -5,9 +5,12 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { NotifyParams, NotifyResult } from '@metamask/snaps-sdk';
 import { NotificationType } from '@metamask/snaps-sdk';
-import type { EnumToUnion } from '@metamask/snaps-sdk/internals';
+import type {
+  NotifyParams,
+  NotifyResult,
+  EnumToUnion,
+} from '@metamask/snaps-sdk';
 import { assertLinksAreSafe } from '@metamask/snaps-ui';
 import type { NonEmptyArray } from '@metamask/utils';
 import { isObject } from '@metamask/utils';

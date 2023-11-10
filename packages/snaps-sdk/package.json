@@ -6,19 +6,6 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "sideEffects": false,
-  "exports": {
-    ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js",
-      "types": "./dist/types/index.d.ts"
-    },
-    "./internals": {
-      "import": "./dist/esm/internals/index.js",
-      "require": "./dist/cjs/internals/index.js",
-      "types": "./dist/types/internals/index.d.ts"
-    },
-    "./package.json": "./package.json"
-  },
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",

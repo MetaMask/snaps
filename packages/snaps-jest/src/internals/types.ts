@@ -1,5 +1,4 @@
-import type { NotificationType } from '@metamask/snaps-sdk';
-import type { EnumToUnion } from '@metamask/snaps-sdk/internals';
+import type { NotificationType, EnumToUnion } from '@metamask/snaps-sdk';
 import type { ApplicationState, Dispatch } from '@metamask/snaps-simulator';
 
 declare global {
