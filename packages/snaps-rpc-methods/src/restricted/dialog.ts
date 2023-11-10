@@ -5,9 +5,8 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { DialogParams } from '@metamask/snaps-sdk';
 import { DialogType } from '@metamask/snaps-sdk';
-import type { EnumToUnion } from '@metamask/snaps-sdk/internals';
+import type { DialogParams, EnumToUnion } from '@metamask/snaps-sdk';
 import type { Component } from '@metamask/snaps-ui';
 import { ComponentStruct, assertUILinksAreSafe } from '@metamask/snaps-ui';
 import type { InferMatching } from '@metamask/snaps-utils';

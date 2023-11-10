@@ -5,8 +5,7 @@
 
 import type { MatcherFunction } from '@jest/expect';
 import { expect } from '@jest/globals';
-import type { NotificationType } from '@metamask/snaps-sdk';
-import type { EnumToUnion } from '@metamask/snaps-sdk/internals';
+import type { NotificationType, EnumToUnion } from '@metamask/snaps-sdk';
 import type { Component } from '@metamask/snaps-ui';
 import type { Json } from '@metamask/utils';
 import { hasProperty } from '@metamask/utils';

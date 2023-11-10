@@ -1,5 +1,4 @@
-import type { NotificationType } from '@metamask/snaps-sdk';
-import type { EnumToUnion } from '@metamask/snaps-sdk/internals';
+import type { NotificationType, EnumToUnion } from '@metamask/snaps-sdk';
 import type { Component } from '@metamask/snaps-ui';
 import type { JsonRpcId, JsonRpcParams } from '@metamask/utils';
 import type { Infer } from 'superstruct';

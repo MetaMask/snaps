@@ -17,6 +17,7 @@ import type { JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
  *
  * const foo: FooValue = Foo.Bar; // Works
  * const foo: FooValue = 'bar'; // Also works
+ * @internal
  */
 export type EnumToUnion<Type extends string> = `${Type}`;
 
@@ -27,6 +28,7 @@ export type EnumToUnion<Type extends string> = `${Type}`;
  * @example
  * // MyMethod is { method: 'my_method', params: { foo: string } }
  * type MyMethod = Method<'my_method', { foo: string }>;
+ * @internal
  */
 export type Method<
   MethodName extends string,

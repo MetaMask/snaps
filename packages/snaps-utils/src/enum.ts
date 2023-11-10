@@ -1,4 +1,4 @@
-import type { EnumToUnion } from '@metamask/snaps-sdk/internals';
+import type { EnumToUnion } from '@metamask/snaps-sdk';
 import type { Struct } from 'superstruct';
 
 import { literal } from './structs';
