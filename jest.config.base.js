@@ -94,6 +94,7 @@ module.exports = {
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   moduleNameMapper: {
+    '^@metamask/(.+)/internals$': ['<rootDir>/../$1/src/internals'],
     '^@metamask/(.+)/test-utils$': ['<rootDir>/../$1/src/test-utils'],
     '^@metamask/(.+)$': [
       '<rootDir>/../$1/src',

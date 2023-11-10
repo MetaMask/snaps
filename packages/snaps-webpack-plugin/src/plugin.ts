@@ -1,8 +1,8 @@
+import { getErrorMessage } from '@metamask/snaps-sdk';
 import type { PostProcessOptions, SourceMap } from '@metamask/snaps-utils';
 import {
   checkManifest,
   evalBundle,
-  getErrorMessage,
   postProcessBundle,
   useTemporaryFile,
 } from '@metamask/snaps-utils';

@@ -1,3 +1,4 @@
+import { getErrorMessage } from '@metamask/snaps-sdk';
 import type { Json } from '@metamask/utils';
 import { assertExhaustive, assert, isPlainObject } from '@metamask/utils';
 import deepEqual from 'fast-deep-equal';
@@ -5,7 +6,6 @@ import { promises as fs } from 'fs';
 import pathUtils from 'path';
 
 import { deepClone } from '../deep-clone';
-import { getErrorMessage } from '../errors';
 import { readJsonFile } from '../fs';
 import { validateNpmSnap } from '../npm';
 import {

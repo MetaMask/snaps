@@ -14,6 +14,9 @@
   ],
   "references": [
     {
+      "path": "../snaps-sdk/tsconfig.build.json"
+    },
+    {
       "path": "../snaps-utils/tsconfig.build.json"
     }
   ]

@@ -7,7 +7,11 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
+<<<<<<< HEAD
     "shasum": "v9l9sN0gm3hxCFfQWRjV1p+5D05NIrFvjRozzVwFUpM=",
+=======
+    "shasum": "y/Q8KZXmyBTjHw9O0bcuHZuVOhEnsny4xXQDL2CA7DU=",
+>>>>>>> 93ebf4b1 (Move `SnapError` to SDK)
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

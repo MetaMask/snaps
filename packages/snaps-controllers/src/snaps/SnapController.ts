@@ -36,7 +36,7 @@ import type {
   RequestSnapsResult,
   SnapId,
 } from '@metamask/snaps-sdk';
-import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
+import { AuxiliaryFileEncoding, getErrorMessage } from '@metamask/snaps-sdk';
 import { assertUILinksAreSafe } from '@metamask/snaps-ui';
 import type {
   FetchedSnapFiles,
@@ -56,7 +56,6 @@ import {
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
   encodeAuxiliaryFile,
-  getErrorMessage,
   HandlerType,
   isOriginAllowed,
   logError,
