@@ -1,2 +1,2 @@
-export * from './internals';
+export type { EnumToUnion } from './internals';
 export * from './types';
