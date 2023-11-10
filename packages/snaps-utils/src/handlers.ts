@@ -10,7 +10,7 @@ import type {
 } from '@metamask/snaps-sdk';
 import { SeverityLevel } from '@metamask/snaps-sdk';
 import { ComponentStruct } from '@metamask/snaps-ui';
-import { literal, object, optional } from 'superstruct';
+import { literal, nullable, object, optional } from 'superstruct';
 
 import type { SnapHandler } from './handler-types';
 import { HandlerType } from './handler-types';
@@ -80,10 +80,12 @@ export const SNAP_EXPORTS = {
   },
 } as const;
 
-export const OnTransactionResponseStruct = object({
-  content: ComponentStruct,
-  severity: optional(literal(SeverityLevel.Critical)),
-});
+export const OnTransactionResponseStruct = nullable(
+  object({
+    content: ComponentStruct,
+    severity: optional(literal(SeverityLevel.Critical)),
+  }),
+);
 
 export const OnHomePageResponseStruct = object({
   content: ComponentStruct,

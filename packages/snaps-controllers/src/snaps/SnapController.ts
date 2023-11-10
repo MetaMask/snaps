@@ -2702,11 +2702,11 @@ export class SnapController extends BaseController<
   async #assertSnapRpcRequestResult(handlerType: HandlerType, result: unknown) {
     switch (handlerType) {
       case HandlerType.OnTransaction: {
+        assertStruct(result, OnTransactionResponseStruct);
         // Null is an allowed return value here
         if (result === null) {
           return;
         }
-        assertStruct(result, OnTransactionResponseStruct);
 
         await this.#triggerPhishingListUpdate();
 
