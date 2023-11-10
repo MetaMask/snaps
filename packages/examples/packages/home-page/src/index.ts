@@ -1,4 +1,4 @@
-import type { OnHomePageHandler } from '@metamask/snaps-types';
+import type { OnHomePageHandler } from '@metamask/snaps-sdk';
 import { panel, text, heading } from '@metamask/snaps-ui';
 
 /**

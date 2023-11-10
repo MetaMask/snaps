@@ -1,5 +1,5 @@
-import type { OnTransactionHandler } from '@metamask/snaps-types';
-import { SeverityLevel } from '@metamask/snaps-types';
+import type { OnTransactionHandler } from '@metamask/snaps-sdk';
+import { SeverityLevel } from '@metamask/snaps-sdk';
 import { panel, text } from '@metamask/snaps-ui';
 import { hasProperty } from '@metamask/utils';
 

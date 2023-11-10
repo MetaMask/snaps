@@ -1,4 +1,4 @@
-import type { OnNameLookupHandler } from '@metamask/snaps-types';
+import type { OnNameLookupHandler } from '@metamask/snaps-sdk';
 
 /**
  * Handle incoming name lookup requests from the MetaMask clients.

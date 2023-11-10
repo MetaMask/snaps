@@ -9,7 +9,7 @@
   "include": ["src", "rollup.config.js"],
   "references": [
     {
-      "path": "../../../snaps-types"
+      "path": "../../../snaps-sdk"
     },
     {
       "path": "../../../snaps-rollup-plugin"

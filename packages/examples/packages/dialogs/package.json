@@ -33,7 +33,6 @@
   "dependencies": {
     "@metamask/rpc-errors": "^6.1.0",
     "@metamask/snaps-sdk": "workspace:^",
-    "@metamask/snaps-types": "workspace:^",
     "@metamask/snaps-ui": "workspace:^"
   },
   "devDependencies": {

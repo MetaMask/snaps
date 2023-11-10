@@ -1,4 +1,4 @@
-import type { OnInstallHandler, OnUpdateHandler } from '@metamask/snaps-types';
+import type { OnInstallHandler, OnUpdateHandler } from '@metamask/snaps-sdk';
 import { heading, panel, text } from '@metamask/snaps-ui';
 
 /**

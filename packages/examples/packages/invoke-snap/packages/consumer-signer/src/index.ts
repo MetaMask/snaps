@@ -1,5 +1,5 @@
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { OnRpcRequestHandler } from '@metamask/snaps-types';
+import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
 import { assert, stringToBytes } from '@metamask/utils';
 import { keccak_256 as keccak256 } from '@noble/hashes/sha3';
 

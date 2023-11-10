@@ -1,3 +1,4 @@
+import type { AccountId, ChainId } from '@metamask/snaps-sdk';
 import type { Infer } from 'superstruct';
 import {
   array,
@@ -9,6 +10,8 @@ import {
   size,
   string,
 } from 'superstruct';
+
+import type { InferMatching } from './structs';
 
 export const CHAIN_ID_REGEX =
   /^(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-a-zA-Z0-9]{1,32})$/u;
@@ -85,11 +88,10 @@ export const ChainIdStruct = pattern<ChainId, null>(
   ChainIdStringStruct,
   CHAIN_ID_REGEX,
 );
-export type ChainId = `${string}:${string}`;
-export type Caip2ChainId = Infer<typeof ChainIdStruct>;
+
+export type Caip2ChainId = InferMatching<typeof ChainIdStruct, ChainId>;
 
 export const AccountIdStruct = pattern(string(), ACCOUNT_ID_REGEX);
-export type AccountId = `${ChainId}:${string}`;
 
 export const AccountIdArrayStruct = array(AccountIdStruct);
 export const AccountAddressStruct = pattern(string(), ACCOUNT_ADDRESS_REGEX);

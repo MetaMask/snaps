@@ -1,5 +1,5 @@
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { OnRpcRequestHandler } from '@metamask/snaps-types';
+import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
 
 import { getMessage } from './locales';
 

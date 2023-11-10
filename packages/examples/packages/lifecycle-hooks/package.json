@@ -31,7 +31,7 @@
     "lint:dependencies": "depcheck"
   },
   "dependencies": {
-    "@metamask/snaps-types": "workspace:^",
+    "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-ui": "workspace:^"
   },
   "devDependencies": {

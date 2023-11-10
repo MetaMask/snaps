@@ -1,5 +1,5 @@
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { OnCronjobHandler } from '@metamask/snaps-types';
+import type { OnCronjobHandler } from '@metamask/snaps-sdk';
 import { panel, text, heading } from '@metamask/snaps-ui';
 
 /**

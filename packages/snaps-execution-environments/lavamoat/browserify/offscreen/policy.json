@@ -142,6 +142,52 @@
         "eslint>debug>ms": true
       }
     },
+    "external:../snaps-sdk/src/index.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/types/index.ts": true
+      }
+    },
+    "external:../snaps-sdk/src/types/handlers/index.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/types/handlers/cronjob.ts": true,
+        "external:../snaps-sdk/src/types/handlers/home-page.ts": true,
+        "external:../snaps-sdk/src/types/handlers/keyring.ts": true,
+        "external:../snaps-sdk/src/types/handlers/lifecycle.ts": true,
+        "external:../snaps-sdk/src/types/handlers/name-lookup.ts": true,
+        "external:../snaps-sdk/src/types/handlers/rpc-request.ts": true,
+        "external:../snaps-sdk/src/types/handlers/transaction.ts": true
+      }
+    },
+    "external:../snaps-sdk/src/types/index.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/types/caip.ts": true,
+        "external:../snaps-sdk/src/types/global.ts": true,
+        "external:../snaps-sdk/src/types/handlers/index.ts": true,
+        "external:../snaps-sdk/src/types/methods/index.ts": true,
+        "external:../snaps-sdk/src/types/permissions.ts": true,
+        "external:../snaps-sdk/src/types/provider.ts": true,
+        "external:../snaps-sdk/src/types/snap.ts": true
+      }
+    },
+    "external:../snaps-sdk/src/types/methods/index.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/types/methods/dialog.ts": true,
+        "external:../snaps-sdk/src/types/methods/get-bip32-entropy.ts": true,
+        "external:../snaps-sdk/src/types/methods/get-bip32-public-key.ts": true,
+        "external:../snaps-sdk/src/types/methods/get-bip44-entropy.ts": true,
+        "external:../snaps-sdk/src/types/methods/get-entropy.ts": true,
+        "external:../snaps-sdk/src/types/methods/get-file.ts": true,
+        "external:../snaps-sdk/src/types/methods/get-locale.ts": true,
+        "external:../snaps-sdk/src/types/methods/get-snaps.ts": true,
+        "external:../snaps-sdk/src/types/methods/invoke-keyring.ts": true,
+        "external:../snaps-sdk/src/types/methods/invoke-snap.ts": true,
+        "external:../snaps-sdk/src/types/methods/manage-accounts.ts": true,
+        "external:../snaps-sdk/src/types/methods/manage-state.ts": true,
+        "external:../snaps-sdk/src/types/methods/methods.ts": true,
+        "external:../snaps-sdk/src/types/methods/notify.ts": true,
+        "external:../snaps-sdk/src/types/methods/request-snaps.ts": true
+      }
+    },
     "external:../snaps-ui/src/builder.ts": {
       "packages": {
         "@metamask/utils": true,
@@ -179,6 +225,7 @@
     },
     "external:../snaps-utils/src/handlers.ts": {
       "packages": {
+        "external:../snaps-sdk/src/index.ts": true,
         "external:../snaps-ui/src/index.ts": true,
         "external:../snaps-utils/src/handler-types.ts": true,
         "superstruct": true

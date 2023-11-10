@@ -9,7 +9,7 @@
   "include": ["src", "webpack.config.ts"],
   "references": [
     {
-      "path": "../../../snaps-types"
+      "path": "../../../snaps-sdk"
     },
     {
       "path": "../../../snaps-webpack-plugin"
