@@ -10,9 +10,11 @@ import type { FetchedSnapFiles } from './types';
  * @param files - All potentially included files in a fetched snap.
  * @throws If any of the files are considered invalid.
  */
-export function validateFetchedSnap(files: FetchedSnapFiles): void {
+export async function validateFetchedSnap(
+  files: FetchedSnapFiles,
+): Promise<void> {
   assertIsSnapManifest(files.manifest.result);
-  validateSnapShasum(files);
+  await validateSnapShasum(files);
   validateSnapManifestLocalizations(
     files.manifest.result,
     files.localizationFiles.map((file) => file.result),

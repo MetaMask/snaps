@@ -172,7 +172,9 @@ function getChecksummableManifest(
  * @param files - All required Snap files to be included in the checksum.
  * @returns The Base64-encoded SHA-256 digest of the source code.
  */
-export function getSnapChecksum(files: FetchedSnapFiles): string {
+export async function getSnapChecksum(
+  files: FetchedSnapFiles,
+): Promise<string> {
   const { manifest, sourceCode, svgIcon, auxiliaryFiles, localizationFiles } =
     files;
 
@@ -184,7 +186,7 @@ export function getSnapChecksum(files: FetchedSnapFiles): string {
     ...localizationFiles,
   ].filter((file) => file !== undefined);
 
-  return base64.encode(checksumFiles(all as VirtualFile[]));
+  return base64.encode(await checksumFiles(all as VirtualFile[]));
 }
 
 /**
@@ -194,11 +196,11 @@ export function getSnapChecksum(files: FetchedSnapFiles): string {
  * @param files - All required Snap files to be included in the checksum.
  * @param errorMessage - The error message to throw if validation fails.
  */
-export function validateSnapShasum(
+export async function validateSnapShasum(
   files: FetchedSnapFiles,
   errorMessage = 'Invalid Snap manifest: manifest shasum does not match computed shasum.',
-): void {
-  if (files.manifest.result.source.shasum !== getSnapChecksum(files)) {
+): Promise<void> {
+  if (files.manifest.result.source.shasum !== (await getSnapChecksum(files))) {
     throw new ProgrammaticallyFixableSnapError(
       errorMessage,
       SnapValidationFailureReason.ShasumMismatch,
