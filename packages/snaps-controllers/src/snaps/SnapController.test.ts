@@ -2247,7 +2247,7 @@ describe('SnapController', () => {
     });
   });
 
-  it('doesnt throw if onTransaction handler returns null', async () => {
+  it(`doesn't throw if onTransaction handler returns null`, async () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
     const snapController = getSnapController(
