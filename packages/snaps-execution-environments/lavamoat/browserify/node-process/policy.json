@@ -372,9 +372,27 @@
         "util": true
       }
     },
+    "external:../snaps-sdk/src/errors.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/internals/index.ts": true
+      }
+    },
     "external:../snaps-sdk/src/index.ts": {
       "packages": {
+        "external:../snaps-sdk/src/errors.ts": true,
+        "external:../snaps-sdk/src/internals/index.ts": true,
         "external:../snaps-sdk/src/types/index.ts": true
+      }
+    },
+    "external:../snaps-sdk/src/internals/errors.ts": {
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
+    "external:../snaps-sdk/src/internals/index.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/internals/errors.ts": true,
+        "external:../snaps-sdk/src/internals/helpers.ts": true
       }
     },
     "external:../snaps-sdk/src/types/handlers/index.ts": {
@@ -450,7 +468,8 @@
     "external:../snaps-utils/src/errors.ts": {
       "packages": {
         "@metamask/rpc-errors": true,
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "external:../snaps-sdk/src/index.ts": true
       }
     },
     "external:../snaps-utils/src/handlers.ts": {

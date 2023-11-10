@@ -8,4 +8,5 @@ export {
   SNAP_ERROR_MESSAGE,
 } from './internals';
 
+export * from './errors';
 export * from './types';
