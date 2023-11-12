@@ -5481,11 +5481,13 @@ __metadata:
     eslint-plugin-n: ^15.7.0
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-promise: ^6.1.1
+    is-svg: ^4.4.0
     jest: ^29.0.2
     jest-it-up: ^2.0.0
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^4.1.2
+    superstruct: ^1.0.3
     typescript: ~4.8.4
   languageName: unknown
   linkType: soft

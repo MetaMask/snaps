@@ -37,7 +37,6 @@ import type {
   SnapId,
 } from '@metamask/snaps-sdk';
 import { AuxiliaryFileEncoding, getErrorMessage } from '@metamask/snaps-sdk';
-import { assertUILinksAreSafe } from '@metamask/snaps-ui';
 import type {
   FetchedSnapFiles,
   PersistedSnap,
@@ -51,6 +50,7 @@ import type {
   TruncatedSnapFields,
 } from '@metamask/snaps-utils';
 import {
+  validateComponentLinks,
   assertIsSnapManifest,
   assertIsValidSnapId,
   DEFAULT_ENDOWMENTS,
@@ -2710,7 +2710,7 @@ export class SnapController extends BaseController<
 
         await this.#triggerPhishingListUpdate();
 
-        assertUILinksAreSafe(
+        validateComponentLinks(
           result.content,
           this.#checkPhishingList.bind(this),
         );
@@ -2721,7 +2721,7 @@ export class SnapController extends BaseController<
 
         await this.#triggerPhishingListUpdate();
 
-        assertUILinksAreSafe(
+        validateComponentLinks(
           result.content,
           this.#checkPhishingList.bind(this),
         );

@@ -5,12 +5,10 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { DialogType } from '@metamask/snaps-sdk';
-import type { DialogParams, EnumToUnion } from '@metamask/snaps-sdk';
-import type { Component } from '@metamask/snaps-ui';
-import { ComponentStruct, assertUILinksAreSafe } from '@metamask/snaps-ui';
+import { DialogType, ComponentStruct } from '@metamask/snaps-sdk';
+import type { DialogParams, EnumToUnion, Component } from '@metamask/snaps-sdk';
+import { validateComponentLinks, enumValue } from '@metamask/snaps-utils';
 import type { InferMatching } from '@metamask/snaps-utils';
-import { enumValue } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 import type { Infer, Struct } from 'superstruct';
 import {
@@ -186,7 +184,7 @@ export function getDialogImplementation({
 
     await maybeUpdatePhishingList();
 
-    assertUILinksAreSafe(content, isOnPhishingList);
+    validateComponentLinks(content, isOnPhishingList);
 
     const placeholder =
       validatedParams.type === DialogType.Prompt
