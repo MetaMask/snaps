@@ -45,18 +45,18 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/snaps-utils>is-svg": {
+    "@metamask/snaps-sdk>is-svg": {
       "packages": {
-        "@metamask/snaps-utils>is-svg>fast-xml-parser": true
+        "@metamask/snaps-sdk>is-svg>fast-xml-parser": true
       }
     },
-    "@metamask/snaps-utils>is-svg>fast-xml-parser": {
+    "@metamask/snaps-sdk>is-svg>fast-xml-parser": {
       "globals": {
         "entityName": true,
         "val": true
       },
       "packages": {
-        "@metamask/snaps-utils>is-svg>fast-xml-parser>strnum": true
+        "@metamask/snaps-sdk>is-svg>fast-xml-parser>strnum": true
       }
     },
     "@metamask/utils": {
@@ -151,7 +151,8 @@
       "packages": {
         "external:../snaps-sdk/src/errors.ts": true,
         "external:../snaps-sdk/src/internals/index.ts": true,
-        "external:../snaps-sdk/src/types/index.ts": true
+        "external:../snaps-sdk/src/types/index.ts": true,
+        "external:../snaps-sdk/src/ui/index.ts": true
       }
     },
     "external:../snaps-sdk/src/internals/errors.ts": {
@@ -206,32 +207,94 @@
         "external:../snaps-sdk/src/types/methods/request-snaps.ts": true
       }
     },
-    "external:../snaps-ui/src/builder.ts": {
+    "external:../snaps-sdk/src/ui/builder.ts": {
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/component.ts": {
       "packages": {
         "@metamask/utils": true,
-        "external:../snaps-ui/src/nodes.ts": true
-      }
-    },
-    "external:../snaps-ui/src/index.ts": {
-      "packages": {
-        "external:../snaps-ui/src/builder.ts": true,
-        "external:../snaps-ui/src/nodes.ts": true,
-        "external:../snaps-ui/src/validation.ts": true
-      }
-    },
-    "external:../snaps-ui/src/nodes.ts": {
-      "packages": {
-        "@metamask/snaps-utils>is-svg": true,
+        "external:../snaps-sdk/src/ui/components/index.ts": true,
         "superstruct": true
       }
     },
-    "external:../snaps-ui/src/validation.ts": {
-      "globals": {
-        "URL": true
-      },
+    "external:../snaps-sdk/src/ui/components/copyable.ts": {
       "packages": {
-        "@metamask/utils": true,
-        "external:../snaps-ui/src/nodes.ts": true,
+        "external:../snaps-sdk/src/ui/builder.ts": true,
+        "external:../snaps-sdk/src/ui/nodes.ts": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/components/divider.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/ui/builder.ts": true,
+        "external:../snaps-sdk/src/ui/nodes.ts": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/components/heading.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/ui/builder.ts": true,
+        "external:../snaps-sdk/src/ui/nodes.ts": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/components/image.ts": {
+      "packages": {
+        "@metamask/snaps-sdk>is-svg": true,
+        "external:../snaps-sdk/src/ui/builder.ts": true,
+        "external:../snaps-sdk/src/ui/nodes.ts": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/components/index.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/ui/components/copyable.ts": true,
+        "external:../snaps-sdk/src/ui/components/divider.ts": true,
+        "external:../snaps-sdk/src/ui/components/heading.ts": true,
+        "external:../snaps-sdk/src/ui/components/image.ts": true,
+        "external:../snaps-sdk/src/ui/components/panel.ts": true,
+        "external:../snaps-sdk/src/ui/components/spinner.ts": true,
+        "external:../snaps-sdk/src/ui/components/text.ts": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/components/panel.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/ui/builder.ts": true,
+        "external:../snaps-sdk/src/ui/components/copyable.ts": true,
+        "external:../snaps-sdk/src/ui/components/divider.ts": true,
+        "external:../snaps-sdk/src/ui/components/heading.ts": true,
+        "external:../snaps-sdk/src/ui/components/image.ts": true,
+        "external:../snaps-sdk/src/ui/components/spinner.ts": true,
+        "external:../snaps-sdk/src/ui/components/text.ts": true,
+        "external:../snaps-sdk/src/ui/nodes.ts": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/components/spinner.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/ui/builder.ts": true,
+        "external:../snaps-sdk/src/ui/nodes.ts": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/components/text.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/ui/builder.ts": true,
+        "external:../snaps-sdk/src/ui/nodes.ts": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/index.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/ui/component.ts": true,
+        "external:../snaps-sdk/src/ui/components/index.ts": true,
+        "external:../snaps-sdk/src/ui/nodes.ts": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/nodes.ts": {
+      "packages": {
         "superstruct": true
       }
     },
@@ -245,7 +308,6 @@
     "external:../snaps-utils/src/handlers.ts": {
       "packages": {
         "external:../snaps-sdk/src/index.ts": true,
-        "external:../snaps-ui/src/index.ts": true,
         "external:../snaps-utils/src/handler-types.ts": true,
         "superstruct": true
       }

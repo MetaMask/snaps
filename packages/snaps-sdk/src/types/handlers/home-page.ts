@@ -1,4 +1,4 @@
-import type { Component } from '@metamask/snaps-ui';
+import type { Component } from '../../ui';
 
 /**
  * The `onHomePage` handler. This is called when the user navigates to the
