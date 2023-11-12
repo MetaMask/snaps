@@ -1,5 +1,5 @@
 import { Box, Flex, List, ListItem, Text } from '@chakra-ui/react';
-import type { Component } from '@metamask/snaps-ui';
+import type { Component } from '@metamask/snaps-sdk';
 import {
   copyable,
   divider,
@@ -7,7 +7,7 @@ import {
   image,
   panel,
   text,
-} from '@metamask/snaps-ui';
+} from '@metamask/snaps-sdk';
 import type { FunctionComponent } from 'react';
 
 import type { IconName } from '../../../components';

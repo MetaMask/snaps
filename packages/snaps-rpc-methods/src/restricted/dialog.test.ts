@@ -1,6 +1,5 @@
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
-import { DialogType } from '@metamask/snaps-sdk';
-import { heading, panel, text } from '@metamask/snaps-ui';
+import { DialogType, heading, panel, text } from '@metamask/snaps-sdk';
 
 import type { DialogMethodHooks } from './dialog';
 import { dialogBuilder, getDialogImplementation } from './dialog';

@@ -1,5 +1,5 @@
 import { Flex, Text } from '@chakra-ui/react';
-import type { Component } from '@metamask/snaps-ui';
+import type { Component } from '@metamask/snaps-sdk';
 import { assert } from '@metamask/utils';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 import type { FunctionComponent, ReactNode } from 'react';

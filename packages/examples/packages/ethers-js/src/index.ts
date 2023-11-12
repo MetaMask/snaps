@@ -1,6 +1,6 @@
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
-import { panel, heading, copyable, text } from '@metamask/snaps-ui';
+import { panel, heading, copyable, text } from '@metamask/snaps-sdk';
 import { Wallet } from 'ethers';
 
 import type { SignMessageParams } from './types';

@@ -1,4 +1,4 @@
-import type { Component } from '@metamask/snaps-ui';
+import type { Component } from '@metamask/snaps-sdk';
 import type { SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { HandlerType } from '@metamask/snaps-utils';
 import {

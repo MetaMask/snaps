@@ -1,4 +1,4 @@
-import { panel } from '@metamask/snaps-ui';
+import { panel } from '@metamask/snaps-sdk';
 
 import { render } from '../../utils';
 import { AlertDialog } from './AlertDialog';

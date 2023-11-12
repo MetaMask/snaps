@@ -1,5 +1,5 @@
-import type { Component } from '@metamask/snaps-ui';
-import { panel, text } from '@metamask/snaps-ui';
+import type { Component } from '@metamask/snaps-sdk';
+import { panel, text } from '@metamask/snaps-sdk';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 
 import { panelToCode, nodeModelsToComponent } from './utils';
@@ -41,7 +41,7 @@ describe('paneltoCode', () => {
 
     const code = panelToCode(component);
     expect(code).toMatchInlineSnapshot(`
-      "import { panel, text } from '@metamask/snaps-ui';
+      "import { panel, text } from '@metamask/snaps-sdk';
 
       const component = panel([text('foo'), panel([text('bar'), text('baz')])]);
       "

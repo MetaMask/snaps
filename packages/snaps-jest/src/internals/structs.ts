@@ -1,5 +1,4 @@
-import { NotificationType } from '@metamask/snaps-sdk';
-import { ComponentStruct } from '@metamask/snaps-ui';
+import { NotificationType, ComponentStruct } from '@metamask/snaps-sdk';
 import { enumValue } from '@metamask/snaps-utils';
 import {
   bytesToHex,
