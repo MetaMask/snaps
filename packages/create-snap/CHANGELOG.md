@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [3.2.0]
-### Uncategorized
-- Use browser native SHA256 when possible ([#1953](https://github.com/MetaMask/snaps/pull/1953))
-- Bump @metamask/auto-changelog from 3.3.0 to 3.4.3 ([#1936](https://github.com/MetaMask/snaps/pull/1936))
+### Changed
+- Use `SubtleCrypto` for checksum calculation ([#1953](https://github.com/MetaMask/snaps/pull/1953))
+  - This reduces the time of the checksum calculation by up to 95%.
 
 ## [3.1.0]
 ### Added

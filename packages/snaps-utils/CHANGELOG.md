@@ -7,16 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [4.0.0]
-### Uncategorized
-- Use browser native SHA256 when possible ([#1953](https://github.com/MetaMask/snaps/pull/1953))
+### Changed
+- Use `SubtleCrypto` for checksum calculation ([#1953](https://github.com/MetaMask/snaps/pull/1953))
+  - This reduces the time of the checksum calculation by up to 95%.
+- Use `@metamask/snaps-sdk` package ([#1930](https://github.com/MetaMask/snaps/pull/1930),
+  [#1946](https://github.com/MetaMask/snaps/pull/1946), [#1950](https://github.com/MetaMask/snaps/pull/1950),
+  [#1949](https://github.com/MetaMask/snaps/pull/1949), [#1954](https://github.com/MetaMask/snaps/pull/1954))
+  - This package replaces the `@metamask/snaps-types` and
+  - `@metamask/snaps-ui` packages, and is much more lightweight.
+
+### Fixed
 - Include localization files in checksum calculations ([#1956](https://github.com/MetaMask/snaps/pull/1956))
-- Move UI functionality to SDK ([#1954](https://github.com/MetaMask/snaps/pull/1954))
-- Fix transaction insight snaps returning null ([#1952](https://github.com/MetaMask/snaps/pull/1952))
-- BREAKING: Move `SnapError` to SDK ([#1949](https://github.com/MetaMask/snaps/pull/1949))
-- Remove separate internals export from SDK ([#1950](https://github.com/MetaMask/snaps/pull/1950))
-- Bump @metamask/auto-changelog from 3.3.0 to 3.4.3 ([#1936](https://github.com/MetaMask/snaps/pull/1936))
-- BREAKING: Move handler types to SDK ([#1946](https://github.com/MetaMask/snaps/pull/1946))
-- BREAKING: Move Snap globals to SDK package ([#1930](https://github.com/MetaMask/snaps/pull/1930))
+
+### Removed
+- **BREAKING**: Remove `ValidatedSnapId` and `SnapId` types ([#1930](https://github.com/MetaMask/snaps/pull/1930))
+  - `ValidatedSnapId` was moved to the `@metamask/snaps-sdk` package as
+    `SnapId`.
+  - `SnapId` was an alias of `string`, and is no longer needed.
+- **BREAKING**: Remove `SnapError` ([#1949](https://github.com/MetaMask/snaps/pull/1949))
+  - This class was moved to the `@metamask/snaps-sdk` package.
+- **BREAKING**: Remove `EnumToUnion` type ([#1930](https://github.com/MetaMask/snaps/pull/1930))
+  - This type was moved to the `@metamask/snaps-sdk` package.
+- **BREAKING**: Remove `RequestedSnapPermissions` type ([#1930](https://github.com/MetaMask/snaps/pull/1930))
+  - This type was deprecated, and is now replaced by the `InitialPermissions`
+    type from the `@metamask/snaps-sdk` package.
 
 ## [3.3.0]
 ### Added

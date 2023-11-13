@@ -7,10 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [1.1.0]
-### Uncategorized
+### Changed
+- Use `@metamask/snaps-sdk` package ([#1946](https://github.com/MetaMask/snaps/pull/1946))
+    - This package replaces the `@metamask/snaps-types` and
+    - `@metamask/snaps-ui` packages, and is much more lightweight.
+
+### Fixed
 - Include localization files in checksum calculations ([#1956](https://github.com/MetaMask/snaps/pull/1956))
-- Bump @metamask/auto-changelog from 3.3.0 to 3.4.3 ([#1936](https://github.com/MetaMask/snaps/pull/1936))
-- BREAKING: Move handler types to SDK ([#1946](https://github.com/MetaMask/snaps/pull/1946))
 
 ## [1.0.0]
 ### Added

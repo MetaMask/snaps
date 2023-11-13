@@ -7,11 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [4.0.0]
-### Uncategorized
-- Move UI functionality to SDK ([#1954](https://github.com/MetaMask/snaps/pull/1954))
-- Remove separate internals export from SDK ([#1950](https://github.com/MetaMask/snaps/pull/1950))
-- Bump @metamask/auto-changelog from 3.3.0 to 3.4.3 ([#1936](https://github.com/MetaMask/snaps/pull/1936))
-- BREAKING: Move Snap globals to SDK package ([#1930](https://github.com/MetaMask/snaps/pull/1930))
+### Changed
+- Use `@metamask/snaps-sdk` package ([#1930](https://github.com/MetaMask/snaps/pull/1930),
+  [#1950](https://github.com/MetaMask/snaps/pull/1950), [#1954](https://github.com/MetaMask/snaps/pull/1954))
+  - This package replaces the `@metamask/snaps-types` and
+  - `@metamask/snaps-ui` packages.
+
+### Removed
+- **BREAKING**: Remove `DialogType`, `ManageStateOperation`, and `NotificationType` enums ([#1930](https://github.com/MetaMask/snaps/pull/1930))
+  - These are now defined in the `@metamask/snaps-sdk` package.
 
 ## [3.3.0]
 ### Added

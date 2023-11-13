@@ -7,19 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [2.1.0]
-### Uncategorized
-- Move UI functionality to SDK ([#1954](https://github.com/MetaMask/snaps/pull/1954))
-- BREAKING: Move `SnapError` to SDK ([#1949](https://github.com/MetaMask/snaps/pull/1949))
-- Remove separate internals export from SDK ([#1950](https://github.com/MetaMask/snaps/pull/1950))
-- Bump @metamask/auto-changelog from 3.3.0 to 3.4.3 ([#1936](https://github.com/MetaMask/snaps/pull/1936))
-- BREAKING: Move handler types to SDK ([#1946](https://github.com/MetaMask/snaps/pull/1946))
-- Add `sensitive` parameter to `copyable` ([#1944](https://github.com/MetaMask/snaps/pull/1944))
-- BREAKING: Move Snap globals to SDK package ([#1930](https://github.com/MetaMask/snaps/pull/1930))
-- Add manifest localization functionality ([#1889](https://github.com/MetaMask/snaps/pull/1889))
-- Add support for unencrypted storage ([#1902](https://github.com/MetaMask/snaps/pull/1902))
-- Add snap home page ([#1896](https://github.com/MetaMask/snaps/pull/1896))
-- Fix `assertLinksAreSafe` import ([#1908](https://github.com/MetaMask/snaps/pull/1908))
-- Handle links in Custom UI and Notifications ([#1814](https://github.com/MetaMask/snaps/pull/1814))
+### Changed
+- Use `@metamask/snaps-sdk` package ([#1930](https://github.com/MetaMask/snaps/pull/1930),
+  [#1946](https://github.com/MetaMask/snaps/pull/1946), [#1950](https://github.com/MetaMask/snaps/pull/1950),
+  [#1949](https://github.com/MetaMask/snaps/pull/1949), [#1954](https://github.com/MetaMask/snaps/pull/1954))
+  - This package replaces the `@metamask/snaps-types` and
+  - `@metamask/snaps-ui` packages, and is much more lightweight.
 
 ## [2.0.1]
 ### Changed

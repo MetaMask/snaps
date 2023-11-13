@@ -6,10 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [3.0.2]
-### Uncategorized
-- Bump @metamask/auto-changelog from 3.3.0 to 3.4.3 ([#1936](https://github.com/MetaMask/snaps/pull/1936))
-
 ## [3.0.1]
 ### Changed
 - Update multiple MetaMask dependencies ([#1841](https://github.com/MetaMask/snaps/pull/1841))

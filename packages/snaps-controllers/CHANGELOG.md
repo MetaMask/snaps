@@ -7,13 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [3.4.0]
-### Uncategorized
-- Use browser native SHA256 when possible ([#1953](https://github.com/MetaMask/snaps/pull/1953))
-- Move UI functionality to SDK ([#1954](https://github.com/MetaMask/snaps/pull/1954))
-- Fix transaction insight snaps returning null ([#1952](https://github.com/MetaMask/snaps/pull/1952))
-- BREAKING: Move `SnapError` to SDK ([#1949](https://github.com/MetaMask/snaps/pull/1949))
-- Bump @metamask/auto-changelog from 3.3.0 to 3.4.3 ([#1936](https://github.com/MetaMask/snaps/pull/1936))
-- BREAKING: Move Snap globals to SDK package ([#1930](https://github.com/MetaMask/snaps/pull/1930))
+### Changed
+- Use `SubtleCrypto` for checksum calculation ([#1953](https://github.com/MetaMask/snaps/pull/1953))
+  - This reduces the time of the checksum calculation by up to 95%.
+- Use `@metamask/snaps-sdk` package ([#1930](https://github.com/MetaMask/snaps/pull/1930), [#1949](https://github.com/MetaMask/snaps/pull/1949))
+  - This package replaces the `@metamask/snaps-types` and
+  - `@metamask/snaps-ui` packages.
+
+### Fixed
+- Fix support for transaction insight Snaps returning `null` ([#1952](https://github.com/MetaMask/snaps/pull/1952))
 
 ## [3.3.0]
 ### Added

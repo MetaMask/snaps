@@ -7,9 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [3.1.0]
-### Uncategorized
-- BREAKING: Move `SnapError` to SDK ([#1949](https://github.com/MetaMask/snaps/pull/1949))
-- Bump @metamask/auto-changelog from 3.3.0 to 3.4.3 ([#1936](https://github.com/MetaMask/snaps/pull/1936))
+### Changed
+- Use `@metamask/snaps-sdk` package ([#1949](https://github.com/MetaMask/snaps/pull/1949))
+  - This package replaces the `@metamask/snaps-types` and
+  - `@metamask/snaps-ui` packages.
 
 ## [3.0.1]
 ### Changed

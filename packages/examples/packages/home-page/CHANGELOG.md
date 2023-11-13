@@ -7,11 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [1.1.0]
-### Uncategorized
-- Move UI functionality to SDK ([#1954](https://github.com/MetaMask/snaps/pull/1954))
-- Bump @metamask/auto-changelog from 3.3.0 to 3.4.3 ([#1936](https://github.com/MetaMask/snaps/pull/1936))
-- BREAKING: Move handler types to SDK ([#1946](https://github.com/MetaMask/snaps/pull/1946))
-- Add `sensitive` parameter to `copyable` ([#1944](https://github.com/MetaMask/snaps/pull/1944))
+### Changed
+- Use `@metamask/snaps-sdk` package ([#1946](https://github.com/MetaMask/snaps/pull/1946), [#1954](https://github.com/MetaMask/snaps/pull/1954))
+    - This package replaces the `@metamask/snaps-types` and
+    - `@metamask/snaps-ui` packages, and is much more lightweight.
 
 ## [1.0.0]
 ### Added
