@@ -32,10 +32,10 @@ export const SnapFileNameFromKey = {
  * @param errorPrefix - The prefix of the error message.
  * @returns A tuple of the Snap manifest object and the Snap source code.
  */
-export function validateNpmSnap(
+export async function validateNpmSnap(
   snapFiles: UnvalidatedSnapFiles,
   errorPrefix?: `${string}: `,
-): SnapFiles {
+): Promise<SnapFiles> {
   EXPECTED_SNAP_FILES.forEach((key) => {
     if (!snapFiles[key]) {
       throw new Error(
@@ -73,7 +73,7 @@ export function validateNpmSnap(
   }
 
   const validatedPackageJson = packageJson;
-  validateNpmSnapManifest({
+  await validateNpmSnapManifest({
     manifest: validatedManifest,
     packageJson: validatedPackageJson,
     sourceCode,

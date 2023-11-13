@@ -197,7 +197,6 @@ export const getMockSnapFiles = ({
   svgIcon = DEFAULT_SNAP_ICON,
   auxiliaryFiles = [],
   localizationFiles = [],
-  updateChecksum = true,
 }: {
   manifest?: SnapManifest | VirtualFile<SnapManifest>;
   sourceCode?: string | VirtualFile;
@@ -205,9 +204,8 @@ export const getMockSnapFiles = ({
   svgIcon?: string | VirtualFile;
   auxiliaryFiles?: VirtualFile[];
   localizationFiles?: LocalizationFile[];
-  updateChecksum?: boolean;
 } = {}): SnapFiles => {
-  const files = {
+  return {
     manifest:
       manifest instanceof VirtualFile
         ? manifest
@@ -246,11 +244,34 @@ export const getMockSnapFiles = ({
       : undefined,
     auxiliaryFiles,
   };
+};
 
-  if (updateChecksum) {
-    files.manifest.result.source.shasum = getSnapChecksum(files);
-    files.manifest.value = JSON.stringify(files.manifest.result);
-  }
+export const getMockSnapFilesWithUpdatedChecksum = async ({
+  manifest = SHASUM_MANIFEST,
+  packageJson = getPackageJson(),
+  sourceCode = DEFAULT_SNAP_BUNDLE,
+  svgIcon = DEFAULT_SNAP_ICON,
+  auxiliaryFiles = [],
+  localizationFiles = [],
+}: {
+  manifest?: SnapManifest | VirtualFile<SnapManifest>;
+  sourceCode?: string | VirtualFile;
+  packageJson?: NpmSnapPackageJson;
+  svgIcon?: string | VirtualFile;
+  auxiliaryFiles?: VirtualFile[];
+  localizationFiles?: LocalizationFile[];
+} = {}): Promise<SnapFiles> => {
+  const files = getMockSnapFiles({
+    manifest,
+    packageJson,
+    sourceCode,
+    svgIcon,
+    auxiliaryFiles,
+    localizationFiles,
+  });
+
+  files.manifest.result.source.shasum = await getSnapChecksum(files);
+  files.manifest.value = JSON.stringify(files.manifest.result);
 
   return files;
 };

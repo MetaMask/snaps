@@ -126,7 +126,7 @@ export async function checkManifest(
       // attempt to fix the manifest the same amount of times as there are
       // reasons in the enum.
       for (let attempts = 1; isInvalid && attempts <= maxAttempts; attempts++) {
-        manifest = fixManifest(
+        manifest = await fixManifest(
           manifest
             ? { ...partiallyValidatedFiles, manifest }
             : partiallyValidatedFiles,
@@ -134,7 +134,10 @@ export async function checkManifest(
         );
 
         try {
-          validateNpmSnapManifest({ ...partiallyValidatedFiles, manifest });
+          await validateNpmSnapManifest({
+            ...partiallyValidatedFiles,
+            manifest,
+          });
 
           isInvalid = false;
         } catch (nextValidationError) {
@@ -218,10 +221,10 @@ export async function checkManifest(
  * @param error - The {@link ProgrammaticallyFixableSnapError} that was thrown.
  * @returns A copy of the manifest file where the cause of the error is fixed.
  */
-export function fixManifest(
+export async function fixManifest(
   snapFiles: SnapFiles,
   error: ProgrammaticallyFixableSnapError,
-): VirtualFile<SnapManifest> {
+): Promise<VirtualFile<SnapManifest>> {
   const { manifest, packageJson } = snapFiles;
   const clonedFile = manifest.clone();
   const manifestCopy = clonedFile.result;
@@ -242,7 +245,7 @@ export function fixManifest(
       break;
 
     case SnapValidationFailureReason.ShasumMismatch:
-      manifestCopy.source.shasum = getSnapChecksum(snapFiles);
+      manifestCopy.source.shasum = await getSnapChecksum(snapFiles);
       break;
 
     /* istanbul ignore next */
@@ -425,7 +428,7 @@ export function getWritableManifest(manifest: SnapManifest): SnapManifest {
  * @param snapFiles.auxiliaryFiles - Any auxiliary files required by the snap at runtime.
  * @param snapFiles.localizationFiles - The Snap's localization files.
  */
-export function validateNpmSnapManifest({
+export async function validateNpmSnapManifest({
   manifest,
   packageJson,
   sourceCode,
@@ -467,7 +470,7 @@ export function validateNpmSnapManifest({
     );
   }
 
-  validateSnapShasum(
+  await validateSnapShasum(
     { manifest, sourceCode, svgIcon, auxiliaryFiles, localizationFiles },
     `"${NpmSnapFileNames.Manifest}" "shasum" field does not match computed shasum.`,
   );

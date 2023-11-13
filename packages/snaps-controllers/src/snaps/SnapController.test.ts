@@ -38,6 +38,7 @@ import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
   getMockLocalizationFile,
+  getMockSnapFilesWithUpdatedChecksum,
 } from '@metamask/snaps-utils/test-utils';
 import type { SemVerRange, SemVerVersion } from '@metamask/utils';
 import { assert, AssertionError, stringToBytes } from '@metamask/utils';
@@ -1155,7 +1156,7 @@ describe('SnapController', () => {
           getPersistedSnapObject({
             sourceCode,
             manifest: getSnapManifest({
-              shasum: getSnapChecksum(getMockSnapFiles({ sourceCode })),
+              shasum: await getSnapChecksum(getMockSnapFiles({ sourceCode })),
             }),
           }),
         ),
@@ -1234,7 +1235,7 @@ describe('SnapController', () => {
           getPersistedSnapObject({
             sourceCode,
             manifest: getSnapManifest({
-              shasum: getSnapChecksum(getMockSnapFiles({ sourceCode })),
+              shasum: await getSnapChecksum(getMockSnapFiles({ sourceCode })),
             }),
           }),
         ),
@@ -1351,7 +1352,7 @@ describe('SnapController', () => {
           getPersistedSnapObject({
             sourceCode,
             manifest: getSnapManifest({
-              shasum: getSnapChecksum(getMockSnapFiles({ sourceCode })),
+              shasum: await getSnapChecksum(getMockSnapFiles({ sourceCode })),
             }),
           }),
         ),
@@ -2620,14 +2621,14 @@ describe('SnapController', () => {
     });
 
     it('crashes the Snap on unhandled errors', async () => {
-      const { manifest, sourceCode, svgIcon } = getMockSnapFiles({
-        updateChecksum: true,
-        sourceCode: `
+      const { manifest, sourceCode, svgIcon } =
+        await getMockSnapFilesWithUpdatedChecksum({
+          sourceCode: `
           module.exports.onRpcRequest = () => {
             throw new Error('foo');
           };
         `,
-      });
+        });
 
       const [snapController, service] = getSnapControllerWithEES(
         getSnapControllerWithEESOptions({
@@ -2662,9 +2663,9 @@ describe('SnapController', () => {
     });
 
     it('does not crash the Snap on handled errors', async () => {
-      const { manifest, sourceCode, svgIcon } = getMockSnapFiles({
-        updateChecksum: true,
-        sourceCode: `
+      const { manifest, sourceCode, svgIcon } =
+        await getMockSnapFilesWithUpdatedChecksum({
+          sourceCode: `
           module.exports.onRpcRequest = () => {
             class SnapError {
               serialize() {
@@ -2684,7 +2685,7 @@ describe('SnapController', () => {
             throw new SnapError();
           };
         `,
-      });
+        });
 
       const [snapController, service] = getSnapControllerWithEES(
         getSnapControllerWithEESOptions({

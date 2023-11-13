@@ -109,7 +109,7 @@ export const validators: Validator[] = [
     ) => {
       if (manifest) {
         const manifestShasum = manifest.result?.source.shasum;
-        const calculatedShasum = getSnapChecksum({
+        const calculatedShasum = await getSnapChecksum({
           manifest,
           sourceCode,
           svgIcon: icon,
