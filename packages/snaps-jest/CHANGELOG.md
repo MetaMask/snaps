@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.0]
+### Uncategorized
+- Move UI functionality to SDK ([#1954](https://github.com/MetaMask/snaps/pull/1954))
+- Remove separate internals export from SDK ([#1950](https://github.com/MetaMask/snaps/pull/1950))
+- Bump @metamask/auto-changelog from 3.3.0 to 3.4.3 ([#1936](https://github.com/MetaMask/snaps/pull/1936))
+- BREAKING: Move Snap globals to SDK package ([#1930](https://github.com/MetaMask/snaps/pull/1930))
+
 ## [3.1.0]
 ### Added
 - Add support for links in custom UI and notifications ([#1814](https://github.com/MetaMask/snaps/pull/1814))
@@ -65,7 +72,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@3.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@4.0.0...HEAD
+[4.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@3.1.0...@metamask/snaps-jest@4.0.0
 [3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@3.0.0...@metamask/snaps-jest@3.1.0
 [3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@2.0.0...@metamask/snaps-jest@3.0.0
 [2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@1.0.0...@metamask/snaps-jest@2.0.0

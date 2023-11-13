@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.0]
+### Uncategorized
+- Use browser native SHA256 when possible ([#1953](https://github.com/MetaMask/snaps/pull/1953))
+- Include localization files in checksum calculations ([#1956](https://github.com/MetaMask/snaps/pull/1956))
+- Move UI functionality to SDK ([#1954](https://github.com/MetaMask/snaps/pull/1954))
+- Fix transaction insight snaps returning null ([#1952](https://github.com/MetaMask/snaps/pull/1952))
+- BREAKING: Move `SnapError` to SDK ([#1949](https://github.com/MetaMask/snaps/pull/1949))
+- Remove separate internals export from SDK ([#1950](https://github.com/MetaMask/snaps/pull/1950))
+- Bump @metamask/auto-changelog from 3.3.0 to 3.4.3 ([#1936](https://github.com/MetaMask/snaps/pull/1936))
+- BREAKING: Move handler types to SDK ([#1946](https://github.com/MetaMask/snaps/pull/1946))
+- BREAKING: Move Snap globals to SDK package ([#1930](https://github.com/MetaMask/snaps/pull/1930))
+
 ## [3.3.0]
 ### Added
 - Add manifest localization functionality ([#1889](https://github.com/MetaMask/snaps/pull/1889))
@@ -76,7 +88,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@3.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@4.0.0...HEAD
+[4.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@3.3.0...@metamask/snaps-utils@4.0.0
 [3.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@3.2.0...@metamask/snaps-utils@3.3.0
 [3.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@3.1.0...@metamask/snaps-utils@3.2.0
 [3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@3.0.0...@metamask/snaps-utils@3.1.0

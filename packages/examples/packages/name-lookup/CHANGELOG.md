@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0]
+### Uncategorized
+- Bump @metamask/auto-changelog from 3.3.0 to 3.4.3 ([#1936](https://github.com/MetaMask/snaps/pull/1936))
+- BREAKING: Move handler types to SDK ([#1946](https://github.com/MetaMask/snaps/pull/1946))
+
 ## [2.0.1]
 ### Changed
 - Update multiple MetaMask dependencies ([#1841](https://github.com/MetaMask/snaps/pull/1841))
@@ -18,7 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add name lookup example snap ([#1768](https://github.com/MetaMask/snaps/pull/1768), [#1754](https://github.com/MetaMask/snaps/pull/1754))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/name-lookup-example-snap@2.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/name-lookup-example-snap@2.1.0...HEAD
+[2.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/name-lookup-example-snap@2.0.1...@metamask/name-lookup-example-snap@2.1.0
 [2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/name-lookup-example-snap@2.0.0...@metamask/name-lookup-example-snap@2.0.1
 [2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/name-lookup-example-snap@1.0.0...@metamask/name-lookup-example-snap@2.0.0
 [1.0.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/name-lookup-example-snap@1.0.0
