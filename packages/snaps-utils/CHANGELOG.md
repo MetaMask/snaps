@@ -17,9 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - This package replaces the `@metamask/snaps-types` and
   - `@metamask/snaps-ui` packages, and is much more lightweight.
 
-### Fixed
-- Include localization files in checksum calculations ([#1956](https://github.com/MetaMask/snaps/pull/1956))
-
 ### Removed
 - **BREAKING**: Remove `ValidatedSnapId` and `SnapId` types ([#1930](https://github.com/MetaMask/snaps/pull/1930))
   - `ValidatedSnapId` was moved to the `@metamask/snaps-sdk` package as
@@ -32,6 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **BREAKING**: Remove `RequestedSnapPermissions` type ([#1930](https://github.com/MetaMask/snaps/pull/1930))
   - This type was deprecated, and is now replaced by the `InitialPermissions`
     type from the `@metamask/snaps-sdk` package.
+
+### Fixed
+- Include localization files in checksum calculations ([#1956](https://github.com/MetaMask/snaps/pull/1956))
 
 ## [3.3.0]
 ### Added
