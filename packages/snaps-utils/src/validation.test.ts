@@ -1,11 +1,15 @@
-import { getMockSnapFiles, getSnapManifest } from './test-utils';
+import {
+  getMockSnapFiles,
+  getMockSnapFilesWithUpdatedChecksum,
+  getSnapManifest,
+} from './test-utils';
 import { NpmSnapFileNames } from './types';
 import { validateFetchedSnap } from './validation';
 
 describe('validateFetchedSnap', () => {
   it('asserts the snap manifest is valid', async () => {
     const manifest = getSnapManifest({ version: 'foo' });
-    const files = getMockSnapFiles({ manifest });
+    const files = await getMockSnapFilesWithUpdatedChecksum({ manifest });
 
     await expect(validateFetchedSnap(files)).rejects.toThrow(
       `"${NpmSnapFileNames.Manifest}" is invalid`,
@@ -25,7 +29,7 @@ describe('validateFetchedSnap', () => {
   });
 
   it('asserts the snap icon is valid', async () => {
-    const files = getMockSnapFiles({ svgIcon: 'foo' });
+    const files = await getMockSnapFilesWithUpdatedChecksum({ svgIcon: 'foo' });
     await expect(validateFetchedSnap(files)).rejects.toThrow(
       'Snap icon must be a valid SVG',
     );
@@ -36,7 +40,7 @@ describe('validateFetchedSnap', () => {
       proposedName: '{{ proposedName }}',
     });
 
-    const files = getMockSnapFiles({
+    const files = await getMockSnapFilesWithUpdatedChecksum({
       manifest,
       localizationFiles: [{ locale: 'en', messages: {} }],
     });

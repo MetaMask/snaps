@@ -14,6 +14,7 @@ import {
   getMockSnapFiles,
   getSnapManifest,
   getMockLocalizationFile,
+  getMockSnapFilesWithUpdatedChecksum,
 } from '../test-utils';
 import type { SnapFiles } from '../types';
 import { NpmSnapFileNames, SnapValidationFailureReason } from '../types';
@@ -183,7 +184,7 @@ describe('checkManifest', () => {
       messages: 'foo',
     });
 
-    const { manifest } = getMockSnapFiles({
+    const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
       manifest: getSnapManifest({
         locales: ['locales/en.json'],
       }),
@@ -208,7 +209,7 @@ describe('checkManifest', () => {
       messages: {},
     });
 
-    const { manifest } = getMockSnapFiles({
+    const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
       manifest: getSnapManifest({
         proposedName: '{{ name }}',
         locales: ['locales/en.json'],
