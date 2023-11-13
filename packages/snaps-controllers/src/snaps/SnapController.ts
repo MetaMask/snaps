@@ -2389,7 +2389,7 @@ export class SnapController extends BaseController<
         localizationFiles: validatedLocalizationFiles,
       };
 
-      validateFetchedSnap(files);
+      await validateFetchedSnap(files);
 
       return { files, location };
     } catch (error) {

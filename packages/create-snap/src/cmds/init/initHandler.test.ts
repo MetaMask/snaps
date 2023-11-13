@@ -2,6 +2,7 @@ import * as snapUtils from '@metamask/snaps-utils';
 import {
   getPackageJson,
   getMockSnapFiles,
+  getMockSnapFilesWithUpdatedChecksum,
 } from '@metamask/snaps-utils/test-utils';
 import * as utils from '@metamask/utils';
 import { promises as fs } from 'fs';
@@ -132,9 +133,10 @@ describe('initialize', () => {
         .mockImplementation(() => false);
       jest.spyOn(initUtils, 'gitInitWithCommit').mockImplementation();
 
-      const { manifest, packageJson } = getMockSnapFiles({
-        packageJson: { ...getPackageJson(), main: undefined },
-      });
+      const { manifest, packageJson } =
+        await getMockSnapFilesWithUpdatedChecksum({
+          packageJson: { ...getPackageJson(), main: undefined },
+        });
 
       jest
         .spyOn(snapUtils, 'readJsonFile')

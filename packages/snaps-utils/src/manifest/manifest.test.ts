@@ -14,6 +14,7 @@ import {
   getMockSnapFiles,
   getSnapManifest,
   getMockLocalizationFile,
+  getMockSnapFilesWithUpdatedChecksum,
 } from '../test-utils';
 import type { SnapFiles } from '../types';
 import { NpmSnapFileNames, SnapValidationFailureReason } from '../types';
@@ -183,7 +184,7 @@ describe('checkManifest', () => {
       messages: 'foo',
     });
 
-    const { manifest } = getMockSnapFiles({
+    const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
       manifest: getSnapManifest({
         locales: ['locales/en.json'],
       }),
@@ -208,7 +209,7 @@ describe('checkManifest', () => {
       messages: {},
     });
 
-    const { manifest } = getMockSnapFiles({
+    const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
       manifest: getSnapManifest({
         proposedName: '{{ name }}',
         locales: ['locales/en.json'],
@@ -240,15 +241,14 @@ describe('checkManifest', () => {
 });
 
 describe('fixManifest', () => {
-  it('fixes a name mismatch in the manifest', () => {
+  it('fixes a name mismatch in the manifest', async () => {
     const files: SnapFiles = getMockSnapFiles({
       manifest: getSnapManifest({ packageName: 'foo' }),
       packageJson: getPackageJson({ name: 'bar' }),
       sourceCode: DEFAULT_SNAP_BUNDLE,
-      updateChecksum: false,
     });
 
-    const manifest = fixManifest(
+    const manifest = await fixManifest(
       files,
       new ProgrammaticallyFixableSnapError(
         'foo',
@@ -261,15 +261,14 @@ describe('fixManifest', () => {
     );
   });
 
-  it('fixes a version mismatch in the manifest', () => {
+  it('fixes a version mismatch in the manifest', async () => {
     const files: SnapFiles = getMockSnapFiles({
       manifest: getSnapManifest({ version: '1' }),
       packageJson: getPackageJson({ version: '2' }),
       sourceCode: DEFAULT_SNAP_BUNDLE,
-      updateChecksum: false,
     });
 
-    const manifest = fixManifest(
+    const manifest = await fixManifest(
       files,
       new ProgrammaticallyFixableSnapError(
         'foo',
@@ -280,15 +279,14 @@ describe('fixManifest', () => {
     expect(manifest.result).toStrictEqual(getSnapManifest({ version: '2' }));
   });
 
-  it('fixes a repository mismatch in the manifest', () => {
+  it('fixes a repository mismatch in the manifest', async () => {
     const files: SnapFiles = getMockSnapFiles({
       manifest: getSnapManifest({ repository: { type: 'git', url: 'foo' } }),
       packageJson: getPackageJson({ repository: { type: 'git', url: 'bar' } }),
       sourceCode: DEFAULT_SNAP_BUNDLE,
-      updateChecksum: false,
     });
 
-    const manifest = fixManifest(
+    const manifest = await fixManifest(
       files,
       new ProgrammaticallyFixableSnapError(
         'foo',
@@ -301,7 +299,7 @@ describe('fixManifest', () => {
     );
   });
 
-  it('fixes a shasum mismatch in the manifest', () => {
+  it('fixes a shasum mismatch in the manifest', async () => {
     const files: SnapFiles = getMockSnapFiles({
       manifest: getSnapManifest({
         shasum: '29MYwcRiruhy9BEJpN/TBIhxoD3t0P4OdXztV9rW8tc=',
@@ -309,10 +307,9 @@ describe('fixManifest', () => {
       packageJson: getPackageJson(),
       sourceCode: DEFAULT_SNAP_BUNDLE,
       svgIcon: DEFAULT_SNAP_ICON,
-      updateChecksum: false,
     });
 
-    const manifest = fixManifest(
+    const manifest = await fixManifest(
       files,
       new ProgrammaticallyFixableSnapError(
         'foo',

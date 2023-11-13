@@ -38,6 +38,7 @@ import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
   getMockLocalizationFile,
+  getMockSnapFilesWithUpdatedChecksum,
 } from '@metamask/snaps-utils/test-utils';
 import type { SemVerRange, SemVerVersion } from '@metamask/utils';
 import { assert, AssertionError, stringToBytes } from '@metamask/utils';
@@ -667,7 +668,7 @@ describe('SnapController', () => {
       },
     };
 
-    const { manifest } = getMockSnapFiles({
+    const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
       manifest: getSnapManifest({
         initialPermissions,
       }),
@@ -779,11 +780,12 @@ describe('SnapController', () => {
     const rootMessenger = getControllerMessenger(registry);
     const messenger = getSnapControllerMessenger(rootMessenger);
 
-    const { manifest, sourceCode, svgIcon } = getMockSnapFiles({
-      manifest: getSnapManifest({
-        version: '1.1.0' as SemVerVersion,
-      }),
-    });
+    const { manifest, sourceCode, svgIcon } =
+      await getMockSnapFilesWithUpdatedChecksum({
+        manifest: getSnapManifest({
+          version: '1.1.0' as SemVerVersion,
+        }),
+      });
 
     registry.get.mockResolvedValueOnce({
       [MOCK_SNAP_ID]: { status: SnapsRegistryStatus.Verified },
@@ -1155,7 +1157,7 @@ describe('SnapController', () => {
           getPersistedSnapObject({
             sourceCode,
             manifest: getSnapManifest({
-              shasum: getSnapChecksum(getMockSnapFiles({ sourceCode })),
+              shasum: await getSnapChecksum(getMockSnapFiles({ sourceCode })),
             }),
           }),
         ),
@@ -1234,7 +1236,7 @@ describe('SnapController', () => {
           getPersistedSnapObject({
             sourceCode,
             manifest: getSnapManifest({
-              shasum: getSnapChecksum(getMockSnapFiles({ sourceCode })),
+              shasum: await getSnapChecksum(getMockSnapFiles({ sourceCode })),
             }),
           }),
         ),
@@ -1351,7 +1353,7 @@ describe('SnapController', () => {
           getPersistedSnapObject({
             sourceCode,
             manifest: getSnapManifest({
-              shasum: getSnapChecksum(getMockSnapFiles({ sourceCode })),
+              shasum: await getSnapChecksum(getMockSnapFiles({ sourceCode })),
             }),
           }),
         ),
@@ -2620,14 +2622,14 @@ describe('SnapController', () => {
     });
 
     it('crashes the Snap on unhandled errors', async () => {
-      const { manifest, sourceCode, svgIcon } = getMockSnapFiles({
-        updateChecksum: true,
-        sourceCode: `
+      const { manifest, sourceCode, svgIcon } =
+        await getMockSnapFilesWithUpdatedChecksum({
+          sourceCode: `
           module.exports.onRpcRequest = () => {
             throw new Error('foo');
           };
         `,
-      });
+        });
 
       const [snapController, service] = getSnapControllerWithEES(
         getSnapControllerWithEESOptions({
@@ -2662,9 +2664,9 @@ describe('SnapController', () => {
     });
 
     it('does not crash the Snap on handled errors', async () => {
-      const { manifest, sourceCode, svgIcon } = getMockSnapFiles({
-        updateChecksum: true,
-        sourceCode: `
+      const { manifest, sourceCode, svgIcon } =
+        await getMockSnapFilesWithUpdatedChecksum({
+          sourceCode: `
           module.exports.onRpcRequest = () => {
             class SnapError {
               serialize() {
@@ -2684,7 +2686,7 @@ describe('SnapController', () => {
             throw new SnapError();
           };
         `,
-      });
+        });
 
       const [snapController, service] = getSnapControllerWithEES(
         getSnapControllerWithEESOptions({
@@ -2900,12 +2902,13 @@ describe('SnapController', () => {
       const version = '0.0.1';
       const newVersion = '0.0.2';
 
-      const { manifest } = getMockSnapFiles({
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({ version }),
       });
-      const { manifest: newManifest } = getMockSnapFiles({
-        manifest: getSnapManifest({ version: newVersion }),
-      });
+      const { manifest: newManifest } =
+        await getMockSnapFilesWithUpdatedChecksum({
+          manifest: getSnapManifest({ version: newVersion }),
+        });
       const truncatedSnap = getTruncatedSnap({
         version: newVersion,
         id: MOCK_LOCAL_SNAP_ID,
@@ -3376,7 +3379,7 @@ describe('SnapController', () => {
         'endowment:webassembly': {},
       };
 
-      const { manifest } = getMockSnapFiles({
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
           initialPermissions,
         }),
@@ -3409,7 +3412,7 @@ describe('SnapController', () => {
         snap_dialog: {},
       };
 
-      const { manifest } = getMockSnapFiles({
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
           initialPermissions,
         }),
@@ -3446,7 +3449,7 @@ describe('SnapController', () => {
         ],
       };
 
-      const { manifest } = getMockSnapFiles({
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
           initialPermissions,
         }),
@@ -3561,12 +3564,13 @@ describe('SnapController', () => {
       const initialPermissions = {
         [handlerEndowments.onRpcRequest]: { snaps: false, dapps: true },
       };
-      const { manifest, sourceCode, svgIcon } = getMockSnapFiles({
-        manifest: getSnapManifest({
-          version: '1.1.0' as SemVerVersion,
-          initialPermissions,
-        }),
-      });
+      const { manifest, sourceCode, svgIcon } =
+        await getMockSnapFilesWithUpdatedChecksum({
+          manifest: getSnapManifest({
+            version: '1.1.0' as SemVerVersion,
+            initialPermissions,
+          }),
+        });
 
       const messenger = getSnapControllerMessenger();
       const snapController = getSnapController(
@@ -3656,7 +3660,7 @@ describe('SnapController', () => {
           { path: ['m', "44'", "1'"], curve: 'secp256k1' as const },
         ],
       };
-      const { manifest } = getMockSnapFiles({
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
           version: '1.1.0' as SemVerVersion,
           initialPermissions,
@@ -3756,7 +3760,7 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      const { manifest } = getMockSnapFiles({
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
           version: newVersion,
         }),
@@ -3911,7 +3915,7 @@ describe('SnapController', () => {
       const newVersion = '0.9.0';
       const newVersionRange = '^0.9.0';
 
-      const { manifest } = getMockSnapFiles({
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
           version: newVersion,
         }),
@@ -4003,6 +4007,23 @@ describe('SnapController', () => {
       const oldVersion = '1.0.0';
       const newVersion = '1.0.1';
 
+      const manifest1 = (
+        await getMockSnapFilesWithUpdatedChecksum({
+          manifest: getSnapManifest({
+            version: newVersion,
+          }),
+        })
+      ).manifest.result;
+
+      const manifest2 = (
+        await getMockSnapFilesWithUpdatedChecksum({
+          manifest: getSnapManifest({
+            version: newVersion,
+          }),
+          sourceCode: 'foo',
+        })
+      ).manifest.result;
+
       const manifest = getSnapManifest();
       const detect = jest
         .fn()
@@ -4012,22 +4033,13 @@ describe('SnapController', () => {
         .mockImplementationOnce(
           () =>
             new LoopbackLocation({
-              manifest: getMockSnapFiles({
-                manifest: getSnapManifest({
-                  version: newVersion,
-                }),
-              }).manifest.result,
+              manifest: manifest1,
             }),
         )
         .mockImplementationOnce(
           () =>
             new LoopbackLocation({
-              manifest: getMockSnapFiles({
-                manifest: getSnapManifest({
-                  version: newVersion,
-                }),
-                sourceCode: 'foo',
-              }).manifest.result,
+              manifest: manifest2,
               files: [
                 new VirtualFile({
                   value: 'foo',
@@ -4099,7 +4111,7 @@ describe('SnapController', () => {
       const newVersion = '1.0.1';
       const olderVersion = '0.9.0';
 
-      const { manifest } = getMockSnapFiles({
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
           version: olderVersion,
         }),
@@ -4155,20 +4167,21 @@ describe('SnapController', () => {
     });
 
     it('handles unnormalized paths correctly', async () => {
-      const { manifest, sourceCode, svgIcon } = getMockSnapFiles({
-        manifest: getSnapManifest({
-          filePath: './bundle.js',
-          iconPath: 'icon.svg',
-        }),
-        sourceCode: new VirtualFile({
-          value: DEFAULT_SNAP_BUNDLE,
-          path: 'bundle.js',
-        }),
-        svgIcon: new VirtualFile({
-          value: DEFAULT_SNAP_ICON,
-          path: 'icon.svg',
-        }),
-      });
+      const { manifest, sourceCode, svgIcon } =
+        await getMockSnapFilesWithUpdatedChecksum({
+          manifest: getSnapManifest({
+            filePath: './bundle.js',
+            iconPath: 'icon.svg',
+          }),
+          sourceCode: new VirtualFile({
+            value: DEFAULT_SNAP_BUNDLE,
+            path: 'bundle.js',
+          }),
+          svgIcon: new VirtualFile({
+            value: DEFAULT_SNAP_ICON,
+            path: 'icon.svg',
+          }),
+        });
 
       const controller = getSnapController(
         getSnapControllerOptions({
@@ -4190,7 +4203,7 @@ describe('SnapController', () => {
     it('installs a snap with localization files', async () => {
       const messenger = getSnapControllerMessenger();
       const { manifest, sourceCode, svgIcon, localizationFiles } =
-        getMockSnapFiles({
+        await getMockSnapFilesWithUpdatedChecksum({
           manifest: getSnapManifest({
             proposedName: '{{ proposedName }}',
             locales: ['locales/en.json'],
@@ -4238,7 +4251,7 @@ describe('SnapController', () => {
     it('throws if the snap localization files are invalid', async () => {
       const messenger = getSnapControllerMessenger();
       const { manifest, sourceCode, svgIcon, localizationFiles } =
-        getMockSnapFiles({
+        await getMockSnapFilesWithUpdatedChecksum({
           manifest: getSnapManifest({
             proposedName: '{{ proposedName }}',
             locales: ['locales/en.json'],
@@ -4309,7 +4322,7 @@ describe('SnapController', () => {
     });
 
     it("throws an error if new version doesn't match version range", async () => {
-      const { manifest } = getMockSnapFiles({
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
           version: '1.1.0' as SemVerVersion,
         }),
@@ -4359,7 +4372,7 @@ describe('SnapController', () => {
       const registry = new MockSnapsRegistry();
       const rootMessenger = getControllerMessenger(registry);
       const messenger = getSnapControllerMessenger(rootMessenger);
-      const { manifest } = getMockSnapFiles({
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
           version: '1.1.0' as SemVerVersion,
         }),
@@ -4389,7 +4402,7 @@ describe('SnapController', () => {
     });
 
     it('does not update on older snap version downloaded', async () => {
-      const { manifest } = getMockSnapFiles({
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
           version: '0.9.0' as SemVerVersion,
         }),
@@ -4437,7 +4450,7 @@ describe('SnapController', () => {
     });
 
     it('updates a snap', async () => {
-      const { manifest } = getMockSnapFiles({
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
           version: '1.1.0' as SemVerVersion,
         }),
@@ -4586,7 +4599,7 @@ describe('SnapController', () => {
     });
 
     it('can update crashed snap', async () => {
-      const { manifest } = getMockSnapFiles({
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
           version: '1.1.0' as SemVerVersion,
         }),
@@ -4640,7 +4653,7 @@ describe('SnapController', () => {
     });
 
     it('stops and restarts a running snap during an update', async () => {
-      const { manifest } = getMockSnapFiles({
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
           version: '1.1.0' as SemVerVersion,
         }),
@@ -4771,7 +4784,7 @@ describe('SnapController', () => {
     it('throws on update request denied', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-      const { manifest } = getMockSnapFiles({
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
           version: '1.1.0' as SemVerVersion,
         }),
@@ -4931,22 +4944,24 @@ describe('SnapController', () => {
         },
       };
 
-      const { manifest } = getMockSnapFiles({
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
           initialPermissions,
         }),
       });
 
-      const { manifest: manifest2 } = getMockSnapFiles({
-        manifest: getSnapManifest({
-          version: '1.1.0' as SemVerRange,
-          initialPermissions: {
-            [handlerEndowments.onRpcRequest]: { snaps: false, dapps: true },
-            snap_confirm: {},
-            'endowment:network-access': {},
-          },
-        }),
-      });
+      const { manifest: manifest2 } = await getMockSnapFilesWithUpdatedChecksum(
+        {
+          manifest: getSnapManifest({
+            version: '1.1.0' as SemVerRange,
+            initialPermissions: {
+              [handlerEndowments.onRpcRequest]: { snaps: false, dapps: true },
+              snap_confirm: {},
+              'endowment:network-access': {},
+            },
+          }),
+        },
+      );
 
       const callActionSpy = jest.spyOn(messenger, 'call');
 
@@ -5167,32 +5182,40 @@ describe('SnapController', () => {
         },
       };
 
+      const manifest1 = (
+        await getMockSnapFilesWithUpdatedChecksum({
+          manifest: getSnapManifest({ initialPermissions }),
+        })
+      ).manifest.result;
+
+      const manifest2 = (
+        await getMockSnapFilesWithUpdatedChecksum({
+          manifest: getSnapManifest({
+            version: '1.1.0' as SemVerRange,
+            initialPermissions: {
+              [handlerEndowments.onRpcRequest]: {
+                snaps: false,
+                dapps: true,
+              },
+              snap_confirm: {},
+              'endowment:network-access': {},
+            },
+          }),
+        })
+      ).manifest.result;
+
       const detect = jest
         .fn()
         .mockImplementationOnce(
           () =>
             new LoopbackLocation({
-              manifest: getMockSnapFiles({
-                manifest: getSnapManifest({ initialPermissions }),
-              }).manifest.result,
+              manifest: manifest1,
             }),
         )
         .mockImplementationOnce(
           () =>
             new LoopbackLocation({
-              manifest: getMockSnapFiles({
-                manifest: getSnapManifest({
-                  version: '1.1.0' as SemVerRange,
-                  initialPermissions: {
-                    [handlerEndowments.onRpcRequest]: {
-                      snaps: false,
-                      dapps: true,
-                    },
-                    snap_confirm: {},
-                    'endowment:network-access': {},
-                  },
-                }),
-              }).manifest.result,
+              manifest: manifest2,
             }),
         );
       /* eslint-enable @typescript-eslint/naming-convention */
@@ -5250,7 +5273,7 @@ describe('SnapController', () => {
     });
 
     it('handles unnormalized paths correctly', async () => {
-      const { manifest } = getMockSnapFiles({
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
           version: '1.2.0' as SemVerVersion,
           filePath: './dist/bundle.js',
@@ -6520,7 +6543,7 @@ describe('SnapController', () => {
         value: stringToBytes('{ "foo" : "bar" }'),
       });
       const { manifest, sourceCode, svgIcon, auxiliaryFiles } =
-        getMockSnapFiles({
+        await getMockSnapFilesWithUpdatedChecksum({
           manifest: getSnapManifest({ files: ['./src/foo.json'] }),
           auxiliaryFiles: [auxiliaryFile],
         });
@@ -6559,7 +6582,7 @@ describe('SnapController', () => {
         value: stringToBytes('{ "foo" : "bar" }'),
       });
       const { manifest, sourceCode, svgIcon, auxiliaryFiles } =
-        getMockSnapFiles({
+        await getMockSnapFilesWithUpdatedChecksum({
           manifest: getSnapManifest({ files: ['./src/foo.json'] }),
           auxiliaryFiles: [auxiliaryFile],
         });
