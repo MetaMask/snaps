@@ -88,23 +88,9 @@ const SHASUM_MANIFEST = {
   manifestVersion: '0.1' as const,
 };
 
-export const DEFAULT_SNAP_SHASUM = getSnapChecksum({
-  sourceCode: new VirtualFile({
-    value: DEFAULT_SNAP_BUNDLE,
-    path: DEFAULT_SOURCE_PATH,
-  }),
-  svgIcon: new VirtualFile({
-    value: DEFAULT_SNAP_ICON,
-    path: DEFAULT_ICON_PATH,
-  }),
-  manifest: new VirtualFile({
-    value: JSON.stringify(SHASUM_MANIFEST),
-    result: SHASUM_MANIFEST,
-    path: DEFAULT_MANIFEST_PATH,
-  }),
-  auxiliaryFiles: [],
-  localizationFiles: [],
-});
+// This will need to be recalculated if the checksum inputs change.
+export const DEFAULT_SNAP_SHASUM =
+  '7KGs2hbdzoEBXD1cjwQ6+K0v7HlzuY5ah+H9Gdh7g6k=';
 
 /**
  * Get a mock snap manifest, based on the provided options. This is useful for

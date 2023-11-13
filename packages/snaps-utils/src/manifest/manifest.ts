@@ -109,7 +109,7 @@ export async function checkManifest(
 
   let manifest: VirtualFile<SnapManifest> | undefined;
   try {
-    ({ manifest } = validateNpmSnap(snapFiles));
+    ({ manifest } = await validateNpmSnap(snapFiles));
   } catch (error) {
     if (error instanceof ProgrammaticallyFixableSnapError) {
       errors.push(error.message);
