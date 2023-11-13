@@ -1,5 +1,5 @@
-import type { Component, Panel } from '@metamask/snaps-ui';
-import { NodeType } from '@metamask/snaps-ui';
+import { NodeType } from '@metamask/snaps-sdk';
+import type { Component, Panel } from '@metamask/snaps-sdk';
 import { deepClone } from '@metamask/snaps-utils';
 import { assert, hasProperty } from '@metamask/utils';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
@@ -126,7 +126,7 @@ export function panelToCode(component: Panel): string {
 
   return prettier.format(
     `
-      import { ${types} } from '@metamask/snaps-ui';
+      import { ${types} } from '@metamask/snaps-sdk';
 
       const component = ${componentToCode(component)};
 `,

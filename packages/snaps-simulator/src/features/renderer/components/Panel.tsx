@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import { isComponent } from '@metamask/snaps-ui';
+import { isComponent } from '@metamask/snaps-sdk';
 import { assert } from '@metamask/utils';
 import type { FunctionComponent } from 'react';
 

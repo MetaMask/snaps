@@ -37,8 +37,9 @@
   "dependencies": {
     "@metamask/key-tree": "^9.0.0",
     "@metamask/providers": "^13.0.0",
-    "@metamask/snaps-ui": "workspace:^",
-    "@metamask/utils": "^8.1.0"
+    "@metamask/utils": "^8.1.0",
+    "is-svg": "^4.4.0",
+    "superstruct": "^1.0.3"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.5.1",

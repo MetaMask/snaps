@@ -1,5 +1,4 @@
-import { AuxiliaryFileEncoding, DialogType } from '@metamask/snaps-sdk';
-import { text } from '@metamask/snaps-ui';
+import { AuxiliaryFileEncoding, DialogType, text } from '@metamask/snaps-sdk';
 import { VirtualFile, normalizeRelative } from '@metamask/snaps-utils';
 import { stringToBytes } from '@metamask/utils';
 import { expectSaga } from 'redux-saga-test-plan';

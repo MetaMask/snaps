@@ -1,6 +1,5 @@
-import type { DialogType, NotifyParams } from '@metamask/snaps-sdk';
 import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
-import type { Component } from '@metamask/snaps-ui';
+import type { DialogType, NotifyParams, Component } from '@metamask/snaps-sdk';
 import type { VirtualFile } from '@metamask/snaps-utils';
 import { encodeAuxiliaryFile, normalizeRelative } from '@metamask/snaps-utils';
 import { nanoid } from '@reduxjs/toolkit';

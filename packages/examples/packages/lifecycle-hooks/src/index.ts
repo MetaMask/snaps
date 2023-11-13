@@ -1,5 +1,5 @@
 import type { OnInstallHandler, OnUpdateHandler } from '@metamask/snaps-sdk';
-import { heading, panel, text } from '@metamask/snaps-ui';
+import { heading, panel, text } from '@metamask/snaps-sdk';
 
 /**
  * Handle installation of the snap. This handler is called when the snap is

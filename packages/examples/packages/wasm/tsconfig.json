@@ -12,9 +12,6 @@
       "path": "../../../snaps-sdk"
     },
     {
-      "path": "../../../snaps-ui"
-    },
-    {
       "path": "../../../snaps-jest"
     },
     {

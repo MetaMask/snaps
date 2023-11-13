@@ -13,9 +13,6 @@
       "path": "../snaps-simulator"
     },
     {
-      "path": "../snaps-ui"
-    },
-    {
       "path": "../snaps-sdk"
     }
   ]

@@ -12,9 +12,5 @@
     "./src/**/__mocks__",
     "./src/**/__snapshots__"
   ],
-  "references": [
-    {
-      "path": "../snaps-ui/tsconfig.build.json"
-    }
-  ]
+  "references": []
 }

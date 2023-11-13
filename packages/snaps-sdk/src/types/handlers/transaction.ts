@@ -1,6 +1,5 @@
-import type { Component } from '@metamask/snaps-ui';
-
 import type { EnumToUnion } from '../../internals';
+import type { Component } from '../../ui';
 import type { ChainId } from '../caip';
 
 /**

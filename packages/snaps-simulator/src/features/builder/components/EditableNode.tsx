@@ -1,5 +1,5 @@
 import { Box, Input } from '@chakra-ui/react';
-import type { Component, Heading, Text } from '@metamask/snaps-ui';
+import type { Component, Heading, Text } from '@metamask/snaps-sdk';
 import { assert } from '@metamask/utils';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 import type { ChangeEvent, FunctionComponent } from 'react';

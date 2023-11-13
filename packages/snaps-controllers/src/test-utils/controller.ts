@@ -9,6 +9,7 @@ import type {
 import { SubjectType } from '@metamask/permission-controller';
 import { providerErrors } from '@metamask/rpc-errors';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
+import type { SnapId } from '@metamask/snaps-sdk';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MockControllerMessenger,
@@ -373,7 +374,6 @@ export const getSnapControllerMessenger = (
       'SnapController:disconnectOrigin',
       'SnapController:revokeDynamicPermissions',
       'SnapController:getFile',
-      'SnapController:getManifest',
       'SnapsRegistry:resolveVersion',
     ],
   });
@@ -455,7 +455,7 @@ export const getSnapControllerWithEES = (
 };
 
 export const getPersistedSnapsState = (
-  ...snaps: PersistedSnapControllerState['snaps'][ValidatedSnapId][]
+  ...snaps: PersistedSnapControllerState['snaps'][SnapId][]
 ): PersistedSnapControllerState['snaps'] => {
   return (snaps.length > 0 ? snaps : [getPersistedSnapObject()]).reduce<
     PersistedSnapControllerState['snaps']

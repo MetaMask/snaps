@@ -5,7 +5,7 @@ to provide transaction insights to the user. This snap uses the `onTransaction`
 handler to provide insights for transactions that are sent by the user.
 
 Transaction insights are displayed in the transaction confirmation screen, and
-can show any [Snaps-based UI](../../../snaps-ui) components.
+can show any [Snaps-based UI](../../../snaps-sdk) components.
 
 ## Snap manifest
 

@@ -11,7 +11,7 @@ import type {
   NotifyResult,
   EnumToUnion,
 } from '@metamask/snaps-sdk';
-import { assertLinksAreSafe } from '@metamask/snaps-ui';
+import { validateTextLinks } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 import { isObject } from '@metamask/utils';
 
@@ -132,7 +132,7 @@ export function getImplementation({
 
     await maybeUpdatePhishingList();
 
-    assertLinksAreSafe(validatedParams.message, isOnPhishingList);
+    validateTextLinks(validatedParams.message, isOnPhishingList);
 
     switch (validatedParams.type) {
       case NotificationType.Native:

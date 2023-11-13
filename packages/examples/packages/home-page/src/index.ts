@@ -1,5 +1,5 @@
 import type { OnHomePageHandler } from '@metamask/snaps-sdk';
-import { panel, text, heading } from '@metamask/snaps-ui';
+import { panel, text, heading } from '@metamask/snaps-sdk';
 
 /**
  * Handle incoming home page requests from the MetaMask clients.

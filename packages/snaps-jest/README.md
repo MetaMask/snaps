@@ -200,7 +200,7 @@ function.
 
 ```js
 import { installSnap } from '@metamask/snaps-jest';
-import { panel, text } from '@metamask/snaps-ui';
+import { panel, text } from '@metamask/snaps-sdk';
 
 describe('MySnap', () => {
   it('should do something', async () => {
@@ -316,7 +316,7 @@ functions that can be used to interact with the user interface.
 
 ```js
 import { installSnap } from '@metamask/snaps-jest';
-import { text } from '@metamask/snaps-ui';
+import { text } from '@metamask/snaps-sdk';
 import { assert } from '@metamask/utils';
 
 describe('MySnap', () => {

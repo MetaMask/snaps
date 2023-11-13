@@ -1,14 +1,13 @@
-/* eslint-disable @typescript-eslint/no-shadow */
-
-import { panel, text } from './builder';
-import type { Divider, Heading, Panel, Spinner, Text, Image } from './nodes';
+import { assertIsComponent, isComponent } from './component';
+import type {
+  Divider,
+  Heading,
+  Image,
+  Panel,
+  Spinner,
+  Text,
+} from './components';
 import { NodeType } from './nodes';
-import {
-  assertIsComponent,
-  assertLinksAreSafe,
-  assertUILinksAreSafe,
-  isComponent,
-} from './validation';
 
 describe('isComponent', () => {
   it('returns true for a divider component', () => {
@@ -190,69 +189,5 @@ describe('assertIsComponent', () => {
     { type: 'foo' },
   ])(`throws for %p`, (value) => {
     expect(() => assertIsComponent(value)).toThrow('Invalid component:');
-  });
-});
-
-describe('assertLinksAreSafe', () => {
-  it('passes for valid links', () => {
-    expect(() =>
-      assertLinksAreSafe('https://foo.bar', () => false),
-    ).not.toThrow();
-
-    expect(() =>
-      assertLinksAreSafe('mailto:foo@bar.baz', () => false),
-    ).not.toThrow();
-  });
-
-  it('throws an error if an invalid link is found in text', () => {
-    expect(() => assertLinksAreSafe('http://foo.bar', () => false)).toThrow(
-      'Invalid URL: Protocol must be one of: https:, mailto:.',
-    );
-
-    expect(() =>
-      assertLinksAreSafe('https://foo^bar.bar', () => false),
-    ).toThrow('Invalid URL: Unable to parse URL.');
-  });
-});
-
-describe('assertUILinksAreSafe', () => {
-  it('does not throw for a safe text component', async () => {
-    const isOnPhishingList = () => false;
-
-    expect(() =>
-      assertUILinksAreSafe(text('[foobar](https://foo.bar)'), isOnPhishingList),
-    ).not.toThrow();
-
-    expect(() =>
-      assertUILinksAreSafe(
-        panel([text('foobar'), text('[foobar](https://foo.bar)')]),
-        isOnPhishingList,
-      ),
-    ).not.toThrow();
-  });
-
-  it('throws for an unsafe text component', async () => {
-    const isOnPhishingList = () => true;
-
-    expect(() =>
-      assertUILinksAreSafe(
-        text('This tests a link: https://foo.bar'),
-        isOnPhishingList,
-      ),
-    ).toThrow('Invalid URL: The specified URL is not allowed.');
-
-    expect(() =>
-      assertUILinksAreSafe(
-        text('This tests a [link](https://foo.bar)'),
-        isOnPhishingList,
-      ),
-    ).toThrow('Invalid URL: The specified URL is not allowed.');
-
-    expect(() =>
-      assertUILinksAreSafe(
-        panel([text('foobar'), text('This tests a [link](https://foo.bar)')]),
-        isOnPhishingList,
-      ),
-    ).toThrow('Invalid URL: The specified URL is not allowed.');
   });
 });

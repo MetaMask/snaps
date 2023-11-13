@@ -8,8 +8,7 @@ import type {
   OnTransactionHandler,
   OnUpdateHandler,
 } from '@metamask/snaps-sdk';
-import { SeverityLevel } from '@metamask/snaps-sdk';
-import { ComponentStruct } from '@metamask/snaps-ui';
+import { SeverityLevel, ComponentStruct } from '@metamask/snaps-sdk';
 import { literal, nullable, object, optional } from 'superstruct';
 
 import type { SnapHandler } from './handler-types';

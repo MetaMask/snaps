@@ -1,5 +1,5 @@
 import { Box, Text } from '@chakra-ui/react';
-import type { Component } from '@metamask/snaps-ui';
+import type { Component } from '@metamask/snaps-sdk';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 import type { FunctionComponent } from 'react';
 import { useMemo } from 'react';

@@ -61,7 +61,6 @@
     "@metamask/snaps-execution-environments": "workspace:^",
     "@metamask/snaps-rpc-methods": "workspace:^",
     "@metamask/snaps-sdk": "workspace:^",
-    "@metamask/snaps-ui": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/utils": "^8.1.0",
     "@minoru/react-dnd-treeview": "^3.4.4",

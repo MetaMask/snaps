@@ -1,5 +1,5 @@
-import type { Component } from '@metamask/snaps-ui';
-import { NodeType } from '@metamask/snaps-ui';
+import type { Component } from '@metamask/snaps-sdk';
+import { NodeType } from '@metamask/snaps-sdk';
 import type { FunctionComponent } from 'react';
 
 import {

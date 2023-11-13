@@ -1,5 +1,5 @@
 import { describe, it } from '@jest/globals';
-import { panel, text, heading } from '@metamask/snaps-ui';
+import { panel, text, heading } from '@metamask/snaps-sdk';
 
 import { onHomePage } from '.';
 

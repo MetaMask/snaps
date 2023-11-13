@@ -10,7 +10,6 @@
     { "path": "../snaps-rpc-methods" },
     { "path": "../snaps-controllers" },
     { "path": "../snaps-utils" },
-    { "path": "../snaps-ui" },
     { "path": "../snaps-sdk" }
   ]
 }

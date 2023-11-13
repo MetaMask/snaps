@@ -32,7 +32,6 @@
   },
   "dependencies": {
     "@metamask/snaps-sdk": "workspace:^",
-    "@metamask/snaps-ui": "workspace:^",
     "@metamask/utils": "^8.1.0"
   },
   "devDependencies": {
