@@ -177,7 +177,12 @@ describe('checkManifest', () => {
   });
 
   it('throws an error if the localization files are invalid', async () => {
-    const localizationFile = getMockLocalizationFile({ locale: 'en' });
+    const localizationFile = getMockLocalizationFile({
+      locale: 'en',
+      // @ts-expect-error - Invalid type.
+      messages: 'foo',
+    });
+
     const { manifest } = getMockSnapFiles({
       manifest: getSnapManifest({
         locales: ['locales/en.json'],
@@ -189,11 +194,11 @@ describe('checkManifest', () => {
     await fs.mkdir(join(BASE_PATH, 'locales'));
     await fs.writeFile(
       join(BASE_PATH, 'locales/en.json'),
-      JSON.stringify('[]'),
+      JSON.stringify(localizationFile),
     );
 
     await expect(checkManifest(BASE_PATH)).rejects.toThrow(
-      'Failed to validate localization file "/snap/locales/en.json": Expected an object, but received: "[]".',
+      'Failed to validate localization file "/snap/locales/en.json": At path: messages -- Expected an object, but received: "foo".',
     );
   });
 
