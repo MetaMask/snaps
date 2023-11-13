@@ -6733,10 +6733,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testim/chrome-version@npm:^1.1.3":
-  version: 1.1.3
-  resolution: "@testim/chrome-version@npm:1.1.3"
-  checksum: 0874590ae515c2e9e80d62130cd9be070932b60724cef93217c6d2d62f2776a2a9cbc4ef3548e674f57236a4c75f322ce0df7b5ecfecbc8d8b5e3eeaee92391c
+"@testim/chrome-version@npm:^1.1.4":
+  version: 1.1.4
+  resolution: "@testim/chrome-version@npm:1.1.4"
+  checksum: 63817db694ab4a49d240217063a30dc2aac9799561132b51da97699207c47cb3355ae043ad1f8b15b770447834cbf36202133641b078f3944d0a502435b40827
   languageName: node
   linkType: hard
 
@@ -8940,7 +8940,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.4.0":
+"axios@npm:^1.6.0":
   version: 1.6.1
   resolution: "axios@npm:1.6.1"
   dependencies:
@@ -9972,20 +9972,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromedriver@npm:^119.0.0":
-  version: 119.0.0
-  resolution: "chromedriver@npm:119.0.0"
+"chromedriver@npm:^119.0.1":
+  version: 119.0.1
+  resolution: "chromedriver@npm:119.0.1"
   dependencies:
-    "@testim/chrome-version": ^1.1.3
-    axios: ^1.4.0
-    compare-versions: ^6.0.0
+    "@testim/chrome-version": ^1.1.4
+    axios: ^1.6.0
+    compare-versions: ^6.1.0
     extract-zip: ^2.0.1
     https-proxy-agent: ^5.0.1
     proxy-from-env: ^1.1.0
-    tcp-port-used: ^1.0.1
+    tcp-port-used: ^1.0.2
   bin:
     chromedriver: bin/chromedriver
-  checksum: a54790c55f7c07606ee378eeb144e289660f859ae1d625a89297de9b376e6cf4e86776bfb09708d7220264052b5f9a0755d760a1c1c80f1a9053718d4c5132a8
+  checksum: 2b4e1f09bf02f3d40e0542bed94e665dda052b00b91e2f0d8cde9343f7ca068b843f31df2873daa4dbf8a78bfd43aa37f538b42befd0f9237f711100f3b72e49
   languageName: node
   linkType: hard
 
@@ -10341,7 +10341,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"compare-versions@npm:^6.0.0":
+"compare-versions@npm:^6.1.0":
   version: 6.1.0
   resolution: "compare-versions@npm:6.1.0"
   checksum: d4e2a45706a023d8d0b6680338b66b79e20bd02d1947f0ac6531dab634cbed89fa373b3f03d503c5e489761194258d6e1bae67a07f88b1efc61648454f2d47e7
@@ -20090,7 +20090,7 @@ __metadata:
     "@types/node": 18.14.2
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
-    chromedriver: ^119.0.0
+    chromedriver: ^119.0.1
     depcheck: ^1.4.7
     eslint: ^8.27.0
     eslint-config-prettier: ^8.5.0
@@ -21461,7 +21461,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tcp-port-used@npm:^1.0.1, tcp-port-used@npm:^1.0.2":
+"tcp-port-used@npm:^1.0.2":
   version: 1.0.2
   resolution: "tcp-port-used@npm:1.0.2"
   dependencies:

@@ -3,10 +3,5 @@
   "compilerOptions": {
     "baseUrl": "./"
   },
-  "include": ["./src"],
-  "references": [
-    {
-      "path": "../snaps-ui"
-    }
-  ]
+  "include": ["./src"]
 }
