@@ -173,13 +173,17 @@ function getChecksummableManifest(
  * @returns The Base64-encoded SHA-256 digest of the source code.
  */
 export function getSnapChecksum(files: FetchedSnapFiles): string {
-  const { manifest, sourceCode, svgIcon, auxiliaryFiles } = files;
+  const { manifest, sourceCode, svgIcon, auxiliaryFiles, localizationFiles } =
+    files;
+
   const all = [
     getChecksummableManifest(manifest),
     sourceCode,
     svgIcon,
     ...auxiliaryFiles,
+    ...localizationFiles,
   ].filter((file) => file !== undefined);
+
   return base64.encode(checksumFiles(all as VirtualFile[]));
 }
 
