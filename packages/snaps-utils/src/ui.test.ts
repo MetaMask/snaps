@@ -5,20 +5,24 @@ import { validateTextLinks, validateComponentLinks } from './ui';
 describe('validateTextLinks', () => {
   it('passes for valid links', () => {
     expect(() =>
-      validateTextLinks('https://foo.bar', () => false),
+      validateTextLinks('[test](https://foo.bar)', () => false),
     ).not.toThrow();
 
     expect(() =>
-      validateTextLinks('mailto:foo@bar.baz', () => false),
+      validateTextLinks('[test](mailto:foo@bar.baz)', () => false),
+    ).not.toThrow();
+
+    expect(() =>
+      validateTextLinks('[](https://foo.bar)', () => false),
     ).not.toThrow();
   });
 
   it('throws an error if an invalid link is found in text', () => {
-    expect(() => validateTextLinks('http://foo.bar', () => false)).toThrow(
-      'Invalid URL: Protocol must be one of: https:, mailto:.',
-    );
+    expect(() =>
+      validateTextLinks('[test](http://foo.bar)', () => false),
+    ).toThrow('Invalid URL: Protocol must be one of: https:, mailto:.');
 
-    expect(() => validateTextLinks('https://foo^bar.bar', () => false)).toThrow(
+    expect(() => validateTextLinks('[test](foo.bar)', () => false)).toThrow(
       'Invalid URL: Unable to parse URL.',
     );
   });
@@ -45,13 +49,6 @@ describe('validateComponentLinks', () => {
 
   it('throws for an unsafe text component', async () => {
     const isOnPhishingList = () => true;
-
-    expect(() =>
-      validateComponentLinks(
-        text('This tests a link: https://foo.bar'),
-        isOnPhishingList,
-      ),
-    ).toThrow('Invalid URL: The specified URL is not allowed.');
 
     expect(() =>
       validateComponentLinks(
