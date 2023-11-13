@@ -6,11 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [3.2.0]
-### Changed
-- Use `SubtleCrypto` for checksum calculation ([#1953](https://github.com/MetaMask/snaps/pull/1953))
-  - This reduces the time of the checksum calculation by up to 95%.
-
 ## [3.1.0]
 ### Added
 - Create an initial commit when creating a Snap from the template ([#1917](https://github.com/MetaMask/snaps/pull/1917))
@@ -52,8 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@3.2.0...HEAD
-[3.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@3.1.0...@metamask/create-snap@3.2.0
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@3.1.0...HEAD
 [3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@3.0.1...@metamask/create-snap@3.1.0
 [3.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@3.0.0...@metamask/create-snap@3.0.1
 [3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@2.0.0...@metamask/create-snap@3.0.0
