@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0]
+### Changed
+- Use `@metamask/snaps-sdk` package ([#1946](https://github.com/MetaMask/snaps/pull/1946))
+  - This package replaces the `@metamask/snaps-types` and
+  - `@metamask/snaps-ui` packages, and is much more lightweight.
+
 ## [2.0.1]
 ### Changed
 - Update multiple MetaMask dependencies ([#1841](https://github.com/MetaMask/snaps/pull/1841))
@@ -40,7 +46,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/network-example-snap@2.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/network-example-snap@2.1.0...HEAD
+[2.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/network-example-snap@2.0.1...@metamask/network-example-snap@2.1.0
 [2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/network-example-snap@2.0.0...@metamask/network-example-snap@2.0.1
 [2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/network-example-snap@1.0.0...@metamask/network-example-snap@2.0.0
 [1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/network-example-snap@0.38.2-flask.1...@metamask/network-example-snap@1.0.0

@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.0]
+### Changed
+- Use `SubtleCrypto` for checksum calculation if available ([#1953](https://github.com/MetaMask/snaps/pull/1953))
+  - This reduces the time of the checksum calculation by up to 95% in some
+    environments.
+- Use `@metamask/snaps-sdk` package ([#1930](https://github.com/MetaMask/snaps/pull/1930),
+  [#1949](https://github.com/MetaMask/snaps/pull/1949), [#1954](https://github.com/MetaMask/snaps/pull/1954))
+  - This package replaces the `@metamask/snaps-types` and
+  - `@metamask/snaps-ui` packages.
+- Bump `@metamask/eth-json-rpc-middleware` from `12.0.0` to `12.0.1` ([#1935](https://github.com/MetaMask/snaps/pull/1935))
+
 ## [2.3.0]
 ### Added
 - Add manifest localization functionality ([#1889](https://github.com/MetaMask/snaps/pull/1889))
@@ -61,7 +72,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.4.0...HEAD
+[2.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.3.0...@metamask/snaps-simulator@2.4.0
 [2.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.2.0...@metamask/snaps-simulator@2.3.0
 [2.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.1.0...@metamask/snaps-simulator@2.2.0
 [2.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.0.0...@metamask/snaps-simulator@2.1.0

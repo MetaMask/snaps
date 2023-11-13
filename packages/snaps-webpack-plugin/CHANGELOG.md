@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0]
+### Changed
+- Use `@metamask/snaps-sdk` package ([#1949](https://github.com/MetaMask/snaps/pull/1949))
+  - This package replaces the `@metamask/snaps-types` and
+  - `@metamask/snaps-ui` packages.
+
 ## [3.0.1]
 ### Changed
 - Update multiple MetaMask dependencies ([#1841](https://github.com/MetaMask/snaps/pull/1841))
@@ -36,7 +42,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@3.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@3.1.0...HEAD
+[3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@3.0.1...@metamask/snaps-webpack-plugin@3.1.0
 [3.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@3.0.0...@metamask/snaps-webpack-plugin@3.0.1
 [3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@2.0.1...@metamask/snaps-webpack-plugin@3.0.0
 [2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@2.0.0...@metamask/snaps-webpack-plugin@2.0.1
