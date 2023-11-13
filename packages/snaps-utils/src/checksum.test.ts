@@ -39,12 +39,10 @@ describe('checksum', () => {
   });
 
   it('uses crypto.subtle when it is available', async () => {
-    const crypto = webcrypto;
-
-    const cryptoSpy = jest.spyOn(crypto.subtle, 'digest');
+    const cryptoSpy = jest.spyOn(webcrypto.subtle, 'digest');
 
     Object.defineProperty(globalThis, 'crypto', {
-      value: crypto,
+      value: webcrypto,
       writable: true,
     });
 
