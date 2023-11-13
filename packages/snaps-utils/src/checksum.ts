@@ -4,7 +4,7 @@ import { sha256 } from '@noble/hashes/sha256';
 import { VirtualFile } from './virtual-file/VirtualFile';
 
 /**
- * Converts an input value to a Uint8Array for use in a checksum.
+ * Convert an input value to a Uint8Array for use in a checksum.
  *
  * @param bytes - A value to use for a checksum calculation.
  * @returns The input value converted to a Uint8Array if necessary.
