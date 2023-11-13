@@ -38,12 +38,12 @@ describe('checksum', () => {
 });
 
 describe('checkumFiles', () => {
-  it('throws on duplicated paths', () => {
+  it('throws on duplicated paths', async () => {
     const files = [
       new VirtualFile({ value: 'foo', path: '/foo' }),
       new VirtualFile({ value: 'bar', path: '/foo' }),
     ];
-    expect(async () => await checksumFiles(files)).toThrow(
+    await expect(checksumFiles(files)).rejects.toThrow(
       'Tried to sort files with non-unique paths.',
     );
   });

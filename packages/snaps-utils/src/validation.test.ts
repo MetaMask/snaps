@@ -17,7 +17,6 @@ describe('validateFetchedSnap', () => {
     const files = getMockSnapFiles({
       manifest,
       sourceCode: 'foo',
-      updateChecksum: false,
     });
 
     await expect(validateFetchedSnap(files)).rejects.toThrow(

@@ -1,4 +1,5 @@
 import { assert, concatBytes, stringToBytes } from '@metamask/utils';
+import { sha256 } from '@noble/hashes/sha256';
 
 import { VirtualFile } from './virtual-file/VirtualFile';
 
@@ -11,13 +12,18 @@ import { VirtualFile } from './virtual-file/VirtualFile';
 export async function checksum(
   bytes: VirtualFile | Uint8Array | string,
 ): Promise<Uint8Array> {
-  const value = bytes instanceof VirtualFile ? bytes.value : bytes;
-  return new Uint8Array(
-    await crypto.subtle.digest(
-      'SHA-256',
-      typeof value === 'string' ? stringToBytes(value) : value,
-    ),
-  );
+  const unwrapped = bytes instanceof VirtualFile ? bytes.value : bytes;
+  const value =
+    typeof unwrapped === 'string' ? stringToBytes(unwrapped) : unwrapped;
+  // Use crypto.subtle.digest whenever possible as it is faster.
+  if (
+    'crypto' in globalThis &&
+    typeof globalThis.crypto === 'object' &&
+    crypto.subtle?.digest
+  ) {
+    return new Uint8Array(await crypto.subtle.digest('SHA-256', value));
+  }
+  return sha256(value);
 }
 
 /**
