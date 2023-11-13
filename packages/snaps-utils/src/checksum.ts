@@ -4,6 +4,26 @@ import { sha256 } from '@noble/hashes/sha256';
 import { VirtualFile } from './virtual-file/VirtualFile';
 
 /**
+ * Converts an input value to a Uint8Array for use in a checksum.
+ *
+ * @param bytes - A value to use for a checksum calculation.
+ * @returns The input value converted to a Uint8Array if necessary.
+ */
+export function getChecksumBytes(
+  bytes: VirtualFile | Uint8Array | string,
+): Uint8Array {
+  // Unwrap VirtualFiles to extract the content
+  // The content is then either a string or Uint8Array
+  const unwrapped = bytes instanceof VirtualFile ? bytes.value : bytes;
+
+  if (typeof unwrapped === 'string') {
+    return stringToBytes(unwrapped);
+  }
+
+  return unwrapped;
+}
+
+/**
  * Calculates checksum for a single byte array.
  *
  * @param bytes - The byte array to calculate the checksum for.
@@ -12,9 +32,7 @@ import { VirtualFile } from './virtual-file/VirtualFile';
 export async function checksum(
   bytes: VirtualFile | Uint8Array | string,
 ): Promise<Uint8Array> {
-  const unwrapped = bytes instanceof VirtualFile ? bytes.value : bytes;
-  const value =
-    typeof unwrapped === 'string' ? stringToBytes(unwrapped) : unwrapped;
+  const value = getChecksumBytes(bytes);
   // Use crypto.subtle.digest whenever possible as it is faster.
   if (
     'crypto' in globalThis &&

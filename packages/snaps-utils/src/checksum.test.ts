@@ -2,19 +2,19 @@ import * as nobleHashes from '@noble/hashes/sha256';
 import { base64 } from '@scure/base';
 import { webcrypto } from 'crypto';
 
-import { checksum, checksumFiles } from './checksum';
+import { checksum, checksumFiles, getChecksumBytes } from './checksum';
 import { VirtualFile } from './index.browser';
 
 const EMPTY_SHA256 = '47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=';
 
-describe('checksum', () => {
-  const FOO_BAR_STR = 'foo bar';
-  const FOO_BAR_UINT8 = new Uint8Array([
-    0x66, 0x6f, 0x6f, 0x20, 0x62, 0x61, 0x72,
-  ]);
-  // echo -n 'foo bar' | shasum -a 256 | cut -d ' ' -f 1| xxd -r -p | base64
-  const FOO_BAR_SHA256 = '+8Gp+Fjqnhd5FpZL2Iw9N7kaHoRBJ2XimVB3fyZcS3U=';
+const FOO_BAR_STR = 'foo bar';
+const FOO_BAR_UINT8 = new Uint8Array([
+  0x66, 0x6f, 0x6f, 0x20, 0x62, 0x61, 0x72,
+]);
+// echo -n 'foo bar' | shasum -a 256 | cut -d ' ' -f 1| xxd -r -p | base64
+const FOO_BAR_SHA256 = '+8Gp+Fjqnhd5FpZL2Iw9N7kaHoRBJ2XimVB3fyZcS3U=';
 
+describe('checksum', () => {
   it('takes string', async () => {
     expect(base64.encode(await checksum(FOO_BAR_STR))).toBe(FOO_BAR_SHA256);
   });
@@ -137,5 +137,24 @@ describe('checkumFiles', () => {
     const hash2 = base64.encode(await checksumFiles(files2));
 
     expect(hash1).toBe(hash2);
+  });
+});
+
+describe('getChecksumBytes', () => {
+  it('handles Uint8Array', () => {
+    expect(getChecksumBytes(FOO_BAR_UINT8)).toStrictEqual(FOO_BAR_UINT8);
+  });
+
+  it('handles strings', () => {
+    expect(getChecksumBytes(FOO_BAR_STR)).toStrictEqual(FOO_BAR_UINT8);
+  });
+
+  it('handles virtual files', () => {
+    expect(getChecksumBytes(new VirtualFile(FOO_BAR_UINT8))).toStrictEqual(
+      FOO_BAR_UINT8,
+    );
+    expect(getChecksumBytes(new VirtualFile(FOO_BAR_STR))).toStrictEqual(
+      FOO_BAR_UINT8,
+    );
   });
 });
