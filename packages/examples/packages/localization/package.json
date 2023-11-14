@@ -1,6 +1,6 @@
 {
   "name": "@metamask/localization-example-snap",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "MetaMask example snap demonstrating how to localize a snap.",
   "repository": {
     "type": "git",
