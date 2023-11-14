@@ -12,7 +12,8 @@
   "files": [
     "dist/",
     "snap.manifest.json",
-    "images/icon.svg"
+    "images/icon.svg",
+    "locales/"
   ],
   "scripts": {
     "build": "mm-snap build",
