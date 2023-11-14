@@ -136,6 +136,8 @@ gen_enforced_dependency(WorkspaceCwd, DependencyIdent, OtherDependencyRange, Dep
   workspace_has_dependency(OtherWorkspaceCwd, DependencyIdent, OtherDependencyRange, OtherDependencyType),
   WorkspaceCwd \= OtherWorkspaceCwd,
   DependencyRange \= OtherDependencyRange,
+  % TODO: Remove below line once @metamask/object-multiplex is bumped to ^2.0.0 in snaps-execution-environments
+  DependencyIdent \= '@metamask/object-multiplex',
   npm_version_range_out_of_sync(DependencyRange, OtherDependencyRange).
 
 % If a dependency is listed under "dependencies", it should not be listed under
