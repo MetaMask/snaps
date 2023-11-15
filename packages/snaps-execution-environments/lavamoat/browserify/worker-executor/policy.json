@@ -204,6 +204,8 @@
       },
       "packages": {
         "@metamask/utils>@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
         "@swc/cli>semver": true,
         "browserify>buffer": true,
         "eslint>debug": true,
@@ -214,6 +216,12 @@
       "globals": {
         "TextEncoder": true,
         "crypto": true
+      }
+    },
+    "@metamask/utils>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
       }
     },
     "@swc/cli>semver": {
