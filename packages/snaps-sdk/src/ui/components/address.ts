@@ -8,7 +8,7 @@ export const AddressStruct = assign(
   LiteralStruct,
   object({
     type: literal(NodeType.Address),
-    value: pattern(string(), /(0x[a-fA-F0-9]{40})/gu),
+    value: pattern(string(), /0x[a-fA-F0-9]{40}/u),
   }),
 );
 
