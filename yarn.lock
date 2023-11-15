@@ -3050,7 +3050,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/tx@npm:^4.1.2":
+"@ethereumjs/tx@npm:^4.1.2, @ethereumjs/tx@npm:^4.2.0":
   version: 4.2.0
   resolution: "@ethereumjs/tx@npm:4.2.0"
   dependencies:
@@ -4013,7 +4013,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/snaps-utils": "workspace:^"
-    "@metamask/utils": ^8.1.0
+    "@metamask/utils": ^8.2.1
     "@swc/cli": ^0.1.62
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
@@ -5046,7 +5046,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/snaps-webpack-plugin": "workspace:^"
-    "@metamask/utils": ^8.1.0
+    "@metamask/utils": ^8.2.1
     "@swc/cli": ^0.1.62
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
@@ -5145,7 +5145,7 @@ __metadata:
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/template-snap": ^0.7.0
-    "@metamask/utils": ^8.1.0
+    "@metamask/utils": ^8.2.1
     "@swc/cli": ^0.1.62
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
@@ -5234,7 +5234,7 @@ __metadata:
     "@metamask/rpc-errors": ^6.1.0
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
-    "@metamask/utils": ^8.1.0
+    "@metamask/utils": ^8.2.1
     "@swc/cli": ^0.1.62
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
@@ -5308,7 +5308,7 @@ __metadata:
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-simulator": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
-    "@metamask/utils": ^8.1.0
+    "@metamask/utils": ^8.2.1
     "@swc/cli": ^0.1.62
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
@@ -5409,7 +5409,7 @@ __metadata:
     "@metamask/rpc-errors": ^6.1.0
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
-    "@metamask/utils": ^8.1.0
+    "@metamask/utils": ^8.2.1
     "@noble/hashes": ^1.3.1
     "@swc/cli": ^0.1.62
     "@swc/core": 1.3.78
@@ -5450,7 +5450,7 @@ __metadata:
     "@metamask/key-tree": ^9.0.0
     "@metamask/providers": ^13.0.0
     "@metamask/rpc-errors": ^6.1.0
-    "@metamask/utils": ^8.1.0
+    "@metamask/utils": ^8.2.1
     "@swc/cli": ^0.1.62
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
@@ -5504,7 +5504,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
-    "@metamask/utils": ^8.1.0
+    "@metamask/utils": ^8.2.1
     "@minoru/react-dnd-treeview": ^3.4.4
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.10
     "@redux-saga/is": ^1.1.3
@@ -5603,7 +5603,7 @@ __metadata:
     "@metamask/rpc-errors": ^6.1.0
     "@metamask/snaps-registry": ^2.1.0
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": ^8.1.0
+    "@metamask/utils": ^8.2.1
     "@noble/hashes": ^1.3.1
     "@scure/base": ^1.1.1
     "@swc/cli": ^0.1.62
@@ -5675,7 +5675,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
-    "@metamask/utils": ^8.1.0
+    "@metamask/utils": ^8.2.1
     "@swc/cli": ^0.1.62
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
@@ -5741,7 +5741,7 @@ __metadata:
     "@metamask/notification-example-snap": "workspace:^"
     "@metamask/providers": ^13.0.0
     "@metamask/snaps-utils": "workspace:^"
-    "@metamask/utils": ^8.1.0
+    "@metamask/utils": ^8.2.1
     "@metamask/wasm-example-snap": "workspace:^"
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.10
     "@popperjs/core": ^2.11.8
@@ -5830,6 +5830,22 @@ __metadata:
     semver: ^7.5.4
     superstruct: ^1.0.3
   checksum: 4cbee36d0c227f3e528930e83f75a0c6b71b55b332c3e162f0e87f3dd86ae017d0b20405d76ea054ab99e4d924d3d9b8b896ed12a12aae57b090350e5a625999
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^8.2.1":
+  version: 8.2.1
+  resolution: "@metamask/utils@npm:8.2.1"
+  dependencies:
+    "@ethereumjs/tx": ^4.2.0
+    "@noble/hashes": ^1.3.1
+    "@scure/base": ^1.1.3
+    "@types/debug": ^4.1.7
+    debug: ^4.3.4
+    pony-cause: ^2.1.10
+    semver: ^7.5.4
+    superstruct: ^1.0.3
+  checksum: 36a714a17e4949d2040bedb28d4373a22e7e86bb797aa2d59223f9799fd76e662443bcede113719c4e200f5e9d90a9d62feafad5028fff8b9a7a85fface097ca
   languageName: node
   linkType: hard
 
@@ -6496,7 +6512,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/base@npm:^1.0.0, @scure/base@npm:^1.1.1, @scure/base@npm:~1.1.0, @scure/base@npm:~1.1.3":
+"@scure/base@npm:^1.0.0, @scure/base@npm:^1.1.1, @scure/base@npm:^1.1.3, @scure/base@npm:~1.1.0, @scure/base@npm:~1.1.3":
   version: 1.1.3
   resolution: "@scure/base@npm:1.1.3"
   checksum: 1606ab8a4db898cb3a1ada16c15437c3bce4e25854fadc8eb03ae93cbbbac1ed90655af4b0be3da37e12056fef11c0374499f69b9e658c9e5b7b3e06353c630c
@@ -18523,7 +18539,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pony-cause@npm:^2.1.9":
+"pony-cause@npm:^2.1.10, pony-cause@npm:^2.1.9":
   version: 2.1.10
   resolution: "pony-cause@npm:2.1.10"
   checksum: 8b61378f213e61056312dc274a1c79980154e9d864f6ad86e0c8b91a50d3ce900d430995ee24147c9f3caa440dfe7d51c274b488d7f033b65b206522536d7217
@@ -20083,7 +20099,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/utils": ^8.1.0
+    "@metamask/utils": ^8.2.1
     "@swc/cli": ^0.1.62
     "@swc/core": 1.3.78
     "@types/jest": ^27.5.1
