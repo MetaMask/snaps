@@ -18,7 +18,7 @@ export function validateTextLinks(
   text: string,
   isOnPhishingList: (url: string) => boolean,
 ) {
-  const matches = text.matchAll(MARKDOWN_LINK_REGEX);
+  const matches = String.prototype.matchAll.call(text, MARKDOWN_LINK_REGEX);
   if (matches) {
     for (const { groups } of matches) {
       const link = groups?.url;
