@@ -27,6 +27,7 @@ import {
 
 export const JsonRpcRequestWithoutIdStruct = object({
   jsonrpc: optional(JsonRpcVersionStruct),
+  id: optional(JsonRpcIdStruct),
   method: string(),
   params: optional(JsonRpcParamsStruct),
 });
