@@ -1,4 +1,4 @@
-import { NotifyFunction } from '../BaseSnapExecutor';
+import type { NotifyFunction } from '../BaseSnapExecutor';
 import { rootRealmGlobal } from '../globalObject';
 import consoleEndowment from './console';
 import crypto from './crypto';
