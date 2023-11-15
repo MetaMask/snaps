@@ -23,32 +23,34 @@ export function validateTextLinks(
     for (const { groups } of matches) {
       const link = groups?.url;
 
-      if (link) {
-        try {
-          const url = new URL(link);
-          assert(
-            ALLOWED_PROTOCOLS.includes(url.protocol),
-            `Protocol must be one of: ${ALLOWED_PROTOCOLS.join(', ')}.`,
-          );
+      if (!link) {
+        continue;
+      }
 
-          const hostname =
-            url.protocol === 'mailto:'
-              ? url.pathname.split('@')[1]
-              : url.hostname;
+      try {
+        const url = new URL(link);
+        assert(
+          ALLOWED_PROTOCOLS.includes(url.protocol),
+          `Protocol must be one of: ${ALLOWED_PROTOCOLS.join(', ')}.`,
+        );
 
-          assert(
-            !isOnPhishingList(hostname),
-            'The specified URL is not allowed.',
-          );
-        } catch (error) {
-          throw new Error(
-            `Invalid URL: ${
-              error instanceof AssertionError
-                ? error.message
-                : 'Unable to parse URL.'
-            }`,
-          );
-        }
+        const hostname =
+          url.protocol === 'mailto:'
+            ? url.pathname.split('@')[1]
+            : url.hostname;
+
+        assert(
+          !isOnPhishingList(hostname),
+          'The specified URL is not allowed.',
+        );
+      } catch (error) {
+        throw new Error(
+          `Invalid URL: ${
+            error instanceof AssertionError
+              ? error.message
+              : 'Unable to parse URL.'
+          }`,
+        );
       }
     }
   }
