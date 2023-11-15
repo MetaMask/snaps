@@ -13,7 +13,6 @@ import {
 import { createBuilder } from '../builder';
 import { LiteralStruct, NodeType } from '../nodes';
 import { AddressStruct } from './address';
-import { DoubleValueStruct } from './doubleValue';
 import { ImageStruct } from './image';
 import { TextStruct } from './text';
 
@@ -23,11 +22,11 @@ export enum RowVariant {
   Warning = 'warning',
 }
 
+// A subset of components made available to the row
 export const RowComponentStruct = union([
   ImageStruct,
   TextStruct,
   AddressStruct,
-  DoubleValueStruct,
 ]);
 
 export const RowStruct = assign(
