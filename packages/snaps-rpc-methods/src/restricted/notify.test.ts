@@ -176,7 +176,7 @@ describe('snap_notify', () => {
           method: 'snap_notify',
           params: {
             type: 'native',
-            message: 'https://foo.bar',
+            message: '[test link](https://foo.bar)',
           },
         }),
       ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
@@ -203,7 +203,7 @@ describe('snap_notify', () => {
           method: 'snap_notify',
           params: {
             type: 'native',
-            message: 'http://foo.bar',
+            message: '[test](http://foo.bar)',
           },
         }),
       ).rejects.toThrow(

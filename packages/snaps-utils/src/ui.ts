@@ -1,12 +1,13 @@
 import type { Component } from '@metamask/snaps-sdk';
 import { NodeType } from '@metamask/snaps-sdk';
-import { assert, AssertionError, hasProperty } from '@metamask/utils';
+import { assert, AssertionError } from '@metamask/utils';
 
-const LINK_REGEX = /(?<protocol>[a-z]+:\/?\/?)(?<host>\S+?(?:\.[a-z]+)+)/giu;
+const MARKDOWN_LINK_REGEX = /\[(?<name>[^\]]*)\]\((?<url>[^)]+)\)/giu;
+
 const ALLOWED_PROTOCOLS = ['https:', 'mailto:'];
 
 /**
- * Search for links in a sting and check them against the phishing list.
+ * Searches for markdown links in a string and checks them against the phishing list.
  *
  * @param text - The text to verify.
  * @param isOnPhishingList - The function that checks the link against the
@@ -17,35 +18,37 @@ export function validateTextLinks(
   text: string,
   isOnPhishingList: (url: string) => boolean,
 ) {
-  const links = text.match(LINK_REGEX);
-  if (links) {
-    links.forEach((link) => {
-      try {
-        const url = new URL(link);
-        assert(
-          ALLOWED_PROTOCOLS.includes(url.protocol),
-          `Protocol must be one of: ${ALLOWED_PROTOCOLS.join(', ')}.`,
-        );
+  const matches = String.prototype.matchAll.call(text, MARKDOWN_LINK_REGEX);
 
-        const hostname =
-          url.protocol === 'mailto:'
-            ? url.pathname.split('@')[1]
-            : url.hostname;
+  for (const { groups } of matches) {
+    const link = groups?.url;
 
-        assert(
-          !isOnPhishingList(hostname),
-          'The specified URL is not allowed.',
-        );
-      } catch (error) {
-        throw new Error(
-          `Invalid URL: ${
-            error instanceof AssertionError
-              ? error.message
-              : 'Unable to parse URL.'
-          }`,
-        );
-      }
-    });
+    /* This case should never happen with the regex but the TS type allows for undefined */
+    /* istanbul ignore next */
+    if (!link) {
+      continue;
+    }
+
+    try {
+      const url = new URL(link);
+      assert(
+        ALLOWED_PROTOCOLS.includes(url.protocol),
+        `Protocol must be one of: ${ALLOWED_PROTOCOLS.join(', ')}.`,
+      );
+
+      const hostname =
+        url.protocol === 'mailto:' ? url.pathname.split('@')[1] : url.hostname;
+
+      assert(!isOnPhishingList(hostname), 'The specified URL is not allowed.');
+    } catch (error) {
+      throw new Error(
+        `Invalid URL: ${
+          error instanceof AssertionError
+            ? error.message
+            : 'Unable to parse URL.'
+        }`,
+      );
+    }
   }
 }
 
@@ -69,7 +72,7 @@ export function validateComponentLinks(
     );
   }
 
-  if (hasProperty(component, 'value') && typeof component.value === 'string') {
+  if (type === NodeType.Text) {
     validateTextLinks(component.value, isOnPhishingList);
   }
 }
