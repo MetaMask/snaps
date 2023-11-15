@@ -73,7 +73,7 @@ export const TerminateRequestArgumentsStruct = union([
 export const ExecuteSnapRequestArgumentsStruct = tuple([
   string(),
   string(),
-  optional(array(EndowmentStruct)),
+  array(EndowmentStruct),
 ]);
 
 export const SnapRpcRequestArgumentsStruct = tuple([

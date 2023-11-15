@@ -7,6 +7,8 @@ describe('Network endowments', () => {
     globalThis.harden = (value) => value;
   });
 
+  const factoryOptions = { notify: jest.fn() };
+
   describe('fetch', () => {
     beforeEach(() => {
       fetchMock.enableMocks();
@@ -19,27 +21,46 @@ describe('Network endowments', () => {
     it('fetches and reads body', async () => {
       const RESULT = 'OK';
       fetchMock.mockOnce(async () => Promise.resolve(RESULT));
-      const { fetch } = network.factory();
+      const { fetch } = network.factory(factoryOptions);
       const result = await (await fetch('foo.com')).text();
       expect(result).toStrictEqual(RESULT);
     });
 
-    it('can use AbortController normally', async () => {
-      let resolve: ((result: string) => void) | null = null;
-      fetchMock.mockOnce(
-        async () =>
-          new Promise((_resolve) => {
-            resolve = _resolve;
-          }),
-      );
+    it('send notification about outbound request and response', async () => {
+      const notify = jest.fn();
+      const RESULT = 'OK';
+      fetchMock.mockOnce(async () => Promise.resolve(RESULT));
+      const { fetch } = network.factory({ notify });
+      const result = await (await fetch('foo.com')).text();
+      expect(result).toStrictEqual(RESULT);
+      expect(notify).toHaveBeenNthCalledWith(1, {
+        method: 'OutboundRequest',
+        params: { source: 'fetch' },
+      });
+      expect(notify).toHaveBeenNthCalledWith(2, {
+        method: 'OutboundResponse',
+        params: { source: 'fetch' },
+      });
+      expect(notify).toHaveBeenNthCalledWith(3, {
+        method: 'OutboundRequest',
+        params: { source: 'fetch' },
+      });
+      expect(notify).toHaveBeenNthCalledWith(4, {
+        method: 'OutboundResponse',
+        params: { source: 'fetch' },
+      });
+      expect(notify).toHaveBeenCalledTimes(4);
+    });
 
-      const { fetch } = network.factory();
+    it('can use AbortController normally', async () => {
+      fetchMock.mockOnce(async () => 'FAIL');
+
+      const { fetch } = network.factory(factoryOptions);
 
       const controller = new AbortController();
 
       const fetchPromise = fetch('foo.com', { signal: controller.signal });
       controller.abort();
-      (resolve as any)('FAIL');
       await expect(fetchPromise).rejects.toThrow('The operation was aborted');
     });
 
@@ -58,12 +79,9 @@ describe('Network endowments', () => {
     it.todo('reason from AbortController.abort() is passed down');
 
     it('should not expose then or catch after teardown has been called', async () => {
-      let fetchResolve: ((result: string) => void) | null = null;
-      fetchMock.mockOnce(
-        async () => new Promise((resolve) => (fetchResolve = resolve)),
-      );
+      fetchMock.mockOnce(async () => 'Resolved');
 
-      const { fetch, teardownFunction } = network.factory();
+      const { fetch, teardownFunction } = network.factory(factoryOptions);
       const ErrorProxy = jest
         .fn()
         .mockImplementation((reason) => Error(reason));
@@ -79,7 +97,6 @@ describe('Network endowments', () => {
         .catch((error) => console.log(error));
 
       const teardownPromise = teardownFunction();
-      (fetchResolve as any)('Resolved');
       await teardownPromise;
       await new Promise((resolve) => setTimeout(() => resolve('Resolved'), 0));
 
@@ -90,7 +107,7 @@ describe('Network endowments', () => {
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
       fetchMock.mockReject(new Error('Failed to fetch.'));
 
-      const { fetch, teardownFunction } = network.factory();
+      const { fetch, teardownFunction } = network.factory(factoryOptions);
 
       // eslint-disable-next-line jest/valid-expect-in-promise
       fetch('foo.com').catch(() => {
@@ -116,7 +133,7 @@ describe('Network endowments', () => {
       const RESULT = 'OK';
       fetchMock.mockOnce(async () => Promise.resolve(RESULT));
 
-      const { fetch } = network.factory();
+      const { fetch } = network.factory(factoryOptions);
       const result = await fetch('foo.com');
 
       expect(result).toBeDefined();
@@ -139,7 +156,7 @@ describe('Network endowments', () => {
       const RESULT = 'OK';
       fetchMock.mockOnce(async () => Promise.resolve(RESULT));
 
-      const { fetch } = network.factory();
+      const { fetch } = network.factory(factoryOptions);
       const result = await fetch('foo.com');
 
       expect(result.bodyUsed).toBe(false);
@@ -150,7 +167,7 @@ describe('Network endowments', () => {
       const RESULT = 'OK';
       fetchMock.mockOnce(async () => Promise.resolve(RESULT));
 
-      const { fetch } = network.factory();
+      const { fetch } = network.factory(factoryOptions);
       const result = await fetch('foo.com');
 
       expect(result.bodyUsed).toBe(false);
@@ -163,7 +180,7 @@ describe('Network endowments', () => {
       const RESULT = 'OK';
       fetchMock.mockOnce(async () => Promise.resolve(RESULT));
 
-      const { fetch } = network.factory();
+      const { fetch } = network.factory(factoryOptions);
       const result = await fetch('foo.com');
 
       expect(result.bodyUsed).toBe(false);
@@ -177,7 +194,7 @@ describe('Network endowments', () => {
       const RESULT = '{}';
       fetchMock.mockOnce(async () => Promise.resolve(RESULT));
 
-      const { fetch } = network.factory();
+      const { fetch } = network.factory(factoryOptions);
       const result = await fetch('foo.com');
 
       expect(result.bodyUsed).toBe(false);

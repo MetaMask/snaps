@@ -110,6 +110,10 @@ const EXECUTION_ENVIRONMENT_METHODS = {
 
 type Methods = typeof EXECUTION_ENVIRONMENT_METHODS;
 
+export type NotifyFunction = (
+  notification: Omit<JsonRpcNotification, 'jsonrpc'>,
+) => Promise<void>;
+
 export class BaseSnapExecutor {
   private readonly snapData: Map<string, SnapData>;
 
@@ -325,7 +329,7 @@ export class BaseSnapExecutor {
   protected async startSnap(
     snapId: string,
     sourceCode: string,
-    _endowments?: string[],
+    _endowments: string[],
   ): Promise<void> {
     log(`Starting snap '${snapId}' in worker.`);
     if (this.snapPromiseErrorHandler) {
@@ -359,12 +363,13 @@ export class BaseSnapExecutor {
     const snapModule: any = { exports: {} };
 
     try {
-      const { endowments, teardown: endowmentTeardown } = createEndowments(
+      const { endowments, teardown: endowmentTeardown } = createEndowments({
         snap,
         ethereum,
         snapId,
-        _endowments,
-      );
+        endowments: _endowments,
+        notify: this.#notify.bind(this),
+      });
 
       // !!! Ensure that this is the only place the data is being set.
       // Other methods access the object value and mutate its properties.
@@ -454,11 +459,17 @@ export class BaseSnapExecutor {
       assertSnapOutboundRequest(sanitizedArgs);
       return await withTeardown(
         (async () => {
-          await this.#notify({ method: 'OutboundRequest' });
+          await this.#notify({
+            method: 'OutboundRequest',
+            params: { source: 'snap.request' },
+          });
           try {
             return await originalRequest(sanitizedArgs);
           } finally {
-            await this.#notify({ method: 'OutboundResponse' });
+            await this.#notify({
+              method: 'OutboundResponse',
+              params: { source: 'snap.request' },
+            });
           }
         })(),
         this as any,
@@ -500,11 +511,17 @@ export class BaseSnapExecutor {
       assertEthereumOutboundRequest(sanitizedArgs);
       return await withTeardown(
         (async () => {
-          await this.#notify({ method: 'OutboundRequest' });
+          await this.#notify({
+            method: 'OutboundRequest',
+            params: { source: 'ethereum.request' },
+          });
           try {
             return await originalRequest(sanitizedArgs);
           } finally {
-            await this.#notify({ method: 'OutboundResponse' });
+            await this.#notify({
+              method: 'OutboundResponse',
+              params: { source: 'ethereum.request' },
+            });
           }
         })(),
         this as any,
