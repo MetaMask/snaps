@@ -7,7 +7,7 @@ const MARKDOWN_LINK_REGEX = /!?\[(?<name>[^\]]*)\]\((?<url>[^)]+)\)/giu;
 const ALLOWED_PROTOCOLS = ['https:', 'mailto:'];
 
 /**
- * Searches for markdown links in a sting and checks them against the phishing list.
+ * Searches for markdown links in a string and checks them against the phishing list.
  *
  * @param text - The text to verify.
  * @param isOnPhishingList - The function that checks the link against the
