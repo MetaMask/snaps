@@ -2,7 +2,7 @@ import type { Component } from '@metamask/snaps-sdk';
 import { NodeType } from '@metamask/snaps-sdk';
 import { assert, AssertionError } from '@metamask/utils';
 
-const MARKDOWN_LINK_REGEX = /!?\[(?<name>[^\]]*)\]\((?<url>[^)]+)\)/giu;
+const MARKDOWN_LINK_REGEX = /\[(?<name>[^\]]*)\]\((?<url>[^)]+)\)/giu;
 
 const ALLOWED_PROTOCOLS = ['https:', 'mailto:'];
 
@@ -19,39 +19,37 @@ export function validateTextLinks(
   isOnPhishingList: (url: string) => boolean,
 ) {
   const matches = String.prototype.matchAll.call(text, MARKDOWN_LINK_REGEX);
-  if (matches) {
-    for (const { groups } of matches) {
-      const link = groups?.url;
 
-      if (!link) {
-        continue;
-      }
+  if (!matches) {
+    return;
+  }
 
-      try {
-        const url = new URL(link);
-        assert(
-          ALLOWED_PROTOCOLS.includes(url.protocol),
-          `Protocol must be one of: ${ALLOWED_PROTOCOLS.join(', ')}.`,
-        );
+  for (const { groups } of matches) {
+    const link = groups?.url;
 
-        const hostname =
-          url.protocol === 'mailto:'
-            ? url.pathname.split('@')[1]
-            : url.hostname;
+    if (!link) {
+      continue;
+    }
 
-        assert(
-          !isOnPhishingList(hostname),
-          'The specified URL is not allowed.',
-        );
-      } catch (error) {
-        throw new Error(
-          `Invalid URL: ${
-            error instanceof AssertionError
-              ? error.message
-              : 'Unable to parse URL.'
-          }`,
-        );
-      }
+    try {
+      const url = new URL(link);
+      assert(
+        ALLOWED_PROTOCOLS.includes(url.protocol),
+        `Protocol must be one of: ${ALLOWED_PROTOCOLS.join(', ')}.`,
+      );
+
+      const hostname =
+        url.protocol === 'mailto:' ? url.pathname.split('@')[1] : url.hostname;
+
+      assert(!isOnPhishingList(hostname), 'The specified URL is not allowed.');
+    } catch (error) {
+      throw new Error(
+        `Invalid URL: ${
+          error instanceof AssertionError
+            ? error.message
+            : 'Unable to parse URL.'
+        }`,
+      );
     }
   }
 }
