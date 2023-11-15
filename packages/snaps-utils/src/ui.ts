@@ -23,6 +23,8 @@ export function validateTextLinks(
   for (const { groups } of matches) {
     const link = groups?.url;
 
+    /* This case should never happen with the regex but the TS type allows for undefined */
+    /* istanbul ignore next */
     if (!link) {
       continue;
     }
