@@ -20,10 +20,6 @@ export function validateTextLinks(
 ) {
   const matches = String.prototype.matchAll.call(text, MARKDOWN_LINK_REGEX);
 
-  if (!matches) {
-    return;
-  }
-
   for (const { groups } of matches) {
     const link = groups?.url;
 
