@@ -33,7 +33,7 @@
   "dependencies": {
     "@metamask/rpc-errors": "^6.1.0",
     "@metamask/snaps-sdk": "workspace:^",
-    "@metamask/utils": "^8.1.0"
+    "@metamask/utils": "^8.2.1"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",

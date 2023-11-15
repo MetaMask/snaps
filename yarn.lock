@@ -3682,7 +3682,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^4.0.0, @metamask/approval-controller@npm:^4.1.0":
+"@metamask/approval-controller@npm:^4.1.0":
   version: 4.1.0
   resolution: "@metamask/approval-controller@npm:4.1.0"
   dependencies:
@@ -3736,7 +3736,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": ^8.1.0
+    "@metamask/utils": ^8.2.1
     "@noble/ed25519": ^1.6.0
     "@noble/secp256k1": ^1.7.1
     "@swc/core": 1.3.78
@@ -3777,7 +3777,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": ^8.1.0
+    "@metamask/utils": ^8.2.1
     "@noble/bls12-381": ^1.2.0
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
@@ -3902,7 +3902,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": ^8.1.0
+    "@metamask/utils": ^8.2.1
     "@noble/hashes": ^1.3.1
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
@@ -3957,7 +3957,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": ^8.1.0
+    "@metamask/utils": ^8.2.1
     "@noble/curves": ^1.1.0
     "@noble/hashes": ^1.3.1
     "@swc/core": 1.3.78
@@ -4101,7 +4101,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": ^8.1.0
+    "@metamask/utils": ^8.2.1
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -4288,7 +4288,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": ^8.1.0
+    "@metamask/utils": ^8.2.1
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -4326,7 +4326,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": ^8.1.0
+    "@metamask/utils": ^8.2.1
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -4394,7 +4394,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": ^8.1.0
+    "@metamask/utils": ^8.2.1
     "@noble/bls12-381": ^1.2.0
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
@@ -4505,7 +4505,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": ^8.1.0
+    "@metamask/utils": ^8.2.1
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -4556,14 +4556,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/json-rpc-engine@npm:^7.1.0, @metamask/json-rpc-engine@npm:^7.1.1":
-  version: 7.1.1
-  resolution: "@metamask/json-rpc-engine@npm:7.1.1"
+"@metamask/json-rpc-engine@npm:^7.1.0, @metamask/json-rpc-engine@npm:^7.1.1, @metamask/json-rpc-engine@npm:^7.3.0":
+  version: 7.3.0
+  resolution: "@metamask/json-rpc-engine@npm:7.3.0"
   dependencies:
-    "@metamask/rpc-errors": ^6.0.0
+    "@metamask/rpc-errors": ^6.1.0
     "@metamask/safe-event-emitter": ^3.0.0
-    "@metamask/utils": ^8.1.0
-  checksum: 9dddd9142965ccd86313cda5bf13f15bf99c6c14631f93aab78de353317d548a334b5b125cdc134edd7d54e2f2e4961a0bdcd24fba997b2913083955df8fefa1
+    "@metamask/utils": ^8.2.0
+  checksum: 7e12fb58ee2775269aa3e6e3a40d18d9053b6cefb6eaa2b80558a65986d0e451a9faf3935548d5b4eced857c6b569e768cb235ef10ff0feb72a23ccadaaff4bc
   languageName: node
   linkType: hard
 
@@ -4779,7 +4779,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": ^8.1.0
+    "@metamask/utils": ^8.2.1
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -4850,23 +4850,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@metamask/permission-controller@npm:5.0.0"
+"@metamask/permission-controller@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "@metamask/permission-controller@npm:5.0.1"
   dependencies:
-    "@metamask/approval-controller": ^4.0.0
+    "@metamask/approval-controller": ^4.1.0
     "@metamask/base-controller": ^3.2.3
     "@metamask/controller-utils": ^5.0.2
-    "@metamask/json-rpc-engine": ^7.1.1
-    "@metamask/rpc-errors": ^6.0.0
-    "@metamask/utils": ^8.1.0
+    "@metamask/json-rpc-engine": ^7.3.0
+    "@metamask/rpc-errors": ^6.1.0
+    "@metamask/utils": ^8.2.0
     "@types/deep-freeze-strict": ^1.1.0
     deep-freeze-strict: ^1.1.1
     immer: ^9.0.6
     nanoid: ^3.1.31
   peerDependencies:
-    "@metamask/approval-controller": ^4.0.0
-  checksum: f79aeb5d8a22761ecfd1e8bee8f1fc3e4d4d9c0f8d823844f799a65657fa063d4b7df248efe0b585685ea27f95a72e4f906a40c228cd95d26ae2bc012c0713cf
+    "@metamask/approval-controller": ^4.1.0
+  checksum: fc61df3f5532b35b9ec26ca712848d680d616103e3d06470691412ee8b5a4b70e27d530065f601b64e0a5c2022aa129b8e6ddcc7c3e8325720aa0f639e3e10ba
   languageName: node
   linkType: hard
 
@@ -5134,9 +5134,9 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/json-rpc-engine": ^7.1.1
+    "@metamask/json-rpc-engine": ^7.3.0
     "@metamask/object-multiplex": ^1.2.0
-    "@metamask/permission-controller": ^5.0.0
+    "@metamask/permission-controller": ^5.0.1
     "@metamask/phishing-controller": ^7.0.0
     "@metamask/post-message-stream": ^7.0.0
     "@metamask/rpc-errors": ^6.1.0
@@ -5227,7 +5227,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/json-rpc-engine": ^7.1.1
+    "@metamask/json-rpc-engine": ^7.3.0
     "@metamask/object-multiplex": ^1.2.0
     "@metamask/post-message-stream": ^7.0.0
     "@metamask/providers": ^13.0.0
@@ -5403,9 +5403,9 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/json-rpc-engine": ^7.1.1
+    "@metamask/json-rpc-engine": ^7.3.0
     "@metamask/key-tree": ^9.0.0
-    "@metamask/permission-controller": ^5.0.0
+    "@metamask/permission-controller": ^5.0.1
     "@metamask/rpc-errors": ^6.1.0
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
@@ -5496,9 +5496,9 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/eth-json-rpc-middleware": ^12.0.1
-    "@metamask/json-rpc-engine": ^7.1.1
+    "@metamask/json-rpc-engine": ^7.3.0
     "@metamask/key-tree": ^9.0.0
-    "@metamask/permission-controller": ^5.0.0
+    "@metamask/permission-controller": ^5.0.1
     "@metamask/snaps-controllers": "workspace:^"
     "@metamask/snaps-execution-environments": "workspace:^"
     "@metamask/snaps-rpc-methods": "workspace:^"
@@ -5598,7 +5598,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/key-tree": ^9.0.0
-    "@metamask/permission-controller": ^5.0.0
+    "@metamask/permission-controller": ^5.0.1
     "@metamask/post-message-stream": ^7.0.0
     "@metamask/rpc-errors": ^6.1.0
     "@metamask/snaps-registry": ^2.1.0
@@ -5819,21 +5819,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^8.0.0, @metamask/utils@npm:^8.1.0":
-  version: 8.1.0
-  resolution: "@metamask/utils@npm:8.1.0"
-  dependencies:
-    "@ethereumjs/tx": ^4.1.2
-    "@noble/hashes": ^1.3.1
-    "@types/debug": ^4.1.7
-    debug: ^4.3.4
-    semver: ^7.5.4
-    superstruct: ^1.0.3
-  checksum: 4cbee36d0c227f3e528930e83f75a0c6b71b55b332c3e162f0e87f3dd86ae017d0b20405d76ea054ab99e4d924d3d9b8b896ed12a12aae57b090350e5a625999
-  languageName: node
-  linkType: hard
-
-"@metamask/utils@npm:^8.2.1":
+"@metamask/utils@npm:^8.0.0, @metamask/utils@npm:^8.1.0, @metamask/utils@npm:^8.2.0, @metamask/utils@npm:^8.2.1":
   version: 8.2.1
   resolution: "@metamask/utils@npm:8.2.1"
   dependencies:
