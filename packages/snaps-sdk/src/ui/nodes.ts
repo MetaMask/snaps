@@ -15,6 +15,8 @@ export enum NodeType {
   // eslint-disable-next-line @typescript-eslint/no-shadow
   Text = 'text',
   Image = 'image',
+  Row = 'row',
+  Address = 'address',
 }
 
 /**

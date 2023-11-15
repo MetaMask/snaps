@@ -1,3 +1,4 @@
+export * from './address';
 export * from './copyable';
 export * from './divider';
 export * from './heading';
@@ -7,3 +8,4 @@ export type { Component, Panel } from './panel';
 export { ComponentStruct, panel, PanelStruct } from './panel';
 export * from './spinner';
 export * from './text';
+export * from './row';
