@@ -49,7 +49,7 @@ export const TransactionOptionsStruct = object({
   // TODO: Move this coercer to `@metamask/utils`.
   from: coerce(StrictHexStruct, optional(BytesLikeStruct), (value) => {
     if (value) {
-      return valueToBytes(value);
+      return bytesToHex(valueToBytes(value));
     }
 
     return bytesToHex(randomBytes(20));
@@ -62,7 +62,7 @@ export const TransactionOptionsStruct = object({
   // TODO: Move this coercer to `@metamask/utils`.
   to: coerce(StrictHexStruct, optional(BytesLikeStruct), (value) => {
     if (value) {
-      return valueToBytes(value);
+      return bytesToHex(valueToBytes(value));
     }
 
     return bytesToHex(randomBytes(20));
