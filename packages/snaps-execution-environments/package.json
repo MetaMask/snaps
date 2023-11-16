@@ -53,6 +53,7 @@
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/utils": "^8.2.1",
     "nanoid": "^3.1.31",
+    "readable-stream": "^4.4.2",
     "superstruct": "^1.0.3"
   },
   "devDependencies": {
