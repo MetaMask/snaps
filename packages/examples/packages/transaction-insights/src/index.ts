@@ -37,11 +37,10 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
           transaction.to ? address(transaction.to) : text('None'),
         ),
         row('Transaction type', text(type)),
-        text('Old text'),
       ]),
       severity: SeverityLevel.Critical,
     };
   }
 
-  return { content: panel([text('**Transaction type:**'), text('Unknown')]) };
+  return { content: panel([row('Transaction type', text('Unknown'))]) };
 };
