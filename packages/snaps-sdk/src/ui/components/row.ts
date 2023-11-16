@@ -1,15 +1,7 @@
 import type { Infer } from 'superstruct';
-import {
-  assign,
-  literal,
-  object,
-  lazy,
-  string,
-  optional,
-  enums,
-  union,
-} from 'superstruct';
+import { assign, literal, object, string, optional, union } from 'superstruct';
 
+import { enumValue } from '../../internals';
 import { createBuilder } from '../builder';
 import { LiteralStruct, NodeType } from '../nodes';
 import { AddressStruct } from './address';
@@ -33,10 +25,15 @@ export const RowStruct = assign(
   LiteralStruct,
   object({
     type: literal(NodeType.Row),
-    // TODO: Use enumValue() or similar if needed?
-    variant: optional(enums(Object.values(RowVariant))),
+    variant: optional(
+      union([
+        enumValue(RowVariant.Default),
+        enumValue(RowVariant.Critical),
+        enumValue(RowVariant.Warning),
+      ]),
+    ),
     label: string(),
-    value: lazy(() => RowComponentStruct),
+    value: RowComponentStruct,
   }),
 );
 

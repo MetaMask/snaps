@@ -6,6 +6,9 @@ export {
   getErrorStack,
   SNAP_ERROR_CODE,
   SNAP_ERROR_MESSAGE,
+  literal,
+  union,
+  enumValue,
 } from './internals';
 
 // Re-exported from `@metamask/utils` for convenience.

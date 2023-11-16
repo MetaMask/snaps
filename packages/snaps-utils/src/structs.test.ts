@@ -1,3 +1,4 @@
+import { union, literal } from '@metamask/snaps-sdk';
 import { assert } from '@metamask/utils';
 import { bold, green, red } from 'chalk';
 import type { Struct } from 'superstruct';
@@ -21,8 +22,6 @@ import {
   getStructErrorMessage,
   getStructErrorPrefix,
   getStructFailureMessage,
-  literal,
-  union,
   SnapsStructError,
   getStructFromPath,
   getUnionStructNames,
@@ -43,27 +42,6 @@ function getStructError(value: unknown, struct: Struct<any>) {
 
   return error;
 }
-
-describe('literal', () => {
-  it.each(['foo', 42, true, false])('validates a literal value', (value) => {
-    expect(is(value, literal(value))).toBe(true);
-  });
-
-  it('returns a struct with the correct name', () => {
-    const [singleError] = validate('foo', literal('bar'));
-    expect(singleError?.message).toBe(
-      'Expected the literal `"bar"`, but received: "foo"',
-    );
-
-    const [unionError] = validate(
-      'foo',
-      union([literal('bar'), literal('baz')]),
-    );
-    expect(unionError?.message).toBe(
-      'Expected the value to satisfy a union of `"bar" | "baz"`, but received: "foo"',
-    );
-  });
-});
 
 describe('file', () => {
   it('resolves a file path relative to the current working directory', () => {

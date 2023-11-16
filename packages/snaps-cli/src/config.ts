@@ -1,10 +1,9 @@
+import { literal, union } from '@metamask/snaps-sdk';
 import {
   createFromStruct,
   file,
   indent,
   isFile,
-  literal,
-  union,
   SnapsStructError,
   named,
 } from '@metamask/snaps-utils';
