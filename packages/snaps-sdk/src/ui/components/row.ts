@@ -37,8 +37,33 @@ export const RowStruct = assign(
   }),
 );
 
+/**
+ * A row node, that renders a row with a label and a value.
+ *
+ * @property type - The type of the node. Must be the string `row`.
+ * @property label - The label for the row.
+ * @property value - A sub component to be rendered
+ * on one side of the row.
+ * @property variant - Optional variant for styling.
+ */
 export type Row = Infer<typeof RowStruct>;
 
+/**
+ * Create a {@link Row} node.
+ *
+ * @param args - The node arguments. This can either be a string, a component and an optional variant or an object
+ * with the properties: `label`, `value` and `variant`.
+ * @param args.label - The label for the row.
+ * @param args.value - Another component, is currently limited to `image`, `text` and `address`.
+ * @param args.variant - An optional variant, either `default`, `warning` or `critical`.
+ * @returns The row node as an object.
+ * @example
+ * const node = image({ value: '<svg />' });
+ * const node = row({ label: 'Address', value: address('0x4bbeeb066ed09b7aed07bf39eee0460dfa261520') });
+ * const node = row({ label: 'Address', value: address('0x4bbeeb066ed09b7aed07bf39eee0460dfa261520'), variant: RowVariant.Warning });
+ * const node = row('Address', address('0x4bbeeb066ed09b7aed07bf39eee0460dfa261520'));
+ * const node = row('Address', address('0x4bbeeb066ed09b7aed07bf39eee0460dfa261520'), RowVariant.Warning);
+ */
 export const row = createBuilder(NodeType.Row, RowStruct, [
   'label',
   'value',
