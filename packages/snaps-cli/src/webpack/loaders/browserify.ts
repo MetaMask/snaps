@@ -1,5 +1,5 @@
 import browserify from 'browserify';
-import { Readable } from 'stream';
+import { Readable } from 'readable-stream';
 import type { LoaderDefinitionFunction } from 'webpack';
 
 import { TranspilationModes } from '../../builders';

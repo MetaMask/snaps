@@ -2,8 +2,8 @@ import { ControllerMessenger } from '@metamask/base-controller';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { logError } from '@metamask/snaps-utils';
 import { createEngineStream } from 'json-rpc-middleware-stream';
-import { pipeline } from 'stream';
-import type { Duplex } from 'stream';
+import { pipeline } from 'readable-stream';
+import type { Duplex } from 'readable-stream';
 
 import type { ErrorMessageEvent } from '../services';
 import { setupMultiplex } from '../services';

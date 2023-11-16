@@ -1,11 +1,11 @@
-import { JsonRpcRequestStruct } from '@metamask/utils';
+import {
+  JsonRpcIdStruct,
+  JsonRpcParamsStruct,
+  JsonRpcVersionStruct,
+} from '@metamask/utils';
 import { parseExpression } from 'cron-parser';
 import type { Infer } from 'superstruct';
 import {
-  assign,
-  omit,
-  partial,
-  pick,
   array,
   coerce,
   create,
@@ -15,10 +15,13 @@ import {
   string,
 } from 'superstruct';
 
-export const CronjobRpcRequestStruct = assign(
-  partial(pick(JsonRpcRequestStruct, ['id', 'jsonrpc'])),
-  omit(JsonRpcRequestStruct, ['id', 'jsonrpc']),
-);
+export const CronjobRpcRequestStruct = object({
+  jsonrpc: optional(JsonRpcVersionStruct),
+  id: optional(JsonRpcIdStruct),
+  method: string(),
+  params: optional(JsonRpcParamsStruct),
+});
+
 export type CronjobRpcRequest = Infer<typeof CronjobRpcRequestStruct>;
 
 export const CronExpressionStruct = refine(

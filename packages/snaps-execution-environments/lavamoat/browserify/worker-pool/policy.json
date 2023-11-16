@@ -1,16 +1,5 @@
 {
   "resources": {
-    "@lavamoat/lavapack>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>events": true,
-        "browserify>inherits": true,
-        "browserify>process": true,
-        "browserify>readable-stream>util-deprecate": true,
-        "browserify>string_decoder": true
-      }
-    },
     "@metamask/post-message-stream": {
       "globals": {
         "MessageEvent.prototype": true,
@@ -23,8 +12,8 @@
         "removeEventListener": true
       },
       "packages": {
-        "@lavamoat/lavapack>readable-stream": true,
-        "@metamask/post-message-stream>@metamask/utils": true
+        "@metamask/post-message-stream>@metamask/utils": true,
+        "readable-stream": true
       }
     },
     "@metamask/post-message-stream>@metamask/utils": {
@@ -66,6 +55,8 @@
       },
       "packages": {
         "@metamask/utils>@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
         "@swc/cli>semver": true,
         "browserify>buffer": true,
         "eslint>debug": true,
@@ -76,6 +67,12 @@
       "globals": {
         "TextEncoder": true,
         "crypto": true
+      }
+    },
+    "@metamask/utils>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
       }
     },
     "@swc/cli>semver": {
@@ -115,13 +112,6 @@
       "globals": {
         "clearTimeout": true,
         "setTimeout": true
-      }
-    },
-    "browserify>readable-stream>util-deprecate": {
-      "globals": {
-        "console.trace": true,
-        "console.warn": true,
-        "localStorage": true
       }
     },
     "browserify>string_decoder": {
@@ -355,6 +345,24 @@
       "packages": {
         "@metamask/utils": true,
         "superstruct": true
+      }
+    },
+    "readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "browserify>inherits": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "readable-stream>util-deprecate": {
+      "globals": {
+        "console.trace": true,
+        "console.warn": true,
+        "localStorage": true
       }
     },
     "superstruct": {

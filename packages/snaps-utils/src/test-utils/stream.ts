@@ -1,5 +1,6 @@
 import { BasePostMessageStream } from '@metamask/post-message-stream';
 import {
+  isJsonRpcNotification,
   isJsonRpcRequest,
   isJsonRpcResponse,
   isPlainObject,
@@ -50,6 +51,11 @@ export class MockWindowPostMessageStream extends BasePostMessageStream {
     // cycle. Instead, we emit them as an arbitrary `response` event.
     if (isPlainObject(data) && isJsonRpcResponse(data.data)) {
       this.emit('response', data.data);
+      return;
+    }
+
+    if (isPlainObject(data) && isJsonRpcNotification(data.data)) {
+      this.emit('notification', data.data);
       return;
     }
 

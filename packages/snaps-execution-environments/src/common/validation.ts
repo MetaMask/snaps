@@ -4,8 +4,9 @@ import type { Json, JsonRpcSuccess } from '@metamask/utils';
 import {
   assertStruct,
   JsonRpcIdStruct,
-  JsonRpcRequestStruct,
+  JsonRpcParamsStruct,
   JsonRpcSuccessStruct,
+  JsonRpcVersionStruct,
   JsonStruct,
 } from '@metamask/utils';
 import type { Infer } from 'superstruct';
@@ -17,7 +18,6 @@ import {
   literal,
   nullable,
   object,
-  omit,
   optional,
   record,
   string,
@@ -25,12 +25,12 @@ import {
   union,
 } from 'superstruct';
 
-export const JsonRpcRequestWithoutIdStruct = assign(
-  omit(JsonRpcRequestStruct, ['id']),
-  object({
-    id: optional(JsonRpcIdStruct),
-  }),
-);
+export const JsonRpcRequestWithoutIdStruct = object({
+  jsonrpc: optional(JsonRpcVersionStruct),
+  id: optional(JsonRpcIdStruct),
+  method: string(),
+  params: optional(JsonRpcParamsStruct),
+});
 
 export type JsonRpcRequestWithoutId = Infer<
   typeof JsonRpcRequestWithoutIdStruct
@@ -180,12 +180,11 @@ export function assertIsOnNameLookupRequestArguments(
   );
 }
 
-const OkResponseStruct = assign(
-  JsonRpcSuccessStruct,
-  object({
-    result: OkStruct,
-  }),
-);
+const OkResponseStruct = object({
+  id: JsonRpcIdStruct,
+  jsonrpc: JsonRpcVersionStruct,
+  result: OkStruct,
+});
 
 const SnapRpcResponse = JsonRpcSuccessStruct;
 

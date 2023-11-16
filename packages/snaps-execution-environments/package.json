@@ -44,15 +44,16 @@
     "lint:dependencies": "depcheck"
   },
   "dependencies": {
-    "@metamask/json-rpc-engine": "^7.1.1",
-    "@metamask/object-multiplex": "^1.2.0",
+    "@metamask/json-rpc-engine": "^7.3.0",
+    "@metamask/object-multiplex": "^2.0.0",
     "@metamask/post-message-stream": "^7.0.0",
-    "@metamask/providers": "^13.0.0",
+    "@metamask/providers": "^14.0.1",
     "@metamask/rpc-errors": "^6.1.0",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^8.1.0",
+    "@metamask/utils": "^8.2.1",
     "nanoid": "^3.1.31",
+    "readable-stream": "^3.6.2",
     "superstruct": "^1.0.3"
   },
   "devDependencies": {

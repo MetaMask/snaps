@@ -13,8 +13,8 @@ import type {
 import { Duration, isJsonRpcNotification, isObject } from '@metamask/utils';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
-import { pipeline } from 'stream';
-import type { Duplex } from 'stream';
+import { pipeline } from 'readable-stream';
+import type { Duplex } from 'readable-stream';
 
 import { log } from '../logging';
 import { hasTimedOut, withTimeout } from '../utils';

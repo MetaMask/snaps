@@ -32,7 +32,7 @@ import {
   hasProperty,
   getSafeJson,
 } from '@metamask/utils';
-import type { Duplex } from 'stream';
+import type { Duplex } from 'readable-stream';
 import { validate } from 'superstruct';
 
 import { log } from '../logging';

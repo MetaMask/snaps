@@ -1,16 +1,5 @@
 {
   "resources": {
-    "@lavamoat/lavapack>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>events": true,
-        "browserify>inherits": true,
-        "browserify>process": true,
-        "browserify>readable-stream>util-deprecate": true,
-        "browserify>string_decoder": true
-      }
-    },
     "@metamask/json-rpc-engine": {
       "packages": {
         "@metamask/providers>@metamask/safe-event-emitter": true,
@@ -23,45 +12,13 @@
         "console.warn": true
       },
       "packages": {
-        "@metamask/object-multiplex>end-of-stream": true,
         "@metamask/object-multiplex>once": true,
-        "@metamask/object-multiplex>readable-stream": true
-      }
-    },
-    "@metamask/object-multiplex>end-of-stream": {
-      "packages": {
-        "@metamask/object-multiplex>once": true,
-        "browserify>process": true
+        "readable-stream": true
       }
     },
     "@metamask/object-multiplex>once": {
       "packages": {
         "@metamask/object-multiplex>once>wrappy": true
-      }
-    },
-    "@metamask/object-multiplex>readable-stream": {
-      "packages": {
-        "@metamask/object-multiplex>readable-stream>isarray": true,
-        "@metamask/object-multiplex>readable-stream>safe-buffer": true,
-        "@metamask/object-multiplex>readable-stream>string_decoder": true,
-        "browserify>browser-resolve": true,
-        "browserify>events": true,
-        "browserify>inherits": true,
-        "browserify>process": true,
-        "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>process-nextick-args": true,
-        "browserify>readable-stream>util-deprecate": true,
-        "browserify>timers-browserify": true
-      }
-    },
-    "@metamask/object-multiplex>readable-stream>safe-buffer": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "@metamask/object-multiplex>readable-stream>string_decoder": {
-      "packages": {
-        "@metamask/object-multiplex>readable-stream>safe-buffer": true
       }
     },
     "@metamask/post-message-stream": {
@@ -76,8 +33,8 @@
         "removeEventListener": true
       },
       "packages": {
-        "@lavamoat/lavapack>readable-stream": true,
-        "@metamask/post-message-stream>@metamask/utils": true
+        "@metamask/post-message-stream>@metamask/utils": true,
+        "readable-stream": true
       }
     },
     "@metamask/post-message-stream>@metamask/utils": {
@@ -94,6 +51,7 @@
     },
     "@metamask/providers": {
       "globals": {
+        "CustomEvent": true,
         "Event": true,
         "addEventListener": true,
         "chrome.runtime.connect": true,
@@ -115,8 +73,9 @@
         "@metamask/providers>is-stream": true,
         "@metamask/providers>json-rpc-middleware-stream": true,
         "@metamask/rpc-errors": true,
-        "browserify>stream-browserify": true,
-        "eslint>fast-deep-equal": true
+        "@metamask/utils": true,
+        "eslint>fast-deep-equal": true,
+        "readable-stream": true
       }
     },
     "@metamask/providers>@metamask/safe-event-emitter": {
@@ -138,8 +97,24 @@
     },
     "@metamask/providers>extension-port-stream": {
       "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream": true,
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/providers>extension-port-stream>readable-stream": {
+      "globals": {
+        "AbortController": true,
+        "AggregateError": true,
+        "Blob": true,
+        "new": true,
+        "target": true
+      },
+      "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream>abort-controller": true,
         "browserify>buffer": true,
-        "browserify>stream-browserify": true
+        "browserify>events": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true
       }
     },
     "@metamask/providers>json-rpc-middleware-stream": {
@@ -149,32 +124,7 @@
       },
       "packages": {
         "@metamask/providers>@metamask/safe-event-emitter": true,
-        "@metamask/providers>json-rpc-middleware-stream>readable-stream": true
-      }
-    },
-    "@metamask/providers>json-rpc-middleware-stream>readable-stream": {
-      "packages": {
-        "@metamask/providers>json-rpc-middleware-stream>readable-stream>isarray": true,
-        "@metamask/providers>json-rpc-middleware-stream>readable-stream>safe-buffer": true,
-        "@metamask/providers>json-rpc-middleware-stream>readable-stream>string_decoder": true,
-        "browserify>browser-resolve": true,
-        "browserify>events": true,
-        "browserify>inherits": true,
-        "browserify>process": true,
-        "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>process-nextick-args": true,
-        "browserify>readable-stream>util-deprecate": true,
-        "browserify>timers-browserify": true
-      }
-    },
-    "@metamask/providers>json-rpc-middleware-stream>readable-stream>safe-buffer": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "@metamask/providers>json-rpc-middleware-stream>readable-stream>string_decoder": {
-      "packages": {
-        "@metamask/providers>json-rpc-middleware-stream>readable-stream>safe-buffer": true
+        "readable-stream": true
       }
     },
     "@metamask/rpc-errors": {
@@ -204,6 +154,8 @@
       },
       "packages": {
         "@metamask/utils>@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
         "@swc/cli>semver": true,
         "browserify>buffer": true,
         "eslint>debug": true,
@@ -214,6 +166,12 @@
       "globals": {
         "TextEncoder": true,
         "crypto": true
+      }
+    },
+    "@metamask/utils>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
       }
     },
     "@swc/cli>semver": {
@@ -255,44 +213,9 @@
         "setTimeout": true
       }
     },
-    "browserify>readable-stream>core-util-is": {
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true
-      }
-    },
-    "browserify>readable-stream>process-nextick-args": {
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "browserify>readable-stream>util-deprecate": {
-      "globals": {
-        "console.trace": true,
-        "console.warn": true,
-        "localStorage": true
-      }
-    },
-    "browserify>stream-browserify": {
-      "packages": {
-        "@lavamoat/lavapack>readable-stream": true,
-        "browserify>events": true,
-        "browserify>inherits": true
-      }
-    },
     "browserify>string_decoder": {
       "packages": {
         "browserify>browser-pack>safe-buffer": true
-      }
-    },
-    "browserify>timers-browserify": {
-      "globals": {
-        "clearInterval": true,
-        "clearTimeout": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "browserify>process": true
       }
     },
     "eslint>debug": {
@@ -521,6 +444,24 @@
       "packages": {
         "@metamask/utils": true,
         "superstruct": true
+      }
+    },
+    "readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "browserify>inherits": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "readable-stream>util-deprecate": {
+      "globals": {
+        "console.trace": true,
+        "console.warn": true,
+        "localStorage": true
       }
     },
     "superstruct": {

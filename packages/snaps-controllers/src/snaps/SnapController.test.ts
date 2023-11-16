@@ -44,8 +44,8 @@ import type { SemVerRange, SemVerVersion } from '@metamask/utils';
 import { assert, AssertionError, stringToBytes } from '@metamask/utils';
 import fetchMock from 'jest-fetch-mock';
 import { createEngineStream } from 'json-rpc-middleware-stream';
-import { pipeline } from 'stream';
-import type { Duplex } from 'stream';
+import { pipeline } from 'readable-stream';
+import type { Duplex } from 'readable-stream';
 
 import type { NodeThreadExecutionService } from '../services';
 import { setupMultiplex } from '../services';
