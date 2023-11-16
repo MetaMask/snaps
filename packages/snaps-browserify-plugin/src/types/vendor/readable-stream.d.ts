@@ -6,5 +6,5 @@ declare module 'readable-stream' {
     Writable,
     TransformCallback,
   } from 'stream';
-  export { Duplex, pipeline } from 'stream';
+  export { Transform, Duplex, pipeline } from 'stream';
 }

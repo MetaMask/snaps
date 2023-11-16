@@ -201,7 +201,7 @@ export class NpmLocation implements SnapLocation {
           `${canonicalBase}/${this.meta.packageName}/`,
           this.files,
         ),
-        (error) => {
+        (error: unknown) => {
           error ? reject(error) : resolve();
         },
       );
