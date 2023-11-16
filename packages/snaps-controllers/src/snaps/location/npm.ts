@@ -17,9 +17,9 @@ import {
   isObject,
   isValidSemVerVersion,
 } from '@metamask/utils';
+import { createGunzip } from 'browserify-zlib';
 import concat from 'concat-stream';
 import getNpmTarballUrl from 'get-npm-tarball-url';
-import createGunzipStream from 'gunzip-maybe';
 import { pipeline } from 'readable-stream';
 import type { Readable, Writable } from 'readable-stream';
 import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
@@ -195,8 +195,8 @@ export class NpmLocation implements SnapLocation {
         getNodeStream(tarballResponse),
         // The "gz" in "tgz" stands for "gzip". The tarball needs to be decompressed
         // before we can actually grab any files from it.
-        // To prevent recursion-based zip bombs, we set a maximum recursion depth of 1.
-        createGunzipStream(1),
+        // To prevent recursion-based zip bombs, we should not allow recursion here.
+        createGunzip(),
         createTarballStream(
           `${canonicalBase}/${this.meta.packageName}/`,
           this.files,
