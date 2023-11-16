@@ -39,7 +39,8 @@
   },
   "dependencies": {
     "@metamask/snaps-utils": "workspace:^",
-    "convert-source-map": "^1.8.0"
+    "convert-source-map": "^1.8.0",
+    "readable-stream": "^3.6.2"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.5.1",

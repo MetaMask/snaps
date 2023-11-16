@@ -5021,6 +5021,7 @@ __metadata:
     memfs: ^3.4.13
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
+    readable-stream: ^3.6.2
     rimraf: ^4.1.2
     typescript: ~4.8.4
   languageName: unknown
@@ -5192,6 +5193,7 @@ __metadata:
     nanoid: ^3.1.31
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
+    readable-stream: ^3.6.2
     readable-web-to-node-stream: ^3.0.2
     rimraf: ^4.1.2
     tar-stream: ^3.1.6

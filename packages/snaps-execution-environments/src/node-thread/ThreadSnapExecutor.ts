@@ -1,7 +1,7 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { ThreadMessageStream } from '@metamask/post-message-stream';
 import { logError, SNAP_STREAM_NAMES } from '@metamask/snaps-utils';
-import { pipeline } from 'stream';
+import { pipeline } from 'readable-stream';
 
 import { BaseSnapExecutor } from '../common/BaseSnapExecutor';
 import { log } from '../logging';

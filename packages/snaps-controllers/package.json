@@ -62,6 +62,7 @@
     "immer": "^9.0.6",
     "json-rpc-middleware-stream": "^5.0.0",
     "nanoid": "^3.1.31",
+    "readable-stream": "^3.6.2",
     "readable-web-to-node-stream": "^3.0.2",
     "tar-stream": "^3.1.6"
   },

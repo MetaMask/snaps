@@ -213,13 +213,6 @@
         "setTimeout": true
       }
     },
-    "browserify>stream-browserify": {
-      "packages": {
-        "browserify>events": true,
-        "browserify>inherits": true,
-        "readable-stream": true
-      }
-    },
     "browserify>string_decoder": {
       "packages": {
         "browserify>browser-pack>safe-buffer": true

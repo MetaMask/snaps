@@ -16,7 +16,7 @@ import browserify from 'browserify';
 import concat from 'concat-stream';
 import os from 'os';
 import pathUtils from 'path';
-import { Readable } from 'stream';
+import { Readable } from 'readable-stream';
 
 import type { Options } from './plugin';
 import plugin, { SnapsBrowserifyTransform } from './plugin';

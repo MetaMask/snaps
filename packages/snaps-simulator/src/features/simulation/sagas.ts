@@ -31,9 +31,9 @@ import { logError, unwrapError } from '@metamask/snaps-utils';
 import { getSafeJson } from '@metamask/utils';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createEngineStream } from 'json-rpc-middleware-stream';
+import { pipeline } from 'readable-stream';
 import type { SagaIterator } from 'redux-saga';
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
-import { pipeline } from 'stream';
 
 import { runSaga } from '../../store/middleware';
 import { getSnapId, getSrp, setSnapId } from '../configuration';

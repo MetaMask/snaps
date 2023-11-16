@@ -20,9 +20,9 @@ import {
 import concat from 'concat-stream';
 import getNpmTarballUrl from 'get-npm-tarball-url';
 import createGunzipStream from 'gunzip-maybe';
+import { pipeline } from 'readable-stream';
+import type { Readable, Writable } from 'readable-stream';
 import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
-import { pipeline } from 'stream';
-import type { Readable, Writable } from 'stream';
 import { extract as tarExtract } from 'tar-stream';
 
 import type { DetectSnapLocationOptions, SnapLocation } from './location';

@@ -2,7 +2,7 @@ import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { logError, type SnapRpcHookArgs } from '@metamask/snaps-utils';
 import type { MockControllerMessenger } from '@metamask/snaps-utils/test-utils';
 import { createEngineStream } from 'json-rpc-middleware-stream';
-import { pipeline } from 'stream';
+import { pipeline } from 'readable-stream';
 
 import type {
   ExecutionService,
