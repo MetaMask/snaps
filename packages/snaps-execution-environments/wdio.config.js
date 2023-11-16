@@ -18,7 +18,7 @@ const config = {
   runner: [
     'browser',
     {
-      headless: false,
+      headless: true,
       viteConfig: {
         plugins: [tsconfigPaths()],
         optimizeDeps: {
