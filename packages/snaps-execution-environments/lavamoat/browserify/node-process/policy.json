@@ -35,63 +35,13 @@
         "console.warn": true
       },
       "packages": {
-        "@metamask/object-multiplex>end-of-stream": true,
-        "@metamask/object-multiplex>once": true,
-        "@metamask/object-multiplex>readable-stream": true
-      }
-    },
-    "@metamask/object-multiplex>end-of-stream": {
-      "globals": {
-        "process.nextTick": true
-      },
-      "packages": {
+        "@lavamoat/lavapack>readable-stream": true,
         "@metamask/object-multiplex>once": true
       }
     },
     "@metamask/object-multiplex>once": {
       "packages": {
         "@metamask/object-multiplex>once>wrappy": true
-      }
-    },
-    "@metamask/object-multiplex>readable-stream": {
-      "builtin": {
-        "events.EventEmitter": true,
-        "stream": true,
-        "timers.setImmediate": true,
-        "util": true
-      },
-      "globals": {
-        "process.browser": true,
-        "process.env.READABLE_STREAM": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.version.slice": true
-      },
-      "packages": {
-        "@metamask/object-multiplex>readable-stream>isarray": true,
-        "@metamask/object-multiplex>readable-stream>safe-buffer": true,
-        "@metamask/object-multiplex>readable-stream>string_decoder": true,
-        "browserify>inherits": true,
-        "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>process-nextick-args": true,
-        "browserify>readable-stream>util-deprecate": true,
-        "events": true,
-        "stream": true,
-        "timers": true,
-        "util": true
-      }
-    },
-    "@metamask/object-multiplex>readable-stream>safe-buffer": {
-      "builtin": {
-        "buffer": true
-      },
-      "packages": {
-        "buffer": true
-      }
-    },
-    "@metamask/object-multiplex>readable-stream>string_decoder": {
-      "packages": {
-        "@metamask/object-multiplex>readable-stream>safe-buffer": true
       }
     },
     "@metamask/post-message-stream": {
@@ -150,7 +100,7 @@
       "packages": {
         "@lavamoat/lavapack>readable-stream": true,
         "@metamask/json-rpc-engine": true,
-        "@metamask/providers>@metamask/object-multiplex": true,
+        "@metamask/object-multiplex": true,
         "@metamask/providers>@metamask/safe-event-emitter": true,
         "@metamask/providers>detect-browser": true,
         "@metamask/providers>extension-port-stream": true,
@@ -159,15 +109,6 @@
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "eslint>fast-deep-equal": true
-      }
-    },
-    "@metamask/providers>@metamask/object-multiplex": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@lavamoat/lavapack>readable-stream": true,
-        "@metamask/object-multiplex>once": true
       }
     },
     "@metamask/providers>@metamask/safe-event-emitter": {
@@ -340,16 +281,6 @@
       }
     },
     "browserify>process": {
-      "globals": {
-        "process": true
-      }
-    },
-    "browserify>readable-stream>core-util-is": {
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true
-      }
-    },
-    "browserify>readable-stream>process-nextick-args": {
       "globals": {
         "process": true
       }
