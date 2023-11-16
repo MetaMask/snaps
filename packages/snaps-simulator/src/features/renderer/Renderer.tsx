@@ -12,9 +12,8 @@ import {
   Image,
 } from './components';
 
-export const components: Record<
-  NodeType,
-  FunctionComponent<{ id: string; node: unknown }>
+export const components: Partial<
+  Record<NodeType, FunctionComponent<{ id: string; node: unknown }>>
 > = {
   [NodeType.Copyable]: Copyable,
   [NodeType.Divider]: Divider,
