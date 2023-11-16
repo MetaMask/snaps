@@ -5275,7 +5275,7 @@ __metadata:
     nanoid: ^3.1.31
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
-    readable-stream: ^4.4.2
+    readable-stream: ^3.6.2
     rimraf: ^4.1.2
     serve-handler: ^6.1.5
     ses: ^0.18.8
@@ -19563,7 +19563,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:^3.6.2 || ^4.4.2, readable-stream@npm:^4.4.2":
+"readable-stream@npm:^3.6.2 || ^4.4.2":
   version: 4.4.2
   resolution: "readable-stream@npm:4.4.2"
   dependencies:
