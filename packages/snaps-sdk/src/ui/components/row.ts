@@ -15,11 +15,7 @@ export enum RowVariant {
 }
 
 // A subset of components made available to the row
-export const RowComponentStruct = union([
-  ImageStruct,
-  TextStruct,
-  AddressStruct,
-]);
+const RowComponentStruct = union([ImageStruct, TextStruct, AddressStruct]);
 
 export const RowStruct = assign(
   LiteralStruct,
