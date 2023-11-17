@@ -3,6 +3,7 @@ import { createReadStream } from 'fs';
 import { readFile } from 'fs/promises';
 import fetchMock from 'jest-fetch-mock';
 import path from 'path';
+import { Readable } from 'stream';
 
 import { NpmLocation } from './npm';
 
@@ -22,9 +23,13 @@ describe('NpmLocation', () => {
 
     const tarballUrl = `https://registry.npmjs.cf/@metamask/template-snap/-/template-snap-${templateSnapVersion}.tgz`;
     const tarballRegistry = `https://registry.npmjs.org/@metamask/template-snap/-/template-snap-${templateSnapVersion}.tgz`;
-    fetchMock
-      .mockResponseOnce(
-        JSON.stringify({
+
+    const customFetchMock = jest.fn();
+
+    customFetchMock
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
           // eslint-disable-next-line @typescript-eslint/naming-convention
           'dist-tags': {
             latest: templateSnapVersion,
@@ -38,27 +43,26 @@ describe('NpmLocation', () => {
             },
           },
         }),
-      )
-      .mockResponseOnce(
-        (_req) =>
-          Promise.resolve({
-            ok: true,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            headers: new Headers({ 'content-length': '5477' }),
-            body: createReadStream(
-              path.resolve(
-                __dirname,
-                `../../../test/fixtures/metamask-template-snap-${templateSnapVersion}.tgz`,
-              ),
+      } as any)
+      .mockResolvedValue({
+        ok: true,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        headers: new Headers({ 'content-length': '5477' }),
+        body: Readable.toWeb(
+          createReadStream(
+            path.resolve(
+              __dirname,
+              `../../../test/fixtures/metamask-template-snap-${templateSnapVersion}.tgz`,
             ),
-          }) as any,
-      );
+          ),
+        ),
+      } as any);
 
     const location = new NpmLocation(
       new URL('npm://registry.npmjs.cf/@metamask/template-snap'),
       {
         versionRange: templateSnapVersion,
-        fetch: fetchMock as typeof fetch,
+        fetch: customFetchMock as typeof fetch,
         allowCustomRegistries: true,
       },
     );
@@ -72,12 +76,12 @@ describe('NpmLocation', () => {
       await location.fetch(manifest.result.source.location.npm.iconPath)
     ).toString();
 
-    expect(fetchMock).toHaveBeenCalledTimes(2);
-    expect(fetchMock).toHaveBeenNthCalledWith(
+    expect(customFetchMock).toHaveBeenCalledTimes(2);
+    expect(customFetchMock).toHaveBeenNthCalledWith(
       1,
       'https://registry.npmjs.cf/@metamask/template-snap',
     );
-    expect(fetchMock).toHaveBeenNthCalledWith(2, tarballUrl);
+    expect(customFetchMock).toHaveBeenNthCalledWith(2, tarballUrl);
 
     expect(manifest.result).toStrictEqual(
       JSON.parse(
@@ -109,25 +113,27 @@ describe('NpmLocation', () => {
       ).toString('utf8'),
     );
 
-    const tarballUrl = `https://registry.npmjs.org/@metamask/template-snap/-/template-snap-${templateSnapVersion}.tgz`;
-    fetchMock.mockResponseOnce(
-      (_req) =>
-        Promise.resolve({
-          ok: true,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          headers: new Headers({ 'content-length': '5477' }),
-          body: createReadStream(
-            path.resolve(
-              __dirname,
-              `../../../test/fixtures/metamask-template-snap-${templateSnapVersion}.tgz`,
-            ),
+    const customFetchMock = jest.fn();
+
+    customFetchMock.mockResolvedValue({
+      ok: true,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      headers: new Headers({ 'content-length': '5477' }),
+      body: Readable.toWeb(
+        createReadStream(
+          path.resolve(
+            __dirname,
+            `../../../test/fixtures/metamask-template-snap-${templateSnapVersion}.tgz`,
           ),
-        }) as any,
-    );
+        ),
+      ),
+    } as any);
+
+    const tarballUrl = `https://registry.npmjs.org/@metamask/template-snap/-/template-snap-${templateSnapVersion}.tgz`;
 
     const location = new NpmLocation(new URL('npm:@metamask/template-snap'), {
       versionRange: templateSnapVersion,
-      fetch: fetchMock as typeof fetch,
+      fetch: customFetchMock as typeof fetch,
     });
 
     const manifest = await location.manifest();
@@ -139,8 +145,8 @@ describe('NpmLocation', () => {
       await location.fetch(manifest.result.source.location.npm.iconPath)
     ).toString();
 
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock).toHaveBeenNthCalledWith(1, tarballUrl);
+    expect(customFetchMock).toHaveBeenCalledTimes(1);
+    expect(customFetchMock).toHaveBeenNthCalledWith(1, tarballUrl);
 
     expect(manifest.result).toStrictEqual(
       JSON.parse(
