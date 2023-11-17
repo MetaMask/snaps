@@ -19,8 +19,8 @@ describe('onTransaction', () => {
 
     expect(response).toRender(
       panel([
-        row('From Address', address(FROM_ADDRESS)),
-        row('To Address', address(TO_ADDRESS)),
+        row('From', address(FROM_ADDRESS)),
+        row('To', address(TO_ADDRESS)),
         row('Transaction type', text('ERC-20')),
       ]),
     );
@@ -41,8 +41,8 @@ describe('onTransaction', () => {
 
     expect(response).toRender(
       panel([
-        row('From Address', address(FROM_ADDRESS)),
-        row('To Address', address(TO_ADDRESS)),
+        row('From', address(FROM_ADDRESS)),
+        row('To', address(TO_ADDRESS)),
         row('Transaction type', text('ERC-721')),
       ]),
     );
@@ -63,8 +63,8 @@ describe('onTransaction', () => {
 
     expect(response).toRender(
       panel([
-        row('From Address', address(FROM_ADDRESS)),
-        row('To Address', address(TO_ADDRESS)),
+        row('From', address(FROM_ADDRESS)),
+        row('To', address(TO_ADDRESS)),
         row('Transaction type', text('ERC-1155')),
       ]),
     );
@@ -83,8 +83,8 @@ describe('onTransaction', () => {
 
     expect(response).toRender(
       panel([
-        row('From Address', address(FROM_ADDRESS)),
-        row('To Address', address(TO_ADDRESS)),
+        row('From', address(FROM_ADDRESS)),
+        row('To', address(TO_ADDRESS)),
         row('Transaction type', text('Unknown')),
       ]),
     );
@@ -103,8 +103,8 @@ describe('onTransaction', () => {
 
     expect(response).toRender(
       panel([
-        row('From Address', address(FROM_ADDRESS)),
-        row('To Address', address(TO_ADDRESS)),
+        row('From', address(FROM_ADDRESS)),
+        row('To', address(TO_ADDRESS)),
         row('Transaction type', text('Unknown')),
       ]),
     );
