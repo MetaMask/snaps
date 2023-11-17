@@ -80,6 +80,7 @@ describe('NpmLocation', () => {
     expect(customFetchMock).toHaveBeenNthCalledWith(
       1,
       'https://registry.npmjs.cf/@metamask/template-snap',
+      { headers: { accept: 'application/json' } },
     );
     expect(customFetchMock).toHaveBeenNthCalledWith(2, tarballUrl);
 

@@ -231,11 +231,19 @@ export type PartialNpmMetadata = {
  */
 export async function fetchNpmMetadata(
   packageName: string,
-  registryUrl: URL | string,
+  registryUrl: URL,
   fetchFunction: typeof fetch,
 ): Promise<PartialNpmMetadata> {
   const packageResponse = await fetchFunction(
     new URL(packageName, registryUrl).toString(),
+    {
+      headers: {
+        // Corgi format is slightly smaller: https://github.com/npm/pacote/blob/main/lib/registry.js#L71
+        accept: isNPM(registryUrl)
+          ? 'application/vnd.npm.install-v1+json; q=1.0, application/json; q=0.8, */*'
+          : 'application/json',
+      },
+    },
   );
   if (!packageResponse.ok) {
     throw new Error(
@@ -251,6 +259,16 @@ export async function fetchNpmMetadata(
   }
 
   return packageMetadata as PartialNpmMetadata;
+}
+
+/**
+ * Determine if a registry URL is NPM.
+ *
+ * @param registryUrl - A registry url.
+ * @returns True if the registry is the NPM registry, otherwise false.
+ */
+function isNPM(registryUrl: URL) {
+  return registryUrl.toString() === DEFAULT_NPM_REGISTRY.toString();
 }
 
 /**
@@ -273,10 +291,7 @@ async function resolveNpmVersion(
   fetchFunction: typeof fetch,
 ): Promise<{ tarballURL: string; targetVersion: SemVerVersion }> {
   // If the version range is already a static version we don't need to look for the metadata.
-  if (
-    registryUrl.toString() === DEFAULT_NPM_REGISTRY.toString() &&
-    isValidSemVerVersion(versionRange)
-  ) {
+  if (isNPM(registryUrl) && isValidSemVerVersion(versionRange)) {
     return {
       tarballURL: getNpmTarballUrl(packageName, versionRange),
       targetVersion: versionRange,
