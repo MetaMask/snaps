@@ -54,7 +54,6 @@ export type Row = Infer<typeof RowStruct>;
  * @param args.variant - An optional variant, either `default`, `warning` or `critical`.
  * @returns The row node as an object.
  * @example
- * const node = image({ value: '<svg />' });
  * const node = row({ label: 'Address', value: address('0x4bbeeb066ed09b7aed07bf39eee0460dfa261520') });
  * const node = row({ label: 'Address', value: address('0x4bbeeb066ed09b7aed07bf39eee0460dfa261520'), variant: RowVariant.Warning });
  * const node = row('Address', address('0x4bbeeb066ed09b7aed07bf39eee0460dfa261520'));
