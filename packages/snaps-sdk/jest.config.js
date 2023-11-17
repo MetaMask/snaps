@@ -13,4 +13,8 @@ module.exports = deepmerge(baseConfig, {
       statements: 100,
     },
   },
+
+  transform: {
+    '^.+\\.(t|j)sx?$': 'ts-jest',
+  },
 });
