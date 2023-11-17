@@ -1,5 +1,5 @@
 import type { OnTransactionHandler } from '@metamask/snaps-sdk';
-import { SeverityLevel, panel, text } from '@metamask/snaps-sdk';
+import { SeverityLevel, panel, text, row, address } from '@metamask/snaps-sdk';
 import { hasProperty } from '@metamask/utils';
 
 import { decodeData } from './utils';
@@ -30,10 +30,14 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
   ) {
     const type = decodeData(transaction.data);
     return {
-      content: panel([text('**Transaction type:**'), text(type)]),
+      content: panel([
+        row('From', address(transaction.from)),
+        row('To', transaction.to ? address(transaction.to) : text('None')),
+        row('Transaction type', text(type)),
+      ]),
       severity: SeverityLevel.Critical,
     };
   }
 
-  return { content: panel([text('**Transaction type:**'), text('Unknown')]) };
+  return { content: panel([row('Transaction type', text('Unknown'))]) };
 };

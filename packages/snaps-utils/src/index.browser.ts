@@ -6,7 +6,6 @@ export * from './cronjob';
 export * from './deep-clone';
 export * from './default-endowments';
 export * from './entropy';
-export * from './enum';
 export * from './errors';
 export * from './handlers';
 export * from './handler-types';

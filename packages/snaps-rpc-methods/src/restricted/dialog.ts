@@ -5,9 +5,9 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { DialogType, ComponentStruct } from '@metamask/snaps-sdk';
+import { DialogType, ComponentStruct, enumValue } from '@metamask/snaps-sdk';
 import type { DialogParams, EnumToUnion, Component } from '@metamask/snaps-sdk';
-import { validateComponentLinks, enumValue } from '@metamask/snaps-utils';
+import { validateComponentLinks } from '@metamask/snaps-utils';
 import type { InferMatching } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 import type { Infer, Struct } from 'superstruct';

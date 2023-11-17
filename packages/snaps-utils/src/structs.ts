@@ -1,18 +1,9 @@
 import { isObject } from '@metamask/utils';
 import { bold, green, red } from 'chalk';
 import { resolve } from 'path';
-import type { Failure, Infer } from 'superstruct';
-import {
-  Struct,
-  StructError,
-  define,
-  literal as superstructLiteral,
-  union as superstructUnion,
-  create,
-  string,
-  coerce,
-} from 'superstruct';
-import type { AnyStruct, InferStructTuple } from 'superstruct/dist/utils';
+import type { Failure } from 'superstruct';
+import { Struct, StructError, create, string, coerce } from 'superstruct';
+import type { AnyStruct } from 'superstruct/dist/utils';
 
 import { indent } from './strings';
 
@@ -42,61 +33,6 @@ export type InferMatching<
   StructType extends Struct<any, any>,
   Type,
 > = StructType['TYPE'] extends Type ? Type : never;
-
-/**
- * A wrapper of `superstruct`'s `literal` struct that also defines the name of
- * the struct as the literal value.
- *
- * This is useful for improving the error messages returned by `superstruct`.
- * For example, instead of returning an error like:
- *
- * ```
- * Expected the value to satisfy a union of `literal | literal`, but received: \"baz\"
- * ```
- *
- * This struct will return an error like:
- *
- * ```
- * Expected the value to satisfy a union of `"foo" | "bar"`, but received: \"baz\"
- * ```
- *
- * @param value - The literal value.
- * @returns The `superstruct` struct, which validates that the value is equal
- * to the literal value.
- */
-export function literal<Type extends string | number | boolean>(value: Type) {
-  return define<Type>(
-    JSON.stringify(value),
-    superstructLiteral(value).validator,
-  );
-}
-
-/**
- * A wrapper of `superstruct`'s `union` struct that also defines the schema as
- * the union of the schemas of the structs.
- *
- * This is useful for improving the error messages returned by `superstruct`.
- *
- * @param structs - The structs to union.
- * @param structs."0" - The first struct.
- * @param structs."1" - The remaining structs.
- * @returns The `superstruct` struct, which validates that the value satisfies
- * one of the structs.
- */
-export function union<Head extends AnyStruct, Tail extends AnyStruct[]>([
-  head,
-  ...tail
-]: [head: Head, ...tail: Tail]): Struct<
-  Infer<Head> | InferStructTuple<Tail>[number],
-  [head: Head, ...tail: Tail]
-> {
-  const struct = superstructUnion([head, ...tail]);
-
-  return new Struct({
-    ...struct,
-    schema: [head, ...tail],
-  });
-}
 
 /**
  * A wrapper of `superstruct`'s `string` struct that coerces a value to a string

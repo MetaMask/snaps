@@ -3,10 +3,12 @@ import { array, assign, lazy, literal, object, union } from 'superstruct';
 
 import { createBuilder } from '../builder';
 import { NodeStruct, NodeType } from '../nodes';
+import { AddressStruct } from './address';
 import { CopyableStruct } from './copyable';
 import { DividerStruct } from './divider';
 import { HeadingStruct } from './heading';
 import { ImageStruct } from './image';
+import { RowStruct } from './row';
 import { SpinnerStruct } from './spinner';
 import { TextStruct } from './text';
 
@@ -87,6 +89,8 @@ export const ComponentStruct = union([
   PanelStruct,
   SpinnerStruct,
   TextStruct,
+  RowStruct,
+  AddressStruct,
 ]);
 
 /**
