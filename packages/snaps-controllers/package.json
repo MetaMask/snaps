@@ -56,6 +56,7 @@
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/utils": "^8.2.1",
     "@xstate/fsm": "^2.0.0",
+    "browserify-zlib": "^0.2.0",
     "concat-stream": "^2.0.0",
     "get-npm-tarball-url": "^2.0.3",
     "immer": "^9.0.6",

@@ -5176,6 +5176,7 @@ __metadata:
     "@wdio/spec-reporter": ^8.19.0
     "@wdio/static-server-service": ^8.19.0
     "@xstate/fsm": ^2.0.0
+    browserify-zlib: ^0.2.0
     concat-stream: ^2.0.0
     deepmerge: ^4.2.2
     depcheck: ^1.4.7
