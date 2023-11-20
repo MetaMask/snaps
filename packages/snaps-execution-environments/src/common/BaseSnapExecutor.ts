@@ -17,6 +17,7 @@ import {
   SNAP_EXPORTS,
   WrappedSnapError,
   unwrapError,
+  logInfo,
 } from '@metamask/snaps-utils';
 import type {
   JsonRpcNotification,
@@ -229,6 +230,10 @@ export class BaseSnapExecutor {
           id: (message as Pick<JsonRpcRequest, 'id'>).id,
           jsonrpc: '2.0',
         });
+      } else {
+        logInfo(
+          'Command stream received a non-JSON-RPC request, and was unable to respond.',
+        );
       }
       return;
     }
