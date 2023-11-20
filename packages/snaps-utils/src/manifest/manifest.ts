@@ -102,7 +102,9 @@ export async function checkManifest(
       sourceCode,
     ),
     svgIcon: await getSnapIcon(basePath, unvalidatedManifest),
-    auxiliaryFiles: (await getSnapFiles(basePath, auxiliaryFilePaths)) ?? [],
+    // Intentionally pass null as the encoding here since the files may be binary
+    auxiliaryFiles:
+      (await getSnapFiles(basePath, auxiliaryFilePaths, null)) ?? [],
     localizationFiles:
       (await getSnapFiles(basePath, localizationFilePaths)) ?? [],
   };
@@ -368,11 +370,13 @@ export function getSnapFilePaths(
  *
  * @param basePath - The path to the folder with the manifest files.
  * @param paths - The paths to the files.
+ * @param encoding - An optional encoding to pass down to readVirtualFile.
  * @returns A list of auxiliary files and their contents, if any.
  */
 export async function getSnapFiles(
   basePath: string,
   paths: string[] | undefined,
+  encoding: BufferEncoding | null = 'utf8',
 ): Promise<VirtualFile[] | undefined> {
   if (!paths) {
     return undefined;
@@ -381,7 +385,7 @@ export async function getSnapFiles(
   try {
     return await Promise.all(
       paths.map(async (filePath) =>
-        readVirtualFile(pathUtils.join(basePath, filePath), 'utf8'),
+        readVirtualFile(pathUtils.join(basePath, filePath), encoding),
       ),
     );
   } catch (error) {

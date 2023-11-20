@@ -437,6 +437,12 @@ describe('getSnapFiles', () => {
     expect(files?.[0]?.value).toBe(MOCK_AUXILIARY_FILE);
   });
 
+  it('returns the file in the specified encoding', async () => {
+    const files = await getSnapFiles(BASE_PATH, ['./src/foo.json'], null);
+    expect(files?.[0]?.value).toBeInstanceOf(Uint8Array);
+    expect(files?.[0]?.value.toString()).toBe(MOCK_AUXILIARY_FILE);
+  });
+
   it('throws an error if the file cannot be read', async () => {
     jest.spyOn(fs, 'readFile').mockImplementation(() => {
       throw new Error('foo');
