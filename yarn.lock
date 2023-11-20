@@ -5255,6 +5255,7 @@ __metadata:
     babel-plugin-tsconfig-paths-module-resolver: ^1.0.4
     babelify: ^10.0.0
     browserify: ^17.0.0
+    crypto-browserify: ^3.12.0
     deepmerge: ^4.2.2
     depcheck: ^1.4.7
     esbuild: ^0.18.10
@@ -5267,6 +5268,7 @@ __metadata:
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-promise: ^6.1.1
     expect-webdriverio: ^4.4.1
+    html-webpack-plugin: ^5.5.3
     istanbul-lib-coverage: ^3.2.0
     istanbul-lib-report: ^3.0.0
     istanbul-reports: ^3.1.5
@@ -5278,19 +5280,27 @@ __metadata:
     nanoid: ^3.1.31
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
+    process: ^0.11.10
     readable-stream: ^3.6.2
     rimraf: ^4.1.2
     serve-handler: ^6.1.5
     ses: ^0.18.8
+    stream-browserify: ^3.0.0
     superstruct: ^1.0.3
+    swc-loader: ^0.2.3
     terser: ^5.17.7
     ts-node: ^10.9.1
+    tsconfig-paths-webpack-plugin: ^4.1.0
+    tty-browserify: ^0.0.1
     typescript: ~4.8.4
     vite: ^4.3.9
     vite-tsconfig-paths: ^4.0.5
     wdio-chromedriver-service: ^8.1.1
     wdio-geckodriver-service: ^5.0.2
     webdriverio: ^8.19.0
+    webpack: ^5.89.0
+    webpack-cli: ^5.1.4
+    webpack-merge: ^5.10.0
     yargs: ^17.7.1
   languageName: unknown
   linkType: soft
@@ -14221,9 +14231,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-webpack-plugin@npm:^5.5.0":
-  version: 5.5.0
-  resolution: "html-webpack-plugin@npm:5.5.0"
+"html-webpack-plugin@npm:^5.5.0, html-webpack-plugin@npm:^5.5.3":
+  version: 5.5.3
+  resolution: "html-webpack-plugin@npm:5.5.3"
   dependencies:
     "@types/html-minifier-terser": ^6.0.0
     html-minifier-terser: ^6.0.2
@@ -14232,7 +14242,7 @@ __metadata:
     tapable: ^2.0.0
   peerDependencies:
     webpack: ^5.20.0
-  checksum: f3d84d0df71fe2f5bac533cc74dce41ab058558cdcc6ff767d166a2abf1cf6fb8491d54d60ddbb34e95c00394e379ba52e0468e0284d1d0cc6a42987056e8219
+  checksum: ccf685195739c372ad641bbd0c9100a847904f34eedc7aff3ece7856cd6c78fd3746d2d615af1bb71e5727993fe711b89e9b744f033ed3fde646540bf5d5e954
   languageName: node
   linkType: hard
 
@@ -21859,14 +21869,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsconfig-paths-webpack-plugin@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "tsconfig-paths-webpack-plugin@npm:4.0.1"
+"tsconfig-paths-webpack-plugin@npm:^4.0.1, tsconfig-paths-webpack-plugin@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "tsconfig-paths-webpack-plugin@npm:4.1.0"
   dependencies:
     chalk: ^4.1.0
     enhanced-resolve: ^5.7.0
     tsconfig-paths: ^4.1.2
-  checksum: a09e765c4939379fa060f78bbc906d0a7be541b9b49d3ad4744e99a2e87f28aa30d549a549196159bc5a50f420fdb1391b8eed360f47ee8ce40e15dcb800b5aa
+  checksum: f6e9a8a407e1a405b0f2531184296d9f033cb4fe5837282b757ab4a2f4cd82a3117e62c4b86d56c7d47749c7f1345aa438ec6417dbf64a0ec74a292fe9eae44d
   languageName: node
   linkType: hard
 
@@ -22918,13 +22928,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-merge@npm:^5.7.3, webpack-merge@npm:^5.9.0":
-  version: 5.9.0
-  resolution: "webpack-merge@npm:5.9.0"
+"webpack-merge@npm:^5.10.0, webpack-merge@npm:^5.7.3, webpack-merge@npm:^5.9.0":
+  version: 5.10.0
+  resolution: "webpack-merge@npm:5.10.0"
   dependencies:
     clone-deep: ^4.0.1
+    flat: ^5.0.2
     wildcard: ^2.0.0
-  checksum: 64fe2c23aacc5f19684452a0e84ec02c46b990423aee6fcc5c18d7d471155bd14e9a6adb02bd3656eb3e0ac2532c8e97d69412ad14c97eeafe32fa6d10050872
+  checksum: 1fe8bf5309add7298e1ac72fb3f2090e1dfa80c48c7e79fa48aa60b5961332c7d0d61efa8851acb805e6b91a4584537a347bc106e05e9aec87fa4f7088c62f2f
   languageName: node
   linkType: hard
 
@@ -22935,9 +22946,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:^5.88.0":
-  version: 5.88.0
-  resolution: "webpack@npm:5.88.0"
+"webpack@npm:^5.88.0, webpack@npm:^5.89.0":
+  version: 5.89.0
+  resolution: "webpack@npm:5.89.0"
   dependencies:
     "@types/eslint-scope": ^3.7.3
     "@types/estree": ^1.0.0
@@ -22968,7 +22979,7 @@ __metadata:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 9fd1568b34ec2e99ba97c8509a15ab2576ec80c396e7015551ec814b24cfc11de173acba3e114dafe95f1a6d460781b09d6201e6a1fb15110e1d01a09f61a283
+  checksum: 43fe0dbc30e168a685ef5a86759d5016a705f6563b39a240aa00826a80637d4a3deeb8062e709d6a4b05c63e796278244c84b04174704dc4a37bedb0f565c5ed
   languageName: node
   linkType: hard
 
