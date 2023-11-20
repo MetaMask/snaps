@@ -1,4 +1,5 @@
 import { HandlerType } from '@metamask/snaps-utils';
+import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
 import { createService } from '../test-utils';
 import type { ExecutionServiceArgs } from './AbstractExecutionService';
@@ -99,6 +100,31 @@ describe('AbstractExecutionService', () => {
       }),
     ).rejects.toThrow(
       `Snap execution service returned no RPC handler for running snap "${snapId}".`,
+    );
+  });
+
+  it('throws an error if RPC request is non JSON serializable', async () => {
+    const { service } = createService(MockExecutionService);
+    await service.executeSnap({
+      snapId: MOCK_SNAP_ID,
+      sourceCode: `
+        console.log('foo');
+      `,
+      endowments: ['console'],
+    });
+
+    await expect(
+      service.handleRpcRequest(MOCK_SNAP_ID, {
+        origin: 'foo.com',
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          id: 6,
+          method: 'bar',
+          params: undefined,
+        },
+      }),
+    ).rejects.toThrow(
+      'Invalid JSON-RPC request: At path: params -- Expected the value to satisfy a union of `record | array`, but received: [object Object].',
     );
   });
 });

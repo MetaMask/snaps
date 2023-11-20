@@ -10,7 +10,12 @@ import type {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
-import { Duration, isJsonRpcNotification, isObject } from '@metamask/utils';
+import {
+  Duration,
+  assertIsJsonRpcRequest,
+  isJsonRpcNotification,
+  isObject,
+} from '@metamask/utils';
 import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import { pipeline } from 'readable-stream';
@@ -362,9 +367,7 @@ export abstract class AbstractExecutionService<WorkerType>
     jobId: string,
     message: JsonRpcRequest,
   ): Promise<Json | undefined> {
-    if (typeof message !== 'object') {
-      throw new Error('Must send object.');
-    }
+    assertIsJsonRpcRequest(message);
 
     const job = this.jobs.get(jobId);
     if (!job) {
