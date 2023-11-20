@@ -1932,6 +1932,7 @@ describe('BaseSnapExecutor', () => {
         MOCK_SNAP_ID,
         HandlerType.OnRpcRequest,
         MOCK_ORIGIN,
+        // @ts-expect-error Invalid JSON
         { jsonrpc: '2.0', method: 'foo', params: undefined },
       ],
     });
@@ -1945,6 +1946,24 @@ describe('BaseSnapExecutor', () => {
         stack: expect.any(String),
       },
     });
+  });
+
+  it('logs when receiving an invalid RPC request that cannot be responded to', async () => {
+    const executor = new TestSnapExecutor();
+
+    const consoleSpy = spy(console, 'log');
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      // @ts-expect-error Invalid JSON
+      id: undefined,
+      method: 'snapRpc',
+      params: [MOCK_SNAP_ID, HandlerType.OnRpcRequest, MOCK_ORIGIN, {}],
+    });
+
+    expect(consoleSpy.calls[0]?.args[0]).toStrictEqual(
+      'Command stream received a non-JSON-RPC request, and was unable to respond.',
+    );
   });
 
   it('contains the self-referential global scopes', async () => {
