@@ -31,9 +31,10 @@ import {
   isJsonRpcRequest,
   hasProperty,
   getSafeJson,
+  JsonRpcIdStruct,
 } from '@metamask/utils';
 import type { Duplex } from 'readable-stream';
-import { validate } from 'superstruct';
+import { validate, is } from 'superstruct';
 
 import { log } from '../logging';
 import type { CommandMethodsMapping } from './commands';
@@ -213,10 +214,23 @@ export class BaseSnapExecutor {
 
   private async onCommandRequest(message: JsonRpcRequest) {
     if (!isJsonRpcRequest(message)) {
-      throw rpcErrors.invalidRequest({
-        message: 'Command stream received a non-JSON-RPC request.',
-        data: message,
-      });
+      if (
+        hasProperty(message, 'id') &&
+        is((message as Pick<JsonRpcRequest, 'id'>).id, JsonRpcIdStruct)
+      ) {
+        // Instead of throwing, we directly respond with an error.
+        // We can only do this if the message ID is still valid.
+        await this.#write({
+          error: serializeError(
+            rpcErrors.internal(
+              'JSON-RPC requests must be JSON serializable objects.',
+            ),
+          ),
+          id: (message as Pick<JsonRpcRequest, 'id'>).id,
+          jsonrpc: '2.0',
+        });
+      }
+      return;
     }
 
     const { id, method, params } = message;

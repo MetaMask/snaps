@@ -1921,6 +1921,32 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('throws when receiving an invalid RPC request', async () => {
+    const executor = new TestSnapExecutor();
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: 'foo', params: undefined },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 2,
+      error: {
+        code: -32603,
+        message: 'JSON-RPC requests must be JSON serializable objects.',
+        stack: expect.any(String),
+      },
+    });
+  });
+
   it('contains the self-referential global scopes', async () => {
     const CODE = `
       module.exports.onRpcRequest = () => globalThis !== undefined &&
