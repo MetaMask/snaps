@@ -20,7 +20,7 @@ export async function serveHandler(
   config: ProcessedConfig,
   options: ServeOptions,
 ): Promise<void> {
-  const server = getServer(config);
+  const server = await getServer(config);
 
   // If the `configPort` is `0`, the OS will choose a random port for us, so we
   // need to get the port from the server after it starts.

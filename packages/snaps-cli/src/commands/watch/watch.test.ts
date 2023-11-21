@@ -24,7 +24,7 @@ describe('watchHandler', () => {
 
     const listen = jest.fn().mockReturnValue({ port: config.server.port });
     const log = jest.spyOn(console, 'log').mockImplementation();
-    jest.spyOn(webpack, 'getServer').mockImplementation(() => ({
+    jest.spyOn(webpack, 'getServer').mockImplementation(async () => ({
       listen,
     }));
 
@@ -66,7 +66,7 @@ describe('watchHandler', () => {
     const log = jest.spyOn(console, 'log').mockImplementation();
     const getServer = jest
       .spyOn(webpack, 'getServer')
-      .mockImplementation(() => ({
+      .mockImplementation(async () => ({
         listen,
       }));
 
@@ -99,7 +99,7 @@ describe('watchHandler', () => {
     const log = jest.spyOn(console, 'log').mockImplementation();
     const getServer = jest
       .spyOn(webpack, 'getServer')
-      .mockImplementation(() => ({
+      .mockImplementation(async () => ({
         listen,
       }));
 
