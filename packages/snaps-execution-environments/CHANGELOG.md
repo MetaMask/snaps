@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.4.1]
 ### Changed
+- Block `wallet_revokePermissions` ([#1978](https://github.com/MetaMask/snaps/pull/1978))
 - Bump several MetaMask dependencies ([#1964](https://github.com/MetaMask/snaps/pull/1964))
 
 ### Fixed
