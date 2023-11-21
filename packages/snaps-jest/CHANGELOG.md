@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.0.1]
 ### Fixed
-- Fix coercing of address values in sendTransaction ([#1970](https://github.com/MetaMask/snaps/pull/1970))
+- Fix coercing of address values in `sendTransaction` function ([#1970](https://github.com/MetaMask/snaps/pull/1970))
 
 ## [4.0.0]
 ### Changed

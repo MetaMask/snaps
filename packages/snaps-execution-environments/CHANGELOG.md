@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump several MetaMask dependencies ([#1964](https://github.com/MetaMask/snaps/pull/1964))
 
 ### Fixed
-- Fix a few issues with passing non-serializable JSON ([#1974](https://github.com/MetaMask/snaps/pull/1974))
+- Fix a few issues with passing non-JSON-serializable values ([#1974](https://github.com/MetaMask/snaps/pull/1974))
 
 ## [3.4.0]
 ### Changed
