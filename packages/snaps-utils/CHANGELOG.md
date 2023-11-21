@@ -8,8 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [5.0.0]
 ### Changed
-- **BREAKING:** Move `enumValue`, `literal` and `union` to `snaps-sdk` ([#1968](https://github.com/MetaMask/snaps/pull/1968))
 - Bump several MetaMask dependencies ([#1964](https://github.com/MetaMask/snaps/pull/1964))
+
+### Removed
+- **BREAKING:** Move `enumValue`, `literal` and `union` to `snaps-sdk` ([#1968](https://github.com/MetaMask/snaps/pull/1968))
 
 ### Fixed
 - Fix issues generating checksum with binary auxiliary files ([#1975](https://github.com/MetaMask/snaps/pull/1975))
