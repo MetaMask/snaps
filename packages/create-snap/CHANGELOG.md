@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.1]
+### Changed
+- Bump several MetaMask dependencies ([#1964](https://github.com/MetaMask/snaps/pull/1964))
+
 ## [3.1.0]
 ### Added
 - Create an initial commit when creating a Snap from the template ([#1917](https://github.com/MetaMask/snaps/pull/1917))
@@ -47,7 +51,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@3.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@3.1.1...HEAD
+[3.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@3.1.0...@metamask/create-snap@3.1.1
 [3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@3.0.1...@metamask/create-snap@3.1.0
 [3.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@3.0.0...@metamask/create-snap@3.0.1
 [3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@2.0.0...@metamask/create-snap@3.0.0
