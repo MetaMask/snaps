@@ -7,6 +7,7 @@ import {
   normalizeRelative,
   parseJson,
 } from '@metamask/snaps-utils';
+import type { Json } from '@metamask/utils';
 import { assert, assertStruct } from '@metamask/utils';
 
 import type { SnapLocation } from './location';
@@ -107,6 +108,12 @@ export class HttpLocation implements SnapLocation {
     this.cache.set(relativePath, { file: vfile, contents: blob });
 
     return this.fetch(relativePath);
+  }
+
+  async fetchJson<Type extends Json>(path: string): Promise<VirtualFile<Type>> {
+    const file = await this.fetch(path);
+    file.result = parseJson(file.toString());
+    return file as VirtualFile<Type>;
   }
 
   get root(): URL {

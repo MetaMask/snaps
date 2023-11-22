@@ -9,7 +9,7 @@ import {
   normalizeRelative,
   parseJson,
 } from '@metamask/snaps-utils';
-import type { SemVerRange, SemVerVersion } from '@metamask/utils';
+import type { Json, SemVerRange, SemVerVersion } from '@metamask/utils';
 import {
   assert,
   assertIsSemVerVersion,
@@ -143,6 +143,12 @@ export abstract class BaseNpmLocation implements SnapLocation {
       new TypeError(`File "${path}" not found in package.`),
     );
     return vfile.clone();
+  }
+
+  async fetchJson<Type extends Json>(path: string): Promise<VirtualFile<Type>> {
+    const file = await this.fetch(path);
+    file.result = parseJson(file.toString());
+    return file as VirtualFile<Type>;
   }
 
   get packageName(): string {

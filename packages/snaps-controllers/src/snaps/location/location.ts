@@ -1,5 +1,5 @@
 import type { SnapManifest, VirtualFile } from '@metamask/snaps-utils';
-import type { SemVerRange } from '@metamask/utils';
+import type { Json, SemVerRange } from '@metamask/utils';
 import { assert } from '@metamask/utils';
 
 import { HttpLocation } from './http';
@@ -22,6 +22,7 @@ export interface SnapLocation {
    */
   manifest(): Promise<VirtualFile<SnapManifest>>;
   fetch(path: string): Promise<VirtualFile>;
+  fetchJson<Type extends Json>(path: string): Promise<VirtualFile<Type>>;
 
   readonly shouldAlwaysReload?: boolean;
 }
