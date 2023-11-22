@@ -230,8 +230,7 @@ export async function fetchSnap(snapId: string): Promise<SnapFiles> {
     ),
     svgIcon,
 
-    // TODO: Fetch these files.
-    auxiliaryFiles: [],
+    auxiliaryFiles: await fetchAuxiliaryFiles(location, manifest.result),
     localizationFiles: await fetchLocalizationFiles(location, manifest.result),
   };
 
@@ -240,9 +239,27 @@ export async function fetchSnap(snapId: string): Promise<SnapFiles> {
 }
 
 /**
- * Fetch the localization files for the snap.
+ * Fetch the auxiliary files for the Snap.
  *
- * @param location - The snap location.
+ * @param location - The Snap location.
+ * @param manifest - The parsed manifest.
+ * @returns The auxiliary files.
+ */
+async function fetchAuxiliaryFiles(
+  location: SnapLocation,
+  manifest: SnapManifest,
+): Promise<VirtualFile[]> {
+  return manifest.source.files
+    ? await Promise.all(
+        manifest.source.files.map(async (filePath) => location.fetch(filePath)),
+      )
+    : [];
+}
+
+/**
+ * Fetch the localization files for the Snap.
+ *
+ * @param location - The Snap location.
  * @param manifest - The parsed manifest.
  * @returns The localization files.
  */
