@@ -41,7 +41,12 @@ import {
   getMockSnapFilesWithUpdatedChecksum,
 } from '@metamask/snaps-utils/test-utils';
 import type { SemVerRange, SemVerVersion } from '@metamask/utils';
-import { assert, AssertionError, stringToBytes } from '@metamask/utils';
+import {
+  assert,
+  AssertionError,
+  base64ToBytes,
+  stringToBytes,
+} from '@metamask/utils';
 import fetchMock from 'jest-fetch-mock';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { pipeline } from 'readable-stream';
@@ -6577,6 +6582,20 @@ describe('SnapController', () => {
     });
 
     it('supports hex encoding', async () => {
+      fetchMock.disableMocks();
+
+      // Because jest-fetch-mock replaces native fetch, we mock it here
+      Object.defineProperty(globalThis, 'fetch', {
+        value: async (dataUrl: string) => {
+          const base64 = dataUrl.replace(
+            'data:application/octet-stream;base64,',
+            '',
+          );
+          const u8 = base64ToBytes(base64);
+          return new File([u8], '');
+        },
+      });
+
       const auxiliaryFile = new VirtualFile({
         path: 'src/foo.json',
         value: stringToBytes('{ "foo" : "bar" }'),
@@ -6612,6 +6631,8 @@ describe('SnapController', () => {
           AuxiliaryFileEncoding.Hex,
         ),
       ).toStrictEqual(auxiliaryFile.toString('hex'));
+
+      fetchMock.enableMocks();
 
       snapController.destroy();
     });
