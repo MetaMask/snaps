@@ -69,6 +69,7 @@ import {
   unwrapError,
   OnHomePageResponseStruct,
   getValidatedLocalizationFiles,
+  asyncEncode,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
@@ -983,7 +984,7 @@ export class SnapController extends BaseController<
 
     this.messagingSystem.registerActionHandler(
       `${controllerName}:getFile`,
-      (...args) => this.getSnapFile(...args),
+      async (...args) => this.getSnapFile(...args),
     );
   }
 
@@ -1423,11 +1424,11 @@ export class SnapController extends BaseController<
    * @param encoding - An optional requested file encoding.
    * @returns The file requested in the chosen file encoding or null if the file is not found.
    */
-  getSnapFile(
+  async getSnapFile(
     snapId: SnapId,
     path: string,
     encoding: AuxiliaryFileEncoding = AuxiliaryFileEncoding.Base64,
-  ): string | null {
+  ): Promise<string | null> {
     const snap = this.getExpect(snapId);
     const normalizedPath = normalizeRelative(path);
     const value = snap.auxiliaryFiles?.find(
@@ -2284,10 +2285,13 @@ export class SnapController extends BaseController<
       `Invalid source code for snap "${snapId}".`,
     );
 
-    const auxiliaryFiles = rawAuxiliaryFiles.map((file) => ({
-      path: file.path,
-      value: file.toString('base64'),
-    }));
+    const auxiliaryFiles = rawAuxiliaryFiles.map((file) => {
+      assert(typeof file.data.base64 === 'string');
+      return {
+        path: file.path,
+        value: file.data.base64,
+      };
+    });
 
     const snapsState = this.state.snaps;
 
@@ -2371,6 +2375,14 @@ export class SnapController extends BaseController<
       const auxiliaryFiles = await getSnapFiles(
         location,
         manifest.result.source.files,
+      );
+
+      await Promise.all(
+        auxiliaryFiles.map(async (file) => {
+          // This should still be safe
+          // eslint-disable-next-line require-atomic-updates
+          file.data.base64 = await asyncEncode(file);
+        }),
       );
 
       const localizationFiles = await getSnapFiles(

@@ -79,6 +79,7 @@ export class VirtualFile<Result = unknown> {
     } else if (this.value instanceof Uint8Array && encoding === 'hex') {
       return bytesToHex(this.value);
     } else if (this.value instanceof Uint8Array && encoding === 'base64') {
+      // For large files, this is quite slow, instead use `asyncEncode()`
       // TODO: Use @metamask/utils for this
       return base64.encode(this.value);
     }

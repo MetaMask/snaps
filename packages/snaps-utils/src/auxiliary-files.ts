@@ -1,6 +1,7 @@
 import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
 import { bytesToHex, bytesToString } from '@metamask/utils';
-import { base64 } from '@scure/base';
+
+import { asyncDecode } from './base64';
 
 /**
  * Re-encodes an auxiliary file if needed depending on the requested file encoding.
@@ -9,7 +10,7 @@ import { base64 } from '@scure/base';
  * @param encoding - The chosen encoding.
  * @returns The file encoded in the requested encoding.
  */
-export function encodeAuxiliaryFile(
+export async function encodeAuxiliaryFile(
   value: string,
   encoding: AuxiliaryFileEncoding,
 ) {
@@ -19,7 +20,7 @@ export function encodeAuxiliaryFile(
   }
 
   // TODO: Use @metamask/utils for this
-  const decoded = base64.decode(value);
+  const decoded = await asyncDecode(value);
   if (encoding === AuxiliaryFileEncoding.Utf8) {
     return bytesToString(decoded);
   }

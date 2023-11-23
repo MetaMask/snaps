@@ -1,5 +1,6 @@
 export * from './array';
 export * from './auxiliary-files';
+export * from './base64';
 export * from './caveats';
 export * from './cronjob';
 export * from './checksum';
