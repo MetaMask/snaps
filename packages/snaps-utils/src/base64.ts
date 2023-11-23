@@ -1,6 +1,6 @@
 import { bytesToBase64 } from '@metamask/utils';
 
-import { getChecksumBytes } from './checksum';
+import { getBytes } from './bytes';
 import type { VirtualFile } from './virtual-file';
 
 /**
@@ -10,7 +10,7 @@ import type { VirtualFile } from './virtual-file';
  * @returns A base64 string.
  */
 export async function asyncEncode(input: Uint8Array | VirtualFile | string) {
-  const bytes = getChecksumBytes(input);
+  const bytes = getBytes(input);
   // In the browser, FileReader is much faster than bytesToBase64.
   if ('FileReader' in globalThis) {
     return await new Promise((resolve, reject) => {
