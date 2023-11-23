@@ -47,6 +47,7 @@ import {
   base64ToBytes,
   stringToBytes,
 } from '@metamask/utils';
+import { File } from 'buffer';
 import fetchMock from 'jest-fetch-mock';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { pipeline } from 'readable-stream';
@@ -6583,6 +6584,11 @@ describe('SnapController', () => {
 
     it('supports hex encoding', async () => {
       fetchMock.disableMocks();
+
+      // We can remove this once we drop Node 18
+      Object.defineProperty(globalThis, 'File', {
+        value: File,
+      });
 
       // Because jest-fetch-mock replaces native fetch, we mock it here
       Object.defineProperty(globalThis, 'fetch', {

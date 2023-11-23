@@ -1,6 +1,7 @@
 import { AuxiliaryFileEncoding, DialogType, text } from '@metamask/snaps-sdk';
 import { VirtualFile, normalizeRelative } from '@metamask/snaps-utils';
-import { stringToBytes } from '@metamask/utils';
+import { base64ToBytes, stringToBytes } from '@metamask/utils';
+import { File } from 'buffer';
 import { expectSaga } from 'redux-saga-test-plan';
 
 import { addNotification } from '../notifications';
@@ -37,6 +38,15 @@ jest.mock('@reduxjs/toolkit', () => ({
   ...jest.requireActual('@reduxjs/toolkit'),
   nanoid: () => 'foo',
 }));
+
+// Because jest-fetch-mock replaces native fetch, we mock it here
+Object.defineProperty(globalThis, 'fetch', {
+  value: async (dataUrl: string) => {
+    const base64 = dataUrl.replace('data:application/octet-stream;base64,', '');
+    const u8 = base64ToBytes(base64);
+    return new File([u8], '');
+  },
+});
 
 const snapId = 'local:http://localhost:8080';
 

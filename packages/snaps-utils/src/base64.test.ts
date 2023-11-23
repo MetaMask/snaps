@@ -1,4 +1,5 @@
 import { bytesToBase64, stringToBytes } from '@metamask/utils';
+import { File } from 'buffer';
 
 import { asyncDecode, asyncEncode } from './base64';
 import { VirtualFile } from './virtual-file';
@@ -33,6 +34,11 @@ class MockFileReader {
 }
 
 describe('asyncEncode', () => {
+  // We can remove this once we drop Node 18
+  Object.defineProperty(globalThis, 'File', {
+    value: File,
+  });
+
   it('encodes vfile to base64', async () => {
     const vfile = new VirtualFile(
       stringToBytes(JSON.stringify({ foo: 'bar' })),
