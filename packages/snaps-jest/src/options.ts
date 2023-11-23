@@ -5,28 +5,16 @@ import {
   defaulted,
   number,
   object,
-  optional,
   string,
   type,
 } from 'superstruct';
 
 const SnapsEnvironmentOptionsStruct = type({
-  executionEnvironmentUrl: optional(string()),
-  simulatorUrl: optional(string()),
-  keepAlive: defaulted(boolean(), false),
-
   server: defaulted(
     object({
       enabled: defaulted(boolean(), true),
       port: defaulted(number(), 0),
       root: defaulted(string(), process.cwd()),
-    }),
-    {},
-  ),
-
-  browser: defaulted(
-    object({
-      headless: defaulted(boolean(), true),
     }),
     {},
   ),
@@ -49,13 +37,6 @@ const SnapsEnvironmentOptionsStruct = type({
  *   }
  * }
  * ```
- * @property executionEnvironmentUrl - The URL of the execution environment. If
- * this is not provided, the execution environment will be served from the
- * built-in HTTP server.
- * @property simulatorUrl - The URL of the simulator. If this is not provided,
- * the simulator will be served from the built-in HTTP server.
- * @property keepAlive - Whether to keep the browser open after the tests have
- * finished. This is useful for debugging. Defaults to `false`.
  * @property server - The options for the built-in HTTP server.
  * @property server.enabled - Whether to run the built-in HTTP server. Defaults
  * to `true`.
@@ -65,9 +46,6 @@ const SnapsEnvironmentOptionsStruct = type({
  * server. Defaults to the current working directory. This is assumed to be the
  * directory containing the snap manifest and `dist` files. If this is a
  * relative path, it will be resolved relative to the current working directory.
- * @property browser - The options for the browser.
- * @property browser.headless - Whether to run the browser in headless mode.
- * Defaults to `true`.
  */
 export type SnapsEnvironmentOptions = Infer<
   typeof SnapsEnvironmentOptionsStruct

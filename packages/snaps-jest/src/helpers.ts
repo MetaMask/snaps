@@ -1,20 +1,17 @@
+import type { AbstractExecutionService } from '@metamask/snaps-controllers';
+import { HandlerType } from '@metamask/snaps-utils';
 import { createModuleLogger } from '@metamask/utils';
-import { getDocument, queries } from 'pptr-testing-library';
+import { create } from 'superstruct';
 
 import {
-  getEnvironment,
-  mock,
-  waitFor,
-  request,
-  sendTransaction,
-  runCronjob,
-  mockJsonRpc,
   rootLogger,
+  handleRequest,
+  handleInstallSnap,
+  TransactionOptionsStruct,
+  getEnvironment,
 } from './internals';
+import type { InstallSnapOptions } from './internals';
 import type { Snap, SnapResponse } from './types';
-
-// eslint-disable-next-line @typescript-eslint/unbound-method
-const { getByTestId } = queries;
 
 const log = createModuleLogger(rootLogger, 'helpers');
 
@@ -41,73 +38,97 @@ const log = createModuleLogger(rootLogger, 'helpers');
  * @param snapId - The ID of the snap, including the prefix (`local:`). Defaults
  * to the URL of the built-in server, if it is running. This supports both
  * local snap IDs and NPM snap IDs.
+ * @param options - The options to use.
+ * @param options.executionService - The execution service to use. Defaults to
+ * {@link NodeThreadExecutionService}. You do not need to provide this unless
+ * you are testing a custom execution service.
+ * @param options.executionServiceOptions - The options to use when creating the
+ * execution service, if any. This should only include options specific to the
+ * provided execution service.
+ * @param options.options - The simulation options.
  * @returns The snap.
  * @throws If the built-in server is not running, and no snap ID is provided.
  */
-export async function installSnap(
+// TODO: Use Superstruct to validate and coerce options.
+export async function installSnap<
+  Service extends new (...args: any[]) => InstanceType<
+    typeof AbstractExecutionService
+  >,
+>(
   snapId: string = getEnvironment().snapId,
+  options: Partial<InstallSnapOptions<Service>> = {},
 ): Promise<Snap> {
-  const environment = getEnvironment();
-
-  log('Installing snap %s.', snapId);
-
-  const page = await environment.createPage();
-  const document = await getDocument(page);
-
-  log('Setting snap ID to %s.', snapId);
-  await page.evaluate((payload) => {
-    window.__SIMULATOR_API__.dispatch({
-      type: 'configuration/setSnapId',
-      payload,
-    });
-  }, snapId);
-
-  log('Waiting for snap to install.');
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  await waitFor(async () => await getByTestId(document, 'status-ok'), {
-    timeout: 10000,
-    message: `Timed out waiting for snap to install. Make sure the snap ID ("${snapId}") is correct, and the server is running.`,
-  });
+  const { executionService, runSaga } = await handleInstallSnap(
+    snapId,
+    options,
+  );
 
   return {
-    request: (options) => {
-      log('Sending request %o.', options);
+    request: (request) => {
+      log('Sending request %o.', request);
 
-      // Note: This function is intentionally not async, so that we can access
-      // the `getInterface` method on the response.
-      return request(page, options);
+      return handleRequest({
+        snapId,
+        executionService,
+        runSaga,
+        handler: HandlerType.OnRpcRequest,
+        request,
+      });
     },
 
-    sendTransaction: async (options = {}): Promise<SnapResponse> => {
-      log('Sending transaction %o.', options);
+    sendTransaction: async (request): Promise<SnapResponse> => {
+      log('Sending transaction %o.', request);
 
-      return await sendTransaction(page, options);
+      const {
+        origin: transactionOrigin,
+        chainId,
+        ...transaction
+      } = create(request, TransactionOptionsStruct);
+
+      return handleRequest({
+        snapId,
+        executionService,
+        runSaga,
+        handler: HandlerType.OnTransaction,
+        request: {
+          method: '',
+          params: {
+            chainId,
+            transaction,
+            transactionOrigin,
+          },
+        },
+      });
     },
 
-    runCronjob: (options) => {
+    runCronjob: (request) => {
       log('Running cronjob %o.', options);
 
-      // Note: This function is intentionally not async, so that we can access
-      // the `getInterface` method on the response.
-      return runCronjob(page, options);
+      return handleRequest({
+        snapId,
+        executionService,
+        runSaga,
+        handler: HandlerType.OnCronjob,
+        request,
+      });
     },
 
     close: async () => {
-      log('Closing page.');
+      log('Closing execution service.');
 
-      await page.close();
+      await executionService.terminateAllSnaps();
     },
 
-    mock: async (options) => {
-      log('Mocking %o.', options);
-
-      return await mock(page, options);
-    },
-
-    mockJsonRpc: async (options) => {
-      log('Mocking JSON-RPC %o.', options);
-
-      return await mockJsonRpc(page, options);
-    },
+    // mock: async (options) => {
+    //   log('Mocking %o.', options);
+    //
+    //   return await mock(page, options);
+    // },
+    //
+    // mockJsonRpc: async (options) => {
+    //   log('Mocking JSON-RPC %o.', options);
+    //
+    //   return await mockJsonRpc(page, options);
+    // },
   };
 }

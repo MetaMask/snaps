@@ -10,7 +10,7 @@ export function getEnvironment() {
   // `snapsEnvironment` is a global variable that is set by the Jest
   // environment.
   assert(
-    snapsEnvironment,
+    typeof snapsEnvironment !== 'undefined',
     'Snaps environment not found. Make sure you have configured the environment correctly.',
   );
 

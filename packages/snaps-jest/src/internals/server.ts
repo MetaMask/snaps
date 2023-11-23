@@ -9,26 +9,10 @@ import express from 'express';
 import { promises as fs } from 'fs';
 import type { Server } from 'http';
 import { createServer } from 'http';
-import { resolve as pathResolve, dirname } from 'path';
+import { resolve as pathResolve } from 'path';
 
 import type { SnapsEnvironmentOptions } from '../options';
 import { rootLogger } from './logger';
-
-const SNAPS_EXECUTION_ENVIRONMENTS_PATH = pathResolve(
-  dirname(
-    require.resolve('@metamask/snaps-execution-environments/package.json'),
-  ),
-  'dist',
-  'browserify',
-  'iframe',
-);
-
-const SNAPS_SIMULATOR_PATH = pathResolve(
-  dirname(require.resolve('@metamask/snaps-simulator/package.json')),
-  'dist',
-  'webpack',
-  'test',
-);
 
 export type ServerOptions = Required<
   // We need a double `Required` for the type to be inferred correctly.
@@ -93,8 +77,6 @@ export async function startServer(options: ServerOptions) {
     next();
   });
 
-  app.use('/environment', express.static(SNAPS_EXECUTION_ENVIRONMENTS_PATH));
-  app.use('/simulator', express.static(SNAPS_SIMULATOR_PATH));
   app.use(express.static(pathResolve(process.cwd(), options.root)));
 
   const server = createServer(app);

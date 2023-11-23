@@ -7,9 +7,6 @@ import type { JsonRpcId, JsonRpcParams } from '@metamask/utils';
 import type { Infer } from 'superstruct';
 
 import type {
-  Mock,
-  MockJsonRpcOptions,
-  MockOptions,
   SnapOptionsStruct,
   SnapResponseStruct,
   TransactionOptionsStruct,
@@ -283,7 +280,7 @@ export type Snap = {
    * @param options - The options for the network mocking.
    * @returns A {@link Mock} object, with an `unmock` function.
    */
-  mock(options: DeepPartial<MockOptions>): Promise<Mock>;
+  // mock(options: DeepPartial<MockOptions>): Promise<Mock>;
 
   /**
    * Enable JSON-RPC provider mocking for the snap. This will mock any requests
@@ -295,7 +292,7 @@ export type Snap = {
    * @param options.result - The JSON value to return.
    * @returns A {@link Mock} object, with an `unmock` function.
    */
-  mockJsonRpc(options: MockJsonRpcOptions): Promise<Mock>;
+  // mockJsonRpc(options: MockJsonRpcOptions): Promise<Mock>;
 };
 
 export type SnapResponse = Infer<typeof SnapResponseStruct>;

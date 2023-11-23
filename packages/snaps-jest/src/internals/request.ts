@@ -1,75 +1,48 @@
-import type { Component } from '@metamask/snaps-sdk';
-import type { SnapRpcHookArgs } from '@metamask/snaps-utils';
-import { HandlerType } from '@metamask/snaps-utils';
-import {
-  assert,
-  createModuleLogger,
-  hasProperty,
-  isPlainObject,
-} from '@metamask/utils';
-import { getDocument, queries } from 'pptr-testing-library';
-import type { Page } from 'puppeteer';
-import { create } from 'superstruct';
+import type { AbstractExecutionService } from '@metamask/snaps-controllers';
+import type { HandlerType } from '@metamask/snaps-utils';
+import { unwrapError } from '@metamask/snaps-utils';
+import { isJsonRpcError } from '@metamask/utils';
+import { nanoid } from '@reduxjs/toolkit';
 
-import type {
-  CronjobOptions,
-  RequestOptions,
-  SnapRequest,
-  SnapResponse,
-  TransactionOptions,
-} from '../types';
-import { getInterface, getNotifications } from './interface';
-import { rootLogger } from './logger';
-import { TransactionOptionsStruct } from './structs';
-import { waitForResponse } from './wait-for';
+import type { RequestOptions, SnapRequest } from '../types';
+import { getInterface } from './simulation';
+import type { RunSagaFunction } from './simulation/store';
 
-const log = createModuleLogger(rootLogger, 'request');
+export type HandleRequestOptions = {
+  snapId: string;
+  executionService: AbstractExecutionService<unknown>;
+  handler: HandlerType;
+  runSaga: RunSagaFunction;
+  request: RequestOptions;
+};
 
 /**
- * Send a request to the snap.
+ * Send a JSON-RPC request to the Snap, and wrap the response in a
+ * {@link SnapResponse} object.
  *
- * @param page - The page to send the request from.
- * @param args - The request arguments.
- * @returns The request ID.
- */
-async function sendRequest(page: Page, args: SnapRpcHookArgs) {
-  const document = await getDocument(page);
-  const button = await queries.getByTestId(
-    document,
-    `navigation-${args.handler}`,
-  );
-
-  // Navigate to the request handler page.
-  await button.click();
-
-  return await page.evaluate((payload) => {
-    window.__SIMULATOR_API__.dispatch({
-      type: 'simulation/sendRequest',
-      payload,
-    });
-
-    return window.__SIMULATOR_API__.getRequestId();
-  }, args);
-}
-
-/**
- * Send a request to the snap.
- *
- * @param page - The page to send the request from.
  * @param options - The request options.
- * @param options.origin - The origin of the request. Defaults to `metamask.io`.
- * @param handler - The handler to use. Defaults to `onRpcRequest`.
- * @returns The response.
+ * @param options.snapId - The ID of the Snap to send the request to.
+ * @param options.executionService - The execution service to use to send the
+ * request.
+ * @param options.handler - The handler to use to send the request.
+ * @param options.runSaga - A function to run a saga outside the usual Redux
+ * flow.
+ * @param options.request - The request to send.
+ * @param options.request.id - The ID of the request. If not provided, a random
+ * ID will be generated.
+ * @param options.request.origin - The origin of the request. Defaults to
+ * `https://metamask.io`.
+ * @returns The response, wrapped in a {@link SnapResponse} object.
  */
-export function request(
-  page: Page,
-  { origin = 'metamask.io', ...options }: RequestOptions,
-  handler:
-    | HandlerType.OnRpcRequest
-    | HandlerType.OnCronjob = HandlerType.OnRpcRequest,
-) {
-  const doRequest = async (): Promise<SnapResponse> => {
-    const args: SnapRpcHookArgs = {
+export function handleRequest({
+  snapId,
+  executionService,
+  handler,
+  runSaga,
+  request: { id = nanoid(), origin = 'https://metamask.io', ...options },
+}: HandleRequestOptions): SnapRequest {
+  const promise = executionService
+    .handleRpcRequest(snapId, {
       origin,
       handler,
       request: {
@@ -77,93 +50,41 @@ export function request(
         id: 1,
         ...options,
       },
-    };
+    })
+    .then((result) => {
+      if (isJsonRpcError(result)) {
+        return {
+          id: String(id),
+          response: {
+            error: result,
+          },
+          notifications: [],
+        };
+      }
 
-    log('Sending request %o', args);
+      return {
+        id: String(id),
+        response: {
+          result,
+        },
+        notifications: [],
+      };
+    })
+    .catch((error) => {
+      const [unwrappedError] = unwrapError(error);
 
-    const promise = waitForResponse(page, handler);
-    const id = await sendRequest(page, args);
-    const response = await promise;
+      return {
+        id: String(id),
+        response: {
+          error: unwrappedError.serialize(),
+        },
+        notifications: [],
+      };
+    }) as unknown as SnapRequest;
 
-    log('Received response %o', response);
-
-    const notifications = await getNotifications(page, id);
-
-    return { id, response, notifications };
+  promise.getInterface = async () => {
+    return await runSaga(getInterface, runSaga).toPromise();
   };
 
-  // This is a bit hacky, but it allows us to add the `getInterface` method
-  // to the response promise.
-  const response = doRequest() as SnapRequest;
-
-  response.getInterface = async (getInterfaceOptions) => {
-    return await getInterface(page, getInterfaceOptions);
-  };
-
-  return response;
-}
-
-/**
- * Send a transaction to the snap.
- *
- * @param page - The page to send the transaction from.
- * @param options - The transaction options.
- * @returns The response.
- */
-export async function sendTransaction(
-  page: Page,
-  options: Partial<TransactionOptions>,
-) {
-  const {
-    origin: transactionOrigin,
-    chainId,
-    ...transaction
-  } = create(options, TransactionOptionsStruct);
-
-  const args: SnapRpcHookArgs = {
-    origin: '',
-    handler: HandlerType.OnTransaction,
-    request: {
-      jsonrpc: '2.0',
-      method: '',
-      params: {
-        chainId,
-        transaction,
-        transactionOrigin,
-      },
-    },
-  };
-
-  log('Sending transaction %o', args);
-
-  const promise = waitForResponse(page, HandlerType.OnTransaction);
-  const id = await sendRequest(page, args);
-  const response = await promise;
-
-  log('Received response %o', response);
-
-  if (hasProperty(response, 'error')) {
-    return { id, response, notifications: [] };
-  }
-
-  assert(isPlainObject(response.result));
-  assert(hasProperty(response.result, 'content'));
-
-  return {
-    id,
-    response,
-    notifications: [],
-    content: response.result.content as Component,
-  };
-}
-
-/**
- * Run a cronjob.
- *
- * @param page - The page to run the cronjob from.
- * @param options - The request options.
- * @returns The response.
- */
-export function runCronjob(page: Page, options: CronjobOptions) {
-  return request(page, options, HandlerType.OnCronjob);
+  return promise;
 }

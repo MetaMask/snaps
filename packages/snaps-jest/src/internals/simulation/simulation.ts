@@ -7,6 +7,7 @@ import type {
 } from '@metamask/snaps-controllers';
 import {
   detectSnapLocation,
+  NodeThreadExecutionService,
   setupMultiplex,
 } from '@metamask/snaps-controllers';
 import type { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
@@ -17,7 +18,7 @@ import type {
   SnapManifest,
   VirtualFile,
 } from '@metamask/snaps-utils';
-import { HandlerType, logError, validateNpmSnap } from '@metamask/snaps-utils';
+import { logError, validateNpmSnap } from '@metamask/snaps-utils';
 import type { Duplex } from 'readable-stream';
 import { pipeline } from 'readable-stream';
 
@@ -26,9 +27,15 @@ import { getControllers, registerSnap } from './controllers';
 import { getEndowments } from './methods';
 import { createJsonRpcEngine } from './middleware';
 import type { SimulationOptions, SimulationUserOptions } from './options';
-import { getRequestFunction } from './request';
 import { createStore } from './store';
 
+/**
+ * Options for the execution service, without the options that are shared
+ * between all execution services.
+ *
+ * @template Service - The type of the execution service, i.e., the class that
+ * creates the execution service.
+ */
 export type ExecutionServiceOptions<
   Service extends new (...args: any[]) => any,
 > = Omit<
@@ -46,7 +53,7 @@ export type ExecutionServiceOptions<
  * @property options - The simulation options.
  * @template Service - The type of the execution service.
  */
-export type RunSnapOptions<
+export type InstallSnapOptions<
   Service extends new (...args: any[]) => InstanceType<
     typeof AbstractExecutionService<unknown>
   >,
@@ -104,30 +111,30 @@ export function getOptions({
 }
 
 /**
- * Run a Snap in a simulated environment.
+ * Install a Snap in a simulated environment. This will fetch the Snap files,
+ * create a Redux store, set up the controllers and JSON-RPC stack, register the
+ * Snap, and run the Snap code in the execution service.
  *
- * @param snapId - The ID of the Snap to run. The Snap will be fetched from the
- * appropriate location.
- * @param options - The options to use when running the Snap.
+ * @param snapId - The ID of the Snap to install.
+ * @param options - The options to use when installing the Snap.
  * @param options.executionService - The execution service to use.
  * @param options.executionServiceOptions - The options to use when creating the
  * execution service, if any. This should only include options specific to the
  * provided execution service.
  * @param options.options - The simulation options.
- * @returns The controllers created for the Snap.
+ * @template Service - The type of the execution service.
  */
-// TODO: Use Superstruct to validate and coerce options.
-export async function installSnap<
+export async function handleInstallSnap<
   Service extends new (...args: any[]) => InstanceType<
     typeof AbstractExecutionService
   >,
 >(
   snapId: string,
   {
-    executionService: ExecutionService,
+    executionService,
     executionServiceOptions,
     options: rawOptions = {},
-  }: RunSnapOptions<Service>,
+  }: Partial<InstallSnapOptions<Service>> = {},
 ) {
   const options = getOptions(rawOptions);
 
@@ -161,7 +168,8 @@ export async function installSnap<
   });
 
   // Create execution service.
-  const executionService = new ExecutionService({
+  const ExecutionService = executionService ?? NodeThreadExecutionService;
+  const service = new ExecutionService({
     ...executionServiceOptions,
     messenger: controllerMessenger.getRestricted({
       name: 'ExecutionService',
@@ -187,22 +195,16 @@ export async function installSnap<
   });
 
   // Run the Snap code in the execution service.
-  await executionService.executeSnap({
+  await service.executeSnap({
     snapId,
     sourceCode: snapFiles.sourceCode.toString('utf8'),
     endowments: await getEndowments(permissionController, snapId),
   });
 
   return {
-    request: getRequestFunction({
-      snapId,
-      executionService,
-      runSaga,
-      handler: HandlerType.OnRpcRequest,
-    }),
-    close: async () => {
-      await executionService.terminateAllSnaps();
-    },
+    executionService: service,
+    controllerMessenger,
+    runSaga,
   };
 }
 
@@ -214,9 +216,12 @@ export async function installSnap<
  * @throws If the Snap files are invalid.
  */
 export async function fetchSnap(snapId: string): Promise<SnapFiles> {
-  const location = detectSnapLocation(snapId);
-  const manifest = await location.manifest();
+  const location = detectSnapLocation(snapId, {
+    allowLocal: true,
+    allowHttp: true,
+  });
 
+  const manifest = await location.manifest();
   const svgIcon =
     manifest.result.source.location.npm.iconPath === undefined
       ? undefined
