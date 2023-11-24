@@ -40,30 +40,6 @@ declare module 'expect' {
 }
 /* eslint-enable @typescript-eslint/consistent-type-definitions */
 
-/**
- * Deeply partialize a type.
- *
- * @template Type - The type to partialize.
- * @returns The deeply partialized type.
- * @example
- * ```ts
- * type Foo = {
- *   bar: {
- *     baz: string;
- *   };
- *   qux: number;
- * };
- *
- * type PartialFoo = DeepPartial<Foo>;
- * // { bar?: { baz?: string; }; qux?: number; }
- * ```
- */
-export type DeepPartial<Type> = {
-  [Key in keyof Type]?: Type[Key] extends Record<string, unknown>
-    ? DeepPartial<Type[Key]>
-    : Type[Key];
-};
-
 export type RequestOptions = {
   /**
    * The JSON-RPC request ID.
@@ -273,26 +249,6 @@ export type Snap = {
    */
   // TODO: Find a way to do this automatically.
   close(): Promise<void>;
-
-  /**
-   * Enable network mocking for the snap.
-   *
-   * @param options - The options for the network mocking.
-   * @returns A {@link Mock} object, with an `unmock` function.
-   */
-  // mock(options: DeepPartial<MockOptions>): Promise<Mock>;
-
-  /**
-   * Enable JSON-RPC provider mocking for the snap. This will mock any requests
-   * sent through the `ethereum` global, with the specified `method`.
-   *
-   * @param options - The options for the JSON-RPC mocking.
-   * @param options.method - The JSON-RPC method to mock, e.g.,
-   * `eth_blockNumber`.
-   * @param options.result - The JSON value to return.
-   * @returns A {@link Mock} object, with an `unmock` function.
-   */
-  // mockJsonRpc(options: MockJsonRpcOptions): Promise<Mock>;
 };
 
 export type SnapResponse = Infer<typeof SnapResponseStruct>;

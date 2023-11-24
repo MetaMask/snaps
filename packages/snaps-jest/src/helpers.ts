@@ -118,17 +118,5 @@ export async function installSnap<
 
       await executionService.terminateAllSnaps();
     },
-
-    // mock: async (options) => {
-    //   log('Mocking %o.', options);
-    //
-    //   return await mock(page, options);
-    // },
-    //
-    // mockJsonRpc: async (options) => {
-    //   log('Mocking JSON-RPC %o.', options);
-    //
-    //   return await mockJsonRpc(page, options);
-    // },
   };
 }
