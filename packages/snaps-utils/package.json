@@ -67,7 +67,7 @@
   "dependencies": {
     "@babel/core": "^7.23.2",
     "@babel/types": "^7.23.0",
-    "@metamask/base-controller": "^3.2.0",
+    "@metamask/base-controller": "^4.0.0",
     "@metamask/key-tree": "^9.0.0",
     "@metamask/permission-controller": "^5.0.1",
     "@metamask/rpc-errors": "^6.1.0",

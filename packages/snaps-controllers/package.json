@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "@metamask/approval-controller": "^5.0.0",
-    "@metamask/base-controller": "^3.2.0",
+    "@metamask/base-controller": "^4.0.0",
     "@metamask/json-rpc-engine": "^7.3.0",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/permission-controller": "^5.0.1",
