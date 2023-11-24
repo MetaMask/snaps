@@ -1,4 +1,3 @@
-import { decrypt, encrypt } from '@metamask/browser-passworder';
 import type { GenericPermissionController } from '@metamask/permission-controller';
 import {
   buildSnapEndowmentSpecifications,
@@ -21,6 +20,8 @@ import {
   getShowDialogImplementation,
   getShowInAppNotificationImplementation,
   getShowNativeNotificationImplementation,
+  encryptImplementation,
+  decryptImplementation,
 } from './hooks';
 
 export type PermissionSpecificationsHooks = {
@@ -80,9 +81,10 @@ export function getPermissionSpecifications({
       // Shared hooks.
       ...hooks,
 
-      // `browser-passworder` encryption and decryption hooks.
-      encrypt,
-      decrypt,
+      // Encryption and decryption hooks.
+      // TODO: Swap these out for the real implementations.
+      encrypt: encryptImplementation,
+      decrypt: decryptImplementation,
 
       // Snaps-specific hooks.
       clearSnapState: getClearSnapStateMethodImplementation(runSaga),
