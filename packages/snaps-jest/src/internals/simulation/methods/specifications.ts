@@ -95,7 +95,7 @@ export function getPermissionSpecifications({
 
       maybeUpdatePhishingList: asyncResolve(),
       showDialog: getShowDialogImplementation(runSaga),
-      showInfoNotification: getShowInAppNotificationImplementation(runSaga),
+      showInAppNotification: getShowInAppNotificationImplementation(runSaga),
       showNativeNotification: getShowNativeNotificationImplementation(runSaga),
       updateSnapState: getUpdateSnapStateMethodImplementation(runSaga),
     }),

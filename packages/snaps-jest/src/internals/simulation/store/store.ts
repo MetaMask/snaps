@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 
+import { notificationsSlice } from './notifications';
 import { stateSlice } from './state';
 import { uiSlice } from './ui';
 
@@ -13,6 +14,7 @@ export function createStore() {
   const sagaMiddleware = createSagaMiddleware();
   const store = configureStore({
     reducer: {
+      notifications: notificationsSlice.reducer,
       state: stateSlice.reducer,
       ui: uiSlice.reducer,
     },

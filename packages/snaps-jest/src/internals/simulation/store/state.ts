@@ -11,7 +11,7 @@ export type State = {
   unencrypted: StateEntry | null;
 };
 
-export const INITIAL_STATE: State = {
+const INITIAL_STATE: State = {
   encrypted: null,
   unencrypted: null,
 };
@@ -39,11 +39,11 @@ export const stateSlice = createSlice({
     },
     clearState: (state, action: PayloadAction<{ encrypted: boolean }>) => {
       if (action.payload.encrypted) {
-        state.encrypted = {};
+        state.encrypted = null;
         return state;
       }
 
-      state.unencrypted = {};
+      state.unencrypted = null;
       return state;
     },
   },

@@ -23,46 +23,28 @@ describe('onRpcRequest', () => {
   });
 
   describe('getGasPrice', () => {
-    const MOCK_GAS_PRICE = '0x387c64b64';
-
     it('returns the current gas price', async () => {
-      const { request, close, mockJsonRpc } = await installSnap();
-
-      // To avoid relying on the network, we mock the response from the Ethereum
-      // provider.
-      await mockJsonRpc({
-        method: 'eth_gasPrice',
-        result: MOCK_GAS_PRICE,
-      });
+      const { request, close } = await installSnap();
 
       const response = await request({
         method: 'getGasPrice',
       });
 
-      expect(response).toRespondWith(MOCK_GAS_PRICE);
+      expect(response).toRespondWith(expect.any(String));
 
       await close();
     });
   });
 
   describe('getVersion', () => {
-    const MOCK_VERSION = '1'; // Ethereum Mainnet
-
     it('returns the current network version', async () => {
-      const { request, close, mockJsonRpc } = await installSnap();
-
-      // To avoid relying on the network, we mock the response from the Ethereum
-      // provider.
-      await mockJsonRpc({
-        method: 'net_version',
-        result: MOCK_VERSION,
-      });
+      const { request, close } = await installSnap();
 
       const response = await request({
         method: 'getVersion',
       });
 
-      expect(response).toRespondWith(MOCK_VERSION);
+      expect(response).toRespondWith('1');
 
       await close();
     });

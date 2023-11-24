@@ -24,6 +24,7 @@ import { pipeline } from 'readable-stream';
 
 import { DEFAULT_LOCALE, DEFAULT_SRP } from './constants';
 import { getControllers, registerSnap } from './controllers';
+import { getSnapFile } from './files';
 import { getEndowments } from './methods';
 import { createJsonRpcEngine } from './middleware';
 import type { SimulationOptions, SimulationUserOptions } from './options';
@@ -87,7 +88,7 @@ export type MiddlewareHooks = {
   getSnapFile: (
     path: string,
     encoding: AuxiliaryFileEncoding,
-  ) => Promise<string>;
+  ) => Promise<string | null>;
 };
 
 /**
@@ -142,14 +143,14 @@ export async function handleInstallSnap<
   const snapFiles = await fetchSnap(snapId);
 
   // Create Redux store.
-  const { runSaga } = createStore();
+  const { store, runSaga } = createStore();
 
   // Set up controllers and JSON-RPC stack.
   const hooks = {
     getMnemonic: async () =>
       Promise.resolve(mnemonicPhraseToBytes(options.secretRecoveryPhrase)),
-    getSnapFile: async (_path: string, _encoding: AuxiliaryFileEncoding) =>
-      Promise.resolve(''),
+    getSnapFile: async (path: string, encoding: AuxiliaryFileEncoding) =>
+      getSnapFile(snapFiles.auxiliaryFiles, path, encoding),
   };
 
   const controllerMessenger = new ControllerMessenger();
@@ -202,6 +203,7 @@ export async function handleInstallSnap<
   });
 
   return {
+    store,
     executionService: service,
     controllerMessenger,
     runSaga,

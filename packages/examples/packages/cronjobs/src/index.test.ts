@@ -5,7 +5,7 @@ import { heading, panel, text } from '@metamask/snaps-sdk';
 describe('onCronjob', () => {
   describe('execute', () => {
     it('shows a dialog', async () => {
-      const { runCronjob } = await installSnap();
+      const { runCronjob, close } = await installSnap();
 
       const request = runCronjob({
         // This would normally be called by the MetaMask extension, but to make
@@ -26,6 +26,8 @@ describe('onCronjob', () => {
 
       const response = await request;
       expect(response).toRespondWith(null);
+
+      await close();
     });
   });
 });

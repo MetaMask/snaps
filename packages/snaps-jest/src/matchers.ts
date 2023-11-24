@@ -11,7 +11,7 @@ import type {
   Component,
 } from '@metamask/snaps-sdk';
 import type { Json } from '@metamask/utils';
-import { hasProperty } from '@metamask/utils';
+import { hasProperty, isPlainObject } from '@metamask/utils';
 import type { MatcherHintOptions } from 'jest-matcher-utils';
 import {
   diff,
@@ -63,8 +63,15 @@ function assertHasInterface(
   actual: unknown,
   matcherName: string,
   options?: MatcherHintOptions,
-): asserts actual is { content: Component } {
-  if (!is(actual, InterfaceStruct) || !actual.content) {
+): asserts actual is { response: { result: { content: Component } } } {
+  if (
+    !isPlainObject(actual) ||
+    !hasProperty(actual, 'response') ||
+    !isPlainObject(actual.response) ||
+    !hasProperty(actual.response, 'result') ||
+    !is(actual.response.result, InterfaceStruct) ||
+    !actual.response.result.content
+  ) {
     throw new Error(
       matcherErrorMessage(
         matcherHint(matcherName, undefined, undefined, options),
@@ -185,7 +192,7 @@ export const toRender: MatcherFunction<[expected: Component]> = function (
 ) {
   assertHasInterface(actual, 'toRender');
 
-  const { content } = actual;
+  const { content } = actual.response.result;
   const pass = this.equals(content, expected);
 
   const difference = diff(expected, content);

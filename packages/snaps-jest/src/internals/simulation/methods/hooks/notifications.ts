@@ -5,7 +5,7 @@ import type { SagaIterator } from 'redux-saga';
 import { put } from 'redux-saga/effects';
 
 import type { RunSagaFunction } from '../../store';
-import { addNotification } from '../../store/notifications';
+import { addNotification } from '../../store';
 
 /**
  * Show a native notification to the user.
@@ -14,6 +14,7 @@ import { addNotification } from '../../store/notifications';
  * @param options - The notification options.
  * @param options.message - The message to show in the notification.
  * @yields Adds the notification to the store.
+ * @returns `null`.
  */
 export function* showNativeNotificationImplementation(
   _snapId: string,
@@ -22,6 +23,8 @@ export function* showNativeNotificationImplementation(
   yield put(
     addNotification({ id: nanoid(), type: NotificationType.Native, message }),
   );
+
+  return null;
 }
 
 /**
@@ -50,14 +53,17 @@ export function getShowNativeNotificationImplementation(
  * @param options - The notification options.
  * @param options.message - The message to show in the notification.
  * @yields Adds the notification to the store.
+ * @returns `null`.
  */
 export function* showInAppNotificationImplementation(
   _snapId: string,
   { message }: NotifyParams,
-): SagaIterator {
+): SagaIterator<null> {
   yield put(
     addNotification({ id: nanoid(), type: NotificationType.InApp, message }),
   );
+
+  return null;
 }
 
 /**

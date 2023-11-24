@@ -58,7 +58,7 @@ export async function installSnap<
   snapId: string = getEnvironment().snapId,
   options: Partial<InstallSnapOptions<Service>> = {},
 ): Promise<Snap> {
-  const { executionService, runSaga } = await handleInstallSnap(
+  const { store, executionService, runSaga } = await handleInstallSnap(
     snapId,
     options,
   );
@@ -69,6 +69,7 @@ export async function installSnap<
 
       return handleRequest({
         snapId,
+        store,
         executionService,
         runSaga,
         handler: HandlerType.OnRpcRequest,
@@ -87,6 +88,7 @@ export async function installSnap<
 
       return handleRequest({
         snapId,
+        store,
         executionService,
         runSaga,
         handler: HandlerType.OnTransaction,
@@ -106,6 +108,7 @@ export async function installSnap<
 
       return handleRequest({
         snapId,
+        store,
         executionService,
         runSaga,
         handler: HandlerType.OnCronjob,

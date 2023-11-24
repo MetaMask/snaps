@@ -1,6 +1,8 @@
 import type { NotificationType } from '@metamask/snaps-sdk';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice } from '@reduxjs/toolkit';
+import { createSelector, createSlice } from '@reduxjs/toolkit';
+
+import type { ApplicationState } from './store';
 
 export type Notification = {
   id: string;
@@ -12,7 +14,7 @@ export type NotificationsState = {
   notifications: Notification[];
 };
 
-export const INITIAL_STATE: NotificationsState = {
+const INITIAL_STATE: NotificationsState = {
   notifications: [],
 };
 
@@ -36,3 +38,8 @@ export const notificationsSlice = createSlice({
 
 export const { addNotification, removeNotification, clearNotifications } =
   notificationsSlice.actions;
+
+export const getNotifications = createSelector(
+  (state: ApplicationState) => state.notifications,
+  ({ notifications }) => notifications,
+);

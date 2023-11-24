@@ -24,7 +24,7 @@ describe('onRpcRequest', () => {
 
   describe('fibonacci', () => {
     it('loads a WASM module and returns the result of the fibonacci function', async () => {
-      const { request } = await installSnap();
+      const { request, close } = await installSnap();
 
       const response = await request({
         method: 'fibonacci',
@@ -32,6 +32,8 @@ describe('onRpcRequest', () => {
       });
 
       expect(response).toRespondWith(55);
+
+      await close();
     });
   });
 });

@@ -5,11 +5,16 @@ import { isJsonRpcError } from '@metamask/utils';
 import { nanoid } from '@reduxjs/toolkit';
 
 import type { RequestOptions, SnapRequest } from '../types';
-import { getInterface } from './simulation';
-import type { RunSagaFunction } from './simulation/store';
+import {
+  clearNotifications,
+  getInterface,
+  getNotifications,
+} from './simulation';
+import type { RunSagaFunction, Store } from './simulation';
 
 export type HandleRequestOptions = {
   snapId: string;
+  store: Store;
   executionService: AbstractExecutionService<unknown>;
   handler: HandlerType;
   runSaga: RunSagaFunction;
@@ -22,6 +27,7 @@ export type HandleRequestOptions = {
  *
  * @param options - The request options.
  * @param options.snapId - The ID of the Snap to send the request to.
+ * @param options.store - The Redux store.
  * @param options.executionService - The execution service to use to send the
  * request.
  * @param options.handler - The handler to use to send the request.
@@ -36,6 +42,7 @@ export type HandleRequestOptions = {
  */
 export function handleRequest({
   snapId,
+  store,
   executionService,
   handler,
   runSaga,
@@ -52,13 +59,16 @@ export function handleRequest({
       },
     })
     .then((result) => {
+      const notifications = getNotifications(store.getState());
+      store.dispatch(clearNotifications());
+
       if (isJsonRpcError(result)) {
         return {
           id: String(id),
           response: {
             error: result,
           },
-          notifications: [],
+          notifications,
         };
       }
 
@@ -67,7 +77,7 @@ export function handleRequest({
         response: {
           result,
         },
-        notifications: [],
+        notifications,
       };
     })
     .catch((error) => {
