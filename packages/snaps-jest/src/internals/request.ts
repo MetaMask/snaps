@@ -1,7 +1,7 @@
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
 import type { HandlerType } from '@metamask/snaps-utils';
 import { unwrapError } from '@metamask/snaps-utils';
-import { isJsonRpcError } from '@metamask/utils';
+import { isJsonRpcError, isPlainObject } from '@metamask/utils';
 import { nanoid } from '@reduxjs/toolkit';
 
 import type { RequestOptions, SnapRequest } from '../types';
@@ -62,6 +62,8 @@ export function handleRequest({
       const notifications = getNotifications(store.getState());
       store.dispatch(clearNotifications());
 
+      const content = isPlainObject(result) ? result.content : undefined;
+
       if (isJsonRpcError(result)) {
         return {
           id: String(id),
@@ -69,6 +71,7 @@ export function handleRequest({
             error: result,
           },
           notifications,
+          content,
         };
       }
 
@@ -78,6 +81,7 @@ export function handleRequest({
           result,
         },
         notifications,
+        content,
       };
     })
     .catch((error) => {
