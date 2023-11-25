@@ -1,3 +1,7 @@
+import type {
+  ActionConstraint,
+  EventConstraint,
+} from '@metamask/base-controller';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { mnemonicPhraseToBytes } from '@metamask/key-tree';
@@ -28,6 +32,7 @@ import { getSnapFile } from './files';
 import { getEndowments } from './methods';
 import { createJsonRpcEngine } from './middleware';
 import type { SimulationOptions, SimulationUserOptions } from './options';
+import type { RunSagaFunction, Store } from './store';
 import { createStore } from './store';
 
 /**
@@ -69,6 +74,14 @@ export type InstallSnapOptions<
       executionServiceOptions: ExecutionServiceOptions<Service>;
       options?: SimulationUserOptions;
     };
+
+export type InstalledSnap = {
+  snapId: string;
+  store: Store;
+  executionService: InstanceType<typeof AbstractExecutionService>;
+  controllerMessenger: ControllerMessenger<ActionConstraint, EventConstraint>;
+  runSaga: RunSagaFunction;
+};
 
 export type MiddlewareHooks = {
   /**
@@ -136,7 +149,7 @@ export async function handleInstallSnap<
     executionServiceOptions,
     options: rawOptions = {},
   }: Partial<InstallSnapOptions<Service>> = {},
-) {
+): Promise<InstalledSnap> {
   const options = getOptions(rawOptions);
 
   // Fetch Snap files.
@@ -203,6 +216,7 @@ export async function handleInstallSnap<
   });
 
   return {
+    snapId,
     store,
     executionService: service,
     controllerMessenger,

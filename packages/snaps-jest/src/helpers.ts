@@ -1,12 +1,11 @@
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
-import { HandlerType } from '@metamask/snaps-utils';
+import { HandlerType, logInfo } from '@metamask/snaps-utils';
 import { createModuleLogger } from '@metamask/utils';
 import { create } from 'superstruct';
 
 import {
   rootLogger,
   handleRequest,
-  handleInstallSnap,
   TransactionOptionsStruct,
   getEnvironment,
 } from './internals';
@@ -21,7 +20,6 @@ const log = createModuleLogger(rootLogger, 'helpers');
  * snap.
  *
  * @example
- * ```ts
  * import { installSnap } from '@metamask/snaps-jest';
  *
  * describe('My Snap', () => {
@@ -34,7 +32,6 @@ const log = createModuleLogger(rootLogger, 'helpers');
  *     expect(response).toRespondWith('bar');
  *   });
  * });
- * ```
  * @param snapId - The ID of the snap, including the prefix (`local:`). Defaults
  * to the URL of the built-in server, if it is running. This supports both
  * local snap IDs and NPM snap IDs.
@@ -55,20 +52,22 @@ export async function installSnap<
     typeof AbstractExecutionService
   >,
 >(
-  snapId: string = getEnvironment().snapId,
+  snapId?: string,
   options: Partial<InstallSnapOptions<Service>> = {},
 ): Promise<Snap> {
-  const { store, executionService, runSaga } = await handleInstallSnap(
-    snapId,
-    options,
-  );
+  const {
+    snapId: installedSnapId,
+    store,
+    executionService,
+    runSaga,
+  } = await getEnvironment().installSnap(snapId, options);
 
   return {
     request: (request) => {
       log('Sending request %o.', request);
 
       return handleRequest({
-        snapId,
+        snapId: installedSnapId,
         store,
         executionService,
         runSaga,
@@ -87,7 +86,7 @@ export async function installSnap<
       } = create(request, TransactionOptionsStruct);
 
       return handleRequest({
-        snapId,
+        snapId: installedSnapId,
         store,
         executionService,
         runSaga,
@@ -107,7 +106,7 @@ export async function installSnap<
       log('Running cronjob %o.', options);
 
       return handleRequest({
-        snapId,
+        snapId: installedSnapId,
         store,
         executionService,
         runSaga,
@@ -118,6 +117,9 @@ export async function installSnap<
 
     close: async () => {
       log('Closing execution service.');
+      logInfo(
+        'Calling `snap.close()` is deprecated, and will be removed in a future release. Snaps are now automatically closed when the test ends.',
+      );
 
       await executionService.terminateAllSnaps();
     },

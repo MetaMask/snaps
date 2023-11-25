@@ -199,14 +199,12 @@ export type SnapRequest = Promise<SnapResponse> & SnapRequestObject;
  * {@link installSnap}, and has methods to send requests to the snap.
  *
  * @example
- * ```ts
  * import { installSnap } from '@metamask/snaps-jest';
  *
  * const snap = await installSnap();
  * const response = await snap.request({ method: 'hello' });
  *
  * expect(response).toRespondWith('Hello, world!');
- * ```
  */
 export type Snap = {
   /**
@@ -246,8 +244,9 @@ export type Snap = {
    * the test environment, and calling it is not strictly necessary.
    *
    * @returns A promise that resolves when the page is closed.
+   * @deprecated Snaps are now automatically closed when the test ends. This
+   * method will be removed in a future release.
    */
-  // TODO: Find a way to do this automatically.
   close(): Promise<void>;
 };
 

@@ -3,7 +3,7 @@ import { installSnap } from '@metamask/snaps-jest';
 
 describe('onRpcRequest', () => {
   it('throws an error if the requested method does not exist', async () => {
-    const { request, close } = await installSnap();
+    const { request } = await installSnap();
 
     const response = await request({
       method: 'foo',
@@ -18,13 +18,11 @@ describe('onRpcRequest', () => {
         cause: null,
       },
     });
-
-    await close();
   });
 
   describe('fibonacci', () => {
     it('loads a WASM module and returns the result of the fibonacci function', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const response = await request({
         method: 'fibonacci',
@@ -32,8 +30,6 @@ describe('onRpcRequest', () => {
       });
 
       expect(response).toRespondWith(55);
-
-      await close();
     });
   });
 });

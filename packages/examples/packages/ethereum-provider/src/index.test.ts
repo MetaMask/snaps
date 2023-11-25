@@ -3,7 +3,7 @@ import { installSnap } from '@metamask/snaps-jest';
 
 describe('onRpcRequest', () => {
   it('throws an error if the requested method does not exist', async () => {
-    const { request, close } = await installSnap();
+    const { request } = await installSnap();
 
     const response = await request({
       method: 'foo',
@@ -18,41 +18,35 @@ describe('onRpcRequest', () => {
         cause: null,
       },
     });
-
-    await close();
   });
 
   describe('getGasPrice', () => {
     it('returns the current gas price', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const response = await request({
         method: 'getGasPrice',
       });
 
       expect(response).toRespondWith(expect.any(String));
-
-      await close();
     });
   });
 
   describe('getVersion', () => {
     it('returns the current network version', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const response = await request({
         method: 'getVersion',
       });
 
       expect(response).toRespondWith('1');
-
-      await close();
     });
   });
 
   describe('getAccounts', () => {
     it('returns the addresses granted access to by the user', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const response = await request({
         method: 'getAccounts',
@@ -62,8 +56,6 @@ describe('onRpcRequest', () => {
       expect(response).toRespondWith([
         '0xc6d5a3c98ec9073b54fa0969957bd582e8d874bf',
       ]);
-
-      await close();
     });
   });
 });

@@ -3,7 +3,7 @@ import { installSnap } from '@metamask/snaps-jest';
 
 describe('onRpcRequest', () => {
   it('throws an error if the requested method does not exist', async () => {
-    const { request, close } = await installSnap();
+    const { request } = await installSnap();
 
     const response = await request({
       method: 'foo',
@@ -18,13 +18,11 @@ describe('onRpcRequest', () => {
         cause: null,
       },
     });
-
-    await close();
   });
 
   describe('fetch', () => {
     it('fetches a URL and returns the JSON response', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const url = 'https://dummyjson.com/http/200';
       const response = await request({
@@ -38,8 +36,6 @@ describe('onRpcRequest', () => {
         status: '200',
         message: 'OK',
       });
-
-      await close();
     });
   });
 });

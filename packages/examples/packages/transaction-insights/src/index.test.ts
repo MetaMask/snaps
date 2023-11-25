@@ -7,7 +7,7 @@ describe('onTransaction', () => {
   const TO_ADDRESS = '0x4bbeeb066ed09b7aed07bf39eee0460dfa261520';
 
   it('returns transaction insights for an ERC-20 transaction', async () => {
-    const { sendTransaction, close } = await installSnap();
+    const { sendTransaction } = await installSnap();
 
     const response = await sendTransaction({
       from: FROM_ADDRESS,
@@ -24,12 +24,10 @@ describe('onTransaction', () => {
         row('Transaction type', text('ERC-20')),
       ]),
     );
-
-    await close();
   });
 
   it('returns transaction insights for an ERC-721 transaction', async () => {
-    const { sendTransaction, close } = await installSnap();
+    const { sendTransaction } = await installSnap();
 
     const response = await sendTransaction({
       from: FROM_ADDRESS,
@@ -46,12 +44,10 @@ describe('onTransaction', () => {
         row('Transaction type', text('ERC-721')),
       ]),
     );
-
-    await close();
   });
 
   it('returns transaction insights for an ERC-1155 transaction', async () => {
-    const { sendTransaction, close } = await installSnap();
+    const { sendTransaction } = await installSnap();
 
     const response = await sendTransaction({
       from: FROM_ADDRESS,
@@ -68,12 +64,10 @@ describe('onTransaction', () => {
         row('Transaction type', text('ERC-1155')),
       ]),
     );
-
-    await close();
   });
 
   it('returns transaction insights for an unknown transaction', async () => {
-    const { sendTransaction, close } = await installSnap();
+    const { sendTransaction } = await installSnap();
 
     const response = await sendTransaction({
       from: FROM_ADDRESS,
@@ -88,12 +82,10 @@ describe('onTransaction', () => {
         row('Transaction type', text('Unknown')),
       ]),
     );
-
-    await close();
   });
 
   it('returns transaction insights for a transaction with no data', async () => {
-    const { sendTransaction, close } = await installSnap();
+    const { sendTransaction } = await installSnap();
 
     const response = await sendTransaction({
       from: FROM_ADDRESS,
@@ -108,7 +100,5 @@ describe('onTransaction', () => {
         row('Transaction type', text('Unknown')),
       ]),
     );
-
-    await close();
   });
 });

@@ -1,8 +1,15 @@
 import { installSnap } from './helpers';
+import { handleInstallSnap } from './internals';
 
 // TODO: Run a server that serves a local Snap, and test that instead, to avoid
 // requests to NPM.
 const SNAP_ID = 'npm:@metamask/localization-example-snap';
+
+Object.defineProperty(global, 'snapsEnvironment', {
+  value: {
+    installSnap: handleInstallSnap,
+  },
+});
 
 describe('installSnap', () => {
   it('installs a Snap and returns the request functions', async () => {
@@ -17,6 +24,7 @@ describe('installSnap', () => {
         result: 'Hello, world!',
       },
       notifications: [],
+      content: undefined,
     });
 
     await close();
@@ -35,6 +43,7 @@ describe('installSnap', () => {
           result: 'Hello, world!',
         },
         notifications: [],
+        content: undefined,
       });
 
       await close();
