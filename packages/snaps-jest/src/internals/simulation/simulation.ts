@@ -25,13 +25,14 @@ import type {
 import { logError, validateNpmSnap } from '@metamask/snaps-utils';
 import type { Duplex } from 'readable-stream';
 import { pipeline } from 'readable-stream';
+import { create } from 'superstruct';
 
-import { DEFAULT_LOCALE, DEFAULT_SRP } from './constants';
 import { getControllers, registerSnap } from './controllers';
 import { getSnapFile } from './files';
 import { getEndowments } from './methods';
 import { createJsonRpcEngine } from './middleware';
 import type { SimulationOptions, SimulationUserOptions } from './options';
+import { SimulationOptionsStruct } from './options';
 import type { RunSagaFunction, Store } from './store';
 import { createStore } from './store';
 
@@ -109,19 +110,13 @@ export type MiddlewareHooks = {
  *
  * @param options - The user options. Any options not specified will be filled
  * in with default values.
- * @param options.secretRecoveryPhrase - The user's secret recovery phrase.
- * @param options.locale - The user's locale.
  * @returns The simulation options.
  */
-// TODO: Use Superstruct to validate and coerce options.
-export function getOptions({
-  secretRecoveryPhrase = DEFAULT_SRP,
-  locale = DEFAULT_LOCALE,
-}: SimulationUserOptions): SimulationOptions {
-  return {
-    secretRecoveryPhrase,
-    locale,
-  };
+export function getOptions(options: SimulationUserOptions): SimulationOptions {
+  return create(
+    options,
+    SimulationOptionsStruct,
+  ) as Required<SimulationUserOptions>;
 }
 
 /**
@@ -156,7 +151,7 @@ export async function handleInstallSnap<
   const snapFiles = await fetchSnap(snapId);
 
   // Create Redux store.
-  const { store, runSaga } = createStore();
+  const { store, runSaga } = createStore(options);
 
   // Set up controllers and JSON-RPC stack.
   const hooks = {

@@ -4,7 +4,7 @@ import { createSelector, createSlice } from '@reduxjs/toolkit';
 
 import type { ApplicationState } from './store';
 
-export type StateEntry = Record<string, Json>;
+export type StateEntry = string | Record<string, Json>;
 
 export type State = {
   encrypted: StateEntry | null;
@@ -25,7 +25,7 @@ export const stateSlice = createSlice({
   reducers: {
     setState: (
       state,
-      action: PayloadAction<{ state: StateEntry; encrypted: boolean }>,
+      action: PayloadAction<{ state: StateEntry | null; encrypted: boolean }>,
     ) => {
       if (action.payload.encrypted) {
         // @ts-expect-error - TS2589: Type instantiation is excessively deep and

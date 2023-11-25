@@ -7,12 +7,12 @@
  * without some mocking. We can switch to a real encryption method once we
  * drop support for Node.js 18.
  *
- * @param password - The password to use.
+ * @param _password - The password to use.
  * @param value - The value to encrypt.
  * @returns The "encrypted" value.
  */
-export function encryptImplementation(password: string, value: string) {
-  return `${password}:${JSON.stringify(value)}`;
+export function encryptImplementation(_password: string, value: string) {
+  return JSON.stringify(value);
 }
 
 /**
@@ -24,16 +24,10 @@ export function encryptImplementation(password: string, value: string) {
  * without some mocking. We can switch to a real encryption method once we
  * drop support for Node.js 18.
  *
- * @param password - The password to use.
+ * @param _password - The password to use.
  * @param value - The value to decrypt.
  * @returns The "decrypted" value.
  */
-export function decryptImplementation(password: string, value: string) {
-  const [expectedPassword, expectedValue] = value.split(/:(.*)/u, 2);
-
-  if (password !== expectedPassword) {
-    throw new Error('Invalid password');
-  }
-
-  return JSON.parse(expectedValue);
+export function decryptImplementation(_password: string, value: string) {
+  return JSON.parse(value);
 }
