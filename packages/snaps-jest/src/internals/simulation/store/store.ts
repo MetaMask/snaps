@@ -26,19 +26,21 @@ export function createStore({ state }: SimulationOptions) {
   });
 
   // Set initial state for the Snap.
-  store.dispatch(
-    setState({
-      state: JSON.stringify(state),
-      encrypted: true,
-    }),
-  );
+  if (state) {
+    store.dispatch(
+      setState({
+        state: JSON.stringify(state),
+        encrypted: true,
+      }),
+    );
 
-  store.dispatch(
-    setState({
-      state: JSON.stringify(state),
-      encrypted: false,
-    }),
-  );
+    store.dispatch(
+      setState({
+        state: JSON.stringify(state),
+        encrypted: false,
+      }),
+    );
+  }
 
   return {
     store,

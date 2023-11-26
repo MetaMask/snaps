@@ -4,16 +4,31 @@ import { createSelector, createSlice } from '@reduxjs/toolkit';
 
 import type { ApplicationState } from './store';
 
+/**
+ * A notification object.
+ *
+ * @property id - A unique ID for the notification.
+ * @property message - The notification message.
+ * @property type - The notification type.
+ */
 export type Notification = {
   id: string;
   message: string;
   type: NotificationType;
 };
 
+/**
+ * The notifications state.
+ *
+ * @property notifications - An array of notifications.
+ */
 export type NotificationsState = {
   notifications: Notification[];
 };
 
+/**
+ * The initial notifications state.
+ */
 const INITIAL_STATE: NotificationsState = {
   notifications: [],
 };
@@ -39,6 +54,12 @@ export const notificationsSlice = createSlice({
 export const { addNotification, removeNotification, clearNotifications } =
   notificationsSlice.actions;
 
+/**
+ * Get the notifications from the state.
+ *
+ * @param state - The application state.
+ * @returns An array of notifications.
+ */
 export const getNotifications = createSelector(
   (state: ApplicationState) => state.notifications,
   ({ notifications }) => notifications,

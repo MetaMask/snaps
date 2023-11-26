@@ -4,9 +4,9 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import type { SagaIterator } from 'redux-saga';
 import { put, select, take } from 'redux-saga/effects';
 
-import type { SnapInterface } from '../../../types';
-import type { Interface, RunSagaFunction } from '../store';
-import { getCurrentInterface, resolveInterface, setInterface } from '../store';
+import type { SnapInterface } from '../../types';
+import type { Interface, RunSagaFunction } from './store';
+import { getCurrentInterface, resolveInterface, setInterface } from './store';
 
 /**
  * Get a user interface object from a type and content object.
@@ -105,7 +105,6 @@ export function resolveWithInput(runSaga: RunSagaFunction) {
  * @yields Takes the set interface action.
  * @returns The user interface object.
  */
-// TODO: Add timeout.
 export function* getInterface(
   runSaga: RunSagaFunction,
 ): SagaIterator<SnapInterface> {

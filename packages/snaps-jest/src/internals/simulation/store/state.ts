@@ -6,11 +6,22 @@ import type { ApplicationState } from './store';
 
 export type StateEntry = string | Record<string, Json>;
 
+/**
+ * The Snap state object.
+ *
+ * @property encrypted - The encrypted state. Can be null if the Snap does not
+ * have an encrypted state.
+ * @property unencrypted - The unencrypted state. Can be null if the Snap does
+ * not have an unencrypted state.
+ */
 export type State = {
   encrypted: StateEntry | null;
   unencrypted: StateEntry | null;
 };
 
+/**
+ * The initial state.
+ */
 const INITIAL_STATE: State = {
   encrypted: null,
   unencrypted: null,

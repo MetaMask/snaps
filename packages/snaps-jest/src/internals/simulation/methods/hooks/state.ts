@@ -14,7 +14,7 @@ import { clearState, getState, setState } from '../../store';
  * @returns The state of the Snap.
  * @yields Selects the state from the store.
  */
-export function* getSnapStateImplementation(
+function* getSnapStateImplementation(
   _snapId: string,
   encrypted = true,
 ): SagaIterator<string> {
@@ -43,7 +43,7 @@ export function getGetSnapStateMethodImplementation(runSaga: RunSagaFunction) {
  * Defaults to encrypted state.
  * @yields Puts the new state in the store.
  */
-export function* updateSnapStateImplementation(
+function* updateSnapStateImplementation(
   _snapId: string,
   newState: StateEntry,
   encrypted = true,
@@ -74,7 +74,7 @@ export function getUpdateSnapStateMethodImplementation(
  * Defaults to encrypted state.
  * @yields Puts the new state in the store.
  */
-export function* clearSnapStateImplementation(
+function* clearSnapStateImplementation(
   _snapId: string,
   encrypted = true,
 ): SagaIterator<void> {

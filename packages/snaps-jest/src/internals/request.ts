@@ -1,7 +1,7 @@
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
 import type { HandlerType } from '@metamask/snaps-utils';
 import { unwrapError } from '@metamask/snaps-utils';
-import { isJsonRpcError, isPlainObject } from '@metamask/utils';
+import { getSafeJson, isJsonRpcError, isPlainObject } from '@metamask/utils';
 import { nanoid } from '@reduxjs/toolkit';
 
 import type { RequestOptions, SnapRequest } from '../types';
@@ -68,7 +68,7 @@ export function handleRequest({
         return {
           id: String(id),
           response: {
-            error: result,
+            error: getSafeJson(result),
           },
           notifications,
           content,
@@ -78,7 +78,7 @@ export function handleRequest({
       return {
         id: String(id),
         response: {
-          result,
+          result: getSafeJson(result),
         },
         notifications,
         content,

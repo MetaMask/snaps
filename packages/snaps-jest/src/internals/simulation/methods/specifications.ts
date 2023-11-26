@@ -45,7 +45,7 @@ export type GetPermissionSpecificationsOptions = {
  * @param result - The result to return.
  * @returns The function implementation.
  */
-function resolve(result: unknown) {
+export function resolve(result: unknown) {
   return () => result;
 }
 
@@ -56,7 +56,7 @@ function resolve(result: unknown) {
  * resolve with `undefined`.
  * @returns The function implementation.
  */
-function asyncResolve(result?: unknown) {
+export function asyncResolve(result?: unknown) {
   return async () => result;
 }
 

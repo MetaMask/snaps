@@ -19,7 +19,7 @@ import { resolveInterface, setInterface, closeInterface } from '../../store';
  * dialog, and closes the dialog.
  * @returns The result of the dialog.
  */
-export function* showDialogImplementation(
+function* showDialogImplementation(
   _snapId: string,
   type: DialogType,
   content: Component,

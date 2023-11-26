@@ -1,6 +1,7 @@
 import { JsonStruct } from '@metamask/utils';
 import type { Infer } from 'superstruct';
 import {
+  create,
   defaulted,
   nullable,
   object,
@@ -34,3 +35,17 @@ export type SimulationUserOptions = Infer<typeof SimulationOptionsStruct>;
  * See {@link SimulationUserOptions} for documentation.
  */
 export type SimulationOptions = Required<SimulationUserOptions>;
+
+/**
+ * Get the options for the simulation.
+ *
+ * @param options - The user options. Any options not specified will be filled
+ * in with default values.
+ * @returns The simulation options.
+ */
+export function getOptions(options: SimulationUserOptions): SimulationOptions {
+  return create(
+    options,
+    SimulationOptionsStruct,
+  ) as Required<SimulationUserOptions>;
+}

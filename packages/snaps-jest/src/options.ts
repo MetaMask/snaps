@@ -25,7 +25,6 @@ const SnapsEnvironmentOptionsStruct = type({
  * configuration under `testEnvironmentOptions`.
  *
  * @example
- * ```json
  * {
  *   "testEnvironment": "@metamask/snaps-jest",
  *   "testEnvironmentOptions": {
@@ -36,7 +35,6 @@ const SnapsEnvironmentOptionsStruct = type({
  *     }
  *   }
  * }
- * ```
  * @property server - The options for the built-in HTTP server.
  * @property server.enabled - Whether to run the built-in HTTP server. Defaults
  * to `true`.

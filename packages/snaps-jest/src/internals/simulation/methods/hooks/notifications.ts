@@ -16,7 +16,7 @@ import { addNotification } from '../../store';
  * @yields Adds the notification to the store.
  * @returns `null`.
  */
-export function* showNativeNotificationImplementation(
+function* showNativeNotificationImplementation(
   _snapId: string,
   { message }: NotifyParams,
 ): SagaIterator {
@@ -55,7 +55,7 @@ export function getShowNativeNotificationImplementation(
  * @yields Adds the notification to the store.
  * @returns `null`.
  */
-export function* showInAppNotificationImplementation(
+function* showInAppNotificationImplementation(
   _snapId: string,
   { message }: NotifyParams,
 ): SagaIterator<null> {

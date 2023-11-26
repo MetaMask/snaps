@@ -25,14 +25,13 @@ import type {
 import { logError, validateNpmSnap } from '@metamask/snaps-utils';
 import type { Duplex } from 'readable-stream';
 import { pipeline } from 'readable-stream';
-import { create } from 'superstruct';
 
 import { getControllers, registerSnap } from './controllers';
 import { getSnapFile } from './files';
 import { getEndowments } from './methods';
 import { createJsonRpcEngine } from './middleware';
-import type { SimulationOptions, SimulationUserOptions } from './options';
-import { SimulationOptionsStruct } from './options';
+import type { SimulationUserOptions } from './options';
+import { getOptions } from './options';
 import type { RunSagaFunction, Store } from './store';
 import { createStore } from './store';
 
@@ -104,20 +103,6 @@ export type MiddlewareHooks = {
     encoding: AuxiliaryFileEncoding,
   ) => Promise<string | null>;
 };
-
-/**
- * Get the options for the simulation.
- *
- * @param options - The user options. Any options not specified will be filled
- * in with default values.
- * @returns The simulation options.
- */
-export function getOptions(options: SimulationUserOptions): SimulationOptions {
-  return create(
-    options,
-    SimulationOptionsStruct,
-  ) as Required<SimulationUserOptions>;
-}
 
 /**
  * Install a Snap in a simulated environment. This will fetch the Snap files,
