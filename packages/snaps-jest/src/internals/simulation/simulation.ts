@@ -30,7 +30,7 @@ import { getControllers, registerSnap } from './controllers';
 import { getSnapFile } from './files';
 import { getEndowments } from './methods';
 import { createJsonRpcEngine } from './middleware';
-import type { SimulationUserOptions } from './options';
+import type { SimulationOptions, SimulationUserOptions } from './options';
 import { getOptions } from './options';
 import type { RunSagaFunction, Store } from './store';
 import { createStore } from './store';
@@ -139,12 +139,7 @@ export async function handleInstallSnap<
   const { store, runSaga } = createStore(options);
 
   // Set up controllers and JSON-RPC stack.
-  const hooks = {
-    getMnemonic: async () =>
-      Promise.resolve(mnemonicPhraseToBytes(options.secretRecoveryPhrase)),
-    getSnapFile: async (path: string, encoding: AuxiliaryFileEncoding) =>
-      getSnapFile(snapFiles.auxiliaryFiles, path, encoding),
-  };
+  const hooks = getHooks(options, snapFiles);
 
   const controllerMessenger = new ControllerMessenger();
   const { subjectMetadataController, permissionController } = getControllers({
@@ -173,6 +168,8 @@ export async function handleInstallSnap<
       const stream = mux.createStream('metamask-provider');
       const providerStream = createEngineStream({ engine });
 
+      // Error function is difficult to test, so we ignore it.
+      /* istanbul ignore next 2 */
       pipeline(stream, providerStream, stream, (error: unknown) => {
         if (error) {
           logError(`Provider stream failure.`, error);
@@ -201,6 +198,25 @@ export async function handleInstallSnap<
     executionService: service,
     controllerMessenger,
     runSaga,
+  };
+}
+
+/**
+ * Get the hooks for the simulation.
+ *
+ * @param options - The simulation options.
+ * @param snapFiles - The Snap files.
+ * @returns The hooks for the simulation.
+ */
+export function getHooks(
+  options: SimulationOptions,
+  snapFiles: SnapFiles,
+): MiddlewareHooks {
+  return {
+    getMnemonic: async () =>
+      Promise.resolve(mnemonicPhraseToBytes(options.secretRecoveryPhrase)),
+    getSnapFile: async (path: string, encoding: AuxiliaryFileEncoding) =>
+      getSnapFile(snapFiles.auxiliaryFiles, path, encoding),
   };
 }
 

@@ -10,11 +10,11 @@ import {
   string,
 } from 'superstruct';
 
-import { DEFAULT_SRP } from './constants';
+import { DEFAULT_LOCALE, DEFAULT_SRP } from './constants';
 
-export const SimulationOptionsStruct = object({
+const SimulationOptionsStruct = object({
   secretRecoveryPhrase: defaulted(optional(string()), DEFAULT_SRP),
-  locale: defaulted(optional(string()), 'en'),
+  locale: defaulted(optional(string()), DEFAULT_LOCALE),
   state: defaulted(optional(nullable(record(string(), JsonStruct))), null),
 });
 

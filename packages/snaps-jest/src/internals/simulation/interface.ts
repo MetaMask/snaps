@@ -60,7 +60,7 @@ export function getInterfaceResponse(
  * @param value - The value to resolve the user interface with.
  * @returns A function that can be used to resolve the user interface.
  */
-export function resolveWith(runSaga: RunSagaFunction, value: unknown) {
+function resolveWith(runSaga: RunSagaFunction, value: unknown) {
   /**
    * Resolve the current user interface with the given value.
    *
@@ -82,7 +82,7 @@ export function resolveWith(runSaga: RunSagaFunction, value: unknown) {
  * @param runSaga - A function to run a saga outside the usual Redux flow.
  * @returns A function that can be used to resolve the user interface.
  */
-export function resolveWithInput(runSaga: RunSagaFunction) {
+function resolveWithInput(runSaga: RunSagaFunction) {
   /**
    * Resolve the current user interface with the given value.
    *

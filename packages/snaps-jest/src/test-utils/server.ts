@@ -1,4 +1,9 @@
-import type { NpmSnapPackageJson, SnapManifest } from '@metamask/snaps-utils';
+import type {
+  LocalizationFile,
+  NpmSnapPackageJson,
+  SnapManifest,
+  VirtualFile,
+} from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
   getMockSnapFilesWithUpdatedChecksum,
@@ -9,18 +14,6 @@ import type { Application } from 'express';
 import express from 'express';
 import type { Server } from 'http';
 import type { AddressInfo } from 'net';
-
-export type MockServerAuxiliaryFile = {
-  /**
-   * The path to the file.
-   */
-  path: string;
-
-  /**
-   * The contents of the file.
-   */
-  contents: string;
-};
 
 export type MockServerOptions = {
   /**
@@ -50,10 +43,17 @@ export type MockServerOptions = {
   port?: number;
 
   /**
-   * Extra files to serve. This can be used to serve auxiliary files, as well as
-   * localization files.
+   * Auxiliary files to serve.
    */
-  files?: MockServerAuxiliaryFile[];
+  auxiliaryFiles?: VirtualFile[];
+
+  /**
+   * Localization files to serve.
+   */
+  localizationFiles?: {
+    path: string;
+    file: LocalizationFile;
+  }[];
 };
 
 /**
@@ -75,8 +75,9 @@ export type MockServerOptions = {
  * modified package.json.
  * @param options.port - The port to listen on. Defaults to `0`, which means
  * that the OS will choose a random available port.
- * @param options.files - Extra files to serve. This can be used to serve
- * auxiliary files, as well as localization files.
+ * @param options.auxiliaryFiles - Auxiliary files to serve.
+ * @param options.localizationFiles - Localization files to serve.
+ * @returns The mock server.
  */
 export async function getMockServer({
   sourceCode = DEFAULT_SNAP_BUNDLE,
@@ -84,13 +85,16 @@ export async function getMockServer({
     initialPermissions: {},
   }),
   packageJson = getPackageJson(),
-  files,
+  auxiliaryFiles = [],
+  localizationFiles = [],
   port = 0,
 }: MockServerOptions = {}) {
   const snapFiles = await getMockSnapFilesWithUpdatedChecksum({
     manifest,
     packageJson,
     sourceCode,
+    auxiliaryFiles,
+    localizationFiles: localizationFiles.map(({ file }) => file),
   });
 
   const app = express();
@@ -119,9 +123,15 @@ export async function getMockServer({
     );
   }
 
-  files?.forEach((file) => {
-    app.use(file.path, (_, response) => {
-      response.end(file.contents);
+  auxiliaryFiles?.forEach((file) => {
+    app.use(`/${file.path}`, (_, response) => {
+      response.end(file.value.toString());
+    });
+  });
+
+  localizationFiles?.forEach(({ file, path }) => {
+    app.use(`/${path}`, (_, response) => {
+      response.end(JSON.stringify(file));
     });
   });
 

@@ -68,7 +68,7 @@ export function getControllers(options: GetControllersOptions): Controllers {
  * @param options.options - Miscellaneous options.
  * @returns The permission controller for the Snap.
  */
-export function getPermissionController({
+function getPermissionController({
   controllerMessenger,
   ...options
 }: GetControllersOptions) {
