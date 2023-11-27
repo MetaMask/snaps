@@ -363,8 +363,6 @@ jobs:
           key: e2e-simulator-build-${{ runner.os }}-${{ github.sha }}
           fail-on-cache-miss: true
       - run: yarn --immutable --immutable-cache
-      - name: Install Google Chrome
-        run: yarn install-chrome
       - name: Build snap
         run: yarn workspace ${{ matrix.package-name }} run build
       - name: Run E2E test
