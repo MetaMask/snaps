@@ -5465,6 +5465,7 @@ __metadata:
     "@jest/environment": ^29.5.0
     "@jest/expect": ^29.5.0
     "@jest/globals": ^29.5.0
+    "@jest/types": ^29.6.3
     "@lavamoat/allow-scripts": ^2.5.1
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/base-controller": ^3.2.0

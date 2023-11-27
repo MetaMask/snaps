@@ -1,11 +1,11 @@
 import { mnemonicPhraseToBytes } from '@metamask/key-tree';
 import { NodeThreadExecutionService } from '@metamask/snaps-controllers';
-import { getMockOptions } from '@metamask/snaps-jest/test-utils';
 import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
 import { VirtualFile } from '@metamask/snaps-utils';
 import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
 import { stringToBytes } from '@metamask/utils';
 
+import { getMockOptions } from '../../test-utils';
 import { getMockServer } from '../../test-utils/server';
 import { DEFAULT_SRP } from './constants';
 import { fetchSnap, getHooks, handleInstallSnap } from './simulation';

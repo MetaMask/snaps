@@ -58,6 +58,7 @@
     "superstruct": "^1.0.3"
   },
   "devDependencies": {
+    "@jest/types": "^29.6.3",
     "@lavamoat/allow-scripts": "^2.5.1",
     "@metamask/auto-changelog": "^3.4.4",
     "@metamask/eslint-config": "^12.1.0",

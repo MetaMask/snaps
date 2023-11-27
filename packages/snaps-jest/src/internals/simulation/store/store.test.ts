@@ -1,5 +1,4 @@
-import { getMockOptions } from '@metamask/snaps-jest/test-utils';
-
+import { getMockOptions } from '../../../test-utils';
 import { createStore } from './store';
 
 describe('createStore', () => {

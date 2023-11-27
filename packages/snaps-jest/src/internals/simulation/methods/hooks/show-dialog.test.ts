@@ -1,7 +1,7 @@
-import { getMockOptions } from '@metamask/snaps-jest/test-utils';
 import { DialogType, text } from '@metamask/snaps-sdk';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
+import { getMockOptions } from '../../../../test-utils';
 import { createStore, resolveInterface } from '../../store';
 import { getShowDialogImplementation } from './show-dialog';
 

@@ -1,9 +1,9 @@
-import { getMockOptions } from '@metamask/snaps-jest/test-utils';
 import { DialogType, text } from '@metamask/snaps-sdk';
 import { assert } from '@metamask/utils';
 import type { SagaIterator } from 'redux-saga';
 import { take } from 'redux-saga/effects';
 
+import { getMockOptions } from '../../test-utils';
 import { getInterface, getInterfaceResponse } from './interface';
 import type { RunSagaFunction } from './store';
 import { createStore, resolveInterface, setInterface } from './store';

@@ -1,6 +1,6 @@
-import { getMockOptions } from '@metamask/snaps-jest/test-utils';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
+import { getMockOptions } from '../../../../test-utils';
 import { createStore, getState, setState } from '../../store';
 import {
   getClearSnapStateMethodImplementation,
