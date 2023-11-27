@@ -320,7 +320,6 @@ jobs:
       - prepare
       - build-source
       - build-types
-      - build-simulator
     strategy:
       fail-fast: false
       matrix:
@@ -354,13 +353,6 @@ jobs:
           path: |
             packages/*/dist/types
           key: build-types-${{ runner.os }}-${{ github.sha }}
-          fail-on-cache-miss: true
-      - name: Restore "@metamask/snaps-simulator" build
-        uses: actions/cache@v3
-        with:
-          path: |
-            packages/snaps-simulator/dist/webpack
-          key: e2e-simulator-build-${{ runner.os }}-${{ github.sha }}
           fail-on-cache-miss: true
       - run: yarn --immutable --immutable-cache
       - name: Build snap
