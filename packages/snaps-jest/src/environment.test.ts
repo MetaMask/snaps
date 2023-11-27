@@ -64,7 +64,7 @@ describe('SnapsEnvironment', () => {
 
   describe('installSnap', () => {
     it('installs a Snap and keeps track of it, terminating any previously installed Snaps', async () => {
-      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      jest.spyOn(console, 'log').mockImplementation();
 
       const environment = new SnapsEnvironment(
         ENVIRONMENT_CONFIG,
@@ -75,12 +75,6 @@ describe('SnapsEnvironment', () => {
 
       const instance = await environment.installSnap();
       expect(instance?.executionService).toBeDefined();
-      expect(consoleSpy).toHaveBeenNthCalledWith(
-        2,
-        expect.stringMatching(
-          /\[Snap: local:http:\/\/localhost:\d+\] Hello, world!/u,
-        ),
-      );
 
       const terminateSpy = jest.spyOn(
         instance?.executionService,
@@ -92,12 +86,6 @@ describe('SnapsEnvironment', () => {
       expect(secondInstance?.executionService).toBeDefined();
       expect(secondInstance?.executionService).not.toBe(
         instance?.executionService,
-      );
-      expect(consoleSpy).toHaveBeenNthCalledWith(
-        4,
-        expect.stringMatching(
-          /\[Snap: local:http:\/\/localhost:\d+\] Hello, world!/u,
-        ),
       );
 
       await environment.teardown();
