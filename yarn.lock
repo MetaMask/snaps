@@ -4937,9 +4937,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/providers@npm:^14.0.1":
-  version: 14.0.1
-  resolution: "@metamask/providers@npm:14.0.1"
+"@metamask/providers@npm:^14.0.2":
+  version: 14.0.2
+  resolution: "@metamask/providers@npm:14.0.2"
   dependencies:
     "@metamask/json-rpc-engine": ^7.1.1
     "@metamask/object-multiplex": ^2.0.0
@@ -4953,7 +4953,7 @@ __metadata:
     json-rpc-middleware-stream: ^5.0.1
     readable-stream: ^3.6.2
     webextension-polyfill: ^0.10.0
-  checksum: 3964165d1356433b5b1aac16f3359223569c11e22dcf018df546549a3e2fd3dd8db1f40667b919621d517d6ecfb8a08b55fb5bdc6df57b56e91f50305e2ebcfd
+  checksum: 4111e4f9eae53b461a5318e2bdc90189837bc781a89a3904670a2449dfd3f2985b89183655f39ab4c63e6162d7c9ffd10d8a16335f2351ba2bb32365acd454f7
   languageName: node
   linkType: hard
 
@@ -5278,7 +5278,7 @@ __metadata:
     "@metamask/json-rpc-engine": ^7.3.0
     "@metamask/object-multiplex": ^2.0.0
     "@metamask/post-message-stream": ^7.0.0
-    "@metamask/providers": ^14.0.1
+    "@metamask/providers": ^14.0.2
     "@metamask/rpc-errors": ^6.1.0
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
@@ -5497,7 +5497,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/key-tree": ^9.0.0
-    "@metamask/providers": ^14.0.1
+    "@metamask/providers": ^14.0.2
     "@metamask/rpc-errors": ^6.1.0
     "@metamask/utils": ^8.2.1
     "@swc/cli": ^0.1.62
@@ -5789,7 +5789,7 @@ __metadata:
     "@metamask/name-lookup-example-snap": "workspace:^"
     "@metamask/network-example-snap": "workspace:^"
     "@metamask/notification-example-snap": "workspace:^"
-    "@metamask/providers": ^14.0.1
+    "@metamask/providers": ^14.0.2
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/utils": ^8.2.1
     "@metamask/wasm-example-snap": "workspace:^"
