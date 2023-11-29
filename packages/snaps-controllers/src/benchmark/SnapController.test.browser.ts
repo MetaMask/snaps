@@ -1,4 +1,4 @@
-/* eslint-disable no-console, import/no-unassigned-import, import/no-extraneous-dependencies */
+/* eslint-disable no-console, import/no-unassigned-import */
 
 import 'ses';
 import { IframeExecutionService } from '../services';
