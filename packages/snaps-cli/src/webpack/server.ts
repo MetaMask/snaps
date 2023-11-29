@@ -3,11 +3,24 @@ import { NpmSnapFileNames, readJsonFile } from '@metamask/snaps-utils';
 import type { Server } from 'http';
 import { createServer } from 'http';
 import type { AddressInfo } from 'net';
-import { join } from 'path';
-import { relative as relativePosix, resolve as resolvePosix } from 'path/posix';
+import { join, relative, resolve as resolvePath, sep, posix } from 'path';
 import serveMiddleware from 'serve-handler';
 
 import type { ProcessedConfig } from '../config';
+
+/**
+ * Get the relative path from one path to another.
+ *
+ * Note: This is a modified version of `path.relative` that uses Posix
+ * separators for URL-compatibility.
+ *
+ * @param from - The path to start from.
+ * @param to - The path to end at.
+ * @returns The relative path.
+ */
+function getRelativePath(from: string, to: string) {
+  return relative(from, to).split(sep).join(posix.sep);
+}
 
 /**
  * Get the allowed paths for the static server. This includes the output file,
@@ -23,29 +36,32 @@ export function getAllowedPaths(
 ) {
   const auxiliaryFiles =
     manifest.source.files?.map((file) =>
-      relativePosix(config.server.root, resolvePosix(config.server.root, file)),
+      getRelativePath(
+        config.server.root,
+        resolvePath(config.server.root, file),
+      ),
     ) ?? [];
 
   const localizationFiles =
     manifest.source.locales?.map((localization) =>
-      relativePosix(
+      getRelativePath(
         config.server.root,
-        resolvePosix(config.server.root, localization),
+        resolvePath(config.server.root, localization),
       ),
     ) ?? [];
 
   return [
-    relativePosix(
+    getRelativePath(
       config.server.root,
-      resolvePosix(
+      resolvePath(
         config.server.root,
         config.output.path,
         config.output.filename,
       ),
     ),
-    relativePosix(
+    getRelativePath(
       config.server.root,
-      resolvePosix(config.server.root, NpmSnapFileNames.Manifest),
+      resolvePath(config.server.root, NpmSnapFileNames.Manifest),
     ),
     ...auxiliaryFiles,
     ...localizationFiles,
