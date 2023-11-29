@@ -3,7 +3,8 @@ import { NpmSnapFileNames, readJsonFile } from '@metamask/snaps-utils';
 import type { Server } from 'http';
 import { createServer } from 'http';
 import type { AddressInfo } from 'net';
-import { join, relative, resolve as resolvePath } from 'path';
+import { join } from 'path';
+import { relative as relativePosix, resolve as resolvePosix } from 'path/posix';
 import serveMiddleware from 'serve-handler';
 
 import type { ProcessedConfig } from '../config';
@@ -22,29 +23,29 @@ export function getAllowedPaths(
 ) {
   const auxiliaryFiles =
     manifest.source.files?.map((file) =>
-      relative(config.server.root, resolvePath(config.server.root, file)),
+      relativePosix(config.server.root, resolvePosix(config.server.root, file)),
     ) ?? [];
 
   const localizationFiles =
     manifest.source.locales?.map((localization) =>
-      relative(
+      relativePosix(
         config.server.root,
-        resolvePath(config.server.root, localization),
+        resolvePosix(config.server.root, localization),
       ),
     ) ?? [];
 
   return [
-    relative(
+    relativePosix(
       config.server.root,
-      resolvePath(
+      resolvePosix(
         config.server.root,
         config.output.path,
         config.output.filename,
       ),
     ),
-    relative(
+    relativePosix(
       config.server.root,
-      resolvePath(config.server.root, NpmSnapFileNames.Manifest),
+      resolvePosix(config.server.root, NpmSnapFileNames.Manifest),
     ),
     ...auxiliaryFiles,
     ...localizationFiles,
