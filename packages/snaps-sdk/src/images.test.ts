@@ -57,30 +57,28 @@ describe('getImageData', () => {
       'Failed to fetch image data from "https://example.com/image.gif": 404 Not Found',
     );
   });
+
+  it('throws if the Snap does not have the "endowment:network-access" permission', async () => {
+    const originalFetch = globalThis.fetch;
+
+    // @ts-expect-error - `fetch` is not optional.
+    globalThis.fetch = undefined;
+
+    await expect(getImageData('https://example.com/image.png')).rejects.toThrow(
+      'Failed to fetch image data from "https://example.com/image.png": Using this function requires the "endowment:network-access" permission.',
+    );
+
+    // eslint-disable-next-line require-atomic-updates
+    globalThis.fetch = originalFetch;
+  });
 });
 
-describe('getImage', () => {
+describe('getImageComponent', () => {
   beforeEach(() => {
     fetchMock.resetMocks();
   });
 
   it('returns the image data as an image component', async () => {
-    fetchMock.mockResponse('image data', {
-      headers: {
-        'Content-Type': 'image/png',
-      },
-    });
-
-    const result = await getImageComponent('https://example.com/image.png');
-    expect(result).toMatchInlineSnapshot(`
-      {
-        "type": "image",
-        "value": "<svg  xmlns="http://www.w3.org/2000/svg"><image href="data:image/png;base64,aW1hZ2UgZGF0YQ==" /></svg>",
-      }
-    `);
-  });
-
-  it('returns the image data as an image component with width and height', async () => {
     fetchMock.mockResponse('image data', {
       headers: {
         'Content-Type': 'image/png',
@@ -95,7 +93,26 @@ describe('getImage', () => {
     expect(result).toMatchInlineSnapshot(`
       {
         "type": "image",
-        "value": "<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><image href="data:image/png;base64,aW1hZ2UgZGF0YQ==" /></svg>",
+        "value": "<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><image width="100" height="100" href="data:image/png;base64,aW1hZ2UgZGF0YQ==" /></svg>",
+      }
+    `);
+  });
+
+  it('returns the image data as an image component with only a width', async () => {
+    fetchMock.mockResponse('image data', {
+      headers: {
+        'Content-Type': 'image/png',
+      },
+    });
+
+    const result = await getImageComponent('https://example.com/image.png', {
+      width: 100,
+    });
+
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "type": "image",
+        "value": "<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><image width="100" height="100" href="data:image/png;base64,aW1hZ2UgZGF0YQ==" /></svg>",
       }
     `);
   });

@@ -11,6 +11,12 @@ import { image } from './ui';
  * @returns A promise that resolves to the image data as a blob.
  */
 async function getRawImageData(url: string, options?: RequestInit) {
+  if (typeof fetch !== 'function') {
+    throw new Error(
+      `Failed to fetch image data from "${url}": Using this function requires the "endowment:network-access" permission.`,
+    );
+  }
+
   return fetch(url, options).then(async (response) => {
     if (!response.ok) {
       throw new Error(
@@ -60,15 +66,14 @@ export async function getImageData(url: string, options?: RequestInit) {
 /**
  * Options for getting an SVG image element from a URL.
  *
- * @property width - The width of the image. If this is not provided, the image
- * will be rendered at its original width.
+ * @property width - The width of the image.
  * @property height - The height of the image. If this is not provided, the
- * image will be rendered at its original height.
+ * width will be used as the height.
  * @property request - The options to use when fetching the image data. This is
  * passed directly to `fetch`.
  */
 export type ImageOptions = {
-  width?: number;
+  width: number;
   height?: number;
   request?: RequestInit;
 };
@@ -94,32 +99,21 @@ export type ImageOptions = {
  * });
  * @param url - The URL to get the image data from.
  * @param options - The options to use when fetching and rendering the image.
- * @param options.width - The width of the image. If this is not provided, the
- * image will be rendered at its original width.
+ * @param options.width - The width of the image.
  * @param options.height - The height of the image. If this is not provided, the
- * image will be rendered at its original height.
+ * width will be used as the height.
  * @param options.request - The options to use when fetching the image data.
  * This is passed directly to `fetch`.
  * @returns A promise that resolves to the image data as an image component.
  */
 export async function getImageComponent(
   url: string,
-  { width, height, request }: ImageOptions = {},
+  { width, height = width, request }: ImageOptions,
 ) {
   const imageData = await getImageData(url, request);
-
-  let size = '';
-  if (width) {
-    assert(width > 0, 'Expected width to be greater than 0.');
-    size += `width="${width}" `;
-  }
-
-  if (height) {
-    assert(height > 0, 'Expected height to be greater than 0.');
-    size += `height="${height}"`;
-  }
+  const size = `width="${width}" height="${height}"`;
 
   return image(
-    `<svg ${size.trim()} xmlns="http://www.w3.org/2000/svg"><image href="${imageData}" /></svg>`,
+    `<svg ${size.trim()} xmlns="http://www.w3.org/2000/svg"><image ${size.trim()} href="${imageData}" /></svg>`,
   );
 }
