@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [3.0.4]
-### Uncategorized
+### Fixed
 - Only serve Snap files from CLI ([#1979](https://github.com/MetaMask/snaps/pull/1979))
 
 ## [3.0.3]
