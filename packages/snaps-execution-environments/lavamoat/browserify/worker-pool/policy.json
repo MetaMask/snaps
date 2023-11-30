@@ -137,9 +137,20 @@
         "external:../snaps-sdk/src/internals/index.ts": true
       }
     },
+    "external:../snaps-sdk/src/images.ts": {
+      "globals": {
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/utils": true,
+        "external:../snaps-sdk/src/ui/index.ts": true
+      }
+    },
     "external:../snaps-sdk/src/index.ts": {
       "packages": {
+        "@metamask/utils": true,
         "external:../snaps-sdk/src/errors.ts": true,
+        "external:../snaps-sdk/src/images.ts": true,
         "external:../snaps-sdk/src/internals/index.ts": true,
         "external:../snaps-sdk/src/types/index.ts": true,
         "external:../snaps-sdk/src/ui/index.ts": true
