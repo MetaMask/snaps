@@ -1,6 +1,10 @@
 import type { SnapManifest } from '@metamask/snaps-utils';
-import { NpmSnapFileNames, readJsonFile } from '@metamask/snaps-utils';
-import type { Server } from 'http';
+import {
+  logError,
+  NpmSnapFileNames,
+  readJsonFile,
+} from '@metamask/snaps-utils';
+import type { IncomingMessage, Server, ServerResponse } from 'http';
 import { createServer } from 'http';
 import type { AddressInfo } from 'net';
 import { join, relative, resolve as resolvePath, sep, posix } from 'path';
@@ -80,11 +84,22 @@ export function getAllowedPaths(
  * resolves when the server is listening.
  */
 export async function getServer(config: ProcessedConfig) {
-  const manifestPath = join(config.server.root, NpmSnapFileNames.Manifest);
-  const { result } = await readJsonFile<SnapManifest>(manifestPath);
-  const allowedPaths = getAllowedPaths(config, result);
+  /**
+   * Get the response for a request. This is extracted into a function so that
+   * we can easily catch errors and send a 500 response.
+   *
+   * @param request - The request.
+   * @param response - The response.
+   * @returns A promise that resolves when the response is sent.
+   */
+  async function getResponse(
+    request: IncomingMessage,
+    response: ServerResponse,
+  ) {
+    const manifestPath = join(config.server.root, NpmSnapFileNames.Manifest);
+    const { result } = await readJsonFile<SnapManifest>(manifestPath);
+    const allowedPaths = getAllowedPaths(config, result);
 
-  const server = createServer((request, response) => {
     const path = request.url?.slice(1);
     const allowed = allowedPaths.some((allowedPath) => path === allowedPath);
 
@@ -94,7 +109,7 @@ export async function getServer(config: ProcessedConfig) {
       return;
     }
 
-    serveMiddleware(request, response, {
+    await serveMiddleware(request, response, {
       public: config.server.root,
       directoryListing: false,
       headers: [
@@ -112,8 +127,14 @@ export async function getServer(config: ProcessedConfig) {
           ],
         },
       ],
-    })?.catch(
-      /* istanbul ignore next */ () => {
+    });
+  }
+
+  const server = createServer((request, response) => {
+    getResponse(request, response).catch(
+      /* istanbul ignore next */
+      (error) => {
+        logError(error);
         response.statusCode = 500;
         response.end();
       },
