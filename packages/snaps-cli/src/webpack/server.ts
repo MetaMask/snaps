@@ -83,7 +83,7 @@ export function getAllowedPaths(
  * @returns An object with a `listen` method that returns a promise that
  * resolves when the server is listening.
  */
-export async function getServer(config: ProcessedConfig) {
+export function getServer(config: ProcessedConfig) {
   /**
    * Get the response for a request. This is extracted into a function so that
    * we can easily catch errors and send a 500 response.

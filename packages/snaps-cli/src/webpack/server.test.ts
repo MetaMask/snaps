@@ -130,7 +130,7 @@ describe('getServer', () => {
       },
     });
 
-    const server = await getServer(config);
+    const server = getServer(config);
     expect(server.listen).toBeInstanceOf(Function);
 
     const { port, server: httpServer, close } = await server.listen();
@@ -150,7 +150,7 @@ describe('getServer', () => {
       },
     });
 
-    const server = await getServer(config);
+    const server = getServer(config);
 
     const { port, close } = await server.listen();
     expect(port).toBe(config.server.port);
@@ -167,7 +167,7 @@ describe('getServer', () => {
       },
     });
 
-    const server = await getServer(config);
+    const server = getServer(config);
 
     const { port, close } = await server.listen(32432);
     expect(port).toBe(32432);
@@ -184,7 +184,7 @@ describe('getServer', () => {
       },
     });
 
-    const server = await getServer(config);
+    const server = getServer(config);
     const { port, close } = await server.listen();
 
     const response = await fetch(`http://localhost:${port}/snap.manifest.json`);
@@ -210,7 +210,7 @@ describe('getServer', () => {
       },
     });
 
-    const server = await getServer(config);
+    const server = getServer(config);
     const { port, close } = await server.listen();
 
     const response = await fetch(`http://localhost:${port}/`);
@@ -232,7 +232,7 @@ describe('getServer', () => {
     });
 
     const createServer = jest.spyOn(http, 'createServer');
-    const server = await getServer(config);
+    const server = getServer(config);
     const httpServer: Server = createServer.mock.results[0].value;
 
     jest.spyOn(httpServer, 'listen').mockImplementationOnce(() => {
@@ -254,7 +254,7 @@ describe('getServer', () => {
     });
 
     const createServer = jest.spyOn(http, 'createServer');
-    const server = await getServer(config);
+    const server = getServer(config);
     const httpServer: Server = createServer.mock.results[0].value;
 
     // @ts-expect-error - Invalid mock.

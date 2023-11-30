@@ -18,7 +18,7 @@ describe('serveHandler', () => {
     const log = jest.spyOn(console, 'log').mockImplementation();
     const getServer = jest
       .spyOn(webpack, 'getServer')
-      .mockImplementation(async () => ({
+      .mockImplementation(() => ({
         listen,
       }));
 
@@ -48,7 +48,7 @@ describe('serveHandler', () => {
     const log = jest.spyOn(console, 'log').mockImplementation();
     const getServer = jest
       .spyOn(webpack, 'getServer')
-      .mockImplementation(async () => ({
+      .mockImplementation(() => ({
         listen,
       }));
 
@@ -79,7 +79,7 @@ describe('serveHandler', () => {
     const log = jest.spyOn(console, 'log').mockImplementation();
     const getServer = jest
       .spyOn(webpack, 'getServer')
-      .mockImplementation(async () => ({
+      .mockImplementation(() => ({
         listen,
       }));
 
