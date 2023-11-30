@@ -117,6 +117,25 @@ describe('getAllowedPaths', () => {
       'images/icon.svg',
     ]);
   });
+
+  it('returns the allowed paths for a given config without an icon', () => {
+    const config = getMockConfig('webpack', {
+      input: 'src/index.js',
+      output: {
+        path: '/foo/dist',
+        filename: 'index.js',
+      },
+      server: {
+        root: '/foo',
+      },
+    });
+
+    const manifest = getSnapManifest();
+    delete manifest.source.location.npm.iconPath;
+
+    const allowedPaths = getAllowedPaths(config, manifest);
+    expect(allowedPaths).toStrictEqual(['dist/index.js', 'snap.manifest.json']);
+  });
 });
 
 describe('getServer', () => {
