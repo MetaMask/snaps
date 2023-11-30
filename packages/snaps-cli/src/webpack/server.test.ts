@@ -30,7 +30,11 @@ describe('getAllowedPaths', () => {
     const manifest = getSnapManifest();
 
     const allowedPaths = getAllowedPaths(config, manifest);
-    expect(allowedPaths).toStrictEqual(['dist/index.js', 'snap.manifest.json']);
+    expect(allowedPaths).toStrictEqual([
+      'dist/index.js',
+      'snap.manifest.json',
+      'images/icon.svg',
+    ]);
   });
 
   it('returns the allowed paths for a given config with auxiliary files', () => {
@@ -55,6 +59,7 @@ describe('getAllowedPaths', () => {
       'snap.manifest.json',
       'src/foo.js',
       'src/bar.js',
+      'images/icon.svg',
     ]);
   });
 
@@ -80,6 +85,7 @@ describe('getAllowedPaths', () => {
       'snap.manifest.json',
       'src/en.json',
       'src/de.json',
+      'images/icon.svg',
     ]);
   });
 
@@ -108,6 +114,7 @@ describe('getAllowedPaths', () => {
       'src/bar.js',
       'src/en.json',
       'src/de.json',
+      'images/icon.svg',
     ]);
   });
 });
