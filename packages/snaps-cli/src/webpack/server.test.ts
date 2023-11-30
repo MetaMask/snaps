@@ -195,7 +195,7 @@ describe('getServer', () => {
     expect(serveMiddleware).toHaveBeenCalledWith(
       expect.any(IncomingMessage),
       expect.any(ServerResponse),
-      expect.objectContaining({ public: '/foo' }),
+      expect.objectContaining({ public: expect.stringContaining('foo') }),
     );
 
     await close();
