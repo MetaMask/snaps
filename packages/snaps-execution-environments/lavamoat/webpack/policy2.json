@@ -1,0 +1,284 @@
+{
+  "//": "This file was modified by edit.js",
+  "resources": {
+    "@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/providers>@metamask/safe-event-emitter": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/object-multiplex": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/object-multiplex>once": true,
+        "readable-stream": true
+      }
+    },
+    "@metamask/object-multiplex>once": {
+      "packages": {
+        "@metamask/object-multiplex>once>wrappy": true
+      }
+    },
+    "@metamask/post-message-stream": {
+      "globals": {
+        "MessageEvent.prototype": true,
+        "WorkerGlobalScope": true,
+        "addEventListener": true,
+        "browser": true,
+        "chrome": true,
+        "location.origin": true,
+        "postMessage": true,
+        "removeEventListener": true
+      },
+      "packages": {
+        "@metamask/post-message-stream>@metamask/utils": true,
+        "readable-stream": true
+      }
+    },
+    "@metamask/post-message-stream>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>semver": true,
+        "@metamask/providers>extension-port-stream>readable-stream>buffer": true,
+        "@metamask/utils>debug": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/providers": {
+      "globals": {
+        "CustomEvent": true,
+        "Event": true,
+        "addEventListener": true,
+        "chrome.runtime.connect": true,
+        "console": true,
+        "dispatchEvent": true,
+        "document.createElement": true,
+        "document.readyState": true,
+        "ethereum": "write",
+        "location.hostname": true,
+        "removeEventListener": true,
+        "web3": true
+      },
+      "packages": {
+        "@metamask/json-rpc-engine": true,
+        "@metamask/object-multiplex": true,
+        "@metamask/providers>@metamask/safe-event-emitter": true,
+        "@metamask/providers>detect-browser": true,
+        "@metamask/providers>extension-port-stream": true,
+        "@metamask/providers>is-stream": true,
+        "@metamask/providers>json-rpc-middleware-stream": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true,
+        "@metamask/providers>fast-deep-equal": true,
+        "readable-stream": true
+      }
+    },
+    "@metamask/providers>@metamask/safe-event-emitter": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream>events": true
+      }
+    },
+    "@metamask/providers>detect-browser": {
+      "globals": {
+        "document": true,
+        "navigator": true
+      },
+      "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream>process": true
+      }
+    },
+    "@metamask/providers>extension-port-stream": {
+      "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream": true,
+        "@metamask/providers>extension-port-stream>readable-stream>buffer": true
+      }
+    },
+    "@metamask/providers>extension-port-stream>readable-stream": {
+      "globals": {
+        "AbortController": true,
+        "AggregateError": true,
+        "Blob": true,
+        "new": true,
+        "target": true
+      },
+      "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream>abort-controller": true,
+        "@metamask/providers>extension-port-stream>readable-stream>buffer": true,
+        "@metamask/providers>extension-port-stream>readable-stream>events": true,
+        "@metamask/providers>extension-port-stream>readable-stream>process": true,
+        "readable-stream>string_decoder": true
+      }
+    },
+    "@metamask/providers>json-rpc-middleware-stream": {
+      "globals": {
+        "console.warn": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/providers>@metamask/safe-event-emitter": true,
+        "readable-stream": true
+      }
+    },
+    "@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/snaps-sdk>is-svg": {
+      "packages": {
+        "@metamask/snaps-sdk>is-svg>fast-xml-parser": true
+      }
+    },
+    "@metamask/snaps-sdk>is-svg>fast-xml-parser": {
+      "globals": {
+        "entityName": true,
+        "val": true
+      },
+      "packages": {
+        "@metamask/snaps-sdk>is-svg>fast-xml-parser>strnum": true
+      }
+    },
+    "@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@metamask/utils>semver": true,
+        "@metamask/providers>extension-port-stream>readable-stream>buffer": true,
+        "@metamask/utils>debug": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/utils>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/utils>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/utils>semver": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@metamask/utils>semver>lru-cache": true,
+        "@metamask/providers>extension-port-stream>readable-stream>process": true
+      }
+    },
+    "@metamask/utils>semver>lru-cache": {
+      "packages": {
+        "@metamask/utils>semver>lru-cache>yallist": true
+      }
+    },
+    "readable-stream>string_decoder>safe-buffer": {
+      "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream>buffer": true
+      }
+    },
+    "@metamask/providers>extension-port-stream>readable-stream>buffer": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream>buffer>base64-js": true,
+        "@metamask/providers>extension-port-stream>readable-stream>buffer>ieee754": true
+      }
+    },
+    "@metamask/providers>extension-port-stream>readable-stream>events": {
+      "globals": {
+        "console": true
+      }
+    },
+    "@metamask/providers>extension-port-stream>readable-stream>process": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      }
+    },
+    "readable-stream>string_decoder": {
+      "packages": {
+        "readable-stream>string_decoder>safe-buffer": true
+      }
+    },
+    "@metamask/utils>debug": {
+      "globals": {
+        "console": true,
+        "document": true,
+        "localStorage": true,
+        "navigator": true,
+        "process": true
+      },
+      "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream>process": true,
+        "@metamask/utils>debug>ms": true
+      }
+    },
+    "readable-stream": {
+      "packages": {
+        "undefined": true,
+        "@metamask/providers>extension-port-stream>readable-stream>buffer": true,
+        "@metamask/providers>extension-port-stream>readable-stream>events": true,
+        "readable-stream>inherits": true,
+        "@metamask/providers>extension-port-stream>readable-stream>process": true,
+        "readable-stream>string_decoder": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "readable-stream>util-deprecate": {
+      "globals": {
+        "console.trace": true,
+        "console.warn": true,
+        "localStorage": true
+      }
+    },
+    "superstruct": {
+      "globals": {
+        "console.warn": true,
+        "define": true
+      }
+    },
+    "@metamask/snaps-sdk": {
+      "packages": {
+        "@metamask/snaps-sdk": true,
+        "@metamask/utils": true,
+        "superstruct": true,
+        "@metamask/snaps-sdk>is-svg": true
+      },
+      "globals": {}
+    },
+    "@metamask/snaps-utils": {
+      "packages": {
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true,
+        "@metamask/snaps-sdk": true,
+        "@metamask/snaps-utils": true,
+        "superstruct": true
+      },
+      "globals": {
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "URL": true
+      }
+    }
+  }
+}

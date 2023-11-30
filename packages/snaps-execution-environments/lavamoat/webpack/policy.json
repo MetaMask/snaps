@@ -1,0 +1,503 @@
+{
+  "//": "this is a copy of browserify/iframe/policy.json with a bunch of edits",
+  "resources": {
+    "@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/providers>@metamask/safe-event-emitter": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/object-multiplex": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/object-multiplex>once": true,
+        "readable-stream": true
+      }
+    },
+    "@metamask/object-multiplex>once": {
+      "packages": {
+        "@metamask/object-multiplex>once>wrappy": true
+      }
+    },
+    "@metamask/post-message-stream": {
+      "globals": {
+        "MessageEvent.prototype": true,
+        "WorkerGlobalScope": true,
+        "addEventListener": true,
+        "browser": true,
+        "chrome": true,
+        "location.origin": true,
+        "postMessage": true,
+        "removeEventListener": true
+      },
+      "packages": {
+        "@metamask/post-message-stream>@metamask/utils": true,
+        "readable-stream": true
+      }
+    },
+    "@metamask/post-message-stream>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@swc/cli>semver": true,
+        "browserify>buffer": true,
+        "eslint>debug": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/providers": {
+      "globals": {
+        "CustomEvent": true,
+        "Event": true,
+        "addEventListener": true,
+        "chrome.runtime.connect": true,
+        "console": true,
+        "dispatchEvent": true,
+        "document.createElement": true,
+        "document.readyState": true,
+        "ethereum": "write",
+        "location.hostname": true,
+        "removeEventListener": true,
+        "web3": true
+      },
+      "packages": {
+        "@metamask/json-rpc-engine": true,
+        "@metamask/object-multiplex": true,
+        "@metamask/providers>@metamask/safe-event-emitter": true,
+        "@metamask/providers>detect-browser": true,
+        "@metamask/providers>extension-port-stream": true,
+        "@metamask/providers>is-stream": true,
+        "@metamask/providers>json-rpc-middleware-stream": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true,
+        "eslint>fast-deep-equal": true,
+        "readable-stream": true
+      }
+    },
+    "@metamask/providers>@metamask/safe-event-emitter": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>events": true
+      }
+    },
+    "@metamask/providers>detect-browser": {
+      "globals": {
+        "document": true,
+        "navigator": true
+      },
+      "packages": {
+        "browserify>process": true
+      }
+    },
+    "@metamask/providers>extension-port-stream": {
+      "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream": true,
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/providers>extension-port-stream>readable-stream": {
+      "globals": {
+        "AbortController": true,
+        "AggregateError": true,
+        "Blob": true,
+        "new": true,
+        "target": true
+      },
+      "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream>abort-controller": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true
+      }
+    },
+    "@metamask/providers>json-rpc-middleware-stream": {
+      "globals": {
+        "console.warn": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/providers>@metamask/safe-event-emitter": true,
+        "readable-stream": true
+      }
+    },
+    "@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/snaps-sdk>is-svg": {
+      "packages": {
+        "@metamask/snaps-sdk>is-svg>fast-xml-parser": true
+      }
+    },
+    "@metamask/snaps-sdk>is-svg>fast-xml-parser": {
+      "globals": {
+        "entityName": true,
+        "val": true
+      },
+      "packages": {
+        "@metamask/snaps-sdk>is-svg>fast-xml-parser>strnum": true
+      }
+    },
+    "@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@swc/cli>semver": true,
+        "browserify>buffer": true,
+        "eslint>debug": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/utils>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/utils>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@swc/cli>semver": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@swc/cli>semver>lru-cache": true,
+        "browserify>process": true
+      }
+    },
+    "@swc/cli>semver>lru-cache": {
+      "packages": {
+        "@swc/cli>semver>lru-cache>yallist": true
+      }
+    },
+    "browserify>browser-pack>safe-buffer": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
+    "browserify>buffer": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "browserify>buffer>base64-js": true,
+        "browserify>buffer>ieee754": true
+      }
+    },
+    "browserify>events": {
+      "globals": {
+        "console": true
+      }
+    },
+    "browserify>process": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      }
+    },
+    "browserify>string_decoder": {
+      "packages": {
+        "browserify>browser-pack>safe-buffer": true
+      }
+    },
+    "eslint>debug": {
+      "globals": {
+        "console": true,
+        "document": true,
+        "localStorage": true,
+        "navigator": true,
+        "process": true
+      },
+      "packages": {
+        "browserify>process": true,
+        "eslint>debug>ms": true
+      }
+    },
+    "external:../snaps-sdk/src/errors.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/internals/index.ts": true
+      }
+    },
+    "external:../snaps-sdk/src/index.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/errors.ts": true,
+        "external:../snaps-sdk/src/internals/index.ts": true,
+        "external:../snaps-sdk/src/types/index.ts": true,
+        "external:../snaps-sdk/src/ui/index.ts": true
+      }
+    },
+    "external:../snaps-sdk/src/internals/error-wrappers.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/errors.ts": true
+      }
+    },
+    "external:../snaps-sdk/src/internals/errors.ts": {
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
+    "external:../snaps-sdk/src/internals/index.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/internals/error-wrappers.ts": true,
+        "external:../snaps-sdk/src/internals/errors.ts": true,
+        "external:../snaps-sdk/src/internals/helpers.ts": true,
+        "external:../snaps-sdk/src/internals/structs.ts": true
+      }
+    },
+    "external:../snaps-sdk/src/internals/structs.ts": {
+      "packages": {
+        "superstruct": true
+      }
+    },
+    "external:../snaps-sdk/src/types/handlers/index.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/types/handlers/cronjob.ts": true,
+        "external:../snaps-sdk/src/types/handlers/home-page.ts": true,
+        "external:../snaps-sdk/src/types/handlers/keyring.ts": true,
+        "external:../snaps-sdk/src/types/handlers/lifecycle.ts": true,
+        "external:../snaps-sdk/src/types/handlers/name-lookup.ts": true,
+        "external:../snaps-sdk/src/types/handlers/rpc-request.ts": true,
+        "external:../snaps-sdk/src/types/handlers/transaction.ts": true
+      }
+    },
+    "external:../snaps-sdk/src/types/index.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/types/caip.ts": true,
+        "external:../snaps-sdk/src/types/global.ts": true,
+        "external:../snaps-sdk/src/types/handlers/index.ts": true,
+        "external:../snaps-sdk/src/types/methods/index.ts": true,
+        "external:../snaps-sdk/src/types/permissions.ts": true,
+        "external:../snaps-sdk/src/types/provider.ts": true,
+        "external:../snaps-sdk/src/types/snap.ts": true
+      }
+    },
+    "external:../snaps-sdk/src/types/methods/index.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/types/methods/dialog.ts": true,
+        "external:../snaps-sdk/src/types/methods/get-bip32-entropy.ts": true,
+        "external:../snaps-sdk/src/types/methods/get-bip32-public-key.ts": true,
+        "external:../snaps-sdk/src/types/methods/get-bip44-entropy.ts": true,
+        "external:../snaps-sdk/src/types/methods/get-entropy.ts": true,
+        "external:../snaps-sdk/src/types/methods/get-file.ts": true,
+        "external:../snaps-sdk/src/types/methods/get-locale.ts": true,
+        "external:../snaps-sdk/src/types/methods/get-snaps.ts": true,
+        "external:../snaps-sdk/src/types/methods/invoke-keyring.ts": true,
+        "external:../snaps-sdk/src/types/methods/invoke-snap.ts": true,
+        "external:../snaps-sdk/src/types/methods/manage-accounts.ts": true,
+        "external:../snaps-sdk/src/types/methods/manage-state.ts": true,
+        "external:../snaps-sdk/src/types/methods/methods.ts": true,
+        "external:../snaps-sdk/src/types/methods/notify.ts": true,
+        "external:../snaps-sdk/src/types/methods/request-snaps.ts": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/builder.ts": {
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/component.ts": {
+      "packages": {
+        "@metamask/utils": true,
+        "external:../snaps-sdk/src/ui/components/index.ts": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/components/address.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/ui/builder.ts": true,
+        "external:../snaps-sdk/src/ui/nodes.ts": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/components/copyable.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/ui/builder.ts": true,
+        "external:../snaps-sdk/src/ui/nodes.ts": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/components/divider.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/ui/builder.ts": true,
+        "external:../snaps-sdk/src/ui/nodes.ts": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/components/heading.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/ui/builder.ts": true,
+        "external:../snaps-sdk/src/ui/nodes.ts": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/components/image.ts": {
+      "packages": {
+        "@metamask/snaps-sdk>is-svg": true,
+        "external:../snaps-sdk/src/ui/builder.ts": true,
+        "external:../snaps-sdk/src/ui/nodes.ts": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/components/index.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/ui/components/address.ts": true,
+        "external:../snaps-sdk/src/ui/components/copyable.ts": true,
+        "external:../snaps-sdk/src/ui/components/divider.ts": true,
+        "external:../snaps-sdk/src/ui/components/heading.ts": true,
+        "external:../snaps-sdk/src/ui/components/image.ts": true,
+        "external:../snaps-sdk/src/ui/components/panel.ts": true,
+        "external:../snaps-sdk/src/ui/components/row.ts": true,
+        "external:../snaps-sdk/src/ui/components/spinner.ts": true,
+        "external:../snaps-sdk/src/ui/components/text.ts": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/components/panel.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/ui/builder.ts": true,
+        "external:../snaps-sdk/src/ui/components/address.ts": true,
+        "external:../snaps-sdk/src/ui/components/copyable.ts": true,
+        "external:../snaps-sdk/src/ui/components/divider.ts": true,
+        "external:../snaps-sdk/src/ui/components/heading.ts": true,
+        "external:../snaps-sdk/src/ui/components/image.ts": true,
+        "external:../snaps-sdk/src/ui/components/row.ts": true,
+        "external:../snaps-sdk/src/ui/components/spinner.ts": true,
+        "external:../snaps-sdk/src/ui/components/text.ts": true,
+        "external:../snaps-sdk/src/ui/nodes.ts": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/components/row.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/internals/index.ts": true,
+        "external:../snaps-sdk/src/ui/builder.ts": true,
+        "external:../snaps-sdk/src/ui/components/address.ts": true,
+        "external:../snaps-sdk/src/ui/components/image.ts": true,
+        "external:../snaps-sdk/src/ui/components/text.ts": true,
+        "external:../snaps-sdk/src/ui/nodes.ts": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/components/spinner.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/ui/builder.ts": true,
+        "external:../snaps-sdk/src/ui/nodes.ts": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/components/text.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/ui/builder.ts": true,
+        "external:../snaps-sdk/src/ui/nodes.ts": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/index.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/ui/component.ts": true,
+        "external:../snaps-sdk/src/ui/components/index.ts": true,
+        "external:../snaps-sdk/src/ui/nodes.ts": true
+      }
+    },
+    "external:../snaps-sdk/src/ui/nodes.ts": {
+      "packages": {
+        "superstruct": true
+      }
+    },
+    "external:../snaps-utils/src/errors.ts": {
+      "packages": {
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true,
+        "external:../snaps-sdk/src/index.ts": true
+      }
+    },
+    "external:../snaps-utils/src/handlers.ts": {
+      "packages": {
+        "external:../snaps-sdk/src/index.ts": true,
+        "external:../snaps-utils/src/handler-types.ts": true,
+        "superstruct": true
+      }
+    },
+    "external:../snaps-utils/src/icon.ts": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "external:../snaps-utils/src/index.executionenv.ts": {
+      "packages": {
+        "external:../snaps-utils/src/errors.ts": true,
+        "external:../snaps-utils/src/handler-types.ts": true,
+        "external:../snaps-utils/src/handlers.ts": true,
+        "external:../snaps-utils/src/logging.ts": true,
+        "external:../snaps-utils/src/namespace.ts": true,
+        "external:../snaps-utils/src/types.ts": true
+      }
+    },
+    "external:../snaps-utils/src/logging.ts": {
+      "globals": {
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
+    "external:../snaps-utils/src/namespace.ts": {
+      "packages": {
+        "superstruct": true
+      }
+    },
+    "external:../snaps-utils/src/types.ts": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/utils": true,
+        "superstruct": true
+      }
+    },
+    "readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "browserify>inherits": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "readable-stream>util-deprecate": {
+      "globals": {
+        "console.trace": true,
+        "console.warn": true,
+        "localStorage": true
+      }
+    },
+    "superstruct": {
+      "globals": {
+        "console.warn": true,
+        "define": true
+      }
+    }
+  }
+}
