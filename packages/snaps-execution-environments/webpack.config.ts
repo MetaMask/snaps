@@ -11,7 +11,7 @@ import { merge } from 'webpack-merge';
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const swc = require('../../.swcrc.build.json');
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-const policy = require('./lavamoat/browserify/iframe/policy.json');
+const policy = require('./lavamoat/webpack/policy2.json');
 
 const baseConfig: Configuration = {
   mode: 'production',
@@ -62,12 +62,6 @@ const baseConfig: Configuration = {
       analyzerMode: 'static',
       openAnalyzer: false,
     }),
-    new LavaMoatPlugin({
-      policy,
-      diagnosticsVerbosity: 1,
-      readableResourceIds: true,
-      HtmlWebpackPluginInterop: true,
-    }),
   ],
 };
 
@@ -76,6 +70,14 @@ const iframeConfig: Configuration = merge(baseConfig, {
   output: {
     path: resolve(__dirname, 'dist/webpack/iframe'),
   },
+  plugins: [
+    new LavaMoatPlugin({
+      policy,
+      diagnosticsVerbosity: 1,
+      readableResourceIds: true,
+      HtmlWebpackPluginInterop: true,
+    }),
+  ],
 });
 
 const configs = [iframeConfig];
