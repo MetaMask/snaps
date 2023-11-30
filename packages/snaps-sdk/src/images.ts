@@ -110,6 +110,16 @@ export async function getImageComponent(
   url: string,
   { width, height = width, request }: ImageOptions,
 ) {
+  assert(
+    typeof width === 'number' && width > 0,
+    'Expected width to be a number greater than 0.',
+  );
+
+  assert(
+    typeof height === 'number' && height > 0,
+    'Expected height to be a number greater than 0.',
+  );
+
   const imageData = await getImageData(url, request);
   const size = `width="${width}" height="${height}"`;
 

@@ -116,4 +116,46 @@ describe('getImageComponent', () => {
       }
     `);
   });
+
+  it.each([
+    true,
+    false,
+    null,
+    undefined,
+    0,
+    -1,
+    '1',
+    '100',
+    {},
+    [],
+    () => undefined,
+  ])('throws an error if the width is invalid', async (width) => {
+    await expect(
+      getImageComponent('https://example.com/image.png', {
+        // @ts-expect-error - `width` is invalid.
+        width,
+      }),
+    ).rejects.toThrow('Expected width to be a number greater than 0.');
+  });
+
+  it.each([
+    true,
+    false,
+    null,
+    undefined,
+    0,
+    -1,
+    '1',
+    '100',
+    {},
+    [],
+    () => undefined,
+  ])('throws an error if the height is invalid', async (height) => {
+    await expect(
+      getImageComponent('https://example.com/image.png', {
+        // @ts-expect-error - `height` is invalid.
+        height,
+      }),
+    ).rejects.toThrow('Expected width to be a number greater than 0.');
+  });
 });
