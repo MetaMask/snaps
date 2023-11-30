@@ -54,6 +54,18 @@ export function getAllowedPaths(
       ),
     ) ?? [];
 
+  const otherFiles = manifest.source.location.npm.iconPath
+    ? [
+        getRelativePath(
+          config.server.root,
+          resolvePath(
+            config.server.root,
+            manifest.source.location.npm.iconPath,
+          ),
+        ),
+      ]
+    : [];
+
   return [
     getRelativePath(
       config.server.root,
@@ -69,6 +81,7 @@ export function getAllowedPaths(
     ),
     ...auxiliaryFiles,
     ...localizationFiles,
+    ...otherFiles,
   ];
 }
 
