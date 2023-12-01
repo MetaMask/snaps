@@ -9,7 +9,7 @@ import type { VirtualFile } from './virtual-file';
  * @param input - The input value, assumed to be coercable to bytes.
  * @returns A base64 string.
  */
-export async function asyncEncode(input: Uint8Array | VirtualFile | string) {
+export async function encodeBase64(input: Uint8Array | VirtualFile | string) {
   const bytes = getBytes(input);
   // In the browser, FileReader is much faster than bytesToBase64.
   if ('FileReader' in globalThis) {
@@ -38,7 +38,9 @@ export async function asyncEncode(input: Uint8Array | VirtualFile | string) {
  * @param base64 - A base64 string.
  * @returns A Uint8Array of bytes.
  */
-export async function asyncDecode(base64: string) {
-  const res = await fetch(`data:application/octet-stream;base64,${base64}`);
-  return new Uint8Array(await res.arrayBuffer());
+export async function decodeBase64(base64: string) {
+  const response = await fetch(
+    `data:application/octet-stream;base64,${base64}`,
+  );
+  return new Uint8Array(await response.arrayBuffer());
 }

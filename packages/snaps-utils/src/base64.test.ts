@@ -1,7 +1,7 @@
 import { bytesToBase64, stringToBytes } from '@metamask/utils';
 import { File } from 'buffer';
 
-import { asyncDecode, asyncEncode } from './base64';
+import { decodeBase64, encodeBase64 } from './base64';
 import { VirtualFile } from './virtual-file';
 
 // Very basic mock that mimics the base64 encoding logic of the browser
@@ -33,7 +33,7 @@ class MockFileReader {
   }
 }
 
-describe('asyncEncode', () => {
+describe('encodeBase64', () => {
   // We can remove this once we drop Node 18
   Object.defineProperty(globalThis, 'File', {
     value: File,
@@ -43,7 +43,7 @@ describe('asyncEncode', () => {
     const vfile = new VirtualFile(
       stringToBytes(JSON.stringify({ foo: 'bar' })),
     );
-    expect(await asyncEncode(vfile)).toBe('eyJmb28iOiJiYXIifQ==');
+    expect(await encodeBase64(vfile)).toBe('eyJmb28iOiJiYXIifQ==');
   });
 
   it('uses FileReader API when available', async () => {
@@ -54,13 +54,13 @@ describe('asyncEncode', () => {
     const vfile = new VirtualFile(
       stringToBytes(JSON.stringify({ foo: 'bar' })),
     );
-    expect(await asyncEncode(vfile)).toBe('eyJmb28iOiJiYXIifQ==');
+    expect(await encodeBase64(vfile)).toBe('eyJmb28iOiJiYXIifQ==');
   });
 });
 
-describe('asyncDecode', () => {
+describe('decodeBase64', () => {
   it('decodes base64 string to bytes', async () => {
-    expect(await asyncDecode('eyJmb28iOiJiYXIifQ==')).toStrictEqual(
+    expect(await decodeBase64('eyJmb28iOiJiYXIifQ==')).toStrictEqual(
       stringToBytes(JSON.stringify({ foo: 'bar' })),
     );
   });

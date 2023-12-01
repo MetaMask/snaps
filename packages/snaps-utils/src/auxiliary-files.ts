@@ -1,7 +1,7 @@
 import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
 import { bytesToHex, bytesToString } from '@metamask/utils';
 
-import { asyncDecode } from './base64';
+import { decodeBase64 } from './base64';
 
 /**
  * Re-encodes an auxiliary file if needed depending on the requested file encoding.
@@ -20,7 +20,7 @@ export async function encodeAuxiliaryFile(
   }
 
   // TODO: Use @metamask/utils for this
-  const decoded = await asyncDecode(value);
+  const decoded = await decodeBase64(value);
   if (encoding === AuxiliaryFileEncoding.Utf8) {
     return bytesToString(decoded);
   }

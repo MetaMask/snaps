@@ -69,7 +69,7 @@ import {
   unwrapError,
   OnHomePageResponseStruct,
   getValidatedLocalizationFiles,
-  asyncEncode,
+  encodeBase64,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
@@ -2381,7 +2381,7 @@ export class SnapController extends BaseController<
         auxiliaryFiles.map(async (file) => {
           // This should still be safe
           // eslint-disable-next-line require-atomic-updates
-          file.data.base64 = await asyncEncode(file);
+          file.data.base64 = await encodeBase64(file);
         }),
       );
 
