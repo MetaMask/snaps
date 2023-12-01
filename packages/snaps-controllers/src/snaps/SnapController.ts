@@ -3,7 +3,7 @@ import type {
   UpdateRequestState,
 } from '@metamask/approval-controller';
 import type { RestrictedControllerMessenger } from '@metamask/base-controller';
-import { BaseControllerV2 as BaseController } from '@metamask/base-controller';
+import { BaseController } from '@metamask/base-controller';
 import type {
   Caveat,
   GetEndowments,
