@@ -110,6 +110,19 @@ const config = {
             path: resolve(__dirname, './src/services/iframe/test'),
           },
         ],
+        // Benchmark NPM bundles
+        middleware: [
+          {
+            mount: '/benchmark/npm',
+            middleware: (_, response) => {
+              response.setHeader('Access-Control-Allow-Origin', '*');
+
+              response.sendFile(
+                resolve(__dirname, './src/benchmark/server/masca-1.1.0.tgz'),
+              );
+            },
+          },
+        ],
       },
     ],
   ],
@@ -127,7 +140,7 @@ const config = {
   ],
   mochaOpts: {
     ui: 'bdd',
-    timeout: 120000,
+    timeout: 300000,
   },
 };
 
