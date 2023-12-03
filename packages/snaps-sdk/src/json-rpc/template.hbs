@@ -1,0 +1,30 @@
+<html>
+<head>
+  <title>Snaps Documentation</title>
+</head>
+<body>
+{{#each methods}}
+  <h1>{{name}}</h1>
+  <p>{{documentation}}</p>
+  <h2>Parameters</h2>
+  <ul>
+    {{#each params}}
+      <h3>{{name}}</h3>
+      <ul>
+        <li>
+          <pre>{{type}}</pre>
+        </li>
+      </ul>
+      <p>{{documentation}}</p>
+    {{/each}}
+  </ul>
+  <h2>Returns</h2>
+  <ul>
+    <li>
+      <pre>{{returns.type}}</pre>
+    </li>
+  </ul>
+  <p>{{returns.documentation}}</p>
+{{/each}}
+</body>
+</html>
