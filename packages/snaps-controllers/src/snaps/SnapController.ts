@@ -1691,7 +1691,7 @@ export class SnapController extends BaseController<
     const snapIds = Object.keys(requestedSnaps);
 
     const pendingUpdates = [];
-    const pendingInstalls = [];
+    const pendingInstalls = new Set<SnapId>();
 
     try {
       for (const [snapId, { version: rawVersion }] of Object.entries(
@@ -1734,7 +1734,7 @@ export class SnapController extends BaseController<
             throw new Error('This snap is already being updated.');
           }
         } else if (!isUpdate) {
-          pendingInstalls.push(snapId);
+          pendingInstalls.add(snapId);
         }
 
         result[snapId] = await this.processRequestedSnap(
@@ -1742,6 +1742,7 @@ export class SnapController extends BaseController<
           snapId,
           location,
           version,
+          pendingInstalls,
         );
       }
 
@@ -1765,7 +1766,9 @@ export class SnapController extends BaseController<
 
       snapIds.forEach((snapId) => this.#rollbackSnapshots.delete(snapId));
     } catch (error) {
-      const installed = pendingInstalls.filter((snapId) => this.has(snapId));
+      const installed = [...pendingInstalls].filter((snapId) =>
+        this.has(snapId),
+      );
       await this.removeSnaps(installed);
       const snapshottedSnaps = [...this.#rollbackSnapshots.keys()];
       const snapsToRollback = pendingUpdates
@@ -1787,6 +1790,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the snap.
    * @param location - The location implementation of the snap.
    * @param versionRange - The semver range of the snap to install.
+   * @param pendingInstalls - A set of currently pending installations.
    * @returns The resulting snap object, or an error if something went wrong.
    */
   private async processRequestedSnap(
@@ -1794,12 +1798,14 @@ export class SnapController extends BaseController<
     snapId: SnapId,
     location: SnapLocation,
     versionRange: SemVerRange,
+    pendingInstalls: Set<SnapId>,
   ): Promise<TruncatedSnap> {
     const existingSnap = this.getTruncated(snapId);
 
     // For devX we always re-install local snaps.
     if (existingSnap && !location.shouldAlwaysReload) {
       if (satisfiesVersionRange(existingSnap.version, versionRange)) {
+        pendingInstalls.delete(snapId);
         return existingSnap;
       }
 
