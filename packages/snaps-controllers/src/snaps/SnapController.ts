@@ -812,10 +812,7 @@ export class SnapController extends BaseController<
     this.#registerMessageHandlers();
 
     Object.values(state?.snaps ?? {}).forEach((snap) =>
-      this.#setupRuntime(snap.id, {
-        sourceCode: snap.sourceCode,
-        state: state?.snapStates?.[snap.id] ?? null,
-      }),
+      this.#setupRuntime(snap.id),
     );
   }
 
@@ -2129,7 +2126,7 @@ export class SnapController extends BaseController<
   async #add(args: AddSnapArgs): Promise<PersistedSnap> {
     const { id: snapId, location, versionRange } = args;
 
-    this.#setupRuntime(snapId, { sourceCode: null, state: null });
+    this.#setupRuntime(snapId);
     const runtime = this.#getRuntimeExpect(snapId);
     if (!runtime.installPromise) {
       log(`Adding snap: ${snapId}`);
@@ -2906,10 +2903,7 @@ export class SnapController extends BaseController<
     return runtime;
   }
 
-  #setupRuntime(
-    snapId: SnapId,
-    data: { sourceCode: string | null; state: string | null },
-  ) {
+  #setupRuntime(snapId: SnapId) {
     if (this.#snapsRuntimeData.has(snapId)) {
       return;
     }
@@ -2933,7 +2927,6 @@ export class SnapController extends BaseController<
       pendingInboundRequests: [],
       pendingOutboundRequests: 0,
       interpreter,
-      ...data,
     });
   }
 
