@@ -1,9 +1,10 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
+
 import type { Job, ExecutionServiceArgs } from '../AbstractExecutionService';
 import { AbstractExecutionService } from '../AbstractExecutionService';
 import { ProxyPostMessageStream } from '../ProxyPostMessageStream';
-import snapsState from './SnapsState';
+import { snapsState } from './SnapsState';
 
 export class WebviewExecutionService extends AbstractExecutionService<Window> {
   #snapDuplexMap?: ProxyPostMessageStream[];
