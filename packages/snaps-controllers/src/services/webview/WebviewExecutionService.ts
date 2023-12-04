@@ -4,7 +4,7 @@
 import type { Job, ExecutionServiceArgs } from '../AbstractExecutionService';
 import { AbstractExecutionService } from '../AbstractExecutionService';
 import { ProxyPostMessageStream } from '../ProxyPostMessageStream';
-import { snapsState } from './SnapsState';
+import { snapsContext } from './SnapsContext';
 
 export class WebviewExecutionService extends AbstractExecutionService<Window> {
   #snapDuplexMap?: ProxyPostMessageStream[];
@@ -21,8 +21,8 @@ export class WebviewExecutionService extends AbstractExecutionService<Window> {
     worker: Window;
     stream: ProxyPostMessageStream;
   }> {
-    const iframeWindow = snapsState.webview;
-    const { stream } = snapsState;
+    const iframeWindow = snapsContext.webview;
+    const { stream } = snapsContext;
 
     // The WebviewExecutionService wraps the stream into a Duplex
     // to pass the jobId to the Proxy Service
