@@ -41,6 +41,7 @@ import {
   getMockLocalizationFile,
   getMockSnapFilesWithUpdatedChecksum,
   MOCK_SNAP_NAME,
+  DEFAULT_SOURCE_PATH,
 } from '@metamask/snaps-utils/test-utils';
 import type { SemVerRange, SemVerVersion } from '@metamask/utils';
 import {
@@ -3473,6 +3474,56 @@ describe('SnapController', () => {
         'PermissionController:revokeAllPermissions',
         MOCK_LOCAL_SNAP_ID,
       );
+
+      snapController.destroy();
+    });
+
+    it('supports preinstalled snaps', async () => {
+      const rootMessenger = getControllerMessenger();
+      jest.spyOn(rootMessenger, 'call');
+
+      const preinstalledSnaps = [
+        {
+          snapId: MOCK_SNAP_ID,
+          manifest: getSnapManifest(),
+          files: [
+            {
+              path: DEFAULT_SOURCE_PATH,
+              value: stringToBytes(DEFAULT_SNAP_BUNDLE),
+            },
+          ],
+        },
+      ];
+      const snapControllerOptions = getSnapControllerWithEESOptions({
+        preinstalledSnaps,
+        rootMessenger,
+      });
+      const [snapController] = getSnapControllerWithEES(snapControllerOptions);
+
+      expect(rootMessenger.call).toHaveBeenCalledWith(
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions: {
+            'endowment:rpc': {
+              caveats: [
+                { type: 'rpcOrigin', value: { dapps: false, snaps: true } },
+              ],
+            },
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_confirm: {},
+          },
+          subject: { origin: 'npm:@metamask/example-snap' },
+        },
+      );
+
+      const result = await snapController.handleRequest({
+        snapId: MOCK_SNAP_ID,
+        origin: MOCK_ORIGIN,
+        request: { method: 'foo' },
+        handler: HandlerType.OnRpcRequest,
+      });
+
+      expect(result).toContain('foo');
 
       snapController.destroy();
     });

@@ -42,6 +42,7 @@ import type {
   FetchedSnapFiles,
   PersistedSnap,
   Snap,
+  SnapManifest,
   SnapRpcHook,
   SnapRpcHookArgs,
   StatusContext,
@@ -72,6 +73,8 @@ import {
   OnHomePageResponseStruct,
   getValidatedLocalizationFiles,
   encodeBase64,
+  VirtualFile,
+  NpmSnapFileNames,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
@@ -142,6 +145,18 @@ export type PendingRequest = {
   requestId: unknown;
   timer: Timer;
 };
+
+export interface PreinstalledSnapFile {
+  path: string;
+  value: string | Uint8Array;
+}
+
+export interface PreinstalledSnap {
+  snapId: SnapId;
+  manifest: SnapManifest;
+  files: PreinstalledSnapFile[];
+  // removable: boolean;
+}
 
 /**
  * A wrapper type for any data stored during runtime of Snaps.
@@ -591,6 +606,11 @@ type SnapControllerArgs = {
    * Used for test overrides.
    */
   detectSnapLocation?: typeof detectSnapLocation;
+
+  /**
+   * A list of snaps to be preinstalled into the SnapController state on initialization.
+   */
+  preinstalledSnaps?: PreinstalledSnap[];
 };
 type AddSnapArgs = {
   id: SnapId;
@@ -696,6 +716,7 @@ export class SnapController extends BaseController<
     fetchFunction = globalThis.fetch.bind(globalThis),
     featureFlags = {},
     detectSnapLocation: detectSnapLocationFunction = detectSnapLocation,
+    preinstalledSnaps,
   }: SnapControllerArgs) {
     super({
       messenger,
@@ -794,6 +815,10 @@ export class SnapController extends BaseController<
 
     this.#initializeStateMachine();
     this.#registerMessageHandlers();
+
+    if (preinstalledSnaps) {
+      this.#handlePreinstalledSnaps(preinstalledSnaps);
+    }
 
     Object.values(state?.snaps ?? {}).forEach((snap) =>
       this.#setupRuntime(snap.id),
@@ -967,6 +992,72 @@ export class SnapController extends BaseController<
       `${controllerName}:getFile`,
       async (...args) => this.getSnapFile(...args),
     );
+  }
+
+  #handlePreinstalledSnaps(preinstalledSnaps: PreinstalledSnap[]) {
+    for (const { snapId, manifest, files } of preinstalledSnaps) {
+      const isAlreadyInstalled = this.has(snapId);
+
+      // Disallow updates for now.
+      if (isAlreadyInstalled) {
+        continue;
+      }
+
+      const manifestFile = new VirtualFile<SnapManifest>({
+        path: NpmSnapFileNames.Manifest,
+        value: JSON.stringify(manifest),
+        result: manifest,
+      });
+
+      const virtualFiles = files.map(
+        ({ path, value }) => new VirtualFile({ value, path }),
+      );
+      const { filePath, iconPath } = manifest.source.location.npm;
+      const sourceCode = virtualFiles.find((file) => file.path === filePath);
+      const svgIcon = iconPath
+        ? virtualFiles.find((file) => file.path === iconPath)
+        : undefined;
+
+      assert(sourceCode, 'Source code not provided for preinstalled snap');
+
+      assert(
+        manifest.source.files === undefined,
+        'Auxiliary files are not currently supported for preinstalled snaps',
+      );
+
+      assert(
+        manifest.source.locales === undefined,
+        'Localization files are not currently supported for preinstalled snaps',
+      );
+
+      const filesObject: FetchedSnapFiles = {
+        manifest: manifestFile,
+        sourceCode,
+        svgIcon,
+        auxiliaryFiles: [],
+        localizationFiles: [],
+      };
+
+      // Add snap to the SnapController state
+      this.#set({ id: snapId, origin: 'MetaMask', files: filesObject });
+
+      // Setup permissions
+      const processedPermissions = processSnapPermissions(
+        manifest.initialPermissions,
+      );
+
+      this.#validateSnapPermissions(processedPermissions);
+
+      this.messagingSystem.call('PermissionController:grantPermissions', {
+        approvedPermissions: processedPermissions,
+        subject: { origin: snapId },
+      });
+
+      // Set status
+      this.update((state) => {
+        state.snaps[snapId].status = SnapStatus.Stopped;
+      });
+    }
   }
 
   #pollForLastRequestStatus() {
