@@ -1116,7 +1116,6 @@ export class SnapController extends BaseController<
           ([_snapId, runtime]) =>
             runtime.activeReferences === 0 &&
             runtime.pendingInboundRequests.length === 0 &&
-            // lastRequest should always be set here but TypeScript wants this check
             runtime.lastRequest &&
             this.#maxIdleTime &&
             timeSince(runtime.lastRequest) > this.#maxIdleTime,
@@ -2172,6 +2171,7 @@ export class SnapController extends BaseController<
     }
 
     try {
+      const runtime = this.#getRuntimeExpect(snapId);
       const result = await this.#executeWithTimeout(
         this.messagingSystem.call('ExecutionService:executeSnap', {
           ...snapData,
@@ -2179,6 +2179,8 @@ export class SnapController extends BaseController<
         }),
       );
       this.#transition(snapId, SnapStatusEvents.Start);
+      // We treat the initialization of the snap as the first request, for idle timing purposes.
+      runtime.lastRequest = Date.now();
       return result;
     } catch (error) {
       await this.#terminateSnap(snapId);

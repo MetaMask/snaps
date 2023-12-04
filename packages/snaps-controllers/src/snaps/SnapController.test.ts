@@ -1149,6 +1149,28 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
+  it('terminates idle snap that hasnt had any requests', async () => {
+    const options = getSnapControllerOptions({
+      idleTimeCheckInterval: 10,
+      maxIdleTime: 50,
+      state: {
+        snaps: getPersistedSnapsState(),
+      },
+    });
+
+    const snapController = getSnapController(options);
+    const snap = snapController.getExpect(MOCK_SNAP_ID);
+
+    await snapController.startSnap(snap.id);
+    expect(snapController.state.snaps[snap.id].status).toBe('running');
+
+    await sleep(100);
+
+    expect(snapController.state.snaps[snap.id].status).toBe('stopped');
+
+    snapController.destroy();
+  });
+
   it('does not timeout while waiting for response from MetaMask', async () => {
     const sourceCode = `
     module.exports.onRpcRequest = () => ethereum.request({ method: 'eth_blockNumber', params: [] });
