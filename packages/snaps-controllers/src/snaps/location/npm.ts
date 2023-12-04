@@ -187,21 +187,40 @@ export class NpmLocation implements SnapLocation {
     }
     canonicalBase += this.meta.registry.host;
 
-    // The "gz" in "tgz" stands for "gzip". The tarball needs to be decompressed
-    // before we can actually grab any files from it.
-    // To prevent recursion-based zip bombs, we should not allow recursion here.
-    const decompressedStream = getDecompressedStream(tarballResponse);
-
     // TODO(ritave): Lazily extract files instead of up-front extracting all of them
     //               We would need to replace tar-stream package because it requires immediate consumption of streams.
     await new Promise<void>((resolve, reject) => {
       this.files = new Map();
+
+      const tarballStream = createTarballStream(
+        `${canonicalBase}/${this.meta.packageName}/`,
+        this.files,
+      );
+
+      // The "gz" in "tgz" stands for "gzip". The tarball needs to be decompressed
+      // before we can actually grab any files from it.
+      // To prevent recursion-based zip bombs, we should not allow recursion here.
+
+      // If native decompression stream is available we use that, otherwise fallback to zlib
+      if ('DecompressionStream' in globalThis) {
+        const decompressionStream = new DecompressionStream('gzip');
+        const decompressedStream =
+          tarballResponse.pipeThrough(decompressionStream);
+
+        pipeline(
+          getNodeStream(decompressedStream),
+          tarballStream,
+          (error: unknown) => {
+            error ? reject(error) : resolve();
+          },
+        );
+        return;
+      }
+
       pipeline(
-        decompressedStream,
-        createTarballStream(
-          `${canonicalBase}/${this.meta.packageName}/`,
-          this.files,
-        ),
+        getNodeStream(tarballResponse),
+        createGunzip(),
+        tarballStream,
         (error: unknown) => {
           error ? reject(error) : resolve();
         },
@@ -400,22 +419,6 @@ function getNodeStream(stream: ReadableStream): Readable {
   }
 
   return new ReadableWebToNodeStream(stream);
-}
-
-/**
- * Create a decompressed gzip stream from a readable stream.
- *
- * @param stream - The input stream.
- * @returns A stream that contains the decompressed data.
- */
-function getDecompressedStream(stream: ReadableStream): Readable {
-  // If native decompression stream is available we use that, otherwise fallback to zlib
-  if ('DecompressionStream' in globalThis) {
-    const decompressionStream = new DecompressionStream('gzip');
-    const decompressedStream = stream.pipeThrough(decompressionStream);
-    return getNodeStream(decompressedStream);
-  }
-  return pipeline(getNodeStream(stream), createGunzip());
 }
 
 /**
