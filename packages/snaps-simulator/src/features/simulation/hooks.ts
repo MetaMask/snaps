@@ -196,5 +196,5 @@ export function* getSnapFile(
     return null;
   }
 
-  return encodeAuxiliaryFile(base64, encoding);
+  return yield call(encodeAuxiliaryFile, base64, encoding);
 }
