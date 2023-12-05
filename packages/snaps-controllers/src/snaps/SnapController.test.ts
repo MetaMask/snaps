@@ -3482,6 +3482,12 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       jest.spyOn(rootMessenger, 'call');
 
+      // The snap should not have permission initially
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({}),
+      );
+
       const preinstalledSnaps = [
         {
           snapId: MOCK_SNAP_ID,
@@ -3512,8 +3518,14 @@ describe('SnapController', () => {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             snap_confirm: {},
           },
-          subject: { origin: 'npm:@metamask/example-snap' },
+          subject: { origin: MOCK_SNAP_ID },
         },
+      );
+
+      // After install the snap should have permissions
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => MOCK_SNAP_PERMISSIONS,
       );
 
       const result = await snapController.handleRequest({
@@ -3524,6 +3536,116 @@ describe('SnapController', () => {
       });
 
       expect(result).toContain('foo');
+
+      snapController.destroy();
+    });
+
+    it('supports updating preinstalled snaps', async () => {
+      const rootMessenger = getControllerMessenger();
+      jest.spyOn(rootMessenger, 'call');
+
+      const preinstalledSnaps = [
+        {
+          snapId: MOCK_SNAP_ID,
+          manifest: getSnapManifest({
+            version: '1.2.3',
+            initialPermissions: {
+              'endowment:rpc': { dapps: true },
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              snap_getEntropy: {},
+            },
+          }),
+          files: [
+            {
+              path: DEFAULT_SOURCE_PATH,
+              value: stringToBytes(DEFAULT_SNAP_BUNDLE),
+            },
+          ],
+        },
+      ];
+
+      const snapControllerOptions = getSnapControllerWithEESOptions({
+        preinstalledSnaps,
+        rootMessenger,
+        state: {
+          snaps: getPersistedSnapsState(),
+        },
+      });
+      const [snapController] = getSnapControllerWithEES(snapControllerOptions);
+
+      expect(rootMessenger.call).toHaveBeenCalledWith(
+        'PermissionController:revokePermissions',
+        {
+          [MOCK_SNAP_ID]: ['snap_confirm'],
+        },
+      );
+
+      expect(rootMessenger.call).toHaveBeenCalledWith(
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_getEntropy: {},
+          },
+          subject: { origin: MOCK_SNAP_ID },
+        },
+      );
+
+      // After install the snap should have permissions
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Rpc]: MOCK_SNAP_PERMISSIONS[SnapEndowments.Rpc],
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_getEntropy: {
+            caveats: null,
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: 'snap_getEntropy',
+          },
+        }),
+      );
+
+      const result = await snapController.handleRequest({
+        snapId: MOCK_SNAP_ID,
+        origin: MOCK_ORIGIN,
+        request: { method: 'foo' },
+        handler: HandlerType.OnRpcRequest,
+      });
+
+      expect(result).toContain('foo');
+
+      snapController.destroy();
+    });
+
+    it('skips snaps that would be a downgrade', async () => {
+      const rootMessenger = getControllerMessenger();
+      jest.spyOn(rootMessenger, 'call');
+
+      const preinstalledSnaps = [
+        {
+          snapId: MOCK_SNAP_ID,
+          manifest: getSnapManifest(),
+          files: [
+            {
+              path: DEFAULT_SOURCE_PATH,
+              value: stringToBytes(DEFAULT_SNAP_BUNDLE),
+            },
+          ],
+        },
+      ];
+
+      const snapControllerOptions = getSnapControllerWithEESOptions({
+        preinstalledSnaps,
+        rootMessenger,
+        state: {
+          snaps: getPersistedSnapsState(),
+        },
+      });
+      const [snapController] = getSnapControllerWithEES(snapControllerOptions);
+
+      expect(rootMessenger.call).toHaveBeenCalledTimes(0);
 
       snapController.destroy();
     });

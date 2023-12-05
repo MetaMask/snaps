@@ -820,7 +820,7 @@ export class SnapController extends BaseController<
       this.#handlePreinstalledSnaps(preinstalledSnaps);
     }
 
-    Object.values(state?.snaps ?? {}).forEach((snap) =>
+    Object.values(this.state?.snaps ?? {}).forEach((snap) =>
       this.#setupRuntime(snap.id),
     );
   }
@@ -996,10 +996,13 @@ export class SnapController extends BaseController<
 
   #handlePreinstalledSnaps(preinstalledSnaps: PreinstalledSnap[]) {
     for (const { snapId, manifest, files } of preinstalledSnaps) {
-      const isAlreadyInstalled = this.has(snapId);
+      const existingSnap = this.get(snapId);
+      const isAlreadyInstalled = existingSnap !== undefined;
+      const isUpdate =
+        isAlreadyInstalled && gtVersion(manifest.version, existingSnap.version);
 
-      // Disallow updates for now.
-      if (isAlreadyInstalled) {
+      // Disallow downgrades
+      if (isAlreadyInstalled && !isUpdate) {
         continue;
       }
 
@@ -1048,10 +1051,22 @@ export class SnapController extends BaseController<
 
       this.#validateSnapPermissions(processedPermissions);
 
-      this.messagingSystem.call('PermissionController:grantPermissions', {
-        approvedPermissions: processedPermissions,
-        subject: { origin: snapId },
-      });
+      const { newPermissions, unusedPermissions } =
+        this.#calculatePermissionsChange(snapId, processedPermissions);
+
+      const unusedPermissionsKeys = Object.keys(unusedPermissions);
+      if (isNonEmptyArray(unusedPermissionsKeys)) {
+        this.messagingSystem.call('PermissionController:revokePermissions', {
+          [snapId]: unusedPermissionsKeys,
+        });
+      }
+
+      if (isNonEmptyArray(Object.keys(newPermissions))) {
+        this.messagingSystem.call('PermissionController:grantPermissions', {
+          approvedPermissions: newPermissions,
+          subject: { origin: snapId },
+        });
+      }
 
       // Set status
       this.update((state) => {
