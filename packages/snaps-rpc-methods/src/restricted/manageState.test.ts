@@ -65,10 +65,12 @@ describe('snap_manageState', () => {
   });
 
   describe('getManageStateImplementation', () => {
-    // We can remove this once we drop Node 18
-    Object.defineProperty(globalThis, 'CryptoKey', {
-      value: webcrypto.CryptoKey,
-    });
+    if (!('CryptoKey' in globalThis)) {
+      // We can remove this once we drop Node 18
+      Object.defineProperty(globalThis, 'CryptoKey', {
+        value: webcrypto.CryptoKey,
+      });
+    }
 
     it('gets snap state', async () => {
       const mockSnapState = {
