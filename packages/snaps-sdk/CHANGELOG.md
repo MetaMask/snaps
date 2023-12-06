@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [1.3.0]
-### Uncategorized
-- Add image fetching utility functions ([#1995](https://github.com/MetaMask/snaps-skunkworks.git/pull/1995))
-- Bump @metamask/providers from 14.0.1 to 14.0.2 ([#1992](https://github.com/MetaMask/snaps-skunkworks.git/pull/1992))
+### Added
+- Add image fetching utility functions ([#1995](https://github.com/MetaMask/snaps/pull/1995))
 
 ## [1.2.0]
 ### Added
@@ -27,8 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@1.3.0...HEAD
-[1.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@1.2.0...@metamask/snaps-sdk@1.3.0
-[1.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@1.1.0...@metamask/snaps-sdk@1.2.0
-[1.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@1.0.0...@metamask/snaps-sdk@1.1.0
-[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/snaps-sdk@1.0.0
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@1.3.0...HEAD
+[1.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@1.2.0...@metamask/snaps-sdk@1.3.0
+[1.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@1.1.0...@metamask/snaps-sdk@1.2.0
+[1.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@1.0.0...@metamask/snaps-sdk@1.1.0
+[1.0.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/snaps-sdk@1.0.0
