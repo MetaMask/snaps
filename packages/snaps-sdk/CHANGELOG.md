@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.0]
 ### Added
 - Add image fetching utility functions ([#1995](https://github.com/MetaMask/snaps/pull/1995))
+  - This adds two functions:
+    - `getImageComponent` to get an `image` component from a PNG or JPEG URL.
+    - `getImageData` to get a base64 data string, which can be embedded in an SVG image.
 
 ## [1.2.0]
 ### Added

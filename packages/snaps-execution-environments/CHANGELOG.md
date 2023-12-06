@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.4.2]
 ### Changed
-- Bump @metamask/providers from 14.0.1 to 14.0.2 ([#1992](https://github.com/MetaMask/snaps/pull/1992))
+- Bump `@metamask/providers` from `14.0.1` to `14.0.2` ([#1992](https://github.com/MetaMask/snaps/pull/1992))
 
 ## [3.4.1]
 ### Changed
