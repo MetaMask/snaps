@@ -23,5 +23,11 @@ export default function loader(source: unknown) {
   assert(typeof source === 'string', 'Expected source to be a string.');
 
   const bytes = stringToBytes(source);
-  return `export default new Uint8Array(${JSON.stringify(Array.from(bytes))});`;
+  return `
+    const bytes = new Uint8Array(${JSON.stringify(Array.from(bytes))});
+    const module = new WebAssembly.Module(bytes);
+    const instance = new WebAssembly.Instance(module, {});
+
+    export default instance.exports;
+  `;
 }
