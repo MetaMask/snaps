@@ -126,6 +126,20 @@ export type Snap = TruncatedSnap & {
    * Localization files which are used to translate the manifest.
    */
   localizationFiles?: LocalizationFile[];
+
+  /**
+   * Flag to signal whether this snap was preinstalled or not.
+   *
+   * A lack of specifying this option will be deemed as not preinstalled.
+   */
+  preinstalled?: boolean;
+
+  /**
+   * Flag to signal whether this snap is removable or not.
+   *
+   * A lack of specifying this option will be deemed as removable.
+   */
+  removable?: boolean;
 };
 
 export type TruncatedSnapFields =

@@ -3568,7 +3568,9 @@ describe('SnapController', () => {
         preinstalledSnaps,
         rootMessenger,
         state: {
-          snaps: getPersistedSnapsState(),
+          snaps: getPersistedSnapsState(
+            getPersistedSnapObject({ preinstalled: true }),
+          ),
         },
       });
       const [snapController] = getSnapControllerWithEES(snapControllerOptions);

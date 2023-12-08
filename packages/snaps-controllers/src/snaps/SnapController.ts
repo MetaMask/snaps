@@ -155,7 +155,7 @@ export interface PreinstalledSnap {
   snapId: SnapId;
   manifest: SnapManifest;
   files: PreinstalledSnapFile[];
-  // removable: boolean;
+  removable?: boolean;
 }
 
 /**
@@ -624,6 +624,8 @@ type AddSnapArgs = {
 type SetSnapArgs = Omit<AddSnapArgs, 'location' | 'versionRange'> & {
   files: FetchedSnapFiles;
   isUpdate?: boolean;
+  removable?: boolean;
+  preinstalled?: boolean;
 };
 
 const defaultState: SnapControllerState = {
@@ -995,14 +997,17 @@ export class SnapController extends BaseController<
   }
 
   #handlePreinstalledSnaps(preinstalledSnaps: PreinstalledSnap[]) {
-    for (const { snapId, manifest, files } of preinstalledSnaps) {
+    for (const { snapId, manifest, files, removable } of preinstalledSnaps) {
       const existingSnap = this.get(snapId);
       const isAlreadyInstalled = existingSnap !== undefined;
       const isUpdate =
         isAlreadyInstalled && gtVersion(manifest.version, existingSnap.version);
 
-      // Disallow downgrades
-      if (isAlreadyInstalled && !isUpdate) {
+      // Disallow downgrades and overwriting non preinstalled snaps
+      if (
+        isAlreadyInstalled &&
+        (!isUpdate || existingSnap.preinstalled !== true)
+      ) {
         continue;
       }
 
@@ -1042,7 +1047,13 @@ export class SnapController extends BaseController<
       };
 
       // Add snap to the SnapController state
-      this.#set({ id: snapId, origin: 'MetaMask', files: filesObject });
+      this.#set({
+        id: snapId,
+        origin: 'MetaMask',
+        files: filesObject,
+        removable,
+        preinstalled: true,
+      });
 
       // Setup permissions
       const processedPermissions = processSnapPermissions(
@@ -1570,6 +1581,11 @@ export class SnapController extends BaseController<
     if (!Array.isArray(snapIds)) {
       throw new Error('Expected array of snap ids.');
     }
+
+    snapIds.forEach((snapId) => {
+      const snap = this.getExpect(snapId);
+      assert(snap.removable !== false, `${snapId} is not removable.`);
+    });
 
     await Promise.all(
       snapIds.map(async (snapId) => {
@@ -2354,7 +2370,14 @@ export class SnapController extends BaseController<
    * @returns The resulting snap object.
    */
   #set(args: SetSnapArgs): PersistedSnap {
-    const { id: snapId, origin, files, isUpdate = false } = args;
+    const {
+      id: snapId,
+      origin,
+      files,
+      isUpdate = false,
+      removable,
+      preinstalled,
+    } = args;
 
     const {
       manifest,
@@ -2404,6 +2427,9 @@ export class SnapController extends BaseController<
       // previous state.
       blocked: false,
       enabled: true,
+
+      removable,
+      preinstalled,
 
       id: snapId,
       initialPermissions: manifest.result.initialPermissions,
