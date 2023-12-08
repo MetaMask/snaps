@@ -17,9 +17,9 @@ import {
   isObject,
   isValidSemVerVersion,
 } from '@metamask/utils';
+import { createGunzip } from 'browserify-zlib';
 import concat from 'concat-stream';
 import getNpmTarballUrl from 'get-npm-tarball-url';
-import createGunzipStream from 'gunzip-maybe';
 import { pipeline } from 'readable-stream';
 import type { Readable, Writable } from 'readable-stream';
 import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
@@ -191,16 +191,36 @@ export class NpmLocation implements SnapLocation {
     //               We would need to replace tar-stream package because it requires immediate consumption of streams.
     await new Promise<void>((resolve, reject) => {
       this.files = new Map();
+
+      const tarballStream = createTarballStream(
+        `${canonicalBase}/${this.meta.packageName}/`,
+        this.files,
+      );
+
+      // The "gz" in "tgz" stands for "gzip". The tarball needs to be decompressed
+      // before we can actually grab any files from it.
+      // To prevent recursion-based zip bombs, we should not allow recursion here.
+
+      // If native decompression stream is available we use that, otherwise fallback to zlib
+      if ('DecompressionStream' in globalThis) {
+        const decompressionStream = new DecompressionStream('gzip');
+        const decompressedStream =
+          tarballResponse.pipeThrough(decompressionStream);
+
+        pipeline(
+          getNodeStream(decompressedStream),
+          tarballStream,
+          (error: unknown) => {
+            error ? reject(error) : resolve();
+          },
+        );
+        return;
+      }
+
       pipeline(
         getNodeStream(tarballResponse),
-        // The "gz" in "tgz" stands for "gzip". The tarball needs to be decompressed
-        // before we can actually grab any files from it.
-        // To prevent recursion-based zip bombs, we set a maximum recursion depth of 1.
-        createGunzipStream(1),
-        createTarballStream(
-          `${canonicalBase}/${this.meta.packageName}/`,
-          this.files,
-        ),
+        createGunzip(),
+        tarballStream,
         (error: unknown) => {
           error ? reject(error) : resolve();
         },
@@ -230,11 +250,19 @@ export type PartialNpmMetadata = {
  */
 export async function fetchNpmMetadata(
   packageName: string,
-  registryUrl: URL | string,
+  registryUrl: URL,
   fetchFunction: typeof fetch,
 ): Promise<PartialNpmMetadata> {
   const packageResponse = await fetchFunction(
     new URL(packageName, registryUrl).toString(),
+    {
+      headers: {
+        // Corgi format is slightly smaller: https://github.com/npm/pacote/blob/main/lib/registry.js#L71
+        accept: isNPM(registryUrl)
+          ? 'application/vnd.npm.install-v1+json; q=1.0, application/json; q=0.8, */*'
+          : 'application/json',
+      },
+    },
   );
   if (!packageResponse.ok) {
     throw new Error(
@@ -250,6 +278,16 @@ export async function fetchNpmMetadata(
   }
 
   return packageMetadata as PartialNpmMetadata;
+}
+
+/**
+ * Determine if a registry URL is NPM.
+ *
+ * @param registryUrl - A registry url.
+ * @returns True if the registry is the NPM registry, otherwise false.
+ */
+function isNPM(registryUrl: URL) {
+  return registryUrl.toString() === DEFAULT_NPM_REGISTRY.toString();
 }
 
 /**
@@ -272,10 +310,7 @@ async function resolveNpmVersion(
   fetchFunction: typeof fetch,
 ): Promise<{ tarballURL: string; targetVersion: SemVerVersion }> {
   // If the version range is already a static version we don't need to look for the metadata.
-  if (
-    registryUrl.toString() === DEFAULT_NPM_REGISTRY.toString() &&
-    isValidSemVerVersion(versionRange)
-  ) {
+  if (isNPM(registryUrl) && isValidSemVerVersion(versionRange)) {
     return {
       tarballURL: getNpmTarballUrl(packageName, versionRange),
       targetVersion: versionRange,

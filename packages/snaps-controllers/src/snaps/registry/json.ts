@@ -1,5 +1,5 @@
 import type { RestrictedControllerMessenger } from '@metamask/base-controller';
-import { BaseControllerV2 as BaseController } from '@metamask/base-controller';
+import { BaseController } from '@metamask/base-controller';
 import type { SnapsRegistryDatabase } from '@metamask/snaps-registry';
 import { verify } from '@metamask/snaps-registry';
 import { getTargetVersion } from '@metamask/snaps-utils';
@@ -207,7 +207,7 @@ export class JsonSnapsRegistry extends BaseController<
 
       if (this.#publicKey) {
         const signature = await this.#safeFetch(this.#url.signature);
-        await this.#verifySignature(database, signature);
+        this.#verifySignature(database, signature);
       }
 
       this.update((state) => {
@@ -346,10 +346,10 @@ export class JsonSnapsRegistry extends BaseController<
    * @throws If the signature is invalid.
    * @private
    */
-  async #verifySignature(database: string, signature: string) {
+  #verifySignature(database: string, signature: string) {
     assert(this.#publicKey, 'No public key provided.');
 
-    const valid = await verify({
+    const valid = verify({
       registry: database,
       signature: JSON.parse(signature),
       publicKey: this.#publicKey,

@@ -1,5 +1,5 @@
 import type { RestrictedControllerMessenger } from '@metamask/base-controller';
-import { BaseControllerV2 as BaseController } from '@metamask/base-controller';
+import { BaseController } from '@metamask/base-controller';
 import type { GetPermissions } from '@metamask/permission-controller';
 import type { SnapId } from '@metamask/snaps-sdk';
 import type {

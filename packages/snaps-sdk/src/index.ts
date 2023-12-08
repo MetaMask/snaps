@@ -18,7 +18,9 @@ export type {
   JsonRpcRequest,
   JsonRpcParams,
 } from '@metamask/utils';
+export { assert } from '@metamask/utils';
 
 export * from './errors';
+export * from './images';
 export * from './types';
 export * from './ui';

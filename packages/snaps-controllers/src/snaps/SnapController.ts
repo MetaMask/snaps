@@ -3,7 +3,7 @@ import type {
   UpdateRequestState,
 } from '@metamask/approval-controller';
 import type { RestrictedControllerMessenger } from '@metamask/base-controller';
-import { BaseControllerV2 as BaseController } from '@metamask/base-controller';
+import { BaseController } from '@metamask/base-controller';
 import type {
   Caveat,
   GetEndowments,
@@ -69,6 +69,7 @@ import {
   unwrapError,
   OnHomePageResponseStruct,
   getValidatedLocalizationFiles,
+  encodeBase64,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
@@ -530,8 +531,8 @@ type SnapControllerMessenger = RestrictedControllerMessenger<
 >;
 
 type FeatureFlags = {
-  requireAllowlist?: true;
-  allowLocalSnaps?: true;
+  requireAllowlist?: boolean;
+  allowLocalSnaps?: boolean;
 };
 
 type SnapControllerArgs = {
@@ -539,23 +540,23 @@ type SnapControllerArgs = {
    * A teardown function that allows the host to clean up its instrumentation
    * for a running snap.
    */
-  closeAllConnections: CloseAllConnectionsFunction;
+  closeAllConnections?: CloseAllConnectionsFunction;
 
   /**
    * A list of permissions that are allowed to be dynamic, meaning they can be revoked from the snap whenever.
    */
-  dynamicPermissions: string[];
+  dynamicPermissions?: string[];
 
   /**
    * The names of endowment permissions whose values are the names of JavaScript
    * APIs that will be added to the snap execution environment at runtime.
    */
-  environmentEndowmentPermissions: string[];
+  environmentEndowmentPermissions?: string[];
 
   /**
    * Excluded permissions with its associated error message used to forbid certain permssions.
    */
-  excludedPermissions: Record<string, string>;
+  excludedPermissions?: Record<string, string>;
 
   /**
    * The function that will be used by the controller fo make network requests.
@@ -665,7 +666,7 @@ export class SnapController extends BaseController<
   SnapControllerState,
   SnapControllerMessenger
 > {
-  #closeAllConnections: CloseAllConnectionsFunction;
+  #closeAllConnections?: CloseAllConnectionsFunction;
 
   #dynamicPermissions: string[];
 
@@ -811,10 +812,7 @@ export class SnapController extends BaseController<
     this.#registerMessageHandlers();
 
     Object.values(state?.snaps ?? {}).forEach((snap) =>
-      this.#setupRuntime(snap.id, {
-        sourceCode: snap.sourceCode,
-        state: state?.snapStates?.[snap.id] ?? null,
-      }),
+      this.#setupRuntime(snap.id),
     );
   }
 
@@ -983,7 +981,7 @@ export class SnapController extends BaseController<
 
     this.messagingSystem.registerActionHandler(
       `${controllerName}:getFile`,
-      (...args) => this.getSnapFile(...args),
+      async (...args) => this.getSnapFile(...args),
     );
   }
 
@@ -1118,7 +1116,6 @@ export class SnapController extends BaseController<
           ([_snapId, runtime]) =>
             runtime.activeReferences === 0 &&
             runtime.pendingInboundRequests.length === 0 &&
-            // lastRequest should always be set here but TypeScript wants this check
             runtime.lastRequest &&
             this.#maxIdleTime &&
             timeSince(runtime.lastRequest) > this.#maxIdleTime,
@@ -1268,7 +1265,7 @@ export class SnapController extends BaseController<
     runtime.pendingOutboundRequests = 0;
     try {
       if (this.isRunning(snapId)) {
-        this.#closeAllConnections(snapId);
+        this.#closeAllConnections?.(snapId);
         await this.#terminateSnap(snapId);
       }
     } finally {
@@ -1423,11 +1420,11 @@ export class SnapController extends BaseController<
    * @param encoding - An optional requested file encoding.
    * @returns The file requested in the chosen file encoding or null if the file is not found.
    */
-  getSnapFile(
+  async getSnapFile(
     snapId: SnapId,
     path: string,
     encoding: AuxiliaryFileEncoding = AuxiliaryFileEncoding.Base64,
-  ): string | null {
+  ): Promise<string | null> {
     const snap = this.getExpect(snapId);
     const normalizedPath = normalizeRelative(path);
     const value = snap.auxiliaryFiles?.find(
@@ -1447,9 +1444,11 @@ export class SnapController extends BaseController<
    */
   async clearState() {
     const snapIds = Object.keys(this.state.snaps);
-    snapIds.forEach((snapId) => {
-      this.#closeAllConnections(snapId);
-    });
+    if (this.#closeAllConnections) {
+      snapIds.forEach((snapId) => {
+        this.#closeAllConnections?.(snapId);
+      });
+    }
 
     await this.messagingSystem.call('ExecutionService:terminateAllSnaps');
     snapIds.forEach((snapId) => this.#revokeAllSnapPermissions(snapId));
@@ -2128,7 +2127,7 @@ export class SnapController extends BaseController<
   async #add(args: AddSnapArgs): Promise<PersistedSnap> {
     const { id: snapId, location, versionRange } = args;
 
-    this.#setupRuntime(snapId, { sourceCode: null, state: null });
+    this.#setupRuntime(snapId);
     const runtime = this.#getRuntimeExpect(snapId);
     if (!runtime.installPromise) {
       log(`Adding snap: ${snapId}`);
@@ -2174,6 +2173,7 @@ export class SnapController extends BaseController<
     }
 
     try {
+      const runtime = this.#getRuntimeExpect(snapId);
       const result = await this.#executeWithTimeout(
         this.messagingSystem.call('ExecutionService:executeSnap', {
           ...snapData,
@@ -2181,6 +2181,8 @@ export class SnapController extends BaseController<
         }),
       );
       this.#transition(snapId, SnapStatusEvents.Start);
+      // We treat the initialization of the snap as the first request, for idle timing purposes.
+      runtime.lastRequest = Date.now();
       return result;
     } catch (error) {
       await this.#terminateSnap(snapId);
@@ -2284,10 +2286,13 @@ export class SnapController extends BaseController<
       `Invalid source code for snap "${snapId}".`,
     );
 
-    const auxiliaryFiles = rawAuxiliaryFiles.map((file) => ({
-      path: file.path,
-      value: file.toString('base64'),
-    }));
+    const auxiliaryFiles = rawAuxiliaryFiles.map((file) => {
+      assert(typeof file.data.base64 === 'string');
+      return {
+        path: file.path,
+        value: file.data.base64,
+      };
+    });
 
     const snapsState = this.state.snaps;
 
@@ -2371,6 +2376,14 @@ export class SnapController extends BaseController<
       const auxiliaryFiles = await getSnapFiles(
         location,
         manifest.result.source.files,
+      );
+
+      await Promise.all(
+        auxiliaryFiles.map(async (file) => {
+          // This should still be safe
+          // eslint-disable-next-line require-atomic-updates
+          file.data.base64 = await encodeBase64(file);
+        }),
       );
 
       const localizationFiles = await getSnapFiles(
@@ -2894,10 +2907,7 @@ export class SnapController extends BaseController<
     return runtime;
   }
 
-  #setupRuntime(
-    snapId: SnapId,
-    data: { sourceCode: string | null; state: string | null },
-  ) {
+  #setupRuntime(snapId: SnapId) {
     if (this.#snapsRuntimeData.has(snapId)) {
       return;
     }
@@ -2921,7 +2931,6 @@ export class SnapController extends BaseController<
       pendingInboundRequests: [],
       pendingOutboundRequests: 0,
       interpreter,
-      ...data,
     });
   }
 

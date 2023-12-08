@@ -19,7 +19,7 @@ Along with other permissions, the manifest of this snap includes the
 ```json
 {
   "initialPermissions": {
-    "endowment:network-access": {}
+    "endowment:transaction-insight": {}
   }
 }
 ```

@@ -41,7 +41,13 @@ import {
   getMockSnapFilesWithUpdatedChecksum,
 } from '@metamask/snaps-utils/test-utils';
 import type { SemVerRange, SemVerVersion } from '@metamask/utils';
-import { assert, AssertionError, stringToBytes } from '@metamask/utils';
+import {
+  assert,
+  AssertionError,
+  base64ToBytes,
+  stringToBytes,
+} from '@metamask/utils';
+import { File } from 'buffer';
 import fetchMock from 'jest-fetch-mock';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { pipeline } from 'readable-stream';
@@ -1139,6 +1145,28 @@ describe('SnapController', () => {
       }),
     ).rejects.toThrow(/request timed out/u);
     expect(snapController.state.snaps[snap.id].status).toBe('crashed');
+
+    snapController.destroy();
+  });
+
+  it('terminates idle snap that hasnt had any requests', async () => {
+    const options = getSnapControllerOptions({
+      idleTimeCheckInterval: 10,
+      maxIdleTime: 50,
+      state: {
+        snaps: getPersistedSnapsState(),
+      },
+    });
+
+    const snapController = getSnapController(options);
+    const snap = snapController.getExpect(MOCK_SNAP_ID);
+
+    await snapController.startSnap(snap.id);
+    expect(snapController.state.snaps[snap.id].status).toBe('running');
+
+    await sleep(100);
+
+    expect(snapController.state.snaps[snap.id].status).toBe('stopped');
 
     snapController.destroy();
   });
@@ -6577,6 +6605,25 @@ describe('SnapController', () => {
     });
 
     it('supports hex encoding', async () => {
+      fetchMock.disableMocks();
+
+      // We can remove this once we drop Node 18
+      Object.defineProperty(globalThis, 'File', {
+        value: File,
+      });
+
+      // Because jest-fetch-mock replaces native fetch, we mock it here
+      Object.defineProperty(globalThis, 'fetch', {
+        value: async (dataUrl: string) => {
+          const base64 = dataUrl.replace(
+            'data:application/octet-stream;base64,',
+            '',
+          );
+          const u8 = base64ToBytes(base64);
+          return new File([u8], '');
+        },
+      });
+
       const auxiliaryFile = new VirtualFile({
         path: 'src/foo.json',
         value: stringToBytes('{ "foo" : "bar" }'),
@@ -6612,6 +6659,8 @@ describe('SnapController', () => {
           AuxiliaryFileEncoding.Hex,
         ),
       ).toStrictEqual(auxiliaryFile.toString('hex'));
+
+      fetchMock.enableMocks();
 
       snapController.destroy();
     });

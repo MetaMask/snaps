@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-execution-environments",
-  "version": "3.4.1",
+  "version": "3.4.2",
   "description": "Snap sandbox environments for executing SES javascript",
   "repository": {
     "type": "git",
@@ -47,7 +47,7 @@
     "@metamask/json-rpc-engine": "^7.3.0",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/post-message-stream": "^7.0.0",
-    "@metamask/providers": "^14.0.1",
+    "@metamask/providers": "^14.0.2",
     "@metamask/rpc-errors": "^6.1.0",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
