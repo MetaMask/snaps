@@ -1,13 +1,8 @@
-import { assert, stringToBytes } from '@metamask/utils';
+import { assert } from '@metamask/utils';
 
 /**
- * A Webpack loader that inlines the WASM module as a `Uint8Array`. This makes
- * it possible to import the WASM module directly, and use it with the
- * `WebAssembly.instantiate` function.
- *
- * This is useful, because snaps are not allowed to import assets from outside
- * of their package. This loader allows you to inline the WASM module as a
- * `Uint8Array`, which can then be passed to `WebAssembly.instantiate`.
+ * A Webpack loader that synchronously loads the WASM module. This makes it
+ * possible to import the WASM module directly.
  *
  * @param source - The WASM module as a string.
  * @returns A string that exports the WASM module as a `Uint8Array`.
@@ -15,19 +10,22 @@ import { assert, stringToBytes } from '@metamask/utils';
  * ```ts
  * import wasm from './program.wasm';
  *
- * const { instance } = await WebAssembly.instantiate(wasm, {});
  * // Do something with the WASM module...
  * ```
  */
 export default function loader(source: unknown) {
-  assert(typeof source === 'string', 'Expected source to be a string.');
+  assert(source instanceof Uint8Array, 'Expected source to be a Uint8Array.');
 
-  const bytes = stringToBytes(source);
   return `
-    const bytes = new Uint8Array(${JSON.stringify(Array.from(bytes))});
+    const bytes = new Uint8Array(${JSON.stringify(Array.from(source))});
     const module = new WebAssembly.Module(bytes);
     const instance = new WebAssembly.Instance(module, {});
 
     export default instance.exports;
   `;
 }
+
+// By setting `raw` to `true`, we are telling Webpack to provide the source as a
+// `Uint8Array` instead of converting it to a string. This allows us to avoid
+// having to convert the source back to a `Uint8Array` in the loader.
+export const raw = true;
