@@ -17,5 +17,5 @@ declare module '*.wasm' {
   type Program = Awaited<ReturnType<typeof instantiate>>;
 
   const module: Program;
-  export default module;
+  export = module;
 }
