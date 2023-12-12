@@ -5,6 +5,7 @@ import type {
   InvokeKeyringParams,
   InvokeKeyringResult,
   InvokeSnapParams,
+  SnapId,
 } from '@metamask/snaps-sdk';
 import type { Snap, SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { HandlerType, WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
@@ -42,7 +43,7 @@ export type InvokeKeyringHooks = {
     origin,
     handler,
     request,
-  }: SnapRpcHookArgs & { snapId: string }) => Promise<unknown>;
+  }: SnapRpcHookArgs & { snapId: SnapId }) => Promise<unknown>;
 
   getSnap: (snapId: string) => Snap | undefined;
 

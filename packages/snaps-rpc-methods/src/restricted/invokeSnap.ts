@@ -11,6 +11,7 @@ import type {
   InvokeSnapResult,
   RequestSnapsParams,
   RequestSnapsResult,
+  SnapId,
 } from '@metamask/snaps-sdk';
 import type { Snap, SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { HandlerType, SnapCaveatType } from '@metamask/snaps-utils';
@@ -43,7 +44,7 @@ export type InvokeSnapMethodHooks = {
     origin,
     handler,
     request,
-  }: SnapRpcHookArgs & { snapId: string }) => Promise<unknown>;
+  }: SnapRpcHookArgs & { snapId: SnapId }) => Promise<unknown>;
 };
 
 type InvokeSnapSpecificationBuilderOptions = {
