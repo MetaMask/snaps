@@ -1,14 +1,27 @@
-import type { BasePostMessageStream } from '@metamask/post-message-stream';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
-import { createWindow, logError } from '@metamask/snaps-utils';
+import { createWindow, logError, logInfo } from '@metamask/snaps-utils';
 import type { JsonRpcRequest } from '@metamask/utils';
 import { assert } from '@metamask/utils';
 
-type ExecutorJob = {
+import type { ProxyMessageStream } from './ProxyMessageStream';
+
+type IJob = {
   id: string;
   window: Window;
   stream: WindowPostMessageStream;
+  terminateNext?: string;
 };
+
+type ExecutionControllerArgs = {
+  proxyService: ProxyMessageStream;
+};
+
+/**
+ * The URL of the iframe execution environment.
+ * TODO: This should be configurable, received via params.
+ */
+const IFRAME_URL =
+  'https://metamask.github.io/iframe-execution-environment/0.11.1';
 
 /**
  * A snap executor using the Webview API.
@@ -25,24 +38,24 @@ type ExecutorJob = {
  * @see https://github.com/react-native-webview/react-native-webview
  */
 export class WebviewSnapExecutor {
-  readonly #stream: BasePostMessageStream;
+  readonly #jobs: Record<string, IJob>;
 
-  readonly jobs: Record<string, ExecutorJob> = {};
+  readonly #proxyService: ProxyMessageStream;
 
   /**
    * Initialize the executor with the given stream. This is a wrapper around the
    * constructor.
    *
-   * @param stream - The stream to use for communication.
+   * @param proxyService - The proxy service to use for communication.
    * @returns The initialized executor.
    */
-  static initialize(stream: BasePostMessageStream) {
-    return new WebviewSnapExecutor(stream);
+  static initialize(proxyService: ProxyMessageStream): WebviewSnapExecutor {
+    return new WebviewSnapExecutor({ proxyService });
   }
 
-  constructor(stream: BasePostMessageStream) {
-    this.#stream = stream;
-    this.#stream.on('data', this.#onData.bind(this));
+  constructor({ proxyService }: ExecutionControllerArgs) {
+    this.#jobs = {};
+    this.#proxyService = proxyService;
   }
 
   /**
@@ -53,25 +66,17 @@ export class WebviewSnapExecutor {
    * @param data - The message data.
    * @param data.data - The JSON-RPC request.
    * @param data.jobId - The job ID.
-   * @param data.extra - Extra data.
-   * @param data.extra.frameUrl - The URL to load in the iframe.
    */
-  #onData(data: {
-    data: JsonRpcRequest;
-    jobId: string;
-    extra: { frameUrl: string };
-  }) {
-    const {
-      jobId,
-      extra: { frameUrl },
-      data: request,
-    } = data;
+  #onData(data: { data: JsonRpcRequest; jobId: string }) {
+    const { jobId, data: request } = data;
 
-    if (!this.jobs[jobId]) {
+    logInfo('[WEBVIEW.SNAP.EXECUTOR - onData]:', data);
+
+    if (!this.#jobs[jobId]) {
       // This ensures that a job is initialized before it is used. To avoid
       // code duplication, we call the `#onData` method again, which will
       // run the rest of the logic after initialization.
-      this.#initializeJob(jobId, frameUrl)
+      this.#initializeJob(jobId)
         .then(() => {
           this.#onData(data);
         })
@@ -84,22 +89,29 @@ export class WebviewSnapExecutor {
 
     // This is a method specific to the `WebviewSnapExecutor`, as the service
     // itself does not have access to the iframes directly.
-    if (request.method === 'terminateJob') {
+    if (request.method === 'terminate') {
       this.#terminateJob(jobId);
       return;
     }
 
-    this.jobs[jobId].stream.write(request);
+    logInfo('[WEBVIEW.SNAP.EXECUTOR - request]:', request);
+
+    this.#jobs[jobId].stream.write(request);
   }
 
   /**
    * Create a new iframe and set up a stream to communicate with it.
    *
    * @param jobId - The job ID.
-   * @param frameUrl - The URL to load in the iframe.
    */
-  async #initializeJob(jobId: string, frameUrl: string): Promise<ExecutorJob> {
-    const window = await createWindow(frameUrl, jobId);
+  async #initializeJob(jobId: string): Promise<IJob> {
+    const window = await createWindow(IFRAME_URL, jobId);
+
+    logInfo('[WEBVIEW.SNAP.EXECUTOR - window elements]:', {
+      IFRAME_URL,
+      jobId,
+    });
+
     const jobStream = new WindowPostMessageStream({
       name: 'parent',
       target: 'child',
@@ -107,13 +119,23 @@ export class WebviewSnapExecutor {
       targetOrigin: '*',
     });
 
+    logInfo('[WEBVIEW.SNAP.EXECUTOR - jobStream]:', Boolean(jobStream));
+
     // Write messages from the iframe to the parent, wrapped with the job ID.
-    jobStream.on('data', (data) => {
-      this.#stream.write({ data, jobId });
+    jobStream.on('data', (data: any) => {
+      this.#proxyService.write({ data, jobId });
+      this.#handleJobDeletion({ data, jobId });
     });
 
-    this.jobs[jobId] = { id: jobId, window, stream: jobStream };
-    return this.jobs[jobId];
+    this.#jobs[jobId] = { id: jobId, window, stream: jobStream };
+    return this.#jobs[jobId];
+  }
+
+  #handleJobDeletion({ jobId, data }: { jobId: string; data: any }): void {
+    const job = this.#jobs[jobId];
+    if (job?.terminateNext && job?.terminateNext === data?.data?.id) {
+      this.#terminateJob(jobId);
+    }
   }
 
   /**
@@ -123,13 +145,13 @@ export class WebviewSnapExecutor {
    * @param jobId - The job ID.
    */
   #terminateJob(jobId: string) {
-    assert(this.jobs[jobId], `Job "${jobId}" not found.`);
+    assert(this.#jobs[jobId], `Job "${jobId}" not found.`);
 
     const iframe = document.getElementById(jobId);
     assert(iframe, `Iframe with ID "${jobId}" not found.`);
 
     iframe.remove();
-    this.jobs[jobId].stream.destroy();
-    delete this.jobs[jobId];
+    this.#jobs[jobId].stream.destroy();
+    delete this.#jobs[jobId];
   }
 }
