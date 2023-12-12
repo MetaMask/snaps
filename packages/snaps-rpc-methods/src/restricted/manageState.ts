@@ -5,7 +5,11 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { ManageStateParams, ManageStateResult } from '@metamask/snaps-sdk';
+import type {
+  ManageStateParams,
+  ManageStateResult,
+  SnapId,
+} from '@metamask/snaps-sdk';
 import { ManageStateOperation } from '@metamask/snaps-sdk';
 import { STATE_ENCRYPTION_MAGIC_VALUE, parseJson } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, Hex } from '@metamask/utils';
@@ -35,14 +39,14 @@ export type ManageStateMethodHooks = {
   /**
    * A function that clears the state of the requesting Snap.
    */
-  clearSnapState: (snapId: string, encrypted: boolean) => void;
+  clearSnapState: (snapId: SnapId, encrypted: boolean) => void;
 
   /**
    * A function that gets the encrypted state of the requesting Snap.
    *
    * @returns The current state of the Snap.
    */
-  getSnapState: (snapId: string, encrypted: boolean) => string;
+  getSnapState: (snapId: SnapId, encrypted: boolean) => string;
 
   /**
    * A function that updates the state of the requesting Snap.
@@ -50,7 +54,7 @@ export type ManageStateMethodHooks = {
    * @param newState - The new state of the Snap.
    */
   updateSnapState: (
-    snapId: string,
+    snapId: SnapId,
     newState: string,
     encrypted: boolean,
   ) => void;
@@ -277,13 +281,15 @@ export function getManageStateImplementation({
       await getUnlockPromise(true);
     }
 
+    const snapId = origin as SnapId;
+
     switch (validatedParams.operation) {
       case ManageStateOperation.ClearState:
-        clearSnapState(origin, shouldEncrypt);
+        clearSnapState(snapId, shouldEncrypt);
         return null;
 
       case ManageStateOperation.GetState: {
-        const state = getSnapState(origin, shouldEncrypt);
+        const state = getSnapState(snapId, shouldEncrypt);
         if (state === null) {
           return state;
         }
@@ -303,11 +309,11 @@ export function getManageStateImplementation({
               state: validatedParams.newState,
               encryptFunction: encrypt,
               mnemonicPhrase: await getMnemonic(),
-              snapId: origin,
+              snapId,
             })
           : JSON.stringify(validatedParams.newState);
 
-        updateSnapState(origin, finalizedState, shouldEncrypt);
+        updateSnapState(snapId, finalizedState, shouldEncrypt);
         return null;
       }
 
