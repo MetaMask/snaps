@@ -10,7 +10,7 @@ import type { LoaderDefinitionFunction } from 'webpack';
  * @param importMap - The import map for the WASM module.
  * @returns The imports code for the WASM module.
  */
-function getImports(importMap: Record<string, string[]>) {
+export function getImports(importMap: Record<string, string[]>) {
   return Object.entries(importMap)
     .map(
       ([moduleName, exportNames]) =>
@@ -28,7 +28,7 @@ function getImports(importMap: Record<string, string[]>) {
  * @param importMap - The import map for the WASM module.
  * @returns The imports code for the WASM module.
  */
-function getModuleImports(importMap: Record<string, string[]>) {
+export function getModuleImports(importMap: Record<string, string[]>) {
   return Object.entries(importMap)
     .map(
       ([moduleName, exportNames]) =>
@@ -45,7 +45,7 @@ function getModuleImports(importMap: Record<string, string[]>) {
  * @param descriptors - The export descriptors from the WASM module.
  * @returns The exports code for the WASM module.
  */
-function getExports(descriptors: WebAssembly.ModuleExportDescriptor[]) {
+export function getExports(descriptors: WebAssembly.ModuleExportDescriptor[]) {
   return descriptors
     .map((descriptor) => {
       if (descriptor.name === 'default') {
