@@ -194,5 +194,6 @@ export function getSlip44ProtocolName(coinType: number | string) {
   if (String(coinType) === '1') {
     return 'Test Networks';
   }
+
   return slip44[coinType as keyof typeof slip44]?.name ?? null;
 }
