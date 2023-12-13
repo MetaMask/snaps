@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `getSnapDerivationPathName` and `getSlip44ProtocolName` to be shared across clients ([#2033](https://github.com/MetaMask/snaps/pull/2033))
 
 ### Changed
-- Bump `snaps-registry` ([#2020](https://hub.com/MetaMask/snaps/pull/2020))git
+- Bump `snaps-registry` ([#2020](https://hub.com/MetaMask/snaps/pull/2020))
 
 ## [5.0.1]
 ### Changed
