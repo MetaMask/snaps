@@ -5,6 +5,7 @@
     "@lavamoat/preinstall-always-fail",
     "@metamask/auto-changelog",
     "@metamask/eslint-*",
+    "@metamask/wasm-example-snap",
     "@types/*",
     "@typescript-eslint/*",
     "eslint-config-*",
