@@ -531,8 +531,8 @@ type SnapControllerMessenger = RestrictedControllerMessenger<
 >;
 
 type FeatureFlags = {
-  requireAllowlist?: true;
-  allowLocalSnaps?: true;
+  requireAllowlist?: boolean;
+  allowLocalSnaps?: boolean;
 };
 
 type SnapControllerArgs = {
@@ -540,23 +540,23 @@ type SnapControllerArgs = {
    * A teardown function that allows the host to clean up its instrumentation
    * for a running snap.
    */
-  closeAllConnections: CloseAllConnectionsFunction;
+  closeAllConnections?: CloseAllConnectionsFunction;
 
   /**
    * A list of permissions that are allowed to be dynamic, meaning they can be revoked from the snap whenever.
    */
-  dynamicPermissions: string[];
+  dynamicPermissions?: string[];
 
   /**
    * The names of endowment permissions whose values are the names of JavaScript
    * APIs that will be added to the snap execution environment at runtime.
    */
-  environmentEndowmentPermissions: string[];
+  environmentEndowmentPermissions?: string[];
 
   /**
    * Excluded permissions with its associated error message used to forbid certain permssions.
    */
-  excludedPermissions: Record<string, string>;
+  excludedPermissions?: Record<string, string>;
 
   /**
    * The function that will be used by the controller fo make network requests.
@@ -666,7 +666,7 @@ export class SnapController extends BaseController<
   SnapControllerState,
   SnapControllerMessenger
 > {
-  #closeAllConnections: CloseAllConnectionsFunction;
+  #closeAllConnections?: CloseAllConnectionsFunction;
 
   #dynamicPermissions: string[];
 
@@ -1265,7 +1265,7 @@ export class SnapController extends BaseController<
     runtime.pendingOutboundRequests = 0;
     try {
       if (this.isRunning(snapId)) {
-        this.#closeAllConnections(snapId);
+        this.#closeAllConnections?.(snapId);
         await this.#terminateSnap(snapId);
       }
     } finally {
@@ -1444,9 +1444,11 @@ export class SnapController extends BaseController<
    */
   async clearState() {
     const snapIds = Object.keys(this.state.snaps);
-    snapIds.forEach((snapId) => {
-      this.#closeAllConnections(snapId);
-    });
+    if (this.#closeAllConnections) {
+      snapIds.forEach((snapId) => {
+        this.#closeAllConnections?.(snapId);
+      });
+    }
 
     await this.messagingSystem.call('ExecutionService:terminateAllSnaps');
     snapIds.forEach((snapId) => this.#revokeAllSnapPermissions(snapId));
