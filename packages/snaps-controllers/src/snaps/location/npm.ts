@@ -50,7 +50,8 @@ export interface NpmOptions {
   allowCustomRegistries?: boolean;
 }
 
-export class NpmLocation implements SnapLocation {
+// Base class for NPM implementation, useful for extending with custom NPM fetching logic
+export abstract class BaseNpmLocation implements SnapLocation {
   private readonly meta: NpmMeta;
 
   private validatedManifest?: VirtualFile<SnapManifest>;
@@ -169,68 +170,139 @@ export class NpmLocation implements SnapLocation {
     const resolvedVersion = await this.meta.resolveVersion(
       this.meta.requestedRange,
     );
-    const [tarballResponse, actualVersion] = await fetchNpmTarball(
+
+    const [files, actualVersion] = await this.fetchNpmTarball(
       this.meta.packageName,
       resolvedVersion,
       this.meta.registry,
       this.meta.fetch,
     );
+
+    this.files = files;
     this.meta.version = actualVersion;
-
-    let canonicalBase = 'npm://';
-    if (this.meta.registry.username !== '') {
-      canonicalBase += this.meta.registry.username;
-      if (this.meta.registry.password !== '') {
-        canonicalBase += `:${this.meta.registry.password}`;
-      }
-      canonicalBase += '@';
-    }
-    canonicalBase += this.meta.registry.host;
-
-    // TODO(ritave): Lazily extract files instead of up-front extracting all of them
-    //               We would need to replace tar-stream package because it requires immediate consumption of streams.
-    await new Promise<void>((resolve, reject) => {
-      this.files = new Map();
-
-      const tarballStream = createTarballStream(
-        `${canonicalBase}/${this.meta.packageName}/`,
-        this.files,
-      );
-
-      // The "gz" in "tgz" stands for "gzip". The tarball needs to be decompressed
-      // before we can actually grab any files from it.
-      // To prevent recursion-based zip bombs, we should not allow recursion here.
-
-      // If native decompression stream is available we use that, otherwise fallback to zlib
-      if ('DecompressionStream' in globalThis) {
-        const decompressionStream = new DecompressionStream('gzip');
-        const decompressedStream =
-          tarballResponse.pipeThrough(decompressionStream);
-
-        pipeline(
-          getNodeStream(decompressedStream),
-          tarballStream,
-          (error: unknown) => {
-            error ? reject(error) : resolve();
-          },
-        );
-        return;
-      }
-
-      pipeline(
-        getNodeStream(tarballResponse),
-        createGunzip(),
-        tarballStream,
-        (error: unknown) => {
-          error ? reject(error) : resolve();
-        },
-      );
-    });
   }
+
+  /**
+   * Fetches the tarball (`.tgz` file) of the specified package and version from
+   * an npm registry.
+   *
+   * @param packageName - The name of the package whose tarball to fetch.
+   * @param versionRange - The SemVer range of the package to fetch. The highest
+   * version satisfying the range will be fetched.
+   * @param registryUrl - The URL of the npm registry to fetch the tarball from.
+   * @param fetchFunction - The fetch function to use. Defaults to the global
+   * {@link fetch}. Useful for Node.js compatibility.
+   * @returns A tuple of the files for the package tarball and the
+   * actual version of the package.
+   * @throws If fetching the tarball fails.
+   */
+  abstract fetchNpmTarball(
+    packageName: string,
+    versionRange: SemVerRange,
+    registryUrl: URL,
+    fetchFunction: typeof fetch,
+  ): Promise<[Map<string, VirtualFile>, SemVerVersion]>;
 }
 
 // Safety limit for tarballs, 250 MB in bytes
 const TARBALL_SIZE_SAFETY_LIMIT = 262144000;
+
+// Main NPM implementation, contains a browser tarball fetching implementation.
+export class NpmLocation extends BaseNpmLocation {
+  /**
+   * Fetches the tarball (`.tgz` file) of the specified package and version from
+   * an npm registry.
+   *
+   * @param packageName - The name of the package whose tarball to fetch.
+   * @param versionRange - The SemVer range of the package to fetch. The highest
+   * version satisfying the range will be fetched.
+   * @param registryUrl - The URL of the npm registry to fetch the tarball from.
+   * @param fetchFunction - The fetch function to use. Defaults to the global
+   * {@link fetch}. Useful for Node.js compatibility.
+   * @returns A tuple of the files for the package tarball and the
+   * actual version of the package.
+   * @throws If fetching the tarball fails.
+   */
+  async fetchNpmTarball(
+    packageName: string,
+    versionRange: SemVerRange,
+    registryUrl: URL,
+    fetchFunction: typeof fetch,
+  ): Promise<[Map<string, VirtualFile<unknown>>, SemVerVersion]> {
+    const { tarballURL, targetVersion } = await resolveNpmVersion(
+      packageName,
+      versionRange,
+      registryUrl,
+      fetchFunction,
+    );
+
+    if (!isValidUrl(tarballURL) || !tarballURL.toString().endsWith('.tgz')) {
+      throw new Error(
+        `Failed to find valid tarball URL in NPM metadata for package "${packageName}".`,
+      );
+    }
+
+    // Override the tarball hostname/protocol with registryUrl hostname/protocol
+    const newTarballUrl = new URL(tarballURL);
+    newTarballUrl.hostname = registryUrl.hostname;
+    newTarballUrl.protocol = registryUrl.protocol;
+
+    // Perform a raw fetch because we want the Response object itself.
+    const tarballResponse = await fetchFunction(newTarballUrl.toString());
+    if (!tarballResponse.ok || !tarballResponse.body) {
+      throw new Error(`Failed to fetch tarball for package "${packageName}".`);
+    }
+    // We assume that NPM is a good actor and provides us with a valid `content-length` header.
+    const tarballSizeString = tarballResponse.headers.get('content-length');
+    assert(tarballSizeString, 'Snap tarball has invalid content-length');
+    const tarballSize = parseInt(tarballSizeString, 10);
+    assert(
+      tarballSize <= TARBALL_SIZE_SAFETY_LIMIT,
+      'Snap tarball exceeds size limit',
+    );
+    const tarballResponseBody = tarballResponse.body;
+    return [
+      await new Promise((resolve, reject) => {
+        const files = new Map();
+
+        const tarballStream = createTarballStream(
+          getNpmCanonicalBasePath(registryUrl, packageName),
+          files,
+        );
+
+        // The "gz" in "tgz" stands for "gzip". The tarball needs to be decompressed
+        // before we can actually grab any files from it.
+        // To prevent recursion-based zip bombs, we should not allow recursion here.
+
+        // If native decompression stream is available we use that, otherwise fallback to zlib
+        if ('DecompressionStream' in globalThis) {
+          const decompressionStream = new DecompressionStream('gzip');
+          const decompressedStream =
+            tarballResponseBody.pipeThrough(decompressionStream);
+
+          pipeline(
+            getNodeStream(decompressedStream),
+            tarballStream,
+            (error: unknown) => {
+              error ? reject(error) : resolve(files);
+            },
+          );
+          return;
+        }
+
+        pipeline(
+          getNodeStream(tarballResponseBody),
+          createGunzip(),
+          tarballStream,
+          (error: unknown) => {
+            error ? reject(error) : resolve(files);
+          },
+        );
+      }),
+      targetVersion,
+    ];
+  }
+}
 
 // Incomplete type
 export type PartialNpmMetadata = {
@@ -281,6 +353,26 @@ export async function fetchNpmMetadata(
 }
 
 /**
+ * Gets the canonical base path for an NPM snap.
+ *
+ * @param registryUrl - A registry URL.
+ * @param packageName - A package name.
+ * @returns The canonical base path.
+ */
+export function getNpmCanonicalBasePath(registryUrl: URL, packageName: string) {
+  let canonicalBase = 'npm://';
+  if (registryUrl.username !== '') {
+    canonicalBase += registryUrl.username;
+    if (registryUrl.password !== '') {
+      canonicalBase += `:${registryUrl.password}`;
+    }
+    canonicalBase += '@';
+  }
+  canonicalBase += registryUrl.host;
+  return `${canonicalBase}${registryUrl.host}/${packageName}/`;
+}
+
+/**
  * Determine if a registry URL is NPM.
  *
  * @param registryUrl - A registry url.
@@ -303,7 +395,7 @@ function isNPM(registryUrl: URL) {
  * @returns An object containing the resolved version and a URL for its tarball.
  * @throws If fetching the metadata fails.
  */
-async function resolveNpmVersion(
+export async function resolveNpmVersion(
   packageName: string,
   versionRange: SemVerRange,
   registryUrl: URL,
@@ -341,61 +433,6 @@ async function resolveNpmVersion(
   const tarballURL = packageMetadata?.versions?.[targetVersion]?.dist?.tarball;
 
   return { tarballURL, targetVersion };
-}
-
-/**
- * Fetches the tarball (`.tgz` file) of the specified package and version from
- * the public npm registry.
- *
- * @param packageName - The name of the package whose tarball to fetch.
- * @param versionRange - The SemVer range of the package to fetch. The highest
- * version satisfying the range will be fetched.
- * @param registryUrl - The URL of the npm registry to fetch the tarball from.
- * @param fetchFunction - The fetch function to use. Defaults to the global
- * {@link fetch}. Useful for Node.js compatibility.
- * @returns A tuple of the {@link Response} for the package tarball and the
- * actual version of the package.
- * @throws If fetching the tarball fails.
- */
-async function fetchNpmTarball(
-  packageName: string,
-  versionRange: SemVerRange,
-  registryUrl: URL,
-  fetchFunction: typeof fetch,
-): Promise<[ReadableStream, SemVerVersion]> {
-  const { tarballURL, targetVersion } = await resolveNpmVersion(
-    packageName,
-    versionRange,
-    registryUrl,
-    fetchFunction,
-  );
-
-  if (!isValidUrl(tarballURL) || !tarballURL.toString().endsWith('.tgz')) {
-    throw new Error(
-      `Failed to find valid tarball URL in NPM metadata for package "${packageName}".`,
-    );
-  }
-
-  // Override the tarball hostname/protocol with registryUrl hostname/protocol
-  const newRegistryUrl = new URL(registryUrl);
-  const newTarballUrl = new URL(tarballURL);
-  newTarballUrl.hostname = newRegistryUrl.hostname;
-  newTarballUrl.protocol = newRegistryUrl.protocol;
-
-  // Perform a raw fetch because we want the Response object itself.
-  const tarballResponse = await fetchFunction(newTarballUrl.toString());
-  if (!tarballResponse.ok || !tarballResponse.body) {
-    throw new Error(`Failed to fetch tarball for package "${packageName}".`);
-  }
-  // We assume that NPM is a good actor and provides us with a valid `content-length` header.
-  const tarballSizeString = tarballResponse.headers.get('content-length');
-  assert(tarballSizeString, 'Snap tarball has invalid content-length');
-  const tarballSize = parseInt(tarballSizeString, 10);
-  assert(
-    tarballSize <= TARBALL_SIZE_SAFETY_LIMIT,
-    'Snap tarball exceeds size limit',
-  );
-  return [tarballResponse.body, targetVersion];
 }
 
 /**
