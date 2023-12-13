@@ -5048,6 +5048,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/slip44@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@metamask/slip44@npm:3.1.0"
+  checksum: 63de4b85448990bde7760704d2f646ff33b34b22799b570c0bb1f7f08b1ebea9784495759611979ca4a5872094b093b63c28c6f6d94aa614cbd692576fcb134f
+  languageName: node
+  linkType: hard
+
 "@metamask/snaps-browserify-plugin@workspace:^, @metamask/snaps-browserify-plugin@workspace:packages/snaps-browserify-plugin":
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-browserify-plugin@workspace:packages/snaps-browserify-plugin"
@@ -5672,6 +5679,7 @@ __metadata:
     "@metamask/permission-controller": ^6.0.0
     "@metamask/post-message-stream": ^7.0.0
     "@metamask/rpc-errors": ^6.1.0
+    "@metamask/slip44": ^3.1.0
     "@metamask/snaps-registry": ^3.0.0
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/utils": ^8.2.1
