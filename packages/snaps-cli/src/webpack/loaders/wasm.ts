@@ -63,15 +63,17 @@ function getExports(descriptors: WebAssembly.ModuleExportDescriptor[]) {
  * A Webpack loader that synchronously loads the WASM module. This makes it
  * possible to import the WASM module directly.
  *
- * @param source - The WASM module as a string.
- * @returns A string that exports the WASM module as a `Uint8Array`.
+ * @param source - The WASM module as `Uint8Array`.
+ * @returns The WASM module as a JavaScript string.
  * @example
  * ```ts
- * import wasm from './program.wasm';
+ * import * as wasm from './program.wasm';
  *
  * // Do something with the WASM module...
  * ```
  */
+// Note: This function needs to be defined like this, so that Webpack can bind
+// `this` to the loader context, and TypeScript can infer the type of `this`.
 const loader: LoaderDefinitionFunction = async function loader(
   source: unknown,
 ) {
