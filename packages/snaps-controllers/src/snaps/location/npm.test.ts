@@ -5,7 +5,11 @@ import fetchMock from 'jest-fetch-mock';
 import path from 'path';
 import { Readable } from 'stream';
 
-import { NpmLocation } from './npm';
+import {
+  DEFAULT_NPM_REGISTRY,
+  NpmLocation,
+  getNpmCanonicalBasePath,
+} from './npm';
 
 fetchMock.enableMocks();
 
@@ -68,9 +72,17 @@ describe('NpmLocation', () => {
     );
 
     const manifest = await location.manifest();
-    const sourceCode = (
-      await location.fetch(manifest.result.source.location.npm.filePath)
-    ).toString();
+    expect(manifest.path).toBe('snap.manifest.json');
+    expect(manifest.data.canonicalPath).toBe(
+      'npm://registry.npmjs.cf/@metamask/template-snap/snap.manifest.json',
+    );
+    const sourceCode = await location.fetch(
+      manifest.result.source.location.npm.filePath,
+    );
+    expect(sourceCode.path).toBe('dist/bundle.js');
+    expect(sourceCode.data.canonicalPath).toBe(
+      'npm://registry.npmjs.cf/@metamask/template-snap/dist/bundle.js',
+    );
     assert(manifest.result.source.location.npm.iconPath);
     const svgIcon = (
       await location.fetch(manifest.result.source.location.npm.iconPath)
@@ -94,7 +106,7 @@ describe('NpmLocation', () => {
       ),
     );
 
-    expect(sourceCode).toStrictEqual(
+    expect(sourceCode.toString()).toStrictEqual(
       (
         await readFile(
           require.resolve('@metamask/template-snap/dist/bundle.js'),
@@ -105,6 +117,8 @@ describe('NpmLocation', () => {
     expect(svgIcon?.startsWith('<svg') && svgIcon.endsWith('</svg>')).toBe(
       true,
     );
+
+    expect(location.version).toBe(templateSnapVersion);
   });
 
   it('fetches a package tarball directly without fetching the metadata when possible', async () => {
@@ -170,6 +184,8 @@ describe('NpmLocation', () => {
     expect(svgIcon?.startsWith('<svg') && svgIcon.endsWith('</svg>')).toBe(
       true,
     );
+
+    expect(location.version).toBe(templateSnapVersion);
   });
 
   it('falls back to zlib if DecompressionStream is unavailable', async () => {
@@ -251,6 +267,50 @@ describe('NpmLocation', () => {
     );
   });
 
+  it('throws if fetching the NPM tarball fails', async () => {
+    const { version: templateSnapVersion } = JSON.parse(
+      (
+        await readFile(require.resolve('@metamask/template-snap/package.json'))
+      ).toString('utf8'),
+    );
+
+    const tarballRegistry = `https://registry.npmjs.org/@metamask/template-snap/-/template-snap-${templateSnapVersion}.tgz`;
+
+    const customFetchMock = jest.fn();
+
+    customFetchMock
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          'dist-tags': {
+            latest: templateSnapVersion,
+          },
+          versions: {
+            [templateSnapVersion]: {
+              dist: {
+                // return npmjs.org registry here so that we can check overriding it with npmjs.cf works
+                tarball: tarballRegistry,
+              },
+            },
+          },
+        }),
+      } as any)
+      .mockResolvedValue({
+        ok: false,
+        body: null,
+      } as any);
+
+    const location = new NpmLocation(new URL('npm:@metamask/template-snap'), {
+      versionRange: templateSnapVersion,
+      fetch: customFetchMock as typeof fetch,
+    });
+
+    await expect(location.manifest()).rejects.toThrow(
+      'Failed to fetch tarball for package "@metamask/template-snap"',
+    );
+  });
+
   it("can't use custom registries by default", () => {
     expect(
       () =>
@@ -287,4 +347,21 @@ describe('NpmLocation', () => {
   it.todo('sets canonical path properly');
   // TODO(ritave): Requires writing tarball packing utility out of scope for a hot-fix blocking release.
   it.todo('paths are normalized to remove "./" prefix');
+});
+
+describe('getNpmCanonicalBasePath', () => {
+  it('returns the default base path', () => {
+    expect(
+      getNpmCanonicalBasePath(DEFAULT_NPM_REGISTRY, '@metamask/example-snap'),
+    ).toBe('npm://registry.npmjs.org/@metamask/example-snap/');
+  });
+
+  it('returns a path for a custom registry', () => {
+    expect(
+      getNpmCanonicalBasePath(
+        new URL('https://foo:bar@registry.com/'),
+        '@metamask/example-snap',
+      ),
+    ).toBe('npm://foo:bar@registry.com/@metamask/example-snap/');
+  });
 });

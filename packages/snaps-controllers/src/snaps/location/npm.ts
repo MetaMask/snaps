@@ -340,7 +340,6 @@ export function getNpmCanonicalBasePath(registryUrl: URL, packageName: string) {
     }
     canonicalBase += '@';
   }
-  canonicalBase += registryUrl.host;
   return `${canonicalBase}${registryUrl.host}/${packageName}/`;
 }
 
