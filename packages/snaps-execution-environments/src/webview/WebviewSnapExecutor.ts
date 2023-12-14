@@ -1,3 +1,35 @@
+/* eslint-disable no-irregular-whitespace */
+
+/**
+ * WebviewSnapExecutor is a class that has only one responsibility. Manage jobs.
+ *
+ * Each job is associated with an iframe and a communication stream.
+ * The class uses the concept of private fields, denoted by #, which are only accessible within the class.
+ *
+ * The WebviewSnapExecutor class has two private fields: #jobs and #proxyService.
+ * The #jobs field is a record (an object with string keys and IJob values) that stores the jobs managed by the executor.
+ * The #proxyService field is an instance of ProxyMessageStream used for communication.
+ *
+ * The initialize static method is a factory method that creates a new instance of WebviewSnapExecutor.
+ * It takes a ProxyMessageStream as an argument and passes it to the constructor of WebviewSnapExecutor.
+ *
+ * The constructor of WebviewSnapExecutor takes an object with a proxyService property as an argument.
+ * It initializes the #jobs field as an empty object and the #proxyService field with the provided proxyService.
+ *
+ * The #onData method handles incoming messages from the WebviewExecutionService.
+ * It expects a jobId and a JSON-RPC request in the data property of the message.
+ * If the job with the given jobId doesn't exist, it initializes the job and then calls the #onData method again.
+ * If the request method is terminate, it terminates the job. Otherwise, it writes the request to the job's stream.
+ *
+ * The #initializeJob method creates a new iframe and sets up a stream to communicate with it.
+ * It also sets up a listener on the stream to write messages from the iframe to the parent and handle job deletion.
+ *
+ * The #handleJobDeletion method checks if a job should be terminated next and if so, it terminates the job.
+ *
+ * The #terminateJob method terminates a job with a given ID.
+ * It removes the iframe associated with the job, destroys the job's stream, and deletes the job from the #jobs record.
+ */
+
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { createWindow, logError, logInfo } from '@metamask/snaps-utils';
 import type { JsonRpcRequest } from '@metamask/utils';
@@ -20,8 +52,7 @@ type ExecutionControllerArgs = {
  * The URL of the iframe execution environment.
  * TODO: This should be configurable, received via params.
  */
-const IFRAME_URL =
-  'https://metamask.github.io/iframe-execution-environment/0.11.1';
+const IFRAME_URL = 'https://metamask.github.io/iframe-execution-environment';
 
 /**
  * A snap executor using the Webview API.
@@ -73,9 +104,6 @@ export class WebviewSnapExecutor {
     logInfo('[WEBVIEW.SNAP.EXECUTOR - onData]:', data);
 
     if (!this.#jobs[jobId]) {
-      // This ensures that a job is initialized before it is used. To avoid
-      // code duplication, we call the `#onData` method again, which will
-      // run the rest of the logic after initialization.
       this.#initializeJob(jobId)
         .then(() => {
           this.#onData(data);
@@ -87,8 +115,6 @@ export class WebviewSnapExecutor {
       return;
     }
 
-    // This is a method specific to the `WebviewSnapExecutor`, as the service
-    // itself does not have access to the iframes directly.
     if (request.method === 'terminate') {
       this.#terminateJob(jobId);
       return;
