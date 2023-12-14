@@ -20,9 +20,8 @@ import {
 import { createGunzip } from 'browserify-zlib';
 import concat from 'concat-stream';
 import getNpmTarballUrl from 'get-npm-tarball-url';
-import { pipeline } from 'readable-stream';
-import type { Readable, Writable } from 'readable-stream';
-import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
+import type { Writable } from 'readable-stream';
+import { pipeline, Readable } from 'readable-stream';
 import { extract as tarExtract } from 'tar-stream';
 
 import type { DetectSnapLocationOptions, SnapLocation } from './location';
@@ -406,7 +405,7 @@ const NPM_TARBALL_PATH_PREFIX = /^package\//u;
 
 /**
  * Converts a {@link ReadableStream} to a Node.js {@link Readable}
- * stream. Returns the stream directly if it is already a Node.js stream.
+ * stream.
  * We can't use the native Web {@link ReadableStream} directly because the
  * other stream libraries we use expect Node.js streams.
  *
@@ -414,11 +413,58 @@ const NPM_TARBALL_PATH_PREFIX = /^package\//u;
  * @returns The given stream as a Node.js Readable stream.
  */
 function getNodeStream(stream: ReadableStream): Readable {
-  if (typeof stream.getReader !== 'function') {
-    return stream as unknown as Readable;
-  }
+  // This section is greatly inspired by https://github.com/nodejs/node/blob/99f6084ef04dd868c7b894ca0fdbb5088773ca6c/lib/internal/webstreams/adapters.js#L512
+  const reader = stream.getReader();
 
-  return new ReadableWebToNodeStream(stream);
+  let closed = false;
+
+  const readable = new Readable({
+    read() {
+      reader
+        .read()
+        .then((chunk) => {
+          if (chunk.done) {
+            // EOF
+            readable.push(null);
+          } else {
+            readable.push(chunk.value);
+          }
+        })
+        .catch((error) => readable.destroy(error));
+    },
+
+    destroy(error, callback) {
+      /**
+       * Utility function for calling the callback once the reader has been closed.
+       */
+      function done() {
+        try {
+          callback(error);
+        } catch (innerError) {
+          process.nextTick(() => {
+            throw innerError;
+          });
+        }
+      }
+
+      if (!closed) {
+        reader.cancel(error).then(done).catch(done);
+        return;
+      }
+      done();
+    },
+  });
+
+  reader.closed
+    .then(() => {
+      closed = true;
+    })
+    .catch((error) => {
+      closed = true;
+      readable.destroy(error);
+    });
+
+  return readable;
 }
 
 /**
