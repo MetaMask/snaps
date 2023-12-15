@@ -206,7 +206,7 @@ export abstract class BaseNpmLocation implements SnapLocation {
 }
 
 // Safety limit for tarballs, 250 MB in bytes
-const TARBALL_SIZE_SAFETY_LIMIT = 262144000;
+export const TARBALL_SIZE_SAFETY_LIMIT = 262144000;
 
 // Main NPM implementation, contains a browser tarball fetching implementation.
 export class NpmLocation extends BaseNpmLocation {
@@ -235,7 +235,6 @@ export class NpmLocation extends BaseNpmLocation {
       tarballSize <= TARBALL_SIZE_SAFETY_LIMIT,
       'Snap tarball exceeds size limit',
     );
-    const tarballResponseBody = tarballResponse.body;
     return new Promise((resolve, reject) => {
       const files = new Map();
 
@@ -252,7 +251,8 @@ export class NpmLocation extends BaseNpmLocation {
       if ('DecompressionStream' in globalThis) {
         const decompressionStream = new DecompressionStream('gzip');
         const decompressedStream =
-          tarballResponseBody.pipeThrough(decompressionStream);
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          tarballResponse.body!.pipeThrough(decompressionStream);
 
         pipeline(
           getNodeStream(decompressedStream),
@@ -265,7 +265,8 @@ export class NpmLocation extends BaseNpmLocation {
       }
 
       pipeline(
-        getNodeStream(tarballResponseBody),
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        getNodeStream(tarballResponse.body!),
         createGunzip(),
         tarballStream,
         (error: unknown) => {
