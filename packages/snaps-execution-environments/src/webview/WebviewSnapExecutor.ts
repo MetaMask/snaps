@@ -87,6 +87,7 @@ export class WebviewSnapExecutor {
   constructor({ proxyService }: ExecutionControllerArgs) {
     this.#jobs = {};
     this.#proxyService = proxyService;
+    this.#proxyService.on('data', this.#onData.bind(this));
   }
 
   /**
