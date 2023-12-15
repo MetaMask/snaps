@@ -458,11 +458,18 @@
         "buffer": true
       }
     },
+    "external:../snaps-utils/src/iframe.ts": {
+      "globals": {
+        "document.body.appendChild": true,
+        "document.createElement": true
+      }
+    },
     "external:../snaps-utils/src/index.executionenv.ts": {
       "packages": {
         "external:../snaps-utils/src/errors.ts": true,
         "external:../snaps-utils/src/handler-types.ts": true,
         "external:../snaps-utils/src/handlers.ts": true,
+        "external:../snaps-utils/src/iframe.ts": true,
         "external:../snaps-utils/src/logging.ts": true,
         "external:../snaps-utils/src/namespace.ts": true,
         "external:../snaps-utils/src/types.ts": true
