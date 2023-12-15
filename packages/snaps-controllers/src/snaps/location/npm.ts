@@ -227,6 +227,7 @@ export class NpmLocation extends BaseNpmLocation {
         `Failed to fetch tarball for package "${this.meta.packageName}".`,
       );
     }
+
     // We assume that NPM is a good actor and provides us with a valid `content-length` header.
     const tarballSizeString = tarballResponse.headers.get('content-length');
     assert(tarballSizeString, 'Snap tarball has invalid content-length');
