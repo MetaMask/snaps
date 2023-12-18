@@ -1637,9 +1637,7 @@ export class SnapController extends BaseController<
 
     const existingCaveat = subjectPermissions?.[
       WALLET_SNAP_PERMISSION_KEY
-    ]?.caveats?.find((caveat) => caveat.type === SnapCaveatType.SnapIds) as
-      | Caveat<string, Json>
-      | undefined;
+    ]?.caveats?.find((caveat) => caveat.type === SnapCaveatType.SnapIds);
 
     const subjectHasSnap = Boolean(
       (existingCaveat?.value as Record<string, Json>)?.[snapId],
@@ -1673,7 +1671,7 @@ export class SnapController extends BaseController<
           },
         ],
       },
-    };
+    } as RequestedPermissions;
 
     this.messagingSystem.call('PermissionController:grantPermissions', {
       approvedPermissions,

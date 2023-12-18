@@ -190,7 +190,7 @@ export type SnapPermissions = InferMatching<
 export const SnapAuxilaryFilesStruct = array(string());
 
 // TODO: Consider typing this stricter?
-export const InitialConnectionsStruct = record(string(), object());
+export const InitialConnectionsStruct = record(string(), object({}));
 
 export type InitialConnections = Infer<typeof InitialConnectionsStruct>;
 
