@@ -52,7 +52,8 @@ type ExecutionControllerArgs = {
  * The URL of the iframe execution environment.
  * TODO: This should be configurable, received via params.
  */
-const IFRAME_URL = 'https://metamask.github.io/iframe-execution-environment';
+const IFRAME_URL =
+  'https://metamask.github.io/iframe-execution-environment/0.11.1';
 
 /**
  * A snap executor using the Webview API.
