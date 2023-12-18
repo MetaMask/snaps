@@ -10,19 +10,6 @@ type ProxyMessageStreamArgs = {
   targetWindow?: Window;
 };
 
-const getSource = Object.getOwnPropertyDescriptor(
-  MessageEvent.prototype,
-  'source',
-)?.get;
-assert(getSource, 'MessageEvent.prototype.source getter is not defined.');
-
-/* istanbul ignore next */
-const getOrigin = Object.getOwnPropertyDescriptor(
-  MessageEvent.prototype,
-  'origin',
-)?.get;
-assert(getOrigin, 'MessageEvent.prototype.origin getter is not defined.');
-
 /**
  * A {@link Window.postMessage} stream.
  */
@@ -98,14 +85,10 @@ export class ProxyMessageStream extends BasePostMessageStream {
   private _onMessage(event: PostMessageEvent): void {
     const message = event.data;
 
-    /* eslint-disable @typescript-eslint/no-non-null-assertion */
-    if (
-      (this.#targetOrigin !== '*' &&
-        getOrigin!.call(event) !== this.#targetOrigin) ||
-      getSource!.call(event) !== this.#targetWindow ||
-      !isValidStreamMessage(message) ||
-      message.target !== this.#name
-    ) {
+    // Notice that we don't check targetWindow or targetOrigin here.
+    // This doesn't seem possible to do in RN.
+    // TODO: Review whether we are fine with this before using in production.
+    if (!isValidStreamMessage(message) || message.target !== this.#name) {
       return;
     }
 
