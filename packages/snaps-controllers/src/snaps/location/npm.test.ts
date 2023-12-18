@@ -1,3 +1,4 @@
+import type { SemVerRange } from '@metamask/utils';
 import { assert } from '@metamask/utils';
 import { createReadStream } from 'fs';
 import { readFile } from 'fs/promises';
@@ -308,6 +309,42 @@ describe('NpmLocation', () => {
 
     await expect(location.manifest()).rejects.toThrow(
       'Failed to fetch tarball for package "@metamask/template-snap"',
+    );
+  });
+
+  it('throws if the NPM tarball URL is invalid', async () => {
+    const { version: templateSnapVersion } = JSON.parse(
+      (
+        await readFile(require.resolve('@metamask/template-snap/package.json'))
+      ).toString('utf8'),
+    );
+
+    const customFetchMock = jest.fn();
+
+    customFetchMock.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        'dist-tags': {
+          latest: templateSnapVersion,
+        },
+        versions: {
+          [templateSnapVersion]: {
+            dist: {
+              tarball: 'foo',
+            },
+          },
+        },
+      }),
+    } as any);
+
+    const location = new NpmLocation(new URL('npm:@metamask/template-snap'), {
+      versionRange: '*' as SemVerRange,
+      fetch: customFetchMock as typeof fetch,
+    });
+
+    await expect(location.manifest()).rejects.toThrow(
+      `Failed to find valid tarball URL in NPM metadata for package "@metamask/template-snap".`,
     );
   });
 
