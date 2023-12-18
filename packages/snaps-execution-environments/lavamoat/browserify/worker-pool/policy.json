@@ -132,6 +132,12 @@
         "eslint>debug>ms": true
       }
     },
+    "external:../snaps-sdk/src/error-wrappers.ts": {
+      "packages": {
+        "@metamask/rpc-errors": true,
+        "external:../snaps-sdk/src/internals/index.ts": true
+      }
+    },
     "external:../snaps-sdk/src/errors.ts": {
       "packages": {
         "external:../snaps-sdk/src/internals/index.ts": true
@@ -149,6 +155,7 @@
     "external:../snaps-sdk/src/index.ts": {
       "packages": {
         "@metamask/utils": true,
+        "external:../snaps-sdk/src/error-wrappers.ts": true,
         "external:../snaps-sdk/src/errors.ts": true,
         "external:../snaps-sdk/src/images.ts": true,
         "external:../snaps-sdk/src/internals/index.ts": true,
@@ -352,11 +359,18 @@
         "buffer": true
       }
     },
+    "external:../snaps-utils/src/iframe.ts": {
+      "globals": {
+        "document.body.appendChild": true,
+        "document.createElement": true
+      }
+    },
     "external:../snaps-utils/src/index.executionenv.ts": {
       "packages": {
         "external:../snaps-utils/src/errors.ts": true,
         "external:../snaps-utils/src/handler-types.ts": true,
         "external:../snaps-utils/src/handlers.ts": true,
+        "external:../snaps-utils/src/iframe.ts": true,
         "external:../snaps-utils/src/logging.ts": true,
         "external:../snaps-utils/src/namespace.ts": true,
         "external:../snaps-utils/src/types.ts": true

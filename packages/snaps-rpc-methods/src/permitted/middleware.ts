@@ -23,7 +23,10 @@ export function createSnapsMethodMiddleware(
     const handler =
       methodHandlers[request.method as keyof typeof methodHandlers];
     if (handler) {
-      if (request.method.startsWith('snap_') && !isSnap) {
+      if (
+        String.prototype.startsWith.call(request.method, 'snap_') &&
+        !isSnap
+      ) {
         return end(rpcErrors.methodNotFound());
       }
 

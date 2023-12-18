@@ -422,7 +422,7 @@ can be imported in the snap, for example:
 ```typescript
 import program from './program.wasm';
 
-const module = await WebAssembly.instantiate(program, {});
+// Program is initialised synchronously.
 // ...
 ```
 

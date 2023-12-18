@@ -1,4 +1,5 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import { rpcErrors, serializeError } from '@metamask/rpc-errors';
 import {
   MOCK_SNAP_ID,
   getTruncatedSnap,
@@ -27,6 +28,31 @@ describe('createSnapsMethodMiddleware', () => {
       id: 1,
       jsonrpc: '2.0',
       result: { [MOCK_SNAP_ID]: getTruncatedSnap() },
+    });
+  });
+
+  it('blocks snap_ prefixed RPC methods for non-snaps', async () => {
+    const middleware = createSnapsMethodMiddleware(false, {});
+
+    const engine = new JsonRpcEngine();
+
+    engine.push(middleware);
+
+    const request = {
+      jsonrpc: '2.0' as const,
+      id: 1,
+      method: 'snap_getFile',
+      params: {},
+    };
+
+    expect(await engine.handle(request)).toStrictEqual({
+      id: 1,
+      jsonrpc: '2.0',
+      error: expect.objectContaining(
+        serializeError(rpcErrors.methodNotFound(), {
+          shouldIncludeStack: false,
+        }),
+      ),
     });
   });
 

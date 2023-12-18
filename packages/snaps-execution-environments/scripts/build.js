@@ -104,8 +104,10 @@ async function main() {
     <meta charset="utf-8" />
     <title>MetaMask Snaps Iframe Execution Environment</title>
     <script>${lavaMoatRuntimeBrowser}</script>
-    <script src="bundle.js"></script>
   </head>
+  <body>
+    <script src="bundle.js"></script>
+  </body>
 </html>`;
 
   await Promise.all(

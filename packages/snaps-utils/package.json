@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-utils",
-  "version": "5.0.1",
+  "version": "5.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
@@ -71,6 +71,7 @@
     "@metamask/key-tree": "^9.0.0",
     "@metamask/permission-controller": "^6.0.0",
     "@metamask/rpc-errors": "^6.1.0",
+    "@metamask/slip44": "^3.1.0",
     "@metamask/snaps-registry": "^3.0.0",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/utils": "^8.2.1",

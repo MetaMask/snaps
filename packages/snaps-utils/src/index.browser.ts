@@ -7,6 +7,7 @@ export * from './checksum';
 export * from './cronjob';
 export * from './deep-clone';
 export * from './default-endowments';
+export * from './derivation-paths';
 export * from './entropy';
 export * from './errors';
 export * from './handlers';
