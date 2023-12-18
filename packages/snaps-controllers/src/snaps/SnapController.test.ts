@@ -3479,6 +3479,113 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
+    it('grants connection permission to initialConnections', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({}),
+      );
+
+      const initialConnections = {
+        'npm:filsnap': {},
+        'https://snaps.metamask.io': {},
+      };
+
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
+        manifest: getSnapManifest({
+          initialConnections,
+        }),
+      });
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          detectSnapLocation: loopbackDetect({ manifest }),
+        }),
+      );
+
+      await snapController.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: {},
+      });
+
+      const approvedPermissions = {
+        [WALLET_SNAP_PERMISSION_KEY]: {
+          caveats: [
+            {
+              type: SnapCaveatType.SnapIds,
+              value: {
+                [MOCK_SNAP_ID]: {},
+              },
+            },
+          ],
+        },
+      };
+
+      expect(messenger.call).toHaveBeenCalledWith(
+        'PermissionController:grantPermissions',
+        { approvedPermissions, subject: { origin: 'npm:filsnap' } },
+      );
+
+      expect(messenger.call).toHaveBeenCalledWith(
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions,
+          subject: { origin: 'https://snaps.metamask.io' },
+        },
+      );
+
+      snapController.destroy();
+    });
+
+    it('updates existing caveats to satisfy initialConnections', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+
+      const initialConnections = {
+        'npm:filsnap': {},
+        'https://snaps.metamask.io': {},
+      };
+
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
+        manifest: getSnapManifest({
+          initialConnections,
+        }),
+      });
+
+      const snapId = `${MOCK_SNAP_ID}_foo`;
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          detectSnapLocation: loopbackDetect({ manifest }),
+        }),
+      );
+
+      await snapController.installSnaps(MOCK_ORIGIN, {
+        [snapId]: {},
+      });
+
+      expect(messenger.call).toHaveBeenCalledWith(
+        'PermissionController:updateCaveat',
+        'npm:filsnap',
+        WALLET_SNAP_PERMISSION_KEY,
+        SnapCaveatType.SnapIds,
+        expect.objectContaining({ [snapId]: {} }),
+      );
+
+      expect(messenger.call).toHaveBeenCalledWith(
+        'PermissionController:updateCaveat',
+        'https://snaps.metamask.io',
+        WALLET_SNAP_PERMISSION_KEY,
+        SnapCaveatType.SnapIds,
+        expect.objectContaining({ [snapId]: {} }),
+      );
+
+      snapController.destroy();
+    });
+
     it('supports preinstalled snaps', async () => {
       const rootMessenger = getControllerMessenger();
       jest.spyOn(rootMessenger, 'call');

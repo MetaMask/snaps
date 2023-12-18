@@ -189,6 +189,11 @@ export type SnapPermissions = InferMatching<
 
 export const SnapAuxilaryFilesStruct = array(string());
 
+// TODO: Consider typing this stricter?
+export const InitialConnectionsStruct = record(string(), object());
+
+export type InitialConnections = Infer<typeof InitialConnectionsStruct>;
+
 export const SnapManifestStruct = object({
   version: VersionStruct,
   description: size(string(), 1, 280),
@@ -215,6 +220,7 @@ export const SnapManifestStruct = object({
     files: optional(SnapAuxilaryFilesStruct),
     locales: optional(SnapAuxilaryFilesStruct),
   }),
+  initialConnections: optional(InitialConnectionsStruct),
   initialPermissions: PermissionsStruct,
   manifestVersion: literal('0.1'),
   $schema: optional(string()), // enables JSON-Schema linting in VSC and other IDEs

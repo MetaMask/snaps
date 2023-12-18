@@ -40,6 +40,7 @@ import type {
 import { AuxiliaryFileEncoding, getErrorMessage } from '@metamask/snaps-sdk';
 import type {
   FetchedSnapFiles,
+  InitialConnections,
   PersistedSnap,
   Snap,
   SnapManifest,
@@ -1619,6 +1620,67 @@ export class SnapController extends BaseController<
     );
   }
 
+  #handleInitialConnections(
+    snapId: SnapId,
+    initialConnections: InitialConnections,
+  ) {
+    for (const origin of Object.keys(initialConnections)) {
+      this.#addSnapToSubject(origin, snapId);
+    }
+  }
+
+  #addSnapToSubject(origin: string, snapId: SnapId) {
+    const subjectPermissions = this.messagingSystem.call(
+      'PermissionController:getPermissions',
+      origin,
+    ) as SubjectPermissions<PermissionConstraint>;
+
+    const existingCaveat = subjectPermissions?.[
+      WALLET_SNAP_PERMISSION_KEY
+    ]?.caveats?.find((caveat) => caveat.type === SnapCaveatType.SnapIds) as
+      | Caveat<string, Json>
+      | undefined;
+
+    const subjectHasSnap = Boolean(
+      (existingCaveat?.value as Record<string, Json>)?.[snapId],
+    );
+
+    // If the subject is already connected to the snap, this is a no-op.
+    if (subjectHasSnap) {
+      return;
+    }
+
+    // If an existing caveat exists, we add the snap to that.
+    if (existingCaveat) {
+      this.messagingSystem.call(
+        'PermissionController:updateCaveat',
+        origin,
+        WALLET_SNAP_PERMISSION_KEY,
+        SnapCaveatType.SnapIds,
+        { ...existingCaveat, [snapId]: {} },
+      );
+      return;
+    }
+
+    const approvedPermissions = {
+      [WALLET_SNAP_PERMISSION_KEY]: {
+        caveats: [
+          {
+            type: SnapCaveatType.SnapIds,
+            value: {
+              [snapId]: {},
+            },
+          },
+        ],
+      },
+    };
+
+    this.messagingSystem.call('PermissionController:grantPermissions', {
+      approvedPermissions,
+      subject: { origin },
+    });
+  }
+
   /**
    * Removes a snap's permission (caveat) from the specified subject.
    *
@@ -2138,6 +2200,10 @@ export class SnapController extends BaseController<
         requestData,
       });
 
+      if (manifest.initialConnections) {
+        this.#handleInitialConnections(snapId, manifest.initialConnections);
+      }
+
       const rollbackSnapshot = this.#getRollbackSnapshot(snapId);
       if (rollbackSnapshot !== undefined) {
         rollbackSnapshot.permissions.revoked = unusedPermissions;
@@ -2591,6 +2657,13 @@ export class SnapController extends BaseController<
         newPermissions: approvedPermissions,
         requestData,
       });
+
+      if (snap.manifest.initialConnections) {
+        this.#handleInitialConnections(
+          snapId,
+          snap.manifest.initialConnections,
+        );
+      }
     } finally {
       const runtime = this.#getRuntimeExpect(snapId);
       runtime.installPromise = null;

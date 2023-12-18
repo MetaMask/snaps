@@ -88,6 +88,7 @@ export const DEFAULT_SNAP_SHASUM =
  * @param manifest.iconPath - The path to the icon of the snap.
  * @param manifest.files - Auxiliary files loaded at runtime by the snap.
  * @param manifest.locales - Localization files of the snap.
+ * @param manifest.initialConnections - Initial connections for the snap.
  * @returns The snap manifest.
  */
 export const getSnapManifest = ({
@@ -102,6 +103,7 @@ export const getSnapManifest = ({
   iconPath = DEFAULT_ICON_PATH,
   files = undefined,
   locales = undefined,
+  initialConnections = undefined,
 }: GetSnapManifestOptions = {}): SnapManifest => {
   return {
     version: version as SemVerVersion,
@@ -121,6 +123,7 @@ export const getSnapManifest = ({
       ...(files ? { files } : {}),
       ...(locales ? { locales } : {}),
     },
+    ...(initialConnections ? { initialConnections } : {}),
     initialPermissions,
     manifestVersion: '0.1' as const,
   };
