@@ -5768,6 +5768,81 @@ describe('SnapController', () => {
       controller.destroy();
     });
 
+    it('supports initialConnections', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        (origin) => {
+          if (origin === MOCK_SNAP_ID) {
+            return MOCK_SNAP_PERMISSIONS;
+          } else if (origin === MOCK_ORIGIN) {
+            return MOCK_ORIGIN_PERMISSIONS;
+          }
+          return {};
+        },
+      );
+
+      const initialConnections = {
+        [MOCK_ORIGIN]: {},
+        'snaps.metamask.io': {},
+        'npm:filsnap': {},
+      };
+
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
+        manifest: getSnapManifest({
+          version: '1.1.0' as SemVerVersion,
+          initialConnections,
+        }),
+      });
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: { snaps: getPersistedSnapsState() },
+          detectSnapLocation: loopbackDetect({ manifest }),
+        }),
+      );
+
+      await snapController.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: { version: '1.1.0' },
+      });
+
+      const approvedPermissions = {
+        [WALLET_SNAP_PERMISSION_KEY]: {
+          caveats: [
+            {
+              type: SnapCaveatType.SnapIds,
+              value: {
+                [MOCK_SNAP_ID]: {},
+              },
+            },
+          ],
+        },
+      };
+
+      expect(messenger.call).toHaveBeenCalledWith(
+        'PermissionController:grantPermissions',
+        { approvedPermissions, subject: { origin: 'npm:filsnap' } },
+      );
+
+      expect(messenger.call).toHaveBeenCalledWith(
+        'PermissionController:grantPermissions',
+        { approvedPermissions, subject: { origin: 'snaps.metamask.io' } },
+      );
+
+      expect(messenger.call).not.toHaveBeenCalledWith(
+        'PermissionController:updateCaveat',
+        MOCK_ORIGIN,
+        WALLET_SNAP_PERMISSION_KEY,
+        SnapCaveatType.SnapIds,
+        expect.objectContaining({ [MOCK_SNAP_ID]: {} }),
+      );
+
+      snapController.destroy();
+    });
+
     it('assigns the same id to the approval request and the request metadata', async () => {
       expect.assertions(4);
 
