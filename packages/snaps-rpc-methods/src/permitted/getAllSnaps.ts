@@ -56,14 +56,10 @@ async function getAllSnapsImplementation(
   { getAllSnaps }: GetAllSnapsHooks,
 ): Promise<void> {
   // The origin is added by the MetaMask middleware stack.
-  const { origin, method } = request as JsonRpcRequest & { origin: string };
+  const { origin } = request as JsonRpcRequest & { origin: string };
 
   if (origin !== 'https://snaps.metamask.io') {
-    return end(
-      rpcErrors.invalidRequest({
-        message: `The origin "${origin}" is not allowed to invoke the method "${method}".`,
-      }),
-    );
+    return end(rpcErrors.methodNotFound());
   }
 
   response.result = await getAllSnaps();

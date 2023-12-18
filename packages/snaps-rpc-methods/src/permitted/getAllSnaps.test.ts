@@ -87,10 +87,8 @@ describe('wallet_getAllSnaps', () => {
         jsonrpc: '2.0',
         id: 1,
         error: expect.objectContaining({
-          code: -32600,
-          message: expect.stringContaining(
-            'The origin "https://example.com" is not allowed to invoke the method "wallet_getAllSnaps".',
-          ),
+          code: -32601,
+          message: 'The method does not exist / is not available.',
         }),
       });
     });
