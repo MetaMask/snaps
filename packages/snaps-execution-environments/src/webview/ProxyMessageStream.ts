@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import type { PostMessageEvent } from '@metamask/post-message-stream';
 import { BasePostMessageStream } from '@metamask/post-message-stream';
 import { isValidStreamMessage } from '@metamask/post-message-stream/dist/utils';
@@ -57,11 +56,12 @@ export class ProxyMessageStream extends BasePostMessageStream {
     this.#target = target;
     this.#targetOrigin = targetOrigin;
     this.#targetWindow = targetWindow;
+
     this._onMessage = this._onMessage.bind(this);
 
     window.addEventListener(
       'message',
-      this._onMessage as unknown as EventListener,
+      (event: MessageEvent<PostMessageEvent>) => this._onMessage(event as any),
       false,
     );
 
@@ -96,6 +96,10 @@ export class ProxyMessageStream extends BasePostMessageStream {
   }
 
   _destroy() {
-    window.removeEventListener('message', this._onMessage as any, false);
+    window.removeEventListener(
+      'message',
+      (event: MessageEvent<PostMessageEvent>) => this._onMessage(event as any),
+      false,
+    );
   }
 }
