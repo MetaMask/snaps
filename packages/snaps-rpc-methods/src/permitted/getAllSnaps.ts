@@ -36,8 +36,8 @@ export type GetAllSnapsHooks = {
 };
 
 /**
- * The `wallet_getSnaps` method implementation.
- * Fetches available snaps for the requesting origin and adds them to the JSON-RPC response.
+ * The `wallet_getAllSnaps` method implementation.
+ * Fetches all installed snaps and adds them to the JSON-RPC response.
  *
  * @param request - The JSON-RPC request object.
  * @param response - The JSON-RPC response object.
