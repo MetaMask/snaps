@@ -74,6 +74,8 @@ async function main() {
         'removeEventListener',
         'isSecureContext',
         'ReactNativeWebView',
+        'JSON',
+        'String',
       ],
     },
   };

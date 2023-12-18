@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 /* eslint-disable @typescript-eslint/naming-convention */
-import { logInfo } from '@metamask/snaps-utils';
-
 import { executeLockdownEvents } from '../common/lockdown/lockdown-events';
 import { executeLockdownMore } from '../common/lockdown/lockdown-more';
 import { ProxyMessageStream } from './ProxyMessageStream';
@@ -24,10 +22,5 @@ const parentStream = new ProxyMessageStream({
   targetOrigin: '*',
   targetWindow: window.ReactNativeWebView,
 });
-
-logInfo(
-  '[WEBVIEW.SNAP.EXECUTOR - Initializing WebviewSnapExecutor]',
-  parentStream,
-);
 
 WebviewSnapExecutor.initialize(parentStream);
