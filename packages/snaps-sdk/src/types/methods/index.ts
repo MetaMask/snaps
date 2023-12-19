@@ -2,6 +2,7 @@ export * from './dialog';
 export * from './get-bip32-entropy';
 export * from './get-bip32-public-key';
 export * from './get-bip44-entropy';
+export * from './get-client-status';
 export * from './get-entropy';
 export * from './get-file';
 export * from './get-locale';
