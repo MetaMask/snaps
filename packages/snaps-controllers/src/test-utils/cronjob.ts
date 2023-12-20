@@ -13,7 +13,7 @@ export const MOCK_CRONJOB_PERMISSION: PermissionConstraint = {
           {
             expression: '* * * * *',
             request: {
-              method: 'exampleMethodTwo',
+              method: 'exampleMethodOne',
               params: ['p1'],
             },
           },
