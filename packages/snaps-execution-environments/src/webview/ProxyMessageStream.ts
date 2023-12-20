@@ -79,6 +79,7 @@ export class ProxyMessageStream extends BasePostMessageStream {
         target: this.#target,
         data,
       }),
+      this.#targetOrigin,
     );
   }
 
