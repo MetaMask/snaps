@@ -1,3 +1,4 @@
+import { getAllSnapsHandler } from './getAllSnaps';
 import { getFileHandler } from './getFile';
 import { getSnapsHandler } from './getSnaps';
 import { invokeKeyringHandler } from './invokeKeyring';
@@ -6,6 +7,7 @@ import { requestSnapsHandler } from './requestSnaps';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 export const methodHandlers = {
+  wallet_getAllSnaps: getAllSnapsHandler,
   wallet_getSnaps: getSnapsHandler,
   wallet_requestSnaps: requestSnapsHandler,
   wallet_invokeSnap: invokeSnapSugarHandler,
