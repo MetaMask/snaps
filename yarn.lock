@@ -3682,15 +3682,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@metamask/approval-controller@npm:5.0.0"
+"@metamask/approval-controller@npm:^5.0.0, @metamask/approval-controller@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "@metamask/approval-controller@npm:5.1.0"
   dependencies:
     "@metamask/base-controller": ^4.0.0
     "@metamask/rpc-errors": ^6.1.0
     "@metamask/utils": ^8.2.0
     nanoid: ^3.1.31
-  checksum: b6a866db33458fa3125a20910d3c576e6e0fb2d8753db81a5d0d57f2181d361ea5e098ed98b60be868279f0ab4b80ba867911563318e5308f0175cdc1e63d15c
+  checksum: 8410904581ec70131daa8f2c4382d0e1bfdf26fc404a422645273f61e38bbae024242e432c192204b9ebbac4c3b45b930221976d40929b673f87d12c6f5df5a9
   languageName: node
   linkType: hard
 
@@ -5200,7 +5200,7 @@ __metadata:
     "@esbuild-plugins/node-globals-polyfill": ^0.2.3
     "@esbuild-plugins/node-modules-polyfill": ^0.2.2
     "@lavamoat/allow-scripts": ^2.5.1
-    "@metamask/approval-controller": ^5.0.0
+    "@metamask/approval-controller": ^5.1.0
     "@metamask/auto-changelog": ^3.4.3
     "@metamask/base-controller": ^4.0.0
     "@metamask/eslint-config": ^12.1.0
