@@ -1,4 +1,4 @@
-import type { Json, JsonRpcParams } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
 import type { Struct } from 'superstruct';
 import { is } from 'superstruct';
 
@@ -17,15 +17,35 @@ import type { OnRpcRequestHandler } from '../types';
  * @returns The response to the JSON-RPC request. This must be a
  * JSON-serializable value.
  */
-type HandlerFunction<Params extends JsonRpcParams> = (
+type HandlerFunction<Params> = (
   params: Params,
   origin: string,
 ) => Promise<Json>;
 
-type Handler<Type extends JsonRpcParams> = {
-  schema: Struct<Type> | ((params: unknown) => params is Type);
+/**
+ * A function that validates the request parameters.
+ *
+ * @param params - The request parameters.
+ * @returns Whether the parameters are valid.
+ */
+type ValidationFunction<Params> = (params: unknown) => params is Params;
+
+/**
+ * A handler for a JSON-RPC method. This includes a schema to validate the
+ * request parameters, and a handler function to call if the request is valid.
+ *
+ * @param schema - The schema to validate the request parameters against.
+ * @param handler - The handler function to call if the request is valid.
+ */
+type Handler<Type> = {
+  schema?: Struct<Type> | ValidationFunction<Type>;
   handler: HandlerFunction<Type>;
 };
+
+/**
+ * A map of method names to schemas and handlers.
+ */
+type GenericHandlerMap = Record<string, unknown>;
 
 /**
  * The options for the `getMethodHandler` function. This is a map of method
@@ -34,7 +54,7 @@ type Handler<Type extends JsonRpcParams> = {
  *
  * See also the {@link Handler} type.
  */
-type MethodHandlerOptions<Map extends Record<string, JsonRpcParams>> = {
+type MethodHandlerOptions<Map extends GenericHandlerMap> = {
   [Key in keyof Map]: Handler<Map[Key]>;
 };
 
@@ -46,10 +66,14 @@ type MethodHandlerOptions<Map extends Record<string, JsonRpcParams>> = {
  * @param schema - The schema to validate the parameters against.
  * @throws If the parameters are invalid.
  */
-function validateParams<Params extends JsonRpcParams>(
+function validateParams<Params>(
   params: unknown,
-  schema: Struct<Params> | ((params: unknown) => params is Params),
+  schema?: Struct<Params> | ValidationFunction<Params>,
 ): asserts params is Params {
+  if (!schema) {
+    return;
+  }
+
   if (typeof schema === 'function') {
     if (!schema(params)) {
       throw new InvalidParamsError();
@@ -86,7 +110,7 @@ function validateParams<Params extends JsonRpcParams>(
  * @returns The method handler. This can be exported as the `onRpcRequest`
  * handler.
  */
-export function getMethodHandler<Map extends Record<string, JsonRpcParams>>(
+export function getMethodHandler<Map extends GenericHandlerMap>(
   options: MethodHandlerOptions<Map>,
 ): OnRpcRequestHandler {
   return async ({ request, origin }) => {

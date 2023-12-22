@@ -2,7 +2,13 @@ import { assert } from '@metamask/utils';
 import { readFile, writeFile } from 'fs/promises';
 import { resolve } from 'path';
 import { Project, SyntaxKind } from 'ts-morph';
-import type { JSDocTagInfo, SourceFile, Type } from 'ts-morph';
+import type {
+  JSDocTagInfo,
+  SourceFile,
+  Type,
+  ArrowFunction,
+  FunctionExpression,
+} from 'ts-morph';
 
 import { formatCode } from './formatter';
 import { installSnap } from './interface';
@@ -13,18 +19,19 @@ export type PackageJson = {
 
 export type Method = {
   name: string;
-  documentation: string[];
+  sourceCode: string;
+  description: string[];
   params: {
     name: string;
     type: string;
-    documentation: {
+    descriptions: {
       name: string;
       description: string;
     }[];
-  };
+  } | null;
   response: {
     type: string;
-    documentation?: string;
+    description?: string;
   };
 };
 
@@ -118,6 +125,64 @@ export function unwrapPromise(type: Type) {
 }
 
 /**
+ * Get the method description from a function.
+ *
+ * @param method - The method.
+ * @returns The method description.
+ */
+function getMethodDescription(method: ArrowFunction | FunctionExpression) {
+  const signature = method.getSignature();
+  return signature
+    .getDocumentationComments()
+    .filter((comment) => comment.getKind() === 'text')
+    .map((comment) => comment.getText());
+}
+
+/**
+ * Get the parameters with their respective descriptions for a function.
+ *
+ * @param fn - The function to get the parameters for.
+ * @returns The parameters, or `null` if the function has no parameters.
+ */
+export function getParameters(fn: ArrowFunction | FunctionExpression) {
+  const signature = fn.getSignature();
+  const parameters = signature.getParameters();
+  if (parameters.length === 0) {
+    return null;
+  }
+
+  const type = fn.getParameters()[0].getType().getText();
+  const tags = signature.getJsDocTags();
+  if (tags.length === 0) {
+    return {
+      name: 'params',
+      type,
+      descriptions: [],
+    };
+  }
+
+  const name = getTag(tags[0], 'parameterName');
+
+  const descriptions = signature
+    .getJsDocTags()
+    .filter((tag) => tag.getName() === 'param')
+    .filter((tag) => {
+      const parameterName = getTag(tag, 'parameterName');
+      return parameterName.startsWith(name);
+    })
+    .map((tag) => ({
+      name: getTag(tag, 'parameterName'),
+      description: getDescription(tag),
+    }));
+
+  return {
+    name,
+    type,
+    descriptions,
+  };
+}
+
+/**
  * Get the methods in the `onRpcRequest` handler. This function assumes that the
  * `onRpcRequest` handler exists, and uses the `getMethodHandler` function to
  * get the methods.
@@ -143,7 +208,7 @@ export async function getMethods(): Promise<Method[]> {
 
   assert(options, 'The `getMethodHandler` call must have options.');
 
-  return options.getProperties().map((node) => {
+  const promises = options.getProperties().map(async (node) => {
     const property = node.asKind(SyntaxKind.PropertyAssignment);
     assert(property, 'The method must be a property assignment.');
 
@@ -167,43 +232,23 @@ export async function getMethods(): Promise<Method[]> {
     assert(fn, 'The method must have a handler function.');
 
     const signature = fn.getSignature();
-    const paramsName = signature.getParameters()[0].getName();
-
-    const paramsTags = signature
-      .getJsDocTags()
-      .filter((tag) => tag.getName() === 'param')
-      .filter((tag) => {
-        const parameterName = getTag(tag, 'parameterName');
-        return parameterName.startsWith(paramsName);
-      })
-      .map((tag) => ({
-        name: getTag(tag, 'parameterName'),
-        description: getDescription(tag),
-      }));
-
     const returnTag = signature
       .getJsDocTags()
       .find((tag) => tag.getName() === 'returns');
 
-    const documentation = signature
-      .getDocumentationComments()
-      .filter((comment) => comment.getKind() === 'text')
-      .map((comment) => comment.getText());
-
     return {
       name: property.getName(),
-      documentation,
-      params: {
-        name: paramsName,
-        type: fn.getParameters()[0].getType().getText(),
-        documentation: paramsTags,
-      },
+      sourceCode: fn.getText(),
+      description: getMethodDescription(fn),
+      params: getParameters(fn),
       response: {
         type: unwrapPromise(fn.getReturnType()),
-        documentation: returnTag ? getDescription(returnTag) : undefined,
+        description: returnTag ? getDescription(returnTag) : undefined,
       },
     };
   });
+
+  return await Promise.all(promises);
 }
 
 /**
@@ -216,23 +261,40 @@ export function getDocumentationComment(method: Method) {
   const comment = ['/**'];
 
   // General documentation for the method.
-  method.documentation.forEach((line) => {
-    comment.push(` * ${line}`);
+  method.description.forEach((line) => {
+    comment.push(` * ${line.replace(/\n/gu, '\n * ')}`);
   });
 
   // Documentation for the parameters.
   comment.push(' *');
-  method.params.documentation.forEach((tag) => {
-    comment.push(` * @param ${tag.name} - ${tag.description}`);
+  method.params?.descriptions.forEach((tag) => {
+    comment.push(
+      ` * @param ${tag.name} - ${tag.description.replace(/\n/gu, '\n * ')}`,
+    );
   });
 
   // Documentation for the return value.
-  if (method.response.documentation) {
-    comment.push(` * @returns ${method.response.documentation}`);
+  if (method.response.description) {
+    comment.push(` * @returns ${method.response.description}`);
   }
 
   comment.push(' */');
   return comment.join('\n');
+}
+
+/**
+ * Get the parameter signature. This is the parameter name and type, e.g.,
+ * `foo: string`.
+ *
+ * @param params - The method parameters.
+ * @returns The parameter signature as a string.
+ */
+export function getParameterSignature(params: Method['params']) {
+  if (!params) {
+    return '';
+  }
+
+  return `${params.name}: ${params.type}`;
 }
 
 /**
@@ -245,7 +307,9 @@ export function getDocumentationComment(method: Method) {
  * @returns The method signature as a string.
  */
 export function getMethodSignature({ name, params, response }: Method) {
-  return `${name}(${params.name}: ${params.type}): Promise<${response.type}>;`;
+  return `${name}(${getParameterSignature(params)}): Promise<${
+    response.type
+  }>;`;
 }
 
 /**

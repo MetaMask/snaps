@@ -15,8 +15,9 @@
     "snap.manifest.json"
   ],
   "scripts": {
-    "build": "mm-snap build",
+    "build": "mm-snap build && yarn build:docs",
     "build:clean": "yarn clean && yarn build",
+    "build:docs": "snaps-generator",
     "clean": "rimraf \"dist\"",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog && yarn lint:dependencies",
     "lint:changelog": "../../../../scripts/validate-changelog.sh @metamask/docs-example-snap",

@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "3VYRYIdxywR8Sq+TM9yHVNgC+Cs3SAeCq2XuePWbuvw=",
+    "shasum": "aNITjRhHLGje0ZCTwv0kOIUudeeW5nTmWpkixkgn8ic=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -19,7 +19,8 @@
   "initialPermissions": {
     "endowment:rpc": {
       "dapps": true
-    }
+    },
+    "snap_getEntropy": {}
   },
   "manifestVersion": "0.1"
 }

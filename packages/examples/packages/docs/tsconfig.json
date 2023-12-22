@@ -6,7 +6,7 @@
       "@metamask/*": ["../../../*/src"]
     }
   },
-  "include": ["src", "snap.config.ts"],
+  "include": ["src", "snap.config.ts", "snap.d.ts"],
   "references": [
     {
       "path": "../../../snaps-sdk"

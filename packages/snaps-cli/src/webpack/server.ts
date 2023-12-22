@@ -79,6 +79,10 @@ export function getAllowedPaths(
       config.server.root,
       resolvePath(config.server.root, NpmSnapFileNames.Manifest),
     ),
+    getRelativePath(
+      config.server.root,
+      resolvePath(config.server.root, NpmSnapFileNames.PackageJson),
+    ),
     ...auxiliaryFiles,
     ...localizationFiles,
     ...otherFiles,
