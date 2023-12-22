@@ -38,19 +38,6 @@ describe('endowment:cronjob', () => {
                 params: ['p1'],
               },
             },
-            {
-              expression: {
-                minute: '*',
-                hour: '*',
-                dayOfMonth: '*',
-                month: '*',
-                dayOfWeek: '*',
-              },
-              request: {
-                method: 'exampleMethodTwo',
-                params: ['p1', 'p2', 'p3'],
-              },
-            },
           ],
         }),
       ).toStrictEqual({
@@ -64,19 +51,6 @@ describe('endowment:cronjob', () => {
                   request: {
                     method: 'exampleMethodOne',
                     params: ['p1'],
-                  },
-                },
-                {
-                  expression: {
-                    minute: '*',
-                    hour: '*',
-                    dayOfMonth: '*',
-                    month: '*',
-                    dayOfWeek: '*',
-                  },
-                  request: {
-                    method: 'exampleMethodTwo',
-                    params: ['p1', 'p2', 'p3'],
                   },
                 },
               ],
@@ -94,19 +68,6 @@ describe('validateCronjobCaveat', () => {
       type: SnapCaveatType.SnapCronjob,
       value: {
         jobs: [
-          {
-            expression: {
-              minute: '*',
-              hour: '*',
-              dayOfMonth: '*',
-              month: '*',
-              dayOfWeek: '*',
-            },
-            request: {
-              method: 'exampleMethodOne',
-              params: ['p1'],
-            },
-          },
           {
             expression: '* * * * *',
             request: {
@@ -157,16 +118,6 @@ describe('CronjobCaveatSpecifications', () => {
       const params = {
         jobs: [
           {
-            expression: {
-              minute: '*',
-              hour: '*',
-              dayOfMonth: '*',
-              month: '*',
-              dayOfWeek: '*',
-            },
-            request: { method: 'snapMethod', params: [] },
-          },
-          {
             expression: '*/2 * * * *',
             request: { method: 'anotherSnapMethod', params: ['a', 'b', 'c'] },
           },
@@ -186,30 +137,6 @@ describe('CronjobCaveatSpecifications', () => {
         jobs: [
           {
             expression: '* * * * * * * * *',
-            request: { method: 'snapMethod', params: [] },
-          },
-        ],
-      };
-
-      expect(() =>
-        cronjobCaveatSpecifications[SnapCaveatType.SnapCronjob].validator?.({
-          type: SnapCaveatType.SnapCronjob,
-          value: invalidParams,
-        }),
-      ).toThrow('Expected a valid cronjob specification array.');
-    });
-
-    it('throws if the expression parameter value is invalid and provided in object format', () => {
-      const invalidParams = {
-        jobs: [
-          {
-            expression: {
-              minute: 'aaa',
-              hour: 'b',
-              dayOfMonth: 'c',
-              month: 'd',
-              dayOfWeek: 'e',
-            },
             request: { method: 'snapMethod', params: [] },
           },
         ],
