@@ -3734,6 +3734,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/base-controller@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "@metamask/base-controller@npm:4.0.1"
+  dependencies:
+    "@metamask/utils": ^8.2.0
+    immer: ^9.0.6
+  checksum: d86a7dbe5f23daf56677fe14192d08c9b38c993e8c05a36afa2d7995bb7b272be8d182450c509ed605e73256d32fef55eea5814130d2381259e30751be3d9f2c
+  languageName: node
+  linkType: hard
+
 "@metamask/bip32-example-snap@workspace:^, @metamask/bip32-example-snap@workspace:packages/examples/packages/bip32":
   version: 0.0.0-use.local
   resolution: "@metamask/bip32-example-snap@workspace:packages/examples/packages/bip32"
@@ -5202,7 +5212,7 @@ __metadata:
     "@lavamoat/allow-scripts": ^2.5.1
     "@metamask/approval-controller": ^5.1.0
     "@metamask/auto-changelog": ^3.4.3
-    "@metamask/base-controller": ^4.0.0
+    "@metamask/base-controller": ^4.0.1
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5566,7 +5576,7 @@ __metadata:
     "@emotion/styled": ^11.10.8
     "@ethersproject/units": ^5.7.0
     "@metamask/auto-changelog": ^3.4.3
-    "@metamask/base-controller": ^4.0.0
+    "@metamask/base-controller": ^4.0.1
     "@metamask/browser-passworder": ^4.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-browser": ^11.1.0
@@ -5670,7 +5680,7 @@ __metadata:
     "@esbuild-plugins/node-modules-polyfill": ^0.2.2
     "@lavamoat/allow-scripts": ^2.5.1
     "@metamask/auto-changelog": ^3.4.3
-    "@metamask/base-controller": ^4.0.0
+    "@metamask/base-controller": ^4.0.1
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
