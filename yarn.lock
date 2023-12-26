@@ -4631,6 +4631,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/json-rpc-engine@npm:^7.3.1":
+  version: 7.3.1
+  resolution: "@metamask/json-rpc-engine@npm:7.3.1"
+  dependencies:
+    "@metamask/rpc-errors": ^6.1.0
+    "@metamask/safe-event-emitter": ^3.0.0
+    "@metamask/utils": ^8.2.0
+  checksum: 4952eb4e70c0011d334fb4a9bf56aa2d68bef745c892dddd06f6ed7e6303fb95b3b60b4e32c88b6d77bfc5091acc8e71ad274f389419e4bdcc5741ef49cde87d
+  languageName: node
+  linkType: hard
+
 "@metamask/json-rpc-example-snap@workspace:^, @metamask/json-rpc-example-snap@workspace:packages/examples/packages/json-rpc":
   version: 0.0.0-use.local
   resolution: "@metamask/json-rpc-example-snap@workspace:packages/examples/packages/json-rpc"
@@ -5207,7 +5218,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/json-rpc-engine": ^7.3.0
+    "@metamask/json-rpc-engine": ^7.3.1
     "@metamask/object-multiplex": ^2.0.0
     "@metamask/permission-controller": ^6.0.0
     "@metamask/phishing-controller": ^8.0.0
@@ -5301,7 +5312,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/json-rpc-engine": ^7.3.0
+    "@metamask/json-rpc-engine": ^7.3.1
     "@metamask/object-multiplex": ^2.0.0
     "@metamask/post-message-stream": ^7.0.0
     "@metamask/providers": ^14.0.2
@@ -5479,7 +5490,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/json-rpc-engine": ^7.3.0
+    "@metamask/json-rpc-engine": ^7.3.1
     "@metamask/key-tree": ^9.0.0
     "@metamask/permission-controller": ^6.0.0
     "@metamask/rpc-errors": ^6.1.0
@@ -5574,7 +5585,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/eth-json-rpc-middleware": ^12.0.1
-    "@metamask/json-rpc-engine": ^7.3.0
+    "@metamask/json-rpc-engine": ^7.3.1
     "@metamask/key-tree": ^9.0.0
     "@metamask/permission-controller": ^6.0.0
     "@metamask/snaps-controllers": "workspace:^"
