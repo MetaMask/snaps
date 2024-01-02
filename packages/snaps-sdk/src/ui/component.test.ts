@@ -1,11 +1,16 @@
 import { assertIsComponent, isComponent } from './component';
-import type {
-  Divider,
-  Heading,
-  Image,
-  Panel,
-  Spinner,
-  Text,
+import type { Input, Form } from './components';
+import {
+  ButtonVariants,
+  type Button,
+  type Divider,
+  type Heading,
+  type Image,
+  type Panel,
+  type Spinner,
+  type Text,
+  ButtonTypes,
+  InputTypes,
 } from './components';
 import { NodeType } from './nodes';
 
@@ -85,7 +90,7 @@ describe('isComponent', () => {
 
     expect(isComponent(image)).toBe(true);
   });
-  
+
   it('returns true for a button component', () => {
     const button: Button = {
       type: NodeType.Button,
@@ -153,7 +158,7 @@ describe('isComponent', () => {
     };
 
     expect(isComponent(form)).toBe(true);
-
+  });
 
   it.each([
     true,
