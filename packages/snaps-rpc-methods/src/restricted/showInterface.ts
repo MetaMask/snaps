@@ -1,14 +1,14 @@
-import {
+import type {
   PermissionSpecificationBuilder,
-  PermissionType,
   RestrictedMethodOptions,
-  SubjectType,
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
-import { Component, ComponentStruct } from '@metamask/snaps-ui';
-import { NonEmptyArray } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
-import { MethodHooksObject } from 'src/utils';
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
+import type { Component } from '@metamask/snaps-sdk';
+import { ComponentStruct } from '@metamask/snaps-sdk';
+import type { NonEmptyArray } from '@metamask/utils';
+import type { MethodHooksObject } from 'src/utils';
 import { StructError, create, object } from 'superstruct';
 
 const methodName = 'snap_showInterface';
@@ -122,11 +122,11 @@ function getValidatedParams(params: unknown): ShowInterfaceArgs {
     return create(params, paramsStruct);
   } catch (error) {
     if (error instanceof StructError) {
-      throw ethErrors.rpc.invalidParams({
+      throw rpcErrors.invalidParams({
         message: `Invalid params: ${error.message}.`,
       });
     }
     /* istanbul ignore next */
-    throw ethErrors.rpc.internal();
+    throw rpcErrors.internal();
   }
 }

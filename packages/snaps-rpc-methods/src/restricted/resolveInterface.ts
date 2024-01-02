@@ -1,13 +1,13 @@
-import {
+import type {
   PermissionSpecificationBuilder,
-  PermissionType,
   RestrictedMethodOptions,
-  SubjectType,
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
-import { Json, JsonStruct, NonEmptyArray } from '@metamask/utils';
-import { ethErrors } from 'eth-rpc-errors';
-import { MethodHooksObject } from 'src/utils';
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
+import type { Json, NonEmptyArray } from '@metamask/utils';
+import { JsonStruct } from '@metamask/utils';
+import type { MethodHooksObject } from 'src/utils';
 import { StructError, create, object, string } from 'superstruct';
 
 const methodName = 'snap_resolveInterface';
@@ -127,11 +127,11 @@ function getValidatedParams(params: unknown): ResolveInterfaceArgs {
     return create(params, paramsStruct);
   } catch (error) {
     if (error instanceof StructError) {
-      throw ethErrors.rpc.invalidParams({
+      throw rpcErrors.invalidParams({
         message: `Invalid params: ${error.message}.`,
       });
     }
     /* istanbul ignore next */
-    throw ethErrors.rpc.internal();
+    throw rpcErrors.internal();
   }
 }
