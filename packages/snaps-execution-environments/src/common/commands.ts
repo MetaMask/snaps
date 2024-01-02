@@ -14,6 +14,7 @@ import {
   assertIsOnTransactionRequestArguments,
   assertIsOnSignatureRequestArguments,
   assertIsOnNameLookupRequestArguments,
+  assertIsOnUserInputRequestArguments,
 } from './validation';
 
 export type CommandMethodsMapping = {

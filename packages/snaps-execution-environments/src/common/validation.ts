@@ -1,9 +1,6 @@
 import { rpcErrors } from '@metamask/rpc-errors';
-import {
-  ChainIdStruct,
-  HandlerType,
-  UserInputEventStruct,
-} from '@metamask/snaps-utils';
+import { UserInputEventStruct } from '@metamask/snaps-sdk';
+import { ChainIdStruct, HandlerType } from '@metamask/snaps-utils';
 import type { Json, JsonRpcSuccess } from '@metamask/utils';
 import {
   assertStruct,

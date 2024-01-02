@@ -1,17 +1,16 @@
-import {
+import type {
   AcceptRequest,
   AddApprovalRequest,
   UpdateRequestState,
 } from '@metamask/approval-controller';
-import {
-  BaseControllerV2 as BaseController,
-  RestrictedControllerMessenger,
-} from '@metamask/base-controller';
-import { Component } from '@metamask/snaps-ui';
-import { ComponentState } from '@metamask/snaps-utils';
-import { Json, assert } from '@metamask/utils';
+import type { RestrictedControllerMessenger } from '@metamask/base-controller';
+import { BaseController } from '@metamask/base-controller';
+import type { Component } from '@metamask/snaps-sdk';
+import type { Json } from '@metamask/utils';
+import { assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
+import type { ComponentState } from './utils';
 import { constructState } from './utils';
 
 const controllerName = 'InterfaceController';

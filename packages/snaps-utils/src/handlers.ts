@@ -8,6 +8,7 @@ import type {
   OnSignatureHandler,
   OnTransactionHandler,
   OnUpdateHandler,
+  OnUserInputHandler,
 } from '@metamask/snaps-sdk';
 import { SeverityLevel, ComponentStruct } from '@metamask/snaps-sdk';
 import { literal, nullable, object, optional } from 'superstruct';
@@ -85,6 +86,13 @@ export const SNAP_EXPORTS = {
       return typeof snapExport === 'function';
     },
   },
+  [HandlerType.OnUserInput]: {
+    type: HandlerType.OnUserInput,
+    required: true,
+    validator: (snapExport: unknown): snapExport is OnUserInputHandler => {
+      return typeof snapExport === 'function';
+    },
+  },
 } as const;
 
 export const OnTransactionResponseStruct = nullable(
@@ -107,53 +115,6 @@ export type HandlerFunction<Type extends SnapHandler> =
   Type['validator'] extends (snapExport: unknown) => snapExport is infer Handler
     ? Handler
     : never;
-
-export enum UserInputEventTypes {
-  ButtonClickEvent = 'ButtonClickEvent',
-  FormSubmitEvent = 'FormSubmitEvent',
-  InputChangeEvent = 'InputChangeEvent',
-}
-
-export const GenericEventStruct = object({
-  type: string(),
-  name: optional(string()),
-});
-
-export const ButtonClickEventStruct = assign(
-  GenericEventStruct,
-  object({
-    type: literal(UserInputEventTypes.ButtonClickEvent),
-  }),
-);
-
-export const FormSubmitEventStruct = assign(
-  GenericEventStruct,
-  object({
-    type: literal(UserInputEventTypes.FormSubmitEvent),
-    value: record(string(), string()),
-  }),
-);
-
-export const InputChangeEventStruct = assign(
-  GenericEventStruct,
-  object({
-    type: literal(UserInputEventTypes.InputChangeEvent),
-    value: string(),
-  }),
-);
-
-export const UserInputEventStruct = union([
-  ButtonClickEventStruct,
-  FormSubmitEventStruct,
-  InputChangeEventStruct,
-]);
-
-type UserInputEvent = Infer<typeof UserInputEventStruct>;
-
-export type OnUserInputHandler = (args: {
-  id: string;
-  event: UserInputEvent;
-}) => Promise<void>;
 
 /**
  * All the function-based handlers that a snap can implement.
