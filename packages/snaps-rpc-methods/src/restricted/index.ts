@@ -18,6 +18,14 @@ import type { ManageStateMethodHooks } from './manageState';
 import { manageStateBuilder } from './manageState';
 import type { NotifyMethodHooks } from './notify';
 import { notifyBuilder } from './notify';
+import type { ReadInterfaceMethodHooks } from './readInterface';
+import { readInterfaceBuilder } from './readInterface';
+import type { ResolveInterfaceMethodHooks } from './resolveInterface';
+import { resolveInterfaceBuilder } from './resolveInterface';
+import type { ShowInterfaceMethodHooks } from './showInterface';
+import { showInterfaceBuilder } from './showInterface';
+import type { UpdateInterfaceMethodHooks } from './updateInterface';
+import { updateInterfaceBuilder } from './updateInterface';
 
 export { WALLET_SNAP_PERMISSION_KEY } from './invokeSnap';
 export { getEncryptionKey } from './manageState';
@@ -31,7 +39,11 @@ export type RestrictedMethodHooks = DialogMethodHooks &
   ManageStateMethodHooks &
   NotifyMethodHooks &
   ManageAccountsMethodHooks &
-  GetLocaleMethodHooks;
+  GetLocaleMethodHooks &
+  ReadInterfaceMethodHooks &
+  ResolveInterfaceMethodHooks &
+  ShowInterfaceMethodHooks &
+  UpdateInterfaceMethodHooks;
 
 export const restrictedMethodPermissionBuilders = {
   [dialogBuilder.targetName]: dialogBuilder,
@@ -44,6 +56,10 @@ export const restrictedMethodPermissionBuilders = {
   [notifyBuilder.targetName]: notifyBuilder,
   [manageAccountsBuilder.targetName]: manageAccountsBuilder,
   [getLocaleBuilder.targetName]: getLocaleBuilder,
+  [readInterfaceBuilder.targetName]: readInterfaceBuilder,
+  [resolveInterfaceBuilder.targetName]: resolveInterfaceBuilder,
+  [showInterfaceBuilder.targetName]: resolveInterfaceBuilder,
+  [updateInterfaceBuilder.targetName]: updateInterfaceBuilder,
 } as const;
 
 export * from './caveats';
