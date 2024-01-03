@@ -24,8 +24,6 @@ import { hasProperty, isObject } from '@metamask/utils';
 
 import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
 import type { MethodHooksObject } from '../utils';
-import type { InstallSnapsHook } from './common/snapInstallation';
-import { handleInstallSnaps } from './common/snapInstallation';
 
 const hookNames: MethodHooksObject<RequestSnapsHooks> = {
   installSnaps: true,
@@ -50,7 +48,9 @@ export type RequestSnapsHooks = {
   /**
    * Installs the requested snaps if they are permitted.
    */
-  installSnaps: InstallSnapsHook;
+  installSnaps: (
+    requestedSnaps: RequestSnapsParams,
+  ) => Promise<RequestSnapsResult>;
 
   /**
    * Initiates a permission request for the requesting origin.
@@ -185,8 +185,12 @@ async function requestSnapsImplementation(
   }
 
   try {
-    if (!Object.keys(requestedSnaps).length) {
-      throw new Error('Request must have at least one requested snap.');
+    if (Object.keys(requestedSnaps).length === 0) {
+      return end(
+        rpcErrors.invalidParams({
+          message: 'Request must have at least one requested snap.',
+        }),
+      );
     }
 
     const requestedPermissions = {
@@ -202,7 +206,7 @@ async function requestSnapsImplementation(
         WALLET_SNAP_PERMISSION_KEY
       ] as RequestSnapsResult;
     } else if (hasRequestedSnaps(existingPermissions, requestedSnaps)) {
-      res.result = await handleInstallSnaps(requestedSnaps, installSnaps);
+      res.result = await installSnaps(requestedSnaps);
     } else {
       const mergedPermissionsRequest = getSnapPermissionsRequest(
         existingPermissions,
