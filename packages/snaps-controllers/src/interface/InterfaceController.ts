@@ -15,16 +15,16 @@ import { constructState } from './utils';
 
 const controllerName = 'InterfaceController';
 
-export type AllowedActions =
+export type AllowedInterfaceControllerActions =
   | AddApprovalRequest
   | UpdateRequestState
   | AcceptRequest;
 
 export type InterfaceControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
-  AllowedActions,
+  AllowedInterfaceControllerActions,
   never,
-  AllowedActions['type'],
+  AllowedInterfaceControllerActions['type'],
   never
 >;
 

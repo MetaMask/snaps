@@ -25,7 +25,7 @@ import type {
   CronjobControllerActions,
   CronjobControllerEvents,
 } from '../cronjob';
-import type { AllowedActions as InterfaceControllerAllowedActions } from '../interface/InterfaceController';
+import type { AllowedInterfaceControllerActions } from '../interface/InterfaceController';
 import type {
   AllowedActions,
   AllowedEvents,
@@ -593,7 +593,7 @@ export const getRestrictedSnapsRegistryControllerMessenger = (
 // Mock controller messenger for Interface Controller
 export const getRootInterfaceControllerMessenger = () => {
   const messenger = new MockControllerMessenger<
-    InterfaceControllerAllowedActions,
+    AllowedInterfaceControllerActions,
     never
   >();
 
@@ -610,7 +610,7 @@ export const getRestrictedInterfaceControllerMessenger = (
 ) => {
   const interfaceControllerMessenger = messenger.getRestricted<
     'InterfaceController',
-    InterfaceControllerAllowedActions['type'],
+    AllowedInterfaceControllerActions['type'],
     never
   >({
     name: 'InterfaceController',
