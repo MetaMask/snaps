@@ -25,6 +25,7 @@ import type {
   CronjobControllerActions,
   CronjobControllerEvents,
 } from '../cronjob';
+import type { AllowedActions as InterfaceControllerAllowedActions } from '../interface/InterfaceController';
 import type {
   AllowedActions,
   AllowedEvents,
@@ -91,6 +92,26 @@ export class MockApprovalController {
         this.#approval.promise.reject(providerErrors.userRejectedRequest());
       }
     }
+  }
+
+  updateRequestState({ requestState }: { requestState: Record<string, Json> }) {
+    if (this.#approval) {
+      this.#approval = {
+        ...this.#approval,
+        request: {
+          ...this.#approval?.request,
+          requestState,
+        },
+      };
+    }
+  }
+
+  async acceptRequest(id: string, value: unknown) {
+    if (this.#approval?.request.id === id) {
+      this.#approval.promise.resolve(value);
+    }
+
+    return await Promise.resolve({ value });
   }
 }
 
@@ -567,4 +588,55 @@ export const getRestrictedSnapsRegistryControllerMessenger = (
   });
 
   return controllerMessenger;
+};
+
+// Mock controller messenger for Interface Controller
+export const getRootInterfaceControllerMessenger = () => {
+  const messenger = new MockControllerMessenger<
+    InterfaceControllerAllowedActions,
+    never
+  >();
+
+  jest.spyOn(messenger, 'call');
+
+  return messenger;
+};
+
+export const getRestrictedInterfaceControllerMessenger = (
+  messenger: ReturnType<
+    typeof getRootInterfaceControllerMessenger
+  > = getRootInterfaceControllerMessenger(),
+  mocked = true,
+) => {
+  const interfaceControllerMessenger = messenger.getRestricted<
+    'InterfaceController',
+    InterfaceControllerAllowedActions['type'],
+    never
+  >({
+    name: 'InterfaceController',
+    allowedActions: [
+      'ApprovalController:addRequest',
+      'ApprovalController:updateRequestState',
+      'ApprovalController:acceptRequest',
+    ],
+  });
+
+  if (mocked) {
+    messenger.registerActionHandler(
+      'ApprovalController:addRequest',
+      approvalControllerMock.addRequest.bind(approvalControllerMock),
+    );
+
+    messenger.registerActionHandler(
+      'ApprovalController:updateRequestState',
+      approvalControllerMock.updateRequestState.bind(approvalControllerMock),
+    );
+
+    messenger.registerActionHandler(
+      'ApprovalController:acceptRequest',
+      approvalControllerMock.acceptRequest.bind(approvalControllerMock),
+    );
+  }
+
+  return interfaceControllerMessenger;
 };

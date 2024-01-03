@@ -115,6 +115,15 @@ describe('buildSnapEndowmentSpecifications', () => {
           "targetName": "endowment:transaction-insight",
           "validator": [Function],
         },
+        "endowment:user-input": {
+          "allowedCaveats": null,
+          "endowmentGetter": [Function],
+          "permissionType": "Endowment",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "endowment:user-input",
+        },
         "endowment:webassembly": {
           "allowedCaveats": null,
           "endowmentGetter": [Function],
@@ -223,6 +232,42 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
             "snap",
           ],
           "targetName": "snap_notify",
+        },
+        "snap_readInterface": {
+          "allowedCaveats": null,
+          "methodImplementation": [Function],
+          "permissionType": "RestrictedMethod",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "snap_readInterface",
+        },
+        "snap_resolveInterface": {
+          "allowedCaveats": null,
+          "methodImplementation": [Function],
+          "permissionType": "RestrictedMethod",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "snap_resolveInterface",
+        },
+        "snap_showInterface": {
+          "allowedCaveats": null,
+          "methodImplementation": [Function],
+          "permissionType": "RestrictedMethod",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "snap_showInterface",
+        },
+        "snap_updateInterface": {
+          "allowedCaveats": null,
+          "methodImplementation": [Function],
+          "permissionType": "RestrictedMethod",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "snap_updateInterface",
         },
         "wallet_snap": {
           "allowedCaveats": [

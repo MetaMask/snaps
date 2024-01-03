@@ -15,7 +15,10 @@ import { constructState } from './utils';
 
 const controllerName = 'InterfaceController';
 
-type AllowedActions = AddApprovalRequest | UpdateRequestState | AcceptRequest;
+export type AllowedActions =
+  | AddApprovalRequest
+  | UpdateRequestState
+  | AcceptRequest;
 
 export type InterfaceControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
@@ -40,7 +43,7 @@ export type InterfaceControllerArgs = {
   state?: InterfaceControllerState;
 };
 
-const INTERFACE_APPROVAL_TYPE = 'snap_interface';
+export const INTERFACE_APPROVAL_TYPE = 'snap_interface';
 
 export class InterfaceController extends BaseController<
   typeof controllerName,
@@ -100,9 +103,7 @@ export class InterfaceController extends BaseController<
 
     const oldState = this.state.interfaces[id].state;
 
-    const componentState = constructState({}, content);
-
-    const newState = { ...componentState, ...oldState };
+    const newState = constructState(oldState, content);
 
     this.messagingSystem.call('ApprovalController:updateRequestState', {
       id,
@@ -160,7 +161,7 @@ export class InterfaceController extends BaseController<
     );
     assert(
       existingInterface.snapId === snapId,
-      `Interface not created by ${snapId}`,
+      `Interface not created by ${snapId}.`,
     );
   }
 }
