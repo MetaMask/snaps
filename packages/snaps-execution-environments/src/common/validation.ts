@@ -227,7 +227,12 @@ export type OnUserInputArguments = Infer<typeof OnUserInputArgumentsStruct>;
 export function assertIsOnUserInputRequestArguments(
   value: unknown,
 ): asserts value is OnUserInputArguments {
-  assertStruct(value, OnUserInputArgumentsStruct, 'Invalid request params');
+  assertStruct(
+    value,
+    OnUserInputArgumentsStruct,
+    'Invalid request params',
+    rpcErrors.invalidParams,
+  );
 }
 
 const OkResponseStruct = object({
