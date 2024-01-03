@@ -7,8 +7,9 @@ import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import { JsonStruct } from '@metamask/utils';
-import type { MethodHooksObject } from 'src/utils';
 import { StructError, create, object, string } from 'superstruct';
+
+import type { MethodHooksObject } from '../utils';
 
 const methodName = 'snap_resolveInterface';
 

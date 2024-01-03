@@ -58,7 +58,7 @@ export const restrictedMethodPermissionBuilders = {
   [getLocaleBuilder.targetName]: getLocaleBuilder,
   [readInterfaceBuilder.targetName]: readInterfaceBuilder,
   [resolveInterfaceBuilder.targetName]: resolveInterfaceBuilder,
-  [showInterfaceBuilder.targetName]: resolveInterfaceBuilder,
+  [showInterfaceBuilder.targetName]: showInterfaceBuilder,
   [updateInterfaceBuilder.targetName]: updateInterfaceBuilder,
 } as const;
 

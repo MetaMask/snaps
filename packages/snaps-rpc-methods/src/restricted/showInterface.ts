@@ -8,8 +8,9 @@ import { rpcErrors } from '@metamask/rpc-errors';
 import type { Component } from '@metamask/snaps-sdk';
 import { ComponentStruct } from '@metamask/snaps-sdk';
 import type { NonEmptyArray } from '@metamask/utils';
-import type { MethodHooksObject } from 'src/utils';
 import { StructError, create, object } from 'superstruct';
+
+import type { MethodHooksObject } from '../utils';
 
 const methodName = 'snap_showInterface';
 
