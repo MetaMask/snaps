@@ -12,7 +12,6 @@ import {
 export enum UserInputEventTypes {
   ButtonClickEvent = 'ButtonClickEvent',
   FormSubmitEvent = 'FormSubmitEvent',
-  InputChangeEvent = 'InputChangeEvent',
 }
 
 export const GenericEventStruct = object({
