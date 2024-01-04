@@ -5786,7 +5786,7 @@ describe('SnapController', () => {
 
       const initialConnections = {
         [MOCK_ORIGIN]: {},
-        'snaps.metamask.io': {},
+        'https://snaps.metamask.io': {},
         'npm:filsnap': {},
       };
 
@@ -5829,7 +5829,10 @@ describe('SnapController', () => {
 
       expect(messenger.call).toHaveBeenCalledWith(
         'PermissionController:grantPermissions',
-        { approvedPermissions, subject: { origin: 'snaps.metamask.io' } },
+        {
+          approvedPermissions,
+          subject: { origin: 'https://snaps.metamask.io' },
+        },
       );
 
       expect(messenger.call).not.toHaveBeenCalledWith(

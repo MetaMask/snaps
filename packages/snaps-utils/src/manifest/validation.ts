@@ -23,6 +23,7 @@ import {
   string,
   type,
   union,
+  intersection,
 } from 'superstruct';
 
 import { isEqual } from '../array';
@@ -32,7 +33,7 @@ import { KeyringOriginsStruct, RpcOriginsStruct } from '../json-rpc';
 import { ChainIdStruct } from '../namespace';
 import { SnapIdStruct } from '../snaps';
 import type { InferMatching } from '../structs';
-import { NameStruct, NpmSnapFileNames } from '../types';
+import { NameStruct, NpmSnapFileNames, uri } from '../types';
 
 // BIP-43 purposes that cannot be used for entropy derivation. These are in the
 // string form, ending with `'`.
@@ -189,8 +190,10 @@ export type SnapPermissions = InferMatching<
 
 export const SnapAuxilaryFilesStruct = array(string());
 
-// TODO: Consider typing this stricter?
-export const InitialConnectionsStruct = record(string(), object({}));
+export const InitialConnectionsStruct = record(
+  intersection([string(), uri()]),
+  object({}),
+);
 
 export type InitialConnections = Infer<typeof InitialConnectionsStruct>;
 
