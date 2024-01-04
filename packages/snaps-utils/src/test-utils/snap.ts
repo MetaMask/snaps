@@ -12,7 +12,7 @@ import {
 
 export const MOCK_SNAP_ID = 'npm:@metamask/example-snap' as SnapId;
 export const MOCK_LOCAL_SNAP_ID = 'local:http://localhost:8080' as SnapId;
-export const MOCK_ORIGIN = 'example.com';
+export const MOCK_ORIGIN = 'https://example.com';
 
 type GetPersistedSnapObjectOptions = Partial<MakeSemVer<PersistedSnap>>;
 type GetSnapObjectOptions = Partial<MakeSemVer<Snap>>;
