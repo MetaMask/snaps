@@ -3921,6 +3921,18 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
+        18,
+        'SubjectMetadataController:addSubjectMetadata',
+        {
+          subjectType: SubjectType.Snap,
+          name: MOCK_SNAP_NAME,
+          origin: MOCK_SNAP_ID,
+          version: '1.0.2',
+          svgIcon: DEFAULT_SNAP_ICON,
+        },
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
         19,
         'ExecutionService:executeSnap',
         expect.objectContaining({}),
