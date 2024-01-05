@@ -5779,16 +5779,42 @@ describe('SnapController', () => {
             return MOCK_SNAP_PERMISSIONS;
           } else if (origin === MOCK_ORIGIN) {
             return MOCK_ORIGIN_PERMISSIONS;
+          } else if (origin === 'https://metamask.io') {
+            return {
+              [WALLET_SNAP_PERMISSION_KEY]: {
+                ...MOCK_WALLET_SNAP_PERMISSION,
+                caveats: [
+                  {
+                    type: SnapCaveatType.SnapIds,
+                    value: {
+                      [MOCK_SNAP_ID]: {},
+                    },
+                  },
+                ],
+              },
+            };
           }
           return {};
         },
       );
+
+      // We wanna test that old pre-approved connections are revoked on update too.
+      const previousInitialConnections = {
+        'https://metamask.io': {},
+      };
 
       const initialConnections = {
         [MOCK_ORIGIN]: {},
         'https://snaps.metamask.io': {},
         'npm:filsnap': {},
       };
+
+      const { manifest: previousManifest } =
+        await getMockSnapFilesWithUpdatedChecksum({
+          manifest: getSnapManifest({
+            initialConnections: previousInitialConnections,
+          }),
+        });
 
       const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
@@ -5800,7 +5826,11 @@ describe('SnapController', () => {
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
-          state: { snaps: getPersistedSnapsState() },
+          state: {
+            snaps: getPersistedSnapsState(
+              getPersistedSnapObject({ manifest: previousManifest.result }),
+            ),
+          },
           detectSnapLocation: loopbackDetect({ manifest }),
         }),
       );
@@ -5832,6 +5862,13 @@ describe('SnapController', () => {
         {
           approvedPermissions,
           subject: { origin: 'https://snaps.metamask.io' },
+        },
+      );
+
+      expect(messenger.call).toHaveBeenCalledWith(
+        'PermissionController:revokePermissions',
+        {
+          'https://metamask.io': [WALLET_SNAP_PERMISSION_KEY],
         },
       );
 

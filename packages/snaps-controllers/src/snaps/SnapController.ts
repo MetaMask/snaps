@@ -1622,8 +1622,20 @@ export class SnapController extends BaseController<
 
   #handleInitialConnections(
     snapId: SnapId,
+    previousInitialConnections: InitialConnections | null,
     initialConnections: InitialConnections,
   ) {
+    if (previousInitialConnections) {
+      const revokedInitialConnections = setDiff(
+        previousInitialConnections,
+        initialConnections,
+      );
+
+      for (const origin of Object.keys(revokedInitialConnections)) {
+        this.removeSnapFromSubject(origin, snapId);
+      }
+    }
+
     for (const origin of Object.keys(initialConnections)) {
       this.#addSnapToSubject(origin, snapId);
     }
@@ -2126,6 +2138,8 @@ export class SnapController extends BaseController<
     try {
       const snap = this.getExpect(snapId);
 
+      const oldManifest = snap.manifest;
+
       const newSnap = await this.#fetchSnap(snapId, location);
 
       const { sourceCode: sourceCodeFile, manifest: manifestFile } =
@@ -2199,7 +2213,11 @@ export class SnapController extends BaseController<
       });
 
       if (manifest.initialConnections) {
-        this.#handleInitialConnections(snapId, manifest.initialConnections);
+        this.#handleInitialConnections(
+          snapId,
+          oldManifest.initialConnections ?? null,
+          manifest.initialConnections,
+        );
       }
 
       const rollbackSnapshot = this.#getRollbackSnapshot(snapId);
@@ -2659,6 +2677,7 @@ export class SnapController extends BaseController<
       if (snap.manifest.initialConnections) {
         this.#handleInitialConnections(
           snapId,
+          null,
           snap.manifest.initialConnections,
         );
       }
