@@ -9,6 +9,7 @@ import type {
   GetEndowments,
   GetPermissions,
   GetSubjectMetadata,
+  AddSubjectMetadata,
   GetSubjects,
   GrantPermissions,
   HasPermission,
@@ -497,6 +498,7 @@ export type AllowedActions =
   | GetPermissions
   | GetSubjects
   | GetSubjectMetadata
+  | AddSubjectMetadata
   | HasPermission
   | HasPermissions
   | RevokePermissions
@@ -2347,6 +2349,7 @@ export class SnapController extends BaseController<
 
     const stringifiedIcon = svgIcon?.toString();
 
+    // TODO: Consider removing this as it is unused now
     this.messagingSystem.publish(
       `SnapController:snapAdded`,
       snap,
