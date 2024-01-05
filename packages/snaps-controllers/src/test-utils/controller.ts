@@ -263,6 +263,11 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
     () => MOCK_SNAP_SUBJECT_METADATA,
   );
 
+  messenger.registerActionHandler(
+    'SubjectMetadataController:addSubjectMetadata',
+    () => undefined,
+  );
+
   messenger.registerActionHandler('ExecutionService:executeSnap', asyncNoOp);
   messenger.registerActionHandler(
     'ExecutionService:handleRpcRequest',
@@ -368,6 +373,7 @@ export const getSnapControllerMessenger = (
       'SnapController:decrementActiveReferences',
       'SnapController:getRegistryMetadata',
       'SubjectMetadataController:getSubjectMetadata',
+      'SubjectMetadataController:addSubjectMetadata',
       'SnapsRegistry:get',
       'SnapsRegistry:getMetadata',
       'SnapsRegistry:update',
