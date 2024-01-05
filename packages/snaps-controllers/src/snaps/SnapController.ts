@@ -2361,7 +2361,7 @@ export class SnapController extends BaseController<
       name: proposedName,
       origin: snap.id,
       version,
-      svgIcon: stringifiedIcon,
+      svgIcon: stringifiedIcon ?? null,
     });
 
     return { ...snap, sourceCode };
