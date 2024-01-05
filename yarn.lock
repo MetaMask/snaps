@@ -4913,9 +4913,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@metamask/permission-controller@npm:7.0.0"
+"@metamask/permission-controller@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "@metamask/permission-controller@npm:7.1.0"
   dependencies:
     "@metamask/base-controller": ^4.0.1
     "@metamask/controller-utils": ^8.0.1
@@ -4928,7 +4928,7 @@ __metadata:
     nanoid: ^3.1.31
   peerDependencies:
     "@metamask/approval-controller": ^5.1.1
-  checksum: d4724ba9c3a4bebb2e128ee25f7609895f1e6dc61303ca15ebe219f24a754130ab28894b9fcb426228226becb9c1951579f81f39e8581fba58b3f5531d63b792
+  checksum: 889213cca32cbf5b32b7e71c70ded0aeea32eae169ec67fb0d0bc8dcaa183b222f9d5417f657e331d7fb21ecb71f250cf1c932110d4b1e2167972b30bd012098
   languageName: node
   linkType: hard
 
@@ -5208,7 +5208,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/json-rpc-engine": ^7.3.1
     "@metamask/object-multiplex": ^2.0.0
-    "@metamask/permission-controller": ^7.0.0
+    "@metamask/permission-controller": ^7.1.0
     "@metamask/phishing-controller": ^8.0.1
     "@metamask/post-message-stream": ^7.0.0
     "@metamask/rpc-errors": ^6.1.0
@@ -5480,7 +5480,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/json-rpc-engine": ^7.3.1
     "@metamask/key-tree": ^9.0.0
-    "@metamask/permission-controller": ^7.0.0
+    "@metamask/permission-controller": ^7.1.0
     "@metamask/rpc-errors": ^6.1.0
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
@@ -5575,7 +5575,7 @@ __metadata:
     "@metamask/eth-json-rpc-middleware": ^12.0.1
     "@metamask/json-rpc-engine": ^7.3.1
     "@metamask/key-tree": ^9.0.0
-    "@metamask/permission-controller": ^7.0.0
+    "@metamask/permission-controller": ^7.1.0
     "@metamask/snaps-controllers": "workspace:^"
     "@metamask/snaps-execution-environments": "workspace:^"
     "@metamask/snaps-rpc-methods": "workspace:^"
@@ -5675,7 +5675,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/key-tree": ^9.0.0
-    "@metamask/permission-controller": ^7.0.0
+    "@metamask/permission-controller": ^7.1.0
     "@metamask/post-message-stream": ^7.0.0
     "@metamask/rpc-errors": ^6.1.0
     "@metamask/slip44": ^3.1.0
