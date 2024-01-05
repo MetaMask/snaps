@@ -2277,7 +2277,7 @@ export class SnapController extends BaseController<
     } = files;
 
     assertIsSnapManifest(manifest.result);
-    const { version } = manifest.result;
+    const { version, proposedName } = manifest.result;
 
     const sourceCode = sourceCodeFile.toString();
 
@@ -2345,11 +2345,21 @@ export class SnapController extends BaseController<
       }
     }
 
+    const stringifiedIcon = svgIcon?.toString();
+
     this.messagingSystem.publish(
       `SnapController:snapAdded`,
       snap,
-      svgIcon?.toString(),
+      stringifiedIcon,
     );
+
+    this.messagingSystem.call('SubjectMetadataController:addSubjectMetadata', {
+      subjectType: SubjectType.Snap,
+      name: proposedName,
+      origin: snap.id,
+      version,
+      svgIcon: stringifiedIcon,
+    });
 
     return { ...snap, sourceCode };
   }
