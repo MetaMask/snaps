@@ -1,3 +1,4 @@
+import type { Infer } from 'superstruct';
 import {
   assign,
   boolean,
@@ -9,7 +10,15 @@ import {
 
 import { createBuilder } from '../builder';
 import { LiteralStruct, NodeType } from '../nodes';
-import type { Literal } from '../nodes';
+
+export const CopyableStruct = assign(
+  LiteralStruct,
+  object({
+    type: literal(NodeType.Copyable),
+    value: string(),
+    sensitive: optional(boolean()),
+  }),
+);
 
 /**
  * Text that can be copied to the clipboard. It can optionally be marked as
@@ -22,19 +31,7 @@ import type { Literal } from '../nodes';
  * are only displayed to the user after clicking on the component. Defaults to
  * false.
  */
-export type Copyable = Literal & {
-  type: NodeType.Copyable;
-  value: string;
-};
-
-export const CopyableStruct = assign(
-  LiteralStruct,
-  object({
-    type: literal(NodeType.Copyable),
-    value: string(),
-    sensitive: optional(boolean()),
-  }),
-);
+export type Copyable = Infer<typeof CopyableStruct>;
 
 /**
  * Create a {@link Copyable} component.
