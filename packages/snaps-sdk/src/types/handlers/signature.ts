@@ -58,7 +58,7 @@ export type SignTypedDataV3Signature = {
  *
  * @property from - The address the signature is being sent from.
  * @property data - The data that is being signed.
- * @property signatureMethod - The signature method, which in this case is eth_signTypedData_v3
+ * @property signatureMethod - The signature method, which in this case is eth_signTypedData_v4
  */
 export type SignTypedDataV4Signature = {
   from: string;
