@@ -23,6 +23,7 @@ import {
   string,
   tuple,
   union,
+  unknown,
 } from 'superstruct';
 
 export const JsonRpcRequestWithoutIdStruct = object({
@@ -132,6 +133,34 @@ export function assertIsOnTransactionRequestArguments(
   assertStruct(
     value,
     OnTransactionRequestArgumentsStruct,
+    'Invalid request params',
+    rpcErrors.invalidParams,
+  );
+}
+
+export const OnSignatureRequestArgumentsStruct = object({
+  signature: record(string(), unknown()),
+  signatureOrigin: nullable(string()),
+});
+
+export type OnSignatureRequestArguments = Infer<
+  typeof OnSignatureRequestArgumentsStruct
+>;
+
+/**
+ * Asserts that the given value is a valid {@link OnSignatureRequestArguments}
+ * object.
+ *
+ * @param value - The value to validate.
+ * @throws If the value is not a valid {@link OnSignatureRequestArguments}
+ * object.
+ */
+export function assertIsOnSignatureRequestArguments(
+  value: unknown,
+): asserts value is OnSignatureRequestArguments {
+  assertStruct(
+    value,
+    OnSignatureRequestArgumentsStruct,
     'Invalid request params',
     rpcErrors.invalidParams,
   );
