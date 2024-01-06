@@ -1,5 +1,6 @@
 import type { EnumToUnion } from '../../internals';
 import type { Component } from '../../ui';
+import type { SeverityLevel } from './transaction';
 
 /**
  * An eth_sign signature object.
