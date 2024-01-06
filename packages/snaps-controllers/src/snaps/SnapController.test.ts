@@ -2288,6 +2288,181 @@ describe('SnapController', () => {
 
       snapController.destroy();
     });
+
+    it('throws if onSignature handler returns a phishing link', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.SignatureInsight]: {
+            caveats: [{ type: SnapCaveatType.SignatureOrigin, value: false }],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.SignatureInsight,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () =>
+          Promise.resolve({
+            content: text('[Foo bar](https://foo.bar)'),
+          }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PhishingController:testOrigin',
+        () => ({
+          result: true,
+          type: 'fuzzy',
+        }),
+      );
+
+      await expect(
+        snapController.handleRequest({
+          snapId: MOCK_SNAP_ID,
+          origin: 'foo.com',
+          handler: HandlerType.OnSignature,
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {},
+            id: 1,
+          },
+        }),
+      ).rejects.toThrow(`Invalid URL: The specified URL is not allowed.`);
+
+      snapController.destroy();
+    });
+
+    it('throws if onSignature returns an invalid value', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.SignatureInsight]: {
+            caveats: [{ type: SnapCaveatType.SignatureOrigin, value: false }],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.SignatureInsight,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () =>
+          Promise.resolve({
+            content: text('[Foo bar](https://foo.bar)'),
+            foo: 'bar',
+          }),
+      );
+
+      await expect(
+        snapController.handleRequest({
+          snapId: MOCK_SNAP_ID,
+          origin: 'foo.com',
+          handler: HandlerType.OnSignature,
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {},
+            id: 1,
+          },
+        }),
+      ).rejects.toThrow(
+        'Assertion failed: At path: foo -- Expected a value of type `never`, but received: `"bar"`.',
+      );
+
+      snapController.destroy();
+    });
+
+    it("doesn't throw if onSignature return value is valid", async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      const handlerResponse = { content: text('[foobar](https://foo.bar)') };
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.SignatureInsight]: {
+            caveats: [{ type: SnapCaveatType.SignatureOrigin, value: false }],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.SignatureInsight,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () => Promise.resolve(handlerResponse),
+      );
+
+      const result = await snapController.handleRequest({
+        snapId: MOCK_SNAP_ID,
+        origin: 'foo.com',
+        handler: HandlerType.OnSignature,
+        request: {
+          jsonrpc: '2.0',
+          method: ' ',
+          params: {},
+          id: 1,
+        },
+      });
+
+      expect(result).toBe(handlerResponse);
+
+      snapController.destroy();
+    });
   });
 
   it(`doesn't throw if onTransaction handler returns null`, async () => {
@@ -2330,6 +2505,58 @@ describe('SnapController', () => {
         snapId: MOCK_SNAP_ID,
         origin: 'foo.com',
         handler: HandlerType.OnTransaction,
+        request: {
+          jsonrpc: '2.0',
+          method: ' ',
+          params: {},
+          id: 1,
+        },
+      }),
+    ).toBeNull();
+
+    snapController.destroy();
+  });
+
+  it(`doesn't throw if onSignature handler returns null`, async () => {
+    const rootMessenger = getControllerMessenger();
+    const messenger = getSnapControllerMessenger(rootMessenger);
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        state: {
+          snaps: getPersistedSnapsState(),
+        },
+      }),
+    );
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => ({
+        [SnapEndowments.SignatureInsight]: {
+          caveats: [{ type: SnapCaveatType.SignatureOrigin, value: false }],
+          date: 1664187844588,
+          id: 'izn0WGUO8cvq_jqvLQuQP',
+          invoker: MOCK_SNAP_ID,
+          parentCapability: SnapEndowments.SignatureInsight,
+        },
+      }),
+    );
+
+    rootMessenger.registerActionHandler(
+      'SubjectMetadataController:getSubjectMetadata',
+      () => MOCK_SNAP_SUBJECT_METADATA,
+    );
+
+    rootMessenger.registerActionHandler(
+      'ExecutionService:handleRpcRequest',
+      async () => Promise.resolve(null),
+    );
+
+    expect(
+      await snapController.handleRequest({
+        snapId: MOCK_SNAP_ID,
+        origin: 'foo.com',
+        handler: HandlerType.OnSignature,
         request: {
           jsonrpc: '2.0',
           method: ' ',
@@ -6073,6 +6300,35 @@ describe('SnapController', () => {
         await messenger.call('SnapController:handleRequest', {
           snapId: MOCK_SNAP_ID,
           handler: HandlerType.OnTransaction,
+          origin: 'foo',
+          request: {},
+        }),
+      ).toBe(true);
+      expect(handleRpcRequestSpy).toHaveBeenCalledTimes(1);
+
+      snapController.destroy();
+    });
+
+    it('handles a signature insight request', async () => {
+      const messenger = getSnapControllerMessenger();
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      const handleRpcRequestSpy = jest
+        .spyOn(snapController, 'handleRequest')
+        .mockResolvedValueOnce(true);
+
+      expect(
+        await messenger.call('SnapController:handleRequest', {
+          snapId: MOCK_SNAP_ID,
+          handler: HandlerType.OnSignature,
           origin: 'foo',
           request: {},
         }),
