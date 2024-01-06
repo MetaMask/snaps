@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.1.1]
+### Changed
+- Fix missing export ([#2045](https://github.com/MetaMask/snaps/pull/2045))
+- Bump `@metamask/permission-controller` from `6.0.0` to `7.0.0` ([#2064](https://github.com/MetaMask/snaps/pull/2064))
+
+### Removed
+- Remove support for object-like syntax for cronjobs ([#2057](https://github.com/MetaMask/snaps/pull/2057))
+  - Since this never worked in the first place we aren't marking it as breaking.
+
 ## [5.1.0]
 ### Added
 - Add `getSnapDerivationPathName` and `getSlip44ProtocolName` to be shared across clients ([#2033](https://github.com/MetaMask/snaps/pull/2033))
@@ -129,7 +138,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@5.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@5.1.1...HEAD
+[5.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@5.1.0...@metamask/snaps-utils@5.1.1
 [5.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@5.0.1...@metamask/snaps-utils@5.1.0
 [5.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@5.0.0...@metamask/snaps-utils@5.0.1
 [5.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@4.0.1...@metamask/snaps-utils@5.0.0

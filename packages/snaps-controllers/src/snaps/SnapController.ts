@@ -9,6 +9,7 @@ import type {
   GetEndowments,
   GetPermissions,
   GetSubjectMetadata,
+  AddSubjectMetadata,
   GetSubjects,
   GrantPermissions,
   HasPermission,
@@ -497,6 +498,7 @@ export type AllowedActions =
   | GetPermissions
   | GetSubjects
   | GetSubjectMetadata
+  | AddSubjectMetadata
   | HasPermission
   | HasPermissions
   | RevokePermissions
@@ -2277,7 +2279,7 @@ export class SnapController extends BaseController<
     } = files;
 
     assertIsSnapManifest(manifest.result);
-    const { version } = manifest.result;
+    const { version, proposedName } = manifest.result;
 
     const sourceCode = sourceCodeFile.toString();
 
@@ -2345,11 +2347,22 @@ export class SnapController extends BaseController<
       }
     }
 
+    const stringifiedIcon = svgIcon?.toString();
+
+    // TODO: Consider removing this as it is unused now
     this.messagingSystem.publish(
       `SnapController:snapAdded`,
       snap,
-      svgIcon?.toString(),
+      stringifiedIcon,
     );
+
+    this.messagingSystem.call('SubjectMetadataController:addSubjectMetadata', {
+      subjectType: SubjectType.Snap,
+      name: proposedName,
+      origin: snap.id,
+      version,
+      svgIcon: stringifiedIcon ?? null,
+    });
 
     return { ...snap, sourceCode };
   }
