@@ -20,6 +20,11 @@ export enum SnapCaveatType {
   TransactionOrigin = 'transactionOrigin',
 
   /**
+   * Caveat specifying access to the signature origin, used by `endowment:signature-insight`.
+   */
+  SignatureOrigin = 'signatureOrigin',
+
+  /**
    * The origins that a Snap can receive JSON-RPC messages from.
    */
   RpcOrigin = 'rpcOrigin',

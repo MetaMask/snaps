@@ -146,6 +146,11 @@ export const ChainIdsStruct = array(ChainIdStruct);
 export const PermissionsStruct = type({
   'endowment:network-access': optional(object({})),
   'endowment:webassembly': optional(object({})),
+  'endowment:signature-insight': optional(
+    object({
+      allowSignatureOrigin: optional(boolean()),
+    }),
+  ),
   'endowment:transaction-insight': optional(
     object({
       allowTransactionOrigin: optional(boolean()),

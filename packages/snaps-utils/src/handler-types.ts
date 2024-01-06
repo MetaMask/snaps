@@ -1,5 +1,6 @@
 export enum HandlerType {
   OnRpcRequest = 'onRpcRequest',
+  OnSignature = 'onSignature',
   OnTransaction = 'onTransaction',
   OnCronjob = 'onCronjob',
   OnInstall = 'onInstall',

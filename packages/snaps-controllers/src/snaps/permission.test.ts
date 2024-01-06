@@ -91,6 +91,18 @@ describe('buildSnapEndowmentSpecifications', () => {
           "targetName": "endowment:rpc",
           "validator": [Function],
         },
+        "endowment:signature-insight": {
+          "allowedCaveats": [
+            "signatureOrigin",
+          ],
+          "endowmentGetter": [Function],
+          "permissionType": "Endowment",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "endowment:signature-insight",
+          "validator": [Function],
+        },
         "endowment:transaction-insight": {
           "allowedCaveats": [
             "transactionOrigin",
