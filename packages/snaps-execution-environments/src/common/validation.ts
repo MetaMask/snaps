@@ -23,7 +23,6 @@ import {
   string,
   tuple,
   union,
-  unknown,
 } from 'superstruct';
 
 export const JsonRpcRequestWithoutIdStruct = object({
@@ -139,7 +138,7 @@ export function assertIsOnTransactionRequestArguments(
 }
 
 export const OnSignatureRequestArgumentsStruct = object({
-  signature: record(string(), unknown()),
+  signature: record(string(), JsonStruct),
   signatureOrigin: nullable(string()),
 });
 

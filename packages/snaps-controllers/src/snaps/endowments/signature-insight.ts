@@ -86,7 +86,7 @@ function validateCaveat(caveat: Caveat<string, any>): void {
 /**
  * Map a raw value from the `initialPermissions` to a caveat specification.
  * Note that this function does not do any validation, that's handled by the
- * PermissionsController when the permission is requested.
+ * PermissionController when the permission is requested.
  *
  * @param value - The raw value from the `initialPermissions`.
  * @returns The caveat specification.

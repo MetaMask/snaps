@@ -6,7 +6,7 @@ import type { SeverityLevel } from './transaction';
  * An eth_sign signature object.
  *
  * @property from - The address the signature is being sent from.
- * @property data - The data that is being signed.
+ * @property data - The data (hex string) that is being signed.
  * @property signatureMethod - The signature method, which in this case is eth_sign
  */
 export type EthSignature = {
@@ -19,7 +19,7 @@ export type EthSignature = {
  * A personal_sign signature object.
  *
  * @property from - The address the signature is being sent from.
- * @property data - The data that is being signed.
+ * @property data - The data (hex string) that is being signed.
  * @property signatureMethod - The signature method, which in this case is personal_sign
  */
 export type PersonalSignature = {
@@ -92,8 +92,8 @@ export type Signature =
  * permission.
  *
  * @param args - The request arguments.
- * @param args.signature - The transaction object, containing the address,
- * value, data, and other properties of the transaction.
+ * @param args.signature - The signature object that contains the from address,
+ * data and signature method.
  * @param args.signatureOrigin - The origin of the signature. This is the
  * URL of the website that submitted the signature. This is only available if
  * the Snap has enabled the `allowSignatureOrigin` option in the

@@ -1453,48 +1453,54 @@ describe('BaseSnapExecutor', () => {
       ],
     });
 
-    it('supports onSignature export', async () => {
-      const CODE = `
-        module.exports.onSignature = ({ signature, signatureOrigin }) =>
-          ({ signature, signatureOrigin });
-      `;
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: { content: { type: 'panel', children: [] } },
+    });
+  });
 
-      const executor = new TestSnapExecutor();
-      await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+  it('supports onSignature export', async () => {
+    const CODE = `
+      module.exports.onSignature = ({ signature, signatureOrigin }) =>
+        ({ signature, signatureOrigin });
+    `;
 
-      expect(await executor.readCommand()).toStrictEqual({
-        jsonrpc: '2.0',
-        id: 1,
-        result: 'OK',
-      });
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
 
-      const signature = {
-        from: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-        data: 'Hello, Bob!',
-      };
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
 
-      const params = {
-        signature,
-        signatureOrigin: 'https://www.uniswap.org',
-      };
+    const signature = {
+      from: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      data: 'Hello, Bob!',
+    };
 
-      await executor.writeCommand({
-        jsonrpc: '2.0',
-        id: 2,
-        method: 'snapRpc',
-        params: [
-          MOCK_SNAP_ID,
-          HandlerType.OnSignature,
-          MOCK_ORIGIN,
-          { jsonrpc: '2.0', method: 'foo', params },
-        ],
-      });
+    const params = {
+      signature,
+      signatureOrigin: 'https://www.uniswap.org',
+    };
 
-      expect(await executor.readCommand()).toStrictEqual({
-        id: 2,
-        jsonrpc: '2.0',
-        result: params,
-      });
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnSignature,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: 'foo', params },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: params,
     });
   });
 
