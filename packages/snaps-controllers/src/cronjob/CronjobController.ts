@@ -19,7 +19,7 @@ import type {
   SnapDisabled,
   SnapEnabled,
   SnapInstalled,
-  SnapRemoved,
+  SnapUninstalled,
   SnapUpdated,
 } from '..';
 import { getRunnableSnaps, SnapEndowments } from '..';
@@ -33,7 +33,7 @@ export type CronjobControllerActions =
 
 export type CronjobControllerEvents =
   | SnapInstalled
-  | SnapRemoved
+  | SnapUninstalled
   | SnapUpdated
   | SnapEnabled
   | SnapDisabled;
@@ -119,7 +119,7 @@ export class CronjobController extends BaseController<
     );
 
     this.messagingSystem.subscribe(
-      'SnapController:snapRemoved',
+      'SnapController:snapUninstalled',
       this._handleSnapUnregisterEvent,
     );
 
@@ -331,7 +331,7 @@ export class CronjobController extends BaseController<
     );
 
     this.messagingSystem.unsubscribe(
-      'SnapController:snapRemoved',
+      'SnapController:snapUninstalled',
       this._handleSnapUnregisterEvent,
     );
 

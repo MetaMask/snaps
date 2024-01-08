@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.1]
+### Fixed
+- Fix missing `global` during snap evaluation ([#2072](https://github.com/MetaMask/snaps/pull/2072))
+
 ## [4.0.0]
 ### Changed
 - **BREAKING:** Synchronously initialize WASM modules ([#2024](https://github.com/MetaMask/snaps/pull/2024))
@@ -91,7 +95,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@4.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@4.0.1...HEAD
+[4.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@4.0.0...@metamask/snaps-cli@4.0.1
 [4.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@3.0.5...@metamask/snaps-cli@4.0.0
 [3.0.5]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@3.0.4...@metamask/snaps-cli@3.0.5
 [3.0.4]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@3.0.3...@metamask/snaps-cli@3.0.4

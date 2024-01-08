@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-cli",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "A CLI for developing MetaMask Snaps.",
   "repository": {
     "type": "git",
@@ -98,7 +98,7 @@
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.5.1",
-    "@metamask/auto-changelog": "^3.4.3",
+    "@metamask/auto-changelog": "^3.4.4",
     "@metamask/eslint-config": "^12.1.0",
     "@metamask/eslint-config-jest": "^12.1.0",
     "@metamask/eslint-config-nodejs": "^12.1.0",

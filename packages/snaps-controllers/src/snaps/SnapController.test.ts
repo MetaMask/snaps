@@ -543,26 +543,16 @@ describe('SnapController', () => {
 
     jest.spyOn(messenger, 'publish');
 
-    const eventSubscriptionPromise = Promise.all([
-      new Promise<void>((resolve) => {
-        messenger.subscribe('SnapController:snapAdded', (snap) => {
-          expect(snap).toStrictEqual(
-            getSnapObject({ status: SnapStatus.Installing }),
-          );
+    const eventSubscriptionPromise = new Promise<void>((resolve) => {
+      messenger.subscribe(
+        'SnapController:snapInstalled',
+        (truncatedSnap, origin) => {
+          expect(truncatedSnap).toStrictEqual(getTruncatedSnap());
+          expect(origin).toStrictEqual(MOCK_ORIGIN);
           resolve();
-        });
-      }),
-      new Promise<void>((resolve) => {
-        messenger.subscribe(
-          'SnapController:snapInstalled',
-          (truncatedSnap, origin) => {
-            expect(truncatedSnap).toStrictEqual(getTruncatedSnap());
-            expect(origin).toStrictEqual(MOCK_ORIGIN);
-            resolve();
-          },
-        );
-      }),
-    ]);
+        },
+      );
+    });
 
     const expectedSnapObject = getTruncatedSnap();
     const permissions = {
@@ -943,10 +933,6 @@ describe('SnapController', () => {
     );
 
     expect(controller.get(MOCK_SNAP_ID)).toBeUndefined();
-    expect(messenger.publish).toHaveBeenCalledWith(
-      'SnapController:snapRemoved',
-      getTruncatedSnap(),
-    );
 
     expect(messenger.publish).not.toHaveBeenCalledWith(
       'SnapController:snapUninstalled',
@@ -973,23 +959,6 @@ describe('SnapController', () => {
         throw new Error('foo');
       });
 
-    const eventSubscriptionPromise = Promise.all([
-      new Promise<void>((resolve) => {
-        messenger.subscribe('SnapController:snapAdded', (snap) => {
-          expect(snap).toStrictEqual(
-            getSnapObject({ status: SnapStatus.Installing }),
-          );
-          resolve();
-        });
-      }),
-      new Promise<void>((resolve) => {
-        messenger.subscribe('SnapController:snapRemoved', (truncatedSnap) => {
-          expect(truncatedSnap).toStrictEqual(getTruncatedSnap());
-          resolve();
-        });
-      }),
-    ]);
-
     await expect(
       snapController.installSnaps(MOCK_ORIGIN, {
         [MOCK_SNAP_ID]: {},
@@ -1009,13 +978,6 @@ describe('SnapController', () => {
           type: SNAP_APPROVAL_INSTALL,
         },
       }),
-    );
-
-    await eventSubscriptionPromise;
-
-    expect(messenger.publish).toHaveBeenCalledWith(
-      'SnapController:snapRemoved',
-      getTruncatedSnap(),
     );
 
     expect(messenger.publish).not.toHaveBeenCalledWith(
@@ -1542,11 +1504,6 @@ describe('SnapController', () => {
     await snapController.removeSnap(snap.id);
 
     expect(snapController.state.snaps[snap.id]).toBeUndefined();
-
-    expect(messenger.publish).toHaveBeenCalledWith(
-      'SnapController:snapRemoved',
-      getTruncatedSnap(),
-    );
 
     expect(messenger.publish).toHaveBeenCalledWith(
       'SnapController:snapUninstalled',
@@ -4634,12 +4591,10 @@ describe('SnapController', () => {
         }),
       );
       const onSnapUpdated = jest.fn();
-      const onSnapAdded = jest.fn();
 
       const snap = controller.getExpect(MOCK_SNAP_ID);
 
       messenger.subscribe('SnapController:snapUpdated', onSnapUpdated);
-      messenger.subscribe('SnapController:snapAdded', onSnapAdded);
 
       const newSnap = controller.get(MOCK_SNAP_ID);
 
@@ -4656,7 +4611,6 @@ describe('SnapController', () => {
       );
       expect(newSnap?.version).toStrictEqual(snap.version);
       expect(onSnapUpdated).not.toHaveBeenCalled();
-      expect(onSnapAdded).not.toHaveBeenCalled();
 
       controller.destroy();
     });
@@ -4714,12 +4668,10 @@ describe('SnapController', () => {
         }),
       );
       const onSnapUpdated = jest.fn();
-      const onSnapAdded = jest.fn();
 
       const snap = controller.getExpect(MOCK_SNAP_ID);
 
       messenger.subscribe('SnapController:snapUpdated', onSnapUpdated);
-      messenger.subscribe('SnapController:snapAdded', onSnapAdded);
 
       const newSnap = controller.get(MOCK_SNAP_ID);
 
@@ -4737,7 +4689,6 @@ describe('SnapController', () => {
       );
       expect(newSnap?.version).toStrictEqual(snap.version);
       expect(onSnapUpdated).not.toHaveBeenCalled();
-      expect(onSnapAdded).not.toHaveBeenCalled();
 
       controller.destroy();
     });
@@ -4766,13 +4717,11 @@ describe('SnapController', () => {
       );
       const callActionSpy = jest.spyOn(messenger, 'call');
       const onSnapUpdated = jest.fn();
-      const onSnapAdded = jest.fn();
 
       await controller.installSnaps(MOCK_ORIGIN, { [MOCK_SNAP_ID]: {} });
       await controller.stopSnap(MOCK_SNAP_ID);
 
       messenger.subscribe('SnapController:snapUpdated', onSnapUpdated);
-      messenger.subscribe('SnapController:snapAdded', onSnapAdded);
 
       const result = await controller.updateSnap(
         MOCK_ORIGIN,
@@ -4886,7 +4835,6 @@ describe('SnapController', () => {
         '1.0.0',
         MOCK_ORIGIN,
       );
-      expect(onSnapAdded).toHaveBeenCalledTimes(1);
 
       controller.destroy();
     });
