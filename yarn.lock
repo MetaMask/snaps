@@ -3709,21 +3709,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/auto-changelog@npm:~3.3.0":
-  version: 3.3.0
-  resolution: "@metamask/auto-changelog@npm:3.3.0"
-  dependencies:
-    diff: ^5.0.0
-    execa: ^5.1.1
-    prettier: ^2.8.8
-    semver: ^7.3.5
-    yargs: ^17.0.1
-  bin:
-    auto-changelog: dist/cli.js
-  checksum: 1b308f0f6beafb479da19398bc51315888c8fa7e1688ee835a96d5e2ca8dccf2edac80ac835335122b2c3ff6c76f03d202a35316122bbfa7c071954d5227f732
-  languageName: node
-  linkType: hard
-
 "@metamask/base-controller@npm:^4.0.0, @metamask/base-controller@npm:^4.0.1":
   version: 4.0.1
   resolution: "@metamask/base-controller@npm:4.0.1"
@@ -3999,23 +3984,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/create-release-branch@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "@metamask/create-release-branch@npm:2.0.1"
+"@metamask/create-release-branch@npm:^1.0.1":
+  version: 1.1.0
+  resolution: "@metamask/create-release-branch@npm:1.1.0"
   dependencies:
     "@metamask/action-utils": ^1.0.0
-    "@metamask/auto-changelog": ~3.3.0
-    "@metamask/utils": ^8.2.1
+    "@metamask/utils": ^5.0.2
     debug: ^4.3.4
     execa: ^5.1.1
     pony-cause: ^2.1.9
-    semver: ^7.5.4
+    semver: ^7.5.0
     which: ^3.0.0
     yaml: ^2.2.2
     yargs: ^17.7.1
   bin:
     create-release-branch: bin/create-release-branch.js
-  checksum: a81ae6a9f8e87e3118c0df33dfd5f692a6d49863ca4d03956917c8239fb69a743181396423fc41f6271373438c61b3d126e20e299739ce46191fe38022c75751
+  checksum: 04ab235f27768c8977fe998da6b4f09eccd384debb80dcafda6c4a5ea59638c414b2e6a2ebd770471946f050ae6eaf1c2d798d06ff0b38c0585d6dc17a62cab4
   languageName: node
   linkType: hard
 
@@ -5870,7 +5854,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/utils@npm:^5.0.0":
+"@metamask/utils@npm:^5.0.0, @metamask/utils@npm:^5.0.2":
   version: 5.0.2
   resolution: "@metamask/utils@npm:5.0.2"
   dependencies:
@@ -20100,7 +20084,7 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^2.5.1
     "@metamask/auto-changelog": ^3.4.4
-    "@metamask/create-release-branch": ^2.0.1
+    "@metamask/create-release-branch": ^1.0.1
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -20338,7 +20322,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.0.0, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.3.8, semver@npm:^7.5.3, semver@npm:^7.5.4":
+"semver@npm:^7.0.0, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.3.8, semver@npm:^7.5.0, semver@npm:^7.5.3, semver@npm:^7.5.4":
   version: 7.5.4
   resolution: "semver@npm:7.5.4"
   dependencies:
