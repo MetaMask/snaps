@@ -388,14 +388,6 @@ export type SnapStateChange = {
 };
 
 /**
- * Emitted when a Snap has been added to state during installation.
- */
-export type SnapAdded = {
-  type: `${typeof controllerName}:snapAdded`;
-  payload: [snap: Snap, svgIcon: string | undefined];
-};
-
-/**
  * Emitted when an installed snap has been blocked.
  */
 export type SnapBlocked = {
@@ -480,7 +472,6 @@ export type SnapDisabled = {
 };
 
 export type SnapControllerEvents =
-  | SnapAdded
   | SnapBlocked
   | SnapInstalled
   | SnapUninstalled
@@ -2347,21 +2338,12 @@ export class SnapController extends BaseController<
       }
     }
 
-    const stringifiedIcon = svgIcon?.toString();
-
-    // TODO: Consider removing this as it is unused now
-    this.messagingSystem.publish(
-      `SnapController:snapAdded`,
-      snap,
-      stringifiedIcon,
-    );
-
     this.messagingSystem.call('SubjectMetadataController:addSubjectMetadata', {
       subjectType: SubjectType.Snap,
       name: proposedName,
       origin: snap.id,
       version,
-      svgIcon: stringifiedIcon ?? null,
+      svgIcon: svgIcon?.toString() ?? null,
     });
 
     return { ...snap, sourceCode };
