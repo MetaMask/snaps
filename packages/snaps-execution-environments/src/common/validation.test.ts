@@ -1,5 +1,6 @@
 import {
   assertIsOnNameLookupRequestArguments,
+  assertIsOnSignatureRequestArguments,
   assertIsOnTransactionRequestArguments,
   isEndowment,
   isEndowmentsArray,
@@ -78,6 +79,39 @@ describe('assertIsOnTransactionRequestArguments', () => {
       );
     },
   );
+});
+
+describe('assertIsOnSignatureRequestArguments', () => {
+  const FROM_ADDRESS = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045';
+  it.each([
+    { signature: { from: FROM_ADDRESS, data: 'hello' }, signatureOrigin: null },
+    { signature: { from: FROM_ADDRESS, data: {} }, signatureOrigin: null },
+  ])('does not throw for a valid signature params object', (args) => {
+    expect(() => assertIsOnSignatureRequestArguments(args)).not.toThrow();
+  });
+
+  it.each([
+    true,
+    false,
+    null,
+    undefined,
+    0,
+    1,
+    '',
+    'foo',
+    [],
+    {},
+    { signature: 'foo', signatureOrigin: null },
+    {
+      signature: { from: FROM_ADDRESS, data: 'hello world' },
+      signatureOrigin: null,
+      foo: 'bar',
+    },
+  ])('throws if the value is not a valid signature params object', (value) => {
+    expect(() => assertIsOnSignatureRequestArguments(value as any)).toThrow(
+      'Invalid request params:',
+    );
+  });
 });
 
 describe('assertIsOnNameLookupRequestArguments', () => {

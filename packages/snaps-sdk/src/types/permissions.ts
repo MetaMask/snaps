@@ -36,6 +36,9 @@ export type InitialPermissions = {
     snaps?: boolean;
     allowedOrigins?: string[];
   };
+  'endowment:signature-insight'?: {
+    allowSignatureOrigin?: boolean;
+  };
   'endowment:transaction-insight'?: {
     allowTransactionOrigin?: boolean;
   };

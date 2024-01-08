@@ -62,6 +62,7 @@ import {
   logError,
   normalizeRelative,
   OnTransactionResponseStruct,
+  OnSignatureResponseStruct,
   resolveVersionRange,
   SnapCaveatType,
   SnapStatus,
@@ -2699,6 +2700,21 @@ export class SnapController extends BaseController<
     switch (handlerType) {
       case HandlerType.OnTransaction: {
         assertStruct(result, OnTransactionResponseStruct);
+        // Null is an allowed return value here
+        if (result === null) {
+          return;
+        }
+
+        await this.#triggerPhishingListUpdate();
+
+        validateComponentLinks(
+          result.content,
+          this.#checkPhishingList.bind(this),
+        );
+        break;
+      }
+      case HandlerType.OnSignature: {
+        assertStruct(result, OnSignatureResponseStruct);
         // Null is an allowed return value here
         if (result === null) {
           return;

@@ -27,6 +27,11 @@ import {
   rpcEndowmentBuilder,
 } from './rpc';
 import {
+  getSignatureInsightCaveatMapper,
+  signatureInsightCaveatSpecifications,
+  signatureInsightEndowmentBuilder,
+} from './signature-insight';
+import {
   getTransactionInsightCaveatMapper,
   transactionInsightCaveatSpecifications,
   transactionInsightEndowmentBuilder,
@@ -46,6 +51,8 @@ export const endowmentPermissionBuilders = {
   [lifecycleHooksEndowmentBuilder.targetName]: lifecycleHooksEndowmentBuilder,
   [keyringEndowmentBuilder.targetName]: keyringEndowmentBuilder,
   [homePageEndowmentBuilder.targetName]: homePageEndowmentBuilder,
+  [signatureInsightEndowmentBuilder.targetName]:
+    signatureInsightEndowmentBuilder,
 } as const;
 
 export const endowmentCaveatSpecifications = {
@@ -54,6 +61,7 @@ export const endowmentCaveatSpecifications = {
   ...rpcCaveatSpecifications,
   ...nameLookupCaveatSpecifications,
   ...keyringCaveatSpecifications,
+  ...signatureInsightCaveatSpecifications,
 };
 
 export const endowmentCaveatMappers: Record<
@@ -66,6 +74,8 @@ export const endowmentCaveatMappers: Record<
   [rpcEndowmentBuilder.targetName]: getRpcCaveatMapper,
   [nameLookupEndowmentBuilder.targetName]: getNameLookupCaveatMapper,
   [keyringEndowmentBuilder.targetName]: getKeyringCaveatMapper,
+  [signatureInsightEndowmentBuilder.targetName]:
+    getSignatureInsightCaveatMapper,
 };
 
 export const handlerEndowments: Record<HandlerType, string> = {
@@ -77,10 +87,12 @@ export const handlerEndowments: Record<HandlerType, string> = {
   [HandlerType.OnUpdate]: lifecycleHooksEndowmentBuilder.targetName,
   [HandlerType.OnKeyringRequest]: keyringEndowmentBuilder.targetName,
   [HandlerType.OnHomePage]: homePageEndowmentBuilder.targetName,
+  [HandlerType.OnSignature]: signatureInsightEndowmentBuilder.targetName,
 };
 
 export * from './enum';
 export { getRpcCaveatOrigins } from './rpc';
+export { getSignatureOriginCaveat } from './signature-insight';
 export { getTransactionOriginCaveat } from './transaction-insight';
 export { getChainIdsCaveat } from './name-lookup';
 export { getKeyringCaveatOrigins } from './keyring';

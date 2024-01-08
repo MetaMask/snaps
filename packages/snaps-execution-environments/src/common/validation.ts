@@ -137,6 +137,34 @@ export function assertIsOnTransactionRequestArguments(
   );
 }
 
+export const OnSignatureRequestArgumentsStruct = object({
+  signature: record(string(), JsonStruct),
+  signatureOrigin: nullable(string()),
+});
+
+export type OnSignatureRequestArguments = Infer<
+  typeof OnSignatureRequestArgumentsStruct
+>;
+
+/**
+ * Asserts that the given value is a valid {@link OnSignatureRequestArguments}
+ * object.
+ *
+ * @param value - The value to validate.
+ * @throws If the value is not a valid {@link OnSignatureRequestArguments}
+ * object.
+ */
+export function assertIsOnSignatureRequestArguments(
+  value: unknown,
+): asserts value is OnSignatureRequestArguments {
+  assertStruct(
+    value,
+    OnSignatureRequestArgumentsStruct,
+    'Invalid request params',
+    rpcErrors.invalidParams,
+  );
+}
+
 const baseNameLookupArgs = { chainId: ChainIdStruct };
 const domainRequestStruct = object({
   ...baseNameLookupArgs,

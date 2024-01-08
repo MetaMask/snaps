@@ -5,6 +5,7 @@ import type {
   OnKeyringRequestHandler,
   OnNameLookupHandler,
   OnRpcRequestHandler,
+  OnSignatureHandler,
   OnTransactionHandler,
   OnUpdateHandler,
 } from '@metamask/snaps-sdk';
@@ -77,6 +78,13 @@ export const SNAP_EXPORTS = {
       return typeof snapExport === 'function';
     },
   },
+  [HandlerType.OnSignature]: {
+    type: HandlerType.OnSignature,
+    required: true,
+    validator: (snapExport: unknown): snapExport is OnSignatureHandler => {
+      return typeof snapExport === 'function';
+    },
+  },
 } as const;
 
 export const OnTransactionResponseStruct = nullable(
@@ -85,6 +93,8 @@ export const OnTransactionResponseStruct = nullable(
     severity: optional(literal(SeverityLevel.Critical)),
   }),
 );
+
+export const OnSignatureResponseStruct = OnTransactionResponseStruct;
 
 export const OnHomePageResponseStruct = object({
   content: ComponentStruct,

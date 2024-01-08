@@ -12,6 +12,7 @@ import type {
 } from './validation';
 import {
   assertIsOnTransactionRequestArguments,
+  assertIsOnSignatureRequestArguments,
   assertIsOnNameLookupRequestArguments,
 } from './validation';
 
@@ -47,6 +48,12 @@ export function getHandlerArguments(
         chainId,
         transactionOrigin,
       };
+    }
+    case HandlerType.OnSignature: {
+      assertIsOnSignatureRequestArguments(request.params);
+
+      const { signature, signatureOrigin } = request.params;
+      return { signature, signatureOrigin };
     }
     case HandlerType.OnNameLookup: {
       assertIsOnNameLookupRequestArguments(request.params);
