@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [4.0.0]
 ### Changed
 - **BREAKING:** Remove `:snapAdded` event ([#2073](https://github.com/MetaMask/snaps/pull/2073))
+- **BREAKING:** Remove `:snapRemoved` event ([#2076](https://github.com/MetaMask/snaps/pull/2076))
 - Populate subject metadata when snaps are added to state ([#2069](https://github.com/MetaMask/snaps/pull/2069))
 
 ## [3.6.0]
