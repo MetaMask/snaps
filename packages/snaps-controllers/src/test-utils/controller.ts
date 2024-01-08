@@ -333,7 +333,6 @@ export const getSnapControllerMessenger = (
       'SnapController:snapUninstalled',
       'SnapController:snapUnblocked',
       'SnapController:snapUpdated',
-      'SnapController:snapRemoved',
       'SnapController:stateChange',
       'SnapController:snapRolledback',
     ],
@@ -498,7 +497,7 @@ export const getRestrictedCronjobControllerMessenger = (
     allowedEvents: [
       'SnapController:snapInstalled',
       'SnapController:snapUpdated',
-      'SnapController:snapRemoved',
+      'SnapController:snapUninstalled',
       'SnapController:snapEnabled',
       'SnapController:snapDisabled',
     ],

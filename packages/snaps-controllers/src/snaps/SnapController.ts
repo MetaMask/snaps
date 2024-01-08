@@ -413,15 +413,6 @@ export type SnapUninstalled = {
 };
 
 /**
- * Emitted when a snap is removed from state, this may happen even
- * if a snap has not fully completed installation.
- */
-export type SnapRemoved = {
-  type: `${typeof controllerName}:snapRemoved`;
-  payload: [snap: TruncatedSnap];
-};
-
-/**
  * Emitted when an installed snap has been unblocked.
  */
 export type SnapUnblocked = {
@@ -475,7 +466,6 @@ export type SnapControllerEvents =
   | SnapBlocked
   | SnapInstalled
   | SnapUninstalled
-  | SnapRemoved
   | SnapStateChange
   | SnapUnblocked
   | SnapUpdated
@@ -1492,8 +1482,6 @@ export class SnapController extends BaseController<
           delete state.snaps[snapId];
           delete state.snapStates[snapId];
         });
-
-        this.messagingSystem.publish(`SnapController:snapRemoved`, truncated);
 
         // If the snap has been fully installed before, also emit snapUninstalled.
         if (snap.status !== SnapStatus.Installing) {

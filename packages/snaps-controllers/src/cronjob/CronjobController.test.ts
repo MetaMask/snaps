@@ -322,7 +322,7 @@ describe('CronjobController', () => {
     cronjobController.destroy();
   });
 
-  it('handles SnapRemoved event', () => {
+  it('handles SnapUninstalled event', () => {
     const rootMessenger = getRootCronjobControllerMessenger();
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
@@ -345,7 +345,7 @@ describe('CronjobController', () => {
       MOCK_ORIGIN,
     );
 
-    rootMessenger.publish('SnapController:snapRemoved', snapInfo);
+    rootMessenger.publish('SnapController:snapUninstalled', snapInfo);
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
 
