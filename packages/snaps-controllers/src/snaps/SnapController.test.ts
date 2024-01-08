@@ -933,10 +933,6 @@ describe('SnapController', () => {
     );
 
     expect(controller.get(MOCK_SNAP_ID)).toBeUndefined();
-    expect(messenger.publish).toHaveBeenCalledWith(
-      'SnapController:snapRemoved',
-      getTruncatedSnap(),
-    );
 
     expect(messenger.publish).not.toHaveBeenCalledWith(
       'SnapController:snapUninstalled',
@@ -963,13 +959,6 @@ describe('SnapController', () => {
         throw new Error('foo');
       });
 
-    const eventSubscriptionPromise = new Promise<void>((resolve) => {
-      messenger.subscribe('SnapController:snapRemoved', (truncatedSnap) => {
-        expect(truncatedSnap).toStrictEqual(getTruncatedSnap());
-        resolve();
-      });
-    });
-
     await expect(
       snapController.installSnaps(MOCK_ORIGIN, {
         [MOCK_SNAP_ID]: {},
@@ -989,13 +978,6 @@ describe('SnapController', () => {
           type: SNAP_APPROVAL_INSTALL,
         },
       }),
-    );
-
-    await eventSubscriptionPromise;
-
-    expect(messenger.publish).toHaveBeenCalledWith(
-      'SnapController:snapRemoved',
-      getTruncatedSnap(),
     );
 
     expect(messenger.publish).not.toHaveBeenCalledWith(
@@ -1522,11 +1504,6 @@ describe('SnapController', () => {
     await snapController.removeSnap(snap.id);
 
     expect(snapController.state.snaps[snap.id]).toBeUndefined();
-
-    expect(messenger.publish).toHaveBeenCalledWith(
-      'SnapController:snapRemoved',
-      getTruncatedSnap(),
-    );
 
     expect(messenger.publish).toHaveBeenCalledWith(
       'SnapController:snapUninstalled',
