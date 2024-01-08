@@ -88,7 +88,7 @@ export type Signature =
  * submitted to the snap. It can return insights about the signature, which
  * will be displayed to the user.
  *
- * Note that using this handler requires the `endowment:signature-insights`
+ * Note that using this handler requires the `endowment:signature-insight`
  * permission.
  *
  * @param args - The request arguments.
