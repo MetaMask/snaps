@@ -6,11 +6,11 @@ import type {
 import type { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type { Component } from '@metamask/snaps-sdk';
+import type { InterfaceState } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
 import { assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
-import type { ComponentState } from './utils';
 import { constructState } from './utils';
 
 const controllerName = 'InterfaceController';
@@ -31,7 +31,7 @@ export type InterfaceControllerMessenger = RestrictedControllerMessenger<
 export type StoredInterface = {
   snapId: string;
   content: Component;
-  state: ComponentState;
+  state: InterfaceState;
 };
 
 export type InterfaceControllerState = {
@@ -140,7 +140,7 @@ export class InterfaceController extends BaseController<
     return this.#interfacePromises.get(id);
   }
 
-  updateInterfaceState(id: string, state: ComponentState) {
+  updateInterfaceState(id: string, state: InterfaceState) {
     this.update((draftState) => {
       draftState.interfaces[id].state = state;
     });
