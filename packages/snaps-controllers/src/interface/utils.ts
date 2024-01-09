@@ -38,8 +38,15 @@ export const constructFormState = (
   return component.value ?? oldInputState ?? null;
 };
 
-export const assertNameIsUnique = (state: InterfaceState, name: string) =>
+/**
+ * Asserts that the component name is unique in state.
+ *
+ * @param state - The interface state to verify against.
+ * @param name - The component name to verify.
+ */
+export const assertNameIsUnique = (state: InterfaceState, name: string) => {
   assert(state[name] === undefined, `duplicate name for component: ${name}`);
+};
 
 /**
  * Construcs the interface state for a given component tree while preserving values for matching stateful components in the old state.
