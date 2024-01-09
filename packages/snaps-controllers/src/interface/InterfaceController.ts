@@ -1,8 +1,3 @@
-import type {
-  AcceptRequest,
-  AddApprovalRequest,
-  UpdateRequestState,
-} from '@metamask/approval-controller';
 import type { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type { Component, InterfaceState } from '@metamask/snaps-sdk';
@@ -15,16 +10,43 @@ const controllerName = 'InterfaceController';
 
 // @TODO: Add actions for functions
 
-export type AllowedInterfaceControllerActions =
-  | AddApprovalRequest
-  | UpdateRequestState
-  | AcceptRequest;
+export type CreateInterface = {
+  type: `${typeof controllerName}:createInterface`;
+  handler: InterfaceController['createInterface'];
+};
+
+export type GetInterface = {
+  type: `${typeof controllerName}:getInterface`;
+  handler: InterfaceController['getInterface'];
+};
+
+export type UpdateInterface = {
+  type: `${typeof controllerName}:updateInterface`;
+  handler: InterfaceController['updateInterface'];
+};
+
+export type DeleteInterface = {
+  type: `${typeof controllerName}:deleteInterface`;
+  handler: InterfaceController['deleteInterface'];
+};
+
+export type UpdateInterfaceState = {
+  type: `${typeof controllerName}:updateInterfaceState`;
+  handler: InterfaceController['updateInterfaceState'];
+};
+
+export type InterfaceControllerActions =
+  | CreateInterface
+  | GetInterface
+  | UpdateInterface
+  | DeleteInterface
+  | UpdateInterfaceState;
 
 export type InterfaceControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
-  AllowedInterfaceControllerActions,
+  InterfaceControllerActions,
   never,
-  AllowedInterfaceControllerActions['type'],
+  InterfaceControllerActions['type'],
   never
 >;
 
@@ -44,6 +66,9 @@ export type InterfaceControllerArgs = {
   state?: InterfaceControllerState;
 };
 
+/**
+ * Use this controller to manage snaps UI interfaces using RPC method hooks.
+ */
 export class InterfaceController extends BaseController<
   typeof controllerName,
   InterfaceControllerState,
@@ -58,8 +83,48 @@ export class InterfaceController extends BaseController<
       name: controllerName,
       state: { interfaces: {}, ...state },
     });
+
+    this.#registerMessageHandlers();
   }
 
+  /**
+   * Constructor helper for registering this controller's messaging system
+   * actions.
+   */
+  #registerMessageHandlers() {
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:createInterface`,
+      this.createInterface.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:getInterface`,
+      this.getInterface.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:updateInterface`,
+      this.updateInterface.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:deleteInterface`,
+      this.deleteInterface.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:updateInterfaceState`,
+      this.updateInterfaceState.bind(this),
+    );
+  }
+
+  /**
+   * Creates an interface in the controller state with the associated data.
+   *
+   * @param snapId - The snap id that created the interface.
+   * @param content - The interface content.
+   * @returns The newly interface id.
+   */
   createInterface(snapId: string, content: Component) {
     const id = nanoid();
 
@@ -76,12 +141,27 @@ export class InterfaceController extends BaseController<
     return id;
   }
 
-  getInterfaceContent(snapId: string, id: string) {
+  /**
+   * Get the data of a given interface id.
+   *
+   * @param snapId - The snap id requesting the interface data.
+   * @param id - The interface id.
+   * @returns The interface state.
+   */
+  getInterface(snapId: string, id: string) {
     this.#validateArgs(snapId, id);
 
-    return this.state.interfaces[id].content;
+    return this.state.interfaces[id];
   }
 
+  /**
+   * Updates the interface with the given content.
+   *
+   * @param snapId - The snap id requesting the update.
+   * @param id - The interface id.
+   * @param content - The new content.
+   * @returns Null.
+   */
   updateInterface(snapId: string, id: string, content: Component) {
     this.#validateArgs(snapId, id);
 
@@ -97,24 +177,35 @@ export class InterfaceController extends BaseController<
     return null;
   }
 
+  /**
+   * Deletes an interface from state.
+   *
+   * @param id - The interface id.
+   */
   deleteInterface(id: string) {
     this.update((draftState) => {
       delete draftState.interfaces[id];
     });
   }
 
+  /**
+   * Updates the interface state.
+   *
+   * @param id - The interface id.
+   * @param state - The new state.
+   */
   updateInterfaceState(id: string, state: InterfaceState) {
     this.update((draftState) => {
       draftState.interfaces[id].state = state;
     });
   }
 
-  getInterfaceState(snapId: string, id: string) {
-    this.#validateArgs(snapId, id);
-
-    return this.state.interfaces[id].state;
-  }
-
+  /**
+   * Utility function to validate the args passed to the other methods.
+   *
+   * @param snapId - The snap id.
+   * @param id - The interface id.
+   */
   #validateArgs(snapId: string, id: string) {
     const existingInterface = this.state.interfaces[id];
 
