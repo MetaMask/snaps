@@ -5,8 +5,7 @@ import type {
 } from '@metamask/approval-controller';
 import type { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
-import type { Component } from '@metamask/snaps-sdk';
-import type { InterfaceState } from '@metamask/snaps-utils';
+import type { Component, InterfaceState } from '@metamask/snaps-sdk';
 import { assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 

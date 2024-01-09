@@ -4,31 +4,31 @@ import { text } from '@metamask/snaps-sdk';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
 import {
-  showInterfaceBuilder,
-  getShowInterfaceImplementation,
+  createInterfaceBuilder,
+  getCreateInterfaceImplementation,
 } from './createInterface';
 
-describe('showInterfaceBuilder', () => {
+describe('createInterfaceBuilder', () => {
   it('has the expected shape', () => {
-    expect(showInterfaceBuilder).toStrictEqual({
-      targetName: 'snap_showInterface',
+    expect(createInterfaceBuilder).toStrictEqual({
+      targetName: 'snap_createInterface',
       specificationBuilder: expect.any(Function),
       methodHooks: {
-        showInterface: true,
+        createInterface: true,
       },
     });
   });
 
   it('returns the expected specification', () => {
     const methodHooks = {
-      showInterface: jest.fn(),
+      createInterface: jest.fn(),
     };
 
     expect(
-      showInterfaceBuilder.specificationBuilder({ methodHooks }),
+      createInterfaceBuilder.specificationBuilder({ methodHooks }),
     ).toStrictEqual({
       permissionType: PermissionType.RestrictedMethod,
-      targetName: 'snap_showInterface',
+      targetName: 'snap_createInterface',
       allowedCaveats: null,
       methodImplementation: expect.any(Function),
       subjectTypes: [SubjectType.Snap],
@@ -36,18 +36,18 @@ describe('showInterfaceBuilder', () => {
   });
 });
 
-describe('getShowInterfaceImplementation', () => {
+describe('getCreateInterfaceImplementation', () => {
   it('returns the expected result', async () => {
-    const showInterface = jest.fn().mockResolvedValue('foo');
+    const createInterface = jest.fn().mockResolvedValue('foo');
 
     const methodHooks = {
-      showInterface,
+      createInterface,
     };
 
-    const implementation = getShowInterfaceImplementation(methodHooks);
+    const implementation = getCreateInterfaceImplementation(methodHooks);
 
     const result = await implementation({
-      method: 'snap_showInterface',
+      method: 'snap_createInterface',
       params: {
         ui: text('foo'),
       },
@@ -60,17 +60,17 @@ describe('getShowInterfaceImplementation', () => {
   });
 
   it('throws on invalid params', async () => {
-    const showInterface = jest.fn().mockResolvedValue('foo');
+    const createInterface = jest.fn().mockResolvedValue('foo');
 
     const methodHooks = {
-      showInterface,
+      createInterface,
     };
 
-    const implementation = getShowInterfaceImplementation(methodHooks);
+    const implementation = getCreateInterfaceImplementation(methodHooks);
 
     await expect(
       implementation({
-        method: 'snap_showInterface',
+        method: 'snap_createInterface',
         params: {
           // @ts-expect-error invalid params
           ui: 'foo',

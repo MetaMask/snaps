@@ -1,6 +1,10 @@
-import type { Component, Input } from '@metamask/snaps-sdk';
 import { NodeType } from '@metamask/snaps-sdk';
-import type { FormState, InterfaceState } from '@metamask/snaps-utils';
+import type {
+  Component,
+  Input,
+  FormState,
+  InterfaceState,
+} from '@metamask/snaps-sdk';
 
 /**
  * Finds the previous value of the input in the old state or sets the input to null.

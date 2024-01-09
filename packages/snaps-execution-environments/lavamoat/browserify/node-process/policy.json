@@ -365,10 +365,16 @@
         "external:../snaps-sdk/src/types/caip.ts": true,
         "external:../snaps-sdk/src/types/global.ts": true,
         "external:../snaps-sdk/src/types/handlers/index.ts": true,
+        "external:../snaps-sdk/src/types/interface.ts": true,
         "external:../snaps-sdk/src/types/methods/index.ts": true,
         "external:../snaps-sdk/src/types/permissions.ts": true,
         "external:../snaps-sdk/src/types/provider.ts": true,
         "external:../snaps-sdk/src/types/snap.ts": true
+      }
+    },
+    "external:../snaps-sdk/src/types/interface.ts": {
+      "packages": {
+        "superstruct": true
       }
     },
     "external:../snaps-sdk/src/types/methods/index.ts": {
