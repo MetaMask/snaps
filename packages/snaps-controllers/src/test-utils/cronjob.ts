@@ -11,22 +11,9 @@ export const MOCK_CRONJOB_PERMISSION: PermissionConstraint = {
       value: {
         jobs: [
           {
-            expression: {
-              minute: '*',
-              hour: '*',
-              dayOfMonth: '*',
-              month: '*',
-              dayOfWeek: '*',
-            },
-            request: {
-              method: 'exampleMethodOne',
-              params: ['p1'],
-            },
-          },
-          {
             expression: '* * * * *',
             request: {
-              method: 'exampleMethodTwo',
+              method: 'exampleMethodOne',
               params: ['p1'],
             },
           },

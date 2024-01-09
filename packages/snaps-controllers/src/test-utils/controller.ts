@@ -263,6 +263,11 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
     () => MOCK_SNAP_SUBJECT_METADATA,
   );
 
+  messenger.registerActionHandler(
+    'SubjectMetadataController:addSubjectMetadata',
+    () => undefined,
+  );
+
   messenger.registerActionHandler('ExecutionService:executeSnap', asyncNoOp);
   messenger.registerActionHandler(
     'ExecutionService:handleRpcRequest',
@@ -328,7 +333,6 @@ export const getSnapControllerMessenger = (
       'SnapController:snapUninstalled',
       'SnapController:snapUnblocked',
       'SnapController:snapUpdated',
-      'SnapController:snapRemoved',
       'SnapController:stateChange',
       'SnapController:snapRolledback',
     ],
@@ -368,6 +372,7 @@ export const getSnapControllerMessenger = (
       'SnapController:decrementActiveReferences',
       'SnapController:getRegistryMetadata',
       'SubjectMetadataController:getSubjectMetadata',
+      'SubjectMetadataController:addSubjectMetadata',
       'SnapsRegistry:get',
       'SnapsRegistry:getMetadata',
       'SnapsRegistry:update',
@@ -492,7 +497,7 @@ export const getRestrictedCronjobControllerMessenger = (
     allowedEvents: [
       'SnapController:snapInstalled',
       'SnapController:snapUpdated',
-      'SnapController:snapRemoved',
+      'SnapController:snapUninstalled',
       'SnapController:snapEnabled',
       'SnapController:snapDisabled',
     ],

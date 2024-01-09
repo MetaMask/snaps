@@ -9,6 +9,7 @@ import type {
   GetEndowments,
   GetPermissions,
   GetSubjectMetadata,
+  AddSubjectMetadata,
   GetSubjects,
   GrantPermissions,
   HasPermission,
@@ -387,14 +388,6 @@ export type SnapStateChange = {
 };
 
 /**
- * Emitted when a Snap has been added to state during installation.
- */
-export type SnapAdded = {
-  type: `${typeof controllerName}:snapAdded`;
-  payload: [snap: Snap, svgIcon: string | undefined];
-};
-
-/**
  * Emitted when an installed snap has been blocked.
  */
 export type SnapBlocked = {
@@ -416,15 +409,6 @@ export type SnapInstalled = {
  */
 export type SnapUninstalled = {
   type: `${typeof controllerName}:snapUninstalled`;
-  payload: [snap: TruncatedSnap];
-};
-
-/**
- * Emitted when a snap is removed from state, this may happen even
- * if a snap has not fully completed installation.
- */
-export type SnapRemoved = {
-  type: `${typeof controllerName}:snapRemoved`;
   payload: [snap: TruncatedSnap];
 };
 
@@ -479,11 +463,9 @@ export type SnapDisabled = {
 };
 
 export type SnapControllerEvents =
-  | SnapAdded
   | SnapBlocked
   | SnapInstalled
   | SnapUninstalled
-  | SnapRemoved
   | SnapStateChange
   | SnapUnblocked
   | SnapUpdated
@@ -497,6 +479,7 @@ export type AllowedActions =
   | GetPermissions
   | GetSubjects
   | GetSubjectMetadata
+  | AddSubjectMetadata
   | HasPermission
   | HasPermissions
   | RevokePermissions
@@ -1500,8 +1483,6 @@ export class SnapController extends BaseController<
           delete state.snapStates[snapId];
         });
 
-        this.messagingSystem.publish(`SnapController:snapRemoved`, truncated);
-
         // If the snap has been fully installed before, also emit snapUninstalled.
         if (snap.status !== SnapStatus.Installing) {
           this.messagingSystem.publish(
@@ -2277,7 +2258,7 @@ export class SnapController extends BaseController<
     } = files;
 
     assertIsSnapManifest(manifest.result);
-    const { version } = manifest.result;
+    const { version, proposedName } = manifest.result;
 
     const sourceCode = sourceCodeFile.toString();
 
@@ -2345,11 +2326,13 @@ export class SnapController extends BaseController<
       }
     }
 
-    this.messagingSystem.publish(
-      `SnapController:snapAdded`,
-      snap,
-      svgIcon?.toString(),
-    );
+    this.messagingSystem.call('SubjectMetadataController:addSubjectMetadata', {
+      subjectType: SubjectType.Snap,
+      name: proposedName,
+      origin: snap.id,
+      version,
+      svgIcon: svgIcon?.toString() ?? null,
+    });
 
     return { ...snap, sourceCode };
   }

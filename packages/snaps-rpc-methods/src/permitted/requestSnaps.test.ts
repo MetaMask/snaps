@@ -447,4 +447,76 @@ describe('implementation', () => {
       jsonrpc: '2.0',
     });
   });
+
+  it('throws if params is not an object', async () => {
+    const { implementation } = requestSnapsHandler;
+
+    const hooks = getMockHooks();
+
+    const engine = new JsonRpcEngine();
+    engine.push((req, res, next, end) => {
+      const result = implementation(
+        req as JsonRpcRequest<RequestSnapsParams>,
+        res as PendingJsonRpcResponse<RequestSnapsResult>,
+        next,
+        end,
+        hooks,
+      );
+
+      result?.catch(end);
+    });
+
+    const response = (await engine.handle({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'wallet_requestSnaps',
+      params: [],
+    })) as JsonRpcSuccess<RequestSnapsResult>;
+
+    expect(response).toStrictEqual({
+      error: {
+        code: -32602,
+        message: '"params" must be an object.',
+        stack: expect.any(String),
+      },
+      id: 1,
+      jsonrpc: '2.0',
+    });
+  });
+
+  it('throws if params is an empty object', async () => {
+    const { implementation } = requestSnapsHandler;
+
+    const hooks = getMockHooks();
+
+    const engine = new JsonRpcEngine();
+    engine.push((req, res, next, end) => {
+      const result = implementation(
+        req as JsonRpcRequest<RequestSnapsParams>,
+        res as PendingJsonRpcResponse<RequestSnapsResult>,
+        next,
+        end,
+        hooks,
+      );
+
+      result?.catch(end);
+    });
+
+    const response = (await engine.handle({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'wallet_requestSnaps',
+      params: {},
+    })) as JsonRpcSuccess<RequestSnapsResult>;
+
+    expect(response).toStrictEqual({
+      error: {
+        code: -32602,
+        message: 'Request must have at least one requested snap.',
+        stack: expect.any(String),
+      },
+      id: 1,
+      jsonrpc: '2.0',
+    });
+  });
 });

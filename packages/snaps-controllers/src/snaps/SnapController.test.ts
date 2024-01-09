@@ -3,10 +3,11 @@ import {
   createAsyncMiddleware,
   JsonRpcEngine,
 } from '@metamask/json-rpc-engine';
-import type {
-  Caveat,
-  SubjectPermissions,
-  ValidPermission,
+import {
+  SubjectType,
+  type Caveat,
+  type SubjectPermissions,
+  type ValidPermission,
 } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
@@ -39,6 +40,7 @@ import {
   MOCK_SNAP_ID,
   getMockLocalizationFile,
   getMockSnapFilesWithUpdatedChecksum,
+  MOCK_SNAP_NAME,
 } from '@metamask/snaps-utils/test-utils';
 import type { SemVerRange, SemVerVersion } from '@metamask/utils';
 import {
@@ -541,26 +543,16 @@ describe('SnapController', () => {
 
     jest.spyOn(messenger, 'publish');
 
-    const eventSubscriptionPromise = Promise.all([
-      new Promise<void>((resolve) => {
-        messenger.subscribe('SnapController:snapAdded', (snap) => {
-          expect(snap).toStrictEqual(
-            getSnapObject({ status: SnapStatus.Installing }),
-          );
+    const eventSubscriptionPromise = new Promise<void>((resolve) => {
+      messenger.subscribe(
+        'SnapController:snapInstalled',
+        (truncatedSnap, origin) => {
+          expect(truncatedSnap).toStrictEqual(getTruncatedSnap());
+          expect(origin).toStrictEqual(MOCK_ORIGIN);
           resolve();
-        });
-      }),
-      new Promise<void>((resolve) => {
-        messenger.subscribe(
-          'SnapController:snapInstalled',
-          (truncatedSnap, origin) => {
-            expect(truncatedSnap).toStrictEqual(getTruncatedSnap());
-            expect(origin).toStrictEqual(MOCK_ORIGIN);
-            resolve();
-          },
-        );
-      }),
-    ]);
+        },
+      );
+    });
 
     const expectedSnapObject = getTruncatedSnap();
     const permissions = {
@@ -578,7 +570,7 @@ describe('SnapController', () => {
       [MOCK_SNAP_ID]: expectedSnapObject,
     });
 
-    expect(messenger.call).toHaveBeenCalledTimes(10);
+    expect(messenger.call).toHaveBeenCalledTimes(11);
 
     expect(messenger.call).toHaveBeenNthCalledWith(
       1,
@@ -605,6 +597,18 @@ describe('SnapController', () => {
 
     expect(messenger.call).toHaveBeenNthCalledWith(
       3,
+      'SubjectMetadataController:addSubjectMetadata',
+      {
+        subjectType: SubjectType.Snap,
+        name: MOCK_SNAP_NAME,
+        origin: MOCK_SNAP_ID,
+        version: '1.0.0',
+        svgIcon: DEFAULT_SNAP_ICON,
+      },
+    );
+
+    expect(messenger.call).toHaveBeenNthCalledWith(
+      4,
       'ApprovalController:updateRequestState',
       {
         id: expect.any(String),
@@ -616,13 +620,13 @@ describe('SnapController', () => {
     );
 
     expect(messenger.call).toHaveBeenNthCalledWith(
-      4,
+      5,
       'PermissionController:grantPermissions',
       expect.any(Object),
     );
 
     expect(messenger.call).toHaveBeenNthCalledWith(
-      5,
+      6,
       'ApprovalController:addRequest',
       expect.objectContaining({
         requestData: {
@@ -641,13 +645,13 @@ describe('SnapController', () => {
     );
 
     expect(messenger.call).toHaveBeenNthCalledWith(
-      6,
+      7,
       'ExecutionService:executeSnap',
       expect.any(Object),
     );
 
     expect(messenger.call).toHaveBeenNthCalledWith(
-      7,
+      8,
       'ApprovalController:updateRequestState',
       {
         id: expect.any(String),
@@ -916,7 +920,7 @@ describe('SnapController', () => {
     );
 
     expect(messenger.call).toHaveBeenNthCalledWith(
-      4,
+      5,
       'ApprovalController:updateRequestState',
       expect.objectContaining({
         id: expect.any(String),
@@ -929,10 +933,6 @@ describe('SnapController', () => {
     );
 
     expect(controller.get(MOCK_SNAP_ID)).toBeUndefined();
-    expect(messenger.publish).toHaveBeenCalledWith(
-      'SnapController:snapRemoved',
-      getTruncatedSnap(),
-    );
 
     expect(messenger.publish).not.toHaveBeenCalledWith(
       'SnapController:snapUninstalled',
@@ -959,33 +959,16 @@ describe('SnapController', () => {
         throw new Error('foo');
       });
 
-    const eventSubscriptionPromise = Promise.all([
-      new Promise<void>((resolve) => {
-        messenger.subscribe('SnapController:snapAdded', (snap) => {
-          expect(snap).toStrictEqual(
-            getSnapObject({ status: SnapStatus.Installing }),
-          );
-          resolve();
-        });
-      }),
-      new Promise<void>((resolve) => {
-        messenger.subscribe('SnapController:snapRemoved', (truncatedSnap) => {
-          expect(truncatedSnap).toStrictEqual(getTruncatedSnap());
-          resolve();
-        });
-      }),
-    ]);
-
     await expect(
       snapController.installSnaps(MOCK_ORIGIN, {
         [MOCK_SNAP_ID]: {},
       }),
     ).rejects.toThrow('foo');
 
-    expect(messengerCallMock).toHaveBeenCalledTimes(8);
+    expect(messengerCallMock).toHaveBeenCalledTimes(9);
 
     expect(messengerCallMock).toHaveBeenNthCalledWith(
-      3,
+      4,
       'ApprovalController:updateRequestState',
       expect.objectContaining({
         id: expect.any(String),
@@ -995,13 +978,6 @@ describe('SnapController', () => {
           type: SNAP_APPROVAL_INSTALL,
         },
       }),
-    );
-
-    await eventSubscriptionPromise;
-
-    expect(messenger.publish).toHaveBeenCalledWith(
-      'SnapController:snapRemoved',
-      getTruncatedSnap(),
     );
 
     expect(messenger.publish).not.toHaveBeenCalledWith(
@@ -1528,11 +1504,6 @@ describe('SnapController', () => {
     await snapController.removeSnap(snap.id);
 
     expect(snapController.state.snaps[snap.id]).toBeUndefined();
-
-    expect(messenger.publish).toHaveBeenCalledWith(
-      'SnapController:snapRemoved',
-      getTruncatedSnap(),
-    );
 
     expect(messenger.publish).toHaveBeenCalledWith(
       'SnapController:snapUninstalled',
@@ -2828,7 +2799,7 @@ describe('SnapController', () => {
 
       expect(result).toStrictEqual({ [MOCK_LOCAL_SNAP_ID]: truncatedSnap });
 
-      expect(messenger.call).toHaveBeenCalledTimes(12);
+      expect(messenger.call).toHaveBeenCalledTimes(13);
 
       expect(messenger.call).toHaveBeenNthCalledWith(
         1,
@@ -2851,7 +2822,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        5,
+        6,
         'ApprovalController:updateRequestState',
         expect.objectContaining({
           id: expect.any(String),
@@ -2863,7 +2834,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        6,
+        7,
         'PermissionController:grantPermissions',
         {
           approvedPermissions: permissions,
@@ -2880,7 +2851,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        7,
+        8,
         'ApprovalController:addRequest',
         expect.objectContaining({
           type: SNAP_APPROVAL_RESULT,
@@ -2900,13 +2871,13 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        8,
+        9,
         'ExecutionService:executeSnap',
         expect.objectContaining({}),
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        9,
+        10,
         'ApprovalController:updateRequestState',
         expect.objectContaining({
           id: expect.any(String),
@@ -2977,7 +2948,7 @@ describe('SnapController', () => {
         [MOCK_LOCAL_SNAP_ID]: truncatedSnap,
       });
 
-      expect(messenger.call).toHaveBeenCalledTimes(23);
+      expect(messenger.call).toHaveBeenCalledTimes(25);
 
       expect(messenger.call).toHaveBeenNthCalledWith(
         1,
@@ -3000,7 +2971,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        3,
+        4,
         'ApprovalController:updateRequestState',
         expect.objectContaining({
           id: expect.any(String),
@@ -3012,7 +2983,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        4,
+        5,
         'PermissionController:grantPermissions',
         {
           approvedPermissions: permissions,
@@ -3029,7 +3000,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        5,
+        6,
         'ApprovalController:addRequest',
         expect.objectContaining({
           id: expect.any(String),
@@ -3050,13 +3021,13 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        6,
+        7,
         'ExecutionService:executeSnap',
         expect.anything(),
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        7,
+        8,
         'ApprovalController:updateRequestState',
         expect.objectContaining({
           id: expect.any(String),
@@ -3068,7 +3039,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        11,
+        12,
         'ApprovalController:addRequest',
         expect.objectContaining({
           type: SNAP_APPROVAL_INSTALL,
@@ -3088,13 +3059,13 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        12,
+        13,
         'ExecutionService:terminateSnap',
         MOCK_LOCAL_SNAP_ID,
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        16,
+        18,
         'ApprovalController:updateRequestState',
         expect.objectContaining({
           id: expect.any(String),
@@ -3106,7 +3077,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        17,
+        19,
         'PermissionController:grantPermissions',
         {
           approvedPermissions: permissions,
@@ -3123,7 +3094,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        18,
+        20,
         'ApprovalController:addRequest',
         expect.objectContaining({
           id: expect.any(String),
@@ -3144,13 +3115,13 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        19,
+        21,
         'ExecutionService:executeSnap',
         expect.objectContaining({ snapId: MOCK_LOCAL_SNAP_ID }),
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        20,
+        22,
         'ApprovalController:updateRequestState',
         expect.objectContaining({
           id: expect.any(String),
@@ -3225,7 +3196,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        6,
+        7,
         'ApprovalController:updateRequestState',
         expect.objectContaining({
           id: expect.any(String),
@@ -3310,7 +3281,7 @@ describe('SnapController', () => {
       expect(result).toStrictEqual({
         [MOCK_SNAP_ID]: truncatedSnap,
       });
-      expect(messenger.call).toHaveBeenCalledTimes(10);
+      expect(messenger.call).toHaveBeenCalledTimes(11);
 
       expect(messenger.call).toHaveBeenNthCalledWith(
         1,
@@ -3330,7 +3301,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        3,
+        4,
         'ApprovalController:updateRequestState',
         expect.objectContaining({
           id: expect.any(String),
@@ -3342,7 +3313,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        4,
+        5,
         'PermissionController:grantPermissions',
         {
           approvedPermissions: permissions,
@@ -3359,7 +3330,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        5,
+        6,
         'ApprovalController:addRequest',
         expect.objectContaining({
           id: expect.any(String),
@@ -3380,13 +3351,13 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        6,
+        7,
         'ExecutionService:executeSnap',
         expect.objectContaining({}),
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        7,
+        8,
         'ApprovalController:updateRequestState',
         expect.objectContaining({
           id: expect.any(String),
@@ -3515,7 +3486,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        3,
+        4,
         'ApprovalController:updateRequestState',
         expect.objectContaining({
           id: expect.any(String),
@@ -3548,7 +3519,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        4,
+        5,
         'PermissionController:grantPermissions',
         {
           approvedPermissions: {
@@ -3641,7 +3612,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        3,
+        4,
         'ApprovalController:updateRequestState',
         expect.objectContaining({
           id: expect.any(String),
@@ -3657,7 +3628,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        4,
+        5,
         'PermissionController:grantPermissions',
         {
           approvedPermissions: {
@@ -3723,7 +3694,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        6,
+        7,
         'PermissionController:grantPermissions',
         {
           approvedPermissions: {
@@ -3827,10 +3798,22 @@ describe('SnapController', () => {
         [MOCK_SNAP_ID]: { version: newVersionRange },
       });
 
-      expect(messenger.call).toHaveBeenCalledTimes(21);
+      expect(messenger.call).toHaveBeenCalledTimes(23);
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        12,
+        3,
+        'SubjectMetadataController:addSubjectMetadata',
+        {
+          subjectType: SubjectType.Snap,
+          name: MOCK_SNAP_NAME,
+          origin: MOCK_SNAP_ID,
+          version: '1.0.0',
+          svgIcon: DEFAULT_SNAP_ICON,
+        },
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        13,
         'ApprovalController:addRequest',
         {
           origin: MOCK_ORIGIN,
@@ -3852,13 +3835,13 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        14,
+        15,
         'PermissionController:getPermissions',
         MOCK_SNAP_ID,
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        15,
+        16,
         'ApprovalController:updateRequestState',
         expect.objectContaining({
           id: expect.any(String),
@@ -3874,7 +3857,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        16,
+        17,
         'ApprovalController:addRequest',
         expect.objectContaining({
           id: expect.any(String),
@@ -3895,13 +3878,25 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        17,
+        18,
+        'SubjectMetadataController:addSubjectMetadata',
+        {
+          subjectType: SubjectType.Snap,
+          name: MOCK_SNAP_NAME,
+          origin: MOCK_SNAP_ID,
+          version: '1.0.2',
+          svgIcon: DEFAULT_SNAP_ICON,
+        },
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        19,
         'ExecutionService:executeSnap',
         expect.objectContaining({}),
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        18,
+        20,
         'ApprovalController:updateRequestState',
         expect.objectContaining({
           id: expect.any(String),
@@ -4369,12 +4364,10 @@ describe('SnapController', () => {
         }),
       );
       const onSnapUpdated = jest.fn();
-      const onSnapAdded = jest.fn();
 
       const snap = controller.getExpect(MOCK_SNAP_ID);
 
       messenger.subscribe('SnapController:snapUpdated', onSnapUpdated);
-      messenger.subscribe('SnapController:snapAdded', onSnapAdded);
 
       const newSnap = controller.get(MOCK_SNAP_ID);
 
@@ -4391,7 +4384,6 @@ describe('SnapController', () => {
       );
       expect(newSnap?.version).toStrictEqual(snap.version);
       expect(onSnapUpdated).not.toHaveBeenCalled();
-      expect(onSnapAdded).not.toHaveBeenCalled();
 
       controller.destroy();
     });
@@ -4449,12 +4441,10 @@ describe('SnapController', () => {
         }),
       );
       const onSnapUpdated = jest.fn();
-      const onSnapAdded = jest.fn();
 
       const snap = controller.getExpect(MOCK_SNAP_ID);
 
       messenger.subscribe('SnapController:snapUpdated', onSnapUpdated);
-      messenger.subscribe('SnapController:snapAdded', onSnapAdded);
 
       const newSnap = controller.get(MOCK_SNAP_ID);
 
@@ -4472,7 +4462,6 @@ describe('SnapController', () => {
       );
       expect(newSnap?.version).toStrictEqual(snap.version);
       expect(onSnapUpdated).not.toHaveBeenCalled();
-      expect(onSnapAdded).not.toHaveBeenCalled();
 
       controller.destroy();
     });
@@ -4501,13 +4490,11 @@ describe('SnapController', () => {
       );
       const callActionSpy = jest.spyOn(messenger, 'call');
       const onSnapUpdated = jest.fn();
-      const onSnapAdded = jest.fn();
 
       await controller.installSnaps(MOCK_ORIGIN, { [MOCK_SNAP_ID]: {} });
       await controller.stopSnap(MOCK_SNAP_ID);
 
       messenger.subscribe('SnapController:snapUpdated', onSnapUpdated);
-      messenger.subscribe('SnapController:snapAdded', onSnapAdded);
 
       const result = await controller.updateSnap(
         MOCK_ORIGIN,
@@ -4533,10 +4520,10 @@ describe('SnapController', () => {
           date: expect.any(Number),
         },
       ]);
-      expect(callActionSpy).toHaveBeenCalledTimes(21);
+      expect(callActionSpy).toHaveBeenCalledTimes(23);
 
       expect(callActionSpy).toHaveBeenNthCalledWith(
-        12,
+        13,
         'ApprovalController:addRequest',
         {
           origin: MOCK_ORIGIN,
@@ -4558,13 +4545,13 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        14,
+        15,
         'PermissionController:getPermissions',
         MOCK_SNAP_ID,
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        15,
+        16,
         'ApprovalController:updateRequestState',
         expect.objectContaining({
           id: expect.any(String),
@@ -4580,7 +4567,7 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        16,
+        17,
         'ApprovalController:addRequest',
         expect.objectContaining({
           id: expect.any(String),
@@ -4601,13 +4588,13 @@ describe('SnapController', () => {
       );
 
       expect(callActionSpy).toHaveBeenNthCalledWith(
-        17,
+        19,
         'ExecutionService:executeSnap',
         expect.objectContaining({}),
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        20,
+        22,
         'ApprovalController:updateRequestState',
         expect.objectContaining({
           id: expect.any(String),
@@ -4621,7 +4608,6 @@ describe('SnapController', () => {
         '1.0.0',
         MOCK_ORIGIN,
       );
-      expect(onSnapAdded).toHaveBeenCalledTimes(1);
 
       controller.destroy();
     });
@@ -4713,7 +4699,7 @@ describe('SnapController', () => {
 
       const isRunning = controller.isRunning(MOCK_SNAP_ID);
 
-      expect(callActionSpy).toHaveBeenCalledTimes(12);
+      expect(callActionSpy).toHaveBeenCalledTimes(13);
 
       expect(callActionSpy).toHaveBeenNthCalledWith(
         1,
@@ -4793,7 +4779,7 @@ describe('SnapController', () => {
       );
 
       expect(callActionSpy).toHaveBeenNthCalledWith(
-        11,
+        12,
         'ApprovalController:updateRequestState',
         expect.objectContaining({
           id: expect.any(String),
@@ -5052,10 +5038,10 @@ describe('SnapController', () => {
 
       await controller.updateSnap(MOCK_ORIGIN, MOCK_SNAP_ID, detect());
 
-      expect(callActionSpy).toHaveBeenCalledTimes(23);
+      expect(callActionSpy).toHaveBeenCalledTimes(25);
 
       expect(callActionSpy).toHaveBeenNthCalledWith(
-        12,
+        13,
         'ApprovalController:addRequest',
         {
           origin: MOCK_ORIGIN,
@@ -5077,7 +5063,7 @@ describe('SnapController', () => {
       );
 
       expect(callActionSpy).toHaveBeenNthCalledWith(
-        15,
+        16,
         'ApprovalController:updateRequestState',
         expect.objectContaining({
           id: expect.any(String),
@@ -5099,7 +5085,7 @@ describe('SnapController', () => {
       );
 
       expect(callActionSpy).toHaveBeenNthCalledWith(
-        16,
+        17,
         'ApprovalController:addRequest',
         {
           origin: MOCK_ORIGIN,
@@ -5121,13 +5107,13 @@ describe('SnapController', () => {
       );
 
       expect(callActionSpy).toHaveBeenNthCalledWith(
-        17,
+        19,
         'PermissionController:revokePermissions',
         { [MOCK_SNAP_ID]: ['snap_manageState'] },
       );
 
       expect(callActionSpy).toHaveBeenNthCalledWith(
-        18,
+        20,
         'PermissionController:grantPermissions',
         {
           approvedPermissions: { 'endowment:network-access': {} },
@@ -5144,13 +5130,13 @@ describe('SnapController', () => {
       );
 
       expect(callActionSpy).toHaveBeenNthCalledWith(
-        19,
+        21,
         'ExecutionService:executeSnap',
         expect.anything(),
       );
 
       expect(callActionSpy).toHaveBeenNthCalledWith(
-        22,
+        24,
         'ApprovalController:updateRequestState',
         expect.objectContaining({
           id: expect.any(String),

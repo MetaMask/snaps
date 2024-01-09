@@ -5,15 +5,7 @@ import {
 } from '@metamask/utils';
 import { parseExpression } from 'cron-parser';
 import type { Infer } from 'superstruct';
-import {
-  array,
-  coerce,
-  create,
-  object,
-  optional,
-  refine,
-  string,
-} from 'superstruct';
+import { array, create, object, optional, refine, string } from 'superstruct';
 
 export const CronjobRpcRequestStruct = object({
   jsonrpc: optional(JsonRpcVersionStruct),
@@ -25,20 +17,7 @@ export const CronjobRpcRequestStruct = object({
 export type CronjobRpcRequest = Infer<typeof CronjobRpcRequestStruct>;
 
 export const CronExpressionStruct = refine(
-  coerce(
-    string(),
-    object({
-      minute: optional(string()),
-      hour: optional(string()),
-      dayOfMonth: optional(string()),
-      month: optional(string()),
-      dayOfWeek: optional(string()),
-    }),
-    (value) =>
-      `${value.minute ?? '*'} ${value.hour ?? '*'} ${value.dayOfMonth ?? '*'} ${
-        value.month ?? '*'
-      } ${value.dayOfWeek ?? '*'}`,
-  ),
+  string(),
   'CronExpression',
   (value) => {
     try {
