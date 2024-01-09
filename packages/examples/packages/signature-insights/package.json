@@ -19,7 +19,7 @@
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf \"dist\"",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog && yarn lint:dependencies",
-    "lint:changelog": "../../../../scripts/validate-changelog.sh @metamask/bip32-example-snap",
+    "lint:changelog": "../../../../scripts/validate-changelog.sh @metamask/signature-insights-example-snap",
     "lint:ci": "yarn lint",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
@@ -31,11 +31,9 @@
     "lint:dependencies": "depcheck"
   },
   "dependencies": {
-    "@metamask/snaps-sdk": "workspace:^",
-    "@metamask/utils": "^8.2.1"
+    "@metamask/snaps-sdk": "workspace:^"
   },
   "devDependencies": {
-    "@jest/globals": "^29.5.0",
     "@lavamoat/allow-scripts": "^2.5.1",
     "@metamask/auto-changelog": "^3.4.4",
     "@metamask/eslint-config": "^12.1.0",
