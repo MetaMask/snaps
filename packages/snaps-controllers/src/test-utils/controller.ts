@@ -25,7 +25,7 @@ import type {
   CronjobControllerActions,
   CronjobControllerEvents,
 } from '../cronjob';
-import type { AllowedInterfaceControllerActions } from '../interface/InterfaceController';
+import type { InterfaceControllerActions } from '../interface/InterfaceController';
 import type {
   AllowedActions,
   AllowedEvents,
@@ -606,37 +606,14 @@ export const getRestrictedInterfaceControllerMessenger = (
   messenger: ReturnType<
     typeof getRootInterfaceControllerMessenger
   > = getRootInterfaceControllerMessenger(),
-  mocked = true,
 ) => {
   const interfaceControllerMessenger = messenger.getRestricted<
     'InterfaceController',
-    AllowedInterfaceControllerActions['type'],
+    InterfaceControllerActions['type'],
     never
   >({
     name: 'InterfaceController',
-    allowedActions: [
-      'ApprovalController:addRequest',
-      'ApprovalController:updateRequestState',
-      'ApprovalController:acceptRequest',
-    ],
   });
-
-  if (mocked) {
-    messenger.registerActionHandler(
-      'ApprovalController:addRequest',
-      approvalControllerMock.addRequest.bind(approvalControllerMock),
-    );
-
-    messenger.registerActionHandler(
-      'ApprovalController:updateRequestState',
-      approvalControllerMock.updateRequestState.bind(approvalControllerMock),
-    );
-
-    messenger.registerActionHandler(
-      'ApprovalController:acceptRequest',
-      approvalControllerMock.acceptRequest.bind(approvalControllerMock),
-    );
-  }
 
   return interfaceControllerMessenger;
 };
