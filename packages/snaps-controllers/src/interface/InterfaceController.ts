@@ -32,6 +32,7 @@ export type StoredInterface = {
   snapId: string;
   content: Component;
   state: InterfaceState;
+  usage?: string;
 };
 
 export type InterfaceControllerState = {
@@ -65,25 +66,10 @@ export class InterfaceController extends BaseController<
     this.#interfacePromises = new Map();
   }
 
-  showInterface(snapId: string, content: Component) {
+  createInterface(snapId: string, content: Component) {
     const id = nanoid();
 
     const componentState = constructState({}, content);
-
-    const approval = this.messagingSystem.call(
-      'ApprovalController:addRequest',
-      {
-        origin: snapId,
-        id,
-        type: INTERFACE_APPROVAL_TYPE,
-        requestData: {},
-        requestState: {
-          content,
-          state: componentState,
-        },
-      },
-      true,
-    );
 
     this.update((draftState) => {
       draftState.interfaces[id] = {
@@ -93,9 +79,20 @@ export class InterfaceController extends BaseController<
       };
     });
 
-    this.#interfacePromises.set(id, approval);
-
     return id;
+  }
+
+  getInterfaceContent(snapId: string, id: string, usage: string) {
+    this.#validateArgs(snapId, id);
+
+    this.update((draftState) => {
+      draftState.interfaces[id] = {
+        ...draftState.interfaces[id],
+        usage,
+      };
+    });
+
+    return this.state.interfaces[id].content;
   }
 
   updateInterface(snapId: string, id: string, content: Component) {
@@ -120,6 +117,13 @@ export class InterfaceController extends BaseController<
   async resolveInterface(snapId: string, id: string, value: Json) {
     this.#validateArgs(snapId, id);
 
+    const { usage } = this.state.interfaces[id];
+
+    assert(
+      usage === 'snap_dialog_custom',
+      `Only interfaces used in 'snap_dialog' of type 'custom' can be resolved.`,
+    );
+
     await this.messagingSystem.call(
       'ApprovalController:acceptRequest',
       id,
@@ -132,12 +136,6 @@ export class InterfaceController extends BaseController<
     });
 
     return null;
-  }
-
-  async readInterface(snapId: string, id: string) {
-    this.#validateArgs(snapId, id);
-
-    return this.#interfacePromises.get(id);
   }
 
   updateInterfaceState(id: string, state: InterfaceState) {

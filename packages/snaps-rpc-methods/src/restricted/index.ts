@@ -1,3 +1,5 @@
+import type { CreateInterfaceMethodHooks } from './createInterface';
+import { createInterfaceBuilder } from './createInterface';
 import type { DialogMethodHooks } from './dialog';
 import { dialogBuilder } from './dialog';
 import type { GetBip32EntropyMethodHooks } from './getBip32Entropy';
@@ -22,8 +24,6 @@ import type { ReadInterfaceMethodHooks } from './readInterface';
 import { readInterfaceBuilder } from './readInterface';
 import type { ResolveInterfaceMethodHooks } from './resolveInterface';
 import { resolveInterfaceBuilder } from './resolveInterface';
-import type { ShowInterfaceMethodHooks } from './showInterface';
-import { showInterfaceBuilder } from './showInterface';
 import type { UpdateInterfaceMethodHooks } from './updateInterface';
 import { updateInterfaceBuilder } from './updateInterface';
 
@@ -42,7 +42,7 @@ export type RestrictedMethodHooks = DialogMethodHooks &
   GetLocaleMethodHooks &
   ReadInterfaceMethodHooks &
   ResolveInterfaceMethodHooks &
-  ShowInterfaceMethodHooks &
+  CreateInterfaceMethodHooks &
   UpdateInterfaceMethodHooks;
 
 export const restrictedMethodPermissionBuilders = {
@@ -58,7 +58,7 @@ export const restrictedMethodPermissionBuilders = {
   [getLocaleBuilder.targetName]: getLocaleBuilder,
   [readInterfaceBuilder.targetName]: readInterfaceBuilder,
   [resolveInterfaceBuilder.targetName]: resolveInterfaceBuilder,
-  [showInterfaceBuilder.targetName]: showInterfaceBuilder,
+  [createInterfaceBuilder.targetName]: createInterfaceBuilder,
   [updateInterfaceBuilder.targetName]: updateInterfaceBuilder,
 } as const;
 

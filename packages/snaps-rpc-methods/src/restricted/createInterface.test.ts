@@ -6,7 +6,7 @@ import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 import {
   showInterfaceBuilder,
   getShowInterfaceImplementation,
-} from './showInterface';
+} from './createInterface';
 
 describe('showInterfaceBuilder', () => {
   it('has the expected shape', () => {
