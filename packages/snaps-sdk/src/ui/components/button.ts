@@ -1,6 +1,7 @@
 import type { Infer } from 'superstruct';
 import { assign, literal, object, optional, string, union } from 'superstruct';
 
+import { enumValue } from '../../internals';
 import { createBuilder } from '../builder';
 import { LiteralStruct, NodeType } from '../nodes';
 
@@ -21,12 +22,12 @@ export const ButtonStruct = assign(
     value: string(),
     variant: optional(
       union([
-        literal(ButtonVariants.Primary),
-        literal(ButtonVariants.Secondary),
+        enumValue(ButtonVariants.Primary),
+        enumValue(ButtonVariants.Secondary),
       ]),
     ),
     buttonType: optional(
-      union([literal(ButtonTypes.Button), literal(ButtonTypes.Submit)]),
+      union([enumValue(ButtonTypes.Button), enumValue(ButtonTypes.Submit)]),
     ),
     name: optional(string()),
   }),

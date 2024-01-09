@@ -70,14 +70,10 @@ export const constructState = (
       },
       {},
     );
-    return newState;
   }
 
   if (type === NodeType.Input) {
-    return {
-      ...newState,
-      [component.name]: constructInputState(oldState, component),
-    };
+    newState[component.name] = constructInputState(oldState, component);
   }
 
   return newState;

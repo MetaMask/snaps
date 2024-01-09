@@ -1,6 +1,7 @@
 import type { Infer } from 'superstruct';
 import { assign, literal, object, optional, string, union } from 'superstruct';
 
+import { enumValue } from '../../internals';
 import { createBuilder } from '../builder';
 import { LiteralStruct, NodeType } from '../nodes';
 
@@ -25,10 +26,10 @@ export const InputStruct = assign(
     name: string(),
     inputType: optional(
       union([
-        literal(InputTypes.Text),
-        literal(InputTypes.Password),
-        literal(InputTypes.Number),
-        literal(InputTypes.Search),
+        enumValue(InputTypes.Text),
+        enumValue(InputTypes.Password),
+        enumValue(InputTypes.Number),
+        enumValue(InputTypes.Search),
       ]),
     ),
     placeholder: optional(string()),
@@ -45,14 +46,12 @@ export type Input = Infer<typeof InputStruct>;
  * with the properties: `inputType`, `value`, `variant`, `placeholder` and `name`.
  * @param args.name - The name for the input.
  * @param args.value - The value of the input.
- * @param args.variant - An optional variant, either `text`, `password`, `number` or `search`.
+ * @param args.inputType - An optional type, either `text`, `password`, `number` or `search`.
  * @param args.placeholder - An optional input placeholder.
  * @returns The input node as an object.
  * @example
  * const node = input({ name: 'myInput', });
- * const node = row({ label: 'Address', value: address('0x4bbeeb066ed09b7aed07bf39eee0460dfa261520'), variant: RowVariant.Warning });
- * const node = row('Address', address('0x4bbeeb066ed09b7aed07bf39eee0460dfa261520'));
- * const node = row('Address', address('0x4bbeeb066ed09b7aed07bf39eee0460dfa261520'), RowVariant.Warning);
+ * const node = input({name: 'myInput', value: 'myValue', inputType: InputTypes.Password, placeholder: 'placeholder'})
  */
 export const input = createBuilder(NodeType.Input, InputStruct, [
   'name',

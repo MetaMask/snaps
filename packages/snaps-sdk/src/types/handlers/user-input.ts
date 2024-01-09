@@ -31,6 +31,7 @@ export const FormSubmitEventStruct = assign(
   object({
     type: literal(UserInputEventTypes.FormSubmitEvent),
     value: record(string(), string()),
+    name: string(),
   }),
 );
 
