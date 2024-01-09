@@ -418,6 +418,7 @@
     },
     "external:../snaps-sdk/src/ui/components/button.ts": {
       "packages": {
+        "external:../snaps-sdk/src/internals/index.ts": true,
         "external:../snaps-sdk/src/ui/builder.ts": true,
         "external:../snaps-sdk/src/ui/nodes.ts": true,
         "superstruct": true
@@ -479,6 +480,7 @@
     },
     "external:../snaps-sdk/src/ui/components/input.ts": {
       "packages": {
+        "external:../snaps-sdk/src/internals/index.ts": true,
         "external:../snaps-sdk/src/ui/builder.ts": true,
         "external:../snaps-sdk/src/ui/nodes.ts": true,
         "superstruct": true
