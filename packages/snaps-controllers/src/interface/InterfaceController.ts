@@ -7,13 +7,14 @@ import type { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type { Component } from '@metamask/snaps-sdk';
 import type { InterfaceState } from '@metamask/snaps-utils';
-import type { Json } from '@metamask/utils';
 import { assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
 import { constructState } from './utils';
 
 const controllerName = 'InterfaceController';
+
+// @TODO: Add actions for functions
 
 export type AllowedInterfaceControllerActions =
   | AddApprovalRequest
@@ -44,15 +45,11 @@ export type InterfaceControllerArgs = {
   state?: InterfaceControllerState;
 };
 
-export const INTERFACE_APPROVAL_TYPE = 'snap_interface';
-
 export class InterfaceController extends BaseController<
   typeof controllerName,
   InterfaceControllerState,
   InterfaceControllerMessenger
 > {
-  #interfacePromises: Map<string, Promise<unknown>>;
-
   constructor({ messenger, state }: InterfaceControllerArgs) {
     super({
       messenger,
@@ -62,8 +59,6 @@ export class InterfaceController extends BaseController<
       name: controllerName,
       state: { interfaces: {}, ...state },
     });
-
-    this.#interfacePromises = new Map();
   }
 
   createInterface(snapId: string, content: Component) {
@@ -82,15 +77,8 @@ export class InterfaceController extends BaseController<
     return id;
   }
 
-  getInterfaceContent(snapId: string, id: string, usage: string) {
+  getInterfaceContent(snapId: string, id: string) {
     this.#validateArgs(snapId, id);
-
-    this.update((draftState) => {
-      draftState.interfaces[id] = {
-        ...draftState.interfaces[id],
-        usage,
-      };
-    });
 
     return this.state.interfaces[id].content;
   }
@@ -102,40 +90,18 @@ export class InterfaceController extends BaseController<
 
     const newState = constructState(oldState, content);
 
-    this.messagingSystem.call('ApprovalController:updateRequestState', {
-      id,
-      requestState: { content, state: newState },
-    });
-
     this.update((draftState) => {
       draftState.interfaces[id].state = newState;
+      draftState.interfaces[id].content = content;
     });
 
     return null;
   }
 
-  async resolveInterface(snapId: string, id: string, value: Json) {
-    this.#validateArgs(snapId, id);
-
-    const { usage } = this.state.interfaces[id];
-
-    assert(
-      usage === 'snap_dialog_custom',
-      `Only interfaces used in 'snap_dialog' of type 'custom' can be resolved.`,
-    );
-
-    await this.messagingSystem.call(
-      'ApprovalController:acceptRequest',
-      id,
-      value,
-    );
-
-    this.#interfacePromises.delete(id);
+  deleteInterface(id: string) {
     this.update((draftState) => {
       delete draftState.interfaces[id];
     });
-
-    return null;
   }
 
   updateInterfaceState(id: string, state: InterfaceState) {

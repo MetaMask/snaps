@@ -1,9 +1,12 @@
 import type { Infer } from 'superstruct';
 import { nullable, record, string, union } from 'superstruct';
 
-export const InterfaceStateStruct = record(
+export const formStateStruct = record(string(), nullable(string()));
+
+export const interfaceStateStruct = record(
   string(),
-  union([record(string(), nullable(string())), nullable(string())]),
+  union([formStateStruct, nullable(string())]),
 );
 
-export type InterfaceState = Infer<typeof InterfaceStateStruct>;
+export type FormState = Infer<typeof formStateStruct>;
+export type InterfaceState = Infer<typeof interfaceStateStruct>;

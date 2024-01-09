@@ -143,6 +143,15 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
     const specifications = buildSnapRestrictedMethodSpecifications([], {});
     expect(specifications).toMatchInlineSnapshot(`
       {
+        "snap_createInterface": {
+          "allowedCaveats": null,
+          "methodImplementation": [Function],
+          "permissionType": "RestrictedMethod",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "snap_createInterface",
+        },
         "snap_dialog": {
           "allowedCaveats": null,
           "methodImplementation": [Function],
@@ -250,15 +259,6 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
             "snap",
           ],
           "targetName": "snap_resolveInterface",
-        },
-        "snap_showInterface": {
-          "allowedCaveats": null,
-          "methodImplementation": [Function],
-          "permissionType": "RestrictedMethod",
-          "subjectTypes": [
-            "snap",
-          ],
-          "targetName": "snap_showInterface",
         },
         "snap_updateInterface": {
           "allowedCaveats": null,

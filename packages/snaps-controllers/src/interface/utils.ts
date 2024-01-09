@@ -1,27 +1,37 @@
 import type { Component, Input } from '@metamask/snaps-sdk';
 import { NodeType } from '@metamask/snaps-sdk';
-import type { InterfaceState } from '@metamask/snaps-utils';
+import type { FormState, InterfaceState } from '@metamask/snaps-utils';
 
 /**
  * Finds the previous value of the input in the old state or sets the input to null.
  *
  * @param state - The interface state.
  * @param component - The Input component.
- * @param form - The form name if the input is contained inside a form.
  * @returns The input state.
  */
 export const constructInputState = (
   state: InterfaceState,
   component: Input,
-  form?: string,
 ) => {
-  if (form) {
-    const oldFormState = state[form] as Record<string, string>;
-    const oldInputState = oldFormState?.[component.name];
-    return oldInputState ?? null;
-  }
+  return component.value ?? state[component.name] ?? null;
+};
 
-  return state[component.name] ?? null;
+/**
+ * Finds the previous value of the input in the old state form or sets the input to null.
+ *
+ * @param state - The interface state.
+ * @param component - The Input component.
+ * @param form - The parent form name of the input.
+ * @returns The input state.
+ */
+export const constructFormState = (
+  state: InterfaceState,
+  component: Input,
+  form: string,
+) => {
+  const oldFormState = state[form] as FormState;
+  const oldInputState = oldFormState?.[component.name];
+  return component.value ?? oldInputState ?? null;
 };
 
 /**
@@ -46,15 +56,16 @@ export const constructState = (
   }
 
   if (type === NodeType.Form) {
-    newState[component.name] = component.children.reduce((acc, node) => {
-      if (node.type === NodeType.Input) {
-        return {
-          ...acc,
-          [node.name]: constructInputState(oldState, node, component.name),
-        };
-      }
-      return acc;
-    }, {});
+    newState[component.name] = component.children.reduce<FormState>(
+      (acc, node) => {
+        if (node.type === NodeType.Input) {
+          acc[node.name] = constructFormState(oldState, node, component.name);
+        }
+
+        return acc;
+      },
+      {},
+    );
     return newState;
   }
 

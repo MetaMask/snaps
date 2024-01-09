@@ -12,37 +12,37 @@ import { StructError, create, object } from 'superstruct';
 
 import type { MethodHooksObject } from '../utils';
 
-const methodName = 'snap_showInterface';
+const methodName = 'snap_createInterface';
 
-export type ShowInterfaceArgs = {
+export type CreateInterfaceArgs = {
   ui: Component;
 };
 
-type ShowInterface = (snapId: string, ui: Component) => Promise<string>;
+type CreateInterface = (snapId: string, ui: Component) => Promise<string>;
 
-export type ShowInterfaceMethodHooks = {
+export type CreateInterfaceMethodHooks = {
   /**
    * @param snapId - The ID of the Snap that is showing the interface.
    * @param ui - The UI components.
    * @returns The unique identifier of the interface.
    */
-  showInterface: ShowInterface;
+  createInterface: CreateInterface;
 };
 
-type ShowInterfaceSpecificationBuilderOptions = {
+type CreateInterfaceSpecificationBuilderOptions = {
   allowedCaveats?: Readonly<NonEmptyArray<string>> | null;
-  methodHooks: ShowInterfaceMethodHooks;
+  methodHooks: CreateInterfaceMethodHooks;
 };
 
-type ShowInterfaceSpecification = ValidPermissionSpecification<{
+type CreateInterfaceSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.RestrictedMethod;
   targetName: typeof methodName;
-  methodImplementation: ReturnType<typeof getShowInterfaceImplementation>;
+  methodImplementation: ReturnType<typeof getCreateInterfaceImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
 }>;
 
 /**
- * The specification builder for the `snap_showInterface` permission. `snap_showInterface`
+ * The specification builder for the `snap_createInterface` permission. `snap_createInterface`
  * lets the Snap display a UI inteface made of snaps UI components.
  *
  * @param options - The specification builder options.
@@ -55,26 +55,26 @@ type ShowInterfaceSpecification = ValidPermissionSpecification<{
 
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
-  ShowInterfaceSpecificationBuilderOptions,
-  ShowInterfaceSpecification
+  CreateInterfaceSpecificationBuilderOptions,
+  CreateInterfaceSpecification
 > = ({
   allowedCaveats = null,
   methodHooks,
-}: ShowInterfaceSpecificationBuilderOptions) => {
+}: CreateInterfaceSpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
     targetName: methodName,
     allowedCaveats,
-    methodImplementation: getShowInterfaceImplementation(methodHooks),
+    methodImplementation: getCreateInterfaceImplementation(methodHooks),
     subjectTypes: [SubjectType.Snap],
   };
 };
 
-const methodHooks: MethodHooksObject<ShowInterfaceMethodHooks> = {
-  showInterface: true,
+const methodHooks: MethodHooksObject<CreateInterfaceMethodHooks> = {
+  createInterface: true,
 };
 
-export const showInterfaceBuilder = Object.freeze({
+export const createInterfaceBuilder = Object.freeze({
   targetName: methodName,
   specificationBuilder,
   methodHooks,
@@ -85,18 +85,18 @@ const paramsStruct = object({
 });
 
 /**
- * Builds the method implementation for `snap_showInterface`.
+ * Builds the method implementation for `snap_createInterface`.
  *
  * @param hooks - The RPC method hooks.
- * @param hooks.showInterface - A function that shows the specified interface in the
+ * @param hooks.createInterface - A function that shows the specified interface in the
  * MetaMask UI and returns the identifier for the interface.
  * @returns The identifier of the interface.
  */
-export function getShowInterfaceImplementation({
-  showInterface,
-}: ShowInterfaceMethodHooks) {
+export function getCreateInterfaceImplementation({
+  createInterface,
+}: CreateInterfaceMethodHooks) {
   return async function implementation(
-    args: RestrictedMethodOptions<ShowInterfaceArgs>,
+    args: RestrictedMethodOptions<CreateInterfaceArgs>,
   ): Promise<string> {
     const {
       params,
@@ -107,18 +107,18 @@ export function getShowInterfaceImplementation({
 
     const { ui } = validatedParams;
 
-    return await showInterface(origin, ui);
+    return await createInterface(origin, ui);
   };
 }
 
 /**
- * Validates the showInterface method `params` and returns them cast to the correct
+ * Validates the createInterface method `params` and returns them cast to the correct
  * type. Throws if validation fails.
  *
  * @param params - The unvalidated params object from the method request.
- * @returns The validated showInterface method parameter object.
+ * @returns The validated createInterface method parameter object.
  */
-function getValidatedParams(params: unknown): ShowInterfaceArgs {
+function getValidatedParams(params: unknown): CreateInterfaceArgs {
   try {
     return create(params, paramsStruct);
   } catch (error) {
