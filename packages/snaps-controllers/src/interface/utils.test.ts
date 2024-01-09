@@ -1,6 +1,7 @@
 import { form, input, panel, text } from '@metamask/snaps-sdk';
 
 import {
+  assertNameIsUnique,
   constructFormState,
   constructInputState,
   constructState,
@@ -63,6 +64,20 @@ describe('constructFormState', () => {
     const result = constructFormState(state, component, 'baz');
 
     expect(result).toBe('baz');
+  });
+});
+
+describe('assertNameIsUnique', () => {
+  it('throws an error if a name is not unique', () => {
+    const state = { test: 'foo' };
+    expect(() => assertNameIsUnique(state, 'test')).toThrow(
+      `duplicate name for component: test`,
+    );
+  });
+
+  it('passes if there is no duplicate name', () => {
+    const state = { test: 'foo' };
+    expect(() => assertNameIsUnique(state, 'bar')).not.toThrow();
   });
 });
 
@@ -190,5 +205,41 @@ describe('constructState', () => {
     expect(result).toStrictEqual({
       foo: 'bar',
     });
+  });
+
+  it('throws if a name is not unique in a form', () => {
+    const components = form({
+      name: 'test',
+      children: [input({ name: 'foo' }), input({ name: 'foo' })],
+    });
+
+    expect(() => constructState({}, components)).toThrow(
+      `duplicate name for component: foo`,
+    );
+  });
+
+  it('throws if a name is not unique at the root', () => {
+    const components = panel([
+      input({ name: 'test' }),
+      input({ name: 'test' }),
+    ]);
+
+    expect(() => constructState({}, components)).toThrow(
+      `duplicate name for component: test`,
+    );
+  });
+
+  it('throws if a form has the same name as an input', () => {
+    const components = panel([
+      input({ name: 'test' }),
+      form({
+        name: 'test',
+        children: [input({ name: 'foo' })],
+      }),
+    ]);
+
+    expect(() => constructState({}, components)).toThrow(
+      `duplicate name for component: test`,
+    );
   });
 });

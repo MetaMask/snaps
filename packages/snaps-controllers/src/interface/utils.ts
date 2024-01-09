@@ -1,4 +1,4 @@
-import { NodeType } from '@metamask/snaps-sdk';
+import { NodeType, assert } from '@metamask/snaps-sdk';
 import type {
   Component,
   Input,
@@ -38,6 +38,9 @@ export const constructFormState = (
   return component.value ?? oldInputState ?? null;
 };
 
+export const assertNameIsUnique = (state: InterfaceState, name: string) =>
+  assert(state[name] === undefined, `duplicate name for component: ${name}`);
+
 /**
  * Construcs the interface state for a given component tree while preserving values for matching stateful components in the old state.
  *
@@ -60,9 +63,11 @@ export const constructState = (
   }
 
   if (type === NodeType.Form) {
+    assertNameIsUnique(newState, component.name);
     newState[component.name] = component.children.reduce<FormState>(
       (acc, node) => {
         if (node.type === NodeType.Input) {
+          assertNameIsUnique(acc, node.name);
           acc[node.name] = constructFormState(oldState, node, component.name);
         }
 
@@ -73,6 +78,7 @@ export const constructState = (
   }
 
   if (type === NodeType.Input) {
+    assertNameIsUnique(newState, component.name);
     newState[component.name] = constructInputState(oldState, component);
   }
 
