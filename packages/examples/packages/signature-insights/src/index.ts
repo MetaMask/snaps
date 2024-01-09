@@ -1,8 +1,13 @@
 import type { OnSignatureHandler } from '@metamask/snaps-sdk';
 import { SeverityLevel, panel, text, row, heading } from '@metamask/snaps-sdk';
 
-// The verifying contract in test dapp e2e tests
+/**
+ * The MetaMask test dapp uses the below contract address as the verifying
+ * contract for `eth_signTypedData_v3` and `eth_signTypedData_v4`, it is being
+ * used here as a flag to return content and to make e2e testing easier in the extension.
+ */
 const MALICIOUS_CONTRACT = '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC';
+
 /**
  * Handle incoming signature requests, sent through one of the following methods:
  * `eth_sign`, `personal_sign`, `eth_signTypedData`, `eth_signTypedData_v3`, `eth_signTypedData_v4`.
@@ -59,11 +64,13 @@ export const onSignature: OnSignatureHandler = async ({ signature }) => {
         ]),
         severity: SeverityLevel.Critical,
       };
+
     case 'personal_sign':
       return {
         content: panel([row('From:', text(from)), row('Data:', text(data))]),
         severity: SeverityLevel.Critical,
       };
+
     case 'eth_signTypedData':
       // show simple key-value pairs of the different param types count
       return {
@@ -73,6 +80,7 @@ export const onSignature: OnSignatureHandler = async ({ signature }) => {
         ]),
         severity: SeverityLevel.Critical,
       };
+
     case 'eth_signTypedData_v3':
       if (domain.verifyingContract === MALICIOUS_CONTRACT) {
         return {
@@ -86,6 +94,7 @@ export const onSignature: OnSignatureHandler = async ({ signature }) => {
         };
       }
       return null;
+
     case 'eth_signTypedData_v4':
       if (domain.verifyingContract === MALICIOUS_CONTRACT) {
         return {
@@ -99,6 +108,7 @@ export const onSignature: OnSignatureHandler = async ({ signature }) => {
         };
       }
       return null;
+
     default:
       return null;
   }

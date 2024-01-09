@@ -24,14 +24,14 @@ Along with other permissions, the manifest of this snap includes the
 }
 ```
 
-By default, the `onSignature` does not receive the signature origin. If you
+By default, the `onSignature` handler does not receive the signature origin. If you
 want to receive the origin, you can add the `allowSignatureOrigin` property to
 the permission definition:
 
 ```json
 {
   "initialPermissions": {
-    "endowment:transaction-insight": {
+    "endowment:signature-insight": {
       "allowSignatureOrigin": true
     }
   }
