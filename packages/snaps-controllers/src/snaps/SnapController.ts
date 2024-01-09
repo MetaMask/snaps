@@ -245,9 +245,9 @@ export type PersistedSnapControllerState = SnapControllerState & {
 type RollbackSnapshot = {
   statePatches: Patch[];
   permissions: {
-    revoked: unknown;
-    granted: unknown[];
-    requestData: unknown;
+    revoked?: SubjectPermissions<ValidPermission<string, Caveat<string, any>>>;
+    granted?: RequestedPermissions;
+    requestData?: Record<string, unknown>;
   };
   newVersion: string;
 };
@@ -1026,16 +1026,16 @@ export class SnapController extends BaseController<
         ? virtualFiles.find((file) => file.path === iconPath)
         : undefined;
 
-      assert(sourceCode, 'Source code not provided for preinstalled snap');
+      assert(sourceCode, 'Source code not provided for preinstalled snap.');
 
       assert(
         manifest.source.files === undefined,
-        'Auxiliary files are not currently supported for preinstalled snaps',
+        'Auxiliary files are not currently supported for preinstalled snaps.',
       );
 
       assert(
         manifest.source.locales === undefined,
-        'Localization files are not currently supported for preinstalled snaps',
+        'Localization files are not currently supported for preinstalled snaps.',
       );
 
       const filesObject: FetchedSnapFiles = {
@@ -1049,7 +1049,7 @@ export class SnapController extends BaseController<
       // Add snap to the SnapController state
       this.#set({
         id: snapId,
-        origin: 'MetaMask',
+        origin: 'metamask',
         files: filesObject,
         removable,
         preinstalled: true,
@@ -1065,19 +1065,7 @@ export class SnapController extends BaseController<
       const { newPermissions, unusedPermissions } =
         this.#calculatePermissionsChange(snapId, processedPermissions);
 
-      const unusedPermissionsKeys = Object.keys(unusedPermissions);
-      if (isNonEmptyArray(unusedPermissionsKeys)) {
-        this.messagingSystem.call('PermissionController:revokePermissions', {
-          [snapId]: unusedPermissionsKeys,
-        });
-      }
-
-      if (isNonEmptyArray(Object.keys(newPermissions))) {
-        this.messagingSystem.call('PermissionController:grantPermissions', {
-          approvedPermissions: newPermissions,
-          subject: { origin: snapId },
-        });
-      }
+      this.#updatePermissions({ snapId, newPermissions, unusedPermissions });
 
       // Set status
       this.update((state) => {
@@ -2129,27 +2117,17 @@ export class SnapController extends BaseController<
         isUpdate: true,
       });
 
-      const unusedPermissionsKeys = Object.keys(unusedPermissions);
-      if (isNonEmptyArray(unusedPermissionsKeys)) {
-        this.messagingSystem.call('PermissionController:revokePermissions', {
-          [snapId]: unusedPermissionsKeys,
-        });
-      }
-
-      if (isNonEmptyArray(Object.keys(approvedNewPermissions))) {
-        this.messagingSystem.call('PermissionController:grantPermissions', {
-          approvedPermissions: approvedNewPermissions,
-          subject: { origin: snapId },
-          requestData,
-        });
-      }
+      this.#updatePermissions({
+        snapId,
+        unusedPermissions,
+        newPermissions: approvedNewPermissions,
+        requestData,
+      });
 
       const rollbackSnapshot = this.#getRollbackSnapshot(snapId);
       if (rollbackSnapshot !== undefined) {
         rollbackSnapshot.permissions.revoked = unusedPermissions;
-        rollbackSnapshot.permissions.granted = Object.keys(
-          approvedNewPermissions,
-        );
+        rollbackSnapshot.permissions.granted = approvedNewPermissions;
         rollbackSnapshot.permissions.requestData = requestData;
       }
 
@@ -2594,13 +2572,11 @@ export class SnapController extends BaseController<
       const { permissions: approvedPermissions, ...requestData } =
         (await pendingApproval.promise) as PermissionsRequest;
 
-      if (isNonEmptyArray(Object.keys(approvedPermissions))) {
-        this.messagingSystem.call('PermissionController:grantPermissions', {
-          approvedPermissions,
-          subject: { origin: snapId },
-          requestData,
-        });
-      }
+      this.#updatePermissions({
+        snapId,
+        newPermissions: approvedPermissions,
+        requestData,
+      });
     } finally {
       const runtime = this.#getRuntimeExpect(snapId);
       runtime.installPromise = null;
@@ -2938,7 +2914,7 @@ export class SnapController extends BaseController<
 
     this.#rollbackSnapshots.set(snapId, {
       statePatches: [],
-      permissions: { revoked: null, granted: [], requestData: null },
+      permissions: {},
       newVersion: '',
     });
 
@@ -2988,19 +2964,12 @@ export class SnapController extends BaseController<
       });
     }
 
-    if (permissions.revoked && Object.keys(permissions.revoked).length) {
-      this.messagingSystem.call('PermissionController:grantPermissions', {
-        approvedPermissions: permissions.revoked as RequestedPermissions,
-        subject: { origin: snapId },
-        requestData: permissions.requestData as Record<string, unknown>,
-      });
-    }
-
-    if (permissions.granted?.length) {
-      this.messagingSystem.call('PermissionController:revokePermissions', {
-        [snapId]: permissions.granted as NonEmptyArray<string>,
-      });
-    }
+    this.#updatePermissions({
+      snapId,
+      unusedPermissions: permissions.granted,
+      newPermissions: permissions.revoked,
+      requestData: permissions.requestData,
+    });
 
     const truncatedSnap = this.getTruncatedExpect(snapId);
 
@@ -3096,6 +3065,48 @@ export class SnapController extends BaseController<
     const approvedPermissions = setDiff(oldPermissions, unusedPermissions);
 
     return { newPermissions, unusedPermissions, approvedPermissions };
+  }
+
+  /**
+   * Updates the permissions for a snap following an install, update or rollback.
+   *
+   * Grants newly requested permissions and revokes unused/revoked permissions.
+   *
+   * @param args - An options bag.
+   * @param args.snapId - The snap ID.
+   * @param args.newPermissions - New permissions to be granted.
+   * @param args.unusedPermissions - Unused permissions to be revoked.
+   * @param args.requestData - Optional request data from an approval.
+   */
+  #updatePermissions({
+    snapId,
+    unusedPermissions = {},
+    newPermissions = {},
+    requestData,
+  }: {
+    snapId: SnapId;
+    newPermissions?:
+      | RequestedPermissions
+      | Record<string, Pick<PermissionConstraint, 'caveats'>>;
+    unusedPermissions?:
+      | RequestedPermissions
+      | SubjectPermissions<ValidPermission<string, Caveat<string, any>>>;
+    requestData?: Record<string, unknown>;
+  }) {
+    const unusedPermissionsKeys = Object.keys(unusedPermissions);
+    if (isNonEmptyArray(unusedPermissionsKeys)) {
+      this.messagingSystem.call('PermissionController:revokePermissions', {
+        [snapId]: unusedPermissionsKeys,
+      });
+    }
+
+    if (isNonEmptyArray(Object.keys(newPermissions))) {
+      this.messagingSystem.call('PermissionController:grantPermissions', {
+        approvedPermissions: newPermissions,
+        subject: { origin: snapId },
+        requestData,
+      });
+    }
   }
 
   /**

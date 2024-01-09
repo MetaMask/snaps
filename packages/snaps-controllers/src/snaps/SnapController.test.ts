@@ -3500,6 +3500,7 @@ describe('SnapController', () => {
           ],
         },
       ];
+
       const snapControllerOptions = getSnapControllerWithEESOptions({
         preinstalledSnaps,
         rootMessenger,
@@ -3621,7 +3622,7 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
-    it('skips snaps that would be a downgrade', async () => {
+    it('skips preinstalling a Snap if a newer version is already installed', async () => {
       const rootMessenger = getControllerMessenger();
       jest.spyOn(rootMessenger, 'call');
 
