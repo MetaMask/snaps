@@ -61,7 +61,7 @@ export const onSignature: OnSignatureHandler = async ({ signature }) => {
       };
     case 'personal_sign':
       return {
-        content: panel([row('From:', text(from)), row('data', text(data))]),
+        content: panel([row('From:', text(from)), row('Data:', text(data))]),
         severity: SeverityLevel.Critical,
       };
     case 'eth_signTypedData':

@@ -5051,6 +5051,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/signature-insights-example-snap@workspace:packages/examples/packages/signature-insights"
   dependencies:
+    "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^2.5.1
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
