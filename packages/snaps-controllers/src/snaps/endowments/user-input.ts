@@ -18,11 +18,11 @@ type UserInputEndowmentSpecification = ValidPermissionSpecification<{
 }>;
 
 /**
- * `endowment:transaction-insight` returns nothing; it is intended to be used as a flag
- * by the extension to detect whether the snap has the capability to show information on the transaction confirmation screen.
+ * `endowment:user-input` returns nothing; it is intended to be used as a flag
+ * by the extension to detect whether the snap has the capability to handle user inputs.
  *
  * @param _builderOptions - Optional specification builder options.
- * @returns The specification for the transaction-insight endowment.
+ * @returns The specification for the user-input endowment.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.Endowment,
