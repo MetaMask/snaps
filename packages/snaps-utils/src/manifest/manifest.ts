@@ -25,8 +25,9 @@ const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {
   proposedName: 4,
   repository: 5,
   source: 6,
-  initialPermissions: 7,
-  manifestVersion: 8,
+  initialConnections: 7,
+  initialPermissions: 8,
+  manifestVersion: 9,
 };
 
 /**

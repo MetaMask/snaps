@@ -40,6 +40,7 @@ import type {
 import { AuxiliaryFileEncoding, getErrorMessage } from '@metamask/snaps-sdk';
 import type {
   FetchedSnapFiles,
+  InitialConnections,
   PersistedSnap,
   Snap,
   SnapManifest,
@@ -1619,6 +1620,77 @@ export class SnapController extends BaseController<
     );
   }
 
+  #handleInitialConnections(
+    snapId: SnapId,
+    previousInitialConnections: InitialConnections | null,
+    initialConnections: InitialConnections,
+  ) {
+    if (previousInitialConnections) {
+      const revokedInitialConnections = setDiff(
+        previousInitialConnections,
+        initialConnections,
+      );
+
+      for (const origin of Object.keys(revokedInitialConnections)) {
+        this.removeSnapFromSubject(origin, snapId);
+      }
+    }
+
+    for (const origin of Object.keys(initialConnections)) {
+      this.#addSnapToSubject(origin, snapId);
+    }
+  }
+
+  #addSnapToSubject(origin: string, snapId: SnapId) {
+    const subjectPermissions = this.messagingSystem.call(
+      'PermissionController:getPermissions',
+      origin,
+    ) as SubjectPermissions<PermissionConstraint>;
+
+    const existingCaveat = subjectPermissions?.[
+      WALLET_SNAP_PERMISSION_KEY
+    ]?.caveats?.find((caveat) => caveat.type === SnapCaveatType.SnapIds);
+
+    const subjectHasSnap = Boolean(
+      (existingCaveat?.value as Record<string, Json>)?.[snapId],
+    );
+
+    // If the subject is already connected to the snap, this is a no-op.
+    if (subjectHasSnap) {
+      return;
+    }
+
+    // If an existing caveat exists, we add the snap to that.
+    if (existingCaveat) {
+      this.messagingSystem.call(
+        'PermissionController:updateCaveat',
+        origin,
+        WALLET_SNAP_PERMISSION_KEY,
+        SnapCaveatType.SnapIds,
+        { ...existingCaveat, [snapId]: {} },
+      );
+      return;
+    }
+
+    const approvedPermissions = {
+      [WALLET_SNAP_PERMISSION_KEY]: {
+        caveats: [
+          {
+            type: SnapCaveatType.SnapIds,
+            value: {
+              [snapId]: {},
+            },
+          },
+        ],
+      },
+    } as RequestedPermissions;
+
+    this.messagingSystem.call('PermissionController:grantPermissions', {
+      approvedPermissions,
+      subject: { origin },
+    });
+  }
+
   /**
    * Removes a snap's permission (caveat) from the specified subject.
    *
@@ -2066,6 +2138,8 @@ export class SnapController extends BaseController<
     try {
       const snap = this.getExpect(snapId);
 
+      const oldManifest = snap.manifest;
+
       const newSnap = await this.#fetchSnap(snapId, location);
 
       const { sourceCode: sourceCodeFile, manifest: manifestFile } =
@@ -2137,6 +2211,14 @@ export class SnapController extends BaseController<
         newPermissions: approvedNewPermissions,
         requestData,
       });
+
+      if (manifest.initialConnections) {
+        this.#handleInitialConnections(
+          snapId,
+          oldManifest.initialConnections ?? null,
+          manifest.initialConnections,
+        );
+      }
 
       const rollbackSnapshot = this.#getRollbackSnapshot(snapId);
       if (rollbackSnapshot !== undefined) {
@@ -2591,6 +2673,14 @@ export class SnapController extends BaseController<
         newPermissions: approvedPermissions,
         requestData,
       });
+
+      if (snap.manifest.initialConnections) {
+        this.#handleInitialConnections(
+          snapId,
+          null,
+          snap.manifest.initialConnections,
+        );
+      }
     } finally {
       const runtime = this.#getRuntimeExpect(snapId);
       runtime.installPromise = null;
