@@ -2590,6 +2590,71 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
+  it('gets the interface content if the result is an interface id', async () => {
+    const rootMessenger = getControllerMessenger();
+    const messenger = getSnapControllerMessenger(rootMessenger);
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        state: {
+          snaps: getPersistedSnapsState(),
+        },
+      }),
+    );
+
+    const handlerResponse = { id: 'foo' };
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => ({
+        [SnapEndowments.HomePage]: {
+          caveats: null,
+          date: 1664187844588,
+          id: 'izn0WGUO8cvq_jqvLQuQP',
+          invoker: MOCK_SNAP_ID,
+          parentCapability: SnapEndowments.HomePage,
+        },
+      }),
+    );
+
+    rootMessenger.registerActionHandler(
+      'SubjectMetadataController:getSubjectMetadata',
+      () => MOCK_SNAP_SUBJECT_METADATA,
+    );
+
+    rootMessenger.registerActionHandler(
+      'ExecutionService:handleRpcRequest',
+      async () => Promise.resolve(handlerResponse),
+    );
+
+    rootMessenger.registerActionHandler(
+      'InterfaceController:getInterface',
+      () => ({ snapId: MOCK_SNAP_ID, state: {}, content: text('hello') }),
+    );
+
+    const result = await snapController.handleRequest({
+      snapId: MOCK_SNAP_ID,
+      origin: 'foo.com',
+      handler: HandlerType.OnHomePage,
+      request: {
+        jsonrpc: '2.0',
+        method: ' ',
+        params: {},
+        id: 1,
+      },
+    });
+
+    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+      5,
+      'InterfaceController:getInterface',
+      MOCK_SNAP_ID,
+      'foo',
+    );
+    expect(result).toBe(handlerResponse);
+
+    snapController.destroy();
+  });
+
   it("doesn't throw if onHomePage return value is valid", async () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);

@@ -401,6 +401,8 @@ export const getSnapControllerMessenger = (
       'SnapController:revokeDynamicPermissions',
       'SnapController:getFile',
       'SnapsRegistry:resolveVersion',
+      'InterfaceController:createInterface',
+      'InterfaceController:getInterface',
     ],
   });
 
@@ -593,7 +595,7 @@ export const getRestrictedSnapsRegistryControllerMessenger = (
 // Mock controller messenger for Interface Controller
 export const getRootInterfaceControllerMessenger = () => {
   const messenger = new MockControllerMessenger<
-    AllowedInterfaceControllerActions,
+    InterfaceControllerActions,
     never
   >();
 
@@ -609,7 +611,7 @@ export const getRestrictedInterfaceControllerMessenger = (
 ) => {
   const interfaceControllerMessenger = messenger.getRestricted<
     'InterfaceController',
-    InterfaceControllerActions['type'],
+    never,
     never
   >({
     name: 'InterfaceController',

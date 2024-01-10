@@ -8,8 +8,6 @@ import { constructState } from './utils';
 
 const controllerName = 'InterfaceController';
 
-// @TODO: Add actions for functions
-
 export type CreateInterface = {
   type: `${typeof controllerName}:createInterface`;
   handler: InterfaceController['createInterface'];

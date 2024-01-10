@@ -74,6 +74,8 @@ import {
   getValidatedLocalizationFiles,
   VirtualFile,
   NpmSnapFileNames,
+  isOnHomePageResponseWithContent,
+  isOnHomePageResponseWithId,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
@@ -94,6 +96,7 @@ import type { StateMachine } from '@xstate/fsm';
 import { createMachine, interpret } from '@xstate/fsm';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
+import type { GetInterface } from 'src/interface';
 
 import { forceStrict, validateMachine } from '../fsm';
 import { log } from '../logging';
@@ -514,7 +517,8 @@ export type AllowedActions =
   | Update
   | ResolveVersion
   | TestOrigin
-  | MaybeUpdateState;
+  | MaybeUpdateState
+  | GetInterface;
 
 export type AllowedEvents =
   | ExecutionServiceEvents
@@ -2849,7 +2853,7 @@ export class SnapController extends BaseController<
           timer,
         );
 
-        await this.#assertSnapRpcRequestResult(handlerType, result);
+        await this.#assertSnapRpcRequestResult(handlerType, result, snapId);
 
         return result;
       } catch (error) {
@@ -2878,13 +2882,26 @@ export class SnapController extends BaseController<
       .result;
   }
 
+  #getInterface(snapId: string, interfaceId: string) {
+    return this.messagingSystem.call(
+      'InterfaceController:getInterface',
+      snapId,
+      interfaceId,
+    );
+  }
+
   /**
    * Asserts that the returned result of a Snap RPC call is the expected shape.
    *
    * @param handlerType - The handler type of the RPC Request.
    * @param result - The result of the RPC request.
+   * @param snapId - The ID of the snap that returned the result.
    */
-  async #assertSnapRpcRequestResult(handlerType: HandlerType, result: unknown) {
+  async #assertSnapRpcRequestResult(
+    handlerType: HandlerType,
+    result: unknown,
+    snapId: string,
+  ) {
     switch (handlerType) {
       case HandlerType.OnTransaction: {
         assertStruct(result, OnTransactionResponseStruct);
@@ -2921,10 +2938,18 @@ export class SnapController extends BaseController<
 
         await this.#triggerPhishingListUpdate();
 
-        validateComponentLinks(
-          result.content,
-          this.#checkPhishingList.bind(this),
-        );
+        if (isOnHomePageResponseWithContent(result)) {
+          validateComponentLinks(
+            result.content,
+            this.#checkPhishingList.bind(this),
+          );
+        }
+
+        if (isOnHomePageResponseWithId(result)) {
+          const { content } = this.#getInterface(snapId, result.id);
+
+          validateComponentLinks(content, this.#checkPhishingList.bind(this));
+        }
         break;
       default:
         break;

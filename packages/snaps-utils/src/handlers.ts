@@ -11,7 +11,15 @@ import type {
   OnUserInputHandler,
 } from '@metamask/snaps-sdk';
 import { SeverityLevel, ComponentStruct } from '@metamask/snaps-sdk';
-import { literal, nullable, object, optional } from 'superstruct';
+import type { Infer } from 'superstruct';
+import {
+  literal,
+  nullable,
+  object,
+  optional,
+  string,
+  union,
+} from 'superstruct';
 
 import type { SnapHandler } from './handler-types';
 import { HandlerType } from './handler-types';
@@ -104,9 +112,26 @@ export const OnTransactionResponseStruct = nullable(
 
 export const OnSignatureResponseStruct = OnTransactionResponseStruct;
 
-export const OnHomePageResponseStruct = object({
+export const OnHomePageResponseWithContentStruct = object({
   content: ComponentStruct,
 });
+
+export const OnHomePageResponseWithIdStruct = object({
+  id: string(),
+});
+
+export const OnHomePageResponseStruct = union([
+  OnHomePageResponseWithContentStruct,
+  OnHomePageResponseWithIdStruct,
+]);
+
+export type OnHomePageResponseWithContent = Infer<
+  typeof OnHomePageResponseWithContentStruct
+>;
+
+export type OnHomePageResponseWithId = Infer<
+  typeof OnHomePageResponseWithIdStruct
+>;
 
 /**
  * Utility type for getting the handler function type from a handler type.
