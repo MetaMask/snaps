@@ -3,4 +3,4 @@ export * from './services';
 export * from './snaps';
 export * from './utils';
 export * from './cronjob';
-export * from './interface';
+export * from './snapInterface';

@@ -2,19 +2,19 @@ import { form, input } from '@metamask/snaps-sdk';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
 import {
-  getRestrictedInterfaceControllerMessenger,
-  getRootInterfaceControllerMessenger,
+  getRestrictedSnapInterfaceControllerMessenger,
+  getRootSnapInterfaceControllerMessenger,
 } from '../test-utils';
-import { InterfaceController } from './InterfaceController';
+import { SnapInterfaceController } from './SnapInterfaceController';
 
-describe('InterfaceController', () => {
+describe('SnapInterfaceController', () => {
   describe('createInterface', () => {
     it('can create a new interface', () => {
-      const rootMessenger = getRootInterfaceControllerMessenger();
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger =
-        getRestrictedInterfaceControllerMessenger(rootMessenger);
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      const interfaceController = new InterfaceController({
+      const interfaceController = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -37,11 +37,11 @@ describe('InterfaceController', () => {
 
   describe('getInterface', () => {
     it('gets the interface', () => {
-      const rootMessenger = getRootInterfaceControllerMessenger();
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger =
-        getRestrictedInterfaceControllerMessenger(rootMessenger);
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      const interfaceController = new InterfaceController({
+      const interfaceController = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -57,11 +57,11 @@ describe('InterfaceController', () => {
     });
 
     it('throws if the snap requesting the interface is not the one that created it', () => {
-      const rootMessenger = getRootInterfaceControllerMessenger();
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger =
-        getRestrictedInterfaceControllerMessenger(rootMessenger);
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      const interfaceController = new InterfaceController({
+      const interfaceController = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -78,11 +78,11 @@ describe('InterfaceController', () => {
     });
 
     it('throws if the interface does not exist', () => {
-      const rootMessenger = getRootInterfaceControllerMessenger();
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger =
-        getRestrictedInterfaceControllerMessenger(rootMessenger);
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      const interfaceController = new InterfaceController({
+      const interfaceController = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -94,11 +94,11 @@ describe('InterfaceController', () => {
 
   describe('updateInterface', () => {
     it('can update an interface', () => {
-      const rootMessenger = getRootInterfaceControllerMessenger();
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger =
-        getRestrictedInterfaceControllerMessenger(rootMessenger);
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      const interfaceController = new InterfaceController({
+      const interfaceController = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -114,11 +114,7 @@ describe('InterfaceController', () => {
 
       const id = interfaceController.createInterface(MOCK_SNAP_ID, components);
 
-      const result = interfaceController.updateInterface(
-        MOCK_SNAP_ID,
-        id,
-        newContent,
-      );
+      interfaceController.updateInterface(MOCK_SNAP_ID, id, newContent);
 
       const { content, state } = interfaceController.getInterface(
         MOCK_SNAP_ID,
@@ -127,16 +123,14 @@ describe('InterfaceController', () => {
 
       expect(content).toStrictEqual(newContent);
       expect(state).toStrictEqual({ foo: { baz: null } });
-
-      expect(result).toBeNull();
     });
 
     it('throws if the interface does not exist', () => {
-      const rootMessenger = getRootInterfaceControllerMessenger();
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger =
-        getRestrictedInterfaceControllerMessenger(rootMessenger);
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      const interfaceController = new InterfaceController({
+      const interfaceController = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -148,11 +142,11 @@ describe('InterfaceController', () => {
     });
 
     it('throws if the interface is updated by another snap', () => {
-      const rootMessenger = getRootInterfaceControllerMessenger();
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger =
-        getRestrictedInterfaceControllerMessenger(rootMessenger);
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      const interfaceController = new InterfaceController({
+      const interfaceController = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -173,11 +167,11 @@ describe('InterfaceController', () => {
 
   describe('updateInterfaceState', () => {
     it('updates the interface state', () => {
-      const rootMessenger = getRootInterfaceControllerMessenger();
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger =
-        getRestrictedInterfaceControllerMessenger(rootMessenger);
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      const interfaceController = new InterfaceController({
+      const interfaceController = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -197,11 +191,11 @@ describe('InterfaceController', () => {
 
   describe('deleteInterface', () => {
     it('can delete an interface', () => {
-      const rootMessenger = getRootInterfaceControllerMessenger();
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger =
-        getRestrictedInterfaceControllerMessenger(rootMessenger);
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      const interfaceController = new InterfaceController({
+      const interfaceController = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 

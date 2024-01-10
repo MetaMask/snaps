@@ -20,6 +20,7 @@ describe('Form', () => {
       ],
     });
   });
+
   it('creates a form component using the shorthand form', () => {
     expect(form('myForm', [input('myInput')])).toStrictEqual({
       type: NodeType.Form,

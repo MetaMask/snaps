@@ -98,7 +98,6 @@ import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
 
 import { forceStrict, validateMachine } from '../fsm';
-import type { GetInterface } from '../interface';
 import { log } from '../logging';
 import type {
   ExecuteSnapAction,
@@ -108,6 +107,7 @@ import type {
   TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '../services';
+import type { GetInterface } from '../snapInterface';
 import { fetchSnap, hasTimedOut, setDiff, withTimeout } from '../utils';
 import { handlerEndowments, SnapEndowments } from './endowments';
 import { getKeyringCaveatOrigins } from './endowments/keyring';
@@ -2884,7 +2884,7 @@ export class SnapController extends BaseController<
 
   #getInterface(snapId: string, interfaceId: string) {
     return this.messagingSystem.call(
-      'InterfaceController:getInterface',
+      'SnapInterfaceController:getInterface',
       snapId,
       interfaceId,
     );

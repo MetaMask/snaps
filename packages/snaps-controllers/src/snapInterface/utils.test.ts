@@ -70,6 +70,7 @@ describe('constructFormState', () => {
 describe('assertNameIsUnique', () => {
   it('throws an error if a name is not unique', () => {
     const state = { test: 'foo' };
+
     expect(() => assertNameIsUnique(state, 'test')).toThrow(
       `duplicate name for component: test`,
     );
@@ -77,6 +78,7 @@ describe('assertNameIsUnique', () => {
 
   it('passes if there is no duplicate name', () => {
     const state = { test: 'foo' };
+
     expect(() => assertNameIsUnique(state, 'bar')).not.toThrow();
   });
 });
@@ -87,11 +89,15 @@ describe('constructState', () => {
       text('text'),
       form({ name: 'foo', children: [input({ name: 'bar' })] }),
     ]);
+
     const result = constructState({}, components);
+
     expect(result).toStrictEqual({ foo: { bar: null } });
   });
+
   it('merges two states', () => {
     const state = { foo: { bar: 'test' } };
+
     const components = panel([
       text('text'),
       form({
@@ -99,11 +105,15 @@ describe('constructState', () => {
         children: [input({ name: 'bar' }), input({ name: 'baz' })],
       }),
     ]);
+
     const result = constructState(state, components);
+
     expect(result).toStrictEqual({ foo: { bar: 'test', baz: null } });
   });
+
   it('deletes unused state', () => {
     const state = { form: { foo: null, bar: 'test' } };
+
     const components = panel([
       text('text'),
       form({
@@ -111,14 +121,18 @@ describe('constructState', () => {
         children: [input({ name: 'bar' }), input({ name: 'baz' })],
       }),
     ]);
+
     const result = constructState(state, components);
+
     expect(result).toStrictEqual({ form: { bar: 'test', baz: null } });
   });
+
   it('handles multiple forms', () => {
     const state = {
       form1: { foo: null, bar: 'test' },
       form2: { foo: 'abc', bar: 'def' },
     };
+
     const components = panel([
       text('text'),
       form({
@@ -130,17 +144,21 @@ describe('constructState', () => {
         children: [input({ name: 'bar' }), input({ name: 'baz' })],
       }),
     ]);
+
     const result = constructState(state, components);
+
     expect(result).toStrictEqual({
       form1: { bar: 'test', baz: null },
       form2: { bar: 'def', baz: null },
     });
   });
+
   it('deletes unused form', () => {
     const state = {
       form1: { foo: null, bar: 'test' },
       form2: { foo: 'abc', bar: 'def' },
     };
+
     const components = panel([
       text('text'),
       form({
@@ -148,16 +166,20 @@ describe('constructState', () => {
         children: [input({ name: 'bar' }), input({ name: 'baz' })],
       }),
     ]);
+
     const result = constructState(state, components);
+
     expect(result).toStrictEqual({
       form1: { bar: 'test', baz: null },
     });
   });
+
   it('handles nesting forms', () => {
     const state = {
       form1: { foo: null, bar: 'test' },
       form2: { foo: 'abc', bar: 'def' },
     };
+
     const components = panel([
       text('text'),
       panel([
@@ -173,7 +195,9 @@ describe('constructState', () => {
         }),
       ]),
     ]);
+
     const result = constructState(state, components);
+
     expect(result).toStrictEqual({
       form1: { bar: 'test', baz: null },
       form2: { bar: 'def', baz: null },
@@ -182,7 +206,9 @@ describe('constructState', () => {
 
   it('handles root level inputs with value', () => {
     const components = panel([input({ name: 'foo', value: 'bar' })]);
+
     const result = constructState({}, components);
+
     expect(result).toStrictEqual({
       foo: 'bar',
     });
@@ -190,7 +216,9 @@ describe('constructState', () => {
 
   it('handles root level inputs without value', () => {
     const components = panel([input({ name: 'foo' })]);
+
     const result = constructState({}, components);
+
     expect(result).toStrictEqual({
       foo: null,
     });
@@ -200,8 +228,11 @@ describe('constructState', () => {
     const state = {
       foo: 'bar',
     };
+
     const components = panel([input({ name: 'foo' })]);
+
     const result = constructState(state, components);
+
     expect(result).toStrictEqual({
       foo: 'bar',
     });

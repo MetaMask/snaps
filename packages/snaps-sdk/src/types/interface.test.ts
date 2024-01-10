@@ -2,13 +2,13 @@ import { assert } from 'superstruct';
 
 import { FormStateStruct, InterfaceStateStruct } from './interface';
 
-describe('formStateStruct', () => {
+describe('FormStateStruct', () => {
   it('passes for a valid form state', () => {
     expect(() => assert({ foo: 'bar' }, FormStateStruct)).not.toThrow();
   });
 });
 
-describe('interfaceStateStruct', () => {
+describe('InterfaceStateStruct', () => {
   it('passes for a valid form state', () => {
     expect(() =>
       assert({ test: { bar: 'baz' }, foo: 'bar' }, InterfaceStateStruct),

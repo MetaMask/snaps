@@ -2628,7 +2628,7 @@ describe('SnapController', () => {
     );
 
     rootMessenger.registerActionHandler(
-      'InterfaceController:getInterface',
+      'SnapInterfaceController:getInterface',
       () => ({ snapId: MOCK_SNAP_ID, state: {}, content: text('hello') }),
     );
 
@@ -2646,7 +2646,7 @@ describe('SnapController', () => {
 
     expect(rootMessenger.call).toHaveBeenNthCalledWith(
       5,
-      'InterfaceController:getInterface',
+      'SnapInterfaceController:getInterface',
       MOCK_SNAP_ID,
       'foo',
     );

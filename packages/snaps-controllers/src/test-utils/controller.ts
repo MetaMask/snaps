@@ -25,7 +25,7 @@ import type {
   CronjobControllerActions,
   CronjobControllerEvents,
 } from '../cronjob';
-import type { InterfaceControllerActions } from '../interface/InterfaceController';
+import type { SnapInterfaceControllerActions } from '../snapInterface/SnapInterfaceController';
 import type {
   AllowedActions,
   AllowedEvents,
@@ -91,18 +91,6 @@ export class MockApprovalController {
       if (requestState.loading === false && !requestState.error) {
         this.#approval.promise.reject(providerErrors.userRejectedRequest());
       }
-    }
-  }
-
-  updateRequestState({ requestState }: { requestState: Record<string, Json> }) {
-    if (this.#approval) {
-      this.#approval = {
-        ...this.#approval,
-        request: {
-          ...this.#approval?.request,
-          requestState,
-        },
-      };
     }
   }
 
@@ -401,8 +389,8 @@ export const getSnapControllerMessenger = (
       'SnapController:revokeDynamicPermissions',
       'SnapController:getFile',
       'SnapsRegistry:resolveVersion',
-      'InterfaceController:createInterface',
-      'InterfaceController:getInterface',
+      'SnapInterfaceController:createInterface',
+      'SnapInterfaceController:getInterface',
     ],
   });
 
@@ -593,9 +581,9 @@ export const getRestrictedSnapsRegistryControllerMessenger = (
 };
 
 // Mock controller messenger for Interface Controller
-export const getRootInterfaceControllerMessenger = () => {
+export const getRootSnapInterfaceControllerMessenger = () => {
   const messenger = new MockControllerMessenger<
-    InterfaceControllerActions,
+    SnapInterfaceControllerActions,
     never
   >();
 
@@ -604,17 +592,17 @@ export const getRootInterfaceControllerMessenger = () => {
   return messenger;
 };
 
-export const getRestrictedInterfaceControllerMessenger = (
+export const getRestrictedSnapInterfaceControllerMessenger = (
   messenger: ReturnType<
-    typeof getRootInterfaceControllerMessenger
-  > = getRootInterfaceControllerMessenger(),
+    typeof getRootSnapInterfaceControllerMessenger
+  > = getRootSnapInterfaceControllerMessenger(),
 ) => {
   const interfaceControllerMessenger = messenger.getRestricted<
-    'InterfaceController',
+    'SnapInterfaceController',
     never,
     never
   >({
-    name: 'InterfaceController',
+    name: 'SnapInterfaceController',
   });
 
   return interfaceControllerMessenger;

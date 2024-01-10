@@ -6,45 +6,45 @@ import { nanoid } from 'nanoid';
 
 import { constructState } from './utils';
 
-const controllerName = 'InterfaceController';
+const controllerName = 'SnapInterfaceController';
 
 export type CreateInterface = {
   type: `${typeof controllerName}:createInterface`;
-  handler: InterfaceController['createInterface'];
+  handler: SnapInterfaceController['createInterface'];
 };
 
 export type GetInterface = {
   type: `${typeof controllerName}:getInterface`;
-  handler: InterfaceController['getInterface'];
+  handler: SnapInterfaceController['getInterface'];
 };
 
 export type UpdateInterface = {
   type: `${typeof controllerName}:updateInterface`;
-  handler: InterfaceController['updateInterface'];
+  handler: SnapInterfaceController['updateInterface'];
 };
 
 export type DeleteInterface = {
   type: `${typeof controllerName}:deleteInterface`;
-  handler: InterfaceController['deleteInterface'];
+  handler: SnapInterfaceController['deleteInterface'];
 };
 
 export type UpdateInterfaceState = {
   type: `${typeof controllerName}:updateInterfaceState`;
-  handler: InterfaceController['updateInterfaceState'];
+  handler: SnapInterfaceController['updateInterfaceState'];
 };
 
-export type InterfaceControllerActions =
+export type SnapInterfaceControllerActions =
   | CreateInterface
   | GetInterface
   | UpdateInterface
   | DeleteInterface
   | UpdateInterfaceState;
 
-export type InterfaceControllerMessenger = RestrictedControllerMessenger<
+export type SnapInterfaceControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
-  InterfaceControllerActions,
+  SnapInterfaceControllerActions,
   never,
-  InterfaceControllerActions['type'],
+  SnapInterfaceControllerActions['type'],
   never
 >;
 
@@ -52,27 +52,26 @@ export type StoredInterface = {
   snapId: string;
   content: Component;
   state: InterfaceState;
-  usage?: string;
 };
 
-export type InterfaceControllerState = {
+export type SnapInterfaceControllerState = {
   interfaces: Record<string, StoredInterface>;
 };
 
-export type InterfaceControllerArgs = {
-  messenger: InterfaceControllerMessenger;
-  state?: InterfaceControllerState;
+export type SnapInterfaceControllerArgs = {
+  messenger: SnapInterfaceControllerMessenger;
+  state?: SnapInterfaceControllerState;
 };
 
 /**
  * Use this controller to manage snaps UI interfaces using RPC method hooks.
  */
-export class InterfaceController extends BaseController<
+export class SnapInterfaceController extends BaseController<
   typeof controllerName,
-  InterfaceControllerState,
-  InterfaceControllerMessenger
+  SnapInterfaceControllerState,
+  SnapInterfaceControllerMessenger
 > {
-  constructor({ messenger, state }: InterfaceControllerArgs) {
+  constructor({ messenger, state }: SnapInterfaceControllerArgs) {
     super({
       messenger,
       metadata: {
@@ -158,7 +157,6 @@ export class InterfaceController extends BaseController<
    * @param snapId - The snap id requesting the update.
    * @param id - The interface id.
    * @param content - The new content.
-   * @returns Null.
    */
   updateInterface(snapId: string, id: string, content: Component) {
     this.#validateArgs(snapId, id);
@@ -171,8 +169,6 @@ export class InterfaceController extends BaseController<
       draftState.interfaces[id].state = newState;
       draftState.interfaces[id].content = content;
     });
-
-    return null;
   }
 
   /**

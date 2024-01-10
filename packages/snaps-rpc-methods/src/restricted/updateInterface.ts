@@ -109,7 +109,9 @@ export function getUpdateInterfaceImplementation({
 
     const { id, ui } = validatedParams;
 
-    return updateInterface(origin, id, ui);
+    updateInterface(origin, id, ui);
+
+    return null;
   };
 }
 
