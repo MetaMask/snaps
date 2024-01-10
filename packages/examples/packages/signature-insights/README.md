@@ -13,6 +13,7 @@ can show any [Snaps-based UI](../../../snaps-sdk) components.
 > permissions. Refer to [the documentation](https://docs.metamask.io/snaps/reference/permissions/#endowmentsignature-insight)
 > for more information.
 
+asdas
 Along with other permissions, the manifest of this snap includes the
 `endowment:signature-insight` permission:
 
