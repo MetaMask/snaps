@@ -14,7 +14,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      const interfaceController = new SnapInterfaceController({
+      const snapInterfaceController = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -23,9 +23,12 @@ describe('SnapInterfaceController', () => {
         children: [input({ name: 'bar' })],
       });
 
-      const id = interfaceController.createInterface(MOCK_SNAP_ID, components);
+      const id = snapInterfaceController.createInterface(
+        MOCK_SNAP_ID,
+        components,
+      );
 
-      const { content, state } = interfaceController.getInterface(
+      const { content, state } = snapInterfaceController.getInterface(
         MOCK_SNAP_ID,
         id,
       );
@@ -41,7 +44,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      const interfaceController = new SnapInterfaceController({
+      const snapInterfaceController = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -50,9 +53,15 @@ describe('SnapInterfaceController', () => {
         children: [input({ name: 'bar' })],
       });
 
-      const id = interfaceController.createInterface(MOCK_SNAP_ID, components);
+      const id = snapInterfaceController.createInterface(
+        MOCK_SNAP_ID,
+        components,
+      );
 
-      const { content } = interfaceController.getInterface(MOCK_SNAP_ID, id);
+      const { content } = snapInterfaceController.getInterface(
+        MOCK_SNAP_ID,
+        id,
+      );
       expect(content).toStrictEqual(components);
     });
 
@@ -61,7 +70,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      const interfaceController = new SnapInterfaceController({
+      const snapInterfaceController = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -70,9 +79,12 @@ describe('SnapInterfaceController', () => {
         children: [input({ name: 'bar' })],
       });
 
-      const id = interfaceController.createInterface(MOCK_SNAP_ID, components);
+      const id = snapInterfaceController.createInterface(
+        MOCK_SNAP_ID,
+        components,
+      );
 
-      expect(() => interfaceController.getInterface('foo', id)).toThrow(
+      expect(() => snapInterfaceController.getInterface('foo', id)).toThrow(
         `Interface not created by foo.`,
       );
     });
@@ -82,12 +94,12 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      const interfaceController = new SnapInterfaceController({
+      const snapInterfaceController = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
       expect(() =>
-        interfaceController.getInterface(MOCK_SNAP_ID, 'test'),
+        snapInterfaceController.getInterface(MOCK_SNAP_ID, 'test'),
       ).toThrow(`Interface with id 'test' not found.`);
     });
   });
@@ -98,7 +110,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      const interfaceController = new SnapInterfaceController({
+      const snapInterfaceController = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -112,11 +124,14 @@ describe('SnapInterfaceController', () => {
         children: [input({ name: 'baz' })],
       });
 
-      const id = interfaceController.createInterface(MOCK_SNAP_ID, components);
+      const id = snapInterfaceController.createInterface(
+        MOCK_SNAP_ID,
+        components,
+      );
 
-      interfaceController.updateInterface(MOCK_SNAP_ID, id, newContent);
+      snapInterfaceController.updateInterface(MOCK_SNAP_ID, id, newContent);
 
-      const { content, state } = interfaceController.getInterface(
+      const { content, state } = snapInterfaceController.getInterface(
         MOCK_SNAP_ID,
         id,
       );
@@ -130,14 +145,14 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      const interfaceController = new SnapInterfaceController({
+      const snapInterfaceController = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
       const content = form({ name: 'foo', children: [input({ name: 'bar' })] });
 
       expect(() =>
-        interfaceController.updateInterface(MOCK_SNAP_ID, 'foo', content),
+        snapInterfaceController.updateInterface(MOCK_SNAP_ID, 'foo', content),
       ).toThrow("Interface with id 'foo' not found.");
     });
 
@@ -146,7 +161,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      const interfaceController = new SnapInterfaceController({
+      const snapInterfaceController = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -157,10 +172,10 @@ describe('SnapInterfaceController', () => {
         children: [input({ name: 'baz' })],
       });
 
-      const id = interfaceController.createInterface(MOCK_SNAP_ID, content);
+      const id = snapInterfaceController.createInterface(MOCK_SNAP_ID, content);
 
       expect(() =>
-        interfaceController.updateInterface('foo', id, newContent),
+        snapInterfaceController.updateInterface('foo', id, newContent),
       ).toThrow('Interface not created by foo.');
     });
   });
@@ -171,7 +186,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      const interfaceController = new SnapInterfaceController({
+      const snapInterfaceController = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -179,11 +194,11 @@ describe('SnapInterfaceController', () => {
 
       const newState = { foo: { bar: 'baz' } };
 
-      const id = interfaceController.createInterface(MOCK_SNAP_ID, content);
+      const id = snapInterfaceController.createInterface(MOCK_SNAP_ID, content);
 
-      interfaceController.updateInterfaceState(id, newState);
+      snapInterfaceController.updateInterfaceState(id, newState);
 
-      const { state } = interfaceController.getInterface(MOCK_SNAP_ID, id);
+      const { state } = snapInterfaceController.getInterface(MOCK_SNAP_ID, id);
 
       expect(state).toStrictEqual(newState);
     });
@@ -195,19 +210,19 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      const interfaceController = new SnapInterfaceController({
+      const snapInterfaceController = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
       const content = form({ name: 'foo', children: [input({ name: 'bar' })] });
 
-      const id = interfaceController.createInterface(MOCK_SNAP_ID, content);
+      const id = snapInterfaceController.createInterface(MOCK_SNAP_ID, content);
 
-      interfaceController.deleteInterface(id);
+      snapInterfaceController.deleteInterface(id);
 
-      expect(() => interfaceController.getInterface(MOCK_SNAP_ID, id)).toThrow(
-        `Interface with id '${id}' not found.`,
-      );
+      expect(() =>
+        snapInterfaceController.getInterface(MOCK_SNAP_ID, id),
+      ).toThrow(`Interface with id '${id}' not found.`);
     });
   });
 });

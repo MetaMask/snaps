@@ -597,7 +597,7 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
     typeof getRootSnapInterfaceControllerMessenger
   > = getRootSnapInterfaceControllerMessenger(),
 ) => {
-  const interfaceControllerMessenger = messenger.getRestricted<
+  const snapInterfaceControllerMessenger = messenger.getRestricted<
     'SnapInterfaceController',
     never,
     never
@@ -605,5 +605,5 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
     name: 'SnapInterfaceController',
   });
 
-  return interfaceControllerMessenger;
+  return snapInterfaceControllerMessenger;
 };
