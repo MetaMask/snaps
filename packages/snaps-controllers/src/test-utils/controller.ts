@@ -93,14 +93,6 @@ export class MockApprovalController {
       }
     }
   }
-
-  async acceptRequest(id: string, value: unknown) {
-    if (this.#approval?.request.id === id) {
-      this.#approval.promise.resolve(value);
-    }
-
-    return await Promise.resolve({ value });
-  }
 }
 
 export const approvalControllerMock = new MockApprovalController();
