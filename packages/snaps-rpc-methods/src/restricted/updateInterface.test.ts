@@ -57,7 +57,7 @@ describe('getUpdateInterfaceImplementation', () => {
       },
     });
 
-    expect(result).toBe('foo');
+    expect(result).toBeNull();
   });
 
   it('throws on invalid params', async () => {

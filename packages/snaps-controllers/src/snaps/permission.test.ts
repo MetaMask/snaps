@@ -206,6 +206,15 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
           ],
           "targetName": "snap_getEntropy",
         },
+        "snap_getInterfaceState": {
+          "allowedCaveats": null,
+          "methodImplementation": [Function],
+          "permissionType": "RestrictedMethod",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "snap_getInterfaceState",
+        },
         "snap_getLocale": {
           "allowedCaveats": null,
           "methodImplementation": [Function],
@@ -241,24 +250,6 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
             "snap",
           ],
           "targetName": "snap_notify",
-        },
-        "snap_readInterface": {
-          "allowedCaveats": null,
-          "methodImplementation": [Function],
-          "permissionType": "RestrictedMethod",
-          "subjectTypes": [
-            "snap",
-          ],
-          "targetName": "snap_readInterface",
-        },
-        "snap_resolveInterface": {
-          "allowedCaveats": null,
-          "methodImplementation": [Function],
-          "permissionType": "RestrictedMethod",
-          "subjectTypes": [
-            "snap",
-          ],
-          "targetName": "snap_resolveInterface",
         },
         "snap_updateInterface": {
           "allowedCaveats": null,

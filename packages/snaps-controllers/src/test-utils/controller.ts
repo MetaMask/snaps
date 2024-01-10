@@ -25,7 +25,7 @@ import type {
   CronjobControllerActions,
   CronjobControllerEvents,
 } from '../cronjob';
-import type { SnapInterfaceControllerActions } from '../snapInterface/SnapInterfaceController';
+import type { SnapInterfaceControllerActions } from '../interface/SnapInterfaceController';
 import type {
   AllowedActions,
   AllowedEvents,
