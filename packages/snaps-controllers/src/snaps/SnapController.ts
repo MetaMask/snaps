@@ -42,6 +42,7 @@ import type {
   FetchedSnapFiles,
   PersistedSnap,
   Snap,
+  SnapManifest,
   SnapRpcHook,
   SnapRpcHookArgs,
   StatusContext,
@@ -72,6 +73,8 @@ import {
   OnHomePageResponseStruct,
   getValidatedLocalizationFiles,
   encodeBase64,
+  VirtualFile,
+  NpmSnapFileNames,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
@@ -142,6 +145,18 @@ export type PendingRequest = {
   requestId: unknown;
   timer: Timer;
 };
+
+export interface PreinstalledSnapFile {
+  path: string;
+  value: string | Uint8Array;
+}
+
+export interface PreinstalledSnap {
+  snapId: SnapId;
+  manifest: SnapManifest;
+  files: PreinstalledSnapFile[];
+  removable?: boolean;
+}
 
 /**
  * A wrapper type for any data stored during runtime of Snaps.
@@ -230,9 +245,9 @@ export type PersistedSnapControllerState = SnapControllerState & {
 type RollbackSnapshot = {
   statePatches: Patch[];
   permissions: {
-    revoked: unknown;
-    granted: unknown[];
-    requestData: unknown;
+    revoked?: SubjectPermissions<ValidPermission<string, Caveat<string, any>>>;
+    granted?: RequestedPermissions;
+    requestData?: Record<string, unknown>;
   };
   newVersion: string;
 };
@@ -591,6 +606,11 @@ type SnapControllerArgs = {
    * Used for test overrides.
    */
   detectSnapLocation?: typeof detectSnapLocation;
+
+  /**
+   * A list of snaps to be preinstalled into the SnapController state on initialization.
+   */
+  preinstalledSnaps?: PreinstalledSnap[];
 };
 type AddSnapArgs = {
   id: SnapId;
@@ -604,6 +624,8 @@ type AddSnapArgs = {
 type SetSnapArgs = Omit<AddSnapArgs, 'location' | 'versionRange'> & {
   files: FetchedSnapFiles;
   isUpdate?: boolean;
+  removable?: boolean;
+  preinstalled?: boolean;
 };
 
 const defaultState: SnapControllerState = {
@@ -696,6 +718,7 @@ export class SnapController extends BaseController<
     fetchFunction = globalThis.fetch.bind(globalThis),
     featureFlags = {},
     detectSnapLocation: detectSnapLocationFunction = detectSnapLocation,
+    preinstalledSnaps,
   }: SnapControllerArgs) {
     super({
       messenger,
@@ -795,7 +818,11 @@ export class SnapController extends BaseController<
     this.#initializeStateMachine();
     this.#registerMessageHandlers();
 
-    Object.values(state?.snaps ?? {}).forEach((snap) =>
+    if (preinstalledSnaps) {
+      this.#handlePreinstalledSnaps(preinstalledSnaps);
+    }
+
+    Object.values(this.state?.snaps ?? {}).forEach((snap) =>
       this.#setupRuntime(snap.id),
     );
   }
@@ -967,6 +994,98 @@ export class SnapController extends BaseController<
       `${controllerName}:getFile`,
       async (...args) => this.getSnapFile(...args),
     );
+  }
+
+  #handlePreinstalledSnaps(preinstalledSnaps: PreinstalledSnap[]) {
+    for (const { snapId, manifest, files, removable } of preinstalledSnaps) {
+      const existingSnap = this.get(snapId);
+      const isAlreadyInstalled = existingSnap !== undefined;
+      const isUpdate =
+        isAlreadyInstalled && gtVersion(manifest.version, existingSnap.version);
+
+      // Disallow downgrades and overwriting non preinstalled snaps
+      if (
+        isAlreadyInstalled &&
+        (!isUpdate || existingSnap.preinstalled !== true)
+      ) {
+        continue;
+      }
+
+      const manifestFile = new VirtualFile<SnapManifest>({
+        path: NpmSnapFileNames.Manifest,
+        value: JSON.stringify(manifest),
+        result: manifest,
+      });
+
+      const virtualFiles = files.map(
+        ({ path, value }) => new VirtualFile({ value, path }),
+      );
+      const { filePath, iconPath } = manifest.source.location.npm;
+      const sourceCode = virtualFiles.find((file) => file.path === filePath);
+      const svgIcon = iconPath
+        ? virtualFiles.find((file) => file.path === iconPath)
+        : undefined;
+
+      assert(sourceCode, 'Source code not provided for preinstalled snap.');
+
+      assert(
+        !iconPath || (iconPath && svgIcon),
+        'Icon not provided for preinstalled snap.',
+      );
+
+      assert(
+        manifest.source.files === undefined,
+        'Auxiliary files are not currently supported for preinstalled snaps.',
+      );
+
+      const localizationFiles =
+        manifest.source.locales?.map((path) =>
+          virtualFiles.find((file) => file.path === path),
+        ) ?? [];
+
+      const validatedLocalizationFiles = getValidatedLocalizationFiles(
+        localizationFiles.filter(Boolean) as VirtualFile<unknown>[],
+      );
+
+      assert(
+        localizationFiles.length === validatedLocalizationFiles.length,
+        'Missing localization files for preinstalled snap.',
+      );
+
+      const filesObject: FetchedSnapFiles = {
+        manifest: manifestFile,
+        sourceCode,
+        svgIcon,
+        auxiliaryFiles: [],
+        localizationFiles: validatedLocalizationFiles,
+      };
+
+      // Add snap to the SnapController state
+      this.#set({
+        id: snapId,
+        origin: 'metamask',
+        files: filesObject,
+        removable,
+        preinstalled: true,
+      });
+
+      // Setup permissions
+      const processedPermissions = processSnapPermissions(
+        manifest.initialPermissions,
+      );
+
+      this.#validateSnapPermissions(processedPermissions);
+
+      const { newPermissions, unusedPermissions } =
+        this.#calculatePermissionsChange(snapId, processedPermissions);
+
+      this.#updatePermissions({ snapId, newPermissions, unusedPermissions });
+
+      // Set status
+      this.update((state) => {
+        state.snaps[snapId].status = SnapStatus.Stopped;
+      });
+    }
   }
 
   #pollForLastRequestStatus() {
@@ -1464,6 +1583,11 @@ export class SnapController extends BaseController<
     if (!Array.isArray(snapIds)) {
       throw new Error('Expected array of snap ids.');
     }
+
+    snapIds.forEach((snapId) => {
+      const snap = this.getExpect(snapId);
+      assert(snap.removable !== false, `${snapId} is not removable.`);
+    });
 
     await Promise.all(
       snapIds.map(async (snapId) => {
@@ -2007,27 +2131,17 @@ export class SnapController extends BaseController<
         isUpdate: true,
       });
 
-      const unusedPermissionsKeys = Object.keys(unusedPermissions);
-      if (isNonEmptyArray(unusedPermissionsKeys)) {
-        this.messagingSystem.call('PermissionController:revokePermissions', {
-          [snapId]: unusedPermissionsKeys,
-        });
-      }
-
-      if (isNonEmptyArray(Object.keys(approvedNewPermissions))) {
-        this.messagingSystem.call('PermissionController:grantPermissions', {
-          approvedPermissions: approvedNewPermissions,
-          subject: { origin: snapId },
-          requestData,
-        });
-      }
+      this.#updatePermissions({
+        snapId,
+        unusedPermissions,
+        newPermissions: approvedNewPermissions,
+        requestData,
+      });
 
       const rollbackSnapshot = this.#getRollbackSnapshot(snapId);
       if (rollbackSnapshot !== undefined) {
         rollbackSnapshot.permissions.revoked = unusedPermissions;
-        rollbackSnapshot.permissions.granted = Object.keys(
-          approvedNewPermissions,
-        );
+        rollbackSnapshot.permissions.granted = approvedNewPermissions;
         rollbackSnapshot.permissions.requestData = requestData;
       }
 
@@ -2248,7 +2362,14 @@ export class SnapController extends BaseController<
    * @returns The resulting snap object.
    */
   #set(args: SetSnapArgs): PersistedSnap {
-    const { id: snapId, origin, files, isUpdate = false } = args;
+    const {
+      id: snapId,
+      origin,
+      files,
+      isUpdate = false,
+      removable,
+      preinstalled,
+    } = args;
 
     const {
       manifest,
@@ -2298,6 +2419,9 @@ export class SnapController extends BaseController<
       // previous state.
       blocked: false,
       enabled: true,
+
+      removable,
+      preinstalled,
 
       id: snapId,
       initialPermissions: manifest.result.initialPermissions,
@@ -2462,13 +2586,11 @@ export class SnapController extends BaseController<
       const { permissions: approvedPermissions, ...requestData } =
         (await pendingApproval.promise) as PermissionsRequest;
 
-      if (isNonEmptyArray(Object.keys(approvedPermissions))) {
-        this.messagingSystem.call('PermissionController:grantPermissions', {
-          approvedPermissions,
-          subject: { origin: snapId },
-          requestData,
-        });
-      }
+      this.#updatePermissions({
+        snapId,
+        newPermissions: approvedPermissions,
+        requestData,
+      });
     } finally {
       const runtime = this.#getRuntimeExpect(snapId);
       runtime.installPromise = null;
@@ -2806,7 +2928,7 @@ export class SnapController extends BaseController<
 
     this.#rollbackSnapshots.set(snapId, {
       statePatches: [],
-      permissions: { revoked: null, granted: [], requestData: null },
+      permissions: {},
       newVersion: '',
     });
 
@@ -2856,19 +2978,12 @@ export class SnapController extends BaseController<
       });
     }
 
-    if (permissions.revoked && Object.keys(permissions.revoked).length) {
-      this.messagingSystem.call('PermissionController:grantPermissions', {
-        approvedPermissions: permissions.revoked as RequestedPermissions,
-        subject: { origin: snapId },
-        requestData: permissions.requestData as Record<string, unknown>,
-      });
-    }
-
-    if (permissions.granted?.length) {
-      this.messagingSystem.call('PermissionController:revokePermissions', {
-        [snapId]: permissions.granted as NonEmptyArray<string>,
-      });
-    }
+    this.#updatePermissions({
+      snapId,
+      unusedPermissions: permissions.granted,
+      newPermissions: permissions.revoked,
+      requestData: permissions.requestData,
+    });
 
     const truncatedSnap = this.getTruncatedExpect(snapId);
 
@@ -2964,6 +3079,48 @@ export class SnapController extends BaseController<
     const approvedPermissions = setDiff(oldPermissions, unusedPermissions);
 
     return { newPermissions, unusedPermissions, approvedPermissions };
+  }
+
+  /**
+   * Updates the permissions for a snap following an install, update or rollback.
+   *
+   * Grants newly requested permissions and revokes unused/revoked permissions.
+   *
+   * @param args - An options bag.
+   * @param args.snapId - The snap ID.
+   * @param args.newPermissions - New permissions to be granted.
+   * @param args.unusedPermissions - Unused permissions to be revoked.
+   * @param args.requestData - Optional request data from an approval.
+   */
+  #updatePermissions({
+    snapId,
+    unusedPermissions = {},
+    newPermissions = {},
+    requestData,
+  }: {
+    snapId: SnapId;
+    newPermissions?:
+      | RequestedPermissions
+      | Record<string, Pick<PermissionConstraint, 'caveats'>>;
+    unusedPermissions?:
+      | RequestedPermissions
+      | SubjectPermissions<ValidPermission<string, Caveat<string, any>>>;
+    requestData?: Record<string, unknown>;
+  }) {
+    const unusedPermissionsKeys = Object.keys(unusedPermissions);
+    if (isNonEmptyArray(unusedPermissionsKeys)) {
+      this.messagingSystem.call('PermissionController:revokePermissions', {
+        [snapId]: unusedPermissionsKeys,
+      });
+    }
+
+    if (isNonEmptyArray(Object.keys(newPermissions))) {
+      this.messagingSystem.call('PermissionController:grantPermissions', {
+        approvedPermissions: newPermissions,
+        subject: { origin: snapId },
+        requestData,
+      });
+    }
   }
 
   /**
