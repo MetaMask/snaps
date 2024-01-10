@@ -96,9 +96,9 @@ import type { StateMachine } from '@xstate/fsm';
 import { createMachine, interpret } from '@xstate/fsm';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
-import type { GetInterface } from 'src/interface';
 
 import { forceStrict, validateMachine } from '../fsm';
+import type { GetInterface } from '../interface';
 import { log } from '../logging';
 import type {
   ExecuteSnapAction,
