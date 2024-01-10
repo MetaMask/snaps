@@ -1029,13 +1029,27 @@ export class SnapController extends BaseController<
       assert(sourceCode, 'Source code not provided for preinstalled snap.');
 
       assert(
+        !iconPath || (iconPath && svgIcon),
+        'Icon not provided for preinstalled snap.',
+      );
+
+      assert(
         manifest.source.files === undefined,
         'Auxiliary files are not currently supported for preinstalled snaps.',
       );
 
+      const localizationFiles =
+        manifest.source.locales?.map((path) =>
+          virtualFiles.find((file) => file.path === path),
+        ) ?? [];
+
+      const validatedLocalizationFiles = getValidatedLocalizationFiles(
+        localizationFiles.filter(Boolean) as VirtualFile<unknown>[],
+      );
+
       assert(
-        manifest.source.locales === undefined,
-        'Localization files are not currently supported for preinstalled snaps.',
+        localizationFiles.length === validatedLocalizationFiles.length,
+        'Missing localization files for preinstalled snap.',
       );
 
       const filesObject: FetchedSnapFiles = {
@@ -1043,7 +1057,7 @@ export class SnapController extends BaseController<
         sourceCode,
         svgIcon,
         auxiliaryFiles: [],
-        localizationFiles: [],
+        localizationFiles: validatedLocalizationFiles,
       };
 
       // Add snap to the SnapController state

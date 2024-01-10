@@ -42,6 +42,7 @@ import {
   getMockSnapFilesWithUpdatedChecksum,
   MOCK_SNAP_NAME,
   DEFAULT_SOURCE_PATH,
+  DEFAULT_ICON_PATH,
 } from '@metamask/snaps-utils/test-utils';
 import type { SemVerRange, SemVerVersion } from '@metamask/utils';
 import {
@@ -3497,6 +3498,10 @@ describe('SnapController', () => {
               path: DEFAULT_SOURCE_PATH,
               value: stringToBytes(DEFAULT_SNAP_BUNDLE),
             },
+            {
+              path: DEFAULT_ICON_PATH,
+              value: stringToBytes(DEFAULT_SNAP_ICON),
+            },
           ],
         },
       ];
@@ -3560,6 +3565,10 @@ describe('SnapController', () => {
             {
               path: DEFAULT_SOURCE_PATH,
               value: stringToBytes(DEFAULT_SNAP_BUNDLE),
+            },
+            {
+              path: DEFAULT_ICON_PATH,
+              value: stringToBytes(DEFAULT_SNAP_ICON),
             },
           ],
         },
@@ -3649,6 +3658,105 @@ describe('SnapController', () => {
       const [snapController] = getSnapControllerWithEES(snapControllerOptions);
 
       expect(rootMessenger.call).toHaveBeenCalledTimes(0);
+
+      snapController.destroy();
+    });
+
+    it('supports localized preinstalled snaps', async () => {
+      const rootMessenger = getControllerMessenger();
+      jest.spyOn(rootMessenger, 'call');
+
+      // The snap should not have permission initially
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({}),
+      );
+
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
+        manifest: getSnapManifest({
+          proposedName: '{{ proposedName }}',
+          locales: ['locales/en.json'],
+        }),
+        localizationFiles: [getMockLocalizationFile()],
+      });
+
+      const preinstalledSnaps = [
+        {
+          snapId: MOCK_SNAP_ID,
+          manifest: manifest.result,
+          files: [
+            {
+              path: DEFAULT_SOURCE_PATH,
+              value: stringToBytes(DEFAULT_SNAP_BUNDLE),
+            },
+            {
+              path: DEFAULT_ICON_PATH,
+              value: stringToBytes(DEFAULT_SNAP_ICON),
+            },
+            {
+              path: 'locales/en.json',
+              value: stringToBytes(JSON.stringify(getMockLocalizationFile())),
+            },
+          ],
+        },
+      ];
+
+      const snapControllerOptions = getSnapControllerWithEESOptions({
+        preinstalledSnaps,
+        rootMessenger,
+      });
+      const [snapController] = getSnapControllerWithEES(snapControllerOptions);
+
+      expect(rootMessenger.call).toHaveBeenCalledWith(
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions: {
+            'endowment:rpc': {
+              caveats: [
+                { type: 'rpcOrigin', value: { dapps: false, snaps: true } },
+              ],
+            },
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_confirm: {},
+          },
+          subject: { origin: MOCK_SNAP_ID },
+        },
+      );
+
+      // After install the snap should have permissions
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => MOCK_SNAP_PERMISSIONS,
+      );
+
+      const result = await snapController.handleRequest({
+        snapId: MOCK_SNAP_ID,
+        origin: MOCK_ORIGIN,
+        request: { method: 'foo' },
+        handler: HandlerType.OnRpcRequest,
+      });
+
+      expect(result).toContain('foo');
+
+      const {
+        manifest: installedManifest,
+        localizationFiles: installedLocalizationFiles,
+      } = snapController.state.snaps[MOCK_SNAP_ID];
+
+      assert(installedLocalizationFiles);
+      const localizedManifest = getLocalizedSnapManifest(
+        installedManifest,
+        'en',
+        installedLocalizationFiles,
+      );
+
+      expect(localizedManifest).toStrictEqual(
+        getSnapManifest({
+          proposedName: 'Example Snap',
+          locales: ['locales/en.json'],
+          shasum: manifest.result.source.shasum,
+        }),
+      );
 
       snapController.destroy();
     });
