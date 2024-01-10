@@ -37,7 +37,7 @@ export type PersonalSignature = {
  */
 export type SignTypedDataSignature = {
   from: string;
-  data: Record<string, any>;
+  data: Record<string, any>[];
   signatureMethod: 'eth_signTypedData';
 };
 
