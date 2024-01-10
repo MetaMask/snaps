@@ -2,7 +2,7 @@ import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 
 import { executeLockdownEvents } from '../common/lockdown/lockdown-events';
 import { executeLockdownMore } from '../common/lockdown/lockdown-more';
-import { OffscreenSnapExecutor } from './OffscreenSnapExecutor';
+import { ProxySnapExecutor } from '../proxy/ProxySnapExecutor';
 
 // Lockdown is already applied in LavaMoat
 executeLockdownMore();
@@ -14,4 +14,4 @@ const parentStream = new BrowserRuntimePostMessageStream({
   target: 'parent',
 });
 
-OffscreenSnapExecutor.initialize(parentStream);
+ProxySnapExecutor.initialize(parentStream);
