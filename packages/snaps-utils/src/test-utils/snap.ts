@@ -32,6 +32,8 @@ export const getPersistedSnapObject = ({
   ],
   auxiliaryFiles = [],
   localizationFiles = [],
+  removable = undefined,
+  preinstalled = undefined,
 }: GetPersistedSnapObjectOptions = {}): PersistedSnap => {
   return {
     blocked,
@@ -45,6 +47,8 @@ export const getPersistedSnapObject = ({
     versionHistory,
     auxiliaryFiles,
     localizationFiles,
+    removable,
+    preinstalled,
   } as const;
 };
 
@@ -62,6 +66,8 @@ export const getSnapObject = ({
   ],
   auxiliaryFiles = [],
   localizationFiles = [],
+  removable = undefined,
+  preinstalled = undefined,
 }: GetSnapObjectOptions = {}): Snap => {
   return {
     blocked,
@@ -75,6 +81,8 @@ export const getSnapObject = ({
     versionHistory,
     auxiliaryFiles,
     localizationFiles,
+    removable,
+    preinstalled,
   } as const;
 };
 
