@@ -72,7 +72,7 @@ export const onSignature: OnSignatureHandler = async ({ signature }) => {
       };
 
     case 'eth_signTypedData':
-      // show simple key-value pairs of the different param types count
+      // Show a count of the different types.
       return {
         content: panel([
           heading('Message type count'),
