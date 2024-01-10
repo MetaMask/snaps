@@ -38,7 +38,7 @@ describe('updateInterfaceBuilder', () => {
 
 describe('getUpdateInterfaceImplementation', () => {
   it('returns the expected result', async () => {
-    const updateInterface = jest.fn().mockResolvedValue('foo');
+    const updateInterface = jest.fn().mockReturnValue('foo');
 
     const methodHooks = {
       updateInterface,
@@ -46,7 +46,7 @@ describe('getUpdateInterfaceImplementation', () => {
 
     const implementation = getUpdateInterfaceImplementation(methodHooks);
 
-    const result = await implementation({
+    const result = implementation({
       method: 'snap_updateInterface',
       params: {
         id: 'foo',
@@ -61,7 +61,7 @@ describe('getUpdateInterfaceImplementation', () => {
   });
 
   it('throws on invalid params', async () => {
-    const updateInterface = jest.fn().mockResolvedValue('foo');
+    const updateInterface = jest.fn().mockReturnValue('foo');
 
     const methodHooks = {
       updateInterface,
@@ -69,7 +69,7 @@ describe('getUpdateInterfaceImplementation', () => {
 
     const implementation = getUpdateInterfaceImplementation(methodHooks);
 
-    await expect(
+    expect(() =>
       implementation({
         method: 'snap_updateInterface',
         params: {
@@ -81,7 +81,7 @@ describe('getUpdateInterfaceImplementation', () => {
           origin: MOCK_SNAP_ID,
         },
       }),
-    ).rejects.toThrow(
+    ).toThrow(
       rpcErrors.invalidParams({
         message:
           'Invalid params: At path: ui -- Expected the value to satisfy a union of `object | object | object | object | object | object | object | object | object | object | object | object`, but received: "foo".',

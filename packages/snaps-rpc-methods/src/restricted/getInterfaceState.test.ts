@@ -1,34 +1,33 @@
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { text } from '@metamask/snaps-sdk';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
 import {
-  createInterfaceBuilder,
-  getCreateInterfaceImplementation,
-} from './createInterface';
+  getInterfaceStateBuilder,
+  getGetInterfaceStateImplementation,
+} from './getInterfaceState';
 
-describe('createInterfaceBuilder', () => {
+describe('getInterfaceStateBuilder', () => {
   it('has the expected shape', () => {
-    expect(createInterfaceBuilder).toStrictEqual({
-      targetName: 'snap_createInterface',
+    expect(getInterfaceStateBuilder).toStrictEqual({
+      targetName: 'snap_getInterfaceState',
       specificationBuilder: expect.any(Function),
       methodHooks: {
-        createInterface: true,
+        getInterfaceState: true,
       },
     });
   });
 
   it('returns the expected specification', () => {
     const methodHooks = {
-      createInterface: jest.fn(),
+      getInterfaceState: jest.fn(),
     };
 
     expect(
-      createInterfaceBuilder.specificationBuilder({ methodHooks }),
+      getInterfaceStateBuilder.specificationBuilder({ methodHooks }),
     ).toStrictEqual({
       permissionType: PermissionType.RestrictedMethod,
-      targetName: 'snap_createInterface',
+      targetName: 'snap_getInterfaceState',
       allowedCaveats: null,
       methodImplementation: expect.any(Function),
       subjectTypes: [SubjectType.Snap],
@@ -36,44 +35,44 @@ describe('createInterfaceBuilder', () => {
   });
 });
 
-describe('getCreateInterfaceImplementation', () => {
+describe('getGetInterfaceStateImplementation', () => {
   it('returns the expected result', () => {
-    const createInterface = jest.fn().mockReturnValue('foo');
+    const getInterfaceState = jest.fn().mockReturnValue({ bar: 'foo' });
 
     const methodHooks = {
-      createInterface,
+      getInterfaceState,
     };
 
-    const implementation = getCreateInterfaceImplementation(methodHooks);
+    const implementation = getGetInterfaceStateImplementation(methodHooks);
 
     const result = implementation({
-      method: 'snap_createInterface',
+      method: 'snap_getInterfaceState',
       params: {
-        ui: text('foo'),
+        id: 'foo',
       },
       context: {
         origin: MOCK_SNAP_ID,
       },
     });
 
-    expect(result).toBe('foo');
+    expect(result).toStrictEqual({ bar: 'foo' });
   });
 
   it('throws on invalid params', () => {
-    const createInterface = jest.fn().mockReturnValue('foo');
+    const getInterfaceState = jest.fn().mockResolvedValue('foo');
 
     const methodHooks = {
-      createInterface,
+      getInterfaceState,
     };
 
-    const implementation = getCreateInterfaceImplementation(methodHooks);
+    const implementation = getGetInterfaceStateImplementation(methodHooks);
 
     expect(() =>
       implementation({
-        method: 'snap_createInterface',
+        method: 'snap_getInterfaceState',
         params: {
           // @ts-expect-error invalid params
-          ui: 'foo',
+          id: 3,
         },
         context: {
           origin: MOCK_SNAP_ID,
@@ -82,7 +81,7 @@ describe('getCreateInterfaceImplementation', () => {
     ).toThrow(
       rpcErrors.invalidParams({
         message:
-          'Invalid params: At path: ui -- Expected the value to satisfy a union of `object | object | object | object | object | object | object | object | object | object | object | object`, but received: "foo".',
+          'Invalid params: At path: id -- Expected a string, but received: 3.',
       }),
     );
   });

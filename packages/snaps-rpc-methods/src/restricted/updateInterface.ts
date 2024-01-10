@@ -19,11 +19,7 @@ export type UpdateInterfaceArgs = {
   ui: Component;
 };
 
-type UpdateInterface = (
-  snapId: string,
-  id: string,
-  ui: Component,
-) => Promise<null>;
+type UpdateInterface = (snapId: string, id: string, ui: Component) => null;
 
 export type UpdateInterfaceMethodHooks = {
   /**
@@ -101,9 +97,9 @@ const paramsStruct = object({
 export function getUpdateInterfaceImplementation({
   updateInterface,
 }: UpdateInterfaceMethodHooks) {
-  return async function implementation(
+  return function implementation(
     args: RestrictedMethodOptions<UpdateInterfaceArgs>,
-  ): Promise<null> {
+  ): null {
     const {
       params,
       context: { origin },
@@ -113,7 +109,7 @@ export function getUpdateInterfaceImplementation({
 
     const { id, ui } = validatedParams;
 
-    return await updateInterface(origin, id, ui);
+    return updateInterface(origin, id, ui);
   };
 }
 

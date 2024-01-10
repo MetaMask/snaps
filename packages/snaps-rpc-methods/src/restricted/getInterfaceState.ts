@@ -5,74 +5,75 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { Json, NonEmptyArray } from '@metamask/utils';
+import type { InterfaceState } from '@metamask/snaps-sdk';
+import type { NonEmptyArray } from '@metamask/utils';
 import { StructError, create, object, string } from 'superstruct';
 
 import type { MethodHooksObject } from '../utils';
 
-const methodName = 'snap_readInterface';
+const methodName = 'snap_getInterfaceState';
 
-export type ReadInterfaceArgs = {
+export type GetInterfaceStateArgs = {
   id: string;
 };
 
-type ReadInterface = (snapId: string, id: string) => Promise<Json>;
+type GetInterfaceState = (snapId: string, id: string) => InterfaceState;
 
-export type ReadInterfaceMethodHooks = {
+export type GetInterfaceStateMethodHooks = {
   /**
    * @param snapId - The ID of the Snap that is showing the interface.
-   * @param id - The ID of the interface to update.
-   * @returns The resolved value.
+   * @param id - The interface ID.
+   * @returns The state of the interface.
    */
-  readInterface: ReadInterface;
+  getInterfaceState: GetInterfaceState;
 };
 
-type ReadInterfaceSpecificationBuilderOptions = {
+type GetInterfaceStateSpecificationBuilderOptions = {
   allowedCaveats?: Readonly<NonEmptyArray<string>> | null;
-  methodHooks: ReadInterfaceMethodHooks;
+  methodHooks: GetInterfaceStateMethodHooks;
 };
 
-type ReadInterfaceSpecification = ValidPermissionSpecification<{
+type GetInterfaceStateSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.RestrictedMethod;
   targetName: typeof methodName;
-  methodImplementation: ReturnType<typeof getReadInterfaceImplementation>;
+  methodImplementation: ReturnType<typeof getGetInterfaceStateImplementation>;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
 }>;
 
 /**
- * The specification builder for the `snap_readInterface` permission. `snap_readInterface`
- * lets the Snap read the resolved values of an UI interface.
+ * The specification builder for the `snap_getInterfaceState` permission. `snap_getInterfaceState`
+ * lets the Snap get the state of an interface.
  *
  * @param options - The specification builder options.
  * @param options.allowedCaveats - The optional allowed caveats for the
  * permission.
  * @param options.methodHooks - The RPC method hooks needed by the method
  * implementation.
- * @returns The specification of the `snap_readInterface` permission.
+ * @returns The specification for the `snap_getInterfaceState` permission.
  */
 
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
-  ReadInterfaceSpecificationBuilderOptions,
-  ReadInterfaceSpecification
+  GetInterfaceStateSpecificationBuilderOptions,
+  GetInterfaceStateSpecification
 > = ({
   allowedCaveats = null,
   methodHooks,
-}: ReadInterfaceSpecificationBuilderOptions) => {
+}: GetInterfaceStateSpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
     targetName: methodName,
     allowedCaveats,
-    methodImplementation: getReadInterfaceImplementation(methodHooks),
+    methodImplementation: getGetInterfaceStateImplementation(methodHooks),
     subjectTypes: [SubjectType.Snap],
   };
 };
 
-const methodHooks: MethodHooksObject<ReadInterfaceMethodHooks> = {
-  readInterface: true,
+const methodHooks: MethodHooksObject<GetInterfaceStateMethodHooks> = {
+  getInterfaceState: true,
 };
 
-export const readInterfaceBuilder = Object.freeze({
+export const getInterfaceStateBuilder = Object.freeze({
   targetName: methodName,
   specificationBuilder,
   methodHooks,
@@ -83,19 +84,18 @@ const paramsStruct = object({
 });
 
 /**
- * Builds the method implementation for `snap_readInterface`.
+ * Builds the method implementation for `snap_getInterfaceState`.
  *
  * @param hooks - The RPC method hooks.
- * @param hooks.readInterface - A function that resolves the specified interface in the
- * MetaMask UI.
- * @returns The method implementation which return nothing.
+ * @param hooks.getInterfaceState - A function that gets the state of the requested interface.
+ * @returns The state of the interface.
  */
-export function getReadInterfaceImplementation({
-  readInterface,
-}: ReadInterfaceMethodHooks) {
-  return async function implementation(
-    args: RestrictedMethodOptions<ReadInterfaceArgs>,
-  ): Promise<Json> {
+export function getGetInterfaceStateImplementation({
+  getInterfaceState,
+}: GetInterfaceStateMethodHooks) {
+  return function implementation(
+    args: RestrictedMethodOptions<GetInterfaceStateArgs>,
+  ): InterfaceState {
     const {
       params,
       context: { origin },
@@ -105,18 +105,18 @@ export function getReadInterfaceImplementation({
 
     const { id } = validatedParams;
 
-    return await readInterface(origin, id);
+    return getInterfaceState(origin, id);
   };
 }
 
 /**
- * Validates the readInterface method `params` and returns them cast to the correct
+ * Validates the getInterfaceState method `params` and returns them cast to the correct
  * type. Throws if validation fails.
  *
  * @param params - The unvalidated params object from the method request.
- * @returns The validated readInterface method parameter object.
+ * @returns The validated getInterfaceState method parameter object.
  */
-function getValidatedParams(params: unknown): ReadInterfaceArgs {
+function getValidatedParams(params: unknown): GetInterfaceStateArgs {
   try {
     return create(params, paramsStruct);
   } catch (error) {

@@ -10,6 +10,7 @@ import type { GetBip44EntropyMethodHooks } from './getBip44Entropy';
 import { getBip44EntropyBuilder } from './getBip44Entropy';
 import type { GetEntropyHooks } from './getEntropy';
 import { getEntropyBuilder } from './getEntropy';
+import { getInterfaceStateBuilder } from './getInterfaceState';
 import type { GetLocaleMethodHooks } from './getLocale';
 import { getLocaleBuilder } from './getLocale';
 import type { InvokeSnapMethodHooks } from './invokeSnap';
@@ -20,10 +21,6 @@ import type { ManageStateMethodHooks } from './manageState';
 import { manageStateBuilder } from './manageState';
 import type { NotifyMethodHooks } from './notify';
 import { notifyBuilder } from './notify';
-import type { ReadInterfaceMethodHooks } from './readInterface';
-import { readInterfaceBuilder } from './readInterface';
-import type { ResolveInterfaceMethodHooks } from './resolveInterface';
-import { resolveInterfaceBuilder } from './resolveInterface';
 import type { UpdateInterfaceMethodHooks } from './updateInterface';
 import { updateInterfaceBuilder } from './updateInterface';
 
@@ -40,8 +37,6 @@ export type RestrictedMethodHooks = DialogMethodHooks &
   NotifyMethodHooks &
   ManageAccountsMethodHooks &
   GetLocaleMethodHooks &
-  ReadInterfaceMethodHooks &
-  ResolveInterfaceMethodHooks &
   CreateInterfaceMethodHooks &
   UpdateInterfaceMethodHooks;
 
@@ -56,10 +51,9 @@ export const restrictedMethodPermissionBuilders = {
   [notifyBuilder.targetName]: notifyBuilder,
   [manageAccountsBuilder.targetName]: manageAccountsBuilder,
   [getLocaleBuilder.targetName]: getLocaleBuilder,
-  [readInterfaceBuilder.targetName]: readInterfaceBuilder,
-  [resolveInterfaceBuilder.targetName]: resolveInterfaceBuilder,
   [createInterfaceBuilder.targetName]: createInterfaceBuilder,
   [updateInterfaceBuilder.targetName]: updateInterfaceBuilder,
+  [getInterfaceStateBuilder.targetName]: getInterfaceStateBuilder,
 } as const;
 
 export * from './caveats';

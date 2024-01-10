@@ -18,7 +18,7 @@ export type CreateInterfaceArgs = {
   ui: Component;
 };
 
-type CreateInterface = (snapId: string, ui: Component) => Promise<string>;
+type CreateInterface = (snapId: string, ui: Component) => string;
 
 export type CreateInterfaceMethodHooks = {
   /**
@@ -43,14 +43,14 @@ type CreateInterfaceSpecification = ValidPermissionSpecification<{
 
 /**
  * The specification builder for the `snap_createInterface` permission. `snap_createInterface`
- * lets the Snap display a UI inteface made of snaps UI components.
+ * lets the Snap create a UI interface made of snaps UI components.
  *
  * @param options - The specification builder options.
  * @param options.allowedCaveats - The optional allowed caveats for the
  * permission.
  * @param options.methodHooks - The RPC method hooks needed by the method
  * implementation.
- * @returns The specification for the `snap_dialog` permission.
+ * @returns The specification for the `snap_createInterface` permission.
  */
 
 const specificationBuilder: PermissionSpecificationBuilder<
@@ -88,16 +88,16 @@ const paramsStruct = object({
  * Builds the method implementation for `snap_createInterface`.
  *
  * @param hooks - The RPC method hooks.
- * @param hooks.createInterface - A function that shows the specified interface in the
- * MetaMask UI and returns the identifier for the interface.
+ * @param hooks.createInterface - A function that creates the specified interface in the
+ * Interface controller and returns the identifier for the interface.
  * @returns The identifier of the interface.
  */
 export function getCreateInterfaceImplementation({
   createInterface,
 }: CreateInterfaceMethodHooks) {
-  return async function implementation(
+  return function implementation(
     args: RestrictedMethodOptions<CreateInterfaceArgs>,
-  ): Promise<string> {
+  ): string {
     const {
       params,
       context: { origin },
@@ -107,7 +107,7 @@ export function getCreateInterfaceImplementation({
 
     const { ui } = validatedParams;
 
-    return await createInterface(origin, ui);
+    return createInterface(origin, ui);
   };
 }
 
