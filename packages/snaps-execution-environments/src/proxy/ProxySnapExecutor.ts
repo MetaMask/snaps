@@ -11,20 +11,19 @@ type ExecutorJob = {
 };
 
 /**
- * A snap executor using the Offscreen Documents API.
+ * A "proxy" snap executor that uses a level of indirection to execute snaps.
+ *
+ * Useful for multiple execution environments.
  *
  * This is not a traditional snap executor, as it does not execute snaps itself.
  * Instead, it creates an iframe window for each snap execution, and sends the
  * snap execution request to the iframe window. The iframe window is responsible
  * for executing the snap.
  *
- * Extensions can only have a single offscreen document, so this executor is
- * persisted between snap executions. The offscreen snap executor essentially
- * acts as a proxy between the extension and the iframe execution environment.
- *
- * @see https://developer.chrome.com/docs/extensions/reference/offscreen/
+ * This executor is persisted between snap executions. The executor essentially
+ * acts as a proxy between the client and the iframe execution environment.
  */
-export class OffscreenSnapExecutor {
+export class ProxySnapExecutor {
   readonly #stream: BasePostMessageStream;
 
   readonly jobs: Record<string, ExecutorJob> = {};
@@ -37,7 +36,7 @@ export class OffscreenSnapExecutor {
    * @returns The initialized executor.
    */
   static initialize(stream: BasePostMessageStream) {
-    return new OffscreenSnapExecutor(stream);
+    return new ProxySnapExecutor(stream);
   }
 
   constructor(stream: BasePostMessageStream) {
