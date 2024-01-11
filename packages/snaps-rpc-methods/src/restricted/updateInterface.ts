@@ -5,19 +5,15 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { Component } from '@metamask/snaps-sdk';
+import type { Component, UpdateInterfaceParams } from '@metamask/snaps-sdk';
 import { ComponentStruct } from '@metamask/snaps-sdk';
+import type { InferMatching } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 import { StructError, create, object, string } from 'superstruct';
 
 import type { MethodHooksObject } from '../utils';
 
 const methodName = 'snap_updateInterface';
-
-export type UpdateInterfaceArgs = {
-  id: string;
-  ui: Component;
-};
 
 type UpdateInterface = (snapId: string, id: string, ui: Component) => null;
 
@@ -81,10 +77,15 @@ export const updateInterfaceBuilder = Object.freeze({
   methodHooks,
 });
 
-const paramsStruct = object({
+const UpdateInterfaceParametersStruct = object({
   id: string(),
   ui: ComponentStruct,
 });
+
+export type UpdateInterfaceParameters = InferMatching<
+  typeof UpdateInterfaceParametersStruct,
+  UpdateInterfaceParams
+>;
 
 /**
  * Builds the method implementation for `snap_updateInterface`.
@@ -98,7 +99,7 @@ export function getUpdateInterfaceImplementation({
   updateInterface,
 }: UpdateInterfaceMethodHooks) {
   return function implementation(
-    args: RestrictedMethodOptions<UpdateInterfaceArgs>,
+    args: RestrictedMethodOptions<UpdateInterfaceParameters>,
   ): null {
     const {
       params,
@@ -122,9 +123,9 @@ export function getUpdateInterfaceImplementation({
  * @param params - The unvalidated params object from the method request.
  * @returns The validated updateInterface method parameter object.
  */
-function getValidatedParams(params: unknown): UpdateInterfaceArgs {
+function getValidatedParams(params: unknown): UpdateInterfaceParameters {
   try {
-    return create(params, paramsStruct);
+    return create(params, UpdateInterfaceParametersStruct);
   } catch (error) {
     if (error instanceof StructError) {
       throw rpcErrors.invalidParams({

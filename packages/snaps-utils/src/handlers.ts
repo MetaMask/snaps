@@ -11,7 +11,6 @@ import type {
   OnUserInputHandler,
 } from '@metamask/snaps-sdk';
 import { SeverityLevel, ComponentStruct } from '@metamask/snaps-sdk';
-import type { Infer } from 'superstruct';
 import {
   literal,
   nullable,
@@ -124,15 +123,6 @@ export const OnHomePageResponseStruct = union([
   OnHomePageResponseWithContentStruct,
   OnHomePageResponseWithIdStruct,
 ]);
-
-export type OnHomePageResponseWithContent = Infer<
-  typeof OnHomePageResponseWithContentStruct
->;
-
-export type OnHomePageResponseWithId = Infer<
-  typeof OnHomePageResponseWithIdStruct
->;
-
 /**
  * Utility type for getting the handler function type from a handler type.
  */

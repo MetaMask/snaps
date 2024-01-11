@@ -14,3 +14,6 @@ export * from './manage-state';
 export * from './methods';
 export * from './notify';
 export * from './request-snaps';
+export * from './create-interface';
+export * from './update-interface';
+export * from './get-interface-state';

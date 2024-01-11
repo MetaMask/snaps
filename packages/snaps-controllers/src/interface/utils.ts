@@ -7,7 +7,7 @@ import type {
 } from '@metamask/snaps-sdk';
 
 /**
- * Finds the previous value of the input in the old state or sets the input to null.
+ * Constructs the state for a stray input (not enclosed in a form).
  *
  * @param state - The interface state.
  * @param component - The Input component.
@@ -21,14 +21,16 @@ export const constructInputState = (
 };
 
 /**
- * Finds the previous value of the input in the old state form or sets the input to null.
+ * Constructs the state for a form input.
+ *
+ * Sets the state to either the specified component value, the previous value from the old state or null.
  *
  * @param state - The interface state.
  * @param component - The Input component.
  * @param form - The parent form name of the input.
  * @returns The input state.
  */
-export const constructFormState = (
+export const constructFormInputState = (
   state: InterfaceState,
   component: Input,
   form: string,
@@ -45,11 +47,14 @@ export const constructFormState = (
  * @param name - The component name to verify.
  */
 export const assertNameIsUnique = (state: InterfaceState, name: string) => {
-  assert(state[name] === undefined, `duplicate name for component: ${name}`);
+  assert(
+    state[name] === undefined,
+    `Duplicate component names are not allowed, found multiple instances of: "${name}".`,
+  );
 };
 
 /**
- * Construcs the interface state for a given component tree while preserving values for matching stateful components in the old state.
+ * Constructs the interface state for a given component tree while preserving values for matching stateful components in the old state.
  *
  * @param oldState - The previous state.
  * @param component - The UI component to construct state from.
@@ -75,7 +80,11 @@ export const constructState = (
       (acc, node) => {
         if (node.type === NodeType.Input) {
           assertNameIsUnique(acc, node.name);
-          acc[node.name] = constructFormState(oldState, node, component.name);
+          acc[node.name] = constructFormInputState(
+            oldState,
+            node,
+            component.name,
+          );
         }
 
         return acc;

@@ -5,17 +5,17 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { InterfaceState } from '@metamask/snaps-sdk';
+import type {
+  GetInterfaceStateParams,
+  InterfaceState,
+} from '@metamask/snaps-sdk';
+import type { InferMatching } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 import { StructError, create, object, string } from 'superstruct';
 
 import type { MethodHooksObject } from '../utils';
 
 const methodName = 'snap_getInterfaceState';
-
-export type GetInterfaceStateArgs = {
-  id: string;
-};
 
 type GetInterfaceState = (snapId: string, id: string) => InterfaceState;
 
@@ -79,9 +79,14 @@ export const getInterfaceStateBuilder = Object.freeze({
   methodHooks,
 });
 
-const paramsStruct = object({
+const GetInterfaceStateParametersStruct = object({
   id: string(),
 });
+
+export type GetInterfaceStateParameters = InferMatching<
+  typeof GetInterfaceStateParametersStruct,
+  GetInterfaceStateParams
+>;
 
 /**
  * Builds the method implementation for `snap_getInterfaceState`.
@@ -94,7 +99,7 @@ export function getGetInterfaceStateImplementation({
   getInterfaceState,
 }: GetInterfaceStateMethodHooks) {
   return function implementation(
-    args: RestrictedMethodOptions<GetInterfaceStateArgs>,
+    args: RestrictedMethodOptions<GetInterfaceStateParameters>,
   ): InterfaceState {
     const {
       params,
@@ -116,9 +121,9 @@ export function getGetInterfaceStateImplementation({
  * @param params - The unvalidated params object from the method request.
  * @returns The validated getInterfaceState method parameter object.
  */
-function getValidatedParams(params: unknown): GetInterfaceStateArgs {
+function getValidatedParams(params: unknown): GetInterfaceStateParameters {
   try {
-    return create(params, paramsStruct);
+    return create(params, GetInterfaceStateParametersStruct);
   } catch (error) {
     if (error instanceof StructError) {
       throw rpcErrors.invalidParams({

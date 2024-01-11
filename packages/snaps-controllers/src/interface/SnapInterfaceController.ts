@@ -1,6 +1,6 @@
 import type { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
-import type { Component, InterfaceState } from '@metamask/snaps-sdk';
+import type { Component, InterfaceState, SnapId } from '@metamask/snaps-sdk';
 import { assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
@@ -49,7 +49,7 @@ export type SnapInterfaceControllerMessenger = RestrictedControllerMessenger<
 >;
 
 export type StoredInterface = {
-  snapId: string;
+  snapId: SnapId;
   content: Component;
   state: InterfaceState;
 };
@@ -122,7 +122,7 @@ export class SnapInterfaceController extends BaseController<
    * @param content - The interface content.
    * @returns The newly interface id.
    */
-  createInterface(snapId: string, content: Component) {
+  createInterface(snapId: SnapId, content: Component) {
     const id = nanoid();
 
     const componentState = constructState({}, content);
@@ -145,7 +145,7 @@ export class SnapInterfaceController extends BaseController<
    * @param id - The interface id.
    * @returns The interface state.
    */
-  getInterface(snapId: string, id: string) {
+  getInterface(snapId: SnapId, id: string) {
     this.#validateArgs(snapId, id);
 
     return this.state.interfaces[id];
@@ -158,7 +158,7 @@ export class SnapInterfaceController extends BaseController<
    * @param id - The interface id.
    * @param content - The new content.
    */
-  updateInterface(snapId: string, id: string, content: Component) {
+  updateInterface(snapId: SnapId, id: string, content: Component) {
     this.#validateArgs(snapId, id);
 
     const oldState = this.state.interfaces[id].state;
@@ -200,7 +200,7 @@ export class SnapInterfaceController extends BaseController<
    * @param snapId - The snap id.
    * @param id - The interface id.
    */
-  #validateArgs(snapId: string, id: string) {
+  #validateArgs(snapId: SnapId, id: string) {
     const existingInterface = this.state.interfaces[id];
 
     assert(

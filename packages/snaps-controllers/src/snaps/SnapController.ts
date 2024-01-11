@@ -36,6 +36,7 @@ import type {
   RequestSnapsParams,
   RequestSnapsResult,
   SnapId,
+  HandlerResponsesWithUI,
 } from '@metamask/snaps-sdk';
 import { AuxiliaryFileEncoding, getErrorMessage } from '@metamask/snaps-sdk';
 import type {
@@ -74,8 +75,6 @@ import {
   getValidatedLocalizationFiles,
   VirtualFile,
   NpmSnapFileNames,
-  isOnHomePageResponseWithContent,
-  isOnHomePageResponseWithId,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
@@ -2882,12 +2881,28 @@ export class SnapController extends BaseController<
       .result;
   }
 
-  #getInterface(snapId: string, interfaceId: string) {
+  #getInterface(snapId: SnapId, interfaceId: string) {
     return this.messagingSystem.call(
       'SnapInterfaceController:getInterface',
       snapId,
       interfaceId,
     );
+  }
+
+  /**
+   * Gets the UI components from the interface if the response contains an interface id
+   * otherwise return the UI components of the response.
+   *
+   * @param snapId - The ID of the snap that returned the result.
+   * @param result - The result of the RPC request.
+   * @returns The UI components.
+   */
+  #getResponseWithContent(snapId: SnapId, result: HandlerResponsesWithUI) {
+    if (hasProperty(result, 'id')) {
+      const { content } = this.#getInterface(snapId, result.id as string);
+      return content;
+    }
+    return result.content;
   }
 
   /**
@@ -2900,7 +2915,7 @@ export class SnapController extends BaseController<
   async #assertSnapRpcRequestResult(
     handlerType: HandlerType,
     result: unknown,
-    snapId: string,
+    snapId: SnapId,
   ) {
     switch (handlerType) {
       case HandlerType.OnTransaction: {
@@ -2934,19 +2949,12 @@ export class SnapController extends BaseController<
         break;
       }
       case HandlerType.OnHomePage:
-        assertStruct(result, OnHomePageResponseStruct);
+        {
+          assertStruct(result, OnHomePageResponseStruct);
 
-        await this.#triggerPhishingListUpdate();
+          await this.#triggerPhishingListUpdate();
 
-        if (isOnHomePageResponseWithContent(result)) {
-          validateComponentLinks(
-            result.content,
-            this.#checkPhishingList.bind(this),
-          );
-        }
-
-        if (isOnHomePageResponseWithId(result)) {
-          const { content } = this.#getInterface(snapId, result.id);
+          const content = this.#getResponseWithContent(snapId, result);
 
           validateComponentLinks(content, this.#checkPhishingList.bind(this));
         }

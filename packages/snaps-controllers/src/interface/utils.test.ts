@@ -2,7 +2,7 @@ import { form, input, panel, text } from '@metamask/snaps-sdk';
 
 import {
   assertNameIsUnique,
-  constructFormState,
+  constructFormInputState,
   constructInputState,
   constructState,
 } from './utils';
@@ -37,11 +37,11 @@ describe('constructInputState', () => {
   });
 });
 
-describe('constructFormState', () => {
+describe('constructFormInputState', () => {
   it('returns null if the input has no previous value', () => {
     const component = input('bar');
 
-    const result = constructFormState({}, component, 'foo');
+    const result = constructFormInputState({}, component, 'foo');
 
     expect(result).toBeNull();
   });
@@ -51,7 +51,7 @@ describe('constructFormState', () => {
 
     const component = input('bar');
 
-    const result = constructFormState(state, component, 'baz');
+    const result = constructFormInputState(state, component, 'baz');
 
     expect(result).toBe('foo');
   });
@@ -61,7 +61,7 @@ describe('constructFormState', () => {
 
     const component = input({ name: 'bar', value: 'baz' });
 
-    const result = constructFormState(state, component, 'baz');
+    const result = constructFormInputState(state, component, 'baz');
 
     expect(result).toBe('baz');
   });
@@ -72,7 +72,7 @@ describe('assertNameIsUnique', () => {
     const state = { test: 'foo' };
 
     expect(() => assertNameIsUnique(state, 'test')).toThrow(
-      `duplicate name for component: test`,
+      `Duplicate component names are not allowed, found multiple instances of: "test".`,
     );
   });
 
@@ -245,7 +245,7 @@ describe('constructState', () => {
     });
 
     expect(() => constructState({}, components)).toThrow(
-      `duplicate name for component: foo`,
+      `Duplicate component names are not allowed, found multiple instances of: "foo".`,
     );
   });
 
@@ -256,7 +256,7 @@ describe('constructState', () => {
     ]);
 
     expect(() => constructState({}, components)).toThrow(
-      `duplicate name for component: test`,
+      `Duplicate component names are not allowed, found multiple instances of: "test".`,
     );
   });
 
@@ -270,7 +270,7 @@ describe('constructState', () => {
     ]);
 
     expect(() => constructState({}, components)).toThrow(
-      `duplicate name for component: test`,
+      `Duplicate component names are not allowed, found multiple instances of: "test".`,
     );
   });
 });

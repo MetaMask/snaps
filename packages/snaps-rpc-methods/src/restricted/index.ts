@@ -10,6 +10,7 @@ import type { GetBip44EntropyMethodHooks } from './getBip44Entropy';
 import { getBip44EntropyBuilder } from './getBip44Entropy';
 import type { GetEntropyHooks } from './getEntropy';
 import { getEntropyBuilder } from './getEntropy';
+import type { GetInterfaceStateMethodHooks } from './getInterfaceState';
 import { getInterfaceStateBuilder } from './getInterfaceState';
 import type { GetLocaleMethodHooks } from './getLocale';
 import { getLocaleBuilder } from './getLocale';
@@ -38,7 +39,8 @@ export type RestrictedMethodHooks = DialogMethodHooks &
   ManageAccountsMethodHooks &
   GetLocaleMethodHooks &
   CreateInterfaceMethodHooks &
-  UpdateInterfaceMethodHooks;
+  UpdateInterfaceMethodHooks &
+  GetInterfaceStateMethodHooks;
 
 export const restrictedMethodPermissionBuilders = {
   [dialogBuilder.targetName]: dialogBuilder,

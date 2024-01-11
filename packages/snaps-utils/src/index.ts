@@ -33,4 +33,3 @@ export * from './ui';
 export * from './validation';
 export * from './versions';
 export * from './virtual-file';
-export * from './home-page';
