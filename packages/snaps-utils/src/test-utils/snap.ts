@@ -34,6 +34,7 @@ export const getPersistedSnapObject = ({
   localizationFiles = [],
   removable = undefined,
   preinstalled = undefined,
+  maxRequestTime = undefined,
 }: GetPersistedSnapObjectOptions = {}): PersistedSnap => {
   return {
     blocked,
@@ -49,6 +50,7 @@ export const getPersistedSnapObject = ({
     localizationFiles,
     removable,
     preinstalled,
+    maxRequestTime,
   } as const;
 };
 
@@ -68,6 +70,7 @@ export const getSnapObject = ({
   localizationFiles = [],
   removable = undefined,
   preinstalled = undefined,
+  maxRequestTime,
 }: GetSnapObjectOptions = {}): Snap => {
   return {
     blocked,
@@ -83,6 +86,7 @@ export const getSnapObject = ({
     localizationFiles,
     removable,
     preinstalled,
+    maxRequestTime,
   } as const;
 };
 

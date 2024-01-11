@@ -1148,6 +1148,56 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
+  it('uses the execution timeout specified by the snap', async () => {
+    const rootMessenger = getControllerMessenger();
+    const options = getSnapControllerWithEESOptions({
+      rootMessenger,
+      idleTimeCheckInterval: 30000,
+      maxIdleTime: 160000,
+      // Note that we are using the default maxRequestTime
+      state: {
+        snaps: getPersistedSnapsState(
+          getPersistedSnapObject({ maxRequestTime: 50 }),
+        ),
+      },
+    });
+
+    const snapController = getSnapController(options);
+    const snap = snapController.getExpect(MOCK_SNAP_ID);
+
+    rootMessenger.registerActionHandler(
+      'ExecutionService:handleRpcRequest',
+      async () => await sleep(100),
+    );
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:hasPermission',
+      (_origin, permission) => {
+        return permission === SnapEndowments.Rpc;
+      },
+    );
+
+    await snapController.startSnap(snap.id);
+    expect(snapController.state.snaps[snap.id].status).toBe('running');
+
+    await expect(
+      snapController.handleRequest({
+        snapId: snap.id,
+        origin: 'foo.com',
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          jsonrpc: '2.0',
+          method: 'test',
+          params: {},
+          id: 1,
+        },
+      }),
+    ).rejects.toThrow(/request timed out/u);
+    expect(snapController.state.snaps[snap.id].status).toBe('crashed');
+
+    snapController.destroy();
+  });
+
   it('does not timeout while waiting for response from MetaMask', async () => {
     const sourceCode = `
     module.exports.onRpcRequest = () => ethereum.request({ method: 'eth_blockNumber', params: [] });

@@ -140,6 +140,8 @@ export type Snap = TruncatedSnap & {
    * A lack of specifying this option will be deemed as removable.
    */
   removable?: boolean;
+
+  maxRequestTime?: number;
 };
 
 export type TruncatedSnapFields =

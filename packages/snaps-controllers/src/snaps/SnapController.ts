@@ -2787,6 +2787,16 @@ export class SnapController extends BaseController<
     return handler({ origin, handler: handlerType, request });
   }
 
+  #getExecutionTimeout(snapId: SnapId): number {
+    const snap = this.getExpect(snapId);
+
+    if (snap.maxRequestTime) {
+      return snap.maxRequestTime;
+    }
+
+    return this.maxRequestTime;
+  }
+
   /**
    * Gets the RPC message handler for the given snap.
    *
@@ -2843,7 +2853,7 @@ export class SnapController extends BaseController<
         }
       }
 
-      const timer = new Timer(this.maxRequestTime);
+      const timer = new Timer(this.#getExecutionTimeout(snapId));
       this.#recordSnapRpcRequestStart(snapId, request.id, timer);
 
       const handleRpcRequestPromise = this.messagingSystem.call(
