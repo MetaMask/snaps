@@ -36,7 +36,7 @@ import type {
   RequestSnapsParams,
   RequestSnapsResult,
   SnapId,
-  HandlerResponsesWithUI,
+  Component,
 } from '@metamask/snaps-sdk';
 import { AuxiliaryFileEncoding, getErrorMessage } from '@metamask/snaps-sdk';
 import type {
@@ -2897,7 +2897,10 @@ export class SnapController extends BaseController<
    * @param result - The result of the RPC request.
    * @returns The UI components.
    */
-  #getResponseWithContent(snapId: SnapId, result: HandlerResponsesWithUI) {
+  #getResponseWithContent(
+    snapId: SnapId,
+    result: { content: Component } | { id: string },
+  ) {
     if (hasProperty(result, 'id')) {
       const { content } = this.#getInterface(snapId, result.id as string);
       return content;
