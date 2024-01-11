@@ -12,6 +12,10 @@ import type {
   GetBip44EntropyParams,
   GetBip44EntropyResult,
 } from './get-bip44-entropy';
+import type {
+  GetClientStatusParams,
+  GetClientStatusResult,
+} from './get-client-status';
 import type { GetEntropyParams, GetEntropyResult } from './get-entropy';
 import type { GetFileParams, GetFileResult } from './get-file';
 import type { GetLocaleParams, GetLocaleResult } from './get-locale';
@@ -39,6 +43,7 @@ export type SnapMethods = {
   snap_getBip32Entropy: [GetBip32EntropyParams, GetBip32EntropyResult];
   snap_getBip32PublicKey: [GetBip32PublicKeyParams, GetBip32PublicKeyResult];
   snap_getBip44Entropy: [GetBip44EntropyParams, GetBip44EntropyResult];
+  snap_getClientStatus: [GetClientStatusParams, GetClientStatusResult];
   snap_getEntropy: [GetEntropyParams, GetEntropyResult];
   snap_getFile: [GetFileParams, GetFileResult];
   snap_getLocale: [GetLocaleParams, GetLocaleResult];
