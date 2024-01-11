@@ -28,3 +28,4 @@ export * from './ui';
 export * from './validation';
 export * from './versions';
 export * from './virtual-file/index.browser';
+export * from './home-page';
