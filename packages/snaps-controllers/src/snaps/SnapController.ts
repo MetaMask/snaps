@@ -1206,12 +1206,24 @@ export class SnapController extends BaseController<
     this.messagingSystem.publish(`${controllerName}:snapUnblocked`, snapId);
   }
 
+  /**
+   * Assert that installation of a given Snap is allowed based on the allow-list requirements and permissions.
+   *
+   * @param snapId - ID of a Snap.
+   * @param snapInfo - An object containing basic snap information including initial and dynamic permissions.
+   */
   async #assertIsInstallAllowed(
     snapId: SnapId,
-    snapInfo: SnapsRegistryInfo & { permissions: SnapPermissions },
+    snapInfo: SnapsRegistryInfo & {
+      initialPermissions: SnapPermissions;
+      dynamicPermissions: SnapPermissions | undefined;
+    },
   ) {
     const results = await this.messagingSystem.call('SnapsRegistry:get', {
-      [snapId]: snapInfo,
+      [snapId]: {
+        version: snapInfo.version,
+        checksum: snapInfo.checksum,
+      },
     });
     const result = results[snapId];
     if (result.status === SnapsRegistryStatus.Blocked) {
@@ -1224,9 +1236,13 @@ export class SnapController extends BaseController<
       );
     }
 
-    const isAllowlistingRequired = Object.keys(snapInfo.permissions).some(
-      (permission) => !ALLOWED_PERMISSIONS.includes(permission),
-    );
+    const isAllowlistingRequired =
+      Object.keys(snapInfo.initialPermissions).some(
+        (permission) => !ALLOWED_PERMISSIONS.includes(permission),
+      ) ||
+      Object.keys(snapInfo.dynamicPermissions ?? {}).some(
+        (permission) => !ALLOWED_PERMISSIONS.includes(permission),
+      );
 
     if (
       this.#featureFlags.requireAllowlist &&
@@ -2213,7 +2229,8 @@ export class SnapController extends BaseController<
       await this.#assertIsInstallAllowed(snapId, {
         version: newVersion,
         checksum: manifest.source.shasum,
-        permissions: manifest.initialPermissions,
+        initialPermissions: manifest.initialPermissions,
+        dynamicPermissions: manifest.dynamicPermissions,
       });
 
       const processedPermissions = processSnapPermissions(
@@ -2387,7 +2404,8 @@ export class SnapController extends BaseController<
         await this.#assertIsInstallAllowed(snapId, {
           version: manifest.version,
           checksum: manifest.source.shasum,
-          permissions: manifest.initialPermissions,
+          initialPermissions: manifest.initialPermissions,
+          dynamicPermissions: manifest.dynamicPermissions,
         });
 
         return this.#set({

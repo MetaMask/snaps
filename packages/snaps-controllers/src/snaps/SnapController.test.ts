@@ -591,7 +591,6 @@ describe('SnapController', () => {
       [MOCK_SNAP_ID]: {
         version: '1.0.0',
         checksum: DEFAULT_SNAP_SHASUM,
-        permissions: getSnapManifest().initialPermissions,
       },
     });
 
@@ -803,6 +802,90 @@ describe('SnapController', () => {
     ).rejects.toThrow(
       'Cannot install version "1.0.0" of snap "npm:@metamask/example-snap": The snap is not on the allowlist.',
     );
+
+    controller.destroy();
+  });
+
+  it('throws an error if snap is not on the allowlist and allowlisting is required because of dynamic permission', async () => {
+    const { manifest, sourceCode, svgIcon } =
+      await getMockSnapFilesWithUpdatedChecksum({
+        manifest: getSnapManifest({
+          initialPermissions: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_dialog: {},
+          },
+          dynamicPermissions: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_getBip44Entropy: [{ coinType: 1 }],
+          },
+        }),
+      });
+
+    const controller = getSnapController(
+      getSnapControllerOptions({
+        featureFlags: { requireAllowlist: true },
+        detectSnapLocation: loopbackDetect({
+          manifest: manifest.result,
+          files: [sourceCode, svgIcon as VirtualFile],
+        }),
+      }),
+    );
+
+    await expect(
+      controller.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: { version: DEFAULT_REQUESTED_SNAP_VERSION },
+      }),
+    ).rejects.toThrow(
+      'Cannot install version "1.0.0" of snap "npm:@metamask/example-snap": The snap is not on the allowlist.',
+    );
+
+    controller.destroy();
+  });
+
+  it('does not throw an error if allowlisting is not required for dynamic permissions', async () => {
+    const { manifest, sourceCode, svgIcon } =
+      await getMockSnapFilesWithUpdatedChecksum({
+        manifest: getSnapManifest({
+          version: '1.1.0' as SemVerVersion,
+          initialPermissions: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_dialog: {},
+            'endowment:transaction-insight': {},
+          },
+          dynamicPermissions: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_manageState: {},
+          },
+        }),
+      });
+
+    const controller = getSnapController(
+      getSnapControllerOptions({
+        featureFlags: { requireAllowlist: true },
+        detectSnapLocation: loopbackDetect({
+          manifest: manifest.result,
+          files: [sourceCode, svgIcon as VirtualFile],
+        }),
+      }),
+    );
+
+    expect(
+      await controller.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: { version: '^1.0.0' },
+      }),
+    ).toStrictEqual({
+      'npm:@metamask/example-snap': {
+        blocked: false,
+        enabled: true,
+        id: 'npm:@metamask/example-snap',
+        initialPermissions: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_dialog: {},
+          'endowment:transaction-insight': {},
+        },
+        version: '1.1.0',
+      },
+    });
 
     controller.destroy();
   });

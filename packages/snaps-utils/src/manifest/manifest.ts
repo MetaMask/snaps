@@ -28,7 +28,8 @@ const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {
   source: 6,
   initialConnections: 7,
   initialPermissions: 8,
-  manifestVersion: 9,
+  dynamicPermissions: 9,
+  manifestVersion: 10,
 };
 
 /**

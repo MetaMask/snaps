@@ -3,10 +3,13 @@ import { getAllSnapsHandler } from './getAllSnaps';
 import { getClientStatusHandler } from './getClientStatus';
 import { getFileHandler } from './getFile';
 import { getInterfaceStateHandler } from './getInterfaceState';
+import { getPermissionsHandler } from './getPermissions';
 import { getSnapsHandler } from './getSnaps';
 import { invokeKeyringHandler } from './invokeKeyring';
 import { invokeSnapSugarHandler } from './invokeSnapSugar';
+import { requestPermissionsHandler } from './requestPermissions';
 import { requestSnapsHandler } from './requestSnaps';
+import { revokePermissionsHandler } from './revokePermissions';
 import { updateInterfaceHandler } from './updateInterface';
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -21,6 +24,9 @@ export const methodHandlers = {
   snap_createInterface: createInterfaceHandler,
   snap_updateInterface: updateInterfaceHandler,
   snap_getInterfaceState: getInterfaceStateHandler,
+  snap_requestPermissions: requestPermissionsHandler,
+  snap_getPermissions: getPermissionsHandler,
+  snap_revokePermissions: revokePermissionsHandler,
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 

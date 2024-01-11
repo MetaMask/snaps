@@ -7,6 +7,7 @@ import {
   isValidSemVerRange,
   inMilliseconds,
   Duration,
+  hasProperty,
 } from '@metamask/utils';
 import type { Infer, Struct } from 'superstruct';
 import {
@@ -241,6 +242,33 @@ export type SnapPermissions = InferMatching<
   InitialPermissions
 >;
 
+const DynamicPermissionsStruct = refine(
+  PermissionsStruct,
+  'NonOverlappingKeys',
+  (value, context) => {
+    const { initialPermissions } = context.branch[0];
+
+    if (initialPermissions) {
+      const duplicateKeys = Object.keys(value).filter((key) =>
+        hasProperty(initialPermissions, key),
+      );
+
+      if (duplicateKeys.length > 0) {
+        return `Permission overlap detected: The following permissions are present in both 'initialPermissions' and 'dynamicPermissions': ${duplicateKeys.join(
+          ', ',
+        )}. A permission should be exclusively declared in only one of these categories (either 'initialPermissions' or 'dynamicPermissions').`;
+      }
+    }
+
+    return true;
+  },
+);
+
+export type SnapDynamicPermissions = InferMatching<
+  typeof DynamicPermissionsStruct,
+  InitialPermissions
+>;
+
 export const SnapAuxilaryFilesStruct = array(string());
 
 export const InitialConnectionsStruct = record(
@@ -278,6 +306,7 @@ export const SnapManifestStruct = object({
   }),
   initialConnections: optional(InitialConnectionsStruct),
   initialPermissions: PermissionsStruct,
+  dynamicPermissions: optional(DynamicPermissionsStruct),
   manifestVersion: literal('0.1'),
   $schema: optional(string()), // enables JSON-Schema linting in VSC and other IDEs
 });

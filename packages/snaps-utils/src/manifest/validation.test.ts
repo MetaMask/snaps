@@ -1,6 +1,11 @@
 import { assert, is, StructError } from 'superstruct';
 
-import { getSnapManifest, MOCK_SNAP_ID } from '../test-utils';
+import {
+  getSnapManifest,
+  MOCK_DYNAMIC_PERMISSIONS,
+  MOCK_INITIAL_PERMISSIONS,
+  MOCK_SNAP_ID,
+} from '../test-utils';
 import {
   assertIsSnapManifest,
   Bip32EntropyStruct,
@@ -190,6 +195,16 @@ describe('assertIsSnapManifest', () => {
     expect(() => assertIsSnapManifest(getSnapManifest())).not.toThrow();
   });
 
+  it('throws an error for an invalid dynamic permissions specification', () => {
+    const snapManifest = getSnapManifest({
+      dynamicPermissions: MOCK_INITIAL_PERMISSIONS,
+    });
+
+    expect(() => createSnapManifest(snapManifest)).toThrow(
+      `At path: dynamicPermissions -- Permission overlap detected: The following permissions are present in both 'initialPermissions' and 'dynamicPermissions': snap_dialog, endowment:rpc. A permission should be exclusively declared in only one of these categories (either 'initialPermissions' or 'dynamicPermissions').`,
+    );
+  });
+
   it.each([
     true,
     false,
@@ -213,7 +228,21 @@ describe('assertIsSnapManifest', () => {
 
 describe('createSnapManifest', () => {
   it('does not throw for a valid snap manifest', () => {
-    expect(() => createSnapManifest(getSnapManifest())).not.toThrow();
+    expect(() =>
+      createSnapManifest(
+        getSnapManifest({ dynamicPermissions: MOCK_DYNAMIC_PERMISSIONS }),
+      ),
+    ).not.toThrow();
+  });
+
+  it('throws an error for an invalid dynamic permissions specification', () => {
+    const snapManifest = getSnapManifest({
+      dynamicPermissions: MOCK_INITIAL_PERMISSIONS,
+    });
+
+    expect(() => createSnapManifest(snapManifest)).toThrow(
+      `At path: dynamicPermissions -- Permission overlap detected: The following permissions are present in both 'initialPermissions' and 'dynamicPermissions': snap_dialog, endowment:rpc. A permission should be exclusively declared in only one of these categories (either 'initialPermissions' or 'dynamicPermissions').`,
+    );
   });
 
   it.each([
