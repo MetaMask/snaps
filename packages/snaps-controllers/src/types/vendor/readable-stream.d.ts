@@ -7,5 +7,5 @@ declare module 'readable-stream' {
     TransformCallback,
     Transform,
   } from 'stream';
-  export { Duplex, pipeline } from 'stream';
+  export { Duplex, pipeline, PassThrough } from 'stream';
 }

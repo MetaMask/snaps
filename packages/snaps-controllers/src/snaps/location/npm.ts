@@ -20,7 +20,9 @@ import {
 import { createGunzip } from 'browserify-zlib';
 import concat from 'concat-stream';
 import getNpmTarballUrl from 'get-npm-tarball-url';
-import { pipeline } from 'readable-stream';
+import peek from 'peek-stream';
+import pumpify from 'pumpify';
+import { pipeline, PassThrough } from 'readable-stream';
 import type { Readable, Writable } from 'readable-stream';
 import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
 import { extract as tarExtract } from 'tar-stream';
@@ -245,7 +247,7 @@ export class NpmLocation extends BaseNpmLocation {
       pipeline(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         getNodeStream(tarballResponse.body!),
-        createGunzip(),
+        createGzipDecompressionStream(1),
         createTarballStream(
           getNpmCanonicalBasePath(this.meta.registry, this.meta.packageName),
           files,
@@ -409,6 +411,34 @@ function getNodeStream(stream: ReadableStream): Readable {
   }
 
   return new ReadableWebToNodeStream(stream);
+}
+
+/**
+ * Recursively creates a Gzip decompression stream.
+ *
+ * @param maxRecursion - The maximum number of times we can recurse through the function.
+ * @returns The decompression stream.
+ */
+function createGzipDecompressionStream(maxRecursion: number) {
+  return peek({ newline: false, maxBuffer: 3 }, function (data, swap) {
+    if (maxRecursion < 0) {
+      swap(new Error('Maximum recursion reached'));
+      return;
+    }
+
+    // Detect gzip
+    if (data[0] === 0x1f && data[1] === 0x8b && data[2] === 0x08) {
+      swap(
+        null,
+        pumpify(
+          createGunzip(),
+          createGzipDecompressionStream(maxRecursion - 1),
+        ),
+      );
+    } else {
+      swap(null, new PassThrough());
+    }
+  });
 }
 
 /**
