@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-shadow, import/no-unassigned-import */
 
+import { UserInputEventTypes } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
 import {
   MOCK_ORIGIN,
@@ -1502,6 +1503,43 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       result: params,
     });
+  });
+
+  it('supports onUserInput export', async () => {
+    const CODE = `
+      module.exports.onUserInput = ({ id, event }) => {}
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    const params = {
+      id: 'foo',
+      event: {
+        type: UserInputEventTypes.ButtonClickEvent,
+        name: 'bar',
+      },
+    };
+
+    await expect(
+      executor.writeCommand({
+        jsonrpc: '2.0',
+        id: 2,
+        method: 'snapRpc',
+        params: [
+          MOCK_SNAP_ID,
+          HandlerType.OnUserInput,
+          MOCK_ORIGIN,
+          { jsonrpc: '2.0', method: 'foo', params },
+        ],
+      }),
+    ).resolves.not.toThrow();
   });
 
   describe('lifecycle hooks', () => {
