@@ -1,7 +1,7 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import type { UpdateInterfaceParams } from '@metamask/snaps-sdk';
 import { text, type UpdateInterfaceResult } from '@metamask/snaps-sdk';
-import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
-import type { PendingJsonRpcResponse } from '@metamask/utils';
+import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
 import { updateInterfaceHandler } from './updateInterface';
 
@@ -35,9 +35,7 @@ describe('snap_updateInterface', () => {
 
       engine.push((request, response, next, end) => {
         const result = implementation(
-          // @ts-expect-error - `origin` is not part of the type, but in practice
-          // it is added by the MetaMask middleware stack.
-          { ...request, origin: MOCK_SNAP_ID },
+          request as JsonRpcRequest<UpdateInterfaceParams>,
           response as PendingJsonRpcResponse<UpdateInterfaceResult>,
           next,
           end,
@@ -76,9 +74,7 @@ describe('snap_updateInterface', () => {
 
     engine.push((request, response, next, end) => {
       const result = implementation(
-        // @ts-expect-error - `origin` is not part of the type, but in practice
-        // it is added by the MetaMask middleware stack.
-        { ...request, origin: MOCK_SNAP_ID },
+        request as JsonRpcRequest<UpdateInterfaceParams>,
         response as PendingJsonRpcResponse<UpdateInterfaceResult>,
         next,
         end,
@@ -122,9 +118,7 @@ describe('snap_updateInterface', () => {
 
     engine.push((request, response, next, end) => {
       const result = implementation(
-        // @ts-expect-error - `origin` is not part of the type, but in practice
-        // it is added by the MetaMask middleware stack.
-        { ...request, origin: MOCK_SNAP_ID },
+        request as JsonRpcRequest<UpdateInterfaceParams>,
         response as PendingJsonRpcResponse<UpdateInterfaceResult>,
         next,
         end,

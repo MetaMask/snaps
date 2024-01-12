@@ -1,9 +1,9 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { type GetInterfaceStateResult } from '@metamask/snaps-sdk';
-import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
-import type { PendingJsonRpcResponse } from '@metamask/utils';
+import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
 import { getInterfaceStateHandler } from './getInterfaceState';
+import type { UpdateInterfaceParameters } from './updateInterface';
 
 describe('snap_getInterfaceState', () => {
   describe('getInterfaceStateHandler', () => {
@@ -35,9 +35,7 @@ describe('snap_getInterfaceState', () => {
 
       engine.push((request, response, next, end) => {
         const result = implementation(
-          // @ts-expect-error - `origin` is not part of the type, but in practice
-          // it is added by the MetaMask middleware stack.
-          { ...request, origin: MOCK_SNAP_ID },
+          request as JsonRpcRequest<UpdateInterfaceParameters>,
           response as PendingJsonRpcResponse<GetInterfaceStateResult>,
           next,
           end,
@@ -78,9 +76,7 @@ describe('snap_getInterfaceState', () => {
 
       engine.push((request, response, next, end) => {
         const result = implementation(
-          // @ts-expect-error - `origin` is not part of the type, but in practice
-          // it is added by the MetaMask middleware stack.
-          { ...request, origin: MOCK_SNAP_ID },
+          request as JsonRpcRequest<UpdateInterfaceParameters>,
           response as PendingJsonRpcResponse<GetInterfaceStateResult>,
           next,
           end,
@@ -125,9 +121,7 @@ describe('snap_getInterfaceState', () => {
 
     engine.push((request, response, next, end) => {
       const result = implementation(
-        // @ts-expect-error - `origin` is not part of the type, but in practice
-        // it is added by the MetaMask middleware stack.
-        { ...request, origin: MOCK_SNAP_ID },
+        request as JsonRpcRequest<UpdateInterfaceParameters>,
         response as PendingJsonRpcResponse<GetInterfaceStateResult>,
         next,
         end,

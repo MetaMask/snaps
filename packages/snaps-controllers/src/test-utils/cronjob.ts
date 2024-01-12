@@ -1,8 +1,6 @@
 import type { PermissionConstraint } from '@metamask/permission-controller';
-import { SnapCaveatType } from '@metamask/snaps-utils';
+import { SnapCaveatType, SnapEndowments } from '@metamask/snaps-utils';
 import { MOCK_ORIGIN } from '@metamask/snaps-utils/test-utils';
-
-import { SnapEndowments } from '../snaps/endowments';
 
 export const MOCK_CRONJOB_PERMISSION: PermissionConstraint = {
   caveats: [

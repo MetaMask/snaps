@@ -24,6 +24,7 @@ import {
   SnapCaveatType,
   SnapStatus,
   VirtualFile,
+  SnapEndowments,
 } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
@@ -85,7 +86,7 @@ import {
   sleep,
 } from '../test-utils';
 import { delay } from '../utils';
-import { handlerEndowments, SnapEndowments } from './endowments';
+import { handlerEndowments } from './endowments';
 import { SnapsRegistryStatus } from './registry';
 import type { SnapControllerState } from './SnapController';
 import {

@@ -93,7 +93,6 @@ export const handlerEndowments: Record<HandlerType, string> = {
   [HandlerType.OnUserInput]: userInputEndowmentBuilder.targetName,
 };
 
-export * from './enum';
 export { getRpcCaveatOrigins } from './rpc';
 export { getSignatureOriginCaveat } from './signature-insight';
 export { getTransactionOriginCaveat } from './transaction-insight';

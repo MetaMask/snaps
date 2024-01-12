@@ -29,6 +29,7 @@ describe('Input', () => {
       name: 'myInput',
     });
   });
+
   it('creates an input component using the shorthand form', () => {
     expect(
       input('myInput', InputTypes.Text, 'type here...', 'foo bar', 'input'),

@@ -1,7 +1,6 @@
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
-import { SnapCaveatType } from '@metamask/snaps-utils';
+import { SnapCaveatType, SnapEndowments } from '@metamask/snaps-utils';
 
-import { SnapEndowments } from '.';
 import {
   getRpcCaveatMapper,
   getRpcCaveatOrigins,

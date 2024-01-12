@@ -6,3 +6,4 @@ export * from './iframe';
 export * from './logging';
 export * from './namespace';
 export * from './types';
+export * from './endowments';

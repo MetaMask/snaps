@@ -224,6 +224,16 @@ describe('constructState', () => {
     });
   });
 
+  it('deletes unused root level values', () => {
+    const components = panel([input({ name: 'foo' })]);
+
+    const result = constructState({ foo: null, bar: null }, components);
+
+    expect(result).toStrictEqual({
+      foo: null,
+    });
+  });
+
   it('merges root level inputs from old state', () => {
     const state = {
       foo: 'bar',

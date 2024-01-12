@@ -10,7 +10,7 @@ import { SubjectType } from '@metamask/permission-controller';
 import { providerErrors } from '@metamask/rpc-errors';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import type { SnapId } from '@metamask/snaps-sdk';
-import { SnapCaveatType } from '@metamask/snaps-utils';
+import { SnapCaveatType, SnapEndowments } from '@metamask/snaps-utils';
 import {
   MockControllerMessenger,
   getPersistedSnapObject,
@@ -35,7 +35,7 @@ import type {
   SnapsRegistryActions,
   SnapsRegistryEvents,
 } from '../snaps';
-import { SnapController, SnapEndowments } from '../snaps';
+import { SnapController } from '../snaps';
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
 import { MockSnapsRegistry } from './registry';

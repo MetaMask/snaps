@@ -4,9 +4,8 @@ import type {
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import { SnapEndowments } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
-
-import { SnapEndowments } from './enum';
 
 const permissionName = SnapEndowments.LifecycleHooks;
 

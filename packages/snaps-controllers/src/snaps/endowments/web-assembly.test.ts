@@ -1,6 +1,6 @@
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import { SnapEndowments } from '@metamask/snaps-utils';
 
-import { SnapEndowments } from './enum';
 import { webAssemblyEndowmentBuilder } from './web-assembly';
 
 describe('endowment:webassembly', () => {

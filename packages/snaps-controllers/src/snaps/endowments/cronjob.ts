@@ -12,11 +12,10 @@ import type { CronjobSpecification } from '@metamask/snaps-utils';
 import {
   SnapCaveatType,
   isCronjobSpecificationArray,
+  SnapEndowments,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import { assert, hasProperty, isPlainObject } from '@metamask/utils';
-
-import { SnapEndowments } from './enum';
 
 const permissionName = SnapEndowments.Cronjob;
 

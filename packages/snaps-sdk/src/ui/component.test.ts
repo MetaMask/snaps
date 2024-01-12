@@ -128,7 +128,7 @@ describe('isComponent', () => {
     expect(isComponent(input)).toBe(true);
   });
 
-  it('returns true for an input component without optinal fields', () => {
+  it('returns true for an input component without optional fields', () => {
     const input: Input = {
       type: NodeType.Input,
       name: 'myInput',
@@ -284,7 +284,7 @@ describe('assertIsComponent', () => {
     expect(() => assertIsComponent(input)).not.toThrow();
   });
 
-  it('does not throw for an input component without optinal fields', () => {
+  it('does not throw for an input component without optional fields', () => {
     const input: Input = {
       type: NodeType.Input,
       name: 'myInput',

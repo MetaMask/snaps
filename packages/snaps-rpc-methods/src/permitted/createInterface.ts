@@ -8,7 +8,7 @@ import type {
   JsonRpcRequest,
 } from '@metamask/snaps-sdk';
 import { ComponentStruct, assert } from '@metamask/snaps-sdk';
-import type { InferMatching } from '@metamask/snaps-utils';
+import { SnapEndowments, type InferMatching } from '@metamask/snaps-utils';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 import { StructError, create, object } from 'superstruct';
 
@@ -21,17 +21,15 @@ const hookNames: MethodHooksObject<CreateInterfaceMethodHooks> = {
 
 export type CreateInterfaceMethodHooks = {
   /**
-   * @param origin - The origin invoking the rpc-method.
    * @param permissionName - The name of the permission invoked.
-   * @returns Whether if the snap has permission to invoke this rpc-method.
+   * @returns Whether the snap has permission to invoke this RPC method or not.
    */
-  hasPermission: (origin: string, permissionName: string) => boolean;
+  hasPermission: (permissionName: string) => boolean;
   /**
-   * @param snapId - The ID of the Snap that is showing the interface.
    * @param ui - The UI components.
    * @returns The unique identifier of the interface.
    */
-  createInterface: (snapId: string, ui: Component) => string;
+  createInterface: (ui: Component) => string;
 };
 
 export const createInterfaceHandler: PermittedHandlerExport<
@@ -73,20 +71,15 @@ function getCreateInterfaceImplementation(
   end: JsonRpcEngineEndCallback,
   { createInterface, hasPermission }: CreateInterfaceMethodHooks,
 ): void {
-  // We expect the MM middleware stack to always add the origin to requests
-  const { params, origin } = req as JsonRpcRequest & { origin: string };
+  const { params } = req;
 
   try {
-    // @TODO: export the endowment name from somwhere ?
-    assert(
-      origin && hasPermission(origin, 'endowment:user-input'),
-      rpcErrors.methodNotFound(),
-    );
+    assert(hasPermission(SnapEndowments.UserInput), rpcErrors.methodNotFound());
     const validatedParams = getValidatedParams(params);
 
     const { ui } = validatedParams;
 
-    res.result = createInterface(origin, ui);
+    res.result = createInterface(ui);
   } catch (error) {
     return end(error);
   }
