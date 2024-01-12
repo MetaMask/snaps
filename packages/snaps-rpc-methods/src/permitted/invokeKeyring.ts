@@ -35,18 +35,17 @@ export const invokeKeyringHandler: PermittedHandlerExport<
 };
 
 export type InvokeKeyringHooks = {
-  hasPermission: (origin: string, permissionName: string) => boolean;
+  hasPermission: (permissionName: string) => boolean;
 
   handleSnapRpcRequest: ({
     snapId,
-    origin,
     handler,
     request,
-  }: SnapRpcHookArgs & { snapId: string }) => Promise<unknown>;
+  }: Omit<SnapRpcHookArgs, 'origin'> & { snapId: string }) => Promise<unknown>;
 
   getSnap: (snapId: string) => Snap | undefined;
 
-  getAllowedKeyringMethods: (origin: string) => string[];
+  getAllowedKeyringMethods: () => string[];
 };
 
 /**
@@ -89,7 +88,7 @@ async function invokeKeyringImplementation(
   const { origin } = req as JsonRpcRequest & { origin: string };
   const { snapId, request } = params;
 
-  if (!origin || !hasPermission(origin, WALLET_SNAP_PERMISSION_KEY)) {
+  if (!origin || !hasPermission(WALLET_SNAP_PERMISSION_KEY)) {
     return end(
       rpcErrors.invalidRequest({
         message: `The snap "${snapId}" is not connected to "${origin}". Please connect before invoking the snap.`,
@@ -113,7 +112,7 @@ async function invokeKeyringImplementation(
     );
   }
 
-  const allowedMethods = getAllowedKeyringMethods(origin);
+  const allowedMethods = getAllowedKeyringMethods();
   if (!allowedMethods.includes(request.method)) {
     return end(
       rpcErrors.invalidRequest({
@@ -125,7 +124,6 @@ async function invokeKeyringImplementation(
   try {
     res.result = (await handleSnapRpcRequest({
       snapId,
-      origin,
       request,
       handler: HandlerType.OnKeyringRequest,
     })) as Json;

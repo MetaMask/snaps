@@ -79,7 +79,6 @@ describe('wallet_invokeKeyring', () => {
       expect(response.result).toBe('bar');
       expect(hooks.handleSnapRpcRequest).toHaveBeenCalledWith({
         handler: HandlerType.OnKeyringRequest,
-        origin: 'metamask.io',
         request: { method: 'foo' },
         snapId: MOCK_SNAP_ID,
       });
