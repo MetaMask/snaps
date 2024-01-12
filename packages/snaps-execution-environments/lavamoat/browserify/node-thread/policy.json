@@ -345,7 +345,6 @@
     "external:../snaps-sdk/src/types/handlers/index.ts": {
       "packages": {
         "external:../snaps-sdk/src/types/handlers/cronjob.ts": true,
-        "external:../snaps-sdk/src/types/handlers/handlers.ts": true,
         "external:../snaps-sdk/src/types/handlers/home-page.ts": true,
         "external:../snaps-sdk/src/types/handlers/keyring.ts": true,
         "external:../snaps-sdk/src/types/handlers/lifecycle.ts": true,

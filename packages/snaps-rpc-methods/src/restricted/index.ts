@@ -1,5 +1,3 @@
-import type { CreateInterfaceMethodHooks } from './createInterface';
-import { createInterfaceBuilder } from './createInterface';
 import type { DialogMethodHooks } from './dialog';
 import { dialogBuilder } from './dialog';
 import type { GetBip32EntropyMethodHooks } from './getBip32Entropy';
@@ -10,8 +8,6 @@ import type { GetBip44EntropyMethodHooks } from './getBip44Entropy';
 import { getBip44EntropyBuilder } from './getBip44Entropy';
 import type { GetEntropyHooks } from './getEntropy';
 import { getEntropyBuilder } from './getEntropy';
-import type { GetInterfaceStateMethodHooks } from './getInterfaceState';
-import { getInterfaceStateBuilder } from './getInterfaceState';
 import type { GetLocaleMethodHooks } from './getLocale';
 import { getLocaleBuilder } from './getLocale';
 import type { InvokeSnapMethodHooks } from './invokeSnap';
@@ -22,8 +18,6 @@ import type { ManageStateMethodHooks } from './manageState';
 import { manageStateBuilder } from './manageState';
 import type { NotifyMethodHooks } from './notify';
 import { notifyBuilder } from './notify';
-import type { UpdateInterfaceMethodHooks } from './updateInterface';
-import { updateInterfaceBuilder } from './updateInterface';
 
 export { WALLET_SNAP_PERMISSION_KEY } from './invokeSnap';
 export { getEncryptionKey } from './manageState';
@@ -37,10 +31,7 @@ export type RestrictedMethodHooks = DialogMethodHooks &
   ManageStateMethodHooks &
   NotifyMethodHooks &
   ManageAccountsMethodHooks &
-  GetLocaleMethodHooks &
-  CreateInterfaceMethodHooks &
-  UpdateInterfaceMethodHooks &
-  GetInterfaceStateMethodHooks;
+  GetLocaleMethodHooks;
 
 export const restrictedMethodPermissionBuilders = {
   [dialogBuilder.targetName]: dialogBuilder,
@@ -53,9 +44,6 @@ export const restrictedMethodPermissionBuilders = {
   [notifyBuilder.targetName]: notifyBuilder,
   [manageAccountsBuilder.targetName]: manageAccountsBuilder,
   [getLocaleBuilder.targetName]: getLocaleBuilder,
-  [createInterfaceBuilder.targetName]: createInterfaceBuilder,
-  [updateInterfaceBuilder.targetName]: updateInterfaceBuilder,
-  [getInterfaceStateBuilder.targetName]: getInterfaceStateBuilder,
 } as const;
 
 export * from './caveats';

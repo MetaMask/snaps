@@ -12,6 +12,4 @@ export type CreateInterfaceParams = {
 /**
  * The result returned by the `snap_createInterface` method, which is the id of the created interface.
  */
-export type CreateInterfaceResult = {
-  id: string;
-};
+export type CreateInterfaceResult = string;

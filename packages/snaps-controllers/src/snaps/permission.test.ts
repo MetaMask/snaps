@@ -143,15 +143,6 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
     const specifications = buildSnapRestrictedMethodSpecifications([], {});
     expect(specifications).toMatchInlineSnapshot(`
       {
-        "snap_createInterface": {
-          "allowedCaveats": null,
-          "methodImplementation": [Function],
-          "permissionType": "RestrictedMethod",
-          "subjectTypes": [
-            "snap",
-          ],
-          "targetName": "snap_createInterface",
-        },
         "snap_dialog": {
           "allowedCaveats": null,
           "methodImplementation": [Function],
@@ -206,15 +197,6 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
           ],
           "targetName": "snap_getEntropy",
         },
-        "snap_getInterfaceState": {
-          "allowedCaveats": null,
-          "methodImplementation": [Function],
-          "permissionType": "RestrictedMethod",
-          "subjectTypes": [
-            "snap",
-          ],
-          "targetName": "snap_getInterfaceState",
-        },
         "snap_getLocale": {
           "allowedCaveats": null,
           "methodImplementation": [Function],
@@ -250,15 +232,6 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
             "snap",
           ],
           "targetName": "snap_notify",
-        },
-        "snap_updateInterface": {
-          "allowedCaveats": null,
-          "methodImplementation": [Function],
-          "permissionType": "RestrictedMethod",
-          "subjectTypes": [
-            "snap",
-          ],
-          "targetName": "snap_updateInterface",
         },
         "wallet_snap": {
           "allowedCaveats": [
