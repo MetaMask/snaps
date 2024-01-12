@@ -247,7 +247,7 @@ export class NpmLocation extends BaseNpmLocation {
       pipeline(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         getNodeStream(tarballResponse.body!),
-        createGzipDecompressionStream(1),
+        createGzipDecompressionStream(2),
         createTarballStream(
           getNpmCanonicalBasePath(this.meta.registry, this.meta.packageName),
           files,
@@ -421,7 +421,7 @@ function getNodeStream(stream: ReadableStream): Readable {
  */
 function createGzipDecompressionStream(maxRecursion: number) {
   return peek({ newline: false, maxBuffer: 3 }, function (data, swap) {
-    if (maxRecursion < 0) {
+    if (maxRecursion <= 0) {
       swap(new Error('Maximum recursion reached'));
       return;
     }
