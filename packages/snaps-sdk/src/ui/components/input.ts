@@ -15,7 +15,6 @@ export enum InputTypes {
   Number = 'number',
   /* eslint-enable @typescript-eslint/no-shadow */
   Password = 'password',
-  Search = 'search',
 }
 
 export const InputStruct = assign(
@@ -29,7 +28,6 @@ export const InputStruct = assign(
         enumValue(InputTypes.Text),
         enumValue(InputTypes.Password),
         enumValue(InputTypes.Number),
-        enumValue(InputTypes.Search),
       ]),
     ),
     placeholder: optional(string()),
@@ -43,7 +41,7 @@ export const InputStruct = assign(
  * @property type - The type of the node, must be the string 'input'.
  * @property name - The name for the input.
  * @property value - The value of the input.
- * @property inputType - An optional type, either `text`, `password`, `number` or `search`.
+ * @property inputType - An optional type, either `text`, `password` or `number`.
  * @property placeholder - An optional input placeholder.
  * @property label - An optional input label.
  */
@@ -56,7 +54,7 @@ export type Input = Infer<typeof InputStruct>;
  * with the properties: `inputType`, `value`, `variant`, `placeholder` and `name`.
  * @param args.name - The name for the input.
  * @param args.value - The value of the input.
- * @param args.inputType - An optional type, either `text`, `password`, `number` or `search`.
+ * @param args.inputType - An optional type, either `text`, `password` or `number`.
  * @param args.placeholder - An optional input placeholder.
  * @param args.label - An optional input label.
  * @returns The input node as an object.
