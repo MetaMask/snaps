@@ -10,7 +10,7 @@ import { encodeAuxiliaryFile, normalizeRelative } from '@metamask/snaps-utils';
  * @param encoding - The requested file encoding.
  * @returns The file in the requested encoding if found, otherwise null.
  */
-export function getSnapFile(
+export async function getSnapFile(
   files: VirtualFile[],
   path: string,
   encoding: AuxiliaryFileEncoding = AuxiliaryFileEncoding.Base64,
@@ -24,5 +24,5 @@ export function getSnapFile(
     return null;
   }
 
-  return encodeAuxiliaryFile(base64, encoding);
+  return await encodeAuxiliaryFile(base64, encoding);
 }

@@ -216,7 +216,7 @@ export function getHooks(
     getMnemonic: async () =>
       Promise.resolve(mnemonicPhraseToBytes(options.secretRecoveryPhrase)),
     getSnapFile: async (path: string, encoding: AuxiliaryFileEncoding) =>
-      getSnapFile(snapFiles.auxiliaryFiles, path, encoding),
+      await getSnapFile(snapFiles.auxiliaryFiles, path, encoding),
   };
 }
 
