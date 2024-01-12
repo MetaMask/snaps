@@ -40,6 +40,7 @@ export const ButtonStruct = assign(
  * @property variant - The style variant of the node, must be either 'primary' or 'secondary'.
  * @property value - The text content of the node, either as plain text, or as a
  * markdown string.
+ * @property buttonType - The type of the button, must be either 'button' or 'submit'.
  * @property name - An optional name to identify the button.
  */
 export type Button = Infer<typeof ButtonStruct>;

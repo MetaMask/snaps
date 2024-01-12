@@ -37,6 +37,16 @@ export const InputStruct = assign(
   }),
 );
 
+/**
+ * Am input node, that renders an input.
+ *
+ * @property type - The type of the node, must be the string 'input'.
+ * @property name - The name for the input.
+ * @property value - The value of the input.
+ * @property inputType - An optional type, either `text`, `password`, `number` or `search`.
+ * @property placeholder - An optional input placeholder.
+ * @property label - An optional input label.
+ */
 export type Input = Infer<typeof InputStruct>;
 
 /**
@@ -48,6 +58,7 @@ export type Input = Infer<typeof InputStruct>;
  * @param args.value - The value of the input.
  * @param args.inputType - An optional type, either `text`, `password`, `number` or `search`.
  * @param args.placeholder - An optional input placeholder.
+ * @param args.label - An optional input label.
  * @returns The input node as an object.
  * @example
  * const node = input({ name: 'myInput', });

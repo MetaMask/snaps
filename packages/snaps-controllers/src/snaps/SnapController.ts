@@ -2897,7 +2897,7 @@ export class SnapController extends BaseController<
    * @param result - The result of the RPC request.
    * @returns The UI components.
    */
-  #getResponseWithContent(
+  #getResponseContent(
     snapId: SnapId,
     result: { content: Component } | { id: string },
   ) {
@@ -2957,7 +2957,7 @@ export class SnapController extends BaseController<
 
           await this.#triggerPhishingListUpdate();
 
-          const content = this.#getResponseWithContent(snapId, result);
+          const content = this.#getResponseContent(snapId, result);
 
           validateComponentLinks(content, this.#checkPhishingList.bind(this));
         }
