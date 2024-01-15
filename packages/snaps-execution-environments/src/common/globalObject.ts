@@ -9,14 +9,6 @@ enum GlobalObjectNames {
   window = 'window',
   /* eslint-enable @typescript-eslint/naming-convention */
 }
-declare global {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-  interface Window {
-    // TODO: Improve and export only postMessage method instead of [any].
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    ReactNativeWebView: any;
-  }
-}
 
 let _rootRealmGlobal: typeof globalThis;
 let _rootRealmGlobalName: string;
