@@ -9,6 +9,7 @@ describe('getOptions', () => {
         "locale": "en",
         "secretRecoveryPhrase": "test test test test test test test test test test test ball",
         "state": null,
+        "unencryptedState": null,
       }
     `);
   });
@@ -23,6 +24,7 @@ describe('getOptions', () => {
         "locale": "nl",
         "secretRecoveryPhrase": "test test test test test test test test test test test ball",
         "state": null,
+        "unencryptedState": null,
       }
     `);
   });

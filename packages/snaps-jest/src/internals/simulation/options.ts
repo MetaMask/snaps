@@ -16,7 +16,10 @@ const SimulationOptionsStruct = object({
   secretRecoveryPhrase: defaulted(optional(string()), DEFAULT_SRP),
   locale: defaulted(optional(string()), DEFAULT_LOCALE),
   state: defaulted(optional(nullable(record(string(), JsonStruct))), null),
-  // TODO: Add unencryptedState field.
+  unencryptedState: defaulted(
+    optional(nullable(record(string(), JsonStruct))),
+    null,
+  ),
 });
 
 /**
