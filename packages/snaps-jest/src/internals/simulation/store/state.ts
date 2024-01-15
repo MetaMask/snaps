@@ -1,11 +1,7 @@
-import type { Json } from '@metamask/utils';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSelector, createSlice } from '@reduxjs/toolkit';
 
 import type { ApplicationState } from './store';
-
-// TODO: This should be just string.
-export type StateEntry = string | Record<string, Json>;
 
 /**
  * The Snap state object.
@@ -16,8 +12,8 @@ export type StateEntry = string | Record<string, Json>;
  * not have an unencrypted state.
  */
 export type State = {
-  encrypted: StateEntry | null;
-  unencrypted: StateEntry | null;
+  encrypted: string | null;
+  unencrypted: string | null;
 };
 
 /**
@@ -37,11 +33,9 @@ export const stateSlice = createSlice({
   reducers: {
     setState: (
       state,
-      action: PayloadAction<{ state: StateEntry | null; encrypted: boolean }>,
+      action: PayloadAction<{ state: string | null; encrypted: boolean }>,
     ) => {
       if (action.payload.encrypted) {
-        // @ts-expect-error - TS2589: Type instantiation is excessively deep and
-        // possibly infinite.
         state.encrypted = action.payload.state;
         return state;
       }

@@ -6,17 +6,13 @@ describe('stateSlice', () => {
       const state = stateSlice.reducer(
         undefined,
         setState({
-          state: {
-            foo: 'bar',
-          },
+          state: 'foo',
           encrypted: true,
         }),
       );
 
       expect(state).toStrictEqual({
-        encrypted: {
-          foo: 'bar',
-        },
+        encrypted: 'foo',
         unencrypted: null,
       });
     });
@@ -25,18 +21,14 @@ describe('stateSlice', () => {
       const state = stateSlice.reducer(
         undefined,
         setState({
-          state: {
-            foo: 'bar',
-          },
+          state: 'foo',
           encrypted: false,
         }),
       );
 
       expect(state).toStrictEqual({
         encrypted: null,
-        unencrypted: {
-          foo: 'bar',
-        },
+        unencrypted: 'foo',
       });
     });
   });
@@ -45,9 +37,7 @@ describe('stateSlice', () => {
     it('clears the encrypted state', () => {
       const state = stateSlice.reducer(
         {
-          encrypted: {
-            foo: 'bar',
-          },
+          encrypted: 'foo',
           unencrypted: null,
         },
         clearState({
@@ -65,9 +55,7 @@ describe('stateSlice', () => {
       const state = stateSlice.reducer(
         {
           encrypted: null,
-          unencrypted: {
-            foo: 'bar',
-          },
+          unencrypted: 'foo',
         },
         clearState({
           encrypted: false,
@@ -87,16 +75,12 @@ describe('getState', () => {
     // @ts-expect-error - The `state` parameter is only partially defined.
     const state = getState(true)({
       state: {
-        encrypted: {
-          foo: 'bar',
-        },
+        encrypted: 'foo',
         unencrypted: null,
       },
     });
 
-    expect(state).toStrictEqual({
-      foo: 'bar',
-    });
+    expect(state).toBe('foo');
   });
 
   it('gets the unencrypted state', () => {
@@ -104,14 +88,10 @@ describe('getState', () => {
     const state = getState(false)({
       state: {
         encrypted: null,
-        unencrypted: {
-          foo: 'bar',
-        },
+        unencrypted: 'foo',
       },
     });
 
-    expect(state).toStrictEqual({
-      foo: 'bar',
-    });
+    expect(state).toBe('foo');
   });
 });
