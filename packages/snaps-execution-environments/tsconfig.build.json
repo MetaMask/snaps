@@ -6,7 +6,7 @@
     "rootDir": "./src",
     "typeRoots": ["../../node_modules/@types", "./node_modules/@types"]
   },
-  "include": ["./src", "./src/openrpc.json"],
+  "include": ["./src", "package.json"],
   "exclude": [
     "**/*.test.ts",
     "**/*.test.browser.ts",
