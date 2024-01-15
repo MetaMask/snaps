@@ -30,6 +30,8 @@ const IFRAME_URL = `https://execution.metamask.io/${packageJson.version}/index.h
 export class ProxySnapExecutor {
   readonly #stream: BasePostMessageStream;
 
+  readonly #frameUrl: string;
+
   readonly jobs: Record<string, ExecutorJob> = {};
 
   /**
@@ -37,15 +39,17 @@ export class ProxySnapExecutor {
    * constructor.
    *
    * @param stream - The stream to use for communication.
+   * @param frameUrl - An optional URL for the iframe to use.
    * @returns The initialized executor.
    */
-  static initialize(stream: BasePostMessageStream) {
-    return new ProxySnapExecutor(stream);
+  static initialize(stream: BasePostMessageStream, frameUrl = IFRAME_URL) {
+    return new ProxySnapExecutor(stream, frameUrl);
   }
 
-  constructor(stream: BasePostMessageStream) {
+  constructor(stream: BasePostMessageStream, frameUrl: string) {
     this.#stream = stream;
     this.#stream.on('data', this.#onData.bind(this));
+    this.#frameUrl = frameUrl;
   }
 
   /**
@@ -91,7 +95,7 @@ export class ProxySnapExecutor {
    * @param jobId - The job ID.
    */
   async #initializeJob(jobId: string): Promise<ExecutorJob> {
-    const window = await createWindow(IFRAME_URL, jobId);
+    const window = await createWindow(this.#frameUrl, jobId);
     const jobStream = new WindowPostMessageStream({
       name: 'parent',
       target: 'child',

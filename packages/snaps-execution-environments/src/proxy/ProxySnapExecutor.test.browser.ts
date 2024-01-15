@@ -3,6 +3,7 @@ import { MockPostMessageStream } from '@metamask/snaps-utils/test-utils';
 import { ProxySnapExecutor } from './ProxySnapExecutor';
 
 const MOCK_JOB_ID = 'job-id';
+const IFRAME_URL = 'http://localhost:4568';
 
 /**
  * Write a message to the stream, wrapped with the job ID and frame URL.
@@ -56,7 +57,7 @@ describe('ProxySnapExecutor', () => {
   it('forwards messages to the iframe', async () => {
     const mockStream = new MockPostMessageStream();
 
-    ProxySnapExecutor.initialize(mockStream);
+    ProxySnapExecutor.initialize(mockStream, IFRAME_URL);
 
     writeMessage(mockStream, {
       name: 'command',
@@ -82,7 +83,7 @@ describe('ProxySnapExecutor', () => {
   it('terminates the iframe', async () => {
     const mockStream = new MockPostMessageStream();
 
-    const executor = ProxySnapExecutor.initialize(mockStream);
+    const executor = ProxySnapExecutor.initialize(mockStream, IFRAME_URL);
 
     // Send ping to ensure that the iframe is created.
     writeMessage(mockStream, {
