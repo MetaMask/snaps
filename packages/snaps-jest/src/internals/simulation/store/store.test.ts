@@ -8,6 +8,9 @@ describe('createStore', () => {
     expect(store).toBeDefined();
     expect(store.getState()).toMatchInlineSnapshot(`
       {
+        "mocks": {
+          "jsonRpc": {},
+        },
         "notifications": {
           "notifications": [],
         },
@@ -35,6 +38,9 @@ describe('createStore', () => {
     expect(store).toBeDefined();
     expect(store.getState()).toMatchInlineSnapshot(`
       {
+        "mocks": {
+          "jsonRpc": {},
+        },
         "notifications": {
           "notifications": [],
         },
@@ -62,6 +68,9 @@ describe('createStore', () => {
     expect(store).toBeDefined();
     expect(store.getState()).toMatchInlineSnapshot(`
       {
+        "mocks": {
+          "jsonRpc": {},
+        },
         "notifications": {
           "notifications": [],
         },

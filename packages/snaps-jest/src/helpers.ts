@@ -8,9 +8,14 @@ import {
   handleRequest,
   TransactionOptionsStruct,
   getEnvironment,
+  JsonRpcMockOptionsStruct,
 } from './internals';
 import type { InstallSnapOptions } from './internals';
-import type { Snap, SnapResponse } from './types';
+import {
+  addJsonRpcMock,
+  removeJsonRpcMock,
+} from './internals/simulation/store/mocks';
+import type { JsonRpcMockOptions, Snap, SnapResponse } from './types';
 
 const log = createModuleLogger(rootLogger, 'helpers');
 
@@ -234,6 +239,21 @@ export async function installSnap<
         handler: HandlerType.OnCronjob,
         request,
       });
+    },
+
+    mockJsonRpc(mock: JsonRpcMockOptions) {
+      log('Mocking JSON-RPC request %o.', mock);
+
+      const { method, result } = create(mock, JsonRpcMockOptionsStruct);
+      store.dispatch(addJsonRpcMock({ method, result }));
+
+      return {
+        unmock() {
+          log('Unmocking JSON-RPC request %o.', mock);
+
+          store.dispatch(removeJsonRpcMock(method));
+        },
+      };
     },
 
     close: async () => {

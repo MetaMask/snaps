@@ -530,4 +530,50 @@ describe('installSnap', () => {
       await closeServer();
     });
   });
+
+  describe('mockJsonRpc', () => {
+    it('mocks a JSON-RPC method', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+
+      const { snapId, close: closeServer } = await getMockServer({
+        sourceCode: `
+          module.exports.onRpcRequest = async () => {
+            return await ethereum.request({
+              method: 'foo',
+            });
+          };
+        `,
+        manifest: getSnapManifest({
+          initialPermissions: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            'endowment:ethereum-provider': {},
+          },
+        }),
+      });
+
+      const { request, close, mockJsonRpc } = await installSnap(snapId);
+      mockJsonRpc({
+        method: 'foo',
+        result: 'mock',
+      });
+
+      const response = await request({
+        method: 'foo',
+      });
+
+      expect(response).toStrictEqual(
+        expect.objectContaining({
+          response: {
+            result: 'mock',
+          },
+        }),
+      );
+
+      // `close` is deprecated because the Jest environment will automatically
+      // close the Snap when the test finishes. However, we still need to close
+      // the Snap in this test because it's run outside the Jest environment.
+      await close();
+      await closeServer();
+    });
+  });
 });

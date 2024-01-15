@@ -3,7 +3,7 @@ import type {
   EnumToUnion,
   Component,
 } from '@metamask/snaps-sdk';
-import type { JsonRpcId, JsonRpcParams } from '@metamask/utils';
+import type { Json, JsonRpcId, JsonRpcParams } from '@metamask/utils';
 import type { Infer } from 'superstruct';
 
 import type {
@@ -195,6 +195,22 @@ export type SnapRequestObject = {
 export type SnapRequest = Promise<SnapResponse> & SnapRequestObject;
 
 /**
+ * The options to use for mocking a JSON-RPC request.
+ */
+export type JsonRpcMockOptions = {
+  /**
+   * The JSON-RPC request method.
+   */
+  method: string;
+
+  /**
+   * The JSON-RPC response, which will be returned when a request with the
+   * specified method is sent.
+   */
+  result: Json;
+};
+
+/**
  * This is the main entry point to interact with the snap. It is returned by
  * {@link installSnap}, and has methods to send requests to the snap.
  *
@@ -238,6 +254,32 @@ export type Snap = {
    * @returns The response promise, with extra {@link SnapRequestObject} fields.
    */
   runCronjob(cronjob: CronjobOptions): SnapRequest;
+
+  /**
+   * Mock a JSON-RPC request. This will cause the snap to respond with the
+   * specified response when a request with the specified method is sent.
+   *
+   * @param mock - The mock options.
+   * @param mock.method - The JSON-RPC request method.
+   * @param mock.result - The JSON-RPC response, which will be returned when a
+   * request with the specified method is sent.
+   * @example
+   * import { installSnap } from '@metamask/snaps-jest';
+   *
+   * // In the test
+   * const snap = await installSnap();
+   * snap.mockJsonRpc({ method: 'eth_accounts', result: ['0x1234'] });
+   *
+   * // In the Snap
+   * const response =
+   *   await ethereum.request({ method: 'eth_accounts' }); // ['0x1234']
+   */
+  mockJsonRpc(mock: JsonRpcMockOptions): {
+    /**
+     * Remove the mock.
+     */
+    unmock(): void;
+  };
 
   /**
    * Close the page running the snap. This is mainly useful for cleaning up

@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 
 import type { SimulationOptions } from '../options';
+import { mocksSlice } from './mocks';
 import { notificationsSlice } from './notifications';
 import { setState, stateSlice } from './state';
 import { uiSlice } from './ui';
@@ -22,6 +23,7 @@ export function createStore(
   const sagaMiddleware = createSagaMiddleware();
   const store = configureStore({
     reducer: {
+      mocks: mocksSlice.reducer,
       notifications: notificationsSlice.reducer,
       state: stateSlice.reducer,
       ui: uiSlice.reducer,

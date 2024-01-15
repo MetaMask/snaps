@@ -152,6 +152,7 @@ export async function handleInstallSnap<
   });
 
   const engine = createJsonRpcEngine({
+    store,
     hooks,
     permissionMiddleware: permissionController.createPermissionMiddleware({
       origin: snapId,

@@ -1,8 +1,13 @@
+import { getMockOptions } from '@metamask/snaps-jest/test-utils';
+
+import { createStore } from '../store';
 import { createJsonRpcEngine } from './engine';
 
 describe('createJsonRpcEngine', () => {
   it('creates a JSON-RPC engine', async () => {
+    const { store } = createStore('password', getMockOptions());
     const engine = createJsonRpcEngine({
+      store,
       hooks: {
         getMnemonic: jest.fn(),
         getSnapFile: jest.fn().mockResolvedValue('foo'),

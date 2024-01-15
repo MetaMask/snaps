@@ -1,7 +1,7 @@
 import type { SagaIterator } from 'redux-saga';
 import { put, select } from 'redux-saga/effects';
 
-import type { RunSagaFunction, StateEntry } from '../../store';
+import type { RunSagaFunction } from '../../store';
 import { clearState, getState, setState } from '../../store';
 
 /**
@@ -45,7 +45,7 @@ export function getGetSnapStateMethodImplementation(runSaga: RunSagaFunction) {
  */
 function* updateSnapStateImplementation(
   _snapId: string,
-  newState: StateEntry,
+  newState: string,
   encrypted = true,
 ): SagaIterator<void> {
   yield put(setState({ state: newState, encrypted }));
