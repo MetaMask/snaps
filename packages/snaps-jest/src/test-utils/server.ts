@@ -1,3 +1,4 @@
+import type { SnapId } from '@metamask/snaps-sdk';
 import type {
   LocalizationFile,
   SnapManifest,
@@ -123,7 +124,7 @@ export async function getMockServer({
 
   const server = await listen(app, port);
   const address = server.address() as AddressInfo;
-  const snapId = `local:http://localhost:${address.port}`;
+  const snapId = `local:http://localhost:${address.port}` as SnapId;
 
   return {
     snapId,

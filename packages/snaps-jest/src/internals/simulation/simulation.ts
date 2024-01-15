@@ -5,24 +5,17 @@ import type {
 import { ControllerMessenger } from '@metamask/base-controller';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { mnemonicPhraseToBytes } from '@metamask/key-tree';
-import type {
-  AbstractExecutionService,
-  SnapLocation,
-} from '@metamask/snaps-controllers';
+import type { AbstractExecutionService } from '@metamask/snaps-controllers';
 import {
+  fetchSnap,
   detectSnapLocation,
   NodeThreadExecutionService,
   setupMultiplex,
 } from '@metamask/snaps-controllers';
 import { getEncryptionKey } from '@metamask/snaps-rpc-methods';
-import type { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
-import type {
-  FetchedSnapFiles,
-  LocalizationFile,
-  SnapManifest,
-  VirtualFile,
-} from '@metamask/snaps-utils';
-import { validateFetchedSnap, logError } from '@metamask/snaps-utils';
+import type { AuxiliaryFileEncoding, SnapId } from '@metamask/snaps-sdk';
+import type { FetchedSnapFiles } from '@metamask/snaps-utils';
+import { logError } from '@metamask/snaps-utils';
 import type { Duplex } from 'readable-stream';
 import { pipeline } from 'readable-stream';
 
@@ -133,7 +126,11 @@ export async function handleInstallSnap<
   const options = getOptions(rawOptions);
 
   // Fetch Snap files.
-  const snapFiles = await fetchSnap(snapId);
+  const location = detectSnapLocation(snapId, {
+    allowLocal: true,
+  });
+
+  const snapFiles = await fetchSnap(snapId as SnapId, location);
 
   // Create Redux store.
   const password = await getEncryptionKey({
@@ -223,76 +220,4 @@ export function getHooks(
     getSnapFile: async (path: string, encoding: AuxiliaryFileEncoding) =>
       await getSnapFile(snapFiles.auxiliaryFiles, path, encoding),
   };
-}
-
-/**
- * Fetch the Snap files for the given Snap ID.
- *
- * @param snapId - The ID of the Snap to fetch.
- * @returns The Snap files.
- * @throws If the Snap files are invalid.
- */
-export async function fetchSnap(snapId: string): Promise<FetchedSnapFiles> {
-  const location = detectSnapLocation(snapId, {
-    allowLocal: true,
-    allowHttp: true,
-  });
-
-  const manifest = await location.manifest();
-  const svgIcon =
-    manifest.result.source.location.npm.iconPath === undefined
-      ? undefined
-      : await location.fetch(manifest.result.source.location.npm.iconPath);
-
-  const files: FetchedSnapFiles = {
-    manifest,
-    sourceCode: await location.fetch(
-      manifest.result.source.location.npm.filePath,
-    ),
-    svgIcon,
-
-    auxiliaryFiles: await fetchAuxiliaryFiles(location, manifest.result),
-    localizationFiles: await fetchLocalizationFiles(location, manifest.result),
-  };
-
-  await validateFetchedSnap(files);
-  return files;
-}
-
-/**
- * Fetch the auxiliary files for the Snap.
- *
- * @param location - The Snap location.
- * @param manifest - The parsed manifest.
- * @returns The auxiliary files.
- */
-async function fetchAuxiliaryFiles(
-  location: SnapLocation,
-  manifest: SnapManifest,
-): Promise<VirtualFile[]> {
-  return manifest.source.files
-    ? await Promise.all(
-        manifest.source.files.map(async (filePath) => location.fetch(filePath)),
-      )
-    : [];
-}
-
-/**
- * Fetch the localization files for the Snap.
- *
- * @param location - The Snap location.
- * @param manifest - The parsed manifest.
- * @returns The localization files.
- */
-async function fetchLocalizationFiles(
-  location: SnapLocation,
-  manifest: SnapManifest,
-): Promise<VirtualFile<LocalizationFile>[]> {
-  return manifest.source.locales
-    ? await Promise.all(
-        manifest.source.locales.map(async (filePath) =>
-          location.fetchJson<LocalizationFile>(filePath),
-        ),
-      )
-    : [];
 }

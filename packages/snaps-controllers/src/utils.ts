@@ -1,3 +1,11 @@
+import type { SnapId } from '@metamask/snaps-sdk';
+import { getErrorMessage } from '@metamask/snaps-sdk';
+import {
+  encodeBase64,
+  getValidatedLocalizationFiles,
+  validateFetchedSnap,
+} from '@metamask/snaps-utils';
+
 import type { SnapLocation } from './snaps';
 import { Timer } from './snaps/Timer';
 
@@ -218,4 +226,61 @@ export async function getSnapFiles(
   return await Promise.all(
     files.map(async (filePath) => location.fetch(filePath)),
   );
+}
+
+/**
+ * Fetch the Snap manifest, source code, and any other files from the given
+ * location.
+ *
+ * @param snapId - The ID of the Snap to fetch.
+ * @param location - The location of the Snap.
+ * @returns The Snap files and location.
+ * @throws If the Snap files are invalid, or if the Snap could not be fetched.
+ */
+export async function fetchSnap(snapId: SnapId, location: SnapLocation) {
+  try {
+    const manifest = await location.manifest();
+    const sourceCode = await location.fetch(
+      manifest.result.source.location.npm.filePath,
+    );
+    const { iconPath } = manifest.result.source.location.npm;
+    const svgIcon = iconPath ? await location.fetch(iconPath) : undefined;
+
+    const auxiliaryFiles = await getSnapFiles(
+      location,
+      manifest.result.source.files,
+    );
+
+    await Promise.all(
+      auxiliaryFiles.map(async (file) => {
+        // This should still be safe
+        // eslint-disable-next-line require-atomic-updates
+        file.data.base64 = await encodeBase64(file);
+      }),
+    );
+
+    const localizationFiles = await getSnapFiles(
+      location,
+      manifest.result.source.locales,
+    );
+
+    const validatedLocalizationFiles =
+      getValidatedLocalizationFiles(localizationFiles);
+
+    const files = {
+      manifest,
+      sourceCode,
+      svgIcon,
+      auxiliaryFiles,
+      localizationFiles: validatedLocalizationFiles,
+    };
+
+    await validateFetchedSnap(files);
+
+    return files;
+  } catch (error) {
+    throw new Error(
+      `Failed to fetch snap "${snapId}": ${getErrorMessage(error)}.`,
+    );
+  }
 }

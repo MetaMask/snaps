@@ -69,11 +69,9 @@ import {
   SnapCaveatType,
   SnapStatus,
   SnapStatusEvents,
-  validateFetchedSnap,
   unwrapError,
   OnHomePageResponseStruct,
   getValidatedLocalizationFiles,
-  encodeBase64,
   VirtualFile,
   NpmSnapFileNames,
 } from '@metamask/snaps-utils';
@@ -107,7 +105,7 @@ import type {
   TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '../services';
-import { getSnapFiles, hasTimedOut, setDiff, withTimeout } from '../utils';
+import { fetchSnap, hasTimedOut, setDiff, withTimeout } from '../utils';
 import { handlerEndowments, SnapEndowments } from './endowments';
 import { getKeyringCaveatOrigins } from './endowments/keyring';
 import { getRpcCaveatOrigins } from './endowments/rpc';
@@ -209,23 +207,6 @@ export type SnapError = {
   message: string;
   code: number;
   data?: Json;
-};
-
-/**
- * The return type of {@link SnapController.#fetchSnap} and its sibling methods.
- */
-type FetchSnapResult = {
-  /**
-   * All files referenced in the manifest, including the manifest itself.
-   */
-  files: FetchedSnapFiles;
-
-  /**
-   * Location that was used to fetch the snap.
-   *
-   * Helpful if you want to pass it forward since files will be still cached.
-   */
-  location: SnapLocation;
 };
 
 // Types that probably should be defined elsewhere in prod
@@ -2140,10 +2121,8 @@ export class SnapController extends BaseController<
 
       const oldManifest = snap.manifest;
 
-      const newSnap = await this.#fetchSnap(snapId, location);
-
-      const { sourceCode: sourceCodeFile, manifest: manifestFile } =
-        newSnap.files;
+      const newSnap = await fetchSnap(snapId, location);
+      const { sourceCode: sourceCodeFile, manifest: manifestFile } = newSnap;
 
       const manifest = manifestFile.result;
 
@@ -2201,7 +2180,7 @@ export class SnapController extends BaseController<
       this.#set({
         origin,
         id: snapId,
-        files: newSnap.files,
+        files: newSnap,
         isUpdate: true,
       });
 
@@ -2313,8 +2292,8 @@ export class SnapController extends BaseController<
       // If fetching and setting the snap succeeds, this property will be set
       // to null in the authorize() method.
       runtime.installPromise = (async () => {
-        const fetchedSnap = await this.#fetchSnap(snapId, location);
-        const manifest = fetchedSnap.files.manifest.result;
+        const fetchedSnap = await fetchSnap(snapId, location);
+        const manifest = fetchedSnap.manifest.result;
         if (!satisfiesVersionRange(manifest.version, versionRange)) {
           throw new Error(
             `Version mismatch. Manifest for "${snapId}" specifies version "${manifest.version}" which doesn't satisfy requested version range "${versionRange}".`,
@@ -2328,7 +2307,7 @@ export class SnapController extends BaseController<
 
         return this.#set({
           ...args,
-          ...fetchedSnap,
+          files: fetchedSnap,
           id: snapId,
         });
       })();
@@ -2542,65 +2521,6 @@ export class SnapController extends BaseController<
     });
 
     return { ...snap, sourceCode };
-  }
-
-  /**
-   * Fetches the manifest and source code of a snap.
-   *
-   * @param snapId - The id of the Snap.
-   * @param location - Source from which snap will be fetched.
-   * @returns A tuple of the Snap manifest object and the Snap source code.
-   */
-  // TODO: Move this to a separate function and reuse in snaps-jest.
-  async #fetchSnap(
-    snapId: SnapId,
-    location: SnapLocation,
-  ): Promise<FetchSnapResult> {
-    try {
-      const manifest = await location.manifest();
-      const sourceCode = await location.fetch(
-        manifest.result.source.location.npm.filePath,
-      );
-      const { iconPath } = manifest.result.source.location.npm;
-      const svgIcon = iconPath ? await location.fetch(iconPath) : undefined;
-
-      const auxiliaryFiles = await getSnapFiles(
-        location,
-        manifest.result.source.files,
-      );
-
-      await Promise.all(
-        auxiliaryFiles.map(async (file) => {
-          // This should still be safe
-          // eslint-disable-next-line require-atomic-updates
-          file.data.base64 = await encodeBase64(file);
-        }),
-      );
-
-      const localizationFiles = await getSnapFiles(
-        location,
-        manifest.result.source.locales,
-      );
-
-      const validatedLocalizationFiles =
-        getValidatedLocalizationFiles(localizationFiles);
-
-      const files = {
-        manifest,
-        sourceCode,
-        svgIcon,
-        auxiliaryFiles,
-        localizationFiles: validatedLocalizationFiles,
-      };
-
-      await validateFetchedSnap(files);
-
-      return { files, location };
-    } catch (error) {
-      throw new Error(
-        `Failed to fetch snap "${snapId}": ${getErrorMessage(error)}.`,
-      );
-    }
   }
 
   #validateSnapPermissions(
