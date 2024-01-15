@@ -36,7 +36,9 @@ export function encryptImplementation(password: string, value: Json) {
 export function decryptImplementation(password: string, value: string) {
   const decryptedValue = JSON.parse(value);
   if (decryptedValue.password !== password) {
-    throw new Error('Incorrect password.');
+    throw new Error(
+      'Incorrect password. This is a bug in `@metamask/snaps-jest`, please report it.',
+    );
   }
 
   return decryptedValue.value;

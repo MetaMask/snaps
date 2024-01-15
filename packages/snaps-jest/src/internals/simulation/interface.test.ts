@@ -24,7 +24,7 @@ async function getResolve(runSaga: RunSagaFunction) {
 
 describe('getInterfaceResponse', () => {
   it('returns an `ok` function that resolves the user interface with `null` for alert dialogs', async () => {
-    const { runSaga } = createStore(getMockOptions());
+    const { runSaga } = createStore('password', getMockOptions());
     const response = getInterfaceResponse(
       runSaga,
       DialogType.Alert,
@@ -43,7 +43,7 @@ describe('getInterfaceResponse', () => {
   });
 
   it('returns an `ok` function that resolves the user interface with `true` for confirmation dialogs', async () => {
-    const { runSaga } = createStore(getMockOptions());
+    const { runSaga } = createStore('password', getMockOptions());
     const response = getInterfaceResponse(
       runSaga,
       DialogType.Confirmation,
@@ -63,7 +63,7 @@ describe('getInterfaceResponse', () => {
   });
 
   it('returns a `cancel` function that resolves the user interface with `false` for confirmation dialogs', async () => {
-    const { runSaga } = createStore(getMockOptions());
+    const { runSaga } = createStore('password', getMockOptions());
     const response = getInterfaceResponse(
       runSaga,
       DialogType.Confirmation,
@@ -84,7 +84,7 @@ describe('getInterfaceResponse', () => {
   });
 
   it('returns an `ok` function that resolves the user interface with the input value for prompt dialogs', async () => {
-    const { runSaga } = createStore(getMockOptions());
+    const { runSaga } = createStore('password', getMockOptions());
     const response = getInterfaceResponse(
       runSaga,
       DialogType.Prompt,
@@ -104,7 +104,7 @@ describe('getInterfaceResponse', () => {
   });
 
   it('returns an `ok` function that resolves the user interface with an empty string for prompt dialogs', async () => {
-    const { runSaga } = createStore(getMockOptions());
+    const { runSaga } = createStore('password', getMockOptions());
     const response = getInterfaceResponse(
       runSaga,
       DialogType.Prompt,
@@ -124,7 +124,7 @@ describe('getInterfaceResponse', () => {
   });
 
   it('returns a `cancel` function that resolves the user interface with `null` for prompt dialogs', async () => {
-    const { runSaga } = createStore(getMockOptions());
+    const { runSaga } = createStore('password', getMockOptions());
     const response = getInterfaceResponse(
       runSaga,
       DialogType.Prompt,
@@ -145,7 +145,7 @@ describe('getInterfaceResponse', () => {
   });
 
   it('throws an error for unknown dialog types', () => {
-    const { runSaga } = createStore(getMockOptions());
+    const { runSaga } = createStore('password', getMockOptions());
 
     expect(() => {
       // @ts-expect-error - Invalid dialog type.
@@ -156,7 +156,7 @@ describe('getInterfaceResponse', () => {
 
 describe('getInterface', () => {
   it('returns the current user interface, if any', async () => {
-    const { store, runSaga } = createStore(getMockOptions());
+    const { store, runSaga } = createStore('password', getMockOptions());
 
     const ui = { type: DialogType.Alert, content: text('foo') };
     store.dispatch(setInterface(ui));
@@ -169,7 +169,7 @@ describe('getInterface', () => {
   });
 
   it('waits for a user interface to be set if none is currently set', async () => {
-    const { store, runSaga } = createStore(getMockOptions());
+    const { store, runSaga } = createStore('password', getMockOptions());
 
     const promise = runSaga(getInterface, runSaga).toPromise();
 

@@ -14,7 +14,7 @@ export type GetAccountsHandlerHooks = {
 };
 
 /**
- * A mock handler for account related methods that always returns the firs
+ * A mock handler for account related methods that always returns the first
  * address for the selected secret recovery phrase.
  *
  * @param _request - Incoming JSON-RPC request. This is ignored for this

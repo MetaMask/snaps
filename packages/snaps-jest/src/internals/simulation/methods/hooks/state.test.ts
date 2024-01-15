@@ -10,7 +10,7 @@ import {
 
 describe('getGetSnapStateMethodImplementation', () => {
   it('returns the implementation of the `getSnapState` hook', async () => {
-    const { store, runSaga } = createStore(getMockOptions());
+    const { store, runSaga } = createStore('password', getMockOptions());
     const fn = getGetSnapStateMethodImplementation(runSaga);
 
     expect(await fn(MOCK_SNAP_ID)).toBeNull();
@@ -30,7 +30,7 @@ describe('getGetSnapStateMethodImplementation', () => {
   });
 
   it('returns the implementation of the `getSnapState` hook for unencrypted state', async () => {
-    const { store, runSaga } = createStore(getMockOptions());
+    const { store, runSaga } = createStore('password', getMockOptions());
     const fn = getGetSnapStateMethodImplementation(runSaga);
 
     expect(await fn(MOCK_SNAP_ID, false)).toBeNull();
@@ -52,7 +52,7 @@ describe('getGetSnapStateMethodImplementation', () => {
 
 describe('getUpdateSnapStateMethodImplementation', () => {
   it('returns the implementation of the `updateSnapState` hook', async () => {
-    const { store, runSaga } = createStore(getMockOptions());
+    const { store, runSaga } = createStore('password', getMockOptions());
     const fn = getUpdateSnapStateMethodImplementation(runSaga);
 
     expect(getState(true)(store.getState())).toBeNull();
@@ -65,7 +65,7 @@ describe('getUpdateSnapStateMethodImplementation', () => {
   });
 
   it('returns the implementation of the `updateSnapState` hook for unencrypted state', async () => {
-    const { store, runSaga } = createStore(getMockOptions());
+    const { store, runSaga } = createStore('password', getMockOptions());
     const fn = getUpdateSnapStateMethodImplementation(runSaga);
 
     expect(getState(false)(store.getState())).toBeNull();
@@ -80,7 +80,7 @@ describe('getUpdateSnapStateMethodImplementation', () => {
 
 describe('getClearSnapStateMethodImplementation', () => {
   it('returns the implementation of the `clearSnapState` hook', async () => {
-    const { store, runSaga } = createStore(getMockOptions());
+    const { store, runSaga } = createStore('password', getMockOptions());
     const fn = getClearSnapStateMethodImplementation(runSaga);
 
     store.dispatch(
@@ -98,7 +98,7 @@ describe('getClearSnapStateMethodImplementation', () => {
   });
 
   it('returns the implementation of the `clearSnapState` hook for unencrypted state', async () => {
-    const { store, runSaga } = createStore(getMockOptions());
+    const { store, runSaga } = createStore('password', getMockOptions());
     const fn = getClearSnapStateMethodImplementation(runSaga);
 
     store.dispatch(

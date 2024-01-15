@@ -3,7 +3,7 @@ import { createStore } from './store';
 
 describe('createStore', () => {
   it('creates a Redux store', () => {
-    const { store } = createStore(getMockOptions());
+    const { store } = createStore('password', getMockOptions());
 
     expect(store).toBeDefined();
     expect(store.getState()).toMatchInlineSnapshot(`
@@ -24,6 +24,7 @@ describe('createStore', () => {
 
   it('creates a Redux store with initial state', () => {
     const { store } = createStore(
+      'password',
       getMockOptions({
         state: {
           foo: 'bar',
@@ -38,7 +39,7 @@ describe('createStore', () => {
           "notifications": [],
         },
         "state": {
-          "encrypted": "{"foo":"bar"}",
+          "encrypted": "{"password":"password","value":{"foo":"bar"}}",
           "unencrypted": "{"foo":"bar"}",
         },
         "ui": {

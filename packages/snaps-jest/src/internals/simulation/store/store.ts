@@ -9,11 +9,12 @@ import { uiSlice } from './ui';
 /**
  * Create a Redux store.
  *
+ * @param password - The password to use for state encryption.
  * @param options - The simulation options.
  * @param options.state - The initial state for the Snap.
  * @returns A Redux store with the default state.
  */
-export function createStore({ state }: SimulationOptions) {
+export function createStore(password: string, { state }: SimulationOptions) {
   const sagaMiddleware = createSagaMiddleware();
   const store = configureStore({
     reducer: {
@@ -29,7 +30,10 @@ export function createStore({ state }: SimulationOptions) {
   if (state) {
     store.dispatch(
       setState({
-        state: JSON.stringify(state),
+        state: JSON.stringify({
+          password,
+          value: state,
+        }),
         encrypted: true,
       }),
     );
