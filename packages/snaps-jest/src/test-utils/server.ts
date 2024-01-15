@@ -1,13 +1,11 @@
 import type {
   LocalizationFile,
-  NpmSnapPackageJson,
   SnapManifest,
   VirtualFile,
 } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
   getMockSnapFilesWithUpdatedChecksum,
-  getPackageJson,
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
 import type { Application } from 'express';
@@ -31,12 +29,6 @@ export type MockServerOptions = {
   manifest?: SnapManifest;
 
   /**
-   * The package.json file to serve. Defaults to the result of calling
-   * {@link getPackageJson}. This can be used to serve a modified package.json.
-   */
-  packageJson?: NpmSnapPackageJson;
-
-  /**
    * The port to listen on. Defaults to `0`, which means that the OS will
    * choose a random available port.
    */
@@ -57,8 +49,7 @@ export type MockServerOptions = {
 };
 
 /**
- * Get a mock server that serves the given source code, manifest, and package
- * JSON.
+ * Get a mock server that serves the given source code, and manifest.
  *
  * The server will listen on a random available port. The returned object
  * contains the Snap ID of the server, as well as a `close` method that can be
@@ -70,9 +61,6 @@ export type MockServerOptions = {
  * @param options.manifest - The snap manifest to serve. Defaults to the result
  * of calling {@link getSnapManifest}. This can be used to serve a modified
  * manifest.
- * @param options.packageJson - The package.json file to serve. Defaults to the
- * result of calling {@link getPackageJson}. This can be used to serve a
- * modified package.json.
  * @param options.port - The port to listen on. Defaults to `0`, which means
  * that the OS will choose a random available port.
  * @param options.auxiliaryFiles - Auxiliary files to serve.
@@ -84,14 +72,12 @@ export async function getMockServer({
   manifest = getSnapManifest({
     initialPermissions: {},
   }),
-  packageJson = getPackageJson(),
   auxiliaryFiles = [],
   localizationFiles = [],
   port = 0,
 }: MockServerOptions = {}) {
   const snapFiles = await getMockSnapFilesWithUpdatedChecksum({
     manifest,
-    packageJson,
     sourceCode,
     auxiliaryFiles,
     localizationFiles: localizationFiles.map(({ file }) => file),
