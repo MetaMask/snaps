@@ -4,16 +4,20 @@ import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
 import { assert } from '@metamask/utils';
 
 import { installSnap } from './helpers';
+import type { InstallSnapOptions } from './internals';
 import { handleInstallSnap } from './internals';
 import { getMockServer } from './test-utils/server';
 
-Object.defineProperty(global, 'snapsEnvironment', {
-  value: {
-    installSnap: handleInstallSnap,
-  },
-});
-
 describe('installSnap', () => {
+  beforeEach(() => {
+    Object.defineProperty(global, 'snapsEnvironment', {
+      writable: true,
+      value: {
+        installSnap: handleInstallSnap,
+      },
+    });
+  });
+
   it('installs a Snap and returns the request functions', async () => {
     jest.spyOn(console, 'log').mockImplementation();
 
@@ -172,6 +176,59 @@ describe('installSnap', () => {
           result: {
             foo: 'bar',
           },
+        },
+      }),
+    );
+
+    // `close` is deprecated because the Jest environment will automatically
+    // close the Snap when the test finishes. However, we still need to close
+    // the Snap in this test because it's run outside the Jest environment.
+    await close();
+    await closeServer();
+  });
+
+  it('accepts the options as an object', async () => {
+    jest.spyOn(console, 'log').mockImplementation();
+
+    const { snapId, close: closeServer } = await getMockServer({
+      sourceCode: `
+        module.exports.onRpcRequest = async (request) => {
+          return await snap.request({
+            method: 'snap_getLocale',
+          });
+        };
+      `,
+      manifest: getSnapManifest({
+        initialPermissions: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_getLocale: {},
+        },
+      }),
+    });
+
+    Object.defineProperty(global, 'snapsEnvironment', {
+      writable: true,
+      value: {
+        installSnap: async (_: string, options: InstallSnapOptions<any>) => {
+          return handleInstallSnap(snapId, options);
+        },
+      },
+    });
+
+    const { request, close } = await installSnap({
+      options: {
+        locale: 'nl',
+      },
+    });
+
+    const response = await request({
+      method: 'hello',
+    });
+
+    expect(response).toStrictEqual(
+      expect.objectContaining({
+        response: {
+          result: 'nl',
         },
       }),
     );
