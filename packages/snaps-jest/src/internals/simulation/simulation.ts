@@ -16,13 +16,12 @@ import {
 } from '@metamask/snaps-controllers';
 import type { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
 import type {
+  FetchedSnapFiles,
   LocalizationFile,
-  NpmSnapPackageJson,
-  SnapFiles,
   SnapManifest,
   VirtualFile,
 } from '@metamask/snaps-utils';
-import { logError, validateNpmSnap } from '@metamask/snaps-utils';
+import { validateFetchedSnap, logError } from '@metamask/snaps-utils';
 import type { Duplex } from 'readable-stream';
 import { pipeline } from 'readable-stream';
 
@@ -210,7 +209,7 @@ export async function handleInstallSnap<
  */
 export function getHooks(
   options: SimulationOptions,
-  snapFiles: SnapFiles,
+  snapFiles: FetchedSnapFiles,
 ): MiddlewareHooks {
   return {
     getMnemonic: async () =>
@@ -227,7 +226,7 @@ export function getHooks(
  * @returns The Snap files.
  * @throws If the Snap files are invalid.
  */
-export async function fetchSnap(snapId: string): Promise<SnapFiles> {
+export async function fetchSnap(snapId: string): Promise<FetchedSnapFiles> {
   const location = detectSnapLocation(snapId, {
     allowLocal: true,
     allowHttp: true,
@@ -239,9 +238,8 @@ export async function fetchSnap(snapId: string): Promise<SnapFiles> {
       ? undefined
       : await location.fetch(manifest.result.source.location.npm.iconPath);
 
-  const files: SnapFiles = {
+  const files: FetchedSnapFiles = {
     manifest,
-    packageJson: await location.fetchJson<NpmSnapPackageJson>('package.json'),
     sourceCode: await location.fetch(
       manifest.result.source.location.npm.filePath,
     ),
@@ -251,7 +249,7 @@ export async function fetchSnap(snapId: string): Promise<SnapFiles> {
     localizationFiles: await fetchLocalizationFiles(location, manifest.result),
   };
 
-  await validateNpmSnap(files);
+  await validateFetchedSnap(files);
   return files;
 }
 

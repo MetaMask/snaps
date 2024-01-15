@@ -1,3 +1,5 @@
+import type { Json } from '@metamask/utils';
+
 /**
  * Mocks encrypting a value using a password. This is not a real encryption
  * method, but rather is used to simulate encryption in the tests.
@@ -7,12 +9,15 @@
  * without some mocking. We can switch to a real encryption method once we
  * drop support for Node.js 18.
  *
- * @param _password - The password to use.
+ * @param password - The password to use.
  * @param value - The value to encrypt.
  * @returns The "encrypted" value.
  */
-export function encryptImplementation(_password: string, value: string) {
-  return JSON.stringify(value);
+export function encryptImplementation(password: string, value: Json) {
+  return JSON.stringify({
+    password,
+    value,
+  });
 }
 
 /**
@@ -24,10 +29,15 @@ export function encryptImplementation(_password: string, value: string) {
  * without some mocking. We can switch to a real encryption method once we
  * drop support for Node.js 18.
  *
- * @param _password - The password to use.
+ * @param password - The password to use.
  * @param value - The value to decrypt.
  * @returns The "decrypted" value.
  */
-export function decryptImplementation(_password: string, value: string) {
-  return JSON.parse(value);
+export function decryptImplementation(password: string, value: string) {
+  const decryptedValue = JSON.parse(value);
+  if (decryptedValue.password !== password) {
+    throw new Error('Incorrect password.');
+  }
+
+  return decryptedValue.value;
 }

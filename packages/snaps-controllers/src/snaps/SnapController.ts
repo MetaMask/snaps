@@ -2551,6 +2551,7 @@ export class SnapController extends BaseController<
    * @param location - Source from which snap will be fetched.
    * @returns A tuple of the Snap manifest object and the Snap source code.
    */
+  // TODO: Move this to a separate function and reuse in snaps-jest.
   async #fetchSnap(
     snapId: SnapId,
     location: SnapLocation,

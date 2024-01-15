@@ -4,6 +4,7 @@ import { createSelector, createSlice } from '@reduxjs/toolkit';
 
 import type { ApplicationState } from './store';
 
+// TODO: This should be just string.
 export type StateEntry = string | Record<string, Json>;
 
 /**
