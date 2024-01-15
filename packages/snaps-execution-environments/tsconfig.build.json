@@ -3,10 +3,10 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/types",
-    "rootDir": "./",
+    "rootDir": "./src",
     "typeRoots": ["../../node_modules/@types", "./node_modules/@types"]
   },
-  "include": ["./src", "package.json"],
+  "include": ["./src"],
   "exclude": [
     "**/*.test.ts",
     "**/*.test.browser.ts",
