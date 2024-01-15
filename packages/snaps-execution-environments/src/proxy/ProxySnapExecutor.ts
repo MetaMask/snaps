@@ -4,11 +4,15 @@ import { createWindow, logError } from '@metamask/snaps-utils';
 import type { JsonRpcRequest } from '@metamask/utils';
 import { assert } from '@metamask/utils';
 
+import packageJson from '../../package.json';
+
 type ExecutorJob = {
   id: string;
   window: Window;
   stream: WindowPostMessageStream;
 };
+
+const IFRAME_URL = `https://execution.metamask.io/${packageJson.version}/index.html`;
 
 /**
  * A "proxy" snap executor that uses a level of indirection to execute snaps.
@@ -52,25 +56,15 @@ export class ProxySnapExecutor {
    * @param data - The message data.
    * @param data.data - The JSON-RPC request.
    * @param data.jobId - The job ID.
-   * @param data.extra - Extra data.
-   * @param data.extra.frameUrl - The URL to load in the iframe.
    */
-  #onData(data: {
-    data: JsonRpcRequest;
-    jobId: string;
-    extra: { frameUrl: string };
-  }) {
-    const {
-      jobId,
-      extra: { frameUrl },
-      data: request,
-    } = data;
+  #onData(data: { data: JsonRpcRequest; jobId: string }) {
+    const { jobId, data: request } = data;
 
     if (!this.jobs[jobId]) {
       // This ensures that a job is initialized before it is used. To avoid
       // code duplication, we call the `#onData` method again, which will
       // run the rest of the logic after initialization.
-      this.#initializeJob(jobId, frameUrl)
+      this.#initializeJob(jobId)
         .then(() => {
           this.#onData(data);
         })
@@ -95,10 +89,9 @@ export class ProxySnapExecutor {
    * Create a new iframe and set up a stream to communicate with it.
    *
    * @param jobId - The job ID.
-   * @param frameUrl - The URL to load in the iframe.
    */
-  async #initializeJob(jobId: string, frameUrl: string): Promise<ExecutorJob> {
-    const window = await createWindow(frameUrl, jobId);
+  async #initializeJob(jobId: string): Promise<ExecutorJob> {
+    const window = await createWindow(IFRAME_URL, jobId);
     const jobStream = new WindowPostMessageStream({
       name: 'parent',
       target: 'child',

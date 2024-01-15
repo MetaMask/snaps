@@ -5,7 +5,6 @@ import { ProxyExecutionService } from '../proxy/ProxyExecutionService';
 
 type OffscreenExecutionEnvironmentServiceArgs = {
   documentUrl: URL;
-  frameUrl: URL;
 } & ExecutionServiceArgs;
 
 export class OffscreenExecutionService extends ProxyExecutionService {
@@ -18,8 +17,6 @@ export class OffscreenExecutionService extends ProxyExecutionService {
    * @param args.documentUrl - The URL of the offscreen document to use as the
    * execution environment. This must be a URL relative to the location where
    * this is called. This cannot be a public (http(s)) URL.
-   * @param args.frameUrl - The URL of the iframe to load inside the offscreen
-   * document.
    * @param args.messenger - The messenger to use for communication with the
    * `SnapController`.
    * @param args.setupSnapProvider - The function to use to set up the snap
@@ -27,14 +24,12 @@ export class OffscreenExecutionService extends ProxyExecutionService {
    */
   constructor({
     documentUrl,
-    frameUrl,
     messenger,
     setupSnapProvider,
   }: OffscreenExecutionEnvironmentServiceArgs) {
     super({
       messenger,
       setupSnapProvider,
-      frameUrl,
       stream: new BrowserRuntimePostMessageStream({
         name: 'parent',
         target: 'child',

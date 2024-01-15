@@ -3,7 +3,6 @@ import { MockPostMessageStream } from '@metamask/snaps-utils/test-utils';
 import { ProxySnapExecutor } from './ProxySnapExecutor';
 
 const MOCK_JOB_ID = 'job-id';
-const IFRAME_URL = `http://localhost:4568`;
 
 /**
  * Write a message to the stream, wrapped with the job ID and frame URL.
@@ -18,9 +17,6 @@ function writeMessage(
   stream.write({
     jobId: MOCK_JOB_ID,
     data: message,
-    extra: {
-      frameUrl: IFRAME_URL,
-    },
   });
 }
 

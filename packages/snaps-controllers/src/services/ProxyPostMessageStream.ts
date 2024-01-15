@@ -22,22 +22,18 @@ export class ProxyPostMessageStream extends BasePostMessageStream {
 
   readonly #jobId: string;
 
-  readonly #extra?: Record<string, unknown>;
-
   /**
    * Initializes a new `ProxyPostMessageStream` instance.
    *
    * @param args - The constructor arguments.
    * @param args.stream - The underlying stream to use for communication.
    * @param args.jobId - The ID of the job this stream is associated with.
-   * @param args.extra - Extra data to include in the post message.
    */
-  constructor({ stream, jobId, extra }: ProxyPostMessageStreamArgs) {
+  constructor({ stream, jobId }: ProxyPostMessageStreamArgs) {
     super();
 
     this.#stream = stream;
     this.#jobId = jobId;
-    this.#extra = extra;
 
     this.#stream.on('data', this.#onData.bind(this));
   }
@@ -66,7 +62,6 @@ export class ProxyPostMessageStream extends BasePostMessageStream {
     this.#stream.write({
       jobId: this.#jobId,
       data,
-      extra: this.#extra,
     });
   }
 }

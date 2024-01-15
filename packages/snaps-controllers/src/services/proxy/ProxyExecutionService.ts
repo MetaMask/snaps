@@ -7,20 +7,15 @@ import { ProxyPostMessageStream } from '../ProxyPostMessageStream';
 
 type ProxyExecutionEnvironmentServiceArgs = {
   stream: BasePostMessageStream;
-  frameUrl: URL;
 } & ExecutionServiceArgs;
 
 export class ProxyExecutionService extends AbstractExecutionService<string> {
-  public readonly frameUrl: URL;
-
   readonly #stream: BasePostMessageStream;
 
   /**
    * Create a new proxy execution service.
    *
    * @param args - The constructor arguments.
-   * @param args.frameUrl - The URL of the iframe to load inside the proxy
-   * executor.
    * @param args.messenger - The messenger to use for communication with the
    * `SnapController`.
    * @param args.setupSnapProvider - The function to use to set up the snap
@@ -30,7 +25,6 @@ export class ProxyExecutionService extends AbstractExecutionService<string> {
    */
   constructor({
     stream,
-    frameUrl,
     messenger,
     setupSnapProvider,
   }: ProxyExecutionEnvironmentServiceArgs) {
@@ -40,7 +34,6 @@ export class ProxyExecutionService extends AbstractExecutionService<string> {
     });
 
     this.#stream = stream;
-    this.frameUrl = frameUrl;
   }
 
   /**
@@ -70,12 +63,6 @@ export class ProxyExecutionService extends AbstractExecutionService<string> {
   protected async initEnvStream(jobId: string) {
     const stream = new ProxyPostMessageStream({
       stream: this.#stream,
-      extra: {
-        // TODO: Rather than injecting the frame URL here, we should come up
-        // with a better way to do this. The frame URL is needed to avoid hard
-        // coding it in the execution environment.
-        frameUrl: this.frameUrl.toString(),
-      },
       jobId,
     });
 
