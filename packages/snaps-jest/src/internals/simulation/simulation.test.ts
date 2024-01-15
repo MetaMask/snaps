@@ -5,8 +5,7 @@ import { VirtualFile } from '@metamask/snaps-utils';
 import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
 import { stringToBytes } from '@metamask/utils';
 
-import { getMockOptions } from '../../test-utils';
-import { getMockServer } from '../../test-utils/server';
+import { getMockOptions, getMockServer } from '../../test-utils';
 import { DEFAULT_SRP } from './constants';
 import { fetchSnap, getHooks, handleInstallSnap } from './simulation';
 

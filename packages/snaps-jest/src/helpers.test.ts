@@ -6,7 +6,7 @@ import { assert } from '@metamask/utils';
 import { installSnap } from './helpers';
 import type { InstallSnapOptions } from './internals';
 import { handleInstallSnap } from './internals';
-import { getMockServer } from './test-utils/server';
+import { getMockServer } from './test-utils';
 
 describe('installSnap', () => {
   beforeEach(() => {
