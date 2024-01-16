@@ -17,6 +17,7 @@
     "typescript",
     "vite",
     "wdio-*",
-    "webdriverio"
+    "webdriverio",
+    "@metamask/snaps-execution-environments"
   ]
 }

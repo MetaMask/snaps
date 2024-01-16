@@ -1,9 +1,9 @@
 import { MockPostMessageStream } from '@metamask/snaps-utils/test-utils';
 
-import { OffscreenSnapExecutor } from './OffscreenSnapExecutor';
+import { ProxySnapExecutor } from './ProxySnapExecutor';
 
 const MOCK_JOB_ID = 'job-id';
-const IFRAME_URL = `http://localhost:4568`;
+const IFRAME_URL = 'http://localhost:4568';
 
 /**
  * Write a message to the stream, wrapped with the job ID and frame URL.
@@ -18,9 +18,6 @@ function writeMessage(
   stream.write({
     jobId: MOCK_JOB_ID,
     data: message,
-    extra: {
-      frameUrl: IFRAME_URL,
-    },
   });
 }
 
@@ -56,11 +53,11 @@ async function getResponse(
   });
 }
 
-describe('OffscreenSnapExecutor', () => {
+describe('ProxySnapExecutor', () => {
   it('forwards messages to the iframe', async () => {
     const mockStream = new MockPostMessageStream();
 
-    OffscreenSnapExecutor.initialize(mockStream);
+    ProxySnapExecutor.initialize(mockStream, IFRAME_URL);
 
     writeMessage(mockStream, {
       name: 'command',
@@ -86,7 +83,7 @@ describe('OffscreenSnapExecutor', () => {
   it('terminates the iframe', async () => {
     const mockStream = new MockPostMessageStream();
 
-    const executor = OffscreenSnapExecutor.initialize(mockStream);
+    const executor = ProxySnapExecutor.initialize(mockStream, IFRAME_URL);
 
     // Send ping to ensure that the iframe is created.
     writeMessage(mockStream, {

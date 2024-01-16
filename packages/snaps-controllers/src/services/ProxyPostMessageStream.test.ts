@@ -3,7 +3,6 @@ import { MockPostMessageStream, sleep } from '@metamask/snaps-utils/test-utils';
 import { ProxyPostMessageStream } from './ProxyPostMessageStream';
 
 const MOCK_JOB_ID = 'job-id';
-const MOCK_FRAME_URL = 'frame-url';
 
 describe('ProxyPostMessageStream', () => {
   it('wraps messages with an iframe url and job id', async () => {
@@ -13,9 +12,6 @@ describe('ProxyPostMessageStream', () => {
     const stream = new ProxyPostMessageStream({
       stream: mockStream,
       jobId: MOCK_JOB_ID,
-      extra: {
-        frameUrl: MOCK_FRAME_URL,
-      },
     });
 
     const message = { foo: 'bar' };
@@ -24,9 +20,6 @@ describe('ProxyPostMessageStream', () => {
     expect(write).toHaveBeenCalledWith({
       jobId: MOCK_JOB_ID,
       data: message,
-      extra: {
-        frameUrl: MOCK_FRAME_URL,
-      },
     });
 
     mockStream.destroy();

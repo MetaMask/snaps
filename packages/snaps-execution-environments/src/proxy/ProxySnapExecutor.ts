@@ -1,5 +1,7 @@
 import type { BasePostMessageStream } from '@metamask/post-message-stream';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import packageJson from '@metamask/snaps-execution-environments/package.json';
 import { createWindow, logError } from '@metamask/snaps-utils';
 import type { JsonRpcRequest } from '@metamask/utils';
 import { assert } from '@metamask/utils';
@@ -10,22 +12,25 @@ type ExecutorJob = {
   stream: WindowPostMessageStream;
 };
 
+const IFRAME_URL = `https://execution.metamask.io/${packageJson.version}/index.html`;
+
 /**
- * A snap executor using the Offscreen Documents API.
+ * A "proxy" snap executor that uses a level of indirection to execute snaps.
+ *
+ * Useful for multiple execution environments.
  *
  * This is not a traditional snap executor, as it does not execute snaps itself.
  * Instead, it creates an iframe window for each snap execution, and sends the
  * snap execution request to the iframe window. The iframe window is responsible
  * for executing the snap.
  *
- * Extensions can only have a single offscreen document, so this executor is
- * persisted between snap executions. The offscreen snap executor essentially
- * acts as a proxy between the extension and the iframe execution environment.
- *
- * @see https://developer.chrome.com/docs/extensions/reference/offscreen/
+ * This executor is persisted between snap executions. The executor essentially
+ * acts as a proxy between the client and the iframe execution environment.
  */
-export class OffscreenSnapExecutor {
+export class ProxySnapExecutor {
   readonly #stream: BasePostMessageStream;
+
+  readonly #frameUrl: string;
 
   readonly jobs: Record<string, ExecutorJob> = {};
 
@@ -34,15 +39,17 @@ export class OffscreenSnapExecutor {
    * constructor.
    *
    * @param stream - The stream to use for communication.
+   * @param frameUrl - An optional URL for the iframe to use.
    * @returns The initialized executor.
    */
-  static initialize(stream: BasePostMessageStream) {
-    return new OffscreenSnapExecutor(stream);
+  static initialize(stream: BasePostMessageStream, frameUrl = IFRAME_URL) {
+    return new ProxySnapExecutor(stream, frameUrl);
   }
 
-  constructor(stream: BasePostMessageStream) {
+  constructor(stream: BasePostMessageStream, frameUrl: string) {
     this.#stream = stream;
     this.#stream.on('data', this.#onData.bind(this));
+    this.#frameUrl = frameUrl;
   }
 
   /**
@@ -53,25 +60,15 @@ export class OffscreenSnapExecutor {
    * @param data - The message data.
    * @param data.data - The JSON-RPC request.
    * @param data.jobId - The job ID.
-   * @param data.extra - Extra data.
-   * @param data.extra.frameUrl - The URL to load in the iframe.
    */
-  #onData(data: {
-    data: JsonRpcRequest;
-    jobId: string;
-    extra: { frameUrl: string };
-  }) {
-    const {
-      jobId,
-      extra: { frameUrl },
-      data: request,
-    } = data;
+  #onData(data: { data: JsonRpcRequest; jobId: string }) {
+    const { jobId, data: request } = data;
 
     if (!this.jobs[jobId]) {
       // This ensures that a job is initialized before it is used. To avoid
       // code duplication, we call the `#onData` method again, which will
       // run the rest of the logic after initialization.
-      this.#initializeJob(jobId, frameUrl)
+      this.#initializeJob(jobId)
         .then(() => {
           this.#onData(data);
         })
@@ -96,10 +93,9 @@ export class OffscreenSnapExecutor {
    * Create a new iframe and set up a stream to communicate with it.
    *
    * @param jobId - The job ID.
-   * @param frameUrl - The URL to load in the iframe.
    */
-  async #initializeJob(jobId: string, frameUrl: string): Promise<ExecutorJob> {
-    const window = await createWindow(frameUrl, jobId);
+  async #initializeJob(jobId: string): Promise<ExecutorJob> {
+    const window = await createWindow(this.#frameUrl, jobId);
     const jobStream = new WindowPostMessageStream({
       name: 'parent',
       target: 'child',

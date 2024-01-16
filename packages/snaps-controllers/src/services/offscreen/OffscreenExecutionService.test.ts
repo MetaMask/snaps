@@ -11,7 +11,6 @@ import { getMockedFunction } from '../../test-utils/mock';
 import { OffscreenExecutionService } from './OffscreenExecutionService';
 
 const DOCUMENT_URL = new URL('https://foo');
-const FRAME_URL = new URL('https://bar');
 
 /**
  * Create a response message for the given request. This function assumes that
@@ -109,7 +108,6 @@ describe('OffscreenExecutionService', () => {
   it('can boot', async () => {
     const { service } = createService(OffscreenExecutionService, {
       documentUrl: DOCUMENT_URL,
-      frameUrl: FRAME_URL,
     });
 
     expect(service).toBeDefined();
@@ -119,7 +117,6 @@ describe('OffscreenExecutionService', () => {
   it('creates a document if it does not exist', async () => {
     const { service } = createService(OffscreenExecutionService, {
       documentUrl: DOCUMENT_URL,
-      frameUrl: FRAME_URL,
     });
 
     const hasDocument = chrome.offscreen.hasDocument as jest.MockedFunction<
@@ -161,7 +158,6 @@ describe('OffscreenExecutionService', () => {
   it('writes a termination command to the stream', async () => {
     const { service } = createService(OffscreenExecutionService, {
       documentUrl: DOCUMENT_URL,
-      frameUrl: FRAME_URL,
     });
 
     expect(
