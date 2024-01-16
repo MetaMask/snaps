@@ -111,7 +111,7 @@ describe('onRpcRequest', () => {
     it('returns the unencrypted state', async () => {
       const { request } = await installSnap({
         options: {
-          state: {
+          unencryptedState: {
             items: ['foo'],
           },
         },
