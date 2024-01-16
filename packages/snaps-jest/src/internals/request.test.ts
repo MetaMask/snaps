@@ -1,6 +1,6 @@
-import { getMockServer } from '@metamask/snaps-jest/test-utils';
 import { HandlerType } from '@metamask/snaps-utils';
 
+import { getMockServer } from '../test-utils';
 import { handleRequest } from './request';
 import { handleInstallSnap } from './simulation';
 
