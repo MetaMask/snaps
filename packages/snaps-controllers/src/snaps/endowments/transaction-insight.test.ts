@@ -18,7 +18,10 @@ describe('endowment:transaction-insight', () => {
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
       targetName: SnapEndowments.TransactionInsight,
-      allowedCaveats: [SnapCaveatType.TransactionOrigin],
+      allowedCaveats: [
+        SnapCaveatType.TransactionOrigin,
+        SnapCaveatType.MaxRequestTime,
+      ],
       endowmentGetter: expect.any(Function),
       validator: expect.any(Function),
       subjectTypes: [SubjectType.Snap],
@@ -41,7 +44,9 @@ describe('endowment:transaction-insight', () => {
         specification.validator({
           caveats: [{ type: 'foo', value: 'bar' }],
         }),
-      ).toThrow('Expected a single "transactionOrigin" caveat.');
+      ).toThrow(
+        'Expected the following caveats: "transactionOrigin", "maxRequestTime".',
+      );
 
       expect(() =>
         // @ts-expect-error Missing other required permission types.
@@ -51,7 +56,9 @@ describe('endowment:transaction-insight', () => {
             { type: 'transactionOrigin', value: [] },
           ],
         }),
-      ).toThrow('Expected a single "transactionOrigin" caveat.');
+      ).toThrow(
+        'Expected the following caveats: "transactionOrigin", "maxRequestTime".',
+      );
     });
   });
 });

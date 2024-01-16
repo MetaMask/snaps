@@ -41,7 +41,10 @@ const specificationBuilder: PermissionSpecificationBuilder<
   return {
     permissionType: PermissionType.Endowment,
     targetName: permissionName,
-    allowedCaveats: [SnapCaveatType.TransactionOrigin],
+    allowedCaveats: [
+      SnapCaveatType.TransactionOrigin,
+      SnapCaveatType.MaxRequestTime,
+    ],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
     validator: createGenericPermissionValidator([
       { type: SnapCaveatType.TransactionOrigin, optional: true },

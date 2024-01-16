@@ -41,7 +41,9 @@ describe('endowment:signature-insight', () => {
         specification.validator({
           caveats: [{ type: 'foo', value: 'bar' }],
         }),
-      ).toThrow('Expected a single "signatureOrigin" caveat.');
+      ).toThrow(
+        'Expected the following caveats: "signatureOrigin", "maxRequestTime".',
+      );
 
       expect(() =>
         // @ts-expect-error Missing other required permission types.
@@ -51,7 +53,9 @@ describe('endowment:signature-insight', () => {
             { type: 'signatureOrigin', value: [] },
           ],
         }),
-      ).toThrow('Expected a single "signatureOrigin" caveat.');
+      ).toThrow(
+        'Expected the following caveats: "signatureOrigin", "maxRequestTime".',
+      );
     });
   });
 });

@@ -16,7 +16,10 @@ describe('endowment:keyring', () => {
       permissionType: PermissionType.Endowment,
       targetName: SnapEndowments.Keyring,
       endowmentGetter: expect.any(Function),
-      allowedCaveats: [SnapCaveatType.KeyringOrigin],
+      allowedCaveats: [
+        SnapCaveatType.KeyringOrigin,
+        SnapCaveatType.MaxRequestTime,
+      ],
       subjectTypes: [SubjectType.Snap],
       validator: expect.any(Function),
     });
@@ -31,14 +34,18 @@ describe('endowment:keyring', () => {
           // @ts-expect-error Missing other required permission types.
           caveats: undefined,
         }),
-      ).toThrow('Expected a single "keyringOrigin" caveat.');
+      ).toThrow(
+        'Expected the following caveats: "keyringOrigin", "maxRequestTime".',
+      );
 
       expect(() =>
         // @ts-expect-error Missing other required permission types.
         specification.validator({
           caveats: [{ type: 'foo', value: 'bar' }],
         }),
-      ).toThrow('Expected a single "keyringOrigin" caveat.');
+      ).toThrow(
+        'Expected the following caveats: "keyringOrigin", "maxRequestTime".',
+      );
 
       expect(() =>
         // @ts-expect-error Missing other required permission types.
@@ -48,7 +55,9 @@ describe('endowment:keyring', () => {
             { type: 'keyringOrigin', value: { allowedOrgins: ['bar.com'] } },
           ],
         }),
-      ).toThrow('Expected a single "keyringOrigin" caveat.');
+      ).toThrow(
+        'Expected the following caveats: "keyringOrigin", "maxRequestTime".',
+      );
     });
   });
 });
