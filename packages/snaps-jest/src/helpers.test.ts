@@ -240,6 +240,47 @@ describe('installSnap', () => {
     await closeServer();
   });
 
+  it('works without options', async () => {
+    jest.spyOn(console, 'log').mockImplementation();
+
+    const { snapId, close: closeServer } = await getMockServer({
+      sourceCode: `
+        module.exports.onRpcRequest = async (request) => {
+          return 'Hello, world!';
+        };
+      `,
+    });
+
+    Object.defineProperty(global, 'snapsEnvironment', {
+      writable: true,
+      value: {
+        installSnap: async (_: string, options: InstallSnapOptions<any>) => {
+          return handleInstallSnap(snapId, options);
+        },
+      },
+    });
+
+    const { request, close } = await installSnap();
+
+    const response = await request({
+      method: 'hello',
+    });
+
+    expect(response).toStrictEqual(
+      expect.objectContaining({
+        response: {
+          result: 'Hello, world!',
+        },
+      }),
+    );
+
+    // `close` is deprecated because the Jest environment will automatically
+    // close the Snap when the test finishes. However, we still need to close
+    // the Snap in this test because it's run outside the Jest environment.
+    await close();
+    await closeServer();
+  });
+
   describe('request', () => {
     it('sends a JSON-RPC request to the Snap and returns the result', async () => {
       jest.spyOn(console, 'log').mockImplementation();
@@ -531,6 +572,79 @@ describe('installSnap', () => {
     });
   });
 
+  describe('sendTransaction', () => {
+    it('sends a transaction and returns the result', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+
+      const { snapId, close: closeServer } = await getMockServer({
+        sourceCode: `
+          module.exports.onTransaction = async ({ transaction }) => {
+            return {
+              content: {
+                type: 'text',
+                value: 'Hello, world! (value: ' + transaction.value + ')',
+              },
+            };
+          };
+         `,
+      });
+
+      const { sendTransaction, close } = await installSnap(snapId);
+      const response = await sendTransaction({
+        value: '0x1',
+      });
+
+      expect(response).toStrictEqual(
+        expect.objectContaining({
+          response: {
+            result: {
+              content: {
+                type: 'text',
+                value: 'Hello, world! (value: 0x01)',
+              },
+            },
+          },
+        }),
+      );
+
+      // `close` is deprecated because the Jest environment will automatically
+      // close the Snap when the test finishes. However, we still need to close
+      // the Snap in this test because it's run outside the Jest environment.
+      await close();
+      await closeServer();
+    });
+  });
+
+  describe('runCronjob', () => {
+    it('runs a cronjob and returns the result', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+
+      const { snapId, close: closeServer } = await getMockServer({
+        sourceCode: `
+          module.exports.onCronjob = async ({ request }) => {
+            return request.method;
+          };
+         `,
+      });
+
+      const { runCronjob, close } = await installSnap(snapId);
+      const response = await runCronjob({
+        method: 'foo',
+      });
+
+      expect(response).toStrictEqual(
+        expect.objectContaining({
+          response: {
+            result: 'foo',
+          },
+        }),
+      );
+
+      await close();
+      await closeServer();
+    });
+  });
+
   describe('mockJsonRpc', () => {
     it('mocks a JSON-RPC method', async () => {
       jest.spyOn(console, 'log').mockImplementation();
@@ -552,7 +666,7 @@ describe('installSnap', () => {
       });
 
       const { request, close, mockJsonRpc } = await installSnap(snapId);
-      mockJsonRpc({
+      const { unmock } = mockJsonRpc({
         method: 'foo',
         result: 'mock',
       });
@@ -565,6 +679,23 @@ describe('installSnap', () => {
         expect.objectContaining({
           response: {
             result: 'mock',
+          },
+        }),
+      );
+
+      unmock();
+
+      const unmockedResponse = await request({
+        method: 'foo',
+      });
+
+      expect(unmockedResponse).toStrictEqual(
+        expect.objectContaining({
+          response: {
+            error: expect.objectContaining({
+              code: -32601,
+              message: 'The method "foo" does not exist / is not available.',
+            }),
           },
         }),
       );

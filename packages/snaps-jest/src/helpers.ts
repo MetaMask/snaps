@@ -31,8 +31,8 @@ function getOptions<
     typeof AbstractExecutionService
   >,
 >(
-  snapId?: string | Partial<InstallSnapOptions<Service>>,
-  options: Partial<InstallSnapOptions<Service>> = {},
+  snapId: string | Partial<InstallSnapOptions<Service>> | undefined,
+  options: Partial<InstallSnapOptions<Service>>,
 ): [string | undefined, Partial<InstallSnapOptions<Service>>] {
   if (typeof snapId === 'object') {
     return [undefined, snapId];
