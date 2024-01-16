@@ -10,6 +10,7 @@
     "eslint-config-*",
     "eslint-plugin-*",
     "prettier-plugin-packagejson",
+    "redux",
     "ts-node",
     "typedoc",
     "typescript"

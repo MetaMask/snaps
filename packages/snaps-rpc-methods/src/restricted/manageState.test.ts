@@ -10,6 +10,7 @@ import {
 import { webcrypto } from 'crypto';
 
 import {
+  getEncryptionKey,
   getManageStateImplementation,
   getValidatedParams,
   specificationBuilder,
@@ -33,6 +34,17 @@ const ENCRYPTION_KEY =
 // Encryption key for `MOCK_LOCAL_SNAP_ID`.
 const OTHER_ENCRYPTION_KEY =
   '0x7cd340349a41e0f7af62a9d97c76e96b12485e0206791d6b5638dd59736af8f5';
+
+describe('getEncryptionKey', () => {
+  it('returns the encryption key for the snap ID', async () => {
+    const result = await getEncryptionKey({
+      mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE_BYTES,
+      snapId: MOCK_SNAP_ID,
+    });
+
+    expect(result).toBe(ENCRYPTION_KEY);
+  });
+});
 
 describe('snap_manageState', () => {
   const MOCK_SMALLER_STORAGE_SIZE_LIMIT = 10; // In bytes

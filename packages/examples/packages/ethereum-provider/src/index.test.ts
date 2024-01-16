@@ -3,7 +3,7 @@ import { installSnap } from '@metamask/snaps-jest';
 
 describe('onRpcRequest', () => {
   it('throws an error if the requested method does not exist', async () => {
-    const { request, close } = await installSnap();
+    const { request } = await installSnap();
 
     const response = await request({
       method: 'foo',
@@ -18,19 +18,17 @@ describe('onRpcRequest', () => {
         cause: null,
       },
     });
-
-    await close();
   });
 
   describe('getGasPrice', () => {
     const MOCK_GAS_PRICE = '0x387c64b64';
 
     it('returns the current gas price', async () => {
-      const { request, close, mockJsonRpc } = await installSnap();
+      const { request, mockJsonRpc } = await installSnap();
 
       // To avoid relying on the network, we mock the response from the Ethereum
       // provider.
-      await mockJsonRpc({
+      mockJsonRpc({
         method: 'eth_gasPrice',
         result: MOCK_GAS_PRICE,
       });
@@ -40,8 +38,6 @@ describe('onRpcRequest', () => {
       });
 
       expect(response).toRespondWith(MOCK_GAS_PRICE);
-
-      await close();
     });
   });
 
@@ -49,11 +45,11 @@ describe('onRpcRequest', () => {
     const MOCK_VERSION = '1'; // Ethereum Mainnet
 
     it('returns the current network version', async () => {
-      const { request, close, mockJsonRpc } = await installSnap();
+      const { request, mockJsonRpc } = await installSnap();
 
       // To avoid relying on the network, we mock the response from the Ethereum
       // provider.
-      await mockJsonRpc({
+      mockJsonRpc({
         method: 'net_version',
         result: MOCK_VERSION,
       });
@@ -63,14 +59,12 @@ describe('onRpcRequest', () => {
       });
 
       expect(response).toRespondWith(MOCK_VERSION);
-
-      await close();
     });
   });
 
   describe('getAccounts', () => {
     it('returns the addresses granted access to by the user', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const response = await request({
         method: 'getAccounts',
@@ -80,8 +74,6 @@ describe('onRpcRequest', () => {
       expect(response).toRespondWith([
         '0xc6d5a3c98ec9073b54fa0969957bd582e8d874bf',
       ]);
-
-      await close();
     });
   });
 });

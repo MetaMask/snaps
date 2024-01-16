@@ -3,7 +3,7 @@ import { installSnap } from '@metamask/snaps-jest';
 
 describe('onRpcRequest', () => {
   it('throws an error if the requested method does not exist', async () => {
-    const { request, close } = await installSnap();
+    const { request } = await installSnap();
 
     const response = await request({
       method: 'foo',
@@ -18,13 +18,11 @@ describe('onRpcRequest', () => {
         cause: null,
       },
     });
-
-    await close();
   });
 
   describe('hello', () => {
     it('returns "Hello from Browserify!"', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const response = await request({
         method: 'hello',
@@ -33,8 +31,6 @@ describe('onRpcRequest', () => {
       expect(response).toRespondWith(
         'Hello from the MetaMask Snaps CLI using Browserify!',
       );
-
-      await close();
     });
   });
 });

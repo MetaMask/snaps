@@ -3,13 +3,10 @@ import type {
   EnumToUnion,
   Component,
 } from '@metamask/snaps-sdk';
-import type { JsonRpcId, JsonRpcParams } from '@metamask/utils';
+import type { Json, JsonRpcId, JsonRpcParams } from '@metamask/utils';
 import type { Infer } from 'superstruct';
 
 import type {
-  Mock,
-  MockJsonRpcOptions,
-  MockOptions,
   SnapOptionsStruct,
   SnapResponseStruct,
   TransactionOptionsStruct,
@@ -42,30 +39,6 @@ declare module 'expect' {
   }
 }
 /* eslint-enable @typescript-eslint/consistent-type-definitions */
-
-/**
- * Deeply partialize a type.
- *
- * @template Type - The type to partialize.
- * @returns The deeply partialized type.
- * @example
- * ```ts
- * type Foo = {
- *   bar: {
- *     baz: string;
- *   };
- *   qux: number;
- * };
- *
- * type PartialFoo = DeepPartial<Foo>;
- * // { bar?: { baz?: string; }; qux?: number; }
- * ```
- */
-export type DeepPartial<Type> = {
-  [Key in keyof Type]?: Type[Key] extends Record<string, unknown>
-    ? DeepPartial<Type[Key]>
-    : Type[Key];
-};
 
 export type RequestOptions = {
   /**
@@ -222,18 +195,32 @@ export type SnapRequestObject = {
 export type SnapRequest = Promise<SnapResponse> & SnapRequestObject;
 
 /**
+ * The options to use for mocking a JSON-RPC request.
+ */
+export type JsonRpcMockOptions = {
+  /**
+   * The JSON-RPC request method.
+   */
+  method: string;
+
+  /**
+   * The JSON-RPC response, which will be returned when a request with the
+   * specified method is sent.
+   */
+  result: Json;
+};
+
+/**
  * This is the main entry point to interact with the snap. It is returned by
  * {@link installSnap}, and has methods to send requests to the snap.
  *
  * @example
- * ```ts
  * import { installSnap } from '@metamask/snaps-jest';
  *
  * const snap = await installSnap();
  * const response = await snap.request({ method: 'hello' });
  *
  * expect(response).toRespondWith('Hello, world!');
- * ```
  */
 export type Snap = {
   /**
@@ -269,33 +256,40 @@ export type Snap = {
   runCronjob(cronjob: CronjobOptions): SnapRequest;
 
   /**
+   * Mock a JSON-RPC request. This will cause the snap to respond with the
+   * specified response when a request with the specified method is sent.
+   *
+   * @param mock - The mock options.
+   * @param mock.method - The JSON-RPC request method.
+   * @param mock.result - The JSON-RPC response, which will be returned when a
+   * request with the specified method is sent.
+   * @example
+   * import { installSnap } from '@metamask/snaps-jest';
+   *
+   * // In the test
+   * const snap = await installSnap();
+   * snap.mockJsonRpc({ method: 'eth_accounts', result: ['0x1234'] });
+   *
+   * // In the Snap
+   * const response =
+   *   await ethereum.request({ method: 'eth_accounts' }); // ['0x1234']
+   */
+  mockJsonRpc(mock: JsonRpcMockOptions): {
+    /**
+     * Remove the mock.
+     */
+    unmock(): void;
+  };
+
+  /**
    * Close the page running the snap. This is mainly useful for cleaning up
    * the test environment, and calling it is not strictly necessary.
    *
    * @returns A promise that resolves when the page is closed.
+   * @deprecated Snaps are now automatically closed when the test ends. This
+   * method will be removed in a future release.
    */
-  // TODO: Find a way to do this automatically.
   close(): Promise<void>;
-
-  /**
-   * Enable network mocking for the snap.
-   *
-   * @param options - The options for the network mocking.
-   * @returns A {@link Mock} object, with an `unmock` function.
-   */
-  mock(options: DeepPartial<MockOptions>): Promise<Mock>;
-
-  /**
-   * Enable JSON-RPC provider mocking for the snap. This will mock any requests
-   * sent through the `ethereum` global, with the specified `method`.
-   *
-   * @param options - The options for the JSON-RPC mocking.
-   * @param options.method - The JSON-RPC method to mock, e.g.,
-   * `eth_blockNumber`.
-   * @param options.result - The JSON value to return.
-   * @returns A {@link Mock} object, with an `unmock` function.
-   */
-  mockJsonRpc(options: MockJsonRpcOptions): Promise<Mock>;
 };
 
 export type SnapResponse = Infer<typeof SnapResponseStruct>;

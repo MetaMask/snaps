@@ -5,7 +5,7 @@ import { assert } from '@metamask/utils';
 
 describe('onRpcRequest', () => {
   it('throws an error if the requested method does not exist', async () => {
-    const { request, close } = await installSnap();
+    const { request } = await installSnap();
 
     const response = await request({
       method: 'foo',
@@ -20,13 +20,11 @@ describe('onRpcRequest', () => {
         cause: null,
       },
     });
-
-    await close();
   });
 
   describe('showAlert', () => {
     it('shows an alert dialog', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const response = request({
         method: 'showAlert',
@@ -45,14 +43,12 @@ describe('onRpcRequest', () => {
       await ui.ok();
 
       expect(await response).toRespondWith(null);
-
-      await close();
     });
   });
 
   describe('showConfirmation', () => {
     it('shows a confirmation dialog', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const response = request({
         method: 'showConfirmation',
@@ -73,12 +69,10 @@ describe('onRpcRequest', () => {
       await ui.ok();
 
       expect(await response).toRespondWith(true);
-
-      await close();
     });
 
     it('responds with false when clicking cancel', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const response = request({
         method: 'showConfirmation',
@@ -89,14 +83,12 @@ describe('onRpcRequest', () => {
       await ui.cancel();
 
       expect(await response).toRespondWith(false);
-
-      await close();
     });
   });
 
   describe('showPrompt', () => {
     it('shows a prompt dialog', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const response = request({
         method: 'showPrompt',
@@ -117,12 +109,10 @@ describe('onRpcRequest', () => {
       await ui.ok('Hello, world!');
 
       expect(await response).toRespondWith('Hello, world!');
-
-      await close();
     });
 
     it('responds with null when clicking cancel', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const response = request({
         method: 'showPrompt',
@@ -133,8 +123,6 @@ describe('onRpcRequest', () => {
       await ui.cancel();
 
       expect(await response).toRespondWith(null);
-
-      await close();
     });
   });
 });

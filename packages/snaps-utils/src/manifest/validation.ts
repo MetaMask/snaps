@@ -145,6 +145,7 @@ export const ChainIdsStruct = array(ChainIdStruct);
 
 /* eslint-disable @typescript-eslint/naming-convention */
 export const PermissionsStruct = type({
+  'endowment:ethereum-provider': optional(object({})),
   'endowment:network-access': optional(object({})),
   'endowment:webassembly': optional(object({})),
   'endowment:signature-insight': optional(
@@ -179,6 +180,7 @@ export const PermissionsStruct = type({
     ),
   ),
   snap_getEntropy: optional(object({})),
+  snap_getLocale: optional(object({})),
   wallet_snap: optional(SnapIdsStruct),
 });
 /* eslint-enable @typescript-eslint/naming-convention */

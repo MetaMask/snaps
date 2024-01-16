@@ -148,6 +148,11 @@ export const SnapOptionsStruct = object({
   timeout: defaulted(optional(number()), 1000),
 });
 
+export const JsonRpcMockOptionsStruct = object({
+  method: string(),
+  result: JsonStruct,
+});
+
 export const InterfaceStruct = type({
   content: optional(ComponentStruct),
 });
