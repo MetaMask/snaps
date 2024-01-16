@@ -14,6 +14,7 @@ import { assertIsRpcOrigins, SnapCaveatType } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import { hasProperty, isPlainObject, assert } from '@metamask/utils';
 
+import { createGenericPermissionValidator } from './caveats';
 import { SnapEndowments } from './enum';
 
 const targetName = SnapEndowments.Rpc;
@@ -45,18 +46,12 @@ const specificationBuilder: PermissionSpecificationBuilder<
   return {
     permissionType: PermissionType.Endowment,
     targetName,
-    allowedCaveats: [SnapCaveatType.RpcOrigin],
+    allowedCaveats: [SnapCaveatType.RpcOrigin, SnapCaveatType.MaxRequestTime],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
-    validator: ({ caveats }) => {
-      if (
-        caveats?.length !== 1 ||
-        caveats[0].type !== SnapCaveatType.RpcOrigin
-      ) {
-        throw rpcErrors.invalidParams({
-          message: `Expected a single "${SnapCaveatType.RpcOrigin}" caveat.`,
-        });
-      }
-    },
+    validator: createGenericPermissionValidator([
+      { type: SnapCaveatType.RpcOrigin },
+      { type: SnapCaveatType.MaxRequestTime, optional: true },
+    ]),
     subjectTypes: [SubjectType.Snap],
   };
 };

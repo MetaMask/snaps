@@ -43,8 +43,14 @@ export enum SnapCaveatType {
    * Caveat specifying the CAIP-2 chain IDs that a snap can service, currently limited to `endowment:name-lookup`.
    */
   ChainIds = 'chainIds',
+
   /**
    * Caveat specifying the input that a name lookup snap can service, currently limited to `endowment:name-lookup`.
    */
   LookupMatchers = 'lookupMatchers',
+
+  /**
+   * Caveat specifying the max request time for a handler endowment.
+   */
+  MaxRequestTime = 'maxRequestTime',
 }

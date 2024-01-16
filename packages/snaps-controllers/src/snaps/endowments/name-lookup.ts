@@ -52,11 +52,12 @@ const specificationBuilder: PermissionSpecificationBuilder<
   return {
     permissionType: PermissionType.Endowment,
     targetName: permissionName,
-    allowedCaveats: [SnapCaveatType.ChainIds, SnapCaveatType.LookupMatchers],
+    allowedCaveats: [SnapCaveatType.ChainIds, SnapCaveatType.LookupMatchers, SnapCaveatType.MaxRequestTime],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
     validator: createGenericPermissionValidator([
       { type: SnapCaveatType.ChainIds, optional: true },
       { type: SnapCaveatType.LookupMatchers, optional: true },
+      { type: SnapCaveatType.MaxRequestTime, optional: true },
     ]),
     subjectTypes: [SubjectType.Snap],
   };

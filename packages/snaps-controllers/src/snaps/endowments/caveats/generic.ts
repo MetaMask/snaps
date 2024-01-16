@@ -1,5 +1,13 @@
-import type { PermissionValidatorConstraint } from '@metamask/permission-controller';
+import type {
+  PermissionConstraint,
+  PermissionValidatorConstraint,
+} from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
+import { Json } from '@metamask/utils';
+
+export type CaveatMapperReturnValue = Pick<PermissionConstraint, 'caveats'>;
+
+export type CaveatMapperFunction = (value: Json) => CaveatMapperReturnValue;
 
 /**
  * Create a generic permission validator that validates the presence of certain caveats.

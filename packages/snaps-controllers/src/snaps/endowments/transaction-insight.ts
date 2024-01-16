@@ -13,6 +13,7 @@ import { SnapCaveatType } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import { assert, hasProperty, isObject, isPlainObject } from '@metamask/utils';
 
+import { createGenericPermissionValidator } from './caveats';
 import { SnapEndowments } from './enum';
 
 const permissionName = SnapEndowments.TransactionInsight;
@@ -42,17 +43,10 @@ const specificationBuilder: PermissionSpecificationBuilder<
     targetName: permissionName,
     allowedCaveats: [SnapCaveatType.TransactionOrigin],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
-    validator: ({ caveats }) => {
-      if (
-        (caveats !== null && caveats?.length > 1) ||
-        (caveats?.length === 1 &&
-          caveats[0].type !== SnapCaveatType.TransactionOrigin)
-      ) {
-        throw rpcErrors.invalidParams({
-          message: `Expected a single "${SnapCaveatType.TransactionOrigin}" caveat.`,
-        });
-      }
-    },
+    validator: createGenericPermissionValidator([
+      { type: SnapCaveatType.TransactionOrigin, optional: true },
+      { type: SnapCaveatType.MaxRequestTime, optional: true },
+    ]),
     subjectTypes: [SubjectType.Snap],
   };
 };
