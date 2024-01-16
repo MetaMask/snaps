@@ -2,6 +2,7 @@ import { JsonRpcError } from '@metamask/rpc-errors';
 import { HandlerType } from '@metamask/snaps-utils';
 
 import { createService, MOCK_BLOCK_NUMBER } from '../../test-utils';
+import { delay } from '../../utils';
 import type { SnapErrorJson } from '../ExecutionService';
 import { NodeThreadExecutionService } from './NodeThreadExecutionService';
 
@@ -210,6 +211,8 @@ describe('NodeThreadExecutionService', () => {
       `,
       endowments: ['console'],
     });
+
+    await delay(100);
 
     expect(result).toBe('OK');
     expect(log).toHaveBeenCalledWith(
