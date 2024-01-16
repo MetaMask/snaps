@@ -5,7 +5,6 @@ import { ProxyExecutionService } from '../proxy/ProxyExecutionService';
 
 type WebviewExecutionServiceArgs = {
   stream: BasePostMessageStream;
-  frameUrl: URL;
 } & ExecutionServiceArgs;
 
 export class WebviewExecutionService extends ProxyExecutionService {
@@ -13,13 +12,11 @@ export class WebviewExecutionService extends ProxyExecutionService {
     messenger,
     setupSnapProvider,
     stream,
-    frameUrl,
   }: WebviewExecutionServiceArgs) {
     super({
       messenger,
       setupSnapProvider,
       stream,
-      frameUrl,
     });
   }
 }
