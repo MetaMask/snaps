@@ -1,7 +1,7 @@
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
 import type { HandlerType } from '@metamask/snaps-utils';
 import { unwrapError } from '@metamask/snaps-utils';
-import { getSafeJson, isJsonRpcError, isPlainObject } from '@metamask/utils';
+import { getSafeJson, isPlainObject } from '@metamask/utils';
 import { nanoid } from '@reduxjs/toolkit';
 
 import type { RequestOptions, SnapRequest } from '../types';
@@ -63,18 +63,6 @@ export function handleRequest({
       store.dispatch(clearNotifications());
 
       const content = isPlainObject(result) ? result.content : undefined;
-
-      if (isJsonRpcError(result)) {
-        return {
-          id: String(id),
-          response: {
-            error: getSafeJson(result),
-          },
-          notifications,
-          content,
-        };
-      }
-
       return {
         id: String(id),
         response: {

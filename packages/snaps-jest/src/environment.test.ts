@@ -4,7 +4,7 @@ import type {
 } from '@jest/environment';
 import { resolve } from 'path';
 
-import { SnapsEnvironment } from './environment';
+import Environment, { SnapsEnvironment } from './environment';
 import { DEFAULT_GLOBAL_CONFIG, DEFAULT_PROJECT_CONFIG } from './test-utils';
 
 const ENVIRONMENT_CONFIG: JestEnvironmentConfig = {
@@ -26,6 +26,10 @@ const ENVIRONMENT_CONTEXT: EnvironmentContext = {
 };
 
 describe('SnapsEnvironment', () => {
+  it('is exported as a default export', () => {
+    expect(Environment).toBe(SnapsEnvironment);
+  });
+
   it('starts a server if enabled', async () => {
     const environment = new SnapsEnvironment(
       ENVIRONMENT_CONFIG,
