@@ -4,7 +4,7 @@ import type { Json } from '@metamask/utils';
 
 import {
   createMaxRequestTimeMapper,
-  getMaxRequestTimeCaveat,
+  getMaxRequestTimeCaveatMapper,
   maxRequestTimeCaveatSpecifications,
 } from './caveats';
 import {
@@ -91,8 +91,8 @@ export const endowmentCaveatMappers: Record<
   [signatureInsightEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
     getSignatureInsightCaveatMapper,
   ),
-  [lifecycleHooksEndowmentBuilder.targetName]: getMaxRequestTimeCaveat,
-  [homePageEndowmentBuilder.targetName]: getMaxRequestTimeCaveat,
+  [lifecycleHooksEndowmentBuilder.targetName]: getMaxRequestTimeCaveatMapper,
+  [homePageEndowmentBuilder.targetName]: getMaxRequestTimeCaveatMapper,
 };
 
 // We allow null because a permitted handler does not have an endowment
