@@ -194,6 +194,7 @@
         "external:../snaps-sdk/src/types/handlers/lifecycle.ts": true,
         "external:../snaps-sdk/src/types/handlers/name-lookup.ts": true,
         "external:../snaps-sdk/src/types/handlers/rpc-request.ts": true,
+        "external:../snaps-sdk/src/types/handlers/signature.ts": true,
         "external:../snaps-sdk/src/types/handlers/transaction.ts": true
       }
     },
@@ -214,6 +215,7 @@
         "external:../snaps-sdk/src/types/methods/get-bip32-entropy.ts": true,
         "external:../snaps-sdk/src/types/methods/get-bip32-public-key.ts": true,
         "external:../snaps-sdk/src/types/methods/get-bip44-entropy.ts": true,
+        "external:../snaps-sdk/src/types/methods/get-client-status.ts": true,
         "external:../snaps-sdk/src/types/methods/get-entropy.ts": true,
         "external:../snaps-sdk/src/types/methods/get-file.ts": true,
         "external:../snaps-sdk/src/types/methods/get-locale.ts": true,
