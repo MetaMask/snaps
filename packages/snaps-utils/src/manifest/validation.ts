@@ -169,7 +169,7 @@ export const MaxRequestTimeStruct = size(
 
 // Utility type to union with for all handler structs
 export const HandlerCaveatsStruct = object({
-  maxRequestTime: MaxRequestTimeStruct,
+  maxRequestTime: optional(MaxRequestTimeStruct),
 });
 
 export type HandlerCaveats = Infer<typeof HandlerCaveatsStruct>;
@@ -177,18 +177,18 @@ export type HandlerCaveats = Infer<typeof HandlerCaveatsStruct>;
 /* eslint-disable @typescript-eslint/naming-convention */
 export const PermissionsStruct = type({
   'endowment:cronjob': optional(
-    union([
+    intersection([
       HandlerCaveatsStruct,
       object({ jobs: CronjobSpecificationArrayStruct }),
     ]),
   ),
   'endowment:ethereum-provider': optional(object({})),
   'endowment:keyring': optional(
-    union([HandlerCaveatsStruct, KeyringOriginsStruct]),
+    intersection([HandlerCaveatsStruct, KeyringOriginsStruct]),
   ),
   'endowment:lifecycle-hooks': optional(HandlerCaveatsStruct),
   'endowment:name-lookup': optional(
-    union([
+    intersection([
       HandlerCaveatsStruct,
       object({
         chains: optional(ChainIdsStruct),
@@ -200,7 +200,7 @@ export const PermissionsStruct = type({
   'endowment:page-home': optional(HandlerCaveatsStruct),
   'endowment:rpc': optional(RpcOriginsStruct),
   'endowment:signature-insight': optional(
-    union([
+    intersection([
       HandlerCaveatsStruct,
       object({
         allowSignatureOrigin: optional(boolean()),
@@ -208,7 +208,7 @@ export const PermissionsStruct = type({
     ]),
   ),
   'endowment:transaction-insight': optional(
-    union([
+    intersection([
       HandlerCaveatsStruct,
       object({
         allowTransactionOrigin: optional(boolean()),
