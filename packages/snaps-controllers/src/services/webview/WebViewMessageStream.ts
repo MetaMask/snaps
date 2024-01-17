@@ -1,0 +1,101 @@
+import type { PostMessageEvent } from '@metamask/post-message-stream';
+import { BasePostMessageStream } from '@metamask/post-message-stream';
+import { isValidStreamMessage } from '@metamask/post-message-stream/dist/utils';
+import { logError } from '@metamask/snaps-utils';
+import { assert } from '@metamask/utils';
+
+// TBD
+export type WebViewInterface = {
+  injectJavaScript(js: string): void;
+  addEventListener(
+    type: 'message',
+    listener: (event: MessageEvent) => void,
+  ): void;
+  removeEventListener(
+    type: 'message',
+    listener: (event: MessageEvent) => void,
+  ): void;
+};
+
+type WebViewStreamArgs = {
+  name: string;
+  target: string;
+  getWebView: () => Promise<WebViewInterface>;
+};
+
+/**
+ * A special postMessage stream used to interface with a WebView.
+ */
+
+export class WebViewMessageStream extends BasePostMessageStream {
+  #name;
+
+  #target;
+
+  #webView: WebViewInterface | undefined;
+
+  /**
+   * Creates a stream for communicating with other streams inside a WebView.
+   *
+   * @param args - Options bag.
+   * @param args.name - The name of the stream. Used to differentiate between
+   * multiple streams sharing the same window object.
+   * @param args.target - The name of the stream to exchange messages with.
+   * @param args.getWebView - A asynchronous getter for the webview.
+   */
+  constructor({ name, target, getWebView }: WebViewStreamArgs) {
+    super();
+
+    this.#name = name;
+    this.#target = target;
+
+    this._onMessage = this._onMessage.bind(this);
+
+    // This is a bit atypical from other post-message streams.
+    // We have to wait for the WebView to fully load before we can continue using the stream.
+    getWebView()
+      .then((webView) => {
+        this.#webView = webView;
+        webView.addEventListener(
+          'message',
+          (event: MessageEvent<PostMessageEvent>) =>
+            this._onMessage(event as any),
+        );
+        this._handshake();
+      })
+      .catch((error) => {
+        logError(error);
+      });
+  }
+
+  protected _postMessage(data: unknown): void {
+    assert(this.#webView);
+    this.#webView.injectJavaScript(
+      `window.postMessage(${JSON.stringify({
+        target: this.#target,
+        data,
+      })})`,
+    );
+  }
+
+  private _onMessage(event: PostMessageEvent): void {
+    const message = JSON.parse(event.data as string);
+
+    // Notice that we don't check targetWindow or targetOrigin here.
+    // This doesn't seem possible to do in RN.
+    // TODO: Review whether we are fine with this before using in production.
+    if (!isValidStreamMessage(message) || message.target !== this.#name) {
+      return;
+    }
+
+    this._onData(message.data);
+  }
+
+  _destroy() {
+    assert(this.#webView);
+    this.#webView.removeEventListener(
+      'message',
+      (event: MessageEvent<PostMessageEvent>) => this._onMessage(event as any),
+    );
+  }
+}
