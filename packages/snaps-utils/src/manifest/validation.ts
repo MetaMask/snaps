@@ -26,6 +26,7 @@ import {
   type,
   union,
   intersection,
+  assign,
 } from 'superstruct';
 
 import { isEqual } from '../array';
@@ -177,43 +178,43 @@ export type HandlerCaveats = Infer<typeof HandlerCaveatsStruct>;
 /* eslint-disable @typescript-eslint/naming-convention */
 export const PermissionsStruct = type({
   'endowment:cronjob': optional(
-    intersection([
+    assign(
       HandlerCaveatsStruct,
       object({ jobs: CronjobSpecificationArrayStruct }),
-    ]),
+    ),
   ),
   'endowment:ethereum-provider': optional(object({})),
   'endowment:keyring': optional(
-    intersection([HandlerCaveatsStruct, KeyringOriginsStruct]),
+    assign(HandlerCaveatsStruct, KeyringOriginsStruct),
   ),
   'endowment:lifecycle-hooks': optional(HandlerCaveatsStruct),
   'endowment:name-lookup': optional(
-    intersection([
+    assign(
       HandlerCaveatsStruct,
       object({
         chains: optional(ChainIdsStruct),
         matchers: optional(LookupMatchersStruct),
       }),
-    ]),
+    ),
   ),
   'endowment:network-access': optional(object({})),
   'endowment:page-home': optional(HandlerCaveatsStruct),
   'endowment:rpc': optional(RpcOriginsStruct),
   'endowment:signature-insight': optional(
-    intersection([
+    assign(
       HandlerCaveatsStruct,
       object({
         allowSignatureOrigin: optional(boolean()),
       }),
-    ]),
+    ),
   ),
   'endowment:transaction-insight': optional(
-    intersection([
+    assign(
       HandlerCaveatsStruct,
       object({
         allowTransactionOrigin: optional(boolean()),
       }),
-    ]),
+    ),
   ),
   'endowment:webassembly': optional(object({})),
   snap_dialog: optional(object({})),
