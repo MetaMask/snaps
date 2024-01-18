@@ -6,15 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [5.2.0]
-### Added
-- Add support for initial connections ([#2048](https://github.com/MetaMask/snaps/pull/2048))
-- Add support for preinstalled snaps ([#2008](https://github.com/MetaMask/snaps/pull/2008))
-- Add support for signature insights ([#2074](https://github.com/MetaMask/snaps/pull/2074))
-
-### Changed
-- Bump several MetaMask dependencies ([#2086](https://github.com/MetaMask/snaps/pull/2086), [#2100](https://github.com/MetaMask/snaps/pull/2100))
-
 ## [5.1.2]
 ### Fixed
 - Fix missing `global` during snap evaluation ([#2072](https://github.com/MetaMask/snaps/pull/2072))
@@ -151,8 +142,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@5.2.0...HEAD
-[5.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@5.1.2...@metamask/snaps-utils@5.2.0
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@5.1.2...HEAD
 [5.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@5.1.1...@metamask/snaps-utils@5.1.2
 [5.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@5.1.0...@metamask/snaps-utils@5.1.1
 [5.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@5.0.1...@metamask/snaps-utils@5.1.0

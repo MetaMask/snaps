@@ -6,16 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [4.1.0]
-### Added
-- Add support for signature insights ([#2074](https://github.com/MetaMask/snaps/pull/2074))
-- Add support for initial connections ([#2048](https://github.com/MetaMask/snaps/pull/2048))
-- Add support for preinstalled snaps ([#2008](https://github.com/MetaMask/snaps/pull/2008))
-- Add additional install events ([#2087](https://github.com/MetaMask/snaps/pull/2087))
-
-### Changed
-- Bump several MetaMask dependencies ([#2086](https://github.com/MetaMask/snaps/pull/2086), [#2100](https://github.com/MetaMask/snaps/pull/2100))
-
 ## [4.0.0]
 ### Changed
 - **BREAKING:** Remove `:snapAdded` event ([#2073](https://github.com/MetaMask/snaps/pull/2073))
@@ -168,8 +158,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@4.1.0...HEAD
-[4.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@4.0.0...@metamask/snaps-controllers@4.1.0
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@4.0.0...HEAD
 [4.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@3.6.0...@metamask/snaps-controllers@4.0.0
 [3.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@3.5.1...@metamask/snaps-controllers@3.6.0
 [3.5.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@3.5.0...@metamask/snaps-controllers@3.5.1

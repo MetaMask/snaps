@@ -6,10 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.4.3]
-### Changed
-- Bump several MetaMask dependencies ([#1999](https://github.com/MetaMask/snaps/pull/1999), [#2065](https://github.com/MetaMask/snaps/pull/2065), [#2064](https://github.com/MetaMask/snaps/pull/2064), [#2069](https://github.com/MetaMask/snaps/pull/2069), [#2054](https://github.com/MetaMask/snaps/pull/2054), [#2086](https://github.com/MetaMask/snaps/pull/2086), [#2100](https://github.com/MetaMask/snaps/pull/2100))
-
 ## [2.4.2]
 ### Changed
 - Bump several MetaMask dependencies ([#1989](https://github.com/MetaMask/snaps/pull/1989))
@@ -84,8 +80,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.4.3...HEAD
-[2.4.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.4.2...@metamask/snaps-simulator@2.4.3
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.4.2...HEAD
 [2.4.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.4.1...@metamask/snaps-simulator@2.4.2
 [2.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.4.0...@metamask/snaps-simulator@2.4.1
 [2.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.3.0...@metamask/snaps-simulator@2.4.0
