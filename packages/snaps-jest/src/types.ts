@@ -262,7 +262,7 @@ export type Snap = {
    *
    * @returns The response.
    */
-  renderHomePage(): Promise<SnapResponse>;
+  getHomePage(): Promise<SnapResponse>;
 
   /**
    * Mock a JSON-RPC request. This will cause the snap to respond with the

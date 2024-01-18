@@ -645,7 +645,7 @@ describe('installSnap', () => {
     });
   });
 
-  describe('renderHomePage', () => {
+  describe('getHomePage', () => {
     it('sends a OnHomePage request and returns the result', async () => {
       jest.spyOn(console, 'log').mockImplementation();
 
@@ -657,8 +657,8 @@ describe('installSnap', () => {
          `,
       });
 
-      const { renderHomePage, close } = await installSnap(snapId);
-      const response = await renderHomePage();
+      const { getHomePage, close } = await installSnap(snapId);
+      const response = await getHomePage();
 
       expect(response).toStrictEqual(
         expect.objectContaining({

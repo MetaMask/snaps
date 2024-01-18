@@ -241,7 +241,7 @@ export async function installSnap<
       });
     },
 
-    renderHomePage: async (): Promise<SnapResponse> => {
+    getHomePage: async (): Promise<SnapResponse> => {
       log('Rendering home page.');
 
       return handleRequest({
