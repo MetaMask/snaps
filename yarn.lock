@@ -3606,37 +3606,37 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/lavapack@npm:6.0.1":
-  version: 6.0.1
-  resolution: "@lavamoat/lavapack@npm:6.0.1"
+"@lavamoat/lavapack@npm:6.0.2":
+  version: 6.0.2
+  resolution: "@lavamoat/lavapack@npm:6.0.2"
   dependencies:
     JSONStream: 1.3.5
     combine-source-map: 0.8.0
     convert-source-map: 2.0.0
     espree: 9.6.1
     json-stable-stringify: 1.0.2
-    lavamoat-core: ^15.1.0
+    lavamoat-core: ^15.1.1
     readable-stream: 3.6.2
     through2: 2.0.5
     umd: 3.0.3
-  checksum: c3a5a4cf2f886542f730d18e379efe7dd24cf12cab6f3485b0724706d383a2b30361c934e21a7e0031b8062b59e4642695daa74b774c37c29ec903d7e4e5e84e
+  checksum: 0685ae8907aa55f4257eb66d802c82976e09a4231ef17d1a6772fa450b99e86ee92e12d39692ddedc2b62392c9f9f3c69bcf15cea2430af5e1c02f9ac085aad3
   languageName: node
   linkType: hard
 
-"@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A6.0.1#./.yarn/patches/@lavamoat-lavapack-npm-6.0.1-1b6497ed4e.patch::locator=root%40workspace%3A.":
-  version: 6.0.1
-  resolution: "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A6.0.1#./.yarn/patches/@lavamoat-lavapack-npm-6.0.1-1b6497ed4e.patch::version=6.0.1&hash=e3a21a&locator=root%40workspace%3A."
+"@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A6.0.2#./.yarn/patches/@lavamoat-lavapack-npm-6.0.2-abebdc70c1.patch::locator=root%40workspace%3A.":
+  version: 6.0.2
+  resolution: "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A6.0.2#./.yarn/patches/@lavamoat-lavapack-npm-6.0.2-abebdc70c1.patch::version=6.0.2&hash=5ec519&locator=root%40workspace%3A."
   dependencies:
     JSONStream: 1.3.5
     combine-source-map: 0.8.0
     convert-source-map: 2.0.0
     espree: 9.6.1
     json-stable-stringify: 1.0.2
-    lavamoat-core: ^15.1.0
+    lavamoat-core: ^15.1.1
     readable-stream: 3.6.2
     through2: 2.0.5
     umd: 3.0.3
-  checksum: d4387cf8b0d324f70efd83453921f60884b26f9445f271df44ba2b3df593bdaa695afdbcda0d72c756b4107bfd910fdb4d9be7611c723cd35321ad1a00ae4b8f
+  checksum: 7d3c177d7cd85b6cee6b96ae2fceb0de1ab19c28a8efc6ce2b4472e11d21c1227b1d86939a4c42e29548ef1f890f4d683c1104bd99c7cb753128416c33d81383
   languageName: node
   linkType: hard
 
@@ -5341,7 +5341,7 @@ __metadata:
     "@esbuild-plugins/node-globals-polyfill": ^0.2.3
     "@esbuild-plugins/node-modules-polyfill": ^0.2.2
     "@lavamoat/allow-scripts": ^3.0.0
-    "@lavamoat/lavapack": ^6.0.1
+    "@lavamoat/lavapack": ^6.0.2
     "@lavamoat/lavatube": ^1.0.0
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
@@ -5391,8 +5391,8 @@ __metadata:
     jest: ^29.0.2
     jest-environment-node: ^29.5.0
     jest-fetch-mock: ^3.0.3
-    lavamoat: ^8.0.1
-    lavamoat-browserify: ^17.0.1
+    lavamoat: ^8.0.2
+    lavamoat-browserify: ^17.0.2
     nanoid: ^3.1.31
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
@@ -16211,55 +16211,55 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-browserify@npm:17.0.1":
-  version: 17.0.1
-  resolution: "lavamoat-browserify@npm:17.0.1"
+"lavamoat-browserify@npm:17.0.2":
+  version: 17.0.2
+  resolution: "lavamoat-browserify@npm:17.0.2"
   dependencies:
     "@lavamoat/aa": ^4.0.1
-    "@lavamoat/lavapack": ^6.0.1
+    "@lavamoat/lavapack": ^6.0.2
     browser-resolve: 2.0.0
     concat-stream: 1.6.2
     convert-source-map: 2.0.0
     duplexify: 4.1.2
     json-stable-stringify: 1.0.2
-    lavamoat-core: ^15.1.0
+    lavamoat-core: ^15.1.1
     pify: 4.0.1
     readable-stream: 3.6.2
     source-map: 0.5.7
     through2: 2.0.5
-  checksum: 5a0381d6b40a37ddf935835eb477c793506e96f89aa6faa77bc797ea76d955be52d2db4aef927809ca9eb45f6c620b6d490ee527b9121c85a1dbcc4ffcd3b34a
+  checksum: dfac2221e762cbef938de06d12607640b480f882215cddd4b2e148916d0a9eb0deef7dc7387fc680b7904a0af648207a84c65094bb5916488cb804abe752e549
   languageName: node
   linkType: hard
 
-"lavamoat-browserify@patch:lavamoat-browserify@npm%3A17.0.1#./.yarn/patches/lavamoat-browserify-npm-17.0.1-86f16fba66.patch::locator=root%40workspace%3A.":
-  version: 17.0.1
-  resolution: "lavamoat-browserify@patch:lavamoat-browserify@npm%3A17.0.1#./.yarn/patches/lavamoat-browserify-npm-17.0.1-86f16fba66.patch::version=17.0.1&hash=8a0530&locator=root%40workspace%3A."
+"lavamoat-browserify@patch:lavamoat-browserify@npm%3A17.0.2#./.yarn/patches/lavamoat-browserify-npm-17.0.2-7b95761e43.patch::locator=root%40workspace%3A.":
+  version: 17.0.2
+  resolution: "lavamoat-browserify@patch:lavamoat-browserify@npm%3A17.0.2#./.yarn/patches/lavamoat-browserify-npm-17.0.2-7b95761e43.patch::version=17.0.2&hash=8a0530&locator=root%40workspace%3A."
   dependencies:
     "@lavamoat/aa": ^4.0.1
-    "@lavamoat/lavapack": ^6.0.1
+    "@lavamoat/lavapack": ^6.0.2
     browser-resolve: 2.0.0
     concat-stream: 1.6.2
     convert-source-map: 2.0.0
     duplexify: 4.1.2
     json-stable-stringify: 1.0.2
-    lavamoat-core: ^15.1.0
+    lavamoat-core: ^15.1.1
     pify: 4.0.1
     readable-stream: 3.6.2
     source-map: 0.5.7
     through2: 2.0.5
-  checksum: 860ba0ad06a90701cc7e64b9acab2148c9affbb732fdb4add59f688396f4bcd1beec47de4dfc38737738c5cd5a30567e1caa9737e67cbf19e9838d3a98cf26b3
+  checksum: 18e877f2acdf86ded6d52deadb50b801734f061267646f16e46ddaaf863a7b86887bb6f720776453f7d357935d141e0a0529ff11bdd39790a868d6c6330bc361
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^15.1.0":
-  version: 15.1.0
-  resolution: "lavamoat-core@npm:15.1.0"
+"lavamoat-core@npm:^15.1.1":
+  version: 15.1.1
+  resolution: "lavamoat-core@npm:15.1.1"
   dependencies:
     json-stable-stringify: 1.0.2
     lavamoat-tofu: ^7.1.0
     merge-deep: 3.0.3
     type-fest: 4.7.1
-  checksum: 9a21e0d4cb084176c313bed66fed1162760667f795cbfe21bf910101d6c9cec7bec908298666c52187cf1cf65d92bb31a1b1ba6b34bfe56b8c20cef4a61a14ad
+  checksum: 72dd9b203b45fe266cd3029f8a67360210fb929b305ca345f2fff62278f6dccde2859012ac43278525dd202d8e7632b1ffcb8359d2aa3675c9b8f5c370310a30
   languageName: node
   linkType: hard
 
@@ -16278,9 +16278,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "lavamoat@npm:8.0.1"
+"lavamoat@npm:^8.0.2":
+  version: 8.0.2
+  resolution: "lavamoat@npm:8.0.2"
   dependencies:
     "@babel/code-frame": 7.22.13
     "@babel/highlight": 7.22.20
@@ -16288,7 +16288,7 @@ __metadata:
     bindings: 1.5.0
     htmlescape: 1.1.1
     json-stable-stringify: 1.0.2
-    lavamoat-core: ^15.1.0
+    lavamoat-core: ^15.1.1
     lavamoat-tofu: ^7.1.0
     node-gyp-build: 4.6.1
     resolve: 1.22.8
@@ -16296,7 +16296,7 @@ __metadata:
   bin:
     lavamoat: src/cli.js
     lavamoat-run-command: src/run-command.js
-  checksum: 40cef3b51621dc3380c3ac0148d3a14f11c6d20b1c74db03fc00df38fa3cc16cef62584064f72bba72f70d216273a5fb33101c4ce7bcad1ba8d5127a77bfc04e
+  checksum: 4a6fbe951e740cc38b250aa4770f096ea4a4111d5aed0d830ff05558d65af9f81682760a09d4df9380367a619cd61dfd3e927824363a9bcb25dc3d4b5c27f7f2
   languageName: node
   linkType: hard
 
