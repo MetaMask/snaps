@@ -256,6 +256,15 @@ export type Snap = {
   runCronjob(cronjob: CronjobOptions): SnapRequest;
 
   /**
+   * Makes a request to the snap to render the snaps home page.
+   *
+   * This method takes no arguments.
+   *
+   * @returns The response.
+   */
+  renderHomePage(): Promise<SnapResponse>;
+
+  /**
    * Mock a JSON-RPC request. This will cause the snap to respond with the
    * specified response when a request with the specified method is sent.
    *
