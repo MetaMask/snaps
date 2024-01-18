@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.3]
+### Uncategorized
+- Bump @metamask/utils from 8.2.1 to 8.3.0 ([#2100](https://github.com/MetaMask/snaps-skunkworks.git/pull/2100))
+- Bump @metamask/base-controller from 4.0.1 to 4.1.0 ([#2086](https://github.com/MetaMask/snaps-skunkworks.git/pull/2086))
+- Bump @metamask/auto-changelog from 3.4.3 to 3.4.4 ([#2054](https://github.com/MetaMask/snaps-skunkworks.git/pull/2054))
+- Populate subject metadata ([#2069](https://github.com/MetaMask/snaps-skunkworks.git/pull/2069))
+- Bump @metamask/permission-controller from 6.0.0 to 7.0.0 ([#2064](https://github.com/MetaMask/snaps-skunkworks.git/pull/2064))
+- Bump @metamask/json-rpc-engine from 7.3.0 to 7.3.1 ([#2065](https://github.com/MetaMask/snaps-skunkworks.git/pull/2065))
+- Bump @metamask/browser-passworder from 4.1.0 to 4.3.0 ([#1999](https://github.com/MetaMask/snaps-skunkworks.git/pull/1999))
+
 ## [2.4.2]
 ### Changed
 - Bump several MetaMask dependencies ([#1989](https://github.com/MetaMask/snaps/pull/1989))
@@ -80,15 +90,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.4.2...HEAD
-[2.4.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.4.1...@metamask/snaps-simulator@2.4.2
-[2.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.4.0...@metamask/snaps-simulator@2.4.1
-[2.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.3.0...@metamask/snaps-simulator@2.4.0
-[2.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.2.0...@metamask/snaps-simulator@2.3.0
-[2.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.1.0...@metamask/snaps-simulator@2.2.0
-[2.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.0.0...@metamask/snaps-simulator@2.1.0
-[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@1.0.0...@metamask/snaps-simulator@2.0.0
-[1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@0.38.1-flask.1...@metamask/snaps-simulator@1.0.0
-[0.38.1-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@0.38.0-flask.1...@metamask/snaps-simulator@0.38.1-flask.1
-[0.38.0-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@0.37.2-flask.1...@metamask/snaps-simulator@0.38.0-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/snaps-simulator@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulator@2.4.3...HEAD
+[2.4.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulator@2.4.2...@metamask/snaps-simulator@2.4.3
+[2.4.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulator@2.4.1...@metamask/snaps-simulator@2.4.2
+[2.4.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulator@2.4.0...@metamask/snaps-simulator@2.4.1
+[2.4.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulator@2.3.0...@metamask/snaps-simulator@2.4.0
+[2.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulator@2.2.0...@metamask/snaps-simulator@2.3.0
+[2.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulator@2.1.0...@metamask/snaps-simulator@2.2.0
+[2.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulator@2.0.0...@metamask/snaps-simulator@2.1.0
+[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulator@1.0.0...@metamask/snaps-simulator@2.0.0
+[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulator@0.38.1-flask.1...@metamask/snaps-simulator@1.0.0
+[0.38.1-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulator@0.38.0-flask.1...@metamask/snaps-simulator@0.38.1-flask.1
+[0.38.0-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulator@0.37.2-flask.1...@metamask/snaps-simulator@0.38.0-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/snaps-simulator@0.37.2-flask.1
