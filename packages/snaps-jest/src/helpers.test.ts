@@ -645,6 +645,32 @@ describe('installSnap', () => {
     });
   });
 
+  describe('getHomePage', () => {
+    it('sends a OnHomePage request and returns the result', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+
+      const { snapId, close: closeServer } = await getMockServer({
+        sourceCode: `
+          module.exports.onHomePage = async () => {
+            return { content: { type: 'text', value: 'Hello, world!' } };
+          };
+         `,
+      });
+
+      const { getHomePage, close } = await installSnap(snapId);
+      const response = await getHomePage();
+
+      expect(response).toStrictEqual(
+        expect.objectContaining({
+          content: { type: 'text', value: 'Hello, world!' },
+        }),
+      );
+
+      await close();
+      await closeServer();
+    });
+  });
+
   describe('mockJsonRpc', () => {
     it('mocks a JSON-RPC method', async () => {
       jest.spyOn(console, 'log').mockImplementation();

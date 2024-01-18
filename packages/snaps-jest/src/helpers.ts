@@ -241,6 +241,21 @@ export async function installSnap<
       });
     },
 
+    getHomePage: async (): Promise<SnapResponse> => {
+      log('Rendering home page.');
+
+      return handleRequest({
+        snapId: installedSnapId,
+        store,
+        executionService,
+        runSaga,
+        handler: HandlerType.OnHomePage,
+        request: {
+          method: '',
+        },
+      });
+    },
+
     mockJsonRpc(mock: JsonRpcMockOptions) {
       log('Mocking JSON-RPC request %o.', mock);
 
