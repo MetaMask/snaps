@@ -4,9 +4,9 @@ import { panel, text, heading } from '@metamask/snaps-sdk';
 
 describe('onHomePage', () => {
   it('returns custom UI', async () => {
-    const { renderHomePage } = await installSnap();
+    const { getHomePage } = await installSnap();
 
-    const response = await renderHomePage();
+    const response = await getHomePage();
 
     expect(response).toRender(
       panel([heading('Hello world!'), text('Welcome to my Snap home page!')]),
