@@ -6,14 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [5.0.0]
-### Added
-- **BREAKING:** Implement testing framework using Node.js executor ([#1982](https://github.com/MetaMask/snaps/pull/1982))
-- Add home page support to `snaps-jest` ([#2104](https://github.com/MetaMask/snaps/pull/2104))
-
-### Changed
-- Bump several MetaMask dependencies ([#2054](https://github.com/MetaMask/snaps/pull/2054), [#2101](https://github.com/MetaMask/snaps/pull/2101), [#2100](https://github.com/MetaMask/snaps/pull/2100))
-
 ## [4.0.1]
 ### Fixed
 - Fix coercing of address values in `sendTransaction` function ([#1970](https://github.com/MetaMask/snaps/pull/1970))
@@ -89,8 +81,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@5.0.0...HEAD
-[5.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@4.0.1...@metamask/snaps-jest@5.0.0
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@4.0.1...HEAD
 [4.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@4.0.0...@metamask/snaps-jest@4.0.1
 [4.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@3.1.0...@metamask/snaps-jest@4.0.0
 [3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@3.0.0...@metamask/snaps-jest@3.1.0
