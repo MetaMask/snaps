@@ -1,5 +1,5 @@
 // @ts-expect-error Walker has no types yet.
-import LavaTube from '@lavamoat/lavatube';
+import { walk } from '@lavamoat/lavatube';
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { StreamProvider } from '@metamask/providers';
@@ -24,14 +24,14 @@ import { SILENT_LOGGER } from './logger';
  */
 export function walkAndSearch(subject: unknown, target: unknown) {
   let result = false;
-  const walker = new LavaTube(
+  walk(
+    subject,
     (value: unknown) => {
       result = target === value;
       return result;
     },
     { maxRecursionLimit: 100, onShouldIgnoreError: () => true },
   );
-  walker.walk(subject);
   return result;
 }
 
