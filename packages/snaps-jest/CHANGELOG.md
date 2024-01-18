@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.0.0]
+### Uncategorized
+- Bump SES and LavaMoat ([#2105](https://github.com/MetaMask/snaps-skunkworks.git/pull/2105))
+- Add home page support to `snaps-jest` ([#2104](https://github.com/MetaMask/snaps-skunkworks.git/pull/2104))
+- Bump @metamask/utils from 8.2.1 to 8.3.0 ([#2100](https://github.com/MetaMask/snaps-skunkworks.git/pull/2100))
+- Bump @metamask/json-rpc-middleware-stream from 6.0.0 to 6.0.1 ([#2101](https://github.com/MetaMask/snaps-skunkworks.git/pull/2101))
+- BREAKING: Implement testing framework using Node.js executor ([#1982](https://github.com/MetaMask/snaps-skunkworks.git/pull/1982))
+- Bump @metamask/auto-changelog from 3.4.3 to 3.4.4 ([#2054](https://github.com/MetaMask/snaps-skunkworks.git/pull/2054))
+
 ## [4.0.1]
 ### Fixed
 - Fix coercing of address values in `sendTransaction` function ([#1970](https://github.com/MetaMask/snaps/pull/1970))
@@ -81,14 +90,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@4.0.1...HEAD
-[4.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@4.0.0...@metamask/snaps-jest@4.0.1
-[4.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@3.1.0...@metamask/snaps-jest@4.0.0
-[3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@3.0.0...@metamask/snaps-jest@3.1.0
-[3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@2.0.0...@metamask/snaps-jest@3.0.0
-[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@1.0.0...@metamask/snaps-jest@2.0.0
-[1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@0.37.5-flask.1...@metamask/snaps-jest@1.0.0
-[0.37.5-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@0.37.4-flask.1...@metamask/snaps-jest@0.37.5-flask.1
-[0.37.4-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@0.37.3-flask.1...@metamask/snaps-jest@0.37.4-flask.1
-[0.37.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@0.37.2-flask.1...@metamask/snaps-jest@0.37.3-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/snaps-jest@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@5.0.0...HEAD
+[5.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@4.0.1...@metamask/snaps-jest@5.0.0
+[4.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@4.0.0...@metamask/snaps-jest@4.0.1
+[4.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@3.1.0...@metamask/snaps-jest@4.0.0
+[3.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@3.0.0...@metamask/snaps-jest@3.1.0
+[3.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@2.0.0...@metamask/snaps-jest@3.0.0
+[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@1.0.0...@metamask/snaps-jest@2.0.0
+[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@0.37.5-flask.1...@metamask/snaps-jest@1.0.0
+[0.37.5-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@0.37.4-flask.1...@metamask/snaps-jest@0.37.5-flask.1
+[0.37.4-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@0.37.3-flask.1...@metamask/snaps-jest@0.37.4-flask.1
+[0.37.3-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@0.37.2-flask.1...@metamask/snaps-jest@0.37.3-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/snaps-jest@0.37.2-flask.1
