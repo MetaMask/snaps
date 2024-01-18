@@ -394,6 +394,22 @@ export type SnapBlocked = {
 };
 
 /**
+ * Emitted when a snap installation or update is started.
+ */
+export type SnapInstallStarted = {
+  type: `${typeof controllerName}:snapInstallStarted`;
+  payload: [snapId: SnapId, origin: string, isUpdate: boolean];
+};
+
+/**
+ * Emitted when a snap installation or update failed.
+ */
+export type SnapInstallFailed = {
+  type: `${typeof controllerName}:snapInstallFailed`;
+  payload: [snapId: SnapId, origin: string, isUpdate: boolean, error: string];
+};
+
+/**
  * Emitted when a snap has been started after being added and authorized during
  * installation.
  */
@@ -464,6 +480,8 @@ export type SnapControllerEvents =
   | SnapBlocked
   | SnapInstalled
   | SnapUninstalled
+  | SnapInstallStarted
+  | SnapInstallFailed
   | SnapStateChange
   | SnapUnblocked
   | SnapUpdated
@@ -1984,6 +2002,13 @@ export class SnapController extends BaseController<
       type: SNAP_APPROVAL_INSTALL,
     });
 
+    this.messagingSystem.publish(
+      'SnapController:snapInstallStarted',
+      snapId,
+      origin,
+      false,
+    );
+
     // Existing snaps must be stopped before overwriting
     if (existingSnap && this.isRunning(snapId)) {
       await this.stopSnap(snapId, SnapStatusEvents.Stop);
@@ -2026,11 +2051,22 @@ export class SnapController extends BaseController<
     } catch (error) {
       logError(`Error when adding ${snapId}.`, error);
 
+      const errorString =
+        error instanceof Error ? error.message : error.toString();
+
       this.#updateApproval(pendingApproval.id, {
         loading: false,
         type: SNAP_APPROVAL_INSTALL,
-        error: error instanceof Error ? error.message : error.toString(),
+        error: errorString,
       });
+
+      this.messagingSystem.publish(
+        'SnapController:snapInstallFailed',
+        snapId,
+        origin,
+        false,
+        errorString,
+      );
 
       throw error;
     }
@@ -2117,6 +2153,13 @@ export class SnapController extends BaseController<
     });
 
     try {
+      this.messagingSystem.publish(
+        'SnapController:snapInstallStarted',
+        snapId,
+        origin,
+        true,
+      );
+
       const snap = this.getExpect(snapId);
 
       const oldManifest = snap.manifest;
@@ -2239,11 +2282,23 @@ export class SnapController extends BaseController<
     } catch (error) {
       logError(`Error when updating ${snapId},`, error);
 
+      const errorString =
+        error instanceof Error ? error.message : error.toString();
+
       this.#updateApproval(pendingApproval.id, {
         loading: false,
-        error: error instanceof Error ? error.message : error.toString(),
+        error: errorString,
         type: SNAP_APPROVAL_UPDATE,
       });
+
+      this.messagingSystem.publish(
+        'SnapController:snapInstallFailed',
+        snapId,
+        origin,
+        true,
+        errorString,
+      );
+
       throw error;
     }
   }
