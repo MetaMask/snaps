@@ -44,6 +44,7 @@ export class SnapsEnvironment extends NodeEnvironment {
    * new browser instance.
    */
   async setup() {
+    log('Setting up environment.');
     await super.setup();
 
     if (this.#options.server.enabled) {
@@ -59,8 +60,13 @@ export class SnapsEnvironment extends NodeEnvironment {
    * HTTP server.
    */
   async teardown() {
+    log('Terminating all snaps.');
     await this.#instance?.executionService.terminateAllSnaps();
+
+    log('Stopping server.');
     this.#server?.close();
+
+    log('Tearing down environment.');
     await super.teardown();
   }
 
@@ -86,7 +92,12 @@ export class SnapsEnvironment extends NodeEnvironment {
     snapId: string = this.snapId,
     options: Partial<InstallSnapOptions<Service>> = {},
   ) {
-    await this.#instance?.executionService.terminateAllSnaps();
+    if (this.#instance) {
+      log('Terminating previous snap %s.', this.#instance.snapId);
+      await this.#instance.executionService.terminateAllSnaps();
+    }
+
+    log('Installing snap %s.', snapId);
     this.#instance = await handleInstallSnap(snapId, options);
     return this.#instance;
   }
