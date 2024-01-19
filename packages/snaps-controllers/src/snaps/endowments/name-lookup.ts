@@ -86,7 +86,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
     allowedCaveats: [SnapCaveatType.ChainIds, SnapCaveatType.Matchers],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
     validator: ({ caveats }) => {
-      if (hasValidCaveats(caveats)) {
+      if (!hasValidCaveats(caveats)) {
         throw rpcErrors.invalidParams({
           message: `Expected one or both of the "${SnapCaveatType.ChainIds}" and "${SnapCaveatType.Matchers}" caveats.`,
         });
