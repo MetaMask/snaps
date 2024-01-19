@@ -96,7 +96,7 @@ export class MockApprovalController {
 
 export const approvalControllerMock = new MockApprovalController();
 
-export const snapConfirmPermissionKey = 'snap_confirm';
+export const snapDialogPermissionKey = 'snap_dialog';
 
 export const MOCK_SNAP_SUBJECT_METADATA: SubjectMetadata = {
   origin: MOCK_SNAP_ID,
@@ -144,12 +144,12 @@ export const MOCK_DAPPS_RPC_ORIGINS_PERMISSION: PermissionConstraint = {
   parentCapability: SnapEndowments.Rpc,
 };
 
-export const MOCK_SNAP_CONFIRM_PERMISSION: PermissionConstraint = {
+export const MOCK_SNAP_DIALOG_PERMISSION: PermissionConstraint = {
   caveats: null,
   date: 1664187844588,
   id: 'izn0WGUO8cvq_jqvLQuQP',
   invoker: MOCK_SNAP_ID,
-  parentCapability: snapConfirmPermissionKey,
+  parentCapability: snapDialogPermissionKey,
 };
 
 export const MOCK_WALLET_SNAP_PERMISSION: PermissionConstraint = {
@@ -178,7 +178,7 @@ export const MOCK_ORIGIN_PERMISSIONS: Record<string, PermissionConstraint> = {
 
 export const MOCK_SNAP_PERMISSIONS: Record<string, PermissionConstraint> = {
   [SnapEndowments.Rpc]: MOCK_RPC_ORIGINS_PERMISSION,
-  [snapConfirmPermissionKey]: MOCK_SNAP_CONFIRM_PERMISSION,
+  [snapDialogPermissionKey]: MOCK_SNAP_DIALOG_PERMISSION,
 };
 
 export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {

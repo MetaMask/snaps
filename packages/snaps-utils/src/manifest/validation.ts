@@ -165,8 +165,6 @@ export const PermissionsStruct = type({
   'endowment:name-lookup': optional(ChainIdsStruct),
   'endowment:keyring': optional(KeyringOriginsStruct),
   snap_dialog: optional(object({})),
-  // TODO: Remove
-  snap_confirm: optional(object({})),
   snap_manageState: optional(object({})),
   snap_manageAccounts: optional(object({})),
   snap_notify: optional(object({})),
