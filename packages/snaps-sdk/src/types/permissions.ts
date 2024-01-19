@@ -26,11 +26,14 @@ export type InitialPermissions = {
   'endowment:cronjob'?: {
     jobs: Cronjob[];
   };
+  'endowment:ethereum-provider': EmptyObject;
   'endowment:keyring'?: {
     allowedOrigins?: string[];
   };
+  'endowment:lifecycle-hooks': EmptyObject;
   'endowment:name-lookup'?: ChainId[];
   'endowment:network-access'?: EmptyObject;
+  'endowment:page-home': EmptyObject;
   'endowment:rpc'?: {
     dapps?: boolean;
     snaps?: boolean;
@@ -45,12 +48,13 @@ export type InitialPermissions = {
   'endowment:webassembly'?: EmptyObject;
 
   /* eslint-disable @typescript-eslint/naming-convention */
-  snap_confirm?: EmptyObject;
+  eth_accounts?: EmptyObject;
   snap_dialog?: EmptyObject;
   snap_getBip32Entropy?: Bip32Entropy[];
   snap_getBip32PublicKey?: Bip32Entropy[];
   snap_getBip44Entropy?: Bip44Entropy[];
   snap_getEntropy?: EmptyObject;
+  snap_getLocale?: EmptyObject;
   snap_manageAccounts?: EmptyObject;
   snap_manageState?: EmptyObject;
   snap_notify?: EmptyObject;
