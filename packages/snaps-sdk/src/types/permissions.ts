@@ -28,22 +28,22 @@ export type InitialPermissions = Partial<{
   };
   'endowment:ethereum-provider': EmptyObject;
   'endowment:keyring': {
-    allowedOrigins: string[];
+    allowedOrigins?: string[];
   };
   'endowment:lifecycle-hooks': EmptyObject;
   'endowment:name-lookup': ChainId[];
   'endowment:network-access': EmptyObject;
   'endowment:page-home': EmptyObject;
   'endowment:rpc': {
-    dapps: boolean;
-    snaps: boolean;
-    allowedOrigins: string[];
+    dapps?: boolean;
+    snaps?: boolean;
+    allowedOrigins?: string[];
   };
   'endowment:signature-insight': {
-    allowSignatureOrigin: boolean;
+    allowSignatureOrigin?: boolean;
   };
   'endowment:transaction-insight': {
-    allowTransactionOrigin: boolean;
+    allowTransactionOrigin?: boolean;
   };
   'endowment:webassembly': EmptyObject;
 
