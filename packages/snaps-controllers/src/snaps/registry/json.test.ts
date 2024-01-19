@@ -56,6 +56,15 @@ const MOCK_DATABASE: SnapsRegistryDatabase = {
   ],
 };
 
+// To regenerate this signature:
+// 1. Use the private key above, and paste it in `secp256k1-key` in
+//    `snaps-registry`.
+// 2. JSON.stringify the database above, and paste it in the `sign-registry`
+//    script in `snaps-registry` (instead of `fs.readFile`).
+//    - Pasting the JSON in the registry file directly will not work, as it
+//      contains a trailing newline.
+// 3. Run the `sign-registry` script.
+// 4. Copy the signature from the `signature.json` file.
 const MOCK_SIGNATURE =
   '0x304402201bfe1a98837631b669643135766de58deb426dc3eeb0a908c8000f85a047db3102207ac621072ea59737287099ac830323b34e59bfc41fb62119b16ce24d0c433f9e';
 const MOCK_SIGNATURE_FILE = {
@@ -64,7 +73,9 @@ const MOCK_SIGNATURE_FILE = {
   format: 'DER',
 };
 
-// {"verifiedSnaps":{},"blockedSnaps":[]}
+// To regenerate this signature:
+// 1. Follow the steps above, but use the empty database below:
+//    `{"verifiedSnaps":{},"blockedSnaps":[]}`
 const MOCK_EMPTY_SIGNATURE =
   '0x30450221009394dd1ab94c99079ce0e9f24170e4e4c40811e261013d3e6b80e4076cca7f9c0220201b6f5479a553fd50fc43fc50d18874583f29757b3f44cd088fae5aeb3595e2';
 const MOCK_EMPTY_SIGNATURE_FILE = {
