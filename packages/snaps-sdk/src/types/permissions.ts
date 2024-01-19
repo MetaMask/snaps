@@ -29,7 +29,10 @@ export type InitialPermissions = {
   'endowment:keyring'?: {
     allowedOrigins?: string[];
   };
-  'endowment:name-lookup'?: ChainId[];
+  'endowment:name-lookup'?: {
+    chains?: ChainId[];
+    matchers?: { tlds?: string[]; schemes?: string[] };
+  };
   'endowment:network-access'?: EmptyObject;
   'endowment:rpc'?: {
     dapps?: boolean;

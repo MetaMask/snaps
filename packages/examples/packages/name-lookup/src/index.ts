@@ -17,12 +17,14 @@ export const onNameLookup: OnNameLookupHandler = async (request) => {
     const shortAddress = address.substring(2, 5);
     const chainIdDecimal = parseInt(chainId.split(':')[1], 10);
     const resolvedDomain = `${shortAddress}.${chainIdDecimal}.test.domain`;
-    return { resolvedDomain };
+    return { resolvedDomains: [{ resolvedDomain, protocol: 'test protocol' }] };
   }
 
   if (domain) {
     const resolvedAddress = '0xc0ffee254729296a45a3885639AC7E10F9d54979';
-    return { resolvedAddress };
+    return {
+      resolvedAddresses: [{ resolvedAddress, protocol: 'test protocol' }],
+    };
   }
 
   return null;

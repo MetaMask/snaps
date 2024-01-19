@@ -87,6 +87,7 @@ describe('getPermissionSpecifications', () => {
         "endowment:name-lookup": {
           "allowedCaveats": [
             "chainIds",
+            "matchers",
           ],
           "endowmentGetter": [Function],
           "permissionType": "Endowment",

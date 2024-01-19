@@ -141,7 +141,11 @@ export const SnapIdsStruct = refine(
 
 export type SnapIds = Infer<typeof SnapIdsStruct>;
 
-export const ChainIdsStruct = array(ChainIdStruct);
+export const ChainIdsStruct = size(array(ChainIdStruct), 1, Infinity);
+export const MatchersStruct = object({
+  tlds: optional(size(array(string()), 1, Infinity)),
+  schemes: optional(size(array(string()), 1, Infinity)),
+});
 
 /* eslint-disable @typescript-eslint/naming-convention */
 export const PermissionsStruct = type({
@@ -162,7 +166,12 @@ export const PermissionsStruct = type({
     object({ jobs: CronjobSpecificationArrayStruct }),
   ),
   'endowment:rpc': optional(RpcOriginsStruct),
-  'endowment:name-lookup': optional(ChainIdsStruct),
+  'endowment:name-lookup': optional(
+    object({
+      chains: optional(ChainIdsStruct),
+      matchers: optional(MatchersStruct),
+    }),
+  ),
   'endowment:keyring': optional(KeyringOriginsStruct),
   snap_dialog: optional(object({})),
   // TODO: Remove

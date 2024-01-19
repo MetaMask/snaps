@@ -6,6 +6,7 @@ import { SnapEndowments } from '.';
 import {
   nameLookupEndowmentBuilder,
   getChainIdsCaveat,
+  getMatchersCaveat,
   getNameLookupCaveatMapper,
   nameLookupCaveatSpecifications,
 } from './name-lookup';
@@ -17,7 +18,7 @@ describe('endowment:name-lookup', () => {
       permissionType: PermissionType.Endowment,
       targetName: SnapEndowments.NameLookup,
       endowmentGetter: expect.any(Function),
-      allowedCaveats: [SnapCaveatType.ChainIds],
+      allowedCaveats: [SnapCaveatType.ChainIds, SnapCaveatType.Matchers],
       subjectTypes: [SubjectType.Snap],
       validator: expect.any(Function),
     });
@@ -30,16 +31,20 @@ describe('endowment:name-lookup', () => {
       expect(() =>
         // @ts-expect-error Missing required permission types.
         specification.validator({}),
-      ).toThrow('Expected a single "chainIds" caveat.');
+      ).toThrow(
+        'Expected one or both of the "chainIds" and "matchers" caveats.',
+      );
     });
 
-    it('throws if the caveat is not a single "chainIds"', () => {
+    it('throws if the caveats are not one or both of "chainIds" and "matchers".', () => {
       expect(() =>
         // @ts-expect-error Missing other required permission types.
         specification.validator({
           caveats: [{ type: 'foo', value: 'bar' }],
         }),
-      ).toThrow('Expected a single "chainIds" caveat.');
+      ).toThrow(
+        'Expected one or both of the "chainIds" and "matchers" caveats.',
+      );
 
       expect(() =>
         // @ts-expect-error Missing other required permission types.
@@ -49,7 +54,9 @@ describe('endowment:name-lookup', () => {
             { type: 'chainIds', value: ['bar'] },
           ],
         }),
-      ).toThrow('Expected a single "chainIds" caveat.');
+      ).toThrow(
+        'Expected one or both of the "chainIds" and "matchers" caveats.',
+      );
     });
   });
 });
@@ -87,28 +94,7 @@ describe('getChainIdsCaveat', () => {
     expect(getChainIdsCaveat(permission)).toBeNull();
   });
 
-  it('throws if the permission does not have exactly one caveat', () => {
-    const permission: PermissionConstraint = {
-      date: 0,
-      parentCapability: 'foo',
-      invoker: 'bar',
-      id: 'baz',
-      caveats: [
-        {
-          type: SnapCaveatType.ChainIds,
-          value: ['eip155:1'],
-        },
-        {
-          type: SnapCaveatType.ChainIds,
-          value: ['eip155:2'],
-        },
-      ],
-    };
-
-    expect(() => getChainIdsCaveat(permission)).toThrow('Assertion failed');
-  });
-
-  it('throws if the first caveat is not a "chainIds" caveat', () => {
+  it('throws if there is not a "chainIds" caveat', () => {
     const permission: PermissionConstraint = {
       date: 0,
       parentCapability: 'foo',
@@ -126,13 +112,88 @@ describe('getChainIdsCaveat', () => {
   });
 });
 
+describe('getMatchersCaveat', () => {
+  it('returns the value from a name-lookup permission', () => {
+    const permission: PermissionConstraint = {
+      date: 0,
+      parentCapability: 'foo',
+      invoker: 'bar',
+      id: 'baz',
+      caveats: [
+        {
+          type: SnapCaveatType.Matchers,
+          value: { tlds: ['lens'] },
+        },
+      ],
+    };
+    expect(getMatchersCaveat(permission)).toStrictEqual({ tlds: ['lens'] });
+  });
+
+  it('returns null if the input is undefined', () => {
+    expect(getMatchersCaveat(undefined)).toBeNull();
+  });
+
+  it('returns null if the permission does not have caveats', () => {
+    const permission: PermissionConstraint = {
+      date: 0,
+      parentCapability: 'foo',
+      invoker: 'bar',
+      id: 'baz',
+      caveats: null,
+    };
+
+    expect(getMatchersCaveat(permission)).toBeNull();
+  });
+
+  it('throws if there is not a "matchers" caveat', () => {
+    const permission: PermissionConstraint = {
+      date: 0,
+      parentCapability: 'foo',
+      invoker: 'bar',
+      id: 'baz',
+      caveats: [
+        {
+          type: SnapCaveatType.PermittedCoinTypes,
+          value: 'foo',
+        },
+      ],
+    };
+
+    expect(() => getMatchersCaveat(permission)).toThrow('Assertion failed');
+  });
+});
+
 describe('getNameLookupCaveatMapper', () => {
   it('maps input to a caveat', () => {
-    expect(getNameLookupCaveatMapper(['eip155:1'])).toStrictEqual({
+    expect(getNameLookupCaveatMapper({ chains: ['eip155:1'] })).toStrictEqual({
       caveats: [
         {
           type: 'chainIds',
           value: ['eip155:1'],
+        },
+      ],
+    });
+
+    expect(
+      getNameLookupCaveatMapper({ matchers: { tlds: ['lens'] } }),
+    ).toStrictEqual({
+      caveats: [
+        {
+          type: 'matchers',
+          value: { tlds: ['lens'] },
+        },
+      ],
+    });
+
+    expect(
+      getNameLookupCaveatMapper({
+        matchers: { tlds: ['lens'], schemes: ['fio'] },
+      }),
+    ).toStrictEqual({
+      caveats: [
+        {
+          type: 'matchers',
+          value: { tlds: ['lens'], schemes: ['fio'] },
         },
       ],
     });
@@ -167,12 +228,62 @@ describe('nameLookupCaveatSpecifications', () => {
         type: SnapCaveatType.ChainIds,
         value: undefined,
       },
-    ])('throws if the caveat values are invalid types', (val) => {
+    ])(
+      'throws if the caveat values are invalid for the "chainIds" caveat',
+      (val) => {
+        expect(() =>
+          nameLookupCaveatSpecifications[SnapCaveatType.ChainIds].validator?.(
+            val,
+          ),
+        ).toThrow('Expected caveat value to have type "string array"');
+      },
+    );
+
+    it('throws if the caveat values are invalid for the "matchers" caveat', () => {
+      [
+        {
+          type: SnapCaveatType.Matchers,
+          value: undefined,
+        },
+        {
+          type: SnapCaveatType.Matchers,
+          value: { foo: 'bar', tlds: ['lens'], schemes: ['fio'] },
+        },
+      ].forEach((caveat) => {
+        expect(() =>
+          nameLookupCaveatSpecifications[SnapCaveatType.Matchers].validator?.(
+            caveat,
+          ),
+        ).toThrow(
+          'Expect caveat value to be a non-empty object with at most 2 properties.',
+        );
+      });
+
       expect(() =>
-        nameLookupCaveatSpecifications[SnapCaveatType.ChainIds].validator?.(
-          val,
-        ),
-      ).toThrow('Expected caveat value to have type "string array"');
+        nameLookupCaveatSpecifications[SnapCaveatType.Matchers].validator?.({
+          type: SnapCaveatType.Matchers,
+          value: { foo: 'bar' },
+        }),
+      ).toThrow(
+        'Expected caveat value to only have either or both of the following properties: "tlds", "schemes".',
+      );
+
+      [
+        {
+          type: SnapCaveatType.Matchers,
+          value: { tlds: [1, 2], schemes: ['fio'] },
+        },
+        {
+          type: SnapCaveatType.Matchers,
+          value: { tlds: ['lens'], schemes: [1, 2] },
+        },
+      ].forEach((caveat) => {
+        expect(() =>
+          nameLookupCaveatSpecifications[SnapCaveatType.Matchers].validator?.(
+            caveat,
+          ),
+        ).toThrow('"tlds" and "schemes" properties must be string arrays.');
+      });
     });
 
     it('will not throw with a valid caveat value', () => {
@@ -180,6 +291,13 @@ describe('nameLookupCaveatSpecifications', () => {
         nameLookupCaveatSpecifications[SnapCaveatType.ChainIds].validator?.({
           type: SnapCaveatType.ChainIds,
           value: ['eip155:1'],
+        }),
+      ).not.toThrow();
+
+      expect(() =>
+        nameLookupCaveatSpecifications[SnapCaveatType.Matchers].validator?.({
+          type: SnapCaveatType.Matchers,
+          value: { tlds: ['lens'], schemes: ['fio'] },
         }),
       ).not.toThrow();
     });
