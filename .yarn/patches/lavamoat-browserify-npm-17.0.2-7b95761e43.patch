@@ -1,0 +1,39 @@
+diff --git a/src/index.js b/src/index.js
+index db802666fb1126700dc604008d51c0f152b6cb37..f9f232171db273991334c9a4b3746ccc66fdda4d 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -8,6 +8,7 @@ const createLavaPack = require('@lavamoat/lavapack')
+ const { createSesWorkaroundsTransform } = require('./sesTransforms')
+ const { loadCanonicalNameMap } = require('@lavamoat/aa')
+ const browserResolve = require('browser-resolve')
++const { isBuiltin } = require('node:module')
+ 
+ // these are the reccomended arguments for lavaMoat to work well with browserify
+ const reccomendedArgs = {
+@@ -72,7 +73,7 @@ function plugin(browserify, pluginOpts) {
+         createModuleInspectorSpy({
+           policyOverride,
+           // no builtins in the browser (yet!)
+-          isBuiltin: () => false,
++          isBuiltin: (name) => browserify._options.node && isBuiltin(name),
+           // should prepare debug info
+           includeDebugInfo: configuration.writeAutoPolicyDebug,
+           // write policy files to disk
+@@ -321,7 +322,7 @@ function validatePolicy(policy) {
+   Object.entries(policy.resources).forEach(([, packageOpts]) => {
+     const packageOptions = Object.keys(packageOpts)
+     const packageEntries = Object.values(packageOpts)
+-    const optionsWhitelist = ['globals', 'packages']
++    const optionsWhitelist = ['globals', 'packages', 'builtin']
+     const valuesWhitelist = [true, 'write']
+ 
+     if (
+@@ -330,7 +331,7 @@ function validatePolicy(policy) {
+       )
+     ) {
+       throw new Error(
+-        "LavaMoat - Unrecognized package options. Expected 'globals' or 'packages'"
++        "LavaMoat - Unrecognized package options. Expected 'globals', 'packages' or 'builtin'"
+       )
+     }
+ 

@@ -3628,7 +3628,7 @@ describe('SnapController', () => {
               ],
             },
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            snap_confirm: {},
+            snap_dialog: {},
           },
           subject: { origin: MOCK_SNAP_ID },
         },
@@ -3694,7 +3694,7 @@ describe('SnapController', () => {
       expect(rootMessenger.call).toHaveBeenCalledWith(
         'PermissionController:revokePermissions',
         {
-          [MOCK_SNAP_ID]: ['snap_confirm'],
+          [MOCK_SNAP_ID]: ['snap_dialog'],
         },
       );
 
@@ -3823,7 +3823,7 @@ describe('SnapController', () => {
               ],
             },
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            snap_confirm: {},
+            snap_dialog: {},
           },
           subject: { origin: MOCK_SNAP_ID },
         },
@@ -5557,16 +5557,16 @@ describe('SnapController', () => {
       /* eslint-disable @typescript-eslint/naming-convention */
       const initialPermissions = {
         [handlerEndowments.onRpcRequest]: { snaps: false, dapps: true },
-        snap_confirm: {},
+        snap_dialog: {},
         snap_manageState: {},
       };
 
       const approvedPermissions: SubjectPermissions<
         ValidPermission<string, Caveat<string, any>>
       > = {
-        snap_confirm: {
+        snap_dialog: {
           caveats: null,
-          parentCapability: 'snap_confirm',
+          parentCapability: 'snap_dialog',
           id: '1',
           date: 1,
           invoker: MOCK_SNAP_ID,
@@ -5607,7 +5607,7 @@ describe('SnapController', () => {
             version: '1.1.0' as SemVerRange,
             initialPermissions: {
               [handlerEndowments.onRpcRequest]: { snaps: false, dapps: true },
-              snap_confirm: {},
+              snap_dialog: {},
               'endowment:network-access': {},
             },
           }),
@@ -5712,7 +5712,7 @@ describe('SnapController', () => {
             approvedPermissions: {
               [handlerEndowments.onRpcRequest]:
                 approvedPermissions[handlerEndowments.onRpcRequest],
-              snap_confirm: approvedPermissions.snap_confirm,
+              snap_dialog: approvedPermissions.snap_dialog,
             },
             unusedPermissions: {
               snap_manageState: approvedPermissions.snap_manageState,
@@ -5911,15 +5911,15 @@ describe('SnapController', () => {
       /* eslint-disable @typescript-eslint/naming-convention */
       const initialPermissions = {
         [handlerEndowments.onRpcRequest]: { snaps: false, dapps: true },
-        snap_confirm: {},
+        snap_dialog: {},
         snap_manageState: {},
       };
       const approvedPermissions: SubjectPermissions<
         ValidPermission<string, Caveat<string, any>>
       > = {
-        snap_confirm: {
+        snap_dialog: {
           caveats: null,
-          parentCapability: 'snap_confirm',
+          parentCapability: 'snap_dialog',
           id: '1',
           date: 1,
           invoker: MOCK_SNAP_ID,
@@ -5963,7 +5963,7 @@ describe('SnapController', () => {
                 snaps: false,
                 dapps: true,
               },
-              snap_confirm: {},
+              snap_dialog: {},
               'endowment:network-access': {},
             },
           }),

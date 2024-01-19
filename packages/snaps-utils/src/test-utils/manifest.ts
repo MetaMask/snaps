@@ -30,7 +30,7 @@ export const MOCK_SNAP_DESCRIPTION = 'The test example snap!';
 export const MOCK_SNAP_VERSION = '1.0.0' as SemVerVersion;
 /* eslint-disable @typescript-eslint/naming-convention */
 export const MOCK_INITIAL_PERMISSIONS = {
-  snap_confirm: {},
+  snap_dialog: {},
   'endowment:rpc': { snaps: true, dapps: false },
 };
 /* eslint-enable @typescript-eslint/naming-convention */
@@ -69,7 +69,7 @@ export const ALTERNATIVE_SNAP_ICON =
 
 // This will need to be recalculated if the checksum inputs change.
 export const DEFAULT_SNAP_SHASUM =
-  '7KGs2hbdzoEBXD1cjwQ6+K0v7HlzuY5ah+H9Gdh7g6k=';
+  'rNyfINgNh161cBmUop+F7xlE+GSEDZH53Y/HDpGLGGg=';
 
 /**
  * Get a mock snap manifest, based on the provided options. This is useful for

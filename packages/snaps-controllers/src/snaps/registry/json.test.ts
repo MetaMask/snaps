@@ -11,8 +11,10 @@ import type { JsonSnapsRegistryArgs } from './json';
 import { JsonSnapsRegistry } from './json';
 import { SnapsRegistryStatus } from './registry';
 
+// Public key for the private key:
+// `0x541c6759fd86c69eceb8d792d7174623db139d81a5b560aa026afcb2dd1bb21c`.
 const MOCK_PUBLIC_KEY =
-  '0x0351e33621fd89183c3db90db7db2a518a91ad0534d1345d031625d33e581e495a';
+  '0x03a885324b8520fba54a173999629952cfa1f97930c20902ec389f9c32c6ffbc40';
 
 const getRegistry = (args?: Partial<JsonSnapsRegistryArgs>) => {
   const messenger = getRestrictedSnapsRegistryControllerMessenger();
@@ -54,16 +56,28 @@ const MOCK_DATABASE: SnapsRegistryDatabase = {
   ],
 };
 
+// To regenerate this signature:
+// 1. Use the private key above, and paste it in `secp256k1-key` in
+//    `snaps-registry`.
+// 2. JSON.stringify the database above, and paste it in the `sign-registry`
+//    script in `snaps-registry` (instead of `fs.readFile`).
+//    - Pasting the JSON in the registry file directly will not work, as it
+//      contains a trailing newline.
+// 3. Run the `sign-registry` script.
+// 4. Copy the signature from the `signature.json` file.
 const MOCK_SIGNATURE =
-  '0x3044022067256cfed70fe93696246f58aa7ff252eba82fd3a6741d2551a58dcda017111402201cc11efbf5bc5f381b4bae4b83d84565ba478ad33308d72c23b47e8dda5b9983';
+  '0x304402201bfe1a98837631b669643135766de58deb426dc3eeb0a908c8000f85a047db3102207ac621072ea59737287099ac830323b34e59bfc41fb62119b16ce24d0c433f9e';
 const MOCK_SIGNATURE_FILE = {
   signature: MOCK_SIGNATURE,
   curve: 'secp256k1',
   format: 'DER',
 };
 
+// To regenerate this signature:
+// 1. Follow the steps above, but use the empty database below:
+//    `{"verifiedSnaps":{},"blockedSnaps":[]}`
 const MOCK_EMPTY_SIGNATURE =
-  '0x304402202de0931fff0173f5c0e701cc8228f2b732da5fa719199b487d7c05e7a47b954702202ff96a4a4748af9cc3a9b6eb7065235f84a2680add6e3aee3ee761eb3084a8e1';
+  '0x30450221009394dd1ab94c99079ce0e9f24170e4e4c40811e261013d3e6b80e4076cca7f9c0220201b6f5479a553fd50fc43fc50d18874583f29757b3f44cd088fae5aeb3595e2';
 const MOCK_EMPTY_SIGNATURE_FILE = {
   signature: MOCK_EMPTY_SIGNATURE,
   curve: 'secp256k1',

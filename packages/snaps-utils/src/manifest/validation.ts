@@ -149,9 +149,21 @@ export const MatchersStruct = object({
 
 /* eslint-disable @typescript-eslint/naming-convention */
 export const PermissionsStruct = type({
+  'endowment:cronjob': optional(
+    object({ jobs: CronjobSpecificationArrayStruct }),
+  ),
   'endowment:ethereum-provider': optional(object({})),
+  'endowment:keyring': optional(KeyringOriginsStruct),
+  'endowment:lifecycle-hooks': optional(object({})),
+  'endowment:name-lookup': optional(
+    object({
+      chains: optional(ChainIdsStruct),
+      matchers: optional(MatchersStruct),
+    }),
+  ),
   'endowment:network-access': optional(object({})),
-  'endowment:webassembly': optional(object({})),
+  'endowment:page-home': optional(object({})),
+  'endowment:rpc': optional(RpcOriginsStruct),
   'endowment:signature-insight': optional(
     object({
       allowSignatureOrigin: optional(boolean()),
@@ -162,20 +174,8 @@ export const PermissionsStruct = type({
       allowTransactionOrigin: optional(boolean()),
     }),
   ),
-  'endowment:cronjob': optional(
-    object({ jobs: CronjobSpecificationArrayStruct }),
-  ),
-  'endowment:rpc': optional(RpcOriginsStruct),
-  'endowment:name-lookup': optional(
-    object({
-      chains: optional(ChainIdsStruct),
-      matchers: optional(MatchersStruct),
-    }),
-  ),
-  'endowment:keyring': optional(KeyringOriginsStruct),
+  'endowment:webassembly': optional(object({})),
   snap_dialog: optional(object({})),
-  // TODO: Remove
-  snap_confirm: optional(object({})),
   snap_manageState: optional(object({})),
   snap_manageAccounts: optional(object({})),
   snap_notify: optional(object({})),
