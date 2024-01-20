@@ -615,6 +615,51 @@ describe('installSnap', () => {
     });
   });
 
+  describe('sendSignature', () => {
+    it('sends a signature request and returns the result', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+
+      const { snapId, close: closeServer } = await getMockServer({
+        sourceCode: `
+          module.exports.onSignature = async ({ signature }) => {
+            return {
+              content: {
+                type: 'text',
+                value: 'You are using the ' + signature.signatureMethod + ' method.',
+              },
+              severity: 'critical',
+            };
+          };
+         `,
+      });
+
+      const { sendSignature, close } = await installSnap(snapId);
+      const response = await sendSignature({
+        signatureMethod: 'personal_sign',
+      });
+
+      expect(response).toStrictEqual(
+        expect.objectContaining({
+          response: {
+            result: {
+              content: {
+                type: 'text',
+                value: 'You are using the personal_sign method.',
+              },
+              severity: 'critical',
+            },
+          },
+        }),
+      );
+
+      // `close` is deprecated because the Jest environment will automatically
+      // close the Snap when the test finishes. However, we still need to close
+      // the Snap in this test because it's run outside the Jest environment.
+      await close();
+      await closeServer();
+    });
+  });
+
   describe('runCronjob', () => {
     it('runs a cronjob and returns the result', async () => {
       jest.spyOn(console, 'log').mockImplementation();

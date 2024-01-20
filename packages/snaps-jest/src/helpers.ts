@@ -9,6 +9,7 @@ import {
   TransactionOptionsStruct,
   getEnvironment,
   JsonRpcMockOptionsStruct,
+  SignatureOptionsStruct,
 } from './internals';
 import type { InstallSnapOptions } from './internals';
 import {
@@ -223,6 +224,30 @@ export async function installSnap<
             chainId,
             transaction,
             transactionOrigin,
+          },
+        },
+      });
+    },
+
+    sendSignature: async (request): Promise<SnapResponse> => {
+      log('Making signature request');
+
+      const { origin: signatureOrigin, ...signature } = create(
+        request,
+        SignatureOptionsStruct,
+      );
+
+      return handleRequest({
+        snapId: installedSnapId,
+        store,
+        executionService,
+        runSaga,
+        handler: HandlerType.OnSignature,
+        request: {
+          method: '',
+          params: {
+            signature,
+            signatureOrigin,
           },
         },
       });
