@@ -5059,7 +5059,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-insights-example-snap@workspace:packages/examples/packages/signature-insights":
+"@metamask/signature-insights-example-snap@workspace:^, @metamask/signature-insights-example-snap@workspace:packages/examples/packages/signature-insights":
   version: 0.0.0-use.local
   resolution: "@metamask/signature-insights-example-snap@workspace:packages/examples/packages/signature-insights"
   dependencies:
@@ -5875,6 +5875,7 @@ __metadata:
     "@metamask/network-example-snap": "workspace:^"
     "@metamask/notification-example-snap": "workspace:^"
     "@metamask/providers": ^14.0.2
+    "@metamask/signature-insights-example-snap": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/utils": ^8.3.0
     "@metamask/wasm-example-snap": "workspace:^"
