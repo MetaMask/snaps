@@ -1,0 +1,23 @@
+{
+  "version": "1.1.0",
+  "description": "MetaMask example snap demonstrating the use of home pages.",
+  "proposedName": "Home Page Example Snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps.git"
+  },
+  "source": {
+    "shasum": "uOF7h6zDflGEiW55h49mwOhG1oOV2hTBGzuj4x2sPwY=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "@metamask/jsx-example-snap",
+        "registry": "https://registry.npmjs.org"
+      }
+    }
+  },
+  "initialPermissions": {
+    "endowment:page-home": {}
+  },
+  "manifestVersion": "0.1"
+}

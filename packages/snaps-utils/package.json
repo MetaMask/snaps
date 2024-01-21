@@ -66,6 +66,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.23.2",
+    "@babel/plugin-transform-react-jsx": "^7.23.4",
     "@babel/types": "^7.23.0",
     "@metamask/base-controller": "^4.1.0",
     "@metamask/key-tree": "^9.0.0",

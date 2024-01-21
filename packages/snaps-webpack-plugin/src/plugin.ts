@@ -68,7 +68,10 @@ export default class SnapsWebpackPlugin {
         },
         (assets) => {
           Object.keys(assets)
-            .filter((assetName) => assetName.endsWith('.js'))
+            .filter(
+              (assetName) =>
+                assetName.endsWith('.js') || assetName.endsWith('.jsx'),
+            )
             .forEach((assetName) => {
               const asset = assets[assetName];
               const source = asset.source() as string;

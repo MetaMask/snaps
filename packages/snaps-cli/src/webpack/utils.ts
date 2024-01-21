@@ -125,6 +125,15 @@ export async function getDefaultLoader({
            * @see https://swc.rs/docs/configuration/compilation#jscparser
            */
           syntax: 'typescript',
+          jsx: true,
+          // TODO(ritave): parsing JSX files doesn't work under 'typescript' syntax, it would need to parse .jsx separately from .tsx
+          // https://github.com/swc-project/swc/issues/6031#issuecomment-1376562806
+        },
+        transform: {
+          react: {
+            runtime: 'automatic',
+            importSource: '@metamask/snaps-sdk',
+          },
         },
       },
 

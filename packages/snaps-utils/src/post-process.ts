@@ -479,6 +479,10 @@ export function postProcessBundle(
       sourceMaps,
 
       plugins: [
+        [
+          '@babel/plugin-transform-react-jsx',
+          { runtime: 'automatic', importSource: '@metamask/snaps-sdk' },
+        ],
         () => ({
           pre,
           visitor,
