@@ -31,16 +31,20 @@ describe('endowment:name-lookup', () => {
       expect(() =>
         // @ts-expect-error Missing required permission types.
         specification.validator({}),
-      ).toThrow('Expected the following caveats: "chainIds", "matchers".');
+      ).toThrow(
+        'Expected the following caveats: "chainIds", "lookupMatchers".',
+      );
     });
 
-    it('throws if the caveats are not one or both of "chainIds" and "matchers".', () => {
+    it('throws if the caveats are not one or both of "chainIds" and "lookupMatchers".', () => {
       expect(() =>
         // @ts-expect-error Missing other required permission types.
         specification.validator({
           caveats: [{ type: 'foo', value: 'bar' }],
         }),
-      ).toThrow('Expected the following caveats: "chainIds", "matchers".');
+      ).toThrow(
+        'Expected the following caveats: "chainIds", "lookupMatchers", received "foo".',
+      );
 
       expect(() =>
         // @ts-expect-error Missing other required permission types.
@@ -50,9 +54,7 @@ describe('endowment:name-lookup', () => {
             { type: 'chainIds', value: ['bar'] },
           ],
         }),
-      ).toThrow(
-        'Expected one or both of the "chainIds" and "matchers" caveats.',
-      );
+      ).toThrow('Duplicate caveats are not allowed.');
     });
   });
 });
@@ -259,7 +261,7 @@ describe('nameLookupCaveatSpecifications', () => {
           value: { foo: 'bar', tlds: ['lens'], schemes: ['fio'] },
         }),
       ).toThrow(
-        'Expect caveat value to be a non-empty object with at most 2 properties.',
+        'Assertion failed: At path: foo -- Expected a value of type `never`, but received: `"bar"`.',
       );
 
       expect(() =>
@@ -270,25 +272,30 @@ describe('nameLookupCaveatSpecifications', () => {
           value: { foo: 'bar' },
         }),
       ).toThrow(
-        'Expected caveat value to only have either or both of the following properties: "tlds", "schemes".',
+        'Assertion failed: At path: foo -- Expected a value of type `never`, but received: `"bar"`.',
       );
 
-      [
-        {
-          type: SnapCaveatType.LookupMatchers,
-          value: { tlds: [1, 2], schemes: ['fio'] },
-        },
-        {
+      expect(() =>
+        nameLookupCaveatSpecifications[
+          SnapCaveatType.LookupMatchers
+        ].validator?.({
           type: SnapCaveatType.LookupMatchers,
           value: { tlds: ['lens'], schemes: [1, 2] },
-        },
-      ].forEach((caveat) => {
-        expect(() =>
-          nameLookupCaveatSpecifications[
-            SnapCaveatType.LookupMatchers
-          ].validator?.(caveat),
-        ).toThrow('"tlds" and "schemes" properties must be string arrays.');
-      });
+        }),
+      ).toThrow(
+        'Assertion failed: At path: schemes.0 -- Expected a string, but received: 1.',
+      );
+
+      expect(() =>
+        nameLookupCaveatSpecifications[
+          SnapCaveatType.LookupMatchers
+        ].validator?.({
+          type: SnapCaveatType.LookupMatchers,
+          value: { tlds: [1, 2], schemes: ['fio'] },
+        }),
+      ).toThrow(
+        'Assertion failed: At path: tlds.0 -- Expected a string, but received: 1.',
+      );
     });
 
     it('will not throw with a valid caveat value', () => {
