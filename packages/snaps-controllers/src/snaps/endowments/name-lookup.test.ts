@@ -6,7 +6,7 @@ import { SnapEndowments } from '.';
 import {
   nameLookupEndowmentBuilder,
   getChainIdsCaveat,
-  getMatchersCaveat,
+  getLookupMatchersCaveat,
   getNameLookupCaveatMapper,
   nameLookupCaveatSpecifications,
 } from './name-lookup';
@@ -18,7 +18,7 @@ describe('endowment:name-lookup', () => {
       permissionType: PermissionType.Endowment,
       targetName: SnapEndowments.NameLookup,
       endowmentGetter: expect.any(Function),
-      allowedCaveats: [SnapCaveatType.ChainIds, SnapCaveatType.Matchers],
+      allowedCaveats: [SnapCaveatType.ChainIds, SnapCaveatType.LookupMatchers],
       subjectTypes: [SubjectType.Snap],
       validator: expect.any(Function),
     });
@@ -112,7 +112,7 @@ describe('getChainIdsCaveat', () => {
   });
 });
 
-describe('getMatchersCaveat', () => {
+describe('getLookupMatchersCaveat', () => {
   it('returns the value from a name-lookup permission', () => {
     const permission: PermissionConstraint = {
       date: 0,
@@ -121,16 +121,18 @@ describe('getMatchersCaveat', () => {
       id: 'baz',
       caveats: [
         {
-          type: SnapCaveatType.Matchers,
+          type: SnapCaveatType.LookupMatchers,
           value: { tlds: ['lens'] },
         },
       ],
     };
-    expect(getMatchersCaveat(permission)).toStrictEqual({ tlds: ['lens'] });
+    expect(getLookupMatchersCaveat(permission)).toStrictEqual({
+      tlds: ['lens'],
+    });
   });
 
   it('returns null if the input is undefined', () => {
-    expect(getMatchersCaveat(undefined)).toBeNull();
+    expect(getLookupMatchersCaveat(undefined)).toBeNull();
   });
 
   it('returns null if the permission does not have caveats', () => {
@@ -142,7 +144,7 @@ describe('getMatchersCaveat', () => {
       caveats: null,
     };
 
-    expect(getMatchersCaveat(permission)).toBeNull();
+    expect(getLookupMatchersCaveat(permission)).toBeNull();
   });
 
   it('throws if there is not a "matchers" caveat', () => {
@@ -159,7 +161,9 @@ describe('getMatchersCaveat', () => {
       ],
     };
 
-    expect(() => getMatchersCaveat(permission)).toThrow('Assertion failed');
+    expect(() => getLookupMatchersCaveat(permission)).toThrow(
+      'Assertion failed',
+    );
   });
 });
 
@@ -242,26 +246,28 @@ describe('nameLookupCaveatSpecifications', () => {
     it('throws if the caveat values are invalid for the "matchers" caveat', () => {
       [
         {
-          type: SnapCaveatType.Matchers,
+          type: SnapCaveatType.LookupMatchers,
           value: undefined,
         },
         {
-          type: SnapCaveatType.Matchers,
+          type: SnapCaveatType.LookupMatchers,
           value: { foo: 'bar', tlds: ['lens'], schemes: ['fio'] },
         },
       ].forEach((caveat) => {
         expect(() =>
-          nameLookupCaveatSpecifications[SnapCaveatType.Matchers].validator?.(
-            caveat,
-          ),
+          nameLookupCaveatSpecifications[
+            SnapCaveatType.LookupMatchers
+          ].validator?.(caveat),
         ).toThrow(
           'Expect caveat value to be a non-empty object with at most 2 properties.',
         );
       });
 
       expect(() =>
-        nameLookupCaveatSpecifications[SnapCaveatType.Matchers].validator?.({
-          type: SnapCaveatType.Matchers,
+        nameLookupCaveatSpecifications[
+          SnapCaveatType.LookupMatchers
+        ].validator?.({
+          type: SnapCaveatType.LookupMatchers,
           value: { foo: 'bar' },
         }),
       ).toThrow(
@@ -270,18 +276,18 @@ describe('nameLookupCaveatSpecifications', () => {
 
       [
         {
-          type: SnapCaveatType.Matchers,
+          type: SnapCaveatType.LookupMatchers,
           value: { tlds: [1, 2], schemes: ['fio'] },
         },
         {
-          type: SnapCaveatType.Matchers,
+          type: SnapCaveatType.LookupMatchers,
           value: { tlds: ['lens'], schemes: [1, 2] },
         },
       ].forEach((caveat) => {
         expect(() =>
-          nameLookupCaveatSpecifications[SnapCaveatType.Matchers].validator?.(
-            caveat,
-          ),
+          nameLookupCaveatSpecifications[
+            SnapCaveatType.LookupMatchers
+          ].validator?.(caveat),
         ).toThrow('"tlds" and "schemes" properties must be string arrays.');
       });
     });
@@ -295,8 +301,10 @@ describe('nameLookupCaveatSpecifications', () => {
       ).not.toThrow();
 
       expect(() =>
-        nameLookupCaveatSpecifications[SnapCaveatType.Matchers].validator?.({
-          type: SnapCaveatType.Matchers,
+        nameLookupCaveatSpecifications[
+          SnapCaveatType.LookupMatchers
+        ].validator?.({
+          type: SnapCaveatType.LookupMatchers,
           value: { tlds: ['lens'], schemes: ['fio'] },
         }),
       ).not.toThrow();

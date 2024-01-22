@@ -10,9 +10,19 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { SnapCaveatType, isChainId } from '@metamask/snaps-utils';
+import {
+  ChainIdsStruct,
+  LookupMatchersStruct,
+  SnapCaveatType,
+} from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
-import { assert, hasProperty, isObject, isPlainObject } from '@metamask/utils';
+import {
+  assert,
+  assertStruct,
+  hasProperty,
+  isObject,
+  isPlainObject,
+} from '@metamask/utils';
 
 import { SnapEndowments } from './enum';
 
@@ -50,7 +60,7 @@ const hasValidCaveats = (caveats: unknown) => {
   if (caveats.length === 1) {
     return (
       caveats[0].type === SnapCaveatType.ChainIds ||
-      caveats[0].type === SnapCaveatType.Matchers
+      caveats[0].type === SnapCaveatType.LookupMatchers
     );
   }
 
@@ -59,7 +69,7 @@ const hasValidCaveats = (caveats: unknown) => {
     caveats.forEach((caveat) => caveatSet.add(caveat.type));
     if (
       caveatSet.has(SnapCaveatType.ChainIds) &&
-      caveatSet.has(SnapCaveatType.Matchers)
+      caveatSet.has(SnapCaveatType.LookupMatchers)
     ) {
       return true;
     }
@@ -83,12 +93,12 @@ const specificationBuilder: PermissionSpecificationBuilder<
   return {
     permissionType: PermissionType.Endowment,
     targetName: permissionName,
-    allowedCaveats: [SnapCaveatType.ChainIds, SnapCaveatType.Matchers],
+    allowedCaveats: [SnapCaveatType.ChainIds, SnapCaveatType.LookupMatchers],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
     validator: ({ caveats }) => {
       if (!hasValidCaveats(caveats)) {
         throw rpcErrors.invalidParams({
-          message: `Expected one or both of the "${SnapCaveatType.ChainIds}" and "${SnapCaveatType.Matchers}" caveats.`,
+          message: `Expected one or both of the "${SnapCaveatType.ChainIds}" and "${SnapCaveatType.LookupMatchers}" caveats.`,
         });
       }
     },
@@ -118,37 +128,10 @@ function validateCaveat(caveat: Caveat<string, any>): void {
 
   switch (caveat.type) {
     case SnapCaveatType.ChainIds:
-      assert(
-        Array.isArray(value) && value.every((val) => isChainId(val)),
-        'Expected caveat value to have type "string array"',
-      );
+      assertStruct(value, ChainIdsStruct);
       break;
-    case SnapCaveatType.Matchers:
-      assert(
-        isObject(value) &&
-          Object.keys(value).length > 0 &&
-          Object.keys(value).length <= 2,
-        'Expect caveat value to be a non-empty object with at most 2 properties.',
-      );
-
-      assert(
-        (hasProperty(value, 'tlds') && hasProperty(value, 'schemes')) ||
-          hasProperty(value, 'tlds') ||
-          hasProperty(value, 'schemes'),
-        'Expected caveat value to only have either or both of the following properties: "tlds", "schemes".',
-      );
-
-      assert(
-        ['tlds', 'schemes'].every((prop) => {
-          if (Array.isArray(value[prop])) {
-            return (value[prop] as unknown[]).every(
-              (val) => typeof val === 'string',
-            );
-          }
-          return false;
-        }),
-        '"tlds" and "schemes" properties must be string arrays.',
-      );
+    case SnapCaveatType.LookupMatchers:
+      assertStruct(value, LookupMatchersStruct);
       break;
     default:
       throw rpcErrors.invalidParams({
@@ -184,7 +167,7 @@ export function getNameLookupCaveatMapper(
 
   if (value.matchers) {
     caveats.push({
-      type: SnapCaveatType.Matchers,
+      type: SnapCaveatType.LookupMatchers,
       value: value.matchers,
     });
   }
@@ -233,7 +216,7 @@ export function getChainIdsCaveat(
  * @param permission - The permission to get the `matchers` caveat from.
  * @returns A `matchers` object that defines the input that the snap supports.
  */
-export function getMatchersCaveat(
+export function getLookupMatchersCaveat(
   permission?: PermissionConstraint,
 ): Record<string, string[]> | null {
   if (!permission?.caveats) {
@@ -241,25 +224,25 @@ export function getMatchersCaveat(
   }
 
   const caveat = permission.caveats.find(
-    (permCaveat) => permCaveat.type === SnapCaveatType.Matchers,
+    (permCaveat) => permCaveat.type === SnapCaveatType.LookupMatchers,
   );
   assert(permission.caveats.length === 1 || permission.caveats.length === 2);
   assert(caveat);
-  assert(caveat.type === SnapCaveatType.Matchers);
+  assert(caveat.type === SnapCaveatType.LookupMatchers);
 
   return (caveat as Caveat<string, Record<string, string[]>>).value ?? null;
 }
 
 export const nameLookupCaveatSpecifications: Record<
-  SnapCaveatType.ChainIds | SnapCaveatType.Matchers,
+  SnapCaveatType.ChainIds | SnapCaveatType.LookupMatchers,
   CaveatSpecificationConstraint
 > = {
   [SnapCaveatType.ChainIds]: Object.freeze({
     type: SnapCaveatType.ChainIds,
     validator: (caveat: Caveat<string, any>) => validateCaveat(caveat),
   }),
-  [SnapCaveatType.Matchers]: Object.freeze({
-    type: SnapCaveatType.Matchers,
+  [SnapCaveatType.LookupMatchers]: Object.freeze({
+    type: SnapCaveatType.LookupMatchers,
     validator: (caveat: Caveat<string, any>) => validateCaveat(caveat),
   }),
 };

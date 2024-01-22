@@ -10,7 +10,16 @@ import type {
   OnUpdateHandler,
 } from '@metamask/snaps-sdk';
 import { SeverityLevel, ComponentStruct } from '@metamask/snaps-sdk';
-import { literal, nullable, object, optional } from 'superstruct';
+import {
+  literal,
+  nullable,
+  object,
+  optional,
+  string,
+  array,
+  size,
+  union,
+} from 'superstruct';
 
 import type { SnapHandler } from './handler-types';
 import { HandlerType } from './handler-types';
@@ -99,6 +108,29 @@ export const OnSignatureResponseStruct = OnTransactionResponseStruct;
 export const OnHomePageResponseStruct = object({
   content: ComponentStruct,
 });
+
+export const AddressResolutionStruct = object({
+  protocol: string(),
+  resolvedDomain: string(),
+});
+
+export const DomainResolutionStruct = object({
+  protocol: string(),
+  resolvedAddress: string(),
+});
+
+export const AddressResolutionResponseStruct = object({
+  resolvedDomains: size(array(AddressResolutionStruct), 1, Infinity),
+});
+
+export const DomainResolutionResponseStruct = object({
+  resolvedAddresses: size(array(DomainResolutionStruct), 1, Infinity),
+});
+
+export const OnNameLookupResponseStruct = union([
+  AddressResolutionResponseStruct,
+  DomainResolutionResponseStruct,
+]);
 
 /**
  * Utility type for getting the handler function type from a handler type.

@@ -94,5 +94,5 @@ export * from './enum';
 export { getRpcCaveatOrigins } from './rpc';
 export { getSignatureOriginCaveat } from './signature-insight';
 export { getTransactionOriginCaveat } from './transaction-insight';
-export { getChainIdsCaveat, getMatchersCaveat } from './name-lookup';
+export { getChainIdsCaveat, getLookupMatchersCaveat } from './name-lookup';
 export { getKeyringCaveatOrigins } from './keyring';

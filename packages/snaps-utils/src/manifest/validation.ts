@@ -142,7 +142,7 @@ export const SnapIdsStruct = refine(
 export type SnapIds = Infer<typeof SnapIdsStruct>;
 
 export const ChainIdsStruct = size(array(ChainIdStruct), 1, Infinity);
-export const MatchersStruct = object({
+export const LookupMatchersStruct = object({
   tlds: optional(size(array(string()), 1, Infinity)),
   schemes: optional(size(array(string()), 1, Infinity)),
 });
@@ -158,7 +158,7 @@ export const PermissionsStruct = type({
   'endowment:name-lookup': optional(
     object({
       chains: optional(ChainIdsStruct),
-      matchers: optional(MatchersStruct),
+      matchers: optional(LookupMatchersStruct),
     }),
   ),
   'endowment:network-access': optional(object({})),

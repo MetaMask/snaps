@@ -46,5 +46,5 @@ export enum SnapCaveatType {
   /**
    * Caveat specifying the input that a name lookup snap can service, currently limited to `endowment:name-lookup`.
    */
-  Matchers = 'matchers',
+  LookupMatchers = 'lookupMatchers',
 }
