@@ -24,6 +24,7 @@ import {
   isPlainObject,
 } from '@metamask/utils';
 
+import { createGenericPermissionValidator } from './caveats';
 import { SnapEndowments } from './enum';
 
 const permissionName = SnapEndowments.NameLookup;
@@ -35,48 +36,6 @@ type NameLookupEndowmentSpecification = ValidPermissionSpecification<{
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
 }>;
-
-/**
- * Helper function to determine if the passed in caveats
- * match the specification for `endowment:name-lookup`.
- *
- * @param caveats - Value that needs to be validated.
- * @returns boolean.
- */
-
-const hasValidCaveats = (caveats: unknown) => {
-  if (!caveats) {
-    return false;
-  }
-
-  if (!Array.isArray(caveats)) {
-    return false;
-  }
-
-  if (caveats.length < 1 || caveats.length > 2) {
-    return false;
-  }
-
-  if (caveats.length === 1) {
-    return (
-      caveats[0].type === SnapCaveatType.ChainIds ||
-      caveats[0].type === SnapCaveatType.LookupMatchers
-    );
-  }
-
-  if (caveats.length === 2) {
-    const caveatSet = new Set();
-    caveats.forEach((caveat) => caveatSet.add(caveat.type));
-    if (
-      caveatSet.has(SnapCaveatType.ChainIds) &&
-      caveatSet.has(SnapCaveatType.LookupMatchers)
-    ) {
-      return true;
-    }
-  }
-
-  return false;
-};
 
 /**
  * `endowment:name-lookup` returns nothing; it is intended to be used as a flag
@@ -95,12 +54,13 @@ const specificationBuilder: PermissionSpecificationBuilder<
     targetName: permissionName,
     allowedCaveats: [SnapCaveatType.ChainIds, SnapCaveatType.LookupMatchers],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
-    validator: ({ caveats }) => {
-      if (!hasValidCaveats(caveats)) {
-        throw rpcErrors.invalidParams({
-          message: `Expected one or both of the "${SnapCaveatType.ChainIds}" and "${SnapCaveatType.LookupMatchers}" caveats.`,
-        });
-      }
+    validator: (permission) => {
+      const lookupPermissionValidator = createGenericPermissionValidator([
+        { type: SnapCaveatType.ChainIds },
+        { type: SnapCaveatType.LookupMatchers },
+      ]);
+
+      lookupPermissionValidator(permission);
     },
     subjectTypes: [SubjectType.Snap],
   };

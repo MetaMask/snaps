@@ -5,6 +5,8 @@ import {
   ChecksumStruct,
   VersionStruct,
   isValidSemVerRange,
+  isObject,
+  hasProperty,
 } from '@metamask/utils';
 import type { Infer, Struct } from 'superstruct';
 import {
@@ -30,7 +32,7 @@ import { isEqual } from '../array';
 import { CronjobSpecificationArrayStruct } from '../cronjob';
 import { SIP_6_MAGIC_VALUE, STATE_ENCRYPTION_MAGIC_VALUE } from '../entropy';
 import { KeyringOriginsStruct, RpcOriginsStruct } from '../json-rpc';
-import { ChainIdStruct } from '../namespace';
+import { ChainIdStruct, isChainId } from '../namespace';
 import { SnapIdStruct } from '../snaps';
 import type { InferMatching } from '../structs';
 import { NameStruct, NpmSnapFileNames, uri } from '../types';
@@ -141,11 +143,62 @@ export const SnapIdsStruct = refine(
 
 export type SnapIds = Infer<typeof SnapIdsStruct>;
 
-export const ChainIdsStruct = size(array(ChainIdStruct), 1, Infinity);
-export const LookupMatchersStruct = object({
-  tlds: optional(size(array(string()), 1, Infinity)),
-  schemes: optional(size(array(string()), 1, Infinity)),
-});
+export const ChainIdsStruct = refine(
+  size(array(ChainIdStruct), 1, Infinity),
+  'Chain IDs',
+  (value) => {
+    if (Array.isArray(value) && value.every((val) => isChainId(val))) {
+      return true;
+    }
+    return 'Expected caveat value to have type "string array"';
+  },
+);
+
+export const LookupMatchersStruct = refine(
+  object({
+    tlds: optional(size(array(string()), 1, Infinity)),
+    schemes: optional(size(array(string()), 1, Infinity)),
+  }),
+  'Lookup Matchers',
+  (value) => {
+    const satisfiesEmptyCondition =
+      isObject(value) &&
+      Object.keys(value).length > 0 &&
+      Object.keys(value).length <= 2;
+
+    if (!satisfiesEmptyCondition) {
+      return 'Expect caveat value to be a non-empty object with at most 2 properties.';
+    }
+
+    const satisfiesPropertyCondition =
+      (hasProperty(value, 'tlds') && hasProperty(value, 'schemes')) ||
+      hasProperty(value, 'tlds') ||
+      hasProperty(value, 'schemes');
+
+    if (!satisfiesPropertyCondition) {
+      return 'Expected caveat value to only have either or both of the following properties: "tlds", "schemes".';
+    }
+
+    const satisfiesCaveatValueCondition = ['tlds', 'schemes'].every(
+      (prop: string) => {
+        if ((value as Record<string, unknown>)[prop]) {
+          if (Array.isArray((value as Record<string, unknown>)[prop])) {
+            return (
+              (value as Record<string, unknown>)[prop] as unknown[]
+            ).every((val) => typeof val === 'string');
+          }
+        }
+        return true;
+      },
+    );
+
+    if (!satisfiesCaveatValueCondition) {
+      return '"tlds" and "schemes" properties must be string arrays.';
+    }
+
+    return true;
+  },
+);
 
 /* eslint-disable @typescript-eslint/naming-convention */
 export const PermissionsStruct = type({
