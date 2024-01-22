@@ -2,7 +2,7 @@ import type { PermissionValidatorConstraint } from '@metamask/permission-control
 import { rpcErrors } from '@metamask/rpc-errors';
 
 /**
- * Creates a generic permission validator that validates the presense of certain caveats.
+ * Create a generic permission validator that validates the presence of certain caveats.
  *
  * This validator only validates the types of the caveats, not the values.
  *
