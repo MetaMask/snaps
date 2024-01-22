@@ -5320,8 +5320,8 @@ __metadata:
     tar-stream: ^3.1.7
     ts-node: ^10.9.1
     typescript: ~4.8.4
-    vite: ^4.3.9
-    vite-tsconfig-paths: ^4.0.5
+    vite: ^4.5.2
+    vite-tsconfig-paths: ^4.3.1
     wdio-chromedriver-service: ^8.1.1
     wdio-geckodriver-service: ^5.0.2
     webdriverio: ^8.19.0
@@ -5406,8 +5406,8 @@ __metadata:
     terser: ^5.17.7
     ts-node: ^10.9.1
     typescript: ~4.8.4
-    vite: ^4.3.9
-    vite-tsconfig-paths: ^4.0.5
+    vite: ^4.5.2
+    vite-tsconfig-paths: ^4.3.1
     wdio-chromedriver-service: ^8.1.1
     wdio-geckodriver-service: ^5.0.2
     webdriverio: ^8.19.0
@@ -5792,8 +5792,8 @@ __metadata:
     ts-node: ^10.9.1
     typescript: ~4.8.4
     validate-npm-package-name: ^5.0.0
-    vite: ^4.3.9
-    vite-tsconfig-paths: ^4.0.5
+    vite: ^4.5.2
+    vite-tsconfig-paths: ^4.3.1
     wdio-chromedriver-service: ^8.1.1
     wdio-geckodriver-service: ^5.0.2
     webdriverio: ^8.19.0
@@ -21725,17 +21725,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsconfck@npm:^2.0.1":
-  version: 2.0.2
-  resolution: "tsconfck@npm:2.0.2"
+"tsconfck@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "tsconfck@npm:3.0.1"
   peerDependencies:
-    typescript: ^4.3.5
+    typescript: ^5.0.0
   peerDependenciesMeta:
     typescript:
       optional: true
   bin:
     tsconfck: bin/tsconfck.js
-  checksum: bc914042b2f5e1f9d7bbadd05b74031f32e2f1757061743d70d86d17dda0734d838e67abb0105b81db67c30b66496e5d408cbe216bb43b3d567a181b0448ddc1
+  checksum: 8ce536b2888c871531bc629ce11b13d22cdaa8f6539e5e16cd58ea0b6a4a9561dd83065db1c2d3c0bb03942cd7fa48c56f8e034e5298bb8c30be4578359ba57d
   languageName: node
   linkType: hard
 
@@ -22450,18 +22450,63 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-tsconfig-paths@npm:^4.0.5":
-  version: 4.0.5
-  resolution: "vite-tsconfig-paths@npm:4.0.5"
+"vite-tsconfig-paths@npm:^4.3.1":
+  version: 4.3.1
+  resolution: "vite-tsconfig-paths@npm:4.3.1"
   dependencies:
     debug: ^4.1.1
     globrex: ^0.1.2
-    tsconfck: ^2.0.1
-  checksum: 49b4064881343ef0b75e52eeb1d5cdfe1f26b32ded68e71efc84022e8e96bdb3d3f37f79f3678b43e935dca279cc24c5936942b5fdbaf1489b497e48572314d9
+    tsconfck: ^3.0.1
+  peerDependencies:
+    vite: "*"
+  peerDependenciesMeta:
+    vite:
+      optional: true
+  checksum: 2934d5d674e0b6ab8d435d4262ff30143c30512072d71ece5a3859a70a188cbdbcc2b0370277049ab551f7bbb6ffb2be94a0bf30154e5c58d38b32adce9740bd
   languageName: node
   linkType: hard
 
-"vite@npm:^4.3.9, vite@npm:~4.4.6":
+"vite@npm:^4.5.2":
+  version: 4.5.2
+  resolution: "vite@npm:4.5.2"
+  dependencies:
+    esbuild: ^0.18.10
+    fsevents: ~2.3.2
+    postcss: ^8.4.27
+    rollup: ^3.27.1
+  peerDependencies:
+    "@types/node": ">= 14"
+    less: "*"
+    lightningcss: ^1.21.0
+    sass: "*"
+    stylus: "*"
+    sugarss: "*"
+    terser: ^5.4.0
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  peerDependenciesMeta:
+    "@types/node":
+      optional: true
+    less:
+      optional: true
+    lightningcss:
+      optional: true
+    sass:
+      optional: true
+    stylus:
+      optional: true
+    sugarss:
+      optional: true
+    terser:
+      optional: true
+  bin:
+    vite: bin/vite.js
+  checksum: 9d1f84f703c2660aced34deee7f309278ed368880f66e9570ac115c793d91f7fffb80ab19c602b3c8bc1341fe23437d86a3fcca2a9ef82f7ef0cdac5a40d0c86
+  languageName: node
+  linkType: hard
+
+"vite@npm:~4.4.6":
   version: 4.4.9
   resolution: "vite@npm:4.4.9"
   dependencies:
