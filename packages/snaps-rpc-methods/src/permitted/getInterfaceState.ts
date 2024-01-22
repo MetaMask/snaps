@@ -71,7 +71,6 @@ function getGetInterfaceStateImplementation(
   end: JsonRpcEngineEndCallback,
   { getInterfaceState, hasPermission }: GetInterfaceStateMethodHooks,
 ): void {
-  // We expect the MM middleware stack to always add the origin to requests
   const { params } = req;
 
   try {

@@ -1527,19 +1527,23 @@ describe('BaseSnapExecutor', () => {
       },
     };
 
-    await expect(
-      executor.writeCommand({
-        jsonrpc: '2.0',
-        id: 2,
-        method: 'snapRpc',
-        params: [
-          MOCK_SNAP_ID,
-          HandlerType.OnUserInput,
-          MOCK_ORIGIN,
-          { jsonrpc: '2.0', method: 'foo', params },
-        ],
-      }),
-    ).resolves.not.toThrow();
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnUserInput,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: 'foo', params },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: null,
+    });
   });
 
   describe('lifecycle hooks', () => {

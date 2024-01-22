@@ -36,7 +36,7 @@ export const InputStruct = assign(
 );
 
 /**
- * Am input node, that renders an input.
+ * An input node, that renders an input.
  *
  * @property type - The type of the node, must be the string 'input'.
  * @property name - The name for the input.

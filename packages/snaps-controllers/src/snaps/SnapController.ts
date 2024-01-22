@@ -108,13 +108,8 @@ import type {
   TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '../services';
-<<<<<<< HEAD
 import { fetchSnap, hasTimedOut, setDiff, withTimeout } from '../utils';
-import { handlerEndowments, SnapEndowments } from './endowments';
-=======
-import { getSnapFiles, hasTimedOut, setDiff, withTimeout } from '../utils';
 import { handlerEndowments } from './endowments';
->>>>>>> 07926813 (address requested changes)
 import { getKeyringCaveatOrigins } from './endowments/keyring';
 import { getRpcCaveatOrigins } from './endowments/rpc';
 import type { SnapLocation } from './location';
