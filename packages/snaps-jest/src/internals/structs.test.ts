@@ -4,6 +4,7 @@ import { create } from 'superstruct';
 import {
   InterfaceStruct,
   JsonRpcMockOptionsStruct,
+  SignatureOptionsStruct,
   SnapOptionsStruct,
   SnapResponseStruct,
   TransactionOptionsStruct,
@@ -77,6 +78,43 @@ describe('TransactionOptionsStruct', () => {
       origin: 'metamask.io',
       to: '0x000000000000000000000000000000000000',
       value: '0x00',
+    });
+  });
+
+  it.each(INVALID_VALUES)('throws for invalid value: %p', (value) => {
+    // eslint-disable-next-line jest/require-to-throw-message
+    expect(() => create(value, TransactionOptionsStruct)).toThrow();
+  });
+});
+
+describe('SignatureOptionsStruct', () => {
+  it('accepts an empty object', () => {
+    const signature = create({}, SignatureOptionsStruct);
+
+    expect(signature).toStrictEqual({
+      data: '0x',
+      from: expect.any(String),
+      origin: 'metamask.io',
+      signatureMethod: 'personal_sign',
+    });
+  });
+
+  it('accepts a valid object', () => {
+    const signature = create(
+      {
+        data: { foo: 'bar' },
+        from: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+        origin: 'metamask.io',
+        signatureMethod: 'eth_signTypedData_v3',
+      },
+      SignatureOptionsStruct,
+    );
+
+    expect(signature).toStrictEqual({
+      data: { foo: 'bar' },
+      from: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045',
+      origin: 'metamask.io',
+      signatureMethod: 'eth_signTypedData_v3',
     });
   });
 
