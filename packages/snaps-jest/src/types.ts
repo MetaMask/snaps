@@ -7,6 +7,7 @@ import type { Json, JsonRpcId, JsonRpcParams } from '@metamask/utils';
 import type { Infer } from 'superstruct';
 
 import type {
+  SignatureOptionsStruct,
   SnapOptionsStruct,
   SnapResponseStruct,
   TransactionOptionsStruct,
@@ -90,6 +91,18 @@ export type CronjobOptions = Omit<RequestOptions, 'origin'>;
  * @property nonce - The nonce to use for the transaction. Defaults to `0`.
  */
 export type TransactionOptions = Infer<typeof TransactionOptionsStruct>;
+
+/**
+ * The options to use for signature requests.
+ *
+ * @property origin - The origin to send the signature request from. Defaults to
+ * `metamask.io`.
+ * @property from - The address to send the signature from. Defaults to a
+ * randomly generated address.
+ * @property data - The data to sign. Defaults to `0x`.
+ * @property signatureMethod - The signature method.
+ */
+export type SignatureOptions = Infer<typeof SignatureOptionsStruct>;
 
 /**
  * The options to use for requests to the snap.
@@ -256,6 +269,16 @@ export type Snap = {
   sendTransaction(
     transaction?: Partial<TransactionOptions>,
   ): Promise<SnapResponse>;
+
+  /**
+   * Send a signature request to the snap.
+   *
+   * @param signature - The signature request object. Contains the params from
+   * the various signature methods, but has an extra `origin` and `signatureMethod` field.
+   * Any missing fields will be filled in with default values.
+   * @returns The response.
+   */
+  onSignature(signature?: Partial<SignatureOptions>): Promise<SnapResponse>;
 
   /**
    * Run a cronjob in the snap. This is similar to {@link request}, but the
