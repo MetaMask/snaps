@@ -38,7 +38,7 @@ describe('manifest', () => {
       '/snap/snap.manifest.json',
       JSON.stringify(
         getSnapManifest({
-          shasum: 'arUMLnuZBGUP4bP3mDBddSs5emfHMgEThNB54+LCm+c=',
+          shasum: 'G/W5b2JZVv+epgNX9pkN63X6Lye9EJVJ4NLSgAw/afc=',
         }),
       ),
     );

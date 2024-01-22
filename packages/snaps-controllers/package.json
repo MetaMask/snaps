@@ -64,7 +64,7 @@
     "nanoid": "^3.1.31",
     "readable-stream": "^3.6.2",
     "readable-web-to-node-stream": "^3.0.2",
-    "tar-stream": "^3.1.6"
+    "tar-stream": "^3.1.7"
   },
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",

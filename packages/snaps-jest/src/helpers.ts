@@ -9,13 +9,20 @@ import {
   TransactionOptionsStruct,
   getEnvironment,
   JsonRpcMockOptionsStruct,
+  SignatureOptionsStruct,
 } from './internals';
 import type { InstallSnapOptions } from './internals';
 import {
   addJsonRpcMock,
   removeJsonRpcMock,
 } from './internals/simulation/store/mocks';
-import type { JsonRpcMockOptions, Snap, SnapResponse } from './types';
+import type {
+  CronjobOptions,
+  JsonRpcMockOptions,
+  Snap,
+  SnapResponse,
+  TransactionOptions,
+} from './types';
 
 const log = createModuleLogger(rootLogger, 'helpers');
 
@@ -188,6 +195,47 @@ export async function installSnap<
     runSaga,
   } = await getEnvironment().installSnap(...resolvedOptions);
 
+  const onTransaction = async (
+    request: TransactionOptions,
+  ): Promise<SnapResponse> => {
+    log('Sending transaction %o.', request);
+
+    const {
+      origin: transactionOrigin,
+      chainId,
+      ...transaction
+    } = create(request, TransactionOptionsStruct);
+
+    return handleRequest({
+      snapId: installedSnapId,
+      store,
+      executionService,
+      runSaga,
+      handler: HandlerType.OnTransaction,
+      request: {
+        method: '',
+        params: {
+          chainId,
+          transaction,
+          transactionOrigin,
+        },
+      },
+    });
+  };
+
+  const onCronjob = (request: CronjobOptions) => {
+    log('Running cronjob %o.', options);
+
+    return handleRequest({
+      snapId: installedSnapId,
+      store,
+      executionService,
+      runSaga,
+      handler: HandlerType.OnCronjob,
+      request,
+    });
+  };
+
   return {
     request: (request) => {
       log('Sending request %o.', request);
@@ -202,46 +250,37 @@ export async function installSnap<
       });
     },
 
-    sendTransaction: async (request): Promise<SnapResponse> => {
-      log('Sending transaction %o.', request);
+    onTransaction,
+    sendTransaction: onTransaction,
 
-      const {
-        origin: transactionOrigin,
-        chainId,
-        ...transaction
-      } = create(request, TransactionOptionsStruct);
+    onSignature: async (request: unknown): Promise<SnapResponse> => {
+      log('Requesting signature %o.', request);
+
+      const { origin: signatureOrigin, ...signature } = create(
+        request,
+        SignatureOptionsStruct,
+      );
 
       return handleRequest({
         snapId: installedSnapId,
         store,
         executionService,
         runSaga,
-        handler: HandlerType.OnTransaction,
+        handler: HandlerType.OnSignature,
         request: {
           method: '',
           params: {
-            chainId,
-            transaction,
-            transactionOrigin,
+            signature,
+            signatureOrigin,
           },
         },
       });
     },
 
-    runCronjob: (request) => {
-      log('Running cronjob %o.', options);
+    onCronjob,
+    runCronjob: onCronjob,
 
-      return handleRequest({
-        snapId: installedSnapId,
-        store,
-        executionService,
-        runSaga,
-        handler: HandlerType.OnCronjob,
-        request,
-      });
-    },
-
-    getHomePage: async (): Promise<SnapResponse> => {
+    onHomePage: async (): Promise<SnapResponse> => {
       log('Rendering home page.');
 
       return handleRequest({

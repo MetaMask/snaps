@@ -296,7 +296,7 @@ describe('BaseSnapExecutor', () => {
 
   it("doesn't allow snap APIs in the Ethereum provider", async () => {
     const CODE = `
-      module.exports.onRpcRequest = () => ethereum.request({ method: 'snap_confirm', params: [] });
+      module.exports.onRpcRequest = () => ethereum.request({ method: 'snap_dialog', params: [] });
     `;
 
     const executor = new TestSnapExecutor();
@@ -332,7 +332,7 @@ describe('BaseSnapExecutor', () => {
             message: 'The method does not exist / is not available.',
             data: {
               cause: null,
-              method: 'snap_confirm',
+              method: 'snap_dialog',
             },
           }),
         },
@@ -536,7 +536,7 @@ describe('BaseSnapExecutor', () => {
   it("doesn't allow direct access to ethereum internals", async () => {
     const CODE = `
       module.exports.onRpcRequest = () =>
-        ethereum._rpcEngine.handle({ method: 'snap_confirm', params: [] });
+        ethereum._rpcEngine.handle({ method: 'snap_dialog', params: [] });
     `;
 
     const executor = new TestSnapExecutor();
