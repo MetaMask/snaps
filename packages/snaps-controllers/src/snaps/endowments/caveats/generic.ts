@@ -30,16 +30,28 @@ export function createGenericPermissionValidator(
     const passedCaveatTypes = actualCaveats.map((caveat) => caveat.type);
     const passedCaveatsSet = new Set(passedCaveatTypes);
 
-    if (
-      // Disallow duplicates
-      passedCaveatsSet.size !== passedCaveatTypes.length ||
-      // Disallow caveats that don't match expected types
-      !actualCaveats.every((caveat) => validCaveatTypes.has(caveat.type)) ||
-      // Fail if not all required caveats are specified
-      !requiredCaveats.every((caveat) => passedCaveatsSet.has(caveat.type))
-    ) {
+    // Disallow duplicates
+    if (passedCaveatsSet.size !== passedCaveatTypes.length) {
+      throw rpcErrors.invalidParams({
+        message: 'Duplicate caveats are not allowed.',
+      });
+    }
+
+    // Disallow caveats that don't match expected types
+    if (!actualCaveats.every((caveat) => validCaveatTypes.has(caveat.type))) {
       throw rpcErrors.invalidParams({
         message: `Expected the following caveats: ${caveatsToValidate
+          .map((caveat) => `"${caveat.type}"`)
+          .join(', ')}, received ${actualCaveats
+          .map((caveat) => `"${caveat.type}"`)
+          .join(', ')}.`,
+      });
+    }
+
+    // Fail if not all required caveats are specified
+    if (!requiredCaveats.every((caveat) => passedCaveatsSet.has(caveat.type))) {
+      throw rpcErrors.invalidParams({
+        message: `Expected the following caveats: ${requiredCaveats
           .map((caveat) => `"${caveat.type}"`)
           .join(', ')}.`,
       });

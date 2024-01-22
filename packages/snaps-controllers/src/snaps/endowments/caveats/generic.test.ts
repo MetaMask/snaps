@@ -41,7 +41,9 @@ describe('createGenericPermissionValidator', () => {
           { type: SnapCaveatType.SnapIds, value: null },
         ],
       }),
-    ).toThrow('Expected the following caveats: "chainIds", "rpcOrigin".');
+    ).toThrow(
+      'Expected the following caveats: "chainIds", "rpcOrigin", received "keyringOrigin", "snapIds".',
+    );
   });
 
   it('fails if too many caveats specified', () => {
@@ -59,7 +61,7 @@ describe('createGenericPermissionValidator', () => {
           { type: SnapCaveatType.RpcOrigin, value: null },
         ],
       }),
-    ).toThrow('Expected the following caveats: "chainIds", "rpcOrigin".');
+    ).toThrow('Duplicate caveats are not allowed.');
   });
 
   it('does not fail if optional caveat is missing', () => {
