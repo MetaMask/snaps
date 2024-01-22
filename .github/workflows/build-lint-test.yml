@@ -280,8 +280,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - prepare
-      - build-source
-      - build-types
+      - build
     strategy:
       fail-fast: false
       matrix:
