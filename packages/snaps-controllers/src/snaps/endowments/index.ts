@@ -92,6 +92,7 @@ export const handlerEndowments: Record<HandlerType, string | null> = {
   [HandlerType.OnUserInput]: null,
 };
 
+export * from './enum';
 export { getRpcCaveatOrigins } from './rpc';
 export { getSignatureOriginCaveat } from './signature-insight';
 export { getTransactionOriginCaveat } from './transaction-insight';

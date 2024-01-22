@@ -1,6 +1,6 @@
 import type { Caveat } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
-import { SnapCaveatType, SnapEndowments } from '@metamask/snaps-utils';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 
 import {
   getCronjobCaveatMapper,
@@ -8,6 +8,7 @@ import {
   validateCronjobCaveat,
   cronjobCaveatSpecifications,
 } from './cronjob';
+import { SnapEndowments } from './enum';
 
 describe('endowment:cronjob', () => {
   describe('specificationBuilder', () => {

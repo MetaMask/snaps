@@ -10,7 +10,6 @@ import {
   HandlerType,
   parseCronExpression,
   logError,
-  SnapEndowments,
 } from '@metamask/snaps-utils';
 import { Duration, inMilliseconds } from '@metamask/utils';
 
@@ -23,7 +22,7 @@ import type {
   SnapUninstalled,
   SnapUpdated,
 } from '..';
-import { getRunnableSnaps } from '..';
+import { getRunnableSnaps, SnapEndowments } from '..';
 import { getCronjobCaveatJobs } from '../snaps/endowments/cronjob';
 import { Timer } from '../snaps/Timer';
 

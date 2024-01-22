@@ -1,6 +1,7 @@
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
-import { SnapCaveatType, SnapEndowments } from '@metamask/snaps-utils';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 
+import { SnapEndowments } from './enum';
 import {
   getKeyringCaveatMapper,
   getKeyringCaveatOrigins,

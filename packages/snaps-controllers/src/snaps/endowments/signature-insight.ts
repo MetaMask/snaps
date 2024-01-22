@@ -9,9 +9,11 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { SnapCaveatType, SnapEndowments } from '@metamask/snaps-utils';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import { assert, hasProperty, isObject, isPlainObject } from '@metamask/utils';
+
+import { SnapEndowments } from './enum';
 
 const permissionName = SnapEndowments.SignatureInsight;
 

@@ -75,7 +75,6 @@ import {
   getValidatedLocalizationFiles,
   VirtualFile,
   NpmSnapFileNames,
-  SnapEndowments,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
@@ -109,7 +108,7 @@ import type {
   TerminateSnapAction,
 } from '../services';
 import { fetchSnap, hasTimedOut, setDiff, withTimeout } from '../utils';
-import { handlerEndowments } from './endowments';
+import { handlerEndowments, SnapEndowments } from './endowments';
 import { getKeyringCaveatOrigins } from './endowments/keyring';
 import { getRpcCaveatOrigins } from './endowments/rpc';
 import type { SnapLocation } from './location';

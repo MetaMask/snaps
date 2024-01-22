@@ -13,7 +13,6 @@ describe('snap_createInterface', () => {
         implementation: expect.any(Function),
         hookNames: {
           createInterface: true,
-          hasPermission: true,
         },
       });
     });
@@ -24,11 +23,9 @@ describe('snap_createInterface', () => {
       const { implementation } = createInterfaceHandler;
 
       const createInterface = jest.fn().mockReturnValue('foo');
-      const hasPermission = jest.fn().mockReturnValue(true);
 
       const hooks = {
         createInterface,
-        hasPermission,
       };
 
       const engine = new JsonRpcEngine();
@@ -56,61 +53,15 @@ describe('snap_createInterface', () => {
 
       expect(response).toStrictEqual({ jsonrpc: '2.0', id: 1, result: 'foo' });
     });
-
-    it('throws if the the snap is not allowed', async () => {
-      const { implementation } = createInterfaceHandler;
-
-      const createInterface = jest.fn().mockReturnValue('foo');
-      const hasPermission = jest.fn().mockReturnValue(false);
-
-      const hooks = {
-        createInterface,
-        hasPermission,
-      };
-
-      const engine = new JsonRpcEngine();
-
-      engine.push((request, response, next, end) => {
-        const result = implementation(
-          request as JsonRpcRequest<CreateInterfaceParameters>,
-          response as PendingJsonRpcResponse<CreateInterfaceResult>,
-          next,
-          end,
-          hooks,
-        );
-
-        result?.catch(end);
-      });
-
-      const response = await engine.handle({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'snap_createInterface',
-        params: {
-          ui: text('foo'),
-        },
-      });
-
-      expect(response).toStrictEqual({
-        jsonrpc: '2.0',
-        id: 1,
-        error: expect.objectContaining({
-          code: -32601,
-          message: 'The method does not exist / is not available.',
-        }),
-      });
-    });
   });
 
   it('throws on invalid params', async () => {
     const { implementation } = createInterfaceHandler;
 
     const createInterface = jest.fn().mockReturnValue('foo');
-    const hasPermission = jest.fn().mockReturnValue(true);
 
     const hooks = {
       createInterface,
-      hasPermission,
     };
 
     const engine = new JsonRpcEngine();

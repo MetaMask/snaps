@@ -7,24 +7,18 @@ import type {
   UpdateInterfaceResult,
   JsonRpcRequest,
 } from '@metamask/snaps-sdk';
-import { ComponentStruct, assert } from '@metamask/snaps-sdk';
-import { SnapEndowments, type InferMatching } from '@metamask/snaps-utils';
+import { ComponentStruct } from '@metamask/snaps-sdk';
+import { type InferMatching } from '@metamask/snaps-utils';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 import { StructError, create, object, string } from 'superstruct';
 
 import type { MethodHooksObject } from '../utils';
 
 const hookNames: MethodHooksObject<UpdateInterfaceMethodHooks> = {
-  hasPermission: true,
   updateInterface: true,
 };
 
 export type UpdateInterfaceMethodHooks = {
-  /**
-   * @param permissionName - The name of the permission invoked.
-   * @returns Whether the snap has permission to invoke this RPC method or not.
-   */
-  hasPermission: (permissionName: string) => boolean;
   /**
    * @param id - The interface ID.
    * @param ui - The UI components.
@@ -62,7 +56,6 @@ export type UpdateInterfaceParameters = InferMatching<
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
  * @param hooks.updateInterface - The function to update the interface.
- * @param hooks.hasPermission - The function to check if the snap has the specific permission.
  * @returns Nothing.
  */
 function getUpdateInterfaceImplementation(
@@ -70,12 +63,11 @@ function getUpdateInterfaceImplementation(
   res: PendingJsonRpcResponse<UpdateInterfaceResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { updateInterface, hasPermission }: UpdateInterfaceMethodHooks,
+  { updateInterface }: UpdateInterfaceMethodHooks,
 ): void {
   const { params } = req;
 
   try {
-    assert(hasPermission(SnapEndowments.UserInput), rpcErrors.methodNotFound());
     const validatedParams = getValidatedParams(params);
 
     const { id, ui } = validatedParams;

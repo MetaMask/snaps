@@ -10,13 +10,11 @@ import type {
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { RpcOrigins } from '@metamask/snaps-utils';
-import {
-  assertIsRpcOrigins,
-  SnapCaveatType,
-  SnapEndowments,
-} from '@metamask/snaps-utils';
+import { assertIsRpcOrigins, SnapCaveatType } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import { hasProperty, isPlainObject, assert } from '@metamask/utils';
+
+import { SnapEndowments } from './enum';
 
 const targetName = SnapEndowments.Rpc;
 

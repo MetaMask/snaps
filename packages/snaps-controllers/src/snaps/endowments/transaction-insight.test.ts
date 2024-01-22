@@ -1,7 +1,8 @@
 import type { PermissionConstraint } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
-import { SnapCaveatType, SnapEndowments } from '@metamask/snaps-utils';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 
+import { SnapEndowments } from './enum';
 import {
   getTransactionInsightCaveatMapper,
   getTransactionOriginCaveat,
@@ -28,22 +29,17 @@ describe('endowment:transaction-insight', () => {
 
   describe('validator', () => {
     it('allows no caveats', () => {
-      expect(() =>
-        // @ts-expect-error Missing required permission types.
-        specification.validator({}),
-      ).not.toThrow();
+      expect(() => specification.validator({})).not.toThrow();
     });
 
     it('throws if the caveat is not a single "transactionOrigin"', () => {
       expect(() =>
-        // @ts-expect-error Missing other required permission types.
         specification.validator({
           caveats: [{ type: 'foo', value: 'bar' }],
         }),
       ).toThrow('Expected a single "transactionOrigin" caveat.');
 
       expect(() =>
-        // @ts-expect-error Missing other required permission types.
         specification.validator({
           caveats: [
             { type: 'transactionOrigin', value: [] },

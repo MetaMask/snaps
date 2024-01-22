@@ -1,6 +1,6 @@
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
-import { SnapEndowments } from '@metamask/snaps-utils';
 
+import { SnapEndowments } from './enum';
 import { ethereumProviderEndowmentBuilder } from './ethereum-provider';
 
 describe('endowment:eip1193', () => {

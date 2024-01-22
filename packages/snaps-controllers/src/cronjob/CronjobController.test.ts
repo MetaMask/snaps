@@ -1,9 +1,10 @@
 import type { TruncatedSnap } from '@metamask/snaps-utils';
-import { HandlerType, SnapEndowments } from '@metamask/snaps-utils';
+import { HandlerType } from '@metamask/snaps-utils';
 import { MOCK_ORIGIN, MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 import type { SemVerVersion } from '@metamask/utils';
 import { Duration, inMilliseconds } from '@metamask/utils';
 
+import { SnapEndowments } from '..';
 import {
   getRestrictedCronjobControllerMessenger,
   getRootCronjobControllerMessenger,

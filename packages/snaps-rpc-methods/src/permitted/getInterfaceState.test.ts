@@ -13,7 +13,6 @@ describe('snap_getInterfaceState', () => {
         implementation: expect.any(Function),
         hookNames: {
           getInterfaceState: true,
-          hasPermission: true,
         },
       });
     });
@@ -24,11 +23,9 @@ describe('snap_getInterfaceState', () => {
       const { implementation } = getInterfaceStateHandler;
 
       const getInterfaceState = jest.fn().mockReturnValue({ foo: 'bar' });
-      const hasPermission = jest.fn().mockReturnValue(true);
 
       const hooks = {
         getInterfaceState,
-        hasPermission,
       };
 
       const engine = new JsonRpcEngine();
@@ -61,15 +58,13 @@ describe('snap_getInterfaceState', () => {
       });
     });
 
-    it('throws if the the snap is not allowed', async () => {
+    it('throws on invalid params', async () => {
       const { implementation } = getInterfaceStateHandler;
 
       const getInterfaceState = jest.fn().mockReturnValue({ foo: 'bar' });
-      const hasPermission = jest.fn().mockReturnValue(false);
 
       const hooks = {
         getInterfaceState,
-        hasPermission,
       };
 
       const engine = new JsonRpcEngine();
@@ -91,64 +86,20 @@ describe('snap_getInterfaceState', () => {
         id: 1,
         method: 'snap_getInterfaceState',
         params: {
-          id: 'foo',
+          id: 42,
         },
       });
 
       expect(response).toStrictEqual({
-        jsonrpc: '2.0',
+        error: {
+          code: -32602,
+          message:
+            'Invalid params: At path: id -- Expected a string, but received: 42.',
+          stack: expect.any(String),
+        },
         id: 1,
-        error: expect.objectContaining({
-          code: -32601,
-          message: 'The method does not exist / is not available.',
-        }),
+        jsonrpc: '2.0',
       });
-    });
-  });
-
-  it('throws on invalid params', async () => {
-    const { implementation } = getInterfaceStateHandler;
-
-    const getInterfaceState = jest.fn().mockReturnValue({ foo: 'bar' });
-    const hasPermission = jest.fn().mockReturnValue(true);
-
-    const hooks = {
-      getInterfaceState,
-      hasPermission,
-    };
-
-    const engine = new JsonRpcEngine();
-
-    engine.push((request, response, next, end) => {
-      const result = implementation(
-        request as JsonRpcRequest<UpdateInterfaceParameters>,
-        response as PendingJsonRpcResponse<GetInterfaceStateResult>,
-        next,
-        end,
-        hooks,
-      );
-
-      result?.catch(end);
-    });
-
-    const response = await engine.handle({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'snap_getInterfaceState',
-      params: {
-        id: 42,
-      },
-    });
-
-    expect(response).toStrictEqual({
-      error: {
-        code: -32602,
-        message:
-          'Invalid params: At path: id -- Expected a string, but received: 42.',
-        stack: expect.any(String),
-      },
-      id: 1,
-      jsonrpc: '2.0',
     });
   });
 });

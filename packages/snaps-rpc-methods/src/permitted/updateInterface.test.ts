@@ -13,7 +13,6 @@ describe('snap_updateInterface', () => {
         implementation: expect.any(Function),
         hookNames: {
           updateInterface: true,
-          hasPermission: true,
         },
       });
     });
@@ -24,11 +23,9 @@ describe('snap_updateInterface', () => {
       const { implementation } = updateInterfaceHandler;
 
       const updateInterface = jest.fn();
-      const hasPermission = jest.fn().mockReturnValue(true);
 
       const hooks = {
         updateInterface,
-        hasPermission,
       };
 
       const engine = new JsonRpcEngine();
@@ -59,59 +56,13 @@ describe('snap_updateInterface', () => {
     });
   });
 
-  it('throws if the the snap is not allowed', async () => {
-    const { implementation } = updateInterfaceHandler;
-
-    const updateInterface = jest.fn();
-    const hasPermission = jest.fn().mockReturnValue(false);
-
-    const hooks = {
-      updateInterface,
-      hasPermission,
-    };
-
-    const engine = new JsonRpcEngine();
-
-    engine.push((request, response, next, end) => {
-      const result = implementation(
-        request as JsonRpcRequest<UpdateInterfaceParams>,
-        response as PendingJsonRpcResponse<UpdateInterfaceResult>,
-        next,
-        end,
-        hooks,
-      );
-
-      result?.catch(end);
-    });
-
-    const response = await engine.handle({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'snap_updateInterface',
-      params: {
-        id: 'foo',
-      },
-    });
-
-    expect(response).toStrictEqual({
-      jsonrpc: '2.0',
-      id: 1,
-      error: expect.objectContaining({
-        code: -32601,
-        message: 'The method does not exist / is not available.',
-      }),
-    });
-  });
-
   it('throws on invalid params', async () => {
     const { implementation } = updateInterfaceHandler;
 
     const updateInterface = jest.fn();
-    const hasPermission = jest.fn().mockReturnValue(true);
 
     const hooks = {
       updateInterface,
-      hasPermission,
     };
 
     const engine = new JsonRpcEngine();
