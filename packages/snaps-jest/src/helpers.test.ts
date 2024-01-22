@@ -615,7 +615,7 @@ describe('installSnap', () => {
     });
   });
 
-  describe('sendSignature', () => {
+  describe('onSignature', () => {
     it('sends a signature request and returns the result', async () => {
       jest.spyOn(console, 'log').mockImplementation();
 
@@ -633,8 +633,8 @@ describe('installSnap', () => {
          `,
       });
 
-      const { sendSignature, close } = await installSnap(snapId);
-      const response = await sendSignature({
+      const { onSignature, close } = await installSnap(snapId);
+      const response = await onSignature({
         signatureMethod: 'personal_sign',
       });
 
@@ -702,8 +702,8 @@ describe('installSnap', () => {
          `,
       });
 
-      const { getHomePage, close } = await installSnap(snapId);
-      const response = await getHomePage();
+      const { onHomePage, close } = await installSnap(snapId);
+      const response = await onHomePage();
 
       expect(response).toStrictEqual(
         expect.objectContaining({

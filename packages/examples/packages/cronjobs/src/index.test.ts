@@ -5,9 +5,9 @@ import { heading, panel, text } from '@metamask/snaps-sdk';
 describe('onCronjob', () => {
   describe('execute', () => {
     it('shows a dialog', async () => {
-      const { runCronjob } = await installSnap();
+      const { onCronjob } = await installSnap();
 
-      const request = runCronjob({
+      const request = onCronjob({
         // This would normally be called by the MetaMask extension, but to make
         // this testable, `@metamask/snaps-jest` exposes a `runCronjob` method.
         method: 'execute',

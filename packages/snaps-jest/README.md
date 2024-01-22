@@ -11,6 +11,7 @@ currently experimental, and the API may change in the future.
   - [Install a snap](#install-a-snap)
   - [`snap.request`](#snaprequest)
   - [`snap.sendTransaction`](#snapsendtransaction)
+  - [`snap.onSignature`](#snaponsignature)
   - [`snap.runCronjob`](#snapruncronjob)
   - [Jest matchers](#jest-matchers)
   - [Interacting with user interfaces](#interacting-with-user-interfaces)
@@ -219,9 +220,9 @@ describe('MySnap', () => {
 });
 ```
 
-### `snap.sendSignature`
+### `snap.onSignature`
 
-The `sendSignature` function can be used to send a signature request to the snap. It
+The `onSignature` function can be used to send a signature request to the snap. It
 takes a single argument, which is an object with the following properties:
 
 - `origin`: The origin of the signature request.
@@ -243,7 +244,7 @@ import { panel, text } from '@metamask/snaps-sdk';
 
 describe('MySnap', () => {
   it('should do something', async () => {
-    const { sendSignature } = await installSnap(/* optional snap ID */);
+    const { onSignature } = await installSnap(/* optional snap ID */);
     const response = await sendSignature({});
 
     expect(response).toRender(

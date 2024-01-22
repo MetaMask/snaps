@@ -16,5 +16,6 @@ export * from './name-lookup';
 export * from './network-access';
 export * from './notifications';
 export * from './transaction-insights';
+export * from './signature-insights';
 export * from './updates';
 export * from './wasm';
