@@ -3,7 +3,7 @@ import { installSnap } from '@metamask/snaps-jest';
 
 describe('onRpcRequest', () => {
   it('throws an error if the requested method does not exist', async () => {
-    const { request, close } = await installSnap();
+    const { request } = await installSnap();
 
     const response = await request({
       method: 'foo',
@@ -18,41 +18,35 @@ describe('onRpcRequest', () => {
         cause: null,
       },
     });
-
-    await close();
   });
 
   describe('getFile', () => {
     it('returns a JSON file', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const response = request({
         method: 'getFile',
       });
 
       expect(await response).toRespondWith({ foo: 'bar' });
-
-      await close();
     });
   });
 
   describe('getFileInBase64', () => {
     it('returns the file in base64', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const response = request({
         method: 'getFileInBase64',
       });
 
       expect(await response).toRespondWith('ewogICJmb28iOiAiYmFyIgp9Cg==');
-
-      await close();
     });
   });
 
   describe('getFileInHex', () => {
     it('returns the file in hex', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const response = request({
         method: 'getFileInHex',
@@ -61,8 +55,6 @@ describe('onRpcRequest', () => {
       expect(await response).toRespondWith(
         '0x7b0a202022666f6f223a2022626172220a7d0a',
       );
-
-      await close();
     });
   });
 });

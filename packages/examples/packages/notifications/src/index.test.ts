@@ -4,7 +4,7 @@ import { NotificationType } from '@metamask/snaps-sdk';
 
 describe('onRpcRequest', () => {
   it('throws an error if the requested method does not exist', async () => {
-    const { request, close } = await installSnap();
+    const { request } = await installSnap();
 
     const response = await request({
       method: 'foo',
@@ -19,13 +19,11 @@ describe('onRpcRequest', () => {
         cause: null,
       },
     });
-
-    await close();
   });
 
   describe('inApp', () => {
     it('sends an in-app notification', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const response = await request({
         method: 'inApp',
@@ -37,14 +35,12 @@ describe('onRpcRequest', () => {
         'Hello from within MetaMask!',
         NotificationType.InApp,
       );
-
-      await close();
     });
   });
 
   describe('native', () => {
     it('sends a native notification', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const response = await request({
         method: 'native',
@@ -56,8 +52,6 @@ describe('onRpcRequest', () => {
         'Hello, Jest, from the browser!',
         NotificationType.Native,
       );
-
-      await close();
     });
   });
 });

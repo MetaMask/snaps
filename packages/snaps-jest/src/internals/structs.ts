@@ -24,6 +24,8 @@ import {
   string,
   type,
   union,
+  record,
+  any,
 } from 'superstruct';
 
 // TODO: Export this from `@metamask/utils` instead.
@@ -140,12 +142,65 @@ export const TransactionOptionsStruct = object({
   ),
 });
 
+export const SignatureOptionsStruct = object({
+  /**
+   * The origin making the signature request.
+   */
+  origin: defaulted(string(), 'metamask.io'),
+
+  /**
+   * The address signing the signature request. Defaults to a randomly generated
+   * address.
+   */
+  from: coerce(StrictHexStruct, optional(BytesLikeStruct), (value) => {
+    if (value) {
+      return bytesToHex(valueToBytes(value));
+    }
+
+    return bytesToHex(randomBytes(20));
+  }),
+
+  /**
+   * The data to send with the transaction. The data may be specified as a
+   * `string`, an object, or an array of objects. This covers the data types
+   * for the supported signature methods. Defaults to `0x`.
+   */
+  data: defaulted(
+    union([
+      StrictHexStruct,
+      literal('0x'),
+      record(string(), any()),
+      array(record(string(), any())),
+    ]),
+    '0x',
+  ),
+
+  /**
+   * The signature method being used.
+   */
+  signatureMethod: defaulted(
+    union([
+      literal('eth_sign'),
+      literal('personal_sign'),
+      literal('eth_signTypedData'),
+      literal('eth_signTypedData_v3'),
+      literal('eth_signTypedData_v4'),
+    ]),
+    'personal_sign',
+  ),
+});
+
 export const SnapOptionsStruct = object({
   /**
    * The timeout in milliseconds to use for requests to the snap. Defaults to
    * `1000`.
    */
   timeout: defaulted(optional(number()), 1000),
+});
+
+export const JsonRpcMockOptionsStruct = object({
+  method: string(),
+  result: JsonStruct,
 });
 
 export const InterfaceStruct = type({

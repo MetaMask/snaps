@@ -151,7 +151,7 @@ type GetEncryptionKeyArgs = {
  * from.
  * @returns The state encryption key.
  */
-async function getEncryptionKey({
+export async function getEncryptionKey({
   mnemonicPhrase,
   snapId,
 }: GetEncryptionKeyArgs) {

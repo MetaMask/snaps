@@ -44,11 +44,11 @@
   },
   "dependencies": {
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^8.2.1",
+    "@metamask/utils": "^8.3.0",
     "yargs": "^17.7.1"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "^2.5.1",
+    "@lavamoat/allow-scripts": "^3.0.0",
     "@metamask/auto-changelog": "^3.4.4",
     "@metamask/eslint-config": "^12.1.0",
     "@metamask/eslint-config-jest": "^12.1.0",

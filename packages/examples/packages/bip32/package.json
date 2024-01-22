@@ -34,13 +34,13 @@
     "@metamask/key-tree": "^9.0.0",
     "@metamask/rpc-errors": "^6.1.0",
     "@metamask/snaps-sdk": "workspace:^",
-    "@metamask/utils": "^8.2.1",
+    "@metamask/utils": "^8.3.0",
     "@noble/ed25519": "^1.6.0",
     "@noble/secp256k1": "^1.7.1"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
-    "@lavamoat/allow-scripts": "^2.5.1",
+    "@lavamoat/allow-scripts": "^3.0.0",
     "@metamask/auto-changelog": "^3.4.4",
     "@metamask/eslint-config": "^12.1.0",
     "@metamask/eslint-config-jest": "^12.1.0",

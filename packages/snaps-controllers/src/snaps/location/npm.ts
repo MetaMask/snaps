@@ -239,17 +239,37 @@ export class NpmLocation extends BaseNpmLocation {
     return new Promise((resolve, reject) => {
       const files = new Map();
 
+      const tarballStream = createTarballStream(
+        getNpmCanonicalBasePath(this.meta.registry, this.meta.packageName),
+        files,
+      );
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const body = tarballResponse.body!;
+
       // The "gz" in "tgz" stands for "gzip". The tarball needs to be decompressed
       // before we can actually grab any files from it.
       // To prevent recursion-based zip bombs, we should not allow recursion here.
+
+      // If native decompression stream is available we use that, otherwise fallback to zlib.
+      if ('pipeThrough' in body && 'DecompressionStream' in globalThis) {
+        const decompressionStream = new DecompressionStream('gzip');
+        const decompressedStream = body.pipeThrough(decompressionStream);
+
+        pipeline(
+          getNodeStream(decompressedStream),
+          tarballStream,
+          (error: unknown) => {
+            error ? reject(error) : resolve(files);
+          },
+        );
+        return;
+      }
+
       pipeline(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        getNodeStream(tarballResponse.body!),
+        getNodeStream(body),
         createGunzip(),
-        createTarballStream(
-          getNpmCanonicalBasePath(this.meta.registry, this.meta.packageName),
-          files,
-        ),
+        tarballStream,
         (error: unknown) => {
           error ? reject(error) : resolve(files);
         },

@@ -154,7 +154,7 @@ export const toRespondWithError: MatcherFunction<[expected: Json]> = function (
  */
 export const toSendNotification: MatcherFunction<
   [expected: string, type?: EnumToUnion<NotificationType> | undefined]
-> = async function (actual, expected, type) {
+> = function (actual, expected, type) {
   assertActualIsSnapResponse(actual, 'toSendNotification');
 
   const { notifications } = actual;
@@ -188,19 +188,22 @@ export const toRender: MatcherFunction<[expected: Component]> = function (
   const { content } = actual;
   const pass = this.equals(content, expected);
 
+  // This is typed as `string | null`, but in practice it's always a string. The
+  // function only returns `null` if both the expected and actual values are
+  // numbers, bigints, or booleans, which is never the case here.
   const difference = diff(expected, content);
 
   const message = pass
     ? () =>
-        `${this.utils.matcherHint('.not.toShowInterface')}\n\n` +
+        `${this.utils.matcherHint('.not.toRender')}\n\n` +
         `Expected: ${this.utils.printExpected(expected)}\n` +
         `Received: ${this.utils.printReceived(content)}` +
-        `${difference ? `\n\nDifference:\n\n${difference}` : ''}`
+        `\n\nDifference:\n\n${difference as string}`
     : () =>
-        `${this.utils.matcherHint('.toShowInterface')}\n\n` +
+        `${this.utils.matcherHint('.toRender')}\n\n` +
         `Expected: ${this.utils.printExpected(expected)}\n` +
         `Received: ${this.utils.printReceived(content)}` +
-        `${difference ? `\n\nDifference:\n\n${difference}` : ''}`;
+        `\n\nDifference:\n\n${difference as string}`;
 
   return { message, pass };
 };

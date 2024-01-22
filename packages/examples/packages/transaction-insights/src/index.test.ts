@@ -7,9 +7,9 @@ describe('onTransaction', () => {
   const TO_ADDRESS = '0x4bbeeb066ed09b7aed07bf39eee0460dfa261520';
 
   it('returns transaction insights for an ERC-20 transaction', async () => {
-    const { sendTransaction, close } = await installSnap();
+    const { onTransaction } = await installSnap();
 
-    const response = await sendTransaction({
+    const response = await onTransaction({
       from: FROM_ADDRESS,
       to: TO_ADDRESS,
       // This is not a valid ERC-20 transfer as all the values are zero, but it
@@ -24,14 +24,12 @@ describe('onTransaction', () => {
         row('Transaction type', text('ERC-20')),
       ]),
     );
-
-    await close();
   });
 
   it('returns transaction insights for an ERC-721 transaction', async () => {
-    const { sendTransaction, close } = await installSnap();
+    const { onTransaction } = await installSnap();
 
-    const response = await sendTransaction({
+    const response = await onTransaction({
       from: FROM_ADDRESS,
       to: TO_ADDRESS,
       // This is not a valid ERC-721 transfer as all the values are zero, but it
@@ -46,14 +44,12 @@ describe('onTransaction', () => {
         row('Transaction type', text('ERC-721')),
       ]),
     );
-
-    await close();
   });
 
   it('returns transaction insights for an ERC-1155 transaction', async () => {
-    const { sendTransaction, close } = await installSnap();
+    const { onTransaction } = await installSnap();
 
-    const response = await sendTransaction({
+    const response = await onTransaction({
       from: FROM_ADDRESS,
       to: TO_ADDRESS,
       // This is not a valid ERC-1155 transfer as all the values are zero, but
@@ -68,14 +64,12 @@ describe('onTransaction', () => {
         row('Transaction type', text('ERC-1155')),
       ]),
     );
-
-    await close();
   });
 
   it('returns transaction insights for an unknown transaction', async () => {
-    const { sendTransaction, close } = await installSnap();
+    const { onTransaction } = await installSnap();
 
-    const response = await sendTransaction({
+    const response = await onTransaction({
       from: FROM_ADDRESS,
       to: TO_ADDRESS,
       data: '0xabcdef1200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
@@ -88,14 +82,12 @@ describe('onTransaction', () => {
         row('Transaction type', text('Unknown')),
       ]),
     );
-
-    await close();
   });
 
   it('returns transaction insights for a transaction with no data', async () => {
-    const { sendTransaction, close } = await installSnap();
+    const { onTransaction } = await installSnap();
 
-    const response = await sendTransaction({
+    const response = await onTransaction({
       from: FROM_ADDRESS,
       to: TO_ADDRESS,
       data: '0x',
@@ -108,7 +100,5 @@ describe('onTransaction', () => {
         row('Transaction type', text('Unknown')),
       ]),
     );
-
-    await close();
   });
 });

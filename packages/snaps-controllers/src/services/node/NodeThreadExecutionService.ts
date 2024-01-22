@@ -15,7 +15,24 @@ export class NodeThreadExecutionService extends AbstractExecutionService<Worker>
       require.resolve(
         '@metamask/snaps-execution-environments/dist/browserify/node-thread/bundle.js',
       ),
+      {
+        stdout: true,
+        stderr: true,
+      },
     );
+
+    // Capturing `stdout` and `stderr` from the worker prevents the worker from
+    // writing to them directly, making it easier to capture them Jest.
+    worker.stdout.on('data', (data) => {
+      // eslint-disable-next-line no-console
+      console.log(data.toString());
+    });
+
+    worker.stderr.on('data', (data) => {
+      // eslint-disable-next-line no-console
+      console.error(data.toString());
+    });
+
     const stream = new ThreadParentMessageStream({ thread: worker });
     return Promise.resolve({ worker, stream });
   }

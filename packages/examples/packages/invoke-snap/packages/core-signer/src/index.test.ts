@@ -6,7 +6,7 @@ import { sha256 } from '@noble/hashes/sha256';
 
 describe('onRpcRequest', () => {
   it('throws an error if the requested method does not exist', async () => {
-    const { request, close } = await installSnap();
+    const { request } = await installSnap();
 
     const response = await request({
       method: 'foo',
@@ -21,13 +21,11 @@ describe('onRpcRequest', () => {
         cause: null,
       },
     });
-
-    await close();
   });
 
   describe('getAccount', () => {
     it('returns an account for the given derivation path', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const response = await request({
         method: 'getAccount',
@@ -44,12 +42,10 @@ describe('onRpcRequest', () => {
         // response is a string.
         publicKey: expect.any(String),
       });
-
-      await close();
     });
 
     it('returns the same account for the same derivation path', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const { response } = await request({
         method: 'getAccount',
@@ -71,14 +67,12 @@ describe('onRpcRequest', () => {
       });
 
       expect(otherResponse).toRespondWith(response.result);
-
-      await close();
     });
   });
 
   describe('signMessage', () => {
     it('signs a message with an account', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const { response } = await request({
         method: 'getAccount',
@@ -110,8 +104,6 @@ describe('onRpcRequest', () => {
       // cannot assert the signature value. Instead, we assert that the
       // response is a string.
       expect(await signResponse).toRespondWith(expect.any(String));
-
-      await close();
     });
   });
 });

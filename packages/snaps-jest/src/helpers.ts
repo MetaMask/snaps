@@ -1,22 +1,52 @@
+import type { AbstractExecutionService } from '@metamask/snaps-controllers';
+import { HandlerType, logInfo } from '@metamask/snaps-utils';
 import { createModuleLogger } from '@metamask/utils';
-import { getDocument, queries } from 'pptr-testing-library';
+import { create } from 'superstruct';
 
 import {
-  getEnvironment,
-  mock,
-  waitFor,
-  request,
-  sendTransaction,
-  runCronjob,
-  mockJsonRpc,
   rootLogger,
+  handleRequest,
+  TransactionOptionsStruct,
+  getEnvironment,
+  JsonRpcMockOptionsStruct,
+  SignatureOptionsStruct,
 } from './internals';
-import type { Snap, SnapResponse } from './types';
-
-// eslint-disable-next-line @typescript-eslint/unbound-method
-const { getByTestId } = queries;
+import type { InstallSnapOptions } from './internals';
+import {
+  addJsonRpcMock,
+  removeJsonRpcMock,
+} from './internals/simulation/store/mocks';
+import type {
+  CronjobOptions,
+  JsonRpcMockOptions,
+  Snap,
+  SnapResponse,
+  TransactionOptions,
+} from './types';
 
 const log = createModuleLogger(rootLogger, 'helpers');
+
+/**
+ * Get the options for {@link installSnap}.
+ *
+ * @param snapId - The ID of the Snap, or the options.
+ * @param options - The options, if any.
+ * @returns The options.
+ */
+function getOptions<
+  Service extends new (...args: any[]) => InstanceType<
+    typeof AbstractExecutionService
+  >,
+>(
+  snapId: string | Partial<InstallSnapOptions<Service>> | undefined,
+  options: Partial<InstallSnapOptions<Service>>,
+): [string | undefined, Partial<InstallSnapOptions<Service>>] {
+  if (typeof snapId === 'object') {
+    return [undefined, snapId];
+  }
+
+  return [snapId, options];
+}
 
 /**
  * Load a snap into the environment. This is the main entry point for testing
@@ -24,7 +54,6 @@ const log = createModuleLogger(rootLogger, 'helpers');
  * snap.
  *
  * @example
- * ```ts
  * import { installSnap } from '@metamask/snaps-jest';
  *
  * describe('My Snap', () => {
@@ -37,77 +66,257 @@ const log = createModuleLogger(rootLogger, 'helpers');
  *     expect(response).toRespondWith('bar');
  *   });
  * });
- * ```
- * @param snapId - The ID of the snap, including the prefix (`local:`). Defaults
- * to the URL of the built-in server, if it is running. This supports both
- * local snap IDs and NPM snap IDs.
  * @returns The snap.
  * @throws If the built-in server is not running, and no snap ID is provided.
  */
-export async function installSnap(
-  snapId: string = getEnvironment().snapId,
+export async function installSnap(): Promise<Snap>;
+
+/**
+ * Load a snap into the environment. This is the main entry point for testing
+ * snaps: It returns a {@link Snap} object that can be used to interact with the
+ * snap.
+ *
+ * @example
+ * import { installSnap } from '@metamask/snaps-jest';
+ *
+ * describe('My Snap', () => {
+ *   it('should do something', async () => {
+ *     const { request } = await installSnap('local:my-snap');
+ *     const response = await request({
+ *       method: 'foo',
+ *       params: ['bar'],
+ *     });
+ *     expect(response).toRespondWith('bar');
+ *   });
+ * });
+ * @param options - The options to use.
+ * @param options.executionService - The execution service to use. Defaults to
+ * {@link NodeThreadExecutionService}. You do not need to provide this unless
+ * you are testing a custom execution service.
+ * @param options.executionServiceOptions - The options to use when creating the
+ * execution service, if any. This should only include options specific to the
+ * provided execution service.
+ * @param options.options - The simulation options.
+ * @returns The snap.
+ * @throws If the built-in server is not running, and no snap ID is provided.
+ */
+export async function installSnap<
+  Service extends new (...args: any[]) => InstanceType<
+    typeof AbstractExecutionService
+  >,
+>(options: Partial<InstallSnapOptions<Service>>): Promise<Snap>;
+
+/**
+ * Load a snap into the environment. This is the main entry point for testing
+ * snaps: It returns a {@link Snap} object that can be used to interact with the
+ * snap.
+ *
+ * @example
+ * import { installSnap } from '@metamask/snaps-jest';
+ *
+ * describe('My Snap', () => {
+ *   it('should do something', async () => {
+ *     const { request } = await installSnap('local:my-snap');
+ *     const response = await request({
+ *       method: 'foo',
+ *       params: ['bar'],
+ *     });
+ *     expect(response).toRespondWith('bar');
+ *   });
+ * });
+ * @param snapId - The ID of the snap, including the prefix (`local:`). Defaults
+ * to the URL of the built-in server, if it is running. This supports both
+ * local snap IDs and NPM snap IDs.
+ * @param options - The options to use.
+ * @param options.executionService - The execution service to use. Defaults to
+ * {@link NodeThreadExecutionService}. You do not need to provide this unless
+ * you are testing a custom execution service.
+ * @param options.executionServiceOptions - The options to use when creating the
+ * execution service, if any. This should only include options specific to the
+ * provided execution service.
+ * @param options.options - The simulation options.
+ * @returns The snap.
+ * @throws If the built-in server is not running, and no snap ID is provided.
+ */
+export async function installSnap<
+  Service extends new (...args: any[]) => InstanceType<
+    typeof AbstractExecutionService
+  >,
+>(
+  snapId: string,
+  options?: Partial<InstallSnapOptions<Service>>,
+): Promise<Snap>;
+
+/**
+ * Load a snap into the environment. This is the main entry point for testing
+ * snaps: It returns a {@link Snap} object that can be used to interact with the
+ * snap.
+ *
+ * @example
+ * import { installSnap } from '@metamask/snaps-jest';
+ *
+ * describe('My Snap', () => {
+ *   it('should do something', async () => {
+ *     const { request } = await installSnap('local:my-snap');
+ *     const response = await request({
+ *       method: 'foo',
+ *       params: ['bar'],
+ *     });
+ *     expect(response).toRespondWith('bar');
+ *   });
+ * });
+ * @param snapId - The ID of the snap, including the prefix (`local:`). Defaults
+ * to the URL of the built-in server, if it is running. This supports both
+ * local snap IDs and NPM snap IDs.
+ * @param options - The options to use.
+ * @param options.executionService - The execution service to use. Defaults to
+ * {@link NodeThreadExecutionService}. You do not need to provide this unless
+ * you are testing a custom execution service.
+ * @param options.executionServiceOptions - The options to use when creating the
+ * execution service, if any. This should only include options specific to the
+ * provided execution service.
+ * @param options.options - The simulation options.
+ * @returns The snap.
+ * @throws If the built-in server is not running, and no snap ID is provided.
+ */
+export async function installSnap<
+  Service extends new (...args: any[]) => InstanceType<
+    typeof AbstractExecutionService
+  >,
+>(
+  snapId?: string | Partial<InstallSnapOptions<Service>>,
+  options: Partial<InstallSnapOptions<Service>> = {},
 ): Promise<Snap> {
-  const environment = getEnvironment();
+  const resolvedOptions = getOptions(snapId, options);
+  const {
+    snapId: installedSnapId,
+    store,
+    executionService,
+    runSaga,
+  } = await getEnvironment().installSnap(...resolvedOptions);
 
-  log('Installing snap %s.', snapId);
+  const onTransaction = async (
+    request: TransactionOptions,
+  ): Promise<SnapResponse> => {
+    log('Sending transaction %o.', request);
 
-  const page = await environment.createPage();
-  const document = await getDocument(page);
+    const {
+      origin: transactionOrigin,
+      chainId,
+      ...transaction
+    } = create(request, TransactionOptionsStruct);
 
-  log('Setting snap ID to %s.', snapId);
-  await page.evaluate((payload) => {
-    window.__SIMULATOR_API__.dispatch({
-      type: 'configuration/setSnapId',
-      payload,
+    return handleRequest({
+      snapId: installedSnapId,
+      store,
+      executionService,
+      runSaga,
+      handler: HandlerType.OnTransaction,
+      request: {
+        method: '',
+        params: {
+          chainId,
+          transaction,
+          transactionOrigin,
+        },
+      },
     });
-  }, snapId);
+  };
 
-  log('Waiting for snap to install.');
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  await waitFor(async () => await getByTestId(document, 'status-ok'), {
-    timeout: 10000,
-    message: `Timed out waiting for snap to install. Make sure the snap ID ("${snapId}") is correct, and the server is running.`,
-  });
+  const onCronjob = (request: CronjobOptions) => {
+    log('Running cronjob %o.', options);
+
+    return handleRequest({
+      snapId: installedSnapId,
+      store,
+      executionService,
+      runSaga,
+      handler: HandlerType.OnCronjob,
+      request,
+    });
+  };
 
   return {
-    request: (options) => {
-      log('Sending request %o.', options);
+    request: (request) => {
+      log('Sending request %o.', request);
 
-      // Note: This function is intentionally not async, so that we can access
-      // the `getInterface` method on the response.
-      return request(page, options);
+      return handleRequest({
+        snapId: installedSnapId,
+        store,
+        executionService,
+        runSaga,
+        handler: HandlerType.OnRpcRequest,
+        request,
+      });
     },
 
-    sendTransaction: async (options = {}): Promise<SnapResponse> => {
-      log('Sending transaction %o.', options);
+    onTransaction,
+    sendTransaction: onTransaction,
 
-      return await sendTransaction(page, options);
+    onSignature: async (request: unknown): Promise<SnapResponse> => {
+      log('Requesting signature %o.', request);
+
+      const { origin: signatureOrigin, ...signature } = create(
+        request,
+        SignatureOptionsStruct,
+      );
+
+      return handleRequest({
+        snapId: installedSnapId,
+        store,
+        executionService,
+        runSaga,
+        handler: HandlerType.OnSignature,
+        request: {
+          method: '',
+          params: {
+            signature,
+            signatureOrigin,
+          },
+        },
+      });
     },
 
-    runCronjob: (options) => {
-      log('Running cronjob %o.', options);
+    onCronjob,
+    runCronjob: onCronjob,
 
-      // Note: This function is intentionally not async, so that we can access
-      // the `getInterface` method on the response.
-      return runCronjob(page, options);
+    onHomePage: async (): Promise<SnapResponse> => {
+      log('Rendering home page.');
+
+      return handleRequest({
+        snapId: installedSnapId,
+        store,
+        executionService,
+        runSaga,
+        handler: HandlerType.OnHomePage,
+        request: {
+          method: '',
+        },
+      });
+    },
+
+    mockJsonRpc(mock: JsonRpcMockOptions) {
+      log('Mocking JSON-RPC request %o.', mock);
+
+      const { method, result } = create(mock, JsonRpcMockOptionsStruct);
+      store.dispatch(addJsonRpcMock({ method, result }));
+
+      return {
+        unmock() {
+          log('Unmocking JSON-RPC request %o.', mock);
+
+          store.dispatch(removeJsonRpcMock(method));
+        },
+      };
     },
 
     close: async () => {
-      log('Closing page.');
+      log('Closing execution service.');
+      logInfo(
+        'Calling `snap.close()` is deprecated, and will be removed in a future release. Snaps are now automatically closed when the test ends.',
+      );
 
-      await page.close();
-    },
-
-    mock: async (options) => {
-      log('Mocking %o.', options);
-
-      return await mock(page, options);
-    },
-
-    mockJsonRpc: async (options) => {
-      log('Mocking JSON-RPC %o.', options);
-
-      return await mockJsonRpc(page, options);
+      await executionService.terminateAllSnaps();
     },
   };
 }

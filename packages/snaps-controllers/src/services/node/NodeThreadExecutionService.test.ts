@@ -1,8 +1,8 @@
 import { JsonRpcError } from '@metamask/rpc-errors';
-import type { SnapId } from '@metamask/snaps-utils';
 import { HandlerType } from '@metamask/snaps-utils';
 
 import { createService, MOCK_BLOCK_NUMBER } from '../../test-utils';
+import { delay } from '../../utils';
 import type { SnapErrorJson } from '../ExecutionService';
 import { NodeThreadExecutionService } from './NodeThreadExecutionService';
 
@@ -120,7 +120,7 @@ describe('NodeThreadExecutionService', () => {
     const unhandledErrorPromise = new Promise((resolve) => {
       controllerMessenger.subscribe(
         'ExecutionService:unhandledError',
-        (_snapId: SnapId, error: SnapErrorJson) => {
+        (_snapId: string, error: SnapErrorJson) => {
           resolve(error);
         },
       );
@@ -192,6 +192,35 @@ describe('NodeThreadExecutionService', () => {
     expect(publishSpy).toHaveBeenCalledWith(
       'ExecutionService:outboundResponse',
       'TestSnap',
+    );
+
+    await service.terminateAllSnaps();
+  });
+
+  it('captures stdout and stderr', async () => {
+    const log = jest.spyOn(console, 'log').mockImplementation();
+    const error = jest.spyOn(console, 'error').mockImplementation();
+
+    const { service } = createService(NodeThreadExecutionService);
+    const snapId = 'TestSnap';
+    const result = await service.executeSnap({
+      snapId,
+      sourceCode: `
+        console.log('foo');
+        console.error('bar');
+      `,
+      endowments: ['console'],
+    });
+
+    await delay(100);
+
+    expect(result).toBe('OK');
+    expect(log).toHaveBeenCalledWith(
+      expect.stringContaining('[Snap: TestSnap] foo'),
+    );
+
+    expect(error).toHaveBeenCalledWith(
+      expect.stringContaining('[Snap: TestSnap] bar'),
     );
 
     await service.terminateAllSnaps();
