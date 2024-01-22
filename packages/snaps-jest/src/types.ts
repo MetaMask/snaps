@@ -266,7 +266,7 @@ export type Snap = {
    * `endowment:cronjob` permission.
    * @returns The response promise, with extra {@link SnapRequestObject} fields.
    */
-  onCronjob(cronjob?: Partial<CronjobOptions>): Promise<SnapResponse>;
+  onCronjob(cronjob?: Partial<CronjobOptions>): SnapRequest;
 
   /**
    * Run a cronjob in the snap. This is similar to {@link request}, but the

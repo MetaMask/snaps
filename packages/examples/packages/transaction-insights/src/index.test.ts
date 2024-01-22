@@ -7,9 +7,9 @@ describe('onTransaction', () => {
   const TO_ADDRESS = '0x4bbeeb066ed09b7aed07bf39eee0460dfa261520';
 
   it('returns transaction insights for an ERC-20 transaction', async () => {
-    const { sendTransaction } = await installSnap();
+    const { onTransaction } = await installSnap();
 
-    const response = await sendTransaction({
+    const response = await onTransaction({
       from: FROM_ADDRESS,
       to: TO_ADDRESS,
       // This is not a valid ERC-20 transfer as all the values are zero, but it
@@ -27,9 +27,9 @@ describe('onTransaction', () => {
   });
 
   it('returns transaction insights for an ERC-721 transaction', async () => {
-    const { sendTransaction } = await installSnap();
+    const { onTransaction } = await installSnap();
 
-    const response = await sendTransaction({
+    const response = await onTransaction({
       from: FROM_ADDRESS,
       to: TO_ADDRESS,
       // This is not a valid ERC-721 transfer as all the values are zero, but it
@@ -47,9 +47,9 @@ describe('onTransaction', () => {
   });
 
   it('returns transaction insights for an ERC-1155 transaction', async () => {
-    const { sendTransaction } = await installSnap();
+    const { onTransaction } = await installSnap();
 
-    const response = await sendTransaction({
+    const response = await onTransaction({
       from: FROM_ADDRESS,
       to: TO_ADDRESS,
       // This is not a valid ERC-1155 transfer as all the values are zero, but
@@ -67,9 +67,9 @@ describe('onTransaction', () => {
   });
 
   it('returns transaction insights for an unknown transaction', async () => {
-    const { sendTransaction } = await installSnap();
+    const { onTransaction } = await installSnap();
 
-    const response = await sendTransaction({
+    const response = await onTransaction({
       from: FROM_ADDRESS,
       to: TO_ADDRESS,
       data: '0xabcdef1200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
@@ -85,9 +85,9 @@ describe('onTransaction', () => {
   });
 
   it('returns transaction insights for a transaction with no data', async () => {
-    const { sendTransaction } = await installSnap();
+    const { onTransaction } = await installSnap();
 
-    const response = await sendTransaction({
+    const response = await onTransaction({
       from: FROM_ADDRESS,
       to: TO_ADDRESS,
       data: '0x',
