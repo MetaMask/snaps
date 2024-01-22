@@ -30,7 +30,7 @@ export type AddressLookupArgs = BaseOnNameLookupArgs & {
  * @property protocol - The protocol that resolved the domain.
  * @property resolvedAddress - The resolved address.
  */
-type AddressResolution = {
+export type AddressResolution = {
   protocol: string;
   resolvedAddress: string;
 };
@@ -41,7 +41,7 @@ type AddressResolution = {
  * @property protocol - The protocol that resolved the address.
  * @property resolvedDomain - The resolved domain.
  */
-type DomainResolution = {
+export type DomainResolution = {
   protocol: string;
   resolvedDomain: string;
 };
