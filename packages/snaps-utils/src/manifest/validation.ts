@@ -166,7 +166,6 @@ export const PermissionsStruct = type({
     }),
   ),
   'endowment:webassembly': optional(object({})),
-  'endowment:user-input': optional(object({})),
   snap_dialog: optional(object({})),
   snap_manageState: optional(object({})),
   snap_manageAccounts: optional(object({})),

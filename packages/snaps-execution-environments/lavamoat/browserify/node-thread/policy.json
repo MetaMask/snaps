@@ -571,7 +571,6 @@
     },
     "external:../snaps-utils/src/index.executionenv.ts": {
       "packages": {
-        "external:../snaps-utils/src/endowments.ts": true,
         "external:../snaps-utils/src/errors.ts": true,
         "external:../snaps-utils/src/handler-types.ts": true,
         "external:../snaps-utils/src/handlers.ts": true,

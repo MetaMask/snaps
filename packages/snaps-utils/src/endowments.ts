@@ -10,5 +10,4 @@ export enum SnapEndowments {
   LifecycleHooks = 'endowment:lifecycle-hooks',
   Keyring = 'endowment:keyring',
   HomePage = 'endowment:page-home',
-  UserInput = 'endowment:user-input',
 }

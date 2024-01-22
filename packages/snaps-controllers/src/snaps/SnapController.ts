@@ -2723,16 +2723,19 @@ export class SnapController extends BaseController<
     assertIsJsonRpcRequest(request);
 
     const permissionName = handlerEndowments[handlerType];
-    const hasPermission = this.messagingSystem.call(
-      'PermissionController:hasPermission',
-      snapId,
-      permissionName,
-    );
 
-    if (!hasPermission) {
-      throw new Error(
-        `Snap "${snapId}" is not permitted to use "${permissionName}".`,
+    if (permissionName) {
+      const hasPermission = this.messagingSystem.call(
+        'PermissionController:hasPermission',
+        snapId,
+        permissionName,
       );
+
+      if (!hasPermission) {
+        throw new Error(
+          `Snap "${snapId}" is not permitted to use "${permissionName}".`,
+        );
+      }
     }
 
     if (
@@ -3267,6 +3270,11 @@ export class SnapController extends BaseController<
    */
   async #callLifecycleHook(snapId: SnapId, handler: HandlerType) {
     const permissionName = handlerEndowments[handler];
+
+    if (!permissionName) {
+      return;
+    }
+
     const hasPermission = this.messagingSystem.call(
       'PermissionController:hasPermission',
       snapId,

@@ -115,15 +115,6 @@ describe('buildSnapEndowmentSpecifications', () => {
           "targetName": "endowment:transaction-insight",
           "validator": [Function],
         },
-        "endowment:user-input": {
-          "allowedCaveats": null,
-          "endowmentGetter": [Function],
-          "permissionType": "Endowment",
-          "subjectTypes": [
-            "snap",
-          ],
-          "targetName": "endowment:user-input",
-        },
         "endowment:webassembly": {
           "allowedCaveats": null,
           "endowmentGetter": [Function],
