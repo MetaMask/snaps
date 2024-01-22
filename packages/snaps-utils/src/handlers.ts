@@ -127,10 +127,9 @@ export const DomainResolutionResponseStruct = object({
   resolvedAddresses: size(array(DomainResolutionStruct), 1, Infinity),
 });
 
-export const OnNameLookupResponseStruct = union([
-  AddressResolutionResponseStruct,
-  DomainResolutionResponseStruct,
-]);
+export const OnNameLookupResponseStruct = nullable(
+  union([AddressResolutionResponseStruct, DomainResolutionResponseStruct]),
+);
 
 /**
  * Utility type for getting the handler function type from a handler type.
