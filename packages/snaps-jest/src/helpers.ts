@@ -223,30 +223,6 @@ export async function installSnap<
     });
   };
 
-  const onSignature = async (request: unknown): Promise<SnapResponse> => {
-    log('Making signature request');
-
-    const { origin: signatureOrigin, ...signature } = create(
-      request,
-      SignatureOptionsStruct,
-    );
-
-    return handleRequest({
-      snapId: installedSnapId,
-      store,
-      executionService,
-      runSaga,
-      handler: HandlerType.OnSignature,
-      request: {
-        method: '',
-        params: {
-          signature,
-          signatureOrigin,
-        },
-      },
-    });
-  };
-
   const onCronjob = (request: CronjobOptions) => {
     log('Running cronjob %o.', options);
 
@@ -277,7 +253,29 @@ export async function installSnap<
     onTransaction,
     sendTransaction: onTransaction,
 
-    onSignature,
+    onSignature: async (request: unknown): Promise<SnapResponse> => {
+      log('Making signature request');
+
+      const { origin: signatureOrigin, ...signature } = create(
+        request,
+        SignatureOptionsStruct,
+      );
+
+      return handleRequest({
+        snapId: installedSnapId,
+        store,
+        executionService,
+        runSaga,
+        handler: HandlerType.OnSignature,
+        request: {
+          method: '',
+          params: {
+            signature,
+            signatureOrigin,
+          },
+        },
+      });
+    },
 
     onCronjob,
     runCronjob: onCronjob,

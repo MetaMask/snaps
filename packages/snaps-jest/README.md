@@ -245,7 +245,7 @@ import { panel, text } from '@metamask/snaps-sdk';
 describe('MySnap', () => {
   it('should do something', async () => {
     const { onSignature } = await installSnap(/* optional snap ID */);
-    const response = await sendSignature({});
+    const response = await onSignature();
 
     expect(response).toRender(
       panel([text('You are using the personal_sign method')]),
