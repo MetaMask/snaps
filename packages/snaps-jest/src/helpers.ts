@@ -254,7 +254,7 @@ export async function installSnap<
     sendTransaction: onTransaction,
 
     onSignature: async (request: unknown): Promise<SnapResponse> => {
-      log('Making signature request');
+      log('Requesting signature %o.', request);
 
       const { origin: signatureOrigin, ...signature } = create(
         request,
