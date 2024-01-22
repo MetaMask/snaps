@@ -657,8 +657,8 @@ describe('installSnap', () => {
          `,
       });
 
-      const { getHomePage, close } = await installSnap(snapId);
-      const response = await getHomePage();
+      const { onHomePage, close } = await installSnap(snapId);
+      const response = await onHomePage();
 
       expect(response).toStrictEqual(
         expect.objectContaining({
