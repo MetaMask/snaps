@@ -61,7 +61,7 @@ describe('onRpcRequest', () => {
         panel([
           heading('Confirmation Dialog'),
           text(
-            'This is a confirmation dialog. It has two buttons: "OK" and "Cancel," letting the user choose whether to proceed with an action.',
+            'This is a confirmation dialog. It has two buttons: "OK" and "Cancel," letting the user choose whether to proceed with an action. [That](https://snaps.metamask.io/) is a what a link looks like.',
           ),
         ]),
       );
