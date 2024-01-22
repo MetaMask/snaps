@@ -2591,9 +2591,9 @@ export class SnapController extends BaseController<
 
     assert(
       permissionKeys.some((key) => handlerPermissions.includes(key)),
-      `A snap must request at least one of the following permissions: ${handlerPermissions.join(
-        ', ',
-      )}.`,
+      `A snap must request at least one of the following permissions: ${handlerPermissions
+        .filter((handler) => handler !== null)
+        .join(', ')}.`,
     );
 
     const excludedPermissionErrors = permissionKeys.reduce<string[]>(
@@ -2722,6 +2722,11 @@ export class SnapController extends BaseController<
     assertIsJsonRpcRequest(request);
 
     const permissionName = handlerEndowments[handlerType];
+
+    assert(
+      typeof permissionName === 'string' || permissionName === null,
+      "'permissionName' must be either a string or null.",
+    );
 
     if (permissionName) {
       const hasPermission = this.messagingSystem.call(
@@ -3270,9 +3275,7 @@ export class SnapController extends BaseController<
   async #callLifecycleHook(snapId: SnapId, handler: HandlerType) {
     const permissionName = handlerEndowments[handler];
 
-    if (!permissionName) {
-      return;
-    }
+    assert(permissionName, 'Lifecycle hook must have an endowment.');
 
     const hasPermission = this.messagingSystem.call(
       'PermissionController:hasPermission',
