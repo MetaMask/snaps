@@ -240,6 +240,19 @@ export type Snap = {
    * will be filled in with default values.
    * @returns The response.
    */
+  onTransaction(
+    transaction?: Partial<TransactionOptions>,
+  ): Promise<SnapResponse>;
+
+  /**
+   * Send a transaction to the snap.
+   *
+   * @param transaction - The transaction. This is similar to an Ethereum
+   * transaction object, but has an extra `origin` field. Any missing fields
+   * will be filled in with default values.
+   * @returns The response.
+   * @deprecated Use {@link onTransaction} instead.
+   */
   sendTransaction(
     transaction?: Partial<TransactionOptions>,
   ): Promise<SnapResponse>;
@@ -253,16 +266,26 @@ export type Snap = {
    * `endowment:cronjob` permission.
    * @returns The response promise, with extra {@link SnapRequestObject} fields.
    */
+  onCronjob(cronjob?: Partial<CronjobOptions>): Promise<SnapResponse>;
+
+  /**
+   * Run a cronjob in the snap. This is similar to {@link request}, but the
+   * request will be sent to the `onCronjob` method of the snap.
+   *
+   * @param cronjob - The cronjob request. This is similar to a JSON-RPC
+   * request, and is normally specified in the snap manifest, under the
+   * `endowment:cronjob` permission.
+   * @returns The response promise, with extra {@link SnapRequestObject} fields.
+   * @deprecated Use {@link onCronjob} instead.
+   */
   runCronjob(cronjob: CronjobOptions): SnapRequest;
 
   /**
-   * Makes a request to the snap to render the snaps home page.
-   *
-   * This method takes no arguments.
+   * Get the response from the snap's `onHomePage` method.
    *
    * @returns The response.
    */
-  getHomePage(): Promise<SnapResponse>;
+  onHomePage(): Promise<SnapResponse>;
 
   /**
    * Mock a JSON-RPC request. This will cause the snap to respond with the
