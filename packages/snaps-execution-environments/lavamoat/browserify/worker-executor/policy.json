@@ -96,8 +96,8 @@
         "@metamask/utils>pony-cause": true,
         "@swc/cli>semver": true,
         "browserify>buffer": true,
-        "eslint>debug": true,
-        "superstruct": true
+        "superstruct": true,
+        "tsup>debug": true
       }
     },
     "@metamask/utils>@noble/hashes": {
@@ -154,19 +154,6 @@
     "browserify>string_decoder": {
       "packages": {
         "browserify>browser-pack>safe-buffer": true
-      }
-    },
-    "eslint>debug": {
-      "globals": {
-        "console": true,
-        "document": true,
-        "localStorage": true,
-        "navigator": true,
-        "process": true
-      },
-      "packages": {
-        "browserify>process": true,
-        "eslint>debug>ms": true
       }
     },
     "external:../snaps-sdk/src/error-wrappers.ts": {
@@ -514,6 +501,19 @@
       "globals": {
         "console.warn": true,
         "define": true
+      }
+    },
+    "tsup>debug": {
+      "globals": {
+        "console": true,
+        "document": true,
+        "localStorage": true,
+        "navigator": true,
+        "process": true
+      },
+      "packages": {
+        "browserify>process": true,
+        "tsup>debug>ms": true
       }
     }
   }

@@ -7,17 +7,23 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "sideEffects": false,
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "browser": {
     "./dist/cjs/services": "./dist/cjs/services/browser.js",
     "./dist/esm/services": "./dist/esm/services/browser.js"
   },
   "types": "./dist/types/index.d.ts",
   "files": [
-    "dist/cjs/**",
-    "dist/esm/**",
-    "dist/types/**"
+    "dist"
   ],
   "scripts": {
     "test:prepare": "yarn mkdirp test/fixtures && ./scripts/generate-fixtures.sh",
@@ -25,12 +31,8 @@
     "posttest": "ts-node scripts/coverage.ts && rimraf coverage/jest coverage/wdio",
     "test:browser": "wdio run wdio.config.js",
     "test:ci": "yarn test",
-    "build": "yarn build:source && yarn build:types",
-    "build:source": "yarn build:esm && yarn build:cjs",
+    "build": "tsup --clean && yarn build:types",
     "build:types": "tsc --project tsconfig.build.json",
-    "build:esm": "swc src --out-dir dist/esm --config-file ../../.swcrc.build.json --config module.type=es6",
-    "build:cjs": "swc src --out-dir dist/cjs --config-file ../../.swcrc.build.json --config module.type=commonjs",
-    "build:clean": "yarn clean && yarn build",
     "clean": "rimraf '*.tsbuildinfo' 'dist'",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
@@ -117,6 +119,7 @@
     "prettier-plugin-packagejson": "^2.2.11",
     "rimraf": "^4.1.2",
     "ts-node": "^10.9.1",
+    "tsup": "^8.0.1",
     "typescript": "~4.8.4",
     "vite": "^4.3.9",
     "vite-tsconfig-paths": "^4.0.5",
@@ -138,5 +141,6 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  }
+  },
+  "build:types": "tsc --project tsconfig.build.json"
 }

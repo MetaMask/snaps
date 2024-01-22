@@ -109,8 +109,8 @@
         "@metamask/utils>pony-cause": true,
         "@swc/cli>semver": true,
         "buffer": true,
-        "eslint>debug": true,
-        "superstruct": true
+        "superstruct": true,
+        "tsup>debug": true
       }
     },
     "@metamask/utils>@noble/hashes": {
@@ -173,27 +173,6 @@
     "browserify>string_decoder": {
       "packages": {
         "browserify>browser-pack>safe-buffer": true
-      }
-    },
-    "eslint>debug": {
-      "builtin": {
-        "tty.isatty": true,
-        "util.deprecate": true,
-        "util.format": true,
-        "util.inspect": true
-      },
-      "globals": {
-        "console": true,
-        "document": true,
-        "localStorage": true,
-        "navigator": true,
-        "process": true
-      },
-      "packages": {
-        "@wdio/mocha-framework>mocha>supports-color": true,
-        "eslint>debug>ms": true,
-        "tty": true,
-        "util": true
       }
     },
     "external:../snaps-sdk/src/error-wrappers.ts": {
@@ -559,6 +538,27 @@
       "globals": {
         "console.warn": true,
         "define": true
+      }
+    },
+    "tsup>debug": {
+      "builtin": {
+        "tty.isatty": true,
+        "util.deprecate": true,
+        "util.format": true,
+        "util.inspect": true
+      },
+      "globals": {
+        "console": true,
+        "document": true,
+        "localStorage": true,
+        "navigator": true,
+        "process": true
+      },
+      "packages": {
+        "@wdio/mocha-framework>mocha>supports-color": true,
+        "tsup>debug>ms": true,
+        "tty": true,
+        "util": true
       }
     }
   }

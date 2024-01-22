@@ -79,7 +79,7 @@ export async function getDefaultLoader({
        * This is necessary for backwards compatibility with the
        * `bundlerCustomizer` function.
        */
-      loader: resolve(__dirname, 'loaders', 'browserify'),
+      loader: require.resolve('@metamask/snaps-cli/loaders/browserify'),
 
       /**
        * The options for the `browserify` loader. These can be overridden in the

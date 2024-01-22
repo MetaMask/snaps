@@ -207,7 +207,7 @@ export async function getDefaultConfiguration(
         config.experimental.wasm && {
           test: /\.wasm$/u,
           use: {
-            loader: resolve(__dirname, 'loaders', 'wasm'),
+            loader: require.resolve('@metamask/snaps-cli/loaders/wasm'),
           },
         },
       ],

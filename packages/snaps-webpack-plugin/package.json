@@ -10,13 +10,19 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "sideEffects": false,
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/types/index.d.ts",
   "files": [
-    "dist/cjs/**",
-    "dist/esm/**",
-    "dist/types/**"
+    "dist"
   ],
   "scripts": {
     "test": "jest && yarn posttest",
@@ -27,12 +33,8 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog && yarn lint:dependencies",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "../../scripts/validate-changelog.sh @metamask/snaps-webpack-plugin",
-    "build": "yarn build:source && yarn build:types",
-    "build:source": "yarn build:esm && yarn build:cjs",
+    "build": "tsup --clean && yarn build:types",
     "build:types": "tsc --project tsconfig.build.json",
-    "build:esm": "swc src --out-dir dist/esm --config-file ../../.swcrc.build.json --config module.type=es6",
-    "build:cjs": "swc src --out-dir dist/cjs --config-file ../../.swcrc.build.json --config module.type=commonjs",
-    "build:clean": "yarn clean && yarn build",
     "clean": "rimraf '*.tsbuildinfo' 'dist'",
     "publish:preview": "yarn npm publish --tag preview",
     "lint:ci": "yarn lint",
@@ -74,6 +76,7 @@
     "prettier": "^2.7.1",
     "prettier-plugin-packagejson": "^2.2.11",
     "rimraf": "^4.1.2",
+    "tsup": "^8.0.1",
     "typescript": "~4.8.4",
     "webpack": "^5.88.0"
   },
@@ -83,5 +86,6 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  }
+  },
+  "build:types": "tsc --project tsconfig.build.json"
 }

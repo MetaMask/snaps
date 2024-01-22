@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./"
   },
-  "include": ["./src", "scripts"],
+  "include": ["./src", "scripts", "package.json", "tsup.config.ts"],
   "references": [
     { "path": "../snaps-execution-environments" },
     { "path": "../snaps-rpc-methods" },

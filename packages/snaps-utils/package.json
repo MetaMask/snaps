@@ -9,39 +9,29 @@
   "exports": {
     ".": {
       "browser": {
-        "import": "./dist/esm/index.browser.js",
-        "require": "./dist/cjs/index.browser.js"
+        "import": "./dist/index.browser.mjs",
+        "require": "./dist/index.browser.js"
       },
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js"
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/types/index.d.ts"
     },
     "./test-utils": {
-      "import": "./dist/esm/test-utils/index.js",
-      "require": "./dist/cjs/test-utils/index.js",
+      "import": "./dist/test-utils/index.mjs",
+      "require": "./dist/test-utils/index.js",
       "types": "./dist/types/test-utils/index.d.ts"
-    }
+    },
+    "./package.json": "./package.json"
   },
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "browser": {
-    "./dist/cjs/index.js": "./dist/cjs/index.browser.js",
-    "./dist/esm/index.js": "./dist/esm/index.browser.js"
+    "./dist/index.js": "./dist/index.browser.js",
+    "./dist/index.mjs": "./dist/index.browser.mjs"
   },
   "types": "./dist/types/index.d.ts",
-  "typesVersions": {
-    "*": {
-      "*": [
-        "./dist/types/index.d.ts"
-      ],
-      "test-utils": [
-        "./dist/types/test-utils/index.d.ts"
-      ]
-    }
-  },
   "files": [
-    "dist/cjs/**",
-    "dist/esm/**",
-    "dist/types/**"
+    "dist"
   ],
   "scripts": {
     "test": "rimraf coverage && jest && yarn test:browser && yarn posttest",
@@ -53,11 +43,8 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog && yarn lint:dependencies",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "../../scripts/validate-changelog.sh @metamask/snaps-utils",
-    "build": "yarn build:source && yarn build:types",
-    "build:source": "yarn build:esm && yarn build:cjs",
+    "build": "tsup --clean && yarn build:types",
     "build:types": "tsc --project tsconfig.build.json",
-    "build:esm": "swc src --out-dir dist/esm --config-file ../../.swcrc.build.json --config module.type=es6",
-    "build:cjs": "swc src --out-dir dist/cjs --config-file ../../.swcrc.build.json --config module.type=commonjs",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf '*.tsbuildinfo' 'dist'",
     "publish:preview": "yarn npm publish --tag preview",
@@ -135,6 +122,7 @@
     "prettier-plugin-packagejson": "^2.2.11",
     "rimraf": "^4.1.2",
     "ts-node": "^10.9.1",
+    "tsup": "^8.0.1",
     "typescript": "~4.8.4",
     "vite": "^4.3.9",
     "vite-tsconfig-paths": "^4.0.5",
@@ -148,5 +136,6 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  }
+  },
+  "build:types": "tsc --project tsconfig.build.json"
 }
