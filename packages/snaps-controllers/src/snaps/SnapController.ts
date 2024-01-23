@@ -2938,10 +2938,9 @@ export class SnapController extends BaseController<
 
         await this.#triggerPhishingListUpdate();
 
-        validateComponentLinks(
-          result.content,
-          this.#checkPhishingList.bind(this),
-        );
+        const content = this.#getResponseContent(snapId, result);
+
+        validateComponentLinks(content, this.#checkPhishingList.bind(this));
         break;
       }
       case HandlerType.OnSignature: {
@@ -2953,10 +2952,9 @@ export class SnapController extends BaseController<
 
         await this.#triggerPhishingListUpdate();
 
-        validateComponentLinks(
-          result.content,
-          this.#checkPhishingList.bind(this),
-        );
+        const content = this.#getResponseContent(snapId, result);
+
+        validateComponentLinks(content, this.#checkPhishingList.bind(this));
         break;
       }
       case HandlerType.OnHomePage:
