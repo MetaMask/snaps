@@ -116,7 +116,7 @@ export class SnapInterfaceController extends BaseController<
   }
 
   /**
-   * Creates an interface in the controller state with the associated data.
+   * Create an interface in the controller state with the associated data.
    *
    * @param snapId - The snap id that created the interface.
    * @param content - The interface content.
@@ -152,7 +152,7 @@ export class SnapInterfaceController extends BaseController<
   }
 
   /**
-   * Updates the interface with the given content.
+   * Update the interface with the given content.
    *
    * @param snapId - The snap id requesting the update.
    * @param id - The interface id.
@@ -172,7 +172,7 @@ export class SnapInterfaceController extends BaseController<
   }
 
   /**
-   * Deletes an interface from state.
+   * Delete an interface from state.
    *
    * @param id - The interface id.
    */
@@ -183,7 +183,7 @@ export class SnapInterfaceController extends BaseController<
   }
 
   /**
-   * Updates the interface state.
+   * Update the interface state.
    *
    * @param id - The interface id.
    * @param state - The new state.

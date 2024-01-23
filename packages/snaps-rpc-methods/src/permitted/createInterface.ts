@@ -80,7 +80,7 @@ function getCreateInterfaceImplementation(
 }
 
 /**
- * Validates the createInterface method `params` and returns them cast to the correct
+ * Validate the createInterface method `params` and returns them cast to the correct
  * type. Throws if validation fails.
  *
  * @param params - The unvalidated params object from the method request.

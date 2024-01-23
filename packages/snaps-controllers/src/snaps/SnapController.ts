@@ -2898,7 +2898,7 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Gets the UI components from the interface if the response contains an interface id
+   * Get the UI components from the interface if the response contains an interface id
    * otherwise return the UI components of the response.
    *
    * @param snapId - The ID of the snap that returned the result.
@@ -2917,7 +2917,7 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Asserts that the returned result of a Snap RPC call is the expected shape.
+   * Assert that the returned result of a Snap RPC call is the expected shape.
    *
    * @param handlerType - The handler type of the RPC Request.
    * @param result - The result of the RPC request.
