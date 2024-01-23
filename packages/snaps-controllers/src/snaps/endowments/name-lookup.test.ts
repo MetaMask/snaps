@@ -201,8 +201,14 @@ describe('getNameLookupCaveatMapper', () => {
     });
   });
 
-  it('does not include caveat if input is empty array', () => {
-    expect(getNameLookupCaveatMapper([])).toStrictEqual({
+  it('does not include caveat if input is empty object', () => {
+    expect(getNameLookupCaveatMapper({})).toStrictEqual({
+      caveats: null,
+    });
+  });
+
+  it('does not include caveat if it is not the correct type', () => {
+    expect(getNameLookupCaveatMapper({ foo: 'bar' })).toStrictEqual({
       caveats: null,
     });
   });
@@ -218,6 +224,15 @@ describe('nameLookupCaveatSpecifications', () => {
             type: SnapCaveatType.ChainIds,
           },
         ),
+      ).toThrow('Expected a plain object.');
+    });
+
+    it('throws if the caveat type is invalid', () => {
+      expect(() =>
+        nameLookupCaveatSpecifications[SnapCaveatType.ChainIds].validator?.({
+          type: 'foo',
+          value: ['eip155:1'],
+        }),
       ).toThrow('Expected a plain object.');
     });
 

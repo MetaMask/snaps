@@ -54,14 +54,10 @@ const specificationBuilder: PermissionSpecificationBuilder<
     targetName: permissionName,
     allowedCaveats: [SnapCaveatType.ChainIds, SnapCaveatType.LookupMatchers],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
-    validator: (permission) => {
-      const lookupPermissionValidator = createGenericPermissionValidator([
-        { type: SnapCaveatType.ChainIds },
-        { type: SnapCaveatType.LookupMatchers },
-      ]);
-
-      lookupPermissionValidator(permission);
-    },
+    validator: createGenericPermissionValidator([
+      { type: SnapCaveatType.ChainIds },
+      { type: SnapCaveatType.LookupMatchers },
+    ]),
     subjectTypes: [SubjectType.Snap],
   };
 };
@@ -159,9 +155,8 @@ export function getChainIdsCaveat(
   const caveat = permission.caveats.find(
     (permCaveat) => permCaveat.type === SnapCaveatType.ChainIds,
   );
-  assert(permission.caveats.length === 1 || permission.caveats.length === 2);
+
   assert(caveat);
-  assert(caveat.type === SnapCaveatType.ChainIds);
 
   return (caveat as Caveat<string, string[]>).value ?? null;
 }

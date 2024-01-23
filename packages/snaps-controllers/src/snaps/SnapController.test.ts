@@ -2745,6 +2745,176 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
+  it('throws if onNameLookup returns an invalid value', async () => {
+    const rootMessenger = getControllerMessenger();
+    const messenger = getSnapControllerMessenger(rootMessenger);
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        state: {
+          snaps: getPersistedSnapsState(),
+        },
+      }),
+    );
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => ({
+        [SnapEndowments.NameLookup]: {
+          caveats: [{ type: SnapCaveatType.ChainIds, value: ['eip155:1'] }],
+          date: 1664187844588,
+          id: 'izn0WGUO8cvq_jqvLQuQP',
+          invoker: MOCK_SNAP_ID,
+          parentCapability: SnapEndowments.NameLookup,
+        },
+      }),
+    );
+
+    rootMessenger.registerActionHandler(
+      'SubjectMetadataController:getSubjectMetadata',
+      () => MOCK_SNAP_SUBJECT_METADATA,
+    );
+
+    rootMessenger.registerActionHandler(
+      'ExecutionService:handleRpcRequest',
+      async () =>
+        Promise.resolve({
+          foo: 'bar',
+        }),
+    );
+
+    await expect(
+      snapController.handleRequest({
+        snapId: MOCK_SNAP_ID,
+        origin: '',
+        handler: HandlerType.OnNameLookup,
+        request: {
+          jsonrpc: '2.0',
+          method: ' ',
+          params: {},
+          id: 1,
+        },
+      }),
+    ).rejects.toThrow(
+      'Assertion failed: Expected the value to satisfy a union of `object | object`, but received: [object Object].',
+    );
+
+    snapController.destroy();
+  });
+
+  it("doesn't throw if onNameLookup return value is valid", async () => {
+    const rootMessenger = getControllerMessenger();
+    const messenger = getSnapControllerMessenger(rootMessenger);
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        state: {
+          snaps: getPersistedSnapsState(),
+        },
+      }),
+    );
+
+    const handlerResponse = {
+      resolvedAddresses: [
+        {
+          protocol: 'lens',
+          resolvedAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+        },
+      ],
+    };
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => ({
+        [SnapEndowments.NameLookup]: {
+          caveats: [{ type: SnapCaveatType.ChainIds, value: ['eip155:1'] }],
+          date: 1664187844588,
+          id: 'izn0WGUO8cvq_jqvLQuQP',
+          invoker: MOCK_SNAP_ID,
+          parentCapability: SnapEndowments.NameLookup,
+        },
+      }),
+    );
+
+    rootMessenger.registerActionHandler(
+      'SubjectMetadataController:getSubjectMetadata',
+      () => MOCK_SNAP_SUBJECT_METADATA,
+    );
+
+    rootMessenger.registerActionHandler(
+      'ExecutionService:handleRpcRequest',
+      async () => Promise.resolve(handlerResponse),
+    );
+
+    const result = await snapController.handleRequest({
+      snapId: MOCK_SNAP_ID,
+      origin: 'foo.com',
+      handler: HandlerType.OnNameLookup,
+      request: {
+        jsonrpc: '2.0',
+        method: ' ',
+        params: {},
+        id: 1,
+      },
+    });
+
+    expect(result).toBe(handlerResponse);
+
+    snapController.destroy();
+  });
+
+  it(`doesn't throw if onNameLookup handler returns null`, async () => {
+    const rootMessenger = getControllerMessenger();
+    const messenger = getSnapControllerMessenger(rootMessenger);
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        state: {
+          snaps: getPersistedSnapsState(),
+        },
+      }),
+    );
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => ({
+        [SnapEndowments.NameLookup]: {
+          caveats: [{ type: SnapCaveatType.ChainIds, value: ['eip155:1'] }],
+          date: 1664187844588,
+          id: 'izn0WGUO8cvq_jqvLQuQP',
+          invoker: MOCK_SNAP_ID,
+          parentCapability: SnapEndowments.NameLookup,
+        },
+      }),
+    );
+
+    rootMessenger.registerActionHandler(
+      'SubjectMetadataController:getSubjectMetadata',
+      () => MOCK_SNAP_SUBJECT_METADATA,
+    );
+
+    rootMessenger.registerActionHandler(
+      'ExecutionService:handleRpcRequest',
+      async () => Promise.resolve(null),
+    );
+
+    expect(
+      await snapController.handleRequest({
+        snapId: MOCK_SNAP_ID,
+        origin: 'foo.com',
+        handler: HandlerType.OnNameLookup,
+        request: {
+          jsonrpc: '2.0',
+          method: ' ',
+          params: {},
+          id: 1,
+        },
+      }),
+    ).toBeNull();
+
+    snapController.destroy();
+  });
+
   describe('getRpcRequestHandler', () => {
     it('handlers populate the "jsonrpc" property if missing', async () => {
       const rootMessenger = getControllerMessenger();
@@ -6922,6 +7092,35 @@ describe('SnapController', () => {
           snapId: MOCK_SNAP_ID,
           handler: HandlerType.OnSignature,
           origin: 'foo',
+          request: {},
+        }),
+      ).toBe(true);
+      expect(handleRpcRequestSpy).toHaveBeenCalledTimes(1);
+
+      snapController.destroy();
+    });
+
+    it('handles a name lookup request', async () => {
+      const messenger = getSnapControllerMessenger();
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      const handleRpcRequestSpy = jest
+        .spyOn(snapController, 'handleRequest')
+        .mockResolvedValueOnce(true);
+
+      expect(
+        await messenger.call('SnapController:handleRequest', {
+          snapId: MOCK_SNAP_ID,
+          handler: HandlerType.OnNameLookup,
+          origin: '',
           request: {},
         }),
       ).toBe(true);
