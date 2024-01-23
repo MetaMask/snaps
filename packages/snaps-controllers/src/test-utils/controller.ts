@@ -25,6 +25,7 @@ import type {
   CronjobControllerActions,
   CronjobControllerEvents,
 } from '../cronjob';
+import type { SnapInterfaceControllerActions } from '../interface/SnapInterfaceController';
 import type {
   AllowedActions,
   AllowedEvents,
@@ -380,6 +381,7 @@ export const getSnapControllerMessenger = (
       'SnapController:revokeDynamicPermissions',
       'SnapController:getFile',
       'SnapsRegistry:resolveVersion',
+      'SnapInterfaceController:getInterface',
     ],
   });
 
@@ -567,4 +569,32 @@ export const getRestrictedSnapsRegistryControllerMessenger = (
   });
 
   return controllerMessenger;
+};
+
+// Mock controller messenger for Interface Controller
+export const getRootSnapInterfaceControllerMessenger = () => {
+  const messenger = new MockControllerMessenger<
+    SnapInterfaceControllerActions,
+    never
+  >();
+
+  jest.spyOn(messenger, 'call');
+
+  return messenger;
+};
+
+export const getRestrictedSnapInterfaceControllerMessenger = (
+  messenger: ReturnType<
+    typeof getRootSnapInterfaceControllerMessenger
+  > = getRootSnapInterfaceControllerMessenger(),
+) => {
+  const snapInterfaceControllerMessenger = messenger.getRestricted<
+    'SnapInterfaceController',
+    never,
+    never
+  >({
+    name: 'SnapInterfaceController',
+  });
+
+  return snapInterfaceControllerMessenger;
 };

@@ -6,3 +6,4 @@ export * from './name-lookup';
 export * from './rpc-request';
 export * from './transaction';
 export * from './signature';
+export * from './user-input';

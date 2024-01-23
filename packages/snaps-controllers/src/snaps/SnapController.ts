@@ -36,6 +36,7 @@ import type {
   RequestSnapsParams,
   RequestSnapsResult,
   SnapId,
+  Component,
 } from '@metamask/snaps-sdk';
 import { AuxiliaryFileEncoding, getErrorMessage } from '@metamask/snaps-sdk';
 import type {
@@ -96,6 +97,7 @@ import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
 
 import { forceStrict, validateMachine } from '../fsm';
+import type { GetInterface } from '../interface';
 import { log } from '../logging';
 import type {
   ExecuteSnapAction,
@@ -514,7 +516,8 @@ export type AllowedActions =
   | Update
   | ResolveVersion
   | TestOrigin
-  | MaybeUpdateState;
+  | MaybeUpdateState
+  | GetInterface;
 
 export type AllowedEvents =
   | ExecutionServiceEvents
@@ -2588,9 +2591,9 @@ export class SnapController extends BaseController<
 
     assert(
       permissionKeys.some((key) => handlerPermissions.includes(key)),
-      `A snap must request at least one of the following permissions: ${handlerPermissions.join(
-        ', ',
-      )}.`,
+      `A snap must request at least one of the following permissions: ${handlerPermissions
+        .filter((handler) => handler !== null)
+        .join(', ')}.`,
     );
 
     const excludedPermissionErrors = permissionKeys.reduce<string[]>(
@@ -2719,16 +2722,24 @@ export class SnapController extends BaseController<
     assertIsJsonRpcRequest(request);
 
     const permissionName = handlerEndowments[handlerType];
-    const hasPermission = this.messagingSystem.call(
-      'PermissionController:hasPermission',
-      snapId,
-      permissionName,
+
+    assert(
+      typeof permissionName === 'string' || permissionName === null,
+      "'permissionName' must be either a string or null.",
     );
 
-    if (!hasPermission) {
-      throw new Error(
-        `Snap "${snapId}" is not permitted to use "${permissionName}".`,
+    if (permissionName) {
+      const hasPermission = this.messagingSystem.call(
+        'PermissionController:hasPermission',
+        snapId,
+        permissionName,
       );
+
+      if (!hasPermission) {
+        throw new Error(
+          `Snap "${snapId}" is not permitted to use "${permissionName}".`,
+        );
+      }
     }
 
     if (
@@ -2849,7 +2860,7 @@ export class SnapController extends BaseController<
           timer,
         );
 
-        await this.#assertSnapRpcRequestResult(handlerType, result);
+        await this.#assertSnapRpcRequestResult(handlerType, result, snapId);
 
         return result;
       } catch (error) {
@@ -2878,13 +2889,45 @@ export class SnapController extends BaseController<
       .result;
   }
 
+  #getInterface(snapId: SnapId, interfaceId: string) {
+    return this.messagingSystem.call(
+      'SnapInterfaceController:getInterface',
+      snapId,
+      interfaceId,
+    );
+  }
+
   /**
-   * Asserts that the returned result of a Snap RPC call is the expected shape.
+   * Get the UI components from the interface if the response contains an interface id
+   * otherwise return the UI components of the response.
+   *
+   * @param snapId - The ID of the snap that returned the result.
+   * @param result - The result of the RPC request.
+   * @returns The UI components.
+   */
+  #getResponseContent(
+    snapId: SnapId,
+    result: { content: Component } | { id: string },
+  ) {
+    if (hasProperty(result, 'id')) {
+      const { content } = this.#getInterface(snapId, result.id as string);
+      return content;
+    }
+    return result.content;
+  }
+
+  /**
+   * Assert that the returned result of a Snap RPC call is the expected shape.
    *
    * @param handlerType - The handler type of the RPC Request.
    * @param result - The result of the RPC request.
+   * @param snapId - The ID of the snap that returned the result.
    */
-  async #assertSnapRpcRequestResult(handlerType: HandlerType, result: unknown) {
+  async #assertSnapRpcRequestResult(
+    handlerType: HandlerType,
+    result: unknown,
+    snapId: SnapId,
+  ) {
     switch (handlerType) {
       case HandlerType.OnTransaction: {
         assertStruct(result, OnTransactionResponseStruct);
@@ -2917,14 +2960,15 @@ export class SnapController extends BaseController<
         break;
       }
       case HandlerType.OnHomePage:
-        assertStruct(result, OnHomePageResponseStruct);
+        {
+          assertStruct(result, OnHomePageResponseStruct);
 
-        await this.#triggerPhishingListUpdate();
+          await this.#triggerPhishingListUpdate();
 
-        validateComponentLinks(
-          result.content,
-          this.#checkPhishingList.bind(this),
-        );
+          const content = this.#getResponseContent(snapId, result);
+
+          validateComponentLinks(content, this.#checkPhishingList.bind(this));
+        }
         break;
       default:
         break;
@@ -3230,6 +3274,9 @@ export class SnapController extends BaseController<
    */
   async #callLifecycleHook(snapId: SnapId, handler: HandlerType) {
     const permissionName = handlerEndowments[handler];
+
+    assert(permissionName, 'Lifecycle hook must have an endowment.');
+
     const hasPermission = this.messagingSystem.call(
       'PermissionController:hasPermission',
       snapId,

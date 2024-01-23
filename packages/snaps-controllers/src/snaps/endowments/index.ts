@@ -78,7 +78,8 @@ export const endowmentCaveatMappers: Record<
     getSignatureInsightCaveatMapper,
 };
 
-export const handlerEndowments: Record<HandlerType, string> = {
+// We allow null because a permitted handler does not have an endowment
+export const handlerEndowments: Record<HandlerType, string | null> = {
   [HandlerType.OnRpcRequest]: rpcEndowmentBuilder.targetName,
   [HandlerType.OnTransaction]: transactionInsightEndowmentBuilder.targetName,
   [HandlerType.OnCronjob]: cronjobEndowmentBuilder.targetName,
@@ -88,6 +89,7 @@ export const handlerEndowments: Record<HandlerType, string> = {
   [HandlerType.OnKeyringRequest]: keyringEndowmentBuilder.targetName,
   [HandlerType.OnHomePage]: homePageEndowmentBuilder.targetName,
   [HandlerType.OnSignature]: signatureInsightEndowmentBuilder.targetName,
+  [HandlerType.OnUserInput]: null,
 };
 
 export * from './enum';
