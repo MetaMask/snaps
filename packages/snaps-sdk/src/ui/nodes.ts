@@ -17,6 +17,9 @@ export enum NodeType {
   Image = 'image',
   Row = 'row',
   Address = 'address',
+  Button = 'button',
+  Input = 'input',
+  Form = 'form',
 }
 
 /**
