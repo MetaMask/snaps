@@ -38,8 +38,7 @@ export const ButtonStruct = assign(
  *
  * @property type - The type of the node, must be the string 'button'.
  * @property variant - The style variant of the node, must be either 'primary' or 'secondary'.
- * @property value - The text content of the node, either as plain text, or as a
- * markdown string.
+ * @property value - The text content of the node as plain text.
  * @property buttonType - The type of the button, must be either 'button' or 'submit'.
  * @property name - An optional name to identify the button.
  */
@@ -49,7 +48,7 @@ export type Button = Infer<typeof ButtonStruct>;
  * Create a {@link Button} node.
  *
  * @param args - The node arguments. This can be either a string, or an object
- * with a `text` property.
+ * with a `value` property. A set of optional properties can be passed.
  * @param args.variant - The optional variant of the button.
  * @param args.value - The text content of the node.
  * @param args.name - The optional name of the button.
@@ -57,7 +56,8 @@ export type Button = Infer<typeof ButtonStruct>;
  * @example
  * ```typescript
  * const node = button({  variant: 'primary', text: 'Hello, world!', name: 'myButton' });
- * const node = button('primary', 'Hello, world!', 'myButton');
+ * const node = button('Hello, world!', 'button', 'myButton', 'primary');
+ * const node = button('Hello, world!');
  * ```
  */
 export const button = createBuilder(NodeType.Button, ButtonStruct, [

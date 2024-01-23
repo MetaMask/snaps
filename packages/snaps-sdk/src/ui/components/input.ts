@@ -9,7 +9,7 @@ import { LiteralStruct, NodeType } from '../nodes';
  * This replicates the available input types from the metamask extension.
  * https://github.com/MetaMask/metamask-extension/develop/ui/components/component-library/input/input.constants.js
  */
-export enum InputTypes {
+export enum InputType {
   /* eslint-disable @typescript-eslint/no-shadow */
   Text = 'text',
   Number = 'number',
@@ -25,9 +25,9 @@ export const InputStruct = assign(
     name: string(),
     inputType: optional(
       union([
-        enumValue(InputTypes.Text),
-        enumValue(InputTypes.Password),
-        enumValue(InputTypes.Number),
+        enumValue(InputType.Text),
+        enumValue(InputType.Password),
+        enumValue(InputType.Number),
       ]),
     ),
     placeholder: optional(string()),
@@ -59,8 +59,10 @@ export type Input = Infer<typeof InputStruct>;
  * @param args.label - An optional input label.
  * @returns The input node as an object.
  * @example
- * const node = input({ name: 'myInput', });
- * const node = input({name: 'myInput', value: 'myValue', inputType: InputTypes.Password, placeholder: 'placeholder'})
+ * const node = input('myInput');
+ * const node = input('myInput', InputType.Text, 'my placeholder', 'myValue', 'myLabel');
+ * const node = input({ name: 'myInput' });
+ * const node = input({name: 'myInput', value: 'myValue', inputType: InputType.Password, placeholder: 'placeholder'})
  */
 export const input = createBuilder(NodeType.Input, InputStruct, [
   'name',
