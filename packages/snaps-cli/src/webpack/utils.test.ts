@@ -2,6 +2,7 @@ import { dim } from 'chalk';
 
 import type { ProcessedWebpackConfig } from '../config';
 import { getMockConfig } from '../test-utils';
+import { browserify } from './loaders';
 import {
   WEBPACK_FALLBACKS,
   getBrowserslistTargets,
@@ -18,8 +19,11 @@ describe('getDefaultLoader', () => {
   it('returns the Browserify loader if `legacy` is set', async () => {
     const config = getMockConfig('browserify');
     expect(await getDefaultLoader(config)).toStrictEqual({
-      loader: expect.stringContaining('browserify'),
-      options: config.legacy,
+      loader: expect.stringContaining('function'),
+      options: {
+        ...config.legacy,
+        fn: browserify,
+      },
     });
   });
 

@@ -600,7 +600,10 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
       {
         "test": /\\\\\\.wasm\\$/u,
         "use": {
-          "loader": "/foo/bar/loaders/wasm",
+          "loader": "/foo/bar/src/webpack/loaders/function.ts",
+          "options": {
+            "fn": [Function],
+          },
         },
       },
     ],
@@ -2041,12 +2044,13 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
         "use": {
-          "loader": "/foo/bar/loaders/browserify",
+          "loader": "/Users/morten/Development/MetaMask/snaps/packages/snaps-cli/src/webpack/loaders/function.ts",
           "options": {
             "bundlerCustomizer": undefined,
             "depsToTranspile": [],
             "dist": "/foo/bar/dist",
             "eval": true,
+            "fn": [Function],
             "manifest": true,
             "outfileName": "bundle.js",
             "port": 8081,
@@ -2176,12 +2180,13 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
         "use": {
-          "loader": "/foo/bar/loaders/browserify",
+          "loader": "/Users/morten/Development/MetaMask/snaps/packages/snaps-cli/src/webpack/loaders/function.ts",
           "options": {
             "bundlerCustomizer": undefined,
             "depsToTranspile": [],
             "dist": "/foo/bar/dist",
             "eval": true,
+            "fn": [Function],
             "manifest": true,
             "outfileName": "bundle.js",
             "port": 8081,
@@ -2311,12 +2316,13 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
         "use": {
-          "loader": "/foo/bar/loaders/browserify",
+          "loader": "/Users/morten/Development/MetaMask/snaps/packages/snaps-cli/src/webpack/loaders/function.ts",
           "options": {
             "bundlerCustomizer": undefined,
             "depsToTranspile": [],
             "dist": "/foo/bar/dist",
             "eval": true,
+            "fn": [Function],
             "manifest": true,
             "outfileName": "bundle.js",
             "port": 8081,

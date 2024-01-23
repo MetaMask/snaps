@@ -14,16 +14,6 @@
       "require": "./dist/index.js",
       "types": "./dist/types/index.d.ts"
     },
-    "./loaders/wasm": {
-      "import": "./dist/webpack/loaders/wasm.mjs",
-      "require": "./dist/webpack/loaders/wasm.js",
-      "types": "./dist/types/webpack/loaders/wasm.d.ts"
-    },
-    "./loaders/browserify": {
-      "import": "./dist/webpack/loaders/browserify.mjs",
-      "require": "./dist/webpack/loaders/browserify.js",
-      "types": "./dist/types/webpack/loaders/browserify.d.ts"
-    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.js",
@@ -76,7 +66,6 @@
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
     "chalk": "^4.1.2",
-    "chokidar": "^3.5.2",
     "console-browserify": "^1.2.0",
     "constants-browserify": "^1.0.0",
     "crypto-browserify": "^3.12.0",
