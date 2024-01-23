@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-shadow, import/no-unassigned-import */
 
-import { UserInputEventTypes } from '@metamask/snaps-sdk';
+import { UserInputEventType } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
 import {
   MOCK_ORIGIN,
@@ -1522,7 +1522,7 @@ describe('BaseSnapExecutor', () => {
     const params = {
       id: 'foo',
       event: {
-        type: UserInputEventTypes.ButtonClickEvent,
+        type: UserInputEventType.ButtonClickEvent,
         name: 'bar',
       },
     };

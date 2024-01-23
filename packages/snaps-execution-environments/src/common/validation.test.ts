@@ -1,4 +1,4 @@
-import { UserInputEventTypes } from '@metamask/snaps-sdk';
+import { UserInputEventType } from '@metamask/snaps-sdk';
 
 import {
   assertIsOnNameLookupRequestArguments,
@@ -155,12 +155,12 @@ describe('assertIsOnUserInputRequestArguments', () => {
   it.each([
     {
       id: 'foo',
-      event: { type: UserInputEventTypes.ButtonClickEvent, name: 'foo' },
+      event: { type: UserInputEventType.ButtonClickEvent, name: 'foo' },
     },
     {
       id: 'foo',
       event: {
-        type: UserInputEventTypes.FormSubmitEvent,
+        type: UserInputEventType.FormSubmitEvent,
         name: 'foo',
         value: { foo: 'bar' },
       },
@@ -183,12 +183,12 @@ describe('assertIsOnUserInputRequestArguments', () => {
     { id: 2, event: { foo: 'bar' } },
     {
       id: 'foo',
-      event: { type: UserInputEventTypes.ButtonClickEvent, name: 'foo' },
+      event: { type: UserInputEventType.ButtonClickEvent, name: 'foo' },
       foo: 'bar',
     },
     {
       id: 'foo',
-      event: { type: UserInputEventTypes.ButtonClickEvent, name: 2 },
+      event: { type: UserInputEventType.ButtonClickEvent, name: 2 },
     },
     {
       id: 'foo',
@@ -205,7 +205,7 @@ describe('assertIsOnUserInputRequestArguments', () => {
     {
       id: 'foo',
       event: {
-        type: UserInputEventTypes.FormSubmitEvent,
+        type: UserInputEventType.FormSubmitEvent,
         name: 'foo',
         value: 'bar',
       },

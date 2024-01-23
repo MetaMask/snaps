@@ -1,19 +1,19 @@
 import { NodeType } from '../nodes';
-import { ButtonTypes, ButtonVariants, button } from './button';
+import { ButtonType, ButtonVariant, button } from './button';
 
 describe('button', () => {
   it('creates a button component', () => {
     expect(
       button({
-        variant: ButtonVariants.Primary,
+        variant: ButtonVariant.Primary,
         value: 'Hello, world!',
         name: 'myButton',
-        buttonType: ButtonTypes.Button,
+        buttonType: ButtonType.Button,
       }),
     ).toStrictEqual({
       type: NodeType.Button,
-      variant: ButtonVariants.Primary,
-      buttonType: ButtonTypes.Button,
+      variant: ButtonVariant.Primary,
+      buttonType: ButtonType.Button,
       name: 'myButton',
       value: 'Hello, world!',
     });
@@ -32,15 +32,15 @@ describe('button', () => {
     expect(
       button(
         'Hello, world!',
-        ButtonTypes.Button,
+        ButtonType.Button,
         'myButton',
-        ButtonVariants.Primary,
+        ButtonVariant.Primary,
       ),
     ).toStrictEqual({
       type: NodeType.Button,
       value: 'Hello, world!',
-      buttonType: ButtonTypes.Button,
-      variant: ButtonVariants.Primary,
+      buttonType: ButtonType.Button,
+      variant: ButtonVariant.Primary,
       name: 'myButton',
     });
 

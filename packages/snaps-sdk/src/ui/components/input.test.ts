@@ -1,5 +1,5 @@
 import { NodeType } from '../nodes';
-import { input, InputTypes } from './input';
+import { input, InputType } from './input';
 
 describe('Input', () => {
   it('creates an input component', () => {
@@ -7,7 +7,7 @@ describe('Input', () => {
       input({
         value: 'Hello, world!',
         name: 'myInput',
-        inputType: InputTypes.Text,
+        inputType: InputType.Text,
         placeholder: 'Type here...',
         label: 'Hello',
       }),
@@ -15,7 +15,7 @@ describe('Input', () => {
       type: NodeType.Input,
       value: 'Hello, world!',
       name: 'myInput',
-      inputType: InputTypes.Text,
+      inputType: InputType.Text,
       placeholder: 'Type here...',
       label: 'Hello',
     });
@@ -32,10 +32,10 @@ describe('Input', () => {
 
   it('creates an input component using the shorthand form', () => {
     expect(
-      input('myInput', InputTypes.Text, 'type here...', 'foo bar', 'input'),
+      input('myInput', InputType.Text, 'type here...', 'foo bar', 'input'),
     ).toStrictEqual({
       type: NodeType.Input,
-      inputType: InputTypes.Text,
+      inputType: InputType.Text,
       placeholder: 'type here...',
       value: 'foo bar',
       name: 'myInput',

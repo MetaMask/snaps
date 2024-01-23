@@ -1,9 +1,9 @@
-import { UserInputEventTypes } from './user-input';
+import { UserInputEventType } from './user-input';
 
-describe('UserInputEventTypes', () => {
+describe('UserInputEventType', () => {
   it('has the correct values', () => {
-    expect(Object.values(UserInputEventTypes)).toHaveLength(2);
-    expect(UserInputEventTypes.ButtonClickEvent).toBe('ButtonClickEvent');
-    expect(UserInputEventTypes.FormSubmitEvent).toBe('FormSubmitEvent');
+    expect(Object.values(UserInputEventType)).toHaveLength(2);
+    expect(UserInputEventType.ButtonClickEvent).toBe('ButtonClickEvent');
+    expect(UserInputEventType.FormSubmitEvent).toBe('FormSubmitEvent');
   });
 });

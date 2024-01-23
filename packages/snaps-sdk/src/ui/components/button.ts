@@ -5,12 +5,12 @@ import { enumValue } from '../../internals';
 import { createBuilder } from '../builder';
 import { LiteralStruct, NodeType } from '../nodes';
 
-export enum ButtonVariants {
+export enum ButtonVariant {
   Primary = 'primary',
   Secondary = 'secondary',
 }
 
-export enum ButtonTypes {
+export enum ButtonType {
   Button = 'button',
   Submit = 'submit',
 }
@@ -22,12 +22,12 @@ export const ButtonStruct = assign(
     value: string(),
     variant: optional(
       union([
-        enumValue(ButtonVariants.Primary),
-        enumValue(ButtonVariants.Secondary),
+        enumValue(ButtonVariant.Primary),
+        enumValue(ButtonVariant.Secondary),
       ]),
     ),
     buttonType: optional(
-      union([enumValue(ButtonTypes.Button), enumValue(ButtonTypes.Submit)]),
+      union([enumValue(ButtonType.Button), enumValue(ButtonType.Submit)]),
     ),
     name: optional(string()),
   }),

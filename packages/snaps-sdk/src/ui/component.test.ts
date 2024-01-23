@@ -1,7 +1,7 @@
 import { assertIsComponent, isComponent } from './component';
 import type { Input, Form } from './components';
 import {
-  ButtonVariants,
+  ButtonVariant,
   type Button,
   type Divider,
   type Heading,
@@ -9,8 +9,8 @@ import {
   type Panel,
   type Spinner,
   type Text,
-  ButtonTypes,
-  InputTypes,
+  ButtonType,
+  InputType,
 } from './components';
 import { NodeType } from './nodes';
 
@@ -94,8 +94,8 @@ describe('isComponent', () => {
   it('returns true for a button component', () => {
     const button: Button = {
       type: NodeType.Button,
-      variant: ButtonVariants.Primary,
-      buttonType: ButtonTypes.Button,
+      variant: ButtonVariant.Primary,
+      buttonType: ButtonType.Button,
       name: 'myButton',
       value: 'Hello, world!',
     };
@@ -120,7 +120,7 @@ describe('isComponent', () => {
       type: NodeType.Input,
       value: 'Hello, world!',
       name: 'myInput',
-      inputType: InputTypes.Text,
+      inputType: InputType.Text,
       placeholder: 'Type here...',
       label: 'Hello',
     };
@@ -250,8 +250,8 @@ describe('assertIsComponent', () => {
   it('does not throw for a button component', () => {
     const button: Button = {
       type: NodeType.Button,
-      variant: ButtonVariants.Primary,
-      buttonType: ButtonTypes.Button,
+      variant: ButtonVariant.Primary,
+      buttonType: ButtonType.Button,
       name: 'myButton',
       value: 'Hello, world!',
     };
@@ -276,7 +276,7 @@ describe('assertIsComponent', () => {
       type: NodeType.Input,
       value: 'Hello, world!',
       name: 'myInput',
-      inputType: InputTypes.Text,
+      inputType: InputType.Text,
       placeholder: 'Type here...',
       label: 'Hello',
     };
