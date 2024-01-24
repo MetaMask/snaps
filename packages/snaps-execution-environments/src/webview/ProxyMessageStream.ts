@@ -1,6 +1,7 @@
 import type { PostMessageEvent } from '@metamask/post-message-stream';
 import { BasePostMessageStream } from '@metamask/post-message-stream';
 import { isValidStreamMessage } from '@metamask/post-message-stream/dist/utils';
+import { base64ToBytes, bytesToString } from '@metamask/utils';
 
 type ProxyMessageStreamArgs = {
   name: string;
@@ -84,7 +85,9 @@ export class ProxyMessageStream extends BasePostMessageStream {
   }
 
   private _onMessage(event: PostMessageEvent): void {
-    const message = event.data;
+    const rawMessage = event.data as string;
+    const bytes = base64ToBytes(rawMessage);
+    const message = JSON.parse(bytesToString(bytes));
 
     // Notice that we don't check targetWindow or targetOrigin here.
     // This doesn't seem possible to do in RN.
