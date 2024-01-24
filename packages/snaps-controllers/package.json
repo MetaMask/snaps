@@ -42,7 +42,7 @@
     "lint:dependencies": "depcheck"
   },
   "dependencies": {
-    "@metamask/approval-controller": "^5.1.1",
+    "@metamask/approval-controller": "^5.1.2",
     "@metamask/base-controller": "^4.1.0",
     "@metamask/json-rpc-engine": "^7.3.2",
     "@metamask/object-multiplex": "^2.0.0",
