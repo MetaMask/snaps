@@ -12,6 +12,7 @@ import type {
 } from '@metamask/snaps-sdk';
 import { SeverityLevel, ComponentStruct } from '@metamask/snaps-sdk';
 import {
+  assign,
   literal,
   nullable,
   object,
@@ -102,11 +103,29 @@ export const SNAP_EXPORTS = {
   },
 } as const;
 
-export const OnTransactionResponseStruct = nullable(
+export const OnTransactionSeverityResponseStruct = object({
+  severity: optional(literal(SeverityLevel.Critical)),
+});
+
+export const OnTransactionResponseWithIdStruct = assign(
+  OnTransactionSeverityResponseStruct,
+  object({
+    id: string(),
+  }),
+);
+
+export const OnTransactionResponseWithContentStruct = assign(
+  OnTransactionSeverityResponseStruct,
   object({
     content: ComponentStruct,
-    severity: optional(literal(SeverityLevel.Critical)),
   }),
+);
+
+export const OnTransactionResponseStruct = nullable(
+  union([
+    OnTransactionResponseWithContentStruct,
+    OnTransactionResponseWithIdStruct,
+  ]),
 );
 
 export const OnSignatureResponseStruct = OnTransactionResponseStruct;
