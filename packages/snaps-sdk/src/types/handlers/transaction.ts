@@ -107,10 +107,16 @@ export type OnTransactionHandler = (args: {
  * The response from a Snap's `onTransaction` handler.
  *
  * @property component - A custom UI component, that will be shown in MetaMask.
+ * @property id - A Snap interface ID.
  * @property severity - The severity level of the content. Currently only one
  * level is supported: `critical`.
  */
-export type OnTransactionResponse = {
-  content: Component;
-  severity?: EnumToUnion<SeverityLevel>;
-};
+export type OnTransactionResponse =
+  | {
+      content: Component;
+      severity?: EnumToUnion<SeverityLevel>;
+    }
+  | {
+      id: string;
+      severity?: EnumToUnion<SeverityLevel>;
+    };

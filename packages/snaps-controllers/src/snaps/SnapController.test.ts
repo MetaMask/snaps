@@ -2223,7 +2223,7 @@ describe('SnapController', () => {
           },
         }),
       ).rejects.toThrow(
-        'Assertion failed: At path: foo -- Expected a value of type `never`, but received: `"bar"`.',
+        'Assertion failed: Expected the value to satisfy a union of `object | object`, but received: [object Object].',
       );
 
       snapController.destroy();
@@ -2398,7 +2398,7 @@ describe('SnapController', () => {
           },
         }),
       ).rejects.toThrow(
-        'Assertion failed: At path: foo -- Expected a value of type `never`, but received: `"bar"`.',
+        'Assertion failed: Expected the value to satisfy a union of `object | object`, but received: [object Object].',
       );
 
       snapController.destroy();
@@ -2626,7 +2626,7 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
-  it('gets the interface content if the result is an interface id', async () => {
+  it('gets the interface content if the result is an interface id for onHomePage', async () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
     const snapController = getSnapController(
@@ -2672,6 +2672,136 @@ describe('SnapController', () => {
       snapId: MOCK_SNAP_ID,
       origin: 'foo.com',
       handler: HandlerType.OnHomePage,
+      request: {
+        jsonrpc: '2.0',
+        method: ' ',
+        params: {},
+        id: 1,
+      },
+    });
+
+    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+      5,
+      'SnapInterfaceController:getInterface',
+      MOCK_SNAP_ID,
+      'foo',
+    );
+    expect(result).toBe(handlerResponse);
+
+    snapController.destroy();
+  });
+
+  it('gets the interface content if the result is an interface id for onTransaction', async () => {
+    const rootMessenger = getControllerMessenger();
+    const messenger = getSnapControllerMessenger(rootMessenger);
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        state: {
+          snaps: getPersistedSnapsState(),
+        },
+      }),
+    );
+
+    const handlerResponse = { id: 'foo' };
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => ({
+        [SnapEndowments.TransactionInsight]: {
+          caveats: null,
+          date: 1664187844588,
+          id: 'izn0WGUO8cvq_jqvLQuQP',
+          invoker: MOCK_SNAP_ID,
+          parentCapability: SnapEndowments.TransactionInsight,
+        },
+      }),
+    );
+
+    rootMessenger.registerActionHandler(
+      'SubjectMetadataController:getSubjectMetadata',
+      () => MOCK_SNAP_SUBJECT_METADATA,
+    );
+
+    rootMessenger.registerActionHandler(
+      'ExecutionService:handleRpcRequest',
+      async () => Promise.resolve(handlerResponse),
+    );
+
+    rootMessenger.registerActionHandler(
+      'SnapInterfaceController:getInterface',
+      () => ({ snapId: MOCK_SNAP_ID, state: {}, content: text('hello') }),
+    );
+
+    const result = await snapController.handleRequest({
+      snapId: MOCK_SNAP_ID,
+      origin: 'foo.com',
+      handler: HandlerType.OnTransaction,
+      request: {
+        jsonrpc: '2.0',
+        method: ' ',
+        params: {},
+        id: 1,
+      },
+    });
+
+    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+      5,
+      'SnapInterfaceController:getInterface',
+      MOCK_SNAP_ID,
+      'foo',
+    );
+    expect(result).toBe(handlerResponse);
+
+    snapController.destroy();
+  });
+
+  it('gets the interface content if the result is an interface id for onSignature', async () => {
+    const rootMessenger = getControllerMessenger();
+    const messenger = getSnapControllerMessenger(rootMessenger);
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        state: {
+          snaps: getPersistedSnapsState(),
+        },
+      }),
+    );
+
+    const handlerResponse = { id: 'foo' };
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => ({
+        [SnapEndowments.SignatureInsight]: {
+          caveats: null,
+          date: 1664187844588,
+          id: 'izn0WGUO8cvq_jqvLQuQP',
+          invoker: MOCK_SNAP_ID,
+          parentCapability: SnapEndowments.SignatureInsight,
+        },
+      }),
+    );
+
+    rootMessenger.registerActionHandler(
+      'SubjectMetadataController:getSubjectMetadata',
+      () => MOCK_SNAP_SUBJECT_METADATA,
+    );
+
+    rootMessenger.registerActionHandler(
+      'ExecutionService:handleRpcRequest',
+      async () => Promise.resolve(handlerResponse),
+    );
+
+    rootMessenger.registerActionHandler(
+      'SnapInterfaceController:getInterface',
+      () => ({ snapId: MOCK_SNAP_ID, state: {}, content: text('hello') }),
+    );
+
+    const result = await snapController.handleRequest({
+      snapId: MOCK_SNAP_ID,
+      origin: 'foo.com',
+      handler: HandlerType.OnSignature,
       request: {
         jsonrpc: '2.0',
         method: ' ',

@@ -3682,15 +3682,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^5.1.1":
-  version: 5.1.1
-  resolution: "@metamask/approval-controller@npm:5.1.1"
+"@metamask/approval-controller@npm:^5.1.2":
+  version: 5.1.2
+  resolution: "@metamask/approval-controller@npm:5.1.2"
   dependencies:
-    "@metamask/base-controller": ^4.0.1
+    "@metamask/base-controller": ^4.1.1
     "@metamask/rpc-errors": ^6.1.0
-    "@metamask/utils": ^8.2.0
+    "@metamask/utils": ^8.3.0
     nanoid: ^3.1.31
-  checksum: 02676b0a213289ba44f2f746c9f5e58687ee80cd17e88ae8324f4ac7fcb910d05476bfbed94c410cfdb56d40e735c812a4ad5d496fdc4911655f2760cc8d6e80
+  checksum: 842987043ebc4a694fee8fe31568e4400c009285f271a0d36c15e370942f026559ffd0ac0147567976260aa2f7f2d66278c850103b8001c269e290e44ccba8d7
   languageName: node
   linkType: hard
 
@@ -3724,13 +3724,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^4.0.1, @metamask/base-controller@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "@metamask/base-controller@npm:4.1.0"
+"@metamask/base-controller@npm:^4.0.1, @metamask/base-controller@npm:^4.1.0, @metamask/base-controller@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "@metamask/base-controller@npm:4.1.1"
   dependencies:
-    "@metamask/utils": ^8.2.0
+    "@metamask/utils": ^8.3.0
     immer: ^9.0.6
-  checksum: b6aa8aeca7e51dc027dcf1e68f2af593dbca951b06b7877fdd1d34a7e90d89c40ca04b11afb7babcb4b5e8bdb1a3c988f29d10ee73db19b3a9920e0f46934a4b
+  checksum: adfbc9815506f41342036743b481236179ffd8378e58dad4ffd5b55158d1a5d5509b113d17af5fe1de35d02c448a7c92fffd5234da1893374aab498356585f76
   languageName: node
   linkType: hard
 
@@ -4257,13 +4257,13 @@ __metadata:
   linkType: hard
 
 "@metamask/eth-json-rpc-provider@npm:^2.1.0":
-  version: 2.3.1
-  resolution: "@metamask/eth-json-rpc-provider@npm:2.3.1"
+  version: 2.3.2
+  resolution: "@metamask/eth-json-rpc-provider@npm:2.3.2"
   dependencies:
-    "@metamask/json-rpc-engine": ^7.3.1
+    "@metamask/json-rpc-engine": ^7.3.2
     "@metamask/safe-event-emitter": ^3.0.0
-    "@metamask/utils": ^8.2.0
-  checksum: fa0a987eb7e0dcff495489e95c358f6786a4a793a42ac900bb022027d27e6534ded743092e79a2191b9b4d760f418f39f6cfb99a5a5a0085f252016579be6865
+    "@metamask/utils": ^8.3.0
+  checksum: e6731271aad3b972d85b9230c26d35a9b88722f3bd3024675ad2f568e634e9fdfef4717ef2892f3cc512d381cf17a4e20dbd5eb808ced765082bea3379ad6ddc
   languageName: node
   linkType: hard
 
@@ -4622,14 +4622,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/json-rpc-engine@npm:^7.1.1, @metamask/json-rpc-engine@npm:^7.3.1":
-  version: 7.3.1
-  resolution: "@metamask/json-rpc-engine@npm:7.3.1"
+"@metamask/json-rpc-engine@npm:^7.1.1, @metamask/json-rpc-engine@npm:^7.3.1, @metamask/json-rpc-engine@npm:^7.3.2":
+  version: 7.3.2
+  resolution: "@metamask/json-rpc-engine@npm:7.3.2"
   dependencies:
     "@metamask/rpc-errors": ^6.1.0
     "@metamask/safe-event-emitter": ^3.0.0
-    "@metamask/utils": ^8.2.0
-  checksum: 4952eb4e70c0011d334fb4a9bf56aa2d68bef745c892dddd06f6ed7e6303fb95b3b60b4e32c88b6d77bfc5091acc8e71ad274f389419e4bdcc5741ef49cde87d
+    "@metamask/utils": ^8.3.0
+  checksum: 396861afc72944af410d5b06c81806db2fd9812206dbf799438f42d974edac6931f6814133adf52d6aa233d5ea3f3629663ef4f54a0cf9ccb948ce9b527137fd
   languageName: node
   linkType: hard
 
@@ -4959,13 +4959,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/post-message-stream@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@metamask/post-message-stream@npm:7.0.0"
+"@metamask/post-message-stream@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "@metamask/post-message-stream@npm:8.0.0"
   dependencies:
-    "@metamask/utils": ^5.0.0
+    "@metamask/utils": ^8.1.0
     readable-stream: 3.6.2
-  checksum: a922874f00870e0c666216e592dff6c508e926fae122646d2792c9a7fac4f73323c65046a1eb9dc48a4b0e7de3bbcf753f5ad470688ed4ba2298b4d3a9b39c7d
+  checksum: 3016d8d5f8a5954fd146ce06c0b5fd7a9a070b43284e2bad140e179ee259146b666d56e6dbefa0277f56fbb67806970c9de3067c75f0e56886d0752e7c0f5e22
   languageName: node
   linkType: hard
 
@@ -5249,18 +5249,18 @@ __metadata:
     "@esbuild-plugins/node-globals-polyfill": ^0.2.3
     "@esbuild-plugins/node-modules-polyfill": ^0.2.2
     "@lavamoat/allow-scripts": ^3.0.0
-    "@metamask/approval-controller": ^5.1.1
+    "@metamask/approval-controller": ^5.1.2
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/base-controller": ^4.1.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/json-rpc-engine": ^7.3.1
+    "@metamask/json-rpc-engine": ^7.3.2
     "@metamask/object-multiplex": ^2.0.0
     "@metamask/permission-controller": ^7.1.0
     "@metamask/phishing-controller": ^8.0.1
-    "@metamask/post-message-stream": ^7.0.0
+    "@metamask/post-message-stream": ^8.0.0
     "@metamask/rpc-errors": ^6.1.0
     "@metamask/snaps-registry": ^3.0.0
     "@metamask/snaps-rpc-methods": "workspace:^"
@@ -5350,9 +5350,9 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/json-rpc-engine": ^7.3.1
+    "@metamask/json-rpc-engine": ^7.3.2
     "@metamask/object-multiplex": ^2.0.0
-    "@metamask/post-message-stream": ^7.0.0
+    "@metamask/post-message-stream": ^8.0.0
     "@metamask/providers": ^14.0.2
     "@metamask/rpc-errors": ^6.1.0
     "@metamask/snaps-sdk": "workspace:^"
@@ -5431,7 +5431,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/eth-json-rpc-middleware": ^12.0.1
-    "@metamask/json-rpc-engine": ^7.3.1
+    "@metamask/json-rpc-engine": ^7.3.2
     "@metamask/json-rpc-middleware-stream": ^6.0.1
     "@metamask/key-tree": ^9.0.0
     "@metamask/permission-controller": ^7.1.0
@@ -5537,7 +5537,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/json-rpc-engine": ^7.3.1
+    "@metamask/json-rpc-engine": ^7.3.2
     "@metamask/key-tree": ^9.0.0
     "@metamask/permission-controller": ^7.1.0
     "@metamask/rpc-errors": ^6.1.0
@@ -5632,7 +5632,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/eth-json-rpc-middleware": ^12.0.1
-    "@metamask/json-rpc-engine": ^7.3.1
+    "@metamask/json-rpc-engine": ^7.3.2
     "@metamask/key-tree": ^9.0.0
     "@metamask/permission-controller": ^7.1.0
     "@metamask/snaps-controllers": "workspace:^"
@@ -5735,7 +5735,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/key-tree": ^9.0.0
     "@metamask/permission-controller": ^7.1.0
-    "@metamask/post-message-stream": ^7.0.0
+    "@metamask/post-message-stream": ^8.0.0
     "@metamask/rpc-errors": ^6.1.0
     "@metamask/slip44": ^3.1.0
     "@metamask/snaps-registry": ^3.0.0
@@ -5929,19 +5929,6 @@ __metadata:
     webpack-dev-server: ^4.15.1
   languageName: unknown
   linkType: soft
-
-"@metamask/utils@npm:^5.0.0":
-  version: 5.0.2
-  resolution: "@metamask/utils@npm:5.0.2"
-  dependencies:
-    "@ethereumjs/tx": ^4.1.2
-    "@types/debug": ^4.1.7
-    debug: ^4.3.4
-    semver: ^7.3.8
-    superstruct: ^1.0.3
-  checksum: eca82e42911b2840deb4f32f0f215c5ffd14d22d68afbbe92d3180e920e509e310777b15eab29def3448f3535b66596ceb4c23666ec846adacc8e1bb093ff882
-  languageName: node
-  linkType: hard
 
 "@metamask/utils@npm:^6.0.1":
   version: 6.2.0

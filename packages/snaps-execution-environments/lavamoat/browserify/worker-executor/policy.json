@@ -33,20 +33,8 @@
         "removeEventListener": true
       },
       "packages": {
-        "@metamask/post-message-stream>@metamask/utils": true,
+        "@metamask/utils": true,
         "readable-stream": true
-      }
-    },
-    "@metamask/post-message-stream>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@swc/cli>semver": true,
-        "browserify>buffer": true,
-        "eslint>debug": true,
-        "superstruct": true
       }
     },
     "@metamask/providers": {
