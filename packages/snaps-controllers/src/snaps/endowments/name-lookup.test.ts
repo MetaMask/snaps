@@ -267,7 +267,7 @@ describe('nameLookupCaveatSpecifications', () => {
           value: undefined,
         }),
       ).toThrow(
-        'Assertion failed: Expected an object, but received: undefined.',
+        'Assertion failed: Expected the value to satisfy a union of `object | object | object`, but received: undefined.',
       );
 
       expect(() =>
@@ -278,7 +278,7 @@ describe('nameLookupCaveatSpecifications', () => {
           value: { foo: 'bar', tlds: ['lens'], schemes: ['fio'] },
         }),
       ).toThrow(
-        'Assertion failed: At path: foo -- Expected a value of type `never`, but received: `"bar"`.',
+        'Assertion failed: Expected the value to satisfy a union of `object | object | object`, but received: [object Object]',
       );
 
       expect(() =>
@@ -289,7 +289,7 @@ describe('nameLookupCaveatSpecifications', () => {
           value: { foo: 'bar' },
         }),
       ).toThrow(
-        'Assertion failed: At path: foo -- Expected a value of type `never`, but received: `"bar"`.',
+        'Assertion failed: Expected the value to satisfy a union of `object | object | object`, but received: [object Object].',
       );
 
       expect(() =>
@@ -300,7 +300,7 @@ describe('nameLookupCaveatSpecifications', () => {
           value: { tlds: ['lens'], schemes: [1, 2] },
         }),
       ).toThrow(
-        'Assertion failed: At path: schemes.0 -- Expected a string, but received: 1.',
+        'Assertion failed: Expected the value to satisfy a union of `object | object | object`, but received: [object Object]',
       );
 
       expect(() =>
@@ -311,7 +311,7 @@ describe('nameLookupCaveatSpecifications', () => {
           value: { tlds: [1, 2], schemes: ['fio'] },
         }),
       ).toThrow(
-        'Assertion failed: At path: tlds.0 -- Expected a string, but received: 1.',
+        'Assertion failed: Expected the value to satisfy a union of `object | object | object`, but received: [object Object].',
       );
     });
 
