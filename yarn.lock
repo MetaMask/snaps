@@ -3724,13 +3724,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^4.0.1, @metamask/base-controller@npm:^4.1.0":
+"@metamask/base-controller@npm:^4.0.1":
   version: 4.1.0
   resolution: "@metamask/base-controller@npm:4.1.0"
   dependencies:
     "@metamask/utils": ^8.2.0
     immer: ^9.0.6
   checksum: b6aa8aeca7e51dc027dcf1e68f2af593dbca951b06b7877fdd1d34a7e90d89c40ca04b11afb7babcb4b5e8bdb1a3c988f29d10ee73db19b3a9920e0f46934a4b
+  languageName: node
+  linkType: hard
+
+"@metamask/base-controller@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "@metamask/base-controller@npm:4.1.1"
+  dependencies:
+    "@metamask/utils": ^8.3.0
+    immer: ^9.0.6
+  checksum: adfbc9815506f41342036743b481236179ffd8378e58dad4ffd5b55158d1a5d5509b113d17af5fe1de35d02c448a7c92fffd5234da1893374aab498356585f76
   languageName: node
   linkType: hard
 
@@ -5251,7 +5261,7 @@ __metadata:
     "@lavamoat/allow-scripts": ^3.0.0
     "@metamask/approval-controller": ^5.1.1
     "@metamask/auto-changelog": ^3.4.4
-    "@metamask/base-controller": ^4.1.0
+    "@metamask/base-controller": ^4.1.1
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5425,7 +5435,7 @@ __metadata:
     "@jest/types": ^29.6.3
     "@lavamoat/allow-scripts": ^3.0.0
     "@metamask/auto-changelog": ^3.4.4
-    "@metamask/base-controller": ^4.1.0
+    "@metamask/base-controller": ^4.1.1
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5624,7 +5634,7 @@ __metadata:
     "@emotion/styled": ^11.10.8
     "@ethersproject/units": ^5.7.0
     "@metamask/auto-changelog": ^3.4.4
-    "@metamask/base-controller": ^4.1.0
+    "@metamask/base-controller": ^4.1.1
     "@metamask/browser-passworder": ^4.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-browser": ^11.1.0
@@ -5728,7 +5738,7 @@ __metadata:
     "@esbuild-plugins/node-modules-polyfill": ^0.2.2
     "@lavamoat/allow-scripts": ^3.0.0
     "@metamask/auto-changelog": ^3.4.4
-    "@metamask/base-controller": ^4.1.0
+    "@metamask/base-controller": ^4.1.1
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
