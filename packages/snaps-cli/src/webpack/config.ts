@@ -164,6 +164,16 @@ export async function getDefaultConfiguration(
          */
         type: 'commonjs',
       },
+
+      /**
+       * The chunk format. This tells Webpack how to export chunks. This is
+       * required because we use browserslist to target browsers, but Snaps are
+       * not fully compatible with browser APIs (such as `window` and
+       * `document`).
+       *
+       * @see https://webpack.js.org/configuration/output/#outputchunkformat
+       */
+      chunkFormat: 'commonjs',
     },
 
     /**
