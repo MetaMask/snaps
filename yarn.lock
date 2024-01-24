@@ -4257,13 +4257,13 @@ __metadata:
   linkType: hard
 
 "@metamask/eth-json-rpc-provider@npm:^2.1.0":
-  version: 2.3.1
-  resolution: "@metamask/eth-json-rpc-provider@npm:2.3.1"
+  version: 2.3.2
+  resolution: "@metamask/eth-json-rpc-provider@npm:2.3.2"
   dependencies:
-    "@metamask/json-rpc-engine": ^7.3.1
+    "@metamask/json-rpc-engine": ^7.3.2
     "@metamask/safe-event-emitter": ^3.0.0
-    "@metamask/utils": ^8.2.0
-  checksum: fa0a987eb7e0dcff495489e95c358f6786a4a793a42ac900bb022027d27e6534ded743092e79a2191b9b4d760f418f39f6cfb99a5a5a0085f252016579be6865
+    "@metamask/utils": ^8.3.0
+  checksum: e6731271aad3b972d85b9230c26d35a9b88722f3bd3024675ad2f568e634e9fdfef4717ef2892f3cc512d381cf17a4e20dbd5eb808ced765082bea3379ad6ddc
   languageName: node
   linkType: hard
 
