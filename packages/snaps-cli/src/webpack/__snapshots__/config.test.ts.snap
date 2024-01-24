@@ -60,6 +60,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "output": {
+    "chunkFormat": "commonjs",
     "clean": false,
     "filename": "bundle.js",
     "library": {
@@ -201,6 +202,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "output": {
+    "chunkFormat": "commonjs",
     "clean": false,
     "filename": "bundle.js",
     "library": {
@@ -342,6 +344,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "output": {
+    "chunkFormat": "commonjs",
     "clean": false,
     "filename": "bundle.js",
     "library": {
@@ -483,6 +486,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "output": {
+    "chunkFormat": "commonjs",
     "clean": false,
     "filename": "bundle.js",
     "library": {
@@ -621,6 +625,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "output": {
+    "chunkFormat": "commonjs",
     "clean": false,
     "filename": "bundle.js",
     "library": {
@@ -762,6 +767,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "output": {
+    "chunkFormat": "commonjs",
     "clean": false,
     "filename": "bundle.js",
     "library": {
@@ -903,6 +909,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "output": {
+    "chunkFormat": "commonjs",
     "clean": false,
     "filename": "bundle.js",
     "library": {
@@ -1044,6 +1051,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "output": {
+    "chunkFormat": "commonjs",
     "clean": false,
     "filename": "bundle.js",
     "library": {
@@ -1193,6 +1201,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "output": {
+    "chunkFormat": "commonjs",
     "clean": false,
     "filename": "bundle.js",
     "library": {
@@ -1342,6 +1351,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "output": {
+    "chunkFormat": "commonjs",
     "clean": false,
     "filename": "bundle.js",
     "library": {
@@ -1492,6 +1502,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "output": {
+    "chunkFormat": "commonjs",
     "clean": false,
     "filename": "bundle.js",
     "library": {
@@ -1633,6 +1644,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "output": {
+    "chunkFormat": "commonjs",
     "clean": false,
     "filename": "bundle.js",
     "library": {
@@ -1774,6 +1786,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "output": {
+    "chunkFormat": "commonjs",
     "clean": false,
     "filename": "bundle.js",
     "library": {
@@ -1924,6 +1937,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "output": {
+    "chunkFormat": "commonjs",
     "clean": false,
     "filename": "bundle.js",
     "library": {
@@ -2077,6 +2091,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "output": {
+    "chunkFormat": "commonjs",
     "clean": false,
     "filename": "bundle.js",
     "library": {
@@ -2211,6 +2226,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "output": {
+    "chunkFormat": "commonjs",
     "clean": false,
     "filename": "bundle.js",
     "library": {
@@ -2345,6 +2361,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     ],
   },
   "output": {
+    "chunkFormat": "commonjs",
     "clean": false,
     "filename": "bundle.js",
     "library": {
