@@ -233,7 +233,9 @@ describe('nameLookupCaveatSpecifications', () => {
           type: 'foo',
           value: ['eip155:1'],
         }),
-      ).toThrow('Expected a plain object.');
+      ).toThrow(
+        'Invalid caveat type, must be one of the following: "chainIds", "matchers".',
+      );
     });
 
     it('throws if the caveat values are invalid for the "chainIds" caveat', () => {
