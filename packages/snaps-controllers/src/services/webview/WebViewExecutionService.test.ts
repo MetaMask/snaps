@@ -13,12 +13,6 @@ const mockedWebView = {
   injectJavaScript: jest.fn(),
 };
 
-jest.mock('./WebViewMessageStream', () => ({
-  WebViewMessageStream: jest.fn().mockImplementation(() => ({
-    webView: mockedWebView,
-  })),
-}));
-
 describe('WebViewExecutionService', () => {
   jest.useRealTimers();
 
