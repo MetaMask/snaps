@@ -1,27 +1,21 @@
 import { sleep } from '@metamask/snaps-utils/test-utils';
 
-import { WebViewMessageStream } from './WebViewMessageStream';
+import { createWebViewObjects } from '../../test-utils/webview';
+import type { WebViewMessageStream } from './WebViewMessageStream';
 
 describe('WebViewMessageStream', () => {
   let mockWebView: any;
   let getWebView: any;
   let stream: WebViewMessageStream;
 
-  beforeEach(() => {
-    mockWebView = {
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
-      injectJavaScript: jest.fn(),
-    };
-    getWebView = jest.fn().mockResolvedValue(mockWebView);
-    stream = new WebViewMessageStream({
-      name: 'testStream',
-      target: 'targetStream',
-      getWebView,
-    });
-  });
-
   it('initializes correctly', async () => {
+    const testObjects = createWebViewObjects();
+    mockWebView = testObjects.mockWebView;
+    getWebView = testObjects.mockGetWebView;
+
+    // Initialize stream. Different from other post-message streams, we have to wait for the WebView to fully load before we can continue using the stream.
+    stream = testObjects.mockStream;
+
     expect(getWebView).toHaveBeenCalled();
     await sleep(1); // wait for getWebView promise to resolve
     expect(mockWebView.addEventListener).toHaveBeenCalledWith(
@@ -30,36 +24,25 @@ describe('WebViewMessageStream', () => {
     );
   });
 
-  it('handles _postMessage correctly', () => {
-    stream._postMessage({ foo: 'bar' });
+  it('handles _postMessage(write) correctly', () => {
+    const message = { foo: 'bar' };
+    stream.write(message);
+
     expect(mockWebView.injectJavaScript).toHaveBeenCalledWith(
-      // We expect XSS encode approach to be used here encoding foo: 'bar' to value below
       `window.postMessage('eyJ0YXJnZXQiOiJ0YXJnZXRTdHJlYW0iLCJkYXRhIjoiU1lOIn0=')`,
     );
-  });
 
-  it('handles _onMessage correctly', () => {
-    const mockedOnData = jest.fn();
-    stream._onData = mockedOnData;
-
-    const messageEvent = {
-      data: JSON.stringify({
-        target: 'testStream',
-        data: { foo: 'bar' },
-      }),
-    };
-    stream._onMessage(messageEvent);
-    expect(mockedOnData).toHaveBeenCalledWith({ foo: 'bar' });
+    stream.destroy();
   });
 
   it('ignores _onMessage with wrong target', () => {
     const messageEvent = {
-      data: JSON.stringify({
+      data: {
         target: 'wrongTarget',
         data: { foo: 'bar' },
-      }),
+      },
     };
-    stream._onMessage(messageEvent);
+    stream.read(messageEvent as any);
     expect(stream.read()).toBeNull();
   });
 
