@@ -75,6 +75,7 @@ import {
   getValidatedLocalizationFiles,
   VirtualFile,
   NpmSnapFileNames,
+  OnNameLookupResponseStruct,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
@@ -2967,6 +2968,9 @@ export class SnapController extends BaseController<
 
           validateComponentLinks(content, this.#checkPhishingList.bind(this));
         }
+        break;
+      case HandlerType.OnNameLookup:
+        assertStruct(result, OnNameLookupResponseStruct);
         break;
       default:
         break;

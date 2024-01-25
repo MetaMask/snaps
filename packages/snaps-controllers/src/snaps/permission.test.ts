@@ -52,6 +52,7 @@ describe('buildSnapEndowmentSpecifications', () => {
         "endowment:name-lookup": {
           "allowedCaveats": [
             "chainIds",
+            "lookupMatchers",
           ],
           "endowmentGetter": [Function],
           "permissionType": "Endowment",

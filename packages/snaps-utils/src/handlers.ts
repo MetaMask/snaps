@@ -18,6 +18,8 @@ import {
   object,
   optional,
   string,
+  array,
+  size,
   union,
 } from 'superstruct';
 
@@ -142,6 +144,29 @@ export const OnHomePageResponseStruct = union([
   OnHomePageResponseWithContentStruct,
   OnHomePageResponseWithIdStruct,
 ]);
+
+export const AddressResolutionStruct = object({
+  protocol: string(),
+  resolvedDomain: string(),
+});
+
+export const DomainResolutionStruct = object({
+  protocol: string(),
+  resolvedAddress: string(),
+});
+
+export const AddressResolutionResponseStruct = object({
+  resolvedDomains: size(array(AddressResolutionStruct), 1, Infinity),
+});
+
+export const DomainResolutionResponseStruct = object({
+  resolvedAddresses: size(array(DomainResolutionStruct), 1, Infinity),
+});
+
+export const OnNameLookupResponseStruct = nullable(
+  union([AddressResolutionResponseStruct, DomainResolutionResponseStruct]),
+);
+
 /**
  * Utility type for getting the handler function type from a handler type.
  */

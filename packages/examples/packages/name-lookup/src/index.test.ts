@@ -15,7 +15,12 @@ describe('onNameLookup', () => {
     };
 
     expect(await onNameLookup(request)).toStrictEqual({
-      resolvedAddress: '0xc0ffee254729296a45a3885639AC7E10F9d54979',
+      resolvedAddresses: [
+        {
+          resolvedAddress: '0xc0ffee254729296a45a3885639AC7E10F9d54979',
+          protocol: 'test protocol',
+        },
+      ],
     });
   });
 
@@ -26,7 +31,9 @@ describe('onNameLookup', () => {
     };
 
     expect(await onNameLookup(request)).toStrictEqual({
-      resolvedDomain: 'c0f.1.test.domain',
+      resolvedDomains: [
+        { resolvedDomain: 'c0f.1.test.domain', protocol: 'test protocol' },
+      ],
     });
   });
 
@@ -38,7 +45,9 @@ describe('onNameLookup', () => {
     } as any;
 
     expect(await onNameLookup(request)).toStrictEqual({
-      resolvedDomain: 'c0f.1.test.domain',
+      resolvedDomains: [
+        { resolvedDomain: 'c0f.1.test.domain', protocol: 'test protocol' },
+      ],
     });
   });
 

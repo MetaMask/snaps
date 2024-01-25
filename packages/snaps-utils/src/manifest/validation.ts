@@ -141,7 +141,20 @@ export const SnapIdsStruct = refine(
 
 export type SnapIds = Infer<typeof SnapIdsStruct>;
 
-export const ChainIdsStruct = array(ChainIdStruct);
+export const ChainIdsStruct = size(array(ChainIdStruct), 1, Infinity);
+
+export const LookupMatchersStruct = union([
+  object({
+    tlds: size(array(string()), 1, Infinity),
+  }),
+  object({
+    schemes: size(array(string()), 1, Infinity),
+  }),
+  object({
+    tlds: size(array(string()), 1, Infinity),
+    schemes: size(array(string()), 1, Infinity),
+  }),
+]);
 
 /* eslint-disable @typescript-eslint/naming-convention */
 export const PermissionsStruct = type({
@@ -151,7 +164,12 @@ export const PermissionsStruct = type({
   'endowment:ethereum-provider': optional(object({})),
   'endowment:keyring': optional(KeyringOriginsStruct),
   'endowment:lifecycle-hooks': optional(object({})),
-  'endowment:name-lookup': optional(ChainIdsStruct),
+  'endowment:name-lookup': optional(
+    object({
+      chains: optional(ChainIdsStruct),
+      matchers: optional(LookupMatchersStruct),
+    }),
+  ),
   'endowment:network-access': optional(object({})),
   'endowment:page-home': optional(object({})),
   'endowment:rpc': optional(RpcOriginsStruct),

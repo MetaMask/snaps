@@ -31,7 +31,10 @@ export type InitialPermissions = Partial<{
     allowedOrigins?: string[];
   };
   'endowment:lifecycle-hooks': EmptyObject;
-  'endowment:name-lookup': ChainId[];
+  'endowment:name-lookup': {
+    chains?: ChainId[];
+    matchers?: { tlds?: string[]; schemes?: string[] };
+  };
   'endowment:network-access': EmptyObject;
   'endowment:page-home': EmptyObject;
   'endowment:rpc': {

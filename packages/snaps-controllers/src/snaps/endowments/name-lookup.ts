@@ -6,13 +6,25 @@ import type {
   Caveat,
   CaveatSpecificationConstraint,
   PermissionConstraint,
+  CaveatConstraint,
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { SnapCaveatType, isChainId } from '@metamask/snaps-utils';
+import {
+  ChainIdsStruct,
+  LookupMatchersStruct,
+  SnapCaveatType,
+} from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
-import { assert, hasProperty, isPlainObject } from '@metamask/utils';
+import {
+  assert,
+  assertStruct,
+  hasProperty,
+  isObject,
+  isPlainObject,
+} from '@metamask/utils';
 
+import { createGenericPermissionValidator } from './caveats';
 import { SnapEndowments } from './enum';
 
 const permissionName = SnapEndowments.NameLookup;
@@ -40,19 +52,12 @@ const specificationBuilder: PermissionSpecificationBuilder<
   return {
     permissionType: PermissionType.Endowment,
     targetName: permissionName,
-    allowedCaveats: [SnapCaveatType.ChainIds],
+    allowedCaveats: [SnapCaveatType.ChainIds, SnapCaveatType.LookupMatchers],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
-    validator: ({ caveats }) => {
-      if (
-        !caveats ||
-        (caveats !== null && caveats?.length > 1) ||
-        (caveats?.length === 1 && caveats[0].type !== SnapCaveatType.ChainIds)
-      ) {
-        throw rpcErrors.invalidParams({
-          message: `Expected a single "${SnapCaveatType.ChainIds}" caveat.`,
-        });
-      }
-    },
+    validator: createGenericPermissionValidator([
+      { type: SnapCaveatType.ChainIds, optional: true },
+      { type: SnapCaveatType.LookupMatchers, optional: true },
+    ]),
     subjectTypes: [SubjectType.Snap],
   };
 };
@@ -77,10 +82,19 @@ function validateCaveat(caveat: Caveat<string, any>): void {
 
   const { value } = caveat;
 
-  assert(
-    Array.isArray(value) && value.every((val) => isChainId(val)),
-    'Expected caveat value to have type "string array"',
-  );
+  switch (caveat.type) {
+    case SnapCaveatType.ChainIds:
+      assertStruct(value, ChainIdsStruct);
+      break;
+    case SnapCaveatType.LookupMatchers:
+      assertStruct(value, LookupMatchersStruct);
+      break;
+    default:
+      throw rpcErrors.invalidParams({
+        message:
+          'Invalid caveat type, must be one of the following: "chainIds", "matchers".',
+      });
+  }
 }
 
 /**
@@ -94,21 +108,29 @@ function validateCaveat(caveat: Caveat<string, any>): void {
 export function getNameLookupCaveatMapper(
   value: Json,
 ): Pick<PermissionConstraint, 'caveats'> {
-  if (
-    !value ||
-    !Array.isArray(value) ||
-    (Array.isArray(value) && value.length === 0)
-  ) {
+  if (!value || !isObject(value) || Object.keys(value).length === 0) {
     return { caveats: null };
   }
-  return {
-    caveats: [
-      {
-        type: SnapCaveatType.ChainIds,
-        value,
-      },
-    ],
-  };
+
+  const caveats = [];
+
+  if (value.chains) {
+    caveats.push({
+      type: SnapCaveatType.ChainIds,
+      value: value.chains,
+    });
+  }
+
+  if (value.matchers) {
+    caveats.push({
+      type: SnapCaveatType.LookupMatchers,
+      value: value.matchers,
+    });
+  }
+
+  assert(caveats.length > 0);
+
+  return { caveats: caveats as NonEmptyArray<CaveatConstraint> };
 }
 
 /**
@@ -128,20 +150,47 @@ export function getChainIdsCaveat(
     return null;
   }
 
-  assert(permission.caveats.length === 1);
-  assert(permission.caveats[0].type === SnapCaveatType.ChainIds);
+  const caveat = permission.caveats.find(
+    (permCaveat) => permCaveat.type === SnapCaveatType.ChainIds,
+  ) as Caveat<string, string[]> | undefined;
 
-  const caveat = permission.caveats[0] as Caveat<string, string[]>;
+  return caveat ? caveat.value : null;
+}
 
-  return caveat.value ?? null;
+/**
+ * Getter function to get the matchers caveat from a permission.
+ *
+ * This does basic validation of the caveat, but does not validate the type or
+ * value of the namespaces object itself, as this is handled by the
+ * `PermissionsController` when the permission is requested.
+ *
+ * @param permission - The permission to get the `matchers` caveat from.
+ * @returns A `matchers` object that defines the input that the snap supports.
+ */
+export function getLookupMatchersCaveat(
+  permission?: PermissionConstraint,
+): Record<string, string[]> | null {
+  if (!permission?.caveats) {
+    return null;
+  }
+
+  const caveat = permission.caveats.find(
+    (permCaveat) => permCaveat.type === SnapCaveatType.LookupMatchers,
+  ) as Caveat<string, Record<string, string[]>> | undefined;
+
+  return caveat ? caveat.value : null;
 }
 
 export const nameLookupCaveatSpecifications: Record<
-  SnapCaveatType.ChainIds,
+  SnapCaveatType.ChainIds | SnapCaveatType.LookupMatchers,
   CaveatSpecificationConstraint
 > = {
   [SnapCaveatType.ChainIds]: Object.freeze({
     type: SnapCaveatType.ChainIds,
+    validator: (caveat: Caveat<string, any>) => validateCaveat(caveat),
+  }),
+  [SnapCaveatType.LookupMatchers]: Object.freeze({
+    type: SnapCaveatType.LookupMatchers,
     validator: (caveat: Caveat<string, any>) => validateCaveat(caveat),
   }),
 };
