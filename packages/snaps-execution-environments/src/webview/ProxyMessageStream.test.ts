@@ -50,7 +50,7 @@ describe('ProxyMessageStream', () => {
       name: 'webview',
       target: 'rnside',
       targetOrigin: '*',
-      targetWindow: window.ReactNativeWebView,
+      targetWindow: window,
     });
 
     const mockCallback = jest.fn((data) => {
@@ -73,7 +73,7 @@ describe('ProxyMessageStream', () => {
       name: 'webview',
       target: 'rnside',
       targetOrigin: '*',
-      targetWindow: window.ReactNativeWebView,
+      targetWindow: window,
     });
 
     const spy = jest.spyOn(stream as any, '_onMessage');
@@ -91,7 +91,7 @@ describe('ProxyMessageStream', () => {
       name: 'webview',
       target: 'rnside',
       targetOrigin: '*',
-      targetWindow: window.ReactNativeWebView,
+      targetWindow: window,
     });
 
     const spy = jest
