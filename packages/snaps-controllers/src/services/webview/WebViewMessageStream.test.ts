@@ -35,6 +35,21 @@ describe('WebViewMessageStream', () => {
     stream.destroy();
   });
 
+  it('calls _onMessage when a message event is emitted', () => {
+    const mockMessageEvent = {
+      data: JSON.stringify({
+        target: 'test',
+        data: 'Test message',
+      }),
+    };
+
+    const onMessageSpy = jest.spyOn(stream, '_onMessage' as any);
+    const listener = mockWebView.addEventListener.mock.calls[0][1];
+    listener(mockMessageEvent);
+
+    expect(onMessageSpy).toHaveBeenCalled();
+  });
+
   it('ignores _onMessage with wrong target', () => {
     const messageEvent = {
       data: {
