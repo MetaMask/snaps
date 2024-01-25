@@ -2861,7 +2861,7 @@ export class SnapController extends BaseController<
           timer,
         );
 
-        await this.#assertSnapRpcRequestResult(handlerType, result, snapId);
+        await this.#assertSnapRpcRequestResult(handlerType, result);
 
         return result;
       } catch (error) {
@@ -2899,22 +2899,22 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Get the UI components from the interface if the response contains an interface id
-   * otherwise return the UI components of the response.
+   * Validate that the links in the response content are valid.
+   * Throws if they are invalid.
    *
-   * @param snapId - The ID of the snap that returned the result.
    * @param result - The result of the RPC request.
-   * @returns The UI components.
    */
-  #getResponseContent(
-    snapId: SnapId,
+  async #validateResponseContent(
     result: { content: Component } | { id: string },
   ) {
-    if (hasProperty(result, 'id')) {
-      const { content } = this.#getInterface(snapId, result.id as string);
-      return content;
+    if (hasProperty(result, 'content')) {
+      await this.#triggerPhishingListUpdate();
+
+      validateComponentLinks(
+        result.content as Component,
+        this.#checkPhishingList.bind(this),
+      );
     }
-    return result.content;
   }
 
   /**
@@ -2922,13 +2922,8 @@ export class SnapController extends BaseController<
    *
    * @param handlerType - The handler type of the RPC Request.
    * @param result - The result of the RPC request.
-   * @param snapId - The ID of the snap that returned the result.
    */
-  async #assertSnapRpcRequestResult(
-    handlerType: HandlerType,
-    result: unknown,
-    snapId: SnapId,
-  ) {
+  async #assertSnapRpcRequestResult(handlerType: HandlerType, result: unknown) {
     switch (handlerType) {
       case HandlerType.OnTransaction: {
         assertStruct(result, OnTransactionResponseStruct);
@@ -2937,11 +2932,8 @@ export class SnapController extends BaseController<
           return;
         }
 
-        await this.#triggerPhishingListUpdate();
+        await this.#validateResponseContent(result);
 
-        const content = this.#getResponseContent(snapId, result);
-
-        validateComponentLinks(content, this.#checkPhishingList.bind(this));
         break;
       }
       case HandlerType.OnSignature: {
@@ -2951,23 +2943,15 @@ export class SnapController extends BaseController<
           return;
         }
 
-        await this.#triggerPhishingListUpdate();
+        await this.#validateResponseContent(result);
 
-        const content = this.#getResponseContent(snapId, result);
-
-        validateComponentLinks(content, this.#checkPhishingList.bind(this));
         break;
       }
       case HandlerType.OnHomePage:
-        {
-          assertStruct(result, OnHomePageResponseStruct);
+        assertStruct(result, OnHomePageResponseStruct);
 
-          await this.#triggerPhishingListUpdate();
+        await this.#validateResponseContent(result);
 
-          const content = this.#getResponseContent(snapId, result);
-
-          validateComponentLinks(content, this.#checkPhishingList.bind(this));
-        }
         break;
       case HandlerType.OnNameLookup:
         assertStruct(result, OnNameLookupResponseStruct);
