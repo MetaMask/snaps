@@ -12,7 +12,10 @@ import type {
   Component,
   InterfaceState,
 } from '@metamask/snaps-sdk';
-import { validateComponentLinks } from '@metamask/snaps-utils';
+import {
+  getFirstErrorInUnion,
+  validateComponentLinks,
+} from '@metamask/snaps-utils';
 import type { InferMatching } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 import type { Infer, Struct } from 'superstruct';
@@ -295,9 +298,15 @@ function getValidatedParams(
     return create(params, struct);
   } catch (error) {
     if (error instanceof StructError) {
-      const { key, type: errorType } = error;
+      const { failures } = error;
 
-      if (key === 'placeholder' && errorType === 'never') {
+      const failureArray = failures();
+
+      const placeholderFailure = failureArray.find(
+        ({ key, type: errorType }) =>
+          key === 'placeholder' && errorType === 'never',
+      );
+      if (placeholderFailure) {
         throw rpcErrors.invalidParams({
           message:
             'Invalid params: Alerts or confirmations may not specify a "placeholder" field.',
@@ -305,7 +314,7 @@ function getValidatedParams(
       }
 
       throw rpcErrors.invalidParams({
-        message: `Invalid params: ${error.message}.`,
+        message: `Invalid params: ${getFirstErrorInUnion(failureArray)}.`,
       });
     }
 
