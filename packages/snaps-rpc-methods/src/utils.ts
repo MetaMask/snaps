@@ -4,7 +4,6 @@ import type {
   SLIP10PathNode,
 } from '@metamask/key-tree';
 import { SLIP10Node } from '@metamask/key-tree';
-import type { Component, InterfaceState } from '@metamask/snaps-sdk';
 import type { MagicValue } from '@metamask/snaps-utils';
 import type { Hex } from '@metamask/utils';
 import {
@@ -12,7 +11,6 @@ import {
   assert,
   concatBytes,
   createDataView,
-  hasProperty,
   stringToBytes,
 } from '@metamask/utils';
 import { keccak_256 as keccak256 } from '@noble/hashes/sha3';
@@ -210,31 +208,4 @@ export async function getNode({
         | SLIP10PathNode[]),
     ],
   });
-}
-
-/**
- * Get the interface data from the associated RPC Method params.
- *
- * @param snapId - The Snap ID.
- * @param params - The RPC Request params.
- * @param getInterface - The Interface Controller function to get the interface.
- * @param createInterface - The Interface Controller function to create the interface.
- * @returns An object with the inteface ID and the interface content.
- */
-export function getParamsInterface(
-  snapId: string,
-  params: { content: Component } | { id: string },
-  getInterface: (
-    snapId: string,
-    id: string,
-  ) => { content: Component; state: InterfaceState },
-  createInterface: (snapId: string, content: Component) => string,
-) {
-  if (hasProperty(params, 'id')) {
-    const { content } = getInterface(snapId, params.id as string);
-    return { id: params.id as string, content };
-  }
-
-  const id = createInterface(snapId, params.content);
-  return { id, content: params.content };
 }

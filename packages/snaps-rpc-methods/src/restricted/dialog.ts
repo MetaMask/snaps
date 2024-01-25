@@ -17,7 +17,7 @@ import {
   validateComponentLinks,
 } from '@metamask/snaps-utils';
 import type { InferMatching } from '@metamask/snaps-utils';
-import type { NonEmptyArray } from '@metamask/utils';
+import { hasProperty, type NonEmptyArray } from '@metamask/utils';
 import type { Infer, Struct } from 'superstruct';
 import {
   create,
@@ -31,7 +31,7 @@ import {
   union,
 } from 'superstruct';
 
-import { getParamsInterface, type MethodHooksObject } from '../utils';
+import { type MethodHooksObject } from '../utils';
 
 const methodName = 'snap_dialog';
 
@@ -243,12 +243,15 @@ export function getDialogImplementation({
     const validatedType = getValidatedType(params);
     const validatedParams = getValidatedParams(params, structs[validatedType]);
 
-    const { content, id } = getParamsInterface(
-      origin,
-      validatedParams,
-      getInterface,
-      createInterface,
-    );
+    let content, id;
+
+    if (hasProperty(validatedParams, 'id')) {
+      content = getInterface(origin, validatedParams.id as string).content;
+      id = validatedParams.id as string;
+    } else {
+      id = createInterface(origin, validatedParams.content);
+      content = validatedParams.content;
+    }
 
     await maybeUpdatePhishingList();
 

@@ -1,14 +1,8 @@
-import { text } from '@metamask/snaps-sdk';
 import { SIP_6_MAGIC_VALUE } from '@metamask/snaps-utils';
 import { TEST_SECRET_RECOVERY_PHRASE_BYTES } from '@metamask/snaps-utils/test-utils';
 
 import { ENTROPY_VECTORS } from './__fixtures__';
-import {
-  deriveEntropy,
-  getNode,
-  getParamsInterface,
-  getPathPrefix,
-} from './utils';
+import { deriveEntropy, getNode, getPathPrefix } from './utils';
 
 describe('deriveEntropy', () => {
   it.each(ENTROPY_VECTORS)(
@@ -77,45 +71,5 @@ describe('getNode', () => {
         "publicKey": "0x00c9aaf347832dc3b1dbb7aab4f41e5e04c64446b819c0761571c27b9f90eacb27",
       }
     `);
-  });
-});
-
-describe('getParamsInterface', () => {
-  it('returns the content and creates a new interface if the params has them', () => {
-    const content = text('foo');
-    const id = 'foo';
-
-    const getInterface = jest.fn();
-    const createInterface = jest.fn().mockReturnValue(id);
-
-    const result = getParamsInterface(
-      'foo',
-      { content },
-      getInterface,
-      createInterface,
-    );
-
-    expect(result).toStrictEqual({ content, id });
-    expect(getInterface).not.toHaveBeenCalled();
-    expect(createInterface).toHaveBeenCalledWith('foo', content);
-  });
-
-  it('gets the content from the InterfaceController and returns the content and the id if the params contains an id', () => {
-    const params = { id: 'foo' };
-
-    const content = text('foo');
-    const getInterface = jest.fn().mockReturnValue({ content, state: {} });
-    const createInterface = jest.fn();
-
-    const result = getParamsInterface(
-      'foo',
-      params,
-      getInterface,
-      createInterface,
-    );
-
-    expect(result).toStrictEqual({ content, id: params.id });
-    expect(getInterface).toHaveBeenCalledWith('foo', params.id);
-    expect(createInterface).not.toHaveBeenCalled();
   });
 });
