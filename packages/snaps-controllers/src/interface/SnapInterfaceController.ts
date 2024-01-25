@@ -1,6 +1,11 @@
 import type { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
+import type {
+  MaybeUpdateState,
+  TestOrigin,
+} from '@metamask/phishing-controller';
 import type { Component, InterfaceState, SnapId } from '@metamask/snaps-sdk';
+import { validateComponentLinks } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
@@ -33,6 +38,10 @@ export type UpdateInterfaceState = {
   handler: SnapInterfaceController['updateInterfaceState'];
 };
 
+export type SnapInterfaceControllerAllowedActions =
+  | TestOrigin
+  | MaybeUpdateState;
+
 export type SnapInterfaceControllerActions =
   | CreateInterface
   | GetInterface
@@ -42,9 +51,9 @@ export type SnapInterfaceControllerActions =
 
 export type SnapInterfaceControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
-  SnapInterfaceControllerActions,
+  SnapInterfaceControllerActions | SnapInterfaceControllerAllowedActions,
   never,
-  SnapInterfaceControllerActions['type'],
+  SnapInterfaceControllerAllowedActions['type'],
   never
 >;
 
@@ -122,7 +131,9 @@ export class SnapInterfaceController extends BaseController<
    * @param content - The interface content.
    * @returns The newly interface id.
    */
-  createInterface(snapId: SnapId, content: Component) {
+  async createInterface(snapId: SnapId, content: Component) {
+    await this.#validateContent(content);
+
     const id = nanoid();
 
     const componentState = constructState({}, content);
@@ -158,8 +169,9 @@ export class SnapInterfaceController extends BaseController<
    * @param id - The interface id.
    * @param content - The new content.
    */
-  updateInterface(snapId: SnapId, id: string, content: Component) {
+  async updateInterface(snapId: SnapId, id: string, content: Component) {
     this.#validateArgs(snapId, id);
+    await this.#validateContent(content);
 
     const oldState = this.state.interfaces[id].state;
 
@@ -211,5 +223,37 @@ export class SnapInterfaceController extends BaseController<
       existingInterface.snapId === snapId,
       `Interface not created by ${snapId}.`,
     );
+  }
+
+  /**
+   * Trigger a Phishing list update if needed.
+   */
+  async #triggerPhishingListUpdate() {
+    await this.messagingSystem.call('PhishingController:maybeUpdateState');
+  }
+
+  /**
+   * Check an origin against the phishing list.
+   *
+   * @param origin - The origin to check.
+   * @returns True if the origin is on the phishing list, otherwise false.
+   */
+  #checkPhishingList(origin: string) {
+    return this.messagingSystem.call('PhishingController:testOrigin', origin)
+      .result;
+  }
+
+  /**
+   * Utility function to validate the components of an interface.
+   * Throws if something is invalid.
+   *
+   * Right now this only checks links against the phighing list.
+   *
+   * @param content - The components to verify.
+   */
+  async #validateContent(content: Component) {
+    await this.#triggerPhishingListUpdate();
+
+    validateComponentLinks(content, this.#checkPhishingList.bind(this));
   }
 }

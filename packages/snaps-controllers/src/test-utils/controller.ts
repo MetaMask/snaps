@@ -25,7 +25,10 @@ import type {
   CronjobControllerActions,
   CronjobControllerEvents,
 } from '../cronjob';
-import type { SnapInterfaceControllerActions } from '../interface/SnapInterfaceController';
+import type {
+  SnapInterfaceControllerActions,
+  SnapInterfaceControllerAllowedActions,
+} from '../interface/SnapInterfaceController';
 import type {
   AllowedActions,
   AllowedEvents,
@@ -574,7 +577,7 @@ export const getRestrictedSnapsRegistryControllerMessenger = (
 // Mock controller messenger for Interface Controller
 export const getRootSnapInterfaceControllerMessenger = () => {
   const messenger = new MockControllerMessenger<
-    SnapInterfaceControllerActions,
+    SnapInterfaceControllerActions | SnapInterfaceControllerAllowedActions,
     never
   >();
 
@@ -587,14 +590,31 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
   messenger: ReturnType<
     typeof getRootSnapInterfaceControllerMessenger
   > = getRootSnapInterfaceControllerMessenger(),
+  mocked = true,
 ) => {
   const snapInterfaceControllerMessenger = messenger.getRestricted<
     'SnapInterfaceController',
-    never,
+    SnapInterfaceControllerAllowedActions['type'],
     never
   >({
     name: 'SnapInterfaceController',
+    allowedActions: [
+      'PhishingController:testOrigin',
+      'PhishingController:maybeUpdateState',
+    ],
   });
+
+  if (mocked) {
+    messenger.registerActionHandler(
+      'PhishingController:maybeUpdateState',
+      async () => Promise.resolve(),
+    );
+
+    messenger.registerActionHandler('PhishingController:testOrigin', () => ({
+      result: false,
+      type: 'all',
+    }));
+  }
 
   return snapInterfaceControllerMessenger;
 };
