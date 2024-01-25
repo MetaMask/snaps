@@ -23,7 +23,7 @@ export type CreateInterfaceMethodHooks = {
    * @param ui - The UI components.
    * @returns The unique identifier of the interface.
    */
-  createInterface: (ui: Component) => string;
+  createInterface: (ui: Component) => Promise<string>;
 };
 
 export const createInterfaceHandler: PermittedHandlerExport<
@@ -57,13 +57,13 @@ export type CreateInterfaceParameters = InferMatching<
  * @param hooks.createInterface - The function to create the interface.
  * @returns Nothing.
  */
-function getCreateInterfaceImplementation(
+async function getCreateInterfaceImplementation(
   req: JsonRpcRequest<CreateInterfaceParameters>,
   res: PendingJsonRpcResponse<CreateInterfaceResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
   { createInterface }: CreateInterfaceMethodHooks,
-): void {
+): Promise<void> {
   const { params } = req;
 
   try {
@@ -71,7 +71,7 @@ function getCreateInterfaceImplementation(
 
     const { ui } = validatedParams;
 
-    res.result = createInterface(ui);
+    res.result = await createInterface(ui);
   } catch (error) {
     return end(error);
   }
