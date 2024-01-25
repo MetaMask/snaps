@@ -104,7 +104,7 @@ describe('getChainIdsCaveat', () => {
       ],
     };
 
-    expect(() => getChainIdsCaveat(permission)).toBeNull();
+    expect(getChainIdsCaveat(permission)).toBeNull();
   });
 });
 
@@ -157,7 +157,7 @@ describe('getLookupMatchersCaveat', () => {
       ],
     };
 
-    expect(() => getLookupMatchersCaveat(permission)).toBeNull();
+    expect(getLookupMatchersCaveat(permission)).toBeNull();
   });
 });
 
@@ -203,10 +203,8 @@ describe('getNameLookupCaveatMapper', () => {
     });
   });
 
-  it('does not include caveat if it is not the correct type', () => {
-    expect(getNameLookupCaveatMapper({ foo: 'bar' })).toStrictEqual({
-      caveats: null,
-    });
+  it('throws if caveat is not the correct type', () => {
+    expect(() => getNameLookupCaveatMapper({ foo: 'bar' })).toThrow('');
   });
 });
 

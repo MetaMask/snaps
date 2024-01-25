@@ -17,6 +17,7 @@ import {
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import {
+  assert,
   assertStruct,
   hasProperty,
   isObject,
@@ -127,9 +128,7 @@ export function getNameLookupCaveatMapper(
     });
   }
 
-  if (caveats.length === 0) {
-    return { caveats: null };
-  }
+  assert(caveats.length > 0);
 
   return { caveats: caveats as NonEmptyArray<CaveatConstraint> };
 }
@@ -153,9 +152,9 @@ export function getChainIdsCaveat(
 
   const caveat = permission.caveats.find(
     (permCaveat) => permCaveat.type === SnapCaveatType.ChainIds,
-  );
+  ) as Caveat<string, string[]> | undefined;
 
-  return (caveat as Caveat<string, string[]>)?.value ?? null;
+  return caveat ? caveat.value : null;
 }
 
 /**
@@ -177,9 +176,9 @@ export function getLookupMatchersCaveat(
 
   const caveat = permission.caveats.find(
     (permCaveat) => permCaveat.type === SnapCaveatType.LookupMatchers,
-  );
+  ) as Caveat<string, Record<string, string[]>> | undefined;
 
-  return (caveat as Caveat<string, Record<string, string[]>>)?.value ?? null;
+  return caveat ? caveat.value : null;
 }
 
 export const nameLookupCaveatSpecifications: Record<
