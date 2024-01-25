@@ -1,7 +1,7 @@
 import { createService } from '../../test-utils';
-import { WebviewExecutionService } from './WebviewExecutionService';
+import { WebViewExecutionService } from './WebViewExecutionService';
 
-class WebviewExecutionServiceWrapper extends WebviewExecutionService {
+class WebViewExecutionServiceWrapper extends WebViewExecutionService {
   public async testInitEnvStream(jobId: string) {
     return this.initEnvStream(jobId);
   }
@@ -19,7 +19,7 @@ jest.mock('./WebViewMessageStream', () => ({
   })),
 }));
 
-describe('WebviewExecutionService', () => {
+describe('WebViewExecutionService', () => {
   jest.useRealTimers();
 
   beforeEach(() => {
@@ -27,7 +27,7 @@ describe('WebviewExecutionService', () => {
   });
 
   it('can boot', async () => {
-    const { service } = createService(WebviewExecutionServiceWrapper, {
+    const { service } = createService(WebViewExecutionServiceWrapper, {
       getWebView: async () => Promise.resolve(mockedWebView),
     });
 

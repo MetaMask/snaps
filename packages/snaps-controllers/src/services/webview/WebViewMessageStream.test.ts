@@ -63,8 +63,8 @@ describe('WebViewMessageStream', () => {
     expect(stream.read()).toBeNull();
   });
 
-  it('handles _destroy correctly', () => {
-    stream._destroy();
+  it('handles destroy correctly', () => {
+    stream.destroy();
     expect(mockWebView.removeEventListener).toHaveBeenCalledWith(
       'message',
       expect.any(Function),

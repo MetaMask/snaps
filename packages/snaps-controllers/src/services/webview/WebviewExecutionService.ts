@@ -3,18 +3,18 @@ import { ProxyExecutionService } from '../proxy/ProxyExecutionService';
 import type { WebViewInterface } from './WebViewMessageStream';
 import { WebViewMessageStream } from './WebViewMessageStream';
 
-type WebviewExecutionServiceArgs = ExecutionServiceArgs & {
+export type WebViewExecutionServiceArgs = ExecutionServiceArgs & {
   getWebView: () => Promise<WebViewInterface>;
 };
 
-export class WebviewExecutionService extends ProxyExecutionService {
+export class WebViewExecutionService extends ProxyExecutionService {
   #getWebView;
 
   constructor({
     messenger,
     setupSnapProvider,
     getWebView,
-  }: WebviewExecutionServiceArgs) {
+  }: WebViewExecutionServiceArgs) {
     super({
       messenger,
       setupSnapProvider,
