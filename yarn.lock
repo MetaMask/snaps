@@ -4239,9 +4239,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^12.0.1":
-  version: 12.0.1
-  resolution: "@metamask/eth-json-rpc-middleware@npm:12.0.1"
+"@metamask/eth-json-rpc-middleware@npm:^12.1.0":
+  version: 12.1.0
+  resolution: "@metamask/eth-json-rpc-middleware@npm:12.1.0"
   dependencies:
     "@metamask/eth-json-rpc-provider": ^2.1.0
     "@metamask/eth-sig-util": ^7.0.0
@@ -4252,7 +4252,7 @@ __metadata:
     klona: ^2.0.6
     pify: ^5.0.0
     safe-stable-stringify: ^2.4.3
-  checksum: 27d7ef46bad5b9db8e5a4591c6646ffd8df974ab841e82d8c446e0458de1f2d66a86eb5bf82b3db3029065edfa7e98ec8c88a79bf4e799f131703dfc3cc9675d
+  checksum: de4f0afb80575d853901812406e9c58bafd3a1679164b2b9fa60dcfc8841c7e625661b9f1ebe5ef4d0d15b66736a7a5495388de879739689af9a9539daf1fdfa
   languageName: node
   linkType: hard
 
@@ -5430,7 +5430,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/eth-json-rpc-middleware": ^12.0.1
+    "@metamask/eth-json-rpc-middleware": ^12.1.0
     "@metamask/json-rpc-engine": ^7.3.2
     "@metamask/json-rpc-middleware-stream": ^6.0.2
     "@metamask/key-tree": ^9.0.0
@@ -5631,7 +5631,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/eth-json-rpc-middleware": ^12.0.1
+    "@metamask/eth-json-rpc-middleware": ^12.1.0
     "@metamask/json-rpc-engine": ^7.3.2
     "@metamask/key-tree": ^9.0.0
     "@metamask/permission-controller": ^7.1.0
