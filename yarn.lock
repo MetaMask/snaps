@@ -3724,7 +3724,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^4.0.1, @metamask/base-controller@npm:^4.1.0, @metamask/base-controller@npm:^4.1.1":
+"@metamask/base-controller@npm:^4.1.0, @metamask/base-controller@npm:^4.1.1":
   version: 4.1.1
   resolution: "@metamask/base-controller@npm:4.1.1"
   dependencies:
@@ -3942,7 +3942,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/controller-utils@npm:^8.0.1, @metamask/controller-utils@npm:^8.0.2":
+"@metamask/controller-utils@npm:^8.0.2":
   version: 8.0.2
   resolution: "@metamask/controller-utils@npm:8.0.2"
   dependencies:
@@ -4622,7 +4622,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/json-rpc-engine@npm:^7.1.1, @metamask/json-rpc-engine@npm:^7.3.1, @metamask/json-rpc-engine@npm:^7.3.2":
+"@metamask/json-rpc-engine@npm:^7.1.1, @metamask/json-rpc-engine@npm:^7.3.2":
   version: 7.3.2
   resolution: "@metamask/json-rpc-engine@npm:7.3.2"
   dependencies:
@@ -4927,22 +4927,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^7.1.0":
-  version: 7.1.0
-  resolution: "@metamask/permission-controller@npm:7.1.0"
+"@metamask/permission-controller@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "@metamask/permission-controller@npm:8.0.0"
   dependencies:
-    "@metamask/base-controller": ^4.0.1
-    "@metamask/controller-utils": ^8.0.1
-    "@metamask/json-rpc-engine": ^7.3.1
+    "@metamask/base-controller": ^4.1.1
+    "@metamask/controller-utils": ^8.0.2
+    "@metamask/json-rpc-engine": ^7.3.2
     "@metamask/rpc-errors": ^6.1.0
-    "@metamask/utils": ^8.2.0
+    "@metamask/utils": ^8.3.0
     "@types/deep-freeze-strict": ^1.1.0
     deep-freeze-strict: ^1.1.1
     immer: ^9.0.6
     nanoid: ^3.1.31
   peerDependencies:
-    "@metamask/approval-controller": ^5.1.1
-  checksum: 889213cca32cbf5b32b7e71c70ded0aeea32eae169ec67fb0d0bc8dcaa183b222f9d5417f657e331d7fb21ecb71f250cf1c932110d4b1e2167972b30bd012098
+    "@metamask/approval-controller": ^5.1.2
+  checksum: edb12aa623ebc57e9021f3bcfc5898db0165f30a4af43f91d26c988caf5e3e02ab9e0d5ff68b9c323e26e314fd50dbb0825c8c0eaae132c7058e141e3b58693e
   languageName: node
   linkType: hard
 
@@ -5258,7 +5258,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/json-rpc-engine": ^7.3.2
     "@metamask/object-multiplex": ^2.0.0
-    "@metamask/permission-controller": ^7.1.0
+    "@metamask/permission-controller": ^8.0.0
     "@metamask/phishing-controller": ^8.0.2
     "@metamask/post-message-stream": ^8.0.0
     "@metamask/rpc-errors": ^6.1.0
@@ -5434,7 +5434,7 @@ __metadata:
     "@metamask/json-rpc-engine": ^7.3.2
     "@metamask/json-rpc-middleware-stream": ^6.0.2
     "@metamask/key-tree": ^9.0.0
-    "@metamask/permission-controller": ^7.1.0
+    "@metamask/permission-controller": ^8.0.0
     "@metamask/snaps-controllers": "workspace:^"
     "@metamask/snaps-execution-environments": "workspace:^"
     "@metamask/snaps-rpc-methods": "workspace:^"
@@ -5539,7 +5539,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/json-rpc-engine": ^7.3.2
     "@metamask/key-tree": ^9.0.0
-    "@metamask/permission-controller": ^7.1.0
+    "@metamask/permission-controller": ^8.0.0
     "@metamask/rpc-errors": ^6.1.0
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
@@ -5634,7 +5634,7 @@ __metadata:
     "@metamask/eth-json-rpc-middleware": ^12.1.0
     "@metamask/json-rpc-engine": ^7.3.2
     "@metamask/key-tree": ^9.0.0
-    "@metamask/permission-controller": ^7.1.0
+    "@metamask/permission-controller": ^8.0.0
     "@metamask/snaps-controllers": "workspace:^"
     "@metamask/snaps-execution-environments": "workspace:^"
     "@metamask/snaps-rpc-methods": "workspace:^"
@@ -5734,7 +5734,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/key-tree": ^9.0.0
-    "@metamask/permission-controller": ^7.1.0
+    "@metamask/permission-controller": ^8.0.0
     "@metamask/post-message-stream": ^8.0.0
     "@metamask/rpc-errors": ^6.1.0
     "@metamask/slip44": ^3.1.0
