@@ -98,7 +98,6 @@ import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
 
 import { forceStrict, validateMachine } from '../fsm';
-import type { GetInterface } from '../interface';
 import { log } from '../logging';
 import type {
   ExecuteSnapAction,
@@ -517,8 +516,7 @@ export type AllowedActions =
   | Update
   | ResolveVersion
   | TestOrigin
-  | MaybeUpdateState
-  | GetInterface;
+  | MaybeUpdateState;
 
 export type AllowedEvents =
   | ExecutionServiceEvents
@@ -2888,14 +2886,6 @@ export class SnapController extends BaseController<
   #checkPhishingList(origin: string) {
     return this.messagingSystem.call('PhishingController:testOrigin', origin)
       .result;
-  }
-
-  #getInterface(snapId: SnapId, interfaceId: string) {
-    return this.messagingSystem.call(
-      'SnapInterfaceController:getInterface',
-      snapId,
-      interfaceId,
-    );
   }
 
   /**

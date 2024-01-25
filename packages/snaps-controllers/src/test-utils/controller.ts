@@ -384,7 +384,6 @@ export const getSnapControllerMessenger = (
       'SnapController:revokeDynamicPermissions',
       'SnapController:getFile',
       'SnapsRegistry:resolveVersion',
-      'SnapInterfaceController:getInterface',
     ],
   });
 
