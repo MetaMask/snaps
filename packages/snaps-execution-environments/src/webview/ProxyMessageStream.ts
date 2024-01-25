@@ -9,11 +9,6 @@ type ProxyMessageStreamArgs = {
   targetOrigin?: string;
   targetWindow?: Window;
 };
-
-/**
- * A {@link Window.postMessage} stream.
- */
-
 export class ProxyMessageStream extends BasePostMessageStream {
   #name;
 
