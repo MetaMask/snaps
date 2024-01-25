@@ -27,13 +27,11 @@ describe('endowment:name-lookup', () => {
   });
 
   describe('validator', () => {
-    it('disallows no caveats', () => {
+    it('allows no caveats', () => {
       expect(() =>
         // @ts-expect-error Missing required permission types.
         specification.validator({}),
-      ).toThrow(
-        'Expected the following caveats: "chainIds", "lookupMatchers".',
-      );
+      ).not.toThrow();
     });
 
     it('throws if the caveats are not one or both of "chainIds" and "lookupMatchers".', () => {
@@ -92,7 +90,7 @@ describe('getChainIdsCaveat', () => {
     expect(getChainIdsCaveat(permission)).toBeNull();
   });
 
-  it('throws if there is not a "chainIds" caveat', () => {
+  it('returns null if there is not a "chainIds" caveat', () => {
     const permission: PermissionConstraint = {
       date: 0,
       parentCapability: 'foo',
@@ -106,7 +104,7 @@ describe('getChainIdsCaveat', () => {
       ],
     };
 
-    expect(() => getChainIdsCaveat(permission)).toThrow('Assertion failed');
+    expect(() => getChainIdsCaveat(permission)).toBeNull();
   });
 });
 
@@ -145,7 +143,7 @@ describe('getLookupMatchersCaveat', () => {
     expect(getLookupMatchersCaveat(permission)).toBeNull();
   });
 
-  it('throws if there is not a "matchers" caveat', () => {
+  it('returns null if there is not a "matchers" caveat', () => {
     const permission: PermissionConstraint = {
       date: 0,
       parentCapability: 'foo',
@@ -159,9 +157,7 @@ describe('getLookupMatchersCaveat', () => {
       ],
     };
 
-    expect(() => getLookupMatchersCaveat(permission)).toThrow(
-      'Assertion failed',
-    );
+    expect(() => getLookupMatchersCaveat(permission)).toBeNull();
   });
 });
 
