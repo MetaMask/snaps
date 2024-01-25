@@ -4670,15 +4670,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/json-rpc-middleware-stream@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "@metamask/json-rpc-middleware-stream@npm:6.0.1"
+"@metamask/json-rpc-middleware-stream@npm:^6.0.2":
+  version: 6.0.2
+  resolution: "@metamask/json-rpc-middleware-stream@npm:6.0.2"
   dependencies:
-    "@metamask/json-rpc-engine": ^7.3.1
+    "@metamask/json-rpc-engine": ^7.3.2
     "@metamask/safe-event-emitter": ^3.0.0
-    "@metamask/utils": ^8.2.0
+    "@metamask/utils": ^8.3.0
     readable-stream: ^3.6.2
-  checksum: bf67c2eec945fd999d69cf6a1c45e6b6d77f101e2d50fd438825f12c63da59734d430878e7fa59bd638dff94c98115cbb01f61b17c21ee900ac24bf4bbd4c357
+  checksum: e831041b03e9f48f584f4425188f72b58974f95b60429c9fe8b5561da69c6bbfad2f2b2199acdff06ee718967214b65c05604d4f85f3287186619683487f1060
   languageName: node
   linkType: hard
 
@@ -5432,7 +5432,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/eth-json-rpc-middleware": ^12.0.1
     "@metamask/json-rpc-engine": ^7.3.2
-    "@metamask/json-rpc-middleware-stream": ^6.0.1
+    "@metamask/json-rpc-middleware-stream": ^6.0.2
     "@metamask/key-tree": ^9.0.0
     "@metamask/permission-controller": ^7.1.0
     "@metamask/snaps-controllers": "workspace:^"
