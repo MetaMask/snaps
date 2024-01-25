@@ -1,3 +1,5 @@
+import type { NonEmptyArray } from '@metamask/utils';
+
 import type { ChainId } from '../caip';
 
 type BaseOnNameLookupArgs = {
@@ -52,7 +54,7 @@ export type DomainResolution = {
  * @property resolvedAddress - The resolved address.
  */
 export type DomainLookupResult = {
-  resolvedAddresses: AddressResolution[];
+  resolvedAddresses: NonEmptyArray<AddressResolution>;
   resolvedDomains?: never;
 };
 
@@ -62,7 +64,7 @@ export type DomainLookupResult = {
  * @property resolvedDomain - The resolved domain name.
  */
 export type AddressLookupResult = {
-  resolvedDomains: DomainResolution[];
+  resolvedDomains: NonEmptyArray<DomainResolution>;
   resolvedAddresses?: never;
 };
 
