@@ -17,7 +17,6 @@ import {
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import {
-  assert,
   assertStruct,
   hasProperty,
   isObject,
@@ -55,8 +54,8 @@ const specificationBuilder: PermissionSpecificationBuilder<
     allowedCaveats: [SnapCaveatType.ChainIds, SnapCaveatType.LookupMatchers],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
     validator: createGenericPermissionValidator([
-      { type: SnapCaveatType.ChainIds },
-      { type: SnapCaveatType.LookupMatchers },
+      { type: SnapCaveatType.ChainIds, optional: true },
+      { type: SnapCaveatType.LookupMatchers, optional: true },
     ]),
     subjectTypes: [SubjectType.Snap],
   };
@@ -156,9 +155,7 @@ export function getChainIdsCaveat(
     (permCaveat) => permCaveat.type === SnapCaveatType.ChainIds,
   );
 
-  assert(caveat);
-
-  return (caveat as Caveat<string, string[]>).value ?? null;
+  return (caveat as Caveat<string, string[]>)?.value ?? null;
 }
 
 /**
@@ -181,11 +178,8 @@ export function getLookupMatchersCaveat(
   const caveat = permission.caveats.find(
     (permCaveat) => permCaveat.type === SnapCaveatType.LookupMatchers,
   );
-  assert(permission.caveats.length === 1 || permission.caveats.length === 2);
-  assert(caveat);
-  assert(caveat.type === SnapCaveatType.LookupMatchers);
 
-  return (caveat as Caveat<string, Record<string, string[]>>).value ?? null;
+  return (caveat as Caveat<string, Record<string, string[]>>)?.value ?? null;
 }
 
 export const nameLookupCaveatSpecifications: Record<
