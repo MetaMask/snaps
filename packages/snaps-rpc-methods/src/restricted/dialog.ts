@@ -6,7 +6,12 @@ import type {
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import { DialogType, ComponentStruct, enumValue } from '@metamask/snaps-sdk';
-import type { DialogParams, EnumToUnion, Component } from '@metamask/snaps-sdk';
+import type {
+  DialogParams,
+  EnumToUnion,
+  Component,
+  InterfaceState,
+} from '@metamask/snaps-sdk';
 import { validateComponentLinks } from '@metamask/snaps-utils';
 import type { InferMatching } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
@@ -23,7 +28,7 @@ import {
   union,
 } from 'superstruct';
 
-import { type MethodHooksObject } from '../utils';
+import { getParamsInterface, type MethodHooksObject } from '../utils';
 
 const methodName = 'snap_dialog';
 
@@ -34,18 +39,27 @@ export type Placeholder = Infer<typeof PlaceholderStruct>;
 type ShowDialog = (
   snapId: string,
   type: EnumToUnion<DialogType>,
-  content: Component,
+  id: string,
   placeholder?: Placeholder,
 ) => Promise<null | boolean | string>;
 
 type MaybeUpdatePhisingList = () => Promise<void>;
 type IsOnPhishingList = (url: string) => boolean;
+type GetInterface = (
+  snapId: string,
+  id: string,
+) => {
+  content: Component;
+  state: InterfaceState;
+};
+
+type CreateInterface = (snapId: string, content: Component) => string;
 
 export type DialogMethodHooks = {
   /**
    * @param snapId - The ID of the Snap that created the alert.
    * @param type - The dialog type.
-   * @param content - The dialog custom UI.
+   * @param id - The interface ID.
    * @param placeholder - The placeholder for the Prompt dialog input.
    */
   showDialog: ShowDialog;
@@ -56,6 +70,16 @@ export type DialogMethodHooks = {
    * @param url - The URL to check against the phishing list.
    */
   isOnPhishingList: IsOnPhishingList;
+  /**
+   * @param snapId - The Snap ID requesting the interface.
+   * @param id - The interface ID to get.
+   */
+  getInterface: GetInterface;
+  /**
+   * @param snapId - The Snap ID creating the interface.
+   * @param content - The content of the interface.
+   */
+  createInterface: CreateInterface;
 };
 
 type DialogSpecificationBuilderOptions = {
@@ -105,6 +129,8 @@ const methodHooks: MethodHooksObject<DialogMethodHooks> = {
   showDialog: true,
   isOnPhishingList: true,
   maybeUpdatePhishingList: true,
+  getInterface: true,
+  createInterface: true,
 };
 
 export const dialogBuilder = Object.freeze({
@@ -119,21 +145,51 @@ const BaseParamsStruct = type({
   type: enums([DialogType.Alert, DialogType.Confirmation, DialogType.Prompt]),
 });
 
-const AlertParametersStruct = object({
+const AlertParametersWithContentStruct = object({
   type: enumValue(DialogType.Alert),
   content: ComponentStruct,
 });
+const AlertParametersWithIdStruct = object({
+  type: enumValue(DialogType.Alert),
+  id: string(),
+});
 
-const ConfirmationParametersStruct = object({
+const AlertParametersStruct = union([
+  AlertParametersWithContentStruct,
+  AlertParametersWithIdStruct,
+]);
+
+const ConfirmationParametersWithContentStruct = object({
   type: enumValue(DialogType.Confirmation),
   content: ComponentStruct,
 });
 
-const PromptParametersStruct = object({
+const ConfirmationParametersWithIdStruct = object({
+  type: enumValue(DialogType.Confirmation),
+  id: string(),
+});
+
+const ConfirmationParametersStruct = union([
+  ConfirmationParametersWithContentStruct,
+  ConfirmationParametersWithIdStruct,
+]);
+
+const PromptParametersWithContentStruct = object({
   type: enumValue(DialogType.Prompt),
   content: ComponentStruct,
   placeholder: PlaceholderStruct,
 });
+
+const PromptParametersWithIdStruct = object({
+  type: enumValue(DialogType.Prompt),
+  id: string(),
+  placeholder: PlaceholderStruct,
+});
+
+const PromptParametersStruct = union([
+  PromptParametersWithContentStruct,
+  PromptParametersWithIdStruct,
+]);
 
 const DialogParametersStruct = union([
   AlertParametersStruct,
@@ -161,6 +217,8 @@ const structs = {
  * @param hooks.isOnPhishingList - A function that checks a link against the
  * phishing list and return true if it's in, otherwise false.
  * @param hooks.maybeUpdatePhishingList - A function that updates the phishing list if needed.
+ * @param hooks.getInterface - A function that gets the interface data from the InterfaceController.
+ * @param hooks.createInterface - A function that creates the interface in InterfaceController.
  * @returns The method implementation which return value depends on the dialog
  * type, valid return types are: string, boolean, null.
  */
@@ -168,6 +226,8 @@ export function getDialogImplementation({
   showDialog,
   isOnPhishingList,
   maybeUpdatePhishingList,
+  getInterface,
+  createInterface,
 }: DialogMethodHooks) {
   return async function dialogImplementation(
     args: RestrictedMethodOptions<DialogParameters>,
@@ -180,7 +240,12 @@ export function getDialogImplementation({
     const validatedType = getValidatedType(params);
     const validatedParams = getValidatedParams(params, structs[validatedType]);
 
-    const { content } = validatedParams;
+    const { content, id } = getParamsInterface(
+      origin,
+      validatedParams,
+      getInterface,
+      createInterface,
+    );
 
     await maybeUpdatePhishingList();
 
@@ -191,7 +256,7 @@ export function getDialogImplementation({
         ? validatedParams.placeholder
         : undefined;
 
-    return showDialog(origin, validatedType, content, placeholder);
+    return showDialog(origin, validatedType, id, placeholder);
   };
 }
 

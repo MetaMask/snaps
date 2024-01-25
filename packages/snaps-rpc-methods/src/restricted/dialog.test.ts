@@ -22,6 +22,8 @@ describe('builder', () => {
           showDialog: jest.fn(),
           isOnPhishingList: jest.fn(),
           maybeUpdatePhishingList: jest.fn(),
+          getInterface: jest.fn(),
+          createInterface: jest.fn(),
         },
       }),
     ).toStrictEqual({
@@ -40,6 +42,8 @@ describe('implementation', () => {
       showDialog: jest.fn(),
       isOnPhishingList: jest.fn(),
       maybeUpdatePhishingList: jest.fn(),
+      getInterface: jest.fn(),
+      createInterface: jest.fn().mockReturnValue('bar'),
     } as DialogMethodHooks);
 
   it('accepts string dialog types', async () => {
@@ -58,7 +62,64 @@ describe('implementation', () => {
     expect(hooks.showDialog).toHaveBeenCalledWith(
       'foo',
       DialogType.Alert,
-      panel([heading('foo'), text('bar')]),
+      'bar',
+      undefined,
+    );
+  });
+
+  it('gets the interface data if an interface ID is passed', async () => {
+    const content = text('foo');
+
+    const hooks = {
+      showDialog: jest.fn(),
+      isOnPhishingList: jest.fn(),
+      maybeUpdatePhishingList: jest.fn(),
+      getInterface: jest.fn().mockReturnValue({ content, state: {} }),
+      createInterface: jest.fn().mockReturnValue('bar'),
+    };
+
+    const implementation = getDialogImplementation(hooks);
+
+    await implementation({
+      context: { origin: 'foo' },
+      method: 'snap_dialog',
+      params: {
+        type: 'alert',
+        id: 'bar',
+      },
+    });
+
+    expect(hooks.getInterface).toHaveBeenCalledWith('foo', 'bar');
+    expect(hooks.showDialog).toHaveBeenCalledTimes(1);
+    expect(hooks.showDialog).toHaveBeenCalledWith(
+      'foo',
+      DialogType.Alert,
+      'bar',
+      undefined,
+    );
+  });
+
+  it('creates a new interface if some content is passed', async () => {
+    const hooks = getMockDialogHooks();
+    const implementation = getDialogImplementation(hooks);
+
+    const content = panel([heading('foo'), text('bar')]);
+
+    await implementation({
+      context: { origin: 'foo' },
+      method: 'snap_dialog',
+      params: {
+        type: 'alert',
+        content,
+      },
+    });
+
+    expect(hooks.createInterface).toHaveBeenCalledWith('foo', content);
+    expect(hooks.showDialog).toHaveBeenCalledTimes(1);
+    expect(hooks.showDialog).toHaveBeenCalledWith(
+      'foo',
+      DialogType.Alert,
+      'bar',
       undefined,
     );
   });
@@ -80,7 +141,7 @@ describe('implementation', () => {
       expect(hooks.showDialog).toHaveBeenCalledWith(
         'foo',
         DialogType.Alert,
-        panel([heading('foo'), text('bar')]),
+        'bar',
         undefined,
       );
     });
@@ -103,7 +164,7 @@ describe('implementation', () => {
       expect(hooks.showDialog).toHaveBeenCalledWith(
         'foo',
         DialogType.Confirmation,
-        panel([heading('foo'), text('bar')]),
+        'bar',
         undefined,
       );
     });
@@ -127,7 +188,7 @@ describe('implementation', () => {
       expect(hooks.showDialog).toHaveBeenCalledWith(
         'foo',
         DialogType.Prompt,
-        panel([heading('foo'), text('bar')]),
+        'bar',
         'foobar',
       );
     });
@@ -251,6 +312,7 @@ describe('implementation', () => {
           implementation({
             context: { origin: 'foo' },
             method: 'snap_dialog',
+            // @ts-expect-error Wrong params.
             params: {
               type,
               content: panel([heading('foo'), text('bar')]),
@@ -268,6 +330,8 @@ describe('implementation', () => {
         showDialog: jest.fn(),
         isOnPhishingList: () => true,
         maybeUpdatePhishingList: jest.fn(),
+        getInterface: jest.fn(),
+        createInterface: jest.fn(),
       });
 
       await expect(
