@@ -41,7 +41,7 @@
     "@metamask/json-rpc-engine": "^7.3.2",
     "@metamask/json-rpc-middleware-stream": "^6.0.2",
     "@metamask/key-tree": "^9.0.0",
-    "@metamask/permission-controller": "^7.1.0",
+    "@metamask/permission-controller": "^8.0.0",
     "@metamask/snaps-controllers": "workspace:^",
     "@metamask/snaps-execution-environments": "workspace:^",
     "@metamask/snaps-rpc-methods": "workspace:^",
