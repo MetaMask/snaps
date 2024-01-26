@@ -6,7 +6,11 @@ import { ProxyMessageStream } from './ProxyMessageStream';
 // Lockdown is already applied in LavaMoat
 executeLockdownMore();
 executeLockdownEvents();
-// Set a stream from the RN Webview Execution environment to the mobile (caller) execution service.
+/**
+ * Set a stream of communication from the RN Webview Execution environment
+ * to the mobile (caller) execution service webview's main window.
+ */
+
 const parentStream = new ProxyMessageStream({
   name: 'child', // webview
   target: 'parent', // rnside

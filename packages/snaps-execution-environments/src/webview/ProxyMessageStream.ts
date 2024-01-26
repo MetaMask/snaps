@@ -9,6 +9,7 @@ type ProxyMessageStreamArgs = {
   targetOrigin?: string;
   targetWindow?: Window;
 };
+
 export class ProxyMessageStream extends BasePostMessageStream {
   #name;
 
@@ -24,13 +25,14 @@ export class ProxyMessageStream extends BasePostMessageStream {
    *
    * @param args - Options bag.
    * @param args.name - The name of the stream. Used to differentiate between
-   * multiple streams sharing the same window object.
-   * @param args.target - The name of the stream to exchange messages with.
+   * multiple streams sharing the same window object. child:WebView
+   * @param args.target - The name of the stream to exchange messages with. parent:rnside
    * @param args.targetOrigin - The origin of the target. Defaults to
-   * `location.origin`, '*' is permitted.
+   * `location.origin`, '*' is permitted. WebView's main Frame location
    * @param args.targetWindow - The window object of the target stream. Defaults
-   * to `window`.
+   * to `window`. WebView's main Frame Window
    */
+
   constructor({
     name,
     target,
@@ -38,15 +40,6 @@ export class ProxyMessageStream extends BasePostMessageStream {
     targetWindow = window,
   }: ProxyMessageStreamArgs) {
     super();
-
-    if (
-      typeof window === 'undefined' ||
-      typeof window.postMessage !== 'function'
-    ) {
-      throw new Error(
-        'window.postMessage is not a function. This class should only be instantiated in a Window.',
-      );
-    }
 
     this.#name = name;
     this.#target = target;
@@ -70,12 +63,11 @@ export class ProxyMessageStream extends BasePostMessageStream {
    */
 
   protected _postMessage(data: unknown): void {
-    this.#targetWindow.postMessage(
+    this.#targetWindow.ReactNativeWebView.postMessage(
       JSON.stringify({
         target: this.#target,
         data,
       }),
-      this.#targetOrigin,
     );
   }
 
@@ -86,7 +78,6 @@ export class ProxyMessageStream extends BasePostMessageStream {
 
     // Notice that we don't check targetWindow or targetOrigin here.
     // This doesn't seem possible to do in RN.
-    // TODO: Review whether we are fine with this before using in production.
     if (!isValidStreamMessage(message) || message.target !== this.#name) {
       return;
     }
