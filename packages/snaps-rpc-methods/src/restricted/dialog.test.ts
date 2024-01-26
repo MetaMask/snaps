@@ -20,9 +20,6 @@ describe('builder', () => {
       dialogBuilder.specificationBuilder({
         methodHooks: {
           showDialog: jest.fn(),
-          isOnPhishingList: jest.fn(),
-          maybeUpdatePhishingList: jest.fn(),
-          getInterface: jest.fn(),
           createInterface: jest.fn(),
         },
       }),
@@ -40,9 +37,6 @@ describe('implementation', () => {
   const getMockDialogHooks = () =>
     ({
       showDialog: jest.fn(),
-      isOnPhishingList: jest.fn(),
-      maybeUpdatePhishingList: jest.fn(),
-      getInterface: jest.fn(),
       createInterface: jest.fn().mockReturnValue('bar'),
     } as DialogMethodHooks);
 
@@ -68,13 +62,8 @@ describe('implementation', () => {
   });
 
   it('gets the interface data if an interface ID is passed', async () => {
-    const content = text('foo');
-
     const hooks = {
       showDialog: jest.fn(),
-      isOnPhishingList: jest.fn(),
-      maybeUpdatePhishingList: jest.fn(),
-      getInterface: jest.fn().mockReturnValue({ content, state: {} }),
       createInterface: jest.fn().mockReturnValue('bar'),
     };
 
@@ -89,7 +78,6 @@ describe('implementation', () => {
       },
     });
 
-    expect(hooks.getInterface).toHaveBeenCalledWith('foo', 'bar');
     expect(hooks.showDialog).toHaveBeenCalledTimes(1);
     expect(hooks.showDialog).toHaveBeenCalledWith(
       'foo',
@@ -324,26 +312,5 @@ describe('implementation', () => {
         );
       },
     );
-
-    it('rejects phishing links', async () => {
-      const implementation = getDialogImplementation({
-        showDialog: jest.fn(),
-        isOnPhishingList: () => true,
-        maybeUpdatePhishingList: jest.fn(),
-        getInterface: jest.fn(),
-        createInterface: jest.fn(),
-      });
-
-      await expect(
-        implementation({
-          context: { origin: 'foo' },
-          method: 'snap_dialog',
-          params: {
-            type: DialogType.Confirmation,
-            content: panel([heading('foo'), text('[bar](https://foo.bar)')]),
-          },
-        }),
-      ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
-    });
   });
 });

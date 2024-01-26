@@ -6,16 +6,8 @@ import type {
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import { DialogType, ComponentStruct, enumValue } from '@metamask/snaps-sdk';
-import type {
-  DialogParams,
-  EnumToUnion,
-  Component,
-  InterfaceState,
-} from '@metamask/snaps-sdk';
-import {
-  getFirstErrorInUnion,
-  validateComponentLinks,
-} from '@metamask/snaps-utils';
+import type { DialogParams, EnumToUnion, Component } from '@metamask/snaps-sdk';
+import { getFirstErrorInUnion } from '@metamask/snaps-utils';
 import type { InferMatching } from '@metamask/snaps-utils';
 import { hasProperty, type NonEmptyArray } from '@metamask/utils';
 import type { Infer, Struct } from 'superstruct';
@@ -46,16 +38,6 @@ type ShowDialog = (
   placeholder?: Placeholder,
 ) => Promise<null | boolean | string>;
 
-type MaybeUpdatePhisingList = () => Promise<void>;
-type IsOnPhishingList = (url: string) => boolean;
-type GetInterface = (
-  snapId: string,
-  id: string,
-) => {
-  content: Component;
-  state: InterfaceState;
-};
-
 type CreateInterface = (snapId: string, content: Component) => string;
 
 export type DialogMethodHooks = {
@@ -67,17 +49,6 @@ export type DialogMethodHooks = {
    */
   showDialog: ShowDialog;
 
-  maybeUpdatePhishingList: MaybeUpdatePhisingList;
-
-  /**
-   * @param url - The URL to check against the phishing list.
-   */
-  isOnPhishingList: IsOnPhishingList;
-  /**
-   * @param snapId - The Snap ID requesting the interface.
-   * @param id - The interface ID to get.
-   */
-  getInterface: GetInterface;
   /**
    * @param snapId - The Snap ID creating the interface.
    * @param content - The content of the interface.
@@ -130,9 +101,6 @@ const specificationBuilder: PermissionSpecificationBuilder<
 
 const methodHooks: MethodHooksObject<DialogMethodHooks> = {
   showDialog: true,
-  isOnPhishingList: true,
-  maybeUpdatePhishingList: true,
-  getInterface: true,
   createInterface: true,
 };
 
@@ -217,19 +185,12 @@ const structs = {
  * @param hooks - The RPC method hooks.
  * @param hooks.showDialog - A function that shows the specified dialog in the
  * MetaMask UI and returns the appropriate value for the dialog type.
- * @param hooks.isOnPhishingList - A function that checks a link against the
- * phishing list and return true if it's in, otherwise false.
- * @param hooks.maybeUpdatePhishingList - A function that updates the phishing list if needed.
- * @param hooks.getInterface - A function that gets the interface data from the InterfaceController.
  * @param hooks.createInterface - A function that creates the interface in InterfaceController.
  * @returns The method implementation which return value depends on the dialog
  * type, valid return types are: string, boolean, null.
  */
 export function getDialogImplementation({
   showDialog,
-  isOnPhishingList,
-  maybeUpdatePhishingList,
-  getInterface,
   createInterface,
 }: DialogMethodHooks) {
   return async function dialogImplementation(
@@ -243,26 +204,17 @@ export function getDialogImplementation({
     const validatedType = getValidatedType(params);
     const validatedParams = getValidatedParams(params, structs[validatedType]);
 
-    let content, id;
-
-    if (hasProperty(validatedParams, 'id')) {
-      content = getInterface(origin, validatedParams.id as string).content;
-      id = validatedParams.id as string;
-    } else {
-      id = createInterface(origin, validatedParams.content);
-      content = validatedParams.content;
-    }
-
-    await maybeUpdatePhishingList();
-
-    validateComponentLinks(content, isOnPhishingList);
-
     const placeholder =
       validatedParams.type === DialogType.Prompt
         ? validatedParams.placeholder
         : undefined;
 
-    return showDialog(origin, validatedType, id, placeholder);
+    if (hasProperty(validatedParams, 'content')) {
+      const id = createInterface(origin, validatedParams.content as Component);
+      return showDialog(origin, validatedType, id, placeholder);
+    }
+
+    return showDialog(origin, validatedType, validatedParams.id, placeholder);
   };
 }
 
