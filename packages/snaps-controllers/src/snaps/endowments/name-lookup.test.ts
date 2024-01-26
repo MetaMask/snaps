@@ -18,7 +18,11 @@ describe('endowment:name-lookup', () => {
       permissionType: PermissionType.Endowment,
       targetName: SnapEndowments.NameLookup,
       endowmentGetter: expect.any(Function),
-      allowedCaveats: [SnapCaveatType.ChainIds, SnapCaveatType.LookupMatchers],
+      allowedCaveats: [
+        SnapCaveatType.ChainIds,
+        SnapCaveatType.LookupMatchers,
+        SnapCaveatType.MaxRequestTime,
+      ],
       subjectTypes: [SubjectType.Snap],
       validator: expect.any(Function),
     });
@@ -41,7 +45,7 @@ describe('endowment:name-lookup', () => {
           caveats: [{ type: 'foo', value: 'bar' }],
         }),
       ).toThrow(
-        'Expected the following caveats: "chainIds", "lookupMatchers", received "foo".',
+        'Expected the following caveats: "chainIds", "lookupMatchers", "maxRequestTime", received "foo".',
       );
 
       expect(() =>

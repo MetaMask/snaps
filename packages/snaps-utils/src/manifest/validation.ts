@@ -5,6 +5,8 @@ import {
   ChecksumStruct,
   VersionStruct,
   isValidSemVerRange,
+  inMilliseconds,
+  Duration,
 } from '@metamask/utils';
 import type { Infer, Struct } from 'superstruct';
 import {
@@ -24,6 +26,7 @@ import {
   type,
   union,
   intersection,
+  assign,
 } from 'superstruct';
 
 import { isEqual } from '../array';
@@ -156,32 +159,62 @@ export const LookupMatchersStruct = union([
   }),
 ]);
 
+export const MINIMUM_REQUEST_TIMEOUT = inMilliseconds(5, Duration.Second);
+export const MAXIMUM_REQUEST_TIMEOUT = inMilliseconds(3, Duration.Minute);
+
+export const MaxRequestTimeStruct = size(
+  integer(),
+  MINIMUM_REQUEST_TIMEOUT,
+  MAXIMUM_REQUEST_TIMEOUT,
+);
+
+// Utility type to union with for all handler structs
+export const HandlerCaveatsStruct = object({
+  maxRequestTime: optional(MaxRequestTimeStruct),
+});
+
+export type HandlerCaveats = Infer<typeof HandlerCaveatsStruct>;
+
 /* eslint-disable @typescript-eslint/naming-convention */
 export const PermissionsStruct = type({
   'endowment:cronjob': optional(
-    object({ jobs: CronjobSpecificationArrayStruct }),
+    assign(
+      HandlerCaveatsStruct,
+      object({ jobs: CronjobSpecificationArrayStruct }),
+    ),
   ),
   'endowment:ethereum-provider': optional(object({})),
-  'endowment:keyring': optional(KeyringOriginsStruct),
-  'endowment:lifecycle-hooks': optional(object({})),
+  'endowment:keyring': optional(
+    assign(HandlerCaveatsStruct, KeyringOriginsStruct),
+  ),
+  'endowment:lifecycle-hooks': optional(HandlerCaveatsStruct),
   'endowment:name-lookup': optional(
-    object({
-      chains: optional(ChainIdsStruct),
-      matchers: optional(LookupMatchersStruct),
-    }),
+    assign(
+      HandlerCaveatsStruct,
+      object({
+        chains: optional(ChainIdsStruct),
+        matchers: optional(LookupMatchersStruct),
+      }),
+    ),
   ),
   'endowment:network-access': optional(object({})),
-  'endowment:page-home': optional(object({})),
+  'endowment:page-home': optional(HandlerCaveatsStruct),
   'endowment:rpc': optional(RpcOriginsStruct),
   'endowment:signature-insight': optional(
-    object({
-      allowSignatureOrigin: optional(boolean()),
-    }),
+    assign(
+      HandlerCaveatsStruct,
+      object({
+        allowSignatureOrigin: optional(boolean()),
+      }),
+    ),
   ),
   'endowment:transaction-insight': optional(
-    object({
-      allowTransactionOrigin: optional(boolean()),
-    }),
+    assign(
+      HandlerCaveatsStruct,
+      object({
+        allowTransactionOrigin: optional(boolean()),
+      }),
+    ),
   ),
   'endowment:webassembly': optional(object({})),
   snap_dialog: optional(object({})),

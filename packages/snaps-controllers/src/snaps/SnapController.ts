@@ -45,7 +45,6 @@ import type {
   PersistedSnap,
   Snap,
   SnapManifest,
-  SnapRpcHook,
   SnapRpcHookArgs,
   StatusContext,
   StatusEvents,
@@ -108,7 +107,11 @@ import type {
   TerminateSnapAction,
 } from '../services';
 import { fetchSnap, hasTimedOut, setDiff, withTimeout } from '../utils';
-import { handlerEndowments, SnapEndowments } from './endowments';
+import {
+  getMaxRequestTimeCaveat,
+  handlerEndowments,
+  SnapEndowments,
+} from './endowments';
 import { getKeyringCaveatOrigins } from './endowments/keyring';
 import { getRpcCaveatOrigins } from './endowments/rpc';
 import type { SnapLocation } from './location';
@@ -159,6 +162,10 @@ export interface PreinstalledSnap {
   removable?: boolean;
 }
 
+type SnapRpcHandler = (
+  options: SnapRpcHookArgs & { timeout: number },
+) => Promise<unknown>;
+
 /**
  * A wrapper type for any data stored during runtime of Snaps.
  * It is not persisted in state as it contains non-serializable data and is only relevant for the
@@ -194,7 +201,7 @@ export interface SnapRuntimeData {
   /**
    * RPC handler designated for the Snap
    */
-  rpcHandler: null | SnapRpcHook;
+  rpcHandler: null | SnapRpcHandler;
 
   /**
    * The finite state machine interpreter for possible states that the Snap can be in such as
@@ -2727,36 +2734,37 @@ export class SnapController extends BaseController<
       "'permissionName' must be either a string or null.",
     );
 
-    if (permissionName) {
-      const hasPermission = this.messagingSystem.call(
-        'PermissionController:hasPermission',
-        snapId,
-        permissionName,
-      );
+    const permissions = this.messagingSystem.call(
+      'PermissionController:getPermissions',
+      snapId,
+    );
 
-      if (!hasPermission) {
-        throw new Error(
-          `Snap "${snapId}" is not permitted to use "${permissionName}".`,
-        );
-      }
+    // If permissionName is null, the handler does not require a permission.
+    if (
+      permissionName !== null &&
+      (!permissions || !hasProperty(permissions, permissionName))
+    ) {
+      throw new Error(
+        `Snap "${snapId}" is not permitted to use "${permissionName}".`,
+      );
     }
+
+    const handlerPermissions = permissionName
+      ? (permissions as SubjectPermissions<PermissionConstraint>)[
+          permissionName
+        ]
+      : undefined;
 
     if (
       permissionName === SnapEndowments.Rpc ||
       permissionName === SnapEndowments.Keyring
     ) {
+      assert(handlerPermissions);
+
       const subject = this.messagingSystem.call(
         'SubjectMetadataController:getSubjectMetadata',
         origin,
       );
-
-      const permissions = this.messagingSystem.call(
-        'PermissionController:getPermissions',
-        snapId,
-      );
-
-      const handlerPermissions = permissions?.[permissionName];
-      assert(handlerPermissions);
 
       const origins =
         permissionName === SnapEndowments.Rpc
@@ -2777,14 +2785,29 @@ export class SnapController extends BaseController<
       }
     }
 
-    const handler = await this.#getRpcRequestHandler(snapId);
+    const handler = this.#getRpcRequestHandler(snapId);
     if (!handler) {
       throw new Error(
         `Snap RPC message handler not found for snap "${snapId}".`,
       );
     }
 
-    return handler({ origin, handler: handlerType, request });
+    const timeout = this.#getExecutionTimeout(handlerPermissions);
+
+    return handler({ origin, handler: handlerType, request, timeout });
+  }
+
+  /**
+   * Determine the execution timeout for a given handler permission.
+   *
+   * If no permission is specified or the permission itself has no execution timeout defined
+   * the constructor argument `maxRequestTime` will be used.
+   *
+   * @param permission - An optional permission constraint for the handler being called.
+   * @returns The execution timeout for the given handler.
+   */
+  #getExecutionTimeout(permission?: PermissionConstraint): number {
+    return getMaxRequestTimeCaveat(permission) ?? this.maxRequestTime;
   }
 
   /**
@@ -2793,7 +2816,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap whose message handler to get.
    * @returns The RPC handler for the given snap.
    */
-  #getRpcRequestHandler(snapId: SnapId): SnapRpcHook {
+  #getRpcRequestHandler(snapId: SnapId): SnapRpcHandler {
     const runtime = this.#getRuntimeExpect(snapId);
     const existingHandler = runtime.rpcHandler;
     if (existingHandler) {
@@ -2809,7 +2832,8 @@ export class SnapController extends BaseController<
       origin,
       handler: handlerType,
       request,
-    }: SnapRpcHookArgs) => {
+      timeout,
+    }: SnapRpcHookArgs & { timeout: number }) => {
       if (this.state.snaps[snapId].enabled === false) {
         throw new Error(`Snap "${snapId}" is disabled.`);
       }
@@ -2843,7 +2867,7 @@ export class SnapController extends BaseController<
         }
       }
 
-      const timer = new Timer(this.maxRequestTime);
+      const timer = new Timer(timeout);
       this.#recordSnapRpcRequestStart(snapId, request.id, timer);
 
       const handleRpcRequestPromise = this.messagingSystem.call(

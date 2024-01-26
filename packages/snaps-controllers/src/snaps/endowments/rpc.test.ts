@@ -16,7 +16,7 @@ describe('endowment:rpc', () => {
       permissionType: PermissionType.Endowment,
       targetName: SnapEndowments.Rpc,
       endowmentGetter: expect.any(Function),
-      allowedCaveats: [SnapCaveatType.RpcOrigin],
+      allowedCaveats: [SnapCaveatType.RpcOrigin, SnapCaveatType.MaxRequestTime],
       validator: expect.any(Function),
       subjectTypes: [SubjectType.Snap],
     });
@@ -33,14 +33,16 @@ describe('endowment:rpc', () => {
           // @ts-expect-error Missing other required permission types.
           caveats: undefined,
         }),
-      ).toThrow('Expected a single "rpcOrigin" caveat.');
+      ).toThrow('Expected the following caveats: "rpcOrigin".');
 
       expect(() =>
         // @ts-expect-error Missing other required permission types.
         specification.validator({
           caveats: [{ type: 'foo', value: 'bar' }],
         }),
-      ).toThrow('Expected a single "rpcOrigin" caveat.');
+      ).toThrow(
+        'Expected the following caveats: "rpcOrigin", "maxRequestTime", received "foo".',
+      );
 
       expect(() =>
         // @ts-expect-error Missing other required permission types.
@@ -50,7 +52,7 @@ describe('endowment:rpc', () => {
             { type: 'rpcOrigin', value: { snaps: true, dapps: false } },
           ],
         }),
-      ).toThrow('Expected a single "rpcOrigin" caveat.');
+      ).toThrow('Duplicate caveats are not allowed.');
     });
   });
 });

@@ -128,6 +128,14 @@ export const MOCK_RPC_ORIGINS_PERMISSION: PermissionConstraint = {
   parentCapability: SnapEndowments.Rpc,
 };
 
+export const MOCK_LIFECYCLE_HOOKS_PERMISSION: PermissionConstraint = {
+  caveats: null,
+  date: 1664187844588,
+  id: 'izn0WGUO8cvq_jqvLQuQP',
+  invoker: MOCK_SNAP_ID,
+  parentCapability: SnapEndowments.LifecycleHooks,
+};
+
 export const MOCK_KEYRING_ORIGINS_PERMISSION: PermissionConstraint = {
   caveats: [
     { type: SnapCaveatType.KeyringOrigin, value: { allowedOrigins: [] } },
