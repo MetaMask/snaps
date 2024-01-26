@@ -23,7 +23,7 @@ export type UpdateInterfaceMethodHooks = {
    * @param id - The interface ID.
    * @param ui - The UI components.
    */
-  updateInterface: (id: string, ui: Component) => void;
+  updateInterface: (id: string, ui: Component) => Promise<void>;
 };
 
 export const updateInterfaceHandler: PermittedHandlerExport<
@@ -58,13 +58,13 @@ export type UpdateInterfaceParameters = InferMatching<
  * @param hooks.updateInterface - The function to update the interface.
  * @returns Nothing.
  */
-function getUpdateInterfaceImplementation(
+async function getUpdateInterfaceImplementation(
   req: JsonRpcRequest<UpdateInterfaceParameters>,
   res: PendingJsonRpcResponse<UpdateInterfaceResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
   { updateInterface }: UpdateInterfaceMethodHooks,
-): void {
+): Promise<void> {
   const { params } = req;
 
   try {
@@ -72,7 +72,7 @@ function getUpdateInterfaceImplementation(
 
     const { id, ui } = validatedParams;
 
-    updateInterface(id, ui);
+    await updateInterface(id, ui);
     res.result = null;
   } catch (error) {
     return end(error);

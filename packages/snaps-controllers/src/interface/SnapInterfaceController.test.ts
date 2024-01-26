@@ -1,5 +1,5 @@
 import type { SnapId } from '@metamask/snaps-sdk';
-import { form, input } from '@metamask/snaps-sdk';
+import { form, input, panel, text } from '@metamask/snaps-sdk';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
 import {
@@ -10,7 +10,7 @@ import { SnapInterfaceController } from './SnapInterfaceController';
 
 describe('SnapInterfaceController', () => {
   describe('createInterface', () => {
-    it('can create a new interface', () => {
+    it('can create a new interface', async () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
@@ -20,12 +20,15 @@ describe('SnapInterfaceController', () => {
         messenger: controllerMessenger,
       });
 
-      const components = form({
-        name: 'foo',
-        children: [input({ name: 'bar' })],
-      });
+      const components = panel([
+        text('[foo](https://foo.bar)'),
+        form({
+          name: 'foo',
+          children: [input({ name: 'bar' })],
+        }),
+      ]);
 
-      const id = rootMessenger.call(
+      const id = await rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         components,
@@ -37,13 +40,74 @@ describe('SnapInterfaceController', () => {
         id,
       );
 
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        2,
+        'PhishingController:maybeUpdateState',
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        3,
+        'PhishingController:testOrigin',
+        'foo.bar',
+      );
+
       expect(content).toStrictEqual(components);
       expect(state).toStrictEqual({ foo: { bar: null } });
+    });
+
+    it('throws if a link is on the phishing list', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+        rootMessenger,
+        false,
+      );
+
+      rootMessenger.registerActionHandler(
+        'PhishingController:maybeUpdateState',
+        jest.fn(),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PhishingController:testOrigin',
+        () => ({ result: true, type: 'all' }),
+      );
+
+      /* eslint-disable-next-line no-new */
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const components = panel([
+        text('[foo](https://foo.bar)'),
+        form({
+          name: 'foo',
+          children: [input({ name: 'bar' })],
+        }),
+      ]);
+
+      await expect(
+        rootMessenger.call(
+          'SnapInterfaceController:createInterface',
+          MOCK_SNAP_ID,
+          components,
+        ),
+      ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        2,
+        'PhishingController:maybeUpdateState',
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        3,
+        'PhishingController:testOrigin',
+        'foo.bar',
+      );
     });
   });
 
   describe('getInterface', () => {
-    it('gets the interface', () => {
+    it('gets the interface', async () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
@@ -58,7 +122,7 @@ describe('SnapInterfaceController', () => {
         children: [input({ name: 'bar' })],
       });
 
-      const id = rootMessenger.call(
+      const id = await rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         components,
@@ -72,7 +136,7 @@ describe('SnapInterfaceController', () => {
       expect(content).toStrictEqual(components);
     });
 
-    it('throws if the snap requesting the interface is not the one that created it', () => {
+    it('throws if the snap requesting the interface is not the one that created it', async () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
@@ -87,7 +151,7 @@ describe('SnapInterfaceController', () => {
         children: [input({ name: 'bar' })],
       });
 
-      const id = rootMessenger.call(
+      const id = await rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         components,
@@ -123,7 +187,7 @@ describe('SnapInterfaceController', () => {
   });
 
   describe('updateInterface', () => {
-    it('can update an interface', () => {
+    it('can update an interface', async () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
@@ -143,13 +207,13 @@ describe('SnapInterfaceController', () => {
         children: [input({ name: 'baz' })],
       });
 
-      const id = rootMessenger.call(
+      const id = await rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         components,
       );
 
-      rootMessenger.call(
+      await rootMessenger.call(
         'SnapInterfaceController:updateInterface',
         MOCK_SNAP_ID,
         id,
@@ -166,7 +230,69 @@ describe('SnapInterfaceController', () => {
       expect(state).toStrictEqual({ foo: { baz: null } });
     });
 
-    it('throws if the interface does not exist', () => {
+    it('throws if a link is on the phishing list', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+        rootMessenger,
+        false,
+      );
+
+      rootMessenger.registerActionHandler(
+        'PhishingController:maybeUpdateState',
+        jest.fn(),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PhishingController:testOrigin',
+        () => ({ result: true, type: 'all' }),
+      );
+
+      /* eslint-disable-next-line no-new */
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const components = form({
+        name: 'foo',
+        children: [input({ name: 'bar' })],
+      });
+
+      const newContent = panel([
+        text('[foo](https://foo.bar)'),
+        form({
+          name: 'foo',
+          children: [input({ name: 'baz' })],
+        }),
+      ]);
+
+      const id = await rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        components,
+      );
+
+      await expect(
+        rootMessenger.call(
+          'SnapInterfaceController:updateInterface',
+          MOCK_SNAP_ID,
+          id,
+          newContent,
+        ),
+      ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        4,
+        'PhishingController:maybeUpdateState',
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        5,
+        'PhishingController:testOrigin',
+        'foo.bar',
+      );
+    });
+
+    it('throws if the interface does not exist', async () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
@@ -178,17 +304,17 @@ describe('SnapInterfaceController', () => {
 
       const content = form({ name: 'foo', children: [input({ name: 'bar' })] });
 
-      expect(() =>
+      await expect(
         rootMessenger.call(
           'SnapInterfaceController:updateInterface',
           MOCK_SNAP_ID,
           'foo',
           content,
         ),
-      ).toThrow("Interface with id 'foo' not found.");
+      ).rejects.toThrow("Interface with id 'foo' not found.");
     });
 
-    it('throws if the interface is updated by another snap', () => {
+    it('throws if the interface is updated by another snap', async () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
@@ -205,25 +331,25 @@ describe('SnapInterfaceController', () => {
         children: [input({ name: 'baz' })],
       });
 
-      const id = rootMessenger.call(
+      const id = await rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         content,
       );
 
-      expect(() =>
+      await expect(
         rootMessenger.call(
           'SnapInterfaceController:updateInterface',
           'foo' as SnapId,
           id,
           newContent,
         ),
-      ).toThrow('Interface not created by foo.');
+      ).rejects.toThrow('Interface not created by foo.');
     });
   });
 
   describe('updateInterfaceState', () => {
-    it('updates the interface state', () => {
+    it('updates the interface state', async () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
@@ -237,7 +363,7 @@ describe('SnapInterfaceController', () => {
 
       const newState = { foo: { bar: 'baz' } };
 
-      const id = rootMessenger.call(
+      const id = await rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         content,
@@ -260,7 +386,7 @@ describe('SnapInterfaceController', () => {
   });
 
   describe('deleteInterface', () => {
-    it('can delete an interface', () => {
+    it('can delete an interface', async () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
@@ -272,7 +398,7 @@ describe('SnapInterfaceController', () => {
 
       const content = form({ name: 'foo', children: [input({ name: 'bar' })] });
 
-      const id = rootMessenger.call(
+      const id = await rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         content,
