@@ -33,9 +33,7 @@ describe('endowment:rpc', () => {
           // @ts-expect-error Missing other required permission types.
           caveats: undefined,
         }),
-      ).toThrow(
-        'Expected the following caveats: "rpcOrigin", "maxRequestTime".',
-      );
+      ).toThrow('Expected the following caveats: "rpcOrigin".');
 
       expect(() =>
         // @ts-expect-error Missing other required permission types.
@@ -43,7 +41,7 @@ describe('endowment:rpc', () => {
           caveats: [{ type: 'foo', value: 'bar' }],
         }),
       ).toThrow(
-        'Expected the following caveats: "rpcOrigin", "maxRequestTime".',
+        'Expected the following caveats: "rpcOrigin", "maxRequestTime", received "foo".',
       );
 
       expect(() =>
@@ -54,9 +52,7 @@ describe('endowment:rpc', () => {
             { type: 'rpcOrigin', value: { snaps: true, dapps: false } },
           ],
         }),
-      ).toThrow(
-        'Expected the following caveats: "rpcOrigin", "maxRequestTime".',
-      );
+      ).toThrow('Duplicate caveats are not allowed.');
     });
   });
 });

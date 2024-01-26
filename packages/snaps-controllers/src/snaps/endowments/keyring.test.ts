@@ -34,9 +34,7 @@ describe('endowment:keyring', () => {
           // @ts-expect-error Missing other required permission types.
           caveats: undefined,
         }),
-      ).toThrow(
-        'Expected the following caveats: "keyringOrigin", "maxRequestTime".',
-      );
+      ).toThrow('Expected the following caveats: "keyringOrigin".');
 
       expect(() =>
         // @ts-expect-error Missing other required permission types.
@@ -44,7 +42,7 @@ describe('endowment:keyring', () => {
           caveats: [{ type: 'foo', value: 'bar' }],
         }),
       ).toThrow(
-        'Expected the following caveats: "keyringOrigin", "maxRequestTime".',
+        'Expected the following caveats: "keyringOrigin", "maxRequestTime", received "foo".',
       );
 
       expect(() =>
@@ -55,9 +53,7 @@ describe('endowment:keyring', () => {
             { type: 'keyringOrigin', value: { allowedOrgins: ['bar.com'] } },
           ],
         }),
-      ).toThrow(
-        'Expected the following caveats: "keyringOrigin", "maxRequestTime".',
-      );
+      ).toThrow('Duplicate caveats are not allowed.');
     });
   });
 });

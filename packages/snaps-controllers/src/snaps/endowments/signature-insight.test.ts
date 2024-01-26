@@ -42,7 +42,7 @@ describe('endowment:signature-insight', () => {
           caveats: [{ type: 'foo', value: 'bar' }],
         }),
       ).toThrow(
-        'Expected the following caveats: "signatureOrigin", "maxRequestTime".',
+        'Expected the following caveats: "signatureOrigin", "maxRequestTime", received "foo".',
       );
 
       expect(() =>
@@ -53,9 +53,7 @@ describe('endowment:signature-insight', () => {
             { type: 'signatureOrigin', value: [] },
           ],
         }),
-      ).toThrow(
-        'Expected the following caveats: "signatureOrigin", "maxRequestTime".',
-      );
+      ).toThrow('Duplicate caveats are not allowed.');
     });
   });
 });

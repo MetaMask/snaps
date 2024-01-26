@@ -2739,6 +2739,7 @@ export class SnapController extends BaseController<
       snapId,
     );
 
+    // If permissionName is null, the handler does not require a permission.
     if (
       permissionName !== null &&
       (!permissions || !hasProperty(permissions, permissionName))
@@ -2749,7 +2750,8 @@ export class SnapController extends BaseController<
     }
 
     const handlerPermissions = permissionName
-      ? permissions![permissionName]
+      ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        permissions![permissionName]
       : undefined;
 
     if (

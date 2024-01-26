@@ -45,7 +45,7 @@ describe('endowment:transaction-insight', () => {
           caveats: [{ type: 'foo', value: 'bar' }],
         }),
       ).toThrow(
-        'Expected the following caveats: "transactionOrigin", "maxRequestTime".',
+        'Expected the following caveats: "transactionOrigin", "maxRequestTime", received "foo".',
       );
 
       expect(() =>
@@ -56,9 +56,7 @@ describe('endowment:transaction-insight', () => {
             { type: 'transactionOrigin', value: [] },
           ],
         }),
-      ).toThrow(
-        'Expected the following caveats: "transactionOrigin", "maxRequestTime".',
-      );
+      ).toThrow('Duplicate caveats are not allowed.');
     });
   });
 });
