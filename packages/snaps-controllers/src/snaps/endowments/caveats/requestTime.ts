@@ -6,7 +6,7 @@ import type {
 import { rpcErrors } from '@metamask/rpc-errors';
 import { MaxRequestTimeStruct, SnapCaveatType } from '@metamask/snaps-utils';
 import type { AssertionErrorConstructor, Json } from '@metamask/utils';
-import { assertStruct, hasProperty, isPlainObject } from '@metamask/utils';
+import { assertStruct, hasProperty, isObject } from '@metamask/utils';
 
 import type { CaveatMapperFunction, CaveatMapperReturnValue } from './generic';
 
@@ -25,7 +25,7 @@ function assertIsMaxRequestTime(
   assertStruct(
     value,
     MaxRequestTimeStruct,
-    'Invalid JSON-RPC origins',
+    'Invalid maxRequestTime',
     ErrorWrapper,
   );
 }
@@ -38,9 +38,9 @@ function assertIsMaxRequestTime(
  * @throws If the caveat value is invalid.
  */
 function validateMaxRequestTimeCaveat(caveat: Caveat<string, any>) {
-  if (!hasProperty(caveat, 'value') || !isPlainObject(caveat.value)) {
+  if (!hasProperty(caveat, 'value')) {
     throw rpcErrors.invalidParams({
-      message: 'Invalid maxRequestTime caveat',
+      message: 'Invalid maxRequestTime caveat.',
     });
   }
 
@@ -59,11 +59,18 @@ function validateMaxRequestTimeCaveat(caveat: Caveat<string, any>) {
 export function getMaxRequestTimeCaveatMapper(
   value: Json,
 ): CaveatMapperReturnValue {
+  if (
+    !value ||
+    !isObject(value) ||
+    (isObject(value) && !hasProperty(value, 'maxRequestTime'))
+  ) {
+    return { caveats: null };
+  }
   return {
     caveats: [
       {
         type: SnapCaveatType.MaxRequestTime,
-        value,
+        value: value.maxRequestTime,
       },
     ],
   };
@@ -106,7 +113,7 @@ export function createMaxRequestTimeMapper(
  * Getter function to get the {@link MaxRequestTime} caveat value from a permission if specified.
  *
  * @param permission - The permission to get the caveat value from.
- * @returns The caveat value if present.
+ * @returns The caveat value if present, otherwise null.
  */
 export function getMaxRequestTimeCaveat(
   permission?: PermissionConstraint,
