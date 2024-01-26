@@ -32,13 +32,18 @@ export type InitialPermissions = Partial<{
     allowedOrigins?: string[];
     maxRequestTime?: number;
   };
-  'endowment:lifecycle-hooks': EmptyObject;
+  'endowment:lifecycle-hooks'?: {
+    maxRequestTime?: number;
+  };
   'endowment:name-lookup': {
     chains?: ChainId[];
     matchers?: { tlds?: string[]; schemes?: string[] };
+    maxRequestTime?: number;
   };
   'endowment:network-access': EmptyObject;
-  'endowment:page-home': EmptyObject;
+  'endowment:page-home'?: {
+    maxRequestTime?: number;
+  };
   'endowment:rpc': {
     dapps?: boolean;
     snaps?: boolean;
@@ -51,12 +56,6 @@ export type InitialPermissions = Partial<{
   };
   'endowment:transaction-insight': {
     allowTransactionOrigin?: boolean;
-    maxRequestTime?: number;
-  };
-  'endowment:lifecycle-hooks'?: {
-    maxRequestTime?: number;
-  };
-  'endowment:page-home'?: {
     maxRequestTime?: number;
   };
   'endowment:webassembly': EmptyObject;

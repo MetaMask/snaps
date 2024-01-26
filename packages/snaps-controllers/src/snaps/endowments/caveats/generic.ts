@@ -3,7 +3,7 @@ import type {
   PermissionValidatorConstraint,
 } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { Json } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
 
 export type CaveatMapperReturnValue = Pick<PermissionConstraint, 'caveats'>;
 
