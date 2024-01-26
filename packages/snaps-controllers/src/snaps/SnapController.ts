@@ -2750,8 +2750,9 @@ export class SnapController extends BaseController<
     }
 
     const handlerPermissions = permissionName
-      ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        permissions![permissionName]
+      ? (permissions as SubjectPermissions<PermissionConstraint>)[
+          permissionName
+        ]
       : undefined;
 
     if (
