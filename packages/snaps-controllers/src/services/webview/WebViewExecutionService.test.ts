@@ -14,8 +14,6 @@ const mockedWebView = {
 };
 
 describe('WebViewExecutionService', () => {
-  jest.useRealTimers();
-
   it('can boot', async () => {
     const { service } = createService(WebViewExecutionServiceWrapper, {
       getWebView: async () => Promise.resolve(mockedWebView),
