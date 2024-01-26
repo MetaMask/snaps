@@ -230,6 +230,68 @@ describe('SnapInterfaceController', () => {
       expect(state).toStrictEqual({ foo: { baz: null } });
     });
 
+    it('throws if a link is on the phishing list', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+        rootMessenger,
+        false,
+      );
+
+      rootMessenger.registerActionHandler(
+        'PhishingController:maybeUpdateState',
+        jest.fn(),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PhishingController:testOrigin',
+        () => ({ result: true, type: 'all' }),
+      );
+
+      /* eslint-disable-next-line no-new */
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const components = form({
+        name: 'foo',
+        children: [input({ name: 'bar' })],
+      });
+
+      const newContent = panel([
+        text('[foo](https://foo.bar)'),
+        form({
+          name: 'foo',
+          children: [input({ name: 'baz' })],
+        }),
+      ]);
+
+      const id = await rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        components,
+      );
+
+      await expect(
+        rootMessenger.call(
+          'SnapInterfaceController:updateInterface',
+          MOCK_SNAP_ID,
+          id,
+          newContent,
+        ),
+      ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        4,
+        'PhishingController:maybeUpdateState',
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        5,
+        'PhishingController:testOrigin',
+        'foo.bar',
+      );
+    });
+
     it('throws if the interface does not exist', async () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger =

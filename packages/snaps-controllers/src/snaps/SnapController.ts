@@ -2937,12 +2937,13 @@ export class SnapController extends BaseController<
 
         break;
       }
-      case HandlerType.OnHomePage:
+      case HandlerType.OnHomePage: {
         assertStruct(result, OnHomePageResponseStruct);
 
         await this.#validateResponseContent(result);
 
         break;
+      }
       case HandlerType.OnNameLookup:
         assertStruct(result, OnNameLookupResponseStruct);
         break;
