@@ -2796,6 +2796,15 @@ export class SnapController extends BaseController<
     return handler({ origin, handler: handlerType, request, timeout });
   }
 
+  /**
+   * Determine the execution timeout for a given handler permission.
+   *
+   * If no permission is specified or the permission itself has no execution timeout defined
+   * the constructor argument `maxRequestTime` will be used.
+   *
+   * @param permission - An optional permission constraint for the handler being called.
+   * @returns The execution timeout for the given handler.
+   */
   #getExecutionTimeout(permission?: PermissionConstraint): number {
     return getMaxRequestTimeCaveat(permission) ?? this.maxRequestTime;
   }
