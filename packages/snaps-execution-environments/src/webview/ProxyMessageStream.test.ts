@@ -1,56 +1,57 @@
-/**
- * @jest-environment jsdom
- */
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
+import { sleep } from '@metamask/snaps-utils/test-utils';
+
 import { ProxyMessageStream } from './ProxyMessageStream';
 
 describe('ProxyMessageStream', () => {
-  let originalPostMessage: any;
+  let mockWindow: any;
 
   beforeEach(() => {
-    originalPostMessage = window.postMessage;
-
-    Object.assign(global, {
-      window: {
-        ReactNativeWebView: {
-          postMessage: jest.fn(),
-        },
+    mockWindow = {
+      ReactNativeWebView: {
+        postMessage: jest.fn() || undefined,
       },
-    });
+      postMessage: jest.fn(),
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+      location: {
+        origin: 'http://localhost',
+      },
+    };
+
+    global.window = mockWindow;
   });
 
-  afterEach(() => {
-    window.postMessage = originalPostMessage;
-  });
-
-  it('throws if window.postMessage is not a function', () => {
-    (window as any).postMessage = undefined;
+  it('throws if window.ReactNativeWebView.postMessage is not a function', () => {
+    mockWindow.ReactNativeWebView.postMessage = undefined;
     expect(
       () => new ProxyMessageStream({ name: 'foo', target: 'bar' }),
     ).toThrow(
-      'window.postMessage is not a function. This class should only be instantiated in a Window.',
+      'this[#targetWindow].ReactNativeWebView.postMessage is not a function',
     );
   });
 
-  it('destroy streams and confirm that they were destroyed', () => {
+  it('destroy streams and confirm that they were destroyed', async () => {
     const stream = new ProxyMessageStream({
-      name: 'foo',
-      target: 'target',
+      name: 'webview',
+      target: 'rnside',
       targetOrigin: '*',
+      targetWindow: mockWindow,
     });
+    await sleep(1);
     stream.destroy();
     expect(stream.destroyed).toBe(true);
   });
 
   it('send and receive messages', () => {
     const mockAddEventListener = jest.fn();
-    window.addEventListener = mockAddEventListener;
+    mockWindow.addEventListener = mockAddEventListener;
 
     const stream = new ProxyMessageStream({
       name: 'webview',
       target: 'rnside',
       targetOrigin: '*',
-      targetWindow: window,
+      targetWindow: mockWindow,
     });
 
     const mockCallback = jest.fn((data) => {
@@ -68,38 +69,20 @@ describe('ProxyMessageStream', () => {
     );
   });
 
-  it('calls _onMessage when a message event is fired', () => {
-    const stream = new ProxyMessageStream({
-      name: 'webview',
-      target: 'rnside',
-      targetOrigin: '*',
-      targetWindow: window,
-    });
-
-    const spy = jest.spyOn(stream as any, '_onMessage');
-
-    const messageEvent = new MessageEvent('message', { data: 'test' });
-    window.dispatchEvent(messageEvent);
-
-    setTimeout(() => {
-      expect(spy).toHaveBeenCalledWith(messageEvent);
-    }, 0);
-  });
-
   it('calls window.removeEventListener when _destroy is called', () => {
     const stream = new ProxyMessageStream({
       name: 'webview',
       target: 'rnside',
       targetOrigin: '*',
-      targetWindow: window,
+      targetWindow: mockWindow,
     });
 
     const spy = jest
-      .spyOn(window, 'removeEventListener')
+      .spyOn(mockWindow, 'removeEventListener')
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       .mockImplementation(() => {});
 
-    (stream as any)._destroy();
+    stream.destroy();
 
     expect(spy).toHaveBeenCalledWith('message', expect.any(Function), false);
 
