@@ -47,3 +47,7 @@ if (invalidExports.length > 0) {
   // eslint-disable-next-line no-console
   console.warn(`Invalid snap exports detected:\n${invalidExports.join('\n')}`);
 }
+
+// To ensure the worker exits we explicitly call exit here
+// If we didn't the eval would wait for timers set during Compartment eval
+process.exit(0);
