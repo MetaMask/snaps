@@ -7,12 +7,10 @@ import { assert, bytesToBase64, stringToBytes } from '@metamask/utils';
 // TBD
 export type WebViewInterface = {
   injectJavaScript(js: string): void;
-  addEventListener(
-    type: 'message',
+  registerMessageListener(
     listener: (event: MessageEvent) => void,
   ): void;
-  removeEventListener(
-    type: 'message',
+  unregisterMessageListener(
     listener: (event: MessageEvent) => void,
   ): void;
 };
