@@ -1,5 +1,6 @@
 import { createService } from '../../test-utils';
 import { WebViewExecutionService } from './WebViewExecutionService';
+import type { WebViewInterface } from './WebViewMessageStream';
 
 class WebViewExecutionServiceWrapper extends WebViewExecutionService {
   public async testInitEnvStream(jobId: string) {
@@ -8,15 +9,16 @@ class WebViewExecutionServiceWrapper extends WebViewExecutionService {
 }
 
 const mockedWebView = {
-  addEventListener: jest.fn(),
-  removeEventListener: jest.fn(),
+  unregisterMessageListener: jest.fn(),
+  registerMessageListener: jest.fn(),
   injectJavaScript: jest.fn(),
 };
 
 describe('WebViewExecutionService', () => {
   it('can boot', async () => {
     const { service } = createService(WebViewExecutionServiceWrapper, {
-      getWebView: async () => Promise.resolve(mockedWebView),
+      getWebView: async () =>
+        Promise.resolve(mockedWebView as unknown as WebViewInterface),
     });
 
     expect(service).toBeDefined();

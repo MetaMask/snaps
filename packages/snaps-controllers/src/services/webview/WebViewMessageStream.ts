@@ -4,15 +4,10 @@ import { isValidStreamMessage } from '@metamask/post-message-stream/dist/utils';
 import { logError } from '@metamask/snaps-utils';
 import { assert, bytesToBase64, stringToBytes } from '@metamask/utils';
 
-// TBD
 export type WebViewInterface = {
   injectJavaScript(js: string): void;
-  registerMessageListener(
-    listener: (event: MessageEvent) => void,
-  ): void;
-  unregisterMessageListener(
-    listener: (event: MessageEvent) => void,
-  ): void;
+  registerMessageListener(listener: (event: MessageEvent) => void): void;
+  unregisterMessageListener(listener: (event: MessageEvent) => void): void;
 };
 
 type WebViewStreamArgs = {
@@ -54,8 +49,7 @@ export class WebViewMessageStream extends BasePostMessageStream {
     getWebView()
       .then((webView) => {
         this.#webView = webView;
-        webView.addEventListener(
-          'message',
+        webView.registerMessageListener(
           (event: MessageEvent<PostMessageEvent>) =>
             this._onMessage(event as any),
         );
@@ -96,8 +90,7 @@ export class WebViewMessageStream extends BasePostMessageStream {
 
   _destroy() {
     assert(this.#webView);
-    this.#webView.removeEventListener(
-      'message',
+    this.#webView.unregisterMessageListener(
       (event: MessageEvent<PostMessageEvent>) => this._onMessage(event as any),
     );
   }
