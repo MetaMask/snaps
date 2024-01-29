@@ -91,7 +91,7 @@ export class WebViewMessageStream extends BasePostMessageStream {
   _destroy() {
     assert(this.#webView);
     this.#webView.unregisterMessageListener(
-      (event: MessageEvent<PostMessageEvent>) => this._onMessage(event as any),
+      this._onMessage,
     );
   }
 }
