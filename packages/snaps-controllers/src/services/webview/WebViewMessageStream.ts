@@ -50,8 +50,7 @@ export class WebViewMessageStream extends BasePostMessageStream {
       .then((webView) => {
         this.#webView = webView;
         webView.registerMessageListener(
-          (event: MessageEvent<PostMessageEvent>) =>
-            this._onMessage(event as any),
+            this._onMessage,
         );
         this._handshake();
       })
