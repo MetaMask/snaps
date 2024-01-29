@@ -47,5 +47,3 @@ if (invalidExports.length > 0) {
   // eslint-disable-next-line no-console
   console.warn(`Invalid snap exports detected:\n${invalidExports.join('\n')}`);
 }
-
-setTimeout(() => process.exit(0), 1000); // Hack to ensure worker exits
