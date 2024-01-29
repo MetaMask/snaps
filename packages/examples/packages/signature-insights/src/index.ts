@@ -49,7 +49,7 @@ export const onSignature: OnSignatureHandler = async ({ signature }) => {
       {},
     );
     return Object.entries(typeCount).map(([type, count]) =>
-      row(type, text(count)),
+      row(type, text(`${count}`)),
     );
   };
 

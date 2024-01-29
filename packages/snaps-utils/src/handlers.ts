@@ -8,9 +8,20 @@ import type {
   OnSignatureHandler,
   OnTransactionHandler,
   OnUpdateHandler,
+  OnUserInputHandler,
 } from '@metamask/snaps-sdk';
 import { SeverityLevel, ComponentStruct } from '@metamask/snaps-sdk';
-import { literal, nullable, object, optional } from 'superstruct';
+import {
+  assign,
+  literal,
+  nullable,
+  object,
+  optional,
+  string,
+  array,
+  size,
+  union,
+} from 'superstruct';
 
 import type { SnapHandler } from './handler-types';
 import { HandlerType } from './handler-types';
@@ -85,20 +96,76 @@ export const SNAP_EXPORTS = {
       return typeof snapExport === 'function';
     },
   },
+  [HandlerType.OnUserInput]: {
+    type: HandlerType.OnUserInput,
+    required: true,
+    validator: (snapExport: unknown): snapExport is OnUserInputHandler => {
+      return typeof snapExport === 'function';
+    },
+  },
 } as const;
 
-export const OnTransactionResponseStruct = nullable(
+export const OnTransactionSeverityResponseStruct = object({
+  severity: optional(literal(SeverityLevel.Critical)),
+});
+
+export const OnTransactionResponseWithIdStruct = assign(
+  OnTransactionSeverityResponseStruct,
+  object({
+    id: string(),
+  }),
+);
+
+export const OnTransactionResponseWithContentStruct = assign(
+  OnTransactionSeverityResponseStruct,
   object({
     content: ComponentStruct,
-    severity: optional(literal(SeverityLevel.Critical)),
   }),
+);
+
+export const OnTransactionResponseStruct = nullable(
+  union([
+    OnTransactionResponseWithContentStruct,
+    OnTransactionResponseWithIdStruct,
+  ]),
 );
 
 export const OnSignatureResponseStruct = OnTransactionResponseStruct;
 
-export const OnHomePageResponseStruct = object({
+export const OnHomePageResponseWithContentStruct = object({
   content: ComponentStruct,
 });
+
+export const OnHomePageResponseWithIdStruct = object({
+  id: string(),
+});
+
+export const OnHomePageResponseStruct = union([
+  OnHomePageResponseWithContentStruct,
+  OnHomePageResponseWithIdStruct,
+]);
+
+export const AddressResolutionStruct = object({
+  protocol: string(),
+  resolvedDomain: string(),
+});
+
+export const DomainResolutionStruct = object({
+  protocol: string(),
+  resolvedAddress: string(),
+});
+
+export const AddressResolutionResponseStruct = object({
+  resolvedDomains: size(array(AddressResolutionStruct), 1, Infinity),
+});
+
+export const DomainResolutionResponseStruct = object({
+  resolvedAddresses: size(array(DomainResolutionStruct), 1, Infinity),
+});
+
+export const OnNameLookupResponseStruct = nullable(
+  union([AddressResolutionResponseStruct, DomainResolutionResponseStruct]),
+);
 
 /**
  * Utility type for getting the handler function type from a handler type.

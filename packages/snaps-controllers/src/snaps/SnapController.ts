@@ -36,6 +36,7 @@ import type {
   RequestSnapsParams,
   RequestSnapsResult,
   SnapId,
+  Component,
 } from '@metamask/snaps-sdk';
 import { AuxiliaryFileEncoding, getErrorMessage } from '@metamask/snaps-sdk';
 import type {
@@ -44,7 +45,6 @@ import type {
   PersistedSnap,
   Snap,
   SnapManifest,
-  SnapRpcHook,
   SnapRpcHookArgs,
   StatusContext,
   StatusEvents,
@@ -74,6 +74,7 @@ import {
   getValidatedLocalizationFiles,
   VirtualFile,
   NpmSnapFileNames,
+  OnNameLookupResponseStruct,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
@@ -106,7 +107,11 @@ import type {
   TerminateSnapAction,
 } from '../services';
 import { fetchSnap, hasTimedOut, setDiff, withTimeout } from '../utils';
-import { handlerEndowments, SnapEndowments } from './endowments';
+import {
+  getMaxRequestTimeCaveat,
+  handlerEndowments,
+  SnapEndowments,
+} from './endowments';
 import { getKeyringCaveatOrigins } from './endowments/keyring';
 import { getRpcCaveatOrigins } from './endowments/rpc';
 import type { SnapLocation } from './location';
@@ -157,6 +162,10 @@ export interface PreinstalledSnap {
   removable?: boolean;
 }
 
+type SnapRpcHandler = (
+  options: SnapRpcHookArgs & { timeout: number },
+) => Promise<unknown>;
+
 /**
  * A wrapper type for any data stored during runtime of Snaps.
  * It is not persisted in state as it contains non-serializable data and is only relevant for the
@@ -192,7 +201,7 @@ export interface SnapRuntimeData {
   /**
    * RPC handler designated for the Snap
    */
-  rpcHandler: null | SnapRpcHook;
+  rpcHandler: null | SnapRpcHandler;
 
   /**
    * The finite state machine interpreter for possible states that the Snap can be in such as
@@ -2588,9 +2597,9 @@ export class SnapController extends BaseController<
 
     assert(
       permissionKeys.some((key) => handlerPermissions.includes(key)),
-      `A snap must request at least one of the following permissions: ${handlerPermissions.join(
-        ', ',
-      )}.`,
+      `A snap must request at least one of the following permissions: ${handlerPermissions
+        .filter((handler) => handler !== null)
+        .join(', ')}.`,
     );
 
     const excludedPermissionErrors = permissionKeys.reduce<string[]>(
@@ -2719,34 +2728,43 @@ export class SnapController extends BaseController<
     assertIsJsonRpcRequest(request);
 
     const permissionName = handlerEndowments[handlerType];
-    const hasPermission = this.messagingSystem.call(
-      'PermissionController:hasPermission',
-      snapId,
-      permissionName,
+
+    assert(
+      typeof permissionName === 'string' || permissionName === null,
+      "'permissionName' must be either a string or null.",
     );
 
-    if (!hasPermission) {
+    const permissions = this.messagingSystem.call(
+      'PermissionController:getPermissions',
+      snapId,
+    );
+
+    // If permissionName is null, the handler does not require a permission.
+    if (
+      permissionName !== null &&
+      (!permissions || !hasProperty(permissions, permissionName))
+    ) {
       throw new Error(
         `Snap "${snapId}" is not permitted to use "${permissionName}".`,
       );
     }
 
+    const handlerPermissions = permissionName
+      ? (permissions as SubjectPermissions<PermissionConstraint>)[
+          permissionName
+        ]
+      : undefined;
+
     if (
       permissionName === SnapEndowments.Rpc ||
       permissionName === SnapEndowments.Keyring
     ) {
+      assert(handlerPermissions);
+
       const subject = this.messagingSystem.call(
         'SubjectMetadataController:getSubjectMetadata',
         origin,
       );
-
-      const permissions = this.messagingSystem.call(
-        'PermissionController:getPermissions',
-        snapId,
-      );
-
-      const handlerPermissions = permissions?.[permissionName];
-      assert(handlerPermissions);
 
       const origins =
         permissionName === SnapEndowments.Rpc
@@ -2767,14 +2785,29 @@ export class SnapController extends BaseController<
       }
     }
 
-    const handler = await this.#getRpcRequestHandler(snapId);
+    const handler = this.#getRpcRequestHandler(snapId);
     if (!handler) {
       throw new Error(
         `Snap RPC message handler not found for snap "${snapId}".`,
       );
     }
 
-    return handler({ origin, handler: handlerType, request });
+    const timeout = this.#getExecutionTimeout(handlerPermissions);
+
+    return handler({ origin, handler: handlerType, request, timeout });
+  }
+
+  /**
+   * Determine the execution timeout for a given handler permission.
+   *
+   * If no permission is specified or the permission itself has no execution timeout defined
+   * the constructor argument `maxRequestTime` will be used.
+   *
+   * @param permission - An optional permission constraint for the handler being called.
+   * @returns The execution timeout for the given handler.
+   */
+  #getExecutionTimeout(permission?: PermissionConstraint): number {
+    return getMaxRequestTimeCaveat(permission) ?? this.maxRequestTime;
   }
 
   /**
@@ -2783,7 +2816,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap whose message handler to get.
    * @returns The RPC handler for the given snap.
    */
-  #getRpcRequestHandler(snapId: SnapId): SnapRpcHook {
+  #getRpcRequestHandler(snapId: SnapId): SnapRpcHandler {
     const runtime = this.#getRuntimeExpect(snapId);
     const existingHandler = runtime.rpcHandler;
     if (existingHandler) {
@@ -2799,7 +2832,8 @@ export class SnapController extends BaseController<
       origin,
       handler: handlerType,
       request,
-    }: SnapRpcHookArgs) => {
+      timeout,
+    }: SnapRpcHookArgs & { timeout: number }) => {
       if (this.state.snaps[snapId].enabled === false) {
         throw new Error(`Snap "${snapId}" is disabled.`);
       }
@@ -2833,7 +2867,7 @@ export class SnapController extends BaseController<
         }
       }
 
-      const timer = new Timer(this.maxRequestTime);
+      const timer = new Timer(timeout);
       this.#recordSnapRpcRequestStart(snapId, request.id, timer);
 
       const handleRpcRequestPromise = this.messagingSystem.call(
@@ -2879,7 +2913,26 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Asserts that the returned result of a Snap RPC call is the expected shape.
+   * Validate that the links in the response content are valid.
+   * Throws if they are invalid.
+   *
+   * @param result - The result of the RPC request.
+   */
+  async #validateResponseContent(
+    result: { content: Component } | { id: string },
+  ) {
+    if (hasProperty(result, 'content')) {
+      await this.#triggerPhishingListUpdate();
+
+      validateComponentLinks(
+        result.content as Component,
+        this.#checkPhishingList.bind(this),
+      );
+    }
+  }
+
+  /**
+   * Assert that the returned result of a Snap RPC call is the expected shape.
    *
    * @param handlerType - The handler type of the RPC Request.
    * @param result - The result of the RPC request.
@@ -2893,12 +2946,8 @@ export class SnapController extends BaseController<
           return;
         }
 
-        await this.#triggerPhishingListUpdate();
+        await this.#validateResponseContent(result);
 
-        validateComponentLinks(
-          result.content,
-          this.#checkPhishingList.bind(this),
-        );
         break;
       }
       case HandlerType.OnSignature: {
@@ -2908,23 +2957,19 @@ export class SnapController extends BaseController<
           return;
         }
 
-        await this.#triggerPhishingListUpdate();
+        await this.#validateResponseContent(result);
 
-        validateComponentLinks(
-          result.content,
-          this.#checkPhishingList.bind(this),
-        );
         break;
       }
-      case HandlerType.OnHomePage:
+      case HandlerType.OnHomePage: {
         assertStruct(result, OnHomePageResponseStruct);
 
-        await this.#triggerPhishingListUpdate();
+        await this.#validateResponseContent(result);
 
-        validateComponentLinks(
-          result.content,
-          this.#checkPhishingList.bind(this),
-        );
+        break;
+      }
+      case HandlerType.OnNameLookup:
+        assertStruct(result, OnNameLookupResponseStruct);
         break;
       default:
         break;
@@ -3230,6 +3275,9 @@ export class SnapController extends BaseController<
    */
   async #callLifecycleHook(snapId: SnapId, handler: HandlerType) {
     const permissionName = handlerEndowments[handler];
+
+    assert(permissionName, 'Lifecycle hook must have an endowment.');
+
     const hasPermission = this.messagingSystem.call(
       'PermissionController:hasPermission',
       snapId,

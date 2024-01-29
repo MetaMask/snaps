@@ -14,6 +14,7 @@ import { assertIsKeyringOrigins, SnapCaveatType } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import { assert, hasProperty, isPlainObject } from '@metamask/utils';
 
+import { createGenericPermissionValidator } from './caveats';
 import { SnapEndowments } from './enum';
 
 const permissionName = SnapEndowments.Keyring;
@@ -42,18 +43,15 @@ const specificationBuilder: PermissionSpecificationBuilder<
   return {
     permissionType: PermissionType.Endowment,
     targetName: permissionName,
-    allowedCaveats: [SnapCaveatType.KeyringOrigin],
+    allowedCaveats: [
+      SnapCaveatType.KeyringOrigin,
+      SnapCaveatType.MaxRequestTime,
+    ],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
-    validator: ({ caveats }) => {
-      if (
-        caveats?.length !== 1 ||
-        caveats[0].type !== SnapCaveatType.KeyringOrigin
-      ) {
-        throw rpcErrors.invalidParams({
-          message: `Expected a single "${SnapCaveatType.KeyringOrigin}" caveat.`,
-        });
-      }
-    },
+    validator: createGenericPermissionValidator([
+      { type: SnapCaveatType.KeyringOrigin },
+      { type: SnapCaveatType.MaxRequestTime, optional: true },
+    ]),
     subjectTypes: [SubjectType.Snap],
   };
 };

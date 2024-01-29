@@ -9,3 +9,6 @@ export { ComponentStruct, panel, PanelStruct } from './panel';
 export * from './spinner';
 export * from './text';
 export * from './row';
+export * from './button';
+export * from './input';
+export * from './form';

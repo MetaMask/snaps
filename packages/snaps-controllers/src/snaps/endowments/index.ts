@@ -3,6 +3,11 @@ import { HandlerType } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
 
 import {
+  createMaxRequestTimeMapper,
+  getMaxRequestTimeCaveatMapper,
+  maxRequestTimeCaveatSpecifications,
+} from './caveats';
+import {
   cronjobCaveatSpecifications,
   cronjobEndowmentBuilder,
   getCronjobCaveatMapper,
@@ -62,23 +67,36 @@ export const endowmentCaveatSpecifications = {
   ...nameLookupCaveatSpecifications,
   ...keyringCaveatSpecifications,
   ...signatureInsightCaveatSpecifications,
+  ...maxRequestTimeCaveatSpecifications,
 };
 
 export const endowmentCaveatMappers: Record<
   string,
   (value: Json) => Pick<PermissionConstraint, 'caveats'>
 > = {
-  [cronjobEndowmentBuilder.targetName]: getCronjobCaveatMapper,
-  [transactionInsightEndowmentBuilder.targetName]:
+  [cronjobEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
+    getCronjobCaveatMapper,
+  ),
+  [transactionInsightEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
     getTransactionInsightCaveatMapper,
-  [rpcEndowmentBuilder.targetName]: getRpcCaveatMapper,
-  [nameLookupEndowmentBuilder.targetName]: getNameLookupCaveatMapper,
-  [keyringEndowmentBuilder.targetName]: getKeyringCaveatMapper,
-  [signatureInsightEndowmentBuilder.targetName]:
+  ),
+  [rpcEndowmentBuilder.targetName]:
+    createMaxRequestTimeMapper(getRpcCaveatMapper),
+  [nameLookupEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
+    getNameLookupCaveatMapper,
+  ),
+  [keyringEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
+    getKeyringCaveatMapper,
+  ),
+  [signatureInsightEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
     getSignatureInsightCaveatMapper,
+  ),
+  [lifecycleHooksEndowmentBuilder.targetName]: getMaxRequestTimeCaveatMapper,
+  [homePageEndowmentBuilder.targetName]: getMaxRequestTimeCaveatMapper,
 };
 
-export const handlerEndowments: Record<HandlerType, string> = {
+// We allow null because a permitted handler does not have an endowment
+export const handlerEndowments: Record<HandlerType, string | null> = {
   [HandlerType.OnRpcRequest]: rpcEndowmentBuilder.targetName,
   [HandlerType.OnTransaction]: transactionInsightEndowmentBuilder.targetName,
   [HandlerType.OnCronjob]: cronjobEndowmentBuilder.targetName,
@@ -88,11 +106,13 @@ export const handlerEndowments: Record<HandlerType, string> = {
   [HandlerType.OnKeyringRequest]: keyringEndowmentBuilder.targetName,
   [HandlerType.OnHomePage]: homePageEndowmentBuilder.targetName,
   [HandlerType.OnSignature]: signatureInsightEndowmentBuilder.targetName,
+  [HandlerType.OnUserInput]: null,
 };
 
 export * from './enum';
 export { getRpcCaveatOrigins } from './rpc';
 export { getSignatureOriginCaveat } from './signature-insight';
 export { getTransactionOriginCaveat } from './transaction-insight';
-export { getChainIdsCaveat } from './name-lookup';
+export { getChainIdsCaveat, getLookupMatchersCaveat } from './name-lookup';
 export { getKeyringCaveatOrigins } from './keyring';
+export { getMaxRequestTimeCaveat } from './caveats';

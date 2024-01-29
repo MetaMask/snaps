@@ -56,7 +56,7 @@ export type GetFileHooks = {
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
- * @param hooks.getSnapFile - The funnction to load a static snap file.
+ * @param hooks.getSnapFile - The function to load a static snap file.
  * @returns Nothing.
  */
 async function implementation(

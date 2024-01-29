@@ -1,4 +1,8 @@
 import type { Method } from '../../internals';
+import type {
+  CreateInterfaceParams,
+  CreateInterfaceResult,
+} from './create-interface';
 import type { DialogParams, DialogResult } from './dialog';
 import type {
   GetBip32EntropyParams,
@@ -18,6 +22,10 @@ import type {
 } from './get-client-status';
 import type { GetEntropyParams, GetEntropyResult } from './get-entropy';
 import type { GetFileParams, GetFileResult } from './get-file';
+import type {
+  GetInterfaceStateParams,
+  GetInterfaceStateResult,
+} from './get-interface-state';
 import type { GetLocaleParams, GetLocaleResult } from './get-locale';
 import type { GetSnapsParams, GetSnapsResult } from './get-snaps';
 import type {
@@ -32,6 +40,10 @@ import type {
 import type { ManageStateParams, ManageStateResult } from './manage-state';
 import type { NotifyParams, NotifyResult } from './notify';
 import type { RequestSnapsParams, RequestSnapsResult } from './request-snaps';
+import type {
+  UpdateInterfaceParams,
+  UpdateInterfaceResult,
+} from './update-interface';
 
 /**
  * The methods that are available to the Snap. Each method is a tuple of the
@@ -50,6 +62,9 @@ export type SnapMethods = {
   snap_manageAccounts: [ManageAccountsParams, ManageAccountsResult];
   snap_manageState: [ManageStateParams, ManageStateResult];
   snap_notify: [NotifyParams, NotifyResult];
+  snap_createInterface: [CreateInterfaceParams, CreateInterfaceResult];
+  snap_updateInterface: [UpdateInterfaceParams, UpdateInterfaceResult];
+  snap_getInterfaceState: [GetInterfaceStateParams, GetInterfaceStateResult];
   wallet_getSnaps: [GetSnapsParams, GetSnapsResult];
   wallet_invokeKeyring: [InvokeKeyringParams, InvokeKeyringResult];
   wallet_invokeSnap: [InvokeSnapParams, InvokeSnapResult];

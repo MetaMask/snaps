@@ -31,6 +31,7 @@ describe('buildSnapEndowmentSpecifications', () => {
         "endowment:keyring": {
           "allowedCaveats": [
             "keyringOrigin",
+            "maxRequestTime",
           ],
           "endowmentGetter": [Function],
           "permissionType": "Endowment",
@@ -52,6 +53,8 @@ describe('buildSnapEndowmentSpecifications', () => {
         "endowment:name-lookup": {
           "allowedCaveats": [
             "chainIds",
+            "lookupMatchers",
+            "maxRequestTime",
           ],
           "endowmentGetter": [Function],
           "permissionType": "Endowment",
@@ -82,6 +85,7 @@ describe('buildSnapEndowmentSpecifications', () => {
         "endowment:rpc": {
           "allowedCaveats": [
             "rpcOrigin",
+            "maxRequestTime",
           ],
           "endowmentGetter": [Function],
           "permissionType": "Endowment",
@@ -106,6 +110,7 @@ describe('buildSnapEndowmentSpecifications', () => {
         "endowment:transaction-insight": {
           "allowedCaveats": [
             "transactionOrigin",
+            "maxRequestTime",
           ],
           "endowmentGetter": [Function],
           "permissionType": "Endowment",

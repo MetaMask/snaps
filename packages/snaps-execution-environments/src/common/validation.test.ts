@@ -1,7 +1,10 @@
+import { UserInputEventType } from '@metamask/snaps-sdk';
+
 import {
   assertIsOnNameLookupRequestArguments,
   assertIsOnSignatureRequestArguments,
   assertIsOnTransactionRequestArguments,
+  assertIsOnUserInputRequestArguments,
   isEndowment,
   isEndowmentsArray,
 } from './validation';
@@ -146,4 +149,70 @@ describe('assertIsOnNameLookupRequestArguments', () => {
       );
     },
   );
+});
+
+describe('assertIsOnUserInputRequestArguments', () => {
+  it.each([
+    {
+      id: 'foo',
+      event: { type: UserInputEventType.ButtonClickEvent, name: 'foo' },
+    },
+    {
+      id: 'foo',
+      event: {
+        type: UserInputEventType.FormSubmitEvent,
+        name: 'foo',
+        value: { foo: 'bar' },
+      },
+    },
+  ])('does not throw for a valid user input param object', (value) => {
+    expect(() => assertIsOnUserInputRequestArguments(value)).not.toThrow();
+  });
+
+  it.each([
+    true,
+    false,
+    null,
+    undefined,
+    0,
+    1,
+    '',
+    'foo',
+    [],
+    {},
+    { id: 2, event: { foo: 'bar' } },
+    {
+      id: 'foo',
+      event: { type: UserInputEventType.ButtonClickEvent, name: 'foo' },
+      foo: 'bar',
+    },
+    {
+      id: 'foo',
+      event: { type: UserInputEventType.ButtonClickEvent, name: 2 },
+    },
+    {
+      id: 'foo',
+      event: { type: 4, name: 'foo' },
+    },
+    {
+      id: 'foo',
+      event: {
+        type: 'baz',
+        name: 'foo',
+        value: 'bar',
+      },
+    },
+    {
+      id: 'foo',
+      event: {
+        type: UserInputEventType.FormSubmitEvent,
+        name: 'foo',
+        value: 'bar',
+      },
+    },
+  ])('throws if the value is not a valid user input params object', (value) => {
+    expect(() => assertIsOnUserInputRequestArguments(value as any)).toThrow(
+      'Invalid request params:',
+    );
+  });
 });

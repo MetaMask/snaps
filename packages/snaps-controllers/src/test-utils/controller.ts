@@ -26,6 +26,10 @@ import type {
   CronjobControllerEvents,
 } from '../cronjob';
 import type {
+  SnapInterfaceControllerActions,
+  SnapInterfaceControllerAllowedActions,
+} from '../interface/SnapInterfaceController';
+import type {
   AllowedActions,
   AllowedEvents,
   PersistedSnapControllerState,
@@ -122,6 +126,14 @@ export const MOCK_RPC_ORIGINS_PERMISSION: PermissionConstraint = {
   id: 'izn0WGUO8cvq_jqvLQuQP',
   invoker: MOCK_SNAP_ID,
   parentCapability: SnapEndowments.Rpc,
+};
+
+export const MOCK_LIFECYCLE_HOOKS_PERMISSION: PermissionConstraint = {
+  caveats: null,
+  date: 1664187844588,
+  id: 'izn0WGUO8cvq_jqvLQuQP',
+  invoker: MOCK_SNAP_ID,
+  parentCapability: SnapEndowments.LifecycleHooks,
 };
 
 export const MOCK_KEYRING_ORIGINS_PERMISSION: PermissionConstraint = {
@@ -567,4 +579,49 @@ export const getRestrictedSnapsRegistryControllerMessenger = (
   });
 
   return controllerMessenger;
+};
+
+// Mock controller messenger for Interface Controller
+export const getRootSnapInterfaceControllerMessenger = () => {
+  const messenger = new MockControllerMessenger<
+    SnapInterfaceControllerActions | SnapInterfaceControllerAllowedActions,
+    never
+  >();
+
+  jest.spyOn(messenger, 'call');
+
+  return messenger;
+};
+
+export const getRestrictedSnapInterfaceControllerMessenger = (
+  messenger: ReturnType<
+    typeof getRootSnapInterfaceControllerMessenger
+  > = getRootSnapInterfaceControllerMessenger(),
+  mocked = true,
+) => {
+  const snapInterfaceControllerMessenger = messenger.getRestricted<
+    'SnapInterfaceController',
+    SnapInterfaceControllerAllowedActions['type'],
+    never
+  >({
+    name: 'SnapInterfaceController',
+    allowedActions: [
+      'PhishingController:testOrigin',
+      'PhishingController:maybeUpdateState',
+    ],
+  });
+
+  if (mocked) {
+    messenger.registerActionHandler(
+      'PhishingController:maybeUpdateState',
+      async () => Promise.resolve(),
+    );
+
+    messenger.registerActionHandler('PhishingController:testOrigin', () => ({
+      result: false,
+      type: 'all',
+    }));
+  }
+
+  return snapInterfaceControllerMessenger;
 };

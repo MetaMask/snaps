@@ -25,25 +25,38 @@ export type RequestedSnap = {
 export type InitialPermissions = Partial<{
   'endowment:cronjob': {
     jobs: Cronjob[];
+    maxRequestTime?: number;
   };
   'endowment:ethereum-provider': EmptyObject;
   'endowment:keyring': {
     allowedOrigins?: string[];
+    maxRequestTime?: number;
   };
-  'endowment:lifecycle-hooks': EmptyObject;
-  'endowment:name-lookup': ChainId[];
+  'endowment:lifecycle-hooks'?: {
+    maxRequestTime?: number;
+  };
+  'endowment:name-lookup': {
+    chains?: ChainId[];
+    matchers?: { tlds?: string[]; schemes?: string[] };
+    maxRequestTime?: number;
+  };
   'endowment:network-access': EmptyObject;
-  'endowment:page-home': EmptyObject;
+  'endowment:page-home'?: {
+    maxRequestTime?: number;
+  };
   'endowment:rpc': {
     dapps?: boolean;
     snaps?: boolean;
     allowedOrigins?: string[];
+    maxRequestTime?: number;
   };
   'endowment:signature-insight': {
     allowSignatureOrigin?: boolean;
+    maxRequestTime?: number;
   };
   'endowment:transaction-insight': {
     allowTransactionOrigin?: boolean;
+    maxRequestTime?: number;
   };
   'endowment:webassembly': EmptyObject;
 

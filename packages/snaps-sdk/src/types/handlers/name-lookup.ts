@@ -1,3 +1,5 @@
+import type { NonEmptyArray } from '@metamask/utils';
+
 import type { ChainId } from '../caip';
 
 type BaseOnNameLookupArgs = {
@@ -15,16 +17,6 @@ export type DomainLookupArgs = BaseOnNameLookupArgs & {
 };
 
 /**
- * The result of a domain lookup.
- *
- * @property resolvedAddress - The resolved address.
- */
-export type DomainLookupResult = {
-  resolvedAddress: string;
-  resolvedDomain?: never;
-};
-
-/**
  * The arguments for an address lookup.
  *
  * @property address - The address that is to be resolved.
@@ -35,13 +27,45 @@ export type AddressLookupArgs = BaseOnNameLookupArgs & {
 };
 
 /**
+ * The address resolution object.
+ *
+ * @property protocol - The protocol that resolved the domain.
+ * @property resolvedAddress - The resolved address.
+ */
+export type AddressResolution = {
+  protocol: string;
+  resolvedAddress: string;
+};
+
+/**
+ * The domain resolution object.
+ *
+ * @property protocol - The protocol that resolved the address.
+ * @property resolvedDomain - The resolved domain.
+ */
+export type DomainResolution = {
+  protocol: string;
+  resolvedDomain: string;
+};
+
+/**
+ * The result of a domain lookup.
+ *
+ * @property resolvedAddress - The resolved address.
+ */
+export type DomainLookupResult = {
+  resolvedAddresses: NonEmptyArray<AddressResolution>;
+  resolvedDomains?: never;
+};
+
+/**
  * The result of an address lookup.
  *
  * @property resolvedDomain - The resolved domain name.
  */
 export type AddressLookupResult = {
-  resolvedDomain: string;
-  resolvedAddress?: never;
+  resolvedDomains: NonEmptyArray<DomainResolution>;
+  resolvedAddresses?: never;
 };
 
 /**

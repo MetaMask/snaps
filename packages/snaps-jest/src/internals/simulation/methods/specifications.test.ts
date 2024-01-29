@@ -66,6 +66,7 @@ describe('getPermissionSpecifications', () => {
         "endowment:keyring": {
           "allowedCaveats": [
             "keyringOrigin",
+            "maxRequestTime",
           ],
           "endowmentGetter": [Function],
           "permissionType": "Endowment",
@@ -87,6 +88,8 @@ describe('getPermissionSpecifications', () => {
         "endowment:name-lookup": {
           "allowedCaveats": [
             "chainIds",
+            "lookupMatchers",
+            "maxRequestTime",
           ],
           "endowmentGetter": [Function],
           "permissionType": "Endowment",
@@ -117,6 +120,7 @@ describe('getPermissionSpecifications', () => {
         "endowment:rpc": {
           "allowedCaveats": [
             "rpcOrigin",
+            "maxRequestTime",
           ],
           "endowmentGetter": [Function],
           "permissionType": "Endowment",
@@ -141,6 +145,7 @@ describe('getPermissionSpecifications', () => {
         "endowment:transaction-insight": {
           "allowedCaveats": [
             "transactionOrigin",
+            "maxRequestTime",
           ],
           "endowmentGetter": [Function],
           "permissionType": "Endowment",
