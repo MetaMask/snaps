@@ -63,7 +63,7 @@ export default class SnapsWebpackPlugin {
       compilation.hooks.processAssets.tap(
         {
           name: PLUGIN_NAME,
-          stage: Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE_COMPATIBILITY,
+          stage: Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE_TRANSFER,
           additionalAssets: true,
         },
         (assets) => {

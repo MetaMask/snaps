@@ -187,7 +187,7 @@ export async function getDefaultConfiguration(
          * @see https://webpack.js.org/configuration/module/#resolvefullyspecified
          */
         {
-          test: /\.m?js/u,
+          test: /\.m?js$/u,
           resolve: {
             fullySpecified: false,
           },
@@ -321,7 +321,7 @@ export async function getDefaultConfiguration(
        */
       minimizer: [
         new TerserPlugin({
-          parallel: true,
+          minify: TerserPlugin.swcMinify,
         }),
       ],
     },

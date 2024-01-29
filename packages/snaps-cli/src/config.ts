@@ -532,7 +532,7 @@ const SnapsWebpackCustomizeWebpackConfigFunctionStruct =
 export const SnapsWebpackConfigStruct = object({
   bundler: literal('webpack'),
   input: defaulted(file(), resolve(process.cwd(), 'src/index.js')),
-  sourceMap: defaulted(union([boolean(), literal('inline')]), true),
+  sourceMap: defaulted(union([boolean(), literal('inline')]), false),
   evaluate: defaulted(boolean(), true),
 
   output: defaulted(
