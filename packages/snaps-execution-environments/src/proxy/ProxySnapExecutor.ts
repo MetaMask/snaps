@@ -53,7 +53,7 @@ export class ProxySnapExecutor {
   }
 
   /**
-   * Handle an incoming message from the `WebViewExecutionService`. This
+   * Handle an incoming message from a `ProxyExecutionService`. This
    * assumes that the message contains a `jobId` property, and a JSON-RPC
    * request in the `data` property.
    *
