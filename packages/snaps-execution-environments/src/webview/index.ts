@@ -1,17 +1,13 @@
 import { executeLockdownEvents } from '../common/lockdown/lockdown-events';
 import { executeLockdownMore } from '../common/lockdown/lockdown-more';
 import { ProxySnapExecutor } from '../proxy/ProxySnapExecutor';
-import { ProxyMessageStream } from './ProxyMessageStream';
+import { WebViewExecutorStream } from './WebViewExecutorStream';
 
 // Lockdown is already applied in LavaMoat
 executeLockdownMore();
 executeLockdownEvents();
-/**
- * Set a stream of communication from the RN Webview Execution environment
- * to the mobile (caller) execution service webview's main window.
- */
 
-const parentStream = new ProxyMessageStream({
+const parentStream = new WebViewExecutorStream({
   name: 'child', // webview
   target: 'parent', // rnside
   targetWindow: window.ReactNativeWebView,

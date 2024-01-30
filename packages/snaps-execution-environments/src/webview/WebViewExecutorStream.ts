@@ -3,13 +3,13 @@ import { BasePostMessageStream } from '@metamask/post-message-stream';
 import { isValidStreamMessage } from '@metamask/post-message-stream/dist/utils';
 import { base64ToBytes, bytesToString } from '@metamask/utils';
 
-type ProxyMessageStreamArgs = {
+type WebViewExecutorStreamArgs = {
   name: string;
   target: string;
   targetWindow: Window['ReactNativeWebView'];
 };
 
-export class ProxyMessageStream extends BasePostMessageStream {
+export class WebViewExecutorStream extends BasePostMessageStream {
   #name;
 
   #target;
@@ -17,8 +17,12 @@ export class ProxyMessageStream extends BasePostMessageStream {
   #targetWindow;
 
   /**
-   * Creates a stream for communicating with other streams across the same or
-   * different `window` objects.
+   * A special post-message-stream to be used by the WebView executor.
+   *
+   * This stream is different in a few ways:
+   * - It expects data to be base64 encoded
+   * - It stringifies the data it posts
+   * - It does less validation of origins
    *
    * @param args - Options bag.
    * @param args.name - The name of the stream. Used to differentiate between
@@ -27,7 +31,7 @@ export class ProxyMessageStream extends BasePostMessageStream {
    * @param args.targetWindow - The window object of the target stream.
    */
 
-  constructor({ name, target, targetWindow }: ProxyMessageStreamArgs) {
+  constructor({ name, target, targetWindow }: WebViewExecutorStreamArgs) {
     super();
 
     this.#name = name;

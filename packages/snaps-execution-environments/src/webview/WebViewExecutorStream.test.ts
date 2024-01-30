@@ -1,9 +1,9 @@
 import { sleep } from '@metamask/snaps-utils/test-utils';
 import { bytesToBase64, stringToBytes } from '@metamask/utils';
 
-import { ProxyMessageStream } from './ProxyMessageStream';
+import { WebViewExecutorStream } from './WebViewExecutorStream';
 
-describe('ProxyMessageStream', () => {
+describe('WebViewExecutorStream', () => {
   beforeEach(() => {
     const addEventListener = jest.fn();
     const postMessage = jest.fn().mockImplementation((message) => {
@@ -25,7 +25,7 @@ describe('ProxyMessageStream', () => {
   it('throws if window.postMessage is not a function', () => {
     expect(
       () =>
-        new ProxyMessageStream({
+        new WebViewExecutorStream({
           name: 'child', // webview
           target: 'parent', // rnside
           targetWindow: {} as any,
@@ -34,12 +34,12 @@ describe('ProxyMessageStream', () => {
   });
 
   it('can communicate between streams and be destroyed', async () => {
-    const streamA = new ProxyMessageStream({
+    const streamA = new WebViewExecutorStream({
       name: 'a',
       target: 'b',
       targetWindow: window,
     });
-    const streamB = new ProxyMessageStream({
+    const streamB = new WebViewExecutorStream({
       name: 'b',
       target: 'a',
       targetWindow: window,
