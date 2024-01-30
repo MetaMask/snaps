@@ -48,4 +48,6 @@ if (invalidExports.length > 0) {
   console.warn(`Invalid snap exports detected:\n${invalidExports.join('\n')}`);
 }
 
-setTimeout(() => process.exit(0), 1000); // Hack to ensure worker exits
+// To ensure the worker exits we explicitly call exit here
+// If we didn't the eval would wait for timers set during Compartment eval
+process.exit(0);
