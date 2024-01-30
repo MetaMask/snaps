@@ -773,14 +773,15 @@ describe('SnapController', () => {
   });
 
   it('throws an error if snap is not on allowlist and allowlisting is required', async () => {
-    const { manifest, sourceCode, svgIcon } = await getMockSnapFilesWithUpdatedChecksum({
-      manifest: getSnapManifest({
-        initialPermissions: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          snap_getBip44Entropy: [{ coinType: 1 }],
-        },
-      }),
-    });
+    const { manifest, sourceCode, svgIcon } =
+      await getMockSnapFilesWithUpdatedChecksum({
+        manifest: getSnapManifest({
+          initialPermissions: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_getBip44Entropy: [{ coinType: 1 }],
+          },
+        }),
+      });
 
     const controller = getSnapController(
       getSnapControllerOptions({
