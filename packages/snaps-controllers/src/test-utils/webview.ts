@@ -7,8 +7,8 @@ import { WebViewMessageStream } from '../services/webview/WebViewMessageStream';
  */
 export function createWebViewObjects() {
   const mockWebView = {
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
+    registerMessageListener: jest.fn(),
+    unregisterMessageListener: jest.fn(),
     injectJavaScript: jest.fn(),
   };
 

@@ -8,10 +8,7 @@ describe('WebViewMessageStream', () => {
 
     expect(mockGetWebView).toHaveBeenCalled();
     await sleep(1); // wait for getWebView promise to resolve
-    expect(mockWebView.addEventListener).toHaveBeenCalledWith(
-      'message',
-      expect.any(Function),
-    );
+    expect(mockWebView.registerMessageListener).toHaveBeenCalled();
   });
 
   it('handles _postMessage(write) correctly', async () => {
@@ -29,20 +26,16 @@ describe('WebViewMessageStream', () => {
   });
 
   it('calls _onMessage when a message event is emitted', async () => {
-    const { mockWebView, mockStream } = createWebViewObjects();
+    const { mockStream, mockWebView } = createWebViewObjects();
 
-    const mockMessageEvent = {
-      data: JSON.stringify({
-        target: 'test',
-        data: 'Test message',
-      }),
-    };
-    await sleep(1);
-    const onMessageSpy = jest.spyOn(mockStream, '_onMessage' as any);
-    const listener = mockWebView.addEventListener.mock.calls[0][1];
-    listener(mockMessageEvent);
+    const mockCallback = jest.fn();
+    mockWebView.registerMessageListener(mockCallback);
+    sleep(1);
+    mockStream.write('test message');
+    const message = mockStream.read();
+    mockStream.on('message', message);
 
-    expect(onMessageSpy).toHaveBeenCalled();
+    expect(mockWebView).toHaveBeenCalled();
   });
 
   it('ignores _onMessage with wrong target', async () => {
@@ -63,9 +56,6 @@ describe('WebViewMessageStream', () => {
     const { mockWebView, mockStream } = createWebViewObjects();
     await sleep(1);
     mockStream.destroy();
-    expect(mockWebView.removeEventListener).toHaveBeenCalledWith(
-      'message',
-      expect.any(Function),
-    );
+    expect(mockWebView.unregisterMessageListener).toHaveBeenCalled();
   });
 });

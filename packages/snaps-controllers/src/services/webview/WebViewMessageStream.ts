@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import type { PostMessageEvent } from '@metamask/post-message-stream';
 import { BasePostMessageStream } from '@metamask/post-message-stream';
 import { isValidStreamMessage } from '@metamask/post-message-stream/dist/utils';
@@ -6,8 +7,8 @@ import { assert, bytesToBase64, stringToBytes } from '@metamask/utils';
 
 export type WebViewInterface = {
   injectJavaScript(js: string): void;
-  registerMessageListener(listener: (event: MessageEvent) => void): void;
-  unregisterMessageListener(listener: (event: MessageEvent) => void): void;
+  registerMessageListener(listener: (event: PostMessageEvent) => void): void;
+  unregisterMessageListener(listener: (event: PostMessageEvent) => void): void;
 };
 
 type WebViewStreamArgs = {
@@ -49,9 +50,7 @@ export class WebViewMessageStream extends BasePostMessageStream {
     getWebView()
       .then((webView) => {
         this.#webView = webView;
-        webView.registerMessageListener(
-            this._onMessage,
-        );
+        webView.registerMessageListener(this._onMessage);
         this._handshake();
       })
       .catch((error) => {
@@ -89,8 +88,6 @@ export class WebViewMessageStream extends BasePostMessageStream {
 
   _destroy() {
     assert(this.#webView);
-    this.#webView.unregisterMessageListener(
-      this._onMessage,
-    );
+    this.#webView.unregisterMessageListener(this._onMessage);
   }
 }
