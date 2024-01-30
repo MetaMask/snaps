@@ -79,7 +79,6 @@ export class WebViewMessageStream extends BasePostMessageStream {
 
     // Notice that we don't check targetWindow or targetOrigin here.
     // This doesn't seem possible to do in RN.
-    // TODO: Review whether we are fine with this before using in production.
     if (!isValidStreamMessage(message) || message.target !== this.#name) {
       return;
     }
