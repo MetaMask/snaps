@@ -23,12 +23,15 @@ describe('ProxyMessageStream', () => {
   });
 
   it('throws if window.ReactNativeWebView.postMessage is not a function', () => {
-    mockWindow.ReactNativeWebView.postMessage = undefined;
     expect(
-      () => new ProxyMessageStream({ name: 'foo', target: 'bar' }),
-    ).toThrow(
-      'this[#targetWindow].ReactNativeWebView.postMessage is not a function',
-    );
+      () =>
+        new ProxyMessageStream({
+          name: 'child', // webview
+          target: 'parent', // rnside
+          targetOrigin: '*',
+          targetWindow: {} as any,
+        }),
+    ).toThrow('this[#targetWindow].postMessage is not a function');
   });
 
   it('destroy streams and confirm that they were destroyed', async () => {
