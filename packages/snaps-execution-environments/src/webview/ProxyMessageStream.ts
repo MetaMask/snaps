@@ -3,23 +3,16 @@ import { BasePostMessageStream } from '@metamask/post-message-stream';
 import { isValidStreamMessage } from '@metamask/post-message-stream/dist/utils';
 import { base64ToBytes, bytesToString } from '@metamask/utils';
 
-type ReactNativeWebView = {
-  postMessage(message: string): void;
-};
-
 type ProxyMessageStreamArgs = {
   name: string;
   target: string;
-  targetOrigin?: string;
-  targetWindow?: Window | ReactNativeWebView;
+  targetWindow: Window['ReactNativeWebView'];
 };
 
 export class ProxyMessageStream extends BasePostMessageStream {
   #name;
 
   #target;
-
-  #targetOrigin;
 
   #targetWindow;
 
@@ -31,32 +24,21 @@ export class ProxyMessageStream extends BasePostMessageStream {
    * @param args.name - The name of the stream. Used to differentiate between
    * multiple streams sharing the same window object. child:WebView
    * @param args.target - The name of the stream to exchange messages with. parent:rnside
-   * @param args.targetOrigin - The origin of the target. Defaults to
-   * `location.origin`, '*' is permitted. WebView's main Frame location
-   * @param args.targetWindow - The window object of the target stream. Defaults
-   * to `window`. WebView's main Frame Window
+   * @param args.targetWindow - The window object of the target stream.
    */
 
-  constructor({
-    name,
-    target,
-    targetOrigin = window.location.origin,
-    targetWindow = window,
-  }: ProxyMessageStreamArgs) {
+  constructor({ name, target, targetWindow }: ProxyMessageStreamArgs) {
     super();
 
     this.#name = name;
     this.#target = target;
-    this.#targetOrigin = targetOrigin;
     this.#targetWindow = targetWindow;
 
     this._onMessage = this._onMessage.bind(this);
 
-    window.addEventListener(
-      'message',
-      (event: MessageEvent<PostMessageEvent>) => this._onMessage(event as any),
-      false,
-    );
+    // This method is already bound.
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    window.addEventListener('message', this._onMessage as any, false);
 
     this._handshake();
   }
@@ -90,10 +72,8 @@ export class ProxyMessageStream extends BasePostMessageStream {
   }
 
   _destroy() {
-    window.removeEventListener(
-      'message',
-      (event: MessageEvent<PostMessageEvent>) => this._onMessage(event as any),
-      false,
-    );
+    // This method is already bound.
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    window.removeEventListener('message', this._onMessage as any, false);
   }
 }

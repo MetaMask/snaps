@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import type { PostMessageEvent } from '@metamask/post-message-stream';
 import { BasePostMessageStream } from '@metamask/post-message-stream';
 import { isValidStreamMessage } from '@metamask/post-message-stream/dist/utils';
