@@ -8,7 +8,7 @@ import { WebViewMessageStream } from '../services/webview/WebViewMessageStream';
  * @param js - The injected JS.
  * @returns The parsed base64 payload as a string.
  */
-function parseInjectedJS(js: string) {
+export function parseInjectedJS(js: string) {
   const base64 = js.slice(20, -2);
   const bytes = base64ToBytes(base64);
   return bytesToString(bytes);
