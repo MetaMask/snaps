@@ -15,7 +15,7 @@ const parentStream = new ProxyMessageStream({
   name: 'child', // webview
   target: 'parent', // rnside
   targetOrigin: '*',
-  targetWindow: window,
+  targetWindow: window.ReactNativeWebView,
 });
 
 ProxySnapExecutor.initialize(parentStream);

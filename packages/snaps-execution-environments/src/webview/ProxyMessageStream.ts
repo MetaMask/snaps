@@ -3,11 +3,15 @@ import { BasePostMessageStream } from '@metamask/post-message-stream';
 import { isValidStreamMessage } from '@metamask/post-message-stream/dist/utils';
 import { base64ToBytes, bytesToString } from '@metamask/utils';
 
+type ReactNativeWebView = {
+  postMessage(message: string): void;
+};
+
 type ProxyMessageStreamArgs = {
   name: string;
   target: string;
   targetOrigin?: string;
-  targetWindow?: Window;
+  targetWindow?: Window | ReactNativeWebView;
 };
 
 export class ProxyMessageStream extends BasePostMessageStream {
@@ -63,7 +67,7 @@ export class ProxyMessageStream extends BasePostMessageStream {
    */
 
   protected _postMessage(data: unknown): void {
-    this.#targetWindow.ReactNativeWebView.postMessage(
+    this.#targetWindow.postMessage(
       JSON.stringify({
         target: this.#target,
         data,
