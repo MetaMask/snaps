@@ -50,6 +50,8 @@ export class WebViewMessageStream extends BasePostMessageStream {
     getWebView()
       .then((webView) => {
         this.#webView = webView;
+        // This method is already bound.
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         webView.registerMessageListener(this._onMessage);
         this._handshake();
       })
@@ -88,6 +90,8 @@ export class WebViewMessageStream extends BasePostMessageStream {
 
   _destroy() {
     assert(this.#webView);
+    // This method is already bound.
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     this.#webView.unregisterMessageListener(this._onMessage);
   }
 }

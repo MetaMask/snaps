@@ -3,59 +3,52 @@ import { sleep } from '@metamask/snaps-utils/test-utils';
 import { createWebViewObjects } from '../../test-utils/webview';
 
 describe('WebViewMessageStream', () => {
-  it('initializes correctly', async () => {
-    const { mockWebView, mockGetWebView } = createWebViewObjects();
-
-    expect(mockGetWebView).toHaveBeenCalled();
-    await sleep(1); // wait for getWebView promise to resolve
-    expect(mockWebView.registerMessageListener).toHaveBeenCalled();
-  });
-
-  it('handles _postMessage(write) correctly', async () => {
-    const { mockWebView, mockStream } = createWebViewObjects();
-
-    const message = { foo: 'bar' };
+  it('can communicate between streams and be destroyed', async () => {
+    const { streamA, streamB, mockWebViewA } = createWebViewObjects();
     await sleep(1);
 
-    mockStream.write(message);
-    expect(mockWebView.injectJavaScript).toHaveBeenCalledWith(
-      `window.postMessage('eyJ0YXJnZXQiOiJ0YXJnZXRTdHJlYW0iLCJkYXRhIjoiU1lOIn0=')`,
+    streamB.on('data', (value) => streamB.write(value * 5));
+
+    // Get a deferred Promise for the result
+    const responsePromise = new Promise((resolve) => {
+      streamA.once('data', (number) => {
+        resolve(Number(number));
+      });
+    });
+
+    // Write to stream A, triggering a response from stream B
+    streamA.write(111);
+
+    expect(await responsePromise).toBe(555);
+
+    expect(mockWebViewA.injectJavaScript).toHaveBeenCalledWith(
+      `window.postMessage('eyJ0YXJnZXQiOiJiIiwiZGF0YSI6MTExfQ==')`,
     );
 
-    mockStream.destroy();
-  });
+    // Inject { target: "foo", data: 111 }
+    mockWebViewA.injectJavaScript(
+      `window.postMessage('eyJ0YXJnZXQiOiJmb28iLCJkYXRhIjoxMTF9')`,
+    );
 
-  it('calls _onMessage when a message event is emitted', async () => {
-    const { mockStream, mockWebView } = createWebViewObjects();
+    const listener = jest.fn();
+    streamB.once('data', listener);
 
-    const mockCallback = jest.fn();
-    mockWebView.registerMessageListener(mockCallback);
-    sleep(1);
-    mockStream.write('test message');
-    const message = mockStream.read();
-    mockStream.on('message', message);
+    await sleep(1);
 
-    expect(mockWebView).toHaveBeenCalled();
-  });
+    // Check that messages with the wrong target are skipped
+    expect(listener).not.toHaveBeenCalled();
 
-  it('ignores _onMessage with wrong target', async () => {
-    const { mockStream } = createWebViewObjects();
-    const messageEvent = {
-      data: {
-        target: 'wrongTarget',
-        data: { foo: 'bar' },
-      },
+    const throwingListener = (data: any) => {
+      throw new Error(`Unexpected data on stream: ${data}`);
     };
 
-    await sleep(1);
-    mockStream.read(messageEvent as any);
-    expect(mockStream.read()).toBeNull();
-  });
+    streamA.once('data', throwingListener);
+    streamB.once('data', throwingListener);
 
-  it('handles destroy correctly', async () => {
-    const { mockWebView, mockStream } = createWebViewObjects();
-    await sleep(1);
-    mockStream.destroy();
-    expect(mockWebView.unregisterMessageListener).toHaveBeenCalled();
+    // Destroy streams and confirm that they were destroyed
+    streamA.destroy();
+    streamB.destroy();
+    expect(streamA.destroyed).toBe(true);
+    expect(streamB.destroyed).toBe(true);
   });
 });
