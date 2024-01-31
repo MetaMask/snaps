@@ -75,6 +75,7 @@ import {
   MOCK_BLOCK_NUMBER,
   MOCK_DAPP_SUBJECT_METADATA,
   MOCK_DAPPS_RPC_ORIGINS_PERMISSION,
+  MOCK_INTERFACE_ID,
   MOCK_KEYRING_ORIGINS_PERMISSION,
   MOCK_LIFECYCLE_HOOKS_PERMISSION,
   MOCK_ORIGIN_PERMISSIONS,
@@ -2211,11 +2212,10 @@ describe('SnapController', () => {
       );
 
       rootMessenger.registerActionHandler(
-        'PhishingController:testOrigin',
-        () => ({
-          result: true,
-          type: 'fuzzy',
-        }),
+        'SnapInterfaceController:createInterface',
+        () => {
+          throw new Error('Invalid URL: The specified URL is not allowed.');
+        },
       );
 
       await expect(
@@ -2342,7 +2342,120 @@ describe('SnapController', () => {
         },
       });
 
-      expect(result).toBe(handlerResponse);
+      expect(result).toStrictEqual({ id: MOCK_INTERFACE_ID });
+
+      snapController.destroy();
+    });
+
+    it('throws if onTransaction return value is an invalid id', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      const handlerResponse = { id: 'bar' };
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.TransactionInsight]: {
+            caveats: [{ type: SnapCaveatType.TransactionOrigin, value: false }],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.TransactionInsight,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () => Promise.resolve(handlerResponse),
+      );
+
+      await expect(
+        snapController.handleRequest({
+          snapId: MOCK_SNAP_ID,
+          origin: 'foo.com',
+          handler: HandlerType.OnTransaction,
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {},
+            id: 1,
+          },
+        }),
+      ).rejects.toThrow("Interface with id 'bar' not found.");
+
+      snapController.destroy();
+    });
+
+    it("doesn't throw if onTransaction return value is an id", async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      const handlerResponse = { id: 'bar' };
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.TransactionInsight]: {
+            caveats: [{ type: SnapCaveatType.TransactionOrigin, value: false }],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.TransactionInsight,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () => Promise.resolve(handlerResponse),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SnapInterfaceController:getInterface',
+        () => ({ snapId: MOCK_SNAP_ID, content: text('foo'), state: {} }),
+      );
+
+      const result = await snapController.handleRequest({
+        snapId: MOCK_SNAP_ID,
+        origin: 'foo.com',
+        handler: HandlerType.OnTransaction,
+        request: {
+          jsonrpc: '2.0',
+          method: ' ',
+          params: {},
+          id: 1,
+        },
+      });
+
+      expect(result).toStrictEqual({ id: 'bar' });
 
       snapController.destroy();
     });
@@ -2386,11 +2499,10 @@ describe('SnapController', () => {
       );
 
       rootMessenger.registerActionHandler(
-        'PhishingController:testOrigin',
-        () => ({
-          result: true,
-          type: 'fuzzy',
-        }),
+        'SnapInterfaceController:createInterface',
+        () => {
+          throw new Error('Invalid URL: The specified URL is not allowed.');
+        },
       );
 
       await expect(
@@ -2468,6 +2580,60 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
+    it('throws if onSignature return value is an invalid id', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      const handlerResponse = { id: 'bar' };
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.SignatureInsight]: {
+            caveats: [{ type: SnapCaveatType.SignatureOrigin, value: false }],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.SignatureInsight,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () => Promise.resolve(handlerResponse),
+      );
+
+      await expect(
+        snapController.handleRequest({
+          snapId: MOCK_SNAP_ID,
+          origin: 'foo.com',
+          handler: HandlerType.OnSignature,
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {},
+            id: 1,
+          },
+        }),
+      ).rejects.toThrow("Interface with id 'bar' not found.");
+
+      snapController.destroy();
+    });
+
     it("doesn't throw if onSignature return value is valid", async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
@@ -2517,7 +2683,7 @@ describe('SnapController', () => {
         },
       });
 
-      expect(result).toBe(handlerResponse);
+      expect(result).toStrictEqual({ id: MOCK_INTERFACE_ID });
 
       snapController.destroy();
     });
@@ -2666,11 +2832,10 @@ describe('SnapController', () => {
     );
 
     rootMessenger.registerActionHandler(
-      'PhishingController:testOrigin',
-      () => ({
-        result: true,
-        type: 'fuzzy',
-      }),
+      'SnapInterfaceController:createInterface',
+      () => {
+        throw new Error('Invalid URL: The specified URL is not allowed.');
+      },
     );
 
     await expect(
@@ -2686,6 +2851,60 @@ describe('SnapController', () => {
         },
       }),
     ).rejects.toThrow(`Invalid URL: The specified URL is not allowed.`);
+
+    snapController.destroy();
+  });
+
+  it('throws if onHomePage return value is an invalid id', async () => {
+    const rootMessenger = getControllerMessenger();
+    const messenger = getSnapControllerMessenger(rootMessenger);
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        state: {
+          snaps: getPersistedSnapsState(),
+        },
+      }),
+    );
+
+    const handlerResponse = { id: 'bar' };
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => ({
+        [SnapEndowments.HomePage]: {
+          caveats: null,
+          date: 1664187844588,
+          id: 'izn0WGUO8cvq_jqvLQuQP',
+          invoker: MOCK_SNAP_ID,
+          parentCapability: SnapEndowments.HomePage,
+        },
+      }),
+    );
+
+    rootMessenger.registerActionHandler(
+      'SubjectMetadataController:getSubjectMetadata',
+      () => MOCK_SNAP_SUBJECT_METADATA,
+    );
+
+    rootMessenger.registerActionHandler(
+      'ExecutionService:handleRpcRequest',
+      async () => Promise.resolve(handlerResponse),
+    );
+
+    await expect(
+      snapController.handleRequest({
+        snapId: MOCK_SNAP_ID,
+        origin: 'foo.com',
+        handler: HandlerType.OnHomePage,
+        request: {
+          jsonrpc: '2.0',
+          method: ' ',
+          params: {},
+          id: 1,
+        },
+      }),
+    ).rejects.toThrow("Interface with id 'bar' not found.");
 
     snapController.destroy();
   });
@@ -2739,7 +2958,7 @@ describe('SnapController', () => {
       },
     });
 
-    expect(result).toBe(handlerResponse);
+    expect(result).toStrictEqual({ id: MOCK_INTERFACE_ID });
 
     snapController.destroy();
   });
