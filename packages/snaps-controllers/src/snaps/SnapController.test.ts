@@ -2347,6 +2347,60 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
+    it("doesn't throw if onTransaction return value is an id", async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      const handlerResponse = { id: 'bar' };
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.TransactionInsight]: {
+            caveats: [{ type: SnapCaveatType.TransactionOrigin, value: false }],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.TransactionInsight,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () => Promise.resolve(handlerResponse),
+      );
+
+      const result = await snapController.handleRequest({
+        snapId: MOCK_SNAP_ID,
+        origin: 'foo.com',
+        handler: HandlerType.OnTransaction,
+        request: {
+          jsonrpc: '2.0',
+          method: ' ',
+          params: {},
+          id: 1,
+        },
+      });
+
+      expect(result).toStrictEqual({ id: 'bar' });
+
+      snapController.destroy();
+    });
+
     it('throws if onSignature handler returns a phishing link', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
