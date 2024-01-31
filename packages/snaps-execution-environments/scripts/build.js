@@ -13,10 +13,16 @@ const yargs = require('yargs');
 const defaultResolvePath = createResolvePath();
 
 const ENTRY_POINTS = {
-  iframe: { entryPoint: './src/iframe/index.ts', html: true, node: false },
+  iframe: {
+    entryPoint: './src/iframe/index.ts',
+    html: true,
+    browser: true,
+    node: false,
+  },
   offscreen: {
     entryPoint: './src/offscreen/index.ts',
-    html: true,
+    browser: true,
+    html: false,
   },
   'node-thread': {
     entryPoint: './src/node-thread/index.ts',
@@ -28,10 +34,11 @@ const ENTRY_POINTS = {
   },
   'worker-executor': {
     entryPoint: './src/webworker/executor/index.ts',
-    worker: true,
+    browser: true,
   },
   'worker-pool': {
     entryPoint: './src/webworker/pool/index.ts',
+    browser: true,
     html: true,
   },
 };
@@ -102,7 +109,7 @@ async function main() {
   await Promise.all(
     Object.entries(ENTRY_POINTS).map(async ([key, config]) => {
       console.log('Bundling', key);
-      const { html, node, worker, entryPoint } = config;
+      const { html, node, browser, entryPoint } = config;
       const insertGlobalVars = node
         ? { process: undefined, ...LavaMoatBrowserify.args.insertGlobalVars }
         : LavaMoatBrowserify.args.insertGlobalVars;
@@ -163,10 +170,9 @@ async function main() {
         ],
       });
 
-      const lavamoatSecurityOptions =
-        worker || html
-          ? lavamoatSecurityOptionsBrowser
-          : lavamoatSecurityOptionsNode;
+      const lavamoatSecurityOptions = browser
+        ? lavamoatSecurityOptionsBrowser
+        : lavamoatSecurityOptionsNode;
 
       // Add LavaMoat to wrap bundles in LavaPack
       // For Node.js builds, this also includes a prelude that contains SES and the LavaMoat runtime
