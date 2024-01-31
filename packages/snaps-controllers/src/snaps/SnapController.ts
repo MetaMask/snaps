@@ -2930,15 +2930,11 @@ export class SnapController extends BaseController<
       case HandlerType.OnTransaction:
       case HandlerType.OnSignature:
       case HandlerType.OnHomePage: {
-        if (result === null) {
-          return result;
-        }
-
         // Since this type has been asserted earlier we can cast
-        const castResult = result as Record<string, Json>;
+        const castResult = result as Record<string, Json> | null;
 
         // If a handler returns static content, we turn it into a dynamic UI
-        if (hasProperty(castResult, 'content')) {
+        if (castResult && hasProperty(castResult, 'content')) {
           const { content, ...rest } = castResult;
 
           const id = await this.#createInterface(snapId, content as Component);
