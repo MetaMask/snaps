@@ -2898,6 +2898,13 @@ export class SnapController extends BaseController<
     return rpcHandler;
   }
 
+  /**
+   * Create a dynamic interface in the SnapInterfaceController.
+   *
+   * @param snapId - The snap ID.
+   * @param content - The initial interface content.
+   * @returns An identifier that can be used to identify the interface.
+   */
   async #createInterface(snapId: SnapId, content: Component): Promise<string> {
     return this.messagingSystem.call(
       'SnapInterfaceController:createInterface',
@@ -2906,6 +2913,14 @@ export class SnapController extends BaseController<
     );
   }
 
+  /**
+   * Transform a RPC request result if necessary.
+   *
+   * @param snapId - The snap ID of the snap that produced the result.
+   * @param handlerType - The handler type that produced the result.
+   * @param result - The result.
+   * @returns The transformed result if applicable, otherwise the original result.
+   */
   async #transformSnapRpcRequestResult(
     snapId: SnapId,
     handlerType: HandlerType,
