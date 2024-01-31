@@ -9,7 +9,7 @@ import type {
 import { SubjectType } from '@metamask/permission-controller';
 import { providerErrors } from '@metamask/rpc-errors';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
-import type { SnapId } from '@metamask/snaps-sdk';
+import { text, type SnapId } from '@metamask/snaps-sdk';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MockControllerMessenger,
@@ -28,6 +28,7 @@ import type {
 import type {
   SnapInterfaceControllerActions,
   SnapInterfaceControllerAllowedActions,
+  StoredInterface,
 } from '../interface/SnapInterfaceController';
 import type {
   AllowedActions,
@@ -316,6 +317,16 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
     async () => MOCK_INTERFACE_ID,
   );
 
+  messenger.registerActionHandler(
+    'SnapInterfaceController:getInterface',
+    (snapId, id) => {
+      if (id !== MOCK_INTERFACE_ID) {
+        throw new Error(`Interface with id '${id}' not found.`);
+      }
+      return { snapId, content: text('foo bar'), state: {} } as StoredInterface;
+    },
+  );
+
   jest.spyOn(messenger, 'call');
 
   return messenger;
@@ -390,6 +401,7 @@ export const getSnapControllerMessenger = (
       'SnapController:getFile',
       'SnapsRegistry:resolveVersion',
       'SnapInterfaceController:createInterface',
+      'SnapInterfaceController:getInterface',
     ],
   });
 

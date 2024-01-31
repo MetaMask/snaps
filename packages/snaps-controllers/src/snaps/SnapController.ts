@@ -92,7 +92,7 @@ import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
 
 import { forceStrict, validateMachine } from '../fsm';
-import type { CreateInterface } from '../interface';
+import type { CreateInterface, GetInterface } from '../interface';
 import { log } from '../logging';
 import type {
   ExecuteSnapAction,
@@ -518,7 +518,8 @@ export type AllowedActions =
   | GetMetadata
   | Update
   | ResolveVersion
-  | CreateInterface;
+  | CreateInterface
+  | GetInterface;
 
 export type AllowedEvents =
   | ExecutionServiceEvents
@@ -2878,7 +2879,7 @@ export class SnapController extends BaseController<
           timer,
         );
 
-        await this.#assertSnapRpcRequestResult(handlerType, result);
+        await this.#assertSnapRpcRequestResult(snapId, handlerType, result);
 
         return this.#transformSnapRpcRequestResult(snapId, handlerType, result);
       } catch (error) {
@@ -2910,6 +2911,17 @@ export class SnapController extends BaseController<
       'SnapInterfaceController:createInterface',
       snapId,
       content,
+    );
+  }
+
+  #assertInterfaceExists(snapId: SnapId, id: string) {
+    // This will throw if the interface is accessible, but we assert nevertheless.
+    assert(
+      this.messagingSystem.call(
+        'SnapInterfaceController:getInterface',
+        snapId,
+        id,
+      ),
     );
   }
 
@@ -2951,20 +2963,43 @@ export class SnapController extends BaseController<
   /**
    * Assert that the returned result of a Snap RPC call is the expected shape.
    *
+   * @param snapId - The snap ID.
    * @param handlerType - The handler type of the RPC Request.
    * @param result - The result of the RPC request.
    */
-  async #assertSnapRpcRequestResult(handlerType: HandlerType, result: unknown) {
+  async #assertSnapRpcRequestResult(
+    snapId: SnapId,
+    handlerType: HandlerType,
+    result: unknown,
+  ) {
     switch (handlerType) {
-      case HandlerType.OnTransaction:
+      case HandlerType.OnTransaction: {
         assertStruct(result, OnTransactionResponseStruct);
+
+        if (result && hasProperty(result, 'id')) {
+          this.#assertInterfaceExists(snapId, result.id as string);
+        }
+
         break;
-      case HandlerType.OnSignature:
+      }
+      case HandlerType.OnSignature: {
         assertStruct(result, OnSignatureResponseStruct);
+
+        if (result && hasProperty(result, 'id')) {
+          this.#assertInterfaceExists(snapId, result.id as string);
+        }
+
         break;
-      case HandlerType.OnHomePage:
+      }
+      case HandlerType.OnHomePage: {
         assertStruct(result, OnHomePageResponseStruct);
+
+        if (result && hasProperty(result, 'id')) {
+          this.#assertInterfaceExists(snapId, result.id as string);
+        }
+
         break;
+      }
       case HandlerType.OnNameLookup:
         assertStruct(result, OnNameLookupResponseStruct);
         break;
