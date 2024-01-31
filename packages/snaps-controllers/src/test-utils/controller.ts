@@ -102,6 +102,8 @@ export const approvalControllerMock = new MockApprovalController();
 
 export const snapDialogPermissionKey = 'snap_dialog';
 
+export const MOCK_INTERFACE_ID = 'QovlAsV2Z3xLP5hsrVMsz';
+
 export const MOCK_SNAP_SUBJECT_METADATA: SubjectMetadata = {
   origin: MOCK_SNAP_ID,
   subjectType: SubjectType.Snap,
@@ -310,14 +312,9 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
   );
 
   messenger.registerActionHandler(
-    'PhishingController:maybeUpdateState',
-    async () => Promise.resolve(),
+    'SnapInterfaceController:createInterface',
+    async () => MOCK_INTERFACE_ID,
   );
-
-  messenger.registerActionHandler('PhishingController:testOrigin', () => ({
-    result: false,
-    type: 'all',
-  }));
 
   jest.spyOn(messenger, 'call');
 
@@ -392,6 +389,7 @@ export const getSnapControllerMessenger = (
       'SnapController:revokeDynamicPermissions',
       'SnapController:getFile',
       'SnapsRegistry:resolveVersion',
+      'SnapInterfaceController:createInterface',
     ],
   });
 

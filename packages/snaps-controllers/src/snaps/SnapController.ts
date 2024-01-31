@@ -25,10 +25,6 @@ import type {
   ValidPermission,
 } from '@metamask/permission-controller';
 import { SubjectType } from '@metamask/permission-controller';
-import type {
-  MaybeUpdateState,
-  TestOrigin,
-} from '@metamask/phishing-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { BlockReason } from '@metamask/snaps-registry';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
@@ -53,7 +49,6 @@ import type {
   TruncatedSnapFields,
 } from '@metamask/snaps-utils';
 import {
-  validateComponentLinks,
   assertIsSnapManifest,
   assertIsValidSnapId,
   DEFAULT_ENDOWMENTS,
@@ -97,6 +92,7 @@ import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
 
 import { forceStrict, validateMachine } from '../fsm';
+import type { CreateInterface } from '../interface';
 import { log } from '../logging';
 import type {
   ExecuteSnapAction,
@@ -522,8 +518,7 @@ export type AllowedActions =
   | GetMetadata
   | Update
   | ResolveVersion
-  | TestOrigin
-  | MaybeUpdateState;
+  | CreateInterface;
 
 export type AllowedEvents =
   | ExecutionServiceEvents
@@ -2885,7 +2880,7 @@ export class SnapController extends BaseController<
 
         await this.#assertSnapRpcRequestResult(handlerType, result);
 
-        return result;
+        return this.#transformSnapRpcRequestResult(snapId, handlerType, result);
       } catch (error) {
         const [jsonRpcError, handled] = unwrapError(error);
 
@@ -2903,31 +2898,42 @@ export class SnapController extends BaseController<
     return rpcHandler;
   }
 
-  async #triggerPhishingListUpdate() {
-    return this.messagingSystem.call('PhishingController:maybeUpdateState');
+  async #createInterface(snapId: SnapId, content: Component): Promise<string> {
+    return this.messagingSystem.call(
+      'SnapInterfaceController:createInterface',
+      snapId,
+      content,
+    );
   }
 
-  #checkPhishingList(origin: string) {
-    return this.messagingSystem.call('PhishingController:testOrigin', origin)
-      .result;
-  }
-
-  /**
-   * Validate that the links in the response content are valid.
-   * Throws if they are invalid.
-   *
-   * @param result - The result of the RPC request.
-   */
-  async #validateResponseContent(
-    result: { content: Component } | { id: string },
+  async #transformSnapRpcRequestResult(
+    snapId: SnapId,
+    handlerType: HandlerType,
+    result: unknown,
   ) {
-    if (hasProperty(result, 'content')) {
-      await this.#triggerPhishingListUpdate();
+    switch (handlerType) {
+      case HandlerType.OnTransaction:
+      case HandlerType.OnSignature:
+      case HandlerType.OnHomePage: {
+        if (result === null) {
+          return result;
+        }
 
-      validateComponentLinks(
-        result.content as Component,
-        this.#checkPhishingList.bind(this),
-      );
+        // Since this type has been asserted earlier we can cast
+        const castResult = result as Record<string, Json>;
+
+        // If a handler returns static content, we turn it into a dynamic UI
+        if (hasProperty(castResult, 'content')) {
+          const { content, ...rest } = castResult;
+
+          const id = await this.#createInterface(snapId, content as Component);
+
+          return { ...rest, id };
+        }
+        return result;
+      }
+      default:
+        return result;
     }
   }
 
@@ -2939,35 +2945,15 @@ export class SnapController extends BaseController<
    */
   async #assertSnapRpcRequestResult(handlerType: HandlerType, result: unknown) {
     switch (handlerType) {
-      case HandlerType.OnTransaction: {
+      case HandlerType.OnTransaction:
         assertStruct(result, OnTransactionResponseStruct);
-        // Null is an allowed return value here
-        if (result === null) {
-          return;
-        }
-
-        await this.#validateResponseContent(result);
-
         break;
-      }
-      case HandlerType.OnSignature: {
+      case HandlerType.OnSignature:
         assertStruct(result, OnSignatureResponseStruct);
-        // Null is an allowed return value here
-        if (result === null) {
-          return;
-        }
-
-        await this.#validateResponseContent(result);
-
         break;
-      }
-      case HandlerType.OnHomePage: {
+      case HandlerType.OnHomePage:
         assertStruct(result, OnHomePageResponseStruct);
-
-        await this.#validateResponseContent(result);
-
         break;
-      }
       case HandlerType.OnNameLookup:
         assertStruct(result, OnNameLookupResponseStruct);
         break;

@@ -75,6 +75,7 @@ import {
   MOCK_BLOCK_NUMBER,
   MOCK_DAPP_SUBJECT_METADATA,
   MOCK_DAPPS_RPC_ORIGINS_PERMISSION,
+  MOCK_INTERFACE_ID,
   MOCK_KEYRING_ORIGINS_PERMISSION,
   MOCK_LIFECYCLE_HOOKS_PERMISSION,
   MOCK_ORIGIN_PERMISSIONS,
@@ -2211,11 +2212,10 @@ describe('SnapController', () => {
       );
 
       rootMessenger.registerActionHandler(
-        'PhishingController:testOrigin',
-        () => ({
-          result: true,
-          type: 'fuzzy',
-        }),
+        'SnapInterfaceController:createInterface',
+        () => {
+          throw new Error('Invalid URL: The specified URL is not allowed.');
+        },
       );
 
       await expect(
@@ -2342,7 +2342,7 @@ describe('SnapController', () => {
         },
       });
 
-      expect(result).toBe(handlerResponse);
+      expect(result).toStrictEqual({ id: MOCK_INTERFACE_ID });
 
       snapController.destroy();
     });
@@ -2386,11 +2386,10 @@ describe('SnapController', () => {
       );
 
       rootMessenger.registerActionHandler(
-        'PhishingController:testOrigin',
-        () => ({
-          result: true,
-          type: 'fuzzy',
-        }),
+        'SnapInterfaceController:createInterface',
+        () => {
+          throw new Error('Invalid URL: The specified URL is not allowed.');
+        },
       );
 
       await expect(
@@ -2517,7 +2516,7 @@ describe('SnapController', () => {
         },
       });
 
-      expect(result).toBe(handlerResponse);
+      expect(result).toStrictEqual({ id: MOCK_INTERFACE_ID });
 
       snapController.destroy();
     });
@@ -2666,11 +2665,10 @@ describe('SnapController', () => {
     );
 
     rootMessenger.registerActionHandler(
-      'PhishingController:testOrigin',
-      () => ({
-        result: true,
-        type: 'fuzzy',
-      }),
+      'SnapInterfaceController:createInterface',
+      () => {
+        throw new Error('Invalid URL: The specified URL is not allowed.');
+      },
     );
 
     await expect(
@@ -2739,7 +2737,7 @@ describe('SnapController', () => {
       },
     });
 
-    expect(result).toBe(handlerResponse);
+    expect(result).toStrictEqual({ id: MOCK_INTERFACE_ID });
 
     snapController.destroy();
   });
