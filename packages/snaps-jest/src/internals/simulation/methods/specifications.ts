@@ -4,8 +4,10 @@ import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-rpc-methods';
+import type { SnapId } from '@metamask/snaps-sdk';
 import { DEFAULT_ENDOWMENTS } from '@metamask/snaps-utils';
 
+import type { RootControllerMessenger } from '../controllers';
 import type { SimulationOptions } from '../options';
 import type { RunSagaFunction } from '../store';
 import {
@@ -34,6 +36,7 @@ export type PermissionSpecificationsHooks = {
 };
 
 export type GetPermissionSpecificationsOptions = {
+  controllerMessenger: RootControllerMessenger;
   hooks: PermissionSpecificationsHooks;
   runSaga: RunSagaFunction;
   options: SimulationOptions;
@@ -64,6 +67,7 @@ export function asyncResolve(result?: unknown) {
  * Get the permission specifications for the Snap.
  *
  * @param options - The options.
+ * @param options.controllerMessenger - The controller messenger.
  * @param options.hooks - The hooks.
  * @param options.runSaga - The function to run a saga outside the usual Redux
  * flow.
@@ -71,6 +75,7 @@ export function asyncResolve(result?: unknown) {
  * @returns The permission specifications for the Snap.
  */
 export function getPermissionSpecifications({
+  controllerMessenger,
   hooks,
   runSaga,
   options,
@@ -100,6 +105,14 @@ export function getPermissionSpecifications({
       showInAppNotification: getShowInAppNotificationImplementation(runSaga),
       showNativeNotification: getShowNativeNotificationImplementation(runSaga),
       updateSnapState: getUpdateSnapStateMethodImplementation(runSaga),
+      createInterface: controllerMessenger.call.bind(
+        controllerMessenger,
+        'SnapInterfaceController:createInterface',
+      ),
+      getInterface: controllerMessenger.call.bind(
+        controllerMessenger,
+        'SnapInterfaceController:getInterface',
+      ),
     }),
   };
 }
@@ -113,7 +126,7 @@ export function getPermissionSpecifications({
  */
 export async function getEndowments(
   permissionController: GenericPermissionController,
-  snapId: string,
+  snapId: SnapId,
 ) {
   const allEndowments = await Object.keys(endowmentPermissionBuilders).reduce<
     Promise<string[]>

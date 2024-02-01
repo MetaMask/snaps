@@ -1,4 +1,5 @@
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
+import type { SnapId } from '@metamask/snaps-sdk';
 import { HandlerType, logInfo } from '@metamask/snaps-utils';
 import { createModuleLogger } from '@metamask/utils';
 import { create } from 'superstruct';
@@ -38,9 +39,9 @@ function getOptions<
     typeof AbstractExecutionService
   >,
 >(
-  snapId: string | Partial<InstallSnapOptions<Service>> | undefined,
+  snapId: SnapId | Partial<InstallSnapOptions<Service>> | undefined,
   options: Partial<InstallSnapOptions<Service>>,
-): [string | undefined, Partial<InstallSnapOptions<Service>>] {
+): [SnapId | undefined, Partial<InstallSnapOptions<Service>>] {
   if (typeof snapId === 'object') {
     return [undefined, snapId];
   }
@@ -143,7 +144,7 @@ export async function installSnap<
     typeof AbstractExecutionService
   >,
 >(
-  snapId: string,
+  snapId: SnapId,
   options?: Partial<InstallSnapOptions<Service>>,
 ): Promise<Snap>;
 
@@ -184,7 +185,7 @@ export async function installSnap<
     typeof AbstractExecutionService
   >,
 >(
-  snapId?: string | Partial<InstallSnapOptions<Service>>,
+  snapId?: SnapId | Partial<InstallSnapOptions<Service>>,
   options: Partial<InstallSnapOptions<Service>> = {},
 ): Promise<Snap> {
   const resolvedOptions = getOptions(snapId, options);
@@ -193,6 +194,7 @@ export async function installSnap<
     store,
     executionService,
     runSaga,
+    controllerMessenger,
   } = await getEnvironment().installSnap(...resolvedOptions);
 
   const onTransaction = async (
@@ -211,6 +213,7 @@ export async function installSnap<
       store,
       executionService,
       runSaga,
+      controllerMessenger,
       handler: HandlerType.OnTransaction,
       request: {
         method: '',
@@ -230,6 +233,7 @@ export async function installSnap<
       snapId: installedSnapId,
       store,
       executionService,
+      controllerMessenger,
       runSaga,
       handler: HandlerType.OnCronjob,
       request,
@@ -244,6 +248,7 @@ export async function installSnap<
         snapId: installedSnapId,
         store,
         executionService,
+        controllerMessenger,
         runSaga,
         handler: HandlerType.OnRpcRequest,
         request,
@@ -265,6 +270,7 @@ export async function installSnap<
         snapId: installedSnapId,
         store,
         executionService,
+        controllerMessenger,
         runSaga,
         handler: HandlerType.OnSignature,
         request: {
@@ -287,6 +293,7 @@ export async function installSnap<
         snapId: installedSnapId,
         store,
         executionService,
+        controllerMessenger,
         runSaga,
         handler: HandlerType.OnHomePage,
         request: {

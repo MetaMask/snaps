@@ -3,6 +3,7 @@ import type {
   JestEnvironmentConfig,
 } from '@jest/environment';
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
+import type { SnapId } from '@metamask/snaps-sdk';
 import { assert, createModuleLogger } from '@metamask/utils';
 import type { Server } from 'http';
 import NodeEnvironment from 'jest-environment-node';
@@ -87,7 +88,7 @@ export class SnapsEnvironment extends NodeEnvironment {
     options: Partial<InstallSnapOptions<Service>> = {},
   ) {
     await this.#instance?.executionService.terminateAllSnaps();
-    this.#instance = await handleInstallSnap(snapId, options);
+    this.#instance = await handleInstallSnap(snapId as SnapId, options);
     return this.#instance;
   }
 

@@ -11,14 +11,21 @@ import {
   detectSnapLocation,
   NodeThreadExecutionService,
   setupMultiplex,
+  SnapInterfaceController,
 } from '@metamask/snaps-controllers';
 import { getEncryptionKey } from '@metamask/snaps-rpc-methods';
-import type { AuxiliaryFileEncoding, SnapId } from '@metamask/snaps-sdk';
+import type {
+  SnapId,
+  AuxiliaryFileEncoding,
+  Component,
+  InterfaceState,
+} from '@metamask/snaps-sdk';
 import type { FetchedSnapFiles } from '@metamask/snaps-utils';
 import { logError } from '@metamask/snaps-utils';
 import type { Duplex } from 'readable-stream';
 import { pipeline } from 'readable-stream';
 
+import type { RootControllerMessenger } from './controllers';
 import { getControllers, registerSnap } from './controllers';
 import { getSnapFile } from './files';
 import { getEndowments } from './methods';
@@ -69,7 +76,7 @@ export type InstallSnapOptions<
     };
 
 export type InstalledSnap = {
-  snapId: string;
+  snapId: SnapId;
   store: Store;
   executionService: InstanceType<typeof AbstractExecutionService>;
   controllerMessenger: ControllerMessenger<ActionConstraint, EventConstraint>;
@@ -102,6 +109,9 @@ export type MiddlewareHooks = {
    * @returns A boolean flag signaling whether the client is locked.
    */
   getIsLocked: () => boolean;
+  createInterface: (content: Component) => Promise<string>;
+  updateInterface: (id: string, content: Component) => Promise<void>;
+  getInterfaceState: (id: string) => InterfaceState;
 };
 
 /**
@@ -123,7 +133,7 @@ export async function handleInstallSnap<
     typeof AbstractExecutionService
   >,
 >(
-  snapId: string,
+  snapId: SnapId,
   {
     executionService,
     executionServiceOptions,
@@ -137,7 +147,7 @@ export async function handleInstallSnap<
     allowLocal: true,
   });
 
-  const snapFiles = await fetchSnap(snapId as SnapId, location);
+  const snapFiles = await fetchSnap(snapId, location);
 
   // Create Redux store.
   const password = await getEncryptionKey({
@@ -147,10 +157,24 @@ export async function handleInstallSnap<
 
   const { store, runSaga } = createStore(password, options);
 
-  // Set up controllers and JSON-RPC stack.
-  const hooks = getHooks(options, snapFiles);
+  const controllerMessenger = new ControllerMessenger<any, any>();
 
-  const controllerMessenger = new ControllerMessenger();
+  registerActions(controllerMessenger);
+
+  // eslint-disable-next-line no-new
+  new SnapInterfaceController({
+    messenger: controllerMessenger.getRestricted({
+      name: 'SnapInterfaceController',
+      allowedActions: [
+        'PhishingController:maybeUpdateState',
+        'PhishingController:testOrigin',
+      ],
+    }),
+  });
+
+  // Set up controllers and JSON-RPC stack.
+  const hooks = getHooks(options, snapFiles, snapId, controllerMessenger);
+
   const { subjectMetadataController, permissionController } = getControllers({
     controllerMessenger,
     hooks,
@@ -216,11 +240,15 @@ export async function handleInstallSnap<
  *
  * @param options - The simulation options.
  * @param snapFiles - The Snap files.
+ * @param snapId - The Snap ID.
+ * @param controllerMessenger - The controller messenger.
  * @returns The hooks for the simulation.
  */
 export function getHooks(
   options: SimulationOptions,
   snapFiles: FetchedSnapFiles,
+  snapId: SnapId,
+  controllerMessenger: RootControllerMessenger,
 ): MiddlewareHooks {
   return {
     getMnemonic: async () =>
@@ -228,5 +256,40 @@ export function getHooks(
     getSnapFile: async (path: string, encoding: AuxiliaryFileEncoding) =>
       await getSnapFile(snapFiles.auxiliaryFiles, path, encoding),
     getIsLocked: () => false,
+    createInterface: async (...args) =>
+      controllerMessenger.call(
+        'SnapInterfaceController:createInterface',
+        snapId,
+        ...args,
+      ),
+    updateInterface: async (...args) =>
+      controllerMessenger.call(
+        'SnapInterfaceController:updateInterface',
+        snapId,
+        ...args,
+      ),
+    getInterfaceState: (...args) =>
+      controllerMessenger.call(
+        'SnapInterfaceController:getInterface',
+        snapId,
+        ...args,
+      ).state,
   };
+}
+
+/**
+ * Register mocked action handlers.
+ *
+ * @param controllerMessenger - The controller messenger.
+ */
+export function registerActions(controllerMessenger: RootControllerMessenger) {
+  controllerMessenger.registerActionHandler(
+    'PhishingController:maybeUpdateState',
+    async () => Promise.resolve(),
+  );
+
+  controllerMessenger.registerActionHandler(
+    'PhishingController:testOrigin',
+    () => ({ result: false, type: 'all' }),
+  );
 }

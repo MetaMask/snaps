@@ -1,4 +1,4 @@
-import type { Component, DialogType } from '@metamask/snaps-sdk';
+import type { DialogType } from '@metamask/snaps-sdk';
 import type { SagaIterator } from 'redux-saga';
 import { put, take } from 'redux-saga/effects';
 
@@ -12,7 +12,7 @@ import { resolveInterface, setInterface, closeInterface } from '../../store';
  * @param _snapId - The ID of the Snap that created the dialog. This is ignored
  * because the simulator only supports one Snap.
  * @param type - The type of dialog to show.
- * @param content - The content to show in the dialog.
+ * @param id - The interface ID.
  * @param _placeholder - The placeholder text to show in the dialog. This is
  * not implemented yet.
  * @yields Sets the dialog in the store, waits for the user to resolve the
@@ -22,10 +22,10 @@ import { resolveInterface, setInterface, closeInterface } from '../../store';
 function* showDialogImplementation(
   _snapId: string,
   type: DialogType,
-  content: Component,
+  id: string,
   _placeholder?: string,
 ): SagaIterator<unknown> {
-  yield put(setInterface({ type, content }));
+  yield put(setInterface({ type, id }));
 
   // We use `take` to wait for `resolveUserInterface` to be dispatched, which
   // indicates that the user has resolved the dialog.

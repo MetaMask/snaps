@@ -1,4 +1,5 @@
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
+import type { SnapId } from '@metamask/snaps-sdk';
 import type { HandlerType } from '@metamask/snaps-utils';
 import { unwrapError } from '@metamask/snaps-utils';
 import { getSafeJson, isPlainObject } from '@metamask/utils';
@@ -11,12 +12,14 @@ import {
   getNotifications,
 } from './simulation';
 import type { RunSagaFunction, Store } from './simulation';
+import type { RootControllerMessenger } from './simulation/controllers';
 
 export type HandleRequestOptions = {
-  snapId: string;
+  snapId: SnapId;
   store: Store;
   executionService: AbstractExecutionService<unknown>;
   handler: HandlerType;
+  controllerMessenger: RootControllerMessenger;
   runSaga: RunSagaFunction;
   request: RequestOptions;
 };
@@ -38,6 +41,7 @@ export type HandleRequestOptions = {
  * ID will be generated.
  * @param options.request.origin - The origin of the request. Defaults to
  * `https://metamask.io`.
+ * @param options.controllerMessenger - The controller messenger used to call actions.
  * @returns The response, wrapped in a {@link SnapResponse} object.
  */
 export function handleRequest({
@@ -45,6 +49,7 @@ export function handleRequest({
   store,
   executionService,
   handler,
+  controllerMessenger,
   runSaga,
   request: { id = nanoid(), origin = 'https://metamask.io', ...options },
 }: HandleRequestOptions): SnapRequest {
@@ -85,7 +90,12 @@ export function handleRequest({
     }) as unknown as SnapRequest;
 
   promise.getInterface = async () => {
-    return await runSaga(getInterface, runSaga).toPromise();
+    return await runSaga(
+      getInterface,
+      runSaga,
+      snapId,
+      controllerMessenger,
+    ).toPromise();
   };
 
   return promise;

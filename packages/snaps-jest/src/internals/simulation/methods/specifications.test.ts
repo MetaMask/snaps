@@ -17,6 +17,9 @@ import {
 const MOCK_HOOKS: MiddlewareHooks = {
   getMnemonic: jest.fn(),
   getSnapFile: jest.fn(),
+  createInterface: jest.fn(),
+  updateInterface: jest.fn(),
+  getInterfaceState: jest.fn(),
 };
 
 describe('resolve', () => {
@@ -40,6 +43,7 @@ describe('getPermissionSpecifications', () => {
         hooks: MOCK_HOOKS,
         runSaga: jest.fn(),
         options: getMockOptions(),
+        controllerMessenger: new ControllerMessenger(),
       }),
     ).toMatchInlineSnapshot(`
       {

@@ -2,17 +2,25 @@ import type { ControllerMessenger } from '@metamask/base-controller';
 import type {
   CaveatSpecificationConstraint,
   PermissionSpecificationConstraint,
+  PermissionControllerActions,
+  SubjectMetadataControllerActions,
 } from '@metamask/permission-controller';
 import {
   PermissionController,
   SubjectMetadataController,
   SubjectType,
 } from '@metamask/permission-controller';
+import type {
+  ExecutionServiceActions,
+  SnapInterfaceControllerActions,
+  SnapInterfaceControllerAllowedActions,
+} from '@metamask/snaps-controllers';
 import {
   caveatSpecifications as snapsCaveatsSpecifications,
   endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications,
   processSnapPermissions,
 } from '@metamask/snaps-rpc-methods';
+import type { SnapId } from '@metamask/snaps-sdk';
 import type { SnapManifest } from '@metamask/snaps-utils';
 import { getSafeJson } from '@metamask/utils';
 
@@ -21,6 +29,18 @@ import { UNRESTRICTED_METHODS } from './methods/constants';
 import type { SimulationOptions } from './options';
 import type { MiddlewareHooks } from './simulation';
 import type { RunSagaFunction } from './store';
+
+export type RootControllerAllowedActions =
+  | SnapInterfaceControllerActions
+  | SnapInterfaceControllerAllowedActions
+  | PermissionControllerActions
+  | ExecutionServiceActions
+  | SubjectMetadataControllerActions;
+
+export type RootControllerMessenger = ControllerMessenger<
+  RootControllerAllowedActions,
+  any
+>;
 
 export type GetControllersOptions = {
   controllerMessenger: ControllerMessenger<any, any>;
@@ -68,10 +88,8 @@ export function getControllers(options: GetControllersOptions): Controllers {
  * @param options.options - Miscellaneous options.
  * @returns The permission controller for the Snap.
  */
-function getPermissionController({
-  controllerMessenger,
-  ...options
-}: GetControllersOptions) {
+function getPermissionController(options: GetControllersOptions) {
+  const { controllerMessenger } = options;
   const permissionSpecifications = getPermissionSpecifications(options);
   return new PermissionController({
     messenger: controllerMessenger.getRestricted({
@@ -105,7 +123,7 @@ function getPermissionController({
  * @param controllers.subjectMetadataController - The subject metadata controller.
  */
 export async function registerSnap(
-  snapId: string,
+  snapId: SnapId,
   manifest: SnapManifest,
   { permissionController, subjectMetadataController }: Controllers,
 ) {
