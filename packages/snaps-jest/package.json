@@ -9,13 +9,15 @@
       "require": "./dist/index.js",
       "types": "./dist/types/index.d.ts"
     },
+    "./jest-preset": "./jest-preset.js",
     "./package.json": "./package.json"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/types/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "jest-preset.js"
   ],
   "scripts": {
     "test": "jest --passWithNoTests && yarn posttest",

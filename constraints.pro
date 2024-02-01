@@ -193,7 +193,10 @@ gen_enforced_field(WorkspaceCwd, 'exports["./package.json"]', './package.json') 
 gen_enforced_field(WorkspaceCwd, 'files', ['dist']) :-
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
-  WorkspaceCwd \= '.'.
+  WorkspaceCwd \= '.',
+  WorkspaceCwd \= 'packages/snaps-jest'.
+gen_enforced_field(WorkspaceCwd, 'files', ['dist', 'jest-preset.js']) :-
+  WorkspaceCwd = 'packages/snaps-jest'.
 
 % Dependencies must have a build script.
 gen_enforced_field(WorkspaceCwd, 'scripts.build', 'tsup --clean && yarn build:types') :-

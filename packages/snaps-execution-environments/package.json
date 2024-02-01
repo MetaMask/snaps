@@ -13,6 +13,12 @@
       "require": "./dist/index.js",
       "types": "./dist/types/index.d.ts"
     },
+    "./dist/browserify/node-process/bundle.js": {
+      "default": "./dist/browserify/node-process/bundle.js"
+    },
+    "./dist/browserify/node-thread/bundle.js": {
+      "default": "./dist/browserify/node-thread/bundle.js"
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.js",
