@@ -2044,7 +2044,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
         "use": {
-          "loader": "/Users/morten/Development/MetaMask/snaps/packages/snaps-cli/src/webpack/loaders/function.ts",
+          "loader": "/foo/bar/src/webpack/loaders/function.ts",
           "options": {
             "bundlerCustomizer": undefined,
             "depsToTranspile": [],
@@ -2180,7 +2180,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
         "use": {
-          "loader": "/Users/morten/Development/MetaMask/snaps/packages/snaps-cli/src/webpack/loaders/function.ts",
+          "loader": "/foo/bar/src/webpack/loaders/function.ts",
           "options": {
             "bundlerCustomizer": undefined,
             "depsToTranspile": [],
@@ -2316,7 +2316,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "exclude": /node_modules/u,
         "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
         "use": {
-          "loader": "/Users/morten/Development/MetaMask/snaps/packages/snaps-cli/src/webpack/loaders/function.ts",
+          "loader": "/foo/bar/src/webpack/loaders/function.ts",
           "options": {
             "bundlerCustomizer": undefined,
             "depsToTranspile": [],

@@ -207,7 +207,7 @@ export async function getDefaultConfiguration(
 
         config.experimental.wasm && {
           test: /\.wasm$/u,
-          use: getFunctionLoader(wasm),
+          use: getFunctionLoader(wasm, {}),
         },
       ],
     },
