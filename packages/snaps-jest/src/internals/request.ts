@@ -2,7 +2,7 @@ import type { AbstractExecutionService } from '@metamask/snaps-controllers';
 import type { SnapId } from '@metamask/snaps-sdk';
 import type { HandlerType } from '@metamask/snaps-utils';
 import { unwrapError } from '@metamask/snaps-utils';
-import { getSafeJson, isPlainObject } from '@metamask/utils';
+import { getSafeJson, hasProperty, isPlainObject } from '@metamask/utils';
 import { nanoid } from '@reduxjs/toolkit';
 
 import type { RequestOptions, SnapRequest } from '../types';
@@ -67,7 +67,20 @@ export function handleRequest({
       const notifications = getNotifications(store.getState());
       store.dispatch(clearNotifications());
 
-      const content = isPlainObject(result) ? result.content : undefined;
+      let content;
+
+      if (isPlainObject(result) && hasProperty(result, 'id')) {
+        content = controllerMessenger.call(
+          'SnapInterfaceController:getInterface',
+          snapId,
+          result.id as string,
+        ).content;
+      }
+
+      if (isPlainObject(result) && hasProperty(result, 'content')) {
+        content = result.content;
+      }
+
       return {
         id: String(id),
         response: {
