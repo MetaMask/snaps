@@ -27,7 +27,14 @@ import type {
 import { SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { BlockReason } from '@metamask/snaps-registry';
-import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
+import {
+  WALLET_SNAP_PERMISSION_KEY,
+  getMaxRequestTimeCaveat,
+  handlerEndowments,
+  SnapEndowments,
+  getKeyringCaveatOrigins,
+  getRpcCaveatOrigins,
+} from '@metamask/snaps-rpc-methods';
 import type {
   RequestSnapsParams,
   RequestSnapsResult,

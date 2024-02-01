@@ -1,5 +1,5 @@
 import type { GenericPermissionController } from '@metamask/permission-controller';
-import { endowmentPermissionBuilders } from '@metamask/snaps-controllers';
+import { endowmentPermissionBuilders } from '@metamask/snaps-rpc-methods';
 import { DEFAULT_ENDOWMENTS } from '@metamask/snaps-utils';
 
 export const ExcludedSnapEndowments = Object.freeze([]);

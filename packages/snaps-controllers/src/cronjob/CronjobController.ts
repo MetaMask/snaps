@@ -1,6 +1,10 @@
 import type { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type { GetPermissions } from '@metamask/permission-controller';
+import {
+  getCronjobCaveatJobs,
+  SnapEndowments,
+} from '@metamask/snaps-rpc-methods';
 import type { SnapId } from '@metamask/snaps-sdk';
 import type {
   TruncatedSnap,
@@ -22,8 +26,7 @@ import type {
   SnapUninstalled,
   SnapUpdated,
 } from '..';
-import { getRunnableSnaps, SnapEndowments } from '..';
-import { getCronjobCaveatJobs } from '../snaps/endowments/cronjob';
+import { getRunnableSnaps } from '..';
 import { Timer } from '../snaps/Timer';
 
 export type CronjobControllerActions =

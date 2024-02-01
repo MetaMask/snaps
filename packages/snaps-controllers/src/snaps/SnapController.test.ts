@@ -10,7 +10,11 @@ import {
   type ValidPermission,
 } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
-import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
+import {
+  WALLET_SNAP_PERMISSION_KEY,
+  handlerEndowments,
+  SnapEndowments,
+} from '@metamask/snaps-rpc-methods';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { AuxiliaryFileEncoding, text } from '@metamask/snaps-sdk';
 import type { SnapPermissions, RpcOrigins } from '@metamask/snaps-utils';
@@ -87,7 +91,6 @@ import {
   sleep,
 } from '../test-utils';
 import { delay } from '../utils';
-import { handlerEndowments, SnapEndowments } from './endowments';
 import { SnapsRegistryStatus } from './registry';
 import type { SnapControllerState } from './SnapController';
 import {
