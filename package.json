@@ -22,7 +22,7 @@
     "lint:ci": "yarn lint:eslint && yarn lint:misc --check && yarn lint:tsconfig && yarn constraints && yarn lint:dependencies",
     "build": "yarn build:source && yarn build:types && yarn build:post-tsc",
     "build:clean": "yarn clean && yarn build",
-    "build:source": "yarn workspaces foreach --parallel --topological --topological-dev --verbose --exclude root --exclude \"@metamask/example-snaps\" --exclude \"@metamask/invoke-snap-example-snap\" run build",
+    "build:source": "yarn workspaces foreach --parallel --topological --topological-dev --verbose --exclude root -exclude \"@metamask/snaps-simulator\" --exclude \"@metamask/example-snaps\" --exclude \"@metamask/invoke-snap-example-snap\" run build",
     "build:types": "tsc --build tsconfig.build.json",
     "build:examples": "yarn workspace @metamask/example-snaps build",
     "build:post-tsc": "yarn workspaces foreach --parallel --topological --topological-dev --verbose run build:post-tsc",
