@@ -6,12 +6,30 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "sideEffects": false,
-  "browser": {
-    "jsx-runtime": "./dist/cjs/jsx-runtime.js"
+  "exports": {
+    ".": {
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
+    },
+    "./jsx-runtime": {
+      "import": "./dist/esm/jsx-runtime.js",
+      "require": "./dist/cjs/jsx-runtime.js",
+      "types": "./dist/types/jsx-runtime.d.ts"
+    }
   },
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/types/index.d.ts"
+      ],
+      "jsx-runtime": [
+        "./dist/types/jsx-runtime.d.ts"
+      ]
+    }
+  },
   "files": [
     "dist/cjs/**",
     "dist/esm/**",

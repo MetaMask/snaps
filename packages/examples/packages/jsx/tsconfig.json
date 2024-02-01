@@ -5,7 +5,8 @@
     "paths": {
       "@metamask/*": ["../../../*/src"]
     },
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "moduleResolution": "NodeNext"
   },
   "include": ["src", "snap.config.ts"],
   "references": [
