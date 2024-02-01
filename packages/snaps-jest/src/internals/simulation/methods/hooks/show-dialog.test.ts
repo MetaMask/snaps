@@ -1,4 +1,4 @@
-import { DialogType, text } from '@metamask/snaps-sdk';
+import { DialogType } from '@metamask/snaps-sdk';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
 import { getMockOptions } from '../../../../test-utils';
@@ -10,7 +10,7 @@ describe('getShowDialogImplementation', () => {
     const { store, runSaga } = createStore('password', getMockOptions());
     const fn = getShowDialogImplementation(runSaga);
 
-    const promise = fn(MOCK_SNAP_ID, DialogType.Alert, text('message'));
+    const promise = fn(MOCK_SNAP_ID, DialogType.Alert, 'foo');
     store.dispatch(resolveInterface('result'));
 
     expect(await promise).toBe('result');

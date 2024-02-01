@@ -4,7 +4,7 @@ import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-rpc-methods';
-import type { SnapId, Component } from '@metamask/snaps-sdk';
+import type { SnapId } from '@metamask/snaps-sdk';
 import { DEFAULT_ENDOWMENTS } from '@metamask/snaps-utils';
 
 import type { RootControllerMessenger } from '../controllers';
@@ -24,6 +24,8 @@ import {
   getShowNativeNotificationImplementation,
   encryptImplementation,
   decryptImplementation,
+  getCreateInterfaceImplementation,
+  getGetInterfaceImplementation,
 } from './hooks';
 
 export type PermissionSpecificationsHooks = {
@@ -105,18 +107,8 @@ export function getPermissionSpecifications({
       showInAppNotification: getShowInAppNotificationImplementation(runSaga),
       showNativeNotification: getShowNativeNotificationImplementation(runSaga),
       updateSnapState: getUpdateSnapStateMethodImplementation(runSaga),
-      createInterface: async (snapId: SnapId, content: Component) =>
-        controllerMessenger.call(
-          'SnapInterfaceController:createInterface',
-          snapId,
-          content,
-        ),
-      getInterface: (snapId: SnapId, id: string) =>
-        controllerMessenger.call(
-          'SnapInterfaceController:getInterface',
-          snapId,
-          id,
-        ),
+      createInterface: getCreateInterfaceImplementation(controllerMessenger),
+      getInterface: getGetInterfaceImplementation(controllerMessenger),
     }),
   };
 }
