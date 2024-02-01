@@ -38,7 +38,7 @@ type ShowDialog = (
   placeholder?: Placeholder,
 ) => Promise<null | boolean | string>;
 
-type CreateInterface = (snapId: string, content: Component) => string;
+type CreateInterface = (snapId: string, content: Component) => Promise<string>;
 
 export type DialogMethodHooks = {
   /**
@@ -210,7 +210,10 @@ export function getDialogImplementation({
         : undefined;
 
     if (hasProperty(validatedParams, 'content')) {
-      const id = createInterface(origin, validatedParams.content as Component);
+      const id = await createInterface(
+        origin,
+        validatedParams.content as Component,
+      );
       return showDialog(origin, validatedType, id, placeholder);
     }
 
