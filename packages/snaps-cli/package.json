@@ -44,7 +44,8 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "publish:preview": "yarn npm publish --tag preview",
     "lint:ci": "yarn lint",
-    "lint:dependencies": "depcheck"
+    "lint:dependencies": "depcheck",
+    "build:ci": "tsup --clean"
   },
   "dependencies": {
     "@babel/core": "^7.23.2",

@@ -42,7 +42,8 @@
     "publish:preview": "yarn npm publish --tag preview",
     "lint:ci": "yarn lint",
     "start": "node scripts/start.js",
-    "lint:dependencies": "depcheck"
+    "lint:dependencies": "depcheck",
+    "build:ci": "tsup --clean"
   },
   "dependencies": {
     "@metamask/json-rpc-engine": "^7.3.2",

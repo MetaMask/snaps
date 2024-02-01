@@ -35,7 +35,8 @@
     "clean": "rimraf '*.tsbuildinfo' 'dist'",
     "publish:preview": "yarn npm publish --tag preview",
     "lint:ci": "yarn lint",
-    "lint:dependencies": "depcheck"
+    "lint:dependencies": "depcheck",
+    "build:ci": "tsup --clean"
   },
   "dependencies": {
     "@metamask/key-tree": "^9.0.0",

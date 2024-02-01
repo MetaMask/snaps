@@ -41,7 +41,8 @@
     "lint:changelog": "../../scripts/validate-changelog.sh @metamask/snaps-controllers",
     "publish:preview": "yarn npm publish --tag preview",
     "lint:ci": "yarn lint",
-    "lint:dependencies": "depcheck"
+    "lint:dependencies": "depcheck",
+    "build:ci": "tsup --clean"
   },
   "dependencies": {
     "@metamask/approval-controller": "^5.1.2",

@@ -42,7 +42,8 @@
     "publish:package": "../../scripts/publish-package.sh",
     "lint:ci": "yarn lint",
     "publish:preview": "yarn npm publish --tag preview",
-    "lint:dependencies": "depcheck"
+    "lint:dependencies": "depcheck",
+    "build:ci": "tsup --clean"
   },
   "dependencies": {
     "@metamask/snaps-utils": "workspace:^",

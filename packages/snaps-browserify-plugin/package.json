@@ -34,6 +34,7 @@
     "lint:changelog": "../../scripts/validate-changelog.sh @metamask/snaps-browserify-plugin",
     "build": "tsup --clean && yarn build:types",
     "build:types": "tsc --project tsconfig.build.json",
+    "build:ci": "tsup --clean",
     "clean": "rimraf '*.tsbuildinfo' 'dist'",
     "publish:preview": "yarn npm publish --tag preview",
     "lint:ci": "yarn lint",

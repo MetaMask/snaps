@@ -205,6 +205,11 @@ gen_enforced_field(WorkspaceCwd, 'build:types', 'tsc --project tsconfig.build.js
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'scripts.build:ci', 'tsup --clean') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.',
+  WorkspaceCwd \= 'packages/snaps-simulator'.
 
 % Dependencies must have preview scripts.
 gen_enforced_field(WorkspaceCwd, 'scripts.publish:preview', 'yarn npm publish --tag preview') :-
