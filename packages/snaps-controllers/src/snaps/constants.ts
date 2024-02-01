@@ -9,4 +9,7 @@ export const ALLOWED_PERMISSIONS = Object.freeze([
   SnapEndowments.Cronjob,
   SnapEndowments.HomePage,
   SnapEndowments.LifecycleHooks,
+  SnapEndowments.EthereumProvider,
+  SnapEndowments.TransactionInsight,
+  SnapEndowments.SignatureInsight,
 ]);
