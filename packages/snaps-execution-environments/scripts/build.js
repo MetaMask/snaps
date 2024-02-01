@@ -14,10 +14,6 @@ const defaultResolvePath = createResolvePath();
 
 const ENTRY_POINTS = {
   iframe: { entryPoint: './src/iframe/index.ts', html: true, node: false },
-  offscreen: {
-    entryPoint: './src/offscreen/index.ts',
-    html: true,
-  },
   'node-thread': {
     entryPoint: './src/node-thread/index.ts',
     node: true,
