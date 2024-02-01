@@ -1,6 +1,7 @@
 import type { SnapInterfaceControllerAllowedActions } from '@metamask/snaps-controllers';
 import { MockControllerMessenger } from '@metamask/snaps-utils/test-utils';
-import type { RootControllerAllowedActions } from 'src/internals/simulation/controllers';
+
+import type { RootControllerAllowedActions } from '../internals/simulation/controllers';
 
 export const getRootControllerMessenger = (mocked = true) => {
   const messenger = new MockControllerMessenger<
