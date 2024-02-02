@@ -1213,8 +1213,8 @@ export class SnapController extends BaseController<
       );
     }
 
-    const isAllowlistingRequired = !Object.keys(snapInfo.permissions).every(
-      (permission) => ALLOWED_PERMISSIONS.includes(permission),
+    const isAllowlistingRequired = Object.keys(snapInfo.permissions).some(
+      (permission) => !ALLOWED_PERMISSIONS.includes(permission),
     );
 
     if (
