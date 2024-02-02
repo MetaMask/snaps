@@ -9,7 +9,7 @@ import type {
 import { SubjectType } from '@metamask/permission-controller';
 import { providerErrors } from '@metamask/rpc-errors';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
-import type { SnapId } from '@metamask/snaps-sdk';
+import { text, type SnapId } from '@metamask/snaps-sdk';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MockControllerMessenger,
@@ -28,6 +28,7 @@ import type {
 import type {
   SnapInterfaceControllerActions,
   SnapInterfaceControllerAllowedActions,
+  StoredInterface,
 } from '../interface/SnapInterfaceController';
 import type {
   AllowedActions,
@@ -101,6 +102,8 @@ export class MockApprovalController {
 export const approvalControllerMock = new MockApprovalController();
 
 export const snapDialogPermissionKey = 'snap_dialog';
+
+export const MOCK_INTERFACE_ID = 'QovlAsV2Z3xLP5hsrVMsz';
 
 export const MOCK_SNAP_SUBJECT_METADATA: SubjectMetadata = {
   origin: MOCK_SNAP_ID,
@@ -310,14 +313,19 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
   );
 
   messenger.registerActionHandler(
-    'PhishingController:maybeUpdateState',
-    async () => Promise.resolve(),
+    'SnapInterfaceController:createInterface',
+    async () => MOCK_INTERFACE_ID,
   );
 
-  messenger.registerActionHandler('PhishingController:testOrigin', () => ({
-    result: false,
-    type: 'all',
-  }));
+  messenger.registerActionHandler(
+    'SnapInterfaceController:getInterface',
+    (snapId, id) => {
+      if (id !== MOCK_INTERFACE_ID) {
+        throw new Error(`Interface with id '${id}' not found.`);
+      }
+      return { snapId, content: text('foo bar'), state: {} } as StoredInterface;
+    },
+  );
 
   jest.spyOn(messenger, 'call');
 
@@ -392,6 +400,8 @@ export const getSnapControllerMessenger = (
       'SnapController:revokeDynamicPermissions',
       'SnapController:getFile',
       'SnapsRegistry:resolveVersion',
+      'SnapInterfaceController:createInterface',
+      'SnapInterfaceController:getInterface',
     ],
   });
 

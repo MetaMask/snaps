@@ -25,10 +25,6 @@ import type {
   ValidPermission,
 } from '@metamask/permission-controller';
 import { SubjectType } from '@metamask/permission-controller';
-import type {
-  MaybeUpdateState,
-  TestOrigin,
-} from '@metamask/phishing-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { BlockReason } from '@metamask/snaps-registry';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
@@ -53,7 +49,6 @@ import type {
   TruncatedSnapFields,
 } from '@metamask/snaps-utils';
 import {
-  validateComponentLinks,
   assertIsSnapManifest,
   assertIsValidSnapId,
   DEFAULT_ENDOWMENTS,
@@ -97,6 +92,7 @@ import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
 
 import { forceStrict, validateMachine } from '../fsm';
+import type { CreateInterface, GetInterface } from '../interface';
 import { log } from '../logging';
 import type {
   ExecuteSnapAction,
@@ -522,8 +518,8 @@ export type AllowedActions =
   | GetMetadata
   | Update
   | ResolveVersion
-  | TestOrigin
-  | MaybeUpdateState;
+  | CreateInterface
+  | GetInterface;
 
 export type AllowedEvents =
   | ExecutionServiceEvents
@@ -2883,9 +2879,9 @@ export class SnapController extends BaseController<
           timer,
         );
 
-        await this.#assertSnapRpcRequestResult(handlerType, result);
+        await this.#assertSnapRpcRequestResult(snapId, handlerType, result);
 
-        return result;
+        return this.#transformSnapRpcRequestResult(snapId, handlerType, result);
       } catch (error) {
         const [jsonRpcError, handled] = unwrapError(error);
 
@@ -2903,68 +2899,104 @@ export class SnapController extends BaseController<
     return rpcHandler;
   }
 
-  async #triggerPhishingListUpdate() {
-    return this.messagingSystem.call('PhishingController:maybeUpdateState');
+  /**
+   * Create a dynamic interface in the SnapInterfaceController.
+   *
+   * @param snapId - The snap ID.
+   * @param content - The initial interface content.
+   * @returns An identifier that can be used to identify the interface.
+   */
+  async #createInterface(snapId: SnapId, content: Component): Promise<string> {
+    return this.messagingSystem.call(
+      'SnapInterfaceController:createInterface',
+      snapId,
+      content,
+    );
   }
 
-  #checkPhishingList(origin: string) {
-    return this.messagingSystem.call('PhishingController:testOrigin', origin)
-      .result;
+  #assertInterfaceExists(snapId: SnapId, id: string) {
+    // This will throw if the interface is accessible, but we assert nevertheless.
+    assert(
+      this.messagingSystem.call(
+        'SnapInterfaceController:getInterface',
+        snapId,
+        id,
+      ),
+    );
   }
 
   /**
-   * Validate that the links in the response content are valid.
-   * Throws if they are invalid.
+   * Transform a RPC request result if necessary.
    *
-   * @param result - The result of the RPC request.
+   * @param snapId - The snap ID of the snap that produced the result.
+   * @param handlerType - The handler type that produced the result.
+   * @param result - The result.
+   * @returns The transformed result if applicable, otherwise the original result.
    */
-  async #validateResponseContent(
-    result: { content: Component } | { id: string },
+  async #transformSnapRpcRequestResult(
+    snapId: SnapId,
+    handlerType: HandlerType,
+    result: unknown,
   ) {
-    if (hasProperty(result, 'content')) {
-      await this.#triggerPhishingListUpdate();
+    switch (handlerType) {
+      case HandlerType.OnTransaction:
+      case HandlerType.OnSignature:
+      case HandlerType.OnHomePage: {
+        // Since this type has been asserted earlier we can cast
+        const castResult = result as Record<string, Json> | null;
 
-      validateComponentLinks(
-        result.content as Component,
-        this.#checkPhishingList.bind(this),
-      );
+        // If a handler returns static content, we turn it into a dynamic UI
+        if (castResult && hasProperty(castResult, 'content')) {
+          const { content, ...rest } = castResult;
+
+          const id = await this.#createInterface(snapId, content as Component);
+
+          return { ...rest, id };
+        }
+        return result;
+      }
+      default:
+        return result;
     }
   }
 
   /**
    * Assert that the returned result of a Snap RPC call is the expected shape.
    *
+   * @param snapId - The snap ID.
    * @param handlerType - The handler type of the RPC Request.
    * @param result - The result of the RPC request.
    */
-  async #assertSnapRpcRequestResult(handlerType: HandlerType, result: unknown) {
+  async #assertSnapRpcRequestResult(
+    snapId: SnapId,
+    handlerType: HandlerType,
+    result: unknown,
+  ) {
     switch (handlerType) {
       case HandlerType.OnTransaction: {
         assertStruct(result, OnTransactionResponseStruct);
-        // Null is an allowed return value here
-        if (result === null) {
-          return;
-        }
 
-        await this.#validateResponseContent(result);
+        if (result && hasProperty(result, 'id')) {
+          this.#assertInterfaceExists(snapId, result.id as string);
+        }
 
         break;
       }
       case HandlerType.OnSignature: {
         assertStruct(result, OnSignatureResponseStruct);
-        // Null is an allowed return value here
-        if (result === null) {
-          return;
-        }
 
-        await this.#validateResponseContent(result);
+        if (result && hasProperty(result, 'id')) {
+          this.#assertInterfaceExists(snapId, result.id as string);
+        }
 
         break;
       }
       case HandlerType.OnHomePage: {
         assertStruct(result, OnHomePageResponseStruct);
 
-        await this.#validateResponseContent(result);
+        if (result && hasProperty(result, 'id')) {
+          this.#assertInterfaceExists(snapId, result.id as string);
+        }
 
         break;
       }
