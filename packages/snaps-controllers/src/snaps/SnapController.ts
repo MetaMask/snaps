@@ -71,6 +71,7 @@ import {
   VirtualFile,
   NpmSnapFileNames,
   OnNameLookupResponseStruct,
+  getLocalizedSnapManifest,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
@@ -2515,7 +2516,7 @@ export class SnapController extends BaseController<
     } = files;
 
     assertIsSnapManifest(manifest.result);
-    const { version, proposedName } = manifest.result;
+    const { version } = manifest.result;
 
     const sourceCode = sourceCodeFile.toString();
 
@@ -2585,6 +2586,14 @@ export class SnapController extends BaseController<
         rollbackSnapshot.statePatches = inversePatches;
       }
     }
+
+    // In case the Snap uses a localized manifest, we need to get the
+    // proposed name from the localized manifest.
+    const { proposedName } = getLocalizedSnapManifest(
+      manifest.result,
+      'en',
+      localizationFiles.map((file) => file.result),
+    );
 
     this.messagingSystem.call('SubjectMetadataController:addSubjectMetadata', {
       subjectType: SubjectType.Snap,
