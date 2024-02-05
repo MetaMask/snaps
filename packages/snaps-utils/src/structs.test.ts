@@ -26,6 +26,7 @@ import {
   getStructFromPath,
   getUnionStructNames,
   named,
+  validateUnion,
 } from './structs';
 
 /**
@@ -297,6 +298,50 @@ describe('getStructErrorMessage', () => {
 
     expect(getStructErrorMessage(struct, error.failures())).toBe(
       messages.map((message) => `  • ${message}`).join('\n'),
+    );
+  });
+});
+
+describe('validateUnion', () => {
+  it('throws a readable error if the type does not satisfy any of the expected types', () => {
+    const FooStruct = object({
+      type: literal('a'),
+      value: string(),
+    });
+
+    const BarStruct = object({
+      type: literal('b'),
+      value: number(),
+    });
+
+    const Union = union([FooStruct, BarStruct]);
+    expect(() =>
+      validateUnion({ type: 'c', value: 42 }, Union, 'type'),
+    ).toThrow(
+      `At path: ${bold('type')} — Expected the value to be one of: ${green(
+        '"a"',
+      )}, ${green('"b"')}, but received: ${red('"c"')}.`,
+    );
+  });
+
+  it('throws a readable error if the value does not satisfy the union type', () => {
+    const FooStruct = object({
+      type: literal('a'),
+      value: string(),
+    });
+
+    const BarStruct = object({
+      type: literal('b'),
+      value: number(),
+    });
+
+    const Union = union([FooStruct, BarStruct]);
+    expect(() =>
+      validateUnion({ type: 'a', value: 42 }, Union, 'type'),
+    ).toThrow(
+      `At path: ${bold('value')} — Expected a value of type ${green(
+        'string',
+      )}, but received: ${red('42')}.`,
     );
   });
 });
