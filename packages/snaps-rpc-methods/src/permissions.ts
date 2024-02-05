@@ -8,10 +8,12 @@ import { hasProperty } from '@metamask/utils';
 import {
   endowmentCaveatMappers,
   endowmentPermissionBuilders,
-} from '../endowments';
-import { restrictedMethodPermissionBuilders } from '../restricted';
-import { caveatMappers } from '../restricted/caveats';
-import { selectHooks } from '../utils';
+} from './endowments';
+import {
+  caveatMappers,
+  restrictedMethodPermissionBuilders,
+} from './restricted';
+import { selectHooks } from './utils';
 
 /**
  * Map initial permissions as defined in a Snap manifest to something that can
