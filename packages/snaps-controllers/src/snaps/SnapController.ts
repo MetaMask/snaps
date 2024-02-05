@@ -2547,6 +2547,8 @@ export class SnapController extends BaseController<
       },
     ];
 
+    const localizedFiles = localizationFiles.map((file) => file.result);
+
     const snap: Snap = {
       // Restore relevant snap state if it exists
       ...existingSnap,
@@ -2567,7 +2569,7 @@ export class SnapController extends BaseController<
       version,
       versionHistory,
       auxiliaryFiles,
-      localizationFiles: localizationFiles.map((file) => file.result),
+      localizationFiles: localizedFiles,
     };
 
     // If the snap was blocked, it isn't any longer
@@ -2592,7 +2594,7 @@ export class SnapController extends BaseController<
     const { proposedName } = getLocalizedSnapManifest(
       manifest.result,
       'en',
-      localizationFiles.map((file) => file.result),
+      localizedFiles,
     );
 
     this.messagingSystem.call('SubjectMetadataController:addSubjectMetadata', {
