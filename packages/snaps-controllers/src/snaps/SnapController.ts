@@ -112,13 +112,6 @@ import type {
 } from '../services';
 import { fetchSnap, hasTimedOut, setDiff, withTimeout } from '../utils';
 import { ALLOWED_PERMISSIONS } from './constants';
-import {
-  getMaxRequestTimeCaveat,
-  handlerEndowments,
-  SnapEndowments,
-} from './endowments';
-import { getKeyringCaveatOrigins } from './endowments/keyring';
-import { getRpcCaveatOrigins } from './endowments/rpc';
 import type { SnapLocation } from './location';
 import { detectSnapLocation } from './location';
 import { processSnapPermissions } from './permissions';
