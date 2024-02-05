@@ -9,10 +9,10 @@ import {
   SubjectType,
 } from '@metamask/permission-controller';
 import {
+  caveatSpecifications as snapsCaveatsSpecifications,
   endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications,
   processSnapPermissions,
-} from '@metamask/snaps-controllers';
-import { caveatSpecifications as snapsCaveatsSpecifications } from '@metamask/snaps-rpc-methods';
+} from '@metamask/snaps-rpc-methods';
 import type { SnapManifest } from '@metamask/snaps-utils';
 import { getSafeJson } from '@metamask/utils';
 

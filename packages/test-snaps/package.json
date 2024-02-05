@@ -31,6 +31,7 @@
   "dependencies": {
     "@metamask/bip32-example-snap": "workspace:^",
     "@metamask/bip44-example-snap": "workspace:^",
+    "@metamask/client-status-example-snap": "workspace:^",
     "@metamask/cronjob-example-snap": "workspace:^",
     "@metamask/dialog-example-snap": "workspace:^",
     "@metamask/error-example-snap": "workspace:^",

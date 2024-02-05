@@ -27,7 +27,15 @@ import type {
 import { SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { BlockReason } from '@metamask/snaps-registry';
-import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
+import {
+  WALLET_SNAP_PERMISSION_KEY,
+  getMaxRequestTimeCaveat,
+  handlerEndowments,
+  SnapEndowments,
+  getKeyringCaveatOrigins,
+  getRpcCaveatOrigins,
+  processSnapPermissions,
+} from '@metamask/snaps-rpc-methods';
 import type {
   RequestSnapsParams,
   RequestSnapsResult,
@@ -41,6 +49,7 @@ import type {
   PersistedSnap,
   Snap,
   SnapManifest,
+  SnapPermissions,
   SnapRpcHookArgs,
   StatusContext,
   StatusEvents,
@@ -103,16 +112,9 @@ import type {
   TerminateSnapAction,
 } from '../services';
 import { fetchSnap, hasTimedOut, setDiff, withTimeout } from '../utils';
-import {
-  getMaxRequestTimeCaveat,
-  handlerEndowments,
-  SnapEndowments,
-} from './endowments';
-import { getKeyringCaveatOrigins } from './endowments/keyring';
-import { getRpcCaveatOrigins } from './endowments/rpc';
+import { ALLOWED_PERMISSIONS } from './constants';
 import type { SnapLocation } from './location';
 import { detectSnapLocation } from './location';
-import { processSnapPermissions } from './permissions';
 import type {
   GetMetadata,
   GetResult,
@@ -1193,7 +1195,10 @@ export class SnapController extends BaseController<
     this.messagingSystem.publish(`${controllerName}:snapUnblocked`, snapId);
   }
 
-  async #assertIsInstallAllowed(snapId: SnapId, snapInfo: SnapsRegistryInfo) {
+  async #assertIsInstallAllowed(
+    snapId: SnapId,
+    snapInfo: SnapsRegistryInfo & { permissions: SnapPermissions },
+  ) {
     const results = await this.messagingSystem.call('SnapsRegistry:get', {
       [snapId]: snapInfo,
     });
@@ -1206,8 +1211,15 @@ export class SnapController extends BaseController<
           result.reason?.explanation ?? ''
         }`,
       );
-    } else if (
+    }
+
+    const isAllowlistingRequired = Object.keys(snapInfo.permissions).some(
+      (permission) => !ALLOWED_PERMISSIONS.includes(permission),
+    );
+
+    if (
       this.#featureFlags.requireAllowlist &&
+      isAllowlistingRequired &&
       result.status !== SnapsRegistryStatus.Verified
     ) {
       throw new Error(
@@ -2190,6 +2202,7 @@ export class SnapController extends BaseController<
       await this.#assertIsInstallAllowed(snapId, {
         version: newVersion,
         checksum: manifest.source.shasum,
+        permissions: manifest.initialPermissions,
       });
 
       const processedPermissions = processSnapPermissions(
@@ -2363,6 +2376,7 @@ export class SnapController extends BaseController<
         await this.#assertIsInstallAllowed(snapId, {
           version: manifest.version,
           checksum: manifest.source.shasum,
+          permissions: manifest.initialPermissions,
         });
 
         return this.#set({

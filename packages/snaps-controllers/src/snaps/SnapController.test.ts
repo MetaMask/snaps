@@ -10,7 +10,11 @@ import {
   type ValidPermission,
 } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
-import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
+import {
+  WALLET_SNAP_PERMISSION_KEY,
+  handlerEndowments,
+  SnapEndowments,
+} from '@metamask/snaps-rpc-methods';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { AuxiliaryFileEncoding, text } from '@metamask/snaps-sdk';
 import type { SnapPermissions, RpcOrigins } from '@metamask/snaps-utils';
@@ -87,7 +91,6 @@ import {
   sleep,
 } from '../test-utils';
 import { delay } from '../utils';
-import { handlerEndowments, SnapEndowments } from './endowments';
 import { SnapsRegistryStatus } from './registry';
 import type { SnapControllerState } from './SnapController';
 import {
@@ -585,7 +588,11 @@ describe('SnapController', () => {
     );
 
     expect(messenger.call).toHaveBeenNthCalledWith(2, 'SnapsRegistry:get', {
-      [MOCK_SNAP_ID]: { version: '1.0.0', checksum: DEFAULT_SNAP_SHASUM },
+      [MOCK_SNAP_ID]: {
+        version: '1.0.0',
+        checksum: DEFAULT_SNAP_SHASUM,
+        permissions: getSnapManifest().initialPermissions,
+      },
     });
 
     expect(messenger.call).toHaveBeenNthCalledWith(
@@ -769,11 +776,23 @@ describe('SnapController', () => {
   });
 
   it('throws an error if snap is not on allowlist and allowlisting is required', async () => {
+    const { manifest, sourceCode, svgIcon } =
+      await getMockSnapFilesWithUpdatedChecksum({
+        manifest: getSnapManifest({
+          initialPermissions: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_getBip44Entropy: [{ coinType: 1 }],
+          },
+        }),
+      });
+
     const controller = getSnapController(
       getSnapControllerOptions({
         featureFlags: { requireAllowlist: true },
-        detectSnapLocation: (_location, options) =>
-          new LoopbackLocation(options),
+        detectSnapLocation: loopbackDetect({
+          manifest: manifest.result,
+          files: [sourceCode, svgIcon as VirtualFile],
+        }),
       }),
     );
 
@@ -782,7 +801,7 @@ describe('SnapController', () => {
         [MOCK_SNAP_ID]: { version: DEFAULT_REQUESTED_SNAP_VERSION },
       }),
     ).rejects.toThrow(
-      'Failed to fetch snap "npm:@metamask/example-snap": The snap is not on the allowlist.',
+      'Cannot install version "1.0.0" of snap "npm:@metamask/example-snap": The snap is not on the allowlist.',
     );
 
     controller.destroy();
