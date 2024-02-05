@@ -22,6 +22,9 @@ The following is a list of the snaps in this directory.
 
 ### Snaps features
 
+- [**`packages/client-status`**](./packages/client-status): This snap demonstrates
+  how to use `snap_getClientStatus` to access information about the client
+  executing the snap.
 - [**`packages/cronjobs`**](./packages/cronjobs): This snap demonstrates how to
   use the `endowment:cronjob` permission to schedule a function to be called at
   a later time.

@@ -95,6 +95,13 @@ export type MiddlewareHooks = {
     path: string,
     encoding: AuxiliaryFileEncoding,
   ) => Promise<string | null>;
+
+  /**
+   * A hook that returns whether the client is locked or not.
+   *
+   * @returns A boolean flag signaling whether the client is locked.
+   */
+  getIsLocked: () => boolean;
 };
 
 /**
@@ -220,5 +227,6 @@ export function getHooks(
       Promise.resolve(mnemonicPhraseToBytes(options.secretRecoveryPhrase)),
     getSnapFile: async (path: string, encoding: AuxiliaryFileEncoding) =>
       await getSnapFile(snapFiles.auxiliaryFiles, path, encoding),
+    getIsLocked: () => false,
   };
 }

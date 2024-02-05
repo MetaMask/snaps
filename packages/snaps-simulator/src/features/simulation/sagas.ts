@@ -153,6 +153,7 @@ export function* initSaga({ payload }: PayloadAction<string>) {
     createSnapsMethodMiddleware(true, {
       getSnapFile: async (...args: Parameters<typeof getSnapFile>) =>
         await runSaga(getSnapFile, ...args).toPromise(),
+      getIsLocked: () => false,
     }),
   );
 
