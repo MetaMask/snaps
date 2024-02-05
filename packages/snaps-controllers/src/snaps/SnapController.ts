@@ -27,7 +27,15 @@ import type {
 import { SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { BlockReason } from '@metamask/snaps-registry';
-import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
+import {
+  WALLET_SNAP_PERMISSION_KEY,
+  getMaxRequestTimeCaveat,
+  handlerEndowments,
+  SnapEndowments,
+  getKeyringCaveatOrigins,
+  getRpcCaveatOrigins,
+  processSnapPermissions,
+} from '@metamask/snaps-rpc-methods';
 import type {
   RequestSnapsParams,
   RequestSnapsResult,
@@ -106,16 +114,8 @@ import type {
 } from '../services';
 import { fetchSnap, hasTimedOut, setDiff, withTimeout } from '../utils';
 import { ALLOWED_PERMISSIONS } from './constants';
-import {
-  getMaxRequestTimeCaveat,
-  handlerEndowments,
-  SnapEndowments,
-} from './endowments';
-import { getKeyringCaveatOrigins } from './endowments/keyring';
-import { getRpcCaveatOrigins } from './endowments/rpc';
 import type { SnapLocation } from './location';
 import { detectSnapLocation } from './location';
-import { processSnapPermissions } from './permissions';
 import type {
   GetMetadata,
   GetResult,

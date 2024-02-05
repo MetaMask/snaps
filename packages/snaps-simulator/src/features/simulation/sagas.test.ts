@@ -1,5 +1,5 @@
 import type { GenericPermissionController } from '@metamask/permission-controller';
-import { processSnapPermissions } from '@metamask/snaps-controllers';
+import { processSnapPermissions } from '@metamask/snaps-rpc-methods';
 import { SnapError } from '@metamask/snaps-sdk';
 import {
   DEFAULT_ENDOWMENTS,

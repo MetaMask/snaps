@@ -1,9 +1,9 @@
 import type { GenericPermissionController } from '@metamask/permission-controller';
 import {
+  endowmentPermissionBuilders,
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
-  endowmentPermissionBuilders,
-} from '@metamask/snaps-controllers';
+} from '@metamask/snaps-rpc-methods';
 import { DEFAULT_ENDOWMENTS } from '@metamask/snaps-utils';
 
 import type { SimulationOptions } from '../options';

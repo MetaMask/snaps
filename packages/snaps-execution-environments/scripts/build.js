@@ -1,4 +1,5 @@
 /* eslint-disable no-console, n/global-require */
+const { stringToBytes } = require('@metamask/utils');
 const {
   createResolvePath,
 } = require('babel-plugin-tsconfig-paths-module-resolver');
@@ -216,7 +217,11 @@ async function main() {
         await fs.writeFile(htmlPath, htmlFile);
       }
 
-      console.log('Finished', key);
+      const outputBytes = stringToBytes(outputBundle);
+
+      const outputSizeInKb = Math.round(outputBytes.byteLength / 1000);
+
+      console.log('Finished', key, `(${outputSizeInKb} KB)`);
       return buffer;
     }),
   );

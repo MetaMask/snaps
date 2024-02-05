@@ -1,8 +1,19 @@
-import { isObject } from '@metamask/utils';
+import { union } from '@metamask/snaps-sdk';
+import type { NonEmptyArray } from '@metamask/utils';
+import { assert, isObject } from '@metamask/utils';
 import { bold, green, red } from 'chalk';
 import { resolve } from 'path';
 import type { Failure } from 'superstruct';
-import { Struct, StructError, create, string, coerce } from 'superstruct';
+import {
+  is,
+  validate,
+  type as superstructType,
+  Struct,
+  StructError,
+  create,
+  string,
+  coerce as superstructCoerce,
+} from 'superstruct';
 import type { AnyStruct } from 'superstruct/dist/utils';
 
 import { indent } from './strings';
@@ -54,7 +65,7 @@ export type InferMatching<
  * ```
  */
 export function file() {
-  return coerce(string(), string(), (value) => {
+  return superstructCoerce(string(), string(), (value) => {
     return resolve(process.cwd(), value);
   });
 }
@@ -207,7 +218,7 @@ export function getUnionStructNames<Type, Schema>(
 }
 
 /**
- * Get a error prefix from a `superstruct` failure. This is useful for
+ * Get an error prefix from a `superstruct` failure. This is useful for
  * formatting the error message returned by `superstruct`.
  *
  * @param failure - The `superstruct` failure.
@@ -288,4 +299,102 @@ export function getStructErrorMessage<Type, Schema>(
   );
 
   return formattedFailures.join('\n');
+}
+
+/**
+ * Validate a union struct, and throw readable errors if the value does not
+ * satisfy the struct. This is useful for improving the error messages returned
+ * by `superstruct`.
+ *
+ * @param value - The value to validate.
+ * @param struct - The `superstruct` union struct to validate the value against.
+ * This struct must be a union of object structs, and must have at least one
+ * shared key to validate against.
+ * @param structKey - The key to validate against. This key must be present in
+ * all the object structs in the union struct, and is expected to be a literal
+ * value.
+ * @param coerce - Whether to coerce the value to satisfy the struct. Defaults
+ * to `false`.
+ * @returns The validated value.
+ * @throws If the value does not satisfy the struct.
+ * @example
+ * const struct = union([
+ *   object({ type: literal('a'), value: string() }),
+ *   object({ type: literal('b'), value: number() }),
+ *   object({ type: literal('c'), value: boolean() }),
+ *   // ...
+ * ]);
+ *
+ * // At path: type — Expected the value to be one of: "a", "b", "c", but received: "d".
+ * validateUnion({ type: 'd', value: 'foo' }, struct, 'type');
+ *
+ * // At path: value — Expected a value of type string, but received: 42.
+ * validateUnion({ type: 'a', value: 42 }, struct, 'value');
+ */
+export function validateUnion<Type, Schema extends readonly Struct<any, any>[]>(
+  value: unknown,
+  struct: Struct<Type, Schema>,
+  structKey: keyof Type,
+  coerce = false,
+) {
+  assert(struct.schema.length > 0, 'Expected a non-empty array of structs.');
+
+  const keyUnion = struct.schema.map(
+    (innerStruct) => innerStruct.schema[structKey],
+    // This is guaranteed to be a non-empty array by the assertion above. We
+    // need to cast it since `superstruct` requires a non-empty array of structs
+    // for the `union` struct.
+  ) as NonEmptyArray<Struct>;
+
+  const key = superstructType({
+    [structKey]: union(keyUnion),
+  });
+
+  const [keyError] = validate(value, key, { coerce });
+  if (keyError) {
+    throw new Error(getStructFailureMessage(key, keyError.failures()[0]));
+  }
+
+  // At this point it's guaranteed that the value is an object, so we can safely
+  // cast it to a Record.
+  const objectValue = value as Record<PropertyKey, unknown>;
+  const objectStruct = struct.schema.find((innerStruct) =>
+    is(objectValue[structKey], innerStruct.schema[structKey]),
+  );
+
+  assert(objectStruct, 'Expected a struct to match the value.');
+
+  const [error, validatedValue] = validate(objectValue, objectStruct, {
+    coerce,
+  });
+
+  if (error) {
+    throw new Error(getStructFailureMessage(objectStruct, error.failures()[0]));
+  }
+
+  return validatedValue as Type;
+}
+
+/**
+ * Create a value with the coercion logic of a union struct, and throw readable
+ * errors if the value does not satisfy the struct. This is useful for improving
+ * the error messages returned by `superstruct`.
+ *
+ * @param value - The value to validate.
+ * @param struct - The `superstruct` union struct to validate the value against.
+ * This struct must be a union of object structs, and must have at least one
+ * shared key to validate against.
+ * @param structKey - The key to validate against. This key must be present in
+ * all the object structs in the union struct, and is expected to be a literal
+ * value.
+ * @returns The validated value.
+ * @throws If the value does not satisfy the struct.
+ * @see validateUnion
+ */
+export function createUnion<Type, Schema extends readonly Struct<any, any>[]>(
+  value: unknown,
+  struct: Struct<Type, Schema>,
+  structKey: keyof Type,
+) {
+  return validateUnion(value, struct, structKey, true);
 }

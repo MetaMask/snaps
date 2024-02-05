@@ -1,4 +1,4 @@
-import { SnapEndowments } from './endowments';
+import { SnapEndowments } from '@metamask/snaps-rpc-methods';
 
 // These permissions are allowed without being on the allowlist.
 export const ALLOWED_PERMISSIONS = Object.freeze([
