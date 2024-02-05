@@ -12,15 +12,15 @@ import {
 import {
   IframeExecutionService,
   setupMultiplex,
-  endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications,
-  processSnapPermissions,
-  buildSnapEndowmentSpecifications,
-  buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-controllers';
 import packageJson from '@metamask/snaps-execution-environments/package.json';
 import {
   createSnapsMethodMiddleware,
   caveatSpecifications as snapsCaveatsSpecifications,
+  endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications,
+  processSnapPermissions,
+  buildSnapEndowmentSpecifications,
+  buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-rpc-methods';
 import type {
   SnapManifest,

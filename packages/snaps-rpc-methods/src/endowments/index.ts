@@ -116,3 +116,4 @@ export { getTransactionOriginCaveat } from './transaction-insight';
 export { getChainIdsCaveat, getLookupMatchersCaveat } from './name-lookup';
 export { getKeyringCaveatOrigins } from './keyring';
 export { getMaxRequestTimeCaveat } from './caveats';
+export { getCronjobCaveatJobs } from './cronjob';
