@@ -235,6 +235,8 @@ export function getDialogImplementation({
       return showDialog(origin, validatedType, id, placeholder);
     }
 
+    // Verify that the passed interface ID is valid.
+    // This will throw if the interface ID is invalid (not created by the snap or doesn't exist)
     try {
       getInterface(origin, validatedParams.id);
     } catch (error) {

@@ -103,7 +103,7 @@ export function handleRequest({
 }
 
 /**
- * Get the response content components either from the Snap interface Controller or the response object if there is some.
+ * Get the response content either from the SnapInterfaceController or the response object if there is one.
  *
  * @param result - The handler result object.
  * @param snapId - The Snap ID.
