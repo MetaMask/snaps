@@ -67,4 +67,18 @@ describe('getHooks', () => {
 
     await close();
   });
+
+  it('returns the `getIsLocked` hook', async () => {
+    const { snapId, close } = await getMockServer();
+
+    const location = detectSnapLocation(snapId, {
+      allowLocal: true,
+    });
+    const snapFiles = await fetchSnap(snapId, location);
+
+    const { getIsLocked } = getHooks(getMockOptions(), snapFiles);
+    expect(getIsLocked()).toBe(false);
+
+    await close();
+  });
 });
