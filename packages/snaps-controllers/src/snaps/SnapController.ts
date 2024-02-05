@@ -34,6 +34,7 @@ import {
   SnapEndowments,
   getKeyringCaveatOrigins,
   getRpcCaveatOrigins,
+  processSnapPermissions,
 } from '@metamask/snaps-rpc-methods';
 import type {
   RequestSnapsParams,
@@ -114,7 +115,6 @@ import { fetchSnap, hasTimedOut, setDiff, withTimeout } from '../utils';
 import { ALLOWED_PERMISSIONS } from './constants';
 import type { SnapLocation } from './location';
 import { detectSnapLocation } from './location';
-import { processSnapPermissions } from './permissions';
 import type {
   GetMetadata,
   GetResult,

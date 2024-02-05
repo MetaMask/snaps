@@ -2,15 +2,16 @@ import type {
   PermissionConstraint,
   PermissionSpecificationConstraint,
 } from '@metamask/permission-controller';
-import {
-  caveatMappers,
-  restrictedMethodPermissionBuilders,
-  selectHooks,
-  endowmentCaveatMappers,
-  endowmentPermissionBuilders,
-} from '@metamask/snaps-rpc-methods';
 import type { SnapPermissions } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
+
+import {
+  endowmentCaveatMappers,
+  endowmentPermissionBuilders,
+} from '../endowments';
+import { restrictedMethodPermissionBuilders } from '../restricted';
+import { caveatMappers } from '../restricted/caveats';
+import { selectHooks } from '../utils';
 
 /**
  * Map initial permissions as defined in a Snap manifest to something that can
