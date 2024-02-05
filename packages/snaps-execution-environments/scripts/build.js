@@ -31,6 +31,10 @@ const ENTRY_POINTS = {
     entryPoint: './src/webworker/pool/index.ts',
     html: true,
   },
+  webview: {
+    entryPoint: './src/webview/index.ts',
+    html: true,
+  },
 };
 
 const OUTPUT_PATH = './dist/browserify';
@@ -62,7 +66,14 @@ async function main() {
     // Only enable for browser builds for now due to incompatibilities.
     scuttleGlobalThis: {
       enabled: true,
-      exceptions: ['postMessage', 'removeEventListener', 'isSecureContext'],
+      exceptions: [
+        'postMessage',
+        'removeEventListener',
+        'isSecureContext',
+        'ReactNativeWebView',
+        'JSON',
+        'String',
+      ],
     },
   };
 

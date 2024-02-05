@@ -53,7 +53,7 @@ export class ProxySnapExecutor {
   }
 
   /**
-   * Handle an incoming message from the `OffscreenExecutionService`. This
+   * Handle an incoming message from a `ProxyExecutionService`. This
    * assumes that the message contains a `jobId` property, and a JSON-RPC
    * request in the `data` property.
    *
@@ -99,7 +99,7 @@ export class ProxySnapExecutor {
     const jobStream = new WindowPostMessageStream({
       name: 'parent',
       target: 'child',
-      targetWindow: window,
+      targetWindow: window, // iframe's internal window
       targetOrigin: '*',
     });
 

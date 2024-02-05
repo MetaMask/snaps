@@ -8,6 +8,7 @@ describe('browser entrypoint', () => {
     'OffscreenExecutionService',
     'WebWorkerExecutionService',
     'ProxyPostMessageStream',
+    'WebViewExecutionService',
   ];
 
   it('entrypoint has expected exports', () => {
