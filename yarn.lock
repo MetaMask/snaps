@@ -3902,7 +3902,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/client-status-example-snap@workspace:packages/examples/packages/client-status":
+"@metamask/client-status-example-snap@workspace:^, @metamask/client-status-example-snap@workspace:packages/examples/packages/client-status":
   version: 0.0.0-use.local
   resolution: "@metamask/client-status-example-snap@workspace:packages/examples/packages/client-status"
   dependencies:
@@ -5894,6 +5894,7 @@ __metadata:
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/bip32-example-snap": "workspace:^"
     "@metamask/bip44-example-snap": "workspace:^"
+    "@metamask/client-status-example-snap": "workspace:^"
     "@metamask/cronjob-example-snap": "workspace:^"
     "@metamask/dialog-example-snap": "workspace:^"
     "@metamask/error-example-snap": "workspace:^"

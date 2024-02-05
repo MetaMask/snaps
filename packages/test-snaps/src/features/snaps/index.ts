@@ -1,5 +1,6 @@
 export * from './bip32';
 export * from './bip44';
+export * from './client-status';
 export * from './cronjobs';
 export * from './dialogs';
 export * from './errors';
