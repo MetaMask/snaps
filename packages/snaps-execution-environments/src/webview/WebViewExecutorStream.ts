@@ -62,12 +62,12 @@ export class WebViewExecutorStream extends BasePostMessageStream {
   }
 
   private _onMessage(event: PostMessageEvent): void {
-    let message;
-    if (typeof event.data === 'string') {
-      const rawMessage = event.data;
-      const bytes = base64ToBytes(rawMessage);
-      message = JSON.parse(bytesToString(bytes));
+    if (typeof event.data !== 'string') {
+      return;
     }
+
+    const bytes = base64ToBytes(event.data);
+    const message = JSON.parse(bytesToString(bytes));
 
     // Notice that we don't check targetWindow or targetOrigin here.
     // This doesn't seem possible to do in RN.

@@ -75,10 +75,11 @@ export class WebViewMessageStream extends BasePostMessageStream {
   }
 
   private _onMessage(event: PostMessageEvent): void {
-    let message;
-    if (typeof event.data === 'string') {
-      message = JSON.parse(event.data);
+    if (typeof event.data !== 'string') {
+      return;
     }
+
+    const message = JSON.parse(event.data);
 
     // Notice that we don't check targetWindow or targetOrigin here.
     // This doesn't seem possible to do in RN.
