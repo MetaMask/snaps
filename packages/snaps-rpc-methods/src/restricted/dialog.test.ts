@@ -1,4 +1,5 @@
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { DialogType, heading, panel, text } from '@metamask/snaps-sdk';
 
 import type { DialogMethodHooks } from './dialog';
@@ -11,6 +12,8 @@ describe('builder', () => {
       specificationBuilder: expect.any(Function),
       methodHooks: {
         showDialog: true,
+        createInterface: true,
+        getInterface: true,
       },
     });
   });
@@ -21,6 +24,7 @@ describe('builder', () => {
         methodHooks: {
           showDialog: jest.fn(),
           createInterface: jest.fn(),
+          getInterface: jest.fn(),
         },
       }),
     ).toStrictEqual({
@@ -38,6 +42,9 @@ describe('implementation', () => {
     ({
       showDialog: jest.fn(),
       createInterface: jest.fn().mockReturnValue('bar'),
+      getInterface: jest
+        .fn()
+        .mockReturnValue({ content: text('foo'), state: {}, snapId: 'foo' }),
     } as DialogMethodHooks);
 
   it('accepts string dialog types', async () => {
@@ -65,6 +72,9 @@ describe('implementation', () => {
     const hooks = {
       showDialog: jest.fn(),
       createInterface: jest.fn().mockReturnValue('bar'),
+      getInterface: jest
+        .fn()
+        .mockReturnValue({ content: text('foo'), state: {}, snapId: 'foo' }),
     };
 
     const implementation = getDialogImplementation(hooks);
@@ -110,6 +120,36 @@ describe('implementation', () => {
       'bar',
       undefined,
     );
+  });
+
+  it('throws if the requested interface does not exist.', async () => {
+    const hooks = {
+      showDialog: jest.fn(),
+      createInterface: jest.fn(),
+      getInterface: jest.fn().mockImplementation((_snapId, id) => {
+        throw new Error(`Interface with id '${id}' not found.`);
+      }),
+    };
+
+    const implementation = getDialogImplementation(hooks);
+
+    await expect(
+      implementation({
+        context: { origin: 'foo' },
+        method: 'snap_dialog',
+        params: {
+          type: 'alert',
+          id: 'bar',
+        },
+      }),
+    ).rejects.toThrow(
+      rpcErrors.invalidParams(
+        `Invalid params: Interface with id 'bar' not found.`,
+      ),
+    );
+
+    expect(hooks.getInterface).toHaveBeenCalledTimes(1);
+    expect(hooks.getInterface).toHaveBeenCalledWith('foo', 'bar');
   });
 
   describe('alerts', () => {

@@ -6,7 +6,13 @@ import type {
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import { DialogType, ComponentStruct, enumValue } from '@metamask/snaps-sdk';
-import type { DialogParams, EnumToUnion, Component } from '@metamask/snaps-sdk';
+import type {
+  DialogParams,
+  EnumToUnion,
+  Component,
+  InterfaceState,
+  SnapId,
+} from '@metamask/snaps-sdk';
 import { getFirstErrorInUnion } from '@metamask/snaps-utils';
 import type { InferMatching } from '@metamask/snaps-utils';
 import { hasProperty, type NonEmptyArray } from '@metamask/utils';
@@ -39,6 +45,10 @@ type ShowDialog = (
 ) => Promise<null | boolean | string>;
 
 type CreateInterface = (snapId: string, content: Component) => Promise<string>;
+type GetInterface = (
+  snapId: string,
+  id: string,
+) => { content: Component; snapId: SnapId; state: InterfaceState };
 
 export type DialogMethodHooks = {
   /**
@@ -54,6 +64,11 @@ export type DialogMethodHooks = {
    * @param content - The content of the interface.
    */
   createInterface: CreateInterface;
+  /**
+   * @param snapId - The SnapId requesting the interface.
+   * @param id - The interface ID.
+   */
+  getInterface: GetInterface;
 };
 
 type DialogSpecificationBuilderOptions = {
@@ -102,6 +117,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 const methodHooks: MethodHooksObject<DialogMethodHooks> = {
   showDialog: true,
   createInterface: true,
+  getInterface: true,
 };
 
 export const dialogBuilder = Object.freeze({
@@ -185,13 +201,15 @@ const structs = {
  * @param hooks - The RPC method hooks.
  * @param hooks.showDialog - A function that shows the specified dialog in the
  * MetaMask UI and returns the appropriate value for the dialog type.
- * @param hooks.createInterface - A function that creates the interface in InterfaceController.
+ * @param hooks.createInterface - A function that creates the interface in SnapInterfaceController.
+ * @param hooks.getInterface - A function that gets an interface from SnapInterfaceController.
  * @returns The method implementation which return value depends on the dialog
  * type, valid return types are: string, boolean, null.
  */
 export function getDialogImplementation({
   showDialog,
   createInterface,
+  getInterface,
 }: DialogMethodHooks) {
   return async function dialogImplementation(
     args: RestrictedMethodOptions<DialogParameters>,
@@ -215,6 +233,14 @@ export function getDialogImplementation({
         validatedParams.content as Component,
       );
       return showDialog(origin, validatedType, id, placeholder);
+    }
+
+    try {
+      getInterface(origin, validatedParams.id);
+    } catch (error) {
+      throw rpcErrors.invalidParams({
+        message: `Invalid params: ${error.message}`,
+      });
     }
 
     return showDialog(origin, validatedType, validatedParams.id, placeholder);
