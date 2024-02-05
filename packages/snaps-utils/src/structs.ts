@@ -337,6 +337,10 @@ export function validateUnion<Type, Schema extends readonly Struct<any, any>[]>(
   structKey: keyof Type,
   coerce = false,
 ) {
+  assert(
+    struct.schema,
+    'Expected a struct with a schema. Make sure to use `union` from `@metamask/snaps-sdk`.',
+  );
   assert(struct.schema.length > 0, 'Expected a non-empty array of structs.');
 
   const keyUnion = struct.schema.map(
@@ -358,21 +362,39 @@ export function validateUnion<Type, Schema extends readonly Struct<any, any>[]>(
   // At this point it's guaranteed that the value is an object, so we can safely
   // cast it to a Record.
   const objectValue = value as Record<PropertyKey, unknown>;
-  const objectStruct = struct.schema.find((innerStruct) =>
+  const objectStructs = struct.schema.filter((innerStruct) =>
     is(objectValue[structKey], innerStruct.schema[structKey]),
   );
 
-  assert(objectStruct, 'Expected a struct to match the value.');
+  assert(objectStructs.length > 0, 'Expected a struct to match the value.');
 
-  const [error, validatedValue] = validate(objectValue, objectStruct, {
-    coerce,
-  });
+  // We need to validate the value against all the object structs that match the
+  // struct key, and return the first validated value.
+  const validationResults = objectStructs.map((objectStruct) =>
+    validate(objectValue, objectStruct, { coerce }),
+  );
 
-  if (error) {
-    throw new Error(getStructFailureMessage(objectStruct, error.failures()[0]));
+  const validatedValue = validationResults.find(([error]) => !error);
+  if (validatedValue) {
+    return validatedValue[1];
   }
 
-  return validatedValue as Type;
+  assert(validationResults[0][0], 'Expected at least one error.');
+
+  // If there is no validated value, we need to find the error with the least
+  // number of failures (with the assumption that it's the most specific error).
+  const validationError = validationResults.reduce((error, [innerError]) => {
+    assert(innerError, 'Expected an error.');
+    if (innerError.failures().length < error.failures().length) {
+      return innerError;
+    }
+
+    return error;
+  }, validationResults[0][0]);
+
+  throw new Error(
+    getStructFailureMessage(struct, validationError.failures()[0]),
+  );
 }
 
 /**

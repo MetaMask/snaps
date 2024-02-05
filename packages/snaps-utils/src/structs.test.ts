@@ -345,6 +345,71 @@ describe('validateUnion', () => {
       )}, but received: ${red('42')}.`,
     );
   });
+
+  it('throws a readable error if the value does not satisfy the union type with multiple options', () => {
+    const FooStruct = object({
+      type: literal('a'),
+      value: string(),
+    });
+
+    const OtherFooStruct = object({
+      type: literal('a'),
+      id: number(),
+    });
+
+    const BarStruct = object({
+      type: literal('b'),
+      value: number(),
+    });
+
+    const Union = union([FooStruct, OtherFooStruct, BarStruct]);
+    expect(() =>
+      validateUnion({ type: 'a', value: 42 }, Union, 'type'),
+    ).toThrow(
+      `At path: ${bold('value')} — Expected a value of type ${green(
+        'string',
+      )}, but received: ${red('42')}.`,
+    );
+
+    expect(() =>
+      validateUnion({ type: 'a', id: 'foo' }, Union, 'type'),
+    ).toThrow(
+      `At path: ${bold('id')} — Expected a value of type ${green(
+        'number',
+      )}, but received: ${red('"foo"')}.`,
+    );
+  });
+
+  it('does not throw if the value satisfies the union', () => {
+    const FooStruct = object({
+      type: literal('a'),
+      value: string(),
+    });
+
+    const OtherFooStruct = object({
+      type: literal('a'),
+      id: number(),
+    });
+
+    const BarStruct = object({
+      type: literal('b'),
+      value: number(),
+    });
+
+    const Union = union([FooStruct, OtherFooStruct, BarStruct]);
+
+    expect(() =>
+      validateUnion({ type: 'a', value: 'foo' }, Union, 'type'),
+    ).not.toThrow();
+
+    expect(() =>
+      validateUnion({ type: 'a', id: 42 }, Union, 'type'),
+    ).not.toThrow();
+
+    expect(() =>
+      validateUnion({ type: 'b', value: 42 }, Union, 'type'),
+    ).not.toThrow();
+  });
 });
 
 describe('createUnion', () => {
