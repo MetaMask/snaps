@@ -1,5 +1,5 @@
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
-import type { SnapId } from '@metamask/snaps-sdk';
+import type { SnapId, Component } from '@metamask/snaps-sdk';
 import type { HandlerType } from '@metamask/snaps-utils';
 import { unwrapError } from '@metamask/snaps-utils';
 import { getSafeJson, hasProperty, isPlainObject } from '@metamask/utils';
@@ -34,6 +34,7 @@ export type HandleRequestOptions = {
  * @param options.executionService - The execution service to use to send the
  * request.
  * @param options.handler - The handler to use to send the request.
+ * @param options.controllerMessenger - The controller messenger used to call actions.
  * @param options.runSaga - A function to run a saga outside the usual Redux
  * flow.
  * @param options.request - The request to send.
@@ -41,7 +42,6 @@ export type HandleRequestOptions = {
  * ID will be generated.
  * @param options.request.origin - The origin of the request. Defaults to
  * `https://metamask.io`.
- * @param options.controllerMessenger - The controller messenger used to call actions.
  * @returns The response, wrapped in a {@link SnapResponse} object.
  */
 export function handleRequest({
@@ -67,19 +67,7 @@ export function handleRequest({
       const notifications = getNotifications(store.getState());
       store.dispatch(clearNotifications());
 
-      let content;
-
-      if (isPlainObject(result) && hasProperty(result, 'id')) {
-        content = controllerMessenger.call(
-          'SnapInterfaceController:getInterface',
-          snapId,
-          result.id as string,
-        ).content;
-      }
-
-      if (isPlainObject(result) && hasProperty(result, 'content')) {
-        content = result.content;
-      }
+      const content = getContentFromResult(result, snapId, controllerMessenger);
 
       return {
         id: String(id),
@@ -112,4 +100,32 @@ export function handleRequest({
   };
 
   return promise;
+}
+
+/**
+ * Get the response content components either from the Snap interface Controller or the response object if there is some.
+ *
+ * @param result - The handler result object.
+ * @param snapId - The Snap ID.
+ * @param controllerMessenger - The controller messenger.
+ * @returns The content components if any.
+ */
+export function getContentFromResult(
+  result: unknown,
+  snapId: SnapId,
+  controllerMessenger: RootControllerMessenger,
+): Component | undefined {
+  if (isPlainObject(result) && hasProperty(result, 'id')) {
+    return controllerMessenger.call(
+      'SnapInterfaceController:getInterface',
+      snapId,
+      result.id as string,
+    ).content;
+  }
+
+  if (isPlainObject(result) && hasProperty(result, 'content')) {
+    return result.content as Component;
+  }
+
+  return undefined;
 }

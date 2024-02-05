@@ -11,7 +11,6 @@ import {
   detectSnapLocation,
   NodeThreadExecutionService,
   setupMultiplex,
-  SnapInterfaceController,
 } from '@metamask/snaps-controllers';
 import { getEncryptionKey } from '@metamask/snaps-rpc-methods';
 import type {
@@ -160,17 +159,6 @@ export async function handleInstallSnap<
   const controllerMessenger = new ControllerMessenger<any, any>();
 
   registerActions(controllerMessenger);
-
-  // eslint-disable-next-line no-new
-  new SnapInterfaceController({
-    messenger: controllerMessenger.getRestricted({
-      name: 'SnapInterfaceController',
-      allowedActions: [
-        'PhishingController:maybeUpdateState',
-        'PhishingController:testOrigin',
-      ],
-    }),
-  });
 
   // Set up controllers and JSON-RPC stack.
   const hooks = getHooks(options, snapFiles, snapId, controllerMessenger);

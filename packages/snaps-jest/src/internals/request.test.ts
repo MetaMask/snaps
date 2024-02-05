@@ -8,7 +8,7 @@ import {
   getRestrictedSnapInterfaceControllerMessenger,
   getRootControllerMessenger,
 } from '../test-utils';
-import { handleRequest } from './request';
+import { getContentFromResult, handleRequest } from './request';
 import { handleInstallSnap } from './simulation';
 
 describe('handleRequest', () => {
@@ -124,5 +124,49 @@ describe('handleRequest', () => {
 
     await closeServer();
     await snap.executionService.terminateAllSnaps();
+  });
+});
+
+describe('getContentFromResult', () => {
+  it('gets the content from the SnapInterfaceController if the result contains an ID', async () => {
+    const controllerMessenger = getRootControllerMessenger();
+    const interfaceController = new SnapInterfaceController({
+      messenger:
+        getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
+    });
+
+    const snapId = 'foo' as SnapId;
+    const content = text('foo');
+
+    const id = await interfaceController.createInterface(snapId, content);
+
+    const result = getContentFromResult({ id }, snapId, controllerMessenger);
+
+    expect(result).toStrictEqual(content);
+  });
+
+  it('gets the content from the result if the result contains the content', () => {
+    const controllerMessenger = getRootControllerMessenger();
+
+    const snapId = 'foo' as SnapId;
+    const content = text('foo');
+
+    const result = getContentFromResult(
+      { content },
+      snapId,
+      controllerMessenger,
+    );
+
+    expect(result).toStrictEqual(content);
+  });
+
+  it('returns undefined if there is no content associated with the result', () => {
+    const controllerMessenger = getRootControllerMessenger();
+
+    const snapId = 'foo' as SnapId;
+
+    const result = getContentFromResult({}, snapId, controllerMessenger);
+
+    expect(result).toBeUndefined();
   });
 });

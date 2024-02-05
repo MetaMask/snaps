@@ -10,6 +10,7 @@ import {
   SubjectMetadataController,
   SubjectType,
 } from '@metamask/permission-controller';
+import { SnapInterfaceController } from '@metamask/snaps-controllers';
 import type {
   ExecutionServiceActions,
   SnapInterfaceControllerActions,
@@ -55,6 +56,7 @@ export type Controllers = {
     CaveatSpecificationConstraint
   >;
   subjectMetadataController: SubjectMetadataController;
+  interfaceController: SnapInterfaceController;
 };
 
 /**
@@ -72,11 +74,22 @@ export function getControllers(options: GetControllersOptions): Controllers {
     subjectCacheLimit: 100,
   });
 
+  const interfaceController = new SnapInterfaceController({
+    messenger: controllerMessenger.getRestricted({
+      name: 'SnapInterfaceController',
+      allowedActions: [
+        'PhishingController:maybeUpdateState',
+        'PhishingController:testOrigin',
+      ],
+    }),
+  });
+
   const permissionController = getPermissionController(options);
 
   return {
     permissionController,
     subjectMetadataController,
+    interfaceController,
   };
 }
 
@@ -125,7 +138,10 @@ function getPermissionController(options: GetControllersOptions) {
 export async function registerSnap(
   snapId: SnapId,
   manifest: SnapManifest,
-  { permissionController, subjectMetadataController }: Controllers,
+  {
+    permissionController,
+    subjectMetadataController,
+  }: Omit<Controllers, 'interfaceController'>,
 ) {
   subjectMetadataController.addSubjectMetadata({
     origin: snapId,
