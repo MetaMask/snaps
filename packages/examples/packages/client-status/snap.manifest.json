@@ -1,13 +1,13 @@
 {
   "version": "0.0.0",
-  "description": "MetaMask example snap demonstrating the use snap_getClientStatus.",
+  "description": "MetaMask example snap demonstrating the use of `snap_getClientStatus`",
   "proposedName": "Client Status Example Snap",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "qPPDPwQWA1NZvwldfnt5NytImYkSnslEEj0LW1DIT3U=",
+    "shasum": "Tb65zln6DKNEwqgi30mB4M2UDBJdGhstKMqR/pEod+w=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
