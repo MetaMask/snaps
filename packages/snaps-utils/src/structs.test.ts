@@ -27,6 +27,7 @@ import {
   getUnionStructNames,
   named,
   validateUnion,
+  createUnion,
 } from './structs';
 
 /**
@@ -343,5 +344,77 @@ describe('validateUnion', () => {
         'string',
       )}, but received: ${red('42')}.`,
     );
+  });
+});
+
+describe('createUnion', () => {
+  it('throws a readable error if the type does not satisfy any of the expected types', () => {
+    const FooStruct = object({
+      type: literal('a'),
+      value: string(),
+    });
+
+    const BarStruct = object({
+      type: literal('b'),
+      value: number(),
+    });
+
+    const Union = union([FooStruct, BarStruct]);
+    expect(() => createUnion({ type: 'c', value: 42 }, Union, 'type')).toThrow(
+      `At path: ${bold('type')} — Expected the value to be one of: ${green(
+        '"a"',
+      )}, ${green('"b"')}, but received: ${red('"c"')}.`,
+    );
+  });
+
+  it('throws a readable error if the value does not satisfy the union type', () => {
+    const FooStruct = object({
+      type: literal('a'),
+      value: string(),
+    });
+
+    const BarStruct = object({
+      type: literal('b'),
+      value: number(),
+    });
+
+    const Union = union([FooStruct, BarStruct]);
+    expect(() => createUnion({ type: 'a', value: 42 }, Union, 'type')).toThrow(
+      `At path: ${bold('value')} — Expected a value of type ${green(
+        'string',
+      )}, but received: ${red('42')}.`,
+    );
+  });
+
+  it('creates a value from a union struct', () => {
+    const FooStruct = object({
+      type: literal('a'),
+      value: string(),
+    });
+
+    const BarStruct = object({
+      type: literal('b'),
+      value: number(),
+    });
+
+    const Union = union([FooStruct, BarStruct]);
+    const value = createUnion({ type: 'a', value: 'foo' }, Union, 'type');
+    expect(value).toStrictEqual({ type: 'a', value: 'foo' });
+  });
+
+  it('creates a value from a union struct with a default', () => {
+    const FooStruct = object({
+      type: literal('a'),
+      value: defaulted(string(), 'bar'),
+    });
+
+    const BarStruct = object({
+      type: literal('b'),
+      value: defaulted(number(), 42),
+    });
+
+    const Union = union([FooStruct, BarStruct]);
+    const value = createUnion({ type: 'a' }, Union, 'type');
+    expect(value).toStrictEqual({ type: 'a', value: 'bar' });
   });
 });
