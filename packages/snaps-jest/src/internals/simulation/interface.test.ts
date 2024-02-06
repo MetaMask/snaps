@@ -1,9 +1,15 @@
+import { SnapInterfaceController } from '@metamask/snaps-controllers';
+import type { SnapId } from '@metamask/snaps-sdk';
 import { DialogType, text } from '@metamask/snaps-sdk';
 import { assert } from '@metamask/utils';
 import type { SagaIterator } from 'redux-saga';
 import { take } from 'redux-saga/effects';
 
-import { getMockOptions } from '../../test-utils';
+import {
+  getMockOptions,
+  getRestrictedSnapInterfaceControllerMessenger,
+  getRootControllerMessenger,
+} from '../../test-utils';
 import { getInterface, getInterfaceResponse } from './interface';
 import type { RunSagaFunction } from './store';
 import { createStore, resolveInterface, setInterface } from './store';
@@ -155,15 +161,34 @@ describe('getInterfaceResponse', () => {
 });
 
 describe('getInterface', () => {
+  const rootControllerMessenger = getRootControllerMessenger();
+  const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+    rootControllerMessenger,
+  );
+
+  const interfaceController = new SnapInterfaceController({
+    messenger: controllerMessenger,
+  });
   it('returns the current user interface, if any', async () => {
     const { store, runSaga } = createStore('password', getMockOptions());
 
-    const ui = { type: DialogType.Alert, content: text('foo') };
+    const snapId = 'foo' as SnapId;
+    const content = text('foo');
+    const id = await interfaceController.createInterface(snapId, content);
+    const type = DialogType.Alert;
+    const ui = { type, id };
+
     store.dispatch(setInterface(ui));
 
-    const result = await runSaga(getInterface, runSaga).toPromise();
+    const result = await runSaga(
+      getInterface,
+      runSaga,
+      snapId,
+      rootControllerMessenger,
+    ).toPromise();
     expect(result).toStrictEqual({
-      ...ui,
+      type,
+      content,
       ok: expect.any(Function),
     });
   });
@@ -171,14 +196,25 @@ describe('getInterface', () => {
   it('waits for a user interface to be set if none is currently set', async () => {
     const { store, runSaga } = createStore('password', getMockOptions());
 
-    const promise = runSaga(getInterface, runSaga).toPromise();
+    const snapId = 'foo' as SnapId;
 
-    const ui = { type: DialogType.Alert, content: text('foo') };
+    const promise = runSaga(
+      getInterface,
+      runSaga,
+      snapId,
+      rootControllerMessenger,
+    ).toPromise();
+
+    const content = text('foo');
+    const id = await interfaceController.createInterface(snapId, content);
+    const type = DialogType.Alert;
+    const ui = { type, id };
     store.dispatch(setInterface(ui));
 
     const result = await promise;
     expect(result).toStrictEqual({
-      ...ui,
+      type,
+      content,
       ok: expect.any(Function),
     });
   });

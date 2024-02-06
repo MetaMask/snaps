@@ -2940,7 +2940,7 @@ export class SnapController extends BaseController<
   }
 
   #assertInterfaceExists(snapId: SnapId, id: string) {
-    // This will throw if the interface is accessible, but we assert nevertheless.
+    // This will throw if the interface isn't accessible, but we assert nevertheless.
     assert(
       this.messagingSystem.call(
         'SnapInterfaceController:getInterface',

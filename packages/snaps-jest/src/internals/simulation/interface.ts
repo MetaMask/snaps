@@ -1,10 +1,11 @@
-import type { Component } from '@metamask/snaps-sdk';
+import type { Component, SnapId } from '@metamask/snaps-sdk';
 import { DialogType } from '@metamask/snaps-sdk';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { SagaIterator } from 'redux-saga';
 import { put, select, take } from 'redux-saga/effects';
 
 import type { SnapInterface } from '../../types';
+import type { RootControllerMessenger } from './controllers';
 import type { Interface, RunSagaFunction } from './store';
 import { getCurrentInterface, resolveInterface, setInterface } from './store';
 
@@ -102,23 +103,34 @@ function resolveWithInput(runSaga: RunSagaFunction) {
  * Get a user interface object from a Snap.
  *
  * @param runSaga - A function to run a saga outside the usual Redux flow.
+ * @param snapId - The Snap ID.
+ * @param controllerMessenger - The controller messenger used to call actions.
  * @yields Takes the set interface action.
  * @returns The user interface object.
  */
 export function* getInterface(
   runSaga: RunSagaFunction,
+  snapId: SnapId,
+  controllerMessenger: RootControllerMessenger,
 ): SagaIterator<SnapInterface> {
   const currentInterface: Interface | null = yield select(getCurrentInterface);
   if (currentInterface) {
-    return getInterfaceResponse(
-      runSaga,
-      currentInterface.type,
-      currentInterface.content,
+    const { content } = controllerMessenger.call(
+      'SnapInterfaceController:getInterface',
+      snapId,
+      currentInterface.id,
     );
+    return getInterfaceResponse(runSaga, currentInterface.type, content);
   }
 
   const { payload }: PayloadAction<Interface> = yield take(setInterface.type);
-  const { type, content } = payload;
+  const { type, id } = payload;
+
+  const { content } = controllerMessenger.call(
+    'SnapInterfaceController:getInterface',
+    snapId,
+    id,
+  );
 
   return getInterfaceResponse(runSaga, type, content);
 }

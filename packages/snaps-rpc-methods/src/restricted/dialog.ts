@@ -5,11 +5,22 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { DialogType, ComponentStruct, enumValue } from '@metamask/snaps-sdk';
-import type { DialogParams, EnumToUnion, Component } from '@metamask/snaps-sdk';
-import { validateComponentLinks } from '@metamask/snaps-utils';
+import {
+  DialogType,
+  ComponentStruct,
+  enumValue,
+  union,
+} from '@metamask/snaps-sdk';
+import type {
+  DialogParams,
+  EnumToUnion,
+  Component,
+  InterfaceState,
+  SnapId,
+} from '@metamask/snaps-sdk';
+import { createUnion } from '@metamask/snaps-utils';
 import type { InferMatching } from '@metamask/snaps-utils';
-import type { NonEmptyArray } from '@metamask/utils';
+import { hasProperty, type NonEmptyArray } from '@metamask/utils';
 import type { Infer, Struct } from 'superstruct';
 import {
   create,
@@ -18,9 +29,7 @@ import {
   optional,
   size,
   string,
-  StructError,
   type,
-  union,
 } from 'superstruct';
 
 import { type MethodHooksObject } from '../utils';
@@ -34,28 +43,35 @@ export type Placeholder = Infer<typeof PlaceholderStruct>;
 type ShowDialog = (
   snapId: string,
   type: EnumToUnion<DialogType>,
-  content: Component,
+  id: string,
   placeholder?: Placeholder,
 ) => Promise<null | boolean | string>;
 
-type MaybeUpdatePhisingList = () => Promise<void>;
-type IsOnPhishingList = (url: string) => boolean;
+type CreateInterface = (snapId: string, content: Component) => Promise<string>;
+type GetInterface = (
+  snapId: string,
+  id: string,
+) => { content: Component; snapId: SnapId; state: InterfaceState };
 
 export type DialogMethodHooks = {
   /**
    * @param snapId - The ID of the Snap that created the alert.
    * @param type - The dialog type.
-   * @param content - The dialog custom UI.
+   * @param id - The interface ID.
    * @param placeholder - The placeholder for the Prompt dialog input.
    */
   showDialog: ShowDialog;
 
-  maybeUpdatePhishingList: MaybeUpdatePhisingList;
-
   /**
-   * @param url - The URL to check against the phishing list.
+   * @param snapId - The Snap ID creating the interface.
+   * @param content - The content of the interface.
    */
-  isOnPhishingList: IsOnPhishingList;
+  createInterface: CreateInterface;
+  /**
+   * @param snapId - The SnapId requesting the interface.
+   * @param id - The interface ID.
+   */
+  getInterface: GetInterface;
 };
 
 type DialogSpecificationBuilderOptions = {
@@ -103,8 +119,8 @@ const specificationBuilder: PermissionSpecificationBuilder<
 
 const methodHooks: MethodHooksObject<DialogMethodHooks> = {
   showDialog: true,
-  isOnPhishingList: true,
-  maybeUpdatePhishingList: true,
+  createInterface: true,
+  getInterface: true,
 };
 
 export const dialogBuilder = Object.freeze({
@@ -119,21 +135,51 @@ const BaseParamsStruct = type({
   type: enums([DialogType.Alert, DialogType.Confirmation, DialogType.Prompt]),
 });
 
-const AlertParametersStruct = object({
+const AlertParametersWithContentStruct = object({
   type: enumValue(DialogType.Alert),
   content: ComponentStruct,
 });
+const AlertParametersWithIdStruct = object({
+  type: enumValue(DialogType.Alert),
+  id: string(),
+});
 
-const ConfirmationParametersStruct = object({
+const AlertParametersStruct = union([
+  AlertParametersWithContentStruct,
+  AlertParametersWithIdStruct,
+]);
+
+const ConfirmationParametersWithContentStruct = object({
   type: enumValue(DialogType.Confirmation),
   content: ComponentStruct,
 });
 
-const PromptParametersStruct = object({
+const ConfirmationParametersWithIdStruct = object({
+  type: enumValue(DialogType.Confirmation),
+  id: string(),
+});
+
+const ConfirmationParametersStruct = union([
+  ConfirmationParametersWithContentStruct,
+  ConfirmationParametersWithIdStruct,
+]);
+
+const PromptParametersWithContentStruct = object({
   type: enumValue(DialogType.Prompt),
   content: ComponentStruct,
   placeholder: PlaceholderStruct,
 });
+
+const PromptParametersWithIdStruct = object({
+  type: enumValue(DialogType.Prompt),
+  id: string(),
+  placeholder: PlaceholderStruct,
+});
+
+const PromptParametersStruct = union([
+  PromptParametersWithContentStruct,
+  PromptParametersWithIdStruct,
+]);
 
 const DialogParametersStruct = union([
   AlertParametersStruct,
@@ -158,16 +204,15 @@ const structs = {
  * @param hooks - The RPC method hooks.
  * @param hooks.showDialog - A function that shows the specified dialog in the
  * MetaMask UI and returns the appropriate value for the dialog type.
- * @param hooks.isOnPhishingList - A function that checks a link against the
- * phishing list and return true if it's in, otherwise false.
- * @param hooks.maybeUpdatePhishingList - A function that updates the phishing list if needed.
+ * @param hooks.createInterface - A function that creates the interface in SnapInterfaceController.
+ * @param hooks.getInterface - A function that gets an interface from SnapInterfaceController.
  * @returns The method implementation which return value depends on the dialog
  * type, valid return types are: string, boolean, null.
  */
 export function getDialogImplementation({
   showDialog,
-  isOnPhishingList,
-  maybeUpdatePhishingList,
+  createInterface,
+  getInterface,
 }: DialogMethodHooks) {
   return async function dialogImplementation(
     args: RestrictedMethodOptions<DialogParameters>,
@@ -180,18 +225,30 @@ export function getDialogImplementation({
     const validatedType = getValidatedType(params);
     const validatedParams = getValidatedParams(params, structs[validatedType]);
 
-    const { content } = validatedParams;
-
-    await maybeUpdatePhishingList();
-
-    validateComponentLinks(content, isOnPhishingList);
-
     const placeholder =
       validatedParams.type === DialogType.Prompt
         ? validatedParams.placeholder
         : undefined;
 
-    return showDialog(origin, validatedType, content, placeholder);
+    if (hasProperty(validatedParams, 'content')) {
+      const id = await createInterface(
+        origin,
+        validatedParams.content as Component,
+      );
+      return showDialog(origin, validatedType, id, placeholder);
+    }
+
+    // Verify that the passed interface ID is valid.
+    // This will throw if the interface ID is invalid (not created by the snap or doesn't exist)
+    try {
+      getInterface(origin, validatedParams.id);
+    } catch (error) {
+      throw rpcErrors.invalidParams({
+        message: `Invalid params: ${error.message}`,
+      });
+    }
+
+    return showDialog(origin, validatedType, validatedParams.id, placeholder);
   };
 }
 
@@ -224,27 +281,13 @@ function getValidatedType(params: unknown): DialogType {
  */
 function getValidatedParams(
   params: unknown,
-  struct: Struct<any>,
+  struct: Struct<any, any>,
 ): DialogParameters {
   try {
-    return create(params, struct);
+    return createUnion(params, struct, 'type');
   } catch (error) {
-    if (error instanceof StructError) {
-      const { key, type: errorType } = error;
-
-      if (key === 'placeholder' && errorType === 'never') {
-        throw rpcErrors.invalidParams({
-          message:
-            'Invalid params: Alerts or confirmations may not specify a "placeholder" field.',
-        });
-      }
-
-      throw rpcErrors.invalidParams({
-        message: `Invalid params: ${error.message}.`,
-      });
-    }
-
-    /* istanbul ignore next */
-    throw rpcErrors.internal();
+    throw rpcErrors.invalidParams({
+      message: `Invalid params: ${error.message}`,
+    });
   }
 }

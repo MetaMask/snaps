@@ -1,4 +1,5 @@
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { DialogType, heading, panel, text } from '@metamask/snaps-sdk';
 
 import type { DialogMethodHooks } from './dialog';
@@ -11,6 +12,8 @@ describe('builder', () => {
       specificationBuilder: expect.any(Function),
       methodHooks: {
         showDialog: true,
+        createInterface: true,
+        getInterface: true,
       },
     });
   });
@@ -20,8 +23,8 @@ describe('builder', () => {
       dialogBuilder.specificationBuilder({
         methodHooks: {
           showDialog: jest.fn(),
-          isOnPhishingList: jest.fn(),
-          maybeUpdatePhishingList: jest.fn(),
+          createInterface: jest.fn(),
+          getInterface: jest.fn(),
         },
       }),
     ).toStrictEqual({
@@ -38,8 +41,10 @@ describe('implementation', () => {
   const getMockDialogHooks = () =>
     ({
       showDialog: jest.fn(),
-      isOnPhishingList: jest.fn(),
-      maybeUpdatePhishingList: jest.fn(),
+      createInterface: jest.fn().mockReturnValue('bar'),
+      getInterface: jest
+        .fn()
+        .mockReturnValue({ content: text('foo'), state: {}, snapId: 'foo' }),
     } as DialogMethodHooks);
 
   it('accepts string dialog types', async () => {
@@ -58,9 +63,93 @@ describe('implementation', () => {
     expect(hooks.showDialog).toHaveBeenCalledWith(
       'foo',
       DialogType.Alert,
-      panel([heading('foo'), text('bar')]),
+      'bar',
       undefined,
     );
+  });
+
+  it('gets the interface data if an interface ID is passed', async () => {
+    const hooks = {
+      showDialog: jest.fn(),
+      createInterface: jest.fn().mockReturnValue('bar'),
+      getInterface: jest
+        .fn()
+        .mockReturnValue({ content: text('foo'), state: {}, snapId: 'foo' }),
+    };
+
+    const implementation = getDialogImplementation(hooks);
+
+    await implementation({
+      context: { origin: 'foo' },
+      method: 'snap_dialog',
+      params: {
+        type: 'alert',
+        id: 'bar',
+      },
+    });
+
+    expect(hooks.showDialog).toHaveBeenCalledTimes(1);
+    expect(hooks.showDialog).toHaveBeenCalledWith(
+      'foo',
+      DialogType.Alert,
+      'bar',
+      undefined,
+    );
+  });
+
+  it('creates a new interface if some content is passed', async () => {
+    const hooks = getMockDialogHooks();
+    const implementation = getDialogImplementation(hooks);
+
+    const content = panel([heading('foo'), text('bar')]);
+
+    await implementation({
+      context: { origin: 'foo' },
+      method: 'snap_dialog',
+      params: {
+        type: 'alert',
+        content,
+      },
+    });
+
+    expect(hooks.createInterface).toHaveBeenCalledWith('foo', content);
+    expect(hooks.showDialog).toHaveBeenCalledTimes(1);
+    expect(hooks.showDialog).toHaveBeenCalledWith(
+      'foo',
+      DialogType.Alert,
+      'bar',
+      undefined,
+    );
+  });
+
+  it('throws if the requested interface does not exist.', async () => {
+    const hooks = {
+      showDialog: jest.fn(),
+      createInterface: jest.fn(),
+      getInterface: jest.fn().mockImplementation((_snapId, id) => {
+        throw new Error(`Interface with id '${id}' not found.`);
+      }),
+    };
+
+    const implementation = getDialogImplementation(hooks);
+
+    await expect(
+      implementation({
+        context: { origin: 'foo' },
+        method: 'snap_dialog',
+        params: {
+          type: 'alert',
+          id: 'bar',
+        },
+      }),
+    ).rejects.toThrow(
+      rpcErrors.invalidParams(
+        `Invalid params: Interface with id 'bar' not found.`,
+      ),
+    );
+
+    expect(hooks.getInterface).toHaveBeenCalledTimes(1);
+    expect(hooks.getInterface).toHaveBeenCalledWith('foo', 'bar');
   });
 
   describe('alerts', () => {
@@ -80,7 +169,7 @@ describe('implementation', () => {
       expect(hooks.showDialog).toHaveBeenCalledWith(
         'foo',
         DialogType.Alert,
-        panel([heading('foo'), text('bar')]),
+        'bar',
         undefined,
       );
     });
@@ -103,7 +192,7 @@ describe('implementation', () => {
       expect(hooks.showDialog).toHaveBeenCalledWith(
         'foo',
         DialogType.Confirmation,
-        panel([heading('foo'), text('bar')]),
+        'bar',
         undefined,
       );
     });
@@ -127,7 +216,7 @@ describe('implementation', () => {
       expect(hooks.showDialog).toHaveBeenCalledWith(
         'foo',
         DialogType.Prompt,
-        panel([heading('foo'), text('bar')]),
+        'bar',
         'foobar',
       );
     });
@@ -197,7 +286,7 @@ describe('implementation', () => {
           params: value as any,
         }),
       ).rejects.toThrow(
-        /Invalid params: At path: .* -- Expected .*, but received: .*\./u,
+        /Invalid params: At path: .* — Expected a value of type .*, but received: .*\./u,
       );
     });
 
@@ -218,7 +307,7 @@ describe('implementation', () => {
             },
           }),
         ).rejects.toThrow(
-          /Invalid params: At path: placeholder -- Expected a string, but received: .*\./u,
+          /Invalid params: At path: placeholder — Expected a value of type string, but received: .*\./u,
         );
       },
     );
@@ -238,7 +327,7 @@ describe('implementation', () => {
           },
         }),
       ).rejects.toThrow(
-        'Invalid params: At path: placeholder -- Expected a string with a length between `1` and `40` but received one with a length of `0`.',
+        'Invalid params: At path: placeholder — Expected a string with a length between 1 and 40, but received one with a length of 0.',
       );
     });
 
@@ -251,6 +340,7 @@ describe('implementation', () => {
           implementation({
             context: { origin: 'foo' },
             method: 'snap_dialog',
+            // @ts-expect-error Wrong params.
             params: {
               type,
               content: panel([heading('foo'), text('bar')]),
@@ -258,28 +348,9 @@ describe('implementation', () => {
             },
           }),
         ).rejects.toThrow(
-          'Invalid params: Alerts or confirmations may not specify a "placeholder" field.',
+          'Invalid params: Unknown key: placeholder, received: "foobar".',
         );
       },
     );
-
-    it('rejects phishing links', async () => {
-      const implementation = getDialogImplementation({
-        showDialog: jest.fn(),
-        isOnPhishingList: () => true,
-        maybeUpdatePhishingList: jest.fn(),
-      });
-
-      await expect(
-        implementation({
-          context: { origin: 'foo' },
-          method: 'snap_dialog',
-          params: {
-            type: DialogType.Confirmation,
-            content: panel([heading('foo'), text('[bar](https://foo.bar)')]),
-          },
-        }),
-      ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
-    });
   });
 });

@@ -3,14 +3,20 @@ import {
   detectSnapLocation,
   fetchSnap,
   NodeThreadExecutionService,
+  SnapInterfaceController,
 } from '@metamask/snaps-controllers';
-import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
+import { AuxiliaryFileEncoding, text } from '@metamask/snaps-sdk';
 import { VirtualFile } from '@metamask/snaps-utils';
 import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
 
-import { getMockOptions, getMockServer } from '../../test-utils';
+import {
+  getMockOptions,
+  getMockServer,
+  getRestrictedSnapInterfaceControllerMessenger,
+  getRootControllerMessenger,
+} from '../../test-utils';
 import { DEFAULT_SRP } from './constants';
-import { getHooks, handleInstallSnap } from './simulation';
+import { getHooks, handleInstallSnap, registerActions } from './simulation';
 
 describe('handleInstallSnap', () => {
   it('installs a Snap and returns the execution service', async () => {
@@ -26,6 +32,8 @@ describe('handleInstallSnap', () => {
 });
 
 describe('getHooks', () => {
+  const controllerMessenger = getRootControllerMessenger();
+
   it('returns the `getMnemonic` hook', async () => {
     const { snapId, close } = await getMockServer();
 
@@ -34,7 +42,12 @@ describe('getHooks', () => {
     });
     const snapFiles = await fetchSnap(snapId, location);
 
-    const { getMnemonic } = getHooks(getMockOptions(), snapFiles);
+    const { getMnemonic } = getHooks(
+      getMockOptions(),
+      snapFiles,
+      snapId,
+      controllerMessenger,
+    );
     expect(await getMnemonic()).toStrictEqual(
       mnemonicPhraseToBytes(DEFAULT_SRP),
     );
@@ -61,10 +74,132 @@ describe('getHooks', () => {
     });
     const snapFiles = await fetchSnap(snapId, location);
 
-    const { getSnapFile } = getHooks(getMockOptions(), snapFiles);
+    const { getSnapFile } = getHooks(
+      getMockOptions(),
+      snapFiles,
+      snapId,
+      controllerMessenger,
+    );
     const file = await getSnapFile('foo.json', AuxiliaryFileEncoding.Utf8);
     expect(file).toStrictEqual(value);
 
+    await close();
+  });
+
+  it('returns the `createInterface` hook', async () => {
+    // eslint-disable-next-line no-new
+    new SnapInterfaceController({
+      messenger:
+        getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
+    });
+
+    jest.spyOn(controllerMessenger, 'call');
+
+    const content = text('foo');
+    const { snapId, close } = await getMockServer({
+      manifest: getSnapManifest(),
+    });
+
+    const location = detectSnapLocation(snapId, {
+      allowLocal: true,
+    });
+    const snapFiles = await fetchSnap(snapId, location);
+
+    const { createInterface } = getHooks(
+      getMockOptions(),
+      snapFiles,
+      snapId,
+      controllerMessenger,
+    );
+    await createInterface(content);
+
+    expect(controllerMessenger.call).toHaveBeenCalledWith(
+      'SnapInterfaceController:createInterface',
+      snapId,
+      content,
+    );
+
+    await close();
+  });
+
+  it('returns the `updateInterface` hook', async () => {
+    // eslint-disable-next-line no-new
+    new SnapInterfaceController({
+      messenger:
+        getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
+    });
+
+    jest.spyOn(controllerMessenger, 'call');
+
+    const content = text('bar');
+    const { snapId, close } = await getMockServer({
+      manifest: getSnapManifest(),
+    });
+
+    const location = detectSnapLocation(snapId, {
+      allowLocal: true,
+    });
+    const snapFiles = await fetchSnap(snapId, location);
+
+    const { createInterface, updateInterface } = getHooks(
+      getMockOptions(),
+      snapFiles,
+      snapId,
+      controllerMessenger,
+    );
+
+    const id = await createInterface(text('foo'));
+
+    await updateInterface(id, content);
+
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
+      3,
+      'SnapInterfaceController:updateInterface',
+      snapId,
+      id,
+      content,
+    );
+
+    await close();
+  });
+
+  it('returns the `getInterfaceState` hook', async () => {
+    // eslint-disable-next-line no-new
+    new SnapInterfaceController({
+      messenger:
+        getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
+    });
+
+    jest.spyOn(controllerMessenger, 'call');
+
+    const { snapId, close } = await getMockServer({
+      manifest: getSnapManifest(),
+    });
+
+    const location = detectSnapLocation(snapId, {
+      allowLocal: true,
+    });
+    const snapFiles = await fetchSnap(snapId, location);
+
+    const { createInterface, getInterfaceState } = getHooks(
+      getMockOptions(),
+      snapFiles,
+      snapId,
+      controllerMessenger,
+    );
+
+    const id = await createInterface(text('foo'));
+
+    const result = getInterfaceState(id);
+
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
+      3,
+      'SnapInterfaceController:getInterface',
+      snapId,
+      id,
+    );
+
+    expect(result).toStrictEqual({});
     await close();
   });
 
@@ -76,9 +211,25 @@ describe('getHooks', () => {
     });
     const snapFiles = await fetchSnap(snapId, location);
 
-    const { getIsLocked } = getHooks(getMockOptions(), snapFiles);
+    const { getIsLocked } = getHooks(
+      getMockOptions(),
+      snapFiles,
+      snapId,
+      controllerMessenger,
+    );
     expect(getIsLocked()).toBe(false);
 
     await close();
+  });
+});
+
+describe('registerActions', () => {
+  const controllerMessenger = getRootControllerMessenger(false);
+  it('registers `PhishingController:testOrigin`', async () => {
+    registerActions(controllerMessenger);
+
+    expect(
+      controllerMessenger.call('PhishingController:testOrigin', 'foo'),
+    ).toStrictEqual({ result: false, type: 'all' });
   });
 });
