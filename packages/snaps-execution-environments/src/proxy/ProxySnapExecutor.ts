@@ -12,7 +12,7 @@ type ExecutorJob = {
   stream: WindowPostMessageStream;
 };
 
-const IFRAME_URL = `https://execution.metamask.io/${packageJson.version}/index.html`;
+const IFRAME_URL = `https://execution.metamask.io/iframe/${packageJson.version}/index.html`;
 
 /**
  * A "proxy" snap executor that uses a level of indirection to execute snaps.

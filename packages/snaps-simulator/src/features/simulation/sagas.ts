@@ -68,7 +68,7 @@ import {
   unrestrictedMethods,
 } from './snap-permissions';
 
-const DEFAULT_ENVIRONMENT_URL = `https://execution.metamask.io/${packageJson.version}/index.html`;
+const DEFAULT_ENVIRONMENT_URL = `https://execution.metamask.io/iframe/${packageJson.version}/index.html`;
 
 /**
  * The initialization saga is run on when the snap ID is changed and initializes the snaps execution environment.
