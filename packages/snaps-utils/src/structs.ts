@@ -324,6 +324,22 @@ export function getStructFailureMessage<Type, Schema>(
     )}, received: ${received}.`;
   }
 
+  if (failure.refinement === 'size') {
+    const message = failure.message
+      .replace(
+        /length between `(\d+)` and `(\d+)`/u,
+        `length between ${color('$1', green, colorize)} and ${color(
+          '$2',
+          green,
+          colorize,
+        )},`,
+      )
+      .replace(/length of `(\d+)`/u, `length of ${color('$1', red, colorize)}`)
+      .replace(/a array/u, 'an array');
+
+    return `${prefix}${message}.`;
+  }
+
   return `${prefix}Expected a value of type ${color(
     failure.type,
     green,
