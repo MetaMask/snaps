@@ -2,7 +2,7 @@
 
 exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config 1`] = `
 {
-  "devtool": "source-map",
+  "devtool": false,
   "entry": "/foo/bar/src/index.js",
   "infrastructureLogging": {
     "level": "none",
@@ -27,7 +27,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "module": {
               "type": "commonjs",
             },
-            "sourceMaps": true,
+            "sourceMaps": false,
             "sync": false,
           },
         },
@@ -143,7 +143,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 
 exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config 2`] = `
 {
-  "devtool": "source-map",
+  "devtool": false,
   "entry": "/foo/bar/src/index.ts",
   "infrastructureLogging": {
     "level": "none",
@@ -168,7 +168,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "module": {
               "type": "commonjs",
             },
-            "sourceMaps": true,
+            "sourceMaps": false,
             "sync": false,
           },
         },
@@ -558,7 +558,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 
 exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config 5`] = `
 {
-  "devtool": "source-map",
+  "devtool": false,
   "entry": "/foo/bar/src/index.js",
   "infrastructureLogging": {
     "level": "none",
@@ -583,7 +583,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "module": {
               "type": "commonjs",
             },
-            "sourceMaps": true,
+            "sourceMaps": false,
             "sync": false,
           },
         },
@@ -704,7 +704,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 
 exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config 6`] = `
 {
-  "devtool": "source-map",
+  "devtool": false,
   "entry": "/foo/bar/src/index.js",
   "infrastructureLogging": {
     "level": "none",
@@ -729,7 +729,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "module": {
               "type": "commonjs",
             },
-            "sourceMaps": true,
+            "sourceMaps": false,
             "sync": false,
           },
         },
@@ -845,7 +845,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 
 exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config 7`] = `
 {
-  "devtool": "source-map",
+  "devtool": false,
   "entry": "/foo/bar/src/index.js",
   "infrastructureLogging": {
     "level": "none",
@@ -870,7 +870,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "module": {
               "type": "commonjs",
             },
-            "sourceMaps": true,
+            "sourceMaps": false,
             "sync": false,
           },
         },
@@ -986,7 +986,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 
 exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config 8`] = `
 {
-  "devtool": "source-map",
+  "devtool": false,
   "entry": "/foo/bar/src/index.js",
   "infrastructureLogging": {
     "level": "none",
@@ -1011,7 +1011,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "module": {
               "type": "commonjs",
             },
-            "sourceMaps": true,
+            "sourceMaps": false,
             "sync": false,
           },
         },
@@ -1135,7 +1135,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 
 exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config 9`] = `
 {
-  "devtool": "source-map",
+  "devtool": false,
   "entry": "/foo/bar/src/index.js",
   "infrastructureLogging": {
     "level": "none",
@@ -1160,7 +1160,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "module": {
               "type": "commonjs",
             },
-            "sourceMaps": true,
+            "sourceMaps": false,
             "sync": false,
           },
         },
@@ -1284,7 +1284,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 
 exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config and options 1`] = `
 {
-  "devtool": "source-map",
+  "devtool": false,
   "entry": "/foo/bar/src/index.ts",
   "infrastructureLogging": {
     "level": "none",
@@ -1309,7 +1309,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "module": {
               "type": "commonjs",
             },
-            "sourceMaps": true,
+            "sourceMaps": false,
             "sync": false,
           },
         },
@@ -1434,7 +1434,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 
 exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config and options 2`] = `
 {
-  "devtool": "source-map",
+  "devtool": false,
   "entry": "/foo/bar/src/index.ts",
   "infrastructureLogging": {
     "level": "none",
@@ -1459,7 +1459,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "module": {
               "type": "commonjs",
             },
-            "sourceMaps": true,
+            "sourceMaps": false,
             "sync": false,
           },
         },
@@ -1575,7 +1575,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 
 exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config and options 3`] = `
 {
-  "devtool": "source-map",
+  "devtool": false,
   "entry": "/foo/bar/src/index.ts",
   "infrastructureLogging": {
     "level": "none",
@@ -1600,7 +1600,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "module": {
               "type": "commonjs",
             },
-            "sourceMaps": true,
+            "sourceMaps": false,
             "sync": false,
           },
         },
@@ -1716,7 +1716,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 
 exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config and options 4`] = `
 {
-  "devtool": "source-map",
+  "devtool": false,
   "entry": "/foo/bar/src/index.ts",
   "infrastructureLogging": {
     "level": "none",
@@ -1741,7 +1741,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "module": {
               "type": "commonjs",
             },
-            "sourceMaps": true,
+            "sourceMaps": false,
             "sync": false,
           },
         },
@@ -1866,7 +1866,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 
 exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config and options 5`] = `
 {
-  "devtool": "source-map",
+  "devtool": false,
   "entry": "/foo/bar/src/index.ts",
   "infrastructureLogging": {
     "level": "none",
@@ -1891,7 +1891,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "module": {
               "type": "commonjs",
             },
-            "sourceMaps": true,
+            "sourceMaps": false,
             "sync": false,
           },
         },
