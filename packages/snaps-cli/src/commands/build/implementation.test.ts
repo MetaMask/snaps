@@ -119,8 +119,36 @@ describe('build', () => {
 
     const output = await fs.readFile('/snap/output.js', 'utf8');
     expect(output).toMatchInlineSnapshot(`
-      "(()=>{var e={67:e=>{e.exports.onRpcRequest=({request:e})=>{console.log("Hello, world!");const{method:r,id:o}=e;return r+o}}},r={};var o=function o(t){var s=r[t];if(void 0!==s)return s.exports;var n=r[t]={exports:{}};return e[t](n,n.exports,o),n.exports}(67),t=exports;for(var s in o)t[s]=o[s];o.__esModule&&Object.defineProperty(t,"__esModule",{value:!0})})();
-      //# sourceMappingURL=output.js.map"
+      "(() => {
+        var e = {
+            67: e => {
+              e.exports.onRpcRequest = ({
+                request: e
+              }) => {
+                console.log("Hello, world!");
+                let {
+                  method: r,
+                  id: o
+                } = e;
+                return r + o;
+              };
+            }
+          },
+          r = {},
+          o = function o(t) {
+            var s = r[t];
+            if (void 0 !== s) return s.exports;
+            var l = r[t] = {
+              exports: {}
+            };
+            return e[t](l, l.exports, o), l.exports;
+          }(67),
+          t = exports;
+        for (var s in o) t[s] = o[s];
+        o.__esModule && Object.defineProperty(t, "__esModule", {
+          value: !0
+        });
+      })();"
     `);
   });
 
@@ -186,8 +214,7 @@ describe('build', () => {
         if (__webpack_exports__.__esModule) Object.defineProperty(__webpack_export_target__, "__esModule", {
           value: true
         });
-      })();
-      //# sourceMappingURL=output.js.map"
+      })();"
     `);
   });
 
@@ -219,9 +246,63 @@ describe('build', () => {
       .replace(/var r=\{(\d+):/u, 'var r={1:')
       .replace(/u.exports\}\(\d+\),t/u, 'u.exports}(1),t');
 
-    expect(deterministicOutput).toMatchInlineSnapshot(
-      `"(()=>{var r={1:r=>{r.exports=function(){function r(e,o,t){function n(s,i){if(!o[s]){if(!e[s]){if(u)return u(s,!0);var f=new Error("Cannot find module '"+s+"'");throw f.code="MODULE_NOT_FOUND",f}var c=o[s]={exports:{}};e[s][0].call(c.exports,(function(r){return n(e[s][1][r]||r)}),c,c.exports,r,e,o,t)}return o[s].exports}for(var u=void 0,s=0;s<t.length;s++)n(t[s]);return n}return r}()({1:[function(r,e,o){"use strict";e.exports.onRpcRequest=({request:r})=>{console.log("Hello, world!");const{method:e,id:o}=r;return e+o}},{}]},{},[1])(1)}},e={};var o=function o(t){var n=e[t];if(void 0!==n)return n.exports;var u=e[t]={exports:{}};return r[t](u,u.exports,o),u.exports}(1),t=exports;for(var n in o)t[n]=o[n];o.__esModule&&Object.defineProperty(t,"__esModule",{value:!0})})();"`,
-    );
+    expect(deterministicOutput).toMatchInlineSnapshot(`
+      "(() => {
+        var r = {
+            360: r => {
+              r.exports = function r(e, o, t) {
+                function n(s, i) {
+                  if (!o[s]) {
+                    if (!e[s]) {
+                      if (u) return u(s, !0);
+                      var f = Error("Cannot find module '" + s + "'");
+                      throw f.code = "MODULE_NOT_FOUND", f;
+                    }
+                    var l = o[s] = {
+                      exports: {}
+                    };
+                    e[s][0].call(l.exports, function (r) {
+                      return n(e[s][1][r] || r);
+                    }, l, l.exports, r, e, o, t);
+                  }
+                  return o[s].exports;
+                }
+                for (var u = void 0, s = 0; s < t.length; s++) n(t[s]);
+                return n;
+              }({
+                1: [function (r, e, o) {
+                  "use strict";
+
+                  e.exports.onRpcRequest = ({
+                    request: r
+                  }) => {
+                    console.log("Hello, world!");
+                    let {
+                      method: e,
+                      id: o
+                    } = r;
+                    return e + o;
+                  };
+                }, {}]
+              }, {}, [1])(1);
+            }
+          },
+          e = {},
+          o = function o(t) {
+            var n = e[t];
+            if (void 0 !== n) return n.exports;
+            var u = e[t] = {
+              exports: {}
+            };
+            return r[t](u, u.exports, o), u.exports;
+          }(360),
+          t = exports;
+        for (var n in o) t[n] = o[n];
+        o.__esModule && Object.defineProperty(t, "__esModule", {
+          value: !0
+        });
+      })();"
+    `);
   });
 
   it('builds an unminimized snap bundle using a legacy config', async () => {
