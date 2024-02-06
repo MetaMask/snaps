@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.0.0]
+
 ### Uncategorized
 
 - [BREAKING] Add support for interactive UI to `snap_dialog` ([#2143](https://github.com/MetaMask/snaps-skunkworks.git/pull/2143))
@@ -248,7 +250,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@4.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@5.0.0...HEAD
+[5.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@4.1.0...@metamask/snaps-controllers@5.0.0
 [4.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@4.0.0...@metamask/snaps-controllers@4.1.0
 [4.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@3.6.0...@metamask/snaps-controllers@4.0.0
 [3.6.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@3.5.1...@metamask/snaps-controllers@3.6.0

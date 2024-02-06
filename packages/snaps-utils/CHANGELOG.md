@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.0.0]
+
 ### Uncategorized
 
 - Fix error message for invalid sizes ([#2167](https://github.com/MetaMask/snaps-skunkworks.git/pull/2167))
@@ -218,7 +220,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@5.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@6.0.0...HEAD
+[6.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@5.2.0...@metamask/snaps-utils@6.0.0
 [5.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@5.1.2...@metamask/snaps-utils@5.2.0
 [5.1.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@5.1.1...@metamask/snaps-utils@5.1.2
 [5.1.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@5.1.0...@metamask/snaps-utils@5.1.1

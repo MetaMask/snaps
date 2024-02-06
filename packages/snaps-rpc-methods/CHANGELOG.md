@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.0.0]
+
 ### Uncategorized
 
 - [BREAKING] Add support for interactive UI to `snap_dialog` ([#2143](https://github.com/MetaMask/snaps-skunkworks.git/pull/2143))
@@ -148,7 +150,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@5.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@6.0.0...HEAD
+[6.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@5.0.0...@metamask/snaps-rpc-methods@6.0.0
 [5.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@4.1.0...@metamask/snaps-rpc-methods@5.0.0
 [4.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@4.0.3...@metamask/snaps-rpc-methods@4.1.0
 [4.0.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@4.0.2...@metamask/snaps-rpc-methods@4.0.3
