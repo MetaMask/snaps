@@ -14,7 +14,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `WebViewExecutionService` for mobile execution ([#2005](https://github.com/MetaMask/snaps/pull/2005))
 
 ### Changed
-- **BREAKING:** Update name lookup API ([#2113](https://github.com/MetaMask/snaps/pull/2113))
 - Loosen allowlist requirements ([#1672](https://github.com/MetaMask/snaps/pull/1672))
   - Snaps with certain permissions can now be installed without being allowlisted.
 - Reintroduce `DecompressionStream` for improved installation performance ([#2110](https://github.com/MetaMask/snaps/pull/2110))

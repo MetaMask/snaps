@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **BREAKING:** Add support for dynamic user interfaces ([#1465](https://github.com/MetaMask/snaps/pull/1465), [#2144](https://github.com/MetaMask/snaps/pull/2144), [#2143](https://github.com/MetaMask/snaps/pull/2143))
   - This adds the `snap_createInterface`, `snap_updateInterface`, and `snap_getInterfaceState` methods.
   - This is breaking because it changes the expected type of the `showDialog` RPC method hook.
+- **BREAKING:** Update the permission format for the name lookup endowment ([#2113](https://github.com/MetaMask/snaps/pull/2113))
+  -  The new format is documented in [SIP-12](https://metamask.github.io/SIPs/SIPS/sip-12).
 - Add endowment permission specifications to this package ([#2155](https://github.com/MetaMask/snaps/pull/2155))
 
 ### Changed
