@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.1.1]
 ### Changed
-- Changed cronjob example snap interval to run more often ([#2164](https://github.com/MetaMask/snaps/pull/2164))
+- Change cronjob interval to run more often ([#2164](https://github.com/MetaMask/snaps/pull/2164))
 
 ## [2.1.0]
 ### Changed

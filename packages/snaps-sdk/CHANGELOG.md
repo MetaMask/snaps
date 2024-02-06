@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.0]
 ### Changed
-- **BREAKING**: Update name lookup API ([#2113](https://github.com/MetaMask/snaps/pull/2113))
+- **BREAKING:** Update name lookup API ([#2113](https://github.com/MetaMask/snaps/pull/2113))
   - This is breaking as the types have changed.
 - Add support for dynamic user interfaces ([#1465](https://github.com/MetaMask/snaps/pull/1465), [#2126](https://github.com/MetaMask/snaps/pull/2126), [#2143](https://github.com/MetaMask/snaps/pull/2143))
 - Add support for snap defined execution timeouts ([#2098](https://github.com/MetaMask/snaps/pull/2098))

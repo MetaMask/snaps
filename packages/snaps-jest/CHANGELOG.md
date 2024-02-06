@@ -9,13 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [5.0.0]
 ### Added
 - **BREAKING:** Implement testing framework using Node.js executor ([#1982](https://github.com/MetaMask/snaps/pull/1982), [#2118](https://github.com/MetaMask/snaps/pull/2118))
-- Add home page support to `snaps-jest` ([#2104](https://github.com/MetaMask/snaps/pull/2104))
-- Add `onSignature` support to `snaps-jest` ([#2114](https://github.com/MetaMask/snaps/pull/2114))
-- Add `snap_getClientStatus` support to `snaps-jest` ([#2159](https://github.com/MetaMask/snaps/pull/2159))
+  - The network mocking functionality was removed, but may be reintroduced in a future version.
+  - `mockJsonRpc` no longer returns a `Promise`.
+  - `runCronjob` was renamed to `onCronjob`, and `sendTransaction` was renamed to `onTransaction`.
+    - For backwards compatibility, the old methods are still available, but will be removed in a future version.
+- Add `onHomePage` support ([#2104](https://github.com/MetaMask/snaps/pull/2104))
+- Add `onSignature` support ([#2114](https://github.com/MetaMask/snaps/pull/2114))
+- Add `snap_getClientStatus` support ([#2159](https://github.com/MetaMask/snaps/pull/2159))
 
 ### Changed
 - Bump several MetaMask dependencies ([#2101](https://github.com/MetaMask/snaps/pull/2101), [#2100](https://github.com/MetaMask/snaps/pull/2100), [#2129](https://github.com/MetaMask/snaps/pull/2129), [#2140](https://github.com/MetaMask/snaps/pull/2140), [#2141](https://github.com/MetaMask/snaps/pull/2141), [#2142](https://github.com/MetaMask/snaps/pull/2142))
-
 
 ## [4.0.1]
 ### Fixed

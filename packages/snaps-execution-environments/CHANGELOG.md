@@ -19,7 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reduce executor bundle sizes ([#2160](https://github.com/MetaMask/snaps/pull/2160))
 - Bump MetaMask dependencies ([#2129](https://github.com/MetaMask/snaps/pull/2129), [#2132](https://github.com/MetaMask/snaps/pull/2132))
 
-
 ## [3.5.0]
 ### Added
 - Add support for signature insights ([#2074](https://github.com/MetaMask/snaps/pull/2074))

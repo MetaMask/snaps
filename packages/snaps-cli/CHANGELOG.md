@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [5.0.0]
 ### Changed
 - **BREAKING:** Disable source maps by default ([#2166](https://github.com/MetaMask/snaps/pull/2166))
+  - This slightly speeds up the build process.
+  - You can enable source maps again by setting `sourceMap: true` in your Snap config.
 
 ## [4.0.1]
 ### Fixed

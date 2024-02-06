@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.0.0]
 ### Changed
-- **BREAKING**: Update name lookup API ([#2113](https://github.com/MetaMask/snaps/pull/2113))
+- **BREAKING:** Update name lookup API ([#2113](https://github.com/MetaMask/snaps/pull/2113))
 
 ## [2.1.0]
 ### Changed

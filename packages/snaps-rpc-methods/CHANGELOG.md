@@ -9,13 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [6.0.0]
 ### Added
 - **BREAKING:** Add support for dynamic user interfaces ([#1465](https://github.com/MetaMask/snaps/pull/1465), [#2144](https://github.com/MetaMask/snaps/pull/2144), [#2143](https://github.com/MetaMask/snaps/pull/2143))
-  - Adds `snap_createInterface`, `snap_updateInterface` and `snap_getInterfaceState`.
+  - This adds the `snap_createInterface`, `snap_updateInterface`, and `snap_getInterfaceState` methods.
   - This is breaking because it changes the expected type of the `showDialog` RPC method hook.
 - Add endowment permission specifications to this package ([#2155](https://github.com/MetaMask/snaps/pull/2155))
 
 ### Changed
 - Bump MetaMask dependencies ([#2129](https://github.com/MetaMask/snaps/pull/2129), [#2142](https://github.com/MetaMask/snaps/pull/2142))
-
 
 ## [5.0.0]
 ### Added
