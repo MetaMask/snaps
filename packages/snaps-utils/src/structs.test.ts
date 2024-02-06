@@ -319,9 +319,7 @@ describe('validateUnion', () => {
     expect(() =>
       validateUnion({ type: 'c', value: 42 }, Union, 'type'),
     ).toThrow(
-      `At path: ${bold('type')} — Expected the value to be one of: ${green(
-        '"a"',
-      )}, ${green('"b"')}, but received: ${red('"c"')}.`,
+      `At path: type — Expected the value to be one of: "a", "b", but received: "c".`,
     );
   });
 
@@ -340,9 +338,7 @@ describe('validateUnion', () => {
     expect(() =>
       validateUnion({ type: 'a', value: 42 }, Union, 'type'),
     ).toThrow(
-      `At path: ${bold('value')} — Expected a value of type ${green(
-        'string',
-      )}, but received: ${red('42')}.`,
+      `At path: value — Expected a value of type string, but received: 42.`,
     );
   });
 
@@ -366,17 +362,13 @@ describe('validateUnion', () => {
     expect(() =>
       validateUnion({ type: 'a', value: 42 }, Union, 'type'),
     ).toThrow(
-      `At path: ${bold('value')} — Expected a value of type ${green(
-        'string',
-      )}, but received: ${red('42')}.`,
+      `At path: value — Expected a value of type string, but received: 42.`,
     );
 
     expect(() =>
       validateUnion({ type: 'a', id: 'foo' }, Union, 'type'),
     ).toThrow(
-      `At path: ${bold('id')} — Expected a value of type ${green(
-        'number',
-      )}, but received: ${red('"foo"')}.`,
+      `At path: id — Expected a value of type number, but received: "foo".`,
     );
   });
 
@@ -426,9 +418,7 @@ describe('createUnion', () => {
 
     const Union = union([FooStruct, BarStruct]);
     expect(() => createUnion({ type: 'c', value: 42 }, Union, 'type')).toThrow(
-      `At path: ${bold('type')} — Expected the value to be one of: ${green(
-        '"a"',
-      )}, ${green('"b"')}, but received: ${red('"c"')}.`,
+      `At path: type — Expected the value to be one of: "a", "b", but received: "c".`,
     );
   });
 
@@ -445,9 +435,7 @@ describe('createUnion', () => {
 
     const Union = union([FooStruct, BarStruct]);
     expect(() => createUnion({ type: 'a', value: 42 }, Union, 'type')).toThrow(
-      `At path: ${bold('value')} — Expected a value of type ${green(
-        'string',
-      )}, but received: ${red('42')}.`,
+      `At path: value — Expected a value of type string, but received: 42.`,
     );
   });
 
