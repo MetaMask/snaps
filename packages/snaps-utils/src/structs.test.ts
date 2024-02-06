@@ -3,6 +3,7 @@ import { assert } from '@metamask/utils';
 import { bold, green, red } from 'chalk';
 import type { Struct } from 'superstruct';
 import superstruct, {
+  size,
   create,
   defaulted,
   is,
@@ -275,6 +276,24 @@ describe('getStructFailureMessage', () => {
       `Expected the value to be \`${green('"bar"')}\`, but received: ${red(
         '"foo"',
       )}.`,
+    );
+  });
+
+  it('returns a readable error for a string with the wrong size', () => {
+    const error = getStructError('', size(string(), 1, 5));
+    expect(getStructFailureMessage(size(string(), 1, 5), error)).toBe(
+      `Expected a string with a length between ${green('1')} and ${green(
+        '5',
+      )}, but received one with a length of ${red('0')}.`,
+    );
+  });
+
+  it('returns a readable error for an array with the wrong size', () => {
+    const error = getStructError([], size(array(), 1, 5));
+    expect(getStructFailureMessage(size(array(), 1, 5), error)).toBe(
+      `Expected an array with a length between ${green('1')} and ${green(
+        '5',
+      )}, but received one with a length of ${red('0')}.`,
     );
   });
 
