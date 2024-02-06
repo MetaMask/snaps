@@ -118,10 +118,9 @@ describe('build', () => {
     );
 
     const output = await fs.readFile('/snap/output.js', 'utf8');
-    expect(output).toMatchInlineSnapshot(`
-      "(()=>{var e={67:e=>{e.exports.onRpcRequest=({request:e})=>{console.log("Hello, world!");const{method:r,id:o}=e;return r+o}}},r={};var o=function o(t){var s=r[t];if(void 0!==s)return s.exports;var n=r[t]={exports:{}};return e[t](n,n.exports,o),n.exports}(67),t=exports;for(var s in o)t[s]=o[s];o.__esModule&&Object.defineProperty(t,"__esModule",{value:!0})})();
-      //# sourceMappingURL=output.js.map"
-    `);
+    expect(output).toMatchInlineSnapshot(
+      `"(()=>{var e={67:e=>{e.exports.onRpcRequest=({request:e})=>{console.log("Hello, world!");const{method:r,id:o}=e;return r+o}}},r={};var o=function o(t){var s=r[t];if(void 0!==s)return s.exports;var n=r[t]={exports:{}};return e[t](n,n.exports,o),n.exports}(67),t=exports;for(var s in o)t[s]=o[s];o.__esModule&&Object.defineProperty(t,"__esModule",{value:!0})})();"`,
+    );
   });
 
   it('builds an unminimized snap bundle using Webpack', async () => {
@@ -186,8 +185,7 @@ describe('build', () => {
         if (__webpack_exports__.__esModule) Object.defineProperty(__webpack_export_target__, "__esModule", {
           value: true
         });
-      })();
-      //# sourceMappingURL=output.js.map"
+      })();"
     `);
   });
 
