@@ -46,6 +46,29 @@ export type InferMatching<
 > = StructType['TYPE'] extends Type ? Type : never;
 
 /**
+ * Colorize a value with a color function. This is useful for colorizing values
+ * in error messages. If colorization is disabled, the original value is
+ * returned.
+ *
+ * @param value - The value to colorize.
+ * @param colorFunction - The color function to use.
+ * @param enabled - Whether to colorize the value.
+ * @returns The colorized value, or the original value if colorization is
+ * disabled.
+ */
+function color(
+  value: string,
+  colorFunction: (value: string) => string,
+  enabled: boolean,
+) {
+  if (enabled) {
+    return colorFunction(value);
+  }
+
+  return value;
+}
+
+/**
  * A wrapper of `superstruct`'s `string` struct that coerces a value to a string
  * and resolves it relative to the current working directory. This is useful
  * for specifying file paths in a configuration file, as it allows the user to
@@ -96,13 +119,16 @@ export class SnapsStructError<Type, Schema> extends StructError {
     suffix: string,
     failure: StructError,
     failures: () => Generator<Failure>,
+    colorize = true,
   ) {
     super(failure, failures);
 
     this.name = 'SnapsStructError';
-    this.message = `${prefix}.\n\n${getStructErrorMessage(struct, [
-      ...failures(),
-    ])}${suffix ? `\n\n${suffix}` : ''}`;
+    this.message = `${prefix}.\n\n${getStructErrorMessage(
+      struct,
+      [...failures()],
+      colorize,
+    )}${suffix ? `\n\n${suffix}` : ''}`;
   }
 }
 
@@ -111,6 +137,7 @@ type GetErrorOptions<Type, Schema> = {
   prefix: string;
   suffix?: string;
   error: StructError;
+  colorize?: boolean;
 };
 
 /**
@@ -138,6 +165,7 @@ export function* arrayToGenerator<Type>(
  * @param options.suffix - The suffix to add to the error message. Defaults to
  * an empty string.
  * @param options.error - The `superstruct` error to wrap.
+ * @param options.colorize - Whether to colorize the value. Defaults to `true`.
  * @returns The `SnapsStructError`.
  */
 export function getError<Type, Schema>({
@@ -145,9 +173,15 @@ export function getError<Type, Schema>({
   prefix,
   suffix = '',
   error,
+  colorize,
 }: GetErrorOptions<Type, Schema>) {
-  return new SnapsStructError(struct, prefix, suffix, error, () =>
-    arrayToGenerator(error.failures()),
+  return new SnapsStructError(
+    struct,
+    prefix,
+    suffix,
+    error,
+    () => arrayToGenerator(error.failures()),
+    colorize,
   );
 }
 
@@ -204,14 +238,16 @@ export function getStructFromPath<Type, Schema>(
  * Get the union struct names from a struct.
  *
  * @param struct - The struct.
+ * @param colorize - Whether to colorize the value. Defaults to `true`.
  * @returns The union struct names, or `null` if the struct is not a union
  * struct.
  */
 export function getUnionStructNames<Type, Schema>(
   struct: Struct<Type, Schema>,
+  colorize = true,
 ) {
   if (Array.isArray(struct.schema)) {
-    return struct.schema.map(({ type }) => green(type));
+    return struct.schema.map(({ type }) => color(type, green, colorize));
   }
 
   return null;
@@ -222,14 +258,15 @@ export function getUnionStructNames<Type, Schema>(
  * formatting the error message returned by `superstruct`.
  *
  * @param failure - The `superstruct` failure.
+ * @param colorize - Whether to colorize the value. Defaults to `true`.
  * @returns The error prefix.
  */
-export function getStructErrorPrefix(failure: Failure) {
+export function getStructErrorPrefix(failure: Failure, colorize = true) {
   if (failure.type === 'never' || failure.path.length === 0) {
     return '';
   }
 
-  return `At path: ${bold(failure.path.join('.'))} — `;
+  return `At path: ${color(failure.path.join('.'), bold, colorize)} — `;
 }
 
 /**
@@ -239,18 +276,20 @@ export function getStructErrorPrefix(failure: Failure) {
  *
  * @param struct - The struct that caused the failure.
  * @param failure - The `superstruct` failure.
+ * @param colorize - Whether to colorize the value. Defaults to `true`.
  * @returns A string describing the failure.
  */
 export function getStructFailureMessage<Type, Schema>(
   struct: Struct<Type, Schema>,
   failure: Failure,
+  colorize = true,
 ) {
-  const received = red(JSON.stringify(failure.value));
-  const prefix = getStructErrorPrefix(failure);
+  const received = color(JSON.stringify(failure.value), red, colorize);
+  const prefix = getStructErrorPrefix(failure, colorize);
 
   if (failure.type === 'union') {
     const childStruct = getStructFromPath(struct, failure.path);
-    const unionNames = getUnionStructNames(childStruct);
+    const unionNames = getUnionStructNames(childStruct, colorize);
 
     if (unionNames) {
       return `${prefix}Expected the value to be one of: ${unionNames.join(
@@ -265,20 +304,30 @@ export function getStructFailureMessage<Type, Schema>(
     // Superstruct's failure does not provide information about which literal
     // value was expected, so we need to parse the message to get the literal.
     const message = failure.message
-      .replace(/the literal `(.+)`,/u, `the value to be \`${green('$1')}\`,`)
-      .replace(/, but received: (.+)/u, `, but received: ${red('$1')}`);
+      .replace(
+        /the literal `(.+)`,/u,
+        `the value to be \`${color('$1', green, colorize)}\`,`,
+      )
+      .replace(
+        /, but received: (.+)/u,
+        `, but received: ${color('$1', red, colorize)}`,
+      );
 
     return `${prefix}${message}.`;
   }
 
   if (failure.type === 'never') {
-    return `Unknown key: ${bold(
+    return `Unknown key: ${color(
       failure.path.join('.'),
+      bold,
+      colorize,
     )}, received: ${received}.`;
   }
 
-  return `${prefix}Expected a value of type ${green(
+  return `${prefix}Expected a value of type ${color(
     failure.type,
+    green,
+    colorize,
   )}, but received: ${received}.`;
 }
 
@@ -288,14 +337,16 @@ export function getStructFailureMessage<Type, Schema>(
  *
  * @param struct - The struct that caused the failures.
  * @param failures - The `superstruct` failures.
+ * @param colorize - Whether to colorize the value. Defaults to `true`.
  * @returns A string describing the errors.
  */
 export function getStructErrorMessage<Type, Schema>(
   struct: Struct<Type, Schema>,
   failures: Failure[],
+  colorize = true,
 ) {
   const formattedFailures = failures.map((failure) =>
-    indent(`• ${getStructFailureMessage(struct, failure)}`),
+    indent(`• ${getStructFailureMessage(struct, failure, colorize)}`),
   );
 
   return formattedFailures.join('\n');
@@ -337,6 +388,10 @@ export function validateUnion<Type, Schema extends readonly Struct<any, any>[]>(
   structKey: keyof Type,
   coerce = false,
 ) {
+  assert(
+    struct.schema,
+    'Expected a struct with a schema. Make sure to use `union` from `@metamask/snaps-sdk`.',
+  );
   assert(struct.schema.length > 0, 'Expected a non-empty array of structs.');
 
   const keyUnion = struct.schema.map(
@@ -352,27 +407,47 @@ export function validateUnion<Type, Schema extends readonly Struct<any, any>[]>(
 
   const [keyError] = validate(value, key, { coerce });
   if (keyError) {
-    throw new Error(getStructFailureMessage(key, keyError.failures()[0]));
+    throw new Error(
+      getStructFailureMessage(key, keyError.failures()[0], false),
+    );
   }
 
   // At this point it's guaranteed that the value is an object, so we can safely
   // cast it to a Record.
   const objectValue = value as Record<PropertyKey, unknown>;
-  const objectStruct = struct.schema.find((innerStruct) =>
+  const objectStructs = struct.schema.filter((innerStruct) =>
     is(objectValue[structKey], innerStruct.schema[structKey]),
   );
 
-  assert(objectStruct, 'Expected a struct to match the value.');
+  assert(objectStructs.length > 0, 'Expected a struct to match the value.');
 
-  const [error, validatedValue] = validate(objectValue, objectStruct, {
-    coerce,
-  });
+  // We need to validate the value against all the object structs that match the
+  // struct key, and return the first validated value.
+  const validationResults = objectStructs.map((objectStruct) =>
+    validate(objectValue, objectStruct, { coerce }),
+  );
 
-  if (error) {
-    throw new Error(getStructFailureMessage(objectStruct, error.failures()[0]));
+  const validatedValue = validationResults.find(([error]) => !error);
+  if (validatedValue) {
+    return validatedValue[1];
   }
 
-  return validatedValue as Type;
+  assert(validationResults[0][0], 'Expected at least one error.');
+
+  // If there is no validated value, we need to find the error with the least
+  // number of failures (with the assumption that it's the most specific error).
+  const validationError = validationResults.reduce((error, [innerError]) => {
+    assert(innerError, 'Expected an error.');
+    if (innerError.failures().length < error.failures().length) {
+      return innerError;
+    }
+
+    return error;
+  }, validationResults[0][0]);
+
+  throw new Error(
+    getStructFailureMessage(struct, validationError.failures()[0], false),
+  );
 }
 
 /**
