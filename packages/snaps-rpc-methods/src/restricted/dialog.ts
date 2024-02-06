@@ -5,7 +5,12 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { DialogType, ComponentStruct, enumValue } from '@metamask/snaps-sdk';
+import {
+  DialogType,
+  ComponentStruct,
+  enumValue,
+  union,
+} from '@metamask/snaps-sdk';
 import type {
   DialogParams,
   EnumToUnion,
@@ -13,7 +18,7 @@ import type {
   InterfaceState,
   SnapId,
 } from '@metamask/snaps-sdk';
-import { getFirstErrorInUnion } from '@metamask/snaps-utils';
+import { createUnion } from '@metamask/snaps-utils';
 import type { InferMatching } from '@metamask/snaps-utils';
 import { hasProperty, type NonEmptyArray } from '@metamask/utils';
 import type { Infer, Struct } from 'superstruct';
@@ -24,9 +29,7 @@ import {
   optional,
   size,
   string,
-  StructError,
   type,
-  union,
 } from 'superstruct';
 
 import { type MethodHooksObject } from '../utils';
@@ -278,33 +281,13 @@ function getValidatedType(params: unknown): DialogType {
  */
 function getValidatedParams(
   params: unknown,
-  struct: Struct<any>,
+  struct: Struct<any, any>,
 ): DialogParameters {
   try {
-    return create(params, struct);
+    return createUnion(params, struct, 'type');
   } catch (error) {
-    if (error instanceof StructError) {
-      const { failures } = error;
-
-      const failureArray = failures();
-
-      const placeholderFailure = failureArray.find(
-        ({ key, type: errorType }) =>
-          key === 'placeholder' && errorType === 'never',
-      );
-      if (placeholderFailure) {
-        throw rpcErrors.invalidParams({
-          message:
-            'Invalid params: Alerts or confirmations may not specify a "placeholder" field.',
-        });
-      }
-
-      throw rpcErrors.invalidParams({
-        message: `Invalid params: ${getFirstErrorInUnion(failureArray)}.`,
-      });
-    }
-
-    /* istanbul ignore next */
-    throw rpcErrors.internal();
+    throw rpcErrors.invalidParams({
+      message: `Invalid params: ${error.message}`,
+    });
   }
 }

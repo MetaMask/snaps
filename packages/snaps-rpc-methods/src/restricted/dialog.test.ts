@@ -286,7 +286,7 @@ describe('implementation', () => {
           params: value as any,
         }),
       ).rejects.toThrow(
-        /Invalid params: At path: .* -- Expected .*, but received: .*\./u,
+        /Invalid params: At path: .* — Expected a value of type .*, but received: .*\./u,
       );
     });
 
@@ -307,7 +307,7 @@ describe('implementation', () => {
             },
           }),
         ).rejects.toThrow(
-          /Invalid params: At path: placeholder -- Expected a string, but received: .*\./u,
+          /Invalid params: At path: .* — Expected a value of type .*, but received: .*\./u,
         );
       },
     );
@@ -327,7 +327,7 @@ describe('implementation', () => {
           },
         }),
       ).rejects.toThrow(
-        'Invalid params: At path: placeholder -- Expected a string with a length between `1` and `40` but received one with a length of `0`.',
+        'Invalid params: At path: placeholder — Expected a value of type string, but received: "".',
       );
     });
 
