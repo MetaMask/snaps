@@ -307,7 +307,7 @@ describe('implementation', () => {
             },
           }),
         ).rejects.toThrow(
-          /Invalid params: At path: .* — Expected a value of type .*, but received: .*\./u,
+          /Invalid params: At path: placeholder — Expected a value of type string, but received: .*\./u,
         );
       },
     );
@@ -348,7 +348,7 @@ describe('implementation', () => {
             },
           }),
         ).rejects.toThrow(
-          'Invalid params: Alerts or confirmations may not specify a "placeholder" field.',
+          'Invalid params: Unknown key: placeholder, received: "foobar".',
         );
       },
     );
