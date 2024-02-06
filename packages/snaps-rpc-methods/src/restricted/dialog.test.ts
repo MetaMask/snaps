@@ -327,7 +327,7 @@ describe('implementation', () => {
           },
         }),
       ).rejects.toThrow(
-        'Invalid params: At path: placeholder — Expected a value of type string, but received: "".',
+        'Invalid params: At path: placeholder — Expected a string with a length between 1 and 40, but received one with a length of 0.',
       );
     });
 
