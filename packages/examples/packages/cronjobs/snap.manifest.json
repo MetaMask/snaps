@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "MlAIIlAjNj2pspgKe/SqU8UCoBJFbkhXxenNkP4hdpg=",
+    "shasum": "YYRsqVZi2Q1/qgdKebTwWYWQXoC97RnYJgxcixOYz7M=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -21,7 +21,7 @@
     "endowment:cronjob": {
       "jobs": [
         {
-          "expression": "* * * * *",
+          "expression": "*/10 * * * * *",
           "request": {
             "method": "execute"
           }
