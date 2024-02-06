@@ -9,12 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [5.0.0]
 
-### Uncategorized
-
-- BREAKING: Disable source maps by default ([#2166](https://github.com/MetaMask/snaps-skunkworks.git/pull/2166))
-- Fix initial permissions types ([#2111](https://github.com/MetaMask/snaps-skunkworks.git/pull/2111))
-- Bump SES and LavaMoat ([#2105](https://github.com/MetaMask/snaps-skunkworks.git/pull/2105))
-- Bump @metamask/utils from 8.2.1 to 8.3.0 ([#2100](https://github.com/MetaMask/snaps-skunkworks.git/pull/2100))
+### Changed
+- **BREAKING:** Disable source maps by default ([#2166](https://github.com/MetaMask/snaps/pull/2166))
 
 ## [4.0.1]
 
@@ -140,21 +136,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@5.0.0...HEAD
-[5.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@4.0.1...@metamask/snaps-cli@5.0.0
-[4.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@4.0.0...@metamask/snaps-cli@4.0.1
-[4.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@3.0.5...@metamask/snaps-cli@4.0.0
-[3.0.5]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@3.0.4...@metamask/snaps-cli@3.0.5
-[3.0.4]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@3.0.3...@metamask/snaps-cli@3.0.4
-[3.0.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@3.0.2...@metamask/snaps-cli@3.0.3
-[3.0.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@3.0.1...@metamask/snaps-cli@3.0.2
-[3.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@3.0.0...@metamask/snaps-cli@3.0.1
-[3.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@2.0.2...@metamask/snaps-cli@3.0.0
-[2.0.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@2.0.1...@metamask/snaps-cli@2.0.2
-[2.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@2.0.0...@metamask/snaps-cli@2.0.1
-[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@0.38.4-flask.1...@metamask/snaps-cli@2.0.0
-[0.38.4-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@0.38.3-flask.1...@metamask/snaps-cli@0.38.4-flask.1
-[0.38.3-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@0.38.2-flask.1...@metamask/snaps-cli@0.38.3-flask.1
-[0.38.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@0.38.1-flask.1...@metamask/snaps-cli@0.38.2-flask.1
-[0.38.1-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@0.38.0-flask.1...@metamask/snaps-cli@0.38.1-flask.1
-[0.38.0-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/snaps-cli@0.38.0-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@5.0.0...HEAD
+[5.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@4.0.1...@metamask/snaps-cli@5.0.0
+[4.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@4.0.0...@metamask/snaps-cli@4.0.1
+[4.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@3.0.5...@metamask/snaps-cli@4.0.0
+[3.0.5]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@3.0.4...@metamask/snaps-cli@3.0.5
+[3.0.4]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@3.0.3...@metamask/snaps-cli@3.0.4
+[3.0.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@3.0.2...@metamask/snaps-cli@3.0.3
+[3.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@3.0.1...@metamask/snaps-cli@3.0.2
+[3.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@3.0.0...@metamask/snaps-cli@3.0.1
+[3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@2.0.2...@metamask/snaps-cli@3.0.0
+[2.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@2.0.1...@metamask/snaps-cli@2.0.2
+[2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@2.0.0...@metamask/snaps-cli@2.0.1
+[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@0.38.4-flask.1...@metamask/snaps-cli@2.0.0
+[0.38.4-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@0.38.3-flask.1...@metamask/snaps-cli@0.38.4-flask.1
+[0.38.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@0.38.2-flask.1...@metamask/snaps-cli@0.38.3-flask.1
+[0.38.2-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@0.38.1-flask.1...@metamask/snaps-cli@0.38.2-flask.1
+[0.38.1-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@0.38.0-flask.1...@metamask/snaps-cli@0.38.1-flask.1
+[0.38.0-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/snaps-cli@0.38.0-flask.1

@@ -9,28 +9,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [5.0.0]
 
-### Uncategorized
+### Added
+- Add support for dynamic user interfaces ([#1465](https://github.com/MetaMask/snaps/pull/1465), [#2126](https://github.com/MetaMask/snaps/pull/2126), [#2144](https://github.com/MetaMask/snaps/pull/2144), [#2152](https://github.com/MetaMask/snaps/pull/2152), [#2143](https://github.com/MetaMask/snaps/pull/2143))
+- Add support for Snap defined execution timeouts ([#2098](https://github.com/MetaMask/snaps/pull/2098))
+  - A Snap can now define `maxRequestTime` to extend or shorten its execution timeout.
+- Add `WebViewExecutionService` for mobile execution ([#2005](https://github.com/MetaMask/snaps/pull/2005))
 
-- [BREAKING] Add support for interactive UI to `snap_dialog` ([#2143](https://github.com/MetaMask/snaps-skunkworks.git/pull/2143))
-- Pass localized snap name to SubjectMetadataController ([#2157](https://github.com/MetaMask/snaps-skunkworks.git/pull/2157))
-- feat: integrate mobile snaps execution environment and services ([#2005](https://github.com/MetaMask/snaps-skunkworks.git/pull/2005))
-- [BREAKING] Move endowments from Controllers to RPC methods ([#2155](https://github.com/MetaMask/snaps-skunkworks.git/pull/2155))
-- Loosen allowlist requirements ([#1672](https://github.com/MetaMask/snaps-skunkworks.git/pull/1672))
-- Always create dynamic UI for returned content ([#2152](https://github.com/MetaMask/snaps-skunkworks.git/pull/2152))
-- Add support for snap defined execution timeouts ([#2098](https://github.com/MetaMask/snaps-skunkworks.git/pull/2098))
-- Add component validation to `SnapInterfaceController` ([#2144](https://github.com/MetaMask/snaps-skunkworks.git/pull/2144))
-- **BREAKING**: Update name lookup API ([#2113](https://github.com/MetaMask/snaps-skunkworks.git/pull/2113))
-- Bump @metamask/permission-controller from 7.1.0 to 8.0.0 ([#2142](https://github.com/MetaMask/snaps-skunkworks.git/pull/2142))
-- Bump @metamask/phishing-controller from 8.0.1 to 8.0.2 ([#2139](https://github.com/MetaMask/snaps-skunkworks.git/pull/2139))
-- Bump @metamask/approval-controller from 5.1.1 to 5.1.2 ([#2130](https://github.com/MetaMask/snaps-skunkworks.git/pull/2130))
-- Add support for interactive UI to `onTransaction` and `onSignature` ([#2126](https://github.com/MetaMask/snaps-skunkworks.git/pull/2126))
-- Bump @metamask/post-message-stream from 7.0.0 to 8.0.0 ([#2132](https://github.com/MetaMask/snaps-skunkworks.git/pull/2132))
-- Bump @metamask/json-rpc-engine from 7.3.1 to 7.3.2 ([#2129](https://github.com/MetaMask/snaps-skunkworks.git/pull/2129))
-- Add support for dynamic user interfaces ([#1465](https://github.com/MetaMask/snaps-skunkworks.git/pull/1465))
-- Add generic caveat validation utility ([#2122](https://github.com/MetaMask/snaps-skunkworks.git/pull/2122))
-- Bump `tar-stream` ([#2116](https://github.com/MetaMask/snaps-skunkworks.git/pull/2116))
-- Fix initial permissions types ([#2111](https://github.com/MetaMask/snaps-skunkworks.git/pull/2111))
-- Reintroduce `DecompressionStream` ([#2110](https://github.com/MetaMask/snaps-skunkworks.git/pull/2110))
+### Changed
+- **BREAKING**: Update name lookup API ([#2113](https://github.com/MetaMask/snaps/pull/2113))
+- Loosen allowlist requirements ([#1672](https://github.com/MetaMask/snaps/pull/1672))
+  - Snaps with certain permissions can now be installed without being allowlisted.
+- Reintroduce `DecompressionStream` for improved installation performance ([#2110](https://github.com/MetaMask/snaps/pull/2110))
+- Bump `tar-stream` ([#2116](https://github.com/MetaMask/snaps/pull/2116))
+  - This fixes a problem where Snaps would sometimes fail to download from NPM.
+- Bump several MetaMask dependencies ([#2129](https://github.com/MetaMask/snaps/pull/2129), [#2132](https://github.com/MetaMask/snaps/pull/2132), [#2130](https://github.com/MetaMask/snaps/pull/2130), [#2139](https://github.com/MetaMask/snaps/pull/2139), [#2142](https://github.com/MetaMask/snaps/pull/2142))
+- Pass localized snap name to SubjectMetadataController ([#2157](https://github.com/MetaMask/snaps/pull/2157))
+
+### Removed
+- **BREAKING:** Remove endowment permission specifications from this package ([#2155](https://github.com/MetaMask/snaps/pull/2155))
+  - They can now be found in `snaps-rpc-methods`.
 
 ## [4.1.0]
 
@@ -250,26 +247,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@5.0.0...HEAD
-[5.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@4.1.0...@metamask/snaps-controllers@5.0.0
-[4.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@4.0.0...@metamask/snaps-controllers@4.1.0
-[4.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@3.6.0...@metamask/snaps-controllers@4.0.0
-[3.6.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@3.5.1...@metamask/snaps-controllers@3.6.0
-[3.5.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@3.5.0...@metamask/snaps-controllers@3.5.1
-[3.5.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@3.4.1...@metamask/snaps-controllers@3.5.0
-[3.4.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@3.4.0...@metamask/snaps-controllers@3.4.1
-[3.4.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@3.3.0...@metamask/snaps-controllers@3.4.0
-[3.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@3.2.0...@metamask/snaps-controllers@3.3.0
-[3.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@3.1.1...@metamask/snaps-controllers@3.2.0
-[3.1.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@3.1.0...@metamask/snaps-controllers@3.1.1
-[3.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@3.0.0...@metamask/snaps-controllers@3.1.0
-[3.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@2.0.2...@metamask/snaps-controllers@3.0.0
-[2.0.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@2.0.1...@metamask/snaps-controllers@2.0.2
-[2.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@2.0.0...@metamask/snaps-controllers@2.0.1
-[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@0.39.0-flask.1...@metamask/snaps-controllers@2.0.0
-[0.39.0-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@0.38.3-flask.1...@metamask/snaps-controllers@0.39.0-flask.1
-[0.38.3-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@0.38.2-flask.1...@metamask/snaps-controllers@0.38.3-flask.1
-[0.38.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@0.38.1-flask.1...@metamask/snaps-controllers@0.38.2-flask.1
-[0.38.1-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@0.38.0-flask.1...@metamask/snaps-controllers@0.38.1-flask.1
-[0.38.0-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@0.37.2-flask.1...@metamask/snaps-controllers@0.38.0-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/snaps-controllers@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@5.0.0...HEAD
+[5.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@4.1.0...@metamask/snaps-controllers@5.0.0
+[4.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@4.0.0...@metamask/snaps-controllers@4.1.0
+[4.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@3.6.0...@metamask/snaps-controllers@4.0.0
+[3.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@3.5.1...@metamask/snaps-controllers@3.6.0
+[3.5.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@3.5.0...@metamask/snaps-controllers@3.5.1
+[3.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@3.4.1...@metamask/snaps-controllers@3.5.0
+[3.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@3.4.0...@metamask/snaps-controllers@3.4.1
+[3.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@3.3.0...@metamask/snaps-controllers@3.4.0
+[3.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@3.2.0...@metamask/snaps-controllers@3.3.0
+[3.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@3.1.1...@metamask/snaps-controllers@3.2.0
+[3.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@3.1.0...@metamask/snaps-controllers@3.1.1
+[3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@3.0.0...@metamask/snaps-controllers@3.1.0
+[3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@2.0.2...@metamask/snaps-controllers@3.0.0
+[2.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@2.0.1...@metamask/snaps-controllers@2.0.2
+[2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@2.0.0...@metamask/snaps-controllers@2.0.1
+[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@0.39.0-flask.1...@metamask/snaps-controllers@2.0.0
+[0.39.0-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@0.38.3-flask.1...@metamask/snaps-controllers@0.39.0-flask.1
+[0.38.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@0.38.2-flask.1...@metamask/snaps-controllers@0.38.3-flask.1
+[0.38.2-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@0.38.1-flask.1...@metamask/snaps-controllers@0.38.2-flask.1
+[0.38.1-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@0.38.0-flask.1...@metamask/snaps-controllers@0.38.1-flask.1
+[0.38.0-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@0.37.2-flask.1...@metamask/snaps-controllers@0.38.0-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/snaps-controllers@0.37.2-flask.1

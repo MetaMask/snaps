@@ -9,10 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0]
 
-### Uncategorized
+### Added
+- Add `snap_getClientStatus` example snap ([#2159](https://github.com/MetaMask/snaps/pull/2159))
 
-- BREAKING: Disable source maps by default ([#2166](https://github.com/MetaMask/snaps-skunkworks.git/pull/2166))
-- Add `snap_getClientStatus` example snap ([#2159](https://github.com/MetaMask/snaps-skunkworks.git/pull/2159))
-
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/client-status-example-snap@1.0.0...HEAD
-[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/client-status-example-snap@1.0.0
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/client-status-example-snap@1.0.0...HEAD
+[1.0.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/client-status-example-snap@1.0.0

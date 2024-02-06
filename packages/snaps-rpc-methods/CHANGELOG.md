@@ -9,14 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.0.0]
 
-### Uncategorized
+### Added
+- **BREAKING:** Add support for dynamic user interfaces ([#1465](https://github.com/MetaMask/snaps/pull/1465), [#2144](https://github.com/MetaMask/snaps/pull/2144), [#2143](https://github.com/MetaMask/snaps/pull/2143))
+  - Adds `snap_createInterface`, `snap_updateInterface` and `snap_getInterfaceState`.
+  - This is breaking because it changes the expected type of the `showDialog` RPC method hook.
+- Add endowment permission specifications to this package ([#2155](https://github.com/MetaMask/snaps/pull/2155))
 
-- [BREAKING] Add support for interactive UI to `snap_dialog` ([#2143](https://github.com/MetaMask/snaps-skunkworks.git/pull/2143))
-- [BREAKING] Move endowments from Controllers to RPC methods ([#2155](https://github.com/MetaMask/snaps-skunkworks.git/pull/2155))
-- Add component validation to `SnapInterfaceController` ([#2144](https://github.com/MetaMask/snaps-skunkworks.git/pull/2144))
-- Bump @metamask/permission-controller from 7.1.0 to 8.0.0 ([#2142](https://github.com/MetaMask/snaps-skunkworks.git/pull/2142))
-- Bump @metamask/json-rpc-engine from 7.3.1 to 7.3.2 ([#2129](https://github.com/MetaMask/snaps-skunkworks.git/pull/2129))
-- Add support for dynamic user interfaces ([#1465](https://github.com/MetaMask/snaps-skunkworks.git/pull/1465))
+### Changed
+- Bump MetaMask dependencies ([#2129](https://github.com/MetaMask/snaps/pull/2129), [#2142](https://github.com/MetaMask/snaps/pull/2142))
+
 
 ## [5.0.0]
 
@@ -150,22 +151,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@6.0.0...HEAD
-[6.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@5.0.0...@metamask/snaps-rpc-methods@6.0.0
-[5.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@4.1.0...@metamask/snaps-rpc-methods@5.0.0
-[4.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@4.0.3...@metamask/snaps-rpc-methods@4.1.0
-[4.0.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@4.0.2...@metamask/snaps-rpc-methods@4.0.3
-[4.0.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@4.0.1...@metamask/snaps-rpc-methods@4.0.2
-[4.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@4.0.0...@metamask/snaps-rpc-methods@4.0.1
-[4.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@3.3.0...@metamask/snaps-rpc-methods@4.0.0
-[3.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@3.2.1...@metamask/snaps-rpc-methods@3.3.0
-[3.2.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@3.2.0...@metamask/snaps-rpc-methods@3.2.1
-[3.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@3.1.0...@metamask/snaps-rpc-methods@3.2.0
-[3.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@3.0.0...@metamask/snaps-rpc-methods@3.1.0
-[3.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@2.0.0...@metamask/snaps-rpc-methods@3.0.0
-[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@0.38.3-flask.1...@metamask/snaps-rpc-methods@2.0.0
-[0.38.3-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@0.38.2-flask.1...@metamask/snaps-rpc-methods@0.38.3-flask.1
-[0.38.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@0.38.1-flask.1...@metamask/snaps-rpc-methods@0.38.2-flask.1
-[0.38.1-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@0.38.0-flask.1...@metamask/snaps-rpc-methods@0.38.1-flask.1
-[0.38.0-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@0.37.2-flask.1...@metamask/snaps-rpc-methods@0.38.0-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/snaps-rpc-methods@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@6.0.0...HEAD
+[6.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@5.0.0...@metamask/snaps-rpc-methods@6.0.0
+[5.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@4.1.0...@metamask/snaps-rpc-methods@5.0.0
+[4.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@4.0.3...@metamask/snaps-rpc-methods@4.1.0
+[4.0.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@4.0.2...@metamask/snaps-rpc-methods@4.0.3
+[4.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@4.0.1...@metamask/snaps-rpc-methods@4.0.2
+[4.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@4.0.0...@metamask/snaps-rpc-methods@4.0.1
+[4.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@3.3.0...@metamask/snaps-rpc-methods@4.0.0
+[3.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@3.2.1...@metamask/snaps-rpc-methods@3.3.0
+[3.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@3.2.0...@metamask/snaps-rpc-methods@3.2.1
+[3.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@3.1.0...@metamask/snaps-rpc-methods@3.2.0
+[3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@3.0.0...@metamask/snaps-rpc-methods@3.1.0
+[3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@2.0.0...@metamask/snaps-rpc-methods@3.0.0
+[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@0.38.3-flask.1...@metamask/snaps-rpc-methods@2.0.0
+[0.38.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@0.38.2-flask.1...@metamask/snaps-rpc-methods@0.38.3-flask.1
+[0.38.2-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@0.38.1-flask.1...@metamask/snaps-rpc-methods@0.38.2-flask.1
+[0.38.1-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@0.38.0-flask.1...@metamask/snaps-rpc-methods@0.38.1-flask.1
+[0.38.0-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@0.37.2-flask.1...@metamask/snaps-rpc-methods@0.38.0-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/snaps-rpc-methods@0.37.2-flask.1

@@ -9,14 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.0]
 
-### Uncategorized
+### Changed
+- **BREAKING**: Update name lookup API ([#2113](https://github.com/MetaMask/snaps/pull/2113))
+  - This is breaking as the types have changed.
+- Add support for dynamic user interfaces ([#1465](https://github.com/MetaMask/snaps/pull/1465), [#2126](https://github.com/MetaMask/snaps/pull/2126), [#2143](https://github.com/MetaMask/snaps/pull/2143))
+- Add support for snap defined execution timeouts ([#2098](https://github.com/MetaMask/snaps/pull/2098))
 
-- [BREAKING] Add support for interactive UI to `snap_dialog` ([#2143](https://github.com/MetaMask/snaps-skunkworks.git/pull/2143))
-- Add support for snap defined execution timeouts ([#2098](https://github.com/MetaMask/snaps-skunkworks.git/pull/2098))
-- **BREAKING**: Update name lookup API ([#2113](https://github.com/MetaMask/snaps-skunkworks.git/pull/2113))
-- Add support for interactive UI to `onTransaction` and `onSignature` ([#2126](https://github.com/MetaMask/snaps-skunkworks.git/pull/2126))
-- Add support for dynamic user interfaces ([#1465](https://github.com/MetaMask/snaps-skunkworks.git/pull/1465))
-- Fix initial permissions types ([#2111](https://github.com/MetaMask/snaps-skunkworks.git/pull/2111))
+### Fixed
+- Fix initial permissions types ([#2111](https://github.com/MetaMask/snaps/pull/2111))
 
 ## [1.4.0]
 
@@ -73,12 +73,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@2.0.0...HEAD
-[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@1.4.0...@metamask/snaps-sdk@2.0.0
-[1.4.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@1.3.2...@metamask/snaps-sdk@1.4.0
-[1.3.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@1.3.1...@metamask/snaps-sdk@1.3.2
-[1.3.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@1.3.0...@metamask/snaps-sdk@1.3.1
-[1.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@1.2.0...@metamask/snaps-sdk@1.3.0
-[1.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@1.1.0...@metamask/snaps-sdk@1.2.0
-[1.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@1.0.0...@metamask/snaps-sdk@1.1.0
-[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/snaps-sdk@1.0.0
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@2.0.0...HEAD
+[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@1.4.0...@metamask/snaps-sdk@2.0.0
+[1.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@1.3.2...@metamask/snaps-sdk@1.4.0
+[1.3.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@1.3.1...@metamask/snaps-sdk@1.3.2
+[1.3.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@1.3.0...@metamask/snaps-sdk@1.3.1
+[1.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@1.2.0...@metamask/snaps-sdk@1.3.0
+[1.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@1.1.0...@metamask/snaps-sdk@1.2.0
+[1.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@1.0.0...@metamask/snaps-sdk@1.1.0
+[1.0.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/snaps-sdk@1.0.0

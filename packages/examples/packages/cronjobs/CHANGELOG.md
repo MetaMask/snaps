@@ -9,22 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.1.1]
 
-### Uncategorized
-
-- BREAKING: Disable source maps by default ([#2166](https://github.com/MetaMask/snaps-skunkworks.git/pull/2166))
-- Run cronjob example snap more often ([#2164](https://github.com/MetaMask/snaps-skunkworks.git/pull/2164))
-- Add support for dynamic user interfaces ([#1465](https://github.com/MetaMask/snaps-skunkworks.git/pull/1465))
-- Rename snaps-jest APIs ([#2118](https://github.com/MetaMask/snaps-skunkworks.git/pull/2118))
-- Bump SES and LavaMoat ([#2105](https://github.com/MetaMask/snaps-skunkworks.git/pull/2105))
-- Bump @metamask/utils from 8.2.1 to 8.3.0 ([#2100](https://github.com/MetaMask/snaps-skunkworks.git/pull/2100))
-- Add `snap_getClientStatus` ([#2051](https://github.com/MetaMask/snaps-skunkworks.git/pull/2051))
-- Signature insights ([#2074](https://github.com/MetaMask/snaps-skunkworks.git/pull/2074))
-- Bump @metamask/auto-changelog from 3.4.3 to 3.4.4 ([#2054](https://github.com/MetaMask/snaps-skunkworks.git/pull/2054))
-- Export error wrappers ([#2043](https://github.com/MetaMask/snaps-skunkworks.git/pull/2043))
-- Add image fetching utility functions ([#1995](https://github.com/MetaMask/snaps-skunkworks.git/pull/1995))
-- Add row and address component ([#1968](https://github.com/MetaMask/snaps-skunkworks.git/pull/1968))
-- Bump several MetaMask dependencies ([#1964](https://github.com/MetaMask/snaps-skunkworks.git/pull/1964))
-- Add Snap error wrappers of JSON-RPC errors ([#1924](https://github.com/MetaMask/snaps-skunkworks.git/pull/1924))
+### Changed
+- Changed cronjob example snap interval to run more often ([#2164](https://github.com/MetaMask/snaps/pull/2164))
 
 ## [2.1.0]
 
@@ -73,12 +59,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@2.1.1...HEAD
-[2.1.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@2.1.0...@metamask/cronjob-example-snap@2.1.1
-[2.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@2.0.1...@metamask/cronjob-example-snap@2.1.0
-[2.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@2.0.0...@metamask/cronjob-example-snap@2.0.1
-[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@1.0.0...@metamask/cronjob-example-snap@2.0.0
-[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@0.38.1-flask.1...@metamask/cronjob-example-snap@1.0.0
-[0.38.1-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@0.38.0-flask.1...@metamask/cronjob-example-snap@0.38.1-flask.1
-[0.38.0-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@0.37.2-flask.1...@metamask/cronjob-example-snap@0.38.0-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/cronjob-example-snap@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@2.1.1...HEAD
+[2.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@2.1.0...@metamask/cronjob-example-snap@2.1.1
+[2.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@2.0.1...@metamask/cronjob-example-snap@2.1.0
+[2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@2.0.0...@metamask/cronjob-example-snap@2.0.1
+[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@1.0.0...@metamask/cronjob-example-snap@2.0.0
+[1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@0.38.1-flask.1...@metamask/cronjob-example-snap@1.0.0
+[0.38.1-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@0.38.0-flask.1...@metamask/cronjob-example-snap@0.38.1-flask.1
+[0.38.0-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@0.37.2-flask.1...@metamask/cronjob-example-snap@0.38.0-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/cronjob-example-snap@0.37.2-flask.1
