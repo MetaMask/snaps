@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.0.0]
+### Added
+- **BREAKING:** Add support for dynamic user interfaces ([#1465](https://github.com/MetaMask/snaps/pull/1465), [#2144](https://github.com/MetaMask/snaps/pull/2144), [#2143](https://github.com/MetaMask/snaps/pull/2143))
+  - This adds the `snap_createInterface`, `snap_updateInterface`, and `snap_getInterfaceState` methods.
+  - This is breaking because it changes the expected type of the `showDialog` RPC method hook.
+- **BREAKING:** Update the permission format for the name lookup endowment ([#2113](https://github.com/MetaMask/snaps/pull/2113))
+  -  The new format is documented in [SIP-12](https://metamask.github.io/SIPs/SIPS/sip-12).
+- Add endowment permission specifications to this package ([#2155](https://github.com/MetaMask/snaps/pull/2155))
+
+### Changed
+- Bump MetaMask dependencies ([#2129](https://github.com/MetaMask/snaps/pull/2129), [#2142](https://github.com/MetaMask/snaps/pull/2142))
+
 ## [5.0.0]
 ### Added
 - Add `snap_getClientStatus` ([#2051](https://github.com/MetaMask/snaps/pull/2051))
@@ -13,7 +25,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **BREAKING:** Use origin bound hooks for `invokeKeyring` ([#2090](https://github.com/MetaMask/snaps/pull/2090))
 - Bump several MetaMask dependencies ([#2069](https://github.com/MetaMask/snaps/pull/2069), [#2100](https://github.com/MetaMask/snaps/pull/2100))
-
 
 ## [4.1.0]
 ### Added
@@ -89,7 +100,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.38.0-flask.1]
 ### Added
 - Add `snap_getLocale` JSON-RPC method ([#1557](https://github.com/MetaMask/snaps/pull/1557))
-   - This will let snaps get the user locale from the client.
+  - This will let snaps get the user locale from the client.
 
 ### Fixed
 - Fix ed25519 public key derivation ([#1678](https://github.com/MetaMask/snaps/pull/1678))
@@ -100,7 +111,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@5.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@6.0.0...HEAD
+[6.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@5.0.0...@metamask/snaps-rpc-methods@6.0.0
 [5.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@4.1.0...@metamask/snaps-rpc-methods@5.0.0
 [4.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@4.0.3...@metamask/snaps-rpc-methods@4.1.0
 [4.0.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@4.0.2...@metamask/snaps-rpc-methods@4.0.3

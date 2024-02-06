@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.0]
+### Added
+- Add WebView execution environment ([#2005](https://github.com/MetaMask/snaps/pull/2005))
+- Add support for dynamic user interfaces ([#1465](https://github.com/MetaMask/snaps/pull/1465))
+
+### Changed
+- **BREAKING:** Stop bundling offscreen execution environment ([#2154](https://github.com/MetaMask/snaps/pull/2154))
+- **BREAKING:** Deploy multiple bundles to AWS ([#2150](https://github.com/MetaMask/snaps/pull/2150))
+  - From now on the bundles will be served at `https://execution.metamask.io/%BUILD_TYPE%/%VERSION%/index.html`.
+- Export `ProxySnapExecutor` ([#2153](https://github.com/MetaMask/snaps/pull/2153))
+- Reduce executor bundle sizes ([#2160](https://github.com/MetaMask/snaps/pull/2160))
+- Bump MetaMask dependencies ([#2129](https://github.com/MetaMask/snaps/pull/2129), [#2132](https://github.com/MetaMask/snaps/pull/2132))
+
 ## [3.5.0]
 ### Added
 - Add support for signature insights ([#2074](https://github.com/MetaMask/snaps/pull/2074))
@@ -128,7 +141,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@3.5.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@4.0.0...HEAD
+[4.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@3.5.0...@metamask/snaps-execution-environments@4.0.0
 [3.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@3.4.3...@metamask/snaps-execution-environments@3.5.0
 [3.4.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@3.4.2...@metamask/snaps-execution-environments@3.4.3
 [3.4.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@3.4.1...@metamask/snaps-execution-environments@3.4.2

@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.0.0]
+### Added
+- Add support for dynamic user interfaces ([#1465](https://github.com/MetaMask/snaps/pull/1465), [#2126](https://github.com/MetaMask/snaps/pull/2126))
+- Add support for snap defined execution timeouts ([#2098](https://github.com/MetaMask/snaps/pull/2098))
+
+### Changed
+- **BREAKING:** Update name lookup type validation ([#2113](https://github.com/MetaMask/snaps/pull/2113))
+  - The return value and the permission format has changed, see [SIP-12](https://metamask.github.io/SIPs/SIPS/sip-12) for more details.
+- Speed up eval-worker for improved CLI performance ([#2147](https://github.com/MetaMask/snaps/pull/2147))
+- Update MetaMask dependencies ([#2132](https://github.com/MetaMask/snaps/pull/2132), [#2142](https://github.com/MetaMask/snaps/pull/2142))
+
+### Fixed
+- Fix initial permissions types ([#2111](https://github.com/MetaMask/snaps/pull/2111))
+
 ## [5.2.0]
 ### Added
 - Add support for initial connections ([#2048](https://github.com/MetaMask/snaps/pull/2048))
@@ -134,8 +148,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.38.1-flask.1]
 ### Changed
 - Update transaction insights response and add severity level enum ([#1653](https://github.com/MetaMask/snaps/pull/1653))
-   - Snaps are now able to specify a `severity` for alongside their insights.
-   - See [SIP-11](https://metamask.github.io/SIPs/SIPS/sip-11) for more information.
+  - Snaps are now able to specify a `severity` for alongside their insights.
+  - See [SIP-11](https://metamask.github.io/SIPs/SIPS/sip-11) for more information.
 
 ## [0.38.0-flask.1]
 ### Added
@@ -151,7 +165,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@5.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@6.0.0...HEAD
+[6.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@5.2.0...@metamask/snaps-utils@6.0.0
 [5.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@5.1.2...@metamask/snaps-utils@5.2.0
 [5.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@5.1.1...@metamask/snaps-utils@5.1.2
 [5.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@5.1.0...@metamask/snaps-utils@5.1.1
