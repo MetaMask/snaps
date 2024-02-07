@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "description": "MetaMask example snap demonstrating the use of interactive UI",
+  "proposedName": "Interactive UI Example Snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps.git"
+  },
+  "source": {
+    "shasum": "8FgLJ9YeBWfZdwcdSyl2I11xkzIWnX/IBT0txf+wWzg=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "iconPath": "images/icon.svg",
+        "packageName": "@metamask/interactive-ui-example-snap",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    "endowment:rpc": {
+      "dapps": true,
+      "snaps": false
+    },
+    "snap_dialog": {},
+    "endowment:transaction-insight": {},
+    "endowment:page-home": {}
+  },
+  "manifestVersion": "0.1"
+}
