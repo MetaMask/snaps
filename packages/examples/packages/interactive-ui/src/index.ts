@@ -22,7 +22,7 @@ import {
  *
  * @returns The Snap interface ID.
  */
-export const createInterface = async () =>
+export const createInterface = async (): Promise<string> =>
   snap.request({
     method: 'snap_createInterface',
     params: {
