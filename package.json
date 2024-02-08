@@ -51,7 +51,7 @@
   "resolutions": {
     "@babel/core": "patch:@babel/core@npm%3A7.23.2#./.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch",
     "@esbuild-plugins/node-modules-polyfill@^0.2.2": "patch:@esbuild-plugins/node-modules-polyfill@npm%3A0.2.2#./.yarn/patches/@esbuild-plugins-node-modules-polyfill-npm-0.2.2-f612681798.patch",
-    "@lavamoat/lavapack@^6.0.2": "patch:@lavamoat/lavapack@npm%3A6.0.2#./.yarn/patches/@lavamoat-lavapack-npm-6.0.2-abebdc70c1.patch",
+    "@lavamoat/lavapack@^6.1.0": "patch:@lavamoat/lavapack@npm%3A6.1.0#./.yarn/patches/@lavamoat-lavapack-npm-6.1.0-69c81c1923.patch",
     "@types/glob@*": "patch:@types/glob@npm%3A7.1.4#./.yarn/patches/@types-glob-npm-7.1.4-d45247eaa2.patch",
     "@types/glob@^7.1.1": "patch:@types/glob@npm%3A7.1.4#./.yarn/patches/@types-glob-npm-7.1.4-d45247eaa2.patch",
     "@types/mocha@^10.0.1": "patch:@types/mocha@npm:10.0.1#.yarn/patches/@types-mocha-npm-10.0.1-7c94e9e170.patch",
@@ -61,7 +61,7 @@
     "jest-fetch-mock@^3.0.3": "patch:jest-fetch-mock@npm:3.0.3#.yarn/patches/jest-fetch-mock-npm-3.0.3-ac072ca8af.patch",
     "jest-util@^29.5.0": "patch:jest-util@npm%3A29.6.3#./.yarn/patches/jest-util-npm-29.6.3-6ffdea2c1c.patch",
     "jest-util@^29.6.3": "patch:jest-util@npm%3A29.6.3#./.yarn/patches/jest-util-npm-29.6.3-6ffdea2c1c.patch",
-    "lavamoat-browserify@^17.0.2": "patch:lavamoat-browserify@npm%3A17.0.2#./.yarn/patches/lavamoat-browserify-npm-17.0.2-7b95761e43.patch",
+    "lavamoat-browserify@^17.0.4": "patch:lavamoat-browserify@npm%3A17.0.4#./.yarn/patches/lavamoat-browserify-npm-17.0.4-5df88049cf.patch",
     "luxon@^3.2.1": "patch:luxon@npm%3A3.3.0#./.yarn/patches/luxon-npm-3.3.0-bdbae9bfd5.patch"
   },
   "devDependencies": {
