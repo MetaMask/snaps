@@ -2037,7 +2037,6 @@
       },
       "globals": {
         "console.warn": true,
-        "isBuiltin": true,
         "process.cwd": true,
         "setTimeout": true
       },
