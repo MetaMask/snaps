@@ -10,7 +10,8 @@
     ".": {
       "browser": {
         "import": "./dist/esm/index.browser.js",
-        "require": "./dist/cjs/index.browser.js"
+        "require": "./dist/cjs/index.browser.js",
+        "types": "./dist/types/index.d.ts"
       },
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js",
