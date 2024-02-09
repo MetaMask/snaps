@@ -1,9 +1,12 @@
 import { expect } from '@jest/globals';
+import { NodeProcessExecutionService } from '@metamask/snaps-controllers';
 import { installSnap } from '@metamask/snaps-jest';
 
 describe('onRpcRequest', () => {
   it('throws an error if the requested method does not exist', async () => {
-    const { request } = await installSnap();
+    const { request } = await installSnap({
+      executionService: NodeProcessExecutionService,
+    });
 
     const response = await request({
       method: 'foo',
@@ -22,7 +25,9 @@ describe('onRpcRequest', () => {
 
   describe('fetch', () => {
     it('fetches a URL and returns the JSON response', async () => {
-      const { request } = await installSnap();
+      const { request } = await installSnap({
+        executionService: NodeProcessExecutionService,
+      });
 
       const url = 'https://dummyjson.com/http/200';
       const response = await request({

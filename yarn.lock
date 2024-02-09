@@ -4872,6 +4872,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/rpc-errors": ^6.1.0
     "@metamask/snaps-cli": "workspace:^"
+    "@metamask/snaps-controllers": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/utils": ^8.3.0
