@@ -137,7 +137,9 @@ export async function getDefaultLoader({
       module: {
         /**
          * This tells SWC to output ES6 modules. This will allow Webpack to
-         * optimize the output code better.
+         * optimize the output code better. Snaps don't support ES6 however, so
+         * the output code will be transpiled to CommonJS by Webpack later in
+         * the build process.
          *
          * @see https://swc.rs/docs/configuration/modules#es6
          */
