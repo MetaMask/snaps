@@ -60,6 +60,17 @@ describe('Snap errors', () => {
 
       expect(wrapped.message).toBe('Internal JSON-RPC error.');
     });
+
+    it('creates a SnapError without a message and with data', () => {
+      const wrapped = new InternalError({
+        foo: 'bar',
+      });
+
+      expect(wrapped.message).toBe('Internal JSON-RPC error.');
+      expect(wrapped.data).toStrictEqual({
+        foo: 'bar',
+      });
+    });
   });
 
   describe('InvalidInputError', () => {
@@ -103,6 +114,17 @@ describe('Snap errors', () => {
 
       expect(wrapped.message).toBe('Invalid input.');
     });
+
+    it('creates a SnapError without a message and with data', () => {
+      const wrapped = new InvalidInputError({
+        foo: 'bar',
+      });
+
+      expect(wrapped.message).toBe('Invalid input.');
+      expect(wrapped.data).toStrictEqual({
+        foo: 'bar',
+      });
+    });
   });
 
   describe('InvalidParamsError', () => {
@@ -145,6 +167,17 @@ describe('Snap errors', () => {
       const wrapped = new InvalidParamsError();
 
       expect(wrapped.message).toBe('Invalid method parameter(s).');
+    });
+
+    it('creates a SnapError without a message and with data', () => {
+      const wrapped = new InvalidParamsError({
+        foo: 'bar',
+      });
+
+      expect(wrapped.message).toBe('Invalid method parameter(s).');
+      expect(wrapped.data).toStrictEqual({
+        foo: 'bar',
+      });
     });
   });
 
@@ -191,6 +224,19 @@ describe('Snap errors', () => {
         'The JSON sent is not a valid Request object.',
       );
     });
+
+    it('creates a SnapError without a message and with data', () => {
+      const wrapped = new InvalidRequestError({
+        foo: 'bar',
+      });
+
+      expect(wrapped.message).toBe(
+        'The JSON sent is not a valid Request object.',
+      );
+      expect(wrapped.data).toStrictEqual({
+        foo: 'bar',
+      });
+    });
   });
 
   describe('LimitExceededError', () => {
@@ -233,6 +279,17 @@ describe('Snap errors', () => {
       const wrapped = new LimitExceededError();
 
       expect(wrapped.message).toBe('Request limit exceeded.');
+    });
+
+    it('creates a SnapError without a message and with data', () => {
+      const wrapped = new LimitExceededError({
+        foo: 'bar',
+      });
+
+      expect(wrapped.message).toBe('Request limit exceeded.');
+      expect(wrapped.data).toStrictEqual({
+        foo: 'bar',
+      });
     });
   });
 
@@ -279,6 +336,19 @@ describe('Snap errors', () => {
         'The method does not exist / is not available.',
       );
     });
+
+    it('creates a SnapError without a message and with data', () => {
+      const wrapped = new MethodNotFoundError({
+        foo: 'bar',
+      });
+
+      expect(wrapped.message).toBe(
+        'The method does not exist / is not available.',
+      );
+      expect(wrapped.data).toStrictEqual({
+        foo: 'bar',
+      });
+    });
   });
 
   describe('MethodNotSupportedError', () => {
@@ -321,6 +391,17 @@ describe('Snap errors', () => {
       const wrapped = new MethodNotSupportedError();
 
       expect(wrapped.message).toBe('Method not supported.');
+    });
+
+    it('creates a SnapError without a message and with data', () => {
+      const wrapped = new MethodNotSupportedError({
+        foo: 'bar',
+      });
+
+      expect(wrapped.message).toBe('Method not supported.');
+      expect(wrapped.data).toStrictEqual({
+        foo: 'bar',
+      });
     });
   });
 
@@ -367,6 +448,19 @@ describe('Snap errors', () => {
         'Invalid JSON was received by the server. An error occurred on the server while parsing the JSON text.',
       );
     });
+
+    it('creates a SnapError without a message and with data', () => {
+      const wrapped = new ParseError({
+        foo: 'bar',
+      });
+
+      expect(wrapped.message).toBe(
+        'Invalid JSON was received by the server. An error occurred on the server while parsing the JSON text.',
+      );
+      expect(wrapped.data).toStrictEqual({
+        foo: 'bar',
+      });
+    });
   });
 
   describe('ResourceNotFoundError', () => {
@@ -409,6 +503,17 @@ describe('Snap errors', () => {
       const wrapped = new ResourceNotFoundError();
 
       expect(wrapped.message).toBe('Resource not found.');
+    });
+
+    it('creates a SnapError without a message and with data', () => {
+      const wrapped = new ResourceNotFoundError({
+        foo: 'bar',
+      });
+
+      expect(wrapped.message).toBe('Resource not found.');
+      expect(wrapped.data).toStrictEqual({
+        foo: 'bar',
+      });
     });
   });
 
@@ -453,6 +558,17 @@ describe('Snap errors', () => {
 
       expect(wrapped.message).toBe('Resource unavailable.');
     });
+
+    it('creates a SnapError without a message and with data', () => {
+      const wrapped = new ResourceUnavailableError({
+        foo: 'bar',
+      });
+
+      expect(wrapped.message).toBe('Resource unavailable.');
+      expect(wrapped.data).toStrictEqual({
+        foo: 'bar',
+      });
+    });
   });
 
   describe('TransactionRejected', () => {
@@ -495,6 +611,17 @@ describe('Snap errors', () => {
       const wrapped = new TransactionRejected();
 
       expect(wrapped.message).toBe('Transaction rejected.');
+    });
+
+    it('creates a SnapError without a message and with data', () => {
+      const wrapped = new TransactionRejected({
+        foo: 'bar',
+      });
+
+      expect(wrapped.message).toBe('Transaction rejected.');
+      expect(wrapped.data).toStrictEqual({
+        foo: 'bar',
+      });
     });
   });
 
@@ -541,6 +668,19 @@ describe('Snap errors', () => {
         'The provider is disconnected from the specified chain.',
       );
     });
+
+    it('creates a SnapError without a message and with data', () => {
+      const wrapped = new ChainDisconnectedError({
+        foo: 'bar',
+      });
+
+      expect(wrapped.message).toBe(
+        'The provider is disconnected from the specified chain.',
+      );
+      expect(wrapped.data).toStrictEqual({
+        foo: 'bar',
+      });
+    });
   });
 
   describe('DisconnectedError', () => {
@@ -585,6 +725,19 @@ describe('Snap errors', () => {
       expect(wrapped.message).toBe(
         'The provider is disconnected from all chains.',
       );
+    });
+
+    it('creates a SnapError without a message and with data', () => {
+      const wrapped = new DisconnectedError({
+        foo: 'bar',
+      });
+
+      expect(wrapped.message).toBe(
+        'The provider is disconnected from all chains.',
+      );
+      expect(wrapped.data).toStrictEqual({
+        foo: 'bar',
+      });
     });
   });
 
@@ -631,6 +784,19 @@ describe('Snap errors', () => {
         'The requested account and/or method has not been authorized by the user.',
       );
     });
+
+    it('creates a SnapError without a message and with data', () => {
+      const wrapped = new UnauthorizedError({
+        foo: 'bar',
+      });
+
+      expect(wrapped.message).toBe(
+        'The requested account and/or method has not been authorized by the user.',
+      );
+      expect(wrapped.data).toStrictEqual({
+        foo: 'bar',
+      });
+    });
   });
 
   describe('UnsupportedMethodError', () => {
@@ -676,6 +842,19 @@ describe('Snap errors', () => {
         'The requested method is not supported by this Ethereum provider.',
       );
     });
+
+    it('creates a SnapError without a message and with data', () => {
+      const wrapped = new UnsupportedMethodError({
+        foo: 'bar',
+      });
+
+      expect(wrapped.message).toBe(
+        'The requested method is not supported by this Ethereum provider.',
+      );
+      expect(wrapped.data).toStrictEqual({
+        foo: 'bar',
+      });
+    });
   });
 
   describe('UserRejectedRequestError', () => {
@@ -718,6 +897,17 @@ describe('Snap errors', () => {
       const wrapped = new UserRejectedRequestError();
 
       expect(wrapped.message).toBe('User rejected the request.');
+    });
+
+    it('creates a SnapError without a message and with data', () => {
+      const wrapped = new UserRejectedRequestError({
+        foo: 'bar',
+      });
+
+      expect(wrapped.message).toBe('User rejected the request.');
+      expect(wrapped.data).toStrictEqual({
+        foo: 'bar',
+      });
     });
   });
 });
