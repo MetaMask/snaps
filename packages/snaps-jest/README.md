@@ -309,13 +309,14 @@ function.
 
 ```js
 import { installSnap } from '@metamask/snaps-jest';
+import { panel, text } from '@metamask/snaps-sdk';
 
 describe('MySnap', () => {
   it('should render the home page', async () => {
     const { onHomePage } = await installSnap(/* optional snap ID */);
     const response = await onHomePage();
 
-    expect(response).toRender(/* ... */);
+    expect(response).toRender(panel([text('Hello, world!')]));
   });
 });
 ```
