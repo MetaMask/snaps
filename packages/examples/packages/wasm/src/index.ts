@@ -1,5 +1,4 @@
-import { rpcErrors } from '@metamask/rpc-errors';
-import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
+import { MethodNotFoundError, type OnRpcRequestHandler } from '@metamask/snaps-sdk';
 
 // This is only imported for its type. It is not used at runtime.
 // eslint-disable-next-line import/order
@@ -48,5 +47,5 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     return program[method](...params);
   }
 
-  throw rpcErrors.methodNotFound({ data: { method } });
+  throw new MethodNotFoundError({ method: request.method });
 };

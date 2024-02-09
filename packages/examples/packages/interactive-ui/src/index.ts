@@ -1,4 +1,3 @@
-import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   OnRpcRequestHandler,
   OnHomePageHandler,
@@ -9,6 +8,7 @@ import {
   UserInputEventType,
   ManageStateOperation,
   assert,
+  MethodNotFoundError,
 } from '@metamask/snaps-sdk';
 
 import {
@@ -90,7 +90,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     }
 
     default:
-      throw rpcErrors.methodNotFound({
+      throw new MethodNotFoundError({
         data: {
           method: request.method,
         },

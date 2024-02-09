@@ -1,6 +1,5 @@
-import { rpcErrors } from '@metamask/rpc-errors';
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
-import { DialogType, panel, text, heading } from '@metamask/snaps-sdk';
+import { DialogType, panel, text, heading, MethodNotFoundError } from '@metamask/snaps-sdk';
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
@@ -71,10 +70,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       });
 
     default:
-      throw rpcErrors.methodNotFound({
-        data: {
-          method: request.method,
-        },
-      });
+      throw new MethodNotFoundError({ method: request.method });
   }
 };
