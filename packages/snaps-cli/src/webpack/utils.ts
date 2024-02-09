@@ -139,7 +139,7 @@ export async function getDefaultLoader({
          * This tells SWC to output ES6 modules. This will allow Webpack to
          * optimize the output code better.
          *
-         * @see https://swc.rs/docs/configuration/modules#commonjs
+         * @see https://swc.rs/docs/configuration/modules#es6
          */
         type: 'es6',
       },
