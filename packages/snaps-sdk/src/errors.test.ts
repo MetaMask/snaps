@@ -10,7 +10,7 @@ describe('SnapError', () => {
     expect(error).toBeInstanceOf(SnapError);
     expect(error.message).toBe('foo');
     expect(error.code).toBe(-32603);
-    expect(error.data).toStrictEqual({});
+    expect(error.data).toBeUndefined();
     expect(error.stack).toBeDefined();
     expect(error.toJSON()).toStrictEqual({
       code: -31002,
@@ -20,7 +20,6 @@ describe('SnapError', () => {
           code: -32603,
           message: 'foo',
           stack: error.stack,
-          data: {},
         },
       },
     });
@@ -36,7 +35,7 @@ describe('SnapError', () => {
     expect(error).toBeInstanceOf(SnapError);
     expect(error.message).toBe('foo');
     expect(error.code).toBe(-32000);
-    expect(error.data).toStrictEqual({});
+    expect(error.data).toBeUndefined();
     expect(error.stack).toBeDefined();
     expect(error.toJSON()).toStrictEqual({
       code: -31002,
@@ -46,7 +45,6 @@ describe('SnapError', () => {
           code: -32000,
           message: 'foo',
           stack: error.stack,
-          data: {},
         },
       },
     });
@@ -101,7 +99,7 @@ describe('SnapError', () => {
     expect(error).toBeInstanceOf(SnapError);
     expect(error.message).toBe('foo');
     expect(error.code).toBe(-32603);
-    expect(error.data).toStrictEqual({});
+    expect(error.data).toBeUndefined();
     expect(error.stack).toBeDefined();
     expect(error.toJSON()).toStrictEqual({
       code: -31002,
@@ -111,7 +109,6 @@ describe('SnapError', () => {
           code: -32603,
           message: 'foo',
           stack: error.stack,
-          data: {},
         },
       },
     });
@@ -149,7 +146,7 @@ describe('SnapError', () => {
     expect(error).toBeInstanceOf(SnapError);
     expect(error.message).toBe('foo');
     expect(error.code).toBe(-32602);
-    expect(error.data).toStrictEqual({});
+    expect(error.data).toBeUndefined();
     expect(error.stack).toBeDefined();
     expect(error.toJSON()).toStrictEqual({
       code: -31002,
@@ -159,7 +156,6 @@ describe('SnapError', () => {
           code: -32602,
           message: 'foo',
           stack: error.stack,
-          data: {},
         },
       },
     });
@@ -202,7 +198,7 @@ describe('SnapError', () => {
     expect(error).toBeInstanceOf(SnapError);
     expect(error.message).toBe('foo');
     expect(error.code).toBe(0);
-    expect(error.data).toStrictEqual({});
+    expect(error.data).toBeUndefined();
     expect(error.stack).toBeDefined();
     expect(error.toJSON()).toStrictEqual({
       code: -31002,
@@ -212,7 +208,6 @@ describe('SnapError', () => {
           code: 0,
           message: 'foo',
           stack: error.stack,
-          data: {},
         },
       },
     });
