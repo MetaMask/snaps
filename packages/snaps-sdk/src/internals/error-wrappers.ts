@@ -18,9 +18,53 @@ export type JsonRpcErrorFunction = typeof rpcErrors.parse;
  */
 export function createSnapError(fn: JsonRpcErrorFunction) {
   return class SnapJsonRpcError extends SnapError {
-    constructor(message?: string, data?: Record<string, Json>) {
-      const error = fn(message);
+    /**
+     * Create a new `SnapJsonRpcError` from a message.
+     *
+     * @param message - The message to create the error from.
+     */
+    constructor(message?: string);
 
+    /**
+     * Create a new `SnapJsonRpcError` from data.
+     *
+     * @param data - The data to create the error from.
+     */
+    constructor(data?: Record<string, Json>);
+
+    /**
+     * Create a new `SnapJsonRpcError` from a message and data.
+     *
+     * @param message - The message to create the error from.
+     * @param data - The data to create the error from.
+     */
+    constructor(
+      message?: string | Record<string, Json>,
+      data?: Record<string, Json>,
+    );
+
+    /**
+     * Create a new `SnapJsonRpcError` from a message and data.
+     *
+     * @param message - The message to create the error from.
+     * @param data - The data to create the error from.
+     */
+    constructor(
+      message?: string | Record<string, Json>,
+      data?: Record<string, Json>,
+    ) {
+      if (typeof message === 'object') {
+        const error = fn();
+        super({
+          code: error.code,
+          message: error.message,
+          data: message,
+        });
+
+        return;
+      }
+
+      const error = fn(message);
       super({
         code: error.code,
         message: error.message,
