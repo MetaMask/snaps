@@ -136,12 +136,12 @@ export async function getDefaultLoader({
        */
       module: {
         /**
-         * This tells SWC to output CommonJS modules. MetaMask Snaps
-         * doesn't support ES modules yet, so this is necessary.
+         * This tells SWC to output ES6 modules. This will allow Webpack to
+         * optimize the output code better.
          *
          * @see https://swc.rs/docs/configuration/modules#commonjs
          */
-        type: 'commonjs',
+        type: 'es6',
       },
 
       env: {

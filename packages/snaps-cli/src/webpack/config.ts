@@ -185,7 +185,7 @@ export async function getDefaultConfiguration(
     module: {
       rules: [
         {
-          test: /\.[tj]sx?$/u,
+          test: /\.(js|mjs|cjs|ts)$/u,
           exclude: /node_modules/u,
           use: await getDefaultLoader(config),
         },
@@ -220,10 +220,10 @@ export async function getDefaultConfiguration(
      */
     resolve: {
       /**
-       * The extensions to resolve. We set it to resolve `.js` and `.ts`
+       * The extensions to resolve. We set it to resolve `.(c|m)?js` and `.ts`
        * files.
        */
-      extensions: ['.js', '.ts'],
+      extensions: ['.js', '.mjs', '.cjs', '.ts'],
 
       /**
        * The fallback options. This tells Webpack how to handle imports that
