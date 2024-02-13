@@ -1,4 +1,7 @@
-import { MethodNotFoundError, type OnRpcRequestHandler } from '@metamask/snaps-sdk';
+import {
+  MethodNotFoundError,
+  type OnRpcRequestHandler,
+} from '@metamask/snaps-sdk';
 
 import type { BaseParams, SetStateParams } from './types';
 import { clearState, getState, setState } from './utils';

@@ -1,4 +1,7 @@
-import { MethodNotFoundError, type OnRpcRequestHandler } from '@metamask/snaps-sdk';
+import {
+  MethodNotFoundError,
+  type OnRpcRequestHandler,
+} from '@metamask/snaps-sdk';
 import type { Hex } from '@metamask/utils';
 import { assert, stringToBytes, bytesToHex } from '@metamask/utils';
 

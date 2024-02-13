@@ -1,4 +1,7 @@
-import { MethodNotFoundError, type OnRpcRequestHandler } from '@metamask/snaps-sdk';
+import {
+  MethodNotFoundError,
+  type OnRpcRequestHandler,
+} from '@metamask/snaps-sdk';
 
 // This is only imported for its type. It is not used at runtime.
 // eslint-disable-next-line import/order

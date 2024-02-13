@@ -1,5 +1,12 @@
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
-import { panel, heading, copyable, text, UserRejectedRequestError, MethodNotFoundError } from '@metamask/snaps-sdk';
+import {
+  panel,
+  heading,
+  copyable,
+  text,
+  UserRejectedRequestError,
+  MethodNotFoundError,
+} from '@metamask/snaps-sdk';
 import { Wallet } from 'ethers';
 
 import type { SignMessageParams } from './types';
