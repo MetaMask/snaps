@@ -17,7 +17,7 @@ export class SnapError extends Error {
 
   readonly #message: string;
 
-  readonly #data: Record<string, Json>;
+  readonly #data?: Record<string, Json>;
 
   readonly #stack?: string;
 
@@ -42,7 +42,12 @@ export class SnapError extends Error {
 
     this.#message = message;
     this.#code = getErrorCode(error);
-    this.#data = { ...getErrorData(error), ...data };
+
+    const mergedData = { ...getErrorData(error), ...data };
+    if (Object.keys(mergedData).length > 0) {
+      this.#data = mergedData;
+    }
+
     this.#stack = super.stack;
   }
 
@@ -109,7 +114,7 @@ export class SnapError extends Error {
           code: this.code,
           message: this.message,
           stack: this.stack,
-          data: this.data,
+          ...(this.data ? { data: this.data } : {}),
         },
       },
     };
@@ -144,8 +149,6 @@ export type SerializedSnapError = {
   code: typeof SNAP_ERROR_CODE;
   message: typeof SNAP_ERROR_MESSAGE;
   data: {
-    cause: JsonRpcError & {
-      data: Record<string, Json>;
-    };
+    cause: JsonRpcError;
   };
 };

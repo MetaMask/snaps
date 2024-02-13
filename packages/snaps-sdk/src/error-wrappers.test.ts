@@ -28,7 +28,7 @@ describe('Snap errors', () => {
       expect(wrapped).toBeInstanceOf(InternalError);
       expect(wrapped.message).toBe('foo');
       expect(wrapped.code).toBe(-32603);
-      expect(wrapped.data).toStrictEqual({});
+      expect(wrapped.data).toBeUndefined();
       expect(wrapped.stack).toBeDefined();
       expect(wrapped.toJSON()).toStrictEqual({
         code: -31002,
@@ -38,7 +38,6 @@ describe('Snap errors', () => {
             code: -32603,
             message: 'foo',
             stack: wrapped.stack,
-            data: {},
           },
         },
       });
@@ -82,7 +81,7 @@ describe('Snap errors', () => {
       expect(wrapped).toBeInstanceOf(InvalidInputError);
       expect(wrapped.message).toBe('foo');
       expect(wrapped.code).toBe(-32000);
-      expect(wrapped.data).toStrictEqual({});
+      expect(wrapped.data).toBeUndefined();
       expect(wrapped.stack).toBeDefined();
       expect(wrapped.toJSON()).toStrictEqual({
         code: -31002,
@@ -92,7 +91,6 @@ describe('Snap errors', () => {
             code: -32000,
             message: 'foo',
             stack: wrapped.stack,
-            data: {},
           },
         },
       });
@@ -136,7 +134,7 @@ describe('Snap errors', () => {
       expect(wrapped).toBeInstanceOf(InvalidParamsError);
       expect(wrapped.message).toBe('foo');
       expect(wrapped.code).toBe(-32602);
-      expect(wrapped.data).toStrictEqual({});
+      expect(wrapped.data).toBeUndefined();
       expect(wrapped.stack).toBeDefined();
       expect(wrapped.toJSON()).toStrictEqual({
         code: -31002,
@@ -146,7 +144,6 @@ describe('Snap errors', () => {
             code: -32602,
             message: 'foo',
             stack: wrapped.stack,
-            data: {},
           },
         },
       });
@@ -190,7 +187,7 @@ describe('Snap errors', () => {
       expect(wrapped).toBeInstanceOf(InvalidRequestError);
       expect(wrapped.message).toBe('foo');
       expect(wrapped.code).toBe(-32600);
-      expect(wrapped.data).toStrictEqual({});
+      expect(wrapped.data).toBeUndefined();
       expect(wrapped.stack).toBeDefined();
       expect(wrapped.toJSON()).toStrictEqual({
         code: -31002,
@@ -200,7 +197,6 @@ describe('Snap errors', () => {
             code: -32600,
             message: 'foo',
             stack: wrapped.stack,
-            data: {},
           },
         },
       });
@@ -248,7 +244,7 @@ describe('Snap errors', () => {
       expect(wrapped).toBeInstanceOf(LimitExceededError);
       expect(wrapped.message).toBe('foo');
       expect(wrapped.code).toBe(-32005);
-      expect(wrapped.data).toStrictEqual({});
+      expect(wrapped.data).toBeUndefined();
       expect(wrapped.stack).toBeDefined();
       expect(wrapped.toJSON()).toStrictEqual({
         code: -31002,
@@ -258,7 +254,6 @@ describe('Snap errors', () => {
             code: -32005,
             message: 'foo',
             stack: wrapped.stack,
-            data: {},
           },
         },
       });
@@ -302,7 +297,7 @@ describe('Snap errors', () => {
       expect(wrapped).toBeInstanceOf(MethodNotFoundError);
       expect(wrapped.message).toBe('foo');
       expect(wrapped.code).toBe(-32601);
-      expect(wrapped.data).toStrictEqual({});
+      expect(wrapped.data).toBeUndefined();
       expect(wrapped.stack).toBeDefined();
       expect(wrapped.toJSON()).toStrictEqual({
         code: -31002,
@@ -312,7 +307,6 @@ describe('Snap errors', () => {
             code: -32601,
             message: 'foo',
             stack: wrapped.stack,
-            data: {},
           },
         },
       });
@@ -360,7 +354,7 @@ describe('Snap errors', () => {
       expect(wrapped).toBeInstanceOf(MethodNotSupportedError);
       expect(wrapped.message).toBe('foo');
       expect(wrapped.code).toBe(-32004);
-      expect(wrapped.data).toStrictEqual({});
+      expect(wrapped.data).toBeUndefined();
       expect(wrapped.stack).toBeDefined();
       expect(wrapped.toJSON()).toStrictEqual({
         code: -31002,
@@ -370,7 +364,6 @@ describe('Snap errors', () => {
             code: -32004,
             message: 'foo',
             stack: wrapped.stack,
-            data: {},
           },
         },
       });
@@ -414,7 +407,7 @@ describe('Snap errors', () => {
       expect(wrapped).toBeInstanceOf(ParseError);
       expect(wrapped.message).toBe('foo');
       expect(wrapped.code).toBe(-32700);
-      expect(wrapped.data).toStrictEqual({});
+      expect(wrapped.data).toBeUndefined();
       expect(wrapped.stack).toBeDefined();
       expect(wrapped.toJSON()).toStrictEqual({
         code: -31002,
@@ -424,7 +417,6 @@ describe('Snap errors', () => {
             code: -32700,
             message: 'foo',
             stack: wrapped.stack,
-            data: {},
           },
         },
       });
@@ -472,7 +464,7 @@ describe('Snap errors', () => {
       expect(wrapped).toBeInstanceOf(ResourceNotFoundError);
       expect(wrapped.message).toBe('foo');
       expect(wrapped.code).toBe(-32001);
-      expect(wrapped.data).toStrictEqual({});
+      expect(wrapped.data).toBeUndefined();
       expect(wrapped.stack).toBeDefined();
       expect(wrapped.toJSON()).toStrictEqual({
         code: -31002,
@@ -482,7 +474,6 @@ describe('Snap errors', () => {
             code: -32001,
             message: 'foo',
             stack: wrapped.stack,
-            data: {},
           },
         },
       });
@@ -526,7 +517,7 @@ describe('Snap errors', () => {
       expect(wrapped).toBeInstanceOf(ResourceUnavailableError);
       expect(wrapped.message).toBe('foo');
       expect(wrapped.code).toBe(-32002);
-      expect(wrapped.data).toStrictEqual({});
+      expect(wrapped.data).toBeUndefined();
       expect(wrapped.stack).toBeDefined();
       expect(wrapped.toJSON()).toStrictEqual({
         code: -31002,
@@ -536,7 +527,6 @@ describe('Snap errors', () => {
             code: -32002,
             message: 'foo',
             stack: wrapped.stack,
-            data: {},
           },
         },
       });
@@ -580,7 +570,7 @@ describe('Snap errors', () => {
       expect(wrapped).toBeInstanceOf(TransactionRejected);
       expect(wrapped.message).toBe('foo');
       expect(wrapped.code).toBe(-32003);
-      expect(wrapped.data).toStrictEqual({});
+      expect(wrapped.data).toBeUndefined();
       expect(wrapped.stack).toBeDefined();
       expect(wrapped.toJSON()).toStrictEqual({
         code: -31002,
@@ -590,7 +580,6 @@ describe('Snap errors', () => {
             code: -32003,
             message: 'foo',
             stack: wrapped.stack,
-            data: {},
           },
         },
       });
@@ -634,7 +623,7 @@ describe('Snap errors', () => {
       expect(wrapped).toBeInstanceOf(ChainDisconnectedError);
       expect(wrapped.message).toBe('foo');
       expect(wrapped.code).toBe(4901);
-      expect(wrapped.data).toStrictEqual({});
+      expect(wrapped.data).toBeUndefined();
       expect(wrapped.stack).toBeDefined();
       expect(wrapped.toJSON()).toStrictEqual({
         code: -31002,
@@ -644,7 +633,6 @@ describe('Snap errors', () => {
             code: 4901,
             message: 'foo',
             stack: wrapped.stack,
-            data: {},
           },
         },
       });
@@ -692,7 +680,7 @@ describe('Snap errors', () => {
       expect(wrapped).toBeInstanceOf(DisconnectedError);
       expect(wrapped.message).toBe('foo');
       expect(wrapped.code).toBe(4900);
-      expect(wrapped.data).toStrictEqual({});
+      expect(wrapped.data).toBeUndefined();
       expect(wrapped.stack).toBeDefined();
       expect(wrapped.toJSON()).toStrictEqual({
         code: -31002,
@@ -702,7 +690,6 @@ describe('Snap errors', () => {
             code: 4900,
             message: 'foo',
             stack: wrapped.stack,
-            data: {},
           },
         },
       });
@@ -750,7 +737,7 @@ describe('Snap errors', () => {
       expect(wrapped).toBeInstanceOf(UnauthorizedError);
       expect(wrapped.message).toBe('foo');
       expect(wrapped.code).toBe(4100);
-      expect(wrapped.data).toStrictEqual({});
+      expect(wrapped.data).toBeUndefined();
       expect(wrapped.stack).toBeDefined();
       expect(wrapped.toJSON()).toStrictEqual({
         code: -31002,
@@ -760,7 +747,6 @@ describe('Snap errors', () => {
             code: 4100,
             message: 'foo',
             stack: wrapped.stack,
-            data: {},
           },
         },
       });
@@ -808,7 +794,7 @@ describe('Snap errors', () => {
       expect(wrapped).toBeInstanceOf(UnsupportedMethodError);
       expect(wrapped.message).toBe('foo');
       expect(wrapped.code).toBe(4200);
-      expect(wrapped.data).toStrictEqual({});
+      expect(wrapped.data).toBeUndefined();
       expect(wrapped.stack).toBeDefined();
       expect(wrapped.toJSON()).toStrictEqual({
         code: -31002,
@@ -818,7 +804,6 @@ describe('Snap errors', () => {
             code: 4200,
             message: 'foo',
             stack: wrapped.stack,
-            data: {},
           },
         },
       });
@@ -866,7 +851,7 @@ describe('Snap errors', () => {
       expect(wrapped).toBeInstanceOf(UserRejectedRequestError);
       expect(wrapped.message).toBe('foo');
       expect(wrapped.code).toBe(4001);
-      expect(wrapped.data).toStrictEqual({});
+      expect(wrapped.data).toBeUndefined();
       expect(wrapped.stack).toBeDefined();
       expect(wrapped.toJSON()).toStrictEqual({
         code: -31002,
@@ -876,7 +861,6 @@ describe('Snap errors', () => {
             code: 4001,
             message: 'foo',
             stack: wrapped.stack,
-            data: {},
           },
         },
       });
