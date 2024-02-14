@@ -13,6 +13,7 @@
   "references": [
     { "path": "../snaps-utils" },
     { "path": "../snaps-browserify-plugin" },
-    { "path": "../snaps-webpack-plugin" }
+    { "path": "../snaps-webpack-plugin" },
+    { "path": "../snaps-sdk" }
   ]
 }
