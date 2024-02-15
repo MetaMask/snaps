@@ -43,7 +43,7 @@ The following is a list of the snaps in this directory.
   render images in a snap. It can generate a QR code from a string, and render
   it in a dialog, as well as render an image from a URL.
   [**`packages/interactive-ui`**](./packages/interactive-ui): This snap demonstrates how to
-  use interactive UI in a snap. It can diplay various interactive UIs in various APIs available in the Snap.
+  use interactive UI in a snap. It can display interactive UIs in various APIs available in the Snap.
 - [**`packages/invoke-snap`**](./packages/invoke-snap): These snaps demonstrate
   how to use the `snap_invokeSnap` method to invoke another snap.
 - [**`packages/json-rpc`**](./packages/json-rpc): This snap demonstrates how to
