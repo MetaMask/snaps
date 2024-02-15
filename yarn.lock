@@ -6409,29 +6409,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@puppeteer/browsers@npm:1.4.6":
-  version: 1.4.6
-  resolution: "@puppeteer/browsers@npm:1.4.6"
-  dependencies:
-    debug: 4.3.4
-    extract-zip: 2.0.1
-    progress: 2.0.3
-    proxy-agent: 6.3.0
-    tar-fs: 3.0.4
-    unbzip2-stream: 1.4.3
-    yargs: 17.7.1
-  peerDependencies:
-    typescript: ">= 4.7.4"
-  peerDependenciesMeta:
-    typescript:
-      optional: true
-  bin:
-    browsers: lib/cjs/main-cli.js
-  checksum: 29569dd8a8a41737bb0dd40cce6279cfc8764afc6242d2f9d8ae610bed7e466fc77eeb27b9b3ac53dd04927a1a0e26389f282f6ba057210979b36ab455009d64
-  languageName: node
-  linkType: hard
-
-"@puppeteer/browsers@npm:^1.6.0":
+"@puppeteer/browsers@npm:1.7.0":
   version: 1.7.0
   resolution: "@puppeteer/browsers@npm:1.7.0"
   dependencies:
@@ -6445,6 +6423,23 @@ __metadata:
   bin:
     browsers: lib/cjs/main-cli.js
   checksum: 0a2aecc72fb94a8d94246188f94cfaad730d1d372b34df94ca51ff8a94596bf475a0fee162c317a768fa4b2a707bfa8afd582d594958f49e1019effadfe744b6
+  languageName: node
+  linkType: hard
+
+"@puppeteer/browsers@patch:@puppeteer/browsers@npm%3A1.7.0#./.yarn/patches/@puppeteer-browsers-npm-1.7.0-203cb4f44b.patch::locator=root%40workspace%3A.":
+  version: 1.7.0
+  resolution: "@puppeteer/browsers@patch:@puppeteer/browsers@npm%3A1.7.0#./.yarn/patches/@puppeteer-browsers-npm-1.7.0-203cb4f44b.patch::version=1.7.0&hash=bbbc7d&locator=root%40workspace%3A."
+  dependencies:
+    debug: 4.3.4
+    extract-zip: 2.0.1
+    progress: 2.0.3
+    proxy-agent: 6.3.0
+    tar-fs: 3.0.4
+    unbzip2-stream: 1.4.3
+    yargs: 17.7.1
+  bin:
+    browsers: lib/cjs/main-cli.js
+  checksum: d767c5c2e7278d8e4471f7ef027db36e73af19ff1955f943c8b0d18dcc71b44ef07569ab0c3ce0ba0038e4152c37c44f27e7435bccc768a0802f813dcde2a870
   languageName: node
   linkType: hard
 
