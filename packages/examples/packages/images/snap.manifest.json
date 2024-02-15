@@ -7,11 +7,10 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "Mmq22si3G7gwXwk8tCyIRusRl1lYKcDqsc933BoJ+kk=",
+    "shasum": "mVX09106PQlEiE6Mf/R5WREwdvrMJh+CZBunbofuCTE=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
-        "iconPath": "images/icon.svg",
         "packageName": "@metamask/images-example-snap",
         "registry": "https://registry.npmjs.org/"
       }

@@ -7,11 +7,10 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "Ra9HLlJ72RQZ8tZuQaKWmdgl3NtDntY44Xlwuu5oJTw=",
+    "shasum": "ADIPSwTN5N9WyTEkUt1aFtSzGilGnfvmbiEpuFsGrYQ=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
-        "iconPath": "images/icon.svg",
         "packageName": "@metamask/ethereum-provider-example-snap",
         "registry": "https://registry.npmjs.org/"
       }
