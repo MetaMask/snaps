@@ -136,11 +136,26 @@ describe('checkManifest', () => {
 
     await fs.writeFile(MANIFEST_PATH, JSON.stringify(manifest));
 
-    const { updated, warnings } = await checkManifest(BASE_PATH);
-    expect(updated).toBe(true);
+    const { warnings } = await checkManifest(BASE_PATH);
     expect(warnings).toHaveLength(1);
     expect(warnings[0]).toMatch(
       'No icon found in `source.location.npm.iconPath`. It is highly recommended for your Snap to have an icon.',
+    );
+  });
+
+  it('returns a warning if manifest has with a non 1:1 ratio', async () => {
+    const manifest = getSnapManifest();
+
+    await fs.writeFile(
+      join(BASE_PATH, 'images/icon.svg'),
+      '<svg height="24" width="25" />',
+    );
+    await fs.writeFile(MANIFEST_PATH, JSON.stringify(manifest));
+
+    const { warnings } = await checkManifest(BASE_PATH);
+    expect(warnings).toHaveLength(1);
+    expect(warnings[0]).toMatch(
+      'Please use an icon with 1:1 ratio between height and height.',
     );
   });
 
