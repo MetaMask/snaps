@@ -65,6 +65,7 @@ describe('loader', () => {
     // @ts-expect-error - We don't need to mock the entire `this` object.
     const result = await loader.bind({
       addDependency: jest.fn(),
+      resourcePath: join(__dirname, '__fixtures__', 'program.wasm'),
       // @ts-expect-error - The type of this function seems to be incorrect.
     })(source);
 

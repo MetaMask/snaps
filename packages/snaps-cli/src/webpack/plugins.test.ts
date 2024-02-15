@@ -1,8 +1,8 @@
 import { createFsFromVolume, Volume } from 'memfs';
 import ora from 'ora';
 import { promisify } from 'util';
-import type { Watching } from 'webpack';
-import { ProvidePlugin } from 'webpack';
+import type { Compiler, Watching } from 'webpack';
+import { WebpackError, ProvidePlugin } from 'webpack';
 
 import * as evalImplementation from '../commands/eval/implementation';
 import { compile, getCompiler } from '../test-utils';
@@ -61,6 +61,40 @@ describe('SnapsStatsPlugin', () => {
     );
 
     expect(process.exitCode).toBe(1);
+  });
+
+  it('logs any warnings', async () => {
+    const log = jest.spyOn(console, 'warn').mockImplementation();
+
+    class AddWarningPlugin {
+      apply(compiler: Compiler) {
+        compiler.hooks.afterEmit.tap('AddWarningPlugin', (compilation) => {
+          compilation.warnings.push(new WebpackError('This is a warning.'));
+        });
+      }
+    }
+
+    await compile({
+      code: `
+        console.log('foo');
+      `,
+      config: {
+        plugins: [
+          new AddWarningPlugin(),
+          new SnapsStatsPlugin({
+            verbose: false,
+          }),
+        ],
+      },
+    });
+
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching(/Compiled 1 file in \d+ms with 1 warning\./u),
+    );
+
+    expect(log).toHaveBeenCalledWith(
+      expect.stringContaining('This is a warning.'),
+    );
   });
 
   it('logs stack traces when verbose is enabled', async () => {

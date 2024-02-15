@@ -59,14 +59,14 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
         return;
       }
 
-      const { modules, time, errors } = stats.toJson();
+      const { modules, time, errors, warnings } = stats.toJson();
 
       assert(modules, 'Modules must be defined in stats.');
       assert(time, 'Time must be defined in stats.');
 
       if (errors?.length) {
         const formattedErrors = errors
-          .map(this.#getStatsErrorMessage.bind(this))
+          .map((statsError) => this.#getStatsErrorMessage(statsError))
           .join('\n\n');
 
         error(
@@ -86,13 +86,32 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
         return;
       }
 
-      info(
-        `Compiled ${modules.length} ${pluralize(
-          modules.length,
-          'file',
-        )} in ${time}ms.`,
-        this.#spinner,
-      );
+      if (warnings?.length) {
+        const formattedWarnings = warnings
+          .map((statsWarning) =>
+            this.#getStatsErrorMessage(statsWarning, yellow),
+          )
+          .join('\n\n');
+
+        warn(
+          `Compiled ${modules.length} ${pluralize(
+            modules.length,
+            'file',
+          )} in ${time}ms with ${warnings.length} ${pluralize(
+            warnings.length,
+            'warning',
+          )}.\n\n${formattedWarnings}\n`,
+          this.#spinner,
+        );
+      } else {
+        info(
+          `Compiled ${modules.length} ${pluralize(
+            modules.length,
+            'file',
+          )} in ${time}ms.`,
+          this.#spinner,
+        );
+      }
 
       if (compiler.watchMode) {
         // The spinner may be restarted by the watch plugin, outside of the
@@ -106,9 +125,10 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
    * Get the error message for the given stats error.
    *
    * @param statsError - The stats error.
+   * @param color - The color to use for the error message.
    * @returns The error message.
    */
-  #getStatsErrorMessage(statsError: StatsError) {
+  #getStatsErrorMessage(statsError: StatsError, color = red) {
     const baseMessage = this.options.verbose
       ? getErrorMessage(statsError)
       : statsError.message;
@@ -116,8 +136,8 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
     const [first, ...rest] = baseMessage.split('\n');
 
     return [
-      indent(red(`• ${first}`), 2),
-      ...rest.map((message) => indent(red(message), 4)),
+      indent(color(`• ${first}`), 2),
+      ...rest.map((message) => indent(color(message), 4)),
       statsError.details && indent(dim(statsError.details), 4),
     ]
       .filter(Boolean)

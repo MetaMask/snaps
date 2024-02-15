@@ -562,11 +562,7 @@ export const SnapsWebpackConfigStruct = object({
     {},
   ),
 
-  environment: defaulted(record(string(), unknown()), {
-    NODE_DEBUG: false,
-    NODE_ENV: 'production',
-    DEBUG: false,
-  }),
+  environment: defaulted(record(string(), unknown()), {}),
 
   stats: defaulted(
     object({

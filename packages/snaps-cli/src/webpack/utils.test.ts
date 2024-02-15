@@ -10,6 +10,7 @@ import {
   getFallbacks,
   getProgressHandler,
   pluralize,
+  getEnvironmentVariables,
 } from './utils';
 
 describe('getDefaultLoader', () => {
@@ -125,5 +126,23 @@ describe('getFallbacks', () => {
     const fallbacks = getFallbacks(true);
 
     expect(fallbacks.fs).toBe(false);
+  });
+});
+
+describe('getEnvironmentVariables', () => {
+  it('returns the environment variables', () => {
+    const env = getEnvironmentVariables({
+      NODE_ENV: 'development',
+      API_URL: 'https://example.com',
+    });
+
+    expect(env).toMatchInlineSnapshot(`
+      {
+        "process.env.API_URL": ""https://example.com"",
+        "process.env.DEBUG": ""false"",
+        "process.env.NODE_DEBUG": ""false"",
+        "process.env.NODE_ENV": ""development"",
+      }
+    `);
   });
 });
