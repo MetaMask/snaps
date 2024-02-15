@@ -36,6 +36,10 @@ export function getSvgDimensions(svg: string): {
 } | null {
   const parsed = parseSvg(svg);
 
+  if (!parsed) {
+    return null;
+  }
+
   const height = parsed['@_height'];
   const width = parsed['@_width'];
 

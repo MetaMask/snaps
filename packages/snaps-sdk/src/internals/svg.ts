@@ -1,4 +1,4 @@
-import { assert } from '@metamask/utils';
+import { assert, hasProperty, isObject } from '@metamask/utils';
 import { XMLParser } from 'fast-xml-parser';
 
 /**
@@ -19,7 +19,12 @@ export function parseSvg(svg: string) {
     });
     const parsed = parser.parse(trimmed, true);
 
-    assert(parsed.svg);
+    assert(hasProperty(parsed, 'svg'));
+
+    // Empty SVGs are not returned as objects
+    if (!isObject(parsed.svg)) {
+      return null;
+    }
 
     return parsed.svg;
   } catch {
