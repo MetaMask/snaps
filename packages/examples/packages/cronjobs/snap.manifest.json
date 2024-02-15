@@ -7,11 +7,10 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "EZZGFdt4cijosfQJOtC/Ccn/gkBwgsIWR8rhLjPGpns=",
+    "shasum": "GAux4AP6Gh186hvbScwMDtFi8Qmfk+XbWZKJygUSLQc=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
-        "iconPath": "images/icon.svg",
         "packageName": "@metamask/cronjob-example-snap",
         "registry": "https://registry.npmjs.org/"
       }
