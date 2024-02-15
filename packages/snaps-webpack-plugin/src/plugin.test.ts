@@ -155,7 +155,7 @@ describe('SnapsWebpackPlugin', () => {
     });
 
     expect(stats.toJson().warnings?.[0].message).toMatch(
-      `SnapsWebpackPlugin: Bundle Warning: Processing of the Snap bundle completed with warnings.\n${PostProcessWarning.UnsafeMathRandom}`,
+      PostProcessWarning.UnsafeMathRandom,
     );
   });
 

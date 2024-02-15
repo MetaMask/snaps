@@ -84,13 +84,11 @@ export default class SnapsWebpackPlugin {
                 });
 
                 if (processed.warnings.length > 0) {
-                  compilation.warnings.push(
-                    new WebpackError(
-                      `${PLUGIN_NAME}: Bundle Warning: Processing of the Snap bundle completed with warnings.\n${processed.warnings.join(
-                        '\n',
-                      )}`,
-                    ),
+                  const webpackErrors = processed.warnings.map(
+                    (warning) => new WebpackError(warning),
                   );
+
+                  compilation.warnings.push(...webpackErrors);
                 }
 
                 const replacement = processed.sourceMap
