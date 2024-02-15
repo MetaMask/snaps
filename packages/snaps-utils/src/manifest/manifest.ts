@@ -191,6 +191,12 @@ export async function checkManifest(
     );
   }
 
+  if (!snapFiles.svgIcon) {
+    warnings.push(
+      'No icon found in `source.location.npm.iconPath`. It is highly recommended for your Snap to have an icon.',
+    );
+  }
+
   if (writeManifest) {
     try {
       const newManifest = `${JSON.stringify(

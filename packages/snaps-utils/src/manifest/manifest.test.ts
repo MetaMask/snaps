@@ -128,6 +128,22 @@ describe('checkManifest', () => {
     expect(warnings[0]).toMatch('Missing recommended package.json properties');
   });
 
+  it('returns a warning if manifest has no defined icon', async () => {
+    const manifest = getSnapManifest();
+
+    // Remove icon
+    manifest.source.location.npm.iconPath = undefined;
+
+    await fs.writeFile(MANIFEST_PATH, JSON.stringify(manifest));
+
+    const { updated, warnings } = await checkManifest(BASE_PATH);
+    expect(updated).toBe(true);
+    expect(warnings).toHaveLength(1);
+    expect(warnings[0]).toMatch(
+      'No icon found in `source.location.npm.iconPath`. It is highly recommended for your Snap to have an icon.',
+    );
+  });
+
   it('return errors if the manifest is invalid', async () => {
     await fs.writeFile(
       MANIFEST_PATH,
