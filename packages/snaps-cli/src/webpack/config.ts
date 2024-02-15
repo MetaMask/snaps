@@ -337,6 +337,22 @@ export async function getDefaultConfiguration(
     },
 
     /**
+     * The performance configuration. This tells Webpack how to handle
+     * performance hints.
+     *
+     * @see https://webpack.js.org/configuration/performance/
+     */
+    performance: {
+      /**
+       * The hints to show. We set it to `false`, so that we don't get
+       * performance hints, as they are not relevant for Snaps.
+       *
+       * @see https://webpack.js.org/configuration/performance/#performancehints
+       */
+      hints: false,
+    },
+
+    /**
      * The infrastructure logging configuration. This tells Webpack how to
      * log messages.
      *
