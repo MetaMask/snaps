@@ -271,3 +271,27 @@ export function getFallbacks(polyfills: ProcessedWebpackConfig['polyfills']): {
     ]),
   );
 }
+
+/**
+ * Get an object that can be used as environment variables for Webpack's
+ * `DefinePlugin`.
+ *
+ * @param environment - The environment object from the Snap config.
+ * @param defaults - The default environment variables.
+ * @returns The Webpack environment variables.
+ */
+export function getEnvironmentVariables(
+  environment: Record<string, unknown>,
+  defaults = {
+    NODE_DEBUG: 'false',
+    NODE_ENV: 'production',
+    DEBUG: 'false',
+  },
+) {
+  return Object.fromEntries(
+    Object.entries({
+      ...defaults,
+      ...environment,
+    }).map(([key, value]) => [`process.env.${key}`, JSON.stringify(value)]),
+  );
+}

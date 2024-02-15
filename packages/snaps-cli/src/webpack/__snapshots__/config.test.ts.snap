@@ -69,6 +69,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "path": "/foo/bar/dist",
     "publicPath": "/",
   },
+  "performance": {
+    "hints": false,
+  },
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
@@ -82,17 +85,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "verbose": false,
       },
     },
-    EnvironmentPlugin {
-      "defaultValues": {
-        "DEBUG": false,
-        "NODE_DEBUG": false,
-        "NODE_ENV": "production",
+    DefinePlugin {
+      "definitions": {
+        "process.env.DEBUG": ""false"",
+        "process.env.NODE_DEBUG": ""false"",
+        "process.env.NODE_ENV": ""production"",
       },
-      "keys": [
-        "NODE_DEBUG",
-        "NODE_ENV",
-        "DEBUG",
-      ],
     },
     ProgressPlugin {
       "dependenciesCount": 10000,
@@ -213,6 +211,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "path": "/foo/bar/dist",
     "publicPath": "/",
   },
+  "performance": {
+    "hints": false,
+  },
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
@@ -226,17 +227,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "verbose": true,
       },
     },
-    EnvironmentPlugin {
-      "defaultValues": {
-        "DEBUG": false,
-        "NODE_DEBUG": false,
-        "NODE_ENV": "production",
+    DefinePlugin {
+      "definitions": {
+        "process.env.DEBUG": ""false"",
+        "process.env.NODE_DEBUG": ""false"",
+        "process.env.NODE_ENV": ""production"",
       },
-      "keys": [
-        "NODE_DEBUG",
-        "NODE_ENV",
-        "DEBUG",
-      ],
     },
     ProgressPlugin {
       "dependenciesCount": 10000,
@@ -357,6 +353,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "path": "/foo/bar/dist",
     "publicPath": "/",
   },
+  "performance": {
+    "hints": false,
+  },
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
@@ -370,17 +369,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "verbose": false,
       },
     },
-    EnvironmentPlugin {
-      "defaultValues": {
-        "DEBUG": false,
-        "NODE_DEBUG": false,
-        "NODE_ENV": "production",
+    DefinePlugin {
+      "definitions": {
+        "process.env.DEBUG": ""false"",
+        "process.env.NODE_DEBUG": ""false"",
+        "process.env.NODE_ENV": ""production"",
       },
-      "keys": [
-        "NODE_DEBUG",
-        "NODE_ENV",
-        "DEBUG",
-      ],
     },
     ProgressPlugin {
       "dependenciesCount": 10000,
@@ -501,6 +495,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "path": "/foo/bar/dist",
     "publicPath": "/",
   },
+  "performance": {
+    "hints": false,
+  },
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
@@ -514,19 +511,13 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "verbose": false,
       },
     },
-    EnvironmentPlugin {
-      "defaultValues": {
-        "DEBUG": false,
-        "FOO": "bar",
-        "NODE_DEBUG": false,
-        "NODE_ENV": "production",
+    DefinePlugin {
+      "definitions": {
+        "process.env.DEBUG": ""false"",
+        "process.env.FOO": ""bar"",
+        "process.env.NODE_DEBUG": ""false"",
+        "process.env.NODE_ENV": ""production"",
       },
-      "keys": [
-        "FOO",
-        "NODE_DEBUG",
-        "NODE_ENV",
-        "DEBUG",
-      ],
     },
     ProgressPlugin {
       "dependenciesCount": 10000,
@@ -642,6 +633,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "path": "/foo/bar/dist",
     "publicPath": "/",
   },
+  "performance": {
+    "hints": false,
+  },
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
@@ -655,17 +649,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "verbose": false,
       },
     },
-    EnvironmentPlugin {
-      "defaultValues": {
-        "DEBUG": false,
-        "NODE_DEBUG": false,
-        "NODE_ENV": "production",
+    DefinePlugin {
+      "definitions": {
+        "process.env.DEBUG": ""false"",
+        "process.env.NODE_DEBUG": ""false"",
+        "process.env.NODE_ENV": ""production"",
       },
-      "keys": [
-        "NODE_DEBUG",
-        "NODE_ENV",
-        "DEBUG",
-      ],
     },
     ProgressPlugin {
       "dependenciesCount": 10000,
@@ -786,6 +775,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "path": "/foo/bar/dist",
     "publicPath": "/",
   },
+  "performance": {
+    "hints": false,
+  },
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
@@ -799,17 +791,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "verbose": false,
       },
     },
-    EnvironmentPlugin {
-      "defaultValues": {
-        "DEBUG": false,
-        "NODE_DEBUG": false,
-        "NODE_ENV": "production",
+    DefinePlugin {
+      "definitions": {
+        "process.env.DEBUG": ""false"",
+        "process.env.NODE_DEBUG": ""false"",
+        "process.env.NODE_ENV": ""production"",
       },
-      "keys": [
-        "NODE_DEBUG",
-        "NODE_ENV",
-        "DEBUG",
-      ],
     },
     ProgressPlugin {
       "dependenciesCount": 10000,
@@ -930,6 +917,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "path": "/foo/bar/dist",
     "publicPath": "/",
   },
+  "performance": {
+    "hints": false,
+  },
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
@@ -943,17 +933,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "verbose": false,
       },
     },
-    EnvironmentPlugin {
-      "defaultValues": {
-        "DEBUG": false,
-        "NODE_DEBUG": false,
-        "NODE_ENV": "production",
+    DefinePlugin {
+      "definitions": {
+        "process.env.DEBUG": ""false"",
+        "process.env.NODE_DEBUG": ""false"",
+        "process.env.NODE_ENV": ""production"",
       },
-      "keys": [
-        "NODE_DEBUG",
-        "NODE_ENV",
-        "DEBUG",
-      ],
     },
     ProgressPlugin {
       "dependenciesCount": 10000,
@@ -1074,6 +1059,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "path": "/foo/bar/dist",
     "publicPath": "/",
   },
+  "performance": {
+    "hints": false,
+  },
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
@@ -1087,17 +1075,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "verbose": false,
       },
     },
-    EnvironmentPlugin {
-      "defaultValues": {
-        "DEBUG": false,
-        "NODE_DEBUG": false,
-        "NODE_ENV": "production",
+    DefinePlugin {
+      "definitions": {
+        "process.env.DEBUG": ""false"",
+        "process.env.NODE_DEBUG": ""false"",
+        "process.env.NODE_ENV": ""production"",
       },
-      "keys": [
-        "NODE_DEBUG",
-        "NODE_ENV",
-        "DEBUG",
-      ],
     },
     ProgressPlugin {
       "dependenciesCount": 10000,
@@ -1226,6 +1209,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "path": "/foo/bar/dist",
     "publicPath": "/",
   },
+  "performance": {
+    "hints": false,
+  },
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
@@ -1239,17 +1225,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "verbose": false,
       },
     },
-    EnvironmentPlugin {
-      "defaultValues": {
-        "DEBUG": false,
-        "NODE_DEBUG": false,
-        "NODE_ENV": "production",
+    DefinePlugin {
+      "definitions": {
+        "process.env.DEBUG": ""false"",
+        "process.env.NODE_DEBUG": ""false"",
+        "process.env.NODE_ENV": ""production"",
       },
-      "keys": [
-        "NODE_DEBUG",
-        "NODE_ENV",
-        "DEBUG",
-      ],
     },
     ProgressPlugin {
       "dependenciesCount": 10000,
@@ -1378,6 +1359,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "path": "/bar/baz",
     "publicPath": "/",
   },
+  "performance": {
+    "hints": false,
+  },
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
@@ -1391,17 +1375,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "verbose": false,
       },
     },
-    EnvironmentPlugin {
-      "defaultValues": {
-        "DEBUG": false,
-        "NODE_DEBUG": false,
-        "NODE_ENV": "production",
+    DefinePlugin {
+      "definitions": {
+        "process.env.DEBUG": ""false"",
+        "process.env.NODE_DEBUG": ""false"",
+        "process.env.NODE_ENV": ""production"",
       },
-      "keys": [
-        "NODE_DEBUG",
-        "NODE_ENV",
-        "DEBUG",
-      ],
     },
     ProgressPlugin {
       "dependenciesCount": 10000,
@@ -1531,6 +1510,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "path": "/bar/baz",
     "publicPath": "/",
   },
+  "performance": {
+    "hints": false,
+  },
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
@@ -1544,17 +1526,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "verbose": false,
       },
     },
-    EnvironmentPlugin {
-      "defaultValues": {
-        "DEBUG": false,
-        "NODE_DEBUG": false,
-        "NODE_ENV": "production",
+    DefinePlugin {
+      "definitions": {
+        "process.env.DEBUG": ""false"",
+        "process.env.NODE_DEBUG": ""false"",
+        "process.env.NODE_ENV": ""production"",
       },
-      "keys": [
-        "NODE_DEBUG",
-        "NODE_ENV",
-        "DEBUG",
-      ],
     },
     ProgressPlugin {
       "dependenciesCount": 10000,
@@ -1675,6 +1652,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "path": "/bar/baz",
     "publicPath": "/",
   },
+  "performance": {
+    "hints": false,
+  },
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
@@ -1688,17 +1668,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "verbose": false,
       },
     },
-    EnvironmentPlugin {
-      "defaultValues": {
-        "DEBUG": false,
-        "NODE_DEBUG": false,
-        "NODE_ENV": "production",
+    DefinePlugin {
+      "definitions": {
+        "process.env.DEBUG": ""false"",
+        "process.env.NODE_DEBUG": ""false"",
+        "process.env.NODE_ENV": ""production"",
       },
-      "keys": [
-        "NODE_DEBUG",
-        "NODE_ENV",
-        "DEBUG",
-      ],
     },
     ProgressPlugin {
       "dependenciesCount": 10000,
@@ -1819,6 +1794,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "path": "/bar/baz",
     "publicPath": "/",
   },
+  "performance": {
+    "hints": false,
+  },
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
@@ -1832,17 +1810,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "verbose": false,
       },
     },
-    EnvironmentPlugin {
-      "defaultValues": {
-        "DEBUG": false,
-        "NODE_DEBUG": false,
-        "NODE_ENV": "production",
+    DefinePlugin {
+      "definitions": {
+        "process.env.DEBUG": ""false"",
+        "process.env.NODE_DEBUG": ""false"",
+        "process.env.NODE_ENV": ""production"",
       },
-      "keys": [
-        "NODE_DEBUG",
-        "NODE_ENV",
-        "DEBUG",
-      ],
     },
     ProgressPlugin {
       "dependenciesCount": 10000,
@@ -1972,6 +1945,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "path": "/bar/baz",
     "publicPath": "/",
   },
+  "performance": {
+    "hints": false,
+  },
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
@@ -1985,17 +1961,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "verbose": false,
       },
     },
-    EnvironmentPlugin {
-      "defaultValues": {
-        "DEBUG": false,
-        "NODE_DEBUG": false,
-        "NODE_ENV": "production",
+    DefinePlugin {
+      "definitions": {
+        "process.env.DEBUG": ""false"",
+        "process.env.NODE_DEBUG": ""false"",
+        "process.env.NODE_ENV": ""production"",
       },
-      "keys": [
-        "NODE_DEBUG",
-        "NODE_ENV",
-        "DEBUG",
-      ],
     },
     ProgressPlugin {
       "dependenciesCount": 10000,
@@ -2128,6 +2099,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "path": "/foo/bar/dist",
     "publicPath": "/",
   },
+  "performance": {
+    "hints": false,
+  },
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
@@ -2141,17 +2115,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "verbose": false,
       },
     },
-    EnvironmentPlugin {
-      "defaultValues": {
-        "DEBUG": false,
-        "NODE_DEBUG": false,
-        "NODE_ENV": "production",
+    DefinePlugin {
+      "definitions": {
+        "process.env.DEBUG": ""false"",
+        "process.env.NODE_DEBUG": ""false"",
+        "process.env.NODE_ENV": ""production"",
       },
-      "keys": [
-        "NODE_DEBUG",
-        "NODE_ENV",
-        "DEBUG",
-      ],
     },
     ProgressPlugin {
       "dependenciesCount": 10000,
@@ -2265,6 +2234,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "path": "/foo/bar/dist",
     "publicPath": "/",
   },
+  "performance": {
+    "hints": false,
+  },
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
@@ -2278,17 +2250,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "verbose": false,
       },
     },
-    EnvironmentPlugin {
-      "defaultValues": {
-        "DEBUG": false,
-        "NODE_DEBUG": false,
-        "NODE_ENV": "production",
+    DefinePlugin {
+      "definitions": {
+        "process.env.DEBUG": ""false"",
+        "process.env.NODE_DEBUG": ""false"",
+        "process.env.NODE_ENV": ""production"",
       },
-      "keys": [
-        "NODE_DEBUG",
-        "NODE_ENV",
-        "DEBUG",
-      ],
     },
     ProgressPlugin {
       "dependenciesCount": 10000,
@@ -2402,6 +2369,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "path": "/foo/bar/dist",
     "publicPath": "/",
   },
+  "performance": {
+    "hints": false,
+  },
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
@@ -2415,17 +2385,12 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "verbose": false,
       },
     },
-    EnvironmentPlugin {
-      "defaultValues": {
-        "DEBUG": false,
-        "NODE_DEBUG": false,
-        "NODE_ENV": "production",
+    DefinePlugin {
+      "definitions": {
+        "process.env.DEBUG": ""false"",
+        "process.env.NODE_DEBUG": ""false"",
+        "process.env.NODE_ENV": ""production"",
       },
-      "keys": [
-        "NODE_DEBUG",
-        "NODE_ENV",
-        "DEBUG",
-      ],
     },
     ProgressPlugin {
       "dependenciesCount": 10000,

@@ -3,7 +3,7 @@ import type { Ora } from 'ora';
 import { resolve } from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import type { Configuration } from 'webpack';
-import { EnvironmentPlugin, ProgressPlugin, ProvidePlugin } from 'webpack';
+import { DefinePlugin, ProgressPlugin, ProvidePlugin } from 'webpack';
 
 import type { ProcessedWebpackConfig } from '../config';
 import {
@@ -16,6 +16,7 @@ import {
   BROWSERSLIST_FILE,
   getDefaultLoader,
   getDevTool,
+  getEnvironmentVariables,
   getFallbacks,
   getProgressHandler,
 } from './utils';
@@ -265,10 +266,11 @@ export async function getDefaultConfiguration(
 
       /**
        * The `EnvironmentPlugin` is a Webpack plugin that adds environment
-       * variables to the bundle. We use it to add the `NODE_ENV` and `DEBUG`
-       * environment variables.
+       * variables to the bundle. We use it to add the `NODE_DEBUG`, `NODE_ENV`,
+       * and `DEBUG` environment variables, as well as any custom environment
+       * variables.
        */
-      new EnvironmentPlugin(config.environment),
+      new DefinePlugin(getEnvironmentVariables(config.environment)),
 
       /**
        * The `ProgressPlugin` is a Webpack plugin that logs the progress of
