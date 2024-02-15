@@ -1,6 +1,7 @@
 /* eslint-disable no-restricted-globals */
 
 import { assert } from '@metamask/utils';
+import { dirname, resolve } from 'path';
 import type { LoaderDefinitionFunction } from 'webpack';
 
 /**
@@ -95,8 +96,9 @@ const loader: LoaderDefinitionFunction = async function loader(
 
   // Add the WASM import as a dependency so that Webpack will watch it for
   // changes.
+  const path = dirname(this.resourcePath);
   for (const name of Object.keys(imports)) {
-    this.addDependency(name);
+    this.addDependency(resolve(path, name));
   }
 
   return `
