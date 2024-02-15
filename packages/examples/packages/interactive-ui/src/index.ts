@@ -3,6 +3,8 @@ import type {
   OnHomePageHandler,
   OnTransactionHandler,
   OnUserInputHandler,
+  Transaction,
+  Component,
 } from '@metamask/snaps-sdk';
 import {
   panel,
@@ -15,15 +17,22 @@ import {
   ButtonType,
   text,
   copyable,
+  ManageStateOperation,
+  assert,
+  address,
+  row,
 } from '@metamask/snaps-sdk';
+import { hasProperty } from '@metamask/utils';
+
+import { decodeData } from './utils';
 
 /**
- * Initiate a new interface with the starting screen and return the Snap interface ID.
+ * Initiate a new interface with the starting screen.
  *
  * @returns The Snap interface ID.
  */
-export const createInterface = async (): Promise<string> =>
-  snap.request({
+export async function createInterface(): Promise<string> {
+  return await snap.request({
     method: 'snap_createInterface',
     params: {
       ui: panel([
@@ -32,14 +41,77 @@ export const createInterface = async (): Promise<string> =>
       ]),
     },
   });
+}
+
+/**
+ * Create the transaction insights components to display.
+ *
+ * @returns The transaction insight content.
+ */
+export async function getInsightContent(): Promise<Component> {
+  const snapState = await snap.request({
+    method: 'snap_manageState',
+    params: {
+      operation: ManageStateOperation.GetState,
+    },
+  });
+
+  assert(snapState?.transaction, 'No transaction found in Snap state.');
+
+  const { from, to } = snapState.transaction as Transaction;
+
+  return panel([
+    row('From', address(from)),
+    row('To', to ? address(to) : text('None')),
+    button({ value: 'See transaction type', name: 'transaction-type' }),
+  ]);
+}
+
+/**
+ * Updates a Snap interface to display the transaction type.
+ *
+ * @param id -  The interface ID to update.
+ */
+export async function displayTransactionType(id: string) {
+  let type = 'unkown';
+
+  const snapState = await snap.request({
+    method: 'snap_manageState',
+    params: {
+      operation: ManageStateOperation.GetState,
+    },
+  });
+
+  assert(snapState?.transaction, 'No transaction found in Snap state.');
+
+  const transaction = snapState.transaction as Transaction;
+
+  if (
+    hasProperty(transaction, 'data') &&
+    typeof transaction.data === 'string'
+  ) {
+    type = decodeData(transaction.data);
+  }
+
+  await snap.request({
+    method: 'snap_updateInterface',
+    params: {
+      id,
+      ui: panel([
+        row('Transaction type', text(type)),
+        button({ value: 'Go back', name: 'go-back' }),
+      ]),
+    },
+  });
+}
 
 /**
  * Update the interface with a simple form containing an input and a submit button.
  *
  * @param id - The Snap interface ID to update.
  */
-export const showForm = async (id: string) => {
-  snap.request({
+export async function showForm(id: string) {
+  await snap.request({
     method: 'snap_updateInterface',
     params: {
       id,
@@ -48,14 +120,17 @@ export const showForm = async (id: string) => {
         form({
           name: 'example-form',
           children: [
-            input({ name: 'example-input', placeholder: 'Enter something...' }),
+            input({
+              name: 'example-input',
+              placeholder: 'Enter something...',
+            }),
             button('Submit', ButtonType.Submit, 'sumbit'),
           ],
         }),
       ]),
     },
   });
-};
+}
 
 /**
  * Update a Snap interface to show a given value.
@@ -63,8 +138,8 @@ export const showForm = async (id: string) => {
  * @param id - The Snap interface ID to update.
  * @param value - The value to display in the UI.
  */
-export const showResult = async (id: string, value: string) => {
-  snap.request({
+export async function showResult(id: string, value: string) {
+  await snap.request({
     method: 'snap_updateInterface',
     params: {
       id,
@@ -75,7 +150,7 @@ export const showResult = async (id: string, value: string) => {
       ]),
     },
   });
-};
+}
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
@@ -84,7 +159,7 @@ export const showResult = async (id: string, value: string) => {
  * - `dialog`: Create a `snap_dialog` with an interactive interface. This demonstrates
  * that a snap can show an interactive `snap_dialog` that the user can interact with.
  *
- * - `get_state`: Get the state of a given interface. This demonstrates
+ * - `getState`: Get the state of a given interface. This demonstrates
  * that a snap can retrieve an interface state.
  *
  * @param params - The request parameters.
@@ -93,37 +168,54 @@ export const showResult = async (id: string, value: string) => {
  * @see https://docs.metamask.io/snaps/reference/exports/#onrpcrequest
  * @see https://docs.metamask.io/snaps/reference/rpc-api/#wallet_invokesnap
  */
-export const onRpcRequest: OnRpcRequestHandler<{ id: string }> = async ({
-  request,
-}) => {
+export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'dialog': {
-      const interfaceId = await createInterface();
+      try {
+        const interfaceId = await createInterface();
 
-      snap.request({
-        method: 'snap_dialog',
+        await snap.request({
+          method: 'snap_manageState',
+          params: {
+            operation: ManageStateOperation.UpdateState,
+            newState: { interfaceId },
+            encrypted: false,
+          },
+        });
+
+        return await snap.request({
+          method: 'snap_dialog',
+          params: {
+            type: 'confirmation',
+            id: interfaceId,
+          },
+        });
+      } finally {
+        await snap.request({
+          method: 'snap_manageState',
+          params: {
+            operation: ManageStateOperation.ClearState,
+            encrypted: false,
+          },
+        });
+      }
+    }
+
+    case 'getState': {
+      const snapState = await snap.request({
+        method: 'snap_manageState',
         params: {
-          type: 'confirmation',
-          id: interfaceId,
+          operation: ManageStateOperation.GetState,
+          encrypted: false,
         },
       });
 
-      return interfaceId;
-    }
-
-    case 'get_state': {
-      if (!request.params?.id) {
-        throw rpcErrors.invalidParams({
-          message: 'Invalid Params: `get_state` needs an interface ID',
-        });
-      }
-
-      const { id } = request.params;
+      assert(snapState?.interfaceId, 'No interface ID found in state.');
 
       const state = await snap.request({
         method: 'snap_getInterfaceState',
         params: {
-          id,
+          id: snapState.interfaceId as string,
         },
       });
 
@@ -163,13 +255,29 @@ export const onHomePage: OnHomePageHandler = async () => {
  * transaction is signed, so it can be used to display information about the
  * transaction to the user before they sign it.
  *
- * The `onTransaction` handler returns a Snaps interface ID, which is displayed
- * in the transaction insights panel.
+ * The `onTransaction` handler returns a Snaps interface ID, which is used to
+ * retrieve the associated interface components in the transaction insights panel.
  *
+ * @param args - The request parameters.
+ * @param args.transaction - The transaction object. This contains the
+ * transaction parameters, such as the `from`, `to`, `value`, and `data` fields.
  * @returns The transaction insights.
  */
-export const onTransaction: OnTransactionHandler = async () => {
-  const interfaceId = await createInterface();
+export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
+  await snap.request({
+    method: 'snap_manageState',
+    params: {
+      operation: ManageStateOperation.UpdateState,
+      newState: { transaction },
+    },
+  });
+
+  const interfaceId = await snap.request({
+    method: 'snap_createInterface',
+    params: {
+      ui: await getInsightContent(),
+    },
+  });
 
   return { id: interfaceId };
 };
@@ -188,6 +296,28 @@ export const onUserInput: OnUserInputHandler = async ({ id, event }) => {
     event.name === 'update'
   ) {
     await showForm(id);
+    return;
+  }
+
+  if (
+    event.type === UserInputEventType.ButtonClickEvent &&
+    event.name === 'transaction-type'
+  ) {
+    await displayTransactionType(id);
+    return;
+  }
+
+  if (
+    event.type === UserInputEventType.ButtonClickEvent &&
+    event.name === 'go-back'
+  ) {
+    await snap.request({
+      method: 'snap_updateInterface',
+      params: {
+        id,
+        ui: await getInsightContent(),
+      },
+    });
     return;
   }
 

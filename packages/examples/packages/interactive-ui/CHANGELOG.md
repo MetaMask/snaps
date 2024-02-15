@@ -7,9 +7,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.0]
-
-### Added
-
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/interactive-ui-example-snap@1.0.0...HEAD
-[1.0.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/interactive-ui-example-snap@1.0.0
+[Unreleased]: https://github.com/MetaMask/snaps/
