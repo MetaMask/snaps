@@ -3570,7 +3570,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/allow-scripts@npm:^3.0.2":
+"@lavamoat/allow-scripts@npm:^3.0.0, @lavamoat/allow-scripts@npm:^3.0.2":
   version: 3.0.2
   resolution: "@lavamoat/allow-scripts@npm:3.0.2"
   dependencies:
