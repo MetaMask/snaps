@@ -3,7 +3,6 @@ import { assert, hasProperty, isObject } from '@metamask/utils';
 import { dim, red, yellow } from 'chalk';
 import { isBuiltin } from 'module';
 import type { Ora } from 'ora';
-import type { WebpackError } from 'terser-webpack-plugin';
 import type {
   Compiler,
   ProvidePlugin,
@@ -129,7 +128,7 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
    * @param color - The color to use for the error message.
    * @returns The error message.
    */
-  #getStatsErrorMessage(statsError: StatsError | WebpackError, color = red) {
+  #getStatsErrorMessage(statsError: StatsError, color = red) {
     const baseMessage = this.options.verbose
       ? getErrorMessage(statsError)
       : statsError.message;
