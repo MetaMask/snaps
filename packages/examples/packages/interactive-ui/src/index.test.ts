@@ -1,7 +1,7 @@
 import { expect } from '@jest/globals';
 import { installSnap } from '@metamask/snaps-jest';
-import { button, heading, panel } from '@metamask/snaps-sdk';
-import { assert, hasProperty } from '@metamask/utils';
+import { address, button, heading, panel, row } from '@metamask/snaps-sdk';
+import { assert } from '@metamask/utils';
 
 describe('onRpcRequest', () => {
   it('throws an error if the requested method does not exist', async () => {
@@ -42,28 +42,25 @@ describe('onRpcRequest', () => {
 
       await ui.ok();
 
-      expect(await response).toRespondWith(expect.any(String));
+      expect(await response).toRespondWith(true);
     });
   });
 
-  describe('get_state', () => {
+  describe('getState', () => {
     it('gets the interface state', async () => {
       const { request } = await installSnap();
 
-      const { response } = await request({
+      const response = request({
         method: 'dialog',
       });
 
-      assert(hasProperty(response, 'result'));
-
-      const id = response.result as string;
+      const ui = await response.getInterface();
 
       const getStateResponse = await request({
-        method: 'get_state',
-        params: {
-          id,
-        },
+        method: 'getState',
       });
+
+      await ui.ok();
 
       expect(getStateResponse).toRespondWith({});
     });
@@ -86,15 +83,24 @@ describe('onHomePage', () => {
 });
 
 describe('onTransaction', () => {
+  const FROM_ADDRESS = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045';
+  const TO_ADDRESS = '0x4bbeeb066ed09b7aed07bf39eee0460dfa261520';
   it('returns custom UI', async () => {
     const { onTransaction } = await installSnap();
 
-    const response = await onTransaction({});
+    const response = await onTransaction({
+      from: FROM_ADDRESS,
+      to: TO_ADDRESS,
+      // This is not a valid ERC-20 transfer as all the values are zero, but it
+      // is enough to test the `onTransaction` handler.
+      data: '0xa9059cbb00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+    });
 
     expect(response).toRender(
       panel([
-        heading('Interactive UI Example Snap'),
-        button({ value: 'Update UI', name: 'update' }),
+        row('From', address(FROM_ADDRESS)),
+        row('To', address(TO_ADDRESS)),
+        button({ value: 'See transaction type', name: 'transaction-type' }),
       ]),
     );
   });
