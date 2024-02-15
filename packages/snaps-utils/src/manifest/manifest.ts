@@ -7,6 +7,7 @@ import pathUtils from 'path';
 
 import { deepClone } from '../deep-clone';
 import { readJsonFile } from '../fs';
+import { getSvgDimensions } from '../icon';
 import { validateNpmSnap } from '../npm';
 import {
   getSnapChecksum,
@@ -194,6 +195,14 @@ export async function checkManifest(
   if (!snapFiles.svgIcon) {
     warnings.push(
       'No icon found in `source.location.npm.iconPath`. It is highly recommended for your Snap to have an icon.',
+    );
+  }
+
+  const iconDimensions =
+    snapFiles.svgIcon && getSvgDimensions(snapFiles.svgIcon.toString());
+  if (iconDimensions && iconDimensions.height !== iconDimensions.width) {
+    warnings.push(
+      'Please use an icon with 1:1 ratio between height and height.',
     );
   }
 
