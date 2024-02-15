@@ -265,10 +265,10 @@ export async function getDefaultConfiguration(
       new SnapsStatsPlugin({ verbose: config.stats.verbose }, options.spinner),
 
       /**
-       * The `EnvironmentPlugin` is a Webpack plugin that adds environment
-       * variables to the bundle. We use it to add the `NODE_DEBUG`, `NODE_ENV`,
-       * and `DEBUG` environment variables, as well as any custom environment
-       * variables.
+       * The `DefinePlugin` is a Webpack plugin that adds static values to the
+       * bundle. We use it to add the `NODE_DEBUG`, `NODE_ENV`, and `DEBUG`
+       * environment variables, as well as any custom environment
+       * variables (as `process.env`).
        */
       new DefinePlugin(getEnvironmentVariables(config.environment)),
 
