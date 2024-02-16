@@ -11,8 +11,7 @@
   "main": "./dist/bundle.js",
   "files": [
     "dist/",
-    "snap.manifest.json",
-    "images/icon.svg"
+    "snap.manifest.json"
   ],
   "scripts": {
     "build": "mm-snap build",
