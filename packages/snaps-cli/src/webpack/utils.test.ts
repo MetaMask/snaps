@@ -11,6 +11,7 @@ import {
   getProgressHandler,
   pluralize,
   getEnvironmentVariables,
+  formatText,
 } from './utils';
 
 describe('getDefaultLoader', () => {
@@ -143,6 +144,53 @@ describe('getEnvironmentVariables', () => {
         "process.env.NODE_DEBUG": ""false"",
         "process.env.NODE_ENV": ""development"",
       }
+    `);
+  });
+});
+
+describe('formatText', () => {
+  let originalColumns: number | undefined;
+  beforeAll(() => {
+    originalColumns = process.stdout.columns;
+    process.stdout.columns = 40;
+  });
+
+  afterAll(() => {
+    // @ts-expect-error - According to the type, `columns` cannot be undefined.
+    process.stdout.columns = originalColumns;
+  });
+
+  it('formats the text', () => {
+    expect(
+      formatText(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eget nulla mattis, sollicitudin enim tincidunt, vulputate libero. Pellentesque neque sapien, lobortis eu elit in, suscipit aliquet augue.',
+        2,
+      ),
+    ).toMatchInlineSnapshot(`
+      "  Lorem ipsum dolor sit amet, 
+        consectetur adipiscing elit. Nam eget 
+        nulla mattis, sollicitudin enim 
+        tincidunt, vulputate libero. 
+        Pellentesque neque sapien, lobortis 
+        eu elit in, suscipit aliquet augue. "
+    `);
+  });
+
+  it('formats the text with a custom initial indentation', () => {
+    process.stdout.columns = 40;
+    expect(
+      formatText(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eget nulla mattis, sollicitudin enim tincidunt, vulputate libero. Pellentesque neque sapien, lobortis eu elit in, suscipit aliquet augue.',
+        4,
+        2,
+      ),
+    ).toMatchInlineSnapshot(`
+      "  Lorem ipsum dolor sit amet, 
+          consectetur adipiscing elit. Nam 
+          eget nulla mattis, sollicitudin 
+          enim tincidunt, vulputate libero. 
+          Pellentesque neque sapien, lobortis 
+          eu elit in, suscipit aliquet augue. "
     `);
   });
 });

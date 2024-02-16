@@ -295,3 +295,49 @@ export function getEnvironmentVariables(
     }).map(([key, value]) => [`process.env.${key}`, JSON.stringify(value)]),
   );
 }
+
+/**
+ * Format the given text to fit within the terminal width.
+ *
+ * @param text - The text to format.
+ * @param indent - The indentation to use.
+ * @param initialIndent - The initial indentation to use, i.e., the indentation
+ * for the first line.
+ * @returns The formatted text.
+ */
+export function formatText(
+  text: string,
+  indent: number,
+  initialIndent = indent,
+) {
+  const terminalWidth = process.stdout.columns;
+  if (!terminalWidth) {
+    return text;
+  }
+
+  const words = text.split(' ');
+
+  const { formattedText: result } = words.reduce(
+    ({ formattedText, currentLineLength }, word) => {
+      if (currentLineLength + word.length + 1 > terminalWidth) {
+        // Start a new line with indentation.
+        return {
+          formattedText: `${formattedText}\n${' '.repeat(indent)}${word} `,
+          currentLineLength: indent + word.length + 1,
+        };
+      }
+
+      // Continue on the same line.
+      return {
+        formattedText: `${formattedText + word} `,
+        currentLineLength: currentLineLength + word.length + 1,
+      };
+    },
+    {
+      formattedText: ' '.repeat(initialIndent),
+      currentLineLength: initialIndent,
+    },
+  );
+
+  return result;
+}
