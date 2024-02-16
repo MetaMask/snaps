@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "MetaMask example snap demonstrating the use of `snap_getFile`.",
   "proposedName": "Get File Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "vQc917eZaWtTBi58gv8oYoEc/yXG/t9Ij5v+ZypgqSo=",
+    "shasum": "jLIJlUMNJxBPdD7VXu+lauJFMbrlZ7Ctpa3CG48aB+I=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

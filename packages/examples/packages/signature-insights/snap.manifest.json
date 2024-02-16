@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MetaMask example snap demonstrating the use of the Signature Insights API.",
   "proposedName": "Signature Insights Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "quuWKRS7c+Ftqo+kdVUVI23jeR1vOEIg12yx8xTH52M=",
+    "shasum": "41EAa6gfYJz5+1ZnHNrBvF5SvT+k8VZx1Q1QGkJPA7A=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
