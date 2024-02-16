@@ -14,15 +14,19 @@ describe('mm-snap manifest', () => {
       runner = getCommandRunner(command, []);
       await runner.wait();
 
-      expect(runner.stderr).toStrictEqual([]);
       expect(runner.stdout).toContainEqual(
         expect.stringMatching(/Checking the input file\./u),
       );
       expect(runner.stdout).toContainEqual(
         expect.stringMatching(/Validating the snap manifest\./u),
       );
-      expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/The snap manifest file is valid\./u),
+      expect(runner.stderr).toContainEqual(
+        expect.stringMatching(/The snap manifest file has warnings\./u),
+      );
+      expect(runner.stderr).toContainEqual(
+        expect.stringContaining(
+          'No icon found in `source.location.npm.iconPath`. It is highly recommended for your Snap to have an icon',
+        ),
       );
       expect(runner.exitCode).toBe(0);
     },
