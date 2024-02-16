@@ -9,7 +9,7 @@ export const SVG_MAX_BYTE_SIZE_TEXT = `${Math.floor(
 )}kb`;
 
 /**
- * Asserts that a virtual file containing a Snap icon is valid.
+ * Assert that a virtual file containing a Snap icon is valid.
  *
  * @param icon - A virtual file containing a Snap icon.
  */
@@ -45,10 +45,7 @@ export function getSvgDimensions(svg: string): {
 
   const viewBox = parsed['@_viewBox'];
   if (viewBox) {
-    const split = viewBox.split(' ');
-
-    const viewBoxWidth = split[2];
-    const viewBoxHeight = split[3];
+    const [_minX, _minY, viewBoxWidth, viewBoxHeight] = viewBox.split(' ');
 
     if (viewBoxWidth && viewBoxHeight) {
       return {
