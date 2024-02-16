@@ -23,7 +23,7 @@ export function parseSvg(svg: string) {
 
     // Empty SVGs are not returned as objects
     if (!isObject(parsed.svg)) {
-      return null;
+      return {};
     }
 
     return parsed.svg;

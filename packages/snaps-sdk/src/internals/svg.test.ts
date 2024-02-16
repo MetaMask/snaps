@@ -19,8 +19,8 @@ describe('parseSvg', () => {
       `);
   });
 
-  it('returns null for empty SVGs', () => {
-    expect(parseSvg('<svg />')).toBeNull();
+  it('returns an empty object for empty SVGs', () => {
+    expect(parseSvg('<svg />')).toStrictEqual({});
   });
 
   it('throws for invalid SVGs', () => {
