@@ -167,12 +167,12 @@ describe('formatText', () => {
         2,
       ),
     ).toMatchInlineSnapshot(`
-      "  Lorem ipsum dolor sit amet, 
-        consectetur adipiscing elit. Nam eget 
-        nulla mattis, sollicitudin enim 
-        tincidunt, vulputate libero. 
-        Pellentesque neque sapien, lobortis 
-        eu elit in, suscipit aliquet augue. "
+      "  Lorem ipsum dolor sit amet,
+        consectetur adipiscing elit. Nam eget
+        nulla mattis, sollicitudin enim
+        tincidunt, vulputate libero.
+        Pellentesque neque sapien, lobortis eu
+        elit in, suscipit aliquet augue."
     `);
   });
 
@@ -185,12 +185,12 @@ describe('formatText', () => {
         2,
       ),
     ).toMatchInlineSnapshot(`
-      "  Lorem ipsum dolor sit amet, 
-          consectetur adipiscing elit. Nam 
-          eget nulla mattis, sollicitudin 
-          enim tincidunt, vulputate libero. 
-          Pellentesque neque sapien, lobortis 
-          eu elit in, suscipit aliquet augue. "
+      "  Lorem ipsum dolor sit amet,
+          consectetur adipiscing elit. Nam
+          eget nulla mattis, sollicitudin enim
+          tincidunt, vulputate libero.
+          Pellentesque neque sapien, lobortis
+          eu elit in, suscipit aliquet augue."
     `);
   });
 });

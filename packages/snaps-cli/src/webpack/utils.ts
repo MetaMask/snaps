@@ -3,6 +3,7 @@ import { promises as fs } from 'fs';
 import { builtinModules } from 'module';
 import type { Ora } from 'ora';
 import { dirname, resolve } from 'path';
+import stripAnsi from 'strip-ansi';
 import type { Configuration } from 'webpack';
 
 import type { ProcessedWebpackConfig } from '../config';
@@ -318,19 +319,23 @@ export function formatText(
   const words = text.split(' ');
 
   const { formattedText: result } = words.reduce(
-    ({ formattedText, currentLineLength }, word) => {
-      if (currentLineLength + word.length + 1 > terminalWidth) {
-        // Start a new line with indentation.
+    ({ formattedText, currentLineLength }, word, index) => {
+      // Determine if a space should be added before the word
+      const visibleWord = stripAnsi(word);
+      const spaceBeforeWord = index > 0 ? ' ' : '';
+      const wordLengthWithSpace = visibleWord.length + spaceBeforeWord.length;
+
+      if (currentLineLength + wordLengthWithSpace > terminalWidth) {
+        // Start a new line with indentation
         return {
-          formattedText: `${formattedText}\n${' '.repeat(indent)}${word} `,
-          currentLineLength: indent + word.length + 1,
+          formattedText: `${formattedText}\n${' '.repeat(indent)}${word}`,
+          currentLineLength: indent + visibleWord.length, // Reset current line length to indent + current word length
         };
       }
-
-      // Continue on the same line.
+      // Continue on the same line
       return {
-        formattedText: `${formattedText + word} `,
-        currentLineLength: currentLineLength + word.length + 1,
+        formattedText: formattedText + spaceBeforeWord + word,
+        currentLineLength: currentLineLength + wordLengthWithSpace,
       };
     },
     {
