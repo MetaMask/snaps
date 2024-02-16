@@ -157,11 +157,7 @@ export default class SnapsWebpackPlugin {
 
         if (warnings.length > 0) {
           compilation.warnings.push(
-            new WebpackError(
-              `${PLUGIN_NAME}: Manifest Warning: Validation of snap.manifest.json completed with warnings.\n${warnings.join(
-                '\n',
-              )}`,
-            ),
+            ...warnings.map((warning) => new WebpackError(warning)),
           );
         }
       }
