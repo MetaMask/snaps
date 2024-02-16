@@ -4,7 +4,7 @@ import { hasProperty, isPlainObject } from '@metamask/utils';
 import type { IFs } from 'memfs';
 import { createFsFromVolume, Volume } from 'memfs';
 import { promisify } from 'util';
-import type { Configuration } from 'webpack';
+import type { Configuration, StatsCompilation } from 'webpack';
 import webpack from 'webpack';
 
 export type CompileOptions = {
@@ -65,7 +65,7 @@ export async function getCompiler({
  */
 export async function compile(
   options: CompileOptions,
-): Promise<{ code: string }> {
+): Promise<{ code: string; stats: StatsCompilation }> {
   const compiler = await getCompiler(options);
 
   return new Promise((resolve, reject) => {
@@ -87,6 +87,7 @@ export async function compile(
 
       resolve({
         code: output,
+        stats: stats.toJson(),
       });
     });
   });

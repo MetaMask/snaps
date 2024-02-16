@@ -285,14 +285,11 @@ export async function getDefaultConfiguration(
        * warning when the bundle is potentially incompatible with MetaMask
        * Snaps.
        */
-      new SnapsBundleWarningsPlugin(
-        {
-          builtInResolver,
-          builtIns: Boolean(config.stats.builtIns),
-          buffer: config.stats.buffer,
-        },
-        options.spinner,
-      ),
+      new SnapsBundleWarningsPlugin({
+        builtInResolver,
+        builtIns: Boolean(config.stats.builtIns),
+        buffer: config.stats.buffer,
+      }),
 
       /**
        * The `WatchPlugin` is a Webpack plugin that adds extra files to watch

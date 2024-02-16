@@ -3,6 +3,7 @@ import { promises as fs } from 'fs';
 import { builtinModules } from 'module';
 import type { Ora } from 'ora';
 import { dirname, resolve } from 'path';
+import stripAnsi from 'strip-ansi';
 import type { Configuration } from 'webpack';
 
 import type { ProcessedWebpackConfig } from '../config';
@@ -294,4 +295,59 @@ export function getEnvironmentVariables(
       ...environment,
     }).map(([key, value]) => [`process.env.${key}`, JSON.stringify(value)]),
   );
+}
+
+/**
+ * Format the given text to fit within the terminal width.
+ *
+ * @param text - The text to format.
+ * @param indent - The indentation to use.
+ * @param initialIndent - The initial indentation to use, i.e., the indentation
+ * for the first line.
+ * @returns The formatted text.
+ */
+export function formatText(
+  text: string,
+  indent: number,
+  initialIndent = indent,
+) {
+  const terminalWidth = process.stdout.columns;
+  if (!terminalWidth) {
+    return text;
+  }
+
+  const words = text.split(' ');
+
+  const { formattedText: result } = words.reduce(
+    ({ formattedText, currentLineLength }, word, index) => {
+      // `chalk` adds ANSI escape codes to the text, which are not visible
+      // characters. We need to strip them to get the visible length of the
+      // text.
+      const visibleWord = stripAnsi(word);
+
+      // Determine if a space should be added before the word.
+      const spaceBeforeWord = index > 0 ? ' ' : '';
+      const wordLengthWithSpace = visibleWord.length + spaceBeforeWord.length;
+
+      // If the word would exceed the terminal width, start a new line.
+      if (currentLineLength + wordLengthWithSpace > terminalWidth) {
+        return {
+          formattedText: `${formattedText}\n${' '.repeat(indent)}${word}`,
+          currentLineLength: indent + visibleWord.length,
+        };
+      }
+
+      // Otherwise, add the word to the current line.
+      return {
+        formattedText: formattedText + spaceBeforeWord + word,
+        currentLineLength: currentLineLength + wordLengthWithSpace,
+      };
+    },
+    {
+      formattedText: ' '.repeat(initialIndent),
+      currentLineLength: initialIndent,
+    },
+  );
+
+  return result;
 }
