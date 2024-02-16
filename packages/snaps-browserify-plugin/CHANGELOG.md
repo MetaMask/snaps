@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.3]
+
 ### Uncategorized
 
 - Update several LavaMoat packages ([#2173](https://github.com/MetaMask/snaps-skunkworks.git/pull/2173))
@@ -51,7 +53,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@3.0.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@3.0.3...HEAD
+[3.0.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@3.0.2...@metamask/snaps-browserify-plugin@3.0.3
 [3.0.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@3.0.1...@metamask/snaps-browserify-plugin@3.0.2
 [3.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@3.0.0...@metamask/snaps-browserify-plugin@3.0.1
 [3.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@2.0.0...@metamask/snaps-browserify-plugin@3.0.0

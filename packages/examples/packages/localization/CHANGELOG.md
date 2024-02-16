@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.2]
+
 ### Uncategorized
 
 - Remove icons from package.json ([#2190](https://github.com/MetaMask/snaps-skunkworks.git/pull/2190))
@@ -45,7 +47,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release ([#1889](https://github.com/MetaMask/snaps/pull/1889))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/localization-example-snap@1.1.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/localization-example-snap@1.1.2...HEAD
+[1.1.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/localization-example-snap@1.1.1...@metamask/localization-example-snap@1.1.2
 [1.1.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/localization-example-snap@1.1.0...@metamask/localization-example-snap@1.1.1
 [1.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/localization-example-snap@1.0.0...@metamask/localization-example-snap@1.1.0
 [1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/localization-example-snap@1.0.0

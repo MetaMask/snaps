@@ -1,6 +1,6 @@
 {
   "name": "@metamask/insights-example-snap",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "MetaMask example snap demonstrating the use of the Transaction Insights API.",
   "repository": {
     "type": "git",

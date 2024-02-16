@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1]
+
 ### Uncategorized
 
 - Remove icons from package.json ([#2190](https://github.com/MetaMask/snaps-skunkworks.git/pull/2190))
@@ -41,7 +43,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `snap_getFile` example Snap ([#1836](https://github.com/MetaMask/snaps/pull/1836), [#1858](https://github.com/MetaMask/snaps/pull/1858))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/get-file-example-snap@1.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/get-file-example-snap@1.1.1...HEAD
+[1.1.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/get-file-example-snap@1.1.0...@metamask/get-file-example-snap@1.1.1
 [1.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/get-file-example-snap@1.0.1...@metamask/get-file-example-snap@1.1.0
 [1.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/get-file-example-snap@1.0.0...@metamask/get-file-example-snap@1.0.1
 [1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/get-file-example-snap@1.0.0
