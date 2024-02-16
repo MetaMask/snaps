@@ -1,5 +1,5 @@
 {
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "MetaMask example snap demonstrating the use of `snap_manageState`.",
   "proposedName": "Manage State Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "fBVEKcZFtuc6sa1XPXZbz1EtlaOhPA5pfYUrg1ogRjw=",
+    "shasum": "92szqCrEqmxOcL+MVbmPrOxJmC8jR5U4iKiVViZBupY=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.2.0]
+### Added
+- Add a manifest warning when no icon is found and when icon is not square ([#2185](https://github.com/MetaMask/snaps/pull/2185))
+
+### Changed
+- Update warning messages ([#2186](https://github.com/MetaMask/snaps/pull/2186))
+- Bump several MetaMask dependencies ([#2054](https://github.com/MetaMask/snaps/pull/2054), [#2100](https://github.com/MetaMask/snaps/pull/2100), [#2105](https://github.com/MetaMask/snaps/pull/2105), [#2173](https://github.com/MetaMask/snaps/pull/2173))
+
 ## [3.1.1]
 ### Changed
 - Bump several MetaMask dependencies ([#1964](https://github.com/MetaMask/snaps/pull/1964))
@@ -46,7 +54,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@3.1.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@3.2.0...HEAD
+[3.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@3.1.1...@metamask/snaps-webpack-plugin@3.2.0
 [3.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@3.1.0...@metamask/snaps-webpack-plugin@3.1.1
 [3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@3.0.1...@metamask/snaps-webpack-plugin@3.1.0
 [3.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@3.0.0...@metamask/snaps-webpack-plugin@3.0.1

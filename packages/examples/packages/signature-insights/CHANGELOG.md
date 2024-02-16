@@ -6,9 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1]
+### Changed
+- Remove snap icon ([#2189](https://github.com/MetaMask/snaps/pull/2189))
+
 ## [1.0.0]
 ### Added
 - Add signature insights example ([#2114](https://github.com/MetaMask/snaps/pull/2079))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/signature-insights-example-snap@1.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/signature-insights-example-snap@1.0.1...HEAD
+[1.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/signature-insights-example-snap@1.0.0...@metamask/signature-insights-example-snap@1.0.1
 [1.0.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/signature-insights-example-snap@1.0.0

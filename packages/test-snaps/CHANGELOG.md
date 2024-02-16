@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.0]
+### Added
+- Add interactive UI example Snap ([#2171](https://github.com/MetaMask/snaps/pull/2171))
+
 ## [2.3.0]
 ### Added
 - Add `snap_getClientStatus` example snap ([#2159](https://github.com/MetaMask/snaps/pull/2159))
@@ -85,7 +89,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.4.0...HEAD
+[2.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.3.0...@metamask/test-snaps@2.4.0
 [2.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.2.4...@metamask/test-snaps@2.3.0
 [2.2.4]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.2.3...@metamask/test-snaps@2.2.4
 [2.2.3]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.2.2...@metamask/test-snaps@2.2.3
