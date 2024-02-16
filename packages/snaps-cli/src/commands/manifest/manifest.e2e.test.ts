@@ -25,7 +25,7 @@ describe('mm-snap manifest', () => {
       );
       expect(runner.stderr).toContainEqual(
         expect.stringContaining(
-          'No icon found in `source.location.npm.iconPath`. It is highly recommended for your Snap to have an icon',
+          'No icon found in the Snap manifest. It is recommended to include an icon for the Snap. See https://docs.metamask.io/snaps/how-to/design-a-snap/#guidelines-at-a-glance for more information.',
         ),
       );
       expect(runner.exitCode).toBe(0);

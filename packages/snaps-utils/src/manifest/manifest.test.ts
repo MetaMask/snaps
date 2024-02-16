@@ -139,7 +139,7 @@ describe('checkManifest', () => {
     const { warnings } = await checkManifest(BASE_PATH);
     expect(warnings).toHaveLength(1);
     expect(warnings[0]).toMatch(
-      'No icon found in `source.location.npm.iconPath`. It is highly recommended for your Snap to have an icon.',
+      'No icon found in the Snap manifest. It is recommended to include an icon for the Snap. See https://docs.metamask.io/snaps/how-to/design-a-snap/#guidelines-at-a-glance for more information.',
     );
   });
 
