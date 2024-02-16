@@ -306,7 +306,7 @@ export function getEnvironmentVariables(
  * for the first line.
  * @returns The formatted line.
  */
-function formatLine(line: string, indent: number, initialIndent = indent) {
+function formatLine(line: string, indent: number, initialIndent: number) {
   const terminalWidth = process.stdout.columns;
   if (!terminalWidth) {
     return `${' '.repeat(initialIndent)}${line}`;
