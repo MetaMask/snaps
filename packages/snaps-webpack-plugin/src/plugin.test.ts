@@ -281,11 +281,8 @@ describe('SnapsWebpackPlugin', () => {
       },
     });
 
-    expect(stats.toJson().warnings?.[0].message).toMatch(
-      'SnapsWebpackPlugin: Manifest Warning: Validation of snap.manifest.json completed with warnings.\n' +
-        'foo\n' +
-        'bar',
-    );
+    expect(stats.toJson().warnings?.[0].message).toMatch('foo');
+    expect(stats.toJson().warnings?.[1].message).toMatch('bar');
   });
 
   it('forwards errors', async () => {

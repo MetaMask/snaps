@@ -1,7 +1,7 @@
-import isSvg from 'is-svg';
 import type { Infer } from 'superstruct';
 import { assign, literal, object, refine, string } from 'superstruct';
 
+import { isSvg } from '../../internals';
 import { createBuilder } from '../builder';
 import { NodeStruct, NodeType } from '../nodes';
 

@@ -7,6 +7,7 @@ import pathUtils from 'path';
 
 import { deepClone } from '../deep-clone';
 import { readJsonFile } from '../fs';
+import { getSvgDimensions } from '../icon';
 import { validateNpmSnap } from '../npm';
 import {
   getSnapChecksum,
@@ -188,6 +189,20 @@ export async function checkManifest(
         },
         '',
       )}`,
+    );
+  }
+
+  if (!snapFiles.svgIcon) {
+    warnings.push(
+      'No icon found in the Snap manifest. It is recommended to include an icon for the Snap. See https://docs.metamask.io/snaps/how-to/design-a-snap/#guidelines-at-a-glance for more information.',
+    );
+  }
+
+  const iconDimensions =
+    snapFiles.svgIcon && getSvgDimensions(snapFiles.svgIcon.toString());
+  if (iconDimensions && iconDimensions.height !== iconDimensions.width) {
+    warnings.push(
+      'The icon in the Snap manifest is not square. It is recommended to use a square icon for the Snap.',
     );
   }
 

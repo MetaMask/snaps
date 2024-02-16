@@ -5658,7 +5658,7 @@ __metadata:
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-promise: ^6.1.1
     expect-type: ^0.17.3
-    is-svg: ^4.4.0
+    fast-xml-parser: ^4.3.4
     jest: ^29.0.2
     jest-fetch-mock: ^3.0.3
     jest-it-up: ^2.0.0
@@ -5833,7 +5833,6 @@ __metadata:
     expect-webdriverio: ^4.4.1
     fast-deep-equal: ^3.1.3
     fast-json-stable-stringify: ^2.1.0
-    is-svg: ^4.4.0
     istanbul-lib-coverage: ^3.2.0
     istanbul-lib-report: ^3.0.0
     istanbul-reports: ^3.1.5
@@ -13178,14 +13177,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-xml-parser@npm:^4.1.3":
-  version: 4.2.5
-  resolution: "fast-xml-parser@npm:4.2.5"
+"fast-xml-parser@npm:^4.3.4":
+  version: 4.3.4
+  resolution: "fast-xml-parser@npm:4.3.4"
   dependencies:
     strnum: ^1.0.5
   bin:
     fxparser: src/cli/cli.js
-  checksum: d32b22005504eeb207249bf40dc82d0994b5bb9ca9dcc731d335a1f425e47fe085b3cace3cf9d32172dd1a5544193c49e8615ca95b4bf95a4a4920a226b06d80
+  checksum: ab88177343f6d3d971d53462db3011003a83eb8a8db704840127ddaaf27105ea90cdf7903a0f9b2e1279ccc4adfca8dfc0277b33bae6262406f10c16bd60ccf9
   languageName: node
   linkType: hard
 
@@ -15262,15 +15261,6 @@ __metadata:
   dependencies:
     has-tostringtag: ^1.0.0
   checksum: 323b3d04622f78d45077cf89aab783b2f49d24dc641aa89b5ad1a72114cfeff2585efc8c12ef42466dff32bde93d839ad321b26884cf75e5a7892a938b089989
-  languageName: node
-  linkType: hard
-
-"is-svg@npm:^4.4.0":
-  version: 4.4.0
-  resolution: "is-svg@npm:4.4.0"
-  dependencies:
-    fast-xml-parser: ^4.1.3
-  checksum: cd5a0ba1af653e4897721913b0b80de968fa5b19eb1a592412f4672d3a1203935d183c2a9dbf61d68023739ee43d3761ea795ae1a9f618c6098a9e89eacdd256
   languageName: node
   linkType: hard
 

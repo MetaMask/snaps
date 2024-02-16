@@ -4,6 +4,7 @@ import {
   SVG_MAX_BYTE_SIZE,
   SVG_MAX_BYTE_SIZE_TEXT,
   assertIsSnapIcon,
+  getSvgDimensions,
 } from './icon';
 import { ALTERNATIVE_SNAP_ICON } from './test-utils';
 import { VirtualFile } from './virtual-file';
@@ -45,5 +46,41 @@ describe('assertIsSnapIcon', () => {
       path: 'foo.svg',
     });
     expect(() => assertIsSnapIcon(icon)).not.toThrow();
+  });
+});
+
+describe('getSvgDimensions', () => {
+  it('uses height and width when available', () => {
+    expect(getSvgDimensions(ALTERNATIVE_SNAP_ICON)).toStrictEqual({
+      height: 25,
+      width: 24,
+    });
+  });
+
+  it('uses viewBox as a fallback', () => {
+    expect(
+      getSvgDimensions(
+        '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"></svg>',
+      ),
+    ).toStrictEqual({
+      height: 24,
+      width: 24,
+    });
+  });
+
+  it('returns null if no dimensions are found', () => {
+    expect(
+      getSvgDimensions(
+        '<svg fill="none" xmlns="http://www.w3.org/2000/svg"></svg>',
+      ),
+    ).toBeNull();
+  });
+
+  it('throws if invalid dimensions are found', () => {
+    expect(() =>
+      getSvgDimensions(
+        '<svg viewBox="foo bar baz qux" fill="none" xmlns="http://www.w3.org/2000/svg"></svg>',
+      ),
+    ).toThrow('Snap icon must be a valid SVG.');
   });
 });

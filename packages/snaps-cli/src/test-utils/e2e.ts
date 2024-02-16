@@ -125,6 +125,32 @@ export class TestRunner extends EventEmitter {
   }
 
   /**
+   * Wait for a message to be written to stderr.
+   *
+   * @param message - The message to wait for. If a string, the message must be
+   * contained in the stderr. If a regular expression, the message must match
+   * the stderr.
+   * @returns The message that was written to stderr.
+   */
+  async waitForStderr(message?: string | RegExp) {
+    assert(
+      this.running,
+      'Cannot wait for stderr while process is not running.',
+    );
+
+    return new Promise<string>((resolve) => {
+      const listener = (actual: string) => {
+        if (this.#matches(message, actual)) {
+          this.off('stderr', listener);
+          resolve(actual);
+        }
+      };
+
+      this.on('stderr', listener);
+    });
+  }
+
+  /**
    * Check if `expected` matches `actual`.
    *
    * @param expected - The expected message.
