@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [2.4.0]
-### Uncategorized
+### Added
 - Add interactive UI example Snap ([#2171](https://github.com/MetaMask/snaps/pull/2171))
 
 ## [2.3.0]

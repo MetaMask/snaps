@@ -7,11 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [6.1.0]
-### Uncategorized
+### Added
 - Add a manifest warning when no icon is found and when icon is not 1:1 ([#2185](https://github.com/MetaMask/snaps/pull/2185))
-- Show Webpack compilation warnings in CLI ([#2186](https://github.com/MetaMask/snaps/pull/2186))
-- Strip empty data from snap errors ([#2179](https://github.com/MetaMask/snaps/pull/2179))
-- Update several LavaMoat packages ([#2173](https://github.com/MetaMask/snaps/pull/2173))
 
 ## [6.0.0]
 ### Added

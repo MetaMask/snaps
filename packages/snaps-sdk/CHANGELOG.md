@@ -7,11 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [2.1.0]
-### Uncategorized
-- Add a manifest warning when no icon is found and when icon is not 1:1 ([#2185](https://github.com/MetaMask/snaps/pull/2185))
-- Strip empty data from snap errors ([#2179](https://github.com/MetaMask/snaps/pull/2179))
+### Changed
 - Improve support for Snap errors without a message ([#2176](https://github.com/MetaMask/snaps/pull/2176))
-- Update several LavaMoat packages ([#2173](https://github.com/MetaMask/snaps/pull/2173))
+- Strip empty `data` from Snap errors ([#2179](https://github.com/MetaMask/snaps/pull/2179))
 
 ## [2.0.0]
 ### Changed

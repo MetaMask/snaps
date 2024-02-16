@@ -7,13 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [3.2.0]
-### Uncategorized
+### Added
 - Add a manifest warning when no icon is found and when icon is not 1:1 ([#2185](https://github.com/MetaMask/snaps/pull/2185))
-- Show Webpack compilation warnings in CLI ([#2186](https://github.com/MetaMask/snaps/pull/2186))
-- Update several LavaMoat packages ([#2173](https://github.com/MetaMask/snaps/pull/2173))
-- Bump SES and LavaMoat ([#2105](https://github.com/MetaMask/snaps/pull/2105))
-- Bump @metamask/utils from 8.2.1 to 8.3.0 ([#2100](https://github.com/MetaMask/snaps/pull/2100))
-- Bump @metamask/auto-changelog from 3.4.3 to 3.4.4 ([#2054](https://github.com/MetaMask/snaps/pull/2054))
+
+### Changed
+- Change warning output format ([#2186](https://github.com/MetaMask/snaps/pull/2186))
+- Bump several MetaMask dependencies ([#2054](https://github.com/MetaMask/snaps/pull/2054), [#2100](https://github.com/MetaMask/snaps/pull/2100), [#2105](https://github.com/MetaMask/snaps/pull/2105), [#2173](https://github.com/MetaMask/snaps/pull/2173))
 
 ## [3.1.1]
 ### Changed

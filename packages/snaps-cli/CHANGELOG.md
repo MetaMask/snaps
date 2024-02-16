@@ -7,11 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [5.1.0]
-### Uncategorized
-- Add a manifest warning when no icon is found and when icon is not 1:1 ([#2185](https://github.com/MetaMask/snaps/pull/2185))
+### Changed
+- Optimize CLI Webpack configuration ([#2175](https://github.com/MetaMask/snaps/pull/2175))
+  - This should allow Snap bundles to be much smaller than in the past.
 - Show Webpack compilation warnings in CLI ([#2186](https://github.com/MetaMask/snaps/pull/2186))
-- Optimise CLI Webpack configuration ([#2175](https://github.com/MetaMask/snaps/pull/2175))
-- Update several LavaMoat packages ([#2173](https://github.com/MetaMask/snaps/pull/2173))
+- Add a warning when no icon is found and when icon is not 1:1 ([#2185](https://github.com/MetaMask/snaps/pull/2185))
 
 ## [5.0.0]
 ### Changed

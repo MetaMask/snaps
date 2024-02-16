@@ -7,8 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [4.0.1]
-### Uncategorized
-- Add a manifest warning when no icon is found and when icon is not 1:1 ([#2185](https://github.com/MetaMask/snaps/pull/2185))
+### Changed
 - Update several LavaMoat packages ([#2173](https://github.com/MetaMask/snaps/pull/2173))
 
 ## [4.0.0]

@@ -7,10 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [3.0.3]
-### Uncategorized
-- Update several LavaMoat packages ([#2173](https://github.com/MetaMask/snaps/pull/2173))
-- Bump SES and LavaMoat ([#2105](https://github.com/MetaMask/snaps/pull/2105))
-- Bump @metamask/auto-changelog from 3.4.3 to 3.4.4 ([#2054](https://github.com/MetaMask/snaps/pull/2054))
+### Changed
+- Bump several MetaMask dependencies ([#2054](https://github.com/MetaMask/snaps/pull/2054), [#2100](https://github.com/MetaMask/snaps/pull/2100), [#2105](https://github.com/MetaMask/snaps/pull/2105), [#2173](https://github.com/MetaMask/snaps/pull/2173))
 
 ## [3.0.2]
 ### Changed
