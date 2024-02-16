@@ -7,9 +7,6 @@ const config: SnapConfig = {
   server: {
     port: 8017,
   },
-  polyfills: {
-    stream: true,
-  },
   stats: {
     buffer: false,
   },

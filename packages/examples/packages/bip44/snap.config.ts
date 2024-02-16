@@ -7,9 +7,11 @@ const config: SnapConfig = {
   server: {
     port: 8002,
   },
-  polyfills: {
-    buffer: true,
-    stream: true,
+  stats: {
+    buffer: false,
+    builtIns: {
+      ignore: ['crypto'],
+    },
   },
 };
 

@@ -9,10 +9,11 @@ const config: SnapConfig = {
   server: {
     port: 8008,
   },
-  polyfills: {
-    crypto: true,
-    stream: true,
-    buffer: true,
+  stats: {
+    buffer: false,
+    builtIns: {
+      ignore: ['crypto'],
+    },
   },
   customizeWebpackConfig: (defaultConfig) =>
     merge(defaultConfig, {

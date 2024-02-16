@@ -10,9 +10,9 @@ import {
   panel,
   row,
   text,
+  assert,
 } from '@metamask/snaps-sdk';
 import type { Component, Transaction } from '@metamask/snaps-sdk';
-import assert from 'assert';
 
 import { decodeData } from './utils';
 
