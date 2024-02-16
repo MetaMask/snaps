@@ -24,18 +24,21 @@ const FUNCTION_SIGNATURES = [
  * Decode the transaction data. This checks the signature of the function that
  * is being called, and returns the type of transaction.
  *
- * @param data - The transaction data. This is expected to be a hex string,
- * containing the function signature and the parameters.
+ * @param data - The transaction data.
  * @returns The type of transaction, or "Unknown," if the function signature
  * does not match any known signatures.
  */
-export function decodeData(data: string) {
-  const normalisedData = remove0x(data);
-  const signature = normalisedData.slice(0, 8);
+export function decodeData(data?: string) {
+  if (data && typeof data === 'string') {
+    const normalisedData = remove0x(data);
+    const signature = normalisedData.slice(0, 8);
 
-  const functionSignature = FUNCTION_SIGNATURES.find(
-    (value) => value.signature === signature,
-  );
+    const functionSignature = FUNCTION_SIGNATURES.find(
+      (value) => value.signature === signature,
+    );
 
-  return functionSignature?.name ?? 'Unknown';
+    return functionSignature?.name ?? 'Unknown';
+  }
+
+  return 'Unknown';
 }
