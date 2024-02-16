@@ -7,11 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [3.0.1]
-### Uncategorized
-- Remove icons from package.json ([#2190](https://github.com/MetaMask/snaps/pull/2190))
-- Delete example snap icons ([#2189](https://github.com/MetaMask/snaps/pull/2189))
-- Optimise CLI Webpack configuration ([#2175](https://github.com/MetaMask/snaps/pull/2175))
-- Update several LavaMoat packages ([#2173](https://github.com/MetaMask/snaps/pull/2173))
+### Changed
+- Remove snap icon ([#2189](https://github.com/MetaMask/snaps/pull/2189))
 
 ## [3.0.0]
 ### Changed

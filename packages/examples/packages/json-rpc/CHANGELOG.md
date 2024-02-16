@@ -7,18 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [2.1.1]
-### Uncategorized
-- Remove icons from package.json ([#2190](https://github.com/MetaMask/snaps/pull/2190))
-- Delete example snap icons ([#2189](https://github.com/MetaMask/snaps/pull/2189))
-- Show Webpack compilation warnings in CLI ([#2186](https://github.com/MetaMask/snaps/pull/2186))
-- Optimise CLI Webpack configuration ([#2175](https://github.com/MetaMask/snaps/pull/2175))
-- Update several LavaMoat packages ([#2173](https://github.com/MetaMask/snaps/pull/2173))
-- BREAKING: Disable source maps by default ([#2166](https://github.com/MetaMask/snaps/pull/2166))
-- Bump SES and LavaMoat ([#2105](https://github.com/MetaMask/snaps/pull/2105))
-- Bump @metamask/utils from 8.2.1 to 8.3.0 ([#2100](https://github.com/MetaMask/snaps/pull/2100))
-- BREAKING: Implement testing framework using Node.js executor ([#1982](https://github.com/MetaMask/snaps/pull/1982))
-- Bump @metamask/auto-changelog from 3.4.3 to 3.4.4 ([#2054](https://github.com/MetaMask/snaps/pull/2054))
-- Bump several MetaMask dependencies ([#1964](https://github.com/MetaMask/snaps/pull/1964))
+### Changed
+- Remove snap icon ([#2189](https://github.com/MetaMask/snaps/pull/2189))
 
 ## [2.1.0]
 ### Changed

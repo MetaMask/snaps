@@ -7,27 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [2.1.1]
-### Uncategorized
-- Add a manifest warning when no icon is found and when icon is not 1:1 ([#2185](https://github.com/MetaMask/snaps/pull/2185))
-- Remove icons from package.json ([#2190](https://github.com/MetaMask/snaps/pull/2190))
-- Delete example snap icons ([#2189](https://github.com/MetaMask/snaps/pull/2189))
-- Show Webpack compilation warnings in CLI ([#2186](https://github.com/MetaMask/snaps/pull/2186))
-- Optimise CLI Webpack configuration ([#2175](https://github.com/MetaMask/snaps/pull/2175))
-- Update several LavaMoat packages ([#2173](https://github.com/MetaMask/snaps/pull/2173))
-- BREAKING: Disable source maps by default ([#2166](https://github.com/MetaMask/snaps/pull/2166))
-- Add support for dynamic user interfaces ([#1465](https://github.com/MetaMask/snaps/pull/1465))
-- Bump SES and LavaMoat ([#2105](https://github.com/MetaMask/snaps/pull/2105))
-- Bump @metamask/utils from 8.2.1 to 8.3.0 ([#2100](https://github.com/MetaMask/snaps/pull/2100))
-- BREAKING: Implement testing framework using Node.js executor ([#1982](https://github.com/MetaMask/snaps/pull/1982))
-- Add `snap_getClientStatus` ([#2051](https://github.com/MetaMask/snaps/pull/2051))
-- Signature insights ([#2074](https://github.com/MetaMask/snaps/pull/2074))
-- Bump @metamask/auto-changelog from 3.4.3 to 3.4.4 ([#2054](https://github.com/MetaMask/snaps/pull/2054))
-- Export error wrappers ([#2043](https://github.com/MetaMask/snaps/pull/2043))
-- Bump `snaps-registry` ([#2020](https://github.com/MetaMask/snaps/pull/2020))
-- Add image fetching utility functions ([#1995](https://github.com/MetaMask/snaps/pull/1995))
-- Add row and address component ([#1968](https://github.com/MetaMask/snaps/pull/1968))
-- Bump several MetaMask dependencies ([#1964](https://github.com/MetaMask/snaps/pull/1964))
-- Add Snap error wrappers of JSON-RPC errors ([#1924](https://github.com/MetaMask/snaps/pull/1924))
+### Changed
+- Remove snap icon ([#2189](https://github.com/MetaMask/snaps/pull/2189))
 
 ## [2.1.0]
 ### Changed

@@ -7,8 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [1.0.0]
-### Uncategorized
-- Add a manifest warning when no icon is found and when icon is not 1:1 ([#2185](https://github.com/MetaMask/snaps/pull/2185))
+### Added
 - Add interactive UI example Snap ([#2171](https://github.com/MetaMask/snaps/pull/2171))
 
 [Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/interactive-ui-example-snap@1.0.0...HEAD
