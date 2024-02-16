@@ -320,19 +320,24 @@ export function formatText(
 
   const { formattedText: result } = words.reduce(
     ({ formattedText, currentLineLength }, word, index) => {
-      // Determine if a space should be added before the word
+      // `chalk` adds ANSI escape codes to the text, which are not visible
+      // characters. We need to strip them to get the visible length of the
+      // text.
       const visibleWord = stripAnsi(word);
+
+      // Determine if a space should be added before the word.
       const spaceBeforeWord = index > 0 ? ' ' : '';
       const wordLengthWithSpace = visibleWord.length + spaceBeforeWord.length;
 
+      // If the word would exceed the terminal width, start a new line.
       if (currentLineLength + wordLengthWithSpace > terminalWidth) {
-        // Start a new line with indentation
         return {
           formattedText: `${formattedText}\n${' '.repeat(indent)}${word}`,
-          currentLineLength: indent + visibleWord.length, // Reset current line length to indent + current word length
+          currentLineLength: indent + visibleWord.length,
         };
       }
-      // Continue on the same line
+
+      // Otherwise, add the word to the current line.
       return {
         formattedText: formattedText + spaceBeforeWord + word,
         currentLineLength: currentLineLength + wordLengthWithSpace,
