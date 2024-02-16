@@ -11,4 +11,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add images example Snap ([#2002](https://github.com/MetaMask/snaps/pull/2002))
 
 [Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/images-example-snap@1.0.0...HEAD
-[0.0.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/images-example-snap@1.0.0
+[1.0.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/images-example-snap@1.0.0
