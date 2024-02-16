@@ -41,6 +41,7 @@
     "@metamask/get-file-example-snap": "workspace:^",
     "@metamask/home-page-example-snap": "workspace:^",
     "@metamask/insights-example-snap": "workspace:^",
+    "@metamask/interactive-ui-example-snap": "workspace:^",
     "@metamask/json-rpc-example-snap": "workspace:^",
     "@metamask/lifecycle-hooks-example-snap": "workspace:^",
     "@metamask/localization-example-snap": "workspace:^",

@@ -8,6 +8,7 @@ export * from './ethereum-provider';
 export * from './ethers-js';
 export * from './get-entropy';
 export * from './get-file';
+export * from './interactive-ui';
 export * from './localization';
 export * from './home-page';
 export * from './json-rpc';
