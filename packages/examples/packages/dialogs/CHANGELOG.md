@@ -8,11 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.2.0]
 ### Added
-- Add a link to confirmation dialog in dialog example snap ([#2112](https://github.com/MetaMask/snaps/pull/2112))
+- Add a link to confirmation dialog ([#2112](https://github.com/MetaMask/snaps/pull/2112))
 
 ### Changed
 - Remove snap icon ([#2189](https://github.com/MetaMask/snaps/pull/2189))
-
 
 ## [2.1.0]
 ### Changed
