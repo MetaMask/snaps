@@ -155,7 +155,7 @@ describe('checkManifest', () => {
     const { warnings } = await checkManifest(BASE_PATH);
     expect(warnings).toHaveLength(1);
     expect(warnings[0]).toMatch(
-      'Please use an icon with 1:1 ratio between height and height.',
+      'The icon in the Snap manifest is not square. It is recommended to use a square icon for the Snap.',
     );
   });
 

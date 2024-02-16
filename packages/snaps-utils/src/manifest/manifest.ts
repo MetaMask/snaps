@@ -202,7 +202,7 @@ export async function checkManifest(
     snapFiles.svgIcon && getSvgDimensions(snapFiles.svgIcon.toString());
   if (iconDimensions && iconDimensions.height !== iconDimensions.width) {
     warnings.push(
-      'Please use an icon with 1:1 ratio between height and height.',
+      'The icon in the Snap manifest is not square. It is recommended to use a square icon for the Snap.',
     );
   }
 

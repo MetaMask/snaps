@@ -75,4 +75,12 @@ describe('getSvgDimensions', () => {
       ),
     ).toBeNull();
   });
+
+  it('throws if invalid dimensions are found', () => {
+    expect(() =>
+      getSvgDimensions(
+        '<svg viewBox="foo bar baz qux" fill="none" xmlns="http://www.w3.org/2000/svg"></svg>',
+      ),
+    ).toThrow('Snap icon must be a valid SVG.');
+  });
 });

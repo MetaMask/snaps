@@ -34,25 +34,36 @@ export function getSvgDimensions(svg: string): {
   height: number;
   width: number;
 } | null {
-  const parsed = parseSvg(svg);
+  try {
+    const parsed = parseSvg(svg);
 
-  const height = parsed['@_height'];
-  const width = parsed['@_width'];
+    const height = parsed['@_height'];
+    const width = parsed['@_width'];
 
-  if (height && width) {
-    return { height, width };
-  }
-
-  const viewBox = parsed['@_viewBox'];
-  if (viewBox) {
-    const [_minX, _minY, viewBoxWidth, viewBoxHeight] = viewBox.split(' ');
-
-    if (viewBoxWidth && viewBoxHeight) {
-      return {
-        width: parseInt(viewBoxWidth, 10),
-        height: parseInt(viewBoxHeight, 10),
-      };
+    if (height && width) {
+      return { height, width };
     }
+
+    const viewBox = parsed['@_viewBox'];
+    if (viewBox) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const [_minX, _minY, viewBoxWidth, viewBoxHeight] = viewBox.split(' ');
+
+      if (viewBoxWidth && viewBoxHeight) {
+        const parsedWidth = parseInt(viewBoxWidth, 10);
+        const parsedHeight = parseInt(viewBoxHeight, 10);
+
+        assert(Number.isInteger(parsedWidth) && parsedWidth > 0);
+        assert(Number.isInteger(parsedHeight) && parsedHeight > 0);
+
+        return {
+          width: parsedWidth,
+          height: parsedHeight,
+        };
+      }
+    }
+  } catch {
+    throw new Error('Snap icon must be a valid SVG.');
   }
 
   return null;
