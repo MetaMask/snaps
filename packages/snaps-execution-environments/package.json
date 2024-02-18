@@ -41,7 +41,6 @@
     "clean": "rimraf '*.tsbuildinfo' 'dist' 'src/__GENERATED__/' 'coverage/*' '__test__/*'",
     "build": "tsup --clean && yarn build:types",
     "build:types": "tsc --project tsconfig.build.json",
-    "build:post-tsc": "yarn build:lavamoat",
     "build:lavamoat": "lavamoat scripts/build.js --policy lavamoat/build-system/policy.json  --policyOverride lavamoat/build-system/policy-override.json",
     "build:lavamoat:policy": "yarn build:lavamoat --writeAutoPolicy && node scripts/build.js --writeAutoPolicy",
     "auto-changelog-init": "auto-changelog init",

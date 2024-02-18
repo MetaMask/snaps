@@ -154,6 +154,11 @@ module.exports = {
         validator: isString,
       });
 
+      noPrivate = Option.Boolean(`--no-private`, false, {
+        description: `Exclude private workspaces`,
+        validator: isBoolean,
+      });
+
       /**
        * Run the given command on the workspaces.
        *
@@ -205,6 +210,8 @@ module.exports = {
             (!this.exclude ||
               !minimatch(workspace.relativeCwd, this.exclude))
           );
+        }).filter((workspace) => {
+          return !this.noPrivate || !workspace.manifest.private;
         });
 
         return await this.run(filteredWorkspaces, this.commandName, this.args);

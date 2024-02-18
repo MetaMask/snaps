@@ -73,29 +73,6 @@ jobs:
             exit 1
           fi
 
-  post-build:
-    name: Post-build
-    runs-on: ubuntu-latest
-    needs:
-      - build
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-      - run: yarn --immutable --immutable-cache
-      - name: Restore build files
-        uses: actions/cache@v3
-        with:
-          path: |
-            packages/*/dist
-          key: build-source-${{ runner.os }}-${{ github.sha }}
-          fail-on-cache-miss: true
-      - name: Post-build
-        run: yarn build:post-tsc:ci
-
   build-simulator:
     name: Build "@metamask/snaps-simulator"
     runs-on: ubuntu-latest

@@ -26,9 +26,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup --clean && yarn build:types",
+    "build": "tsup --clean && yarn build:types && yarn build:chmod && yarn build:readme",
     "build:types": "tsc --project tsconfig.build.json",
-    "build:post-tsc": "yarn build:chmod && yarn build:readme",
     "build:chmod": "chmod +x ./dist/main.mjs && chmod +x ./dist/main.js",
     "build:readme": "node ./scripts/updateReadme.js",
     "build:watch": "tsc-watch --onSuccess 'yarn build:chmod'",
