@@ -203,7 +203,8 @@ gen_enforced_field(WorkspaceCwd, 'scripts.build', 'tsup --clean && yarn build:ty
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.',
-  WorkspaceCwd \= 'packages/snaps-simulator'.
+  WorkspaceCwd \= 'packages/snaps-simulator',
+  WorkspaceCwd \= 'packages/snaps-cli'.
 gen_enforced_field(WorkspaceCwd, 'build:types', 'tsc --project tsconfig.build.json') :-
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
