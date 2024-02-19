@@ -298,27 +298,21 @@ export function getEnvironmentVariables(
 }
 
 /**
- * Format the given text to fit within the terminal width.
+ * Format the given line to fit within the terminal width.
  *
- * @param text - The text to format.
+ * @param line - The line to format.
  * @param indent - The indentation to use.
  * @param initialIndent - The initial indentation to use, i.e., the indentation
  * for the first line.
- * @returns The formatted text.
+ * @returns The formatted line.
  */
-export function formatText(
-  text: string,
-  indent: number,
-  initialIndent = indent,
-) {
+function formatLine(line: string, indent: number, initialIndent: number) {
   const terminalWidth = process.stdout.columns;
   if (!terminalWidth) {
-    return text;
+    return `${' '.repeat(initialIndent)}${line}`;
   }
 
-  const words = text.split(' ');
-
-  const { formattedText: result } = words.reduce(
+  return line.split(' ').reduce(
     ({ formattedText, currentLineLength }, word, index) => {
       // `chalk` adds ANSI escape codes to the text, which are not visible
       // characters. We need to strip them to get the visible length of the
@@ -347,7 +341,30 @@ export function formatText(
       formattedText: ' '.repeat(initialIndent),
       currentLineLength: initialIndent,
     },
-  );
+  ).formattedText;
+}
 
-  return result;
+/**
+ * Format the given text to fit within the terminal width.
+ *
+ * @param text - The text to format.
+ * @param indent - The indentation to use.
+ * @param initialIndent - The initial indentation to use, i.e., the indentation
+ * for the first line.
+ * @returns The formatted text.
+ */
+export function formatText(
+  text: string,
+  indent: number,
+  initialIndent = indent,
+) {
+  const lines = text.split('\n');
+
+  // Apply formatting to each line separately and then join them.
+  return lines
+    .map((line, index) => {
+      const lineIndent = index === 0 ? initialIndent : indent;
+      return formatLine(line, indent, lineIndent);
+    })
+    .join('\n');
 }

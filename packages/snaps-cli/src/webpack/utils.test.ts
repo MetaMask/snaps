@@ -176,6 +176,22 @@ describe('formatText', () => {
     `);
   });
 
+  it('formats the text with new lines', () => {
+    expect(
+      formatText(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eget nulla mattis, sollicitudin enim tincidunt, vulputate libero.\nPellentesque neque sapien, lobortis eu elit in, suscipit aliquet augue.',
+        2,
+      ),
+    ).toMatchInlineSnapshot(`
+      "  Lorem ipsum dolor sit amet,
+        consectetur adipiscing elit. Nam eget
+        nulla mattis, sollicitudin enim
+        tincidunt, vulputate libero.
+        Pellentesque neque sapien, lobortis eu
+        elit in, suscipit aliquet augue."
+    `);
+  });
+
   it('formats the text with a custom initial indentation', () => {
     process.stdout.columns = 40;
     expect(
@@ -191,6 +207,21 @@ describe('formatText', () => {
           tincidunt, vulputate libero.
           Pellentesque neque sapien, lobortis
           eu elit in, suscipit aliquet augue."
+    `);
+  });
+
+  it('indents the text if the terminal width is not set', () => {
+    // @ts-expect-error - According to the type, `columns` cannot be undefined.
+    process.stdout.columns = undefined;
+
+    expect(
+      formatText(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eget nulla mattis, sollicitudin enim tincidunt, vulputate libero.\nPellentesque neque sapien, lobortis eu elit in, suscipit aliquet augue.',
+        2,
+      ),
+    ).toMatchInlineSnapshot(`
+      "  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eget nulla mattis, sollicitudin enim tincidunt, vulputate libero.
+        Pellentesque neque sapien, lobortis eu elit in, suscipit aliquet augue."
     `);
   });
 });
