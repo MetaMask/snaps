@@ -9,9 +9,6 @@ const config: SnapConfig = {
   stats: {
     buffer: false,
   },
-  polyfills: {
-    stream: true,
-  },
 };
 
 export default config;
