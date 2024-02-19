@@ -283,13 +283,12 @@ export class JsonSnapsRegistry extends BaseController<
   }
 
   /**
-   * Find an allowlisted version within a specified version range.
+   * Find an allowlisted version within a specified version range. Otherwise return the version range itself.
    *
    * @param snapId - The ID of the snap we are trying to resolve a version for.
    * @param versionRange - The version range.
    * @param refetch - An optional flag used to determine if we are refetching the registry.
-   * @returns An allowlisted version within the specified version range.
-   * @throws If an allowlisted version does not exist within the version range.
+   * @returns An allowlisted version within the specified version range if available otherwise returns the input version range.
    */
   async #resolveVersion(
     snapId: string,
@@ -304,7 +303,10 @@ export class JsonSnapsRegistry extends BaseController<
       return this.#resolveVersion(snapId, versionRange, true);
     }
 
-    assert(versions, 'The snap is not on the allowlist');
+    // If we cannot narrow down the version range we return the unaltered version range.
+    if (!versions) {
+      return versionRange;
+    }
 
     const targetVersion = getTargetVersion(
       Object.keys(versions) as SemVerVersion[],
@@ -316,10 +318,10 @@ export class JsonSnapsRegistry extends BaseController<
       return this.#resolveVersion(snapId, versionRange, true);
     }
 
-    assert(
-      targetVersion,
-      'No matching versions of the snap are on the allowlist',
-    );
+    // If we cannot narrow down the version range we return the unaltered version range.
+    if (!targetVersion) {
+      return versionRange;
+    }
 
     // A semver version is technically also a valid semver range.
     assertIsSemVerRange(targetVersion);

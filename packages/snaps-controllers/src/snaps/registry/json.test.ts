@@ -354,38 +354,38 @@ describe('JsonSnapsRegistry', () => {
       expect(result).toBe('1.0.0');
     });
 
-    it('throws if snap is not on the allowlist', async () => {
+    it('returns version range if snap is not on the allowlist', async () => {
       fetchMock
         .mockResponseOnce(
           JSON.stringify({ verifiedSnaps: {}, blockedSnaps: [] }),
         )
         .mockResponseOnce(JSON.stringify(MOCK_EMPTY_SIGNATURE_FILE));
 
+      const range = '^1.0.0' as SemVerRange;
       const { messenger } = getRegistry();
-      await expect(
-        messenger.call(
+      expect(
+        await messenger.call(
           'SnapsRegistry:resolveVersion',
           MOCK_SNAP_ID,
-          '^1.0.0' as SemVerRange,
+          range,
         ),
-      ).rejects.toThrow('The snap is not on the allowlist');
+      ).toBe(range);
     });
 
-    it('throws if resolved version is not on the allowlist', async () => {
+    it('returns version range if resolved version is not on the allowlist', async () => {
       fetchMock
         .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
         .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
 
+      const range = '^1.2.0' as SemVerRange;
       const { messenger } = getRegistry();
-      await expect(
-        messenger.call(
+      expect(
+        await messenger.call(
           'SnapsRegistry:resolveVersion',
           MOCK_SNAP_ID,
-          '^1.2.0' as SemVerRange,
+          range,
         ),
-      ).rejects.toThrow(
-        'No matching versions of the snap are on the allowlist',
-      );
+      ).toBe(range);
     });
 
     it('refetches the database on allowlist miss if configured', async () => {
