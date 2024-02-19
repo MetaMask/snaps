@@ -9,7 +9,7 @@ const { default: baseConfig } = require('../../tsup.config');
 
 const config: Options = {
   name: packageJson.name,
-  external: ['@swc/core', '@swc/wasm', 'pnpapi', 'uglify-js', 'webpack'],
+  external: ['@swc/core', 'pnpapi', 'uglify-js'],
 };
 
 export default deepmerge<Options>(baseConfig, config);
