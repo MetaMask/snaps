@@ -1,6 +1,6 @@
 {
   "name": "@metamask/error-example-snap",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "MetaMask example snap demonstrating the use of error handling in snaps.",
   "repository": {
     "type": "git",
@@ -11,8 +11,7 @@
   "main": "./dist/bundle.js",
   "files": [
     "dist/",
-    "snap.manifest.json",
-    "images/icon.svg"
+    "snap.manifest.json"
   ],
   "scripts": {
     "build": "mm-snap build",

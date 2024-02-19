@@ -1,8 +1,8 @@
 import { createFsFromVolume, Volume } from 'memfs';
 import ora from 'ora';
 import { promisify } from 'util';
-import type { Watching } from 'webpack';
-import { ProvidePlugin } from 'webpack';
+import type { Compiler, Watching } from 'webpack';
+import { WebpackError, ProvidePlugin } from 'webpack';
 
 import * as evalImplementation from '../commands/eval/implementation';
 import { compile, getCompiler } from '../test-utils';
@@ -61,6 +61,40 @@ describe('SnapsStatsPlugin', () => {
     );
 
     expect(process.exitCode).toBe(1);
+  });
+
+  it('logs any warnings', async () => {
+    const log = jest.spyOn(console, 'warn').mockImplementation();
+
+    class AddWarningPlugin {
+      apply(compiler: Compiler) {
+        compiler.hooks.afterEmit.tap('AddWarningPlugin', (compilation) => {
+          compilation.warnings.push(new WebpackError('This is a warning.'));
+        });
+      }
+    }
+
+    await compile({
+      code: `
+        console.log('foo');
+      `,
+      config: {
+        plugins: [
+          new AddWarningPlugin(),
+          new SnapsStatsPlugin({
+            verbose: false,
+          }),
+        ],
+      },
+    });
+
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching(/Compiled 1 file in \d+ms with 1 warning\./u),
+    );
+
+    expect(log).toHaveBeenCalledWith(
+      expect.stringContaining('This is a warning.'),
+    );
   });
 
   it('logs stack traces when verbose is enabled', async () => {
@@ -405,14 +439,13 @@ describe('SnapsBuiltInResolver', () => {
 });
 
 describe('SnapsBundleWarningsPlugin', () => {
-  it('logs a message when built-in modules are unresolved', async () => {
-    const log = jest.spyOn(console, 'warn').mockImplementation();
+  it('adds a warning when built-in modules are unresolved', async () => {
     const builtInResolver = new SnapsBuiltInResolver();
 
     builtInResolver.unresolvedModules.add('fs');
     builtInResolver.unresolvedModules.add('path');
 
-    await compile({
+    const { stats } = await compile({
       code: `
         import fs from 'fs';
         import path from 'path';
@@ -432,20 +465,18 @@ describe('SnapsBundleWarningsPlugin', () => {
       },
     });
 
-    expect(log).toHaveBeenCalledWith(expect.stringContaining('fs'));
-    expect(log).toHaveBeenCalledWith(expect.stringContaining('path'));
-    expect(log).toHaveBeenCalledWith(
-      expect.stringMatching(
-        /The snap attempted to use one or more Node.js builtins, but no browser fallback has been provided\./u,
-      ),
+    expect(stats.warnings).toHaveLength(1);
+    expect(stats.warnings?.[0].message).toMatch(
+      /The snap attempted to use one or more Node.js builtins, but no browser fallback has been provided\./u,
     );
+    expect(stats.warnings?.[0].details).toContain('fs');
+    expect(stats.warnings?.[0].details).toContain('path');
   });
 
-  it('does not log a message when built-in modules are resolved', async () => {
-    const log = jest.spyOn(console, 'warn').mockImplementation();
+  it('does not add a warning when built-in modules are resolved', async () => {
     const builtInResolver = new SnapsBuiltInResolver();
 
-    await compile({
+    const { stats } = await compile({
       code: `
         import fs from 'fs';
         import path from 'path';
@@ -467,13 +498,11 @@ describe('SnapsBundleWarningsPlugin', () => {
       },
     });
 
-    expect(log).not.toHaveBeenCalled();
+    expect(stats.warnings).toHaveLength(0);
   });
 
-  it('does not log a message when there is no resolver plugin', async () => {
-    const log = jest.spyOn(console, 'warn').mockImplementation();
-
-    await compile({
+  it('does add a warning when there is no resolver plugin', async () => {
+    const { stats } = await compile({
       code: `
         import fs from 'fs';
         import path from 'path';
@@ -498,13 +527,11 @@ describe('SnapsBundleWarningsPlugin', () => {
       },
     });
 
-    expect(log).not.toHaveBeenCalled();
+    expect(stats.warnings).toHaveLength(0);
   });
 
-  it('logs a message when the bundle contains Buffer', async () => {
-    const log = jest.spyOn(console, 'warn').mockImplementation();
-
-    await compile({
+  it('adds a warning when the bundle contains Buffer', async () => {
+    const { stats } = await compile({
       code: `
         console.log(Buffer);
       `,
@@ -513,17 +540,14 @@ describe('SnapsBundleWarningsPlugin', () => {
       },
     });
 
-    expect(log).toHaveBeenCalledWith(
-      expect.stringContaining(
-        'The snap attempted to use the Node.js Buffer global, which is not supported in the MetaMask Snaps CLI by default.',
-      ),
+    expect(stats.warnings).toHaveLength(1);
+    expect(stats.warnings?.[0].message).toMatch(
+      /The snap attempted to use the Node\.js Buffer global, which is not supported in the MetaMask Snaps CLI by default\./u,
     );
   });
 
-  it('does not log a message when the buffer option is disabled', async () => {
-    const log = jest.spyOn(console, 'warn').mockImplementation();
-
-    await compile({
+  it('does add a warning when the buffer option is disabled', async () => {
+    const { stats } = await compile({
       code: `
         console.log(Buffer);
       `,
@@ -532,13 +556,11 @@ describe('SnapsBundleWarningsPlugin', () => {
       },
     });
 
-    expect(log).not.toHaveBeenCalled();
+    expect(stats.warnings).toHaveLength(0);
   });
 
-  it('does not log a message when the bundle does not contain Buffer', async () => {
-    const log = jest.spyOn(console, 'warn').mockImplementation();
-
-    await compile({
+  it('does add a warning when the bundle does not contain Buffer', async () => {
+    const { stats } = await compile({
       code: `
         console.log('Hello, world!');
       `,
@@ -547,13 +569,11 @@ describe('SnapsBundleWarningsPlugin', () => {
       },
     });
 
-    expect(log).not.toHaveBeenCalled();
+    expect(stats.warnings).toHaveLength(0);
   });
 
   it('does not log a message when Buffer is provided', async () => {
-    const log = jest.spyOn(console, 'warn').mockImplementation();
-
-    await compile({
+    const { stats } = await compile({
       code: `
         console.log(Buffer);
       `,
@@ -567,6 +587,6 @@ describe('SnapsBundleWarningsPlugin', () => {
       },
     });
 
-    expect(log).not.toHaveBeenCalled();
+    expect(stats.warnings).toHaveLength(0);
   });
 });

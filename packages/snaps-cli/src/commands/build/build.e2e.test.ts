@@ -32,15 +32,21 @@ describe('mm-snap build', () => {
       runner = getCommandRunner(command, []);
       await runner.wait();
 
-      expect(runner.stderr).toStrictEqual([]);
       expect(runner.stdout).toContainEqual(
         expect.stringMatching(/Checking the input file\./u),
       );
       expect(runner.stdout).toContainEqual(
         expect.stringMatching(/Building the snap bundle\./u),
       );
-      expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Compiled \d+ files? in \d+ms\./u),
+      expect(runner.stderr).toContainEqual(
+        expect.stringMatching(
+          /Compiled \d+ files? in \d+ms with \d+ warnings?\./u,
+        ),
+      );
+      expect(runner.stderr).toContainEqual(
+        expect.stringContaining(
+          'No icon found in the Snap manifest. It is recommended to include an icon for the Snap. See https://docs.metamask.io/snaps/how-to/design-a-snap/#guidelines-at-a-glance for more information.',
+        ),
       );
       expect(runner.stdout).toContainEqual(
         expect.stringMatching(/Evaluating the snap bundle\./u),
@@ -55,15 +61,21 @@ describe('mm-snap build', () => {
       runner = getCommandRunner(command, [], SNAP_BROWSERIFY_DIR);
       await runner.wait();
 
-      expect(runner.stderr).toStrictEqual([]);
       expect(runner.stdout).toContainEqual(
         expect.stringMatching(/Checking the input file\./u),
       );
       expect(runner.stdout).toContainEqual(
         expect.stringMatching(/Building the snap bundle\./u),
       );
-      expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Compiled \d+ files? in \d+ms\./u),
+      expect(runner.stderr).toContainEqual(
+        expect.stringMatching(
+          /Compiled \d+ files? in \d+ms with \d+ warnings?\./u,
+        ),
+      );
+      expect(runner.stderr).toContainEqual(
+        expect.stringContaining(
+          'No icon found in the Snap manifest. It is recommended to include an icon for the Snap. See https://docs.metamask.io/snaps/how-to/design-a-snap/#guidelines-at-a-glance for more information.',
+        ),
       );
       expect(runner.stdout).toContainEqual(
         expect.stringMatching(/Evaluating the snap bundle\./u),

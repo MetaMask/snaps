@@ -3,7 +3,7 @@ import type { Ora } from 'ora';
 import { resolve } from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import type { Configuration } from 'webpack';
-import { EnvironmentPlugin, ProgressPlugin, ProvidePlugin } from 'webpack';
+import { DefinePlugin, ProgressPlugin, ProvidePlugin } from 'webpack';
 
 import type { ProcessedWebpackConfig } from '../config';
 import {
@@ -16,6 +16,7 @@ import {
   BROWSERSLIST_FILE,
   getDefaultLoader,
   getDevTool,
+  getEnvironmentVariables,
   getFallbacks,
   getProgressHandler,
 } from './utils';
@@ -264,11 +265,12 @@ export async function getDefaultConfiguration(
       new SnapsStatsPlugin({ verbose: config.stats.verbose }, options.spinner),
 
       /**
-       * The `EnvironmentPlugin` is a Webpack plugin that adds environment
-       * variables to the bundle. We use it to add the `NODE_ENV` and `DEBUG`
-       * environment variables.
+       * The `DefinePlugin` is a Webpack plugin that adds static values to the
+       * bundle. We use it to add the `NODE_DEBUG`, `NODE_ENV`, and `DEBUG`
+       * environment variables, as well as any custom environment
+       * variables (as `process.env`).
        */
-      new EnvironmentPlugin(config.environment),
+      new DefinePlugin(getEnvironmentVariables(config.environment)),
 
       /**
        * The `ProgressPlugin` is a Webpack plugin that logs the progress of
@@ -283,14 +285,11 @@ export async function getDefaultConfiguration(
        * warning when the bundle is potentially incompatible with MetaMask
        * Snaps.
        */
-      new SnapsBundleWarningsPlugin(
-        {
-          builtInResolver,
-          builtIns: Boolean(config.stats.builtIns),
-          buffer: config.stats.buffer,
-        },
-        options.spinner,
-      ),
+      new SnapsBundleWarningsPlugin({
+        builtInResolver,
+        builtIns: Boolean(config.stats.builtIns),
+        buffer: config.stats.buffer,
+      }),
 
       /**
        * The `WatchPlugin` is a Webpack plugin that adds extra files to watch
@@ -334,6 +333,22 @@ export async function getDefaultConfiguration(
           parallel: true,
         }),
       ],
+    },
+
+    /**
+     * The performance configuration. This tells Webpack how to handle
+     * performance hints.
+     *
+     * @see https://webpack.js.org/configuration/performance/
+     */
+    performance: {
+      /**
+       * The hints to show. We set it to `false`, so that we don't get
+       * performance hints, as they are not relevant for Snaps.
+       *
+       * @see https://webpack.js.org/configuration/performance/#performancehints
+       */
+      hints: false,
     },
 
     /**

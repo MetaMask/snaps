@@ -1,5 +1,5 @@
 {
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "MetaMask example Snap demonstrating how to render images in Snaps UI.",
   "proposedName": "Images Example Snap",
   "repository": {
@@ -7,11 +7,10 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "YRGwMaOJHIRegfuR/LmMR+fs2pOi3Wg31Fh3Y/lOJfk=",
+    "shasum": "SVdLbDNPtAVtkX7kium/1sbYrc5r0wYwf1TDp9veeAw=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
-        "iconPath": "images/icon.svg",
         "packageName": "@metamask/images-example-snap",
         "registry": "https://registry.npmjs.org/"
       }

@@ -58,7 +58,7 @@ export type PostProcessedBundle = {
 };
 
 export enum PostProcessWarning {
-  UnsafeMathRandom = '`Math.random` was detected in the bundle. This is not a secure source of randomness.',
+  UnsafeMathRandom = '`Math.random` was detected in the Snap bundle. This is not a secure source of randomness, and should not be used in a secure context. Use `crypto.getRandomValues` instead.',
 }
 
 // The RegEx below consists of multiple groups joined by a boolean OR.

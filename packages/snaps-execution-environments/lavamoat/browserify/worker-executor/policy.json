@@ -76,18 +76,13 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/snaps-sdk>is-svg": {
-      "packages": {
-        "@metamask/snaps-sdk>is-svg>fast-xml-parser": true
-      }
-    },
-    "@metamask/snaps-sdk>is-svg>fast-xml-parser": {
+    "@metamask/snaps-sdk>fast-xml-parser": {
       "globals": {
         "entityName": true,
         "val": true
       },
       "packages": {
-        "@metamask/snaps-sdk>is-svg>fast-xml-parser>strnum": true
+        "@metamask/snaps-sdk>fast-xml-parser>strnum": true
       }
     },
     "@metamask/utils": {
@@ -220,12 +215,19 @@
         "external:../snaps-sdk/src/internals/error-wrappers.ts": true,
         "external:../snaps-sdk/src/internals/errors.ts": true,
         "external:../snaps-sdk/src/internals/helpers.ts": true,
-        "external:../snaps-sdk/src/internals/structs.ts": true
+        "external:../snaps-sdk/src/internals/structs.ts": true,
+        "external:../snaps-sdk/src/internals/svg.ts": true
       }
     },
     "external:../snaps-sdk/src/internals/structs.ts": {
       "packages": {
         "superstruct": true
+      }
+    },
+    "external:../snaps-sdk/src/internals/svg.ts": {
+      "packages": {
+        "@metamask/snaps-sdk>fast-xml-parser": true,
+        "@metamask/utils": true
       }
     },
     "external:../snaps-sdk/src/types/handlers/index.ts": {
@@ -345,7 +347,7 @@
     },
     "external:../snaps-sdk/src/ui/components/image.ts": {
       "packages": {
-        "@metamask/snaps-sdk>is-svg": true,
+        "external:../snaps-sdk/src/internals/index.ts": true,
         "external:../snaps-sdk/src/ui/builder.ts": true,
         "external:../snaps-sdk/src/ui/nodes.ts": true,
         "superstruct": true

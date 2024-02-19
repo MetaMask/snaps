@@ -1,5 +1,5 @@
 {
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "{{ description }}",
   "proposedName": "{{ name }}",
   "repository": {
@@ -7,11 +7,10 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "1ag+BcW+rfL1qTmpnMA+Sd0h57/sZoprFB4qMFXBmPE=",
+    "shasum": "yh6gQI6x50HN+mte35DVEukn9IdXol9/3oiN1jwtl1Y=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
-        "iconPath": "images/icon.svg",
         "packageName": "@metamask/localization-example-snap",
         "registry": "https://registry.npmjs.org/"
       }

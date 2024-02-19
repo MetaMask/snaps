@@ -1,6 +1,6 @@
 {
   "name": "@metamask/images-example-snap",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "MetaMask example Snap demonstrating how to render images in Snaps UI.",
   "repository": {
     "type": "git",
@@ -11,8 +11,7 @@
   "main": "./dist/bundle.js",
   "files": [
     "dist/",
-    "snap.manifest.json",
-    "images/icon.svg"
+    "snap.manifest.json"
   ],
   "scripts": {
     "build": "mm-snap build",

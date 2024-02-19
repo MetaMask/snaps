@@ -1,5 +1,5 @@
 {
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "MetaMask example snap demonstrating how to use Ethers.js inside a snap.",
   "proposedName": "Ethers.js Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "t9CVxyl+WB6UwtynS8zhgA76KWUmQUdGGP+E0Rj+fR0=",
+    "shasum": "N9i27+suBYwVHDzqQGtvafY55vHNCkcYAL7Fuw6wOz0=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

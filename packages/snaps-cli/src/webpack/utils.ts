@@ -3,6 +3,7 @@ import { promises as fs } from 'fs';
 import { builtinModules } from 'module';
 import type { Ora } from 'ora';
 import { dirname, resolve } from 'path';
+import stripAnsi from 'strip-ansi';
 import type { Configuration } from 'webpack';
 
 import type { ProcessedWebpackConfig } from '../config';
@@ -270,4 +271,100 @@ export function getFallbacks(polyfills: ProcessedWebpackConfig['polyfills']): {
         : false,
     ]),
   );
+}
+
+/**
+ * Get an object that can be used as environment variables for Webpack's
+ * `DefinePlugin`.
+ *
+ * @param environment - The environment object from the Snap config.
+ * @param defaults - The default environment variables.
+ * @returns The Webpack environment variables.
+ */
+export function getEnvironmentVariables(
+  environment: Record<string, unknown>,
+  defaults = {
+    NODE_DEBUG: 'false',
+    NODE_ENV: 'production',
+    DEBUG: 'false',
+  },
+) {
+  return Object.fromEntries(
+    Object.entries({
+      ...defaults,
+      ...environment,
+    }).map(([key, value]) => [`process.env.${key}`, JSON.stringify(value)]),
+  );
+}
+
+/**
+ * Format the given line to fit within the terminal width.
+ *
+ * @param line - The line to format.
+ * @param indent - The indentation to use.
+ * @param initialIndent - The initial indentation to use, i.e., the indentation
+ * for the first line.
+ * @returns The formatted line.
+ */
+function formatLine(line: string, indent: number, initialIndent: number) {
+  const terminalWidth = process.stdout.columns;
+  if (!terminalWidth) {
+    return `${' '.repeat(initialIndent)}${line}`;
+  }
+
+  return line.split(' ').reduce(
+    ({ formattedText, currentLineLength }, word, index) => {
+      // `chalk` adds ANSI escape codes to the text, which are not visible
+      // characters. We need to strip them to get the visible length of the
+      // text.
+      const visibleWord = stripAnsi(word);
+
+      // Determine if a space should be added before the word.
+      const spaceBeforeWord = index > 0 ? ' ' : '';
+      const wordLengthWithSpace = visibleWord.length + spaceBeforeWord.length;
+
+      // If the word would exceed the terminal width, start a new line.
+      if (currentLineLength + wordLengthWithSpace > terminalWidth) {
+        return {
+          formattedText: `${formattedText}\n${' '.repeat(indent)}${word}`,
+          currentLineLength: indent + visibleWord.length,
+        };
+      }
+
+      // Otherwise, add the word to the current line.
+      return {
+        formattedText: formattedText + spaceBeforeWord + word,
+        currentLineLength: currentLineLength + wordLengthWithSpace,
+      };
+    },
+    {
+      formattedText: ' '.repeat(initialIndent),
+      currentLineLength: initialIndent,
+    },
+  ).formattedText;
+}
+
+/**
+ * Format the given text to fit within the terminal width.
+ *
+ * @param text - The text to format.
+ * @param indent - The indentation to use.
+ * @param initialIndent - The initial indentation to use, i.e., the indentation
+ * for the first line.
+ * @returns The formatted text.
+ */
+export function formatText(
+  text: string,
+  indent: number,
+  initialIndent = indent,
+) {
+  const lines = text.split('\n');
+
+  // Apply formatting to each line separately and then join them.
+  return lines
+    .map((line, index) => {
+      const lineIndent = index === 0 ? initialIndent : indent;
+      return formatLine(line, indent, lineIndent);
+    })
+    .join('\n');
 }

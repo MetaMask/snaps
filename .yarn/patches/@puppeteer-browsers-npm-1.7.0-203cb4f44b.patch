@@ -1,0 +1,104 @@
+diff --git a/lib/cjs/browser-data/chrome-headless-shell.js b/lib/cjs/browser-data/chrome-headless-shell.js
+index af555e4fb3294f7a48660f8d4a97ddf52dada0e5..c3b6a9f5860d08817869016dcef13eab3c63499a 100644
+--- a/lib/cjs/browser-data/chrome-headless-shell.js
++++ b/lib/cjs/browser-data/chrome-headless-shell.js
+@@ -35,7 +35,7 @@ function folder(platform) {
+             return 'win64';
+     }
+ }
+-function resolveDownloadUrl(platform, buildId, baseUrl = 'https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing') {
++function resolveDownloadUrl(platform, buildId, baseUrl = 'https://storage.googleapis.com/chrome-for-testing-public') {
+     return `${baseUrl}/${resolveDownloadPath(platform, buildId).join('/')}`;
+ }
+ exports.resolveDownloadUrl = resolveDownloadUrl;
+diff --git a/lib/cjs/browser-data/chrome.js b/lib/cjs/browser-data/chrome.js
+index 6af4e6f63e55e83a00e5f5c557fc0dbb0bfc4865..9988779d2d307815776d6bcdd2a877af15f015cb 100644
+--- a/lib/cjs/browser-data/chrome.js
++++ b/lib/cjs/browser-data/chrome.js
+@@ -36,7 +36,7 @@ function folder(platform) {
+             return 'win64';
+     }
+ }
+-function resolveDownloadUrl(platform, buildId, baseUrl = 'https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing') {
++function resolveDownloadUrl(platform, buildId, baseUrl = 'https://storage.googleapis.com/chrome-for-testing-public') {
+     return `${baseUrl}/${resolveDownloadPath(platform, buildId).join('/')}`;
+ }
+ exports.resolveDownloadUrl = resolveDownloadUrl;
+diff --git a/lib/cjs/browser-data/chromedriver.js b/lib/cjs/browser-data/chromedriver.js
+index f9ced6c4724e3cb3a3188989f1bab25b3aa4941b..faea49e7c8b1f4fa85acfae0d78a9a1a2a3c0a30 100644
+--- a/lib/cjs/browser-data/chromedriver.js
++++ b/lib/cjs/browser-data/chromedriver.js
+@@ -35,7 +35,7 @@ function folder(platform) {
+             return 'win64';
+     }
+ }
+-function resolveDownloadUrl(platform, buildId, baseUrl = 'https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing') {
++function resolveDownloadUrl(platform, buildId, baseUrl = 'https://storage.googleapis.com/chrome-for-testing-public') {
+     return `${baseUrl}/${resolveDownloadPath(platform, buildId).join('/')}`;
+ }
+ exports.resolveDownloadUrl = resolveDownloadUrl;
+diff --git a/lib/cjs/install.d.ts b/lib/cjs/install.d.ts
+index 68fb99dff49e3c82b9dbd035343562ca8157a53d..5d9bd466c83458f6497a716ae6f6bbde444927c2 100644
+--- a/lib/cjs/install.d.ts
++++ b/lib/cjs/install.d.ts
+@@ -47,7 +47,7 @@ export interface InstallOptions {
+      *
+      * @defaultValue Either
+      *
+-     * - https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing or
++     * - https://storage.googleapis.com/chrome-for-testing-public or
+      * - https://archive.mozilla.org/pub/firefox/nightly/latest-mozilla-central
+      *
+      */
+diff --git a/lib/esm/browser-data/chrome-headless-shell.js b/lib/esm/browser-data/chrome-headless-shell.js
+index cf45517bd6dbc1cdebd289b5e01db9a557c2822d..f8fd3d6362cd2e40f33df5fb4f30f7ec7f06d611 100644
+--- a/lib/esm/browser-data/chrome-headless-shell.js
++++ b/lib/esm/browser-data/chrome-headless-shell.js
+@@ -29,7 +29,7 @@ function folder(platform) {
+             return 'win64';
+     }
+ }
+-export function resolveDownloadUrl(platform, buildId, baseUrl = 'https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing') {
++export function resolveDownloadUrl(platform, buildId, baseUrl = 'https://storage.googleapis.com/chrome-for-testing-public') {
+     return `${baseUrl}/${resolveDownloadPath(platform, buildId).join('/')}`;
+ }
+ export function resolveDownloadPath(platform, buildId) {
+diff --git a/lib/esm/browser-data/chrome.js b/lib/esm/browser-data/chrome.js
+index e550644bfc0893169feb46d884e1de01d10ccb12..87f8daec7b3e5d30790946149c51cae01278ecbc 100644
+--- a/lib/esm/browser-data/chrome.js
++++ b/lib/esm/browser-data/chrome.js
+@@ -30,7 +30,7 @@ function folder(platform) {
+             return 'win64';
+     }
+ }
+-export function resolveDownloadUrl(platform, buildId, baseUrl = 'https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing') {
++export function resolveDownloadUrl(platform, buildId, baseUrl = 'https://storage.googleapis.com/chrome-for-testing-public') {
+     return `${baseUrl}/${resolveDownloadPath(platform, buildId).join('/')}`;
+ }
+ export function resolveDownloadPath(platform, buildId) {
+diff --git a/lib/esm/browser-data/chromedriver.js b/lib/esm/browser-data/chromedriver.js
+index a4504e4f2d9b361b393c013d3cb6ca325a346770..aa48aca65487921e04f735283a99218621682bdc 100644
+--- a/lib/esm/browser-data/chromedriver.js
++++ b/lib/esm/browser-data/chromedriver.js
+@@ -29,7 +29,7 @@ function folder(platform) {
+             return 'win64';
+     }
+ }
+-export function resolveDownloadUrl(platform, buildId, baseUrl = 'https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing') {
++export function resolveDownloadUrl(platform, buildId, baseUrl = 'https://storage.googleapis.com/chrome-for-testing-public') {
+     return `${baseUrl}/${resolveDownloadPath(platform, buildId).join('/')}`;
+ }
+ export function resolveDownloadPath(platform, buildId) {
+diff --git a/lib/esm/install.d.ts b/lib/esm/install.d.ts
+index 68fb99dff49e3c82b9dbd035343562ca8157a53d..5d9bd466c83458f6497a716ae6f6bbde444927c2 100644
+--- a/lib/esm/install.d.ts
++++ b/lib/esm/install.d.ts
+@@ -47,7 +47,7 @@ export interface InstallOptions {
+      *
+      * @defaultValue Either
+      *
+-     * - https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing or
++     * - https://storage.googleapis.com/chrome-for-testing-public or
+      * - https://archive.mozilla.org/pub/firefox/nightly/latest-mozilla-central
+      *
+      */

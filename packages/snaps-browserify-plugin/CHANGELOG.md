@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.3]
+### Changed
+- Bump several MetaMask dependencies ([#2054](https://github.com/MetaMask/snaps/pull/2054), [#2100](https://github.com/MetaMask/snaps/pull/2100), [#2105](https://github.com/MetaMask/snaps/pull/2105), [#2173](https://github.com/MetaMask/snaps/pull/2173))
+
 ## [3.0.2]
 ### Changed
 - Bump several MetaMask dependencies ([#1964](https://github.com/MetaMask/snaps/pull/1964))
@@ -32,7 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-browserify-plugin@3.0.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-browserify-plugin@3.0.3...HEAD
+[3.0.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-browserify-plugin@3.0.2...@metamask/snaps-browserify-plugin@3.0.3
 [3.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-browserify-plugin@3.0.1...@metamask/snaps-browserify-plugin@3.0.2
 [3.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-browserify-plugin@3.0.0...@metamask/snaps-browserify-plugin@3.0.1
 [3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-browserify-plugin@2.0.0...@metamask/snaps-browserify-plugin@3.0.0

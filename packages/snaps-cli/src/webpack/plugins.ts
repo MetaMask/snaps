@@ -1,6 +1,5 @@
-import { indent } from '@metamask/snaps-utils';
 import { assert, hasProperty, isObject } from '@metamask/utils';
-import { dim, red, yellow } from 'chalk';
+import { bold, dim, red, yellow } from 'chalk';
 import { isBuiltin } from 'module';
 import type { Ora } from 'ora';
 import type {
@@ -11,10 +10,11 @@ import type {
   StatsError,
   WebpackPluginInstance,
 } from 'webpack';
+import { WebpackError } from 'webpack';
 
 import { evaluate } from '../commands/eval';
 import { error, getErrorMessage, info, warn } from '../utils';
-import { pluralize } from './utils';
+import { formatText, pluralize } from './utils';
 
 export type SnapsStatsPluginOptions = {
   /**
@@ -59,14 +59,14 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
         return;
       }
 
-      const { modules, time, errors } = stats.toJson();
+      const { modules, time, errors, warnings } = stats.toJson();
 
       assert(modules, 'Modules must be defined in stats.');
       assert(time, 'Time must be defined in stats.');
 
       if (errors?.length) {
         const formattedErrors = errors
-          .map(this.#getStatsErrorMessage.bind(this))
+          .map((statsError) => this.#getStatsErrorMessage(statsError))
           .join('\n\n');
 
         error(
@@ -86,13 +86,32 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
         return;
       }
 
-      info(
-        `Compiled ${modules.length} ${pluralize(
-          modules.length,
-          'file',
-        )} in ${time}ms.`,
-        this.#spinner,
-      );
+      if (warnings?.length) {
+        const formattedWarnings = warnings
+          .map((statsWarning) =>
+            this.#getStatsErrorMessage(statsWarning, yellow),
+          )
+          .join('\n\n');
+
+        warn(
+          `Compiled ${modules.length} ${pluralize(
+            modules.length,
+            'file',
+          )} in ${time}ms with ${warnings.length} ${pluralize(
+            warnings.length,
+            'warning',
+          )}.\n\n${formattedWarnings}\n`,
+          this.#spinner,
+        );
+      } else {
+        info(
+          `Compiled ${modules.length} ${pluralize(
+            modules.length,
+            'file',
+          )} in ${time}ms.`,
+          this.#spinner,
+        );
+      }
 
       if (compiler.watchMode) {
         // The spinner may be restarted by the watch plugin, outside of the
@@ -106,9 +125,10 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
    * Get the error message for the given stats error.
    *
    * @param statsError - The stats error.
+   * @param color - The color to use for the error message.
    * @returns The error message.
    */
-  #getStatsErrorMessage(statsError: StatsError) {
+  #getStatsErrorMessage(statsError: StatsError, color = red) {
     const baseMessage = this.options.verbose
       ? getErrorMessage(statsError)
       : statsError.message;
@@ -116,9 +136,9 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
     const [first, ...rest] = baseMessage.split('\n');
 
     return [
-      indent(red(`• ${first}`), 2),
-      ...rest.map((message) => indent(red(message), 4)),
-      statsError.details && indent(dim(statsError.details), 4),
+      color(formatText(`• ${first}`, 4, 2)),
+      ...rest.map((message) => formatText(color(message), 4)),
+      statsError.details && `\n${formatText(dim(statsError.details), 6)}`,
     ]
       .filter(Boolean)
       .join('\n');
@@ -335,11 +355,6 @@ export type SnapsBundleWarningsPluginOptions = {
 
 export class SnapsBundleWarningsPlugin implements WebpackPluginInstance {
   /**
-   * The spinner to use for logging.
-   */
-  readonly #spinner?: Ora;
-
-  /**
    * The options for the plugin.
    */
   readonly options: SnapsBundleWarningsPluginOptions;
@@ -349,10 +364,8 @@ export class SnapsBundleWarningsPlugin implements WebpackPluginInstance {
       buffer: true,
       builtIns: true,
     },
-    spinner?: Ora,
   ) {
     this.options = options;
-    this.#spinner = spinner;
   }
 
   /**
@@ -377,7 +390,7 @@ export class SnapsBundleWarningsPlugin implements WebpackPluginInstance {
    * @param compiler - The Webpack compiler.
    */
   #checkBuiltIns(compiler: Compiler) {
-    compiler.hooks.afterCompile.tap(this.constructor.name, () => {
+    compiler.hooks.afterCompile.tap(this.constructor.name, (compilation) => {
       if (!this.options.builtInResolver) {
         return;
       }
@@ -388,27 +401,27 @@ export class SnapsBundleWarningsPlugin implements WebpackPluginInstance {
       }
 
       const formattedModules = new Array(...unresolvedModules)
-        .map((name) => indent(`• ${name}`, 2))
+        .map((name) => `• ${name}`)
         .join('\n');
 
-      warn(
-        `The snap attempted to use one or more Node.js builtins, but no browser fallback has been provided.\n` +
-          `The MetaMask Snaps CLI does not support Node.js builtins by default. If you want to use this module, you must set ${yellow(
-            `polyfills`,
-          )} to ${yellow(
-            `true`,
-          )} or an object with the builtins to polyfill as the key and ${yellow(
-            `true`,
-          )} as the value.\n` +
-          `To disable this warning, set ${yellow(
-            '`stats.builtIns`',
-          )} to ${yellow(
-            '`false`',
-          )} in your snap config file, or add the module to the ${yellow(
-            '`stats.builtIns.ignore`',
-          )} array.\n\n${formattedModules}\n`,
-        this.#spinner,
+      const webpackError = new WebpackError(
+        `The snap attempted to use one or more Node.js builtins, but no browser fallback has been provided. The MetaMask Snaps CLI does not support Node.js builtins by default. If you want to use this module, you must set ${bold(
+          '`polyfills`',
+        )} to ${bold(
+          '`true`',
+        )} or an object with the builtins to polyfill as the key and ${bold(
+          '`true`',
+        )} as the value. To disable this warning, set ${bold(
+          '`stats.builtIns`',
+        )} to ${bold(
+          '`false`',
+        )} in your snap config file, or add the module to the ${bold(
+          '`stats.builtIns.ignore`',
+        )} array.`,
       );
+
+      webpackError.details = formattedModules;
+      compilation.warnings.push(webpackError);
     });
   }
 
@@ -463,17 +476,16 @@ export class SnapsBundleWarningsPlugin implements WebpackPluginInstance {
             return;
           }
 
-          warn(
-            `The snap attempted to use the Node.js Buffer global, which is not supported in the MetaMask Snaps CLI by default.\n` +
-              `To use the Buffer global, you must polyfill Buffer by setting ${yellow(
-                `buffer`,
-              )} to ${yellow(`true`)} in the ${yellow(
-                `polyfills`,
-              )} config object in your snap config.\n` +
-              `To disable this warning, set ${yellow(
+          compilation.warnings.push(
+            new WebpackError(
+              `The snap attempted to use the Node.js Buffer global, which is not supported in the MetaMask Snaps CLI by default. To use the Buffer global, you must polyfill Buffer by setting ${bold(
+                '`buffer`',
+              )} to ${bold('`true`')} in the ${bold(
+                '`polyfills`',
+              )} config object in your snap config. To disable this warning, set ${bold(
                 '`stats.buffer`',
-              )} to ${yellow('`false`')} in your snap config file.`,
-            this.#spinner,
+              )} to ${bold('`false`')} in your snap config file.`,
+            ),
           );
         },
       );
