@@ -320,7 +320,7 @@ export class BaseSnapExecutor {
       await this.#write({
         error: serializeError(
           rpcErrors.internal(
-            'JSON-RPC responses must be JSON serializable objects smaller than 64 MB..',
+            'JSON-RPC responses must be JSON serializable objects smaller than 64 MB.',
           ),
         ),
         id,

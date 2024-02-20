@@ -2007,6 +2007,44 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('throws when trying to respond with value that is too large', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => '1'.repeat(100_000_000);
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 2,
+      error: {
+        code: -32603,
+        message:
+          'JSON-RPC responses must be JSON serializable objects smaller than 64 MB.',
+        stack: expect.any(String),
+      },
+    });
+  });
+
   it('throws when receiving an invalid RPC request', async () => {
     const executor = new TestSnapExecutor();
 
