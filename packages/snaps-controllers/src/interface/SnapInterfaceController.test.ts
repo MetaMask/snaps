@@ -104,6 +104,52 @@ describe('SnapInterfaceController', () => {
         'foo.bar',
       );
     });
+
+    it('throws if UI content is too large', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+        rootMessenger,
+        false,
+      );
+
+      /* eslint-disable-next-line no-new */
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const components = panel([text('[foo](https://foo.bar)'.repeat(100000))]);
+
+      await expect(
+        rootMessenger.call(
+          'SnapInterfaceController:createInterface',
+          MOCK_SNAP_ID,
+          components,
+        ),
+      ).rejects.toThrow('UI content is unreasonably large.');
+    });
+
+    it('throws if text content is too large', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+        rootMessenger,
+        false,
+      );
+
+      /* eslint-disable-next-line no-new */
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const components = panel([text('[foo](https://foo.bar)'.repeat(2500))]);
+
+      await expect(
+        rootMessenger.call(
+          'SnapInterfaceController:createInterface',
+          MOCK_SNAP_ID,
+          components,
+        ),
+      ).rejects.toThrow('UI text content is unreasonably large.');
+    });
   });
 
   describe('getInterface', () => {
@@ -290,6 +336,72 @@ describe('SnapInterfaceController', () => {
         'PhishingController:testOrigin',
         'foo.bar',
       );
+    });
+
+    it('throws if UI content is too large', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      /* eslint-disable-next-line no-new */
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const components = form({
+        name: 'foo',
+        children: [input({ name: 'bar' })],
+      });
+
+      const newContent = panel([text('[foo](https://foo.bar)'.repeat(100000))]);
+
+      const id = await rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        components,
+      );
+
+      await expect(
+        rootMessenger.call(
+          'SnapInterfaceController:updateInterface',
+          MOCK_SNAP_ID,
+          id,
+          newContent,
+        ),
+      ).rejects.toThrow('UI content is unreasonably large.');
+    });
+
+    it('throws if text content is too large', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      /* eslint-disable-next-line no-new */
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const components = form({
+        name: 'foo',
+        children: [input({ name: 'bar' })],
+      });
+
+      const newContent = panel([text('[foo](https://foo.bar)'.repeat(2500))]);
+
+      const id = await rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        components,
+      );
+
+      await expect(
+        rootMessenger.call(
+          'SnapInterfaceController:updateInterface',
+          MOCK_SNAP_ID,
+          id,
+          newContent,
+        ),
+      ).rejects.toThrow('UI text content is unreasonably large.');
     });
 
     it('throws if the interface does not exist', async () => {
