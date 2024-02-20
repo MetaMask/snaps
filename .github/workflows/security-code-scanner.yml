@@ -25,6 +25,7 @@ jobs:
             '**/__snapshots__/'
             '**/*.test.js*'
             '**/*.test.ts*'
+            '**/*.test.browser.ts*'
             docs/
             '**/jest.environment.js'
             '**/jest.config.js'
