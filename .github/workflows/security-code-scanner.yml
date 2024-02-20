@@ -21,6 +21,7 @@ jobs:
           paths_ignored: |
             tests/
             '**/test/'
+            '**/test-utils/'
             '**/__mocks__/'
             '**/__snapshots__/'
             '**/*.test.js*'
