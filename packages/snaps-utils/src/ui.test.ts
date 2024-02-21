@@ -1,4 +1,4 @@
-import { panel, text } from '@metamask/snaps-sdk';
+import { panel, text, row, address } from '@metamask/snaps-sdk';
 
 import { validateTextLinks, validateComponentLinks } from './ui';
 
@@ -60,6 +60,16 @@ describe('validateComponentLinks', () => {
     expect(() =>
       validateComponentLinks(
         panel([text('foobar'), text('This tests a [link](https://foo.bar)')]),
+        isOnPhishingList,
+      ),
+    ).toThrow('Invalid URL: The specified URL is not allowed.');
+
+    expect(() =>
+      validateComponentLinks(
+        panel([
+          row('foo', text('This tests a [link](https://foo.bar)')),
+          row('bar', address('0x4bbeeb066ed09b7aed07bf39eee0460dfa261520')),
+        ]),
         isOnPhishingList,
       ),
     ).toThrow('Invalid URL: The specified URL is not allowed.');
