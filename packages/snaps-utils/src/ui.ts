@@ -91,18 +91,20 @@ export function validateComponentLinks(
  */
 export function getTotalTextLength(component: Component): number {
   const { type } = component;
-  if (type === NodeType.Panel) {
-    return component.children.reduce<number>(
-      // This is a bug in TypeScript: https://github.com/microsoft/TypeScript/issues/48313
-      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-      (sum, node) => sum + getTotalTextLength(node),
-      0,
-    );
-  }
 
-  if (type === NodeType.Text) {
-    return component.value.length;
+  switch (type) {
+    case NodeType.Panel:
+      return component.children.reduce<number>(
+        // This is a bug in TypeScript: https://github.com/microsoft/TypeScript/issues/48313
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+        (sum, node) => sum + getTotalTextLength(node),
+        0,
+      );
+    case NodeType.Row:
+      return getTotalTextLength(component.value);
+    case NodeType.Text:
+      return component.value.length;
+    default:
+      return 0;
   }
-
-  return 0;
 }

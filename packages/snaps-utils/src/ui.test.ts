@@ -103,6 +103,12 @@ describe('getTotalTextLength', () => {
     ).toBe(9);
   });
 
+  it('calculates total length for nested text in rows', () => {
+    expect(
+      getTotalTextLength(panel([row('1', text('foo')), row('2', text('bar'))])),
+    ).toBe(6);
+  });
+
   it('ignores non text components', () => {
     expect(getTotalTextLength(panel([text('foo'), image('<svg />')]))).toBe(3);
   });
