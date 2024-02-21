@@ -1,6 +1,10 @@
-import { panel, text, row, address } from '@metamask/snaps-sdk';
+import { panel, text, row, address, image } from '@metamask/snaps-sdk';
 
-import { validateTextLinks, validateComponentLinks } from './ui';
+import {
+  validateTextLinks,
+  validateComponentLinks,
+  getTotalTextLength,
+} from './ui';
 
 describe('validateTextLinks', () => {
   it('passes for valid links', () => {
@@ -83,5 +87,29 @@ describe('validateComponentLinks', () => {
         isOnPhishingList,
       ),
     ).toThrow('Invalid URL: The specified URL is not allowed.');
+  });
+});
+
+describe('getTotalTextLength', () => {
+  it('calculates total length', () => {
+    expect(getTotalTextLength(text('foo'))).toBe(3);
+  });
+
+  it('calculates total length for nested text', () => {
+    expect(
+      getTotalTextLength(
+        panel([text('foo'), panel([text('bar'), text('baz')])]),
+      ),
+    ).toBe(9);
+  });
+
+  it('calculates total length for nested text in rows', () => {
+    expect(
+      getTotalTextLength(panel([row('1', text('foo')), row('2', text('bar'))])),
+    ).toBe(6);
+  });
+
+  it('ignores non text components', () => {
+    expect(getTotalTextLength(panel([text('foo'), image('<svg />')]))).toBe(3);
   });
 });
