@@ -4536,7 +4536,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/images-example-snap@workspace:packages/examples/packages/images":
+"@metamask/images-example-snap@workspace:^, @metamask/images-example-snap@workspace:packages/examples/packages/images":
   version: 0.0.0-use.local
   resolution: "@metamask/images-example-snap@workspace:packages/examples/packages/images"
   dependencies:
@@ -5926,6 +5926,7 @@ __metadata:
     "@metamask/get-entropy-example-snap": "workspace:^"
     "@metamask/get-file-example-snap": "workspace:^"
     "@metamask/home-page-example-snap": "workspace:^"
+    "@metamask/images-example-snap": "workspace:^"
     "@metamask/insights-example-snap": "workspace:^"
     "@metamask/interactive-ui-example-snap": "workspace:^"
     "@metamask/json-rpc-example-snap": "workspace:^"
