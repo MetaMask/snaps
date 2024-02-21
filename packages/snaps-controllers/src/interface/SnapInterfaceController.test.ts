@@ -125,7 +125,7 @@ describe('SnapInterfaceController', () => {
           MOCK_SNAP_ID,
           components,
         ),
-      ).rejects.toThrow('UI content is unreasonably large.');
+      ).rejects.toThrow('A Snap UI may not be larger than 250 kB.');
     });
 
     it('throws if text content is too large', async () => {
@@ -148,7 +148,7 @@ describe('SnapInterfaceController', () => {
           MOCK_SNAP_ID,
           components,
         ),
-      ).rejects.toThrow('UI text content is unreasonably large.');
+      ).rejects.toThrow('The text in a Snap UI may not be larger than 50 kB.');
     });
   });
 
@@ -368,7 +368,7 @@ describe('SnapInterfaceController', () => {
           id,
           newContent,
         ),
-      ).rejects.toThrow('UI content is unreasonably large.');
+      ).rejects.toThrow('A Snap UI may not be larger than 250 kB.');
     });
 
     it('throws if text content is too large', async () => {
@@ -401,7 +401,7 @@ describe('SnapInterfaceController', () => {
           id,
           newContent,
         ),
-      ).rejects.toThrow('UI text content is unreasonably large.');
+      ).rejects.toThrow('The text in a Snap UI may not be larger than 50 kB.');
     });
 
     it('throws if the interface does not exist', async () => {
