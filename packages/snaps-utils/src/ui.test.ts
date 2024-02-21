@@ -45,6 +45,16 @@ describe('validateComponentLinks', () => {
         isOnPhishingList,
       ),
     ).not.toThrow();
+
+    expect(() =>
+      validateComponentLinks(
+        panel([
+          row('foo', text('[bar](https://foo.bar)')),
+          row('baz', address('0x4bbeeb066ed09b7aed07bf39eee0460dfa261520')),
+        ]),
+        isOnPhishingList,
+      ),
+    ).not.toThrow();
   });
 
   it('throws for an unsafe text component', async () => {
