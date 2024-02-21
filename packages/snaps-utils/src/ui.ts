@@ -66,13 +66,19 @@ export function validateComponentLinks(
   isOnPhishingList: (url: string) => boolean,
 ) {
   const { type } = component;
-  if (type === NodeType.Panel) {
-    component.children.forEach((node) =>
-      validateComponentLinks(node, isOnPhishingList),
-    );
-  }
-
-  if (type === NodeType.Text) {
-    validateTextLinks(component.value, isOnPhishingList);
+  switch (type) {
+    case NodeType.Panel:
+      component.children.forEach((node) =>
+        validateComponentLinks(node, isOnPhishingList),
+      );
+      break;
+    case NodeType.Row:
+      validateComponentLinks(component.value, isOnPhishingList);
+      break;
+    case NodeType.Text:
+      validateTextLinks(component.value, isOnPhishingList);
+      break;
+    default:
+      break;
   }
 }
