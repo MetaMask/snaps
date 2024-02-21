@@ -197,6 +197,7 @@ export function isValidResponse(response: Record<string, unknown>) {
   if (!isObject(response)) {
     return false;
   }
+
   try {
     // If the JSON is invalid this will throw and we should return false.
     const size = getJsonSize(response);
