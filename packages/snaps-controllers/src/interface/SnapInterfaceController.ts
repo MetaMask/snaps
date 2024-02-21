@@ -260,7 +260,7 @@ export class SnapInterfaceController extends BaseController<
   async #validateContent(content: Component) {
     const size = getJsonSize(content);
 
-    assert(size <= MAX_UI_CONTENT_SIZE, 'UI content is unreasonably large.');
+    assert(size <= MAX_UI_CONTENT_SIZE, `A Snap UI may not be larger than ${MAX_UI_CONTENT_SIZE / 1000} kB.`);
 
     const textSize = getTotalTextLength(content);
 
