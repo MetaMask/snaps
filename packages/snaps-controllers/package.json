@@ -49,7 +49,7 @@
     "@metamask/permission-controller": "^8.0.0",
     "@metamask/phishing-controller": "^8.0.2",
     "@metamask/post-message-stream": "^8.0.0",
-    "@metamask/rpc-errors": "^6.1.0",
+    "@metamask/rpc-errors": "^6.2.0",
     "@metamask/snaps-registry": "^3.0.0",
     "@metamask/snaps-rpc-methods": "workspace:^",
     "@metamask/snaps-sdk": "workspace:^",
