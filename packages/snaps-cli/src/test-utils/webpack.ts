@@ -135,6 +135,16 @@ export function normalizeConfig(config: Configuration): Configuration {
       };
     }
 
+    if (rule.use.loader.includes('function.ts')) {
+      return {
+        ...rule,
+        use: {
+          ...rule.use,
+          loader: '/foo/bar/src/webpack/loaders/function.ts',
+        },
+      };
+    }
+
     return rule;
   });
 

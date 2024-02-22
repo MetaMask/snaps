@@ -6,6 +6,7 @@ import type { Configuration } from 'webpack';
 import { DefinePlugin, ProgressPlugin, ProvidePlugin } from 'webpack';
 
 import type { ProcessedWebpackConfig } from '../config';
+import { getFunctionLoader, wasm } from './loaders';
 import {
   SnapsBuiltInResolver,
   SnapsBundleWarningsPlugin,
@@ -206,9 +207,7 @@ export async function getDefaultConfiguration(
 
         config.experimental.wasm && {
           test: /\.wasm$/u,
-          use: {
-            loader: resolve(__dirname, 'loaders', 'wasm'),
-          },
+          use: getFunctionLoader(wasm, {}),
         },
       ],
     },

@@ -191,8 +191,10 @@ describe('getDefaultConfiguration', () => {
     async (config) => {
       jest.spyOn(process, 'cwd').mockReturnValue('/foo/bar');
 
+      const output = await getDefaultConfiguration(config);
+
       // eslint-disable-next-line jest/no-restricted-matchers
-      expect(await getDefaultConfiguration(config)).toMatchSnapshot();
+      expect(normalizeConfig(output)).toMatchSnapshot();
     },
   );
 
