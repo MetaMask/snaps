@@ -8,28 +8,28 @@
   },
   "license": "ISC",
   "sideEffects": false,
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/types/index.d.ts",
   "bin": {
-    "mm-snap": "./dist/cjs/main.js"
+    "mm-snap": "./dist/main.js"
   },
   "files": [
-    "dist/cjs/**",
-    "dist/esm/**",
-    "dist/types/**",
-    ".browserslistrc"
+    "dist"
   ],
   "scripts": {
-    "build": "yarn build:source && yarn build:types",
-    "build:source": "yarn build:esm && yarn build:cjs",
+    "build": "tsup --clean && yarn build:types && yarn build:chmod && yarn build:readme",
     "build:types": "tsc --project tsconfig.build.json",
-    "build:esm": "swc src --out-dir dist/esm --config-file ../../.swcrc.build.json --config module.type=es6",
-    "build:cjs": "swc src --out-dir dist/cjs --config-file ../../.swcrc.build.json --config module.type=commonjs",
-    "build:post-tsc": "yarn build:chmod && yarn build:readme",
-    "build:chmod": "chmod +x ./dist/esm/main.js && chmod +x ./dist/cjs/main.js",
+    "build:chmod": "chmod +x ./dist/main.mjs && chmod +x ./dist/main.js",
     "build:readme": "node ./scripts/updateReadme.js",
-    "build:clean": "yarn clean && yarn build",
     "build:watch": "tsc-watch --onSuccess 'yarn build:chmod'",
     "clean": "rimraf '*.tsbuildinfo' 'dist'",
     "test": "jest --runInBand && yarn posttest",
@@ -43,7 +43,8 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "publish:preview": "yarn npm publish --tag preview",
     "lint:ci": "yarn lint",
-    "lint:dependencies": "depcheck"
+    "lint:dependencies": "depcheck",
+    "build:ci": "tsup --clean"
   },
   "dependencies": {
     "@babel/core": "^7.23.2",
@@ -65,7 +66,6 @@
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
     "chalk": "^4.1.2",
-    "chokidar": "^3.5.2",
     "console-browserify": "^1.2.0",
     "constants-browserify": "^1.0.0",
     "crypto-browserify": "^3.12.0",
@@ -104,7 +104,6 @@
     "@metamask/eslint-config-jest": "^12.1.0",
     "@metamask/eslint-config-nodejs": "^12.1.0",
     "@metamask/eslint-config-typescript": "^12.1.0",
-    "@swc/cli": "^0.1.62",
     "@swc/jest": "^0.2.26",
     "@types/browserify": "^12.0.37",
     "@types/jest": "^27.5.1",
@@ -134,6 +133,7 @@
     "rimraf": "^4.1.2",
     "ts-node": "^10.9.1",
     "tsc-watch": "^4.5.0",
+    "tsup": "^8.0.1",
     "typescript": "~4.8.4"
   },
   "engines": {

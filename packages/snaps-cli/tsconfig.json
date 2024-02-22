@@ -3,7 +3,13 @@
   "compilerOptions": {
     "baseUrl": "./"
   },
-  "include": ["./src", "./src/**/*.json", "jest.setup.ts"],
+  "include": [
+    "./src",
+    "./src/**/*.json",
+    "jest.setup.ts",
+    "package.json",
+    "tsup.config.ts"
+  ],
   "references": [
     { "path": "../snaps-utils" },
     { "path": "../snaps-browserify-plugin" },
