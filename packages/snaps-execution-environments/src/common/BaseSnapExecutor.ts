@@ -26,8 +26,6 @@ import type {
   Json,
 } from '@metamask/utils';
 import {
-  isObject,
-  isValidJson,
   assert,
   isJsonRpcRequest,
   hasProperty,
@@ -49,6 +47,7 @@ import {
   sanitizeRequestArguments,
   proxyStreamProvider,
   withTeardown,
+  isValidResponse,
 } from './utils';
 import {
   ExecuteSnapRequestArgumentsStruct,
@@ -301,27 +300,27 @@ export class BaseSnapExecutor {
     });
   }
 
-  async #notify(requestObject: Omit<JsonRpcNotification, 'jsonrpc'>) {
-    if (!isValidJson(requestObject) || !isObject(requestObject)) {
+  async #notify(notification: Omit<JsonRpcNotification, 'jsonrpc'>) {
+    if (!isValidResponse(notification)) {
       throw rpcErrors.internal(
-        'JSON-RPC notifications must be JSON serializable objects',
+        'JSON-RPC notifications must be JSON serializable objects smaller than 64 MB.',
       );
     }
 
     await this.#write({
-      ...requestObject,
+      ...notification,
       jsonrpc: '2.0',
     });
   }
 
-  async #respond(id: JsonRpcId, requestObject: Record<string, unknown>) {
-    if (!isValidJson(requestObject) || !isObject(requestObject)) {
+  async #respond(id: JsonRpcId, response: Record<string, unknown>) {
+    if (!isValidResponse(response)) {
       // Instead of throwing, we directly respond with an error.
       // This prevents an issue where we wouldn't respond when errors were non-serializable
       await this.#write({
         error: serializeError(
           rpcErrors.internal(
-            'JSON-RPC responses must be JSON serializable objects.',
+            'JSON-RPC responses must be JSON serializable objects smaller than 64 MB.',
           ),
         ),
         id,
@@ -331,7 +330,7 @@ export class BaseSnapExecutor {
     }
 
     await this.#write({
-      ...requestObject,
+      ...response,
       id,
       jsonrpc: '2.0',
     });

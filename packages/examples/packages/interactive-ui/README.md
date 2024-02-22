@@ -22,8 +22,5 @@ is sent by the user. It shows a user interface with details about the transactio
 
 The snap exposes an `onHomePage` handler, which shows a user interface.
 
-```
-
 For more information, you can refer to
 [the end-to-end tests](./src/index.test.ts).
-```

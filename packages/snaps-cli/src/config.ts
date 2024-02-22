@@ -1,7 +1,6 @@
 import { literal, union } from '@metamask/snaps-sdk';
 import {
   createFromStruct,
-  file,
   indent,
   isFile,
   SnapsStructError,
@@ -35,6 +34,7 @@ import type { Configuration as WebpackConfiguration } from 'webpack';
 
 import { TranspilationModes } from './builders';
 import { ConfigError } from './errors';
+import { file } from './structs';
 import type { YargsArgs } from './types/yargs';
 import { CONFIG_FILE, TS_CONFIG_FILE } from './utils';
 

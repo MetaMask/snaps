@@ -11,6 +11,7 @@ export * from './get-file';
 export * from './interactive-ui';
 export * from './localization';
 export * from './home-page';
+export * from './images';
 export * from './json-rpc';
 export * from './lifecycle-hooks';
 export * from './manage-state';

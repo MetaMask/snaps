@@ -66,13 +66,45 @@ export function validateComponentLinks(
   isOnPhishingList: (url: string) => boolean,
 ) {
   const { type } = component;
-  if (type === NodeType.Panel) {
-    component.children.forEach((node) =>
-      validateComponentLinks(node, isOnPhishingList),
-    );
+  switch (type) {
+    case NodeType.Panel:
+      component.children.forEach((node) =>
+        validateComponentLinks(node, isOnPhishingList),
+      );
+      break;
+    case NodeType.Row:
+      validateComponentLinks(component.value, isOnPhishingList);
+      break;
+    case NodeType.Text:
+      validateTextLinks(component.value, isOnPhishingList);
+      break;
+    default:
+      break;
   }
+}
 
-  if (type === NodeType.Text) {
-    validateTextLinks(component.value, isOnPhishingList);
+/**
+ * Calculate the total length of all text in the component.
+ *
+ * @param component - A custom UI component.
+ * @returns The total length of all text components in the component.
+ */
+export function getTotalTextLength(component: Component): number {
+  const { type } = component;
+
+  switch (type) {
+    case NodeType.Panel:
+      return component.children.reduce<number>(
+        // This is a bug in TypeScript: https://github.com/microsoft/TypeScript/issues/48313
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+        (sum, node) => sum + getTotalTextLength(node),
+        0,
+      );
+    case NodeType.Row:
+      return getTotalTextLength(component.value);
+    case NodeType.Text:
+      return component.value.length;
+    default:
+      return 0;
   }
 }

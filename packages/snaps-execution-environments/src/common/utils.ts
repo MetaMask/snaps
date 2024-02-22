@@ -1,9 +1,21 @@
 import type { StreamProvider } from '@metamask/providers';
 import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { assert, assertStruct, getSafeJson, JsonStruct } from '@metamask/utils';
+import {
+  assert,
+  assertStruct,
+  getJsonSize,
+  getSafeJson,
+  isObject,
+  JsonStruct,
+} from '@metamask/utils';
 
 import { log } from '../logging';
+
+// 64 MB - we chose this number because it is the size limit for postMessage
+// between the extension and the dapp enforced by Chrome.
+const MAX_RESPONSE_JSON_SIZE = 64_000_000;
+
 /**
  * Make proxy for Promise and handle the teardown process properly.
  * If the teardown is called in the meanwhile, Promise result will not be
@@ -173,4 +185,24 @@ export function sanitizeRequestArguments(value: unknown): RequestArguments {
   // This lets request arguments contain undefined which is normally disallowed.
   const json = JSON.parse(JSON.stringify(value));
   return getSafeJson(json) as RequestArguments;
+}
+
+/**
+ * Check if the input is a valid response.
+ *
+ * @param response - The response.
+ * @returns True if the response is valid, otherwise false.
+ */
+export function isValidResponse(response: Record<string, unknown>) {
+  if (!isObject(response)) {
+    return false;
+  }
+
+  try {
+    // If the JSON is invalid this will throw and we should return false.
+    const size = getJsonSize(response);
+    return size < MAX_RESPONSE_JSON_SIZE;
+  } catch {
+    return false;
+  }
 }

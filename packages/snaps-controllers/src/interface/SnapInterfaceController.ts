@@ -5,11 +5,17 @@ import type {
   TestOrigin,
 } from '@metamask/phishing-controller';
 import type { Component, InterfaceState, SnapId } from '@metamask/snaps-sdk';
-import { validateComponentLinks } from '@metamask/snaps-utils';
-import { assert } from '@metamask/utils';
+import {
+  getTotalTextLength,
+  validateComponentLinks,
+} from '@metamask/snaps-utils';
+import { assert, getJsonSize } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
 import { constructState } from './utils';
+
+const MAX_UI_CONTENT_SIZE = 250_000; // 250 kb
+const MAX_TEXT_LENGTH = 50_000; // 50 kb
 
 const controllerName = 'SnapInterfaceController';
 
@@ -252,6 +258,22 @@ export class SnapInterfaceController extends BaseController<
    * @param content - The components to verify.
    */
   async #validateContent(content: Component) {
+    const size = getJsonSize(content);
+
+    assert(
+      size <= MAX_UI_CONTENT_SIZE,
+      `A Snap UI may not be larger than ${MAX_UI_CONTENT_SIZE / 1000} kB.`,
+    );
+
+    const textSize = getTotalTextLength(content);
+
+    assert(
+      textSize <= MAX_TEXT_LENGTH,
+      `The text in a Snap UI may not be larger than ${
+        MAX_TEXT_LENGTH / 1000
+      } kB.`,
+    );
+
     await this.#triggerPhishingListUpdate();
 
     validateComponentLinks(content, this.#checkPhishingList.bind(this));

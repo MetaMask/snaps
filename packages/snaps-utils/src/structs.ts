@@ -2,7 +2,6 @@ import { union } from '@metamask/snaps-sdk';
 import type { NonEmptyArray } from '@metamask/utils';
 import { assert, isObject } from '@metamask/utils';
 import { bold, green, red } from 'chalk';
-import { resolve } from 'path';
 import type { Failure } from 'superstruct';
 import {
   is,
@@ -11,8 +10,6 @@ import {
   Struct,
   StructError,
   create,
-  string,
-  coerce as superstructCoerce,
 } from 'superstruct';
 import type { AnyStruct } from 'superstruct/dist/utils';
 
@@ -66,31 +63,6 @@ function color(
   }
 
   return value;
-}
-
-/**
- * A wrapper of `superstruct`'s `string` struct that coerces a value to a string
- * and resolves it relative to the current working directory. This is useful
- * for specifying file paths in a configuration file, as it allows the user to
- * use both relative and absolute paths.
- *
- * @returns The `superstruct` struct, which validates that the value is a
- * string, and resolves it relative to the current working directory.
- * @example
- * ```ts
- * const config = struct({
- *   file: file(),
- *   // ...
- * });
- *
- * const value = create({ file: 'path/to/file' }, config);
- * console.log(value.file); // /process/cwd/path/to/file
- * ```
- */
-export function file() {
-  return superstructCoerce(string(), string(), (value) => {
-    return resolve(process.cwd(), value);
-  });
 }
 
 /**
