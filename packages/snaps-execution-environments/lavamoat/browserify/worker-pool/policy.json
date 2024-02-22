@@ -40,10 +40,10 @@
         "@metamask/utils>@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
-        "@swc/cli>semver": true,
         "browserify>buffer": true,
-        "eslint>debug": true,
-        "superstruct": true
+        "depcheck>semver": true,
+        "superstruct": true,
+        "tsup>debug": true
       }
     },
     "@metamask/utils>@noble/hashes": {
@@ -56,20 +56,6 @@
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
-      }
-    },
-    "@swc/cli>semver": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@swc/cli>semver>lru-cache": true,
-        "browserify>process": true
-      }
-    },
-    "@swc/cli>semver>lru-cache": {
-      "packages": {
-        "@swc/cli>semver>lru-cache>yallist": true
       }
     },
     "browserify>browser-pack>safe-buffer": {
@@ -102,17 +88,18 @@
         "browserify>browser-pack>safe-buffer": true
       }
     },
-    "eslint>debug": {
+    "depcheck>semver": {
       "globals": {
-        "console": true,
-        "document": true,
-        "localStorage": true,
-        "navigator": true,
-        "process": true
+        "console.error": true
       },
       "packages": {
         "browserify>process": true,
-        "eslint>debug>ms": true
+        "depcheck>semver>lru-cache": true
+      }
+    },
+    "depcheck>semver>lru-cache": {
+      "packages": {
+        "depcheck>semver>lru-cache>yallist": true
       }
     },
     "external:../snaps-sdk/src/error-wrappers.ts": {
@@ -460,6 +447,19 @@
       "globals": {
         "console.warn": true,
         "define": true
+      }
+    },
+    "tsup>debug": {
+      "globals": {
+        "console": true,
+        "document": true,
+        "localStorage": true,
+        "navigator": true,
+        "process": true
+      },
+      "packages": {
+        "browserify>process": true,
+        "tsup>debug>ms": true
       }
     }
   }

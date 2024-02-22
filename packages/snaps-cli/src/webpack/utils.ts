@@ -7,6 +7,7 @@ import stripAnsi from 'strip-ansi';
 import type { Configuration } from 'webpack';
 
 import type { ProcessedWebpackConfig } from '../config';
+import { browserify, getFunctionLoader } from './loaders';
 
 export const BROWSERSLIST_FILE = resolve(
   dirname(
@@ -72,21 +73,13 @@ export async function getDefaultLoader({
   sourceMap,
 }: ProcessedWebpackConfig) {
   if (legacy) {
-    return {
-      /**
-       * If the snap uses the legacy config, we use the custom `browserify`
-       * loader. This uses the legacy Browserify config to transpile the code.
-       * This is necessary for backwards compatibility with the
-       * `bundlerCustomizer` function.
-       */
-      loader: resolve(__dirname, 'loaders', 'browserify'),
-
-      /**
-       * The options for the `browserify` loader. These can be overridden in the
-       * snap config.
-       */
-      options: legacy,
-    };
+    /**
+     * If the snap uses the legacy config, we use the custom `browserify`
+     * loader. This uses the legacy Browserify config to transpile the code.
+     * This is necessary for backwards compatibility with the
+     * `bundlerCustomizer` function.
+     */
+    return getFunctionLoader(browserify, legacy);
   }
 
   const targets = await getBrowserslistTargets();

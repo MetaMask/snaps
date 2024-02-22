@@ -7,14 +7,25 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "sideEffects": false,
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./dist/browserify/node-process/bundle.js": {
+      "default": "./dist/browserify/node-process/bundle.js"
+    },
+    "./dist/browserify/node-thread/bundle.js": {
+      "default": "./dist/browserify/node-thread/bundle.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/types/index.d.ts",
   "files": [
-    "dist/cjs/**",
-    "dist/esm/**",
-    "dist/types/**",
-    "dist/browserify/**"
+    "dist"
   ],
   "scripts": {
     "test": "rimraf coverage && jest && yarn test:browser && yarn posttest",
@@ -28,20 +39,16 @@
     "lint:changelog": "../../scripts/validate-changelog.sh @metamask/snaps-execution-environments",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog && yarn lint:dependencies",
     "clean": "rimraf '*.tsbuildinfo' 'dist' 'src/__GENERATED__/' 'coverage/*' '__test__/*'",
-    "build": "yarn build:source && yarn build:types",
-    "build:source": "yarn build:esm && yarn build:cjs",
+    "build": "tsup --clean && yarn build:types",
     "build:types": "tsc --project tsconfig.build.json",
-    "build:esm": "swc src --out-dir dist/esm --config-file ../../.swcrc.build.json --config module.type=es6",
-    "build:cjs": "swc src --out-dir dist/cjs --config-file ../../.swcrc.build.json --config module.type=commonjs",
-    "build:clean": "yarn clean && yarn build",
-    "build:post-tsc": "yarn build:lavamoat",
     "build:lavamoat": "lavamoat scripts/build.js --policy lavamoat/build-system/policy.json  --policyOverride lavamoat/build-system/policy-override.json",
     "build:lavamoat:policy": "yarn build:lavamoat --writeAutoPolicy && node scripts/build.js --writeAutoPolicy",
     "auto-changelog-init": "auto-changelog init",
     "publish:preview": "yarn npm publish --tag preview",
     "lint:ci": "yarn lint",
     "start": "node scripts/start.js",
-    "lint:dependencies": "depcheck"
+    "lint:dependencies": "depcheck",
+    "build:ci": "tsup --clean"
   },
   "dependencies": {
     "@metamask/json-rpc-engine": "^7.3.2",
@@ -70,7 +77,6 @@
     "@metamask/eslint-config-jest": "^12.1.0",
     "@metamask/eslint-config-nodejs": "^12.1.0",
     "@metamask/eslint-config-typescript": "^12.1.0",
-    "@swc/cli": "^0.1.62",
     "@swc/core": "1.3.78",
     "@swc/jest": "^0.2.26",
     "@types/express": "^4.17.17",
@@ -114,6 +120,7 @@
     "ses": "^1.1.0",
     "terser": "^5.17.7",
     "ts-node": "^10.9.1",
+    "tsup": "^8.0.1",
     "typescript": "~4.8.4",
     "vite": "^4.3.9",
     "vite-tsconfig-paths": "^4.0.5",

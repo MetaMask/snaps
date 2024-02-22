@@ -4,7 +4,7 @@
     "baseUrl": "./",
     "jsx": "preserve"
   },
-  "include": ["./src"],
+  "include": ["./src", "package.json", "tsup.config.ts"],
   "references": [
     {
       "path": "../snaps-utils"

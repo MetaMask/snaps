@@ -157,24 +157,70 @@ gen_enforced_field(WorkspaceCwd, 'types', './dist/types/index.d.ts') :-
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'exports["."].types', './dist/types/index.d.ts') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
 
 % The entrypoint for the dependency must be `./dist/cjs/index.js`.
-gen_enforced_field(WorkspaceCwd, 'main', './dist/cjs/index.js') :-
+gen_enforced_field(WorkspaceCwd, 'main', './dist/index.js') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'exports["."].require', './dist/index.js') :-
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
 
 % The module entrypoint for the dependency must be `./dist/esm/index.js`.
-gen_enforced_field(WorkspaceCwd, 'module', './dist/esm/index.js') :-
+gen_enforced_field(WorkspaceCwd, 'module', './dist/index.mjs') :-
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'exports["."].import', './dist/index.mjs') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+
+% `package.json` must be exported.
+gen_enforced_field(WorkspaceCwd, 'exports["./package.json"]', './package.json') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+
+% The list of files included in the package must only include files generated
+% during the build step.
+gen_enforced_field(WorkspaceCwd, 'files', ['dist']) :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.',
+  WorkspaceCwd \= 'packages/snaps-jest'.
+gen_enforced_field(WorkspaceCwd, 'files', ['dist', 'jest-preset.js']) :-
+  WorkspaceCwd = 'packages/snaps-jest'.
+
+% Dependencies must have a build script.
+gen_enforced_field(WorkspaceCwd, 'scripts.build', 'tsup --clean && yarn build:types') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.',
+  WorkspaceCwd \= 'packages/snaps-simulator',
+  WorkspaceCwd \= 'packages/snaps-cli'.
+gen_enforced_field(WorkspaceCwd, 'build:types', 'tsc --project tsconfig.build.json') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'scripts.build:ci', 'tsup --clean') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.',
+  WorkspaceCwd \= 'packages/snaps-simulator'.
 
 % Dependencies must have preview scripts.
 gen_enforced_field(WorkspaceCwd, 'scripts.publish:preview', 'yarn npm publish --tag preview') :-
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
 
+% Dependencies must have a "publishConfig" field.
 gen_enforced_field(WorkspaceCwd, 'publishConfig.access', 'public') :-
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
