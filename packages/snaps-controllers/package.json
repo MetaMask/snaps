@@ -13,14 +13,20 @@
       "require": "./dist/index.js",
       "types": "./dist/types/index.d.ts"
     },
+    "./node": {
+      "import": "./dist/index.node.mjs",
+      "require": "./dist/index.node.js",
+      "types": "./dist/types/index.node.d.ts"
+    },
+    "./react-native": {
+      "import": "./dist/index.react-native.mjs",
+      "require": "./dist/index.react-native.js",
+      "types": "./dist/types/index.react-native.d.ts"
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
-  "browser": {
-    "./dist/cjs/services": "./dist/cjs/services/browser.js",
-    "./dist/esm/services": "./dist/esm/services/browser.js"
-  },
   "types": "./dist/types/index.d.ts",
   "files": [
     "dist"
