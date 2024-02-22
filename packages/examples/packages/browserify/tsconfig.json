@@ -4,6 +4,7 @@
     "resolveJsonModule": true,
     "baseUrl": "./",
     "paths": {
+      "@metamask/*/node": ["../../../*/src/node"],
       "@metamask/*": ["../../../*/src"]
     }
   },

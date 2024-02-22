@@ -1,0 +1,13 @@
+diff --git a/lib/try-path.js b/lib/try-path.js
+index de11ccbf9090658eb0ee61bdba1984ee21bcb3b7..2e75f72483aa7b05bf0a2cde06b3c009eb2103e8 100644
+--- a/lib/try-path.js
++++ b/lib/try-path.js
+@@ -85,6 +85,6 @@ function matchStar(pattern, search) {
+     if (search.substr(search.length - part2.length) !== part2) {
+         return undefined;
+     }
+-    return search.substr(star, search.length - part2.length);
++    return search.substr(star, search.length - part2.length - part1.length);
+ }
+ //# sourceMappingURL=try-path.js.map
+\ No newline at end of file
