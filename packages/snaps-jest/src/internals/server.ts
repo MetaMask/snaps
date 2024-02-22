@@ -3,7 +3,7 @@ import {
   assertIsSnapManifest,
   isDirectory,
   isFile,
-} from '@metamask/snaps-utils';
+} from '@metamask/snaps-utils/node';
 import { createModuleLogger } from '@metamask/utils';
 import express from 'express';
 import { promises as fs } from 'fs';

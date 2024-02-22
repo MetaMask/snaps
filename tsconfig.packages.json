@@ -8,6 +8,7 @@
     "moduleResolution": "node",
     "paths": {
       "@metamask/*/test-utils": ["../*/src/test-utils"],
+      "@metamask/*/node": ["../*/src/node"],
       "@metamask/*": ["../*/src"]
     },
     "resolveJsonModule": true,

@@ -13,9 +13,9 @@
       "types": "./dist/types/index.d.ts"
     },
     "./node": {
-      "import": "./dist/index.node.mjs",
-      "require": "./dist/index.node.js",
-      "types": "./dist/types/index.node.d.ts"
+      "import": "./dist/node.mjs",
+      "require": "./dist/node.js",
+      "types": "./dist/types/node.d.ts"
     },
     "./test-utils": {
       "import": "./dist/test-utils/index.mjs",

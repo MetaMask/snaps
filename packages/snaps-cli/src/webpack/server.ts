@@ -3,7 +3,7 @@ import {
   logError,
   NpmSnapFileNames,
   readJsonFile,
-} from '@metamask/snaps-utils';
+} from '@metamask/snaps-utils/node';
 import type { IncomingMessage, Server, ServerResponse } from 'http';
 import { createServer } from 'http';
 import type { AddressInfo } from 'net';

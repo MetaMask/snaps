@@ -5,7 +5,7 @@ import pathUtils from 'path';
 
 import { parseJson } from './json';
 import type { VirtualFile } from './virtual-file';
-import { readVirtualFile } from './virtual-file';
+import { readVirtualFile } from './virtual-file/node';
 
 /**
  * Checks whether the given path string resolves to an existing directory, and

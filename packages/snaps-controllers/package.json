@@ -14,14 +14,14 @@
       "types": "./dist/types/index.d.ts"
     },
     "./node": {
-      "import": "./dist/index.node.mjs",
-      "require": "./dist/index.node.js",
-      "types": "./dist/types/index.node.d.ts"
+      "import": "./dist/node.mjs",
+      "require": "./dist/node.js",
+      "types": "./dist/types/node.d.ts"
     },
     "./react-native": {
-      "import": "./dist/index.react-native.mjs",
-      "require": "./dist/index.react-native.js",
-      "types": "./dist/types/index.react-native.d.ts"
+      "import": "./dist/react-native.mjs",
+      "require": "./dist/react-native.js",
+      "types": "./dist/types/react-native.d.ts"
     },
     "./package.json": "./package.json"
   },

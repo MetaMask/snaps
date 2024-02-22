@@ -1,4 +1,4 @@
 /* eslint-disable import/export */
 
 export * from '.';
-export * from './services/index.node';
+export * from './services/node';
