@@ -23,6 +23,7 @@ jobs:
             '**/test-utils/'
             '**/__mocks__/'
             '**/__snapshots__/'
+            '**/__fixtures__/'
             '**/*.test.js*'
             '**/*.test.ts*'
             '**/*.test.browser.ts*'
