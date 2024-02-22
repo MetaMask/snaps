@@ -40,7 +40,7 @@
   "dependencies": {
     "@metamask/key-tree": "^9.0.0",
     "@metamask/providers": "^14.0.2",
-    "@metamask/rpc-errors": "^6.1.0",
+    "@metamask/rpc-errors": "^6.2.0",
     "@metamask/utils": "^8.3.0",
     "fast-xml-parser": "^4.3.4",
     "superstruct": "^1.0.3"

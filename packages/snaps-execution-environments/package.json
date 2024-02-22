@@ -55,7 +55,7 @@
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/post-message-stream": "^8.0.0",
     "@metamask/providers": "^14.0.2",
-    "@metamask/rpc-errors": "^6.1.0",
+    "@metamask/rpc-errors": "^6.2.0",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/utils": "^8.3.0",
