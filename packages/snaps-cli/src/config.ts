@@ -54,7 +54,7 @@ export type SnapBrowserifyConfig = {
    * deprecated and will be removed in a future release, so it's recommended to
    * use the Webpack bundler instead.
    */
-  bundler?: 'browserify';
+  bundler: 'browserify';
 
   /**
    * The options for the Snaps CLI. These are merged with the options passed to
@@ -206,7 +206,7 @@ export type SnapWebpackConfig = {
    * deprecated and will be removed in a future release, so it's recommended to
    * use the Webpack bundler instead.
    */
-  bundler: 'webpack';
+  bundler?: 'webpack';
 
   /**
    * The path to the snap entry point. This should be a JavaScript or TypeScript
@@ -488,7 +488,7 @@ const SnapsBrowserifyBundlerCustomizerFunctionStruct =
   );
 
 export const SnapsBrowserifyConfigStruct = object({
-  bundler: defaulted(literal('browserify'), 'browserify'),
+  bundler: literal('browserify'),
   cliOptions: defaulted(
     object({
       bundle: optional(file()),
@@ -530,7 +530,7 @@ const SnapsWebpackCustomizeWebpackConfigFunctionStruct =
   );
 
 export const SnapsWebpackConfigStruct = object({
-  bundler: literal('webpack'),
+  bundler: defaulted(literal('webpack'), 'webpack'),
   input: defaulted(file(), resolve(process.cwd(), 'src/index.js')),
   sourceMap: defaulted(union([boolean(), literal('inline')]), false),
   evaluate: defaulted(boolean(), true),
@@ -633,7 +633,7 @@ export const SnapsWebpackConfigStruct = object({
 export const SnapsConfigStruct = type({
   bundler: defaulted(
     union([literal('browserify'), literal('webpack')]),
-    'browserify',
+    'webpack',
   ),
 });
 
