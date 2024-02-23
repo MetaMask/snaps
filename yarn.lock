@@ -5875,7 +5875,6 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
     assert: ^2.0.0
-    constants-browserify: ^1.0.0
     copy-webpack-plugin: ^11.0.0
     css-loader: ^6.7.3
     date-fns: ^2.30.0
@@ -16409,7 +16408,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json5@npm:^2.1.1, json5@npm:^2.1.2, json5@npm:^2.2.2, json5@npm:^2.2.3":
+"json5@npm:^2.1.1, json5@npm:^2.1.2, json5@npm:^2.2.3":
   version: 2.2.3
   resolution: "json5@npm:2.2.3"
   bin:
@@ -22236,7 +22235,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsconfig-paths@npm:^3.11.0, tsconfig-paths@npm:^3.14.1":
+"tsconfig-paths@npm:3.14.2":
   version: 3.14.2
   resolution: "tsconfig-paths@npm:3.14.2"
   dependencies:
@@ -22248,14 +22247,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsconfig-paths@npm:^4.1.2":
-  version: 4.2.0
-  resolution: "tsconfig-paths@npm:4.2.0"
+"tsconfig-paths@patch:tsconfig-paths@npm%3A3.14.2#./.yarn/patches/tsconfig-paths-npm-3.14.2-90ce75420d.patch::locator=root%40workspace%3A.":
+  version: 3.14.2
+  resolution: "tsconfig-paths@patch:tsconfig-paths@npm%3A3.14.2#./.yarn/patches/tsconfig-paths-npm-3.14.2-90ce75420d.patch::version=3.14.2&hash=dd3581&locator=root%40workspace%3A."
   dependencies:
-    json5: ^2.2.2
+    "@types/json5": ^0.0.29
+    json5: ^1.0.2
     minimist: ^1.2.6
     strip-bom: ^3.0.0
-  checksum: 28c5f7bbbcabc9dabd4117e8fdc61483f6872a1c6b02a4b1c4d68c5b79d06896c3cc9547610c4c3ba64658531caa2de13ead1ea1bf321c7b53e969c4752b98c7
+  checksum: f62dc9e6c719ef134cf563f868bb10e6f392b0aa1e1dc893501c3bddcdf4853149bff5c6de882e4537f5482424629350e8127dcc955f0b6bdaa445306e4bae17
   languageName: node
   linkType: hard
 

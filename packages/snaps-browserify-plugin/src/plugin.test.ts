@@ -6,7 +6,7 @@ import {
   evalBundle,
   logWarning,
   PostProcessWarning,
-} from '@metamask/snaps-utils';
+} from '@metamask/snaps-utils/node';
 import {
   DEFAULT_SNAP_BUNDLE,
   getSnapManifest,
@@ -23,8 +23,8 @@ import plugin, { SnapsBrowserifyTransform } from './plugin';
 
 jest.mock('fs');
 
-jest.mock('@metamask/snaps-utils', () => ({
-  ...jest.requireActual('@metamask/snaps-utils'),
+jest.mock('@metamask/snaps-utils/node', () => ({
+  ...jest.requireActual('@metamask/snaps-utils/node'),
   evalBundle: jest.fn(),
   checkManifest: jest.fn(),
   logWarning: jest.fn(),

@@ -4,7 +4,7 @@ import {
   readJsonFile,
   createSnapManifest,
   logInfo,
-} from '@metamask/snaps-utils';
+} from '@metamask/snaps-utils/node';
 import type { SemVerRange, SemVerVersion } from '@metamask/utils';
 import { satisfiesVersionRange } from '@metamask/utils';
 import { promises as fs } from 'fs';

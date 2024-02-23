@@ -61,8 +61,8 @@ import { createEngineStream } from 'json-rpc-middleware-stream';
 import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';
 
-import type { NodeThreadExecutionService } from '../services';
 import { setupMultiplex } from '../services';
+import type { NodeThreadExecutionService } from '../services/node';
 import {
   approvalControllerMock,
   ExecutionEnvironmentStub,
