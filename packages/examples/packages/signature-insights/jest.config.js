@@ -12,6 +12,11 @@ module.exports = deepmerge(baseConfig, {
   // This is required for the tests to run inside the `MetaMask/snaps`
   // repository. You don't need this in your own project.
   moduleNameMapper: {
+    '^@metamask/(.+)/node$': [
+      '<rootDir>/../../../$1/src/node',
+      '<rootDir>/../../../../node_modules/@metamask/$1/node',
+      '<rootDir>/node_modules/@metamask/$1/node',
+    ],
     '^@metamask/(.+)$': [
       '<rootDir>/../../../$1/src',
       '<rootDir>/../../../../node_modules/@metamask/$1',

@@ -10,7 +10,7 @@ import type {
   ExecutionServiceEvents,
   SnapExecutionData,
 } from '../services';
-import { NodeThreadExecutionService, setupMultiplex } from '../services';
+import { NodeThreadExecutionService, setupMultiplex } from '../services/node';
 
 export const MOCK_BLOCK_NUMBER = '0xa70e75';
 

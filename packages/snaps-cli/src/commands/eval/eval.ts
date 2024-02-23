@@ -1,4 +1,4 @@
-import { isFile } from '@metamask/snaps-utils';
+import { isFile } from '@metamask/snaps-utils/node';
 import { resolve } from 'path';
 
 import type { ProcessedConfig } from '../../config';

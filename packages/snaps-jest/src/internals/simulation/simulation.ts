@@ -11,7 +11,7 @@ import {
   detectSnapLocation,
   NodeThreadExecutionService,
   setupMultiplex,
-} from '@metamask/snaps-controllers';
+} from '@metamask/snaps-controllers/node';
 import { getEncryptionKey } from '@metamask/snaps-rpc-methods';
 import type {
   SnapId,

@@ -3,6 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
+      "@metamask/*/node": ["../../../*/src/node"],
       "@metamask/*": ["../../../*/src"]
     }
   },

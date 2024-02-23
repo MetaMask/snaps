@@ -1,5 +1,5 @@
-import * as utils from '@metamask/snaps-utils';
-import { SnapEvalError } from '@metamask/snaps-utils';
+import * as utils from '@metamask/snaps-utils/node';
+import { SnapEvalError } from '@metamask/snaps-utils/node';
 import { DEFAULT_SNAP_BUNDLE } from '@metamask/snaps-utils/test-utils';
 import normalFs from 'fs';
 import { dirname, join } from 'path';
@@ -10,11 +10,13 @@ const { promises: fs } = normalFs;
 
 jest.mock('fs');
 
-jest.mock('@metamask/snaps-utils', () => ({
-  ...jest.requireActual('@metamask/snaps-utils'),
+jest.mock('@metamask/snaps-utils/node', () => ({
+  ...jest.requireActual('@metamask/snaps-utils/node'),
   evalBundle: jest
     .fn()
-    .mockImplementation(jest.requireActual('@metamask/snaps-utils').evalBundle),
+    .mockImplementation(
+      jest.requireActual('@metamask/snaps-utils/node').evalBundle,
+    ),
 }));
 
 describe('evaluate', () => {

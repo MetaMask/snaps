@@ -8,13 +8,14 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "browser": {
-        "import": "./dist/index.browser.mjs",
-        "require": "./dist/index.browser.js"
-      },
       "import": "./dist/index.mjs",
       "require": "./dist/index.js",
       "types": "./dist/types/index.d.ts"
+    },
+    "./node": {
+      "import": "./dist/node.mjs",
+      "require": "./dist/node.js",
+      "types": "./dist/types/node.d.ts"
     },
     "./test-utils": {
       "import": "./dist/test-utils/index.mjs",
@@ -25,10 +26,6 @@
   },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
-  "browser": {
-    "./dist/index.js": "./dist/index.browser.js",
-    "./dist/index.mjs": "./dist/index.browser.mjs"
-  },
   "types": "./dist/types/index.d.ts",
   "files": [
     "dist"

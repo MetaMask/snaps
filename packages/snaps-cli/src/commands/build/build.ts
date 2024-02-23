@@ -1,4 +1,4 @@
-import { isFile } from '@metamask/snaps-utils';
+import { isFile } from '@metamask/snaps-utils/node';
 import { resolve as pathResolve } from 'path';
 
 import type { ProcessedConfig, ProcessedWebpackConfig } from '../../config';

@@ -2,7 +2,7 @@ import { assert, concatBytes } from '@metamask/utils';
 import { sha256 } from '@noble/hashes/sha256';
 
 import { getBytes } from './bytes';
-import type { VirtualFile } from './virtual-file/VirtualFile';
+import type { VirtualFile } from './virtual-file';
 
 /**
  * Calculates checksum for a single byte array.
