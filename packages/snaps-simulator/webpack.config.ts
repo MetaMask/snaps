@@ -14,7 +14,6 @@ import {
   DllPlugin,
   DllReferencePlugin,
   EnvironmentPlugin,
-  NormalModuleReplacementPlugin,
 } from 'webpack';
 import type { Configuration as DevServerConfiguration } from 'webpack-dev-server';
 import { merge } from 'webpack-merge';
@@ -59,27 +58,9 @@ const baseConfig: Configuration = {
         baseUrl: __dirname,
       }),
     ],
-    /* eslint-disable @typescript-eslint/naming-convention */
     fallback: {
-      assert: false,
-      child_process: false,
-      constants: false,
-      crypto: false,
-      fs: false,
-      http: false,
-      https: false,
-      module: false,
       stream: require.resolve('stream-browserify'),
-      _stream_transform: require.resolve(
-        'readable-stream/lib/_stream_transform.js',
-      ),
-      os: false,
-      path: false,
-      util: false,
-      worker_threads: false,
-      zlib: false,
     },
-    /* eslint-enable @typescript-eslint/naming-convention */
   },
   plugins: [
     new ProvidePlugin({
@@ -152,17 +133,6 @@ const baseAppConfig = merge<Configuration & DevServerConfiguration>(
         },
       ],
     },
-    /* eslint-disable @typescript-eslint/naming-convention */
-    externals: {
-      'node:module': 'commonjs module',
-    },
-    resolve: {
-      fallback: {
-        assert: require.resolve('assert/'),
-        constants: require.resolve('constants-browserify'),
-      },
-    },
-    /* eslint-enable @typescript-eslint/naming-convention */
     plugins: [
       new DllReferencePlugin({
         manifest: VENDOR_MANIFEST_PATH,
@@ -183,14 +153,6 @@ const baseAppConfig = merge<Configuration & DevServerConfiguration>(
           },
         ],
       }),
-
-      // Stop attempting to bundle the Node.js execution services. They are
-      // not used in the browser, and attempting to bundle them causes
-      // errors.
-      new NormalModuleReplacementPlugin(
-        /.*services\/node.*/u,
-        resolve(__dirname, 'src', 'stub.ts'),
-      ),
     ],
     cache: {
       type: 'filesystem',
