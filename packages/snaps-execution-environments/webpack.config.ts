@@ -27,28 +27,34 @@ const baseConfig: Configuration = {
           loader: 'swc-loader',
           options: {
             ...swc,
+            module: {
+              type: 'es6',
+            },
           },
+        },
+      },
+      {
+        test: /\.m?js$/u,
+        resolve: {
+          // Fixes an issue with `@metamask/key-tree`. We can remove this after
+          // releasing a new version of `@metamask/key-tree`.
+          fullySpecified: false,
         },
       },
     ],
   },
   resolve: {
-    mainFields: ['module', 'main'],
     extensions: ['.ts', '.js'],
-    plugins: [
-      new TsconfigPathsPlugin({
-        mainFields: ['module', 'main'],
-      }),
-    ],
+    plugins: [new TsconfigPathsPlugin()],
     fallback: {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       child_process: false,
-      crypto: require.resolve('crypto-browserify'),
+      crypto: false,
       fs: false,
       os: false,
       path: false,
       stream: require.resolve('stream-browserify'),
-      tty: require.resolve('tty-browserify'),
+      tty: false,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       worker_threads: false,
     },
