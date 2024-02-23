@@ -100,6 +100,11 @@ const vendorConfig: Configuration = merge(baseConfig, {
   },
   resolve: {
     extensions: ['.js', '.jsx'],
+    fallback: {
+      http: false,
+      https: false,
+      zlib: false,
+    },
   },
   plugins: [
     new DllPlugin({
