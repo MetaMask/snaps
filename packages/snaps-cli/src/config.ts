@@ -5,7 +5,7 @@ import {
   isFile,
   SnapsStructError,
   named,
-} from '@metamask/snaps-utils';
+} from '@metamask/snaps-utils/node';
 import { hasProperty } from '@metamask/utils';
 import { transform } from '@swc/core';
 import type { BrowserifyObject } from 'browserify';

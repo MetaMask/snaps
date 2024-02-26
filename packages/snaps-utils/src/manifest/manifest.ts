@@ -16,7 +16,7 @@ import {
 } from '../snaps';
 import type { SnapFiles, UnvalidatedSnapFiles } from '../types';
 import { NpmSnapFileNames, SnapValidationFailureReason } from '../types';
-import { readVirtualFile, VirtualFile } from '../virtual-file';
+import { readVirtualFile, VirtualFile } from '../virtual-file/node';
 import type { SnapManifest } from './validation';
 
 const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {

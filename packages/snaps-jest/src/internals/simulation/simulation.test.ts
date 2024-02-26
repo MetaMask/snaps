@@ -4,7 +4,7 @@ import {
   fetchSnap,
   NodeThreadExecutionService,
   SnapInterfaceController,
-} from '@metamask/snaps-controllers';
+} from '@metamask/snaps-controllers/node';
 import { AuxiliaryFileEncoding, text } from '@metamask/snaps-sdk';
 import { VirtualFile } from '@metamask/snaps-utils';
 import { getSnapManifest } from '@metamask/snaps-utils/test-utils';

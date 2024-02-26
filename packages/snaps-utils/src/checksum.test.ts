@@ -3,7 +3,7 @@ import { base64 } from '@scure/base';
 import { webcrypto } from 'crypto';
 
 import { checksum, checksumFiles } from './checksum';
-import { VirtualFile } from './index.browser';
+import { VirtualFile } from './virtual-file';
 
 const EMPTY_SHA256 = '47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=';
 

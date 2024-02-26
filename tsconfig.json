@@ -19,5 +19,5 @@
     "resolveJsonModule": true
   },
   "files": [],
-  "include": ["scripts"]
+  "include": ["scripts", "tsup.config.ts"]
 }

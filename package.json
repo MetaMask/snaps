@@ -10,7 +10,6 @@
     "packages/*"
   ],
   "scripts": {
-    "setup": "yarn install",
     "postinstall": "simple-git-hooks",
     "lint:eslint": "eslint . --cache --ext js,jsx,ts,tsx",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn '**/*.json' '**/*.md' '!**/CHANGELOG.md' '**/*.yml' '**/*.html'",
@@ -20,13 +19,12 @@
     "lint": "yarn workspaces foreach --parallel run lint:eslint && yarn lint:misc --check && yarn lint:tsconfig && yarn constraints && yarn lint:dependencies",
     "lint:fix": "yarn workspaces foreach --parallel run lint:eslint --fix && yarn lint:misc --write && yarn lint:tsconfig && yarn constraints --fix",
     "lint:ci": "yarn lint:eslint && yarn lint:misc --check && yarn lint:tsconfig && yarn constraints && yarn lint:dependencies",
-    "build": "yarn build:source && yarn build:types && yarn build:post-tsc",
+    "build": "yarn build:source && yarn build:types",
+    "build:ci": "yarn workspaces filter --include \"packages/*\" --parallel --topological --no-private run build:ci",
     "build:clean": "yarn clean && yarn build",
-    "build:source": "yarn workspaces foreach --parallel --verbose run build:source",
+    "build:source": "yarn workspaces filter --parallel --topological --exclude \"{packages/examples,packages/examples/packages/invoke-snap}\" run build",
     "build:types": "tsc --build tsconfig.build.json",
     "build:examples": "yarn workspace @metamask/example-snaps build",
-    "build:post-tsc": "yarn workspaces foreach --parallel --topological --topological-dev --verbose run build:post-tsc",
-    "build:post-tsc:ci": "yarn workspaces foreach --parallel --topological --topological-dev --verbose --exclude root --exclude \"@metamask/snaps-simulator\" --exclude \"@metamask/snaps-execution-environments\" --exclude \"@metamask/snaps-jest\" --exclude \"@metamask/example-snaps\" --exclude \"@metamask/test-snaps\" run build:post-tsc",
     "clean": "yarn workspaces foreach --parallel --verbose run clean",
     "test": "yarn workspaces foreach --parallel --verbose run test",
     "test:browser": "yarn workspaces foreach --verbose run test:browser",
@@ -64,7 +62,10 @@
     "jest-util@^29.5.0": "patch:jest-util@npm%3A29.6.3#./.yarn/patches/jest-util-npm-29.6.3-6ffdea2c1c.patch",
     "jest-util@^29.6.3": "patch:jest-util@npm%3A29.6.3#./.yarn/patches/jest-util-npm-29.6.3-6ffdea2c1c.patch",
     "lavamoat-browserify@^17.0.4": "patch:lavamoat-browserify@npm%3A17.0.4#./.yarn/patches/lavamoat-browserify-npm-17.0.4-5df88049cf.patch",
-    "luxon@^3.2.1": "patch:luxon@npm%3A3.3.0#./.yarn/patches/luxon-npm-3.3.0-bdbae9bfd5.patch"
+    "luxon@^3.2.1": "patch:luxon@npm%3A3.3.0#./.yarn/patches/luxon-npm-3.3.0-bdbae9bfd5.patch",
+    "tsconfig-paths@^3.11.0": "patch:tsconfig-paths@npm%3A3.14.2#./.yarn/patches/tsconfig-paths-npm-3.14.2-90ce75420d.patch",
+    "tsconfig-paths@^3.14.1": "patch:tsconfig-paths@npm%3A3.14.2#./.yarn/patches/tsconfig-paths-npm-3.14.2-90ce75420d.patch",
+    "tsconfig-paths@^4.1.2": "patch:tsconfig-paths@npm%3A3.14.2#./.yarn/patches/tsconfig-paths-npm-3.14.2-90ce75420d.patch"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^3.0.2",
@@ -75,7 +76,6 @@
     "@metamask/eslint-config-nodejs": "^12.1.0",
     "@metamask/eslint-config-typescript": "^12.1.0",
     "@metamask/utils": "^8.3.0",
-    "@swc/cli": "^0.1.62",
     "@swc/core": "1.3.78",
     "@types/jest": "^27.5.1",
     "@types/node": "18.14.2",
@@ -103,6 +103,7 @@
     "semver": "^7.5.4",
     "simple-git-hooks": "^2.7.0",
     "ts-node": "^10.9.1",
+    "tsup": "^8.0.1",
     "typescript": "~4.8.4"
   },
   "engines": {
@@ -118,7 +119,8 @@
       "geckodriver": true,
       "ts-node>@swc/core": true,
       "@swc/core": true,
-      "favicons>sharp": true
+      "favicons>sharp": true,
+      "tsup>esbuild": true
     }
   },
   "packageManager": "yarn@3.6.0"

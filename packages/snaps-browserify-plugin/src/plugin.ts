@@ -1,11 +1,11 @@
-import type { PostProcessOptions } from '@metamask/snaps-utils';
+import type { PostProcessOptions } from '@metamask/snaps-utils/node';
 import {
   checkManifest,
   evalBundle,
   logWarning,
   postProcessBundle,
   useTemporaryFile,
-} from '@metamask/snaps-utils';
+} from '@metamask/snaps-utils/node';
 import type { BrowserifyObject } from 'browserify';
 import { fromSource } from 'convert-source-map';
 import pathUtils from 'path';
