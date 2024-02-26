@@ -12,9 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **BREAKING:** Move Node.js exports to separate export ([#2210](https://github.com/MetaMask/snaps/pull/2210))
   - The default export is now browser-compatible.
   - Node.js APIs can be imported from `<package>/node`.
+- Bump `@metamask/rpc-errors` to `^6.2.1` ([#2209](https://github.com/MetaMask/snaps/pull/2209))
+
+### Removed
 - **BREAKING:** Move `file` struct to CLI ([#2207](https://github.com/MetaMask/snaps/pull/2207))
   - The previously exported `file` struct can now be found in `@metamask/snaps-cli`.
-- Bump `@metamask/rpc-errors` to `^6.2.1` ([#2209](https://github.com/MetaMask/snaps/pull/2209))
 
 ### Fixed
 - Add sizing limits for custom UI ([#2199](https://github.com/MetaMask/snaps/pull/2199))
