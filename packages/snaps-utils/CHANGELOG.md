@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.0.0]
+### Changed
+- **BREAKING:** Update ESM build to be fully compliant with the ESM standard ([#2210](https://github.com/MetaMask/snaps/pull/2210))
+- **BREAKING:** Move Node.js exports to separate export ([#2210](https://github.com/MetaMask/snaps/pull/2210))
+  - The default export is now browser-compatible.
+  - Node.js APIs can be imported from `<package>/node`.
+- Bump `@metamask/rpc-errors` to `^6.2.1` ([#2209](https://github.com/MetaMask/snaps/pull/2209))
+
+### Removed
+- **BREAKING:** Move `file` struct to CLI ([#2207](https://github.com/MetaMask/snaps/pull/2207))
+  - The previously exported `file` struct can now be found in `@metamask/snaps-cli`.
+
+### Fixed
+- Add sizing limits for custom UI ([#2199](https://github.com/MetaMask/snaps/pull/2199))
+- Properly validate links contained in rows ([#2205](https://github.com/MetaMask/snaps/pull/2205))
+
 ## [6.1.0]
 ### Added
 - Add a manifest warning when no icon is found and when icon is not square ([#2185](https://github.com/MetaMask/snaps/pull/2185))
@@ -169,7 +185,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@6.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.0.0...HEAD
+[7.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@6.1.0...@metamask/snaps-utils@7.0.0
 [6.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@6.0.0...@metamask/snaps-utils@6.1.0
 [6.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@5.2.0...@metamask/snaps-utils@6.0.0
 [5.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@5.1.2...@metamask/snaps-utils@5.2.0
