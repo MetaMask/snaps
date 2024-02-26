@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [6.0.0]
 ### Changed
 - **BREAKING:** Update ESM build to be fully compliant with the ESM standard ([#2210](https://github.com/MetaMask/snaps/pull/2210))
-- **BREAKING:** Change CLI config to use Webpack by default ([#2214](https://github.com/MetaMask/snaps/pull/2214))
+- **BREAKING:** Change config to use Webpack by default ([#2214](https://github.com/MetaMask/snaps/pull/2214))
+  - You can still use Browserify by specifying `bundler: 'browserify'`.
 
 ## [5.1.1]
 ### Fixed
