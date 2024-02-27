@@ -48,10 +48,6 @@ const config: Options = {
   // Split the output into chunks. This is useful for tree-shaking.
   // https://tsup.egoist.dev/#code-splitting
   splitting: true,
-
-  // The environments to target when generating the bundles.
-  // https://tsup.egoist.dev/#target-environment
-  target: ['es2020'],
 };
 
 export default config;
