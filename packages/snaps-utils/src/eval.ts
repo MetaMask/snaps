@@ -31,6 +31,8 @@ function getDirName(): string {
     return __dirname;
   }
 
+  // This is a fallback for environments where `__dirname` is not defined, such
+  // as when using ES modules with Node.js.
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore - `import.meta` is not supported in this context.
   return dirname(fileURLToPath(import.meta.url));
