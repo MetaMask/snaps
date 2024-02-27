@@ -64,7 +64,7 @@ export enum PostProcessWarning {
 // The RegEx below consists of multiple groups joined by a boolean OR.
 // Each part consists of two groups which capture a part of each string
 // which needs to be split up, e.g., `<!--` is split into `<!` and `--`.
-const TOKEN_REGEX = /(<!)(--)|(--)(>)|(import)(\(.*?\))/gu;
+const TOKEN_REGEX = /(<!)(--)|(--)(>)|(--)(!)(>)|(import)(\(.*?\))/gu;
 
 // An empty template element, i.e., a part of a template literal without any
 // value ("").
