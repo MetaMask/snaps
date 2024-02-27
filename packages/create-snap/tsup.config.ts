@@ -9,6 +9,7 @@ const { default: baseConfig } = require('../../tsup.config');
 
 const config: Options = {
   name: packageJson.name,
+  platform: 'node',
 };
 
 export default deepmerge<Options>(baseConfig, config);
