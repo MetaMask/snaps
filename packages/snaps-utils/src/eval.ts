@@ -22,20 +22,19 @@ export class SnapEvalError extends Error {
 }
 
 /**
- * Get the directory name of the current module.
+ * Get the dirname of the file at the provided `import.meta.url`. This is
+ * similar to `__dirname` in CommonJS modules.
  *
- * @returns The directory name of the current module.
+ * @param importMetaUrl - The `import.meta.url` of the file to get the dirname
+ * of.
+ * @returns The dirname of the file at the provided `import.meta.url`.
  */
-function getDirName(): string {
-  if (typeof __dirname !== 'undefined') {
-    return __dirname;
+export function getDirname(importMetaUrl: string): string {
+  if (importMetaUrl.startsWith('file://')) {
+    return dirname(fileURLToPath(importMetaUrl));
   }
 
-  // This is a fallback for environments where `__dirname` is not defined, such
-  // as when using ES modules with Node.js.
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore - `import.meta` is not supported in this context.
-  return dirname(fileURLToPath(import.meta.url));
+  return dirname(importMetaUrl);
 }
 
 /**
@@ -49,11 +48,17 @@ export async function evalBundle(bundlePath: string): Promise<EvalOutput> {
   await validateFilePath(bundlePath);
 
   return new Promise((resolve, reject) => {
-    const worker = fork(join(getDirName(), 'eval-worker.js'), [bundlePath], {
-      // To avoid printing the output of the worker to the console, we set
-      // `stdio` to `pipe` and handle the output ourselves.
-      stdio: 'pipe',
-    });
+    const worker = fork(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore - `import.meta` is not supported in the current environment.
+      join(getDirname(import.meta.url), 'eval-worker.js'),
+      [bundlePath],
+      {
+        // To avoid printing the output of the worker to the console, we set
+        // `stdio` to `pipe` and handle the output ourselves.
+        stdio: 'pipe',
+      },
+    );
 
     let stdout = '';
     let stderr = '';

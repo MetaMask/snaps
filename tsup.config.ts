@@ -32,11 +32,6 @@ const config: Options = {
   // the bundles will work in both Node.js and browsers.
   platform: 'neutral',
 
-  // Enables shimming of `__dirname` and `import.meta.url`, so that they work
-  // in both CommonJS and ESM.
-  // https://tsup.egoist.dev/#inject-cjs-and-esm-shims
-  shims: true,
-
   // Hide unnecessary logs from the console. Warnings and errors will still be
   // shown.
   silent: true,
@@ -48,6 +43,18 @@ const config: Options = {
   // Split the output into chunks. This is useful for tree-shaking.
   // https://tsup.egoist.dev/#code-splitting
   splitting: true,
+
+  esbuildOptions: (options, { format }) => {
+    if (format === 'cjs') {
+      options.define = {
+        // Using `import.meta` in Node.js without ESM is a syntax error, so
+        // we replace `import.meta.url` with `__filename` in CommonJS bundles.
+        // This only works with the `getDirname` function in `snaps-utils`.
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        'import.meta.url': '__filename',
+      };
+    }
+  },
 };
 
 export default config;
