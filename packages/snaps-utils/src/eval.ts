@@ -1,7 +1,6 @@
 import { assert } from '@metamask/utils';
 import { fork } from 'child_process';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { join } from 'path';
 
 import { validateFilePath } from './fs';
 
@@ -22,22 +21,6 @@ export class SnapEvalError extends Error {
 }
 
 /**
- * Get the dirname of the file at the provided `import.meta.url`. This is
- * similar to `__dirname` in CommonJS modules.
- *
- * @param importMetaUrl - The `import.meta.url` of the file to get the dirname
- * of.
- * @returns The dirname of the file at the provided `import.meta.url`.
- */
-export function getDirname(importMetaUrl: string): string {
-  if (importMetaUrl.startsWith('file://')) {
-    return dirname(fileURLToPath(importMetaUrl));
-  }
-
-  return dirname(importMetaUrl);
-}
-
-/**
  * Spawn a new process to run the provided bundle in.
  *
  * @param bundlePath - The path to the bundle to run.
@@ -48,17 +31,11 @@ export async function evalBundle(bundlePath: string): Promise<EvalOutput> {
   await validateFilePath(bundlePath);
 
   return new Promise((resolve, reject) => {
-    const worker = fork(
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore - `import.meta` is not supported in the current environment.
-      join(getDirname(import.meta.url), 'eval-worker.js'),
-      [bundlePath],
-      {
-        // To avoid printing the output of the worker to the console, we set
-        // `stdio` to `pipe` and handle the output ourselves.
-        stdio: 'pipe',
-      },
-    );
+    const worker = fork(join(__dirname, 'eval-worker.js'), [bundlePath], {
+      // To avoid printing the output of the worker to the console, we set
+      // `stdio` to `pipe` and handle the output ourselves.
+      stdio: 'pipe',
+    });
 
     let stdout = '';
     let stderr = '';
