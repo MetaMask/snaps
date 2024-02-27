@@ -32,7 +32,6 @@ const dirnameShimPlugin: Plugin = {
       return undefined;
     }
 
-    // Not sure how this impacts source maps
     return { code: `${DIRNAME_SHIM}\n${code}`, map: info.map };
   },
 };
