@@ -118,7 +118,7 @@ checked using the [Jest matchers](#jest-matchers):
 import { installSnap } from '@metamask/snaps-jest';
 
 describe('MySnap', () => {
-  it('should do something', async () => {
+  it('should respond to foo with bar', async () => {
     const { request } = await installSnap(/* optional snap ID */);
     const response = await request({
       origin: 'http://localhost:8080',
@@ -140,7 +140,7 @@ If you prefer, you can also manually check the response:
 import { installSnap } from '@metamask/snaps-jest';
 
 describe('MySnap', () => {
-  it('should do something', async () => {
+  it('should respond to foo with bar', async () => {
     const { request } = await installSnap(/* optional snap ID */);
     const { response } = await request({
       origin: 'http://localhost:8080',
@@ -161,7 +161,7 @@ matchers to check it, including snapshot matchers:
 import { installSnap } from '@metamask/snaps-jest';
 
 describe('MySnap', () => {
-  it('should do something', async () => {
+  it('should respond to foo', async () => {
     const { request } = await installSnap(/* optional snap ID */);
     const { response } = await request({
       origin: 'http://localhost:8080',
@@ -203,7 +203,7 @@ import { installSnap } from '@metamask/snaps-jest';
 import { panel, text } from '@metamask/snaps-sdk';
 
 describe('MySnap', () => {
-  it('should do something', async () => {
+  it('should return transaction insights', async () => {
     const { onTransaction } = await installSnap(/* optional snap ID */);
     const response = await onTransaction({
       value: '0x0',
@@ -242,7 +242,7 @@ import { installSnap } from '@metamask/snaps-jest';
 import { panel, text } from '@metamask/snaps-sdk';
 
 describe('MySnap', () => {
-  it('should do something', async () => {
+  it('should return signature insights', async () => {
     const { onSignature } = await installSnap(/* optional snap ID */);
     const response = await onSignature();
 
@@ -309,16 +309,14 @@ function.
 
 ```js
 import { installSnap } from '@metamask/snaps-jest';
+import { panel, text } from '@metamask/snaps-sdk';
 
 describe('MySnap', () => {
-  it('should do something', async () => {
+  it('should render the home page', async () => {
     const { onHomePage } = await installSnap(/* optional snap ID */);
-    const response = await onHomePage({
-      method: 'foo',
-      params: [],
-    });
+    const response = await onHomePage();
 
-    expect(response).toRender(/* ... */);
+    expect(response).toRender(panel([text('Hello, world!')]));
   });
 });
 ```
@@ -359,7 +357,7 @@ import { text } from '@metamask/snaps-sdk';
 import { assert } from '@metamask/utils';
 
 describe('MySnap', () => {
-  it('should do something', async () => {
+  it('should render an alert with hello world', async () => {
     const { request } = await installSnap(/* optional snap ID */);
 
     // Note: We cannot resolve the promise yet!
@@ -414,9 +412,7 @@ bundle during tests.
 - Default: `true`
 
 Whether to enable the built-in HTTP server. By default, it will be enabled. If
-you want to use your own HTTP server, you can disable this option, and use the
-`executionEnvironmentUrl` and `simulatorUrl` options to configure the URLs of
-your own server.
+you want to use your own HTTP server, you can disable this option, and use [`installSnap`](#install-a-snap) with a custom server, e.g. `installSnap('local:http://my-server')`.
 
 ##### Example
 
