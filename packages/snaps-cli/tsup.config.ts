@@ -10,6 +10,7 @@ const { default: baseConfig } = require('../../tsup.config');
 const config: Options = {
   name: packageJson.name,
   external: ['@metamask/snaps-cli'],
+  platform: 'node',
 };
 
 export default deepmerge<Options>(baseConfig, config);

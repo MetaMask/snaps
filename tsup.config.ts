@@ -1,6 +1,10 @@
+import { builtinModules } from 'module';
 import type { Options } from 'tsup';
 
 const config: Options = {
+  // Clean the dist folder before bundling.
+  clean: true,
+
   // The entry to bundle.
   entry: [
     'src/**/*.ts',
@@ -15,16 +19,18 @@ const config: Options = {
     '!src/**/*.test.*.ts',
   ],
 
+  // External modules that should not be processed by `tsup`. We want to
+  // exclude built-in Node.js modules from the bundle.
+  // https://tsup.egoist.dev/#excluding-packages
+  external: builtinModules,
+
   // The output formats. We want to generate both CommonJS and ESM bundles.
   // https://tsup.egoist.dev/#bundle-formats
   format: ['cjs', 'esm'],
 
-  // Generate sourcemaps as separate files.
-  // https://tsup.egoist.dev/#generate-sourcemap-file
-  sourcemap: true,
-
-  // Clean the dist folder before bundling.
-  clean: true,
+  // The platform to target when generating the bundles. `neutral` means that
+  // the bundles will work in both Node.js and browsers.
+  platform: 'neutral',
 
   // Enables shimming of `__dirname` and `import.meta.url`, so that they work
   // in both CommonJS and ESM.
@@ -34,6 +40,10 @@ const config: Options = {
   // Hide unnecessary logs from the console. Warnings and errors will still be
   // shown.
   silent: true,
+
+  // Generate sourcemaps as separate files.
+  // https://tsup.egoist.dev/#generate-sourcemap-file
+  sourcemap: true,
 
   // Split the output into chunks. This is useful for tree-shaking.
   // https://tsup.egoist.dev/#code-splitting

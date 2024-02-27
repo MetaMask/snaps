@@ -1,6 +1,7 @@
 import { assert } from '@metamask/utils';
 import { fork } from 'child_process';
-import { join } from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 import { validateFilePath } from './fs';
 
@@ -21,6 +22,21 @@ export class SnapEvalError extends Error {
 }
 
 /**
+ * Get the directory name of the current module.
+ *
+ * @returns The directory name of the current module.
+ */
+function getDirName(): string {
+  if (typeof __dirname !== 'undefined') {
+    return __dirname;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore - `import.meta` is not supported in this context.
+  return dirname(fileURLToPath(import.meta.url));
+}
+
+/**
  * Spawn a new process to run the provided bundle in.
  *
  * @param bundlePath - The path to the bundle to run.
@@ -31,7 +47,7 @@ export async function evalBundle(bundlePath: string): Promise<EvalOutput> {
   await validateFilePath(bundlePath);
 
   return new Promise((resolve, reject) => {
-    const worker = fork(join(__dirname, 'eval-worker.js'), [bundlePath], {
+    const worker = fork(join(getDirName(), 'eval-worker.js'), [bundlePath], {
       // To avoid printing the output of the worker to the console, we set
       // `stdio` to `pipe` and handle the output ourselves.
       stdio: 'pipe',
