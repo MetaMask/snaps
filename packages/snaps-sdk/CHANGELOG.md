@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.1]
+### Fixed
+- Fix minor build configuration problems ([#2220](https://github.com/MetaMask/snaps/pull/2220))
+
 ## [3.0.0]
 ### Changed
 - **BREAKING:** Update ESM build to be fully compliant with the ESM standard ([#2210](https://github.com/MetaMask/snaps/pull/2210))
@@ -69,7 +73,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@3.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@3.0.1...HEAD
+[3.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@3.0.0...@metamask/snaps-sdk@3.0.1
 [3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@2.1.0...@metamask/snaps-sdk@3.0.0
 [2.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@2.0.0...@metamask/snaps-sdk@2.1.0
 [2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@1.4.0...@metamask/snaps-sdk@2.0.0
