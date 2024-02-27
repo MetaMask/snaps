@@ -173,6 +173,21 @@ describe('postProcessBundle', () => {
     `);
   });
 
+  it('breaks up HTML comment terminators in string literals with alternative comment end', () => {
+    const code = `
+      const foo = '<!-- bar --!>';
+    `;
+
+    const processedCode = postProcessBundle(code);
+    expect(processedCode).toMatchInlineSnapshot(`
+      {
+        "code": "const foo = "<!" + "--" + " bar " + "--" + "!" + ">";",
+        "sourceMap": null,
+        "warnings": [],
+      }
+    `);
+  });
+
   it('breaks up `import()` in string literals', () => {
     const code = `
       const foo = 'foo bar import() baz';
@@ -199,6 +214,21 @@ describe('postProcessBundle', () => {
     expect(processedCode).toMatchInlineSnapshot(`
       {
         "code": "const foo = \`\${"<!"}\${"--"} bar \${"--"}\${">"} \${"<!" + "--" + " baz " + "--" + ">"} \${qux}\`;",
+        "sourceMap": null,
+        "warnings": [],
+      }
+    `);
+  });
+
+  it('breaks up HTML comment terminators in template literals with alternative comment end', () => {
+    const code = `
+      const foo = \`<!-- bar --> \${'<!-- baz --!>'} \${qux}\`;
+    `;
+
+    const processedCode = postProcessBundle(code);
+    expect(processedCode).toMatchInlineSnapshot(`
+      {
+        "code": "const foo = \`\${"<!"}\${"--"} bar \${"--"}\${">"} \${"<!" + "--" + " baz " + "--" + "!" + ">"} \${qux}\`;",
         "sourceMap": null,
         "warnings": [],
       }
