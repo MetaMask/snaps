@@ -14,7 +14,8 @@
       "require": "./dist/index.js",
       "types": "./dist/types/index.d.ts"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./browserslistrc": "./.browserslistrc"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -23,7 +24,8 @@
     "mm-snap": "./dist/main.js"
   },
   "files": [
-    "dist"
+    "dist",
+    ".browserslistrc"
   ],
   "scripts": {
     "build": "tsup --clean && yarn build:types && yarn build:chmod && yarn build:readme",
