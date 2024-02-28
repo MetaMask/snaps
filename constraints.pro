@@ -194,7 +194,8 @@ gen_enforced_field(WorkspaceCwd, 'files', ['dist']) :-
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.',
-  WorkspaceCwd \= 'packages/snaps-jest'.
+  WorkspaceCwd \= 'packages/snaps-jest',
+  WorkspaceCwd \= 'packages/snaps-cli'.
 gen_enforced_field(WorkspaceCwd, 'files', ['dist', 'jest-preset.js']) :-
   WorkspaceCwd = 'packages/snaps-jest'.
 
