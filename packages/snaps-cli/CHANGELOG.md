@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.0.2]
 
-### Uncategorized
+### Fixed
 
-- Publish `.browserslistrc` in CLI ([#2227](https://github.com/MetaMask/snaps/pull/2227))
+- Publish `.browserslistrc` ([#2227](https://github.com/MetaMask/snaps/pull/2227))
 
 ## [6.0.1]
 
