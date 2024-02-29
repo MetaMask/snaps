@@ -2171,10 +2171,12 @@
     },
     "lavamoat>@lavamoat/aa": {
       "builtin": {
-        "fs.readFileSync": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.relative": true
+        "node:fs.lstatSync": true,
+        "node:fs.readFileSync": true,
+        "node:fs.realpathSync": true,
+        "node:path.dirname": true,
+        "node:path.join": true,
+        "node:path.relative": true
       },
       "packages": {
         "depcheck>resolve": true
@@ -2217,7 +2219,7 @@
       "builtin": {
         "events": true,
         "fs.readFileSync": true,
-        "node:fs/promises.readFile": true,
+        "node:fs.readFileSync": true,
         "node:fs/promises.writeFile": true,
         "path.extname": true,
         "path.join": true
