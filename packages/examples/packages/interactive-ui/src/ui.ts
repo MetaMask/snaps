@@ -108,7 +108,7 @@ export async function showForm(id: string) {
               name: 'example-input',
               placeholder: 'Enter something...',
             }),
-            button('Submit', ButtonType.Submit, 'sumbit'),
+            button('Submit', ButtonType.Submit, 'submit'),
           ],
         }),
       ]),
