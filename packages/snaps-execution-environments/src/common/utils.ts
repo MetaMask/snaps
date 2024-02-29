@@ -1,5 +1,4 @@
-import type { StreamProvider } from '@metamask/providers';
-import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
+import type { StreamProvider, RequestArguments } from '@metamask/providers';
 import { rpcErrors } from '@metamask/rpc-errors';
 import {
   assert,
