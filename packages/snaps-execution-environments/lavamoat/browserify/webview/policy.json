@@ -22,6 +22,17 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/snaps-sdk": {
+      "globals": {
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/rpc-errors": true,
+        "@metamask/snaps-sdk>fast-xml-parser": true,
+        "@metamask/utils": true,
+        "superstruct": true
+      }
+    },
     "@metamask/snaps-sdk>fast-xml-parser": {
       "globals": {
         "entityName": true,
@@ -29,6 +40,22 @@
       },
       "packages": {
         "@metamask/snaps-sdk>fast-xml-parser>strnum": true
+      }
+    },
+    "@metamask/snaps-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "document.body.appendChild": true,
+        "document.createElement": true
+      },
+      "packages": {
+        "@metamask/rpc-errors": true,
+        "@metamask/snaps-sdk": true,
+        "@metamask/utils": true,
+        "superstruct": true
       }
     },
     "@metamask/utils": {
@@ -102,327 +129,9 @@
         "depcheck>semver>lru-cache>yallist": true
       }
     },
-    "external:../snaps-sdk/src/error-wrappers.ts": {
-      "packages": {
-        "@metamask/rpc-errors": true,
-        "external:../snaps-sdk/src/internals/index.ts": true
-      }
-    },
-    "external:../snaps-sdk/src/errors.ts": {
-      "packages": {
-        "external:../snaps-sdk/src/internals/index.ts": true
-      }
-    },
-    "external:../snaps-sdk/src/images.ts": {
-      "globals": {
-        "fetch": true
-      },
-      "packages": {
-        "@metamask/utils": true,
-        "external:../snaps-sdk/src/ui/index.ts": true
-      }
-    },
-    "external:../snaps-sdk/src/index.ts": {
-      "packages": {
-        "@metamask/utils": true,
-        "external:../snaps-sdk/src/error-wrappers.ts": true,
-        "external:../snaps-sdk/src/errors.ts": true,
-        "external:../snaps-sdk/src/images.ts": true,
-        "external:../snaps-sdk/src/internals/index.ts": true,
-        "external:../snaps-sdk/src/types/index.ts": true,
-        "external:../snaps-sdk/src/ui/index.ts": true
-      }
-    },
-    "external:../snaps-sdk/src/internals/error-wrappers.ts": {
-      "packages": {
-        "external:../snaps-sdk/src/errors.ts": true
-      }
-    },
-    "external:../snaps-sdk/src/internals/errors.ts": {
-      "packages": {
-        "@metamask/utils": true
-      }
-    },
-    "external:../snaps-sdk/src/internals/index.ts": {
-      "packages": {
-        "external:../snaps-sdk/src/internals/error-wrappers.ts": true,
-        "external:../snaps-sdk/src/internals/errors.ts": true,
-        "external:../snaps-sdk/src/internals/helpers.ts": true,
-        "external:../snaps-sdk/src/internals/structs.ts": true,
-        "external:../snaps-sdk/src/internals/svg.ts": true
-      }
-    },
-    "external:../snaps-sdk/src/internals/structs.ts": {
-      "packages": {
-        "superstruct": true
-      }
-    },
-    "external:../snaps-sdk/src/internals/svg.ts": {
-      "packages": {
-        "@metamask/snaps-sdk>fast-xml-parser": true,
-        "@metamask/utils": true
-      }
-    },
-    "external:../snaps-sdk/src/types/handlers/index.ts": {
-      "packages": {
-        "external:../snaps-sdk/src/types/handlers/cronjob.ts": true,
-        "external:../snaps-sdk/src/types/handlers/home-page.ts": true,
-        "external:../snaps-sdk/src/types/handlers/keyring.ts": true,
-        "external:../snaps-sdk/src/types/handlers/lifecycle.ts": true,
-        "external:../snaps-sdk/src/types/handlers/name-lookup.ts": true,
-        "external:../snaps-sdk/src/types/handlers/rpc-request.ts": true,
-        "external:../snaps-sdk/src/types/handlers/signature.ts": true,
-        "external:../snaps-sdk/src/types/handlers/transaction.ts": true,
-        "external:../snaps-sdk/src/types/handlers/user-input.ts": true
-      }
-    },
-    "external:../snaps-sdk/src/types/handlers/user-input.ts": {
-      "packages": {
-        "superstruct": true
-      }
-    },
-    "external:../snaps-sdk/src/types/index.ts": {
-      "packages": {
-        "external:../snaps-sdk/src/types/caip.ts": true,
-        "external:../snaps-sdk/src/types/global.ts": true,
-        "external:../snaps-sdk/src/types/handlers/index.ts": true,
-        "external:../snaps-sdk/src/types/interface.ts": true,
-        "external:../snaps-sdk/src/types/methods/index.ts": true,
-        "external:../snaps-sdk/src/types/permissions.ts": true,
-        "external:../snaps-sdk/src/types/provider.ts": true,
-        "external:../snaps-sdk/src/types/snap.ts": true
-      }
-    },
-    "external:../snaps-sdk/src/types/interface.ts": {
-      "packages": {
-        "superstruct": true
-      }
-    },
-    "external:../snaps-sdk/src/types/methods/index.ts": {
-      "packages": {
-        "external:../snaps-sdk/src/types/methods/create-interface.ts": true,
-        "external:../snaps-sdk/src/types/methods/dialog.ts": true,
-        "external:../snaps-sdk/src/types/methods/get-bip32-entropy.ts": true,
-        "external:../snaps-sdk/src/types/methods/get-bip32-public-key.ts": true,
-        "external:../snaps-sdk/src/types/methods/get-bip44-entropy.ts": true,
-        "external:../snaps-sdk/src/types/methods/get-client-status.ts": true,
-        "external:../snaps-sdk/src/types/methods/get-entropy.ts": true,
-        "external:../snaps-sdk/src/types/methods/get-file.ts": true,
-        "external:../snaps-sdk/src/types/methods/get-interface-state.ts": true,
-        "external:../snaps-sdk/src/types/methods/get-locale.ts": true,
-        "external:../snaps-sdk/src/types/methods/get-snaps.ts": true,
-        "external:../snaps-sdk/src/types/methods/invoke-keyring.ts": true,
-        "external:../snaps-sdk/src/types/methods/invoke-snap.ts": true,
-        "external:../snaps-sdk/src/types/methods/manage-accounts.ts": true,
-        "external:../snaps-sdk/src/types/methods/manage-state.ts": true,
-        "external:../snaps-sdk/src/types/methods/methods.ts": true,
-        "external:../snaps-sdk/src/types/methods/notify.ts": true,
-        "external:../snaps-sdk/src/types/methods/request-snaps.ts": true,
-        "external:../snaps-sdk/src/types/methods/update-interface.ts": true
-      }
-    },
-    "external:../snaps-sdk/src/ui/builder.ts": {
-      "packages": {
-        "@metamask/utils": true
-      }
-    },
-    "external:../snaps-sdk/src/ui/component.ts": {
-      "packages": {
-        "@metamask/utils": true,
-        "external:../snaps-sdk/src/ui/components/index.ts": true,
-        "superstruct": true
-      }
-    },
-    "external:../snaps-sdk/src/ui/components/address.ts": {
-      "packages": {
-        "external:../snaps-sdk/src/ui/builder.ts": true,
-        "external:../snaps-sdk/src/ui/nodes.ts": true,
-        "superstruct": true
-      }
-    },
-    "external:../snaps-sdk/src/ui/components/button.ts": {
-      "packages": {
-        "external:../snaps-sdk/src/internals/index.ts": true,
-        "external:../snaps-sdk/src/ui/builder.ts": true,
-        "external:../snaps-sdk/src/ui/nodes.ts": true,
-        "superstruct": true
-      }
-    },
-    "external:../snaps-sdk/src/ui/components/copyable.ts": {
-      "packages": {
-        "external:../snaps-sdk/src/ui/builder.ts": true,
-        "external:../snaps-sdk/src/ui/nodes.ts": true,
-        "superstruct": true
-      }
-    },
-    "external:../snaps-sdk/src/ui/components/divider.ts": {
-      "packages": {
-        "external:../snaps-sdk/src/ui/builder.ts": true,
-        "external:../snaps-sdk/src/ui/nodes.ts": true,
-        "superstruct": true
-      }
-    },
-    "external:../snaps-sdk/src/ui/components/form.ts": {
-      "packages": {
-        "external:../snaps-sdk/src/ui/builder.ts": true,
-        "external:../snaps-sdk/src/ui/components/button.ts": true,
-        "external:../snaps-sdk/src/ui/components/input.ts": true,
-        "external:../snaps-sdk/src/ui/nodes.ts": true,
-        "superstruct": true
-      }
-    },
-    "external:../snaps-sdk/src/ui/components/heading.ts": {
-      "packages": {
-        "external:../snaps-sdk/src/ui/builder.ts": true,
-        "external:../snaps-sdk/src/ui/nodes.ts": true,
-        "superstruct": true
-      }
-    },
-    "external:../snaps-sdk/src/ui/components/image.ts": {
-      "packages": {
-        "external:../snaps-sdk/src/internals/index.ts": true,
-        "external:../snaps-sdk/src/ui/builder.ts": true,
-        "external:../snaps-sdk/src/ui/nodes.ts": true,
-        "superstruct": true
-      }
-    },
-    "external:../snaps-sdk/src/ui/components/index.ts": {
-      "packages": {
-        "external:../snaps-sdk/src/ui/components/address.ts": true,
-        "external:../snaps-sdk/src/ui/components/button.ts": true,
-        "external:../snaps-sdk/src/ui/components/copyable.ts": true,
-        "external:../snaps-sdk/src/ui/components/divider.ts": true,
-        "external:../snaps-sdk/src/ui/components/form.ts": true,
-        "external:../snaps-sdk/src/ui/components/heading.ts": true,
-        "external:../snaps-sdk/src/ui/components/image.ts": true,
-        "external:../snaps-sdk/src/ui/components/input.ts": true,
-        "external:../snaps-sdk/src/ui/components/panel.ts": true,
-        "external:../snaps-sdk/src/ui/components/row.ts": true,
-        "external:../snaps-sdk/src/ui/components/spinner.ts": true,
-        "external:../snaps-sdk/src/ui/components/text.ts": true
-      }
-    },
-    "external:../snaps-sdk/src/ui/components/input.ts": {
-      "packages": {
-        "external:../snaps-sdk/src/internals/index.ts": true,
-        "external:../snaps-sdk/src/ui/builder.ts": true,
-        "external:../snaps-sdk/src/ui/nodes.ts": true,
-        "superstruct": true
-      }
-    },
-    "external:../snaps-sdk/src/ui/components/panel.ts": {
-      "packages": {
-        "external:../snaps-sdk/src/ui/builder.ts": true,
-        "external:../snaps-sdk/src/ui/components/address.ts": true,
-        "external:../snaps-sdk/src/ui/components/button.ts": true,
-        "external:../snaps-sdk/src/ui/components/copyable.ts": true,
-        "external:../snaps-sdk/src/ui/components/divider.ts": true,
-        "external:../snaps-sdk/src/ui/components/form.ts": true,
-        "external:../snaps-sdk/src/ui/components/heading.ts": true,
-        "external:../snaps-sdk/src/ui/components/image.ts": true,
-        "external:../snaps-sdk/src/ui/components/input.ts": true,
-        "external:../snaps-sdk/src/ui/components/row.ts": true,
-        "external:../snaps-sdk/src/ui/components/spinner.ts": true,
-        "external:../snaps-sdk/src/ui/components/text.ts": true,
-        "external:../snaps-sdk/src/ui/nodes.ts": true,
-        "superstruct": true
-      }
-    },
-    "external:../snaps-sdk/src/ui/components/row.ts": {
-      "packages": {
-        "external:../snaps-sdk/src/internals/index.ts": true,
-        "external:../snaps-sdk/src/ui/builder.ts": true,
-        "external:../snaps-sdk/src/ui/components/address.ts": true,
-        "external:../snaps-sdk/src/ui/components/image.ts": true,
-        "external:../snaps-sdk/src/ui/components/text.ts": true,
-        "external:../snaps-sdk/src/ui/nodes.ts": true,
-        "superstruct": true
-      }
-    },
-    "external:../snaps-sdk/src/ui/components/spinner.ts": {
-      "packages": {
-        "external:../snaps-sdk/src/ui/builder.ts": true,
-        "external:../snaps-sdk/src/ui/nodes.ts": true,
-        "superstruct": true
-      }
-    },
-    "external:../snaps-sdk/src/ui/components/text.ts": {
-      "packages": {
-        "external:../snaps-sdk/src/ui/builder.ts": true,
-        "external:../snaps-sdk/src/ui/nodes.ts": true,
-        "superstruct": true
-      }
-    },
-    "external:../snaps-sdk/src/ui/index.ts": {
-      "packages": {
-        "external:../snaps-sdk/src/ui/component.ts": true,
-        "external:../snaps-sdk/src/ui/components/index.ts": true,
-        "external:../snaps-sdk/src/ui/nodes.ts": true
-      }
-    },
-    "external:../snaps-sdk/src/ui/nodes.ts": {
-      "packages": {
-        "superstruct": true
-      }
-    },
-    "external:../snaps-utils/src/errors.ts": {
-      "packages": {
-        "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
-        "external:../snaps-sdk/src/index.ts": true
-      }
-    },
-    "external:../snaps-utils/src/handlers.ts": {
-      "packages": {
-        "external:../snaps-sdk/src/index.ts": true,
-        "external:../snaps-utils/src/handler-types.ts": true,
-        "superstruct": true
-      }
-    },
     "external:../snaps-utils/src/icon.ts": {
       "builtin": {
         "buffer": true
-      }
-    },
-    "external:../snaps-utils/src/iframe.ts": {
-      "globals": {
-        "document.body.appendChild": true,
-        "document.createElement": true
-      }
-    },
-    "external:../snaps-utils/src/index.executionenv.ts": {
-      "packages": {
-        "external:../snaps-utils/src/errors.ts": true,
-        "external:../snaps-utils/src/handler-types.ts": true,
-        "external:../snaps-utils/src/handlers.ts": true,
-        "external:../snaps-utils/src/iframe.ts": true,
-        "external:../snaps-utils/src/logging.ts": true,
-        "external:../snaps-utils/src/namespace.ts": true,
-        "external:../snaps-utils/src/types.ts": true
-      }
-    },
-    "external:../snaps-utils/src/logging.ts": {
-      "globals": {
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true
-      },
-      "packages": {
-        "@metamask/utils": true
-      }
-    },
-    "external:../snaps-utils/src/namespace.ts": {
-      "packages": {
-        "superstruct": true
-      }
-    },
-    "external:../snaps-utils/src/types.ts": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/utils": true,
-        "superstruct": true
       }
     },
     "readable-stream": {
