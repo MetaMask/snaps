@@ -161,8 +161,7 @@ jobs:
         run: yarn --immutable
       - name: Build dependencies
         run: |
-          yarn build:source
-          yarn build:types
+          yarn build:ci
       - name: Update examples
         run: yarn build:examples
       - name: Cache examples
