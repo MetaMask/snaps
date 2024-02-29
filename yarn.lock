@@ -3720,63 +3720,63 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/aa@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "@lavamoat/aa@npm:4.0.1"
+"@lavamoat/aa@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@lavamoat/aa@npm:4.1.0"
   dependencies:
     resolve: 1.22.8
   bin:
     lavamoat-ls: src/cli.js
-  checksum: ec49d058bd169a358d702c8d3672faf2228458f56d1d85c9738eff6924f5f2d5e24c2c693d1937fee49795155176890804c9dc68a51738662fa5b917931af280
+  checksum: c2ca989d2aaf012f8e1bc314c90a2475a79bbf34d52d2434d36e593e3d126b958950677f2111c142b81e5a7df7c6b1110331c908be5e033cfe96cdf7013540a7
   languageName: node
   linkType: hard
 
-"@lavamoat/allow-scripts@npm:^3.0.2":
-  version: 3.0.2
-  resolution: "@lavamoat/allow-scripts@npm:3.0.2"
+"@lavamoat/allow-scripts@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "@lavamoat/allow-scripts@npm:3.0.3"
   dependencies:
-    "@lavamoat/aa": ^4.0.1
+    "@lavamoat/aa": ^4.1.0
     "@npmcli/run-script": 7.0.4
     bin-links: 4.0.3
     npm-normalize-package-bin: 3.0.1
     yargs: 17.7.2
   bin:
     allow-scripts: src/cli.js
-  checksum: 2a8fc1629845990121d41f8b52f85b7b835c9aeb9a1659172c14ecb7dbb985845d4bb396bdac58e1fc570fc6e4e6025c90b16a69691082456e27c7c30acf073b
+  checksum: 867cfee6e5bbe33d8e897c1374e10cff116f5c6e7cfc0609a5e985880b8b1603583f5d8a4a0bc67407784497debf91e7646fd8d85b76dd46c816d7337cf7de97
   languageName: node
   linkType: hard
 
-"@lavamoat/lavapack@npm:6.1.0":
-  version: 6.1.0
-  resolution: "@lavamoat/lavapack@npm:6.1.0"
+"@lavamoat/lavapack@npm:6.1.1":
+  version: 6.1.1
+  resolution: "@lavamoat/lavapack@npm:6.1.1"
   dependencies:
     JSONStream: 1.3.5
     combine-source-map: 0.8.0
     convert-source-map: 2.0.0
     espree: 9.6.1
     json-stable-stringify: 1.1.1
-    lavamoat-core: ^15.1.2
+    lavamoat-core: ^15.2.0
     readable-stream: 3.6.2
     through2: 4.0.2
     umd: 3.0.3
-  checksum: ed8b2d32655d8ade51853a73077863d17467da6ec76fc7fcbed27f6cfae883e4fc0b67a9cf48b28dc99205593dbe4ba06efd75a54be58be753e4ac5e0719e20a
+  checksum: 4809e980f770f615ff2dfc66dfcdbe47785fab7296f6fbb8e7d3c329961d0d6352f399778557a069a9b7564fb5e56ee412075a1207f65817f1764dc70300bf06
   languageName: node
   linkType: hard
 
-"@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A6.1.0#./.yarn/patches/@lavamoat-lavapack-npm-6.1.0-69c81c1923.patch::locator=root%40workspace%3A.":
-  version: 6.1.0
-  resolution: "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A6.1.0#./.yarn/patches/@lavamoat-lavapack-npm-6.1.0-69c81c1923.patch::version=6.1.0&hash=451f3f&locator=root%40workspace%3A."
+"@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A6.1.1#./.yarn/patches/@lavamoat-lavapack-npm-6.1.1-b81af21193.patch::locator=root%40workspace%3A.":
+  version: 6.1.1
+  resolution: "@lavamoat/lavapack@patch:@lavamoat/lavapack@npm%3A6.1.1#./.yarn/patches/@lavamoat-lavapack-npm-6.1.1-b81af21193.patch::version=6.1.1&hash=c65141&locator=root%40workspace%3A."
   dependencies:
     JSONStream: 1.3.5
     combine-source-map: 0.8.0
     convert-source-map: 2.0.0
     espree: 9.6.1
     json-stable-stringify: 1.1.1
-    lavamoat-core: ^15.1.2
+    lavamoat-core: ^15.2.0
     readable-stream: 3.6.2
     through2: 4.0.2
     umd: 3.0.3
-  checksum: d8610d146010ded63bfc808087aa9cfb9b64d3d9eab2d6a7a38b440b40acba2d63b72b3805b734d9eae0ce9e3737839475d7f6979b424eacbf1f9c0ecd832a44
+  checksum: 3a67a5f9edb4c1c304eb6d67d29f0f78b8ce2cf410b17901648b6b20e87f6c03c31bce10c60b6c7d2b84a2c24d81d7b6f4823b5af3b100c52d1718b9275f552e
   languageName: node
   linkType: hard
 
@@ -3879,7 +3879,7 @@ __metadata:
   resolution: "@metamask/bip32-example-snap@workspace:packages/examples/packages/bip32"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -3920,7 +3920,7 @@ __metadata:
   resolution: "@metamask/bip44-example-snap@workspace:packages/examples/packages/bip44"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -3970,7 +3970,7 @@ __metadata:
   resolution: "@metamask/browserify-example-snap@workspace:packages/examples/packages/browserify"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -4008,7 +4008,7 @@ __metadata:
   resolution: "@metamask/browserify-plugin-example-snap@workspace:packages/examples/packages/browserify-plugin"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -4047,7 +4047,7 @@ __metadata:
   resolution: "@metamask/client-status-example-snap@workspace:packages/examples/packages/client-status"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -4085,7 +4085,7 @@ __metadata:
   resolution: "@metamask/consumer-signer-example-snap@workspace:packages/examples/packages/invoke-snap/packages/consumer-signer"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -4140,7 +4140,7 @@ __metadata:
   resolution: "@metamask/core-signer-example-snap@workspace:packages/examples/packages/invoke-snap/packages/core-signer"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -4203,7 +4203,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/create-snap@workspace:packages/create-snap"
   dependencies:
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -4250,7 +4250,7 @@ __metadata:
   resolution: "@metamask/cronjob-example-snap@workspace:packages/examples/packages/cronjobs"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -4288,7 +4288,7 @@ __metadata:
   resolution: "@metamask/dialog-example-snap@workspace:packages/examples/packages/dialogs"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -4326,7 +4326,7 @@ __metadata:
   resolution: "@metamask/error-example-snap@workspace:packages/examples/packages/errors"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -4474,7 +4474,7 @@ __metadata:
   resolution: "@metamask/ethereum-provider-example-snap@workspace:packages/examples/packages/ethereum-provider"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -4512,7 +4512,7 @@ __metadata:
   resolution: "@metamask/ethers-js-example-snap@workspace:packages/examples/packages/ethers-js"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -4563,7 +4563,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/example-snaps@workspace:packages/examples"
   dependencies:
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -4592,7 +4592,7 @@ __metadata:
   resolution: "@metamask/get-entropy-example-snap@workspace:packages/examples/packages/get-entropy"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -4631,7 +4631,7 @@ __metadata:
   resolution: "@metamask/get-file-example-snap@workspace:packages/examples/packages/get-file"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -4668,7 +4668,7 @@ __metadata:
   resolution: "@metamask/home-page-example-snap@workspace:packages/examples/packages/home-page"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -4704,7 +4704,7 @@ __metadata:
   resolution: "@metamask/images-example-snap@workspace:packages/examples/packages/images"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -4742,7 +4742,7 @@ __metadata:
   resolution: "@metamask/insights-example-snap@workspace:packages/examples/packages/transaction-insights"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -4779,7 +4779,7 @@ __metadata:
   resolution: "@metamask/interactive-ui-example-snap@workspace:packages/examples/packages/interactive-ui"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -4817,7 +4817,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/invoke-snap-example-snap@workspace:packages/examples/packages/invoke-snap"
   dependencies:
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -4857,7 +4857,7 @@ __metadata:
   resolution: "@metamask/json-rpc-example-snap@workspace:packages/examples/packages/json-rpc"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -4920,7 +4920,7 @@ __metadata:
   resolution: "@metamask/lifecycle-hooks-example-snap@workspace:packages/examples/packages/lifecycle-hooks"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -4956,7 +4956,7 @@ __metadata:
   resolution: "@metamask/localization-example-snap@workspace:packages/examples/packages/localization"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -4993,7 +4993,7 @@ __metadata:
   resolution: "@metamask/manage-state-example-snap@workspace:packages/examples/packages/manage-state"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -5030,7 +5030,7 @@ __metadata:
   resolution: "@metamask/name-lookup-example-snap@workspace:packages/examples/packages/name-lookup"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -5066,7 +5066,7 @@ __metadata:
   resolution: "@metamask/network-example-snap@workspace:packages/examples/packages/network-access"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -5105,7 +5105,7 @@ __metadata:
   resolution: "@metamask/notification-example-snap@workspace:packages/examples/packages/notifications"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -5227,7 +5227,7 @@ __metadata:
     "@babel/preset-env": ^7.23.2
     "@babel/preset-typescript": ^7.23.2
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -5296,7 +5296,7 @@ __metadata:
   resolution: "@metamask/signature-insights-example-snap@workspace:packages/examples/packages/signature-insights"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -5338,7 +5338,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-browserify-plugin@workspace:packages/snaps-browserify-plugin"
   dependencies:
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -5389,7 +5389,7 @@ __metadata:
     "@babel/plugin-transform-runtime": ^7.13.2
     "@babel/preset-env": ^7.23.2
     "@babel/preset-typescript": ^7.23.2
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -5478,7 +5478,7 @@ __metadata:
   dependencies:
     "@esbuild-plugins/node-globals-polyfill": ^0.2.3
     "@esbuild-plugins/node-modules-polyfill": ^0.2.2
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/approval-controller": ^5.1.2
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/base-controller": ^4.1.0
@@ -5572,8 +5572,8 @@ __metadata:
     "@babel/preset-typescript": ^7.23.2
     "@esbuild-plugins/node-globals-polyfill": ^0.2.3
     "@esbuild-plugins/node-modules-polyfill": ^0.2.2
-    "@lavamoat/allow-scripts": ^3.0.2
-    "@lavamoat/lavapack": ^6.1.0
+    "@lavamoat/allow-scripts": ^3.0.3
+    "@lavamoat/lavapack": ^6.1.1
     "@lavamoat/lavatube": ^1.0.0
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
@@ -5622,8 +5622,8 @@ __metadata:
     jest: ^29.0.2
     jest-environment-node: ^29.5.0
     jest-fetch-mock: ^3.0.3
-    lavamoat: ^8.0.3
-    lavamoat-browserify: ^17.0.4
+    lavamoat: ^8.0.4
+    lavamoat-browserify: ^17.0.5
     nanoid: ^3.1.31
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
@@ -5653,7 +5653,7 @@ __metadata:
     "@jest/expect": ^29.5.0
     "@jest/globals": ^29.5.0
     "@jest/types": ^29.6.3
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/base-controller": ^4.1.0
     "@metamask/eslint-config": ^12.1.0
@@ -5721,7 +5721,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-rollup-plugin@workspace:packages/snaps-rollup-plugin"
   dependencies:
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -5760,7 +5760,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-rpc-methods@workspace:packages/snaps-rpc-methods"
   dependencies:
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/browser-passworder": ^4.3.0
     "@metamask/eslint-config": ^12.1.0
@@ -5805,7 +5805,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-sdk@workspace:packages/snaps-sdk"
   dependencies:
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -5955,7 +5955,7 @@ __metadata:
     "@babel/types": ^7.23.0
     "@esbuild-plugins/node-globals-polyfill": ^0.2.3
     "@esbuild-plugins/node-modules-polyfill": ^0.2.2
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/base-controller": ^4.1.0
     "@metamask/eslint-config": ^12.1.0
@@ -6032,7 +6032,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-webpack-plugin@workspace:packages/snaps-webpack-plugin"
   dependencies:
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -6196,7 +6196,7 @@ __metadata:
   resolution: "@metamask/wasm-example-snap@workspace:packages/examples/packages/wasm"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -6234,7 +6234,7 @@ __metadata:
   resolution: "@metamask/webpack-plugin-example-snap@workspace:packages/examples/packages/webpack-plugin"
   dependencies:
     "@jest/globals": ^29.5.0
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -16564,62 +16564,62 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-browserify@npm:17.0.4":
-  version: 17.0.4
-  resolution: "lavamoat-browserify@npm:17.0.4"
+"lavamoat-browserify@npm:17.0.5":
+  version: 17.0.5
+  resolution: "lavamoat-browserify@npm:17.0.5"
   dependencies:
-    "@lavamoat/aa": ^4.0.1
-    "@lavamoat/lavapack": ^6.1.0
+    "@lavamoat/aa": ^4.1.0
+    "@lavamoat/lavapack": ^6.1.1
     browser-resolve: 2.0.0
     concat-stream: 2.0.0
     convert-source-map: 2.0.0
     duplexify: 4.1.2
     json-stable-stringify: 1.1.1
-    lavamoat-core: ^15.1.2
+    lavamoat-core: ^15.2.0
     pify: 5.0.0
     readable-stream: 3.6.2
     source-map: 0.7.4
     through2: 4.0.2
-  checksum: fa7cffaf0940ad15d5ae31ffd3d44943d70e5064466a6ee6febb475293a8f6ecb3c29aa93283d71145264bf5ddc2b2e0b9840e511196851c8dff7480b0378a68
+  checksum: 6b20f3b3a61b51434760dacbe1243a673cb90da99492555aeb00d5fb6bea8bcf3fd0688c9a91158389bc337286d9d86905caf5ab9fdbc7fa5aab7d300da70e6a
   languageName: node
   linkType: hard
 
-"lavamoat-browserify@patch:lavamoat-browserify@npm%3A17.0.4#./.yarn/patches/lavamoat-browserify-npm-17.0.4-5df88049cf.patch::locator=root%40workspace%3A.":
-  version: 17.0.4
-  resolution: "lavamoat-browserify@patch:lavamoat-browserify@npm%3A17.0.4#./.yarn/patches/lavamoat-browserify-npm-17.0.4-5df88049cf.patch::version=17.0.4&hash=8a0530&locator=root%40workspace%3A."
+"lavamoat-browserify@patch:lavamoat-browserify@npm%3A17.0.5#./.yarn/patches/lavamoat-browserify-npm-17.0.5-16c00e9ef9.patch::locator=root%40workspace%3A.":
+  version: 17.0.5
+  resolution: "lavamoat-browserify@patch:lavamoat-browserify@npm%3A17.0.5#./.yarn/patches/lavamoat-browserify-npm-17.0.5-16c00e9ef9.patch::version=17.0.5&hash=8a0530&locator=root%40workspace%3A."
   dependencies:
-    "@lavamoat/aa": ^4.0.1
-    "@lavamoat/lavapack": ^6.1.0
+    "@lavamoat/aa": ^4.1.0
+    "@lavamoat/lavapack": ^6.1.1
     browser-resolve: 2.0.0
     concat-stream: 2.0.0
     convert-source-map: 2.0.0
     duplexify: 4.1.2
     json-stable-stringify: 1.1.1
-    lavamoat-core: ^15.1.2
+    lavamoat-core: ^15.2.0
     pify: 5.0.0
     readable-stream: 3.6.2
     source-map: 0.7.4
     through2: 4.0.2
-  checksum: 9720f225a47b0c42d930cbe6d4decfc8cdd0e31751bbba236c94d22b93be436fed74b2c51e25503d0e1c0adad115aa4f348bcc294da057419f3833b96bb9ad52
+  checksum: 652b29c992a991a1d54cc6ccd665cfff74f1123e5f9ce432c52428d0c8c6d95f213080a0bee2fc61fb897e89e80168fd44ac2ebff9225f18eae6adf9c46b2609
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^15.1.2":
-  version: 15.1.2
-  resolution: "lavamoat-core@npm:15.1.2"
+"lavamoat-core@npm:^15.2.0":
+  version: 15.2.0
+  resolution: "lavamoat-core@npm:15.2.0"
   dependencies:
     "@babel/types": 7.23.9
     json-stable-stringify: 1.1.1
-    lavamoat-tofu: ^7.2.0
+    lavamoat-tofu: ^7.2.1
     merge-deep: 3.0.3
     type-fest: 4.10.2
-  checksum: c71b6f0ed72502117de3c412f7717839bae36656059a49da9c82e0a26206f58c7dc911a2e9569f071a98d6c7bd8357fa5fd0a6b6069b2e7a8f69f5d5a79ba0bb
+  checksum: 86b1c0a0b328e5127fc71378a1797ffdb6ee9c62864313114a4282bc1135628a6b33bb99feace55de846698adca5c0e3b42e6b0c4c43501321cbf79a423feb2a
   languageName: node
   linkType: hard
 
-"lavamoat-tofu@npm:^7.2.0":
-  version: 7.2.0
-  resolution: "lavamoat-tofu@npm:7.2.0"
+"lavamoat-tofu@npm:^7.2.1":
+  version: 7.2.1
+  resolution: "lavamoat-tofu@npm:7.2.1"
   dependencies:
     "@babel/parser": 7.23.9
     "@babel/traverse": 7.23.9
@@ -16627,30 +16627,30 @@ __metadata:
     "@types/babel__traverse": 7.20.5
     type-fest: 4.10.2
   peerDependencies:
-    lavamoat-core: ^15.1.2
-  checksum: f41697631805b070741e231680ac55996503dd6abef87cf956963c18ccb232eaf7d348be03b121dbad1e83ce09f6ff815f53a8789ca607dbf27de6fb3cb22735
+    lavamoat-core: ^15.2.0
+  checksum: 1a55b9d8b9025710192f33a7ac0b2c6c542749dd3fdceb2150fa5cb628a8e7509ee65dbf969bfb8ed15e911c032253e33596e4ef83f5b7ee0285ec0b6566ec76
   languageName: node
   linkType: hard
 
-"lavamoat@npm:^8.0.3":
-  version: 8.0.3
-  resolution: "lavamoat@npm:8.0.3"
+"lavamoat@npm:^8.0.4":
+  version: 8.0.4
+  resolution: "lavamoat@npm:8.0.4"
   dependencies:
     "@babel/code-frame": 7.23.5
     "@babel/highlight": 7.23.4
-    "@lavamoat/aa": ^4.0.1
+    "@lavamoat/aa": ^4.1.0
     bindings: 1.5.0
     htmlescape: 1.1.1
     json-stable-stringify: 1.1.1
-    lavamoat-core: ^15.1.2
-    lavamoat-tofu: ^7.2.0
+    lavamoat-core: ^15.2.0
+    lavamoat-tofu: ^7.2.1
     node-gyp-build: 4.8.0
     resolve: 1.22.8
     yargs: 17.7.2
   bin:
     lavamoat: src/cli.js
     lavamoat-run-command: src/run-command.js
-  checksum: 1d4d05d8d191af713146cb814892073d5c5131c461fb4498c21cca668f4ec22b783e60c7f6e2ffcfefd3b89cf0eec0ada0151f8ca07b97c3be0896f27850d5dd
+  checksum: 2fd07c70149764d56d0ddeeeaea5ceeb2b5c3b790182d8afc847ac34c79e754329d85bdf19d69d2f1cd9e3bb707b7c230fc587c45ca1eb75a281c5e07fd847ba
   languageName: node
   linkType: hard
 
@@ -20489,7 +20489,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root@workspace:."
   dependencies:
-    "@lavamoat/allow-scripts": ^3.0.2
+    "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/create-release-branch": ^3.0.0
     "@metamask/eslint-config": ^12.1.0
