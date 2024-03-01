@@ -202,11 +202,6 @@
         "depcheck>semver>lru-cache>yallist": true
       }
     },
-    "external:../snaps-utils/src/icon.ts": {
-      "builtin": {
-        "buffer": true
-      }
-    },
     "istanbul-lib-report>supports-color>has-flag": {
       "globals": {
         "process.argv": true

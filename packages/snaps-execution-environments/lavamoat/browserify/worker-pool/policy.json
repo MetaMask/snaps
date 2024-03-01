@@ -129,11 +129,6 @@
         "depcheck>semver>lru-cache>yallist": true
       }
     },
-    "external:../snaps-utils/src/icon.ts": {
-      "builtin": {
-        "buffer": true
-      }
-    },
     "readable-stream": {
       "packages": {
         "browserify>browser-resolve": true,
