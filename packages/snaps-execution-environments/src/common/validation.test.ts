@@ -165,6 +165,14 @@ describe('assertIsOnUserInputRequestArguments', () => {
         value: { foo: 'bar' },
       },
     },
+    {
+      id: 'foo',
+      event: {
+        type: UserInputEventType.InputChangeEvent,
+        name: 'input',
+        value: 'bar',
+      },
+    },
   ])('does not throw for a valid user input param object', (value) => {
     expect(() => assertIsOnUserInputRequestArguments(value)).not.toThrow();
   });

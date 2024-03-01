@@ -11,10 +11,11 @@ import {
 
 /**
  * The type of user input event fired.
- * Currently only two events are supported:
+ * Currently only three events are supported:
  *
  * - `ButtonClickEvent` - A button has been clicked in the UI.
  * - `FormSubmitEvent` - A Form has been submitted in the UI.
+ * - `InputChangeEvent` - The value of an input field has changed in the UI.
  */
 export enum UserInputEventType {
   ButtonClickEvent = 'ButtonClickEvent',
