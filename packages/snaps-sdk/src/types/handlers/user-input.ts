@@ -19,7 +19,7 @@ import {
 export enum UserInputEventType {
   ButtonClickEvent = 'ButtonClickEvent',
   FormSubmitEvent = 'FormSubmitEvent',
-  OnInputChange = 'OnInputChange',
+  InputChangeEvent = 'InputChangeEvent',
 }
 
 export const GenericEventStruct = object({
@@ -44,10 +44,10 @@ export const FormSubmitEventStruct = assign(
   }),
 );
 
-export const OnInputChangeEventStruct = assign(
+export const InputChangeEventStruct = assign(
   GenericEventStruct,
   object({
-    type: literal(UserInputEventType.OnInputChange),
+    type: literal(UserInputEventType.InputChangeEvent),
     name: string(),
     value: string(),
   }),
@@ -56,7 +56,7 @@ export const OnInputChangeEventStruct = assign(
 export const UserInputEventStruct = union([
   ButtonClickEventStruct,
   FormSubmitEventStruct,
-  OnInputChangeEventStruct,
+  InputChangeEventStruct,
 ]);
 
 /**
