@@ -1,5 +1,5 @@
 import { isSvg, parseSvg } from '@metamask/snaps-sdk';
-import { assert } from '@metamask/utils';
+import { assert, stringToBytes } from '@metamask/utils';
 
 import type { VirtualFile } from './virtual-file';
 
@@ -16,8 +16,13 @@ export const SVG_MAX_BYTE_SIZE_TEXT = `${Math.floor(
 export function assertIsSnapIcon(icon: VirtualFile) {
   assert(icon.path.endsWith('.svg'), 'Expected snap icon to end in ".svg".');
 
+  const byteLength =
+    typeof icon.value === 'string'
+      ? stringToBytes(icon.value).byteLength
+      : icon.value.byteLength;
+
   assert(
-    Buffer.byteLength(icon.value, 'utf8') <= SVG_MAX_BYTE_SIZE,
+    byteLength <= SVG_MAX_BYTE_SIZE,
     `The specified SVG icon exceeds the maximum size of ${SVG_MAX_BYTE_SIZE_TEXT}.`,
   );
 
