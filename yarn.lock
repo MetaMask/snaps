@@ -2973,6 +2973,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@endo/env-options@npm:^1.1.2":
+  version: 1.1.7
+  resolution: "@endo/env-options@npm:1.1.7"
+  checksum: 10/95693abb5e0c05bcdd8ebf7ba7a9845d2ff17d6d2e1350b5fd9acc9343d008424cb0f221b03035fe5d3f122bfca69f089c07db593b7a14e6697e1abdf9139660
+  languageName: node
+  linkType: hard
+
 "@es-joy/jsdoccomment@npm:~0.37.0":
   version: 0.37.1
   resolution: "@es-joy/jsdoccomment@npm:0.37.1"
@@ -3992,14 +3999,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/webpack@file:./lavamoat-webpack-0.0.1-beta.0.tgz::locator=%40metamask%2Fsnaps-execution-environments%40workspace%3Apackages%2Fsnaps-execution-environments":
-  version: 0.0.1-beta.0
-  resolution: "@lavamoat/webpack@file:./lavamoat-webpack-0.0.1-beta.0.tgz#./lavamoat-webpack-0.0.1-beta.0.tgz::hash=7739b3&locator=%40metamask%2Fsnaps-execution-environments%40workspace%3Apackages%2Fsnaps-execution-environments"
+"@lavamoat/webpack@npm:0.3.0-beta.0":
+  version: 0.3.0-beta.0
+  resolution: "@lavamoat/webpack@npm:0.3.0-beta.0"
   dependencies:
-    lavamoat-core: "npm:^15.0.0"
+    "@lavamoat/aa": "npm:^4.2.0"
+    browser-resolve: "npm:2.0.0"
+    json-stable-stringify: "npm:1.1.1"
+    lavamoat-core: "npm:^15.3.0"
+    ses: "npm:1.4.0"
   peerDependencies:
     webpack: ^5.80.2
-  checksum: 10/c3db9f78e6aee2cdb624a853d62b0f2af788e35cf20e68d3af5e5ab5daee97ba067d929950c72c6fbaef15b8e10ede0ddd511595a52152eb1b6545025fc7491a
+  checksum: 10/267e2f0a3860e551657b2d2682c9358936288a14d4303157c5c34995064fdebae4d536bb7e452da5578edaa44d371f855a6db64547082fd00c5edc6c890c7376
   languageName: node
   linkType: hard
 
@@ -5981,7 +5992,7 @@ __metadata:
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@lavamoat/lavapack": "npm:^6.1.1"
     "@lavamoat/lavatube": "npm:^1.0.0"
-    "@lavamoat/webpack": ./lavamoat-webpack-0.0.1-beta.0.tgz
+    "@lavamoat/webpack": "npm:0.3.0-beta.0"
     "@metamask/auto-changelog": "npm:^3.4.4"
     "@metamask/eslint-config": "npm:^12.1.0"
     "@metamask/eslint-config-jest": "npm:^12.1.0"
@@ -17020,19 +17031,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^15.0.0":
-  version: 15.4.0
-  resolution: "lavamoat-core@npm:15.4.0"
-  dependencies:
-    "@babel/types": "npm:7.24.6"
-    json-stable-stringify: "npm:1.1.1"
-    lavamoat-tofu: "npm:^7.3.0"
-    merge-deep: "npm:3.0.3"
-    type-fest: "npm:4.15.0"
-  checksum: 10/81b97f38e63ec73c6f7c64f31ac22da14ab06cc1bc643431acde5311c71518f742d94fe141aca13fc50406749f2f3f4681d4e753d86cfcd102b4cef42150800d
-  languageName: node
-  linkType: hard
-
 "lavamoat-core@npm:^15.2.0":
   version: 15.2.0
   resolution: "lavamoat-core@npm:15.2.0"
@@ -17043,6 +17041,19 @@ __metadata:
     merge-deep: "npm:3.0.3"
     type-fest: "npm:4.10.2"
   checksum: 10/877379f61c6736d3ce621864fca61d89351b445b39d942c22f1acee2fb668681fd61af01bef42709aab6973e86d4a7e517613fca5a71ae20844de686e39d90c7
+  languageName: node
+  linkType: hard
+
+"lavamoat-core@npm:^15.3.0":
+  version: 15.4.0
+  resolution: "lavamoat-core@npm:15.4.0"
+  dependencies:
+    "@babel/types": "npm:7.24.6"
+    json-stable-stringify: "npm:1.1.1"
+    lavamoat-tofu: "npm:^7.3.0"
+    merge-deep: "npm:3.0.3"
+    type-fest: "npm:4.15.0"
+  checksum: 10/81b97f38e63ec73c6f7c64f31ac22da14ab06cc1bc643431acde5311c71518f742d94fe141aca13fc50406749f2f3f4681d4e753d86cfcd102b4cef42150800d
   languageName: node
   linkType: hard
 
@@ -21053,6 +21064,15 @@ __metadata:
     parseurl: "npm:~1.3.3"
     send: "npm:0.19.0"
   checksum: 10/7fa9d9c68090f6289976b34fc13c50ac8cd7f16ae6bce08d16459300f7fc61fbc2d7ebfa02884c073ec9d6ab9e7e704c89561882bbe338e99fcacb2912fde737
+  languageName: node
+  linkType: hard
+
+"ses@npm:1.4.0":
+  version: 1.4.0
+  resolution: "ses@npm:1.4.0"
+  dependencies:
+    "@endo/env-options": "npm:^1.1.2"
+  checksum: 10/f895334538092defa9fbac7b31244bc80a8f738faa083688a50134f865f677d86079cab3a6384ce5e843480ce4546c80eee5f49828af0749d0599064a7a2d8a0
   languageName: node
   linkType: hard
 
