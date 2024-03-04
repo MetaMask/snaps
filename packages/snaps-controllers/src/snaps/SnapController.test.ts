@@ -472,7 +472,7 @@ describe('SnapController', () => {
           id: 1,
         },
       }),
-    ).rejects.toThrow(/request timed out/u);
+    ).rejects.toThrow(`${snap.id} failed to respond to the request in time.`);
 
     expect(snapController.state.snaps[snap.id].status).toBe('crashed');
     snapController.destroy();
@@ -1141,7 +1141,7 @@ describe('SnapController', () => {
           id: 1,
         },
       }),
-    ).rejects.toThrow(/request timed out/u);
+    ).rejects.toThrow(`${snap.id} failed to respond to the request in time.`);
     expect(snapController.state.snaps[snap.id].status).toBe('crashed');
 
     snapController.destroy();
@@ -1226,7 +1226,7 @@ describe('SnapController', () => {
           id: 1,
         },
       }),
-    ).rejects.toThrow(/request timed out/u);
+    ).rejects.toThrow(`${snap.id} failed to respond to the request in time.`);
     expect(snapController.state.snaps[snap.id].status).toBe('crashed');
 
     snapController.destroy();
@@ -1401,7 +1401,7 @@ describe('SnapController', () => {
     const snapController = getSnapController(
       getSnapControllerOptions({
         messenger,
-        maxRequestTime: 50,
+        maxInitTime: 50,
         state: {
           snaps: getPersistedSnapsState(),
         },
@@ -1421,7 +1421,7 @@ describe('SnapController', () => {
     );
 
     await expect(snapController.startSnap(snap.id)).rejects.toThrow(
-      /request timed out/u,
+      `${snap.id} failed to start.`,
     );
 
     snapController.destroy();
@@ -1583,7 +1583,7 @@ describe('SnapController', () => {
           id: 1,
         },
       }),
-    ).rejects.toThrow(/request timed out/u);
+    ).rejects.toThrow(`${snap.id} failed to respond to the request in time.`);
     expect(snapController.state.snaps[snap.id].status).toBe('crashed');
 
     await snapController.removeSnap(snap.id);
