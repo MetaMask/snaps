@@ -1,5 +1,6 @@
-// @ts-expect-error - no type declaration
+// @ts-expect-error - types coming soon
 import LavaMoatPlugin from '@lavamoat/webpack';
+import { readFileSync } from 'fs';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { resolve } from 'path';
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
@@ -11,7 +12,6 @@ import { merge } from 'webpack-merge';
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const swc = require('../../.swcrc.build.json');
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-const policy = require('./lavamoat/webpack/policy2.json');
 
 const baseConfig: Configuration = {
   mode: 'production',
@@ -60,7 +60,6 @@ const baseConfig: Configuration = {
     },
   },
   plugins: [
-    new HtmlWebpackPlugin(),
     new ProvidePlugin({
       process: 'process/browser',
     }),
@@ -77,11 +76,19 @@ const iframeConfig: Configuration = merge(baseConfig, {
     path: resolve(__dirname, 'dist/webpack/iframe'),
   },
   plugins: [
+    // You may randomly need @ts-expect-error here, depending how dependencies resolve. If semver is a smart idea, typescript for webpack config is not
     new LavaMoatPlugin({
-      policy,
+      // lockdown: {}, // override lockdown options here if you want
+      generatePolicy: true,
       diagnosticsVerbosity: 1,
       readableResourceIds: true,
-      HtmlWebpackPluginInterop: true,
+      emitPolicySnapshot: true, // puts the result of merging policy with override that was used for the bundle alongside the bundle for human review
+    }),
+    new HtmlWebpackPlugin({
+      template: './src/iframe/template.html',
+      templateParameters: {
+        lockdownScript: readFileSync(require.resolve('ses')), // this could be provided as a static field on the plugin reference
+      },
     }),
   ],
 });
