@@ -1,3 +1,4 @@
+import { BasePostMessageStream } from '@metamask/post-message-stream';
 import { HandlerType } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
@@ -126,5 +127,31 @@ describe('AbstractExecutionService', () => {
     ).rejects.toThrow(
       'Invalid JSON-RPC request: At path: params -- Expected the value to satisfy a union of `record | array`, but received: [object Object].',
     );
+
+    await service.terminateAllSnaps();
+  });
+
+  it('throws an error if execution environment fails to respond to ping', async () => {
+    const { service } = createService(MockExecutionService);
+
+    class MockStream extends BasePostMessageStream {
+      protected _postMessage(_data?: unknown): void {
+        // no-op
+      }
+    }
+
+    // @ts-expect-error Accessing private property and returning unusable worker.
+    service.initEnvStream = async () =>
+      Promise.resolve({ worker: null, stream: new MockStream() });
+
+    await expect(
+      service.executeSnap({
+        snapId: MOCK_SNAP_ID,
+        sourceCode: `
+        console.log('foo');
+      `,
+        endowments: ['console'],
+      }),
+    ).rejects.toThrow('The Snaps execution environment failed to start.');
   });
 });

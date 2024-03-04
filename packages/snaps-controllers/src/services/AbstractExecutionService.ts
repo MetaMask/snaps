@@ -13,6 +13,7 @@ import type {
 import {
   Duration,
   assertIsJsonRpcRequest,
+  inMilliseconds,
   isJsonRpcNotification,
   isObject,
 } from '@metamask/utils';
@@ -37,6 +38,7 @@ export type SetupSnapProvider = (snapId: string, stream: Duplex) => void;
 export type ExecutionServiceArgs = {
   setupSnapProvider: SetupSnapProvider;
   messenger: ExecutionServiceMessenger;
+  pingTimeout?: number;
   terminationTimeout?: number;
 };
 
@@ -70,12 +72,15 @@ export abstract class AbstractExecutionService<WorkerType>
 
   #messenger: ExecutionServiceMessenger;
 
+  #pingTimeout: number;
+
   #terminationTimeout: number;
 
   constructor({
     setupSnapProvider,
     messenger,
-    terminationTimeout = Duration.Second,
+    pingTimeout = inMilliseconds(2, Duration.Second),
+    terminationTimeout = inMilliseconds(1, Duration.Second),
   }: ExecutionServiceArgs) {
     this.#snapRpcHooks = new Map();
     this.jobs = new Map();
@@ -83,6 +88,7 @@ export abstract class AbstractExecutionService<WorkerType>
     this.#snapToJobMap = new Map();
     this.#jobToSnapMap = new Map();
     this.#messenger = messenger;
+    this.#pingTimeout = pingTimeout;
     this.#terminationTimeout = terminationTimeout;
 
     this.registerMessageHandlers();
@@ -338,15 +344,23 @@ export abstract class AbstractExecutionService<WorkerType>
       throw new Error(`Snap "${snapData.snapId}" is already being executed.`);
     }
 
+    // This may resolve even if the environment has failed to start up fully
     const job = await this.initJob();
     this.#mapSnapAndJob(snapData.snapId, job.id);
 
     // Ping the worker to ensure that it started up
-    await this.command(job.id, {
-      jsonrpc: '2.0',
-      method: 'ping',
-      id: nanoid(),
-    });
+    const pingResult = await withTimeout(
+      this.command(job.id, {
+        jsonrpc: '2.0',
+        method: 'ping',
+        id: nanoid(),
+      }),
+      this.#pingTimeout,
+    );
+
+    if (pingResult === hasTimedOut) {
+      throw new Error('The Snaps execution environment failed to start.');
+    }
 
     const rpcStream = job.streams.rpc;
 
