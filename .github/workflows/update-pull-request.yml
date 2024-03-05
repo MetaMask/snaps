@@ -92,7 +92,7 @@ jobs:
       - name: Deduplicate yarn.lock
         run: yarn dedupe
       - name: Cache yarn.lock
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: yarn.lock
           key: cache-yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -112,7 +112,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Restore yarn.lock
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: yarn.lock
           key: cache-yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -127,7 +127,7 @@ jobs:
       - name: Regenerate LavaMoat policies
         run: yarn build:lavamoat:policy
       - name: Cache LavaMoat policies
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: packages/snaps-execution-environments/lavamoat
           key: cache-lavamoat-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -147,7 +147,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Restore yarn.lock
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: yarn.lock
           key: cache-yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -165,7 +165,7 @@ jobs:
       - name: Update examples
         run: yarn build:examples
       - name: Cache examples
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: packages/examples/packages
           key: cache-examples-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -198,7 +198,7 @@ jobs:
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
       - name: Restore yarn.lock
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: yarn.lock
           key: cache-yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -208,7 +208,7 @@ jobs:
           git add yarn.lock
           git commit -m "Deduplicate yarn.lock" || true
       - name: Restore LavaMoat policies
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: packages/snaps-execution-environments/lavamoat
           key: cache-lavamoat-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -218,7 +218,7 @@ jobs:
           git add packages/snaps-execution-environments/lavamoat
           git commit -m "Update LavaMoat policies" || true
       - name: Restore examples
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: packages/examples/packages
           key: cache-examples-${{ needs.prepare.outputs.COMMIT_SHA }}
