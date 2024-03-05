@@ -225,7 +225,7 @@ jobs:
         if: ${{ matrix.node-version == '18.x' }}
         uses: actions/upload-artifact@v4
         with:
-          name: coverage
+          name: coverage-${{ matrix.package-name }}
           path: |
             stub
             ${{ steps.get-coverage-folder.outputs.coverage-folder }}/**/coverage-final.json
@@ -248,7 +248,8 @@ jobs:
       - name: Download coverage artifact
         uses: actions/download-artifact@v4
         with:
-          name: coverage
+          pattern: coverage-*
+          merge-multiple: true
       - name: Upload coverage results
         uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70
         with:
