@@ -220,12 +220,13 @@ jobs:
         run: |
           echo "stub" >> stub
           echo "coverage-folder=$(yarn workspaces list --json | grep ${{ matrix.package-name }} | jq -r '.location')/coverage" >> "$GITHUB_OUTPUT"
+          echo "artifact-name=$(echo ${{ matrix.package-name }} | sed 's:.*/::')" >> "$GITHUB_OUTPUT"
         shell: bash
       - name: Upload coverage artifact
         if: ${{ matrix.node-version == '18.x' }}
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-${{ matrix.package-name }}
+          name: coverage-${{ steps.get-coverage-folder.outputs.artifact-name }}
           path: |
             stub
             ${{ steps.get-coverage-folder.outputs.coverage-folder }}/**/coverage-final.json
