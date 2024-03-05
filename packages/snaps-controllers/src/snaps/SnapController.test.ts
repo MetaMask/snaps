@@ -5849,6 +5849,230 @@ describe('SnapController', () => {
       controller.destroy();
     });
 
+    it('updates a Snap that has dynamic permissions', async () => {
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
+        manifest: getSnapManifest({
+          version: '1.1.0' as SemVerVersion,
+          dynamicPermissions: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_manageState: {},
+            'endowment:page-home': {},
+          },
+        }),
+      });
+      const rootMessenger = getControllerMessenger();
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => {
+          return {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_manageState: {
+              caveats: null,
+              parentCapability: 'snap_manageState',
+              id: '2',
+              date: 1,
+              invoker: MOCK_SNAP_ID,
+            },
+          };
+        },
+      );
+      const detectSnapLocation = jest
+        .fn()
+        .mockImplementationOnce(() => new LoopbackLocation())
+        .mockImplementationOnce(
+          () =>
+            new LoopbackLocation({
+              manifest: manifest.result,
+            }),
+        );
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const controller = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          detectSnapLocation,
+        }),
+      );
+      const callActionSpy = jest.spyOn(messenger, 'call');
+      const publishSpy = jest.spyOn(messenger, 'publish');
+      const onSnapUpdated = jest.fn();
+
+      await controller.installSnaps(MOCK_ORIGIN, { [MOCK_SNAP_ID]: {} });
+      await controller.stopSnap(MOCK_SNAP_ID);
+
+      messenger.subscribe('SnapController:snapUpdated', onSnapUpdated);
+
+      const result = await controller.updateSnap(
+        MOCK_ORIGIN,
+        MOCK_SNAP_ID,
+        detectSnapLocation(),
+      );
+
+      const newSnapTruncated = controller.getTruncated(MOCK_SNAP_ID);
+
+      const newSnap = controller.get(MOCK_SNAP_ID);
+
+      expect(result).toStrictEqual(newSnapTruncated);
+      expect(newSnap?.version).toBe('1.1.0');
+      expect(newSnap?.versionHistory).toStrictEqual([
+        {
+          origin: MOCK_ORIGIN,
+          version: '1.0.0',
+          date: expect.any(Number),
+        },
+        {
+          origin: MOCK_ORIGIN,
+          version: '1.1.0',
+          date: expect.any(Number),
+        },
+      ]);
+      expect(callActionSpy).toHaveBeenCalledTimes(22);
+
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        12,
+        'ApprovalController:addRequest',
+        {
+          origin: MOCK_ORIGIN,
+          id: expect.any(String),
+          type: SNAP_APPROVAL_UPDATE,
+          requestData: {
+            metadata: {
+              id: expect.any(String),
+              dappOrigin: MOCK_ORIGIN,
+              origin: MOCK_SNAP_ID,
+            },
+            snapId: MOCK_SNAP_ID,
+          },
+          requestState: {
+            loading: true,
+          },
+        },
+        true,
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        14,
+        'PermissionController:getPermissions',
+        MOCK_SNAP_ID,
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        15,
+        'ApprovalController:updateRequestState',
+        expect.objectContaining({
+          id: expect.any(String),
+          requestState: {
+            approvedPermissions: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              snap_manageState: {
+                caveats: null,
+                date: 1,
+                id: '2',
+                invoker: 'npm:@metamask/example-snap',
+                parentCapability: 'snap_manageState',
+              },
+            },
+            loading: false,
+            newPermissions: {
+              'endowment:rpc': {
+                caveats: [
+                  { type: 'rpcOrigin', value: { dapps: false, snaps: true } },
+                ],
+              },
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              snap_dialog: {},
+            },
+            newVersion: '1.1.0',
+            permissions: {
+              'endowment:rpc': {
+                caveats: [
+                  { type: 'rpcOrigin', value: { dapps: false, snaps: true } },
+                ],
+              },
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              snap_dialog: {},
+            },
+            unusedPermissions: {},
+          },
+        }),
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        16,
+        'ApprovalController:addRequest',
+        expect.objectContaining({
+          id: expect.any(String),
+          type: SNAP_APPROVAL_RESULT,
+          requestData: {
+            metadata: {
+              id: expect.any(String),
+              dappOrigin: MOCK_ORIGIN,
+              origin: MOCK_SNAP_ID,
+            },
+            snapId: MOCK_SNAP_ID,
+          },
+          requestState: {
+            loading: true,
+          },
+        }),
+        true,
+      );
+
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        18,
+        'PermissionController:grantPermissions',
+        expect.objectContaining({
+          approvedPermissions: {
+            'endowment:rpc': {
+              caveats: [
+                { type: 'rpcOrigin', value: { dapps: false, snaps: true } },
+              ],
+            },
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_dialog: {},
+          },
+          requestData: {
+            metadata: {
+              dappOrigin: 'https://example.com',
+              id: expect.any(String),
+              origin: 'npm:@metamask/example-snap',
+            },
+            snapId: 'npm:@metamask/example-snap',
+          },
+          subject: { origin: 'npm:@metamask/example-snap' },
+        }),
+      );
+
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        19,
+        'ExecutionService:executeSnap',
+        expect.objectContaining({}),
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        22,
+        'ApprovalController:updateRequestState',
+        expect.objectContaining({
+          id: expect.any(String),
+          requestState: { loading: false, type: SNAP_APPROVAL_UPDATE },
+        }),
+      );
+
+      expect(publishSpy).toHaveBeenCalledWith(
+        'SnapController:snapInstallStarted',
+        MOCK_SNAP_ID,
+        MOCK_ORIGIN,
+        true,
+      );
+      expect(onSnapUpdated).toHaveBeenCalledTimes(1);
+      expect(onSnapUpdated).toHaveBeenCalledWith(
+        newSnapTruncated,
+        '1.0.0',
+        MOCK_ORIGIN,
+      );
+
+      controller.destroy();
+    });
+
     it('can update crashed snap', async () => {
       const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({

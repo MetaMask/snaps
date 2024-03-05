@@ -112,7 +112,13 @@ import type {
   TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '../services';
-import { fetchSnap, hasTimedOut, setDiff, withTimeout } from '../utils';
+import {
+  fetchSnap,
+  hasTimedOut,
+  setDiff,
+  setIntersection,
+  withTimeout,
+} from '../utils';
 import { ALLOWED_PERMISSIONS } from './constants';
 import type { SnapLocation } from './location';
 import { detectSnapLocation } from './location';
@@ -1087,15 +1093,21 @@ export class SnapController extends BaseController<
         preinstalled: true,
       });
 
-      // Setup permissions
-      const processedPermissions = processSnapPermissions(
+      // Process Initial and Dynamic permissions
+      const processedInitialPermissions = processSnapPermissions(
         manifest.initialPermissions,
       );
-
-      this.#validateSnapPermissions(processedPermissions);
+      this.#validateSnapPermissions(processedInitialPermissions);
+      const processedDynamicPermissions = processSnapPermissions(
+        manifest.dynamicPermissions ?? {},
+      );
 
       const { newPermissions, unusedPermissions } =
-        this.#calculatePermissionsChange(snapId, processedPermissions);
+        this.#calculatePermissionsChange(
+          snapId,
+          processedInitialPermissions,
+          processedDynamicPermissions,
+        );
 
       this.#updatePermissions({ snapId, newPermissions, unusedPermissions });
 
@@ -2233,14 +2245,21 @@ export class SnapController extends BaseController<
         dynamicPermissions: manifest.dynamicPermissions,
       });
 
-      const processedPermissions = processSnapPermissions(
+      // Process Initial and Dynamic permissions
+      const processedInitialPermissions = processSnapPermissions(
         manifest.initialPermissions,
       );
-
-      this.#validateSnapPermissions(processedPermissions);
+      this.#validateSnapPermissions(processedInitialPermissions);
+      const processedDynamicPermissions = processSnapPermissions(
+        manifest.dynamicPermissions ?? {},
+      );
 
       const { newPermissions, unusedPermissions, approvedPermissions } =
-        this.#calculatePermissionsChange(snapId, processedPermissions);
+        this.#calculatePermissionsChange(
+          snapId,
+          processedInitialPermissions,
+          processedDynamicPermissions,
+        );
 
       this.#updateApproval(pendingApproval.id, {
         permissions: newPermissions,
@@ -3239,6 +3258,10 @@ export class SnapController extends BaseController<
       string,
       Pick<PermissionConstraint, 'caveats'>
     >,
+    dynamicPermissionsSet: Record<
+      string,
+      Pick<PermissionConstraint, 'caveats'>
+    >,
   ): {
     newPermissions: Record<string, Pick<PermissionConstraint, 'caveats'>>;
     unusedPermissions: SubjectPermissions<
@@ -3255,9 +3278,14 @@ export class SnapController extends BaseController<
       ) ?? {};
 
     const newPermissions = setDiff(desiredPermissionsSet, oldPermissions);
-    // TODO(ritave): The assumption that these are unused only holds so long as we do not
-    //               permit dynamic permission requests.
-    const unusedPermissions = setDiff(oldPermissions, desiredPermissionsSet);
+    const usedDynamicPermissions = setIntersection(
+      dynamicPermissionsSet ?? {},
+      oldPermissions,
+    );
+    const unusedPermissions = setDiff(oldPermissions, {
+      ...desiredPermissionsSet,
+      ...usedDynamicPermissions,
+    });
 
     // It's a Set Intersection of oldPermissions and desiredPermissionsSet
     // oldPermissions ∖ (oldPermissions ∖ desiredPermissionsSet) ⟺ oldPermissions ∩ desiredPermissionsSet
