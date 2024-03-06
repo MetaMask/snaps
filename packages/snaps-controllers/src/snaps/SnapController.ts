@@ -1093,7 +1093,7 @@ export class SnapController extends BaseController<
         preinstalled: true,
       });
 
-      // Process Initial and Dynamic permissions
+      // Process and validate Initial and Dynamic permissions
       const processedInitialPermissions = processSnapPermissions(
         manifest.initialPermissions,
       );
@@ -1101,6 +1101,7 @@ export class SnapController extends BaseController<
       const processedDynamicPermissions = processSnapPermissions(
         manifest.dynamicPermissions ?? {},
       );
+      this.#validateSnapPermissions(processedDynamicPermissions, true);
 
       const { newPermissions, unusedPermissions } =
         this.#calculatePermissionsChange(
@@ -2245,7 +2246,7 @@ export class SnapController extends BaseController<
         dynamicPermissions: manifest.dynamicPermissions,
       });
 
-      // Process Initial and Dynamic permissions
+      // Process and validate Initial and Dynamic permissions
       const processedInitialPermissions = processSnapPermissions(
         manifest.initialPermissions,
       );
@@ -2253,6 +2254,7 @@ export class SnapController extends BaseController<
       const processedDynamicPermissions = processSnapPermissions(
         manifest.dynamicPermissions ?? {},
       );
+      this.#validateSnapPermissions(processedDynamicPermissions, true);
 
       const { newPermissions, unusedPermissions, approvedPermissions } =
         this.#calculatePermissionsChange(
@@ -2663,18 +2665,21 @@ export class SnapController extends BaseController<
 
   #validateSnapPermissions(
     processedPermissions: Record<string, Pick<PermissionConstraint, 'caveats'>>,
+    dynamicPermissions = false,
   ) {
     const permissionKeys = Object.keys(processedPermissions);
     const handlerPermissions = Array.from(
       new Set(Object.values(handlerEndowments)),
     );
 
-    assert(
-      permissionKeys.some((key) => handlerPermissions.includes(key)),
-      `A snap must request at least one of the following permissions: ${handlerPermissions
-        .filter((handler) => handler !== null)
-        .join(', ')}.`,
-    );
+    if (!dynamicPermissions) {
+      assert(
+        permissionKeys.some((key) => handlerPermissions.includes(key)),
+        `A snap must request at least one of the following permissions: ${handlerPermissions
+          .filter((handler) => handler !== null)
+          .join(', ')}.`,
+      );
+    }
 
     const excludedPermissionErrors = permissionKeys.reduce<string[]>(
       (errors, permission) => {
