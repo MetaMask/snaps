@@ -32,6 +32,7 @@ export const InputStruct = assign(
     ),
     placeholder: optional(string()),
     label: optional(string()),
+    error: optional(string()),
   }),
 );
 
@@ -44,6 +45,7 @@ export const InputStruct = assign(
  * @property inputType - An optional type, either `text`, `password` or `number`.
  * @property placeholder - An optional input placeholder.
  * @property label - An optional input label.
+ * @property error - An optional error text.
  */
 export type Input = Infer<typeof InputStruct>;
 
@@ -57,6 +59,7 @@ export type Input = Infer<typeof InputStruct>;
  * @param args.inputType - An optional type, either `text`, `password` or `number`.
  * @param args.placeholder - An optional input placeholder.
  * @param args.label - An optional input label.
+ * @param args.error - An optional error text.
  * @returns The input node as an object.
  * @example
  * const node = input('myInput');
