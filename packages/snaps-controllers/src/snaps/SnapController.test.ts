@@ -5873,6 +5873,13 @@ describe('SnapController', () => {
               date: 1,
               invoker: MOCK_SNAP_ID,
             },
+            'endowment:transaction-insight': {
+              caveats: null,
+              parentCapability: 'endowment:transaction-insight',
+              id: '3',
+              date: 1,
+              invoker: MOCK_SNAP_ID,
+            },
           };
         },
       );
@@ -5925,7 +5932,7 @@ describe('SnapController', () => {
           date: expect.any(Number),
         },
       ]);
-      expect(callActionSpy).toHaveBeenCalledTimes(22);
+      expect(callActionSpy).toHaveBeenCalledTimes(23);
 
       expect(callActionSpy).toHaveBeenNthCalledWith(
         12,
@@ -5991,7 +5998,15 @@ describe('SnapController', () => {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               snap_dialog: {},
             },
-            unusedPermissions: {},
+            unusedPermissions: {
+              'endowment:transaction-insight': {
+                caveats: null,
+                date: 1,
+                id: '3',
+                invoker: 'npm:@metamask/example-snap',
+                parentCapability: 'endowment:transaction-insight',
+              },
+            },
           },
         }),
       );
@@ -6019,6 +6034,14 @@ describe('SnapController', () => {
 
       expect(callActionSpy).toHaveBeenNthCalledWith(
         18,
+        'PermissionController:revokePermissions',
+        expect.objectContaining({
+          'npm:@metamask/example-snap': ['endowment:transaction-insight'],
+        }),
+      );
+
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        19,
         'PermissionController:grantPermissions',
         expect.objectContaining({
           approvedPermissions: {
@@ -6043,13 +6066,13 @@ describe('SnapController', () => {
       );
 
       expect(callActionSpy).toHaveBeenNthCalledWith(
-        19,
+        20,
         'ExecutionService:executeSnap',
         expect.objectContaining({}),
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        22,
+        23,
         'ApprovalController:updateRequestState',
         expect.objectContaining({
           id: expect.any(String),
