@@ -4841,18 +4841,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/json-rpc-engine@npm:^7.1.1, @metamask/json-rpc-engine@npm:^7.3.2":
-  version: 7.3.2
-  resolution: "@metamask/json-rpc-engine@npm:7.3.2"
-  dependencies:
-    "@metamask/rpc-errors": ^6.1.0
-    "@metamask/safe-event-emitter": ^3.0.0
-    "@metamask/utils": ^8.3.0
-  checksum: 396861afc72944af410d5b06c81806db2fd9812206dbf799438f42d974edac6931f6814133adf52d6aa233d5ea3f3629663ef4f54a0cf9ccb948ce9b527137fd
-  languageName: node
-  linkType: hard
-
-"@metamask/json-rpc-engine@npm:^7.3.3":
+"@metamask/json-rpc-engine@npm:^7.1.1, @metamask/json-rpc-engine@npm:^7.3.2, @metamask/json-rpc-engine@npm:^7.3.3":
   version: 7.3.3
   resolution: "@metamask/json-rpc-engine@npm:7.3.3"
   dependencies:
@@ -5275,7 +5264,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/rpc-errors@npm:^6.0.0, @metamask/rpc-errors@npm:^6.1.0, @metamask/rpc-errors@npm:^6.2.1":
+"@metamask/rpc-errors@npm:^6.0.0, @metamask/rpc-errors@npm:^6.2.1":
   version: 6.2.1
   resolution: "@metamask/rpc-errors@npm:6.2.1"
   dependencies:
