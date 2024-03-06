@@ -6,7 +6,7 @@ import {
 import { assert } from '@metamask/utils';
 
 import { LoopbackLocation } from './test-utils';
-import { getSnapFiles, setDiff } from './utils';
+import { getSnapFiles, setDiff, setIntersection } from './utils';
 
 describe('setDiff', () => {
   it('does nothing on empty type {}-B', () => {
@@ -35,6 +35,43 @@ describe('setDiff', () => {
   it('works for the same object A-A', () => {
     const object = { a: 'foo', b: 'bar' };
     expect(setDiff(object, object)).toStrictEqual({});
+  });
+});
+
+describe('setIntersection', () => {
+  it('does nothing on empty type ({} ∩ B)', () => {
+    expect(setIntersection({}, { a: 'foo' })).toStrictEqual({});
+  });
+
+  it('does nothing on empty type (A ∩ {})', () => {
+    expect(setIntersection({ a: 'foo', b: 'bar' }, {})).toStrictEqual({});
+  });
+
+  it('does an intersection (A ∩ B)', () => {
+    expect(
+      setIntersection(
+        { a: 'foo', b: 'bar', c: 'c' },
+        { a: 'bar', b: 'bar', c: 'c', d: 'd', e: 'e' },
+      ),
+    ).toStrictEqual({
+      a: 'foo',
+      b: 'bar',
+      c: 'c',
+    });
+  });
+
+  it('additional B properties have no effect in (A ∩ B)', () => {
+    expect(
+      setIntersection({ a: 'foo', b: 'bar' }, { b: 0, c: 'foobar' }),
+    ).toStrictEqual({ b: 'bar' });
+  });
+
+  it('works for the same object (A ∩ A)', () => {
+    const object = { a: 'foo', b: 'bar' };
+    expect(setIntersection(object, object)).toStrictEqual({
+      a: 'foo',
+      b: 'bar',
+    });
   });
 });
 
