@@ -2671,22 +2671,23 @@ export class SnapController extends BaseController<
     initialPermissions: Record<string, Pick<PermissionConstraint, 'caveats'>>,
     dynamicPermissions?: Record<string, Pick<PermissionConstraint, 'caveats'>>,
   ) {
-    const permissionKeys = Object.keys({
-      ...initialPermissions,
-      ...(dynamicPermissions ?? {}),
-    });
+    const initialPermissionKeys = Object.keys(initialPermissions);
+    const allPermissionKeys = [
+      ...initialPermissionKeys,
+      ...Object.keys(dynamicPermissions ?? {}),
+    ];
     const handlerPermissions = Array.from(
       new Set(Object.values(handlerEndowments)),
     );
 
     assert(
-      permissionKeys.some((key) => handlerPermissions.includes(key)),
+      initialPermissionKeys.some((key) => handlerPermissions.includes(key)),
       `A snap must request at least one of the following permissions: ${handlerPermissions
         .filter((handler) => handler !== null)
         .join(', ')}.`,
     );
 
-    const excludedPermissionErrors = permissionKeys.reduce<string[]>(
+    const excludedPermissionErrors = allPermissionKeys.reduce<string[]>(
       (errors, permission) => {
         if (hasProperty(this.#excludedPermissions, permission)) {
           errors.push(this.#excludedPermissions[permission]);
