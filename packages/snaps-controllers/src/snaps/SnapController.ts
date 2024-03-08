@@ -1234,7 +1234,11 @@ export class SnapController extends BaseController<
       result.status !== SnapsRegistryStatus.Verified
     ) {
       throw new Error(
-        `Cannot install version "${snapInfo.version}" of snap "${snapId}": The snap is not on the allowlist.`,
+        `Cannot install version "${snapInfo.version}" of snap "${snapId}": ${
+          result.status === SnapsRegistryStatus.Unavailable
+            ? 'The registry is temporarily unavailable.'
+            : 'The snap is not on the allowlist.'
+        }`,
       );
     }
   }
