@@ -18,6 +18,7 @@ describe('address', () => {
   });
 
   it('validates the args', () => {
+    // @ts-expect-error - Invalid args.
     expect(() => address({ value: 'foo' })).toThrow(
       'Invalid address component: At path: value -- Expected a string matching `/0x[a-fA-F0-9]{40}$/` but received "foo"',
     );
