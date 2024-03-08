@@ -39,6 +39,28 @@ export function setDiff<
 }
 
 /**
+ * Takes two objects and does a Set Intersection of them.
+ *
+ * @param objectA - The object on which the difference is being calculated.
+ * @param objectB - The object whose properties will be removed from objectA.
+ * @returns The elements that are in both sets (ObjectA and ObjectB).
+ */
+export function setIntersection<
+  ObjectA extends Record<any, unknown>,
+  ObjectB extends Record<any, unknown>,
+>(objectA: ObjectA, objectB: ObjectB): Intersection<ObjectA, ObjectB> {
+  return Object.entries(objectA).reduce<Record<any, unknown>>(
+    (acc, [key, value]) => {
+      if (key in objectB) {
+        acc[key] = value;
+      }
+      return acc;
+    },
+    {},
+  ) as Intersection<ObjectA, ObjectB>;
+}
+
+/**
  * A Promise that delays its return for a given amount of milliseconds.
  *
  * @param ms - Milliseconds to delay the execution for.
@@ -192,6 +214,14 @@ type NonLiteralKeys<Type> = NonNullable<
  */
 export type Diff<First, Second> = Omit<First, LiteralKeys<Second>> &
   Partial<Pick<First, Extract<keyof First, NonLiteralKeys<Second>>>>;
+
+/**
+ * A set intersection of two objects based on their keys.
+ */
+export type Intersection<First, Second> = Pick<
+  First,
+  Extract<keyof First, keyof Second>
+>;
 
 /**
  * Makes every specified property of the specified object type mutable.

@@ -17,3 +17,6 @@ export * from './methods';
 export * from './notify';
 export * from './request-snaps';
 export * from './update-interface';
+export * from './request-permissions';
+export * from './get-permissions';
+export * from './revoke-permissions';

@@ -26,7 +26,11 @@ import validateNPMPackage from 'validate-npm-package-name';
 import { SnapCaveatType } from './caveats';
 import { checksumFiles } from './checksum';
 import type { LocalizationFile } from './localization';
-import type { SnapManifest, SnapPermissions } from './manifest/validation';
+import type {
+  SnapDynamicPermissions,
+  SnapManifest,
+  SnapPermissions,
+} from './manifest/validation';
 import type { FetchedSnapFiles, SnapsPermissionRequest } from './types';
 import { SnapIdPrefixes, SnapValidationFailureReason, uri } from './types';
 import type { VirtualFile } from './virtual-file';
@@ -90,6 +94,11 @@ export type Snap = TruncatedSnap & {
    * installed.
    */
   initialPermissions: SnapPermissions;
+
+  /**
+   * The dynamic permissions of the Snap, which can be requested at the runtime.
+   */
+  dynamicPermissions?: SnapDynamicPermissions;
 
   /**
    * The source code of the Snap.

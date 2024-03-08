@@ -34,6 +34,11 @@ export const MOCK_INITIAL_PERMISSIONS = {
   'endowment:rpc': { snaps: true, dapps: false },
 };
 /* eslint-enable @typescript-eslint/naming-convention */
+export const MOCK_DYNAMIC_PERMISSIONS = {
+  'endowment:transaction-insight': {
+    allowTransactionOrigin: true,
+  },
+};
 
 /**
  * Get the default package repository, in a format compatible with
@@ -81,6 +86,7 @@ export const DEFAULT_SNAP_SHASUM =
  * @param manifest.description - The description of the snap.
  * @param manifest.proposedName - The proposed name of the snap.
  * @param manifest.initialPermissions - The initial permissions of the snap.
+ * @param manifest.dynamicPermissions - The dynamic permissions of the snap.
  * @param manifest.shasum - The shasum of the snap.
  * @param manifest.filePath - The path to the snap.
  * @param manifest.packageName - The name of the snap.
@@ -96,6 +102,7 @@ export const getSnapManifest = ({
   description = MOCK_SNAP_DESCRIPTION,
   proposedName = MOCK_SNAP_NAME,
   initialPermissions = MOCK_INITIAL_PERMISSIONS,
+  dynamicPermissions = undefined,
   shasum = DEFAULT_SNAP_SHASUM,
   filePath = DEFAULT_SOURCE_PATH,
   packageName = MOCK_SNAP_NAME,
@@ -125,6 +132,7 @@ export const getSnapManifest = ({
     },
     ...(initialConnections ? { initialConnections } : {}),
     initialPermissions,
+    ...(dynamicPermissions ? { dynamicPermissions } : {}),
     manifestVersion: '0.1' as const,
   };
 };

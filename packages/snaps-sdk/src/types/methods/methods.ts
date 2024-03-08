@@ -27,6 +27,10 @@ import type {
   GetInterfaceStateResult,
 } from './get-interface-state';
 import type { GetLocaleParams, GetLocaleResult } from './get-locale';
+import type {
+  GetPermissionsParams,
+  GetPermissionsResult,
+} from './get-permissions';
 import type { GetSnapsParams, GetSnapsResult } from './get-snaps';
 import type {
   InvokeKeyringParams,
@@ -39,7 +43,15 @@ import type {
 } from './manage-accounts';
 import type { ManageStateParams, ManageStateResult } from './manage-state';
 import type { NotifyParams, NotifyResult } from './notify';
+import type {
+  RequestPermissionsParams,
+  RequestPermissionsResult,
+} from './request-permissions';
 import type { RequestSnapsParams, RequestSnapsResult } from './request-snaps';
+import type {
+  RevokePermissionsParams,
+  RevokePermissionsResult,
+} from './revoke-permissions';
 import type {
   UpdateInterfaceParams,
   UpdateInterfaceResult,
@@ -65,6 +77,9 @@ export type SnapMethods = {
   snap_createInterface: [CreateInterfaceParams, CreateInterfaceResult];
   snap_updateInterface: [UpdateInterfaceParams, UpdateInterfaceResult];
   snap_getInterfaceState: [GetInterfaceStateParams, GetInterfaceStateResult];
+  snap_requestPermissions: [RequestPermissionsParams, RequestPermissionsResult];
+  snap_getPermissions: [GetPermissionsParams, GetPermissionsResult];
+  snap_revokePermissions: [RevokePermissionsParams, RevokePermissionsResult];
   wallet_getSnaps: [GetSnapsParams, GetSnapsResult];
   wallet_invokeKeyring: [InvokeKeyringParams, InvokeKeyringResult];
   wallet_invokeSnap: [InvokeSnapParams, InvokeSnapResult];

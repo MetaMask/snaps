@@ -112,7 +112,13 @@ import type {
   TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '../services';
-import { fetchSnap, hasTimedOut, setDiff, withTimeout } from '../utils';
+import {
+  fetchSnap,
+  hasTimedOut,
+  setDiff,
+  setIntersection,
+  withTimeout,
+} from '../utils';
 import { ALLOWED_PERMISSIONS } from './constants';
 import type { SnapLocation } from './location';
 import { detectSnapLocation } from './location';
@@ -1087,15 +1093,24 @@ export class SnapController extends BaseController<
         preinstalled: true,
       });
 
-      // Setup permissions
-      const processedPermissions = processSnapPermissions(
+      // Process and validate Initial and Dynamic permissions
+      const processedInitialPermissions = processSnapPermissions(
         manifest.initialPermissions,
       );
-
-      this.#validateSnapPermissions(processedPermissions);
+      const processedDynamicPermissions = processSnapPermissions(
+        manifest.dynamicPermissions ?? {},
+      );
+      this.#validateSnapPermissions(
+        processedInitialPermissions,
+        processedDynamicPermissions,
+      );
 
       const { newPermissions, unusedPermissions } =
-        this.#calculatePermissionsChange(snapId, processedPermissions);
+        this.#calculatePermissionsChange(
+          snapId,
+          processedInitialPermissions,
+          processedDynamicPermissions,
+        );
 
       this.#updatePermissions({ snapId, newPermissions, unusedPermissions });
 
@@ -1206,12 +1221,24 @@ export class SnapController extends BaseController<
     this.messagingSystem.publish(`${controllerName}:snapUnblocked`, snapId);
   }
 
+  /**
+   * Assert that installation of a given Snap is allowed based on the allow-list requirements and permissions.
+   *
+   * @param snapId - ID of a Snap.
+   * @param snapInfo - An object containing basic snap information including initial and dynamic permissions.
+   */
   async #assertIsInstallAllowed(
     snapId: SnapId,
-    snapInfo: SnapsRegistryInfo & { permissions: SnapPermissions },
+    snapInfo: SnapsRegistryInfo & {
+      initialPermissions: SnapPermissions;
+      dynamicPermissions: SnapPermissions | undefined;
+    },
   ) {
     const results = await this.messagingSystem.call('SnapsRegistry:get', {
-      [snapId]: snapInfo,
+      [snapId]: {
+        version: snapInfo.version,
+        checksum: snapInfo.checksum,
+      },
     });
     const result = results[snapId];
     if (result.status === SnapsRegistryStatus.Blocked) {
@@ -1224,9 +1251,13 @@ export class SnapController extends BaseController<
       );
     }
 
-    const isAllowlistingRequired = Object.keys(snapInfo.permissions).some(
-      (permission) => !ALLOWED_PERMISSIONS.includes(permission),
-    );
+    const isAllowlistingRequired =
+      Object.keys(snapInfo.initialPermissions).some(
+        (permission) => !ALLOWED_PERMISSIONS.includes(permission),
+      ) ||
+      Object.keys(snapInfo.dynamicPermissions ?? {}).some(
+        (permission) => !ALLOWED_PERMISSIONS.includes(permission),
+      );
 
     if (
       this.#featureFlags.requireAllowlist &&
@@ -2213,17 +2244,28 @@ export class SnapController extends BaseController<
       await this.#assertIsInstallAllowed(snapId, {
         version: newVersion,
         checksum: manifest.source.shasum,
-        permissions: manifest.initialPermissions,
+        initialPermissions: manifest.initialPermissions,
+        dynamicPermissions: manifest.dynamicPermissions,
       });
 
-      const processedPermissions = processSnapPermissions(
+      // Process and validate Initial and Dynamic permissions
+      const processedInitialPermissions = processSnapPermissions(
         manifest.initialPermissions,
       );
-
-      this.#validateSnapPermissions(processedPermissions);
+      const processedDynamicPermissions = processSnapPermissions(
+        manifest.dynamicPermissions ?? {},
+      );
+      this.#validateSnapPermissions(
+        processedInitialPermissions,
+        processedDynamicPermissions,
+      );
 
       const { newPermissions, unusedPermissions, approvedPermissions } =
-        this.#calculatePermissionsChange(snapId, processedPermissions);
+        this.#calculatePermissionsChange(
+          snapId,
+          processedInitialPermissions,
+          processedDynamicPermissions,
+        );
 
       this.#updateApproval(pendingApproval.id, {
         permissions: newPermissions,
@@ -2387,7 +2429,8 @@ export class SnapController extends BaseController<
         await this.#assertIsInstallAllowed(snapId, {
           version: manifest.version,
           checksum: manifest.source.shasum,
-          permissions: manifest.initialPermissions,
+          initialPermissions: manifest.initialPermissions,
+          dynamicPermissions: manifest.dynamicPermissions,
         });
 
         return this.#set({
@@ -2625,21 +2668,26 @@ export class SnapController extends BaseController<
   }
 
   #validateSnapPermissions(
-    processedPermissions: Record<string, Pick<PermissionConstraint, 'caveats'>>,
+    initialPermissions: Record<string, Pick<PermissionConstraint, 'caveats'>>,
+    dynamicPermissions?: Record<string, Pick<PermissionConstraint, 'caveats'>>,
   ) {
-    const permissionKeys = Object.keys(processedPermissions);
+    const initialPermissionKeys = Object.keys(initialPermissions);
+    const allPermissionKeys = [
+      ...initialPermissionKeys,
+      ...Object.keys(dynamicPermissions ?? {}),
+    ];
     const handlerPermissions = Array.from(
       new Set(Object.values(handlerEndowments)),
     );
 
     assert(
-      permissionKeys.some((key) => handlerPermissions.includes(key)),
+      initialPermissionKeys.some((key) => handlerPermissions.includes(key)),
       `A snap must request at least one of the following permissions: ${handlerPermissions
         .filter((handler) => handler !== null)
         .join(', ')}.`,
     );
 
-    const excludedPermissionErrors = permissionKeys.reduce<string[]>(
+    const excludedPermissionErrors = allPermissionKeys.reduce<string[]>(
       (errors, permission) => {
         if (hasProperty(this.#excludedPermissions, permission)) {
           errors.push(this.#excludedPermissions[permission]);
@@ -3221,6 +3269,10 @@ export class SnapController extends BaseController<
       string,
       Pick<PermissionConstraint, 'caveats'>
     >,
+    dynamicPermissionsSet: Record<
+      string,
+      Pick<PermissionConstraint, 'caveats'>
+    >,
   ): {
     newPermissions: Record<string, Pick<PermissionConstraint, 'caveats'>>;
     unusedPermissions: SubjectPermissions<
@@ -3237,9 +3289,14 @@ export class SnapController extends BaseController<
       ) ?? {};
 
     const newPermissions = setDiff(desiredPermissionsSet, oldPermissions);
-    // TODO(ritave): The assumption that these are unused only holds so long as we do not
-    //               permit dynamic permission requests.
-    const unusedPermissions = setDiff(oldPermissions, desiredPermissionsSet);
+    const usedDynamicPermissions = setIntersection(
+      dynamicPermissionsSet ?? {},
+      oldPermissions,
+    );
+    const unusedPermissions = setDiff(oldPermissions, {
+      ...desiredPermissionsSet,
+      ...usedDynamicPermissions,
+    });
 
     // It's a Set Intersection of oldPermissions and desiredPermissionsSet
     // oldPermissions ∖ (oldPermissions ∖ desiredPermissionsSet) ⟺ oldPermissions ∩ desiredPermissionsSet

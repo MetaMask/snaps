@@ -23,6 +23,7 @@ export const getPersistedSnapObject = ({
   enabled = true,
   id = MOCK_SNAP_ID,
   initialPermissions = getSnapManifest().initialPermissions,
+  dynamicPermissions = getSnapManifest().dynamicPermissions,
   manifest = getSnapManifest(),
   sourceCode = DEFAULT_SNAP_BUNDLE,
   status = SnapStatus.Stopped,
@@ -38,6 +39,7 @@ export const getPersistedSnapObject = ({
   return {
     blocked,
     initialPermissions,
+    dynamicPermissions,
     id,
     version: version as SemVerVersion,
     manifest,
@@ -57,6 +59,7 @@ export const getSnapObject = ({
   enabled = true,
   id = MOCK_SNAP_ID,
   initialPermissions = getSnapManifest().initialPermissions,
+  dynamicPermissions = getSnapManifest().dynamicPermissions,
   sourceCode = DEFAULT_SNAP_BUNDLE,
   manifest = getSnapManifest(),
   status = SnapStatus.Stopped,
@@ -72,6 +75,7 @@ export const getSnapObject = ({
   return {
     blocked,
     initialPermissions,
+    dynamicPermissions,
     sourceCode,
     id,
     version: version as SemVerVersion,
