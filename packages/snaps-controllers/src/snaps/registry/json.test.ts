@@ -267,7 +267,7 @@ describe('JsonSnapsRegistry', () => {
     });
   });
 
-  it('doesnt use existing state if existing state isnt sufficient', async () => {
+  it(`doesn't use existing state if existing state isn't sufficient`, async () => {
     fetchMock.mockResponse('', { status: 404 });
 
     const { messenger } = getRegistry({
