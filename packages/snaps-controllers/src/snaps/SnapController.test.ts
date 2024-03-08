@@ -775,6 +775,38 @@ describe('SnapController', () => {
     controller.destroy();
   });
 
+  it('throws an error if the registry is unavailable and allowlisting is required but resolve succeeds', async () => {
+    const registry = new MockSnapsRegistry();
+    const rootMessenger = getControllerMessenger(registry);
+    const messenger = getSnapControllerMessenger(rootMessenger);
+    const controller = getSnapController(
+      getSnapControllerOptions({
+        featureFlags: { requireAllowlist: true },
+        messenger,
+        detectSnapLocation: (_location, options) =>
+          new LoopbackLocation(options),
+      }),
+    );
+
+    // Mock resolve to succeed, but registry.get() will fail later
+    registry.resolveVersion.mockReturnValue('1.0.0');
+    registry.get.mockReturnValue({
+      [MOCK_SNAP_ID]: { status: SnapsRegistryStatus.Unavailable },
+    });
+
+    await expect(
+      controller.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: { version: DEFAULT_REQUESTED_SNAP_VERSION },
+      }),
+    ).rejects.toThrow(
+      'Cannot install version "1.0.0" of snap "npm:@metamask/example-snap": The registry is temporarily unavailable.',
+    );
+
+    expect(registry.resolveVersion).toHaveBeenCalled();
+
+    controller.destroy();
+  });
+
   it('throws an error if snap is not on allowlist and allowlisting is required', async () => {
     const { manifest, sourceCode, svgIcon } =
       await getMockSnapFilesWithUpdatedChecksum({
