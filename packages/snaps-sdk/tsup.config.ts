@@ -11,7 +11,7 @@ delete baseConfig.entry;
 
 const config: Options = {
   name: packageJson.name,
-  entry: ['src/index.ts'],
+  entry: ['src/index.ts', 'src/jsx/index.ts', 'src/jsx/runtime.ts'],
 
   // Esbuild is not deterministic when code splitting is enabled. This is
   // problematic for building the example Snaps in this repository, so we
