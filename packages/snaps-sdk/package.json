@@ -12,6 +12,16 @@
       "require": "./dist/index.js",
       "types": "./dist/types/index.d.ts"
     },
+    "./jsx-runtime": {
+      "import": "./dist/jsx/runtime.mjs",
+      "require": "./dist/jsx/runtime.js",
+      "types": "./dist/types/jsx/runtime.d.ts"
+    },
+    "./jsx": {
+      "import": "./dist/jsx/index.mjs",
+      "require": "./dist/jsx/index.js",
+      "types": "./dist/types/jsx/index.d.ts"
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.js",

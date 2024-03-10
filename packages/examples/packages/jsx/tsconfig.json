@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "jsx": "preserve",
+    "paths": {
+      "@metamask/*/jsx": ["../../../*/src/jsx"],
+      "@metamask/*": ["../../../*/src"]
+    }
+  },
+  "include": ["src", "snap.config.ts"],
+  "references": [
+    {
+      "path": "../../../snaps-sdk"
+    },
+    {
+      "path": "../../../snaps-jest"
+    },
+    {
+      "path": "../../../snaps-cli"
+    }
+  ]
+}
