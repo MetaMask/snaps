@@ -7,6 +7,17 @@ module.exports = {
 
   overrides: [
     {
+      files: ['*.ts', '*.tsx'],
+      rules: {
+        '@typescript-eslint/no-shadow': [
+          'error',
+          {
+            allow: ['Text'],
+          },
+        ],
+      },
+    },
+    {
       files: ['*.test.ts'],
       rules: {
         'jest/expect-expect': [
