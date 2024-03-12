@@ -5275,9 +5275,9 @@ __metadata:
   linkType: hard
 
 "@metamask/safe-event-emitter@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/safe-event-emitter@npm:3.0.0"
-  checksum: 8dc58a76f9f75bf2405931465fc311c68043d851e6b8ebe9f82ae339073a08a83430dba9338f8e3adc4bfc8067607125074bcafa32baee3a5157f42343dc89e5
+  version: 3.1.0
+  resolution: "@metamask/safe-event-emitter@npm:3.1.0"
+  checksum: 39572b04ab9b03db15df9a8ff6eb5cb39ced9c9a22697221913252554efb4911f09cb4373c3011c2abc69a681b38f1452a73e25e93bd36e57a80633598f923a8
   languageName: node
   linkType: hard
 
