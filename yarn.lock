@@ -6008,6 +6008,7 @@ __metadata:
     istanbul-lib-report: ^3.0.0
     istanbul-reports: ^3.1.5
     jest: ^29.0.2
+    marked: ^12.0.1
     memfs: ^3.4.13
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
@@ -17206,6 +17207,15 @@ __metadata:
   version: 0.1.0
   resolution: "map-stream@npm:0.1.0"
   checksum: 38abbe4eb883888031e6b2fc0630bc583c99396be16b8ace5794b937b682a8a081f03e8b15bfd4914d1bc88318f0e9ac73ba3512ae65955cd449f63256ddb31d
+  languageName: node
+  linkType: hard
+
+"marked@npm:^12.0.1":
+  version: 12.0.1
+  resolution: "marked@npm:12.0.1"
+  bin:
+    marked: bin/marked.js
+  checksum: 35ebc6c4612fcc028a1cd6419321e336be5b29d3feb68dfd5aaa7fcddb399c7873cd3291d60daf342db3eede747757e4e18515f349f0ee7b84ec24254f3a4190
   languageName: node
   linkType: hard
 

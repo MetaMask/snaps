@@ -19,12 +19,72 @@ describe('validateTextLinks', () => {
     expect(() =>
       validateTextLinks('[](https://foo.bar)', () => false),
     ).not.toThrow();
+
+    expect(() =>
+      validateTextLinks('[[test]](https://foo.bar)', () => false),
+    ).not.toThrow();
+
+    expect(() =>
+      validateTextLinks('[test](https://foo.bar "foo bar baz")', () => false),
+    ).not.toThrow();
+
+    expect(() =>
+      validateTextLinks('<https://foo.bar>', () => false),
+    ).not.toThrow();
+
+    expect(() =>
+      validateTextLinks(
+        `[foo][1]
+         [1]: https://foo.bar`,
+        () => false,
+      ),
+    ).not.toThrow();
+
+    expect(() =>
+      validateTextLinks(
+        `[foo][1]
+         [1]: https://foo.bar "foo bar baz"`,
+        () => false,
+      ),
+    ).not.toThrow();
   });
 
   it('throws an error if an invalid link is found in text', () => {
     expect(() =>
       validateTextLinks('[test](http://foo.bar)', () => false),
     ).toThrow('Invalid URL: Protocol must be one of: https:, mailto:.');
+
+    expect(() =>
+      validateTextLinks('[[test]](http://foo.bar)', () => false),
+    ).toThrow('Invalid URL: Protocol must be one of: https:, mailto:.');
+
+    expect(() => validateTextLinks('<http://foo.bar>', () => false)).toThrow(
+      'Invalid URL: Protocol must be one of: https:, mailto:.',
+    );
+
+    expect(() =>
+      validateTextLinks('[test](http://foo.bar "foo bar baz")', () => false),
+    ).toThrow('Invalid URL: Protocol must be one of: https:, mailto:.');
+
+    expect(() =>
+      validateTextLinks(
+        `[foo][1]
+         [1]: http://foo.bar`,
+        () => false,
+      ),
+    ).toThrow('Invalid URL: Protocol must be one of: https:, mailto:.');
+
+    expect(() =>
+      validateTextLinks(
+        `[foo][1]
+         [1]: http://foo.bar "foo bar baz"`,
+        () => false,
+      ),
+    ).toThrow('Invalid URL: Protocol must be one of: https:, mailto:.');
+
+    expect(() => validateTextLinks('[test](#code)', () => false)).toThrow(
+      'Invalid URL: Unable to parse URL.',
+    );
 
     expect(() => validateTextLinks('[test](foo.bar)', () => false)).toThrow(
       'Invalid URL: Unable to parse URL.',

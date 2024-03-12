@@ -1,10 +1,30 @@
 import type { Component } from '@metamask/snaps-sdk';
 import { NodeType } from '@metamask/snaps-sdk';
 import { assert, AssertionError } from '@metamask/utils';
-
-const MARKDOWN_LINK_REGEX = /\[(?<name>[^\]]*)\]\((?<url>[^)]+)\)/giu;
+import type { Tokens } from 'marked';
+import { lexer, walkTokens } from 'marked';
 
 const ALLOWED_PROTOCOLS = ['https:', 'mailto:'];
+
+/**
+ * Extract all links from a Markdown text string using the `marked` lexer.
+ *
+ * @param text - The markdown text string.
+ * @returns A list of URLs linked to in the string.
+ */
+function getMarkdownLinks(text: string) {
+  const tokens = lexer(text);
+  const links: (Tokens.Link | Tokens.Generic)[] = [];
+
+  // Walk the lexed tokens and collect all link tokens
+  walkTokens(tokens, (token) => {
+    if (token.type === 'link') {
+      links.push(token);
+    }
+  });
+
+  return links.map((link) => link?.href).filter(Boolean);
+}
 
 /**
  * Searches for markdown links in a string and checks them against the phishing list.
@@ -18,17 +38,9 @@ export function validateTextLinks(
   text: string,
   isOnPhishingList: (url: string) => boolean,
 ) {
-  const matches = String.prototype.matchAll.call(text, MARKDOWN_LINK_REGEX);
+  const links = getMarkdownLinks(text);
 
-  for (const { groups } of matches) {
-    const link = groups?.url;
-
-    /* This case should never happen with the regex but the TS type allows for undefined */
-    /* istanbul ignore next */
-    if (!link) {
-      continue;
-    }
-
+  for (const link of links) {
     try {
       const url = new URL(link);
       assert(
