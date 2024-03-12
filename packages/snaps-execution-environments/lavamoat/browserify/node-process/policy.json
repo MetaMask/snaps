@@ -51,11 +51,21 @@
       "packages": {
         "@metamask/json-rpc-engine": true,
         "@metamask/object-multiplex": true,
+        "@metamask/providers>@metamask/json-rpc-middleware-stream": true,
         "@metamask/providers>@metamask/safe-event-emitter": true,
         "@metamask/providers>is-stream": true,
-        "@metamask/providers>json-rpc-middleware-stream": true,
         "@metamask/rpc-errors": true,
         "eslint>fast-deep-equal": true,
+        "readable-stream": true
+      }
+    },
+    "@metamask/providers>@metamask/json-rpc-middleware-stream": {
+      "globals": {
+        "console.warn": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/providers>@metamask/safe-event-emitter": true,
         "readable-stream": true
       }
     },
@@ -68,16 +78,6 @@
       },
       "packages": {
         "events": true
-      }
-    },
-    "@metamask/providers>json-rpc-middleware-stream": {
-      "globals": {
-        "console.warn": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/providers>@metamask/safe-event-emitter": true,
-        "readable-stream": true
       }
     },
     "@metamask/rpc-errors": {

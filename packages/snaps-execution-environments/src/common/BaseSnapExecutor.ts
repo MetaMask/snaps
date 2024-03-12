@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 /// <reference path="../../../../node_modules/ses/types.d.ts" />
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
-import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
+import type { RequestArguments } from '@metamask/providers';
 import { StreamProvider } from '@metamask/providers/dist/StreamProvider';
 import { errorCodes, rpcErrors, serializeError } from '@metamask/rpc-errors';
 import type { SnapsProvider } from '@metamask/snaps-sdk';
