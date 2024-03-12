@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [7.0.3]
 ### Changed
-- Use `marked` for extraction of markdown links ([#2261](https://github.com/MetaMask/snaps/pull/2261))
+- Update markdown parsing for better link validation ([#2261](https://github.com/MetaMask/snaps/pull/2261))
 - Bump `@metamask/snaps-registry` to `^3.0.1` ([#2255](https://github.com/MetaMask/snaps/pull/2255))
 
 ## [7.0.2]
