@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.1]
+
 ### Uncategorized
 
 - Bump `@metamask/providers` to `^15.0.0` ([#2231](https://github.com/MetaMask/snaps-skunkworks.git/pull/2231))
@@ -111,7 +113,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@3.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@3.1.1...HEAD
+[3.1.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@3.1.0...@metamask/snaps-sdk@3.1.1
 [3.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@3.0.1...@metamask/snaps-sdk@3.1.0
 [3.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@3.0.0...@metamask/snaps-sdk@3.0.1
 [3.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@2.1.0...@metamask/snaps-sdk@3.0.0
