@@ -33,7 +33,7 @@ describe('onRpcRequest', () => {
       const ui = await response.getInterface();
       assert(ui.type === 'alert');
 
-      expect(ui).toRender(panel([text('Hello from JSX.')]));
+      expect(ui).toRender(panel([text('Hello from **JSX**.')]));
 
       await ui.ok();
 

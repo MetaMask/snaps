@@ -96,6 +96,7 @@ module.exports = {
   moduleNameMapper: {
     '^@metamask/(.+)/test-utils$': ['<rootDir>/../$1/src/test-utils'],
     '^@metamask/(.+)/node$': ['<rootDir>/../$1/src/node'],
+    '^@metamask/(.+)/jsx': ['<rootDir>/../$1/src/jsx'],
     '^@metamask/(.+)$': [
       '<rootDir>/../$1/src',
       '<rootDir>/../../node_modules/@metamask/$1',
@@ -201,6 +202,14 @@ module.exports = {
           target: 'es2022',
           parser: {
             syntax: 'typescript',
+            tsx: true,
+          },
+          transform: {
+            react: {
+              runtime: 'automatic',
+              importSource: '@metamask/snaps-sdk',
+              useBuiltins: true,
+            },
           },
         },
         sourceMaps: false,
