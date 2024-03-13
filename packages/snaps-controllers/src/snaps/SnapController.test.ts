@@ -3,6 +3,7 @@ import {
   createAsyncMiddleware,
   JsonRpcEngine,
 } from '@metamask/json-rpc-engine';
+import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import {
   SubjectType,
   type Caveat,
@@ -57,7 +58,6 @@ import {
 } from '@metamask/utils';
 import { File } from 'buffer';
 import fetchMock from 'jest-fetch-mock';
-import { createEngineStream } from 'json-rpc-middleware-stream';
 import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';
 
