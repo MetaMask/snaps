@@ -3,7 +3,8 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/types",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "jsx": "preserve"
   },
   "include": ["./src"],
   "exclude": [

@@ -9,6 +9,8 @@
     "paths": {
       "@metamask/*/test-utils": ["../*/src/test-utils"],
       "@metamask/*/node": ["../*/src/node"],
+      "@metamask/*/jsx-runtime": ["../*/src/jsx"],
+      "@metamask/*/jsx": ["../*/src/jsx"],
       "@metamask/*": ["../*/src"]
     },
     "resolveJsonModule": true,

@@ -17,16 +17,5 @@ module.exports = {
         ],
       },
     },
-    {
-      files: ['*.test.ts'],
-      rules: {
-        'jest/expect-expect': [
-          'error',
-          {
-            assertFunctionNames: ['expect', 'expectTypeOf'],
-          },
-        ],
-      },
-    },
   ],
 };
