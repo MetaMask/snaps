@@ -56,7 +56,7 @@
     "@metamask/json-rpc-engine": "^7.3.3",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/permission-controller": "^8.0.1",
-    "@metamask/phishing-controller": "^8.0.2",
+    "@metamask/phishing-controller": "^9.0.1",
     "@metamask/post-message-stream": "^8.0.0",
     "@metamask/rpc-errors": "^6.2.1",
     "@metamask/snaps-registry": "^3.0.1",

@@ -3874,6 +3874,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/base-controller@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "@metamask/base-controller@npm:5.0.1"
+  dependencies:
+    "@metamask/utils": ^8.3.0
+    immer: ^9.0.6
+  checksum: 97ccf900377b06f72db7ee1c167448de80dfec6b02b3aeda715d498974ffffbb5a8cc82f44aabc58f7b6afb693d85f504515cec97bf385efa0377975b4019c7b
+  languageName: node
+  linkType: hard
+
 "@metamask/bip32-example-snap@workspace:^, @metamask/bip32-example-snap@workspace:packages/examples/packages/bip32":
   version: 0.0.0-use.local
   resolution: "@metamask/bip32-example-snap@workspace:packages/examples/packages/bip32"
@@ -4120,7 +4130,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/controller-utils@npm:^8.0.2, @metamask/controller-utils@npm:^8.0.3":
+"@metamask/controller-utils@npm:^8.0.3":
   version: 8.0.3
   resolution: "@metamask/controller-utils@npm:8.0.3"
   dependencies:
@@ -4132,6 +4142,23 @@ __metadata:
     ethereumjs-util: ^7.0.10
     fast-deep-equal: ^3.1.3
   checksum: a84e4c0d5f30022a3aa2fed0d59265be268f6d35662c88ef9243e213af7472d008304c648ae6b305388a61335345f6a27fcb6de9b91978ed2252e3c86f58119a
+  languageName: node
+  linkType: hard
+
+"@metamask/controller-utils@npm:^9.0.1":
+  version: 9.0.1
+  resolution: "@metamask/controller-utils@npm:9.0.1"
+  dependencies:
+    "@ethereumjs/util": ^8.1.0
+    "@metamask/eth-query": ^4.0.0
+    "@metamask/ethjs-unit": ^0.3.0
+    "@metamask/utils": ^8.3.0
+    "@spruceid/siwe-parser": 1.1.3
+    "@types/bn.js": ^5.1.5
+    bn.js: ^5.2.1
+    eth-ens-namehash: ^2.0.8
+    fast-deep-equal: ^3.1.3
+  checksum: 8f3eba1b46ea03825e9111204266db871b019362e44ee4535fd272cb1b67da03f43fe747a5d9c0d483b33095ce1333e4bd82c4375e362ab598e3198552a8566c
   languageName: node
   linkType: hard
 
@@ -5176,16 +5203,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^8.0.2":
-  version: 8.0.2
-  resolution: "@metamask/phishing-controller@npm:8.0.2"
+"@metamask/phishing-controller@npm:^9.0.1":
+  version: 9.0.1
+  resolution: "@metamask/phishing-controller@npm:9.0.1"
   dependencies:
-    "@metamask/base-controller": ^4.1.1
-    "@metamask/controller-utils": ^8.0.2
+    "@metamask/base-controller": ^5.0.1
+    "@metamask/controller-utils": ^9.0.1
     "@types/punycode": ^2.1.0
     eth-phishing-detect: ^1.2.0
     punycode: ^2.1.1
-  checksum: 2263f8c696ae81b233cc21ad927515c24e32132ddb297ab04ca45a8d92bbd0e8b0d7b43d53a074277cc441d51ce95d03efccecac0c7da9493540d489f4aecb81
+  checksum: f8770b94d9d4e7f7daa5619d9bf32bc0909b6947dd72172ba76f085ca6e29bafa9d728f57e6ed296355f589ec6d267ee537587a7a70ccc2b2b971604e3ad0c8b
   languageName: node
   linkType: hard
 
@@ -5489,7 +5516,7 @@ __metadata:
     "@metamask/json-rpc-engine": ^7.3.3
     "@metamask/object-multiplex": ^2.0.0
     "@metamask/permission-controller": ^8.0.1
-    "@metamask/phishing-controller": ^8.0.2
+    "@metamask/phishing-controller": ^9.0.1
     "@metamask/post-message-stream": ^8.0.0
     "@metamask/rpc-errors": ^6.2.1
     "@metamask/snaps-registry": ^3.0.1
@@ -7333,6 +7360,15 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: 1dc1cbbd7a1e8bf3614752e9602f558762a901031f499f3055828b5e3e2bba16e5b88c27b3c4152ad795248fbe4086c731a5c4b0f29bb243f1875beeeabee59c
+  languageName: node
+  linkType: hard
+
+"@types/bn.js@npm:^5.1.5":
+  version: 5.1.5
+  resolution: "@types/bn.js@npm:5.1.5"
+  dependencies:
+    "@types/node": "*"
+  checksum: c87b28c4af74545624f8a3dae5294b16aa190c222626e8d4b2e327b33b1a3f1eeb43e7a24d914a9774bca43d8cd6e1cb0325c1f4b3a244af6693a024e1d918e6
   languageName: node
   linkType: hard
 
