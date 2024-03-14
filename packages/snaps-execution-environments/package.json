@@ -51,7 +51,7 @@
     "build:ci": "tsup --clean"
   },
   "dependencies": {
-    "@metamask/json-rpc-engine": "^7.3.3",
+    "@metamask/json-rpc-engine": "^8.0.1",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/post-message-stream": "^8.0.0",
     "@metamask/providers": "^15.0.0",
