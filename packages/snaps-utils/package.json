@@ -54,7 +54,7 @@
     "@babel/types": "^7.23.0",
     "@metamask/base-controller": "^4.1.0",
     "@metamask/key-tree": "^9.0.0",
-    "@metamask/permission-controller": "^8.0.1",
+    "@metamask/permission-controller": "^9.0.1",
     "@metamask/rpc-errors": "^6.2.1",
     "@metamask/slip44": "^3.1.0",
     "@metamask/snaps-registry": "^3.0.1",
