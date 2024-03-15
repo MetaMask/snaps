@@ -1,4 +1,5 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import { createStreamMiddleware } from '@metamask/json-rpc-middleware-stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import type { BasePostMessageStream } from '@metamask/post-message-stream';
 import { JsonRpcError } from '@metamask/rpc-errors';
@@ -17,7 +18,6 @@ import {
   isJsonRpcNotification,
   isObject,
 } from '@metamask/utils';
-import { createStreamMiddleware } from 'json-rpc-middleware-stream';
 import { nanoid } from 'nanoid';
 import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';

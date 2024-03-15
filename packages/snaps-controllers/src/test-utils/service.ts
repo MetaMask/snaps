@@ -1,7 +1,7 @@
 import { ControllerMessenger } from '@metamask/base-controller';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { logError } from '@metamask/snaps-utils';
-import { createEngineStream } from 'json-rpc-middleware-stream';
 import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';
 

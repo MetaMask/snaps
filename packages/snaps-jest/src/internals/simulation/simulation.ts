@@ -184,6 +184,8 @@ export async function handleInstallSnap<
     ...executionServiceOptions,
     messenger: controllerMessenger.getRestricted({
       name: 'ExecutionService',
+      allowedActions: [],
+      allowedEvents: [],
     }),
     setupSnapProvider: (_snapId: string, rpcStream: Duplex) => {
       const mux = setupMultiplex(rpcStream, 'snapStream');
