@@ -120,6 +120,8 @@ export function* initSaga({ payload }: PayloadAction<string>) {
   const subjectMetadataController = new SubjectMetadataController({
     messenger: controllerMessenger.getRestricted({
       name: 'SubjectMetadataController',
+      allowedActions: [],
+      allowedEvents: [],
     }),
     subjectCacheLimit: 100,
   });
@@ -136,6 +138,7 @@ export function* initSaga({ payload }: PayloadAction<string>) {
         `SnapController:install`,
         `SubjectMetadataController:getSubjectMetadata`,
       ] as any,
+      allowedEvents: [],
     }),
     caveatSpecifications: {
       ...snapsCaveatsSpecifications,
@@ -179,6 +182,8 @@ export function* initSaga({ payload }: PayloadAction<string>) {
     iframeUrl: new URL(environmentUrl),
     messenger: controllerMessenger.getRestricted({
       name: 'ExecutionService',
+      allowedActions: [],
+      allowedEvents: [],
     }),
     setupSnapProvider: (_snapId, rpcStream) => {
       const mux = setupMultiplex(rpcStream, 'snapStream');
