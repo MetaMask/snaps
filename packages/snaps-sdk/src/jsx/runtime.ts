@@ -23,6 +23,7 @@ export function jsx<Props>(
   props: SnapProps<Props>,
 ): unknown | null {
   if (!component) {
+    // If component is undefined, a fragment was used.
     return jsx(Panel, props as PanelProps);
   }
 
@@ -42,10 +43,7 @@ export function jsx<Props>(
 
   if (result.type === 'text') {
     const value = Array.isArray(result.props.children)
-      ? result.props.children.reduce<string>((accumulator, child) => {
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          return `${accumulator}${child}`;
-        }, '')
+      ? result.props.children.join('')
       : result.props.children;
 
     return {
