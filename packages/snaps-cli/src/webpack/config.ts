@@ -209,7 +209,7 @@ export async function getDefaultConfiguration(
         /**
          * This allows importing `.svg` files as a string.
          */
-        {
+        config.features.images && {
           test: /\.svg$/u,
           // `asset/source` returns the source as a UTF-8 string.
           type: 'asset/source',
@@ -218,7 +218,7 @@ export async function getDefaultConfiguration(
         /**
          * This allows importing `.png` files as a data URL.
          */
-        {
+        config.features.images && {
           test: /\.png$/u,
           type: 'asset/inline',
           generator: {
@@ -229,7 +229,7 @@ export async function getDefaultConfiguration(
         /**
          * This allows importing `.jpe?g` files as a data URL.
          */
-        {
+        config.features.images && {
           test: /\.jpe?g$/u,
           type: 'asset/inline',
           generator: {

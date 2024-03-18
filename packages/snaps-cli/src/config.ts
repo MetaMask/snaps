@@ -13,7 +13,6 @@ import { dim } from 'chalk';
 import { readFile } from 'fs/promises';
 import Module from 'module';
 import { basename, dirname, resolve } from 'path';
-import type { Infer } from 'superstruct';
 import {
   array,
   boolean,
@@ -30,6 +29,7 @@ import {
   unknown,
   empty,
 } from 'superstruct';
+import type { Infer } from 'superstruct';
 import type { Configuration as WebpackConfiguration } from 'webpack';
 
 import { TranspilationModes } from './builders';
@@ -416,6 +416,27 @@ export type SnapWebpackConfig = {
       };
 
   /**
+   * Optional features to enable in the CLI.
+   *
+   * @example
+   * {
+   *   features: {
+   *     images: true,
+   *   }
+   * }
+   */
+  features?: {
+    /**
+     * Whether to enable support for images. If `true`, the Webpack
+     * configuration will be modified to support images. If `false`, the
+     * Webpack configuration will not be modified.
+     *
+     * @default true
+     */
+    images?: boolean;
+  };
+
+  /**
    * A function to customize the Webpack configuration used to build the snap.
    * This function will be called with the default Webpack configuration, and
    * should return the modified configuration. If not specified, the default
@@ -616,6 +637,13 @@ export const SnapsWebpackConfigStruct = object({
       }),
     ]),
     false,
+  ),
+
+  features: defaulted(
+    object({
+      images: defaulted(boolean(), true),
+    }),
+    {},
   ),
 
   customizeWebpackConfig: optional(
