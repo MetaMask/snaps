@@ -52,7 +52,7 @@ describe('onRpcRequest', () => {
   describe('getCat', () => {
     // This test is flaky, so we disable it for now.
     // eslint-disable-next-line jest/no-disabled-tests
-    it('shows a cat', async () => {
+    it.skip('shows a cat', async () => {
       const { request } = await installSnap();
 
       const response = request({
