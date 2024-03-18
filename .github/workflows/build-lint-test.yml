@@ -214,6 +214,8 @@ jobs:
       - run: yarn --immutable --immutable-cache
       - name: Install Google Chrome
         run: yarn install-chrome
+      - run: yarn workspace @metamask/snaps-sdk run build
+        if: ${{ matrix.package-name == '@metamask/snaps-cli' }}
       - run: yarn workspace ${{ matrix.package-name }} run test:ci
       - name: Get coverage folder
         id: get-coverage-folder
@@ -316,4 +318,5 @@ jobs:
           node-version-file: '.nvmrc'
           cache: yarn
       - run: yarn --immutable
+      - run: yarn workspace @metamask/snaps-sdk run build
       - run: yarn workspace @metamask/snaps-cli run test
