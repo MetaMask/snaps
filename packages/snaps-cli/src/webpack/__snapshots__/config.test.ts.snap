@@ -36,7 +36,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -178,7 +196,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -320,7 +356,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -462,7 +516,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -595,7 +667,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       {
         "test": /\\\\\\.wasm\\$/u,
@@ -745,7 +835,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -887,7 +995,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -1029,7 +1155,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -1179,7 +1323,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -1293,6 +1455,151 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 }
 `;
 
+exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config 10`] = `
+{
+  "devtool": false,
+  "entry": "/foo/bar/src/index.js",
+  "infrastructureLogging": {
+    "level": "none",
+  },
+  "mode": "production",
+  "module": {
+    "rules": [
+      {
+        "exclude": /node_modules/u,
+        "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
+        "use": {
+          "loader": "/foo/bar/node_modules/swc-loader/index.js",
+          "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
+            "jsc": {
+              "parser": {
+                "syntax": "typescript",
+              },
+            },
+            "module": {
+              "type": "es6",
+            },
+            "sourceMaps": false,
+            "sync": false,
+          },
+        },
+      },
+      {
+        "resolve": {
+          "fullySpecified": false,
+        },
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      false,
+      false,
+      false,
+      false,
+    ],
+  },
+  "optimization": {
+    "minimize": false,
+    "minimizer": [
+      TerserPlugin {
+        "options": {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minimizer": {
+            "implementation": [Function],
+            "options": {},
+          },
+          "parallel": true,
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+  },
+  "output": {
+    "chunkFormat": "commonjs",
+    "clean": false,
+    "filename": "bundle.js",
+    "library": {
+      "type": "commonjs",
+    },
+    "path": "/foo/bar/dist",
+    "publicPath": "/",
+  },
+  "performance": {
+    "hints": false,
+  },
+  "plugins": [
+    SnapsWebpackPlugin {
+      "options": {
+        "eval": true,
+        "manifestPath": "/foo/bar/snap.manifest.json",
+        "writeManifest": true,
+      },
+    },
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
+    DefinePlugin {
+      "definitions": {
+        "process.env.DEBUG": ""false"",
+        "process.env.NODE_DEBUG": ""false"",
+        "process.env.NODE_ENV": ""production"",
+      },
+    },
+    ProgressPlugin {
+      "dependenciesCount": 10000,
+      "handler": [Function],
+      "modulesCount": 5000,
+      "percentBy": undefined,
+      "profile": false,
+      "showActiveModules": false,
+      "showDependencies": true,
+      "showEntries": true,
+      "showModules": true,
+    },
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
+      },
+    },
+  ],
+  "resolve": {
+    "extensions": [
+      ".js",
+      ".mjs",
+      ".cjs",
+      ".ts",
+    ],
+    "fallback": {
+      "buffer": false,
+      "fs": false,
+      "path": false,
+    },
+    "plugins": [
+      SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
+        "unresolvedModules": Set {},
+      },
+    ],
+  },
+  "stats": "none",
+  "target": "browserslist:/foo/bar/.browserslistrc",
+}
+`;
+
 exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config and options 1`] = `
 {
   "devtool": false,
@@ -1329,7 +1636,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -1480,7 +1805,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -1622,7 +1965,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -1764,7 +2125,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -1915,7 +2294,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -2070,7 +2467,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -2206,7 +2621,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -2342,7 +2775,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],

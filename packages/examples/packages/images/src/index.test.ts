@@ -26,7 +26,7 @@ describe('onRpcRequest', () => {
 
   describe('getQrCode', () => {
     it('generates a QR code for the given data', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const response = request({
         method: 'getQrCode',
@@ -46,16 +46,14 @@ describe('onRpcRequest', () => {
       await ui.ok();
 
       expect(await response).toRespondWith(null);
-
-      await close();
     });
   });
 
   describe('getCat', () => {
-    // This test is flaky so we disable it for now
+    // This test is flaky, so we disable it for now.
     // eslint-disable-next-line jest/no-disabled-tests
     it.skip('shows a cat', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const response = request({
         method: 'getCat',
@@ -84,8 +82,66 @@ describe('onRpcRequest', () => {
       await ui.ok();
 
       expect(await response).toRespondWith(null);
+    });
+  });
 
-      await close();
+  describe('getSvgIcon', () => {
+    it('shows an SVG icon', async () => {
+      const { request } = await installSnap();
+
+      const response = request({
+        method: 'getSvgIcon',
+      });
+
+      const ui = await response.getInterface();
+      // eslint-disable-next-line jest/prefer-strict-equal
+      expect(ui.content).toEqual({
+        type: 'panel',
+        children: [
+          {
+            type: 'text',
+            value: 'Here is an SVG icon:',
+          },
+          {
+            type: 'image',
+            value: expect.stringContaining('<svg'),
+          },
+        ],
+      });
+
+      await ui.ok();
+
+      expect(await response).toRespondWith(null);
+    });
+  });
+
+  describe('getPngIcon', () => {
+    it('shows a PNG icon', async () => {
+      const { request } = await installSnap();
+
+      const response = request({
+        method: 'getPngIcon',
+      });
+
+      const ui = await response.getInterface();
+      // eslint-disable-next-line jest/prefer-strict-equal
+      expect(ui.content).toEqual({
+        type: 'panel',
+        children: [
+          {
+            type: 'text',
+            value: 'Here is a PNG icon:',
+          },
+          {
+            type: 'image',
+            value: expect.stringContaining('data:image/png;base64'),
+          },
+        ],
+      });
+
+      await ui.ok();
+
+      expect(await response).toRespondWith(null);
     });
   });
 });

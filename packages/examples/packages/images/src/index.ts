@@ -9,6 +9,9 @@ import {
 } from '@metamask/snaps-sdk';
 import { renderSVG } from 'uqr';
 
+import pngIcon from './images/icon.png';
+import svgIcon from './images/icon.svg';
+
 /**
  * The parameters for the `getQrCode` method.
  *
@@ -70,6 +73,32 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
               width: 400,
             }),
           ]),
+        },
+      });
+    }
+
+    case 'getSvgIcon': {
+      return await snap.request({
+        method: 'snap_dialog',
+        params: {
+          type: DialogType.Alert,
+
+          // `.svg` files are imported as strings, so they can be used directly
+          // with the `image` component.
+          content: panel([text('Here is an SVG icon:'), image(svgIcon)]),
+        },
+      });
+    }
+
+    case 'getPngIcon': {
+      return await snap.request({
+        method: 'snap_dialog',
+        params: {
+          type: DialogType.Alert,
+
+          // `.png` files are imported as SVGs containing an `<image>` tag,
+          // so they can be used directly with the `image` component.
+          content: panel([text('Here is a PNG icon:'), image(pngIcon)]),
         },
       });
     }

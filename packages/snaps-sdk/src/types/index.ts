@@ -1,6 +1,8 @@
 // This is intentionally imported, rather than re-exported.
-// eslint-disable-next-line import/no-unassigned-import
+/* eslint-disable import/no-unassigned-import */
 import './global';
+import './images';
+/* eslint-enable import/no-unassigned-import */
 
 export * from './caip';
 export * from './handlers';
