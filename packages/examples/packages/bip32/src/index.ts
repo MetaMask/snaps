@@ -1,4 +1,3 @@
-import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
 import {
   DialogType,
@@ -6,6 +5,9 @@ import {
   text,
   heading,
   copyable,
+  InvalidParamsError,
+  UserRejectedRequestError,
+  MethodNotFoundError,
 } from '@metamask/snaps-sdk';
 import {
   add0x,
@@ -46,9 +48,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       const { message, curve, ...params } = request.params as SignMessageParams;
 
       if (!message || typeof message !== 'string') {
-        throw rpcErrors.invalidParams({
-          message: `Invalid signature data: "${message}".`,
-        });
+        throw new InvalidParamsError(`Invalid signature data: "${message}".`);
       }
 
       const node = await getPrivateNode({ ...params, curve });
@@ -71,7 +71,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       });
 
       if (!approved) {
-        throw providerErrors.userRejectedRequest();
+        throw new UserRejectedRequestError();
       }
 
       if (curve === 'ed25519') {
@@ -95,10 +95,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       throw new Error(`Unsupported curve: ${String(curve)}.`);
     }
 
-    default: {
-      throw rpcErrors.methodNotFound({
-        data: { method: request.method },
-      });
-    }
+    default:
+      throw new MethodNotFoundError({ method: request.method });
   }
 };

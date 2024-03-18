@@ -30,7 +30,6 @@
     "lint:dependencies": "depcheck"
   },
   "dependencies": {
-    "@metamask/rpc-errors": "^6.2.1",
     "@metamask/snaps-sdk": "workspace:^"
   },
   "devDependencies": {

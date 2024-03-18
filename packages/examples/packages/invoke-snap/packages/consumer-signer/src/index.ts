@@ -1,5 +1,8 @@
-import { rpcErrors } from '@metamask/rpc-errors';
-import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
+import {
+  InvalidParamsError,
+  MethodNotFoundError,
+  type OnRpcRequestHandler,
+} from '@metamask/snaps-sdk';
 import { assert, stringToBytes } from '@metamask/utils';
 import { keccak_256 as keccak256 } from '@noble/hashes/sha3';
 
@@ -37,10 +40,9 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
 
       assert(
         path[1] === `bip32:60'`,
-        rpcErrors.invalidParams({
-          message:
-            "This snap only supports the Ethereum mainnet. Please use the `bip32:60'` coin type.",
-        }),
+        new InvalidParamsError(
+          "This snap only supports the Ethereum mainnet. Please use the `bip32:60'` coin type.",
+        ),
       );
 
       const account = await snap.request({
@@ -75,8 +77,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     }
 
     default:
-      throw rpcErrors.methodNotFound({
-        data: { method: request.method },
-      });
+      throw new MethodNotFoundError({ method: request.method });
   }
 };

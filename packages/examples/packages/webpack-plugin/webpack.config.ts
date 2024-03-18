@@ -35,7 +35,7 @@ const config: Configuration = {
     minimize: true,
     minimizer: [
       new TerserPlugin({
-        minify: TerserPlugin.swcMinify,
+        parallel: true,
       }),
     ],
   },

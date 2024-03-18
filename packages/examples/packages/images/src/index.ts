@@ -1,4 +1,3 @@
-import { rpcErrors } from '@metamask/rpc-errors';
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
 import {
   DialogType,
@@ -6,6 +5,7 @@ import {
   image,
   panel,
   text,
+  MethodNotFoundError,
 } from '@metamask/snaps-sdk';
 import { renderSVG } from 'uqr';
 
@@ -75,8 +75,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     }
 
     default:
-      throw rpcErrors.methodNotFound({
-        data: { method: request.method },
-      });
+      throw new MethodNotFoundError({ method: request.method });
   }
 };

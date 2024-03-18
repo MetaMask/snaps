@@ -1,6 +1,12 @@
-import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
-import { panel, heading, copyable, text } from '@metamask/snaps-sdk';
+import {
+  panel,
+  heading,
+  copyable,
+  text,
+  UserRejectedRequestError,
+  MethodNotFoundError,
+} from '@metamask/snaps-sdk';
 import { Wallet } from 'ethers';
 
 import type { SignMessageParams } from './types';
@@ -50,15 +56,13 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       });
 
       if (!result) {
-        throw providerErrors.userRejectedRequest();
+        throw new UserRejectedRequestError();
       }
 
       return wallet.signMessage(params.message);
     }
 
     default:
-      throw rpcErrors.methodNotFound({
-        data: { method: request.method },
-      });
+      throw new MethodNotFoundError({ method: request.method });
   }
 };
