@@ -225,7 +225,7 @@ export const Icon: ForwardRefExoticComponent<IconProps> = forwardRef(
     return (
       <Image
         ref={ref}
-        src={src}
+        src={src as string}
         alt={alt}
         width={width}
         height={height}
