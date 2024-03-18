@@ -91,9 +91,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
 
     default:
       throw new MethodNotFoundError({
-        data: {
-          method: request.method,
-        },
+        method: request.method,
       });
   }
 };
