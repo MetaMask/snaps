@@ -63,8 +63,8 @@ function assertHasInterface(
   actual: unknown,
   matcherName: string,
   options?: MatcherHintOptions,
-): asserts actual is { content: Component } {
-  if (!is(actual, InterfaceStruct) || !actual.content) {
+): asserts actual is { getInterface(): Component } {
+  if (!is(actual, InterfaceStruct) || !actual.getInterface) {
     throw new Error(
       matcherErrorMessage(
         matcherHint(matcherName, undefined, undefined, options),
@@ -185,7 +185,8 @@ export const toRender: MatcherFunction<[expected: Component]> = function (
 ) {
   assertHasInterface(actual, 'toRender');
 
-  const { content } = actual;
+  const content = actual.getInterface();
+
   const pass = this.equals(content, expected);
 
   // This is typed as `string | null`, but in practice it's always a string. The

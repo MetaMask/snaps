@@ -8,7 +8,7 @@ import {
   getRestrictedSnapInterfaceControllerMessenger,
   getRootControllerMessenger,
 } from '../test-utils';
-import { getContentFromResult, handleRequest } from './request';
+import { handleRequest } from './request';
 import { handleInstallSnap } from './simulation';
 
 describe('handleRequest', () => {

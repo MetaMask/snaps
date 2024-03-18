@@ -1,15 +1,22 @@
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
-import type { SnapId, Component } from '@metamask/snaps-sdk';
+import type { SnapId } from '@metamask/snaps-sdk';
 import type { HandlerType } from '@metamask/snaps-utils';
 import { unwrapError } from '@metamask/snaps-utils';
 import { getSafeJson, hasProperty, isPlainObject } from '@metamask/utils';
 import { nanoid } from '@reduxjs/toolkit';
 
-import type { RequestOptions, SnapRequest } from '../types';
+import type {
+  RequestOptions,
+  SnapInterfaceActions,
+  SnapInterfaceResponse,
+  SnapRequest,
+} from '../types';
 import {
   clearNotifications,
+  clickElement,
   getInterface,
   getNotifications,
+  typeInField,
 } from './simulation';
 import type { RunSagaFunction, Store } from './simulation';
 import type { RootControllerMessenger } from './simulation/controllers';
@@ -67,15 +74,17 @@ export function handleRequest({
       const notifications = getNotifications(store.getState());
       store.dispatch(clearNotifications());
 
-      const content = getContentFromResult(result, snapId, controllerMessenger);
-
       return {
         id: String(id),
         response: {
           result: getSafeJson(result),
         },
         notifications,
-        content,
+        getInterface: getInterfaceFromResult(
+          result,
+          snapId,
+          controllerMessenger,
+        ),
       };
     })
     .catch((error) => {
@@ -103,29 +112,58 @@ export function handleRequest({
 }
 
 /**
- * Get the response content either from the SnapInterfaceController or the response object if there is one.
+ * Get the response content from the SnapInterfaceController and include the interaction methods.
  *
  * @param result - The handler result object.
  * @param snapId - The Snap ID.
  * @param controllerMessenger - The controller messenger.
  * @returns The content components if any.
  */
-export function getContentFromResult(
+export function getInterfaceFromResult(
   result: unknown,
   snapId: SnapId,
   controllerMessenger: RootControllerMessenger,
-): Component | undefined {
+): (() => SnapInterfaceResponse) | undefined {
   if (isPlainObject(result) && hasProperty(result, 'id')) {
-    return controllerMessenger.call(
-      'SnapInterfaceController:getInterface',
-      snapId,
-      result.id as string,
-    ).content;
-  }
+    return () => {
+      const { content } = controllerMessenger.call(
+        'SnapInterfaceController:getInterface',
+        snapId,
+        result.id as string,
+      );
 
-  if (isPlainObject(result) && hasProperty(result, 'content')) {
-    return result.content as Component;
-  }
+      const clickElementFn: SnapInterfaceActions['clickElement'] = async (
+        name,
+      ) => {
+        await clickElement(
+          controllerMessenger,
+          result.id as string,
+          content,
+          snapId,
+          name,
+        );
+      };
 
+      const typeInFieldFn: SnapInterfaceActions['typeInField'] = async (
+        name,
+        value,
+      ) => {
+        await typeInField(
+          controllerMessenger,
+          result.id as string,
+          content,
+          snapId,
+          name,
+          value,
+        );
+      };
+
+      return {
+        content,
+        clickElement: clickElementFn,
+        typeInField: typeInFieldFn,
+      };
+    };
+  }
   return undefined;
 }

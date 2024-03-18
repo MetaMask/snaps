@@ -29,17 +29,21 @@ async function getResolve(runSaga: RunSagaFunction) {
 }
 
 describe('getInterfaceResponse', () => {
+  const interfaceActions = { clickElement: jest.fn(), typeInField: jest.fn() };
   it('returns an `ok` function that resolves the user interface with `null` for alert dialogs', async () => {
     const { runSaga } = createStore('password', getMockOptions());
     const response = getInterfaceResponse(
       runSaga,
       DialogType.Alert,
       text('foo'),
+      interfaceActions,
     );
 
     expect(response).toStrictEqual({
       type: DialogType.Alert,
       content: text('foo'),
+      clickElement: expect.any(Function),
+      typeInField: expect.any(Function),
       ok: expect.any(Function),
     });
 
@@ -54,11 +58,14 @@ describe('getInterfaceResponse', () => {
       runSaga,
       DialogType.Confirmation,
       text('foo'),
+      interfaceActions,
     );
 
     expect(response).toStrictEqual({
       type: DialogType.Confirmation,
       content: text('foo'),
+      clickElement: expect.any(Function),
+      typeInField: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -74,12 +81,15 @@ describe('getInterfaceResponse', () => {
       runSaga,
       DialogType.Confirmation,
       text('foo'),
+      interfaceActions,
     );
 
     assert(response.type === DialogType.Confirmation);
     expect(response).toStrictEqual({
       type: DialogType.Confirmation,
       content: text('foo'),
+      clickElement: expect.any(Function),
+      typeInField: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -95,11 +105,14 @@ describe('getInterfaceResponse', () => {
       runSaga,
       DialogType.Prompt,
       text('foo'),
+      interfaceActions,
     );
 
     expect(response).toStrictEqual({
       type: DialogType.Prompt,
       content: text('foo'),
+      clickElement: expect.any(Function),
+      typeInField: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -115,11 +128,14 @@ describe('getInterfaceResponse', () => {
       runSaga,
       DialogType.Prompt,
       text('foo'),
+      interfaceActions,
     );
 
     expect(response).toStrictEqual({
       type: DialogType.Prompt,
       content: text('foo'),
+      clickElement: expect.any(Function),
+      typeInField: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -135,12 +151,15 @@ describe('getInterfaceResponse', () => {
       runSaga,
       DialogType.Prompt,
       text('foo'),
+      interfaceActions,
     );
 
     assert(response.type === DialogType.Prompt);
     expect(response).toStrictEqual({
       type: DialogType.Prompt,
       content: text('foo'),
+      clickElement: expect.any(Function),
+      typeInField: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -189,6 +208,8 @@ describe('getInterface', () => {
     expect(result).toStrictEqual({
       type,
       content,
+      clickElement: expect.any(Function),
+      typeInField: expect.any(Function),
       ok: expect.any(Function),
     });
   });
@@ -215,6 +236,8 @@ describe('getInterface', () => {
     expect(result).toStrictEqual({
       type,
       content,
+      clickElement: expect.any(Function),
+      typeInField: expect.any(Function),
       ok: expect.any(Function),
     });
   });
