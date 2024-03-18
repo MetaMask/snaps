@@ -231,7 +231,7 @@ describe('formatText', () => {
   });
 });
 
-describe('getImage', () => {
+describe('getImageSVG', () => {
   it('returns an SVG string for a PNG image', () => {
     const image = getImageSVG('image/png', new Uint8Array([1, 2, 3]));
     expect(image).toMatchInlineSnapshot(
