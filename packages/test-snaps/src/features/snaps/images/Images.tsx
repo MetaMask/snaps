@@ -13,7 +13,9 @@ export const Images: FunctionComponent = () => {
       version={IMAGES_VERSION}
       testId="images"
     >
-      <ShowImage />
+      <ShowImage name="Cat" method="getCat" />
+      <ShowImage name="SVG" method="getSvgIcon" />
+      <ShowImage name="PNG" method="getPngIcon" />
       <ShowQr />
     </Snap>
   );

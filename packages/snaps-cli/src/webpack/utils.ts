@@ -1,3 +1,4 @@
+import { bytesToBase64 } from '@metamask/utils';
 import { dim } from 'chalk';
 import { promises as fs } from 'fs';
 import { builtinModules } from 'module';
@@ -360,4 +361,16 @@ export function formatText(
       return formatLine(line, indent, lineIndent);
     })
     .join('\n');
+}
+
+/**
+ * Get an SVG from the given bytes and mime type.
+ *
+ * @param mimeType - The mime type of the image.
+ * @param bytes - The image bytes.
+ * @returns The SVG.
+ */
+export function getImageSVG(mimeType: string, bytes: Uint8Array) {
+  const dataUrl = `data:${mimeType};base64,${bytesToBase64(bytes)}`;
+  return `<svg xmlns="http://www.w3.org/2000/svg"><image href="${dataUrl}" /></svg>`;
 }

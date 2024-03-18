@@ -19,6 +19,7 @@ import {
   getDevTool,
   getEnvironmentVariables,
   getFallbacks,
+  getImageSVG,
   getProgressHandler,
 } from './utils';
 
@@ -199,9 +200,40 @@ export async function getDefaultConfiguration(
          * @see https://webpack.js.org/configuration/module/#resolvefullyspecified
          */
         {
-          test: /\.m?js/u,
+          test: /\.m?js$/u,
           resolve: {
             fullySpecified: false,
+          },
+        },
+
+        /**
+         * This allows importing `.svg` files as a string.
+         */
+        {
+          test: /\.svg$/u,
+          // `asset/source` returns the source as a UTF-8 string.
+          type: 'asset/source',
+        },
+
+        /**
+         * This allows importing `.png` files as a data URL.
+         */
+        {
+          test: /\.png$/u,
+          type: 'asset/inline',
+          generator: {
+            dataUrl: getImageSVG.bind(null, 'image/png'),
+          },
+        },
+
+        /**
+         * This allows importing `.jpe?g` files as a data URL.
+         */
+        {
+          test: /\.jpe?g$/u,
+          type: 'asset/inline',
+          generator: {
+            dataUrl: getImageSVG.bind(null, 'image/jpeg'),
           },
         },
 

@@ -13,6 +13,7 @@ import {
   pluralize,
   getEnvironmentVariables,
   formatText,
+  getImageSVG,
 } from './utils';
 
 describe('getDefaultLoader', () => {
@@ -227,5 +228,21 @@ describe('formatText', () => {
       "  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eget nulla mattis, sollicitudin enim tincidunt, vulputate libero.
         Pellentesque neque sapien, lobortis eu elit in, suscipit aliquet augue."
     `);
+  });
+});
+
+describe('getImage', () => {
+  it('returns an SVG string for a PNG image', () => {
+    const image = getImageSVG('image/png', new Uint8Array([1, 2, 3]));
+    expect(image).toMatchInlineSnapshot(
+      `"<svg xmlns="http://www.w3.org/2000/svg"><image href="data:image/png;base64,AQID" /></svg>"`,
+    );
+  });
+
+  it('returns an SVG string for a JPEG image', () => {
+    const image = getImageSVG('image/jpeg', new Uint8Array([1, 2, 3]));
+    expect(image).toMatchInlineSnapshot(
+      `"<svg xmlns="http://www.w3.org/2000/svg"><image href="data:image/jpeg;base64,AQID" /></svg>"`,
+    );
   });
 });
