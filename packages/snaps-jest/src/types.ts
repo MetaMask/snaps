@@ -340,7 +340,7 @@ export type Snap = {
   close(): Promise<void>;
 };
 
-export type SnapInterfaceResponse = {
+export type SnapHandlerInterface = {
   content: Component;
 } & SnapInterfaceActions;
 
@@ -352,7 +352,7 @@ export type SnapResponseWithInterface = {
     message: string;
     type: EnumToUnion<NotificationType>;
   }[];
-  getInterface(): SnapInterfaceResponse;
+  getInterface(): SnapHandlerInterface;
 };
 
 export type SnapResponseWithoutInterface = Omit<

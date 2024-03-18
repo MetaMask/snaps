@@ -1,4 +1,8 @@
-import { NotificationType, enumValue } from '@metamask/snaps-sdk';
+import {
+  ComponentStruct,
+  NotificationType,
+  enumValue,
+} from '@metamask/snaps-sdk';
 import {
   bytesToHex,
   JsonStruct,
@@ -22,6 +26,7 @@ import {
   record,
   any,
   func,
+  type,
 } from 'superstruct';
 
 // TODO: Export this from `@metamask/utils` instead.
@@ -199,8 +204,8 @@ export const JsonRpcMockOptionsStruct = object({
   result: JsonStruct,
 });
 
-export const InterfaceStruct = object({
-  getInterface: func(),
+export const InterfaceStruct = type({
+  content: optional(ComponentStruct),
 });
 
 export const SnapResponseWithoutInterfaceStruct = object({
@@ -229,7 +234,9 @@ export const SnapResponseWithoutInterfaceStruct = object({
 
 export const SnapResponseWithInterfaceStruct = assign(
   SnapResponseWithoutInterfaceStruct,
-  InterfaceStruct,
+  object({
+    getInterface: func(),
+  }),
 );
 
 export const SnapResponseStruct = union([

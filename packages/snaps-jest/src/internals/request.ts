@@ -7,8 +7,8 @@ import { nanoid } from '@reduxjs/toolkit';
 
 import type {
   RequestOptions,
+  SnapHandlerInterface,
   SnapInterfaceActions,
-  SnapInterfaceResponse,
   SnapRequest,
 } from '../types';
 import {
@@ -74,17 +74,19 @@ export function handleRequest({
       const notifications = getNotifications(store.getState());
       store.dispatch(clearNotifications());
 
+      const getInterfaceFn = getInterfaceFromResult(
+        result,
+        snapId,
+        controllerMessenger,
+      );
+
       return {
         id: String(id),
         response: {
           result: getSafeJson(result),
         },
         notifications,
-        getInterface: getInterfaceFromResult(
-          result,
-          snapId,
-          controllerMessenger,
-        ),
+        ...(getInterfaceFn ? { getInterface: getInterfaceFn } : {}),
       };
     })
     .catch((error) => {
@@ -123,7 +125,7 @@ export function getInterfaceFromResult(
   result: unknown,
   snapId: SnapId,
   controllerMessenger: RootControllerMessenger,
-): (() => SnapInterfaceResponse) | undefined {
+): (() => SnapHandlerInterface) | undefined {
   if (isPlainObject(result) && hasProperty(result, 'id')) {
     return () => {
       const { content } = controllerMessenger.call(

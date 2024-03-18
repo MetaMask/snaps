@@ -117,10 +117,46 @@ describe('onHomePage', () => {
 
     const response = await onHomePage();
 
-    expect(response).toRender(
+    const startScreen = response.getInterface();
+
+    expect(startScreen).toRender(
       panel([
         heading('Interactive UI Example Snap'),
         button({ value: 'Update UI', name: 'update' }),
+      ]),
+    );
+
+    await startScreen.clickElement('update');
+
+    const formScreen = response.getInterface();
+
+    expect(formScreen).toRender(
+      panel([
+        heading('Interactive UI Example Snap'),
+        form({
+          name: 'example-form',
+          children: [
+            input({
+              name: 'example-input',
+              placeholder: 'Enter something...',
+            }),
+            button('Submit', ButtonType.Submit, 'submit'),
+          ],
+        }),
+      ]),
+    );
+
+    await formScreen.typeInField('example-input', 'foobar');
+
+    await formScreen.clickElement('submit');
+
+    const resultScreen = response.getInterface();
+
+    expect(resultScreen).toRender(
+      panel([
+        heading('Interactive UI Example Snap'),
+        text('The submitted value is:'),
+        copyable('foobar'),
       ]),
     );
   });
@@ -140,11 +176,24 @@ describe('onTransaction', () => {
       data: '0xa9059cbb00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
     });
 
-    expect(response).toRender(
+    const startScreen = response.getInterface();
+
+    expect(startScreen).toRender(
       panel([
         row('From', address(FROM_ADDRESS)),
         row('To', address(TO_ADDRESS)),
         button({ value: 'See transaction type', name: 'transaction-type' }),
+      ]),
+    );
+
+    await startScreen.clickElement('transaction-type');
+
+    const txTypeScreen = response.getInterface();
+
+    expect(txTypeScreen).toRender(
+      panel([
+        row('Transaction type', text('ERC-20')),
+        button({ value: 'Go back', name: 'go-back' }),
       ]),
     );
   });
