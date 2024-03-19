@@ -4115,8 +4115,8 @@ __metadata:
   linkType: soft
 
 "@metamask/controller-utils@npm:^9.0.1":
-  version: 9.0.1
-  resolution: "@metamask/controller-utils@npm:9.0.1"
+  version: 9.0.2
+  resolution: "@metamask/controller-utils@npm:9.0.2"
   dependencies:
     "@ethereumjs/util": ^8.1.0
     "@metamask/eth-query": ^4.0.0
@@ -4127,7 +4127,7 @@ __metadata:
     bn.js: ^5.2.1
     eth-ens-namehash: ^2.0.8
     fast-deep-equal: ^3.1.3
-  checksum: 8f3eba1b46ea03825e9111204266db871b019362e44ee4535fd272cb1b67da03f43fe747a5d9c0d483b33095ce1333e4bd82c4375e362ab598e3198552a8566c
+  checksum: 06e1e33275aba4a54ee5a99fa2ca614a089f9e0d4369d700694bad0386af2492f0aa9337124db41afb54ffe4c9cb89055f6e05810333436b20be7d7da133aa45
   languageName: node
   linkType: hard
 
