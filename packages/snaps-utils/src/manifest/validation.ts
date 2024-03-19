@@ -199,7 +199,7 @@ export const PermissionsStruct = type({
   ),
   'endowment:network-access': optional(object({})),
   'endowment:page-home': optional(HandlerCaveatsStruct),
-  'endowment:rpc': optional(RpcOriginsStruct),
+  'endowment:rpc': optional(assign(HandlerCaveatsStruct, RpcOriginsStruct)),
   'endowment:signature-insight': optional(
     assign(
       HandlerCaveatsStruct,
