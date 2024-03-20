@@ -175,9 +175,10 @@ export const HandlerCaveatsStruct = object({
 
 export type HandlerCaveats = Infer<typeof HandlerCaveatsStruct>;
 
-export const EmptyObjectStruct = optional(
-  object<EmptyObject>({}) as unknown as Struct<EmptyObject, null>,
-);
+export const EmptyObjectStruct = object<EmptyObject>({}) as unknown as Struct<
+  EmptyObject,
+  null
+>;
 
 /* eslint-disable @typescript-eslint/naming-convention */
 export const PermissionsStruct: Describe<InitialPermissions> = type({
@@ -187,7 +188,7 @@ export const PermissionsStruct: Describe<InitialPermissions> = type({
       object({ jobs: CronjobSpecificationArrayStruct }),
     ),
   ),
-  'endowment:ethereum-provider': EmptyObjectStruct,
+  'endowment:ethereum-provider': optional(EmptyObjectStruct),
   'endowment:keyring': optional(
     assign(HandlerCaveatsStruct, KeyringOriginsStruct),
   ),
@@ -201,7 +202,7 @@ export const PermissionsStruct: Describe<InitialPermissions> = type({
       }),
     ),
   ),
-  'endowment:network-access': EmptyObjectStruct,
+  'endowment:network-access': optional(EmptyObjectStruct),
   'endowment:page-home': optional(HandlerCaveatsStruct),
   'endowment:rpc': optional(assign(HandlerCaveatsStruct, RpcOriginsStruct)),
   'endowment:signature-insight': optional(
@@ -220,11 +221,11 @@ export const PermissionsStruct: Describe<InitialPermissions> = type({
       }),
     ),
   ),
-  'endowment:webassembly': EmptyObjectStruct,
-  snap_dialog: EmptyObjectStruct,
-  snap_manageState: EmptyObjectStruct,
-  snap_manageAccounts: EmptyObjectStruct,
-  snap_notify: EmptyObjectStruct,
+  'endowment:webassembly': optional(EmptyObjectStruct),
+  snap_dialog: optional(EmptyObjectStruct),
+  snap_manageState: optional(EmptyObjectStruct),
+  snap_manageAccounts: optional(EmptyObjectStruct),
+  snap_notify: optional(EmptyObjectStruct),
   snap_getBip32Entropy: optional(SnapGetBip32EntropyPermissionsStruct),
   snap_getBip32PublicKey: optional(SnapGetBip32EntropyPermissionsStruct),
   snap_getBip44Entropy: optional(
@@ -234,8 +235,8 @@ export const PermissionsStruct: Describe<InitialPermissions> = type({
       Infinity,
     ),
   ),
-  snap_getEntropy: EmptyObjectStruct,
-  snap_getLocale: EmptyObjectStruct,
+  snap_getEntropy: optional(EmptyObjectStruct),
+  snap_getLocale: optional(EmptyObjectStruct),
   wallet_snap: optional(SnapIdsStruct),
 });
 /* eslint-enable @typescript-eslint/naming-convention */
