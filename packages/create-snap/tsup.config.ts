@@ -9,6 +9,7 @@ const { default: baseConfig } = require('../../tsup.config');
 
 const config: Options = {
   name: packageJson.name,
+  external: ['@metamask/create-snap'],
   platform: 'node',
 };
 

@@ -10,7 +10,8 @@ import pathUtils from 'path';
 import type { SemVer } from 'semver';
 import semver from 'semver';
 
-import cliPackageJson from '../../../package.json';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import cliPackageJson from '@metamask/create-snap/package.json';
 import type { YargsArgs } from '../../types/yargs';
 import {
   buildSnap,
