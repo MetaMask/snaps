@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.0]
 ### Changed
-- Add support for importing SVG, PNG, and JPEG files directly ([#2284](https://github.com/MetaMask/snaps/pull/2284))
+- Add example showing how to import and use images ([#2284](https://github.com/MetaMask/snaps/pull/2284))
 - Use error wrappers ([#2178](https://github.com/MetaMask/snaps/pull/2178))
 
 ## [1.0.0]

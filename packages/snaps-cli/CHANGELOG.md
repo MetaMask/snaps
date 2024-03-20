@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [6.1.0]
 ### Added
 - Add support for importing SVG, PNG, and JPEG files directly ([#2284](https://github.com/MetaMask/snaps/pull/2284))
+  - You can now import these files using a regular import declaration when using the Webpack-based config.
+  - To opt out of this feature (i.e., to use custom image loading logic), add the following to your config:
+    ```ts
+    {
+      features: {
+        images: false,
+      },
+    }
+    ```
 
 ### Changed
 - Update CLI docs link ([#2294](https://github.com/MetaMask/snaps/pull/2294))
