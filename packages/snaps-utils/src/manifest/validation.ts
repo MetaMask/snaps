@@ -1,5 +1,5 @@
 import { isValidBIP32PathSegment } from '@metamask/key-tree';
-import type { InitialPermissions } from '@metamask/snaps-sdk';
+import type { EmptyObject, InitialPermissions } from '@metamask/snaps-sdk';
 import {
   assertStruct,
   ChecksumStruct,
@@ -175,6 +175,10 @@ export const HandlerCaveatsStruct = object({
 
 export type HandlerCaveats = Infer<typeof HandlerCaveatsStruct>;
 
+export const EmptyObjectStruct = optional(
+  object<EmptyObject>({}) as unknown as Struct<EmptyObject, null>,
+);
+
 /* eslint-disable @typescript-eslint/naming-convention */
 export const PermissionsStruct: Describe<InitialPermissions> = type({
   'endowment:cronjob': optional(
@@ -183,7 +187,7 @@ export const PermissionsStruct: Describe<InitialPermissions> = type({
       object({ jobs: CronjobSpecificationArrayStruct }),
     ),
   ),
-  'endowment:ethereum-provider': optional(object({})),
+  'endowment:ethereum-provider': EmptyObjectStruct,
   'endowment:keyring': optional(
     assign(HandlerCaveatsStruct, KeyringOriginsStruct),
   ),
@@ -197,7 +201,7 @@ export const PermissionsStruct: Describe<InitialPermissions> = type({
       }),
     ),
   ),
-  'endowment:network-access': optional(object({})),
+  'endowment:network-access': EmptyObjectStruct,
   'endowment:page-home': optional(HandlerCaveatsStruct),
   'endowment:rpc': optional(assign(HandlerCaveatsStruct, RpcOriginsStruct)),
   'endowment:signature-insight': optional(
@@ -216,11 +220,11 @@ export const PermissionsStruct: Describe<InitialPermissions> = type({
       }),
     ),
   ),
-  'endowment:webassembly': optional(object({})),
-  snap_dialog: optional(object({})),
-  snap_manageState: optional(object({})),
-  snap_manageAccounts: optional(object({})),
-  snap_notify: optional(object({})),
+  'endowment:webassembly': EmptyObjectStruct,
+  snap_dialog: EmptyObjectStruct,
+  snap_manageState: EmptyObjectStruct,
+  snap_manageAccounts: EmptyObjectStruct,
+  snap_notify: EmptyObjectStruct,
   snap_getBip32Entropy: optional(SnapGetBip32EntropyPermissionsStruct),
   snap_getBip32PublicKey: optional(SnapGetBip32EntropyPermissionsStruct),
   snap_getBip44Entropy: optional(
@@ -230,8 +234,8 @@ export const PermissionsStruct: Describe<InitialPermissions> = type({
       Infinity,
     ),
   ),
-  snap_getEntropy: optional(object({})),
-  snap_getLocale: optional(object({})),
+  snap_getEntropy: EmptyObjectStruct,
+  snap_getLocale: EmptyObjectStruct,
   wallet_snap: optional(SnapIdsStruct),
 });
 /* eslint-enable @typescript-eslint/naming-convention */

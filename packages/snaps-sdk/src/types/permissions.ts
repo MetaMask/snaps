@@ -2,8 +2,7 @@ import type { JsonRpcRequest } from '@metamask/utils';
 
 import type { ChainId } from './caip';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export type EmptyObject = {};
+export type EmptyObject = Record<string, never>;
 
 export type Cronjob = {
   expression: string;
