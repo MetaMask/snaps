@@ -8,7 +8,7 @@ import {
   inMilliseconds,
   Duration,
 } from '@metamask/utils';
-import type { Infer, Struct } from 'superstruct';
+import type { Describe, Infer, Struct } from 'superstruct';
 import {
   array,
   boolean,
@@ -176,7 +176,7 @@ export const HandlerCaveatsStruct = object({
 export type HandlerCaveats = Infer<typeof HandlerCaveatsStruct>;
 
 /* eslint-disable @typescript-eslint/naming-convention */
-export const PermissionsStruct = type({
+export const PermissionsStruct: Describe<InitialPermissions> = type({
   'endowment:cronjob': optional(
     assign(
       HandlerCaveatsStruct,

@@ -2,12 +2,25 @@ import type { JsonRpcRequest } from '@metamask/utils';
 
 import type { ChainId } from './caip';
 
-export type EmptyObject = Record<string, never>;
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type EmptyObject = {};
 
 export type Cronjob = {
   expression: string;
   request: Omit<JsonRpcRequest, 'jsonrpc' | 'id'>;
 };
+
+export type NameLookupMatchers =
+  | {
+      tlds: string[];
+    }
+  | {
+      schemes: string[];
+    }
+  | {
+      tlds: string[];
+      schemes: string[];
+    };
 
 export type Bip32Entropy = {
   curve: 'secp256k1' | 'ed25519';
@@ -37,7 +50,7 @@ export type InitialPermissions = Partial<{
   };
   'endowment:name-lookup': {
     chains?: ChainId[];
-    matchers?: { tlds?: string[]; schemes?: string[] };
+    matchers?: NameLookupMatchers;
     maxRequestTime?: number;
   };
   'endowment:network-access': EmptyObject;
