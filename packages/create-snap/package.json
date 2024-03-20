@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^8.3.0",
+    "semver": "^7.5.4",
     "yargs": "^17.7.1"
   },
   "devDependencies": {

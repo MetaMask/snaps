@@ -4205,7 +4205,6 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/snaps-utils": "workspace:^"
-    "@metamask/utils": ^8.3.0
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
     "@types/jest": ^27.5.1
@@ -4230,6 +4229,7 @@ __metadata:
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     rimraf: ^4.1.2
+    semver: ^7.5.4
     ts-node: ^10.9.1
     tsc-watch: ^4.5.0
     tsup: ^8.0.1
