@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-jest",
-  "version": "6.0.1",
+  "version": "6.0.2",
   "description": "A Jest preset for end-to-end testing MetaMask Snaps, including a Jest environment, and a set of Jest matchers.",
   "sideEffects": false,
   "exports": {

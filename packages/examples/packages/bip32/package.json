@@ -1,6 +1,6 @@
 {
   "name": "@metamask/bip32-example-snap",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "MetaMask example snap demonstrating the use of `snap_getBip32Entropy`.",
   "repository": {
     "type": "git",

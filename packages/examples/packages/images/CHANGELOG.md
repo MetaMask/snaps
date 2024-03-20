@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0]
+
 ### Uncategorized
 
 - Add support for importing SVG, PNG, and JPEG files directly ([#2284](https://github.com/MetaMask/snaps-skunkworks.git/pull/2284))
@@ -25,5 +27,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add images example Snap ([#2002](https://github.com/MetaMask/snaps/pull/2002))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/images-example-snap@1.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/images-example-snap@1.1.0...HEAD
+[1.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/images-example-snap@1.0.0...@metamask/images-example-snap@1.1.0
 [1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/images-example-snap@1.0.0
