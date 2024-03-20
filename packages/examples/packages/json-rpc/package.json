@@ -1,6 +1,6 @@
 {
   "name": "@metamask/json-rpc-example-snap",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "MetaMask example snap demonstrating the use of the `endowment:rpc` permission.",
   "repository": {
     "type": "git",

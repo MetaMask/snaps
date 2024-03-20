@@ -6,6 +6,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.1.0]
+### Added
+- Add support for importing SVG, PNG, and JPEG files directly ([#2284](https://github.com/MetaMask/snaps/pull/2284))
+  - You can now import these files using a regular import declaration when using the Webpack-based config.
+  - To opt out of this feature (i.e., to use custom image loading logic), add the following to your config:
+    ```ts
+    {
+      features: {
+        images: false,
+      },
+    }
+    ```
+
+### Changed
+- Update CLI docs link ([#2294](https://github.com/MetaMask/snaps/pull/2294))
+
+### Fixed
+- Fix detection of minimum Node.js version ([#2292](https://github.com/MetaMask/snaps/pull/2292))
+
 ## [6.0.2]
 ### Fixed
 - Publish `.browserslistrc` ([#2227](https://github.com/MetaMask/snaps/pull/2227))
@@ -127,7 +146,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.0.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.1.0...HEAD
+[6.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.0.2...@metamask/snaps-cli@6.1.0
 [6.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.0.1...@metamask/snaps-cli@6.0.2
 [6.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.0.0...@metamask/snaps-cli@6.0.1
 [6.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@5.1.1...@metamask/snaps-cli@6.0.0

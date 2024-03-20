@@ -1,5 +1,5 @@
 {
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "MetaMask example snap demonstrating the use of `snap_dialog`.",
   "proposedName": "Dialog Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "0EWOdxj1/tE41ruHFjRCOvD5GNYROKzwlrjya39HVVw=",
+    "shasum": "2omN9u/lT2cXPZ3O6j4wG3W3HBn/6No9JxH4ncqUG6M=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
