@@ -720,8 +720,7 @@ export type ProcessedConfig = ProcessedWebpackConfig;
 export function getConfig(config: unknown, argv: YargsArgs): ProcessedConfig {
   const prefix = 'The snap config file is invalid';
   const suffix = dim(
-    // TODO: Link to `docs.metamask.io` once the docs are published.
-    'Refer to the documentation for more information: https://github.com/MetaMask/snaps/tree/main/packages/snaps-cli/',
+    'Refer to the documentation for more information: https://docs.metamask.io/snaps/reference/cli/options/',
   );
 
   const { bundler } = createFromStruct(
