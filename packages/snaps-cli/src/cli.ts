@@ -1,10 +1,10 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import packageJson from '@metamask/snaps-cli/package.json';
 import type { SemVer } from 'semver';
 import semver from 'semver';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-import packageJson from '@metamask/snaps-cli/package.json';
 import builders from './builders';
 import { getConfigByArgv } from './config';
 import { error, getYargsErrorMessage, sanitizeInputs } from './utils';
