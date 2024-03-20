@@ -5,11 +5,12 @@ import {
   createSnapManifest,
   logInfo,
 } from '@metamask/snaps-utils/node';
-import type { SemVerRange, SemVerVersion } from '@metamask/utils';
-import { satisfiesVersionRange } from '@metamask/utils';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
+import type { SemVer } from 'semver';
+import semver from 'semver';
 
+import cliPackageJson from '../../../package.json';
 import type { YargsArgs } from '../../types/yargs';
 import {
   buildSnap,
@@ -21,8 +22,6 @@ import {
   SNAP_LOCATION,
   yarnInstall,
 } from './initUtils';
-
-const SATISFIED_VERSION = '>=18.16.0' as SemVerRange;
 
 /**
  * Creates a new snap package, based on one of the provided templates. This
@@ -37,14 +36,14 @@ const SATISFIED_VERSION = '>=18.16.0' as SemVerRange;
 export async function initHandler(argv: YargsArgs) {
   const { directory } = argv;
 
-  const isVersionSupported = satisfiesVersionRange(
-    process.version as SemVerVersion,
-    SATISFIED_VERSION,
-  );
+  const versionRange = cliPackageJson.engines.node;
+  const minimumVersion = (semver.minVersion(versionRange) as SemVer).format();
+
+  const isVersionSupported = semver.satisfies(process.version, versionRange);
 
   if (!isVersionSupported) {
     throw new Error(
-      `Init Error: You are using an outdated version of Node (${process.version}). Please update to Node ${SATISFIED_VERSION}.`,
+      `Init Error: You are using an outdated version of Node (${process.version}). Please update to Node ${minimumVersion} or later.`,
     );
   }
 

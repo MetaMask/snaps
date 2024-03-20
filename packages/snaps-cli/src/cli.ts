@@ -1,12 +1,12 @@
+import type { SemVer } from 'semver';
 import semver from 'semver';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
+import packageJson from '../package.json';
 import builders from './builders';
 import { getConfigByArgv } from './config';
 import { error, getYargsErrorMessage, sanitizeInputs } from './utils';
-
-const MINIMUM_NODE_18_VERSION = '18.16.0';
 
 /**
  * Check the Node version. If the Node version is less than the minimum required
@@ -17,18 +17,12 @@ const MINIMUM_NODE_18_VERSION = '18.16.0';
 export function checkNodeVersion(
   nodeVersion: string = process.version.slice(1),
 ) {
-  const majorVersion = semver.major(nodeVersion);
-  const message = `Node version ${nodeVersion} is not supported. Please use Node ${MINIMUM_NODE_18_VERSION} or later.`;
+  const versionRange = packageJson.engines.node;
+  const minimumVersion = (semver.minVersion(versionRange) as SemVer).format();
 
-  if (majorVersion < 18) {
-    error(message);
-    // eslint-disable-next-line n/no-process-exit
-    process.exit(1);
-  }
-
-  if (majorVersion === 18 && semver.lt(nodeVersion, MINIMUM_NODE_18_VERSION)) {
+  if (!semver.satisfies(nodeVersion, versionRange)) {
     error(
-      `Node version ${nodeVersion} is not supported. Please use Node ${MINIMUM_NODE_18_VERSION} or later.`,
+      `Node version ${nodeVersion} is not supported. Please use Node ${minimumVersion} or later.`,
     );
     // eslint-disable-next-line n/no-process-exit
     process.exit(1);
