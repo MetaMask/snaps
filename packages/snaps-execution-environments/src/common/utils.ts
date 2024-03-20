@@ -54,33 +54,24 @@ export async function withTeardown<Type>(
 }
 
 /**
- * Returns a Proxy that narrows down (attenuates) the fields available on
- * the StreamProvider and replaces the request implementation.
+ * Returns a Proxy that only allows access to a `request` function.
+ * This is useful for replacing StreamProvider with an attenuated version.
  *
- * @param provider - Instance of a StreamProvider to be limited.
- * @param request - Custom attenuated request object.
- * @returns Proxy to the StreamProvider instance.
+ * @param request - Custom attenuated request function.
+ * @returns Proxy that mimics a StreamProvider instance.
  */
-export function proxyStreamProvider(
-  provider: StreamProvider,
-  request: unknown,
-): StreamProvider {
+export function proxyStreamProvider(request: unknown): StreamProvider {
   // Proxy target is intentionally set to be an empty object, to ensure
   // that access to the prototype chain is not possible.
   const proxy = new Proxy(
     {},
     {
       has(_target: object, prop: string | symbol) {
-        return (
-          typeof prop === 'string' &&
-          ['request', 'on', 'removeListener'].includes(prop)
-        );
+        return typeof prop === 'string' && ['request'].includes(prop);
       },
       get(_target, prop: keyof StreamProvider) {
         if (prop === 'request') {
           return request;
-        } else if (['on', 'removeListener'].includes(prop)) {
-          return provider[prop];
         }
 
         return undefined;

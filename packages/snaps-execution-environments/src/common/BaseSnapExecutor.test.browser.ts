@@ -390,9 +390,6 @@ describe('BaseSnapExecutor', () => {
   it('allows direct access to ethereum public properties', async () => {
     const CODE = `
       module.exports.onRpcRequest = () => {
-        const listener = () => undefined;
-        ethereum.on('accountsChanged', listener);
-        ethereum.removeListener('accountsChanged', listener);
         return ethereum.request({ method: 'eth_blockNumber', params: [] });
       };
     `;
@@ -2415,8 +2412,8 @@ describe('BaseSnapExecutor', () => {
           hasMethods: {
             ethereum: {
               request: true,
-              on: true,
-              removeListener: true,
+              on: false,
+              removeListener: false,
               rpcEngine: false,
             },
             snap: {
