@@ -28,7 +28,7 @@ const getMockArgv = (...args: string[]) => {
 const HELP_TEXT_REGEX = /^\s*Usage: .+ <command> \[options\]/u;
 
 describe('checkNodeVersion', () => {
-  it.each(['16.17.0', '16.18.0', '18.6.0', '18.7.0', '20.0.0'])(
+  it.each(['18.16.0', '18.17.0', '20.0.0'])(
     'does not exit if the Node version is %s',
     (version) => {
       const spy = jest.spyOn(process, 'exit').mockImplementation();
@@ -38,8 +38,8 @@ describe('checkNodeVersion', () => {
     },
   );
 
-  it.each(['14.0.0', '16.0.0', '16.16.1'])(
-    'logs a message and exists if the Node version is %s',
+  it.each(['14.0.0', '16.0.0', '16.16.1', '18.0.0', '18.5.0'])(
+    'logs a message and exits if the Node version is %s',
     (version) => {
       const spy = jest.spyOn(process, 'exit').mockImplementation();
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
@@ -51,26 +51,7 @@ describe('checkNodeVersion', () => {
       expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         expect.stringContaining(
-          `Node version ${version} is not supported. Please use Node 16.17.0 or later.`,
-        ),
-      );
-    },
-  );
-
-  it.each(['18.0.0', '18.5.0'])(
-    'logs a message and exists if the Node version is %s',
-    (version) => {
-      const spy = jest.spyOn(process, 'exit').mockImplementation();
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-
-      checkNodeVersion(version);
-
-      expect(spy).toHaveBeenCalledTimes(1);
-      expect(spy).toHaveBeenCalledWith(1);
-      expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining(
-          `Node version ${version} is not supported. Please use Node 18.6.0 or later.`,
+          `Node version ${version} is not supported. Please use Node 18.16.0 or later.`,
         ),
       );
     },
