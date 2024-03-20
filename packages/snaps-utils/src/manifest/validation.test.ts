@@ -6,6 +6,7 @@ import {
   Bip32EntropyStruct,
   Bip32PathStruct,
   createSnapManifest,
+  EmptyObjectStruct,
   isSnapManifest,
   SnapIdsStruct,
 } from './validation';
@@ -149,6 +150,16 @@ describe('SnapIdsStruct', () => {
       false,
     );
     expect(is({ fooBar: {} }, SnapIdsStruct)).toBe(false);
+  });
+});
+
+describe('EmptyObjectStruct', () => {
+  it('accepts an empty object', () => {
+    expect(is({}, EmptyObjectStruct)).toBe(true);
+  });
+
+  it('rejects non-empty objects', () => {
+    expect(is({ foo: 'bar' }, EmptyObjectStruct)).toBe(false);
   });
 });
 

@@ -1,5 +1,5 @@
 import { isValidBIP32PathSegment } from '@metamask/key-tree';
-import type { InitialPermissions } from '@metamask/snaps-sdk';
+import type { EmptyObject, InitialPermissions } from '@metamask/snaps-sdk';
 import {
   assertStruct,
   ChecksumStruct,
@@ -8,7 +8,7 @@ import {
   inMilliseconds,
   Duration,
 } from '@metamask/utils';
-import type { Infer, Struct } from 'superstruct';
+import type { Describe, Infer, Struct } from 'superstruct';
 import {
   array,
   boolean,
@@ -175,15 +175,20 @@ export const HandlerCaveatsStruct = object({
 
 export type HandlerCaveats = Infer<typeof HandlerCaveatsStruct>;
 
+export const EmptyObjectStruct = object<EmptyObject>({}) as unknown as Struct<
+  EmptyObject,
+  null
+>;
+
 /* eslint-disable @typescript-eslint/naming-convention */
-export const PermissionsStruct = type({
+export const PermissionsStruct: Describe<InitialPermissions> = type({
   'endowment:cronjob': optional(
     assign(
       HandlerCaveatsStruct,
       object({ jobs: CronjobSpecificationArrayStruct }),
     ),
   ),
-  'endowment:ethereum-provider': optional(object({})),
+  'endowment:ethereum-provider': optional(EmptyObjectStruct),
   'endowment:keyring': optional(
     assign(HandlerCaveatsStruct, KeyringOriginsStruct),
   ),
@@ -197,7 +202,7 @@ export const PermissionsStruct = type({
       }),
     ),
   ),
-  'endowment:network-access': optional(object({})),
+  'endowment:network-access': optional(EmptyObjectStruct),
   'endowment:page-home': optional(HandlerCaveatsStruct),
   'endowment:rpc': optional(assign(HandlerCaveatsStruct, RpcOriginsStruct)),
   'endowment:signature-insight': optional(
@@ -216,11 +221,11 @@ export const PermissionsStruct = type({
       }),
     ),
   ),
-  'endowment:webassembly': optional(object({})),
-  snap_dialog: optional(object({})),
-  snap_manageState: optional(object({})),
-  snap_manageAccounts: optional(object({})),
-  snap_notify: optional(object({})),
+  'endowment:webassembly': optional(EmptyObjectStruct),
+  snap_dialog: optional(EmptyObjectStruct),
+  snap_manageState: optional(EmptyObjectStruct),
+  snap_manageAccounts: optional(EmptyObjectStruct),
+  snap_notify: optional(EmptyObjectStruct),
   snap_getBip32Entropy: optional(SnapGetBip32EntropyPermissionsStruct),
   snap_getBip32PublicKey: optional(SnapGetBip32EntropyPermissionsStruct),
   snap_getBip44Entropy: optional(
@@ -230,8 +235,8 @@ export const PermissionsStruct = type({
       Infinity,
     ),
   ),
-  snap_getEntropy: optional(object({})),
-  snap_getLocale: optional(object({})),
+  snap_getEntropy: optional(EmptyObjectStruct),
+  snap_getLocale: optional(EmptyObjectStruct),
   wallet_snap: optional(SnapIdsStruct),
 });
 /* eslint-enable @typescript-eslint/naming-convention */
