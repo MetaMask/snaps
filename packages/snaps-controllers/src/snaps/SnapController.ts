@@ -1466,6 +1466,14 @@ export class SnapController extends BaseController<
    */
   async #terminateSnap(snapId: SnapId) {
     await this.messagingSystem.call('ExecutionService:terminateSnap', snapId);
+    // Hack to give up execution for a bit to let gracefully terminating Snaps return.
+    await new Promise((resolve) => setTimeout(resolve, 1));
+    const runtime = this.#getRuntimeExpect(snapId);
+    // Unresponsive Snaps may still be timed, time them out.
+    runtime.pendingInboundRequests
+      .filter((pendingRequest) => pendingRequest.timer.status !== 'finished')
+      .forEach((pendingRequest) => pendingRequest.timer.finish());
+    await new Promise((resolve) => setTimeout(resolve, 1));
     this.messagingSystem.publish(
       'SnapController:snapTerminated',
       this.getTruncatedExpect(snapId),
@@ -3097,8 +3105,18 @@ export class SnapController extends BaseController<
 
         await this.#assertSnapRpcRequestResult(snapId, handlerType, result);
 
-        return this.#transformSnapRpcRequestResult(snapId, handlerType, result);
+        const transformedResult = this.#transformSnapRpcRequestResult(
+          snapId,
+          handlerType,
+          result,
+        );
+
+        this.#recordSnapRpcRequestFinish(snapId, request.id);
+
+        return transformedResult;
       } catch (error) {
+        // We flag the RPC request as finished early since termination may affect pending requests
+        this.#recordSnapRpcRequestFinish(snapId, request.id);
         const [jsonRpcError, handled] = unwrapError(error);
 
         if (!handled) {
@@ -3106,8 +3124,6 @@ export class SnapController extends BaseController<
         }
 
         throw jsonRpcError;
-      } finally {
-        this.#recordSnapRpcRequestFinish(snapId, request.id);
       }
     };
 

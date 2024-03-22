@@ -1603,6 +1603,54 @@ describe('SnapController', () => {
     await service.terminateAllSnaps();
   });
 
+  it('throws if the Snap is terminated while executing', async () => {
+    const { manifest, sourceCode, svgIcon } =
+      await getMockSnapFilesWithUpdatedChecksum({
+        sourceCode: `
+      module.exports.onRpcRequest = () => {
+        return new Promise((resolve) => {});
+      };
+    `,
+      });
+
+    const [snapController] = getSnapControllerWithEES(
+      getSnapControllerWithEESOptions({
+        detectSnapLocation: loopbackDetect({
+          manifest,
+          files: [sourceCode, svgIcon as VirtualFile],
+        }),
+      }),
+    );
+
+    await snapController.installSnaps(MOCK_ORIGIN, {
+      [MOCK_SNAP_ID]: {},
+    });
+
+    const snap = snapController.getExpect(MOCK_SNAP_ID);
+
+    expect(snapController.state.snaps[snap.id].status).toBe('running');
+
+    const promise = snapController.handleRequest({
+      snapId: snap.id,
+      origin: 'foo.com',
+      handler: HandlerType.OnRpcRequest,
+      request: {
+        jsonrpc: '2.0',
+        method: 'test',
+        params: {},
+        id: 1,
+      },
+    });
+
+    await snapController.removeSnap(snap.id);
+
+    await expect(promise).rejects.toThrow(
+      `The snap "${snap.id}" has been terminated during execution.`,
+    );
+
+    snapController.destroy();
+  });
+
   it('does not kill snaps with open sessions', async () => {
     const sourceCode = `
       module.exports.onRpcRequest = () => 'foo bar';
