@@ -13,7 +13,9 @@ describe('onSignature', () => {
       data: '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0',
     });
 
-    expect(response).toRender(
+    const screen = response.getInterface();
+
+    expect(screen).toRender(
       panel([
         row('From:', text('0xd8da6bf26964af9d7eed9e03e53415d37aa96045')),
         row(
