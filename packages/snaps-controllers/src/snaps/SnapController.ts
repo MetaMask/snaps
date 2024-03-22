@@ -203,6 +203,11 @@ export interface SnapRuntimeData {
   rpcHandler: null | SnapRpcHandler;
 
   /**
+   * A boolean flag to determine whether the Snap is currently being stopped.
+   */
+  stopping: boolean;
+
+  /**
    * The finite state machine interpreter for possible states that the Snap can be in such as
    * stopped, running, blocked
    *
@@ -1394,16 +1399,26 @@ export class SnapController extends BaseController<
       throw new Error(`The snap "${snapId}" is not running.`);
     }
 
-    // Reset request tracking
-    runtime.lastRequest = null;
-    runtime.pendingInboundRequests = [];
-    runtime.pendingOutboundRequests = 0;
+    // No-op if the Snap is already stopping.
+    if (runtime.stopping) {
+      return;
+    }
+
+    // Flag that the Snap is actively stopping, this prevents other calls to stopSnap
+    // while we are handling termination of the Snap
+    runtime.stopping = true;
+
     try {
       if (this.isRunning(snapId)) {
         this.#closeAllConnections?.(snapId);
         await this.#terminateSnap(snapId);
       }
     } finally {
+      // Reset request tracking
+      runtime.lastRequest = null;
+      runtime.pendingInboundRequests = [];
+      runtime.pendingOutboundRequests = 0;
+      runtime.stopping = false;
       if (this.isRunning(snapId)) {
         this.#transition(snapId, statusEvent);
       }
@@ -1417,6 +1432,14 @@ export class SnapController extends BaseController<
    */
   async #terminateSnap(snapId: SnapId) {
     await this.messagingSystem.call('ExecutionService:terminateSnap', snapId);
+    // Hack to give up execution for a bit to let gracefully terminating Snaps return.
+    await new Promise((resolve) => setTimeout(resolve, 1));
+    const runtime = this.#getRuntimeExpect(snapId);
+    // Unresponsive Snaps may still be timed, time them out.
+    runtime.pendingInboundRequests
+      .filter((pendingRequest) => pendingRequest.timer.status !== 'finished')
+      .forEach((pendingRequest) => pendingRequest.timer.finish());
+    await new Promise((resolve) => setTimeout(resolve, 1));
     this.messagingSystem.publish(
       'SnapController:snapTerminated',
       this.getTruncatedExpect(snapId),
@@ -2929,8 +2952,18 @@ export class SnapController extends BaseController<
 
         await this.#assertSnapRpcRequestResult(snapId, handlerType, result);
 
-        return this.#transformSnapRpcRequestResult(snapId, handlerType, result);
+        const transformedResult = this.#transformSnapRpcRequestResult(
+          snapId,
+          handlerType,
+          result,
+        );
+
+        this.#recordSnapRpcRequestFinish(snapId, request.id);
+
+        return transformedResult;
       } catch (error) {
+        // We flag the RPC request as finished early since termination may affect pending requests
+        this.#recordSnapRpcRequestFinish(snapId, request.id);
         const [jsonRpcError, handled] = unwrapError(error);
 
         if (!handled) {
@@ -2938,8 +2971,6 @@ export class SnapController extends BaseController<
         }
 
         throw jsonRpcError;
-      } finally {
-        this.#recordSnapRpcRequestFinish(snapId, request.id);
       }
     };
 
@@ -3216,6 +3247,7 @@ export class SnapController extends BaseController<
       pendingInboundRequests: [],
       pendingOutboundRequests: 0,
       interpreter,
+      stopping: false,
     });
   }
 
