@@ -713,7 +713,7 @@ describe('installSnap', () => {
 
       expect(response).toStrictEqual(
         expect.objectContaining({
-          content: { type: 'text', value: 'Hello, world!' },
+          getInterface: expect.any(Function),
         }),
       );
 

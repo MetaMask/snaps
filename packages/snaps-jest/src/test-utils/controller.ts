@@ -19,6 +19,11 @@ export const getRootControllerMessenger = (mocked = true) => {
       result: false,
       type: 'all',
     }));
+
+    messenger.registerActionHandler(
+      'ExecutionService:handleRpcRequest',
+      jest.fn(),
+    );
   }
 
   return messenger;
@@ -39,6 +44,7 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'PhishingController:testOrigin',
       'PhishingController:maybeUpdateState',
     ],
+    allowedEvents: [],
   });
 
   return snapInterfaceControllerMessenger;

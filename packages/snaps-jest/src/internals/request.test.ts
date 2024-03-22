@@ -1,6 +1,6 @@
 import { SnapInterfaceController } from '@metamask/snaps-controllers';
 import type { SnapId } from '@metamask/snaps-sdk';
-import { text } from '@metamask/snaps-sdk';
+import { UserInputEventType, button, input, text } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
 
 import {
@@ -8,7 +8,11 @@ import {
   getRestrictedSnapInterfaceControllerMessenger,
   getRootControllerMessenger,
 } from '../test-utils';
-import { handleRequest } from './request';
+import {
+  getInterfaceApi,
+  getInterfaceFromResult,
+  handleRequest,
+} from './request';
 import { handleInstallSnap } from './simulation';
 
 describe('handleRequest', () => {
@@ -32,7 +36,6 @@ describe('handleRequest', () => {
     });
 
     expect(response).toStrictEqual({
-      content: undefined,
       id: expect.any(String),
       response: {
         result: 'Hello, world!',
@@ -85,7 +88,7 @@ describe('handleRequest', () => {
         },
       },
       notifications: [],
-      content,
+      getInterface: expect.any(Function),
     });
 
     await closeServer();
@@ -127,8 +130,44 @@ describe('handleRequest', () => {
   });
 });
 
-describe('getContentFromResult', () => {
-  it('gets the content from the SnapInterfaceController if the result contains an ID', async () => {
+describe('getInterfaceFromResult', () => {
+  const controllerMessenger = getRootControllerMessenger();
+  // eslint-disable-next-line no-new
+  new SnapInterfaceController({
+    messenger:
+      getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
+  });
+  it('returns the interface ID if the result includes it', async () => {
+    const result = await getInterfaceFromResult(
+      { id: 'foo' },
+      'bar' as SnapId,
+      controllerMessenger,
+    );
+
+    expect(result).toBe('foo');
+  });
+
+  it('creates a new interface and returns its ID if the result contains content', async () => {
+    jest.spyOn(controllerMessenger, 'call');
+
+    const result = await getInterfaceFromResult(
+      { content: text('foo') },
+      'bar' as SnapId,
+      controllerMessenger,
+    );
+
+    expect(result).toStrictEqual(expect.any(String));
+
+    expect(controllerMessenger.call).toHaveBeenCalledWith(
+      'SnapInterfaceController:createInterface',
+      'bar',
+      text('foo'),
+    );
+  });
+});
+
+describe('getInterfaceApi', () => {
+  it('gets the content from the SnapInterfaceController if the result contains an interface ID', async () => {
     const controllerMessenger = getRootControllerMessenger();
     const interfaceController = new SnapInterfaceController({
       messenger:
@@ -140,33 +179,156 @@ describe('getContentFromResult', () => {
 
     const id = await interfaceController.createInterface(snapId, content);
 
-    const result = getContentFromResult({ id }, snapId, controllerMessenger);
+    const getInterface = await getInterfaceApi(
+      { id },
+      snapId,
+      controllerMessenger,
+    );
 
-    expect(result).toStrictEqual(content);
+    expect(getInterface).toStrictEqual(expect.any(Function));
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const result = getInterface!();
+
+    expect(result).toStrictEqual({
+      content,
+      clickElement: expect.any(Function),
+      typeInField: expect.any(Function),
+    });
   });
 
-  it('gets the content from the result if the result contains the content', () => {
+  it('gets the content from the SnapInterfaceController if the result contains content', async () => {
     const controllerMessenger = getRootControllerMessenger();
+
+    // eslint-disable-next-line no-new
+    new SnapInterfaceController({
+      messenger:
+        getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
+    });
 
     const snapId = 'foo' as SnapId;
     const content = text('foo');
 
-    const result = getContentFromResult(
+    const getInterface = await getInterfaceApi(
       { content },
       snapId,
       controllerMessenger,
     );
 
-    expect(result).toStrictEqual(content);
+    expect(getInterface).toStrictEqual(expect.any(Function));
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const result = getInterface!();
+
+    expect(result).toStrictEqual({
+      content,
+      clickElement: expect.any(Function),
+      typeInField: expect.any(Function),
+    });
   });
 
-  it('returns undefined if there is no content associated with the result', () => {
+  it('returns undefined if there is no interface ID associated with the result', async () => {
     const controllerMessenger = getRootControllerMessenger();
 
     const snapId = 'foo' as SnapId;
 
-    const result = getContentFromResult({}, snapId, controllerMessenger);
+    const result = await getInterfaceApi({}, snapId, controllerMessenger);
 
     expect(result).toBeUndefined();
+  });
+
+  it('sends the request to the snap when using `clickElement`', async () => {
+    const controllerMessenger = getRootControllerMessenger();
+
+    jest.spyOn(controllerMessenger, 'call');
+
+    // eslint-disable-next-line no-new
+    new SnapInterfaceController({
+      messenger:
+        getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
+    });
+
+    const snapId = 'foo' as SnapId;
+    const content = button({ value: 'foo', name: 'foo' });
+
+    const getInterface = await getInterfaceApi(
+      { content },
+      snapId,
+      controllerMessenger,
+    );
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const snapInterface = getInterface!();
+
+    await snapInterface.clickElement('foo');
+
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
+      4,
+      'ExecutionService:handleRpcRequest',
+      snapId,
+      {
+        origin: '',
+        handler: HandlerType.OnUserInput,
+        request: {
+          jsonrpc: '2.0',
+          method: ' ',
+          params: {
+            event: {
+              type: UserInputEventType.ButtonClickEvent,
+              name: 'foo',
+            },
+            id: expect.any(String),
+          },
+        },
+      },
+    );
+  });
+
+  it('sends the request to the snap when using `typeInField`', async () => {
+    const controllerMessenger = getRootControllerMessenger();
+
+    jest.spyOn(controllerMessenger, 'call');
+
+    // eslint-disable-next-line no-new
+    new SnapInterfaceController({
+      messenger:
+        getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
+    });
+
+    const snapId = 'foo' as SnapId;
+    const content = input('foo');
+
+    const getInterface = await getInterfaceApi(
+      { content },
+      snapId,
+      controllerMessenger,
+    );
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const snapInterface = getInterface!();
+
+    await snapInterface.typeInField('foo', 'bar');
+
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
+      6,
+      'ExecutionService:handleRpcRequest',
+      snapId,
+      {
+        origin: '',
+        handler: HandlerType.OnUserInput,
+        request: {
+          jsonrpc: '2.0',
+          method: ' ',
+          params: {
+            event: {
+              type: UserInputEventType.InputChangeEvent,
+              name: 'foo',
+              value: 'bar',
+            },
+            id: expect.any(String),
+          },
+        },
+      },
+    );
   });
 });

@@ -237,7 +237,6 @@ export async function clickElement(
         handler: HandlerType.OnUserInput,
         request: {
           jsonrpc: '2.0',
-          id: 1,
           method: ' ',
           params: {
             event: {
@@ -273,7 +272,16 @@ export async function clickElement(
   }
 }
 
-const mergeValue = (
+/**
+ * Merge a value in the interface state.
+ *
+ * @param state - The actual interface state.
+ * @param name - The component name that changed value.
+ * @param value - The new value.
+ * @param form - The form name if the element is in one.
+ * @returns The state with the merged value.
+ */
+export const mergeValue = (
   state: InterfaceState,
   name: string,
   value: string | null,

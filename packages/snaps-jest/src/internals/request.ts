@@ -1,5 +1,5 @@
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
-import type { SnapId } from '@metamask/snaps-sdk';
+import type { SnapId, Component } from '@metamask/snaps-sdk';
 import type { HandlerType } from '@metamask/snaps-utils';
 import { unwrapError } from '@metamask/snaps-utils';
 import { getSafeJson, hasProperty, isPlainObject } from '@metamask/utils';
@@ -70,11 +70,11 @@ export function handleRequest({
         ...options,
       },
     })
-    .then((result) => {
+    .then(async (result) => {
       const notifications = getNotifications(store.getState());
       store.dispatch(clearNotifications());
 
-      const getInterfaceFn = getInterfaceFromResult(
+      const getInterfaceFn = await getInterfaceApi(
         result,
         snapId,
         controllerMessenger,
@@ -114,6 +114,36 @@ export function handleRequest({
 }
 
 /**
+ * Get the interface ID from the result if it's available or create a new interface if the result contains static components.
+ *
+ * @param result - The handler result object.
+ * @param snapId - The Snap ID.
+ * @param controllerMessenger - The controller messenger.
+ * @returns The interface ID or undefined if the result doesn't include content.
+ */
+export async function getInterfaceFromResult(
+  result: unknown,
+  snapId: SnapId,
+  controllerMessenger: RootControllerMessenger,
+) {
+  if (isPlainObject(result) && hasProperty(result, 'id')) {
+    return result.id as string;
+  }
+
+  if (isPlainObject(result) && hasProperty(result, 'content')) {
+    const id = await controllerMessenger.call(
+      'SnapInterfaceController:createInterface',
+      snapId,
+      result.content as Component,
+    );
+
+    return id;
+  }
+
+  return undefined;
+}
+
+/**
  * Get the response content from the SnapInterfaceController and include the interaction methods.
  *
  * @param result - The handler result object.
@@ -121,17 +151,23 @@ export function handleRequest({
  * @param controllerMessenger - The controller messenger.
  * @returns The content components if any.
  */
-export function getInterfaceFromResult(
+export async function getInterfaceApi(
   result: unknown,
   snapId: SnapId,
   controllerMessenger: RootControllerMessenger,
-): (() => SnapHandlerInterface) | undefined {
-  if (isPlainObject(result) && hasProperty(result, 'id')) {
+): Promise<(() => SnapHandlerInterface) | undefined> {
+  const interfaceId = await getInterfaceFromResult(
+    result,
+    snapId,
+    controllerMessenger,
+  );
+
+  if (interfaceId) {
     return () => {
       const { content } = controllerMessenger.call(
         'SnapInterfaceController:getInterface',
         snapId,
-        result.id as string,
+        interfaceId,
       );
 
       const clickElementFn: SnapInterfaceActions['clickElement'] = async (
@@ -139,7 +175,7 @@ export function getInterfaceFromResult(
       ) => {
         await clickElement(
           controllerMessenger,
-          result.id as string,
+          interfaceId,
           content,
           snapId,
           name,
@@ -152,7 +188,7 @@ export function getInterfaceFromResult(
       ) => {
         await typeInField(
           controllerMessenger,
-          result.id as string,
+          interfaceId,
           content,
           snapId,
           name,
