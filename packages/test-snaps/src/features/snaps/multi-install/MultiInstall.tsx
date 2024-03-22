@@ -19,7 +19,7 @@ import {
 export const MultiInstall: FunctionComponent = () => {
   const [installSnaps, { isLoading }] = useInstallSnapsMutation();
 
-  const handleUpdate = () => {
+  const handleInstall = () => {
     installSnaps({
       [getSnapId(BIP_32_SNAP_ID, BIP_32_PORT)]: { version: BIP_32_VERSION },
       [getSnapId(BIP_44_SNAP_ID, BIP_44_PORT)]: { version: BIP_44_VERSION },
@@ -37,7 +37,7 @@ export const MultiInstall: FunctionComponent = () => {
       <ButtonGroup>
         <Button
           disabled={isLoading}
-          onClick={handleUpdate}
+          onClick={handleInstall}
           id="multi-install-connect"
         >
           Install Snaps
