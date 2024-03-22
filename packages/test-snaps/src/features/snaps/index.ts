@@ -15,6 +15,7 @@ export * from './images';
 export * from './json-rpc';
 export * from './lifecycle-hooks';
 export * from './manage-state';
+export * from './multi-install';
 export * from './name-lookup';
 export * from './network-access';
 export * from './notifications';

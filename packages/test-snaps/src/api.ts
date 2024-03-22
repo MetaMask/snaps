@@ -63,6 +63,8 @@ export type InstallSnapArgs = {
   version: string;
 };
 
+export type InstallSnapsArgs = Record<string, { version?: string }>;
+
 export type InstallSnapResult = Record<string, { error: JsonRpcError }>;
 
 export const baseApi = createApi({
@@ -114,14 +116,13 @@ export const baseApi = createApi({
             },
           },
         }),
-        transformResponse: (snaps: InstallSnapResult, _, { snapId }) => {
-          if (snaps[snapId].error) {
-            logError(snaps[snapId].error);
-            throw new Error(snaps[snapId].error.message);
-          }
-
-          return snaps;
-        },
+        invalidatesTags: [Tag.InstalledSnaps],
+      }),
+      installSnaps: build.mutation<InstallSnapResult, InstallSnapsArgs>({
+        query: (params) => ({
+          method: 'wallet_requestSnaps',
+          params,
+        }),
         invalidatesTags: [Tag.InstalledSnaps],
       }),
     };
@@ -136,4 +137,5 @@ export const {
   useLazyRequestQuery,
   useInvokeMutationMutation: useInvokeMutation,
   useInstallSnapMutation,
+  useInstallSnapsMutation,
 } = baseApi;
