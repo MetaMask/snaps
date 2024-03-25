@@ -214,6 +214,7 @@ describe('getElement', () => {
 
     expect(result).toStrictEqual({
       element: button({ value: 'foo', name: 'bar' }),
+      form: undefined,
     });
   });
 

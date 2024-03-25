@@ -13,7 +13,7 @@ import {
   UserInputEventType,
   assert,
 } from '@metamask/snaps-sdk';
-import { HandlerType } from '@metamask/snaps-utils';
+import { HandlerType, hasChildren } from '@metamask/snaps-utils';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { type SagaIterator } from 'redux-saga';
 import { call, put, select, take } from 'redux-saga/effects';
@@ -178,21 +178,13 @@ export function getElement(
     return { element: content };
   }
 
-  if (type === NodeType.Form) {
+  if (hasChildren(content)) {
     for (const element of content.children) {
       const result = getElement(element, name);
-      if (result) {
-        return { element: result.element, form: content.name };
-      }
-    }
-  }
-
-  if (type === NodeType.Panel) {
-    for (const element of content.children) {
-      const result = getElement(element, name);
+      const form = type === NodeType.Form ? content.name : result?.form;
 
       if (result) {
-        return result;
+        return { element: result.element, form };
       }
     }
   }

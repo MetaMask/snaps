@@ -1,6 +1,6 @@
-import type { Component } from '@metamask/snaps-sdk';
+import type { Component, NodeWithChildren } from '@metamask/snaps-sdk';
 import { NodeType } from '@metamask/snaps-sdk';
-import { assert, AssertionError } from '@metamask/utils';
+import { assert, AssertionError, hasProperty } from '@metamask/utils';
 import type { Tokens } from 'marked';
 import { lexer, walkTokens } from 'marked';
 
@@ -119,4 +119,16 @@ export function getTotalTextLength(component: Component): number {
     default:
       return 0;
   }
+}
+
+/**
+ * Check if a component has children.
+ *
+ * @param component - A custom UI component.
+ * @returns `true` if the component has children, `false` otherwise.
+ */
+export function hasChildren(
+  component: Component,
+): component is NodeWithChildren {
+  return hasProperty(component, 'children');
 }

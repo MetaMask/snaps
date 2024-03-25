@@ -1,9 +1,18 @@
-import { panel, text, row, address, image } from '@metamask/snaps-sdk';
+import {
+  panel,
+  text,
+  row,
+  address,
+  image,
+  form,
+  button,
+} from '@metamask/snaps-sdk';
 
 import {
   validateTextLinks,
   validateComponentLinks,
   getTotalTextLength,
+  hasChildren,
 } from './ui';
 
 describe('validateTextLinks', () => {
@@ -171,5 +180,18 @@ describe('getTotalTextLength', () => {
 
   it('ignores non text components', () => {
     expect(getTotalTextLength(panel([text('foo'), image('<svg />')]))).toBe(3);
+  });
+});
+
+describe('hasChildren', () => {
+  it.each([panel([text('foo')]), form('bar', [button('foo')])])(
+    'returns true if the node has children',
+    (value) => {
+      expect(hasChildren(value)).toBe(true);
+    },
+  );
+
+  it('returns false if the node does not have children', () => {
+    expect(hasChildren(text('foo'))).toBe(false);
   });
 });
