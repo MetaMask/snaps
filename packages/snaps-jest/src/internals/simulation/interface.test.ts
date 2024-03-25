@@ -1,5 +1,4 @@
 import { SnapInterfaceController } from '@metamask/snaps-controllers';
-import type { SnapId } from '@metamask/snaps-sdk';
 import {
   ButtonType,
   DialogType,
@@ -11,6 +10,7 @@ import {
   text,
 } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
+import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 import { assert } from '@metamask/utils';
 import type { SagaIterator } from 'redux-saga';
 import { take } from 'redux-saga/effects';
@@ -250,7 +250,7 @@ describe('clickElement', () => {
     const content = button({ value: 'foo', name: 'bar' });
 
     const interfaceId = await interfaceController.createInterface(
-      'foo' as SnapId,
+      MOCK_SNAP_ID,
       content,
     );
 
@@ -258,11 +258,11 @@ describe('clickElement', () => {
       rootControllerMessenger,
       interfaceId,
       content,
-      'foo' as SnapId,
+      MOCK_SNAP_ID,
       'bar',
     );
 
-    expect(handleRpcRequestMock).toHaveBeenCalledWith('foo', {
+    expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
       origin: '',
       handler: HandlerType.OnUserInput,
       request: {
@@ -286,7 +286,7 @@ describe('clickElement', () => {
     ]);
 
     const interfaceId = await interfaceController.createInterface(
-      'foo' as SnapId,
+      MOCK_SNAP_ID,
       content,
     );
 
@@ -294,11 +294,11 @@ describe('clickElement', () => {
       rootControllerMessenger,
       interfaceId,
       content,
-      'foo' as SnapId,
+      MOCK_SNAP_ID,
       'baz',
     );
 
-    expect(handleRpcRequestMock).toHaveBeenCalledWith('foo', {
+    expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
       origin: '',
       handler: HandlerType.OnUserInput,
       request: {
@@ -322,7 +322,7 @@ describe('clickElement', () => {
     const content = button({ value: 'foo', name: 'foo' });
 
     const interfaceId = await interfaceController.createInterface(
-      'foo' as SnapId,
+      MOCK_SNAP_ID,
       content,
     );
 
@@ -331,7 +331,7 @@ describe('clickElement', () => {
         rootControllerMessenger,
         interfaceId,
         content,
-        'foo' as SnapId,
+        MOCK_SNAP_ID,
         'baz',
       ),
     ).rejects.toThrow('No button found in the interface.');
@@ -380,7 +380,7 @@ describe('typeInField', () => {
     const content = input('bar');
 
     const interfaceId = await interfaceController.createInterface(
-      'foo' as SnapId,
+      MOCK_SNAP_ID,
       content,
     );
 
@@ -388,7 +388,7 @@ describe('typeInField', () => {
       rootControllerMessenger,
       interfaceId,
       content,
-      'foo' as SnapId,
+      MOCK_SNAP_ID,
       'bar',
       'baz',
     );
@@ -399,7 +399,7 @@ describe('typeInField', () => {
       { bar: 'baz' },
     );
 
-    expect(handleRpcRequestMock).toHaveBeenCalledWith('foo', {
+    expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
       origin: '',
       handler: HandlerType.OnUserInput,
       request: {
@@ -421,7 +421,7 @@ describe('typeInField', () => {
     const content = text('bar');
 
     const interfaceId = await interfaceController.createInterface(
-      'foo' as SnapId,
+      MOCK_SNAP_ID,
       content,
     );
 
@@ -430,7 +430,7 @@ describe('typeInField', () => {
         rootControllerMessenger,
         interfaceId,
         content,
-        'foo' as SnapId,
+        MOCK_SNAP_ID,
         'bar',
         'baz',
       ),
@@ -450,9 +450,8 @@ describe('getInterface', () => {
   it('returns the current user interface, if any', async () => {
     const { store, runSaga } = createStore('password', getMockOptions());
 
-    const snapId = 'foo' as SnapId;
     const content = text('foo');
-    const id = await interfaceController.createInterface(snapId, content);
+    const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
     const type = DialogType.Alert;
     const ui = { type, id };
 
@@ -461,7 +460,7 @@ describe('getInterface', () => {
     const result = await runSaga(
       getInterface,
       runSaga,
-      snapId,
+      MOCK_SNAP_ID,
       rootControllerMessenger,
     ).toPromise();
     expect(result).toStrictEqual({
@@ -476,17 +475,15 @@ describe('getInterface', () => {
   it('waits for a user interface to be set if none is currently set', async () => {
     const { store, runSaga } = createStore('password', getMockOptions());
 
-    const snapId = 'foo' as SnapId;
-
     const promise = runSaga(
       getInterface,
       runSaga,
-      snapId,
+      MOCK_SNAP_ID,
       rootControllerMessenger,
     ).toPromise();
 
     const content = text('foo');
-    const id = await interfaceController.createInterface(snapId, content);
+    const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
     const type = DialogType.Alert;
     const ui = { type, id };
     store.dispatch(setInterface(ui));
@@ -505,9 +502,8 @@ describe('getInterface', () => {
     jest.spyOn(rootControllerMessenger, 'call');
     const { store, runSaga } = createStore('password', getMockOptions());
 
-    const snapId = 'foo' as SnapId;
     const content = button({ value: 'foo', name: 'foo' });
-    const id = await interfaceController.createInterface(snapId, content);
+    const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
     const type = DialogType.Alert;
     const ui = { type, id };
 
@@ -516,7 +512,7 @@ describe('getInterface', () => {
     const result = await runSaga(
       getInterface,
       runSaga,
-      snapId,
+      MOCK_SNAP_ID,
       rootControllerMessenger,
     ).toPromise();
 
@@ -524,7 +520,7 @@ describe('getInterface', () => {
 
     expect(rootControllerMessenger.call).toHaveBeenCalledWith(
       'ExecutionService:handleRpcRequest',
-      snapId,
+      MOCK_SNAP_ID,
       {
         origin: '',
         handler: HandlerType.OnUserInput,
@@ -547,9 +543,8 @@ describe('getInterface', () => {
     jest.spyOn(rootControllerMessenger, 'call');
     const { store, runSaga } = createStore('password', getMockOptions());
 
-    const snapId = 'foo' as SnapId;
     const content = input('foo');
-    const id = await interfaceController.createInterface(snapId, content);
+    const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
     const type = DialogType.Alert;
     const ui = { type, id };
 
@@ -558,7 +553,7 @@ describe('getInterface', () => {
     const result = await runSaga(
       getInterface,
       runSaga,
-      snapId,
+      MOCK_SNAP_ID,
       rootControllerMessenger,
     ).toPromise();
 
@@ -566,7 +561,7 @@ describe('getInterface', () => {
 
     expect(rootControllerMessenger.call).toHaveBeenCalledWith(
       'ExecutionService:handleRpcRequest',
-      snapId,
+      MOCK_SNAP_ID,
       {
         origin: '',
         handler: HandlerType.OnUserInput,

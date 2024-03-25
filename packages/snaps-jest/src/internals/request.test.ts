@@ -2,6 +2,7 @@ import { SnapInterfaceController } from '@metamask/snaps-controllers';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { UserInputEventType, button, input, text } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
+import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
 import {
   getMockServer,
@@ -137,10 +138,11 @@ describe('getInterfaceFromResult', () => {
     messenger:
       getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
   });
+
   it('returns the interface ID if the result includes it', async () => {
     const result = await getInterfaceFromResult(
       { id: 'foo' },
-      'bar' as SnapId,
+      MOCK_SNAP_ID,
       controllerMessenger,
     );
 
@@ -152,7 +154,7 @@ describe('getInterfaceFromResult', () => {
 
     const result = await getInterfaceFromResult(
       { content: text('foo') },
-      'bar' as SnapId,
+      MOCK_SNAP_ID,
       controllerMessenger,
     );
 
@@ -160,7 +162,7 @@ describe('getInterfaceFromResult', () => {
 
     expect(controllerMessenger.call).toHaveBeenCalledWith(
       'SnapInterfaceController:createInterface',
-      'bar',
+      MOCK_SNAP_ID,
       text('foo'),
     );
   });
@@ -173,15 +175,13 @@ describe('getInterfaceApi', () => {
       messenger:
         getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
     });
-
-    const snapId = 'foo' as SnapId;
     const content = text('foo');
 
-    const id = await interfaceController.createInterface(snapId, content);
+    const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
 
     const getInterface = await getInterfaceApi(
       { id },
-      snapId,
+      MOCK_SNAP_ID,
       controllerMessenger,
     );
 
@@ -206,12 +206,11 @@ describe('getInterfaceApi', () => {
         getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
     });
 
-    const snapId = 'foo' as SnapId;
     const content = text('foo');
 
     const getInterface = await getInterfaceApi(
       { content },
-      snapId,
+      MOCK_SNAP_ID,
       controllerMessenger,
     );
 
@@ -230,9 +229,7 @@ describe('getInterfaceApi', () => {
   it('returns undefined if there is no interface ID associated with the result', async () => {
     const controllerMessenger = getRootControllerMessenger();
 
-    const snapId = 'foo' as SnapId;
-
-    const result = await getInterfaceApi({}, snapId, controllerMessenger);
+    const result = await getInterfaceApi({}, MOCK_SNAP_ID, controllerMessenger);
 
     expect(result).toBeUndefined();
   });
@@ -248,12 +245,11 @@ describe('getInterfaceApi', () => {
         getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
     });
 
-    const snapId = 'foo' as SnapId;
     const content = button({ value: 'foo', name: 'foo' });
 
     const getInterface = await getInterfaceApi(
       { content },
-      snapId,
+      MOCK_SNAP_ID,
       controllerMessenger,
     );
 
@@ -265,7 +261,7 @@ describe('getInterfaceApi', () => {
     expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       4,
       'ExecutionService:handleRpcRequest',
-      snapId,
+      MOCK_SNAP_ID,
       {
         origin: '',
         handler: HandlerType.OnUserInput,
@@ -295,12 +291,11 @@ describe('getInterfaceApi', () => {
         getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
     });
 
-    const snapId = 'foo' as SnapId;
     const content = input('foo');
 
     const getInterface = await getInterfaceApi(
       { content },
-      snapId,
+      MOCK_SNAP_ID,
       controllerMessenger,
     );
 
@@ -312,7 +307,7 @@ describe('getInterfaceApi', () => {
     expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       6,
       'ExecutionService:handleRpcRequest',
-      snapId,
+      MOCK_SNAP_ID,
       {
         origin: '',
         handler: HandlerType.OnUserInput,

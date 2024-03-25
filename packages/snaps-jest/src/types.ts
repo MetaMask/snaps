@@ -91,6 +91,7 @@ export type SnapInterfaceActions = {
    * @param name - The element name to click.
    */
   clickElement(name: string): Promise<void>;
+
   /**
    * Type a value in a interface field.
    *

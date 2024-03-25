@@ -8,7 +8,6 @@ import { nanoid } from '@reduxjs/toolkit';
 import type {
   RequestOptions,
   SnapHandlerInterface,
-  SnapInterfaceActions,
   SnapRequest,
 } from '../types';
 import {
@@ -170,38 +169,30 @@ export async function getInterfaceApi(
         interfaceId,
       );
 
-      const clickElementFn: SnapInterfaceActions['clickElement'] = async (
-        name,
-      ) => {
-        await clickElement(
-          controllerMessenger,
-          interfaceId,
-          content,
-          snapId,
-          name,
-        );
-      };
-
-      const typeInFieldFn: SnapInterfaceActions['typeInField'] = async (
-        name,
-        value,
-      ) => {
-        await typeInField(
-          controllerMessenger,
-          interfaceId,
-          content,
-          snapId,
-          name,
-          value,
-        );
-      };
-
       return {
         content,
-        clickElement: clickElementFn,
-        typeInField: typeInFieldFn,
+        clickElement: async (name) => {
+          await clickElement(
+            controllerMessenger,
+            interfaceId,
+            content,
+            snapId,
+            name,
+          );
+        },
+        typeInField: async (name, value) => {
+          await typeInField(
+            controllerMessenger,
+            interfaceId,
+            content,
+            snapId,
+            name,
+            value,
+          );
+        },
       };
     };
   }
+
   return undefined;
 }

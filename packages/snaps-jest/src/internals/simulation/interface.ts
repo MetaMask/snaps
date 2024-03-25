@@ -215,7 +215,7 @@ export async function clickElement(
   content: Component,
   snapId: SnapId,
   name: string,
-) {
+): Promise<void> {
   const result = getElement(content, name);
   assert(
     result !== undefined && result.element.type === NodeType.Button,
@@ -249,7 +249,11 @@ export async function clickElement(
         },
       },
     );
-  } else if (result.element.buttonType !== ButtonType.Submit) {
+
+    return;
+  }
+
+  if (result.element.buttonType !== ButtonType.Submit) {
     await controllerMessenger.call(
       'ExecutionService:handleRpcRequest',
       snapId,
@@ -281,12 +285,12 @@ export async function clickElement(
  * @param form - The form name if the element is in one.
  * @returns The state with the merged value.
  */
-export const mergeValue = (
+export function mergeValue(
   state: InterfaceState,
   name: string,
   value: string | null,
   form?: string,
-): InterfaceState => {
+): InterfaceState {
   if (form) {
     return {
       ...state,
@@ -296,8 +300,9 @@ export const mergeValue = (
       },
     };
   }
+
   return { ...state, [name]: value };
-};
+}
 
 /**
  * Type a value in an interface element.
