@@ -1,29 +1,38 @@
-import type { SnapComponent } from '../component';
-import type { BoldElement } from './formatting';
+import type { Nested } from '../component';
+import { createSnapComponent } from '../component';
+import type { FormattingElement } from './formatting';
 
-export type TextChildren = string | BoldElement | TextChildren[];
+export type TextChildren = Nested<string | FormattingElement>;
 
+/**
+ * The props of the {@link Text} component.
+ *
+ * @property children - The text to display. This should be a string, an array
+ * of strings, or an array of formatting elements.
+ */
 export type TextProps = {
   children?: TextChildren;
 };
 
-export type TextElement = ReturnType<typeof Text>;
+const TYPE = 'text';
 
 /**
- * A text component, which is used to render text.
+ * A text component, which is used to display text.
  *
  * @param props - The props of the component.
- * @param props.key - The key of the component.
- * @param props.children - The text to render.
+ * @param props.children - The text to display. This should be a string, an
+ * array of strings, or an array of formatting elements.
  * @returns A text element.
+ * @example
+ * <Text>
+ *   Hello <Bold>world</Bold>!
+ * </Text>
  */
-export const Text: SnapComponent<TextProps, 'text'> = ({
-  key = null,
-  ...props
-}) => {
-  return {
-    type: 'text',
-    props,
-    key,
-  };
-};
+export const Text = createSnapComponent<TextProps, typeof TYPE>(TYPE);
+
+/**
+ * A text element.
+ *
+ * @see Text
+ */
+export type TextElement = ReturnType<typeof Text>;

@@ -1,3 +1,3 @@
 export * from './formatting';
-export * from './Panel';
+export * from './Box';
 export * from './Text';
