@@ -1,14 +1,6 @@
-import { NodeType } from '../ui';
-import type { SnapComponent, SnapProps } from './component';
-import type {
-  BoldElement,
-  PanelElement,
-  PanelProps,
-  TextElement,
-} from './components';
-import { Panel } from './components';
-
-type Element = BoldElement | PanelElement | TextElement;
+import type { Key, SnapComponent } from './component';
+import type { BoxProps } from './components';
+import { Box } from './components';
 
 /**
  * The JSX runtime for Snaps SDK components. This function is used to render
@@ -19,44 +11,16 @@ type Element = BoldElement | PanelElement | TextElement;
  * @returns The rendered component.
  */
 export function jsx<Props>(
-  component: SnapComponent<SnapProps<Props>>,
-  props: SnapProps<Props>,
+  component: SnapComponent<Props>,
+  props: Props & { key?: Key | null },
 ): unknown | null {
   if (!component) {
-    // If component is undefined, a fragment was used.
-    return jsx(Panel, props as PanelProps);
+    // If component is undefined, a JSX fragment `<>...</>` was used. In this
+    // case, we need to wrap the children in a `Box` component.
+    return jsx(Box, props as unknown as BoxProps);
   }
 
-  const result = component(props) as Element;
-
-  // For the proof of concept, we only support panels and text nodes.
-  if (result.type === 'panel') {
-    const children = Array.isArray(result.props.children)
-      ? result.props.children
-      : [result.props.children];
-
-    return {
-      type: NodeType.Panel,
-      children,
-    };
-  }
-
-  if (result.type === 'text') {
-    const value = Array.isArray(result.props.children)
-      ? result.props.children.join('')
-      : result.props.children;
-
-    return {
-      type: NodeType.Text,
-      value,
-    };
-  }
-
-  if (result.type === 'bold') {
-    return `**${result.props.children}**`;
-  }
-
-  return null;
+  return component(props);
 }
 
 /**
@@ -70,8 +34,8 @@ export function jsx<Props>(
  * @returns The rendered component.
  */
 export function jsxs<Props>(
-  component: SnapComponent<SnapProps<Props>>,
-  props: SnapProps<Props>,
+  component: SnapComponent<Props>,
+  props: Props & { key?: Key | null },
 ): unknown | null {
   return jsx(component, props);
 }
