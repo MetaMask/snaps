@@ -1,8 +1,4 @@
-import type {
-  NotificationType,
-  EnumToUnion,
-  Component,
-} from '@metamask/snaps-sdk';
+import type { Component } from '@metamask/snaps-sdk';
 import type { Json, JsonRpcId, JsonRpcParams } from '@metamask/utils';
 import type { Infer } from 'superstruct';
 
@@ -12,34 +8,6 @@ import type {
   SnapResponseStruct,
   TransactionOptionsStruct,
 } from './internals';
-
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
-declare module 'expect' {
-  interface AsymmetricMatchers {
-    toRespondWith(response: unknown): void;
-    toRespondWithError(error: unknown): void;
-    toSendNotification(
-      message: string,
-      type?: EnumToUnion<NotificationType>,
-    ): void;
-    toRender(component: Component): void;
-  }
-
-  // Ideally we would use `Matchers<Result>` instead of `Matchers<R>`, but
-  // TypeScript doesn't allow this:
-  // TS2428: All declarations of 'Matchers' must have identical type parameters.
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  interface Matchers<R> {
-    toRespondWith(response: unknown): R;
-    toRespondWithError(error: unknown): R;
-    toSendNotification(
-      message: string,
-      type?: EnumToUnion<NotificationType>,
-    ): R;
-    toRender(component: Component): R;
-  }
-}
-/* eslint-enable @typescript-eslint/consistent-type-definitions */
 
 export type RequestOptions = {
   /**
