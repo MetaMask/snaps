@@ -17,7 +17,9 @@ describe('onTransaction', () => {
       data: '0xa9059cbb00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
     });
 
-    expect(response).toRender(
+    const screen = response.getInterface();
+
+    expect(screen).toRender(
       panel([
         row('From', address(FROM_ADDRESS)),
         row('To', address(TO_ADDRESS)),
@@ -37,7 +39,9 @@ describe('onTransaction', () => {
       data: '0x23b872dd00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
     });
 
-    expect(response).toRender(
+    const screen = response.getInterface();
+
+    expect(screen).toRender(
       panel([
         row('From', address(FROM_ADDRESS)),
         row('To', address(TO_ADDRESS)),
@@ -57,7 +61,9 @@ describe('onTransaction', () => {
       data: '0xf242432a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
     });
 
-    expect(response).toRender(
+    const screen = response.getInterface();
+
+    expect(screen).toRender(
       panel([
         row('From', address(FROM_ADDRESS)),
         row('To', address(TO_ADDRESS)),
@@ -75,7 +81,9 @@ describe('onTransaction', () => {
       data: '0xabcdef1200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
     });
 
-    expect(response).toRender(
+    const screen = response.getInterface();
+
+    expect(screen).toRender(
       panel([
         row('From', address(FROM_ADDRESS)),
         row('To', address(TO_ADDRESS)),
@@ -93,7 +101,9 @@ describe('onTransaction', () => {
       data: '0x',
     });
 
-    expect(response).toRender(
+    const screen = response.getInterface();
+
+    expect(screen).toRender(
       panel([
         row('From', address(FROM_ADDRESS)),
         row('To', address(TO_ADDRESS)),

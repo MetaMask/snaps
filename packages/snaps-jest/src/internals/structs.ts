@@ -1,6 +1,6 @@
 import {
-  NotificationType,
   ComponentStruct,
+  NotificationType,
   enumValue,
 } from '@metamask/snaps-sdk';
 import {
@@ -22,10 +22,11 @@ import {
   object,
   optional,
   string,
-  type,
   union,
   record,
   any,
+  func,
+  type,
 } from 'superstruct';
 
 // TODO: Export this from `@metamask/utils` instead.
@@ -207,29 +208,38 @@ export const InterfaceStruct = type({
   content: optional(ComponentStruct),
 });
 
-export const SnapResponseStruct = assign(
-  InterfaceStruct,
+export const SnapResponseWithoutInterfaceStruct = object({
+  id: string(),
+
+  response: union([
+    object({
+      result: JsonStruct,
+    }),
+    object({
+      error: JsonStruct,
+    }),
+  ]),
+
+  notifications: array(
+    object({
+      id: string(),
+      message: string(),
+      type: union([
+        enumValue(NotificationType.InApp),
+        enumValue(NotificationType.Native),
+      ]),
+    }),
+  ),
+});
+
+export const SnapResponseWithInterfaceStruct = assign(
+  SnapResponseWithoutInterfaceStruct,
   object({
-    id: string(),
-
-    response: union([
-      object({
-        result: JsonStruct,
-      }),
-      object({
-        error: JsonStruct,
-      }),
-    ]),
-
-    notifications: array(
-      object({
-        id: string(),
-        message: string(),
-        type: union([
-          enumValue(NotificationType.InApp),
-          enumValue(NotificationType.Native),
-        ]),
-      }),
-    ),
+    getInterface: func(),
   }),
 );
+
+export const SnapResponseStruct = union([
+  SnapResponseWithoutInterfaceStruct,
+  SnapResponseWithInterfaceStruct,
+]);

@@ -7,6 +7,8 @@ import {
   SignatureOptionsStruct,
   SnapOptionsStruct,
   SnapResponseStruct,
+  SnapResponseWithInterfaceStruct,
+  SnapResponseWithoutInterfaceStruct,
   TransactionOptionsStruct,
 } from './structs';
 
@@ -202,9 +204,124 @@ describe('InterfaceStruct', () => {
   });
 });
 
-describe('SnapResponseStruct', () => {
+describe('SnapResponseWithInterfaceStruct', () => {
   it('accepts a valid object', () => {
     const options = create(
+      {
+        id: '1',
+        response: {
+          result: '0x1',
+        },
+        notifications: [
+          {
+            id: '1',
+            type: 'native',
+            message: 'Hello, world!',
+          },
+        ],
+        getInterface: () => undefined,
+      },
+      SnapResponseWithInterfaceStruct,
+    );
+
+    expect(options).toStrictEqual({
+      id: '1',
+      response: {
+        result: '0x1',
+      },
+      notifications: [
+        {
+          id: '1',
+          type: 'native',
+          message: 'Hello, world!',
+        },
+      ],
+      getInterface: expect.any(Function),
+    });
+  });
+
+  it.each(INVALID_VALUES)('throws for invalid value: %p', (value) => {
+    // eslint-disable-next-line jest/require-to-throw-message
+    expect(() => create(value, SnapResponseWithInterfaceStruct)).toThrow();
+  });
+});
+
+describe('SnapResponseWithoutInterfaceStruct', () => {
+  it('accepts a valid object', () => {
+    const options = create(
+      {
+        id: '1',
+        response: {
+          result: '0x1',
+        },
+        notifications: [
+          {
+            id: '1',
+            type: 'native',
+            message: 'Hello, world!',
+          },
+        ],
+      },
+      SnapResponseWithoutInterfaceStruct,
+    );
+
+    expect(options).toStrictEqual({
+      id: '1',
+      response: {
+        result: '0x1',
+      },
+      notifications: [
+        {
+          id: '1',
+          type: 'native',
+          message: 'Hello, world!',
+        },
+      ],
+    });
+  });
+
+  it.each(INVALID_VALUES)('throws for invalid value: %p', (value) => {
+    // eslint-disable-next-line jest/require-to-throw-message
+    expect(() => create(value, SnapResponseWithoutInterfaceStruct)).toThrow();
+  });
+});
+
+describe('SnapResponseStruct', () => {
+  it('accepts a valid object', () => {
+    const optionsWithInterface = create(
+      {
+        id: '1',
+        response: {
+          result: '0x1',
+        },
+        notifications: [
+          {
+            id: '1',
+            type: 'native',
+            message: 'Hello, world!',
+          },
+        ],
+        getInterface: () => undefined,
+      },
+      SnapResponseStruct,
+    );
+
+    expect(optionsWithInterface).toStrictEqual({
+      id: '1',
+      response: {
+        result: '0x1',
+      },
+      notifications: [
+        {
+          id: '1',
+          type: 'native',
+          message: 'Hello, world!',
+        },
+      ],
+      getInterface: expect.any(Function),
+    });
+
+    const optionsWithoutInterface = create(
       {
         id: '1',
         response: {
@@ -221,7 +338,7 @@ describe('SnapResponseStruct', () => {
       SnapResponseStruct,
     );
 
-    expect(options).toStrictEqual({
+    expect(optionsWithoutInterface).toStrictEqual({
       id: '1',
       response: {
         result: '0x1',

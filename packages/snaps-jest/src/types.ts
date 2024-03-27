@@ -1,4 +1,9 @@
-import type { Component } from '@metamask/snaps-sdk';
+import type {
+  Component,
+  NotificationType,
+  EnumToUnion,
+} from '@metamask/snaps-sdk';
+import type { InferMatching } from '@metamask/snaps-utils';
 import type { Json, JsonRpcId, JsonRpcParams } from '@metamask/utils';
 import type { Infer } from 'superstruct';
 
@@ -79,6 +84,23 @@ export type SignatureOptions = Infer<typeof SignatureOptionsStruct>;
  */
 export type SnapOptions = Infer<typeof SnapOptionsStruct>;
 
+export type SnapInterfaceActions = {
+  /**
+   * Click on an interface element.
+   *
+   * @param name - The element name to click.
+   */
+  clickElement(name: string): Promise<void>;
+
+  /**
+   * Type a value in a interface field.
+   *
+   * @param name - The element name to type in.
+   * @param value - The value to type.
+   */
+  typeInField(name: string, value: string): Promise<void>;
+};
+
 /**
  * A `snap_dialog` alert interface.
  */
@@ -151,10 +173,12 @@ export type SnapPromptInterface = {
   cancel(): Promise<void>;
 };
 
-export type SnapInterface =
+export type SnapInterface = (
   | SnapAlertInterface
   | SnapConfirmationInterface
-  | SnapPromptInterface;
+  | SnapPromptInterface
+) &
+  SnapInterfaceActions;
 
 export type SnapRequestObject = {
   /**
@@ -223,7 +247,7 @@ export type Snap = {
    */
   onTransaction(
     transaction?: Partial<TransactionOptions>,
-  ): Promise<SnapResponse>;
+  ): Promise<SnapResponseWithInterface>;
 
   /**
    * Send a transaction to the snap.
@@ -236,7 +260,7 @@ export type Snap = {
    */
   sendTransaction(
     transaction?: Partial<TransactionOptions>,
-  ): Promise<SnapResponse>;
+  ): Promise<SnapResponseWithInterface>;
 
   /**
    * Send a signature request to the snap.
@@ -246,7 +270,9 @@ export type Snap = {
    * Any missing fields will be filled in with default values.
    * @returns The response.
    */
-  onSignature(signature?: Partial<SignatureOptions>): Promise<SnapResponse>;
+  onSignature(
+    signature?: Partial<SignatureOptions>,
+  ): Promise<SnapResponseWithInterface>;
 
   /**
    * Run a cronjob in the snap. This is similar to {@link request}, but the
@@ -276,7 +302,7 @@ export type Snap = {
    *
    * @returns The response.
    */
-  onHomePage(): Promise<SnapResponse>;
+  onHomePage(): Promise<SnapResponseWithInterface>;
 
   /**
    * Mock a JSON-RPC request. This will cause the snap to respond with the
@@ -315,4 +341,31 @@ export type Snap = {
   close(): Promise<void>;
 };
 
-export type SnapResponse = Infer<typeof SnapResponseStruct>;
+export type SnapHandlerInterface = {
+  content: Component;
+} & SnapInterfaceActions;
+
+export type SnapResponseWithInterface = {
+  id: string;
+  response: { result: Json } | { error: Json };
+  notifications: {
+    id: string;
+    message: string;
+    type: EnumToUnion<NotificationType>;
+  }[];
+  getInterface(): SnapHandlerInterface;
+};
+
+export type SnapResponseWithoutInterface = Omit<
+  SnapResponseWithInterface,
+  'getInterface'
+>;
+
+export type SnapResponseType =
+  | SnapResponseWithoutInterface
+  | SnapResponseWithInterface;
+
+export type SnapResponse = InferMatching<
+  typeof SnapResponseStruct,
+  SnapResponseType
+>;

@@ -8,7 +8,9 @@ describe('onHomePage', () => {
 
     const response = await onHomePage();
 
-    expect(response).toRender(
+    const screen = response.getInterface();
+
+    expect(screen).toRender(
       panel([heading('Hello world!'), text('Welcome to my Snap home page!')]),
     );
   });

@@ -7,7 +7,7 @@ import {
   toRespondWithError,
   toSendNotification,
 } from './matchers';
-import { getMockResponse } from './test-utils';
+import { getMockInterfaceResponse, getMockResponse } from './test-utils';
 
 expect.extend({
   toRespondWith,
@@ -284,30 +284,26 @@ describe('toSendNotification', () => {
 
 describe('toRender', () => {
   it('passes when the component is correct', () => {
-    expect(
-      getMockResponse({
-        content: panel([text('Hello, world!')]),
-      }),
-    ).toRender(panel([text('Hello, world!')]));
+    expect(getMockInterfaceResponse(panel([text('Hello, world!')]))).toRender(
+      panel([text('Hello, world!')]),
+    );
   });
 
   it('fails when the component is incorrect', () => {
     expect(() =>
-      expect(
-        getMockResponse({
-          content: panel([text('Hello, world!')]),
-        }),
-      ).toRender(panel([text('Hello, world?')])),
+      expect(getMockInterfaceResponse(panel([text('Hello, world!')]))).toRender(
+        panel([text('Hello, world?')]),
+      ),
     ).toThrow('Received:');
   });
 
   it('fails when the component is missing', () => {
     expect(() =>
       expect(
-        getMockResponse({
+        getMockInterfaceResponse(
           // @ts-expect-error - Invalid response.
-          content: null,
-        }),
+          null,
+        ),
       ).not.toRender(panel([text('Hello, world!')])),
     ).toThrow('Received has type:');
   });
@@ -315,18 +311,14 @@ describe('toRender', () => {
   describe('not', () => {
     it('passes when the component is correct', () => {
       expect(
-        getMockResponse({
-          content: panel([text('Hello, world!')]),
-        }),
+        getMockInterfaceResponse(panel([text('Hello, world!')])),
       ).not.toRender(panel([text('Hello, world?')]));
     });
 
     it('fails when the component is incorrect', () => {
       expect(() =>
         expect(
-          getMockResponse({
-            content: panel([text('Hello, world!')]),
-          }),
+          getMockInterfaceResponse(panel([text('Hello, world!')])),
         ).not.toRender(panel([text('Hello, world!')])),
       ).toThrow('Received:');
     });
