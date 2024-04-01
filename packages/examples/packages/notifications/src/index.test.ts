@@ -49,7 +49,7 @@ describe('onRpcRequest', () => {
 
       expect(response).toRespondWith(null);
       expect(response).toSendNotification(
-        'Hello, Jest, from the browser!',
+        'Hello from the browser!',
         NotificationType.Native,
       );
     });
