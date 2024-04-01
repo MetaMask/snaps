@@ -136,6 +136,11 @@ export const SNAPS_DERIVATION_PATHS: SnapsDerivationPath[] = [
     name: 'Mina',
   },
   {
+    path: ['m', `44'`, `242'`],
+    curve: 'ed25519',
+    name: 'Nimiq',
+  },
+  {
     path: ['m', `44'`, `1729'`, `0'`, `0'`],
     curve: 'ed25519',
     name: 'Tezos',
