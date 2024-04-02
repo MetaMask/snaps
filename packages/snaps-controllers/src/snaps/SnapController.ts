@@ -1638,6 +1638,7 @@ export class SnapController extends BaseController<
         this.update((state: any) => {
           delete state.snaps[snapId];
           delete state.snapStates[snapId];
+          delete state.unencryptedSnapStates[snapId];
         });
 
         // If the snap has been fully installed before, also emit snapUninstalled.
