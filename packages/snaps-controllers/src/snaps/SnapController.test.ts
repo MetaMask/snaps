@@ -6792,6 +6792,30 @@ describe('SnapController', () => {
 
       snapController.destroy();
     });
+
+    it('removes snap state', async () => {
+      const messenger = getSnapControllerMessenger();
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+            snapStates: {
+              [MOCK_SNAP_ID]: 'foo',
+            },
+            unencryptedSnapStates: {
+              [MOCK_SNAP_ID]: 'bar',
+            },
+          },
+        }),
+      );
+
+      await snapController.removeSnap(MOCK_SNAP_ID);
+      expect(snapController.state.snapStates).toStrictEqual({});
+      expect(snapController.state.unencryptedSnapStates).toStrictEqual({});
+
+      snapController.destroy();
+    });
   });
 
   describe('enableSnap', () => {
