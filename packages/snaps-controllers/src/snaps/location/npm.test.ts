@@ -380,7 +380,7 @@ describe('NpmLocation', () => {
   });
 
   // TODO(ritave): Doing this tests requires writing tarball packing utility function
-  //               With the the current changeset going way out of scope, I'm leaving this for future.
+  //               With the current changeset going way out of scope, I'm leaving this for future.
   it.todo('sets canonical path properly');
   // TODO(ritave): Requires writing tarball packing utility out of scope for a hot-fix blocking release.
   it.todo('paths are normalized to remove "./" prefix');
