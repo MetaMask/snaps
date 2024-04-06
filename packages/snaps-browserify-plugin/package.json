@@ -38,7 +38,7 @@
     "lint:dependencies": "depcheck"
   },
   "dependencies": {
-    "@metamask/snaps-utils": "workspace:^",
+    "@metamask/snaps-utils": "0.24.0",
     "convert-source-map": "^1.8.0",
     "readable-stream": "^3.6.2"
   },
