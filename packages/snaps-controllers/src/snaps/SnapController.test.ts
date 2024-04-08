@@ -109,6 +109,7 @@ if (!('CryptoKey' in globalThis)) {
   });
 }
 
+globalThis.crypto ??= webcrypto as typeof globalThis.crypto;
 globalThis.crypto.getRandomValues = <Type extends ArrayBufferView | null>(
   array: Type,
 ) => {
