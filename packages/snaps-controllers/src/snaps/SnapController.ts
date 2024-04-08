@@ -115,7 +115,11 @@ import type {
   TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '../services';
-import type { KeyDerivationOptions } from '../types';
+import type { EncryptionResult } from '../types';
+import {
+  type ExportableKeyEncryptor,
+  type KeyDerivationOptions,
+} from '../types';
 import { fetchSnap, hasTimedOut, setDiff, withTimeout } from '../utils';
 import { ALLOWED_PERMISSIONS } from './constants';
 import type { SnapLocation } from './location';
@@ -632,7 +636,7 @@ type SnapControllerArgs = {
    */
   preinstalledSnaps?: PreinstalledSnap[];
 
-  encryptor?: any;
+  encryptor: ExportableKeyEncryptor;
 
   getMnemonic: () => Promise<Uint8Array>;
 };
@@ -717,7 +721,7 @@ export class SnapController extends BaseController<
 
   #maxInitTime: number;
 
-  #encryptor: any;
+  #encryptor: ExportableKeyEncryptor;
 
   #getMnemonic: () => Promise<Uint8Array>;
 
@@ -1525,7 +1529,7 @@ export class SnapController extends BaseController<
     salt: string;
     useCache: boolean;
     keyMetadata?: KeyDerivationOptions;
-  }): Promise<string> {
+  }): Promise<unknown> {
     const runtime = this.#getRuntimeExpect(snapId);
 
     if (runtime.encryptionKey && useCache) {
@@ -1551,7 +1555,7 @@ export class SnapController extends BaseController<
 
   async #decryptSnapState(snapId: SnapId, state: string) {
     try {
-      const parsed = parseJson(state);
+      const parsed = parseJson<EncryptionResult>(state);
       const { salt, keyMetadata } = parsed;
       const useCache = this.#encryptor.isVaultUpdated(state);
       const encryptionKey = await this.#getSnapEncryptionKey({
