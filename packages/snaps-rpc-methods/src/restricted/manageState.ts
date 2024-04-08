@@ -7,9 +7,9 @@ import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { ManageStateParams, ManageStateResult } from '@metamask/snaps-sdk';
 import { ManageStateOperation } from '@metamask/snaps-sdk';
-import { STATE_ENCRYPTION_MAGIC_VALUE, parseJson } from '@metamask/snaps-utils';
-import type { Json, NonEmptyArray, Hex } from '@metamask/utils';
-import { isObject, getJsonSize, assert, isValidJson } from '@metamask/utils';
+import { STATE_ENCRYPTION_MAGIC_VALUE } from '@metamask/snaps-utils';
+import type { Json, NonEmptyArray } from '@metamask/utils';
+import { isObject, getJsonSize } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
 import { deriveEntropy } from '../utils';
@@ -20,11 +20,6 @@ export const STATE_ENCRYPTION_SALT = 'snap_manageState encryption';
 const methodName = 'snap_manageState';
 
 export type ManageStateMethodHooks = {
-  /**
-   * @returns The mnemonic of the user's primary keyring.
-   */
-  getMnemonic: () => Promise<Uint8Array>;
-
   /**
    * Waits for the extension to be unlocked.
    *
@@ -42,7 +37,10 @@ export type ManageStateMethodHooks = {
    *
    * @returns The current state of the Snap.
    */
-  getSnapState: (snapId: string, encrypted: boolean) => string;
+  getSnapState: (
+    snapId: string,
+    encrypted: boolean,
+  ) => Promise<Record<string, Json>>;
 
   /**
    * A function that updates the state of the requesting Snap.
@@ -51,29 +49,9 @@ export type ManageStateMethodHooks = {
    */
   updateSnapState: (
     snapId: string,
-    newState: string,
+    newState: Record<string, Json>,
     encrypted: boolean,
-  ) => void;
-
-  /**
-   * Encrypts data with a key. This is assumed to perform symmetric encryption.
-   *
-   * @param key - The key to use for encryption, in hexadecimal format.
-   * @param data - The JSON data to encrypt.
-   * @returns The ciphertext as a string. The format for this string is
-   * dependent on the implementation, but MUST be a string.
-   */
-  encrypt: (key: string, data: Json) => Promise<string>;
-
-  /**
-   * Decrypts data with a key. This is assumed to perform symmetric decryption.
-   *
-   * @param key - The key to use for decryption, in hexadecimal format.
-   * @param cipherText - The ciphertext to decrypt. The format for this string
-   * is dependent on the implementation, but MUST be a string.
-   * @returns The decrypted data as a JSON object.
-   */
-  decrypt: (key: Hex, cipherText: string) => Promise<unknown>;
+  ) => Promise<void>;
 };
 
 type ManageStateSpecificationBuilderOptions = {
@@ -116,13 +94,10 @@ export const specificationBuilder: PermissionSpecificationBuilder<
 };
 
 const methodHooks: MethodHooksObject<ManageStateMethodHooks> = {
-  getMnemonic: true,
   getUnlockPromise: true,
   clearSnapState: true,
   getSnapState: true,
   updateSnapState: true,
-  encrypt: true,
-  decrypt: true,
 };
 
 export const manageStateBuilder = Object.freeze({
@@ -151,7 +126,7 @@ type GetEncryptionKeyArgs = {
  * from.
  * @returns The state encryption key.
  */
-export async function getEncryptionKey({
+export async function getEncryptionEntropy({
   mnemonicPhrase,
   snapId,
 }: GetEncryptionKeyArgs) {
@@ -161,68 +136,6 @@ export async function getEncryptionKey({
     salt: STATE_ENCRYPTION_SALT,
     magic: STATE_ENCRYPTION_MAGIC_VALUE,
   });
-}
-
-type EncryptStateArgs = GetEncryptionKeyArgs & {
-  state: Json;
-  encryptFunction: ManageStateMethodHooks['encrypt'];
-};
-
-/**
- * Encrypt the state using a deterministic encryption algorithm, based on the
- * snap ID and mnemonic phrase.
- *
- * @param args - The encryption args.
- * @param args.state - The state to encrypt.
- * @param args.encryptFunction - The function to use for encrypting the state.
- * @param args.snapId - The ID of the snap to get the encryption key for.
- * @param args.mnemonicPhrase - The mnemonic phrase to derive the encryption key
- * from.
- * @returns The encrypted state.
- */
-async function encryptState({
-  state,
-  encryptFunction,
-  ...keyArgs
-}: EncryptStateArgs) {
-  const encryptionKey = await getEncryptionKey(keyArgs);
-  return await encryptFunction(encryptionKey, state);
-}
-
-type DecryptStateArgs = GetEncryptionKeyArgs & {
-  state: string;
-  decryptFunction: ManageStateMethodHooks['decrypt'];
-};
-
-/**
- * Decrypt the state using a deterministic decryption algorithm, based on the
- * snap ID and mnemonic phrase.
- *
- * @param args - The encryption args.
- * @param args.state - The state to decrypt.
- * @param args.decryptFunction - The function to use for decrypting the state.
- * @param args.snapId - The ID of the snap to get the encryption key for.
- * @param args.mnemonicPhrase - The mnemonic phrase to derive the encryption key
- * from.
- * @returns The encrypted state.
- */
-async function decryptState({
-  state,
-  decryptFunction,
-  ...keyArgs
-}: DecryptStateArgs) {
-  try {
-    const encryptionKey = await getEncryptionKey(keyArgs);
-    const decryptedState = await decryptFunction(encryptionKey, state);
-
-    assert(isValidJson(decryptedState));
-
-    return decryptedState as Record<string, Json>;
-  } catch {
-    throw rpcErrors.internal({
-      message: 'Failed to decrypt snap state, the state must be corrupted.',
-    });
-  }
 }
 
 /**
@@ -235,25 +148,18 @@ async function decryptState({
  * state for a snap.
  * @param hooks.updateSnapState - A function that updates the state stored for a
  * snap.
- * @param hooks.getMnemonic - A function to retrieve the Secret Recovery Phrase
- * of the user.
  * @param hooks.getUnlockPromise - A function that resolves once the MetaMask
  * extension is unlocked and prompts the user to unlock their MetaMask if it is
  * locked.
- * @param hooks.encrypt - A function that encrypts the given state.
- * @param hooks.decrypt - A function that decrypts the given state.
  * @returns The method implementation which either returns `null` for a
  * successful state update/deletion or returns the decrypted state.
  * @throws If the params are invalid.
  */
 export function getManageStateImplementation({
-  getMnemonic,
   getUnlockPromise,
   clearSnapState,
   getSnapState,
   updateSnapState,
-  encrypt,
-  decrypt,
 }: ManageStateMethodHooks) {
   return async function manageState(
     options: RestrictedMethodOptions<ManageStateParams>,
@@ -283,31 +189,11 @@ export function getManageStateImplementation({
         return null;
 
       case ManageStateOperation.GetState: {
-        const state = getSnapState(origin, shouldEncrypt);
-        if (state === null) {
-          return state;
-        }
-        return shouldEncrypt
-          ? await decryptState({
-              state,
-              decryptFunction: decrypt,
-              mnemonicPhrase: await getMnemonic(),
-              snapId: origin,
-            })
-          : parseJson<Record<string, Json>>(state);
+        return await getSnapState(origin, shouldEncrypt);
       }
 
       case ManageStateOperation.UpdateState: {
-        const finalizedState = shouldEncrypt
-          ? await encryptState({
-              state: validatedParams.newState,
-              encryptFunction: encrypt,
-              mnemonicPhrase: await getMnemonic(),
-              snapId: origin,
-            })
-          : JSON.stringify(validatedParams.newState);
-
-        updateSnapState(origin, finalizedState, shouldEncrypt);
+        await updateSnapState(origin, validatedParams.newState, shouldEncrypt);
         return null;
       }
 

@@ -1,4 +1,13 @@
 import type { ApprovalRequest } from '@metamask/approval-controller';
+import {
+  encryptWithKey,
+  decryptWithKey,
+  keyFromPassword,
+  importKey,
+  exportKey,
+  generateSalt,
+  isVaultUpdated,
+} from '@metamask/browser-passworder';
 import type {
   PermissionConstraint,
   SubjectPermissions,
@@ -21,6 +30,7 @@ import {
   MOCK_LOCAL_SNAP_ID,
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
+  TEST_SECRET_RECOVERY_PHRASE_BYTES,
 } from '@metamask/snaps-utils/test-utils';
 import type { Json } from '@metamask/utils';
 
@@ -43,6 +53,7 @@ import type {
   SnapsRegistryEvents,
 } from '../snaps';
 import { SnapController } from '../snaps';
+import type { KeyDerivationOptions } from '../types';
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
 import { MockSnapsRegistry } from './registry';
@@ -424,6 +435,37 @@ export type PartialSnapControllerConstructorParams = Partial<
   }
 >;
 
+export const DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS = {
+  algorithm: 'PBKDF2' as const,
+  params: {
+    iterations: 600_000,
+  },
+};
+
+const getSnapControllerEncryptor = () => {
+  return {
+    encryptWithKey,
+    decryptWithKey,
+    keyFromPassword: async (
+      password: string,
+      salt: string,
+      exportable: boolean,
+      opts?: KeyDerivationOptions,
+    ) =>
+      keyFromPassword(
+        password,
+        salt,
+        exportable,
+        opts ?? DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS,
+      ),
+    importKey,
+    exportKey,
+    generateSalt,
+    isVaultUpdated: (vault: string) =>
+      isVaultUpdated(vault, DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS),
+  };
+};
+
 export const getSnapControllerOptions = (
   opts?: PartialSnapControllerConstructorParams,
 ) => {
@@ -434,6 +476,8 @@ export const getSnapControllerOptions = (
     featureFlags: { dappsCanUpdateSnaps: true },
     state: undefined,
     fetchFunction: jest.fn(),
+    getMnemonic: async () => Promise.resolve(TEST_SECRET_RECOVERY_PHRASE_BYTES),
+    encryptor: getSnapControllerEncryptor(),
     ...opts,
   } as SnapControllerConstructorParams;
 
@@ -462,6 +506,8 @@ export const getSnapControllerWithEESOptions = ({
     closeAllConnections: jest.fn(),
     messenger: snapControllerMessenger,
     rootMessenger,
+    getMnemonic: async () => Promise.resolve(TEST_SECRET_RECOVERY_PHRASE_BYTES),
+    encryptor: getSnapControllerEncryptor(),
     fetchFunction: jest.fn(),
     ...options,
   } as SnapControllerConstructorParams & {

@@ -36,6 +36,7 @@ import {
   getRpcCaveatOrigins,
   processSnapPermissions,
 } from '@metamask/snaps-rpc-methods';
+import { getEncryptionEntropy } from '@metamask/snaps-rpc-methods/src/restricted/manageState';
 import type {
   RequestSnapsParams,
   RequestSnapsResult,
@@ -80,6 +81,7 @@ import {
   NpmSnapFileNames,
   OnNameLookupResponseStruct,
   getLocalizedSnapManifest,
+  parseJson,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
@@ -92,6 +94,7 @@ import {
   hasProperty,
   inMilliseconds,
   isNonEmptyArray,
+  isValidJson,
   isValidSemVerRange,
   satisfiesVersionRange,
   timeSince,
@@ -112,6 +115,7 @@ import type {
   TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '../services';
+import type { KeyDerivationOptions } from '../types';
 import { fetchSnap, hasTimedOut, setDiff, withTimeout } from '../utils';
 import { ALLOWED_PERMISSIONS } from './constants';
 import type { SnapLocation } from './location';
@@ -209,6 +213,8 @@ export interface SnapRuntimeData {
    * @see {@link SnapController:constructor}
    */
   interpreter: StateMachine.Service<StatusContext, StatusEvents, StatusStates>;
+
+  encryptionKey: string | null;
 }
 
 export type SnapError = {
@@ -625,6 +631,10 @@ type SnapControllerArgs = {
    * A list of snaps to be preinstalled into the SnapController state on initialization.
    */
   preinstalledSnaps?: PreinstalledSnap[];
+
+  encryptor?: any;
+
+  getMnemonic: () => Promise<Uint8Array>;
 };
 type AddSnapArgs = {
   id: SnapId;
@@ -707,6 +717,10 @@ export class SnapController extends BaseController<
 
   #maxInitTime: number;
 
+  #encryptor: any;
+
+  #getMnemonic: () => Promise<Uint8Array>;
+
   #detectSnapLocation: typeof detectSnapLocation;
 
   #snapsRuntimeData: Map<SnapId, SnapRuntimeData>;
@@ -736,6 +750,8 @@ export class SnapController extends BaseController<
     featureFlags = {},
     detectSnapLocation: detectSnapLocationFunction = detectSnapLocation,
     preinstalledSnaps,
+    encryptor,
+    getMnemonic,
   }: SnapControllerArgs) {
     super({
       messenger,
@@ -789,6 +805,8 @@ export class SnapController extends BaseController<
     this.maxRequestTime = maxRequestTime;
     this.#maxInitTime = maxInitTime;
     this.#detectSnapLocation = detectSnapLocationFunction;
+    this.#encryptor = encryptor;
+    this.#getMnemonic = getMnemonic;
     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
     this._onOutboundRequest = this._onOutboundRequest.bind(this);
     this._onOutboundResponse = this._onOutboundResponse.bind(this);
@@ -930,7 +948,7 @@ export class SnapController extends BaseController<
 
     this.messagingSystem.registerActionHandler(
       `${controllerName}:getSnapState`,
-      (...args) => this.getSnapState(...args),
+      async (...args) => this.getSnapState(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -950,7 +968,7 @@ export class SnapController extends BaseController<
 
     this.messagingSystem.registerActionHandler(
       `${controllerName}:updateSnapState`,
-      (...args) => this.updateSnapState(...args),
+      async (...args) => this.updateSnapState(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -1497,6 +1515,82 @@ export class SnapController extends BaseController<
     return truncateSnap(this.getExpect(snapId));
   }
 
+  async #getSnapEncryptionKey({
+    snapId,
+    salt,
+    keyMetadata,
+    useCache,
+  }: {
+    snapId: SnapId;
+    salt: string;
+    useCache: boolean;
+    keyMetadata?: KeyDerivationOptions;
+  }): Promise<string> {
+    const runtime = this.#getRuntimeExpect(snapId);
+
+    if (runtime.encryptionKey && useCache) {
+      return this.#encryptor.importKey(runtime.encryptionKey);
+    }
+
+    const mnemonicPhrase = await this.#getMnemonic();
+    const entropy = await getEncryptionEntropy({ snapId, mnemonicPhrase });
+    const encryptionKey = await this.#encryptor.keyFromPassword(
+      entropy,
+      salt,
+      true,
+      keyMetadata,
+    );
+    const exportedKey = await this.#encryptor.exportKey(encryptionKey);
+
+    // Cache exported encryption key in runtime
+    if (useCache) {
+      runtime.encryptionKey = exportedKey;
+    }
+    return encryptionKey;
+  }
+
+  async #decryptSnapState(snapId: SnapId, state: string) {
+    try {
+      const parsed = parseJson(state);
+      const { salt, keyMetadata } = parsed;
+      const useCache = this.#encryptor.isVaultUpdated(state);
+      const encryptionKey = await this.#getSnapEncryptionKey({
+        snapId,
+        salt,
+        useCache,
+        keyMetadata,
+      });
+      const decryptedState = await this.#encryptor.decryptWithKey(
+        encryptionKey,
+        parsed,
+      );
+
+      assert(isValidJson(decryptedState));
+
+      return decryptedState as Record<string, Json>;
+    } catch {
+      throw rpcErrors.internal({
+        message: 'Failed to decrypt snap state, the state must be corrupted.',
+      });
+    }
+  }
+
+  async #encryptSnapState(snapId: SnapId, state: Record<string, Json>) {
+    const salt = this.#encryptor.generateSalt();
+    const encryptionKey = await this.#getSnapEncryptionKey({
+      snapId,
+      salt,
+      useCache: true,
+    });
+    const encryptedState = await this.#encryptor.encryptWithKey(
+      encryptionKey,
+      state,
+    );
+
+    encryptedState.salt = salt;
+    return JSON.stringify(encryptedState);
+  }
+
   /**
    * Updates the own state of the snap with the given id.
    * This is distinct from the state MetaMask uses to manage snaps.
@@ -1505,14 +1599,22 @@ export class SnapController extends BaseController<
    * @param newSnapState - The new state of the snap.
    * @param encrypted - A flag to indicate whether to use encrypted storage or not.
    */
-  updateSnapState(snapId: SnapId, newSnapState: string, encrypted: boolean) {
-    this.update((state) => {
-      if (encrypted) {
-        state.snapStates[snapId] = newSnapState;
-      } else {
-        state.unencryptedSnapStates[snapId] = newSnapState;
-      }
-    });
+  async updateSnapState(
+    snapId: SnapId,
+    newSnapState: Record<string, Json>,
+    encrypted: boolean,
+  ) {
+    if (encrypted) {
+      const encryptedState = await this.#encryptSnapState(snapId, newSnapState);
+
+      this.update((state) => {
+        state.snapStates[snapId] = encryptedState;
+      });
+    } else {
+      this.update((state) => {
+        state.unencryptedSnapStates[snapId] = JSON.stringify(newSnapState);
+      });
+    }
   }
 
   /**
@@ -1540,11 +1642,17 @@ export class SnapController extends BaseController<
    * @param encrypted - A flag to indicate whether to use encrypted storage or not.
    * @returns The requested snap state or null if no state exists.
    */
-  getSnapState(snapId: SnapId, encrypted: boolean): Json {
+  async getSnapState(snapId: SnapId, encrypted: boolean): Promise<Json> {
     const state = encrypted
       ? this.state.snapStates[snapId]
       : this.state.unencryptedSnapStates[snapId];
-    return state ?? null;
+
+    if (!encrypted || state === null) {
+      return state;
+    }
+
+    const decrypted = await this.#decryptSnapState(snapId, state);
+    return decrypted;
   }
 
   /**
@@ -3213,6 +3321,7 @@ export class SnapController extends BaseController<
       lastRequest: null,
       rpcHandler: null,
       installPromise: null,
+      encryptionKey: null,
       activeReferences: 0,
       pendingInboundRequests: [],
       pendingOutboundRequests: 0,
