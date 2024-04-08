@@ -1,9 +1,6 @@
-import { decrypt, encrypt } from '@metamask/browser-passworder';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
-import { rpcErrors } from '@metamask/rpc-errors';
 import { ManageStateOperation } from '@metamask/snaps-sdk';
 import {
-  MOCK_LOCAL_SNAP_ID,
   MOCK_SNAP_ID,
   TEST_SECRET_RECOVERY_PHRASE_BYTES,
 } from '@metamask/snaps-utils/test-utils';
@@ -16,24 +13,9 @@ import {
   specificationBuilder,
 } from './manageState';
 
-globalThis.crypto ??= webcrypto as typeof globalThis.crypto;
-globalThis.crypto.getRandomValues = <Type extends ArrayBufferView | null>(
-  array: Type,
-) => {
-  if (array === null) {
-    return null as Type;
-  }
-
-  return new Uint8Array(array.buffer).fill(0) as unknown as Type;
-};
-
 // Encryption key for `MOCK_SNAP_ID`.
 const ENCRYPTION_KEY =
   '0xd2f0a8e994b871ba4451ac383bf323cdaad8d554736355f2223e155692fbc446';
-
-// Encryption key for `MOCK_LOCAL_SNAP_ID`.
-const OTHER_ENCRYPTION_KEY =
-  '0x7cd340349a41e0f7af62a9d97c76e96b12485e0206791d6b5638dd59736af8f5';
 
 describe('getEncryptionEntropy', () => {
   it('returns the encryption entropy for the snap ID', async () => {
@@ -55,10 +37,7 @@ describe('snap_manageState', () => {
         clearSnapState: jest.fn(),
         getSnapState: jest.fn(),
         updateSnapState: jest.fn(),
-        getMnemonic: jest.fn(),
         getUnlockPromise: jest.fn(),
-        encrypt,
-        decrypt,
       };
 
       expect(
@@ -91,10 +70,8 @@ describe('snap_manageState', () => {
         },
       };
 
-      const mockEncryptedState = await encrypt(ENCRYPTION_KEY, mockSnapState);
-
       const clearSnapState = jest.fn().mockReturnValueOnce(true);
-      const getSnapState = jest.fn().mockReturnValueOnce(mockEncryptedState);
+      const getSnapState = jest.fn().mockReturnValueOnce(mockSnapState);
       const updateSnapState = jest.fn().mockReturnValueOnce(true);
 
       const manageStateImplementation = getManageStateImplementation({
@@ -122,9 +99,7 @@ describe('snap_manageState', () => {
       };
 
       const clearSnapState = jest.fn().mockReturnValueOnce(true);
-      const getSnapState = jest
-        .fn()
-        .mockReturnValueOnce(JSON.stringify(mockSnapState));
+      const getSnapState = jest.fn().mockReturnValueOnce(mockSnapState);
       const updateSnapState = jest.fn().mockReturnValueOnce(true);
       const getUnlockPromise = jest.fn();
 
@@ -173,9 +148,6 @@ describe('snap_manageState', () => {
       const getSnapState = jest.fn().mockReturnValueOnce(true);
       const updateSnapState = jest.fn().mockReturnValueOnce(true);
       const getUnlockPromise = jest.fn();
-      const getMnemonic = jest
-        .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
 
       const manageStateImplementation = getManageStateImplementation({
         clearSnapState,
@@ -191,7 +163,6 @@ describe('snap_manageState', () => {
       });
 
       expect(clearSnapState).toHaveBeenCalledWith(MOCK_SNAP_ID, true);
-      expect(getMnemonic).not.toHaveBeenCalled();
       expect(getUnlockPromise).not.toHaveBeenCalled();
     });
 
@@ -200,9 +171,6 @@ describe('snap_manageState', () => {
       const getSnapState = jest.fn().mockReturnValueOnce(true);
       const updateSnapState = jest.fn().mockReturnValueOnce(true);
       const getUnlockPromise = jest.fn();
-      const getMnemonic = jest
-        .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
 
       const manageStateImplementation = getManageStateImplementation({
         clearSnapState,
@@ -221,7 +189,6 @@ describe('snap_manageState', () => {
       });
 
       expect(clearSnapState).toHaveBeenCalledWith(MOCK_SNAP_ID, false);
-      expect(getMnemonic).not.toHaveBeenCalled();
       expect(getUnlockPromise).not.toHaveBeenCalled();
     });
 
@@ -231,8 +198,6 @@ describe('snap_manageState', () => {
           data: 'for a snap state',
         },
       };
-
-      const mockEncryptedState = await encrypt(ENCRYPTION_KEY, mockSnapState);
 
       const clearSnapState = jest.fn().mockReturnValueOnce(true);
       const getSnapState = jest.fn().mockReturnValueOnce(true);
@@ -256,65 +221,7 @@ describe('snap_manageState', () => {
 
       expect(updateSnapState).toHaveBeenCalledWith(
         MOCK_SNAP_ID,
-        mockEncryptedState,
-        true,
-      );
-    });
-
-    it('uses different encryption for different snap IDs', async () => {
-      const mockSnapState = {
-        some: {
-          data: 'for a snap state',
-        },
-      };
-
-      const mockEncryptedState = await encrypt(ENCRYPTION_KEY, mockSnapState);
-      const mockOtherEncryptedState = await encrypt(
-        OTHER_ENCRYPTION_KEY,
         mockSnapState,
-      );
-
-      const clearSnapState = jest.fn().mockReturnValueOnce(true);
-      const getSnapState = jest.fn().mockReturnValueOnce(true);
-      const updateSnapState = jest.fn().mockReturnValueOnce(true);
-
-      const manageStateImplementation = getManageStateImplementation({
-        clearSnapState,
-        getSnapState,
-        updateSnapState,
-        getUnlockPromise: jest.fn(),
-      });
-
-      await manageStateImplementation({
-        context: { origin: MOCK_SNAP_ID },
-        method: 'snap_manageState',
-        params: {
-          operation: ManageStateOperation.UpdateState,
-          newState: mockSnapState,
-        },
-      });
-
-      await manageStateImplementation({
-        context: { origin: MOCK_LOCAL_SNAP_ID },
-        method: 'snap_manageState',
-        params: {
-          operation: ManageStateOperation.UpdateState,
-          newState: mockSnapState,
-        },
-      });
-
-      expect(updateSnapState).toHaveBeenCalledTimes(2);
-      expect(updateSnapState).toHaveBeenNthCalledWith(
-        1,
-        MOCK_SNAP_ID,
-        mockEncryptedState,
-        true,
-      );
-
-      expect(updateSnapState).toHaveBeenNthCalledWith(
-        2,
-        MOCK_LOCAL_SNAP_ID,
-        mockOtherEncryptedState,
         true,
       );
     });
@@ -332,9 +239,6 @@ describe('snap_manageState', () => {
         .mockReturnValueOnce(JSON.stringify(mockSnapState));
       const updateSnapState = jest.fn().mockReturnValueOnce(true);
       const getUnlockPromise = jest.fn();
-      const getMnemonic = jest
-        .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
 
       const manageStateImplementation = getManageStateImplementation({
         clearSnapState,
@@ -355,10 +259,9 @@ describe('snap_manageState', () => {
 
       expect(updateSnapState).toHaveBeenCalledWith(
         MOCK_SNAP_ID,
-        JSON.stringify(mockSnapState),
+        mockSnapState,
         false,
       );
-      expect(getMnemonic).not.toHaveBeenCalled();
       expect(getUnlockPromise).not.toHaveBeenCalled();
     });
 
@@ -390,31 +293,6 @@ describe('snap_manageState', () => {
           },
         }),
       ).not.toThrow();
-    });
-
-    it('throws an error if the state is corrupt', async () => {
-      const clearSnapState = jest.fn().mockReturnValueOnce(true);
-      const getSnapState = jest.fn().mockReturnValueOnce('foo');
-      const updateSnapState = jest.fn().mockReturnValueOnce(true);
-
-      const manageStateImplementation = getManageStateImplementation({
-        clearSnapState,
-        getSnapState,
-        updateSnapState,
-        getUnlockPromise: jest.fn(),
-      });
-
-      await expect(
-        manageStateImplementation({
-          context: { origin: MOCK_SNAP_ID },
-          method: 'snap_manageState',
-          params: { operation: ManageStateOperation.GetState },
-        }),
-      ).rejects.toThrow(
-        rpcErrors.internal({
-          message: 'Failed to decrypt snap state, the state must be corrupted.',
-        }),
-      );
     });
 
     it('throws an error on update if the new state is not plain object', async () => {

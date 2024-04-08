@@ -35,8 +35,8 @@ import {
   getKeyringCaveatOrigins,
   getRpcCaveatOrigins,
   processSnapPermissions,
+  getEncryptionEntropy,
 } from '@metamask/snaps-rpc-methods';
-import { getEncryptionEntropy } from '@metamask/snaps-rpc-methods/src/restricted/manageState';
 import type {
   RequestSnapsParams,
   RequestSnapsResult,
@@ -1651,8 +1651,12 @@ export class SnapController extends BaseController<
       ? this.state.snapStates[snapId]
       : this.state.unencryptedSnapStates[snapId];
 
-    if (!encrypted || state === null) {
+    if (state === null) {
       return state;
+    }
+
+    if (!encrypted) {
+      return parseJson(state);
     }
 
     const decrypted = await this.#decryptSnapState(snapId, state);

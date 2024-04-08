@@ -7585,10 +7585,38 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
+    it('throws an error if the state is corrupt', async () => {
+      const messenger = getSnapControllerMessenger();
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: {
+              [MOCK_SNAP_ID]: getPersistedSnapObject(),
+            },
+            snapStates: {
+              [MOCK_SNAP_ID]: 'foo',
+            },
+          },
+        }),
+      );
+
+      await expect(
+        messenger.call('SnapController:getSnapState', MOCK_SNAP_ID, true),
+      ).rejects.toThrow(
+        rpcErrors.internal({
+          message: 'Failed to decrypt snap state, the state must be corrupted.',
+        }),
+      );
+
+      snapController.destroy();
+    });
+
     it(`gets the snap's unencrypted state`, async () => {
       const messenger = getSnapControllerMessenger();
 
-      const state = 'foo';
+      const state = { foo: 'bar' };
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -7598,7 +7626,7 @@ describe('SnapController', () => {
               [MOCK_SNAP_ID]: getPersistedSnapObject(),
             },
             unencryptedSnapStates: {
-              [MOCK_SNAP_ID]: state,
+              [MOCK_SNAP_ID]: JSON.stringify(state),
             },
           },
         }),

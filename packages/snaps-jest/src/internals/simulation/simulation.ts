@@ -12,7 +12,7 @@ import {
   NodeThreadExecutionService,
   setupMultiplex,
 } from '@metamask/snaps-controllers/node';
-import { getEncryptionKey } from '@metamask/snaps-rpc-methods';
+import { getEncryptionEntropy } from '@metamask/snaps-rpc-methods';
 import type {
   SnapId,
   AuxiliaryFileEncoding,
@@ -149,7 +149,7 @@ export async function handleInstallSnap<
   const snapFiles = await fetchSnap(snapId, location);
 
   // Create Redux store.
-  const password = await getEncryptionKey({
+  const password = await getEncryptionEntropy({
     mnemonicPhrase: mnemonicPhraseToBytes(options.secretRecoveryPhrase),
     snapId,
   });
