@@ -29,6 +29,7 @@ export type GenericEncryptor = {
    * @returns The encrypted string.
    */
   encrypt: (password: string, object: Json) => Promise<string>;
+
   /**
    * Decrypt the given encrypted string with the given password.
    *
@@ -37,9 +38,10 @@ export type GenericEncryptor = {
    * @returns The decrypted object.
    */
   decrypt: (password: string, encryptedString: string) => Promise<unknown>;
+
   /**
-   * Optional vault migration helper. Checks if the provided vault is up to date
-   * with the desired encryption algorithm.
+   * Check if the provided vault is up to date with the
+   * desired encryption algorithm.
    *
    * @param vault - The encrypted string to check.
    * @param targetDerivationParams - The desired target derivation params.
@@ -64,6 +66,7 @@ export type ExportableKeyEncryptor = GenericEncryptor & {
    * @returns The encryption result.
    */
   encryptWithKey: (key: unknown, object: Json) => Promise<EncryptionResult>;
+
   /**
    * Decrypt the given encrypted string with the given encryption key.
    *
@@ -82,7 +85,7 @@ export type ExportableKeyEncryptor = GenericEncryptor & {
    * @param key - The exported key string.
    * @returns The encryption key.
    */
-  importKey: (key: string) => Promise<unknown>;
+  importKey: <Type>(key: string) => Promise<Type>;
 
   /**
    * Export a generated key as a string.
@@ -95,7 +98,7 @@ export type ExportableKeyEncryptor = GenericEncryptor & {
   /**
    * Generate a salt with a given length.
    *
-   * @param length - The length of the salt.
+   * @param length - The length of the salt, default is 32 bytes.
    * @returns The base64 encoded salt bytes.
    */
   generateSalt: (length?: number) => string;
@@ -109,10 +112,10 @@ export type ExportableKeyEncryptor = GenericEncryptor & {
    * @param opts - The options to use for key derivation.
    * @returns The encryption key.
    */
-  keyFromPassword: (
+  keyFromPassword: <Type>(
     password: string,
     salt: string,
     exportable?: boolean,
     opts?: KeyDerivationOptions,
-  ) => Promise<unknown>;
+  ) => Promise<Type>;
 };

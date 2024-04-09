@@ -218,6 +218,9 @@ export interface SnapRuntimeData {
    */
   interpreter: StateMachine.Service<StatusContext, StatusEvents, StatusStates>;
 
+  /**
+   * Cached encryption key used for state encryption.
+   */
   encryptionKey: string | null;
 }
 
@@ -636,8 +639,16 @@ type SnapControllerArgs = {
    */
   preinstalledSnaps?: PreinstalledSnap[];
 
+  /**
+   * A utility object containing functions required for state encryption.
+   */
   encryptor: ExportableKeyEncryptor;
 
+  /**
+   * A hook to access the mnemonic of the user's primary keyring.
+   *
+   * @returns The mnemonic as bytes.
+   */
   getMnemonic: () => Promise<Uint8Array>;
 };
 type AddSnapArgs = {
@@ -1519,11 +1530,21 @@ export class SnapController extends BaseController<
     return truncateSnap(this.getExpect(snapId));
   }
 
+  /**
+   * Generate an encryption key to be used for state encryption for a given Snap.
+   *
+   * @param options - An options bag.
+   * @param options.snapId - The Snap ID.
+   * @param options.salt - A salt to be used for the encryption key.
+   * @param options.useCache - Whether to use caching or not.
+   * @param options.keyMetadata - Optional metadata about how to derive the encryption key.
+   * @returns An encryption key.
+   */
   async #getSnapEncryptionKey({
     snapId,
     salt,
-    keyMetadata,
     useCache,
+    keyMetadata,
   }: {
     snapId: SnapId;
     salt: string;
@@ -1553,6 +1574,14 @@ export class SnapController extends BaseController<
     return encryptionKey;
   }
 
+  /**
+   * Decrypt the encrypted state for a given Snap.
+   *
+   * @param snapId - The Snap ID.
+   * @param state - The encrypted state as a string.
+   * @returns A valid JSON object derived from the encrypted state.
+   * @throws If the decryption fails or the decrypted state is not valid JSON.
+   */
   async #decryptSnapState(snapId: SnapId, state: string) {
     try {
       const parsed = parseJson<EncryptionResult>(state);
@@ -1579,6 +1608,16 @@ export class SnapController extends BaseController<
     }
   }
 
+  /**
+   * Encrypt a JSON state object for a given Snap.
+   *
+   * Note: This function does not assert the validity of the object,
+   * please ensure only valid JSON is passed to it.
+   *
+   * @param snapId - The Snap ID.
+   * @param state - The state object.
+   * @returns A string containing the encrypted JSON object.
+   */
   async #encryptSnapState(snapId: SnapId, state: Record<string, Json>) {
     const salt = this.#encryptor.generateSalt();
     const encryptionKey = await this.#getSnapEncryptionKey({
