@@ -177,6 +177,10 @@ const DEFAULT_ICONS = {
     alt: 'Image',
     src: imageIcon,
   },
+  button: {
+    alt: 'Button',
+    src: imageIcon,
+  },
 };
 
 export type IconName = keyof typeof DEFAULT_ICONS;

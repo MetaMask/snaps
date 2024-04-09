@@ -10,6 +10,7 @@ import {
   Heading,
   Spinner,
   Image,
+  Button,
 } from './components';
 
 export const components: Partial<
@@ -22,9 +23,7 @@ export const components: Partial<
   [NodeType.Spinner]: Spinner,
   [NodeType.Text]: Text,
   [NodeType.Image]: Image,
-  // @todo: Create a button
-  // TODO(@guillaumerx): Quick fix to build, update those later
-  [NodeType.Button]: Text,
+  [NodeType.Button]: Button,
   [NodeType.Input]: Text,
   [NodeType.Form]: Text,
 };
