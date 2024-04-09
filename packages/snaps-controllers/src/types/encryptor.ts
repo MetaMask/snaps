@@ -22,7 +22,7 @@ export type EncryptionResult = {
  */
 export type GenericEncryptor = {
   /**
-   * Encrypts the given object with the given password.
+   * Encrypt the given object with the given password.
    *
    * @param password - The password to encrypt with.
    * @param object - The object to encrypt.
@@ -30,7 +30,7 @@ export type GenericEncryptor = {
    */
   encrypt: (password: string, object: Json) => Promise<string>;
   /**
-   * Decrypts the given encrypted string with the given password.
+   * Decrypt the given encrypted string with the given password.
    *
    * @param password - The password to decrypt with.
    * @param encryptedString - The encrypted string to decrypt.
@@ -57,7 +57,7 @@ export type GenericEncryptor = {
  */
 export type ExportableKeyEncryptor = GenericEncryptor & {
   /**
-   * Encrypts the given object with the given encryption key.
+   * Encrypt the given object with the given encryption key.
    *
    * @param key - The encryption key to encrypt with.
    * @param object - The object to encrypt.
@@ -65,7 +65,7 @@ export type ExportableKeyEncryptor = GenericEncryptor & {
    */
   encryptWithKey: (key: unknown, object: Json) => Promise<EncryptionResult>;
   /**
-   * Decrypts the given encrypted string with the given encryption key.
+   * Decrypt the given encrypted string with the given encryption key.
    *
    * @param key - The encryption key to decrypt with.
    * @param encryptedString - The encrypted string to decrypt.
@@ -75,8 +75,9 @@ export type ExportableKeyEncryptor = GenericEncryptor & {
     key: unknown,
     encryptedString: EncryptionResult,
   ) => Promise<unknown>;
+
   /**
-   * Generates an encryption key from exported key string.
+   * Generate an encryption key from exported key string.
    *
    * @param key - The exported key string.
    * @returns The encryption key.
@@ -84,7 +85,7 @@ export type ExportableKeyEncryptor = GenericEncryptor & {
   importKey: (key: string) => Promise<unknown>;
 
   /**
-   * Exports a generated key as a string.
+   * Export a generated key as a string.
    *
    * @param key - The encryption key.
    * @returns The exported key string.
@@ -92,7 +93,7 @@ export type ExportableKeyEncryptor = GenericEncryptor & {
   exportKey: (key: unknown) => Promise<string>;
 
   /**
-   * Generates a salt with a given length.
+   * Generate a salt with a given length.
    *
    * @param length - The length of the salt.
    * @returns The base64 encoded salt bytes.
@@ -100,7 +101,7 @@ export type ExportableKeyEncryptor = GenericEncryptor & {
   generateSalt: (length?: number) => string;
 
   /**
-   * Generates an encryption key using a password.
+   * Generate an encryption key using a password.
    *
    * @param password - The password to use to generate key.
    * @param salt - The salt string to use in key derivation.
