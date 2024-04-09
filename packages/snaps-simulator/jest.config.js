@@ -8,7 +8,7 @@ module.exports = deepmerge(baseConfig, {
       branches: 72.5,
       functions: 79.28,
       lines: 89.37,
-      statements: 89.26,
+      statements: 89.16,
     },
   },
   setupFiles: ['./jest.setup.js'],

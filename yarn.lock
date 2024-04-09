@@ -5859,7 +5859,6 @@ __metadata:
     "@ethersproject/units": ^5.7.0
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/base-controller": ^5.0.1
-    "@metamask/browser-passworder": ^5.0.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-browser": ^11.1.0
     "@metamask/eslint-config-jest": ^12.1.0

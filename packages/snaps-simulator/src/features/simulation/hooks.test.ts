@@ -139,24 +139,24 @@ describe('showInAppNotification', () => {
 
 describe('updateSnapState', () => {
   it('puts the new snap state', async () => {
-    await expectSaga(updateSnapState, snapId, 'foo', true)
+    await expectSaga(updateSnapState, snapId, { foo: 'bar' }, true)
       .withState({
         simulation: {
           snapState: null,
         },
       })
-      .put(setSnapState('foo'))
+      .put(setSnapState(JSON.stringify({ foo: 'bar' })))
       .silentRun();
   });
 
   it('puts the new unencrypted snap state', async () => {
-    await expectSaga(updateSnapState, snapId, 'bar', false)
+    await expectSaga(updateSnapState, snapId, { foo: 'bar' }, false)
       .withState({
         simulation: {
           unencryptedSnapState: null,
         },
       })
-      .put(setUnencryptedSnapState('bar'))
+      .put(setUnencryptedSnapState(JSON.stringify({ foo: 'bar' })))
       .silentRun();
   });
 });
@@ -166,11 +166,11 @@ describe('getSnapState', () => {
     await expectSaga(getSnapState, snapId, true)
       .withState({
         simulation: {
-          snapState: 'foo',
+          snapState: JSON.stringify({ foo: 'bar' }),
         },
       })
       .select(getSnapStateSelector)
-      .returns('foo')
+      .returns({ foo: 'bar' })
       .silentRun();
   });
 
@@ -178,11 +178,11 @@ describe('getSnapState', () => {
     await expectSaga(getSnapState, snapId, false)
       .withState({
         simulation: {
-          unencryptedSnapState: 'bar',
+          unencryptedSnapState: JSON.stringify({ foo: 'bar' }),
         },
       })
       .select(getUnencryptedSnapStateSelector)
-      .returns('bar')
+      .returns({ foo: 'bar' })
       .silentRun();
   });
 });
