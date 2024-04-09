@@ -13,7 +13,7 @@ const ALLOWED_PROTOCOLS = ['https:', 'mailto:'];
  * @returns A list of URLs linked to in the string.
  */
 function getMarkdownLinks(text: string) {
-  const tokens = lexer(text);
+  const tokens = lexer(text, { gfm: false });
   const links: (Tokens.Link | Tokens.Generic)[] = [];
 
   // Walk the lexed tokens and collect all link tokens

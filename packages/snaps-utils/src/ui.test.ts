@@ -58,6 +58,12 @@ describe('validateTextLinks', () => {
     ).not.toThrow();
   });
 
+  it('passes for non-links', () => {
+    expect(() =>
+      validateTextLinks('Hello **http://localhost:3000**', () => false),
+    ).not.toThrow();
+  });
+
   it('throws an error if an invalid link is found in text', () => {
     expect(() =>
       validateTextLinks('[test](http://foo.bar)', () => false),
@@ -76,17 +82,12 @@ describe('validateTextLinks', () => {
     ).toThrow('Invalid URL: Protocol must be one of: https:, mailto:.');
 
     expect(() =>
-      validateTextLinks(
-        `[foo][1]
-         [1]: http://foo.bar`,
-        () => false,
-      ),
+      validateTextLinks('[foo][1]\n\n[1]: http://foo.bar', () => false),
     ).toThrow('Invalid URL: Protocol must be one of: https:, mailto:.');
 
     expect(() =>
       validateTextLinks(
-        `[foo][1]
-         [1]: http://foo.bar "foo bar baz"`,
+        `[foo][1]\n\n[1]: http://foo.bar "foo bar baz"`,
         () => false,
       ),
     ).toThrow('Invalid URL: Protocol must be one of: https:, mailto:.');
