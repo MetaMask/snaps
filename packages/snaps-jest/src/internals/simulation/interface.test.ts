@@ -48,7 +48,7 @@ async function getResolve(runSaga: RunSagaFunction) {
 describe('getInterfaceResponse', () => {
   const interfaceActions = { clickElement: jest.fn(), typeInField: jest.fn() };
   it('returns an `ok` function that resolves the user interface with `null` for alert dialogs', async () => {
-    const { runSaga } = createStore('password', getMockOptions());
+    const { runSaga } = createStore(getMockOptions());
     const response = getInterfaceResponse(
       runSaga,
       DialogType.Alert,
@@ -70,7 +70,7 @@ describe('getInterfaceResponse', () => {
   });
 
   it('returns an `ok` function that resolves the user interface with `true` for confirmation dialogs', async () => {
-    const { runSaga } = createStore('password', getMockOptions());
+    const { runSaga } = createStore(getMockOptions());
     const response = getInterfaceResponse(
       runSaga,
       DialogType.Confirmation,
@@ -93,7 +93,7 @@ describe('getInterfaceResponse', () => {
   });
 
   it('returns a `cancel` function that resolves the user interface with `false` for confirmation dialogs', async () => {
-    const { runSaga } = createStore('password', getMockOptions());
+    const { runSaga } = createStore(getMockOptions());
     const response = getInterfaceResponse(
       runSaga,
       DialogType.Confirmation,
@@ -117,7 +117,7 @@ describe('getInterfaceResponse', () => {
   });
 
   it('returns an `ok` function that resolves the user interface with the input value for prompt dialogs', async () => {
-    const { runSaga } = createStore('password', getMockOptions());
+    const { runSaga } = createStore(getMockOptions());
     const response = getInterfaceResponse(
       runSaga,
       DialogType.Prompt,
@@ -140,7 +140,7 @@ describe('getInterfaceResponse', () => {
   });
 
   it('returns an `ok` function that resolves the user interface with an empty string for prompt dialogs', async () => {
-    const { runSaga } = createStore('password', getMockOptions());
+    const { runSaga } = createStore(getMockOptions());
     const response = getInterfaceResponse(
       runSaga,
       DialogType.Prompt,
@@ -163,7 +163,7 @@ describe('getInterfaceResponse', () => {
   });
 
   it('returns a `cancel` function that resolves the user interface with `null` for prompt dialogs', async () => {
-    const { runSaga } = createStore('password', getMockOptions());
+    const { runSaga } = createStore(getMockOptions());
     const response = getInterfaceResponse(
       runSaga,
       DialogType.Prompt,
@@ -187,7 +187,7 @@ describe('getInterfaceResponse', () => {
   });
 
   it('throws an error for unknown dialog types', () => {
-    const { runSaga } = createStore('password', getMockOptions());
+    const { runSaga } = createStore(getMockOptions());
 
     expect(() => {
       // @ts-expect-error - Invalid dialog type.
@@ -449,7 +449,7 @@ describe('getInterface', () => {
     messenger: controllerMessenger,
   });
   it('returns the current user interface, if any', async () => {
-    const { store, runSaga } = createStore('password', getMockOptions());
+    const { store, runSaga } = createStore(getMockOptions());
 
     const content = text('foo');
     const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
@@ -474,7 +474,7 @@ describe('getInterface', () => {
   });
 
   it('waits for a user interface to be set if none is currently set', async () => {
-    const { store, runSaga } = createStore('password', getMockOptions());
+    const { store, runSaga } = createStore(getMockOptions());
 
     const promise = runSaga(
       getInterface,
@@ -501,7 +501,7 @@ describe('getInterface', () => {
 
   it('sends a request to the snap when `clickElement` is called', async () => {
     jest.spyOn(rootControllerMessenger, 'call');
-    const { store, runSaga } = createStore('password', getMockOptions());
+    const { store, runSaga } = createStore(getMockOptions());
 
     const content = button({ value: 'foo', name: 'foo' });
     const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
@@ -542,7 +542,7 @@ describe('getInterface', () => {
 
   it('sends a request to the snap when `typeInField` is called', async () => {
     jest.spyOn(rootControllerMessenger, 'call');
-    const { store, runSaga } = createStore('password', getMockOptions());
+    const { store, runSaga } = createStore(getMockOptions());
 
     const content = input('foo');
     const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);

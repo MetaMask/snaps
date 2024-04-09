@@ -1,5 +1,4 @@
 import { ControllerMessenger } from '@metamask/base-controller';
-import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { createFetchMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
@@ -92,8 +91,6 @@ export function* initSaga({ payload }: PayloadAction<string>) {
     ...buildSnapRestrictedMethodSpecifications([], {
       ...sharedHooks,
       // TODO: Add all the hooks required
-      encrypt,
-      decrypt,
       // TODO: Allow changing this?
       getLocale: async () => Promise.resolve('en'),
       getUnlockPromise: async () => Promise.resolve(true),

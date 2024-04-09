@@ -7,7 +7,7 @@ import { createMockMiddleware } from './mock';
 
 describe('createMockMiddleware', () => {
   it('mocks a JSON-RPC method', async () => {
-    const { store } = createStore('password', getMockOptions());
+    const { store } = createStore(getMockOptions());
     store.dispatch(
       addJsonRpcMock({
         method: 'foo',
@@ -32,7 +32,7 @@ describe('createMockMiddleware', () => {
   });
 
   it('calls the next middleware if no mock is found', async () => {
-    const { store } = createStore('password', getMockOptions());
+    const { store } = createStore(getMockOptions());
     const engine = new JsonRpcEngine();
 
     engine.push(createMockMiddleware(store));
