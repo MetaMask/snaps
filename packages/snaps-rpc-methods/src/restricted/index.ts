@@ -20,7 +20,7 @@ import type { NotifyMethodHooks } from './notify';
 import { notifyBuilder } from './notify';
 
 export { WALLET_SNAP_PERMISSION_KEY } from './invokeSnap';
-export { getEncryptionKey } from './manageState';
+export { getEncryptionEntropy } from './manageState';
 
 export type RestrictedMethodHooks = DialogMethodHooks &
   GetBip32EntropyMethodHooks &

@@ -3954,12 +3954,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/browser-passworder@npm:^4.3.0":
-  version: 4.3.0
-  resolution: "@metamask/browser-passworder@npm:4.3.0"
+"@metamask/browser-passworder@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@metamask/browser-passworder@npm:5.0.0"
   dependencies:
     "@metamask/utils": ^8.2.0
-  checksum: 7992553a0cd91902aa316a931d36c2628cb5a73fcbc28a31dce4177704036d739214c580ed833079003b2c7dfd60c5648a20734badf91e2c665cfe2f56012a8c
+  checksum: f4ac33d9e42b8bcf89ee10bda96f854794e8fbeaa369192ea2f23893a96cb804cfcb2c0b73c1f6f06f5caa8c8cc866bcb6b5878e19a187a8da4823d581abc357
   languageName: node
   linkType: hard
 
@@ -5486,6 +5486,7 @@ __metadata:
     "@metamask/approval-controller": ^6.0.1
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/base-controller": ^5.0.1
+    "@metamask/browser-passworder": ^5.0.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5766,7 +5767,6 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
-    "@metamask/browser-passworder": ^4.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5859,7 +5859,6 @@ __metadata:
     "@ethersproject/units": ^5.7.0
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/base-controller": ^5.0.1
-    "@metamask/browser-passworder": ^4.3.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-browser": ^11.1.0
     "@metamask/eslint-config-jest": ^12.1.0

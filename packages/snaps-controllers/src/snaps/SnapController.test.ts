@@ -1,4 +1,5 @@
 import { getPersistentState } from '@metamask/base-controller';
+import { encrypt } from '@metamask/browser-passworder';
 import {
   createAsyncMiddleware,
   JsonRpcEngine,
@@ -57,6 +58,7 @@ import {
   stringToBytes,
 } from '@metamask/utils';
 import { File } from 'buffer';
+import { webcrypto } from 'crypto';
 import fetchMock from 'jest-fetch-mock';
 import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';
@@ -65,6 +67,7 @@ import { setupMultiplex } from '../services';
 import type { NodeThreadExecutionService } from '../services/node';
 import {
   approvalControllerMock,
+  DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS,
   ExecutionEnvironmentStub,
   getControllerMessenger,
   getNodeEESMessenger,
@@ -99,15 +102,33 @@ import {
   SNAP_APPROVAL_UPDATE,
 } from './SnapController';
 
-Object.defineProperty(globalThis, 'crypto', {
-  value: {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-    ...require('node:crypto').webcrypto,
-    getRandomValues: jest.fn().mockReturnValue(new Uint32Array(32)),
-  },
-});
+if (!('CryptoKey' in globalThis)) {
+  // We can remove this once we drop Node 18
+  Object.defineProperty(globalThis, 'CryptoKey', {
+    value: webcrypto.CryptoKey,
+  });
+}
+
+globalThis.crypto ??= webcrypto as typeof globalThis.crypto;
+globalThis.crypto.getRandomValues = <Type extends ArrayBufferView | null>(
+  array: Type,
+) => {
+  if (array === null) {
+    return null as Type;
+  }
+
+  return new Uint8Array(array.buffer).fill(0) as unknown as Type;
+};
 
 fetchMock.enableMocks();
+
+// Encryption key for `MOCK_SNAP_ID`.
+const ENCRYPTION_KEY =
+  '0xd2f0a8e994b871ba4451ac383bf323cdaad8d554736355f2223e155692fbc446';
+
+// Encryption key for `MOCK_LOCAL_SNAP_ID`.
+const OTHER_ENCRYPTION_KEY =
+  '0x7cd340349a41e0f7af62a9d97c76e96b12485e0206791d6b5638dd59736af8f5';
 
 describe('SnapController', () => {
   beforeEach(() => {
@@ -121,28 +142,6 @@ describe('SnapController', () => {
     const [snapController, service] = getSnapControllerWithEES();
     expect(service).toBeDefined();
     expect(snapController).toBeDefined();
-    snapController.destroy();
-    await service.terminateAllSnaps();
-  });
-
-  it('creates a worker and snap controller, adds a snap, and update its state', async () => {
-    const [snapController, service] = getSnapControllerWithEES(
-      getSnapControllerWithEESOptions({
-        state: {
-          snaps: getPersistedSnapsState(),
-        },
-      }),
-    );
-
-    const snap = snapController.getExpect(MOCK_SNAP_ID);
-    const state = 'foo';
-
-    await snapController.startSnap(snap.id);
-    snapController.updateSnapState(snap.id, state, true);
-    const snapState = snapController.getSnapState(snap.id, true);
-    expect(snapState).toStrictEqual(state);
-
-    expect(snapController.state.snapStates[MOCK_SNAP_ID]).toStrictEqual(state);
     snapController.destroy();
     await service.terminateAllSnaps();
   });
@@ -7427,7 +7426,15 @@ describe('SnapController', () => {
     it(`gets the snap's state`, async () => {
       const messenger = getSnapControllerMessenger();
 
-      const state = 'foo';
+      const state = { myVariable: 1 };
+
+      const mockEncryptedState = await encrypt(
+        ENCRYPTION_KEY,
+        state,
+        undefined,
+        undefined,
+        DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS,
+      );
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -7437,14 +7444,14 @@ describe('SnapController', () => {
               [MOCK_SNAP_ID]: getPersistedSnapObject(),
             },
             snapStates: {
-              [MOCK_SNAP_ID]: state,
+              [MOCK_SNAP_ID]: mockEncryptedState,
             },
           },
         }),
       );
 
       const getSnapStateSpy = jest.spyOn(snapController, 'getSnapState');
-      const result = messenger.call(
+      const result = await messenger.call(
         'SnapController:getSnapState',
         MOCK_SNAP_ID,
         true,
@@ -7456,10 +7463,161 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
+    it('migrates user storage to latest key derivation options', async () => {
+      const messenger = getSnapControllerMessenger();
+
+      const state = { myVariable: 1 };
+
+      const initialEncryptedState = await encrypt(
+        ENCRYPTION_KEY,
+        state,
+        undefined,
+        undefined,
+        {
+          ...DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS,
+          params: { iterations: 10_000 },
+        },
+      );
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: {
+              [MOCK_SNAP_ID]: getPersistedSnapObject(),
+            },
+            snapStates: {
+              [MOCK_SNAP_ID]: initialEncryptedState,
+            },
+          },
+        }),
+      );
+
+      const newState = { myVariable: 2 };
+
+      await messenger.call(
+        'SnapController:updateSnapState',
+        MOCK_SNAP_ID,
+        newState,
+        true,
+      );
+
+      const upgradedEncryptedState = await encrypt(
+        ENCRYPTION_KEY,
+        newState,
+        undefined,
+        undefined,
+        DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS,
+      );
+
+      const result = await messenger.call(
+        'SnapController:getSnapState',
+        MOCK_SNAP_ID,
+        true,
+      );
+
+      expect(result).toStrictEqual(newState);
+      expect(snapController.state.snapStates[MOCK_SNAP_ID]).toStrictEqual(
+        upgradedEncryptedState,
+      );
+
+      snapController.destroy();
+    });
+
+    it('different snaps use different encryption keys', async () => {
+      const messenger = getSnapControllerMessenger();
+
+      const state = { foo: 'bar' };
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: {
+              [MOCK_SNAP_ID]: getPersistedSnapObject(),
+              [MOCK_LOCAL_SNAP_ID]: getPersistedSnapObject({
+                id: MOCK_LOCAL_SNAP_ID,
+              }),
+            },
+          },
+        }),
+      );
+
+      await messenger.call(
+        'SnapController:updateSnapState',
+        MOCK_SNAP_ID,
+        state,
+        true,
+      );
+
+      await messenger.call(
+        'SnapController:updateSnapState',
+        MOCK_LOCAL_SNAP_ID,
+        state,
+        true,
+      );
+
+      const encryptedState1 = await encrypt(
+        ENCRYPTION_KEY,
+        state,
+        undefined,
+        undefined,
+        DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS,
+      );
+
+      const encryptedState2 = await encrypt(
+        OTHER_ENCRYPTION_KEY,
+        state,
+        undefined,
+        undefined,
+        DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS,
+      );
+
+      expect(snapController.state.snapStates[MOCK_SNAP_ID]).toStrictEqual(
+        encryptedState1,
+      );
+      expect(snapController.state.snapStates[MOCK_LOCAL_SNAP_ID]).toStrictEqual(
+        encryptedState2,
+      );
+      expect(snapController.state.snapStates[MOCK_SNAP_ID]).not.toStrictEqual(
+        snapController.state.snapStates[MOCK_LOCAL_SNAP_ID],
+      );
+
+      snapController.destroy();
+    });
+
+    it('throws an error if the state is corrupt', async () => {
+      const messenger = getSnapControllerMessenger();
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: {
+              [MOCK_SNAP_ID]: getPersistedSnapObject(),
+            },
+            snapStates: {
+              [MOCK_SNAP_ID]: 'foo',
+            },
+          },
+        }),
+      );
+
+      await expect(
+        messenger.call('SnapController:getSnapState', MOCK_SNAP_ID, true),
+      ).rejects.toThrow(
+        rpcErrors.internal({
+          message: 'Failed to decrypt snap state, the state must be corrupted.',
+        }),
+      );
+
+      snapController.destroy();
+    });
+
     it(`gets the snap's unencrypted state`, async () => {
       const messenger = getSnapControllerMessenger();
 
-      const state = 'foo';
+      const state = { foo: 'bar' };
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -7469,14 +7627,14 @@ describe('SnapController', () => {
               [MOCK_SNAP_ID]: getPersistedSnapObject(),
             },
             unencryptedSnapStates: {
-              [MOCK_SNAP_ID]: state,
+              [MOCK_SNAP_ID]: JSON.stringify(state),
             },
           },
         }),
       );
 
       const getSnapStateSpy = jest.spyOn(snapController, 'getSnapState');
-      const result = messenger.call(
+      const result = await messenger.call(
         'SnapController:getSnapState',
         MOCK_SNAP_ID,
         false,
@@ -7535,8 +7693,15 @@ describe('SnapController', () => {
       );
 
       const updateSnapStateSpy = jest.spyOn(snapController, 'updateSnapState');
-      const state = 'bar';
-      messenger.call(
+      const state = { foo: 'bar' };
+      const mockEncryptedState = await encrypt(
+        ENCRYPTION_KEY,
+        state,
+        undefined,
+        undefined,
+        DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS,
+      );
+      await messenger.call(
         'SnapController:updateSnapState',
         MOCK_SNAP_ID,
         state,
@@ -7545,7 +7710,7 @@ describe('SnapController', () => {
 
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(1);
       expect(snapController.state.snapStates[MOCK_SNAP_ID]).toStrictEqual(
-        state,
+        mockEncryptedState,
       );
 
       snapController.destroy();
@@ -7564,8 +7729,8 @@ describe('SnapController', () => {
       );
 
       const updateSnapStateSpy = jest.spyOn(snapController, 'updateSnapState');
-      const state = 'bar';
-      messenger.call(
+      const state = { foo: 'bar' };
+      await messenger.call(
         'SnapController:updateSnapState',
         MOCK_SNAP_ID,
         state,
@@ -7575,7 +7740,7 @@ describe('SnapController', () => {
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(1);
       expect(
         snapController.state.unencryptedSnapStates[MOCK_SNAP_ID],
-      ).toStrictEqual(state);
+      ).toStrictEqual(JSON.stringify(state));
 
       snapController.destroy();
     });
@@ -7600,7 +7765,7 @@ describe('SnapController', () => {
       );
 
       messenger.call('SnapController:clearSnapState', MOCK_SNAP_ID, true);
-      const clearedState = messenger.call(
+      const clearedState = await messenger.call(
         'SnapController:getSnapState',
         MOCK_SNAP_ID,
         true,
@@ -7628,7 +7793,7 @@ describe('SnapController', () => {
       );
 
       messenger.call('SnapController:clearSnapState', MOCK_SNAP_ID, false);
-      const clearedState = messenger.call(
+      const clearedState = await messenger.call(
         'SnapController:getSnapState',
         MOCK_SNAP_ID,
         false,
