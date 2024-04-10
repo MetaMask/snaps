@@ -538,6 +538,114 @@ describe('SnapController', () => {
     await service.terminateAllSnaps();
   });
 
+  it('includes the initialConnections data in the approval requestState when installing a Snap', async () => {
+    const rootMessenger = getControllerMessenger();
+    const messenger = getSnapControllerMessenger(rootMessenger);
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => ({}),
+    );
+
+    const initialConnections = {
+      'npm:filsnap': {},
+      'https://snaps.metamask.io': {},
+    };
+
+    const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
+      manifest: getSnapManifest({
+        initialConnections,
+      }),
+    });
+
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        detectSnapLocation: loopbackDetect({ manifest }),
+      }),
+    );
+
+    await snapController.installSnaps(MOCK_ORIGIN, {
+      [MOCK_SNAP_ID]: {},
+    });
+
+    expect(messenger.call).toHaveBeenNthCalledWith(
+      4,
+      'ApprovalController:updateRequestState',
+      {
+        id: expect.any(String),
+        requestState: {
+          loading: false,
+          connections: initialConnections,
+          permissions: expect.anything(),
+        },
+      },
+    );
+
+    snapController.destroy();
+  });
+
+  it('includes the initialConnections data in the approval requestState when updating a Snap', async () => {
+    const rootMessenger = getControllerMessenger();
+    const messenger = getSnapControllerMessenger(rootMessenger);
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => ({}),
+    );
+
+    const initialConnections = {
+      'npm:filsnap': {},
+      'https://snaps.metamask.io': {},
+    };
+
+    const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
+      manifest: getSnapManifest({
+        version: '1.1.0' as SemVerVersion,
+        initialConnections,
+      }),
+    });
+
+    const detectSnapLocation = loopbackDetect({
+      manifest: manifest.result,
+    });
+
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        state: {
+          snaps: getPersistedSnapsState(),
+        },
+        detectSnapLocation,
+      }),
+    );
+
+    await snapController.updateSnap(
+      MOCK_ORIGIN,
+      MOCK_SNAP_ID,
+      detectSnapLocation(),
+    );
+
+    expect(messenger.call).toHaveBeenNthCalledWith(
+      4,
+      'ApprovalController:updateRequestState',
+      {
+        id: expect.any(String),
+        requestState: {
+          connections: initialConnections,
+          permissions: expect.anything(),
+          newVersion: '1.1.0',
+          newPermissions: expect.anything(),
+          approvedPermissions: {},
+          unusedPermissions: {},
+          loading: false,
+        },
+      },
+    );
+
+    snapController.destroy();
+  });
+
   it('installs a snap via installSnaps', async () => {
     const messenger = getSnapControllerMessenger();
     const snapController = getSnapController(
@@ -613,6 +721,7 @@ describe('SnapController', () => {
         id: expect.any(String),
         requestState: {
           loading: false,
+          connections: {},
           permissions,
         },
       },
@@ -3594,6 +3703,7 @@ describe('SnapController', () => {
         expect.objectContaining({
           id: expect.any(String),
           requestState: {
+            connections: {},
             permissions,
             loading: false,
           },
@@ -3744,6 +3854,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            connections: {},
             permissions,
           },
         }),
@@ -3838,6 +3949,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            connections: {},
             permissions,
           },
         }),
@@ -4463,6 +4575,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            connections: {},
             permissions,
           },
         }),
@@ -4651,6 +4764,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            connections: {},
             permissions: {
               [handlerEndowments.onRpcRequest as string]: {
                 caveats: [
@@ -4780,6 +4894,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            connections: {},
             permissions: {
               [SnapEndowments.Rpc]: {
                 caveats: [caveat],
@@ -5012,6 +5127,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            connections: {},
             permissions: {},
             newVersion,
             newPermissions: {},
@@ -5736,6 +5852,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            connections: {},
             permissions: {},
             newVersion: '1.1.0',
             newPermissions: {},
@@ -5927,6 +6044,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            connections: {},
             permissions: {},
             newVersion: '1.1.0',
             newPermissions: {},
@@ -6086,6 +6204,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            connections: {},
             permissions,
             newVersion: '1.1.0',
             newPermissions: permissions,
@@ -6260,6 +6379,7 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
+            connections: {},
             permissions: { 'endowment:network-access': {} },
             newVersion: '1.1.0',
             newPermissions: { 'endowment:network-access': {} },

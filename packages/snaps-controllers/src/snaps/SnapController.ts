@@ -2386,6 +2386,7 @@ export class SnapController extends BaseController<
         this.#calculatePermissionsChange(snapId, processedPermissions);
 
       this.#updateApproval(pendingApproval.id, {
+        connections: manifest.initialConnections ?? {},
         permissions: newPermissions,
         newVersion: manifest.version,
         newPermissions,
@@ -2738,6 +2739,7 @@ export class SnapController extends BaseController<
       preinstalled,
 
       id: snapId,
+      initialConnections: manifest.result.initialConnections,
       initialPermissions: manifest.result.initialPermissions,
       manifest: manifest.result,
       status: this.#statusMachine.config.initial as StatusStates['value'],
@@ -2835,7 +2837,7 @@ export class SnapController extends BaseController<
     log(`Authorizing snap: ${snapId}`);
     const snapsState = this.state.snaps;
     const snap = snapsState[snapId];
-    const { initialPermissions } = snap;
+    const { initialPermissions, initialConnections } = snap;
 
     try {
       const processedPermissions = processSnapPermissions(initialPermissions);
@@ -2844,6 +2846,7 @@ export class SnapController extends BaseController<
 
       this.#updateApproval(pendingApproval.id, {
         loading: false,
+        connections: initialConnections ?? {},
         permissions: processedPermissions,
       });
 
