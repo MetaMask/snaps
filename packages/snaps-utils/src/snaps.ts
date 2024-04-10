@@ -26,7 +26,11 @@ import validateNPMPackage from 'validate-npm-package-name';
 import { SnapCaveatType } from './caveats';
 import { checksumFiles } from './checksum';
 import type { LocalizationFile } from './localization';
-import type { SnapManifest, SnapPermissions } from './manifest/validation';
+import type {
+  InitialConnections,
+  SnapManifest,
+  SnapPermissions,
+} from './manifest/validation';
 import type { FetchedSnapFiles, SnapsPermissionRequest } from './types';
 import { SnapIdPrefixes, SnapValidationFailureReason, uri } from './types';
 import type { VirtualFile } from './virtual-file';
@@ -85,6 +89,10 @@ export type PersistedSnap = Snap;
  * A Snap as it exists in {@link SnapController} state.
  */
 export type Snap = TruncatedSnap & {
+  /**
+   * The initial connections of the Snap, optional, requested on installation.
+   */
+  initialConnections?: InitialConnections;
   /**
    * The initial permissions of the Snap, which will be requested when it is
    * installed.
