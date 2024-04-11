@@ -1690,8 +1690,8 @@ export class SnapController extends BaseController<
       ? this.state.snapStates[snapId]
       : this.state.unencryptedSnapStates[snapId];
 
-    if (state === null) {
-      return state;
+    if (state === null || state === undefined) {
+      return null;
     }
 
     if (!encrypted) {
