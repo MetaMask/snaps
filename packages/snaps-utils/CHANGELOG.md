@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.1.0]
+### Added
+- Add derivation path for Nimiq ([#2309](https://github.com/MetaMask/snaps/pull/2309))
+
+### Fixed
+- Disable GitHub flavored Markdown when lexing ([#2317](https://github.com/MetaMask/snaps/pull/2317))
+
 ## [7.0.4]
 ### Changed
 - Bump MetaMask dependencies ([#2270](https://github.com/MetaMask/snaps/pull/2270))
@@ -206,7 +213,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.0.4...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.1.0...HEAD
+[7.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.0.4...@metamask/snaps-utils@7.1.0
 [7.0.4]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.0.3...@metamask/snaps-utils@7.0.4
 [7.0.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.0.2...@metamask/snaps-utils@7.0.3
 [7.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.0.1...@metamask/snaps-utils@7.0.2

@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.0]
+### Removed
+- **BREAKING:** Remove broken `ethereum` properties ([#2296](https://github.com/MetaMask/snaps/pull/2296))
+  - Snaps can no longer access `on` and `removeListener` on `ethereum`.
+  - This feature was already non-functional.
+
 ## [3.2.0]
 ### Added
 - Add support for importing SVG, PNG, and JPEG files directly ([#2284](https://github.com/MetaMask/snaps/pull/2284))
@@ -93,7 +99,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@3.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.0.0...HEAD
+[4.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@3.2.0...@metamask/snaps-sdk@4.0.0
 [3.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@3.1.1...@metamask/snaps-sdk@3.2.0
 [3.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@3.1.0...@metamask/snaps-sdk@3.1.1
 [3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@3.0.1...@metamask/snaps-sdk@3.1.0

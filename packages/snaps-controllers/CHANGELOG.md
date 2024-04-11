@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.0.0]
+### Changed
+- **BREAKING:** Refactor encryption to enable caching ([#2316](https://github.com/MetaMask/snaps/pull/2316))
+  - New required constructor arguments `encryptor` and `getMnemonic` have been added.
+- Include `initialConnections` in approval `requestState` ([#2322](https://github.com/MetaMask/snaps/pull/2322))
+
+### Fixed
+- Delete unencrypted state when uninstalling a Snap ([#2311](https://github.com/MetaMask/snaps/pull/2311))
+
 ## [6.0.4]
 ### Changed
 - Bump MetaMask dependencies ([#2270](https://github.com/MetaMask/snaps/pull/2270))
@@ -221,7 +230,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@6.0.4...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@7.0.0...HEAD
+[7.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@6.0.4...@metamask/snaps-controllers@7.0.0
 [6.0.4]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@6.0.3...@metamask/snaps-controllers@6.0.4
 [6.0.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@6.0.2...@metamask/snaps-controllers@6.0.3
 [6.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@6.0.1...@metamask/snaps-controllers@6.0.2
