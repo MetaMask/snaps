@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.0.0]
+
 ### Uncategorized
 
 - Add initialConnections to requestState ([#2322](https://github.com/MetaMask/snaps-skunkworks.git/pull/2322))
@@ -302,7 +304,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@6.0.4...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@7.0.0...HEAD
+[7.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@6.0.4...@metamask/snaps-controllers@7.0.0
 [6.0.4]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@6.0.3...@metamask/snaps-controllers@6.0.4
 [6.0.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@6.0.2...@metamask/snaps-controllers@6.0.3
 [6.0.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@6.0.1...@metamask/snaps-controllers@6.0.2

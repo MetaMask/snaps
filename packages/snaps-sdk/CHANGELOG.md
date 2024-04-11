@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.0]
+
 ### Uncategorized
 
 - [BREAKING] Support Interactive UI in `snaps-jest` ([#2286](https://github.com/MetaMask/snaps-skunkworks.git/pull/2286))
@@ -132,7 +134,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@3.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@4.0.0...HEAD
+[4.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@3.2.0...@metamask/snaps-sdk@4.0.0
 [3.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@3.1.1...@metamask/snaps-sdk@3.2.0
 [3.1.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@3.1.0...@metamask/snaps-sdk@3.1.1
 [3.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@3.0.1...@metamask/snaps-sdk@3.1.0

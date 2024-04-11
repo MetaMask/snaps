@@ -1,6 +1,6 @@
 {
   "name": "@metamask/notification-example-snap",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "MetaMask example snap demonstrating the use of `snap_notify`.",
   "repository": {
     "type": "git",
