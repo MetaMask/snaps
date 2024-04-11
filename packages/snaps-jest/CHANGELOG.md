@@ -8,13 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [7.0.0]
 ### Added
-- **BREAKING:** Support Interactive UI in `snaps-jest` ([#2286](https://github.com/MetaMask/snaps-skunkworks.git/pull/2286))
+- **BREAKING:** Support Interactive UI in `snaps-jest` ([#2286](https://github.com/MetaMask/snaps/pull/2286))
   - Remove `content` from the Snap response, instead `getInterface()` must be used
   - `clickElement` and `typeInField` can be used on the interface return value to simulate actions
 
 ### Changed
-- Improve Jest expect types ([#2308](https://github.com/MetaMask/snaps-skunkworks.git/pull/2308))
-- Refactor to support changes to encryption ([#2316](https://github.com/MetaMask/snaps-skunkworks.git/pull/2316))
+- Improve Jest expect types ([#2308](https://github.com/MetaMask/snaps/pull/2308))
+- Refactor to support changes to encryption ([#2316](https://github.com/MetaMask/snaps/pull/2316))
 
 ## [6.0.2]
 ### Changed

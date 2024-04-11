@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.6.0]
 ### Added
-- Add multi install entry to test-snaps ([#2305](https://github.com/MetaMask/snaps-skunkworks.git/pull/2305))
+- Add multi install entry to test-snaps ([#2305](https://github.com/MetaMask/snaps/pull/2305))
 
 ## [2.5.0]
 ### Added

@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [8.0.0]
 ### Changed
-- **BREAKING:** Refactor to support changes to encryption ([#2316](https://github.com/MetaMask/snaps-skunkworks.git/pull/2316))
+- **BREAKING:** Refactor to support changes to encryption ([#2316](https://github.com/MetaMask/snaps/pull/2316))
   - No longer expects `encrypt` or `decrypt`, instead expects `updateSnapState` and `getSnapState` to be asynchronous
 
 ## [7.0.2]

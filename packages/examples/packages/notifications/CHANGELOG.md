@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.1.3]
 ### Fixed
-- Fix native notifications not working reliably ([#2310](https://github.com/MetaMask/snaps-skunkworks.git/pull/2310))
+- Fix native notifications not working reliably ([#2310](https://github.com/MetaMask/snaps/pull/2310))
 
 ## [2.1.2]
 ### Changed

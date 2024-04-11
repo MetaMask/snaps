@@ -8,12 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [7.0.0]
 ### Changed
-- **BREAKING:** Refactor encryption to enable caching ([#2316](https://github.com/MetaMask/snaps-skunkworks.git/pull/2316))
+- **BREAKING:** Refactor encryption to enable caching ([#2316](https://github.com/MetaMask/snaps/pull/2316))
   - New required constructor arguments `encryptor` and `getMnemonic` have been added.
-- Include `initialConnections` in approval `requestState` ([#2322](https://github.com/MetaMask/snaps-skunkworks.git/pull/2322))
+- Include `initialConnections` in approval `requestState` ([#2322](https://github.com/MetaMask/snaps/pull/2322))
 
 ### Fixed
-- Delete unencrypted state when uninstalling a Snap ([#2311](https://github.com/MetaMask/snaps-skunkworks.git/pull/2311))
+- Delete unencrypted state when uninstalling a Snap ([#2311](https://github.com/MetaMask/snaps/pull/2311))
 
 ## [6.0.4]
 ### Changed

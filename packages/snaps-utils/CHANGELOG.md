@@ -8,10 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [7.1.0]
 ### Added
-- Add derivation path for Nimiq ([#2309](https://github.com/MetaMask/snaps-skunkworks.git/pull/2309))
+- Add derivation path for Nimiq ([#2309](https://github.com/MetaMask/snaps/pull/2309))
 
 ### Fixed
-- Disable GitHub flavored Markdown when lexing ([#2317](https://github.com/MetaMask/snaps-skunkworks.git/pull/2317))
+- Disable GitHub flavored Markdown when lexing ([#2317](https://github.com/MetaMask/snaps/pull/2317))
 
 ## [7.0.4]
 ### Changed

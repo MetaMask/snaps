@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.0.0]
 ### Removed
-- **BREAKING:** Remove broken `ethereum` properties ([#2296](https://github.com/MetaMask/snaps-skunkworks.git/pull/2296))
+- **BREAKING:** Remove broken `ethereum` properties ([#2296](https://github.com/MetaMask/snaps/pull/2296))
   - Snaps can no longer access `on` and `removeListener` on `ethereum`.
   - This feature was already non-functional.
 
