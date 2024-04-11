@@ -222,6 +222,11 @@ export interface SnapRuntimeData {
    * Cached encryption key used for state encryption.
    */
   encryptionKey: string | null;
+
+  /**
+   * Cached encryption salt used for state encryption.
+   */
+  encryptionSalt: string | null;
 }
 
 export type SnapError = {
@@ -1542,21 +1547,25 @@ export class SnapController extends BaseController<
    */
   async #getSnapEncryptionKey({
     snapId,
-    salt,
+    salt: passedSalt,
     useCache,
     keyMetadata,
   }: {
     snapId: SnapId;
-    salt: string;
+    salt?: string;
     useCache: boolean;
     keyMetadata?: KeyDerivationOptions;
-  }): Promise<unknown> {
+  }): Promise<{ key: unknown; salt: string }> {
     const runtime = this.#getRuntimeExpect(snapId);
 
-    if (runtime.encryptionKey && useCache) {
-      return this.#encryptor.importKey(runtime.encryptionKey);
+    if (runtime.encryptionKey && runtime.encryptionSalt && useCache) {
+      return {
+        key: await this.#encryptor.importKey(runtime.encryptionKey),
+        salt: runtime.encryptionSalt,
+      };
     }
 
+    const salt = passedSalt ?? this.#encryptor.generateSalt();
     const mnemonicPhrase = await this.#getMnemonic();
     const entropy = await getEncryptionEntropy({ snapId, mnemonicPhrase });
     const encryptionKey = await this.#encryptor.keyFromPassword(
@@ -1570,8 +1579,9 @@ export class SnapController extends BaseController<
     // Cache exported encryption key in runtime
     if (useCache) {
       runtime.encryptionKey = exportedKey;
+      runtime.encryptionSalt = salt;
     }
-    return encryptionKey;
+    return { key: encryptionKey, salt };
   }
 
   /**
@@ -1587,16 +1597,13 @@ export class SnapController extends BaseController<
       const parsed = parseJson<EncryptionResult>(state);
       const { salt, keyMetadata } = parsed;
       const useCache = this.#encryptor.isVaultUpdated(state);
-      const encryptionKey = await this.#getSnapEncryptionKey({
+      const { key } = await this.#getSnapEncryptionKey({
         snapId,
         salt,
         useCache,
         keyMetadata,
       });
-      const decryptedState = await this.#encryptor.decryptWithKey(
-        encryptionKey,
-        parsed,
-      );
+      const decryptedState = await this.#encryptor.decryptWithKey(key, parsed);
 
       assert(isValidJson(decryptedState));
 
@@ -1619,16 +1626,11 @@ export class SnapController extends BaseController<
    * @returns A string containing the encrypted JSON object.
    */
   async #encryptSnapState(snapId: SnapId, state: Record<string, Json>) {
-    const salt = this.#encryptor.generateSalt();
-    const encryptionKey = await this.#getSnapEncryptionKey({
+    const { key, salt } = await this.#getSnapEncryptionKey({
       snapId,
-      salt,
       useCache: true,
     });
-    const encryptedState = await this.#encryptor.encryptWithKey(
-      encryptionKey,
-      state,
-    );
+    const encryptedState = await this.#encryptor.encryptWithKey(key, state);
 
     encryptedState.salt = salt;
     return JSON.stringify(encryptedState);
@@ -1690,8 +1692,8 @@ export class SnapController extends BaseController<
       ? this.state.snapStates[snapId]
       : this.state.unencryptedSnapStates[snapId];
 
-    if (state === null) {
-      return state;
+    if (state === null || state === undefined) {
+      return null;
     }
 
     if (!encrypted) {
@@ -3372,6 +3374,7 @@ export class SnapController extends BaseController<
       rpcHandler: null,
       installPromise: null,
       encryptionKey: null,
+      encryptionSalt: null,
       activeReferences: 0,
       pendingInboundRequests: [],
       pendingOutboundRequests: 0,

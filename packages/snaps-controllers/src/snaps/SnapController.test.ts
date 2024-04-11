@@ -7765,6 +7765,35 @@ describe('SnapController', () => {
 
       snapController.destroy();
     });
+
+    it(`returns null if the Snap has no state yet`, async () => {
+      const messenger = getSnapControllerMessenger();
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: {
+              [MOCK_SNAP_ID]: getPersistedSnapObject(),
+            },
+          },
+        }),
+      );
+
+      expect(
+        await messenger.call(
+          'SnapController:getSnapState',
+          MOCK_SNAP_ID,
+          false,
+        ),
+      ).toBeNull();
+
+      expect(
+        await messenger.call('SnapController:getSnapState', MOCK_SNAP_ID, true),
+      ).toBeNull();
+
+      snapController.destroy();
+    });
   });
 
   describe('SnapController:has', () => {
