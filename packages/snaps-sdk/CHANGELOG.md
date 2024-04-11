@@ -7,9 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [4.0.0]
-### Uncategorized
-- [BREAKING] Support Interactive UI in `snaps-jest` ([#2286](https://github.com/MetaMask/snaps/pull/2286))
-- Remove broken `ethereum` properties ([#2296](https://github.com/MetaMask/snaps/pull/2296))
+### Removed
+- **BREAKING:** Remove broken `ethereum` properties ([#2296](https://github.com/MetaMask/snaps/pull/2296))
+  - Snaps can no longer access `on` and `removeListener` on `ethereum`.
+  - This feature was already non-functional.
 
 ## [3.2.0]
 ### Added
