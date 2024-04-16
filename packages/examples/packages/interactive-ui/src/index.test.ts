@@ -88,6 +88,59 @@ describe('onRpcRequest', () => {
 
       expect(await response).toRespondWith(true);
     });
+
+    it('lets users input nothing', async () => {
+      const { request } = await installSnap();
+
+      const response = request({
+        method: 'dialog',
+      });
+
+      const startScreen = await response.getInterface();
+      assert(startScreen.type === 'confirmation');
+
+      expect(startScreen).toRender(
+        panel([
+          heading('Interactive UI Example Snap'),
+          button({ value: 'Update UI', name: 'update' }),
+        ]),
+      );
+
+      await startScreen.clickElement('update');
+
+      const formScreen = await response.getInterface();
+
+      expect(formScreen).toRender(
+        panel([
+          heading('Interactive UI Example Snap'),
+          form({
+            name: 'example-form',
+            children: [
+              input({
+                name: 'example-input',
+                placeholder: 'Enter something...',
+              }),
+              button('Submit', ButtonType.Submit, 'submit'),
+            ],
+          }),
+        ]),
+      );
+
+      await formScreen.clickElement('submit');
+
+      const resultScreen = await response.getInterface();
+
+      expect(resultScreen).toRender(
+        panel([
+          heading('Interactive UI Example Snap'),
+          text('The submitted value is:'),
+          copyable(''),
+        ]),
+      );
+      await resultScreen.ok();
+
+      expect(await response).toRespondWith(true);
+    });
   });
 
   describe('getState', () => {

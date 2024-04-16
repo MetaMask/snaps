@@ -2,6 +2,7 @@ import type { Infer } from 'superstruct';
 import {
   assign,
   literal,
+  nullable,
   object,
   optional,
   record,
@@ -40,7 +41,7 @@ export const FormSubmitEventStruct = assign(
   GenericEventStruct,
   object({
     type: literal(UserInputEventType.FormSubmitEvent),
-    value: record(string(), string()),
+    value: record(string(), nullable(string())),
     name: string(),
   }),
 );
@@ -68,7 +69,7 @@ export const UserInputEventStruct = union([
  * @property value - The value associated with the event. Only available when an {@link UserInputEventType.FormSubmitEvent} is fired.
  * It contains the form values submitted.
  */
-type UserInputEvent = Infer<typeof UserInputEventStruct>;
+export type UserInputEvent = Infer<typeof UserInputEventStruct>;
 
 /**
  * The `onUserInput` handler. This is called when an user input event is fired in the UI.
