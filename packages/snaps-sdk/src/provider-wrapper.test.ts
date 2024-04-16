@@ -96,6 +96,7 @@ describe('getBip44Entropy', () => {
     const node = {
       chainCode:
         '0x50ccfa58a885b48b5eed09486b3948e8454f34856fb81da5d7b8519d7997abd1',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       coin_type: 1,
       depth: 2,
       index: 2147483649,
@@ -205,7 +206,7 @@ describe('getLocale', () => {
     (snap.request as jest.MockedFn<typeof snap.request>).mockResolvedValue(
       'en',
     );
-    expect(await getLocale()).toStrictEqual('en');
+    expect(await getLocale()).toBe('en');
     expect(snap.request).toHaveBeenCalledWith({
       method: 'snap_getLocale',
     });
@@ -217,7 +218,7 @@ describe('setState', () => {
     (snap.request as jest.MockedFn<typeof snap.request>).mockResolvedValue(
       null,
     );
-    expect(await setState({ foo: 'bar' })).toStrictEqual(null);
+    expect(await setState({ foo: 'bar' })).toBeNull();
     expect(snap.request).toHaveBeenCalledWith({
       method: 'snap_manageState',
       params: {
@@ -234,7 +235,7 @@ describe('setState', () => {
     (snap.request as jest.MockedFn<typeof snap.request>).mockResolvedValue(
       null,
     );
-    expect(await setState({ foo: 'bar' }, false)).toStrictEqual(null);
+    expect(await setState({ foo: 'bar' }, false)).toBeNull();
     expect(snap.request).toHaveBeenCalledWith({
       method: 'snap_manageState',
       params: {
@@ -285,7 +286,7 @@ describe('clearState', () => {
     (snap.request as jest.MockedFn<typeof snap.request>).mockResolvedValue(
       null,
     );
-    expect(await clearState()).toStrictEqual(null);
+    expect(await clearState()).toBeNull();
     expect(snap.request).toHaveBeenCalledWith({
       method: 'snap_manageState',
       params: {
@@ -299,7 +300,7 @@ describe('clearState', () => {
     (snap.request as jest.MockedFn<typeof snap.request>).mockResolvedValue(
       null,
     );
-    expect(await clearState(false)).toStrictEqual(null);
+    expect(await clearState(false)).toBeNull();
     expect(snap.request).toHaveBeenCalledWith({
       method: 'snap_manageState',
       params: {
@@ -315,9 +316,7 @@ describe('notify', () => {
     (snap.request as jest.MockedFn<typeof snap.request>).mockResolvedValue(
       null,
     );
-    expect(await notify(NotificationType.InApp, 'Hello world!')).toStrictEqual(
-      null,
-    );
+    expect(await notify(NotificationType.InApp, 'Hello world!')).toBeNull();
     expect(snap.request).toHaveBeenCalledWith({
       method: 'snap_notify',
       params: {
@@ -333,9 +332,7 @@ describe('createInterface', () => {
     (snap.request as jest.MockedFn<typeof snap.request>).mockResolvedValue(
       'foo',
     );
-    expect(await createInterface(panel([text('Hello world!')]))).toStrictEqual(
-      'foo',
-    );
+    expect(await createInterface(panel([text('Hello world!')]))).toBe('foo');
     expect(snap.request).toHaveBeenCalledWith({
       method: 'snap_createInterface',
       params: {
@@ -360,7 +357,7 @@ describe('updateInterface', () => {
     );
     expect(
       await updateInterface('foo', panel([text('Hello world!')])),
-    ).toStrictEqual(null);
+    ).toBeNull();
     expect(snap.request).toHaveBeenCalledWith({
       method: 'snap_updateInterface',
       params: {
