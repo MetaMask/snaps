@@ -9,7 +9,7 @@ import {
   panel,
   text,
 } from '@metamask/snaps-sdk';
-import { HandlerType } from '@metamask/snaps-utils';
+import { HandlerType, WrappedSnapError } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 import { assert } from '@metamask/utils';
 import type { SagaIterator } from 'redux-saga';
@@ -307,6 +307,22 @@ describe('clickElement', () => {
         method: ' ',
         params: {
           event: {
+            type: UserInputEventType.ButtonClickEvent,
+            name: 'baz',
+          },
+          id: interfaceId,
+        },
+      },
+    });
+
+    expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
+      origin: '',
+      handler: HandlerType.OnUserInput,
+      request: {
+        jsonrpc: '2.0',
+        method: ' ',
+        params: {
+          event: {
             type: UserInputEventType.FormSubmitEvent,
             name: 'bar',
             value: {
@@ -338,6 +354,31 @@ describe('clickElement', () => {
     ).rejects.toThrow('No button found in the interface.');
 
     expect(handleRpcRequestMock).not.toHaveBeenCalled();
+  });
+
+  it('unwraps errors', async () => {
+    const content = button({ value: 'foo', name: 'foo' });
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    handleRpcRequestMock.mockRejectedValue(
+      new WrappedSnapError(new Error('bar')),
+    );
+
+    await expect(
+      clickElement(
+        rootControllerMessenger,
+        interfaceId,
+        content,
+        MOCK_SNAP_ID,
+        'foo',
+      ),
+    ).rejects.toThrow('bar');
+
+    expect(handleRpcRequestMock).toHaveBeenCalled();
   });
 });
 
