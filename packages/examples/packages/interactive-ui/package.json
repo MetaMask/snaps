@@ -1,6 +1,6 @@
 {
   "name": "@metamask/interactive-ui-example-snap",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "MetaMask example snap demonstrating the use of interactive UI.",
   "repository": {
     "type": "git",

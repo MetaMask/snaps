@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2]
+### Fixed
+- Fix a crash when submitting an empty string ([#2333](https://github.com/MetaMask/snaps/pull/2333))
+
 ## [1.0.1]
 ### Changed
 - Use error wrappers ([#2178](https://github.com/MetaMask/snaps/pull/2178))
@@ -14,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add interactive UI example Snap ([#2171](https://github.com/MetaMask/snaps/pull/2171))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/interactive-ui-example-snap@1.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/interactive-ui-example-snap@1.0.2...HEAD
+[1.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/interactive-ui-example-snap@1.0.1...@metamask/interactive-ui-example-snap@1.0.2
 [1.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/interactive-ui-example-snap@1.0.0...@metamask/interactive-ui-example-snap@1.0.1
 [1.0.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/interactive-ui-example-snap@1.0.0
