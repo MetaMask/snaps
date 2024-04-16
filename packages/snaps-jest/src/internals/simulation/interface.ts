@@ -5,6 +5,7 @@ import type {
   Input,
   InterfaceState,
   SnapId,
+  UserInputEvent,
 } from '@metamask/snaps-sdk';
 import {
   ButtonType,
@@ -13,7 +14,7 @@ import {
   UserInputEventType,
   assert,
 } from '@metamask/snaps-sdk';
-import { HandlerType, hasChildren } from '@metamask/snaps-utils';
+import { HandlerType, hasChildren, unwrapError } from '@metamask/snaps-utils';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { type SagaIterator } from 'redux-saga';
 import { call, put, select, take } from 'redux-saga/effects';
@@ -191,6 +192,42 @@ export function getElement(
 
   return undefined;
 }
+/**
+ * Handle submitting event requests to OnUserInput including unwrapping potential errors.
+ *
+ * @param controllerMessenger - The controller messenger used to call actions.
+ * @param snapId - The Snap ID.
+ * @param id - The interface ID.
+ * @param event - The event to submit.
+ */
+async function handleEvent(
+  controllerMessenger: RootControllerMessenger,
+  snapId: SnapId,
+  id: string,
+  event: UserInputEvent,
+) {
+  try {
+    await controllerMessenger.call(
+      'ExecutionService:handleRpcRequest',
+      snapId,
+      {
+        origin: '',
+        handler: HandlerType.OnUserInput,
+        request: {
+          jsonrpc: '2.0',
+          method: ' ',
+          params: {
+            event,
+            id,
+          },
+        },
+      },
+    );
+  } catch (error) {
+    const [unwrapped] = unwrapError(error);
+    throw unwrapped;
+  }
+}
 
 /**
  * Click on an element of the Snap interface.
@@ -214,6 +251,12 @@ export async function clickElement(
     'No button found in the interface.',
   );
 
+  // Button click events are always triggered.
+  await handleEvent(controllerMessenger, snapId, id, {
+    type: UserInputEventType.ButtonClickEvent,
+    name: result.element.name,
+  });
+
   if (result.form && result.element.buttonType === ButtonType.Submit) {
     const { state } = controllerMessenger.call(
       'SnapInterfaceController:getInterface',
@@ -221,50 +264,11 @@ export async function clickElement(
       id,
     );
 
-    await controllerMessenger.call(
-      'ExecutionService:handleRpcRequest',
-      snapId,
-      {
-        origin: '',
-        handler: HandlerType.OnUserInput,
-        request: {
-          jsonrpc: '2.0',
-          method: ' ',
-          params: {
-            event: {
-              type: UserInputEventType.FormSubmitEvent,
-              name: result.form,
-              value: state[result.form],
-            },
-            id,
-          },
-        },
-      },
-    );
-
-    return;
-  }
-
-  if (result.element.buttonType !== ButtonType.Submit) {
-    await controllerMessenger.call(
-      'ExecutionService:handleRpcRequest',
-      snapId,
-      {
-        origin: '',
-        handler: HandlerType.OnUserInput,
-        request: {
-          jsonrpc: '2.0',
-          method: ' ',
-          params: {
-            event: {
-              type: UserInputEventType.ButtonClickEvent,
-              name: result.element.name,
-            },
-            id,
-          },
-        },
-      },
-    );
+    await handleEvent(controllerMessenger, snapId, id, {
+      type: UserInputEventType.FormSubmitEvent,
+      name: result.form,
+      value: state[result.form] as Record<string, string | null>,
+    });
   }
 }
 
