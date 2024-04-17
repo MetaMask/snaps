@@ -2,6 +2,8 @@ const deepmerge = require('deepmerge');
 
 const baseConfig = require('../../jest.config.base');
 
+delete baseConfig.transform;
+
 module.exports = deepmerge(baseConfig, {
   coverageThreshold: {
     global: {
@@ -27,12 +29,19 @@ module.exports = deepmerge(baseConfig, {
       '@swc/jest',
       {
         jsc: {
+          target: 'es2022',
+          parser: {
+            syntax: 'typescript',
+            tsx: true,
+          },
           transform: {
             react: {
               runtime: 'automatic',
+              useBuiltins: true,
             },
           },
         },
+        sourceMaps: false,
       },
     ],
   },
