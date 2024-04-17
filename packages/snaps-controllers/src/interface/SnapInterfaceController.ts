@@ -6,15 +6,16 @@ import type {
 } from '@metamask/phishing-controller';
 import type { Component, InterfaceState, SnapId } from '@metamask/snaps-sdk';
 import {
+  getJsonSizeUnsafe,
   getTotalTextLength,
   validateComponentLinks,
 } from '@metamask/snaps-utils';
-import { assert, getJsonSize } from '@metamask/utils';
+import { assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
 import { constructState } from './utils';
 
-const MAX_UI_CONTENT_SIZE = 250_000; // 250 kb
+const MAX_UI_CONTENT_SIZE = 10_000_000; // 10 mb
 const MAX_TEXT_LENGTH = 50_000; // 50 kb
 
 const controllerName = 'SnapInterfaceController';
@@ -253,16 +254,16 @@ export class SnapInterfaceController extends BaseController<
    * Utility function to validate the components of an interface.
    * Throws if something is invalid.
    *
-   * Right now this only checks links against the phighing list.
-   *
    * @param content - The components to verify.
    */
   async #validateContent(content: Component) {
-    const size = getJsonSize(content);
+    // We assume the validity of this JSON to be validated by the caller.
+    // E.g. in the RPC method implementation.
+    const size = getJsonSizeUnsafe(content);
 
     assert(
       size <= MAX_UI_CONTENT_SIZE,
-      `A Snap UI may not be larger than ${MAX_UI_CONTENT_SIZE / 1000} kB.`,
+      `A Snap UI may not be larger than ${MAX_UI_CONTENT_SIZE / 1000000} MB.`,
     );
 
     const textSize = getTotalTextLength(content);
