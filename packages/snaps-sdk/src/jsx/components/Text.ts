@@ -7,8 +7,7 @@ export type TextChildren = Nested<string | FormattingElement>;
 /**
  * The props of the {@link Text} component.
  *
- * @property children - The text to display. This should be a string, an array
- * of strings, or an array of formatting elements.
+ * @property children - The text to display.
  */
 export type TextProps = {
   children?: TextChildren;
@@ -20,8 +19,7 @@ const TYPE = 'text';
  * A text component, which is used to display text.
  *
  * @param props - The props of the component.
- * @param props.children - The text to display. This should be a string, an
- * array of strings, or an array of formatting elements.
+ * @param props.children - The text to display.
  * @returns A text element.
  * @example
  * <Text>

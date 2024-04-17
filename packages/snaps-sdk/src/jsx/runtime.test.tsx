@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-shadow
-import { Bold, Panel, Text } from './components';
+import { Bold, Box, Text } from './components';
 
 describe('jsx', () => {
   it('renders a JSX component', () => {
@@ -7,7 +7,8 @@ describe('jsx', () => {
 
     expect(element).toStrictEqual({
       type: 'text',
-      value: 'Hello',
+      key: null,
+      props: { children: 'Hello' },
     });
   });
 });
@@ -18,27 +19,35 @@ describe('jsxs', () => {
 
     expect(element).toStrictEqual({
       type: 'text',
-      value: 'Hello',
+      key: null,
+      props: { children: 'Hello' },
     });
   });
 
   it('renders a nested JSX component', () => {
     const element = (
-      <Panel>
+      <Box>
         <Text>
           Hello, <Bold>world</Bold>
         </Text>
-      </Panel>
+      </Box>
     );
 
     expect(element).toStrictEqual({
-      type: 'panel',
-      children: [
-        {
+      type: 'box',
+      key: null,
+      props: {
+        children: {
           type: 'text',
-          value: 'Hello, **world**',
+          key: null,
+          props: {
+            children: [
+              'Hello, ',
+              { type: 'bold', key: null, props: { children: 'world' } },
+            ],
+          },
         },
-      ],
+      },
     });
   });
 
@@ -51,17 +60,14 @@ describe('jsxs', () => {
     );
 
     expect(element).toStrictEqual({
-      type: 'panel',
-      children: [
-        {
-          type: 'text',
-          value: 'Hello',
-        },
-        {
-          type: 'text',
-          value: 'World',
-        },
-      ],
+      type: 'box',
+      key: null,
+      props: {
+        children: [
+          { type: 'text', key: null, props: { children: 'Hello' } },
+          { type: 'text', key: null, props: { children: 'World' } },
+        ],
+      },
     });
   });
 });

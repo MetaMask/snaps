@@ -8,7 +8,6 @@ import { createSnapComponent } from '../component';
  */
 export type BoxProps = {
   children: SnapNode;
-  alignment?: 'start' | 'center' | 'end' | undefined;
 };
 
 const TYPE = 'box';
@@ -18,11 +17,9 @@ const TYPE = 'box';
  *
  * @param props - The props of the component.
  * @param props.children - The children of the box.
- * @param props.alignment - The alignment of the box. This can be `start`,
- * `center`, or `end`. The default is `start`.
  * @returns A box element.
  * @example
- * <Box alignment="center">
+ * <Box>
  *   <Text>Hello world!</Text>
  * </Box>
  */

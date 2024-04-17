@@ -1,16 +1,21 @@
 import type { StringElement } from '../../component';
 import { createSnapComponent } from '../../component';
 
+// TODO: Add the `onClick` prop to the `ButtonProps` type.
+
 /**
  * The props of the {@link Button} component.
  *
- * @property children - The text to display on the button. This should be a
- * string or an array of strings.
- * @property onClick - The function to call when the button is clicked.
+ * @property children - The text to display on the button.
+ * @property name - The name of the button. This is used to identify the button
+ * in the event handler.
+ * @property type - The type of the button, i.e., `'button'` or `'submit'`.
+ * Defaults to `'button'`.
  */
 export type ButtonProps = {
   children: StringElement;
-  onClick?: (() => void) | undefined;
+  name?: string | undefined;
+  type?: 'button' | 'submit' | undefined;
 };
 
 const TYPE = 'button';
@@ -24,10 +29,6 @@ const TYPE = 'button';
  * @param props.onClick - The function to call when the button is clicked.
  * @returns A button element.
  * @example
- * function handleClick() {
- *   // Do something
- * }
- *
  * <Button onClick={handleClick}>Click me</Button>
  */
 export const Button = createSnapComponent<ButtonProps, typeof TYPE>(TYPE);

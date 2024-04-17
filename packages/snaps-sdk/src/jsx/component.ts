@@ -1,4 +1,14 @@
+import type { Json } from '@metamask/utils';
+
+/**
+ * A key, which can be a string or a number.
+ */
 export type Key = string | number;
+
+/**
+ * A JSON object.
+ */
+export type JsonObject = Record<string, Json>;
 
 /**
  * A JSX element.
@@ -7,7 +17,10 @@ export type Key = string | number;
  * @property props - The props of the element.
  * @property key - The key of the element.
  */
-export type SnapElement<Props = any, Type extends string = string> = {
+export type SnapElement<
+  Props extends JsonObject = Record<string, never>,
+  Type extends string = string,
+> = {
   type: Type;
   props: Props;
   key: Key | null;
@@ -39,7 +52,7 @@ export type StringElement = Nested<string>;
  * A JSX component.
  */
 export type SnapComponent<
-  Props = Record<string, never>,
+  Props extends JsonObject = Record<string, never>,
   Type extends string = string,
 > = (props: Props & { key?: Key | null }) => SnapElement<Props, Type>;
 
@@ -51,9 +64,10 @@ export type SnapComponent<
  * @returns A function that creates a Snap element.
  * @see SnapComponent
  */
-export function createSnapComponent<Props, Type extends string>(
-  type: Type,
-): SnapComponent<Props, Type> {
+export function createSnapComponent<
+  Props extends JsonObject = Record<string, never>,
+  Type extends string = string,
+>(type: Type): SnapComponent<Props, Type> {
   return (props: Props & { key?: Key | null }) => {
     const { key = null, ...rest } = props;
     return {

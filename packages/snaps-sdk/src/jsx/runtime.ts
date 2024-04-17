@@ -1,4 +1,4 @@
-import type { Key, SnapComponent } from './component';
+import type { JsonObject, Key, SnapComponent } from './component';
 import type { BoxProps } from './components';
 import { Box } from './components';
 
@@ -10,7 +10,7 @@ import { Box } from './components';
  * @param props - The props to pass to the component.
  * @returns The rendered component.
  */
-export function jsx<Props>(
+export function jsx<Props extends JsonObject>(
   component: SnapComponent<Props>,
   props: Props & { key?: Key | null },
 ): unknown | null {
@@ -33,7 +33,7 @@ export function jsx<Props>(
  * @param props - The props to pass to the component.
  * @returns The rendered component.
  */
-export function jsxs<Props>(
+export function jsxs<Props extends JsonObject>(
   component: SnapComponent<Props>,
   props: Props & { key?: Key | null },
 ): unknown | null {

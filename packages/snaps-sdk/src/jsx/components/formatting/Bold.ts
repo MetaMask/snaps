@@ -6,8 +6,7 @@ import type { Text } from '../Text';
 /**
  * The props of the {@link Bold} component.
  *
- * @property children - The text to display in bold. This should be a string
- * or an array of strings.
+ * @property children - The text to display in bold.
  */
 export type BoldProps = {
   children: StringElement;
@@ -20,8 +19,7 @@ const TYPE = 'bold';
  * only be used as a child of the {@link Text} component.
  *
  * @param props - The props of the component.
- * @param props.children - The text to display in bold. This should be a string
- * or an array of strings.
+ * @param props.children - The text to display in bold.
  * @returns A bold element.
  * @example
  * <Text>
