@@ -34,6 +34,7 @@
     "@metamask/snaps-sdk": "workspace:^"
   },
   "devDependencies": {
+    "@jest/globals": "^29.5.0",
     "@lavamoat/allow-scripts": "^3.0.3",
     "@metamask/auto-changelog": "^3.4.4",
     "@metamask/eslint-config": "^12.1.0",

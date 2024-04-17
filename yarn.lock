@@ -4914,6 +4914,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/jsx-example-snap@workspace:packages/examples/packages/jsx"
   dependencies:
+    "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
