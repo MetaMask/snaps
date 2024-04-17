@@ -1,7 +1,7 @@
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
 import { DialogType } from '@metamask/snaps-sdk';
-import { Bold, Panel, Text } from '@metamask/snaps-sdk/jsx';
+import { Bold, Box, Text } from '@metamask/snaps-sdk/jsx';
 
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
@@ -11,11 +11,11 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         params: {
           type: DialogType.Alert,
           content: (
-            <Panel>
+            <Box>
               <Text>
                 Hello from <Bold>JSX</Bold>.
               </Text>
-            </Panel>
+            </Box>
           ),
         },
       });

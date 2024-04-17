@@ -4,7 +4,7 @@ import { resolve } from 'path';
 const config: SnapConfig = {
   input: resolve(__dirname, 'src/index.tsx'),
   server: {
-    port: 8005,
+    port: 8029,
   },
   stats: {
     buffer: false,

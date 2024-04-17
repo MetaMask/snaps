@@ -1,4 +1,4 @@
-import { createSnapComponent } from '@metamask/snaps-sdk/jsx';
+import { createSnapComponent } from '../component';
 
 const TYPE = 'divider';
 

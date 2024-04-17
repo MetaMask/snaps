@@ -1,4 +1,4 @@
-import { createSnapComponent } from '@metamask/snaps-sdk/jsx';
+import { createSnapComponent } from '../component';
 
 /**
  * The props of the {@link Copyable} component.
