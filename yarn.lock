@@ -4914,7 +4914,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/jsx-example-snap@workspace:packages/examples/packages/jsx"
   dependencies:
-    "@jest/globals": ^29.5.0
     "@lavamoat/allow-scripts": ^3.0.3
     "@metamask/auto-changelog": ^3.4.4
     "@metamask/eslint-config": ^12.1.0
@@ -4925,7 +4924,6 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": ^8.3.0
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
     "@typescript-eslint/eslint-plugin": ^5.42.1
