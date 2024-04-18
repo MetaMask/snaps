@@ -9,7 +9,7 @@ describe('parseJson', () => {
 });
 
 describe('getJsonSizeUnsafe', () => {
-  it('strips __proto__ and constructor', () => {
+  it('calculates the size of the JSON input', () => {
     const input = { foo: 'bar' };
     expect(getJsonSizeUnsafe(input)).toBe(13);
   });
