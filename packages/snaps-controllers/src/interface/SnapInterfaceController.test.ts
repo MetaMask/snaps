@@ -1,5 +1,5 @@
 import type { SnapId } from '@metamask/snaps-sdk';
-import { form, input, panel, text } from '@metamask/snaps-sdk';
+import { form, image, input, panel, text } from '@metamask/snaps-sdk';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
 import {
@@ -117,7 +117,8 @@ describe('SnapInterfaceController', () => {
         messenger: controllerMessenger,
       });
 
-      const components = panel([text('[foo](https://foo.bar)'.repeat(100000))]);
+      const images = new Array(800_000).fill(image(`<svg />`));
+      const components = panel(images);
 
       await expect(
         rootMessenger.call(
@@ -125,7 +126,7 @@ describe('SnapInterfaceController', () => {
           MOCK_SNAP_ID,
           components,
         ),
-      ).rejects.toThrow('A Snap UI may not be larger than 250 kB.');
+      ).rejects.toThrow('A Snap UI may not be larger than 10 MB.');
     });
 
     it('throws if text content is too large', async () => {
@@ -353,7 +354,8 @@ describe('SnapInterfaceController', () => {
         children: [input({ name: 'bar' })],
       });
 
-      const newContent = panel([text('[foo](https://foo.bar)'.repeat(100000))]);
+      const images = new Array(800_000).fill(image(`<svg />`));
+      const newContent = panel(images);
 
       const id = await rootMessenger.call(
         'SnapInterfaceController:createInterface',
@@ -368,7 +370,7 @@ describe('SnapInterfaceController', () => {
           id,
           newContent,
         ),
-      ).rejects.toThrow('A Snap UI may not be larger than 250 kB.');
+      ).rejects.toThrow('A Snap UI may not be larger than 10 MB.');
     });
 
     it('throws if text content is too large', async () => {
