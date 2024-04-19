@@ -4313,7 +4313,7 @@ describe('SnapController', () => {
           manifest: getSnapManifest({
             version: '1.2.3',
             initialPermissions: {
-              'endowment:rpc': { dapps: true },
+              'endowment:rpc': { dapps: false, snaps: true },
               // eslint-disable-next-line @typescript-eslint/naming-convention
               snap_getEntropy: {},
             },
@@ -4995,6 +4995,81 @@ describe('SnapController', () => {
                 {
                   type: SnapCaveatType.PermittedDerivationPaths,
                   value: [{ path: ['m', "44'", "1'"], curve: 'secp256k1' }],
+                },
+              ],
+            },
+          },
+          subject: { origin: MOCK_SNAP_ID },
+          requestData: {
+            metadata: {
+              origin: MOCK_SNAP_ID,
+              dappOrigin: MOCK_ORIGIN,
+              id: expect.any(String),
+            },
+
+            snapId: MOCK_SNAP_ID,
+          },
+        },
+      );
+
+      snapController.destroy();
+    });
+
+    it('overwrites caveats on update for already approved permissions', async () => {
+      const initialPermissions = {
+        [handlerEndowments.onRpcRequest as string]: {
+          allowedOrigins: ['https://metamask.io'],
+        },
+      };
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
+        manifest: getSnapManifest({
+          version: '1.1.0' as SemVerVersion,
+          initialPermissions,
+        }),
+      });
+
+      const detectSnapLocation = loopbackDetect({
+        manifest: manifest.result,
+      });
+
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+          detectSnapLocation,
+        }),
+      );
+
+      await snapController.updateSnap(
+        MOCK_ORIGIN,
+        MOCK_SNAP_ID,
+        detectSnapLocation(),
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        7,
+        'PermissionController:revokePermissions',
+        {
+          [MOCK_SNAP_ID]: [SnapEndowments.Rpc, 'snap_dialog'],
+        },
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        8,
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions: {
+            [handlerEndowments.onRpcRequest as string]: {
+              caveats: [
+                {
+                  type: SnapCaveatType.RpcOrigin,
+                  value: {
+                    allowedOrigins: ['https://metamask.io'],
+                  },
                 },
               ],
             },

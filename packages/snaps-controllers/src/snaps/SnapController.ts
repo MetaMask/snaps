@@ -120,7 +120,13 @@ import {
   type ExportableKeyEncryptor,
   type KeyDerivationOptions,
 } from '../types';
-import { fetchSnap, hasTimedOut, setDiff, withTimeout } from '../utils';
+import {
+  fetchSnap,
+  hasTimedOut,
+  permissionsDiff,
+  setDiff,
+  withTimeout,
+} from '../utils';
 import { ALLOWED_PERMISSIONS } from './constants';
 import type { SnapLocation } from './location';
 import { detectSnapLocation } from './location';
@@ -3403,14 +3409,23 @@ export class SnapController extends BaseController<
         snapId,
       ) ?? {};
 
-    const newPermissions = setDiff(desiredPermissionsSet, oldPermissions);
+    const newPermissions = permissionsDiff(
+      desiredPermissionsSet,
+      oldPermissions,
+    );
     // TODO(ritave): The assumption that these are unused only holds so long as we do not
     //               permit dynamic permission requests.
-    const unusedPermissions = setDiff(oldPermissions, desiredPermissionsSet);
+    const unusedPermissions = permissionsDiff(
+      oldPermissions,
+      desiredPermissionsSet,
+    );
 
     // It's a Set Intersection of oldPermissions and desiredPermissionsSet
     // oldPermissions ∖ (oldPermissions ∖ desiredPermissionsSet) ⟺ oldPermissions ∩ desiredPermissionsSet
-    const approvedPermissions = setDiff(oldPermissions, unusedPermissions);
+    const approvedPermissions = permissionsDiff(
+      oldPermissions,
+      unusedPermissions,
+    );
 
     return { newPermissions, unusedPermissions, approvedPermissions };
   }

@@ -1,3 +1,4 @@
+import type { PermissionConstraint } from '@metamask/permission-controller';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { getErrorMessage } from '@metamask/snaps-sdk';
 import {
@@ -5,6 +6,7 @@ import {
   getValidatedLocalizationFiles,
   validateFetchedSnap,
 } from '@metamask/snaps-utils';
+import deepEqual from 'fast-deep-equal';
 
 import type { SnapLocation } from './snaps';
 import { Timer } from './snaps/Timer';
@@ -36,6 +38,35 @@ export function setDiff<
     },
     {},
   ) as Diff<ObjectA, ObjectB>;
+}
+
+/**
+ * Calculate a difference between two permissions objects.
+ *
+ * Similar to `setDiff` except for one additional condition:
+ * Permissions in B should be removed from A if they exist in both and have differing caveats.
+ *
+ * @param permissionsA - An object containing one or more partial permissions.
+ * @param permissionsB - An object containing one or more partial permissions to be subtracted from A.
+ * @returns The permissions set A without properties from B.
+ */
+export function permissionsDiff(
+  permissionsA: Record<string, Pick<PermissionConstraint, 'caveats'>>,
+  permissionsB: Record<string, Pick<PermissionConstraint, 'caveats'>>,
+) {
+  return Object.entries(permissionsA).reduce<
+    Record<string, Pick<PermissionConstraint, 'caveats'>>
+  >((acc, [key, value]) => {
+    const isIncluded = key in permissionsB;
+    if (
+      !isIncluded ||
+      (isIncluded &&
+        !deepEqual(value.caveats ?? [], permissionsB[key].caveats ?? []))
+    ) {
+      acc[key] = value;
+    }
+    return acc;
+  }, {});
 }
 
 /**
