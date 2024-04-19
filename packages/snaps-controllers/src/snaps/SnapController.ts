@@ -2600,12 +2600,13 @@ export class SnapController extends BaseController<
 
     try {
       const runtime = this.#getRuntimeExpect(snapId);
-      const result = await withTimeout(
-        this.messagingSystem.call('ExecutionService:executeSnap', {
+      const result = await this.messagingSystem.call(
+        'ExecutionService:executeSnap',
+        {
           ...snapData,
           endowments: await this.#getEndowments(snapId),
-        }),
-        this.#maxInitTime,
+          timeout: this.#maxInitTime,
+        },
       );
 
       if (result === hasTimedOut) {

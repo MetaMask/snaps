@@ -23,6 +23,7 @@ import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';
 
 import { log } from '../logging';
+import { Timer } from '../snaps/Timer';
 import { hasTimedOut, withTimeout } from '../utils';
 import type {
   ExecutionService,
@@ -38,6 +39,7 @@ export type SetupSnapProvider = (snapId: string, stream: Duplex) => void;
 export type ExecutionServiceArgs = {
   setupSnapProvider: SetupSnapProvider;
   messenger: ExecutionServiceMessenger;
+  initTimeout?: number;
   pingTimeout?: number;
   terminationTimeout?: number;
 };
@@ -54,6 +56,9 @@ export type Job<WorkerType> = {
   rpcEngine: JsonRpcEngine;
   worker: WorkerType;
 };
+
+export type TerminateJobArgs<WorkerType> = Partial<Job<WorkerType>> &
+  Pick<Job<WorkerType>, 'id'>;
 
 export abstract class AbstractExecutionService<WorkerType>
   implements ExecutionService
@@ -72,6 +77,8 @@ export abstract class AbstractExecutionService<WorkerType>
 
   #messenger: ExecutionServiceMessenger;
 
+  #initTimeout: number;
+
   #pingTimeout: number;
 
   #terminationTimeout: number;
@@ -79,6 +86,7 @@ export abstract class AbstractExecutionService<WorkerType>
   constructor({
     setupSnapProvider,
     messenger,
+    initTimeout = inMilliseconds(60, Duration.Second),
     pingTimeout = inMilliseconds(2, Duration.Second),
     terminationTimeout = inMilliseconds(1, Duration.Second),
   }: ExecutionServiceArgs) {
@@ -88,6 +96,7 @@ export abstract class AbstractExecutionService<WorkerType>
     this.#snapToJobMap = new Map();
     this.#jobToSnapMap = new Map();
     this.#messenger = messenger;
+    this.#initTimeout = initTimeout;
     this.#pingTimeout = pingTimeout;
     this.#terminationTimeout = terminationTimeout;
 
@@ -107,7 +116,7 @@ export abstract class AbstractExecutionService<WorkerType>
 
     this.#messenger.registerActionHandler(
       `${controllerName}:executeSnap`,
-      async (snapData: SnapExecutionData) => this.executeSnap(snapData),
+      async (data: SnapExecutionData) => this.executeSnap(data),
     );
 
     this.#messenger.registerActionHandler(
@@ -128,7 +137,7 @@ export abstract class AbstractExecutionService<WorkerType>
    *
    * @param job - The object corresponding to the job to be terminated.
    */
-  protected abstract terminateJob(job: Job<WorkerType>): void;
+  protected abstract terminateJob(job: TerminateJobArgs<WorkerType>): void;
 
   /**
    * Terminates the job with the specified ID and deletes all its associated
@@ -144,24 +153,28 @@ export abstract class AbstractExecutionService<WorkerType>
       throw new Error(`Job with id "${jobId}" not found.`);
     }
 
-    // Ping worker and tell it to run teardown, continue with termination if it takes too long
-    const result = await withTimeout(
-      this.command(jobId, {
-        jsonrpc: '2.0',
-        method: 'terminate',
-        params: [],
-        id: nanoid(),
-      }),
-      this.#terminationTimeout,
-    );
+    try {
+      // Ping worker and tell it to run teardown, continue with termination if it takes too long
+      const result = await withTimeout(
+        this.command(jobId, {
+          jsonrpc: '2.0',
+          method: 'terminate',
+          params: [],
+          id: nanoid(),
+        }),
+        this.#terminationTimeout,
+      );
 
-    if (result === hasTimedOut || result !== 'OK') {
-      // We tried to shutdown gracefully but failed. This probably means the Snap is in infinite loop and
-      // hogging down the whole JS process.
-      // TODO(ritave): It might be doing weird things such as posting a lot of setTimeouts. Add a test to ensure that this behaviour
-      //               doesn't leak into other workers. Especially important in IframeExecutionEnvironment since they all share the same
-      //               JS process.
-      logError(`Job "${jobId}" failed to terminate gracefully.`, result);
+      if (result === hasTimedOut || result !== 'OK') {
+        // We tried to shutdown gracefully but failed. This probably means the Snap is in infinite loop and
+        // hogging down the whole JS process.
+        // TODO(ritave): It might be doing weird things such as posting a lot of setTimeouts. Add a test to ensure that this behaviour
+        //               doesn't leak into other workers. Especially important in IframeExecutionEnvironment since they all share the same
+        //               JS process.
+        logError(`Job "${jobId}" failed to terminate gracefully.`, result);
+      }
+    } catch {
+      // Ignore
     }
 
     Object.values(jobWrapper.streams).forEach((stream) => {
@@ -175,8 +188,8 @@ export abstract class AbstractExecutionService<WorkerType>
 
     this.terminateJob(jobWrapper);
 
-    this.#removeSnapAndJobMapping(jobId);
     this.jobs.delete(jobId);
+    this.#removeSnapAndJobMapping(jobId);
     log(`Job "${jobId}" terminated.`);
   }
 
@@ -185,10 +198,10 @@ export abstract class AbstractExecutionService<WorkerType>
    *
    * Depending on the execution environment, this may run forever if the Snap fails to start up properly, therefore any call to this function should be wrapped in a timeout.
    *
+   * @param jobId - The ID of the job to initiate.
    * @returns Information regarding the created job.
    */
-  protected async initJob(): Promise<Job<WorkerType>> {
-    const jobId = nanoid();
+  protected async initJob(jobId: string): Promise<Job<WorkerType>> {
     const { streams, worker } = await this.initStreams(jobId);
     const rpcEngine = new JsonRpcEngine();
 
@@ -333,20 +346,35 @@ export abstract class AbstractExecutionService<WorkerType>
   /**
    * Initializes and executes a snap, setting up the communication channels to the snap etc.
    *
-   * Depending on the execution environment, this may run forever if the Snap fails to start up properly, therefore any call to this function should be wrapped in a timeout.
-   *
    * @param snapData - Data needed for Snap execution.
+   * @param snapData.snapId - The ID of the Snap to execute.
+   * @param snapData.sourceCode - The source code of the Snap to execute.
+   * @param snapData.endowments - The endowments available to the executing Snap.
    * @returns A string `OK` if execution succeeded.
-   * @throws If the execution service returns an error.
+   * @throws If the execution service returns an error or execution times out.
    */
-  async executeSnap(snapData: SnapExecutionData): Promise<string> {
-    if (this.#snapToJobMap.has(snapData.snapId)) {
-      throw new Error(`Snap "${snapData.snapId}" is already being executed.`);
+  async executeSnap({
+    snapId,
+    sourceCode,
+    endowments,
+  }: SnapExecutionData): Promise<string> {
+    if (this.#snapToJobMap.has(snapId)) {
+      throw new Error(`Snap "${snapId}" is already being executed.`);
     }
 
+    const jobId = nanoid();
+    const timer = new Timer(this.#initTimeout);
+
     // This may resolve even if the environment has failed to start up fully
-    const job = await this.initJob();
-    this.#mapSnapAndJob(snapData.snapId, job.id);
+    const job = await withTimeout(this.initJob(jobId), timer);
+
+    if (job === hasTimedOut) {
+      // For certain environments, such as the iframe we may have already created the worker and wish to terminate it.
+      this.terminateJob({ id: jobId });
+      throw new Error('The Snaps execution environment failed to start.');
+    }
+
+    this.#mapSnapAndJob(snapId, job.id);
 
     // Ping the worker to ensure that it started up
     const pingResult = await withTimeout(
@@ -364,15 +392,20 @@ export abstract class AbstractExecutionService<WorkerType>
 
     const rpcStream = job.streams.rpc;
 
-    this.setupSnapProvider(snapData.snapId, rpcStream);
+    this.setupSnapProvider(snapId, rpcStream);
 
-    const result = await this.command(job.id, {
-      jsonrpc: '2.0',
-      method: 'executeSnap',
-      params: snapData,
-      id: nanoid(),
-    });
-    this.#createSnapHooks(snapData.snapId, job.id);
+    const remainingTime = timer.remaining;
+
+    const result = await withTimeout(
+      this.command(job.id, {
+        jsonrpc: '2.0',
+        method: 'executeSnap',
+        params: { snapId, sourceCode, endowments },
+        id: nanoid(),
+      }),
+      remainingTime,
+    );
+    this.#createSnapHooks(snapId, job.id);
     return result as string;
   }
 

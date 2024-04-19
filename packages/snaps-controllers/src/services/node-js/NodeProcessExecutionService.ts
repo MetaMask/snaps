@@ -3,7 +3,7 @@ import { ProcessParentMessageStream } from '@metamask/post-message-stream';
 import type { ChildProcess } from 'child_process';
 import { fork } from 'child_process';
 
-import type { Job } from '..';
+import type { TerminateJobArgs } from '..';
 import { AbstractExecutionService } from '..';
 
 export class NodeProcessExecutionService extends AbstractExecutionService<ChildProcess> {
@@ -36,7 +36,7 @@ export class NodeProcessExecutionService extends AbstractExecutionService<ChildP
     return Promise.resolve({ worker, stream });
   }
 
-  protected terminateJob(jobWrapper: Job<ChildProcess>): void {
-    jobWrapper.worker.kill();
+  protected terminateJob(jobWrapper: TerminateJobArgs<ChildProcess>): void {
+    jobWrapper.worker?.kill();
   }
 }
