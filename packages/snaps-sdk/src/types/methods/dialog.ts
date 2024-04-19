@@ -1,4 +1,5 @@
 import type { EnumToUnion } from '../../internals';
+import type { JSXElement } from '../../jsx';
 import type { Component } from '../../ui';
 
 /**
@@ -25,7 +26,7 @@ export enum DialogType {
 export type AlertDialog =
   | {
       type: EnumToUnion<DialogType.Alert>;
-      content: Component;
+      content: Component | JSXElement;
     }
   | {
       type: EnumToUnion<DialogType.Alert>;
@@ -42,7 +43,7 @@ export type AlertDialog =
 export type ConfirmationDialog =
   | {
       type: EnumToUnion<DialogType.Confirmation>;
-      content: Component;
+      content: Component | JSXElement;
     }
   | {
       type: EnumToUnion<DialogType.Confirmation>;
@@ -61,7 +62,7 @@ export type ConfirmationDialog =
 export type PromptDialog =
   | {
       type: EnumToUnion<DialogType.Prompt>;
-      content: Component;
+      content: Component | JSXElement;
       placeholder?: string;
     }
   | {

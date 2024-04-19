@@ -1,3 +1,4 @@
+import type { JSXElement } from '../../jsx';
 import type { Component } from '../../ui';
 
 /**
@@ -19,6 +20,6 @@ export type OnHomePageHandler = () => Promise<OnHomePageResponse>;
  */
 export type OnHomePageResponse =
   | {
-      content: Component;
+      content: Component | JSXElement;
     }
   | { id: string };

@@ -1,3 +1,4 @@
+import type { JSXElement } from '../../jsx';
 import type { Component } from '../../ui';
 
 /**
@@ -8,7 +9,7 @@ import type { Component } from '../../ui';
  */
 export type UpdateInterfaceParams = {
   id: string;
-  ui: Component;
+  ui: Component | JSXElement;
 };
 
 /**

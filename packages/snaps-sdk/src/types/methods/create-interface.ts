@@ -1,3 +1,4 @@
+import type { JSXElement } from '../../jsx';
 import type { Component } from '../../ui';
 
 /**
@@ -6,7 +7,7 @@ import type { Component } from '../../ui';
  * @property ui - The components to display in the interface.
  */
 export type CreateInterfaceParams = {
-  ui: Component;
+  ui: Component | JSXElement;
 };
 
 /**
