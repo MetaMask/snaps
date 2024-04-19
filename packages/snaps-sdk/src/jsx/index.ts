@@ -1,3 +1,3 @@
 export * from './component';
 export * from './components';
-export * from './runtime';
+export * from './jsx-runtime';

@@ -1,3 +1,4 @@
+import type { StringElement } from '../component';
 import { createSnapComponent } from '../component';
 
 /**
@@ -8,7 +9,7 @@ import { createSnapComponent } from '../component';
  * `http` is not allowed.
  */
 export type LinkProps = {
-  children: string | string[];
+  children: StringElement;
   href: string;
 };
 

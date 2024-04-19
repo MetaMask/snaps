@@ -11,6 +11,19 @@ export type Key = string | number;
 export type JsonObject = Record<string, Json>;
 
 /**
+ * A generic JSX element.
+ *
+ * @property type - The type of the element.
+ * @property props - The props of the element.
+ * @property key - The key of the element.
+ */
+export type GenericSnapElement = {
+  type: string;
+  props: JsonObject;
+  key: Key | null;
+};
+
+/**
  * A JSX element.
  *
  * @property type - The type of the element.

@@ -8,19 +8,24 @@
   "sideEffects": false,
   "exports": {
     ".": {
+      "types": "./dist/types/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/types/index.d.ts"
-    },
-    "./jsx-runtime": {
-      "import": "./dist/jsx/runtime.mjs",
-      "require": "./dist/jsx/runtime.js",
-      "types": "./dist/types/jsx/runtime.d.ts"
+      "require": "./dist/index.js"
     },
     "./jsx": {
+      "types": "./dist/types/jsx/index.d.ts",
       "import": "./dist/jsx/index.mjs",
-      "require": "./dist/jsx/index.js",
-      "types": "./dist/types/jsx/index.d.ts"
+      "require": "./dist/jsx/index.js"
+    },
+    "./jsx-runtime": {
+      "types": "./dist/types/jsx/jsx-runtime.d.ts",
+      "import": "./dist/jsx/jsx-runtime.mjs",
+      "require": "./dist/jsx/jsx-runtime.js"
+    },
+    "./production/jsx-runtime": {
+      "types": "./dist/types/jsx/production/jsx-runtime.d.ts",
+      "import": "./dist/jsx/production/jsx-runtime.mjs",
+      "require": "./dist/jsx/production/jsx-runtime.js"
     },
     "./package.json": "./package.json"
   },

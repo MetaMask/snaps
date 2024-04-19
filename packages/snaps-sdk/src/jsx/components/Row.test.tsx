@@ -7,7 +7,7 @@ describe('Row', () => {
   it('renders a row with an address', () => {
     const result = (
       <Row label="Foo">
-        <Address address="0x" />
+        <Address address="0x1234" />
       </Row>
     );
 
@@ -20,7 +20,7 @@ describe('Row', () => {
           type: 'address',
           key: null,
           props: {
-            address: '0x',
+            address: '0x1234',
           },
         },
       },

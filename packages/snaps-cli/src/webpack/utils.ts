@@ -147,7 +147,7 @@ export async function getDefaultLoader({
              *
              * @see https://swc.rs/docs/configuration/compilation#jsctransformreact
              */
-            importSource: '@metamask/snaps-sdk',
+            importSource: '@metamask/snaps-sdk/production',
 
             /**
              * This tells SWC to use `Object.assign` and `Object.create` for

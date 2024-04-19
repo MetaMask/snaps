@@ -6,6 +6,9 @@ const config: SnapConfig = {
   server: {
     port: 8029,
   },
+  output: {
+    minimize: false,
+  },
   stats: {
     buffer: false,
   },

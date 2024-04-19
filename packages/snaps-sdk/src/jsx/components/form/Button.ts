@@ -11,11 +11,16 @@ import { createSnapComponent } from '../../component';
  * in the event handler.
  * @property type - The type of the button, i.e., `'button'` or `'submit'`.
  * Defaults to `'button'`.
+ * @property variant - The variant of the button, i.e., `'primary'` or
+ * `'destructive'`. Defaults to `'primary'`.
+ * @property disabled - Whether the button is disabled. Defaults to `false`.
  */
 export type ButtonProps = {
   children: StringElement;
   name?: string | undefined;
   type?: 'button' | 'submit' | undefined;
+  variant?: 'primary' | 'destructive' | undefined;
+  disabled?: boolean | undefined;
 };
 
 const TYPE = 'button';

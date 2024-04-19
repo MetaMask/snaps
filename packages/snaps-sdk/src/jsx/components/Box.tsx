@@ -1,4 +1,4 @@
-import type { SnapNode } from '../component';
+import type { GenericSnapElement, Nested } from '../component';
 import { createSnapComponent } from '../component';
 
 /**
@@ -7,7 +7,8 @@ import { createSnapComponent } from '../component';
  * @property children - The children of the box.
  */
 export type BoxProps = {
-  children: SnapNode;
+  // We can't use `JSXElement` because it causes a circular reference.
+  children: Nested<GenericSnapElement>;
 };
 
 const TYPE = 'box';

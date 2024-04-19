@@ -6,9 +6,11 @@
     "lib": ["DOM", "ES2020"],
     "module": "CommonJS",
     "moduleResolution": "node",
+    "noErrorTruncation": true,
     "paths": {
       "@metamask/*/test-utils": ["../*/src/test-utils"],
       "@metamask/*/node": ["../*/src/node"],
+      "@metamask/*/production/jsx-runtime": ["../*/src/jsx/production"],
       "@metamask/*/jsx-runtime": ["../*/src/jsx"],
       "@metamask/*/jsx": ["../*/src/jsx"],
       "@metamask/*": ["../*/src"]

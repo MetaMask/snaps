@@ -1,8 +1,8 @@
 import type { Nested } from '../component';
 import { createSnapComponent } from '../component';
-import type { FormattingElement } from './formatting';
+import type { StandardFormattingElement } from './formatting';
 
-export type TextChildren = Nested<string | FormattingElement>;
+export type TextChildren = Nested<string | StandardFormattingElement>;
 
 /**
  * The props of the {@link Text} component.
@@ -10,7 +10,7 @@ export type TextChildren = Nested<string | FormattingElement>;
  * @property children - The text to display.
  */
 export type TextProps = {
-  children?: TextChildren;
+  children: TextChildren;
 };
 
 const TYPE = 'text';
