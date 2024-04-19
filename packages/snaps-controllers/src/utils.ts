@@ -50,10 +50,13 @@ export function setDiff<
  * @param permissionsB - An object containing one or more partial permissions to be subtracted from A.
  * @returns The permissions set A without properties from B.
  */
-export function permissionsDiff(
-  permissionsA: Record<string, Pick<PermissionConstraint, 'caveats'>>,
-  permissionsB: Record<string, Pick<PermissionConstraint, 'caveats'>>,
-) {
+export function permissionsDiff<
+  PermissionsA extends Record<string, Pick<PermissionConstraint, 'caveats'>>,
+  PermissionsB extends Record<string, Pick<PermissionConstraint, 'caveats'>>,
+>(
+  permissionsA: PermissionsA,
+  permissionsB: PermissionsB,
+): Diff<PermissionsA, PermissionsB> {
   return Object.entries(permissionsA).reduce<
     Record<string, Pick<PermissionConstraint, 'caveats'>>
   >((acc, [key, value]) => {
@@ -66,7 +69,7 @@ export function permissionsDiff(
       acc[key] = value;
     }
     return acc;
-  }, {});
+  }, {}) as Diff<PermissionsA, PermissionsB>;
 }
 
 /**
