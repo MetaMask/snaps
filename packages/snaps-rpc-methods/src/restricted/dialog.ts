@@ -18,6 +18,7 @@ import type {
   InterfaceState,
   SnapId,
 } from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import { createUnion } from '@metamask/snaps-utils';
 import type { InferMatching } from '@metamask/snaps-utils';
 import { hasProperty, type NonEmptyArray } from '@metamask/utils';
@@ -47,11 +48,15 @@ type ShowDialog = (
   placeholder?: Placeholder,
 ) => Promise<null | boolean | string>;
 
-type CreateInterface = (snapId: string, content: Component) => Promise<string>;
+type CreateInterface = (
+  snapId: string,
+  content: Component | JSXElement,
+) => Promise<string>;
+
 type GetInterface = (
   snapId: string,
   id: string,
-) => { content: Component; snapId: SnapId; state: InterfaceState };
+) => { content: Component | JSXElement; snapId: SnapId; state: InterfaceState };
 
 export type DialogMethodHooks = {
   /**

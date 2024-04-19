@@ -29,7 +29,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               },
               "transform": {
                 "react": {
-                  "importSource": "@metamask/snaps-sdk",
+                  "importSource": "@metamask/snaps-sdk/production",
                   "runtime": "automatic",
                   "useBuiltins": true,
                 },
@@ -202,7 +202,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               },
               "transform": {
                 "react": {
-                  "importSource": "@metamask/snaps-sdk",
+                  "importSource": "@metamask/snaps-sdk/production",
                   "runtime": "automatic",
                   "useBuiltins": true,
                 },
@@ -375,7 +375,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               },
               "transform": {
                 "react": {
-                  "importSource": "@metamask/snaps-sdk",
+                  "importSource": "@metamask/snaps-sdk/production",
                   "runtime": "automatic",
                   "useBuiltins": true,
                 },
@@ -548,7 +548,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               },
               "transform": {
                 "react": {
-                  "importSource": "@metamask/snaps-sdk",
+                  "importSource": "@metamask/snaps-sdk/production",
                   "runtime": "automatic",
                   "useBuiltins": true,
                 },
@@ -712,7 +712,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               },
               "transform": {
                 "react": {
-                  "importSource": "@metamask/snaps-sdk",
+                  "importSource": "@metamask/snaps-sdk/production",
                   "runtime": "automatic",
                   "useBuiltins": true,
                 },
@@ -893,7 +893,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               },
               "transform": {
                 "react": {
-                  "importSource": "@metamask/snaps-sdk",
+                  "importSource": "@metamask/snaps-sdk/production",
                   "runtime": "automatic",
                   "useBuiltins": true,
                 },
@@ -1066,7 +1066,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               },
               "transform": {
                 "react": {
-                  "importSource": "@metamask/snaps-sdk",
+                  "importSource": "@metamask/snaps-sdk/production",
                   "runtime": "automatic",
                   "useBuiltins": true,
                 },
@@ -1239,7 +1239,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               },
               "transform": {
                 "react": {
-                  "importSource": "@metamask/snaps-sdk",
+                  "importSource": "@metamask/snaps-sdk/production",
                   "runtime": "automatic",
                   "useBuiltins": true,
                 },
@@ -1420,7 +1420,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               },
               "transform": {
                 "react": {
-                  "importSource": "@metamask/snaps-sdk",
+                  "importSource": "@metamask/snaps-sdk/production",
                   "runtime": "automatic",
                   "useBuiltins": true,
                 },
@@ -1601,7 +1601,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               },
               "transform": {
                 "react": {
-                  "importSource": "@metamask/snaps-sdk",
+                  "importSource": "@metamask/snaps-sdk/production",
                   "runtime": "automatic",
                   "useBuiltins": true,
                 },
@@ -1759,7 +1759,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               },
               "transform": {
                 "react": {
-                  "importSource": "@metamask/snaps-sdk",
+                  "importSource": "@metamask/snaps-sdk/production",
                   "runtime": "automatic",
                   "useBuiltins": true,
                 },
@@ -1941,7 +1941,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               },
               "transform": {
                 "react": {
-                  "importSource": "@metamask/snaps-sdk",
+                  "importSource": "@metamask/snaps-sdk/production",
                   "runtime": "automatic",
                   "useBuiltins": true,
                 },
@@ -2114,7 +2114,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               },
               "transform": {
                 "react": {
-                  "importSource": "@metamask/snaps-sdk",
+                  "importSource": "@metamask/snaps-sdk/production",
                   "runtime": "automatic",
                   "useBuiltins": true,
                 },
@@ -2287,7 +2287,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               },
               "transform": {
                 "react": {
-                  "importSource": "@metamask/snaps-sdk",
+                  "importSource": "@metamask/snaps-sdk/production",
                   "runtime": "automatic",
                   "useBuiltins": true,
                 },
@@ -2469,7 +2469,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
               },
               "transform": {
                 "react": {
-                  "importSource": "@metamask/snaps-sdk",
+                  "importSource": "@metamask/snaps-sdk/production",
                   "runtime": "automatic",
                   "useBuiltins": true,
                 },

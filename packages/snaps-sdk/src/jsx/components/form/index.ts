@@ -1,6 +1,5 @@
-import type { FieldElement } from '@metamask/snaps-sdk/jsx';
-
 import type { ButtonElement } from './Button';
+import type { FieldElement } from './Field';
 import type { FormElement } from './Form';
 import type { InputElement } from './Input';
 

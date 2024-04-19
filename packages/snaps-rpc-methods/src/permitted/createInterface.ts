@@ -8,6 +8,7 @@ import type {
   JsonRpcRequest,
 } from '@metamask/snaps-sdk';
 import { ComponentStruct } from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import { type InferMatching } from '@metamask/snaps-utils';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 import { StructError, create, object } from 'superstruct';
@@ -23,7 +24,7 @@ export type CreateInterfaceMethodHooks = {
    * @param ui - The UI components.
    * @returns The unique identifier of the interface.
    */
-  createInterface: (ui: Component) => Promise<string>;
+  createInterface: (ui: Component | JSXElement) => Promise<string>;
 };
 
 export const createInterfaceHandler: PermittedHandlerExport<
