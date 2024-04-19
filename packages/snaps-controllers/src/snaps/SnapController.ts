@@ -185,6 +185,11 @@ export interface SnapRuntimeData {
   installPromise: null | Promise<PersistedSnap>;
 
   /**
+   * A promise that resolves when the Snap has finished starting
+   */
+  startPromise: null | Promise<unknown>;
+
+  /**
    * A Unix timestamp for the last time the Snap received an RPC request
    */
   lastRequest: null | number;
@@ -1359,7 +1364,7 @@ export class SnapController extends BaseController<
       throw new Error(`Snap "${snapId}" is disabled.`);
     }
 
-    await this.#startSnap({
+    await this.#cachedStartSnap({
       snapId,
       sourceCode: snap.sourceCode,
     });
@@ -2225,7 +2230,7 @@ export class SnapController extends BaseController<
         type: SNAP_APPROVAL_RESULT,
       });
 
-      await this.#startSnap({
+      await this.#cachedStartSnap({
         snapId,
         sourceCode,
       });
@@ -2336,6 +2341,13 @@ export class SnapController extends BaseController<
       );
     }
 
+    const snap = this.getExpect(snapId);
+
+    assert(
+      snap.status !== SnapStatus.Installing,
+      'Cannot update a Snap that is still installing.',
+    );
+
     let pendingApproval = this.#createApproval({
       origin,
       snapId,
@@ -2349,8 +2361,6 @@ export class SnapController extends BaseController<
         origin,
         true,
       );
-
-      const snap = this.getExpect(snapId);
 
       const oldManifest = snap.manifest;
 
@@ -2449,7 +2459,7 @@ export class SnapController extends BaseController<
       );
 
       try {
-        await this.#startSnap({ snapId, sourceCode });
+        await this.#cachedStartSnap({ snapId, sourceCode });
       } catch {
         throw new Error(`Snap ${snapId} crashed with updated source code.`);
       }
@@ -2571,14 +2581,30 @@ export class SnapController extends BaseController<
     }
   }
 
+  async #cachedStartSnap(snapData: { snapId: SnapId; sourceCode: string }) {
+    const { snapId } = snapData;
+
+    const runtime = this.#getRuntimeExpect(snapId);
+
+    // If the Snap is not currently being started, we should start it and
+    // cache the promise.
+    if (!runtime.startPromise) {
+      const promise = this.#startSnap(snapData);
+      runtime.startPromise = promise;
+    }
+
+    return await runtime.startPromise;
+  }
+
   async #startSnap(snapData: { snapId: SnapId; sourceCode: string }) {
     const { snapId } = snapData;
     if (this.isRunning(snapId)) {
       throw new Error(`Snap "${snapId}" is already started.`);
     }
 
+    const runtime = this.#getRuntimeExpect(snapId);
+
     try {
-      const runtime = this.#getRuntimeExpect(snapId);
       const result = await withTimeout(
         this.messagingSystem.call('ExecutionService:executeSnap', {
           ...snapData,
@@ -2598,6 +2624,8 @@ export class SnapController extends BaseController<
     } catch (error) {
       await this.#terminateSnap(snapId);
       throw error;
+    } finally {
+      runtime.startPromise = null;
     }
   }
 
@@ -3373,6 +3401,7 @@ export class SnapController extends BaseController<
       lastRequest: null,
       rpcHandler: null,
       installPromise: null,
+      startPromise: null,
       encryptionKey: null,
       encryptionSalt: null,
       activeReferences: 0,
