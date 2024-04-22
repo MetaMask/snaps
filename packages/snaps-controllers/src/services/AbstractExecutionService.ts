@@ -196,13 +196,16 @@ export abstract class AbstractExecutionService<WorkerType>
   /**
    * Initiates a job for a snap.
    *
-   * Depending on the execution environment, this may run forever if the Snap fails to start up properly, therefore any call to this function should be wrapped in a timeout.
-   *
    * @param jobId - The ID of the job to initiate.
+   * @param timer - The timer to use for timeouts.
    * @returns Information regarding the created job.
+   * @throws If the execution service returns an error or execution times out.
    */
-  protected async initJob(jobId: string): Promise<Job<WorkerType>> {
-    const { streams, worker } = await this.initStreams(jobId);
+  protected async initJob(
+    jobId: string,
+    timer: Timer,
+  ): Promise<Job<WorkerType>> {
+    const { streams, worker } = await this.initStreams(jobId, timer);
     const rpcEngine = new JsonRpcEngine();
 
     const jsonRpcConnection = createStreamMiddleware();
@@ -234,15 +237,24 @@ export abstract class AbstractExecutionService<WorkerType>
   /**
    * Sets up the streams for an initiated job.
    *
-   * Depending on the execution environment, this may run forever if the Snap fails to start up properly, therefore any call to this function should be wrapped in a timeout.
-   *
    * @param jobId - The id of the job.
+   * @param timer - The timer to use for timeouts.
    * @returns The streams to communicate with the worker and the worker itself.
+   * @throws If the execution service returns an error or execution times out.
    */
   protected async initStreams(
     jobId: string,
+    timer: Timer,
   ): Promise<{ streams: JobStreams; worker: WorkerType }> {
-    const { worker, stream: envStream } = await this.initEnvStream(jobId);
+    const result = await withTimeout(this.initEnvStream(jobId), timer);
+
+    if (result === hasTimedOut) {
+      // For certain environments, such as the iframe we may have already created the worker and wish to terminate it.
+      this.terminateJob({ id: jobId });
+      throw new Error('The Snaps execution environment failed to start.');
+    }
+
+    const { worker, stream: envStream } = result;
     const mux = setupMultiplex(envStream, `Job: "${jobId}"`);
     const commandStream = mux.createStream(SNAP_STREAM_NAMES.COMMAND);
 
@@ -366,13 +378,7 @@ export abstract class AbstractExecutionService<WorkerType>
     const timer = new Timer(this.#initTimeout);
 
     // This may resolve even if the environment has failed to start up fully
-    const job = await withTimeout(this.initJob(jobId), timer);
-
-    if (job === hasTimedOut) {
-      // For certain environments, such as the iframe we may have already created the worker and wish to terminate it.
-      this.terminateJob({ id: jobId });
-      throw new Error('The Snaps execution environment failed to start.');
-    }
+    const job = await this.initJob(jobId, timer);
 
     this.#mapSnapAndJob(snapId, job.id);
 
