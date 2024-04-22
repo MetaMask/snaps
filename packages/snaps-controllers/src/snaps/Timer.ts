@@ -8,7 +8,6 @@ export class Timer {
     | {
         value: 'paused';
         remaining: number;
-        start: number;
         callback: () => void;
       }
     | {
@@ -124,10 +123,13 @@ export class Timer {
       clearTimeout(this.state.timeout as any);
     }
 
-    const { callback, start, remaining } = this.state;
+    const { callback, remaining } = this.state;
     this.state = {
       value: 'finished',
-      remaining: remaining - (Date.now() - start),
+      remaining:
+        this.state.value === 'running'
+          ? remaining - (Date.now() - this.state.start)
+          : remaining,
     };
 
     if (shouldCall) {

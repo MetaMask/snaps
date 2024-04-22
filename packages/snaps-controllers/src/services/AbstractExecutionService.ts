@@ -405,6 +405,11 @@ export abstract class AbstractExecutionService<WorkerType>
       }),
       remainingTime,
     );
+
+    if (result === hasTimedOut) {
+      throw new Error(`${snapId} failed to start.`);
+    }
+
     this.#createSnapHooks(snapId, job.id);
     return result as string;
   }
