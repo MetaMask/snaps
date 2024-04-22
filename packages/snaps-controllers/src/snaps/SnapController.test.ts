@@ -1642,9 +1642,14 @@ describe('SnapController', () => {
       },
     });
 
-    await snapController.removeSnap(snap.id);
+    const results = await Promise.allSettled([
+      snapController.removeSnap(snap.id),
+      promise,
+    ]);
 
-    await expect(promise).rejects.toThrow(
+    expect(results[0].status).toBe('fulfilled');
+    expect(results[1].status).toBe('rejected');
+    expect((results[1] as PromiseRejectedResult).reason.message).toBe(
       `The snap "${snap.id}" has been terminated during execution.`,
     );
 
