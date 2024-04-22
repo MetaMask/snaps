@@ -1466,14 +1466,19 @@ export class SnapController extends BaseController<
    */
   async #terminateSnap(snapId: SnapId) {
     await this.messagingSystem.call('ExecutionService:terminateSnap', snapId);
+
     // Hack to give up execution for a bit to let gracefully terminating Snaps return.
     await new Promise((resolve) => setTimeout(resolve, 1));
+
     const runtime = this.#getRuntimeExpect(snapId);
-    // Unresponsive Snaps may still be timed, time them out.
+    // Unresponsive requests may still be timed, time them out.
     runtime.pendingInboundRequests
       .filter((pendingRequest) => pendingRequest.timer.status !== 'finished')
       .forEach((pendingRequest) => pendingRequest.timer.finish());
+
+    // Hack to give up execution for a bit to let timed out requests return.
     await new Promise((resolve) => setTimeout(resolve, 1));
+
     this.messagingSystem.publish(
       'SnapController:snapTerminated',
       this.getTruncatedExpect(snapId),
