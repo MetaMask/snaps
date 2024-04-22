@@ -1,8 +1,16 @@
-import type { Component, NodeWithChildren } from '@metamask/snaps-sdk';
+import type {
+  Component,
+  NodeWithChildren,
+  SnapInterface,
+} from '@metamask/snaps-sdk';
 import { NodeType } from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
+import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import { assert, AssertionError, hasProperty } from '@metamask/utils';
 import type { Tokens } from 'marked';
 import { lexer, walkTokens } from 'marked';
+
+import { walkJsx } from './jsx';
 
 const ALLOWED_PROTOCOLS = ['https:', 'mailto:'];
 
@@ -27,7 +35,39 @@ function getMarkdownLinks(text: string) {
 }
 
 /**
- * Searches for markdown links in a string and checks them against the phishing list.
+ * Validate a link against the phishing list.
+ *
+ * @param link - The link to validate.
+ * @param isOnPhishingList - The function that checks the link against the
+ * phishing list.
+ */
+function validateLink(
+  link: string,
+  isOnPhishingList: (url: string) => boolean,
+) {
+  try {
+    const url = new URL(link);
+    assert(
+      ALLOWED_PROTOCOLS.includes(url.protocol),
+      `Protocol must be one of: ${ALLOWED_PROTOCOLS.join(', ')}.`,
+    );
+
+    const hostname =
+      url.protocol === 'mailto:' ? url.pathname.split('@')[1] : url.hostname;
+
+    assert(!isOnPhishingList(hostname), 'The specified URL is not allowed.');
+  } catch (error) {
+    throw new Error(
+      `Invalid URL: ${
+        error instanceof AssertionError ? error.message : 'Unable to parse URL.'
+      }`,
+    );
+  }
+}
+
+/**
+ * Search for Markdown links in a string and checks them against the phishing
+ * list.
  *
  * @param text - The text to verify.
  * @param isOnPhishingList - The function that checks the link against the
@@ -41,27 +81,29 @@ export function validateTextLinks(
   const links = getMarkdownLinks(text);
 
   for (const link of links) {
-    try {
-      const url = new URL(link);
-      assert(
-        ALLOWED_PROTOCOLS.includes(url.protocol),
-        `Protocol must be one of: ${ALLOWED_PROTOCOLS.join(', ')}.`,
-      );
-
-      const hostname =
-        url.protocol === 'mailto:' ? url.pathname.split('@')[1] : url.hostname;
-
-      assert(!isOnPhishingList(hostname), 'The specified URL is not allowed.');
-    } catch (error) {
-      throw new Error(
-        `Invalid URL: ${
-          error instanceof AssertionError
-            ? error.message
-            : 'Unable to parse URL.'
-        }`,
-      );
-    }
+    validateLink(link, isOnPhishingList);
   }
+}
+
+/**
+ * Walk a JSX tree and validate each {@link LinkElement} node against the
+ * phishing list.
+ *
+ * @param node - The JSX node to walk.
+ * @param isOnPhishingList - The function that checks the link against the
+ * phishing list.
+ */
+function validateJsxLinks(
+  node: JSXElement,
+  isOnPhishingList: (url: string) => boolean,
+) {
+  walkJsx(node, (childNode) => {
+    if (childNode.type !== 'link') {
+      return;
+    }
+
+    validateLink(childNode.props.href, isOnPhishingList);
+  });
 }
 
 /**
@@ -74,9 +116,14 @@ export function validateTextLinks(
  * @throws If the component contains a link that is not allowed.
  */
 export function validateComponentLinks(
-  component: Component,
+  component: SnapInterface,
   isOnPhishingList: (url: string) => boolean,
 ) {
+  if (isJSXElementUnsafe(component)) {
+    validateJsxLinks(component, isOnPhishingList);
+    return;
+  }
+
   const { type } = component;
   switch (type) {
     case NodeType.Panel:

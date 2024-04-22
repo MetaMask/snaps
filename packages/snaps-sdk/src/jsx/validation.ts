@@ -211,7 +211,9 @@ export const LinkStruct: Describe<LinkElement> = element('link', {
  * A struct for the {@link TextElement} type.
  */
 export const TextStruct: Describe<TextElement> = element('text', {
-  children: maybeArray(nullUnion([string(), BoldStruct, ItalicStruct])),
+  children: maybeArray(
+    nullUnion([string(), BoldStruct, ItalicStruct, LinkStruct]),
+  ),
 });
 
 /**
@@ -263,6 +265,21 @@ export const JSXElementStruct: Describe<JSXElement> = nullUnion([
  */
 export function isJSXElement(value: unknown): value is JSXElement {
   return is(value, JSXElementStruct);
+}
+
+/**
+ * Check if a value is a JSX element, without validating all of its contents.
+ * This is useful when you want to validate the structure of a value, but not
+ * all the children.
+ *
+ * This should only be used when you are sure that the value is safe to use,
+ * i.e., after using {@link isJSXElement}.
+ *
+ * @param value - The value to check.
+ * @returns True if the value is a JSX element, false otherwise.
+ */
+export function isJSXElementUnsafe(value: unknown): value is JSXElement {
+  return is(value, ElementStruct);
 }
 
 /**

@@ -7,6 +7,7 @@ import {
   form,
   button,
 } from '@metamask/snaps-sdk';
+import { Box, Link, Text } from '@metamask/snaps-sdk/jsx';
 
 import {
   validateTextLinks,
@@ -103,7 +104,7 @@ describe('validateTextLinks', () => {
 });
 
 describe('validateComponentLinks', () => {
-  it('does not throw for a safe text component', async () => {
+  it('does not throw for a safe markdown text component', async () => {
     const isOnPhishingList = () => false;
 
     expect(() =>
@@ -126,6 +127,38 @@ describe('validateComponentLinks', () => {
           row('foo', text('[bar](https://foo.bar)')),
           row('baz', address('0x4bbeeb066ed09b7aed07bf39eee0460dfa261520')),
         ]),
+        isOnPhishingList,
+      ),
+    ).not.toThrow();
+  });
+
+  it.each([
+    <Text>
+      <Link href="https://foo.bar">Foo</Link>
+    </Text>,
+    <Box>
+      <Text>Foo</Text>
+      <Text>
+        <Link href="https://foo.bar">Bar</Link>
+      </Text>
+    </Box>,
+  ])('does not throw for a safe JSX text component', async (element) => {
+    const isOnPhishingList = () => false;
+
+    expect(() =>
+      validateComponentLinks(element, isOnPhishingList),
+    ).not.toThrow();
+  });
+
+  it('does not throw for a JSX component with a link outside of a Link component', async () => {
+    const isOnPhishingList = () => true;
+
+    expect(() =>
+      validateComponentLinks(
+        <Box>
+          <Text>Foo</Text>
+          <Text>https://foo.bar</Text>
+        </Box>,
         isOnPhishingList,
       ),
     ).not.toThrow();
@@ -157,6 +190,24 @@ describe('validateComponentLinks', () => {
         isOnPhishingList,
       ),
     ).toThrow('Invalid URL: The specified URL is not allowed.');
+  });
+
+  it.each([
+    <Text>
+      <Link href="https://foo.bar">Foo</Link>
+    </Text>,
+    <Box>
+      <Text>Foo</Text>
+      <Text>
+        <Link href="https://foo.bar">Bar</Link>
+      </Text>
+    </Box>,
+  ])('throws for an unsafe JSX text component', async (element) => {
+    const isOnPhishingList = () => true;
+
+    expect(() => validateComponentLinks(element, isOnPhishingList)).toThrow(
+      'Invalid URL: The specified URL is not allowed.',
+    );
   });
 });
 

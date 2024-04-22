@@ -1,8 +1,11 @@
 import type { MaybeArray } from '../component';
 import { createSnapComponent } from '../component';
 import type { StandardFormattingElement } from './formatting';
+import type { LinkElement } from './Link';
 
-export type TextChildren = MaybeArray<string | StandardFormattingElement>;
+export type TextChildren = MaybeArray<
+  string | StandardFormattingElement | LinkElement
+>;
 
 /**
  * The props of the {@link Text} component.

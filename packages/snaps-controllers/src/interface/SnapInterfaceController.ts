@@ -4,7 +4,12 @@ import type {
   MaybeUpdateState,
   TestOrigin,
 } from '@metamask/phishing-controller';
-import type { Component, InterfaceState, SnapId } from '@metamask/snaps-sdk';
+import type {
+  InterfaceState,
+  SnapId,
+  SnapInterface,
+} from '@metamask/snaps-sdk';
+import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import {
   getJsonSizeUnsafe,
   getTotalTextLength,
@@ -66,7 +71,7 @@ export type SnapInterfaceControllerMessenger = RestrictedControllerMessenger<
 
 export type StoredInterface = {
   snapId: SnapId;
-  content: Component;
+  content: SnapInterface;
   state: InterfaceState;
 };
 
@@ -138,7 +143,7 @@ export class SnapInterfaceController extends BaseController<
    * @param content - The interface content.
    * @returns The newly interface id.
    */
-  async createInterface(snapId: SnapId, content: Component) {
+  async createInterface(snapId: SnapId, content: SnapInterface) {
     await this.#validateContent(content);
 
     const id = nanoid();
@@ -146,6 +151,8 @@ export class SnapInterfaceController extends BaseController<
     const componentState = constructState({}, content);
 
     this.update((draftState) => {
+      // @ts-expect-error - TS2589: Type instantiation is excessively deep and
+      // possibly infinite.
       draftState.interfaces[id] = {
         snapId,
         content,
@@ -176,7 +183,7 @@ export class SnapInterfaceController extends BaseController<
    * @param id - The interface id.
    * @param content - The new content.
    */
-  async updateInterface(snapId: SnapId, id: string, content: Component) {
+  async updateInterface(snapId: SnapId, id: string, content: SnapInterface) {
     this.#validateArgs(snapId, id);
     await this.#validateContent(content);
 
@@ -256,7 +263,7 @@ export class SnapInterfaceController extends BaseController<
    *
    * @param content - The components to verify.
    */
-  async #validateContent(content: Component) {
+  async #validateContent(content: SnapInterface) {
     // We assume the validity of this JSON to be validated by the caller.
     // E.g. in the RPC method implementation.
     const size = getJsonSizeUnsafe(content);
@@ -266,17 +273,17 @@ export class SnapInterfaceController extends BaseController<
       `A Snap UI may not be larger than ${MAX_UI_CONTENT_SIZE / 1000000} MB.`,
     );
 
-    const textSize = getTotalTextLength(content);
-
-    assert(
-      textSize <= MAX_TEXT_LENGTH,
-      `The text in a Snap UI may not be larger than ${
-        MAX_TEXT_LENGTH / 1000
-      } kB.`,
-    );
+    if (!isJSXElementUnsafe(content)) {
+      const textSize = getTotalTextLength(content);
+      assert(
+        textSize <= MAX_TEXT_LENGTH,
+        `The text in a Snap UI may not be larger than ${
+          MAX_TEXT_LENGTH / 1000
+        } kB.`,
+      );
+    }
 
     await this.#triggerPhishingListUpdate();
-
     validateComponentLinks(content, this.#checkPhishingList.bind(this));
   }
 }

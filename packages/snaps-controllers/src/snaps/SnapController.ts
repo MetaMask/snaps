@@ -41,7 +41,7 @@ import type {
   RequestSnapsParams,
   RequestSnapsResult,
   SnapId,
-  Component,
+  SnapInterface,
 } from '@metamask/snaps-sdk';
 import { AuxiliaryFileEncoding, getErrorMessage } from '@metamask/snaps-sdk';
 import type {
@@ -3143,7 +3143,10 @@ export class SnapController extends BaseController<
    * @param content - The initial interface content.
    * @returns An identifier that can be used to identify the interface.
    */
-  async #createInterface(snapId: SnapId, content: Component): Promise<string> {
+  async #createInterface(
+    snapId: SnapId,
+    content: SnapInterface,
+  ): Promise<string> {
     return this.messagingSystem.call(
       'SnapInterfaceController:createInterface',
       snapId,
@@ -3186,7 +3189,10 @@ export class SnapController extends BaseController<
         if (castResult && hasProperty(castResult, 'content')) {
           const { content, ...rest } = castResult;
 
-          const id = await this.#createInterface(snapId, content as Component);
+          const id = await this.#createInterface(
+            snapId,
+            content as SnapInterface,
+          );
 
           return { ...rest, id };
         }

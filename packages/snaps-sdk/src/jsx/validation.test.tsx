@@ -33,6 +33,7 @@ import {
   ImageStruct,
   InputStruct,
   isJSXElement,
+  isJSXElementUnsafe,
   ItalicStruct,
   KeyStruct,
   LinkStruct,
@@ -707,6 +708,63 @@ describe('isJSXElement', () => {
     },
   ])('returns false for "%p"', (value) => {
     expect(isJSXElement(value)).toBe(false);
+  });
+});
+
+describe('isJSXElementUnsafe', () => {
+  it.each([
+    <Text>foo</Text>,
+    <Box>
+      <Text>foo</Text>
+    </Box>,
+    <Row label="label">
+      <Image src="src" alt="alt" />
+    </Row>,
+  ])('returns true for a JSX element', (value) => {
+    expect(isJSXElement(value)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    {
+      type: 'text',
+      props: {
+        children: 'foo',
+      },
+    },
+    {
+      type: 'box',
+      props: {
+        children: {
+          type: 'text',
+          props: {
+            children: 'foo',
+          },
+        },
+      },
+    },
+    {
+      type: 'row',
+      key: null,
+    },
+  ])('returns false for "%p"', (value) => {
+    expect(isJSXElement(value)).toBe(false);
+  });
+
+  it('does not validate the props of a JSX element', () => {
+    expect(
+      isJSXElementUnsafe(
+        // @ts-expect-error - Invalid props.
+        <Text foo="bar">
+          <Text>Invalid</Text>
+        </Text>,
+      ),
+    ).toBe(true);
   });
 });
 

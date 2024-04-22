@@ -7,9 +7,9 @@ import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import {
   DialogType,
-  ComponentStruct,
   enumValue,
   union,
+  SnapInterfaceStruct,
 } from '@metamask/snaps-sdk';
 import type {
   DialogParams,
@@ -17,8 +17,8 @@ import type {
   Component,
   InterfaceState,
   SnapId,
+  SnapInterface,
 } from '@metamask/snaps-sdk';
-import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import { createUnion } from '@metamask/snaps-utils';
 import type { InferMatching } from '@metamask/snaps-utils';
 import { hasProperty, type NonEmptyArray } from '@metamask/utils';
@@ -50,13 +50,13 @@ type ShowDialog = (
 
 type CreateInterface = (
   snapId: string,
-  content: Component | JSXElement,
+  content: SnapInterface,
 ) => Promise<string>;
 
 type GetInterface = (
   snapId: string,
   id: string,
-) => { content: Component | JSXElement; snapId: SnapId; state: InterfaceState };
+) => { content: SnapInterface; snapId: SnapId; state: InterfaceState };
 
 export type DialogMethodHooks = {
   /**
@@ -142,7 +142,7 @@ const BaseParamsStruct = type({
 
 const AlertParametersWithContentStruct = object({
   type: enumValue(DialogType.Alert),
-  content: ComponentStruct,
+  content: SnapInterfaceStruct,
 });
 const AlertParametersWithIdStruct = object({
   type: enumValue(DialogType.Alert),
@@ -156,7 +156,7 @@ const AlertParametersStruct = union([
 
 const ConfirmationParametersWithContentStruct = object({
   type: enumValue(DialogType.Confirmation),
-  content: ComponentStruct,
+  content: SnapInterfaceStruct,
 });
 
 const ConfirmationParametersWithIdStruct = object({
@@ -171,7 +171,7 @@ const ConfirmationParametersStruct = union([
 
 const PromptParametersWithContentStruct = object({
   type: enumValue(DialogType.Prompt),
-  content: ComponentStruct,
+  content: SnapInterfaceStruct,
   placeholder: PlaceholderStruct,
 });
 

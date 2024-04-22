@@ -94,6 +94,9 @@ module.exports = {
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   moduleNameMapper: {
+    '^@metamask/(.+)/production/jsx-runtime': [
+      '<rootDir>/../$1/src/jsx/production',
+    ],
     '^@metamask/(.+)/test-utils$': ['<rootDir>/../$1/src/test-utils'],
     '^@metamask/(.+)/node$': ['<rootDir>/../$1/src/node'],
     '^@metamask/(.+)/jsx': ['<rootDir>/../$1/src/jsx'],
@@ -207,7 +210,7 @@ module.exports = {
           transform: {
             react: {
               runtime: 'automatic',
-              importSource: '@metamask/snaps-sdk',
+              importSource: '@metamask/snaps-sdk/production',
               useBuiltins: true,
             },
           },
