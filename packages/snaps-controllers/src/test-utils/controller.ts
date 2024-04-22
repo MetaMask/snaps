@@ -173,6 +173,19 @@ export const MOCK_DAPPS_RPC_ORIGINS_PERMISSION: PermissionConstraint = {
   parentCapability: SnapEndowments.Rpc,
 };
 
+export const MOCK_ALLOWED_RPC_ORIGINS_PERMISSION: PermissionConstraint = {
+  caveats: [
+    {
+      type: SnapCaveatType.RpcOrigin,
+      value: { allowedOrigins: ['https://metamask.io'] },
+    },
+  ],
+  date: 1664187844588,
+  id: 'izn0WGUO8cvq_jqvLQuQP',
+  invoker: MOCK_SNAP_ID,
+  parentCapability: SnapEndowments.Rpc,
+};
+
 export const MOCK_SNAP_DIALOG_PERMISSION: PermissionConstraint = {
   caveats: null,
   date: 1664187844588,
