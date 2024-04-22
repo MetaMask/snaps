@@ -1567,6 +1567,74 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
+  it('gracefully throws for multiple failing requests', async () => {
+    const sourceCode = `
+    module.exports.onRpcRequest = async () => snap.request({ method: 'snap_dialog', params: null });
+    `;
+
+    const options = getSnapControllerWithEESOptions({
+      environmentEndowmentPermissions: [SnapEndowments.EthereumProvider],
+      idleTimeCheckInterval: 30000,
+      maxIdleTime: 160000,
+      state: {
+        snaps: getPersistedSnapsState(
+          getPersistedSnapObject({
+            sourceCode,
+            manifest: getSnapManifest({
+              shasum: await getSnapChecksum(getMockSnapFiles({ sourceCode })),
+            }),
+          }),
+        ),
+      },
+    });
+
+    const { rootMessenger } = options;
+    const [snapController, service] = getSnapControllerWithEES(options);
+    const snap = snapController.getExpect(MOCK_SNAP_ID);
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:hasPermission',
+      () => true,
+    );
+
+    const results = (await Promise.allSettled([
+      snapController.handleRequest({
+        snapId: snap.id,
+        origin: 'foo.com',
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          jsonrpc: '2.0',
+          method: 'test',
+          params: {},
+          id: 1,
+        },
+      }),
+      snapController.handleRequest({
+        snapId: snap.id,
+        origin: 'foo.com',
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          jsonrpc: '2.0',
+          method: 'test',
+          params: {},
+          id: 1,
+        },
+      }),
+    ])) as PromiseRejectedResult[];
+
+    expect(results[0].status).toBe('rejected');
+    expect(results[0].reason.message).toBe(
+      "'args.params' must be an object or array if provided.",
+    );
+    expect(results[1].status).toBe('rejected');
+    expect(results[1].reason.message).toBe(
+      "'args.params' must be an object or array if provided.",
+    );
+
+    snapController.destroy();
+    await service.terminateAllSnaps();
+  });
+
   it('does not kill snaps with open sessions', async () => {
     const sourceCode = `
       module.exports.onRpcRequest = () => 'foo bar';

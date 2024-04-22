@@ -233,6 +233,11 @@ export interface SnapRuntimeData {
    * Cached encryption salt used for state encryption.
    */
   encryptionSalt: string | null;
+
+  /**
+   * A boolean flag to determine whether the Snap is currently being stopped.
+   */
+  stopping: boolean;
 }
 
 export type SnapError = {
@@ -1438,16 +1443,26 @@ export class SnapController extends BaseController<
       throw new Error(`The snap "${snapId}" is not running.`);
     }
 
-    // Reset request tracking
-    runtime.lastRequest = null;
-    runtime.pendingInboundRequests = [];
-    runtime.pendingOutboundRequests = 0;
+    // No-op if the Snap is already stopping.
+    if (runtime.stopping) {
+      return;
+    }
+
+    // Flag that the Snap is actively stopping, this prevents other calls to stopSnap
+    // while we are handling termination of the Snap
+    runtime.stopping = true;
+
     try {
       if (this.isRunning(snapId)) {
         this.#closeAllConnections?.(snapId);
         await this.#terminateSnap(snapId);
       }
     } finally {
+      // Reset request tracking
+      runtime.lastRequest = null;
+      runtime.pendingInboundRequests = [];
+      runtime.pendingOutboundRequests = 0;
+      runtime.stopping = false;
       if (this.isRunning(snapId)) {
         this.#transition(snapId, statusEvent);
       }
@@ -3385,6 +3400,7 @@ export class SnapController extends BaseController<
       pendingInboundRequests: [],
       pendingOutboundRequests: 0,
       interpreter,
+      stopping: false,
     });
   }
 
