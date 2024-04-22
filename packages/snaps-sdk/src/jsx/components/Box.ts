@@ -1,4 +1,4 @@
-import type { GenericSnapElement, Nested } from '../component';
+import type { GenericSnapElement, MaybeArray } from '../component';
 import { createSnapComponent } from '../component';
 
 /**
@@ -8,7 +8,7 @@ import { createSnapComponent } from '../component';
  */
 export type BoxProps = {
   // We can't use `JSXElement` because it causes a circular reference.
-  children: Nested<GenericSnapElement>;
+  children: MaybeArray<GenericSnapElement>;
 };
 
 const TYPE = 'box';

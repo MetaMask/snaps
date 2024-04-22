@@ -1,3 +1,4 @@
+import type { MaybeArray } from '../../component';
 import { createSnapComponent } from '../../component';
 import type { FieldElement } from './Field';
 
@@ -11,7 +12,7 @@ import type { FieldElement } from './Field';
  * the event handler.
  */
 type FormProps = {
-  children: FieldElement | FieldElement[];
+  children: MaybeArray<FieldElement>;
   name: string;
 };
 

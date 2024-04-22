@@ -1,8 +1,8 @@
-import type { Nested } from '../component';
+import type { MaybeArray } from '../component';
 import { createSnapComponent } from '../component';
 import type { StandardFormattingElement } from './formatting';
 
-export type TextChildren = Nested<string | StandardFormattingElement>;
+export type TextChildren = MaybeArray<string | StandardFormattingElement>;
 
 /**
  * The props of the {@link Text} component.

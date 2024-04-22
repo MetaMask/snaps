@@ -40,26 +40,25 @@ export type SnapElement<
 };
 
 /**
- * A nested type, which can be a type or an array of nested types.
+ * A type that can be a single value or an array of values.
  *
- * @template Type - The type that can be nested.
+ * @template Type - The type that can be an array.
  * @example
- * type NestedString = Nested<string>;
- * const nestedString: NestedString = 'hello';
- * const nestedStringArray: NestedString = ['hello', 'world'];
- * const nestedStringNestedArray: NestedString = ['hello', ['world']];
+ * type MaybeArrayString = MaybeArray<string>;
+ * const maybeArrayString: MaybeArrayString = 'hello';
+ * const maybeArrayStringArray: MaybeArrayString = ['hello', 'world'];
  */
-export type Nested<Type> = Type | Nested<Type>[];
+export type MaybeArray<Type> = Type | Type[];
 
 /**
  * A JSX node, which can be an element, a string, null, or an array of nodes.
  */
-export type SnapNode = Nested<SnapElement | string | null>;
+export type SnapNode = MaybeArray<GenericSnapElement | string | null>;
 
 /**
- * A JSX string element, which can be a string or a (nested) array of strings.
+ * A JSX string element, which can be a string or an array of strings.
  */
-export type StringElement = Nested<string>;
+export type StringElement = MaybeArray<string>;
 
 /**
  * A JSX component.

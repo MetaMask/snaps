@@ -22,7 +22,7 @@ import type { EmptyObject } from '../types';
 import type {
   GenericSnapElement,
   Key,
-  Nested,
+  MaybeArray,
   StringElement,
 } from './component';
 import type {
@@ -53,10 +53,9 @@ export const KeyStruct: Describe<Key> = nullUnion([string(), number()]);
 /**
  * A struct for the {@link StringElement} type.
  */
-export const StringElementStruct: Describe<StringElement> = nullUnion([
+export const StringElementStruct: Describe<StringElement> = maybeArray(
   string(),
-  lazy(() => array(StringElementStruct)),
-]);
+);
 
 /**
  * A struct for the {@link GenericSnapElement} type.
@@ -68,15 +67,15 @@ export const ElementStruct: Describe<GenericSnapElement> = object({
 });
 
 /**
- * A helper function for creating a struct for a nestable type.
+ * A helper function for creating a struct for a {@link MaybeArray} type.
  *
- * @param struct - The struct for the nested type.
- * @returns The struct for the nested type.
+ * @param struct - The struct for the maybe array type.
+ * @returns The struct for the maybe array type.
  */
-function nested<Type, Schema>(
+function maybeArray<Type, Schema>(
   struct: Struct<Type, Schema>,
-): Struct<Nested<Type>, any> {
-  return nullUnion([struct, array(lazy(() => nested(struct)))]);
+): Struct<MaybeArray<Type>, any> {
+  return nullUnion([struct, array(struct)]);
 }
 
 /**
@@ -166,11 +165,10 @@ export const AddressStruct: Describe<AddressElement> = element('address', {
  * A struct for the {@link BoxElement} type.
  */
 export const BoxStruct: Describe<BoxElement> = element('box', {
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  children: lazy(() => nested(JSXElementStruct)) as unknown as Struct<
-    Nested<GenericSnapElement>,
-    null
-  >,
+  children: maybeArray(
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    lazy(() => JSXElementStruct),
+  ) as unknown as Struct<MaybeArray<GenericSnapElement>, null>,
 });
 
 /**
@@ -213,7 +211,7 @@ export const LinkStruct: Describe<LinkElement> = element('link', {
  * A struct for the {@link TextElement} type.
  */
 export const TextStruct: Describe<TextElement> = element('text', {
-  children: nested(nullUnion([StringElementStruct, BoldStruct, ItalicStruct])),
+  children: maybeArray(nullUnion([string(), BoldStruct, ItalicStruct])),
 });
 
 /**
