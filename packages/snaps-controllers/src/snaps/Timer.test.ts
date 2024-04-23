@@ -19,6 +19,7 @@ describe('Timer', () => {
     expect(callback).not.toHaveBeenCalled();
     jest.advanceTimersByTime(500);
     expect(callback).toHaveBeenCalled();
+    expect(timer.remaining).toBe(0);
   });
 
   it('calls the callback', () => {
@@ -40,6 +41,18 @@ describe('Timer', () => {
     timer.cancel();
     jest.advanceTimersByTime(1000);
     expect(callback).not.toHaveBeenCalled();
+    expect(timer.remaining).toBe(1000);
+  });
+
+  it('can finish', () => {
+    const timer = new Timer(1000);
+    const callback = jest.fn();
+    timer.start(callback);
+    timer.finish();
+    expect(callback).toHaveBeenCalled();
+    expect(timer.status).toBe('finished');
+    jest.advanceTimersByTime(1000);
+    expect(callback).toHaveBeenCalledTimes(1);
   });
 
   it('works with +Infinity', () => {
@@ -144,6 +157,29 @@ describe('Timer', () => {
 
     jest.advanceTimersByTime(1000);
     expect(timer.status).toBe('finished');
+
+    expect(callback).toHaveBeenCalled();
+  });
+
+  it('updates remaining', () => {
+    const timer = new Timer(1000);
+    const callback = jest.fn();
+
+    expect(timer.remaining).toBe(1000);
+
+    timer.start(callback);
+
+    jest.advanceTimersByTime(200);
+
+    timer.pause();
+    expect(timer.remaining).toBe(800);
+
+    timer.resume();
+    expect(timer.status).toBe('running');
+
+    jest.advanceTimersByTime(800);
+    expect(timer.status).toBe('finished');
+    expect(timer.remaining).toBe(0);
 
     expect(callback).toHaveBeenCalled();
   });

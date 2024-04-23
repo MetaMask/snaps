@@ -2,7 +2,10 @@ import type { BasePostMessageStream } from '@metamask/post-message-stream';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { createWindow } from '@metamask/snaps-utils';
 
-import type { Job, ExecutionServiceArgs } from '../AbstractExecutionService';
+import type {
+  ExecutionServiceArgs,
+  TerminateJobArgs,
+} from '../AbstractExecutionService';
 import { AbstractExecutionService } from '../AbstractExecutionService';
 
 type IframeExecutionEnvironmentServiceArgs = {
@@ -24,7 +27,7 @@ export class IframeExecutionService extends AbstractExecutionService<Window> {
     this.iframeUrl = iframeUrl;
   }
 
-  protected terminateJob(jobWrapper: Job<Window>): void {
+  protected terminateJob(jobWrapper: TerminateJobArgs<Window>): void {
     document.getElementById(jobWrapper.id)?.remove();
   }
 

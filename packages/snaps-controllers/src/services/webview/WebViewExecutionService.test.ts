@@ -119,6 +119,7 @@ describe('WebViewExecutionService', () => {
       await service.executeSnap({
         snapId: MOCK_SNAP_ID,
         sourceCode: DEFAULT_SNAP_BUNDLE,
+        endowments: [],
       }),
     ).toBe('OK');
   });

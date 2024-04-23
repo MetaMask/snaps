@@ -134,6 +134,7 @@ describe('OffscreenExecutionService', () => {
       await service.executeSnap({
         snapId: MOCK_SNAP_ID,
         sourceCode: DEFAULT_SNAP_BUNDLE,
+        endowments: [],
       }),
     ).toBe('OK');
 
@@ -141,6 +142,7 @@ describe('OffscreenExecutionService', () => {
       await service.executeSnap({
         snapId: MOCK_LOCAL_SNAP_ID,
         sourceCode: DEFAULT_SNAP_BUNDLE,
+        endowments: [],
       }),
     ).toBe('OK');
 
@@ -164,6 +166,7 @@ describe('OffscreenExecutionService', () => {
       await service.executeSnap({
         snapId: MOCK_SNAP_ID,
         sourceCode: DEFAULT_SNAP_BUNDLE,
+        endowments: [],
       }),
     ).toBe('OK');
 

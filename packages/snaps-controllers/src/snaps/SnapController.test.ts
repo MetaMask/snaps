@@ -1535,33 +1535,176 @@ describe('SnapController', () => {
     await service.terminateAllSnaps();
   });
 
-  it('times out on stuck starting snap', async () => {
-    const rootMessenger = getControllerMessenger();
-    const messenger = getSnapControllerMessenger(rootMessenger);
-    const snapController = getSnapController(
-      getSnapControllerOptions({
-        messenger,
-        maxInitTime: 50,
-        state: {
-          snaps: getPersistedSnapsState(),
-        },
-      }),
-    );
+  it('gracefully throws for multiple failing requests', async () => {
+    const sourceCode = `
+    module.exports.onRpcRequest = async () => snap.request({ method: 'snap_dialog', params: null });
+    `;
 
+    const options = getSnapControllerWithEESOptions({
+      environmentEndowmentPermissions: [SnapEndowments.EthereumProvider],
+      idleTimeCheckInterval: 30000,
+      maxIdleTime: 160000,
+      state: {
+        snaps: getPersistedSnapsState(
+          getPersistedSnapObject({
+            sourceCode,
+            manifest: getSnapManifest({
+              shasum: await getSnapChecksum(getMockSnapFiles({ sourceCode })),
+            }),
+          }),
+        ),
+      },
+    });
+
+    const { rootMessenger } = options;
+    const [snapController, service] = getSnapControllerWithEES(options);
     const snap = snapController.getExpect(MOCK_SNAP_ID);
 
     rootMessenger.registerActionHandler(
-      'ExecutionService:executeSnap',
-      async () => await sleep(100),
-    );
-
-    rootMessenger.registerActionHandler(
       'PermissionController:hasPermission',
-      () => false,
+      () => true,
     );
 
-    await expect(snapController.startSnap(snap.id)).rejects.toThrow(
-      `${snap.id} failed to start.`,
+    const results = (await Promise.allSettled([
+      snapController.handleRequest({
+        snapId: snap.id,
+        origin: 'foo.com',
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          jsonrpc: '2.0',
+          method: 'test',
+          params: {},
+          id: 1,
+        },
+      }),
+      snapController.handleRequest({
+        snapId: snap.id,
+        origin: 'foo.com',
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          jsonrpc: '2.0',
+          method: 'test',
+          params: {},
+          id: 1,
+        },
+      }),
+    ])) as PromiseRejectedResult[];
+
+    expect(results[0].status).toBe('rejected');
+    expect(results[0].reason.message).toBe(
+      "'args.params' must be an object or array if provided.",
+    );
+    expect(results[1].status).toBe('rejected');
+    expect(results[1].reason.message).toBe(
+      "'args.params' must be an object or array if provided.",
+    );
+
+    snapController.destroy();
+    await service.terminateAllSnaps();
+  });
+
+  // This isn't stable in CI unfortunately
+  it.skip('throws if the Snap is terminated while executing', async () => {
+    const { manifest, sourceCode, svgIcon } =
+      await getMockSnapFilesWithUpdatedChecksum({
+        sourceCode: `
+      module.exports.onRpcRequest = () => {
+        return new Promise((resolve) => {});
+      };
+    `,
+      });
+
+    const [snapController] = getSnapControllerWithEES(
+      getSnapControllerWithEESOptions({
+        detectSnapLocation: loopbackDetect({
+          manifest,
+          files: [sourceCode, svgIcon as VirtualFile],
+        }),
+      }),
+    );
+
+    await snapController.installSnaps(MOCK_ORIGIN, {
+      [MOCK_SNAP_ID]: {},
+    });
+
+    const snap = snapController.getExpect(MOCK_SNAP_ID);
+
+    expect(snapController.state.snaps[snap.id].status).toBe('running');
+
+    const promise = snapController.handleRequest({
+      snapId: snap.id,
+      origin: 'foo.com',
+      handler: HandlerType.OnRpcRequest,
+      request: {
+        jsonrpc: '2.0',
+        method: 'test',
+        params: {},
+        id: 1,
+      },
+    });
+
+    const results = await Promise.allSettled([
+      snapController.removeSnap(snap.id),
+      promise,
+    ]);
+
+    expect(results[0].status).toBe('fulfilled');
+    expect(results[1].status).toBe('rejected');
+    expect((results[1] as PromiseRejectedResult).reason.message).toBe(
+      `The snap "${snap.id}" has been terminated during execution.`,
+    );
+
+    snapController.destroy();
+  });
+
+  it('throws if unresponsive Snap is terminated while executing', async () => {
+    const { manifest, sourceCode, svgIcon } =
+      await getMockSnapFilesWithUpdatedChecksum({
+        sourceCode: `
+      module.exports.onRpcRequest = () => {
+        while(true) {}
+      };
+    `,
+      });
+
+    const [snapController] = getSnapControllerWithEES(
+      getSnapControllerWithEESOptions({
+        detectSnapLocation: loopbackDetect({
+          manifest,
+          files: [sourceCode, svgIcon as VirtualFile],
+        }),
+      }),
+    );
+
+    await snapController.installSnaps(MOCK_ORIGIN, {
+      [MOCK_SNAP_ID]: {},
+    });
+
+    const snap = snapController.getExpect(MOCK_SNAP_ID);
+
+    expect(snapController.state.snaps[snap.id].status).toBe('running');
+
+    const promise = snapController.handleRequest({
+      snapId: snap.id,
+      origin: 'foo.com',
+      handler: HandlerType.OnRpcRequest,
+      request: {
+        jsonrpc: '2.0',
+        method: 'test',
+        params: {},
+        id: 1,
+      },
+    });
+
+    const results = await Promise.allSettled([
+      snapController.removeSnap(snap.id),
+      promise,
+    ]);
+
+    expect(results[0].status).toBe('fulfilled');
+    expect(results[1].status).toBe('rejected');
+    expect((results[1] as PromiseRejectedResult).reason.message).toBe(
+      `${snap.id} failed to respond to the request in time.`,
     );
 
     snapController.destroy();

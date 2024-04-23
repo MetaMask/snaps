@@ -233,6 +233,11 @@ export interface SnapRuntimeData {
    * Cached encryption salt used for state encryption.
    */
   encryptionSalt: string | null;
+
+  /**
+   * A boolean flag to determine whether the Snap is currently being stopped.
+   */
+  stopping: boolean;
 }
 
 export type SnapError = {
@@ -623,12 +628,6 @@ type SnapControllerArgs = {
   maxRequestTime?: number;
 
   /**
-   * The maximum amount of time a snap may take to initialize, including
-   * the time it takes for the execution environment to start.
-   */
-  maxInitTime?: number;
-
-  /**
    * The npm registry URL that will be used to fetch published snaps.
    */
   npmRegistryUrl?: string;
@@ -741,8 +740,6 @@ export class SnapController extends BaseController<
   // This property cannot be hash private yet because of tests.
   private readonly maxRequestTime: number;
 
-  #maxInitTime: number;
-
   #encryptor: ExportableKeyEncryptor;
 
   #getMnemonic: () => Promise<Uint8Array>;
@@ -771,7 +768,6 @@ export class SnapController extends BaseController<
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
     maxIdleTime = inMilliseconds(30, Duration.Second),
     maxRequestTime = inMilliseconds(60, Duration.Second),
-    maxInitTime = inMilliseconds(60, Duration.Second),
     fetchFunction = globalThis.fetch.bind(globalThis),
     featureFlags = {},
     detectSnapLocation: detectSnapLocationFunction = detectSnapLocation,
@@ -829,7 +825,6 @@ export class SnapController extends BaseController<
     this.#idleTimeCheckInterval = idleTimeCheckInterval;
     this.#maxIdleTime = maxIdleTime;
     this.maxRequestTime = maxRequestTime;
-    this.#maxInitTime = maxInitTime;
     this.#detectSnapLocation = detectSnapLocationFunction;
     this.#encryptor = encryptor;
     this.#getMnemonic = getMnemonic;
@@ -1438,16 +1433,26 @@ export class SnapController extends BaseController<
       throw new Error(`The snap "${snapId}" is not running.`);
     }
 
-    // Reset request tracking
-    runtime.lastRequest = null;
-    runtime.pendingInboundRequests = [];
-    runtime.pendingOutboundRequests = 0;
+    // No-op if the Snap is already stopping.
+    if (runtime.stopping) {
+      return;
+    }
+
+    // Flag that the Snap is actively stopping, this prevents other calls to stopSnap
+    // while we are handling termination of the Snap
+    runtime.stopping = true;
+
     try {
       if (this.isRunning(snapId)) {
         this.#closeAllConnections?.(snapId);
         await this.#terminateSnap(snapId);
       }
     } finally {
+      // Reset request tracking
+      runtime.lastRequest = null;
+      runtime.pendingInboundRequests = [];
+      runtime.pendingOutboundRequests = 0;
+      runtime.stopping = false;
       if (this.isRunning(snapId)) {
         this.#transition(snapId, statusEvent);
       }
@@ -1461,6 +1466,19 @@ export class SnapController extends BaseController<
    */
   async #terminateSnap(snapId: SnapId) {
     await this.messagingSystem.call('ExecutionService:terminateSnap', snapId);
+
+    // Hack to give up execution for a bit to let gracefully terminating Snaps return.
+    await new Promise((resolve) => setTimeout(resolve, 1));
+
+    const runtime = this.#getRuntimeExpect(snapId);
+    // Unresponsive requests may still be timed, time them out.
+    runtime.pendingInboundRequests
+      .filter((pendingRequest) => pendingRequest.timer.status !== 'finished')
+      .forEach((pendingRequest) => pendingRequest.timer.finish());
+
+    // Hack to give up execution for a bit to let timed out requests return.
+    await new Promise((resolve) => setTimeout(resolve, 1));
+
     this.messagingSystem.publish(
       'SnapController:snapTerminated',
       this.getTruncatedExpect(snapId),
@@ -2585,17 +2603,13 @@ export class SnapController extends BaseController<
 
     try {
       const runtime = this.#getRuntimeExpect(snapId);
-      const result = await withTimeout(
-        this.messagingSystem.call('ExecutionService:executeSnap', {
+      const result = await this.messagingSystem.call(
+        'ExecutionService:executeSnap',
+        {
           ...snapData,
           endowments: await this.#getEndowments(snapId),
-        }),
-        this.#maxInitTime,
+        },
       );
-
-      if (result === hasTimedOut) {
-        throw new Error(`${snapId} failed to start.`);
-      }
 
       this.#transition(snapId, SnapStatusEvents.Start);
       // We treat the initialization of the snap as the first request, for idle timing purposes.
@@ -3096,8 +3110,18 @@ export class SnapController extends BaseController<
 
         await this.#assertSnapRpcRequestResult(snapId, handlerType, result);
 
-        return this.#transformSnapRpcRequestResult(snapId, handlerType, result);
+        const transformedResult = await this.#transformSnapRpcRequestResult(
+          snapId,
+          handlerType,
+          result,
+        );
+
+        this.#recordSnapRpcRequestFinish(snapId, request.id);
+
+        return transformedResult;
       } catch (error) {
+        // We flag the RPC request as finished early since termination may affect pending requests
+        this.#recordSnapRpcRequestFinish(snapId, request.id);
         const [jsonRpcError, handled] = unwrapError(error);
 
         if (!handled) {
@@ -3105,8 +3129,6 @@ export class SnapController extends BaseController<
         }
 
         throw jsonRpcError;
-      } finally {
-        this.#recordSnapRpcRequestFinish(snapId, request.id);
       }
     };
 
@@ -3385,6 +3407,7 @@ export class SnapController extends BaseController<
       pendingInboundRequests: [],
       pendingOutboundRequests: 0,
       interpreter,
+      stopping: false,
     });
   }
 
