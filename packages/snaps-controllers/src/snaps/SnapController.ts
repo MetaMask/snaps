@@ -3110,7 +3110,7 @@ export class SnapController extends BaseController<
 
         await this.#assertSnapRpcRequestResult(snapId, handlerType, result);
 
-        const transformedResult = this.#transformSnapRpcRequestResult(
+        const transformedResult = await this.#transformSnapRpcRequestResult(
           snapId,
           handlerType,
           result,
