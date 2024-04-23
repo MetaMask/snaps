@@ -3507,7 +3507,7 @@ export class SnapController extends BaseController<
    * to return false in that scenario.
    *
    * @param snapId - The snap id.
-   * @param newVersionRange - The new version range being requsted.
+   * @param newVersionRange - The new version range being requested.
    * @returns `true` if validation checks pass and `false` if they do not.
    */
   #isValidUpdate(snapId: SnapId, newVersionRange: SemVerRange): boolean {

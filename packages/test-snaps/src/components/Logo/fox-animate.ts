@@ -190,7 +190,7 @@ export class FoxAnimation {
 
       const weight = this.weights[i];
 
-      // calculate ditance and force magnitude
+      // calculate distance and force magnitude
       const d = vec3.subtract(this._velocity, this.curPosition[i], P);
       const scale = Math.min(10, (weight[3] * mag) / (1 + vec3.sqrLen(d)));
       if (scale < 0.01 || vec3.squaredLength(this.velocity[i]) > 100) {
