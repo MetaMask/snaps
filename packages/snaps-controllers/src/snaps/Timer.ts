@@ -64,7 +64,7 @@ export class Timer {
   finish() {
     assert(
       this.status !== 'finished',
-      new Error('Tried to finish a finished Timer'),
+      new Error('Tried to finish a finished Timer.'),
     );
     this.onFinish(true);
   }
