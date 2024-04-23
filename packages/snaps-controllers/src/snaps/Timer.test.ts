@@ -44,6 +44,17 @@ describe('Timer', () => {
     expect(timer.remaining).toBe(1000);
   });
 
+  it('can finish', () => {
+    const timer = new Timer(1000);
+    const callback = jest.fn();
+    timer.start(callback);
+    timer.finish();
+    expect(callback).toHaveBeenCalled();
+    expect(timer.status).toBe('finished');
+    jest.advanceTimersByTime(1000);
+    expect(callback).toHaveBeenCalledTimes(1);
+  });
+
   it('works with +Infinity', () => {
     const timer = new Timer(Infinity);
     expect(timer.status).toBe('stopped');

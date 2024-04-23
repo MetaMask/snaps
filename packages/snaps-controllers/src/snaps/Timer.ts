@@ -57,6 +57,19 @@ export class Timer {
   }
 
   /**
+   * Marks the timer as finished prematurely and triggers the callback.
+   *
+   * @throws {@link Error}. If it wasn't running or paused.
+   */
+  finish() {
+    assert(
+      this.status !== 'finished',
+      new Error('Tried to finish a finished Timer.'),
+    );
+    this.onFinish(true);
+  }
+
+  /**
    * Pauses a currently running timer, allowing it to resume later.
    *
    * @throws {@link Error}. If it wasn't running.
