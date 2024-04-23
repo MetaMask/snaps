@@ -16,7 +16,7 @@ type FormProps = {
   name: string;
 };
 
-const TYPE = 'form';
+const TYPE = 'Form';
 
 /**
  * A form component, which is used to create a form.

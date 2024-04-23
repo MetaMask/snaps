@@ -17,7 +17,7 @@ export type RowProps = {
   variant?: 'default' | 'warning' | 'error';
 };
 
-const TYPE = 'row';
+const TYPE = 'Row';
 
 /**
  * A row component, which is used to display a row of information.

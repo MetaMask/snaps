@@ -8,12 +8,15 @@ import { expect } from '@jest/globals';
 import type {
   NotificationType,
   EnumToUnion,
-  Component,
+  SnapInterface,
 } from '@metamask/snaps-sdk';
+import type { SnapNode } from '@metamask/snaps-sdk/jsx';
+import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import type { Json } from '@metamask/utils';
 import { hasProperty } from '@metamask/utils';
 import type { MatcherHintOptions } from 'jest-matcher-utils';
 import {
+  EXPECTED_COLOR,
   diff,
   matcherErrorMessage,
   matcherHint,
@@ -63,7 +66,7 @@ function assertHasInterface(
   actual: unknown,
   matcherName: string,
   options?: MatcherHintOptions,
-): asserts actual is { content: Component } {
+): asserts actual is { content: SnapInterface } {
   if (!is(actual, InterfaceStruct) || !actual.content) {
     throw new Error(
       matcherErrorMessage(
@@ -179,7 +182,105 @@ export const toSendNotification: MatcherFunction<
   return { message, pass };
 };
 
-export const toRender: MatcherFunction<[expected: Component]> = function (
+/**
+ * Serialise a JSX prop to a string.
+ *
+ * @param prop - The JSX prop.
+ * @returns The serialised JSX prop.
+ */
+function serialiseProp(prop: unknown): string {
+  if (typeof prop === 'string') {
+    return `"${prop}"`;
+  }
+
+  return `{${JSON.stringify(prop)}}`;
+}
+
+/**
+ * Serialise JSX props to a string.
+ *
+ * @param props - The JSX props.
+ * @returns The serialised JSX props.
+ */
+function serialiseProps(props: Record<string, unknown>): string {
+  return Object.entries(props)
+    .filter(([key]) => key !== 'children')
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, value]) => ` ${key}=${serialiseProp(value)}`)
+    .join('');
+}
+
+/**
+ * Serialise a JSX node to a string.
+ *
+ * @param node - The JSX node.
+ * @param indentation - The indentation level. Defaults to `0`. This should not
+ * be set by the caller, as it is used for recursion.
+ * @returns The serialised JSX node.
+ */
+export function serialiseJsx(node: SnapNode, indentation = 0): string {
+  if (Array.isArray(node)) {
+    return node.map((child) => serialiseJsx(child, indentation)).join('');
+  }
+
+  const indent = '  '.repeat(indentation);
+  if (typeof node === 'string') {
+    return `${indent}${node}\n`;
+  }
+
+  if (!node) {
+    return '';
+  }
+
+  const { type, props } = node;
+  const trailingNewline = indentation > 0 ? '\n' : '';
+
+  if (hasProperty(props, 'children')) {
+    const children = serialiseJsx(props.children as SnapNode, indentation + 1);
+    return `${indent}<${type}${serialiseProps(
+      props,
+    )}>\n${children}${indent}</${type}>${trailingNewline}`;
+  }
+
+  return `${indent}<${type}${serialiseProps(props)} />${trailingNewline}`;
+}
+
+/**
+ * Get the difference between two interfaces.
+ *
+ * @param actual - The actual interface.
+ * @param expected - The expected interface.
+ * @returns The difference between the interfaces.
+ */
+function getInterfaceDiff(
+  actual: SnapInterface,
+  expected: SnapInterface,
+): string {
+  if (isJSXElementUnsafe(actual) && isJSXElementUnsafe(expected)) {
+    // This is typed as `string | null`, but in practice it's always a string. The
+    // function only returns `null` if both the expected and actual values are
+    // numbers, bigints, or booleans, which is never the case here.
+    return diff(serialiseJsx(actual), serialiseJsx(expected)) as string;
+  }
+
+  return diff(expected, actual) as string;
+}
+
+/**
+ * Get the interface from a value.
+ *
+ * @param value - The value.
+ * @returns The interface.
+ */
+function getInterface(value: SnapInterface) {
+  if (isJSXElementUnsafe(value)) {
+    return serialiseJsx(value);
+  }
+
+  return value;
+}
+
+export const toRender: MatcherFunction<[expected: SnapInterface]> = function (
   actual,
   expected,
 ) {
@@ -188,22 +289,18 @@ export const toRender: MatcherFunction<[expected: Component]> = function (
   const { content } = actual;
   const pass = this.equals(content, expected);
 
-  // This is typed as `string | null`, but in practice it's always a string. The
-  // function only returns `null` if both the expected and actual values are
-  // numbers, bigints, or booleans, which is never the case here.
-  const difference = diff(expected, content);
-
+  const difference = getInterfaceDiff(content, expected);
   const message = pass
     ? () =>
         `${this.utils.matcherHint('.not.toRender')}\n\n` +
-        `Expected: ${this.utils.printExpected(expected)}\n` +
-        `Received: ${this.utils.printReceived(content)}` +
-        `\n\nDifference:\n\n${difference as string}`
+        `Expected:\n${EXPECTED_COLOR(getInterface(expected))}\n\n` +
+        `Received:\n${RECEIVED_COLOR(getInterface(content))}` +
+        `\n\nDifference:\n\n${difference}`
     : () =>
         `${this.utils.matcherHint('.toRender')}\n\n` +
-        `Expected: ${this.utils.printExpected(expected)}\n` +
-        `Received: ${this.utils.printReceived(content)}` +
-        `\n\nDifference:\n\n${difference as string}`;
+        `Expected:\n${EXPECTED_COLOR(getInterface(expected))}\n\n` +
+        `Received:\n${RECEIVED_COLOR(getInterface(content))}` +
+        `\n\nDifference:\n\n${difference}`;
 
   return { message, pass };
 };

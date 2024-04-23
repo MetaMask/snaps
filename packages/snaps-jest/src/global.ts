@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions, @typescript-eslint/naming-convention, @typescript-eslint/no-empty-interface, @typescript-eslint/no-unused-vars, @typescript-eslint/no-namespace */
 
 import type {
-  Component,
   EnumToUnion,
   NotificationType,
+  SnapInterface,
 } from '@metamask/snaps-sdk';
 
 interface SnapsMatchers {
@@ -65,7 +65,7 @@ interface SnapsMatchers {
    * const ui = await response.getInterface();
    * expect(ui).toRender(panel([heading('Hello, world!')]));
    */
-  toRender(component: Component): void;
+  toRender(component: SnapInterface): void;
 }
 
 // Extend the `expect` interface with the new matchers. This is used when

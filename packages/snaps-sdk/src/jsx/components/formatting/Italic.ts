@@ -11,7 +11,7 @@ export type ItalicProps = {
   children: StringElement;
 };
 
-const TYPE = 'italic';
+const TYPE = 'Italic';
 
 /**
  * An italic component, which is used to display text in italic. This componen

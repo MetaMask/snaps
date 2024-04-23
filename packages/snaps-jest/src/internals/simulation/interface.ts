@@ -1,11 +1,11 @@
 import type {
   Button,
-  Component,
   FormState,
   Input,
   InterfaceState,
   SnapId,
   UserInputEvent,
+  SnapInterface as SnapInterfaceType,
 } from '@metamask/snaps-sdk';
 import {
   ButtonType,
@@ -36,7 +36,7 @@ import { getCurrentInterface, resolveInterface, setInterface } from './store';
 export function getInterfaceResponse(
   runSaga: RunSagaFunction,
   type: DialogType,
-  content: Component,
+  content: SnapInterfaceType,
   interfaceActions: SnapInterfaceActions,
 ): SnapInterface {
   switch (type) {
@@ -130,7 +130,7 @@ function resolveWithInput(runSaga: RunSagaFunction) {
 function* getStoredInterface(
   controllerMessenger: RootControllerMessenger,
   snapId: SnapId,
-): SagaIterator<Interface & { content: Component }> {
+): SagaIterator<Interface & { content: SnapInterfaceType }> {
   const currentInterface: Interface | null = yield select(getCurrentInterface);
 
   if (currentInterface) {
@@ -159,10 +159,11 @@ function* getStoredInterface(
  *
  * @param content - The interface content.
  * @param name - The element name.
- * @returns An object containing the element and the form name if it's contained in a form, otherwise undefined.
+ * @returns An object containing the element and the form name if it's contained
+ * in a form, otherwise undefined.
  */
 export function getElement(
-  content: Component,
+  content: SnapInterfaceType,
   name: string,
 ):
   | {
@@ -241,7 +242,7 @@ async function handleEvent(
 export async function clickElement(
   controllerMessenger: RootControllerMessenger,
   id: string,
-  content: Component,
+  content: SnapInterfaceType,
   snapId: SnapId,
   name: string,
 ): Promise<void> {
@@ -313,7 +314,7 @@ export function mergeValue(
 export async function typeInField(
   controllerMessenger: RootControllerMessenger,
   id: string,
-  content: Component,
+  content: SnapInterfaceType,
   snapId: SnapId,
   name: string,
   value: string,

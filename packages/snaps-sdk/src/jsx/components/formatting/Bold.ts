@@ -12,7 +12,7 @@ export type BoldProps = {
   children: StringElement;
 };
 
-const TYPE = 'bold';
+const TYPE = 'Bold';
 
 /**
  * A bold component, which is used to display text in bold. This component can

@@ -1,5 +1,4 @@
-import { Bold } from '@metamask/snaps-sdk/jsx';
-
+import { Bold } from './formatting';
 import { Text } from './Text';
 
 describe('Text', () => {

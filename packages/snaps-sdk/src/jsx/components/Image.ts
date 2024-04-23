@@ -14,7 +14,7 @@ type ImageProps = {
   alt?: string | undefined;
 };
 
-const TYPE = 'image';
+const TYPE = 'Image';
 
 /**
  * An image component, which is used to display an image.

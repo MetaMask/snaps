@@ -23,7 +23,7 @@ export type ButtonProps = {
   disabled?: boolean | undefined;
 };
 
-const TYPE = 'button';
+const TYPE = 'Button';
 
 /**
  * A button component, which is used to create a clickable button.

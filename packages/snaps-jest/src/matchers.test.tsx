@@ -1,7 +1,9 @@
 import { expect } from '@jest/globals';
 import { panel, text } from '@metamask/snaps-sdk';
+import { Box, Button, Field, Form, Input, Text } from '@metamask/snaps-sdk/jsx';
 
 import {
+  serialiseJsx,
   toRender,
   toRespondWith,
   toRespondWithError,
@@ -282,6 +284,74 @@ describe('toSendNotification', () => {
   });
 });
 
+describe('serialiseJsx', () => {
+  it('serialises a JSX element', () => {
+    expect(
+      serialiseJsx(
+        <Box>
+          <Text>Hello</Text>
+        </Box>,
+        0,
+      ),
+    ).toMatchInlineSnapshot(`
+      "<Box>
+        <Text>
+          Hello
+        </Text>
+      </Box>"
+    `);
+  });
+
+  it('serialises a JSX element with props', () => {
+    expect(
+      serialiseJsx(
+        <Form name="foo">
+          <Field label="Foo">
+            <Input name="input" type="text" />
+            <Button variant="primary">Primary button</Button>
+          </Field>
+          <Field label="Bar">
+            <Input name="input" type="text" />
+            <Button variant="destructive">Secondary button</Button>
+          </Field>
+        </Form>,
+        0,
+      ),
+    ).toMatchInlineSnapshot(`
+      "<Form name="foo">
+        <Field label="Foo">
+          <Input name="input" type="text" />
+          <Button variant="primary">
+            Primary button
+          </Button>
+        </Field>
+        <Field label="Bar">
+          <Input name="input" type="text" />
+          <Button variant="destructive">
+            Secondary button
+          </Button>
+        </Field>
+      </Form>"
+    `);
+  });
+
+  it('serialises a JSX element with non-string props', () => {
+    expect(
+      serialiseJsx(
+        // @ts-expect-error - Invalid prop.
+        <Box foo={0} />,
+      ),
+    ).toMatchInlineSnapshot(`"<Box foo={0} />"`);
+  });
+
+  it('serialises a JSX element with null children', () => {
+    expect(serialiseJsx(<Box>{null}</Box>)).toMatchInlineSnapshot(`
+      "<Box>
+      </Box>"
+    `);
+  });
+});
+
 describe('toRender', () => {
   it('passes when the component is correct', () => {
     expect(getMockInterfaceResponse(panel([text('Hello, world!')]))).toRender(
@@ -289,10 +359,24 @@ describe('toRender', () => {
     );
   });
 
+  it('passes when the JSX component is correct', () => {
+    expect(getMockInterfaceResponse(<Text>foo</Text>)).toRender(
+      <Text>foo</Text>,
+    );
+  });
+
   it('fails when the component is incorrect', () => {
     expect(() =>
       expect(getMockInterfaceResponse(panel([text('Hello, world!')]))).toRender(
         panel([text('Hello, world?')]),
+      ),
+    ).toThrow('Received:');
+  });
+
+  it('fails when the JSX component is incorrect', () => {
+    expect(() =>
+      expect(getMockInterfaceResponse(<Text>foo</Text>)).toRender(
+        <Text>bar</Text>,
       ),
     ).toThrow('Received:');
   });
@@ -315,11 +399,25 @@ describe('toRender', () => {
       ).not.toRender(panel([text('Hello, world?')]));
     });
 
+    it('passes when the JSX component is correct', () => {
+      expect(getMockInterfaceResponse(<Text>foo</Text>)).not.toRender(
+        <Text>bar</Text>,
+      );
+    });
+
     it('fails when the component is incorrect', () => {
       expect(() =>
         expect(
           getMockInterfaceResponse(panel([text('Hello, world!')])),
         ).not.toRender(panel([text('Hello, world!')])),
+      ).toThrow('Received:');
+    });
+
+    it('fails when the JSX component is incorrect', () => {
+      expect(() =>
+        expect(getMockInterfaceResponse(<Text>foo</Text>)).not.toRender(
+          <Text>foo</Text>,
+        ),
       ).toThrow('Received:');
     });
   });

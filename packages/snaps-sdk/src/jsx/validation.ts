@@ -99,7 +99,7 @@ function element<Name extends string, Props extends ObjectSchema = EmptyObject>(
 /**
  * A struct for the {@link ButtonElement} type.
  */
-export const ButtonStruct: Describe<ButtonElement> = element('button', {
+export const ButtonStruct: Describe<ButtonElement> = element('Button', {
   children: StringElementStruct,
   name: optional(string()),
   type: defaulted(
@@ -116,7 +116,7 @@ export const ButtonStruct: Describe<ButtonElement> = element('button', {
 /**
  * A struct for the {@link InputElement} type.
  */
-export const InputStruct: Describe<InputElement> = element('input', {
+export const InputStruct: Describe<InputElement> = element('Input', {
   name: string(),
   type: nullUnion([literal('text'), literal('password'), literal('number')]),
   value: optional(string()),
@@ -126,7 +126,7 @@ export const InputStruct: Describe<InputElement> = element('input', {
 /**
  * A struct for the {@link FieldElement} type.
  */
-export const FieldStruct: Describe<FieldElement> = element('field', {
+export const FieldStruct: Describe<FieldElement> = element('Field', {
   label: string(),
   error: optional(string()),
   children: nullUnion([tuple([InputStruct, ButtonStruct]), InputStruct]),
@@ -135,7 +135,7 @@ export const FieldStruct: Describe<FieldElement> = element('field', {
 /**
  * A struct for the {@link FormElement} type.
  */
-export const FormStruct: Describe<FormElement> = element('form', {
+export const FormStruct: Describe<FormElement> = element('Form', {
   children: nullUnion([FieldStruct, array(FieldStruct)]),
   name: string(),
 });
@@ -143,28 +143,28 @@ export const FormStruct: Describe<FormElement> = element('form', {
 /**
  * A struct for the {@link BoldElement} type.
  */
-export const BoldStruct: Describe<BoldElement> = element('bold', {
+export const BoldStruct: Describe<BoldElement> = element('Bold', {
   children: StringElementStruct,
 });
 
 /**
  * A struct for the {@link ItalicElement} type.
  */
-export const ItalicStruct: Describe<ItalicElement> = element('italic', {
+export const ItalicStruct: Describe<ItalicElement> = element('Italic', {
   children: StringElementStruct,
 });
 
 /**
  * A struct for the {@link AddressElement} type.
  */
-export const AddressStruct: Describe<AddressElement> = element('address', {
+export const AddressStruct: Describe<AddressElement> = element('Address', {
   address: StrictHexStruct,
 });
 
 /**
  * A struct for the {@link BoxElement} type.
  */
-export const BoxStruct: Describe<BoxElement> = element('box', {
+export const BoxStruct: Describe<BoxElement> = element('Box', {
   children: maybeArray(
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     lazy(() => JSXElementStruct),
@@ -174,7 +174,7 @@ export const BoxStruct: Describe<BoxElement> = element('box', {
 /**
  * A struct for the {@link CopyableElement} type.
  */
-export const CopyableStruct: Describe<CopyableElement> = element('copyable', {
+export const CopyableStruct: Describe<CopyableElement> = element('Copyable', {
   value: string(),
   sensitive: defaulted(optional(boolean()), false),
 });
@@ -182,19 +182,19 @@ export const CopyableStruct: Describe<CopyableElement> = element('copyable', {
 /**
  * A struct for the {@link DividerElement} type.
  */
-export const DividerStruct: Describe<DividerElement> = element('divider');
+export const DividerStruct: Describe<DividerElement> = element('Divider');
 
 /**
  * A struct for the {@link HeadingElement} type.
  */
-export const HeadingStruct: Describe<HeadingElement> = element('heading', {
+export const HeadingStruct: Describe<HeadingElement> = element('Heading', {
   children: StringElementStruct,
 });
 
 /**
  * A struct for the {@link ImageElement} type.
  */
-export const ImageStruct: Describe<ImageElement> = element('image', {
+export const ImageStruct: Describe<ImageElement> = element('Image', {
   src: string(),
   alt: optional(string()),
 });
@@ -202,7 +202,7 @@ export const ImageStruct: Describe<ImageElement> = element('image', {
 /**
  * A struct for the {@link LinkElement} type.
  */
-export const LinkStruct: Describe<LinkElement> = element('link', {
+export const LinkStruct: Describe<LinkElement> = element('Link', {
   href: string(),
   children: StringElementStruct,
 });
@@ -210,7 +210,7 @@ export const LinkStruct: Describe<LinkElement> = element('link', {
 /**
  * A struct for the {@link TextElement} type.
  */
-export const TextStruct: Describe<TextElement> = element('text', {
+export const TextStruct: Describe<TextElement> = element('Text', {
   children: maybeArray(
     nullUnion([string(), BoldStruct, ItalicStruct, LinkStruct]),
   ),
@@ -219,7 +219,7 @@ export const TextStruct: Describe<TextElement> = element('text', {
 /**
  * A struct for the {@link RowElement} type.
  */
-export const RowStruct: Describe<RowElement> = element('row', {
+export const RowStruct: Describe<RowElement> = element('Row', {
   label: string(),
   children: nullUnion([AddressStruct, ImageStruct, TextStruct]),
   variant: defaulted(
@@ -233,7 +233,7 @@ export const RowStruct: Describe<RowElement> = element('row', {
 /**
  * A struct for the {@link SpinnerElement} type.
  */
-export const SpinnerStruct: Describe<SpinnerElement> = element('spinner');
+export const SpinnerStruct: Describe<SpinnerElement> = element('Spinner');
 
 /**
  * A struct for the {@link JSXElement} type.

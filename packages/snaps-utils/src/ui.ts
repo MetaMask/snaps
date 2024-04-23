@@ -6,7 +6,12 @@ import type {
 import { NodeType } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
-import { assert, AssertionError, hasProperty } from '@metamask/utils';
+import {
+  assert,
+  AssertionError,
+  hasProperty,
+  isPlainObject,
+} from '@metamask/utils';
 import type { Tokens } from 'marked';
 import { lexer, walkTokens } from 'marked';
 
@@ -98,7 +103,7 @@ function validateJsxLinks(
   isOnPhishingList: (url: string) => boolean,
 ) {
   walkJsx(node, (childNode) => {
-    if (childNode.type !== 'link') {
+    if (childNode.type !== 'Link') {
       return;
     }
 
@@ -175,7 +180,12 @@ export function getTotalTextLength(component: Component): number {
  * @returns `true` if the component has children, `false` otherwise.
  */
 export function hasChildren(
-  component: Component,
+  component: SnapInterface,
 ): component is NodeWithChildren {
-  return hasProperty(component, 'children');
+  return (
+    hasProperty(component, 'children') ||
+    (hasProperty(component, 'props') &&
+      isPlainObject(component.props) &&
+      hasProperty(component.props, 'children'))
+  );
 }

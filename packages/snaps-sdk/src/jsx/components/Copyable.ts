@@ -13,7 +13,7 @@ export type CopyableProps = {
   sensitive?: boolean;
 };
 
-const TYPE = 'copyable';
+const TYPE = 'Copyable';
 
 /**
  * A copyable component, which is used to display text that can be copied by the

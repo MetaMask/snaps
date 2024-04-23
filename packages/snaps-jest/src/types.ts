@@ -1,7 +1,7 @@
 import type {
-  Component,
   NotificationType,
   EnumToUnion,
+  SnapInterface as SnapInterfaceType,
 } from '@metamask/snaps-sdk';
 import type { InferMatching } from '@metamask/snaps-utils';
 import type { Json, JsonRpcId, JsonRpcParams } from '@metamask/utils';
@@ -113,7 +113,7 @@ export type SnapAlertInterface = {
   /**
    * The content to show in the alert.
    */
-  content: Component;
+  content: SnapInterfaceType;
 
   /**
    * Close the alert.
@@ -133,7 +133,7 @@ export type SnapConfirmationInterface = {
   /**
    * The content to show in the confirmation.
    */
-  content: Component;
+  content: SnapInterfaceType;
 
   /**
    * Close the confirmation.
@@ -158,7 +158,7 @@ export type SnapPromptInterface = {
   /**
    * The content to show in the prompt.
    */
-  content: Component;
+  content: SnapInterfaceType;
 
   /**
    * Close the prompt.
@@ -342,7 +342,7 @@ export type Snap = {
 };
 
 export type SnapHandlerInterface = {
-  content: Component;
+  content: SnapInterfaceType;
 } & SnapInterfaceActions;
 
 export type SnapResponseWithInterface = {

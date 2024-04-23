@@ -8,10 +8,10 @@ import { createSnapComponent } from '../component';
  */
 export type BoxProps = {
   // We can't use `JSXElement` because it causes a circular reference.
-  children: MaybeArray<GenericSnapElement>;
+  children: MaybeArray<GenericSnapElement | null>;
 };
 
-const TYPE = 'box';
+const TYPE = 'Box';
 
 /**
  * A box component, which is used to group multiple components together.

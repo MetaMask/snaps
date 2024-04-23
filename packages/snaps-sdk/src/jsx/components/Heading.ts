@@ -10,7 +10,7 @@ type HeadingProps = {
   children: StringElement;
 };
 
-const TYPE = 'heading';
+const TYPE = 'Heading';
 
 /**
  * A heading component, which is used to display heading text.

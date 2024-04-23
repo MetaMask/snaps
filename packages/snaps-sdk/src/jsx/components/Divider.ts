@@ -1,6 +1,6 @@
 import { createSnapComponent } from '../component';
 
-const TYPE = 'divider';
+const TYPE = 'Divider';
 
 /**
  * A divider component, which is used to create a horizontal line between

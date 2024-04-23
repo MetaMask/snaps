@@ -16,7 +16,7 @@ export type TextProps = {
   children: TextChildren;
 };
 
-const TYPE = 'text';
+const TYPE = 'Text';
 
 /**
  * A text component, which is used to display text.

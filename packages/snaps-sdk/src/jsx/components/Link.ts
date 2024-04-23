@@ -13,7 +13,7 @@ export type LinkProps = {
   href: string;
 };
 
-const TYPE = 'link';
+const TYPE = 'Link';
 
 /**
  * A link component, which is used to display a hyperlink.

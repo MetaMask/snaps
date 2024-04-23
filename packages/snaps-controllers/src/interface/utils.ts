@@ -146,7 +146,7 @@ function constructJsxState(
   component: JSXElement,
   newState: InterfaceState,
 ): InterfaceState {
-  if (component.type === 'box') {
+  if (component.type === 'Box') {
     if (Array.isArray(component.props.children)) {
       return component.props.children.reduce(
         (accumulator, node) =>
@@ -162,7 +162,7 @@ function constructJsxState(
     );
   }
 
-  if (component.type === 'form') {
+  if (component.type === 'Form') {
     assertNameIsUnique(newState, component.props.name);
 
     if (Array.isArray(component.props.children)) {
@@ -187,7 +187,7 @@ function constructJsxState(
     );
   }
 
-  if (component.type === 'input') {
+  if (component.type === 'Input') {
     assertNameIsUnique(newState, component.props.name);
     newState[component.props.name] = constructJsxInputState(
       oldState,

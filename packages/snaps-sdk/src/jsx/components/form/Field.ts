@@ -15,7 +15,7 @@ export type FieldProps = {
   children: [InputElement, ButtonElement] | InputElement;
 };
 
-const TYPE = 'field';
+const TYPE = 'Field';
 
 /**
  * A field component, which is used to create a form field. This component can

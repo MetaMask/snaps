@@ -1,6 +1,6 @@
 import { createSnapComponent } from '../component';
 
-const TYPE = 'spinner';
+const TYPE = 'Spinner';
 
 /**
  * A spinner component, which is used to display a spinner, indicating that some

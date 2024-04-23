@@ -10,7 +10,7 @@ export type AddressProps = {
   address: `0x${string}`;
 };
 
-const TYPE = 'address';
+const TYPE = 'Address';
 
 /**
  * An address component, which is used to display an Ethereum address.

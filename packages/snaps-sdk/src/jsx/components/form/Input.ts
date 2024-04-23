@@ -18,7 +18,7 @@ type InputProps = {
   placeholder?: string | undefined;
 };
 
-const TYPE = 'input';
+const TYPE = 'Input';
 
 /**
  * An input component, which is used to create an input field. This component
