@@ -236,12 +236,16 @@ describe('getTotalTextLength', () => {
 });
 
 describe('hasChildren', () => {
-  it.each([panel([text('foo')]), form('bar', [button('foo')])])(
-    'returns true if the node has children',
-    (value) => {
-      expect(hasChildren(value)).toBe(true);
-    },
-  );
+  it.each([
+    panel([text('foo')]),
+    form('bar', [button('foo')]),
+    <Text>Foo</Text>,
+    <Box>
+      <Text>Foo</Text>
+    </Box>,
+  ])('returns true if the node has children', (value) => {
+    expect(hasChildren(value)).toBe(true);
+  });
 
   it('returns false if the node does not have children', () => {
     expect(hasChildren(text('foo'))).toBe(false);

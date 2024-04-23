@@ -5,7 +5,7 @@ describe('Link', () => {
     const result = <Link href="https://example.com">Foo</Link>;
 
     expect(result).toStrictEqual({
-      type: 'link',
+      type: 'Link',
       key: null,
       props: {
         href: 'https://example.com',
@@ -18,7 +18,7 @@ describe('Link', () => {
     const result = <Link href="https://example.com">Hello {'world'}!</Link>;
 
     expect(result).toStrictEqual({
-      type: 'link',
+      type: 'Link',
       key: null,
       props: {
         href: 'https://example.com',

@@ -5,7 +5,7 @@ describe('Input', () => {
     const result = <Input name="foo" type="text" />;
 
     expect(result).toStrictEqual({
-      type: 'input',
+      type: 'Input',
       props: {
         name: 'foo',
         type: 'text',
@@ -18,7 +18,7 @@ describe('Input', () => {
     const result = <Input name="foo" type="password" />;
 
     expect(result).toStrictEqual({
-      type: 'input',
+      type: 'Input',
       props: {
         name: 'foo',
         type: 'password',
@@ -31,7 +31,7 @@ describe('Input', () => {
     const result = <Input name="foo" type="number" />;
 
     expect(result).toStrictEqual({
-      type: 'input',
+      type: 'Input',
       props: {
         name: 'foo',
         type: 'number',

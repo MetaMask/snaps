@@ -5,7 +5,7 @@ describe('Heading', () => {
     const result = <Heading>Foo</Heading>;
 
     expect(result).toStrictEqual({
-      type: 'heading',
+      type: 'Heading',
       key: null,
       props: {
         children: 'Foo',
@@ -17,7 +17,7 @@ describe('Heading', () => {
     const result = <Heading>Hello {'world'}!</Heading>;
 
     expect(result).toStrictEqual({
-      type: 'heading',
+      type: 'Heading',
       key: null,
       props: {
         children: ['Hello ', 'world', '!'],

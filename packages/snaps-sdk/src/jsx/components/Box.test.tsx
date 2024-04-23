@@ -10,11 +10,11 @@ describe('Box', () => {
     );
 
     expect(result).toStrictEqual({
-      type: 'box',
+      type: 'Box',
       key: null,
       props: {
         children: {
-          type: 'text',
+          type: 'Text',
           key: null,
           props: {
             children: 'Hello',
@@ -33,19 +33,19 @@ describe('Box', () => {
     );
 
     expect(result).toStrictEqual({
-      type: 'box',
+      type: 'Box',
       key: null,
       props: {
         children: [
           {
-            type: 'text',
+            type: 'Text',
             key: null,
             props: {
               children: 'Hello',
             },
           },
           {
-            type: 'text',
+            type: 'Text',
             key: null,
             props: {
               children: 'World',

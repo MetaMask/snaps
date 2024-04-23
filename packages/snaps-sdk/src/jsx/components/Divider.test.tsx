@@ -5,7 +5,7 @@ describe('Divider', () => {
     const result = <Divider />;
 
     expect(result).toStrictEqual({
-      type: 'divider',
+      type: 'Divider',
       key: null,
       props: {},
     });

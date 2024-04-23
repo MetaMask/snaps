@@ -7,7 +7,7 @@ describe('Address', () => {
     );
 
     expect(result).toStrictEqual({
-      type: 'address',
+      type: 'Address',
       key: null,
       props: {
         address: '0x1234567890123456789012345678901234567890',

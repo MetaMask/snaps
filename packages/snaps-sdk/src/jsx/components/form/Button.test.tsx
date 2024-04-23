@@ -5,7 +5,7 @@ describe('Button', () => {
     const result = <Button>foo</Button>;
 
     expect(result).toStrictEqual({
-      type: 'button',
+      type: 'Button',
       props: {
         children: 'foo',
       },
@@ -17,7 +17,7 @@ describe('Button', () => {
     const result = <Button>foo {'bar'}</Button>;
 
     expect(result).toStrictEqual({
-      type: 'button',
+      type: 'Button',
       props: {
         children: ['foo ', 'bar'],
       },
@@ -29,7 +29,7 @@ describe('Button', () => {
     const result = <Button name="foo">foo</Button>;
 
     expect(result).toStrictEqual({
-      type: 'button',
+      type: 'Button',
       props: {
         children: 'foo',
         name: 'foo',
@@ -42,7 +42,7 @@ describe('Button', () => {
     const result = <Button type="button">foo</Button>;
 
     expect(result).toStrictEqual({
-      type: 'button',
+      type: 'Button',
       props: {
         children: 'foo',
         type: 'button',

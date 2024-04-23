@@ -15,18 +15,18 @@ describe('Form', () => {
     );
 
     expect(result).toStrictEqual({
-      type: 'form',
+      type: 'Form',
       key: null,
       props: {
         name: 'my-form',
         children: {
-          type: 'field',
+          type: 'Field',
           key: null,
           props: {
             label: 'Username',
             children: [
               {
-                type: 'input',
+                type: 'Input',
                 key: null,
                 props: {
                   name: 'username',
@@ -34,7 +34,7 @@ describe('Form', () => {
                 },
               },
               {
-                type: 'button',
+                type: 'Button',
                 key: null,
                 props: {
                   type: 'submit',

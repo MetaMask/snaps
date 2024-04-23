@@ -5,7 +5,7 @@ describe('Bold', () => {
     const result = <Bold>foo</Bold>;
 
     expect(result).toStrictEqual({
-      type: 'bold',
+      type: 'Bold',
       props: {
         children: 'foo',
       },
@@ -17,7 +17,7 @@ describe('Bold', () => {
     const result = <Bold>foo {'bar'}</Bold>;
 
     expect(result).toStrictEqual({
-      type: 'bold',
+      type: 'Bold',
       props: {
         children: ['foo ', 'bar'],
       },

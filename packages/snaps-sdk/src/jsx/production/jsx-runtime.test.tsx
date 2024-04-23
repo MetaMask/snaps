@@ -6,7 +6,7 @@ describe('jsx', () => {
     const element = <Text>Hello</Text>;
 
     expect(element).toStrictEqual({
-      type: 'text',
+      type: 'Text',
       key: null,
       props: { children: 'Hello' },
     });
@@ -29,7 +29,7 @@ describe('jsxs', () => {
     const element = <Text>Hello</Text>;
 
     expect(element).toStrictEqual({
-      type: 'text',
+      type: 'Text',
       key: null,
       props: { children: 'Hello' },
     });
@@ -45,16 +45,16 @@ describe('jsxs', () => {
     );
 
     expect(element).toStrictEqual({
-      type: 'box',
+      type: 'Box',
       key: null,
       props: {
         children: {
-          type: 'text',
+          type: 'Text',
           key: null,
           props: {
             children: [
               'Hello, ',
-              { type: 'bold', key: null, props: { children: 'world' } },
+              { type: 'Bold', key: null, props: { children: 'world' } },
             ],
           },
         },
@@ -71,12 +71,12 @@ describe('jsxs', () => {
     );
 
     expect(element).toStrictEqual({
-      type: 'box',
+      type: 'Box',
       key: null,
       props: {
         children: [
-          { type: 'text', key: null, props: { children: 'Hello' } },
-          { type: 'text', key: null, props: { children: 'World' } },
+          { type: 'Text', key: null, props: { children: 'Hello' } },
+          { type: 'Text', key: null, props: { children: 'World' } },
         ],
       },
     });

@@ -11,12 +11,12 @@ describe('Field', () => {
     );
 
     expect(result).toStrictEqual({
-      type: 'field',
+      type: 'Field',
       key: null,
       props: {
         label: 'Label',
         children: {
-          type: 'input',
+          type: 'Input',
           key: null,
           props: {
             name: 'foo',
@@ -35,13 +35,13 @@ describe('Field', () => {
     );
 
     expect(result).toStrictEqual({
-      type: 'field',
+      type: 'Field',
       key: null,
       props: {
         label: 'Label',
         error: 'Error',
         children: {
-          type: 'input',
+          type: 'Input',
           key: null,
           props: {
             name: 'foo',
@@ -61,13 +61,13 @@ describe('Field', () => {
     );
 
     expect(result).toStrictEqual({
-      type: 'field',
+      type: 'Field',
       key: null,
       props: {
         label: 'Label',
         children: [
           {
-            type: 'input',
+            type: 'Input',
             key: null,
             props: {
               name: 'foo',
@@ -75,7 +75,7 @@ describe('Field', () => {
             },
           },
           {
-            type: 'button',
+            type: 'Button',
             key: null,
             props: {
               type: 'submit',

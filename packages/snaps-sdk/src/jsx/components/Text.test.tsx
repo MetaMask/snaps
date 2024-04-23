@@ -6,7 +6,7 @@ describe('Text', () => {
     const result = <Text>Foo</Text>;
 
     expect(result).toStrictEqual({
-      type: 'text',
+      type: 'Text',
       key: null,
       props: {
         children: 'Foo',
@@ -18,7 +18,7 @@ describe('Text', () => {
     const result = <Text>Hello {'world'}!</Text>;
 
     expect(result).toStrictEqual({
-      type: 'text',
+      type: 'Text',
       key: null,
       props: {
         children: ['Hello ', 'world', '!'],
@@ -34,13 +34,13 @@ describe('Text', () => {
     );
 
     expect(result).toStrictEqual({
-      type: 'text',
+      type: 'Text',
       key: null,
       props: {
         children: [
           'Hello ',
           {
-            type: 'bold',
+            type: 'Bold',
             key: null,
             props: {
               children: 'world',

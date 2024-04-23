@@ -167,8 +167,8 @@ export const AddressStruct: Describe<AddressElement> = element('Address', {
 export const BoxStruct: Describe<BoxElement> = element('Box', {
   children: maybeArray(
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    lazy(() => JSXElementStruct),
-  ) as unknown as Struct<MaybeArray<GenericSnapElement>, null>,
+    nullable(lazy(() => JSXElementStruct)),
+  ) as unknown as Struct<MaybeArray<GenericSnapElement | null>, null>,
 });
 
 /**

@@ -5,7 +5,7 @@ describe('Image', () => {
     const result = <Image src="<svg />" alt="Foo" />;
 
     expect(result).toStrictEqual({
-      type: 'image',
+      type: 'Image',
       key: null,
       props: {
         src: '<svg />',

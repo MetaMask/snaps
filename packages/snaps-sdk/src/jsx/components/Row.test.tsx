@@ -12,12 +12,12 @@ describe('Row', () => {
     );
 
     expect(result).toStrictEqual({
-      type: 'row',
+      type: 'Row',
       key: null,
       props: {
         label: 'Foo',
         children: {
-          type: 'address',
+          type: 'Address',
           key: null,
           props: {
             address: '0x1234',
@@ -35,12 +35,12 @@ describe('Row', () => {
     );
 
     expect(result).toStrictEqual({
-      type: 'row',
+      type: 'Row',
       key: null,
       props: {
         label: 'Foo',
         children: {
-          type: 'text',
+          type: 'Text',
           key: null,
           props: {
             children: 'Bar',
@@ -58,12 +58,12 @@ describe('Row', () => {
     );
 
     expect(result).toStrictEqual({
-      type: 'row',
+      type: 'Row',
       key: null,
       props: {
         label: 'Foo',
         children: {
-          type: 'image',
+          type: 'Image',
           key: null,
           props: {
             src: '<svg />',

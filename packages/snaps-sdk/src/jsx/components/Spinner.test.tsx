@@ -5,7 +5,7 @@ describe('Spinner', () => {
     const result = <Spinner />;
 
     expect(result).toStrictEqual({
-      type: 'spinner',
+      type: 'Spinner',
       key: null,
       props: {},
     });

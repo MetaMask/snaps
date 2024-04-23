@@ -5,7 +5,7 @@ describe('Italic', () => {
     const result = <Italic>foo</Italic>;
 
     expect(result).toStrictEqual({
-      type: 'italic',
+      type: 'Italic',
       props: {
         children: 'foo',
       },
@@ -17,7 +17,7 @@ describe('Italic', () => {
     const result = <Italic>foo {'bar'}</Italic>;
 
     expect(result).toStrictEqual({
-      type: 'italic',
+      type: 'Italic',
       props: {
         children: ['foo ', 'bar'],
       },
