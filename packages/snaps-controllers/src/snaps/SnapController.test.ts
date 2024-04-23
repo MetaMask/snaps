@@ -1535,38 +1535,6 @@ describe('SnapController', () => {
     await service.terminateAllSnaps();
   });
 
-  it('times out on stuck starting snap', async () => {
-    const rootMessenger = getControllerMessenger();
-    const messenger = getSnapControllerMessenger(rootMessenger);
-    const snapController = getSnapController(
-      getSnapControllerOptions({
-        messenger,
-        maxInitTime: 50,
-        state: {
-          snaps: getPersistedSnapsState(),
-        },
-      }),
-    );
-
-    const snap = snapController.getExpect(MOCK_SNAP_ID);
-
-    rootMessenger.registerActionHandler(
-      'ExecutionService:executeSnap',
-      async () => await sleep(100),
-    );
-
-    rootMessenger.registerActionHandler(
-      'PermissionController:hasPermission',
-      () => false,
-    );
-
-    await expect(snapController.startSnap(snap.id)).rejects.toThrow(
-      `${snap.id} failed to start.`,
-    );
-
-    snapController.destroy();
-  });
-
   it('gracefully throws for multiple failing requests', async () => {
     const sourceCode = `
     module.exports.onRpcRequest = async () => snap.request({ method: 'snap_dialog', params: null });

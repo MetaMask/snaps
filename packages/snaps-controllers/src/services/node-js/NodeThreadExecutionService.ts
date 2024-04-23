@@ -3,7 +3,7 @@ import { ThreadParentMessageStream } from '@metamask/post-message-stream';
 // eslint-disable-next-line @typescript-eslint/no-shadow
 import { Worker } from 'worker_threads';
 
-import type { Job } from '..';
+import type { TerminateJobArgs } from '..';
 import { AbstractExecutionService } from '..';
 
 export class NodeThreadExecutionService extends AbstractExecutionService<Worker> {
@@ -37,7 +37,9 @@ export class NodeThreadExecutionService extends AbstractExecutionService<Worker>
     return Promise.resolve({ worker, stream });
   }
 
-  protected async terminateJob(jobWrapper: Job<Worker>): Promise<void> {
-    await jobWrapper.worker.terminate();
+  protected async terminateJob(
+    jobWrapper: TerminateJobArgs<Worker>,
+  ): Promise<void> {
+    await jobWrapper.worker?.terminate();
   }
 }

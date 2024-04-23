@@ -1,7 +1,10 @@
 import type { BasePostMessageStream } from '@metamask/post-message-stream';
 import { nanoid } from 'nanoid';
 
-import type { ExecutionServiceArgs, Job } from '../AbstractExecutionService';
+import type {
+  ExecutionServiceArgs,
+  TerminateJobArgs,
+} from '../AbstractExecutionService';
 import { AbstractExecutionService } from '../AbstractExecutionService';
 import { ProxyPostMessageStream } from '../ProxyPostMessageStream';
 
@@ -41,7 +44,7 @@ export class ProxyExecutionService extends AbstractExecutionService<string> {
    *
    * @param job - The job to terminate.
    */
-  protected async terminateJob(job: Job<string>) {
+  protected async terminateJob(job: TerminateJobArgs<string>) {
     // The `AbstractExecutionService` will have already closed the job stream,
     // so we write to the runtime stream directly.
     this.#stream.write({

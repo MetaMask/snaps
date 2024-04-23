@@ -1,6 +1,7 @@
 import { BasePostMessageStream } from '@metamask/post-message-stream';
 import { HandlerType } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
+import { Duration, inMilliseconds } from '@metamask/utils';
 
 import { createService } from '../test-utils';
 import type { ExecutionServiceArgs } from './AbstractExecutionService';
@@ -11,6 +12,7 @@ class MockExecutionService extends NodeThreadExecutionService {
     super({
       messenger,
       setupSnapProvider,
+      initTimeout: inMilliseconds(5, Duration.Second),
     });
   }
 
@@ -153,5 +155,39 @@ describe('AbstractExecutionService', () => {
         endowments: ['console'],
       }),
     ).rejects.toThrow('The Snaps execution environment failed to start.');
+  });
+
+  it('throws an error if execution environment fails to init', async () => {
+    const { service } = createService(MockExecutionService);
+
+    // @ts-expect-error Accessing private property and returning unusable worker.
+    service.initEnvStream = async () =>
+      new Promise((_resolve) => {
+        // no-op
+      });
+
+    await expect(
+      service.executeSnap({
+        snapId: MOCK_SNAP_ID,
+        sourceCode: `
+        console.log('foo');
+      `,
+        endowments: ['console'],
+      }),
+    ).rejects.toThrow('The Snaps execution environment failed to start.');
+  });
+
+  it('throws an error if Snap fails to init', async () => {
+    const { service } = createService(MockExecutionService);
+
+    await expect(
+      service.executeSnap({
+        snapId: MOCK_SNAP_ID,
+        sourceCode: `
+        while(true) {}
+      `,
+        endowments: ['console'],
+      }),
+    ).rejects.toThrow(`${MOCK_SNAP_ID} failed to start.`);
   });
 });

@@ -628,12 +628,6 @@ type SnapControllerArgs = {
   maxRequestTime?: number;
 
   /**
-   * The maximum amount of time a snap may take to initialize, including
-   * the time it takes for the execution environment to start.
-   */
-  maxInitTime?: number;
-
-  /**
    * The npm registry URL that will be used to fetch published snaps.
    */
   npmRegistryUrl?: string;
@@ -746,8 +740,6 @@ export class SnapController extends BaseController<
   // This property cannot be hash private yet because of tests.
   private readonly maxRequestTime: number;
 
-  #maxInitTime: number;
-
   #encryptor: ExportableKeyEncryptor;
 
   #getMnemonic: () => Promise<Uint8Array>;
@@ -776,7 +768,6 @@ export class SnapController extends BaseController<
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
     maxIdleTime = inMilliseconds(30, Duration.Second),
     maxRequestTime = inMilliseconds(60, Duration.Second),
-    maxInitTime = inMilliseconds(60, Duration.Second),
     fetchFunction = globalThis.fetch.bind(globalThis),
     featureFlags = {},
     detectSnapLocation: detectSnapLocationFunction = detectSnapLocation,
@@ -834,7 +825,6 @@ export class SnapController extends BaseController<
     this.#idleTimeCheckInterval = idleTimeCheckInterval;
     this.#maxIdleTime = maxIdleTime;
     this.maxRequestTime = maxRequestTime;
-    this.#maxInitTime = maxInitTime;
     this.#detectSnapLocation = detectSnapLocationFunction;
     this.#encryptor = encryptor;
     this.#getMnemonic = getMnemonic;
@@ -2600,17 +2590,13 @@ export class SnapController extends BaseController<
 
     try {
       const runtime = this.#getRuntimeExpect(snapId);
-      const result = await withTimeout(
-        this.messagingSystem.call('ExecutionService:executeSnap', {
+      const result = await this.messagingSystem.call(
+        'ExecutionService:executeSnap',
+        {
           ...snapData,
           endowments: await this.#getEndowments(snapId),
-        }),
-        this.#maxInitTime,
+        },
       );
-
-      if (result === hasTimedOut) {
-        throw new Error(`${snapId} failed to start.`);
-      }
 
       this.#transition(snapId, SnapStatusEvents.Start);
       // We treat the initialization of the snap as the first request, for idle timing purposes.

@@ -4,7 +4,10 @@ import { createWindow } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
-import type { ExecutionServiceArgs, Job } from '../AbstractExecutionService';
+import type {
+  ExecutionServiceArgs,
+  TerminateJobArgs,
+} from '../AbstractExecutionService';
 import { AbstractExecutionService } from '../AbstractExecutionService';
 import { ProxyPostMessageStream } from '../ProxyPostMessageStream';
 
@@ -48,7 +51,7 @@ export class WebWorkerExecutionService extends AbstractExecutionService<string> 
    *
    * @param job - The job to terminate.
    */
-  protected async terminateJob(job: Job<string>) {
+  protected async terminateJob(job: TerminateJobArgs<string>) {
     // The `AbstractExecutionService` will have already closed the job stream,
     // so we write to the runtime stream directly.
     assert(this.#runtimeStream, 'Runtime stream not initialized.');
