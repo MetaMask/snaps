@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.2.0]
+
 ### Uncategorized
 
 - Increase max UI size limit ([#2342](https://github.com/MetaMask/snaps-skunkworks.git/pull/2342))
@@ -291,7 +293,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@7.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@7.2.0...HEAD
+[7.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@7.1.0...@metamask/snaps-utils@7.2.0
 [7.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@7.0.4...@metamask/snaps-utils@7.1.0
 [7.0.4]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@7.0.3...@metamask/snaps-utils@7.0.4
 [7.0.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@7.0.2...@metamask/snaps-utils@7.0.3
