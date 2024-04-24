@@ -20,9 +20,9 @@ describe('NodeProcessExecutionService', () => {
     const response = await service.executeSnap({
       snapId: 'TestSnap',
       sourceCode: `
-        console.log('foo');
+      module.exports.onRpcRequest = () => null;
       `,
-      endowments: ['console'],
+      endowments: [],
     });
     expect(response).toBe('OK');
     await service.terminateAllSnaps();
@@ -205,6 +205,7 @@ describe('NodeProcessExecutionService', () => {
     const result = await service.executeSnap({
       snapId,
       sourceCode: `
+        module.exports.onRpcRequest = () => null;
         console.log('foo');
         console.error('bar');
       `,
