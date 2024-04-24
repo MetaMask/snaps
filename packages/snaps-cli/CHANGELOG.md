@@ -10,7 +10,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Disable `topLevelAwait` configuration option ([#2358](https://github.com/MetaMask/snaps/pull/2358))
   - Before this the CLI would produce invalid builds when using top-level await.
-  - This is now correctly disabled.
 
 ## [6.1.0]
 ### Added
