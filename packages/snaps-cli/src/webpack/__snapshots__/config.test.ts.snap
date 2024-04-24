@@ -4,6 +4,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -164,6 +167,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -324,6 +330,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": "inline-source-map",
   "entry": "/foo/bar/src/index.ts",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -484,6 +493,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": "source-map",
   "entry": "/foo/bar/src/index.ts",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -635,6 +647,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -803,6 +818,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -963,6 +981,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -1123,6 +1144,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -1291,6 +1315,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -1459,6 +1486,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -1604,6 +1634,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -1773,6 +1806,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -1933,6 +1969,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -2093,6 +2132,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -2262,6 +2304,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -2431,6 +2476,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -2585,6 +2633,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -2739,6 +2790,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
