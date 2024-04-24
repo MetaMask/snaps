@@ -461,6 +461,9 @@ export class BaseSnapExecutor {
       }
       return acc;
     }, {});
+
+    // If the Snap has no valid exports after this, fail.
+    assert(Object.keys(data.exports).length > 0, 'Snap has no valid exports.');
   }
 
   /**

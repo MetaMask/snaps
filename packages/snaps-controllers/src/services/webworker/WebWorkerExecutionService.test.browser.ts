@@ -37,17 +37,17 @@ describe('WebWorkerExecutionService', () => {
     await service.executeSnap({
       snapId: MOCK_SNAP_ID,
       sourceCode: `
-        console.log('foo');
+        module.exports.onRpcRequest = () => null;
       `,
-      endowments: ['console'],
+      endowments: [],
     });
 
     await service.executeSnap({
       snapId: MOCK_LOCAL_SNAP_ID,
       sourceCode: `
-        console.log('foo');
+        module.exports.onRpcRequest = () => null;
       `,
-      endowments: ['console'],
+      endowments: [],
     });
 
     expect(document.getElementById(WORKER_POOL_ID)).not.toBeNull();
@@ -64,9 +64,9 @@ describe('WebWorkerExecutionService', () => {
     const response = await service.executeSnap({
       snapId: 'TestSnap',
       sourceCode: `
-        console.log('foo');
+        module.exports.onRpcRequest = () => null;
       `,
-      endowments: ['console'],
+      endowments: [],
     });
 
     expect(response).toBe('OK');
