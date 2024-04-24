@@ -14,7 +14,9 @@ describe('jsx', () => {
 
   it('validates the element', () => {
     // @ts-expect-error - Invalid props.
-    expect(() => <Text foo="bar" />).toThrow();
+    expect(() => <Text foo="bar" />).toThrow(
+      'Invalid JSX element: Expected the value to satisfy a union of `object | object | object | object | object | object | object | object | object | object | object | object | object | object | object | object`, but received: [object Object].',
+    );
   });
 });
 

@@ -1,5 +1,16 @@
-import type { StringElement } from '../component';
+import type {
+  MaybeArray,
+  StandardFormattingElement,
+} from '@metamask/snaps-sdk/jsx';
+
 import { createSnapComponent } from '../component';
+
+/**
+ * The children of the {@link Link} component.
+ */
+export type LinkChildren = MaybeArray<
+  string | StandardFormattingElement | null
+>;
 
 /**
  * The props of the {@link Link} component.
@@ -9,7 +20,7 @@ import { createSnapComponent } from '../component';
  * `http` is not allowed.
  */
 export type LinkProps = {
-  children: StringElement;
+  children: LinkChildren;
   href: string;
 };
 

@@ -1,8 +1,5 @@
-import {
-  NotificationType,
-  enumValue,
-  SnapInterfaceStruct,
-} from '@metamask/snaps-sdk';
+import { NotificationType, enumValue } from '@metamask/snaps-sdk';
+import { JSXElementStruct } from '@metamask/snaps-sdk/jsx';
 import {
   bytesToHex,
   JsonStruct,
@@ -205,7 +202,7 @@ export const JsonRpcMockOptionsStruct = object({
 });
 
 export const InterfaceStruct = type({
-  content: optional(SnapInterfaceStruct),
+  content: optional(JSXElementStruct),
 });
 
 export const SnapResponseWithoutInterfaceStruct = object({

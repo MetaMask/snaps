@@ -6,12 +6,27 @@ import { hasProperty, isPlainObject } from '@metamask/utils';
  *
  * @param node - The JSX node to walk.
  * @param callback - The callback to call on each node.
+ * @returns The result of the callback, if any.
  */
-export function walkJsx(
+export function walkJsx<Value>(
   node: JSXElement,
-  callback: (node: JSXElement) => void,
-) {
-  callback(node);
+  callback: (node: JSXElement) => Value | undefined,
+): Value | undefined {
+  if (Array.isArray(node)) {
+    for (const child of node) {
+      const childResult = walkJsx(child as JSXElement, callback);
+      if (childResult !== undefined) {
+        return childResult;
+      }
+    }
+
+    return undefined;
+  }
+
+  const result = callback(node);
+  if (result !== undefined) {
+    return result;
+  }
 
   if (
     hasProperty(node, 'props') &&
@@ -19,15 +34,20 @@ export function walkJsx(
     hasProperty(node.props, 'children')
   ) {
     if (Array.isArray(node.props.children)) {
-      node.props.children.forEach((child) => {
+      for (const child of node.props.children) {
         if (isPlainObject(child)) {
-          walkJsx(child as JSXElement, callback);
+          const childResult = walkJsx(child as JSXElement, callback);
+          if (childResult !== undefined) {
+            return childResult;
+          }
         }
-      });
+      }
     }
 
     if (isPlainObject(node.props.children)) {
-      walkJsx(node.props.children as JSXElement, callback);
+      return walkJsx(node.props.children as JSXElement, callback);
     }
   }
+
+  return undefined;
 }

@@ -69,6 +69,18 @@ export type SnapComponent<
 > = (props: Props & { key?: Key | null }) => SnapElement<Props, Type>;
 
 /**
+ * Remove undefined props from an object.
+ *
+ * @param props - The object to remove undefined props from.
+ * @returns The object without undefined props.
+ */
+function removeUndefinedProps<Props extends JsonObject>(props: Props): Props {
+  return Object.fromEntries(
+    Object.entries(props).filter(([, value]) => value !== undefined),
+  ) as Props;
+}
+
+/**
  * Create a Snap component from a type. This is a helper function that creates a
  * Snap component function.
  *
@@ -84,7 +96,7 @@ export function createSnapComponent<
     const { key = null, ...rest } = props;
     return {
       type,
-      props: rest as Props,
+      props: removeUndefinedProps(rest as Props),
       key,
     };
   };

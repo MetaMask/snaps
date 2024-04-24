@@ -10,7 +10,7 @@ import type { InputElement } from './Input';
  * @property children - The input field and the submit button.
  */
 export type FieldProps = {
-  label: string;
+  label?: string | undefined;
   error?: string | undefined;
   children: [InputElement, ButtonElement] | InputElement;
 };

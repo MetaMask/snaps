@@ -10,7 +10,7 @@ import type {
   OnUpdateHandler,
   OnUserInputHandler,
 } from '@metamask/snaps-sdk';
-import { SnapInterfaceStruct, SeverityLevel } from '@metamask/snaps-sdk';
+import { ComponentOrElementStruct, SeverityLevel } from '@metamask/snaps-sdk';
 import {
   assign,
   literal,
@@ -119,7 +119,7 @@ export const OnTransactionResponseWithIdStruct = assign(
 export const OnTransactionResponseWithContentStruct = assign(
   OnTransactionSeverityResponseStruct,
   object({
-    content: SnapInterfaceStruct,
+    content: ComponentOrElementStruct,
   }),
 );
 
@@ -133,7 +133,7 @@ export const OnTransactionResponseStruct = nullable(
 export const OnSignatureResponseStruct = OnTransactionResponseStruct;
 
 export const OnHomePageResponseWithContentStruct = object({
-  content: SnapInterfaceStruct,
+  content: ComponentOrElementStruct,
 });
 
 export const OnHomePageResponseWithIdStruct = object({

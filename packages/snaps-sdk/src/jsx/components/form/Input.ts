@@ -7,13 +7,13 @@ import { createSnapComponent } from '../../component';
  *
  * @property name - The name of the input field. This is used to identify the
  * input field in the form data.
- * @property type - The type of the input field.
+ * @property type - The type of the input field. Defaults to `text`.
  * @property value - The value of the input field.
  * @property placeholder - The placeholder text of the input field.
  */
 type InputProps = {
   name: string;
-  type: 'text' | 'password' | 'number';
+  type?: 'text' | 'password' | 'number' | undefined;
   value?: string | undefined;
   placeholder?: string | undefined;
 };

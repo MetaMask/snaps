@@ -3,7 +3,7 @@
 import type {
   EnumToUnion,
   NotificationType,
-  SnapInterface,
+  ComponentOrElement,
 } from '@metamask/snaps-sdk';
 
 interface SnapsMatchers {
@@ -65,7 +65,7 @@ interface SnapsMatchers {
    * const ui = await response.getInterface();
    * expect(ui).toRender(panel([heading('Hello, world!')]));
    */
-  toRender(component: SnapInterface): void;
+  toRender(component: ComponentOrElement): void;
 }
 
 // Extend the `expect` interface with the new matchers. This is used when

@@ -1,72 +1,6 @@
-import { form, input, panel, text } from '@metamask/snaps-sdk';
 import { Box, Button, Field, Form, Input, Text } from '@metamask/snaps-sdk/jsx';
 
-import {
-  assertNameIsUnique,
-  constructFormInputState,
-  constructInputState,
-  constructState,
-} from './utils';
-
-describe('constructInputState', () => {
-  it('returns null if the input has no previous value', () => {
-    const component = input('bar');
-
-    const result = constructInputState({}, component);
-
-    expect(result).toBeNull();
-  });
-
-  it('returns the previous state value of an input', () => {
-    const state = { bar: 'foo' };
-
-    const component = input('bar');
-
-    const result = constructInputState(state, component);
-
-    expect(result).toBe('foo');
-  });
-
-  it('returns the defined component value if it is set', () => {
-    const state = { bar: 'foo' };
-
-    const component = input({ name: 'bar', value: 'baz' });
-
-    const result = constructInputState(state, component);
-
-    expect(result).toBe('baz');
-  });
-});
-
-describe('constructFormInputState', () => {
-  it('returns null if the input has no previous value', () => {
-    const component = input('bar');
-
-    const result = constructFormInputState({}, component, 'foo');
-
-    expect(result).toBeNull();
-  });
-
-  it('returns the previous state value of an input', () => {
-    const state = { baz: { bar: 'foo' } };
-
-    const component = input('bar');
-
-    const result = constructFormInputState(state, component, 'baz');
-
-    expect(result).toBe('foo');
-  });
-
-  it('returns the defined component value if it is set', () => {
-    const state = { baz: { bar: 'foo' } };
-
-    const component = input({ name: 'bar', value: 'baz' });
-
-    const result = constructFormInputState(state, component, 'baz');
-
-    expect(result).toBe('baz');
-  });
-});
+import { assertNameIsUnique, constructJsxState } from './utils';
 
 describe('assertNameIsUnique', () => {
   it('throws an error if a name is not unique', () => {
@@ -84,14 +18,38 @@ describe('assertNameIsUnique', () => {
   });
 });
 
-describe('constructState', () => {
+describe('constructJsxState', () => {
   it('can construct a new component state', () => {
-    const components = panel([
-      text('text'),
-      form({ name: 'foo', children: [input({ name: 'bar' })] }),
-    ]);
+    const element = (
+      <Box>
+        <Text>text</Text>
+        <Form name="foo">
+          <Field label="Bar">
+            <Input type="text" name="bar" />
+          </Field>
+        </Form>
+      </Box>
+    );
 
-    const result = constructState({}, components);
+    const result = constructJsxState({}, element);
+
+    expect(result).toStrictEqual({ foo: { bar: null } });
+  });
+
+  it('can construct a new component state from a field with a button', () => {
+    const element = (
+      <Box>
+        <Text>text</Text>
+        <Form name="foo">
+          <Field label="Bar">
+            <Input type="text" name="bar" />
+            <Button>Button</Button>
+          </Field>
+        </Form>
+      </Box>
+    );
+
+    const result = constructJsxState({}, element);
 
     expect(result).toStrictEqual({ foo: { bar: null } });
   });
@@ -99,32 +57,42 @@ describe('constructState', () => {
   it('merges two states', () => {
     const state = { foo: { bar: 'test' } };
 
-    const components = panel([
-      text('text'),
-      form({
-        name: 'foo',
-        children: [input({ name: 'bar' }), input({ name: 'baz' })],
-      }),
-    ]);
+    const element = (
+      <Box>
+        <Text>text</Text>
+        <Form name="foo">
+          <Field label="Bar">
+            <Input type="text" name="bar" value="test" />
+          </Field>
+          <Field label="Baz">
+            <Input type="text" name="baz" />
+          </Field>
+        </Form>
+      </Box>
+    );
 
-    const result = constructState(state, components);
-
+    const result = constructJsxState(state, element);
     expect(result).toStrictEqual({ foo: { bar: 'test', baz: null } });
   });
 
   it('deletes unused state', () => {
     const state = { form: { foo: null, bar: 'test' } };
 
-    const components = panel([
-      text('text'),
-      form({
-        name: 'form',
-        children: [input({ name: 'bar' }), input({ name: 'baz' })],
-      }),
-    ]);
+    const element = (
+      <Box>
+        <Text>text</Text>
+        <Form name="form">
+          <Field label="Bar">
+            <Input type="text" name="bar" value="test" />
+          </Field>
+          <Field label="Baz">
+            <Input type="text" name="baz" />
+          </Field>
+        </Form>
+      </Box>
+    );
 
-    const result = constructState(state, components);
-
+    const result = constructJsxState(state, element);
     expect(result).toStrictEqual({ form: { bar: 'test', baz: null } });
   });
 
@@ -134,19 +102,29 @@ describe('constructState', () => {
       form2: { foo: 'abc', bar: 'def' },
     };
 
-    const components = panel([
-      text('text'),
-      form({
-        name: 'form1',
-        children: [input({ name: 'bar' }), input({ name: 'baz' })],
-      }),
-      form({
-        name: 'form2',
-        children: [input({ name: 'bar' }), input({ name: 'baz' })],
-      }),
-    ]);
+    const element = (
+      <Box>
+        <Text>text</Text>
+        <Form name="form1">
+          <Field label="Bar">
+            <Input type="text" name="bar" value="test" />
+          </Field>
+          <Field label="Baz">
+            <Input type="text" name="baz" />
+          </Field>
+        </Form>
+        <Form name="form2">
+          <Field label="Bar">
+            <Input type="text" name="bar" value="def" />
+          </Field>
+          <Field label="Baz">
+            <Input type="text" name="baz" />
+          </Field>
+        </Form>
+      </Box>
+    );
 
-    const result = constructState(state, components);
+    const result = constructJsxState(state, element);
 
     expect(result).toStrictEqual({
       form1: { bar: 'test', baz: null },
@@ -154,51 +132,65 @@ describe('constructState', () => {
     });
   });
 
-  it('deletes unused form', () => {
+  it('deletes an unused form', () => {
     const state = {
       form1: { foo: null, bar: 'test' },
       form2: { foo: 'abc', bar: 'def' },
     };
 
-    const components = panel([
-      text('text'),
-      form({
-        name: 'form1',
-        children: [input({ name: 'bar' }), input({ name: 'baz' })],
-      }),
-    ]);
+    const element = (
+      <Box>
+        <Text>text</Text>
+        <Form name="form1">
+          <Field label="Bar">
+            <Input type="text" name="bar" value="test" />
+          </Field>
+          <Field label="Baz">
+            <Input type="text" name="baz" />
+          </Field>
+        </Form>
+      </Box>
+    );
 
-    const result = constructState(state, components);
-
+    const result = constructJsxState(state, element);
     expect(result).toStrictEqual({
       form1: { bar: 'test', baz: null },
     });
   });
 
-  it('handles nesting forms', () => {
+  it('handles nested forms', () => {
     const state = {
       form1: { foo: null, bar: 'test' },
       form2: { foo: 'abc', bar: 'def' },
     };
 
-    const components = panel([
-      text('text'),
-      panel([
-        form({
-          name: 'form1',
-          children: [input({ name: 'bar' }), input({ name: 'baz' })],
-        }),
-      ]),
-      panel([
-        form({
-          name: 'form2',
-          children: [input({ name: 'bar' }), input({ name: 'baz' })],
-        }),
-      ]),
-    ]);
+    const element = (
+      <Box>
+        <Text>text</Text>
+        <Box>
+          <Form name="form1">
+            <Field label="Bar">
+              <Input type="text" name="bar" value="test" />
+            </Field>
+            <Field label="Baz">
+              <Input type="text" name="baz" />
+            </Field>
+          </Form>
+        </Box>
+        <Box>
+          <Form name="form2">
+            <Field label="Bar">
+              <Input type="text" name="bar" value="def" />
+            </Field>
+            <Field label="Baz">
+              <Input type="text" name="baz" />
+            </Field>
+          </Form>
+        </Box>
+      </Box>
+    );
 
-    const result = constructState(state, components);
-
+    const result = constructJsxState(state, element);
     expect(result).toStrictEqual({
       form1: { bar: 'test', baz: null },
       form2: { bar: 'def', baz: null },
@@ -206,30 +198,39 @@ describe('constructState', () => {
   });
 
   it('handles root level inputs with value', () => {
-    const components = panel([input({ name: 'foo', value: 'bar' })]);
+    const element = (
+      <Box>
+        <Input name="foo" type="text" value="bar" />
+      </Box>
+    );
 
-    const result = constructState({}, components);
-
+    const result = constructJsxState({}, element);
     expect(result).toStrictEqual({
       foo: 'bar',
     });
   });
 
   it('handles root level inputs without value', () => {
-    const components = panel([input({ name: 'foo' })]);
+    const element = (
+      <Box>
+        <Input name="foo" type="text" />
+      </Box>
+    );
 
-    const result = constructState({}, components);
-
+    const result = constructJsxState({}, element);
     expect(result).toStrictEqual({
       foo: null,
     });
   });
 
   it('deletes unused root level values', () => {
-    const components = panel([input({ name: 'foo' })]);
+    const element = (
+      <Box>
+        <Input name="foo" type="text" />
+      </Box>
+    );
 
-    const result = constructState({ foo: null, bar: null }, components);
-
+    const result = constructJsxState({ foo: null, bar: null }, element);
     expect(result).toStrictEqual({
       foo: null,
     });
@@ -240,331 +241,62 @@ describe('constructState', () => {
       foo: 'bar',
     };
 
-    const components = panel([input({ name: 'foo' })]);
+    const element = (
+      <Box>
+        <Input name="foo" type="text" />
+      </Box>
+    );
 
-    const result = constructState(state, components);
-
+    const result = constructJsxState(state, element);
     expect(result).toStrictEqual({
       foo: 'bar',
     });
   });
 
   it('throws if a name is not unique in a form', () => {
-    const components = form({
-      name: 'test',
-      children: [input({ name: 'foo' }), input({ name: 'foo' })],
-    });
+    const element = (
+      <Form name="test">
+        <Field label="Foo">
+          <Input name="foo" type="text" />
+        </Field>
+        <Field label="Bar">
+          <Input name="foo" type="text" />
+        </Field>
+      </Form>
+    );
 
-    expect(() => constructState({}, components)).toThrow(
+    expect(() => constructJsxState({}, element)).toThrow(
       `Duplicate component names are not allowed, found multiple instances of: "foo".`,
     );
   });
 
   it('throws if a name is not unique at the root', () => {
-    const components = panel([
-      input({ name: 'test' }),
-      input({ name: 'test' }),
-    ]);
+    const element = (
+      <Box>
+        <Input name="test" type="text" />
+        <Input name="test" type="text" />
+      </Box>
+    );
 
-    expect(() => constructState({}, components)).toThrow(
+    expect(() => constructJsxState({}, element)).toThrow(
       `Duplicate component names are not allowed, found multiple instances of: "test".`,
     );
   });
 
   it('throws if a form has the same name as an input', () => {
-    const components = panel([
-      input({ name: 'test' }),
-      form({
-        name: 'test',
-        children: [input({ name: 'foo' })],
-      }),
-    ]);
-
-    expect(() => constructState({}, components)).toThrow(
-      `Duplicate component names are not allowed, found multiple instances of: "test".`,
-    );
-  });
-
-  describe('jsx', () => {
-    it('can construct a new component state', () => {
-      const element = (
-        <Box>
-          <Text>text</Text>
-          <Form name="foo">
-            <Field label="Bar">
-              <Input type="text" name="bar" />
-            </Field>
-          </Form>
-        </Box>
-      );
-
-      const result = constructState({}, element);
-
-      expect(result).toStrictEqual({ foo: { bar: null } });
-    });
-
-    it('can construct a new component state from a field with a button', () => {
-      const element = (
-        <Box>
-          <Text>text</Text>
-          <Form name="foo">
-            <Field label="Bar">
-              <Input type="text" name="bar" />
-              <Button>Button</Button>
-            </Field>
-          </Form>
-        </Box>
-      );
-
-      const result = constructState({}, element);
-
-      expect(result).toStrictEqual({ foo: { bar: null } });
-    });
-
-    it('merges two states', () => {
-      const state = { foo: { bar: 'test' } };
-
-      const element = (
-        <Box>
-          <Text>text</Text>
-          <Form name="foo">
-            <Field label="Bar">
-              <Input type="text" name="bar" value="test" />
-            </Field>
-            <Field label="Baz">
-              <Input type="text" name="baz" />
-            </Field>
-          </Form>
-        </Box>
-      );
-
-      const result = constructState(state, element);
-      expect(result).toStrictEqual({ foo: { bar: 'test', baz: null } });
-    });
-
-    it('deletes unused state', () => {
-      const state = { form: { foo: null, bar: 'test' } };
-
-      const element = (
-        <Box>
-          <Text>text</Text>
-          <Form name="form">
-            <Field label="Bar">
-              <Input type="text" name="bar" value="test" />
-            </Field>
-            <Field label="Baz">
-              <Input type="text" name="baz" />
-            </Field>
-          </Form>
-        </Box>
-      );
-
-      const result = constructState(state, element);
-      expect(result).toStrictEqual({ form: { bar: 'test', baz: null } });
-    });
-
-    it('handles multiple forms', () => {
-      const state = {
-        form1: { foo: null, bar: 'test' },
-        form2: { foo: 'abc', bar: 'def' },
-      };
-
-      const element = (
-        <Box>
-          <Text>text</Text>
-          <Form name="form1">
-            <Field label="Bar">
-              <Input type="text" name="bar" value="test" />
-            </Field>
-            <Field label="Baz">
-              <Input type="text" name="baz" />
-            </Field>
-          </Form>
-          <Form name="form2">
-            <Field label="Bar">
-              <Input type="text" name="bar" value="def" />
-            </Field>
-            <Field label="Baz">
-              <Input type="text" name="baz" />
-            </Field>
-          </Form>
-        </Box>
-      );
-
-      const result = constructState(state, element);
-
-      expect(result).toStrictEqual({
-        form1: { bar: 'test', baz: null },
-        form2: { bar: 'def', baz: null },
-      });
-    });
-
-    it('deletes an unused form', () => {
-      const state = {
-        form1: { foo: null, bar: 'test' },
-        form2: { foo: 'abc', bar: 'def' },
-      };
-
-      const element = (
-        <Box>
-          <Text>text</Text>
-          <Form name="form1">
-            <Field label="Bar">
-              <Input type="text" name="bar" value="test" />
-            </Field>
-            <Field label="Baz">
-              <Input type="text" name="baz" />
-            </Field>
-          </Form>
-        </Box>
-      );
-
-      const result = constructState(state, element);
-      expect(result).toStrictEqual({
-        form1: { bar: 'test', baz: null },
-      });
-    });
-
-    it('handles nested forms', () => {
-      const state = {
-        form1: { foo: null, bar: 'test' },
-        form2: { foo: 'abc', bar: 'def' },
-      };
-
-      const element = (
-        <Box>
-          <Text>text</Text>
-          <Box>
-            <Form name="form1">
-              <Field label="Bar">
-                <Input type="text" name="bar" value="test" />
-              </Field>
-              <Field label="Baz">
-                <Input type="text" name="baz" />
-              </Field>
-            </Form>
-          </Box>
-          <Box>
-            <Form name="form2">
-              <Field label="Bar">
-                <Input type="text" name="bar" value="def" />
-              </Field>
-              <Field label="Baz">
-                <Input type="text" name="baz" />
-              </Field>
-            </Form>
-          </Box>
-        </Box>
-      );
-
-      const result = constructState(state, element);
-      expect(result).toStrictEqual({
-        form1: { bar: 'test', baz: null },
-        form2: { bar: 'def', baz: null },
-      });
-    });
-
-    it('handles root level inputs with value', () => {
-      const element = (
-        <Box>
-          <Input name="foo" type="text" value="bar" />
-        </Box>
-      );
-
-      const result = constructState({}, element);
-      expect(result).toStrictEqual({
-        foo: 'bar',
-      });
-    });
-
-    it('handles root level inputs without value', () => {
-      const element = (
-        <Box>
-          <Input name="foo" type="text" />
-        </Box>
-      );
-
-      const result = constructState({}, element);
-      expect(result).toStrictEqual({
-        foo: null,
-      });
-    });
-
-    it('deletes unused root level values', () => {
-      const element = (
-        <Box>
-          <Input name="foo" type="text" />
-        </Box>
-      );
-
-      const result = constructState({ foo: null, bar: null }, element);
-      expect(result).toStrictEqual({
-        foo: null,
-      });
-    });
-
-    it('merges root level inputs from old state', () => {
-      const state = {
-        foo: 'bar',
-      };
-
-      const element = (
-        <Box>
-          <Input name="foo" type="text" />
-        </Box>
-      );
-
-      const result = constructState(state, element);
-      expect(result).toStrictEqual({
-        foo: 'bar',
-      });
-    });
-
-    it('throws if a name is not unique in a form', () => {
-      const element = (
+    const element = (
+      <Box>
+        <Input name="test" type="text" />
         <Form name="test">
           <Field label="Foo">
             <Input name="foo" type="text" />
           </Field>
-          <Field label="Bar">
-            <Input name="foo" type="text" />
-          </Field>
         </Form>
-      );
+      </Box>
+    );
 
-      expect(() => constructState({}, element)).toThrow(
-        `Duplicate component names are not allowed, found multiple instances of: "foo".`,
-      );
-    });
-
-    it('throws if a name is not unique at the root', () => {
-      const element = (
-        <Box>
-          <Input name="test" type="text" />
-          <Input name="test" type="text" />
-        </Box>
-      );
-
-      expect(() => constructState({}, element)).toThrow(
-        `Duplicate component names are not allowed, found multiple instances of: "test".`,
-      );
-    });
-
-    it('throws if a form has the same name as an input', () => {
-      const element = (
-        <Box>
-          <Input name="test" type="text" />
-          <Form name="test">
-            <Field label="Foo">
-              <Input name="foo" type="text" />
-            </Field>
-          </Form>
-        </Box>
-      );
-
-      expect(() => constructState({}, element)).toThrow(
-        `Duplicate component names are not allowed, found multiple instances of: "test".`,
-      );
-    });
+    expect(() => constructJsxState({}, element)).toThrow(
+      `Duplicate component names are not allowed, found multiple instances of: "test".`,
+    );
   });
 });

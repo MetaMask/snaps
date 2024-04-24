@@ -9,7 +9,7 @@ import {
   DialogType,
   enumValue,
   union,
-  SnapInterfaceStruct,
+  ComponentOrElementStruct,
 } from '@metamask/snaps-sdk';
 import type {
   DialogParams,
@@ -17,7 +17,7 @@ import type {
   Component,
   InterfaceState,
   SnapId,
-  SnapInterface,
+  ComponentOrElement,
 } from '@metamask/snaps-sdk';
 import { createUnion } from '@metamask/snaps-utils';
 import type { InferMatching } from '@metamask/snaps-utils';
@@ -50,13 +50,13 @@ type ShowDialog = (
 
 type CreateInterface = (
   snapId: string,
-  content: SnapInterface,
+  content: ComponentOrElement,
 ) => Promise<string>;
 
 type GetInterface = (
   snapId: string,
   id: string,
-) => { content: SnapInterface; snapId: SnapId; state: InterfaceState };
+) => { content: ComponentOrElement; snapId: SnapId; state: InterfaceState };
 
 export type DialogMethodHooks = {
   /**
@@ -142,7 +142,7 @@ const BaseParamsStruct = type({
 
 const AlertParametersWithContentStruct = object({
   type: enumValue(DialogType.Alert),
-  content: SnapInterfaceStruct,
+  content: ComponentOrElementStruct,
 });
 const AlertParametersWithIdStruct = object({
   type: enumValue(DialogType.Alert),
@@ -156,7 +156,7 @@ const AlertParametersStruct = union([
 
 const ConfirmationParametersWithContentStruct = object({
   type: enumValue(DialogType.Confirmation),
-  content: SnapInterfaceStruct,
+  content: ComponentOrElementStruct,
 });
 
 const ConfirmationParametersWithIdStruct = object({
@@ -171,7 +171,7 @@ const ConfirmationParametersStruct = union([
 
 const PromptParametersWithContentStruct = object({
   type: enumValue(DialogType.Prompt),
-  content: SnapInterfaceStruct,
+  content: ComponentOrElementStruct,
   placeholder: PlaceholderStruct,
 });
 

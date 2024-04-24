@@ -1,5 +1,18 @@
-import type { StringElement } from '../../component';
+import type { MaybeArray } from '@metamask/snaps-sdk/jsx';
+
 import { createSnapComponent } from '../../component';
+
+/**
+ * The children of the {@link Italic} component.
+ */
+export type ItalicChildren = MaybeArray<
+  | string
+  | {
+      // We have to specify the type here to avoid a circular reference.
+      type: 'Bold';
+    }
+  | null
+>;
 
 /**
  * The props of the {@link Italic} component.
@@ -8,7 +21,7 @@ import { createSnapComponent } from '../../component';
  * or an array of strings.
  */
 export type ItalicProps = {
-  children: StringElement;
+  children: ItalicChildren;
 };
 
 const TYPE = 'Italic';

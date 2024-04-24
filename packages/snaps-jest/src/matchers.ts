@@ -8,10 +8,12 @@ import { expect } from '@jest/globals';
 import type {
   NotificationType,
   EnumToUnion,
-  SnapInterface,
+  ComponentOrElement,
+  Component,
 } from '@metamask/snaps-sdk';
-import type { SnapNode } from '@metamask/snaps-sdk/jsx';
+import type { JSXElement, SnapNode } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
+import { getJsxElementFromComponent } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
 import { hasProperty } from '@metamask/utils';
 import type { MatcherHintOptions } from 'jest-matcher-utils';
@@ -66,7 +68,7 @@ function assertHasInterface(
   actual: unknown,
   matcherName: string,
   options?: MatcherHintOptions,
-): asserts actual is { content: SnapInterface } {
+): asserts actual is { content: JSXElement } {
   if (!is(actual, InterfaceStruct) || !actual.content) {
     throw new Error(
       matcherErrorMessage(
@@ -245,65 +247,69 @@ export function serialiseJsx(node: SnapNode, indentation = 0): string {
   return `${indent}<${type}${serialiseProps(props)} />${trailingNewline}`;
 }
 
-/**
- * Get the difference between two interfaces.
- *
- * @param actual - The actual interface.
- * @param expected - The expected interface.
- * @returns The difference between the interfaces.
- */
-function getInterfaceDiff(
-  actual: SnapInterface,
-  expected: SnapInterface,
-): string {
-  if (isJSXElementUnsafe(actual) && isJSXElementUnsafe(expected)) {
-    // This is typed as `string | null`, but in practice it's always a string. The
-    // function only returns `null` if both the expected and actual values are
-    // numbers, bigints, or booleans, which is never the case here.
-    return diff(serialiseJsx(actual), serialiseJsx(expected)) as string;
-  }
-
-  return diff(expected, actual) as string;
-}
-
-/**
- * Get the interface from a value.
- *
- * @param value - The value.
- * @returns The interface.
- */
-function getInterface(value: SnapInterface) {
-  if (isJSXElementUnsafe(value)) {
-    return serialiseJsx(value);
-  }
-
-  return value;
-}
-
-export const toRender: MatcherFunction<[expected: SnapInterface]> = function (
+const toRenderLegacy: MatcherFunction<[expected: Component]> = function (
   actual,
   expected,
 ) {
   assertHasInterface(actual, 'toRender');
 
   const { content } = actual;
-  const pass = this.equals(content, expected);
+  const expectedElement = getJsxElementFromComponent(expected);
+  const pass = this.equals(content, expectedElement);
 
-  const difference = getInterfaceDiff(content, expected);
+  // This is typed as `string | null`, but in practice it's always a string.
+  // The function only returns `null` if both the expected and actual values
+  // are numbers, bigints, or booleans, which is never the case here.
+  const difference = diff(actual, expectedElement) as string;
+
   const message = pass
     ? () =>
         `${this.utils.matcherHint('.not.toRender')}\n\n` +
-        `Expected:\n${EXPECTED_COLOR(getInterface(expected))}\n\n` +
-        `Received:\n${RECEIVED_COLOR(getInterface(content))}` +
+        `Expected:\n${this.utils.printExpected(expectedElement)}\n\n` +
+        `Received:\n${this.utils.printReceived(content)}` +
         `\n\nDifference:\n\n${difference}`
     : () =>
         `${this.utils.matcherHint('.toRender')}\n\n` +
-        `Expected:\n${EXPECTED_COLOR(getInterface(expected))}\n\n` +
-        `Received:\n${RECEIVED_COLOR(getInterface(content))}` +
+        `Expected:\n${this.utils.printExpected(expectedElement)}\n\n` +
+        `Received:\n${this.utils.printReceived(content)}` +
         `\n\nDifference:\n\n${difference}`;
 
   return { message, pass };
 };
+
+export const toRender: MatcherFunction<[expected: ComponentOrElement]> =
+  function (actual, expected) {
+    assertHasInterface(actual, 'toRender');
+
+    if (!isJSXElementUnsafe(expected)) {
+      return toRenderLegacy.call(this, actual, expected);
+    }
+
+    const { content } = actual;
+    const pass = this.equals(content, expected);
+
+    // This is typed as `string | null`, but in practice it's always a string.
+    // The function only returns `null` if both the expected and actual values
+    // are numbers, bigints, or booleans, which is never the case here.
+    const difference = diff(
+      serialiseJsx(expected),
+      serialiseJsx(content),
+    ) as string;
+
+    const message = pass
+      ? () =>
+          `${this.utils.matcherHint('.not.toRender')}\n\n` +
+          `Expected:\n${EXPECTED_COLOR(serialiseJsx(expected))}\n\n` +
+          `Received:\n${RECEIVED_COLOR(serialiseJsx(content))}` +
+          `\n\nDifference:\n\n${difference}`
+      : () =>
+          `${this.utils.matcherHint('.toRender')}\n\n` +
+          `Expected:\n${EXPECTED_COLOR(serialiseJsx(expected))}\n\n` +
+          `Received:\n${RECEIVED_COLOR(serialiseJsx(content))}` +
+          `\n\nDifference:\n\n${difference}`;
+
+    return { message, pass };
+  };
 
 expect.extend({
   toRespondWith,

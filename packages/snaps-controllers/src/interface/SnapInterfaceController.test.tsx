@@ -9,6 +9,7 @@ import {
   Link,
   Text,
 } from '@metamask/snaps-sdk/jsx';
+import { getJsxElementFromComponent } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
 import {
@@ -60,7 +61,7 @@ describe('SnapInterfaceController', () => {
         'foo.bar',
       );
 
-      expect(content).toStrictEqual(components);
+      expect(content).toStrictEqual(getJsxElementFromComponent(components));
       expect(state).toStrictEqual({ foo: { bar: null } });
     });
 
@@ -314,7 +315,8 @@ describe('SnapInterfaceController', () => {
         MOCK_SNAP_ID,
         id,
       );
-      expect(content).toStrictEqual(components);
+
+      expect(content).toStrictEqual(getJsxElementFromComponent(components));
     });
 
     it('throws if the snap requesting the interface is not the one that created it', async () => {
@@ -407,7 +409,7 @@ describe('SnapInterfaceController', () => {
         id,
       );
 
-      expect(content).toStrictEqual(newContent);
+      expect(content).toStrictEqual(getJsxElementFromComponent(newContent));
       expect(state).toStrictEqual({ foo: { baz: null } });
     });
 

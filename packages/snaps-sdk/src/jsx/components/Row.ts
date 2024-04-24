@@ -4,6 +4,11 @@ import type { ImageElement } from './Image';
 import type { TextElement } from './Text';
 
 /**
+ * The children of a {@link Row} component.
+ */
+export type RowChildren = AddressElement | ImageElement | TextElement;
+
+/**
  * The props of the {@link Row} component.
  *
  * @property label - The label of the row.
@@ -13,7 +18,7 @@ import type { TextElement } from './Text';
  */
 export type RowProps = {
   label: string;
-  children: AddressElement | ImageElement | TextElement;
+  children: RowChildren;
   variant?: 'default' | 'warning' | 'error';
 };
 

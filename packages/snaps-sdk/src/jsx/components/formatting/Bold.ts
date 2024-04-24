@@ -1,7 +1,20 @@
-import type { StringElement } from '../../component';
+import type { MaybeArray } from '@metamask/snaps-sdk/jsx';
+
 import { createSnapComponent } from '../../component';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { Text } from '../Text';
+
+/**
+ * The children of the {@link Bold} component.
+ */
+export type BoldChildren = MaybeArray<
+  | string
+  | {
+      // We have to specify the type here to avoid a circular reference.
+      type: 'Italic';
+    }
+  | null
+>;
 
 /**
  * The props of the {@link Bold} component.
@@ -9,7 +22,7 @@ import type { Text } from '../Text';
  * @property children - The text to display in bold.
  */
 export type BoldProps = {
-  children: StringElement;
+  children: BoldChildren;
 };
 
 const TYPE = 'Bold';

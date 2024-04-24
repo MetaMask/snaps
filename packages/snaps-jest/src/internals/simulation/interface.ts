@@ -1,20 +1,17 @@
 import type {
-  Button,
   FormState,
-  Input,
   InterfaceState,
   SnapId,
   UserInputEvent,
-  SnapInterface as SnapInterfaceType,
 } from '@metamask/snaps-sdk';
-import {
-  ButtonType,
-  DialogType,
-  NodeType,
-  UserInputEventType,
-  assert,
-} from '@metamask/snaps-sdk';
-import { HandlerType, hasChildren, unwrapError } from '@metamask/snaps-utils';
+import { DialogType, UserInputEventType, assert } from '@metamask/snaps-sdk';
+import type {
+  ButtonElement,
+  FormElement,
+  InputElement,
+  JSXElement,
+} from '@metamask/snaps-sdk/jsx';
+import { HandlerType, unwrapError, walkJsx } from '@metamask/snaps-utils';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { type SagaIterator } from 'redux-saga';
 import { call, put, select, take } from 'redux-saga/effects';
@@ -36,7 +33,7 @@ import { getCurrentInterface, resolveInterface, setInterface } from './store';
 export function getInterfaceResponse(
   runSaga: RunSagaFunction,
   type: DialogType,
-  content: SnapInterfaceType,
+  content: JSXElement,
   interfaceActions: SnapInterfaceActions,
 ): SnapInterface {
   switch (type) {
@@ -130,7 +127,7 @@ function resolveWithInput(runSaga: RunSagaFunction) {
 function* getStoredInterface(
   controllerMessenger: RootControllerMessenger,
   snapId: SnapId,
-): SagaIterator<Interface & { content: SnapInterfaceType }> {
+): SagaIterator<Interface & { content: JSXElement }> {
   const currentInterface: Interface | null = yield select(getCurrentInterface);
 
   if (currentInterface) {
@@ -155,6 +152,33 @@ function* getStoredInterface(
 }
 
 /**
+ * Find an element inside a form element in a JSX tree.
+ *
+ * @param form - The form element.
+ * @param name - The element name.
+ * @returns An object containing the element and the form name if it's contained
+ * in a form, otherwise undefined.
+ */
+function getFormElement(form: FormElement, name: string) {
+  const element = walkJsx(form, (childElement) => {
+    if (
+      (childElement.type === 'Input' || childElement.type === 'Button') &&
+      childElement.props.name === name
+    ) {
+      return childElement;
+    }
+
+    return undefined;
+  });
+
+  if (element === undefined) {
+    return undefined;
+  }
+
+  return { element, form };
+}
+
+/**
  * Get a Button or an Input from an interface.
  *
  * @param content - The interface content.
@@ -163,35 +187,46 @@ function* getStoredInterface(
  * in a form, otherwise undefined.
  */
 export function getElement(
-  content: SnapInterfaceType,
+  content: JSXElement,
   name: string,
 ):
   | {
-      element: Button | Input;
-      form?: string;
+      element: ButtonElement | InputElement;
+      form?: FormElement;
     }
   | undefined {
   const { type } = content;
-
-  if (
-    (type === NodeType.Button || type === NodeType.Input) &&
-    content.name === name
-  ) {
+  if ((type === 'Button' || type === 'Input') && content.props.name === name) {
     return { element: content };
   }
 
-  if (hasChildren(content)) {
-    for (const element of content.children) {
-      const result = getElement(element, name);
-      const form = type === NodeType.Form ? content.name : result?.form;
-
-      if (result) {
-        return { element: result.element, form };
-      }
+  return walkJsx(content, (element) => {
+    if (element.type === 'Form') {
+      return getFormElement(element, name);
     }
-  }
 
-  return undefined;
+    if (
+      (element.type === 'Button' || element.type === 'Input') &&
+      element.props.name === name
+    ) {
+      return { element };
+    }
+
+    return undefined;
+  });
+
+  // if (hasChildren(content)) {
+  //   for (const element of content.props.children) {
+  //     const result = getElement(element, name);
+  //     const form = type === NodeType.Form ? content.name : result?.form;
+  //
+  //     if (result) {
+  //       return { element: result.element, form };
+  //     }
+  //   }
+  // }
+  //
+  // return undefined;
 }
 /**
  * Handle submitting event requests to OnUserInput including unwrapping potential errors.
@@ -242,23 +277,23 @@ async function handleEvent(
 export async function clickElement(
   controllerMessenger: RootControllerMessenger,
   id: string,
-  content: SnapInterfaceType,
+  content: JSXElement,
   snapId: SnapId,
   name: string,
 ): Promise<void> {
   const result = getElement(content, name);
   assert(
-    result !== undefined && result.element.type === NodeType.Button,
+    result !== undefined && result.element.type === 'Button',
     'No button found in the interface.',
   );
 
   // Button click events are always triggered.
   await handleEvent(controllerMessenger, snapId, id, {
     type: UserInputEventType.ButtonClickEvent,
-    name: result.element.name,
+    name: result.element.props.name,
   });
 
-  if (result.form && result.element.buttonType === ButtonType.Submit) {
+  if (result.form && result.element.props.type === 'submit') {
     const { state } = controllerMessenger.call(
       'SnapInterfaceController:getInterface',
       snapId,
@@ -267,8 +302,8 @@ export async function clickElement(
 
     await handleEvent(controllerMessenger, snapId, id, {
       type: UserInputEventType.FormSubmitEvent,
-      name: result.form,
-      value: state[result.form] as Record<string, string | null>,
+      name: result.form.props.name,
+      value: state[result.form.props.name] as Record<string, string | null>,
     });
   }
 }
@@ -314,7 +349,7 @@ export function mergeValue(
 export async function typeInField(
   controllerMessenger: RootControllerMessenger,
   id: string,
-  content: SnapInterfaceType,
+  content: JSXElement,
   snapId: SnapId,
   name: string,
   value: string,
@@ -322,7 +357,7 @@ export async function typeInField(
   const result = getElement(content, name);
 
   assert(
-    result !== undefined && result.element.type === NodeType.Input,
+    result !== undefined && result.element.type === 'Input',
     'No input found in the interface.',
   );
 
@@ -332,7 +367,7 @@ export async function typeInField(
     id,
   );
 
-  const newState = mergeValue(state, name, value, result.form);
+  const newState = mergeValue(state, name, value, result.form?.props.name);
 
   controllerMessenger.call(
     'SnapInterfaceController:updateInterfaceState',
@@ -349,7 +384,7 @@ export async function typeInField(
       params: {
         event: {
           type: UserInputEventType.InputChangeEvent,
-          name: result.element.name,
+          name: result.element.props.name,
           value,
         },
         id,

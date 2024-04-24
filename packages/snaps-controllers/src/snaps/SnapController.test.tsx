@@ -19,6 +19,7 @@ import {
 } from '@metamask/snaps-rpc-methods';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { AuxiliaryFileEncoding, text } from '@metamask/snaps-sdk';
+import { Text } from '@metamask/snaps-sdk/jsx';
 import type { SnapPermissions, RpcOrigins } from '@metamask/snaps-utils';
 import {
   DEFAULT_ENDOWMENTS,
@@ -1873,6 +1874,7 @@ describe('SnapController', () => {
 
     expect(snapController.state.snaps[snap.id]).toBeUndefined();
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(messenger.publish).toHaveBeenCalledWith(
       'SnapController:snapUninstalled',
       getTruncatedSnap(),
@@ -2742,7 +2744,7 @@ describe('SnapController', () => {
 
       rootMessenger.registerActionHandler(
         'SnapInterfaceController:getInterface',
-        () => ({ snapId: MOCK_SNAP_ID, content: text('foo'), state: {} }),
+        () => ({ snapId: MOCK_SNAP_ID, content: <Text>foo</Text>, state: {} }),
       );
 
       const result = await snapController.handleRequest({
@@ -5611,11 +5613,13 @@ describe('SnapController', () => {
       expect(controller.get(snapId1)?.status).toBe('stopped');
       expect(controller.get(snapId2)?.status).toBe('stopped');
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(messenger.publish).not.toHaveBeenCalledWith(
         'SnapController:snapInstalled',
         expect.anything(),
       );
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(messenger.publish).not.toHaveBeenCalledWith(
         'SnapController:snapUpdated',
         expect.anything(),

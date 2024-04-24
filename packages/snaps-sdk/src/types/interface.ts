@@ -22,5 +22,8 @@ export const InterfaceStateStruct = record(
 export type FormState = Infer<typeof FormStateStruct>;
 export type InterfaceState = Infer<typeof InterfaceStateStruct>;
 
-export type SnapInterface = Component | JSXElement;
-export const SnapInterfaceStruct = union([ComponentStruct, JSXElementStruct]);
+export type ComponentOrElement = Component | JSXElement;
+export const ComponentOrElementStruct = union([
+  ComponentStruct,
+  JSXElementStruct,
+]);

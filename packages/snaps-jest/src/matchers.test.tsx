@@ -354,9 +354,13 @@ describe('serialiseJsx', () => {
 
 describe('toRender', () => {
   it('passes when the component is correct', () => {
-    expect(getMockInterfaceResponse(panel([text('Hello, world!')]))).toRender(
-      panel([text('Hello, world!')]),
-    );
+    expect(
+      getMockInterfaceResponse(
+        <Box>
+          <Text>Hello, world!</Text>
+        </Box>,
+      ),
+    ).toRender(panel([text('Hello, world!')]));
   });
 
   it('passes when the JSX component is correct', () => {
@@ -367,9 +371,13 @@ describe('toRender', () => {
 
   it('fails when the component is incorrect', () => {
     expect(() =>
-      expect(getMockInterfaceResponse(panel([text('Hello, world!')]))).toRender(
-        panel([text('Hello, world?')]),
-      ),
+      expect(
+        getMockInterfaceResponse(
+          <Box>
+            <Text>Hello, world!</Text>
+          </Box>,
+        ),
+      ).toRender(panel([text('Hello, world?')])),
     ).toThrow('Received:');
   });
 
@@ -395,7 +403,11 @@ describe('toRender', () => {
   describe('not', () => {
     it('passes when the component is correct', () => {
       expect(
-        getMockInterfaceResponse(panel([text('Hello, world!')])),
+        getMockInterfaceResponse(
+          <Box>
+            <Text>Hello, world!</Text>
+          </Box>,
+        ),
       ).not.toRender(panel([text('Hello, world?')]));
     });
 
@@ -408,7 +420,11 @@ describe('toRender', () => {
     it('fails when the component is incorrect', () => {
       expect(() =>
         expect(
-          getMockInterfaceResponse(panel([text('Hello, world!')])),
+          getMockInterfaceResponse(
+            <Box>
+              <Text>Hello, world!</Text>
+            </Box>,
+          ),
         ).not.toRender(panel([text('Hello, world!')])),
       ).toThrow('Received:');
     });

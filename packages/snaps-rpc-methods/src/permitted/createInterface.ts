@@ -5,9 +5,9 @@ import type {
   CreateInterfaceParams,
   CreateInterfaceResult,
   JsonRpcRequest,
-  SnapInterface,
+  ComponentOrElement,
 } from '@metamask/snaps-sdk';
-import { SnapInterfaceStruct } from '@metamask/snaps-sdk';
+import { ComponentOrElementStruct } from '@metamask/snaps-sdk';
 import { type InferMatching } from '@metamask/snaps-utils';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 import { StructError, create, object } from 'superstruct';
@@ -23,7 +23,7 @@ export type CreateInterfaceMethodHooks = {
    * @param ui - The UI components.
    * @returns The unique identifier of the interface.
    */
-  createInterface: (ui: SnapInterface) => Promise<string>;
+  createInterface: (ui: ComponentOrElement) => Promise<string>;
 };
 
 export const createInterfaceHandler: PermittedHandlerExport<
@@ -37,7 +37,7 @@ export const createInterfaceHandler: PermittedHandlerExport<
 };
 
 const CreateInterfaceParametersStruct = object({
-  ui: SnapInterfaceStruct,
+  ui: ComponentOrElementStruct,
 });
 
 export type CreateInterfaceParameters = InferMatching<

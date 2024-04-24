@@ -3,8 +3,11 @@ import { createSnapComponent } from '../component';
 import type { StandardFormattingElement } from './formatting';
 import type { LinkElement } from './Link';
 
+/**
+ * The children of the {@link Text} component.
+ */
 export type TextChildren = MaybeArray<
-  string | StandardFormattingElement | LinkElement
+  string | StandardFormattingElement | LinkElement | null
 >;
 
 /**

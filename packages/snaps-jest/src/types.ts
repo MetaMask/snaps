@@ -1,8 +1,5 @@
-import type {
-  NotificationType,
-  EnumToUnion,
-  SnapInterface as SnapInterfaceType,
-} from '@metamask/snaps-sdk';
+import type { NotificationType, EnumToUnion } from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import type { InferMatching } from '@metamask/snaps-utils';
 import type { Json, JsonRpcId, JsonRpcParams } from '@metamask/utils';
 import type { Infer } from 'superstruct';
@@ -113,7 +110,7 @@ export type SnapAlertInterface = {
   /**
    * The content to show in the alert.
    */
-  content: SnapInterfaceType;
+  content: JSXElement;
 
   /**
    * Close the alert.
@@ -133,7 +130,7 @@ export type SnapConfirmationInterface = {
   /**
    * The content to show in the confirmation.
    */
-  content: SnapInterfaceType;
+  content: JSXElement;
 
   /**
    * Close the confirmation.
@@ -158,7 +155,7 @@ export type SnapPromptInterface = {
   /**
    * The content to show in the prompt.
    */
-  content: SnapInterfaceType;
+  content: JSXElement;
 
   /**
    * Close the prompt.
@@ -342,7 +339,7 @@ export type Snap = {
 };
 
 export type SnapHandlerInterface = {
-  content: SnapInterfaceType;
+  content: JSXElement;
 } & SnapInterfaceActions;
 
 export type SnapResponseWithInterface = {

@@ -1,4 +1,10 @@
-import { assertStruct, JsonStruct, StrictHexStruct } from '@metamask/utils';
+import {
+  assertStruct,
+  hasProperty,
+  isPlainObject,
+  JsonStruct,
+  StrictHexStruct,
+} from '@metamask/utils';
 import type { Struct } from 'superstruct';
 import {
   is,
@@ -42,6 +48,7 @@ import type {
   LinkElement,
   RowElement,
   SpinnerElement,
+  StandardFormattingElement,
   TextElement,
 } from './components';
 
@@ -118,7 +125,9 @@ export const ButtonStruct: Describe<ButtonElement> = element('Button', {
  */
 export const InputStruct: Describe<InputElement> = element('Input', {
   name: string(),
-  type: nullUnion([literal('text'), literal('password'), literal('number')]),
+  type: optional(
+    nullUnion([literal('text'), literal('password'), literal('number')]),
+  ),
   value: optional(string()),
   placeholder: optional(string()),
 });
@@ -127,7 +136,7 @@ export const InputStruct: Describe<InputElement> = element('Input', {
  * A struct for the {@link FieldElement} type.
  */
 export const FieldStruct: Describe<FieldElement> = element('Field', {
-  label: string(),
+  label: optional(string()),
   error: optional(string()),
   children: nullUnion([tuple([InputStruct, ButtonStruct]), InputStruct]),
 });
@@ -144,15 +153,36 @@ export const FormStruct: Describe<FormElement> = element('Form', {
  * A struct for the {@link BoldElement} type.
  */
 export const BoldStruct: Describe<BoldElement> = element('Bold', {
-  children: StringElementStruct,
+  children: maybeArray(
+    nullable(
+      nullUnion([
+        string(),
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        lazy(() => ItalicStruct) as unknown as Struct<{ type: 'Italic' }>,
+      ]),
+    ),
+  ),
 });
 
 /**
  * A struct for the {@link ItalicElement} type.
  */
 export const ItalicStruct: Describe<ItalicElement> = element('Italic', {
-  children: StringElementStruct,
+  children: maybeArray(
+    nullable(
+      nullUnion([
+        string(),
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        lazy(() => BoldStruct) as unknown as Struct<{ type: 'Bold' }>,
+      ]),
+    ),
+  ),
 });
+
+export const FormattingStruct: Describe<StandardFormattingElement> = nullUnion([
+  BoldStruct,
+  ItalicStruct,
+]);
 
 /**
  * A struct for the {@link AddressElement} type.
@@ -204,7 +234,7 @@ export const ImageStruct: Describe<ImageElement> = element('Image', {
  */
 export const LinkStruct: Describe<LinkElement> = element('Link', {
   href: string(),
-  children: StringElementStruct,
+  children: maybeArray(nullable(nullUnion([FormattingStruct, string()]))),
 });
 
 /**
@@ -212,7 +242,7 @@ export const LinkStruct: Describe<LinkElement> = element('Link', {
  */
 export const TextStruct: Describe<TextElement> = element('Text', {
   children: maybeArray(
-    nullUnion([string(), BoldStruct, ItalicStruct, LinkStruct]),
+    nullable(nullUnion([string(), BoldStruct, ItalicStruct, LinkStruct])),
   ),
 });
 
@@ -279,7 +309,12 @@ export function isJSXElement(value: unknown): value is JSXElement {
  * @returns True if the value is a JSX element, false otherwise.
  */
 export function isJSXElementUnsafe(value: unknown): value is JSXElement {
-  return is(value, ElementStruct);
+  return (
+    isPlainObject(value) &&
+    hasProperty(value, 'type') &&
+    hasProperty(value, 'props') &&
+    hasProperty(value, 'key')
+  );
 }
 
 /**

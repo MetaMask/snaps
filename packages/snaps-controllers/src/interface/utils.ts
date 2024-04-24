@@ -1,51 +1,33 @@
-import { NodeType, assert } from '@metamask/snaps-sdk';
+import { assert } from '@metamask/snaps-sdk';
 import type {
-  Input,
   FormState,
   InterfaceState,
-  SnapInterface,
+  ComponentOrElement,
 } from '@metamask/snaps-sdk';
 import type {
+  ButtonElement,
   FieldElement,
   InputElement,
   JSXElement,
 } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
+import { getJsxElementFromComponent } from '@metamask/snaps-utils';
 
 /**
- * Construct the state for a stray input (not enclosed in a form).
+ * Get a JSX element from a component or JSX element. If the component is a
+ * JSX element, it is returned as is. Otherwise, the component is converted to
+ * a JSX element.
  *
- * @param state - The interface state.
- * @param component - The Input component.
- * @returns The input state.
+ * @param component - The component to convert.
+ * @returns The JSX element.
  */
-export const constructInputState = (
-  state: InterfaceState,
-  component: Input,
-) => {
-  return component.value ?? state[component.name] ?? null;
-};
+export function getJsxInterface(component: ComponentOrElement): JSXElement {
+  if (isJSXElementUnsafe(component)) {
+    return component;
+  }
 
-/**
- * Construct the state for a form input.
- *
- * Sets the state to either the specified component value, the previous value
- * from the old state or null.
- *
- * @param state - The interface state.
- * @param component - The Input component.
- * @param form - The parent form name of the input.
- * @returns The input state.
- */
-export const constructFormInputState = (
-  state: InterfaceState,
-  component: Input,
-  form: string,
-) => {
-  const oldFormState = state[form] as FormState;
-  const oldInputState = oldFormState?.[component.name];
-  return component.value ?? oldInputState ?? null;
-};
+  return getJsxElementFromComponent(component);
+}
 
 /**
  * Assert that the component name is unique in state.
@@ -53,12 +35,12 @@ export const constructFormInputState = (
  * @param state - The interface state to verify against.
  * @param name - The component name to verify.
  */
-export const assertNameIsUnique = (state: InterfaceState, name: string) => {
+export function assertNameIsUnique(state: InterfaceState, name: string) {
   assert(
     state[name] === undefined,
     `Duplicate component names are not allowed, found multiple instances of: "${name}".`,
   );
-};
+}
 
 /**
  * Construct the state for an input field.
@@ -117,10 +99,14 @@ function getJsxFieldInput(element: FieldElement) {
  */
 function constructJsxFormState(
   oldState: InterfaceState,
-  component: FieldElement,
+  component: FieldElement | ButtonElement,
   form: string,
   newState: FormState,
 ): FormState {
+  if (component.type === 'Button') {
+    return newState;
+  }
+
   const input = getJsxFieldInput(component);
   assertNameIsUnique(newState, input.props.name);
 
@@ -141,10 +127,10 @@ function constructJsxFormState(
  * @param newState - The state that is being constructed.
  * @returns The interface state of the passed component.
  */
-function constructJsxState(
+export function constructJsxState(
   oldState: InterfaceState,
   component: JSXElement,
-  newState: InterfaceState,
+  newState: InterfaceState = {},
 ): InterfaceState {
   if (component.type === 'Box') {
     if (Array.isArray(component.props.children)) {
@@ -197,56 +183,3 @@ function constructJsxState(
 
   return newState;
 }
-
-/**
- * Construct the interface state for a given component tree while preserving
- * values for matching stateful components in the old state.
- *
- * @param oldState - The previous state.
- * @param component - The UI component to construct state from.
- * @param newState - The state that is being constructed.
- * @returns The interface state of the passed component.
- */
-export const constructState = (
-  oldState: InterfaceState,
-  component: SnapInterface,
-  newState: InterfaceState = {},
-): InterfaceState => {
-  if (isJSXElementUnsafe(component)) {
-    return constructJsxState(oldState, component, newState);
-  }
-
-  const { type } = component;
-  if (type === NodeType.Panel) {
-    return component.children.reduce(
-      (acc, node) => constructState(oldState, node, acc),
-      newState,
-    );
-  }
-
-  if (type === NodeType.Form) {
-    assertNameIsUnique(newState, component.name);
-    newState[component.name] = component.children.reduce<FormState>(
-      (acc, node) => {
-        if (node.type === NodeType.Input) {
-          assertNameIsUnique(acc, node.name);
-          acc[node.name] = constructFormInputState(
-            oldState,
-            node,
-            component.name,
-          );
-        }
-
-        return acc;
-      },
-      {},
-    );
-  }
-
-  if (type === NodeType.Input) {
-    assertNameIsUnique(newState, component.name);
-    newState[component.name] = constructInputState(oldState, component);
-  }
-
-  return newState;
-};

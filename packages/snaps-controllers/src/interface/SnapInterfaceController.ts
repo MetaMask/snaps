@@ -7,21 +7,16 @@ import type {
 import type {
   InterfaceState,
   SnapId,
-  SnapInterface,
+  ComponentOrElement,
 } from '@metamask/snaps-sdk';
-import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
-import {
-  getJsonSizeUnsafe,
-  getTotalTextLength,
-  validateComponentLinks,
-} from '@metamask/snaps-utils';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
+import { getJsonSizeUnsafe, validateJsxLinks } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
-import { constructState } from './utils';
+import { constructJsxState, getJsxInterface } from './utils';
 
 const MAX_UI_CONTENT_SIZE = 10_000_000; // 10 mb
-const MAX_TEXT_LENGTH = 50_000; // 50 kb
 
 const controllerName = 'SnapInterfaceController';
 
@@ -71,7 +66,7 @@ export type SnapInterfaceControllerMessenger = RestrictedControllerMessenger<
 
 export type StoredInterface = {
   snapId: SnapId;
-  content: SnapInterface;
+  content: JSXElement;
   state: InterfaceState;
 };
 
@@ -143,19 +138,19 @@ export class SnapInterfaceController extends BaseController<
    * @param content - The interface content.
    * @returns The newly interface id.
    */
-  async createInterface(snapId: SnapId, content: SnapInterface) {
-    await this.#validateContent(content);
+  async createInterface(snapId: SnapId, content: ComponentOrElement) {
+    const element = getJsxInterface(content);
+    await this.#validateContent(element);
 
     const id = nanoid();
-
-    const componentState = constructState({}, content);
+    const componentState = constructJsxState({}, element);
 
     this.update((draftState) => {
       // @ts-expect-error - TS2589: Type instantiation is excessively deep and
       // possibly infinite.
       draftState.interfaces[id] = {
         snapId,
-        content,
+        content: element,
         state: componentState,
       };
     });
@@ -183,17 +178,21 @@ export class SnapInterfaceController extends BaseController<
    * @param id - The interface id.
    * @param content - The new content.
    */
-  async updateInterface(snapId: SnapId, id: string, content: SnapInterface) {
+  async updateInterface(
+    snapId: SnapId,
+    id: string,
+    content: ComponentOrElement,
+  ) {
     this.#validateArgs(snapId, id);
-    await this.#validateContent(content);
+    const element = getJsxInterface(content);
+    await this.#validateContent(element);
 
     const oldState = this.state.interfaces[id].state;
-
-    const newState = constructState(oldState, content);
+    const newState = constructJsxState(oldState, element);
 
     this.update((draftState) => {
       draftState.interfaces[id].state = newState;
-      draftState.interfaces[id].content = content;
+      draftState.interfaces[id].content = element;
     });
   }
 
@@ -261,29 +260,18 @@ export class SnapInterfaceController extends BaseController<
    * Utility function to validate the components of an interface.
    * Throws if something is invalid.
    *
-   * @param content - The components to verify.
+   * @param element - The JSX element to verify.
    */
-  async #validateContent(content: SnapInterface) {
+  async #validateContent(element: JSXElement) {
     // We assume the validity of this JSON to be validated by the caller.
-    // E.g. in the RPC method implementation.
-    const size = getJsonSizeUnsafe(content);
-
+    // E.g., in the RPC method implementation.
+    const size = getJsonSizeUnsafe(element);
     assert(
       size <= MAX_UI_CONTENT_SIZE,
       `A Snap UI may not be larger than ${MAX_UI_CONTENT_SIZE / 1000000} MB.`,
     );
 
-    if (!isJSXElementUnsafe(content)) {
-      const textSize = getTotalTextLength(content);
-      assert(
-        textSize <= MAX_TEXT_LENGTH,
-        `The text in a Snap UI may not be larger than ${
-          MAX_TEXT_LENGTH / 1000
-        } kB.`,
-      );
-    }
-
     await this.#triggerPhishingListUpdate();
-    validateComponentLinks(content, this.#checkPhishingList.bind(this));
+    validateJsxLinks(element, this.#checkPhishingList.bind(this));
   }
 }
