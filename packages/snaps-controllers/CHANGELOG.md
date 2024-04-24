@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.0.0]
+### Changed
+- **BREAKING:** Move `maxInitTime` constructor argument from `SnapController` to `ExecutionService` ([#2348](https://github.com/MetaMask/snaps/pull/2348))
+
+### Fixed
+- Increase max UI size limit from 250 KB to 10 MB ([#2342](https://github.com/MetaMask/snaps/pull/2342))
+- Consider caveats in permissions difference calculation ([#2345](https://github.com/MetaMask/snaps/pull/2345))
+  - This fixes a bug where certain caveats would not be correctly applied when updating Snaps.
+- Gracefully handle errors for multiple simultaneous failing requests ([#2346](https://github.com/MetaMask/snaps/pull/2346))
+- Properly handle termination of Snaps that are currently executing ([#2304](https://github.com/MetaMask/snaps/pull/2304))
+- Properly tear down partially initialized executors and improve stability when executor initialization fails ([#2348](https://github.com/MetaMask/snaps/pull/2348))
+
 ## [7.0.1]
 ### Fixed
 - Fix encryption key caching issues ([#2326](https://github.com/MetaMask/snaps/pull/2326))
@@ -234,7 +246,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@7.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.0.0...HEAD
+[8.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@7.0.1...@metamask/snaps-controllers@8.0.0
 [7.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@7.0.0...@metamask/snaps-controllers@7.0.1
 [7.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@6.0.4...@metamask/snaps-controllers@7.0.0
 [6.0.4]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@6.0.3...@metamask/snaps-controllers@6.0.4
