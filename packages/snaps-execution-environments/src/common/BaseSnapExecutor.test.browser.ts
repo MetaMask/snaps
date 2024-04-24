@@ -1244,7 +1244,7 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('throws if the Snap doesnt export anything', async () => {
+  it("throws if the Snap doesn't export anything", async () => {
     const CODE = ``;
 
     const executor = new TestSnapExecutor();
