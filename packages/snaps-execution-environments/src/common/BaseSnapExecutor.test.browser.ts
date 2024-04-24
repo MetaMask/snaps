@@ -40,6 +40,8 @@ describe('BaseSnapExecutor', () => {
       const CODE = `
         setTimeout(() => { throw new Error('setTimeout executed'); }, 10);
         setInterval(() => { throw new Error('setInterval executed'); }, 10);
+
+        exports.onRpcRequest = () => null;
       `;
 
       const executor = new TestSnapExecutor();
@@ -1236,6 +1238,28 @@ describe('BaseSnapExecutor', () => {
           cause: expect.objectContaining({
             code: -32603,
             message: 'Failed to start.',
+          }),
+        },
+      }),
+    });
+  });
+
+  it("throws if the Snap doesn't export anything", async () => {
+    const CODE = ``;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      error: expect.objectContaining({
+        code: -32603,
+        message: `Error while running snap '${MOCK_SNAP_ID}': Snap has no valid exports.`,
+        data: {
+          cause: expect.objectContaining({
+            code: -32603,
+            message: 'Snap has no valid exports.',
           }),
         },
       }),

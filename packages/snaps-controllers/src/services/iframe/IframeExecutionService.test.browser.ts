@@ -30,9 +30,9 @@ describe('IframeExecutionService', () => {
     const response = await service.executeSnap({
       snapId: 'TestSnap',
       sourceCode: `
-        console.log('foo');
+        module.exports.onRpcRequest = () => null;
       `,
-      endowments: ['console'],
+      endowments: [],
     });
 
     expect(response).toBe('OK');

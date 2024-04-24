@@ -34,9 +34,9 @@ describe('AbstractExecutionService', () => {
     await service.executeSnap({
       snapId: 'TestSnap',
       sourceCode: `
-        console.log('foo');
+        module.exports.onRpcRequest = () => null;
       `,
-      endowments: ['console'],
+      endowments: [],
     });
 
     const { streams } = service.getJobs().values().next().value;
@@ -61,9 +61,9 @@ describe('AbstractExecutionService', () => {
     await service.executeSnap({
       snapId: 'TestSnap',
       sourceCode: `
-        console.log('foo');
+      module.exports.onRpcRequest = () => null;
       `,
-      endowments: ['console'],
+      endowments: [],
     });
 
     const { streams } = service.getJobs().values().next().value;
@@ -111,9 +111,9 @@ describe('AbstractExecutionService', () => {
     await service.executeSnap({
       snapId: MOCK_SNAP_ID,
       sourceCode: `
-        console.log('foo');
+         module.exports.onRpcRequest = () => null;
       `,
-      endowments: ['console'],
+      endowments: [],
     });
 
     await expect(
