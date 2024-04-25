@@ -56,3 +56,9 @@ export function jsxs<Props extends JsonObject>(
 ): unknown | null {
   return jsx(component, props);
 }
+
+// Alias the `jsx` and `jsxs` functions to `jsxDEV` and `jsxsDEV` respectively.
+// This is done to ensure that the JSX runtime is compatible with development
+// tools that expect these functions to be defined.
+export const jsxDEV = jsx;
+export const jsxsDEV = jsxs;
