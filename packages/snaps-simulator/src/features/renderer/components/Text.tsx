@@ -3,7 +3,8 @@ import { isComponent } from '@metamask/snaps-sdk';
 import { assert } from '@metamask/utils';
 import type { FunctionComponent } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Icon } from 'src/components';
+
+import { Icon } from '../../../components';
 
 export type TextProps = {
   id: string;

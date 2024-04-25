@@ -127,11 +127,11 @@ function getComponentArgs(component: Component): string {
     case NodeType.Button:
     case NodeType.Input: {
       const args = Object.keys(component)
-        .filter((key) => key !== 'type')
+        .filter(
+          (key) =>
+            key !== 'type' && component[key as keyof typeof component] !== '',
+        )
         .reduce((acc, prev) => {
-          if (component[prev as keyof typeof component] === '') {
-            return acc;
-          }
           return { ...acc, [prev]: component[prev as keyof typeof component] };
         }, {});
 
