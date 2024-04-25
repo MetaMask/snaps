@@ -4,7 +4,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx",
-    "jsxImportSource": "@metamask/snaps-sdk/production",
+    "jsxImportSource": "@metamask/snaps-sdk",
     "lib": ["DOM", "ES2020"],
     "module": "CommonJS",
     "moduleResolution": "node",

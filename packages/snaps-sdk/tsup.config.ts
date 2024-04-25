@@ -15,7 +15,7 @@ const config: Options = {
     'src/index.ts',
     'src/jsx/index.ts',
     'src/jsx/jsx-runtime.ts',
-    'src/jsx/production/jsx-runtime.ts',
+    'src/jsx/jsx-dev-runtime.ts',
   ],
 
   // Esbuild is not deterministic when code splitting is enabled. This is

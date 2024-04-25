@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-shadow
 import { Bold, Box, Text } from './components';
 
 describe('jsx', () => {
@@ -12,10 +11,14 @@ describe('jsx', () => {
     });
   });
 
-  it('validates the element', () => {
+  it('does not validate the element', () => {
     // @ts-expect-error - Invalid props.
-    expect(() => <Text foo="bar" />).toThrow(
-      'Invalid JSX element: Expected the value to satisfy a union of `object | object | object | object | object | object | object | object | object | object | object | object | object | object | object | object`, but received: [object Object].',
+    expect(() => <Text foo="bar" />).not.toThrow();
+  });
+
+  it('throws an error for built-in HTML elements', () => {
+    expect(() => <div />).toThrow(
+      'An HTML element ("div") was used in a Snap component, which is not supported by Snaps UI. Please use one of the supported Snap components.',
     );
   });
 

@@ -19,7 +19,7 @@ module.exports = deepmerge(baseConfig, {
     {
       testMatch: [
         '<rootDir>/src/jsx/validation.test.tsx',
-        '<rootDir>/src/jsx/production/**/*.test.tsx',
+        '<rootDir>/src/jsx/jsx-runtime.test.tsx',
       ],
       transform: {
         '^.+\\.(t|j)sx?$': [
@@ -27,7 +27,7 @@ module.exports = deepmerge(baseConfig, {
           {
             tsconfig: {
               jsx: 'react-jsx',
-              jsxImportSource: resolve(__dirname, './src/jsx/production'),
+              jsxImportSource: resolve(__dirname, './src/jsx'),
             },
           },
         ],
@@ -37,14 +37,14 @@ module.exports = deepmerge(baseConfig, {
       testMatch: ['<rootDir>/**/*.test.ts', '<rootDir>/**/*.test.tsx'],
       testPathIgnorePatterns: [
         '<rootDir>/src/jsx/validation.test.tsx',
-        '<rootDir>/src/jsx/production',
+        '<rootDir>/src/jsx/jsx-runtime.test.tsx',
       ],
       transform: {
         '^.+\\.(t|j)sx?$': [
           'ts-jest',
           {
             tsconfig: {
-              jsx: 'react-jsx',
+              jsx: 'react-jsxdev',
               jsxImportSource: resolve(__dirname, './src/jsx'),
             },
           },
