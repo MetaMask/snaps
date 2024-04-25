@@ -22,6 +22,7 @@ export const Button: FunctionComponent<ButtonProps> = ({ node, id }) => {
       key={`${id}-button`}
       width="100%"
       variant={BUTTON_VARIANTS[node.variant ?? 'primary']}
+      marginBottom="4"
     >
       {node.value}
     </ChakraButton>

@@ -1,8 +1,8 @@
 import type { Component } from '@metamask/snaps-sdk';
-import { panel, text } from '@metamask/snaps-sdk';
+import { button, input, panel, text } from '@metamask/snaps-sdk';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 
-import { panelToCode, nodeModelsToComponent } from './utils';
+import { isValidFormNode, panelToCode, nodeModelsToComponent } from './utils';
 
 describe('nodeModelsToComponent', () => {
   it('creates a component from an array of node models', () => {
@@ -46,5 +46,25 @@ describe('paneltoCode', () => {
       const component = panel([text('foo'), panel([text('bar'), text('baz')])]);
       "
     `);
+  });
+});
+
+describe('isValidFormNode', () => {
+  it('returns true for input nodes', () => {
+    const node: Component = input('input');
+
+    expect(isValidFormNode(node)).toBe(true);
+  });
+
+  it('returns true for button nodes', () => {
+    const node: Component = button('button');
+
+    expect(isValidFormNode(node)).toBe(true);
+  });
+
+  it('returns false for other nodes', () => {
+    const node: Component = text('foo');
+
+    expect(isValidFormNode(node)).toBe(false);
   });
 });

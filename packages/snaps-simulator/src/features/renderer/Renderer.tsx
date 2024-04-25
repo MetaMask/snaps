@@ -11,21 +11,23 @@ import {
   Spinner,
   Image,
   Button,
+  Form,
+  Input,
 } from './components';
 
 export const components: Partial<
   Record<NodeType, FunctionComponent<{ id: string; node: unknown }>>
 > = {
+  [NodeType.Button]: Button,
   [NodeType.Copyable]: Copyable,
   [NodeType.Divider]: Divider,
+  [NodeType.Form]: Form,
   [NodeType.Heading]: Heading,
   [NodeType.Panel]: Panel,
   [NodeType.Spinner]: Spinner,
   [NodeType.Text]: Text,
   [NodeType.Image]: Image,
-  [NodeType.Button]: Button,
-  [NodeType.Input]: Text,
-  [NodeType.Form]: Text,
+  [NodeType.Input]: Input,
 };
 
 type RendererProps = {

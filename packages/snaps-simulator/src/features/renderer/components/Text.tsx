@@ -3,6 +3,7 @@ import { isComponent } from '@metamask/snaps-sdk';
 import { assert } from '@metamask/utils';
 import type { FunctionComponent } from 'react';
 import ReactMarkdown from 'react-markdown';
+import { Icon } from 'src/components';
 
 export type TextProps = {
   id: string;
@@ -31,8 +32,16 @@ export const Text: FunctionComponent<TextProps> = ({ node, id }) => {
             fontSize="sm"
             isExternal
             color="link.default"
+            display="inline"
           >
             {value}
+            <Icon
+              icon="linkOut"
+              width="14px"
+              marginLeft="2px"
+              display="inline"
+              verticalAlign="middle"
+            />
           </ChakraLink>
         ),
       }}

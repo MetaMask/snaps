@@ -4,8 +4,10 @@ import {
   button,
   copyable,
   divider,
+  form,
   heading,
   image,
+  input,
   panel,
   text,
 } from '@metamask/snaps-sdk';
@@ -70,6 +72,18 @@ const TEMPLATE_COMPONENTS: TemplateComponent[] = [
     icon: 'button',
     text: 'Button',
     data: button('Button'),
+    droppable: false,
+  },
+  {
+    icon: 'form',
+    text: 'Form',
+    data: form('form', []),
+    droppable: true,
+  },
+  {
+    icon: 'input',
+    text: 'Input',
+    data: input('Input'),
     droppable: false,
   },
 ];

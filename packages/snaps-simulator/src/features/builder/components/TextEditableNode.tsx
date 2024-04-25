@@ -1,25 +1,28 @@
-import { Box, Input } from '@chakra-ui/react';
-import type { Component, Heading, Text } from '@metamask/snaps-sdk';
+import { Box, Input as ChakraInput } from '@chakra-ui/react';
+import {
+  type Copyable,
+  type Heading,
+  type Text,
+  NodeType,
+} from '@metamask/snaps-sdk';
 import { assert } from '@metamask/utils';
-import type { NodeModel } from '@minoru/react-dnd-treeview';
 import type { ChangeEvent, FunctionComponent } from 'react';
 import { useState } from 'react';
 
+import type { EditableNodeProps } from '../../../types';
 import { getNodeText } from '../utils';
 import { BaseNode } from './BaseNode';
 
-export type EditableComponent = Text | Heading;
+export type TextEditableComponent = Text | Heading | Copyable;
 
-type EditableNodeProps = {
-  node: NodeModel<EditableComponent>;
-  depth: number;
-  isDragging: boolean;
-  onChange?: (node: NodeModel<EditableComponent>, value: string) => void;
-  onClose?: ((node: NodeModel<Component>) => void) | undefined;
-};
+export const TEXT_EDITABLE_NODES = [
+  NodeType.Heading,
+  NodeType.Text,
+  NodeType.Image,
+];
 
 /**
- * An editable node, which renders an editable component in the builder.
+ * An editable node with a text field, which renders an editable component in the builder.
  *
  * @param props - The props of the component.
  * @param props.node - The editable node to render.
@@ -29,13 +32,9 @@ type EditableNodeProps = {
  * @param props.onClose - A function to call when the node is closed.
  * @returns An editable node component.
  */
-export const EditableNode: FunctionComponent<EditableNodeProps> = ({
-  node,
-  depth,
-  isDragging,
-  onChange,
-  onClose,
-}) => {
+export const TextEditableNode: FunctionComponent<
+  EditableNodeProps<TextEditableComponent>
+> = ({ node, depth, isDragging, onChange, onClose }) => {
   const text = getNodeText(node);
   assert(text !== null, 'Node must have text.');
 
@@ -43,13 +42,13 @@ export const EditableNode: FunctionComponent<EditableNodeProps> = ({
 
   const handleChange = (newValue: ChangeEvent<HTMLInputElement>) => {
     setValue(newValue.target.value);
-    onChange?.(node, newValue.target.value);
+    onChange?.(node, 'value', newValue.target.value);
   };
 
   return (
     <Box marginLeft={`${depth * 16}px`}>
       <BaseNode node={node} isDragging={isDragging} onClose={onClose}>
-        <Input
+        <ChakraInput
           value={value}
           onChange={handleChange}
           fontSize="sm"
