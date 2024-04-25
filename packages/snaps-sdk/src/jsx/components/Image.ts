@@ -29,7 +29,7 @@ const TYPE = 'Image';
  * image for users who cannot see it.
  * @returns An image element.
  * @example
- * <Image src="https://example.com/image.png" alt="An example image" />
+ * <Image src="<svg>...</svg>" alt="An example image" />
  */
 export const Image = createSnapComponent<ImageProps, typeof TYPE>(TYPE);
 

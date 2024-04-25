@@ -31,10 +31,9 @@ const TYPE = 'Button';
  * @param props - The props of the component.
  * @param props.children - The text to display on the button. This should be a
  * string or an array of strings.
- * @param props.onClick - The function to call when the button is clicked.
  * @returns A button element.
  * @example
- * <Button onClick={handleClick}>Click me</Button>
+ * <Button name="my-button">Click me</Button>
  */
 export const Button = createSnapComponent<ButtonProps, typeof TYPE>(TYPE);
 

@@ -30,7 +30,6 @@ const TYPE = 'Input';
  * @param props.type - The type of the input field.
  * @param props.value - The value of the input field.
  * @param props.placeholder - The placeholder text of the input field.
- * @param props.onChange - The function to call when the input field changes.
  * @returns An input element.
  * @example
  * <Input name="username" type="text" />
