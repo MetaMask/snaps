@@ -88,7 +88,6 @@ export const BLOCKED_RPC_METHODS = Object.freeze([
   'wallet_requestPermissions',
   'wallet_revokePermissions',
   // We disallow all of these confirmations for now, since the screens are not ready for Snaps.
-  'eth_sendRawTransaction',
   'eth_sendTransaction',
   'eth_sign',
   'eth_signTypedData',
