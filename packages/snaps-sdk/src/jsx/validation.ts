@@ -145,7 +145,7 @@ export const FieldStruct: Describe<FieldElement> = element('Field', {
  * A struct for the {@link FormElement} type.
  */
 export const FormStruct: Describe<FormElement> = element('Form', {
-  children: nullUnion([FieldStruct, array(FieldStruct)]),
+  children: maybeArray(nullUnion([FieldStruct, ButtonStruct])),
   name: string(),
 });
 

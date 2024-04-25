@@ -1,5 +1,6 @@
 import type { MaybeArray } from '../../component';
 import { createSnapComponent } from '../../component';
+import type { ButtonElement } from './Button';
 import type { FieldElement } from './Field';
 
 // TODO: Add `onSubmit` prop to the `FormProps` type.
@@ -12,7 +13,7 @@ import type { FieldElement } from './Field';
  * the event handler.
  */
 type FormProps = {
-  children: MaybeArray<FieldElement>;
+  children: MaybeArray<FieldElement | ButtonElement>;
   name: string;
 };
 
