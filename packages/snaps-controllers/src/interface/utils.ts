@@ -49,10 +49,7 @@ export function assertNameIsUnique(state: InterfaceState, name: string) {
  * @param element - The input element.
  * @returns The input state.
  */
-function constructJsxInputState(
-  oldState: InterfaceState,
-  element: InputElement,
-) {
+function constructInputState(oldState: InterfaceState, element: InputElement) {
   return element.props.value ?? oldState[element.props.name] ?? null;
 }
 
@@ -64,7 +61,7 @@ function constructJsxInputState(
  * @param form - The parent form name of the input.
  * @returns The input state.
  */
-function constructJsxFormInputState(
+function constructFormInputState(
   oldState: InterfaceState,
   component: InputElement,
   form: string,
@@ -80,7 +77,7 @@ function constructJsxFormInputState(
  * @param element - The field element.
  * @returns The input element.
  */
-function getJsxFieldInput(element: FieldElement) {
+function getFieldInput(element: FieldElement) {
   if (Array.isArray(element.props.children)) {
     return element.props.children[0];
   }
@@ -97,7 +94,7 @@ function getJsxFieldInput(element: FieldElement) {
  * @param newState - The new state.
  * @returns The input state.
  */
-function constructJsxFormState(
+function constructFormState(
   oldState: InterfaceState,
   component: FieldElement | ButtonElement,
   form: string,
@@ -107,14 +104,10 @@ function constructJsxFormState(
     return newState;
   }
 
-  const input = getJsxFieldInput(component);
+  const input = getFieldInput(component);
   assertNameIsUnique(newState, input.props.name);
 
-  newState[input.props.name] = constructJsxFormInputState(
-    oldState,
-    input,
-    form,
-  );
+  newState[input.props.name] = constructFormInputState(oldState, input, form);
 
   return newState;
 }
@@ -127,7 +120,7 @@ function constructJsxFormState(
  * @param newState - The state that is being constructed.
  * @returns The interface state of the passed component.
  */
-export function constructJsxState(
+export function constructState(
   oldState: InterfaceState,
   component: JSXElement,
   newState: InterfaceState = {},
@@ -136,12 +129,12 @@ export function constructJsxState(
     if (Array.isArray(component.props.children)) {
       return component.props.children.reduce(
         (accumulator, node) =>
-          constructJsxState(oldState, node as JSXElement, accumulator),
+          constructState(oldState, node as JSXElement, accumulator),
         newState,
       );
     }
 
-    return constructJsxState(
+    return constructState(
       oldState,
       component.props.children as JSXElement,
       newState,
@@ -154,7 +147,7 @@ export function constructJsxState(
     if (Array.isArray(component.props.children)) {
       newState[component.props.name] =
         component.props.children.reduce<FormState>((accumulator, node) => {
-          return constructJsxFormState(
+          return constructFormState(
             oldState,
             node,
             component.props.name,
@@ -165,7 +158,7 @@ export function constructJsxState(
       return newState;
     }
 
-    newState[component.props.name] = constructJsxFormState(
+    newState[component.props.name] = constructFormState(
       oldState,
       component.props.children,
       component.props.name,
@@ -175,10 +168,7 @@ export function constructJsxState(
 
   if (component.type === 'Input') {
     assertNameIsUnique(newState, component.props.name);
-    newState[component.props.name] = constructJsxInputState(
-      oldState,
-      component,
-    );
+    newState[component.props.name] = constructInputState(oldState, component);
   }
 
   return newState;

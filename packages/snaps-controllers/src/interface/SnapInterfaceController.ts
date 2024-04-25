@@ -14,7 +14,7 @@ import { getJsonSizeUnsafe, validateJsxLinks } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
-import { constructJsxState, getJsxInterface } from './utils';
+import { constructState, getJsxInterface } from './utils';
 
 const MAX_UI_CONTENT_SIZE = 10_000_000; // 10 mb
 
@@ -143,7 +143,7 @@ export class SnapInterfaceController extends BaseController<
     await this.#validateContent(element);
 
     const id = nanoid();
-    const componentState = constructJsxState({}, element);
+    const componentState = constructState({}, element);
 
     this.update((draftState) => {
       // @ts-expect-error - TS2589: Type instantiation is excessively deep and
@@ -188,7 +188,7 @@ export class SnapInterfaceController extends BaseController<
     await this.#validateContent(element);
 
     const oldState = this.state.interfaces[id].state;
-    const newState = constructJsxState(oldState, element);
+    const newState = constructState(oldState, element);
 
     this.update((draftState) => {
       draftState.interfaces[id].state = newState;

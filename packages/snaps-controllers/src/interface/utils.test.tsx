@@ -1,6 +1,6 @@
 import { Box, Button, Field, Form, Input, Text } from '@metamask/snaps-sdk/jsx';
 
-import { assertNameIsUnique, constructJsxState } from './utils';
+import { assertNameIsUnique, constructState } from './utils';
 
 describe('assertNameIsUnique', () => {
   it('throws an error if a name is not unique', () => {
@@ -18,7 +18,7 @@ describe('assertNameIsUnique', () => {
   });
 });
 
-describe('constructJsxState', () => {
+describe('constructState', () => {
   it('can construct a new component state', () => {
     const element = (
       <Box>
@@ -31,7 +31,7 @@ describe('constructJsxState', () => {
       </Box>
     );
 
-    const result = constructJsxState({}, element);
+    const result = constructState({}, element);
 
     expect(result).toStrictEqual({ foo: { bar: null } });
   });
@@ -49,7 +49,7 @@ describe('constructJsxState', () => {
       </Box>
     );
 
-    const result = constructJsxState({}, element);
+    const result = constructState({}, element);
 
     expect(result).toStrictEqual({ foo: { bar: null } });
   });
@@ -71,7 +71,7 @@ describe('constructJsxState', () => {
       </Box>
     );
 
-    const result = constructJsxState(state, element);
+    const result = constructState(state, element);
     expect(result).toStrictEqual({ foo: { bar: 'test', baz: null } });
   });
 
@@ -92,7 +92,7 @@ describe('constructJsxState', () => {
       </Box>
     );
 
-    const result = constructJsxState(state, element);
+    const result = constructState(state, element);
     expect(result).toStrictEqual({ form: { bar: 'test', baz: null } });
   });
 
@@ -124,7 +124,7 @@ describe('constructJsxState', () => {
       </Box>
     );
 
-    const result = constructJsxState(state, element);
+    const result = constructState(state, element);
 
     expect(result).toStrictEqual({
       form1: { bar: 'test', baz: null },
@@ -152,7 +152,7 @@ describe('constructJsxState', () => {
       </Box>
     );
 
-    const result = constructJsxState(state, element);
+    const result = constructState(state, element);
     expect(result).toStrictEqual({
       form1: { bar: 'test', baz: null },
     });
@@ -190,7 +190,7 @@ describe('constructJsxState', () => {
       </Box>
     );
 
-    const result = constructJsxState(state, element);
+    const result = constructState(state, element);
     expect(result).toStrictEqual({
       form1: { bar: 'test', baz: null },
       form2: { bar: 'def', baz: null },
@@ -204,7 +204,7 @@ describe('constructJsxState', () => {
       </Box>
     );
 
-    const result = constructJsxState({}, element);
+    const result = constructState({}, element);
     expect(result).toStrictEqual({
       foo: 'bar',
     });
@@ -217,7 +217,7 @@ describe('constructJsxState', () => {
       </Box>
     );
 
-    const result = constructJsxState({}, element);
+    const result = constructState({}, element);
     expect(result).toStrictEqual({
       foo: null,
     });
@@ -230,7 +230,7 @@ describe('constructJsxState', () => {
       </Box>
     );
 
-    const result = constructJsxState({ foo: null, bar: null }, element);
+    const result = constructState({ foo: null, bar: null }, element);
     expect(result).toStrictEqual({
       foo: null,
     });
@@ -247,7 +247,7 @@ describe('constructJsxState', () => {
       </Box>
     );
 
-    const result = constructJsxState(state, element);
+    const result = constructState(state, element);
     expect(result).toStrictEqual({
       foo: 'bar',
     });
@@ -265,7 +265,7 @@ describe('constructJsxState', () => {
       </Form>
     );
 
-    expect(() => constructJsxState({}, element)).toThrow(
+    expect(() => constructState({}, element)).toThrow(
       `Duplicate component names are not allowed, found multiple instances of: "foo".`,
     );
   });
@@ -278,7 +278,7 @@ describe('constructJsxState', () => {
       </Box>
     );
 
-    expect(() => constructJsxState({}, element)).toThrow(
+    expect(() => constructState({}, element)).toThrow(
       `Duplicate component names are not allowed, found multiple instances of: "test".`,
     );
   });
@@ -295,7 +295,7 @@ describe('constructJsxState', () => {
       </Box>
     );
 
-    expect(() => constructJsxState({}, element)).toThrow(
+    expect(() => constructState({}, element)).toThrow(
       `Duplicate component names are not allowed, found multiple instances of: "test".`,
     );
   });
