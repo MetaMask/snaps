@@ -241,7 +241,7 @@ describe('getJsxElementFromComponent', () => {
         }),
       ),
     ).toStrictEqual(
-      <Button name="foo" variant="primary" type="button">
+      <Button name="foo" variant="primary">
         foo
       </Button>,
     );
@@ -257,7 +257,23 @@ describe('getJsxElementFromComponent', () => {
         }),
       ),
     ).toStrictEqual(
-      <Button name="bar" variant="destructive" type="button">
+      <Button name="bar" variant="destructive">
+        bar
+      </Button>,
+    );
+  });
+
+  it('returns the JSX element for a button component with a type', () => {
+    expect(
+      getJsxElementFromComponent(
+        button({
+          buttonType: 'submit',
+          name: 'bar',
+          value: 'bar',
+        }),
+      ),
+    ).toStrictEqual(
+      <Button name="bar" type="submit">
         bar
       </Button>,
     );
@@ -291,7 +307,7 @@ describe('getJsxElementFromComponent', () => {
             type={undefined}
           />
         </Field>
-        <Button name={undefined} type="button" variant={undefined}>
+        <Button name={undefined} variant={undefined}>
           button
         </Button>
       </Form>,
@@ -479,7 +495,7 @@ describe('getJsxElementFromComponent', () => {
                   type={undefined}
                 />
               </Field>
-              <Button name={undefined} type="button" variant={undefined}>
+              <Button name={undefined} variant={undefined}>
                 button
               </Button>
             </Form>

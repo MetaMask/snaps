@@ -9,7 +9,7 @@ import { hasProperty, isPlainObject } from '@metamask/utils';
  * @returns The result of the callback, if any.
  */
 export function walkJsx<Value>(
-  node: JSXElement,
+  node: JSXElement | JSXElement[],
   callback: (node: JSXElement) => Value | undefined,
 ): Value | undefined {
   if (Array.isArray(node)) {

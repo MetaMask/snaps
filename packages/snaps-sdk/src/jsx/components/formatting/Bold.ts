@@ -1,5 +1,4 @@
-import type { MaybeArray } from '@metamask/snaps-sdk/jsx';
-
+import type { MaybeArray } from '../../component';
 import { createSnapComponent } from '../../component';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { Text } from '../Text';
