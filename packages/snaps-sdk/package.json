@@ -22,7 +22,17 @@
       "import": "./dist/jsx/jsx-runtime.mjs",
       "require": "./dist/jsx/jsx-runtime.js"
     },
+    "./jsx-dev-runtime": {
+      "types": "./dist/types/jsx/jsx-runtime.d.ts",
+      "import": "./dist/jsx/jsx-runtime.mjs",
+      "require": "./dist/jsx/jsx-runtime.js"
+    },
     "./production/jsx-runtime": {
+      "types": "./dist/types/jsx/production/jsx-runtime.d.ts",
+      "import": "./dist/jsx/production/jsx-runtime.mjs",
+      "require": "./dist/jsx/production/jsx-runtime.js"
+    },
+    "./production/jsx-dev-runtime": {
       "types": "./dist/types/jsx/production/jsx-runtime.d.ts",
       "import": "./dist/jsx/production/jsx-runtime.mjs",
       "require": "./dist/jsx/production/jsx-runtime.js"
