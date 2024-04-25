@@ -1,9 +1,6 @@
-import type {
-  MaybeArray,
-  StandardFormattingElement,
-} from '@metamask/snaps-sdk/jsx';
-
+import type { MaybeArray } from '../component';
 import { createSnapComponent } from '../component';
+import type { StandardFormattingElement } from './formatting';
 
 /**
  * The children of the {@link Link} component.

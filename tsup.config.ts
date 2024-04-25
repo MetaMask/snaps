@@ -43,6 +43,7 @@ const config: Options = {
   // The entry to bundle.
   entry: [
     'src/**/*.ts',
+    'src/**/*.tsx',
     '!src/**/__fixtures__/**/*',
     '!src/**/__mocks__/**/*',
     '!src/**/__test__/**/*',
@@ -50,8 +51,10 @@ const config: Options = {
     '!src/**/__snapshots__/**/*',
     '!src/**/test-utils/**/*',
     '!src/**/*.test.ts',
+    '!src/**/*.test.tsx',
     '!src/**/*.test-d.ts',
     '!src/**/*.test.*.ts',
+    '!src/**/*.test.*.tsx',
   ],
 
   // External modules that should not be processed by `tsup`. We want to

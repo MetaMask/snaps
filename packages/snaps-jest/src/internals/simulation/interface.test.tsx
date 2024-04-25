@@ -52,6 +52,7 @@ async function getResolve(runSaga: RunSagaFunction) {
 
 describe('getInterfaceResponse', () => {
   const interfaceActions = { clickElement: jest.fn(), typeInField: jest.fn() };
+
   it('returns an `ok` function that resolves the user interface with `null` for alert dialogs', async () => {
     const { runSaga } = createStore(getMockOptions());
     const response = getInterfaceResponse(
@@ -85,7 +86,7 @@ describe('getInterfaceResponse', () => {
 
     expect(response).toStrictEqual({
       type: DialogType.Confirmation,
-      content: text('foo'),
+      content: <Text>foo</Text>,
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       ok: expect.any(Function),
@@ -196,7 +197,7 @@ describe('getInterfaceResponse', () => {
 
     expect(() => {
       // @ts-expect-error - Invalid dialog type.
-      getInterfaceResponse(runSaga, 'Foo', text('foo'));
+      getInterfaceResponse(runSaga, 'Foo', <Text>foo</Text>);
     }).toThrow('Unknown or unsupported dialog type: "Foo".');
   });
 });
