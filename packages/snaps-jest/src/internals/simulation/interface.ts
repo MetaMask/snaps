@@ -175,7 +175,7 @@ function getFormElement(form: FormElement, name: string) {
     return undefined;
   }
 
-  return { element, form };
+  return { element, form: form.props.name };
 }
 
 /**
@@ -192,7 +192,7 @@ export function getElement(
 ):
   | {
       element: ButtonElement | InputElement;
-      form?: FormElement;
+      form?: string;
     }
   | undefined {
   const { type } = content;
@@ -289,8 +289,8 @@ export async function clickElement(
 
     await handleEvent(controllerMessenger, snapId, id, {
       type: UserInputEventType.FormSubmitEvent,
-      name: result.form.props.name,
-      value: state[result.form.props.name] as Record<string, string | null>,
+      name: result.form,
+      value: state[result.form] as Record<string, string | null>,
     });
   }
 }

@@ -227,20 +227,20 @@ describe('getElement', () => {
 
     expect(result).toStrictEqual({
       element: <Button name="bar">foo</Button>,
-      form: getJsxElementFromComponent(content),
+      form: 'foo',
     });
   });
 
   it('gets an element in a form when there are multiple forms', () => {
     const content = panel([
-      form('foo', [button({ value: 'foo', name: 'bar' })]),
-      form('foo', [button({ value: 'foo', name: 'baz' })]),
+      form('form-1', [button({ value: 'foo', name: 'bar' })]),
+      form('form-2', [button({ value: 'foo', name: 'baz' })]),
     ]);
     const result = getElement(getJsxElementFromComponent(content), 'baz');
 
     expect(result).toStrictEqual({
       element: <Button name="baz">foo</Button>,
-      form: getJsxElementFromComponent(content.children[1]),
+      form: 'form-2',
     });
   });
 });
