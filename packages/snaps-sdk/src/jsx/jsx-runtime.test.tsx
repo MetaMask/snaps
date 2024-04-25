@@ -18,6 +18,12 @@ describe('jsx', () => {
       'Invalid JSX element: Expected the value to satisfy a union of `object | object | object | object | object | object | object | object | object | object | object | object | object | object | object | object`, but received: [object Object].',
     );
   });
+
+  it('throws an error for JSX fragments', () => {
+    expect(() => <></>).toThrow(
+      'A JSX fragment was used in a Snap component, which is not supported by Snaps UI. Please use one of the supported Snap components.',
+    );
+  });
 });
 
 describe('jsxs', () => {
@@ -54,26 +60,6 @@ describe('jsxs', () => {
             ],
           },
         },
-      },
-    });
-  });
-
-  it('renders a fragment', () => {
-    const element = (
-      <>
-        <Text>Hello</Text>
-        <Text>World</Text>
-      </>
-    );
-
-    expect(element).toStrictEqual({
-      type: 'Box',
-      key: null,
-      props: {
-        children: [
-          { type: 'Text', key: null, props: { children: 'Hello' } },
-          { type: 'Text', key: null, props: { children: 'World' } },
-        ],
       },
     });
   });

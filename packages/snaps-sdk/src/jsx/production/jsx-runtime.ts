@@ -1,5 +1,4 @@
 import type { JsonObject, Key, SnapComponent } from '../component';
-import { Box, type BoxProps } from '../components';
 
 /**
  * The JSX runtime for Snaps SDK components. This function is used to render
@@ -28,9 +27,11 @@ export function jsx<Props extends JsonObject>(
   }
 
   if (!component) {
-    // If component is undefined, a JSX fragment `<>...</>` was used. In this
-    // case, we need to wrap the children in a `Box` component.
-    return jsx(Box, props as unknown as BoxProps);
+    // If component is undefined, a JSX fragment `<>...</>` was used, which is
+    // not supported in Snaps.
+    throw new Error(
+      'A JSX fragment was used in a Snap component, which is not supported by Snaps UI. Please use one of the supported Snap components.',
+    );
   }
 
   return component(props);
