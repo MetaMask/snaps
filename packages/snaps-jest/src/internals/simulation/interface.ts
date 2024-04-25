@@ -354,7 +354,7 @@ export async function typeInField(
     id,
   );
 
-  const newState = mergeValue(state, name, value, result.form?.props.name);
+  const newState = mergeValue(state, name, value, result.form);
 
   controllerMessenger.call(
     'SnapInterfaceController:updateInterfaceState',
