@@ -80,7 +80,7 @@ export const MultiEditableNode: FunctionComponent<
   EditableNodeProps<MultiEditableComponent>
 > = ({ node, depth, isDragging, onChange, onClose }) => {
   if (!node.data) {
-    return undefined;
+    return null;
   }
 
   const nodeDataOptions = MULTI_EDITABLE_NODES[node.data.type];
@@ -117,7 +117,7 @@ export const MultiEditableNode: FunctionComponent<
               );
             }
 
-            return undefined;
+            return null;
           })}
         </Box>
       </BaseNode>
