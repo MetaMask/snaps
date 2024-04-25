@@ -21,26 +21,11 @@ export const Input: FunctionComponent<InputProps> = ({ node, id }) => {
     <FormControl isInvalid={Boolean(node.error)} key={`${id}-input`}>
       {node.label && <FormLabel>{node.label}</FormLabel>}
       <ChakraInput
-        fontSize="sm"
-        bg="chakra-body-bg"
-        borderColor="border.default"
-        outline="none"
-        _active={{
-          borderColor: 'border.active',
-          outline: 'none',
-          boxShadow: 'none',
-        }}
-        _focusVisible={{
-          borderColor: 'border.active',
-          outline: 'none',
-          boxShadow: 'none',
-        }}
         value={node.value}
         type={node.inputType}
         placeholder={node.placeholder}
-        marginBottom="0"
       />
-      {node.error && <FormErrorMessage>{node.error}</FormErrorMessage>}
+      <FormErrorMessage>{node.error}</FormErrorMessage>
     </FormControl>
   );
 };

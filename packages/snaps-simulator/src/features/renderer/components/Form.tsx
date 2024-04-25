@@ -15,7 +15,7 @@ export const Form: FunctionComponent<FormProps> = ({ node, id }) => {
   assert(node.type === 'form', 'Expected value to be a form component.');
 
   return (
-    <Box key={`${id}-form`}>
+    <Box key={`${id}-form`} as="form">
       {node.children.map((child, index) => (
         <Renderer
           key={`${id}-form-child-${index}`}

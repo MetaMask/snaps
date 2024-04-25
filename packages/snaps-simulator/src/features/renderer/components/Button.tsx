@@ -10,7 +10,7 @@ export type ButtonProps = {
 
 const BUTTON_VARIANTS = {
   primary: 'primary',
-  secondary: 'outlined',
+  secondary: 'outline',
 };
 
 export const Button: FunctionComponent<ButtonProps> = ({ node, id }) => {
