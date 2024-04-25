@@ -214,19 +214,6 @@ export function getElement(
 
     return undefined;
   });
-
-  // if (hasChildren(content)) {
-  //   for (const element of content.props.children) {
-  //     const result = getElement(element, name);
-  //     const form = type === NodeType.Form ? content.name : result?.form;
-  //
-  //     if (result) {
-  //       return { element: result.element, form };
-  //     }
-  //   }
-  // }
-  //
-  // return undefined;
 }
 /**
  * Handle submitting event requests to OnUserInput including unwrapping potential errors.
