@@ -4,6 +4,8 @@ import { assert } from '@metamask/utils';
 import type { FunctionComponent } from 'react';
 import ReactMarkdown from 'react-markdown';
 
+import { Icon } from '../../../components';
+
 export type TextProps = {
   id: string;
   node: unknown;
@@ -31,8 +33,16 @@ export const Text: FunctionComponent<TextProps> = ({ node, id }) => {
             fontSize="sm"
             isExternal
             color="link.default"
+            display="inline"
           >
             {value}
+            <Icon
+              icon="linkOut"
+              width="14px"
+              marginLeft="2px"
+              display="inline"
+              verticalAlign="middle"
+            />
           </ChakraLink>
         ),
       }}

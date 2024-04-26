@@ -6,9 +6,9 @@ module.exports = deepmerge(baseConfig, {
   coverageThreshold: {
     global: {
       branches: 72.5,
-      functions: 79.28,
-      lines: 89.37,
-      statements: 89.16,
+      functions: 80.23,
+      lines: 89.9,
+      statements: 89.73,
     },
   },
   setupFiles: ['./jest.setup.js'],

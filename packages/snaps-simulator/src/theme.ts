@@ -158,12 +158,13 @@ export const theme = extendTheme({
     Form: defineFormMultiStyleConfig({
       baseStyle: defineFormPartsStyle({
         container: {
+          marginBottom: 4,
           label: {
             fontSize: 'xs',
             marginBottom: 1,
           },
           input: {
-            marginBottom: 4,
+            marginBottom: 0,
             borderColor: 'border.default',
             outline: 'none',
             fontSize: 'sm',
@@ -179,7 +180,7 @@ export const theme = extendTheme({
             },
           },
           textarea: {
-            marginBottom: 4,
+            marginBottom: 0,
             borderColor: 'border.default',
             outline: 'none',
             fontSize: 'sm',

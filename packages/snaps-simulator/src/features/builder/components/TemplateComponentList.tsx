@@ -1,10 +1,13 @@
 import { Box, Flex, List, ListItem, Text } from '@chakra-ui/react';
 import type { Component } from '@metamask/snaps-sdk';
 import {
+  button,
   copyable,
   divider,
+  form,
   heading,
   image,
+  input,
   panel,
   text,
 } from '@metamask/snaps-sdk';
@@ -63,6 +66,24 @@ const TEMPLATE_COMPONENTS: TemplateComponent[] = [
     icon: 'image',
     text: 'Image',
     data: image(SVG),
+    droppable: false,
+  },
+  {
+    icon: 'button',
+    text: 'Button',
+    data: button('Button'),
+    droppable: false,
+  },
+  {
+    icon: 'form',
+    text: 'Form',
+    data: form('form', []),
+    droppable: true,
+  },
+  {
+    icon: 'input',
+    text: 'Input',
+    data: input('Input'),
     droppable: false,
   },
 ];

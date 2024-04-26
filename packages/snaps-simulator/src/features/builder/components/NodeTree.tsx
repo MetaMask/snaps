@@ -1,9 +1,10 @@
 import { Box, Flex } from '@chakra-ui/react';
-import type { Component } from '@metamask/snaps-sdk';
+import { NodeType, type Component } from '@metamask/snaps-sdk';
 import type {
   NodeModel,
   NodeRender,
   TreeMethods,
+  TreeProps,
 } from '@minoru/react-dnd-treeview';
 import { Tree } from '@minoru/react-dnd-treeview';
 import type { FunctionComponent } from 'react';
@@ -31,7 +32,11 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
 }) => {
   const ref = useRef<TreeMethods>(null);
 
-  const handleChange = (node: NodeModel<Component>, value: string) => {
+  const handleChange = (
+    node: NodeModel<Component>,
+    key: string,
+    value: string,
+  ) => {
     // TODO: This code is a mess.
     const newItems: any = items.map((item) => {
       if (item.id === node.id) {
@@ -40,7 +45,8 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
           data: {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unnecessary-type-assertion
             type: item.data!.type,
-            value,
+            ...item.data,
+            [key]: value,
           },
           text: value,
         };
@@ -92,17 +98,20 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
     return false;
   };
 
-  const handleCanDrop = (
-    _tree: NodeModel<Component>[],
-    {
-      dropTarget,
-      dropTargetId,
-    }: {
-      dropTarget?: NodeModel<Component> | undefined;
-      dropTargetId?: string | number;
-    },
+  const handleCanDrop: TreeProps<Component>['canDrop'] = (
+    _tree,
+    { dropTarget, dropTargetId, dragSource },
   ) => {
     if (dropTargetId) {
+      // Checks if the component is allowed in an Form.
+      if (
+        dropTarget?.data?.type === NodeType.Form &&
+        dragSource?.data?.type !== NodeType.Button &&
+        dragSource?.data?.type !== NodeType.Input
+      ) {
+        return false;
+      }
+
       return dropTarget?.droppable && dropTargetId > 0;
     }
 

@@ -1,26 +1,20 @@
 import { Box } from '@chakra-ui/react';
 import type { Component } from '@metamask/snaps-sdk';
-import { NodeType } from '@metamask/snaps-sdk';
 import { assert } from '@metamask/utils';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 import type { FunctionComponent } from 'react';
 
 import { BaseNode } from './BaseNode';
-import type { EditableComponent } from './EditableNode';
-import { EditableNode } from './EditableNode';
-
-export const EDITABLE_NODES = [
-  NodeType.Heading,
-  NodeType.Text,
-  NodeType.Copyable,
-  NodeType.Image,
-];
+import type { MultiEditableComponent } from './MultiEditableNode';
+import { MULTI_EDITABLE_NODES, MultiEditableNode } from './MultiEditableNode';
+import type { TextEditableComponent } from './TextEditableNode';
+import { TEXT_EDITABLE_NODES, TextEditableNode } from './TextEditableNode';
 
 type NodeProps = {
   node: NodeModel<Component>;
   depth: number;
   isDragging: boolean;
-  onChange: (node: NodeModel<Component>, value: string) => void;
+  onChange: (node: NodeModel<Component>, key: string, value: string) => void;
   onClose?: ((node: NodeModel<Component>) => void) | undefined;
 };
 
@@ -44,10 +38,22 @@ export const Node: FunctionComponent<NodeProps> = ({
   onClose,
 }) => {
   assert(node.data?.type, 'Node must have a type.');
-  if (EDITABLE_NODES.includes(node.data.type)) {
+  if (TEXT_EDITABLE_NODES.includes(node.data.type)) {
     return (
-      <EditableNode
-        node={node as NodeModel<EditableComponent>}
+      <TextEditableNode
+        node={node as NodeModel<TextEditableComponent>}
+        depth={depth}
+        isDragging={isDragging}
+        onChange={onChange}
+        onClose={onClose}
+      />
+    );
+  }
+
+  if (Object.keys(MULTI_EDITABLE_NODES).includes(node.data.type)) {
+    return (
+      <MultiEditableNode
+        node={node as NodeModel<MultiEditableComponent>}
         depth={depth}
         isDragging={isDragging}
         onChange={onChange}
