@@ -11,7 +11,10 @@ import type {
   JSXElement,
 } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
-import { getJsxElementFromComponent } from '@metamask/snaps-utils';
+import {
+  getJsxChildren,
+  getJsxElementFromComponent,
+} from '@metamask/snaps-utils';
 
 /**
  * Get a JSX element from a component or JSX element. If the component is a
@@ -126,17 +129,10 @@ export function constructState(
   newState: InterfaceState = {},
 ): InterfaceState {
   if (component.type === 'Box') {
-    if (Array.isArray(component.props.children)) {
-      return component.props.children.reduce(
-        (accumulator, node) =>
-          constructState(oldState, node as JSXElement, accumulator),
-        newState,
-      );
-    }
-
-    return constructState(
-      oldState,
-      component.props.children as JSXElement,
+    const children = getJsxChildren(component);
+    return children.reduce(
+      (accumulator, node) =>
+        constructState(oldState, node as JSXElement, accumulator),
       newState,
     );
   }
@@ -144,26 +140,21 @@ export function constructState(
   if (component.type === 'Form') {
     assertNameIsUnique(newState, component.props.name);
 
-    if (Array.isArray(component.props.children)) {
-      newState[component.props.name] =
-        component.props.children.reduce<FormState>((accumulator, node) => {
-          return constructFormState(
-            oldState,
-            node,
-            component.props.name,
-            accumulator,
-          );
-        }, {});
-
-      return newState;
-    }
-
-    newState[component.props.name] = constructFormState(
-      oldState,
-      component.props.children,
-      component.props.name,
+    const children = getJsxChildren(component);
+    newState[component.props.name] = children.reduce<FormState>(
+      (accumulator, node) => {
+        return constructFormState(
+          oldState,
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+          node as FieldElement | ButtonElement,
+          component.props.name,
+          accumulator,
+        );
+      },
       {},
     );
+
+    return newState;
   }
 
   if (component.type === 'Input') {

@@ -11,8 +11,6 @@
     "paths": {
       "@metamask/*/test-utils": ["../*/src/test-utils"],
       "@metamask/*/node": ["../*/src/node"],
-      "@metamask/*/production/jsx-dev-runtime": ["../*/src/jsx/production"],
-      "@metamask/*/production/jsx-runtime": ["../*/src/jsx/production"],
       "@metamask/*/jsx-dev-runtime": ["../*/src/jsx"],
       "@metamask/*/jsx-runtime": ["../*/src/jsx"],
       "@metamask/*/jsx": ["../*/src/jsx"],

@@ -6,6 +6,7 @@ import type {
   ItalicChildren,
   JSXElement,
   RowChildren,
+  SnapNode,
   TextChildren,
 } from '@metamask/snaps-sdk/jsx';
 import {
@@ -31,11 +32,10 @@ import {
   assertExhaustive,
   AssertionError,
   hasProperty,
+  isPlainObject,
 } from '@metamask/utils';
 import { lexer, walkTokens } from 'marked';
 import type { Token, Tokens } from 'marked';
-
-import { walkJsx } from './jsx';
 
 const MAX_TEXT_LENGTH = 50_000; // 50 kb
 const ALLOWED_PROTOCOLS = ['https:', 'mailto:'];
@@ -408,4 +408,69 @@ export function hasChildren<Element extends JSXElement>(
   element: Element,
 ): element is Element & { props: { children: JSXElement } } {
   return hasProperty(element.props, 'children');
+}
+
+/**
+ * Get the children of a JSX element as an array. If the element has only one
+ * child, the child is returned as an array.
+ *
+ * @param element - A JSX element.
+ * @returns The children of the element.
+ */
+export function getJsxChildren(element: JSXElement): SnapNode[] {
+  if (hasChildren(element)) {
+    if (Array.isArray(element.props.children)) {
+      return element.props.children;
+    }
+
+    return [element.props.children];
+  }
+
+  return [];
+}
+
+/**
+ * Walk a JSX tree and call a callback on each node.
+ *
+ * @param node - The JSX node to walk.
+ * @param callback - The callback to call on each node.
+ * @returns The result of the callback, if any.
+ */
+export function walkJsx<Value>(
+  node: JSXElement | JSXElement[],
+  callback: (node: JSXElement) => Value | undefined,
+): Value | undefined {
+  if (Array.isArray(node)) {
+    for (const child of node) {
+      const childResult = walkJsx(child as JSXElement, callback);
+      if (childResult !== undefined) {
+        return childResult;
+      }
+    }
+
+    return undefined;
+  }
+
+  const result = callback(node);
+  if (result !== undefined) {
+    return result;
+  }
+
+  if (
+    hasProperty(node, 'props') &&
+    isPlainObject(node.props) &&
+    hasProperty(node.props, 'children')
+  ) {
+    const children = getJsxChildren(node);
+    for (const child of children) {
+      if (isPlainObject(child)) {
+        const childResult = walkJsx(child as JSXElement, callback);
+        if (childResult !== undefined) {
+          return childResult;
+        }
+      }
+    }
+  }
+
+  return undefined;
 }

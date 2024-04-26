@@ -212,7 +212,7 @@ module.exports = {
           transform: {
             react: {
               runtime: 'automatic',
-              importSource: '@metamask/snaps-sdk/production',
+              importSource: '@metamask/snaps-sdk',
               useBuiltins: true,
             },
           },

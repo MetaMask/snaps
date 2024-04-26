@@ -15,7 +15,6 @@ export * from './handler-types';
 export * from './iframe';
 export * from './json';
 export * from './json-rpc';
-export * from './jsx';
 export * from './localization';
 export * from './logging';
 export * from './manifest';

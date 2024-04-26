@@ -1,4 +1,4 @@
-import type { MaybeArray } from '../../component';
+import type { JsonObject, MaybeArray, SnapElement } from '../../component';
 import { createSnapComponent } from '../../component';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { Text } from '../Text';
@@ -8,10 +8,8 @@ import type { Text } from '../Text';
  */
 export type BoldChildren = MaybeArray<
   | string
-  | {
-      // We have to specify the type here to avoid a circular reference.
-      type: 'Italic';
-    }
+  // We have to specify the type here to avoid a circular reference.
+  | SnapElement<JsonObject, 'Italic'>
   | null
 >;
 

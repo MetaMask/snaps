@@ -27,8 +27,10 @@ import { literal, nullUnion } from '../internals';
 import type { EmptyObject } from '../types';
 import type {
   GenericSnapElement,
+  JsonObject,
   Key,
   MaybeArray,
+  SnapElement,
   StringElement,
 } from './component';
 import type {
@@ -158,7 +160,9 @@ export const BoldStruct: Describe<BoldElement> = element('Bold', {
       nullUnion([
         string(),
         // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        lazy(() => ItalicStruct) as unknown as Struct<{ type: 'Italic' }>,
+        lazy(() => ItalicStruct) as unknown as Struct<
+          SnapElement<JsonObject, 'Italic'>
+        >,
       ]),
     ),
   ),
@@ -173,7 +177,9 @@ export const ItalicStruct: Describe<ItalicElement> = element('Italic', {
       nullUnion([
         string(),
         // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        lazy(() => BoldStruct) as unknown as Struct<{ type: 'Bold' }>,
+        lazy(() => BoldStruct) as unknown as Struct<
+          SnapElement<JsonObject, 'Bold'>
+        >,
       ]),
     ),
   ),
