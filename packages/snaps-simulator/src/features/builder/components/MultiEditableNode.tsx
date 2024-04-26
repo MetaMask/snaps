@@ -15,52 +15,60 @@ import { EditableNodeSelect } from './EditableNodeSelect';
 
 export type MultiEditableComponent = Button | Input | Form;
 
+enum FieldType {
+  String = 'string',
+  Dropdown = 'dropdown',
+}
+
 type MultiEditableNodes = Record<
   MultiEditableComponent['type'],
-  Record<string, { type: 'string' } | { type: 'dropdown'; values: string[] }>
+  Record<
+    string,
+    { type: FieldType.String } | { type: FieldType.Dropdown; values: string[] }
+  >
 >;
 
 export const MULTI_EDITABLE_NODES: MultiEditableNodes = {
   [NodeType.Input]: {
     name: {
-      type: 'string',
+      type: FieldType.String,
     },
     label: {
-      type: 'string',
+      type: FieldType.String,
     },
     placeholder: {
-      type: 'string',
+      type: FieldType.String,
     },
     value: {
-      type: 'string',
+      type: FieldType.String,
     },
     inputType: {
-      type: 'dropdown',
+      type: FieldType.Dropdown,
       values: [InputType.Text, InputType.Number, InputType.Password],
     },
     error: {
-      type: 'string',
+      type: FieldType.String,
     },
   },
   [NodeType.Button]: {
     name: {
-      type: 'string',
+      type: FieldType.String,
     },
     value: {
-      type: 'string',
+      type: FieldType.String,
     },
     variant: {
-      type: 'dropdown',
+      type: FieldType.Dropdown,
       values: [ButtonVariant.Primary, ButtonVariant.Secondary],
     },
     buttonType: {
-      type: 'dropdown',
+      type: FieldType.Dropdown,
       values: [ButtonType.Button, ButtonType.Submit],
     },
   },
   [NodeType.Form]: {
     name: {
-      type: 'string',
+      type: FieldType.String,
     },
   },
 };
@@ -95,7 +103,7 @@ export const MultiEditableNode: FunctionComponent<
               onChange?.(node, key, value);
             };
 
-            if (property.type === 'string') {
+            if (property.type === FieldType.String) {
               return (
                 <EditableNodeInput
                   placeholder={key}
@@ -106,7 +114,7 @@ export const MultiEditableNode: FunctionComponent<
               );
             }
 
-            if (property.type === 'dropdown') {
+            if (property.type === FieldType.Dropdown) {
               return (
                 <EditableNodeSelect
                   key={`${key}-select`}
