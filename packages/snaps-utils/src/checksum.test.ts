@@ -38,13 +38,15 @@ describe('checksum', () => {
     expect(base64.encode(await checksum(new Uint8Array()))).toBe(EMPTY_SHA256);
   });
 
-  it('uses crypto.subtle when it is available', async () => {
+  it('handles crypto.subtle availability', async () => {
     const cryptoSpy = jest.spyOn(webcrypto.subtle, 'digest');
+    Object.defineProperty(globalThis, 'crypto', { value: webcrypto, writable: true });
 
-    Object.defineProperty(globalThis, 'crypto', {
-      value: webcrypto,
-      writable: true,
-    });
+    await checksum(FOO_BAR_UINT8);
+
+    expect(base64.encode(await checksum(FOO_BAR_UINT8))).toBe(FOO_BAR_SHA256);
+    expect(cryptoSpy).toHaveBeenCalled();
+  });
 
     expect(base64.encode(await checksum(FOO_BAR_UINT8))).toBe(FOO_BAR_SHA256);
     expect(cryptoSpy).toHaveBeenCalled();
