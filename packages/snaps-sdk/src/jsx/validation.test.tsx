@@ -367,6 +367,7 @@ describe('AddressStruct', () => {
     <Address>
       <Text>foo</Text>
     </Address>,
+    <Address address="0x1234" />,
     <Text>foo</Text>,
     <Box>
       <Text>foo</Text>

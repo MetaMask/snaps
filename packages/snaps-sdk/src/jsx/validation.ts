@@ -1,9 +1,9 @@
 import {
   assertStruct,
   hasProperty,
+  HexChecksumAddressStruct,
   isPlainObject,
   JsonStruct,
-  StrictHexStruct,
 } from '@metamask/utils';
 import type { Struct } from 'superstruct';
 import {
@@ -119,7 +119,7 @@ export const ButtonStruct: Describe<ButtonElement> = element('Button', {
     optional(nullUnion([literal('primary'), literal('destructive')])),
     'primary',
   ),
-  disabled: defaulted(optional(boolean()), 'false'),
+  disabled: defaulted(optional(boolean()), false),
 });
 
 /**
@@ -194,7 +194,7 @@ export const FormattingStruct: Describe<StandardFormattingElement> = nullUnion([
  * A struct for the {@link AddressElement} type.
  */
 export const AddressStruct: Describe<AddressElement> = element('Address', {
-  address: StrictHexStruct,
+  address: HexChecksumAddressStruct,
 });
 
 /**
