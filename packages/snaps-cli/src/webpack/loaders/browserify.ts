@@ -28,7 +28,7 @@ const loader: LoaderDefinitionFunction<LegacyOptions> = async function (
   const { transpilationMode } = config;
 
   const bundler = browserify({
-    extensions: ['.js', '.ts'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
     debug: Boolean(sourceMap),
     standalone: '<snap>',
   });
@@ -41,7 +41,7 @@ const loader: LoaderDefinitionFunction<LegacyOptions> = async function (
     /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require */
     bundler.transform(require('babelify'), {
       global: transpilationMode === TranspilationModes.LocalAndDeps,
-      extensions: ['.js', '.ts'],
+      extensions: ['.js', '.jsx', '.ts', '.tsx'],
       presets: [
         require('@babel/preset-typescript'),
         [
