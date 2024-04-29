@@ -137,7 +137,6 @@ function* getStoredInterface(
   }
 
   const { payload }: PayloadAction<Interface> = yield take(setInterface.type);
-
   const { content } = controllerMessenger.call(
     'SnapInterfaceController:getInterface',
     snapId,

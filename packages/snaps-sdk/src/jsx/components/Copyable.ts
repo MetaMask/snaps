@@ -10,7 +10,7 @@ import { createSnapComponent } from '../component';
  */
 export type CopyableProps = {
   value: string;
-  sensitive?: boolean;
+  sensitive?: boolean | undefined;
 };
 
 const TYPE = 'Copyable';

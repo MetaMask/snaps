@@ -1,7 +1,8 @@
 import { describe, expect } from '@jest/globals';
 import { installSnap } from '@metamask/snaps-jest';
-import { Bold, Box, Text } from '@metamask/snaps-sdk/jsx';
 import { assert } from '@metamask/utils';
+
+import { Counter } from './components';
 
 describe('onRpcRequest', () => {
   it('throws an error if the requested method does not exist', async () => {
@@ -22,26 +23,25 @@ describe('onRpcRequest', () => {
     });
   });
 
-  describe('showAlert', () => {
-    it('shows an alert dialog', async () => {
+  describe('increment', () => {
+    it('shows a dialog with a counter and an increment button', async () => {
       const { request } = await installSnap();
 
       const response = request({
-        method: 'showAlert',
+        method: 'increment',
       });
 
       const ui = await response.getInterface();
       assert(ui.type === 'alert');
 
-      expect(ui).toRender(
-        <Box>
-          <Text>
-            Hello from <Bold>JSX</Bold>.
-          </Text>
-        </Box>,
-      );
+      expect(ui).toRender(<Counter count={0} />);
 
-      await ui.ok();
+      await ui.clickElement('increment');
+
+      const updatedUi = await response.getInterface();
+      expect(updatedUi).toRender(<Counter count={1} />);
+
+      await updatedUi.ok();
 
       expect(await response).toRespondWith(null);
     });

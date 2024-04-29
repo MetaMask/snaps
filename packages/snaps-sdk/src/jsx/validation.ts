@@ -8,7 +8,6 @@ import type { Struct } from 'superstruct';
 import {
   is,
   boolean,
-  defaulted,
   optional,
   tuple,
   array,
@@ -110,15 +109,9 @@ function element<Name extends string, Props extends ObjectSchema = EmptyObject>(
 export const ButtonStruct: Describe<ButtonElement> = element('Button', {
   children: StringElementStruct,
   name: optional(string()),
-  type: defaulted(
-    optional(nullUnion([literal('button'), literal('submit')])),
-    'button',
-  ),
-  variant: defaulted(
-    optional(nullUnion([literal('primary'), literal('destructive')])),
-    'primary',
-  ),
-  disabled: defaulted(optional(boolean()), false),
+  type: optional(nullUnion([literal('button'), literal('submit')])),
+  variant: optional(nullUnion([literal('primary'), literal('destructive')])),
+  disabled: optional(boolean()),
 });
 
 /**
@@ -211,7 +204,7 @@ export const BoxStruct: Describe<BoxElement> = element('Box', {
  */
 export const CopyableStruct: Describe<CopyableElement> = element('Copyable', {
   value: string(),
-  sensitive: defaulted(optional(boolean()), false),
+  sensitive: optional(boolean()),
 });
 
 /**
@@ -257,11 +250,8 @@ export const TextStruct: Describe<TextElement> = element('Text', {
 export const RowStruct: Describe<RowElement> = element('Row', {
   label: string(),
   children: nullUnion([AddressStruct, ImageStruct, TextStruct]),
-  variant: defaulted(
-    optional(
-      nullUnion([literal('default'), literal('warning'), literal('error')]),
-    ),
-    'default',
+  variant: optional(
+    nullUnion([literal('default'), literal('warning'), literal('error')]),
   ),
 });
 
