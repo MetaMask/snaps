@@ -365,7 +365,32 @@ describe('clickElement', () => {
         MOCK_SNAP_ID,
         'baz',
       ),
-    ).rejects.toThrow('No button found in the interface.');
+    ).rejects.toThrow(
+      'Could not find an element in the interface with the name "baz".',
+    );
+
+    expect(handleRpcRequestMock).not.toHaveBeenCalled();
+  });
+
+  it('throws if the element is not a button', async () => {
+    const content = input({ value: 'foo', name: 'foo' });
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await expect(
+      clickElement(
+        rootControllerMessenger,
+        interfaceId,
+        getJsxElementFromComponent(content),
+        MOCK_SNAP_ID,
+        'foo',
+      ),
+    ).rejects.toThrow(
+      'Expected an element of type "Button", but found "Input".',
+    );
 
     expect(handleRpcRequestMock).not.toHaveBeenCalled();
   });
@@ -490,7 +515,31 @@ describe('typeInField', () => {
         'bar',
         'baz',
       ),
-    ).rejects.toThrow('No input found in the interface.');
+    ).rejects.toThrow(
+      'Could not find an element in the interface with the name "bar".',
+    );
+  });
+
+  it('throws if the element is not an input', async () => {
+    const content = button({ value: 'foo', name: 'foo' });
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await expect(
+      typeInField(
+        rootControllerMessenger,
+        interfaceId,
+        getJsxElementFromComponent(content),
+        MOCK_SNAP_ID,
+        'foo',
+        'baz',
+      ),
+    ).rejects.toThrow(
+      'Expected an element of type "Input", but found "Button".',
+    );
   });
 });
 

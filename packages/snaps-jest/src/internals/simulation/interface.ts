@@ -5,13 +5,9 @@ import type {
   UserInputEvent,
 } from '@metamask/snaps-sdk';
 import { DialogType, UserInputEventType, assert } from '@metamask/snaps-sdk';
-import type {
-  ButtonElement,
-  FormElement,
-  InputElement,
-  JSXElement,
-} from '@metamask/snaps-sdk/jsx';
+import type { FormElement, JSXElement } from '@metamask/snaps-sdk/jsx';
 import { HandlerType, unwrapError, walkJsx } from '@metamask/snaps-utils';
+import { hasProperty } from '@metamask/utils';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { type SagaIterator } from 'redux-saga';
 import { call, put, select, take } from 'redux-saga/effects';
@@ -152,6 +148,26 @@ function* getStoredInterface(
 }
 
 /**
+ * A JSX element with a name.
+ */
+export type NamedJSXElement = JSXElement & { props: { name: string } };
+
+/**
+ * Check if a JSX element is a JSX element with a given name.
+ *
+ * @param element - The JSX element.
+ * @param name - The element name.
+ * @returns True if the element is a JSX element with the given name, otherwise
+ * false.
+ */
+function isJSXElementWithName<Element extends JSXElement, Name extends string>(
+  element: Element,
+  name: Name,
+): element is Element & { props: { name: Name } } {
+  return hasProperty(element.props, 'name') && element.props.name === name;
+}
+
+/**
  * Find an element inside a form element in a JSX tree.
  *
  * @param form - The form element.
@@ -160,11 +176,8 @@ function* getStoredInterface(
  * in a form, otherwise undefined.
  */
 function getFormElement(form: FormElement, name: string) {
-  const element = walkJsx(form, (childElement) => {
-    if (
-      (childElement.type === 'Input' || childElement.type === 'Button') &&
-      childElement.props.name === name
-    ) {
+  const element = walkJsx<NamedJSXElement>(form, (childElement) => {
+    if (isJSXElementWithName(childElement, name)) {
       return childElement;
     }
 
@@ -179,7 +192,7 @@ function getFormElement(form: FormElement, name: string) {
 }
 
 /**
- * Get a Button or an Input from an interface.
+ * Get an element from a JSX tree with the given name.
  *
  * @param content - The interface content.
  * @param name - The element name.
@@ -191,12 +204,11 @@ export function getElement(
   name: string,
 ):
   | {
-      element: ButtonElement | InputElement;
+      element: NamedJSXElement;
       form?: string;
     }
   | undefined {
-  const { type } = content;
-  if ((type === 'Button' || type === 'Input') && content.props.name === name) {
+  if (isJSXElementWithName(content, name)) {
     return { element: content };
   }
 
@@ -205,10 +217,7 @@ export function getElement(
       return getFormElement(element, name);
     }
 
-    if (
-      (element.type === 'Button' || element.type === 'Input') &&
-      element.props.name === name
-    ) {
+    if (isJSXElementWithName(element, name)) {
       return { element };
     }
 
@@ -270,8 +279,13 @@ export async function clickElement(
 ): Promise<void> {
   const result = getElement(content, name);
   assert(
-    result !== undefined && result.element.type === 'Button',
-    'No button found in the interface.',
+    result !== undefined,
+    `Could not find an element in the interface with the name "${name}".`,
+  );
+
+  assert(
+    result.element.type === 'Button',
+    `Expected an element of type "Button", but found "${result.element.type}".`,
   );
 
   // Button click events are always triggered.
@@ -344,8 +358,13 @@ export async function typeInField(
   const result = getElement(content, name);
 
   assert(
-    result !== undefined && result.element.type === 'Input',
-    'No input found in the interface.',
+    result !== undefined,
+    `Could not find an element in the interface with the name "${name}".`,
+  );
+
+  assert(
+    result.element.type === 'Input',
+    `Expected an element of type "Input", but found "${result.element.type}".`,
   );
 
   const { state } = controllerMessenger.call(
