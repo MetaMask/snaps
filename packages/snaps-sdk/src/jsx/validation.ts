@@ -1,5 +1,4 @@
 import {
-  assertStruct,
   hasProperty,
   HexChecksumAddressStruct,
   isPlainObject,
@@ -333,5 +332,11 @@ export function assertJSXElement(value: unknown): asserts value is JSXElement {
   // TODO: We should use the error parsing utils from `snaps-utils` to improve
   // the error messages. It currently includes colours and potentially other
   // formatting that we might not want to include in the SDK.
-  assertStruct(value, JSXElementStruct, 'Invalid JSX element');
+  if (!isJSXElement(value)) {
+    throw new Error(
+      `Expected a JSX element, but received ${JSON.stringify(
+        value,
+      )}. Please refer to the documentation for the supported JSX elements and their props.`,
+    );
+  }
 }

@@ -798,11 +798,11 @@ describe('assertJSXElement', () => {
       type: 'row',
       key: null,
     },
-  ])('throws an error for "%p"', () => {
+  ])('throws an error for "%p"', (element) => {
     expect(() => {
-      assertJSXElement('foo');
+      assertJSXElement(element);
     }).toThrow(
-      'Invalid JSX element: Expected the value to satisfy a union of `object | object | object | object | object | object | object | object | object | object | object | object | object | object | object | object`, but received: "foo".',
+      /Expected a JSX element, but received .+\. Please refer to the documentation for the supported JSX elements and their props\./u,
     );
   });
 
