@@ -23,7 +23,7 @@ describe('onRpcRequest', () => {
     });
   });
 
-  describe('increment', () => {
+  describe('display', () => {
     it('shows a dialog with a counter and an increment button', async () => {
       const { request } = await installSnap();
 
