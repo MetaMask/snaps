@@ -9,7 +9,6 @@ import {
   is,
   boolean,
   optional,
-  tuple,
   array,
   lazy,
   nullable,
@@ -132,7 +131,7 @@ export const InputStruct: Describe<InputElement> = element('Input', {
 export const FieldStruct: Describe<FieldElement> = element('Field', {
   label: optional(string()),
   error: optional(string()),
-  children: nullUnion([tuple([InputStruct, ButtonStruct]), InputStruct]),
+  children: InputStruct,
 });
 
 /**

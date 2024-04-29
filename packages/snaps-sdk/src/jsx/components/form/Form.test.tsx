@@ -9,7 +9,6 @@ describe('Form', () => {
       <Form name="my-form">
         <Field label="Username">
           <Input name="username" type="text" />
-          <Button type="submit">Submit</Button>
         </Field>
       </Form>
     );
@@ -24,24 +23,14 @@ describe('Form', () => {
           key: null,
           props: {
             label: 'Username',
-            children: [
-              {
-                type: 'Input',
-                key: null,
-                props: {
-                  name: 'username',
-                  type: 'text',
-                },
+            children: {
+              type: 'Input',
+              key: null,
+              props: {
+                name: 'username',
+                type: 'text',
               },
-              {
-                type: 'Button',
-                key: null,
-                props: {
-                  type: 'submit',
-                  children: 'Submit',
-                },
-              },
-            ],
+            },
           },
         },
       },
@@ -53,7 +42,6 @@ describe('Form', () => {
       <Form name="my-form">
         <Field label="Username">
           <Input name="username" type="text" />
-          <Button>Action</Button>
         </Field>
         <Button type="submit">Submit</Button>
       </Form>
@@ -70,23 +58,14 @@ describe('Form', () => {
             key: null,
             props: {
               label: 'Username',
-              children: [
-                {
-                  type: 'Input',
-                  key: null,
-                  props: {
-                    name: 'username',
-                    type: 'text',
-                  },
+              children: {
+                type: 'Input',
+                key: null,
+                props: {
+                  name: 'username',
+                  type: 'text',
                 },
-                {
-                  type: 'Button',
-                  key: null,
-                  props: {
-                    children: 'Action',
-                  },
-                },
-              ],
+              },
             },
           },
           {
