@@ -28,7 +28,7 @@ describe('onRpcRequest', () => {
       const { request } = await installSnap();
 
       const response = request({
-        method: 'increment',
+        method: 'display',
       });
 
       const ui = await response.getInterface();
