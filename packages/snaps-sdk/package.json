@@ -33,7 +33,10 @@
   "module": "./dist/index.mjs",
   "types": "./dist/types/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "jsx.js",
+    "jsx-dev-runtime.js",
+    "jsx-runtime.js"
   ],
   "scripts": {
     "test": "jest && yarn posttest",
