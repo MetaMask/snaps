@@ -189,92 +189,101 @@ function validateComponentTextSize(component: Component) {
  * Get a JSX element from a legacy UI component. This supports all legacy UI
  * components, and maps them to their JSX equivalents where possible.
  *
- * @param component - The legacy UI component.
+ * This function validates the text size of the component, but does not validate
+ * the total size. The total size of the component should be validated before
+ * calling this function.
+ *
+ * @param legacyComponent - The legacy UI component.
  * @returns The JSX element.
  */
-export function getJsxElementFromComponent(component: Component): JSXElement {
-  validateComponentTextSize(component);
+export function getJsxElementFromComponent(
+  legacyComponent: Component,
+): JSXElement {
+  validateComponentTextSize(legacyComponent);
 
-  switch (component.type) {
-    case NodeType.Address:
-      return <Address address={component.value} />;
+  /**
+   * Get the JSX element for a component. This function is recursive and will
+   * call itself for child components.
+   *
+   * @param component - The component to convert to a JSX element.
+   * @returns The JSX element.
+   */
+  function getElement(component: Component) {
+    switch (component.type) {
+      case NodeType.Address:
+        return <Address address={component.value} />;
 
-    case NodeType.Button:
-      return (
-        <Button
-          name={component.name}
-          variant={getButtonVariant(component.variant)}
-          type={component.buttonType}
-        >
-          {component.value}
-        </Button>
-      );
-
-    case NodeType.Copyable:
-      return (
-        <Copyable value={component.value} sensitive={component.sensitive} />
-      );
-
-    case NodeType.Divider:
-      return <Divider />;
-
-    case NodeType.Form:
-      return (
-        <Form name={component.name}>
-          {
-            getChildren(
-              component.children.map(getJsxElementFromComponent),
-            ) as FieldElement[]
-          }
-        </Form>
-      );
-
-    case NodeType.Heading:
-      return <Heading children={component.value} />;
-
-    case NodeType.Image:
-      // `Image` supports `alt`, but the legacy `Image` component does not.
-      return <Image src={component.value} />;
-
-    case NodeType.Input:
-      return (
-        <Field label={component.label}>
-          <Input
+      case NodeType.Button:
+        return (
+          <Button
             name={component.name}
-            type={component.inputType}
-            value={component.value}
-            placeholder={component.placeholder}
-          />
-        </Field>
-      );
+            variant={getButtonVariant(component.variant)}
+            type={component.buttonType}
+          >
+            {component.value}
+          </Button>
+        );
 
-    case NodeType.Panel:
-      // `Panel` is renamed to `Box` in JSX.
-      return (
-        <Box
-          children={getChildren(
-            component.children.map(getJsxElementFromComponent),
-          )}
-        />
-      );
+      case NodeType.Copyable:
+        return (
+          <Copyable value={component.value} sensitive={component.sensitive} />
+        );
 
-    case NodeType.Row:
-      return (
-        <Row label={component.label}>
-          {getJsxElementFromComponent(component.value) as RowChildren}
-        </Row>
-      );
+      case NodeType.Divider:
+        return <Divider />;
 
-    case NodeType.Spinner:
-      return <Spinner />;
+      case NodeType.Form:
+        return (
+          <Form name={component.name}>
+            {getChildren(component.children.map(getElement)) as FieldElement[]}
+          </Form>
+        );
 
-    case NodeType.Text:
-      return <Text>{getChildren(getTextChildren(component.value))}</Text>;
+      case NodeType.Heading:
+        return <Heading children={component.value} />;
 
-    /* istanbul ignore next 2 */
-    default:
-      return assertExhaustive(component);
+      case NodeType.Image:
+        // `Image` supports `alt`, but the legacy `Image` component does not.
+        return <Image src={component.value} />;
+
+      case NodeType.Input:
+        return (
+          <Field label={component.label}>
+            <Input
+              name={component.name}
+              type={component.inputType}
+              value={component.value}
+              placeholder={component.placeholder}
+            />
+          </Field>
+        );
+
+      case NodeType.Panel:
+        // `Panel` is renamed to `Box` in JSX.
+        return (
+          <Box children={getChildren(component.children.map(getElement))} />
+        );
+
+      case NodeType.Row:
+        return (
+          <Row label={component.label}>
+            {getElement(component.value) as RowChildren}
+          </Row>
+        );
+
+      case NodeType.Spinner:
+        return <Spinner />;
+
+      case NodeType.Text:
+        return <Text>{getChildren(getTextChildren(component.value))}</Text>;
+
+      /* istanbul ignore next 2 */
+      default:
+        return assertExhaustive(component);
+    }
   }
+
+  return getElement(legacyComponent);
 }
 
 /**
