@@ -32,8 +32,8 @@ const TYPE = 'Form';
  * <Form name="my-form">
  *   <Field label="Username">
  *     <Input name="username" type="text" />
- *     <Button type="submit">Submit</Button>
  *   </Field>
+ *   <Button type="submit">Submit</Button>
  * </Form>
  */
 export const Form = createSnapComponent<FormProps, typeof TYPE>(TYPE);
