@@ -248,7 +248,7 @@ export function getJsxElementFromComponent(
 
       case NodeType.Input:
         return (
-          <Field label={component.label}>
+          <Field label={component.label} error={component.error}>
             <Input
               name={component.name}
               type={component.inputType}

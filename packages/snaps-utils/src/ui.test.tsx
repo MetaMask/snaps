@@ -342,6 +342,27 @@ describe('getJsxElementFromComponent', () => {
     );
   });
 
+  it('returns the JSX element for an input component with a label and error', () => {
+    expect(
+      getJsxElementFromComponent(
+        input({
+          name: 'foo',
+          label: 'bar',
+          error: 'baz',
+        }),
+      ),
+    ).toStrictEqual(
+      <Field label="bar" error="baz">
+        <Input
+          name="foo"
+          value={undefined}
+          placeholder={undefined}
+          type={undefined}
+        />
+      </Field>,
+    );
+  });
+
   it('returns the JSX element for a panel component', () => {
     expect(
       getJsxElementFromComponent(panel([text('foo'), text('bar')])),
