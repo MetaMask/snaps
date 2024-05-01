@@ -1,6 +1,7 @@
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import { DialogType, heading, panel, text } from '@metamask/snaps-sdk';
+import { Box, Text } from '@metamask/snaps-sdk/jsx';
 
 import type { DialogMethodHooks } from './dialog';
 import { dialogBuilder, getDialogImplementation } from './dialog';
@@ -122,6 +123,35 @@ describe('implementation', () => {
     );
   });
 
+  it('creates a new interface if a JSX element is passed', async () => {
+    const hooks = getMockDialogHooks();
+    const implementation = getDialogImplementation(hooks);
+
+    const content = (
+      <Box>
+        <Text>Hello, world!</Text>
+      </Box>
+    );
+
+    await implementation({
+      context: { origin: 'foo' },
+      method: 'snap_dialog',
+      params: {
+        type: 'alert',
+        content,
+      },
+    });
+
+    expect(hooks.createInterface).toHaveBeenCalledWith('foo', content);
+    expect(hooks.showDialog).toHaveBeenCalledTimes(1);
+    expect(hooks.showDialog).toHaveBeenCalledWith(
+      'foo',
+      DialogType.Alert,
+      'bar',
+      undefined,
+    );
+  });
+
   it('throws if the requested interface does not exist.', async () => {
     const hooks = {
       showDialog: jest.fn(),
@@ -173,6 +203,31 @@ describe('implementation', () => {
         undefined,
       );
     });
+
+    it('handles JSX alerts', async () => {
+      const hooks = getMockDialogHooks();
+      const implementation = getDialogImplementation(hooks);
+      await implementation({
+        context: { origin: 'foo' },
+        method: 'snap_dialog',
+        params: {
+          type: DialogType.Alert,
+          content: (
+            <Box>
+              <Text>Hello, world!</Text>
+            </Box>
+          ),
+        },
+      });
+
+      expect(hooks.showDialog).toHaveBeenCalledTimes(1);
+      expect(hooks.showDialog).toHaveBeenCalledWith(
+        'foo',
+        DialogType.Alert,
+        'bar',
+        undefined,
+      );
+    });
   });
 
   describe('confirmations', () => {
@@ -196,6 +251,31 @@ describe('implementation', () => {
         undefined,
       );
     });
+
+    it('handles JSX confirmations', async () => {
+      const hooks = getMockDialogHooks();
+      const implementation = getDialogImplementation(hooks);
+      await implementation({
+        context: { origin: 'foo' },
+        method: 'snap_dialog',
+        params: {
+          type: DialogType.Confirmation,
+          content: (
+            <Box>
+              <Text>Hello, world!</Text>
+            </Box>
+          ),
+        },
+      });
+
+      expect(hooks.showDialog).toHaveBeenCalledTimes(1);
+      expect(hooks.showDialog).toHaveBeenCalledWith(
+        'foo',
+        DialogType.Confirmation,
+        'bar',
+        undefined,
+      );
+    });
   });
 
   describe('prompts', () => {
@@ -208,6 +288,32 @@ describe('implementation', () => {
         params: {
           type: DialogType.Prompt,
           content: panel([heading('foo'), text('bar')]),
+          placeholder: 'foobar',
+        },
+      });
+
+      expect(hooks.showDialog).toHaveBeenCalledTimes(1);
+      expect(hooks.showDialog).toHaveBeenCalledWith(
+        'foo',
+        DialogType.Prompt,
+        'bar',
+        'foobar',
+      );
+    });
+
+    it('handles JSX prompts', async () => {
+      const hooks = getMockDialogHooks();
+      const implementation = getDialogImplementation(hooks);
+      await implementation({
+        context: { origin: 'foo' },
+        method: 'snap_dialog',
+        params: {
+          type: DialogType.Prompt,
+          content: (
+            <Box>
+              <Text>Hello, world!</Text>
+            </Box>
+          ),
           placeholder: 'foobar',
         },
       });
@@ -340,8 +446,8 @@ describe('implementation', () => {
           implementation({
             context: { origin: 'foo' },
             method: 'snap_dialog',
-            // @ts-expect-error Wrong params.
             params: {
+              // @ts-expect-error Wrong params.
               type,
               content: panel([heading('foo'), text('bar')]),
               placeholder: 'foobar',

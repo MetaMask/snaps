@@ -1,5 +1,6 @@
-import { NodeProcessExecutionService } from '@metamask/snaps-controllers';
+import { NodeProcessExecutionService } from '@metamask/snaps-controllers/node';
 import { DialogType } from '@metamask/snaps-sdk';
+import { Text } from '@metamask/snaps-sdk/jsx';
 import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
 import { assert } from '@metamask/utils';
 
@@ -399,10 +400,7 @@ describe('installSnap', () => {
       assert(ui.type === DialogType.Prompt);
       expect(ui).toStrictEqual({
         type: DialogType.Prompt,
-        content: {
-          type: 'text',
-          value: 'Hello, world!',
-        },
+        content: <Text>Hello, world!</Text>,
         clickElement: expect.any(Function),
         typeInField: expect.any(Function),
         ok: expect.any(Function),
@@ -460,10 +458,7 @@ describe('installSnap', () => {
       assert(ui.type === DialogType.Confirmation);
       expect(ui).toStrictEqual({
         type: DialogType.Confirmation,
-        content: {
-          type: 'text',
-          value: 'Hello, world!',
-        },
+        content: <Text>Hello, world!</Text>,
         clickElement: expect.any(Function),
         typeInField: expect.any(Function),
         ok: expect.any(Function),
@@ -520,10 +515,7 @@ describe('installSnap', () => {
       const ui = await response.getInterface();
       expect(ui).toStrictEqual({
         type: DialogType.Alert,
-        content: {
-          type: 'text',
-          value: 'Hello, world!',
-        },
+        content: <Text>Hello, world!</Text>,
         clickElement: expect.any(Function),
         typeInField: expect.any(Function),
         ok: expect.any(Function),

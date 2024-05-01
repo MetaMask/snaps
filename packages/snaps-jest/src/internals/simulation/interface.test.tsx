@@ -9,7 +9,12 @@ import {
   panel,
   text,
 } from '@metamask/snaps-sdk';
-import { HandlerType, WrappedSnapError } from '@metamask/snaps-utils';
+import { Button, Text } from '@metamask/snaps-sdk/jsx';
+import {
+  getJsxElementFromComponent,
+  HandlerType,
+  WrappedSnapError,
+} from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 import { assert } from '@metamask/utils';
 import type { SagaIterator } from 'redux-saga';
@@ -47,18 +52,19 @@ async function getResolve(runSaga: RunSagaFunction) {
 
 describe('getInterfaceResponse', () => {
   const interfaceActions = { clickElement: jest.fn(), typeInField: jest.fn() };
+
   it('returns an `ok` function that resolves the user interface with `null` for alert dialogs', async () => {
     const { runSaga } = createStore(getMockOptions());
     const response = getInterfaceResponse(
       runSaga,
       DialogType.Alert,
-      text('foo'),
+      <Text>foo</Text>,
       interfaceActions,
     );
 
     expect(response).toStrictEqual({
       type: DialogType.Alert,
-      content: text('foo'),
+      content: <Text>foo</Text>,
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       ok: expect.any(Function),
@@ -74,13 +80,13 @@ describe('getInterfaceResponse', () => {
     const response = getInterfaceResponse(
       runSaga,
       DialogType.Confirmation,
-      text('foo'),
+      <Text>foo</Text>,
       interfaceActions,
     );
 
     expect(response).toStrictEqual({
       type: DialogType.Confirmation,
-      content: text('foo'),
+      content: <Text>foo</Text>,
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       ok: expect.any(Function),
@@ -97,14 +103,14 @@ describe('getInterfaceResponse', () => {
     const response = getInterfaceResponse(
       runSaga,
       DialogType.Confirmation,
-      text('foo'),
+      <Text>foo</Text>,
       interfaceActions,
     );
 
     assert(response.type === DialogType.Confirmation);
     expect(response).toStrictEqual({
       type: DialogType.Confirmation,
-      content: text('foo'),
+      content: <Text>foo</Text>,
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       ok: expect.any(Function),
@@ -121,13 +127,13 @@ describe('getInterfaceResponse', () => {
     const response = getInterfaceResponse(
       runSaga,
       DialogType.Prompt,
-      text('foo'),
+      <Text>foo</Text>,
       interfaceActions,
     );
 
     expect(response).toStrictEqual({
       type: DialogType.Prompt,
-      content: text('foo'),
+      content: <Text>foo</Text>,
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       ok: expect.any(Function),
@@ -144,13 +150,13 @@ describe('getInterfaceResponse', () => {
     const response = getInterfaceResponse(
       runSaga,
       DialogType.Prompt,
-      text('foo'),
+      <Text>foo</Text>,
       interfaceActions,
     );
 
     expect(response).toStrictEqual({
       type: DialogType.Prompt,
-      content: text('foo'),
+      content: <Text>foo</Text>,
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       ok: expect.any(Function),
@@ -167,14 +173,14 @@ describe('getInterfaceResponse', () => {
     const response = getInterfaceResponse(
       runSaga,
       DialogType.Prompt,
-      text('foo'),
+      <Text>foo</Text>,
       interfaceActions,
     );
 
     assert(response.type === DialogType.Prompt);
     expect(response).toStrictEqual({
       type: DialogType.Prompt,
-      content: text('foo'),
+      content: <Text>foo</Text>,
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       ok: expect.any(Function),
@@ -191,7 +197,7 @@ describe('getInterfaceResponse', () => {
 
     expect(() => {
       // @ts-expect-error - Invalid dialog type.
-      getInterfaceResponse(runSaga, 'Foo', text('foo'));
+      getInterfaceResponse(runSaga, 'Foo', <Text>foo</Text>);
     }).toThrow('Unknown or unsupported dialog type: "Foo".');
   });
 });
@@ -199,33 +205,42 @@ describe('getInterfaceResponse', () => {
 describe('getElement', () => {
   it('gets an element at the root', () => {
     const content = button({ value: 'foo', name: 'bar' });
-
-    const result = getElement(content, 'bar');
+    const result = getElement(getJsxElementFromComponent(content), 'bar');
 
     expect(result).toStrictEqual({
-      element: button({ value: 'foo', name: 'bar' }),
+      element: <Button name="bar">foo</Button>,
     });
   });
 
   it('gets an element with a given name inside a panel', () => {
     const content = panel([button({ value: 'foo', name: 'bar' })]);
-
-    const result = getElement(content, 'bar');
+    const result = getElement(getJsxElementFromComponent(content), 'bar');
 
     expect(result).toStrictEqual({
-      element: button({ value: 'foo', name: 'bar' }),
-      form: undefined,
+      element: <Button name="bar">foo</Button>,
     });
   });
 
   it('gets an element in a form', () => {
     const content = form('foo', [button({ value: 'foo', name: 'bar' })]);
-
-    const result = getElement(content, 'bar');
+    const result = getElement(getJsxElementFromComponent(content), 'bar');
 
     expect(result).toStrictEqual({
-      element: button({ value: 'foo', name: 'bar' }),
+      element: <Button name="bar">foo</Button>,
       form: 'foo',
+    });
+  });
+
+  it('gets an element in a form when there are multiple forms', () => {
+    const content = panel([
+      form('form-1', [button({ value: 'foo', name: 'bar' })]),
+      form('form-2', [button({ value: 'foo', name: 'baz' })]),
+    ]);
+    const result = getElement(getJsxElementFromComponent(content), 'baz');
+
+    expect(result).toStrictEqual({
+      element: <Button name="baz">foo</Button>,
+      form: 'form-2',
     });
   });
 });
@@ -249,7 +264,6 @@ describe('clickElement', () => {
 
   it('sends a ButtonClickEvent to the snap', async () => {
     const content = button({ value: 'foo', name: 'bar' });
-
     const interfaceId = await interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
@@ -258,7 +272,7 @@ describe('clickElement', () => {
     await clickElement(
       rootControllerMessenger,
       interfaceId,
-      content,
+      getJsxElementFromComponent(content),
       MOCK_SNAP_ID,
       'bar',
     );
@@ -294,7 +308,7 @@ describe('clickElement', () => {
     await clickElement(
       rootControllerMessenger,
       interfaceId,
-      content,
+      getJsxElementFromComponent(content),
       MOCK_SNAP_ID,
       'baz',
     );
@@ -347,11 +361,36 @@ describe('clickElement', () => {
       clickElement(
         rootControllerMessenger,
         interfaceId,
-        content,
+        getJsxElementFromComponent(content),
         MOCK_SNAP_ID,
         'baz',
       ),
-    ).rejects.toThrow('No button found in the interface.');
+    ).rejects.toThrow(
+      'Could not find an element in the interface with the name "baz".',
+    );
+
+    expect(handleRpcRequestMock).not.toHaveBeenCalled();
+  });
+
+  it('throws if the element is not a button', async () => {
+    const content = input({ value: 'foo', name: 'foo' });
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await expect(
+      clickElement(
+        rootControllerMessenger,
+        interfaceId,
+        getJsxElementFromComponent(content),
+        MOCK_SNAP_ID,
+        'foo',
+      ),
+    ).rejects.toThrow(
+      'Expected an element of type "Button", but found "Input".',
+    );
 
     expect(handleRpcRequestMock).not.toHaveBeenCalled();
   });
@@ -372,7 +411,7 @@ describe('clickElement', () => {
       clickElement(
         rootControllerMessenger,
         interfaceId,
-        content,
+        getJsxElementFromComponent(content),
         MOCK_SNAP_ID,
         'foo',
       ),
@@ -429,7 +468,7 @@ describe('typeInField', () => {
     await typeInField(
       rootControllerMessenger,
       interfaceId,
-      content,
+      getJsxElementFromComponent(content),
       MOCK_SNAP_ID,
       'bar',
       'baz',
@@ -471,12 +510,36 @@ describe('typeInField', () => {
       typeInField(
         rootControllerMessenger,
         interfaceId,
-        content,
+        getJsxElementFromComponent(content),
         MOCK_SNAP_ID,
         'bar',
         'baz',
       ),
-    ).rejects.toThrow('No input found in the interface.');
+    ).rejects.toThrow(
+      'Could not find an element in the interface with the name "bar".',
+    );
+  });
+
+  it('throws if the element is not an input', async () => {
+    const content = button({ value: 'foo', name: 'foo' });
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await expect(
+      typeInField(
+        rootControllerMessenger,
+        interfaceId,
+        getJsxElementFromComponent(content),
+        MOCK_SNAP_ID,
+        'foo',
+        'baz',
+      ),
+    ).rejects.toThrow(
+      'Expected an element of type "Input", but found "Button".',
+    );
   });
 });
 
@@ -507,7 +570,7 @@ describe('getInterface', () => {
     ).toPromise();
     expect(result).toStrictEqual({
       type,
-      content,
+      content: getJsxElementFromComponent(content),
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       ok: expect.any(Function),
@@ -533,7 +596,7 @@ describe('getInterface', () => {
     const result = await promise;
     expect(result).toStrictEqual({
       type,
-      content,
+      content: getJsxElementFromComponent(content),
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       ok: expect.any(Function),

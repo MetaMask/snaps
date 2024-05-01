@@ -1,4 +1,4 @@
-import { panel, text } from '@metamask/snaps-sdk';
+import { Box, Text } from '@metamask/snaps-sdk/jsx';
 import { create } from 'superstruct';
 
 import {
@@ -180,21 +180,21 @@ describe('InterfaceStruct', () => {
   it('accepts a valid object', () => {
     const options = create(
       {
-        content: panel([text('Hello, world!')]),
+        content: (
+          <Box>
+            <Text>Hello, world!</Text>
+          </Box>
+        ),
       },
       InterfaceStruct,
     );
 
     expect(options).toStrictEqual({
-      content: {
-        type: 'panel',
-        children: [
-          {
-            type: 'text',
-            value: 'Hello, world!',
-          },
-        ],
-      },
+      content: (
+        <Box>
+          <Text>Hello, world!</Text>
+        </Box>
+      ),
     });
   });
 

@@ -8,9 +8,24 @@
   "sideEffects": false,
   "exports": {
     ".": {
+      "types": "./dist/types/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/types/index.d.ts"
+      "require": "./dist/index.js"
+    },
+    "./jsx": {
+      "types": "./dist/types/jsx/index.d.ts",
+      "import": "./dist/jsx/index.mjs",
+      "require": "./dist/jsx/index.js"
+    },
+    "./jsx-runtime": {
+      "types": "./dist/types/jsx/jsx-runtime.d.ts",
+      "import": "./dist/jsx/jsx-runtime.mjs",
+      "require": "./dist/jsx/jsx-runtime.js"
+    },
+    "./jsx-dev-runtime": {
+      "types": "./dist/types/jsx/jsx-dev-runtime.d.ts",
+      "import": "./dist/jsx/jsx-dev-runtime.mjs",
+      "require": "./dist/jsx/jsx-dev-runtime.js"
     },
     "./package.json": "./package.json"
   },
@@ -18,7 +33,10 @@
   "module": "./dist/index.mjs",
   "types": "./dist/types/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "jsx.js",
+    "jsx-dev-runtime.js",
+    "jsx-runtime.js"
   ],
   "scripts": {
     "test": "jest && yarn posttest",

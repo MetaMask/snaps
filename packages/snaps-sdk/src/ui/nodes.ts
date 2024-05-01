@@ -1,8 +1,6 @@
 import type { Infer } from 'superstruct';
 import { assign, object, string, unknown } from 'superstruct';
 
-import type { Form, Panel } from './components';
-
 /**
  * The supported node types. This is based on SIP-7.
  *
@@ -23,11 +21,6 @@ export enum NodeType {
   Input = 'input',
   Form = 'form',
 }
-
-/**
- * The nodes with a children.
- */
-export type NodeWithChildren = Panel | Form;
 
 /**
  * @internal
