@@ -11,12 +11,14 @@ import type { JsonObject, Key, SnapComponent } from './component';
  *
  * @param component - The component to render.
  * @param props - The props to pass to the component.
+ * @param key - The key of the component.
  * @returns The rendered component.
  * @see https://www.typescriptlang.org/tsconfig/#jsx
  */
 export function jsx<Props extends JsonObject>(
   component: SnapComponent<Props>,
-  props: Props & { key?: Key | null },
+  props: Props,
+  key: Key | null,
 ): unknown | null {
   if (typeof component === 'string') {
     // If component is a string, it is a built-in HTML element. This is not
@@ -36,7 +38,7 @@ export function jsx<Props extends JsonObject>(
     );
   }
 
-  return component(props);
+  return component({ ...props, key });
 }
 
 /**
@@ -52,12 +54,14 @@ export function jsx<Props extends JsonObject>(
  *
  * @param component - The component to render.
  * @param props - The props to pass to the component.
+ * @param key - The key of the component.
  * @returns The rendered component.
  * @see https://www.typescriptlang.org/tsconfig/#jsx
  */
 export function jsxs<Props extends JsonObject>(
   component: SnapComponent<Props>,
-  props: Props & { key?: Key | null },
+  props: Props,
+  key: Key | null,
 ): unknown | null {
-  return jsx(component, props);
+  return jsx(component, props, key);
 }

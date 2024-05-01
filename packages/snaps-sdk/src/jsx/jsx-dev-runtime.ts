@@ -13,14 +13,16 @@ import { assertJSXElement } from './validation';
  *
  * @param component - The component to render.
  * @param props - The props to pass to the component.
+ * @param key - The key of the component.
  * @returns The rendered component.
  * @see https://www.typescriptlang.org/tsconfig/#jsx
  */
 export function jsxDEV<Props extends JsonObject>(
   component: SnapComponent<Props>,
-  props: Props & { key?: Key | null },
+  props: Props,
+  key: Key | null,
 ): unknown | null {
-  const element = jsx(component, props);
+  const element = jsx(component, props, key);
   assertJSXElement(element);
 
   return element;

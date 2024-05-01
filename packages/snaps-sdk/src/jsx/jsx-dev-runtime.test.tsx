@@ -11,6 +11,16 @@ describe('jsx', () => {
     });
   });
 
+  it('renders a JSX component with a key', () => {
+    const element = <Text key="foo">Hello</Text>;
+
+    expect(element).toStrictEqual({
+      type: 'Text',
+      key: 'foo',
+      props: { children: 'Hello' },
+    });
+  });
+
   it('renders a nested JSX component', () => {
     const element = (
       <Box>
