@@ -1,4 +1,4 @@
-import type { Component } from '../../ui';
+import type { ComponentOrElement } from '..';
 
 /**
  * The request parameters for the `snap_createInterface` method.
@@ -6,7 +6,7 @@ import type { Component } from '../../ui';
  * @property ui - The components to display in the interface.
  */
 export type CreateInterfaceParams = {
-  ui: Component;
+  ui: ComponentOrElement;
 };
 
 /**

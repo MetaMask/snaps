@@ -3,12 +3,12 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/types",
-    "rootDir": "./src",
-    "jsx": "preserve"
+    "rootDir": "./src"
   },
   "include": ["./src"],
   "exclude": [
     "**/*.test.ts",
+    "**/*.test.tsx",
     "./src/**/test-utils",
     "./src/**/__mocks__",
     "./src/**/__snapshots__"

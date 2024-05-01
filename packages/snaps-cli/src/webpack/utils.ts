@@ -120,6 +120,43 @@ export async function getDefaultLoader({
            * @see https://swc.rs/docs/configuration/compilation#jscparser
            */
           syntax: 'typescript',
+
+          /**
+           * This tells the parser to transpile JSX.
+           *
+           * @see https://swc.rs/docs/configuration/compilation#jscparser
+           * @see https://swc.rs/docs/configuration/compilation#jscparserjsx
+           */
+          tsx: true,
+        },
+
+        transform: {
+          react: {
+            /**
+             * This tells SWC to use the JSX runtime, instead of the
+             * `createElement` function.
+             *
+             * @see https://swc.rs/docs/configuration/compilation#jsctransformreact
+             */
+            runtime: 'automatic',
+
+            /**
+             * This tells SWC to import the JSX runtime from the
+             * `@metamask/snaps-sdk` package, instead of the default React
+             * package.
+             *
+             * @see https://swc.rs/docs/configuration/compilation#jsctransformreact
+             */
+            importSource: '@metamask/snaps-sdk',
+
+            /**
+             * This tells SWC to use `Object.assign` and `Object.create` for
+             * JSX spread attributes, instead of the default behavior.
+             *
+             * @see https://swc.rs/docs/configuration/compilation#jsctransformreact
+             */
+            useBuiltins: true,
+          },
         },
       },
 

@@ -8,7 +8,9 @@
   "include": ["./src"],
   "exclude": [
     "**/*.test.ts",
+    "**/*.test.tsx",
     "**/*.test.browser.ts",
+    "**/*.test.browser.tsx",
     "./src/**/test-utils",
     "./src/**/__mocks__",
     "./src/**/__snapshots__",

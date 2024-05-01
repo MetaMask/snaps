@@ -1,5 +1,6 @@
 import { SnapInterfaceController } from '@metamask/snaps-controllers';
 import { text } from '@metamask/snaps-sdk';
+import { getJsxElementFromComponent } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
 import {
@@ -35,7 +36,8 @@ describe('getCreateInterfaceImplementation', () => {
       MOCK_SNAP_ID,
       content,
     );
-    expect(result.content).toStrictEqual(content);
+
+    expect(result.content).toStrictEqual(getJsxElementFromComponent(content));
   });
 });
 
@@ -63,6 +65,10 @@ describe('getGetInterfaceImplementation', () => {
       MOCK_SNAP_ID,
       id,
     );
-    expect(result).toStrictEqual({ content, state: {}, snapId: MOCK_SNAP_ID });
+    expect(result).toStrictEqual({
+      content: getJsxElementFromComponent(content),
+      state: {},
+      snapId: MOCK_SNAP_ID,
+    });
   });
 });

@@ -1,4 +1,4 @@
-import type { Component } from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 
 import type { SnapHandlerInterface, SnapResponse } from '../types';
 
@@ -32,7 +32,7 @@ export function getMockResponse({
  * @returns The mock handler interface.
  */
 export function getMockInterfaceResponse(
-  content: Component,
+  content: JSXElement,
 ): SnapHandlerInterface {
   return {
     content,

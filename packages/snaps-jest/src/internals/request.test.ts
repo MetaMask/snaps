@@ -1,7 +1,7 @@
 import { SnapInterfaceController } from '@metamask/snaps-controllers';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { UserInputEventType, button, input, text } from '@metamask/snaps-sdk';
-import { HandlerType } from '@metamask/snaps-utils';
+import { getJsxElementFromComponent, HandlerType } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
 import {
@@ -191,7 +191,7 @@ describe('getInterfaceApi', () => {
     const result = getInterface!();
 
     expect(result).toStrictEqual({
-      content,
+      content: getJsxElementFromComponent(content),
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
     });
@@ -220,7 +220,7 @@ describe('getInterfaceApi', () => {
     const result = getInterface!();
 
     expect(result).toStrictEqual({
-      content,
+      content: getJsxElementFromComponent(content),
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
     });

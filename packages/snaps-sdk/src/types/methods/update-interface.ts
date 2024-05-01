@@ -1,4 +1,4 @@
-import type { Component } from '../../ui';
+import type { ComponentOrElement } from '..';
 
 /**
  * The request parameters for the `snap_createInterface` method.
@@ -8,7 +8,7 @@ import type { Component } from '../../ui';
  */
 export type UpdateInterfaceParams = {
   id: string;
-  ui: Component;
+  ui: ComponentOrElement;
 };
 
 /**

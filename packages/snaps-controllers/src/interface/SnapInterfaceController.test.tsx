@@ -1,5 +1,15 @@
 import type { SnapId } from '@metamask/snaps-sdk';
 import { form, image, input, panel, text } from '@metamask/snaps-sdk';
+import {
+  Box,
+  Field,
+  Form,
+  Image,
+  Input,
+  Link,
+  Text,
+} from '@metamask/snaps-sdk/jsx';
+import { getJsxElementFromComponent } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
 import {
@@ -51,7 +61,57 @@ describe('SnapInterfaceController', () => {
         'foo.bar',
       );
 
-      expect(content).toStrictEqual(components);
+      expect(content).toStrictEqual(getJsxElementFromComponent(components));
+      expect(state).toStrictEqual({ foo: { bar: null } });
+    });
+
+    it('can create a new interface from JSX', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      /* eslint-disable-next-line no-new */
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const element = (
+        <Box>
+          <Text>
+            <Link href="https://foo.bar">foo</Link>
+          </Text>
+          <Form name="foo">
+            <Field label="Bar">
+              <Input name="bar" type="text" />
+            </Field>
+          </Form>
+        </Box>
+      );
+
+      const id = await rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        element,
+      );
+
+      const { content, state } = rootMessenger.call(
+        'SnapInterfaceController:getInterface',
+        MOCK_SNAP_ID,
+        id,
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        2,
+        'PhishingController:maybeUpdateState',
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        3,
+        'PhishingController:testOrigin',
+        'foo.bar',
+      );
+
+      expect(content).toStrictEqual(element);
       expect(state).toStrictEqual({ foo: { bar: null } });
     });
 
@@ -105,6 +165,56 @@ describe('SnapInterfaceController', () => {
       );
     });
 
+    it('throws if a JSX link is on the phishing list', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+        rootMessenger,
+        false,
+      );
+
+      rootMessenger.registerActionHandler(
+        'PhishingController:maybeUpdateState',
+        jest.fn(),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PhishingController:testOrigin',
+        () => ({ result: true, type: 'all' }),
+      );
+
+      /* eslint-disable-next-line no-new */
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const element = (
+        <Box>
+          <Text>
+            Foo <Link href="https://foo.bar">Bar</Link>
+          </Text>
+        </Box>
+      );
+
+      await expect(
+        rootMessenger.call(
+          'SnapInterfaceController:createInterface',
+          MOCK_SNAP_ID,
+          element,
+        ),
+      ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        2,
+        'PhishingController:maybeUpdateState',
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        3,
+        'PhishingController:testOrigin',
+        'foo.bar',
+      );
+    });
+
     it('throws if UI content is too large', async () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
@@ -125,6 +235,31 @@ describe('SnapInterfaceController', () => {
           'SnapInterfaceController:createInterface',
           MOCK_SNAP_ID,
           components,
+        ),
+      ).rejects.toThrow('A Snap UI may not be larger than 10 MB.');
+    });
+
+    it('throws if JSX UI content is too large', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+        rootMessenger,
+        false,
+      );
+
+      /* eslint-disable-next-line no-new */
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const element = (
+        <Box>{new Array(800_000).fill(<Image src="<svg />" />)}</Box>
+      );
+
+      await expect(
+        rootMessenger.call(
+          'SnapInterfaceController:createInterface',
+          MOCK_SNAP_ID,
+          element,
         ),
       ).rejects.toThrow('A Snap UI may not be larger than 10 MB.');
     });
@@ -180,7 +315,8 @@ describe('SnapInterfaceController', () => {
         MOCK_SNAP_ID,
         id,
       );
-      expect(content).toStrictEqual(components);
+
+      expect(content).toStrictEqual(getJsxElementFromComponent(components));
     });
 
     it('throws if the snap requesting the interface is not the one that created it', async () => {
@@ -273,7 +409,56 @@ describe('SnapInterfaceController', () => {
         id,
       );
 
-      expect(content).toStrictEqual(newContent);
+      expect(content).toStrictEqual(getJsxElementFromComponent(newContent));
+      expect(state).toStrictEqual({ foo: { baz: null } });
+    });
+
+    it('can update an interface using JSX', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      /* eslint-disable-next-line no-new */
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const element = (
+        <Form name="foo">
+          <Field label="Bar">
+            <Input name="bar" type="text" />
+          </Field>
+        </Form>
+      );
+
+      const newElement = (
+        <Form name="foo">
+          <Field label="Baz">
+            <Input name="baz" type="text" />
+          </Field>
+        </Form>
+      );
+
+      const id = await rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        element,
+      );
+
+      await rootMessenger.call(
+        'SnapInterfaceController:updateInterface',
+        MOCK_SNAP_ID,
+        id,
+        newElement,
+      );
+
+      const { content, state } = rootMessenger.call(
+        'SnapInterfaceController:getInterface',
+        MOCK_SNAP_ID,
+        id,
+      );
+
+      expect(content).toStrictEqual(newElement);
       expect(state).toStrictEqual({ foo: { baz: null } });
     });
 
@@ -339,6 +524,72 @@ describe('SnapInterfaceController', () => {
       );
     });
 
+    it('throws if a JSX link is on the phishing list', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+        rootMessenger,
+        false,
+      );
+
+      rootMessenger.registerActionHandler(
+        'PhishingController:maybeUpdateState',
+        jest.fn(),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PhishingController:testOrigin',
+        () => ({ result: true, type: 'all' }),
+      );
+
+      /* eslint-disable-next-line no-new */
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const element = (
+        <Form name="foo">
+          <Field label="Bar">
+            <Input name="bar" type="text" />
+          </Field>
+        </Form>
+      );
+
+      const newElement = (
+        <Box>
+          <Text>
+            Foo <Link href="https://foo.bar">Bar</Link>
+          </Text>
+          {element}
+        </Box>
+      );
+
+      const id = await rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        element,
+      );
+
+      await expect(
+        rootMessenger.call(
+          'SnapInterfaceController:updateInterface',
+          MOCK_SNAP_ID,
+          id,
+          newElement,
+        ),
+      ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        4,
+        'PhishingController:maybeUpdateState',
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        5,
+        'PhishingController:testOrigin',
+        'foo.bar',
+      );
+    });
+
     it('throws if UI content is too large', async () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger =
@@ -369,6 +620,44 @@ describe('SnapInterfaceController', () => {
           MOCK_SNAP_ID,
           id,
           newContent,
+        ),
+      ).rejects.toThrow('A Snap UI may not be larger than 10 MB.');
+    });
+
+    it('throws if JSX UI content is too large', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      /* eslint-disable-next-line no-new */
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const element = (
+        <Form name="foo">
+          <Field label="Bar">
+            <Input name="bar" type="text" />
+          </Field>
+        </Form>
+      );
+
+      const newElement = (
+        <Box>{new Array(800_000).fill(<Image src={'<svg />'} />)}</Box>
+      );
+
+      const id = await rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        element,
+      );
+
+      await expect(
+        rootMessenger.call(
+          'SnapInterfaceController:updateInterface',
+          MOCK_SNAP_ID,
+          id,
+          newElement,
         ),
       ).rejects.toThrow('A Snap UI may not be larger than 10 MB.');
     });
