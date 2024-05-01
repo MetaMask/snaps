@@ -98,7 +98,7 @@ export const SNAP_EXPORTS = {
   },
   [HandlerType.OnUserInput]: {
     type: HandlerType.OnUserInput,
-    required: true,
+    required: false,
     validator: (snapExport: unknown): snapExport is OnUserInputHandler => {
       return typeof snapExport === 'function';
     },
