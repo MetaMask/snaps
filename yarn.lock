@@ -4910,7 +4910,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/jsx-example-snap@workspace:packages/examples/packages/jsx":
+"@metamask/jsx-example-snap@workspace:^, @metamask/jsx-example-snap@workspace:packages/examples/packages/jsx":
   version: 0.0.0-use.local
   resolution: "@metamask/jsx-example-snap@workspace:packages/examples/packages/jsx"
   dependencies:
@@ -6144,6 +6144,7 @@ __metadata:
     "@metamask/insights-example-snap": "workspace:^"
     "@metamask/interactive-ui-example-snap": "workspace:^"
     "@metamask/json-rpc-example-snap": "workspace:^"
+    "@metamask/jsx-example-snap": "workspace:^"
     "@metamask/lifecycle-hooks-example-snap": "workspace:^"
     "@metamask/localization-example-snap": "workspace:^"
     "@metamask/manage-state-example-snap": "workspace:^"
