@@ -734,7 +734,7 @@ describe('getJsxChildren', () => {
       </Box>
     );
 
-    expect(getJsxChildren(element)).toBe(element.props.children);
+    expect(getJsxChildren(element)).toStrictEqual(element.props.children);
   });
 
   it('returns the children of a JSX element with one child', () => {
@@ -752,6 +752,27 @@ describe('getJsxChildren', () => {
     const element = <Box />;
 
     expect(getJsxChildren(element)).toStrictEqual([]);
+  });
+
+  it('returns an empty array if the child is null', () => {
+    const element = <Box>{null}</Box>;
+
+    expect(getJsxChildren(element)).toStrictEqual([]);
+  });
+
+  it('removes null children from the array', () => {
+    const element = (
+      <Box>
+        <Text>Hello</Text>
+        {null}
+        <Text>World</Text>
+      </Box>
+    );
+
+    expect(getJsxChildren(element)).toStrictEqual([
+      <Text>Hello</Text>,
+      <Text>World</Text>,
+    ]);
   });
 });
 
