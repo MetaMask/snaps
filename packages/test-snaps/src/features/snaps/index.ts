@@ -13,6 +13,7 @@ export * from './localization';
 export * from './home-page';
 export * from './images';
 export * from './json-rpc';
+export * from './jsx';
 export * from './lifecycle-hooks';
 export * from './manage-state';
 export * from './multi-install';
