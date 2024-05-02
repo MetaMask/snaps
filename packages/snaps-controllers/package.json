@@ -53,7 +53,7 @@
   "dependencies": {
     "@metamask/approval-controller": "^6.0.1",
     "@metamask/base-controller": "^5.0.2",
-    "@metamask/json-rpc-engine": "^8.0.1",
+    "@metamask/json-rpc-engine": "^8.0.2",
     "@metamask/json-rpc-middleware-stream": "^7.0.1",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/permission-controller": "^9.0.2",

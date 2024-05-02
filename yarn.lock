@@ -4850,6 +4850,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/json-rpc-engine@npm:^8.0.2":
+  version: 8.0.2
+  resolution: "@metamask/json-rpc-engine@npm:8.0.2"
+  dependencies:
+    "@metamask/rpc-errors": ^6.2.1
+    "@metamask/safe-event-emitter": ^3.0.0
+    "@metamask/utils": ^8.3.0
+  checksum: c240d298ad503d93922a94a62cf59f0344b6d6644a523bc8ea3c0f321bea7172b89f2747a5618e2861b2e8152ae5086b76f391a10e4566529faa50b8850c051d
+  languageName: node
+  linkType: hard
+
 "@metamask/json-rpc-example-snap@workspace:^, @metamask/json-rpc-example-snap@workspace:packages/examples/packages/json-rpc":
   version: 0.0.0-use.local
   resolution: "@metamask/json-rpc-example-snap@workspace:packages/examples/packages/json-rpc"
@@ -5529,7 +5540,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/json-rpc-engine": ^8.0.1
+    "@metamask/json-rpc-engine": ^8.0.2
     "@metamask/json-rpc-middleware-stream": ^7.0.1
     "@metamask/object-multiplex": ^2.0.0
     "@metamask/permission-controller": ^9.0.2
@@ -5624,7 +5635,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/json-rpc-engine": ^8.0.1
+    "@metamask/json-rpc-engine": ^8.0.2
     "@metamask/object-multiplex": ^2.0.0
     "@metamask/post-message-stream": ^8.0.0
     "@metamask/providers": ^16.0.0
@@ -5705,7 +5716,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/eth-json-rpc-middleware": ^12.1.0
-    "@metamask/json-rpc-engine": ^8.0.1
+    "@metamask/json-rpc-engine": ^8.0.2
     "@metamask/json-rpc-middleware-stream": ^7.0.1
     "@metamask/key-tree": ^9.0.0
     "@metamask/permission-controller": ^9.0.2
@@ -5810,7 +5821,7 @@ __metadata:
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
-    "@metamask/json-rpc-engine": ^8.0.1
+    "@metamask/json-rpc-engine": ^8.0.2
     "@metamask/key-tree": ^9.0.0
     "@metamask/permission-controller": ^9.0.2
     "@metamask/rpc-errors": ^6.2.1
@@ -5904,7 +5915,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/eth-json-rpc-middleware": ^12.1.0
-    "@metamask/json-rpc-engine": ^8.0.1
+    "@metamask/json-rpc-engine": ^8.0.2
     "@metamask/json-rpc-middleware-stream": ^7.0.1
     "@metamask/key-tree": ^9.0.0
     "@metamask/permission-controller": ^9.0.2
