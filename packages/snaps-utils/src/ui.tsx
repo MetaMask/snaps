@@ -5,8 +5,8 @@ import type {
   FieldElement,
   ItalicChildren,
   JSXElement,
+  MaybeArray,
   RowChildren,
-  SnapNode,
   TextChildren,
 } from '@metamask/snaps-sdk/jsx';
 import {
@@ -415,7 +415,9 @@ export function getTotalTextLength(component: Component): number {
  */
 export function hasChildren<Element extends JSXElement>(
   element: Element,
-): element is Element & { props: { children: JSXElement } } {
+): element is Element & {
+  props: { children: MaybeArray<JSXElement | string> };
+} {
   return hasProperty(element.props, 'children');
 }
 
@@ -426,13 +428,17 @@ export function hasChildren<Element extends JSXElement>(
  * @param element - A JSX element.
  * @returns The children of the element.
  */
-export function getJsxChildren(element: JSXElement): SnapNode[] {
+export function getJsxChildren(element: JSXElement): (JSXElement | string)[] {
   if (hasChildren(element)) {
     if (Array.isArray(element.props.children)) {
-      return element.props.children;
+      // @ts-expect-error - Each member of the union type has signatures, but
+      // none of those signatures are compatible with each other.
+      return element.props.children.filter(Boolean);
     }
 
-    return [element.props.children];
+    if (element.props.children) {
+      return [element.props.children];
+    }
   }
 
   return [];
@@ -473,7 +479,7 @@ export function walkJsx<Value>(
     const children = getJsxChildren(node);
     for (const child of children) {
       if (isPlainObject(child)) {
-        const childResult = walkJsx(child as JSXElement, callback);
+        const childResult = walkJsx(child, callback);
         if (childResult !== undefined) {
           return childResult;
         }
