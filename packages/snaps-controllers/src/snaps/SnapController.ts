@@ -758,6 +758,8 @@ export class SnapController extends BaseController<
     StatusStates
   >;
 
+  #preinstalledSnaps: PreinstalledSnap[] = [];
+
   constructor({
     closeAllConnections,
     messenger,
@@ -876,6 +878,7 @@ export class SnapController extends BaseController<
     this.#registerMessageHandlers();
 
     if (preinstalledSnaps) {
+      this.#preinstalledSnaps = preinstalledSnaps;
       this.#handlePreinstalledSnaps(preinstalledSnaps);
     }
 
@@ -1773,6 +1776,9 @@ export class SnapController extends BaseController<
       state.snaps = {};
       state.snapStates = {};
     });
+
+    // We want to remove all snaps & permissions, except for preinstalled snaps
+    this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
   }
 
   /**
