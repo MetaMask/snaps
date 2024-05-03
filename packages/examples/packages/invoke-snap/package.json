@@ -21,7 +21,7 @@
     "lint:ci": "yarn lint:eslint && yarn lint:misc --check",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
-    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" \"!snap.manifest.json\" \"!packages/**\" --ignore-path ../../../../.gitignore",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!snap.manifest.json\" \"!packages/**\" --ignore-path ../../../../.gitignore",
     "lint:dependencies": "depcheck"
   },
   "devDependencies": {

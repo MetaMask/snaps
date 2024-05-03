@@ -20,7 +20,7 @@
     "test": "yarn workspaces foreach --parallel --verbose --interlaced --no-private run test",
     "lint": "yarn workspaces foreach --parallel --verbose --interlaced --no-private run lint && yarn lint:dependencies",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
-    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" \"!packages/**\" --ignore-path ../../.gitignore",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!packages/**\" --ignore-path ../../.gitignore",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:ci": "yarn lint:eslint && yarn lint:misc --check",
     "lint:changelogs": "yarn workspaces foreach --parallel --verbose run lint:changelog",

@@ -13,7 +13,7 @@
     "lint:changelog": "../../scripts/validate-changelog.sh @metamask/snaps-simulator",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:constraints --fix && yarn lint:misc --write && yarn lint:changelog",
-    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" --ignore-path ../../.gitignore",
     "start": "webpack serve --config-name main --mode development",
     "start:e2e": "webpack serve --config-name test --mode development",
     "test": "jest && jest-it-up --margin 0.5",
