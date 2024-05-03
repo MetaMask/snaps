@@ -42,7 +42,7 @@
     "build:ci": "tsup --clean"
   },
   "dependencies": {
-    "@metamask/snaps-utils": "workspace:^"
+    "@metamask/snaps-utils": "0.24.0"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^3.0.3",
