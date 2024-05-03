@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.1.0]
+### Added
+- Add JSX support for custom UI ([#2258](https://github.com/MetaMask/snaps/pull/2258))
+
 ## [8.0.0]
 ### Changed
 - **BREAKING:** Refactor to support changes to encryption ([#2316](https://github.com/MetaMask/snaps/pull/2316))
@@ -130,7 +134,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@8.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@8.1.0...HEAD
+[8.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@8.0.0...@metamask/snaps-rpc-methods@8.1.0
 [8.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@7.0.2...@metamask/snaps-rpc-methods@8.0.0
 [7.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@7.0.1...@metamask/snaps-rpc-methods@7.0.2
 [7.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@7.0.0...@metamask/snaps-rpc-methods@7.0.1

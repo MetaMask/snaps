@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.2.0]
+### Added
+- Add support for building Snaps with JSX ([#2258](https://github.com/MetaMask/snaps/pull/2258))
+  - It's now possible to use JSX components from `@metamask/snaps-sdk` to build
+    user interfaces for Snaps.
+
 ## [6.1.1]
 ### Fixed
 - Disable `topLevelAwait` configuration option ([#2358](https://github.com/MetaMask/snaps/pull/2358))
@@ -151,7 +157,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.1.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.2.0...HEAD
+[6.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.1.1...@metamask/snaps-cli@6.2.0
 [6.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.1.0...@metamask/snaps-cli@6.1.1
 [6.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.0.2...@metamask/snaps-cli@6.1.0
 [6.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.0.1...@metamask/snaps-cli@6.0.2
