@@ -105,7 +105,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improve support for Snap errors without a message ([#2176](https://github.com/MetaMask/snaps/pull/2176))
   - You can now add data to an error without having to specify a message. For example:
     ```ts
-    throw new MethodNotFoundError({ method: 'some method name' });
+    throw new MethodNotFoundError({ method: "some method name" });
     ```
 - Strip empty `data` from Snap errors ([#2179](https://github.com/MetaMask/snaps/pull/2179))
 
