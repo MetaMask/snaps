@@ -9,11 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.1.0]
 
-### Uncategorized
+### Changed
 
-- Bump @metamask/providers from 16.0.0 to 16.1.0 ([#2386](https://github.com/MetaMask/snaps/pull/2386))
-- fix: make `onUserInput` export optional ([#2373](https://github.com/MetaMask/snaps/pull/2373))
-- chore: unblock `eth_sendRawTransaction` ([#2362](https://github.com/MetaMask/snaps/pull/2362))
+- Unblock `eth_sendRawTransaction` ([#2362](https://github.com/MetaMask/snaps/pull/2362))
+- Bump `@metamask/providers` from `16.0.0` to `16.1.0` ([#2386](https://github.com/MetaMask/snaps/pull/2386))
+
+### Fixed
+
+- Make `onUserInput` export optional ([#2373](https://github.com/MetaMask/snaps/pull/2373))
+  - Snaps will no longer crash when interacting with a user interface when the
+    Snap does not export `onUserInput`.
 
 ## [6.0.2]
 

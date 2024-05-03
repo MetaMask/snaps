@@ -9,11 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [8.0.0]
 
-### Uncategorized
+### Added
 
-- Add JSX support for custom UI ([#2258](https://github.com/MetaMask/snaps/pull/2258))
-- Bump @metamask/base-controller from 5.0.1 to 5.0.2 ([#2375](https://github.com/MetaMask/snaps/pull/2375))
-- fix: fail starting Snap if no exports found ([#2357](https://github.com/MetaMask/snaps/pull/2357))
+- **BREAKING:** Add JSX support for custom UI ([#2258](https://github.com/MetaMask/snaps/pull/2258))
+  - It's now possible to use JSX components from `@metamask/snaps-sdk` to build
+    user interfaces for Snaps.
+  - This is a breaking change, because the legacy user interfaces are converted
+    to the new JSX format.
+    - If you are checking the format of a interface without `toRender`, you will
+      need to update your tests to check the JSX format.
+
+### Changed
+
+- Bump `@metamask/base-controller` from `5.0.1` to `5.0.2` ([#2375](https://github.com/MetaMask/snaps/pull/2375))
 
 ## [7.0.2]
 

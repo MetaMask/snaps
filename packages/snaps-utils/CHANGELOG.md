@@ -9,12 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [7.3.0]
 
-### Uncategorized
+### Added
 
-- Make `getJsxChildren` return array of `JSXElement | string` ([#2383](https://github.com/MetaMask/snaps/pull/2383))
-- fix: make `onUserInput` export optional ([#2373](https://github.com/MetaMask/snaps/pull/2373))
-- Add JSX support for custom UI ([#2258](https://github.com/MetaMask/snaps/pull/2258))
-- Bump @metamask/base-controller from 5.0.1 to 5.0.2 ([#2375](https://github.com/MetaMask/snaps/pull/2375))
+- Add JSX support for custom UI ([#2258](https://github.com/MetaMask/snaps/pull/2258), [#2383](https://github.com/MetaMask/snaps/pull/2383))
+  - This adds utility functions for working with JSX in Snaps.
+
+### Changed
+
+- Bump `@metamask/base-controller` from `5.0.1` to `5.0.2` ([#2375](https://github.com/MetaMask/snaps/pull/2375))
 
 ## [7.2.0]
 

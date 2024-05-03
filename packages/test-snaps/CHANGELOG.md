@@ -9,11 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.7.0]
 
-### Uncategorized
+### Added
 
-- Bump @metamask/providers from 16.0.0 to 16.1.0 ([#2386](https://github.com/MetaMask/snaps/pull/2386))
-- Add JSX example to test-snaps ([#2378](https://github.com/MetaMask/snaps/pull/2378))
-- Add JSX support for custom UI ([#2258](https://github.com/MetaMask/snaps/pull/2258))
+- Add JSX example Snap ([#2258](https://github.com/MetaMask/snaps/pull/2258), [#2378](https://github.com/MetaMask/snaps/pull/2378))
 
 ## [2.6.1]
 

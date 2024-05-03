@@ -9,9 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.2.0]
 
-### Uncategorized
+### Added
 
-- Add JSX support for custom UI ([#2258](https://github.com/MetaMask/snaps/pull/2258))
+- Add support for building Snaps with JSX ([#2258](https://github.com/MetaMask/snaps/pull/2258))
+  - It's now possible to use JSX components from `@metamask/snaps-sdk` to build
+    user interfaces for Snaps.
 
 ## [6.1.1]
 

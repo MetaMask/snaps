@@ -9,11 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [8.1.0]
 
-### Uncategorized
+### Added
 
-- Bump @metamask/approval-controller from 6.0.1 to 6.0.2 ([#2380](https://github.com/MetaMask/snaps/pull/2380))
 - Add JSX support for custom UI ([#2258](https://github.com/MetaMask/snaps/pull/2258))
-- Bump @metamask/base-controller from 5.0.1 to 5.0.2 ([#2375](https://github.com/MetaMask/snaps/pull/2375))
+
+### Changed
+
+- Bump `@metamask/approval-controller` from `6.0.1` to `6.0.2` ([#2380](https://github.com/MetaMask/snaps/pull/2380))
+- Bump `@metamask/base-controller` from `5.0.1` to `5.0.2` ([#2375](https://github.com/MetaMask/snaps/pull/2375))
+
+### Fixed
+
+- Fix an issue where certain types of executors would be timed out too quickly ([#2389](https://github.com/MetaMask/snaps/pull/2389))
 
 ## [8.0.0]
 
