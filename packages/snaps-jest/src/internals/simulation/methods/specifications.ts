@@ -22,8 +22,6 @@ import {
   getShowDialogImplementation,
   getShowInAppNotificationImplementation,
   getShowNativeNotificationImplementation,
-  encryptImplementation,
-  decryptImplementation,
   getCreateInterfaceImplementation,
   getGetInterfaceImplementation,
 } from './hooks';
@@ -87,11 +85,6 @@ export function getPermissionSpecifications({
     ...buildSnapRestrictedMethodSpecifications(EXCLUDED_SNAP_PERMISSIONS, {
       // Shared hooks.
       ...hooks,
-
-      // Encryption and decryption hooks.
-      // TODO: Swap these out for the real implementations.
-      encrypt: encryptImplementation,
-      decrypt: decryptImplementation,
 
       // Snaps-specific hooks.
       clearSnapState: getClearSnapStateMethodImplementation(runSaga),

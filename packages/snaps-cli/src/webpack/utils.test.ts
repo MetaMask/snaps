@@ -2,6 +2,7 @@ import { dim } from 'chalk';
 
 import type { ProcessedWebpackConfig } from '../config';
 import { getMockConfig } from '../test-utils';
+import { browserify } from './loaders';
 import {
   WEBPACK_FALLBACKS,
   getBrowserslistTargets,
@@ -12,14 +13,18 @@ import {
   pluralize,
   getEnvironmentVariables,
   formatText,
+  getImageSVG,
 } from './utils';
 
 describe('getDefaultLoader', () => {
   it('returns the Browserify loader if `legacy` is set', async () => {
     const config = getMockConfig('browserify');
     expect(await getDefaultLoader(config)).toStrictEqual({
-      loader: expect.stringContaining('browserify'),
-      options: config.legacy,
+      loader: expect.stringContaining('function'),
+      options: {
+        ...config.legacy,
+        fn: browserify,
+      },
     });
   });
 
@@ -176,6 +181,22 @@ describe('formatText', () => {
     `);
   });
 
+  it('formats the text with new lines', () => {
+    expect(
+      formatText(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eget nulla mattis, sollicitudin enim tincidunt, vulputate libero.\nPellentesque neque sapien, lobortis eu elit in, suscipit aliquet augue.',
+        2,
+      ),
+    ).toMatchInlineSnapshot(`
+      "  Lorem ipsum dolor sit amet,
+        consectetur adipiscing elit. Nam eget
+        nulla mattis, sollicitudin enim
+        tincidunt, vulputate libero.
+        Pellentesque neque sapien, lobortis eu
+        elit in, suscipit aliquet augue."
+    `);
+  });
+
   it('formats the text with a custom initial indentation', () => {
     process.stdout.columns = 40;
     expect(
@@ -192,5 +213,36 @@ describe('formatText', () => {
           Pellentesque neque sapien, lobortis
           eu elit in, suscipit aliquet augue."
     `);
+  });
+
+  it('indents the text if the terminal width is not set', () => {
+    // @ts-expect-error - According to the type, `columns` cannot be undefined.
+    process.stdout.columns = undefined;
+
+    expect(
+      formatText(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eget nulla mattis, sollicitudin enim tincidunt, vulputate libero.\nPellentesque neque sapien, lobortis eu elit in, suscipit aliquet augue.',
+        2,
+      ),
+    ).toMatchInlineSnapshot(`
+      "  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eget nulla mattis, sollicitudin enim tincidunt, vulputate libero.
+        Pellentesque neque sapien, lobortis eu elit in, suscipit aliquet augue."
+    `);
+  });
+});
+
+describe('getImageSVG', () => {
+  it('returns an SVG string for a PNG image', () => {
+    const image = getImageSVG('image/png', new Uint8Array([1, 2, 3]));
+    expect(image).toMatchInlineSnapshot(
+      `"<svg xmlns="http://www.w3.org/2000/svg"><image href="data:image/png;base64,AQID" /></svg>"`,
+    );
+  });
+
+  it('returns an SVG string for a JPEG image', () => {
+    const image = getImageSVG('image/jpeg', new Uint8Array([1, 2, 3]));
+    expect(image).toMatchInlineSnapshot(
+      `"<svg xmlns="http://www.w3.org/2000/svg"><image href="data:image/jpeg;base64,AQID" /></svg>"`,
+    );
   });
 });

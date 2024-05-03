@@ -5,8 +5,8 @@ import type { SnapsEthereumProvider, SnapsProvider } from './provider';
 describe('SnapsEthereumProvider', () => {
   it('only has the expected methods', () => {
     expectTypeOf<SnapsEthereumProvider>().toHaveProperty('request');
-    expectTypeOf<SnapsEthereumProvider>().toHaveProperty('on');
-    expectTypeOf<SnapsEthereumProvider>().toHaveProperty('removeListener');
+    expectTypeOf<SnapsEthereumProvider>().not.toHaveProperty('on');
+    expectTypeOf<SnapsEthereumProvider>().not.toHaveProperty('removeListener');
     expectTypeOf<SnapsEthereumProvider>().not.toHaveProperty('isConnected');
   });
 });

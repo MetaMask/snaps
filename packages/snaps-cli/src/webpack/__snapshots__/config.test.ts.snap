@@ -4,6 +4,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -12,7 +15,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
+        "test": /\\\\\\.\\(js\\|jsx\\|mjs\\|cjs\\|ts\\|tsx\\)\\$/u,
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
@@ -22,6 +25,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "jsc": {
               "parser": {
                 "syntax": "typescript",
+                "tsx": true,
+              },
+              "transform": {
+                "react": {
+                  "importSource": "@metamask/snaps-sdk",
+                  "runtime": "automatic",
+                  "useBuiltins": true,
+                },
               },
             },
             "module": {
@@ -36,7 +47,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -119,9 +148,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
   "resolve": {
     "extensions": [
       ".js",
+      ".jsx",
       ".mjs",
       ".cjs",
       ".ts",
+      ".tsx",
     ],
     "fallback": {
       "buffer": false,
@@ -146,6 +177,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -154,7 +188,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
+        "test": /\\\\\\.\\(js\\|jsx\\|mjs\\|cjs\\|ts\\|tsx\\)\\$/u,
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
@@ -164,6 +198,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "jsc": {
               "parser": {
                 "syntax": "typescript",
+                "tsx": true,
+              },
+              "transform": {
+                "react": {
+                  "importSource": "@metamask/snaps-sdk",
+                  "runtime": "automatic",
+                  "useBuiltins": true,
+                },
               },
             },
             "module": {
@@ -178,7 +220,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -261,9 +321,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
   "resolve": {
     "extensions": [
       ".js",
+      ".jsx",
       ".mjs",
       ".cjs",
       ".ts",
+      ".tsx",
     ],
     "fallback": {
       "buffer": false,
@@ -288,6 +350,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": "inline-source-map",
   "entry": "/foo/bar/src/index.ts",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -296,7 +361,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
+        "test": /\\\\\\.\\(js\\|jsx\\|mjs\\|cjs\\|ts\\|tsx\\)\\$/u,
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
@@ -306,6 +371,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "jsc": {
               "parser": {
                 "syntax": "typescript",
+                "tsx": true,
+              },
+              "transform": {
+                "react": {
+                  "importSource": "@metamask/snaps-sdk",
+                  "runtime": "automatic",
+                  "useBuiltins": true,
+                },
               },
             },
             "module": {
@@ -320,7 +393,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -403,9 +494,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
   "resolve": {
     "extensions": [
       ".js",
+      ".jsx",
       ".mjs",
       ".cjs",
       ".ts",
+      ".tsx",
     ],
     "fallback": {
       "buffer": false,
@@ -430,6 +523,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": "source-map",
   "entry": "/foo/bar/src/index.ts",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -438,7 +534,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
+        "test": /\\\\\\.\\(js\\|jsx\\|mjs\\|cjs\\|ts\\|tsx\\)\\$/u,
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
@@ -448,6 +544,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "jsc": {
               "parser": {
                 "syntax": "typescript",
+                "tsx": true,
+              },
+              "transform": {
+                "react": {
+                  "importSource": "@metamask/snaps-sdk",
+                  "runtime": "automatic",
+                  "useBuiltins": true,
+                },
               },
             },
             "module": {
@@ -462,7 +566,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -541,9 +663,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
   "resolve": {
     "extensions": [
       ".js",
+      ".jsx",
       ".mjs",
       ".cjs",
       ".ts",
+      ".tsx",
     ],
     "fallback": {
       "buffer": false,
@@ -563,6 +687,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -571,7 +698,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
+        "test": /\\\\\\.\\(js\\|jsx\\|mjs\\|cjs\\|ts\\|tsx\\)\\$/u,
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
@@ -581,6 +708,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "jsc": {
               "parser": {
                 "syntax": "typescript",
+                "tsx": true,
+              },
+              "transform": {
+                "react": {
+                  "importSource": "@metamask/snaps-sdk",
+                  "runtime": "automatic",
+                  "useBuiltins": true,
+                },
               },
             },
             "module": {
@@ -595,12 +730,33 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       {
         "test": /\\\\\\.wasm\\$/u,
         "use": {
-          "loader": "/foo/bar/loaders/wasm",
+          "loader": "/foo/bar/src/webpack/loaders/function.ts",
+          "options": {
+            "fn": [Function],
+          },
         },
       },
     ],
@@ -683,9 +839,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
   "resolve": {
     "extensions": [
       ".js",
+      ".jsx",
       ".mjs",
       ".cjs",
       ".ts",
+      ".tsx",
     ],
     "fallback": {
       "buffer": false,
@@ -710,6 +868,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -718,7 +879,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
+        "test": /\\\\\\.\\(js\\|jsx\\|mjs\\|cjs\\|ts\\|tsx\\)\\$/u,
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
@@ -728,6 +889,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "jsc": {
               "parser": {
                 "syntax": "typescript",
+                "tsx": true,
+              },
+              "transform": {
+                "react": {
+                  "importSource": "@metamask/snaps-sdk",
+                  "runtime": "automatic",
+                  "useBuiltins": true,
+                },
               },
             },
             "module": {
@@ -742,7 +911,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -825,9 +1012,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
   "resolve": {
     "extensions": [
       ".js",
+      ".jsx",
       ".mjs",
       ".cjs",
       ".ts",
+      ".tsx",
     ],
     "fallback": {
       "buffer": false,
@@ -852,6 +1041,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -860,7 +1052,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
+        "test": /\\\\\\.\\(js\\|jsx\\|mjs\\|cjs\\|ts\\|tsx\\)\\$/u,
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
@@ -870,6 +1062,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "jsc": {
               "parser": {
                 "syntax": "typescript",
+                "tsx": true,
+              },
+              "transform": {
+                "react": {
+                  "importSource": "@metamask/snaps-sdk",
+                  "runtime": "automatic",
+                  "useBuiltins": true,
+                },
               },
             },
             "module": {
@@ -884,7 +1084,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -967,9 +1185,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
   "resolve": {
     "extensions": [
       ".js",
+      ".jsx",
       ".mjs",
       ".cjs",
       ".ts",
+      ".tsx",
     ],
     "fallback": {
       "buffer": false,
@@ -994,6 +1214,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -1002,7 +1225,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
+        "test": /\\\\\\.\\(js\\|jsx\\|mjs\\|cjs\\|ts\\|tsx\\)\\$/u,
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
@@ -1012,6 +1235,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "jsc": {
               "parser": {
                 "syntax": "typescript",
+                "tsx": true,
+              },
+              "transform": {
+                "react": {
+                  "importSource": "@metamask/snaps-sdk",
+                  "runtime": "automatic",
+                  "useBuiltins": true,
+                },
               },
             },
             "module": {
@@ -1026,7 +1257,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -1117,9 +1366,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
   "resolve": {
     "extensions": [
       ".js",
+      ".jsx",
       ".mjs",
       ".cjs",
       ".ts",
+      ".tsx",
     ],
     "fallback": {
       "buffer": "/foo/bar/index.js",
@@ -1144,6 +1395,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -1152,7 +1406,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
+        "test": /\\\\\\.\\(js\\|jsx\\|mjs\\|cjs\\|ts\\|tsx\\)\\$/u,
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
@@ -1162,6 +1416,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "jsc": {
               "parser": {
                 "syntax": "typescript",
+                "tsx": true,
+              },
+              "transform": {
+                "react": {
+                  "importSource": "@metamask/snaps-sdk",
+                  "runtime": "automatic",
+                  "useBuiltins": true,
+                },
               },
             },
             "module": {
@@ -1176,7 +1438,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -1267,12 +1547,172 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
   "resolve": {
     "extensions": [
       ".js",
+      ".jsx",
       ".mjs",
       ".cjs",
       ".ts",
+      ".tsx",
     ],
     "fallback": {
       "buffer": "/foo/bar/index.js",
+      "fs": false,
+      "path": false,
+    },
+    "plugins": [
+      SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
+        "unresolvedModules": Set {},
+      },
+    ],
+  },
+  "stats": "none",
+  "target": "browserslist:/foo/bar/.browserslistrc",
+}
+`;
+
+exports[`getDefaultConfiguration returns the default Webpack configuration for the given CLI config 10`] = `
+{
+  "devtool": false,
+  "entry": "/foo/bar/src/index.js",
+  "experiments": {
+    "topLevelAwait": false,
+  },
+  "infrastructureLogging": {
+    "level": "none",
+  },
+  "mode": "production",
+  "module": {
+    "rules": [
+      {
+        "exclude": /node_modules/u,
+        "test": /\\\\\\.\\(js\\|jsx\\|mjs\\|cjs\\|ts\\|tsx\\)\\$/u,
+        "use": {
+          "loader": "/foo/bar/node_modules/swc-loader/index.js",
+          "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
+            "jsc": {
+              "parser": {
+                "syntax": "typescript",
+                "tsx": true,
+              },
+              "transform": {
+                "react": {
+                  "importSource": "@metamask/snaps-sdk",
+                  "runtime": "automatic",
+                  "useBuiltins": true,
+                },
+              },
+            },
+            "module": {
+              "type": "es6",
+            },
+            "sourceMaps": false,
+            "sync": false,
+          },
+        },
+      },
+      {
+        "resolve": {
+          "fullySpecified": false,
+        },
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      false,
+      false,
+      false,
+      false,
+    ],
+  },
+  "optimization": {
+    "minimize": false,
+    "minimizer": [
+      TerserPlugin {
+        "options": {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minimizer": {
+            "implementation": [Function],
+            "options": {},
+          },
+          "parallel": true,
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+  },
+  "output": {
+    "chunkFormat": "commonjs",
+    "clean": false,
+    "filename": "bundle.js",
+    "library": {
+      "type": "commonjs",
+    },
+    "path": "/foo/bar/dist",
+    "publicPath": "/",
+  },
+  "performance": {
+    "hints": false,
+  },
+  "plugins": [
+    SnapsWebpackPlugin {
+      "options": {
+        "eval": true,
+        "manifestPath": "/foo/bar/snap.manifest.json",
+        "writeManifest": true,
+      },
+    },
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
+    DefinePlugin {
+      "definitions": {
+        "process.env.DEBUG": ""false"",
+        "process.env.NODE_DEBUG": ""false"",
+        "process.env.NODE_ENV": ""production"",
+      },
+    },
+    ProgressPlugin {
+      "dependenciesCount": 10000,
+      "handler": [Function],
+      "modulesCount": 5000,
+      "percentBy": undefined,
+      "profile": false,
+      "showActiveModules": false,
+      "showDependencies": true,
+      "showEntries": true,
+      "showModules": true,
+    },
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
+      },
+    },
+  ],
+  "resolve": {
+    "extensions": [
+      ".js",
+      ".jsx",
+      ".mjs",
+      ".cjs",
+      ".ts",
+      ".tsx",
+    ],
+    "fallback": {
+      "buffer": false,
       "fs": false,
       "path": false,
     },
@@ -1294,6 +1734,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -1302,7 +1745,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
+        "test": /\\\\\\.\\(js\\|jsx\\|mjs\\|cjs\\|ts\\|tsx\\)\\$/u,
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
@@ -1312,6 +1755,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "jsc": {
               "parser": {
                 "syntax": "typescript",
+                "tsx": true,
+              },
+              "transform": {
+                "react": {
+                  "importSource": "@metamask/snaps-sdk",
+                  "runtime": "automatic",
+                  "useBuiltins": true,
+                },
               },
             },
             "module": {
@@ -1326,7 +1777,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -1418,9 +1887,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
   "resolve": {
     "extensions": [
       ".js",
+      ".jsx",
       ".mjs",
       ".cjs",
       ".ts",
+      ".tsx",
     ],
     "fallback": {
       "buffer": false,
@@ -1445,6 +1916,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -1453,7 +1927,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
+        "test": /\\\\\\.\\(js\\|jsx\\|mjs\\|cjs\\|ts\\|tsx\\)\\$/u,
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
@@ -1463,6 +1937,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "jsc": {
               "parser": {
                 "syntax": "typescript",
+                "tsx": true,
+              },
+              "transform": {
+                "react": {
+                  "importSource": "@metamask/snaps-sdk",
+                  "runtime": "automatic",
+                  "useBuiltins": true,
+                },
               },
             },
             "module": {
@@ -1477,7 +1959,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -1560,9 +2060,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
   "resolve": {
     "extensions": [
       ".js",
+      ".jsx",
       ".mjs",
       ".cjs",
       ".ts",
+      ".tsx",
     ],
     "fallback": {
       "buffer": false,
@@ -1587,6 +2089,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -1595,7 +2100,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
+        "test": /\\\\\\.\\(js\\|jsx\\|mjs\\|cjs\\|ts\\|tsx\\)\\$/u,
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
@@ -1605,6 +2110,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "jsc": {
               "parser": {
                 "syntax": "typescript",
+                "tsx": true,
+              },
+              "transform": {
+                "react": {
+                  "importSource": "@metamask/snaps-sdk",
+                  "runtime": "automatic",
+                  "useBuiltins": true,
+                },
               },
             },
             "module": {
@@ -1619,7 +2132,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -1702,9 +2233,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
   "resolve": {
     "extensions": [
       ".js",
+      ".jsx",
       ".mjs",
       ".cjs",
       ".ts",
+      ".tsx",
     ],
     "fallback": {
       "buffer": false,
@@ -1729,6 +2262,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -1737,7 +2273,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
+        "test": /\\\\\\.\\(js\\|jsx\\|mjs\\|cjs\\|ts\\|tsx\\)\\$/u,
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
@@ -1747,6 +2283,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "jsc": {
               "parser": {
                 "syntax": "typescript",
+                "tsx": true,
+              },
+              "transform": {
+                "react": {
+                  "importSource": "@metamask/snaps-sdk",
+                  "runtime": "automatic",
+                  "useBuiltins": true,
+                },
               },
             },
             "module": {
@@ -1761,7 +2305,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -1853,9 +2415,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
   "resolve": {
     "extensions": [
       ".js",
+      ".jsx",
       ".mjs",
       ".cjs",
       ".ts",
+      ".tsx",
     ],
     "fallback": {
       "buffer": false,
@@ -1880,6 +2444,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -1888,7 +2455,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
+        "test": /\\\\\\.\\(js\\|jsx\\|mjs\\|cjs\\|ts\\|tsx\\)\\$/u,
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
@@ -1898,6 +2465,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
             "jsc": {
               "parser": {
                 "syntax": "typescript",
+                "tsx": true,
+              },
+              "transform": {
+                "react": {
+                  "importSource": "@metamask/snaps-sdk",
+                  "runtime": "automatic",
+                  "useBuiltins": true,
+                },
               },
             },
             "module": {
@@ -1912,7 +2487,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -2004,9 +2597,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
   "resolve": {
     "extensions": [
       ".js",
+      ".jsx",
       ".mjs",
       ".cjs",
       ".ts",
+      ".tsx",
     ],
     "fallback": {
       "buffer": false,
@@ -2031,6 +2626,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -2039,14 +2637,15 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
+        "test": /\\\\\\.\\(js\\|jsx\\|mjs\\|cjs\\|ts\\|tsx\\)\\$/u,
         "use": {
-          "loader": "/foo/bar/loaders/browserify",
+          "loader": "/foo/bar/src/webpack/loaders/function.ts",
           "options": {
             "bundlerCustomizer": undefined,
             "depsToTranspile": [],
             "dist": "/foo/bar/dist",
             "eval": true,
+            "fn": [Function],
             "manifest": true,
             "outfileName": "bundle.js",
             "port": 8081,
@@ -2066,7 +2665,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -2144,9 +2761,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
   "resolve": {
     "extensions": [
       ".js",
+      ".jsx",
       ".mjs",
       ".cjs",
       ".ts",
+      ".tsx",
     ],
     "fallback": {
       "buffer": false,
@@ -2166,6 +2785,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -2174,14 +2796,15 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
+        "test": /\\\\\\.\\(js\\|jsx\\|mjs\\|cjs\\|ts\\|tsx\\)\\$/u,
         "use": {
-          "loader": "/foo/bar/loaders/browserify",
+          "loader": "/foo/bar/src/webpack/loaders/function.ts",
           "options": {
             "bundlerCustomizer": undefined,
             "depsToTranspile": [],
             "dist": "/foo/bar/dist",
             "eval": true,
+            "fn": [Function],
             "manifest": true,
             "outfileName": "bundle.js",
             "port": 8081,
@@ -2201,7 +2824,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -2279,9 +2920,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
   "resolve": {
     "extensions": [
       ".js",
+      ".jsx",
       ".mjs",
       ".cjs",
       ".ts",
+      ".tsx",
     ],
     "fallback": {
       "buffer": false,
@@ -2301,6 +2944,9 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
+  "experiments": {
+    "topLevelAwait": false,
+  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -2309,14 +2955,15 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "rules": [
       {
         "exclude": /node_modules/u,
-        "test": /\\\\\\.\\(js\\|mjs\\|cjs\\|ts\\)\\$/u,
+        "test": /\\\\\\.\\(js\\|jsx\\|mjs\\|cjs\\|ts\\|tsx\\)\\$/u,
         "use": {
-          "loader": "/foo/bar/loaders/browserify",
+          "loader": "/foo/bar/src/webpack/loaders/function.ts",
           "options": {
             "bundlerCustomizer": undefined,
             "depsToTranspile": [],
             "dist": "/foo/bar/dist",
             "eval": true,
+            "fn": [Function],
             "manifest": true,
             "outfileName": "bundle.js",
             "port": 8081,
@@ -2336,7 +2983,25 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "resolve": {
           "fullySpecified": false,
         },
-        "test": /\\\\\\.m\\?js/u,
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
       },
       false,
     ],
@@ -2414,9 +3079,11 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
   "resolve": {
     "extensions": [
       ".js",
+      ".jsx",
       ".mjs",
       ".cjs",
       ".ts",
+      ".tsx",
     ],
     "fallback": {
       "buffer": false,

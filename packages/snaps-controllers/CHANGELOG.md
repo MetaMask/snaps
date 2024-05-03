@@ -6,6 +6,64 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.0.0]
+### Changed
+- **BREAKING:** Move `maxInitTime` constructor argument from `SnapController` to `ExecutionService` ([#2348](https://github.com/MetaMask/snaps/pull/2348))
+
+### Fixed
+- Increase max UI size limit from 250 KB to 10 MB ([#2342](https://github.com/MetaMask/snaps/pull/2342))
+- Consider caveats in permissions difference calculation ([#2345](https://github.com/MetaMask/snaps/pull/2345))
+  - This fixes a bug where certain caveats would not be correctly applied when updating Snaps.
+- Gracefully handle errors for multiple simultaneous failing requests ([#2346](https://github.com/MetaMask/snaps/pull/2346))
+- Properly handle termination of Snaps that are currently executing ([#2304](https://github.com/MetaMask/snaps/pull/2304))
+- Properly tear down partially initialized executors and improve stability when executor initialization fails ([#2348](https://github.com/MetaMask/snaps/pull/2348))
+
+## [7.0.1]
+### Fixed
+- Fix encryption key caching issues ([#2326](https://github.com/MetaMask/snaps/pull/2326))
+
+## [7.0.0]
+### Changed
+- **BREAKING:** Refactor encryption to enable caching ([#2316](https://github.com/MetaMask/snaps/pull/2316))
+  - New required constructor arguments `encryptor` and `getMnemonic` have been added.
+- Include `initialConnections` in approval `requestState` ([#2322](https://github.com/MetaMask/snaps/pull/2322))
+
+### Fixed
+- Delete unencrypted state when uninstalling a Snap ([#2311](https://github.com/MetaMask/snaps/pull/2311))
+
+## [6.0.4]
+### Changed
+- Bump MetaMask dependencies ([#2270](https://github.com/MetaMask/snaps/pull/2270))
+
+## [6.0.3]
+### Changed
+- Handle unavailable registry more gracefully ([#2256](https://github.com/MetaMask/snaps/pull/2256))
+- Bump `@metamask/snaps-registry` to `^3.0.1` ([#2255](https://github.com/MetaMask/snaps/pull/2255))
+- Bump `@metamask/json-rpc-engine` to `^7.3.3` ([#2247](https://github.com/MetaMask/snaps/pull/2247))
+
+## [6.0.2]
+### Changed
+- Improve timeout handling when the execution environment fails to load ([#2242](https://github.com/MetaMask/snaps/pull/2242))
+
+## [6.0.1]
+### Fixed
+- Fix minor build configuration problems ([#2220](https://github.com/MetaMask/snaps/pull/2220))
+
+## [6.0.0]
+### Changed
+- **BREAKING:** Update ESM build to be fully compliant with the ESM standard ([#2210](https://github.com/MetaMask/snaps/pull/2210))
+- **BREAKING:** Move Node.js exports to separate export ([#2210](https://github.com/MetaMask/snaps/pull/2210))
+  - The default export is now browser-compatible.
+  - Node.js APIs can be imported from `<package>/node`.
+- Bump `@metamask/rpc-errors` to `^6.2.1` ([#2209](https://github.com/MetaMask/snaps/pull/2209))
+
+### Fixed
+- Add sizing limits for custom UI ([#2199](https://github.com/MetaMask/snaps/pull/2199))
+
+## [5.0.1]
+### Fixed
+- Fix issue installing non-allowlisted Snaps in allowlist mode ([#2196](https://github.com/MetaMask/snaps/pull/2196))
+
 ## [5.0.0]
 ### Added
 - Add support for dynamic user interfaces ([#1465](https://github.com/MetaMask/snaps/pull/1465), [#2126](https://github.com/MetaMask/snaps/pull/2126), [#2144](https://github.com/MetaMask/snaps/pull/2144), [#2152](https://github.com/MetaMask/snaps/pull/2152), [#2143](https://github.com/MetaMask/snaps/pull/2143))
@@ -188,7 +246,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@5.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.0.0...HEAD
+[8.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@7.0.1...@metamask/snaps-controllers@8.0.0
+[7.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@7.0.0...@metamask/snaps-controllers@7.0.1
+[7.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@6.0.4...@metamask/snaps-controllers@7.0.0
+[6.0.4]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@6.0.3...@metamask/snaps-controllers@6.0.4
+[6.0.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@6.0.2...@metamask/snaps-controllers@6.0.3
+[6.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@6.0.1...@metamask/snaps-controllers@6.0.2
+[6.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@6.0.0...@metamask/snaps-controllers@6.0.1
+[6.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@5.0.1...@metamask/snaps-controllers@6.0.0
+[5.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@5.0.0...@metamask/snaps-controllers@5.0.1
 [5.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@4.1.0...@metamask/snaps-controllers@5.0.0
 [4.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@4.0.0...@metamask/snaps-controllers@4.1.0
 [4.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@3.6.0...@metamask/snaps-controllers@4.0.0

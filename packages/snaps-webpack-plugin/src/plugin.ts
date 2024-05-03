@@ -1,11 +1,11 @@
 import { getErrorMessage } from '@metamask/snaps-sdk';
-import type { PostProcessOptions, SourceMap } from '@metamask/snaps-utils';
 import {
   checkManifest,
   evalBundle,
   postProcessBundle,
   useTemporaryFile,
-} from '@metamask/snaps-utils';
+} from '@metamask/snaps-utils/node';
+import type { PostProcessOptions, SourceMap } from '@metamask/snaps-utils/node';
 import { assert } from '@metamask/utils';
 import pathUtils from 'path';
 import { promisify } from 'util';

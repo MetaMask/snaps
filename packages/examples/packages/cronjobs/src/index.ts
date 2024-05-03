@@ -1,6 +1,5 @@
-import { rpcErrors } from '@metamask/rpc-errors';
 import type { OnCronjobHandler } from '@metamask/snaps-sdk';
-import { panel, text, heading } from '@metamask/snaps-sdk';
+import { panel, text, heading, MethodNotFoundError } from '@metamask/snaps-sdk';
 
 /**
  * Handle cronjob execution requests from MetaMask. This handler handles one
@@ -31,10 +30,6 @@ export const onCronjob: OnCronjobHandler = async ({ request }) => {
         },
       });
     default:
-      throw rpcErrors.methodNotFound({
-        data: {
-          method: request.method,
-        },
-      });
+      throw new MethodNotFoundError({ method: request.method });
   }
 };

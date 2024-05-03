@@ -26,7 +26,7 @@ describe('onRpcRequest', () => {
 
   describe('getQrCode', () => {
     it('generates a QR code for the given data', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const response = request({
         method: 'getQrCode',
@@ -46,16 +46,14 @@ describe('onRpcRequest', () => {
       await ui.ok();
 
       expect(await response).toRespondWith(null);
-
-      await close();
     });
   });
 
   describe('getCat', () => {
-    // This test is flaky so we disable it for now
+    // This test is flaky, so we disable it for now.
     // eslint-disable-next-line jest/no-disabled-tests
     it.skip('shows a cat', async () => {
-      const { request, close } = await installSnap();
+      const { request } = await installSnap();
 
       const response = request({
         method: 'getCat',
@@ -84,8 +82,84 @@ describe('onRpcRequest', () => {
       await ui.ok();
 
       expect(await response).toRespondWith(null);
+    });
+  });
 
-      await close();
+  describe('getSvgIcon', () => {
+    it('shows an SVG icon', async () => {
+      const { request } = await installSnap();
+
+      const response = request({
+        method: 'getSvgIcon',
+      });
+
+      const ui = await response.getInterface();
+      // eslint-disable-next-line jest/prefer-strict-equal
+      expect(ui.content).toEqual({
+        type: 'Box',
+        props: {
+          children: [
+            {
+              type: 'Text',
+              props: {
+                children: 'Here is an SVG icon:',
+              },
+              key: null,
+            },
+            {
+              type: 'Image',
+              props: {
+                src: expect.stringContaining('<svg'),
+              },
+              key: null,
+            },
+          ],
+        },
+        key: null,
+      });
+
+      await ui.ok();
+
+      expect(await response).toRespondWith(null);
+    });
+  });
+
+  describe('getPngIcon', () => {
+    it('shows a PNG icon', async () => {
+      const { request } = await installSnap();
+
+      const response = request({
+        method: 'getPngIcon',
+      });
+
+      const ui = await response.getInterface();
+      // eslint-disable-next-line jest/prefer-strict-equal
+      expect(ui.content).toEqual({
+        type: 'Box',
+        props: {
+          children: [
+            {
+              type: 'Text',
+              props: {
+                children: 'Here is a PNG icon:',
+              },
+              key: null,
+            },
+            {
+              type: 'Image',
+              props: {
+                src: expect.stringContaining('data:image/png;base64'),
+              },
+              key: null,
+            },
+          ],
+        },
+        key: null,
+      });
+
+      await ui.ok();
+
+      expect(await response).toRespondWith(null);
     });
   });
 });

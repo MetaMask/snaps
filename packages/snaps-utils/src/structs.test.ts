@@ -4,9 +4,7 @@ import { bold, green, red } from 'chalk';
 import type { Struct } from 'superstruct';
 import superstruct, {
   size,
-  create,
   defaulted,
-  is,
   number,
   object,
   string,
@@ -18,7 +16,6 @@ import superstruct, {
 import {
   arrayToGenerator,
   createFromStruct,
-  file,
   getError,
   getStructErrorMessage,
   getStructErrorPrefix,
@@ -45,20 +42,6 @@ function getStructError(value: unknown, struct: Struct<any>) {
 
   return error;
 }
-
-describe('file', () => {
-  it('resolves a file path relative to the current working directory', () => {
-    jest.spyOn(process, 'cwd').mockReturnValue('/foo/bar');
-
-    expect(is('packages/snaps-utils/src/structs.test.ts', file())).toBe(true);
-    expect(create('packages/snaps-utils/src/structs.test.ts', file())).toBe(
-      '/foo/bar/packages/snaps-utils/src/structs.test.ts',
-    );
-    expect(create('/packages/snaps-utils/src/structs.test.ts', file())).toBe(
-      '/packages/snaps-utils/src/structs.test.ts',
-    );
-  });
-});
 
 describe('named', () => {
   it('sets the struct name', () => {

@@ -17,7 +17,7 @@ export class Timer {
         start: number;
         timeout?: unknown;
       }
-    | { value: 'finished' };
+    | { value: 'finished'; remaining: number };
 
   /**
    * If `ms` is smaller or equal to zero (including -Infinity), the callback is added to the event loop and executed async immediately
@@ -39,6 +39,10 @@ export class Timer {
     return this.state.value;
   }
 
+  get remaining(): number {
+    return this.state.remaining;
+  }
+
   /**
    * Cancels the currently running timer and marks it finished.
    *
@@ -50,6 +54,19 @@ export class Timer {
       new Error('Tried to cancel a not running Timer'),
     );
     this.onFinish(false);
+  }
+
+  /**
+   * Marks the timer as finished prematurely and triggers the callback.
+   *
+   * @throws {@link Error}. If it wasn't running or paused.
+   */
+  finish() {
+    assert(
+      this.status !== 'finished',
+      new Error('Tried to finish a finished Timer.'),
+    );
+    this.onFinish(true);
   }
 
   /**
@@ -119,8 +136,14 @@ export class Timer {
       clearTimeout(this.state.timeout as any);
     }
 
-    const { callback } = this.state;
-    this.state = { value: 'finished' };
+    const { callback, remaining } = this.state;
+    this.state = {
+      value: 'finished',
+      remaining:
+        this.state.value === 'running'
+          ? remaining - (Date.now() - this.state.start)
+          : remaining,
+    };
 
     if (shouldCall) {
       callback();

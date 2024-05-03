@@ -30,6 +30,16 @@ describe('assertIsSnapIcon', () => {
     );
   });
 
+  it('asserts that the file is an appropriate size when the file is represented by a string', () => {
+    const icon = new VirtualFile({
+      value: '1'.repeat(SVG_MAX_BYTE_SIZE + 1),
+      path: 'foo.svg',
+    });
+    expect(() => assertIsSnapIcon(icon)).toThrow(
+      `The specified SVG icon exceeds the maximum size of ${SVG_MAX_BYTE_SIZE_TEXT}.`,
+    );
+  });
+
   it('asserts that the file is a valid SVG', () => {
     const icon = new VirtualFile({
       value: stringToBytes('foo'),

@@ -1,4 +1,3 @@
-import { rpcErrors, providerErrors } from '@metamask/rpc-errors';
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
 import {
   DialogType,
@@ -6,6 +5,8 @@ import {
   text,
   heading,
   copyable,
+  MethodNotFoundError,
+  UserRejectedRequestError,
 } from '@metamask/snaps-sdk';
 import { add0x, assert, hexToBytes } from '@metamask/utils';
 import { secp256k1 } from '@noble/curves/secp256k1';
@@ -68,7 +69,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       });
 
       if (!approved) {
-        throw providerErrors.userRejectedRequest();
+        throw new UserRejectedRequestError();
       }
 
       const signature = secp256k1.sign(
@@ -80,8 +81,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     }
 
     default:
-      throw rpcErrors.methodNotFound({
-        data: { method: request.method },
-      });
+      throw new MethodNotFoundError({ method: request.method });
   }
 };

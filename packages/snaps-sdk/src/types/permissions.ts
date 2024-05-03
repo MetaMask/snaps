@@ -9,6 +9,18 @@ export type Cronjob = {
   request: Omit<JsonRpcRequest, 'jsonrpc' | 'id'>;
 };
 
+export type NameLookupMatchers =
+  | {
+      tlds: string[];
+    }
+  | {
+      schemes: string[];
+    }
+  | {
+      tlds: string[];
+      schemes: string[];
+    };
+
 export type Bip32Entropy = {
   curve: 'secp256k1' | 'ed25519';
   path: string[];
@@ -37,7 +49,7 @@ export type InitialPermissions = Partial<{
   };
   'endowment:name-lookup': {
     chains?: ChainId[];
-    matchers?: { tlds?: string[]; schemes?: string[] };
+    matchers?: NameLookupMatchers;
     maxRequestTime?: number;
   };
   'endowment:network-access': EmptyObject;

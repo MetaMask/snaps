@@ -1,6 +1,6 @@
 {
   "name": "@metamask/invoke-snap-example-snap",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "private": true,
   "description": "MetaMask example snaps demonstrating the use of `wallet_invokeSnap` to call a snap from another snap.",
   "repository": {
@@ -14,7 +14,6 @@
   "scripts": {
     "build": "yarn workspaces foreach --parallel --verbose run build",
     "build:clean": "yarn clean && yarn build",
-    "build:post-tsc": "yarn build",
     "clean": "yarn workspaces foreach --parallel --verbose run clean",
     "start": "yarn workspaces foreach --parallel --verbose --interlaced --jobs unlimited run start",
     "test": "yarn workspaces foreach --parallel --verbose --interlaced run test",
@@ -26,7 +25,7 @@
     "lint:dependencies": "depcheck"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "^3.0.2",
+    "@lavamoat/allow-scripts": "^3.0.3",
     "@metamask/auto-changelog": "^3.4.4",
     "@metamask/eslint-config": "^12.1.0",
     "@metamask/eslint-config-jest": "^12.1.0",

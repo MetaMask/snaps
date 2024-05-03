@@ -1,5 +1,7 @@
-import { rpcErrors } from '@metamask/rpc-errors';
-import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
+import {
+  MethodNotFoundError,
+  type OnRpcRequestHandler,
+} from '@metamask/snaps-sdk';
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
@@ -23,9 +25,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       return 'Hello from the MetaMask Snaps CLI using Browserify!';
 
     default: {
-      throw rpcErrors.methodNotFound({
-        data: { method: request.method },
-      });
+      throw new MethodNotFoundError({ method: request.method });
     }
   }
 };

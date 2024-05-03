@@ -1,9 +1,9 @@
-import type { PostProcessOptions } from '@metamask/snaps-utils';
+import type { PostProcessOptions } from '@metamask/snaps-utils/node';
 import {
   checkManifest,
   evalBundle,
   postProcessBundle,
-} from '@metamask/snaps-utils';
+} from '@metamask/snaps-utils/node';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
 // eslint-disable-next-line @typescript-eslint/no-shadow

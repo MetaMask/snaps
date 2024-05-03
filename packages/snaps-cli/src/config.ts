@@ -1,12 +1,11 @@
 import { literal, union } from '@metamask/snaps-sdk';
 import {
   createFromStruct,
-  file,
   indent,
   isFile,
   SnapsStructError,
   named,
-} from '@metamask/snaps-utils';
+} from '@metamask/snaps-utils/node';
 import { hasProperty } from '@metamask/utils';
 import { transform } from '@swc/core';
 import type { BrowserifyObject } from 'browserify';
@@ -14,7 +13,6 @@ import { dim } from 'chalk';
 import { readFile } from 'fs/promises';
 import Module from 'module';
 import { basename, dirname, resolve } from 'path';
-import type { Infer } from 'superstruct';
 import {
   array,
   boolean,
@@ -31,10 +29,12 @@ import {
   unknown,
   empty,
 } from 'superstruct';
+import type { Infer } from 'superstruct';
 import type { Configuration as WebpackConfiguration } from 'webpack';
 
 import { TranspilationModes } from './builders';
 import { ConfigError } from './errors';
+import { file } from './structs';
 import type { YargsArgs } from './types/yargs';
 import { CONFIG_FILE, TS_CONFIG_FILE } from './utils';
 
@@ -54,7 +54,7 @@ export type SnapBrowserifyConfig = {
    * deprecated and will be removed in a future release, so it's recommended to
    * use the Webpack bundler instead.
    */
-  bundler?: 'browserify';
+  bundler: 'browserify';
 
   /**
    * The options for the Snaps CLI. These are merged with the options passed to
@@ -206,7 +206,7 @@ export type SnapWebpackConfig = {
    * deprecated and will be removed in a future release, so it's recommended to
    * use the Webpack bundler instead.
    */
-  bundler: 'webpack';
+  bundler?: 'webpack';
 
   /**
    * The path to the snap entry point. This should be a JavaScript or TypeScript
@@ -416,6 +416,27 @@ export type SnapWebpackConfig = {
       };
 
   /**
+   * Optional features to enable in the CLI.
+   *
+   * @example
+   * {
+   *   features: {
+   *     images: true,
+   *   }
+   * }
+   */
+  features?: {
+    /**
+     * Whether to enable support for images. If `true`, the Webpack
+     * configuration will be modified to support images. If `false`, the
+     * Webpack configuration will not be modified.
+     *
+     * @default true
+     */
+    images?: boolean;
+  };
+
+  /**
    * A function to customize the Webpack configuration used to build the snap.
    * This function will be called with the default Webpack configuration, and
    * should return the modified configuration. If not specified, the default
@@ -488,7 +509,7 @@ const SnapsBrowserifyBundlerCustomizerFunctionStruct =
   );
 
 export const SnapsBrowserifyConfigStruct = object({
-  bundler: defaulted(literal('browserify'), 'browserify'),
+  bundler: literal('browserify'),
   cliOptions: defaulted(
     object({
       bundle: optional(file()),
@@ -530,7 +551,7 @@ const SnapsWebpackCustomizeWebpackConfigFunctionStruct =
   );
 
 export const SnapsWebpackConfigStruct = object({
-  bundler: literal('webpack'),
+  bundler: defaulted(literal('webpack'), 'webpack'),
   input: defaulted(file(), resolve(process.cwd(), 'src/index.js')),
   sourceMap: defaulted(union([boolean(), literal('inline')]), false),
   evaluate: defaulted(boolean(), true),
@@ -618,6 +639,13 @@ export const SnapsWebpackConfigStruct = object({
     false,
   ),
 
+  features: defaulted(
+    object({
+      images: defaulted(boolean(), true),
+    }),
+    {},
+  ),
+
   customizeWebpackConfig: optional(
     SnapsWebpackCustomizeWebpackConfigFunctionStruct,
   ),
@@ -633,7 +661,7 @@ export const SnapsWebpackConfigStruct = object({
 export const SnapsConfigStruct = type({
   bundler: defaulted(
     union([literal('browserify'), literal('webpack')]),
-    'browserify',
+    'webpack',
   ),
 });
 
@@ -692,8 +720,7 @@ export type ProcessedConfig = ProcessedWebpackConfig;
 export function getConfig(config: unknown, argv: YargsArgs): ProcessedConfig {
   const prefix = 'The snap config file is invalid';
   const suffix = dim(
-    // TODO: Link to `docs.metamask.io` once the docs are published.
-    'Refer to the documentation for more information: https://github.com/MetaMask/snaps/tree/main/packages/snaps-cli/',
+    'Refer to the documentation for more information: https://docs.metamask.io/snaps/reference/cli/options/',
   );
 
   const { bundler } = createFromStruct(

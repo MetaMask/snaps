@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.2]
+### Changed
+- Use error wrappers ([#2178](https://github.com/MetaMask/snaps/pull/2178))
+
 ## [2.1.1]
 ### Changed
 - Remove snap icon ([#2189](https://github.com/MetaMask/snaps/pull/2189))
@@ -37,7 +41,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add Browserify example snap ([#1632](https://github.com/MetaMask/snaps/pull/1632))
   - This snap demonstrates how to use the deprecated Browserify configuration format.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/browserify-example-snap@2.1.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/browserify-example-snap@2.1.2...HEAD
+[2.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/browserify-example-snap@2.1.1...@metamask/browserify-example-snap@2.1.2
 [2.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/browserify-example-snap@2.1.0...@metamask/browserify-example-snap@2.1.1
 [2.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/browserify-example-snap@2.0.1...@metamask/browserify-example-snap@2.1.0
 [2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/browserify-example-snap@2.0.0...@metamask/browserify-example-snap@2.0.1

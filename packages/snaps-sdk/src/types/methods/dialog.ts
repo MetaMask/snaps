@@ -1,5 +1,5 @@
+import type { ComponentOrElement } from '..';
 import type { EnumToUnion } from '../../internals';
-import type { Component } from '../../ui';
 
 /**
  * The type of dialog to display.
@@ -25,7 +25,7 @@ export enum DialogType {
 export type AlertDialog =
   | {
       type: EnumToUnion<DialogType.Alert>;
-      content: Component;
+      content: ComponentOrElement;
     }
   | {
       type: EnumToUnion<DialogType.Alert>;
@@ -42,7 +42,7 @@ export type AlertDialog =
 export type ConfirmationDialog =
   | {
       type: EnumToUnion<DialogType.Confirmation>;
-      content: Component;
+      content: ComponentOrElement;
     }
   | {
       type: EnumToUnion<DialogType.Confirmation>;
@@ -61,7 +61,7 @@ export type ConfirmationDialog =
 export type PromptDialog =
   | {
       type: EnumToUnion<DialogType.Prompt>;
-      content: Component;
+      content: ComponentOrElement;
       placeholder?: string;
     }
   | {

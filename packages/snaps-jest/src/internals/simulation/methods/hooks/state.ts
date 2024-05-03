@@ -1,3 +1,5 @@
+import { parseJson } from '@metamask/snaps-utils';
+import type { Json } from '@metamask/utils';
 import type { SagaIterator } from 'redux-saga';
 import { put, select } from 'redux-saga/effects';
 
@@ -18,7 +20,9 @@ function* getSnapStateImplementation(
   _snapId: string,
   encrypted = true,
 ): SagaIterator<string> {
-  return yield select(getState(encrypted));
+  const state = yield select(getState(encrypted));
+  // TODO: Use actual decryption implementation
+  return parseJson(state);
 }
 
 /**
@@ -45,10 +49,11 @@ export function getGetSnapStateMethodImplementation(runSaga: RunSagaFunction) {
  */
 function* updateSnapStateImplementation(
   _snapId: string,
-  newState: string,
+  newState: Record<string, Json>,
   encrypted = true,
 ): SagaIterator<void> {
-  yield put(setState({ state: newState, encrypted }));
+  // TODO: Use actual encryption implementation
+  yield put(setState({ state: JSON.stringify(newState), encrypted }));
 }
 
 /**

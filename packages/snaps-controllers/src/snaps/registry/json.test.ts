@@ -242,32 +242,15 @@ describe('JsonSnapsRegistry', () => {
     });
   });
 
-  it('returns unverified for unavailable database if failOnUnavailableRegistry is set to false', async () => {
+  it('uses existing state if registry is unavailable', async () => {
     fetchMock.mockResponse('', { status: 404 });
 
     const { messenger } = getRegistry({
-      failOnUnavailableRegistry: false,
-    });
-
-    const result = await messenger.call('SnapsRegistry:get', {
-      [MOCK_SNAP_ID]: {
-        version: '1.0.0' as SemVerVersion,
-        checksum: DEFAULT_SNAP_SHASUM,
+      refetchOnAllowlistMiss: true,
+      state: {
+        lastUpdated: 0,
+        database: MOCK_DATABASE,
       },
-    });
-
-    expect(result).toStrictEqual({
-      [MOCK_SNAP_ID]: {
-        status: SnapsRegistryStatus.Unverified,
-      },
-    });
-  });
-
-  it('does not verify the signature if no public key is provided', async () => {
-    fetchMock.mockResponse(JSON.stringify(MOCK_DATABASE));
-
-    const { messenger } = getRegistry({
-      publicKey: undefined,
     });
 
     const result = await messenger.call('SnapsRegistry:get', {
@@ -284,22 +267,51 @@ describe('JsonSnapsRegistry', () => {
     });
   });
 
-  it('throws for unavailable database by default', async () => {
+  it(`doesn't use existing state if existing state isn't sufficient`, async () => {
+    fetchMock.mockResponse('', { status: 404 });
+
+    const { messenger } = getRegistry({
+      refetchOnAllowlistMiss: true,
+      state: {
+        lastUpdated: 0,
+        database: MOCK_DATABASE,
+      },
+    });
+
+    const result = await messenger.call('SnapsRegistry:get', {
+      [MOCK_SNAP_ID]: {
+        version: '1.0.1' as SemVerVersion,
+        checksum: DEFAULT_SNAP_SHASUM,
+      },
+    });
+
+    expect(result).toStrictEqual({
+      [MOCK_SNAP_ID]: {
+        status: SnapsRegistryStatus.Unavailable,
+      },
+    });
+  });
+
+  it('returns unavailable if the database is unavailable', async () => {
     fetchMock.mockResponse('', { status: 404 });
 
     const { messenger } = getRegistry();
 
-    await expect(
-      messenger.call('SnapsRegistry:get', {
-        [MOCK_SNAP_ID]: {
-          version: '1.0.0' as SemVerVersion,
-          checksum: DEFAULT_SNAP_SHASUM,
-        },
-      }),
-    ).rejects.toThrow('Snaps registry is unavailable, installation blocked.');
+    const result = await messenger.call('SnapsRegistry:get', {
+      [MOCK_SNAP_ID]: {
+        version: '1.0.0' as SemVerVersion,
+        checksum: DEFAULT_SNAP_SHASUM,
+      },
+    });
+
+    expect(result).toStrictEqual({
+      [MOCK_SNAP_ID]: {
+        status: SnapsRegistryStatus.Unavailable,
+      },
+    });
   });
 
-  it('throws for unavailable signature', async () => {
+  it('returns unavailable if signature is unavailable', async () => {
     fetchMock
       .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
       .mockResponseOnce('', {
@@ -308,17 +320,21 @@ describe('JsonSnapsRegistry', () => {
 
     const { messenger } = getRegistry();
 
-    await expect(
-      messenger.call('SnapsRegistry:get', {
-        [MOCK_SNAP_ID]: {
-          version: '1.0.0' as SemVerVersion,
-          checksum: DEFAULT_SNAP_SHASUM,
-        },
-      }),
-    ).rejects.toThrow('Snaps registry is unavailable, installation blocked.');
+    const result = await messenger.call('SnapsRegistry:get', {
+      [MOCK_SNAP_ID]: {
+        version: '1.0.0' as SemVerVersion,
+        checksum: DEFAULT_SNAP_SHASUM,
+      },
+    });
+
+    expect(result).toStrictEqual({
+      [MOCK_SNAP_ID]: {
+        status: SnapsRegistryStatus.Unavailable,
+      },
+    });
   });
 
-  it('throws for invalid signature', async () => {
+  it('returns unavailable if signature is invalid', async () => {
     fetchMock
       .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
       .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
@@ -328,14 +344,18 @@ describe('JsonSnapsRegistry', () => {
         '0x034ca27b046507d1a9997bddc991b56d96b93d4adac3a96dfe01ce450bfb661455',
     });
 
-    await expect(
-      messenger.call('SnapsRegistry:get', {
-        [MOCK_SNAP_ID]: {
-          version: '1.0.0' as SemVerVersion,
-          checksum: DEFAULT_SNAP_SHASUM,
-        },
-      }),
-    ).rejects.toThrow('Snaps registry is unavailable, installation blocked.');
+    const result = await messenger.call('SnapsRegistry:get', {
+      [MOCK_SNAP_ID]: {
+        version: '1.0.0' as SemVerVersion,
+        checksum: DEFAULT_SNAP_SHASUM,
+      },
+    });
+
+    expect(result).toStrictEqual({
+      [MOCK_SNAP_ID]: {
+        status: SnapsRegistryStatus.Unavailable,
+      },
+    });
   });
 
   describe('resolveVersion', () => {
@@ -354,38 +374,38 @@ describe('JsonSnapsRegistry', () => {
       expect(result).toBe('1.0.0');
     });
 
-    it('throws if snap is not on the allowlist', async () => {
+    it('returns version range if snap is not on the allowlist', async () => {
       fetchMock
         .mockResponseOnce(
           JSON.stringify({ verifiedSnaps: {}, blockedSnaps: [] }),
         )
         .mockResponseOnce(JSON.stringify(MOCK_EMPTY_SIGNATURE_FILE));
 
+      const range = '^1.0.0' as SemVerRange;
       const { messenger } = getRegistry();
-      await expect(
-        messenger.call(
+      expect(
+        await messenger.call(
           'SnapsRegistry:resolveVersion',
           MOCK_SNAP_ID,
-          '^1.0.0' as SemVerRange,
+          range,
         ),
-      ).rejects.toThrow('The snap is not on the allowlist');
+      ).toBe(range);
     });
 
-    it('throws if resolved version is not on the allowlist', async () => {
+    it('returns version range if resolved version is not on the allowlist', async () => {
       fetchMock
         .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
         .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
 
+      const range = '^1.2.0' as SemVerRange;
       const { messenger } = getRegistry();
-      await expect(
-        messenger.call(
+      expect(
+        await messenger.call(
           'SnapsRegistry:resolveVersion',
           MOCK_SNAP_ID,
-          '^1.2.0' as SemVerRange,
+          range,
         ),
-      ).rejects.toThrow(
-        'No matching versions of the snap are on the allowlist',
-      );
+      ).toBe(range);
     });
 
     it('refetches the database on allowlist miss if configured', async () => {

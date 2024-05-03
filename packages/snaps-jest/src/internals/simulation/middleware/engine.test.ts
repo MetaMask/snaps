@@ -4,7 +4,7 @@ import { createJsonRpcEngine } from './engine';
 
 describe('createJsonRpcEngine', () => {
   it('creates a JSON-RPC engine', async () => {
-    const { store } = createStore('password', getMockOptions());
+    const { store } = createStore(getMockOptions());
     const engine = createJsonRpcEngine({
       store,
       hooks: {

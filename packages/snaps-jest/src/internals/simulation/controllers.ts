@@ -70,6 +70,8 @@ export function getControllers(options: GetControllersOptions): Controllers {
   const subjectMetadataController = new SubjectMetadataController({
     messenger: controllerMessenger.getRestricted({
       name: 'SubjectMetadataController',
+      allowedActions: [],
+      allowedEvents: [],
     }),
     subjectCacheLimit: 100,
   });
@@ -81,6 +83,7 @@ export function getControllers(options: GetControllersOptions): Controllers {
         'PhishingController:maybeUpdateState',
         'PhishingController:testOrigin',
       ],
+      allowedEvents: [],
     }),
   });
 
@@ -116,6 +119,7 @@ function getPermissionController(options: GetControllersOptions) {
         `SnapController:install`,
         `SubjectMetadataController:getSubjectMetadata`,
       ],
+      allowedEvents: [],
     }),
     caveatSpecifications: {
       ...snapsCaveatsSpecifications,

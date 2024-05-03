@@ -5,8 +5,16 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 import { assert } from '@metamask/utils';
 
-import { LoopbackLocation } from './test-utils';
-import { getSnapFiles, setDiff } from './utils';
+import { SnapEndowments } from '../../snaps-rpc-methods/src/endowments';
+import {
+  LoopbackLocation,
+  MOCK_ALLOWED_RPC_ORIGINS_PERMISSION,
+  MOCK_DAPPS_RPC_ORIGINS_PERMISSION,
+  MOCK_LIFECYCLE_HOOKS_PERMISSION,
+  MOCK_RPC_ORIGINS_PERMISSION,
+  MOCK_SNAP_DIALOG_PERMISSION,
+} from './test-utils';
+import { getSnapFiles, permissionsDiff, setDiff } from './utils';
 
 describe('setDiff', () => {
   it('does nothing on empty type {}-B', () => {
@@ -35,6 +43,93 @@ describe('setDiff', () => {
   it('works for the same object A-A', () => {
     const object = { a: 'foo', b: 'bar' };
     expect(setDiff(object, object)).toStrictEqual({});
+  });
+});
+
+describe('permissionsDiff', () => {
+  it('does nothing on empty type {}-B', () => {
+    expect(
+      permissionsDiff(
+        {},
+        { [SnapEndowments.Rpc]: MOCK_RPC_ORIGINS_PERMISSION },
+      ),
+    ).toStrictEqual({});
+  });
+
+  it('does nothing on empty type A-{}', () => {
+    expect(
+      permissionsDiff(
+        { [SnapEndowments.Rpc]: MOCK_RPC_ORIGINS_PERMISSION },
+        {},
+      ),
+    ).toStrictEqual({
+      [SnapEndowments.Rpc]: MOCK_RPC_ORIGINS_PERMISSION,
+    });
+  });
+
+  it('does a difference', () => {
+    expect(
+      permissionsDiff(
+        {
+          [SnapEndowments.Rpc]: MOCK_RPC_ORIGINS_PERMISSION,
+          [SnapEndowments.LifecycleHooks]: MOCK_LIFECYCLE_HOOKS_PERMISSION,
+        },
+        { [SnapEndowments.Rpc]: MOCK_RPC_ORIGINS_PERMISSION },
+      ),
+    ).toStrictEqual({
+      [SnapEndowments.LifecycleHooks]: MOCK_LIFECYCLE_HOOKS_PERMISSION,
+    });
+  });
+
+  it('additional B permissions have no effect in A-B', () => {
+    expect(
+      permissionsDiff(
+        {
+          [SnapEndowments.Rpc]: MOCK_RPC_ORIGINS_PERMISSION,
+          [SnapEndowments.LifecycleHooks]: MOCK_LIFECYCLE_HOOKS_PERMISSION,
+        },
+        {
+          [SnapEndowments.Rpc]: MOCK_RPC_ORIGINS_PERMISSION,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_dialog: MOCK_SNAP_DIALOG_PERMISSION,
+        },
+      ),
+    ).toStrictEqual({
+      [SnapEndowments.LifecycleHooks]: MOCK_LIFECYCLE_HOOKS_PERMISSION,
+    });
+  });
+
+  it('considers caveats in diff', () => {
+    expect(
+      permissionsDiff(
+        {
+          [SnapEndowments.Rpc]: MOCK_DAPPS_RPC_ORIGINS_PERMISSION,
+        },
+        {
+          [SnapEndowments.Rpc]: MOCK_ALLOWED_RPC_ORIGINS_PERMISSION,
+        },
+      ),
+    ).toStrictEqual({
+      [SnapEndowments.Rpc]: MOCK_DAPPS_RPC_ORIGINS_PERMISSION,
+    });
+
+    expect(
+      permissionsDiff(
+        {
+          [SnapEndowments.Rpc]: MOCK_ALLOWED_RPC_ORIGINS_PERMISSION,
+        },
+        {
+          [SnapEndowments.Rpc]: MOCK_DAPPS_RPC_ORIGINS_PERMISSION,
+        },
+      ),
+    ).toStrictEqual({
+      [SnapEndowments.Rpc]: MOCK_ALLOWED_RPC_ORIGINS_PERMISSION,
+    });
+  });
+
+  it('works for the same permissions A-A', () => {
+    const object = { [SnapEndowments.Rpc]: MOCK_RPC_ORIGINS_PERMISSION };
+    expect(permissionsDiff(object, object)).toStrictEqual({});
   });
 });
 

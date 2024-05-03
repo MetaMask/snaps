@@ -5,11 +5,17 @@ import { unwrapError } from '@metamask/snaps-utils';
 import { getSafeJson, hasProperty, isPlainObject } from '@metamask/utils';
 import { nanoid } from '@reduxjs/toolkit';
 
-import type { RequestOptions, SnapRequest } from '../types';
+import type {
+  RequestOptions,
+  SnapHandlerInterface,
+  SnapRequest,
+} from '../types';
 import {
   clearNotifications,
+  clickElement,
   getInterface,
   getNotifications,
+  typeInField,
 } from './simulation';
 import type { RunSagaFunction, Store } from './simulation';
 import type { RootControllerMessenger } from './simulation/controllers';
@@ -63,11 +69,15 @@ export function handleRequest({
         ...options,
       },
     })
-    .then((result) => {
+    .then(async (result) => {
       const notifications = getNotifications(store.getState());
       store.dispatch(clearNotifications());
 
-      const content = getContentFromResult(result, snapId, controllerMessenger);
+      const getInterfaceFn = await getInterfaceApi(
+        result,
+        snapId,
+        controllerMessenger,
+      );
 
       return {
         id: String(id),
@@ -75,7 +85,7 @@ export function handleRequest({
           result: getSafeJson(result),
         },
         notifications,
-        content,
+        ...(getInterfaceFn ? { getInterface: getInterfaceFn } : {}),
       };
     })
     .catch((error) => {
@@ -103,28 +113,85 @@ export function handleRequest({
 }
 
 /**
- * Get the response content either from the SnapInterfaceController or the response object if there is one.
+ * Get the interface ID from the result if it's available or create a new interface if the result contains static components.
+ *
+ * @param result - The handler result object.
+ * @param snapId - The Snap ID.
+ * @param controllerMessenger - The controller messenger.
+ * @returns The interface ID or undefined if the result doesn't include content.
+ */
+export async function getInterfaceFromResult(
+  result: unknown,
+  snapId: SnapId,
+  controllerMessenger: RootControllerMessenger,
+) {
+  if (isPlainObject(result) && hasProperty(result, 'id')) {
+    return result.id as string;
+  }
+
+  if (isPlainObject(result) && hasProperty(result, 'content')) {
+    const id = await controllerMessenger.call(
+      'SnapInterfaceController:createInterface',
+      snapId,
+      result.content as Component,
+    );
+
+    return id;
+  }
+
+  return undefined;
+}
+
+/**
+ * Get the response content from the SnapInterfaceController and include the interaction methods.
  *
  * @param result - The handler result object.
  * @param snapId - The Snap ID.
  * @param controllerMessenger - The controller messenger.
  * @returns The content components if any.
  */
-export function getContentFromResult(
+export async function getInterfaceApi(
   result: unknown,
   snapId: SnapId,
   controllerMessenger: RootControllerMessenger,
-): Component | undefined {
-  if (isPlainObject(result) && hasProperty(result, 'id')) {
-    return controllerMessenger.call(
-      'SnapInterfaceController:getInterface',
-      snapId,
-      result.id as string,
-    ).content;
-  }
+): Promise<(() => SnapHandlerInterface) | undefined> {
+  const interfaceId = await getInterfaceFromResult(
+    result,
+    snapId,
+    controllerMessenger,
+  );
 
-  if (isPlainObject(result) && hasProperty(result, 'content')) {
-    return result.content as Component;
+  if (interfaceId) {
+    return () => {
+      const { content } = controllerMessenger.call(
+        'SnapInterfaceController:getInterface',
+        snapId,
+        interfaceId,
+      );
+
+      return {
+        content,
+        clickElement: async (name) => {
+          await clickElement(
+            controllerMessenger,
+            interfaceId,
+            content,
+            snapId,
+            name,
+          );
+        },
+        typeInField: async (name, value) => {
+          await typeInField(
+            controllerMessenger,
+            interfaceId,
+            content,
+            snapId,
+            name,
+            value,
+          );
+        },
+      };
+    };
   }
 
   return undefined;

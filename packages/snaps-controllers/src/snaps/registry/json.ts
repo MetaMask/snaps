@@ -21,12 +21,14 @@ import type {
 } from './registry';
 import { SnapsRegistryStatus } from './registry';
 
-// TODO: Replace with a Codefi URL
 const SNAP_REGISTRY_URL =
-  'https://cdn.jsdelivr.net/gh/MetaMask/snaps-registry@gh-pages/latest/registry.json';
+  'https://acl.execution.metamask.io/latest/registry.json';
 
 const SNAP_REGISTRY_SIGNATURE_URL =
-  'https://cdn.jsdelivr.net/gh/MetaMask/snaps-registry@gh-pages/latest/signature.json';
+  'https://acl.execution.metamask.io/latest/signature.json';
+
+const DEFAULT_PUBLIC_KEY =
+  '0x025b65308f0f0fb8bc7f7ff87bfc296e0330eee5d3c1d1ee4a048b2fd6a86fa0a6';
 
 type JsonSnapsRegistryUrl = {
   registry: string;
@@ -40,7 +42,6 @@ export type JsonSnapsRegistryArgs = {
   url?: JsonSnapsRegistryUrl;
   recentFetchThreshold?: number;
   refetchOnAllowlistMiss?: boolean;
-  failOnUnavailableRegistry?: boolean;
   publicKey?: Hex;
 };
 
@@ -83,6 +84,7 @@ export type SnapsRegistryMessenger = RestrictedControllerMessenger<
 export type SnapsRegistryState = {
   database: SnapsRegistryDatabase | null;
   lastUpdated: number | null;
+  databaseUnavailable: boolean;
 };
 
 const controllerName = 'SnapsRegistry';
@@ -90,6 +92,7 @@ const controllerName = 'SnapsRegistry';
 const defaultState = {
   database: null,
   lastUpdated: null,
+  databaseUnavailable: false,
 };
 
 export class JsonSnapsRegistry extends BaseController<
@@ -99,15 +102,13 @@ export class JsonSnapsRegistry extends BaseController<
 > {
   #url: JsonSnapsRegistryUrl;
 
-  #publicKey?: Hex;
+  #publicKey: Hex;
 
   #fetchFunction: typeof fetch;
 
   #recentFetchThreshold: number;
 
   #refetchOnAllowlistMiss: boolean;
-
-  #failOnUnavailableRegistry: boolean;
 
   #currentUpdate: Promise<void> | null;
 
@@ -118,10 +119,9 @@ export class JsonSnapsRegistry extends BaseController<
       registry: SNAP_REGISTRY_URL,
       signature: SNAP_REGISTRY_SIGNATURE_URL,
     },
-    publicKey,
+    publicKey = DEFAULT_PUBLIC_KEY,
     fetchFunction = globalThis.fetch.bind(globalThis),
     recentFetchThreshold = inMilliseconds(5, Duration.Minute),
-    failOnUnavailableRegistry = true,
     refetchOnAllowlistMiss = true,
   }: JsonSnapsRegistryArgs) {
     super({
@@ -129,6 +129,7 @@ export class JsonSnapsRegistry extends BaseController<
       metadata: {
         database: { persist: true, anonymous: false },
         lastUpdated: { persist: true, anonymous: false },
+        databaseUnavailable: { persist: true, anonymous: false },
       },
       name: controllerName,
       state: {
@@ -141,7 +142,6 @@ export class JsonSnapsRegistry extends BaseController<
     this.#fetchFunction = fetchFunction;
     this.#recentFetchThreshold = recentFetchThreshold;
     this.#refetchOnAllowlistMiss = refetchOnAllowlistMiss;
-    this.#failOnUnavailableRegistry = failOnUnavailableRegistry;
     this.#currentUpdate = null;
 
     this.messagingSystem.registerActionHandler(
@@ -205,17 +205,19 @@ export class JsonSnapsRegistry extends BaseController<
     try {
       const database = await this.#safeFetch(this.#url.registry);
 
-      if (this.#publicKey) {
-        const signature = await this.#safeFetch(this.#url.signature);
-        this.#verifySignature(database, signature);
-      }
+      const signature = await this.#safeFetch(this.#url.signature);
+      this.#verifySignature(database, signature);
 
       this.update((state) => {
         state.database = JSON.parse(database);
         state.lastUpdated = Date.now();
+        state.databaseUnavailable = false;
       });
     } catch {
       // Ignore
+      this.update((state) => {
+        state.databaseUnavailable = true;
+      });
     }
   }
 
@@ -224,10 +226,6 @@ export class JsonSnapsRegistry extends BaseController<
       await this.#triggerUpdate();
     }
 
-    // If the database is still null and we require it, throw.
-    if (this.#failOnUnavailableRegistry && this.state.database === null) {
-      throw new Error('Snaps registry is unavailable, installation blocked.');
-    }
     return this.state.database;
   }
 
@@ -266,7 +264,11 @@ export class JsonSnapsRegistry extends BaseController<
       await this.#triggerUpdate();
       return this.#getSingle(snapId, snapInfo, true);
     }
-    return { status: SnapsRegistryStatus.Unverified };
+    return {
+      status: this.state.databaseUnavailable
+        ? SnapsRegistryStatus.Unavailable
+        : SnapsRegistryStatus.Unverified,
+    };
   }
 
   async #get(
@@ -283,13 +285,12 @@ export class JsonSnapsRegistry extends BaseController<
   }
 
   /**
-   * Find an allowlisted version within a specified version range.
+   * Find an allowlisted version within a specified version range. Otherwise return the version range itself.
    *
    * @param snapId - The ID of the snap we are trying to resolve a version for.
    * @param versionRange - The version range.
    * @param refetch - An optional flag used to determine if we are refetching the registry.
-   * @returns An allowlisted version within the specified version range.
-   * @throws If an allowlisted version does not exist within the version range.
+   * @returns An allowlisted version within the specified version range if available otherwise returns the input version range.
    */
   async #resolveVersion(
     snapId: string,
@@ -304,7 +305,10 @@ export class JsonSnapsRegistry extends BaseController<
       return this.#resolveVersion(snapId, versionRange, true);
     }
 
-    assert(versions, 'The snap is not on the allowlist');
+    // If we cannot narrow down the version range we return the unaltered version range.
+    if (!versions) {
+      return versionRange;
+    }
 
     const targetVersion = getTargetVersion(
       Object.keys(versions) as SemVerVersion[],
@@ -316,10 +320,10 @@ export class JsonSnapsRegistry extends BaseController<
       return this.#resolveVersion(snapId, versionRange, true);
     }
 
-    assert(
-      targetVersion,
-      'No matching versions of the snap are on the allowlist',
-    );
+    // If we cannot narrow down the version range we return the unaltered version range.
+    if (!targetVersion) {
+      return versionRange;
+    }
 
     // A semver version is technically also a valid semver range.
     assertIsSemVerRange(targetVersion);

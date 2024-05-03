@@ -7,7 +7,7 @@ import { getShowDialogImplementation } from './show-dialog';
 
 describe('getShowDialogImplementation', () => {
   it('returns the implementation of the `showDialog` hook', async () => {
-    const { store, runSaga } = createStore('password', getMockOptions());
+    const { store, runSaga } = createStore(getMockOptions());
     const fn = getShowDialogImplementation(runSaga);
 
     const promise = fn(MOCK_SNAP_ID, DialogType.Alert, 'foo');

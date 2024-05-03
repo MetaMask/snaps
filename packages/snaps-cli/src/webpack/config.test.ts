@@ -150,6 +150,19 @@ describe('getDefaultConfiguration', () => {
         buffer: true,
       },
     }),
+    getMockConfig('webpack', {
+      input: 'src/index.js',
+      output: {
+        path: 'dist',
+        minimize: false,
+      },
+      manifest: {
+        path: 'snap.manifest.json',
+      },
+      features: {
+        images: false,
+      },
+    }),
   ])(
     'returns the default Webpack configuration for the given CLI config',
     async (config) => {
@@ -191,8 +204,10 @@ describe('getDefaultConfiguration', () => {
     async (config) => {
       jest.spyOn(process, 'cwd').mockReturnValue('/foo/bar');
 
+      const output = await getDefaultConfiguration(config);
+
       // eslint-disable-next-line jest/no-restricted-matchers
-      expect(await getDefaultConfiguration(config)).toMatchSnapshot();
+      expect(normalizeConfig(output)).toMatchSnapshot();
     },
   );
 

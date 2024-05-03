@@ -1,8 +1,6 @@
-import type {
-  NotificationType,
-  EnumToUnion,
-  Component,
-} from '@metamask/snaps-sdk';
+import type { NotificationType, EnumToUnion } from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
+import type { InferMatching } from '@metamask/snaps-utils';
 import type { Json, JsonRpcId, JsonRpcParams } from '@metamask/utils';
 import type { Infer } from 'superstruct';
 
@@ -12,34 +10,6 @@ import type {
   SnapResponseStruct,
   TransactionOptionsStruct,
 } from './internals';
-
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
-declare module 'expect' {
-  interface AsymmetricMatchers {
-    toRespondWith(response: unknown): void;
-    toRespondWithError(error: unknown): void;
-    toSendNotification(
-      message: string,
-      type?: EnumToUnion<NotificationType>,
-    ): void;
-    toRender(component: Component): void;
-  }
-
-  // Ideally we would use `Matchers<Result>` instead of `Matchers<R>`, but
-  // TypeScript doesn't allow this:
-  // TS2428: All declarations of 'Matchers' must have identical type parameters.
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  interface Matchers<R> {
-    toRespondWith(response: unknown): R;
-    toRespondWithError(error: unknown): R;
-    toSendNotification(
-      message: string,
-      type?: EnumToUnion<NotificationType>,
-    ): R;
-    toRender(component: Component): R;
-  }
-}
-/* eslint-enable @typescript-eslint/consistent-type-definitions */
 
 export type RequestOptions = {
   /**
@@ -111,6 +81,23 @@ export type SignatureOptions = Infer<typeof SignatureOptionsStruct>;
  */
 export type SnapOptions = Infer<typeof SnapOptionsStruct>;
 
+export type SnapInterfaceActions = {
+  /**
+   * Click on an interface element.
+   *
+   * @param name - The element name to click.
+   */
+  clickElement(name: string): Promise<void>;
+
+  /**
+   * Type a value in a interface field.
+   *
+   * @param name - The element name to type in.
+   * @param value - The value to type.
+   */
+  typeInField(name: string, value: string): Promise<void>;
+};
+
 /**
  * A `snap_dialog` alert interface.
  */
@@ -123,7 +110,7 @@ export type SnapAlertInterface = {
   /**
    * The content to show in the alert.
    */
-  content: Component;
+  content: JSXElement;
 
   /**
    * Close the alert.
@@ -143,7 +130,7 @@ export type SnapConfirmationInterface = {
   /**
    * The content to show in the confirmation.
    */
-  content: Component;
+  content: JSXElement;
 
   /**
    * Close the confirmation.
@@ -168,7 +155,7 @@ export type SnapPromptInterface = {
   /**
    * The content to show in the prompt.
    */
-  content: Component;
+  content: JSXElement;
 
   /**
    * Close the prompt.
@@ -183,10 +170,12 @@ export type SnapPromptInterface = {
   cancel(): Promise<void>;
 };
 
-export type SnapInterface =
+export type SnapInterface = (
   | SnapAlertInterface
   | SnapConfirmationInterface
-  | SnapPromptInterface;
+  | SnapPromptInterface
+) &
+  SnapInterfaceActions;
 
 export type SnapRequestObject = {
   /**
@@ -255,7 +244,7 @@ export type Snap = {
    */
   onTransaction(
     transaction?: Partial<TransactionOptions>,
-  ): Promise<SnapResponse>;
+  ): Promise<SnapResponseWithInterface>;
 
   /**
    * Send a transaction to the snap.
@@ -268,7 +257,7 @@ export type Snap = {
    */
   sendTransaction(
     transaction?: Partial<TransactionOptions>,
-  ): Promise<SnapResponse>;
+  ): Promise<SnapResponseWithInterface>;
 
   /**
    * Send a signature request to the snap.
@@ -278,7 +267,9 @@ export type Snap = {
    * Any missing fields will be filled in with default values.
    * @returns The response.
    */
-  onSignature(signature?: Partial<SignatureOptions>): Promise<SnapResponse>;
+  onSignature(
+    signature?: Partial<SignatureOptions>,
+  ): Promise<SnapResponseWithInterface>;
 
   /**
    * Run a cronjob in the snap. This is similar to {@link request}, but the
@@ -308,7 +299,7 @@ export type Snap = {
    *
    * @returns The response.
    */
-  onHomePage(): Promise<SnapResponse>;
+  onHomePage(): Promise<SnapResponseWithInterface>;
 
   /**
    * Mock a JSON-RPC request. This will cause the snap to respond with the
@@ -347,4 +338,31 @@ export type Snap = {
   close(): Promise<void>;
 };
 
-export type SnapResponse = Infer<typeof SnapResponseStruct>;
+export type SnapHandlerInterface = {
+  content: JSXElement;
+} & SnapInterfaceActions;
+
+export type SnapResponseWithInterface = {
+  id: string;
+  response: { result: Json } | { error: Json };
+  notifications: {
+    id: string;
+    message: string;
+    type: EnumToUnion<NotificationType>;
+  }[];
+  getInterface(): SnapHandlerInterface;
+};
+
+export type SnapResponseWithoutInterface = Omit<
+  SnapResponseWithInterface,
+  'getInterface'
+>;
+
+export type SnapResponseType =
+  | SnapResponseWithoutInterface
+  | SnapResponseWithInterface;
+
+export type SnapResponse = InferMatching<
+  typeof SnapResponseStruct,
+  SnapResponseType
+>;

@@ -1,9 +1,20 @@
-import type { StreamProvider } from '@metamask/providers';
-import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
+import type { StreamProvider, RequestArguments } from '@metamask/providers';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { assert, assertStruct, getSafeJson, JsonStruct } from '@metamask/utils';
+import {
+  assert,
+  assertStruct,
+  getJsonSize,
+  getSafeJson,
+  isObject,
+  JsonStruct,
+} from '@metamask/utils';
 
 import { log } from '../logging';
+
+// 64 MB - we chose this number because it is the size limit for postMessage
+// between the extension and the dapp enforced by Chrome.
+const MAX_RESPONSE_JSON_SIZE = 64_000_000;
+
 /**
  * Make proxy for Promise and handle the teardown process properly.
  * If the teardown is called in the meanwhile, Promise result will not be
@@ -43,33 +54,24 @@ export async function withTeardown<Type>(
 }
 
 /**
- * Returns a Proxy that narrows down (attenuates) the fields available on
- * the StreamProvider and replaces the request implementation.
+ * Returns a Proxy that only allows access to a `request` function.
+ * This is useful for replacing StreamProvider with an attenuated version.
  *
- * @param provider - Instance of a StreamProvider to be limited.
- * @param request - Custom attenuated request object.
- * @returns Proxy to the StreamProvider instance.
+ * @param request - Custom attenuated request function.
+ * @returns Proxy that mimics a StreamProvider instance.
  */
-export function proxyStreamProvider(
-  provider: StreamProvider,
-  request: unknown,
-): StreamProvider {
+export function proxyStreamProvider(request: unknown): StreamProvider {
   // Proxy target is intentionally set to be an empty object, to ensure
   // that access to the prototype chain is not possible.
   const proxy = new Proxy(
     {},
     {
       has(_target: object, prop: string | symbol) {
-        return (
-          typeof prop === 'string' &&
-          ['request', 'on', 'removeListener'].includes(prop)
-        );
+        return typeof prop === 'string' && ['request'].includes(prop);
       },
       get(_target, prop: keyof StreamProvider) {
         if (prop === 'request') {
           return request;
-        } else if (['on', 'removeListener'].includes(prop)) {
-          return provider[prop];
         }
 
         return undefined;
@@ -86,7 +88,6 @@ export const BLOCKED_RPC_METHODS = Object.freeze([
   'wallet_requestPermissions',
   'wallet_revokePermissions',
   // We disallow all of these confirmations for now, since the screens are not ready for Snaps.
-  'eth_sendRawTransaction',
   'eth_sendTransaction',
   'eth_sign',
   'eth_signTypedData',
@@ -173,4 +174,24 @@ export function sanitizeRequestArguments(value: unknown): RequestArguments {
   // This lets request arguments contain undefined which is normally disallowed.
   const json = JSON.parse(JSON.stringify(value));
   return getSafeJson(json) as RequestArguments;
+}
+
+/**
+ * Check if the input is a valid response.
+ *
+ * @param response - The response.
+ * @returns True if the response is valid, otherwise false.
+ */
+export function isValidResponse(response: Record<string, unknown>) {
+  if (!isObject(response)) {
+    return false;
+  }
+
+  try {
+    // If the JSON is invalid this will throw and we should return false.
+    const size = getJsonSize(response);
+    return size < MAX_RESPONSE_JSON_SIZE;
+  } catch {
+    return false;
+  }
 }

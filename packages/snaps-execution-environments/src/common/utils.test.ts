@@ -2,6 +2,7 @@ import {
   BLOCKED_RPC_METHODS,
   assertEthereumOutboundRequest,
   assertSnapOutboundRequest,
+  isValidResponse,
 } from './utils';
 
 describe('assertSnapOutboundRequest', () => {
@@ -75,5 +76,24 @@ describe('assertEthereumOutboundRequest', () => {
     ).toThrow(
       'Provided value is not JSON-RPC compatible: Expected the value to satisfy a union of `literal | boolean | finite number | string | array | record`, but received: [object Object].',
     );
+  });
+});
+
+describe('isValidResponse', () => {
+  it('returns false if the value is not an object', () => {
+    // @ts-expect-error Intentionally using bad params
+    expect(isValidResponse('foo')).toBe(false);
+  });
+
+  it('returns false if the value is not JSON serializable', () => {
+    expect(isValidResponse({ foo: BigInt(0) })).toBe(false);
+  });
+
+  it('returns false if the value is too large', () => {
+    expect(isValidResponse({ foo: '1'.repeat(100_000_000) })).toBe(false);
+  });
+
+  it('returns true if the value is a valid JSON object', () => {
+    expect(isValidResponse({ foo: 'bar' })).toBe(true);
   });
 });

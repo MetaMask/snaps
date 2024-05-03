@@ -51,6 +51,52 @@ describe('getConfig', () => {
     ).toThrow(`Unknown key: ${bold('cliOptions')}, received:`);
   });
 
+  it.each([
+    {
+      input: 'src/index.js',
+      sourceMap: false,
+      output: {
+        path: 'dist',
+      },
+      server: {
+        port: 8081,
+      },
+    },
+    {
+      input: 'src/index.js',
+      output: {
+        path: 'dist',
+      },
+      server: {
+        port: 8081,
+      },
+    },
+    {
+      input: 'src/index.js',
+      server: {
+        port: 8081,
+      },
+    },
+    {
+      input: 'src/index.js',
+      output: {},
+    },
+    {
+      input: 'src/index.js',
+    },
+    {},
+  ])('returns a valid config for `%o`', (value) => {
+    const config = getConfig(value, MOCK_ARGV);
+
+    expect(config).toStrictEqual(
+      getMockConfig('webpack', {
+        input: resolve(process.cwd(), 'src', 'index.js'),
+      }),
+    );
+
+    expect(config.legacy).toBeUndefined();
+  });
+
   describe('browserify', () => {
     it.each([
       {
@@ -73,20 +119,18 @@ describe('getConfig', () => {
         },
       },
       {
-        cliOptions: {
-          src: 'src/index.js',
-          port: 8081,
-        },
-      },
-      {
+        bundler: 'browserify',
         cliOptions: {
           port: 8081,
         },
       },
       {
+        bundler: 'browserify',
         cliOptions: {},
       },
-      {},
+      {
+        bundler: 'browserify',
+      },
     ])('returns a valid config for `%o`', (value) => {
       const config = getConfig(value, MOCK_ARGV);
 
@@ -115,6 +159,7 @@ describe('getConfig', () => {
       expect(() =>
         getConfig(
           {
+            bundler: 'browserify',
             cliOptions: {
               depsToTranspile: ['foo', 'bar'],
               transpilationMode: TranspilationModes.LocalOnly,

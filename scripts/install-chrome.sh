@@ -5,12 +5,12 @@ set -u
 set -o pipefail
 
 # To get the latest version, see <https://www.ubuntuupdates.org/ppa/google_chrome?dist=stable>
-CHROME_VERSION='121.0.6167.139-1'
+CHROME_VERSION='123.0.6312.105-1'
 CHROME_BINARY="google-chrome-stable_${CHROME_VERSION}_amd64.deb"
 CHROME_BINARY_URL="https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/${CHROME_BINARY}"
 
 # To retrieve this checksum, run the `wget` and `shasum` commands below
-CHROME_BINARY_SHA512SUM='0ef3d3ab17cbe585993ff01e805ab875cb37b8563620c31afeda750eeff3c3d0a0a25afbfb628f5b1d2d4909e7f20215f789ffff6e58af2c64ef0c484586b707'
+CHROME_BINARY_SHA512SUM='b5bc4a3ae20d60bf2fa05ae332d14892b3395c538572259a03ea2baf5a9293e71af23d37794cbc40c7378f9389fa76de07124df9df90831088df1411cd30855e'
 
 wget -O "${CHROME_BINARY}" -t 5 "${CHROME_BINARY_URL}"
 

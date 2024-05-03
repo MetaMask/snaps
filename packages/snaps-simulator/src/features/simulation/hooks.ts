@@ -1,7 +1,16 @@
 import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
-import type { DialogType, NotifyParams, Component } from '@metamask/snaps-sdk';
+import type {
+  DialogType,
+  NotifyParams,
+  Component,
+  Json,
+} from '@metamask/snaps-sdk';
 import type { VirtualFile } from '@metamask/snaps-utils';
-import { encodeAuxiliaryFile, normalizeRelative } from '@metamask/snaps-utils';
+import {
+  encodeAuxiliaryFile,
+  normalizeRelative,
+  parseJson,
+} from '@metamask/snaps-utils';
 import { nanoid } from '@reduxjs/toolkit';
 import type { SagaIterator } from 'redux-saga';
 import { call, put, select, take } from 'redux-saga/effects';
@@ -144,13 +153,14 @@ export function* showInAppNotification(
  */
 export function* updateSnapState(
   _snapId: string,
-  newSnapState: string | null,
+  newSnapState: Record<string, Json> | null,
   encrypted: boolean,
 ): SagaIterator {
+  const stringified = JSON.stringify(newSnapState);
   yield put(
     encrypted
-      ? setSnapState(newSnapState)
-      : setUnencryptedSnapState(newSnapState),
+      ? setSnapState(stringified)
+      : setUnencryptedSnapState(stringified),
   );
 }
 
@@ -169,7 +179,7 @@ export function* getSnapState(
   const state: string = yield select(
     encrypted ? getSnapStateSelector : getUnencryptedSnapStateSelector,
   );
-  return state;
+  return parseJson(state);
 }
 
 /**

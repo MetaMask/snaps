@@ -1,5 +1,5 @@
 {
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "MetaMask example snap demonstrating how to use the Browserify plugin to bundle a snap.",
   "proposedName": "Browserify Plugin Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "+QrDIWgBO01d6S34AhyhFmYdSy828ttcNqGcQK+wRYc=",
+    "shasum": "vpYPj8QWmC7IdgnpddVnk9wXTR9f+b7NRQFqKHPKN9o=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

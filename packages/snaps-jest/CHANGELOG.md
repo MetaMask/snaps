@@ -6,6 +6,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.0.2]
+### Changed
+- Bump `@metamask/snaps-execution-environments` to latest ([#2339](https://github.com/MetaMask/snaps/pull/2339))
+
+## [7.0.1]
+### Fixed
+- Improve correctness of `clickElement` ([#2334](https://github.com/MetaMask/snaps/pull/2334))
+  - The function should now behave closer to the client implementation.
+
+## [7.0.0]
+### Added
+- **BREAKING:** Support Interactive UI in `snaps-jest` ([#2286](https://github.com/MetaMask/snaps/pull/2286))
+  - Remove `content` from the Snap response, instead `getInterface()` must be used
+  - `clickElement` and `typeInField` can be used on the interface return value to simulate actions
+
+### Changed
+- Improve Jest expect types ([#2308](https://github.com/MetaMask/snaps/pull/2308))
+- Refactor to support changes to encryption ([#2316](https://github.com/MetaMask/snaps/pull/2316))
+
+## [6.0.2]
+### Changed
+- Bump MetaMask dependencies ([#2270](https://github.com/MetaMask/snaps/pull/2270))
+- Bump @metamask/json-rpc-engine from 7.3.2 to 7.3.3 ([#2247](https://github.com/MetaMask/snaps/pull/2247))
+
+## [6.0.1]
+### Fixed
+- Fix minor build configuration problems ([#2220](https://github.com/MetaMask/snaps/pull/2220))
+
+## [6.0.0]
+### Changed
+- **BREAKING:** Update ESM build to be fully compliant with the ESM standard ([#2210](https://github.com/MetaMask/snaps/pull/2210))
+- **BREAKING:** Move Node.js exports to separate export ([#2210](https://github.com/MetaMask/snaps/pull/2210))
+  - The default export is now browser-compatible.
+  - Node.js APIs can be imported from `<package>/node`.
+- Bump `@metamask/rpc-errors` to `^6.2.1` ([#2209](https://github.com/MetaMask/snaps/pull/2209))
+
 ## [5.0.0]
 ### Added
 - **BREAKING:** Implement testing framework using Node.js executor ([#1982](https://github.com/MetaMask/snaps/pull/1982), [#2118](https://github.com/MetaMask/snaps/pull/2118))
@@ -95,7 +131,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@5.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@7.0.2...HEAD
+[7.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@7.0.1...@metamask/snaps-jest@7.0.2
+[7.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@7.0.0...@metamask/snaps-jest@7.0.1
+[7.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@6.0.2...@metamask/snaps-jest@7.0.0
+[6.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@6.0.1...@metamask/snaps-jest@6.0.2
+[6.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@6.0.0...@metamask/snaps-jest@6.0.1
+[6.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@5.0.0...@metamask/snaps-jest@6.0.0
 [5.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@4.0.1...@metamask/snaps-jest@5.0.0
 [4.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@4.0.0...@metamask/snaps-jest@4.0.1
 [4.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@3.1.0...@metamask/snaps-jest@4.0.0

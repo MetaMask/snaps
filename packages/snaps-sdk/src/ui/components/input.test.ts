@@ -10,6 +10,7 @@ describe('Input', () => {
         inputType: InputType.Text,
         placeholder: 'Type here...',
         label: 'Hello',
+        error: 'Invalid input',
       }),
     ).toStrictEqual({
       type: NodeType.Input,
@@ -18,6 +19,7 @@ describe('Input', () => {
       inputType: InputType.Text,
       placeholder: 'Type here...',
       label: 'Hello',
+      error: 'Invalid input',
     });
 
     expect(

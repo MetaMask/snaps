@@ -4,12 +4,19 @@ import type {
   MaybeUpdateState,
   TestOrigin,
 } from '@metamask/phishing-controller';
-import type { Component, InterfaceState, SnapId } from '@metamask/snaps-sdk';
-import { validateComponentLinks } from '@metamask/snaps-utils';
+import type {
+  InterfaceState,
+  SnapId,
+  ComponentOrElement,
+} from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
+import { getJsonSizeUnsafe, validateJsxLinks } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
-import { constructState } from './utils';
+import { constructState, getJsxInterface } from './utils';
+
+const MAX_UI_CONTENT_SIZE = 10_000_000; // 10 mb
 
 const controllerName = 'SnapInterfaceController';
 
@@ -59,7 +66,7 @@ export type SnapInterfaceControllerMessenger = RestrictedControllerMessenger<
 
 export type StoredInterface = {
   snapId: SnapId;
-  content: Component;
+  content: JSXElement;
   state: InterfaceState;
 };
 
@@ -131,17 +138,19 @@ export class SnapInterfaceController extends BaseController<
    * @param content - The interface content.
    * @returns The newly interface id.
    */
-  async createInterface(snapId: SnapId, content: Component) {
-    await this.#validateContent(content);
+  async createInterface(snapId: SnapId, content: ComponentOrElement) {
+    const element = getJsxInterface(content);
+    await this.#validateContent(element);
 
     const id = nanoid();
-
-    const componentState = constructState({}, content);
+    const componentState = constructState({}, element);
 
     this.update((draftState) => {
+      // @ts-expect-error - TS2589: Type instantiation is excessively deep and
+      // possibly infinite.
       draftState.interfaces[id] = {
         snapId,
-        content,
+        content: element,
         state: componentState,
       };
     });
@@ -169,17 +178,21 @@ export class SnapInterfaceController extends BaseController<
    * @param id - The interface id.
    * @param content - The new content.
    */
-  async updateInterface(snapId: SnapId, id: string, content: Component) {
+  async updateInterface(
+    snapId: SnapId,
+    id: string,
+    content: ComponentOrElement,
+  ) {
     this.#validateArgs(snapId, id);
-    await this.#validateContent(content);
+    const element = getJsxInterface(content);
+    await this.#validateContent(element);
 
     const oldState = this.state.interfaces[id].state;
-
-    const newState = constructState(oldState, content);
+    const newState = constructState(oldState, element);
 
     this.update((draftState) => {
       draftState.interfaces[id].state = newState;
-      draftState.interfaces[id].content = content;
+      draftState.interfaces[id].content = element;
     });
   }
 
@@ -247,13 +260,18 @@ export class SnapInterfaceController extends BaseController<
    * Utility function to validate the components of an interface.
    * Throws if something is invalid.
    *
-   * Right now this only checks links against the phighing list.
-   *
-   * @param content - The components to verify.
+   * @param element - The JSX element to verify.
    */
-  async #validateContent(content: Component) {
-    await this.#triggerPhishingListUpdate();
+  async #validateContent(element: JSXElement) {
+    // We assume the validity of this JSON to be validated by the caller.
+    // E.g., in the RPC method implementation.
+    const size = getJsonSizeUnsafe(element);
+    assert(
+      size <= MAX_UI_CONTENT_SIZE,
+      `A Snap UI may not be larger than ${MAX_UI_CONTENT_SIZE / 1000000} MB.`,
+    );
 
-    validateComponentLinks(content, this.#checkPhishingList.bind(this));
+    await this.#triggerPhishingListUpdate();
+    validateJsxLinks(element, this.#checkPhishingList.bind(this));
   }
 }

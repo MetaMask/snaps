@@ -1,4 +1,3 @@
-import { rpcErrors, providerErrors } from '@metamask/rpc-errors';
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
 import {
   DialogType,
@@ -6,6 +5,8 @@ import {
   text,
   heading,
   copyable,
+  UserRejectedRequestError,
+  MethodNotFoundError,
 } from '@metamask/snaps-sdk';
 import { bytesToHex, stringToBytes } from '@metamask/utils';
 import { sign } from '@noble/bls12-381';
@@ -47,7 +48,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       });
 
       if (!approved) {
-        throw providerErrors.userRejectedRequest();
+        throw new UserRejectedRequestError();
       }
 
       const privateKey = await getEntropy(salt);
@@ -56,8 +57,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     }
 
     default:
-      throw rpcErrors.methodNotFound({
-        data: { method: request.method },
-      });
+      throw new MethodNotFoundError({ method: request.method });
   }
 };

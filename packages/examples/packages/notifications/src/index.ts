@@ -1,5 +1,4 @@
-import { rpcErrors } from '@metamask/rpc-errors';
-import { NotificationType } from '@metamask/snaps-sdk';
+import { MethodNotFoundError, NotificationType } from '@metamask/snaps-sdk';
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
 
 /**
@@ -11,16 +10,12 @@ import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
  *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.
- * @param params.origin - The origin of the dapp that sent the request.
  * @returns The JSON-RPC response.
  * @see https://docs.metamask.io/snaps/reference/exports/#onrpcrequest
  * @see https://docs.metamask.io/snaps/reference/rpc-api/#wallet_invokesnap
  * @see https://docs.metamask.io/snaps/reference/rpc-api/#snap_notify
  */
-export const onRpcRequest: OnRpcRequestHandler = async ({
-  origin,
-  request,
-}) => {
+export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'inApp':
       return await snap.request({
@@ -40,13 +35,11 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
           // We're using the `NotificationType` enum here, but you can also use
           // the string values directly, e.g. `type: 'native'`.
           type: NotificationType.Native,
-          message: `Hello, ${origin}, from the browser!`,
+          message: `Hello from the browser!`,
         },
       });
 
     default:
-      throw rpcErrors.methodNotFound({
-        data: { method: request.method },
-      });
+      throw new MethodNotFoundError({ method: request.method });
   }
 };

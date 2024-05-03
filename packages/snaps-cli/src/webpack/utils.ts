@@ -1,3 +1,4 @@
+import { bytesToBase64 } from '@metamask/utils';
 import { dim } from 'chalk';
 import { promises as fs } from 'fs';
 import { builtinModules } from 'module';
@@ -7,6 +8,7 @@ import stripAnsi from 'strip-ansi';
 import type { Configuration } from 'webpack';
 
 import type { ProcessedWebpackConfig } from '../config';
+import { browserify, getFunctionLoader } from './loaders';
 
 export const BROWSERSLIST_FILE = resolve(
   dirname(
@@ -72,21 +74,13 @@ export async function getDefaultLoader({
   sourceMap,
 }: ProcessedWebpackConfig) {
   if (legacy) {
-    return {
-      /**
-       * If the snap uses the legacy config, we use the custom `browserify`
-       * loader. This uses the legacy Browserify config to transpile the code.
-       * This is necessary for backwards compatibility with the
-       * `bundlerCustomizer` function.
-       */
-      loader: resolve(__dirname, 'loaders', 'browserify'),
-
-      /**
-       * The options for the `browserify` loader. These can be overridden in the
-       * snap config.
-       */
-      options: legacy,
-    };
+    /**
+     * If the snap uses the legacy config, we use the custom `browserify`
+     * loader. This uses the legacy Browserify config to transpile the code.
+     * This is necessary for backwards compatibility with the
+     * `bundlerCustomizer` function.
+     */
+    return getFunctionLoader(browserify, legacy);
   }
 
   const targets = await getBrowserslistTargets();
@@ -126,6 +120,43 @@ export async function getDefaultLoader({
            * @see https://swc.rs/docs/configuration/compilation#jscparser
            */
           syntax: 'typescript',
+
+          /**
+           * This tells the parser to transpile JSX.
+           *
+           * @see https://swc.rs/docs/configuration/compilation#jscparser
+           * @see https://swc.rs/docs/configuration/compilation#jscparserjsx
+           */
+          tsx: true,
+        },
+
+        transform: {
+          react: {
+            /**
+             * This tells SWC to use the JSX runtime, instead of the
+             * `createElement` function.
+             *
+             * @see https://swc.rs/docs/configuration/compilation#jsctransformreact
+             */
+            runtime: 'automatic',
+
+            /**
+             * This tells SWC to import the JSX runtime from the
+             * `@metamask/snaps-sdk` package, instead of the default React
+             * package.
+             *
+             * @see https://swc.rs/docs/configuration/compilation#jsctransformreact
+             */
+            importSource: '@metamask/snaps-sdk',
+
+            /**
+             * This tells SWC to use `Object.assign` and `Object.create` for
+             * JSX spread attributes, instead of the default behavior.
+             *
+             * @see https://swc.rs/docs/configuration/compilation#jsctransformreact
+             */
+            useBuiltins: true,
+          },
         },
       },
 
@@ -298,27 +329,21 @@ export function getEnvironmentVariables(
 }
 
 /**
- * Format the given text to fit within the terminal width.
+ * Format the given line to fit within the terminal width.
  *
- * @param text - The text to format.
+ * @param line - The line to format.
  * @param indent - The indentation to use.
  * @param initialIndent - The initial indentation to use, i.e., the indentation
  * for the first line.
- * @returns The formatted text.
+ * @returns The formatted line.
  */
-export function formatText(
-  text: string,
-  indent: number,
-  initialIndent = indent,
-) {
+function formatLine(line: string, indent: number, initialIndent: number) {
   const terminalWidth = process.stdout.columns;
   if (!terminalWidth) {
-    return text;
+    return `${' '.repeat(initialIndent)}${line}`;
   }
 
-  const words = text.split(' ');
-
-  const { formattedText: result } = words.reduce(
+  return line.split(' ').reduce(
     ({ formattedText, currentLineLength }, word, index) => {
       // `chalk` adds ANSI escape codes to the text, which are not visible
       // characters. We need to strip them to get the visible length of the
@@ -347,7 +372,42 @@ export function formatText(
       formattedText: ' '.repeat(initialIndent),
       currentLineLength: initialIndent,
     },
-  );
+  ).formattedText;
+}
 
-  return result;
+/**
+ * Format the given text to fit within the terminal width.
+ *
+ * @param text - The text to format.
+ * @param indent - The indentation to use.
+ * @param initialIndent - The initial indentation to use, i.e., the indentation
+ * for the first line.
+ * @returns The formatted text.
+ */
+export function formatText(
+  text: string,
+  indent: number,
+  initialIndent = indent,
+) {
+  const lines = text.split('\n');
+
+  // Apply formatting to each line separately and then join them.
+  return lines
+    .map((line, index) => {
+      const lineIndent = index === 0 ? initialIndent : indent;
+      return formatLine(line, indent, lineIndent);
+    })
+    .join('\n');
+}
+
+/**
+ * Get an SVG from the given bytes and mime type.
+ *
+ * @param mimeType - The mime type of the image.
+ * @param bytes - The image bytes.
+ * @returns The SVG.
+ */
+export function getImageSVG(mimeType: string, bytes: Uint8Array) {
+  const dataUrl = `data:${mimeType};base64,${bytesToBase64(bytes)}`;
+  return `<svg xmlns="http://www.w3.org/2000/svg"><image href="${dataUrl}" /></svg>`;
 }

@@ -1,6 +1,6 @@
 import { stringToBytes } from '@metamask/utils';
 
-import { VirtualFile } from './virtual-file';
+import { VirtualFile } from './virtual-file/VirtualFile';
 
 /**
  * Convert a bytes-like input value to a Uint8Array.

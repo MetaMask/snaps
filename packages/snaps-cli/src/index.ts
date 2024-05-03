@@ -15,4 +15,4 @@ export type {
 } from './webpack';
 
 // Re-exported from `snaps-cli` for convenience.
-export { merge } from 'webpack-merge';
+export { merge, mergeWithCustomize, mergeWithRules } from 'webpack-merge';

@@ -35,8 +35,8 @@
         "depcheck>@babel/parser": true,
         "depcheck>@babel/traverse": true,
         "depcheck>json5": true,
-        "eslint>debug": true,
-        "lavamoat>@babel/code-frame": true
+        "lavamoat>@babel/code-frame": true,
+        "tsup>debug": true
       }
     },
     "@babel/core>@ampproject/remapping": {
@@ -53,8 +53,8 @@
         "define": true
       },
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true
+        "tsup>sucrase>@jridgewell/gen-mapping>@jridgewell/set-array": true,
+        "tsup>sucrase>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true
       }
     },
     "@babel/core>@babel/generator": {
@@ -65,8 +65,8 @@
       "packages": {
         "@babel/core>@babel/generator>jsesc": true,
         "@babel/core>@babel/types": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true,
+        "tsup>sucrase>@jridgewell/gen-mapping": true
       }
     },
     "@babel/core>@babel/generator>jsesc": {
@@ -1017,9 +1017,9 @@
         "@metamask/utils>@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
-        "@swc/cli>semver": true,
-        "eslint>debug": true,
-        "superstruct": true
+        "depcheck>semver": true,
+        "superstruct": true,
+        "tsup>debug": true
       }
     },
     "@metamask/utils>@noble/hashes": {
@@ -1032,20 +1032,6 @@
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
-      }
-    },
-    "@swc/cli>semver": {
-      "globals": {
-        "console.error": true,
-        "process": true
-      },
-      "packages": {
-        "@swc/cli>semver>lru-cache": true
-      }
-    },
-    "@swc/cli>semver>lru-cache": {
-      "packages": {
-        "@swc/cli>semver>lru-cache>yallist": true
       }
     },
     "@wdio/mocha-framework>mocha>supports-color": {
@@ -1837,8 +1823,8 @@
         "depcheck>@babel/traverse>@babel/helper-hoist-variables": true,
         "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
         "depcheck>@babel/traverse>globals": true,
-        "eslint>debug": true,
-        "lavamoat>@babel/code-frame": true
+        "lavamoat>@babel/code-frame": true,
+        "tsup>debug": true
       }
     },
     "depcheck>@babel/traverse>@babel/helper-function-name": {
@@ -1909,6 +1895,20 @@
         "process.platform": true
       }
     },
+    "depcheck>semver": {
+      "globals": {
+        "console.error": true,
+        "process": true
+      },
+      "packages": {
+        "depcheck>semver>lru-cache": true
+      }
+    },
+    "depcheck>semver>lru-cache": {
+      "packages": {
+        "depcheck>semver>lru-cache>yallist": true
+      }
+    },
     "eslint-plugin-import>array-includes>get-intrinsic": {
       "globals": {
         "AggregateError": true,
@@ -1973,25 +1973,6 @@
     "eslint>chalk>ansi-styles>color-convert": {
       "packages": {
         "eslint>chalk>ansi-styles>color-convert>color-name": true
-      }
-    },
-    "eslint>debug": {
-      "builtin": {
-        "tty.isatty": true,
-        "util.deprecate": true,
-        "util.format": true,
-        "util.inspect": true
-      },
-      "globals": {
-        "console": true,
-        "document": true,
-        "localStorage": true,
-        "navigator": true,
-        "process": true
-      },
-      "packages": {
-        "@wdio/mocha-framework>mocha>supports-color": true,
-        "eslint>debug>ms": true
       }
     },
     "eslint>espree": {
@@ -2190,10 +2171,12 @@
     },
     "lavamoat>@lavamoat/aa": {
       "builtin": {
-        "fs.readFileSync": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.relative": true
+        "node:fs.lstatSync": true,
+        "node:fs.readFileSync": true,
+        "node:fs.realpathSync": true,
+        "node:path.dirname": true,
+        "node:path.join": true,
+        "node:path.relative": true
       },
       "packages": {
         "depcheck>resolve": true
@@ -2236,7 +2219,7 @@
       "builtin": {
         "events": true,
         "fs.readFileSync": true,
-        "node:fs/promises.readFile": true,
+        "node:fs.readFileSync": true,
         "node:fs/promises.writeFile": true,
         "path.extname": true,
         "path.join": true
@@ -2386,28 +2369,6 @@
         "define": true
       }
     },
-    "terser>@jridgewell/source-map>@jridgewell/gen-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": {
-      "globals": {
-        "define": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "define": true
-      }
-    },
     "terser>@jridgewell/source-map>@jridgewell/trace-mapping": {
       "globals": {
         "define": true
@@ -2438,6 +2399,47 @@
     "terser>source-map-support>buffer-from": {
       "globals": {
         "Buffer": true
+      }
+    },
+    "tsup>debug": {
+      "builtin": {
+        "tty.isatty": true,
+        "util.deprecate": true,
+        "util.format": true,
+        "util.inspect": true
+      },
+      "globals": {
+        "console": true,
+        "document": true,
+        "localStorage": true,
+        "navigator": true,
+        "process": true
+      },
+      "packages": {
+        "@wdio/mocha-framework>mocha>supports-color": true,
+        "tsup>debug>ms": true
+      }
+    },
+    "tsup>sucrase>@jridgewell/gen-mapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true,
+        "tsup>sucrase>@jridgewell/gen-mapping>@jridgewell/set-array": true,
+        "tsup>sucrase>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true
+      }
+    },
+    "tsup>sucrase>@jridgewell/gen-mapping>@jridgewell/set-array": {
+      "globals": {
+        "define": true
+      }
+    },
+    "tsup>sucrase>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "define": true
       }
     },
     "yargs": {

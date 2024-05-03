@@ -1,4 +1,4 @@
-import type { Component } from '../../ui';
+import type { ComponentOrElement } from '..';
 
 /**
  * The `onHomePage` handler. This is called when the user navigates to the
@@ -19,6 +19,6 @@ export type OnHomePageHandler = () => Promise<OnHomePageResponse>;
  */
 export type OnHomePageResponse =
   | {
-      content: Component;
+      content: ComponentOrElement;
     }
   | { id: string };

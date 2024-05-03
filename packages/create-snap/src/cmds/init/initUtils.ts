@@ -10,7 +10,7 @@ export const SNAP_LOCATION = 'packages/snap/';
 /**
  * Checks if the destination folder exists and if it's empty. Otherwise create it.
  *
- * @param directory - The desination folder.
+ * @param directory - The destination folder.
  */
 export async function prepareWorkingDirectory(
   directory: string,

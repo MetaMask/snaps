@@ -10,23 +10,24 @@ import {
   Heading,
   Spinner,
   Image,
+  Button,
+  Form,
+  Input,
 } from './components';
 
 export const components: Partial<
   Record<NodeType, FunctionComponent<{ id: string; node: unknown }>>
 > = {
+  [NodeType.Button]: Button,
   [NodeType.Copyable]: Copyable,
   [NodeType.Divider]: Divider,
+  [NodeType.Form]: Form,
   [NodeType.Heading]: Heading,
   [NodeType.Panel]: Panel,
   [NodeType.Spinner]: Spinner,
   [NodeType.Text]: Text,
   [NodeType.Image]: Image,
-  // @todo: Create a button
-  // TODO(@guillaumerx): Quick fix to build, update those later
-  [NodeType.Button]: Text,
-  [NodeType.Input]: Text,
-  [NodeType.Form]: Text,
+  [NodeType.Input]: Input,
 };
 
 type RendererProps = {

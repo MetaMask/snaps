@@ -3,11 +3,17 @@
     "composite": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "@metamask/snaps-sdk",
     "lib": ["DOM", "ES2020"],
     "module": "CommonJS",
     "moduleResolution": "node",
     "paths": {
       "@metamask/*/test-utils": ["../*/src/test-utils"],
+      "@metamask/*/node": ["../*/src/node"],
+      "@metamask/*/jsx-dev-runtime": ["../*/src/jsx"],
+      "@metamask/*/jsx-runtime": ["../*/src/jsx"],
+      "@metamask/*/jsx": ["../*/src/jsx"],
       "@metamask/*": ["../*/src"]
     },
     "resolveJsonModule": true,

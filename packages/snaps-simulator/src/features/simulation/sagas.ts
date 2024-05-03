@@ -1,7 +1,7 @@
 import { ControllerMessenger } from '@metamask/base-controller';
-import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { createFetchMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { mnemonicPhraseToBytes } from '@metamask/key-tree';
 import type { GenericPermissionController } from '@metamask/permission-controller';
 import {
@@ -30,7 +30,6 @@ import type {
 import { logError, unwrapError } from '@metamask/snaps-utils';
 import { getSafeJson } from '@metamask/utils';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { createEngineStream } from 'json-rpc-middleware-stream';
 import { pipeline } from 'readable-stream';
 import type { SagaIterator } from 'redux-saga';
 import { all, call, put, select, takeLatest } from 'redux-saga/effects';
@@ -92,8 +91,6 @@ export function* initSaga({ payload }: PayloadAction<string>) {
     ...buildSnapRestrictedMethodSpecifications([], {
       ...sharedHooks,
       // TODO: Add all the hooks required
-      encrypt,
-      decrypt,
       // TODO: Allow changing this?
       getLocale: async () => Promise.resolve('en'),
       getUnlockPromise: async () => Promise.resolve(true),
@@ -120,6 +117,8 @@ export function* initSaga({ payload }: PayloadAction<string>) {
   const subjectMetadataController = new SubjectMetadataController({
     messenger: controllerMessenger.getRestricted({
       name: 'SubjectMetadataController',
+      allowedActions: [],
+      allowedEvents: [],
     }),
     subjectCacheLimit: 100,
   });
@@ -136,6 +135,7 @@ export function* initSaga({ payload }: PayloadAction<string>) {
         `SnapController:install`,
         `SubjectMetadataController:getSubjectMetadata`,
       ] as any,
+      allowedEvents: [],
     }),
     caveatSpecifications: {
       ...snapsCaveatsSpecifications,
@@ -179,6 +179,8 @@ export function* initSaga({ payload }: PayloadAction<string>) {
     iframeUrl: new URL(environmentUrl),
     messenger: controllerMessenger.getRestricted({
       name: 'ExecutionService',
+      allowedActions: [],
+      allowedEvents: [],
     }),
     setupSnapProvider: (_snapId, rpcStream) => {
       const mux = setupMultiplex(rpcStream, 'snapStream');

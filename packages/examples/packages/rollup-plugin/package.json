@@ -1,6 +1,6 @@
 {
   "name": "@metamask/rollup-plugin-example-snap",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "MetaMask example snap demonstrating how to use the Rollup plugin to bundle a snap.",
   "repository": {
     "type": "git",
@@ -30,7 +30,6 @@
     "lint:dependencies": "depcheck"
   },
   "dependencies": {
-    "@metamask/rpc-errors": "^6.1.0",
     "@metamask/snaps-sdk": "workspace:^"
   },
   "devDependencies": {
@@ -38,7 +37,7 @@
     "@babel/preset-env": "^7.23.2",
     "@babel/preset-typescript": "^7.23.2",
     "@jest/globals": "^29.5.0",
-    "@lavamoat/allow-scripts": "^3.0.2",
+    "@lavamoat/allow-scripts": "^3.0.3",
     "@metamask/auto-changelog": "^3.4.4",
     "@metamask/eslint-config": "^12.1.0",
     "@metamask/eslint-config-jest": "^12.1.0",

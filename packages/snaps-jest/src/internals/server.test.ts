@@ -30,7 +30,7 @@ describe('startServer', () => {
               "registry": "https://registry.npmjs.org",
             },
           },
-          "shasum": "D3ANeNZ7C1Ynx0GTP07afj72Jq06Srlq49QZkhICY+E=",
+          "shasum": "uaLwMO39qzKbshqPM6W2Ju7gkO/czuwgNKpjzXRXJj0=",
         },
         "version": "1.0.0",
       }

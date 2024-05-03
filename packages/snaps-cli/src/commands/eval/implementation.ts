@@ -1,4 +1,4 @@
-import { evalBundle, SnapEvalError, indent } from '@metamask/snaps-utils';
+import { evalBundle, SnapEvalError, indent } from '@metamask/snaps-utils/node';
 import { red } from 'chalk';
 
 import { CommandError } from '../../errors';

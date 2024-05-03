@@ -1,6 +1,7 @@
 import { SnapInterfaceController } from '@metamask/snaps-controllers';
-import type { SnapId } from '@metamask/snaps-sdk';
 import { text } from '@metamask/snaps-sdk';
+import { getJsxElementFromComponent } from '@metamask/snaps-utils';
+import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
 import {
   getRestrictedSnapInterfaceControllerMessenger,
@@ -24,19 +25,19 @@ describe('getCreateInterfaceImplementation', () => {
 
     const fn = getCreateInterfaceImplementation(controllerMessenger);
 
-    const snapId = 'foo' as SnapId;
     const content = text('bar');
 
-    const id = await fn(snapId, content);
+    const id = await fn(MOCK_SNAP_ID, content);
 
-    const result = interfaceController.getInterface(snapId, id);
+    const result = interfaceController.getInterface(MOCK_SNAP_ID, id);
 
     expect(controllerMessenger.call).toHaveBeenCalledWith(
       'SnapInterfaceController:createInterface',
-      snapId,
+      MOCK_SNAP_ID,
       content,
     );
-    expect(result.content).toStrictEqual(content);
+
+    expect(result.content).toStrictEqual(getJsxElementFromComponent(content));
   });
 });
 
@@ -53,18 +54,21 @@ describe('getGetInterfaceImplementation', () => {
 
     const fn = getGetInterfaceImplementation(controllerMessenger);
 
-    const snapId = 'foo' as SnapId;
     const content = text('bar');
 
-    const id = await interfaceController.createInterface(snapId, content);
+    const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
 
-    const result = fn(snapId, id);
+    const result = fn(MOCK_SNAP_ID, id);
 
     expect(controllerMessenger.call).toHaveBeenCalledWith(
       'SnapInterfaceController:getInterface',
-      snapId,
+      MOCK_SNAP_ID,
       id,
     );
-    expect(result).toStrictEqual({ content, state: {}, snapId });
+    expect(result).toStrictEqual({
+      content: getJsxElementFromComponent(content),
+      state: {},
+      snapId: MOCK_SNAP_ID,
+    });
   });
 });

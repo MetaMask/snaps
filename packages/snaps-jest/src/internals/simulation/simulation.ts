@@ -11,8 +11,7 @@ import {
   detectSnapLocation,
   NodeThreadExecutionService,
   setupMultiplex,
-} from '@metamask/snaps-controllers';
-import { getEncryptionKey } from '@metamask/snaps-rpc-methods';
+} from '@metamask/snaps-controllers/node';
 import type {
   SnapId,
   AuxiliaryFileEncoding,
@@ -149,12 +148,7 @@ export async function handleInstallSnap<
   const snapFiles = await fetchSnap(snapId, location);
 
   // Create Redux store.
-  const password = await getEncryptionKey({
-    mnemonicPhrase: mnemonicPhraseToBytes(options.secretRecoveryPhrase),
-    snapId,
-  });
-
-  const { store, runSaga } = createStore(password, options);
+  const { store, runSaga } = createStore(options);
 
   const controllerMessenger = new ControllerMessenger<any, any>();
 
@@ -184,6 +178,8 @@ export async function handleInstallSnap<
     ...executionServiceOptions,
     messenger: controllerMessenger.getRestricted({
       name: 'ExecutionService',
+      allowedActions: [],
+      allowedEvents: [],
     }),
     setupSnapProvider: (_snapId: string, rpcStream: Duplex) => {
       const mux = setupMultiplex(rpcStream, 'snapStream');

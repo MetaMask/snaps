@@ -1,9 +1,3 @@
 {
-  "resources": {
-    "external:../snaps-utils/src/icon.ts": {
-      "builtin": {
-        "buffer": true
-      }
-    }
-  }
+  "resources": {}
 }

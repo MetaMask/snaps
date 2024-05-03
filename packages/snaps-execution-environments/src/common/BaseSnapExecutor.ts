@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 /// <reference path="../../../../node_modules/ses/types.d.ts" />
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
-import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
+import type { RequestArguments } from '@metamask/providers';
 import { StreamProvider } from '@metamask/providers/dist/StreamProvider';
 import { errorCodes, rpcErrors, serializeError } from '@metamask/rpc-errors';
 import type { SnapsProvider } from '@metamask/snaps-sdk';
@@ -26,8 +26,6 @@ import type {
   Json,
 } from '@metamask/utils';
 import {
-  isObject,
-  isValidJson,
   assert,
   isJsonRpcRequest,
   hasProperty,
@@ -49,6 +47,7 @@ import {
   sanitizeRequestArguments,
   proxyStreamProvider,
   withTeardown,
+  isValidResponse,
 } from './utils';
 import {
   ExecuteSnapRequestArgumentsStruct,
@@ -301,27 +300,27 @@ export class BaseSnapExecutor {
     });
   }
 
-  async #notify(requestObject: Omit<JsonRpcNotification, 'jsonrpc'>) {
-    if (!isValidJson(requestObject) || !isObject(requestObject)) {
+  async #notify(notification: Omit<JsonRpcNotification, 'jsonrpc'>) {
+    if (!isValidResponse(notification)) {
       throw rpcErrors.internal(
-        'JSON-RPC notifications must be JSON serializable objects',
+        'JSON-RPC notifications must be JSON serializable objects smaller than 64 MB.',
       );
     }
 
     await this.#write({
-      ...requestObject,
+      ...notification,
       jsonrpc: '2.0',
     });
   }
 
-  async #respond(id: JsonRpcId, requestObject: Record<string, unknown>) {
-    if (!isValidJson(requestObject) || !isObject(requestObject)) {
+  async #respond(id: JsonRpcId, response: Record<string, unknown>) {
+    if (!isValidResponse(response)) {
       // Instead of throwing, we directly respond with an error.
       // This prevents an issue where we wouldn't respond when errors were non-serializable
       await this.#write({
         error: serializeError(
           rpcErrors.internal(
-            'JSON-RPC responses must be JSON serializable objects.',
+            'JSON-RPC responses must be JSON serializable objects smaller than 64 MB.',
           ),
         ),
         id,
@@ -331,7 +330,7 @@ export class BaseSnapExecutor {
     }
 
     await this.#write({
-      ...requestObject,
+      ...response,
       id,
       jsonrpc: '2.0',
     });
@@ -462,6 +461,9 @@ export class BaseSnapExecutor {
       }
       return acc;
     }, {});
+
+    // If the Snap has no valid exports after this, fail.
+    assert(Object.keys(data.exports).length > 0, 'Snap has no valid exports.');
   }
 
   /**
@@ -495,23 +497,7 @@ export class BaseSnapExecutor {
       );
     };
 
-    // Proxy target is intentionally set to be an empty object, to ensure
-    // that access to the prototype chain is not possible.
-    const snapGlobalProxy = new Proxy(
-      {},
-      {
-        has(_target: object, prop: string | symbol) {
-          return typeof prop === 'string' && ['request'].includes(prop);
-        },
-        get(_target, prop: keyof StreamProvider) {
-          if (prop === 'request') {
-            return request;
-          }
-
-          return undefined;
-        },
-      },
-    ) as SnapsProvider;
+    const snapGlobalProxy = proxyStreamProvider(request) as SnapsProvider;
 
     return harden(snapGlobalProxy);
   }
@@ -547,7 +533,7 @@ export class BaseSnapExecutor {
       );
     };
 
-    const streamProviderProxy = proxyStreamProvider(provider, request);
+    const streamProviderProxy = proxyStreamProvider(request);
 
     return harden(streamProviderProxy);
   }

@@ -6,6 +6,7 @@ import type { Configuration } from 'webpack';
 import { DefinePlugin, ProgressPlugin, ProvidePlugin } from 'webpack';
 
 import type { ProcessedWebpackConfig } from '../config';
+import { getFunctionLoader, wasm } from './loaders';
 import {
   SnapsBuiltInResolver,
   SnapsBundleWarningsPlugin,
@@ -18,6 +19,7 @@ import {
   getDevTool,
   getEnvironmentVariables,
   getFallbacks,
+  getImageSVG,
   getProgressHandler,
 } from './utils';
 
@@ -186,7 +188,7 @@ export async function getDefaultConfiguration(
     module: {
       rules: [
         {
-          test: /\.(js|mjs|cjs|ts)$/u,
+          test: /\.(js|jsx|mjs|cjs|ts|tsx)$/u,
           exclude: /node_modules/u,
           use: await getDefaultLoader(config),
         },
@@ -198,17 +200,46 @@ export async function getDefaultConfiguration(
          * @see https://webpack.js.org/configuration/module/#resolvefullyspecified
          */
         {
-          test: /\.m?js/u,
+          test: /\.m?js$/u,
           resolve: {
             fullySpecified: false,
           },
         },
 
+        /**
+         * This allows importing `.svg` files as a string.
+         */
+        config.features.images && {
+          test: /\.svg$/u,
+          // `asset/source` returns the source as a UTF-8 string.
+          type: 'asset/source',
+        },
+
+        /**
+         * This allows importing `.png` files as a data URL.
+         */
+        config.features.images && {
+          test: /\.png$/u,
+          type: 'asset/inline',
+          generator: {
+            dataUrl: getImageSVG.bind(null, 'image/png'),
+          },
+        },
+
+        /**
+         * This allows importing `.jpe?g` files as a data URL.
+         */
+        config.features.images && {
+          test: /\.jpe?g$/u,
+          type: 'asset/inline',
+          generator: {
+            dataUrl: getImageSVG.bind(null, 'image/jpeg'),
+          },
+        },
+
         config.experimental.wasm && {
           test: /\.wasm$/u,
-          use: {
-            loader: resolve(__dirname, 'loaders', 'wasm'),
-          },
+          use: getFunctionLoader(wasm, {}),
         },
       ],
     },
@@ -221,10 +252,10 @@ export async function getDefaultConfiguration(
      */
     resolve: {
       /**
-       * The extensions to resolve. We set it to resolve `.(c|m)?js` and `.ts`
-       * files.
+       * The extensions to resolve. We set it to resolve `.(c|m)?jsx?` and
+       * `.tsx?` files.
        */
-      extensions: ['.js', '.mjs', '.cjs', '.ts'],
+      extensions: ['.js', '.jsx', '.mjs', '.cjs', '.ts', '.tsx'],
 
       /**
        * The fallback options. This tells Webpack how to handle imports that
@@ -333,6 +364,23 @@ export async function getDefaultConfiguration(
           parallel: true,
         }),
       ],
+    },
+
+    /**
+     * The experiments configuration. This configures which Webpack
+     * experiments to enable/disable.
+     *
+     * @see https://webpack.js.org/configuration/experiments
+     */
+    experiments: {
+      /**
+       * Experimental support for top level await.
+       *
+       * This is unsupported in Snaps and therefore disabled.
+       *
+       * @see https://webpack.js.org/configuration/experiments/#experimentstoplevelawait
+       */
+      topLevelAwait: false,
     },
 
     /**

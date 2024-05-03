@@ -1,5 +1,7 @@
-import { rpcErrors } from '@metamask/rpc-errors';
-import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
+import {
+  MethodNotFoundError,
+  type OnRpcRequestHandler,
+} from '@metamask/snaps-sdk';
 
 import { getMessage } from './locales';
 
@@ -20,8 +22,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       return await getMessage('hello');
 
     default:
-      throw rpcErrors.methodNotFound({
-        data: { method: request.method },
-      });
+      throw new MethodNotFoundError({ method: request.method });
   }
 };

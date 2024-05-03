@@ -8,6 +8,7 @@ import alertIcon from '../assets/icons/alert.svg';
 import arrowDownIcon from '../assets/icons/arrow-down.svg';
 import arrowRightIcon from '../assets/icons/arrow-right.svg';
 import arrowTopRightIcon from '../assets/icons/arrow-top-right.svg';
+import buttonIcon from '../assets/icons/button.svg';
 import computerIcon from '../assets/icons/computer.svg';
 import configurationDarkIcon from '../assets/icons/configuration-dark.svg';
 import configurationIcon from '../assets/icons/configuration.svg';
@@ -22,12 +23,15 @@ import dividerIcon from '../assets/icons/divider.svg';
 import dotIcon from '../assets/icons/dot.svg';
 import dragIcon from '../assets/icons/drag.svg';
 import errorTriangleIcon from '../assets/icons/error-triangle.svg';
+import formIcon from '../assets/icons/form.svg';
 import gitHubDarkIcon from '../assets/icons/github-dark.svg';
 import gitHubIcon from '../assets/icons/github.svg';
 import headingIcon from '../assets/icons/heading.svg';
 import imageIcon from '../assets/icons/image.svg';
+import inputIcon from '../assets/icons/input.svg';
 import insightsIcon from '../assets/icons/insights.svg';
 import jsonRpcIcon from '../assets/icons/json-rpc.svg';
+import linkOutIcon from '../assets/icons/link-out.svg';
 import manifestIcon from '../assets/icons/manifest.svg';
 import moonIcon from '../assets/icons/moon.svg';
 import panelIcon from '../assets/icons/panel.svg';
@@ -149,6 +153,10 @@ const DEFAULT_ICONS = {
     alt: 'Drag',
     src: dragIcon,
   },
+  linkOut: {
+    alt: 'Link Out',
+    src: linkOutIcon,
+  },
   heading: {
     alt: 'Heading',
     src: headingIcon,
@@ -176,6 +184,18 @@ const DEFAULT_ICONS = {
   image: {
     alt: 'Image',
     src: imageIcon,
+  },
+  button: {
+    alt: 'Button',
+    src: buttonIcon,
+  },
+  form: {
+    alt: 'Form',
+    src: formIcon,
+  },
+  input: {
+    alt: 'Input',
+    src: inputIcon,
   },
 };
 
@@ -225,7 +245,7 @@ export const Icon: ForwardRefExoticComponent<IconProps> = forwardRef(
     return (
       <Image
         ref={ref}
-        src={src}
+        src={src as string}
         alt={alt}
         width={width}
         height={height}

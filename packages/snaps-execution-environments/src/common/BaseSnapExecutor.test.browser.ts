@@ -40,6 +40,8 @@ describe('BaseSnapExecutor', () => {
       const CODE = `
         setTimeout(() => { throw new Error('setTimeout executed'); }, 10);
         setInterval(() => { throw new Error('setInterval executed'); }, 10);
+
+        exports.onRpcRequest = () => null;
       `;
 
       const executor = new TestSnapExecutor();
@@ -390,9 +392,6 @@ describe('BaseSnapExecutor', () => {
   it('allows direct access to ethereum public properties', async () => {
     const CODE = `
       module.exports.onRpcRequest = () => {
-        const listener = () => undefined;
-        ethereum.on('accountsChanged', listener);
-        ethereum.removeListener('accountsChanged', listener);
         return ethereum.request({ method: 'eth_blockNumber', params: [] });
       };
     `;
@@ -1245,6 +1244,28 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it("throws if the Snap doesn't export anything", async () => {
+    const CODE = ``;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      error: expect.objectContaining({
+        code: -32603,
+        message: `Error while running snap '${MOCK_SNAP_ID}': Snap has no valid exports.`,
+        data: {
+          cause: expect.objectContaining({
+            code: -32603,
+            message: 'Snap has no valid exports.',
+          }),
+        },
+      }),
+    });
+  });
+
   it('supports onTransaction export', async () => {
     const CODE = `
       module.exports.onTransaction = ({ transaction, chainId, transactionOrigin }) =>
@@ -1508,6 +1529,47 @@ describe('BaseSnapExecutor', () => {
   it('supports onUserInput export', async () => {
     const CODE = `
       module.exports.onUserInput = ({ id, event }) => {}
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    const params = {
+      id: 'foo',
+      event: {
+        type: UserInputEventType.ButtonClickEvent,
+        name: 'bar',
+      },
+    };
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnUserInput,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: 'foo', params },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: null,
+    });
+  });
+
+  it('returns null if no onUserInput export is found', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => {}
     `;
 
     const executor = new TestSnapExecutor();
@@ -2007,6 +2069,44 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('throws when trying to respond with value that is too large', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => '1'.repeat(100_000_000);
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 2,
+      error: {
+        code: -32603,
+        message:
+          'JSON-RPC responses must be JSON serializable objects smaller than 64 MB.',
+        stack: expect.any(String),
+      },
+    });
+  });
+
   it('throws when receiving an invalid RPC request', async () => {
     const executor = new TestSnapExecutor();
 
@@ -2377,8 +2477,8 @@ describe('BaseSnapExecutor', () => {
           hasMethods: {
             ethereum: {
               request: true,
-              on: true,
-              removeListener: true,
+              on: false,
+              removeListener: false,
               rpcEngine: false,
             },
             snap: {

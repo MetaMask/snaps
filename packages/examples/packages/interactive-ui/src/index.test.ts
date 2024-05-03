@@ -1,6 +1,17 @@
 import { expect } from '@jest/globals';
 import { installSnap } from '@metamask/snaps-jest';
-import { address, button, heading, panel, row } from '@metamask/snaps-sdk';
+import {
+  ButtonType,
+  address,
+  button,
+  copyable,
+  form,
+  heading,
+  input,
+  panel,
+  row,
+  text,
+} from '@metamask/snaps-sdk';
 import { assert } from '@metamask/utils';
 
 describe('onRpcRequest', () => {
@@ -30,17 +41,103 @@ describe('onRpcRequest', () => {
         method: 'dialog',
       });
 
-      const ui = await response.getInterface();
-      assert(ui.type === 'confirmation');
+      const startScreen = await response.getInterface();
+      assert(startScreen.type === 'confirmation');
 
-      expect(ui).toRender(
+      expect(startScreen).toRender(
         panel([
           heading('Interactive UI Example Snap'),
           button({ value: 'Update UI', name: 'update' }),
         ]),
       );
 
-      await ui.ok();
+      await startScreen.clickElement('update');
+
+      const formScreen = await response.getInterface();
+
+      expect(formScreen).toRender(
+        panel([
+          heading('Interactive UI Example Snap'),
+          form({
+            name: 'example-form',
+            children: [
+              input({
+                name: 'example-input',
+                placeholder: 'Enter something...',
+              }),
+              button('Submit', ButtonType.Submit, 'submit'),
+            ],
+          }),
+        ]),
+      );
+
+      await formScreen.typeInField('example-input', 'foobar');
+
+      await formScreen.clickElement('submit');
+
+      const resultScreen = await response.getInterface();
+
+      expect(resultScreen).toRender(
+        panel([
+          heading('Interactive UI Example Snap'),
+          text('The submitted value is:'),
+          copyable('foobar'),
+        ]),
+      );
+      await resultScreen.ok();
+
+      expect(await response).toRespondWith(true);
+    });
+
+    it('lets users input nothing', async () => {
+      const { request } = await installSnap();
+
+      const response = request({
+        method: 'dialog',
+      });
+
+      const startScreen = await response.getInterface();
+      assert(startScreen.type === 'confirmation');
+
+      expect(startScreen).toRender(
+        panel([
+          heading('Interactive UI Example Snap'),
+          button({ value: 'Update UI', name: 'update' }),
+        ]),
+      );
+
+      await startScreen.clickElement('update');
+
+      const formScreen = await response.getInterface();
+
+      expect(formScreen).toRender(
+        panel([
+          heading('Interactive UI Example Snap'),
+          form({
+            name: 'example-form',
+            children: [
+              input({
+                name: 'example-input',
+                placeholder: 'Enter something...',
+              }),
+              button('Submit', ButtonType.Submit, 'submit'),
+            ],
+          }),
+        ]),
+      );
+
+      await formScreen.clickElement('submit');
+
+      const resultScreen = await response.getInterface();
+
+      expect(resultScreen).toRender(
+        panel([
+          heading('Interactive UI Example Snap'),
+          text('The submitted value is:'),
+          copyable(''),
+        ]),
+      );
+      await resultScreen.ok();
 
       expect(await response).toRespondWith(true);
     });
@@ -73,10 +170,46 @@ describe('onHomePage', () => {
 
     const response = await onHomePage();
 
-    expect(response).toRender(
+    const startScreen = response.getInterface();
+
+    expect(startScreen).toRender(
       panel([
         heading('Interactive UI Example Snap'),
         button({ value: 'Update UI', name: 'update' }),
+      ]),
+    );
+
+    await startScreen.clickElement('update');
+
+    const formScreen = response.getInterface();
+
+    expect(formScreen).toRender(
+      panel([
+        heading('Interactive UI Example Snap'),
+        form({
+          name: 'example-form',
+          children: [
+            input({
+              name: 'example-input',
+              placeholder: 'Enter something...',
+            }),
+            button('Submit', ButtonType.Submit, 'submit'),
+          ],
+        }),
+      ]),
+    );
+
+    await formScreen.typeInField('example-input', 'foobar');
+
+    await formScreen.clickElement('submit');
+
+    const resultScreen = response.getInterface();
+
+    expect(resultScreen).toRender(
+      panel([
+        heading('Interactive UI Example Snap'),
+        text('The submitted value is:'),
+        copyable('foobar'),
       ]),
     );
   });
@@ -96,11 +229,24 @@ describe('onTransaction', () => {
       data: '0xa9059cbb00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
     });
 
-    expect(response).toRender(
+    const startScreen = response.getInterface();
+
+    expect(startScreen).toRender(
       panel([
         row('From', address(FROM_ADDRESS)),
         row('To', address(TO_ADDRESS)),
         button({ value: 'See transaction type', name: 'transaction-type' }),
+      ]),
+    );
+
+    await startScreen.clickElement('transaction-type');
+
+    const txTypeScreen = response.getInterface();
+
+    expect(txTypeScreen).toRender(
+      panel([
+        row('Transaction type', text('ERC-20')),
+        button({ value: 'Go back', name: 'go-back' }),
       ]),
     );
   });

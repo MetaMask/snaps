@@ -4,15 +4,15 @@ import { resolve } from 'path';
 import { DefinePlugin } from 'webpack';
 
 const config: SnapConfig = {
-  bundler: 'webpack',
   input: resolve(__dirname, 'src/index.ts'),
   server: {
     port: 8008,
   },
-  polyfills: {
-    crypto: true,
-    stream: true,
-    buffer: true,
+  stats: {
+    buffer: false,
+    builtIns: {
+      ignore: ['crypto'],
+    },
   },
   customizeWebpackConfig: (defaultConfig) =>
     merge(defaultConfig, {

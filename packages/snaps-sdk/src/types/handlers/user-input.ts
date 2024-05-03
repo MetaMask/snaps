@@ -2,6 +2,7 @@ import type { Infer } from 'superstruct';
 import {
   assign,
   literal,
+  nullable,
   object,
   optional,
   record,
@@ -11,14 +12,16 @@ import {
 
 /**
  * The type of user input event fired.
- * Currently only two events are supported:
+ * Currently only three events are supported:
  *
  * - `ButtonClickEvent` - A button has been clicked in the UI.
  * - `FormSubmitEvent` - A Form has been submitted in the UI.
+ * - `InputChangeEvent` - The value of an input field has changed in the UI.
  */
 export enum UserInputEventType {
   ButtonClickEvent = 'ButtonClickEvent',
   FormSubmitEvent = 'FormSubmitEvent',
+  InputChangeEvent = 'InputChangeEvent',
 }
 
 export const GenericEventStruct = object({
@@ -30,6 +33,7 @@ export const ButtonClickEventStruct = assign(
   GenericEventStruct,
   object({
     type: literal(UserInputEventType.ButtonClickEvent),
+    name: optional(string()),
   }),
 );
 
@@ -37,14 +41,24 @@ export const FormSubmitEventStruct = assign(
   GenericEventStruct,
   object({
     type: literal(UserInputEventType.FormSubmitEvent),
-    value: record(string(), string()),
+    value: record(string(), nullable(string())),
     name: string(),
+  }),
+);
+
+export const InputChangeEventStruct = assign(
+  GenericEventStruct,
+  object({
+    type: literal(UserInputEventType.InputChangeEvent),
+    name: string(),
+    value: string(),
   }),
 );
 
 export const UserInputEventStruct = union([
   ButtonClickEventStruct,
   FormSubmitEventStruct,
+  InputChangeEventStruct,
 ]);
 
 /**
@@ -55,7 +69,7 @@ export const UserInputEventStruct = union([
  * @property value - The value associated with the event. Only available when an {@link UserInputEventType.FormSubmitEvent} is fired.
  * It contains the form values submitted.
  */
-type UserInputEvent = Infer<typeof UserInputEventStruct>;
+export type UserInputEvent = Infer<typeof UserInputEventStruct>;
 
 /**
  * The `onUserInput` handler. This is called when an user input event is fired in the UI.
