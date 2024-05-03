@@ -1,9 +1,15 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Uncategorized
+
+- Forward keys to JSX component ([#2379](https://github.com/MetaMask/snaps/pull/2379))
+- Add JSX support for custom UI ([#2258](https://github.com/MetaMask/snaps/pull/2258))
 
 [Unreleased]: https://github.com/MetaMask/snaps/
