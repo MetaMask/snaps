@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0]
+
 ### Uncategorized
 
 - Forward keys to JSX component ([#2379](https://github.com/MetaMask/snaps/pull/2379))
 - Add JSX support for custom UI ([#2258](https://github.com/MetaMask/snaps/pull/2258))
 
-[Unreleased]: https://github.com/MetaMask/snaps/
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/jsx-example-snap@1.0.0...HEAD
+[1.0.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/jsx-example-snap@1.0.0

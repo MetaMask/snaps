@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.3.0]
+
 ### Uncategorized
 
 - Make `getJsxChildren` return array of `JSXElement | string` ([#2383](https://github.com/MetaMask/snaps/pull/2383))
@@ -300,7 +302,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.3.0...HEAD
+[7.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.2.0...@metamask/snaps-utils@7.3.0
 [7.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.1.0...@metamask/snaps-utils@7.2.0
 [7.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.0.4...@metamask/snaps-utils@7.1.0
 [7.0.4]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.0.3...@metamask/snaps-utils@7.0.4

@@ -1,6 +1,6 @@
 {
   "name": "@metamask/jsx-example-snap",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "MetaMask example snap demonstrating the use of JSX for UI components.",
   "repository": {
     "type": "git",

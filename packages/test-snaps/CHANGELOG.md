@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.0]
+
 ### Uncategorized
 
 - Bump @metamask/providers from 16.0.0 to 16.1.0 ([#2386](https://github.com/MetaMask/snaps/pull/2386))
@@ -155,7 +157,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.6.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.7.0...HEAD
+[2.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.6.1...@metamask/test-snaps@2.7.0
 [2.6.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.6.0...@metamask/test-snaps@2.6.1
 [2.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.5.0...@metamask/test-snaps@2.6.0
 [2.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.4.0...@metamask/test-snaps@2.5.0
