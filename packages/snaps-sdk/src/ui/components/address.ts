@@ -28,6 +28,8 @@ export type Address = Infer<typeof AddressStruct>;
  * with the `value` property.
  * @param args.value - The address to be rendered.
  * @returns The address node as an object.
+ * @deprecated Snaps component functions are deprecated, in favor of the new JSX
+ * components. This function will be removed in a future release.
  * @example
  * const node = address({ value: '0x4bbeeb066ed09b7aed07bf39eee0460dfa261520' });
  * const node = address('0x4bbeeb066ed09b7aed07bf39eee0460dfa261520');

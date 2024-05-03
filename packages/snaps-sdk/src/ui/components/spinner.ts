@@ -21,6 +21,8 @@ export type Spinner = Infer<typeof SpinnerStruct>;
  * Create a {@link Spinner} node.
  *
  * @returns The spinner node as object.
+ * @deprecated Snaps component functions are deprecated, in favor of the new JSX
+ * components. This function will be removed in a future release.
  * @example
  * const node = spinner();
  */
