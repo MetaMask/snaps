@@ -6,6 +6,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.1.0]
+### Added
+- Add JSX support for custom UI ([#2258](https://github.com/MetaMask/snaps/pull/2258), [#2379](https://github.com/MetaMask/snaps/pull/2379))
+  - It's now possible to use JSX components from this package to build user
+    interfaces for Snaps.
+  - This package now exports a custom JSX runtime that can be used to render
+    JSX components in Snaps. It can be used with the `react-jsx` and
+    `react-jsxdev` JSX pragmas, using `@metamask/snaps-sdk` as import source.
+    - When using `@metamask/snaps-cli` to build Snaps, the Snaps JSX runtime
+      will be used automatically.
+
+### Changed
+- Deprecate legacy UI components ([#2388](https://github.com/MetaMask/snaps/pull/2388))
+- Bump `@metamask/providers` from `16.0.0` to `16.1.0` ([#2386](https://github.com/MetaMask/snaps/pull/2386))
+
 ## [4.0.1]
 ### Fixed
 - Allow `null` in `FormSubmitEventStruct` form state ([#2333](https://github.com/MetaMask/snaps/pull/2333))
@@ -103,7 +118,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.1.0...HEAD
+[4.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.0.1...@metamask/snaps-sdk@4.1.0
 [4.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.0.0...@metamask/snaps-sdk@4.0.1
 [4.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@3.2.0...@metamask/snaps-sdk@4.0.0
 [3.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@3.1.1...@metamask/snaps-sdk@3.2.0

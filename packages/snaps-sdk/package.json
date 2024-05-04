@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-sdk",
-  "version": "4.0.1",
+  "version": "4.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
@@ -57,7 +57,7 @@
   },
   "dependencies": {
     "@metamask/key-tree": "^9.0.0",
-    "@metamask/providers": "^16.0.0",
+    "@metamask/providers": "^16.1.0",
     "@metamask/rpc-errors": "^6.2.1",
     "@metamask/utils": "^8.3.0",
     "fast-xml-parser": "^4.3.4",

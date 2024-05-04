@@ -43,6 +43,8 @@ export type Copyable = Infer<typeof CopyableStruct>;
  * values are only displayed to the user after clicking on the component.
  * Defaults to false.
  * @returns A {@link Copyable} component.
+ * @deprecated Snaps component functions are deprecated, in favor of the new JSX
+ * components. This function will be removed in a future release.
  * @example
  * const node = copyable('Hello, world!');
  * const node = copyable({ value: 'Hello, world!' });

@@ -61,6 +61,8 @@ export type Input = Infer<typeof InputStruct>;
  * @param args.label - An optional input label.
  * @param args.error - An optional error text.
  * @returns The input node as an object.
+ * @deprecated Snaps component functions are deprecated, in favor of the new JSX
+ * components. This function will be removed in a future release.
  * @example
  * const node = input('myInput');
  * const node = input('myInput', InputType.Text, 'my placeholder', 'myValue', 'myLabel');

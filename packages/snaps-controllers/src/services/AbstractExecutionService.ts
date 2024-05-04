@@ -42,6 +42,7 @@ export type ExecutionServiceArgs = {
   initTimeout?: number;
   pingTimeout?: number;
   terminationTimeout?: number;
+  usePing?: boolean;
 };
 
 export type JobStreams = {
@@ -83,12 +84,15 @@ export abstract class AbstractExecutionService<WorkerType>
 
   #terminationTimeout: number;
 
+  #usePing: boolean;
+
   constructor({
     setupSnapProvider,
     messenger,
     initTimeout = inMilliseconds(60, Duration.Second),
     pingTimeout = inMilliseconds(2, Duration.Second),
     terminationTimeout = inMilliseconds(1, Duration.Second),
+    usePing = true,
   }: ExecutionServiceArgs) {
     this.#snapRpcHooks = new Map();
     this.jobs = new Map();
@@ -99,6 +103,7 @@ export abstract class AbstractExecutionService<WorkerType>
     this.#initTimeout = initTimeout;
     this.#pingTimeout = pingTimeout;
     this.#terminationTimeout = terminationTimeout;
+    this.#usePing = usePing;
 
     this.registerMessageHandlers();
   }
@@ -382,18 +387,21 @@ export abstract class AbstractExecutionService<WorkerType>
 
     this.#mapSnapAndJob(snapId, job.id);
 
-    // Ping the worker to ensure that it started up
-    const pingResult = await withTimeout(
-      this.command(job.id, {
-        jsonrpc: '2.0',
-        method: 'ping',
-        id: nanoid(),
-      }),
-      this.#pingTimeout,
-    );
+    // Certain environments use ping as part of their initialization and thus can skip it here
+    if (this.#usePing) {
+      // Ping the worker to ensure that it started up
+      const pingResult = await withTimeout(
+        this.command(job.id, {
+          jsonrpc: '2.0',
+          method: 'ping',
+          id: nanoid(),
+        }),
+        this.#pingTimeout,
+      );
 
-    if (pingResult === hasTimedOut) {
-      throw new Error('The Snaps execution environment failed to start.');
+      if (pingResult === hasTimedOut) {
+        throw new Error('The Snaps execution environment failed to start.');
+      }
     }
 
     const rpcStream = job.streams.rpc;

@@ -53,6 +53,8 @@ export type Row = Infer<typeof RowStruct>;
  * @param args.value - Another component, is currently limited to `image`, `text` and `address`.
  * @param args.variant - An optional variant, either `default`, `warning` or `critical`.
  * @returns The row node as an object.
+ * @deprecated Snaps component functions are deprecated, in favor of the new JSX
+ * components. This function will be removed in a future release.
  * @example
  * const node = row({ label: 'Address', value: address('0x4bbeeb066ed09b7aed07bf39eee0460dfa261520') });
  * const node = row({ label: 'Address', value: address('0x4bbeeb066ed09b7aed07bf39eee0460dfa261520'), variant: RowVariant.Warning });
