@@ -1778,7 +1778,9 @@ export class SnapController extends BaseController<
     });
 
     // We want to remove all snaps & permissions, except for preinstalled snaps
-    this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
+    if (this.#preinstalledSnaps) {
+      this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
+    }
   }
 
   /**
