@@ -7619,6 +7619,81 @@ describe('SnapController', () => {
 
       snapController.destroy();
     });
+
+    it('reinstalls preinstalled Snaps after clearing state', async () => {
+      const preinstalledSnapId = `${MOCK_SNAP_ID}2` as SnapId;
+
+      const preinstalledSnaps = [
+        {
+          snapId: preinstalledSnapId,
+          manifest: getSnapManifest(),
+          files: [
+            {
+              path: DEFAULT_SOURCE_PATH,
+              value: stringToBytes(DEFAULT_SNAP_BUNDLE),
+            },
+            {
+              path: DEFAULT_ICON_PATH,
+              value: stringToBytes(DEFAULT_SNAP_ICON),
+            },
+          ],
+        },
+      ];
+
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+          preinstalledSnaps,
+        }),
+      );
+
+      const callActionSpy = jest.spyOn(messenger, 'call');
+
+      expect(snapController.has(MOCK_SNAP_ID)).toBe(true);
+      expect(snapController.has(preinstalledSnapId)).toBe(true);
+
+      await snapController.clearState();
+
+      expect(snapController.has(MOCK_SNAP_ID)).toBe(false);
+      expect(snapController.has(preinstalledSnapId)).toBe(true);
+
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'ExecutionService:terminateAllSnaps',
+      );
+
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'PermissionController:revokeAllPermissions',
+        MOCK_SNAP_ID,
+      );
+
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'PermissionController:revokeAllPermissions',
+        preinstalledSnapId,
+      );
+
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions: {
+            'endowment:rpc': {
+              caveats: [
+                { type: 'rpcOrigin', value: { dapps: false, snaps: true } },
+              ],
+            },
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_dialog: {},
+          },
+          subject: { origin: preinstalledSnapId },
+        },
+      );
+
+      snapController.destroy();
+    });
   });
 
   describe('SnapController actions', () => {
