@@ -758,7 +758,7 @@ export class SnapController extends BaseController<
     StatusStates
   >;
 
-  #preinstalledSnaps: PreinstalledSnap[] = [];
+  #preinstalledSnaps: PreinstalledSnap[] | null;
 
   constructor({
     closeAllConnections,
