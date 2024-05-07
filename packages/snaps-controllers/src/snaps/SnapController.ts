@@ -647,7 +647,7 @@ type SnapControllerArgs = {
   /**
    * A list of snaps to be preinstalled into the SnapController state on initialization.
    */
-  preinstalledSnaps?: PreinstalledSnap[];
+  preinstalledSnaps?: PreinstalledSnap[] | null;
 
   /**
    * A utility object containing functions required for state encryption.
@@ -773,7 +773,7 @@ export class SnapController extends BaseController<
     fetchFunction = globalThis.fetch.bind(globalThis),
     featureFlags = {},
     detectSnapLocation: detectSnapLocationFunction = detectSnapLocation,
-    preinstalledSnaps,
+    preinstalledSnaps = null,
     encryptor,
     getMnemonic,
   }: SnapControllerArgs) {
@@ -830,6 +830,7 @@ export class SnapController extends BaseController<
     this.#detectSnapLocation = detectSnapLocationFunction;
     this.#encryptor = encryptor;
     this.#getMnemonic = getMnemonic;
+    this.#preinstalledSnaps = preinstalledSnaps;
     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
     this._onOutboundRequest = this._onOutboundRequest.bind(this);
     this._onOutboundResponse = this._onOutboundResponse.bind(this);
@@ -877,9 +878,8 @@ export class SnapController extends BaseController<
     this.#initializeStateMachine();
     this.#registerMessageHandlers();
 
-    if (preinstalledSnaps) {
-      this.#preinstalledSnaps = preinstalledSnaps;
-      this.#handlePreinstalledSnaps(preinstalledSnaps);
+    if (this.#preinstalledSnaps) {
+      this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
     }
 
     Object.values(this.state?.snaps ?? {}).forEach((snap) =>
