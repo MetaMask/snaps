@@ -1777,9 +1777,15 @@ export class SnapController extends BaseController<
       state.snapStates = {};
     });
 
+    this.#snapsRuntimeData.clear();
+
     // We want to remove all snaps & permissions, except for preinstalled snaps
     if (this.#preinstalledSnaps) {
       this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
+
+      Object.values(this.state?.snaps).forEach((snap) =>
+        this.#setupRuntime(snap.id),
+      );
     }
   }
 
