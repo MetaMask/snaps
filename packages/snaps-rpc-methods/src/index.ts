@@ -1,6 +1,6 @@
 export {
-  handlers as permittedMethods,
   createSnapsMethodMiddleware,
+  createSnapsMethodRemapMiddleware,
 } from './permitted';
 export type { PermittedRpcMethodHooks } from './permitted';
 export { SnapCaveatType } from '@metamask/snaps-utils';

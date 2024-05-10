@@ -36,11 +36,9 @@ describe('wallet_invokeSnap', () => {
         id: 'some-id',
         jsonrpc: '2.0',
         method: 'wallet_invokeSnap',
+        // @ts-expect-error - Invalid params.
         params: {
-          // @ts-expect-error - Invalid params.
           snapId: undefined,
-
-          // @ts-expect-error - Invalid params.
           request: [],
         },
       };

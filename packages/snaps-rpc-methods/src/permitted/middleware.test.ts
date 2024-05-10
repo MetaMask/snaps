@@ -4,8 +4,12 @@ import {
   MOCK_SNAP_ID,
   getTruncatedSnap,
 } from '@metamask/snaps-utils/test-utils';
+import { jsonrpc2 } from '@metamask/utils';
 
-import { createSnapsMethodMiddleware } from './middleware';
+import {
+  createSnapsMethodMiddleware,
+  createSnapsMethodRemapMiddleware,
+} from './middleware';
 
 describe('createSnapsMethodMiddleware', () => {
   it('supports wallet_getSnaps', async () => {
@@ -124,5 +128,56 @@ describe('createSnapsMethodMiddleware', () => {
         ),
       },
     });
+  });
+});
+
+describe('createSnapsMethodRemapMiddleware', () => {
+  const mockMethodName = 'foo';
+  const getMockHandlerMap = () => ({
+    [mockMethodName]: {
+      implementation: jest.fn(),
+    },
+  });
+  const getMockRequest = () => ({
+    jsonrpc: jsonrpc2,
+    id: 1,
+    method: mockMethodName,
+  });
+  const getMockResponse = () => ({
+    jsonrpc: jsonrpc2,
+    id: 'foo',
+    result: null,
+  });
+
+  // Exports coverage
+  it('creates a middleware function', () => {
+    const middleware = createSnapsMethodRemapMiddleware();
+    expect(typeof middleware).toBe('function');
+  });
+
+  it('calls remap handlers', () => {
+    const handlers = getMockHandlerMap();
+    // @ts-expect-error Intentional destructive testing
+    const middleware = createSnapsMethodRemapMiddleware(handlers);
+    const nextMock = jest.fn();
+    const endMock = jest.fn();
+
+    middleware(getMockRequest(), getMockResponse(), nextMock, endMock);
+
+    expect(handlers[mockMethodName].implementation).toHaveBeenCalledTimes(1);
+    expect(nextMock).not.toHaveBeenCalled();
+    expect(endMock).not.toHaveBeenCalled();
+  });
+
+  it('forwards requests for methods without a remap handler', () => {
+    // @ts-expect-error Intentional destructive testing
+    const middleware = createSnapsMethodRemapMiddleware({});
+    const nextMock = jest.fn();
+    const endMock = jest.fn();
+
+    middleware(getMockRequest(), getMockResponse(), nextMock, endMock);
+
+    expect(nextMock).toHaveBeenCalledTimes(1);
+    expect(endMock).not.toHaveBeenCalled();
   });
 });

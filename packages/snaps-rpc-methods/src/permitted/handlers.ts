@@ -14,7 +14,6 @@ export const methodHandlers = {
   wallet_getAllSnaps: getAllSnapsHandler,
   wallet_getSnaps: getSnapsHandler,
   wallet_requestSnaps: requestSnapsHandler,
-  wallet_invokeSnap: invokeSnapSugarHandler,
   wallet_invokeKeyring: invokeKeyringHandler,
   snap_getClientStatus: getClientStatusHandler,
   snap_getFile: getFileHandler,
@@ -22,6 +21,9 @@ export const methodHandlers = {
   snap_updateInterface: updateInterfaceHandler,
   snap_getInterfaceState: getInterfaceStateHandler,
 };
-/* eslint-enable @typescript-eslint/naming-convention */
 
-export const handlers = Object.values(methodHandlers);
+// Methods that remap themselves to another method.
+export const methodRemapHandlers = {
+  wallet_invokeSnap: invokeSnapSugarHandler,
+};
+/* eslint-enable @typescript-eslint/naming-convention */
