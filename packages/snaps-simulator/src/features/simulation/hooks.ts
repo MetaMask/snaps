@@ -1,9 +1,11 @@
+import type { SnapInterfaceController } from '@metamask/snaps-controllers';
 import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
 import type {
   DialogType,
   NotifyParams,
   Component,
   Json,
+  SnapId,
 } from '@metamask/snaps-sdk';
 import type { VirtualFile } from '@metamask/snaps-utils';
 import {
@@ -20,6 +22,7 @@ import {
   closeUserInterface,
   getAuxiliaryFiles,
   getRequestId,
+  getSnapInterfaceController,
   getSnapName,
   getSnapStateSelector,
   getUnencryptedSnapStateSelector,
@@ -34,7 +37,7 @@ import {
  *
  * @param snapId - The ID of the Snap that created the alert.
  * @param type - The type of dialog to show.
- * @param content - The content to show in the dialog.
+ * @param id - The snap interface ID.
  * @param _placeholder - The placeholder text to show in the dialog.
  * @yields Selects the current state.
  * @returns True if the dialog was shown, false otherwise.
@@ -42,7 +45,7 @@ import {
 export function* showDialog(
   snapId: string,
   type: DialogType,
-  content: Component,
+  id: string,
   _placeholder?: string,
 ): SagaIterator {
   const snapName = yield select(getSnapName);
@@ -53,7 +56,7 @@ export function* showDialog(
       snapId,
       snapName: snapName ?? snapId,
       type,
-      node: content,
+      id,
     }),
   );
 
@@ -207,4 +210,94 @@ export function* getSnapFile(
   }
 
   return yield call(encodeAuxiliaryFile, base64, encoding);
+}
+
+/**
+ * Creates a snap interface.
+ *
+ * @param snapId - The snap id.
+ * @param content - The content of the interface.
+ * @returns The snap interface ID.
+ * @yields Creates the interface in the SnapInterfaceController.
+ */
+export function* createInterface(
+  snapId: string,
+  content: Component,
+): SagaIterator {
+  const snapInterfaceController: SnapInterfaceController = yield select(
+    getSnapInterfaceController,
+  );
+
+  return yield call(
+    [snapInterfaceController, 'createInterface'],
+    snapId as SnapId,
+    content,
+  );
+}
+
+/**
+ * Gets a snap interface.
+ *
+ * @param snapId - The snap id.
+ * @param id - The interface id.
+ * @returns The snap interface.
+ * @yields Gets the interface from the SnapInterfaceController.
+ */
+export function* getInterface(snapId: string, id: string): SagaIterator {
+  const snapInterfaceController: SnapInterfaceController = yield select(
+    getSnapInterfaceController,
+  );
+
+  return yield call(
+    [snapInterfaceController, 'getInterface'],
+    snapId as SnapId,
+    id,
+  );
+}
+
+/**
+ * Updates a snap interface.
+ *
+ * @param snapId - The snap id.
+ * @param id - The interface id.
+ * @param content - The new content of the interface.
+ * @yields Updates the interface in the SnapInterfaceController.
+ */
+export function* updateInterface(
+  snapId: string,
+  id: string,
+  content: Component,
+): SagaIterator {
+  const snapInterfaceController: SnapInterfaceController = yield select(
+    getSnapInterfaceController,
+  );
+
+  yield call(
+    [snapInterfaceController, 'updateInterface'],
+    snapId as SnapId,
+    id,
+    content,
+  );
+}
+
+/**
+ * Gets the state of a snap interface.
+ *
+ * @param snapId - The snap id.
+ * @param id - The interface id.
+ * @returns The state of the interface.
+ * @yields Gets the interface from the SnapInterfaceController.
+ */
+export function* getInterfaceState(snapId: string, id: string): SagaIterator {
+  const snapInterfaceController: SnapInterfaceController = yield select(
+    getSnapInterfaceController,
+  );
+
+  const { state } = yield call(
+    [snapInterfaceController, 'getInterface'],
+    snapId as SnapId,
+    id,
+  );
+
+  return state;
 }

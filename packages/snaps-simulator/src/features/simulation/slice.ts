@@ -2,8 +2,11 @@ import type {
   GenericPermissionController,
   SubjectMetadataController,
 } from '@metamask/permission-controller';
-import type { IframeExecutionService } from '@metamask/snaps-controllers';
-import type { DialogType, Component } from '@metamask/snaps-sdk';
+import type {
+  IframeExecutionService,
+  SnapInterfaceController,
+} from '@metamask/snaps-controllers';
+import type { DialogType, SnapId } from '@metamask/snaps-sdk';
 import { getLocalizedSnapManifest as localizeSnapManifest } from '@metamask/snaps-utils';
 import type {
   LocalizationFile,
@@ -29,7 +32,7 @@ export type HandlerUserInterface = {
   type: DialogType;
   snapId: string;
   snapName: string;
-  node: Component;
+  id: string;
 };
 
 type SimulationState = {
@@ -37,6 +40,7 @@ type SimulationState = {
   executionService: IframeExecutionService | null;
   permissionController: GenericPermissionController | null;
   subjectMetadataController: SubjectMetadataController | null;
+  snapInterfaceController: SnapInterfaceController | null;
   manifest: VirtualFile<SnapManifest> | null;
   sourceCode: VirtualFile<string> | null;
   auxiliaryFiles: VirtualFile[] | null;
@@ -53,6 +57,7 @@ export const INITIAL_STATE: SimulationState = {
   executionService: null,
   permissionController: null,
   subjectMetadataController: null,
+  snapInterfaceController: null,
   manifest: null,
   sourceCode: null,
   auxiliaryFiles: null,
@@ -82,6 +87,12 @@ const slice = createSlice({
       action: PayloadAction<SubjectMetadataController>,
     ) {
       state.subjectMetadataController = action.payload as any;
+    },
+    setSnapInterfaceController(
+      state,
+      action: PayloadAction<SnapInterfaceController>,
+    ) {
+      state.snapInterfaceController = action.payload as any;
     },
     setManifest(state, action: PayloadAction<VirtualFile<SnapManifest>>) {
       // Type error occurs here due to some weirdness with SnapManifest and WritableDraft or PayloadAction
@@ -129,6 +140,7 @@ export const {
   setExecutionService,
   setPermissionController,
   setSubjectMetadataController,
+  setSnapInterfaceController,
   setManifest,
   setSourceCode,
   setIcon,
@@ -161,6 +173,11 @@ export const getPermissionController = createSelector(
 export const getSubjectMetadataController = createSelector(
   (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
   (state) => state.subjectMetadataController,
+);
+
+export const getSnapInterfaceController = createSelector(
+  (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
+  (state) => state.snapInterfaceController,
 );
 
 export const getSnapName = createSelector(
@@ -222,4 +239,16 @@ export const getLocalizationFiles = createSelector(
 export const getRequestId = createSelector(
   (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
   (state) => state.requestId,
+);
+
+export const getSnapInterface = createSelector(
+  (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
+  ({ snapInterfaceController, ui }) => {
+    if (!snapInterfaceController || !ui) {
+      return null;
+    }
+
+    const { snapId, id } = ui;
+    return snapInterfaceController.getInterface(snapId as SnapId, id).content;
+  },
 );

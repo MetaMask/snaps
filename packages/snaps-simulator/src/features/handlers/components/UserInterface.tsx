@@ -9,22 +9,27 @@ import {
   PromptDialog,
 } from '../../../components';
 import { useDispatch, useSelector } from '../../../hooks';
-import { getUserInterface, resolveUserInterface } from '../../simulation';
+import {
+  getSnapInterface,
+  getUserInterface,
+  resolveUserInterface,
+} from '../../simulation';
 
 export const UserInterface: FunctionComponent = () => {
   const dispatch = useDispatch();
   const ui = useSelector(getUserInterface);
+  const content = useSelector(getSnapInterface);
   const tab = useTabsContext();
 
   useEffect(() => {
     tab.setSelectedIndex(1);
   }, [tab]);
 
-  if (!ui) {
+  if (!ui || !content) {
     return null;
   }
 
-  const { snapName, snapId, type, node } = ui;
+  const { snapName, snapId, type } = ui;
 
   switch (type) {
     case DialogType.Alert: {
@@ -36,7 +41,7 @@ export const UserInterface: FunctionComponent = () => {
         <AlertDialog
           snapName={snapName}
           snapId={snapId}
-          node={node}
+          node={content}
           onClose={handleClose}
         />
       );
@@ -54,7 +59,7 @@ export const UserInterface: FunctionComponent = () => {
         <ConfirmationDialog
           snapName={snapName}
           snapId={snapId}
-          node={node}
+          node={content}
           onCancel={handleCancel}
           onApprove={handleApprove}
         />
@@ -73,7 +78,7 @@ export const UserInterface: FunctionComponent = () => {
         <PromptDialog
           snapName={snapName}
           snapId={snapId}
-          node={node}
+          node={content}
           onCancel={handleCancel}
           onSubmit={handleSubmit}
         />
