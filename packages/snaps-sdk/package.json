@@ -36,7 +36,10 @@
     "dist",
     "jsx.js",
     "jsx-dev-runtime.js",
-    "jsx-runtime.js"
+    "jsx-runtime.js",
+    "jsx.d.ts",
+    "jsx-dev-runtime.d.ts",
+    "jsx-runtime.d.ts"
   ],
   "scripts": {
     "test": "jest && yarn posttest",
