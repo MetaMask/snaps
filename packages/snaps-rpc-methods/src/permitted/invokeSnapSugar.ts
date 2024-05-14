@@ -5,50 +5,56 @@ import type {
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { InvokeSnapParams, InvokeSnapResult } from '@metamask/snaps-sdk';
-import type { JsonRpcRequest } from '@metamask/utils';
+import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import { isObject } from '@metamask/utils';
 
 /**
  * `wallet_invokeSnap` attempts to invoke an RPC method of the specified Snap.
  */
 export const invokeSnapSugarHandler: PermittedHandlerExport<
-  void,
+  InvokeSnapSugarHooks,
   InvokeSnapParams,
   InvokeSnapResult
 > = {
   methodNames: ['wallet_invokeSnap'],
   implementation: invokeSnapSugar,
-  hookNames: undefined,
+  hookNames: {
+    invokeSnap: true,
+  },
+};
+
+export type InvokeSnapSugarHooks = {
+  invokeSnap: (params: InvokeSnapParams) => Promise<InvokeSnapResult>;
 };
 
 /**
  * The `wallet_invokeSnap` method implementation.
- * Reroutes incoming JSON-RPC requests that are targeting snaps, by modifying the method and params.
+ * Effectively calls `wallet_snap` under the hood.
  *
  * @param req - The JSON-RPC request object.
- * @param _res - The JSON-RPC response object. Not used by this
- * function.
- * @param next - The `json-rpc-engine` "next" callback.
+ * @param res - The JSON-RPC response object.
+ * @param _next - The `json-rpc-engine` "next" callback.
  * @param end - The `json-rpc-engine` "end" callback.
+ * @param hooks - The RPC method hooks.
+ * @param hooks.invokeSnap - A function to invoke a snap designated by its parameters,
+ * bound to the requesting origin.
  * @returns Nothing.
  * @throws If the params are invalid.
  */
-export function invokeSnapSugar(
+export async function invokeSnapSugar(
   req: JsonRpcRequest<InvokeSnapParams>,
-  _res: unknown,
-  next: JsonRpcEngineNextCallback,
+  res: PendingJsonRpcResponse<InvokeSnapResult>,
+  _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
-): void {
-  let params: InvokeSnapParams;
+  { invokeSnap }: InvokeSnapSugarHooks,
+): Promise<void> {
   try {
-    params = getValidatedParams(req.params);
+    const params = getValidatedParams(req.params);
+    res.result = await invokeSnap(params);
   } catch (error) {
     return end(error);
   }
-
-  req.method = 'wallet_snap';
-  req.params = params;
-  return next();
+  return end();
 }
 
 /**
