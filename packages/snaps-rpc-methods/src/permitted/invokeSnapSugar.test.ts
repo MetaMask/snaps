@@ -23,7 +23,7 @@ describe('wallet_invokeSnap', () => {
         jsonrpc: jsonrpc2,
       } as PendingJsonRpcResponse<InvokeSnapResult>);
 
-    it('invokes snap with next()', async () => {
+    it('invokes snap using hook', async () => {
       const params = {
         snapId: 'npm:@metamask/example-snap',
         request: { method: 'hello' },
