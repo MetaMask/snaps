@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.1.1]
+### Fixed
+- Re-instantiate preinstalled Snaps after clearing state ([#2393](https://github.com/MetaMask/snaps/pull/2393))
+
 ## [8.1.0]
 ### Added
 - Add JSX support for custom UI ([#2258](https://github.com/MetaMask/snaps/pull/2258))
@@ -257,7 +261,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.1.1...HEAD
+[8.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.1.0...@metamask/snaps-controllers@8.1.1
 [8.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.0.0...@metamask/snaps-controllers@8.1.0
 [8.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@7.0.1...@metamask/snaps-controllers@8.0.0
 [7.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@7.0.0...@metamask/snaps-controllers@7.0.1
