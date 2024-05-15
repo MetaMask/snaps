@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/deep-clone.ts"],"names":[],"mappings":";AAAA,OAAO,UAAU;AAEV,IAAM,YAAY,KAAK,EAAE,OAAO,OAAO,SAAS,MAAM,CAAC","sourcesContent":["import rfdc from 'rfdc';\n\nexport const deepClone = rfdc({ proto: false, circles: false });\n"]}
