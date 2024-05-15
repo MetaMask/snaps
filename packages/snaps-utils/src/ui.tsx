@@ -40,7 +40,7 @@ import { lexer, walkTokens } from 'marked';
 import type { Token, Tokens } from 'marked';
 
 const MAX_TEXT_LENGTH = 50_000; // 50 kb
-const ALLOWED_PROTOCOLS = ['https:', 'mailto:'];
+const DEFAULT_ALLOWED_PROTOCOLS = ['https:', 'mailto:'];
 
 /**
  * Get the button variant from a legacy button component variant.
@@ -320,16 +320,18 @@ function getMarkdownLinks(text: string) {
  * @param link - The link to validate.
  * @param isOnPhishingList - The function that checks the link against the
  * phishing list.
+ * @param allowedProtocols - Allowed protocols (example: ['https:'])
  */
 function validateLink(
   link: string,
   isOnPhishingList: (url: string) => boolean,
+  allowedProtocols: string[],
 ) {
   try {
     const url = new URL(link);
     assert(
-      ALLOWED_PROTOCOLS.includes(url.protocol),
-      `Protocol must be one of: ${ALLOWED_PROTOCOLS.join(', ')}.`,
+      allowedProtocols.includes(url.protocol),
+      `Protocol must be one of: ${allowedProtocols.join(', ')}.`,
     );
 
     const hostname =
@@ -352,16 +354,18 @@ function validateLink(
  * @param text - The text to verify.
  * @param isOnPhishingList - The function that checks the link against the
  * phishing list.
+ * @param allowedProtocols - Allowed protocols (example: ['https:'])
  * @throws If the text contains a link that is not allowed.
  */
 export function validateTextLinks(
   text: string,
   isOnPhishingList: (url: string) => boolean,
+  allowedProtocols: string[] = DEFAULT_ALLOWED_PROTOCOLS,
 ) {
   const links = getMarkdownLinks(text);
 
   for (const link of links) {
-    validateLink(link.href, isOnPhishingList);
+    validateLink(link.href, isOnPhishingList, allowedProtocols);
   }
 }
 
@@ -372,17 +376,19 @@ export function validateTextLinks(
  * @param node - The JSX node to walk.
  * @param isOnPhishingList - The function that checks the link against the
  * phishing list.
+ * @param allowedProtocols - Allowed protocols (example: ['https:'])
  */
 export function validateJsxLinks(
   node: JSXElement,
   isOnPhishingList: (url: string) => boolean,
+  allowedProtocols: string[] = DEFAULT_ALLOWED_PROTOCOLS,
 ) {
   walkJsx(node, (childNode) => {
     if (childNode.type !== 'Link') {
       return;
     }
 
-    validateLink(childNode.props.href, isOnPhishingList);
+    validateLink(childNode.props.href, isOnPhishingList, allowedProtocols);
   });
 }
 
