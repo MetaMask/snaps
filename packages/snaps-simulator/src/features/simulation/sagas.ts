@@ -89,7 +89,7 @@ export function* initSaga({ payload }: PayloadAction<string>) {
 
   controllerMessenger.registerActionHandler(
     'PhishingController:testOrigin',
-    () => false,
+    () => ({ result: false }),
   );
 
   controllerMessenger.registerActionHandler(
@@ -170,7 +170,7 @@ export function* initSaga({ payload }: PayloadAction<string>) {
     messenger: controllerMessenger.getRestricted({
       name: 'SnapInterfaceController',
       allowedActions: [
-        `PhishingController:testOrigin `,
+        `PhishingController:testOrigin`,
         `PhishingController:maybeUpdateState`,
       ],
       allowedEvents: [],
