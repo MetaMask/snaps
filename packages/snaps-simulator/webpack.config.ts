@@ -35,7 +35,7 @@ const baseConfig: Configuration = {
   module: {
     rules: [
       {
-        test: /snaps-utils\/.*\.tsx/u,
+        test: /snaps-utils\/.*\.tsx?/u,
         use: {
           loader: 'swc-loader',
           options: {
@@ -53,6 +53,7 @@ const baseConfig: Configuration = {
       },
       {
         test: /\.tsx?$/u,
+        exclude: /snaps-utils/u,
         use: {
           loader: 'swc-loader',
         },
