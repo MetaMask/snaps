@@ -5,8 +5,10 @@ import type {
   FieldElement,
   ItalicChildren,
   JSXElement,
+  LinkElement,
   MaybeArray,
   RowChildren,
+  StandardFormattingElement,
   TextChildren,
 } from '@metamask/snaps-sdk/jsx';
 import {
@@ -150,7 +152,9 @@ function getTextChildFromToken(token: Token): TextChildren {
  * @param value - The markdown string.
  * @returns The text children.
  */
-export function getTextChildren(value: string) {
+export function getTextChildren(
+  value: string,
+): (string | StandardFormattingElement | LinkElement)[] {
   const rootTokens = lexer(value, { gfm: false });
   const children: TextChildren = [];
 
@@ -165,7 +169,11 @@ export function getTextChildren(value: string) {
     }
   });
 
-  return children.filter((child) => child !== null);
+  return children.filter((child) => child !== null) as (
+    | string
+    | StandardFormattingElement
+    | LinkElement
+  )[];
 }
 
 /**
