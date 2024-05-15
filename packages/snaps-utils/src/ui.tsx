@@ -320,7 +320,7 @@ function getMarkdownLinks(text: string) {
  * @param link - The link to validate.
  * @param isOnPhishingList - The function that checks the link against the
  * phishing list.
- * @param allowedProtocols - Allowed protocols (example: ['https:'])
+ * @param allowedProtocols - Allowed protocols (example: ['https:']).
  */
 function validateLink(
   link: string,
@@ -354,7 +354,7 @@ function validateLink(
  * @param text - The text to verify.
  * @param isOnPhishingList - The function that checks the link against the
  * phishing list.
- * @param allowedProtocols - Allowed protocols (example: ['https:'])
+ * @param allowedProtocols - Allowed protocols (example: ['https:']).
  * @throws If the text contains a link that is not allowed.
  */
 export function validateTextLinks(
@@ -376,7 +376,7 @@ export function validateTextLinks(
  * @param node - The JSX node to walk.
  * @param isOnPhishingList - The function that checks the link against the
  * phishing list.
- * @param allowedProtocols - Allowed protocols (example: ['https:'])
+ * @param allowedProtocols - Allowed protocols (example: ['https:']).
  */
 export function validateJsxLinks(
   node: JSXElement,
