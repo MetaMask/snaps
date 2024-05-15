@@ -531,6 +531,31 @@ describe('getJsxElementFromComponent', () => {
 });
 
 describe('validateTextLinks', () => {
+  it('handles custom protocols', () => {
+    const allowedProtocols = ['http:', 'file:'];
+    expect(() =>
+      validateTextLinks(
+        '[test](http://foo.bar)',
+        () => false,
+        allowedProtocols,
+      ),
+    ).not.toThrow();
+    expect(() =>
+      validateTextLinks(
+        '[test](https://foo.bar)',
+        () => false,
+        allowedProtocols,
+      ),
+    ).toThrow('Invalid URL: Protocol must be one of: http:, file:.');
+    expect(() =>
+      validateTextLinks(
+        '<file:///var/www/index.html>',
+        () => false,
+        allowedProtocols,
+      ),
+    ).not.toThrow();
+  });
+
   it('passes for valid links', () => {
     expect(() =>
       validateTextLinks('[test](https://foo.bar)', () => false),
