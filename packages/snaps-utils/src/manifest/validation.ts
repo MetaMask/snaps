@@ -1,3 +1,4 @@
+import type { SupportedCurve } from '@metamask/key-tree';
 import { isValidBIP32PathSegment } from '@metamask/key-tree';
 import type { EmptyObject, InitialPermissions } from '@metamask/snaps-sdk';
 import {
@@ -107,11 +108,17 @@ export const bip32entropy = <
     return true;
   });
 
+export const CurveStruct: Describe<SupportedCurve> = enums([
+  'ed25519',
+  'secp256k1',
+  'ed25519Bip32',
+]);
+
 // Used outside @metamask/snap-utils
 export const Bip32EntropyStruct = bip32entropy(
   type({
     path: Bip32PathStruct,
-    curve: enums(['ed25519', 'secp256k1', 'ed25519Bip32']),
+    curve: CurveStruct,
   }),
 );
 
