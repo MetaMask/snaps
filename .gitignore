@@ -1,4 +1,6 @@
 **/dist
+!packages/snaps-sdk/dist
+!packages/snaps-utils/dist
 
 # sed backup files
 *.*-e
