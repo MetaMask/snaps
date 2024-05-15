@@ -1,5 +1,5 @@
 import { Button as ChakraButton } from '@chakra-ui/react';
-import { assertIsComponent } from '@metamask/snaps-sdk';
+import { assertJSXElement } from '@metamask/snaps-sdk/jsx-runtime';
 import { assert } from '@metamask/utils';
 import type { FunctionComponent } from 'react';
 
@@ -10,21 +10,23 @@ export type ButtonProps = {
 
 const BUTTON_VARIANTS = {
   primary: 'primary',
-  secondary: 'outline',
+  destructive: 'outline',
 };
 
 export const Button: FunctionComponent<ButtonProps> = ({ node, id }) => {
-  assertIsComponent(node);
-  assert(node.type === 'button', 'Expected value to be a button component.');
+  assertJSXElement(node);
+  assert(node.type === 'Button', 'Expected value to be a button component.');
 
+  const { props } = node;
   return (
     <ChakraButton
       key={`${id}-button`}
       width="100%"
-      variant={BUTTON_VARIANTS[node.variant ?? 'primary']}
+      variant={BUTTON_VARIANTS[props.variant ?? 'primary']}
       marginBottom="4"
+      type={props.type}
     >
-      {node.value}
+      {props.children}
     </ChakraButton>
   );
 };

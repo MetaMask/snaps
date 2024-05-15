@@ -5974,6 +5974,7 @@ __metadata:
     "@swc/core": 1.3.78
     "@testing-library/react": ^14.0.0
     "@types/express": ^4.17.17
+    "@types/he": ^1.2.3
     "@types/jest": ^27.5.1
     "@types/node": 18.14.2
     "@types/react": ^18.2.5
@@ -6002,6 +6003,7 @@ __metadata:
     favicons: ^7.1.2
     favicons-webpack-plugin: ^6.0.0
     framer-motion: ^10.12.8
+    he: ^1.2.0
     html-webpack-plugin: ^5.5.0
     jest: ^29.0.2
     jest-environment-jsdom: ^29.5.0
@@ -7636,6 +7638,13 @@ __metadata:
   dependencies:
     "@types/unist": "*"
   checksum: fff47998f4c11e21a7454b58673f70478740ecdafd95aaf50b70a3daa7da9cdc57315545bf9c039613732c40b7b0e9e49d11d03fe9a4304721cdc3b29a88141e
+  languageName: node
+  linkType: hard
+
+"@types/he@npm:^1.2.3":
+  version: 1.2.3
+  resolution: "@types/he@npm:1.2.3"
+  checksum: e77851c73dd7b9902d92fe0118a26246a7f3676a3a1c6eb1408305187ef73b57c22550b1435946b983267f961d935554d5d0e1b458416932552f31e763e1aa41
   languageName: node
   linkType: hard
 

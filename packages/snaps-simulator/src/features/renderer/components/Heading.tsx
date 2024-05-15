@@ -1,5 +1,5 @@
 import { Heading as ChakraHeading } from '@chakra-ui/react';
-import { isComponent } from '@metamask/snaps-sdk';
+import { assertJSXElement } from '@metamask/snaps-sdk/jsx-runtime';
 import { assert } from '@metamask/utils';
 import type { FunctionComponent } from 'react';
 
@@ -9,9 +9,10 @@ export type HeadingProps = {
 };
 
 export const Heading: FunctionComponent<HeadingProps> = ({ node, id }) => {
-  assert(isComponent(node), 'Expected value to be a valid UI component.');
-  assert(node.type === 'heading', 'Expected value to be a heading component.');
+  assertJSXElement(node);
+  assert(node.type === 'Heading', 'Expected value to be a heading component.');
 
+  const { props } = node;
   return (
     <ChakraHeading
       fontFamily="custom"
@@ -20,7 +21,7 @@ export const Heading: FunctionComponent<HeadingProps> = ({ node, id }) => {
       paddingBottom="4"
       key={`${id}-heading`}
     >
-      {node.value}
+      {props.children}
     </ChakraHeading>
   );
 };

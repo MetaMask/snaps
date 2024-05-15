@@ -1,5 +1,5 @@
 import { Image as ChakraImage } from '@chakra-ui/react';
-import { isComponent } from '@metamask/snaps-sdk';
+import { assertJSXElement } from '@metamask/snaps-sdk/jsx-runtime';
 import { assert } from '@metamask/utils';
 import type { FunctionComponent } from 'react';
 
@@ -9,10 +9,11 @@ export type ImageProps = {
 };
 
 export const Image: FunctionComponent<ImageProps> = ({ id, node }) => {
-  assert(isComponent(node), 'Expected value to be a valid UI component.');
-  assert(node.type === 'image', 'Expected value to be a image component.');
+  assertJSXElement(node);
+  assert(node.type === 'Image', 'Expected value to be a image component.');
 
-  const src = `data:image/svg+xml;utf8,${encodeURIComponent(node.value)}`;
+  const { props } = node;
+  const src = `data:image/svg+xml;utf8,${encodeURIComponent(props.src)}`;
 
-  return <ChakraImage key={`${id}-image`} src={src} />;
+  return <ChakraImage key={`${id}-image`} src={src} alt={props.alt} />;
 };

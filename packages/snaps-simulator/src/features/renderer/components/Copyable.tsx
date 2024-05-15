@@ -1,4 +1,4 @@
-import { isComponent } from '@metamask/snaps-sdk';
+import { assertJSXElement } from '@metamask/snaps-sdk/jsx-runtime';
 import { assert } from '@metamask/utils';
 import type { FunctionComponent } from 'react';
 
@@ -10,11 +10,13 @@ export type CopyableProps = {
 };
 
 export const Copyable: FunctionComponent<CopyableProps> = ({ node, id }) => {
-  assert(isComponent(node), 'Expected value to be a valid UI component.');
+  assertJSXElement(node);
   assert(
-    node.type === 'copyable',
+    node.type === 'Copyable',
     'Expected value to be a copyable component.',
   );
 
-  return <CopyableComponent key={`${id}-copyable`} value={node.value} />;
+  const { props } = node;
+
+  return <CopyableComponent key={`${id}-copyable`} value={props.value} />;
 };

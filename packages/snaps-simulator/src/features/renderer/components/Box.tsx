@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Box as ChakraBox } from '@chakra-ui/react';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx-runtime';
 import { assertJSXElement } from '@metamask/snaps-sdk/jsx-runtime';
 import { getJsxChildren } from '@metamask/snaps-utils';
@@ -7,24 +7,24 @@ import type { FunctionComponent } from 'react';
 
 import { Renderer } from '../Renderer';
 
-export type FormProps = {
+export type BoxProps = {
   id: string;
   node: unknown;
 };
 
-export const Form: FunctionComponent<FormProps> = ({ node, id }) => {
+export const Box: FunctionComponent<BoxProps> = ({ node, id }) => {
   assertJSXElement(node);
-  assert(node.type === 'Form', 'Expected value to be a form component.');
+  assert(node.type === 'Box', 'Expected value to be a Box component.');
 
   return (
-    <Box key={`${id}-form`} as="form">
+    <ChakraBox key={`${id}-panel`}>
       {getJsxChildren(node).map((child, index) => (
         <Renderer
-          key={`${id}-form-child-${index}`}
-          id={`${id}-form-child-${index}`}
+          key={`${id}-panel-child-${index}`}
+          id={`${id}-panel-child-${index}`}
           node={child as JSXElement}
         />
       ))}
-    </Box>
+    </ChakraBox>
   );
 };

@@ -1,10 +1,11 @@
-import type { Component } from '@metamask/snaps-sdk';
-import { NodeType } from '@metamask/snaps-sdk';
+import type { ComponentOrElement } from '@metamask/snaps-sdk';
+import { getJsxInterface } from '@metamask/snaps-utils';
 import type { FunctionComponent } from 'react';
 
 import {
+  Bold,
   Copyable,
-  Panel,
+  Box,
   Text,
   Divider,
   Heading,
@@ -13,25 +14,32 @@ import {
   Button,
   Form,
   Input,
+  Field,
+  Italic,
+  Link,
 } from './components';
 
 export const components: Partial<
-  Record<NodeType, FunctionComponent<{ id: string; node: unknown }>>
+  Record<string, FunctionComponent<{ id: string; node: unknown }>>
 > = {
-  [NodeType.Button]: Button,
-  [NodeType.Copyable]: Copyable,
-  [NodeType.Divider]: Divider,
-  [NodeType.Form]: Form,
-  [NodeType.Heading]: Heading,
-  [NodeType.Panel]: Panel,
-  [NodeType.Spinner]: Spinner,
-  [NodeType.Text]: Text,
-  [NodeType.Image]: Image,
-  [NodeType.Input]: Input,
+  Bold,
+  Box,
+  Button,
+  Copyable,
+  Divider,
+  Field,
+  Form,
+  Heading,
+  Input,
+  Italic,
+  Link,
+  Spinner,
+  Text,
+  Image,
 };
 
 type RendererProps = {
-  node: Component;
+  node: ComponentOrElement;
   id?: string;
 };
 
@@ -48,11 +56,12 @@ export const Renderer: FunctionComponent<RendererProps> = ({
   node,
   id = 'root',
 }) => {
-  const ReactComponent = components[node.type];
+  const element = getJsxInterface(node);
+  const ReactComponent = components[element.type];
 
   if (!ReactComponent) {
     throw new Error(`Unknown component type: ${node.type}.`);
   }
 
-  return <ReactComponent id={id} node={node} />;
+  return <ReactComponent id={id} node={element} />;
 };

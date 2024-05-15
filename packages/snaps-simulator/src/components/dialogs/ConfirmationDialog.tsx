@@ -1,5 +1,5 @@
 import { Box, Button, Flex } from '@chakra-ui/react';
-import type { Component } from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx-runtime';
 import type { FunctionComponent } from 'react';
 
 import { Renderer } from '../../features/renderer';
@@ -9,7 +9,7 @@ import { Window } from '../Window';
 export type ConfirmationDialogProps = {
   snapName: string;
   snapId: string;
-  node: Component;
+  node: JSXElement;
   onCancel?: () => void;
   onApprove?: () => void;
 };

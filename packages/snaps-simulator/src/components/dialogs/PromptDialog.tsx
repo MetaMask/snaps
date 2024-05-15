@@ -1,5 +1,5 @@
 import { Box, Button, Flex, FormControl, Input } from '@chakra-ui/react';
-import type { Component } from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx-runtime';
 import type { FunctionComponent } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -11,7 +11,7 @@ export type PromptDialogProps = {
   snapName: string;
   snapId: string;
   placeholder?: string;
-  node: Component;
+  node: JSXElement;
   onCancel?: () => void;
   onSubmit?: (value: string) => void;
 };
