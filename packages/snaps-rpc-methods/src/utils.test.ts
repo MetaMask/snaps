@@ -28,6 +28,17 @@ describe('getPathPrefix', () => {
   it('returns "slip10" for "ed25519"', () => {
     expect(getPathPrefix('ed25519')).toBe('slip10');
   });
+
+  it('returns "cip3" for "ed25519Bip32"', () => {
+    expect(getPathPrefix('ed25519Bip32')).toBe('cip3');
+  });
+
+  it('throws for an unknown curve', () => {
+    // @ts-expect-error Invalid curve.
+    expect(() => getPathPrefix('foo')).toThrow(
+      'Invalid branch reached. Should be detected during compilation.',
+    );
+  });
 });
 
 describe('getNode', () => {

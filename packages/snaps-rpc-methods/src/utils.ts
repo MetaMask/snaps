@@ -158,7 +158,7 @@ export async function deriveEntropy({
  *
  * - The Secp256k1 curve always uses the BIP-32 specification.
  * - The Ed25519 curve always uses the SLIP-10 specification.
- * - The BIP-32-Ed25519 curve always uses the SLIP-10 specification.
+ * - The BIP-32-Ed25519 curve always uses the CIP-3 specification.
  *
  * While this does not matter in most situations (no known case at the time of
  * writing), `key-tree` requires a specific specification to be used.
@@ -167,13 +167,16 @@ export async function deriveEntropy({
  * validated by this function.
  * @returns The path prefix, i.e., `bip32` or `slip10`.
  */
-export function getPathPrefix(curve: SupportedCurve): 'bip32' | 'slip10' {
+export function getPathPrefix(
+  curve: SupportedCurve,
+): 'bip32' | 'slip10' | 'cip3' {
   switch (curve) {
     case 'secp256k1':
       return 'bip32';
     case 'ed25519':
-    case 'ed25519Bip32':
       return 'slip10';
+    case 'ed25519Bip32':
+      return 'cip3';
     default:
       return assertExhaustive(curve);
   }
@@ -204,6 +207,7 @@ export async function getNode({
   path,
 }: GetNodeArgs) {
   const prefix = getPathPrefix(curve);
+
   return await SLIP10Node.fromDerivationPath({
     curve,
     derivationPath: [
