@@ -10,6 +10,12 @@ describe('getSnapDerivationPathName', () => {
     );
   });
 
+  it("returns a name from the hardcoded list starting with `1852'`, `1815'`", () => {
+    expect(
+      getSnapDerivationPathName(['m', `1852'`, `1815'`], 'ed25519Bip32'),
+    ).toBe('Cardano');
+  });
+
   it('returns a name from the SLIP44 list where applicable', () => {
     expect(
       getSnapDerivationPathName(['m', `44'`, `60'`, `0'`], 'secp256k1'),

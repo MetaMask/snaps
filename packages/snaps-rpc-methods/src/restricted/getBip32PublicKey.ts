@@ -13,11 +13,12 @@ import type {
 import {
   bip32entropy,
   Bip32PathStruct,
+  CurveStruct,
   SnapCaveatType,
 } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
-import { boolean, enums, object, optional } from 'superstruct';
+import { boolean, object, optional } from 'superstruct';
 
 import type { MethodHooksObject } from '../utils';
 import { getNode } from '../utils';
@@ -53,7 +54,7 @@ type GetBip32PublicKeySpecification = ValidPermissionSpecification<{
 export const Bip32PublicKeyArgsStruct = bip32entropy(
   object({
     path: Bip32PathStruct,
-    curve: enums(['ed25519', 'secp256k1']),
+    curve: CurveStruct,
     compressed: optional(boolean()),
   }),
 );

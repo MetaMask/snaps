@@ -101,6 +101,28 @@ describe('getBip32PublicKeyImplementation', () => {
       );
     });
 
+    it('derives the ed25519Bip32 public key from the path', async () => {
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const getMnemonic = jest
+        .fn()
+        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+
+      expect(
+        await getBip32PublicKeyImplementation({
+          getUnlockPromise,
+          getMnemonic,
+          // @ts-expect-error Missing other required properties.
+        })({
+          params: {
+            path: ['m', "44'", "1'", "0'", "0'", "1'"],
+            curve: 'ed25519Bip32',
+          },
+        }),
+      ).toMatchInlineSnapshot(
+        `"0xd91d18b4540a2f30341e8463d5f9b25b14fae9a236dcbea338b668a318bb0867"`,
+      );
+    });
+
     it('derives the compressed public key from the path', async () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
       const getMnemonic = jest

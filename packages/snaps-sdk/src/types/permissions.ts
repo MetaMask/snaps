@@ -1,3 +1,4 @@
+import type { SupportedCurve } from '@metamask/key-tree';
 import type { JsonRpcRequest } from '@metamask/utils';
 
 import type { ChainId } from './caip';
@@ -22,7 +23,7 @@ export type NameLookupMatchers =
     };
 
 export type Bip32Entropy = {
-  curve: 'secp256k1' | 'ed25519';
+  curve: SupportedCurve;
   path: string[];
 };
 
