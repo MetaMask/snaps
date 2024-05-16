@@ -115,12 +115,13 @@ export const notifyBuilder = Object.freeze({
  * @returns The method implementation which returns `null` on success.
  * @throws If the params are invalid.
  */
-export function getImplementation({
-  showNativeNotification,
-  showInAppNotification,
-  isOnPhishingList,
-  maybeUpdatePhishingList,
-}: NotifyMethodHooks,
+export function getImplementation(
+  {
+    showNativeNotification,
+    showInAppNotification,
+    isOnPhishingList,
+    maybeUpdatePhishingList,
+  }: NotifyMethodHooks,
   allowedProtocols: string[],
 ) {
   return async function implementation(
@@ -135,7 +136,11 @@ export function getImplementation({
 
     await maybeUpdatePhishingList();
 
-    validateTextLinks(validatedParams.message, isOnPhishingList, allowedProtocols);
+    validateTextLinks(
+      validatedParams.message,
+      isOnPhishingList,
+      allowedProtocols,
+    );
 
     switch (validatedParams.type) {
       case NotificationType.Native:
