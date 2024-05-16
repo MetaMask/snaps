@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.4.0]
+### Added
+- Add support for BIP-32-Ed25519 / CIP-3 key derivation ([#2408](https://github.com/MetaMask/snaps/pull/2408))
+
+## Fixed
+- Fix build producing invalid JSX types ([#2410](https://github.com/MetaMask/snaps/pull/2410))
+
 ## [7.3.0]
 ### Added
 - Add JSX support for custom UI ([#2258](https://github.com/MetaMask/snaps/pull/2258), [#2383](https://github.com/MetaMask/snaps/pull/2383))
@@ -225,7 +232,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.4.0...HEAD
+[7.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.3.0...@metamask/snaps-utils@7.4.0
 [7.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.2.0...@metamask/snaps-utils@7.3.0
 [7.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.1.0...@metamask/snaps-utils@7.2.0
 [7.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.0.4...@metamask/snaps-utils@7.1.0

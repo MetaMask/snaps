@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-rpc-methods",
-  "version": "8.1.0",
+  "version": "9.0.0",
   "description": "MetaMask Snaps JSON-RPC method implementations.",
   "repository": {
     "type": "git",
