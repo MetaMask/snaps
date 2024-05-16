@@ -2129,6 +2129,7 @@ export class SnapController extends BaseController<
         // Existing snaps may need to be updated, unless they should be re-installed (e.g. local snaps)
         // Everything else is treated as an install
         const isUpdate = this.has(snapId) && !location.shouldAlwaysReload;
+        const forceLatest = rawVersion === 'latest';
 
         if (isUpdate && this.#isValidUpdate(snapId, version)) {
           const existingSnap = this.getExpect(snapId);
@@ -2148,7 +2149,7 @@ export class SnapController extends BaseController<
           origin,
           snapId,
           location,
-          version,
+          forceLatest && isUpdate ? await location.resolveVersion() : version,
         );
       }
 

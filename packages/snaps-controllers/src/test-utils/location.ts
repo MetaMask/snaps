@@ -146,6 +146,10 @@ export class LoopbackLocation implements SnapLocation {
     );
     return file;
   });
+
+  resolveVersion = jest.fn(async () => {
+    return '*' as SemVerRange;
+  });
   /* eslint-enable @typescript-eslint/require-await */
 
   get shouldAlwaysReload() {

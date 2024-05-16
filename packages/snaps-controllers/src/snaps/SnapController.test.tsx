@@ -6439,6 +6439,59 @@ describe('SnapController', () => {
       controller.destroy();
     });
 
+    it('updates to latest when latest version is specified', async () => {
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
+        manifest: getSnapManifest({
+          version: '1.1.0' as SemVerVersion,
+        }),
+      });
+
+      const location = new LoopbackLocation({
+        manifest: manifest.result,
+      });
+
+      location.resolveVersion.mockImplementation(
+        async () => '1.1.0' as SemVerRange,
+      );
+
+      const messenger = getSnapControllerMessenger();
+      const controller = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+          detectSnapLocation: loopbackDetect(location),
+        }),
+      );
+
+      const result = await controller.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: { version: 'latest' },
+      });
+
+      const newSnapTruncated = controller.getTruncated(MOCK_SNAP_ID);
+
+      const newSnap = controller.get(MOCK_SNAP_ID);
+
+      expect(result[MOCK_SNAP_ID]).toStrictEqual(newSnapTruncated);
+      expect(newSnap?.version).toBe('1.1.0');
+      expect(newSnap?.versionHistory).toStrictEqual([
+        {
+          origin: MOCK_ORIGIN,
+          version: '1.0.0',
+          date: expect.any(Number),
+        },
+        {
+          origin: MOCK_ORIGIN,
+          version: '1.1.0',
+          date: expect.any(Number),
+        },
+      ]);
+      expect(newSnap?.status).toBe(SnapStatus.Running);
+
+      controller.destroy();
+    });
+
     it('requests approval for new and already approved permissions and revoke unused permissions', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);

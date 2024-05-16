@@ -7,6 +7,7 @@ import {
   normalizeRelative,
   parseJson,
 } from '@metamask/snaps-utils';
+import type { SemVerRange } from '@metamask/utils';
 import { assert, assertStruct } from '@metamask/utils';
 
 import type { SnapLocation } from './location';
@@ -107,6 +108,10 @@ export class HttpLocation implements SnapLocation {
     this.cache.set(relativePath, { file: vfile, contents: blob });
 
     return this.fetch(relativePath);
+  }
+
+  async resolveVersion(): Promise<SemVerRange> {
+    return '*' as SemVerRange;
   }
 
   get root(): URL {
