@@ -122,7 +122,7 @@ export function getImplementation(
     isOnPhishingList,
     maybeUpdatePhishingList,
   }: NotifyMethodHooks,
-  allowedProtocols: string[],
+  allowedProtocols?: string[],
 ) {
   return async function implementation(
     args: RestrictedMethodOptions<NotifyParams>,
