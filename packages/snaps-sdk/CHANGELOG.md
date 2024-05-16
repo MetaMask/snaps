@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.2.0]
+
 ### Uncategorized
 
 - Add support for BIP-32-Ed25519 / CIP-3 key derivation ([#2408](https://github.com/MetaMask/snaps-skunkworks.git/pull/2408))
@@ -164,7 +166,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@4.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@4.2.0...HEAD
+[4.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@4.1.0...@metamask/snaps-sdk@4.2.0
 [4.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@4.0.1...@metamask/snaps-sdk@4.1.0
 [4.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@4.0.0...@metamask/snaps-sdk@4.0.1
 [4.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@3.2.0...@metamask/snaps-sdk@4.0.0

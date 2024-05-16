@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.4.0]
+
 ### Uncategorized
 
 - fix: specify explicit type to prevent type issues at build ([#2410](https://github.com/MetaMask/snaps-skunkworks.git/pull/2410))
@@ -309,7 +311,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@7.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@7.4.0...HEAD
+[7.4.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@7.3.0...@metamask/snaps-utils@7.4.0
 [7.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@7.2.0...@metamask/snaps-utils@7.3.0
 [7.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@7.1.0...@metamask/snaps-utils@7.2.0
 [7.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@7.0.4...@metamask/snaps-utils@7.1.0
