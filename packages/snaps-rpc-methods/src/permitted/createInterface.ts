@@ -6,11 +6,15 @@ import type {
   CreateInterfaceResult,
   JsonRpcRequest,
   ComponentOrElement,
+  InterfaceContext,
 } from '@metamask/snaps-sdk';
-import { ComponentOrElementStruct } from '@metamask/snaps-sdk';
+import {
+  ComponentOrElementStruct,
+  InterfaceContextStruct,
+} from '@metamask/snaps-sdk';
 import { type InferMatching } from '@metamask/snaps-utils';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
-import { StructError, create, object } from 'superstruct';
+import { StructError, create, object, optional } from 'superstruct';
 
 import type { MethodHooksObject } from '../utils';
 
@@ -23,7 +27,10 @@ export type CreateInterfaceMethodHooks = {
    * @param ui - The UI components.
    * @returns The unique identifier of the interface.
    */
-  createInterface: (ui: ComponentOrElement) => Promise<string>;
+  createInterface: (
+    ui: ComponentOrElement,
+    context?: InterfaceContext,
+  ) => Promise<string>;
 };
 
 export const createInterfaceHandler: PermittedHandlerExport<
@@ -38,6 +45,7 @@ export const createInterfaceHandler: PermittedHandlerExport<
 
 const CreateInterfaceParametersStruct = object({
   ui: ComponentOrElementStruct,
+  context: optional(InterfaceContextStruct),
 });
 
 export type CreateInterfaceParameters = InferMatching<
@@ -69,9 +77,9 @@ async function getCreateInterfaceImplementation(
   try {
     const validatedParams = getValidatedParams(params);
 
-    const { ui } = validatedParams;
+    const { ui, context } = validatedParams;
 
-    res.result = await createInterface(ui);
+    res.result = await createInterface(ui, context);
   } catch (error) {
     return end(error);
   }
