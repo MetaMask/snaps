@@ -259,7 +259,7 @@ describe('getInterfaceApi', () => {
     await snapInterface.clickElement('foo');
 
     expect(controllerMessenger.call).toHaveBeenNthCalledWith(
-      4,
+      5,
       'ExecutionService:handleRpcRequest',
       MOCK_SNAP_ID,
       {
@@ -274,6 +274,7 @@ describe('getInterfaceApi', () => {
               name: 'foo',
             },
             id: expect.any(String),
+            context: null,
           },
         },
       },
@@ -321,6 +322,7 @@ describe('getInterfaceApi', () => {
               value: 'bar',
             },
             id: expect.any(String),
+            context: null,
           },
         },
       },

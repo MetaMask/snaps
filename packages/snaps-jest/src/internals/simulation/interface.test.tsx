@@ -289,6 +289,7 @@ describe('clickElement', () => {
             name: 'bar',
           },
           id: interfaceId,
+          context: null,
         },
       },
     });
@@ -325,6 +326,7 @@ describe('clickElement', () => {
             name: 'baz',
           },
           id: interfaceId,
+          context: null,
         },
       },
     });
@@ -344,6 +346,7 @@ describe('clickElement', () => {
             },
           },
           id: interfaceId,
+          context: null,
         },
       },
     });
@@ -493,6 +496,7 @@ describe('typeInField', () => {
             value: 'baz',
           },
           id: interfaceId,
+          context: null,
         },
       },
     });
@@ -638,6 +642,7 @@ describe('getInterface', () => {
               name: 'foo',
             },
             id,
+            context: null,
           },
         },
       },
@@ -680,6 +685,7 @@ describe('getInterface', () => {
               value: 'bar',
             },
             id,
+            context: null,
           },
         },
       },
