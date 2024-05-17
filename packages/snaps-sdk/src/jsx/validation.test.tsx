@@ -238,6 +238,18 @@ describe('FormStruct', () => {
     <Form name="foo">
       <Field label="foo">
         <Input name="foo" type="text" />
+        <Button>foo</Button>
+      </Field>
+    </Form>,
+    <Form name="foo">
+      <Field label="foo">
+        <Input name="foo" type="text" />
+      </Field>
+    </Form>,
+    <Form name="foo">
+      <Field error="foo">
+        <Input name="foo" type="text" />
+        <Button>foo</Button>
       </Field>
     </Form>,
     <Form name="foo">

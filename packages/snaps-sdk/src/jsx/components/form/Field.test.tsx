@@ -1,3 +1,4 @@
+import { Button } from './Button';
 import { Field } from './Field';
 import { Input } from './Input';
 
@@ -47,6 +48,41 @@ describe('Field', () => {
             type: 'text',
           },
         },
+      },
+    });
+  });
+
+  it('renders a field element with an input and a button', () => {
+    const result = (
+      <Field label="Label">
+        <Input name="foo" type="text" />
+        <Button type="submit">Submit</Button>
+      </Field>
+    );
+
+    expect(result).toStrictEqual({
+      type: 'Field',
+      key: null,
+      props: {
+        label: 'Label',
+        children: [
+          {
+            type: 'Input',
+            key: null,
+            props: {
+              name: 'foo',
+              type: 'text',
+            },
+          },
+          {
+            type: 'Button',
+            key: null,
+            props: {
+              type: 'submit',
+              children: 'Submit',
+            },
+          },
+        ],
       },
     });
   });

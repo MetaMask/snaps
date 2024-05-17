@@ -16,6 +16,7 @@ import {
   object,
   record,
   string,
+  tuple,
 } from 'superstruct';
 import type { ObjectSchema } from 'superstruct/dist/utils';
 
@@ -131,7 +132,7 @@ export const InputStruct: Describe<InputElement> = element('Input', {
 export const FieldStruct: Describe<FieldElement> = element('Field', {
   label: optional(string()),
   error: optional(string()),
-  children: InputStruct,
+  children: nullUnion([tuple([InputStruct, ButtonStruct]), InputStruct]),
 });
 
 /**
