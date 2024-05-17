@@ -215,7 +215,7 @@ export function assertIsOnNameLookupRequestArguments(
 export const OnUserInputArgumentsStruct = object({
   id: string(),
   event: UserInputEventStruct,
-  context: nullable(InterfaceContextStruct),
+  context: optional(nullable(InterfaceContextStruct)),
 });
 
 export type OnUserInputArguments = Infer<typeof OnUserInputArgumentsStruct>;

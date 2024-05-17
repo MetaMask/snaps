@@ -69,6 +69,7 @@ describe('getGetInterfaceImplementation', () => {
       content: getJsxElementFromComponent(content),
       state: {},
       snapId: MOCK_SNAP_ID,
+      context: null,
     });
   });
 });

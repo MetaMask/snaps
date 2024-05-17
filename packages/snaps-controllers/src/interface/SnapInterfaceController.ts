@@ -15,7 +15,11 @@ import { getJsonSizeUnsafe, validateJsxLinks } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
-import { constructState, getJsxInterface } from './utils';
+import {
+  constructState,
+  getJsxInterface,
+  validateInterfaceContext,
+} from './utils';
 
 const MAX_UI_CONTENT_SIZE = 10_000_000; // 10 mb
 
@@ -148,8 +152,7 @@ export class SnapInterfaceController extends BaseController<
   ) {
     const element = getJsxInterface(content);
     await this.#validateContent(element);
-
-    // TODO: Validate context size
+    validateInterfaceContext(context);
 
     const id = nanoid();
     const componentState = constructState({}, element);
