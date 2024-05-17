@@ -24,6 +24,8 @@ jobs:
     name: Build, lint, and test
     needs: check-workflows
     uses: ./.github/workflows/build-lint-test.yml
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   publish-staging-simulator:
     name: Publish Snaps Simulator to `staging` folder
