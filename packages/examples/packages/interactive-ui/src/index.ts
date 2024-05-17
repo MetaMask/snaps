@@ -129,18 +129,11 @@ export const onHomePage: OnHomePageHandler = async () => {
  * @returns The transaction insights.
  */
 export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
-  await snap.request({
-    method: 'snap_manageState',
-    params: {
-      operation: ManageStateOperation.UpdateState,
-      newState: { transaction },
-    },
-  });
-
   const interfaceId = await snap.request({
     method: 'snap_createInterface',
     params: {
-      ui: await getInsightContent(),
+      ui: await getInsightContent(transaction),
+      context: { transaction },
     },
   });
 
@@ -153,9 +146,14 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
  * @param params - The event parameters.
  * @param params.id - The Snap interface ID where the event was fired.
  * @param params.event - The event object containing the event type, name and value.
+ * @param params.context - The Snap interface context.
  * @see https://docs.metamask.io/snaps/reference/exports/#onuserinput
  */
-export const onUserInput: OnUserInputHandler = async ({ id, event }) => {
+export const onUserInput: OnUserInputHandler = async ({
+  id,
+  event,
+  context,
+}) => {
   if (event.type === UserInputEventType.ButtonClickEvent) {
     switch (event.name) {
       case 'update':
@@ -163,7 +161,7 @@ export const onUserInput: OnUserInputHandler = async ({ id, event }) => {
         break;
 
       case 'transaction-type':
-        await displayTransactionType(id);
+        await displayTransactionType(id, context?.transaction);
         break;
 
       case 'go-back':
@@ -171,7 +169,7 @@ export const onUserInput: OnUserInputHandler = async ({ id, event }) => {
           method: 'snap_updateInterface',
           params: {
             id,
-            ui: await getInsightContent(),
+            ui: await getInsightContent(context?.transaction),
           },
         });
         break;
