@@ -32,6 +32,12 @@ describe('HttpLocation', () => {
     expect(bundle.toString()).toStrictEqual(DEFAULT_SNAP_BUNDLE);
   });
 
+  it('resolves to *', async () => {
+    expect(
+      await new HttpLocation(new URL('http://foo.bar/foo/')).resolveVersion(),
+    ).toBe('*');
+  });
+
   it('throws if fetch fails', async () => {
     const base = 'http://foo.bar';
 
