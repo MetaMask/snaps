@@ -45,6 +45,8 @@ export type Image = Infer<typeof ImageStruct>;
  * @param args.value - The SVG image to be rendered. Must be a valid SVG string.
  * @returns The image node as object. Other image formats are supported by
  * embedding them as data URLs in the SVG.
+ * @deprecated Snaps component functions are deprecated, in favor of the new JSX
+ * components. This function will be removed in a future release.
  * @example
  * const node = image({ value: '<svg />' });
  * const node = image('<svg />');

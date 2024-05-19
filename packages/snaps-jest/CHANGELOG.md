@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.0.0]
+### Added
+- **BREAKING:** Add JSX support for custom UI ([#2258](https://github.com/MetaMask/snaps/pull/2258))
+  - It's now possible to use JSX components from `@metamask/snaps-sdk` to build
+    user interfaces for Snaps.
+  - This is a breaking change, because the legacy user interfaces are converted
+    to the new JSX format.
+    - If you are checking the format of a interface without `toRender`, you will
+      need to update your tests to check the JSX format.
+
+### Changed
+- Bump `@metamask/base-controller` from `5.0.1` to `5.0.2` ([#2375](https://github.com/MetaMask/snaps/pull/2375))
+
 ## [7.0.2]
 ### Changed
 - Bump `@metamask/snaps-execution-environments` to latest ([#2339](https://github.com/MetaMask/snaps/pull/2339))
@@ -131,7 +144,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@7.0.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.0.0...HEAD
+[8.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@7.0.2...@metamask/snaps-jest@8.0.0
 [7.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@7.0.1...@metamask/snaps-jest@7.0.2
 [7.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@7.0.0...@metamask/snaps-jest@7.0.1
 [7.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@6.0.2...@metamask/snaps-jest@7.0.0

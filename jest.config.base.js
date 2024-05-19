@@ -24,7 +24,9 @@ module.exports = {
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   collectCoverageFrom: [
     './src/**/*.ts',
+    './src/**/*.tsx',
     '!./src/**/*.test.ts',
+    '!./src/**/*.test.tsx',
     '!./src/**/*.test.browser.ts',
     '!./src/test-utils/**/*.ts',
     '!./src/**/*.d.ts',
@@ -94,8 +96,12 @@ module.exports = {
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   moduleNameMapper: {
+    '^@metamask/(.+)/production/jsx-runtime': [
+      '<rootDir>/../$1/src/jsx/production',
+    ],
     '^@metamask/(.+)/test-utils$': ['<rootDir>/../$1/src/test-utils'],
     '^@metamask/(.+)/node$': ['<rootDir>/../$1/src/node'],
+    '^@metamask/(.+)/jsx': ['<rootDir>/../$1/src/jsx'],
     '^@metamask/(.+)$': [
       '<rootDir>/../$1/src',
       '<rootDir>/../../node_modules/@metamask/$1',
@@ -201,6 +207,14 @@ module.exports = {
           target: 'es2022',
           parser: {
             syntax: 'typescript',
+            tsx: true,
+          },
+          transform: {
+            react: {
+              runtime: 'automatic',
+              importSource: '@metamask/snaps-sdk',
+              useBuiltins: true,
+            },
           },
         },
         sourceMaps: false,

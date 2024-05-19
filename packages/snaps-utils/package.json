@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-utils",
-  "version": "7.2.0",
+  "version": "7.4.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
@@ -52,8 +52,8 @@
   "dependencies": {
     "@babel/core": "^7.23.2",
     "@babel/types": "^7.23.0",
-    "@metamask/base-controller": "^5.0.1",
-    "@metamask/key-tree": "^9.0.0",
+    "@metamask/base-controller": "^5.0.2",
+    "@metamask/key-tree": "^9.1.0",
     "@metamask/permission-controller": "^9.0.2",
     "@metamask/rpc-errors": "^6.2.1",
     "@metamask/slip44": "^3.1.0",

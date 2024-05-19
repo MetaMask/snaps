@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-rpc-methods",
-  "version": "8.0.0",
+  "version": "9.0.0",
   "description": "MetaMask Snaps JSON-RPC method implementations.",
   "repository": {
     "type": "git",
@@ -39,7 +39,7 @@
     "build:ci": "tsup --clean"
   },
   "dependencies": {
-    "@metamask/key-tree": "^9.0.0",
+    "@metamask/key-tree": "^9.1.0",
     "@metamask/permission-controller": "^9.0.2",
     "@metamask/rpc-errors": "^6.2.1",
     "@metamask/snaps-sdk": "workspace:^",

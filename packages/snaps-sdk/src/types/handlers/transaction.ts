@@ -1,5 +1,5 @@
+import type { ComponentOrElement } from '..';
 import type { EnumToUnion } from '../../internals';
-import type { Component } from '../../ui';
 import type { ChainId } from '../caip';
 
 /**
@@ -113,7 +113,7 @@ export type OnTransactionHandler = (args: {
  */
 export type OnTransactionResponse =
   | {
-      content: Component;
+      content: ComponentOrElement;
       severity?: EnumToUnion<SeverityLevel>;
     }
   | {

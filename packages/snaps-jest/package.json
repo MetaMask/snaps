@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-jest",
-  "version": "7.0.2",
+  "version": "8.0.0",
   "description": "A Jest preset for end-to-end testing MetaMask Snaps, including a Jest environment, and a set of Jest matchers.",
   "sideEffects": false,
   "exports": {
@@ -40,11 +40,11 @@
     "@jest/environment": "^29.5.0",
     "@jest/expect": "^29.5.0",
     "@jest/globals": "^29.5.0",
-    "@metamask/base-controller": "^5.0.1",
+    "@metamask/base-controller": "^5.0.2",
     "@metamask/eth-json-rpc-middleware": "^12.1.0",
     "@metamask/json-rpc-engine": "^8.0.1",
     "@metamask/json-rpc-middleware-stream": "^7.0.1",
-    "@metamask/key-tree": "^9.0.0",
+    "@metamask/key-tree": "^9.1.0",
     "@metamask/permission-controller": "^9.0.2",
     "@metamask/snaps-controllers": "workspace:^",
     "@metamask/snaps-execution-environments": "workspace:^",

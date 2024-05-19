@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "description": "MetaMask example snap demonstrating the use of JSX for UI components.",
+  "proposedName": "JSX Example Snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps.git"
+  },
+  "source": {
+    "shasum": "4B0wPvxkXgjt80J27Y7wI3e8J5SkkuOH+GmFVpXMLEk=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "@metamask/jsx-example-snap",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    "endowment:rpc": {
+      "dapps": true
+    },
+    "snap_dialog": {},
+    "snap_manageState": {}
+  },
+  "manifestVersion": "0.1"
+}

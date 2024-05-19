@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-controllers",
-  "version": "8.0.0",
+  "version": "8.1.1",
   "description": "Controllers for MetaMask Snaps.",
   "repository": {
     "type": "git",
@@ -51,8 +51,8 @@
     "build:ci": "tsup --clean"
   },
   "dependencies": {
-    "@metamask/approval-controller": "^6.0.1",
-    "@metamask/base-controller": "^5.0.1",
+    "@metamask/approval-controller": "^6.0.2",
+    "@metamask/base-controller": "^5.0.2",
     "@metamask/json-rpc-engine": "^8.0.1",
     "@metamask/json-rpc-middleware-stream": "^7.0.1",
     "@metamask/object-multiplex": "^2.0.0",

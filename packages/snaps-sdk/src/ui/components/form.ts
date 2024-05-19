@@ -40,6 +40,8 @@ export type Form = Infer<typeof FormStruct>;
  * @param args.children - The child nodes of the form. This can be any valid
  * {@link FormComponent}.
  * @returns The form node as object.
+ * @deprecated Snaps component functions are deprecated, in favor of the new JSX
+ * components. This function will be removed in a future release.
  * @example
  * const node = form({
  *  name: 'myForm',

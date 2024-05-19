@@ -53,6 +53,8 @@ export type Button = Infer<typeof ButtonStruct>;
  * @param args.value - The text content of the node.
  * @param args.name - The optional name of the button.
  * @returns The text node as object.
+ * @deprecated Snaps component functions are deprecated, in favor of the new JSX
+ * components. This function will be removed in a future release.
  * @example
  * ```typescript
  * const node = button({  variant: 'primary', text: 'Hello, world!', name: 'myButton' });

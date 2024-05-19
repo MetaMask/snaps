@@ -1,20 +1,13 @@
 import type {
-  Button,
-  Component,
   FormState,
-  Input,
   InterfaceState,
   SnapId,
   UserInputEvent,
 } from '@metamask/snaps-sdk';
-import {
-  ButtonType,
-  DialogType,
-  NodeType,
-  UserInputEventType,
-  assert,
-} from '@metamask/snaps-sdk';
-import { HandlerType, hasChildren, unwrapError } from '@metamask/snaps-utils';
+import { DialogType, UserInputEventType, assert } from '@metamask/snaps-sdk';
+import type { FormElement, JSXElement } from '@metamask/snaps-sdk/jsx';
+import { HandlerType, unwrapError, walkJsx } from '@metamask/snaps-utils';
+import { hasProperty } from '@metamask/utils';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { type SagaIterator } from 'redux-saga';
 import { call, put, select, take } from 'redux-saga/effects';
@@ -36,7 +29,7 @@ import { getCurrentInterface, resolveInterface, setInterface } from './store';
 export function getInterfaceResponse(
   runSaga: RunSagaFunction,
   type: DialogType,
-  content: Component,
+  content: JSXElement,
   interfaceActions: SnapInterfaceActions,
 ): SnapInterface {
   switch (type) {
@@ -130,7 +123,7 @@ function resolveWithInput(runSaga: RunSagaFunction) {
 function* getStoredInterface(
   controllerMessenger: RootControllerMessenger,
   snapId: SnapId,
-): SagaIterator<Interface & { content: Component }> {
+): SagaIterator<Interface & { content: JSXElement }> {
   const currentInterface: Interface | null = yield select(getCurrentInterface);
 
   if (currentInterface) {
@@ -144,7 +137,6 @@ function* getStoredInterface(
   }
 
   const { payload }: PayloadAction<Interface> = yield take(setInterface.type);
-
   const { content } = controllerMessenger.call(
     'SnapInterfaceController:getInterface',
     snapId,
@@ -155,42 +147,81 @@ function* getStoredInterface(
 }
 
 /**
- * Get a Button or an Input from an interface.
+ * A JSX element with a name.
+ */
+export type NamedJSXElement = JSXElement & { props: { name: string } };
+
+/**
+ * Check if a JSX element is a JSX element with a given name.
+ *
+ * @param element - The JSX element.
+ * @param name - The element name.
+ * @returns True if the element is a JSX element with the given name, otherwise
+ * false.
+ */
+function isJSXElementWithName<Element extends JSXElement, Name extends string>(
+  element: Element,
+  name: Name,
+): element is Element & { props: { name: Name } } {
+  return hasProperty(element.props, 'name') && element.props.name === name;
+}
+
+/**
+ * Find an element inside a form element in a JSX tree.
+ *
+ * @param form - The form element.
+ * @param name - The element name.
+ * @returns An object containing the element and the form name if it's contained
+ * in a form, otherwise undefined.
+ */
+function getFormElement(form: FormElement, name: string) {
+  const element = walkJsx<NamedJSXElement>(form, (childElement) => {
+    if (isJSXElementWithName(childElement, name)) {
+      return childElement;
+    }
+
+    return undefined;
+  });
+
+  if (element === undefined) {
+    return undefined;
+  }
+
+  return { element, form: form.props.name };
+}
+
+/**
+ * Get an element from a JSX tree with the given name.
  *
  * @param content - The interface content.
  * @param name - The element name.
- * @returns An object containing the element and the form name if it's contained in a form, otherwise undefined.
+ * @returns An object containing the element and the form name if it's contained
+ * in a form, otherwise undefined.
  */
 export function getElement(
-  content: Component,
+  content: JSXElement,
   name: string,
 ):
   | {
-      element: Button | Input;
+      element: NamedJSXElement;
       form?: string;
     }
   | undefined {
-  const { type } = content;
-
-  if (
-    (type === NodeType.Button || type === NodeType.Input) &&
-    content.name === name
-  ) {
+  if (isJSXElementWithName(content, name)) {
     return { element: content };
   }
 
-  if (hasChildren(content)) {
-    for (const element of content.children) {
-      const result = getElement(element, name);
-      const form = type === NodeType.Form ? content.name : result?.form;
-
-      if (result) {
-        return { element: result.element, form };
-      }
+  return walkJsx(content, (element) => {
+    if (element.type === 'Form') {
+      return getFormElement(element, name);
     }
-  }
 
-  return undefined;
+    if (isJSXElementWithName(element, name)) {
+      return { element };
+    }
+
+    return undefined;
+  });
 }
 /**
  * Handle submitting event requests to OnUserInput including unwrapping potential errors.
@@ -241,23 +272,28 @@ async function handleEvent(
 export async function clickElement(
   controllerMessenger: RootControllerMessenger,
   id: string,
-  content: Component,
+  content: JSXElement,
   snapId: SnapId,
   name: string,
 ): Promise<void> {
   const result = getElement(content, name);
   assert(
-    result !== undefined && result.element.type === NodeType.Button,
-    'No button found in the interface.',
+    result !== undefined,
+    `Could not find an element in the interface with the name "${name}".`,
+  );
+
+  assert(
+    result.element.type === 'Button',
+    `Expected an element of type "Button", but found "${result.element.type}".`,
   );
 
   // Button click events are always triggered.
   await handleEvent(controllerMessenger, snapId, id, {
     type: UserInputEventType.ButtonClickEvent,
-    name: result.element.name,
+    name: result.element.props.name,
   });
 
-  if (result.form && result.element.buttonType === ButtonType.Submit) {
+  if (result.form && result.element.props.type === 'submit') {
     const { state } = controllerMessenger.call(
       'SnapInterfaceController:getInterface',
       snapId,
@@ -313,7 +349,7 @@ export function mergeValue(
 export async function typeInField(
   controllerMessenger: RootControllerMessenger,
   id: string,
-  content: Component,
+  content: JSXElement,
   snapId: SnapId,
   name: string,
   value: string,
@@ -321,8 +357,13 @@ export async function typeInField(
   const result = getElement(content, name);
 
   assert(
-    result !== undefined && result.element.type === NodeType.Input,
-    'No input found in the interface.',
+    result !== undefined,
+    `Could not find an element in the interface with the name "${name}".`,
+  );
+
+  assert(
+    result.element.type === 'Input',
+    `Expected an element of type "Input", but found "${result.element.type}".`,
   );
 
   const { state } = controllerMessenger.call(
@@ -348,7 +389,7 @@ export async function typeInField(
       params: {
         event: {
           type: UserInputEventType.InputChangeEvent,
-          name: result.element.name,
+          name: result.element.props.name,
           value,
         },
         id,

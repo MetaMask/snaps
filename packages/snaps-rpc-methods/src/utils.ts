@@ -2,11 +2,13 @@ import type {
   HardenedBIP32Node,
   BIP32Node,
   SLIP10PathNode,
+  SupportedCurve,
 } from '@metamask/key-tree';
 import { SLIP10Node } from '@metamask/key-tree';
 import type { MagicValue } from '@metamask/snaps-utils';
 import type { Hex } from '@metamask/utils';
 import {
+  assertExhaustive,
   add0x,
   assert,
   concatBytes,
@@ -154,28 +156,34 @@ export async function deriveEntropy({
  * Get the path prefix to use for key derivation in `key-tree`. This assumes the
  * following:
  *
- * - The Secp256k1 curve always use the BIP-32 specification.
- * - The Ed25519 curve always use the SLIP-10 specification.
+ * - The Secp256k1 curve always uses the BIP-32 specification.
+ * - The Ed25519 curve always uses the SLIP-10 specification.
+ * - The BIP-32-Ed25519 curve always uses the CIP-3 specification.
  *
  * While this does not matter in most situations (no known case at the time of
  * writing), `key-tree` requires a specific specification to be used.
  *
  * @param curve - The curve to get the path prefix for. The curve is NOT
  * validated by this function.
- * @returns The path prefix, i.e., `secp256k1` or `ed25519`.
+ * @returns The path prefix, i.e., `bip32` or `slip10`.
  */
 export function getPathPrefix(
-  curve: 'secp256k1' | 'ed25519',
-): 'bip32' | 'slip10' {
-  if (curve === 'secp256k1') {
-    return 'bip32';
+  curve: SupportedCurve,
+): 'bip32' | 'slip10' | 'cip3' {
+  switch (curve) {
+    case 'secp256k1':
+      return 'bip32';
+    case 'ed25519':
+      return 'slip10';
+    case 'ed25519Bip32':
+      return 'cip3';
+    default:
+      return assertExhaustive(curve);
   }
-
-  return 'slip10';
 }
 
 type GetNodeArgs = {
-  curve: 'secp256k1' | 'ed25519';
+  curve: SupportedCurve;
   secretRecoveryPhrase: Uint8Array;
   path: string[];
 };
@@ -199,6 +207,7 @@ export async function getNode({
   path,
 }: GetNodeArgs) {
   const prefix = getPathPrefix(curve);
+
   return await SLIP10Node.fromDerivationPath({
     curve,
     derivationPath: [

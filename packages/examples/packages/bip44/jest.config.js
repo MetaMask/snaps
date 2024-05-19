@@ -12,6 +12,16 @@ module.exports = deepmerge(baseConfig, {
   // This is required for the tests to run inside the `MetaMask/snaps`
   // repository. You don't need this in your own project.
   moduleNameMapper: {
+    '^@metamask/(.+)/production/jsx-runtime': [
+      '<rootDir>/../../../$1/src/jsx/production/jsx-runtime',
+      '<rootDir>/../../../../node_modules/@metamask/$1/jsx/production/jsx-runtime',
+      '<rootDir>/node_modules/@metamask/$1/jsx/production/jsx-runtime',
+    ],
+    '^@metamask/(.+)/jsx': [
+      '<rootDir>/../../../$1/src/jsx',
+      '<rootDir>/../../../../node_modules/@metamask/$1/jsx',
+      '<rootDir>/node_modules/@metamask/$1/jsx',
+    ],
     '^@metamask/(.+)/node$': [
       '<rootDir>/../../../$1/src/node',
       '<rootDir>/../../../../node_modules/@metamask/$1/node',

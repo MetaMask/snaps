@@ -41,6 +41,8 @@ export type Text = Infer<typeof TextStruct>;
  * @param args.markdown - An optional flag to enable or disable markdown. This
  * is enabled by default.
  * @returns The text node as object.
+ * @deprecated Snaps component functions are deprecated, in favor of the new JSX
+ * components. This function will be removed in a future release.
  * @example
  * const node = text({ value: 'Hello, world!' });
  * const node = text('Hello, world!');

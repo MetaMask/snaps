@@ -2,12 +2,12 @@ import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
-  Component,
   CreateInterfaceParams,
   CreateInterfaceResult,
   JsonRpcRequest,
+  ComponentOrElement,
 } from '@metamask/snaps-sdk';
-import { ComponentStruct } from '@metamask/snaps-sdk';
+import { ComponentOrElementStruct } from '@metamask/snaps-sdk';
 import { type InferMatching } from '@metamask/snaps-utils';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 import { StructError, create, object } from 'superstruct';
@@ -23,7 +23,7 @@ export type CreateInterfaceMethodHooks = {
    * @param ui - The UI components.
    * @returns The unique identifier of the interface.
    */
-  createInterface: (ui: Component) => Promise<string>;
+  createInterface: (ui: ComponentOrElement) => Promise<string>;
 };
 
 export const createInterfaceHandler: PermittedHandlerExport<
@@ -37,7 +37,7 @@ export const createInterfaceHandler: PermittedHandlerExport<
 };
 
 const CreateInterfaceParametersStruct = object({
-  ui: ComponentStruct,
+  ui: ComponentOrElementStruct,
 });
 
 export type CreateInterfaceParameters = InferMatching<

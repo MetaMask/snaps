@@ -68,6 +68,8 @@ export type Panel = {
  * @param args.children - The child nodes of the panel. This can be any valid
  * {@link Component}.
  * @returns The panel node as object.
+ * @deprecated Snaps component functions are deprecated, in favor of the new JSX
+ * components. This function will be removed in a future release.
  * @example
  * const node = panel({
  *  children: [

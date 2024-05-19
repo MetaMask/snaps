@@ -96,17 +96,26 @@ describe('onRpcRequest', () => {
       const ui = await response.getInterface();
       // eslint-disable-next-line jest/prefer-strict-equal
       expect(ui.content).toEqual({
-        type: 'panel',
-        children: [
-          {
-            type: 'text',
-            value: 'Here is an SVG icon:',
-          },
-          {
-            type: 'image',
-            value: expect.stringContaining('<svg'),
-          },
-        ],
+        type: 'Box',
+        props: {
+          children: [
+            {
+              type: 'Text',
+              props: {
+                children: 'Here is an SVG icon:',
+              },
+              key: null,
+            },
+            {
+              type: 'Image',
+              props: {
+                src: expect.stringContaining('<svg'),
+              },
+              key: null,
+            },
+          ],
+        },
+        key: null,
       });
 
       await ui.ok();
@@ -126,17 +135,26 @@ describe('onRpcRequest', () => {
       const ui = await response.getInterface();
       // eslint-disable-next-line jest/prefer-strict-equal
       expect(ui.content).toEqual({
-        type: 'panel',
-        children: [
-          {
-            type: 'text',
-            value: 'Here is a PNG icon:',
-          },
-          {
-            type: 'image',
-            value: expect.stringContaining('data:image/png;base64'),
-          },
-        ],
+        type: 'Box',
+        props: {
+          children: [
+            {
+              type: 'Text',
+              props: {
+                children: 'Here is a PNG icon:',
+              },
+              key: null,
+            },
+            {
+              type: 'Image',
+              props: {
+                src: expect.stringContaining('data:image/png;base64'),
+              },
+              key: null,
+            },
+          ],
+        },
+        key: null,
       });
 
       await ui.ok();

@@ -57,6 +57,14 @@ module.exports = {
         // triggers for class methods as well.
         'no-restricted-syntax': 'off',
 
+        // This allows importing the `Text` JSX component.
+        '@typescript-eslint/no-shadow': [
+          'error',
+          {
+            allow: ['Text'],
+          },
+        ],
+
         // Without the `allowAny` option, this rule causes a lot of false
         // positives.
         '@typescript-eslint/restrict-template-expressions': [
@@ -71,7 +79,7 @@ module.exports = {
     },
 
     {
-      files: ['**/*.test.ts', '**/*.test.js'],
+      files: ['**/*.test.ts', '**/*.test.tsx', '**/*.test.js'],
       extends: ['@metamask/eslint-config-jest'],
       rules: {
         '@typescript-eslint/no-shadow': [

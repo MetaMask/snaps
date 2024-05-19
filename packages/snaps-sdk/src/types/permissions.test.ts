@@ -42,6 +42,15 @@ describe('Bip32Entropy', () => {
 
     expectTypeOf(entropy).toMatchTypeOf<Bip32Entropy>();
   });
+
+  it('supports ed25519Bip32', () => {
+    const entropy = {
+      curve: 'ed25519Bip32' as const,
+      path: ['m', "44'"],
+    };
+
+    expectTypeOf(entropy).toMatchTypeOf<Bip32Entropy>();
+  });
 });
 
 describe('Bip44Entropy', () => {

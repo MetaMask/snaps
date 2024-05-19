@@ -34,6 +34,7 @@ export class ProxyExecutionService extends AbstractExecutionService<string> {
     super({
       messenger,
       setupSnapProvider,
+      usePing: false,
     });
 
     this.#stream = stream;
@@ -67,6 +68,18 @@ export class ProxyExecutionService extends AbstractExecutionService<string> {
     const stream = new ProxyPostMessageStream({
       stream: this.#stream,
       jobId,
+    });
+
+    // Send a request and await any response before continuing
+    // This simulates the behaviour of non-proxy environments by effectively awaiting
+    // the load of the environment inside the proxy environment
+    // This assumes the proxy environment is already loaded before this function is called
+    await new Promise((resolve) => {
+      stream.once('data', resolve);
+      stream.write({
+        name: 'command',
+        data: { jsonrpc: '2.0', method: 'ping', id: nanoid() },
+      });
     });
 
     return { worker: jobId, stream };

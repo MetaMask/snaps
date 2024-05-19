@@ -1567,6 +1567,47 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('returns null if no onUserInput export is found', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => {}
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    const params = {
+      id: 'foo',
+      event: {
+        type: UserInputEventType.ButtonClickEvent,
+        name: 'bar',
+      },
+    };
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnUserInput,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: 'foo', params },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: null,
+    });
+  });
+
   describe('lifecycle hooks', () => {
     const LIFECYCLE_HOOKS = [HandlerType.OnInstall, HandlerType.OnUpdate];
 
