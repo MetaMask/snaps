@@ -1,4 +1,6 @@
 import { Button } from './Button';
+import { Dropdown } from './Dropdown';
+import { DropdownOption } from './DropdownOption';
 import { Field } from './Field';
 import { Input } from './Input';
 
@@ -83,6 +85,50 @@ describe('Field', () => {
             },
           },
         ],
+      },
+    });
+  });
+
+  it('renders a dropdown element', () => {
+    const result = (
+      <Field label="Label">
+        <Dropdown name="foo">
+          <DropdownOption value="option1">Option 1</DropdownOption>
+          <DropdownOption value="option2">Option 2</DropdownOption>
+        </Dropdown>
+      </Field>
+    );
+
+    expect(result).toStrictEqual({
+      type: 'Field',
+      key: null,
+      props: {
+        label: 'Label',
+        children: {
+          type: 'Dropdown',
+          key: null,
+          props: {
+            name: 'foo',
+            children: [
+              {
+                type: 'DropdownOption',
+                key: null,
+                props: {
+                  children: 'Option 1',
+                  value: 'option1',
+                },
+              },
+              {
+                type: 'DropdownOption',
+                key: null,
+                props: {
+                  children: 'Option 2',
+                  value: 'option2',
+                },
+              },
+            ],
+          },
+        },
       },
     });
   });

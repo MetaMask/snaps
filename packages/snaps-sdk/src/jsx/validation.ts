@@ -129,15 +129,6 @@ export const InputStruct: Describe<InputElement> = element('Input', {
 });
 
 /**
- * A struct for the {@link FieldElement} type.
- */
-export const FieldStruct: Describe<FieldElement> = element('Field', {
-  label: optional(string()),
-  error: optional(string()),
-  children: nullUnion([tuple([InputStruct, ButtonStruct]), InputStruct]),
-});
-
-/**
  * A struct for the {@link DropdownOptionElement} type.
  */
 export const DropdownOptionStruct: Describe<DropdownOptionElement> = element(
@@ -154,6 +145,19 @@ export const DropdownOptionStruct: Describe<DropdownOptionElement> = element(
 export const DropdownStruct: Describe<DropdownElement> = element('Dropdown', {
   name: string(),
   children: maybeArray(DropdownOptionStruct),
+});
+
+/**
+ * A struct for the {@link FieldElement} type.
+ */
+export const FieldStruct: Describe<FieldElement> = element('Field', {
+  label: optional(string()),
+  error: optional(string()),
+  children: nullUnion([
+    tuple([InputStruct, ButtonStruct]),
+    InputStruct,
+    DropdownStruct,
+  ]),
 });
 
 /**
@@ -312,6 +316,7 @@ export const BoxChildStruct = nullUnion([
   RowStruct,
   SpinnerStruct,
   TextStruct,
+  DropdownStruct,
 ]);
 
 /**
@@ -341,6 +346,7 @@ export const JSXElementStruct: Describe<JSXElement> = nullUnion([
   SpinnerStruct,
   TextStruct,
   DropdownStruct,
+  DropdownOptionStruct,
 ]);
 
 /**

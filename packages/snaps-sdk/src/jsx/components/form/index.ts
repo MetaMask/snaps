@@ -1,5 +1,6 @@
 import type { ButtonElement } from './Button';
 import type { DropdownElement } from './Dropdown';
+import type { DropdownOptionElement } from './DropdownOption';
 import type { FieldElement } from './Field';
 import type { FormElement } from './Form';
 import type { InputElement } from './Input';
@@ -16,4 +17,5 @@ export type StandardFormElement =
   | FormElement
   | FieldElement
   | InputElement
-  | DropdownElement;
+  | DropdownElement
+  | DropdownOptionElement;
