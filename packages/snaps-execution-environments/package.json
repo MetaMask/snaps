@@ -69,7 +69,7 @@
     "@babel/preset-typescript": "^7.23.2",
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
-    "@lavamoat/allow-scripts": "^3.0.3",
+    "@lavamoat/allow-scripts": "^3.0.4",
     "@lavamoat/lavapack": "^6.1.1",
     "@lavamoat/lavatube": "^1.0.0",
     "@metamask/auto-changelog": "^3.4.4",
