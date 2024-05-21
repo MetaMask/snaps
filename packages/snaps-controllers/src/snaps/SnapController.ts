@@ -1894,7 +1894,7 @@ export class SnapController extends BaseController<
         origin,
         WALLET_SNAP_PERMISSION_KEY,
         SnapCaveatType.SnapIds,
-        { ...existingCaveat, [snapId]: {} },
+        { ...(existingCaveat.value as Record<string, Json>), [snapId]: {} },
       );
       return;
     }

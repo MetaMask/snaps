@@ -51,7 +51,7 @@ import {
   DEFAULT_SOURCE_PATH,
   DEFAULT_ICON_PATH,
 } from '@metamask/snaps-utils/test-utils';
-import type { SemVerRange, SemVerVersion } from '@metamask/utils';
+import type { SemVerRange, SemVerVersion, Json } from '@metamask/utils';
 import {
   assert,
   AssertionError,
@@ -4362,12 +4362,15 @@ describe('SnapController', () => {
         [snapId]: {},
       });
 
+      const existingCaveatValue = MOCK_WALLET_SNAP_PERMISSION.caveats?.[0]
+        .value as Record<string, Json>;
+
       expect(messenger.call).toHaveBeenCalledWith(
         'PermissionController:updateCaveat',
         'npm:filsnap',
         WALLET_SNAP_PERMISSION_KEY,
         SnapCaveatType.SnapIds,
-        expect.objectContaining({ [snapId]: {} }),
+        { ...existingCaveatValue, [snapId]: {} },
       );
 
       expect(messenger.call).toHaveBeenCalledWith(
@@ -4375,7 +4378,7 @@ describe('SnapController', () => {
         'https://snaps.metamask.io',
         WALLET_SNAP_PERMISSION_KEY,
         SnapCaveatType.SnapIds,
-        expect.objectContaining({ [snapId]: {} }),
+        { ...existingCaveatValue, [snapId]: {} },
       );
 
       snapController.destroy();
@@ -8495,7 +8498,6 @@ describe('SnapController', () => {
         SnapCaveatType.SnapIds,
         {
           [MOCK_LOCAL_SNAP_ID]: {},
-          foo: {},
           [`${MOCK_SNAP_ID}1`]: {},
           [`${MOCK_SNAP_ID}2`]: {},
           [`${MOCK_SNAP_ID}3`]: {},
