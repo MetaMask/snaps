@@ -9,7 +9,7 @@ import { Window } from '../Window';
 export type ConfirmationDialogProps = {
   snapName: string;
   snapId: string;
-  node: JSXElement;
+  interfaceId: string;
   onCancel?: () => void;
   onApprove?: () => void;
 };
@@ -23,19 +23,20 @@ export type ConfirmationDialogProps = {
  * @param props.node - The component to render.
  * @param props.onCancel - The cancel callback.
  * @param props.onApprove - The approve callback.
+ * @param props.interfaceId
  * @returns The component.
  */
 export const ConfirmationDialog: FunctionComponent<ConfirmationDialogProps> = ({
   snapName,
   snapId,
-  node,
+  interfaceId,
   onCancel,
   onApprove,
 }) => (
   <Window snapName={snapName} snapId={snapId}>
     <Box margin="4" marginTop="0" flex="1">
       <Delineator type={DelineatorType.Content} snapName={snapName}>
-        <Renderer node={node} />
+        <Renderer interfaceId={interfaceId} snapId={snapId} />
       </Delineator>
     </Box>
     <Flex

@@ -1,7 +1,9 @@
-import type { ComponentOrElement } from '@metamask/snaps-sdk';
+import type { ComponentOrElement, SnapId } from '@metamask/snaps-sdk';
 import { getJsxInterface } from '@metamask/snaps-utils';
 import type { FunctionComponent } from 'react';
+import { useSelector } from 'src/hooks';
 
+import { getSnapInterfaceController } from '../simulation';
 import {
   Bold,
   Copyable,
@@ -39,7 +41,8 @@ export const components: Partial<
 };
 
 type RendererProps = {
-  node: ComponentOrElement;
+  interfaceId: string;
+  snapId: string;
   id?: string;
 };
 
@@ -50,17 +53,34 @@ type RendererProps = {
  * @param props.node - The component to render.
  * @param props.id - The component ID, to be used as a prefix for component
  * keys.
+ * @param props.interfaceId
+ * @param props.snapId
  * @returns The renderer component.
  */
 export const Renderer: FunctionComponent<RendererProps> = ({
-  node,
+  interfaceId,
+  snapId,
   id = 'root',
 }) => {
-  const element = getJsxInterface(node);
+  const snapInterfaceController = useSelector(getSnapInterfaceController);
+  console.log('interface id in Renderer', interfaceId);
+
+  if (!interfaceId) {
+    return null;
+  }
+
+  const element = snapInterfaceController?.getInterface(
+    snapId as SnapId,
+    interfaceId,
+  )?.content;
+
+  if (!element) {
+    return null;
+  }
   const ReactComponent = components[element.type];
 
   if (!ReactComponent) {
-    throw new Error(`Unknown component type: ${node.type}.`);
+    throw new Error(`Unknown component type: ${element.type}.`);
   }
 
   return <ReactComponent id={id} node={element} />;

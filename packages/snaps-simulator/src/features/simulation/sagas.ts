@@ -23,14 +23,14 @@ import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-rpc-methods';
-import type { Component } from '@metamask/snaps-sdk';
+import type { Component, ComponentOrElement } from '@metamask/snaps-sdk';
 import type {
   SnapManifest,
   SnapRpcHookArgs,
   VirtualFile,
 } from '@metamask/snaps-utils';
 import { logError, unwrapError } from '@metamask/snaps-utils';
-import { getSafeJson } from '@metamask/utils';
+import { getSafeJson, hasProperty, isObject } from '@metamask/utils';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { pipeline } from 'readable-stream';
 import type { SagaIterator } from 'redux-saga';
@@ -299,12 +299,30 @@ export function* requestSaga({ payload }: PayloadAction<SnapRpcHookArgs>) {
       payload,
     );
 
-    yield put({
-      type: `${payload.handler}/setResponse`,
-      payload: {
-        result,
-      },
-    });
+    if (isObject(result) && hasProperty(result, 'content')) {
+      const interfaceId: string = yield call(
+        createInterface,
+        snapId,
+        result.content as ComponentOrElement,
+      );
+
+      yield put({
+        type: `${payload.handler}/setResponse`,
+        payload: {
+          result: {
+            ...result,
+            id: interfaceId,
+          },
+        },
+      });
+    } else {
+      yield put({
+        type: `${payload.handler}/setResponse`,
+        payload: {
+          result,
+        },
+      });
+    }
   } catch (error) {
     const [unwrappedError] = unwrapError(error);
 

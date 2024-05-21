@@ -9,7 +9,7 @@ import { Window } from '../Window';
 export type AlertDialogProps = {
   snapName: string;
   snapId: string;
-  node: JSXElement;
+  interfaceId: string;
   onClose?: () => void;
 };
 
@@ -21,18 +21,19 @@ export type AlertDialogProps = {
  * @param props.snapId - The snap ID.
  * @param props.node - The component to render.
  * @param props.onClose - The close callback.
+ * @param props.interfaceId
  * @returns The component.
  */
 export const AlertDialog: FunctionComponent<AlertDialogProps> = ({
   snapName,
   snapId,
-  node,
+  interfaceId,
   onClose,
 }) => (
   <Window snapName={snapName} snapId={snapId}>
     <Box margin="4" marginTop="0" flex="1">
       <Delineator type={DelineatorType.Content} snapName={snapName}>
-        <Renderer node={node} />
+        <Renderer interfaceId={interfaceId} snapId={snapId} />
       </Delineator>
     </Box>
     <Flex

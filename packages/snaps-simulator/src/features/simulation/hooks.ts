@@ -6,6 +6,7 @@ import type {
   Component,
   Json,
   SnapId,
+  ComponentOrElement,
 } from '@metamask/snaps-sdk';
 import type { VirtualFile } from '@metamask/snaps-utils';
 import {
@@ -222,7 +223,7 @@ export function* getSnapFile(
  */
 export function* createInterface(
   snapId: string,
-  content: Component,
+  content: ComponentOrElement,
 ): SagaIterator {
   const snapInterfaceController: SnapInterfaceController = yield select(
     getSnapInterfaceController,
@@ -266,7 +267,7 @@ export function* getInterface(snapId: string, id: string): SagaIterator {
 export function* updateInterface(
   snapId: string,
   id: string,
-  content: Component,
+  content: ComponentOrElement,
 ): SagaIterator {
   const snapInterfaceController: SnapInterfaceController = yield select(
     getSnapInterfaceController,

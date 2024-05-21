@@ -47,9 +47,9 @@ export const Response = () => {
 
   // TODO: Fix this type cast.
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-  const content = (response as any).result?.content;
+  const interfaceId = (response as any).result?.id;
 
-  if (handler === HandlerType.OnTransaction && content) {
+  if (handler === HandlerType.OnTransaction && interfaceId) {
     return (
       <Box margin="4">
         <Window snapName={snapName} snapId={snapId} showAuthorship={false}>
@@ -57,7 +57,7 @@ export const Response = () => {
             <Skeleton height="38px" mb="4" speed={3} />
             <Skeleton height="285px" mb="4" speed={3} />
             <Delineator type={DelineatorType.Insights} snapName={snapName}>
-              <Renderer node={content} />
+              <Renderer interfaceId={interfaceId} snapId={snapId} />
             </Delineator>
           </Box>
         </Window>
