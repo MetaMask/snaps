@@ -69,7 +69,7 @@
     "tsup@^8.0.1": "patch:tsup@npm%3A8.0.2#./.yarn/patches/tsup-npm-8.0.2-86e40f68a7.patch"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "^3.0.3",
+    "@lavamoat/allow-scripts": "^3.0.4",
     "@metamask/auto-changelog": "^3.4.4",
     "@metamask/create-release-branch": "^3.0.0",
     "@metamask/eslint-config": "^12.1.0",
