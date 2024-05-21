@@ -1,3 +1,5 @@
+import type { DropdownElement } from '@metamask/snaps-sdk/jsx-runtime';
+
 import type { MaybeArray } from '../../component';
 import { createSnapComponent } from '../../component';
 import type { ButtonElement } from './Button';
@@ -13,7 +15,7 @@ import type { FieldElement } from './Field';
  * the event handler.
  */
 type FormProps = {
-  children: MaybeArray<FieldElement | ButtonElement>;
+  children: MaybeArray<FieldElement | ButtonElement | DropdownElement>;
   name: string;
 };
 
