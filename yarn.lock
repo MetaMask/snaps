@@ -3812,13 +3812,13 @@ __metadata:
   linkType: hard
 
 "@metamask/action-utils@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/action-utils@npm:1.0.0"
+  version: 1.1.1
+  resolution: "@metamask/action-utils@npm:1.1.1"
   dependencies:
     "@types/semver": ^7.3.6
     glob: ^7.1.7
     semver: ^7.3.5
-  checksum: 5cfd5c7f8895f4bc602cb6e7b3e133aae0431ded8f50e136d314b2e54936ae22cc6add226fa6dfabb300addf084e32fd864a87b91af9188fa158b6e99d91e784
+  checksum: b13245c89e5fd769ab03d3731f0156b805b55c3af402ce896181682b423e5f3d00470dc258161ff6598f5dad49d06e19a40c9967805a8e7bc1de0d8d2313a9ff
   languageName: node
   linkType: hard
 
