@@ -201,7 +201,6 @@ export const MOCK_WALLET_SNAP_PERMISSION: PermissionConstraint = {
       value: {
         [MOCK_SNAP_ID]: {},
         [MOCK_LOCAL_SNAP_ID]: {},
-        foo: {},
         [`${MOCK_SNAP_ID}1`]: {},
         [`${MOCK_SNAP_ID}2`]: {},
         [`${MOCK_SNAP_ID}3`]: {},
