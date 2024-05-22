@@ -10,6 +10,8 @@ import {
   union,
 } from 'superstruct';
 
+import { InterfaceContext } from '../interface';
+
 /**
  * The type of user input event fired.
  * Currently only three events are supported:
@@ -81,4 +83,5 @@ export type UserInputEvent = Infer<typeof UserInputEventStruct>;
 export type OnUserInputHandler = (args: {
   id: string;
   event: UserInputEvent;
+  context: InterfaceContext | null;
 }) => Promise<void>;

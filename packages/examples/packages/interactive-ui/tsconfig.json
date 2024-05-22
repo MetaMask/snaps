@@ -2,7 +2,10 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": "./",
+    "jsx": "react-jsxdev",
     "paths": {
+      "@metamask/*/jsx": ["../../../*/src/jsx"],
+      "@metamask/*/jsx-dev-runtime": ["../../../*/src/jsx"],
       "@metamask/*": ["../../../*/src"]
     }
   },
