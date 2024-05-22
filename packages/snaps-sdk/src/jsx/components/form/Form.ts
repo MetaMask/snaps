@@ -1,8 +1,7 @@
-import type { DropdownElement } from '@metamask/snaps-sdk/jsx-runtime';
-
 import type { MaybeArray } from '../../component';
 import { createSnapComponent } from '../../component';
 import type { ButtonElement } from './Button';
+import type { DropdownElement } from './Dropdown';
 import type { FieldElement } from './Field';
 
 // TODO: Add `onSubmit` prop to the `FormProps` type.

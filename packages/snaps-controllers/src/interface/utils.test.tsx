@@ -1,4 +1,13 @@
-import { Box, Button, Field, Form, Input, Text } from '@metamask/snaps-sdk/jsx';
+import {
+  Box,
+  Button,
+  Dropdown,
+  DropdownOption,
+  Field,
+  Form,
+  Input,
+  Text,
+} from '@metamask/snaps-sdk/jsx';
 
 import { assertNameIsUnique, constructState } from './utils';
 
@@ -220,6 +229,42 @@ describe('constructState', () => {
     const result = constructState({}, element);
     expect(result).toStrictEqual({
       foo: null,
+    });
+  });
+
+  it('supports root level dropdowns', () => {
+    const element = (
+      <Box>
+        <Dropdown name="foo" value="option2">
+          <DropdownOption value="option1">Option 1</DropdownOption>
+          <DropdownOption value="option2">Option 2</DropdownOption>
+        </Dropdown>
+      </Box>
+    );
+
+    const result = constructState({}, element);
+    expect(result).toStrictEqual({
+      foo: 'option2',
+    });
+  });
+
+  it('supports dropdowns in forms', () => {
+    const element = (
+      <Box>
+        <Form name="form">
+          <Field label="foo">
+            <Dropdown name="foo" value="option2">
+              <DropdownOption value="option1">Option 1</DropdownOption>
+              <DropdownOption value="option2">Option 2</DropdownOption>
+            </Dropdown>
+          </Field>
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element);
+    expect(result).toStrictEqual({
+      form: { foo: 'option2' },
     });
   });
 
