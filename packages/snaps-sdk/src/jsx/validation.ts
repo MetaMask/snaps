@@ -197,6 +197,16 @@ export const BoxStruct: Describe<BoxElement> = element('Box', {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     nullable(lazy(() => JSXElementStruct)),
   ) as unknown as Struct<MaybeArray<GenericSnapElement | null>, null>,
+  direction: optional(nullUnion([literal('horizontal'), literal('vertical')])),
+  alignment: optional(
+    nullUnion([
+      literal('start'),
+      literal('center'),
+      literal('end'),
+      literal('space-between'),
+      literal('space-around'),
+    ]),
+  ),
 });
 
 /**
