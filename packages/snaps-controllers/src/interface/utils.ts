@@ -163,12 +163,7 @@ export function constructState(
     return newState;
   }
 
-  if (component.type === 'Input') {
-    assertNameIsUnique(newState, component.props.name);
-    newState[component.props.name] = constructInputState(oldState, component);
-  }
-
-  if (component.type === 'Dropdown') {
+  if (component.type === 'Input' || component.type === 'Dropdown') {
     assertNameIsUnique(newState, component.props.name);
     newState[component.props.name] = constructInputState(oldState, component);
   }
