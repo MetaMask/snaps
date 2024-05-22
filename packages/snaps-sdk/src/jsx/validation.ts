@@ -195,7 +195,7 @@ export const AddressStruct: Describe<AddressElement> = element('Address', {
 export const BoxStruct: Describe<BoxElement> = element('Box', {
   children: maybeArray(
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    nullable(lazy(() => JSXElementStruct)),
+    nullable(lazy(() => BoxChildStruct)),
   ) as unknown as Struct<MaybeArray<GenericSnapElement | null>, null>,
   direction: optional(nullUnion([literal('horizontal'), literal('vertical')])),
   alignment: optional(
@@ -269,6 +269,35 @@ export const RowStruct: Describe<RowElement> = element('Row', {
  * A struct for the {@link SpinnerElement} type.
  */
 export const SpinnerStruct: Describe<SpinnerElement> = element('Spinner');
+
+/**
+ * A subset of JSX elements that are allowed as children of the Box component.
+ * This set should include all components, except components that need to be nested
+ * in another component (e.g. Field must be contained in a Form).
+ */
+export const BoxChildStruct = nullUnion([
+  ButtonStruct,
+  InputStruct,
+  FormStruct,
+  BoldStruct,
+  ItalicStruct,
+  AddressStruct,
+  BoxStruct,
+  CopyableStruct,
+  DividerStruct,
+  HeadingStruct,
+  ImageStruct,
+  LinkStruct,
+  RowStruct,
+  SpinnerStruct,
+  TextStruct,
+]);
+
+/**
+ * For now, the allowed JSX elements at the root are the same as the allowed
+ * children of the Box component.
+ */
+export const RootJSXElementStruct = BoxChildStruct;
 
 /**
  * A struct for the {@link JSXElement} type.

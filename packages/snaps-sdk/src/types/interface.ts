@@ -2,7 +2,7 @@ import type { Infer } from 'superstruct';
 import { nullable, record, string, union } from 'superstruct';
 
 import type { JSXElement } from '../jsx';
-import { JSXElementStruct } from '../jsx';
+import { RootJSXElementStruct } from '../jsx';
 import type { Component } from '../ui';
 import { ComponentStruct } from '../ui';
 
@@ -25,5 +25,5 @@ export type InterfaceState = Infer<typeof InterfaceStateStruct>;
 export type ComponentOrElement = Component | JSXElement;
 export const ComponentOrElementStruct = union([
   ComponentStruct,
-  JSXElementStruct,
+  RootJSXElementStruct,
 ]);
