@@ -46,5 +46,5 @@ export type SignMessageParams = {
   /**
    * The curve used to derive the account.
    */
-  curve: 'secp256k1' | 'ed25519';
+  curve: 'secp256k1' | 'ed25519' | 'ed25519bip32';
 };
