@@ -144,6 +144,7 @@ export const DropdownOptionStruct: Describe<DropdownOptionElement> = element(
  */
 export const DropdownStruct: Describe<DropdownElement> = element('Dropdown', {
   name: string(),
+  value: optional(string()),
   children: maybeArray(DropdownOptionStruct),
 });
 

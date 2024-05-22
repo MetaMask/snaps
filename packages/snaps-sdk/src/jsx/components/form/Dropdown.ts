@@ -12,6 +12,7 @@ import type { DropdownOptionElement } from './DropdownOption';
  */
 type DropdownProps = {
   name: string;
+  value?: string;
   children: MaybeArray<DropdownOptionElement>;
 };
 
