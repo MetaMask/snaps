@@ -437,6 +437,11 @@ describe('BoxStruct', () => {
         <Image src="src" alt="alt" />
       </Row>
     </Box>,
+    <Box>
+      <Field label="foo">
+        <Input name="foo" />
+      </Field>
+    </Box>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, BoxStruct)).toBe(false);
   });
