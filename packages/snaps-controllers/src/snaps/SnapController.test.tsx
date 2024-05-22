@@ -586,7 +586,7 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
-  it('includes the initialConnections data in the approval requestState when updating a Snap', async () => {
+  it('includes the initialConnections data in the requestState when updating a Snap without pre-existing connections', async () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
 
@@ -598,6 +598,7 @@ describe('SnapController', () => {
     const initialConnections = {
       'npm:filsnap': {},
       'https://snaps.metamask.io': {},
+      'https://metamask.github.io': {},
     };
 
     const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
@@ -633,13 +634,95 @@ describe('SnapController', () => {
       {
         id: expect.any(String),
         requestState: {
-          connections: initialConnections,
           permissions: expect.anything(),
           newVersion: '1.1.0',
           newPermissions: expect.anything(),
           approvedPermissions: {},
           unusedPermissions: {},
           loading: false,
+          newConnections: initialConnections,
+          unusedConnections: {},
+          approvedConnections: {},
+        },
+      },
+    );
+
+    snapController.destroy();
+  });
+
+  it('includes the initialConnections data in the requestState when updating a Snap with pre-existing connections', async () => {
+    const rootMessenger = getControllerMessenger();
+    const messenger = getSnapControllerMessenger(rootMessenger);
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => ({}),
+    );
+
+    const initialConnections = {
+      'npm:filsnap': {},
+      'https://snaps.metamask.io': {},
+      'https://metamask.github.io': {},
+    };
+
+    const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
+      manifest: getSnapManifest({
+        version: '1.1.0' as SemVerVersion,
+        initialConnections,
+      }),
+    });
+
+    const detectSnapLocation = loopbackDetect({
+      manifest: manifest.result,
+    });
+
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        state: {
+          snaps: getPersistedSnapsState(
+            getPersistedSnapObject({
+              manifest: {
+                initialConnections: {
+                  'https://snaps.metamask.io': {},
+                  'https://portfolio.metamask.io': {},
+                },
+              },
+            }),
+          ),
+        },
+        detectSnapLocation,
+      }),
+    );
+
+    await snapController.updateSnap(
+      MOCK_ORIGIN,
+      MOCK_SNAP_ID,
+      detectSnapLocation(),
+    );
+
+    expect(messenger.call).toHaveBeenNthCalledWith(
+      4,
+      'ApprovalController:updateRequestState',
+      {
+        id: expect.any(String),
+        requestState: {
+          permissions: expect.anything(),
+          newVersion: '1.1.0',
+          newPermissions: expect.anything(),
+          approvedPermissions: {},
+          unusedPermissions: {},
+          loading: false,
+          newConnections: {
+            'npm:filsnap': {},
+            'https://metamask.github.io': {},
+          },
+          unusedConnections: {
+            'https://portfolio.metamask.io': {},
+          },
+          approvedConnections: {
+            'https://snaps.metamask.io': {},
+          },
         },
       },
     );
@@ -5350,12 +5433,14 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
-            connections: {},
             permissions: {},
             newVersion,
             newPermissions: {},
             approvedPermissions: MOCK_SNAP_PERMISSIONS,
             unusedPermissions: {},
+            newConnections: {},
+            unusedConnections: {},
+            approvedConnections: {},
           },
         }),
       );
@@ -6077,12 +6162,14 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
-            connections: {},
             permissions: {},
             newVersion: '1.1.0',
             newPermissions: {},
             approvedPermissions: MOCK_SNAP_PERMISSIONS,
             unusedPermissions: {},
+            newConnections: {},
+            unusedConnections: {},
+            approvedConnections: {},
           },
         }),
       );
@@ -6269,12 +6356,14 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
-            connections: {},
             permissions: {},
             newVersion: '1.1.0',
             newPermissions: {},
             approvedPermissions: MOCK_SNAP_PERMISSIONS,
             unusedPermissions: {},
+            newConnections: {},
+            unusedConnections: {},
+            approvedConnections: {},
           },
         }),
       );
@@ -6429,12 +6518,14 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
-            connections: {},
             permissions,
             newVersion: '1.1.0',
             newPermissions: permissions,
             approvedPermissions: {},
             unusedPermissions: {},
+            newConnections: {},
+            unusedConnections: {},
+            approvedConnections: {},
           },
         }),
       );
@@ -6604,7 +6695,6 @@ describe('SnapController', () => {
           id: expect.any(String),
           requestState: {
             loading: false,
-            connections: {},
             permissions: { 'endowment:network-access': {} },
             newVersion: '1.1.0',
             newPermissions: { 'endowment:network-access': {} },
@@ -6616,6 +6706,9 @@ describe('SnapController', () => {
             unusedPermissions: {
               snap_manageState: approvedPermissions.snap_manageState,
             },
+            newConnections: {},
+            unusedConnections: {},
+            approvedConnections: {},
           },
         }),
       );

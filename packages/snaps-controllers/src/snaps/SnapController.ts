@@ -121,6 +121,7 @@ import {
   type KeyDerivationOptions,
 } from '../types';
 import {
+  calculateConnectionsChange,
   fetchSnap,
   hasTimedOut,
   permissionsDiff,
@@ -2425,13 +2426,21 @@ export class SnapController extends BaseController<
       const { newPermissions, unusedPermissions, approvedPermissions } =
         this.#calculatePermissionsChange(snapId, processedPermissions);
 
+      const { newConnections, unusedConnections, approvedConnections } =
+        calculateConnectionsChange(
+          oldManifest.initialConnections ?? {},
+          manifest.initialConnections ?? {},
+        );
+
       this.#updateApproval(pendingApproval.id, {
-        connections: manifest.initialConnections ?? {},
         permissions: newPermissions,
         newVersion: manifest.version,
         newPermissions,
         approvedPermissions,
         unusedPermissions,
+        newConnections,
+        unusedConnections,
+        approvedConnections,
         loading: false,
       });
 
