@@ -5219,13 +5219,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/post-message-stream@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/post-message-stream@npm:8.0.0"
+"@metamask/post-message-stream@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "@metamask/post-message-stream@npm:8.1.0"
   dependencies:
     "@metamask/utils": ^8.1.0
     readable-stream: 3.6.2
-  checksum: 3016d8d5f8a5954fd146ce06c0b5fd7a9a070b43284e2bad140e179ee259146b666d56e6dbefa0277f56fbb67806970c9de3067c75f0e56886d0752e7c0f5e22
+  checksum: 84b5f90ee28d3440520088c01fb64c42a2ed3e761bef4285c8dd72f78c3f634d58ac3314c5ebaedabc92e3db369960e17d61b84719f2d6271cd6d4957f2b6704
   languageName: node
   linkType: hard
 
@@ -5521,7 +5521,7 @@ __metadata:
     "@metamask/object-multiplex": ^2.0.0
     "@metamask/permission-controller": ^9.0.2
     "@metamask/phishing-controller": ^9.0.1
-    "@metamask/post-message-stream": ^8.0.0
+    "@metamask/post-message-stream": ^8.1.0
     "@metamask/rpc-errors": ^6.2.1
     "@metamask/snaps-registry": ^3.1.0
     "@metamask/snaps-rpc-methods": "workspace:^"
@@ -5613,7 +5613,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/json-rpc-engine": ^8.0.1
     "@metamask/object-multiplex": ^2.0.0
-    "@metamask/post-message-stream": ^8.0.0
+    "@metamask/post-message-stream": ^8.1.0
     "@metamask/providers": ^16.1.0
     "@metamask/rpc-errors": ^6.2.1
     "@metamask/snaps-sdk": "workspace:^"
@@ -5993,7 +5993,7 @@ __metadata:
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/key-tree": ^9.1.0
     "@metamask/permission-controller": ^9.0.2
-    "@metamask/post-message-stream": ^8.0.0
+    "@metamask/post-message-stream": ^8.1.0
     "@metamask/rpc-errors": ^6.2.1
     "@metamask/slip44": ^3.1.0
     "@metamask/snaps-registry": ^3.1.0
