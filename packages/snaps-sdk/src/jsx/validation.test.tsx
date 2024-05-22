@@ -394,6 +394,18 @@ describe('BoxStruct', () => {
         <Image src="src" alt="alt" />
       </Row>
     </Box>,
+    <Box direction="horizontal" alignment="space-between">
+      <Text>foo</Text>
+      <Row label="label">
+        <Image src="src" alt="alt" />
+      </Row>
+    </Box>,
+    <Box direction="horizontal">
+      <Text>foo</Text>
+      <Row label="label">
+        <Image src="src" alt="alt" />
+      </Row>
+    </Box>,
   ])('validates a box element', (value) => {
     expect(is(value, BoxStruct)).toBe(true);
   });
@@ -411,6 +423,20 @@ describe('BoxStruct', () => {
     <Row label="label">
       <Image src="src" alt="alt" />
     </Row>,
+    // @ts-expect-error - Invalid props.
+    <Box direction="foo">
+      <Text>foo</Text>
+      <Row label="label">
+        <Image src="src" alt="alt" />
+      </Row>
+    </Box>,
+    // @ts-expect-error - Invalid props.
+    <Box direction="vertical" alignment="foo">
+      <Text>foo</Text>
+      <Row label="label">
+        <Image src="src" alt="alt" />
+      </Row>
+    </Box>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, BoxStruct)).toBe(false);
   });
