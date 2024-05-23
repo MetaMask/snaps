@@ -1,5 +1,6 @@
 import type { SnapManifest, VirtualFile } from '@metamask/snaps-utils';
 import { LocalSnapIdStruct, SnapIdPrefixes } from '@metamask/snaps-utils';
+import type { SemVerRange } from '@metamask/utils';
 import { assert, assertStruct } from '@metamask/utils';
 
 import type { HttpOptions } from './http';
@@ -31,6 +32,10 @@ export class LocalLocation implements SnapLocation {
 
   async fetch(path: string): Promise<VirtualFile> {
     return convertCanonical(await this.#http.fetch(path));
+  }
+
+  async resolveVersion(): Promise<SemVerRange> {
+    return '*' as SemVerRange;
   }
 
   get shouldAlwaysReload() {

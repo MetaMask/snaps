@@ -2129,14 +2129,17 @@ export class SnapController extends BaseController<
         // Existing snaps may need to be updated, unless they should be re-installed (e.g. local snaps)
         // Everything else is treated as an install
         const isUpdate = this.has(snapId) && !location.shouldAlwaysReload;
+        const forceLatest = rawVersion === 'latest';
+        const resolvedVersion =
+          forceLatest && isUpdate ? await location.resolveVersion() : version;
 
-        if (isUpdate && this.#isValidUpdate(snapId, version)) {
+        if (isUpdate && this.#isValidUpdate(snapId, resolvedVersion)) {
           const existingSnap = this.getExpect(snapId);
           pendingUpdates.push({ snapId, oldVersion: existingSnap.version });
           let rollbackSnapshot = this.#getRollbackSnapshot(snapId);
           if (rollbackSnapshot === undefined) {
             rollbackSnapshot = this.#createRollbackSnapshot(snapId);
-            rollbackSnapshot.newVersion = version;
+            rollbackSnapshot.newVersion = resolvedVersion;
           } else {
             throw new Error('This snap is already being updated.');
           }
@@ -2148,7 +2151,7 @@ export class SnapController extends BaseController<
           origin,
           snapId,
           location,
-          version,
+          resolvedVersion,
         );
       }
 

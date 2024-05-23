@@ -34,6 +34,14 @@ describe('LocalLocation', () => {
     ).toBe(true);
   });
 
+  it('resolves to *', async () => {
+    expect(
+      await new LocalLocation(
+        new URL('local:http://localhost'),
+      ).resolveVersion(),
+    ).toBe('*');
+  });
+
   it.each([
     [
       'local:http://localhost/foo',

@@ -54,6 +54,11 @@ export interface NpmOptions {
 export abstract class BaseNpmLocation implements SnapLocation {
   protected readonly meta: NpmMeta;
 
+  #resolvedPackage: {
+    tarballURL: string;
+    targetVersion: SemVerVersion;
+  } | null = null;
+
   #validatedManifest?: VirtualFile<SnapManifest>;
 
   #files?: Map<string, VirtualFile>;
@@ -165,18 +170,32 @@ export abstract class BaseNpmLocation implements SnapLocation {
     return this.meta.requestedRange;
   }
 
+  async resolveVersion(): Promise<SemVerRange> {
+    if (!this.#resolvedPackage) {
+      const resolvedVersion = await this.meta.resolveVersion(
+        this.meta.requestedRange,
+      );
+
+      const resolved = await resolveNpmVersion(
+        this.meta.packageName,
+        resolvedVersion,
+        this.meta.registry,
+        this.meta.fetch,
+      );
+
+      this.#resolvedPackage = resolved;
+    }
+
+    return this.#resolvedPackage.targetVersion as unknown as SemVerRange;
+  }
+
   async #lazyInit() {
     assert(this.#files === undefined);
-    const resolvedVersion = await this.meta.resolveVersion(
-      this.meta.requestedRange,
-    );
 
-    const { tarballURL, targetVersion } = await resolveNpmVersion(
-      this.meta.packageName,
-      resolvedVersion,
-      this.meta.registry,
-      this.meta.fetch,
-    );
+    const targetVersion = await this.resolveVersion();
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const { tarballURL } = this.#resolvedPackage!;
 
     if (!isValidUrl(tarballURL) || !tarballURL.toString().endsWith('.tgz')) {
       throw new Error(

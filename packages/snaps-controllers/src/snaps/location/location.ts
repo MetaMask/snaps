@@ -23,6 +23,8 @@ export interface SnapLocation {
   manifest(): Promise<VirtualFile<SnapManifest>>;
   fetch(path: string): Promise<VirtualFile>;
 
+  resolveVersion(): Promise<SemVerRange>;
+
   readonly shouldAlwaysReload?: boolean;
 }
 
