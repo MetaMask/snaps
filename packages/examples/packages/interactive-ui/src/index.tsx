@@ -7,7 +7,12 @@ import type {
 } from '@metamask/snaps-sdk';
 import { UserInputEventType, MethodNotFoundError } from '@metamask/snaps-sdk';
 
-import { InteractiveForm, Result, Insight, TransactionType } from './components';
+import {
+  InteractiveForm,
+  Result,
+  Insight,
+  TransactionType,
+} from './components';
 import { decodeData } from './utils';
 
 /**

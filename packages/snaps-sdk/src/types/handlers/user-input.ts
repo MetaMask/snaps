@@ -10,7 +10,7 @@ import {
   union,
 } from 'superstruct';
 
-import { InterfaceContext } from '../interface';
+import type { InterfaceContext } from '../interface';
 
 /**
  * The type of user input event fired.
