@@ -10379,9 +10379,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromedriver@npm:^123.0.1":
-  version: 123.0.1
-  resolution: "chromedriver@npm:123.0.1"
+"chromedriver@npm:^125.0.1":
+  version: 125.0.1
+  resolution: "chromedriver@npm:125.0.1"
   dependencies:
     "@testim/chrome-version": ^1.1.4
     axios: ^1.6.7
@@ -10392,7 +10392,7 @@ __metadata:
     tcp-port-used: ^1.0.2
   bin:
     chromedriver: bin/chromedriver
-  checksum: 2b9ea33983cca8092fb36537c6cb35e5e5b61cd4fdbe88b09abb04fadb39c214b254a775275bce65ae442859543b421b1b1797929df10bc4981267d768aa315a
+  checksum: 755a866f19f64f4d2599844971566fe1c79659260f266ab53b8c943bfe0517fd9d1435e6c5dc7146c5266afcf7d11f748b5b981940cbcc5511856cba1996d292
   languageName: node
   linkType: hard
 
@@ -20427,7 +20427,7 @@ __metadata:
     "@types/node": 18.14.2
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
-    chromedriver: ^123.0.1
+    chromedriver: ^125.0.1
     depcheck: ^1.4.7
     eslint: ^8.27.0
     eslint-config-prettier: ^8.5.0
