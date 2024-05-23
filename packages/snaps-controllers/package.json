@@ -116,7 +116,7 @@
     "eslint-plugin-n": "^15.7.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-promise": "^6.1.1",
-    "expect-webdriverio": "^4.4.1",
+    "expect-webdriverio": "^4.13.0",
     "istanbul-lib-coverage": "^3.2.0",
     "istanbul-lib-report": "^3.0.0",
     "istanbul-reports": "^3.1.5",
@@ -133,7 +133,7 @@
     "vite-tsconfig-paths": "^4.0.5",
     "wdio-chromedriver-service": "^8.1.1",
     "wdio-geckodriver-service": "^5.0.2",
-    "webdriverio": "^8.19.0"
+    "webdriverio": "^8.37.0"
   },
   "peerDependencies": {
     "@metamask/snaps-execution-environments": "workspace:^"
@@ -149,5 +149,17 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
+  },
+  "lavamoat": {
+    "allowScripts": {
+      "@swc/core": false,
+      "@wdio/browser-runner>@originjs/vite-plugin-commonjs>esbuild": false,
+      "@wdio/cli>@wdio/utils>edgedriver": false,
+      "esbuild": false,
+      "tsup>esbuild": false,
+      "wdio-chromedriver-service>chromedriver": false,
+      "wdio-geckodriver-service>geckodriver": false,
+      "webdriverio>@wdio/utils>geckodriver": false
+    }
   }
 }
