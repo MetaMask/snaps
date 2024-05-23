@@ -1,5 +1,6 @@
 import type {
   FormState,
+  InterfaceContext,
   InterfaceState,
   SnapId,
   UserInputEvent,
@@ -230,12 +231,14 @@ export function getElement(
  * @param snapId - The Snap ID.
  * @param id - The interface ID.
  * @param event - The event to submit.
+ * @param context - The interface context.
  */
 async function handleEvent(
   controllerMessenger: RootControllerMessenger,
   snapId: SnapId,
   id: string,
   event: UserInputEvent,
+  context: InterfaceContext | null,
 ) {
   try {
     await controllerMessenger.call(
@@ -250,6 +253,7 @@ async function handleEvent(
           params: {
             event,
             id,
+            context,
           },
         },
       },
@@ -287,24 +291,36 @@ export async function clickElement(
     `Expected an element of type "Button", but found "${result.element.type}".`,
   );
 
+  const { state, context } = controllerMessenger.call(
+    'SnapInterfaceController:getInterface',
+    snapId,
+    id,
+  );
+
   // Button click events are always triggered.
-  await handleEvent(controllerMessenger, snapId, id, {
-    type: UserInputEventType.ButtonClickEvent,
-    name: result.element.props.name,
-  });
+  await handleEvent(
+    controllerMessenger,
+    snapId,
+    id,
+    {
+      type: UserInputEventType.ButtonClickEvent,
+      name: result.element.props.name,
+    },
+    context,
+  );
 
   if (result.form && result.element.props.type === 'submit') {
-    const { state } = controllerMessenger.call(
-      'SnapInterfaceController:getInterface',
+    await handleEvent(
+      controllerMessenger,
       snapId,
       id,
+      {
+        type: UserInputEventType.FormSubmitEvent,
+        name: result.form,
+        value: state[result.form] as Record<string, string | null>,
+      },
+      context,
     );
-
-    await handleEvent(controllerMessenger, snapId, id, {
-      type: UserInputEventType.FormSubmitEvent,
-      name: result.form,
-      value: state[result.form] as Record<string, string | null>,
-    });
   }
 }
 
@@ -366,7 +382,7 @@ export async function typeInField(
     `Expected an element of type "Input", but found "${result.element.type}".`,
   );
 
-  const { state } = controllerMessenger.call(
+  const { state, context } = controllerMessenger.call(
     'SnapInterfaceController:getInterface',
     snapId,
     id,
@@ -393,6 +409,7 @@ export async function typeInField(
           value,
         },
         id,
+        context,
       },
     },
   });

@@ -35,6 +35,7 @@ describe('getCreateInterfaceImplementation', () => {
       'SnapInterfaceController:createInterface',
       MOCK_SNAP_ID,
       content,
+      undefined,
     );
 
     expect(result.content).toStrictEqual(getJsxElementFromComponent(content));
@@ -69,6 +70,7 @@ describe('getGetInterfaceImplementation', () => {
       content: getJsxElementFromComponent(content),
       state: {},
       snapId: MOCK_SNAP_ID,
+      context: null,
     });
   });
 });

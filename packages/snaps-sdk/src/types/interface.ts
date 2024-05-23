@@ -1,3 +1,4 @@
+import { JsonStruct } from '@metamask/utils';
 import type { Infer } from 'superstruct';
 import { nullable, record, string, union } from 'superstruct';
 
@@ -27,3 +28,6 @@ export const ComponentOrElementStruct = union([
   ComponentStruct,
   RootJSXElementStruct,
 ]);
+
+export const InterfaceContextStruct = record(string(), JsonStruct);
+export type InterfaceContext = Infer<typeof InterfaceContextStruct>;

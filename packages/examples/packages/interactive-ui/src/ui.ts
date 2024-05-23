@@ -1,6 +1,5 @@
 import {
   ButtonType,
-  ManageStateOperation,
   address,
   button,
   copyable,
@@ -36,19 +35,15 @@ export async function createInterface(): Promise<string> {
 /**
  * Create the transaction insights components to display.
  *
+ * @param transaction - The transaction object.
  * @returns The transaction insight content.
  */
-export async function getInsightContent(): Promise<Component> {
-  const snapState = await snap.request({
-    method: 'snap_manageState',
-    params: {
-      operation: ManageStateOperation.GetState,
-    },
-  });
+export async function getInsightContent(
+  transaction?: Transaction,
+): Promise<Component> {
+  assert(transaction, 'No transaction found in Snap context.');
 
-  assert(snapState?.transaction, 'No transaction found in Snap state.');
-
-  const { from, to } = snapState.transaction as Transaction;
+  const { from, to } = transaction as Transaction;
 
   return panel([
     row('From', address(from)),
@@ -58,22 +53,16 @@ export async function getInsightContent(): Promise<Component> {
 }
 
 /**
- * Update a Snap interface to display the transaction type after fetching
- * the transaction from state.
+ * Update a Snap interface to display the transaction type.
  *
- * @param id -  The interface ID to update.
+ * @param id - The interface ID to update.
+ * @param transaction - The transaction object.
  */
-export async function displayTransactionType(id: string) {
-  const snapState = await snap.request({
-    method: 'snap_manageState',
-    params: {
-      operation: ManageStateOperation.GetState,
-    },
-  });
-
-  assert(snapState?.transaction, 'No transaction found in Snap state.');
-
-  const transaction = snapState.transaction as Transaction;
+export async function displayTransactionType(
+  id: string,
+  transaction?: Transaction,
+) {
+  assert(transaction, 'No transaction found in Snap context.');
 
   const type = decodeData(transaction.data);
 

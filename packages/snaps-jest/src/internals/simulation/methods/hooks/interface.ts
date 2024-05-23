@@ -1,4 +1,4 @@
-import type { Component, SnapId } from '@metamask/snaps-sdk';
+import type { Component, InterfaceContext, SnapId } from '@metamask/snaps-sdk';
 
 import type { RootControllerMessenger } from '../../controllers';
 
@@ -11,11 +11,16 @@ import type { RootControllerMessenger } from '../../controllers';
 export function getCreateInterfaceImplementation(
   controllerMessenger: RootControllerMessenger,
 ) {
-  return async (snapId: SnapId, content: Component) =>
+  return async (
+    snapId: SnapId,
+    content: Component,
+    context?: InterfaceContext,
+  ) =>
     controllerMessenger.call(
       'SnapInterfaceController:createInterface',
       snapId,
       content,
+      context,
     );
 }
 

@@ -115,6 +115,69 @@ describe('SnapInterfaceController', () => {
       expect(state).toStrictEqual({ foo: { bar: null } });
     });
 
+    it('supports providing interface context', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      /* eslint-disable-next-line no-new */
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const element = (
+        <Box>
+          <Text>
+            <Link href="https://foo.bar">foo</Link>
+          </Text>
+        </Box>
+      );
+
+      const id = await rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        element,
+        { foo: 'bar' },
+      );
+
+      const { content, context } = rootMessenger.call(
+        'SnapInterfaceController:getInterface',
+        MOCK_SNAP_ID,
+        id,
+      );
+
+      expect(content).toStrictEqual(element);
+      expect(context).toStrictEqual({ foo: 'bar' });
+    });
+
+    it('throws if interface context is too large', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      /* eslint-disable-next-line no-new */
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const element = (
+        <Box>
+          <Text>
+            <Link href="https://foo.bar">foo</Link>
+          </Text>
+        </Box>
+      );
+
+      await expect(
+        rootMessenger.call(
+          'SnapInterfaceController:createInterface',
+          MOCK_SNAP_ID,
+          element,
+          { foo: 'a'.repeat(1_000_000) },
+        ),
+      ).rejects.toThrow('A Snap interface context may not be larger than 1 MB');
+    });
+
     it('throws if a link is on the phishing list', async () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(

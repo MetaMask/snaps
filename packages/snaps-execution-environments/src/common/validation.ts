@@ -1,5 +1,8 @@
 import { rpcErrors } from '@metamask/rpc-errors';
-import { UserInputEventStruct } from '@metamask/snaps-sdk';
+import {
+  InterfaceContextStruct,
+  UserInputEventStruct,
+} from '@metamask/snaps-sdk';
 import { ChainIdStruct, HandlerType } from '@metamask/snaps-utils';
 import type { Json, JsonRpcSuccess } from '@metamask/utils';
 import {
@@ -212,6 +215,7 @@ export function assertIsOnNameLookupRequestArguments(
 export const OnUserInputArgumentsStruct = object({
   id: string(),
   event: UserInputEventStruct,
+  context: optional(nullable(InterfaceContextStruct)),
 });
 
 export type OnUserInputArguments = Infer<typeof OnUserInputArgumentsStruct>;

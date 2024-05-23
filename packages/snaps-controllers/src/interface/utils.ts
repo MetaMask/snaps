@@ -3,6 +3,7 @@ import type {
   FormState,
   InterfaceState,
   ComponentOrElement,
+  InterfaceContext,
 } from '@metamask/snaps-sdk';
 import type {
   ButtonElement,
@@ -12,6 +13,7 @@ import type {
 } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import {
+  getJsonSizeUnsafe,
   getJsxChildren,
   getJsxElementFromComponent,
 } from '@metamask/snaps-utils';
@@ -163,4 +165,28 @@ export function constructState(
   }
 
   return newState;
+}
+
+const MAX_CONTEXT_SIZE = 1_000_000; // 1 mb
+
+/**
+ * Validate a JSON blob to be used as the interface context.
+ *
+ * @param context - The JSON blob.
+ * @throws If the JSON blob is too large.
+ */
+export function validateInterfaceContext(context?: InterfaceContext) {
+  if (!context) {
+    return;
+  }
+
+  // We assume the validity of this JSON to be validated by the caller.
+  // E.g., in the RPC method implementation.
+  const size = getJsonSizeUnsafe(context);
+  assert(
+    size <= MAX_CONTEXT_SIZE,
+    `A Snap interface context may not be larger than ${
+      MAX_CONTEXT_SIZE / 1000000
+    } MB.`,
+  );
 }

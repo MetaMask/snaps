@@ -88,8 +88,8 @@ export function getHandlerArguments(
     case HandlerType.OnUserInput: {
       assertIsOnUserInputRequestArguments(request.params);
 
-      const { id, event } = request.params;
-      return { id, event };
+      const { id, event, context } = request.params;
+      return { id, event, context };
     }
 
     default:
