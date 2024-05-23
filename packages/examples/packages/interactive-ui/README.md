@@ -11,8 +11,6 @@ JSON-RPC methods:
 
 - `dialog`: Create a `snap_dialog` with an interactive interface. This demonstrates that a snap can show an interactive `snap_dialog` that the user can interact with.
 
-- `getState`: Get the state of a given interface. This demonstrates that a snap can retrieve an interface state.
-
 ### onTransaction
 
 This snap exposes an `onTransaction` handler, which is called when a transaction  
