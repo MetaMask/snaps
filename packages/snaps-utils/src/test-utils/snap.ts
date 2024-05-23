@@ -23,6 +23,7 @@ export const getPersistedSnapObject = ({
   enabled = true,
   id = MOCK_SNAP_ID,
   initialPermissions = getSnapManifest().initialPermissions,
+  initialConnections = getSnapManifest().initialConnections,
   manifest = getSnapManifest(),
   sourceCode = DEFAULT_SNAP_BUNDLE,
   status = SnapStatus.Stopped,
@@ -38,6 +39,7 @@ export const getPersistedSnapObject = ({
   return {
     blocked,
     initialPermissions,
+    ...(initialConnections ? { initialConnections } : {}),
     id,
     version: version as SemVerVersion,
     manifest,
