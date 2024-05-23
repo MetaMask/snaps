@@ -78,15 +78,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         throw new UserRejectedRequestError();
       }
 
-      if (curve === 'ed25519') {
-        const signed = await signEd25519(
-          stringToBytes(message),
-          remove0x(node.privateKey),
-        );
-        return bytesToHex(signed);
-      }
-
-      if (curve === 'ed25519Bip32') {
+      if (curve === 'ed25519' || curve === 'ed25519Bip32') {
         const signed = await signEd25519(
           stringToBytes(message),
           remove0x(node.privateKey),
