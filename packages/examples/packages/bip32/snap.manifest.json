@@ -38,6 +38,14 @@
           "0'"
         ],
         "curve": "ed25519"
+      },
+      {
+        "path": [
+          "m",
+          "44'",
+          "0'"
+        ],
+        "curve": "ed25519Bip32"
       }
     ],
     "snap_getBip32PublicKey": [
