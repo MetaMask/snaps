@@ -105,22 +105,11 @@ function getFieldInput(element: FieldElement) {
  */
 function constructFormState(
   oldState: InterfaceState,
-  component: FieldElement | ButtonElement | DropdownElement,
+  component: FieldElement | ButtonElement,
   form: string,
   newState: FormState,
 ): FormState {
   if (component.type === 'Button') {
-    return newState;
-  }
-
-  if (component.type === 'Dropdown') {
-    assertNameIsUnique(newState, component.props.name);
-
-    newState[component.props.name] = constructFormInputState(
-      oldState,
-      component,
-      form,
-    );
     return newState;
   }
 
