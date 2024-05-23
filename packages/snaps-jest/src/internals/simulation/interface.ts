@@ -461,7 +461,7 @@ export async function selectInDropdown(
     `The dropdown with the name "${name}" does not contain "${value}".`,
   );
 
-  const { state } = controllerMessenger.call(
+  const { state, context } = controllerMessenger.call(
     'SnapInterfaceController:getInterface',
     snapId,
     id,
@@ -488,6 +488,7 @@ export async function selectInDropdown(
           value,
         },
         id,
+        context,
       },
     },
   });

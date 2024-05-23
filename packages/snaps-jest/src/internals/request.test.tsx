@@ -1,6 +1,7 @@
 import { SnapInterfaceController } from '@metamask/snaps-controllers';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { UserInputEventType, button, input, text } from '@metamask/snaps-sdk';
+import { Dropdown, DropdownOption } from '@metamask/snaps-sdk/jsx';
 import { getJsxElementFromComponent, HandlerType } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
@@ -194,6 +195,7 @@ describe('getInterfaceApi', () => {
       content: getJsxElementFromComponent(content),
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
+      selectInDropdown: expect.any(Function),
     });
   });
 
@@ -223,6 +225,7 @@ describe('getInterfaceApi', () => {
       content: getJsxElementFromComponent(content),
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
+      selectInDropdown: expect.any(Function),
     });
   });
 
@@ -320,6 +323,59 @@ describe('getInterfaceApi', () => {
               type: UserInputEventType.InputChangeEvent,
               name: 'foo',
               value: 'bar',
+            },
+            id: expect.any(String),
+            context: null,
+          },
+        },
+      },
+    );
+  });
+
+  it('sends the request to the snap when using `selectInDropdown`', async () => {
+    const controllerMessenger = getRootControllerMessenger();
+
+    jest.spyOn(controllerMessenger, 'call');
+
+    // eslint-disable-next-line no-new
+    new SnapInterfaceController({
+      messenger:
+        getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
+    });
+
+    const content = (
+      <Dropdown name="foo">
+        <DropdownOption value="option1">Option 1</DropdownOption>
+        <DropdownOption value="option2">Option 2</DropdownOption>
+      </Dropdown>
+    );
+
+    const getInterface = await getInterfaceApi(
+      { content },
+      MOCK_SNAP_ID,
+      controllerMessenger,
+    );
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const snapInterface = getInterface!();
+
+    await snapInterface.selectInDropdown('foo', 'option2');
+
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
+      6,
+      'ExecutionService:handleRpcRequest',
+      MOCK_SNAP_ID,
+      {
+        origin: '',
+        handler: HandlerType.OnUserInput,
+        request: {
+          jsonrpc: '2.0',
+          method: ' ',
+          params: {
+            event: {
+              type: UserInputEventType.InputChangeEvent,
+              name: 'foo',
+              value: 'option2',
             },
             id: expect.any(String),
             context: null,

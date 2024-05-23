@@ -625,6 +625,7 @@ describe('selectInDropdown', () => {
             value: 'option2',
           },
           id: interfaceId,
+          context: null,
         },
       },
     });
@@ -894,6 +895,7 @@ describe('getInterface', () => {
               value: 'option2',
             },
             id,
+            context: null,
           },
         },
       },
