@@ -9,7 +9,14 @@ import {
   panel,
   text,
 } from '@metamask/snaps-sdk';
-import { Button, Text } from '@metamask/snaps-sdk/jsx';
+import {
+  Button,
+  Text,
+  Dropdown,
+  DropdownOption,
+  Box,
+  Input,
+} from '@metamask/snaps-sdk/jsx';
 import {
   getJsxElementFromComponent,
   HandlerType,
@@ -31,6 +38,7 @@ import {
   getInterface,
   getInterfaceResponse,
   mergeValue,
+  selectInDropdown,
   typeInField,
 } from './interface';
 import type { RunSagaFunction } from './store';
@@ -51,7 +59,11 @@ async function getResolve(runSaga: RunSagaFunction) {
 }
 
 describe('getInterfaceResponse', () => {
-  const interfaceActions = { clickElement: jest.fn(), typeInField: jest.fn() };
+  const interfaceActions = {
+    clickElement: jest.fn(),
+    typeInField: jest.fn(),
+    selectInDropdown: jest.fn(),
+  };
 
   it('returns an `ok` function that resolves the user interface with `null` for alert dialogs', async () => {
     const { runSaga } = createStore(getMockOptions());
@@ -67,6 +79,7 @@ describe('getInterfaceResponse', () => {
       content: <Text>foo</Text>,
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
+      selectInDropdown: expect.any(Function),
       ok: expect.any(Function),
     });
 
@@ -89,6 +102,7 @@ describe('getInterfaceResponse', () => {
       content: <Text>foo</Text>,
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
+      selectInDropdown: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -113,6 +127,7 @@ describe('getInterfaceResponse', () => {
       content: <Text>foo</Text>,
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
+      selectInDropdown: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -136,6 +151,7 @@ describe('getInterfaceResponse', () => {
       content: <Text>foo</Text>,
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
+      selectInDropdown: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -159,6 +175,7 @@ describe('getInterfaceResponse', () => {
       content: <Text>foo</Text>,
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
+      selectInDropdown: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -183,6 +200,7 @@ describe('getInterfaceResponse', () => {
       content: <Text>foo</Text>,
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
+      selectInDropdown: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -547,6 +565,147 @@ describe('typeInField', () => {
   });
 });
 
+describe('selectInDropdown', () => {
+  const rootControllerMessenger = getRootControllerMessenger();
+  const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+    rootControllerMessenger,
+  );
+
+  const interfaceController = new SnapInterfaceController({
+    messenger: controllerMessenger,
+  });
+
+  const handleRpcRequestMock = jest.fn();
+
+  rootControllerMessenger.registerActionHandler(
+    'ExecutionService:handleRpcRequest',
+    handleRpcRequestMock,
+  );
+
+  it('updates the interface state and sends an InputChangeEvent', async () => {
+    jest.spyOn(rootControllerMessenger, 'call');
+
+    const content = (
+      <Dropdown name="foo">
+        <DropdownOption value="option1">Option 1</DropdownOption>
+        <DropdownOption value="option2">Option 2</DropdownOption>
+      </Dropdown>
+    );
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await selectInDropdown(
+      rootControllerMessenger,
+      interfaceId,
+      content,
+      MOCK_SNAP_ID,
+      'foo',
+      'option2',
+    );
+
+    expect(rootControllerMessenger.call).toHaveBeenCalledWith(
+      'SnapInterfaceController:updateInterfaceState',
+      interfaceId,
+      { foo: 'option2' },
+    );
+
+    expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
+      origin: '',
+      handler: HandlerType.OnUserInput,
+      request: {
+        jsonrpc: '2.0',
+        method: ' ',
+        params: {
+          event: {
+            type: UserInputEventType.InputChangeEvent,
+            name: 'foo',
+            value: 'option2',
+          },
+          id: interfaceId,
+        },
+      },
+    });
+  });
+
+  it('throws if selected option does not exist', async () => {
+    const content = (
+      <Dropdown name="foo">
+        <DropdownOption value="option1">Option 1</DropdownOption>
+        <DropdownOption value="option2">Option 2</DropdownOption>
+      </Dropdown>
+    );
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await expect(
+      selectInDropdown(
+        rootControllerMessenger,
+        interfaceId,
+        content,
+        MOCK_SNAP_ID,
+        'foo',
+        'option3',
+      ),
+    ).rejects.toThrow(
+      'The dropdown with the name "foo" does not contain "option3"',
+    );
+  });
+
+  it('throws if there is no dropdowns in the interface', async () => {
+    const content = (
+      <Box>
+        <Text>Foo</Text>
+      </Box>
+    );
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await expect(
+      selectInDropdown(
+        rootControllerMessenger,
+        interfaceId,
+        content,
+        MOCK_SNAP_ID,
+        'bar',
+        'baz',
+      ),
+    ).rejects.toThrow(
+      'Could not find an element in the interface with the name "bar".',
+    );
+  });
+
+  it('throws if the element is not a dropdown', async () => {
+    const content = <Input name="foo" />;
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await expect(
+      selectInDropdown(
+        rootControllerMessenger,
+        interfaceId,
+        content,
+        MOCK_SNAP_ID,
+        'foo',
+        'baz',
+      ),
+    ).rejects.toThrow(
+      'Expected an element of type "Dropdown", but found "Input".',
+    );
+  });
+});
+
 describe('getInterface', () => {
   const rootControllerMessenger = getRootControllerMessenger();
   const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
@@ -577,6 +736,7 @@ describe('getInterface', () => {
       content: getJsxElementFromComponent(content),
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
+      selectInDropdown: expect.any(Function),
       ok: expect.any(Function),
     });
   });
@@ -603,6 +763,7 @@ describe('getInterface', () => {
       content: getJsxElementFromComponent(content),
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
+      selectInDropdown: expect.any(Function),
       ok: expect.any(Function),
     });
   });
@@ -686,6 +847,53 @@ describe('getInterface', () => {
             },
             id,
             context: null,
+          },
+        },
+      },
+    );
+  });
+
+  it('sends a request to the snap when `selectInDropdown` is called', async () => {
+    jest.spyOn(rootControllerMessenger, 'call');
+    const { store, runSaga } = createStore(getMockOptions());
+
+    const content = (
+      <Dropdown name="foo">
+        <DropdownOption value="option1">Option 1</DropdownOption>
+        <DropdownOption value="option2">Option 2</DropdownOption>
+      </Dropdown>
+    );
+    const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
+    const type = DialogType.Alert;
+    const ui = { type, id };
+
+    store.dispatch(setInterface(ui));
+
+    const result = await runSaga(
+      getInterface,
+      runSaga,
+      MOCK_SNAP_ID,
+      rootControllerMessenger,
+    ).toPromise();
+
+    await result.selectInDropdown('foo', 'option2');
+
+    expect(rootControllerMessenger.call).toHaveBeenCalledWith(
+      'ExecutionService:handleRpcRequest',
+      MOCK_SNAP_ID,
+      {
+        origin: '',
+        handler: HandlerType.OnUserInput,
+        request: {
+          jsonrpc: '2.0',
+          method: ' ',
+          params: {
+            event: {
+              type: UserInputEventType.InputChangeEvent,
+              name: 'foo',
+              value: 'option2',
+            },
+            id,
           },
         },
       },

@@ -96,6 +96,14 @@ export type SnapInterfaceActions = {
    * @param value - The value to type.
    */
   typeInField(name: string, value: string): Promise<void>;
+
+  /**
+   * Select an option with a value in a dropdown.
+   *
+   * @param name - The element name to type in.
+   * @param value - The value to type.
+   */
+  selectInDropdown(name: string, value: string): Promise<void>;
 };
 
 /**
