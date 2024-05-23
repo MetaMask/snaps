@@ -10,7 +10,7 @@ CHROME_BINARY="google-chrome-stable_${CHROME_VERSION}_amd64.deb"
 CHROME_BINARY_URL="https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/${CHROME_BINARY}"
 
 # To retrieve this checksum, run the `wget` and `shasum` commands below
-CHROME_BINARY_SHA512SUM='b5bc4a3ae20d60bf2fa05ae332d14892b3395c538572259a03ea2baf5a9293e71af23d37794cbc40c7378f9389fa76de07124df9df90831088df1411cd30855e'
+CHROME_BINARY_SHA512SUM='0c221bca2bfaf198018f8d1649da2ae3120e3a3e27dcf9c16170a6b05302728d28caf8af172bdd6e34b56d3b6cc7769b4a17def250c92a569871565d167dc866'
 
 wget -O "${CHROME_BINARY}" -t 5 "${CHROME_BINARY_URL}"
 
