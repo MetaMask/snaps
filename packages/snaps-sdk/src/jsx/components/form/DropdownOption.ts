@@ -1,7 +1,5 @@
 import { createSnapComponent } from '../../component';
 
-// TODO: Add the `onChange` prop to the `InputProps` type.
-
 /**
  * The props of the {@link Dropdown} component.
  *
