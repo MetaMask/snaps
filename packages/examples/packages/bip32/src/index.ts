@@ -81,7 +81,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       if (curve === 'ed25519' || curve === 'ed25519Bip32') {
         const signed = await signEd25519(
           stringToBytes(message),
-          remove0x(node.privateKey),
+          remove0x(node.privateKey).slice(0, 64),
         );
         return bytesToHex(signed);
       }
