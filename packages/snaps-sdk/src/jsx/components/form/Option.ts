@@ -1,7 +1,7 @@
 import { createSnapComponent } from '../../component';
 
 /**
- * The props of the {@link Dropdown} component.
+ * The props of the {@link Option} component.
  *
  * @property value - The value of the dropdown option. This is used to populate the
  * state in the form data.
@@ -33,8 +33,8 @@ const TYPE = 'Option';
 export const Option = createSnapComponent<OptionProps, typeof TYPE>(TYPE);
 
 /**
- * A dropdown element.
+ * A dropdown option element.
  *
- * @see Dropdown
+ * @see Option
  */
 export type OptionElement = ReturnType<typeof Option>;
