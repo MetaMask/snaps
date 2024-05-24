@@ -4,6 +4,7 @@ import type { HandlerType } from '@metamask/snaps-utils';
 import { unwrapError } from '@metamask/snaps-utils';
 import { getSafeJson, hasProperty, isPlainObject } from '@metamask/utils';
 import { nanoid } from '@reduxjs/toolkit';
+import { is } from 'superstruct';
 
 import type {
   RequestOptions,
@@ -20,6 +21,7 @@ import {
 } from './simulation';
 import type { RunSagaFunction, Store } from './simulation';
 import type { RootControllerMessenger } from './simulation/controllers';
+import { SnapResponseStruct } from './structs';
 
 export type HandleRequestOptions = {
   snapId: SnapId;
@@ -102,12 +104,24 @@ export function handleRequest({
     }) as unknown as SnapRequest;
 
   promise.getInterface = async () => {
-    return await runSaga(
+    const sagaPromise = runSaga(
       getInterface,
       runSaga,
       snapId,
       controllerMessenger,
     ).toPromise();
+    const result = await Promise.race([promise, sagaPromise]);
+
+    // If the request promise has resolved to an error, we should throw
+    // instead of waiting for an interface that likely will never be displayed
+    if (
+      is(result, SnapResponseStruct) &&
+      hasProperty(result.response, 'error')
+    ) {
+      throw result.response.error;
+    }
+
+    return await sagaPromise;
   };
 
   return promise;
