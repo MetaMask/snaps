@@ -8,7 +8,7 @@ import {
   Copyable,
   Divider,
   Dropdown,
-  DropdownOption,
+  Option,
   Field,
   Form,
   Heading,
@@ -210,8 +210,8 @@ describe('FieldStruct', () => {
     </Field>,
     <Field label="foo">
       <Dropdown name="foo">
-        <DropdownOption value="option1">Option 1</DropdownOption>
-        <DropdownOption value="option2">Option 2</DropdownOption>
+        <Option value="option1">Option 1</Option>
+        <Option value="option2">Option 2</Option>
       </Dropdown>
     </Field>,
   ])('validates a field element', (value) => {
@@ -708,8 +708,8 @@ describe('SpinnerStruct', () => {
 describe('Dropdown', () => {
   it.each([
     <Dropdown name="foo">
-      <DropdownOption value="option1">Option 1</DropdownOption>
-      <DropdownOption value="option2">Option 2</DropdownOption>
+      <Option value="option1">Option 1</Option>
+      <Option value="option2">Option 2</Option>
     </Dropdown>,
   ])('validates a dropdown element', (value) => {
     expect(is(value, DropdownStruct)).toBe(true);

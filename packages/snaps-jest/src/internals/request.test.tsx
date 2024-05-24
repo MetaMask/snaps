@@ -1,7 +1,7 @@
 import { SnapInterfaceController } from '@metamask/snaps-controllers';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { UserInputEventType, button, input, text } from '@metamask/snaps-sdk';
-import { Dropdown, DropdownOption } from '@metamask/snaps-sdk/jsx';
+import { Dropdown, Option } from '@metamask/snaps-sdk/jsx';
 import { getJsxElementFromComponent, HandlerType } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
@@ -345,8 +345,8 @@ describe('getInterfaceApi', () => {
 
     const content = (
       <Dropdown name="foo">
-        <DropdownOption value="option1">Option 1</DropdownOption>
-        <DropdownOption value="option2">Option 2</DropdownOption>
+        <Option value="option1">Option 1</Option>
+        <Option value="option2">Option 2</Option>
       </Dropdown>
     );
 

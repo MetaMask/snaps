@@ -1,8 +1,8 @@
 import { Button } from './Button';
 import { Dropdown } from './Dropdown';
-import { DropdownOption } from './DropdownOption';
 import { Field } from './Field';
 import { Input } from './Input';
+import { Option } from './Option';
 
 describe('Field', () => {
   it('renders a field element', () => {
@@ -93,8 +93,8 @@ describe('Field', () => {
     const result = (
       <Field label="Label">
         <Dropdown name="foo">
-          <DropdownOption value="option1">Option 1</DropdownOption>
-          <DropdownOption value="option2">Option 2</DropdownOption>
+          <Option value="option1">Option 1</Option>
+          <Option value="option2">Option 2</Option>
         </Dropdown>
       </Field>
     );
@@ -111,7 +111,7 @@ describe('Field', () => {
             name: 'foo',
             children: [
               {
-                type: 'DropdownOption',
+                type: 'Option',
                 key: null,
                 props: {
                   children: 'Option 1',
@@ -119,7 +119,7 @@ describe('Field', () => {
                 },
               },
               {
-                type: 'DropdownOption',
+                type: 'Option',
                 key: null,
                 props: {
                   children: 'Option 2',

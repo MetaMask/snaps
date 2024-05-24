@@ -5,13 +5,14 @@ import { createSnapComponent } from '../../component';
  *
  * @property value - The value of the dropdown option. This is used to populate the
  * state in the form data.
+ * @property children - The text to display.
  */
-type DropdownOptionProps = {
+type OptionProps = {
   value: string;
   children: string;
 };
 
-const TYPE = 'DropdownOption';
+const TYPE = 'Option';
 
 /**
  * A dropdown option component, which is used to create a dropdown option. This component
@@ -20,22 +21,20 @@ const TYPE = 'DropdownOption';
  * @param props - The props of the component.
  * @param props.value - The value of the dropdown option. This is used to populate the
  * state in the form data.
+ * @param props.children - The text to display.
  * @returns A dropdown option element.
  * @example
  * <Dropdown name="dropdown">
- *  <DropdownOption value="option1">Option 1</DropdownOption>
- *  <DropdownOption value="option2">Option 2</DropdownOption>
- *  <DropdownOption value="option3">Option 3</DropdownOption>
+ *  <Option value="option1">Option 1</Option>
+ *  <Option value="option2">Option 2</Option>
+ *  <Option value="option3">Option 3</Option>
  * </Dropdown>
  */
-export const DropdownOption = createSnapComponent<
-  DropdownOptionProps,
-  typeof TYPE
->(TYPE);
+export const Option = createSnapComponent<OptionProps, typeof TYPE>(TYPE);
 
 /**
  * A dropdown element.
  *
  * @see Dropdown
  */
-export type DropdownOptionElement = ReturnType<typeof DropdownOption>;
+export type OptionElement = ReturnType<typeof Option>;

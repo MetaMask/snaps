@@ -2,7 +2,7 @@ import {
   Box,
   Button,
   Dropdown,
-  DropdownOption,
+  Option,
   Field,
   Form,
   Input,
@@ -236,8 +236,8 @@ describe('constructState', () => {
     const element = (
       <Box>
         <Dropdown name="foo" value="option2">
-          <DropdownOption value="option1">Option 1</DropdownOption>
-          <DropdownOption value="option2">Option 2</DropdownOption>
+          <Option value="option1">Option 1</Option>
+          <Option value="option2">Option 2</Option>
         </Dropdown>
       </Box>
     );
@@ -254,8 +254,8 @@ describe('constructState', () => {
         <Form name="form">
           <Field label="foo">
             <Dropdown name="foo" value="option2">
-              <DropdownOption value="option1">Option 1</DropdownOption>
-              <DropdownOption value="option2">Option 2</DropdownOption>
+              <Option value="option1">Option 1</Option>
+              <Option value="option2">Option 2</Option>
             </Dropdown>
           </Field>
         </Form>

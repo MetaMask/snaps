@@ -13,7 +13,7 @@ import {
   Button,
   Text,
   Dropdown,
-  DropdownOption,
+  Option,
   Box,
   Input,
 } from '@metamask/snaps-sdk/jsx';
@@ -587,8 +587,8 @@ describe('selectInDropdown', () => {
 
     const content = (
       <Dropdown name="foo">
-        <DropdownOption value="option1">Option 1</DropdownOption>
-        <DropdownOption value="option2">Option 2</DropdownOption>
+        <Option value="option1">Option 1</Option>
+        <Option value="option2">Option 2</Option>
       </Dropdown>
     );
 
@@ -634,8 +634,8 @@ describe('selectInDropdown', () => {
   it('throws if selected option does not exist', async () => {
     const content = (
       <Dropdown name="foo">
-        <DropdownOption value="option1">Option 1</DropdownOption>
-        <DropdownOption value="option2">Option 2</DropdownOption>
+        <Option value="option1">Option 1</Option>
+        <Option value="option2">Option 2</Option>
       </Dropdown>
     );
 
@@ -860,8 +860,8 @@ describe('getInterface', () => {
 
     const content = (
       <Dropdown name="foo">
-        <DropdownOption value="option1">Option 1</DropdownOption>
-        <DropdownOption value="option2">Option 2</DropdownOption>
+        <Option value="option1">Option 1</Option>
+        <Option value="option2">Option 2</Option>
       </Dropdown>
     );
     const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);

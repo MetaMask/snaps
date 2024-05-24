@@ -39,7 +39,7 @@ import type {
   CopyableElement,
   DividerElement,
   DropdownElement,
-  DropdownOptionElement,
+  OptionElement,
   FieldElement,
   FormElement,
   HeadingElement,
@@ -129,15 +129,12 @@ export const InputStruct: Describe<InputElement> = element('Input', {
 });
 
 /**
- * A struct for the {@link DropdownOptionElement} type.
+ * A struct for the {@link OptionElement} type.
  */
-export const DropdownOptionStruct: Describe<DropdownOptionElement> = element(
-  'DropdownOption',
-  {
-    value: string(),
-    children: string(),
-  },
-);
+export const OptionStruct: Describe<OptionElement> = element('Option', {
+  value: string(),
+  children: string(),
+});
 
 /**
  * A struct for the {@link DropdownElement} type.
@@ -145,7 +142,7 @@ export const DropdownOptionStruct: Describe<DropdownOptionElement> = element(
 export const DropdownStruct: Describe<DropdownElement> = element('Dropdown', {
   name: string(),
   value: optional(string()),
-  children: maybeArray(DropdownOptionStruct),
+  children: maybeArray(OptionStruct),
 });
 
 /**
@@ -347,7 +344,7 @@ export const JSXElementStruct: Describe<JSXElement> = nullUnion([
   SpinnerStruct,
   TextStruct,
   DropdownStruct,
-  DropdownOptionStruct,
+  OptionStruct,
 ]);
 
 /**
