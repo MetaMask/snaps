@@ -43,12 +43,16 @@ describe('onRpcRequest', () => {
 
       await formScreen.typeInField('example-input', 'foobar');
 
+      await formScreen.selectInDropdown('example-dropdown', 'option3');
+
       await formScreen.clickElement('submit');
 
       const resultScreen = await response.getInterface();
 
       expect(resultScreen).toRender(
-        <Result values={{ 'example-input': 'foobar' }} />,
+        <Result
+          values={{ 'example-input': 'foobar', 'example-dropdown': 'option3' }}
+        />,
       );
       await resultScreen.ok();
 
@@ -72,7 +76,7 @@ describe('onRpcRequest', () => {
       const resultScreen = await response.getInterface();
 
       expect(resultScreen).toRender(
-        <Result values={{ 'example-input': '' }} />,
+        <Result values={{ 'example-input': '', 'example-dropdown': '' }} />,
       );
       await resultScreen.ok();
 
@@ -93,12 +97,16 @@ describe('onHomePage', () => {
 
     await formScreen.typeInField('example-input', 'foobar');
 
+    await formScreen.selectInDropdown('example-dropdown', 'option3');
+
     await formScreen.clickElement('submit');
 
     const resultScreen = response.getInterface();
 
     expect(resultScreen).toRender(
-      <Result values={{ 'example-input': 'foobar' }} />,
+      <Result
+        values={{ 'example-input': 'foobar', 'example-dropdown': 'option3' }}
+      />,
     );
   });
 });

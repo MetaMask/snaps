@@ -16,6 +16,7 @@ import {
   getInterface,
   getNotifications,
   typeInField,
+  selectInDropdown,
 } from './simulation';
 import type { RunSagaFunction, Store } from './simulation';
 import type { RootControllerMessenger } from './simulation/controllers';
@@ -182,6 +183,16 @@ export async function getInterfaceApi(
         },
         typeInField: async (name, value) => {
           await typeInField(
+            controllerMessenger,
+            interfaceId,
+            content,
+            snapId,
+            name,
+            value,
+          );
+        },
+        selectInDropdown: async (name, value) => {
+          await selectInDropdown(
             controllerMessenger,
             interfaceId,
             content,

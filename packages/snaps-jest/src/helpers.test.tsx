@@ -403,6 +403,7 @@ describe('installSnap', () => {
         content: <Text>Hello, world!</Text>,
         clickElement: expect.any(Function),
         typeInField: expect.any(Function),
+        selectInDropdown: expect.any(Function),
         ok: expect.any(Function),
         cancel: expect.any(Function),
       });
@@ -461,6 +462,7 @@ describe('installSnap', () => {
         content: <Text>Hello, world!</Text>,
         clickElement: expect.any(Function),
         typeInField: expect.any(Function),
+        selectInDropdown: expect.any(Function),
         ok: expect.any(Function),
         cancel: expect.any(Function),
       });
@@ -518,6 +520,7 @@ describe('installSnap', () => {
         content: <Text>Hello, world!</Text>,
         clickElement: expect.any(Function),
         typeInField: expect.any(Function),
+        selectInDropdown: expect.any(Function),
         ok: expect.any(Function),
       });
 

@@ -7,6 +7,7 @@ import type {
 } from '@metamask/snaps-sdk';
 import type {
   ButtonElement,
+  DropdownElement,
   FieldElement,
   InputElement,
   JSXElement,
@@ -54,7 +55,10 @@ export function assertNameIsUnique(state: InterfaceState, name: string) {
  * @param element - The input element.
  * @returns The input state.
  */
-function constructInputState(oldState: InterfaceState, element: InputElement) {
+function constructInputState(
+  oldState: InterfaceState,
+  element: InputElement | DropdownElement,
+) {
   return element.props.value ?? oldState[element.props.name] ?? null;
 }
 
@@ -68,7 +72,7 @@ function constructInputState(oldState: InterfaceState, element: InputElement) {
  */
 function constructFormInputState(
   oldState: InterfaceState,
-  component: InputElement,
+  component: InputElement | DropdownElement,
   form: string,
 ) {
   const oldFormState = oldState[form] as FormState;
@@ -159,7 +163,7 @@ export function constructState(
     return newState;
   }
 
-  if (component.type === 'Input') {
+  if (component.type === 'Input' || component.type === 'Dropdown') {
     assertNameIsUnique(newState, component.props.name);
     newState[component.props.name] = constructInputState(oldState, component);
   }

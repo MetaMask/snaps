@@ -7,6 +7,8 @@ import {
   Button,
   Copyable,
   Divider,
+  Dropdown,
+  Option,
   Field,
   Form,
   Heading,
@@ -26,6 +28,7 @@ import {
   ButtonStruct,
   CopyableStruct,
   DividerStruct,
+  DropdownStruct,
   ElementStruct,
   FieldStruct,
   FormStruct,
@@ -204,6 +207,12 @@ describe('FieldStruct', () => {
     </Field>,
     <Field error="bar">
       <Input name="foo" type="text" />
+    </Field>,
+    <Field label="foo">
+      <Dropdown name="foo">
+        <Option value="option1">Option 1</Option>
+        <Option value="option2">Option 2</Option>
+      </Dropdown>
     </Field>,
   ])('validates a field element', (value) => {
     expect(is(value, FieldStruct)).toBe(true);
@@ -693,6 +702,37 @@ describe('SpinnerStruct', () => {
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, SpinnerStruct)).toBe(false);
+  });
+});
+
+describe('Dropdown', () => {
+  it.each([
+    <Dropdown name="foo">
+      <Option value="option1">Option 1</Option>
+      <Option value="option2">Option 2</Option>
+    </Dropdown>,
+  ])('validates a dropdown element', (value) => {
+    expect(is(value, DropdownStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <Spinner>foo</Spinner>,
+    <Text>foo</Text>,
+    <Box>
+      <Text>foo</Text>
+    </Box>,
+    <Row label="label">
+      <Image src="src" alt="alt" />
+    </Row>,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, DropdownStruct)).toBe(false);
   });
 });
 

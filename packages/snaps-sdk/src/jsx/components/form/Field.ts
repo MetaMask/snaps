@@ -1,5 +1,6 @@
 import { createSnapComponent } from '../../component';
 import type { ButtonElement } from './Button';
+import type { DropdownElement } from './Dropdown';
 import type { InputElement } from './Input';
 
 /**
@@ -12,7 +13,7 @@ import type { InputElement } from './Input';
 export type FieldProps = {
   label?: string | undefined;
   error?: string | undefined;
-  children: [InputElement, ButtonElement] | InputElement;
+  children: [InputElement, ButtonElement] | InputElement | DropdownElement;
 };
 
 const TYPE = 'Field';
