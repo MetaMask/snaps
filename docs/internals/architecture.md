@@ -1,7 +1,15 @@
 # Architecture
 
-Below is a sequence diagram of the architecture of the Metamask Snaps system. It
-shows the flow of a request from a dapp to a snap, and back.
+## Entity diagram
+
+This entity diagram illustrates the "backend" components of the Snaps system
+and how they communicate with each other.
+
+![MetaMask Snaps Architecture](https://github.com/MetaMask/snaps/assets/25517051/4e2ba193-7245-4400-9b29-92b13ccb9cd1)
+
+## Sequence diagram
+
+This sequence diagram illustrates the flow of a request from a dapp to a Snap, and back.
 
 ```mermaid
 sequenceDiagram
