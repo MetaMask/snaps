@@ -52,6 +52,7 @@ import type {
   SpinnerElement,
   StandardFormattingElement,
   TextElement,
+  DoubleValueElement,
 } from './components';
 
 /**
@@ -246,6 +247,17 @@ export const CopyableStruct: Describe<CopyableElement> = element('Copyable', {
 export const DividerStruct: Describe<DividerElement> = element('Divider');
 
 /**
+ * A struct for the {@link DoubleValueElement} type.
+ */
+export const DoubleValueStruct: Describe<DoubleValueElement> = element(
+  'DoubleValue',
+  {
+    left: string(),
+    right: string(),
+  },
+);
+
+/**
  * A struct for the {@link HeadingElement} type.
  */
 export const HeadingStruct: Describe<HeadingElement> = element('Heading', {
@@ -282,7 +294,12 @@ export const TextStruct: Describe<TextElement> = element('Text', {
  */
 export const RowStruct: Describe<RowElement> = element('Row', {
   label: string(),
-  children: nullUnion([AddressStruct, ImageStruct, TextStruct]),
+  children: nullUnion([
+    AddressStruct,
+    ImageStruct,
+    TextStruct,
+    DoubleValueStruct,
+  ]),
   variant: optional(
     nullUnion([literal('default'), literal('warning'), literal('error')]),
   ),
@@ -345,6 +362,7 @@ export const JSXElementStruct: Describe<JSXElement> = nullUnion([
   TextStruct,
   DropdownStruct,
   OptionStruct,
+  DoubleValueStruct,
 ]);
 
 /**

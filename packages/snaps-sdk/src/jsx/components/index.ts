@@ -1,3 +1,5 @@
+import type { DoubleValueElement } from '@metamask/snaps-sdk/jsx-runtime';
+
 import type { AddressElement } from './Address';
 import type { BoxElement } from './Box';
 import type { CopyableElement } from './Copyable';
@@ -17,6 +19,7 @@ export * from './Address';
 export * from './Box';
 export * from './Copyable';
 export * from './Divider';
+export * from './DoubleValue';
 export * from './Heading';
 export * from './Image';
 export * from './Link';
@@ -34,6 +37,7 @@ export type JSXElement =
   | BoxElement
   | CopyableElement
   | DividerElement
+  | DoubleValueElement
   | HeadingElement
   | ImageElement
   | LinkElement

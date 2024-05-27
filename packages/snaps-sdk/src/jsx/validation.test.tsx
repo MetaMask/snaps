@@ -19,6 +19,7 @@ import {
   Row,
   Spinner,
   Text,
+  DoubleValue,
 } from './components';
 import {
   AddressStruct,
@@ -44,6 +45,7 @@ import {
   SpinnerStruct,
   StringElementStruct,
   TextStruct,
+  DoubleValueStruct,
 } from './validation';
 
 describe('KeyStruct', () => {
@@ -451,6 +453,9 @@ describe('BoxStruct', () => {
         <Input name="foo" />
       </Field>
     </Box>,
+    <Box>
+      <DoubleValue left="foo" right="bar" />
+    </Box>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, BoxStruct)).toBe(false);
   });
@@ -510,6 +515,37 @@ describe('DividerStruct', () => {
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, DividerStruct)).toBe(false);
+  });
+});
+
+describe('DoubleValueStruct', () => {
+  it.each([<DoubleValue left="foo" right="bar" />])(
+    'validates a double value element',
+    (value) => {
+      expect(is(value, DoubleValueStruct)).toBe(true);
+    },
+  );
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <DoubleValue />,
+    // @ts-expect-error - Invalid props.
+    <DoubleValue left="foo" />,
+    <Text>foo</Text>,
+    <Box>
+      <Text>foo</Text>
+    </Box>,
+    <Row label="label">
+      <Image src="src" alt="alt" />
+    </Row>,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, DoubleValueStruct)).toBe(false);
   });
 });
 
@@ -649,6 +685,9 @@ describe('RowStruct', () => {
     </Row>,
     <Row label="label" variant="default">
       <Address address="0x1234567890abcdef1234567890abcdef12345678" />
+    </Row>,
+    <Row label="label" variant="default">
+      <DoubleValue left="foo" right="bar" />
     </Row>,
   ])('validates a row element', (value) => {
     expect(is(value, RowStruct)).toBe(true);
