@@ -14,7 +14,8 @@ export type DoubleValueProps = {
 const TYPE = 'DoubleValue';
 
 /**
- * An double value component, which can be used to display two different text values in a row.
+ * An double value component, which can be used to display two different text values side by side.
+ * This component can only be used as a child of the {@link Row} component.
  *
  * This component does not accept any children.
  *
