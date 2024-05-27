@@ -2,6 +2,9 @@ name: Build, Lint, and Test
 
 on:
   workflow_call:
+    secrets:
+      CODECOV_TOKEN:
+        required: true
 
 jobs:
   prepare:
@@ -254,9 +257,10 @@ jobs:
           pattern: coverage-*
           merge-multiple: true
       - name: Upload coverage results
-        uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70
+        uses: codecov/codecov-action@6d798873df2b1b8e5846dba6fb86631229fbcb17
         with:
           files: packages/**/coverage-final.json
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   test-e2e:
     name: E2E Test
