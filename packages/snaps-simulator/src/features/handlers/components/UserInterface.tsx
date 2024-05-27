@@ -24,7 +24,7 @@ export const UserInterface: FunctionComponent = () => {
     return null;
   }
 
-  console.log(ui.id);
+  console.log(ui);
   const { snapName, snapId, type, id } = ui;
 
   switch (type) {
