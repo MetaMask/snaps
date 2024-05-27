@@ -9,7 +9,7 @@ import { getSnapId } from '../../../../utils';
 import { BIP_32_PORT, BIP_32_SNAP_ID } from '../constants';
 
 export type SignMessageProps = {
-  curve: 'secp256k1' | 'ed25519';
+  curve: 'secp256k1' | 'ed25519' | 'ed25519Bip32';
 };
 
 export const SignMessage: FunctionComponent<SignMessageProps> = ({ curve }) => {

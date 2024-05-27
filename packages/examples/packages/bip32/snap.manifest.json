@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "GVN0FD0c4xnr+osY4rjRvF/KSGBgVC2fccbLwzGoFnk=",
+    "shasum": "VTYKPC0W5V/eIRyWm3BWx596kB2yHcAtduJKwfZM9mg=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -38,6 +38,14 @@
           "0'"
         ],
         "curve": "ed25519"
+      },
+      {
+        "path": [
+          "m",
+          "44'",
+          "0'"
+        ],
+        "curve": "ed25519Bip32"
       }
     ],
     "snap_getBip32PublicKey": [

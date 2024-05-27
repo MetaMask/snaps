@@ -13,7 +13,7 @@ export type GetBip32PublicKeyParams = {
   /**
    * The curve used to derive the account.
    */
-  curve: 'secp256k1' | 'ed25519';
+  curve: 'secp256k1' | 'ed25519' | 'ed25519Bip32';
 
   /**
    * Whether to return the public key in compressed form.
@@ -46,5 +46,5 @@ export type SignMessageParams = {
   /**
    * The curve used to derive the account.
    */
-  curve: 'secp256k1' | 'ed25519';
+  curve: 'secp256k1' | 'ed25519' | 'ed25519Bip32';
 };

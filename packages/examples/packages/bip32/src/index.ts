@@ -54,7 +54,11 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       const node = await getPrivateNode({ ...params, curve });
 
       assert(node.privateKey);
-      assert(curve === 'ed25519' || curve === 'secp256k1');
+      assert(
+        curve === 'ed25519' ||
+          curve === 'ed25519Bip32' ||
+          curve === 'secp256k1',
+      );
 
       const approved = await snap.request({
         method: 'snap_dialog',
@@ -74,10 +78,10 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         throw new UserRejectedRequestError();
       }
 
-      if (curve === 'ed25519') {
+      if (curve === 'ed25519' || curve === 'ed25519Bip32') {
         const signed = await signEd25519(
           stringToBytes(message),
-          remove0x(node.privateKey),
+          remove0x(node.privateKey).slice(0, 64),
         );
         return bytesToHex(signed);
       }
