@@ -260,7 +260,7 @@ const toRenderLegacy: MatcherFunction<[expected: Component]> = function (
   // This is typed as `string | null`, but in practice it's always a string.
   // The function only returns `null` if both the expected and actual values
   // are numbers, bigints, or booleans, which is never the case here.
-  const difference = diff(actual, expectedElement) as string;
+  const difference = diff(expectedElement, content) as string;
 
   const message = pass
     ? () =>
