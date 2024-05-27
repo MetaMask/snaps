@@ -2,7 +2,6 @@ import type { AddressElement } from './Address';
 import type { BoxElement } from './Box';
 import type { CopyableElement } from './Copyable';
 import type { DividerElement } from './Divider';
-import type { DoubleValueElement } from './DoubleValue';
 import type { StandardFormElement } from './form';
 import type { StandardFormattingElement } from './formatting';
 import type { HeadingElement } from './Heading';
@@ -11,6 +10,7 @@ import type { LinkElement } from './Link';
 import type { RowElement } from './Row';
 import type { SpinnerElement } from './Spinner';
 import type { TextElement } from './Text';
+import type { ValueElement } from './Value';
 
 export * from './form';
 export * from './formatting';
@@ -18,7 +18,7 @@ export * from './Address';
 export * from './Box';
 export * from './Copyable';
 export * from './Divider';
-export * from './DoubleValue';
+export * from './Value';
 export * from './Heading';
 export * from './Image';
 export * from './Link';
@@ -36,7 +36,7 @@ export type JSXElement =
   | BoxElement
   | CopyableElement
   | DividerElement
-  | DoubleValueElement
+  | ValueElement
   | HeadingElement
   | ImageElement
   | LinkElement
