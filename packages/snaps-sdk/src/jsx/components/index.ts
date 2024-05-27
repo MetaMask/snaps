@@ -1,9 +1,8 @@
-import type { DoubleValueElement } from '@metamask/snaps-sdk/jsx-runtime';
-
 import type { AddressElement } from './Address';
 import type { BoxElement } from './Box';
 import type { CopyableElement } from './Copyable';
 import type { DividerElement } from './Divider';
+import type { DoubleValueElement } from './DoubleValue';
 import type { StandardFormElement } from './form';
 import type { StandardFormattingElement } from './formatting';
 import type { HeadingElement } from './Heading';
