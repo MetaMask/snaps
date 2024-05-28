@@ -520,7 +520,7 @@ describe('DividerStruct', () => {
 
 describe('ValueStruct', () => {
   it.each([<Value extra="foo" value="bar" />])(
-    'validates a double value element',
+    'validates a value element',
     (value) => {
       expect(is(value, ValueStruct)).toBe(true);
     },

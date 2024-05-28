@@ -3,7 +3,8 @@ import { createSnapComponent } from '../component';
 /**
  * The props of the {@link Value} component.
  *
- *
+ * @property value - The value shown on the right side.
+ * @property extra - The extra text shown on the left side.
  */
 export type ValueProps = {
   value: string;
