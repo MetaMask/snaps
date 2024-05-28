@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.2.0]
+### Added
+- Add `context` field to `snap_createInterface` ([#2413](https://github.com/MetaMask/snaps/pull/2413))
+- Add feature flag to disable platform ([#2434](https://github.com/MetaMask/snaps/pull/2434))
+- Add support for `Dropdown` component ([#2420](https://github.com/MetaMask/snaps/pull/2420))
+- Add `initialConnections` diff calculations needed for Snap update ([#2424](https://github.com/MetaMask/snaps/pull/2424))
+
+### Fixed
+- Correctly merge caveats when using initial connections ([#2419](https://github.com/MetaMask/snaps/pull/2419))
+
 ## [8.1.1]
 ### Fixed
 - Re-instantiate preinstalled Snaps after clearing state ([#2393](https://github.com/MetaMask/snaps/pull/2393))
@@ -261,7 +271,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.1.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.2.0...HEAD
+[8.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.1.1...@metamask/snaps-controllers@8.2.0
 [8.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.1.0...@metamask/snaps-controllers@8.1.1
 [8.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.0.0...@metamask/snaps-controllers@8.1.0
 [8.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@7.0.1...@metamask/snaps-controllers@8.0.0
