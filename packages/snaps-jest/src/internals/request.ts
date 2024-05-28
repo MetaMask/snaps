@@ -1,5 +1,5 @@
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
-import type { SnapId, Component } from '@metamask/snaps-sdk';
+import type { SnapId, Component, JsonRpcError } from '@metamask/snaps-sdk';
 import type { HandlerType } from '@metamask/snaps-utils';
 import { unwrapError } from '@metamask/snaps-utils';
 import { getSafeJson, hasProperty, isPlainObject } from '@metamask/utils';
@@ -118,7 +118,11 @@ export function handleRequest({
       is(result, SnapResponseStruct) &&
       hasProperty(result.response, 'error')
     ) {
-      throw result.response.error;
+      throw new Error(
+        `Unable to get the interface from the Snap: The returned interface may be invalid. The error message received was: ${
+          (result.response.error as JsonRpcError).message
+        }`,
+      );
     }
 
     return await sagaPromise;
