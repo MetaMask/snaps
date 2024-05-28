@@ -572,6 +572,10 @@ type FeatureFlags = {
   allowLocalSnaps?: boolean;
 };
 
+type DynamicFeatureFlags = {
+  disableSnaps?: boolean;
+};
+
 type SnapControllerArgs = {
   /**
    * A teardown function that allows the host to clean up its instrumentation
@@ -661,6 +665,13 @@ type SnapControllerArgs = {
    * @returns The mnemonic as bytes.
    */
   getMnemonic: () => Promise<Uint8Array>;
+
+  /**
+   * A hook to get dynamic feature flags at runtime.
+   *
+   * @returns The feature flags.
+   */
+  getFeatureFlags: () => DynamicFeatureFlags;
 };
 type AddSnapArgs = {
   id: SnapId;
@@ -745,6 +756,8 @@ export class SnapController extends BaseController<
 
   #getMnemonic: () => Promise<Uint8Array>;
 
+  #getFeatureFlags: () => DynamicFeatureFlags;
+
   #detectSnapLocation: typeof detectSnapLocation;
 
   #snapsRuntimeData: Map<SnapId, SnapRuntimeData>;
@@ -777,6 +790,7 @@ export class SnapController extends BaseController<
     preinstalledSnaps = null,
     encryptor,
     getMnemonic,
+    getFeatureFlags = () => ({}),
   }: SnapControllerArgs) {
     super({
       messenger,
@@ -831,6 +845,7 @@ export class SnapController extends BaseController<
     this.#detectSnapLocation = detectSnapLocationFunction;
     this.#encryptor = encryptor;
     this.#getMnemonic = getMnemonic;
+    this.#getFeatureFlags = getFeatureFlags;
     this.#preinstalledSnaps = preinstalledSnaps;
     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
     this._onOutboundRequest = this._onOutboundRequest.bind(this);
@@ -1166,6 +1181,7 @@ export class SnapController extends BaseController<
    * for more information.
    */
   async updateBlockedSnaps(): Promise<void> {
+    this.#assertCanUsePlatform();
     await this.messagingSystem.call('SnapsRegistry:update');
 
     const blockedSnaps = await this.messagingSystem.call(
@@ -1286,6 +1302,17 @@ export class SnapController extends BaseController<
     }
   }
 
+  /**
+   * Asserts whether the Snaps platform is allowed to run.
+   */
+  #assertCanUsePlatform() {
+    const flags = this.#getFeatureFlags();
+    assert(
+      flags.disableSnaps !== true,
+      'The Snaps platform requires basic functionality to be used. Enable basic functionality in the settings to use the Snaps platform.',
+    );
+  }
+
   async #stopSnapsLastRequestPastMax() {
     const entries = [...this.#snapsRuntimeData.entries()];
     return Promise.all(
@@ -1358,6 +1385,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap to start.
    */
   async startSnap(snapId: SnapId): Promise<void> {
+    this.#assertCanUsePlatform();
     const snap = this.state.snaps[snapId];
 
     if (snap.enabled === false) {
@@ -2094,6 +2122,8 @@ export class SnapController extends BaseController<
     origin: string,
     requestedSnaps: RequestSnapsParams,
   ): Promise<RequestSnapsResult> {
+    this.#assertCanUsePlatform();
+
     const result: RequestSnapsResult = {};
 
     const snapIds = Object.keys(requestedSnaps);
@@ -2369,6 +2399,7 @@ export class SnapController extends BaseController<
     newVersionRange: string = DEFAULT_REQUESTED_SNAP_VERSION,
     emitEvent = true,
   ): Promise<TruncatedSnap> {
+    this.#assertCanUsePlatform();
     if (!isValidSemVerRange(newVersionRange)) {
       throw new Error(
         `Received invalid snap version range: "${newVersionRange}".`,
@@ -2563,6 +2594,7 @@ export class SnapController extends BaseController<
   async getRegistryMetadata(
     snapId: SnapId,
   ): Promise<SnapsRegistryMetadata | null> {
+    this.#assertCanUsePlatform();
     return await this.messagingSystem.call('SnapsRegistry:getMetadata', snapId);
   }
 
@@ -2964,6 +2996,8 @@ export class SnapController extends BaseController<
     handler: handlerType,
     request: rawRequest,
   }: SnapRpcHookArgs & { snapId: SnapId }): Promise<unknown> {
+    this.#assertCanUsePlatform();
+
     const request = {
       jsonrpc: '2.0',
       id: nanoid(),
