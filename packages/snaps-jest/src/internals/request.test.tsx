@@ -135,7 +135,7 @@ describe('handleRequest', () => {
     expect(() =>
       (response as SnapResponseWithInterface).getInterface(),
     ).toThrow(
-      'Unable to get the interface from the Snap: The returned interface may be invalid.',
+      'Unable to get the interface from the Snap: The request to the Snap failed.',
     );
 
     await closeServer();

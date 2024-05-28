@@ -74,7 +74,7 @@ export function handleRequest({
 }: HandleRequestOptions): SnapRequest {
   const getInterfaceError = () => {
     throw new Error(
-      'Unable to get the interface from the Snap: The returned interface may be invalid.',
+      'Unable to get the interface from the Snap: The request to the Snap failed.',
     );
   };
 
