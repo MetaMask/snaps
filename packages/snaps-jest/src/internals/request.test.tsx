@@ -10,6 +10,7 @@ import {
   getRestrictedSnapInterfaceControllerMessenger,
   getRootControllerMessenger,
 } from '../test-utils';
+import type { SnapResponseWithInterface } from '../types';
 import {
   getInterfaceApi,
   getInterfaceFromResult,
@@ -97,6 +98,80 @@ describe('handleRequest', () => {
     await snap.executionService.terminateAllSnaps();
   });
 
+  it('gracefully handles returned invalid UI', async () => {
+    const controllerMessenger = getRootControllerMessenger();
+
+    const { snapId, close: closeServer } = await getMockServer({
+      sourceCode: `
+        module.exports.onHomePage = async (request) => {
+          return ({ content: 'foo' });
+        };
+      `,
+      port: 4242,
+    });
+
+    const snap = await handleInstallSnap(snapId);
+    const response = await handleRequest({
+      ...snap,
+      controllerMessenger,
+      handler: HandlerType.OnHomePage,
+      request: {
+        method: '',
+      },
+    });
+
+    expect(response).toStrictEqual({
+      id: expect.any(String),
+      response: {
+        error: expect.objectContaining({
+          code: -32603,
+          message: 'The Snap returned an invalid interface.',
+        }),
+      },
+      notifications: [],
+      getInterface: expect.any(Function),
+    });
+
+    expect(() =>
+      (response as SnapResponseWithInterface).getInterface(),
+    ).toThrow(
+      'Unable to get the interface from the Snap: The request to the Snap failed.',
+    );
+
+    await closeServer();
+    await snap.executionService.terminateAllSnaps();
+  });
+
+  it('gracefully handles returned invalid UI when not awaiting the request', async () => {
+    const controllerMessenger = getRootControllerMessenger();
+
+    const { snapId, close: closeServer } = await getMockServer({
+      sourceCode: `
+        module.exports.onHomePage = async (request) => {
+          return ({ content: 'foo' });
+        };
+      `,
+      port: 4242,
+    });
+
+    const snap = await handleInstallSnap(snapId);
+    const promise = handleRequest({
+      ...snap,
+      controllerMessenger,
+      handler: HandlerType.OnHomePage,
+      request: {
+        method: '',
+      },
+    });
+
+    await expect(promise.getInterface()).rejects.toThrow(
+      'Unable to get the interface from the Snap: The returned interface may be invalid. The error message received was: The Snap returned an invalid interface.',
+    );
+
+    await closeServer();
+    await snap.executionService.terminateAllSnaps();
+  });
+
   it('returns an error response', async () => {
     const { snapId, close: closeServer } = await getMockServer({
       sourceCode: `
@@ -125,6 +200,7 @@ describe('handleRequest', () => {
         }),
       },
       notifications: [],
+      getInterface: expect.any(Function),
     });
 
     await closeServer();
