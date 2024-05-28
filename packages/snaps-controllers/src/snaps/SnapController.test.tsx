@@ -908,6 +908,46 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
+  it('throws an error if the platform is disabled during installSnaps', async () => {
+    const controller = getSnapController(
+      getSnapControllerOptions({
+        getFeatureFlags: () => ({ disableSnaps: true }),
+      }),
+    );
+
+    await expect(
+      controller.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: {},
+      }),
+    ).rejects.toThrow(
+      'The Snaps platform requires basic functionality to be used. Enable basic functionality in the settings to use the Snaps platform.',
+    );
+
+    controller.destroy();
+  });
+
+  it('throws an error if the platform is disabled during handleRequest', async () => {
+    const controller = getSnapController(
+      getSnapControllerOptions({
+        getFeatureFlags: () => ({ disableSnaps: true }),
+        state: getPersistedSnapsState(),
+      }),
+    );
+
+    await expect(
+      controller.handleRequest({
+        snapId: MOCK_SNAP_ID,
+        origin: MOCK_ORIGIN,
+        handler: HandlerType.OnRpcRequest,
+        request: { method: 'foo' },
+      }),
+    ).rejects.toThrow(
+      'The Snaps platform requires basic functionality to be used. Enable basic functionality in the settings to use the Snaps platform.',
+    );
+
+    controller.destroy();
+  });
+
   it('throws an error on invalid semver range during installSnaps', async () => {
     const controller = getSnapController();
 
