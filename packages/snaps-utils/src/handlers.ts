@@ -82,6 +82,13 @@ export const SNAP_EXPORTS = {
       return typeof snapExport === 'function';
     },
   },
+  [HandlerType.OnAccountsChainRequest]: {
+    type: HandlerType.OnAccountsChainRequest,
+    required: true,
+    validator: (snapExport: unknown): snapExport is OnUserInputHandler => {
+      return typeof snapExport === 'function';
+    },
+  },
   [HandlerType.OnHomePage]: {
     type: HandlerType.OnHomePage,
     required: true,
