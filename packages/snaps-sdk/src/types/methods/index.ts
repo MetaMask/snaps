@@ -9,6 +9,7 @@ export * from './get-file';
 export * from './get-interface-state';
 export * from './get-locale';
 export * from './get-snaps';
+export * from './invoke-accounts-snap';
 export * from './invoke-keyring';
 export * from './invoke-snap';
 export * from './manage-accounts';
