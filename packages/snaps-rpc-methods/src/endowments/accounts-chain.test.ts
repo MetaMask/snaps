@@ -4,7 +4,6 @@ import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   getAccountsChainCaveatMapper,
   getAccountsChainCaveatOrigins,
-  accountsChainCaveatSpecifications,
   accountsChainEndowmentBuilder,
 } from './accounts-chain';
 import { SnapEndowments } from './enum';
@@ -20,6 +19,7 @@ describe('endowment:accounts-chain', () => {
       endowmentGetter: expect.any(Function),
       allowedCaveats: [
         SnapCaveatType.KeyringOrigin,
+        SnapCaveatType.ChainIds,
         SnapCaveatType.MaxRequestTime,
       ],
       subjectTypes: [SubjectType.Snap],
@@ -109,35 +109,5 @@ describe('getAccountsChainCaveatOrigins', () => {
         ],
       }),
     ).toThrow('Assertion failed.');
-  });
-});
-
-describe('keyringCaveatSpecifications', () => {
-  describe('validator', () => {
-    it('throws if the caveat values are invalid', () => {
-      expect(() =>
-        accountsChainCaveatSpecifications[
-          SnapCaveatType.KeyringOrigin
-        ].validator?.(
-          // @ts-expect-error Missing value type.
-          {
-            type: SnapCaveatType.KeyringOrigin,
-          },
-        ),
-      ).toThrow('Invalid keyring origins: Expected a plain object.');
-
-      expect(() =>
-        accountsChainCaveatSpecifications[
-          SnapCaveatType.KeyringOrigin
-        ].validator?.({
-          type: SnapCaveatType.KeyringOrigin,
-          value: {
-            foo: 'bar',
-          },
-        }),
-      ).toThrow(
-        'Invalid keyring origins: At path: foo -- Expected a value of type `never`, but received: `"bar"`.',
-      );
-    });
   });
 });
