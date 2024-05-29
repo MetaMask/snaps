@@ -199,6 +199,12 @@ export const PermissionsStruct: Describe<InitialPermissions> = type({
   'endowment:keyring': optional(
     assign(HandlerCaveatsStruct, KeyringOriginsStruct),
   ),
+  'endowment:accounts-chain': optional(
+    assign(
+      HandlerCaveatsStruct,
+      assign(KeyringOriginsStruct, object({ chains: ChainIdsStruct })),
+    ),
+  ),
   'endowment:lifecycle-hooks': optional(HandlerCaveatsStruct),
   'endowment:name-lookup': optional(
     assign(
