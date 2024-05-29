@@ -20,11 +20,12 @@ export const UserInterface: FunctionComponent = () => {
     tab.setSelectedIndex(1);
   }, [tab]);
 
+  console.log(ui);
+
   if (!ui?.id) {
     return null;
   }
 
-  console.log(ui);
   const { snapName, snapId, type, id } = ui;
 
   switch (type) {

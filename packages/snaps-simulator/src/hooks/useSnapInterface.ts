@@ -13,6 +13,9 @@ export const useSnapInterface = (snapId: string, interfaceId: string) => {
   );
 
   useEffect(() => {
+    if (!interfaceId) {
+      return;
+    }
     const storedInterface = snapInterfaceController?.getInterface(
       snapId as SnapId,
       interfaceId,
