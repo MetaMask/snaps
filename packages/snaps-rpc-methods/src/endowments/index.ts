@@ -3,6 +3,10 @@ import { HandlerType } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
 
 import {
+  getAccountsChainCaveatMapper,
+  accountsChainEndowmentBuilder,
+} from './accounts-chain';
+import {
   createMaxRequestTimeMapper,
   getMaxRequestTimeCaveatMapper,
   maxRequestTimeCaveatSpecifications,
@@ -88,6 +92,9 @@ export const endowmentCaveatMappers: Record<
   [keyringEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
     getKeyringCaveatMapper,
   ),
+  [accountsChainEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
+    getAccountsChainCaveatMapper,
+  ),
   [signatureInsightEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
     getSignatureInsightCaveatMapper,
   ),
@@ -106,6 +113,8 @@ export const handlerEndowments: Record<HandlerType, string | null> = {
   [HandlerType.OnKeyringRequest]: keyringEndowmentBuilder.targetName,
   [HandlerType.OnHomePage]: homePageEndowmentBuilder.targetName,
   [HandlerType.OnSignature]: signatureInsightEndowmentBuilder.targetName,
+  [HandlerType.OnAccountsChainRequest]:
+    accountsChainEndowmentBuilder.targetName,
   [HandlerType.OnUserInput]: null,
 };
 
