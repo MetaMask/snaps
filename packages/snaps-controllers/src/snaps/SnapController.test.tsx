@@ -8865,7 +8865,7 @@ describe('SnapController', () => {
         MOCK_SNAP_ID,
         {
           handler: HandlerType.OnInstall,
-          origin: '',
+          origin: MOCK_ORIGIN,
           request: {
             jsonrpc: '2.0',
             id: expect.any(String),
@@ -9008,7 +9008,7 @@ describe('SnapController', () => {
         MOCK_SNAP_ID,
         {
           handler: HandlerType.OnUpdate,
-          origin: '',
+          origin: MOCK_ORIGIN,
           request: {
             jsonrpc: '2.0',
             id: expect.any(String),
