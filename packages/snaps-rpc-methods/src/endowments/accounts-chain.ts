@@ -11,7 +11,7 @@ import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import type { KeyringOrigins } from '@metamask/snaps-utils';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
-import { assert, isObject } from '@metamask/utils';
+import { isObject } from '@metamask/utils';
 
 import { createGenericPermissionValidator } from './caveats';
 import { SnapEndowments } from './enum';
@@ -92,8 +92,6 @@ export function getAccountsChainCaveatMapper(
       value: { allowedOrigins: value.allowedOrigins },
     });
   }
-
-  assert(caveats.length >= 2);
 
   return { caveats: caveats as NonEmptyArray<CaveatConstraint> };
 }
