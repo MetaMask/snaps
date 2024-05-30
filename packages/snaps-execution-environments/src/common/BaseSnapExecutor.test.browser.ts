@@ -1615,7 +1615,7 @@ describe('BaseSnapExecutor', () => {
       // eslint-disable-next-line no-loop-func
       it(`supports \`${handler}\` export`, async () => {
         const CODE = `
-          module.exports.${handler} = ({ request }) => request.params[0];
+          module.exports.${handler} = ({ origin }) => origin;
         `;
 
         const executor = new TestSnapExecutor();
@@ -1635,14 +1635,14 @@ describe('BaseSnapExecutor', () => {
             MOCK_SNAP_ID,
             handler,
             MOCK_ORIGIN,
-            { jsonrpc: '2.0', method: 'foo', params: ['bar'] },
+            { jsonrpc: '2.0', method: handler },
           ],
         });
 
         expect(await executor.readCommand()).toStrictEqual({
           id: 2,
           jsonrpc: '2.0',
-          result: 'bar',
+          result: MOCK_ORIGIN,
         });
       });
 

@@ -871,25 +871,35 @@ export class SnapController extends BaseController<
     );
     /* eslint-enable @typescript-eslint/unbound-method */
 
-    this.messagingSystem.subscribe('SnapController:snapInstalled', ({ id }) => {
-      this.#callLifecycleHook(id, HandlerType.OnInstall).catch((error) => {
-        logError(
-          `Error when calling \`onInstall\` lifecycle hook for snap "${id}": ${getErrorMessage(
-            error,
-          )}`,
+    this.messagingSystem.subscribe(
+      'SnapController:snapInstalled',
+      ({ id }, origin) => {
+        this.#callLifecycleHook(origin, id, HandlerType.OnInstall).catch(
+          (error) => {
+            logError(
+              `Error when calling \`onInstall\` lifecycle hook for snap "${id}": ${getErrorMessage(
+                error,
+              )}`,
+            );
+          },
         );
-      });
-    });
+      },
+    );
 
-    this.messagingSystem.subscribe('SnapController:snapUpdated', ({ id }) => {
-      this.#callLifecycleHook(id, HandlerType.OnUpdate).catch((error) => {
-        logError(
-          `Error when calling \`onUpdate\` lifecycle hook for snap "${id}": ${getErrorMessage(
-            error,
-          )}`,
+    this.messagingSystem.subscribe(
+      'SnapController:snapUpdated',
+      ({ id }, _oldVersion, origin) => {
+        this.#callLifecycleHook(origin, id, HandlerType.OnUpdate).catch(
+          (error) => {
+            logError(
+              `Error when calling \`onUpdate\` lifecycle hook for snap "${id}": ${getErrorMessage(
+                error,
+              )}`,
+            );
+          },
         );
-      });
-    });
+      },
+    );
 
     this.#initializeStateMachine();
     this.#registerMessageHandlers();
@@ -3592,12 +3602,17 @@ export class SnapController extends BaseController<
    * `endowment:lifecycle-hooks` permission. If the snap does not have the
    * permission, nothing happens.
    *
+   * @param origin - The origin.
    * @param snapId - The snap ID.
    * @param handler - The lifecycle hook to call. This should be one of the
    * supported lifecycle hooks.
    * @private
    */
-  async #callLifecycleHook(snapId: SnapId, handler: HandlerType) {
+  async #callLifecycleHook(
+    origin: string,
+    snapId: SnapId,
+    handler: HandlerType,
+  ) {
     const permissionName = handlerEndowments[handler];
 
     assert(permissionName, 'Lifecycle hook must have an endowment.');
@@ -3615,7 +3630,7 @@ export class SnapController extends BaseController<
     await this.handleRequest({
       snapId,
       handler,
-      origin: '',
+      origin,
       request: {
         jsonrpc: '2.0',
         method: handler,

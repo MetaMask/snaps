@@ -1,5 +1,3 @@
-import type { JsonRpcRequest } from '@metamask/utils';
-
 /**
  * A lifecycle event handler. This is called whenever a lifecycle event occurs,
  * such as the Snap being installed or updated.
@@ -8,11 +6,10 @@ import type { JsonRpcRequest } from '@metamask/utils';
  * permission.
  *
  * @param args - The request arguments.
- * @param args.request - The JSON-RPC request sent to the Snap. This does not
- * contain any parameters.
+ * @param args.origin - The origin that triggered the lifecycle event hook.
  */
 export type LifecycleEventHandler = (args: {
-  request: JsonRpcRequest;
+  origin: string;
 }) => Promise<unknown>;
 
 /**
@@ -24,8 +21,7 @@ export type LifecycleEventHandler = (args: {
  * This type is an alias for {@link LifecycleEventHandler}.
  *
  * @param args - The request arguments.
- * @param args.request - The JSON-RPC request sent to the Snap. This does not
- * contain any parameters.
+ * @param args.origin - The origin that triggered the lifecycle event hook.
  */
 export type OnInstallHandler = LifecycleEventHandler;
 
@@ -38,7 +34,6 @@ export type OnInstallHandler = LifecycleEventHandler;
  * This type is an alias for {@link LifecycleEventHandler}.
  *
  * @param args - The request arguments.
- * @param args.request - The JSON-RPC request sent to the Snap. This does not
- * contain any parameters.
+ * @param args.origin - The origin that triggered the lifecycle event hook.
  */
 export type OnUpdateHandler = LifecycleEventHandler;
