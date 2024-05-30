@@ -1449,6 +1449,39 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('supports onAccountsChainRequest export', async () => {
+    const CODE = `
+      module.exports.onAccountsChainRequest = ({ request }) => request.params[0];
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnAccountsChainRequest,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: 'foo', params: ['bar'] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: 'bar',
+    });
+  });
+
   it('supports onHomePage export', async () => {
     const CODE = `
       module.exports.onHomePage = () => ({ content: { type: 'panel', children: [] }});
