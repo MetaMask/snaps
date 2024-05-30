@@ -1,5 +1,5 @@
 import { resolve } from 'path';
-import { coerce, string } from 'superstruct';
+import { coerce, string } from '@metamask/superstruct';
 
 /**
  * A wrapper of `superstruct`'s `string` struct that coerces a value to a string

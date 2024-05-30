@@ -1,5 +1,5 @@
 import { assertStruct, isPlainObject } from '@metamask/utils';
-import type { Struct } from 'superstruct';
+import type { Struct } from '@metamask/superstruct';
 
 import type { Component } from './components';
 import type { NodeType } from './nodes';

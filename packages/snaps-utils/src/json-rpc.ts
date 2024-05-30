@@ -9,8 +9,15 @@ import {
   isJsonRpcFailure,
   isJsonRpcSuccess,
 } from '@metamask/utils';
-import type { Infer } from 'superstruct';
-import { array, boolean, object, optional, refine, string } from 'superstruct';
+import type { Infer } from '@metamask/superstruct';
+import {
+  array,
+  boolean,
+  object,
+  optional,
+  refine,
+  string,
+} from '@metamask/superstruct';
 
 const AllowedOriginsStruct = array(
   refine(string(), 'Allowed origin', (value) => {

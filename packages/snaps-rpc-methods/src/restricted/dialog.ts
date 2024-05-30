@@ -22,7 +22,7 @@ import type {
 import { createUnion } from '@metamask/snaps-utils';
 import type { InferMatching } from '@metamask/snaps-utils';
 import { hasProperty, type NonEmptyArray } from '@metamask/utils';
-import type { Infer, Struct } from 'superstruct';
+import type { Infer, Struct } from '@metamask/superstruct';
 import {
   create,
   enums,

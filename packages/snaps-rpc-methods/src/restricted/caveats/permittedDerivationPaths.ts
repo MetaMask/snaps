@@ -12,7 +12,7 @@ import {
 } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
-import { array, size, type } from 'superstruct';
+import { array, size, type } from '@metamask/superstruct';
 
 /**
  * Map a raw value from the `initialPermissions` to a caveat specification.

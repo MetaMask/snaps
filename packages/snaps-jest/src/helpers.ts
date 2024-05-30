@@ -1,8 +1,8 @@
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { HandlerType, logInfo } from '@metamask/snaps-utils';
+import { create } from '@metamask/superstruct';
 import { assertStruct, createModuleLogger } from '@metamask/utils';
-import { create } from 'superstruct';
 
 import {
   rootLogger,

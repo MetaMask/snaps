@@ -33,7 +33,7 @@ import {
   JsonRpcIdStruct,
 } from '@metamask/utils';
 import type { Duplex } from 'readable-stream';
-import { validate, is } from 'superstruct';
+import { validate, is } from '@metamask/superstruct';
 
 import { log } from '../logging';
 import type { CommandMethodsMapping } from './commands';

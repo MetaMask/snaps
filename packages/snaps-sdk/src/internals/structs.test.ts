@@ -1,4 +1,4 @@
-import { is, validate } from 'superstruct';
+import { is, validate } from '@metamask/superstruct';
 
 import { enumValue, literal, union } from './structs';
 

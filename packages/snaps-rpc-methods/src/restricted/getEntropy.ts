@@ -9,8 +9,8 @@ import type { GetEntropyParams, GetEntropyResult } from '@metamask/snaps-sdk';
 import { SIP_6_MAGIC_VALUE } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
-import type { Infer } from 'superstruct';
-import { literal, object, optional, string } from 'superstruct';
+import type { Infer } from '@metamask/superstruct';
+import { literal, object, optional, string } from '@metamask/superstruct';
 
 import type { MethodHooksObject } from '../utils';
 import { deriveEntropy } from '../utils';

@@ -6,7 +6,7 @@ import { AuxiliaryFileEncoding, enumValue } from '@metamask/snaps-sdk';
 import type { InferMatching } from '@metamask/snaps-utils';
 import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
-import { object, optional, string, union } from 'superstruct';
+import { object, optional, string, union } from '@metamask/superstruct';
 
 import type { MethodHooksObject } from '../utils';
 

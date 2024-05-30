@@ -1,4 +1,4 @@
-import type { Infer } from 'superstruct';
+import type { Infer } from '@metamask/superstruct';
 import {
   Struct,
   define,

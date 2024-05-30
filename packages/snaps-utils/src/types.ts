@@ -1,6 +1,6 @@
 import type { Json } from '@metamask/utils';
 import { assertStruct, VersionStruct } from '@metamask/utils';
-import type { Infer, Struct } from 'superstruct';
+import type { Infer, Struct } from '@metamask/superstruct';
 import {
   instance,
   is,

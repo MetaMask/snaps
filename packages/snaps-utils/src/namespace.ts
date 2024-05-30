@@ -1,5 +1,5 @@
 import type { AccountId, ChainId } from '@metamask/snaps-sdk';
-import type { Infer } from 'superstruct';
+import type { Infer } from '@metamask/superstruct';
 import {
   array,
   define,

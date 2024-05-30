@@ -1,7 +1,7 @@
 import type { Json, SemVerVersion, SemVerRange } from '@metamask/utils';
 import { VersionRangeStruct } from '@metamask/utils';
 import { maxSatisfying as maxSatisfyingSemver } from 'semver';
-import { validate } from 'superstruct';
+import { validate } from '@metamask/superstruct';
 
 export const DEFAULT_REQUESTED_SNAP_VERSION = '*' as SemVerRange;
 

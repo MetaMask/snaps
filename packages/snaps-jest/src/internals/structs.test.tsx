@@ -1,5 +1,5 @@
-import { Box, Text } from '@metamask/snaps-sdk/jsx';
-import { create } from 'superstruct';
+import { Box, Text } from '@metamask/snaps-sdk';
+import { create } from '@metamask/superstruct';
 
 import {
   InterfaceStruct,

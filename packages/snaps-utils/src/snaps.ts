@@ -9,7 +9,7 @@ import type { Json } from '@metamask/utils';
 import { assert, isObject, assertStruct } from '@metamask/utils';
 import { base64 } from '@scure/base';
 import stableStringify from 'fast-json-stable-stringify';
-import type { Struct } from 'superstruct';
+import type { Struct } from '@metamask/superstruct';
 import {
   empty,
   enums,

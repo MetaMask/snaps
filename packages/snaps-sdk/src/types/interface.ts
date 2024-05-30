@@ -1,6 +1,12 @@
+import type { Infer } from '@metamask/superstruct';
+import {
+  boolean,
+  nullable,
+  record,
+  string,
+  union,
+} from '@metamask/superstruct';
 import { JsonStruct } from '@metamask/utils';
-import type { Infer } from 'superstruct';
-import { boolean, nullable, record, string, union } from 'superstruct';
 
 import type { JSXElement } from '../jsx';
 import { RootJSXElementStruct } from '../jsx';

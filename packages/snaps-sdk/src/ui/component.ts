@@ -1,5 +1,5 @@
 import { assertStruct } from '@metamask/utils';
-import { is } from 'superstruct';
+import { is } from '@metamask/superstruct';
 
 import { ComponentStruct } from './components';
 import type { Component } from './components';

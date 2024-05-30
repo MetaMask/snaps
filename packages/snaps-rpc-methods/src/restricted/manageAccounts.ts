@@ -11,7 +11,14 @@ import type {
 import type { InferMatching } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import { JsonStruct } from '@metamask/utils';
-import { assert, string, object, union, array, record } from 'superstruct';
+import {
+  assert,
+  string,
+  object,
+  union,
+  array,
+  record,
+} from '@metamask/superstruct';
 
 const SnapMessageStruct = union([
   object({

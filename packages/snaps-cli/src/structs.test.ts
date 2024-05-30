@@ -1,5 +1,5 @@
 import { resolve } from 'path/posix';
-import { create, is } from 'superstruct';
+import { create, is } from '@metamask/superstruct';
 
 import { file } from './structs';
 
