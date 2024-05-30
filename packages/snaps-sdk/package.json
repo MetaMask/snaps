@@ -62,8 +62,8 @@
     "@metamask/key-tree": "^9.1.1",
     "@metamask/providers": "^17.0.0",
     "@metamask/rpc-errors": "^6.2.1",
-    "@metamask/utils": "^8.3.0",
-    "superstruct": "^1.0.3"
+    "@metamask/superstruct": "^3.0.0",
+    "@metamask/utils": "^8.3.0"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^3.0.4",

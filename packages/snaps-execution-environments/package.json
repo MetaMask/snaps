@@ -58,10 +58,10 @@
     "@metamask/rpc-errors": "^6.2.1",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
+    "@metamask/superstruct": "^3.0.0",
     "@metamask/utils": "^8.3.0",
     "nanoid": "^3.1.31",
-    "readable-stream": "^3.6.2",
-    "superstruct": "^1.0.3"
+    "readable-stream": "^3.6.2"
   },
   "devDependencies": {
     "@babel/core": "^7.23.2",

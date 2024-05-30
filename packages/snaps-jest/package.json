@@ -51,6 +51,7 @@
     "@metamask/snaps-rpc-methods": "workspace:^",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
+    "@metamask/superstruct": "^3.0.0",
     "@metamask/utils": "^8.3.0",
     "@reduxjs/toolkit": "^1.9.5",
     "express": "^4.18.2",
@@ -59,8 +60,7 @@
     "mime": "^3.0.0",
     "readable-stream": "^3.6.2",
     "redux": "^4.2.1",
-    "redux-saga": "^1.2.3",
-    "superstruct": "^1.0.3"
+    "redux-saga": "^1.2.3"
   },
   "devDependencies": {
     "@jest/types": "^29.6.3",
