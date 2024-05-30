@@ -1,6 +1,6 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { InvokeKeyringParams } from '@metamask/snaps-sdk';
+import type { InvokeAccountsSnapParams } from '@metamask/snaps-sdk';
 import { AccountsSnapHandlerType } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID, getSnapObject } from '@metamask/snaps-utils/test-utils';
@@ -57,7 +57,7 @@ describe('wallet_invokeAccountsSnap', () => {
       engine.push(createOriginMiddleware('metamask.io'));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<InvokeKeyringParams>,
+          req as JsonRpcRequest<InvokeAccountsSnapParams>,
           res,
           next,
           end,
@@ -86,6 +86,49 @@ describe('wallet_invokeAccountsSnap', () => {
       });
     });
 
+    it('invokes the snap and returns the result when using the chain type', async () => {
+      const { implementation } = invokeAccountSnapHandler;
+
+      const hooks = getMockHooks();
+
+      hooks.hasPermission.mockImplementation(() => true);
+      hooks.getSnap.mockImplementation(() => getSnapObject());
+      hooks.handleSnapRpcRequest.mockImplementation(() => 'bar');
+      hooks.getAllowedKeyringMethods.mockImplementation(() => ['foo']);
+
+      const engine = new JsonRpcEngine();
+      engine.push(createOriginMiddleware('metamask.io'));
+      engine.push((req, res, next, end) => {
+        const result = implementation(
+          req as JsonRpcRequest<InvokeAccountsSnapParams>,
+          res,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = (await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'wallet_invokeAccountsSnap',
+        params: {
+          snapId: MOCK_SNAP_ID,
+          request: { method: 'foo' },
+          type: AccountsSnapHandlerType.Chain,
+        },
+      })) as JsonRpcSuccess<string>;
+
+      expect(response.result).toBe('bar');
+      expect(hooks.handleSnapRpcRequest).toHaveBeenCalledWith({
+        handler: HandlerType.OnAccountsChainRequest,
+        request: { method: 'foo' },
+        snapId: MOCK_SNAP_ID,
+      });
+    });
+
     it('fails if invoking the snap fails', async () => {
       const { implementation } = invokeAccountSnapHandler;
 
@@ -104,7 +147,7 @@ describe('wallet_invokeAccountsSnap', () => {
       engine.push(createOriginMiddleware('metamask.io'));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<InvokeKeyringParams>,
+          req as JsonRpcRequest<InvokeAccountsSnapParams>,
           res,
           next,
           end,
@@ -135,6 +178,51 @@ describe('wallet_invokeAccountsSnap', () => {
       });
     });
 
+    it('fails if the type is invalid', async () => {
+      const { implementation } = invokeAccountSnapHandler;
+
+      const hooks = getMockHooks();
+
+      hooks.hasPermission.mockImplementation(() => true);
+      hooks.getSnap.mockImplementation(() => getSnapObject());
+      hooks.handleSnapRpcRequest.mockImplementation(() => 'bar');
+      hooks.getAllowedKeyringMethods.mockImplementation(() => ['foo']);
+
+      const engine = new JsonRpcEngine();
+      engine.push(createOriginMiddleware('metamask.io'));
+      engine.push((req, res, next, end) => {
+        const result = implementation(
+          req as JsonRpcRequest<InvokeAccountsSnapParams>,
+          res,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = (await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'wallet_invokeAccountsSnap',
+        params: {
+          snapId: MOCK_SNAP_ID,
+          request: { method: 'foo' },
+          type: 'baz',
+        },
+      })) as JsonRpcFailure;
+
+      expect(response.error).toStrictEqual({
+        ...rpcErrors
+          .invalidParams({
+            message: 'The handler type "baz" does not exist.',
+          })
+          .serialize(),
+        stack: expect.any(String),
+      });
+    });
+
     it('fails if origin is not authorized to call the method', async () => {
       const { implementation } = invokeAccountSnapHandler;
 
@@ -153,7 +241,7 @@ describe('wallet_invokeAccountsSnap', () => {
       engine.push(createOriginMiddleware('metamask.io'));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<InvokeKeyringParams>,
+          req as JsonRpcRequest<InvokeAccountsSnapParams>,
           res,
           next,
           end,
@@ -203,7 +291,7 @@ describe('wallet_invokeAccountsSnap', () => {
       engine.push(createOriginMiddleware('metamask.io'));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<InvokeKeyringParams>,
+          req as JsonRpcRequest<InvokeAccountsSnapParams>,
           res,
           next,
           end,
@@ -243,7 +331,7 @@ describe('wallet_invokeAccountsSnap', () => {
       engine.push(createOriginMiddleware('metamask.io'));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<InvokeKeyringParams>,
+          req as JsonRpcRequest<InvokeAccountsSnapParams>,
           res,
           next,
           end,
@@ -286,7 +374,7 @@ describe('wallet_invokeAccountsSnap', () => {
       engine.push(createOriginMiddleware('metamask.io'));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<InvokeKeyringParams>,
+          req as JsonRpcRequest<InvokeAccountsSnapParams>,
           res,
           next,
           end,
@@ -325,7 +413,7 @@ describe('wallet_invokeAccountsSnap', () => {
       const engine = new JsonRpcEngine();
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<InvokeKeyringParams>,
+          req as JsonRpcRequest<InvokeAccountsSnapParams>,
           res,
           next,
           end,

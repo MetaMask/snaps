@@ -2,9 +2,8 @@ import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
-  InvokeKeyringParams,
-  InvokeKeyringResult,
-  InvokeSnapParams,
+  InvokeAccountsSnapParams,
+  InvokeAccountsSnapResult,
 } from '@metamask/snaps-sdk';
 import { AccountsSnapHandlerType } from '@metamask/snaps-sdk';
 import type { Snap, SnapRpcHookArgs } from '@metamask/snaps-utils';
@@ -15,7 +14,7 @@ import { hasProperty, type Json } from '@metamask/utils';
 import type { MethodHooksObject } from '../utils';
 import { getValidatedParams } from './invokeSnapSugar';
 
-const hookNames: MethodHooksObject<InvokeKeyringHooks> = {
+const hookNames: MethodHooksObject<InvokeAccountsSnapHooks> = {
   hasPermission: true,
   handleSnapRpcRequest: true,
   getSnap: true,
@@ -26,16 +25,16 @@ const hookNames: MethodHooksObject<InvokeKeyringHooks> = {
  * `wallet_invokeAccountsSnap` invokes an account Snap.
  */
 export const invokeAccountSnapHandler: PermittedHandlerExport<
-  InvokeKeyringHooks,
-  InvokeSnapParams,
-  InvokeKeyringResult
+  InvokeAccountsSnapHooks,
+  InvokeAccountsSnapParams,
+  InvokeAccountsSnapResult
 > = {
   methodNames: ['wallet_invokeAccountsSnap'],
   implementation: invokeAccountSnapImplementation,
   hookNames,
 };
 
-export type InvokeKeyringHooks = {
+export type InvokeAccountsSnapHooks = {
   hasPermission: (permissionName: string) => boolean;
 
   handleSnapRpcRequest: ({
@@ -72,8 +71,8 @@ const HANDLER_MAP = Object.freeze({
  * @returns Nothing.
  */
 async function invokeAccountSnapImplementation(
-  req: JsonRpcRequest<InvokeKeyringParams>,
-  res: PendingJsonRpcResponse<InvokeKeyringResult>,
+  req: JsonRpcRequest<InvokeAccountsSnapParams>,
+  res: PendingJsonRpcResponse<InvokeAccountsSnapResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
   {
@@ -81,11 +80,11 @@ async function invokeAccountSnapImplementation(
     hasPermission,
     getSnap,
     getAllowedKeyringMethods,
-  }: InvokeKeyringHooks,
+  }: InvokeAccountsSnapHooks,
 ): Promise<void> {
-  let params: InvokeSnapParams;
+  let params: InvokeAccountsSnapParams;
   try {
-    params = getValidatedParams(req.params);
+    params = getValidatedParams(req.params) as InvokeAccountsSnapParams;
   } catch (error) {
     return end(error);
   }

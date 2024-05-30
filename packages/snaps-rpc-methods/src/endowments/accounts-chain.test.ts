@@ -4,6 +4,7 @@ import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   getAccountsChainCaveatMapper,
   getAccountsChainCaveatOrigins,
+  getAccountsChainCaveatChainIds,
   accountsChainEndowmentBuilder,
 } from './accounts-chain';
 import { SnapEndowments } from './enum';
@@ -25,6 +26,8 @@ describe('endowment:accounts-chain', () => {
       subjectTypes: [SubjectType.Snap],
       validator: expect.any(Function),
     });
+
+    expect(specification.endowmentGetter()).toBeUndefined();
   });
 
   describe('validator', () => {
@@ -38,7 +41,7 @@ describe('endowment:accounts-chain', () => {
           // @ts-expect-error Missing other required permission types.
           caveats: undefined,
         }),
-      ).toThrow('Expected the following caveats: "keyringOrigin".');
+      ).toThrow('Expected the following caveats: "keyringOrigin", "chainIds".');
 
       expect(() =>
         // @ts-expect-error Missing other required permission types.
@@ -46,7 +49,7 @@ describe('endowment:accounts-chain', () => {
           caveats: [{ type: 'foo', value: 'bar' }],
         }),
       ).toThrow(
-        'Expected the following caveats: "keyringOrigin", "maxRequestTime", received "foo".',
+        'Expected the following caveats: "keyringOrigin", "chainIds", "maxRequestTime", received "foo".',
       );
 
       expect(() =>
@@ -62,17 +65,30 @@ describe('endowment:accounts-chain', () => {
   });
 });
 
-describe('getKeyringCaveatMapper', () => {
+describe('getAccountsChainCaveatMapper', () => {
   it('maps a value to a caveat', () => {
     expect(
-      getAccountsChainCaveatMapper({ allowedOrigins: ['foo.com'] }),
+      getAccountsChainCaveatMapper({
+        allowedOrigins: ['foo.com'],
+        chains: ['bip122:000000000019d6689c085ae165831e93'],
+      }),
     ).toStrictEqual({
       caveats: [
+        {
+          type: SnapCaveatType.ChainIds,
+          value: ['bip122:000000000019d6689c085ae165831e93'],
+        },
         {
           type: SnapCaveatType.KeyringOrigin,
           value: { allowedOrigins: ['foo.com'] },
         },
       ],
+    });
+  });
+
+  it('returns null if the input is null', () => {
+    expect(getAccountsChainCaveatMapper(null)).toStrictEqual({
+      caveats: null,
     });
   });
 });
@@ -91,23 +107,20 @@ describe('getAccountsChainCaveatOrigins', () => {
       }),
     ).toStrictEqual({ allowedOrigins: ['foo.com'] });
   });
+});
 
-  it('throws if the caveat is not a single "rpcOrigin"', () => {
-    expect(() =>
+describe('getAccountsChainCaveatChainIds', () => {
+  it('returns the chain ids from the caveat', () => {
+    expect(
       // @ts-expect-error Missing other required permission types.
-      getAccountsChainCaveatOrigins({
-        caveats: [{ type: 'foo', value: 'bar' }],
-      }),
-    ).toThrow('Assertion failed.');
-
-    expect(() =>
-      // @ts-expect-error Missing other required permission types.
-      getAccountsChainCaveatOrigins({
+      getAccountsChainCaveatChainIds({
         caveats: [
-          { type: 'keyringOrigin', value: { allowedOrigins: ['foo.com'] } },
-          { type: 'keyringOrigin', value: { allowedOrigins: ['foo.com'] } },
+          {
+            type: SnapCaveatType.ChainIds,
+            value: ['bip122:000000000019d6689c085ae165831e93'],
+          },
         ],
       }),
-    ).toThrow('Assertion failed.');
+    ).toStrictEqual(['bip122:000000000019d6689c085ae165831e93']);
   });
 });
