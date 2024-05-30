@@ -53,7 +53,7 @@
     "@metamask/notification-example-snap": "workspace:^",
     "@metamask/signature-insights-example-snap": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^8.3.0",
+    "@metamask/utils": "^8.5.0",
     "@metamask/wasm-example-snap": "workspace:^",
     "@popperjs/core": "^2.11.8",
     "@reduxjs/toolkit": "^1.9.5",

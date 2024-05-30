@@ -59,7 +59,7 @@
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/superstruct": "^3.0.0",
-    "@metamask/utils": "^8.3.0",
+    "@metamask/utils": "^8.5.0",
     "nanoid": "^3.1.31",
     "readable-stream": "^3.6.2"
   },

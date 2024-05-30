@@ -41,7 +41,7 @@
     "@metamask/snaps-rpc-methods": "workspace:^",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^8.3.0",
+    "@metamask/utils": "^8.5.0",
     "@minoru/react-dnd-treeview": "^3.4.4",
     "@reduxjs/toolkit": "^1.9.5",
     "date-fns": "^2.30.0",
