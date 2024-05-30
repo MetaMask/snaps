@@ -4,6 +4,7 @@ import { getClientStatusHandler } from './getClientStatus';
 import { getFileHandler } from './getFile';
 import { getInterfaceStateHandler } from './getInterfaceState';
 import { getSnapsHandler } from './getSnaps';
+import { invokeAccountSnapHandler } from './invokeAccountsSnap';
 import { invokeKeyringHandler } from './invokeKeyring';
 import { invokeSnapSugarHandler } from './invokeSnapSugar';
 import { requestSnapsHandler } from './requestSnaps';
@@ -16,6 +17,7 @@ export const methodHandlers = {
   wallet_requestSnaps: requestSnapsHandler,
   wallet_invokeSnap: invokeSnapSugarHandler,
   wallet_invokeKeyring: invokeKeyringHandler,
+  wallet_invokeAccountsSnap: invokeAccountSnapHandler,
   snap_getClientStatus: getClientStatusHandler,
   snap_getFile: getFileHandler,
   snap_createInterface: createInterfaceHandler,
