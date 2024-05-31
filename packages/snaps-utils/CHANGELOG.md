@@ -15,7 +15,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add support for BIP-32-Ed25519 / CIP-3 key derivation ([#2408](https://github.com/MetaMask/snaps/pull/2408))
 
 ## Fixed
-
 - Fix build producing invalid JSX types ([#2410](https://github.com/MetaMask/snaps/pull/2410))
 
 ## [7.3.0]
