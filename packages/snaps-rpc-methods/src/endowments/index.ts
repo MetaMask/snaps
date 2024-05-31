@@ -2,10 +2,7 @@ import type { PermissionConstraint } from '@metamask/permission-controller';
 import { HandlerType } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
 
-import {
-  getAccountsChainCaveatMapper,
-  accountsChainEndowmentBuilder,
-} from './accounts-chain';
+import { getAccountsCaveatMapper, accountsEndowmentBuilder } from './accounts';
 import {
   createMaxRequestTimeMapper,
   getMaxRequestTimeCaveatMapper,
@@ -59,7 +56,7 @@ export const endowmentPermissionBuilders = {
   [nameLookupEndowmentBuilder.targetName]: nameLookupEndowmentBuilder,
   [lifecycleHooksEndowmentBuilder.targetName]: lifecycleHooksEndowmentBuilder,
   [keyringEndowmentBuilder.targetName]: keyringEndowmentBuilder,
-  [accountsChainEndowmentBuilder.targetName]: accountsChainEndowmentBuilder,
+  [accountsEndowmentBuilder.targetName]: accountsEndowmentBuilder,
   [homePageEndowmentBuilder.targetName]: homePageEndowmentBuilder,
   [signatureInsightEndowmentBuilder.targetName]:
     signatureInsightEndowmentBuilder,
@@ -93,8 +90,8 @@ export const endowmentCaveatMappers: Record<
   [keyringEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
     getKeyringCaveatMapper,
   ),
-  [accountsChainEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
-    getAccountsChainCaveatMapper,
+  [accountsEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
+    getAccountsCaveatMapper,
   ),
   [signatureInsightEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
     getSignatureInsightCaveatMapper,
@@ -114,8 +111,8 @@ export const handlerEndowments: Record<HandlerType, string | null> = {
   [HandlerType.OnKeyringRequest]: keyringEndowmentBuilder.targetName,
   [HandlerType.OnHomePage]: homePageEndowmentBuilder.targetName,
   [HandlerType.OnSignature]: signatureInsightEndowmentBuilder.targetName,
-  [HandlerType.OnAccountsChainRequest]:
-    accountsChainEndowmentBuilder.targetName,
+  [HandlerType.OnAccountsRequest]: accountsEndowmentBuilder.targetName,
+  [HandlerType.OnInternalAccountsRequest]: accountsEndowmentBuilder.targetName,
   [HandlerType.OnUserInput]: null,
 };
 

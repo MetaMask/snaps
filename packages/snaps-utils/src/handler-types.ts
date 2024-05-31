@@ -7,7 +7,8 @@ export enum HandlerType {
   OnUpdate = 'onUpdate',
   OnNameLookup = 'onNameLookup',
   OnKeyringRequest = 'onKeyringRequest',
-  OnAccountsChainRequest = 'onAccountsChainRequest',
+  OnAccountsRequest = 'onAccountsRequest',
+  OnInternalAccountsRequest = 'onInternalAccountsRequest',
   OnHomePage = 'onHomePage',
   OnUserInput = 'onUserInput',
 }

@@ -5,7 +5,6 @@ import type {
   InvokeAccountsSnapParams,
   InvokeAccountsSnapResult,
 } from '@metamask/snaps-sdk';
-import { AccountsSnapHandlerType } from '@metamask/snaps-sdk';
 import type { Snap, SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { HandlerType, WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
 import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
@@ -48,11 +47,6 @@ export type InvokeAccountsSnapHooks = {
   getAllowedKeyringMethods: () => string[];
 };
 
-const HANDLER_MAP = Object.freeze({
-  [AccountsSnapHandlerType.Keyring]: HandlerType.OnKeyringRequest,
-  [AccountsSnapHandlerType.Chain]: HandlerType.OnAccountsChainRequest,
-});
-
 /**
  * The `wallet_invokeAccountsSnap` method implementation.
  * Invokes onKeyringRequest or onAccountsChainRequest if the snap requested is installed and connected to the dapp.
@@ -91,22 +85,12 @@ async function invokeAccountSnapImplementation(
 
   // We expect the MM middleware stack to always add the origin to requests
   const { origin } = req as JsonRpcRequest & { origin: string };
-  const { snapId, request, type } = params;
+  const { snapId, request } = params;
 
   if (!origin || !hasPermission(WALLET_SNAP_PERMISSION_KEY)) {
     return end(
       rpcErrors.invalidRequest({
         message: `The snap "${snapId}" is not connected to "${origin}". Please connect before invoking the snap.`,
-      }),
-    );
-  }
-
-  const handler = HANDLER_MAP[type];
-
-  if (!handler) {
-    return end(
-      rpcErrors.invalidParams({
-        message: `The handler type "${type}" does not exist.`,
       }),
     );
   }
@@ -127,22 +111,21 @@ async function invokeAccountSnapImplementation(
     );
   }
 
-  if (type === AccountsSnapHandlerType.Keyring) {
-    const allowedMethods = getAllowedKeyringMethods();
-    if (!allowedMethods.includes(request.method)) {
-      return end(
-        rpcErrors.invalidRequest({
-          message: `The origin "${origin}" is not allowed to invoke the method "${request.method}".`,
-        }),
-      );
-    }
+  // TODO: Figure this out.
+  const allowedMethods = getAllowedKeyringMethods();
+  if (!allowedMethods.includes(request.method)) {
+    return end(
+      rpcErrors.invalidRequest({
+        message: `The origin "${origin}" is not allowed to invoke the method "${request.method}".`,
+      }),
+    );
   }
 
   try {
     res.result = (await handleSnapRpcRequest({
       snapId,
       request,
-      handler,
+      handler: HandlerType.OnAccountsRequest,
     })) as Json;
   } catch (error) {
     return end(error);

@@ -16,9 +16,9 @@ import { isObject } from '@metamask/utils';
 import { createGenericPermissionValidator } from './caveats';
 import { SnapEndowments } from './enum';
 
-const permissionName = SnapEndowments.AccountsChain;
+const permissionName = SnapEndowments.Accounts;
 
-type AccountsChainEndowmentSpecification = ValidPermissionSpecification<{
+type AccountsEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetName: typeof permissionName;
   endowmentGetter: (_options?: EndowmentGetterParams) => undefined;
@@ -28,16 +28,16 @@ type AccountsChainEndowmentSpecification = ValidPermissionSpecification<{
 }>;
 
 /**
- * `endowment:accounts-chain` returns nothing; it is intended to be used as a flag
- * by the client to detect whether the Snap supports the Accounts Chain API.
+ * `endowment:accounts` returns nothing; it is intended to be used as a flag
+ * by the client to detect whether the Snap supports the Accounts API.
  *
  * @param _builderOptions - Optional specification builder options.
- * @returns The specification for the accounts chain endowment.
+ * @returns The specification for the accounts endowment.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.Endowment,
   any,
-  AccountsChainEndowmentSpecification
+  AccountsEndowmentSpecification
 > = (_builderOptions?: unknown) => {
   return {
     permissionType: PermissionType.Endowment,
@@ -57,7 +57,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
   };
 };
 
-export const accountsChainEndowmentBuilder = Object.freeze({
+export const accountsEndowmentBuilder = Object.freeze({
   targetName: permissionName,
   specificationBuilder,
 } as const);
@@ -70,7 +70,7 @@ export const accountsChainEndowmentBuilder = Object.freeze({
  * @param value - The raw value from the `initialPermissions`.
  * @returns The caveat specification.
  */
-export function getAccountsChainCaveatMapper(
+export function getAccountsCaveatMapper(
   value: Json,
 ): Pick<PermissionConstraint, 'caveats'> {
   if (!value || !isObject(value) || Object.keys(value).length === 0) {
@@ -103,7 +103,7 @@ export function getAccountsChainCaveatMapper(
  * @param permission - The permission to get the caveat value from.
  * @returns The caveat value.
  */
-export function getAccountsChainCaveatOrigins(
+export function getAccountsCaveatOrigins(
   permission?: PermissionConstraint,
 ): KeyringOrigins | null {
   const caveat = permission?.caveats?.find(
@@ -120,7 +120,7 @@ export function getAccountsChainCaveatOrigins(
  * @param permission - The permission to get the caveat value from.
  * @returns The caveat value.
  */
-export function getAccountsChainCaveatChainIds(
+export function getAccountsCaveatChainIds(
   permission?: PermissionConstraint,
 ): string[] | null {
   const caveat = permission?.caveats?.find(

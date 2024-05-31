@@ -2,21 +2,19 @@ import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 
 import {
-  getAccountsChainCaveatMapper,
-  getAccountsChainCaveatOrigins,
-  getAccountsChainCaveatChainIds,
-  accountsChainEndowmentBuilder,
-} from './accounts-chain';
+  getAccountsCaveatMapper,
+  getAccountsCaveatOrigins,
+  getAccountsCaveatChainIds,
+  accountsEndowmentBuilder,
+} from './accounts';
 import { SnapEndowments } from './enum';
 
-describe('endowment:accounts-chain', () => {
+describe('endowment:accounts', () => {
   it('builds the expected permission specification', () => {
-    const specification = accountsChainEndowmentBuilder.specificationBuilder(
-      {},
-    );
+    const specification = accountsEndowmentBuilder.specificationBuilder({});
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
-      targetName: SnapEndowments.AccountsChain,
+      targetName: SnapEndowments.Accounts,
       endowmentGetter: expect.any(Function),
       allowedCaveats: [
         SnapCaveatType.KeyringOrigin,
@@ -32,9 +30,7 @@ describe('endowment:accounts-chain', () => {
 
   describe('validator', () => {
     it('throws if the caveat is not a single "keyringOrigin"', () => {
-      const specification = accountsChainEndowmentBuilder.specificationBuilder(
-        {},
-      );
+      const specification = accountsEndowmentBuilder.specificationBuilder({});
 
       expect(() =>
         specification.validator({
@@ -65,10 +61,10 @@ describe('endowment:accounts-chain', () => {
   });
 });
 
-describe('getAccountsChainCaveatMapper', () => {
+describe('getAccountsCaveatMapper', () => {
   it('maps a value to a caveat', () => {
     expect(
-      getAccountsChainCaveatMapper({
+      getAccountsCaveatMapper({
         allowedOrigins: ['foo.com'],
         chains: ['bip122:000000000019d6689c085ae165831e93'],
       }),
@@ -87,17 +83,17 @@ describe('getAccountsChainCaveatMapper', () => {
   });
 
   it('returns null if the input is null', () => {
-    expect(getAccountsChainCaveatMapper(null)).toStrictEqual({
+    expect(getAccountsCaveatMapper(null)).toStrictEqual({
       caveats: null,
     });
   });
 });
 
-describe('getAccountsChainCaveatOrigins', () => {
+describe('getAccountsCaveatOrigins', () => {
   it('returns the origins from the caveat', () => {
     expect(
       // @ts-expect-error Missing other required permission types.
-      getAccountsChainCaveatOrigins({
+      getAccountsCaveatOrigins({
         caveats: [
           {
             type: SnapCaveatType.KeyringOrigin,
@@ -109,11 +105,11 @@ describe('getAccountsChainCaveatOrigins', () => {
   });
 });
 
-describe('getAccountsChainCaveatChainIds', () => {
+describe('getAccountsCaveatChainIds', () => {
   it('returns the chain ids from the caveat', () => {
     expect(
       // @ts-expect-error Missing other required permission types.
-      getAccountsChainCaveatChainIds({
+      getAccountsCaveatChainIds({
         caveats: [
           {
             type: SnapCaveatType.ChainIds,
