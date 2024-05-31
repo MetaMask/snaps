@@ -20,13 +20,11 @@ export const UserInterface: FunctionComponent = () => {
     tab.setSelectedIndex(1);
   }, [tab]);
 
-  console.log(ui);
-
-  if (!ui?.id) {
+  if (!ui?.content) {
     return null;
   }
 
-  const { snapName, snapId, type, id } = ui;
+  const { snapName, snapId, type, content } = ui;
 
   switch (type) {
     case DialogType.Alert: {
@@ -38,7 +36,7 @@ export const UserInterface: FunctionComponent = () => {
         <AlertDialog
           snapName={snapName}
           snapId={snapId}
-          interfaceId={id}
+          content={content}
           onClose={handleClose}
         />
       );
@@ -56,7 +54,7 @@ export const UserInterface: FunctionComponent = () => {
         <ConfirmationDialog
           snapName={snapName}
           snapId={snapId}
-          interfaceId={id}
+          content={content}
           onCancel={handleCancel}
           onApprove={handleApprove}
         />
@@ -75,7 +73,7 @@ export const UserInterface: FunctionComponent = () => {
         <PromptDialog
           snapName={snapName}
           snapId={snapId}
-          interfaceId={id}
+          content={content}
           onCancel={handleCancel}
           onSubmit={handleSubmit}
         />

@@ -5967,6 +5967,7 @@ __metadata:
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/utils": ^8.3.0
     "@minoru/react-dnd-treeview": ^3.4.4
+    "@noble/hashes": ^1.4.0
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.10
     "@redux-saga/is": ^1.1.3
     "@redux-saga/symbols": ^1.1.3
@@ -6009,6 +6010,7 @@ __metadata:
     jest-environment-jsdom: ^29.5.0
     jest-fetch-mock: ^3.0.3
     jest-it-up: ^2.0.0
+    loadash: ^1.0.0
     monaco-editor: ^0.38.0
     monaco-editor-webpack-plugin: ^7.0.1
     prettier: ^2.7.1
@@ -6492,7 +6494,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:^1.1.2, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.3.2":
+"@noble/hashes@npm:^1.1.2, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.3.2, @noble/hashes@npm:^1.4.0":
   version: 1.4.0
   resolution: "@noble/hashes@npm:1.4.0"
   checksum: 8ba816ae26c90764b8c42493eea383716396096c5f7ba6bea559993194f49d80a73c081f315f4c367e51bd2d5891700bcdfa816b421d24ab45b41cb03e4f3342
@@ -16767,6 +16769,13 @@ __metadata:
   version: 0.2.5
   resolution: "load-tsconfig@npm:0.2.5"
   checksum: 631740833c4a7157bb7b6eeae6e1afb6a6fac7416b7ba91bd0944d5c5198270af2d68bf8347af3cc2ba821adc4d83ef98f66278bd263bc284c863a09ec441503
+  languageName: node
+  linkType: hard
+
+"loadash@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "loadash@npm:1.0.0"
+  checksum: 05a105fa9773a7c15963ea783507daa4d488a7a5b782ba77d84dbfaa40b01eb6a3a6cb1a160e67c4af339c7aa9209f9bfb8ef35eefffe98838930f05752ea550
   languageName: node
   linkType: hard
 

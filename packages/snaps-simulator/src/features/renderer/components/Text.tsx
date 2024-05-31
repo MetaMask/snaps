@@ -16,12 +16,7 @@ export const Text: FunctionComponent<TextProps> = ({ node, id }) => {
   assert(node.type === 'Text', 'Expected value to be a text component.');
 
   return (
-    <ChakraText
-      key={`${id}-text`}
-      fontFamily="custom"
-      fontSize="sm"
-      paddingBottom="1"
-    >
+    <ChakraText key={id} fontFamily="custom" fontSize="sm" paddingBottom="1">
       {renderTextChildren(getJsxChildren(node), id)}
     </ChakraText>
   );

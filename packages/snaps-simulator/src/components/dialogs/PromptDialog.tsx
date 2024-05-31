@@ -11,7 +11,7 @@ export type PromptDialogProps = {
   snapName: string;
   snapId: string;
   placeholder?: string;
-  interfaceId: string;
+  content: JSXElement;
   onCancel?: () => void;
   onSubmit?: (value: string) => void;
 };
@@ -32,13 +32,14 @@ type PromptForm = {
  * @param props.onSubmit - The submit callback. The value is passed as the first
  * argument.
  * @param props.interfaceId
+ * @param props.content
  * @returns The component.
  */
 export const PromptDialog: FunctionComponent<PromptDialogProps> = ({
   snapName,
   snapId,
   placeholder,
-  interfaceId,
+  content,
   onCancel,
   onSubmit,
 }) => {
@@ -60,7 +61,7 @@ export const PromptDialog: FunctionComponent<PromptDialogProps> = ({
     <Window snapName={snapName} snapId={snapId}>
       <Box margin="4" marginTop="0" flex="1">
         <Delineator type={DelineatorType.Content} snapName={snapName}>
-          <Renderer interfaceId={interfaceId} snapId={snapId} />
+          <Renderer content={content} />
           {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
           <form onSubmit={handleSubmit(onFormSubmit)} id="prompt-form">
             <FormControl

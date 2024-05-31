@@ -5,7 +5,7 @@ import { getJsxChildren } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 import type { FunctionComponent } from 'react';
 
-import { Renderer } from '../Renderer';
+import { SnapComponent } from '../SnapComponent';
 
 export type BoxProps = {
   id: string;
@@ -15,14 +15,12 @@ export type BoxProps = {
 export const Box: FunctionComponent<BoxProps> = ({ node, id }) => {
   assertJSXElement(node);
   assert(node.type === 'Box', 'Expected value to be a Box component.');
-
   return (
-    <ChakraBox key={`${id}-panel`}>
+    <ChakraBox key={id}>
       {getJsxChildren(node).map((child, index) => (
-        <Renderer
-          key={`${id}-panel-child-${index}`}
-          id={`${id}-panel-child-${index}`}
+        <SnapComponent
           node={child as JSXElement}
+          key={`${id}-panel-child-${index}`}
         />
       ))}
     </ChakraBox>

@@ -57,7 +57,7 @@ export const Response = () => {
             <Skeleton height="38px" mb="4" speed={3} />
             <Skeleton height="285px" mb="4" speed={3} />
             <Delineator type={DelineatorType.Insights} snapName={snapName}>
-              <Renderer interfaceId={interfaceId} snapId={snapId} />
+              <Renderer interfaceId={interfaceId} />
             </Delineator>
           </Box>
         </Window>

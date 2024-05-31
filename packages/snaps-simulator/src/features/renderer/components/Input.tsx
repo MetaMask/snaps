@@ -1,25 +1,34 @@
 import { Input as ChakraInput } from '@chakra-ui/react';
 import { assertJSXElement } from '@metamask/snaps-sdk/jsx-runtime';
 import { assert } from '@metamask/utils';
-import type { FunctionComponent } from 'react';
+import type { ChangeEvent, FunctionComponent } from 'react';
+import { useSnapInterfaceContext } from 'src/contexts';
 
 export type InputProps = {
   id: string;
   node: unknown;
+  form?: string;
 };
 
-export const Input: FunctionComponent<InputProps> = ({ node, id }) => {
+export const Input: FunctionComponent<InputProps> = ({ node, id, form }) => {
+  const { handleInputChange, getValue } = useSnapInterfaceContext();
   assertJSXElement(node);
   assert(node.type === 'Input', 'Expected value to be an input component.');
 
   const { props } = node;
 
+  const value = getValue(props.name, form);
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    handleInputChange(props.name, event.target.value, form);
+  };
   return (
     <ChakraInput
       key={`${id}-input`}
-      value={props.value}
+      value={value}
       type={props.type}
       placeholder={props.placeholder}
+      onChange={handleChange}
     />
   );
 };

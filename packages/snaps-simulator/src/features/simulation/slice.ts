@@ -5,9 +5,14 @@ import type {
 import type {
   IframeExecutionService,
   SnapInterfaceController,
+  StoredInterface,
 } from '@metamask/snaps-controllers';
-import type { DialogType, SnapId } from '@metamask/snaps-sdk';
-import { getLocalizedSnapManifest as localizeSnapManifest } from '@metamask/snaps-utils';
+import type { DialogType, InterfaceState } from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx-runtime';
+import {
+  HandlerType,
+  getLocalizedSnapManifest as localizeSnapManifest,
+} from '@metamask/snaps-utils';
 import type {
   LocalizationFile,
   SnapManifest,
@@ -33,6 +38,8 @@ export type HandlerUserInterface = {
   snapId: string;
   snapName: string;
   id: string;
+  content: JSXElement;
+  state: InterfaceState;
 };
 
 type SimulationState = {
@@ -113,7 +120,20 @@ const slice = createSlice({
     setIcon(state, action: PayloadAction<VirtualFile<string>>) {
       state.icon = action.payload;
     },
+    setUserInterface: (state, action: PayloadAction<StoredInterface>) => {
+      if (state.ui) {
+        // @ts-expect-error Can't compute type
+        state.ui.content = action.payload.content;
+        state.ui.state = action.payload.state;
+      }
+    },
+    setUserInterfaceState: (state, action: PayloadAction<InterfaceState>) => {
+      if (state.ui) {
+        state.ui.state = action.payload;
+      }
+    },
     showUserInterface: (state, action: PayloadAction<HandlerUserInterface>) => {
+      // @ts-expect-error Can't compute type
       state.ui = action.payload;
     },
     closeUserInterface: (state) => {
@@ -125,8 +145,10 @@ const slice = createSlice({
     setUnencryptedSnapState: (state, action: PayloadAction<string | null>) => {
       state.unencryptedSnapState = action.payload;
     },
-    sendRequest: (state, _: PayloadAction<SnapRpcHookArgs>) => {
-      state.requestId = nanoid();
+    sendRequest: (state, action: PayloadAction<SnapRpcHookArgs>) => {
+      if (action.payload.handler !== HandlerType.OnUserInput) {
+        state.requestId = nanoid();
+      }
     },
   },
 });
@@ -146,6 +168,8 @@ export const {
   setIcon,
   setAuxiliaryFiles,
   setLocalizationFiles,
+  setUserInterface,
+  setUserInterfaceState,
   showUserInterface,
   closeUserInterface,
   setSnapState,
@@ -178,6 +202,16 @@ export const getSubjectMetadataController = createSelector(
 export const getSnapInterfaceController = createSelector(
   (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
   (state) => state.snapInterfaceController,
+);
+
+export const getSnapInterfaceContent = createSelector(
+  (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
+  (state) => state.ui?.content,
+);
+
+export const getSnapInterfaceState = createSelector(
+  (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
+  (state) => state.ui?.state,
 );
 
 export const getSnapName = createSelector(
@@ -239,16 +273,4 @@ export const getLocalizationFiles = createSelector(
 export const getRequestId = createSelector(
   (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
   (state) => state.requestId,
-);
-
-export const getSnapInterface = createSelector(
-  (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
-  ({ snapInterfaceController, ui }) => {
-    if (!snapInterfaceController || !ui) {
-      return null;
-    }
-
-    const { snapId, id } = ui;
-    return snapInterfaceController.getInterface(snapId as SnapId, id).content;
-  },
 );

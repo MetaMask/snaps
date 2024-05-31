@@ -1,9 +1,11 @@
-import type { SnapInterfaceController } from '@metamask/snaps-controllers';
+import type {
+  SnapInterfaceController,
+  StoredInterface,
+} from '@metamask/snaps-controllers';
 import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
 import type {
   DialogType,
   NotifyParams,
-  Component,
   Json,
   SnapId,
   ComponentOrElement,
@@ -30,6 +32,7 @@ import {
   resolveUserInterface,
   setSnapState,
   setUnencryptedSnapState,
+  setUserInterface,
   showUserInterface,
 } from './slice';
 
@@ -51,6 +54,7 @@ export function* showDialog(
 ): SagaIterator {
   const snapName = yield select(getSnapName);
 
+  const snapInterface: StoredInterface = yield call(getInterface, snapId, id);
   // TODO: Support placeholder.
   yield put(
     showUserInterface({
@@ -58,6 +62,8 @@ export function* showDialog(
       snapName: snapName ?? snapId,
       type,
       id,
+      content: snapInterface.content,
+      state: snapInterface.state,
     }),
   );
 
@@ -279,6 +285,10 @@ export function* updateInterface(
     id,
     content,
   );
+
+  const snapInterface: StoredInterface = yield call(getInterface, snapId, id);
+
+  yield put(setUserInterface(snapInterface));
 }
 
 /**

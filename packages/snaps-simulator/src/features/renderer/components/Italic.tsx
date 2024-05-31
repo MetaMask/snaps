@@ -16,13 +16,7 @@ export const Italic: FunctionComponent<ItalicProps> = ({ node, id }) => {
   assert(node.type === 'Italic', 'Expected value to be an italic component.');
 
   return (
-    <Text
-      key={`${id}-text`}
-      fontFamily="custom"
-      fontSize="sm"
-      paddingBottom="1"
-      as="i"
-    >
+    <Text key={id} fontFamily="custom" fontSize="sm" paddingBottom="1" as="i">
       {renderTextChildren(getJsxChildren(node), id)}
     </Text>
   );

@@ -27,10 +27,12 @@ export type NodeRendererProps = {
  *
  * @param props - The props of the component.
  * @param props.items - The items to render in the tree.
+ * @param props.interfaceId
  * @returns A node renderer component.
  */
 export const NodeRenderer: FunctionComponent<NodeRendererProps> = ({
   items,
+  interfaceId,
 }) => {
   const snapId = useSelector(getSnapId);
   const snapName = useSelector(getSnapName) ?? 'Unknown';
