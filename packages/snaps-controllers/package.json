@@ -29,7 +29,9 @@
   "module": "./dist/index.mjs",
   "types": "./dist/types/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "react-native.d.ts",
+    "react-native.js"
   ],
   "scripts": {
     "test:prepare": "yarn mkdirp test/fixtures && ./scripts/generate-fixtures.sh",

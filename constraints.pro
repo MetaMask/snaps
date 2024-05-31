@@ -196,6 +196,7 @@ gen_enforced_field(WorkspaceCwd, 'files', ['dist']) :-
   WorkspaceCwd \= '.',
   WorkspaceCwd \= 'packages/snaps-jest',
   WorkspaceCwd \= 'packages/snaps-cli',
+  WorkspaceCwd \= 'packages/snaps-controllers',
   WorkspaceCwd \= 'packages/snaps-sdk'.
 gen_enforced_field(WorkspaceCwd, 'files', ['dist', 'jest-preset.js']) :-
   WorkspaceCwd = 'packages/snaps-jest'.
