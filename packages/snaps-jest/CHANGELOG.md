@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.1.2]
+### Fixed
+- Fix invalid `@metamask/snaps-sdk` imports ([#2452](https://github.com/MetaMask/snaps/pull/2452))
+
 ## [8.1.1]
 ### Changed
 - Bump `@metamask/key-tree` from `9.1.0` to `9.1.1` ([#2431](https://github.com/MetaMask/snaps/pull/2431))
@@ -157,7 +161,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.1.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.1.2...HEAD
+[8.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.1.1...@metamask/snaps-jest@8.1.2
 [8.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.1.0...@metamask/snaps-jest@8.1.1
 [8.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.0.0...@metamask/snaps-jest@8.1.0
 [8.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@7.0.2...@metamask/snaps-jest@8.0.0

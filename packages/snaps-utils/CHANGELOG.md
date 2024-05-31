@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.4.1]
+### Fixed
+- Fix invalid `@metamask/snaps-sdk` imports ([#2452](https://github.com/MetaMask/snaps/pull/2452))
+
 ## [7.4.0]
 ### Added
 - Add support for BIP-32-Ed25519 / CIP-3 key derivation ([#2408](https://github.com/MetaMask/snaps/pull/2408))
@@ -232,7 +236,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.4.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.4.1...HEAD
+[7.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.4.0...@metamask/snaps-utils@7.4.1
 [7.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.3.0...@metamask/snaps-utils@7.4.0
 [7.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.2.0...@metamask/snaps-utils@7.3.0
 [7.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.1.0...@metamask/snaps-utils@7.2.0
