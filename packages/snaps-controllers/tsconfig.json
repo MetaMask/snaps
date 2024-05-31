@@ -3,7 +3,13 @@
   "compilerOptions": {
     "baseUrl": "./"
   },
-  "include": ["./src", "scripts", "package.json", "tsup.config.ts"],
+  "include": [
+    "./src",
+    "scripts",
+    "package.json",
+    "tsup.config.ts",
+    "react-native.d.ts"
+  ],
   "references": [
     { "path": "../snaps-execution-environments" },
     { "path": "../snaps-rpc-methods" },
