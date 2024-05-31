@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.4.0]
+### Added
+- Add origin to lifecycle hooks ([#2441](https://github.com/MetaMask/snaps/pull/2441))
+  - Lifecycle hooks can now use the `origin` parameter to determine the origin
+    of the installation or update.
+
+### Changed
+- Bump `@metamask/providers` from `16.1.0` to `17.0.0` ([#2442](https://github.com/MetaMask/snaps/pull/2442))
+- Bump `@metamask/key-tree` from `9.1.0` to `9.1.1` ([#2431](https://github.com/MetaMask/snaps/pull/2431))
+
 ## [4.3.0]
 ### Added
 - Add `Value` component ([#2435](https://github.com/MetaMask/snaps/pull/2435))
@@ -136,7 +146,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.4.0...HEAD
+[4.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.3.0...@metamask/snaps-sdk@4.4.0
 [4.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.2.0...@metamask/snaps-sdk@4.3.0
 [4.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.1.0...@metamask/snaps-sdk@4.2.0
 [4.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.0.1...@metamask/snaps-sdk@4.1.0
