@@ -111,15 +111,19 @@ export const notifyBuilder = Object.freeze({
  * @param hooks.showInAppNotification - A function that shows a notification in the MetaMask UI.
  * @param hooks.isOnPhishingList - A function that checks for links against the phishing list.
  * @param hooks.maybeUpdatePhishingList - A function that updates the phishing list if needed.
+ * @param allowedProtocols - Allowed protocols for links (example: ['https:']).
  * @returns The method implementation which returns `null` on success.
  * @throws If the params are invalid.
  */
-export function getImplementation({
-  showNativeNotification,
-  showInAppNotification,
-  isOnPhishingList,
-  maybeUpdatePhishingList,
-}: NotifyMethodHooks) {
+export function getImplementation(
+  {
+    showNativeNotification,
+    showInAppNotification,
+    isOnPhishingList,
+    maybeUpdatePhishingList,
+  }: NotifyMethodHooks,
+  allowedProtocols?: string[],
+) {
   return async function implementation(
     args: RestrictedMethodOptions<NotifyParams>,
   ): Promise<NotifyResult> {
@@ -132,7 +136,11 @@ export function getImplementation({
 
     await maybeUpdatePhishingList();
 
-    validateTextLinks(validatedParams.message, isOnPhishingList);
+    validateTextLinks(
+      validatedParams.message,
+      isOnPhishingList,
+      allowedProtocols,
+    );
 
     switch (validatedParams.type) {
       case NotificationType.Native:

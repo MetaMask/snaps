@@ -285,6 +285,7 @@ export class SnapInterfaceController extends BaseController<
     );
 
     await this.#triggerPhishingListUpdate();
+    // TODO: Expose configuration for allowedProtocols in validateJsxLinks
     validateJsxLinks(element, this.#checkPhishingList.bind(this));
   }
 }
