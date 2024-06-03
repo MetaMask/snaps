@@ -152,6 +152,81 @@ describe('isOriginAllowed', () => {
     expect(isOriginAllowed(origins, SubjectType.Snap, 'foo')).toBe(false);
     expect(isOriginAllowed(origins, SubjectType.Website, 'bar')).toBe(false);
   });
+
+  it('supports wildcards', () => {
+    const origins: RpcOrigins = {
+      allowedOrigins: ['*'],
+    };
+
+    expect(isOriginAllowed(origins, SubjectType.Snap, 'foo')).toBe(true);
+    expect(isOriginAllowed(origins, SubjectType.Website, 'bar')).toBe(true);
+  });
+
+  it('supports prefixes with wildcards', () => {
+    const origins: RpcOrigins = {
+      allowedOrigins: ['https://*', 'npm:*'],
+    };
+
+    expect(
+      isOriginAllowed(
+        origins,
+        SubjectType.Website,
+        'https://snaps.metamask.io',
+      ),
+    ).toBe(true);
+    expect(isOriginAllowed(origins, SubjectType.Snap, 'npm:filsnap')).toBe(
+      true,
+    );
+    expect(
+      isOriginAllowed(origins, SubjectType.Website, 'http://snaps.metamask.io'),
+    ).toBe(false);
+    expect(
+      isOriginAllowed(origins, SubjectType.Snap, 'local:http://localhost:8080'),
+    ).toBe(false);
+  });
+
+  it('supports partial strings with wildcards', () => {
+    const origins: RpcOrigins = {
+      allowedOrigins: ['*.metamask.io'],
+    };
+
+    expect(
+      isOriginAllowed(
+        origins,
+        SubjectType.Website,
+        'https://snaps.metamask.io',
+      ),
+    ).toBe(true);
+    expect(
+      isOriginAllowed(origins, SubjectType.Website, 'https://foo.metamask.io'),
+    ).toBe(true);
+  });
+
+  it('supports multiple wildcards', () => {
+    const origins: RpcOrigins = {
+      allowedOrigins: ['*.metamask.*'],
+    };
+
+    expect(
+      isOriginAllowed(
+        origins,
+        SubjectType.Website,
+        'https://snaps.metamask.io',
+      ),
+    ).toBe(true);
+    expect(
+      isOriginAllowed(origins, SubjectType.Website, 'https://foo.metamask.io'),
+    ).toBe(true);
+    expect(
+      isOriginAllowed(origins, SubjectType.Website, 'https://foo.metamask.dk'),
+    ).toBe(true);
+    expect(
+      isOriginAllowed(origins, SubjectType.Website, 'https://foo.metamask2.io'),
+    ).toBe(false);
+    expect(
+      isOriginAllowed(origins, SubjectType.Website, 'https://ametamask2.io'),
+    ).toBe(false);
+  });
 });
 
 describe('assertIsJsonRpcSuccess', () => {

@@ -85,6 +85,20 @@ export function assertIsKeyringOrigins(
 }
 
 /**
+ * Create regular expression for matching against an origin while allowing wildcards.
+ *
+ * @param matcher - The string to create the regular expression with.
+ * @returns The regular expression.
+ */
+function createOriginRegExp(matcher: string) {
+  // Escape potential Regex characters
+  const escaped = matcher.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+  // Support wildcards
+  const regex = escaped.replace(/\*/gu, '.*');
+  return RegExp(regex, 'u');
+}
+
+/**
  * Check if the given origin is allowed by the given JSON-RPC origins object.
  *
  * @param origins - The JSON-RPC origins object.
@@ -103,7 +117,11 @@ export function isOriginAllowed(
   }
 
   // If the origin is in the `allowedOrigins` list, it is allowed.
-  if (origins.allowedOrigins?.includes(origin)) {
+  if (
+    origins.allowedOrigins
+      ?.map(createOriginRegExp)
+      .some((regex) => regex.test(origin))
+  ) {
     return true;
   }
 
