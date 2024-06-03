@@ -32,7 +32,7 @@ import {
   resolveUserInterface,
   setSnapState,
   setUnencryptedSnapState,
-  setUserInterface,
+  setSnapInterface,
   showUserInterface,
 } from './slice';
 
@@ -62,10 +62,10 @@ export function* showDialog(
       snapName: snapName ?? snapId,
       type,
       id,
-      content: snapInterface.content,
-      state: snapInterface.state,
     }),
   );
+
+  yield put(setSnapInterface({ id, ...snapInterface }));
 
   const { payload } = yield take(resolveUserInterface.type);
   yield put(closeUserInterface());
@@ -288,7 +288,7 @@ export function* updateInterface(
 
   const snapInterface: StoredInterface = yield call(getInterface, snapId, id);
 
-  yield put(setUserInterface(snapInterface));
+  yield put(setSnapInterface({ id, ...snapInterface }));
 }
 
 /**

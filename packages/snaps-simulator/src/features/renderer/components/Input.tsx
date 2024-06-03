@@ -22,6 +22,7 @@ export const Input: FunctionComponent<InputProps> = ({ node, id, form }) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     handleInputChange(props.name, event.target.value, form);
   };
+
   return (
     <ChakraInput
       key={`${id}-input`}

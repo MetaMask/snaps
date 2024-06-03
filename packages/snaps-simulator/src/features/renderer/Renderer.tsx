@@ -13,15 +13,12 @@ type RendererProps = {
  * A UI renderer for Snaps UI.
  *
  * @param props - The component props.
- * @param props.interfaceId - The interface ID.
- * @param props.id - The component ID, to be used as a prefix for component
- * keys.
- * @param props.content
+ * @param props.content - The JSX element to render.
  * @returns The renderer component.
  */
 export const Renderer: FunctionComponent<RendererProps> = ({ content }) => {
   const id = generateKey({}, content);
-  console.log(content);
+
   return (
     <SnapInterfaceContextProvider>
       <SnapComponent node={content} id={id} />

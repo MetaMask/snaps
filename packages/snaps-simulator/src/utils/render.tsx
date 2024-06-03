@@ -8,7 +8,7 @@ import { sha256 } from '@noble/hashes/sha256';
 import type { RenderResult } from '@testing-library/react';
 import { render as testingLibraryRender } from '@testing-library/react';
 import { unescape as unescapeEntities } from 'he';
-import { memoize } from 'lodash';
+import memoize from 'lodash.memoize';
 import type { ReactElement } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 

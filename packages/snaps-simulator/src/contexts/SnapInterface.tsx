@@ -1,14 +1,16 @@
 import { UserInputEventType } from '@metamask/snaps-sdk';
 import type { FormState, InterfaceState } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
-import { debounce, throttle } from 'lodash';
+import debounce from 'lodash.debounce';
+import throttle from 'lodash.throttle';
 import type { FunctionComponent, ReactNode } from 'react';
 import { createContext, useContext } from 'react';
 
 import {
   getSnapInterfaceController,
-  getUserInterface,
+  getSnapInterface,
   sendRequest,
+  setSnapInterfaceState,
 } from '../features';
 import { useDispatch, useSelector } from '../hooks';
 import { mergeValue } from './utils';
@@ -52,14 +54,14 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   SnapInterfaceContextProviderProps
 > = ({ children }) => {
   const dispatch = useDispatch();
-  const ui = useSelector(getUserInterface);
+  const snapInterface = useSelector(getSnapInterface);
   const snapInterfaceController = useSelector(getSnapInterfaceController);
 
-  if (!ui) {
+  if (!snapInterface) {
     return null;
   }
 
-  const { id, state } = ui;
+  const { id, state } = snapInterface;
 
   const rawSnapRequestFunction = (
     event: UserInputEventType,
@@ -124,6 +126,8 @@ export const SnapInterfaceContextProvider: FunctionComponent<
     const newState = mergeValue(state, name, value, form);
 
     snapInterfaceController?.updateInterfaceState(id, newState);
+    dispatch(setSnapInterfaceState(newState));
+
     handleEvent({
       event: UserInputEventType.InputChangeEvent,
       name,

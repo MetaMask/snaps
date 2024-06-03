@@ -9,22 +9,27 @@ import {
   PromptDialog,
 } from '../../../components';
 import { useDispatch, useSelector } from '../../../hooks';
-import { getUserInterface, resolveUserInterface } from '../../simulation';
+import {
+  getSnapInterfaceContent,
+  getUserInterface,
+  resolveUserInterface,
+} from '../../simulation';
 
 export const UserInterface: FunctionComponent = () => {
   const dispatch = useDispatch();
-  const ui = useSelector(getUserInterface);
+  const userInterface = useSelector(getUserInterface);
+  const content = useSelector(getSnapInterfaceContent);
   const tab = useTabsContext();
 
   useEffect(() => {
     tab.setSelectedIndex(1);
   }, [tab]);
 
-  if (!ui?.content) {
+  if (!content || !userInterface) {
     return null;
   }
 
-  const { snapName, snapId, type, content } = ui;
+  const { snapName, snapId, type } = userInterface;
 
   switch (type) {
     case DialogType.Alert: {

@@ -15,7 +15,6 @@ export const ResetUserInterfaceTab: FunctionComponent = () => {
   const tab = useTabsContext();
 
   useEffect(() => {
-    console.log(userInterface);
     if (!userInterface) {
       tab.setSelectedIndex(0);
     }

@@ -8,18 +8,14 @@ import type {
   StoredInterface,
 } from '@metamask/snaps-controllers';
 import type { DialogType, InterfaceState } from '@metamask/snaps-sdk';
-import type { JSXElement } from '@metamask/snaps-sdk/jsx-runtime';
-import {
-  HandlerType,
-  getLocalizedSnapManifest as localizeSnapManifest,
-} from '@metamask/snaps-utils';
+import { getLocalizedSnapManifest as localizeSnapManifest } from '@metamask/snaps-utils';
 import type {
   LocalizationFile,
   SnapManifest,
   SnapRpcHookArgs,
   VirtualFile,
 } from '@metamask/snaps-utils';
-import type { PayloadAction } from '@reduxjs/toolkit';
+import type { Draft, PayloadAction } from '@reduxjs/toolkit';
 import {
   createAction,
   createSelector,
@@ -38,9 +34,9 @@ export type HandlerUserInterface = {
   snapId: string;
   snapName: string;
   id: string;
-  content: JSXElement;
-  state: InterfaceState;
 };
+
+export type SnapInterface = StoredInterface & { id: string };
 
 type SimulationState = {
   status: SnapStatus;
@@ -54,6 +50,7 @@ type SimulationState = {
   localizationFiles: VirtualFile<LocalizationFile>[] | null;
   icon?: VirtualFile<string>;
   ui?: HandlerUserInterface | null;
+  snapInterface?: SnapInterface | null;
   snapState: string | null;
   unencryptedSnapState: string | null;
   requestId?: string;
@@ -120,20 +117,17 @@ const slice = createSlice({
     setIcon(state, action: PayloadAction<VirtualFile<string>>) {
       state.icon = action.payload;
     },
-    setUserInterface: (state, action: PayloadAction<StoredInterface>) => {
-      if (state.ui) {
-        // @ts-expect-error Can't compute type
-        state.ui.content = action.payload.content;
-        state.ui.state = action.payload.state;
-      }
+    setSnapInterface: (state, action: PayloadAction<SnapInterface>) => {
+      // `immer` does not work well with generic types, so we have to cast.
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+      state.snapInterface = action.payload as Draft<SnapInterface>;
     },
-    setUserInterfaceState: (state, action: PayloadAction<InterfaceState>) => {
-      if (state.ui) {
-        state.ui.state = action.payload;
+    setSnapInterfaceState: (state, action: PayloadAction<InterfaceState>) => {
+      if (state.snapInterface) {
+        state.snapInterface.state = action.payload;
       }
     },
     showUserInterface: (state, action: PayloadAction<HandlerUserInterface>) => {
-      // @ts-expect-error Can't compute type
       state.ui = action.payload;
     },
     closeUserInterface: (state) => {
@@ -145,10 +139,8 @@ const slice = createSlice({
     setUnencryptedSnapState: (state, action: PayloadAction<string | null>) => {
       state.unencryptedSnapState = action.payload;
     },
-    sendRequest: (state, action: PayloadAction<SnapRpcHookArgs>) => {
-      if (action.payload.handler !== HandlerType.OnUserInput) {
-        state.requestId = nanoid();
-      }
+    sendRequest: (state, _: PayloadAction<SnapRpcHookArgs>) => {
+      state.requestId = nanoid();
     },
   },
 });
@@ -168,8 +160,8 @@ export const {
   setIcon,
   setAuxiliaryFiles,
   setLocalizationFiles,
-  setUserInterface,
-  setUserInterfaceState,
+  setSnapInterface,
+  setSnapInterfaceState,
   showUserInterface,
   closeUserInterface,
   setSnapState,
@@ -204,14 +196,14 @@ export const getSnapInterfaceController = createSelector(
   (state) => state.snapInterfaceController,
 );
 
-export const getSnapInterfaceContent = createSelector(
+export const getSnapInterface = createSelector(
   (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
-  (state) => state.ui?.content,
+  (state) => state.snapInterface,
 );
 
-export const getSnapInterfaceState = createSelector(
-  (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
-  (state) => state.ui?.state,
+export const getSnapInterfaceContent = createSelector(
+  [getSnapInterface],
+  (snapInterface) => snapInterface?.content,
 );
 
 export const getSnapName = createSelector(

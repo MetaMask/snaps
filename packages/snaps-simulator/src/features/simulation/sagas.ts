@@ -9,6 +9,7 @@ import {
   SubjectMetadataController,
   SubjectType,
 } from '@metamask/permission-controller';
+import type { StoredInterface } from '@metamask/snaps-controllers';
 import {
   IframeExecutionService,
   SnapInterfaceController,
@@ -23,7 +24,8 @@ import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-rpc-methods';
-import type { Component, ComponentOrElement } from '@metamask/snaps-sdk';
+import type { SnapId } from '@metamask/snaps-sdk';
+import { type Component, type ComponentOrElement } from '@metamask/snaps-sdk';
 import type {
   SnapManifest,
   SnapRpcHookArgs,
@@ -34,7 +36,14 @@ import { getSafeJson, hasProperty, isObject } from '@metamask/utils';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { pipeline } from 'readable-stream';
 import type { SagaIterator } from 'redux-saga';
-import { all, call, put, select, takeLatest } from 'redux-saga/effects';
+import {
+  all,
+  call,
+  put,
+  select,
+  takeEvery,
+  takeLatest,
+} from 'redux-saga/effects';
 
 import { runSaga } from '../../store/middleware';
 import { getSnapId, getSrp, setSnapId } from '../configuration';
@@ -67,6 +76,8 @@ import {
   setSubjectMetadataController,
   getSubjectMetadataController,
   setSnapInterfaceController,
+  getSnapInterfaceController,
+  setSnapInterface,
 } from './slice';
 import {
   ExcludedSnapEndowments,
@@ -291,6 +302,9 @@ export function* requestSaga({ payload }: PayloadAction<SnapRpcHookArgs>) {
   const executionService: IframeExecutionService = yield select(
     getExecutionService,
   );
+  const snapInterfaceController: SnapInterfaceController = yield select(
+    getSnapInterfaceController,
+  );
 
   try {
     const result: unknown = yield call(
@@ -306,16 +320,34 @@ export function* requestSaga({ payload }: PayloadAction<SnapRpcHookArgs>) {
         result.content as ComponentOrElement,
       );
 
+      const snapInterface: StoredInterface = yield call(
+        [snapInterfaceController, 'getInterface'],
+        snapId as SnapId,
+        interfaceId,
+      );
+
+      yield put(setSnapInterface({ id: interfaceId, ...snapInterface }));
+
       yield put({
         type: `${payload.handler}/setResponse`,
         payload: {
           result: {
-            ...result,
+            ...snapInterface,
             id: interfaceId,
           },
         },
       });
-    } else {
+    } else if (isObject(result) && hasProperty(result, 'id')) {
+      const snapInterface: StoredInterface = yield call(
+        [snapInterfaceController, 'getInterface'],
+        snapId as SnapId,
+        result.id as string,
+      );
+
+      yield put(
+        setSnapInterface({ id: result.id as string, ...snapInterface }),
+      );
+
       yield put({
         type: `${payload.handler}/setResponse`,
         payload: {
@@ -391,7 +423,7 @@ export function* simulationSaga() {
   yield all([
     takeLatest(setSnapId.type, initSaga),
     takeLatest(setSourceCode.type, rebootSaga),
-    takeLatest(sendRequest.type, requestSaga),
+    takeEvery(sendRequest.type, requestSaga),
     takeLatest(setManifest, permissionsSaga),
   ]);
 }

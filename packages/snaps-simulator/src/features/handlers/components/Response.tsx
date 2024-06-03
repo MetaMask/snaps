@@ -11,13 +11,14 @@ import {
 import { useSelector, useHandler } from '../../../hooks';
 import { getSnapId } from '../../configuration';
 import { Renderer } from '../../renderer';
-import { getSnapName } from '../../simulation';
+import { getSnapInterfaceContent, getSnapName } from '../../simulation';
 
 export const Response = () => {
   const handler = useHandler();
   const response = useSelector((state) => state[handler].response);
   const snapId = useSelector(getSnapId);
   const snapName = useSelector(getSnapName) as string;
+  const content = useSelector(getSnapInterfaceContent);
 
   if (!response) {
     return (
@@ -45,11 +46,7 @@ export const Response = () => {
     );
   }
 
-  // TODO: Fix this type cast.
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-  const interfaceId = (response as any).result?.id;
-
-  if (handler === HandlerType.OnTransaction && interfaceId) {
+  if (handler === HandlerType.OnTransaction && content) {
     return (
       <Box margin="4">
         <Window snapName={snapName} snapId={snapId} showAuthorship={false}>
@@ -57,7 +54,7 @@ export const Response = () => {
             <Skeleton height="38px" mb="4" speed={3} />
             <Skeleton height="285px" mb="4" speed={3} />
             <Delineator type={DelineatorType.Insights} snapName={snapName}>
-              <Renderer interfaceId={interfaceId} />
+              <Renderer content={content} />
             </Delineator>
           </Box>
         </Window>
