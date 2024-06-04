@@ -1,16 +1,22 @@
-import { Box, Flex, List, ListItem, Text } from '@chakra-ui/react';
-import type { Component } from '@metamask/snaps-sdk';
 import {
-  button,
-  copyable,
-  divider,
-  form,
-  heading,
-  image,
-  input,
-  panel,
-  text,
-} from '@metamask/snaps-sdk';
+  Box as ChakraBox,
+  Flex,
+  List,
+  ListItem,
+  Text as ChakraText,
+} from '@chakra-ui/react';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
+import {
+  Box,
+  Heading,
+  Text,
+  Divider,
+  Copyable,
+  Image,
+  Button,
+  Form,
+  Input,
+} from '@metamask/snaps-sdk/jsx';
 import type { FunctionComponent } from 'react';
 
 import type { IconName } from '../../../components';
@@ -19,7 +25,7 @@ import { TemplateComponent } from './TemplateComponent';
 type TemplateComponent = {
   icon: IconName;
   text: string;
-  data: Component;
+  data: JSXElement;
   droppable: boolean;
 };
 
@@ -35,55 +41,57 @@ const TEMPLATE_COMPONENTS: TemplateComponent[] = [
   {
     icon: 'panel',
     text: 'Panel',
-    data: panel([]),
+    // @ts-expect-error Box requires a children.
+    data: <Box></Box>,
     droppable: true,
   },
   {
     icon: 'heading',
     text: 'Heading',
-    data: heading('Heading'),
+    data: <Heading>Heading</Heading>,
     droppable: false,
   },
   {
     icon: 'text',
     text: 'Text',
-    data: text('Text'),
+    data: <Text>Text</Text>,
     droppable: false,
   },
   {
     icon: 'divider',
     text: 'Divider',
-    data: divider(),
+    data: <Divider />,
     droppable: false,
   },
   {
     icon: 'copyable',
     text: 'Copyable',
-    data: copyable('Copyable text'),
+    data: <Copyable value="Copyable text" />,
     droppable: false,
   },
   {
     icon: 'image',
     text: 'Image',
-    data: image(SVG),
+    data: <Image src={SVG} />,
     droppable: false,
   },
   {
     icon: 'button',
     text: 'Button',
-    data: button('Button'),
+    data: <Button>Button</Button>,
     droppable: false,
   },
   {
     icon: 'form',
     text: 'Form',
-    data: form('form', []),
+    // @ts-expect-error Box requires a children.
+    data: <Form name="form"></Form>,
     droppable: true,
   },
   {
     icon: 'input',
     text: 'Input',
-    data: input('Input'),
+    data: <Input name="input" />,
     droppable: false,
   },
 ];
@@ -97,10 +105,15 @@ export const TemplateComponentList: FunctionComponent<ComponentsListProps> = ({
   nextId,
   incrementId,
 }) => (
-  <Box marginBottom="4">
-    <Text fontSize="xs" fontWeight="600" lineHeight="133%" marginBottom="1">
+  <ChakraBox marginBottom="4">
+    <ChakraText
+      fontSize="xs"
+      fontWeight="600"
+      lineHeight="133%"
+      marginBottom="1"
+    >
       Components
-    </Text>
+    </ChakraText>
     <Flex as={List} gap="2">
       {TEMPLATE_COMPONENTS.map((component) => (
         <ListItem key={`component-${component.text}`}>
@@ -118,5 +131,5 @@ export const TemplateComponentList: FunctionComponent<ComponentsListProps> = ({
         </ListItem>
       ))}
     </Flex>
-  </Box>
+  </ChakraBox>
 );

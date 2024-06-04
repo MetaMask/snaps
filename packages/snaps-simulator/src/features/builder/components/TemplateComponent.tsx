@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import type { Component } from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx-runtime';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 import type { FunctionComponent } from 'react';
 import { useDrag } from 'react-dnd';
@@ -8,7 +8,7 @@ import type { IconName } from '../../../components';
 import { Prefill } from '../../../components';
 
 type TemplateComponentProps = {
-  node: NodeModel<Component>;
+  node: NodeModel<JSXElement>;
   icon: IconName;
   incrementId: () => void;
 };

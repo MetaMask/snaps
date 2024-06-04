@@ -1,5 +1,6 @@
 import { Box, Flex } from '@chakra-ui/react';
 import { NodeType, type Component } from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx-runtime';
 import type {
   NodeModel,
   NodeRender,
@@ -14,8 +15,8 @@ import { Node } from './Node';
 import { Start } from './Start';
 
 export type NodeTreeProps = {
-  items: NodeModel<Component>[];
-  setItems: (items: NodeModel<Component>[]) => void;
+  items: NodeModel<JSXElement>[];
+  setItems: (items: NodeModel<JSXElement>[]) => void;
 };
 
 /**
@@ -33,7 +34,7 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
   const ref = useRef<TreeMethods>(null);
 
   const handleChange = (
-    node: NodeModel<Component>,
+    node: NodeModel<JSXElement>,
     key: string,
     value: string,
   ) => {
@@ -58,11 +59,11 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
     setItems(newItems);
   };
 
-  const handleDrop = (newItems: NodeModel<Component>[]) => {
+  const handleDrop = (newItems: NodeModel<JSXElement>[]) => {
     setItems(newItems);
   };
 
-  const handleClose = (node: NodeModel<Component>) => {
+  const handleClose = (node: NodeModel<JSXElement>) => {
     const newItems = items.filter(
       (item) => item.id !== node.id && item.parent !== node.id,
     );
@@ -70,7 +71,10 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
     setItems(newItems);
   };
 
-  const handleRender: NodeRender<Component> = (node, { depth, isDragging }) => {
+  const handleRender: NodeRender<JSXElement> = (
+    node,
+    { depth, isDragging },
+  ) => {
     if (items.length <= 1) {
       return <Start />;
     }

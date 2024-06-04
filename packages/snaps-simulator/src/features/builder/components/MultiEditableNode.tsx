@@ -1,11 +1,10 @@
 import { Box } from '@chakra-ui/react';
-import type { Button, Form, Input } from '@metamask/snaps-sdk';
-import {
-  ButtonType,
-  ButtonVariant,
-  InputType,
-  NodeType,
-} from '@metamask/snaps-sdk';
+import { ButtonType, ButtonVariant, InputType } from '@metamask/snaps-sdk';
+import type {
+  ButtonElement,
+  FormElement,
+  InputElement,
+} from '@metamask/snaps-sdk/jsx-runtime';
 import type { FunctionComponent } from 'react';
 
 import type { EditableNodeProps } from '../../../types';
@@ -13,7 +12,7 @@ import { BaseNode } from './BaseNode';
 import { EditableNodeInput } from './EditableNodeInput';
 import { EditableNodeSelect } from './EditableNodeSelect';
 
-export type MultiEditableComponent = Button | Input | Form;
+export type MultiEditableComponent = ButtonElement | InputElement | FormElement;
 
 enum FieldType {
   String = 'string',
@@ -29,7 +28,7 @@ type MultiEditableNodes = Record<
 >;
 
 export const MULTI_EDITABLE_NODES: MultiEditableNodes = {
-  [NodeType.Input]: {
+  Input: {
     name: {
       type: FieldType.String,
     },
@@ -50,7 +49,7 @@ export const MULTI_EDITABLE_NODES: MultiEditableNodes = {
       type: FieldType.String,
     },
   },
-  [NodeType.Button]: {
+  Button: {
     name: {
       type: FieldType.String,
     },
@@ -66,7 +65,7 @@ export const MULTI_EDITABLE_NODES: MultiEditableNodes = {
       values: [ButtonType.Button, ButtonType.Submit],
     },
   },
-  [NodeType.Form]: {
+  Form: {
     name: {
       type: FieldType.String,
     },
@@ -108,7 +107,9 @@ export const MultiEditableNode: FunctionComponent<
                 <EditableNodeInput
                   placeholder={key}
                   key={`${key}-input`}
-                  defaultValue={node.data?.[key as keyof typeof node.data]}
+                  defaultValue={
+                    node.data?.props[key as keyof typeof node.data.props]
+                  }
                   onChange={handleChange}
                 />
               );
@@ -118,7 +119,9 @@ export const MultiEditableNode: FunctionComponent<
               return (
                 <EditableNodeSelect
                   key={`${key}-select`}
-                  defaultValue={node.data?.[key as keyof typeof node.data]}
+                  defaultValue={
+                    node.data?.props[key as keyof typeof node.data.props]
+                  }
                   onChange={handleChange}
                   options={property.values}
                 />

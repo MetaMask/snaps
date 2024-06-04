@@ -1,10 +1,9 @@
 import { Box, Input as ChakraInput } from '@chakra-ui/react';
-import {
-  type Copyable,
-  type Heading,
-  type Text,
-  NodeType,
-} from '@metamask/snaps-sdk';
+import type {
+  CopyableElement,
+  HeadingElement,
+  TextElement,
+} from '@metamask/snaps-sdk/jsx-runtime';
 import { assert } from '@metamask/utils';
 import type { ChangeEvent, FunctionComponent } from 'react';
 import { useState } from 'react';
@@ -13,13 +12,12 @@ import type { EditableNodeProps } from '../../../types';
 import { getNodeText } from '../utils';
 import { BaseNode } from './BaseNode';
 
-export type TextEditableComponent = Text | Heading | Copyable;
+export type TextEditableComponent =
+  | TextElement
+  | HeadingElement
+  | CopyableElement;
 
-export const TEXT_EDITABLE_NODES = [
-  NodeType.Heading,
-  NodeType.Text,
-  NodeType.Image,
-];
+export const TEXT_EDITABLE_NODES = ['Heading', 'Text', 'Image'];
 
 /**
  * An editable node with a text field, which renders an editable component in the builder.

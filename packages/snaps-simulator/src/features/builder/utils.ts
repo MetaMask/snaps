@@ -1,12 +1,12 @@
-import { NodeType } from '@metamask/snaps-sdk';
 import type {
-  Button,
-  Component,
-  Form,
-  Input,
-  Panel,
-} from '@metamask/snaps-sdk';
-import { deepClone } from '@metamask/snaps-utils';
+  BoxElement,
+  ButtonElement,
+  FormElement,
+  GenericSnapElement,
+  InputElement,
+  JSXElement,
+} from '@metamask/snaps-sdk/jsx-runtime';
+import { deepClone, getJsxChildren } from '@metamask/snaps-utils';
 import { assert, hasProperty } from '@metamask/utils';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 import typescript from 'prettier/parser-typescript';
@@ -19,11 +19,15 @@ import prettier from 'prettier/standalone';
  * @returns The text of the node model, or `null` if the node model does not
  * have text.
  */
-export function getNodeText(nodeModel: NodeModel<Component>) {
+export function getNodeText(nodeModel: NodeModel<JSXElement>) {
   assert(nodeModel.data, 'Node model must have data.');
 
-  if (hasProperty(nodeModel.data, 'value')) {
-    return nodeModel.data.value as string;
+  if (hasProperty(nodeModel.data.props, 'value')) {
+    return nodeModel.data.props.value as string;
+  }
+
+  if (hasProperty(nodeModel.data.props, 'children')) {
+    return nodeModel.data.props.children as string;
   }
 
   return null;
@@ -35,8 +39,8 @@ export function getNodeText(nodeModel: NodeModel<Component>) {
  * @param node - The node to verify.
  * @returns True if the node is a valid form children, otherwise false.
  */
-export function isValidFormNode(node: Component) {
-  return node.type === 'input' || node.type === 'button';
+export function isValidFormNode(node: JSXElement) {
+  return node.type === 'Input' || node.type === 'Button';
 }
 
 /**
@@ -47,23 +51,27 @@ export function isValidFormNode(node: Component) {
  * @returns The component.
  */
 export function nodeModelsToComponent(
-  nodeModels: NodeModel<Component>[],
-): Panel {
+  nodeModels: NodeModel<JSXElement>[],
+): BoxElement {
   // We want to clone the node models so that we don't mutate the original data.
   const clonedModels = deepClone(nodeModels);
 
   for (const nodeModel of clonedModels) {
     assert(nodeModel.data, 'Node model must have data.');
     const parent = clonedModels.find((model) => model.id === nodeModel.parent);
-
+    console.log(nodeModel);
     if (parent) {
       switch (parent.data?.type) {
-        case 'panel':
-          parent.data.children.push(nodeModel.data);
+        case 'Box':
+          (parent.data.props.children as GenericSnapElement[]).push(
+            nodeModel.data,
+          );
           break;
-        case 'form': {
+        case 'Form': {
           if (isValidFormNode(nodeModel.data)) {
-            parent.data.children.push(nodeModel.data as Input | Button);
+            (parent.data.props.children as GenericSnapElement[]).push(
+              nodeModel.data as InputElement | ButtonElement,
+            );
           }
           break;
         }
@@ -75,7 +83,9 @@ export function nodeModelsToComponent(
   }
 
   const root = clonedModels.find((model) => model.parent === 0);
-  assert(root?.data?.type === 'panel', 'Root must be a panel.');
+
+  console.log(root?.data?.type);
+  assert(root?.data?.type === 'Box', 'Root must be a panel.');
 
   return root.data;
 }
@@ -86,17 +96,21 @@ export function nodeModelsToComponent(
  * @param component - The component.
  * @returns The component types.
  */
-function getComponentTypes(component: Panel | Form): NodeType[] {
-  const componentTypes = new Set<NodeType>();
+function getComponentTypes(component: BoxElement | FormElement): string[] {
+  const componentTypes = new Set<string>();
   componentTypes.add(component.type);
 
-  for (const child of component.children) {
-    componentTypes.add(child.type);
+  const children = getJsxChildren(component);
 
-    if (child.type === 'panel' || child.type === 'form') {
-      const childComponentTypes = getComponentTypes(child);
-      for (const childComponentType of childComponentTypes) {
-        componentTypes.add(childComponentType);
+  for (const child of children) {
+    if (typeof child !== 'string') {
+      componentTypes.add(child.type);
+
+      if (child.type === 'Box' || child.type === 'Form') {
+        const childComponentTypes = getComponentTypes(child);
+        for (const childComponentType of childComponentTypes) {
+          componentTypes.add(childComponentType);
+        }
       }
     }
   }
@@ -105,82 +119,69 @@ function getComponentTypes(component: Panel | Form): NodeType[] {
 }
 
 /**
- * Get the arguments used to create a component.
+ * Convert an element to code.
  *
- * @param component - The component.
- * @returns The arguments.
+ * @param element - The element.
+ * @returns The element as code.
  */
-function getComponentArgs(component: Component): string {
-  switch (component.type) {
-    case NodeType.Panel:
-      return component.children.map(getComponentArgs).join(',\n');
-    case NodeType.Form:
-      return `'${component.name}', ${component.children
-        .map(getComponentArgs)
-        .join(',\n')}`;
-    case NodeType.Copyable:
-      return `'${component.value}'${component.sensitive ? ', true' : ''}`;
-    case NodeType.Text:
-    case NodeType.Heading:
-    case NodeType.Image:
-      return JSON.stringify(component.value);
-    case NodeType.Button:
-    case NodeType.Input: {
-      const args = Object.keys(component)
-        .filter(
-          (key) =>
-            key !== 'type' && component[key as keyof typeof component] !== '',
-        )
-        .reduce((acc, prev) => {
-          return { ...acc, [prev]: component[prev as keyof typeof component] };
-        }, {});
-
-      return JSON.stringify(args);
-    }
-    case NodeType.Spinner:
-    case NodeType.Divider:
-    default:
-      return '';
-  }
+function elementToCode(element: JSXElement): string {
+  return `<${element.type} ${getElementProps(element.props)}>${
+    hasProperty(element.props, 'children')
+      ? `${getElementChildren(getJsxChildren(element))} </${element.type}`
+      : ''
+  }`;
 }
 
 /**
- * Get the code for a component.
+ * Get the props of an element as code.
  *
- * @param component - The component.
- * @returns The code.
+ * @param props - The props.
+ * @returns The props to code.
  */
-function componentToCode(component: Component): string {
-  if (component.type === NodeType.Panel) {
-    return `panel([\n${component.children
-      .map(componentToCode)
-      .join(',\n')}\n])`;
-  }
+function getElementProps(props: Record<string, unknown>) {
+  return Object.entries(props)
+    .map(([key, value]) => {
+      if (typeof value === 'string') {
+        return `${key}="${value}"`;
+      }
 
-  if (component.type === NodeType.Form) {
-    return `form('${component.name}', [\n${component.children
-      .map(componentToCode)
-      .join(',\n')}\n])`;
-  }
-
-  const args = getComponentArgs(component);
-  return `${component.type}(${args})`;
+      return `${key}={${JSON.stringify(value)}}`;
+    })
+    .join(' ');
 }
 
 /**
- * Convert a root panel to code. The code is formatted using prettier.
+ * Get the children of an element as code.
+ *
+ * @param children - The children.
+ * @returns The children to code.
+ */
+function getElementChildren(children: (string | JSXElement)[]) {
+  return children
+    .map((child) => {
+      if (typeof child === 'string') {
+        return child;
+      }
+
+      return elementToCode(child);
+    })
+    .join(' ');
+}
+
+/**
+ * Convert a root Box to code. The code is formatted using prettier.
  *
  * @param component - The root panel.
  * @returns The code.
  */
-export function panelToCode(component: Panel): string {
+export function boxToCode(component: BoxElement): string {
   const types = getComponentTypes(component).join(', ');
 
   return prettier.format(
     `
       import { ${types} } from '@metamask/snaps-sdk';
 
-      const component = ${componentToCode(component)};
+      const component = ${elementToCode(component)};
 `,
     {
       parser: 'typescript',

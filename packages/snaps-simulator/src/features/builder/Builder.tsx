@@ -1,5 +1,5 @@
 import {
-  Box,
+  Box as ChakraBox,
   Flex,
   Tab,
   TabList,
@@ -7,28 +7,29 @@ import {
   TabPanels,
   Tabs,
 } from '@chakra-ui/react';
-import type { Component } from '@metamask/snaps-sdk';
-import { NodeType } from '@metamask/snaps-sdk';
+import { Box, Text, type JSXElement } from '@metamask/snaps-sdk/jsx-runtime';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 import type { FunctionComponent } from 'react';
 import { useState } from 'react';
 
 import { Editor } from '../../components';
 import { TemplateComponentList, NodeTree, NodeRenderer } from './components';
-import { nodeModelsToComponent, panelToCode } from './utils';
+import { boxToCode, nodeModelsToComponent } from './utils';
 
 export const Builder: FunctionComponent = () => {
   const [id, setId] = useState<number>(2);
-  const [items, setItems] = useState<NodeModel<Component>[]>([
+  const [items, setItems] = useState<NodeModel<JSXElement>[]>([
     {
       id: 1,
       parent: 0,
-      text: 'Panel',
+      text: 'Box',
       droppable: true,
-      data: {
-        type: NodeType.Panel,
-        children: [],
-      },
+
+      data: (
+        <Box>
+          <Text>Text</Text>
+        </Box>
+      ),
     },
   ]);
 
@@ -67,7 +68,7 @@ export const Builder: FunctionComponent = () => {
             </TabPanels>
           </Tabs>
         </Flex>
-        <Box
+        <ChakraBox
           display="flex"
           flexDirection="column"
           flex="1"
@@ -107,7 +108,7 @@ export const Builder: FunctionComponent = () => {
               >
                 <Editor
                   border="none"
-                  value={panelToCode(nodeModelsToComponent(items))}
+                  value={boxToCode(nodeModelsToComponent(items))}
                   language="typescript"
                   options={{
                     readOnly: true,
@@ -116,7 +117,7 @@ export const Builder: FunctionComponent = () => {
               </TabPanel>
             </TabPanels>
           </Tabs>
-        </Box>
+        </ChakraBox>
       </Flex>
     </Flex>
   );

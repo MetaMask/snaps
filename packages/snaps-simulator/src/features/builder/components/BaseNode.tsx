@@ -1,5 +1,5 @@
 import { Flex, Text } from '@chakra-ui/react';
-import type { Component } from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx-runtime';
 import { assert } from '@metamask/utils';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 import type { FunctionComponent, ReactNode } from 'react';
@@ -8,10 +8,10 @@ import type { IconName } from '../../../components';
 import { Icon } from '../../../components';
 
 export type BaseNodeProps = {
-  node: NodeModel<Component>;
+  node: NodeModel<JSXElement>;
   isDragging: boolean;
   children?: ReactNode;
-  onClose?: ((node: NodeModel<Component>) => void) | undefined;
+  onClose?: ((node: NodeModel<JSXElement>) => void) | undefined;
 };
 
 export const BaseNode: FunctionComponent<BaseNodeProps> = ({

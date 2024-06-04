@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import type { Component } from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx-runtime';
 import { assert } from '@metamask/utils';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 import type { FunctionComponent } from 'react';
@@ -11,11 +11,11 @@ import type { TextEditableComponent } from './TextEditableNode';
 import { TEXT_EDITABLE_NODES, TextEditableNode } from './TextEditableNode';
 
 type NodeProps = {
-  node: NodeModel<Component>;
+  node: NodeModel<JSXElement>;
   depth: number;
   isDragging: boolean;
-  onChange: (node: NodeModel<Component>, key: string, value: string) => void;
-  onClose?: ((node: NodeModel<Component>) => void) | undefined;
+  onChange: (node: NodeModel<JSXElement>, key: string, value: string) => void;
+  onClose?: ((node: NodeModel<JSXElement>) => void) | undefined;
 };
 
 /**
