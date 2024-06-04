@@ -21,7 +21,7 @@ const permissionName = SnapEndowments.SignatureInsight;
 type SignatureInsightEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetName: typeof permissionName;
-  endowmentGetter: (_options?: EndowmentGetterParams) => undefined;
+  endowmentGetter: (_options?: EndowmentGetterParams) => null;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
 }>;
@@ -42,7 +42,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
     permissionType: PermissionType.Endowment,
     targetName: permissionName,
     allowedCaveats: [SnapCaveatType.SignatureOrigin],
-    endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
+    endowmentGetter: (_getterOptions?: EndowmentGetterParams) => null,
     validator: createGenericPermissionValidator([
       { type: SnapCaveatType.SignatureOrigin, optional: true },
       { type: SnapCaveatType.MaxRequestTime, optional: true },

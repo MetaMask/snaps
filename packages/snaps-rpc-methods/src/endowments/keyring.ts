@@ -22,7 +22,7 @@ const permissionName = SnapEndowments.Keyring;
 type KeyringEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetName: typeof permissionName;
-  endowmentGetter: (_options?: EndowmentGetterParams) => undefined;
+  endowmentGetter: (_options?: EndowmentGetterParams) => null;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
   subjectTypes: readonly SubjectType[];
@@ -47,7 +47,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
       SnapCaveatType.KeyringOrigin,
       SnapCaveatType.MaxRequestTime,
     ],
-    endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
+    endowmentGetter: (_getterOptions?: EndowmentGetterParams) => null,
     validator: createGenericPermissionValidator([
       { type: SnapCaveatType.KeyringOrigin },
       { type: SnapCaveatType.MaxRequestTime, optional: true },
