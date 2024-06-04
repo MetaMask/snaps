@@ -125,7 +125,7 @@ async function invokeAccountSnapImplementation(
     res.result = (await handleSnapRpcRequest({
       snapId,
       request,
-      handler: HandlerType.OnAccountsRequest,
+      handler: HandlerType.OnExternalAccountsRequest,
     })) as Json;
   } catch (error) {
     return end(error);

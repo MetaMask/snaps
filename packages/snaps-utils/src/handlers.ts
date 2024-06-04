@@ -89,8 +89,8 @@ export const SNAP_EXPORTS = {
       return typeof snapExport === 'function';
     },
   },
-  [HandlerType.OnInternalAccountsRequest]: {
-    type: HandlerType.OnInternalAccountsRequest,
+  [HandlerType.OnExternalAccountsRequest]: {
+    type: HandlerType.OnExternalAccountsRequest,
     required: true,
     validator: (snapExport: unknown): snapExport is OnUserInputHandler => {
       return typeof snapExport === 'function';

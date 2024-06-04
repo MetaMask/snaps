@@ -78,7 +78,7 @@ describe('wallet_invokeAccountsSnap', () => {
 
       expect(response.result).toBe('bar');
       expect(hooks.handleSnapRpcRequest).toHaveBeenCalledWith({
-        handler: HandlerType.OnKeyringRequest,
+        handler: HandlerType.OnExternalAccountsRequest,
         request: { method: 'foo' },
         snapId: MOCK_SNAP_ID,
       });

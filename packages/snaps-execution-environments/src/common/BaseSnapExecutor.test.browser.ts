@@ -1482,9 +1482,9 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('supports onInternalAccountsRequest export', async () => {
+  it('supports onExternalAccountsRequest export', async () => {
     const CODE = `
-      module.exports.onInternalAccountsRequest = ({ request }) => request.params[0];
+      module.exports.onExternalAccountsRequest = ({ request }) => request.params[0];
     `;
 
     const executor = new TestSnapExecutor();
@@ -1502,7 +1502,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         MOCK_SNAP_ID,
-        HandlerType.OnInternalAccountsRequest,
+        HandlerType.onExternalAccountsRequest,
         MOCK_ORIGIN,
         { jsonrpc: '2.0', method: 'foo', params: ['bar'] },
       ],

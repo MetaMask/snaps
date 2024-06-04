@@ -23,7 +23,7 @@ export type OnAccountsRequestHandler<
 }) => Promise<Json>;
 
 /**
- * The `onInternalAccountsRequest` handler, which is called when a Snap receives a
+ * The `onExternalAccountsRequest` handler, which is called when a Snap receives a
  * accounts request. This handler is strictly invoked by MetaMask clients.
  *
  * Note that using this handler requires the `endowment:accounts` permission.
@@ -37,7 +37,7 @@ export type OnAccountsRequestHandler<
  * JSON-serializable value. In order to return an error, throw a `SnapError`
  * instead.
  */
-export type OnInternalAccountsRequestHandler<
+export type OnExternalAccountsRequestHandler<
   Params extends JsonRpcParams = JsonRpcParams,
 > = (args: {
   origin: string;

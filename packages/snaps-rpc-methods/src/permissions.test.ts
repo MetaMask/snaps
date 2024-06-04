@@ -8,6 +8,20 @@ describe('buildSnapEndowmentSpecifications', () => {
     const specifications = buildSnapEndowmentSpecifications([]);
     expect(specifications).toMatchInlineSnapshot(`
       {
+        "endowment:accounts": {
+          "allowedCaveats": [
+            "keyringOrigin",
+            "chainIds",
+            "maxRequestTime",
+          ],
+          "endowmentGetter": [Function],
+          "permissionType": "Endowment",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "endowment:accounts",
+          "validator": [Function],
+        },
         "endowment:cronjob": {
           "allowedCaveats": [
             "snapCronjob",

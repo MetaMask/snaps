@@ -112,7 +112,7 @@ export const handlerEndowments: Record<HandlerType, string | null> = {
   [HandlerType.OnHomePage]: homePageEndowmentBuilder.targetName,
   [HandlerType.OnSignature]: signatureInsightEndowmentBuilder.targetName,
   [HandlerType.OnAccountsRequest]: accountsEndowmentBuilder.targetName,
-  [HandlerType.OnInternalAccountsRequest]: accountsEndowmentBuilder.targetName,
+  [HandlerType.OnExternalAccountsRequest]: accountsEndowmentBuilder.targetName,
   [HandlerType.OnUserInput]: null,
 };
 
