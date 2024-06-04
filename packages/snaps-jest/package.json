@@ -40,7 +40,7 @@
     "@jest/environment": "^29.5.0",
     "@jest/expect": "^29.5.0",
     "@jest/globals": "^29.5.0",
-    "@metamask/base-controller": "^5.0.2",
+    "@metamask/base-controller": "^6.0.0",
     "@metamask/eth-json-rpc-middleware": "^12.1.1",
     "@metamask/json-rpc-engine": "^8.0.1",
     "@metamask/json-rpc-middleware-stream": "^7.0.1",
