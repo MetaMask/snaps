@@ -14,13 +14,7 @@ import { array, boolean, object, optional, refine, string } from 'superstruct';
 
 const AllowedOriginsStruct = array(
   refine(string(), 'Allowed origin', (value) => {
-    const wildcards = value.split('').reduce((accumulator, character) => {
-      if (character === '*') {
-        return accumulator + 1;
-      }
-      return accumulator;
-    }, 0);
-
+    const wildcards = value.split('*').length - 1;
     if (wildcards > 2) {
       return 'No more than two wildcards (*) are allowed in "allowedOrigins".';
     }
