@@ -70,7 +70,7 @@ describe('assertIsRpcOrigins', () => {
     expect(() =>
       assertIsRpcOrigins({ allowedOrigins: ['*.*.metamask.***'] }),
     ).toThrow(
-      'Invalid JSON-RPC origins: At path: allowedOrigins.0 -- No more than two wildcards (*) are allowed in "allowedOrigins"',
+      'Invalid JSON-RPC origins: At path: allowedOrigins.0 -- No more than two wildcards ("*") are allowed in an origin specifier.',
     );
   });
 });

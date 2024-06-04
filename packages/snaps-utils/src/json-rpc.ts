@@ -16,7 +16,7 @@ const AllowedOriginsStruct = array(
   refine(string(), 'Allowed origin', (value) => {
     const wildcards = value.split('*').length - 1;
     if (wildcards > 2) {
-      return 'No more than two wildcards (*) are allowed in "allowedOrigins".';
+      return 'No more than two wildcards ("*") are allowed in an origin specifier.';
     }
 
     return true;
