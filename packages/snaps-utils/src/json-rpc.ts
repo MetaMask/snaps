@@ -98,6 +98,8 @@ export function assertIsKeyringOrigins(
 /**
  * Create regular expression for matching against an origin while allowing wildcards.
  *
+ * The "*" symbol is treated as a wildcard and will match 0 or more characters.
+ *
  * @param matcher - The string to create the regular expression with.
  * @returns The regular expression.
  */
@@ -107,6 +109,28 @@ function createOriginRegExp(matcher: string) {
   // Support wildcards
   const regex = escaped.replace(/\*/gu, '.*');
   return RegExp(regex, 'u');
+}
+
+/**
+ * Check whether an origin is allowed or not using a matcher string.
+ *
+ * The matcher string may be a specific origin to match or include wildcards.
+ * The "*" symbol is treated as a wildcard and will match 0 or more characters.
+ * Note: this means that https://*metamask.io matches both https://metamask.io
+ * and https://snaps.metamask.io.
+ *
+ * @param matcher - The matcher string.
+ * @param origin - The origin.
+ * @returns Whether the origin is allowed.
+ */
+function checkAllowedOrigin(matcher: string, origin: string) {
+  // If the matcher is a single wildcard or identical to the origin we can return true immediately.
+  if (matcher === '*' || matcher === origin) {
+    return true;
+  }
+
+  const regex = createOriginRegExp(matcher);
+  return regex.test(origin);
 }
 
 /**
@@ -129,9 +153,9 @@ export function isOriginAllowed(
 
   // If the origin is in the `allowedOrigins` list, it is allowed.
   if (
-    origins.allowedOrigins
-      ?.map(createOriginRegExp)
-      .some((regex) => regex.test(origin))
+    origins.allowedOrigins?.some((matcher) =>
+      checkAllowedOrigin(matcher, origin),
+    )
   ) {
     return true;
   }
