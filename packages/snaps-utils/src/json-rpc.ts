@@ -12,11 +12,28 @@ import {
 import type { Infer } from 'superstruct';
 import { array, boolean, object, optional, refine, string } from 'superstruct';
 
+const AllowedOriginsStruct = array(
+  refine(string(), 'Allowed origin', (value) => {
+    const wildcards = value.split('').reduce((accumulator, character) => {
+      if (character === '*') {
+        return accumulator + 1;
+      }
+      return accumulator;
+    }, 0);
+
+    if (wildcards > 2) {
+      return 'No more than two wildcards (*) are allowed in "allowedOrigins".';
+    }
+
+    return true;
+  }),
+);
+
 export const RpcOriginsStruct = refine(
   object({
     dapps: optional(boolean()),
     snaps: optional(boolean()),
-    allowedOrigins: optional(array(string())),
+    allowedOrigins: optional(AllowedOriginsStruct),
   }),
   'RPC origins',
   (value) => {
@@ -58,7 +75,7 @@ export function assertIsRpcOrigins(
 }
 
 export const KeyringOriginsStruct = object({
-  allowedOrigins: optional(array(string())),
+  allowedOrigins: optional(AllowedOriginsStruct),
 });
 
 export type KeyringOrigins = Infer<typeof KeyringOriginsStruct>;

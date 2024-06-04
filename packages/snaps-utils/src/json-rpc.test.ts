@@ -65,6 +65,14 @@ describe('assertIsRpcOrigins', () => {
       'Invalid JSON-RPC origins: Must specify at least one JSON-RPC origin.',
     );
   });
+
+  it('throws if allowedOrigins contains too many wildcards', () => {
+    expect(() =>
+      assertIsRpcOrigins({ allowedOrigins: ['*.*.metamask.***'] }),
+    ).toThrow(
+      'Invalid JSON-RPC origins: At path: allowedOrigins.0 -- No more than two wildcards (*) are allowed in "allowedOrigins"',
+    );
+  });
 });
 
 describe('assertIsKeyringOrigin', () => {
