@@ -29,7 +29,7 @@ describe('endowment:accounts', () => {
   });
 
   describe('validator', () => {
-    it('throws if the caveat is not a single "keyringOrigin"', () => {
+    it('throws if the caveat is not a "keyringOrigin" and "chainIds"', () => {
       const specification = accountsEndowmentBuilder.specificationBuilder({});
 
       expect(() =>
@@ -47,6 +47,15 @@ describe('endowment:accounts', () => {
       ).toThrow(
         'Expected the following caveats: "keyringOrigin", "chainIds", "maxRequestTime", received "foo".',
       );
+
+      expect(() =>
+        // @ts-expect-error Missing other required permission types.
+        specification.validator({
+          caveats: [
+            { type: 'keyringOrigin', value: { allowedOrgins: ['foo.com'] } },
+          ],
+        }),
+      ).toThrow('Expected the following caveats: "keyringOrigin", "chainIds".');
 
       expect(() =>
         // @ts-expect-error Missing other required permission types.

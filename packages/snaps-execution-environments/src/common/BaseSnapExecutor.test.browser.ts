@@ -1502,7 +1502,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         MOCK_SNAP_ID,
-        HandlerType.onExternalAccountsRequest,
+        HandlerType.OnExternalAccountsRequest,
         MOCK_ORIGIN,
         { jsonrpc: '2.0', method: 'foo', params: ['bar'] },
       ],

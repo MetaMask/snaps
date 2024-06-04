@@ -76,7 +76,7 @@ export function getHandlerArguments(
     }
     case HandlerType.OnRpcRequest:
     case HandlerType.OnKeyringRequest:
-    case HandlerType.onExternalAccountsRequest:
+    case HandlerType.OnExternalAccountsRequest:
     case HandlerType.OnAccountsRequest:
       return { origin, request };
 
