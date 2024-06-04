@@ -12,11 +12,22 @@ import {
 import type { Infer } from 'superstruct';
 import { array, boolean, object, optional, refine, string } from 'superstruct';
 
+const AllowedOriginsStruct = array(
+  refine(string(), 'Allowed origin', (value) => {
+    const wildcards = value.split('*').length - 1;
+    if (wildcards > 2) {
+      return 'No more than two wildcards ("*") are allowed in an origin specifier.';
+    }
+
+    return true;
+  }),
+);
+
 export const RpcOriginsStruct = refine(
   object({
     dapps: optional(boolean()),
     snaps: optional(boolean()),
-    allowedOrigins: optional(array(string())),
+    allowedOrigins: optional(AllowedOriginsStruct),
   }),
   'RPC origins',
   (value) => {
@@ -58,7 +69,7 @@ export function assertIsRpcOrigins(
 }
 
 export const KeyringOriginsStruct = object({
-  allowedOrigins: optional(array(string())),
+  allowedOrigins: optional(AllowedOriginsStruct),
 });
 
 export type KeyringOrigins = Infer<typeof KeyringOriginsStruct>;
@@ -85,6 +96,44 @@ export function assertIsKeyringOrigins(
 }
 
 /**
+ * Create regular expression for matching against an origin while allowing wildcards.
+ *
+ * The "*" symbol is treated as a wildcard and will match 0 or more characters.
+ *
+ * @param matcher - The string to create the regular expression with.
+ * @returns The regular expression.
+ */
+function createOriginRegExp(matcher: string) {
+  // Escape potential Regex characters
+  const escaped = matcher.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+  // Support wildcards
+  const regex = escaped.replace(/\*/gu, '.*');
+  return RegExp(regex, 'u');
+}
+
+/**
+ * Check whether an origin is allowed or not using a matcher string.
+ *
+ * The matcher string may be a specific origin to match or include wildcards.
+ * The "*" symbol is treated as a wildcard and will match 0 or more characters.
+ * Note: this means that https://*metamask.io matches both https://metamask.io
+ * and https://snaps.metamask.io.
+ *
+ * @param matcher - The matcher string.
+ * @param origin - The origin.
+ * @returns Whether the origin is allowed.
+ */
+function checkAllowedOrigin(matcher: string, origin: string) {
+  // If the matcher is a single wildcard or identical to the origin we can return true immediately.
+  if (matcher === '*' || matcher === origin) {
+    return true;
+  }
+
+  const regex = createOriginRegExp(matcher);
+  return regex.test(origin);
+}
+
+/**
  * Check if the given origin is allowed by the given JSON-RPC origins object.
  *
  * @param origins - The JSON-RPC origins object.
@@ -103,7 +152,11 @@ export function isOriginAllowed(
   }
 
   // If the origin is in the `allowedOrigins` list, it is allowed.
-  if (origins.allowedOrigins?.includes(origin)) {
+  if (
+    origins.allowedOrigins?.some((matcher) =>
+      checkAllowedOrigin(matcher, origin),
+    )
+  ) {
     return true;
   }
 
