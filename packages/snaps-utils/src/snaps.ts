@@ -148,6 +148,11 @@ export type Snap = TruncatedSnap & {
    * A lack of specifying this option will be deemed as removable.
    */
   removable?: boolean;
+
+  /**
+   * Flag to signal whether this snap should be hidden from the user or not.
+   */
+  hidden?: boolean;
 };
 
 export type TruncatedSnapFields =
