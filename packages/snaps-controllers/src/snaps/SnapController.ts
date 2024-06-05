@@ -174,6 +174,7 @@ export interface PreinstalledSnap {
   manifest: SnapManifest;
   files: PreinstalledSnapFile[];
   removable?: boolean;
+  hidden?: boolean;
 }
 
 type SnapRpcHandler = (
@@ -687,6 +688,7 @@ type SetSnapArgs = Omit<AddSnapArgs, 'location' | 'versionRange'> & {
   isUpdate?: boolean;
   removable?: boolean;
   preinstalled?: boolean;
+  hidden?: boolean;
 };
 
 const defaultState: SnapControllerState = {
@@ -1083,7 +1085,13 @@ export class SnapController extends BaseController<
   }
 
   #handlePreinstalledSnaps(preinstalledSnaps: PreinstalledSnap[]) {
-    for (const { snapId, manifest, files, removable } of preinstalledSnaps) {
+    for (const {
+      snapId,
+      manifest,
+      files,
+      removable,
+      hidden,
+    } of preinstalledSnaps) {
       const existingSnap = this.get(snapId);
       const isAlreadyInstalled = existingSnap !== undefined;
       const isUpdate =
@@ -1152,6 +1160,7 @@ export class SnapController extends BaseController<
         origin: 'metamask',
         files: filesObject,
         removable,
+        hidden,
         preinstalled: true,
       });
 
@@ -2769,6 +2778,7 @@ export class SnapController extends BaseController<
       isUpdate = false,
       removable,
       preinstalled,
+      hidden,
     } = args;
 
     const {
@@ -2824,6 +2834,7 @@ export class SnapController extends BaseController<
 
       removable,
       preinstalled,
+      hidden,
 
       id: snapId,
       initialConnections: manifest.result.initialConnections,
