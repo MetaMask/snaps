@@ -1,6 +1,7 @@
 import type {
   Caveat,
   CaveatConstraint,
+  CaveatSpecificationConstraint,
   EndowmentGetterParams,
   PermissionConstraint,
   PermissionSpecificationBuilder,
@@ -8,17 +9,26 @@ import type {
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import type { KeyringOrigins } from '@metamask/snaps-utils';
-import { SnapCaveatType } from '@metamask/snaps-utils';
+import {
+  ProtocolRpcMethodsStruct,
+  SnapCaveatType,
+} from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
-import { isObject } from '@metamask/utils';
+import {
+  assertStruct,
+  hasProperty,
+  isObject,
+  isPlainObject,
+} from '@metamask/utils';
 
 import { createGenericPermissionValidator } from './caveats';
 import { SnapEndowments } from './enum';
 
-const permissionName = SnapEndowments.AccountsChain;
+const permissionName = SnapEndowments.Protocol;
 
-type AccountsChainEndowmentSpecification = ValidPermissionSpecification<{
+type ProtocolEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetName: typeof permissionName;
   endowmentGetter: (_options?: EndowmentGetterParams) => undefined;
@@ -28,8 +38,8 @@ type AccountsChainEndowmentSpecification = ValidPermissionSpecification<{
 }>;
 
 /**
- * `endowment:accounts-chain` returns nothing; it is intended to be used as a flag
- * by the client to detect whether the Snap supports the Accounts Chain API.
+ * `endowment:protocol` returns nothing; it is intended to be used as a flag
+ * by the client to detect whether the Snap supports the Protocol API.
  *
  * @param _builderOptions - Optional specification builder options.
  * @returns The specification for the accounts chain endowment.
@@ -37,7 +47,7 @@ type AccountsChainEndowmentSpecification = ValidPermissionSpecification<{
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.Endowment,
   any,
-  AccountsChainEndowmentSpecification
+  ProtocolEndowmentSpecification
 > = (_builderOptions?: unknown) => {
   return {
     permissionType: PermissionType.Endowment,
@@ -45,19 +55,21 @@ const specificationBuilder: PermissionSpecificationBuilder<
     allowedCaveats: [
       SnapCaveatType.KeyringOrigin,
       SnapCaveatType.ChainIds,
+      SnapCaveatType.SnapRpcMethods,
       SnapCaveatType.MaxRequestTime,
     ],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
     validator: createGenericPermissionValidator([
       { type: SnapCaveatType.KeyringOrigin },
       { type: SnapCaveatType.ChainIds },
+      { type: SnapCaveatType.SnapRpcMethods },
       { type: SnapCaveatType.MaxRequestTime, optional: true },
     ]),
     subjectTypes: [SubjectType.Snap],
   };
 };
 
-export const accountsChainEndowmentBuilder = Object.freeze({
+export const protocolEndowmentBuilder = Object.freeze({
   targetName: permissionName,
   specificationBuilder,
 } as const);
@@ -70,7 +82,7 @@ export const accountsChainEndowmentBuilder = Object.freeze({
  * @param value - The raw value from the `initialPermissions`.
  * @returns The caveat specification.
  */
-export function getAccountsChainCaveatMapper(
+export function getProtocolCaveatMapper(
   value: Json,
 ): Pick<PermissionConstraint, 'caveats'> {
   if (!value || !isObject(value) || Object.keys(value).length === 0) {
@@ -93,6 +105,13 @@ export function getAccountsChainCaveatMapper(
     });
   }
 
+  if (value.methods) {
+    caveats.push({
+      type: SnapCaveatType.SnapRpcMethods,
+      value: value.methods,
+    });
+  }
+
   return { caveats: caveats as NonEmptyArray<CaveatConstraint> };
 }
 
@@ -103,7 +122,7 @@ export function getAccountsChainCaveatMapper(
  * @param permission - The permission to get the caveat value from.
  * @returns The caveat value.
  */
-export function getAccountsChainCaveatOrigins(
+export function getProtocolCaveatOrigins(
   permission?: PermissionConstraint,
 ): KeyringOrigins | null {
   const caveat = permission?.caveats?.find(
@@ -120,7 +139,7 @@ export function getAccountsChainCaveatOrigins(
  * @param permission - The permission to get the caveat value from.
  * @returns The caveat value.
  */
-export function getAccountsChainCaveatChainIds(
+export function getProtocolCaveatChainIds(
   permission?: PermissionConstraint,
 ): string[] | null {
   const caveat = permission?.caveats?.find(
@@ -129,3 +148,52 @@ export function getAccountsChainCaveatChainIds(
 
   return caveat ? caveat.value : null;
 }
+
+/**
+ * Getter function to get the {@link SnapRpcMethods} caveat value from a
+ * permission.
+ *
+ * @param permission - The permission to get the caveat value from.
+ * @returns The caveat value.
+ */
+export function getProtocolCaveatRpcMethods(
+  permission?: PermissionConstraint,
+): string[] | null {
+  const caveat = permission?.caveats?.find(
+    (permCaveat) => permCaveat.type === SnapCaveatType.SnapRpcMethods,
+  ) as Caveat<string, string[]> | undefined;
+
+  return caveat ? caveat.value : null;
+}
+
+/**
+ * Validates the type of the caveat value.
+ *
+ * @param caveat - The caveat to validate.
+ * @throws If the caveat value is invalid.
+ */
+function validateCaveat(caveat: Caveat<string, any>): void {
+  if (!hasProperty(caveat, 'value') || !isPlainObject(caveat)) {
+    throw rpcErrors.invalidParams({
+      message: 'Expected a plain object.',
+    });
+  }
+
+  const { value } = caveat;
+  assertStruct(
+    value,
+    ProtocolRpcMethodsStruct,
+    'Invalid RPC methods specified',
+    rpcErrors.invalidParams,
+  );
+}
+
+export const protocolCaveatSpecifications: Record<
+  SnapCaveatType.SnapRpcMethods,
+  CaveatSpecificationConstraint
+> = {
+  [SnapCaveatType.SnapRpcMethods]: Object.freeze({
+    type: SnapCaveatType.SnapRpcMethods,
+    validator: (caveat: Caveat<string, any>) => validateCaveat(caveat),
+  }),
+};

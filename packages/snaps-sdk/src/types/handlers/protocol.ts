@@ -1,10 +1,10 @@
 import type { Json, JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 
 /**
- * The `onAccountsChainRequest` handler, which is called when a Snap receives a
+ * The `onProtocolRequest` handler, which is called when a Snap receives a
  * accounts chain request.
  *
- * Note that using this handler requires the `endowment:accounts-chain` permission.
+ * Note that using this handler requires the `endowment:protocol` permission.
  *
  * @param args - The request arguments.
  * @param args.origin - The origin of the request. This can be the ID of another
@@ -15,7 +15,7 @@ import type { Json, JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
  * JSON-serializable value. In order to return an error, throw a `SnapError`
  * instead.
  */
-export type OnAccountsChainRequestHandler<
+export type OnProtocolRequestHandler<
   Params extends JsonRpcParams = JsonRpcParams,
 > = (args: {
   origin: string;

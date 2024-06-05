@@ -1449,9 +1449,9 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('supports onAccountsChainRequest export', async () => {
+  it('supports onProtocolRequest export', async () => {
     const CODE = `
-      module.exports.onAccountsChainRequest = ({ request }) => request.params[0];
+      module.exports.onProtocolRequest = ({ request }) => request.params[0];
     `;
 
     const executor = new TestSnapExecutor();
@@ -1469,7 +1469,7 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         MOCK_SNAP_ID,
-        HandlerType.OnAccountsChainRequest,
+        HandlerType.OnProtocolRequest,
         MOCK_ORIGIN,
         { jsonrpc: '2.0', method: 'foo', params: ['bar'] },
       ],

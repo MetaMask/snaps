@@ -76,7 +76,7 @@ export function getHandlerArguments(
     }
     case HandlerType.OnRpcRequest:
     case HandlerType.OnKeyringRequest:
-    case HandlerType.OnAccountsChainRequest:
+    case HandlerType.OnProtocolRequest:
       return { origin, request };
 
     case HandlerType.OnCronjob:

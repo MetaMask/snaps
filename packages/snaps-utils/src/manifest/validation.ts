@@ -180,6 +180,8 @@ export const HandlerCaveatsStruct = object({
   maxRequestTime: optional(MaxRequestTimeStruct),
 });
 
+export const ProtocolRpcMethodsStruct = array(string());
+
 export type HandlerCaveats = Infer<typeof HandlerCaveatsStruct>;
 
 export const EmptyObjectStruct = object<EmptyObject>({}) as unknown as Struct<
@@ -199,10 +201,13 @@ export const PermissionsStruct: Describe<InitialPermissions> = type({
   'endowment:keyring': optional(
     assign(HandlerCaveatsStruct, KeyringOriginsStruct),
   ),
-  'endowment:accounts-chain': optional(
+  'endowment:protocol': optional(
     assign(
       HandlerCaveatsStruct,
-      assign(KeyringOriginsStruct, object({ chains: ChainIdsStruct })),
+      assign(
+        KeyringOriginsStruct,
+        object({ chains: ChainIdsStruct, methods: ProtocolRpcMethodsStruct }),
+      ),
     ),
   ),
   'endowment:lifecycle-hooks': optional(HandlerCaveatsStruct),

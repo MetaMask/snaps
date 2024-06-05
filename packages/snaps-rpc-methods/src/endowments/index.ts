@@ -3,10 +3,6 @@ import { HandlerType } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
 
 import {
-  getAccountsChainCaveatMapper,
-  accountsChainEndowmentBuilder,
-} from './accounts-chain';
-import {
   createMaxRequestTimeMapper,
   getMaxRequestTimeCaveatMapper,
   maxRequestTimeCaveatSpecifications,
@@ -30,6 +26,7 @@ import {
   nameLookupEndowmentBuilder,
 } from './name-lookup';
 import { networkAccessEndowmentBuilder } from './network-access';
+import { getProtocolCaveatMapper, protocolEndowmentBuilder } from './protocol';
 import {
   getRpcCaveatMapper,
   rpcCaveatSpecifications,
@@ -59,7 +56,7 @@ export const endowmentPermissionBuilders = {
   [nameLookupEndowmentBuilder.targetName]: nameLookupEndowmentBuilder,
   [lifecycleHooksEndowmentBuilder.targetName]: lifecycleHooksEndowmentBuilder,
   [keyringEndowmentBuilder.targetName]: keyringEndowmentBuilder,
-  [accountsChainEndowmentBuilder.targetName]: accountsChainEndowmentBuilder,
+  [protocolEndowmentBuilder.targetName]: protocolEndowmentBuilder,
   [homePageEndowmentBuilder.targetName]: homePageEndowmentBuilder,
   [signatureInsightEndowmentBuilder.targetName]:
     signatureInsightEndowmentBuilder,
@@ -93,8 +90,8 @@ export const endowmentCaveatMappers: Record<
   [keyringEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
     getKeyringCaveatMapper,
   ),
-  [accountsChainEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
-    getAccountsChainCaveatMapper,
+  [protocolEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
+    getProtocolCaveatMapper,
   ),
   [signatureInsightEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
     getSignatureInsightCaveatMapper,
@@ -114,8 +111,7 @@ export const handlerEndowments: Record<HandlerType, string | null> = {
   [HandlerType.OnKeyringRequest]: keyringEndowmentBuilder.targetName,
   [HandlerType.OnHomePage]: homePageEndowmentBuilder.targetName,
   [HandlerType.OnSignature]: signatureInsightEndowmentBuilder.targetName,
-  [HandlerType.OnAccountsChainRequest]:
-    accountsChainEndowmentBuilder.targetName,
+  [HandlerType.OnProtocolRequest]: protocolEndowmentBuilder.targetName,
   [HandlerType.OnUserInput]: null,
 };
 
@@ -127,3 +123,8 @@ export { getChainIdsCaveat, getLookupMatchersCaveat } from './name-lookup';
 export { getKeyringCaveatOrigins } from './keyring';
 export { getMaxRequestTimeCaveat } from './caveats';
 export { getCronjobCaveatJobs } from './cronjob';
+export {
+  getProtocolCaveatChainIds,
+  getProtocolCaveatOrigins,
+  getProtocolCaveatRpcMethods,
+} from './protocol';

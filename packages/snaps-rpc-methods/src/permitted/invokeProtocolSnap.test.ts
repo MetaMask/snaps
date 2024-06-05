@@ -10,12 +10,12 @@ import type {
   JsonRpcSuccess,
 } from '@metamask/utils';
 
-import { invokeAccountSnapHandler } from './invokeAccountsSnap';
+import { invokeProtocolSnapHandler } from './invokeProtocolSnap';
 
-describe('wallet_invokeAccountsSnap', () => {
-  describe('invokeKeyringHandler', () => {
+describe('wallet_invokeProtocolSnap', () => {
+  describe('invokeProtocolSnapHandler', () => {
     it('has the expected shape', () => {
-      expect(invokeAccountSnapHandler).toMatchObject({
+      expect(invokeProtocolSnapHandler).toMatchObject({
         methodNames: ['wallet_invokeAccountsSnap'],
         implementation: expect.any(Function),
         hookNames: {
@@ -26,7 +26,7 @@ describe('wallet_invokeAccountsSnap', () => {
       });
     });
   });
-  describe('invokeKeyringImplementation', () => {
+  describe('invokeProtocolSnapImplementation', () => {
     // Mirror the origin middleware in the extension
     const createOriginMiddleware =
       (origin: string) =>
@@ -44,7 +44,7 @@ describe('wallet_invokeAccountsSnap', () => {
       } as any);
 
     it('invokes the snap and returns the result', async () => {
-      const { implementation } = invokeAccountSnapHandler;
+      const { implementation } = invokeProtocolSnapHandler;
 
       const hooks = getMockHooks();
 
@@ -87,7 +87,7 @@ describe('wallet_invokeAccountsSnap', () => {
     });
 
     it('invokes the snap and returns the result when using the chain type', async () => {
-      const { implementation } = invokeAccountSnapHandler;
+      const { implementation } = invokeProtocolSnapHandler;
 
       const hooks = getMockHooks();
 
@@ -130,7 +130,7 @@ describe('wallet_invokeAccountsSnap', () => {
     });
 
     it('fails if invoking the snap fails', async () => {
-      const { implementation } = invokeAccountSnapHandler;
+      const { implementation } = invokeProtocolSnapHandler;
 
       const hooks = getMockHooks();
 
@@ -179,7 +179,7 @@ describe('wallet_invokeAccountsSnap', () => {
     });
 
     it('fails if the type is invalid', async () => {
-      const { implementation } = invokeAccountSnapHandler;
+      const { implementation } = invokeProtocolSnapHandler;
 
       const hooks = getMockHooks();
 
@@ -224,7 +224,7 @@ describe('wallet_invokeAccountsSnap', () => {
     });
 
     it('fails if origin is not authorized to call the method', async () => {
-      const { implementation } = invokeAccountSnapHandler;
+      const { implementation } = invokeProtocolSnapHandler;
 
       const hooks = getMockHooks();
 
@@ -274,7 +274,7 @@ describe('wallet_invokeAccountsSnap', () => {
     });
 
     it("fails if the request doesn't have a method name", async () => {
-      const { implementation } = invokeAccountSnapHandler;
+      const { implementation } = invokeProtocolSnapHandler;
 
       const hooks = getMockHooks();
 
@@ -321,7 +321,7 @@ describe('wallet_invokeAccountsSnap', () => {
     });
 
     it("fails if the origin doesn't have the permission to invoke the snap", async () => {
-      const { implementation } = invokeAccountSnapHandler;
+      const { implementation } = invokeProtocolSnapHandler;
 
       const hooks = getMockHooks();
 
@@ -363,7 +363,7 @@ describe('wallet_invokeAccountsSnap', () => {
     });
 
     it('fails if the snap is not installed', async () => {
-      const { implementation } = invokeAccountSnapHandler;
+      const { implementation } = invokeProtocolSnapHandler;
 
       const hooks = getMockHooks();
 
@@ -406,7 +406,7 @@ describe('wallet_invokeAccountsSnap', () => {
     });
 
     it('fails if params are invalid', async () => {
-      const { implementation } = invokeAccountSnapHandler;
+      const { implementation } = invokeProtocolSnapHandler;
 
       const hooks = getMockHooks();
 
