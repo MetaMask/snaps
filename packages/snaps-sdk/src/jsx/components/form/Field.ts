@@ -1,3 +1,5 @@
+import type { FileInputElement } from '@metamask/snaps-sdk/jsx';
+
 import { createSnapComponent } from '../../component';
 import type { ButtonElement } from './Button';
 import type { DropdownElement } from './Dropdown';
@@ -13,7 +15,11 @@ import type { InputElement } from './Input';
 export type FieldProps = {
   label?: string | undefined;
   error?: string | undefined;
-  children: [InputElement, ButtonElement] | InputElement | DropdownElement;
+  children:
+    | [InputElement, ButtonElement]
+    | DropdownElement
+    | FileInputElement
+    | InputElement;
 };
 
 const TYPE = 'Field';
@@ -31,6 +37,10 @@ const TYPE = 'Field';
  * <Field label="Username">
  *   <Input name="username" type="text" />
  *   <Button type="submit">Submit</Button>
+ * </Field>
+ * @example
+ * <Field label="Upload file">
+ *   <FileInput name="file" accept={['image/*']} multiple />
  * </Field>
  */
 export const Field = createSnapComponent<FieldProps, typeof TYPE>(TYPE);

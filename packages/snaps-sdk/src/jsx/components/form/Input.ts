@@ -11,7 +11,7 @@ import { createSnapComponent } from '../../component';
  * @property value - The value of the input field.
  * @property placeholder - The placeholder text of the input field.
  */
-type InputProps = {
+export type InputProps = {
   name: string;
   type?: 'text' | 'password' | 'number' | undefined;
   value?: string | undefined;
