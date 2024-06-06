@@ -11,6 +11,7 @@ import type {
   FieldElement,
   InputElement,
   JSXElement,
+  OptionElement,
 } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import {
@@ -49,6 +50,26 @@ export function assertNameIsUnique(state: InterfaceState, name: string) {
 }
 
 /**
+ * Construct default state for a component.
+ *
+ * This function is meant to be used inside constructInputState to account
+ * for component specific defaults and will not override the component value or existing form state.
+ *
+ * @param element - The input element.
+ * @returns The default state for the specific component, if any.
+ */
+function constructComponentSpecificDefaultState(
+  element: InputElement | DropdownElement,
+) {
+  if (element.type === 'Dropdown') {
+    const children = getJsxChildren(element) as OptionElement[];
+    return children[0].props.value;
+  }
+
+  return null;
+}
+
+/**
  * Construct the state for an input field.
  *
  * @param oldState - The previous state.
@@ -59,7 +80,12 @@ function constructInputState(
   oldState: InterfaceState,
   element: InputElement | DropdownElement,
 ) {
-  return element.props.value ?? oldState[element.props.name] ?? null;
+  return (
+    element.props.value ??
+    oldState[element.props.name] ??
+    constructComponentSpecificDefaultState(element) ??
+    null
+  );
 }
 
 /**
@@ -77,7 +103,12 @@ function constructFormInputState(
 ) {
   const oldFormState = oldState[form] as FormState;
   const oldInputState = oldFormState?.[component.props.name];
-  return component.props.value ?? oldInputState ?? null;
+  return (
+    component.props.value ??
+    oldInputState ??
+    constructComponentSpecificDefaultState(component) ??
+    null
+  );
 }
 
 /**

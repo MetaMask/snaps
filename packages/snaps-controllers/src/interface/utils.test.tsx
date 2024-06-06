@@ -232,6 +232,22 @@ describe('constructState', () => {
     });
   });
 
+  it('sets default value for root level dropdown', () => {
+    const element = (
+      <Box>
+        <Dropdown name="foo">
+          <Option value="option1">Option 1</Option>
+          <Option value="option2">Option 2</Option>
+        </Dropdown>
+      </Box>
+    );
+
+    const result = constructState({}, element);
+    expect(result).toStrictEqual({
+      foo: 'option1',
+    });
+  });
+
   it('supports root level dropdowns', () => {
     const element = (
       <Box>
@@ -245,6 +261,26 @@ describe('constructState', () => {
     const result = constructState({}, element);
     expect(result).toStrictEqual({
       foo: 'option2',
+    });
+  });
+
+  it('sets default value for dropdowns in forms', () => {
+    const element = (
+      <Box>
+        <Form name="form">
+          <Field label="foo">
+            <Dropdown name="foo">
+              <Option value="option1">Option 1</Option>
+              <Option value="option2">Option 2</Option>
+            </Dropdown>
+          </Field>
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element);
+    expect(result).toStrictEqual({
+      form: { foo: 'option1' },
     });
   });
 
