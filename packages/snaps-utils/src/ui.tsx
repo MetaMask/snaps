@@ -29,6 +29,7 @@ import {
   Button,
   Address,
 } from '@metamask/snaps-sdk/jsx';
+import type { NonEmptyArray } from '@metamask/utils';
 import {
   assert,
   assertExhaustive,
@@ -66,7 +67,7 @@ function getButtonVariant(variant?: 'primary' | 'secondary' | undefined) {
  * @param elements - The JSX elements.
  * @returns The child or children.
  */
-function getChildren<Type>(elements: Type[]) {
+function getChildren<Type>(elements: NonEmptyArray<Type>) {
   if (elements.length === 1) {
     return elements[0];
   }
@@ -82,7 +83,11 @@ function getChildren<Type>(elements: Type[]) {
  */
 function getLinkText(token: Tokens.Link | Tokens.Generic) {
   if (token.tokens && token.tokens.length > 0) {
-    return getChildren(token.tokens.flatMap(getTextChildFromToken));
+    return getChildren(
+      token.tokens.flatMap(
+        getTextChildFromToken,
+      ) as NonEmptyArray<TextChildren>,
+    );
   }
 
   return token.href;
@@ -95,7 +100,9 @@ function getLinkText(token: Tokens.Link | Tokens.Generic) {
  * @returns The text child.
  */
 function getTextChildFromTokens(tokens: Token[]) {
-  return getChildren(tokens.flatMap(getTextChildFromToken));
+  return getChildren(
+    tokens.flatMap(getTextChildFromToken) as NonEmptyArray<TextChildren>,
+  );
 }
 
 /**
@@ -154,9 +161,10 @@ function getTextChildFromToken(token: Token): TextChildren {
  */
 export function getTextChildren(
   value: string,
-): (string | StandardFormattingElement | LinkElement)[] {
+): NonEmptyArray<string | StandardFormattingElement | LinkElement> {
   const rootTokens = lexer(value, { gfm: false });
-  const children: TextChildren = [];
+  const children: (string | StandardFormattingElement | LinkElement | null)[] =
+    [];
 
   walkTokens(rootTokens, (token) => {
     if (token.type === 'paragraph') {
@@ -169,11 +177,9 @@ export function getTextChildren(
     }
   });
 
-  return children.filter((child) => child !== null) as (
-    | string
-    | StandardFormattingElement
-    | LinkElement
-  )[];
+  return children.filter((child) => child !== null) as NonEmptyArray<
+    string | StandardFormattingElement | LinkElement
+  >;
 }
 
 /**
@@ -243,7 +249,9 @@ export function getJsxElementFromComponent(
       case NodeType.Form:
         return (
           <Form name={component.name}>
-            {getChildren(component.children.map(getElement)) as FieldElement[]}
+            {getChildren(
+              component.children.map(getElement) as NonEmptyArray<FieldElement>,
+            )}
           </Form>
         );
 
@@ -269,7 +277,11 @@ export function getJsxElementFromComponent(
       case NodeType.Panel:
         // `Panel` is renamed to `Box` in JSX.
         return (
-          <Box children={getChildren(component.children.map(getElement))} />
+          <Box
+            children={getChildren(
+              component.children.map(getElement) as NonEmptyArray<JSXElement>,
+            )}
+          />
         );
 
       case NodeType.Row:

@@ -1,4 +1,4 @@
-import type { Json } from '@metamask/utils';
+import type { Json, NonEmptyArray } from '@metamask/utils';
 
 /**
  * A key, which can be a string or a number.
@@ -48,7 +48,7 @@ export type SnapElement<
  * const maybeArrayString: MaybeArrayString = 'hello';
  * const maybeArrayStringArray: MaybeArrayString = ['hello', 'world'];
  */
-export type MaybeArray<Type> = Type | Type[];
+export type MaybeArray<Type> = Type | NonEmptyArray<Type>;
 
 /**
  * A JSX node, which can be an element, a string, null, or an array of nodes.
