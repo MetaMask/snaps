@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.4.2]
+### Fixed
+- Require at least 1 child in JSX components ([#2466](https://github.com/MetaMask/snaps/pull/2466))
+
 ## [4.4.1]
 ### Fixed
 - Fix invalid `@metamask/snaps-sdk` imports ([#2452](https://github.com/MetaMask/snaps/pull/2452))
@@ -150,7 +154,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.4.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.4.2...HEAD
+[4.4.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.4.1...@metamask/snaps-sdk@4.4.2
 [4.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.4.0...@metamask/snaps-sdk@4.4.1
 [4.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.3.0...@metamask/snaps-sdk@4.4.0
 [4.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.2.0...@metamask/snaps-sdk@4.3.0

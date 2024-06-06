@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.5.0]
+### Added
+- Allow wildcards in `allowedOrigins` ([#2458](https://github.com/MetaMask/snaps/pull/2458))
+- Add `hidden` flag for preinstalled Snaps ([#2463](https://github.com/MetaMask/snaps/pull/2463))
+
+### Fixed
+- Require at least 1 child in JSX components ([#2466](https://github.com/MetaMask/snaps/pull/2466))
+
 ## [7.4.1]
 ### Fixed
 - Fix invalid `@metamask/snaps-sdk` imports ([#2452](https://github.com/MetaMask/snaps/pull/2452))
@@ -15,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add support for BIP-32-Ed25519 / CIP-3 key derivation ([#2408](https://github.com/MetaMask/snaps/pull/2408))
 
 ## Fixed
+
 - Fix build producing invalid JSX types ([#2410](https://github.com/MetaMask/snaps/pull/2410))
 
 ## [7.3.0]
@@ -236,7 +245,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.4.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.5.0...HEAD
+[7.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.4.1...@metamask/snaps-utils@7.5.0
 [7.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.4.0...@metamask/snaps-utils@7.4.1
 [7.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.3.0...@metamask/snaps-utils@7.4.0
 [7.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.2.0...@metamask/snaps-utils@7.3.0

@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.4.0]
+### Added
+- Add `hidden` flag for preinstalled Snaps ([#2463](https://github.com/MetaMask/snaps/pull/2463))
+
+### Fixed
+- Use first Dropdown option as the default value ([#2465](https://github.com/MetaMask/snaps/pull/2465))
+
 ## [8.3.1]
 ### Fixed
 - Fix `react-native` export for tools that don't support `package.json` exports ([#2451](https://github.com/MetaMask/snaps/pull/2451))
@@ -281,7 +288,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.3.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.4.0...HEAD
+[8.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.3.1...@metamask/snaps-controllers@8.4.0
 [8.3.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.3.0...@metamask/snaps-controllers@8.3.1
 [8.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.2.0...@metamask/snaps-controllers@8.3.0
 [8.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.1.1...@metamask/snaps-controllers@8.2.0
