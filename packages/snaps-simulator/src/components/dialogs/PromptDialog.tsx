@@ -27,12 +27,10 @@ type PromptForm = {
  * @param props.snapName - The snap name.
  * @param props.snapId - The snap ID.
  * @param props.placeholder - The placeholder text.
- * @param props.node - The component to render.
+ * @param props.content - The component to render.
  * @param props.onCancel - The cancel callback.
  * @param props.onSubmit - The submit callback. The value is passed as the first
  * argument.
- * @param props.interfaceId
- * @param props.content
  * @returns The component.
  */
 export const PromptDialog: FunctionComponent<PromptDialogProps> = ({

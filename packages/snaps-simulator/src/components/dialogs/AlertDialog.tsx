@@ -19,10 +19,8 @@ export type AlertDialogProps = {
  * @param props - The component props.
  * @param props.snapName - The snap name.
  * @param props.snapId - The snap ID.
- * @param props.node - The component to render.
+ * @param props.content - The component to render.
  * @param props.onClose - The close callback.
- * @param props.interfaceId
- * @param props.content
  * @returns The component.
  */
 export const AlertDialog: FunctionComponent<AlertDialogProps> = ({

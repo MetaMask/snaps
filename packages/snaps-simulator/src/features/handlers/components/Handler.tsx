@@ -23,8 +23,8 @@ import { Response } from './Response';
 import { UserInterface } from './UserInterface';
 
 export const Handler: FunctionComponent = () => {
+  const [tab, setTab] = useState(0);
   const userInterface = useSelector(getUserInterface);
-  const [tab, setTab] = useState(userInterface ? 1 : 0);
 
   return (
     <Flex width="100%" direction="column" overflow="hidden">

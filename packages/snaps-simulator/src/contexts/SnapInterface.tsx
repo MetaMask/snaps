@@ -50,6 +50,14 @@ const THROTTLED_EVENTS = [
   UserInputEventType.FormSubmitEvent,
 ];
 
+/**
+ * A provider for the Snap Interface context.
+ * This context provides functions to interact with the Snap Interface.
+ *
+ * @param props - The props of the component.
+ * @param props.children - The children of the component.
+ * @returns A provider for the Snap Interface context.
+ */
 export const SnapInterfaceContextProvider: FunctionComponent<
   SnapInterfaceContextProviderProps
 > = ({ children }) => {
@@ -57,6 +65,10 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   const snapInterface = useSelector(getSnapInterface);
   const snapInterfaceController = useSelector(getSnapInterfaceController);
 
+  /**
+   * A no-op function.
+   * Used when there is no Snap Interface to interact with.
+   */
   const noOp = () => {
     /* No Op */
   };
@@ -77,11 +89,18 @@ export const SnapInterfaceContextProvider: FunctionComponent<
 
   const { id, state } = snapInterface;
 
+  /**
+   * Send a request to the Snap.
+   *
+   * @param event - The event type.
+   * @param name - The name of the component emitting the event.
+   * @param value - The value of the component emitting the event.
+   */
   const rawSnapRequestFunction = (
     event: UserInputEventType,
     name?: string,
     value?: string | InterfaceState,
-  ) =>
+  ) => {
     dispatch(
       sendRequest({
         origin: '',
@@ -101,8 +120,16 @@ export const SnapInterfaceContextProvider: FunctionComponent<
         },
       }),
     );
+  };
 
+  /**
+   * Debounce the request to the Snap.
+   */
   const snapRequestDebounced = debounce(rawSnapRequestFunction, 200);
+
+  /**
+   * Throttle the request to the Snap.
+   */
   const snapRequestThrottled = throttle(rawSnapRequestFunction, 200);
 
   /**
@@ -136,6 +163,13 @@ export const SnapInterfaceContextProvider: FunctionComponent<
     return undefined;
   };
 
+  /**
+   * Handle the change of an input value.
+   *
+   * @param name - The name of the input.
+   * @param value - The new value of the input.
+   * @param form - The form containing the input.
+   */
   const handleInputChange: HandleInputChange = (name, value, form) => {
     const newState = mergeValue(state, name, value, form);
 

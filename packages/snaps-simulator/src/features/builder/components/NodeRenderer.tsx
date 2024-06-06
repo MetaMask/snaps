@@ -27,7 +27,6 @@ export type NodeRendererProps = {
  *
  * @param props - The props of the component.
  * @param props.items - The items to render in the tree.
- * @param props.interfaceId
  * @returns A node renderer component.
  */
 export const NodeRenderer: FunctionComponent<NodeRendererProps> = ({
@@ -36,7 +35,7 @@ export const NodeRenderer: FunctionComponent<NodeRendererProps> = ({
   const snapId = useSelector(getSnapId);
   const snapName = useSelector(getSnapName) ?? 'Unknown';
   const node = useMemo(() => nodeModelsToComponent(items), [items]);
-  console.log(node);
+
   return (
     <Window snapName={snapName} snapId={snapId}>
       <Box margin="4" marginTop="0" flex="1">
