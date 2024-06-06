@@ -76,7 +76,9 @@ describe('onRpcRequest', () => {
       const resultScreen = await response.getInterface();
 
       expect(resultScreen).toRender(
-        <Result values={{ 'example-input': '', 'example-dropdown': '' }} />,
+        <Result
+          values={{ 'example-input': '', 'example-dropdown': 'option1' }}
+        />,
       );
       await resultScreen.ok();
 
