@@ -430,6 +430,8 @@ describe('BoxStruct', () => {
     [],
     // @ts-expect-error - Invalid props.
     <Box />,
+    // @ts-expect-error - Invalid props.
+    <Box children={[]} />,
     <Text>foo</Text>,
     <Row label="label">
       <Image src="src" alt="alt" />

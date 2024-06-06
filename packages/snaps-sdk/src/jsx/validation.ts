@@ -1,3 +1,4 @@
+import type { NonEmptyArray } from '@metamask/utils';
 import {
   hasProperty,
   HexChecksumAddressStruct,
@@ -6,6 +7,7 @@ import {
 } from '@metamask/utils';
 import type { Struct } from 'superstruct';
 import {
+  refine,
   is,
   boolean,
   optional,
@@ -77,6 +79,22 @@ export const ElementStruct: Describe<GenericSnapElement> = object({
 });
 
 /**
+ * A struct for the {@link NonEmptyArray} type.
+ *
+ * @param struct - The struct for the non-empty array type.
+ * @returns The struct for the non-empty array type.
+ */
+function nonEmptyArray<Type, Schema>(
+  struct: Struct<Type, Schema>,
+): Struct<NonEmptyArray<Type>, any> {
+  return refine(
+    array(struct),
+    'NonEmptyArray',
+    (value) => value.length > 0,
+  ) as unknown as Struct<NonEmptyArray<Type>, Schema>;
+}
+
+/**
  * A helper function for creating a struct for a {@link MaybeArray} type.
  *
  * @param struct - The struct for the maybe array type.
@@ -85,7 +103,7 @@ export const ElementStruct: Describe<GenericSnapElement> = object({
 function maybeArray<Type, Schema>(
   struct: Struct<Type, Schema>,
 ): Struct<MaybeArray<Type>, any> {
-  return nullUnion([struct, array(struct)]);
+  return nullUnion([struct, nonEmptyArray(struct)]);
 }
 
 /**
