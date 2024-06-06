@@ -11,6 +11,7 @@ import { Tree } from '@minoru/react-dnd-treeview';
 import type { FunctionComponent } from 'react';
 import { useEffect, useRef } from 'react';
 
+import { canDropElement } from '../utils';
 import { Node } from './Node';
 import { Start } from './Start';
 
@@ -47,7 +48,10 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unnecessary-type-assertion
             type: item.data!.type,
             ...item.data,
-            [key]: value,
+            props: {
+              ...item.data?.props,
+              [key]: value,
+            },
           },
           text: value,
         };
@@ -94,7 +98,7 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
     return <Box width="100%" height="20px" />;
   };
 
-  const handleCanDrag = (node?: NodeModel<Component>) => {
+  const handleCanDrag = (node?: NodeModel<JSXElement>) => {
     if (node) {
       return node.id >= 2;
     }
@@ -102,21 +106,16 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
     return false;
   };
 
-  const handleCanDrop: TreeProps<Component>['canDrop'] = (
+  const handleCanDrop: TreeProps<JSXElement>['canDrop'] = (
     _tree,
     { dropTarget, dropTargetId, dragSource },
   ) => {
     if (dropTargetId) {
-      // Checks if the component is allowed in an Form.
-      if (
-        dropTarget?.data?.type === NodeType.Form &&
-        dragSource?.data?.type !== NodeType.Button &&
-        dragSource?.data?.type !== NodeType.Input
-      ) {
-        return false;
-      }
-
-      return dropTarget?.droppable && dropTargetId > 0;
+      return (
+        canDropElement(dropTarget?.data, dragSource?.data) &&
+        dropTarget?.droppable &&
+        dropTargetId > 0
+      );
     }
 
     return false;

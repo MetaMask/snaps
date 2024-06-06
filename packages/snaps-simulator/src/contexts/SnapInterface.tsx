@@ -57,8 +57,22 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   const snapInterface = useSelector(getSnapInterface);
   const snapInterfaceController = useSelector(getSnapInterfaceController);
 
+  const noOp = () => {
+    /* No Op */
+  };
+
   if (!snapInterface) {
-    return null;
+    return (
+      <SnapInterfaceContext.Provider
+        value={{
+          getValue: noOp as GetValue,
+          handleInputChange: noOp as HandleInputChange,
+          handleEvent: noOp as HandleEvent,
+        }}
+      >
+        {children}
+      </SnapInterfaceContext.Provider>
+    );
   }
 
   const { id, state } = snapInterface;

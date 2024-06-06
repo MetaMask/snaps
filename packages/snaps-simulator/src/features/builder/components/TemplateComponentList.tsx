@@ -16,6 +16,7 @@ import {
   Button,
   Form,
   Input,
+  Field,
 } from '@metamask/snaps-sdk/jsx';
 import type { FunctionComponent } from 'react';
 
@@ -39,59 +40,65 @@ const SVG = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="
 
 const TEMPLATE_COMPONENTS: TemplateComponent[] = [
   {
-    icon: 'panel',
-    text: 'Panel',
-    // @ts-expect-error Box requires a children.
-    data: <Box></Box>,
+    icon: 'box',
+    text: 'Box',
+    data: Box({ children: [] }),
     droppable: true,
   },
   {
     icon: 'heading',
     text: 'Heading',
-    data: <Heading>Heading</Heading>,
+    data: Heading({ children: 'Heading' }),
     droppable: false,
   },
   {
     icon: 'text',
     text: 'Text',
-    data: <Text>Text</Text>,
+    data: Text({ children: 'Text' }),
     droppable: false,
   },
   {
     icon: 'divider',
     text: 'Divider',
-    data: <Divider />,
+    data: Divider({}),
     droppable: false,
   },
   {
     icon: 'copyable',
     text: 'Copyable',
-    data: <Copyable value="Copyable text" />,
+    data: Copyable({ value: 'Text to copy' }),
     droppable: false,
   },
   {
     icon: 'image',
     text: 'Image',
-    data: <Image src={SVG} />,
+    data: Image({ src: SVG }),
     droppable: false,
   },
   {
     icon: 'button',
     text: 'Button',
-    data: <Button>Button</Button>,
+    data: Button({ children: 'Button' }),
     droppable: false,
   },
   {
     icon: 'form',
     text: 'Form',
-    // @ts-expect-error Box requires a children.
-    data: <Form name="form"></Form>,
+    data: Form({ name: 'form', children: [] }),
     droppable: true,
   },
   {
+    icon: 'field',
+    text: 'Field',
+    // @ts-expect-error - Field expects children.
+    data: Field({ children: [] }),
+    droppable: true,
+  },
+
+  {
     icon: 'input',
     text: 'Input',
-    data: <Input name="input" />,
+    data: Input({ name: 'input' }),
     droppable: false,
   },
 ];

@@ -1,7 +1,8 @@
 import { Box } from '@chakra-ui/react';
-import { ButtonType, ButtonVariant, InputType } from '@metamask/snaps-sdk';
+import { ButtonType, InputType } from '@metamask/snaps-sdk';
 import type {
   ButtonElement,
+  FieldElement,
   FormElement,
   InputElement,
 } from '@metamask/snaps-sdk/jsx-runtime';
@@ -12,7 +13,11 @@ import { BaseNode } from './BaseNode';
 import { EditableNodeInput } from './EditableNodeInput';
 import { EditableNodeSelect } from './EditableNodeSelect';
 
-export type MultiEditableComponent = ButtonElement | InputElement | FormElement;
+export type MultiEditableComponent =
+  | ButtonElement
+  | InputElement
+  | FormElement
+  | FieldElement;
 
 enum FieldType {
   String = 'string',
@@ -41,7 +46,7 @@ export const MULTI_EDITABLE_NODES: MultiEditableNodes = {
     value: {
       type: FieldType.String,
     },
-    inputType: {
+    type: {
       type: FieldType.Dropdown,
       values: [InputType.Text, InputType.Number, InputType.Password],
     },
@@ -58,15 +63,26 @@ export const MULTI_EDITABLE_NODES: MultiEditableNodes = {
     },
     variant: {
       type: FieldType.Dropdown,
-      values: [ButtonVariant.Primary, ButtonVariant.Secondary],
+      values: ['primary', 'destructive'],
     },
-    buttonType: {
+    type: {
       type: FieldType.Dropdown,
       values: [ButtonType.Button, ButtonType.Submit],
+    },
+    children: {
+      type: FieldType.String,
     },
   },
   Form: {
     name: {
+      type: FieldType.String,
+    },
+  },
+  Field: {
+    label: {
+      type: FieldType.String,
+    },
+    error: {
       type: FieldType.String,
     },
   },

@@ -7,7 +7,7 @@ import {
   TabPanels,
   Tabs,
 } from '@chakra-ui/react';
-import { Box, Text, type JSXElement } from '@metamask/snaps-sdk/jsx-runtime';
+import { Box, type JSXElement } from '@metamask/snaps-sdk/jsx-runtime';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 import type { FunctionComponent } from 'react';
 import { useState } from 'react';
@@ -25,11 +25,7 @@ export const Builder: FunctionComponent = () => {
       text: 'Box',
       droppable: true,
 
-      data: (
-        <Box>
-          <Text>Text</Text>
-        </Box>
-      ),
+      data: Box({ children: [] }),
     },
   ]);
 

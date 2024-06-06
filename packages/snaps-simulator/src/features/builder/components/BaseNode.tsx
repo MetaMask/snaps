@@ -41,7 +41,7 @@ export const BaseNode: FunctionComponent<BaseNodeProps> = ({
       marginX="4"
       cursor={node.id > 1 ? 'move' : 'default'}
     >
-      <Icon icon={node.data.type as IconName} width="16px" />
+      <Icon icon={node.data.type.toLowerCase() as IconName} width="16px" />
       <Text
         fontWeight="500"
         fontSize="sm"

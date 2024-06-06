@@ -36,7 +36,7 @@ export const NodeRenderer: FunctionComponent<NodeRendererProps> = ({
   const snapId = useSelector(getSnapId);
   const snapName = useSelector(getSnapName) ?? 'Unknown';
   const node = useMemo(() => nodeModelsToComponent(items), [items]);
-
+  console.log(node);
   return (
     <Window snapName={snapName} snapId={snapId}>
       <Box margin="4" marginTop="0" flex="1">
