@@ -163,7 +163,8 @@ export function getTextChildren(
   value: string,
 ): NonEmptyArray<string | StandardFormattingElement | LinkElement> {
   const rootTokens = lexer(value, { gfm: false });
-  const children: TextChildren = [null];
+  const children: (string | StandardFormattingElement | LinkElement | null)[] =
+    [];
 
   walkTokens(rootTokens, (token) => {
     if (token.type === 'paragraph') {
