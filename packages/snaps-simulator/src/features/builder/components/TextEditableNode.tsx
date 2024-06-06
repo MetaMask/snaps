@@ -3,7 +3,7 @@ import type {
   CopyableElement,
   HeadingElement,
   TextElement,
-} from '@metamask/snaps-sdk/jsx-runtime';
+} from '@metamask/snaps-sdk/jsx';
 import { assert, hasProperty } from '@metamask/utils';
 import type { ChangeEvent, FunctionComponent } from 'react';
 import { useState } from 'react';

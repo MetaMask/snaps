@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import type { JSXElement } from '@metamask/snaps-sdk/jsx-runtime';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import { assert } from '@metamask/utils';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 import type { FunctionComponent } from 'react';

@@ -7,7 +7,7 @@ import {
   TabPanels,
   Tabs,
 } from '@chakra-ui/react';
-import { Box, type JSXElement } from '@metamask/snaps-sdk/jsx-runtime';
+import { Box, type JSXElement } from '@metamask/snaps-sdk/jsx';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 import type { FunctionComponent } from 'react';
 import { useState } from 'react';

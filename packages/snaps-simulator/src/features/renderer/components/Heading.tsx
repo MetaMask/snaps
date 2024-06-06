@@ -1,5 +1,5 @@
 import { Heading as ChakraHeading } from '@chakra-ui/react';
-import { assertJSXElement } from '@metamask/snaps-sdk/jsx-runtime';
+import { assertJSXElement } from '@metamask/snaps-sdk/jsx';
 import { assert } from '@metamask/utils';
 import type { FunctionComponent } from 'react';
 

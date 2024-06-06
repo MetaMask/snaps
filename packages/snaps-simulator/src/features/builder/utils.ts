@@ -4,7 +4,7 @@ import type {
   FieldElement,
   InputElement,
   JSXElement,
-} from '@metamask/snaps-sdk/jsx-runtime';
+} from '@metamask/snaps-sdk/jsx';
 import { deepClone, getJsxChildren, hasChildren } from '@metamask/snaps-utils';
 import { assert, hasProperty } from '@metamask/utils';
 import type { NodeModel } from '@minoru/react-dnd-treeview';

@@ -1,4 +1,4 @@
-import type { JSXElement } from '@metamask/snaps-sdk/jsx-runtime';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 
 export type EditableNodeProps<Element extends JSXElement> = {

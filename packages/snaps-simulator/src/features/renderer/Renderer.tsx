@@ -1,4 +1,4 @@
-import type { JSXElement } from '@metamask/snaps-sdk/jsx-runtime';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import type { FunctionComponent } from 'react';
 
 import { SnapInterfaceContextProvider } from '../../contexts';

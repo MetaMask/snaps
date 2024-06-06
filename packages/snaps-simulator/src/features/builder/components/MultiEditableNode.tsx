@@ -5,7 +5,7 @@ import type {
   FieldElement,
   FormElement,
   InputElement,
-} from '@metamask/snaps-sdk/jsx-runtime';
+} from '@metamask/snaps-sdk/jsx';
 import type { FunctionComponent } from 'react';
 
 import type { EditableNodeProps } from '../../../types';

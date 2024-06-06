@@ -1,5 +1,5 @@
 import { Box, Text } from '@chakra-ui/react';
-import type { JSXElement } from '@metamask/snaps-sdk/jsx-runtime';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 import type { FunctionComponent } from 'react';
 import { useMemo } from 'react';

@@ -4,8 +4,8 @@ import {
   FormErrorMessage,
   FormLabel,
 } from '@chakra-ui/react';
-import type { InputElement } from '@metamask/snaps-sdk/jsx-runtime';
-import { assertJSXElement } from '@metamask/snaps-sdk/jsx-runtime';
+import type { InputElement } from '@metamask/snaps-sdk/jsx';
+import { assertJSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 import type { ChangeEvent, FunctionComponent } from 'react';

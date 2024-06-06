@@ -1,7 +1,4 @@
-import type {
-  GenericSnapElement,
-  JSXElement,
-} from '@metamask/snaps-sdk/jsx-runtime';
+import type { GenericSnapElement, JSXElement } from '@metamask/snaps-sdk/jsx';
 import { hasChildren } from '@metamask/snaps-utils';
 import { bytesToHex, remove0x } from '@metamask/utils';
 import { sha256 } from '@noble/hashes/sha256';

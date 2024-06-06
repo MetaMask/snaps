@@ -1,6 +1,6 @@
 import { Button as ChakraButton } from '@chakra-ui/react';
 import { ButtonType, UserInputEventType } from '@metamask/snaps-sdk';
-import { assertJSXElement } from '@metamask/snaps-sdk/jsx-runtime';
+import { assertJSXElement } from '@metamask/snaps-sdk/jsx';
 import { assert } from '@metamask/utils';
 import type { MouseEvent, FunctionComponent } from 'react';
 import { useSnapInterfaceContext } from 'src/contexts';
