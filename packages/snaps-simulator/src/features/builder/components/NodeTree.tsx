@@ -1,5 +1,4 @@
 import { Box, Flex } from '@chakra-ui/react';
-import { NodeType, type Component } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx-runtime';
 import type {
   NodeModel,
