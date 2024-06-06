@@ -1,5 +1,4 @@
 # Changelog
-
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -7,92 +6,59 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- Require at least 1 child in JSX components ([#2466](https://github.com/MetaMask/snaps-skunkworks.git/pull/2466))
-- feat: Add value component ([#2435](https://github.com/MetaMask/snaps-skunkworks.git/pull/2435))
-- feat: add dropdown component ([#2420](https://github.com/MetaMask/snaps-skunkworks.git/pull/2420))
-- feat: add `context` field to `snap_createInterface` ([#2413](https://github.com/MetaMask/snaps-skunkworks.git/pull/2413))
-- fix: correct validation for children of Box component ([#2423](https://github.com/MetaMask/snaps-skunkworks.git/pull/2423))
-- feat: add box positioning props ([#2422](https://github.com/MetaMask/snaps-skunkworks.git/pull/2422))
-- chore(devdeps): @lavamoat/allow-scripts@^3.0.3>^3.0.4 ([#2418](https://github.com/MetaMask/snaps-skunkworks.git/pull/2418))
-- feat: add button within input field ([#2407](https://github.com/MetaMask/snaps-skunkworks.git/pull/2407))
-- Add JSX support for custom UI ([#2258](https://github.com/MetaMask/snaps-skunkworks.git/pull/2258))
-- Allow `null` in `FormSubmitEventStruct` form state ([#2333](https://github.com/MetaMask/snaps-skunkworks.git/pull/2333))
-
 ## [2.1.3]
-
 ### Changed
-
 - Use error wrappers ([#2178](https://github.com/MetaMask/snaps/pull/2178))
 
 ## [2.1.2]
-
 ### Changed
-
 - Remove snap icon ([#2189](https://github.com/MetaMask/snaps/pull/2189))
 
 ## [2.1.1]
-
 ### Changed
-
 - Change cronjob interval to run more often ([#2164](https://github.com/MetaMask/snaps/pull/2164))
 
 ## [2.1.0]
-
 ### Changed
-
 - Use `@metamask/snaps-sdk` package ([#1946](https://github.com/MetaMask/snaps/pull/1946), [#1954](https://github.com/MetaMask/snaps/pull/1954))
   - This package replaces the `@metamask/snaps-types` and
   - `@metamask/snaps-ui` packages, and is much more lightweight.
 
 ## [2.0.1]
-
 ### Changed
-
 - Update multiple MetaMask dependencies ([#1841](https://github.com/MetaMask/snaps/pull/1841))
 
 ## [2.0.0]
-
 ### Changed
-
 - **BREAKING:** Bump minimum Node.js version to `^18.16.0` ([#1741](https://github.com/MetaMask/snaps/pull/1741))
 
 ## [1.0.0]
-
 ### Changed
-
 - Initial stable release from main branch ([#1757](https://github.com/MetaMask/snaps/pull/1757))
 
 ## [0.38.1-flask.1]
-
 ### Fixed
-
 - Remove unused dependencies ([#1680](https://github.com/MetaMask/snaps/pull/1680))
 
 ## [0.38.0-flask.1]
-
 ### Changed
-
 - Update example to the new configuration format ([#1632](https://github.com/MetaMask/snaps/pull/1632))
   - The example now uses Webpack instead of Browserify.
 
 ## [0.37.2-flask.1]
-
 ### Changed
-
 - Release package independently ([#1600](https://github.com/MetaMask/snaps/pull/1600))
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@2.1.3...HEAD
-[2.1.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@2.1.2...@metamask/cronjob-example-snap@2.1.3
-[2.1.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@2.1.1...@metamask/cronjob-example-snap@2.1.2
-[2.1.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@2.1.0...@metamask/cronjob-example-snap@2.1.1
-[2.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@2.0.1...@metamask/cronjob-example-snap@2.1.0
-[2.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@2.0.0...@metamask/cronjob-example-snap@2.0.1
-[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@1.0.0...@metamask/cronjob-example-snap@2.0.0
-[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@0.38.1-flask.1...@metamask/cronjob-example-snap@1.0.0
-[0.38.1-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@0.38.0-flask.1...@metamask/cronjob-example-snap@0.38.1-flask.1
-[0.38.0-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@0.37.2-flask.1...@metamask/cronjob-example-snap@0.38.0-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/cronjob-example-snap@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@2.1.3...HEAD
+[2.1.3]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@2.1.2...@metamask/cronjob-example-snap@2.1.3
+[2.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@2.1.1...@metamask/cronjob-example-snap@2.1.2
+[2.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@2.1.0...@metamask/cronjob-example-snap@2.1.1
+[2.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@2.0.1...@metamask/cronjob-example-snap@2.1.0
+[2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@2.0.0...@metamask/cronjob-example-snap@2.0.1
+[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@1.0.0...@metamask/cronjob-example-snap@2.0.0
+[1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@0.38.1-flask.1...@metamask/cronjob-example-snap@1.0.0
+[0.38.1-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@0.38.0-flask.1...@metamask/cronjob-example-snap@0.38.1-flask.1
+[0.38.0-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@0.37.2-flask.1...@metamask/cronjob-example-snap@0.38.0-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/cronjob-example-snap@0.37.2-flask.1

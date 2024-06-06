@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.4.2]
+
 ### Uncategorized
 
 - Require at least 1 child in JSX components ([#2466](https://github.com/MetaMask/snaps-skunkworks.git/pull/2466))
@@ -206,7 +208,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@4.4.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@4.4.2...HEAD
+[4.4.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@4.4.1...@metamask/snaps-sdk@4.4.2
 [4.4.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@4.4.0...@metamask/snaps-sdk@4.4.1
 [4.4.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@4.3.0...@metamask/snaps-sdk@4.4.0
 [4.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@4.2.0...@metamask/snaps-sdk@4.3.0
