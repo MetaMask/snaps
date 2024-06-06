@@ -54,6 +54,7 @@ import type {
   StandardFormattingElement,
   TextElement,
   ValueElement,
+  FileInputElement,
 } from './components';
 
 /**
@@ -163,6 +164,18 @@ export const DropdownStruct: Describe<DropdownElement> = element('Dropdown', {
 });
 
 /**
+ * A struct for the {@link FileInputElement} type.
+ */
+export const FileInputStruct: Describe<FileInputElement> = element(
+  'FileInput',
+  {
+    name: string(),
+    accept: nullUnion([optional(array(string()))]),
+    multiple: optional(boolean()),
+  },
+);
+
+/**
  * A struct for the {@link FieldElement} type.
  */
 export const FieldStruct: Describe<FieldElement> = element('Field', {
@@ -170,8 +183,9 @@ export const FieldStruct: Describe<FieldElement> = element('Field', {
   error: optional(string()),
   children: nullUnion([
     tuple([InputStruct, ButtonStruct]),
-    InputStruct,
     DropdownStruct,
+    FileInputStruct,
+    InputStruct,
   ]),
 });
 
@@ -358,6 +372,7 @@ export const RootJSXElementStruct = BoxChildStruct;
 export const JSXElementStruct: Describe<JSXElement> = nullUnion([
   ButtonStruct,
   InputStruct,
+  FileInputStruct,
   FieldStruct,
   FormStruct,
   BoldStruct,

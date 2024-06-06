@@ -9,6 +9,7 @@ import type {
   ButtonElement,
   DropdownElement,
   FieldElement,
+  FileInputElement,
   InputElement,
   JSXElement,
   OptionElement,
@@ -98,11 +99,17 @@ function constructInputState(
  */
 function constructFormInputState(
   oldState: InterfaceState,
-  component: InputElement | DropdownElement,
+  component: InputElement | DropdownElement | FileInputElement,
   form: string,
 ) {
+  if (component.type === 'FileInput') {
+    // TODO: Implement file input state construction.
+    return null;
+  }
+
   const oldFormState = oldState[form] as FormState;
   const oldInputState = oldFormState?.[component.props.name];
+
   return (
     component.props.value ??
     oldInputState ??
