@@ -746,7 +746,7 @@ describe('SpinnerStruct', () => {
   });
 });
 
-describe('Dropdown', () => {
+describe('DropdownStruct', () => {
   it.each([
     <Dropdown name="foo">
       <Option value="option1">Option 1</Option>
@@ -763,6 +763,10 @@ describe('Dropdown', () => {
     undefined,
     {},
     [],
+    // @ts-expect-error - Invalid props.
+    <Dropdown name="foo" />,
+    // @ts-expect-error - Invalid props.
+    <Dropdown name="foo" children={[]} />,
     // @ts-expect-error - Invalid props.
     <Spinner>foo</Spinner>,
     <Text>foo</Text>,
