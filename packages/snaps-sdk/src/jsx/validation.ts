@@ -7,7 +7,7 @@ import {
 } from '@metamask/utils';
 import type { Struct } from 'superstruct';
 import {
-  refine,
+  nonempty,
   is,
   boolean,
   optional,
@@ -87,11 +87,10 @@ export const ElementStruct: Describe<GenericSnapElement> = object({
 function nonEmptyArray<Type, Schema>(
   struct: Struct<Type, Schema>,
 ): Struct<NonEmptyArray<Type>, any> {
-  return refine(
-    array(struct),
-    'NonEmptyArray',
-    (value) => value.length > 0,
-  ) as unknown as Struct<NonEmptyArray<Type>, Schema>;
+  return nonempty(array(struct)) as unknown as Struct<
+    NonEmptyArray<Type>,
+    Schema
+  >;
 }
 
 /**
