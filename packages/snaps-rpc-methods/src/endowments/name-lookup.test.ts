@@ -27,7 +27,7 @@ describe('endowment:name-lookup', () => {
       validator: expect.any(Function),
     });
 
-    expect(specification.endowmentGetter()).toBeUndefined();
+    expect(specification.endowmentGetter()).toBeNull();
   });
 
   describe('validator', () => {

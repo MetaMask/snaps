@@ -27,7 +27,7 @@ describe('endowment:transaction-insight', () => {
       subjectTypes: [SubjectType.Snap],
     });
 
-    expect(specification.endowmentGetter()).toBeUndefined();
+    expect(specification.endowmentGetter()).toBeNull();
   });
 
   describe('validator', () => {

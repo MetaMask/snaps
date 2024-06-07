@@ -22,7 +22,7 @@ describe('endowment:cronjob', () => {
         subjectTypes: [SubjectType.Snap],
       });
 
-      expect(specification.endowmentGetter()).toBeUndefined();
+      expect(specification.endowmentGetter()).toBeNull();
     });
   });
 
