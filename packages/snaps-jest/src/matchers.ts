@@ -18,6 +18,7 @@ import type {
 } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import { getJsxElementFromComponent } from '@metamask/snaps-utils';
+import { is } from '@metamask/superstruct';
 import type { Json } from '@metamask/utils';
 import { hasProperty } from '@metamask/utils';
 import type { MatcherHintOptions } from 'jest-matcher-utils';
@@ -30,7 +31,6 @@ import {
   printWithType,
   RECEIVED_COLOR,
 } from 'jest-matcher-utils';
-import { is } from '@metamask/superstruct';
 
 import { InterfaceStruct, SnapResponseStruct } from './internals';
 import type { SnapResponse } from './types';

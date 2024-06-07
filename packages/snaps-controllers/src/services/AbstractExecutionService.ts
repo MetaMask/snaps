@@ -441,9 +441,8 @@ export abstract class AbstractExecutionService<WorkerType>
     }
 
     log('Parent: Sending Command', message);
-    const response: PendingJsonRpcResponse<Json> = await job.rpcEngine.handle(
-      message,
-    );
+    const response: PendingJsonRpcResponse<Json> =
+      job.rpcEngine.handle(message);
 
     if (response.error) {
       throw new JsonRpcError(

@@ -21,7 +21,6 @@ import type {
 } from '@metamask/snaps-sdk';
 import { createUnion } from '@metamask/snaps-utils';
 import type { InferMatching } from '@metamask/snaps-utils';
-import { hasProperty, type NonEmptyArray } from '@metamask/utils';
 import type { Infer, Struct } from '@metamask/superstruct';
 import {
   create,
@@ -32,6 +31,7 @@ import {
   string,
   type,
 } from '@metamask/superstruct';
+import { hasProperty, type NonEmptyArray } from '@metamask/utils';
 
 import { type MethodHooksObject } from '../utils';
 

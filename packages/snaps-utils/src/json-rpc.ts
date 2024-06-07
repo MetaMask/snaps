@@ -1,4 +1,13 @@
 import { SubjectType } from '@metamask/permission-controller';
+import type { Infer } from '@metamask/superstruct';
+import {
+  array,
+  boolean,
+  object,
+  optional,
+  refine,
+  string,
+} from '@metamask/superstruct';
 import type {
   AssertionErrorConstructor,
   Json,
@@ -9,15 +18,6 @@ import {
   isJsonRpcFailure,
   isJsonRpcSuccess,
 } from '@metamask/utils';
-import type { Infer } from '@metamask/superstruct';
-import {
-  array,
-  boolean,
-  object,
-  optional,
-  refine,
-  string,
-} from '@metamask/superstruct';
 
 const AllowedOriginsStruct = array(
   refine(string(), 'Allowed origin', (value) => {

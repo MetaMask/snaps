@@ -1,9 +1,3 @@
-import {
-  JsonRpcIdStruct,
-  JsonRpcParamsStruct,
-  JsonRpcVersionStruct,
-} from '@metamask/utils';
-import { parseExpression } from 'cron-parser';
 import type { Infer } from '@metamask/superstruct';
 import {
   array,
@@ -13,6 +7,12 @@ import {
   refine,
   string,
 } from '@metamask/superstruct';
+import {
+  JsonRpcIdStruct,
+  JsonRpcParamsStruct,
+  JsonRpcVersionStruct,
+} from '@metamask/utils';
+import { parseExpression } from 'cron-parser';
 
 export const CronjobRpcRequestStruct = object({
   jsonrpc: optional(JsonRpcVersionStruct),

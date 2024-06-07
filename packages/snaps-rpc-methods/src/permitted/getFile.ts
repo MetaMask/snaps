@@ -4,9 +4,9 @@ import { rpcErrors } from '@metamask/rpc-errors';
 import type { GetFileParams, GetFileResult } from '@metamask/snaps-sdk';
 import { AuxiliaryFileEncoding, enumValue } from '@metamask/snaps-sdk';
 import type { InferMatching } from '@metamask/snaps-utils';
+import { object, optional, string, union } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
-import { object, optional, string, union } from '@metamask/superstruct';
 
 import type { MethodHooksObject } from '../utils';
 

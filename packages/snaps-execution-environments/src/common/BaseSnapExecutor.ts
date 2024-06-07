@@ -19,6 +19,7 @@ import {
   unwrapError,
   logInfo,
 } from '@metamask/snaps-utils';
+import { validate, is } from '@metamask/superstruct';
 import type {
   JsonRpcNotification,
   JsonRpcId,
@@ -33,7 +34,6 @@ import {
   JsonRpcIdStruct,
 } from '@metamask/utils';
 import type { Duplex } from 'readable-stream';
-import { validate, is } from '@metamask/superstruct';
 
 import { log } from '../logging';
 import type { CommandMethodsMapping } from './commands';

@@ -1,5 +1,3 @@
-import type { Json } from '@metamask/utils';
-import { assertStruct, VersionStruct } from '@metamask/utils';
 import type { Infer, Struct } from '@metamask/superstruct';
 import {
   instance,
@@ -14,6 +12,8 @@ import {
   union,
   assert as assertSuperstruct,
 } from '@metamask/superstruct';
+import type { Json } from '@metamask/utils';
+import { assertStruct, VersionStruct } from '@metamask/utils';
 
 import type { SnapCaveatType } from './caveats';
 import type { SnapFunctionExports, SnapRpcHookArgs } from './handlers';

@@ -5,10 +5,6 @@ import type {
 } from '@metamask/permission-controller';
 import type { BlockReason } from '@metamask/snaps-registry';
 import type { SnapId, Snap as TruncatedSnap } from '@metamask/snaps-sdk';
-import type { Json } from '@metamask/utils';
-import { assert, isObject, assertStruct } from '@metamask/utils';
-import { base64 } from '@scure/base';
-import stableStringify from 'fast-json-stable-stringify';
 import type { Struct } from '@metamask/superstruct';
 import {
   empty,
@@ -21,6 +17,10 @@ import {
   union,
   validate,
 } from '@metamask/superstruct';
+import type { Json } from '@metamask/utils';
+import { assert, isObject, assertStruct } from '@metamask/utils';
+import { base64 } from '@scure/base';
+import stableStringify from 'fast-json-stable-stringify';
 import validateNPMPackage from 'validate-npm-package-name';
 
 import { SnapCaveatType } from './caveats';

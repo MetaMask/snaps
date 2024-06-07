@@ -8,8 +8,8 @@ import type {
   JsonRpcRequest,
 } from '@metamask/snaps-sdk';
 import { type InferMatching } from '@metamask/snaps-utils';
-import type { PendingJsonRpcResponse } from '@metamask/utils';
 import { StructError, create, object, string } from '@metamask/superstruct';
+import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
 

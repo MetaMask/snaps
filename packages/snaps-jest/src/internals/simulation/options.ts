@@ -1,4 +1,3 @@
-import { JsonStruct } from '@metamask/utils';
 import type { Infer } from '@metamask/superstruct';
 import {
   create,
@@ -9,6 +8,7 @@ import {
   record,
   string,
 } from '@metamask/superstruct';
+import { JsonStruct } from '@metamask/utils';
 
 import { DEFAULT_LOCALE, DEFAULT_SRP } from './constants';
 

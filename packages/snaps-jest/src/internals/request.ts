@@ -7,6 +7,7 @@ import {
 } from '@metamask/snaps-sdk';
 import type { HandlerType } from '@metamask/snaps-utils';
 import { unwrapError } from '@metamask/snaps-utils';
+import { is } from '@metamask/superstruct';
 import {
   assert,
   getSafeJson,
@@ -14,7 +15,6 @@ import {
   isPlainObject,
 } from '@metamask/utils';
 import { nanoid } from '@reduxjs/toolkit';
-import { is } from '@metamask/superstruct';
 
 import type {
   RequestOptions,
