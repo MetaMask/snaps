@@ -67,7 +67,7 @@ export const SnapIdsCaveatSpecification: Record<
           params,
           context: { origin },
         }: RestrictedMethodOptions<RestrictedMethodParameters> = args;
-        const snapIds = caveat.value;
+        const snapIds = caveat.value as SnapIds;
         const { snapId } = params as InvokeSnapParams;
         if (!hasProperty(snapIds, snapId)) {
           throw new Error(

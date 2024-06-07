@@ -13,7 +13,7 @@ const permissionName = SnapEndowments.LifecycleHooks;
 type LifecycleHooksEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetName: typeof permissionName;
-  endowmentGetter: (_options?: EndowmentGetterParams) => undefined;
+  endowmentGetter: (_options?: EndowmentGetterParams) => null;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
 }>;
 
@@ -34,7 +34,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
     permissionType: PermissionType.Endowment,
     targetName: permissionName,
     allowedCaveats: null,
-    endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
+    endowmentGetter: (_getterOptions?: EndowmentGetterParams) => null,
     subjectTypes: [SubjectType.Snap],
   };
 };

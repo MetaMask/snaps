@@ -23,7 +23,7 @@ const permissionName = SnapEndowments.Cronjob;
 type CronjobEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetName: typeof permissionName;
-  endowmentGetter: (_options?: any) => undefined;
+  endowmentGetter: (_options?: any) => null;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
 }>;
 
@@ -42,7 +42,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
     permissionType: PermissionType.Endowment,
     targetName: permissionName,
     allowedCaveats: [SnapCaveatType.SnapCronjob],
-    endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
+    endowmentGetter: (_getterOptions?: EndowmentGetterParams) => null,
     subjectTypes: [SubjectType.Snap],
   };
 };

@@ -32,7 +32,7 @@ const permissionName = SnapEndowments.NameLookup;
 type NameLookupEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetName: typeof permissionName;
-  endowmentGetter: (_options?: EndowmentGetterParams) => undefined;
+  endowmentGetter: (_options?: EndowmentGetterParams) => null;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
 }>;
@@ -57,7 +57,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
       SnapCaveatType.LookupMatchers,
       SnapCaveatType.MaxRequestTime,
     ],
-    endowmentGetter: (_getterOptions?: EndowmentGetterParams) => undefined,
+    endowmentGetter: (_getterOptions?: EndowmentGetterParams) => null,
     validator: createGenericPermissionValidator([
       { type: SnapCaveatType.ChainIds, optional: true },
       { type: SnapCaveatType.LookupMatchers, optional: true },

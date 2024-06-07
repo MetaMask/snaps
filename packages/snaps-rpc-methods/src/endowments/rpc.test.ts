@@ -21,7 +21,7 @@ describe('endowment:rpc', () => {
       subjectTypes: [SubjectType.Snap],
     });
 
-    expect(specification.endowmentGetter()).toBeUndefined();
+    expect(specification.endowmentGetter()).toBeNull();
   });
 
   describe('validator', () => {

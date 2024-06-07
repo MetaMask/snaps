@@ -14,6 +14,6 @@ describe('endowment:page-home', () => {
       subjectTypes: [SubjectType.Snap],
     });
 
-    expect(specification.endowmentGetter()).toBeUndefined();
+    expect(specification.endowmentGetter()).toBeNull();
   });
 });
