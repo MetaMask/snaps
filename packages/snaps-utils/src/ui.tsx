@@ -2,7 +2,6 @@ import type { Component } from '@metamask/snaps-sdk';
 import { NodeType } from '@metamask/snaps-sdk';
 import type {
   BoldChildren,
-  FieldElement,
   ItalicChildren,
   JSXElement,
   LinkElement,
@@ -29,7 +28,6 @@ import {
   Button,
   Address,
 } from '@metamask/snaps-sdk/jsx';
-import type { NonEmptyArray } from '@metamask/utils';
 import {
   assert,
   assertExhaustive,
@@ -67,7 +65,7 @@ function getButtonVariant(variant?: 'primary' | 'secondary' | undefined) {
  * @param elements - The JSX elements.
  * @returns The child or children.
  */
-function getChildren<Type>(elements: NonEmptyArray<Type>) {
+function getChildren<Type>(elements: Type[]) {
   if (elements.length === 1) {
     return elements[0];
   }
@@ -83,11 +81,7 @@ function getChildren<Type>(elements: NonEmptyArray<Type>) {
  */
 function getLinkText(token: Tokens.Link | Tokens.Generic) {
   if (token.tokens && token.tokens.length > 0) {
-    return getChildren(
-      token.tokens.flatMap(
-        getTextChildFromToken,
-      ) as NonEmptyArray<TextChildren>,
-    );
+    return getChildren(token.tokens.flatMap(getTextChildFromToken));
   }
 
   return token.href;
@@ -100,9 +94,7 @@ function getLinkText(token: Tokens.Link | Tokens.Generic) {
  * @returns The text child.
  */
 function getTextChildFromTokens(tokens: Token[]) {
-  return getChildren(
-    tokens.flatMap(getTextChildFromToken) as NonEmptyArray<TextChildren>,
-  );
+  return getChildren(tokens.flatMap(getTextChildFromToken));
 }
 
 /**
@@ -161,7 +153,7 @@ function getTextChildFromToken(token: Token): TextChildren {
  */
 export function getTextChildren(
   value: string,
-): NonEmptyArray<string | StandardFormattingElement | LinkElement> {
+): (string | StandardFormattingElement | LinkElement)[] {
   const rootTokens = lexer(value, { gfm: false });
   const children: (string | StandardFormattingElement | LinkElement | null)[] =
     [];
@@ -177,9 +169,12 @@ export function getTextChildren(
     }
   });
 
-  return children.filter((child) => child !== null) as NonEmptyArray<
-    string | StandardFormattingElement | LinkElement
-  >;
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+  return children.filter((child) => child !== null) as (
+    | string
+    | StandardFormattingElement
+    | LinkElement
+  )[];
 }
 
 /**
@@ -249,9 +244,7 @@ export function getJsxElementFromComponent(
       case NodeType.Form:
         return (
           <Form name={component.name}>
-            {getChildren(
-              component.children.map(getElement) as NonEmptyArray<FieldElement>,
-            )}
+            {getChildren(component.children.map(getElement))}
           </Form>
         );
 
@@ -277,11 +270,7 @@ export function getJsxElementFromComponent(
       case NodeType.Panel:
         // `Panel` is renamed to `Box` in JSX.
         return (
-          <Box
-            children={getChildren(
-              component.children.map(getElement) as NonEmptyArray<JSXElement>,
-            )}
-          />
+          <Box children={getChildren(component.children.map(getElement))} />
         );
 
       case NodeType.Row:

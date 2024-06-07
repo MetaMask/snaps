@@ -430,7 +430,6 @@ describe('BoxStruct', () => {
     [],
     // @ts-expect-error - Invalid props.
     <Box />,
-    // @ts-expect-error - Invalid props.
     <Box children={[]} />,
     <Text>foo</Text>,
     <Row label="label">
@@ -765,7 +764,6 @@ describe('DropdownStruct', () => {
     [],
     // @ts-expect-error - Invalid props.
     <Dropdown name="foo" />,
-    // @ts-expect-error - Invalid props.
     <Dropdown name="foo" children={[]} />,
     // @ts-expect-error - Invalid props.
     <Spinner>foo</Spinner>,
