@@ -4489,7 +4489,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": ^8.3.0
+    "@metamask/utils": ^8.5.0
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -4790,7 +4790,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": ^8.3.0
+    "@metamask/utils": ^8.5.0
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -4827,7 +4827,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": ^8.3.0
+    "@metamask/utils": ^8.5.0
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -4976,7 +4976,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": ^8.3.0
+    "@metamask/utils": ^8.5.0
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -5171,7 +5171,7 @@ __metadata:
     "@metamask/snaps-controllers": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": ^8.3.0
+    "@metamask/utils": ^8.5.0
     "@swc/core": 1.3.78
     "@swc/jest": ^0.2.26
     "@typescript-eslint/eslint-plugin": ^5.42.1
