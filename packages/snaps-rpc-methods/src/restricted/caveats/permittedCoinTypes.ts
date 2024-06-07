@@ -91,18 +91,12 @@ export const PermittedCoinTypesCaveatSpecification: Record<
 > = {
   [SnapCaveatType.PermittedCoinTypes]: Object.freeze({
     type: SnapCaveatType.PermittedCoinTypes,
-    decorator: (
-      method,
-      caveat: Caveat<
-        SnapCaveatType.PermittedCoinTypes,
-        GetBip44EntropyParams[]
-      >,
-    ) => {
+    decorator: (method, caveat) => {
       return async (args) => {
         const { params } = args;
         validateBIP44Params(params);
 
-        const coinType = caveat.value.find(
+        const coinType = (caveat.value as GetBip44EntropyParams[]).find(
           (caveatValue) => caveatValue.coinType === params.coinType,
         );
 

@@ -79,15 +79,12 @@ export const PermittedDerivationPathsCaveatSpecification: Record<
 > = {
   [SnapCaveatType.PermittedDerivationPaths]: Object.freeze({
     type: SnapCaveatType.PermittedDerivationPaths,
-    decorator: (
-      method,
-      caveat: Caveat<SnapCaveatType.PermittedDerivationPaths, Bip32Entropy[]>,
-    ) => {
+    decorator: (method, caveat) => {
       return async (args) => {
         const { params } = args;
         validateBIP32Path(params);
 
-        const path = caveat.value.find(
+        const path = (caveat.value as Bip32Entropy[]).find(
           (caveatPath) =>
             isEqual(
               params.path.slice(0, caveatPath.path.length),
