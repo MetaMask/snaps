@@ -1,8 +1,7 @@
-import type { FileInputElement } from '@metamask/snaps-sdk/jsx';
-
 import { createSnapComponent } from '../../component';
 import type { ButtonElement } from './Button';
 import type { DropdownElement } from './Dropdown';
+import type { FileInputElement } from './FileInput';
 import type { InputElement } from './Input';
 
 /**
