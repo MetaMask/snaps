@@ -1,11 +1,10 @@
-import type { Infer } from '@metamask/superstruct';
+import type { AnyStruct, Infer, InferStructTuple } from '@metamask/superstruct';
 import {
   Struct,
   define,
   literal as superstructLiteral,
   union as superstructUnion,
-} from 'superstruct';
-import type { AnyStruct, InferStructTuple } from 'superstruct/dist/utils';
+} from '@metamask/superstruct';
 
 import type { EnumToUnion } from './helpers';
 

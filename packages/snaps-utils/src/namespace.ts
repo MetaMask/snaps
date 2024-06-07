@@ -9,7 +9,7 @@ import {
   pattern,
   size,
   string,
-} from 'superstruct';
+} from '@metamask/superstruct';
 
 import type { InferMatching } from './structs';
 

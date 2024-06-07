@@ -1,6 +1,4 @@
 import { union, literal } from '@metamask/snaps-sdk';
-import { assert } from '@metamask/utils';
-import { bold, green, red } from 'chalk';
 import type { Struct } from '@metamask/superstruct';
 import superstruct, {
   size,
@@ -12,7 +10,9 @@ import superstruct, {
   union as superstructUnion,
   array,
   is,
-} from 'superstruct';
+} from '@metamask/superstruct';
+import { assert } from '@metamask/utils';
+import { bold, green, red } from 'chalk';
 
 import { RpcOriginsStruct } from './json-rpc';
 import { HandlerCaveatsStruct } from './manifest';

@@ -7,7 +7,7 @@ import {
   record,
   string,
   StructError,
-} from 'superstruct';
+} from '@metamask/superstruct';
 
 import { parseJson } from './json';
 import type { SnapManifest } from './manifest';

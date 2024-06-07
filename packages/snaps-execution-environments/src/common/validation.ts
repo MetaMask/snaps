@@ -4,15 +4,6 @@ import {
   UserInputEventStruct,
 } from '@metamask/snaps-sdk';
 import { ChainIdStruct, HandlerType } from '@metamask/snaps-utils';
-import type { Json, JsonRpcSuccess } from '@metamask/utils';
-import {
-  assertStruct,
-  JsonRpcIdStruct,
-  JsonRpcParamsStruct,
-  JsonRpcSuccessStruct,
-  JsonRpcVersionStruct,
-  JsonStruct,
-} from '@metamask/utils';
 import type { Infer } from '@metamask/superstruct';
 import {
   array,
@@ -27,7 +18,16 @@ import {
   string,
   tuple,
   union,
-} from 'superstruct';
+} from '@metamask/superstruct';
+import type { Json, JsonRpcSuccess } from '@metamask/utils';
+import {
+  assertStruct,
+  JsonRpcIdStruct,
+  JsonRpcParamsStruct,
+  JsonRpcSuccessStruct,
+  JsonRpcVersionStruct,
+  JsonStruct,
+} from '@metamask/utils';
 
 export const JsonRpcRequestWithoutIdStruct = object({
   jsonrpc: optional(JsonRpcVersionStruct),

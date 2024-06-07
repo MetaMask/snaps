@@ -1,4 +1,4 @@
-import { is } from 'superstruct';
+import { is } from '@metamask/superstruct';
 
 import {
   Address,

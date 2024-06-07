@@ -31,7 +31,7 @@ import {
   size,
   string,
   type,
-} from 'superstruct';
+} from '@metamask/superstruct';
 
 import { type MethodHooksObject } from '../utils';
 

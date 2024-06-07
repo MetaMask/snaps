@@ -6,7 +6,7 @@ import {
   object,
   optional,
   string,
-} from 'superstruct';
+} from '@metamask/superstruct';
 
 import { createBuilder } from '../builder';
 import { LiteralStruct, NodeType } from '../nodes';

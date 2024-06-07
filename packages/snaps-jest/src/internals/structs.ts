@@ -24,7 +24,7 @@ import {
   any,
   func,
   type,
-} from 'superstruct';
+} from '@metamask/superstruct';
 
 // TODO: Export this from `@metamask/utils` instead.
 const BytesLikeStruct = union([

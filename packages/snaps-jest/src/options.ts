@@ -7,7 +7,7 @@ import {
   object,
   string,
   type,
-} from 'superstruct';
+} from '@metamask/superstruct';
 
 const SnapsEnvironmentOptionsStruct = type({
   server: defaulted(

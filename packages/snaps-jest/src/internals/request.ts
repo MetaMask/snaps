@@ -14,7 +14,7 @@ import {
   isPlainObject,
 } from '@metamask/utils';
 import { nanoid } from '@reduxjs/toolkit';
-import { is } from 'superstruct';
+import { is } from '@metamask/superstruct';
 
 import type {
   RequestOptions,

@@ -7,13 +7,13 @@ import type {
   ObjectType,
 } from '@metamask/superstruct';
 import {
+  assign,
   is,
   validate,
   type as superstructType,
   Struct,
   StructError,
   create,
-  assign,
 } from '@metamask/superstruct';
 import type { NonEmptyArray } from '@metamask/utils';
 import { assert, isObject } from '@metamask/utils';

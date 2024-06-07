@@ -8,7 +8,7 @@ import {
   optional,
   record,
   string,
-} from 'superstruct';
+} from '@metamask/superstruct';
 
 import { DEFAULT_LOCALE, DEFAULT_SRP } from './constants';
 

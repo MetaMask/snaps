@@ -10,7 +10,7 @@ import {
   string,
   union,
   boolean,
-} from 'superstruct';
+} from '@metamask/superstruct';
 
 import type { InterfaceContext } from '../interface';
 

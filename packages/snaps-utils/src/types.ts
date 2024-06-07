@@ -13,7 +13,7 @@ import {
   type,
   union,
   assert as assertSuperstruct,
-} from 'superstruct';
+} from '@metamask/superstruct';
 
 import type { SnapCaveatType } from './caveats';
 import type { SnapFunctionExports, SnapRpcHookArgs } from './handlers';

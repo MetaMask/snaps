@@ -20,7 +20,7 @@ import {
   string,
   union,
   validate,
-} from 'superstruct';
+} from '@metamask/superstruct';
 import validateNPMPackage from 'validate-npm-package-name';
 
 import { SnapCaveatType } from './caveats';
