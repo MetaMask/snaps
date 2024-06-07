@@ -1,4 +1,3 @@
-import type { NonEmptyArray } from '@metamask/utils';
 import {
   hasProperty,
   HexChecksumAddressStruct,
@@ -86,11 +85,8 @@ export const ElementStruct: Describe<GenericSnapElement> = object({
  */
 function nonEmptyArray<Type, Schema>(
   struct: Struct<Type, Schema>,
-): Struct<NonEmptyArray<Type>, any> {
-  return nonempty(array(struct)) as unknown as Struct<
-    NonEmptyArray<Type>,
-    Schema
-  >;
+): Struct<Type[], Struct<Type, Schema>> {
+  return nonempty(array(struct));
 }
 
 /**
