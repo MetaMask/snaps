@@ -28,8 +28,8 @@
       },
       "packages": {
         "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
-        "superstruct": true
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/snaps-utils": {
@@ -44,8 +44,8 @@
       "packages": {
         "@metamask/rpc-errors": true,
         "@metamask/snaps-sdk": true,
-        "@metamask/utils": true,
-        "superstruct": true
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/utils": {
@@ -54,12 +54,12 @@
         "TextEncoder": true
       },
       "packages": {
+        "@metamask/superstruct": true,
         "@metamask/utils>@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "depcheck>semver": true,
-        "superstruct": true,
         "tsup>debug": true
       }
     },
@@ -135,12 +135,6 @@
         "console.trace": true,
         "console.warn": true,
         "localStorage": true
-      }
-    },
-    "superstruct": {
-      "globals": {
-        "console.warn": true,
-        "define": true
       }
     },
     "tsup>debug": {
