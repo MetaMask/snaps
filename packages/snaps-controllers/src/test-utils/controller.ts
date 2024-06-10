@@ -454,6 +454,13 @@ export const DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS = {
   },
 };
 
+export const LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS = {
+  algorithm: 'PBKDF2' as const,
+  params: {
+    iterations: 10_000,
+  },
+};
+
 const getSnapControllerEncryptor = () => {
   return {
     encryptWithKey,
