@@ -78,7 +78,6 @@ import {
   getSnapControllerOptions,
   getSnapControllerWithEES,
   getSnapControllerWithEESOptions,
-  LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS,
   loopbackDetect,
   LoopbackLocation,
   MOCK_BLOCK_NUMBER,
@@ -96,6 +95,7 @@ import {
   sleep,
 } from '../test-utils';
 import { delay } from '../utils';
+import { LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS } from './constants';
 import { SnapsRegistryStatus } from './registry';
 import type { SnapControllerState } from './SnapController';
 import {

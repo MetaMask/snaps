@@ -128,7 +128,10 @@ import {
   setDiff,
   withTimeout,
 } from '../utils';
-import { ALLOWED_PERMISSIONS } from './constants';
+import {
+  ALLOWED_PERMISSIONS,
+  LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS,
+} from './constants';
 import type { SnapLocation } from './location';
 import { detectSnapLocation } from './location';
 import type {
@@ -1678,12 +1681,7 @@ export class SnapController extends BaseController<
         useCache,
         // When decrypting state we expect key metadata to be present.
         // If it isn't present, we assume that the Snap state we are decrypting is old enough to use the legacy encryption params.
-        keyMetadata: keyMetadata ?? {
-          algorithm: 'PBKDF2',
-          params: {
-            iterations: 10_000,
-          },
-        },
+        keyMetadata: keyMetadata ?? LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS,
       });
       const decryptedState = await this.#encryptor.decryptWithKey(key, parsed);
 
