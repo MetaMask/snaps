@@ -1,6 +1,5 @@
 import {
   DEFAULT_SNAP_BUNDLE,
-  MOCK_LOCAL_SNAP_ID,
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 import type { Json, JsonRpcRequest } from '@metamask/utils';
@@ -9,8 +8,6 @@ import { isJsonRpcRequest, isPlainObject } from '@metamask/utils';
 import { createService } from '../../test-utils';
 import { getMockedFunction } from '../../test-utils/mock';
 import { OffscreenExecutionService } from './OffscreenExecutionService';
-
-const DOCUMENT_URL = new URL('https://foo');
 
 /**
  * Create a response message for the given request. This function assumes that
@@ -96,71 +93,19 @@ describe('OffscreenExecutionService', () => {
             removeListener: jest.fn(),
           },
         },
-
-        offscreen: {
-          hasDocument: jest.fn(),
-          createDocument: jest.fn(),
-        },
       },
     });
   });
 
   it('can boot', async () => {
-    const { service } = createService(OffscreenExecutionService, {
-      documentUrl: DOCUMENT_URL,
-    });
+    const { service } = createService(OffscreenExecutionService);
 
     expect(service).toBeDefined();
     await service.terminateAllSnaps();
   });
 
-  it('creates a document if it does not exist', async () => {
-    const { service } = createService(OffscreenExecutionService, {
-      documentUrl: DOCUMENT_URL,
-    });
-
-    const hasDocument = chrome.offscreen.hasDocument as jest.MockedFunction<
-      () => Promise<boolean>
-    >;
-    const createDocument = getMockedFunction(chrome.offscreen.createDocument);
-
-    hasDocument.mockResolvedValueOnce(false).mockResolvedValue(true);
-
-    expect(hasDocument).not.toHaveBeenCalled();
-    expect(createDocument).not.toHaveBeenCalled();
-
-    // Run two snaps to ensure that the document is created only once.
-    expect(
-      await service.executeSnap({
-        snapId: MOCK_SNAP_ID,
-        sourceCode: DEFAULT_SNAP_BUNDLE,
-        endowments: [],
-      }),
-    ).toBe('OK');
-
-    expect(
-      await service.executeSnap({
-        snapId: MOCK_LOCAL_SNAP_ID,
-        sourceCode: DEFAULT_SNAP_BUNDLE,
-        endowments: [],
-      }),
-    ).toBe('OK');
-
-    expect(hasDocument).toHaveBeenCalledTimes(2);
-    expect(createDocument).toHaveBeenCalledTimes(1);
-    expect(createDocument).toHaveBeenCalledWith({
-      justification: 'MetaMask Snaps Execution Environment',
-      reasons: ['IFRAME_SCRIPTING'],
-      url: DOCUMENT_URL.toString(),
-    });
-
-    await service.terminateAllSnaps();
-  });
-
   it('writes a termination command to the stream', async () => {
-    const { service } = createService(OffscreenExecutionService, {
-      documentUrl: DOCUMENT_URL,
-    });
+    const { service } = createService(OffscreenExecutionService);
 
     expect(
       await service.executeSnap({
