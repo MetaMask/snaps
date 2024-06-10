@@ -13,3 +13,10 @@ export const ALLOWED_PERMISSIONS = Object.freeze([
   SnapEndowments.TransactionInsight,
   SnapEndowments.SignatureInsight,
 ]);
+
+export const LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS = {
+  algorithm: 'PBKDF2' as const,
+  params: {
+    iterations: 10_000,
+  },
+};
