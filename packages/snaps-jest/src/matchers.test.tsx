@@ -1,9 +1,8 @@
 import { expect } from '@jest/globals';
 import { panel, text } from '@metamask/snaps-sdk';
-import { Box, Button, Field, Form, Input, Text } from '@metamask/snaps-sdk/jsx';
+import { Box, Text } from '@metamask/snaps-sdk/jsx';
 
 import {
-  serialiseJsx,
   toRender,
   toRespondWith,
   toRespondWithError,
@@ -281,74 +280,6 @@ describe('toSendNotification', () => {
         ).not.toSendNotification('foo', 'native'),
       ).toThrow('Received:');
     });
-  });
-});
-
-describe('serialiseJsx', () => {
-  it('serialises a JSX element', () => {
-    expect(
-      serialiseJsx(
-        <Box>
-          <Text>Hello</Text>
-        </Box>,
-        0,
-      ),
-    ).toMatchInlineSnapshot(`
-      "<Box>
-        <Text>
-          Hello
-        </Text>
-      </Box>"
-    `);
-  });
-
-  it('serialises a JSX element with props', () => {
-    expect(
-      serialiseJsx(
-        <Form name="foo">
-          <Field label="Foo">
-            <Input name="input" type="text" />
-            <Button variant="primary">Primary button</Button>
-          </Field>
-          <Field label="Bar">
-            <Input name="input" type="text" />
-            <Button variant="destructive">Secondary button</Button>
-          </Field>
-        </Form>,
-        0,
-      ),
-    ).toMatchInlineSnapshot(`
-      "<Form name="foo">
-        <Field label="Foo">
-          <Input name="input" type="text" />
-          <Button variant="primary">
-            Primary button
-          </Button>
-        </Field>
-        <Field label="Bar">
-          <Input name="input" type="text" />
-          <Button variant="destructive">
-            Secondary button
-          </Button>
-        </Field>
-      </Form>"
-    `);
-  });
-
-  it('serialises a JSX element with non-string props', () => {
-    expect(
-      serialiseJsx(
-        // @ts-expect-error - Invalid prop.
-        <Box foo={0} />,
-      ),
-    ).toMatchInlineSnapshot(`"<Box foo={0} />"`);
-  });
-
-  it('serialises a JSX element with null children', () => {
-    expect(serialiseJsx(<Box>{null}</Box>)).toMatchInlineSnapshot(`
-      "<Box>
-      </Box>"
-    `);
   });
 });
 

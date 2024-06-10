@@ -42,7 +42,7 @@ const TEMPLATE_COMPONENTS: TemplateComponent[] = [
   {
     icon: 'box',
     text: 'Box',
-    data: Box({ children: [] }),
+    data: Box({ children: null }),
     droppable: true,
   },
   {
@@ -84,14 +84,13 @@ const TEMPLATE_COMPONENTS: TemplateComponent[] = [
   {
     icon: 'form',
     text: 'Form',
-    data: Form({ name: 'form', children: [] }),
+    data: Form({ name: 'form', children: null }),
     droppable: true,
   },
   {
     icon: 'field',
     text: 'Field',
-    // @ts-expect-error - Field expects children.
-    data: Field({ children: [] }),
+    data: Field({ children: null }),
     droppable: true,
   },
 

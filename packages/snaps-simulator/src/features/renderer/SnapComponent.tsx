@@ -42,7 +42,7 @@ export const components: Partial<
 };
 
 type SnapComponentProps = {
-  node: JSXElement;
+  node: JSXElement | null;
   form?: string;
   map?: Record<string, number>;
   id?: string;
@@ -52,12 +52,18 @@ export const SnapComponent: FunctionComponent<SnapComponentProps> = ({
   node,
   form,
   map = {},
-  id = generateKey(map, node),
+  id,
 }) => {
+  if (!node) {
+    return null;
+  }
+
+  const key = id ?? generateKey(map, node);
+
   const ReactComponent = components[node.type];
   if (!ReactComponent) {
     throw new Error(`Unknown component type: ${node.type}.`);
   }
 
-  return <ReactComponent id={id} node={node} form={form} key={id} />;
+  return <ReactComponent id={key} node={node} form={form} key={key} />;
 };

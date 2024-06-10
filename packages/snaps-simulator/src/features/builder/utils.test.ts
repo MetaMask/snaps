@@ -1,64 +1,94 @@
-import type { Component } from '@metamask/snaps-sdk';
-import { button, form, input, panel, text } from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
+import {
+  Box,
+  Text,
+  Form,
+  Input,
+  Field,
+  Button,
+  Copyable,
+} from '@metamask/snaps-sdk/jsx';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 
 import {
   isValidFormNode,
-  panelToCode,
+  boxToCode,
   nodeModelsToComponent,
   getNodeText,
 } from './utils';
 
 describe('nodeModelsToComponent', () => {
   it('creates a component from an array of node models', () => {
-    const nodeModels: NodeModel<Component>[] = [
+    const nodeModels: NodeModel<JSXElement>[] = [
       {
         id: 1,
         parent: 0,
         text: 'parent',
-        data: panel([]),
+        // @ts-expect-error - Invalid Box children prop.
+        data: Box({ children: [] }),
       },
       {
         id: 2,
         parent: 1,
         text: 'child',
-        data: panel([]),
+        // @ts-expect-error - Invalid Box children prop.
+        data: Box({ children: [] }),
       },
       {
         id: 3,
         parent: 2,
         text: 'child',
-        data: text('foo'),
+        data: Text({ children: 'foo' }),
       },
       {
         id: 4,
         parent: 1,
         text: 'child',
-        data: form('form', []),
+        // @ts-expect-error - Invalid Form children prop.
+        data: Form({ name: 'form', children: [] }),
       },
       {
         id: 5,
         parent: 4,
         text: 'child',
-        data: input('input'),
+        // @ts-expect-error - Invalid Field children prop.
+        data: Field({ children: [] }),
+      },
+      {
+        id: 6,
+        parent: 5,
+        text: 'child',
+        data: Input({ name: 'input' }),
       },
     ];
 
     const component = nodeModelsToComponent(nodeModels);
     expect(component).toStrictEqual(
-      panel([panel([text('foo')]), form('form', [input('input')])]),
+      Box({
+        children: [
+          Box({ children: [Text({ children: 'foo' })] }),
+          Form({
+            name: 'form',
+            children: [Field({ children: Input({ name: 'input' }) })],
+          }),
+        ],
+      }),
     );
   });
 });
 
-describe('paneltoCode', () => {
+describe('boxToCode', () => {
   it('creates code from a component', () => {
-    const component: Component = panel([
-      text('foo'),
-      panel([text('bar'), text('baz')]),
-    ]);
+    const component = Box({
+      children: [
+        Text({ children: 'foo' }),
+        Box({
+          children: [Text({ children: 'bar' }), Text({ children: 'baz' })],
+        }),
+      ],
+    });
 
-    const code = panelToCode(component);
+    const code = boxToCode(component);
     expect(code).toMatchInlineSnapshot(`
       "import { panel, text } from '@metamask/snaps-sdk';
 
@@ -68,12 +98,24 @@ describe('paneltoCode', () => {
   });
 
   it('creates code from a component with a form', () => {
-    const component: Component = panel([
-      text('foo'),
-      form('form', [input('input'), button('button')]),
-    ]);
+    const component = Box({
+      children: [
+        Text({ children: 'foo' }),
+        Form({
+          name: 'form',
+          children: [
+            Field({
+              children: [
+                Input({ name: 'input' }),
+                Button({ children: 'button' }),
+              ],
+            }),
+          ],
+        }),
+      ],
+    });
 
-    const code = panelToCode(component);
+    const code = boxToCode(component);
     expect(code).toMatchInlineSnapshot(`
       "import { button, form, input, panel, text } from '@metamask/snaps-sdk';
 
@@ -88,31 +130,43 @@ describe('paneltoCode', () => {
 
 describe('isValidFormNode', () => {
   it('returns true for input nodes', () => {
-    const node: Component = input('input');
+    const node = Input({ name: 'input' });
 
     expect(isValidFormNode(node)).toBe(true);
   });
 
   it('returns true for button nodes', () => {
-    const node: Component = button('button');
+    const node = Button({ children: 'button' });
 
     expect(isValidFormNode(node)).toBe(true);
   });
 
   it('returns false for other nodes', () => {
-    const node: Component = text('foo');
+    const node = Text({ children: 'foo' });
 
     expect(isValidFormNode(node)).toBe(false);
   });
 });
 
 describe('getNodeText', () => {
-  it('returns the text of a node model', () => {
-    const nodeModel: NodeModel<Component> = {
+  it('returns the children of a node model', () => {
+    const nodeModel: NodeModel<JSXElement> = {
       id: 1,
       parent: 0,
       text: 'foo',
-      data: text('bar'),
+      data: Text({ children: 'bar' }),
+    };
+
+    const nodeText = getNodeText(nodeModel);
+    expect(nodeText).toBe('bar');
+  });
+
+  it('returns the value of a node model', () => {
+    const nodeModel: NodeModel<JSXElement> = {
+      id: 1,
+      parent: 0,
+      text: 'foo',
+      data: Copyable({ value: 'bar' }),
     };
 
     const nodeText = getNodeText(nodeModel);
@@ -120,7 +174,7 @@ describe('getNodeText', () => {
   });
 
   it('returns null if the node model does not have text', () => {
-    const nodeModel: NodeModel<Component> = {
+    const nodeModel: NodeModel<JSXElement> = {
       id: 1,
       parent: 0,
       text: 'foo',

@@ -199,29 +199,35 @@ export const FileInputStruct: Describe<FileInputElement> = element(
   },
 );
 
-/**
- * A struct for the {@link FieldElement} type.
- */
-export const FieldStruct: Describe<FieldElement> = element('Field', {
-  label: optional(string()),
-  error: optional(string()),
-  children: nullUnion([
+export const FieldChildrenStruct = nullable(
+  nullUnion([
     tuple([InputStruct, ButtonStruct]),
     DropdownStruct,
     FileInputStruct,
     InputStruct,
     CheckboxStruct,
   ]),
+);
+
+/**
+ * A struct for the {@link FieldElement} type.
+ */
+export const FieldStruct: Describe<FieldElement> = element('Field', {
+  label: optional(string()),
+  error: optional(string()),
+  children: FieldChildrenStruct,
 });
+
+export const FormChildrenStruct = children(
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  [FieldStruct, lazy(() => BoxChildStruct)],
+) as unknown as Struct<SnapsChildren<GenericSnapElement>, null>;
 
 /**
  * A struct for the {@link FormElement} type.
  */
 export const FormStruct: Describe<FormElement> = element('Form', {
-  children: children(
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    [FieldStruct, lazy(() => BoxChildStruct)],
-  ) as unknown as Struct<SnapsChildren<GenericSnapElement>, null>,
+  children: FormChildrenStruct,
   name: string(),
 });
 
@@ -263,14 +269,16 @@ export const AddressStruct: Describe<AddressElement> = element('Address', {
   address: HexChecksumAddressStruct,
 });
 
+export const BoxChildrenStruct = children(
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  [lazy(() => BoxChildStruct)],
+) as unknown as Struct<SnapsChildren<GenericSnapElement>, null>;
+
 /**
  * A struct for the {@link BoxElement} type.
  */
 export const BoxStruct: Describe<BoxElement> = element('Box', {
-  children: children(
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    [lazy(() => BoxChildStruct)],
-  ) as unknown as Struct<SnapsChildren<GenericSnapElement>, null>,
+  children: BoxChildrenStruct,
   direction: optional(nullUnion([literal('horizontal'), literal('vertical')])),
   alignment: optional(
     nullUnion([

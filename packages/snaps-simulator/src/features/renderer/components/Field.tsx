@@ -14,7 +14,7 @@ import { useSnapInterfaceContext } from 'src/contexts';
 export type FieldProps = {
   id: string;
   node: unknown;
-  form: string;
+  form?: string;
 };
 
 export const Field: FunctionComponent<FieldProps> = ({ node, id, form }) => {

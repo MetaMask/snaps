@@ -15,6 +15,14 @@ import {
 import { useDispatch, useSelector } from '../hooks';
 import { mergeValue } from './utils';
 
+/**
+ * A no-op function.
+ * Used when there is no Snap Interface to interact with.
+ */
+const noOp = () => {
+  /* No Op */
+};
+
 export type GetValue = (name: string, form?: string) => string | undefined;
 
 export type HandleInputChange = (
@@ -35,8 +43,14 @@ export type SnapInterfaceContextType = {
   handleEvent: HandleEvent;
 };
 
+const initialState = {
+  getValue: noOp as GetValue,
+  handleInputChange: noOp as HandleInputChange,
+  handleEvent: noOp as HandleEvent,
+};
+
 export const SnapInterfaceContext =
-  createContext<SnapInterfaceContextType | null>(null);
+  createContext<SnapInterfaceContextType>(initialState);
 
 export type SnapInterfaceContextProviderProps = {
   children: ReactNode;
@@ -65,23 +79,9 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   const snapInterface = useSelector(getSnapInterface);
   const snapInterfaceController = useSelector(getSnapInterfaceController);
 
-  /**
-   * A no-op function.
-   * Used when there is no Snap Interface to interact with.
-   */
-  const noOp = () => {
-    /* No Op */
-  };
-
   if (!snapInterface) {
     return (
-      <SnapInterfaceContext.Provider
-        value={{
-          getValue: noOp as GetValue,
-          handleInputChange: noOp as HandleInputChange,
-          handleEvent: noOp as HandleEvent,
-        }}
-      >
+      <SnapInterfaceContext.Provider value={initialState}>
         {children}
       </SnapInterfaceContext.Provider>
     );
@@ -198,5 +198,5 @@ export const SnapInterfaceContextProvider: FunctionComponent<
  * @returns The Snap Interface context.
  */
 export function useSnapInterfaceContext() {
-  return useContext(SnapInterfaceContext) as SnapInterfaceContextType;
+  return useContext(SnapInterfaceContext);
 }

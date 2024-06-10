@@ -10,7 +10,7 @@ import { Tree } from '@minoru/react-dnd-treeview';
 import type { FunctionComponent } from 'react';
 import { useEffect, useRef } from 'react';
 
-import { canDropElement } from '../utils';
+import { canDropElement, getChildrenFromTree } from '../utils';
 import { Node } from './Node';
 import { Start } from './Start';
 
@@ -106,12 +106,18 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
   };
 
   const handleCanDrop: TreeProps<JSXElement>['canDrop'] = (
-    _tree,
+    tree,
     { dropTarget, dropTargetId, dragSource },
   ) => {
-    if (dropTargetId) {
+    if (dropTargetId && dragSource?.data) {
+      const targetChildren = getChildrenFromTree(tree, dropTargetId);
+
+      const mergedChildren =
+        targetChildren.length === 0
+          ? dragSource.data
+          : [...targetChildren, dragSource.data];
       return (
-        canDropElement(dropTarget?.data, dragSource?.data) &&
+        canDropElement(dropTarget?.data, mergedChildren) &&
         dropTarget?.droppable &&
         dropTargetId > 0
       );

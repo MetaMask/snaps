@@ -24,8 +24,7 @@ export const Builder: FunctionComponent = () => {
       parent: 0,
       text: 'Box',
       droppable: true,
-
-      data: Box({ children: [] }),
+      data: Box({ children: null }),
     },
   ]);
 

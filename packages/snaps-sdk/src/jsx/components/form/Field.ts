@@ -20,7 +20,8 @@ export type FieldProps = {
     | DropdownElement
     | FileInputElement
     | InputElement
-    | CheckboxElement;
+    | CheckboxElement
+    | null;
 };
 
 const TYPE = 'Field';
