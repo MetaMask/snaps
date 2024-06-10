@@ -78,6 +78,7 @@ import {
   getSnapControllerOptions,
   getSnapControllerWithEES,
   getSnapControllerWithEESOptions,
+  LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS,
   loopbackDetect,
   LoopbackLocation,
   MOCK_BLOCK_NUMBER,
@@ -8174,6 +8175,42 @@ describe('SnapController', () => {
       expect(snapController.state.snapStates[MOCK_SNAP_ID]).not.toStrictEqual(
         snapController.state.snapStates[MOCK_LOCAL_SNAP_ID],
       );
+
+      snapController.destroy();
+    });
+
+    it('uses legacy decryption where needed', async () => {
+      const messenger = getSnapControllerMessenger();
+
+      const state = { foo: 'bar' };
+
+      const { data, iv, salt } = JSON.parse(
+        await encrypt(
+          ENCRYPTION_KEY,
+          state,
+          undefined,
+          undefined,
+          LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS,
+        ),
+      );
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: {
+              [MOCK_SNAP_ID]: getPersistedSnapObject(),
+            },
+            snapStates: {
+              [MOCK_SNAP_ID]: JSON.stringify({ data, iv, salt }),
+            },
+          },
+        }),
+      );
+
+      expect(
+        await messenger.call('SnapController:getSnapState', MOCK_SNAP_ID, true),
+      ).toStrictEqual(state);
 
       snapController.destroy();
     });

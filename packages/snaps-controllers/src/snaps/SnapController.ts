@@ -1676,7 +1676,14 @@ export class SnapController extends BaseController<
         snapId,
         salt,
         useCache,
-        keyMetadata,
+        // When decrypting state we expect key metadata to be present.
+        // If it isn't present, we assume that the Snap state we are decrypting is old enough to use the legacy encryption params.
+        keyMetadata: keyMetadata ?? {
+          algorithm: 'PBKDF2',
+          params: {
+            iterations: 10_000,
+          },
+        },
       });
       const decryptedState = await this.#encryptor.decryptWithKey(key, parsed);
 
