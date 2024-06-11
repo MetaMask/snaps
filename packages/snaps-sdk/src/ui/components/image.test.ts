@@ -1,18 +1,7 @@
-import { is } from 'superstruct';
-
 import { NodeType } from '../nodes';
-import { image, svg } from './image';
+import { image } from './image';
 
 const MOCK_SVG = '<svg />';
-
-describe('svg', () => {
-  it('validates an SVG string', () => {
-    expect(is(MOCK_SVG, svg())).toBe(true);
-    expect(is('<svg></svg>', svg())).toBe(true);
-    expect(is('<foo/>', svg())).toBe(false);
-    expect(is(1, svg())).toBe(false);
-  });
-});
 
 describe('image', () => {
   it('creates an image component', () => {

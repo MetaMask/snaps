@@ -161,7 +161,7 @@ describe('ButtonStruct', () => {
       <Text>foo</Text>
     </Box>,
     <Row label="label">
-      <Image src="src" alt="alt" />
+      <Image src="<svg />" alt="alt" />
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, ButtonStruct)).toBe(false);
@@ -195,7 +195,7 @@ describe('InputStruct', () => {
       <Text>foo</Text>
     </Box>,
     <Row label="label">
-      <Image src="src" alt="alt" />
+      <Image src="<svg />" alt="alt" />
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, InputStruct)).toBe(false);
@@ -237,7 +237,7 @@ describe('FieldStruct', () => {
       <Text>foo</Text>
     </Box>,
     <Row label="label">
-      <Image src="src" alt="alt" />
+      <Image src="<svg />" alt="alt" />
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, FieldStruct)).toBe(false);
@@ -294,7 +294,7 @@ describe('FormStruct', () => {
       <Text>foo</Text>
     </Box>,
     <Row label="label">
-      <Image src="src" alt="alt" />
+      <Image src="<svg />" alt="alt" />
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, FormStruct)).toBe(false);
@@ -320,7 +320,7 @@ describe('BoldStruct', () => {
       <Text>foo</Text>
     </Box>,
     <Row label="label">
-      <Image src="src" alt="alt" />
+      <Image src="<svg />" alt="alt" />
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, BoldStruct)).toBe(false);
@@ -349,7 +349,7 @@ describe('ItalicStruct', () => {
       <Text>foo</Text>
     </Box>,
     <Row label="label">
-      <Image src="src" alt="alt" />
+      <Image src="<svg />" alt="alt" />
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, ItalicStruct)).toBe(false);
@@ -383,7 +383,7 @@ describe('AddressStruct', () => {
       <Text>foo</Text>
     </Box>,
     <Row label="label">
-      <Image src="src" alt="alt" />
+      <Image src="<svg />" alt="alt" />
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, AddressStruct)).toBe(false);
@@ -402,19 +402,19 @@ describe('BoxStruct', () => {
     <Box>
       <Text>foo</Text>
       <Row label="label">
-        <Image src="src" alt="alt" />
+        <Image src="<svg />" alt="alt" />
       </Row>
     </Box>,
     <Box direction="horizontal" alignment="space-between">
       <Text>foo</Text>
       <Row label="label">
-        <Image src="src" alt="alt" />
+        <Image src="<svg />" alt="alt" />
       </Row>
     </Box>,
     <Box direction="horizontal">
       <Text>foo</Text>
       <Row label="label">
-        <Image src="src" alt="alt" />
+        <Image src="<svg />" alt="alt" />
       </Row>
     </Box>,
   ])('validates a box element', (value) => {
@@ -433,20 +433,20 @@ describe('BoxStruct', () => {
     <Box children={[]} />,
     <Text>foo</Text>,
     <Row label="label">
-      <Image src="src" alt="alt" />
+      <Image src="<svg />" alt="alt" />
     </Row>,
     // @ts-expect-error - Invalid props.
     <Box direction="foo">
       <Text>foo</Text>
       <Row label="label">
-        <Image src="src" alt="alt" />
+        <Image src="<svg />" alt="alt" />
       </Row>
     </Box>,
     // @ts-expect-error - Invalid props.
     <Box direction="vertical" alignment="foo">
       <Text>foo</Text>
       <Row label="label">
-        <Image src="src" alt="alt" />
+        <Image src="<svg />" alt="alt" />
       </Row>
     </Box>,
     <Box>
@@ -486,7 +486,7 @@ describe('CopyableStruct', () => {
       <Text>foo</Text>
     </Box>,
     <Row label="label">
-      <Image src="src" alt="alt" />
+      <Image src="<svg />" alt="alt" />
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, CopyableStruct)).toBe(false);
@@ -512,7 +512,7 @@ describe('DividerStruct', () => {
       <Text>foo</Text>
     </Box>,
     <Row label="label">
-      <Image src="src" alt="alt" />
+      <Image src="<svg />" alt="alt" />
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, DividerStruct)).toBe(false);
@@ -543,7 +543,7 @@ describe('ValueStruct', () => {
       <Text>foo</Text>
     </Box>,
     <Row label="label">
-      <Image src="src" alt="alt" />
+      <Image src="<svg />" alt="alt" />
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, ValueStruct)).toBe(false);
@@ -575,7 +575,7 @@ describe('HeadingStruct', () => {
       <Text>Hello</Text>
     </Box>,
     <Row label="label">
-      <Image src="src" alt="alt" />
+      <Image src="<svg />" alt="alt" />
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, HeadingStruct)).toBe(false);
@@ -600,13 +600,13 @@ describe('ImageStruct', () => {
     // @ts-expect-error - Invalid props.
     <Image />,
     // @ts-expect-error - Invalid props.
-    <Image src="src" alt={42} />,
+    <Image src="<svg />" alt={42} />,
     <Text>foo</Text>,
     <Box>
       <Text>foo</Text>
     </Box>,
     <Row label="label">
-      <Image src="src" alt="alt" />
+      <Image src="<svg />" alt="alt" />
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, ImageStruct)).toBe(false);
@@ -637,7 +637,7 @@ describe('LinkStruct', () => {
       <Text>foo</Text>
     </Box>,
     <Row label="label">
-      <Image src="src" alt="alt" />
+      <Image src="<svg />" alt="alt" />
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, LinkStruct)).toBe(false);
@@ -669,7 +669,7 @@ describe('TextStruct', () => {
       <Text>foo</Text>
     </Box>,
     <Row label="label">
-      <Image src="src" alt="alt" />
+      <Image src="<svg />" alt="alt" />
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, TextStruct)).toBe(false);
@@ -682,7 +682,7 @@ describe('RowStruct', () => {
       <Text>foo</Text>
     </Row>,
     <Row label="label">
-      <Image src="src" alt="alt" />
+      <Image src="<svg />" alt="alt" />
     </Row>,
     <Row label="label" variant="default">
       <Address address="0x1234567890abcdef1234567890abcdef12345678" />
@@ -738,7 +738,7 @@ describe('SpinnerStruct', () => {
       <Text>foo</Text>
     </Box>,
     <Row label="label">
-      <Image src="src" alt="alt" />
+      <Image src="<svg />" alt="alt" />
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, SpinnerStruct)).toBe(false);
@@ -772,7 +772,7 @@ describe('DropdownStruct', () => {
       <Text>foo</Text>
     </Box>,
     <Row label="label">
-      <Image src="src" alt="alt" />
+      <Image src="<svg />" alt="alt" />
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, DropdownStruct)).toBe(false);
@@ -786,7 +786,7 @@ describe('isJSXElement', () => {
       <Text>foo</Text>
     </Box>,
     <Row label="label">
-      <Image src="src" alt="alt" />
+      <Image src="<svg />" alt="alt" />
     </Row>,
   ])('returns true for a JSX element', (value) => {
     expect(isJSXElement(value)).toBe(true);
@@ -832,10 +832,10 @@ describe('isJSXElementUnsafe', () => {
       <Text>foo</Text>
     </Box>,
     <Row label="label">
-      <Image src="src" alt="alt" />
+      <Image src="<svg />" alt="alt" />
     </Row>,
   ])('returns true for a JSX element', (value) => {
-    expect(isJSXElement(value)).toBe(true);
+    expect(isJSXElementUnsafe(value)).toBe(true);
   });
 
   it.each([
@@ -925,7 +925,7 @@ describe('assertJSXElement', () => {
       <Text>foo</Text>
     </Box>,
     <Row label="label">
-      <Image src="src" alt="alt" />
+      <Image src="<svg />" alt="alt" />
     </Row>,
   ])('does not throw an error for a JSX element', (value) => {
     expect(() => {

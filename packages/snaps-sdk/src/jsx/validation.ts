@@ -22,7 +22,7 @@ import {
 import type { ObjectSchema } from 'superstruct/dist/utils';
 
 import type { Describe } from '../internals';
-import { literal, nullUnion } from '../internals';
+import { literal, nullUnion, svg } from '../internals';
 import type { EmptyObject } from '../types';
 import type {
   GenericSnapElement,
@@ -278,7 +278,7 @@ export const HeadingStruct: Describe<HeadingElement> = element('Heading', {
  * A struct for the {@link ImageElement} type.
  */
 export const ImageStruct: Describe<ImageElement> = element('Image', {
-  src: string(),
+  src: svg(),
   alt: optional(string()),
 });
 
