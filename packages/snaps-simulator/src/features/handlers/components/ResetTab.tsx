@@ -1,9 +1,9 @@
 import { useTabsContext } from '@chakra-ui/react';
 import type { FunctionComponent } from 'react';
 import { useEffect } from 'react';
-import { getUserInterface } from 'src/features/simulation';
 
 import { useHandler, useSelector } from '../../../hooks';
+import { getUserInterface } from '../../simulation';
 
 /**
  * Resets the tab to the first tab when the handler changes.

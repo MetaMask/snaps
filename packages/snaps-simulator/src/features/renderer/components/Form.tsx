@@ -5,8 +5,8 @@ import { assertJSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 import type { FunctionComponent, FormEvent } from 'react';
-import { useSnapInterfaceContext } from 'src/contexts';
 
+import { useSnapInterfaceContext } from '../../../contexts';
 import { SnapComponent } from '../SnapComponent';
 
 export type FormProps = {

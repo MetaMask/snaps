@@ -2,7 +2,8 @@ import { Input as ChakraInput } from '@chakra-ui/react';
 import { assertJSXElement } from '@metamask/snaps-sdk/jsx';
 import { assert } from '@metamask/utils';
 import type { ChangeEvent, FunctionComponent } from 'react';
-import { useSnapInterfaceContext } from 'src/contexts';
+
+import { useSnapInterfaceContext } from '../../../contexts';
 
 export type InputProps = {
   id: string;

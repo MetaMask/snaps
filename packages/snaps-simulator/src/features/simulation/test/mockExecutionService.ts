@@ -7,7 +7,7 @@ export class MockExecutionService {
     // no-op for now
   }
 
-  handleRpcRequest() {
+  handleRpcRequest(): any {
     return 'foobar';
   }
 }

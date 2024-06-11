@@ -1,15 +1,12 @@
-import {
-  Input,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-} from '@chakra-ui/react';
-import type { InputElement } from '@metamask/snaps-sdk/jsx';
+import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react';
+import type { ButtonElement, InputElement } from '@metamask/snaps-sdk/jsx';
 import { assertJSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
-import type { ChangeEvent, FunctionComponent } from 'react';
-import { useSnapInterfaceContext } from 'src/contexts';
+import type { FunctionComponent } from 'react';
+
+import { Button } from './Button';
+import { Input } from './Input';
 
 export type FieldProps = {
   id: string;
@@ -18,29 +15,23 @@ export type FieldProps = {
 };
 
 export const Field: FunctionComponent<FieldProps> = ({ node, id, form }) => {
-  const { handleInputChange, getValue } = useSnapInterfaceContext();
   assertJSXElement(node);
   assert(node.type === 'Field', 'Expected value to be a field component.');
 
-  const input = getJsxChildren(node)[0] as InputElement;
+  const children = getJsxChildren(node);
 
-  const value = getValue(input.props.name, form);
+  const input = children[0] as InputElement;
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    handleInputChange(input.props.name, event.target.value, form);
-  };
+  const button = children[1] as ButtonElement;
 
   const { props } = node;
 
   return (
     <FormControl isInvalid={Boolean(props.error)} key={`${id}-field`}>
       {props.label && <FormLabel>{props.label}</FormLabel>}
-      <Input
-        value={value}
-        type={input.props.type}
-        placeholder={input.props.placeholder}
-        onChange={handleChange}
-      />
+
+      <Input id={id} node={input} form={form} />
+      {button && <Button id={id} node={button} />}
       <FormErrorMessage>{props.error}</FormErrorMessage>
     </FormControl>
   );
