@@ -26,6 +26,8 @@ export type FieldProps = {
 
 const TYPE = 'Field';
 
+export const FIELD_CHILD_TYPES = ['Input', 'Dropdown', 'Button'];
+
 /**
  * A field component, which is used to create a form field. This component can
  * only be used as a child of the {@link Form} component.

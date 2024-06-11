@@ -215,7 +215,11 @@ export const FieldChildrenStruct = nullable(
 export const FieldStruct: Describe<FieldElement> = element('Field', {
   label: optional(string()),
   error: optional(string()),
-  children: FieldChildrenStruct,
+  children: nullUnion([
+    tuple([InputStruct, ButtonStruct]),
+    InputStruct,
+    DropdownStruct,
+  ]),
 });
 
 export const FormChildrenStruct = children(
@@ -227,7 +231,7 @@ export const FormChildrenStruct = children(
  * A struct for the {@link FormElement} type.
  */
 export const FormStruct: Describe<FormElement> = element('Form', {
-  children: FormChildrenStruct,
+  children: maybeArray(nullUnion([FieldStruct, ButtonStruct])),
   name: string(),
 });
 
