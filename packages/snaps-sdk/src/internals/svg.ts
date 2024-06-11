@@ -11,7 +11,7 @@ export function svg() {
     // This validation is intentionally very basic, we don't need to be that strict
     // and merely have this extra validation as a helpful error if devs aren't
     // passing in SVGs.
-    if (!value.startsWith('<svg')) {
+    if (!value.includes('<svg')) {
       return 'Value is not a valid SVG.';
     }
 
