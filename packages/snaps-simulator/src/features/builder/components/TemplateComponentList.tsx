@@ -5,7 +5,11 @@ import {
   ListItem,
   Text as ChakraText,
 } from '@chakra-ui/react';
-import type { JSXElement } from '@metamask/snaps-sdk/jsx';
+import type {
+  FieldElement,
+  FormElement,
+  JSXElement,
+} from '@metamask/snaps-sdk/jsx';
 import {
   Box,
   Heading,
@@ -84,13 +88,18 @@ const TEMPLATE_COMPONENTS: TemplateComponent[] = [
   {
     icon: 'form',
     text: 'Form',
-    data: Form({ name: 'form', children: null }),
+    data: Form({
+      name: 'form',
+      children: [] as unknown as FormElement['props']['children'],
+    }),
     droppable: true,
   },
   {
     icon: 'field',
     text: 'Field',
-    data: Field({ children: null }),
+    data: Field({
+      children: [] as unknown as FieldElement['props']['children'],
+    }),
     droppable: true,
   },
 

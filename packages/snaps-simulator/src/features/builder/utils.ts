@@ -1,7 +1,8 @@
+import type { FieldElement, FormElement } from '@metamask/snaps-sdk/jsx';
 import {
-  BoxChildrenStruct,
-  FieldChildrenStruct,
-  FormChildrenStruct,
+  BOX_CHILD_TYPES,
+  FIELD_CHILD_TYPES,
+  FORM_CHILD_TYPES,
   type BoxElement,
   type JSXElement,
 } from '@metamask/snaps-sdk/jsx';
@@ -15,8 +16,6 @@ import { assert, hasProperty } from '@metamask/utils';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 import typescript from 'prettier/parser-typescript';
 import prettier from 'prettier/standalone';
-import type { Infer } from 'superstruct';
-import { is } from 'superstruct';
 
 /**
  * Get the text of a node model.
@@ -45,10 +44,8 @@ export function getNodeText(nodeModel: NodeModel<JSXElement>) {
  * @param child - The node to verify.
  * @returns True if the node is a valid box children, otherwise false.
  */
-export function isValidBoxChild(
-  child: unknown,
-): child is Infer<typeof BoxChildrenStruct> {
-  return is(child, BoxChildrenStruct);
+export function isValidBoxChild(child: JSXElement) {
+  return BOX_CHILD_TYPES.includes(child.type);
 }
 
 /**
@@ -57,10 +54,8 @@ export function isValidBoxChild(
  * @param child - The node to verify.
  * @returns True if the node is a valid form children, otherwise false.
  */
-export function isValidFormChild(
-  child: unknown,
-): child is Infer<typeof FormChildrenStruct> {
-  return is(child, FormChildrenStruct);
+export function isValidFormChild(child: JSXElement) {
+  return FORM_CHILD_TYPES.includes(child.type);
 }
 
 /**
@@ -69,10 +64,8 @@ export function isValidFormChild(
  * @param child - The node to verify.
  * @returns True if the node is a valid field children, otherwise false.
  */
-export function isValidFieldChild(
-  child: unknown,
-): child is Infer<typeof FieldChildrenStruct> {
-  return is(child, FieldChildrenStruct);
+export function isValidFieldChild(child: JSXElement) {
+  return FIELD_CHILD_TYPES.includes(child.type);
 }
 /**
  * Set the children of an element.
@@ -85,17 +78,15 @@ export function isValidFieldChild(
 export function setElementChildren(
   parent: JSXElement,
   child: JSXElement,
-  validator: (child: unknown) => boolean,
+  validator: (child: JSXElement) => boolean,
 ) {
   const actual = getJsxChildren(parent);
 
-  const merged = actual.length === 0 ? child : [...actual, child];
-
-  if (validator(merged)) {
-    return merged;
+  if (!validator(child)) {
+    return actual;
   }
 
-  return actual.length === 0 ? null : actual;
+  return actual.length === 0 ? child : [...actual, child];
 }
 /**
  * Convert an array of node models to a component. This is useful for converting
@@ -120,7 +111,7 @@ export function nodeModelsToComponent(
             parent.data,
             nodeModel.data,
             isValidBoxChild,
-          ) as Infer<typeof BoxChildrenStruct>;
+          ) as BoxElement['props']['children'];
 
           break;
         case 'Form':
@@ -128,7 +119,7 @@ export function nodeModelsToComponent(
             parent.data,
             nodeModel.data,
             isValidFormChild,
-          ) as Infer<typeof FormChildrenStruct>;
+          ) as FormElement['props']['children'];
           break;
 
         case 'Field':
@@ -136,7 +127,7 @@ export function nodeModelsToComponent(
             parent.data,
             nodeModel.data,
             isValidFieldChild,
-          ) as Infer<typeof FieldChildrenStruct>;
+          ) as FieldElement['props']['children'];
           break;
 
         default:
@@ -207,36 +198,13 @@ export function boxToCode(component: BoxElement): string {
 }
 
 /**
- * Get the children of a parent node from the tree.
- *
- * @param tree - The tree.
- * @param parentId - The parent ID.
- * @returns The children of the parent node.
- */
-export function getChildrenFromTree(
-  tree: NodeModel<JSXElement>[],
-  parentId: string | number,
-) {
-  return tree.reduce<JSXElement[]>((acc, node) => {
-    if (node.parent === parentId && node.data) {
-      acc.push(node.data);
-    }
-
-    return acc;
-  }, []);
-}
-
-/**
  * Verify that an element can be dropped into a parent element.
  *
  * @param parent - The parent element.
  * @param element - The element to drop.
  * @returns True if the element can be dropped, otherwise false.
  */
-export function canDropElement(
-  parent?: JSXElement,
-  element?: JSXElement | JSXElement[],
-) {
+export function canDropElement(parent?: JSXElement, element?: JSXElement) {
   if (!parent || !element) {
     return false;
   }
