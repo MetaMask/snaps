@@ -28,6 +28,7 @@ import type {
   JsonObject,
   Key,
   MaybeArray,
+  Nestable,
   SnapElement,
   StringElement,
 } from './component';
@@ -77,6 +78,21 @@ export const ElementStruct: Describe<GenericSnapElement> = object({
 });
 
 /**
+ * A helper function for creating a struct for a {@link Nestable} type.
+ *
+ * @param struct - The struct for the type to test.
+ * @returns The struct for the nestable type.
+ */
+function nestable<Type, Schema>(struct: Struct<Type, Schema>) {
+  const nestableStruct: Struct<Nestable<Type>> = nullUnion([
+    struct,
+    array(lazy(() => nestableStruct)),
+  ]);
+
+  return nestableStruct;
+}
+
+/**
  * A helper function for creating a struct for a {@link MaybeArray} type.
  *
  * @param struct - The struct for the maybe array type.
@@ -85,7 +101,7 @@ export const ElementStruct: Describe<GenericSnapElement> = object({
 function maybeArray<Type, Schema>(
   struct: Struct<Type, Schema>,
 ): Struct<MaybeArray<Type>, any> {
-  return nullUnion([struct, array(struct)]);
+  return nestable(nullUnion([struct, array(struct)]));
 }
 
 /**

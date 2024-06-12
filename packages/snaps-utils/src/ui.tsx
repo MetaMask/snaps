@@ -442,7 +442,7 @@ export function getJsxChildren(element: JSXElement): (JSXElement | string)[] {
     if (Array.isArray(element.props.children)) {
       // @ts-expect-error - Each member of the union type has signatures, but
       // none of those signatures are compatible with each other.
-      return element.props.children.filter(Boolean);
+      return element.props.children.filter(Boolean).flat(Infinity);
     }
 
     if (element.props.children) {
