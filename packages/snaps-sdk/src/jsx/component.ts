@@ -39,6 +39,15 @@ export type SnapElement<
   key: Key | null;
 };
 
+/**
+ * A type that can be a single value or an infinitely nestable array of values.
+ *
+ * @template Type - The type that can be an array.
+ * @example
+ * type NestableString = Nestable<string>;
+ * const nestableString: NestableString = 'hello';
+ * const nestableStringArray: NestableString = ['hello', 'world', ['foo', ['bar']]];
+ */
 export type Nestable<Type> = Type | Nestable<Type>[];
 
 /**
@@ -50,7 +59,7 @@ export type Nestable<Type> = Type | Nestable<Type>[];
  * const maybeArrayString: MaybeArrayString = 'hello';
  * const maybeArrayStringArray: MaybeArrayString = ['hello', 'world'];
  */
-export type MaybeArray<Type> = Type | Type[] | Nestable<Type>;
+export type MaybeArray<Type> = Nestable<Type>;
 
 /**
  * A JSX node, which can be an element, a string, null, or an array of nodes.

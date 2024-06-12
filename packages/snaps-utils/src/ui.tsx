@@ -165,7 +165,15 @@ export function getTextChildren(
       }
 
       const { tokens } = token as Tokens.Paragraph;
-      children.push(...tokens.flatMap(getTextChildFromToken));
+      // We do not need to consider nesting deeper than 1 level here and we can therefore cast.
+      children.push(
+        ...(tokens.flatMap(getTextChildFromToken) as (
+          | string
+          | StandardFormattingElement
+          | LinkElement
+          | null
+        )[]),
+      );
     }
   });
 
