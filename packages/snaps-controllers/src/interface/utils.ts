@@ -63,7 +63,7 @@ function constructComponentSpecificDefaultState(
 ) {
   if (element.type === 'Dropdown') {
     const children = getJsxChildren(element) as OptionElement[];
-    return children[0].props.value;
+    return children[0]?.props.value;
   }
 
   return null;

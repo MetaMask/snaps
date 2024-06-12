@@ -6,7 +6,6 @@ import {
 } from '@metamask/utils';
 import type { Struct } from 'superstruct';
 import {
-  nonempty,
   is,
   boolean,
   optional,
@@ -78,18 +77,6 @@ export const ElementStruct: Describe<GenericSnapElement> = object({
 });
 
 /**
- * A struct for the {@link NonEmptyArray} type.
- *
- * @param struct - The struct for the non-empty array type.
- * @returns The struct for the non-empty array type.
- */
-function nonEmptyArray<Type, Schema>(
-  struct: Struct<Type, Schema>,
-): Struct<Type[], Struct<Type, Schema>> {
-  return nonempty(array(struct));
-}
-
-/**
  * A helper function for creating a struct for a {@link MaybeArray} type.
  *
  * @param struct - The struct for the maybe array type.
@@ -98,7 +85,7 @@ function nonEmptyArray<Type, Schema>(
 function maybeArray<Type, Schema>(
   struct: Struct<Type, Schema>,
 ): Struct<MaybeArray<Type>, any> {
-  return nullUnion([struct, nonEmptyArray(struct)]);
+  return nullUnion([struct, array(struct)]);
 }
 
 /**
