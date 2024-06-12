@@ -1,25 +1,9 @@
 import type { Infer } from 'superstruct';
-import { assign, literal, object, refine, string } from 'superstruct';
+import { assign, literal, object } from 'superstruct';
 
-import { isSvg } from '../../internals';
+import { svg } from '../../internals';
 import { createBuilder } from '../builder';
 import { NodeStruct, NodeType } from '../nodes';
-
-/**
- * Get a Struct that validates a string as a valid SVG.
- *
- * @returns A Struct that validates a string as a valid SVG.
- * @internal
- */
-export function svg() {
-  return refine(string(), 'SVG', (value) => {
-    if (!isSvg(value)) {
-      return 'Value is not a valid SVG.';
-    }
-
-    return true;
-  });
-}
 
 export const ImageStruct = assign(
   NodeStruct,

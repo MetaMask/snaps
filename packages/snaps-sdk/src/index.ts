@@ -9,8 +9,6 @@ export {
   literal,
   union,
   enumValue,
-  parseSvg,
-  isSvg,
 } from './internals';
 
 // Re-exported from `@metamask/utils` for convenience.
