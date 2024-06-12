@@ -19,8 +19,7 @@ type DropdownProps = {
 const TYPE = 'Dropdown';
 
 /**
- * A dropdown component, which is used to create a dropdown. This component
- * can only be used as a child of the {@link Field} component.
+ * A dropdown component, which is used to create a dropdown.
  *
  * @param props - The props of the component.
  * @param props.name - The name of the dropdown field. This is used to identify the

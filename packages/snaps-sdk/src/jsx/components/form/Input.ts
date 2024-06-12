@@ -21,8 +21,7 @@ type InputProps = {
 const TYPE = 'Input';
 
 /**
- * An input component, which is used to create an input field. This component
- * can only be used as a child of the {@link Field} component.
+ * An input component, which is used to create an input field.
  *
  * @param props - The props of the component.
  * @param props.name - The name of the input field. This is used to identify the
