@@ -165,7 +165,15 @@ export function getTextChildren(
       }
 
       const { tokens } = token as Tokens.Paragraph;
-      children.push(...tokens.flatMap(getTextChildFromToken));
+      // We do not need to consider nesting deeper than 1 level here and we can therefore cast.
+      children.push(
+        ...(tokens.flatMap(getTextChildFromToken) as (
+          | string
+          | StandardFormattingElement
+          | LinkElement
+          | null
+        )[]),
+      );
     }
   });
 
@@ -442,7 +450,7 @@ export function getJsxChildren(element: JSXElement): (JSXElement | string)[] {
     if (Array.isArray(element.props.children)) {
       // @ts-expect-error - Each member of the union type has signatures, but
       // none of those signatures are compatible with each other.
-      return element.props.children.filter(Boolean);
+      return element.props.children.filter(Boolean).flat(Infinity);
     }
 
     if (element.props.children) {

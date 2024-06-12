@@ -774,6 +774,30 @@ describe('getJsxChildren', () => {
       <Text>World</Text>,
     ]);
   });
+
+  it('flattens the children array', () => {
+    const element = (
+      <Box>
+        <Text>Hello</Text>
+        {[1, 2, 3].map((value) => (
+          <Text>{value.toString()}</Text>
+        ))}
+        <Text>World</Text>
+      </Box>
+    );
+
+    const children = getJsxChildren(element);
+
+    expect(element.props.children).toHaveLength(3);
+    expect(children).toHaveLength(5);
+    expect(children).toStrictEqual([
+      <Text>Hello</Text>,
+      <Text>1</Text>,
+      <Text>2</Text>,
+      <Text>3</Text>,
+      <Text>World</Text>,
+    ]);
+  });
 });
 
 describe('walkJsx', () => {

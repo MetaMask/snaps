@@ -417,6 +417,12 @@ describe('BoxStruct', () => {
         <Image src="<svg />" alt="alt" />
       </Row>
     </Box>,
+    <Box>
+      <Text>Foo</Text>
+      {[1, 2, 3, 4, 5].map((value) => (
+        <Text>{value.toString()}</Text>
+      ))}
+    </Box>,
   ])('validates a box element', (value) => {
     expect(is(value, BoxStruct)).toBe(true);
   });
