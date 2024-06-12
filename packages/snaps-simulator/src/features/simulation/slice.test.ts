@@ -1,6 +1,9 @@
 import type { IframeExecutionService } from '@metamask/snaps-controllers';
+import type { SnapId } from '@metamask/snaps-sdk';
+import { Text } from '@metamask/snaps-sdk/jsx';
 import { VirtualFile } from '@metamask/snaps-utils';
 
+import type { SnapInterface } from './slice';
 import {
   SnapStatus,
   simulation as reducer,
@@ -13,7 +16,11 @@ import {
   setSnapState,
   setUnencryptedSnapState,
   setLocalizationFiles,
+  setSnapInterface,
+  setSnapInterfaceController,
+  setSnapInterfaceState,
 } from './slice';
+import { getSnapInterfaceController } from './test/controllers';
 import { MockExecutionService } from './test/mockExecutionService';
 import { MOCK_MANIFEST, MOCK_MANIFEST_FILE } from './test/mockManifest';
 
@@ -36,6 +43,21 @@ describe('simulation slice', () => {
       );
 
       expect(result.executionService).toStrictEqual(executionService);
+    });
+  });
+
+  describe('setSnapInterfaceController', () => {
+    it('sets the snap interface controller', () => {
+      const snapInterfaceController = getSnapInterfaceController();
+
+      const result = reducer(
+        INITIAL_STATE,
+        setSnapInterfaceController(snapInterfaceController),
+      );
+
+      expect(result.snapInterfaceController).toStrictEqual(
+        snapInterfaceController,
+      );
     });
   });
 
@@ -95,6 +117,33 @@ describe('simulation slice', () => {
       const result = reducer(INITIAL_STATE, setManifest(MOCK_MANIFEST_FILE));
 
       expect(result.manifest?.result).toStrictEqual(MOCK_MANIFEST);
+    });
+  });
+
+  describe('setSnapInterface', () => {
+    it('sets the snap interface', () => {
+      const snapInterface = {
+        id: 'foo',
+        snapId: 'bar' as SnapId,
+        content: Text({ children: 'Hello, world!' }),
+        context: null,
+        state: {},
+      };
+      const result = reducer(INITIAL_STATE, setSnapInterface(snapInterface));
+
+      expect(result.snapInterface).toStrictEqual(snapInterface);
+    });
+  });
+
+  describe('setSnapInterfaceState', () => {
+    it('sets the snap interface state', () => {
+      const state = { foo: 'bar' };
+      const result = reducer(
+        { ...INITIAL_STATE, snapInterface: { state: {} } as SnapInterface },
+        setSnapInterfaceState(state),
+      );
+
+      expect(result.snapInterface?.state).toStrictEqual(state);
     });
   });
 });

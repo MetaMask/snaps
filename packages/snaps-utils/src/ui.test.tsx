@@ -42,6 +42,7 @@ import {
   walkJsx,
   getJsxChildren,
   serialiseJsx,
+  getJsxInterface,
 } from './ui';
 
 describe('getTextChildren', () => {
@@ -1025,5 +1026,33 @@ describe('serialiseJsx', () => {
       "<Box>
       </Box>"
     `);
+  });
+});
+
+describe('getJsxInterface', () => {
+  it('returns the JSX interface for a JSX element', () => {
+    expect(
+      getJsxInterface(
+        <Box>
+          <Text>Hello</Text>
+        </Box>,
+      ),
+    ).toStrictEqual(
+      Box({
+        children: Text({
+          children: 'Hello',
+        }),
+      }),
+    );
+  });
+
+  it('returns the JSX interface for a legacy element', () => {
+    expect(getJsxInterface(panel([text('Hello')]))).toStrictEqual(
+      Box({
+        children: Text({
+          children: 'Hello',
+        }),
+      }),
+    );
   });
 });
