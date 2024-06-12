@@ -6,6 +6,7 @@ export * from './dialogs';
 export * from './errors';
 export * from './ethereum-provider';
 export * from './ethers-js';
+export * from './file-upload';
 export * from './get-entropy';
 export * from './get-file';
 export * from './interactive-ui';

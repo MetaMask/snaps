@@ -171,7 +171,7 @@ export const FileInputStruct: Describe<FileInputElement> = element(
   {
     name: string(),
     accept: nullUnion([optional(array(string()))]),
-    multiple: optional(boolean()),
+    compact: optional(boolean()),
   },
 );
 

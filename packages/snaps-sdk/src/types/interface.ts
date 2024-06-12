@@ -8,8 +8,9 @@ import type { Component } from '../ui';
 import { ComponentStruct } from '../ui';
 
 /**
- * To avoid typing problems with the interface state when manipulating it we have to differentiate the state of
- * a form (that will be contained inside the root state) and the root state since a key in the root stat can contain
+ * To avoid typing problems with the interface state when manipulating it we
+ * have to differentiate the state of a form (that will be contained inside the
+ * root state) and the root state since a key in the root stat can contain
  * either the value of an input or a sub-state of a form.
  */
 

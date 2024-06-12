@@ -8,13 +8,13 @@ import { createSnapComponent } from '../../component';
  * @property label - The label of the file input field.
  * @property accept - The file types that the file input field accepts. If not
  * specified, the file input field accepts all file types.
- * @property multiple - Whether the file input field accepts multiple files.
- * Defaults to `false`.
+ * @property compact - Whether the file input field is compact. Default is
+ * `false`.
  */
 export type FileInputProps = {
   name: string;
   accept?: string[] | undefined;
-  multiple?: boolean | undefined;
+  compact?: boolean | undefined;
 };
 
 const TYPE = 'FileInput';
@@ -31,7 +31,8 @@ const TYPE = 'FileInput';
  * @param props.label - The label of the file input field.
  * @param props.accept - The file types that the file input field accepts. If
  * not specified, the file input field accepts all file types.
- * @param props.multiple - Whether the file input field accepts multiple files.
+ * @param props.compact - Whether the file input field is compact. Default is
+ * `false`.
  * @returns A file input element.
  * @example
  * <FileInput name="file" accept={['image/*']} multiple />
