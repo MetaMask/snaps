@@ -311,6 +311,7 @@ export const RowStruct: Describe<RowElement> = element('Row', {
   variant: optional(
     nullUnion([literal('default'), literal('warning'), literal('error')]),
   ),
+  tooltip: optional(string()),
 });
 
 /**
