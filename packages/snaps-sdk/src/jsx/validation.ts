@@ -101,7 +101,7 @@ function nestable<Type, Schema>(struct: Struct<Type, Schema>) {
 function maybeArray<Type, Schema>(
   struct: Struct<Type, Schema>,
 ): Struct<MaybeArray<Type>, any> {
-  return nestable(nullUnion([struct, array(struct)]));
+  return nestable(struct);
 }
 
 /**
