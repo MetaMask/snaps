@@ -562,7 +562,7 @@ describe('FileInputStruct', () => {
   it.each([
     <FileInput name="foo" />,
     <FileInput name="foo" accept={['image/*']} />,
-    <FileInput name="foo" multiple />,
+    <FileInput name="foo" compact />,
   ])('validates a file input element', (value) => {
     expect(is(value, FileInputStruct)).toBe(true);
   });
@@ -581,7 +581,7 @@ describe('FileInputStruct', () => {
     // @ts-expect-error - Invalid props.
     <FileInput name="foo" accept="image/*" />,
     // @ts-expect-error - Invalid props.
-    <FileInput name="foo" multiple="true" />,
+    <FileInput name="foo" compact="true" />,
     <Text>foo</Text>,
     <Box>
       <Text>foo</Text>

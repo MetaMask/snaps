@@ -82,8 +82,12 @@ function constructComponentSpecificDefaultState(
  */
 function constructInputState(
   oldState: InterfaceState,
-  element: InputElement | DropdownElement,
+  element: InputElement | DropdownElement | FileInputElement,
 ) {
+  if (element.type === 'FileInput') {
+    return oldState[element.props.name] ?? null;
+  }
+
   return (
     element.props.value ??
     oldState[element.props.name] ??
@@ -203,7 +207,11 @@ export function constructState(
     return newState;
   }
 
-  if (component.type === 'Input' || component.type === 'Dropdown') {
+  if (
+    component.type === 'Input' ||
+    component.type === 'Dropdown' ||
+    component.type === 'FileInput'
+  ) {
     assertNameIsUnique(newState, component.props.name);
     newState[component.props.name] = constructInputState(oldState, component);
   }

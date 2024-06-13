@@ -35,9 +35,13 @@ const TYPE = 'FileInput';
  * `false`.
  * @returns A file input element.
  * @example
- * <FileInput name="file" accept={['image/*']} multiple />
+ * <FileInput name="file" accept={['image/*']} />
+ * @example
+ * <FileInput name="file" compact />
  * @example
  * <Field label="Upload file">
+ *   <FileInput name="file" />
+ * </Field>
  */
 export const FileInput = createSnapComponent<FileInputProps, typeof TYPE>(TYPE);
 
