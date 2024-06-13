@@ -35,6 +35,7 @@ export type AddressLookupArgs = BaseOnNameLookupArgs & {
 export type AddressResolution = {
   protocol: string;
   resolvedAddress: string;
+  domainName: string;
 };
 
 /**
