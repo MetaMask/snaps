@@ -4,28 +4,27 @@ import type { ExecutionServiceArgs } from '../AbstractExecutionService';
 import { ProxyExecutionService } from '../proxy/ProxyExecutionService';
 
 type OffscreenExecutionEnvironmentServiceArgs = {
-  documentUrl: URL;
+  offscreenPromise: Promise<unknown>;
 } & ExecutionServiceArgs;
 
 export class OffscreenExecutionService extends ProxyExecutionService {
-  public readonly documentUrl: URL;
+  readonly #offscreenPromise: Promise<unknown>;
 
   /**
    * Create a new offscreen execution service.
    *
    * @param args - The constructor arguments.
-   * @param args.documentUrl - The URL of the offscreen document to use as the
-   * execution environment. This must be a URL relative to the location where
-   * this is called. This cannot be a public (http(s)) URL.
    * @param args.messenger - The messenger to use for communication with the
    * `SnapController`.
    * @param args.setupSnapProvider - The function to use to set up the snap
    * provider.
+   * @param args.offscreenPromise - A promise that resolves when the offscreen
+   * environment is ready.
    */
   constructor({
-    documentUrl,
     messenger,
     setupSnapProvider,
+    offscreenPromise,
   }: OffscreenExecutionEnvironmentServiceArgs) {
     super({
       messenger,
@@ -36,37 +35,19 @@ export class OffscreenExecutionService extends ProxyExecutionService {
       }),
     });
 
-    this.documentUrl = documentUrl;
+    this.#offscreenPromise = offscreenPromise;
   }
 
   /**
-   * Create a new stream for the specified job. This wraps the runtime stream
-   * in a stream specific to the job.
+   * Create a new stream for the given job ID. This will wait for the offscreen
+   * environment to be ready before creating the stream.
    *
-   * @param jobId - The job ID.
+   * @param jobId - The job ID to create a stream for.
+   * @returns The stream for the given job ID.
    */
   protected async initEnvStream(jobId: string) {
-    // Lazily create the offscreen document.
-    await this.#createDocument();
+    await this.#offscreenPromise;
 
-    return super.initEnvStream(jobId);
-  }
-
-  /**
-   * Creates the offscreen document to be used as the execution environment.
-   *
-   * If the document already exists, this does nothing.
-   */
-  async #createDocument() {
-    // Extensions can only have a single offscreen document.
-    if (await chrome.offscreen.hasDocument()) {
-      return;
-    }
-
-    await chrome.offscreen.createDocument({
-      justification: 'MetaMask Snaps Execution Environment',
-      reasons: ['IFRAME_SCRIPTING' as chrome.offscreen.Reason],
-      url: this.documentUrl.toString(),
-    });
+    return await super.initEnvStream(jobId);
   }
 }

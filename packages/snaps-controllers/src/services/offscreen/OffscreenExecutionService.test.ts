@@ -1,16 +1,19 @@
 import {
   DEFAULT_SNAP_BUNDLE,
-  MOCK_LOCAL_SNAP_ID,
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 import type { Json, JsonRpcRequest } from '@metamask/utils';
-import { isJsonRpcRequest, isPlainObject } from '@metamask/utils';
+import {
+  createDeferredPromise,
+  isJsonRpcRequest,
+  isPlainObject,
+} from '@metamask/utils';
 
 import { createService } from '../../test-utils';
 import { getMockedFunction } from '../../test-utils/mock';
 import { OffscreenExecutionService } from './OffscreenExecutionService';
 
-const DOCUMENT_URL = new URL('https://foo');
+const OFFSCREEN_PROMISE = Promise.resolve();
 
 /**
  * Create a response message for the given request. This function assumes that
@@ -96,70 +99,65 @@ describe('OffscreenExecutionService', () => {
             removeListener: jest.fn(),
           },
         },
-
-        offscreen: {
-          hasDocument: jest.fn(),
-          createDocument: jest.fn(),
-        },
       },
     });
   });
 
   it('can boot', async () => {
     const { service } = createService(OffscreenExecutionService, {
-      documentUrl: DOCUMENT_URL,
+      offscreenPromise: OFFSCREEN_PROMISE,
     });
 
     expect(service).toBeDefined();
     await service.terminateAllSnaps();
   });
 
-  it('creates a document if it does not exist', async () => {
+  it('waits for the offscreen environment to be ready', async () => {
+    const { promise, resolve } = createDeferredPromise();
     const { service } = createService(OffscreenExecutionService, {
-      documentUrl: DOCUMENT_URL,
+      offscreenPromise: promise,
     });
 
-    const hasDocument = chrome.offscreen.hasDocument as jest.MockedFunction<
-      () => Promise<boolean>
-    >;
-    const createDocument = getMockedFunction(chrome.offscreen.createDocument);
-
-    hasDocument.mockResolvedValueOnce(false).mockResolvedValue(true);
-
-    expect(hasDocument).not.toHaveBeenCalled();
-    expect(createDocument).not.toHaveBeenCalled();
-
-    // Run two snaps to ensure that the document is created only once.
-    expect(
-      await service.executeSnap({
-        snapId: MOCK_SNAP_ID,
-        sourceCode: DEFAULT_SNAP_BUNDLE,
-        endowments: [],
-      }),
-    ).toBe('OK');
-
-    expect(
-      await service.executeSnap({
-        snapId: MOCK_LOCAL_SNAP_ID,
-        sourceCode: DEFAULT_SNAP_BUNDLE,
-        endowments: [],
-      }),
-    ).toBe('OK');
-
-    expect(hasDocument).toHaveBeenCalledTimes(2);
-    expect(createDocument).toHaveBeenCalledTimes(1);
-    expect(createDocument).toHaveBeenCalledWith({
-      justification: 'MetaMask Snaps Execution Environment',
-      reasons: ['IFRAME_SCRIPTING'],
-      url: DOCUMENT_URL.toString(),
+    const executePromise = service.executeSnap({
+      snapId: MOCK_SNAP_ID,
+      sourceCode: DEFAULT_SNAP_BUNDLE,
+      endowments: [],
     });
 
-    await service.terminateAllSnaps();
+    const sendMessage = jest.mocked(chrome.runtime.sendMessage);
+    expect(sendMessage).not.toHaveBeenCalledWith({
+      target: 'child',
+      data: {
+        jobId: expect.any(String),
+        data: expect.objectContaining({
+          name: 'command',
+          data: expect.objectContaining({
+            method: 'ping',
+          }),
+        }),
+      },
+    });
+
+    resolve();
+
+    expect(await executePromise).toBe('OK');
+    expect(sendMessage).toHaveBeenCalledWith({
+      target: 'child',
+      data: {
+        jobId: expect.any(String),
+        data: expect.objectContaining({
+          name: 'command',
+          data: expect.objectContaining({
+            method: 'ping',
+          }),
+        }),
+      },
+    });
   });
 
   it('writes a termination command to the stream', async () => {
     const { service } = createService(OffscreenExecutionService, {
-      documentUrl: DOCUMENT_URL,
+      offscreenPromise: OFFSCREEN_PROMISE,
     });
 
     expect(
