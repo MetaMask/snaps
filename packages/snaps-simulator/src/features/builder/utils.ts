@@ -1,8 +1,8 @@
 import type { FieldElement, FormElement } from '@metamask/snaps-sdk/jsx';
 import {
-  BOX_CHILD_TYPES,
-  FIELD_CHILD_TYPES,
-  FORM_CHILD_TYPES,
+  BoxChildStruct,
+  FieldChildUnionStruct,
+  FormChildStruct,
   type BoxElement,
   type JSXElement,
 } from '@metamask/snaps-sdk/jsx';
@@ -16,6 +16,7 @@ import { assert, hasProperty } from '@metamask/utils';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 import typescript from 'prettier/parser-typescript';
 import prettier from 'prettier/standalone';
+import { is } from 'superstruct';
 
 /**
  * Get the text of a node model.
@@ -45,7 +46,7 @@ export function getNodeText(nodeModel: NodeModel<JSXElement>) {
  * @returns True if the node is a valid box children, otherwise false.
  */
 export function isValidBoxChild(child: JSXElement) {
-  return BOX_CHILD_TYPES.includes(child.type);
+  return is(child, BoxChildStruct);
 }
 
 /**
@@ -55,7 +56,7 @@ export function isValidBoxChild(child: JSXElement) {
  * @returns True if the node is a valid form children, otherwise false.
  */
 export function isValidFormChild(child: JSXElement) {
-  return FORM_CHILD_TYPES.includes(child.type);
+  return is(child, FormChildStruct);
 }
 
 /**
@@ -65,7 +66,7 @@ export function isValidFormChild(child: JSXElement) {
  * @returns True if the node is a valid field children, otherwise false.
  */
 export function isValidFieldChild(child: JSXElement) {
-  return FIELD_CHILD_TYPES.includes(child.type);
+  return is(child, FieldChildUnionStruct);
 }
 /**
  * Set the children of an element.

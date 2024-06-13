@@ -210,16 +210,46 @@ export const FieldChildrenStruct = nullable(
 );
 
 /**
+ * A subset of JSX elements that represent the tuple Button + Input of the Field children.
+ */
+const BUTTON_INPUT = [InputStruct, ButtonStruct] as [
+  typeof InputStruct,
+  typeof ButtonStruct,
+];
+
+/**
+ * A subset of JSX elements that are allowed as single children of the Field component.
+ */
+const FIELD_CHILDREN_ARRAY = [InputStruct, DropdownStruct, FileInputStruct] as [
+  typeof InputStruct,
+  typeof DropdownStruct,
+  typeof FileInputStruct,
+];
+
+/**
+ * A union of the allowed children of the Field component.
+ * This is mainly used in the simulator for validation purposes.
+ */
+export const FieldChildUnionStruct = nullUnion([
+  ...FIELD_CHILDREN_ARRAY,
+  ...BUTTON_INPUT,
+]);
+
+/**
+ * A subset of JSX elements that are allowed as children of the Field component.
+ */
+const FieldChildStruct = nullUnion([
+  tuple(BUTTON_INPUT),
+  ...FIELD_CHILDREN_ARRAY,
+]);
+
+/**
  * A struct for the {@link FieldElement} type.
  */
 export const FieldStruct: Describe<FieldElement> = element('Field', {
   label: optional(string()),
   error: optional(string()),
-  children: nullUnion([
-    tuple([InputStruct, ButtonStruct]),
-    InputStruct,
-    DropdownStruct,
-  ]),
+  children: nullable(FieldChildStruct),
 });
 
 export const FormChildrenStruct = children(
@@ -228,10 +258,15 @@ export const FormChildrenStruct = children(
 ) as unknown as Struct<SnapsChildren<GenericSnapElement>, null>;
 
 /**
+ * A subset of JSX elements that are allowed as children of the Form component.
+ */
+export const FormChildStruct = nullUnion([FieldStruct, ButtonStruct]);
+
+/**
  * A struct for the {@link FormElement} type.
  */
 export const FormStruct: Describe<FormElement> = element('Form', {
-  children: maybeArray(nullUnion([FieldStruct, ButtonStruct])),
+  children: maybeArray(FormChildStruct),
   name: string(),
 });
 

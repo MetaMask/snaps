@@ -6036,6 +6036,7 @@ __metadata:
     rimraf: ^4.1.2
     stream-browserify: ^3.0.0
     style-loader: ^3.3.2
+    superstruct: ^1.0.3
     swc-loader: ^0.2.3
     terser-webpack-plugin: ^5.3.9
     ts-node: ^10.9.1

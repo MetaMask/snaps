@@ -8,4 +8,7 @@ export {
   isJSXElement,
   isJSXElementUnsafe,
   assertJSXElement,
+  BoxChildStruct,
+  FormChildStruct,
+  FieldChildUnionStruct,
 } from './validation';

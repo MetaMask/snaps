@@ -94,8 +94,7 @@ const TEMPLATE_COMPONENTS: TemplateComponent[] = [
     icon: 'field',
     text: 'Field',
     data: Field({
-      // @ts-expect-error - FieldElement is not expecting an empty array.
-      children: [],
+      children: null,
     }),
     droppable: true,
   },

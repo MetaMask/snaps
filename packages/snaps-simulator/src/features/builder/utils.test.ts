@@ -117,8 +117,7 @@ describe('nodeModelsToComponent', () => {
         id: 5,
         parent: 4,
         text: 'child',
-        // @ts-expect-error - Invalid Field children prop.
-        data: Field({ children: [] }),
+        data: Field({ children: null }),
       },
       {
         id: 6,
