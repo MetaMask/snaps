@@ -5,11 +5,7 @@ import {
   ListItem,
   Text as ChakraText,
 } from '@chakra-ui/react';
-import type {
-  FieldElement,
-  FormElement,
-  JSXElement,
-} from '@metamask/snaps-sdk/jsx';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import {
   Box,
   Heading,
@@ -90,7 +86,7 @@ const TEMPLATE_COMPONENTS: TemplateComponent[] = [
     text: 'Form',
     data: Form({
       name: 'form',
-      children: [] as unknown as FormElement['props']['children'],
+      children: [],
     }),
     droppable: true,
   },
@@ -98,7 +94,8 @@ const TEMPLATE_COMPONENTS: TemplateComponent[] = [
     icon: 'field',
     text: 'Field',
     data: Field({
-      children: [] as unknown as FieldElement['props']['children'],
+      // @ts-expect-error - FieldElement is not expecting an empty array.
+      children: [],
     }),
     droppable: true,
   },

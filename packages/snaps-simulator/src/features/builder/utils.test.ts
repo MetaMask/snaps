@@ -93,14 +93,12 @@ describe('nodeModelsToComponent', () => {
         id: 1,
         parent: 0,
         text: 'parent',
-        // @ts-expect-error - Invalid Box children prop.
         data: Box({ children: [] }),
       },
       {
         id: 2,
         parent: 1,
         text: 'child',
-        // @ts-expect-error - Invalid Box children prop.
         data: Box({ children: [] }),
       },
       {
@@ -113,7 +111,6 @@ describe('nodeModelsToComponent', () => {
         id: 4,
         parent: 1,
         text: 'child',
-        // @ts-expect-error - Invalid Form children prop.
         data: Form({ name: 'form', children: [] }),
       },
       {
