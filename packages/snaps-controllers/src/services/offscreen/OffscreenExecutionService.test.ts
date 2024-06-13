@@ -3,11 +3,17 @@ import {
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 import type { Json, JsonRpcRequest } from '@metamask/utils';
-import { isJsonRpcRequest, isPlainObject } from '@metamask/utils';
+import {
+  createDeferredPromise,
+  isJsonRpcRequest,
+  isPlainObject,
+} from '@metamask/utils';
 
 import { createService } from '../../test-utils';
 import { getMockedFunction } from '../../test-utils/mock';
 import { OffscreenExecutionService } from './OffscreenExecutionService';
+
+const OFFSCREEN_PROMISE = Promise.resolve();
 
 /**
  * Create a response message for the given request. This function assumes that
@@ -98,14 +104,61 @@ describe('OffscreenExecutionService', () => {
   });
 
   it('can boot', async () => {
-    const { service } = createService(OffscreenExecutionService);
+    const { service } = createService(OffscreenExecutionService, {
+      offscreenPromise: OFFSCREEN_PROMISE,
+    });
 
     expect(service).toBeDefined();
     await service.terminateAllSnaps();
   });
 
+  it('waits for the offscreen environment to be ready', async () => {
+    const { promise, resolve } = createDeferredPromise();
+    const { service } = createService(OffscreenExecutionService, {
+      offscreenPromise: promise,
+    });
+
+    const executePromise = service.executeSnap({
+      snapId: MOCK_SNAP_ID,
+      sourceCode: DEFAULT_SNAP_BUNDLE,
+      endowments: [],
+    });
+
+    const sendMessage = jest.mocked(chrome.runtime.sendMessage);
+    expect(sendMessage).not.toHaveBeenCalledWith({
+      target: 'child',
+      data: {
+        jobId: expect.any(String),
+        data: expect.objectContaining({
+          name: 'command',
+          data: expect.objectContaining({
+            method: 'ping',
+          }),
+        }),
+      },
+    });
+
+    resolve();
+
+    expect(await executePromise).toBe('OK');
+    expect(sendMessage).toHaveBeenCalledWith({
+      target: 'child',
+      data: {
+        jobId: expect.any(String),
+        data: expect.objectContaining({
+          name: 'command',
+          data: expect.objectContaining({
+            method: 'ping',
+          }),
+        }),
+      },
+    });
+  });
+
   it('writes a termination command to the stream', async () => {
-    const { service } = createService(OffscreenExecutionService);
+    const { service } = createService(OffscreenExecutionService, {
+      offscreenPromise: OFFSCREEN_PROMISE,
+    });
 
     expect(
       await service.executeSnap({
