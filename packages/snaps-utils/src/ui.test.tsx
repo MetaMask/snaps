@@ -382,6 +382,16 @@ describe('getJsxElementFromComponent', () => {
     );
   });
 
+  it('returns the JSX element for a row component with a variant', () => {
+    expect(
+      getJsxElementFromComponent(row('foo', text('bar'), 'critical')),
+    ).toStrictEqual(
+      <Row label="foo" variant="critical">
+        <Text>bar</Text>
+      </Row>,
+    );
+  });
+
   it('returns the JSX element for a row component with an address component', () => {
     expect(
       getJsxElementFromComponent(

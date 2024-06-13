@@ -283,7 +283,7 @@ export function getJsxElementFromComponent(
 
       case NodeType.Row:
         return (
-          <Row label={component.label}>
+          <Row label={component.label} variant={component.variant}>
             {getElement(component.value) as RowChildren}
           </Row>
         );
