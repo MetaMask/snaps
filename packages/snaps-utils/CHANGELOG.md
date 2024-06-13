@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.6.0]
+### Added
+- Support nested children in JSX ([#2482](https://github.com/MetaMask/snaps/pull/2482))
+
+### Changed
+- Update `onNameLookup` response to include `domainName` ([#2484](https://github.com/MetaMask/snaps/pull/2484))
+- Bump MetaMask dependencies ([#2460](https://github.com/MetaMask/snaps/pull/2460))
+
+### Fixed
+- Fix a problem with converting legacy UIs that used `row()` ([#2486](https://github.com/MetaMask/snaps/pull/2486))
+- Revert requiring at least one child in JSX components ([#2470](https://github.com/MetaMask/snaps/pull/2470))
+
 ## [7.5.0]
 ### Added
 - Allow wildcards in `allowedOrigins` ([#2458](https://github.com/MetaMask/snaps/pull/2458))
@@ -245,7 +257,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.5.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.6.0...HEAD
+[7.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.5.0...@metamask/snaps-utils@7.6.0
 [7.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.4.1...@metamask/snaps-utils@7.5.0
 [7.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.4.0...@metamask/snaps-utils@7.4.1
 [7.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.3.0...@metamask/snaps-utils@7.4.0

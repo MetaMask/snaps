@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.0.0]
+### Added
+- Allow row tooltips ([#2483](https://github.com/MetaMask/snaps/pull/2483))
+- Support nested children in JSX ([#2482](https://github.com/MetaMask/snaps/pull/2482))
+
+### Changed
+- Update `onNameLookup` response types ([#2484](https://github.com/MetaMask/snaps/pull/2484))
+
+### Removed
+- **BREAKING:** Remove `parseSvg` and `isSvg` internals ([#2475](https://github.com/MetaMask/snaps/pull/2475))
+
+### Fixed
+- Correct Row variant in JSX ([#2486](https://github.com/MetaMask/snaps/pull/2486))
+- Revert requiring at least one child in JSX components ([#2481](https://github.com/MetaMask/snaps/pull/2481), [#2470](https://github.com/MetaMask/snaps/pull/2470))
+- Correct docs for `Input` and `Dropdown` ([#2479](https://github.com/MetaMask/snaps/pull/2479))
+
 ## [4.4.2]
 ### Fixed
 - Require at least 1 child in JSX components ([#2466](https://github.com/MetaMask/snaps/pull/2466))
@@ -154,7 +170,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.4.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@5.0.0...HEAD
+[5.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.4.2...@metamask/snaps-sdk@5.0.0
 [4.4.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.4.1...@metamask/snaps-sdk@4.4.2
 [4.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.4.0...@metamask/snaps-sdk@4.4.1
 [4.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.3.0...@metamask/snaps-sdk@4.4.0

@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.0.0]
+### Changed
+- **BREAKING:** Defer creation of offscreen document in `OffscreenExecutionService` ([#2473](https://github.com/MetaMask/snaps/pull/2473))
+- Update `onNameLookup` response to include `domainName` ([#2484](https://github.com/MetaMask/snaps/pull/2484))
+- Bump MetaMask dependencies ([#2460](https://github.com/MetaMask/snaps/pull/2460))
+
+### Fixed
+- Properly decrypt legacy state blobs ([#2472](https://github.com/MetaMask/snaps/pull/2472))
+
 ## [8.4.0]
 ### Added
 - Add `hidden` flag for preinstalled Snaps ([#2463](https://github.com/MetaMask/snaps/pull/2463))
@@ -288,7 +297,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.4.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.0.0...HEAD
+[9.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.4.0...@metamask/snaps-controllers@9.0.0
 [8.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.3.1...@metamask/snaps-controllers@8.4.0
 [8.3.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.3.0...@metamask/snaps-controllers@8.3.1
 [8.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.2.0...@metamask/snaps-controllers@8.3.0
