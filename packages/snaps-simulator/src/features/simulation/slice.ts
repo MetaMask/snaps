@@ -15,7 +15,7 @@ import type {
   SnapRpcHookArgs,
   VirtualFile,
 } from '@metamask/snaps-utils';
-import type { Draft, PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
 import {
   createAction,
   createSelector,
@@ -118,9 +118,8 @@ const slice = createSlice({
       state.icon = action.payload;
     },
     setSnapInterface: (state, action: PayloadAction<SnapInterface>) => {
-      // `immer` does not work well with generic types, so we have to cast.
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-      state.snapInterface = action.payload as Draft<SnapInterface>;
+      // @ts-expect-error `immer` does not work well with generic types.
+      state.snapInterface = action.payload;
     },
     setSnapInterfaceState: (state, action: PayloadAction<InterfaceState>) => {
       if (state.snapInterface) {
