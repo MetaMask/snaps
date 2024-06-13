@@ -1,48 +1,20 @@
-import { assert, hasProperty, isObject } from '@metamask/utils';
-import { XMLParser } from 'fast-xml-parser';
+import { refine, string } from 'superstruct';
 
 /**
- * Parse and validate a string as an SVG.
+ * Get a Struct that validates a string as a valid SVG.
  *
- * @param svg - An SVG string.
- * @returns The SVG, its attributes and children in an object format.
+ * @returns A Struct that validates a string as a valid SVG.
+ * @internal
  */
-export function parseSvg(svg: string) {
-  try {
-    const trimmed = svg.trim();
-
-    assert(trimmed.length > 0);
-
-    const parser = new XMLParser({
-      ignoreAttributes: false,
-      parseAttributeValue: true,
-    });
-    const parsed = parser.parse(trimmed, true);
-
-    assert(hasProperty(parsed, 'svg'));
-
-    // Empty SVGs are not returned as objects
-    if (!isObject(parsed.svg)) {
-      return {};
+export function svg() {
+  return refine(string(), 'SVG', (value) => {
+    // This validation is intentionally very basic, we don't need to be that strict
+    // and merely have this extra validation as a helpful error if devs aren't
+    // passing in SVGs.
+    if (!value.includes('<svg')) {
+      return 'Value is not a valid SVG.';
     }
 
-    return parsed.svg;
-  } catch {
-    throw new Error('Snap icon must be a valid SVG.');
-  }
-}
-
-/**
- * Validate that a string is a valid SVG.
- *
- * @param svg - An SVG string.
- * @returns True if the SVG is valid otherwise false.
- */
-export function isSvg(svg: string) {
-  try {
-    parseSvg(svg);
     return true;
-  } catch {
-    return false;
-  }
+  });
 }

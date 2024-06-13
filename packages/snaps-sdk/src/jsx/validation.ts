@@ -6,7 +6,6 @@ import {
 } from '@metamask/utils';
 import type { Struct } from 'superstruct';
 import {
-  nonempty,
   is,
   boolean,
   optional,
@@ -22,13 +21,14 @@ import {
 import type { ObjectSchema } from 'superstruct/dist/utils';
 
 import type { Describe } from '../internals';
-import { literal, nullUnion } from '../internals';
+import { literal, nullUnion, svg } from '../internals';
 import type { EmptyObject } from '../types';
 import type {
   GenericSnapElement,
   JsonObject,
   Key,
   MaybeArray,
+  Nestable,
   SnapElement,
   StringElement,
 } from './component';
@@ -78,15 +78,18 @@ export const ElementStruct: Describe<GenericSnapElement> = object({
 });
 
 /**
- * A struct for the {@link NonEmptyArray} type.
+ * A helper function for creating a struct for a {@link Nestable} type.
  *
- * @param struct - The struct for the non-empty array type.
- * @returns The struct for the non-empty array type.
+ * @param struct - The struct for the type to test.
+ * @returns The struct for the nestable type.
  */
-function nonEmptyArray<Type, Schema>(
-  struct: Struct<Type, Schema>,
-): Struct<Type[], Struct<Type, Schema>> {
-  return nonempty(array(struct));
+function nestable<Type, Schema>(struct: Struct<Type, Schema>) {
+  const nestableStruct: Struct<Nestable<Type>> = nullUnion([
+    struct,
+    array(lazy(() => nestableStruct)),
+  ]);
+
+  return nestableStruct;
 }
 
 /**
@@ -98,7 +101,7 @@ function nonEmptyArray<Type, Schema>(
 function maybeArray<Type, Schema>(
   struct: Struct<Type, Schema>,
 ): Struct<MaybeArray<Type>, any> {
-  return nullUnion([struct, nonEmptyArray(struct)]);
+  return nestable(struct);
 }
 
 /**
@@ -278,7 +281,7 @@ export const HeadingStruct: Describe<HeadingElement> = element('Heading', {
  * A struct for the {@link ImageElement} type.
  */
 export const ImageStruct: Describe<ImageElement> = element('Image', {
-  src: string(),
+  src: svg(),
   alt: optional(string()),
 });
 
@@ -306,8 +309,9 @@ export const RowStruct: Describe<RowElement> = element('Row', {
   label: string(),
   children: nullUnion([AddressStruct, ImageStruct, TextStruct, ValueStruct]),
   variant: optional(
-    nullUnion([literal('default'), literal('warning'), literal('error')]),
+    nullUnion([literal('default'), literal('warning'), literal('critical')]),
   ),
+  tooltip: optional(string()),
 });
 
 /**

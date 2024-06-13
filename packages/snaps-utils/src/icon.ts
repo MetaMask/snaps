@@ -1,6 +1,6 @@
-import { isSvg, parseSvg } from '@metamask/snaps-sdk';
 import { assert, stringToBytes } from '@metamask/utils';
 
+import { isSvg, parseSvg } from './svg';
 import type { VirtualFile } from './virtual-file';
 
 export const SVG_MAX_BYTE_SIZE = 100_000;

@@ -153,6 +153,7 @@ export const AddressResolutionStruct = object({
 export const DomainResolutionStruct = object({
   protocol: string(),
   resolvedAddress: string(),
+  domainName: string(),
 });
 
 export const AddressResolutionResponseStruct = object({

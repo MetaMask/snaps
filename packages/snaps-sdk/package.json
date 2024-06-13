@@ -63,7 +63,6 @@
     "@metamask/providers": "^17.0.0",
     "@metamask/rpc-errors": "^6.2.1",
     "@metamask/utils": "^8.3.0",
-    "fast-xml-parser": "^4.3.4",
     "superstruct": "^1.0.3"
   },
   "devDependencies": {
