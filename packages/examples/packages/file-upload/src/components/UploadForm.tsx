@@ -1,6 +1,13 @@
 import type { File } from '@metamask/snaps-sdk';
 import type { SnapComponent } from '@metamask/snaps-sdk/jsx';
-import { Form, FileInput, Box, Field, Heading } from '@metamask/snaps-sdk/jsx';
+import {
+  Button,
+  Form,
+  FileInput,
+  Box,
+  Field,
+  Heading,
+} from '@metamask/snaps-sdk/jsx';
 
 import { FileList } from './FileList';
 
@@ -14,8 +21,9 @@ export const UploadForm: SnapComponent<InteractiveFormProps> = ({ files }) => {
       <Heading>File Upload</Heading>
       <Form name="foo">
         <Field>
-          <FileInput name="file" />
+          <FileInput name="file" compact />
         </Field>
+        <Button type="submit">Submit</Button>
       </Form>
       <FileList files={files} />
     </Box>

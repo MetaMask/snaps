@@ -52,11 +52,30 @@ export const ButtonClickEventStruct = assign(
  */
 export type ButtonClickEvent = Infer<typeof ButtonClickEventStruct>;
 
+export const FileStruct = object({
+  name: string(),
+  size: number(),
+  contentType: string(),
+  contents: string(),
+});
+
+/**
+ * A file object containing the file name, size, content type, and the base64
+ * encoded contents of the file.
+ *
+ * @property name - The name of the file.
+ * @property size - The size of the file in bytes.
+ * @property contentType - The content type of the file.
+ * @property contents - The base64 encoded contents of the file.
+ */
+export type File = Infer<typeof FileStruct>;
+
 export const FormSubmitEventStruct = assign(
   GenericEventStruct,
   object({
     type: literal(UserInputEventType.FormSubmitEvent),
     value: record(string(), nullable(string())),
+    files: record(string(), nullable(FileStruct)),
     name: string(),
   }),
 );
@@ -69,6 +88,10 @@ export const FormSubmitEventStruct = assign(
  * @property value - The form values submitted as an object. The keys are the
  * names of the form fields and the values are the values of the form fields. If
  * a form field is empty, the value is `null`.
+ * @property files - The files uploaded in the form. The keys are the names of
+ * the file input fields and the values are the file objects containing the file
+ * name, size, content type, and the base64 encoded contents of the file. See
+ * {@link File}.
  */
 export type FormSubmitEvent = Infer<typeof FormSubmitEventStruct>;
 
@@ -90,24 +113,6 @@ export const InputChangeEventStruct = assign(
  * @property value - The new value of the input field.
  */
 export type InputChangeEvent = Infer<typeof InputChangeEventStruct>;
-
-export const FileStruct = object({
-  name: string(),
-  size: number(),
-  contentType: string(),
-  contents: string(),
-});
-
-/**
- * A file object containing the file name, size, content type, and the base64
- * encoded contents of the file.
- *
- * @property name - The name of the file.
- * @property size - The size of the file in bytes.
- * @property contentType - The content type of the file.
- * @property contents - The base64 encoded contents of the file.
- */
-export type File = Infer<typeof FileStruct>;
 
 export const FileUploadEventStruct = assign(
   GenericEventStruct,

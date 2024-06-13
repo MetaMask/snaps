@@ -6,6 +6,7 @@ import type { JSXElement } from '../jsx';
 import { RootJSXElementStruct } from '../jsx';
 import type { Component } from '../ui';
 import { ComponentStruct } from '../ui';
+import { FileStruct } from './handlers';
 
 /**
  * To avoid typing problems with the interface state when manipulating it we
@@ -14,7 +15,10 @@ import { ComponentStruct } from '../ui';
  * either the value of an input or a sub-state of a form.
  */
 
-export const FormStateStruct = record(string(), nullable(string()));
+export const FormStateStruct = record(
+  string(),
+  nullable(union([FileStruct, string()])),
+);
 
 export const InterfaceStateStruct = record(
   string(),

@@ -5,7 +5,7 @@ import type {
 } from '@metamask/snaps-sdk';
 import { UserInputEventType, MethodNotFoundError } from '@metamask/snaps-sdk';
 
-import { UploadForm } from './components';
+import { UploadedFiles, UploadForm } from './components';
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
@@ -60,6 +60,20 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
  */
 export const onUserInput: OnUserInputHandler = async ({ id, event }) => {
   if (
+    event.type === UserInputEventType.ButtonClickEvent &&
+    event.name === 'back'
+  ) {
+    await snap.request({
+      method: 'snap_updateInterface',
+      params: {
+        id,
+        ui: <UploadForm files={[]} />,
+      },
+    });
+    return;
+  }
+
+  if (
     event.type === UserInputEventType.FileUploadEvent &&
     event.file !== null
   ) {
@@ -85,6 +99,17 @@ export const onUserInput: OnUserInputHandler = async ({ id, event }) => {
       params: {
         id,
         ui: <UploadForm files={[...files, event.file]} />,
+      },
+    });
+    return;
+  }
+
+  if (event.type === UserInputEventType.FormSubmitEvent) {
+    await snap.request({
+      method: 'snap_updateInterface',
+      params: {
+        id,
+        ui: <UploadedFiles file={event.files.file} />,
       },
     });
   }

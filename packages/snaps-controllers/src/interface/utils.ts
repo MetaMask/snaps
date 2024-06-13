@@ -43,7 +43,10 @@ export function getJsxInterface(component: ComponentOrElement): JSXElement {
  * @param state - The interface state to verify against.
  * @param name - The component name to verify.
  */
-export function assertNameIsUnique(state: InterfaceState, name: string) {
+export function assertNameIsUnique(
+  state: InterfaceState | FormState,
+  name: string,
+) {
   assert(
     state[name] === undefined,
     `Duplicate component names are not allowed, found multiple instances of: "${name}".`,
@@ -102,13 +105,12 @@ function constructFormInputState(
   component: InputElement | DropdownElement | FileInputElement,
   form: string,
 ) {
-  if (component.type === 'FileInput') {
-    // TODO: Implement file input state construction.
-    return null;
-  }
-
   const oldFormState = oldState[form] as FormState;
   const oldInputState = oldFormState?.[component.props.name];
+
+  if (component.type === 'FileInput') {
+    return oldInputState ?? null;
+  }
 
   return (
     component.props.value ??
