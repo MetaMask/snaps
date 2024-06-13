@@ -309,7 +309,7 @@ export const RowStruct: Describe<RowElement> = element('Row', {
   label: string(),
   children: nullUnion([AddressStruct, ImageStruct, TextStruct, ValueStruct]),
   variant: optional(
-    nullUnion([literal('default'), literal('warning'), literal('error')]),
+    nullUnion([literal('default'), literal('warning'), literal('critical')]),
   ),
   tooltip: optional(string()),
 });
