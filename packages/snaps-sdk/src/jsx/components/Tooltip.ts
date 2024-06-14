@@ -15,10 +15,11 @@ export type TooltipChildren =
  * The props of the {@link Tooltip} component.
  *
  * @property children - The children of the box.
+ * @property content - The text to display in the tooltip.
  */
 export type TooltipProps = {
   children: TooltipChildren;
-  value: TextElement | StandardFormattingElement | LinkElement | string;
+  content: TextElement | StandardFormattingElement | LinkElement | string;
 };
 
 const TYPE = 'Tooltip';
@@ -28,9 +29,10 @@ const TYPE = 'Tooltip';
  *
  * @param props - The props of the component.
  * @param props.children - The children of the tooltip.
+ * @param props.content - The text to display in the tooltip.
  * @returns A tooltip element.
  * @example
- * <Tooltip value={<Text>foo</Text>}>
+ * <Tooltip content={<Text>foo</Text>}>
  *   <Text>Hello world!</Text>
  * </Tooltip>
  */

@@ -333,10 +333,10 @@ export const TooltipChildStruct = nullUnion([
 ]);
 
 /**
- * A subset of JSX elements that are allowed as value of the Tooltip component.
+ * A subset of JSX elements that are allowed as content of the Tooltip component.
  * This set should include all text components.
  */
-export const TooltipValueStruct = nullUnion([
+export const TooltipContentStruct = nullUnion([
   TextStruct,
   BoldStruct,
   ItalicStruct,
@@ -349,7 +349,7 @@ export const TooltipValueStruct = nullUnion([
  */
 export const TooltipStruct: Describe<TooltipElement> = element('Tooltip', {
   children: nullable(TooltipChildStruct),
-  value: TooltipValueStruct,
+  content: TooltipContentStruct,
 });
 
 /**
