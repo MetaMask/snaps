@@ -21,7 +21,7 @@ export const UploadForm: SnapComponent<InteractiveFormProps> = ({ files }) => {
       <Heading>File Upload</Heading>
       <Form name="foo">
         <Field>
-          <FileInput name="file" compact />
+          <FileInput name="file" />
         </Field>
         <Button type="submit">Submit</Button>
       </Form>

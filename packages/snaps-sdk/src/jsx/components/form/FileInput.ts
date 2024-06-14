@@ -29,7 +29,8 @@ const TYPE = 'FileInput';
  * @param props.name - The name of the file input field. This is used to
  * identify the file input field in the form data.
  * @param props.accept - The file types that the file input field accepts. If
- * not specified, the file input field accepts all file types.
+ * not specified, the file input field accepts all file types. For examples of
+ * valid values, see the [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/accept).
  * @param props.compact - Whether the file input field is compact. Default is
  * `false`.
  * @returns A file input element.
