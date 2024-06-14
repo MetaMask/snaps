@@ -53,6 +53,7 @@ import type {
   SpinnerElement,
   StandardFormattingElement,
   TextElement,
+  TooltipElement,
   ValueElement,
   FileInputElement,
 } from './components';
@@ -320,6 +321,38 @@ export const TextStruct: Describe<TextElement> = element('Text', {
 });
 
 /**
+ * A subset of JSX elements that are allowed as children of the Tooltip component.
+ * This set should include all text components and the Image.
+ */
+export const TooltipChildStruct = nullUnion([
+  TextStruct,
+  BoldStruct,
+  ItalicStruct,
+  LinkStruct,
+  ImageStruct,
+]);
+
+/**
+ * A subset of JSX elements that are allowed as value of the Tooltip component.
+ * This set should include all text components.
+ */
+export const TooltipValueStruct = nullUnion([
+  TextStruct,
+  BoldStruct,
+  ItalicStruct,
+  LinkStruct,
+  string(),
+]);
+
+/**
+ * A struct for the {@link TooltipElement} type.
+ */
+export const TooltipStruct: Describe<TooltipElement> = element('Tooltip', {
+  children: nullable(TooltipChildStruct),
+  value: TooltipValueStruct,
+});
+
+/**
  * A struct for the {@link RowElement} type.
  */
 export const RowStruct: Describe<RowElement> = element('Row', {
@@ -359,6 +392,7 @@ export const BoxChildStruct = nullUnion([
   RowStruct,
   SpinnerStruct,
   TextStruct,
+  TooltipStruct,
 ]);
 
 /**
@@ -391,6 +425,7 @@ export const JSXElementStruct: Describe<JSXElement> = nullUnion([
   DropdownStruct,
   OptionStruct,
   ValueStruct,
+  TooltipStruct,
 ]);
 
 /**

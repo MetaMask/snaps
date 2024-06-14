@@ -19,6 +19,7 @@ import {
   Row,
   Spinner,
   Text,
+  Tooltip,
   Value,
   FileInput,
 } from './components';
@@ -47,6 +48,7 @@ import {
   SpinnerStruct,
   StringElementStruct,
   TextStruct,
+  TooltipStruct,
   ValueStruct,
 } from './validation';
 
@@ -718,6 +720,45 @@ describe('TextStruct', () => {
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, TextStruct)).toBe(false);
+  });
+});
+
+describe('TooltipStruct', () => {
+  it.each([
+    <Tooltip value="foo">
+      <Text>bar</Text>
+    </Tooltip>,
+    <Tooltip value={<Text>foo</Text>}>
+      <Bold>bar</Bold>
+    </Tooltip>,
+  ])(`validates a tooltip element`, (value) => {
+    expect(is(value, TooltipStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <Tooltip />,
+    // @ts-expect-error - Invalid props.
+    <Tooltip foo="bar">foo</Tooltip>,
+    <Tooltip value={<Copyable value="bar" />}>
+      <Text>foo</Text>
+    </Tooltip>,
+    <Box>
+      <Tooltip value={'foo'}>
+        <Text>foo</Text>
+      </Tooltip>
+    </Box>,
+    <Row label="label">
+      <Image src="<svg />" alt="alt" />
+    </Row>,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, TooltipStruct)).toBe(false);
   });
 });
 
