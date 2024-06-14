@@ -725,10 +725,10 @@ describe('TextStruct', () => {
 
 describe('TooltipStruct', () => {
   it.each([
-    <Tooltip value="foo">
+    <Tooltip content="foo">
       <Text>bar</Text>
     </Tooltip>,
-    <Tooltip value={<Text>foo</Text>}>
+    <Tooltip content={<Text>foo</Text>}>
       <Bold>bar</Bold>
     </Tooltip>,
   ])(`validates a tooltip element`, (value) => {
@@ -746,11 +746,11 @@ describe('TooltipStruct', () => {
     <Tooltip />,
     // @ts-expect-error - Invalid props.
     <Tooltip foo="bar">foo</Tooltip>,
-    <Tooltip value={<Copyable value="bar" />}>
+    <Tooltip content={<Copyable value="bar" />}>
       <Text>foo</Text>
     </Tooltip>,
     <Box>
-      <Tooltip value={'foo'}>
+      <Tooltip content={'foo'}>
         <Text>foo</Text>
       </Tooltip>
     </Box>,
