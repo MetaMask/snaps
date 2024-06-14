@@ -338,26 +338,27 @@ export const SpinnerStruct: Describe<SpinnerElement> = element('Spinner');
 
 /**
  * A subset of JSX elements that are allowed as children of the Box component.
- * This set should include all components, except components that need to be nested
- * in another component (e.g. Field must be contained in a Form).
+ * This set includes all components, except components that need to be nested in
+ * another component (e.g., Field must be contained in a Form).
  */
 export const BoxChildStruct = nullUnion([
-  ButtonStruct,
-  InputStruct,
-  FormStruct,
-  BoldStruct,
-  ItalicStruct,
   AddressStruct,
+  BoldStruct,
   BoxStruct,
+  ButtonStruct,
   CopyableStruct,
   DividerStruct,
+  DropdownStruct,
+  FileInputStruct,
+  FormStruct,
   HeadingStruct,
+  InputStruct,
   ImageStruct,
+  ItalicStruct,
   LinkStruct,
   RowStruct,
   SpinnerStruct,
   TextStruct,
-  DropdownStruct,
 ]);
 
 /**
