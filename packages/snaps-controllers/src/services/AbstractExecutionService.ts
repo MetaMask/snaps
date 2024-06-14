@@ -7,9 +7,9 @@ import type { SnapRpcHook, SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { SNAP_STREAM_NAMES, logError } from '@metamask/snaps-utils';
 import type {
   Json,
+  JsonRpcFailure,
   JsonRpcNotification,
   JsonRpcRequest,
-  PendingJsonRpcResponse,
 } from '@metamask/utils';
 import {
   Duration,
@@ -441,10 +441,14 @@ export abstract class AbstractExecutionService<WorkerType>
     }
 
     log('Parent: Sending Command', message);
-    const response: PendingJsonRpcResponse<Json> =
-      job.rpcEngine.handle(message);
+    // eslint is blocking `await` usage even though `handle` returns a promise.
+    // eslint-disable-next-line @typescript-eslint/await-thenable
+    const response = await job.rpcEngine.handle(message);
 
-    if (response.error) {
+    if (
+      ((res): res is JsonRpcFailure =>
+        'error' in res && res.error !== undefined)(response)
+    ) {
       throw new JsonRpcError(
         response.error.code,
         response.error.message,
