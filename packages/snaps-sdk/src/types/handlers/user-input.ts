@@ -87,7 +87,7 @@ export const FormSubmitEventStruct = assign(
  * @property name - The name of the form that was submitted.
  * @property value - The form values submitted as an object. The keys are the
  * names of the form fields and the values are the values of the form fields. If
- * a form field is empty, the value is `null`.
+ * a form field is empty, the value is `null` or an empty string.
  * @property files - The files uploaded in the form. The keys are the names of
  * the file input fields and the values are the file objects containing the file
  * name, size, content type, and the base64 encoded contents of the file. See
