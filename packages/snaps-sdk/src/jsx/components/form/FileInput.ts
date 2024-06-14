@@ -28,7 +28,6 @@ const TYPE = 'FileInput';
  * @param props - The props of the component.
  * @param props.name - The name of the file input field. This is used to
  * identify the file input field in the form data.
- * @param props.label - The label of the file input field.
  * @param props.accept - The file types that the file input field accepts. If
  * not specified, the file input field accepts all file types.
  * @param props.compact - Whether the file input field is compact. Default is
