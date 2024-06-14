@@ -17,6 +17,7 @@ export type TextChildren = MaybeArray<
  */
 export type TextProps = {
   children: TextChildren;
+  alignment?: 'start' | 'center' | 'end' | undefined;
 };
 
 const TYPE = 'Text';

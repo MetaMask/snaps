@@ -650,6 +650,7 @@ describe('LinkStruct', () => {
 describe('TextStruct', () => {
   it.each([
     <Text>foo</Text>,
+    <Text alignment="end">foo</Text>,
     <Text>
       Hello, <Bold>world</Bold>
     </Text>,

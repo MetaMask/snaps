@@ -300,6 +300,9 @@ export const TextStruct: Describe<TextElement> = element('Text', {
   children: maybeArray(
     nullable(nullUnion([string(), BoldStruct, ItalicStruct, LinkStruct])),
   ),
+  alignment: optional(
+    nullUnion([literal('start'), literal('center'), literal('end')]),
+  ),
 });
 
 /**
