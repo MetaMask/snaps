@@ -43,10 +43,7 @@ export function getJsxInterface(component: ComponentOrElement): JSXElement {
  * @param state - The interface state to verify against.
  * @param name - The component name to verify.
  */
-export function assertNameIsUnique(
-  state: InterfaceState | FormState,
-  name: string,
-) {
+export function assertNameIsUnique(state: InterfaceState, name: string) {
   assert(
     state[name] === undefined,
     `Duplicate component names are not allowed, found multiple instances of: "${name}".`,

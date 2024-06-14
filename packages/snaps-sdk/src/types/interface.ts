@@ -15,16 +15,16 @@ import { FileStruct } from './handlers';
  * either the value of an input or a sub-state of a form.
  */
 
-export const FormStateStruct = record(
-  string(),
-  nullable(union([FileStruct, string()])),
-);
+export const StateStruct = union([FileStruct, string()]);
+
+export const FormStateStruct = record(string(), nullable(StateStruct));
 
 export const InterfaceStateStruct = record(
   string(),
-  union([FormStateStruct, nullable(string())]),
+  union([FormStateStruct, nullable(StateStruct)]),
 );
 
+export type State = Infer<typeof StateStruct>;
 export type FormState = Infer<typeof FormStateStruct>;
 export type InterfaceState = Infer<typeof InterfaceStateStruct>;
 
