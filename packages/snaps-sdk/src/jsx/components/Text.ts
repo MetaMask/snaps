@@ -32,6 +32,10 @@ const TYPE = 'Text';
  * <Text>
  *   Hello <Bold>world</Bold>!
  * </Text>
+ * @example
+ * <Text alignment="end">
+ *   Hello <Bold>world</Bold>!
+ * </Text>
  */
 export const Text = createSnapComponent<TextProps, typeof TYPE>(TYPE);
 
