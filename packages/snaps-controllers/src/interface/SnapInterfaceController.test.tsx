@@ -3,6 +3,7 @@ import { form, image, input, panel, text } from '@metamask/snaps-sdk';
 import {
   Box,
   Field,
+  FileInput,
   Form,
   Image,
   Input,
@@ -828,6 +829,56 @@ describe('SnapInterfaceController', () => {
       const content = form({ name: 'foo', children: [input({ name: 'bar' })] });
 
       const newState = { foo: { bar: 'baz' } };
+
+      const id = await rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        content,
+      );
+
+      rootMessenger.call(
+        'SnapInterfaceController:updateInterfaceState',
+        id,
+        newState,
+      );
+
+      const { state } = rootMessenger.call(
+        'SnapInterfaceController:getInterface',
+        MOCK_SNAP_ID,
+        id,
+      );
+
+      expect(state).toStrictEqual(newState);
+    });
+
+    it('updates the interface state with a file', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      /* eslint-disable-next-line no-new */
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const content = (
+        <Form name="foo">
+          <Field label="Bar">
+            <FileInput name="bar" />
+          </Field>
+        </Form>
+      );
+
+      const newState = {
+        foo: {
+          bar: {
+            name: 'test.png',
+            size: 123,
+            contentType: 'image/png',
+            contents: 'foo',
+          },
+        },
+      };
 
       const id = await rootMessenger.call(
         'SnapInterfaceController:createInterface',

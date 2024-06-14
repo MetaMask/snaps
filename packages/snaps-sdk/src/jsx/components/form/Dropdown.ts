@@ -12,7 +12,7 @@ import type { OptionElement } from './Option';
  */
 type DropdownProps = {
   name: string;
-  value?: string;
+  value?: string | undefined;
   children: MaybeArray<OptionElement>;
 };
 

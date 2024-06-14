@@ -12,7 +12,7 @@ import type { FieldElement } from './Field';
  * @property name - The name of the form. This is used to identify the form in
  * the event handler.
  */
-type FormProps = {
+export type FormProps = {
   children: MaybeArray<FieldElement | ButtonElement>;
   name: string;
 };

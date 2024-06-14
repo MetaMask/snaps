@@ -20,6 +20,7 @@ import {
   Spinner,
   Text,
   Value,
+  FileInput,
 } from './components';
 import {
   AddressStruct,
@@ -32,6 +33,7 @@ import {
   DropdownStruct,
   ElementStruct,
   FieldStruct,
+  FileInputStruct,
   FormStruct,
   HeadingStruct,
   ImageStruct,
@@ -522,13 +524,15 @@ describe('DividerStruct', () => {
   });
 });
 
-describe('ValueStruct', () => {
-  it.each([<Value extra="foo" value="bar" />])(
-    'validates a value element',
-    (value) => {
-      expect(is(value, ValueStruct)).toBe(true);
-    },
-  );
+describe('DropdownStruct', () => {
+  it.each([
+    <Dropdown name="foo">
+      <Option value="option1">Option 1</Option>
+      <Option value="option2">Option 2</Option>
+    </Dropdown>,
+  ])('validates a dropdown element', (value) => {
+    expect(is(value, DropdownStruct)).toBe(true);
+  });
 
   it.each([
     'foo',
@@ -538,9 +542,10 @@ describe('ValueStruct', () => {
     {},
     [],
     // @ts-expect-error - Invalid props.
-    <Value />,
+    <Dropdown name="foo" />,
+    <Dropdown name="foo" children={[]} />,
     // @ts-expect-error - Invalid props.
-    <Value left="foo" />,
+    <Spinner>foo</Spinner>,
     <Text>foo</Text>,
     <Box>
       <Text>foo</Text>
@@ -550,6 +555,42 @@ describe('ValueStruct', () => {
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, ValueStruct)).toBe(false);
+  });
+});
+
+describe('FileInputStruct', () => {
+  it.each([
+    <FileInput name="foo" />,
+    <FileInput name="foo" accept={['image/*']} />,
+    <FileInput name="foo" compact />,
+  ])('validates a file input element', (value) => {
+    expect(is(value, FileInputStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <FileInput />,
+    // @ts-expect-error - Invalid props.
+    <FileInput name={42} />,
+    // @ts-expect-error - Invalid props.
+    <FileInput name="foo" accept="image/*" />,
+    // @ts-expect-error - Invalid props.
+    <FileInput name="foo" compact="true" />,
+    <Text>foo</Text>,
+    <Box>
+      <Text>foo</Text>
+    </Box>,
+    <Row label="label">
+      <Image src="src" alt="alt" />
+    </Row>,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, FileInputStruct)).toBe(false);
   });
 });
 
@@ -752,15 +793,13 @@ describe('SpinnerStruct', () => {
   });
 });
 
-describe('DropdownStruct', () => {
-  it.each([
-    <Dropdown name="foo">
-      <Option value="option1">Option 1</Option>
-      <Option value="option2">Option 2</Option>
-    </Dropdown>,
-  ])('validates a dropdown element', (value) => {
-    expect(is(value, DropdownStruct)).toBe(true);
-  });
+describe('ValueStruct', () => {
+  it.each([<Value extra="foo" value="bar" />])(
+    'validates a value element',
+    (value) => {
+      expect(is(value, ValueStruct)).toBe(true);
+    },
+  );
 
   it.each([
     'foo',
@@ -770,7 +809,9 @@ describe('DropdownStruct', () => {
     {},
     [],
     // @ts-expect-error - Invalid props.
-    <Spinner>foo</Spinner>,
+    <Value />,
+    // @ts-expect-error - Invalid props.
+    <Value left="foo" />,
     <Text>foo</Text>,
     <Box>
       <Text>foo</Text>
@@ -779,7 +820,7 @@ describe('DropdownStruct', () => {
       <Image src="<svg />" alt="alt" />
     </Row>,
   ])('does not validate "%p"', (value) => {
-    expect(is(value, DropdownStruct)).toBe(false);
+    expect(is(value, ValueStruct)).toBe(false);
   });
 });
 

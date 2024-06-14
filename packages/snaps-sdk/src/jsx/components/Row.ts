@@ -25,7 +25,7 @@ export type RowChildren =
 export type RowProps = {
   label: string;
   children: RowChildren;
-  variant?: 'default' | 'warning' | 'critical';
+  variant?: 'default' | 'warning' | 'critical' | undefined;
   tooltip?: string | undefined;
 };
 

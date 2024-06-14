@@ -362,6 +362,7 @@ describe('clickElement', () => {
             value: {
               foo: 'foo',
             },
+            files: {},
           },
           id: interfaceId,
           context: null,

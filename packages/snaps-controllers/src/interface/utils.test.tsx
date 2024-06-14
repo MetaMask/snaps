@@ -7,6 +7,7 @@ import {
   Form,
   Input,
   Text,
+  FileInput,
 } from '@metamask/snaps-sdk/jsx';
 
 import { assertNameIsUnique, constructState } from './utils';
@@ -331,6 +332,19 @@ describe('constructState', () => {
     const result = constructState(state, element);
     expect(result).toStrictEqual({
       foo: 'bar',
+    });
+  });
+
+  it('supports file inputs', () => {
+    const element = (
+      <Box>
+        <FileInput name="foo" />
+      </Box>
+    );
+
+    const result = constructState({}, element);
+    expect(result).toStrictEqual({
+      foo: null,
     });
   });
 

@@ -54,6 +54,7 @@ import type {
   StandardFormattingElement,
   TextElement,
   ValueElement,
+  FileInputElement,
 } from './components';
 
 /**
@@ -163,6 +164,18 @@ export const DropdownStruct: Describe<DropdownElement> = element('Dropdown', {
 });
 
 /**
+ * A struct for the {@link FileInputElement} type.
+ */
+export const FileInputStruct: Describe<FileInputElement> = element(
+  'FileInput',
+  {
+    name: string(),
+    accept: nullUnion([optional(array(string()))]),
+    compact: optional(boolean()),
+  },
+);
+
+/**
  * A struct for the {@link FieldElement} type.
  */
 export const FieldStruct: Describe<FieldElement> = element('Field', {
@@ -170,8 +183,9 @@ export const FieldStruct: Describe<FieldElement> = element('Field', {
   error: optional(string()),
   children: nullUnion([
     tuple([InputStruct, ButtonStruct]),
-    InputStruct,
     DropdownStruct,
+    FileInputStruct,
+    InputStruct,
   ]),
 });
 
@@ -324,26 +338,27 @@ export const SpinnerStruct: Describe<SpinnerElement> = element('Spinner');
 
 /**
  * A subset of JSX elements that are allowed as children of the Box component.
- * This set should include all components, except components that need to be nested
- * in another component (e.g. Field must be contained in a Form).
+ * This set includes all components, except components that need to be nested in
+ * another component (e.g., Field must be contained in a Form).
  */
 export const BoxChildStruct = nullUnion([
-  ButtonStruct,
-  InputStruct,
-  FormStruct,
-  BoldStruct,
-  ItalicStruct,
   AddressStruct,
+  BoldStruct,
   BoxStruct,
+  ButtonStruct,
   CopyableStruct,
   DividerStruct,
+  DropdownStruct,
+  FileInputStruct,
+  FormStruct,
   HeadingStruct,
+  InputStruct,
   ImageStruct,
+  ItalicStruct,
   LinkStruct,
   RowStruct,
   SpinnerStruct,
   TextStruct,
-  DropdownStruct,
 ]);
 
 /**
@@ -358,6 +373,7 @@ export const RootJSXElementStruct = BoxChildStruct;
 export const JSXElementStruct: Describe<JSXElement> = nullUnion([
   ButtonStruct,
   InputStruct,
+  FileInputStruct,
   FieldStruct,
   FormStruct,
   BoldStruct,
