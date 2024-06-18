@@ -194,7 +194,10 @@ export const FieldStruct: Describe<FieldElement> = element('Field', {
  * A struct for the {@link FormElement} type.
  */
 export const FormStruct: Describe<FormElement> = element('Form', {
-  children: maybeArray(nullUnion([FieldStruct, ButtonStruct])),
+  children: maybeArray(
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    nullable(lazy(() => BoxChildStruct)),
+  ) as unknown as Struct<MaybeArray<GenericSnapElement | null>, null>,
   name: string(),
 });
 
