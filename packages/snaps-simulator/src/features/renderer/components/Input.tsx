@@ -27,7 +27,7 @@ export const Input: FunctionComponent<InputProps> = ({ node, id, form }) => {
   return (
     <ChakraInput
       key={`${id}-input`}
-      value={value}
+      value={value as string}
       type={props.type}
       placeholder={props.placeholder}
       onChange={handleChange}

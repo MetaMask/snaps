@@ -1,5 +1,5 @@
 import { UserInputEventType } from '@metamask/snaps-sdk';
-import type { FormState, InterfaceState } from '@metamask/snaps-sdk';
+import type { FormState, State } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
 import debounce from 'lodash.debounce';
 import throttle from 'lodash.throttle';
@@ -23,7 +23,7 @@ const noOp = () => {
   /* No Op */
 };
 
-export type GetValue = (name: string, form?: string) => string | undefined;
+export type GetValue = (name: string, form?: string) => State | undefined;
 
 export type HandleInputChange = (
   name: string,
@@ -34,7 +34,7 @@ export type HandleInputChange = (
 export type HandleEvent = (args: {
   event: UserInputEventType;
   name?: string;
-  value?: string;
+  value?: State;
 }) => void;
 
 export type SnapInterfaceContextType = {
@@ -99,7 +99,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   const rawSnapRequestFunction = (
     event: UserInputEventType,
     name?: string,
-    value?: string | InterfaceState,
+    value?: State | FormState,
   ) => {
     dispatch(
       sendRequest({
@@ -143,7 +143,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   const handleEvent: HandleEvent = ({
     event,
     name,
-    value = name ? state[name] ?? undefined : undefined,
+    value = name ? (state as FormState)[name] ?? undefined : undefined,
   }) => {
     const fn = THROTTLED_EVENTS.includes(event)
       ? snapRequestThrottled
