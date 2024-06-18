@@ -4,6 +4,7 @@ import type {
   InterfaceState,
   SnapId,
   UserInputEvent,
+  File,
 } from '@metamask/snaps-sdk';
 import { DialogType, UserInputEventType, assert } from '@metamask/snaps-sdk';
 import type { FormElement, JSXElement } from '@metamask/snaps-sdk/jsx';
@@ -20,6 +21,7 @@ import { call, put, select, take } from 'redux-saga/effects';
 
 import type { SnapInterface, SnapInterfaceActions } from '../../types';
 import type { RootControllerMessenger } from './controllers';
+import { getFileToUpload } from './files';
 import type { Interface, RunSagaFunction } from './store';
 import { getCurrentInterface, resolveInterface, setInterface } from './store';
 
@@ -270,6 +272,47 @@ async function handleEvent(
 }
 
 /**
+ * The values and files of a form.
+ *
+ * @property value - The values of the form fields, if any.
+ * @property files - The files of the form fields, if any.
+ */
+export type FormValues = {
+  value: Record<string, string | null>;
+  files: Record<string, File | null>;
+};
+
+/**
+ * Get the form values from the interface state. If the event is not a form
+ * submit event, an empty object is returned. Otherwise, the form values are
+ * extracted from the state, and the values and files are returned separately.
+ *
+ * @param state - The interface state.
+ * @returns The form values.
+ */
+export function getFormValues(state?: FormState): FormValues {
+  if (!state) {
+    return { value: {}, files: {} };
+  }
+
+  return Object.entries(state).reduce<FormValues>(
+    (accumulator, [key, value]) => {
+      const formValue = value as string | File | null;
+      if (formValue) {
+        if (typeof formValue === 'string') {
+          accumulator.value[key] = formValue;
+        } else {
+          accumulator.files[key] = formValue;
+        }
+      }
+
+      return accumulator;
+    },
+    { value: {}, files: {} },
+  );
+}
+
+/**
  * Click on an element of the Snap interface.
  *
  * @param controllerMessenger - The controller messenger used to call actions.
@@ -341,7 +384,7 @@ export async function clickElement(
 export function mergeValue(
   state: InterfaceState,
   name: string,
-  value: string | null,
+  value: string | File | null,
   form?: string,
 ): InterfaceState {
   if (form) {
@@ -495,6 +538,137 @@ export async function selectInDropdown(
 }
 
 /**
+ * Upload a file to an interface element.
+ *
+ * @param controllerMessenger - The controller messenger used to call actions.
+ * @param id - The interface ID.
+ * @param content - The interface Components.
+ * @param snapId - The Snap ID.
+ * @param name - The element name.
+ * @param file - The file to upload. This can be a path to a file or a
+ * `Uint8Array` containing the file contents. If this is a path, the file is
+ * resolved relative to the current working directory.
+ * @param fileName - The name of the file. By default, this is inferred from the
+ * file path if it's a path, and defaults to an empty string if it's a
+ * `Uint8Array`.
+ * @param contentType - The content type of the file. By default, this is
+ * inferred from the file name if it's a path, and defaults to
+ * `application/octet-stream` if it's a `Uint8Array` or the content type cannot
+ * be inferred from the file name.
+ */
+export async function uploadFile(
+  controllerMessenger: RootControllerMessenger,
+  id: string,
+  content: JSXElement,
+  snapId: SnapId,
+  name: string,
+  file: string | Uint8Array,
+  fileName?: string,
+  contentType?: string,
+) {
+  const result = getElement(content, name);
+
+  assert(
+    result !== undefined,
+    `Could not find an element in the interface with the name "${name}".`,
+  );
+
+  assert(
+    result.element.type === 'FileInput',
+    `Expected an element of type "FileInput", but found "${result.element.type}".`,
+  );
+
+  const { state, context } = controllerMessenger.call(
+    'SnapInterfaceController:getInterface',
+    snapId,
+    id,
+  );
+
+  const fileObject = await getFileToUpload(file, fileName, contentType);
+  const newState = mergeValue(state, name, fileObject, result.form);
+
+  controllerMessenger.call(
+    'SnapInterfaceController:updateInterfaceState',
+    id,
+    newState,
+  );
+
+  await controllerMessenger.call('ExecutionService:handleRpcRequest', snapId, {
+    origin: '',
+    handler: HandlerType.OnUserInput,
+    request: {
+      jsonrpc: '2.0',
+      method: ' ',
+      params: {
+        event: {
+          type: UserInputEventType.FileUploadEvent,
+          name: result.element.props.name,
+          file: fileObject,
+        },
+        id,
+        context,
+      },
+    },
+  });
+}
+
+/**
+ * Get the user interface actions for a Snap interface. These actions can be
+ * used to interact with the interface.
+ *
+ * @param snapId - The Snap ID.
+ * @param controllerMessenger - The controller messenger used to call actions.
+ * @param interface - The interface object.
+ * @param interface.content - The interface content.
+ * @param interface.id - The interface ID.
+ * @returns The user interface actions.
+ */
+export function getInterfaceActions(
+  snapId: SnapId,
+  controllerMessenger: RootControllerMessenger,
+  { content, id }: Omit<Interface, 'type'> & { content: JSXElement },
+): SnapInterfaceActions {
+  return {
+    clickElement: async (name: string) => {
+      await clickElement(controllerMessenger, id, content, snapId, name);
+    },
+
+    typeInField: async (name: string, value: string) => {
+      await typeInField(controllerMessenger, id, content, snapId, name, value);
+    },
+
+    selectInDropdown: async (name: string, value: string) => {
+      await selectInDropdown(
+        controllerMessenger,
+        id,
+        content,
+        snapId,
+        name,
+        value,
+      );
+    },
+
+    uploadFile: async (
+      name: string,
+      file: string | Uint8Array,
+      fileName?: string,
+      contentType?: string,
+    ) => {
+      await uploadFile(
+        controllerMessenger,
+        id,
+        content,
+        snapId,
+        name,
+        file,
+        fileName,
+        contentType,
+      );
+    },
+  };
+}
+
+/**
  * Get a user interface object from a Snap.
  *
  * @param runSaga - A function to run a saga outside the usual Redux flow.
@@ -508,30 +682,22 @@ export function* getInterface(
   snapId: SnapId,
   controllerMessenger: RootControllerMessenger,
 ): SagaIterator<SnapInterface> {
-  const { type, id, content } = yield call(
+  const storedInterface = yield call(
     getStoredInterface,
     controllerMessenger,
     snapId,
   );
 
-  const interfaceActions = {
-    clickElement: async (name: string) => {
-      await clickElement(controllerMessenger, id, content, snapId, name);
-    },
-    typeInField: async (name: string, value: string) => {
-      await typeInField(controllerMessenger, id, content, snapId, name, value);
-    },
-    selectInDropdown: async (name: string, value: string) => {
-      await selectInDropdown(
-        controllerMessenger,
-        id,
-        content,
-        snapId,
-        name,
-        value,
-      );
-    },
-  };
+  const interfaceActions = getInterfaceActions(
+    snapId,
+    controllerMessenger,
+    storedInterface,
+  );
 
-  return getInterfaceResponse(runSaga, type, content, interfaceActions);
+  return getInterfaceResponse(
+    runSaga,
+    storedInterface.type,
+    storedInterface.content,
+    interfaceActions,
+  );
 }

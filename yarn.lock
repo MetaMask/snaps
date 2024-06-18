@@ -5788,6 +5788,7 @@ __metadata:
     jest-environment-node: ^29.5.0
     jest-it-up: ^2.0.0
     jest-matcher-utils: ^29.5.0
+    mime: ^4.0.3
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     readable-stream: ^3.6.2
@@ -17378,6 +17379,15 @@ __metadata:
   bin:
     mime: cli.js
   checksum: fef25e39263e6d207580bdc629f8872a3f9772c923c7f8c7e793175cee22777bbe8bba95e5d509a40aaa292d8974514ce634ae35769faa45f22d17edda5e8557
+  languageName: node
+  linkType: hard
+
+"mime@npm:^4.0.3":
+  version: 4.0.3
+  resolution: "mime@npm:4.0.3"
+  bin:
+    mime: bin/cli.js
+  checksum: 17f7bf9f566f0127fac3b93acd5dd37fcfa7cce5842b9fe599fdf7a716cbc3d8b69aac0e8a1a5df834d44a610a51d04eea6e38d2dbc2f1a2326e9a759a5821dc
   languageName: node
   linkType: hard
 

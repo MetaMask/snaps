@@ -104,6 +104,28 @@ export type SnapInterfaceActions = {
    * @param value - The value to type.
    */
   selectInDropdown(name: string, value: string): Promise<void>;
+
+  /**
+   * Upload a file.
+   *
+   * @param name - The element name to upload the file to.
+   * @param file - The file to upload. This can be a path to a file or a
+   * `Uint8Array` containing the file contents. If this is a path, the file is
+   * resolved relative to the current working directory.
+   * @param fileName - The name of the file. By default, this is inferred from the
+   * file path if it's a path, and defaults to an empty string if it's a
+   * `Uint8Array`.
+   * @param contentType - The content type of the file. By default, this is
+   * inferred from the file name if it's a path, and defaults to
+   * `application/octet-stream` if it's a `Uint8Array` or the content type cannot
+   * be inferred from the file name.
+   */
+  uploadFile(
+    name: string,
+    file: string,
+    fileName: string,
+    contentType: string,
+  ): Promise<void>;
 };
 
 /**

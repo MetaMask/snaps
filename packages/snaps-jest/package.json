@@ -56,6 +56,7 @@
     "express": "^4.18.2",
     "jest-environment-node": "^29.5.0",
     "jest-matcher-utils": "^29.5.0",
+    "mime": "^4.0.3",
     "readable-stream": "^3.6.2",
     "redux": "^4.2.1",
     "redux-saga": "^1.2.3",
