@@ -32,14 +32,18 @@ const TYPE = 'Tooltip';
  * @param props.content - The text to display in the tooltip.
  * @returns A tooltip element.
  * @example
- * <Tooltip content={<Text>foo</Text>}>
+ * <Tooltip content="Tooltip text">
+ *   <Text>Hello world!</Text>
+ * </Tooltip>
+ * @example
+ * <Tooltip content={<Text>Text with <Bold>formatting</Bold></Text>}>
  *   <Text>Hello world!</Text>
  * </Tooltip>
  */
 export const Tooltip = createSnapComponent<TooltipProps, typeof TYPE>(TYPE);
 
 /**
- * A box element.
+ * A tooltip element.
  *
  * @see Tooltip
  */
