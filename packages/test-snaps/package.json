@@ -1,6 +1,6 @@
 {
   "name": "@metamask/test-snaps",
-  "version": "2.8.0",
+  "version": "2.9.0",
   "private": true,
   "description": "The test snaps website for MetaMask Snaps, used for end-to-end testing.",
   "repository": {
@@ -36,6 +36,7 @@
     "@metamask/error-example-snap": "workspace:^",
     "@metamask/ethereum-provider-example-snap": "workspace:^",
     "@metamask/ethers-js-example-snap": "workspace:^",
+    "@metamask/file-upload-example-snap": "workspace:^",
     "@metamask/get-entropy-example-snap": "workspace:^",
     "@metamask/get-file-example-snap": "workspace:^",
     "@metamask/home-page-example-snap": "workspace:^",

@@ -19,6 +19,7 @@ describe('onNameLookup', () => {
         {
           resolvedAddress: '0xc0ffee254729296a45a3885639AC7E10F9d54979',
           protocol: 'test protocol',
+          domainName: DOMAIN_MOCK,
         },
       ],
     });

@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.9.0]
+### Changed
+- Use latest versions of example Snaps ([#2487](https://github.com/MetaMask/snaps/pull/2487))
+
 ## [2.8.0]
 ### Added
 - Add support for `ed25519Bip32` to the BIP-32 example snap ([#2428](https://github.com/MetaMask/snaps/pull/2428))
@@ -115,7 +119,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.8.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.9.0...HEAD
+[2.9.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.8.0...@metamask/test-snaps@2.9.0
 [2.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.7.0...@metamask/test-snaps@2.8.0
 [2.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.6.1...@metamask/test-snaps@2.7.0
 [2.6.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.6.0...@metamask/test-snaps@2.6.1

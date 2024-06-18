@@ -11,7 +11,7 @@ import { createSnapComponent } from '../../component';
  * @property value - The value of the input field.
  * @property placeholder - The placeholder text of the input field.
  */
-type InputProps = {
+export type InputProps = {
   name: string;
   type?: 'text' | 'password' | 'number' | undefined;
   value?: string | undefined;
@@ -21,8 +21,7 @@ type InputProps = {
 const TYPE = 'Input';
 
 /**
- * An input component, which is used to create an input field. This component
- * can only be used as a child of the {@link Field} component.
+ * An input component, which is used to create an input field.
  *
  * @param props - The props of the component.
  * @param props.name - The name of the input field. This is used to identify the

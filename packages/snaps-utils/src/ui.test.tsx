@@ -382,6 +382,16 @@ describe('getJsxElementFromComponent', () => {
     );
   });
 
+  it('returns the JSX element for a row component with a variant', () => {
+    expect(
+      getJsxElementFromComponent(row('foo', text('bar'), 'critical')),
+    ).toStrictEqual(
+      <Row label="foo" variant="critical">
+        <Text>bar</Text>
+      </Row>,
+    );
+  });
+
   it('returns the JSX element for a row component with an address component', () => {
     expect(
       getJsxElementFromComponent(
@@ -771,6 +781,30 @@ describe('getJsxChildren', () => {
 
     expect(getJsxChildren(element)).toStrictEqual([
       <Text>Hello</Text>,
+      <Text>World</Text>,
+    ]);
+  });
+
+  it('flattens the children array', () => {
+    const element = (
+      <Box>
+        <Text>Hello</Text>
+        {[1, 2, 3].map((value) => (
+          <Text>{value.toString()}</Text>
+        ))}
+        <Text>World</Text>
+      </Box>
+    );
+
+    const children = getJsxChildren(element);
+
+    expect(element.props.children).toHaveLength(3);
+    expect(children).toHaveLength(5);
+    expect(children).toStrictEqual([
+      <Text>Hello</Text>,
+      <Text>1</Text>,
+      <Text>2</Text>,
+      <Text>3</Text>,
       <Text>World</Text>,
     ]);
   });

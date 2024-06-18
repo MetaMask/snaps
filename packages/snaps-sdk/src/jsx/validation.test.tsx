@@ -19,7 +19,9 @@ import {
   Row,
   Spinner,
   Text,
+  Tooltip,
   Value,
+  FileInput,
 } from './components';
 import {
   AddressStruct,
@@ -32,6 +34,7 @@ import {
   DropdownStruct,
   ElementStruct,
   FieldStruct,
+  FileInputStruct,
   FormStruct,
   HeadingStruct,
   ImageStruct,
@@ -45,6 +48,7 @@ import {
   SpinnerStruct,
   StringElementStruct,
   TextStruct,
+  TooltipStruct,
   ValueStruct,
 } from './validation';
 
@@ -417,6 +421,12 @@ describe('BoxStruct', () => {
         <Image src="<svg />" alt="alt" />
       </Row>
     </Box>,
+    <Box>
+      <Text>Foo</Text>
+      {[1, 2, 3, 4, 5].map((value) => (
+        <Text>{value.toString()}</Text>
+      ))}
+    </Box>,
   ])('validates a box element', (value) => {
     expect(is(value, BoxStruct)).toBe(true);
   });
@@ -428,9 +438,6 @@ describe('BoxStruct', () => {
     undefined,
     {},
     [],
-    // @ts-expect-error - Invalid props.
-    <Box />,
-    <Box children={[]} />,
     <Text>foo</Text>,
     <Row label="label">
       <Image src="<svg />" alt="alt" />
@@ -519,13 +526,15 @@ describe('DividerStruct', () => {
   });
 });
 
-describe('ValueStruct', () => {
-  it.each([<Value extra="foo" value="bar" />])(
-    'validates a value element',
-    (value) => {
-      expect(is(value, ValueStruct)).toBe(true);
-    },
-  );
+describe('DropdownStruct', () => {
+  it.each([
+    <Dropdown name="foo">
+      <Option value="option1">Option 1</Option>
+      <Option value="option2">Option 2</Option>
+    </Dropdown>,
+  ])('validates a dropdown element', (value) => {
+    expect(is(value, DropdownStruct)).toBe(true);
+  });
 
   it.each([
     'foo',
@@ -535,9 +544,10 @@ describe('ValueStruct', () => {
     {},
     [],
     // @ts-expect-error - Invalid props.
-    <Value />,
+    <Dropdown name="foo" />,
+    <Dropdown name="foo" children={[]} />,
     // @ts-expect-error - Invalid props.
-    <Value left="foo" />,
+    <Spinner>foo</Spinner>,
     <Text>foo</Text>,
     <Box>
       <Text>foo</Text>
@@ -547,6 +557,42 @@ describe('ValueStruct', () => {
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, ValueStruct)).toBe(false);
+  });
+});
+
+describe('FileInputStruct', () => {
+  it.each([
+    <FileInput name="foo" />,
+    <FileInput name="foo" accept={['image/*']} />,
+    <FileInput name="foo" compact />,
+  ])('validates a file input element', (value) => {
+    expect(is(value, FileInputStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <FileInput />,
+    // @ts-expect-error - Invalid props.
+    <FileInput name={42} />,
+    // @ts-expect-error - Invalid props.
+    <FileInput name="foo" accept="image/*" />,
+    // @ts-expect-error - Invalid props.
+    <FileInput name="foo" compact="true" />,
+    <Text>foo</Text>,
+    <Box>
+      <Text>foo</Text>
+    </Box>,
+    <Row label="label">
+      <Image src="src" alt="alt" />
+    </Row>,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, FileInputStruct)).toBe(false);
   });
 });
 
@@ -647,6 +693,7 @@ describe('LinkStruct', () => {
 describe('TextStruct', () => {
   it.each([
     <Text>foo</Text>,
+    <Text alignment="end">foo</Text>,
     <Text>
       Hello, <Bold>world</Bold>
     </Text>,
@@ -676,6 +723,45 @@ describe('TextStruct', () => {
   });
 });
 
+describe('TooltipStruct', () => {
+  it.each([
+    <Tooltip content="foo">
+      <Text>bar</Text>
+    </Tooltip>,
+    <Tooltip content={<Text>foo</Text>}>
+      <Bold>bar</Bold>
+    </Tooltip>,
+  ])(`validates a tooltip element`, (value) => {
+    expect(is(value, TooltipStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <Tooltip />,
+    // @ts-expect-error - Invalid props.
+    <Tooltip foo="bar">foo</Tooltip>,
+    <Tooltip content={<Copyable value="bar" />}>
+      <Text>foo</Text>
+    </Tooltip>,
+    <Box>
+      <Tooltip content={'foo'}>
+        <Text>foo</Text>
+      </Tooltip>
+    </Box>,
+    <Row label="label">
+      <Image src="<svg />" alt="alt" />
+    </Row>,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, TooltipStruct)).toBe(false);
+  });
+});
+
 describe('RowStruct', () => {
   it.each([
     <Row label="label">
@@ -688,6 +774,9 @@ describe('RowStruct', () => {
       <Address address="0x1234567890abcdef1234567890abcdef12345678" />
     </Row>,
     <Row label="label" variant="default">
+      <Value extra="foo" value="bar" />
+    </Row>,
+    <Row label="label" variant="default" tooltip="This is a tooltip.">
       <Value extra="foo" value="bar" />
     </Row>,
   ])('validates a row element', (value) => {
@@ -745,15 +834,13 @@ describe('SpinnerStruct', () => {
   });
 });
 
-describe('DropdownStruct', () => {
-  it.each([
-    <Dropdown name="foo">
-      <Option value="option1">Option 1</Option>
-      <Option value="option2">Option 2</Option>
-    </Dropdown>,
-  ])('validates a dropdown element', (value) => {
-    expect(is(value, DropdownStruct)).toBe(true);
-  });
+describe('ValueStruct', () => {
+  it.each([<Value extra="foo" value="bar" />])(
+    'validates a value element',
+    (value) => {
+      expect(is(value, ValueStruct)).toBe(true);
+    },
+  );
 
   it.each([
     'foo',
@@ -763,10 +850,9 @@ describe('DropdownStruct', () => {
     {},
     [],
     // @ts-expect-error - Invalid props.
-    <Dropdown name="foo" />,
-    <Dropdown name="foo" children={[]} />,
+    <Value />,
     // @ts-expect-error - Invalid props.
-    <Spinner>foo</Spinner>,
+    <Value left="foo" />,
     <Text>foo</Text>,
     <Box>
       <Text>foo</Text>
@@ -775,7 +861,7 @@ describe('DropdownStruct', () => {
       <Image src="<svg />" alt="alt" />
     </Row>,
   ])('does not validate "%p"', (value) => {
-    expect(is(value, DropdownStruct)).toBe(false);
+    expect(is(value, ValueStruct)).toBe(false);
   });
 });
 

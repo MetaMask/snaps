@@ -6,7 +6,6 @@ import {
 } from '@metamask/utils';
 import type { Struct } from 'superstruct';
 import {
-  nonempty,
   is,
   boolean,
   optional,
@@ -29,6 +28,7 @@ import type {
   JsonObject,
   Key,
   MaybeArray,
+  Nestable,
   SnapElement,
   StringElement,
 } from './component';
@@ -53,7 +53,9 @@ import type {
   SpinnerElement,
   StandardFormattingElement,
   TextElement,
+  TooltipElement,
   ValueElement,
+  FileInputElement,
 } from './components';
 
 /**
@@ -78,15 +80,18 @@ export const ElementStruct: Describe<GenericSnapElement> = object({
 });
 
 /**
- * A struct for the {@link NonEmptyArray} type.
+ * A helper function for creating a struct for a {@link Nestable} type.
  *
- * @param struct - The struct for the non-empty array type.
- * @returns The struct for the non-empty array type.
+ * @param struct - The struct for the type to test.
+ * @returns The struct for the nestable type.
  */
-function nonEmptyArray<Type, Schema>(
-  struct: Struct<Type, Schema>,
-): Struct<Type[], Struct<Type, Schema>> {
-  return nonempty(array(struct));
+function nestable<Type, Schema>(struct: Struct<Type, Schema>) {
+  const nestableStruct: Struct<Nestable<Type>> = nullUnion([
+    struct,
+    array(lazy(() => nestableStruct)),
+  ]);
+
+  return nestableStruct;
 }
 
 /**
@@ -98,7 +103,7 @@ function nonEmptyArray<Type, Schema>(
 function maybeArray<Type, Schema>(
   struct: Struct<Type, Schema>,
 ): Struct<MaybeArray<Type>, any> {
-  return nullUnion([struct, nonEmptyArray(struct)]);
+  return nestable(struct);
 }
 
 /**
@@ -160,6 +165,18 @@ export const DropdownStruct: Describe<DropdownElement> = element('Dropdown', {
 });
 
 /**
+ * A struct for the {@link FileInputElement} type.
+ */
+export const FileInputStruct: Describe<FileInputElement> = element(
+  'FileInput',
+  {
+    name: string(),
+    accept: nullUnion([optional(array(string()))]),
+    compact: optional(boolean()),
+  },
+);
+
+/**
  * A struct for the {@link FieldElement} type.
  */
 export const FieldStruct: Describe<FieldElement> = element('Field', {
@@ -167,8 +184,9 @@ export const FieldStruct: Describe<FieldElement> = element('Field', {
   error: optional(string()),
   children: nullUnion([
     tuple([InputStruct, ButtonStruct]),
-    InputStruct,
     DropdownStruct,
+    FileInputStruct,
+    InputStruct,
   ]),
 });
 
@@ -297,6 +315,41 @@ export const TextStruct: Describe<TextElement> = element('Text', {
   children: maybeArray(
     nullable(nullUnion([string(), BoldStruct, ItalicStruct, LinkStruct])),
   ),
+  alignment: optional(
+    nullUnion([literal('start'), literal('center'), literal('end')]),
+  ),
+});
+
+/**
+ * A subset of JSX elements that are allowed as children of the Tooltip component.
+ * This set should include all text components and the Image.
+ */
+export const TooltipChildStruct = nullUnion([
+  TextStruct,
+  BoldStruct,
+  ItalicStruct,
+  LinkStruct,
+  ImageStruct,
+]);
+
+/**
+ * A subset of JSX elements that are allowed as content of the Tooltip component.
+ * This set should include all text components.
+ */
+export const TooltipContentStruct = nullUnion([
+  TextStruct,
+  BoldStruct,
+  ItalicStruct,
+  LinkStruct,
+  string(),
+]);
+
+/**
+ * A struct for the {@link TooltipElement} type.
+ */
+export const TooltipStruct: Describe<TooltipElement> = element('Tooltip', {
+  children: nullable(TooltipChildStruct),
+  content: TooltipContentStruct,
 });
 
 /**
@@ -306,8 +359,9 @@ export const RowStruct: Describe<RowElement> = element('Row', {
   label: string(),
   children: nullUnion([AddressStruct, ImageStruct, TextStruct, ValueStruct]),
   variant: optional(
-    nullUnion([literal('default'), literal('warning'), literal('error')]),
+    nullUnion([literal('default'), literal('warning'), literal('critical')]),
   ),
+  tooltip: optional(string()),
 });
 
 /**
@@ -317,26 +371,28 @@ export const SpinnerStruct: Describe<SpinnerElement> = element('Spinner');
 
 /**
  * A subset of JSX elements that are allowed as children of the Box component.
- * This set should include all components, except components that need to be nested
- * in another component (e.g. Field must be contained in a Form).
+ * This set includes all components, except components that need to be nested in
+ * another component (e.g., Field must be contained in a Form).
  */
 export const BoxChildStruct = nullUnion([
-  ButtonStruct,
-  InputStruct,
-  FormStruct,
-  BoldStruct,
-  ItalicStruct,
   AddressStruct,
+  BoldStruct,
   BoxStruct,
+  ButtonStruct,
   CopyableStruct,
   DividerStruct,
+  DropdownStruct,
+  FileInputStruct,
+  FormStruct,
   HeadingStruct,
+  InputStruct,
   ImageStruct,
+  ItalicStruct,
   LinkStruct,
   RowStruct,
   SpinnerStruct,
   TextStruct,
-  DropdownStruct,
+  TooltipStruct,
 ]);
 
 /**
@@ -351,6 +407,7 @@ export const RootJSXElementStruct = BoxChildStruct;
 export const JSXElementStruct: Describe<JSXElement> = nullUnion([
   ButtonStruct,
   InputStruct,
+  FileInputStruct,
   FieldStruct,
   FormStruct,
   BoldStruct,
@@ -368,6 +425,7 @@ export const JSXElementStruct: Describe<JSXElement> = nullUnion([
   DropdownStruct,
   OptionStruct,
   ValueStruct,
+  TooltipStruct,
 ]);
 
 /**
