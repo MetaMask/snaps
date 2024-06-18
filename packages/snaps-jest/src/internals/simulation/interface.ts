@@ -19,7 +19,11 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { type SagaIterator } from 'redux-saga';
 import { call, put, select, take } from 'redux-saga/effects';
 
-import type { SnapInterface, SnapInterfaceActions } from '../../types';
+import type {
+  FileOptions,
+  SnapInterface,
+  SnapInterfaceActions,
+} from '../../types';
 import type { RootControllerMessenger } from './controllers';
 import { getFileToUpload } from './files';
 import type { Interface, RunSagaFunction } from './store';
@@ -548,13 +552,14 @@ export async function selectInDropdown(
  * @param file - The file to upload. This can be a path to a file or a
  * `Uint8Array` containing the file contents. If this is a path, the file is
  * resolved relative to the current working directory.
- * @param fileName - The name of the file. By default, this is inferred from the
- * file path if it's a path, and defaults to an empty string if it's a
- * `Uint8Array`.
- * @param contentType - The content type of the file. By default, this is
- * inferred from the file name if it's a path, and defaults to
- * `application/octet-stream` if it's a `Uint8Array` or the content type cannot
- * be inferred from the file name.
+ * @param options - The file options.
+ * @param options.fileName - The name of the file. By default, this is
+ * inferred from the file path if it's a path, and defaults to an empty string
+ * if it's a `Uint8Array`.
+ * @param options.contentType - The content type of the file. By default, this
+ * is inferred from the file name if it's a path, and defaults to
+ * `application/octet-stream` if it's a `Uint8Array` or the content type
+ * cannot be inferred from the file name.
  */
 export async function uploadFile(
   controllerMessenger: RootControllerMessenger,
@@ -563,8 +568,7 @@ export async function uploadFile(
   snapId: SnapId,
   name: string,
   file: string | Uint8Array,
-  fileName?: string,
-  contentType?: string,
+  options?: FileOptions,
 ) {
   const result = getElement(content, name);
 
@@ -584,7 +588,7 @@ export async function uploadFile(
     id,
   );
 
-  const fileObject = await getFileToUpload(file, fileName, contentType);
+  const fileObject = await getFileToUpload(file, options);
   const newState = mergeValue(state, name, fileObject, result.form);
 
   controllerMessenger.call(
@@ -651,8 +655,7 @@ export function getInterfaceActions(
     uploadFile: async (
       name: string,
       file: string | Uint8Array,
-      fileName?: string,
-      contentType?: string,
+      options?: FileOptions,
     ) => {
       await uploadFile(
         controllerMessenger,
@@ -661,8 +664,7 @@ export function getInterfaceActions(
         snapId,
         name,
         file,
-        fileName,
-        contentType,
+        options,
       );
     },
   };

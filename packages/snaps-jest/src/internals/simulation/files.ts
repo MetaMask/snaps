@@ -1,3 +1,4 @@
+import type { FileOptions } from '@metamask/snaps-jest';
 import type { File } from '@metamask/snaps-sdk';
 import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
 import type { VirtualFile } from '@metamask/snaps-utils';
@@ -50,18 +51,18 @@ function getContentType(extension: string) {
  * @param file - The file to upload. This can be a path to a file or a
  * `Uint8Array` containing the file contents. If this is a path, the file is
  * resolved relative to the current working directory.
- * @param fileName - The name of the file. By default, this is inferred from the
- * file path if it's a path, and defaults to an empty string if it's a
- * `Uint8Array`.
- * @param contentType - The content type of the file. By default, this is
- * inferred from the file name if it's a path, and defaults to
- * `application/octet-stream` if it's a `Uint8Array` or the content type cannot
- * be inferred from the file name.
+ * @param options - The file options.
+ * @param options.fileName - The name of the file. By default, this is
+ * inferred from the file path if it's a path, and defaults to an empty string
+ * if it's a `Uint8Array`.
+ * @param options.contentType - The content type of the file. By default, this
+ * is inferred from the file name if it's a path, and defaults to
+ * `application/octet-stream` if it's a `Uint8Array` or the content type
+ * cannot be inferred from the file name.
  */
 export async function getFileToUpload(
   file: string | Uint8Array,
-  fileName?: string,
-  contentType?: string,
+  { fileName, contentType }: FileOptions = {},
 ): Promise<File> {
   if (typeof file === 'string') {
     const buffer = await readFile(resolve(process.cwd(), file));
