@@ -8,6 +8,7 @@ import {
   Button,
   Copyable,
   Heading,
+  Option,
 } from '@metamask/snaps-sdk/jsx';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 
@@ -41,7 +42,7 @@ describe('isValidFormChild', () => {
   });
 
   it('returns false for invalid form children', () => {
-    const child = Input({ name: 'input' });
+    const child = Option({ children: 'foo', value: 'foo' });
     expect(isValidFormChild(child)).toBe(false);
   });
 });
