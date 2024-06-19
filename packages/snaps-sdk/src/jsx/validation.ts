@@ -199,16 +199,6 @@ export const FileInputStruct: Describe<FileInputElement> = element(
   },
 );
 
-export const FieldChildrenStruct = nullable(
-  nullUnion([
-    tuple([InputStruct, ButtonStruct]),
-    DropdownStruct,
-    FileInputStruct,
-    InputStruct,
-    CheckboxStruct,
-  ]),
-);
-
 /**
  * A subset of JSX elements that represent the tuple Button + Input of the Field children.
  */
@@ -220,10 +210,16 @@ const BUTTON_INPUT = [InputStruct, ButtonStruct] as [
 /**
  * A subset of JSX elements that are allowed as single children of the Field component.
  */
-const FIELD_CHILDREN_ARRAY = [InputStruct, DropdownStruct, FileInputStruct] as [
+const FIELD_CHILDREN_ARRAY = [
+  InputStruct,
+  DropdownStruct,
+  FileInputStruct,
+  CheckboxStruct,
+] as [
   typeof InputStruct,
   typeof DropdownStruct,
   typeof FileInputStruct,
+  typeof CheckboxStruct,
 ];
 
 /**
@@ -252,21 +248,19 @@ export const FieldStruct: Describe<FieldElement> = element('Field', {
   children: nullable(FieldChildStruct),
 });
 
-export const FormChildrenStruct = children(
+/**
+ * A subset of JSX elements that are allowed as children of the Form component.
+ */
+export const FormChildStruct = children(
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   [FieldStruct, lazy(() => BoxChildStruct)],
 ) as unknown as Struct<SnapsChildren<GenericSnapElement>, null>;
 
 /**
- * A subset of JSX elements that are allowed as children of the Form component.
- */
-export const FormChildStruct = nullUnion([FieldStruct, ButtonStruct]);
-
-/**
  * A struct for the {@link FormElement} type.
  */
 export const FormStruct: Describe<FormElement> = element('Form', {
-  children: maybeArray(FormChildStruct),
+  children: FormChildStruct,
   name: string(),
 });
 
