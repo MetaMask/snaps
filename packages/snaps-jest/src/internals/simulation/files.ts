@@ -1,4 +1,3 @@
-import type { FileOptions } from '@metamask/snaps-jest';
 import type { File } from '@metamask/snaps-sdk';
 import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
 import type { VirtualFile } from '@metamask/snaps-utils';
@@ -7,6 +6,8 @@ import { bytesToBase64 } from '@metamask/utils';
 import { readFile } from 'fs/promises';
 import mime from 'mime';
 import { basename, extname, resolve } from 'path';
+
+import type { FileOptions } from '../../types';
 
 /**
  * Get a statically defined Snap file from an array of files.

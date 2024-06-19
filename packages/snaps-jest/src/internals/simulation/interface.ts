@@ -302,12 +302,10 @@ export function getFormValues(state?: FormState): FormValues {
   return Object.entries(state).reduce<FormValues>(
     (accumulator, [key, value]) => {
       const formValue = value as string | File | null;
-      if (formValue) {
-        if (typeof formValue === 'string') {
-          accumulator.value[key] = formValue;
-        } else {
-          accumulator.files[key] = formValue;
-        }
+      if (typeof formValue === 'string' || formValue === null) {
+        accumulator.value[key] = formValue;
+      } else {
+        accumulator.files[key] = formValue;
       }
 
       return accumulator;

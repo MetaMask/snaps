@@ -307,6 +307,19 @@ describe('getFormValues', () => {
       },
     });
   });
+
+  it('returns null values as null', () => {
+    const state = {
+      foo: null,
+    };
+
+    const result = getFormValues(state);
+
+    expect(result).toStrictEqual({
+      value: { foo: null },
+      files: {},
+    });
+  });
 });
 
 describe('clickElement', () => {
