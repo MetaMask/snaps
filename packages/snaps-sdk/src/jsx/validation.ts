@@ -37,6 +37,7 @@ import type {
   BoldElement,
   BoxElement,
   ButtonElement,
+  CheckboxElement,
   CopyableElement,
   DividerElement,
   DropdownElement,
@@ -133,6 +134,14 @@ export const ButtonStruct: Describe<ButtonElement> = element('Button', {
   type: optional(nullUnion([literal('button'), literal('submit')])),
   variant: optional(nullUnion([literal('primary'), literal('destructive')])),
   disabled: optional(boolean()),
+});
+
+/**
+ * A struct for the {@link CheckboxElement} type.
+ */
+export const CheckboxStruct: Describe<CheckboxElement> = element('Checkbox', {
+  name: string(),
+  value: optional(boolean()),
 });
 
 /**
@@ -396,6 +405,7 @@ export const BoxChildStruct = nullUnion([
   SpinnerStruct,
   TextStruct,
   TooltipStruct,
+  CheckboxStruct,
 ]);
 
 /**
@@ -429,6 +439,7 @@ export const JSXElementStruct: Describe<JSXElement> = nullUnion([
   OptionStruct,
   ValueStruct,
   TooltipStruct,
+  CheckboxStruct,
 ]);
 
 /**
