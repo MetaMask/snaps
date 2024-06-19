@@ -40,7 +40,7 @@ export async function getSnapFile(
  * @returns The content type of the file. If the content type cannot be inferred
  * from the extension, `application/octet-stream` is returned.
  */
-function getContentType(extension: string) {
+export function getContentType(extension: string) {
   return mime.getType(extension) ?? 'application/octet-stream';
 }
 

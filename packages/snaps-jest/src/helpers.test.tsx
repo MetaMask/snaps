@@ -404,6 +404,7 @@ describe('installSnap', () => {
         clickElement: expect.any(Function),
         typeInField: expect.any(Function),
         selectInDropdown: expect.any(Function),
+        uploadFile: expect.any(Function),
         ok: expect.any(Function),
         cancel: expect.any(Function),
       });
@@ -463,6 +464,7 @@ describe('installSnap', () => {
         clickElement: expect.any(Function),
         typeInField: expect.any(Function),
         selectInDropdown: expect.any(Function),
+        uploadFile: expect.any(Function),
         ok: expect.any(Function),
         cancel: expect.any(Function),
       });
@@ -521,6 +523,7 @@ describe('installSnap', () => {
         clickElement: expect.any(Function),
         typeInField: expect.any(Function),
         selectInDropdown: expect.any(Function),
+        uploadFile: expect.any(Function),
         ok: expect.any(Function),
       });
 
