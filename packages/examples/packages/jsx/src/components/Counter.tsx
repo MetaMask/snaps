@@ -10,6 +10,12 @@ export type CounterProps = {
   count: number;
 };
 
+/**
+ * A tooltip content component, which explains how to use the counter.
+ * This component is used as the content of a {@link Tooltip} component.
+ *
+ * @returns The tooltip content component.
+ */
 export const TooltipContent = () => (
   <Text>
     Click the <Bold>increment</Bold> button to increase the count.
