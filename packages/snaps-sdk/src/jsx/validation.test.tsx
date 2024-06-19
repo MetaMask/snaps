@@ -286,9 +286,6 @@ describe('FormStruct', () => {
     // @ts-expect-error - Invalid props.
     <Form />,
     <Form name="foo">
-      <Text>foo</Text>
-    </Form>,
-    <Form name="foo">
       <Field label="foo">
         <Text>foo</Text>
       </Field>

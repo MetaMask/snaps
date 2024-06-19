@@ -466,15 +466,17 @@ export function getJsxChildren(element: JSXElement): (JSXElement | string)[] {
  *
  * @param node - The JSX node to walk.
  * @param callback - The callback to call on each node.
+ * @param depth - The current depth in the JSX tree for a walk.
  * @returns The result of the callback, if any.
  */
 export function walkJsx<Value>(
   node: JSXElement | JSXElement[],
-  callback: (node: JSXElement) => Value | undefined,
+  callback: (node: JSXElement, depth: number) => Value | undefined,
+  depth = 0,
 ): Value | undefined {
   if (Array.isArray(node)) {
     for (const child of node) {
-      const childResult = walkJsx(child as JSXElement, callback);
+      const childResult = walkJsx(child as JSXElement, callback, depth);
       if (childResult !== undefined) {
         return childResult;
       }
@@ -483,7 +485,7 @@ export function walkJsx<Value>(
     return undefined;
   }
 
-  const result = callback(node);
+  const result = callback(node, depth);
   if (result !== undefined) {
     return result;
   }
@@ -496,7 +498,7 @@ export function walkJsx<Value>(
     const children = getJsxChildren(node);
     for (const child of children) {
       if (isPlainObject(child)) {
-        const childResult = walkJsx(child, callback);
+        const childResult = walkJsx(child, callback, depth + 1);
         if (childResult !== undefined) {
           return childResult;
         }

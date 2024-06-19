@@ -305,6 +305,61 @@ describe('constructState', () => {
     });
   });
 
+  it('supports nested fields', () => {
+    const element = (
+      <Box>
+        <Form name="form">
+          <Text>Foo</Text>
+          <Box>
+            <Field label="bar">
+              <Dropdown name="bar" value="option2">
+                <Option value="option1">Option 1</Option>
+                <Option value="option2">Option 2</Option>
+              </Dropdown>
+            </Field>
+          </Box>
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element);
+    expect(result).toStrictEqual({
+      form: { bar: 'option2' },
+    });
+  });
+
+  it('supports nested forms by tying fields to nearest form', () => {
+    const element = (
+      <Box>
+        <Form name="form">
+          <Text>Foo</Text>
+          <Box>
+            <Form name="form2">
+              <Field label="bar">
+                <Dropdown name="bar" value="option2">
+                  <Option value="option1">Option 1</Option>
+                  <Option value="option2">Option 2</Option>
+                </Dropdown>
+              </Field>
+            </Form>
+            <Field label="baz">
+              <Dropdown name="baz" value="option4">
+                <Option value="option3">Option 3</Option>
+                <Option value="option4">Option 4</Option>
+              </Dropdown>
+            </Field>
+          </Box>
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element);
+    expect(result).toStrictEqual({
+      form: { baz: 'option4' },
+      form2: { bar: 'option2' },
+    });
+  });
+
   it('deletes unused root level values', () => {
     const element = (
       <Box>
