@@ -825,12 +825,13 @@ describe('walkJsx', () => {
     walkJsx(tree, callback);
 
     expect(callback).toHaveBeenCalledTimes(4);
-    expect(callback).toHaveBeenCalledWith(tree);
-    expect(callback).toHaveBeenCalledWith(tree.props.children[0]);
+    expect(callback).toHaveBeenCalledWith(tree, 0);
+    expect(callback).toHaveBeenCalledWith(tree.props.children[0], 1);
     expect(callback).toHaveBeenCalledWith(
       tree.props.children[0].props.children,
+      2,
     );
-    expect(callback).toHaveBeenCalledWith(tree.props.children[1]);
+    expect(callback).toHaveBeenCalledWith(tree.props.children[1], 1);
   });
 
   it('calls the callback on each node in an array of nodes', () => {
@@ -848,13 +849,14 @@ describe('walkJsx', () => {
     walkJsx(tree, callback);
 
     expect(callback).toHaveBeenCalledTimes(5);
-    expect(callback).toHaveBeenCalledWith(tree[0]);
-    expect(callback).toHaveBeenCalledWith(tree[0].props.children[0]);
+    expect(callback).toHaveBeenCalledWith(tree[0], 0);
+    expect(callback).toHaveBeenCalledWith(tree[0].props.children[0], 1);
     expect(callback).toHaveBeenCalledWith(
       tree[0].props.children[0].props.children,
+      2,
     );
-    expect(callback).toHaveBeenCalledWith(tree[0].props.children[1]);
-    expect(callback).toHaveBeenCalledWith(tree[1]);
+    expect(callback).toHaveBeenCalledWith(tree[0].props.children[1], 1);
+    expect(callback).toHaveBeenCalledWith(tree[1], 0);
   });
 
   it("returns the result of the callback if it's not undefined", () => {

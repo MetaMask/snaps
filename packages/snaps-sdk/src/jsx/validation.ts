@@ -196,7 +196,7 @@ export const FieldStruct: Describe<FieldElement> = element('Field', {
 export const FormStruct: Describe<FormElement> = element('Form', {
   children: maybeArray(
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    nullable(lazy(() => BoxChildStruct)),
+    nullable(nullUnion([FieldStruct, lazy(() => BoxChildStruct)])),
   ) as unknown as Struct<MaybeArray<GenericSnapElement | null>, null>,
   name: string(),
 });

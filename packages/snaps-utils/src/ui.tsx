@@ -476,7 +476,7 @@ export function walkJsx<Value>(
 ): Value | undefined {
   if (Array.isArray(node)) {
     for (const child of node) {
-      const childResult = walkJsx(child as JSXElement, callback, depth + 1);
+      const childResult = walkJsx(child as JSXElement, callback, depth);
       if (childResult !== undefined) {
         return childResult;
       }

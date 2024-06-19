@@ -4,6 +4,7 @@ import type {
   InterfaceState,
   ComponentOrElement,
   InterfaceContext,
+  State,
 } from '@metamask/snaps-sdk';
 import type {
   DropdownElement,
@@ -83,7 +84,7 @@ function constructInputState(
   form?: string,
 ) {
   const oldStateUnwrapped = form ? (oldState[form] as FormState) : oldState;
-  const oldInputState = oldStateUnwrapped?.[element.props.name];
+  const oldInputState = oldStateUnwrapped?.[element.props.name] as State;
 
   if (element.type === 'FileInput') {
     return oldInputState ?? null;
