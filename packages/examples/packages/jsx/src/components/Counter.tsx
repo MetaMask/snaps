@@ -1,5 +1,5 @@
 import type { SnapComponent } from '@metamask/snaps-sdk/jsx';
-import { Bold, Button, Box, Text } from '@metamask/snaps-sdk/jsx';
+import { Bold, Button, Box, Text, Tooltip } from '@metamask/snaps-sdk/jsx';
 
 /**
  * The props for the {@link Counter} component.
@@ -9,6 +9,18 @@ import { Bold, Button, Box, Text } from '@metamask/snaps-sdk/jsx';
 export type CounterProps = {
   count: number;
 };
+
+/**
+ * A tooltip content component, which explains how to use the counter.
+ * This component is used as the content of a {@link Tooltip} component.
+ *
+ * @returns The tooltip content component.
+ */
+export const TooltipContent = () => (
+  <Text>
+    Click the <Bold>increment</Bold> button to increase the count.
+  </Text>
+);
 
 /**
  * A counter component, which shows the current count, and a button to increment
@@ -21,9 +33,11 @@ export type CounterProps = {
 export const Counter: SnapComponent<CounterProps> = ({ count }) => {
   return (
     <Box>
-      <Text>
-        <Bold>Count:</Bold> {String(count)}
-      </Text>
+      <Tooltip content={<TooltipContent />}>
+        <Text>
+          <Bold>Count:</Bold> {String(count)}
+        </Text>
+      </Tooltip>
       <Button name="increment">Increment</Button>
     </Box>
   );
