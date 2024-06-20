@@ -5,6 +5,7 @@ import type {
 } from '@metamask/snaps-sdk';
 import { UserInputEventType, MethodNotFoundError } from '@metamask/snaps-sdk';
 
+import type { UploadFormState } from './components';
 import { UploadedFiles, UploadForm } from './components';
 
 /**
@@ -105,11 +106,12 @@ export const onUserInput: OnUserInputHandler = async ({ id, event }) => {
   }
 
   if (event.type === UserInputEventType.FormSubmitEvent) {
+    const value = event.value as UploadFormState;
     await snap.request({
       method: 'snap_updateInterface',
       params: {
         id,
-        ui: <UploadedFiles file={event.files.file} />,
+        ui: <UploadedFiles file={value.file} />,
       },
     });
   }

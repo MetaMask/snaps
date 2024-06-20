@@ -11,6 +11,16 @@ import {
 
 import { FileList } from './FileList';
 
+/**
+ * The state of the {@link UploadForm} component.
+ */
+export type UploadFormState = {
+  /**
+   * The file that was uploaded, or `null` if no file was uploaded.
+   */
+  file: File | null;
+};
+
 export type InteractiveFormProps = {
   files: File[];
 };
