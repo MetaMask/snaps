@@ -1,4 +1,4 @@
-import type { InterfaceState } from '../interface';
+import type { State } from '../interface';
 
 /**
  * The request parameters for the `snap_getInterfaceState` method.
@@ -10,6 +10,16 @@ export type GetInterfaceStateParams = {
 };
 
 /**
- * The result returned by the `snap_getInterfaceState` method, which is the state of the interface.
+ * The legacy interface state object. This does not include additional metadata
+ * about the state, such as the type of the state.
  */
-export type GetInterfaceStateResult = InterfaceState;
+export type LegacyState = Record<
+  string,
+  State['value'] | Record<string, State['value']>
+>;
+
+/**
+ * The result returned by the `snap_getInterfaceState` method, which is the
+ * state of the interface.
+ */
+export type GetInterfaceStateResult = LegacyState;

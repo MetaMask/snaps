@@ -139,7 +139,12 @@ describe('snap_getInterfaceState', () => {
     it('returns the result from the `getInterfaceState` hook', async () => {
       const { implementation } = getInterfaceStateHandler;
 
-      const getInterfaceState = jest.fn().mockReturnValue({ foo: 'bar' });
+      const getInterfaceState = jest.fn().mockReturnValue({
+        foo: {
+          type: 'Input',
+          value: 'bar',
+        },
+      });
 
       const hooks = {
         getInterfaceState,

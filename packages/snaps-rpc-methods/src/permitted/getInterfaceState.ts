@@ -6,6 +6,7 @@ import type {
   GetInterfaceStateResult,
   InterfaceState,
   JsonRpcRequest,
+  LegacyState,
   State,
 } from '@metamask/snaps-sdk';
 import { type InferMatching } from '@metamask/snaps-utils';
@@ -43,11 +44,6 @@ const GetInterfaceStateParametersStruct = object({
 export type GetInterfaceStateParameters = InferMatching<
   typeof GetInterfaceStateParametersStruct,
   GetInterfaceStateParams
->;
-
-type LegacyState = Record<
-  string,
-  State['value'] | Record<string, State['value']>
 >;
 
 /**
@@ -130,7 +126,7 @@ function getGetInterfaceStateImplementation(
 
     const { id } = validatedParams;
 
-    res.result = getInterfaceState(id);
+    res.result = getLegacyInterfaceState(getInterfaceState(id));
   } catch (error) {
     return end(error);
   }
