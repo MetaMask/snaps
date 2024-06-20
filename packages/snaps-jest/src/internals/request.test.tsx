@@ -272,6 +272,7 @@ describe('getInterfaceApi', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
+      uploadFile: expect.any(Function),
     });
   });
 
@@ -302,6 +303,7 @@ describe('getInterfaceApi', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
+      uploadFile: expect.any(Function),
     });
   });
 

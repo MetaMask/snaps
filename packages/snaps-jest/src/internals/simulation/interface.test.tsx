@@ -16,6 +16,7 @@ import {
   Option,
   Box,
   Input,
+  FileInput,
 } from '@metamask/snaps-sdk/jsx';
 import {
   getJsxElementFromComponent,
@@ -40,6 +41,7 @@ import {
   mergeValue,
   selectInDropdown,
   typeInField,
+  uploadFile,
 } from './interface';
 import type { RunSagaFunction } from './store';
 import { createStore, resolveInterface, setInterface } from './store';
@@ -63,6 +65,7 @@ describe('getInterfaceResponse', () => {
     clickElement: jest.fn(),
     typeInField: jest.fn(),
     selectInDropdown: jest.fn(),
+    uploadFile: jest.fn(),
   };
 
   it('returns an `ok` function that resolves the user interface with `null` for alert dialogs', async () => {
@@ -80,6 +83,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
+      uploadFile: expect.any(Function),
       ok: expect.any(Function),
     });
 
@@ -103,6 +107,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
+      uploadFile: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -128,6 +133,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
+      uploadFile: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -152,6 +158,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
+      uploadFile: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -176,6 +183,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
+      uploadFile: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -201,6 +209,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
+      uploadFile: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -707,6 +716,169 @@ describe('selectInDropdown', () => {
   });
 });
 
+describe('uploadFile', () => {
+  it('uploads a file and sends an `FileUploadEvent` to the Snap', async () => {
+    const rootControllerMessenger = getRootControllerMessenger();
+    const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+      rootControllerMessenger,
+    );
+
+    const interfaceController = new SnapInterfaceController({
+      messenger: controllerMessenger,
+    });
+
+    const handleRpcRequestMock = jest.fn();
+
+    rootControllerMessenger.registerActionHandler(
+      'ExecutionService:handleRpcRequest',
+      handleRpcRequestMock,
+    );
+
+    const content = (
+      <Box>
+        <FileInput name="foo" />
+      </Box>
+    );
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await uploadFile(
+      rootControllerMessenger,
+      interfaceId,
+      content,
+      MOCK_SNAP_ID,
+      'foo',
+      new Uint8Array([1, 2, 3]),
+    );
+
+    expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
+      origin: '',
+      handler: HandlerType.OnUserInput,
+      request: {
+        jsonrpc: '2.0',
+        method: ' ',
+        params: {
+          event: {
+            type: UserInputEventType.FileUploadEvent,
+            name: 'foo',
+            file: {
+              name: '',
+              size: 3,
+              contentType: 'application/octet-stream',
+              contents: 'AQID',
+            },
+          },
+          id: interfaceId,
+          context: null,
+        },
+      },
+    });
+  });
+
+  it('uploads a file with a custom file name and MIME type', async () => {
+    const rootControllerMessenger = getRootControllerMessenger();
+    const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+      rootControllerMessenger,
+    );
+
+    const interfaceController = new SnapInterfaceController({
+      messenger: controllerMessenger,
+    });
+
+    const handleRpcRequestMock = jest.fn();
+
+    rootControllerMessenger.registerActionHandler(
+      'ExecutionService:handleRpcRequest',
+      handleRpcRequestMock,
+    );
+
+    const content = (
+      <Box>
+        <FileInput name="foo" />
+      </Box>
+    );
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await uploadFile(
+      rootControllerMessenger,
+      interfaceId,
+      content,
+      MOCK_SNAP_ID,
+      'foo',
+      new Uint8Array([1, 2, 3]),
+      {
+        fileName: 'bar',
+        contentType: 'text/plain',
+      },
+    );
+
+    expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
+      origin: '',
+      handler: HandlerType.OnUserInput,
+      request: {
+        jsonrpc: '2.0',
+        method: ' ',
+        params: {
+          event: {
+            type: UserInputEventType.FileUploadEvent,
+            name: 'foo',
+            file: {
+              name: 'bar',
+              size: 3,
+              contentType: 'text/plain',
+              contents: 'AQID',
+            },
+          },
+          id: interfaceId,
+          context: null,
+        },
+      },
+    });
+  });
+
+  it('throws an error if the file size exceeds the maximum allowed size', async () => {
+    const rootControllerMessenger = getRootControllerMessenger();
+    const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+      rootControllerMessenger,
+    );
+
+    const interfaceController = new SnapInterfaceController({
+      messenger: controllerMessenger,
+    });
+
+    const content = (
+      <Box>
+        <FileInput name="foo" />
+      </Box>
+    );
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await expect(
+      uploadFile(
+        rootControllerMessenger,
+        interfaceId,
+        content,
+        MOCK_SNAP_ID,
+        'foo',
+        new Uint8Array(11_000_000),
+      ),
+    ).rejects.toThrow(
+      'The file size (11.00 MB) exceeds the maximum allowed size of 10.00 MB.',
+    );
+  });
+});
+
 describe('getInterface', () => {
   const rootControllerMessenger = getRootControllerMessenger();
   const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
@@ -738,6 +910,7 @@ describe('getInterface', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
+      uploadFile: expect.any(Function),
       ok: expect.any(Function),
     });
   });
@@ -765,6 +938,7 @@ describe('getInterface', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
+      uploadFile: expect.any(Function),
       ok: expect.any(Function),
     });
   });
@@ -893,6 +1067,58 @@ describe('getInterface', () => {
               type: UserInputEventType.InputChangeEvent,
               name: 'foo',
               value: 'option2',
+            },
+            id,
+            context: null,
+          },
+        },
+      },
+    );
+  });
+
+  it('sends a request to the snap when `uploadFile` is called', async () => {
+    jest.spyOn(rootControllerMessenger, 'call');
+    const { store, runSaga } = createStore(getMockOptions());
+
+    const content = (
+      <Box>
+        <FileInput name="foo" />
+      </Box>
+    );
+    const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
+    const type = DialogType.Alert;
+    const ui = { type, id };
+
+    store.dispatch(setInterface(ui));
+
+    const result = await runSaga(
+      getInterface,
+      runSaga,
+      MOCK_SNAP_ID,
+      rootControllerMessenger,
+    ).toPromise();
+
+    await result.uploadFile('foo', new Uint8Array([1, 2, 3]));
+
+    expect(rootControllerMessenger.call).toHaveBeenCalledWith(
+      'ExecutionService:handleRpcRequest',
+      MOCK_SNAP_ID,
+      {
+        origin: '',
+        handler: HandlerType.OnUserInput,
+        request: {
+          jsonrpc: '2.0',
+          method: ' ',
+          params: {
+            event: {
+              type: UserInputEventType.FileUploadEvent,
+              name: 'foo',
+              file: {
+                name: '',
+                size: 3,
+                contentType: 'application/octet-stream',
+                contents: 'AQID',
+              },
             },
             id,
             context: null,

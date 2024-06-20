@@ -1,9 +1,9 @@
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
 import {
-  type SnapId,
-  type JsonRpcError,
   type ComponentOrElement,
   ComponentOrElementStruct,
+  type JsonRpcError,
+  type SnapId,
 } from '@metamask/snaps-sdk';
 import type { HandlerType } from '@metamask/snaps-utils';
 import { unwrapError } from '@metamask/snaps-utils';
@@ -21,15 +21,13 @@ import type {
   SnapHandlerInterface,
   SnapRequest,
 } from '../types';
+import type { RunSagaFunction, Store } from './simulation';
 import {
   clearNotifications,
-  clickElement,
   getInterface,
+  getInterfaceActions,
   getNotifications,
-  typeInField,
-  selectInDropdown,
 } from './simulation';
-import type { RunSagaFunction, Store } from './simulation';
 import type { RootControllerMessenger } from './simulation/controllers';
 import { SnapResponseStruct } from './structs';
 
@@ -195,7 +193,8 @@ export async function getInterfaceFromResult(
 }
 
 /**
- * Get the response content from the SnapInterfaceController and include the interaction methods.
+ * Get the response content from the `SnapInterfaceController` and include the
+ * interaction methods.
  *
  * @param result - The handler result object.
  * @param snapId - The Snap ID.
@@ -221,37 +220,14 @@ export async function getInterfaceApi(
         interfaceId,
       );
 
+      const actions = getInterfaceActions(snapId, controllerMessenger, {
+        id: interfaceId,
+        content,
+      });
+
       return {
         content,
-        clickElement: async (name) => {
-          await clickElement(
-            controllerMessenger,
-            interfaceId,
-            content,
-            snapId,
-            name,
-          );
-        },
-        typeInField: async (name, value) => {
-          await typeInField(
-            controllerMessenger,
-            interfaceId,
-            content,
-            snapId,
-            name,
-            value,
-          );
-        },
-        selectInDropdown: async (name, value) => {
-          await selectInDropdown(
-            controllerMessenger,
-            interfaceId,
-            content,
-            snapId,
-            name,
-            value,
-          );
-        },
+        ...actions,
       };
     };
   }

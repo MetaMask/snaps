@@ -18,7 +18,7 @@ export type UploadFormState = {
   /**
    * The file that was uploaded, or `null` if no file was uploaded.
    */
-  file: File | null;
+  'file-input': File | null;
 };
 
 export type InteractiveFormProps = {
@@ -29,11 +29,13 @@ export const UploadForm: SnapComponent<InteractiveFormProps> = ({ files }) => {
   return (
     <Box>
       <Heading>File Upload</Heading>
-      <Form name="foo">
+      <Form name="file-upload-form">
         <Field>
-          <FileInput name="file" />
+          <FileInput name="file-input" />
         </Field>
-        <Button type="submit">Submit</Button>
+        <Button name="submit-file-upload-form" type="submit">
+          Submit
+        </Button>
       </Form>
       <FileList files={files} />
     </Box>

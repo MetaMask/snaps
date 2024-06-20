@@ -12,8 +12,8 @@ import { UploadedFiles, UploadForm } from './components';
  * Handle incoming JSON-RPC requests from the dapp, sent through the
  * `wallet_invokeSnap` method. This handler handles one method:
  *
- * - `dialog`: Create a `snap_dialog` with an interactive interface. This demonstrates
- * that a snap can show an interactive `snap_dialog` that the user can interact with.
+ * - `dialog`: Create a `snap_dialog` with an an upload form. The form allows
+ * the user to upload files, and the uploaded files are displayed in the UI.
  *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.
@@ -111,7 +111,7 @@ export const onUserInput: OnUserInputHandler = async ({ id, event }) => {
       method: 'snap_updateInterface',
       params: {
         id,
-        ui: <UploadedFiles file={value.file} />,
+        ui: <UploadedFiles file={value['file-input']} />,
       },
     });
   }
