@@ -51,6 +51,19 @@ export function assertNameIsUnique(state: InterfaceState, name: string) {
 }
 
 /**
+ * Assert that the component name is unique in form state.
+ *
+ * @param state - The interface state to verify against.
+ * @param name - The component name to verify.
+ */
+export function assertFormNameIsUnique(state: FormState, name: string) {
+  assert(
+    state.value[name] === undefined,
+    `Duplicate component names are not allowed, found multiple instances of: "${name}".`,
+  );
+}
+
+/**
  * Construct default state for a component.
  *
  * This function is meant to be used inside constructInputState to account
@@ -82,20 +95,29 @@ function constructInputState(
   oldState: InterfaceState,
   element: InputElement | DropdownElement | FileInputElement,
   form?: string,
-) {
-  const oldStateUnwrapped = form ? (oldState[form] as FormState) : oldState;
+): State {
+  const oldStateUnwrapped = form
+    ? (oldState[form] as FormState)?.value
+    : oldState;
+
   const oldInputState = oldStateUnwrapped?.[element.props.name] as State;
 
   if (element.type === 'FileInput') {
-    return oldInputState ?? null;
+    return (
+      oldInputState ?? {
+        value: null,
+        type: 'FileInput',
+      }
+    );
   }
 
-  return (
-    element.props.value ??
-    oldInputState ??
-    constructComponentSpecificDefaultState(element) ??
-    null
-  );
+  return {
+    value: (element.props.value ??
+      oldInputState?.value ??
+      constructComponentSpecificDefaultState(element) ??
+      null) as string | null,
+    type: element.type,
+  };
 }
 
 /**
@@ -126,7 +148,12 @@ export function constructState(
     if (component.type === 'Form') {
       assertNameIsUnique(newState, component.props.name);
       formStack.push({ name: component.props.name, depth });
-      newState[component.props.name] = {};
+
+      newState[component.props.name] = {
+        type: 'Form',
+        value: {},
+      };
+
       return;
     }
 
@@ -138,8 +165,8 @@ export function constructState(
         component.type === 'FileInput')
     ) {
       const formState = newState[currentForm.name] as FormState;
-      assertNameIsUnique(formState, component.props.name);
-      formState[component.props.name] = constructInputState(
+      assertFormNameIsUnique(formState, component.props.name);
+      formState.value[component.props.name] = constructInputState(
         oldState,
         component,
         currentForm.name,

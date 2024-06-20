@@ -1,9 +1,126 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import type { InterfaceState } from '@metamask/snaps-sdk';
 import { type GetInterfaceStateResult } from '@metamask/snaps-sdk';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
-import { getInterfaceStateHandler } from './getInterfaceState';
+import {
+  getInterfaceStateHandler,
+  getLegacyInterfaceState,
+} from './getInterfaceState';
 import type { UpdateInterfaceParameters } from './updateInterface';
+
+describe('getLegacyInterfaceState', () => {
+  it('returns the legacy state', () => {
+    const state: InterfaceState = {
+      foo: {
+        value: 'bar',
+        type: 'Input',
+      },
+      baz: {
+        value: 'qux',
+        type: 'Dropdown',
+      },
+      quux: {
+        value: {
+          name: 'file.txt',
+          contentType: 'text/plain',
+          size: 42,
+          contents: 'base64',
+        },
+        type: 'FileInput',
+      },
+    };
+
+    const legacyState = getLegacyInterfaceState(state);
+    expect(legacyState).toStrictEqual({
+      foo: 'bar',
+      baz: 'qux',
+      quux: {
+        name: 'file.txt',
+        contentType: 'text/plain',
+        size: 42,
+        contents: 'base64',
+      },
+    });
+  });
+
+  it('returns the legacy state with form state', () => {
+    const state: InterfaceState = {
+      form: {
+        type: 'Form',
+        value: {
+          foo: {
+            value: 'bar',
+            type: 'Input',
+          },
+          baz: {
+            value: 'qux',
+            type: 'Dropdown',
+          },
+          quux: {
+            value: {
+              name: 'file.txt',
+              contentType: 'text/plain',
+              size: 42,
+              contents: 'base64',
+            },
+            type: 'FileInput',
+          },
+        },
+      },
+      input: {
+        value: 'input',
+        type: 'Input',
+      },
+    };
+
+    const legacyState = getLegacyInterfaceState(state);
+    expect(legacyState).toStrictEqual({
+      form: {
+        foo: 'bar',
+        baz: 'qux',
+        quux: {
+          name: 'file.txt',
+          contentType: 'text/plain',
+          size: 42,
+          contents: 'base64',
+        },
+      },
+      input: 'input',
+    });
+  });
+
+  it('returns the legacy state with form state containing an input named type and value', () => {
+    const state: InterfaceState = {
+      form: {
+        type: 'Form',
+        value: {
+          type: {
+            value: 'bar',
+            type: 'Input',
+          },
+          value: {
+            value: 'qux',
+            type: 'Dropdown',
+          },
+        },
+      },
+      input: {
+        value: 'input',
+        type: 'Input',
+      },
+    };
+
+    const legacyState = getLegacyInterfaceState(state);
+    expect(legacyState).toStrictEqual({
+      form: {
+        type: 'bar',
+        value: 'qux',
+      },
+      input: 'input',
+    });
+  });
+});
 
 describe('snap_getInterfaceState', () => {
   describe('getInterfaceStateHandler', () => {

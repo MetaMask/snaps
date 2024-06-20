@@ -1,8 +1,10 @@
 import type {
+  File,
   FormState,
   InterfaceContext,
   InterfaceState,
   SnapId,
+  State,
   UserInputEvent,
 } from '@metamask/snaps-sdk';
 import { DialogType, UserInputEventType, assert } from '@metamask/snaps-sdk';
@@ -12,6 +14,7 @@ import {
   getJsxChildren,
   unwrapError,
   walkJsx,
+  getFormValues,
 } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
 import type { PayloadAction } from '@reduxjs/toolkit';
@@ -322,8 +325,7 @@ export async function clickElement(
       {
         type: UserInputEventType.FormSubmitEvent,
         name: result.form,
-        value: state[result.form] as Record<string, string | null>,
-        files: {},
+        ...getFormValues(state[result.form] as FormState),
       },
       context,
     );
@@ -331,10 +333,36 @@ export async function clickElement(
 }
 
 /**
- * Merge a value in the interface state.
+ * Get the value of an interface element.
+ *
+ * @param type - The component type.
+ * @param value - The value.
+ * @returns The state.
+ */
+export function getValue(
+  type: 'Dropdown' | 'FileInput' | 'Input',
+  value: string | File | null,
+): State {
+  if (type === 'FileInput') {
+    return {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+      value: value as File | null,
+      type,
+    };
+  }
+
+  return {
+    value: value as string | null,
+    type,
+  };
+}
+
+/**
+ * Merge a file in the interface state. This is used for file inputs.
  *
  * @param state - The actual interface state.
  * @param name - The component name that changed value.
+ * @param type - The component type.
  * @param value - The new value.
  * @param form - The form name if the element is in one.
  * @returns The state with the merged value.
@@ -342,20 +370,65 @@ export async function clickElement(
 export function mergeValue(
   state: InterfaceState,
   name: string,
+  type: 'FileInput',
+  value: File | null,
+  form?: string,
+): InterfaceState;
+
+/**
+ * Merge a string value in the interface state. This is used for input and
+ * dropdown elements.
+ *
+ * @param state - The actual interface state.
+ * @param name - The component name that changed value.
+ * @param type - The component type.
+ * @param value - The new value.
+ * @param form - The form name if the element is in one.
+ * @returns The state with the merged value.
+ */
+export function mergeValue(
+  state: InterfaceState,
+  name: string,
+  type: 'Dropdown' | 'Input',
   value: string | null,
+  form?: string,
+): InterfaceState;
+
+/**
+ * Merge a value in the interface state.
+ *
+ * @param state - The actual interface state.
+ * @param name - The component name that changed value.
+ * @param type - The component type.
+ * @param value - The new value.
+ * @param form - The form name if the element is in one.
+ * @returns The state with the merged value.
+ */
+export function mergeValue(
+  state: InterfaceState,
+  name: string,
+  type: 'Dropdown' | 'FileInput' | 'Input',
+  value: string | File | null,
   form?: string,
 ): InterfaceState {
   if (form) {
+    const formState = state[form] as FormState;
     return {
       ...state,
       [form]: {
-        ...(state[form] as FormState),
-        [name]: value,
+        ...formState,
+        value: {
+          ...formState.value,
+          [name]: getValue(type, value),
+        },
       },
     };
   }
 
-  return { ...state, [name]: value };
+  return {
+    ...state,
+    [name]: getValue(type, value),
+  };
 }
 
 /**
@@ -394,7 +467,13 @@ export async function typeInField(
     id,
   );
 
-  const newState = mergeValue(state, name, value, result.form);
+  const newState = mergeValue(
+    state,
+    name,
+    result.element.type,
+    value,
+    result.form,
+  );
 
   controllerMessenger.call(
     'SnapInterfaceController:updateInterfaceState',
@@ -468,7 +547,13 @@ export async function selectInDropdown(
     id,
   );
 
-  const newState = mergeValue(state, name, value, result.form);
+  const newState = mergeValue(
+    state,
+    name,
+    result.element.type,
+    value,
+    result.form,
+  );
 
   controllerMessenger.call(
     'SnapInterfaceController:updateInterfaceState',

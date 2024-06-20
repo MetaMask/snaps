@@ -1,4 +1,5 @@
 import { SnapInterfaceController } from '@metamask/snaps-controllers';
+import type { InterfaceState } from '@metamask/snaps-sdk';
 import {
   ButtonType,
   DialogType,
@@ -37,6 +38,7 @@ import {
   getElement,
   getInterface,
   getInterfaceResponse,
+  getValue,
   mergeValue,
   selectInDropdown,
   typeInField,
@@ -443,21 +445,88 @@ describe('clickElement', () => {
   });
 });
 
+describe('getValue', () => {
+  it('returns the value for a file input', () => {
+    const result = getValue('FileInput', {
+      name: 'foo',
+      size: 123,
+      contentType: 'text/plain',
+      contents: 'base64',
+    });
+
+    expect(result).toStrictEqual({
+      type: 'FileInput',
+      value: {
+        name: 'foo',
+        size: 123,
+        contentType: 'text/plain',
+        contents: 'base64',
+      },
+    });
+  });
+
+  it('returns the value for an input', () => {
+    const result = getValue('Input', 'foo');
+
+    expect(result).toStrictEqual({
+      type: 'Input',
+      value: 'foo',
+    });
+  });
+
+  it('returns the value for a dropdown', () => {
+    const result = getValue('Dropdown', 'foo');
+
+    expect(result).toStrictEqual({
+      type: 'Dropdown',
+      value: 'foo',
+    });
+  });
+});
+
 describe('mergeValue', () => {
   it('merges a value outside of a form', () => {
-    const state = { foo: 'bar' };
+    const state: InterfaceState = {
+      foo: {
+        type: 'Input',
+        value: 'bar',
+      },
+    };
 
-    const result = mergeValue(state, 'foo', 'baz');
-
-    expect(result).toStrictEqual({ foo: 'baz' });
+    const result = mergeValue(state, 'foo', 'Input', 'baz');
+    expect(result).toStrictEqual({
+      foo: {
+        type: 'Input',
+        value: 'baz',
+      },
+    });
   });
 
   it('merges a value inside of a form', () => {
-    const state = { foo: { bar: 'baz' } };
+    const state: InterfaceState = {
+      foo: {
+        type: 'Form',
+        value: {
+          bar: {
+            type: 'Input',
+            value: 'bar',
+          },
+        },
+      },
+    };
 
-    const result = mergeValue(state, 'bar', 'test', 'foo');
-
-    expect(result).toStrictEqual({ foo: { bar: 'test' } });
+    const result = mergeValue(state, 'bar', 'Input', 'test', 'foo');
+    expect(result).toStrictEqual({
+      foo: {
+        type: 'Form',
+        value: {
+          bar: {
+            type: 'Input',
+            value: 'test',
+          },
+        },
+      },
+    });
   });
 });
 
@@ -499,7 +568,12 @@ describe('typeInField', () => {
     expect(rootControllerMessenger.call).toHaveBeenCalledWith(
       'SnapInterfaceController:updateInterfaceState',
       interfaceId,
-      { bar: 'baz' },
+      {
+        bar: {
+          type: 'Input',
+          value: 'baz',
+        },
+      },
     );
 
     expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
@@ -610,7 +684,12 @@ describe('selectInDropdown', () => {
     expect(rootControllerMessenger.call).toHaveBeenCalledWith(
       'SnapInterfaceController:updateInterfaceState',
       interfaceId,
-      { foo: 'option2' },
+      {
+        foo: {
+          type: 'Dropdown',
+          value: 'option2',
+        },
+      },
     );
 
     expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {

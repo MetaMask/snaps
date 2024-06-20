@@ -1,4 +1,4 @@
-import type { Component } from '@metamask/snaps-sdk';
+import type { Component, FormState, File } from '@metamask/snaps-sdk';
 import { NodeType } from '@metamask/snaps-sdk';
 import type {
   BoldChildren,
@@ -507,4 +507,44 @@ export function walkJsx<Value>(
   }
 
   return undefined;
+}
+
+/**
+ * The values and files of a form.
+ *
+ * @property value - The values of the form fields, if any.
+ * @property files - The files of the form fields, if any.
+ */
+export type FormValues = {
+  value: Record<string, string | null>;
+  files: Record<string, File | null>;
+};
+
+/**
+ * Get the form values from the interface state. If the state is undefined, an
+ * object with empty values and files is returned. Otherwise, the form values
+ * are extracted from the state, and the values and files are returned
+ * separately.
+ *
+ * @param state - The interface state.
+ * @returns The form values.
+ */
+export function getFormValues(state?: FormState): FormValues {
+  if (!state?.value) {
+    return { value: {}, files: {} };
+  }
+
+  // TODO: Use `Object.groupBy` when it's available in our browser targets.
+  return Object.entries(state.value).reduce<FormValues>(
+    (accumulator, [key, value]) => {
+      if (value.type === 'FileInput') {
+        accumulator.files[key] = value.value;
+      } else {
+        accumulator.value[key] = value.value;
+      }
+
+      return accumulator;
+    },
+    { value: {}, files: {} },
+  );
 }

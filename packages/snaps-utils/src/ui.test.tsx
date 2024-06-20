@@ -1,3 +1,4 @@
+import type { FormState } from '@metamask/snaps-sdk';
 import {
   panel,
   text,
@@ -41,6 +42,7 @@ import {
   validateTextLinks,
   walkJsx,
   getJsxChildren,
+  getFormValues,
 } from './ui';
 
 describe('getTextChildren', () => {
@@ -917,5 +919,69 @@ describe('walkJsx', () => {
     const callback = jest.fn();
     const result = walkJsx(tree, callback);
     expect(result).toBeUndefined();
+  });
+});
+
+describe('getFormValues', () => {
+  it('returns an empty object if the state is undefined', () => {
+    expect(getFormValues(undefined)).toStrictEqual({
+      value: {},
+      files: {},
+    });
+  });
+
+  it('returns the form values from the state', () => {
+    const state: FormState = {
+      type: 'Form',
+      value: {
+        foo: {
+          type: 'Input' as const,
+          value: 'bar',
+        },
+        baz: {
+          type: 'Dropdown' as const,
+          value: null,
+        },
+        qux: {
+          type: 'FileInput' as const,
+          value: {
+            name: 'quux',
+            size: 3,
+            contentType: 'image/svg+xml',
+            contents: 'base64',
+          },
+        },
+      },
+    };
+
+    expect(getFormValues(state)).toStrictEqual({
+      value: { foo: 'bar', baz: null },
+      files: { qux: state.value.qux.value },
+    });
+  });
+
+  it('properly groups form values that are null', () => {
+    const state: FormState = {
+      type: 'Form',
+      value: {
+        foo: {
+          type: 'Input',
+          value: null,
+        },
+        baz: {
+          type: 'Dropdown' as const,
+          value: null,
+        },
+        qux: {
+          type: 'FileInput' as const,
+          value: null,
+        },
+      },
+    };
+
+    expect(getFormValues(state)).toStrictEqual({
+      value: { foo: null, baz: null },
+      files: { qux: null },
+    });
   });
 });

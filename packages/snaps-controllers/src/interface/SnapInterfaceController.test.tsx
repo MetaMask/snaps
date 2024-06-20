@@ -1,4 +1,4 @@
-import type { SnapId } from '@metamask/snaps-sdk';
+import type { InterfaceState, SnapId } from '@metamask/snaps-sdk';
 import { form, image, input, panel, text } from '@metamask/snaps-sdk';
 import {
   Box,
@@ -63,7 +63,17 @@ describe('SnapInterfaceController', () => {
       );
 
       expect(content).toStrictEqual(getJsxElementFromComponent(components));
-      expect(state).toStrictEqual({ foo: { bar: null } });
+      expect(state).toStrictEqual({
+        foo: {
+          type: 'Form',
+          value: {
+            bar: {
+              type: 'Input',
+              value: null,
+            },
+          },
+        },
+      });
     });
 
     it('can create a new interface from JSX', async () => {
@@ -113,7 +123,17 @@ describe('SnapInterfaceController', () => {
       );
 
       expect(content).toStrictEqual(element);
-      expect(state).toStrictEqual({ foo: { bar: null } });
+      expect(state).toStrictEqual({
+        foo: {
+          type: 'Form',
+          value: {
+            bar: {
+              type: 'Input',
+              value: null,
+            },
+          },
+        },
+      });
     });
 
     it('supports providing interface context', async () => {
@@ -474,7 +494,17 @@ describe('SnapInterfaceController', () => {
       );
 
       expect(content).toStrictEqual(getJsxElementFromComponent(newContent));
-      expect(state).toStrictEqual({ foo: { baz: null } });
+      expect(state).toStrictEqual({
+        foo: {
+          type: 'Form',
+          value: {
+            baz: {
+              type: 'Input',
+              value: null,
+            },
+          },
+        },
+      });
     });
 
     it('can update an interface using JSX', async () => {
@@ -523,7 +553,17 @@ describe('SnapInterfaceController', () => {
       );
 
       expect(content).toStrictEqual(newElement);
-      expect(state).toStrictEqual({ foo: { baz: null } });
+      expect(state).toStrictEqual({
+        foo: {
+          type: 'Form',
+          value: {
+            baz: {
+              type: 'Input',
+              value: null,
+            },
+          },
+        },
+      });
     });
 
     it('throws if a link is on the phishing list', async () => {
@@ -828,7 +868,17 @@ describe('SnapInterfaceController', () => {
 
       const content = form({ name: 'foo', children: [input({ name: 'bar' })] });
 
-      const newState = { foo: { bar: 'baz' } };
+      const newState: InterfaceState = {
+        foo: {
+          type: 'Form',
+          value: {
+            bar: {
+              type: 'Input',
+              value: 'baz',
+            },
+          },
+        },
+      };
 
       const id = await rootMessenger.call(
         'SnapInterfaceController:createInterface',
@@ -869,13 +919,19 @@ describe('SnapInterfaceController', () => {
         </Form>
       );
 
-      const newState = {
+      const newState: InterfaceState = {
         foo: {
-          bar: {
-            name: 'test.png',
-            size: 123,
-            contentType: 'image/png',
-            contents: 'foo',
+          type: 'Form',
+          value: {
+            bar: {
+              type: 'FileInput',
+              value: {
+                name: 'test.png',
+                size: 123,
+                contentType: 'image/png',
+                contents: 'foo',
+              },
+            },
           },
         },
       };

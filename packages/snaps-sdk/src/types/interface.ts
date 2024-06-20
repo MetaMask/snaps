@@ -1,6 +1,6 @@
 import { JsonStruct } from '@metamask/utils';
 import type { Infer } from 'superstruct';
-import { nullable, record, string, union } from 'superstruct';
+import { literal, object, nullable, record, string, union } from 'superstruct';
 
 import type { JSXElement } from '../jsx';
 import { RootJSXElementStruct } from '../jsx';
@@ -8,20 +8,30 @@ import type { Component } from '../ui';
 import { ComponentStruct } from '../ui';
 import { FileStruct } from './handlers';
 
-/**
- * To avoid typing problems with the interface state when manipulating it we
- * have to differentiate the state of a form (that will be contained inside the
- * root state) and the root state since a key in the root stat can contain
- * either the value of an input or a sub-state of a form.
- */
+// To avoid typing problems with the interface state when manipulating it we
+// have to differentiate the state of a form (that will be contained inside the
+// root state) and the root state since a key in the root stat can contain
+// either the value of an input or a sub-state of a form.
 
-export const StateStruct = union([FileStruct, string()]);
+export const StateStruct = union([
+  object({
+    value: nullable(string()),
+    type: union([literal('Dropdown'), literal('Input')]),
+  }),
+  object({
+    value: nullable(FileStruct),
+    type: literal('FileInput'),
+  }),
+]);
 
-export const FormStateStruct = record(string(), nullable(StateStruct));
+export const FormStateStruct = object({
+  type: literal('Form'),
+  value: record(string(), StateStruct),
+});
 
 export const InterfaceStateStruct = record(
   string(),
-  union([FormStateStruct, nullable(StateStruct)]),
+  union([FormStateStruct, StateStruct]),
 );
 
 export type State = Infer<typeof StateStruct>;

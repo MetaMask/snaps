@@ -6,6 +6,7 @@ import type {
   GetInterfaceStateResult,
   InterfaceState,
   JsonRpcRequest,
+  State,
 } from '@metamask/snaps-sdk';
 import { type InferMatching } from '@metamask/snaps-utils';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
@@ -43,6 +44,65 @@ export type GetInterfaceStateParameters = InferMatching<
   typeof GetInterfaceStateParametersStruct,
   GetInterfaceStateParams
 >;
+
+type LegacyState = Record<
+  string,
+  State['value'] | Record<string, State['value']>
+>;
+
+/**
+ * Get the legacy interface state object from the current interface state. This
+ * exists for backwards compatibility when using the `snap_getInterfaceState`
+ * method.
+ *
+ * @param state - The interface state.
+ * @returns The legacy interface state object.
+ * @example
+ * const state: InterfaceState = {
+ *   foo: {
+ *     value: 'bar',
+ *     type: 'Input',
+ *   },
+ *   baz: {
+ *     type: 'Form',
+ *     value: {
+ *       qux: {
+ *         type: 'Dropdown',
+ *         value: 'quux',
+ *       },
+ *     },
+ *   },
+ * };
+ *
+ * const legacyState = getLegacyInterfaceState(state);
+ * // {
+ * //   foo: 'bar',
+ * //   baz: {
+ * //     qux: 'quux',
+ * //   },
+ * // }
+ */
+export function getLegacyInterfaceState(state: InterfaceState): LegacyState {
+  return Object.entries(state).reduce<LegacyState>(
+    (accumulator, [key, value]) => {
+      if (value.type === 'Form') {
+        return {
+          ...accumulator,
+          [key]: getLegacyInterfaceState(value.value) as Record<
+            string,
+            State['value']
+          >,
+        };
+      }
+
+      return {
+        ...accumulator,
+        [key]: value.value,
+      };
+    },
+    {},
+  );
+}
 
 /**
  * The `snap_getInterfaceState` method implementation.

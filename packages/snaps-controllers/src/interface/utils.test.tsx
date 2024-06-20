@@ -1,3 +1,4 @@
+import type { FormState, InterfaceState } from '@metamask/snaps-sdk';
 import {
   Box,
   Button,
@@ -10,11 +11,20 @@ import {
   FileInput,
 } from '@metamask/snaps-sdk/jsx';
 
-import { assertNameIsUnique, constructState } from './utils';
+import {
+  assertFormNameIsUnique,
+  assertNameIsUnique,
+  constructState,
+} from './utils';
 
 describe('assertNameIsUnique', () => {
   it('throws an error if a name is not unique', () => {
-    const state = { test: 'foo' };
+    const state: InterfaceState = {
+      test: {
+        type: 'Input',
+        value: 'foo',
+      },
+    };
 
     expect(() => assertNameIsUnique(state, 'test')).toThrow(
       `Duplicate component names are not allowed, found multiple instances of: "test".`,
@@ -22,9 +32,46 @@ describe('assertNameIsUnique', () => {
   });
 
   it('passes if there is no duplicate name', () => {
-    const state = { test: 'foo' };
+    const state: InterfaceState = {
+      test: {
+        type: 'Input',
+        value: 'foo',
+      },
+    };
 
     expect(() => assertNameIsUnique(state, 'bar')).not.toThrow();
+  });
+});
+
+describe('assertFormNameIsUnique', () => {
+  it('throws an error if a name is not unique', () => {
+    const state: FormState = {
+      type: 'Form',
+      value: {
+        test: {
+          type: 'Input',
+          value: 'foo',
+        },
+      },
+    };
+
+    expect(() => assertFormNameIsUnique(state, 'test')).toThrow(
+      `Duplicate component names are not allowed, found multiple instances of: "test".`,
+    );
+  });
+
+  it('passes if there is no duplicate name', () => {
+    const state: FormState = {
+      type: 'Form',
+      value: {
+        test: {
+          type: 'Input',
+          value: 'foo',
+        },
+      },
+    };
+
+    expect(() => assertFormNameIsUnique(state, 'bar')).not.toThrow();
   });
 });
 
@@ -43,7 +90,17 @@ describe('constructState', () => {
 
     const result = constructState({}, element);
 
-    expect(result).toStrictEqual({ foo: { bar: null } });
+    expect(result).toStrictEqual({
+      foo: {
+        type: 'Form',
+        value: {
+          bar: {
+            type: 'Input',
+            value: null,
+          },
+        },
+      },
+    });
   });
 
   it('can construct a new component state from a field with a button', () => {
@@ -61,11 +118,31 @@ describe('constructState', () => {
 
     const result = constructState({}, element);
 
-    expect(result).toStrictEqual({ foo: { bar: null } });
+    expect(result).toStrictEqual({
+      foo: {
+        type: 'Form',
+        value: {
+          bar: {
+            type: 'Input',
+            value: null,
+          },
+        },
+      },
+    });
   });
 
   it('merges two states', () => {
-    const state = { foo: { bar: 'test' } };
+    const state: InterfaceState = {
+      foo: {
+        type: 'Form',
+        value: {
+          bar: {
+            type: 'Input',
+            value: 'test',
+          },
+        },
+      },
+    };
 
     const element = (
       <Box>
@@ -82,11 +159,39 @@ describe('constructState', () => {
     );
 
     const result = constructState(state, element);
-    expect(result).toStrictEqual({ foo: { bar: 'test', baz: null } });
+    expect(result).toStrictEqual({
+      foo: {
+        type: 'Form',
+        value: {
+          bar: {
+            type: 'Input',
+            value: 'test',
+          },
+          baz: {
+            type: 'Input',
+            value: null,
+          },
+        },
+      },
+    });
   });
 
   it('deletes unused state', () => {
-    const state = { form: { foo: null, bar: 'test' } };
+    const state: InterfaceState = {
+      form: {
+        type: 'Form',
+        value: {
+          foo: {
+            type: 'Input',
+            value: 'test',
+          },
+          bar: {
+            type: 'Input',
+            value: 'test',
+          },
+        },
+      },
+    };
 
     const element = (
       <Box>
@@ -103,13 +208,51 @@ describe('constructState', () => {
     );
 
     const result = constructState(state, element);
-    expect(result).toStrictEqual({ form: { bar: 'test', baz: null } });
+    expect(result).toStrictEqual({
+      form: {
+        type: 'Form',
+        value: {
+          bar: {
+            type: 'Input',
+            value: 'test',
+          },
+          baz: {
+            type: 'Input',
+            value: null,
+          },
+        },
+      },
+    });
   });
 
   it('handles multiple forms', () => {
-    const state = {
-      form1: { foo: null, bar: 'test' },
-      form2: { foo: 'abc', bar: 'def' },
+    const state: InterfaceState = {
+      form1: {
+        type: 'Form',
+        value: {
+          foo: {
+            type: 'Input',
+            value: 'test',
+          },
+          bar: {
+            type: 'Input',
+            value: 'test',
+          },
+        },
+      },
+      form2: {
+        type: 'Form',
+        value: {
+          foo: {
+            type: 'Input',
+            value: 'abc',
+          },
+          bar: {
+            type: 'Input',
+            value: 'def',
+          },
+        },
+      },
     };
 
     const element = (
@@ -137,15 +280,51 @@ describe('constructState', () => {
     const result = constructState(state, element);
 
     expect(result).toStrictEqual({
-      form1: { bar: 'test', baz: null },
-      form2: { bar: 'def', baz: null },
+      form1: {
+        type: 'Form',
+        value: {
+          bar: { type: 'Input', value: 'test' },
+          baz: { type: 'Input', value: null },
+        },
+      },
+      form2: {
+        type: 'Form',
+        value: {
+          bar: { type: 'Input', value: 'def' },
+          baz: { type: 'Input', value: null },
+        },
+      },
     });
   });
 
   it('deletes an unused form', () => {
-    const state = {
-      form1: { foo: null, bar: 'test' },
-      form2: { foo: 'abc', bar: 'def' },
+    const state: InterfaceState = {
+      form1: {
+        type: 'Form',
+        value: {
+          foo: {
+            type: 'Input',
+            value: 'test',
+          },
+          bar: {
+            type: 'Input',
+            value: 'test',
+          },
+        },
+      },
+      form2: {
+        type: 'Form',
+        value: {
+          foo: {
+            type: 'Input',
+            value: 'abc',
+          },
+          bar: {
+            type: 'Input',
+            value: 'def',
+          },
+        },
+      },
     };
 
     const element = (
@@ -164,14 +343,44 @@ describe('constructState', () => {
 
     const result = constructState(state, element);
     expect(result).toStrictEqual({
-      form1: { bar: 'test', baz: null },
+      form1: {
+        type: 'Form',
+        value: {
+          bar: { type: 'Input', value: 'test' },
+          baz: { type: 'Input', value: null },
+        },
+      },
     });
   });
 
   it('handles nested forms', () => {
-    const state = {
-      form1: { foo: null, bar: 'test' },
-      form2: { foo: 'abc', bar: 'def' },
+    const state: InterfaceState = {
+      form1: {
+        type: 'Form',
+        value: {
+          foo: {
+            type: 'Input',
+            value: null,
+          },
+          bar: {
+            type: 'Input',
+            value: 'test',
+          },
+        },
+      },
+      form2: {
+        type: 'Form',
+        value: {
+          foo: {
+            type: 'Input',
+            value: 'abc',
+          },
+          bar: {
+            type: 'Input',
+            value: 'def',
+          },
+        },
+      },
     };
 
     const element = (
@@ -202,8 +411,20 @@ describe('constructState', () => {
 
     const result = constructState(state, element);
     expect(result).toStrictEqual({
-      form1: { bar: 'test', baz: null },
-      form2: { bar: 'def', baz: null },
+      form1: {
+        type: 'Form',
+        value: {
+          bar: { type: 'Input', value: 'test' },
+          baz: { type: 'Input', value: null },
+        },
+      },
+      form2: {
+        type: 'Form',
+        value: {
+          bar: { type: 'Input', value: 'def' },
+          baz: { type: 'Input', value: null },
+        },
+      },
     });
   });
 
@@ -216,7 +437,10 @@ describe('constructState', () => {
 
     const result = constructState({}, element);
     expect(result).toStrictEqual({
-      foo: 'bar',
+      foo: {
+        type: 'Input',
+        value: 'bar',
+      },
     });
   });
 
@@ -229,7 +453,10 @@ describe('constructState', () => {
 
     const result = constructState({}, element);
     expect(result).toStrictEqual({
-      foo: null,
+      foo: {
+        type: 'Input',
+        value: null,
+      },
     });
   });
 
@@ -245,7 +472,10 @@ describe('constructState', () => {
 
     const result = constructState({}, element);
     expect(result).toStrictEqual({
-      foo: 'option1',
+      foo: {
+        type: 'Dropdown',
+        value: 'option1',
+      },
     });
   });
 
@@ -261,7 +491,10 @@ describe('constructState', () => {
 
     const result = constructState({}, element);
     expect(result).toStrictEqual({
-      foo: 'option2',
+      foo: {
+        type: 'Dropdown',
+        value: 'option2',
+      },
     });
   });
 
@@ -281,7 +514,15 @@ describe('constructState', () => {
 
     const result = constructState({}, element);
     expect(result).toStrictEqual({
-      form: { foo: 'option1' },
+      form: {
+        type: 'Form',
+        value: {
+          foo: {
+            type: 'Dropdown',
+            value: 'option1',
+          },
+        },
+      },
     });
   });
 
@@ -301,7 +542,15 @@ describe('constructState', () => {
 
     const result = constructState({}, element);
     expect(result).toStrictEqual({
-      form: { foo: 'option2' },
+      form: {
+        type: 'Form',
+        value: {
+          foo: {
+            type: 'Dropdown',
+            value: 'option2',
+          },
+        },
+      },
     });
   });
 
@@ -324,7 +573,15 @@ describe('constructState', () => {
 
     const result = constructState({}, element);
     expect(result).toStrictEqual({
-      form: { bar: 'option2' },
+      form: {
+        type: 'Form',
+        value: {
+          bar: {
+            type: 'Dropdown',
+            value: 'option2',
+          },
+        },
+      },
     });
   });
 
@@ -355,8 +612,21 @@ describe('constructState', () => {
 
     const result = constructState({}, element);
     expect(result).toStrictEqual({
-      form: { baz: 'option4' },
-      form2: { bar: 'option2' },
+      form: {
+        type: 'Form',
+        value: {
+          baz: {
+            type: 'Dropdown',
+            value: 'option4',
+          },
+        },
+      },
+      form2: {
+        type: 'Form',
+        value: {
+          bar: { type: 'Dropdown', value: 'option2' },
+        },
+      },
     });
   });
 
@@ -367,15 +637,32 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({ foo: null, bar: null }, element);
+    const oldState: InterfaceState = {
+      foo: {
+        type: 'Input',
+        value: null,
+      },
+      bar: {
+        type: 'Input',
+        value: null,
+      },
+    };
+
+    const result = constructState(oldState, element);
     expect(result).toStrictEqual({
-      foo: null,
+      foo: {
+        type: 'Input',
+        value: null,
+      },
     });
   });
 
   it('merges root level inputs from old state', () => {
-    const state = {
-      foo: 'bar',
+    const state: InterfaceState = {
+      foo: {
+        type: 'Input',
+        value: 'bar',
+      },
     };
 
     const element = (
@@ -386,7 +673,10 @@ describe('constructState', () => {
 
     const result = constructState(state, element);
     expect(result).toStrictEqual({
-      foo: 'bar',
+      foo: {
+        type: 'Input',
+        value: 'bar',
+      },
     });
   });
 
@@ -399,7 +689,10 @@ describe('constructState', () => {
 
     const result = constructState({}, element);
     expect(result).toStrictEqual({
-      foo: null,
+      foo: {
+        type: 'FileInput',
+        value: null,
+      },
     });
   });
 
