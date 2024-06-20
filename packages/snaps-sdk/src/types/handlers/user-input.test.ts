@@ -13,20 +13,20 @@ describe('UserInputEventType', () => {
 });
 
 describe('FormSubmitEventStruct', () => {
-  it('accepts values and files', () => {
+  it('accepts string values and files', () => {
     expect(
       is(
         {
           type: 'FormSubmitEvent',
           name: 'foo',
-          value: {},
-          files: {
+          value: {
             file: {
               name: 'consensys.svg',
               size: 791,
               contentType: 'image/svg+xml',
               contents: '...',
             },
+            string: 'bar',
           },
         },
         FormSubmitEventStruct,

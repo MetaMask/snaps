@@ -322,8 +322,7 @@ export async function clickElement(
       {
         type: UserInputEventType.FormSubmitEvent,
         name: result.form,
-        value: state[result.form] as Record<string, string | null>,
-        files: {},
+        value: state[result.form] as FormState,
       },
       context,
     );

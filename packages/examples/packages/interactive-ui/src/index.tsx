@@ -7,6 +7,7 @@ import type {
 } from '@metamask/snaps-sdk';
 import { UserInputEventType, MethodNotFoundError } from '@metamask/snaps-sdk';
 
+import type { InteractiveFormState } from './components';
 import {
   InteractiveForm,
   Result,
@@ -152,11 +153,12 @@ export const onUserInput: OnUserInputHandler = async ({
     event.type === UserInputEventType.FormSubmitEvent &&
     event.name === 'example-form'
   ) {
+    const value = event.value as InteractiveFormState;
     await snap.request({
       method: 'snap_updateInterface',
       params: {
         id,
-        ui: <Result values={event.value} />,
+        ui: <Result values={value} />,
       },
     });
   }

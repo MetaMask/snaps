@@ -74,8 +74,7 @@ export const FormSubmitEventStruct = assign(
   GenericEventStruct,
   object({
     type: literal(UserInputEventType.FormSubmitEvent),
-    value: record(string(), nullable(string())),
-    files: record(string(), nullable(FileStruct)),
+    value: record(string(), nullable(union([string(), FileStruct]))),
     name: string(),
   }),
 );

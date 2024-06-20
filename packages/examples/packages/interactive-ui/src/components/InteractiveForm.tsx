@@ -10,6 +10,21 @@ import {
   Option,
 } from '@metamask/snaps-sdk/jsx';
 
+/**
+ * The state of the {@link InteractiveForm} component.
+ */
+export type InteractiveFormState = {
+  /**
+   * The value of the example input.
+   */
+  'example-input': string;
+
+  /**
+   * The value of the example dropdown.
+   */
+  'example-dropdown': string;
+};
+
 export const InteractiveForm: SnapComponent = () => {
   return (
     <Box>

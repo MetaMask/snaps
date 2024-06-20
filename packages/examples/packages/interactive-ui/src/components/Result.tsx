@@ -1,8 +1,10 @@
 import type { SnapComponent } from '@metamask/snaps-sdk/jsx';
 import { Heading, Button, Box, Text, Copyable } from '@metamask/snaps-sdk/jsx';
 
+import type { InteractiveFormState } from './InteractiveForm';
+
 type ResultProps = {
-  values: Record<string, string>;
+  values: InteractiveFormState;
 };
 
 export const Result: SnapComponent<ResultProps> = ({ values }) => {
