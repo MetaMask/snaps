@@ -162,8 +162,8 @@ describe('assertIsOnUserInputRequestArguments', () => {
       event: {
         type: UserInputEventType.FormSubmitEvent,
         name: 'foo',
-        value: { foo: 'bar' },
-        files: {
+        value: {
+          foo: 'bar',
           file: {
             name: 'foo.svg',
             size: 791,
