@@ -25,9 +25,14 @@ import type {
   SnapInterfaceActions,
 } from '../../types';
 import type { RootControllerMessenger } from './controllers';
-import { getFileToUpload } from './files';
+import { getFileSize, getFileToUpload } from './files';
 import type { Interface, RunSagaFunction } from './store';
 import { getCurrentInterface, resolveInterface, setInterface } from './store';
+
+/**
+ * The maximum file size that can be uploaded.
+ */
+const MAX_FILE_SIZE = 50_000_000; // 50 MB
 
 /**
  * Get a user interface object from a type and content object.
@@ -501,6 +506,18 @@ export async function selectInDropdown(
 }
 
 /**
+ * Get a formatted file size.
+ *
+ * @param size - The file size in bytes.
+ * @returns The formatted file size in MB, with two decimal places.
+ * @example
+ * getFormattedFileSize(1_000_000); // '1.00 MB'
+ */
+function getFormattedFileSize(size: number) {
+  return `${(size / 1_000_000).toFixed(2)} MB`;
+}
+
+/**
  * Upload a file to an interface element.
  *
  * @param controllerMessenger - The controller messenger used to call actions.
@@ -546,6 +563,17 @@ export async function uploadFile(
     snapId,
     id,
   );
+
+  const fileSize = await getFileSize(file);
+  if (fileSize > MAX_FILE_SIZE) {
+    throw new Error(
+      `The file size (${getFormattedFileSize(
+        fileSize,
+      )}) exceeds the maximum allowed size of ${getFormattedFileSize(
+        MAX_FILE_SIZE,
+      )}.`,
+    );
+  }
 
   const fileObject = await getFileToUpload(file, options);
   const newState = mergeValue(state, name, fileObject, result.form);

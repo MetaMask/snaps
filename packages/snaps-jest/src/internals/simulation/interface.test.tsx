@@ -842,6 +842,41 @@ describe('uploadFile', () => {
       },
     });
   });
+
+  it('throws an error if the file size exceeds the maximum allowed size', async () => {
+    const rootControllerMessenger = getRootControllerMessenger();
+    const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+      rootControllerMessenger,
+    );
+
+    const interfaceController = new SnapInterfaceController({
+      messenger: controllerMessenger,
+    });
+
+    const content = (
+      <Box>
+        <FileInput name="foo" />
+      </Box>
+    );
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await expect(
+      uploadFile(
+        rootControllerMessenger,
+        interfaceId,
+        content,
+        MOCK_SNAP_ID,
+        'foo',
+        new Uint8Array(51_000_000),
+      ),
+    ).rejects.toThrow(
+      'The file size (51.00 MB) exceeds the maximum allowed size of 50.00 MB.',
+    );
+  });
 });
 
 describe('getInterface', () => {

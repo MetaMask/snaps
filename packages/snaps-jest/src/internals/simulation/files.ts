@@ -3,7 +3,7 @@ import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
 import type { VirtualFile } from '@metamask/snaps-utils';
 import { encodeAuxiliaryFile, normalizeRelative } from '@metamask/snaps-utils';
 import { bytesToBase64 } from '@metamask/utils';
-import { readFile } from 'fs/promises';
+import { readFile, stat } from 'fs/promises';
 import mime from 'mime';
 import { basename, extname, resolve } from 'path';
 
@@ -43,6 +43,23 @@ export async function getSnapFile(
  */
 export function getContentType(extension: string) {
   return mime.getType(extension) ?? 'application/octet-stream';
+}
+
+/**
+ * Get the size of a file, from a file path or a `Uint8Array`.
+ *
+ * @param file - The file to get the size of. This can be a path to a file or a
+ * `Uint8Array` containing the file contents. If this is a path, the file is
+ * resolved relative to the current working directory.
+ * @returns The size of the file in bytes.
+ */
+export async function getFileSize(file: string | Uint8Array) {
+  if (typeof file === 'string') {
+    const { size } = await stat(resolve(process.cwd(), file));
+    return size;
+  }
+
+  return file.length;
 }
 
 /**

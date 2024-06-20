@@ -2,7 +2,12 @@ import { VirtualFile } from '@metamask/snaps-utils';
 import { stringToBytes } from '@metamask/utils';
 import { resolve } from 'path';
 
-import { getContentType, getFileToUpload, getSnapFile } from './files';
+import {
+  getContentType,
+  getFileSize,
+  getFileToUpload,
+  getSnapFile,
+} from './files';
 
 describe('getSnapFile', () => {
   it('returns the file', async () => {
@@ -41,6 +46,18 @@ describe('getContentType', () => {
 
   it('returns the default content type for an empty string', () => {
     expect(getContentType('')).toBe('application/octet-stream');
+  });
+});
+
+describe('getFileSize', () => {
+  it('returns the file size for a `Uint8Array`', async () => {
+    expect(await getFileSize(new Uint8Array([1, 2, 3]))).toBe(3);
+  });
+
+  it('returns the file size for a file path', async () => {
+    expect(
+      await getFileSize(resolve(__dirname, '../../test-utils/snap/snap.js')),
+    ).toBe(112);
   });
 });
 
