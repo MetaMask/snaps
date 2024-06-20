@@ -871,10 +871,10 @@ describe('uploadFile', () => {
         content,
         MOCK_SNAP_ID,
         'foo',
-        new Uint8Array(51_000_000),
+        new Uint8Array(11_000_000),
       ),
     ).rejects.toThrow(
-      'The file size (51.00 MB) exceeds the maximum allowed size of 50.00 MB.',
+      'The file size (11.00 MB) exceeds the maximum allowed size of 10.00 MB.',
     );
   });
 });

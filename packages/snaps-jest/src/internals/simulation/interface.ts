@@ -32,7 +32,7 @@ import { getCurrentInterface, resolveInterface, setInterface } from './store';
 /**
  * The maximum file size that can be uploaded.
  */
-const MAX_FILE_SIZE = 50_000_000; // 50 MB
+const MAX_FILE_SIZE = 10_000_000; // 10 MB
 
 /**
  * Get a user interface object from a type and content object.
