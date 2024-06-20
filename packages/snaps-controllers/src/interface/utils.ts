@@ -78,6 +78,27 @@ function constructComponentSpecificDefaultState(
 }
 
 /**
+ * Get the state value for a stateful component.
+ *
+ * Most components store the state value as a `value` prop.
+ * This function exists to account for components where that isn't the case.
+ *
+ * @param element - The input element.
+ * @returns The state value for a given component.
+ */
+function getComponentStateValue(
+  element: InputElement | DropdownElement | CheckboxElement,
+) {
+  switch (element.type) {
+    case 'Checkbox':
+      return element.props.checked;
+
+    default:
+      return element.props.value;
+  }
+}
+
+/**
  * Construct the state for an input field.
  *
  * @param oldState - The previous state.
@@ -98,7 +119,7 @@ function constructInputState(
   }
 
   return (
-    element.props.value ??
+    getComponentStateValue(element) ??
     oldInputState ??
     constructComponentSpecificDefaultState(element) ??
     null

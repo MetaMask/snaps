@@ -141,7 +141,9 @@ export const ButtonStruct: Describe<ButtonElement> = element('Button', {
  */
 export const CheckboxStruct: Describe<CheckboxElement> = element('Checkbox', {
   name: string(),
-  value: optional(boolean()),
+  checked: optional(boolean()),
+  label: optional(string()),
+  variant: optional(nullUnion([literal('default'), literal('toggle')])),
 });
 
 /**

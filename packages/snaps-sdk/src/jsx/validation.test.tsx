@@ -472,12 +472,13 @@ describe('BoxStruct', () => {
 });
 
 describe('CheckboxStruct', () => {
-  it.each([<Checkbox name="foo" />, <Checkbox name="foo" value={true} />])(
-    'validates a dropdown element',
-    (value) => {
-      expect(is(value, CheckboxStruct)).toBe(true);
-    },
-  );
+  it.each([
+    <Checkbox name="foo" />,
+    <Checkbox name="foo" checked={true} />,
+    <Checkbox name="foo" checked={true} label="Foo" variant="toggle" />,
+  ])('validates a dropdown element', (value) => {
+    expect(is(value, CheckboxStruct)).toBe(true);
+  });
 
   it.each([
     'foo',

@@ -309,7 +309,7 @@ describe('constructState', () => {
   it('supports root level checkboxes in forms', () => {
     const element = (
       <Box>
-        <Checkbox name="foo" value={true} />
+        <Checkbox name="foo" checked={true} />
       </Box>
     );
 
@@ -341,7 +341,7 @@ describe('constructState', () => {
       <Box>
         <Form name="form">
           <Field label="foo">
-            <Checkbox name="foo" value={true} />
+            <Checkbox name="foo" checked={true} />
           </Field>
         </Form>
       </Box>
