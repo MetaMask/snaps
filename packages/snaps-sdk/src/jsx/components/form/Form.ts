@@ -11,7 +11,7 @@ import { createSnapComponent } from '../../component';
  * the event handler.
  */
 export type FormProps = {
-  children: MaybeArray<GenericSnapElement | null>;
+  children: MaybeArray<GenericSnapElement | boolean | null>;
   name: string;
 };
 

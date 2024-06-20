@@ -24,4 +24,21 @@ describe('Italic', () => {
       key: null,
     });
   });
+
+  it('returns an italic element with a conditional value', () => {
+    const result = (
+      <Italic>
+        Hello
+        {false && 'world'}
+      </Italic>
+    );
+
+    expect(result).toStrictEqual({
+      type: 'Italic',
+      props: {
+        children: ['Hello', false],
+      },
+      key: null,
+    });
+  });
 });

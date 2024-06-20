@@ -64,12 +64,13 @@ export type MaybeArray<Type> = Nestable<Type>;
 /**
  * A JSX node, which can be an element, a string, null, or an array of nodes.
  */
-export type SnapNode = MaybeArray<GenericSnapElement | string | null>;
+export type SnapNode = MaybeArray<GenericSnapElement | string | boolean | null>;
 
 /**
- * A JSX string element, which can be a string or an array of strings.
+ * A JSX string element, which can be a string or an array of strings, or
+ * booleans (for conditional rendering).
  */
-export type StringElement = MaybeArray<string>;
+export type StringElement = MaybeArray<string | boolean>;
 
 /**
  * A JSX component.

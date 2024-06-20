@@ -1,3 +1,4 @@
+import type { StringElement } from '../../component';
 import { createSnapComponent } from '../../component';
 
 /**
@@ -9,7 +10,7 @@ import { createSnapComponent } from '../../component';
  */
 type OptionProps = {
   value: string;
-  children: string;
+  children: StringElement;
 };
 
 const TYPE = 'Option';

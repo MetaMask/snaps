@@ -6,7 +6,7 @@ import type { StandardFormattingElement } from './formatting';
  * The children of the {@link Link} component.
  */
 export type LinkChildren = MaybeArray<
-  string | StandardFormattingElement | null
+  string | StandardFormattingElement | boolean | null
 >;
 
 /**

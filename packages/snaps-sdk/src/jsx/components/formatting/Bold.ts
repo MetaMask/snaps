@@ -10,6 +10,7 @@ export type BoldChildren = MaybeArray<
   | string
   // We have to specify the type here to avoid a circular reference.
   | SnapElement<JsonObject, 'Italic'>
+  | boolean
   | null
 >;
 

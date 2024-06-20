@@ -26,4 +26,22 @@ describe('Link', () => {
       },
     });
   });
+
+  it('renders a link with a conditional value', () => {
+    const result = (
+      <Link href="https://example.com">
+        Hello
+        {false && 'world'}
+      </Link>
+    );
+
+    expect(result).toStrictEqual({
+      type: 'Link',
+      key: null,
+      props: {
+        href: 'https://example.com',
+        children: ['Hello', false],
+      },
+    });
+  });
 });

@@ -24,4 +24,21 @@ describe('Heading', () => {
       },
     });
   });
+
+  it('renders a heading with a conditional value', () => {
+    const result = (
+      <Heading>
+        Hello
+        {false && 'world'}
+      </Heading>
+    );
+
+    expect(result).toStrictEqual({
+      type: 'Heading',
+      key: null,
+      props: {
+        children: ['Hello', false],
+      },
+    });
+  });
 });

@@ -7,7 +7,7 @@ import type { LinkElement } from './Link';
  * The children of the {@link Text} component.
  */
 export type TextChildren = MaybeArray<
-  string | StandardFormattingElement | LinkElement | null
+  string | boolean | StandardFormattingElement | LinkElement | null
 >;
 
 /**

@@ -10,7 +10,7 @@ import { createSnapComponent } from '../component';
  */
 export type BoxProps = {
   // We can't use `JSXElement` because it causes a circular reference.
-  children: MaybeArray<GenericSnapElement | null>;
+  children: MaybeArray<GenericSnapElement | boolean | null>;
   direction?: 'vertical' | 'horizontal' | undefined;
   alignment?:
     | 'start'

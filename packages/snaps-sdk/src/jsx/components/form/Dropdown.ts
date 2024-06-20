@@ -10,10 +10,10 @@ import type { OptionElement } from './Option';
  * @property value - The selected value of the dropdown.
  * @property children - The children of the dropdown.
  */
-type DropdownProps = {
+export type DropdownProps = {
   name: string;
   value?: string | undefined;
-  children: MaybeArray<OptionElement>;
+  children: MaybeArray<OptionElement | boolean>;
 };
 
 const TYPE = 'Dropdown';
