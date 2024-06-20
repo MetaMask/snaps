@@ -1,6 +1,6 @@
 import { JsonStruct } from '@metamask/utils';
 import type { Infer } from 'superstruct';
-import { nullable, record, string, union } from 'superstruct';
+import { boolean, nullable, record, string, union } from 'superstruct';
 
 import type { JSXElement } from '../jsx';
 import { RootJSXElementStruct } from '../jsx';
@@ -15,7 +15,7 @@ import { FileStruct } from './handlers';
  * either the value of an input or a sub-state of a form.
  */
 
-export const StateStruct = union([FileStruct, string()]);
+export const StateStruct = union([FileStruct, string(), boolean()]);
 
 export const FormStateStruct = record(string(), nullable(StateStruct));
 

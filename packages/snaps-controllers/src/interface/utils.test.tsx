@@ -8,6 +8,7 @@ import {
   Input,
   Text,
   FileInput,
+  Checkbox,
 } from '@metamask/snaps-sdk/jsx';
 
 import { assertNameIsUnique, constructState } from './utils';
@@ -302,6 +303,53 @@ describe('constructState', () => {
     const result = constructState({}, element);
     expect(result).toStrictEqual({
       form: { foo: 'option2' },
+    });
+  });
+
+  it('supports root level checkboxes in forms', () => {
+    const element = (
+      <Box>
+        <Checkbox name="foo" value={true} />
+      </Box>
+    );
+
+    const result = constructState({}, element);
+    expect(result).toStrictEqual({
+      foo: true,
+    });
+  });
+
+  it('sets default value for checkbox in forms', () => {
+    const element = (
+      <Box>
+        <Form name="form">
+          <Field label="foo">
+            <Checkbox name="foo" />
+          </Field>
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element);
+    expect(result).toStrictEqual({
+      form: { foo: false },
+    });
+  });
+
+  it('supports checkboxes in forms', () => {
+    const element = (
+      <Box>
+        <Form name="form">
+          <Field label="foo">
+            <Checkbox name="foo" value={true} />
+          </Field>
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element);
+    expect(result).toStrictEqual({
+      form: { foo: true },
     });
   });
 
