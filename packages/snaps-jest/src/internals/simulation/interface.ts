@@ -276,45 +276,6 @@ async function handleEvent(
 }
 
 /**
- * The values and files of a form.
- *
- * @property value - The values of the form fields, if any.
- * @property files - The files of the form fields, if any.
- */
-export type FormValues = {
-  value: Record<string, string | null>;
-  files: Record<string, File | null>;
-};
-
-/**
- * Get the form values from the interface state. If the event is not a form
- * submit event, an empty object is returned. Otherwise, the form values are
- * extracted from the state, and the values and files are returned separately.
- *
- * @param state - The interface state.
- * @returns The form values.
- */
-export function getFormValues(state?: FormState): FormValues {
-  if (!state) {
-    return { value: {}, files: {} };
-  }
-
-  return Object.entries(state).reduce<FormValues>(
-    (accumulator, [key, value]) => {
-      const formValue = value as string | File | null;
-      if (typeof formValue === 'string' || formValue === null) {
-        accumulator.value[key] = formValue;
-      } else {
-        accumulator.files[key] = formValue;
-      }
-
-      return accumulator;
-    },
-    { value: {}, files: {} },
-  );
-}
-
-/**
  * Click on an element of the Snap interface.
  *
  * @param controllerMessenger - The controller messenger used to call actions.

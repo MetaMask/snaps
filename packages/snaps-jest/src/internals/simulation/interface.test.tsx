@@ -36,7 +36,6 @@ import {
 import {
   clickElement,
   getElement,
-  getFormValues,
   getInterface,
   getInterfaceResponse,
   mergeValue,
@@ -269,55 +268,6 @@ describe('getElement', () => {
     expect(result).toStrictEqual({
       element: <Button name="baz">foo</Button>,
       form: 'form-2',
-    });
-  });
-});
-
-describe('getFormValues', () => {
-  it('returns an empty object for the value and files if the state is undefined', () => {
-    const result = getFormValues(undefined);
-    expect(result).toStrictEqual({
-      value: {},
-      files: {},
-    });
-  });
-
-  it('returns the form values from the state', () => {
-    const state = {
-      foo: 'bar',
-      baz: {
-        name: 'qux',
-        size: 3,
-        contentType: 'application/octet-stream',
-        contents: 'AQID',
-      },
-    };
-
-    const result = getFormValues(state);
-
-    expect(result).toStrictEqual({
-      value: { foo: 'bar' },
-      files: {
-        baz: {
-          name: 'qux',
-          size: 3,
-          contentType: 'application/octet-stream',
-          contents: 'AQID',
-        },
-      },
-    });
-  });
-
-  it('returns null values as null', () => {
-    const state = {
-      foo: null,
-    };
-
-    const result = getFormValues(state);
-
-    expect(result).toStrictEqual({
-      value: { foo: null },
-      files: {},
     });
   });
 });
