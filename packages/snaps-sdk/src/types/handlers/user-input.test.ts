@@ -1,6 +1,10 @@
 import { is } from 'superstruct';
 
-import { FormSubmitEventStruct, UserInputEventType } from './user-input';
+import {
+  FormSubmitEventStruct,
+  InputChangeEventStruct,
+  UserInputEventType,
+} from './user-input';
 
 describe('UserInputEventType', () => {
   it('has the correct values', () => {
@@ -13,7 +17,7 @@ describe('UserInputEventType', () => {
 });
 
 describe('FormSubmitEventStruct', () => {
-  it('accepts string values and files', () => {
+  it('accepts strings, booleans and files as value', () => {
     expect(
       is(
         {
@@ -27,9 +31,38 @@ describe('FormSubmitEventStruct', () => {
               contents: '...',
             },
             string: 'bar',
+            bool: true,
           },
         },
         FormSubmitEventStruct,
+      ),
+    ).toBe(true);
+  });
+});
+
+describe('InputChangeEventStruct', () => {
+  it('accepts string values', () => {
+    expect(
+      is(
+        {
+          type: 'InputChangeEvent',
+          name: 'foo',
+          value: 'bar',
+        },
+        InputChangeEventStruct,
+      ),
+    ).toBe(true);
+  });
+
+  it('accepts boolean values', () => {
+    expect(
+      is(
+        {
+          type: 'InputChangeEvent',
+          name: 'foo',
+          value: true,
+        },
+        InputChangeEventStruct,
       ),
     ).toBe(true);
   });
