@@ -196,6 +196,7 @@ export const FieldStruct: Describe<FieldElement> = element('Field', {
     DropdownStruct,
     FileInputStruct,
     InputStruct,
+    CheckboxStruct,
   ]),
 });
 

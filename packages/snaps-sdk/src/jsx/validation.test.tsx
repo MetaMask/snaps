@@ -222,6 +222,9 @@ describe('FieldStruct', () => {
         <Option value="option2">Option 2</Option>
       </Dropdown>
     </Field>,
+    <Field label="foo">
+      <Checkbox name="foo" />
+    </Field>,
   ])('validates a field element', (value) => {
     expect(is(value, FieldStruct)).toBe(true);
   });

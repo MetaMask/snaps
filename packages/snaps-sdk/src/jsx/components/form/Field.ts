@@ -1,5 +1,6 @@
 import { createSnapComponent } from '../../component';
 import type { ButtonElement } from './Button';
+import type { CheckboxElement } from './Checkbox';
 import type { DropdownElement } from './Dropdown';
 import type { FileInputElement } from './FileInput';
 import type { InputElement } from './Input';
@@ -18,7 +19,8 @@ export type FieldProps = {
     | [InputElement, ButtonElement]
     | DropdownElement
     | FileInputElement
-    | InputElement;
+    | InputElement
+    | CheckboxElement;
 };
 
 const TYPE = 'Field';
