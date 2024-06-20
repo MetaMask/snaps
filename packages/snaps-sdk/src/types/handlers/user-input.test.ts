@@ -17,7 +17,7 @@ describe('UserInputEventType', () => {
 });
 
 describe('FormSubmitEventStruct', () => {
-  it('accepts strings, booleans and files as value', () => {
+  it('accepts strings, booleans, and files as value', () => {
     expect(
       is(
         {
