@@ -7,6 +7,7 @@ import { getSnapsHandler } from './getSnaps';
 import { invokeKeyringHandler } from './invokeKeyring';
 import { invokeSnapSugarHandler } from './invokeSnapSugar';
 import { requestSnapsHandler } from './requestSnaps';
+import { resolveInterfaceHandler } from './resolveInterface';
 import { updateInterfaceHandler } from './updateInterface';
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -21,6 +22,7 @@ export const methodHandlers = {
   snap_createInterface: createInterfaceHandler,
   snap_updateInterface: updateInterfaceHandler,
   snap_getInterfaceState: getInterfaceStateHandler,
+  snap_resolveInterface: resolveInterfaceHandler,
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 

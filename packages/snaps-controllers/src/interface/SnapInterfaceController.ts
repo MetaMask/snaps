@@ -13,10 +13,10 @@ import type {
   SnapId,
   ComponentOrElement,
   InterfaceContext,
-  Json,
 } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsonSizeUnsafe, validateJsxLinks } from '@metamask/snaps-utils';
+import type { Json } from '@metamask/utils';
 import { assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
