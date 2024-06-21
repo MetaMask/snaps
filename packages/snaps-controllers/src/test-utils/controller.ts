@@ -74,7 +74,11 @@ export class MockApprovalController {
     };
   };
 
-  async addRequest(request: { requestData?: Record<string, Json> }) {
+  async addRequest(request: {
+    id?: string;
+    origin?: string;
+    requestData?: Record<string, Json>;
+  }) {
     const promise = new Promise((resolve, reject) => {
       this.#approval = {
         promise: { resolve, reject },
@@ -83,6 +87,21 @@ export class MockApprovalController {
     });
 
     return promise;
+  }
+
+  hasRequest(
+    opts: { id?: string; origin?: string; type?: string } = {},
+  ): boolean {
+    return this.#approval?.request.id === opts.id;
+  }
+
+  async acceptRequest(_id: string, value: unknown) {
+    if (this.#approval) {
+      this.#approval.promise.resolve(value);
+      return await Promise.resolve({ value });
+    }
+
+    return await Promise.reject(new Error('No request to approve.'));
   }
 
   updateRequestStateAndApprove({
@@ -679,7 +698,10 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
     allowedActions: [
       'PhishingController:testOrigin',
       'PhishingController:maybeUpdateState',
+      'ApprovalController:hasRequest',
+      'ApprovalController:acceptRequest',
     ],
+    allowedEvents: [],
   });
 
   if (mocked) {
