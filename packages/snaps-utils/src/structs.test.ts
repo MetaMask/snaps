@@ -1,6 +1,7 @@
 import { union, literal } from '@metamask/snaps-sdk';
 import type { Struct } from '@metamask/superstruct';
-import superstruct, {
+import {
+  create,
   size,
   defaulted,
   number,
@@ -31,6 +32,14 @@ import {
   createUnion,
   mergeStructs,
 } from './structs';
+
+jest.mock('@metamask/superstruct', () => {
+  return {
+    ...jest.requireActual('@metamask/superstruct'),
+    create: jest.fn(),
+  };
+});
+const createMock = jest.mocked(create);
 
 /**
  * Get an error from a struct, for testing.
@@ -133,6 +142,12 @@ describe('createFromStruct', () => {
     {},
   );
 
+  beforeEach(() => {
+    createMock.mockImplementation(
+      jest.requireActual('@metamask/superstruct').create,
+    );
+  });
+
   it('creates a value from a struct', () => {
     const value = createFromStruct(undefined, DEFAULT_STRUCT, 'Foo');
     expect(value).toStrictEqual({
@@ -157,7 +172,7 @@ describe('createFromStruct', () => {
   });
 
   it('throws the raw error if an unknown error is thrown', () => {
-    jest.spyOn(superstruct, 'create').mockImplementation(() => {
+    createMock.mockImplementationOnce(() => {
       throw new Error('Unknown error.');
     });
 
