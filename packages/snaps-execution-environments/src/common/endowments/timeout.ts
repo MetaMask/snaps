@@ -14,7 +14,11 @@ const MINIMUM_TIMEOUT = 10;
  */
 const createTimeout = () => {
   const registeredHandles = new Map<unknown, unknown>();
-  const _setTimeout = (handler: TimerHandler, timeout?: number): unknown => {
+  const _setTimeout = (
+    handler: TimerHandler,
+    timeout?: number,
+    ...args: any[]
+  ): unknown => {
     if (typeof handler !== 'function') {
       throw rpcErrors.internal(
         `The timeout handler must be a function. Received: ${typeof handler}.`,
@@ -22,10 +26,14 @@ const createTimeout = () => {
     }
     harden(handler);
     const handle = Object.freeze(Object.create(null));
-    const platformHandle = setTimeout(() => {
-      registeredHandles.delete(handle);
-      handler();
-    }, Math.max(MINIMUM_TIMEOUT, timeout ?? 0));
+    const platformHandle = setTimeout(
+      (...passedArgs) => {
+        registeredHandles.delete(handle);
+        handler(...passedArgs);
+      },
+      Math.max(MINIMUM_TIMEOUT, timeout ?? 0),
+      ...args,
+    );
 
     registeredHandles.set(handle, platformHandle);
     return handle;
