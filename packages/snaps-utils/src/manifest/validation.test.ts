@@ -9,6 +9,7 @@ import {
   CurveStruct,
   EmptyObjectStruct,
   isSnapManifest,
+  PermissionsStruct,
   SnapIdsStruct,
 } from './validation';
 
@@ -257,5 +258,11 @@ describe('createSnapManifest', () => {
     getSnapManifest({ version: 'foo bar' }),
   ])('throws for an invalid snap manifest', (value) => {
     expect(() => createSnapManifest(value)).toThrow(StructError);
+  });
+});
+
+describe('PermissionsStruct', () => {
+  it('disallows empty endowment:rpc', () => {
+    expect(is({ 'endowment:rpc': {} }, PermissionsStruct)).toBe(false);
   });
 });

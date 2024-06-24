@@ -11,8 +11,11 @@ import superstruct, {
   validate,
   union as superstructUnion,
   array,
+  is,
 } from 'superstruct';
 
+import { RpcOriginsStruct } from './json-rpc';
+import { HandlerCaveatsStruct } from './manifest';
 import {
   arrayToGenerator,
   createFromStruct,
@@ -26,6 +29,7 @@ import {
   named,
   validateUnion,
   createUnion,
+  mergeStructs,
 } from './structs';
 
 /**
@@ -471,5 +475,24 @@ describe('createUnion', () => {
     const Union = union([FooStruct, BarStruct]);
     const value = createUnion({ type: 'a' }, Union, 'type');
     expect(value).toStrictEqual({ type: 'a', value: 'bar' });
+  });
+});
+
+describe('mergeStructs', () => {
+  it('merges objects', () => {
+    const struct1 = object({ a: string(), b: string(), c: string() });
+    const struct2 = object({ b: number() });
+    const struct3 = object({ a: number() });
+
+    const mergedStruct = mergeStructs(struct1, struct2, struct3);
+    expect(is({ a: 1, b: 2, c: 'c' }, mergedStruct)).toBe(true);
+    expect(is({ a: 'a', b: 2, c: 'c' }, mergedStruct)).toBe(false);
+    expect(is({ a: 1, b: 2, c: 3 }, mergedStruct)).toBe(false);
+  });
+
+  it('keeps refinements', () => {
+    const struct = mergeStructs(HandlerCaveatsStruct, RpcOriginsStruct);
+    expect(is({}, struct)).toBe(false);
+    expect(is({ dapps: true }, struct)).toBe(true);
   });
 });

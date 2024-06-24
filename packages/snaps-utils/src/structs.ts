@@ -10,6 +10,7 @@ import {
   Struct,
   StructError,
   create,
+  assign,
 } from 'superstruct';
 import type { AnyStruct } from 'superstruct/dist/utils';
 
@@ -460,4 +461,24 @@ export function createUnion<Type, Schema extends readonly Struct<any, any>[]>(
   structKey: keyof Type,
 ) {
   return validateUnion(value, struct, structKey, true);
+}
+
+/**
+ * Merge multiple structs into one, using superstruct `assign`.
+ *
+ * Differently from plain `assign`, this function also copies over refinements from each struct.
+ *
+ * @param structs - The `superstruct` structs to merge.
+ * @returns The merged struct.
+ */
+export function mergeStructs(...structs: Struct<any>[]): Struct<any> {
+  const mergedStruct = assign(...structs);
+  return new Struct({
+    ...mergedStruct,
+    *refiner(value, ctx) {
+      for (const struct of structs) {
+        yield* struct.refiner(value, ctx);
+      }
+    },
+  });
 }
