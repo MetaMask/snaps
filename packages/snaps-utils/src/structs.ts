@@ -12,7 +12,12 @@ import {
   create,
   assign,
 } from 'superstruct';
-import type { AnyStruct } from 'superstruct/dist/utils';
+import type {
+  AnyStruct,
+  Assign,
+  ObjectSchema,
+  ObjectType,
+} from 'superstruct/dist/utils';
 
 import { indent } from './strings';
 
@@ -463,6 +468,59 @@ export function createUnion<Type, Schema extends readonly Struct<any, any>[]>(
   return validateUnion(value, struct, structKey, true);
 }
 
+// These types are copied from Superstruct, to mirror `assign`.
+export function mergeStructs<
+  ObjectA extends ObjectSchema,
+  ObjectB extends ObjectSchema,
+>(
+  A: Struct<ObjectType<ObjectA>, ObjectA>,
+  B: Struct<ObjectType<ObjectB>, ObjectB>,
+): Struct<ObjectType<Assign<ObjectA, ObjectB>>, Assign<ObjectA, ObjectB>>;
+export function mergeStructs<
+  ObjectA extends ObjectSchema,
+  ObjectB extends ObjectSchema,
+  ObjectC extends ObjectSchema,
+>(
+  A: Struct<ObjectType<ObjectA>, ObjectA>,
+  B: Struct<ObjectType<ObjectB>, ObjectB>,
+  C: Struct<ObjectType<ObjectC>, ObjectC>,
+): Struct<
+  ObjectType<Assign<Assign<ObjectA, ObjectB>, ObjectC>>,
+  Assign<Assign<ObjectA, ObjectB>, ObjectC>
+>;
+export function mergeStructs<
+  ObjectA extends ObjectSchema,
+  ObjectB extends ObjectSchema,
+  ObjectC extends ObjectSchema,
+  ObjectD extends ObjectSchema,
+>(
+  A: Struct<ObjectType<ObjectA>, ObjectA>,
+  B: Struct<ObjectType<ObjectB>, ObjectB>,
+  C: Struct<ObjectType<ObjectC>, ObjectC>,
+  D: Struct<ObjectType<ObjectD>, ObjectD>,
+): Struct<
+  ObjectType<Assign<Assign<Assign<ObjectA, ObjectB>, ObjectC>, ObjectD>>,
+  Assign<Assign<Assign<ObjectA, ObjectB>, ObjectC>, ObjectD>
+>;
+export function mergeStructs<
+  ObjectA extends ObjectSchema,
+  ObjectB extends ObjectSchema,
+  ObjectC extends ObjectSchema,
+  ObjectD extends ObjectSchema,
+  ObjectE extends ObjectSchema,
+>(
+  A: Struct<ObjectType<ObjectA>, ObjectA>,
+  B: Struct<ObjectType<ObjectB>, ObjectB>,
+  C: Struct<ObjectType<ObjectC>, ObjectC>,
+  D: Struct<ObjectType<ObjectD>, ObjectD>,
+  E: Struct<ObjectType<ObjectE>, ObjectE>,
+): Struct<
+  ObjectType<
+    Assign<Assign<Assign<Assign<ObjectA, ObjectB>, ObjectC>, ObjectD>, ObjectE>
+  >,
+  Assign<Assign<Assign<Assign<ObjectA, ObjectB>, ObjectC>, ObjectD>, ObjectE>
+>;
+
 /**
  * Merge multiple structs into one, using superstruct `assign`.
  *
@@ -472,7 +530,9 @@ export function createUnion<Type, Schema extends readonly Struct<any, any>[]>(
  * @returns The merged struct.
  */
 export function mergeStructs(...structs: Struct<any>[]): Struct<any> {
-  const mergedStruct = assign(...structs);
+  const mergedStruct = (assign as (...structs: Struct<any>[]) => Struct)(
+    ...structs,
+  );
   return new Struct({
     ...mergedStruct,
     *refiner(value, ctx) {
