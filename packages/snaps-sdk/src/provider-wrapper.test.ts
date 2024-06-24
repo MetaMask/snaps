@@ -332,7 +332,9 @@ describe('createInterface', () => {
     (snap.request as jest.MockedFn<typeof snap.request>).mockResolvedValue(
       'foo',
     );
-    expect(await createInterface(panel([text('Hello world!')]))).toBe('foo');
+    expect(
+      await createInterface(panel([text('Hello world!')]), { foo: 'bar' }),
+    ).toBe('foo');
     expect(snap.request).toHaveBeenCalledWith({
       method: 'snap_createInterface',
       params: {
@@ -345,6 +347,7 @@ describe('createInterface', () => {
           ],
           type: 'panel',
         },
+        context: { foo: 'bar' },
       },
     });
   });

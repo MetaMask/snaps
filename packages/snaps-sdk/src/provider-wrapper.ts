@@ -197,10 +197,17 @@ export async function notify(
  * Create a new interface with the specified UI.
  *
  * @param ui - The UI of the interface.
+ * @param context - An optional context blob for the interface.
  * @returns A promise that resolves to the interface ID.
  */
-export async function createInterface(ui: CreateInterfaceParams['ui']) {
-  return snap.request({ method: 'snap_createInterface', params: { ui } });
+export async function createInterface(
+  ui: CreateInterfaceParams['ui'],
+  context?: CreateInterfaceParams['context'],
+) {
+  return snap.request({
+    method: 'snap_createInterface',
+    params: { ui, context },
+  });
 }
 
 /**
