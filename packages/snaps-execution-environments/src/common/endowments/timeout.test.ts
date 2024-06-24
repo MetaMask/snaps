@@ -28,6 +28,16 @@ describe('Timeout endowments', () => {
     ).toBeUndefined();
   }, 300);
 
+  it('should be able to use parameters', async () => {
+    const { setTimeout: _setTimeout } = timeout.factory();
+
+    expect(
+      await new Promise((resolve) => {
+        _setTimeout(resolve, 200, 'foo');
+      }),
+    ).toBe('foo');
+  }, 300);
+
   it('teardownFunction should clear timeouts', async () => {
     const { setTimeout: _setTimeout, teardownFunction } = timeout.factory();
 

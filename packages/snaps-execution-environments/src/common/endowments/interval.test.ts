@@ -32,6 +32,18 @@ describe('Interval endowments', () => {
     expect(await promise).toBeUndefined();
   });
 
+  it('should be able to use parameters', async () => {
+    const { setInterval: _setInterval } = interval.factory();
+
+    const promise = new Promise((resolve) => {
+      _setInterval(resolve, 200, 'foo');
+    });
+
+    jest.advanceTimersByTime(300);
+
+    expect(await promise).toBe('foo');
+  });
+
   it('teardownFunction should clear intervals', async () => {
     const { setInterval: _setInterval, teardownFunction } = interval.factory();
 

@@ -15,7 +15,11 @@ const MINIMUM_INTERVAL = 10;
 const createInterval = () => {
   const registeredHandles = new Map<unknown, unknown>();
 
-  const _setInterval = (handler: TimerHandler, timeout?: number): unknown => {
+  const _setInterval = (
+    handler: TimerHandler,
+    timeout?: number,
+    ...args: any[]
+  ): unknown => {
     if (typeof handler !== 'function') {
       throw rpcErrors.invalidInput(
         `The interval handler must be a function. Received: ${typeof handler}.`,
@@ -26,6 +30,7 @@ const createInterval = () => {
     const platformHandle = setInterval(
       handler,
       Math.max(MINIMUM_INTERVAL, timeout ?? 0),
+      ...args,
     );
     registeredHandles.set(handle, platformHandle);
     return handle;
