@@ -1,4 +1,4 @@
-import { Box, Text } from '@metamask/snaps-sdk';
+import { Box, Text } from '@metamask/snaps-sdk/jsx';
 import { create } from '@metamask/superstruct';
 
 import {
