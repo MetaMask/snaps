@@ -33,6 +33,7 @@ import type {
   Key,
   Nestable,
   SnapElement,
+  SnapsChildren,
   StringElement,
 } from './component';
 import type {
@@ -217,8 +218,8 @@ export const FieldStruct: Describe<FieldElement> = element('Field', {
 export const FormStruct: Describe<FormElement> = element('Form', {
   children: children(
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    [FieldStruct, lazy(() => BoxChildStruct), boolean()],
-  ) as unknown as Struct<Nestable<GenericSnapElement | boolean | null>, null>,
+    [FieldStruct, lazy(() => BoxChildStruct)],
+  ) as unknown as Struct<SnapsChildren<GenericSnapElement>, null>,
   name: string(),
 });
 
@@ -268,8 +269,8 @@ export const AddressStruct: Describe<AddressElement> = element('Address', {
 export const BoxStruct: Describe<BoxElement> = element('Box', {
   children: children(
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    [lazy(() => BoxChildStruct), boolean()],
-  ) as unknown as Struct<Nestable<GenericSnapElement | boolean | null>, null>,
+    [lazy(() => BoxChildStruct)],
+  ) as unknown as Struct<SnapsChildren<GenericSnapElement>, null>,
   direction: optional(nullUnion([literal('horizontal'), literal('vertical')])),
   alignment: optional(
     nullUnion([
