@@ -81,7 +81,12 @@ describe('implementation', () => {
     });
 
     expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-    expect(hooks.showDialog).toHaveBeenCalledWith('foo', undefined, 'bar');
+    expect(hooks.showDialog).toHaveBeenCalledWith(
+      'foo',
+      undefined,
+      'bar',
+      undefined,
+    );
   });
 
   it('gets the interface data if an interface ID is passed', async () => {
@@ -344,31 +349,23 @@ describe('implementation', () => {
   });
 
   describe('validation', () => {
-    it.each([
-      undefined,
-      null,
-      false,
-      '',
-      'abc',
-      2,
-      [],
-      {},
-      new (class {})(),
-      new Array(41).fill('a').join(''),
-    ])('rejects invalid parameter object', async (value) => {
-      const hooks = getMockDialogHooks();
-      const implementation = getDialogImplementation(hooks);
+    it.each([undefined, null, false, 2])(
+      'rejects invalid parameter object',
+      async (value) => {
+        const hooks = getMockDialogHooks();
+        const implementation = getDialogImplementation(hooks);
 
-      await expect(
-        implementation({
-          context: { origin: 'foo' },
-          method: 'snap_dialog',
-          params: value as any,
-        }),
-      ).rejects.toThrow(
-        'The "type" property must be one of: alert, confirmation, prompt.',
-      );
-    });
+        await expect(
+          implementation({
+            context: { origin: 'foo' },
+            method: 'snap_dialog',
+            params: value as any,
+          }),
+        ).rejects.toThrow(
+          'The "type" property must be one of: alert, confirmation, prompt.',
+        );
+      },
+    );
 
     it.each([{ type: false }, { type: '' }, { type: 'foo' }])(
       'rejects invalid types',

@@ -25,7 +25,15 @@ import { createUnion } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
 import { hasProperty, type NonEmptyArray } from '@metamask/utils';
 import type { Infer, Struct } from 'superstruct';
-import { object, optional, size, string } from 'superstruct';
+import {
+  create,
+  enums,
+  object,
+  optional,
+  size,
+  string,
+  type,
+} from 'superstruct';
 
 import { type MethodHooksObject } from '../utils';
 
@@ -128,6 +136,14 @@ export const dialogBuilder = Object.freeze({
   methodHooks,
 } as const);
 
+// Note: We use `type` here instead of `object` because `type` does not validate
+// the keys of the object, which is what we want.
+const BaseParamsStruct = type({
+  type: optional(
+    enums([DialogType.Alert, DialogType.Confirmation, DialogType.Prompt]),
+  ),
+});
+
 const AlertParametersWithContentStruct = object({
   type: enumValue(DialogType.Alert),
   content: ComponentOrElementStruct,
@@ -190,6 +206,12 @@ export type DialogParameters = InferMatching<
   DialogParams
 >;
 
+const structs: Record<DialogType, Struct<any, any>> = {
+  [DialogType.Alert]: AlertParametersStruct,
+  [DialogType.Confirmation]: ConfirmationParametersStruct,
+  [DialogType.Prompt]: PromptParametersStruct,
+};
+
 /**
  * Builds the method implementation for `snap_dialog`.
  *
@@ -214,10 +236,9 @@ export function getDialogImplementation({
       context: { origin },
     } = args;
 
-    const validatedParams = getValidatedParams(params, DialogParametersStruct);
+    const validatedType = getValidatedType(params);
 
-    const type = getDialogType(validatedParams);
-
+    const validatedParams = getValidatedParams(params, validatedType);
     const placeholder = isPromptDialog(validatedParams)
       ? validatedParams.placeholder
       : undefined;
@@ -227,12 +248,12 @@ export function getDialogImplementation({
         origin,
         validatedParams.content as Component,
       );
-      return showDialog(origin, type, id, placeholder);
+      return showDialog(origin, validatedType, id, placeholder);
     }
 
     validateInterface(origin, validatedParams.id, getInterface);
 
-    return showDialog(origin, type, validatedParams.id, placeholder);
+    return showDialog(origin, validatedType, validatedParams.id, placeholder);
   };
 }
 /**
@@ -267,6 +288,25 @@ function getDialogType(params: DialogParameters): DialogType | undefined {
 }
 
 /**
+ * Get the validated type of the dialog parameters. Throws an error if the type
+ * is invalid.
+ *
+ * @param params - The parameters to validate.
+ * @returns The validated type of the dialog parameters.
+ */
+function getValidatedType(params: unknown): DialogType | undefined {
+  try {
+    return create(params, BaseParamsStruct).type;
+  } catch (error) {
+    throw rpcErrors.invalidParams({
+      message: `The "type" property must be one of: ${Object.values(
+        DialogType,
+      ).join(', ')}.`,
+    });
+  }
+}
+
+/**
  * Checks if the dialog parameters are for an alert dialog.
  *
  * @param params - The dialog parameters.
@@ -281,15 +321,17 @@ function isPromptDialog(params: DialogParameters): params is PromptDialog {
  * type. Throws if validation fails.
  *
  * @param params - The unvalidated params object from the method request.
- * @param struct - The struct to validate the params against.
+ * @param validatedType - The validated dialog type.
  * @returns The validated confirm method parameter object.
  */
 function getValidatedParams(
   params: unknown,
-  struct: Struct<any, any>,
+  validatedType: DialogType | undefined,
 ): DialogParameters {
   try {
-    return createUnion(params, struct, 'type');
+    return validatedType
+      ? createUnion(params, structs[validatedType], 'type')
+      : create(params, DefaultParametersStruct);
   } catch (error) {
     throw rpcErrors.invalidParams({
       message: `Invalid params: ${error.message}`,
