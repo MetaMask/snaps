@@ -13,22 +13,4 @@ describe('Option', () => {
       key: null,
     });
   });
-
-  it('renders a dropdown option with a conditional value', () => {
-    const result = (
-      <Option value="foo">
-        Foo
-        {false && <span>Bar</span>}
-      </Option>
-    );
-
-    expect(result).toStrictEqual({
-      type: 'Option',
-      props: {
-        value: 'foo',
-        children: ['Foo', false],
-      },
-      key: null,
-    });
-  });
 });

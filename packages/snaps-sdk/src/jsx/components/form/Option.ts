@@ -1,4 +1,3 @@
-import type { StringElement } from '../../component';
 import { createSnapComponent } from '../../component';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Dropdown } from './Dropdown';
@@ -12,7 +11,7 @@ import { Dropdown } from './Dropdown';
  */
 type OptionProps = {
   value: string;
-  children: StringElement;
+  children: string;
 };
 
 const TYPE = 'Option';

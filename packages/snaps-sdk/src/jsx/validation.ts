@@ -172,7 +172,7 @@ export const InputStruct: Describe<InputElement> = element('Input', {
  */
 export const OptionStruct: Describe<OptionElement> = element('Option', {
   value: string(),
-  children: StringElementStruct,
+  children: string(),
 });
 
 /**
