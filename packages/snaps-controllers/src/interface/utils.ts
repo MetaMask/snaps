@@ -12,6 +12,7 @@ import type {
   JSXElement,
   OptionElement,
   FileInputElement,
+  CheckboxElement,
 } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import {
@@ -60,14 +61,41 @@ export function assertNameIsUnique(state: InterfaceState, name: string) {
  * @returns The default state for the specific component, if any.
  */
 function constructComponentSpecificDefaultState(
-  element: InputElement | DropdownElement,
+  element: InputElement | DropdownElement | CheckboxElement,
 ) {
-  if (element.type === 'Dropdown') {
-    const children = getJsxChildren(element) as OptionElement[];
-    return children[0]?.props.value;
-  }
+  switch (element.type) {
+    case 'Dropdown': {
+      const children = getJsxChildren(element) as OptionElement[];
+      return children[0]?.props.value;
+    }
 
-  return null;
+    case 'Checkbox':
+      return false;
+
+    default:
+      return null;
+  }
+}
+
+/**
+ * Get the state value for a stateful component.
+ *
+ * Most components store the state value as a `value` prop.
+ * This function exists to account for components where that isn't the case.
+ *
+ * @param element - The input element.
+ * @returns The state value for a given component.
+ */
+function getComponentStateValue(
+  element: InputElement | DropdownElement | CheckboxElement,
+) {
+  switch (element.type) {
+    case 'Checkbox':
+      return element.props.checked;
+
+    default:
+      return element.props.value;
+  }
 }
 
 /**
@@ -80,7 +108,7 @@ function constructComponentSpecificDefaultState(
  */
 function constructInputState(
   oldState: InterfaceState,
-  element: InputElement | DropdownElement | FileInputElement,
+  element: InputElement | DropdownElement | FileInputElement | CheckboxElement,
   form?: string,
 ) {
   const oldStateUnwrapped = form ? (oldState[form] as FormState) : oldState;
@@ -91,7 +119,7 @@ function constructInputState(
   }
 
   return (
-    element.props.value ??
+    getComponentStateValue(element) ??
     oldInputState ??
     constructComponentSpecificDefaultState(element) ??
     null
@@ -135,7 +163,8 @@ export function constructState(
       currentForm &&
       (component.type === 'Input' ||
         component.type === 'Dropdown' ||
-        component.type === 'FileInput')
+        component.type === 'FileInput' ||
+        component.type === 'Checkbox')
     ) {
       const formState = newState[currentForm.name] as FormState;
       assertNameIsUnique(formState, component.props.name);
@@ -151,7 +180,8 @@ export function constructState(
     if (
       component.type === 'Input' ||
       component.type === 'Dropdown' ||
-      component.type === 'FileInput'
+      component.type === 'FileInput' ||
+      component.type === 'Checkbox'
     ) {
       assertNameIsUnique(newState, component.props.name);
       newState[component.props.name] = constructInputState(oldState, component);

@@ -22,6 +22,7 @@ import {
   Tooltip,
   Value,
   FileInput,
+  Checkbox,
 } from './components';
 import {
   AddressStruct,
@@ -29,6 +30,7 @@ import {
   BoldStruct,
   BoxStruct,
   ButtonStruct,
+  CheckboxStruct,
   CopyableStruct,
   DividerStruct,
   DropdownStruct,
@@ -219,6 +221,9 @@ describe('FieldStruct', () => {
         <Option value="option1">Option 1</Option>
         <Option value="option2">Option 2</Option>
       </Dropdown>
+    </Field>,
+    <Field label="foo">
+      <Checkbox name="foo" />
     </Field>,
   ])('validates a field element', (value) => {
     expect(is(value, FieldStruct)).toBe(true);
@@ -466,6 +471,36 @@ describe('BoxStruct', () => {
   });
 });
 
+describe('CheckboxStruct', () => {
+  it.each([
+    <Checkbox name="foo" />,
+    <Checkbox name="foo" checked={true} />,
+    <Checkbox name="foo" checked={true} label="Foo" variant="toggle" />,
+  ])('validates a dropdown element', (value) => {
+    expect(is(value, CheckboxStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <Spinner>foo</Spinner>,
+    <Text>foo</Text>,
+    <Box>
+      <Text>foo</Text>
+    </Box>,
+    <Row label="label">
+      <Image src="<svg />" alt="alt" />
+    </Row>,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, CheckboxStruct)).toBe(false);
+  });
+});
+
 describe('CopyableStruct', () => {
   it.each([
     <Copyable value="foo" />,
@@ -541,9 +576,6 @@ describe('DropdownStruct', () => {
     {},
     [],
     // @ts-expect-error - Invalid props.
-    <Dropdown name="foo" />,
-    <Dropdown name="foo" children={[]} />,
-    // @ts-expect-error - Invalid props.
     <Spinner>foo</Spinner>,
     <Text>foo</Text>,
     <Box>
@@ -553,7 +585,7 @@ describe('DropdownStruct', () => {
       <Image src="<svg />" alt="alt" />
     </Row>,
   ])('does not validate "%p"', (value) => {
-    expect(is(value, ValueStruct)).toBe(false);
+    expect(is(value, DropdownStruct)).toBe(false);
   });
 });
 

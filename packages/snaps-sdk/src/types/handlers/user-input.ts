@@ -9,6 +9,7 @@ import {
   record,
   string,
   union,
+  boolean,
 } from 'superstruct';
 
 import type { InterfaceContext } from '../interface';
@@ -74,7 +75,7 @@ export const FormSubmitEventStruct = assign(
   GenericEventStruct,
   object({
     type: literal(UserInputEventType.FormSubmitEvent),
-    value: record(string(), nullable(union([string(), FileStruct]))),
+    value: record(string(), nullable(union([string(), FileStruct, boolean()]))),
     name: string(),
   }),
 );
@@ -99,7 +100,7 @@ export const InputChangeEventStruct = assign(
   object({
     type: literal(UserInputEventType.InputChangeEvent),
     name: string(),
-    value: string(),
+    value: union([string(), boolean()]),
   }),
 );
 
