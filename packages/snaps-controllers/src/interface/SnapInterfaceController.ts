@@ -11,15 +11,15 @@ import type {
   InterfaceContext,
 } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
-import {
-  getJsonSizeUnsafe,
-  getJsxInterface,
-  validateJsxLinks,
-} from '@metamask/snaps-utils';
+import { getJsonSizeUnsafe, validateJsxLinks } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
-import { constructState, validateInterfaceContext } from './utils';
+import {
+  constructState,
+  getJsxInterface,
+  validateInterfaceContext,
+} from './utils';
 
 const MAX_UI_CONTENT_SIZE = 10_000_000; // 10 mb
 

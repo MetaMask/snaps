@@ -1,3 +1,4 @@
+import { panel, text } from '@metamask/snaps-sdk';
 import {
   Box,
   Button,
@@ -11,7 +12,35 @@ import {
   Checkbox,
 } from '@metamask/snaps-sdk/jsx';
 
-import { assertNameIsUnique, constructState } from './utils';
+import { assertNameIsUnique, constructState, getJsxInterface } from './utils';
+
+describe('getJsxInterface', () => {
+  it('returns the JSX interface for a JSX element', () => {
+    expect(
+      getJsxInterface(
+        <Box>
+          <Text>Hello</Text>
+        </Box>,
+      ),
+    ).toStrictEqual(
+      Box({
+        children: Text({
+          children: 'Hello',
+        }),
+      }),
+    );
+  });
+
+  it('returns the JSX interface for a legacy element', () => {
+    expect(getJsxInterface(panel([text('Hello')]))).toStrictEqual(
+      Box({
+        children: Text({
+          children: 'Hello',
+        }),
+      }),
+    );
+  });
+});
 
 describe('assertNameIsUnique', () => {
   it('throws an error if a name is not unique', () => {

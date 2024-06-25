@@ -1,4 +1,4 @@
-import type { Component, ComponentOrElement } from '@metamask/snaps-sdk';
+import type { Component } from '@metamask/snaps-sdk';
 import { NodeType } from '@metamask/snaps-sdk';
 import type {
   BoldChildren,
@@ -29,7 +29,6 @@ import {
   Box,
   Button,
   Address,
-  isJSXElementUnsafe,
 } from '@metamask/snaps-sdk/jsx';
 import {
   assert,
@@ -304,22 +303,6 @@ export function getJsxElementFromComponent(
   }
 
   return getElement(legacyComponent);
-}
-
-/**
- * Get a JSX element from a component or JSX element. If the component is a
- * JSX element, it is returned as is. Otherwise, the component is converted to
- * a JSX element.
- *
- * @param component - The component to convert.
- * @returns The JSX element.
- */
-export function getJsxInterface(component: ComponentOrElement): JSXElement {
-  if (isJSXElementUnsafe(component)) {
-    return component;
-  }
-
-  return getJsxElementFromComponent(component);
 }
 
 /**
