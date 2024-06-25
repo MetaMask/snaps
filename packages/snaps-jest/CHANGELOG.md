@@ -8,8 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [8.2.0]
 ### Added
-- Add support for checkboxes to `snaps-jest` ([#2515](https://github.com/MetaMask/snaps/pull/2515))
-- Add support for file inputs to `snaps-jest` ([#2494](https://github.com/MetaMask/snaps/pull/2494))
+- Add support for `Checkbox` to `snaps-jest` ([#2515](https://github.com/MetaMask/snaps/pull/2515))
+  - Checkboxes can be interacted with using `clickElement`.
+- Add support for `FileInput` to `snaps-jest` ([#2494](https://github.com/MetaMask/snaps/pull/2494))
+  - Files can be uploaded to file inputs using `uploadFile`.
 
 ## [8.1.3]
 ### Changed
