@@ -69,6 +69,21 @@ describe('implementation', () => {
     );
   });
 
+  it('accepts no dialog type', async () => {
+    const hooks = getMockDialogHooks();
+    const implementation = getDialogImplementation(hooks);
+    await implementation({
+      context: { origin: 'foo' },
+      method: 'snap_dialog',
+      params: {
+        id: 'bar',
+      },
+    });
+
+    expect(hooks.showDialog).toHaveBeenCalledTimes(1);
+    expect(hooks.showDialog).toHaveBeenCalledWith('foo', undefined, 'bar');
+  });
+
   it('gets the interface data if an interface ID is passed', async () => {
     const hooks = {
       showDialog: jest.fn(),
@@ -446,8 +461,8 @@ describe('implementation', () => {
           implementation({
             context: { origin: 'foo' },
             method: 'snap_dialog',
+            // @ts-expect-error Wrong params.
             params: {
-              // @ts-expect-error Wrong params.
               type,
               content: panel([heading('foo'), text('bar')]),
               placeholder: 'foobar',

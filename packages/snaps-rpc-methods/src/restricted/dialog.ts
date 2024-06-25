@@ -17,21 +17,15 @@ import type {
   Component,
   InterfaceState,
   SnapId,
+  PromptDialog,
   ComponentOrElement,
 } from '@metamask/snaps-sdk';
-import { createUnion } from '@metamask/snaps-utils';
 import type { InferMatching } from '@metamask/snaps-utils';
+import { createUnion } from '@metamask/snaps-utils';
+import type { Json } from '@metamask/utils';
 import { hasProperty, type NonEmptyArray } from '@metamask/utils';
 import type { Infer, Struct } from 'superstruct';
-import {
-  create,
-  enums,
-  object,
-  optional,
-  size,
-  string,
-  type,
-} from 'superstruct';
+import { object, optional, size, string } from 'superstruct';
 
 import { type MethodHooksObject } from '../utils';
 
@@ -43,10 +37,10 @@ export type Placeholder = Infer<typeof PlaceholderStruct>;
 
 type ShowDialog = (
   snapId: string,
-  type: EnumToUnion<DialogType>,
+  type: EnumToUnion<DialogType> | undefined,
   id: string,
   placeholder?: Placeholder,
-) => Promise<null | boolean | string>;
+) => Promise<null | boolean | string | Json>;
 
 type CreateInterface = (
   snapId: string,
@@ -134,12 +128,6 @@ export const dialogBuilder = Object.freeze({
   methodHooks,
 } as const);
 
-// Note: We use `type` here instead of `object` because `type` does not validate
-// the keys of the object, which is what we want.
-const BaseParamsStruct = type({
-  type: enums([DialogType.Alert, DialogType.Confirmation, DialogType.Prompt]),
-});
-
 const AlertParametersWithContentStruct = object({
   type: enumValue(DialogType.Alert),
   content: ComponentOrElementStruct,
@@ -186,22 +174,21 @@ const PromptParametersStruct = union([
   PromptParametersWithIdStruct,
 ]);
 
+const DefaultParametersStruct = object({
+  id: string(),
+});
+
 const DialogParametersStruct = union([
   AlertParametersStruct,
   ConfirmationParametersStruct,
   PromptParametersStruct,
+  DefaultParametersStruct,
 ]);
 
 export type DialogParameters = InferMatching<
   typeof DialogParametersStruct,
   DialogParams
 >;
-
-const structs = {
-  [DialogType.Alert]: AlertParametersStruct,
-  [DialogType.Confirmation]: ConfirmationParametersStruct,
-  [DialogType.Prompt]: PromptParametersStruct,
-};
 
 /**
  * Builds the method implementation for `snap_dialog`.
@@ -221,59 +208,72 @@ export function getDialogImplementation({
 }: DialogMethodHooks) {
   return async function dialogImplementation(
     args: RestrictedMethodOptions<DialogParameters>,
-  ): Promise<boolean | null | string> {
+  ): Promise<boolean | null | string | Json> {
     const {
       params,
       context: { origin },
     } = args;
 
-    const validatedType = getValidatedType(params);
-    const validatedParams = getValidatedParams(params, structs[validatedType]);
+    const validatedParams = getValidatedParams(params, DialogParametersStruct);
 
-    const placeholder =
-      validatedParams.type === DialogType.Prompt
-        ? validatedParams.placeholder
-        : undefined;
+    const type = getDialogType(validatedParams);
+
+    const placeholder = isPromptDialog(validatedParams)
+      ? validatedParams.placeholder
+      : undefined;
 
     if (hasProperty(validatedParams, 'content')) {
       const id = await createInterface(
         origin,
         validatedParams.content as Component,
       );
-      return showDialog(origin, validatedType, id, placeholder);
+      return showDialog(origin, type, id, placeholder);
     }
 
-    // Verify that the passed interface ID is valid.
-    // This will throw if the interface ID is invalid (not created by the snap or doesn't exist)
-    try {
-      getInterface(origin, validatedParams.id);
-    } catch (error) {
-      throw rpcErrors.invalidParams({
-        message: `Invalid params: ${error.message}`,
-      });
-    }
+    validateInterface(origin, validatedParams.id, getInterface);
 
-    return showDialog(origin, validatedType, validatedParams.id, placeholder);
+    return showDialog(origin, type, validatedParams.id, placeholder);
   };
+}
+/**
+ * Validate that the interface ID is valid.
+ *
+ * @param origin - The origin of the request.
+ * @param id - The interface ID.
+ * @param getInterface - The function to get the interface.
+ */
+function validateInterface(
+  origin: string,
+  id: string,
+  getInterface: GetInterface,
+) {
+  try {
+    getInterface(origin, id);
+  } catch (error) {
+    throw rpcErrors.invalidParams({
+      message: `Invalid params: ${error.message}`,
+    });
+  }
 }
 
 /**
- * Get the validated type of the dialog parameters. Throws an error if the type
- * is invalid.
+ * Gets the dialog type from the dialog parameters.
  *
- * @param params - The parameters to validate.
- * @returns The validated type of the dialog parameters.
+ * @param params - The dialog parameters.
+ * @returns The dialog type.
  */
-function getValidatedType(params: unknown): DialogType {
-  try {
-    return create(params, BaseParamsStruct).type;
-  } catch (error) {
-    throw rpcErrors.invalidParams({
-      message: `The "type" property must be one of: ${Object.values(
-        DialogType,
-      ).join(', ')}.`,
-    });
-  }
+function getDialogType(params: DialogParameters): DialogType | undefined {
+  return hasProperty(params, 'type') ? (params.type as DialogType) : undefined;
+}
+
+/**
+ * Checks if the dialog parameters are for an alert dialog.
+ *
+ * @param params - The dialog parameters.
+ * @returns `true` if the dialog parameters are for an alert dialog, `false`
+ */
+function isPromptDialog(params: DialogParameters): params is PromptDialog {
+  return getDialogType(params) === DialogType.Prompt;
 }
 
 /**
