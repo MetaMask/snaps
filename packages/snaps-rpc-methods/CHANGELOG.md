@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.1.4]
+### Changed
+- Bump MetaMask dependencies ([#2516](https://github.com/MetaMask/snaps/pull/2516))
+
 ## [9.1.3]
 ### Changed
 - Bump MetaMask dependencies ([#2460](https://github.com/MetaMask/snaps/pull/2460))
@@ -158,7 +162,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@9.1.3...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@9.1.4...HEAD
+[9.1.4]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@9.1.3...@metamask/snaps-rpc-methods@9.1.4
 [9.1.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@9.1.2...@metamask/snaps-rpc-methods@9.1.3
 [9.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@9.1.1...@metamask/snaps-rpc-methods@9.1.2
 [9.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@9.1.0...@metamask/snaps-rpc-methods@9.1.1
