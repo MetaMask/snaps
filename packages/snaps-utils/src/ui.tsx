@@ -5,7 +5,7 @@ import type {
   ItalicChildren,
   JSXElement,
   LinkElement,
-  MaybeArray,
+  Nestable,
   RowChildren,
   StandardFormattingElement,
   TextChildren,
@@ -433,7 +433,7 @@ export function getTotalTextLength(component: Component): number {
 export function hasChildren<Element extends JSXElement>(
   element: Element,
 ): element is Element & {
-  props: { children: MaybeArray<JSXElement | string> };
+  props: { children: Nestable<JSXElement | string> };
 } {
   return hasProperty(element.props, 'children');
 }

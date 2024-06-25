@@ -11,7 +11,11 @@ import type {
   ComponentOrElement,
   Component,
 } from '@metamask/snaps-sdk';
-import type { JSXElement, SnapNode } from '@metamask/snaps-sdk/jsx';
+import type {
+  GenericSnapElement,
+  JSXElement,
+  SnapNode,
+} from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import { getJsxElementFromComponent } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
@@ -234,7 +238,7 @@ export function serialiseJsx(node: SnapNode, indentation = 0): string {
     return '';
   }
 
-  const { type, props } = node;
+  const { type, props } = node as GenericSnapElement;
   const trailingNewline = indentation > 0 ? '\n' : '';
 
   if (hasProperty(props, 'children')) {
