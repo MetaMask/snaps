@@ -43,7 +43,7 @@ declaration, like so:
 export type DropdownProps = {
   name: string;
   value?: string | undefined;
-  children: MaybeArray<OptionElement | boolean>;
+  children: SnapsChildren<OptionElement>;
 };
 ```
 
@@ -78,7 +78,8 @@ exceptions to this rule, such as when the component only accepts a single child
 element (e.g., `Field`).
 
 Children should also accept `boolean` and `null` values to allow for conditional
-rendering of child elements.
+rendering of child elements. This is handled automatically by the
+`SnapsChildren` type.
 
 ```typescript
 export type ComponentProps = {
