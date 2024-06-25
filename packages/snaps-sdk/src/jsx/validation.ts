@@ -229,7 +229,6 @@ export const FormStruct: Describe<FormElement> = element('Form', {
 export const BoldStruct: Describe<BoldElement> = element('Bold', {
   children: children([
     string(),
-    boolean(),
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     lazy(() => ItalicStruct) as unknown as Struct<
       SnapElement<JsonObject, 'Italic'>
@@ -243,7 +242,6 @@ export const BoldStruct: Describe<BoldElement> = element('Bold', {
 export const ItalicStruct: Describe<ItalicElement> = element('Italic', {
   children: children([
     string(),
-    boolean(),
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     lazy(() => BoldStruct) as unknown as Struct<
       SnapElement<JsonObject, 'Bold'>
@@ -324,20 +322,14 @@ export const ImageStruct: Describe<ImageElement> = element('Image', {
  */
 export const LinkStruct: Describe<LinkElement> = element('Link', {
   href: string(),
-  children: children([FormattingStruct, string(), boolean()]),
+  children: children([FormattingStruct, string()]),
 });
 
 /**
  * A struct for the {@link TextElement} type.
  */
 export const TextStruct: Describe<TextElement> = element('Text', {
-  children: children([
-    string(),
-    boolean(),
-    BoldStruct,
-    ItalicStruct,
-    LinkStruct,
-  ]),
+  children: children([string(), BoldStruct, ItalicStruct, LinkStruct]),
   alignment: optional(
     nullUnion([literal('start'), literal('center'), literal('end')]),
   ),
