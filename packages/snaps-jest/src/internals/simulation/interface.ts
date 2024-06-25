@@ -14,7 +14,7 @@ import {
   unwrapError,
   walkJsx,
 } from '@metamask/snaps-utils';
-import { hasProperty } from '@metamask/utils';
+import { assertExhaustive, hasProperty } from '@metamask/utils';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { type SagaIterator } from 'redux-saga';
 import { call, put, select, take } from 'redux-saga/effects';
@@ -303,8 +303,8 @@ export async function clickElement(
   );
 
   assert(
-    result.element.type === 'Button',
-    `Expected an element of type "Button", but found "${result.element.type}".`,
+    result.element.type === 'Button' || result.element.type === 'Checkbox',
+    `Expected an element of type "Button" or "Checkbox", but found "${result.element.type}".`,
   );
 
   const { state, context } = controllerMessenger.call(
@@ -313,30 +313,69 @@ export async function clickElement(
     id,
   );
 
-  // Button click events are always triggered.
-  await handleEvent(
-    controllerMessenger,
-    snapId,
-    id,
-    {
-      type: UserInputEventType.ButtonClickEvent,
-      name: result.element.props.name,
-    },
-    context,
-  );
+  const { type } = result.element;
+  const elementName = result.element.props.name;
 
-  if (result.form && result.element.props.type === 'submit') {
-    await handleEvent(
-      controllerMessenger,
-      snapId,
-      id,
-      {
-        type: UserInputEventType.FormSubmitEvent,
-        name: result.form,
-        value: state[result.form] as FormState,
-      },
-      context,
-    );
+  const formState = (result.form ? state[result.form] : state) as FormState;
+  const currentValue = formState[elementName];
+
+  switch (type) {
+    case 'Button': {
+      // Button click events are always triggered.
+      await handleEvent(
+        controllerMessenger,
+        snapId,
+        id,
+        {
+          type: UserInputEventType.ButtonClickEvent,
+          name: elementName,
+        },
+        context,
+      );
+
+      if (result.form && result.element.props.type === 'submit') {
+        await handleEvent(
+          controllerMessenger,
+          snapId,
+          id,
+          {
+            type: UserInputEventType.FormSubmitEvent,
+            name: result.form,
+            value: state[result.form] as FormState,
+          },
+          context,
+        );
+      }
+      break;
+    }
+
+    case 'Checkbox': {
+      const newValue = !currentValue;
+      const newState = mergeValue(state, name, newValue, result.form);
+
+      controllerMessenger.call(
+        'SnapInterfaceController:updateInterfaceState',
+        id,
+        newState,
+      );
+
+      await handleEvent(
+        controllerMessenger,
+        snapId,
+        id,
+        {
+          type: UserInputEventType.InputChangeEvent,
+          name: elementName,
+          value: newValue,
+        },
+        context,
+      );
+      break;
+    }
+
+    /* istanbul ignore next */
+    default:
+      assertExhaustive(type);
   }
 }
 
@@ -352,7 +391,7 @@ export async function clickElement(
 export function mergeValue(
   state: InterfaceState,
   name: string,
-  value: string | File | null,
+  value: string | File | boolean | null,
   form?: string,
 ): InterfaceState {
   if (form) {

@@ -17,6 +17,8 @@ import {
   Box,
   Input,
   FileInput,
+  Checkbox,
+  Form,
 } from '@metamask/snaps-sdk/jsx';
 import {
   getJsxElementFromComponent,
@@ -379,6 +381,76 @@ describe('clickElement', () => {
     });
   });
 
+  it('supports checkboxes', async () => {
+    const content = (
+      <Form name="form">
+        <Checkbox name="checkbox" />
+        <Button name="button" type="submit">
+          Submit
+        </Button>
+      </Form>
+    );
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await clickElement(
+      rootControllerMessenger,
+      interfaceId,
+      content,
+      MOCK_SNAP_ID,
+      'checkbox',
+    );
+
+    await clickElement(
+      rootControllerMessenger,
+      interfaceId,
+      content,
+      MOCK_SNAP_ID,
+      'button',
+    );
+
+    expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
+      origin: '',
+      handler: HandlerType.OnUserInput,
+      request: {
+        jsonrpc: '2.0',
+        method: ' ',
+        params: {
+          event: {
+            type: UserInputEventType.InputChangeEvent,
+            name: 'checkbox',
+            value: true,
+          },
+          id: interfaceId,
+          context: null,
+        },
+      },
+    });
+
+    expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
+      origin: '',
+      handler: HandlerType.OnUserInput,
+      request: {
+        jsonrpc: '2.0',
+        method: ' ',
+        params: {
+          event: {
+            type: UserInputEventType.FormSubmitEvent,
+            name: 'form',
+            value: {
+              checkbox: true,
+            },
+          },
+          id: interfaceId,
+          context: null,
+        },
+      },
+    });
+  });
+
   it('throws if there is no button with the given name in the interface', async () => {
     const content = button({ value: 'foo', name: 'foo' });
 
@@ -419,7 +491,7 @@ describe('clickElement', () => {
         'foo',
       ),
     ).rejects.toThrow(
-      'Expected an element of type "Button", but found "Input".',
+      'Expected an element of type "Button" or "Checkbox", but found "Input".',
     );
 
     expect(handleRpcRequestMock).not.toHaveBeenCalled();
