@@ -5633,7 +5633,7 @@ __metadata:
     jest: ^29.0.2
     jest-fetch-mock: ^3.0.3
     mkdirp: ^1.0.4
-    nanoid: ^3.1.31
+    nanoid: ^3.3.7
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     readable-stream: ^3.6.2
@@ -5718,7 +5718,7 @@ __metadata:
     jest-fetch-mock: ^3.0.3
     lavamoat: ^8.0.4
     lavamoat-browserify: ^17.0.5
-    nanoid: ^3.1.31
+    nanoid: ^3.3.7
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.2.11
     readable-stream: ^3.6.2
@@ -17729,7 +17729,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^3.1.31, nanoid@npm:^3.3.6":
+"nanoid@npm:^3.1.31, nanoid@npm:^3.3.6, nanoid@npm:^3.3.7":
   version: 3.3.7
   resolution: "nanoid@npm:3.3.7"
   bin:
