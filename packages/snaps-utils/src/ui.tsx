@@ -5,7 +5,7 @@ import type {
   ItalicChildren,
   JSXElement,
   LinkElement,
-  MaybeArray,
+  Nestable,
   RowChildren,
   StandardFormattingElement,
   TextChildren,
@@ -433,9 +433,21 @@ export function getTotalTextLength(component: Component): number {
 export function hasChildren<Element extends JSXElement>(
   element: Element,
 ): element is Element & {
-  props: { children: MaybeArray<JSXElement | string> };
+  props: { children: Nestable<JSXElement | string> };
 } {
   return hasProperty(element.props, 'children');
+}
+
+/**
+ * Filter a JSX child to remove `null`, `undefined`, plain booleans, and empty
+ * strings.
+ *
+ * @param child - The JSX child to filter.
+ * @returns `true` if the child is not `null`, `undefined`, a plain boolean, or
+ * an empty string, `false` otherwise.
+ */
+function filterJsxChild(child: JSXElement | string | boolean | null): boolean {
+  return Boolean(child) && child !== true;
 }
 
 /**
@@ -450,7 +462,7 @@ export function getJsxChildren(element: JSXElement): (JSXElement | string)[] {
     if (Array.isArray(element.props.children)) {
       // @ts-expect-error - Each member of the union type has signatures, but
       // none of those signatures are compatible with each other.
-      return element.props.children.filter(Boolean).flat(Infinity);
+      return element.props.children.filter(filterJsxChild).flat(Infinity);
     }
 
     if (element.props.children) {

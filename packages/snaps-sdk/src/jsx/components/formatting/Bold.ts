@@ -1,16 +1,15 @@
-import type { JsonObject, MaybeArray, SnapElement } from '../../component';
+import type { JsonObject, SnapElement, SnapsChildren } from '../../component';
 import { createSnapComponent } from '../../component';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { Text } from '../Text';
+import { Text } from '../Text';
 
 /**
  * The children of the {@link Bold} component.
  */
-export type BoldChildren = MaybeArray<
+export type BoldChildren = SnapsChildren<
   | string
   // We have to specify the type here to avoid a circular reference.
   | SnapElement<JsonObject, 'Italic'>
-  | null
 >;
 
 /**

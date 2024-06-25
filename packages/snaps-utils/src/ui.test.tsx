@@ -785,6 +785,45 @@ describe('getJsxChildren', () => {
     ]);
   });
 
+  it('removes falsy children from the array', () => {
+    const element = (
+      <Box>
+        <Text>Hello</Text>
+        {false && <Text>Foo</Text>}
+        <Text>World</Text>
+      </Box>
+    );
+
+    expect(getJsxChildren(element)).toStrictEqual([
+      <Text>Hello</Text>,
+      <Text>World</Text>,
+    ]);
+  });
+
+  it('removes falsy children from a text element', () => {
+    const element = (
+      <Text>
+        Hello
+        {false && 'Foo'}
+        World
+      </Text>
+    );
+
+    expect(getJsxChildren(element)).toStrictEqual(['Hello', 'World']);
+  });
+
+  it('removes `true` children from the array', () => {
+    const element = (
+      <Text>
+        Hello
+        {true}
+        World
+      </Text>
+    );
+
+    expect(getJsxChildren(element)).toStrictEqual(['Hello', 'World']);
+  });
+
   it('flattens the children array', () => {
     const element = (
       <Box>

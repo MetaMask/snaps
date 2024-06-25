@@ -24,4 +24,21 @@ describe('Bold', () => {
       key: null,
     });
   });
+
+  it('returns a bold element with a conditional value', () => {
+    const result = (
+      <Bold>
+        Hello
+        {false && 'world'}
+      </Bold>
+    );
+
+    expect(result).toStrictEqual({
+      type: 'Bold',
+      props: {
+        children: ['Hello', false],
+      },
+      key: null,
+    });
+  });
 });

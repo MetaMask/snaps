@@ -1,14 +1,13 @@
-import type { JsonObject, MaybeArray, SnapElement } from '../../component';
+import type { JsonObject, SnapElement, SnapsChildren } from '../../component';
 import { createSnapComponent } from '../../component';
 
 /**
  * The children of the {@link Italic} component.
  */
-export type ItalicChildren = MaybeArray<
+export type ItalicChildren = SnapsChildren<
   | string
   // We have to specify the type here to avoid a circular reference.
   | SnapElement<JsonObject, 'Bold'>
-  | null
 >;
 
 /**

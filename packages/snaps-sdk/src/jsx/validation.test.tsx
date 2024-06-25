@@ -73,7 +73,7 @@ describe('StringElementStruct', () => {
     expect(is(['foo', 'bar'], StringElementStruct)).toBe(true);
   });
 
-  it.each([null, undefined, {}])('does not validate "%p"', (value) => {
+  it.each([undefined, {}])('does not validate "%p"', (value) => {
     expect(is(value, StringElementStruct)).toBe(false);
   });
 });

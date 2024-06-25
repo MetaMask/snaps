@@ -9,6 +9,7 @@ export type TooltipChildren =
   | StandardFormattingElement
   | LinkElement
   | ImageElement
+  | boolean
   | null;
 
 /**

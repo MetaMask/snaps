@@ -89,4 +89,22 @@ describe('Box', () => {
       },
     });
   });
+
+  it('renders a box with a conditional', () => {
+    const result = (
+      <Box direction="horizontal" alignment="space-between">
+        {false && <Text>Hello</Text>}
+      </Box>
+    );
+
+    expect(result).toStrictEqual({
+      type: 'Box',
+      key: null,
+      props: {
+        direction: 'horizontal',
+        alignment: 'space-between',
+        children: false,
+      },
+    });
+  });
 });

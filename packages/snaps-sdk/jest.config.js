@@ -4,7 +4,11 @@ const { resolve } = require('path');
 const baseConfig = require('../../jest.config.base');
 
 module.exports = deepmerge(baseConfig, {
-  collectCoverageFrom: ['!./src/**/index.ts'],
+  collectCoverageFrom: [
+    '!./src/**/index.ts',
+    '!./src/types/global.ts',
+    '!./src/types/images.ts',
+  ],
 
   coverageThreshold: {
     global: {
