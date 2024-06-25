@@ -208,7 +208,6 @@ export const FieldStruct: Describe<FieldElement> = element('Field', {
     FileInputStruct,
     InputStruct,
     CheckboxStruct,
-    boolean(),
   ]),
 });
 
