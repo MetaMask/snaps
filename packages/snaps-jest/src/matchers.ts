@@ -11,15 +11,7 @@ import type {
   ComponentOrElement,
   Component,
 } from '@metamask/snaps-sdk';
-<<<<<<< HEAD
-import type {
-  GenericSnapElement,
-  JSXElement,
-  SnapNode,
-} from '@metamask/snaps-sdk/jsx';
-=======
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
->>>>>>> def3ced6 (make the children validation more generic)
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import {
   getJsxElementFromComponent,

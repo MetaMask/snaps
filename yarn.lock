@@ -7801,15 +7801,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mdast@npm:^3.0.0":
-  version: 3.0.11
-  resolution: "@types/mdast@npm:3.0.11"
-  dependencies:
-    "@types/unist": "*"
-  checksum: 3b04cf465535553b47a1811c247668bd6cfeb54d99a2c9dbb82ccd0f5145d271d10c3169f929701d8cd55fd569f0d2e459a50845813ba3261f1fb0395a288cea
-  languageName: node
-  linkType: hard
-
 "@types/mime@npm:*, @types/mime@npm:^3.0.0":
   version: 3.0.4
   resolution: "@types/mime@npm:3.0.4"
