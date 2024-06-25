@@ -1,4 +1,4 @@
-import type { MaybeArray } from '../component';
+import type { SnapsChildren } from '../component';
 import { createSnapComponent } from '../component';
 import type { StandardFormattingElement } from './formatting';
 import type { LinkElement } from './Link';
@@ -6,8 +6,8 @@ import type { LinkElement } from './Link';
 /**
  * The children of the {@link Text} component.
  */
-export type TextChildren = MaybeArray<
-  string | boolean | StandardFormattingElement | LinkElement | null
+export type TextChildren = SnapsChildren<
+  string | StandardFormattingElement | LinkElement
 >;
 
 /**

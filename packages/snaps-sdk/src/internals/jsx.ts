@@ -90,7 +90,7 @@ export type Describe<Type> = Struct<Type, StructSchema<Type>>;
  */
 export function nullUnion<Head extends AnyStruct, Tail extends AnyStruct[]>(
   structs: [head: Head, ...tail: Tail],
-) {
+): Struct<Infer<Head> | InferStructTuple<Tail>[number], null> {
   return union(structs) as unknown as Struct<
     Infer<Head> | InferStructTuple<Tail>[number],
     null

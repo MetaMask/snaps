@@ -1,4 +1,4 @@
-import type { MaybeArray } from '../../component';
+import type { SnapsChildren } from '../../component';
 import { createSnapComponent } from '../../component';
 import type { OptionElement } from './Option';
 
@@ -13,7 +13,7 @@ import type { OptionElement } from './Option';
 export type DropdownProps = {
   name: string;
   value?: string | undefined;
-  children: MaybeArray<OptionElement | boolean>;
+  children: SnapsChildren<OptionElement>;
 };
 
 const TYPE = 'Dropdown';

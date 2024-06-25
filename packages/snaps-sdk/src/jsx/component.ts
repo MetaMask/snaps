@@ -51,26 +51,22 @@ export type SnapElement<
 export type Nestable<Type> = Type | Nestable<Type>[];
 
 /**
- * A type that can be a single value or an array of values.
+ * A type that can be a single value or an array of values, a boolean, or null.
  *
  * @template Type - The type that can be an array.
- * @example
- * type MaybeArrayString = MaybeArray<string>;
- * const maybeArrayString: MaybeArrayString = 'hello';
- * const maybeArrayStringArray: MaybeArrayString = ['hello', 'world'];
  */
-export type MaybeArray<Type> = Nestable<Type>;
+export type SnapsChildren<Type> = Nestable<Type | boolean | null>;
 
 /**
  * A JSX node, which can be an element, a string, null, or an array of nodes.
  */
-export type SnapNode = MaybeArray<GenericSnapElement | string | boolean | null>;
+export type SnapNode = SnapsChildren<GenericSnapElement | string>;
 
 /**
  * A JSX string element, which can be a string or an array of strings, or
  * booleans (for conditional rendering).
  */
-export type StringElement = MaybeArray<string | boolean>;
+export type StringElement = SnapsChildren<string>;
 
 /**
  * A JSX component.

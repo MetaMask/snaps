@@ -4,7 +4,7 @@ import {
   isPlainObject,
   JsonStruct,
 } from '@metamask/utils';
-import type { Struct } from 'superstruct';
+import type { Infer, Struct } from 'superstruct';
 import {
   is,
   boolean,
@@ -18,7 +18,11 @@ import {
   string,
   tuple,
 } from 'superstruct';
-import type { ObjectSchema } from 'superstruct/dist/utils';
+import type {
+  AnyStruct,
+  InferStructTuple,
+  ObjectSchema,
+} from 'superstruct/dist/utils';
 
 import type { Describe } from '../internals';
 import { literal, nullUnion, svg } from '../internals';
@@ -27,7 +31,6 @@ import type {
   GenericSnapElement,
   JsonObject,
   Key,
-  MaybeArray,
   Nestable,
   SnapElement,
   StringElement,
@@ -67,9 +70,9 @@ export const KeyStruct: Describe<Key> = nullUnion([string(), number()]);
 /**
  * A struct for the {@link StringElement} type.
  */
-export const StringElementStruct: Describe<StringElement> = maybeArray(
-  nullUnion([string(), boolean()]),
-);
+export const StringElementStruct: Describe<StringElement> = children([
+  string(),
+]);
 
 /**
  * A struct for the {@link GenericSnapElement} type.
@@ -86,7 +89,9 @@ export const ElementStruct: Describe<GenericSnapElement> = object({
  * @param struct - The struct for the type to test.
  * @returns The struct for the nestable type.
  */
-function nestable<Type, Schema>(struct: Struct<Type, Schema>) {
+function nestable<Type, Schema>(
+  struct: Struct<Type, Schema>,
+): Struct<Nestable<Type>, any> {
   const nestableStruct: Struct<Nestable<Type>> = nullUnion([
     struct,
     array(lazy(() => nestableStruct)),
@@ -96,15 +101,19 @@ function nestable<Type, Schema>(struct: Struct<Type, Schema>) {
 }
 
 /**
- * A helper function for creating a struct for a {@link MaybeArray} type.
+ * A helper function for creating a struct which allows children of a specific
+ * type, as well as `null` and `boolean`.
  *
- * @param struct - The struct for the maybe array type.
- * @returns The struct for the maybe array type.
+ * @param structs - The structs to allow as children.
+ * @returns The struct for the children.
  */
-function maybeArray<Type, Schema>(
-  struct: Struct<Type, Schema>,
-): Struct<MaybeArray<Type>, any> {
-  return nestable(struct);
+function children<Head extends AnyStruct, Tail extends AnyStruct[]>(
+  structs: [head: Head, ...tail: Tail],
+): Struct<
+  Nestable<Infer<Head> | InferStructTuple<Tail>[number] | boolean | null>,
+  null
+> {
+  return nestable(nullable(nullUnion([...structs, boolean()])));
 }
 
 /**
@@ -172,7 +181,7 @@ export const OptionStruct: Describe<OptionElement> = element('Option', {
 export const DropdownStruct: Describe<DropdownElement> = element('Dropdown', {
   name: string(),
   value: optional(string()),
-  children: maybeArray(nullUnion([OptionStruct, boolean()])),
+  children: children([OptionStruct]),
 });
 
 /**
@@ -207,10 +216,10 @@ export const FieldStruct: Describe<FieldElement> = element('Field', {
  * A struct for the {@link FormElement} type.
  */
 export const FormStruct: Describe<FormElement> = element('Form', {
-  children: maybeArray(
+  children: children(
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    nullable(nullUnion([FieldStruct, lazy(() => BoxChildStruct), boolean()])),
-  ) as unknown as Struct<MaybeArray<GenericSnapElement | boolean | null>, null>,
+    [FieldStruct, lazy(() => BoxChildStruct), boolean()],
+  ) as unknown as Struct<Nestable<GenericSnapElement | boolean | null>, null>,
   name: string(),
 });
 
@@ -218,36 +227,28 @@ export const FormStruct: Describe<FormElement> = element('Form', {
  * A struct for the {@link BoldElement} type.
  */
 export const BoldStruct: Describe<BoldElement> = element('Bold', {
-  children: maybeArray(
-    nullable(
-      nullUnion([
-        string(),
-        boolean(),
-        // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        lazy(() => ItalicStruct) as unknown as Struct<
-          SnapElement<JsonObject, 'Italic'>
-        >,
-      ]),
-    ),
-  ),
+  children: children([
+    string(),
+    boolean(),
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    lazy(() => ItalicStruct) as unknown as Struct<
+      SnapElement<JsonObject, 'Italic'>
+    >,
+  ]),
 });
 
 /**
  * A struct for the {@link ItalicElement} type.
  */
 export const ItalicStruct: Describe<ItalicElement> = element('Italic', {
-  children: maybeArray(
-    nullable(
-      nullUnion([
-        string(),
-        boolean(),
-        // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        lazy(() => BoldStruct) as unknown as Struct<
-          SnapElement<JsonObject, 'Bold'>
-        >,
-      ]),
-    ),
-  ),
+  children: children([
+    string(),
+    boolean(),
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    lazy(() => BoldStruct) as unknown as Struct<
+      SnapElement<JsonObject, 'Bold'>
+    >,
+  ]),
 });
 
 export const FormattingStruct: Describe<StandardFormattingElement> = nullUnion([
@@ -266,10 +267,10 @@ export const AddressStruct: Describe<AddressElement> = element('Address', {
  * A struct for the {@link BoxElement} type.
  */
 export const BoxStruct: Describe<BoxElement> = element('Box', {
-  children: maybeArray(
+  children: children(
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    nullable(nullUnion([lazy(() => BoxChildStruct), boolean()])),
-  ) as unknown as Struct<MaybeArray<GenericSnapElement | boolean | null>, null>,
+    [lazy(() => BoxChildStruct), boolean()],
+  ) as unknown as Struct<Nestable<GenericSnapElement | boolean | null>, null>,
   direction: optional(nullUnion([literal('horizontal'), literal('vertical')])),
   alignment: optional(
     nullUnion([
@@ -323,20 +324,20 @@ export const ImageStruct: Describe<ImageElement> = element('Image', {
  */
 export const LinkStruct: Describe<LinkElement> = element('Link', {
   href: string(),
-  children: maybeArray(
-    nullable(nullUnion([FormattingStruct, string(), boolean()])),
-  ),
+  children: children([FormattingStruct, string(), boolean()]),
 });
 
 /**
  * A struct for the {@link TextElement} type.
  */
 export const TextStruct: Describe<TextElement> = element('Text', {
-  children: maybeArray(
-    nullable(
-      nullUnion([string(), boolean(), BoldStruct, ItalicStruct, LinkStruct]),
-    ),
-  ),
+  children: children([
+    string(),
+    boolean(),
+    BoldStruct,
+    ItalicStruct,
+    LinkStruct,
+  ]),
   alignment: optional(
     nullUnion([literal('start'), literal('center'), literal('end')]),
   ),

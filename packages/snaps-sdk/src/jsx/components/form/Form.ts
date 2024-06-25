@@ -1,4 +1,4 @@
-import type { GenericSnapElement, MaybeArray } from '../../component';
+import type { GenericSnapElement, SnapsChildren } from '../../component';
 import { createSnapComponent } from '../../component';
 
 // TODO: Add `onSubmit` prop to the `FormProps` type.
@@ -11,7 +11,7 @@ import { createSnapComponent } from '../../component';
  * the event handler.
  */
 export type FormProps = {
-  children: MaybeArray<GenericSnapElement | boolean | null>;
+  children: SnapsChildren<GenericSnapElement>;
   name: string;
 };
 

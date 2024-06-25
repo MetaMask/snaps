@@ -72,8 +72,8 @@ export type ComponentProps = {
 
 #### Children
 
-In most cases, the children prop should be defined as `MaybeArray` to allow for
-both a single child element or an array of child elements. There are some
+In most cases, the children prop should be defined as `SnapsChildren` to allow
+for both a single child element or an array of child elements. There are some
 exceptions to this rule, such as when the component only accepts a single child
 element (e.g., `Field`).
 
@@ -82,7 +82,7 @@ rendering of child elements.
 
 ```typescript
 export type ComponentProps = {
-  children: MaybeArray<string | boolean | null>;
+  children: SnapsChildren<string>; // Nestable<string | boolean | null>;
 };
 ```
 
@@ -91,6 +91,6 @@ add the `?` to the prop definition.
 
 ```typescript
 export type ComponentProps = {
-  children?: MaybeArray<string | boolean | null> | undefined;
+  children?: SnapsChildren<string> | undefined;
 };
 ```

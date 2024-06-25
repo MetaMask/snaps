@@ -12,5 +12,6 @@
     "jsx.d.ts",
     "jsx-runtime.d.ts",
     "jsx-dev-runtime.d.ts"
-  ]
+  ],
+  "exclude": ["./dist"]
 }
