@@ -8,6 +8,7 @@ import {
   Input,
   Dropdown,
   Option,
+  Checkbox,
 } from '@metamask/snaps-sdk/jsx';
 
 /**
@@ -23,6 +24,11 @@ export type InteractiveFormState = {
    * The value of the example dropdown.
    */
   'example-dropdown': string;
+
+  /**
+   * The value of the example checkbox.
+   */
+  'example-checkbox': boolean;
 };
 
 export const InteractiveForm: SnapComponent = () => {
@@ -39,6 +45,9 @@ export const InteractiveForm: SnapComponent = () => {
             <Option value="option2">Option 2</Option>
             <Option value="option3">Option 3</Option>
           </Dropdown>
+        </Field>
+        <Field label="Example Checkbox">
+          <Checkbox name="example-checkbox" label="Checkbox" />
         </Field>
         <Button type="submit" name="submit">
           Submit

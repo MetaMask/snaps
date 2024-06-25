@@ -45,13 +45,19 @@ describe('onRpcRequest', () => {
 
       await formScreen.selectInDropdown('example-dropdown', 'option3');
 
+      await formScreen.clickElement('example-checkbox');
+
       await formScreen.clickElement('submit');
 
       const resultScreen = await response.getInterface();
 
       expect(resultScreen).toRender(
         <Result
-          values={{ 'example-input': 'foobar', 'example-dropdown': 'option3' }}
+          values={{
+            'example-input': 'foobar',
+            'example-dropdown': 'option3',
+            'example-checkbox': true,
+          }}
         />,
       );
       await resultScreen.ok();
@@ -77,7 +83,11 @@ describe('onRpcRequest', () => {
 
       expect(resultScreen).toRender(
         <Result
-          values={{ 'example-input': '', 'example-dropdown': 'option1' }}
+          values={{
+            'example-input': '',
+            'example-dropdown': 'option1',
+            'example-checkbox': false,
+          }}
         />,
       );
       await resultScreen.ok();
@@ -107,7 +117,11 @@ describe('onHomePage', () => {
 
     expect(resultScreen).toRender(
       <Result
-        values={{ 'example-input': 'foobar', 'example-dropdown': 'option3' }}
+        values={{
+          'example-input': 'foobar',
+          'example-dropdown': 'option3',
+          'example-checkbox': false,
+        }}
       />,
     );
   });
