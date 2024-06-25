@@ -6,8 +6,8 @@
     "jsx": "react-jsx",
     "jsxImportSource": "@metamask/snaps-sdk",
     "lib": ["DOM", "ES2020"],
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "paths": {
       "@metamask/*/test-utils": ["../*/src/test-utils"],
       "@metamask/*/node": ["../*/src/node"],
