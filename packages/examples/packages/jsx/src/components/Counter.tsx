@@ -35,7 +35,7 @@ export const Counter: SnapComponent<CounterProps> = ({ count }) => {
     <Box>
       <Tooltip content={<TooltipContent />}>
         <Text>
-          <Bold>Count:</Bold> {String(count)}
+          Count: <Bold>{String(count)}</Bold>
         </Text>
       </Tooltip>
       <Button name="increment">Increment</Button>
