@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0]
+
 ### Uncategorized
 
 - Support conditional children in most JSX components ([#2506](https://github.com/MetaMask/snaps-skunkworks.git/pull/2506))
@@ -37,5 +39,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add JSX example Snap ([#2258](https://github.com/MetaMask/snaps/pull/2258))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/jsx-example-snap@1.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/jsx-example-snap@1.1.0...HEAD
+[1.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/jsx-example-snap@1.0.0...@metamask/jsx-example-snap@1.1.0
 [1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/jsx-example-snap@1.0.0

@@ -1,6 +1,6 @@
 {
   "name": "@metamask/file-upload-example-snap",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "MetaMask example snap demonstrating file inputs and handling file uploads",
   "repository": {
     "type": "git",

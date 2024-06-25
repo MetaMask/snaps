@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0]
+
 ### Uncategorized
 
 - Support conditional children in most JSX components ([#2506](https://github.com/MetaMask/snaps-skunkworks.git/pull/2506))
@@ -49,7 +51,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add interactive UI example Snap ([#2171](https://github.com/MetaMask/snaps/pull/2171))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/interactive-ui-example-snap@2.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/interactive-ui-example-snap@2.1.0...HEAD
+[2.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/interactive-ui-example-snap@2.0.0...@metamask/interactive-ui-example-snap@2.1.0
 [2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/interactive-ui-example-snap@1.0.2...@metamask/interactive-ui-example-snap@2.0.0
 [1.0.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/interactive-ui-example-snap@1.0.1...@metamask/interactive-ui-example-snap@1.0.2
 [1.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/interactive-ui-example-snap@1.0.0...@metamask/interactive-ui-example-snap@1.0.1

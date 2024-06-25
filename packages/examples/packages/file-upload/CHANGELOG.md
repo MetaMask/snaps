@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0]
+
 ### Uncategorized
 
 - Support conditional children in most JSX components ([#2506](https://github.com/MetaMask/snaps-skunkworks.git/pull/2506))
@@ -17,4 +19,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `Tooltip` component ([#2490](https://github.com/MetaMask/snaps-skunkworks.git/pull/2490))
 - Add file input component ([#2469](https://github.com/MetaMask/snaps-skunkworks.git/pull/2469))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/file-upload-example-snap@1.0.0...HEAD
+[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/file-upload-example-snap@1.0.0
