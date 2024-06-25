@@ -3802,12 +3802,12 @@ __metadata:
   linkType: hard
 
 "@metamask/abi-utils@npm:^2.0.2":
-  version: 2.0.2
-  resolution: "@metamask/abi-utils@npm:2.0.2"
+  version: 2.0.3
+  resolution: "@metamask/abi-utils@npm:2.0.3"
   dependencies:
-    "@metamask/utils": ^8.0.0
-    superstruct: ^1.0.3
-  checksum: 5ec153e7691a4e1dc8738a0ba1a99a354ddb13851fa88a40a19f002f6308310e71c2cee28c3a25d9f7f67e839c7dffe4760e93e308dd17fa725b08d0dc73a3d4
+    "@metamask/superstruct": ^3.0.0
+    "@metamask/utils": ^8.5.0
+  checksum: c0d43cd52a6615b32b09ed6786d01e3de764af30b107941a5df134f8a48da344793035dd247f5b38a56f36c436c7131b94b0c71ef004e88e6e00f878ffa4ebbf
   languageName: node
   linkType: hard
 
@@ -21474,13 +21474,6 @@ __metadata:
   version: 0.1.1
   resolution: "suffix@npm:0.1.1"
   checksum: 5e0eff027bac0ad1c6d42361ad19c48abdd4e86971afdb4e4f4aeb8c9a4149a0b55ea5f3a22d7e59cd09638cf64dd022baa552a1c0a2c6a6107520a657d563a2
-  languageName: node
-  linkType: hard
-
-"superstruct@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "superstruct@npm:1.0.3"
-  checksum: 761790bb111e6e21ddd608299c252f3be35df543263a7ebbc004e840d01fcf8046794c274bcb351bdf3eae4600f79d317d085cdbb19ca05803a4361840cc9bb1
   languageName: node
   linkType: hard
 
