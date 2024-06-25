@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.0.0]
+### Added
+- **BREAKING:** Add `FileInput` component ([#2469](https://github.com/MetaMask/snaps/pull/2469), [#2504](https://github.com/MetaMask/snaps/pull/2504))
+  - `FormSubmitEvent` may now contain values of type `File`.
+- **BREAKING:** Add `Checkbox` component ([#2501](https://github.com/MetaMask/snaps/pull/2501))
+  - `FormSubmitEvent` and `InputChangeEvent` may now contain values of type `boolean`.
+- Add `alignment` prop to `Text` ([#2489](https://github.com/MetaMask/snaps/pull/2489))
+- Add `Tooltip` component ([#2490](https://github.com/MetaMask/snaps/pull/2490))
+- Support additional components inside forms ([#2497](https://github.com/MetaMask/snaps/pull/2497))
+- Support conditional children in most JSX components ([#2506](https://github.com/MetaMask/snaps/pull/2506))
+
 ## [5.0.0]
 ### Added
 - Allow row tooltips ([#2483](https://github.com/MetaMask/snaps/pull/2483))
@@ -170,7 +181,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@5.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.0.0...HEAD
+[6.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@5.0.0...@metamask/snaps-sdk@6.0.0
 [5.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.4.2...@metamask/snaps-sdk@5.0.0
 [4.4.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.4.1...@metamask/snaps-sdk@4.4.2
 [4.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.4.0...@metamask/snaps-sdk@4.4.1

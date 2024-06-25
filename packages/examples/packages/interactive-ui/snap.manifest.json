@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "MetaMask example snap demonstrating the use of interactive UI",
   "proposedName": "Interactive UI Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "79flM7DJLGVf3VAkc5TCu9JkfbjfB0xoQIAKCUpL12Y=",
+    "shasum": "Ko9xBAU/AMTQmdJHIKVaXEvIMRKil4LMaFj+3gS3eZo=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
