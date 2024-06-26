@@ -94,6 +94,7 @@ const TEMPLATE_COMPONENTS: TemplateComponent[] = [
     icon: 'field',
     text: 'Field',
     data: Field({
+      // @ts-expect-error - children is required
       children: null,
     }),
     droppable: true,

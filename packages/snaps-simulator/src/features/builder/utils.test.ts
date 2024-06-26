@@ -118,7 +118,8 @@ describe('nodeModelsToComponent', () => {
         id: 5,
         parent: 4,
         text: 'child',
-        data: Field({ children: null }),
+        // @ts-expect-error children is required.
+        data: Field({ children: [] }),
       },
       {
         id: 6,

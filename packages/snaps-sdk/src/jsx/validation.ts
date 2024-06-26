@@ -245,7 +245,7 @@ const FieldChildStruct = nullUnion([
 export const FieldStruct: Describe<FieldElement> = element('Field', {
   label: optional(string()),
   error: optional(string()),
-  children: nullable(FieldChildStruct),
+  children: FieldChildStruct,
 });
 
 /**

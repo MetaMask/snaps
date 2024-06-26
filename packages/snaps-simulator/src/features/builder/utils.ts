@@ -3,6 +3,7 @@ import {
   BoxChildStruct,
   FieldChildUnionStruct,
   FormChildStruct,
+  Input,
   type BoxElement,
   type JSXElement,
 } from '@metamask/snaps-sdk/jsx';
@@ -56,7 +57,12 @@ export function isValidBoxChild(child: JSXElement) {
  * @returns True if the node is a valid form children, otherwise false.
  */
 export function isValidFormChild(child: JSXElement) {
-  return is(child, FormChildStruct);
+  // Add a children to the Field to pass validation.
+  const childCopy = deepClone(child);
+  if (childCopy.type === 'Field') {
+    childCopy.props.children = Input({ name: 'input' });
+  }
+  return is(childCopy, FormChildStruct);
 }
 
 /**
