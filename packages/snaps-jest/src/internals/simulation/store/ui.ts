@@ -1,11 +1,10 @@
-import type { DialogType } from '@metamask/snaps-sdk';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAction, createSelector, createSlice } from '@reduxjs/toolkit';
 
 import type { ApplicationState } from './store';
 
 export type Interface = {
-  type: DialogType;
+  type: string;
   id: string;
 };
 

@@ -38,7 +38,7 @@ import { type MethodHooksObject } from '../utils';
 
 const methodName = 'snap_dialog';
 
-export const SNAP_DIALOG_TYPES = {
+export const DIALOG_APPROVAL_TYPES = {
   [DialogType.Alert]: `${methodName}:alert`,
   [DialogType.Confirmation]: `${methodName}:confirmation`,
   [DialogType.Prompt]: `${methodName}:prompt`,
@@ -255,8 +255,8 @@ export function getDialogImplementation({
     const validatedType = getValidatedType(params);
 
     const approvalType = validatedType
-      ? SNAP_DIALOG_TYPES[validatedType]
-      : SNAP_DIALOG_TYPES.default;
+      ? DIALOG_APPROVAL_TYPES[validatedType]
+      : DIALOG_APPROVAL_TYPES.default;
 
     const validatedParams = getValidatedParams(params, validatedType);
     const placeholder = isPromptDialog(validatedParams)

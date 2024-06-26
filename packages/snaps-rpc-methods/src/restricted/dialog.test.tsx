@@ -5,7 +5,7 @@ import { Box, Text } from '@metamask/snaps-sdk/jsx';
 
 import type { DialogMethodHooks } from './dialog';
 import {
-  SNAP_DIALOG_TYPES,
+  DIALOG_APPROVAL_TYPES,
   dialogBuilder,
   getDialogImplementation,
 } from './dialog';
@@ -68,7 +68,7 @@ describe('implementation', () => {
     expect(hooks.requestUserApproval).toHaveBeenCalledWith({
       id: undefined,
       origin: 'foo',
-      type: SNAP_DIALOG_TYPES[DialogType.Alert],
+      type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
       requestData: {
         id: 'bar',
         placeholder: undefined,
@@ -91,7 +91,7 @@ describe('implementation', () => {
     expect(hooks.requestUserApproval).toHaveBeenCalledWith({
       id: 'bar',
       origin: 'foo',
-      type: SNAP_DIALOG_TYPES.default,
+      type: DIALOG_APPROVAL_TYPES.default,
       requestData: {
         id: 'bar',
         placeholder: undefined,
@@ -123,7 +123,7 @@ describe('implementation', () => {
     expect(hooks.requestUserApproval).toHaveBeenCalledWith({
       id: undefined,
       origin: 'foo',
-      type: SNAP_DIALOG_TYPES[DialogType.Alert],
+      type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
       requestData: {
         id: 'bar',
         placeholder: undefined,
@@ -151,7 +151,7 @@ describe('implementation', () => {
     expect(hooks.requestUserApproval).toHaveBeenCalledWith({
       id: undefined,
       origin: 'foo',
-      type: SNAP_DIALOG_TYPES[DialogType.Alert],
+      type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
       requestData: {
         id: 'bar',
         placeholder: undefined,
@@ -183,7 +183,7 @@ describe('implementation', () => {
     expect(hooks.requestUserApproval).toHaveBeenCalledWith({
       id: undefined,
       origin: 'foo',
-      type: SNAP_DIALOG_TYPES[DialogType.Alert],
+      type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
       requestData: {
         id: 'bar',
         placeholder: undefined,
@@ -238,7 +238,7 @@ describe('implementation', () => {
       expect(hooks.requestUserApproval).toHaveBeenCalledWith({
         id: undefined,
         origin: 'foo',
-        type: SNAP_DIALOG_TYPES[DialogType.Alert],
+        type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
         requestData: {
           id: 'bar',
           placeholder: undefined,
@@ -266,7 +266,7 @@ describe('implementation', () => {
       expect(hooks.requestUserApproval).toHaveBeenCalledWith({
         id: undefined,
         origin: 'foo',
-        type: SNAP_DIALOG_TYPES[DialogType.Alert],
+        type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
         requestData: {
           id: 'bar',
           placeholder: undefined,
@@ -292,7 +292,7 @@ describe('implementation', () => {
       expect(hooks.requestUserApproval).toHaveBeenCalledWith({
         id: undefined,
         origin: 'foo',
-        type: SNAP_DIALOG_TYPES[DialogType.Confirmation],
+        type: DIALOG_APPROVAL_TYPES[DialogType.Confirmation],
         requestData: {
           id: 'bar',
           placeholder: undefined,
@@ -320,7 +320,7 @@ describe('implementation', () => {
       expect(hooks.requestUserApproval).toHaveBeenCalledWith({
         id: undefined,
         origin: 'foo',
-        type: SNAP_DIALOG_TYPES[DialogType.Confirmation],
+        type: DIALOG_APPROVAL_TYPES[DialogType.Confirmation],
         requestData: {
           id: 'bar',
           placeholder: undefined,
@@ -347,7 +347,7 @@ describe('implementation', () => {
       expect(hooks.requestUserApproval).toHaveBeenCalledWith({
         id: undefined,
         origin: 'foo',
-        type: SNAP_DIALOG_TYPES[DialogType.Prompt],
+        type: DIALOG_APPROVAL_TYPES[DialogType.Prompt],
         requestData: {
           id: 'bar',
           placeholder: 'foobar',
@@ -376,7 +376,7 @@ describe('implementation', () => {
       expect(hooks.requestUserApproval).toHaveBeenCalledWith({
         id: undefined,
         origin: 'foo',
-        type: SNAP_DIALOG_TYPES[DialogType.Prompt],
+        type: DIALOG_APPROVAL_TYPES[DialogType.Prompt],
         requestData: {
           id: 'bar',
           placeholder: 'foobar',

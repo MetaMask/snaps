@@ -19,11 +19,11 @@ import {
   getClearSnapStateMethodImplementation,
   getGetSnapStateMethodImplementation,
   getUpdateSnapStateMethodImplementation,
-  getShowDialogImplementation,
   getShowInAppNotificationImplementation,
   getShowNativeNotificationImplementation,
   getCreateInterfaceImplementation,
   getGetInterfaceImplementation,
+  getRequestUserApprovalImplementation,
 } from './hooks';
 
 export type PermissionSpecificationsHooks = {
@@ -96,7 +96,7 @@ export function getPermissionSpecifications({
       isOnPhishingList: resolve(false),
 
       maybeUpdatePhishingList: asyncResolve(),
-      showDialog: getShowDialogImplementation(runSaga),
+      requestUserApproval: getRequestUserApprovalImplementation(runSaga),
       showInAppNotification: getShowInAppNotificationImplementation(runSaga),
       showNativeNotification: getShowNativeNotificationImplementation(runSaga),
       updateSnapState: getUpdateSnapStateMethodImplementation(runSaga),

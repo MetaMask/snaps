@@ -47,3 +47,4 @@ export const restrictedMethodPermissionBuilders = {
 } as const;
 
 export * from './caveats';
+export { DIALOG_APPROVAL_TYPES } from './dialog';
