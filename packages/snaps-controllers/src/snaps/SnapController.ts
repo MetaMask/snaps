@@ -574,6 +574,7 @@ type SnapControllerMessenger = RestrictedControllerMessenger<
 type FeatureFlags = {
   requireAllowlist?: boolean;
   allowLocalSnaps?: boolean;
+  disableSnapInstallation?: boolean;
 };
 
 type DynamicFeatureFlags = {
@@ -1322,6 +1323,16 @@ export class SnapController extends BaseController<
         }`,
       );
     }
+  }
+
+  /**
+   * Asserts whether new Snaps are allowed to be installed.
+   */
+  #assertCanInstallSnaps() {
+    assert(
+      this.#featureFlags.disableSnapInstallation !== true,
+      'Installing Snaps is currently disabled in this version of MetaMask.',
+    );
   }
 
   /**
@@ -2279,6 +2290,8 @@ export class SnapController extends BaseController<
       );
     }
 
+    this.#assertCanInstallSnaps();
+
     let pendingApproval = this.#createApproval({
       origin,
       snapId,
@@ -2423,6 +2436,7 @@ export class SnapController extends BaseController<
     newVersionRange: string = DEFAULT_REQUESTED_SNAP_VERSION,
     emitEvent = true,
   ): Promise<TruncatedSnap> {
+    this.#assertCanInstallSnaps();
     this.#assertCanUsePlatform();
     if (!isValidSemVerRange(newVersionRange)) {
       throw new Error(
