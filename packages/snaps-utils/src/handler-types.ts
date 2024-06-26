@@ -7,6 +7,7 @@ export enum HandlerType {
   OnUpdate = 'onUpdate',
   OnNameLookup = 'onNameLookup',
   OnKeyringRequest = 'onKeyringRequest',
+  OnProtocolRequest = 'OnProtocolRequest',
   OnHomePage = 'onHomePage',
   OnUserInput = 'onUserInput',
 }
