@@ -23,6 +23,8 @@ import {
   Value,
   FileInput,
   Checkbox,
+  Footer,
+  Container,
 } from './components';
 import {
   AddressStruct,
@@ -31,12 +33,14 @@ import {
   BoxStruct,
   ButtonStruct,
   CheckboxStruct,
+  ContainerStruct,
   CopyableStruct,
   DividerStruct,
   DropdownStruct,
   ElementStruct,
   FieldStruct,
   FileInputStruct,
+  FooterStruct,
   FormStruct,
   HeadingStruct,
   ImageStruct,
@@ -468,6 +472,91 @@ describe('BoxStruct', () => {
     </Box>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, BoxStruct)).toBe(false);
+  });
+});
+
+describe('FooterStruct', () => {
+  it.each([
+    <Footer>
+      <Button name="confirm">Confirm</Button>
+    </Footer>,
+    <Footer>
+      <Button name="cancel">Cancel</Button>
+      <Button name="confirm">Confirm</Button>
+    </Footer>,
+  ])('validates a footer element', (value) => {
+    expect(is(value, FooterStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <Footer />,
+    <Footer>
+      <Text>foo</Text>
+    </Footer>,
+    <Text>foo</Text>,
+    <Box>
+      <Text>foo</Text>
+    </Box>,
+    <Row label="label">
+      <Image src="<svg />" alt="alt" />
+    </Row>,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, FooterStruct)).toBe(false);
+  });
+});
+
+describe('ContainerStruct', () => {
+  it.each([
+    <Container>
+      <Box>
+        <Text>Hello world!</Text>
+      </Box>
+    </Container>,
+    <Container>
+      <Box>
+        <Text>Hello world!</Text>
+      </Box>
+      <Footer>
+        <Button name="confirm">Confirm</Button>
+      </Footer>
+    </Container>,
+  ])('validates a container element', (value) => {
+    expect(is(value, ContainerStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <Container />,
+    <Container>
+      <Box>
+        <Text>Hello world!</Text>
+      </Box>
+      <Footer>
+        <Text>foo</Text>
+      </Footer>
+    </Container>,
+    <Text>foo</Text>,
+    <Box>
+      <Text>foo</Text>
+    </Box>,
+    <Row label="label">
+      <Image src="<svg />" alt="alt" />
+    </Row>,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, ContainerStruct)).toBe(false);
   });
 });
 

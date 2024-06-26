@@ -1,7 +1,9 @@
 import type { AddressElement } from './Address';
 import type { BoxElement } from './Box';
+import type { ContainerElement } from './Container';
 import type { CopyableElement } from './Copyable';
 import type { DividerElement } from './Divider';
+import type { FooterElement } from './Footer';
 import type { StandardFormElement } from './form';
 import type { StandardFormattingElement } from './formatting';
 import type { HeadingElement } from './Heading';
@@ -27,6 +29,8 @@ export * from './Row';
 export * from './Spinner';
 export * from './Text';
 export * from './Tooltip';
+export * from './Footer';
+export * from './Container';
 
 /**
  * A built-in JSX element, which can be used in a Snap user interface.
@@ -36,8 +40,10 @@ export type JSXElement =
   | StandardFormattingElement
   | AddressElement
   | BoxElement
+  | ContainerElement
   | CopyableElement
   | DividerElement
+  | FooterElement
   | ValueElement
   | HeadingElement
   | ImageElement

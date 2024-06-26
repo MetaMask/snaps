@@ -62,6 +62,8 @@ import type {
   TooltipElement,
   ValueElement,
   FileInputElement,
+  ContainerElement,
+  FooterElement,
 } from './components';
 
 /**
@@ -283,6 +285,41 @@ export const BoxStruct: Describe<BoxElement> = element('Box', {
 });
 
 /**
+ * A subset of JSX elements that are allowed as children of the Footer component.
+ * This set should include a single button or a tuple of two buttons.
+ */
+export const FooterChildStruct = nullUnion([
+  tuple([ButtonStruct, ButtonStruct]),
+  ButtonStruct,
+]);
+
+/**
+ * A struct for the {@link FooterElement} type.
+ */
+export const FooterStruct: Describe<FooterElement> = element('Footer', {
+  children: FooterChildStruct,
+});
+
+/**
+ * A subset of JSX elements that are allowed as children of the Container component.
+ * This set should include a single Box or a tuple of a Box and a Footer component.
+ */
+export const ContainerChildStruct = nullUnion([
+  tuple([BoxStruct, FooterStruct]),
+  BoxStruct,
+]);
+
+/**
+ * A struct for the {@link ContainerElement} type.
+ */
+export const ContainerStruct: Describe<ContainerElement> = element(
+  'Container',
+  {
+    children: ContainerChildStruct,
+  },
+);
+
+/**
  * A struct for the {@link CopyableElement} type.
  */
 export const CopyableStruct: Describe<CopyableElement> = element('Copyable', {
@@ -445,6 +482,8 @@ export const JSXElementStruct: Describe<JSXElement> = nullUnion([
   ValueStruct,
   TooltipStruct,
   CheckboxStruct,
+  FooterStruct,
+  ContainerStruct,
 ]);
 
 /**
