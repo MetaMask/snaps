@@ -17,9 +17,11 @@ export enum DialogType {
   Prompt = 'prompt',
 }
 
-export type DefaultDialog = {
-  id: string;
-};
+export type DefaultDialog =
+  | {
+      id: string;
+    }
+  | { content: ComponentOrElement };
 
 /**
  * An alert dialog.

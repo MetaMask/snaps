@@ -76,7 +76,7 @@ describe('implementation', () => {
     });
   });
 
-  it('accepts no dialog type', async () => {
+  it('accepts no dialog type with an interface ID', async () => {
     const hooks = getMockDialogHooks();
     const implementation = getDialogImplementation(hooks);
     await implementation({
@@ -87,6 +87,37 @@ describe('implementation', () => {
       },
     });
 
+    expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+    expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+      id: 'bar',
+      origin: 'foo',
+      type: DIALOG_APPROVAL_TYPES.default,
+      requestData: {
+        id: 'bar',
+        placeholder: undefined,
+      },
+    });
+  });
+
+  it('accepts no dialog type with content', async () => {
+    const hooks = getMockDialogHooks();
+    const implementation = getDialogImplementation(hooks);
+
+    const content = (
+      <Box>
+        <Text>Hello, world!</Text>
+      </Box>
+    );
+
+    await implementation({
+      context: { origin: 'foo' },
+      method: 'snap_dialog',
+      params: {
+        content,
+      },
+    });
+
+    expect(hooks.createInterface).toHaveBeenCalledWith('foo', content);
     expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
     expect(hooks.requestUserApproval).toHaveBeenCalledWith({
       id: 'bar',

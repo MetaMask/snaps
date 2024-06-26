@@ -206,9 +206,18 @@ const PromptParametersStruct = union([
   PromptParametersWithIdStruct,
 ]);
 
-const DefaultParametersStruct = object({
+const DefaultParametersWithContentStruct = object({
+  content: ComponentOrElementStruct,
+});
+
+const DefaultParametersWithIdStruct = object({
   id: string(),
 });
+
+const DefaultParametersStruct = union([
+  DefaultParametersWithContentStruct,
+  DefaultParametersWithIdStruct,
+]);
 
 const DialogParametersStruct = union([
   AlertParametersStruct,
@@ -270,6 +279,7 @@ export function getDialogImplementation({
       );
 
       return requestUserApproval({
+        id: validatedType ? undefined : id,
         origin,
         type: approvalType,
         requestData: { id, placeholder },
@@ -278,10 +288,8 @@ export function getDialogImplementation({
 
     validateInterface(origin, validatedParams.id, getInterface);
 
-    const approvalId = validatedType ? undefined : validatedParams.id;
-
     return requestUserApproval({
-      id: approvalId,
+      id: validatedType ? undefined : validatedParams.id,
       origin,
       type: approvalType,
       requestData: { id: validatedParams.id, placeholder },
