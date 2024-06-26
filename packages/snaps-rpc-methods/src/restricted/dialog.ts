@@ -13,7 +13,6 @@ import {
 } from '@metamask/snaps-sdk';
 import type {
   DialogParams,
-  EnumToUnion,
   Component,
   InterfaceState,
   SnapId,
@@ -39,16 +38,30 @@ import { type MethodHooksObject } from '../utils';
 
 const methodName = 'snap_dialog';
 
+export const SNAP_DIALOG_TYPES = {
+  [DialogType.Alert]: `${methodName}:alert`,
+  [DialogType.Confirmation]: `${methodName}:confirmation`,
+  [DialogType.Prompt]: `${methodName}:prompt`,
+  default: `${methodName}:default`,
+};
+
 const PlaceholderStruct = optional(size(string(), 1, 40));
 
 export type Placeholder = Infer<typeof PlaceholderStruct>;
 
-type ShowDialog = (
-  snapId: string,
-  type: EnumToUnion<DialogType> | undefined,
-  id: string,
-  placeholder?: Placeholder,
-) => Promise<null | boolean | string | Json>;
+type RequestUserApprovalOptions = {
+  id?: string;
+  origin: string;
+  type: string;
+  requestData: {
+    id: string;
+    placeholder?: string;
+  };
+};
+
+type RequestUserApproval = (
+  opts: RequestUserApprovalOptions,
+) => Promise<boolean | null | string | Json>;
 
 type CreateInterface = (
   snapId: string,
@@ -62,12 +75,15 @@ type GetInterface = (
 
 export type DialogMethodHooks = {
   /**
-   * @param snapId - The ID of the Snap that created the alert.
-   * @param type - The dialog type.
-   * @param id - The interface ID.
-   * @param placeholder - The placeholder for the Prompt dialog input.
+   * @param opts - The `requestUserApproval` options.
+   * @param opts.id - The approval ID. If not provided, a new approval ID will be generated.
+   * @param opts.origin - The origin of the request. In this case, the Snap ID.
+   * @param opts.type - The type of the approval request.
+   * @param opts.requestData - The data of the approval request.
+   * @param opts.requestData.id - The ID of the interface.
+   * @param opts.requestData.placeholder - The placeholder of the `Prompt` dialog.
    */
-  showDialog: ShowDialog;
+  requestUserApproval: RequestUserApproval;
 
   /**
    * @param snapId - The Snap ID creating the interface.
@@ -125,7 +141,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 };
 
 const methodHooks: MethodHooksObject<DialogMethodHooks> = {
-  showDialog: true,
+  requestUserApproval: true,
   createInterface: true,
   getInterface: true,
 };
@@ -216,15 +232,15 @@ const structs: Record<DialogType, Struct<any, any>> = {
  * Builds the method implementation for `snap_dialog`.
  *
  * @param hooks - The RPC method hooks.
- * @param hooks.showDialog - A function that shows the specified dialog in the
- * MetaMask UI and returns the appropriate value for the dialog type.
+ * @param hooks.requestUserApproval - A function that creates a new Approval in the ApprovalController.
+ * This function should return a Promise that resolves with the appropriate value when the user has approved or rejected the request.
  * @param hooks.createInterface - A function that creates the interface in SnapInterfaceController.
  * @param hooks.getInterface - A function that gets an interface from SnapInterfaceController.
  * @returns The method implementation which return value depends on the dialog
  * type, valid return types are: string, boolean, null.
  */
 export function getDialogImplementation({
-  showDialog,
+  requestUserApproval,
   createInterface,
   getInterface,
 }: DialogMethodHooks) {
@@ -238,6 +254,10 @@ export function getDialogImplementation({
 
     const validatedType = getValidatedType(params);
 
+    const approvalType = validatedType
+      ? SNAP_DIALOG_TYPES[validatedType]
+      : SNAP_DIALOG_TYPES.default;
+
     const validatedParams = getValidatedParams(params, validatedType);
     const placeholder = isPromptDialog(validatedParams)
       ? validatedParams.placeholder
@@ -248,12 +268,24 @@ export function getDialogImplementation({
         origin,
         validatedParams.content as Component,
       );
-      return showDialog(origin, validatedType, id, placeholder);
+
+      return requestUserApproval({
+        origin,
+        type: approvalType,
+        requestData: { id, placeholder },
+      });
     }
 
     validateInterface(origin, validatedParams.id, getInterface);
 
-    return showDialog(origin, validatedType, validatedParams.id, placeholder);
+    const approvalId = validatedType ? undefined : validatedParams.id;
+
+    return requestUserApproval({
+      id: approvalId,
+      origin,
+      type: approvalType,
+      requestData: { id: validatedParams.id, placeholder },
+    });
   };
 }
 /**

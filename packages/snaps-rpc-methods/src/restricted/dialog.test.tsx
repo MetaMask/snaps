@@ -4,7 +4,11 @@ import { DialogType, heading, panel, text } from '@metamask/snaps-sdk';
 import { Box, Text } from '@metamask/snaps-sdk/jsx';
 
 import type { DialogMethodHooks } from './dialog';
-import { dialogBuilder, getDialogImplementation } from './dialog';
+import {
+  SNAP_DIALOG_TYPES,
+  dialogBuilder,
+  getDialogImplementation,
+} from './dialog';
 
 describe('builder', () => {
   it('has the expected shape', () => {
@@ -12,7 +16,7 @@ describe('builder', () => {
       targetName: 'snap_dialog',
       specificationBuilder: expect.any(Function),
       methodHooks: {
-        showDialog: true,
+        requestUserApproval: true,
         createInterface: true,
         getInterface: true,
       },
@@ -23,7 +27,7 @@ describe('builder', () => {
     expect(
       dialogBuilder.specificationBuilder({
         methodHooks: {
-          showDialog: jest.fn(),
+          requestUserApproval: jest.fn(),
           createInterface: jest.fn(),
           getInterface: jest.fn(),
         },
@@ -41,7 +45,7 @@ describe('builder', () => {
 describe('implementation', () => {
   const getMockDialogHooks = () =>
     ({
-      showDialog: jest.fn(),
+      requestUserApproval: jest.fn(),
       createInterface: jest.fn().mockReturnValue('bar'),
       getInterface: jest
         .fn()
@@ -60,13 +64,16 @@ describe('implementation', () => {
       },
     });
 
-    expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-    expect(hooks.showDialog).toHaveBeenCalledWith(
-      'foo',
-      DialogType.Alert,
-      'bar',
-      undefined,
-    );
+    expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+    expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+      id: undefined,
+      origin: 'foo',
+      type: SNAP_DIALOG_TYPES[DialogType.Alert],
+      requestData: {
+        id: 'bar',
+        placeholder: undefined,
+      },
+    });
   });
 
   it('accepts no dialog type', async () => {
@@ -80,18 +87,21 @@ describe('implementation', () => {
       },
     });
 
-    expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-    expect(hooks.showDialog).toHaveBeenCalledWith(
-      'foo',
-      undefined,
-      'bar',
-      undefined,
-    );
+    expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+    expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+      id: 'bar',
+      origin: 'foo',
+      type: SNAP_DIALOG_TYPES.default,
+      requestData: {
+        id: 'bar',
+        placeholder: undefined,
+      },
+    });
   });
 
   it('gets the interface data if an interface ID is passed', async () => {
     const hooks = {
-      showDialog: jest.fn(),
+      requestUserApproval: jest.fn(),
       createInterface: jest.fn().mockReturnValue('bar'),
       getInterface: jest
         .fn()
@@ -109,13 +119,16 @@ describe('implementation', () => {
       },
     });
 
-    expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-    expect(hooks.showDialog).toHaveBeenCalledWith(
-      'foo',
-      DialogType.Alert,
-      'bar',
-      undefined,
-    );
+    expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+    expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+      id: undefined,
+      origin: 'foo',
+      type: SNAP_DIALOG_TYPES[DialogType.Alert],
+      requestData: {
+        id: 'bar',
+        placeholder: undefined,
+      },
+    });
   });
 
   it('creates a new interface if some content is passed', async () => {
@@ -134,13 +147,16 @@ describe('implementation', () => {
     });
 
     expect(hooks.createInterface).toHaveBeenCalledWith('foo', content);
-    expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-    expect(hooks.showDialog).toHaveBeenCalledWith(
-      'foo',
-      DialogType.Alert,
-      'bar',
-      undefined,
-    );
+    expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+    expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+      id: undefined,
+      origin: 'foo',
+      type: SNAP_DIALOG_TYPES[DialogType.Alert],
+      requestData: {
+        id: 'bar',
+        placeholder: undefined,
+      },
+    });
   });
 
   it('creates a new interface if a JSX element is passed', async () => {
@@ -163,18 +179,21 @@ describe('implementation', () => {
     });
 
     expect(hooks.createInterface).toHaveBeenCalledWith('foo', content);
-    expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-    expect(hooks.showDialog).toHaveBeenCalledWith(
-      'foo',
-      DialogType.Alert,
-      'bar',
-      undefined,
-    );
+    expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+    expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+      id: undefined,
+      origin: 'foo',
+      type: SNAP_DIALOG_TYPES[DialogType.Alert],
+      requestData: {
+        id: 'bar',
+        placeholder: undefined,
+      },
+    });
   });
 
   it('throws if the requested interface does not exist.', async () => {
     const hooks = {
-      showDialog: jest.fn(),
+      requestUserApproval: jest.fn(),
       createInterface: jest.fn(),
       getInterface: jest.fn().mockImplementation((_snapId, id) => {
         throw new Error(`Interface with id '${id}' not found.`);
@@ -215,13 +234,16 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-      expect(hooks.showDialog).toHaveBeenCalledWith(
-        'foo',
-        DialogType.Alert,
-        'bar',
-        undefined,
-      );
+      expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+      expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+        id: undefined,
+        origin: 'foo',
+        type: SNAP_DIALOG_TYPES[DialogType.Alert],
+        requestData: {
+          id: 'bar',
+          placeholder: undefined,
+        },
+      });
     });
 
     it('handles JSX alerts', async () => {
@@ -240,13 +262,16 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-      expect(hooks.showDialog).toHaveBeenCalledWith(
-        'foo',
-        DialogType.Alert,
-        'bar',
-        undefined,
-      );
+      expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+      expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+        id: undefined,
+        origin: 'foo',
+        type: SNAP_DIALOG_TYPES[DialogType.Alert],
+        requestData: {
+          id: 'bar',
+          placeholder: undefined,
+        },
+      });
     });
   });
 
@@ -263,13 +288,16 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-      expect(hooks.showDialog).toHaveBeenCalledWith(
-        'foo',
-        DialogType.Confirmation,
-        'bar',
-        undefined,
-      );
+      expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+      expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+        id: undefined,
+        origin: 'foo',
+        type: SNAP_DIALOG_TYPES[DialogType.Confirmation],
+        requestData: {
+          id: 'bar',
+          placeholder: undefined,
+        },
+      });
     });
 
     it('handles JSX confirmations', async () => {
@@ -288,13 +316,16 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-      expect(hooks.showDialog).toHaveBeenCalledWith(
-        'foo',
-        DialogType.Confirmation,
-        'bar',
-        undefined,
-      );
+      expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+      expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+        id: undefined,
+        origin: 'foo',
+        type: SNAP_DIALOG_TYPES[DialogType.Confirmation],
+        requestData: {
+          id: 'bar',
+          placeholder: undefined,
+        },
+      });
     });
   });
 
@@ -312,13 +343,16 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-      expect(hooks.showDialog).toHaveBeenCalledWith(
-        'foo',
-        DialogType.Prompt,
-        'bar',
-        'foobar',
-      );
+      expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+      expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+        id: undefined,
+        origin: 'foo',
+        type: SNAP_DIALOG_TYPES[DialogType.Prompt],
+        requestData: {
+          id: 'bar',
+          placeholder: 'foobar',
+        },
+      });
     });
 
     it('handles JSX prompts', async () => {
@@ -338,13 +372,16 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-      expect(hooks.showDialog).toHaveBeenCalledWith(
-        'foo',
-        DialogType.Prompt,
-        'bar',
-        'foobar',
-      );
+      expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+      expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+        id: undefined,
+        origin: 'foo',
+        type: SNAP_DIALOG_TYPES[DialogType.Prompt],
+        requestData: {
+          id: 'bar',
+          placeholder: 'foobar',
+        },
+      });
     });
   });
 
