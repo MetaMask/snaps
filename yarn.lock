@@ -5587,7 +5587,7 @@ __metadata:
     "@metamask/phishing-controller": ^10.0.0
     "@metamask/post-message-stream": ^8.1.0
     "@metamask/rpc-errors": ^6.2.1
-    "@metamask/snaps-registry": ^3.1.0
+    "@metamask/snaps-registry": ^3.2.0
     "@metamask/snaps-rpc-methods": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
@@ -5802,15 +5802,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snaps-registry@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "@metamask/snaps-registry@npm:3.1.0"
+"@metamask/snaps-registry@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "@metamask/snaps-registry@npm:3.2.0"
   dependencies:
-    "@metamask/utils": ^8.3.0
+    "@metamask/superstruct": ^3.0.0
+    "@metamask/utils": ^8.5.0
     "@noble/curves": ^1.2.0
     "@noble/hashes": ^1.3.2
-    superstruct: ^1.0.3
-  checksum: 019cb47134c2ad4724f4f392385d4e81ab61dfefb12e66a88a2480a178502190e2d5d99cf269b906e4acda1b88de3fe356c80e71dc32c6c3f0fada9461c9bc49
+  checksum: ac3537cda6454f461e6d00623aefa29ee3e7f7c68003c7629fc550c1f27694115c475d626c89172bd7ecb52de2a0b75db64aa9fe9e8625492e335337d3f579f7
   languageName: node
   linkType: hard
 
@@ -6061,7 +6061,7 @@ __metadata:
     "@metamask/post-message-stream": ^8.1.0
     "@metamask/rpc-errors": ^6.2.1
     "@metamask/slip44": ^3.1.0
-    "@metamask/snaps-registry": ^3.1.0
+    "@metamask/snaps-registry": ^3.2.0
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/utils": ^8.3.0
     "@noble/hashes": ^1.3.1
@@ -6165,6 +6165,13 @@ __metadata:
     webpack-sources: ^3.2.3
   languageName: unknown
   linkType: soft
+
+"@metamask/superstruct@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/superstruct@npm:3.0.0"
+  checksum: 667f8f2947186972516bb72b4ba215eaeede257c8beb0450583dd4c8b00c28729ff938267ca8804a3a351277fd627b8607cafeb71eb7045a2b6930639bb6a341
+  languageName: node
+  linkType: hard
 
 "@metamask/template-snap@npm:^0.7.0":
   version: 0.7.0
@@ -6273,6 +6280,23 @@ __metadata:
     superstruct: ^1.0.3
     uuid: ^9.0.1
   checksum: b0397e97bac7192f6189a8625a2dfcb56d3c2cf4dd2cb3d4e012a7e9786f04f59f6917805544bc131a6dacd2c8344e237ae43ad47429bb5eb35c6cf1248440b4
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^8.5.0":
+  version: 8.5.0
+  resolution: "@metamask/utils@npm:8.5.0"
+  dependencies:
+    "@ethereumjs/tx": ^4.2.0
+    "@metamask/superstruct": ^3.0.0
+    "@noble/hashes": ^1.3.1
+    "@scure/base": ^1.1.3
+    "@types/debug": ^4.1.7
+    debug: ^4.3.4
+    pony-cause: ^2.1.10
+    semver: ^7.5.4
+    uuid: ^9.0.1
+  checksum: e8eac1c796c3f6b623be3c2736e8682248620f666b180f5c12ce56ee09587d4e28b6811862139a05c7a1bec91415f10ccf0516f3cdf342f88b0189d2a057c24b
   languageName: node
   linkType: hard
 
