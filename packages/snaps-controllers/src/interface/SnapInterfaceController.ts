@@ -252,6 +252,7 @@ export class SnapInterfaceController extends BaseController<
 
   /**
    * Resolve the promise of a given interface approval request.
+   * The approval needs to have the same ID as the interface.
    *
    * @param snapId - The snap id.
    * @param id - The interface id.
@@ -311,7 +312,8 @@ export class SnapInterfaceController extends BaseController<
   }
 
   /**
-   * Check if an approval request exists for a given interface.
+   * Check if an approval request exists for a given interface by looking up
+   * if the ApprovalController has a request with the given interface ID.
    *
    * @param id - The interface id.
    * @returns True if an approval request exists, otherwise false.

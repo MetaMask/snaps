@@ -22,7 +22,7 @@ import type {
 import type { InferMatching } from '@metamask/snaps-utils';
 import { createUnion } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
-import { hasProperty, type NonEmptyArray } from '@metamask/utils';
+import { hasProperty, isObject, type NonEmptyArray } from '@metamask/utils';
 import type { Infer, Struct } from 'superstruct';
 import {
   create,
@@ -42,7 +42,7 @@ export const DIALOG_APPROVAL_TYPES = {
   [DialogType.Alert]: `${methodName}:alert`,
   [DialogType.Confirmation]: `${methodName}:confirmation`,
   [DialogType.Prompt]: `${methodName}:prompt`,
-  default: `${methodName}:default`,
+  default: methodName,
 };
 
 const PlaceholderStruct = optional(size(string(), 1, 40));
@@ -260,6 +260,12 @@ export function getDialogImplementation({
       params,
       context: { origin },
     } = args;
+
+    if (!isObject(params)) {
+      throw rpcErrors.invalidParams({
+        message: 'Invalid params: Expected params to be a single object.',
+      });
+    }
 
     const validatedType = getValidatedType(params);
 

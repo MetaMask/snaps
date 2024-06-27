@@ -960,7 +960,9 @@ describe('SnapInterfaceController', () => {
       const id = await rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
-        Box({ children: Text({ children: 'foo' }) }),
+        <Box>
+          <Text>foo</Text>
+        </Box>,
       );
 
       const approvalPromise = approvalControllerMock.addRequest({
@@ -1034,7 +1036,9 @@ describe('SnapInterfaceController', () => {
       const id = await rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
-        Box({ children: Text({ children: 'foo' }) }),
+        <Box>
+          <Text>foo</Text>
+        </Box>,
       );
 
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -1077,7 +1081,9 @@ describe('SnapInterfaceController', () => {
       const id = await rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
-        Box({ children: Text({ children: 'foo' }) }),
+        <Box>
+          <Text>foo</Text>
+        </Box>,
       );
 
       await expect(

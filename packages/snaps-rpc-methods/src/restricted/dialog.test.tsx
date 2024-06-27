@@ -430,7 +430,7 @@ describe('implementation', () => {
             params: value as any,
           }),
         ).rejects.toThrow(
-          'The "type" property must be one of: alert, confirmation, prompt.',
+          'Invalid params: Expected params to be a single object.',
         );
       },
     );
@@ -526,7 +526,6 @@ describe('implementation', () => {
           implementation({
             context: { origin: 'foo' },
             method: 'snap_dialog',
-            // @ts-expect-error Wrong params.
             params: {
               type,
               content: panel([heading('foo'), text('bar')]),

@@ -21,7 +21,7 @@ describe('snap_resolveInterface', () => {
   });
 
   describe('implementation', () => {
-    it('returns the result from the `resolveInterface` hook', async () => {
+    it('returns null after calling the `resolveInterface` hook', async () => {
       const { implementation } = resolveInterfaceHandler;
 
       const resolveInterface = jest.fn();
