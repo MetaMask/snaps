@@ -435,6 +435,21 @@ describe('implementation', () => {
       },
     );
 
+    it('rejects empty parameter object', async () => {
+      const hooks = getMockDialogHooks();
+      const implementation = getDialogImplementation(hooks);
+
+      await expect(
+        implementation({
+          context: { origin: 'foo' },
+          method: 'snap_dialog',
+          params: {} as any,
+        }),
+      ).rejects.toThrow(
+        'Invalid params: Expected the value to satisfy a union of `object | object`, but received: [object Object]',
+      );
+    });
+
     it.each([{ type: false }, { type: '' }, { type: 'foo' }])(
       'rejects invalid types',
       async (value) => {
