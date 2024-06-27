@@ -1,0 +1,41 @@
+import type { BlockReason, SnapsRegistryDatabase } from '@metamask/snaps-registry';
+import type { SnapId } from '@metamask/snaps-sdk';
+import type { SemVerRange, SemVerVersion } from '@metamask/utils';
+export declare type SnapsRegistryInfo = {
+    version: SemVerVersion;
+    checksum: string;
+};
+export declare type SnapsRegistryRequest = Record<SnapId, SnapsRegistryInfo>;
+export declare type SnapsRegistryMetadata = SnapsRegistryDatabase['verifiedSnaps'][SnapId]['metadata'];
+export declare enum SnapsRegistryStatus {
+    Unverified = 0,
+    Blocked = 1,
+    Verified = 2,
+    Unavailable = 3
+}
+export declare type SnapsRegistryResult = {
+    status: SnapsRegistryStatus;
+    reason?: BlockReason;
+};
+export declare type SnapsRegistry = {
+    get(snaps: SnapsRegistryRequest): Promise<Record<SnapId, SnapsRegistryResult>>;
+    update(): Promise<void>;
+    /**
+     * Find an allowlisted version within a specified version range.
+     *
+     * @param snapId - The ID of the snap we are trying to resolve a version for.
+     * @param versionRange - The version range.
+     * @param refetch - An optional flag used to determine if we are refetching the registry.
+     * @returns An allowlisted version within the specified version range.
+     * @throws If an allowlisted version does not exist within the version range.
+     */
+    resolveVersion(snapId: SnapId, versionRange: SemVerRange): Promise<SemVerRange>;
+    /**
+     * Get metadata for the given snap ID.
+     *
+     * @param snapId - The ID of the snap to get metadata for.
+     * @returns The metadata for the given snap ID, or `null` if the snap is not
+     * verified.
+     */
+    getMetadata(snapId: SnapId): Promise<SnapsRegistryMetadata | null>;
+};

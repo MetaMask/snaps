@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/snaps/selectors.ts"],"names":[],"mappings":";AAEO,IAAM,mBAAmB,CAA6B,UAC3D,MAAM,OAAO,CAAC,SAAS,KAAK,WAAW,CAAC,KAAK,OAAO","sourcesContent":["import type { TruncatedSnap } from '@metamask/snaps-utils';\n\nexport const getRunnableSnaps = <Snap extends TruncatedSnap>(snaps: Snap[]) =>\n  snaps.filter((snap) => snap.enabled && !snap.blocked);\n"]}

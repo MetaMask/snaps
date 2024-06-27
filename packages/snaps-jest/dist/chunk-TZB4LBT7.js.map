@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/internals/logger.ts"],"names":[],"mappings":";AAAA,SAAS,2BAA2B;AAE7B,IAAM,aAAa,oBAAoB,YAAY","sourcesContent":["import { createProjectLogger } from '@metamask/utils';\n\nexport const rootLogger = createProjectLogger('snaps-jest');\n"]}
