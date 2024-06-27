@@ -35,7 +35,25 @@ const baseConfig: Configuration = {
   module: {
     rules: [
       {
+        test: /snaps-utils\/.*\.tsx?/u,
+        use: {
+          loader: 'swc-loader',
+          options: {
+            jsc: {
+              transform: {
+                react: {
+                  runtime: 'automatic',
+                  importSource: '@metamask/snaps-sdk',
+                  useBuiltins: true,
+                },
+              },
+            },
+          },
+        },
+      },
+      {
         test: /\.tsx?$/u,
+        exclude: /snaps-utils/u,
         use: {
           loader: 'swc-loader',
         },

@@ -1,3 +1,5 @@
+import type { DialogApprovalTypes } from '@metamask/snaps-rpc-methods';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import type {
   FormState,
   InterfaceContext,
@@ -45,33 +47,33 @@ const MAX_FILE_SIZE = 10_000_000; // 10 MB
  */
 export function getInterfaceResponse(
   runSaga: RunSagaFunction,
-  type: DialogType,
+  type: DialogApprovalTypes[DialogType],
   content: JSXElement,
   interfaceActions: SnapInterfaceActions,
 ): SnapInterface {
   switch (type) {
-    case DialogType.Alert:
+    case DIALOG_APPROVAL_TYPES[DialogType.Alert]:
       return {
         ...interfaceActions,
-        type,
+        type: DialogType.Alert,
         content,
         ok: resolveWith(runSaga, null),
       };
 
-    case DialogType.Confirmation:
+    case DIALOG_APPROVAL_TYPES[DialogType.Confirmation]:
       return {
         ...interfaceActions,
-        type,
+        type: DialogType.Confirmation,
         content,
 
         ok: resolveWith(runSaga, true),
         cancel: resolveWith(runSaga, false),
       };
 
-    case DialogType.Prompt:
+    case DIALOG_APPROVAL_TYPES[DialogType.Prompt]:
       return {
         ...interfaceActions,
-        type,
+        type: DialogType.Prompt,
         content,
 
         ok: resolveWithInput(runSaga),

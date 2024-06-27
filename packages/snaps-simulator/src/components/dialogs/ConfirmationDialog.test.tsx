@@ -1,4 +1,4 @@
-import { panel } from '@metamask/snaps-sdk';
+import { Box } from '@metamask/snaps-sdk/jsx';
 
 import { render } from '../../utils';
 import { ConfirmationDialog } from './ConfirmationDialog';
@@ -10,7 +10,7 @@ describe('ConfirmationDialog', () => {
         <ConfirmationDialog
           snapName="foo-snap"
           snapId="local:http://localhost:8000"
-          node={panel([])}
+          content={Box({ children: null })}
         />,
       ),
     ).not.toThrow();

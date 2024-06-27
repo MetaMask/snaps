@@ -1,5 +1,5 @@
 import { Box, Text } from '@chakra-ui/react';
-import type { Component } from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 import type { FunctionComponent } from 'react';
 import { useMemo } from 'react';
@@ -18,7 +18,7 @@ import { nodeModelsToComponent } from '../utils';
 import { ErrorBoundary } from './ErrorBoundary';
 
 export type NodeRendererProps = {
-  items: NodeModel<Component>[];
+  items: NodeModel<JSXElement>[];
 };
 
 /**
@@ -50,7 +50,7 @@ export const NodeRenderer: FunctionComponent<NodeRendererProps> = ({
           }
         >
           <Delineator type={DelineatorType.Content} snapName={snapName}>
-            <Renderer node={node} />
+            <Renderer content={node} />
           </Delineator>
         </ErrorBoundary>
       </Box>

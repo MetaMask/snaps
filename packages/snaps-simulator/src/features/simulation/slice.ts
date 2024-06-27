@@ -2,8 +2,12 @@ import type {
   GenericPermissionController,
   SubjectMetadataController,
 } from '@metamask/permission-controller';
-import type { IframeExecutionService } from '@metamask/snaps-controllers';
-import type { DialogType, Component } from '@metamask/snaps-sdk';
+import type {
+  IframeExecutionService,
+  SnapInterfaceController,
+  StoredInterface,
+} from '@metamask/snaps-controllers';
+import type { DialogType, InterfaceState } from '@metamask/snaps-sdk';
 import { getLocalizedSnapManifest as localizeSnapManifest } from '@metamask/snaps-utils';
 import type {
   LocalizationFile,
@@ -29,20 +33,24 @@ export type HandlerUserInterface = {
   type: DialogType;
   snapId: string;
   snapName: string;
-  node: Component;
+  id: string;
 };
+
+export type SnapInterface = StoredInterface & { id: string };
 
 type SimulationState = {
   status: SnapStatus;
   executionService: IframeExecutionService | null;
   permissionController: GenericPermissionController | null;
   subjectMetadataController: SubjectMetadataController | null;
+  snapInterfaceController: SnapInterfaceController | null;
   manifest: VirtualFile<SnapManifest> | null;
   sourceCode: VirtualFile<string> | null;
   auxiliaryFiles: VirtualFile[] | null;
   localizationFiles: VirtualFile<LocalizationFile>[] | null;
   icon?: VirtualFile<string>;
   ui?: HandlerUserInterface | null;
+  snapInterface?: SnapInterface | null;
   snapState: string | null;
   unencryptedSnapState: string | null;
   requestId?: string;
@@ -53,6 +61,7 @@ export const INITIAL_STATE: SimulationState = {
   executionService: null,
   permissionController: null,
   subjectMetadataController: null,
+  snapInterfaceController: null,
   manifest: null,
   sourceCode: null,
   auxiliaryFiles: null,
@@ -83,6 +92,12 @@ const slice = createSlice({
     ) {
       state.subjectMetadataController = action.payload as any;
     },
+    setSnapInterfaceController(
+      state,
+      action: PayloadAction<SnapInterfaceController>,
+    ) {
+      state.snapInterfaceController = action.payload as any;
+    },
     setManifest(state, action: PayloadAction<VirtualFile<SnapManifest>>) {
       // Type error occurs here due to some weirdness with SnapManifest and WritableDraft or PayloadAction
       state.manifest = action.payload as any;
@@ -101,6 +116,15 @@ const slice = createSlice({
     },
     setIcon(state, action: PayloadAction<VirtualFile<string>>) {
       state.icon = action.payload;
+    },
+    setSnapInterface: (state, action: PayloadAction<SnapInterface>) => {
+      // @ts-expect-error `immer` does not work well with generic types.
+      state.snapInterface = action.payload;
+    },
+    setSnapInterfaceState: (state, action: PayloadAction<InterfaceState>) => {
+      if (state.snapInterface) {
+        state.snapInterface.state = action.payload;
+      }
     },
     showUserInterface: (state, action: PayloadAction<HandlerUserInterface>) => {
       state.ui = action.payload;
@@ -129,11 +153,14 @@ export const {
   setExecutionService,
   setPermissionController,
   setSubjectMetadataController,
+  setSnapInterfaceController,
   setManifest,
   setSourceCode,
   setIcon,
   setAuxiliaryFiles,
   setLocalizationFiles,
+  setSnapInterface,
+  setSnapInterfaceState,
   showUserInterface,
   closeUserInterface,
   setSnapState,
@@ -161,6 +188,21 @@ export const getPermissionController = createSelector(
 export const getSubjectMetadataController = createSelector(
   (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
   (state) => state.subjectMetadataController,
+);
+
+export const getSnapInterfaceController = createSelector(
+  (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
+  (state) => state.snapInterfaceController,
+);
+
+export const getSnapInterface = createSelector(
+  (state: { simulation: typeof INITIAL_STATE }) => state.simulation,
+  (state) => state.snapInterface,
+);
+
+export const getSnapInterfaceContent = createSelector(
+  [getSnapInterface],
+  (snapInterface) => snapInterface?.content,
 );
 
 export const getSnapName = createSelector(

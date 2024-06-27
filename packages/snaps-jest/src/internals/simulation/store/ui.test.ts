@@ -1,3 +1,4 @@
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { DialogType, text } from '@metamask/snaps-sdk';
 
 import {
@@ -13,14 +14,14 @@ describe('uiSlice', () => {
       const state = uiSlice.reducer(
         undefined,
         setInterface({
-          type: DialogType.Alert,
+          type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
           content: text('foo'),
         }),
       );
 
       expect(state).toStrictEqual({
         current: {
-          type: DialogType.Alert,
+          type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
           content: text('foo'),
         },
       });
@@ -32,7 +33,7 @@ describe('uiSlice', () => {
       const state = uiSlice.reducer(
         {
           current: {
-            type: DialogType.Alert,
+            type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
             content: text('foo'),
           },
         },
@@ -70,7 +71,7 @@ describe('getCurrentInterface', () => {
     const state = {
       ui: {
         current: {
-          type: DialogType.Alert,
+          type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
           content: text('foo'),
         },
       },
@@ -78,7 +79,7 @@ describe('getCurrentInterface', () => {
 
     // @ts-expect-error - The `state` parameter is only partially defined.
     expect(getCurrentInterface(state)).toStrictEqual({
-      type: DialogType.Alert,
+      type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
       content: text('foo'),
     });
   });

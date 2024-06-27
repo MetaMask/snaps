@@ -1,4 +1,5 @@
 import { SnapInterfaceController } from '@metamask/snaps-controllers';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import {
   ButtonType,
   DialogType,
@@ -74,7 +75,7 @@ describe('getInterfaceResponse', () => {
     const { runSaga } = createStore(getMockOptions());
     const response = getInterfaceResponse(
       runSaga,
-      DialogType.Alert,
+      DIALOG_APPROVAL_TYPES[DialogType.Alert],
       <Text>foo</Text>,
       interfaceActions,
     );
@@ -98,7 +99,7 @@ describe('getInterfaceResponse', () => {
     const { runSaga } = createStore(getMockOptions());
     const response = getInterfaceResponse(
       runSaga,
-      DialogType.Confirmation,
+      DIALOG_APPROVAL_TYPES[DialogType.Confirmation],
       <Text>foo</Text>,
       interfaceActions,
     );
@@ -123,7 +124,7 @@ describe('getInterfaceResponse', () => {
     const { runSaga } = createStore(getMockOptions());
     const response = getInterfaceResponse(
       runSaga,
-      DialogType.Confirmation,
+      DIALOG_APPROVAL_TYPES[DialogType.Confirmation],
       <Text>foo</Text>,
       interfaceActions,
     );
@@ -149,7 +150,7 @@ describe('getInterfaceResponse', () => {
     const { runSaga } = createStore(getMockOptions());
     const response = getInterfaceResponse(
       runSaga,
-      DialogType.Prompt,
+      DIALOG_APPROVAL_TYPES[DialogType.Prompt],
       <Text>foo</Text>,
       interfaceActions,
     );
@@ -174,7 +175,7 @@ describe('getInterfaceResponse', () => {
     const { runSaga } = createStore(getMockOptions());
     const response = getInterfaceResponse(
       runSaga,
-      DialogType.Prompt,
+      DIALOG_APPROVAL_TYPES[DialogType.Prompt],
       <Text>foo</Text>,
       interfaceActions,
     );
@@ -199,7 +200,7 @@ describe('getInterfaceResponse', () => {
     const { runSaga } = createStore(getMockOptions());
     const response = getInterfaceResponse(
       runSaga,
-      DialogType.Prompt,
+      DIALOG_APPROVAL_TYPES[DialogType.Prompt],
       <Text>foo</Text>,
       interfaceActions,
     );
@@ -966,7 +967,7 @@ describe('getInterface', () => {
     const content = text('foo');
     const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
     const type = DialogType.Alert;
-    const ui = { type, id };
+    const ui = { type: DIALOG_APPROVAL_TYPES[type], id };
 
     store.dispatch(setInterface(ui));
 
@@ -1000,7 +1001,7 @@ describe('getInterface', () => {
     const content = text('foo');
     const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
     const type = DialogType.Alert;
-    const ui = { type, id };
+    const ui = { type: DIALOG_APPROVAL_TYPES[type], id };
     store.dispatch(setInterface(ui));
 
     const result = await promise;
@@ -1022,7 +1023,7 @@ describe('getInterface', () => {
     const content = button({ value: 'foo', name: 'foo' });
     const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
     const type = DialogType.Alert;
-    const ui = { type, id };
+    const ui = { type: DIALOG_APPROVAL_TYPES[type], id };
 
     store.dispatch(setInterface(ui));
 
@@ -1064,7 +1065,7 @@ describe('getInterface', () => {
     const content = input('foo');
     const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
     const type = DialogType.Alert;
-    const ui = { type, id };
+    const ui = { type: DIALOG_APPROVAL_TYPES[type], id };
 
     store.dispatch(setInterface(ui));
 
@@ -1112,7 +1113,7 @@ describe('getInterface', () => {
     );
     const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
     const type = DialogType.Alert;
-    const ui = { type, id };
+    const ui = { type: DIALOG_APPROVAL_TYPES[type], id };
 
     store.dispatch(setInterface(ui));
 
@@ -1159,7 +1160,7 @@ describe('getInterface', () => {
     );
     const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
     const type = DialogType.Alert;
-    const ui = { type, id };
+    const ui = { type: DIALOG_APPROVAL_TYPES[type], id };
 
     store.dispatch(setInterface(ui));
 

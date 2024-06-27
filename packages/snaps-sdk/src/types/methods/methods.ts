@@ -41,6 +41,10 @@ import type { ManageStateParams, ManageStateResult } from './manage-state';
 import type { NotifyParams, NotifyResult } from './notify';
 import type { RequestSnapsParams, RequestSnapsResult } from './request-snaps';
 import type {
+  ResolveInterfaceParams,
+  ResolveInterfaceResult,
+} from './resolve-interface';
+import type {
   UpdateInterfaceParams,
   UpdateInterfaceResult,
 } from './update-interface';
@@ -65,6 +69,7 @@ export type SnapMethods = {
   snap_createInterface: [CreateInterfaceParams, CreateInterfaceResult];
   snap_updateInterface: [UpdateInterfaceParams, UpdateInterfaceResult];
   snap_getInterfaceState: [GetInterfaceStateParams, GetInterfaceStateResult];
+  snap_resolveInterface: [ResolveInterfaceParams, ResolveInterfaceResult];
   wallet_getSnaps: [GetSnapsParams, GetSnapsResult];
   wallet_invokeKeyring: [InvokeKeyringParams, InvokeKeyringResult];
   wallet_invokeSnap: [InvokeSnapParams, InvokeSnapResult];
