@@ -286,6 +286,11 @@ export class SnapInterfaceController extends BaseController<
     );
   }
 
+  /**
+   * Utility function to validate that the approval request exists.
+   *
+   * @param id - The interface id.
+   */
   #validateApproval(id: string) {
     assert(
       this.#hasApprovalRequest(id),

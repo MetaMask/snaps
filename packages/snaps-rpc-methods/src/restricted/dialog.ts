@@ -38,6 +38,10 @@ import { type MethodHooksObject } from '../utils';
 
 const methodName = 'snap_dialog';
 
+export type DialogApprovalTypes = Record<DialogType, string> & {
+  default: string;
+};
+
 export const DIALOG_APPROVAL_TYPES = {
   [DialogType.Alert]: `${methodName}:alert`,
   [DialogType.Confirmation]: `${methodName}:confirmation`,

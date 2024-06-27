@@ -1,3 +1,4 @@
+import type { DialogApprovalTypes } from '@metamask/snaps-rpc-methods';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import type {
   FormState,
@@ -46,7 +47,7 @@ const MAX_FILE_SIZE = 10_000_000; // 10 MB
  */
 export function getInterfaceResponse(
   runSaga: RunSagaFunction,
-  type: string,
+  type: DialogApprovalTypes[DialogType],
   content: JSXElement,
   interfaceActions: SnapInterfaceActions,
 ): SnapInterface {
