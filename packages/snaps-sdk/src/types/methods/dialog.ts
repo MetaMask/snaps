@@ -1,3 +1,5 @@
+import type { Json } from '@metamask/utils';
+
 import type { ComponentOrElement } from '..';
 import type { EnumToUnion } from '../../internals';
 
@@ -14,6 +16,12 @@ export enum DialogType {
   Confirmation = 'confirmation',
   Prompt = 'prompt',
 }
+
+export type DefaultDialog =
+  | {
+      id: string;
+    }
+  | { content: ComponentOrElement };
 
 /**
  * An alert dialog.
@@ -79,7 +87,11 @@ export type PromptDialog =
  * @property placeholder - The placeholder text to display in the dialog. Only
  * applicable for the `prompt` dialog.
  */
-export type DialogParams = AlertDialog | ConfirmationDialog | PromptDialog;
+export type DialogParams =
+  | AlertDialog
+  | ConfirmationDialog
+  | PromptDialog
+  | DefaultDialog;
 
 /**
  * The result returned by the `snap_dialog` method.
@@ -90,4 +102,4 @@ export type DialogParams = AlertDialog | ConfirmationDialog | PromptDialog;
  * - If the dialog is a `prompt`, the result is the value entered by
  * the user.
  */
-export type DialogResult = null | boolean | string;
+export type DialogResult = null | boolean | string | Json;

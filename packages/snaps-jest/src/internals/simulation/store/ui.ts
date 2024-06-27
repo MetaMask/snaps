@@ -1,3 +1,4 @@
+import type { DialogApprovalTypes } from '@metamask/snaps-rpc-methods';
 import type { DialogType } from '@metamask/snaps-sdk';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAction, createSelector, createSlice } from '@reduxjs/toolkit';
@@ -5,7 +6,7 @@ import { createAction, createSelector, createSlice } from '@reduxjs/toolkit';
 import type { ApplicationState } from './store';
 
 export type Interface = {
-  type: DialogType;
+  type: DialogApprovalTypes[DialogType];
   id: string;
 };
 

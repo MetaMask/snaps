@@ -4,7 +4,11 @@ import { DialogType, heading, panel, text } from '@metamask/snaps-sdk';
 import { Box, Text } from '@metamask/snaps-sdk/jsx';
 
 import type { DialogMethodHooks } from './dialog';
-import { dialogBuilder, getDialogImplementation } from './dialog';
+import {
+  DIALOG_APPROVAL_TYPES,
+  dialogBuilder,
+  getDialogImplementation,
+} from './dialog';
 
 describe('builder', () => {
   it('has the expected shape', () => {
@@ -12,7 +16,7 @@ describe('builder', () => {
       targetName: 'snap_dialog',
       specificationBuilder: expect.any(Function),
       methodHooks: {
-        showDialog: true,
+        requestUserApproval: true,
         createInterface: true,
         getInterface: true,
       },
@@ -23,7 +27,7 @@ describe('builder', () => {
     expect(
       dialogBuilder.specificationBuilder({
         methodHooks: {
-          showDialog: jest.fn(),
+          requestUserApproval: jest.fn(),
           createInterface: jest.fn(),
           getInterface: jest.fn(),
         },
@@ -41,7 +45,7 @@ describe('builder', () => {
 describe('implementation', () => {
   const getMockDialogHooks = () =>
     ({
-      showDialog: jest.fn(),
+      requestUserApproval: jest.fn(),
       createInterface: jest.fn().mockReturnValue('bar'),
       getInterface: jest
         .fn()
@@ -60,18 +64,75 @@ describe('implementation', () => {
       },
     });
 
-    expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-    expect(hooks.showDialog).toHaveBeenCalledWith(
-      'foo',
-      DialogType.Alert,
-      'bar',
-      undefined,
+    expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+    expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+      id: undefined,
+      origin: 'foo',
+      type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
+      requestData: {
+        id: 'bar',
+        placeholder: undefined,
+      },
+    });
+  });
+
+  it('accepts no dialog type with an interface ID', async () => {
+    const hooks = getMockDialogHooks();
+    const implementation = getDialogImplementation(hooks);
+    await implementation({
+      context: { origin: 'foo' },
+      method: 'snap_dialog',
+      params: {
+        id: 'bar',
+      },
+    });
+
+    expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+    expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+      id: 'bar',
+      origin: 'foo',
+      type: DIALOG_APPROVAL_TYPES.default,
+      requestData: {
+        id: 'bar',
+        placeholder: undefined,
+      },
+    });
+  });
+
+  it('accepts no dialog type with content', async () => {
+    const hooks = getMockDialogHooks();
+    const implementation = getDialogImplementation(hooks);
+
+    const content = (
+      <Box>
+        <Text>Hello, world!</Text>
+      </Box>
     );
+
+    await implementation({
+      context: { origin: 'foo' },
+      method: 'snap_dialog',
+      params: {
+        content,
+      },
+    });
+
+    expect(hooks.createInterface).toHaveBeenCalledWith('foo', content);
+    expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+    expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+      id: 'bar',
+      origin: 'foo',
+      type: DIALOG_APPROVAL_TYPES.default,
+      requestData: {
+        id: 'bar',
+        placeholder: undefined,
+      },
+    });
   });
 
   it('gets the interface data if an interface ID is passed', async () => {
     const hooks = {
-      showDialog: jest.fn(),
+      requestUserApproval: jest.fn(),
       createInterface: jest.fn().mockReturnValue('bar'),
       getInterface: jest
         .fn()
@@ -89,13 +150,16 @@ describe('implementation', () => {
       },
     });
 
-    expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-    expect(hooks.showDialog).toHaveBeenCalledWith(
-      'foo',
-      DialogType.Alert,
-      'bar',
-      undefined,
-    );
+    expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+    expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+      id: undefined,
+      origin: 'foo',
+      type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
+      requestData: {
+        id: 'bar',
+        placeholder: undefined,
+      },
+    });
   });
 
   it('creates a new interface if some content is passed', async () => {
@@ -114,13 +178,16 @@ describe('implementation', () => {
     });
 
     expect(hooks.createInterface).toHaveBeenCalledWith('foo', content);
-    expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-    expect(hooks.showDialog).toHaveBeenCalledWith(
-      'foo',
-      DialogType.Alert,
-      'bar',
-      undefined,
-    );
+    expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+    expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+      id: undefined,
+      origin: 'foo',
+      type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
+      requestData: {
+        id: 'bar',
+        placeholder: undefined,
+      },
+    });
   });
 
   it('creates a new interface if a JSX element is passed', async () => {
@@ -143,18 +210,21 @@ describe('implementation', () => {
     });
 
     expect(hooks.createInterface).toHaveBeenCalledWith('foo', content);
-    expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-    expect(hooks.showDialog).toHaveBeenCalledWith(
-      'foo',
-      DialogType.Alert,
-      'bar',
-      undefined,
-    );
+    expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+    expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+      id: undefined,
+      origin: 'foo',
+      type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
+      requestData: {
+        id: 'bar',
+        placeholder: undefined,
+      },
+    });
   });
 
   it('throws if the requested interface does not exist.', async () => {
     const hooks = {
-      showDialog: jest.fn(),
+      requestUserApproval: jest.fn(),
       createInterface: jest.fn(),
       getInterface: jest.fn().mockImplementation((_snapId, id) => {
         throw new Error(`Interface with id '${id}' not found.`);
@@ -195,13 +265,16 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-      expect(hooks.showDialog).toHaveBeenCalledWith(
-        'foo',
-        DialogType.Alert,
-        'bar',
-        undefined,
-      );
+      expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+      expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+        id: undefined,
+        origin: 'foo',
+        type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
+        requestData: {
+          id: 'bar',
+          placeholder: undefined,
+        },
+      });
     });
 
     it('handles JSX alerts', async () => {
@@ -220,13 +293,16 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-      expect(hooks.showDialog).toHaveBeenCalledWith(
-        'foo',
-        DialogType.Alert,
-        'bar',
-        undefined,
-      );
+      expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+      expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+        id: undefined,
+        origin: 'foo',
+        type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
+        requestData: {
+          id: 'bar',
+          placeholder: undefined,
+        },
+      });
     });
   });
 
@@ -243,13 +319,16 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-      expect(hooks.showDialog).toHaveBeenCalledWith(
-        'foo',
-        DialogType.Confirmation,
-        'bar',
-        undefined,
-      );
+      expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+      expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+        id: undefined,
+        origin: 'foo',
+        type: DIALOG_APPROVAL_TYPES[DialogType.Confirmation],
+        requestData: {
+          id: 'bar',
+          placeholder: undefined,
+        },
+      });
     });
 
     it('handles JSX confirmations', async () => {
@@ -268,13 +347,16 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-      expect(hooks.showDialog).toHaveBeenCalledWith(
-        'foo',
-        DialogType.Confirmation,
-        'bar',
-        undefined,
-      );
+      expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+      expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+        id: undefined,
+        origin: 'foo',
+        type: DIALOG_APPROVAL_TYPES[DialogType.Confirmation],
+        requestData: {
+          id: 'bar',
+          placeholder: undefined,
+        },
+      });
     });
   });
 
@@ -292,13 +374,16 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-      expect(hooks.showDialog).toHaveBeenCalledWith(
-        'foo',
-        DialogType.Prompt,
-        'bar',
-        'foobar',
-      );
+      expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+      expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+        id: undefined,
+        origin: 'foo',
+        type: DIALOG_APPROVAL_TYPES[DialogType.Prompt],
+        requestData: {
+          id: 'bar',
+          placeholder: 'foobar',
+        },
+      });
     });
 
     it('handles JSX prompts', async () => {
@@ -318,29 +403,39 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.showDialog).toHaveBeenCalledTimes(1);
-      expect(hooks.showDialog).toHaveBeenCalledWith(
-        'foo',
-        DialogType.Prompt,
-        'bar',
-        'foobar',
-      );
+      expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+      expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+        id: undefined,
+        origin: 'foo',
+        type: DIALOG_APPROVAL_TYPES[DialogType.Prompt],
+        requestData: {
+          id: 'bar',
+          placeholder: 'foobar',
+        },
+      });
     });
   });
 
   describe('validation', () => {
-    it.each([
-      undefined,
-      null,
-      false,
-      '',
-      'abc',
-      2,
-      [],
-      {},
-      new (class {})(),
-      new Array(41).fill('a').join(''),
-    ])('rejects invalid parameter object', async (value) => {
+    it.each([undefined, null, false, 2])(
+      'rejects invalid parameter object',
+      async (value) => {
+        const hooks = getMockDialogHooks();
+        const implementation = getDialogImplementation(hooks);
+
+        await expect(
+          implementation({
+            context: { origin: 'foo' },
+            method: 'snap_dialog',
+            params: value as any,
+          }),
+        ).rejects.toThrow(
+          'Invalid params: Expected params to be a single object.',
+        );
+      },
+    );
+
+    it('rejects empty parameter object', async () => {
       const hooks = getMockDialogHooks();
       const implementation = getDialogImplementation(hooks);
 
@@ -348,10 +443,10 @@ describe('implementation', () => {
         implementation({
           context: { origin: 'foo' },
           method: 'snap_dialog',
-          params: value as any,
+          params: {} as any,
         }),
       ).rejects.toThrow(
-        'The "type" property must be one of: alert, confirmation, prompt.',
+        'Invalid params: Expected the value to satisfy a union of `object | object`, but received: [object Object]',
       );
     });
 
@@ -447,7 +542,6 @@ describe('implementation', () => {
             context: { origin: 'foo' },
             method: 'snap_dialog',
             params: {
-              // @ts-expect-error Wrong params.
               type,
               content: panel([heading('foo'), text('bar')]),
               placeholder: 'foobar',
