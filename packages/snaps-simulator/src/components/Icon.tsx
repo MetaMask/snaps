@@ -173,8 +173,8 @@ const DEFAULT_ICONS = {
     alt: 'Divider',
     src: dividerIcon,
   },
-  panel: {
-    alt: 'Panel',
+  box: {
+    alt: 'Box',
     src: panelIcon,
   },
   ui: {
@@ -195,6 +195,10 @@ const DEFAULT_ICONS = {
   },
   input: {
     alt: 'Input',
+    src: inputIcon,
+  },
+  field: {
+    alt: 'Field',
     src: inputIcon,
   },
 };

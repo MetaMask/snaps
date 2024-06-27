@@ -1,5 +1,5 @@
 import { Box, Flex } from '@chakra-ui/react';
-import { NodeType, type Component } from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import type {
   NodeModel,
   NodeRender,
@@ -10,12 +10,13 @@ import { Tree } from '@minoru/react-dnd-treeview';
 import type { FunctionComponent } from 'react';
 import { useEffect, useRef } from 'react';
 
+import { canDropElement } from '../utils';
 import { Node } from './Node';
 import { Start } from './Start';
 
 export type NodeTreeProps = {
-  items: NodeModel<Component>[];
-  setItems: (items: NodeModel<Component>[]) => void;
+  items: NodeModel<JSXElement>[];
+  setItems: (items: NodeModel<JSXElement>[]) => void;
 };
 
 /**
@@ -33,7 +34,7 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
   const ref = useRef<TreeMethods>(null);
 
   const handleChange = (
-    node: NodeModel<Component>,
+    node: NodeModel<JSXElement>,
     key: string,
     value: string,
   ) => {
@@ -46,7 +47,10 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unnecessary-type-assertion
             type: item.data!.type,
             ...item.data,
-            [key]: value,
+            props: {
+              ...item.data?.props,
+              [key]: value,
+            },
           },
           text: value,
         };
@@ -58,11 +62,11 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
     setItems(newItems);
   };
 
-  const handleDrop = (newItems: NodeModel<Component>[]) => {
+  const handleDrop = (newItems: NodeModel<JSXElement>[]) => {
     setItems(newItems);
   };
 
-  const handleClose = (node: NodeModel<Component>) => {
+  const handleClose = (node: NodeModel<JSXElement>) => {
     const newItems = items.filter(
       (item) => item.id !== node.id && item.parent !== node.id,
     );
@@ -70,7 +74,10 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
     setItems(newItems);
   };
 
-  const handleRender: NodeRender<Component> = (node, { depth, isDragging }) => {
+  const handleRender: NodeRender<JSXElement> = (
+    node,
+    { depth, isDragging },
+  ) => {
     if (items.length <= 1) {
       return <Start />;
     }
@@ -90,7 +97,7 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
     return <Box width="100%" height="20px" />;
   };
 
-  const handleCanDrag = (node?: NodeModel<Component>) => {
+  const handleCanDrag = (node?: NodeModel<JSXElement>) => {
     if (node) {
       return node.id >= 2;
     }
@@ -98,21 +105,16 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
     return false;
   };
 
-  const handleCanDrop: TreeProps<Component>['canDrop'] = (
+  const handleCanDrop: TreeProps<JSXElement>['canDrop'] = (
     _tree,
     { dropTarget, dropTargetId, dragSource },
   ) => {
-    if (dropTargetId) {
-      // Checks if the component is allowed in an Form.
-      if (
-        dropTarget?.data?.type === NodeType.Form &&
-        dragSource?.data?.type !== NodeType.Button &&
-        dragSource?.data?.type !== NodeType.Input
-      ) {
-        return false;
-      }
-
-      return dropTarget?.droppable && dropTargetId > 0;
+    if (dropTargetId && dragSource?.data) {
+      return (
+        canDropElement(dropTarget?.data, dragSource?.data) &&
+        dropTarget?.droppable &&
+        dropTargetId > 0
+      );
     }
 
     return false;

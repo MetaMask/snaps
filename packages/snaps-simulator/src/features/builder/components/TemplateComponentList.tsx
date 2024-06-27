@@ -1,16 +1,23 @@
-import { Box, Flex, List, ListItem, Text } from '@chakra-ui/react';
-import type { Component } from '@metamask/snaps-sdk';
 import {
-  button,
-  copyable,
-  divider,
-  form,
-  heading,
-  image,
-  input,
-  panel,
-  text,
-} from '@metamask/snaps-sdk';
+  Box as ChakraBox,
+  Flex,
+  List,
+  ListItem,
+  Text as ChakraText,
+} from '@chakra-ui/react';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
+import {
+  Box,
+  Heading,
+  Text,
+  Divider,
+  Copyable,
+  Image,
+  Button,
+  Form,
+  Input,
+  Field,
+} from '@metamask/snaps-sdk/jsx';
 import type { FunctionComponent } from 'react';
 
 import type { IconName } from '../../../components';
@@ -19,7 +26,7 @@ import { TemplateComponent } from './TemplateComponent';
 type TemplateComponent = {
   icon: IconName;
   text: string;
-  data: Component;
+  data: JSXElement;
   droppable: boolean;
 };
 
@@ -33,57 +40,70 @@ const SVG = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="
 
 const TEMPLATE_COMPONENTS: TemplateComponent[] = [
   {
-    icon: 'panel',
-    text: 'Panel',
-    data: panel([]),
+    icon: 'box',
+    text: 'Box',
+    data: Box({ children: null }),
     droppable: true,
   },
   {
     icon: 'heading',
     text: 'Heading',
-    data: heading('Heading'),
+    data: Heading({ children: 'Heading' }),
     droppable: false,
   },
   {
     icon: 'text',
     text: 'Text',
-    data: text('Text'),
+    data: Text({ children: 'Text' }),
     droppable: false,
   },
   {
     icon: 'divider',
     text: 'Divider',
-    data: divider(),
+    data: Divider({}),
     droppable: false,
   },
   {
     icon: 'copyable',
     text: 'Copyable',
-    data: copyable('Copyable text'),
+    data: Copyable({ value: 'Text to copy' }),
     droppable: false,
   },
   {
     icon: 'image',
     text: 'Image',
-    data: image(SVG),
+    data: Image({ src: SVG }),
     droppable: false,
   },
   {
     icon: 'button',
     text: 'Button',
-    data: button('Button'),
+    data: Button({ children: 'Button' }),
     droppable: false,
   },
   {
     icon: 'form',
     text: 'Form',
-    data: form('form', []),
+    data: Form({
+      name: 'form',
+      children: [],
+    }),
     droppable: true,
   },
   {
+    icon: 'field',
+    text: 'Field',
+    data: Field({
+      // @ts-expect-error - children is required
+      children: null,
+    }),
+    droppable: true,
+  },
+
+  {
     icon: 'input',
     text: 'Input',
-    data: input('Input'),
+    data: Input({ name: 'input' }),
     droppable: false,
   },
 ];
@@ -97,10 +117,15 @@ export const TemplateComponentList: FunctionComponent<ComponentsListProps> = ({
   nextId,
   incrementId,
 }) => (
-  <Box marginBottom="4">
-    <Text fontSize="xs" fontWeight="600" lineHeight="133%" marginBottom="1">
+  <ChakraBox marginBottom="4">
+    <ChakraText
+      fontSize="xs"
+      fontWeight="600"
+      lineHeight="133%"
+      marginBottom="1"
+    >
       Components
-    </Text>
+    </ChakraText>
     <Flex as={List} gap="2">
       {TEMPLATE_COMPONENTS.map((component) => (
         <ListItem key={`component-${component.text}`}>
@@ -118,5 +143,5 @@ export const TemplateComponentList: FunctionComponent<ComponentsListProps> = ({
         </ListItem>
       ))}
     </Flex>
-  </Box>
+  </ChakraBox>
 );

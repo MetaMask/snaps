@@ -1,5 +1,5 @@
 import { Box, Button, Flex, FormControl, Input } from '@chakra-ui/react';
-import type { Component } from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import type { FunctionComponent } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -11,7 +11,7 @@ export type PromptDialogProps = {
   snapName: string;
   snapId: string;
   placeholder?: string;
-  node: Component;
+  content: JSXElement;
   onCancel?: () => void;
   onSubmit?: (value: string) => void;
 };
@@ -27,7 +27,7 @@ type PromptForm = {
  * @param props.snapName - The snap name.
  * @param props.snapId - The snap ID.
  * @param props.placeholder - The placeholder text.
- * @param props.node - The component to render.
+ * @param props.content - The component to render.
  * @param props.onCancel - The cancel callback.
  * @param props.onSubmit - The submit callback. The value is passed as the first
  * argument.
@@ -37,7 +37,7 @@ export const PromptDialog: FunctionComponent<PromptDialogProps> = ({
   snapName,
   snapId,
   placeholder,
-  node,
+  content,
   onCancel,
   onSubmit,
 }) => {
@@ -59,7 +59,7 @@ export const PromptDialog: FunctionComponent<PromptDialogProps> = ({
     <Window snapName={snapName} snapId={snapId}>
       <Box margin="4" marginTop="0" flex="1">
         <Delineator type={DelineatorType.Content} snapName={snapName}>
-          <Renderer node={node} />
+          <Renderer content={content} />
           {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
           <form onSubmit={handleSubmit(onFormSubmit)} id="prompt-form">
             <FormControl

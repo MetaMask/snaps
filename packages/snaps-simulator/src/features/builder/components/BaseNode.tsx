@@ -1,5 +1,5 @@
 import { Flex, Text } from '@chakra-ui/react';
-import type { Component } from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import { assert } from '@metamask/utils';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 import type { FunctionComponent, ReactNode } from 'react';
@@ -8,10 +8,10 @@ import type { IconName } from '../../../components';
 import { Icon } from '../../../components';
 
 export type BaseNodeProps = {
-  node: NodeModel<Component>;
+  node: NodeModel<JSXElement>;
   isDragging: boolean;
   children?: ReactNode;
-  onClose?: ((node: NodeModel<Component>) => void) | undefined;
+  onClose?: ((node: NodeModel<JSXElement>) => void) | undefined;
 };
 
 export const BaseNode: FunctionComponent<BaseNodeProps> = ({
@@ -41,7 +41,7 @@ export const BaseNode: FunctionComponent<BaseNodeProps> = ({
       marginX="4"
       cursor={node.id > 1 ? 'move' : 'default'}
     >
-      <Icon icon={node.data.type as IconName} width="16px" />
+      <Icon icon={node.data.type.toLowerCase() as IconName} width="16px" />
       <Text
         fontWeight="500"
         fontSize="sm"

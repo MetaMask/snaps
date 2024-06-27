@@ -1,5 +1,5 @@
 import { Box, Button, Flex } from '@chakra-ui/react';
-import type { Component } from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import type { FunctionComponent } from 'react';
 
 import { Renderer } from '../../features/renderer';
@@ -9,7 +9,7 @@ import { Window } from '../Window';
 export type ConfirmationDialogProps = {
   snapName: string;
   snapId: string;
-  node: Component;
+  content: JSXElement;
   onCancel?: () => void;
   onApprove?: () => void;
 };
@@ -20,7 +20,7 @@ export type ConfirmationDialogProps = {
  * @param props - The component props.
  * @param props.snapName - The snap name.
  * @param props.snapId - The snap ID.
- * @param props.node - The component to render.
+ * @param props.content - The component to render.
  * @param props.onCancel - The cancel callback.
  * @param props.onApprove - The approve callback.
  * @returns The component.
@@ -28,14 +28,14 @@ export type ConfirmationDialogProps = {
 export const ConfirmationDialog: FunctionComponent<ConfirmationDialogProps> = ({
   snapName,
   snapId,
-  node,
+  content,
   onCancel,
   onApprove,
 }) => (
   <Window snapName={snapName} snapId={snapId}>
     <Box margin="4" marginTop="0" flex="1">
       <Delineator type={DelineatorType.Content} snapName={snapName}>
-        <Renderer node={node} />
+        <Renderer content={content} />
       </Delineator>
     </Box>
     <Flex

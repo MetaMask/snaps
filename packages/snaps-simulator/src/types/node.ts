@@ -1,10 +1,10 @@
-import type { Component } from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 
-export type EditableNodeProps<Components extends Component> = {
-  node: NodeModel<Components>;
+export type EditableNodeProps<Element extends JSXElement> = {
+  node: NodeModel<Element>;
   depth: number;
   isDragging: boolean;
-  onChange?: (node: NodeModel<Components>, key: string, value: string) => void;
-  onClose?: ((node: NodeModel<Component>) => void) | undefined;
+  onChange?: (node: NodeModel<JSXElement>, key: string, value: string) => void;
+  onClose?: ((node: NodeModel<JSXElement>) => void) | undefined;
 };

@@ -1,58 +1,27 @@
-import type { Component } from '@metamask/snaps-sdk';
-import { NodeType } from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import type { FunctionComponent } from 'react';
 
-import {
-  Copyable,
-  Panel,
-  Text,
-  Divider,
-  Heading,
-  Spinner,
-  Image,
-  Button,
-  Form,
-  Input,
-} from './components';
-
-export const components: Partial<
-  Record<NodeType, FunctionComponent<{ id: string; node: unknown }>>
-> = {
-  [NodeType.Button]: Button,
-  [NodeType.Copyable]: Copyable,
-  [NodeType.Divider]: Divider,
-  [NodeType.Form]: Form,
-  [NodeType.Heading]: Heading,
-  [NodeType.Panel]: Panel,
-  [NodeType.Spinner]: Spinner,
-  [NodeType.Text]: Text,
-  [NodeType.Image]: Image,
-  [NodeType.Input]: Input,
-};
+import { SnapInterfaceContextProvider } from '../../contexts';
+import { generateKey } from '../../utils';
+import { SnapComponent } from './SnapComponent';
 
 type RendererProps = {
-  node: Component;
-  id?: string;
+  content: JSXElement;
 };
 
 /**
  * A UI renderer for Snaps UI.
  *
  * @param props - The component props.
- * @param props.node - The component to render.
- * @param props.id - The component ID, to be used as a prefix for component
- * keys.
+ * @param props.content - The JSX element to render.
  * @returns The renderer component.
  */
-export const Renderer: FunctionComponent<RendererProps> = ({
-  node,
-  id = 'root',
-}) => {
-  const ReactComponent = components[node.type];
+export const Renderer: FunctionComponent<RendererProps> = ({ content }) => {
+  const id = generateKey({}, content);
 
-  if (!ReactComponent) {
-    throw new Error(`Unknown component type: ${node.type}.`);
-  }
-
-  return <ReactComponent id={id} node={node} />;
+  return (
+    <SnapInterfaceContextProvider>
+      <SnapComponent node={content} id={id} />
+    </SnapInterfaceContextProvider>
+  );
 };

@@ -9,8 +9,10 @@ import {
   SubjectMetadataController,
   SubjectType,
 } from '@metamask/permission-controller';
+import type { StoredInterface } from '@metamask/snaps-controllers';
 import {
   IframeExecutionService,
+  SnapInterfaceController,
   setupMultiplex,
 } from '@metamask/snaps-controllers';
 import packageJson from '@metamask/snaps-execution-environments/package.json';
@@ -22,17 +24,26 @@ import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-rpc-methods';
+import type { SnapId } from '@metamask/snaps-sdk';
+import { type Component, type ComponentOrElement } from '@metamask/snaps-sdk';
 import type {
   SnapManifest,
   SnapRpcHookArgs,
   VirtualFile,
 } from '@metamask/snaps-utils';
 import { logError, unwrapError } from '@metamask/snaps-utils';
-import { getSafeJson } from '@metamask/utils';
+import { getSafeJson, hasProperty, isObject } from '@metamask/utils';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { pipeline } from 'readable-stream';
 import type { SagaIterator } from 'redux-saga';
-import { all, call, put, select, takeLatest } from 'redux-saga/effects';
+import {
+  all,
+  call,
+  put,
+  select,
+  takeEvery,
+  takeLatest,
+} from 'redux-saga/effects';
 
 import { runSaga } from '../../store/middleware';
 import { getSnapId, getSrp, setSnapId } from '../configuration';
@@ -40,11 +51,15 @@ import { addError } from '../console';
 import { ManifestStatus, setValid } from '../manifest';
 import { JSON_RPC_ENDPOINT } from './constants';
 import {
+  createInterface,
+  getInterface,
+  getInterfaceState,
   getSnapFile,
   getSnapState,
   showDialog,
   showInAppNotification,
   showNativeNotification,
+  updateInterface,
   updateSnapState,
 } from './hooks';
 import { createMiscMethodMiddleware } from './middleware';
@@ -60,6 +75,8 @@ import {
   setPermissionController,
   setSubjectMetadataController,
   getSubjectMetadataController,
+  setSnapInterfaceController,
+  setSnapInterface,
 } from './slice';
 import {
   ExcludedSnapEndowments,
@@ -70,6 +87,25 @@ import {
 const DEFAULT_ENVIRONMENT_URL = `https://execution.metamask.io/iframe/${packageJson.version}/index.html`;
 
 /**
+ * Register the misc controller actions.
+ *
+ * @param controllerMessenger - The controller messenger.
+ */
+export function registerActions(
+  controllerMessenger: ControllerMessenger<any, any>,
+) {
+  controllerMessenger.registerActionHandler(
+    'PhishingController:testOrigin',
+    () => ({ result: false }),
+  );
+
+  controllerMessenger.registerActionHandler(
+    'PhishingController:maybeUpdateState',
+    async () => Promise.resolve(),
+  );
+}
+
+/**
  * The initialization saga is run on when the snap ID is changed and initializes the snaps execution environment.
  * This saga also creates the JSON-RPC engine and middlewares used to process RPC requests from the executing snap.
  *
@@ -78,7 +114,9 @@ const DEFAULT_ENVIRONMENT_URL = `https://execution.metamask.io/iframe/${packageJ
  * @yields Puts the execution environment after creation.
  */
 export function* initSaga({ payload }: PayloadAction<string>) {
-  const controllerMessenger = new ControllerMessenger();
+  const controllerMessenger = new ControllerMessenger<any, any>();
+
+  registerActions(controllerMessenger);
 
   const srp: string = yield select(getSrp);
 
@@ -111,6 +149,10 @@ export function* initSaga({ payload }: PayloadAction<string>) {
       maybeUpdatePhishingList: async () => Promise.resolve(),
       // TODO: Allow changing this ?
       isOnPhishingList: () => false,
+      createInterface: async (...args: Parameters<typeof createInterface>) =>
+        await runSaga(createInterface, ...args).toPromise(),
+      getInterface: (...args: Parameters<typeof getInterface>) =>
+        runSaga(getInterface, ...args).result(),
     }),
   };
 
@@ -145,6 +187,17 @@ export function* initSaga({ payload }: PayloadAction<string>) {
     unrestrictedMethods,
   });
 
+  const snapInterfaceController = new SnapInterfaceController({
+    messenger: controllerMessenger.getRestricted({
+      name: 'SnapInterfaceController',
+      allowedActions: [
+        `PhishingController:testOrigin`,
+        `PhishingController:maybeUpdateState`,
+      ],
+      allowedEvents: [],
+    }),
+  });
+
   const engine = new JsonRpcEngine();
 
   engine.push(createMiscMethodMiddleware(sharedHooks));
@@ -154,6 +207,12 @@ export function* initSaga({ payload }: PayloadAction<string>) {
       getSnapFile: async (...args: Parameters<typeof getSnapFile>) =>
         await runSaga(getSnapFile, ...args).toPromise(),
       getIsLocked: () => false,
+      createInterface: async (content: Component) =>
+        await runSaga(createInterface, payload, content).toPromise(),
+      getInterfaceState: (id: string) =>
+        runSaga(getInterfaceState, payload, id).result(),
+      updateInterface: async (id: string, content: Component) =>
+        await runSaga(updateInterface, payload, id, content).toPromise(),
     }),
   );
 
@@ -197,6 +256,7 @@ export function* initSaga({ payload }: PayloadAction<string>) {
   yield put(setExecutionService(executionService));
   yield put(setPermissionController(permissionController));
   yield put(setSubjectMetadataController(subjectMetadataController));
+  yield put(setSnapInterfaceController(snapInterfaceController));
 }
 
 /**
@@ -259,6 +319,42 @@ export function* requestSaga({ payload }: PayloadAction<SnapRpcHookArgs>) {
       snapId,
       payload,
     );
+
+    if (isObject(result) && hasProperty(result, 'content')) {
+      const interfaceId: string = yield call(
+        createInterface,
+        snapId,
+        result.content as ComponentOrElement,
+      );
+
+      const snapInterface: StoredInterface = yield call(
+        getInterface,
+        snapId as SnapId,
+        interfaceId,
+      );
+
+      yield put(setSnapInterface({ id: interfaceId, ...snapInterface }));
+
+      yield put({
+        type: `${payload.handler}/setResponse`,
+        payload: {
+          result: {
+            ...snapInterface,
+            id: interfaceId,
+          },
+        },
+      });
+    } else if (isObject(result) && hasProperty(result, 'id')) {
+      const snapInterface: StoredInterface = yield call(
+        getInterface,
+        snapId as SnapId,
+        result.id as string,
+      );
+
+      yield put(
+        setSnapInterface({ id: result.id as string, ...snapInterface }),
+      );
+    }
 
     yield put({
       type: `${payload.handler}/setResponse`,
@@ -334,7 +430,7 @@ export function* simulationSaga() {
   yield all([
     takeLatest(setSnapId.type, initSaga),
     takeLatest(setSourceCode.type, rebootSaga),
-    takeLatest(sendRequest.type, requestSaga),
+    takeEvery(sendRequest.type, requestSaga),
     takeLatest(setManifest, permissionsSaga),
   ]);
 }

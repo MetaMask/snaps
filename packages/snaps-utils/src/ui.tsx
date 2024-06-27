@@ -2,11 +2,13 @@ import type { Component } from '@metamask/snaps-sdk';
 import { NodeType } from '@metamask/snaps-sdk';
 import type {
   BoldChildren,
+  GenericSnapElement,
   ItalicChildren,
   JSXElement,
   LinkElement,
   Nestable,
   RowChildren,
+  SnapNode,
   StandardFormattingElement,
   TextChildren,
 } from '@metamask/snaps-sdk/jsx';
@@ -519,4 +521,67 @@ export function walkJsx<Value>(
   }
 
   return undefined;
+}
+
+/**
+ * Serialise a JSX prop to a string.
+ *
+ * @param prop - The JSX prop.
+ * @returns The serialised JSX prop.
+ */
+function serialiseProp(prop: unknown): string {
+  if (typeof prop === 'string') {
+    return `"${prop}"`;
+  }
+
+  return `{${JSON.stringify(prop)}}`;
+}
+
+/**
+ * Serialise JSX props to a string.
+ *
+ * @param props - The JSX props.
+ * @returns The serialised JSX props.
+ */
+function serialiseProps(props: Record<string, unknown>): string {
+  return Object.entries(props)
+    .filter(([key]) => key !== 'children')
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, value]) => ` ${key}=${serialiseProp(value)}`)
+    .join('');
+}
+
+/**
+ * Serialise a JSX node to a string.
+ *
+ * @param node - The JSX node.
+ * @param indentation - The indentation level. Defaults to `0`. This should not
+ * be set by the caller, as it is used for recursion.
+ * @returns The serialised JSX node.
+ */
+export function serialiseJsx(node: SnapNode, indentation = 0): string {
+  if (Array.isArray(node)) {
+    return node.map((child) => serialiseJsx(child, indentation)).join('');
+  }
+
+  const indent = '  '.repeat(indentation);
+  if (typeof node === 'string') {
+    return `${indent}${node}\n`;
+  }
+
+  if (!node) {
+    return '';
+  }
+
+  const { type, props } = node as GenericSnapElement;
+  const trailingNewline = indentation > 0 ? '\n' : '';
+
+  if (hasProperty(props, 'children')) {
+    const children = serialiseJsx(props.children as SnapNode, indentation + 1);
+    return `${indent}<${type}${serialiseProps(
+      props,
+    )}>\n${children}${indent}</${type}>${trailingNewline}`;
+  }
+
+  return `${indent}<${type}${serialiseProps(props)} />${trailingNewline}`;
 }

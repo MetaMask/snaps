@@ -1,4 +1,6 @@
-import { AuxiliaryFileEncoding, DialogType, text } from '@metamask/snaps-sdk';
+import type { SnapId } from '@metamask/snaps-sdk';
+import { AuxiliaryFileEncoding, DialogType } from '@metamask/snaps-sdk';
+import { Box, Input, Text } from '@metamask/snaps-sdk/jsx';
 import { VirtualFile, normalizeRelative } from '@metamask/snaps-utils';
 import { base64ToBytes, stringToBytes } from '@metamask/utils';
 import { File } from 'buffer';
@@ -6,11 +8,15 @@ import { expectSaga } from 'redux-saga-test-plan';
 
 import { addNotification } from '../notifications';
 import {
+  createInterface,
+  getInterface,
+  getInterfaceState,
   getSnapFile,
   getSnapState,
   showDialog,
   showInAppNotification,
   showNativeNotification,
+  updateInterface,
   updateSnapState,
 } from './hooks';
 import {
@@ -20,10 +26,13 @@ import {
   getSnapStateSelector,
   getUnencryptedSnapStateSelector,
   resolveUserInterface,
+  setSnapInterface,
   setSnapState,
   setUnencryptedSnapState,
   showUserInterface,
+  getSnapInterfaceController,
 } from './slice';
+import { getSnapInterfaceController as getTestSnapInterfaceController } from './test/controllers';
 import { MOCK_MANIFEST_FILE } from './test/mockManifest';
 
 Object.defineProperty(globalThis, 'Notification', {
@@ -51,11 +60,24 @@ Object.defineProperty(globalThis, 'fetch', {
 const snapId = 'local:http://localhost:8080';
 
 describe('showDialog', () => {
+  const snapInterfaceController = getTestSnapInterfaceController();
+
   it('shows a dialog', async () => {
-    await expectSaga(showDialog, snapId, DialogType.Alert, text('foo'))
+    const interfaceId = await snapInterfaceController.createInterface(
+      snapId as SnapId,
+      Box({ children: null }),
+    );
+
+    const snapInterface = await snapInterfaceController.getInterface(
+      snapId as SnapId,
+      interfaceId,
+    );
+
+    await expectSaga(showDialog, snapId, DialogType.Alert, interfaceId)
       .withState({
         simulation: {
           manifest: MOCK_MANIFEST_FILE,
+          snapInterfaceController,
         },
       })
       .select(getSnapName)
@@ -64,9 +86,10 @@ describe('showDialog', () => {
           snapId,
           snapName: '@metamask/example-snap',
           type: DialogType.Alert,
-          node: text('foo'),
+          id: interfaceId,
         }),
       )
+      .put(setSnapInterface({ id: interfaceId, ...snapInterface }))
       .dispatch(resolveUserInterface('foo'))
       .put(closeUserInterface())
       .returns('foo')
@@ -221,6 +244,128 @@ describe('getSnapFile', () => {
       })
       .select(getAuxiliaryFiles)
       .returns('0x7b22666f6f223a22626172227d')
+      .silentRun();
+  });
+});
+
+describe('createInterface', () => {
+  it('creates an interface', async () => {
+    const snapInterfaceController = getTestSnapInterfaceController();
+
+    const { returnValue } = await expectSaga(
+      createInterface,
+      snapId,
+      Box({ children: null }),
+    )
+      .withState({
+        simulation: { snapInterfaceController },
+      })
+      .select(getSnapInterfaceController)
+      .call(
+        [snapInterfaceController, 'createInterface'],
+        snapId as SnapId,
+        Box({ children: null }),
+      )
+
+      .silentRun();
+
+    expect(returnValue).toBe(
+      Object.keys(snapInterfaceController.state.interfaces)[0],
+    );
+  });
+});
+
+describe('getInterface', () => {
+  const snapInterfaceController = getTestSnapInterfaceController();
+
+  it('returns the requested interface', async () => {
+    const interfaceId = await snapInterfaceController.createInterface(
+      snapId as SnapId,
+      Box({ children: null }),
+    );
+
+    const snapInterface = snapInterfaceController.getInterface(
+      snapId as SnapId,
+      interfaceId,
+    );
+
+    await expectSaga(getInterface, snapId, interfaceId)
+      .withState({
+        simulation: { snapInterfaceController },
+      })
+      .select(getSnapInterfaceController)
+      .call(
+        [snapInterfaceController, 'getInterface'],
+        snapId as SnapId,
+        interfaceId,
+      )
+      .returns(snapInterface)
+      .silentRun();
+  });
+});
+
+describe('updateInterface', () => {
+  it('updates the interface', async () => {
+    const snapInterfaceController = getTestSnapInterfaceController();
+    const interfaceId = await snapInterfaceController.createInterface(
+      snapId as SnapId,
+      Box({ children: null }),
+    );
+
+    await expectSaga(
+      updateInterface,
+      snapId,
+      interfaceId,
+      Box({ children: Text({ children: 'foo' }) }),
+    )
+      .withState({
+        simulation: { snapInterfaceController },
+      })
+      .select(getSnapInterfaceController)
+      .call(
+        [snapInterfaceController, 'updateInterface'],
+        snapId as SnapId,
+        interfaceId,
+        Box({ children: Text({ children: 'foo' }) }),
+      )
+      .call(getInterface, snapId, interfaceId)
+      .put(
+        setSnapInterface({
+          id: interfaceId,
+          state: {},
+          snapId: snapId as SnapId,
+          content: Box({ children: Text({ children: 'foo' }) }),
+          context: null,
+        }),
+      )
+      .silentRun();
+  });
+});
+
+describe('getInterfaceState', () => {
+  it('returns the state of the interface', async () => {
+    const snapInterfaceController = getTestSnapInterfaceController();
+    const interfaceId = await snapInterfaceController.createInterface(
+      snapId as SnapId,
+      Box({ children: Input({ name: 'foo', value: 'bar' }) }),
+    );
+
+    const snapInterface = await snapInterfaceController.getInterface(
+      snapId as SnapId,
+      interfaceId,
+    );
+
+    await expectSaga(getInterfaceState, snapId, interfaceId)
+      .withState({
+        simulation: { snapInterfaceController },
+      })
+      .select(getSnapInterfaceController)
+      .call(
+        [snapInterfaceController, 'getInterface'],
+        snapId as SnapId,
+        interfaceId,
+      )
+      .returns(snapInterface.state)
       .silentRun();
   });
 });

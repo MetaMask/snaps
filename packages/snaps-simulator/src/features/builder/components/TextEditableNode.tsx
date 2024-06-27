@@ -1,11 +1,10 @@
 import { Box, Input as ChakraInput } from '@chakra-ui/react';
-import {
-  type Copyable,
-  type Heading,
-  type Text,
-  NodeType,
-} from '@metamask/snaps-sdk';
-import { assert } from '@metamask/utils';
+import type {
+  CopyableElement,
+  HeadingElement,
+  TextElement,
+} from '@metamask/snaps-sdk/jsx';
+import { assert, hasProperty } from '@metamask/utils';
 import type { ChangeEvent, FunctionComponent } from 'react';
 import { useState } from 'react';
 
@@ -13,13 +12,12 @@ import type { EditableNodeProps } from '../../../types';
 import { getNodeText } from '../utils';
 import { BaseNode } from './BaseNode';
 
-export type TextEditableComponent = Text | Heading | Copyable;
+export type TextEditableComponent =
+  | TextElement
+  | HeadingElement
+  | CopyableElement;
 
-export const TEXT_EDITABLE_NODES = [
-  NodeType.Heading,
-  NodeType.Text,
-  NodeType.Image,
-];
+export const TEXT_EDITABLE_NODES = ['Heading', 'Text', 'Image', 'Copyable'];
 
 /**
  * An editable node with a text field, which renders an editable component in the builder.
@@ -37,12 +35,17 @@ export const TextEditableNode: FunctionComponent<
 > = ({ node, depth, isDragging, onChange, onClose }) => {
   const text = getNodeText(node);
   assert(text !== null, 'Node must have text.');
-
   const [value, setValue] = useState(text);
 
   const handleChange = (newValue: ChangeEvent<HTMLInputElement>) => {
     setValue(newValue.target.value);
-    onChange?.(node, 'value', newValue.target.value);
+    onChange?.(
+      node,
+      hasProperty(node.data?.props as Record<string, unknown>, 'value')
+        ? 'value'
+        : 'children',
+      newValue.target.value,
+    );
   };
 
   return (
