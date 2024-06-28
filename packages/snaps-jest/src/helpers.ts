@@ -37,10 +37,10 @@ import type {
   SnapInterfaceActions,
   SnapConfirmationInterface,
   SnapPromptInterface,
-  SnapDefaultInterface,
-  SnapDefaultInterfaceWithFooter,
-  SnapDefaultInterfaceWithPartialFooter,
-  SnapDefaultInterfaceWithoutFooter,
+  DefaultSnapInterface,
+  DefaultSnapInterfaceWithFooter,
+  DefaultSnapInterfaceWithPartialFooter,
+  DefaultSnapInterfaceWithoutFooter,
 } from './types';
 
 const log = createModuleLogger(rootLogger, 'helpers');
@@ -118,7 +118,7 @@ export function assertIsPromptDialog(
  */
 export function assertIsCustomDialog(
   ui: SnapInterface,
-): asserts ui is SnapDefaultInterface & SnapInterfaceActions {
+): asserts ui is DefaultSnapInterface & SnapInterfaceActions {
   assert(!hasProperty(ui, 'type'));
 }
 
@@ -128,8 +128,8 @@ export function assertIsCustomDialog(
  * @param ui - The interface to verify.
  */
 export function assertCustomDialogHasFooter(
-  ui: SnapDefaultInterface & SnapInterfaceActions,
-): asserts ui is SnapDefaultInterfaceWithFooter & SnapInterfaceActions {
+  ui: DefaultSnapInterface & SnapInterfaceActions,
+): asserts ui is DefaultSnapInterfaceWithFooter & SnapInterfaceActions {
   const footer = getElementByType<FooterElement>(ui.content, 'Footer');
 
   assert(footer && getJsxChildren(footer).length === 2);
@@ -141,8 +141,8 @@ export function assertCustomDialogHasFooter(
  * @param ui - The interface to verify.
  */
 export function assertCustomDialogHasPartialFooter(
-  ui: SnapDefaultInterface & SnapInterfaceActions,
-): asserts ui is SnapDefaultInterfaceWithPartialFooter & SnapInterfaceActions {
+  ui: DefaultSnapInterface & SnapInterfaceActions,
+): asserts ui is DefaultSnapInterfaceWithPartialFooter & SnapInterfaceActions {
   const footer = getElementByType<FooterElement>(ui.content, 'Footer');
 
   assert(footer && getJsxChildren(footer).length === 1);
@@ -154,8 +154,8 @@ export function assertCustomDialogHasPartialFooter(
  * @param ui - The interface to verify.
  */
 export function assertCustomDialogHasNoFooter(
-  ui: SnapDefaultInterface & SnapInterfaceActions,
-): asserts ui is SnapDefaultInterfaceWithoutFooter & SnapInterfaceActions {
+  ui: DefaultSnapInterface & SnapInterfaceActions,
+): asserts ui is DefaultSnapInterfaceWithoutFooter & SnapInterfaceActions {
   const footer = getElementByType<FooterElement>(ui.content, 'Footer');
 
   assert(!footer);
