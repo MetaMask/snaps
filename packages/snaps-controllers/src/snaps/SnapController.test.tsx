@@ -135,13 +135,7 @@ const OTHER_ENCRYPTION_KEY =
 describe('SnapController', () => {
   beforeEach(() => {
     // eslint-disable-next-line @typescript-eslint/require-await
-    fetchMock.mockImplementation(async (request) => {
-      if (
-        typeof request === 'string' &&
-        request.startsWith('data:application/octet-stream;base64,')
-      ) {
-        return globalThis.fetch(request);
-      }
+    fetchMock.mockImplementation(async () => {
       throw new AssertionError({ message: 'Unmocked access to internet.' });
     });
   });
