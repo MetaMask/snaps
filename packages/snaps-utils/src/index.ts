@@ -4,6 +4,7 @@ export * from './base64';
 export * from './bytes';
 export * from './caveats';
 export * from './checksum';
+export * from './constants';
 export * from './cronjob';
 export * from './deep-clone';
 export * from './default-endowments';
