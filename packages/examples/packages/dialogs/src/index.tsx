@@ -21,6 +21,7 @@ import { CustomDialog } from './components';
  * - `showAlert`: Show an alert dialog.
  * - `showConfirmation`: Show a confirmation dialog.
  * - `showPrompt`: Show a prompt dialog.
+ * - `showCustom`: Show a custom dialog with the resolution handled by the snap.
  *
  * The dialogs are shown using the [`snap_dialog`](https://docs.metamask.io/snaps/reference/rpc-api/#snap_dialog)
  * method.
