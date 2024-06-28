@@ -233,7 +233,7 @@ type DefaultSnapInterfaceWithFooter = {
  */
 type DefaultSnapInterfaceWithPartialFooter = DefaultSnapInterfaceWithFooter & {
   /**
-   * Cancel the prompt.
+   * Cancel the dialog.
    */
   cancel(): Promise<void>;
 };
@@ -245,7 +245,7 @@ type DefaultSnapInterfaceWithPartialFooter = DefaultSnapInterfaceWithFooter & {
 type DefaultSnapInterfaceWithoutFooter =
   DefaultSnapInterfaceWithPartialFooter & {
     /**
-     * Close the prompt.
+     * Close the dialog.
      *
      */
     ok(): Promise<void>;
