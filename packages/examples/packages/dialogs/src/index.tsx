@@ -94,6 +94,14 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   }
 };
 
+/**
+ * Handle incoming user events coming from the MetaMask clients open interfaces.
+ *
+ * @param params - The event parameters.
+ * @param params.id - The Snap interface ID where the event was fired.
+ * @param params.event - The event object containing the event type, name and value.
+ * @see https://docs.metamask.io/snaps/reference/exports/#onuserinput
+ */
 export const onUserInput: OnUserInputHandler = async ({ id, event }) => {
   if (event.type === UserInputEventType.ButtonClickEvent) {
     switch (event.name) {

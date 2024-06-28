@@ -216,54 +216,51 @@ export type SnapPromptInterface = {
   cancel(): Promise<void>;
 };
 
-export type SnapDefaultInterfaceWithFooter = {
+/**
+ * A `snap_dialog` default interface that has a Footer with two buttons defined.
+ * The approval of this confirmation is handled by the snap.
+ */
+type DefaultSnapInterfaceWithFooter = {
   /**
    * The content to show in the interface.
    */
   content: JSXElement;
 };
 
-export type SnapDefaultInterfaceWithPartialFooter = {
-  /**
-   * The content to show in the interface.
-   */
-  content: JSXElement;
-
+/**
+ * A `snap_dialog` default interface that has a Footer with one button defined.
+ * A cancel button is automatically applied to the interface in this case.
+ */
+type DefaultSnapInterfaceWithPartialFooter = DefaultSnapInterfaceWithFooter & {
   /**
    * Cancel the prompt.
    */
   cancel(): Promise<void>;
 };
 
-export type SnapDefaultInterfaceWithoutFooter = {
-  /**
-   * The content to show in the interface.
-   */
-  content: JSXElement;
+/**
+ * A `snap_dialog` default interface that has no Footer defined.
+ * A cancel and ok button is automatically applied to the interface in this case.
+ */
+type DefaultSnapInterfaceWithoutFooter =
+  DefaultSnapInterfaceWithPartialFooter & {
+    /**
+     * Close the prompt.
+     *
+     */
+    ok(): Promise<void>;
+  };
 
-  /**
-   * Close the prompt.
-   *
-   * @param value - The value to close the prompt with.
-   */
-  ok(): Promise<void>;
-
-  /**
-   * Cancel the prompt.
-   */
-  cancel(): Promise<void>;
-};
-
-export type SnapDefaultInterface =
-  | SnapDefaultInterfaceWithFooter
-  | SnapDefaultInterfaceWithPartialFooter
-  | SnapDefaultInterfaceWithoutFooter;
+export type DefaultSnapInterface =
+  | DefaultSnapInterfaceWithFooter
+  | DefaultSnapInterfaceWithPartialFooter
+  | DefaultSnapInterfaceWithoutFooter;
 
 export type SnapInterface = (
   | SnapAlertInterface
   | SnapConfirmationInterface
   | SnapPromptInterface
-  | SnapDefaultInterface
+  | DefaultSnapInterface
 ) &
   SnapInterfaceActions;
 

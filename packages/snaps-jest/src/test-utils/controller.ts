@@ -32,7 +32,7 @@ export const getRootControllerMessenger = (mocked = true) => {
 
     messenger.registerActionHandler(
       'ApprovalController:acceptRequest',
-      async (_id: string, value: unknown) => Promise.resolve({ value }),
+      async (_id: string, value: unknown) => ({ value }),
     );
   }
 

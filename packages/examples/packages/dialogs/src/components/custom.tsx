@@ -9,6 +9,11 @@ import {
   type SnapComponent,
 } from '@metamask/snaps-sdk/jsx';
 
+/**
+ * A custom dialog component.
+ *
+ * @returns The custom dialog component.
+ */
 export const CustomDialog: SnapComponent = () => (
   <Container>
     <Box>
