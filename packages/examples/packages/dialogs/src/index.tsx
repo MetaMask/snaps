@@ -1,11 +1,17 @@
-import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
+import type {
+  OnRpcRequestHandler,
+  OnUserInputHandler,
+} from '@metamask/snaps-sdk';
 import {
   DialogType,
   panel,
   text,
   heading,
   MethodNotFoundError,
+  UserInputEventType,
 } from '@metamask/snaps-sdk';
+
+import { CustomDialog } from './components';
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
@@ -75,7 +81,54 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         },
       });
 
+    case 'showCustom':
+      return snap.request({
+        method: 'snap_dialog',
+        params: {
+          content: <CustomDialog />,
+        },
+      });
+
     default:
       throw new MethodNotFoundError({ method: request.method });
+  }
+};
+
+export const onUserInput: OnUserInputHandler = async ({ id, event }) => {
+  if (event.type === UserInputEventType.ButtonClickEvent) {
+    switch (event.name) {
+      case 'cancel':
+        await snap.request({
+          method: 'snap_resolveInterface',
+          params: {
+            id,
+            value: null,
+          },
+        });
+        break;
+
+      case 'confirm': {
+        const state = await snap.request({
+          method: 'snap_getInterfaceState',
+          params: {
+            id,
+          },
+        });
+
+        const value = state['custom-input'];
+
+        await snap.request({
+          method: 'snap_resolveInterface',
+          params: {
+            id,
+            value,
+          },
+        });
+        break;
+      }
+
+      default:
+        break;
+    }
   }
 };

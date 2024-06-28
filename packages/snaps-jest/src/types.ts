@@ -216,10 +216,54 @@ export type SnapPromptInterface = {
   cancel(): Promise<void>;
 };
 
+export type SnapDefaultInterfaceWithFooter = {
+  /**
+   * The content to show in the interface.
+   */
+  content: JSXElement;
+};
+
+export type SnapDefaultInterfaceWithPartialFooter = {
+  /**
+   * The content to show in the interface.
+   */
+  content: JSXElement;
+
+  /**
+   * Cancel the prompt.
+   */
+  cancel(): Promise<void>;
+};
+
+export type SnapDefaultInterfaceWithoutFooter = {
+  /**
+   * The content to show in the interface.
+   */
+  content: JSXElement;
+
+  /**
+   * Close the prompt.
+   *
+   * @param value - The value to close the prompt with.
+   */
+  ok(): Promise<void>;
+
+  /**
+   * Cancel the prompt.
+   */
+  cancel(): Promise<void>;
+};
+
+export type SnapDefaultInterface =
+  | SnapDefaultInterfaceWithFooter
+  | SnapDefaultInterfaceWithPartialFooter
+  | SnapDefaultInterfaceWithoutFooter;
+
 export type SnapInterface = (
   | SnapAlertInterface
   | SnapConfirmationInterface
   | SnapPromptInterface
+  | SnapDefaultInterface
 ) &
   SnapInterfaceActions;
 

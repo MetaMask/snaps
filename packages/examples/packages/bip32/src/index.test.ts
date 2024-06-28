@@ -1,7 +1,6 @@
 import { expect } from '@jest/globals';
-import { installSnap } from '@metamask/snaps-jest';
+import { assertIsConfirmationDialog, installSnap } from '@metamask/snaps-jest';
 import { copyable, heading, panel, text } from '@metamask/snaps-sdk';
-import { assert } from '@metamask/utils';
 
 describe('onRpcRequest', () => {
   it('throws an error if the requested method does not exist', async () => {
@@ -109,6 +108,7 @@ describe('onRpcRequest', () => {
       });
 
       const ui = await response.getInterface();
+      assertIsConfirmationDialog(ui);
       expect(ui).toRender(
         panel([
           heading('Signature request'),
@@ -141,6 +141,7 @@ describe('onRpcRequest', () => {
       });
 
       const ui = await response.getInterface();
+      assertIsConfirmationDialog(ui);
       expect(ui).toRender(
         panel([
           heading('Signature request'),
@@ -173,6 +174,7 @@ describe('onRpcRequest', () => {
       });
 
       const ui = await response.getInterface();
+      assertIsConfirmationDialog(ui);
       expect(ui).toRender(
         panel([
           heading('Signature request'),
@@ -205,7 +207,7 @@ describe('onRpcRequest', () => {
       });
 
       const ui = await response.getInterface();
-      assert(ui.type === 'confirmation');
+      assertIsConfirmationDialog(ui);
       await ui.cancel();
 
       expect(await response).toRespondWithError({

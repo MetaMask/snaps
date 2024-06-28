@@ -9,7 +9,8 @@ import type {
   File,
 } from '@metamask/snaps-sdk';
 import { DialogType, UserInputEventType, assert } from '@metamask/snaps-sdk';
-import type { FormElement, JSXElement } from '@metamask/snaps-sdk/jsx';
+import type { FooterElement } from '@metamask/snaps-sdk/jsx';
+import { type FormElement, type JSXElement } from '@metamask/snaps-sdk/jsx';
 import {
   HandlerType,
   getJsxChildren,
@@ -47,7 +48,7 @@ const MAX_FILE_SIZE = 10_000_000; // 10 MB
  */
 export function getInterfaceResponse(
   runSaga: RunSagaFunction,
-  type: DialogApprovalTypes[DialogType],
+  type: DialogApprovalTypes[DialogType | 'default'],
   content: JSXElement,
   interfaceActions: SnapInterfaceActions,
 ): SnapInterface {
@@ -80,9 +81,50 @@ export function getInterfaceResponse(
         cancel: resolveWith(runSaga, null),
       };
 
+    case DIALOG_APPROVAL_TYPES.default: {
+      const footer = getElementByType<FooterElement>(content, 'Footer');
+
+      // No Footer defined so we apply a default footer.
+      if (!footer) {
+        return {
+          ...interfaceActions,
+          content,
+
+          ok: resolveWith(runSaga, null),
+          cancel: resolveWith(runSaga, null),
+        };
+      }
+
+      // Only one button in footer so we apply a default cancel button.
+      if (getJsxChildren(footer).length === 1) {
+        return {
+          ...interfaceActions,
+          content,
+
+          cancel: resolveWith(runSaga, null),
+        };
+      }
+
+      // We have two buttons in the footer so we assume the snap handles the approval of the interface.
+      return {
+        ...interfaceActions,
+        content,
+      };
+    }
+
     default:
       throw new Error(`Unknown or unsupported dialog type: "${String(type)}".`);
   }
+}
+
+/**
+ * Resolve the current user interface with the given value.
+ *
+ * @param value - The value to resolve the user interface with.
+ * @yields Puts the resolve user interface action.
+ */
+export function* resolveWithSaga(value: unknown): SagaIterator {
+  yield put(resolveInterface(value));
 }
 
 /**
@@ -94,17 +136,8 @@ export function getInterfaceResponse(
  * @returns A function that can be used to resolve the user interface.
  */
 function resolveWith(runSaga: RunSagaFunction, value: unknown) {
-  /**
-   * Resolve the current user interface with the given value.
-   *
-   * @yields Puts the resolve user interface action.
-   */
-  function* resolveWithSaga(): SagaIterator {
-    yield put(resolveInterface(value));
-  }
-
   return async () => {
-    await runSaga(resolveWithSaga).toPromise();
+    await runSaga(resolveWithSaga, value).toPromise();
   };
 }
 
@@ -116,16 +149,6 @@ function resolveWith(runSaga: RunSagaFunction, value: unknown) {
  * @returns A function that can be used to resolve the user interface.
  */
 function resolveWithInput(runSaga: RunSagaFunction) {
-  /**
-   * Resolve the current user interface with the given value.
-   *
-   * @param value - The value to resolve the user interface with.
-   * @yields Puts the resolve user interface action.
-   */
-  function* resolveWithSaga(value: string): SagaIterator {
-    yield put(resolveInterface(value));
-  }
-
   return async (value = '') => {
     await runSaga(resolveWithSaga, value).toPromise();
   };
@@ -242,6 +265,27 @@ export function getElement(
     return undefined;
   });
 }
+
+/**
+ * Get an element from a JSX tree with the given type.
+ *
+ * @param content - The interface content.
+ * @param type - The element type.
+ * @returns The element with the given type.
+ */
+export function getElementByType<Element extends JSXElement>(
+  content: JSXElement,
+  type: string,
+) {
+  return walkJsx(content, (element) => {
+    if (element.type === type) {
+      return element as Element;
+    }
+
+    return undefined;
+  });
+}
+
 /**
  * Handle submitting event requests to OnUserInput including unwrapping potential errors.
  *
@@ -711,7 +755,7 @@ export function* getInterface(
   runSaga: RunSagaFunction,
   snapId: SnapId,
   controllerMessenger: RootControllerMessenger,
-): SagaIterator<SnapInterface> {
+): SagaIterator {
   const storedInterface = yield call(
     getStoredInterface,
     controllerMessenger,

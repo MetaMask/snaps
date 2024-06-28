@@ -494,7 +494,10 @@ export const BoxChildStruct = nullUnion([
  * For now, the allowed JSX elements at the root are the same as the allowed
  * children of the Box component.
  */
-export const RootJSXElementStruct = BoxChildStruct;
+export const RootJSXElementStruct = nullUnion([
+  BoxChildStruct,
+  ContainerStruct,
+]);
 
 /**
  * A struct for the {@link JSXElement} type.
