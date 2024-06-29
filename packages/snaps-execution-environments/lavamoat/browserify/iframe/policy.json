@@ -2,24 +2,9 @@
   "resources": {
     "@metamask/json-rpc-engine": {
       "packages": {
-        "@metamask/json-rpc-engine>@metamask/utils": true,
         "@metamask/providers>@metamask/safe-event-emitter": true,
-        "@metamask/rpc-errors": true
-      }
-    },
-    "@metamask/json-rpc-engine>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/superstruct": true,
-        "@metamask/utils>@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "browserify>buffer": true,
-        "depcheck>semver": true,
-        "tsup>debug": true
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/object-multiplex": {
@@ -48,23 +33,8 @@
         "removeEventListener": true
       },
       "packages": {
-        "@metamask/post-message-stream>@metamask/utils": true,
+        "@metamask/utils": true,
         "readable-stream": true
-      }
-    },
-    "@metamask/post-message-stream>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/superstruct": true,
-        "@metamask/utils>@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "browserify>buffer": true,
-        "depcheck>semver": true,
-        "tsup>debug": true
       }
     },
     "@metamask/providers": {
@@ -85,8 +55,8 @@
     "@metamask/providers>@metamask/json-rpc-engine": {
       "packages": {
         "@metamask/providers>@metamask/safe-event-emitter": true,
-        "@metamask/providers>@metamask/utils": true,
-        "@metamask/rpc-errors": true
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/providers>@metamask/json-rpc-middleware-stream": {
@@ -107,40 +77,10 @@
         "browserify>events": true
       }
     },
-    "@metamask/providers>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/superstruct": true,
-        "@metamask/utils>@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "browserify>buffer": true,
-        "depcheck>semver": true,
-        "tsup>debug": true
-      }
-    },
     "@metamask/rpc-errors": {
       "packages": {
-        "@metamask/rpc-errors>@metamask/utils": true,
-        "@metamask/rpc-errors>fast-safe-stringify": true
-      }
-    },
-    "@metamask/rpc-errors>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/superstruct": true,
-        "@metamask/utils>@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "browserify>buffer": true,
-        "depcheck>semver": true,
-        "tsup>debug": true
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/snaps-sdk": {
