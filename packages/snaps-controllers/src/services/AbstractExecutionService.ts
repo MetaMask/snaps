@@ -9,12 +9,12 @@ import type {
   Json,
   JsonRpcNotification,
   JsonRpcRequest,
-  PendingJsonRpcResponse,
 } from '@metamask/utils';
 import {
   Duration,
   assertIsJsonRpcRequest,
   inMilliseconds,
+  isJsonRpcFailure,
   isJsonRpcNotification,
   isObject,
 } from '@metamask/utils';
@@ -441,11 +441,11 @@ export abstract class AbstractExecutionService<WorkerType>
     }
 
     log('Parent: Sending Command', message);
-    const response: PendingJsonRpcResponse<Json> = await job.rpcEngine.handle(
-      message,
-    );
+    // eslint is blocking `await` usage even though `handle` overload returns a promise.
+    // eslint-disable-next-line @typescript-eslint/await-thenable
+    const response = await job.rpcEngine.handle(message);
 
-    if (response.error) {
+    if (isJsonRpcFailure(response)) {
       throw new JsonRpcError(
         response.error.code,
         response.error.message,

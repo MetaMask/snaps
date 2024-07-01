@@ -1,4 +1,4 @@
-import { assert } from 'superstruct';
+import { assert } from '@metamask/superstruct';
 
 import { FormStateStruct, InterfaceStateStruct } from './interface';
 

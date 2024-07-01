@@ -2,7 +2,7 @@
 /// <reference path="../../../../node_modules/ses/types.d.ts" />
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import type { RequestArguments } from '@metamask/providers';
-import { StreamProvider } from '@metamask/providers/dist/StreamProvider';
+import { StreamProvider } from '@metamask/providers';
 import { errorCodes, rpcErrors, serializeError } from '@metamask/rpc-errors';
 import type { SnapsProvider } from '@metamask/snaps-sdk';
 import { getErrorData } from '@metamask/snaps-sdk';
@@ -19,6 +19,7 @@ import {
   unwrapError,
   logInfo,
 } from '@metamask/snaps-utils';
+import { validate, is } from '@metamask/superstruct';
 import type {
   JsonRpcNotification,
   JsonRpcId,
@@ -33,7 +34,6 @@ import {
   JsonRpcIdStruct,
 } from '@metamask/utils';
 import type { Duplex } from 'readable-stream';
-import { validate, is } from 'superstruct';
 
 import { log } from '../logging';
 import type { CommandMethodsMapping } from './commands';

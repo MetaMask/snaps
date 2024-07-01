@@ -1,5 +1,5 @@
-import type { Infer } from 'superstruct';
-import { assign, object, string, unknown } from 'superstruct';
+import type { Infer } from '@metamask/superstruct';
+import { assign, object, string, unknown } from '@metamask/superstruct';
 
 /**
  * The supported node types. This is based on SIP-7.

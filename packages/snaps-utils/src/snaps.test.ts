@@ -2,7 +2,7 @@ import type {
   SubjectPermissions,
   PermissionConstraint,
 } from '@metamask/permission-controller';
-import { is } from 'superstruct';
+import { is } from '@metamask/superstruct';
 
 import { SnapCaveatType } from './caveats';
 import {

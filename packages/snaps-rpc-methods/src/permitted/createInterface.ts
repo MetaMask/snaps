@@ -13,8 +13,8 @@ import {
   InterfaceContextStruct,
 } from '@metamask/snaps-sdk';
 import { type InferMatching } from '@metamask/snaps-utils';
+import { StructError, create, object, optional } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
-import { StructError, create, object, optional } from 'superstruct';
 
 import type { MethodHooksObject } from '../utils';
 

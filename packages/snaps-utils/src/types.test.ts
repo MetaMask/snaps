@@ -1,4 +1,4 @@
-import { enums, is, literal } from 'superstruct';
+import { enums, is, literal } from '@metamask/superstruct';
 
 import { getPackageJson } from './test-utils';
 import {

@@ -1,4 +1,4 @@
-import { refine, string } from 'superstruct';
+import { refine, string } from '@metamask/superstruct';
 
 /**
  * Get a Struct that validates a string as a valid SVG.

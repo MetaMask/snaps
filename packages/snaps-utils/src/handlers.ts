@@ -21,7 +21,7 @@ import {
   array,
   size,
   union,
-} from 'superstruct';
+} from '@metamask/superstruct';
 
 import type { SnapHandler } from './handler-types';
 import { HandlerType } from './handler-types';

@@ -1,13 +1,6 @@
 import { NotificationType, enumValue } from '@metamask/snaps-sdk';
 import { JSXElementStruct } from '@metamask/snaps-sdk/jsx';
 import {
-  bytesToHex,
-  JsonStruct,
-  StrictHexStruct,
-  valueToBytes,
-} from '@metamask/utils';
-import { randomBytes } from 'crypto';
-import {
   array,
   assign,
   bigint,
@@ -24,7 +17,14 @@ import {
   any,
   func,
   type,
-} from 'superstruct';
+} from '@metamask/superstruct';
+import {
+  bytesToHex,
+  JsonStruct,
+  StrictHexStruct,
+  valueToBytes,
+} from '@metamask/utils';
+import { randomBytes } from 'crypto';
 
 // TODO: Export this from `@metamask/utils` instead.
 const BytesLikeStruct = union([

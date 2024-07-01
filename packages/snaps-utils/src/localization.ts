@@ -1,5 +1,5 @@
 import { getErrorMessage } from '@metamask/snaps-sdk';
-import type { Infer } from 'superstruct';
+import type { Infer } from '@metamask/superstruct';
 import {
   create,
   object,
@@ -7,7 +7,7 @@ import {
   record,
   string,
   StructError,
-} from 'superstruct';
+} from '@metamask/superstruct';
 
 import { parseJson } from './json';
 import type { SnapManifest } from './manifest';

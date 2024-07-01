@@ -1,15 +1,7 @@
 import type { SupportedCurve } from '@metamask/key-tree';
 import { isValidBIP32PathSegment } from '@metamask/key-tree';
 import type { EmptyObject, InitialPermissions } from '@metamask/snaps-sdk';
-import {
-  assertStruct,
-  ChecksumStruct,
-  VersionStruct,
-  isValidSemVerRange,
-  inMilliseconds,
-  Duration,
-} from '@metamask/utils';
-import type { Describe, Infer, Struct } from 'superstruct';
+import type { Describe, Infer, Struct } from '@metamask/superstruct';
 import {
   array,
   boolean,
@@ -27,7 +19,15 @@ import {
   type,
   union,
   intersection,
-} from 'superstruct';
+} from '@metamask/superstruct';
+import {
+  assertStruct,
+  ChecksumStruct,
+  VersionStruct,
+  isValidSemVerRange,
+  inMilliseconds,
+  Duration,
+} from '@metamask/utils';
 
 import { isEqual } from '../array';
 import { CronjobSpecificationArrayStruct } from '../cronjob';

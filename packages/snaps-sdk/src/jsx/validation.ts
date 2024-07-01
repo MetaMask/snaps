@@ -1,10 +1,10 @@
-import {
-  hasProperty,
-  HexChecksumAddressStruct,
-  isPlainObject,
-  JsonStruct,
-} from '@metamask/utils';
-import type { Infer, Struct } from 'superstruct';
+import type {
+  AnyStruct,
+  Infer,
+  InferStructTuple,
+  ObjectSchema,
+  Struct,
+} from '@metamask/superstruct';
 import {
   is,
   boolean,
@@ -17,12 +17,13 @@ import {
   record,
   string,
   tuple,
-} from 'superstruct';
-import type {
-  AnyStruct,
-  InferStructTuple,
-  ObjectSchema,
-} from 'superstruct/dist/utils';
+} from '@metamask/superstruct';
+import {
+  hasProperty,
+  HexChecksumAddressStruct,
+  isPlainObject,
+  JsonStruct,
+} from '@metamask/utils';
 
 import type { Describe } from '../internals';
 import { literal, nullUnion, svg } from '../internals';

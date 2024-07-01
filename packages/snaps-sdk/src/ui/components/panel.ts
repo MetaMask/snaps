@@ -1,5 +1,12 @@
-import type { Infer, Struct } from 'superstruct';
-import { array, assign, lazy, literal, object, union } from 'superstruct';
+import type { Infer, Struct } from '@metamask/superstruct';
+import {
+  array,
+  assign,
+  lazy,
+  literal,
+  object,
+  union,
+} from '@metamask/superstruct';
 
 import { createBuilder } from '../builder';
 import { NodeStruct, NodeType } from '../nodes';
