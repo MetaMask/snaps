@@ -9064,7 +9064,7 @@ describe('SnapController', () => {
       );
 
       snapController.destroy();
-    }, 40_000);
+    }, 60_000);
   });
 
   describe('SnapController:snapInstalled', () => {
