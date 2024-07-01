@@ -362,7 +362,7 @@ functions that can be used to interact with the user interface.
 ##### Example
 
 ```js
-import { installSnap } from '@metamask/snaps-jest';
+import { installSnap, assertIsAlertDialog } from '@metamask/snaps-jest';
 import { text } from '@metamask/snaps-sdk';
 import { assert } from '@metamask/utils';
 
@@ -379,7 +379,7 @@ describe('MySnap', () => {
 
     // This is useful if you're using TypeScript, since it will infer the type
     // of the user interface.
-    assert(ui.type === 'alert');
+    assertIsAlertDialog(ui);
     expect(ui).toRender(text('Hello, world!'));
 
     // "Click" the OK button.

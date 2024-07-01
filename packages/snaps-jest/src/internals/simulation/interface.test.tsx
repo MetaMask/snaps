@@ -20,6 +20,8 @@ import {
   FileInput,
   Checkbox,
   Form,
+  Container,
+  Footer,
 } from '@metamask/snaps-sdk/jsx';
 import {
   getJsxElementFromComponent,
@@ -27,10 +29,18 @@ import {
   WrappedSnapError,
 } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
-import { assert } from '@metamask/utils';
 import type { SagaIterator } from 'redux-saga';
 import { take } from 'redux-saga/effects';
 
+import {
+  assertIsAlertDialog,
+  assertIsConfirmationDialog,
+  assertIsCustomDialog,
+  assertIsPromptDialog,
+  assertCustomDialogHasFooter,
+  assertCustomDialogHasPartialFooter,
+  assertCustomDialogHasNoFooter,
+} from '../../helpers';
 import {
   getMockOptions,
   getRestrictedSnapInterfaceControllerMessenger,
@@ -42,6 +52,7 @@ import {
   getInterface,
   getInterfaceResponse,
   mergeValue,
+  resolveWithSaga,
   selectInDropdown,
   typeInField,
   uploadFile,
@@ -79,6 +90,7 @@ describe('getInterfaceResponse', () => {
       <Text>foo</Text>,
       interfaceActions,
     );
+    assertIsAlertDialog(response);
 
     expect(response).toStrictEqual({
       type: DialogType.Alert,
@@ -104,6 +116,7 @@ describe('getInterfaceResponse', () => {
       interfaceActions,
     );
 
+    assertIsConfirmationDialog(response);
     expect(response).toStrictEqual({
       type: DialogType.Confirmation,
       content: <Text>foo</Text>,
@@ -129,7 +142,7 @@ describe('getInterfaceResponse', () => {
       interfaceActions,
     );
 
-    assert(response.type === DialogType.Confirmation);
+    assertIsConfirmationDialog(response);
     expect(response).toStrictEqual({
       type: DialogType.Confirmation,
       content: <Text>foo</Text>,
@@ -155,6 +168,7 @@ describe('getInterfaceResponse', () => {
       interfaceActions,
     );
 
+    assertIsPromptDialog(response);
     expect(response).toStrictEqual({
       type: DialogType.Prompt,
       content: <Text>foo</Text>,
@@ -180,6 +194,7 @@ describe('getInterfaceResponse', () => {
       interfaceActions,
     );
 
+    assertIsPromptDialog(response);
     expect(response).toStrictEqual({
       type: DialogType.Prompt,
       content: <Text>foo</Text>,
@@ -205,7 +220,7 @@ describe('getInterfaceResponse', () => {
       interfaceActions,
     );
 
-    assert(response.type === DialogType.Prompt);
+    assertIsPromptDialog(response);
     expect(response).toStrictEqual({
       type: DialogType.Prompt,
       content: <Text>foo</Text>,
@@ -222,6 +237,116 @@ describe('getInterfaceResponse', () => {
     expect(await promise).toBeNull();
   });
 
+  it('returns no `ok` or `cancel` functions for custom dialogs with a complete footer', () => {
+    const { runSaga } = createStore(getMockOptions());
+    const response = getInterfaceResponse(
+      runSaga,
+      DIALOG_APPROVAL_TYPES.default,
+      <Container>
+        <Box>
+          <Text>foo</Text>
+        </Box>
+        <Footer>
+          <Button name="cancel">Cancel</Button>
+          <Button name="confirm">Confirm</Button>
+        </Footer>
+      </Container>,
+      interfaceActions,
+    );
+
+    assertIsCustomDialog(response);
+    assertCustomDialogHasFooter(response);
+
+    expect(response).toStrictEqual({
+      content: (
+        <Container>
+          <Box>
+            <Text>foo</Text>
+          </Box>
+          <Footer>
+            <Button name="cancel">Cancel</Button>
+            <Button name="confirm">Confirm</Button>
+          </Footer>
+        </Container>
+      ),
+      clickElement: expect.any(Function),
+      typeInField: expect.any(Function),
+      selectInDropdown: expect.any(Function),
+      uploadFile: expect.any(Function),
+    });
+  });
+
+  it('returns a `cancel` functions for custom dialogs with a partial footer', () => {
+    const { runSaga } = createStore(getMockOptions());
+    const response = getInterfaceResponse(
+      runSaga,
+      DIALOG_APPROVAL_TYPES.default,
+      <Container>
+        <Box>
+          <Text>foo</Text>
+        </Box>
+        <Footer>
+          <Button name="confirm">Confirm</Button>
+        </Footer>
+      </Container>,
+      interfaceActions,
+    );
+
+    assertIsCustomDialog(response);
+    assertCustomDialogHasPartialFooter(response);
+
+    expect(response).toStrictEqual({
+      content: (
+        <Container>
+          <Box>
+            <Text>foo</Text>
+          </Box>
+          <Footer>
+            <Button name="confirm">Confirm</Button>
+          </Footer>
+        </Container>
+      ),
+      clickElement: expect.any(Function),
+      typeInField: expect.any(Function),
+      selectInDropdown: expect.any(Function),
+      uploadFile: expect.any(Function),
+      cancel: expect.any(Function),
+    });
+  });
+
+  it('returns a `ok` and `cancel` functions for custom dialogs without a footer', () => {
+    const { runSaga } = createStore(getMockOptions());
+    const response = getInterfaceResponse(
+      runSaga,
+      DIALOG_APPROVAL_TYPES.default,
+      <Container>
+        <Box>
+          <Text>foo</Text>
+        </Box>
+      </Container>,
+      interfaceActions,
+    );
+
+    assertIsCustomDialog(response);
+    assertCustomDialogHasNoFooter(response);
+
+    expect(response).toStrictEqual({
+      content: (
+        <Container>
+          <Box>
+            <Text>foo</Text>
+          </Box>
+        </Container>
+      ),
+      clickElement: expect.any(Function),
+      typeInField: expect.any(Function),
+      selectInDropdown: expect.any(Function),
+      uploadFile: expect.any(Function),
+      cancel: expect.any(Function),
+      ok: expect.any(Function),
+    });
+  });
+
   it('throws an error for unknown dialog types', () => {
     const { runSaga } = createStore(getMockOptions());
 
@@ -229,6 +354,27 @@ describe('getInterfaceResponse', () => {
       // @ts-expect-error - Invalid dialog type.
       getInterfaceResponse(runSaga, 'Foo', <Text>foo</Text>);
     }).toThrow('Unknown or unsupported dialog type: "Foo".');
+  });
+});
+
+describe('resolveWithSaga', () => {
+  it('resolves the user interface', async () => {
+    const { runSaga, store } = createStore(
+      getMockOptions({
+        state: {
+          ui: {
+            current: {
+              type: DIALOG_APPROVAL_TYPES.default,
+              id: 'foo',
+            },
+          },
+        },
+      }),
+    );
+
+    await runSaga(resolveWithSaga, 'hello').toPromise();
+
+    expect(store.getState().ui.current).toBeNull();
   });
 });
 

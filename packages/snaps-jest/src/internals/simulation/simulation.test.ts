@@ -5,6 +5,7 @@ import {
   NodeThreadExecutionService,
   SnapInterfaceController,
 } from '@metamask/snaps-controllers/node';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { AuxiliaryFileEncoding, text } from '@metamask/snaps-sdk';
 import { VirtualFile } from '@metamask/snaps-utils';
 import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
@@ -17,6 +18,7 @@ import {
 } from '../../test-utils';
 import { DEFAULT_SRP } from './constants';
 import { getHooks, handleInstallSnap, registerActions } from './simulation';
+import { createStore, setInterface } from './store';
 
 describe('handleInstallSnap', () => {
   it('installs a Snap and returns the execution service', async () => {
@@ -203,6 +205,57 @@ describe('getHooks', () => {
     await close();
   });
 
+  it('returns the `resolveInterface` hook', async () => {
+    // eslint-disable-next-line no-new
+    const snapInterfaceController = new SnapInterfaceController({
+      messenger:
+        getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
+    });
+
+    jest.spyOn(controllerMessenger, 'call');
+
+    const { snapId, close } = await getMockServer({
+      manifest: getSnapManifest(),
+    });
+    const id = await snapInterfaceController.createInterface(
+      snapId,
+      text('foo'),
+    );
+
+    const location = detectSnapLocation(snapId, {
+      allowLocal: true,
+    });
+    const snapFiles = await fetchSnap(snapId, location);
+
+    const { resolveInterface } = getHooks(
+      getMockOptions({
+        state: {
+          ui: {
+            current: {
+              id,
+              type: DIALOG_APPROVAL_TYPES.default,
+            },
+          },
+        },
+      }),
+      snapFiles,
+      snapId,
+      controllerMessenger,
+    );
+
+    await resolveInterface(id, 'foobar');
+
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
+      2,
+      'SnapInterfaceController:resolveInterface',
+      snapId,
+      id,
+      'foobar',
+    );
+
+    await close();
+  });
+
   it('returns the `getIsLocked` hook', async () => {
     const { snapId, close } = await getMockServer();
 
@@ -224,12 +277,42 @@ describe('getHooks', () => {
 });
 
 describe('registerActions', () => {
+  const { runSaga, store } = createStore(getMockOptions());
   const controllerMessenger = getRootControllerMessenger(false);
+
   it('registers `PhishingController:testOrigin`', async () => {
-    registerActions(controllerMessenger);
+    registerActions(controllerMessenger, runSaga);
 
     expect(
       controllerMessenger.call('PhishingController:testOrigin', 'foo'),
     ).toStrictEqual({ result: false, type: 'all' });
+  });
+
+  it('registers `ApprovalController:hasRequest`', async () => {
+    registerActions(controllerMessenger, runSaga);
+
+    store.dispatch(
+      setInterface({ type: DIALOG_APPROVAL_TYPES.default, id: 'foo' }),
+    );
+
+    expect(
+      controllerMessenger.call('ApprovalController:hasRequest', { id: 'foo' }),
+    ).toBe(true);
+  });
+
+  it('registers `ApprovalController:acceptRequest`', async () => {
+    registerActions(controllerMessenger, runSaga);
+
+    store.dispatch(
+      setInterface({ type: DIALOG_APPROVAL_TYPES.default, id: 'foo' }),
+    );
+
+    expect(
+      await controllerMessenger.call(
+        'ApprovalController:acceptRequest',
+        'foo',
+        'bar',
+      ),
+    ).toStrictEqual({ value: 'bar' });
   });
 });

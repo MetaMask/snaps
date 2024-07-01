@@ -24,6 +24,16 @@ export const getRootControllerMessenger = (mocked = true) => {
       'ExecutionService:handleRpcRequest',
       jest.fn(),
     );
+
+    messenger.registerActionHandler(
+      'ApprovalController:hasRequest',
+      () => true,
+    );
+
+    messenger.registerActionHandler(
+      'ApprovalController:acceptRequest',
+      async (_id: string, value: unknown) => ({ value }),
+    );
   }
 
   return messenger;
@@ -43,6 +53,8 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
     allowedActions: [
       'PhishingController:testOrigin',
       'PhishingController:maybeUpdateState',
+      'ApprovalController:hasRequest',
+      'ApprovalController:acceptRequest',
     ],
     allowedEvents: [],
   });

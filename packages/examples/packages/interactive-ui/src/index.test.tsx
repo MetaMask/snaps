@@ -1,6 +1,5 @@
 import { expect } from '@jest/globals';
-import { installSnap } from '@metamask/snaps-jest';
-import { assert } from '@metamask/utils';
+import { assertIsConfirmationDialog, installSnap } from '@metamask/snaps-jest';
 
 import {
   Insight,
@@ -37,7 +36,6 @@ describe('onRpcRequest', () => {
       });
 
       const formScreen = await response.getInterface();
-      assert(formScreen.type === 'confirmation');
 
       expect(formScreen).toRender(<InteractiveForm />);
 
@@ -50,6 +48,7 @@ describe('onRpcRequest', () => {
       await formScreen.clickElement('submit');
 
       const resultScreen = await response.getInterface();
+      assertIsConfirmationDialog(resultScreen);
 
       expect(resultScreen).toRender(
         <Result
@@ -73,13 +72,13 @@ describe('onRpcRequest', () => {
       });
 
       const formScreen = await response.getInterface();
-      assert(formScreen.type === 'confirmation');
 
       expect(formScreen).toRender(<InteractiveForm />);
 
       await formScreen.clickElement('submit');
 
       const resultScreen = await response.getInterface();
+      assertIsConfirmationDialog(resultScreen);
 
       expect(resultScreen).toRender(
         <Result

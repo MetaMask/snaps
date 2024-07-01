@@ -1,11 +1,17 @@
-import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
+import type {
+  OnRpcRequestHandler,
+  OnUserInputHandler,
+} from '@metamask/snaps-sdk';
 import {
   DialogType,
   panel,
   text,
   heading,
   MethodNotFoundError,
+  UserInputEventType,
 } from '@metamask/snaps-sdk';
+
+import { CustomDialog } from './components';
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
@@ -15,6 +21,7 @@ import {
  * - `showAlert`: Show an alert dialog.
  * - `showConfirmation`: Show a confirmation dialog.
  * - `showPrompt`: Show a prompt dialog.
+ * - `showCustom`: Show a custom dialog with the resolution handled by the snap.
  *
  * The dialogs are shown using the [`snap_dialog`](https://docs.metamask.io/snaps/reference/rpc-api/#snap_dialog)
  * method.
@@ -75,7 +82,62 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         },
       });
 
+    case 'showCustom':
+      return snap.request({
+        method: 'snap_dialog',
+        params: {
+          content: <CustomDialog />,
+        },
+      });
+
     default:
       throw new MethodNotFoundError({ method: request.method });
+  }
+};
+
+/**
+ * Handle incoming user events coming from the MetaMask clients open interfaces.
+ *
+ * @param params - The event parameters.
+ * @param params.id - The Snap interface ID where the event was fired.
+ * @param params.event - The event object containing the event type, name and value.
+ * @see https://docs.metamask.io/snaps/reference/exports/#onuserinput
+ */
+export const onUserInput: OnUserInputHandler = async ({ id, event }) => {
+  if (event.type === UserInputEventType.ButtonClickEvent) {
+    switch (event.name) {
+      case 'cancel':
+        await snap.request({
+          method: 'snap_resolveInterface',
+          params: {
+            id,
+            value: null,
+          },
+        });
+        break;
+
+      case 'confirm': {
+        const state = await snap.request({
+          method: 'snap_getInterfaceState',
+          params: {
+            id,
+          },
+        });
+
+        const value = state['custom-input'];
+
+        await snap.request({
+          method: 'snap_resolveInterface',
+          params: {
+            id,
+            value,
+          },
+        });
+        break;
+      }
+
+      default:
+        break;
+    }
   }
 };
