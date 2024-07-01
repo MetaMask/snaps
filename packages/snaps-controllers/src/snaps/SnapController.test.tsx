@@ -6069,6 +6069,34 @@ describe('SnapController', () => {
     });
   });
 
+  it('throws if the Snap source code is too large', async () => {
+    const messenger = getSnapControllerMessenger();
+    const { manifest, sourceCode, svgIcon, localizationFiles } =
+      await getMockSnapFilesWithUpdatedChecksum({
+        sourceCode: 'a'.repeat(64_000_001),
+      });
+
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        detectSnapLocation: loopbackDetect({
+          manifest,
+          files: [sourceCode, svgIcon as VirtualFile, ...localizationFiles],
+        }),
+      }),
+    );
+
+    await expect(
+      snapController.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: {},
+      }),
+    ).rejects.toThrow(
+      'Failed to fetch snap "npm:@metamask/example-snap": Snap source code must be smaller than 64 MB..',
+    );
+
+    snapController.destroy();
+  });
+
   describe('updateSnap', () => {
     it('throws an error for non installed snap', async () => {
       const detectSnapLocation = loopbackDetect();
@@ -8984,6 +9012,59 @@ describe('SnapController', () => {
 
       snapController.destroy();
     });
+
+    it('throws if encoding is too large', async () => {
+      const auxiliaryFile = new VirtualFile({
+        path: 'src/foo.json',
+        value: new Uint8Array(32_000_000),
+      });
+      const { manifest, sourceCode, svgIcon, auxiliaryFiles } =
+        await getMockSnapFilesWithUpdatedChecksum({
+          manifest: getSnapManifest({ files: ['./src/foo.json'] }),
+          auxiliaryFiles: [auxiliaryFile],
+        });
+
+      const messenger = getSnapControllerMessenger();
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          detectSnapLocation: loopbackDetect({
+            manifest,
+            files: [sourceCode, svgIcon as VirtualFile, ...auxiliaryFiles],
+          }),
+        }),
+      );
+
+      // Because jest-fetch-mock replaces native fetch, we mock it here
+      Object.defineProperty(globalThis, 'fetch', {
+        value: async (dataUrl: string) => {
+          const base64 = dataUrl.replace(
+            'data:application/octet-stream;base64,',
+            '',
+          );
+          const u8 = base64ToBytes(base64);
+          return new File([u8], '');
+        },
+      });
+
+      await snapController.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: {},
+      });
+
+      await expect(
+        messenger.call(
+          'SnapController:getFile',
+          MOCK_SNAP_ID,
+          './src/foo.json',
+          AuxiliaryFileEncoding.Hex,
+        ),
+      ).rejects.toThrow(
+        'Failed to encode static file to "hex": Static files must be less than 64 MB when encoded.',
+      );
+
+      snapController.destroy();
+    }, 60_000);
   });
 
   describe('SnapController:snapInstalled', () => {

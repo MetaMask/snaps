@@ -1,7 +1,9 @@
 import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
-import { bytesToHex, bytesToString } from '@metamask/utils';
+import { assert, bytesToHex, bytesToString } from '@metamask/utils';
 
 import { decodeBase64 } from './base64';
+import { MAX_FILE_SIZE } from './constants';
+import type { VirtualFile } from './virtual-file';
 
 /**
  * Re-encodes an auxiliary file if needed depending on the requested file encoding.
@@ -26,4 +28,18 @@ export async function encodeAuxiliaryFile(
   }
 
   return bytesToHex(decoded);
+}
+
+/**
+ * Validate that auxiliary files used by the Snap are within size limits.
+ *
+ * @param files - A list of auxiliary files.
+ */
+export function validateAuxiliaryFiles(files: VirtualFile[]) {
+  for (const file of files) {
+    assert(
+      file.size < MAX_FILE_SIZE,
+      'Static files required by the Snap must be smaller than 64 MB.',
+    );
+  }
 }

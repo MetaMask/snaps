@@ -82,6 +82,7 @@ import {
   OnNameLookupResponseStruct,
   getLocalizedSnapManifest,
   parseJson,
+  MAX_FILE_SIZE,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
@@ -1818,7 +1819,14 @@ export class SnapController extends BaseController<
       return null;
     }
 
-    return encodeAuxiliaryFile(value, encoding);
+    const encoded = await encodeAuxiliaryFile(value, encoding);
+
+    assert(
+      encoded.length < MAX_FILE_SIZE,
+      `Failed to encode static file to "${encoding}": Static files must be less than 64 MB when encoded.`,
+    );
+
+    return encoded;
   }
 
   /**

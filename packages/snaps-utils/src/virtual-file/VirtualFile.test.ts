@@ -26,6 +26,19 @@ describe('VirtualFile', () => {
     expect(file1.value).toStrictEqual(VALUE);
   });
 
+  describe('size', () => {
+    it('returns string length for strings', () => {
+      const file = new VirtualFile({ value: 'foo' });
+      expect(file.size).toBe(3);
+    });
+
+    it('returns byte length for Uint8Array', () => {
+      const value = stringToBytes('foo bar');
+      const file = new VirtualFile({ value });
+      expect(file.size).toBe(7);
+    });
+  });
+
   describe('toString()', () => {
     it('supports encodings', () => {
       // TextEncoder doesn't support utf-16 anymore
