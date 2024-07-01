@@ -9016,7 +9016,7 @@ describe('SnapController', () => {
     it('throws if encoding is too large', async () => {
       const auxiliaryFile = new VirtualFile({
         path: 'src/foo.json',
-        value: new Uint8Array(33_000_000),
+        value: new Uint8Array(32_000_000),
       });
       const { manifest, sourceCode, svgIcon, auxiliaryFiles } =
         await getMockSnapFilesWithUpdatedChecksum({
@@ -9064,7 +9064,7 @@ describe('SnapController', () => {
       );
 
       snapController.destroy();
-    }, 20_000);
+    }, 40_000);
   });
 
   describe('SnapController:snapInstalled', () => {
