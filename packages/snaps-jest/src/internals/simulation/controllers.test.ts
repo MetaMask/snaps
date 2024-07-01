@@ -9,11 +9,13 @@ import { getControllers } from './controllers';
 import type { MiddlewareHooks } from './simulation';
 
 const MOCK_HOOKS: MiddlewareHooks = {
+  getIsLocked: jest.fn(),
   getMnemonic: jest.fn(),
   getSnapFile: jest.fn(),
   createInterface: jest.fn(),
   updateInterface: jest.fn(),
   getInterfaceState: jest.fn(),
+  resolveInterface: jest.fn(),
 };
 
 describe('getControllers', () => {

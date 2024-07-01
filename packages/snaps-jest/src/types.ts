@@ -216,10 +216,52 @@ export type SnapPromptInterface = {
   cancel(): Promise<void>;
 };
 
+/**
+ * A `snap_dialog` default interface that has a Footer with two buttons defined.
+ * The approval of this confirmation is handled by the snap.
+ */
+export type DefaultSnapInterfaceWithFooter = {
+  /**
+   * The content to show in the interface.
+   */
+  content: JSXElement;
+};
+
+/**
+ * A `snap_dialog` default interface that has a Footer with one button defined.
+ * A cancel button is automatically applied to the interface in this case.
+ */
+export type DefaultSnapInterfaceWithPartialFooter =
+  DefaultSnapInterfaceWithFooter & {
+    /**
+     * Cancel the dialog.
+     */
+    cancel(): Promise<void>;
+  };
+
+/**
+ * A `snap_dialog` default interface that has no Footer defined.
+ * A cancel and ok button is automatically applied to the interface in this case.
+ */
+export type DefaultSnapInterfaceWithoutFooter =
+  DefaultSnapInterfaceWithPartialFooter & {
+    /**
+     * Close the dialog.
+     *
+     */
+    ok(): Promise<void>;
+  };
+
+export type DefaultSnapInterface =
+  | DefaultSnapInterfaceWithFooter
+  | DefaultSnapInterfaceWithPartialFooter
+  | DefaultSnapInterfaceWithoutFooter;
+
 export type SnapInterface = (
   | SnapAlertInterface
   | SnapConfirmationInterface
   | SnapPromptInterface
+  | DefaultSnapInterface
 ) &
   SnapInterfaceActions;
 

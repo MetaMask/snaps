@@ -82,6 +82,8 @@ export function getControllers(options: GetControllersOptions): Controllers {
       allowedActions: [
         'PhishingController:maybeUpdateState',
         'PhishingController:testOrigin',
+        'ApprovalController:hasRequest',
+        'ApprovalController:acceptRequest',
       ],
       allowedEvents: [],
     }),

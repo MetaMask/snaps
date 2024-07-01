@@ -12,6 +12,7 @@ import {
   NodeThreadExecutionService,
   setupMultiplex,
 } from '@metamask/snaps-controllers/node';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import type {
   SnapId,
   AuxiliaryFileEncoding,
@@ -20,18 +21,22 @@ import type {
 } from '@metamask/snaps-sdk';
 import type { FetchedSnapFiles } from '@metamask/snaps-utils';
 import { logError } from '@metamask/snaps-utils';
+import type { Json } from '@metamask/utils';
 import type { Duplex } from 'readable-stream';
 import { pipeline } from 'readable-stream';
+import type { SagaIterator } from 'redux-saga';
+import { select } from 'redux-saga/effects';
 
 import type { RootControllerMessenger } from './controllers';
 import { getControllers, registerSnap } from './controllers';
 import { getSnapFile } from './files';
+import { resolveWithSaga } from './interface';
 import { getEndowments } from './methods';
 import { createJsonRpcEngine } from './middleware';
 import type { SimulationOptions, SimulationUserOptions } from './options';
 import { getOptions } from './options';
-import type { RunSagaFunction, Store } from './store';
-import { createStore } from './store';
+import type { Interface, RunSagaFunction, Store } from './store';
+import { createStore, getCurrentInterface } from './store';
 
 /**
  * Options for the execution service, without the options that are shared
@@ -110,6 +115,7 @@ export type MiddlewareHooks = {
   createInterface: (content: Component) => Promise<string>;
   updateInterface: (id: string, content: Component) => Promise<void>;
   getInterfaceState: (id: string) => InterfaceState;
+  resolveInterface: (id: string, value: Json) => Promise<void>;
 };
 
 /**
@@ -152,7 +158,7 @@ export async function handleInstallSnap<
 
   const controllerMessenger = new ControllerMessenger<any, any>();
 
-  registerActions(controllerMessenger);
+  registerActions(controllerMessenger, runSaga);
 
   // Set up controllers and JSON-RPC stack.
   const hooks = getHooks(options, snapFiles, snapId, controllerMessenger);
@@ -258,6 +264,12 @@ export function getHooks(
         snapId,
         ...args,
       ).state,
+    resolveInterface: async (...args) =>
+      controllerMessenger.call(
+        'SnapInterfaceController:resolveInterface',
+        snapId,
+        ...args,
+      ),
   };
 }
 
@@ -265,8 +277,12 @@ export function getHooks(
  * Register mocked action handlers.
  *
  * @param controllerMessenger - The controller messenger.
+ * @param runSaga - The run saga function.
  */
-export function registerActions(controllerMessenger: RootControllerMessenger) {
+export function registerActions(
+  controllerMessenger: RootControllerMessenger,
+  runSaga: RunSagaFunction,
+) {
   controllerMessenger.registerActionHandler(
     'PhishingController:maybeUpdateState',
     async () => Promise.resolve(),
@@ -275,5 +291,38 @@ export function registerActions(controllerMessenger: RootControllerMessenger) {
   controllerMessenger.registerActionHandler(
     'PhishingController:testOrigin',
     () => ({ result: false, type: 'all' }),
+  );
+
+  controllerMessenger.registerActionHandler(
+    'ApprovalController:hasRequest',
+    (opts) => {
+      /**
+       * Get the current interface from the store.
+       *
+       * @yields Selects the current interface from the store.
+       * @returns The current interface.
+       */
+      function* getCurrentInterfaceSaga(): SagaIterator {
+        const currentInterface: Interface = yield select(getCurrentInterface);
+        return currentInterface;
+      }
+
+      const currentInterface: Interface | undefined = runSaga(
+        getCurrentInterfaceSaga,
+      ).result();
+      return (
+        currentInterface?.type === DIALOG_APPROVAL_TYPES.default &&
+        currentInterface?.id === opts?.id
+      );
+    },
+  );
+
+  controllerMessenger.registerActionHandler(
+    'ApprovalController:acceptRequest',
+    async (_id: string, value: unknown) => {
+      await runSaga(resolveWithSaga, value).toPromise();
+
+      return { value };
+    },
   );
 }

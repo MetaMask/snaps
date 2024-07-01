@@ -1,7 +1,14 @@
 import { expect } from '@jest/globals';
-import { installSnap } from '@metamask/snaps-jest';
+import {
+  assertIsAlertDialog,
+  assertIsConfirmationDialog,
+  assertIsCustomDialog,
+  assertIsPromptDialog,
+  installSnap,
+} from '@metamask/snaps-jest';
 import { heading, panel, text } from '@metamask/snaps-sdk';
-import { assert } from '@metamask/utils';
+
+import { CustomDialog } from './components';
 
 describe('onRpcRequest', () => {
   it('throws an error if the requested method does not exist', async () => {
@@ -31,7 +38,7 @@ describe('onRpcRequest', () => {
       });
 
       const ui = await response.getInterface();
-      assert(ui.type === 'alert');
+      assertIsAlertDialog(ui);
 
       expect(ui).toRender(
         panel([
@@ -55,7 +62,7 @@ describe('onRpcRequest', () => {
       });
 
       const ui = await response.getInterface();
-      assert(ui.type === 'confirmation');
+      assertIsConfirmationDialog(ui);
 
       expect(ui).toRender(
         panel([
@@ -79,7 +86,7 @@ describe('onRpcRequest', () => {
       });
 
       const ui = await response.getInterface();
-      assert(ui.type === 'confirmation');
+      assertIsConfirmationDialog(ui);
       await ui.cancel();
 
       expect(await response).toRespondWith(false);
@@ -95,7 +102,7 @@ describe('onRpcRequest', () => {
       });
 
       const ui = await response.getInterface();
-      assert(ui.type === 'prompt');
+      assertIsPromptDialog(ui);
 
       expect(ui).toRender(
         panel([
@@ -119,10 +126,34 @@ describe('onRpcRequest', () => {
       });
 
       const ui = await response.getInterface();
-      assert(ui.type === 'prompt');
+      assertIsPromptDialog(ui);
+
       await ui.cancel();
 
       expect(await response).toRespondWith(null);
+    });
+  });
+
+  describe('showCustom', () => {
+    it('shows a custom dialog and can return the input value', async () => {
+      const value = 'Hello, world!';
+
+      const { request } = await installSnap();
+
+      const response = request({
+        method: 'showCustom',
+      });
+
+      const ui = await response.getInterface();
+      assertIsCustomDialog(ui);
+
+      expect(ui).toRender(<CustomDialog />);
+
+      await ui.typeInField('custom-input', value);
+
+      await ui.clickElement('confirm');
+
+      expect(await response).toRespondWith(value);
     });
   });
 });

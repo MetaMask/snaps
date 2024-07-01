@@ -2,9 +2,13 @@ import { NodeProcessExecutionService } from '@metamask/snaps-controllers/node';
 import { DialogType } from '@metamask/snaps-sdk';
 import { Text } from '@metamask/snaps-sdk/jsx';
 import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
-import { assert } from '@metamask/utils';
 
-import { installSnap } from './helpers';
+import {
+  assertIsAlertDialog,
+  assertIsConfirmationDialog,
+  assertIsPromptDialog,
+  installSnap,
+} from './helpers';
 import type { InstallSnapOptions } from './internals';
 import { handleInstallSnap } from './internals';
 import { getMockServer } from './test-utils';
@@ -397,7 +401,7 @@ describe('installSnap', () => {
       });
 
       const ui = await response.getInterface();
-      assert(ui.type === DialogType.Prompt);
+      assertIsPromptDialog(ui);
       expect(ui).toStrictEqual({
         type: DialogType.Prompt,
         content: <Text>Hello, world!</Text>,
@@ -457,7 +461,7 @@ describe('installSnap', () => {
       });
 
       const ui = await response.getInterface();
-      assert(ui.type === DialogType.Confirmation);
+      assertIsConfirmationDialog(ui);
       expect(ui).toStrictEqual({
         type: DialogType.Confirmation,
         content: <Text>Hello, world!</Text>,
@@ -517,6 +521,7 @@ describe('installSnap', () => {
       });
 
       const ui = await response.getInterface();
+      assertIsAlertDialog(ui);
       expect(ui).toStrictEqual({
         type: DialogType.Alert,
         content: <Text>Hello, world!</Text>,

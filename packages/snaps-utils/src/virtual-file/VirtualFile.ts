@@ -72,6 +72,12 @@ export class VirtualFile<Result = unknown> {
 
   path: string;
 
+  get size() {
+    return typeof this.value === 'string'
+      ? this.value.length
+      : this.value.byteLength;
+  }
+
   toString(encoding?: string) {
     if (typeof this.value === 'string') {
       assert(encoding === undefined, 'Tried to encode string.');
