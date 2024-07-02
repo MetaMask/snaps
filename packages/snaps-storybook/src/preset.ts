@@ -1,8 +1,8 @@
-import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
-import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
 import type { ViteFinal } from '@storybook/builder-vite';
 import type { PresetProperty } from '@storybook/types';
 import { resolve, dirname, join } from 'path';
+import type { PluginOption } from 'vite';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 /**
  * Get the absolute path of a file in an Node.js package.
@@ -137,19 +137,14 @@ export const previewHead: PresetProperty<'previewHead'> = (head = '') => `
 export const viteFinal: ViteFinal = (config) => {
   return {
     ...config,
-    optimizeDeps: {
-      ...config.optimizeDeps,
-      esbuildOptions: {
-        ...config.optimizeDeps?.esbuildOptions,
-        plugins: [
-          ...(config.optimizeDeps?.esbuildOptions?.plugins ?? []),
-          NodeGlobalsPolyfillPlugin({
-            buffer: true,
-            process: true,
-          }),
-          NodeModulesPolyfillPlugin(),
-        ],
-      },
-    },
+    plugins: [
+      ...(config.plugins as PluginOption[]),
+      nodePolyfills({
+        globals: {
+          Buffer: true,
+          process: true,
+        },
+      }),
+    ],
   };
 };
