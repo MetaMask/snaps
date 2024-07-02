@@ -1,9 +1,9 @@
-import { Cell } from './Cell';
+import { Card } from './Card';
 
-describe('Cell', () => {
-  it('renders a Cell', () => {
+describe('Card', () => {
+  it('renders a card', () => {
     const result = (
-      <Cell
+      <Card
         image="<svg />"
         title="Title"
         description="Description"
@@ -13,7 +13,7 @@ describe('Cell', () => {
     );
 
     expect(result).toStrictEqual({
-      type: 'Cell',
+      type: 'Card',
       key: null,
       props: {
         image: '<svg />',

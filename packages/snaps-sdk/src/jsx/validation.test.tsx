@@ -25,7 +25,7 @@ import {
   Checkbox,
   Footer,
   Container,
-  Cell,
+  Card,
 } from './components';
 import {
   AddressStruct,
@@ -33,7 +33,7 @@ import {
   BoldStruct,
   BoxStruct,
   ButtonStruct,
-  CellStruct,
+  CardStruct,
   CheckboxStruct,
   ContainerStruct,
   CopyableStruct,
@@ -514,17 +514,17 @@ describe('FooterStruct', () => {
   });
 });
 
-describe('CellStruct', () => {
+describe('CardStruct', () => {
   it.each([
-    <Cell
+    <Card
       image="<svg />"
       title="Title"
       description="Description"
       value="$1200"
       extra="0.12 ETH"
     />,
-  ])('validates a cell element', (value) => {
-    expect(is(value, CellStruct)).toBe(true);
+  ])('validates a card element', (value) => {
+    expect(is(value, CardStruct)).toBe(true);
   });
 
   it.each([
@@ -535,12 +535,12 @@ describe('CellStruct', () => {
     {},
     [],
     // @ts-expect-error - Invalid props.
-    <Cell />,
+    <Card />,
     <Row label="label">
       <Image src="<svg />" alt="alt" />
     </Row>,
   ])('does not validate "%p"', (value) => {
-    expect(is(value, CellStruct)).toBe(false);
+    expect(is(value, CardStruct)).toBe(false);
   });
 });
 

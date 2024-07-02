@@ -42,7 +42,7 @@ import type {
   BoxElement,
   ButtonElement,
   CheckboxElement,
-  CellElement,
+  CardElement,
   CopyableElement,
   DividerElement,
   DropdownElement,
@@ -382,9 +382,9 @@ export const ValueStruct: Describe<ValueElement> = element('Value', {
 });
 
 /**
- * A struct for the {@link CellElement} type.
+ * A struct for the {@link CardElement} type.
  */
-export const CellStruct: Describe<CellElement> = element('Cell', {
+export const CardStruct: Describe<CardElement> = element('Card', {
   image: optional(string()),
   title: string(),
   description: optional(string()),
@@ -500,7 +500,7 @@ export const BoxChildStruct = nullUnion([
   TextStruct,
   TooltipStruct,
   CheckboxStruct,
-  CellStruct,
+  CardStruct,
 ]);
 
 /**
@@ -540,7 +540,7 @@ export const JSXElementStruct: Describe<JSXElement> = nullUnion([
   CheckboxStruct,
   FooterStruct,
   ContainerStruct,
-  CellStruct,
+  CardStruct,
 ]);
 
 /**

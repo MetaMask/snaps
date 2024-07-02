@@ -1,6 +1,6 @@
 import type { AddressElement } from './Address';
 import type { BoxElement } from './Box';
-import type { CellElement } from './Cell';
+import type { CardElement } from './Card';
 import type { ContainerElement } from './Container';
 import type { CopyableElement } from './Copyable';
 import type { DividerElement } from './Divider';
@@ -20,7 +20,7 @@ export * from './form';
 export * from './formatting';
 export * from './Address';
 export * from './Box';
-export * from './Cell';
+export * from './Card';
 export * from './Copyable';
 export * from './Divider';
 export * from './Value';
@@ -42,7 +42,7 @@ export type JSXElement =
   | StandardFormattingElement
   | AddressElement
   | BoxElement
-  | CellElement
+  | CardElement
   | ContainerElement
   | CopyableElement
   | DividerElement
