@@ -1,6 +1,6 @@
 import { union } from '@metamask/snaps-sdk';
 import type { NonEmptyArray } from '@metamask/utils';
-import { assert, isObject } from '@metamask/utils';
+import { assert, hasProperty, isObject } from '@metamask/utils';
 import { bold, green, red } from 'chalk';
 import type { Failure } from 'superstruct';
 import {
@@ -426,18 +426,25 @@ export function validateUnion<Type, Schema extends readonly Struct<any, any>[]>(
     return validatedValue[1];
   }
 
-  assert(validationResults[0][0], 'Expected at least one error.');
+  const filteredResults = validationResults.filter(([result]) =>
+    hasProperty(objectValue, result?.key),
+  );
+
+  const relevantResults =
+    filteredResults.length > 0 ? filteredResults : validationResults;
+
+  assert(relevantResults[0][0], 'Expected at least one error.');
 
   // If there is no validated value, we need to find the error with the least
   // number of failures (with the assumption that it's the most specific error).
-  const validationError = validationResults.reduce((error, [innerError]) => {
+  const validationError = relevantResults.reduce((error, [innerError]) => {
     assert(innerError, 'Expected an error.');
     if (innerError.failures().length < error.failures().length) {
       return innerError;
     }
 
     return error;
-  }, validationResults[0][0]);
+  }, relevantResults[0][0]);
 
   throw new Error(
     getStructFailureMessage(struct, validationError.failures()[0], false),
