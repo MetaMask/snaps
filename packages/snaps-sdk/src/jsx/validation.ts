@@ -12,7 +12,6 @@ import {
   array,
   lazy,
   nullable,
-  number,
   object,
   record,
   string,
@@ -69,7 +68,7 @@ import type {
 /**
  * A struct for the {@link Key} type.
  */
-export const KeyStruct: Describe<Key> = nullUnion([string(), number()]);
+export const KeyStruct: Describe<Key> = nullUnion([string()]);
 
 /**
  * A struct for the {@link StringElement} type.

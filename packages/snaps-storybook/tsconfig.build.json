@@ -1,18 +1,24 @@
 {
   "extends": "../../tsconfig.packages.build.json",
   "compilerOptions": {
+    "jsx": "react-jsx",
     "baseUrl": "./",
     "outDir": "./dist/types",
-    "rootDir": "./src"
+    "rootDir": "./",
+    "skipLibCheck": true,
+    "resolveJsonModule": true
   },
   "include": ["./src"],
   "exclude": [
     "**/*.test.ts",
     "**/*.test.tsx",
-    "**/*.stories.tsx",
     "./src/**/test-utils",
     "./src/**/__mocks__",
     "./src/**/__snapshots__"
   ],
-  "references": []
+  "references": [
+    {
+      "path": "../snaps-sdk/tsconfig.build.json"
+    }
+  ]
 }
