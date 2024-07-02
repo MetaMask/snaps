@@ -4,7 +4,7 @@
     "jsx": "react-jsx",
     "baseUrl": "./",
     "outDir": "./dist/types",
-    "rootDir": "./",
+    "rootDir": "./src",
     "skipLibCheck": true,
     "resolveJsonModule": true
   },

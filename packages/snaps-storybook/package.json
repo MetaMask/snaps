@@ -24,7 +24,8 @@
   "module": "./dist/index.mjs",
   "types": "./dist/types/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "preset.js"
   ],
   "scripts": {
     "clean": "rimraf '*.tsbuildinfo' 'dist'",
@@ -50,8 +51,6 @@
     "@chakra-ui/react": "^2.6.1",
     "@emotion/react": "^11.10.8",
     "@emotion/styled": "^11.10.8",
-    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
-    "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
     "@metamask/design-tokens": "^4.0.0",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/snaps-sdk": "workspace:^",
@@ -70,6 +69,7 @@
     "react-dom": "^18.2.0",
     "swc-loader": "^0.2.3",
     "ts-morph": "^23.0.0",
+    "vite-plugin-node-polyfills": "^0.22.0",
     "webpack-merge": "^5.9.0"
   },
   "devDependencies": {

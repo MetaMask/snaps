@@ -52,7 +52,7 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "../../scripts/validate-changelog.sh @metamask/snaps-sdk",
     "build": "tsup --clean && yarn build:types",
-    "build:storybook": "storybook build",
+    "build:storybook": "storybook build --quiet",
     "build:types": "tsc --project tsconfig.build.json",
     "clean": "rimraf '*.tsbuildinfo' 'dist'",
     "publish:preview": "yarn npm publish --tag preview",
@@ -98,7 +98,7 @@
     "prettier": "^2.7.1",
     "prettier-plugin-packagejson": "^2.2.11",
     "rimraf": "^4.1.2",
-    "storybook": "^8.0.0",
+    "storybook": "^8.1.11",
     "ts-jest": "^29.1.1",
     "tsup": "^8.0.1",
     "typescript": "~4.8.4"
