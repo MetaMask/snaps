@@ -1,4 +1,4 @@
-import type { Preview, SnapsRenderer } from '@metamask/snaps-storybook';
+import type { Preview } from '@metamask/snaps-storybook';
 
 const preview: Preview = {
   tags: ['autodocs'],
