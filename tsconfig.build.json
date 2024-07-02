@@ -11,6 +11,7 @@
     { "path": "./packages/snaps-rpc-methods/tsconfig.build.json" },
     { "path": "./packages/snaps-sdk/tsconfig.build.json" },
     { "path": "./packages/snaps-simulator/tsconfig.build.json" },
+    { "path": "./packages/snaps-storybook/tsconfig.build.json" },
     { "path": "./packages/snaps-utils/tsconfig.build.json" },
     { "path": "./packages/snaps-webpack-plugin/tsconfig.build.json" }
   ]

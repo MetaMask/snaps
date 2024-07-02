@@ -1,9 +1,9 @@
 import type { Json } from '@metamask/utils';
 
 /**
- * A key, which can be a string or a number.
+ * A key, i.e., a string value.
  */
-export type Key = string | number;
+export type Key = string;
 
 /**
  * A JSON object.

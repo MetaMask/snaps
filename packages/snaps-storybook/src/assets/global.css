@@ -1,0 +1,11 @@
+.sidebar-item {
+  font-size: 14px;
+}
+
+.sidebar-item[data-nodetype="component"], .sidebar-item[data-selected="true"] {
+  font-weight: 500 !important;
+}
+
+.sb-bar button {
+  font-weight: 600 !important;
+}
