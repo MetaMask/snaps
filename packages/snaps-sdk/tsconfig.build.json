@@ -9,6 +9,7 @@
   "exclude": [
     "**/*.test.ts",
     "**/*.test.tsx",
+    "**/*.stories.tsx",
     "./src/**/test-utils",
     "./src/**/__mocks__",
     "./src/**/__snapshots__"
