@@ -34,6 +34,7 @@ const ENTRY_POINTS = {
   webview: {
     entryPoint: './src/webview/index.ts',
     html: true,
+    inlineBundle: true,
   },
 };
 
@@ -99,7 +100,7 @@ async function main() {
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>MetaMask Snaps Iframe Execution Environment</title>
+    <title>MetaMask Snaps Execution Environment</title>
     <script>${lavaMoatRuntimeBrowser}</script>
   </head>
   <body>
@@ -107,10 +108,22 @@ async function main() {
   </body>
 </html>`;
 
+  const createInlinedHTML = (bundleSource) => `<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>MetaMask Snaps Execution Environment</title>
+    <script>${lavaMoatRuntimeBrowser}</script>
+  </head>
+  <body>
+    <script>${bundleSource}</script>
+  </body>
+</html>`;
+
   await Promise.all(
     Object.entries(ENTRY_POINTS).map(async ([key, config]) => {
       console.log('Bundling', key);
-      const { html, node, worker, entryPoint } = config;
+      const { html, node, worker, entryPoint, inlineBundle } = config;
       const insertGlobalVars = node
         ? { process: undefined, ...LavaMoatBrowserify.args.insertGlobalVars }
         : LavaMoatBrowserify.args.insertGlobalVars;
@@ -218,14 +231,19 @@ async function main() {
         outputBundle = `${runtime}\n${outputBundle}`;
       }
 
-      const bundlePath = path.join(OUTPUT_PATH, key, OUTPUT_BUNDLE);
-      await fs.mkdir(path.dirname(bundlePath), { recursive: true });
-      await fs.writeFile(bundlePath, outputBundle);
+      if (!inlineBundle) {
+        const bundlePath = path.join(OUTPUT_PATH, key, OUTPUT_BUNDLE);
+        await fs.mkdir(path.dirname(bundlePath), { recursive: true });
+        await fs.writeFile(bundlePath, outputBundle);
+      }
 
       if (html) {
         const htmlPath = path.join(OUTPUT_PATH, key, OUTPUT_HTML);
         await fs.mkdir(path.dirname(htmlPath), { recursive: true });
-        await fs.writeFile(htmlPath, htmlFile);
+        await fs.writeFile(
+          htmlPath,
+          inlineBundle ? createInlinedHTML(outputBundle) : htmlFile,
+        );
       }
 
       const outputBytes = stringToBytes(outputBundle);
