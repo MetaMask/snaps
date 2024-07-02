@@ -27,6 +27,20 @@ jobs:
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
+  publish-storybook-pr:
+    name: Publish Storybook to `pr/${{ github.event.number }}` folder
+    needs: lint-build-test
+    if: ${{ github.event_name == 'pull_request' }}
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-github-pages.yml
+    with:
+      build_script: yarn workspace @metamask/snaps-sdk build && yarn workspace @metamask/snaps-storybook build && yarn workspace @metamask/snaps-sdk build:storybook
+      publish_dir: ./packages/snaps-sdk/storybook-static
+      destination_dir: storybook/pr/${{ github.event.number }}
+    secrets:
+      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
+
   publish-staging-simulator:
     name: Publish Snaps Simulator to `staging` folder
     needs: lint-build-test
