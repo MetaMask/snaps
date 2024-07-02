@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+
+    <title>@storybook/cli - Storybook</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+    
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    
+    <link
+      rel="prefetch"
+      href="./sb-common-assets/nunito-sans-regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="prefetch"
+      href="./sb-common-assets/nunito-sans-bold.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="./sb-common-assets/fonts.css" />
+
+    <link href="./sb-manager/runtime.js" rel="modulepreload" />
+
+    
+    <link href="./sb-addons/storybook-core-server-presets-0/common-manager-bundle.js" rel="modulepreload" />
+    
+    <link href="./sb-addons/toolbars-1/manager-bundle.js" rel="modulepreload" />
+    
+    <link href="./sb-addons/snaps-storybook-2/manager-bundle.js" rel="modulepreload" />
+    
+    <link href="./sb-addons/controls-3/manager-bundle.js" rel="modulepreload" />
+      
+  
+  
+  <link rel="prefetch" href="./snaps/fonts/Euclid-Circular-B-Light.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="prefetch" href="./snaps/fonts/Euclid-Circular-B-Light-Italic.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="prefetch" href="./snaps/fonts/Euclid-Circular-B-Regular.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="prefetch" href="./snaps/fonts/Euclid-Circular-B-Italic.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="prefetch" href="./snaps/fonts/Euclid-Circular-B-Medium.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="prefetch" href="./snaps/fonts/Euclid-Circular-B-Medium-Italic.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="prefetch" href="./snaps/fonts/Euclid-Circular-B-SemiBold.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="prefetch" href="./snaps/fonts/Euclid-Circular-B-SemiBold-Italic.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="prefetch" href="./snaps/fonts/Euclid-Circular-B-Bold.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="prefetch" href="./snaps/fonts/Euclid-Circular-B-Bold-Italic.woff2" as="font" type="font/woff2" crossorigin />
+
+  <link rel="prefetch" href="./snaps/fonts/Inter-Light.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="prefetch" href="./snaps/fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="prefetch" href="./snaps/fonts/Inter-Medium.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="prefetch" href="./snaps/fonts/Inter-SemiBold.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="prefetch" href="./snaps/fonts/Inter-Bold.woff2" as="font" type="font/woff2" crossorigin />
+
+  <link rel="stylesheet" href="./snaps/global.css" />
+  <link rel="stylesheet" href="./snaps/fonts/fonts.css" />
+
+ 
+
+    <style>
+      #storybook-root[hidden] {
+        display: none !important;
+      }
+    </style>
+
+    
+  </head>
+  <body>
+    <div id="root"></div>
+
+    
+    <script>
+      
+        
+          window['FEATURES'] = {
+  "argTypeTargetsV7": true,
+  "legacyDecoratorFileOrder": false,
+  "disallowImplicitActionsInRenderV8": true
+};
+        
+      
+        
+          window['REFS'] = {};
+        
+      
+        
+          window['LOGLEVEL'] = "info";
+        
+      
+        
+          window['DOCS_OPTIONS'] = {
+  "defaultName": "Docs",
+  "autodocs": "tag"
+};
+        
+      
+        
+          window['CONFIG_TYPE'] = "PRODUCTION";
+        
+      
+        
+      
+        
+      
+        
+          window['TAGS_OPTIONS'] = {
+  "dev-only": {
+    "excludeFromDocsStories": true
+  },
+  "docs-only": {
+    "excludeFromSidebar": true
+  },
+  "test-only": {
+    "excludeFromSidebar": true,
+    "excludeFromDocsStories": true
+  }
+};
+        
+      
+        
+          window['STORYBOOK_BUILDER'] = "@storybook/builder-vite";
+        
+      
+        
+          window['STORYBOOK_FRAMEWORK'] = "@metamask/snaps-storybook";
+        
+      
+    </script>
+    
+
+    <script type="module">
+      import './sb-manager/globals-runtime.js';
+      
+      
+        import './sb-addons/storybook-core-server-presets-0/common-manager-bundle.js';
+      
+        import './sb-addons/toolbars-1/manager-bundle.js';
+      
+        import './sb-addons/snaps-storybook-2/manager-bundle.js';
+      
+        import './sb-addons/controls-3/manager-bundle.js';
+      
+      
+      import './sb-manager/runtime.js';
+    </script>
+
+    
+    <link href="./sb-preview/runtime.js" rel="prefetch" as="script" />
+    
+  </body>
+</html>

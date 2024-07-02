@@ -1,0 +1,1 @@
+var o=(n,r)=>{const e=n(),{theme:t}=r.globals;return{type:"ThemeProvider",props:{children:e,theme:t},key:null}},l=(n,r)=>{const e=n();return r.globals.extension&&e.type!=="Extension"?{type:"Extension",props:{children:e},key:null}:e},s=[l,o];export{s as decorators};
