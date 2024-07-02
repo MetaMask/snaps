@@ -523,7 +523,7 @@ describe('CellStruct', () => {
       value="$1200"
       extra="0.12 ETH"
     />,
-  ])('validates a container element', (value) => {
+  ])('validates a cell element', (value) => {
     expect(is(value, CellStruct)).toBe(true);
   });
 
