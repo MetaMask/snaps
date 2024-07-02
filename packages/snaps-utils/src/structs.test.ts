@@ -12,6 +12,7 @@ import superstruct, {
   union as superstructUnion,
   array,
   is,
+  boolean,
 } from 'superstruct';
 
 import { RpcOriginsStruct } from './json-rpc';
@@ -345,6 +346,47 @@ describe('validateUnion', () => {
       validateUnion({ type: 'a', value: 42 }, Union, 'type'),
     ).toThrow(
       `At path: value — Expected a value of type string, but received: 42.`,
+    );
+  });
+
+  it('throws a readable error even if input is missing keys', () => {
+    const FooStruct = object({
+      type: literal('a'),
+      value: string(),
+    });
+
+    const BarStruct = object({
+      type: literal('b'),
+      value: number(),
+    });
+
+    const Union = union([FooStruct, BarStruct]);
+    expect(() => validateUnion({ type: 'a' }, Union, 'type')).toThrow(
+      `At path: value — Expected a value of type string, but received: undefined.`,
+    );
+  });
+
+  it('selects the error with the least failures', () => {
+    const FooStruct = object({
+      type: literal('a'),
+      value: union([boolean(), string()]),
+    });
+
+    const OtherFooStruct = object({
+      type: literal('a'),
+      value: boolean(),
+    });
+
+    const BarStruct = object({
+      type: literal('b'),
+      value: number(),
+    });
+
+    const Union = union([FooStruct, OtherFooStruct, BarStruct]);
+    expect(() =>
+      validateUnion({ type: 'a', value: 42 }, Union, 'type'),
+    ).toThrow(
+      `At path: value — Expected a value of type boolean, but received: 42.`,
     );
   });
 

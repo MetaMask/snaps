@@ -469,7 +469,6 @@ describe('implementation', () => {
     );
 
     it.each([
-      { type: DialogType.Alert },
       { type: DialogType.Alert, content: null },
       { type: DialogType.Alert, content: false },
       { type: DialogType.Alert, content: '' },
@@ -487,7 +486,22 @@ describe('implementation', () => {
           params: value as any,
         }),
       ).rejects.toThrow(
-        /Invalid params: At path: .* — Expected a value of type .*, but received: .*\./u,
+        /Invalid params: At path: .* — Expected the value to be one of: object, object, but received: .*\./u,
+      );
+    });
+
+    it('rejects invalid fields', async () => {
+      const hooks = getMockDialogHooks();
+      const implementation = getDialogImplementation(hooks);
+
+      await expect(
+        implementation({
+          context: { origin: 'foo' },
+          method: 'snap_dialog',
+          params: { type: DialogType.Alert } as any,
+        }),
+      ).rejects.toThrow(
+        'Invalid params: At path: id — Expected a value of type string, but received: undefined.',
       );
     });
 
