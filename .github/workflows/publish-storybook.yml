@@ -1,0 +1,19 @@
+on:
+  workflow_call:
+    secrets:
+      PUBLISH_PAGES_TOKEN:
+        required: true
+
+jobs:
+  publish-storybook-pr:
+    name: Publish Storybook to `pr` folder
+    needs: lint-build-test
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-github-pages.yml
+    with:
+      build_script: yarn workspace @metamask/snaps-simulator build
+      publish_dir: ./packages/snaps-simulator/dist/webpack/main
+      destination_dir: snaps-simulator/staging
+    secrets:
+      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}

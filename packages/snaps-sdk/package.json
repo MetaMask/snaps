@@ -52,6 +52,7 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "../../scripts/validate-changelog.sh @metamask/snaps-sdk",
     "build": "tsup --clean && yarn build:types",
+    "build:storybook": "storybook build",
     "build:types": "tsc --project tsconfig.build.json",
     "clean": "rimraf '*.tsbuildinfo' 'dist'",
     "publish:preview": "yarn npm publish --tag preview",
