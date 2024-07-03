@@ -25,7 +25,7 @@ import type {
 } from 'superstruct/dist/utils';
 
 import type { Describe } from '../internals';
-import { literal, nullUnion, svg } from '../internals';
+import { literal, nullUnion, svg, typedUnion } from '../internals';
 import type { EmptyObject } from '../types';
 import type {
   GenericSnapElement,
@@ -480,7 +480,7 @@ export const SpinnerStruct: Describe<SpinnerElement> = element('Spinner');
  * This set includes all components, except components that need to be nested in
  * another component (e.g., Field must be contained in a Form).
  */
-export const BoxChildStruct = nullUnion([
+export const BoxChildStruct = typedUnion([
   AddressStruct,
   BoldStruct,
   BoxStruct,
@@ -515,7 +515,7 @@ export const RootJSXElementStruct = nullUnion([
 /**
  * A struct for the {@link JSXElement} type.
  */
-export const JSXElementStruct: Describe<JSXElement> = nullUnion([
+export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   ButtonStruct,
   InputStruct,
   FileInputStruct,
