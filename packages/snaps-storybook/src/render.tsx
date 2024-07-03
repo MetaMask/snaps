@@ -4,6 +4,7 @@ import type { ArgsStoryFn, RenderToCanvas } from '@storybook/types';
 import { StrictMode } from 'react';
 
 import { ErrorBoundary, Renderer } from './components';
+import { CUSTOM_COMPONENTS } from './components/custom';
 import type { SnapsRenderer } from './types';
 
 /**
@@ -47,7 +48,11 @@ export const renderToCanvas: RenderToCanvas<SnapsRenderer> = async (
   const element = (
     <StrictMode>
       <ErrorBoundary showMain={showMain} showException={showException}>
-        <Renderer id="root" element={storyElement} />
+        <Renderer
+          id="root"
+          element={storyElement}
+          overrides={CUSTOM_COMPONENTS}
+        />
       </ErrorBoundary>
     </StrictMode>
   );

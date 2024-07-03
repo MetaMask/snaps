@@ -57,7 +57,6 @@ const Tooltip: FunctionComponent<TooltipProps> = ({ tooltip, variant }) => {
  * The row component. See {@link RowProps} for the props.
  *
  * @param props - The props of the component.
- * @param props.id - The unique ID to use as key for the renderer.
  * @param props.label - The label of the row.
  * @param props.variant - The variant of the row.
  * @param props.tooltip - The tooltip content.
@@ -67,7 +66,6 @@ const Tooltip: FunctionComponent<TooltipProps> = ({ tooltip, variant }) => {
  * @returns A row element.
  */
 export const Row: FunctionComponent<RenderProps<RowProps>> = ({
-  id,
   label,
   variant = 'default',
   tooltip,
@@ -82,7 +80,7 @@ export const Row: FunctionComponent<RenderProps<RowProps>> = ({
         <Text fontWeight="500">{label}</Text>
         <Tooltip tooltip={tooltip} variant={variant} />
       </Flex>
-      <Renderer id={`${id}-row`} element={children} />
+      <Renderer id="row" element={children} />
     </Box>
   );
 };

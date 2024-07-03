@@ -43,7 +43,6 @@ function getFlexProps({
  * The box component. See {@link BoxProps} for the props.
  *
  * @param props - The box props.
- * @param props.id - The unique ID to use as key for the renderer.
  * @param props.direction - The box direction.
  * @param props.alignment - The box alignment.
  * @param props.children - The box content.
@@ -52,7 +51,6 @@ function getFlexProps({
  * @returns The rendered box.
  */
 export const Box: FunctionComponent<RenderProps<BoxProps>> = ({
-  id,
   direction,
   alignment,
   children,
@@ -60,7 +58,7 @@ export const Box: FunctionComponent<RenderProps<BoxProps>> = ({
 }) => {
   return (
     <Flex gap="1" {...getFlexProps({ alignment, direction })}>
-      <Renderer id={`${id}-box`} element={children} />
+      <Renderer id="box" element={children} />
     </Flex>
   );
 };

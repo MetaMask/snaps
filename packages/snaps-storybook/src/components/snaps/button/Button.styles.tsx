@@ -26,6 +26,18 @@ export const styles = defineStyleConfig({
         color: 'text.muted',
       },
     }),
+
+    solid: defineStyle({
+      color: 'background.default',
+      backgroundColor: 'text.default',
+      _disabled: {
+        backgroundColor: 'text.muted',
+      },
+
+      _hover: {
+        backgroundColor: 'text.alternative',
+      },
+    }),
   },
 
   sizes: {
@@ -37,6 +49,20 @@ export const styles = defineStyleConfig({
       padding: 0,
       paddingInlineStart: 0,
       paddingInlineEnd: 0,
+    }),
+
+    large: defineStyle({
+      lineHeight: 'short',
+      fontSize: 'sm',
+      fontWeight: '500',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingX: '4',
+      height: '48px',
+      borderRadius: 'full',
+      border: '1px solid',
+      borderColor: 'currentColor',
     }),
   },
 
