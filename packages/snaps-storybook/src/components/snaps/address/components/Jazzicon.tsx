@@ -4,8 +4,20 @@ import jazzicon from '@metamask/jazzicon';
 import type { FunctionComponent } from 'react';
 import { useEffect, useRef } from 'react';
 
+/**
+ * The props for the {@link Jazzicon} component.
+ *
+ * @see BoxProps
+ */
 export type JazziconProps = BoxProps & {
+  /**
+   * The size of the Jazzicon.
+   */
   size?: number;
+
+  /**
+   * The Ethereum address to display the Jazzicon for.
+   */
   address: string;
 };
 

@@ -2,7 +2,8 @@ import type { GenericSnapElement, Nestable } from '@metamask/snaps-sdk/jsx';
 import { assert } from '@metamask/utils';
 import type { FunctionComponent } from 'react';
 
-import * as COMPONENT_MAP from './snaps';
+import { CUSTOM_COMPONENTS } from './custom';
+import { SNAPS_COMPONENTS } from './snaps';
 
 /**
  * The props that are passed to a rendered component.
@@ -16,17 +17,29 @@ export type RenderProps<Type> = Type & {
    * the rendered components have unique keys.
    */
   id: string;
+
+  /**
+   * The Renderer component to use to render nested elements.
+   */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  Renderer: FunctionComponent<RendererProps>;
 };
 
 /**
  * The props for the {@link Renderer} component.
  */
-export type RendererProps = RenderProps<{
+export type RendererProps = {
+  /**
+   * The unique ID to use as key for the renderer. This is used to ensure that
+   * the rendered components have unique keys.
+   */
+  id: string;
+
   /**
    * The JSX element to render.
    */
   element: Nestable<string | GenericSnapElement | boolean | null>;
-}>;
+};
 
 /**
  * The renderer component that renders Snaps JSX elements. It supports rendering
@@ -61,10 +74,17 @@ export const Renderer: FunctionComponent<RendererProps> = ({ element, id }) => {
     );
   }
 
-  // eslint-disable-next-line import/namespace
-  const Component = COMPONENT_MAP[element.type as keyof typeof COMPONENT_MAP];
-  assert(Component, `No component found for type: "${element.type}".`);
+  if (CUSTOM_COMPONENTS[element.type as keyof typeof CUSTOM_COMPONENTS]) {
+    const Component =
+      CUSTOM_COMPONENTS[element.type as keyof typeof CUSTOM_COMPONENTS];
 
-  // @ts-expect-error - TODO: Fix types.
-  return <Component id={id} {...element.props} />;
+    // @ts-expect-error - TODO: Fix types.
+    return <Component id={id} Renderer={Renderer} {...element.props} />;
+  }
+
+  // eslint-disable-next-line import/namespace
+  const item = SNAPS_COMPONENTS[element.type];
+  assert(item, `No component found for type: "${element.type}".`);
+
+  return <item.Component id={id} Renderer={Renderer} {...element.props} />;
 };

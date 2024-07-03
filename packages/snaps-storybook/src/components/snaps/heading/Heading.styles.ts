@@ -1,6 +1,6 @@
 import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
 
-export const Heading = defineStyleConfig({
+export const styles = defineStyleConfig({
   baseStyle: defineStyle({
     color: 'text.default',
     fontWeight: '700',

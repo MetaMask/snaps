@@ -2,7 +2,7 @@ import { Flex, Text } from '@chakra-ui/react';
 import type { AddressProps } from '@metamask/snaps-sdk/jsx';
 import type { FunctionComponent } from 'react';
 
-import { Jazzicon } from '../Jazzicon';
+import { Jazzicon } from './components';
 
 /**
  * Get a truncated version of the address.

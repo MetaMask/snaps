@@ -8,9 +8,8 @@ import {
 import type { RowProps } from '@metamask/snaps-sdk/jsx';
 import type { FunctionComponent } from 'react';
 
-import { DangerIcon, QuestionIcon, WarningIcon } from '../icons';
-import type { RenderProps } from '../Renderer';
-import { Renderer } from '../Renderer';
+import { DangerIcon, QuestionIcon, WarningIcon } from '../../icons';
+import type { RenderProps } from '../../Renderer';
 
 /**
  * Get the icon for the row variant.
@@ -63,6 +62,8 @@ const Tooltip: FunctionComponent<TooltipProps> = ({ tooltip, variant }) => {
  * @param props.variant - The variant of the row.
  * @param props.tooltip - The tooltip content.
  * @param props.children - The children of the row.
+ * @param props.Renderer - The Renderer component to use to render nested
+ * elements.
  * @returns A row element.
  */
 export const Row: FunctionComponent<RenderProps<RowProps>> = ({
@@ -71,6 +72,7 @@ export const Row: FunctionComponent<RenderProps<RowProps>> = ({
   variant = 'default',
   tooltip,
   children,
+  Renderer,
 }) => {
   const styles = useStyleConfig('Row', { variant });
 
