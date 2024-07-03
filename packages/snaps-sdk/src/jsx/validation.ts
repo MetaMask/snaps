@@ -43,6 +43,7 @@ import type {
   BoxElement,
   ButtonElement,
   CheckboxElement,
+  CardElement,
   CopyableElement,
   DividerElement,
   DropdownElement,
@@ -382,6 +383,17 @@ export const ValueStruct: Describe<ValueElement> = element('Value', {
 });
 
 /**
+ * A struct for the {@link CardElement} type.
+ */
+export const CardStruct: Describe<CardElement> = element('Card', {
+  image: optional(string()),
+  title: string(),
+  description: optional(string()),
+  value: string(),
+  extra: optional(string()),
+});
+
+/**
  * A struct for the {@link HeadingElement} type.
  */
 export const HeadingStruct: Describe<HeadingElement> = element('Heading', {
@@ -489,6 +501,7 @@ export const BoxChildStruct = nullUnion([
   TextStruct,
   TooltipStruct,
   CheckboxStruct,
+  CardStruct,
 ]);
 
 /**
@@ -528,6 +541,7 @@ export const JSXElementStruct: Describe<JSXElement> = nullUnion([
   CheckboxStruct,
   FooterStruct,
   ContainerStruct,
+  CardStruct,
 ]);
 
 /**
