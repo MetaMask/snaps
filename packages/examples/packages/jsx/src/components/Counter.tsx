@@ -1,12 +1,5 @@
 import type { SnapComponent } from '@metamask/snaps-sdk/jsx';
-import {
-  Copyable,
-  Bold,
-  Button,
-  Box,
-  Text,
-  Tooltip,
-} from '@metamask/snaps-sdk/jsx';
+import { Bold, Button, Box, Text, Tooltip } from '@metamask/snaps-sdk/jsx';
 
 /**
  * The props for the {@link Counter} component.
@@ -46,7 +39,6 @@ export const Counter: SnapComponent<CounterProps> = ({ count }) => {
         </Text>
       </Tooltip>
       <Button name="increment">Increment</Button>
-      <Copyable value="test" sensitive={true} />
     </Box>
   );
 };
