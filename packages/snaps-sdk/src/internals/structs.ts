@@ -1,4 +1,4 @@
-import { assert, hasProperty, isPlainObject } from '@metamask/utils';
+import { hasProperty, isPlainObject } from '@metamask/utils';
 import type { Infer } from 'superstruct';
 import {
   Struct,
@@ -95,15 +95,19 @@ export function typedUnion<Head extends AnyStruct, Tail extends AnyStruct[]>(
     type: 'typedUnion',
     schema: null,
     *entries(value, context) {
-      if (isPlainObject(value) && hasProperty(value, 'type')) {
-        const { type } = value;
-        const struct = structs.find(({ schema }) => is(type, schema.type));
+      if (!isPlainObject(value) || !hasProperty(value, 'type')) {
+        return;
+      }
 
-        assert(struct, 'Expected at least one struct to match');
+      const { type } = value;
+      const struct = structs.find(({ schema }) => is(type, schema.type));
 
-        for (const entry of struct.entries(value, context)) {
-          yield entry;
-        }
+      if (!struct) {
+        return;
+      }
+
+      for (const entry of struct.entries(value, context)) {
+        yield entry;
       }
     },
     validator(value, context) {

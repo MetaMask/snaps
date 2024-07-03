@@ -132,7 +132,7 @@ describe('snap_createInterface', () => {
       error: {
         code: -32602,
         message:
-          'Invalid params: At path: ui -- Expected the value to satisfy a union of `union | union`, but received: "foo".',
+          'Invalid params: At path: ui -- Expected the value to satisfy a union of `typedUnion | union`, but received: "foo".',
         stack: expect.any(String),
       },
       id: 1,
