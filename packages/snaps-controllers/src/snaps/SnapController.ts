@@ -122,7 +122,6 @@ import {
   type KeyDerivationOptions,
 } from '../types';
 import {
-  calculateConnectionsChange,
   fetchSnap,
   hasTimedOut,
   permissionsDiff,
@@ -2504,7 +2503,8 @@ export class SnapController extends BaseController<
         this.#calculatePermissionsChange(snapId, processedPermissions);
 
       const { newConnections, unusedConnections, approvedConnections } =
-        calculateConnectionsChange(
+        this.#calculateConnectionsChange(
+          snapId,
           oldManifest.initialConnections ?? {},
           manifest.initialConnections ?? {},
         );
@@ -3562,6 +3562,57 @@ export class SnapController extends BaseController<
     );
 
     return { newPermissions, unusedPermissions, approvedPermissions };
+  }
+
+  #isSubjectConnectedToSnap(snapId: SnapId, origin: string) {
+    const subjectPermissions = this.messagingSystem.call(
+      'PermissionController:getPermissions',
+      origin,
+    ) as SubjectPermissions<PermissionConstraint>;
+
+    const existingCaveat = subjectPermissions?.[
+      WALLET_SNAP_PERMISSION_KEY
+    ]?.caveats?.find((caveat) => caveat.type === SnapCaveatType.SnapIds);
+
+    return Boolean((existingCaveat?.value as Record<string, Json>)?.[snapId]);
+  }
+
+  #calculateConnectionsChange(
+    snapId: SnapId,
+    oldConnectionsSet: Record<string, Json>,
+    desiredConnectionsSet: Record<string, Json>,
+  ): {
+    newConnections: Record<string, Json>;
+    unusedConnections: Record<string, Json>;
+    approvedConnections: Record<string, Json>;
+  } {
+    // Filter out any origins that have been revoked since last install/update.
+    // That way they will be represented as new.
+    const filteredOldConnections = Object.keys(oldConnectionsSet)
+      .filter((origin) => this.#isSubjectConnectedToSnap(snapId, origin))
+      .reduce<Record<string, Json>>((accumulator, origin) => {
+        accumulator[origin] = oldConnectionsSet[origin];
+        return accumulator;
+      }, {});
+
+    const newConnections = setDiff(
+      desiredConnectionsSet,
+      filteredOldConnections,
+    );
+
+    const unusedConnections = setDiff(
+      filteredOldConnections,
+      desiredConnectionsSet,
+    );
+
+    // It's a Set Intersection of oldConnections and desiredConnectionsSet
+    // oldConnections ∖ (oldConnections ∖ desiredConnectionsSet) ⟺ oldConnections ∩ desiredConnectionsSet
+    const approvedConnections = setDiff(
+      filteredOldConnections,
+      unusedConnections,
+    );
+
+    return { newConnections, unusedConnections, approvedConnections };
   }
 
   /**
