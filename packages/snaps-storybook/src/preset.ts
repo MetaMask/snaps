@@ -137,6 +137,19 @@ export const previewHead: PresetProperty<'previewHead'> = (head = '') => `
 export const viteFinal: ViteFinal = (config) => {
   return {
     ...config,
+    build: {
+      ...config.build,
+      rollupOptions: {
+        ...config.build?.rollupOptions,
+        onwarn: (warning, warn) => {
+          if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
+            return;
+          }
+
+          warn(warning);
+        },
+      },
+    },
     plugins: [
       ...(config.plugins as PluginOption[]),
       nodePolyfills({
