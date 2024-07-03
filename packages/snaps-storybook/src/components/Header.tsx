@@ -7,7 +7,14 @@ import type { FunctionComponent } from 'react';
  * @returns The header element.
  */
 export const Header: FunctionComponent = () => (
-  <Flex as="header" padding="4" gap="4" background="background.default">
+  <Flex
+    as="header"
+    padding="4"
+    gap="4"
+    background="background.default"
+    boxShadow="md"
+    clipPath="inset(0px 0px -16px 0px)"
+  >
     <SkeletonCircle width="40px" height="40px" />
     <Box alignSelf="center">
       <Heading as="h1" fontSize="sm" fontWeight="500" lineHeight="short">

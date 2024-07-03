@@ -38,6 +38,41 @@ export function getDesignTokens(themeValue: keyof Theme): DesignTokens {
   );
 }
 
+/**
+ * The shadow shape type from `@metamask/design-tokens`. It's not exported from
+ * the package, so we need to define it here.
+ */
+type ShadowShape = Theme['shadows']['size']['xs'];
+
+/**
+ * Get a shadow string from a {@link ShadowShape} object.
+ *
+ * @param shape - The shadow shape to get the string for.
+ * @returns The shadow string.
+ */
+function getShadow(shape: ShadowShape) {
+  return `${shape.shadowOffset.width}px ${shape.shadowOffset.height}px ${shape.shadowRadius}px 0px ${shape.shadowColor}`;
+}
+
+/**
+ * Get the shadows from the design tokens.
+ *
+ * @returns The shadows extracted from the design tokens.
+ */
+export function getShadows() {
+  return Object.fromEntries(
+    Object.entries(lightTheme.shadows.size).map(([key, value]) => [
+      key,
+      {
+        default: getShadow(value),
+        _dark: getShadow(
+          darkTheme.shadows.size[key as keyof Theme['shadows']['size']],
+        ),
+      },
+    ]),
+  );
+}
+
 export type Styles = ReturnType<typeof defineStyleConfig>;
 
 /**
