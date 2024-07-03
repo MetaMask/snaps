@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
+import type { defineStyleConfig } from '@chakra-ui/styled-system';
 import type { Theme } from '@metamask/design-tokens';
 import { darkTheme, lightTheme } from '@metamask/design-tokens';
+
+import type { Component } from '../components';
 
 export type DesignTokens = Record<
   string,
@@ -32,5 +35,24 @@ export function getDesignTokens(themeValue: keyof Theme): DesignTokens {
         ]),
       ),
     ]),
+  );
+}
+
+export type Styles = ReturnType<typeof defineStyleConfig>;
+
+/**
+ * Extract the styles from the components provided.
+ *
+ * @param components - The components to extract styles from.
+ * @returns The styles extracted from the components.
+ */
+export function getComponents(components: Record<string, Component>) {
+  return Object.fromEntries(
+    Object.entries(components)
+      .filter(([, component]) => component.styles !== undefined)
+      .map(([componentName, component]) => [
+        componentName,
+        component.styles as Styles,
+      ]),
   );
 }

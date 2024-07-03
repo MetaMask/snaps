@@ -1,6 +1,6 @@
 import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
 
-export const Row = defineStyleConfig({
+export const styles = defineStyleConfig({
   baseStyle: defineStyle({
     display: 'flex',
     gap: '1',

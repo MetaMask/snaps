@@ -2,9 +2,10 @@
 
 import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
 
-export const Button = defineStyleConfig({
+export const styles = defineStyleConfig({
   baseStyle: defineStyle({
     background: 'none',
+    borderRadius: '0',
     maxWidth: 'fit-content',
     _disabled: {
       opacity: 1,

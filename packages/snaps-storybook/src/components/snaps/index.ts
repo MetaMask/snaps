@@ -3,11 +3,24 @@
 // components, but are used by the Storybook plugin to render the extension
 // window and provide the necessary context for the Snap to render.
 
-export * from './custom';
+import * as Address from './address';
+import * as Box from './box';
+import * as Button from './button';
+import * as Copyable from './copyable';
+import * as Heading from './heading';
+import * as Row from './row';
+import * as Text from './text';
+import type { Component } from './types';
 
-export * from './Address';
-export * from './Box';
-export * from './Button';
-export * from './Heading';
-export * from './Row';
-export * from './Text';
+// TODO: Change `string` to `JSXElement['type']`.
+export const SNAPS_COMPONENTS: Record<string, Component> = {
+  Address,
+  Box,
+  Button,
+  Copyable,
+  Heading,
+  Row,
+  Text,
+};
+
+export * from './types';

@@ -3,9 +3,9 @@ import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import { DecoratorHelpers } from '@storybook/addon-themes';
 import type { FunctionComponent } from 'react';
 
-import { theme } from '../../../theme';
-import { ColorMode } from '../../ColorMode';
-import { Renderer } from '../../Renderer';
+import { theme } from '../../theme';
+import { ColorMode } from '../ColorMode';
+import { Renderer } from '../Renderer';
 
 const { initializeThemeState } = DecoratorHelpers;
 

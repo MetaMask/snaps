@@ -1,14 +1,16 @@
 import { extendTheme } from '@chakra-ui/react';
 
+import { SNAPS_COMPONENTS } from '../components';
 import { borders } from './borders';
-import * as components from './components';
 import { config } from './config';
+import { lineHeights } from './line-heights';
 import { styles } from './styles';
-import { getDesignTokens } from './utils';
+import { getComponents, getDesignTokens } from './utils';
 
 export const theme = extendTheme({
   config,
-  components,
+  components: getComponents(SNAPS_COMPONENTS),
+  lineHeights,
 
   semanticTokens: {
     borders,

@@ -1,6 +1,6 @@
 import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
 
-export const Text = defineStyleConfig({
+export const styles = defineStyleConfig({
   baseStyle: defineStyle({
     fontSize: 'sm',
     lineHeight: 'short',
