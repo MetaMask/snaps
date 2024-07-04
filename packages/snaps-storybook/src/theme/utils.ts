@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import type { createMultiStyleConfigHelpers } from '@chakra-ui/react';
-import type { defineStyleConfig } from '@chakra-ui/styled-system';
+import type {
+  createMultiStyleConfigHelpers,
+  defineStyleConfig,
+} from '@chakra-ui/react';
 import type { Theme } from '@metamask/design-tokens';
 import { darkTheme, lightTheme } from '@metamask/design-tokens';
 import { hasProperty } from '@metamask/utils';

@@ -5,6 +5,8 @@
     "@lavamoat/preinstall-always-fail",
     "@metamask/auto-changelog",
     "@metamask/eslint-*",
+    "@storybook/addon-docs",
+    "@storybook/addon-toolbars",
     "@types/*",
     "@typescript-eslint/*",
     "eslint-config-*",
