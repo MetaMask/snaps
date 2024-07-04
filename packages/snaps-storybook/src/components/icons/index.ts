@@ -1,6 +1,7 @@
 export * from './CopyIcon';
 export * from './CopySuccessIcon';
 export * from './DangerIcon';
+export * from './ExportIcon';
 export * from './EyeIcon';
 export * from './EyeSlashIcon';
 export * from './QuestionIcon';

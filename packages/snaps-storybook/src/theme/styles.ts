@@ -5,6 +5,7 @@ export const styles: Styles = {
     body: {
       background: 'background.default',
       color: 'text.default',
+      fontSize: 'sm',
     },
 
     // The Storybook docs container.
