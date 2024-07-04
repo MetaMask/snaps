@@ -28,6 +28,8 @@
     "preset.js"
   ],
   "scripts": {
+    "test": "jest && yarn posttest",
+    "posttest": "jest-it-up --margin 0.25",
     "clean": "rimraf '*.tsbuildinfo' 'dist'",
     "start": "storybook dev --port 7000 --no-open",
     "build": "tsup --clean && yarn build:types",
@@ -61,7 +63,6 @@
     "@storybook/addon-themes": "^8.1.11",
     "@storybook/addon-toolbars": "^8.1.11",
     "@storybook/builder-vite": "^8.1.11",
-    "@storybook/components": "^8.1.11",
     "@storybook/manager-api": "^8.1.11",
     "@storybook/react-dom-shim": "^8.1.11",
     "@storybook/theming": "^8.1.11",
@@ -69,12 +70,10 @@
     "prettier": "^2.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "swc-loader": "^0.2.3",
-    "ts-morph": "^23.0.0",
-    "vite-plugin-node-polyfills": "^0.22.0",
-    "webpack-merge": "^5.9.0"
+    "vite-plugin-node-polyfills": "^0.22.0"
   },
   "devDependencies": {
+    "@chakra-ui/theme-tools": "^2.1.2",
     "@metamask/auto-changelog": "^3.4.4",
     "@metamask/eslint-config": "^12.1.0",
     "@metamask/eslint-config-jest": "^12.1.0",
@@ -96,7 +95,8 @@
     "jest-it-up": "^2.0.0",
     "ts-jest": "^29.1.1",
     "tsup": "^8.0.1",
-    "typescript": "~4.8.4"
+    "typescript": "~4.8.4",
+    "vite": "^5.3.3"
   },
   "peerDependencies": {
     "storybook": "^8.0.0"
