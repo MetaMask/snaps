@@ -7,6 +7,7 @@ import * as Address from './address';
 import * as Bold from './bold';
 import * as Box from './box';
 import * as Button from './button';
+import * as Card from './card';
 import * as Checkbox from './checkbox';
 import * as Container from './container';
 import * as Copyable from './copyable';
@@ -32,6 +33,7 @@ export const SNAPS_COMPONENTS: Record<string, Component> = {
   Bold,
   Box,
   Button,
+  Card,
   Checkbox,
   Container,
   Copyable,
