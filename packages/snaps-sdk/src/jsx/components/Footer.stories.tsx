@@ -5,7 +5,7 @@ import { Footer } from './Footer';
 import { Button } from './form';
 
 const meta: Meta<typeof Footer> = {
-  title: 'Footer',
+  title: 'Layout/Footer',
   component: Footer,
   argTypes: {
     children: {

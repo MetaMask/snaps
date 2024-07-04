@@ -6,7 +6,7 @@ import type { TooltipProps } from './Tooltip';
 import { Tooltip } from './Tooltip';
 
 const meta: Meta<typeof Tooltip> = {
-  title: 'Tooltip',
+  title: 'UI/Tooltip',
   component: Tooltip,
   argTypes: {
     content: {

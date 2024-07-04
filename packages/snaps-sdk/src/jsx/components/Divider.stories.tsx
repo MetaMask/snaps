@@ -5,7 +5,7 @@ import { Divider } from './Divider';
 import { Text } from './Text';
 
 const meta: Meta<typeof Divider> = {
-  title: 'Divider',
+  title: 'Layout/Divider',
   component: Divider,
 };
 

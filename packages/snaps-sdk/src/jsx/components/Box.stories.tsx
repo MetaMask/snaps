@@ -7,7 +7,7 @@ import { Heading } from './Heading';
 import { Text } from './Text';
 
 const meta: Meta<typeof Box> = {
-  title: 'Box',
+  title: 'Layout/Box',
   component: Box,
   argTypes: {
     direction: {
@@ -43,7 +43,6 @@ export default meta;
  * The default box, which renders its children in a vertical layout.
  */
 export const Vertical: Story<BoxProps> = {
-  name: 'Vertical direction',
   render: (props) => (
     <Box {...props}>
       <Heading>Box</Heading>
@@ -61,7 +60,6 @@ export const Vertical: Story<BoxProps> = {
  * layout (i.e., next to each other instead of on top of each other).
  */
 export const Horizontal: Story<BoxProps> = {
-  name: 'Horizontal direction',
   render: (props) => (
     <Box {...props}>
       <Heading>Box</Heading>
@@ -77,8 +75,7 @@ export const Horizontal: Story<BoxProps> = {
 /**
  * The box with center alignment, which centers its children.
  */
-export const Center: Story<BoxProps> = {
-  name: 'Center alignment',
+export const Centered: Story<BoxProps> = {
   render: (props) => (
     <Box {...props}>
       <Heading>Box</Heading>
@@ -97,7 +94,6 @@ export const Center: Story<BoxProps> = {
  * This only works with horizontal direction.
  */
 export const SpaceBetween: Story<BoxProps> = {
-  name: 'Space between alignment',
   render: (props) => (
     <Box {...props}>
       <Heading>Box</Heading>

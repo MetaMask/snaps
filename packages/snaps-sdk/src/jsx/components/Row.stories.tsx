@@ -6,7 +6,7 @@ import { Row } from './Row';
 import { Text } from './Text';
 
 const meta: Meta<typeof Row> = {
-  title: 'Row',
+  title: 'UI/Row',
   component: Row,
   argTypes: {
     label: {

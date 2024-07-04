@@ -4,7 +4,7 @@ import type { CopyableProps } from './Copyable';
 import { Copyable } from './Copyable';
 
 const meta: Meta<typeof Copyable> = {
-  title: 'Copyable',
+  title: 'UI/Copyable',
   component: Copyable,
   argTypes: {
     value: {

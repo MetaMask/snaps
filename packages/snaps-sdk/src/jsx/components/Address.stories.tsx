@@ -4,7 +4,7 @@ import type { AddressProps } from './Address';
 import { Address } from './Address';
 
 const meta: Meta<typeof Address> = {
-  title: 'Address',
+  title: 'UI/Address',
   component: Address,
   argTypes: {
     address: {
