@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 
-import type { Styles } from '../../theme/utils';
+import type { MultiStyles, Styles } from '../../theme/utils';
 
 /**
  * A component that can be rendered in Storybook.
@@ -15,5 +15,5 @@ export type Component = {
   /**
    * The optional Chakra UI styles for the component.
    */
-  styles?: Styles;
+  styles?: Styles | MultiStyles | Record<string, Styles | MultiStyles>;
 };

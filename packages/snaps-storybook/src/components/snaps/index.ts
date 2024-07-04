@@ -9,8 +9,10 @@ import * as Box from './box';
 import * as Button from './button';
 import * as Copyable from './copyable';
 import * as Divider from './divider';
+import * as Field from './field';
 import * as Footer from './footer';
 import * as Heading from './heading';
+import * as Input from './input';
 import * as Italic from './italic';
 import * as Link from './link';
 import * as Row from './row';
@@ -26,8 +28,10 @@ export const SNAPS_COMPONENTS: Record<string, Component> = {
   Button,
   Copyable,
   Divider,
+  Field,
   Footer,
   Heading,
+  Input,
   Italic,
   Link,
   Row,

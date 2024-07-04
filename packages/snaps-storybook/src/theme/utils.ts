@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
+import type { createMultiStyleConfigHelpers } from '@chakra-ui/react';
 import type { defineStyleConfig } from '@chakra-ui/styled-system';
 import type { Theme } from '@metamask/design-tokens';
 import { darkTheme, lightTheme } from '@metamask/design-tokens';
+import { hasProperty } from '@metamask/utils';
 
 import type { Component } from '../components';
 
@@ -73,7 +75,27 @@ export function getShadows() {
   );
 }
 
+export type MultiStyles = ReturnType<
+  ReturnType<typeof createMultiStyleConfigHelpers>['defineMultiStyleConfig']
+>;
+
 export type Styles = ReturnType<typeof defineStyleConfig>;
+
+/**
+ * Check if the styles provided are a record of styles.
+ *
+ * @param styles - The styles to check.
+ * @returns Whether the styles are a record of styles.
+ */
+export function isStylesRecord(
+  styles?: Styles | MultiStyles | Record<string, Styles | MultiStyles>,
+): styles is Record<string, Styles | MultiStyles> {
+  return (
+    styles !== undefined &&
+    !hasProperty(styles, 'baseStyle') &&
+    !hasProperty(styles, 'variants')
+  );
+}
 
 /**
  * Extract the styles from the components provided.
@@ -82,12 +104,19 @@ export type Styles = ReturnType<typeof defineStyleConfig>;
  * @returns The styles extracted from the components.
  */
 export function getComponents(components: Record<string, Component>) {
-  return Object.fromEntries(
-    Object.entries(components)
-      .filter(([, component]) => component.styles !== undefined)
-      .map(([componentName, component]) => [
-        componentName,
-        component.styles as Styles,
-      ]),
-  );
+  return Object.entries(components)
+    .filter(([, component]) => component.styles !== undefined)
+    .reduce((accumulator, [componentName, component]) => {
+      if (isStylesRecord(component.styles)) {
+        return {
+          ...accumulator,
+          ...component.styles,
+        };
+      }
+
+      return {
+        ...accumulator,
+        [componentName]: component.styles,
+      };
+    }, {});
 }

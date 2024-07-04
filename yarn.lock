@@ -6439,6 +6439,7 @@ __metadata:
     "@babel/parser": ^7.24.7
     "@babel/traverse": ^7.24.7
     "@babel/types": ^7.23.0
+    "@chakra-ui/anatomy": ^2.1.1
     "@chakra-ui/react": ^2.6.1
     "@emotion/react": ^11.10.8
     "@emotion/styled": ^11.10.8

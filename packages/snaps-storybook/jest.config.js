@@ -31,7 +31,7 @@ module.exports = deepmerge(baseConfig, {
           {
             tsconfig: {
               jsx: 'react-jsx',
-              jsxImportSource: resolve(__dirname, './src/jsx'),
+              jsxImportSource: 'react',
             },
           },
         ],
