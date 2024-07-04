@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
 import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
 
 export const styles = defineStyleConfig({
