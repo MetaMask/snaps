@@ -24,8 +24,7 @@
   "module": "./dist/index.mjs",
   "types": "./dist/types/index.d.ts",
   "files": [
-    "dist",
-    "preset.js"
+    "dist"
   ],
   "scripts": {
     "test": "jest && yarn posttest",
@@ -70,6 +69,7 @@
     "prettier": "^2.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "storybook": "^8.1.11",
     "vite-plugin-node-polyfills": "^0.22.0"
   },
   "devDependencies": {
@@ -96,10 +96,10 @@
     "ts-jest": "^29.1.1",
     "tsup": "^8.0.1",
     "typescript": "~4.8.4",
-    "vite": "^5.3.3"
+    "vite": "^4.3.9"
   },
   "peerDependencies": {
-    "storybook": "^8.0.0"
+    "storybook": "^8.1.11"
   },
   "engines": {
     "node": "^18.16 || >=20"
