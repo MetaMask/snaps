@@ -2,7 +2,9 @@ import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
 
 export const styles = defineStyleConfig({
   baseStyle: defineStyle({
-    fontSize: 'inherit',
-    lineHeight: 'short',
+    color: 'primary.default',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '1',
   }),
 });
