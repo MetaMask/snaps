@@ -18,6 +18,7 @@ import * as FileInput from './file-input';
 import * as Footer from './footer';
 import * as Form from './form';
 import * as Heading from './heading';
+import * as Image from './image';
 import * as Input from './input';
 import * as Italic from './italic';
 import * as Link from './link';
@@ -44,6 +45,7 @@ export const SNAPS_COMPONENTS: Record<string, Component> = {
   Footer,
   Form,
   Heading,
+  Image,
   Input,
   Italic,
   Link,
