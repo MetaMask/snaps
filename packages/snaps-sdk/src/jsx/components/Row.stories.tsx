@@ -4,6 +4,7 @@ import { Address } from './Address';
 import type { RowProps } from './Row';
 import { Row } from './Row';
 import { Text } from './Text';
+import { Value } from './Value';
 
 const meta: Meta<typeof Row> = {
   title: 'UI/Row',
@@ -94,7 +95,6 @@ export const Critical: Story<RowProps> = {
  * different icon depending on the variant.
  */
 export const Tooltip: Story<RowProps> = {
-  name: 'With tooltip',
   render: (props) => <Row {...props} />,
   args: {
     label: 'Label',
@@ -107,10 +107,22 @@ export const Tooltip: Story<RowProps> = {
  * A row with an address.
  */
 export const WithAddress: Story<RowProps> = {
-  name: 'With address',
+  name: 'Address',
   render: (props) => <Row {...props} />,
   args: {
     label: 'Label',
     children: <Address address="0x4bbeEB066eD09B7AEd07bF39EEe0460DFa261520" />,
+  },
+};
+
+/**
+ * A row with a value and extra description.
+ */
+export const WithValue: Story<RowProps> = {
+  name: 'Value',
+  render: (props) => <Row {...props} />,
+  args: {
+    label: 'Label',
+    children: <Value value="$1200.00" extra="0.12 ETH" />,
   },
 };
