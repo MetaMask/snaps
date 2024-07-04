@@ -44,7 +44,8 @@ describe('literal', () => {
 describe('typedUnion', () => {
   const unionStruct = typedUnion([BoxStruct, TextStruct, FieldStruct]);
   it('validates strictly the part of the union that matches the type', () => {
-    const result = validate(Text({} as any), unionStruct);
+    // @ts-expect-error Invalid props.
+    const result = validate(Text({}), unionStruct);
 
     expect(result[0]?.message).toBe(
       'At path: props.children -- Expected the value to satisfy a union of `union | array`, but received: undefined',
