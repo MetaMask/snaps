@@ -40,12 +40,7 @@ export const Default: Story<FieldProps> = {
   args: {
     label: 'Field label',
     children: (
-      <Input
-        name="input"
-        type="text"
-        value=""
-        placeholder="Input placeholder"
-      />
+      <Input name="input" type="text" placeholder="Input placeholder" />
     ),
   },
 };
@@ -59,12 +54,7 @@ export const Error: Story<FieldProps> = {
     label: 'Field label',
     error: 'Field error',
     children: (
-      <Input
-        name="input"
-        type="text"
-        value=""
-        placeholder="Input placeholder"
-      />
+      <Input name="input" type="text" placeholder="Input placeholder" />
     ),
   },
 };
@@ -78,12 +68,7 @@ export const InputWithButton: Story<FieldProps> = {
   args: {
     label: 'Field label',
     children: [
-      <Input
-        name="input"
-        type="text"
-        value=""
-        placeholder="Input placeholder"
-      />,
+      <Input name="input" type="text" placeholder="Input placeholder" />,
       <Button type="submit">Submit</Button>,
     ],
   },

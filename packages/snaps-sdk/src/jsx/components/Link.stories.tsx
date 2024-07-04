@@ -5,7 +5,7 @@ import type { LinkProps } from './Link';
 import { Link } from './Link';
 
 const meta: Meta<typeof Link> = {
-  title: 'Link',
+  title: 'Text/Link',
   component: Link,
   argTypes: {
     href: {

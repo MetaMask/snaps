@@ -7,14 +7,19 @@ import * as Address from './address';
 import * as Bold from './bold';
 import * as Box from './box';
 import * as Button from './button';
+import * as Checkbox from './checkbox';
 import * as Copyable from './copyable';
 import * as Divider from './divider';
+import * as Dropdown from './dropdown';
 import * as Field from './field';
+import * as FileInput from './file-input';
 import * as Footer from './footer';
+import * as Form from './form';
 import * as Heading from './heading';
 import * as Input from './input';
 import * as Italic from './italic';
 import * as Link from './link';
+import * as Option from './option';
 import * as Row from './row';
 import * as Text from './text';
 import * as Tooltip from './tooltip';
@@ -26,14 +31,19 @@ export const SNAPS_COMPONENTS: Record<string, Component> = {
   Bold,
   Box,
   Button,
+  Checkbox,
   Copyable,
   Divider,
+  Dropdown,
   Field,
+  FileInput,
   Footer,
+  Form,
   Heading,
   Input,
   Italic,
   Link,
+  Option,
   Row,
   Text,
   Tooltip,

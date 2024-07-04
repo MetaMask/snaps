@@ -4,7 +4,7 @@ import type { HeadingProps } from './Heading';
 import { Heading } from './Heading';
 
 const meta: Meta<typeof Heading> = {
-  title: 'Heading',
+  title: 'Text/Heading',
   component: Heading,
 };
 

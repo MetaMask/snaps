@@ -2773,7 +2773,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chakra-ui/utils@npm:2.0.15":
+"@chakra-ui/utils@npm:2.0.15, @chakra-ui/utils@npm:^2.0.15":
   version: 2.0.15
   resolution: "@chakra-ui/utils@npm:2.0.15"
   dependencies:
@@ -6441,6 +6441,7 @@ __metadata:
     "@babel/types": ^7.23.0
     "@chakra-ui/anatomy": ^2.1.1
     "@chakra-ui/react": ^2.6.1
+    "@chakra-ui/utils": ^2.0.15
     "@emotion/react": ^11.10.8
     "@emotion/styled": ^11.10.8
     "@metamask/auto-changelog": ^3.4.4

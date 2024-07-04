@@ -1,5 +1,6 @@
 import type { Meta, Story } from '@metamask/snaps-storybook';
 
+import { Field } from './Field';
 import type { InputProps } from './Input';
 import { Input } from './Input';
 
@@ -74,5 +75,21 @@ export const DefaultValue: Story<InputProps> = {
     name: 'input',
     value: 'Default value',
     placeholder: 'This input has a default value',
+  },
+};
+
+/**
+ * The input component can be used within a field component to render an input
+ * field with a label, and optional error message.
+ */
+export const WithinField: Story<InputProps> = {
+  render: (props) => (
+    <Field label="Input">
+      <Input {...props} />
+    </Field>
+  ),
+  args: {
+    name: 'input',
+    placeholder: 'This is the placeholder text',
   },
 };
