@@ -3,6 +3,8 @@
 // components, but are used by the Storybook plugin to render the extension
 // window and provide the necessary context for the Snap to render.
 
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
+
 import * as Address from './address';
 import * as Bold from './bold';
 import * as Box from './box';
@@ -24,12 +26,13 @@ import * as Italic from './italic';
 import * as Link from './link';
 import * as Option from './option';
 import * as Row from './row';
+import * as Spinner from './spinner';
 import * as Text from './text';
 import * as Tooltip from './tooltip';
 import type { Component } from './types';
+import * as Value from './value';
 
-// TODO: Change `string` to `JSXElement['type']`.
-export const SNAPS_COMPONENTS: Record<string, Component> = {
+export const SNAPS_COMPONENTS: Record<JSXElement['type'], Component> = {
   Address,
   Bold,
   Box,
@@ -51,8 +54,10 @@ export const SNAPS_COMPONENTS: Record<string, Component> = {
   Link,
   Option,
   Row,
+  Spinner,
   Text,
   Tooltip,
+  Value,
 };
 
 export * from './types';
