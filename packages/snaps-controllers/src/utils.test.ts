@@ -14,12 +14,7 @@ import {
   MOCK_RPC_ORIGINS_PERMISSION,
   MOCK_SNAP_DIALOG_PERMISSION,
 } from './test-utils';
-import {
-  calculateConnectionsChange,
-  getSnapFiles,
-  permissionsDiff,
-  setDiff,
-} from './utils';
+import { getSnapFiles, permissionsDiff, setDiff } from './utils';
 
 describe('setDiff', () => {
   it('does nothing on empty type {}-B', () => {
@@ -183,34 +178,5 @@ describe('getSnapFiles', () => {
         value: 'bar',
       }),
     ]);
-  });
-});
-
-describe('calculateConnectionsChange', () => {
-  it('should properly calculate connection change based on the input data', () => {
-    const oldConnections = {
-      'npm:filsnap': {},
-      'https://snaps.metamask.io': {},
-      'https://metamask.github.io': {},
-    };
-    const newConnections = {
-      'https://snaps.metamask.io': {},
-      'https://portfolio.metamask.io': {},
-    };
-
-    expect(
-      calculateConnectionsChange(oldConnections, newConnections),
-    ).toStrictEqual({
-      newConnections: {
-        'https://portfolio.metamask.io': {},
-      },
-      unusedConnections: {
-        'npm:filsnap': {},
-        'https://metamask.github.io': {},
-      },
-      approvedConnections: {
-        'https://snaps.metamask.io': {},
-      },
-    });
   });
 });
