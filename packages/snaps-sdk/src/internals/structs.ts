@@ -1,7 +1,9 @@
+import { hasProperty, isPlainObject } from '@metamask/utils';
 import type { Infer } from 'superstruct';
 import {
   Struct,
   define,
+  is,
   literal as superstructLiteral,
   union as superstructUnion,
 } from 'superstruct';
@@ -75,4 +77,64 @@ export function enumValue<Type extends string>(
   constant: Type,
 ): Struct<EnumToUnion<Type>, null> {
   return literal(constant as EnumToUnion<Type>);
+}
+
+/**
+ * Create a custom union struct that validates exclusively based on a `type` field.
+ *
+ * This should improve error messaging for unions with many structs in them.
+ *
+ * @param structs - The structs to union.
+ * @returns The `superstruct` struct, which validates that the value satisfies
+ * one of the structs.
+ */
+export function typedUnion<Head extends AnyStruct, Tail extends AnyStruct[]>(
+  structs: [head: Head, ...tail: Tail],
+): Struct<Infer<Head> | InferStructTuple<Tail>[number], null> {
+  return new Struct({
+    type: 'union',
+    schema: null,
+    *entries(value, context) {
+      if (!isPlainObject(value) || !hasProperty(value, 'type')) {
+        return;
+      }
+
+      const { type } = value;
+      const struct = structs.find(({ schema }) => is(type, schema.type));
+
+      if (!struct) {
+        return;
+      }
+
+      for (const entry of struct.entries(value, context)) {
+        yield entry;
+      }
+    },
+    validator(value, context) {
+      const types = structs.map(({ schema }) => schema.type.type);
+
+      if (
+        !isPlainObject(value) ||
+        !hasProperty(value, 'type') ||
+        typeof value.type !== 'string'
+      ) {
+        return `Expected type to be one of: ${types.join(
+          ', ',
+        )}, but received: undefined`;
+      }
+
+      const { type } = value;
+
+      const struct = structs.find(({ schema }) => is(type, schema.type));
+
+      if (struct) {
+        // This only validates the root of the struct, entries does the rest of the work.
+        return struct.validator(value, context);
+      }
+
+      return `Expected type to be one of: ${types.join(
+        ', ',
+      )}, but received: "${type}"`;
+    },
+  }) as unknown as Struct<Infer<Head> | InferStructTuple<Tail>[number], null>;
 }

@@ -1,6 +1,8 @@
 import { is, validate } from 'superstruct';
 
-import { enumValue, literal, union } from './structs';
+import { Text } from '../jsx';
+import { BoxStruct, FieldStruct, TextStruct } from '../jsx/validation';
+import { enumValue, literal, typedUnion, union } from './structs';
 
 describe('enumValue', () => {
   it('validates an enum value', () => {
@@ -35,6 +37,34 @@ describe('literal', () => {
     );
     expect(unionError?.message).toBe(
       'Expected the value to satisfy a union of `"bar" | "baz"`, but received: "foo"',
+    );
+  });
+});
+
+describe('typedUnion', () => {
+  const unionStruct = typedUnion([BoxStruct, TextStruct, FieldStruct]);
+  it('validates strictly the part of the union that matches the type', () => {
+    // @ts-expect-error Invalid props.
+    const result = validate(Text({}), unionStruct);
+
+    expect(result[0]?.message).toBe(
+      'At path: props.children -- Expected the value to satisfy a union of `union | array`, but received: undefined',
+    );
+  });
+
+  it('returns an error if the value has no type', () => {
+    const result = validate({}, unionStruct);
+
+    expect(result[0]?.message).toBe(
+      'Expected type to be one of: "Box", "Text", "Field", but received: undefined',
+    );
+  });
+
+  it('returns an error if the type doesnt exist in the union', () => {
+    const result = validate({ type: 'foo' }, unionStruct);
+
+    expect(result[0]?.message).toBe(
+      'Expected type to be one of: "Box", "Text", "Field", but received: "foo"',
     );
   });
 });
