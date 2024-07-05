@@ -8,7 +8,6 @@ import {
   validateAuxiliaryFiles,
   validateFetchedSnap,
 } from '@metamask/snaps-utils';
-import type { Json } from '@metamask/utils';
 import deepEqual from 'fast-deep-equal';
 
 import type { SnapLocation } from './snaps';
@@ -329,30 +328,4 @@ export async function fetchSnap(snapId: SnapId, location: SnapLocation) {
       `Failed to fetch snap "${snapId}": ${getErrorMessage(error)}.`,
     );
   }
-}
-
-/**
- * Calculate change of initialConnections.
- *
- * @param oldConnectionsSet - Previously approved connections.
- * @param desiredConnectionsSet - New connections.
- * @returns Object containing newConnections, unusedConnections and approvedConnections.
- */
-export function calculateConnectionsChange(
-  oldConnectionsSet: Record<string, Json>,
-  desiredConnectionsSet: Record<string, Json>,
-): {
-  newConnections: Record<string, Json>;
-  unusedConnections: Record<string, Json>;
-  approvedConnections: Record<string, Json>;
-} {
-  const newConnections = setDiff(desiredConnectionsSet, oldConnectionsSet);
-
-  const unusedConnections = setDiff(oldConnectionsSet, desiredConnectionsSet);
-
-  // It's a Set Intersection of oldConnections and desiredConnectionsSet
-  // oldConnections ∖ (oldConnections ∖ desiredConnectionsSet) ⟺ oldConnections ∩ desiredConnectionsSet
-  const approvedConnections = setDiff(oldConnectionsSet, unusedConnections);
-
-  return { newConnections, unusedConnections, approvedConnections };
 }

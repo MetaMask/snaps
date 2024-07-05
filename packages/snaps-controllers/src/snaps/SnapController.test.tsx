@@ -5,6 +5,7 @@ import {
   JsonRpcEngine,
 } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
+import type { PermissionConstraint } from '@metamask/permission-controller';
 import {
   SubjectType,
   type Caveat,
@@ -657,6 +658,107 @@ describe('SnapController', () => {
 
     rootMessenger.registerActionHandler(
       'PermissionController:getPermissions',
+      (origin) =>
+        ['https://portfolio.metamask.io', 'https://snaps.metamask.io'].includes(
+          origin,
+        )
+          ? ({
+              [WALLET_SNAP_PERMISSION_KEY]: {
+                caveats: [
+                  {
+                    type: SnapCaveatType.SnapIds,
+                    value: {
+                      [MOCK_SNAP_ID]: {},
+                    },
+                  },
+                ],
+                date: 1664187844588,
+                id: 'izn0WGUO8cvq_jqvLQuQP',
+                invoker: origin,
+                parentCapability: WALLET_SNAP_PERMISSION_KEY,
+              },
+            } as Record<string, PermissionConstraint>)
+          : {},
+    );
+
+    const initialConnections = {
+      'npm:filsnap': {},
+      'https://snaps.metamask.io': {},
+      'https://metamask.github.io': {},
+    };
+
+    const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
+      manifest: getSnapManifest({
+        version: '1.1.0' as SemVerVersion,
+        initialConnections,
+      }),
+    });
+
+    const detectSnapLocation = loopbackDetect({
+      manifest: manifest.result,
+    });
+
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        state: {
+          snaps: getPersistedSnapsState(
+            getPersistedSnapObject({
+              manifest: {
+                initialConnections: {
+                  'https://snaps.metamask.io': {},
+                  'https://portfolio.metamask.io': {},
+                },
+              },
+            }),
+          ),
+        },
+        detectSnapLocation,
+      }),
+    );
+
+    await snapController.updateSnap(
+      MOCK_ORIGIN,
+      MOCK_SNAP_ID,
+      detectSnapLocation(),
+    );
+
+    expect(messenger.call).toHaveBeenNthCalledWith(
+      6,
+      'ApprovalController:updateRequestState',
+      {
+        id: expect.any(String),
+        requestState: {
+          permissions: expect.anything(),
+          newVersion: '1.1.0',
+          newPermissions: expect.anything(),
+          approvedPermissions: {},
+          unusedPermissions: {},
+          loading: false,
+          newConnections: {
+            'npm:filsnap': {},
+            'https://metamask.github.io': {},
+          },
+          unusedConnections: {
+            'https://portfolio.metamask.io': {},
+          },
+          approvedConnections: {
+            'https://snaps.metamask.io': {},
+          },
+        },
+      },
+    );
+
+    snapController.destroy();
+  });
+
+  it('includes the initialConnections data in the requestState when updating a Snap with pre-existing connections where some are revoked', async () => {
+    const rootMessenger = getControllerMessenger();
+    const messenger = getSnapControllerMessenger(rootMessenger);
+
+    // Simulate all permissions being revoked.
+    rootMessenger.registerActionHandler(
+      'PermissionController:getPermissions',
       () => ({}),
     );
 
@@ -703,7 +805,7 @@ describe('SnapController', () => {
     );
 
     expect(messenger.call).toHaveBeenNthCalledWith(
-      4,
+      6,
       'ApprovalController:updateRequestState',
       {
         id: expect.any(String),
@@ -717,13 +819,10 @@ describe('SnapController', () => {
           newConnections: {
             'npm:filsnap': {},
             'https://metamask.github.io': {},
-          },
-          unusedConnections: {
-            'https://portfolio.metamask.io': {},
-          },
-          approvedConnections: {
             'https://snaps.metamask.io': {},
           },
+          unusedConnections: {},
+          approvedConnections: {},
         },
       },
     );

@@ -8,6 +8,7 @@ import {
   union,
 } from '@metamask/superstruct';
 
+import { typedUnion } from '../../internals';
 import { createBuilder } from '../builder';
 import { NodeStruct, NodeType } from '../nodes';
 import { AddressStruct } from './address';
@@ -93,7 +94,7 @@ export type Panel = {
 export const panel = createBuilder(NodeType.Panel, PanelStruct, ['children']);
 
 // This is defined separately from `Component` to avoid circular dependencies.
-export const ComponentStruct = union([
+export const ComponentStruct = typedUnion([
   CopyableStruct,
   DividerStruct,
   HeadingStruct,
