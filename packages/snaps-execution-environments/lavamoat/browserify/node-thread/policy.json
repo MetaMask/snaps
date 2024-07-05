@@ -2,8 +2,14 @@
   "resources": {
     "@metamask/json-rpc-engine": {
       "packages": {
+        "@metamask/json-rpc-engine>@metamask/rpc-errors": true,
         "@metamask/providers>@metamask/safe-event-emitter": true,
-        "@metamask/rpc-errors": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/json-rpc-engine>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
         "@metamask/utils": true
       }
     },
@@ -46,23 +52,37 @@
     },
     "@metamask/providers": {
       "globals": {
-        "console": true
+        "CustomEvent": true,
+        "Event": true,
+        "addEventListener": true,
+        "chrome.runtime.connect": true,
+        "console": true,
+        "dispatchEvent": true,
+        "document.createElement": true,
+        "document.readyState": true,
+        "ethereum": "write",
+        "location.hostname": true,
+        "removeEventListener": true,
+        "web3": true
       },
       "packages": {
         "@metamask/object-multiplex": true,
         "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/providers>@metamask/json-rpc-middleware-stream": true,
+        "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/providers>@metamask/safe-event-emitter": true,
+        "@metamask/providers>detect-browser": true,
+        "@metamask/providers>extension-port-stream": true,
         "@metamask/providers>is-stream": true,
-        "@metamask/rpc-errors": true,
+        "@metamask/utils": true,
         "eslint>fast-deep-equal": true,
         "readable-stream": true
       }
     },
     "@metamask/providers>@metamask/json-rpc-engine": {
       "packages": {
+        "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/providers>@metamask/safe-event-emitter": true,
-        "@metamask/rpc-errors": true,
         "@metamask/utils": true
       }
     },
@@ -76,6 +96,12 @@
         "readable-stream": true
       }
     },
+    "@metamask/providers>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/providers>@metamask/safe-event-emitter": {
       "builtin": {
         "events.EventEmitter": true
@@ -85,6 +111,57 @@
       },
       "packages": {
         "events": true
+      }
+    },
+    "@metamask/providers>detect-browser": {
+      "globals": {
+        "document": true,
+        "navigator": true,
+        "process": true
+      }
+    },
+    "@metamask/providers>extension-port-stream": {
+      "builtin": {
+        "buffer.Buffer": true
+      },
+      "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream": true,
+        "buffer": true
+      }
+    },
+    "@metamask/providers>extension-port-stream>readable-stream": {
+      "builtin": {
+        "buffer.Blob": true,
+        "buffer.Buffer": true,
+        "events.EventEmitter": true,
+        "stream": true,
+        "string_decoder.StringDecoder": true
+      },
+      "globals": {
+        "AbortController": true,
+        "AggregateError": true,
+        "Blob": true,
+        "process.env.READABLE_STREAM": true
+      },
+      "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream>abort-controller": true,
+        "browserify>process": true,
+        "buffer": true,
+        "events": true,
+        "stream": true,
+        "string_decoder": true
+      }
+    },
+    "@metamask/providers>extension-port-stream>readable-stream>abort-controller": {
+      "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream>abort-controller>event-target-shim": true
+      }
+    },
+    "@metamask/providers>extension-port-stream>readable-stream>abort-controller>event-target-shim": {
+      "globals": {
+        "Event": true,
+        "EventTarget": true,
+        "console": true
       }
     },
     "@metamask/rpc-errors": {
@@ -178,6 +255,11 @@
       },
       "packages": {
         "util": true
+      }
+    },
+    "browserify>process": {
+      "globals": {
+        "process": true
       }
     },
     "browserify>string_decoder": {
