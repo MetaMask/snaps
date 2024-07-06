@@ -12,6 +12,7 @@
     "eslint-config-*",
     "eslint-plugin-*",
     "prettier-plugin-packagejson",
+    "ts-jest",
     "ts-node",
     "typedoc",
     "typescript"

@@ -6442,7 +6442,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-storybook@workspace:packages/snaps-storybook"
   dependencies:
-    "@babel/core": ^7.23.2
     "@babel/generator": ^7.24.7
     "@babel/parser": ^7.24.7
     "@babel/traverse": ^7.24.7
