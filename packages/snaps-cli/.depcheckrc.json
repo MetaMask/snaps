@@ -11,6 +11,7 @@
     "assert",
     "browser-pack",
     "buffer",
+    "core-js-compat",
     "eslint-config-*",
     "eslint-plugin-*",
     "events",

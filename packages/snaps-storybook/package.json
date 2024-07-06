@@ -28,8 +28,8 @@
   ],
   "scripts": {
     "test": "jest && yarn posttest",
-    "test:ci": "yarn test",
     "posttest": "jest-it-up --margin 0.25",
+    "test:ci": "yarn test",
     "clean": "rimraf '*.tsbuildinfo' 'dist'",
     "start": "storybook dev --port 7000 --no-open",
     "build": "tsup --clean && yarn build:types",
