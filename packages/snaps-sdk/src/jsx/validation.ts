@@ -68,7 +68,7 @@ import type {
 /**
  * A struct for the {@link Key} type.
  */
-export const KeyStruct: Describe<Key> = nullUnion([string()]);
+export const KeyStruct: Describe<Key> = string();
 
 /**
  * A struct for the {@link StringElement} type.
