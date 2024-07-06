@@ -2,7 +2,7 @@
 /// <reference path="../../../../node_modules/ses/types.d.ts" />
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import type { RequestArguments } from '@metamask/providers';
-import { StreamProvider } from '@metamask/providers';
+import { StreamProvider } from '@metamask/providers/dist/StreamProvider';
 import { errorCodes, rpcErrors, serializeError } from '@metamask/rpc-errors';
 import type { SnapsProvider } from '@metamask/snaps-sdk';
 import { getErrorData } from '@metamask/snaps-sdk';
