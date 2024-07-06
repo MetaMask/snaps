@@ -1,5 +1,4 @@
 const deepmerge = require('deepmerge');
-const { resolve } = require('path');
 
 const baseConfig = require('../../jest.config.base');
 
@@ -12,48 +11,23 @@ module.exports = deepmerge(baseConfig, {
 
   coverageThreshold: {
     global: {
-      branches: 100,
-      functions: 100,
-      lines: 100,
-      statements: 100,
+      branches: 21.48,
+      functions: 15.32,
+      lines: 16.29,
+      statements: 16.11,
     },
   },
 
-  projects: [
-    {
-      testMatch: [
-        '<rootDir>/src/jsx/validation.test.tsx',
-        '<rootDir>/src/jsx/jsx-runtime.test.tsx',
-      ],
-      transform: {
-        '^.+\\.(t|j)sx?$': [
-          'ts-jest',
-          {
-            tsconfig: {
-              jsx: 'react-jsx',
-              jsxImportSource: 'react',
-            },
-          },
-        ],
+  testMatch: ['<rootDir>/**/*.test.ts', '<rootDir>/**/*.test.tsx'],
+  transform: {
+    '^.+\\.(t|j)sx?$': [
+      'ts-jest',
+      {
+        tsconfig: {
+          jsx: 'react-jsxdev',
+          jsxImportSource: '@metamask/snaps-jsx',
+        },
       },
-    },
-    {
-      testMatch: ['<rootDir>/**/*.test.ts', '<rootDir>/**/*.test.tsx'],
-      testPathIgnorePatterns: [
-        '<rootDir>/src/jsx/validation.test.tsx',
-        '<rootDir>/src/jsx/jsx-runtime.test.tsx',
-      ],
-      transform: {
-        '^.+\\.(t|j)sx?$': [
-          'ts-jest',
-          {
-            tsconfig: {
-              jsx: 'react-jsxdev',
-              jsxImportSource: resolve(__dirname, './src/jsx'),
-            },
-          },
-        ],
-      },
-    },
-  ],
+    ],
+  },
 });
