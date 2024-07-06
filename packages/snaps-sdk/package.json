@@ -76,7 +76,6 @@
     "@metamask/eslint-config-typescript": "^12.1.0",
     "@metamask/snaps-storybook": "workspace:^",
     "@storybook/addon-controls": "^8.1.11",
-    "@storybook/blocks": "^8.1.11",
     "@swc/core": "1.3.78",
     "@types/jest": "^27.5.1",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
