@@ -357,10 +357,10 @@ function getValidatedType(params: unknown): DialogType | undefined {
 }
 
 /**
- * Checks if the dialog parameters are for an alert dialog.
+ * Checks if the dialog parameters are for a prompt dialog.
  *
  * @param params - The dialog parameters.
- * @returns `true` if the dialog parameters are for an alert dialog, `false`
+ * @returns `true` if the dialog parameters are for a prompt dialog, `false` otherwise.
  */
 function isPromptDialog(params: DialogParameters): params is PromptDialog {
   return getDialogType(params) === DialogType.Prompt;
