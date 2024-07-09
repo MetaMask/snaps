@@ -5,6 +5,7 @@
     "@lavamoat/preinstall-always-fail",
     "@metamask/auto-changelog",
     "@metamask/eslint-*",
+    "@metamask/snaps-storybook",
     "@storybook/addon-controls",
     "@types/*",
     "@typescript-eslint/*",
