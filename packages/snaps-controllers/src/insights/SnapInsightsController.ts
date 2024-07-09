@@ -23,25 +23,25 @@ import {
   ValidPermission,
 } from '@metamask/permission-controller';
 
-const controllerName = 'SnapInsightController';
+const controllerName = 'SnapInsightsController';
 
-export type SnapInsightControllerAllowedActions =
+export type SnapInsightsControllerAllowedActions =
   | HandleSnapRequest
   | GetAllSnaps
   | GetPermissions;
 
-export type SnapInsightControllerActions = never;
+export type SnapInsightsControllerActions = never;
 
-export type SnapInsightControllerAllowedEvents =
+export type SnapInsightsControllerAllowedEvents =
   | TransactionControllerUnapprovedTransactionAddedEvent
   | SignatureStateChange;
 
-export type SnapInsightControllerMessenger = RestrictedControllerMessenger<
+export type SnapInsightsControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
-  SnapInsightControllerActions | SnapInsightControllerAllowedActions,
-  SnapInsightControllerAllowedEvents,
-  SnapInsightControllerAllowedActions['type'],
-  SnapInsightControllerAllowedEvents['type']
+  SnapInsightsControllerActions | SnapInsightsControllerAllowedActions,
+  SnapInsightsControllerAllowedEvents,
+  SnapInsightsControllerAllowedActions['type'],
+  SnapInsightsControllerAllowedEvents['type']
 >;
 
 export type SnapInsight = {
@@ -55,13 +55,13 @@ export type SnapInsights = {
   results: SnapInsight[];
 };
 
-export type SnapInsightControllerState = {
+export type SnapInsightsControllerState = {
   insights: Record<string, SnapInsights>;
 };
 
-export type SnapInsightControllerArgs = {
-  messenger: SnapInsightControllerMessenger;
-  state?: SnapInsightControllerState;
+export type SnapInsightsControllerArgs = {
+  messenger: SnapInsightsControllerMessenger;
+  state?: SnapInsightsControllerState;
 };
 
 // The controller doesn't currently export this, so we grab it this way.
@@ -80,12 +80,12 @@ type SnapWithPermission = {
 /**
  * Controller for monitoring for new transactions and signatures to provide insight for.
  */
-export class SnapInsightController extends BaseController<
+export class SnapInsightsController extends BaseController<
   typeof controllerName,
-  SnapInsightControllerState,
-  SnapInsightControllerMessenger
+  SnapInsightsControllerState,
+  SnapInsightsControllerMessenger
 > {
-  constructor({ messenger, state }: SnapInsightControllerArgs) {
+  constructor({ messenger, state }: SnapInsightsControllerArgs) {
     super({
       messenger,
       metadata: {

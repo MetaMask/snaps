@@ -58,8 +58,8 @@ import { MOCK_CRONJOB_PERMISSION } from './cronjob';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
 import { MockSnapsRegistry } from './registry';
 import {
-  SnapInsightControllerAllowedActions,
-  SnapInsightControllerAllowedEvents,
+  SnapInsightsControllerAllowedActions,
+  SnapInsightsControllerAllowedEvents,
 } from '../insights';
 
 const asyncNoOp = async () => Promise.resolve();
@@ -751,10 +751,10 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
 };
 
 // Mock controller messenger for Insight Controller
-export const getRootSnapInsightControllerMessenger = () => {
+export const getRootSnapInsightsControllerMessenger = () => {
   const messenger = new MockControllerMessenger<
-    SnapInsightControllerAllowedActions,
-    SnapInsightControllerAllowedEvents
+    SnapInsightsControllerAllowedActions,
+    SnapInsightsControllerAllowedEvents
   >();
 
   jest.spyOn(messenger, 'call');
@@ -762,17 +762,17 @@ export const getRootSnapInsightControllerMessenger = () => {
   return messenger;
 };
 
-export const getRestrictedSnapInsightControllerMessenger = (
+export const getRestrictedSnapInsightsControllerMessenger = (
   messenger: ReturnType<
-    typeof getRootSnapInsightControllerMessenger
-  > = getRootSnapInsightControllerMessenger(),
+    typeof getRootSnapInsightsControllerMessenger
+  > = getRootSnapInsightsControllerMessenger(),
 ) => {
   const controllerMessenger = messenger.getRestricted<
-    'SnapInsightController',
-    SnapInsightControllerAllowedActions['type'],
-    SnapInsightControllerAllowedEvents['type']
+    'SnapInsightsController',
+    SnapInsightsControllerAllowedActions['type'],
+    SnapInsightsControllerAllowedEvents['type']
   >({
-    name: 'SnapInsightController',
+    name: 'SnapInsightsController',
     allowedEvents: [
       'TransactionController:unapprovedTransactionAdded',
       'SignatureController:stateChange',

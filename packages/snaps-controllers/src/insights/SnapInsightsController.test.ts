@@ -1,12 +1,12 @@
 import {
-  getRestrictedSnapInsightControllerMessenger,
-  getRootSnapInsightControllerMessenger,
+  getRestrictedSnapInsightsControllerMessenger,
+  getRootSnapInsightsControllerMessenger,
   MOCK_INSIGHTS_PERMISSIONS,
   TRANSACTION_META_MOCK,
   PERSONAL_SIGNATURE_MOCK,
   TYPED_SIGNATURE_MOCK,
 } from '../test-utils';
-import { SnapInsightController } from './SnapInsightController';
+import { SnapInsightsController } from './SnapInsightsController';
 import {
   getTruncatedSnap,
   MOCK_LOCAL_SNAP_ID,
@@ -15,9 +15,9 @@ import {
 import { nanoid } from 'nanoid';
 import { HandlerType } from '@metamask/snaps-utils';
 
-describe('SnapInsightController', () => {
+describe('SnapInsightsController', () => {
   it('adds insight for transactions', async () => {
-    const rootMessenger = getRootSnapInsightControllerMessenger();
+    const rootMessenger = getRootSnapInsightsControllerMessenger();
 
     rootMessenger.registerActionHandler('SnapController:getAll', () => {
       return [getTruncatedSnap(), getTruncatedSnap({ id: MOCK_LOCAL_SNAP_ID })];
@@ -38,9 +38,9 @@ describe('SnapInsightController', () => {
     );
 
     const controllerMessenger =
-      getRestrictedSnapInsightControllerMessenger(rootMessenger);
+      getRestrictedSnapInsightsControllerMessenger(rootMessenger);
 
-    const controller = new SnapInsightController({
+    const controller = new SnapInsightsController({
       messenger: controllerMessenger,
     });
 
@@ -98,11 +98,11 @@ describe('SnapInsightController', () => {
   });
 
   it('adds insight for personal sign', async () => {
-    const rootMessenger = getRootSnapInsightControllerMessenger();
+    const rootMessenger = getRootSnapInsightsControllerMessenger();
     const controllerMessenger =
-      getRestrictedSnapInsightControllerMessenger(rootMessenger);
+      getRestrictedSnapInsightsControllerMessenger(rootMessenger);
 
-    const controller = new SnapInsightController({
+    const controller = new SnapInsightsController({
       messenger: controllerMessenger,
     });
 
@@ -192,11 +192,11 @@ describe('SnapInsightController', () => {
   });
 
   it('adds insight for typed signatures', async () => {
-    const rootMessenger = getRootSnapInsightControllerMessenger();
+    const rootMessenger = getRootSnapInsightsControllerMessenger();
     const controllerMessenger =
-      getRestrictedSnapInsightControllerMessenger(rootMessenger);
+      getRestrictedSnapInsightsControllerMessenger(rootMessenger);
 
-    const controller = new SnapInsightController({
+    const controller = new SnapInsightsController({
       messenger: controllerMessenger,
     });
 
@@ -284,11 +284,11 @@ describe('SnapInsightController', () => {
   });
 
   it('does not fetch signature insights if they are already fetched for a given signature', async () => {
-    const rootMessenger = getRootSnapInsightControllerMessenger();
+    const rootMessenger = getRootSnapInsightsControllerMessenger();
     const controllerMessenger =
-      getRestrictedSnapInsightControllerMessenger(rootMessenger);
+      getRestrictedSnapInsightsControllerMessenger(rootMessenger);
 
-    const controller = new SnapInsightController({
+    const controller = new SnapInsightsController({
       messenger: controllerMessenger,
     });
 
