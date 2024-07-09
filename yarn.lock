@@ -6294,7 +6294,6 @@ __metadata:
     "@metamask/key-tree": ^9.1.1
     "@metamask/providers": ^17.0.0
     "@metamask/rpc-errors": ^6.2.1
-    "@metamask/snaps-storybook": "workspace:^"
     "@metamask/utils": ^8.3.0
     "@storybook/addon-controls": ^8.1.11
     "@storybook/types": ^8.1.11
@@ -6438,7 +6437,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snaps-storybook@workspace:^, @metamask/snaps-storybook@workspace:packages/snaps-storybook":
+"@metamask/snaps-storybook@workspace:packages/snaps-storybook":
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-storybook@workspace:packages/snaps-storybook"
   dependencies:
