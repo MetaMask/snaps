@@ -1,10 +1,8 @@
-import { TransactionStatus } from '@metamask/transaction-controller';
-
 export const TRANSACTION_META_MOCK = {
   origin: 'http://metamask.io',
   chainId: '0x1' as const,
   id: '1',
-  status: TransactionStatus.unapproved as const,
+  status: 'unapproved' as const,
   time: 123456789,
   txParams: {
     from: '0x4bbeEB066eD09B7AEd07bF39EEe0460DFa261520',

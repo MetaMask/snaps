@@ -1,3 +1,4 @@
+import { InternalError } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
 import {
   getTruncatedSnap,
@@ -13,6 +14,7 @@ import {
   TRANSACTION_META_MOCK,
   PERSONAL_SIGNATURE_MOCK,
   TYPED_SIGNATURE_MOCK,
+  MOCK_INSIGHTS_PERMISSIONS_NO_ORIGINS,
 } from '../test-utils';
 import { SnapInsightsController } from './SnapInsightsController';
 
@@ -26,15 +28,20 @@ describe('SnapInsightsController', () => {
 
     rootMessenger.registerActionHandler(
       'SnapController:handleRequest',
-      async () => {
-        return { id: nanoid() };
+      async ({ snapId }) => {
+        if (snapId === MOCK_SNAP_ID) {
+          return { id: nanoid() };
+        }
+        throw new InternalError();
       },
     );
 
     rootMessenger.registerActionHandler(
       'PermissionController:getPermissions',
-      () => {
-        return MOCK_INSIGHTS_PERMISSIONS;
+      (origin) => {
+        return origin === MOCK_SNAP_ID
+          ? MOCK_INSIGHTS_PERMISSIONS
+          : MOCK_INSIGHTS_PERMISSIONS_NO_ORIGINS;
       },
     );
 
@@ -54,11 +61,18 @@ describe('SnapInsightsController', () => {
     await new Promise(process.nextTick);
 
     expect(Object.values(controller.state.insights)[0]).toStrictEqual({
-      loading: false,
-      results: [
-        { snapId: MOCK_SNAP_ID, response: { id: expect.any(String) } },
-        { snapId: MOCK_LOCAL_SNAP_ID, response: { id: expect.any(String) } },
-      ],
+      [MOCK_SNAP_ID]: {
+        snapId: MOCK_SNAP_ID,
+        interfaceId: expect.any(String),
+        loading: false,
+        error: undefined,
+      },
+      [MOCK_LOCAL_SNAP_ID]: {
+        snapId: MOCK_LOCAL_SNAP_ID,
+        interfaceId: undefined,
+        loading: false,
+        error: 'Internal JSON-RPC error.',
+      },
     });
 
     expect(rootMessenger.call).toHaveBeenCalledTimes(5);
@@ -91,7 +105,7 @@ describe('SnapInsightsController', () => {
           params: {
             chainId: TRANSACTION_META_MOCK.chainId,
             transaction: TRANSACTION_META_MOCK.txParams,
-            transactionOrigin: TRANSACTION_META_MOCK.origin,
+            transactionOrigin: null,
           },
         },
       },
@@ -113,15 +127,20 @@ describe('SnapInsightsController', () => {
 
     rootMessenger.registerActionHandler(
       'SnapController:handleRequest',
-      async () => {
-        return { id: nanoid() };
+      async ({ snapId }) => {
+        if (snapId === MOCK_SNAP_ID) {
+          return { id: nanoid() };
+        }
+        throw new InternalError();
       },
     );
 
     rootMessenger.registerActionHandler(
       'PermissionController:getPermissions',
-      () => {
-        return MOCK_INSIGHTS_PERMISSIONS;
+      (origin) => {
+        return origin === MOCK_SNAP_ID
+          ? MOCK_INSIGHTS_PERMISSIONS
+          : MOCK_INSIGHTS_PERMISSIONS_NO_ORIGINS;
       },
     );
 
@@ -140,11 +159,18 @@ describe('SnapInsightsController', () => {
     await new Promise(process.nextTick);
 
     expect(Object.values(controller.state.insights)[0]).toStrictEqual({
-      loading: false,
-      results: [
-        { snapId: MOCK_SNAP_ID, response: { id: expect.any(String) } },
-        { snapId: MOCK_LOCAL_SNAP_ID, response: { id: expect.any(String) } },
-      ],
+      [MOCK_SNAP_ID]: {
+        snapId: MOCK_SNAP_ID,
+        interfaceId: expect.any(String),
+        loading: false,
+        error: undefined,
+      },
+      [MOCK_LOCAL_SNAP_ID]: {
+        snapId: MOCK_LOCAL_SNAP_ID,
+        interfaceId: undefined,
+        loading: false,
+        error: 'Internal JSON-RPC error.',
+      },
     });
 
     expect(rootMessenger.call).toHaveBeenCalledTimes(5);
@@ -154,7 +180,7 @@ describe('SnapInsightsController', () => {
       {
         snapId: MOCK_SNAP_ID,
         origin: '',
-        handler: HandlerType.OnTransaction,
+        handler: HandlerType.OnSignature,
         request: {
           method: '',
           params: {
@@ -175,7 +201,7 @@ describe('SnapInsightsController', () => {
       {
         snapId: MOCK_LOCAL_SNAP_ID,
         origin: '',
-        handler: HandlerType.OnTransaction,
+        handler: HandlerType.OnSignature,
         request: {
           method: '',
           params: {
@@ -185,7 +211,7 @@ describe('SnapInsightsController', () => {
               signatureMethod:
                 PERSONAL_SIGNATURE_MOCK.msgParams.signatureMethod,
             },
-            signatureOrigin: PERSONAL_SIGNATURE_MOCK.msgParams.origin,
+            signatureOrigin: null,
           },
         },
       },
@@ -214,8 +240,10 @@ describe('SnapInsightsController', () => {
 
     rootMessenger.registerActionHandler(
       'PermissionController:getPermissions',
-      () => {
-        return MOCK_INSIGHTS_PERMISSIONS;
+      (origin) => {
+        return origin === MOCK_SNAP_ID
+          ? MOCK_INSIGHTS_PERMISSIONS
+          : MOCK_INSIGHTS_PERMISSIONS_NO_ORIGINS;
       },
     );
 
@@ -234,11 +262,18 @@ describe('SnapInsightsController', () => {
     await new Promise(process.nextTick);
 
     expect(Object.values(controller.state.insights)[0]).toStrictEqual({
-      loading: false,
-      results: [
-        { snapId: MOCK_SNAP_ID, response: { id: expect.any(String) } },
-        { snapId: MOCK_LOCAL_SNAP_ID, response: { id: expect.any(String) } },
-      ],
+      [MOCK_SNAP_ID]: {
+        snapId: MOCK_SNAP_ID,
+        interfaceId: expect.any(String),
+        loading: false,
+        error: undefined,
+      },
+      [MOCK_LOCAL_SNAP_ID]: {
+        snapId: MOCK_LOCAL_SNAP_ID,
+        interfaceId: expect.any(String),
+        loading: false,
+        error: undefined,
+      },
     });
 
     expect(rootMessenger.call).toHaveBeenCalledTimes(5);
@@ -248,7 +283,7 @@ describe('SnapInsightsController', () => {
       {
         snapId: MOCK_SNAP_ID,
         origin: '',
-        handler: HandlerType.OnTransaction,
+        handler: HandlerType.OnSignature,
         request: {
           method: '',
           params: {
@@ -268,7 +303,7 @@ describe('SnapInsightsController', () => {
       {
         snapId: MOCK_LOCAL_SNAP_ID,
         origin: '',
-        handler: HandlerType.OnTransaction,
+        handler: HandlerType.OnSignature,
         request: {
           method: '',
           params: {
@@ -277,7 +312,7 @@ describe('SnapInsightsController', () => {
               data: JSON.parse(TYPED_SIGNATURE_MOCK.msgParams.data),
               signatureMethod: TYPED_SIGNATURE_MOCK.msgParams.signatureMethod,
             },
-            signatureOrigin: TYPED_SIGNATURE_MOCK.msgParams.origin,
+            signatureOrigin: null,
           },
         },
       },
@@ -306,8 +341,10 @@ describe('SnapInsightsController', () => {
 
     rootMessenger.registerActionHandler(
       'PermissionController:getPermissions',
-      () => {
-        return MOCK_INSIGHTS_PERMISSIONS;
+      (origin) => {
+        return origin === MOCK_SNAP_ID
+          ? MOCK_INSIGHTS_PERMISSIONS
+          : MOCK_INSIGHTS_PERMISSIONS_NO_ORIGINS;
       },
     );
 
@@ -337,11 +374,18 @@ describe('SnapInsightsController', () => {
     await new Promise(process.nextTick);
 
     expect(Object.values(controller.state.insights)[0]).toStrictEqual({
-      loading: false,
-      results: [
-        { snapId: MOCK_SNAP_ID, response: { id: expect.any(String) } },
-        { snapId: MOCK_LOCAL_SNAP_ID, response: { id: expect.any(String) } },
-      ],
+      [MOCK_SNAP_ID]: {
+        snapId: MOCK_SNAP_ID,
+        interfaceId: expect.any(String),
+        loading: false,
+        error: undefined,
+      },
+      [MOCK_LOCAL_SNAP_ID]: {
+        snapId: MOCK_LOCAL_SNAP_ID,
+        interfaceId: expect.any(String),
+        loading: false,
+        error: undefined,
+      },
     });
 
     expect(rootMessenger.call).toHaveBeenCalledTimes(8);

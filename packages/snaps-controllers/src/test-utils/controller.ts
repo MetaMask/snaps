@@ -250,7 +250,7 @@ export const MOCK_INSIGHTS_PERMISSIONS: Record<string, PermissionConstraint> = {
     caveats: [
       {
         type: SnapCaveatType.TransactionOrigin,
-        value: { allowTransactionOrigin: true },
+        value: true,
       },
     ],
     date: 1664187844588,
@@ -262,7 +262,37 @@ export const MOCK_INSIGHTS_PERMISSIONS: Record<string, PermissionConstraint> = {
     caveats: [
       {
         type: SnapCaveatType.SignatureOrigin,
-        value: { allowSignatureOrigin: true },
+        value: true,
+      },
+    ],
+    date: 1664187844588,
+    id: 'izn0WGUO8cvq_jqvLQuQP',
+    invoker: MOCK_SNAP_ID,
+    parentCapability: SnapEndowments.SignatureInsight,
+  },
+};
+
+export const MOCK_INSIGHTS_PERMISSIONS_NO_ORIGINS: Record<
+  string,
+  PermissionConstraint
+> = {
+  [SnapEndowments.TransactionInsight]: {
+    caveats: [
+      {
+        type: SnapCaveatType.TransactionOrigin,
+        value: false,
+      },
+    ],
+    date: 1664187844588,
+    id: 'izn0WGUO8cvq_jqvLQuQP',
+    invoker: MOCK_SNAP_ID,
+    parentCapability: SnapEndowments.TransactionInsight,
+  },
+  [SnapEndowments.SignatureInsight]: {
+    caveats: [
+      {
+        type: SnapCaveatType.SignatureOrigin,
+        value: false,
       },
     ],
     date: 1664187844588,

@@ -15,7 +15,7 @@ import {
   SnapEndowments,
 } from '@metamask/snaps-rpc-methods';
 import type { Json, SnapId } from '@metamask/snaps-sdk';
-import { HandlerType, logError } from '@metamask/snaps-utils';
+import { HandlerType } from '@metamask/snaps-utils';
 import type {
   TransactionControllerUnapprovedTransactionAddedEvent,
   TransactionMeta,
@@ -48,17 +48,13 @@ export type SnapInsightsControllerMessenger = RestrictedControllerMessenger<
 
 export type SnapInsight = {
   snapId: SnapId;
-  interfaceId?: string;
+  interfaceId?: string | null;
   error?: string;
-};
-
-export type SnapInsights = {
   loading: boolean;
-  results: SnapInsight[];
 };
 
 export type SnapInsightsControllerState = {
-  insights: Record<string, SnapInsights>;
+  insights: Record<string, Record<SnapId, SnapInsight>>;
 };
 
 export type SnapInsightsControllerArgs = {
@@ -139,43 +135,32 @@ export class SnapInsightsController extends BaseController<
       SnapEndowments.TransactionInsight,
     );
 
-    const promises = snaps.map(async ({ snapId, permission }) => {
+    snaps.forEach(({ snapId, permission }) => {
       const hasTransactionOriginCaveat = getTransactionOriginCaveat(permission);
       const transactionOrigin =
         hasTransactionOriginCaveat && origin ? origin : null;
 
-      return this.#handleSnapRequest({
+      this.update((state) => {
+        if (!state.insights[id]) {
+          state.insights[id] = {};
+        }
+        state.insights[id][snapId] = { snapId, loading: true };
+      });
+
+      this.#handleSnapRequest({
         snapId,
         handler: HandlerType.OnTransaction,
         params: { transaction: txParams, chainId, transactionOrigin },
-      });
-    });
-
-    this.update((state) => {
-      state.insights[id] = { loading: true, results: [] };
-    });
-
-    Promise.allSettled(promises)
-      .then((settled) => {
-        const results = settled.map((promise, idx) => {
-          const { snapId } = snaps[idx];
-          if (promise.status === 'rejected') {
-            return {
-              error: promise.reason,
-              snapId,
-            };
-          }
-          return {
-            snapId,
-            response: promise.value,
-          };
-        });
-        this.update((state) => {
-          state.insights[id].loading = false;
-          state.insights[id].results = results;
-        });
       })
-      .catch(logError);
+        .then((response) =>
+          this.#handleSnapResponse({
+            id,
+            snapId,
+            response: response as Record<string, Json>,
+          }),
+        )
+        .catch((error) => this.#handleSnapResponse({ id, snapId, error }));
+    });
   }
 
   #handleSignatureStateChange(state: SignatureControllerState) {
@@ -218,42 +203,31 @@ export class SnapInsightsController extends BaseController<
       signatureMethod,
     };
 
-    const promises = snaps.map(async ({ snapId, permission }) => {
+    snaps.forEach(({ snapId, permission }) => {
       const hasSignatureOriginCaveat = getSignatureOriginCaveat(permission);
       const signatureOrigin = hasSignatureOriginCaveat ? origin : null;
 
-      return this.#handleSnapRequest({
-        snapId,
-        handler: HandlerType.OnTransaction,
-        params: { signature: payload, signatureOrigin },
+      this.update((state) => {
+        if (!state.insights[id]) {
+          state.insights[id] = {};
+        }
+        state.insights[id][snapId] = { snapId, loading: true };
       });
-    });
 
-    this.update((state) => {
-      state.insights[id] = { loading: true, results: [] };
-    });
-
-    Promise.allSettled(promises)
-      .then((settled) => {
-        const results = settled.map((promise, idx) => {
-          const { snapId } = snaps[idx];
-          if (promise.status === 'rejected') {
-            return {
-              error: promise.reason,
-              snapId,
-            };
-          }
-          return {
-            snapId,
-            response: promise.value,
-          };
-        });
-        this.update((state) => {
-          state.insights[id].loading = false;
-          state.insights[id].results = results;
-        });
+      this.#handleSnapRequest({
+        snapId,
+        handler: HandlerType.OnSignature,
+        params: { signature: payload, signatureOrigin },
       })
-      .catch(logError);
+        .then((response) =>
+          this.#handleSnapResponse({
+            id,
+            snapId,
+            response: response as Record<string, Json>,
+          }),
+        )
+        .catch((error) => this.#handleSnapResponse({ id, snapId, error }));
+    });
   }
 
   async #handleSnapRequest({
@@ -273,6 +247,24 @@ export class SnapInsightsController extends BaseController<
         method: '',
         params,
       },
+    });
+  }
+
+  #handleSnapResponse({
+    id,
+    snapId,
+    response,
+    error,
+  }: {
+    id: string;
+    snapId: SnapId;
+    response?: Record<string, Json>;
+    error?: Error;
+  }) {
+    this.update((state) => {
+      state.insights[id][snapId].loading = false;
+      state.insights[id][snapId].interfaceId = response?.id as string;
+      state.insights[id][snapId].error = error?.message;
     });
   }
 }
