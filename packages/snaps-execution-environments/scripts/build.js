@@ -95,30 +95,23 @@ async function main() {
     JSON.stringify(lavamoatSecurityOptionsBrowser),
   );
 
-  const htmlFile = `
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>MetaMask Snaps Execution Environment</title>
-    <script>${lavaMoatRuntimeBrowser}</script>
-  </head>
-  <body>
-    <script src="bundle.js"></script>
-  </body>
-</html>`;
+  const createHtml = (scriptTag) => `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <title>MetaMask Snaps Execution Environment</title>
+        <script>${lavaMoatRuntimeBrowser}</script>
+      </head>
+      <body>
+        ${scriptTag}
+      </body>
+    </html>`;
 
-  const createInlinedHTML = (bundleSource) => `<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>MetaMask Snaps Execution Environment</title>
-    <script>${lavaMoatRuntimeBrowser}</script>
-  </head>
-  <body>
-    <script>${bundleSource}</script>
-  </body>
-</html>`;
+  const htmlFile = createHtml('<script src="bundle.js"></script>');
+
+  const createInlinedHTML = (bundleSource) =>
+    createHtml(`<script>${bundleSource}</script>`);
 
   await Promise.all(
     Object.entries(ENTRY_POINTS).map(async ([key, config]) => {
