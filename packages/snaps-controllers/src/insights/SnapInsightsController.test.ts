@@ -1,3 +1,11 @@
+import { HandlerType } from '@metamask/snaps-utils';
+import {
+  getTruncatedSnap,
+  MOCK_LOCAL_SNAP_ID,
+  MOCK_SNAP_ID,
+} from '@metamask/snaps-utils/test-utils';
+import { nanoid } from 'nanoid';
+
 import {
   getRestrictedSnapInsightsControllerMessenger,
   getRootSnapInsightsControllerMessenger,
@@ -7,13 +15,6 @@ import {
   TYPED_SIGNATURE_MOCK,
 } from '../test-utils';
 import { SnapInsightsController } from './SnapInsightsController';
-import {
-  getTruncatedSnap,
-  MOCK_LOCAL_SNAP_ID,
-  MOCK_SNAP_ID,
-} from '@metamask/snaps-utils/test-utils';
-import { nanoid } from 'nanoid';
-import { HandlerType } from '@metamask/snaps-utils';
 
 describe('SnapInsightsController', () => {
   it('adds insight for transactions', async () => {

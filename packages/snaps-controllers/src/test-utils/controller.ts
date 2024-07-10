@@ -39,6 +39,10 @@ import type {
   CronjobControllerEvents,
 } from '../cronjob';
 import type {
+  SnapInsightsControllerAllowedActions,
+  SnapInsightsControllerAllowedEvents,
+} from '../insights';
+import type {
   SnapInterfaceControllerActions,
   SnapInterfaceControllerAllowedActions,
   StoredInterface,
@@ -57,10 +61,6 @@ import type { KeyDerivationOptions } from '../types';
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
 import { MockSnapsRegistry } from './registry';
-import {
-  SnapInsightsControllerAllowedActions,
-  SnapInsightsControllerAllowedEvents,
-} from '../insights';
 
 const asyncNoOp = async () => Promise.resolve();
 
@@ -777,7 +777,11 @@ export const getRestrictedSnapInsightsControllerMessenger = (
       'TransactionController:unapprovedTransactionAdded',
       'SignatureController:stateChange',
     ],
-    allowedActions: ['PermissionController:getPermissions', 'SnapController:getAll', 'SnapController:handleRequest'],
+    allowedActions: [
+      'PermissionController:getPermissions',
+      'SnapController:getAll',
+      'SnapController:handleRequest',
+    ],
   });
 
   return controllerMessenger;
