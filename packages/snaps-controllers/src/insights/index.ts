@@ -1,1 +1,1 @@
-export * from './SnapInsightController';
+export * from './SnapInsightsController';
