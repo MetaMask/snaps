@@ -3874,6 +3874,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/base-controller@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "@metamask/base-controller@npm:6.0.1"
+  dependencies:
+    "@metamask/utils": ^9.0.0
+    immer: ^9.0.6
+  checksum: c5dc9ce53dbb65190462e269dff78f5f2a789a787246bf4f7b2f4867da5ac11c54a67db530db5ba520f64f5a124f58983f36f9c6a4ab032e86cd3058a1b3e864
+  languageName: node
+  linkType: hard
+
 "@metamask/bip32-example-snap@workspace:^, @metamask/bip32-example-snap@workspace:packages/examples/packages/bip32":
   version: 0.0.0-use.local
   resolution: "@metamask/bip32-example-snap@workspace:packages/examples/packages/bip32"
@@ -5572,7 +5582,7 @@ __metadata:
     "@lavamoat/allow-scripts": ^3.0.4
     "@metamask/approval-controller": ^7.0.0
     "@metamask/auto-changelog": ^3.4.4
-    "@metamask/base-controller": ^6.0.0
+    "@metamask/base-controller": ^6.0.1
     "@metamask/browser-passworder": ^5.0.0
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -5748,7 +5758,7 @@ __metadata:
     "@jest/types": ^29.6.3
     "@lavamoat/allow-scripts": ^3.0.4
     "@metamask/auto-changelog": ^3.4.4
-    "@metamask/base-controller": ^6.0.0
+    "@metamask/base-controller": ^6.0.1
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
@@ -5947,7 +5957,7 @@ __metadata:
     "@emotion/styled": ^11.10.8
     "@ethersproject/units": ^5.7.0
     "@metamask/auto-changelog": ^3.4.4
-    "@metamask/base-controller": ^6.0.0
+    "@metamask/base-controller": ^6.0.1
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-browser": ^11.1.0
     "@metamask/eslint-config-jest": ^12.1.0
@@ -6058,7 +6068,7 @@ __metadata:
     "@esbuild-plugins/node-modules-polyfill": ^0.2.2
     "@lavamoat/allow-scripts": ^3.0.4
     "@metamask/auto-changelog": ^3.4.4
-    "@metamask/base-controller": ^6.0.0
+    "@metamask/base-controller": ^6.0.1
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
