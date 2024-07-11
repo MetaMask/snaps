@@ -22,6 +22,11 @@ export type TransactionMeta = {
    * Underlying Transaction object.
    */
   txParams: TransactionParams;
+
+  /**
+   * The status of the transaction.
+   */
+  status: string;
 };
 
 /**
@@ -119,6 +124,15 @@ export type TransactionParams = {
 export type TransactionControllerUnapprovedTransactionAddedEvent = {
   type: `TransactionController:unapprovedTransactionAdded`;
   payload: [transactionMeta: TransactionMeta];
+};
+
+export type TransactionControllerTransactionStatusUpdatedEvent = {
+  type: `TransactionController:transactionStatusUpdated`;
+  payload: [
+    {
+      transactionMeta: TransactionMeta;
+    },
+  ];
 };
 
 export type StateSignatureParams = {

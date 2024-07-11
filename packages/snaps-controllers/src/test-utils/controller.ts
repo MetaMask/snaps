@@ -805,12 +805,14 @@ export const getRestrictedSnapInsightsControllerMessenger = (
     name: 'SnapInsightsController',
     allowedEvents: [
       'TransactionController:unapprovedTransactionAdded',
+      'TransactionController:transactionStatusUpdated',
       'SignatureController:stateChange',
     ],
     allowedActions: [
       'PermissionController:getPermissions',
       'SnapController:getAll',
       'SnapController:handleRequest',
+      'SnapInterfaceController:deleteInterface',
     ],
   });
 

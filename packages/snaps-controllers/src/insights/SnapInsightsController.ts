@@ -14,6 +14,7 @@ import type { Json, SnapId } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
 
+import type { DeleteInterface } from '../interface';
 import type { GetAllSnaps, HandleSnapRequest } from '../snaps';
 import { getRunnableSnaps } from '../snaps';
 import type {
@@ -22,6 +23,7 @@ import type {
   SignatureStateChange,
   SignatureControllerState,
   StateSignature,
+  TransactionControllerTransactionStatusUpdatedEvent,
 } from '../types';
 
 const controllerName = 'SnapInsightsController';
@@ -29,12 +31,14 @@ const controllerName = 'SnapInsightsController';
 export type SnapInsightsControllerAllowedActions =
   | HandleSnapRequest
   | GetAllSnaps
-  | GetPermissions;
+  | GetPermissions
+  | DeleteInterface;
 
 export type SnapInsightsControllerActions = never;
 
 export type SnapInsightsControllerAllowedEvents =
   | TransactionControllerUnapprovedTransactionAddedEvent
+  | TransactionControllerTransactionStatusUpdatedEvent
   | SignatureStateChange;
 
 export type SnapInsightsControllerMessenger = RestrictedControllerMessenger<
@@ -87,6 +91,11 @@ export class SnapInsightsController extends BaseController<
     this.messagingSystem.subscribe(
       'TransactionController:unapprovedTransactionAdded',
       this.#handleTransaction.bind(this),
+    );
+
+    this.messagingSystem.subscribe(
+      'TransactionController:transactionStatusUpdated',
+      this.#handleTransactionStatusUpdate.bind(this),
     );
 
     this.messagingSystem.subscribe(
@@ -155,17 +164,34 @@ export class SnapInsightsController extends BaseController<
   }
 
   #handleSignatureStateChange(state: SignatureControllerState) {
-    const snaps = this.#getSnapsWithPermission(SnapEndowments.SignatureInsight);
-
-    // This isn't very efficient, but SignatureController doesn't expose a better event for us to use yet.
-    for (const personalSignature of Object.values(
-      state.unapprovedPersonalMsgs,
-    )) {
-      this.#handleSignature(snaps, personalSignature);
+    // If any IDs have disappeared since the last state update, the insight may be cleaned up.
+    for (const id of Object.keys(this.state.insights)) {
+      if (
+        !hasProperty(state.unapprovedTypedMessages, id) &&
+        !hasProperty(state.unapprovedPersonalMsgs, id)
+      ) {
+        this.#handleInsightCleanup(id);
+      }
     }
 
-    for (const typedMessage of Object.values(state.unapprovedTypedMessages)) {
-      this.#handleSignature(snaps, typedMessage);
+    if (
+      state.unapprovedPersonalMsgCount > 0 ||
+      state.unapprovedTypedMessagesCount > 0
+    ) {
+      const snaps = this.#getSnapsWithPermission(
+        SnapEndowments.SignatureInsight,
+      );
+
+      // This isn't very efficient, but SignatureController doesn't expose a better event for us to use yet.
+      for (const personalSignature of Object.values(
+        state.unapprovedPersonalMsgs,
+      )) {
+        this.#handleSignature(snaps, personalSignature);
+      }
+
+      for (const typedMessage of Object.values(state.unapprovedTypedMessages)) {
+        this.#handleSignature(snaps, typedMessage);
+      }
     }
   }
 
@@ -218,6 +244,36 @@ export class SnapInsightsController extends BaseController<
           }),
         )
         .catch((error) => this.#handleSnapResponse({ id, snapId, error }));
+    });
+  }
+
+  #handleTransactionStatusUpdate({
+    transactionMeta,
+  }: {
+    transactionMeta: TransactionMeta;
+  }) {
+    if (transactionMeta.status !== 'unapproved') {
+      this.#handleInsightCleanup(transactionMeta.id);
+    }
+  }
+
+  #handleInsightCleanup(id: string) {
+    if (!this.#hasInsight(id)) {
+      return;
+    }
+
+    // Delete interfaces from interface controller.
+    Object.values(this.state.insights[id])
+      .filter((insight) => insight.interfaceId)
+      .forEach((insight) => {
+        this.messagingSystem.call(
+          'SnapInterfaceController:deleteInterface',
+          insight.interfaceId as string,
+        );
+      });
+
+    this.update((state) => {
+      delete state.insights[id];
     });
   }
 

@@ -22,6 +22,13 @@ describe('SnapInsightsController', () => {
   it('adds insight for transactions', async () => {
     const rootMessenger = getRootSnapInsightsControllerMessenger();
 
+    rootMessenger.registerActionHandler(
+      'SnapInterfaceController:deleteInterface',
+      () => {
+        // no-op
+      },
+    );
+
     rootMessenger.registerActionHandler('SnapController:getAll', () => {
       return [getTruncatedSnap(), getTruncatedSnap({ id: MOCK_LOCAL_SNAP_ID })];
     });
@@ -110,6 +117,24 @@ describe('SnapInsightsController', () => {
         },
       },
     );
+
+    // Simulate transaction signed & confirmed
+
+    rootMessenger.publish('TransactionController:transactionStatusUpdated', {
+      transactionMeta: { ...TRANSACTION_META_MOCK, status: 'approved' },
+    });
+
+    rootMessenger.publish('TransactionController:transactionStatusUpdated', {
+      transactionMeta: { ...TRANSACTION_META_MOCK, status: 'confirmed' },
+    });
+
+    expect(Object.values(controller.state.insights)).toHaveLength(0);
+    expect(rootMessenger.call).toHaveBeenCalledTimes(6);
+    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+      6,
+      'SnapInterfaceController:deleteInterface',
+      expect.any(String),
+    );
   });
 
   it('adds insight for personal sign', async () => {
@@ -120,6 +145,13 @@ describe('SnapInsightsController', () => {
     const controller = new SnapInsightsController({
       messenger: controllerMessenger,
     });
+
+    rootMessenger.registerActionHandler(
+      'SnapInterfaceController:deleteInterface',
+      () => {
+        // no-op
+      },
+    );
 
     rootMessenger.registerActionHandler('SnapController:getAll', () => {
       return [getTruncatedSnap(), getTruncatedSnap({ id: MOCK_LOCAL_SNAP_ID })];
@@ -215,6 +247,26 @@ describe('SnapInsightsController', () => {
           },
         },
       },
+    );
+
+    // Simulate signature signed
+    rootMessenger.publish(
+      'SignatureController:stateChange',
+      {
+        unapprovedPersonalMsgCount: 0,
+        unapprovedTypedMessagesCount: 0,
+        unapprovedTypedMessages: {},
+        unapprovedPersonalMsgs: {},
+      },
+      [],
+    );
+
+    expect(Object.values(controller.state.insights)).toHaveLength(0);
+    expect(rootMessenger.call).toHaveBeenCalledTimes(6);
+    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+      6,
+      'SnapInterfaceController:deleteInterface',
+      expect.any(String),
     );
   });
 
