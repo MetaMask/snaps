@@ -1,6 +1,6 @@
 import { assert } from '@metamask/utils';
-import { assertIsSnapIcon } from 'src/icon';
 
+import { assertIsSnapIcon } from '../../icon';
 import type { ValidatorMeta } from '../validator-types';
 
 /**

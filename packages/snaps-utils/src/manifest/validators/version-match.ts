@@ -1,5 +1,4 @@
-import { NpmSnapFileNames } from 'src/types';
-
+import { NpmSnapFileNames } from '../../types';
 import type { ValidatorMeta } from '../validator-types';
 
 /**
@@ -13,8 +12,7 @@ export const VersionMatch: ValidatorMeta = {
     if (packageJsonVersion !== manifestPackageVersion) {
       context.report(
         `"${NpmSnapFileNames.Manifest}" npm package version ("${manifestPackageVersion}") does not match the "${NpmSnapFileNames.PackageJson}" "version" field ("${packageJsonVersion}").`,
-        () => {
-          const manifest = files.manifest.clone().result;
+        ({ manifest }) => {
           manifest.version = packageJsonVersion;
           return { manifest };
         },

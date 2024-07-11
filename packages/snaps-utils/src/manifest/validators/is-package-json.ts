@@ -1,6 +1,6 @@
-import { NpmSnapFileNames, NpmSnapPackageJsonStruct } from 'src/types';
 import { validate } from 'superstruct';
 
+import { NpmSnapFileNames, NpmSnapPackageJsonStruct } from '../../types';
 import type { ValidatorMeta } from '../validator-types';
 
 /**

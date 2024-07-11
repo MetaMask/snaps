@@ -1,7 +1,6 @@
-import { getSnapChecksum } from 'src/snaps';
-import type { FetchedSnapFiles } from 'src/types';
-import { NpmSnapFileNames } from 'src/types';
-
+import { getSnapChecksum } from '../../snaps';
+import type { FetchedSnapFiles } from '../../types';
+import { NpmSnapFileNames } from '../../types';
 import type { ValidatorMeta } from '../validator-types';
 
 /**
@@ -22,8 +21,7 @@ export const checksum: ValidatorMeta = {
     ) {
       context.report(
         `"${NpmSnapFileNames.Manifest}" "shasum" field does not match computed shasum.`,
-        async () => {
-          const manifest = files.manifest.clone().result;
+        async ({ manifest }) => {
           manifest.source.shasum = await getSnapChecksum(fetchedFiles);
           return { manifest };
         },

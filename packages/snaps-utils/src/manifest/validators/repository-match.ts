@@ -1,7 +1,7 @@
 import deepEqual from 'fast-deep-equal';
-import { deepClone } from 'src/deep-clone';
-import { NpmSnapFileNames } from 'src/types';
 
+import { deepClone } from '../../deep-clone';
+import { NpmSnapFileNames } from '../../types';
 import type { ValidatorMeta } from '../validator-types';
 
 /**
@@ -18,8 +18,7 @@ export const repositoryMatch: ValidatorMeta = {
     ) {
       context.report(
         `"${NpmSnapFileNames.Manifest}" "repository" field does not match the "${NpmSnapFileNames.PackageJson}" "repository" field.`,
-        () => {
-          const manifest = files.manifest.clone().result;
+        ({ manifest }) => {
           manifest.repository = packageJsonRepository
             ? deepClone(packageJsonRepository)
             : undefined;

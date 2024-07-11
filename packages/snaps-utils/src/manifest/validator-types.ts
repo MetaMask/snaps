@@ -2,9 +2,11 @@ import type { SnapFiles, UnvalidatedSnapFiles } from 'src/types';
 
 import type { SnapManifest } from '.';
 
-export type ValidatorFix = () =>
-  | { manifest: SnapManifest }
-  | Promise<{ manifest: SnapManifest }>;
+// TODO(ritave): Research using patch based fixing similar to eslint
+//               https://eslint.org/docs/latest/extend/custom-rules#applying-fixes
+export type ValidatorFix = (files: {
+  manifest: SnapManifest;
+}) => { manifest: SnapManifest } | Promise<{ manifest: SnapManifest }>;
 
 export type ValidatorSeverity = 'error' | 'warning';
 

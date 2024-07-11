@@ -1,23 +1,16 @@
 import { getErrorMessage } from '@metamask/snaps-sdk';
 import type { Json } from '@metamask/utils';
-import { assertExhaustive, assert, isPlainObject } from '@metamask/utils';
-import deepEqual from 'fast-deep-equal';
+import { assert, isPlainObject } from '@metamask/utils';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
 
 import { deepClone } from '../deep-clone';
 import { readJsonFile } from '../fs';
-import { getSvgDimensions } from '../icon';
-import { validateNpmSnap } from '../npm';
-import {
-  getSnapChecksum,
-  ProgrammaticallyFixableSnapError,
-  validateSnapShasum,
-} from '../snaps';
-import type { SnapFiles, UnvalidatedSnapFiles } from '../types';
-import { NpmSnapFileNames, SnapValidationFailureReason } from '../types';
+import type { UnvalidatedSnapFiles } from '../types';
+import { NpmSnapFileNames } from '../types';
 import { readVirtualFile, VirtualFile } from '../virtual-file/node';
 import type { SnapManifest } from './validation';
+import { runValidators } from './validator';
 
 const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {
   $schema: 1,
@@ -46,7 +39,7 @@ const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {
  * in, a different method for logging can be used.
  */
 export type CheckManifestResult = {
-  manifest: SnapManifest;
+  manifest?: SnapManifest;
   updated?: boolean;
   warnings: string[];
   errors: string[];
@@ -72,9 +65,6 @@ export async function checkManifest(
   sourceCode?: string,
   writeFileFn: WriteFileFunction = fs.writeFile,
 ): Promise<CheckManifestResult> {
-  const warnings: string[] = [];
-  const errors: string[] = [];
-
   let updated = false;
 
   const manifestPath = pathUtils.join(basePath, NpmSnapFileNames.Manifest);
@@ -111,169 +101,60 @@ export async function checkManifest(
       (await getSnapFiles(basePath, localizationFilePaths)) ?? [],
   };
 
-  let manifest: VirtualFile<SnapManifest> | undefined;
-  try {
-    ({ manifest } = await validateNpmSnap(snapFiles));
-  } catch (error) {
-    if (error instanceof ProgrammaticallyFixableSnapError) {
-      errors.push(error.message);
+  let results = await runValidators(snapFiles);
 
-      // If we get here, the files at least have the correct shape.
-      const partiallyValidatedFiles = snapFiles as SnapFiles;
+  if (writeManifest && results.fixes.length) {
+    let shouldRunFixes = true;
+    const MAX_ATTEMPTS = 10;
 
-      let isInvalid = true;
-      let currentError = error;
-      const maxAttempts = Object.keys(SnapValidationFailureReason).length;
+    for (
+      let attempts = 1;
+      shouldRunFixes && attempts <= MAX_ATTEMPTS;
+      attempts++
+    ) {
+      assert(results.files);
+      let manifest = deepClone(results.files.manifest.result);
 
-      // Attempt to fix all fixable validation failure reasons. All such reasons
-      // are enumerated by the `SnapValidationFailureReason` enum, so we only
-      // attempt to fix the manifest the same amount of times as there are
-      // reasons in the enum.
-      for (let attempts = 1; isInvalid && attempts <= maxAttempts; attempts++) {
-        manifest = await fixManifest(
-          manifest
-            ? { ...partiallyValidatedFiles, manifest }
-            : partiallyValidatedFiles,
-          currentError,
-        );
-
-        try {
-          await validateNpmSnapManifest({
-            ...partiallyValidatedFiles,
-            manifest,
-          });
-
-          isInvalid = false;
-        } catch (nextValidationError) {
-          currentError = nextValidationError;
-          /* istanbul ignore next: this should be impossible */
-          if (
-            !(
-              nextValidationError instanceof ProgrammaticallyFixableSnapError
-            ) ||
-            (attempts === maxAttempts && !isInvalid)
-          ) {
-            throw new Error(
-              `Internal error: Failed to fix manifest. This is a bug, please report it. Reason:\n${error.message}`,
-            );
-          }
-
-          errors.push(currentError.message);
-        }
+      for (const fix of results.fixes) {
+        ({ manifest } = await fix({ manifest }));
       }
 
-      updated = true;
-    } else {
-      throw error;
-    }
-  }
-
-  // TypeScript assumes `manifest` can still be undefined, that is not the case.
-  // But we assert to keep TypeScript happy.
-  assert(manifest);
-
-  const validatedManifest = manifest.result;
-
-  // Check presence of recommended keys
-  const recommendedFields = ['repository'] as const;
-
-  const missingRecommendedFields = recommendedFields.filter(
-    (key) => !validatedManifest[key],
-  );
-
-  if (missingRecommendedFields.length > 0) {
-    warnings.push(
-      `Missing recommended package.json properties:\n${missingRecommendedFields.reduce(
-        (allMissing, currentField) => {
-          return `${allMissing}\t${currentField}\n`;
-        },
-        '',
-      )}`,
-    );
-  }
-
-  if (!snapFiles.svgIcon) {
-    warnings.push(
-      'No icon found in the Snap manifest. It is recommended to include an icon for the Snap. See https://docs.metamask.io/snaps/how-to/design-a-snap/#guidelines-at-a-glance for more information.',
-    );
-  }
-
-  const iconDimensions =
-    snapFiles.svgIcon && getSvgDimensions(snapFiles.svgIcon.toString());
-  if (iconDimensions && iconDimensions.height !== iconDimensions.width) {
-    warnings.push(
-      'The icon in the Snap manifest is not square. It is recommended to use a square icon for the Snap.',
-    );
-  }
-
-  if (writeManifest) {
-    try {
-      const newManifest = `${JSON.stringify(
-        getWritableManifest(validatedManifest),
+      results.files.manifest.value = `${JSON.stringify(
+        getWritableManifest(manifest),
         null,
         2,
       )}\n`;
+      results.files.manifest.result = manifest;
 
-      if (updated || newManifest !== manifestFile.value) {
+      results = await runValidators(results.files);
+      shouldRunFixes = Boolean(results.fixes.length);
+    }
+
+    // If we fixed all the errors the files will exist
+    if (results.files) {
+      try {
         await writeFileFn(
           pathUtils.join(basePath, NpmSnapFileNames.Manifest),
-          newManifest,
+          results.files.manifest.toString(),
+        );
+
+        updated = true;
+      } catch (error) {
+        // Note: This error isn't pushed to the errors array, because it's not an
+        // error in the manifest itself.
+        throw new Error(
+          `Failed to update snap.manifest.json: ${error.message}`,
         );
       }
-    } catch (error) {
-      // Note: This error isn't pushed to the errors array, because it's not an
-      // error in the manifest itself.
-      throw new Error(`Failed to update snap.manifest.json: ${error.message}`);
     }
   }
 
-  return { manifest: validatedManifest, updated, warnings, errors };
-}
-
-/**
- * Given the relevant Snap files (manifest, `package.json`, and bundle) and a
- * Snap manifest validation error, fixes the fault in the manifest that caused
- * the error.
- *
- * @param snapFiles - The contents of all Snap files.
- * @param error - The {@link ProgrammaticallyFixableSnapError} that was thrown.
- * @returns A copy of the manifest file where the cause of the error is fixed.
- */
-export async function fixManifest(
-  snapFiles: SnapFiles,
-  error: ProgrammaticallyFixableSnapError,
-): Promise<VirtualFile<SnapManifest>> {
-  const { manifest, packageJson } = snapFiles;
-  const clonedFile = manifest.clone();
-  const manifestCopy = clonedFile.result;
-
-  switch (error.reason) {
-    case SnapValidationFailureReason.NameMismatch:
-      manifestCopy.source.location.npm.packageName = packageJson.result.name;
-      break;
-
-    case SnapValidationFailureReason.VersionMismatch:
-      manifestCopy.version = packageJson.result.version;
-      break;
-
-    case SnapValidationFailureReason.RepositoryMismatch:
-      manifestCopy.repository = packageJson.result.repository
-        ? deepClone(packageJson.result.repository)
-        : undefined;
-      break;
-
-    case SnapValidationFailureReason.ShasumMismatch:
-      manifestCopy.source.shasum = await getSnapChecksum(snapFiles);
-      break;
-
-    /* istanbul ignore next */
-    default:
-      assertExhaustive(error.reason);
-  }
-
-  clonedFile.result = manifestCopy;
-  clonedFile.value = JSON.stringify(manifestCopy);
-  return clonedFile;
+  return {
+    manifest: results.files?.manifest.result,
+    updated,
+    warnings: results.warnings,
+    errors: results.errors,
+  };
 }
 
 /**
@@ -434,64 +315,4 @@ export function getWritableManifest(manifest: SnapManifest): SnapManifest {
     );
 
   return writableManifest as SnapManifest;
-}
-
-/**
- * Validates the fields of an NPM Snap manifest that has already passed JSON
- * Schema validation.
- *
- * @param snapFiles - The relevant snap files to validate.
- * @param snapFiles.manifest - The npm Snap manifest to validate.
- * @param snapFiles.packageJson - The npm Snap's `package.json`.
- * @param snapFiles.sourceCode - The Snap's source code.
- * @param snapFiles.svgIcon - The Snap's optional icon.
- * @param snapFiles.auxiliaryFiles - Any auxiliary files required by the snap at runtime.
- * @param snapFiles.localizationFiles - The Snap's localization files.
- */
-export async function validateNpmSnapManifest({
-  manifest,
-  packageJson,
-  sourceCode,
-  svgIcon,
-  auxiliaryFiles,
-  localizationFiles,
-}: SnapFiles) {
-  const packageJsonName = packageJson.result.name;
-  const packageJsonVersion = packageJson.result.version;
-  const packageJsonRepository = packageJson.result.repository;
-
-  const manifestPackageName = manifest.result.source.location.npm.packageName;
-  const manifestPackageVersion = manifest.result.version;
-  const manifestRepository = manifest.result.repository;
-
-  if (packageJsonName !== manifestPackageName) {
-    throw new ProgrammaticallyFixableSnapError(
-      `"${NpmSnapFileNames.Manifest}" npm package name ("${manifestPackageName}") does not match the "${NpmSnapFileNames.PackageJson}" "name" field ("${packageJsonName}").`,
-      SnapValidationFailureReason.NameMismatch,
-    );
-  }
-
-  if (packageJsonVersion !== manifestPackageVersion) {
-    throw new ProgrammaticallyFixableSnapError(
-      `"${NpmSnapFileNames.Manifest}" npm package version ("${manifestPackageVersion}") does not match the "${NpmSnapFileNames.PackageJson}" "version" field ("${packageJsonVersion}").`,
-      SnapValidationFailureReason.VersionMismatch,
-    );
-  }
-
-  if (
-    // The repository may be `undefined` in package.json but can only be defined
-    // or `null` in the Snap manifest due to TS@<4.4 issues.
-    (packageJsonRepository || manifestRepository) &&
-    !deepEqual(packageJsonRepository, manifestRepository)
-  ) {
-    throw new ProgrammaticallyFixableSnapError(
-      `"${NpmSnapFileNames.Manifest}" "repository" field does not match the "${NpmSnapFileNames.PackageJson}" "repository" field.`,
-      SnapValidationFailureReason.RepositoryMismatch,
-    );
-  }
-
-  await validateSnapShasum(
-    { manifest, sourceCode, svgIcon, auxiliaryFiles, localizationFiles },
-    `"${NpmSnapFileNames.Manifest}" "shasum" field does not match computed shasum.`,
-  );
 }

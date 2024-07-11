@@ -32,7 +32,7 @@ import type {
   SnapPermissions,
 } from './manifest/validation';
 import type { FetchedSnapFiles, SnapsPermissionRequest } from './types';
-import { SnapIdPrefixes, SnapValidationFailureReason, uri } from './types';
+import { SnapIdPrefixes, uri } from './types';
 import type { VirtualFile } from './virtual-file';
 
 // This RegEx matches valid npm package names (with some exceptions) and space-
@@ -163,19 +163,6 @@ export type TruncatedSnapFields =
   | 'blocked';
 
 /**
- * An error indicating that a Snap validation failure is programmatically
- * fixable during development.
- */
-export class ProgrammaticallyFixableSnapError extends Error {
-  reason: SnapValidationFailureReason;
-
-  constructor(message: string, reason: SnapValidationFailureReason) {
-    super(message);
-    this.reason = reason;
-  }
-}
-
-/**
  * Gets a checksummable manifest by removing the shasum property and reserializing the JSON using a deterministic algorithm.
  *
  * @param manifest - The manifest itself.
@@ -228,10 +215,7 @@ export async function validateSnapShasum(
   errorMessage = 'Invalid Snap manifest: manifest shasum does not match computed shasum.',
 ): Promise<void> {
   if (files.manifest.result.source.shasum !== (await getSnapChecksum(files))) {
-    throw new ProgrammaticallyFixableSnapError(
-      errorMessage,
-      SnapValidationFailureReason.ShasumMismatch,
-    );
+    throw new Error(errorMessage);
   }
 }
 

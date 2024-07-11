@@ -1,5 +1,4 @@
-import { getSvgDimensions } from 'src/icon';
-
+import { getSvgDimensions } from '../../icon';
 import type { ValidatorMeta } from '../validator-types';
 
 /**

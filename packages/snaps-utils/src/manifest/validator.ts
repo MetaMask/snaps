@@ -69,7 +69,7 @@ class Context implements ValidatorContext {
 // TODO(ritave): snap.manifest.json and package.json should check
 //               json parsing as well instead of assuming it's
 //               already parsed
-async function runValidators(
+export async function runValidators(
   files: UnvalidatedSnapFiles,
   rules: ValidatorMeta[] = Object.values(defaultValidators),
 ): Promise<ValidatorResults> {

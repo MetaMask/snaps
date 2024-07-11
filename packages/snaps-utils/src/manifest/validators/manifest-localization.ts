@@ -1,6 +1,6 @@
 import { getErrorMessage } from '@metamask/snaps-sdk';
-import { getLocalizedSnapManifest } from 'src/localization';
 
+import { getLocalizedSnapManifest } from '../../localization';
 import type { ValidatorMeta } from '../validator-types';
 
 /**

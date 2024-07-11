@@ -1,5 +1,4 @@
-import { NpmSnapFileNames } from 'src/types';
-
+import { NpmSnapFileNames } from '../../types';
 import type { ValidatorMeta } from '../validator-types';
 
 /**
@@ -14,8 +13,7 @@ export const packageNameMatch: ValidatorMeta = {
     if (packageJsonName !== manifestPackageName) {
       context.report(
         `"${NpmSnapFileNames.Manifest}" npm package name ("${manifestPackageName}") does not match the "${NpmSnapFileNames.PackageJson}" "name" field ("${packageJsonName}").`,
-        () => {
-          const manifest = files.manifest.clone().result;
+        ({ manifest }) => {
           manifest.source.location.npm.packageName = packageJsonName;
           return { manifest };
         },

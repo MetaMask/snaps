@@ -1,5 +1,4 @@
-import { NpmSnapFileNames } from 'src/types';
-
+import { NpmSnapFileNames } from '../../types';
 import type { ValidatorMeta } from '../validator-types';
 
 const EXPECTED_SNAP_FILES = ['manifest', 'packageJson', 'sourceCode'] as const;

@@ -1,8 +1,8 @@
 import { assert } from '@metamask/utils';
-import { parseJson } from 'src/json';
-import { LocalizationFileStruct } from 'src/localization';
 import { validate } from 'superstruct';
 
+import { parseJson } from '../../json';
+import { LocalizationFileStruct } from '../../localization';
 import type { ValidatorMeta } from '../validator-types';
 
 /**
