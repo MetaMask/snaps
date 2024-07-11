@@ -5585,7 +5585,7 @@ __metadata:
     "@metamask/phishing-controller": ^10.0.0
     "@metamask/post-message-stream": ^8.1.0
     "@metamask/rpc-errors": ^6.3.1
-    "@metamask/snaps-registry": ^3.2.0
+    "@metamask/snaps-registry": ^3.2.1
     "@metamask/snaps-rpc-methods": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
@@ -5800,15 +5800,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/snaps-registry@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "@metamask/snaps-registry@npm:3.2.0"
+"@metamask/snaps-registry@npm:^3.2.1":
+  version: 3.2.1
+  resolution: "@metamask/snaps-registry@npm:3.2.1"
   dependencies:
-    "@metamask/superstruct": ^3.0.0
-    "@metamask/utils": ^8.5.0
+    "@metamask/superstruct": ^3.1.0
+    "@metamask/utils": ^9.0.0
     "@noble/curves": ^1.2.0
     "@noble/hashes": ^1.3.2
-  checksum: ac3537cda6454f461e6d00623aefa29ee3e7f7c68003c7629fc550c1f27694115c475d626c89172bd7ecb52de2a0b75db64aa9fe9e8625492e335337d3f579f7
+  checksum: d91f71ea1c8284b728c469adce60b771e683a5bd189f26742839e7948bc9a3bb1e9414275c579e0cab4042850122b78fcbd83c4a558fea6a3682eef4cc653b67
   languageName: node
   linkType: hard
 
@@ -6068,7 +6068,7 @@ __metadata:
     "@metamask/post-message-stream": ^8.1.0
     "@metamask/rpc-errors": ^6.3.1
     "@metamask/slip44": ^3.1.0
-    "@metamask/snaps-registry": ^3.2.0
+    "@metamask/snaps-registry": ^3.2.1
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/superstruct": ^3.1.0
     "@metamask/utils": ^9.0.0
@@ -6173,7 +6173,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/superstruct@npm:^3.0.0, @metamask/superstruct@npm:^3.1.0":
+"@metamask/superstruct@npm:^3.1.0":
   version: 3.1.0
   resolution: "@metamask/superstruct@npm:3.1.0"
   checksum: 00e4d0c0aae8b25ccc1885c1db0bb4ed1590010570140c255e4deee3bf8a10c859c8fce5e475b4ae09c8a56316207af87585b91f7f5a5c028d668ccd111f19e3
