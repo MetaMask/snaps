@@ -5,10 +5,6 @@ import type {
   GetPermissions,
   ValidPermission,
 } from '@metamask/permission-controller';
-import type {
-  SignatureController,
-  SignatureStateChange,
-} from '@metamask/signature-controller';
 import {
   getSignatureOriginCaveat,
   getTransactionOriginCaveat,
@@ -16,14 +12,17 @@ import {
 } from '@metamask/snaps-rpc-methods';
 import type { Json, SnapId } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
-import type {
-  TransactionControllerUnapprovedTransactionAddedEvent,
-  TransactionMeta,
-} from '@metamask/transaction-controller';
 import { hasProperty } from '@metamask/utils';
 
 import type { GetAllSnaps, HandleSnapRequest } from '../snaps';
 import { getRunnableSnaps } from '../snaps';
+import type {
+  TransactionControllerUnapprovedTransactionAddedEvent,
+  TransactionMeta,
+  SignatureStateChange,
+  SignatureControllerState,
+  StateSignature,
+} from '../types';
 
 const controllerName = 'SnapInsightsController';
 
@@ -60,14 +59,6 @@ export type SnapInsightsControllerState = {
 export type SnapInsightsControllerArgs = {
   messenger: SnapInsightsControllerMessenger;
   state?: SnapInsightsControllerState;
-};
-
-// The controller doesn't currently export this, so we grab it this way.
-type SignatureControllerState = SignatureController['state'];
-type StateSignature = SignatureControllerState['unapprovedTypedMessages']['0'];
-type SignatureParams = StateSignature['msgParams'] & {
-  data: string | Record<string, Json>;
-  signatureMethod: string;
 };
 
 type SnapWithPermission = {
@@ -185,8 +176,7 @@ export class SnapInsightsController extends BaseController<
       return;
     }
 
-    const { from, data, signatureMethod, origin } =
-      msgParams as SignatureParams;
+    const { from, data, signatureMethod, origin } = msgParams;
 
     /**
      * Both eth_signTypedData_v3 and eth_signTypedData_v4 methods
@@ -205,7 +195,8 @@ export class SnapInsightsController extends BaseController<
 
     snaps.forEach(({ snapId, permission }) => {
       const hasSignatureOriginCaveat = getSignatureOriginCaveat(permission);
-      const signatureOrigin = hasSignatureOriginCaveat ? origin : null;
+      const signatureOrigin =
+        origin && hasSignatureOriginCaveat ? origin : null;
 
       this.update((state) => {
         if (!state.insights[id]) {
