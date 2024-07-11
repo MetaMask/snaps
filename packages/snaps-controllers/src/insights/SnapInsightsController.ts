@@ -104,10 +104,23 @@ export class SnapInsightsController extends BaseController<
     );
   }
 
+  /**
+   * Check if an insight already exists for a given ID.
+   *
+   * @param id - The ID.
+   * @returns True if the insight already exists, otherwise false.
+   */
   #hasInsight(id: string) {
     return hasProperty(this.state.insights, id);
   }
 
+  /**
+   * Get a list of runnable Snaps that have a given permission.
+   * Also includes the permission object itself.
+   *
+   * @param permissionName - The permission name.
+   * @returns A list of objects containing Snap IDs and the permission object.
+   */
   #getSnapsWithPermission(permissionName: string) {
     const allSnaps = this.messagingSystem.call('SnapController:getAll');
     const filteredSnaps = getRunnableSnaps(allSnaps);
@@ -128,6 +141,13 @@ export class SnapInsightsController extends BaseController<
     }, []);
   }
 
+  /**
+   * Handle a newly added unapproved transaction.
+   * This function fetches insights from all available Snaps
+   * and populates the insights state blob with the responses.
+   *
+   * @param transaction - The transaction object.
+   */
   #handleTransaction(transaction: TransactionMeta) {
     const { id, txParams, chainId, origin } = transaction;
 
@@ -163,6 +183,13 @@ export class SnapInsightsController extends BaseController<
     });
   }
 
+  /**
+   * Handle the stateChange event emitted by the SignatureController.
+   * This function will remove existing insights from the state when applicable, as well as
+   * trigger insight fetching for newly added signatures.
+   *
+   * @param state - The SignatureController state blob.
+   */
   #handleSignatureStateChange(state: SignatureControllerState) {
     // If any IDs have disappeared since the last state update, the insight may be cleaned up.
     for (const id of Object.keys(this.state.insights)) {
@@ -195,6 +222,14 @@ export class SnapInsightsController extends BaseController<
     }
   }
 
+  /**
+   * Handle a newly added unapproved signature.
+   * This function fetches insights from all available Snaps
+   * and populates the insights state blob with the responses.
+   *
+   * @param snaps - A list of Snaps to invoke.
+   * @param signature - The signature object.
+   */
   #handleSignature(snaps: SnapWithPermission[], signature: StateSignature) {
     const { id, msgParams } = signature;
 
@@ -247,6 +282,14 @@ export class SnapInsightsController extends BaseController<
     });
   }
 
+  /**
+   * Handle the transactionStatusUpdated event emitted by the TransactionController.
+   * This function will remove insights for the transaction in question
+   * once the transaction status has changed from unapproved.
+   *
+   * @param args - An options bag.
+   * @param args.transactionMeta - The transaction.
+   */
   #handleTransactionStatusUpdate({
     transactionMeta,
   }: {
@@ -277,6 +320,15 @@ export class SnapInsightsController extends BaseController<
     });
   }
 
+  /**
+   * Handle sending a request to a given Snap with a given payload.
+   *
+   * @param args - An options bag.
+   * @param args.snapId - The Snap ID.
+   * @param args.handler - The handler to invoke.
+   * @param args.params - The JSON-RPC params to send.
+   * @returns The response from the Snap.
+   */
   async #handleSnapRequest({
     snapId,
     handler,
@@ -297,6 +349,15 @@ export class SnapInsightsController extends BaseController<
     });
   }
 
+  /**
+   * Handle response from a given Snap by persisting the response or error in state.
+   *
+   * @param args - An options bag.
+   * @param args.id - The transaction or signature ID.
+   * @param args.snapId - The Snap ID.
+   * @param args.response - An optional response object returned by the Snap.
+   * @param args.error - An optional error returned by the Snap.
+   */
   #handleSnapResponse({
     id,
     snapId,
