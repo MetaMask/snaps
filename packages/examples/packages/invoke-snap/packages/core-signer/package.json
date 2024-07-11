@@ -30,7 +30,7 @@
     "lint:dependencies": "depcheck"
   },
   "dependencies": {
-    "@metamask/key-tree": "^9.1.1",
+    "@metamask/key-tree": "^9.1.2",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/utils": "^9.0.0",
     "@noble/curves": "^1.1.0",
