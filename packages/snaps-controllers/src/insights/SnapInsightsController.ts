@@ -161,9 +161,7 @@ export class SnapInsightsController extends BaseController<
         hasTransactionOriginCaveat && origin ? origin : null;
 
       this.update((state) => {
-        if (!state.insights[id]) {
-          state.insights[id] = {};
-        }
+        state.insights[id] ??= {};
         state.insights[id][snapId] = { snapId, loading: true };
       });
 
@@ -260,9 +258,7 @@ export class SnapInsightsController extends BaseController<
         origin && hasSignatureOriginCaveat ? origin : null;
 
       this.update((state) => {
-        if (!state.insights[id]) {
-          state.insights[id] = {};
-        }
+        state.insights[id] ??= {};
         state.insights[id][snapId] = { snapId, loading: true };
       });
 
