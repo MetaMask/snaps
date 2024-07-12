@@ -13,10 +13,13 @@ export const isLocalizationFile: ValidatorMeta = {
   structureCheck(files, context) {
     for (const file of files.localizationFiles) {
       try {
-        const [error] = validate(
+        const [error, localization] = validate(
           parseJson(file.toString()),
           LocalizationFileStruct,
         );
+        // TODO(ritave): Validators shouldn't modify files, figure out a way
+        //               to validate JSON as well as update the file
+        file.result = localization;
         if (error) {
           context.report(
             `Failed to validate localization file "${file.path}": ${error.message}.`,

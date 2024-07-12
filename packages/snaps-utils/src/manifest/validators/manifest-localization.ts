@@ -1,6 +1,5 @@
 import { getErrorMessage } from '@metamask/snaps-sdk';
 
-import { parseJson } from '../../json';
 import type { LocalizationFile } from '../../localization';
 import { getLocalizedSnapManifest } from '../../localization';
 import type { ValidatorMeta } from '../validator-types';
@@ -13,7 +12,7 @@ export const manifestLocalization: ValidatorMeta = {
   semanticCheck(files, context) {
     const manifest = files.manifest.result;
     const localizations: LocalizationFile[] = files.localizationFiles.map(
-      (file) => parseJson(file.toString()),
+      (file) => file.result,
     );
     const locales = [
       'en', // The manifest must be able to be localized in English.
