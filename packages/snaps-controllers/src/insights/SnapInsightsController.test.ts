@@ -93,7 +93,7 @@ describe('SnapInsightsController', () => {
         request: {
           method: '',
           params: {
-            chainId: TRANSACTION_META_MOCK.chainId,
+            chainId: `eip155:${parseInt(TRANSACTION_META_MOCK.chainId, 16)}`,
             transaction: TRANSACTION_META_MOCK.txParams,
             transactionOrigin: TRANSACTION_META_MOCK.origin,
           },
@@ -110,7 +110,7 @@ describe('SnapInsightsController', () => {
         request: {
           method: '',
           params: {
-            chainId: TRANSACTION_META_MOCK.chainId,
+            chainId: `eip155:${parseInt(TRANSACTION_META_MOCK.chainId, 16)}`,
             transaction: TRANSACTION_META_MOCK.txParams,
             transactionOrigin: null,
           },

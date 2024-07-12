@@ -151,6 +151,9 @@ export class SnapInsightsController extends BaseController<
   #handleTransaction(transaction: TransactionMeta) {
     const { id, txParams, chainId, origin } = transaction;
 
+    // This assumes that the transactions are EVM-compatible for now.
+    const caipChainId = `eip155:${parseInt(chainId, 16)}`;
+
     const snaps = this.#getSnapsWithPermission(
       SnapEndowments.TransactionInsight,
     );
@@ -168,7 +171,11 @@ export class SnapInsightsController extends BaseController<
       this.#handleSnapRequest({
         snapId,
         handler: HandlerType.OnTransaction,
-        params: { transaction: txParams, chainId, transactionOrigin },
+        params: {
+          transaction: txParams,
+          chainId: caipChainId,
+          transactionOrigin,
+        },
       })
         .then((response) =>
           this.#handleSnapResponse({
