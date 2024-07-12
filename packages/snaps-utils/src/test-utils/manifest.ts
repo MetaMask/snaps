@@ -69,7 +69,6 @@ export const ALTERNATIVE_SNAP_ICON =
 
 // This will need to be recalculated if the checksum inputs change.
 export const DEFAULT_SNAP_SHASUM =
-  //  'rNyfINgNh161cBmUop+F7xlE+GSEDZH53Y/HDpGLGGg=';
   'J5omcPnXWBn7mvD8Et/8VsxDIolUG56cT6iYnJGuHmM=';
 /**
  * Get a mock snap manifest, based on the provided options. This is useful for
