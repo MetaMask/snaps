@@ -32,7 +32,7 @@
     "@ethersproject/units": "^5.7.0",
     "@metamask/base-controller": "^6.0.0",
     "@metamask/eth-json-rpc-middleware": "^12.1.2",
-    "@metamask/json-rpc-engine": "^9.0.0",
+    "@metamask/json-rpc-engine": "^9.0.1",
     "@metamask/json-rpc-middleware-stream": "^8.0.0",
     "@metamask/key-tree": "^9.1.1",
     "@metamask/permission-controller": "^10.0.0",
