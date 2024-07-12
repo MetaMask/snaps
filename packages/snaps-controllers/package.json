@@ -53,7 +53,7 @@
     "build:ci": "tsup --clean"
   },
   "dependencies": {
-    "@metamask/approval-controller": "^7.0.0",
+    "@metamask/approval-controller": "^7.0.1",
     "@metamask/base-controller": "^6.0.0",
     "@metamask/json-rpc-engine": "^9.0.0",
     "@metamask/json-rpc-middleware-stream": "^8.0.0",
