@@ -130,8 +130,8 @@ export async function checkManifest(
       shouldRunFixes = Boolean(results.fixes.length);
     }
 
-    // If we fixed all the errors the files will exist
-    if (results.files) {
+    if (!shouldRunFixes) {
+      assert(results.files);
       try {
         await writeFileFn(
           pathUtils.join(basePath, NpmSnapFileNames.Manifest),

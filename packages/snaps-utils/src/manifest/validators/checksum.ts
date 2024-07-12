@@ -8,21 +8,20 @@ import type { ValidatorMeta } from '../validator-types';
  */
 export const checksum: ValidatorMeta = {
   severity: 'error',
-  async validatedCheck(files, context) {
+  async semanticCheck(files, context) {
     const fetchedFiles: FetchedSnapFiles = {
       manifest: files.manifest,
       sourceCode: files.sourceCode,
       auxiliaryFiles: files.auxiliaryFiles,
       localizationFiles: files.localizationFiles,
     };
-    if (
-      files.manifest.result.source.shasum !==
-      (await getSnapChecksum(fetchedFiles))
-    ) {
+    const gotChecksum = files.manifest.result.source.shasum;
+    const expectedChecksum = await getSnapChecksum(fetchedFiles);
+    if (gotChecksum !== expectedChecksum) {
       context.report(
-        `"${NpmSnapFileNames.Manifest}" "shasum" field does not match computed shasum.`,
+        `"${NpmSnapFileNames.Manifest}" "shasum" field does not match computed shasum. Got "${gotChecksum}", expected "${expectedChecksum}"`,
         async ({ manifest }) => {
-          manifest.source.shasum = await getSnapChecksum(fetchedFiles);
+          manifest.source.shasum = expectedChecksum;
           return { manifest };
         },
       );

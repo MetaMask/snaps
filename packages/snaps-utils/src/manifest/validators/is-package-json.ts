@@ -8,7 +8,7 @@ import type { ValidatorMeta } from '../validator-types';
  */
 export const isPackageJson: ValidatorMeta = {
   severity: 'error',
-  validationCheck(files, context) {
+  structureCheck(files, context) {
     if (!files.packageJson) {
       return;
     }

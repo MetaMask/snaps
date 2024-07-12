@@ -10,3 +10,4 @@ export * from './package-json-recommended-fields';
 export * from './package-name-match';
 export * from './repository-match';
 export * from './version-match';
+export * from './icon-exists';

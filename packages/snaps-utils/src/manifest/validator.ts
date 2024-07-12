@@ -1,6 +1,6 @@
 import { assert } from '@metamask/utils';
-import type { SnapFiles, UnvalidatedSnapFiles } from 'src/types';
 
+import type { SnapFiles, UnvalidatedSnapFiles } from '../types';
 import type {
   ValidatorContext,
   ValidatorFix,
@@ -74,16 +74,16 @@ export async function runValidators(
   rules: ValidatorMeta[] = Object.values(defaultValidators),
 ): Promise<ValidatorResults> {
   const context = new Context();
-  const validationRules = rules.filter(({ validationCheck }) =>
+  const validationRules = rules.filter(({ structureCheck: validationCheck }) =>
     Boolean(validationCheck),
   );
-  const validatedRules = rules.filter(({ validatedCheck }) =>
+  const validatedRules = rules.filter(({ semanticCheck: validatedCheck }) =>
     Boolean(validatedCheck),
   );
 
   for (const rule of validationRules) {
     context.nextSeverity = rule.severity;
-    await rule.validationCheck?.(files, context);
+    await rule.structureCheck?.(files, context);
   }
   if (context.hasErrors) {
     return {
@@ -94,14 +94,7 @@ export async function runValidators(
   }
   for (const rule of validatedRules) {
     context.nextSeverity = rule.severity;
-    await rule.validatedCheck?.(files as SnapFiles, context);
-  }
-  if (context.hasErrors) {
-    return {
-      warnings: context.warnings(),
-      errors: context.errors(),
-      fixes: context.fixes(),
-    };
+    await rule.semanticCheck?.(files as SnapFiles, context);
   }
   return {
     files: files as SnapFiles,

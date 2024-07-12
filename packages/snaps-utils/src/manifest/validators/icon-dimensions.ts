@@ -6,7 +6,7 @@ import type { ValidatorMeta } from '../validator-types';
  */
 export const iconDimensions: ValidatorMeta = {
   severity: 'warning',
-  validatedCheck(files, context) {
+  semanticCheck(files, context) {
     if (!files.svgIcon) {
       return;
     }

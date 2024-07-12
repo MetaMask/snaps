@@ -1,6 +1,5 @@
-import type { SnapFiles, UnvalidatedSnapFiles } from 'src/types';
-
-import type { SnapManifest } from '.';
+import type { SnapFiles, UnvalidatedSnapFiles } from '../types';
+import type { SnapManifest } from './validation';
 
 // TODO(ritave): Research using patch based fixing similar to eslint
 //               https://eslint.org/docs/latest/extend/custom-rules#applying-fixes
@@ -22,7 +21,7 @@ export type ValidatorMeta = {
    * @param files - Files to be verified
    * @param context - Validator context to report errors
    */
-  validationCheck?: (
+  structureCheck?: (
     files: UnvalidatedSnapFiles,
     context: ValidatorContext,
   ) => void | Promise<void>;
@@ -32,7 +31,7 @@ export type ValidatorMeta = {
    * @param files - Files to be verified
    * @param context - Validator context to report errors
    */
-  validatedCheck?: (
+  semanticCheck?: (
     files: SnapFiles,
     context: ValidatorContext,
   ) => void | Promise<void>;

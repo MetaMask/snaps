@@ -6,7 +6,7 @@ import type { ValidatorMeta } from '../validator-types';
  */
 export const packageNameMatch: ValidatorMeta = {
   severity: 'error',
-  validatedCheck(files, context) {
+  semanticCheck(files, context) {
     const packageJsonName = files.packageJson.result.name;
     const manifestPackageName =
       files.manifest.result.source.location.npm.packageName;

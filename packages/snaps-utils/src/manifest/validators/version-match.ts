@@ -6,7 +6,7 @@ import type { ValidatorMeta } from '../validator-types';
  */
 export const VersionMatch: ValidatorMeta = {
   severity: 'error',
-  validatedCheck(files, context) {
+  semanticCheck(files, context) {
     const packageJsonVersion = files.packageJson.result.version;
     const manifestPackageVersion = files.manifest.result.version;
     if (packageJsonVersion !== manifestPackageVersion) {

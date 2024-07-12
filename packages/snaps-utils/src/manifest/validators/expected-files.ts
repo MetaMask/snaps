@@ -14,14 +14,14 @@ const SnapFileNameFromKey = {
  */
 export const expectedFiles: ValidatorMeta = {
   severity: 'error',
-  validationCheck(files, context) {
+  structureCheck(files, context) {
     for (const expectedFile of EXPECTED_SNAP_FILES) {
       if (!files[expectedFile]) {
         context.report(`Missing file "${SnapFileNameFromKey[expectedFile]}".`);
       }
     }
   },
-  validatedCheck(files, ctx) {
+  semanticCheck(files, ctx) {
     const { iconPath } = files.manifest.result.source.location.npm;
     if (iconPath && !files.svgIcon) {
       ctx.report(`Missing file "${iconPath}".`);

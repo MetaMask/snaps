@@ -7,7 +7,7 @@ const RECOMMENDED_FIELDS = ['repository'] as const;
  */
 export const packageJsonRecommendedFields: ValidatorMeta = {
   severity: 'warning',
-  validatedCheck(files, context) {
+  semanticCheck(files, context) {
     for (const recommendedField of RECOMMENDED_FIELDS) {
       if (!files.packageJson.result[recommendedField]) {
         context.report(

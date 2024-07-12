@@ -9,7 +9,7 @@ import type { ValidatorMeta } from '../validator-types';
  */
 export const repositoryMatch: ValidatorMeta = {
   severity: 'error',
-  validatedCheck(files, context) {
+  semanticCheck(files, context) {
     const packageJsonRepository = files.packageJson.result.repository;
     const manifestRepository = files.manifest.result.repository;
     if (

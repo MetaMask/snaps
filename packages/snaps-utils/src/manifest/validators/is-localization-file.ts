@@ -10,7 +10,7 @@ import type { ValidatorMeta } from '../validator-types';
  */
 export const isLocalizationFile: ValidatorMeta = {
   severity: 'error',
-  validationCheck(files, context) {
+  structureCheck(files, context) {
     for (const file of files.localizationFiles) {
       try {
         const [error] = validate(

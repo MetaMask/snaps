@@ -9,7 +9,7 @@ import type { ValidatorMeta } from '../validator-types';
  */
 export const isSnapManifest: ValidatorMeta = {
   severity: 'error',
-  validationCheck(files, context) {
+  structureCheck(files, context) {
     if (!files.manifest) {
       return;
     }

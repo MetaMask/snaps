@@ -2,25 +2,19 @@ import { promises as fs } from 'fs';
 import { join } from 'path';
 
 import { readJsonFile } from '../fs';
-import * as npm from '../npm';
-import { validateNpmSnap } from '../npm';
-import { ProgrammaticallyFixableSnapError } from '../snaps';
 import {
   DEFAULT_SNAP_BUNDLE,
   DEFAULT_SNAP_ICON,
   DEFAULT_SNAP_SHASUM,
   MOCK_AUXILIARY_FILE,
   getPackageJson,
-  getMockSnapFiles,
   getSnapManifest,
   getMockLocalizationFile,
   getMockSnapFilesWithUpdatedChecksum,
 } from '../test-utils';
-import type { SnapFiles } from '../types';
-import { NpmSnapFileNames, SnapValidationFailureReason } from '../types';
+import { NpmSnapFileNames } from '../types';
 import {
   checkManifest,
-  fixManifest,
   getSnapFilePaths,
   getSnapFiles,
   getSnapIcon,
@@ -30,9 +24,6 @@ import {
 import type { SnapManifest } from './validation';
 
 jest.mock('fs');
-jest.mock('../npm', () => ({
-  validateNpmSnap: jest.fn(),
-}));
 
 const BASE_PATH = '/snap';
 const MANIFEST_PATH = join(BASE_PATH, NpmSnapFileNames.Manifest);
@@ -61,10 +52,6 @@ async function resetFileSystem() {
 describe('checkManifest', () => {
   beforeEach(async () => {
     await resetFileSystem();
-
-    (
-      validateNpmSnap as jest.MockedFunction<typeof validateNpmSnap>
-    ).mockImplementation(jest.requireActual('../npm').validateNpmSnap);
   });
 
   it('returns the status and warnings after processing', async () => {
@@ -125,7 +112,9 @@ describe('checkManifest', () => {
     const { updated, warnings } = await checkManifest(BASE_PATH);
     expect(updated).toBe(true);
     expect(warnings).toHaveLength(1);
-    expect(warnings[0]).toMatch('Missing recommended package.json properties');
+    expect(warnings[0]).toMatch(
+      'Missing recommended package.json property: "repository"',
+    );
   });
 
   it('returns a warning if manifest has no defined icon', async () => {
@@ -165,32 +154,24 @@ describe('checkManifest', () => {
       JSON.stringify(
         getSnapManifest({
           version: '0.0.1',
-          shasum: '29MYwcRiruhy9BEJpN/TBIhxoD3t0P4OdXztV9rW8tc=',
+          shasum: '1234567890123456789012345678901234567890123=',
         }),
       ),
     );
 
-    const { manifest, updated, errors, warnings } = await checkManifest(
-      BASE_PATH,
-      false,
-    );
+    const { errors, warnings } = await checkManifest(BASE_PATH, false);
 
-    expect(manifest).toStrictEqual(getSnapManifest());
-    expect(updated).toBe(true);
     expect(warnings).toHaveLength(0);
 
-    expect(errors).toStrictEqual([
-      '"snap.manifest.json" npm package version ("0.0.1") does not match the "package.json" "version" field ("1.0.0").',
-      '"snap.manifest.json" "shasum" field does not match computed shasum.',
-    ]);
-  });
-
-  it('throws an error if the error is not programmatically fixable', async () => {
-    jest.spyOn(npm, 'validateNpmSnap').mockImplementation(() => {
-      throw new Error('foo');
-    });
-
-    await expect(checkManifest(BASE_PATH)).rejects.toThrow('foo');
+    expect(errors).toHaveLength(2);
+    // Make this test order independent
+    // eslint-disable-next-line jest/prefer-strict-equal
+    expect(errors).toEqual(
+      expect.arrayContaining([
+        '"snap.manifest.json" npm package version ("0.0.1") does not match the "package.json" "version" field ("1.0.0").',
+        '"snap.manifest.json" "shasum" field does not match computed shasum. Got "1234567890123456789012345678901234567890123=", expected "K4oN/+x2OnRDN79YDO5/UjqIBFjjNrWPvgZdDMw8WXs="',
+      ]),
+    );
   });
 
   it('throws an error if the localization files cannot be loaded', async () => {
@@ -208,7 +189,7 @@ describe('checkManifest', () => {
     );
   });
 
-  it('throws an error if the localization files are invalid', async () => {
+  it('returns an error if the localization files are invalid', async () => {
     const localizationFile = getMockLocalizationFile({
       locale: 'en',
       // @ts-expect-error - Invalid type.
@@ -229,12 +210,13 @@ describe('checkManifest', () => {
       JSON.stringify(localizationFile),
     );
 
-    await expect(checkManifest(BASE_PATH)).rejects.toThrow(
+    const { errors } = await checkManifest(BASE_PATH);
+    expect(errors).toStrictEqual([
       'Failed to validate localization file "/snap/locales/en.json": At path: messages -- Expected an object, but received: "foo".',
-    );
+    ]);
   });
 
-  it('throws an error if the localization files are missing translations', async () => {
+  it('returns an error if the localization files are missing translations', async () => {
     const localizationFile = getMockLocalizationFile({
       locale: 'en',
       messages: {},
@@ -255,12 +237,16 @@ describe('checkManifest', () => {
       JSON.stringify(localizationFile),
     );
 
-    await expect(checkManifest(BASE_PATH)).rejects.toThrow(
+    const { errors } = await checkManifest(BASE_PATH);
+    expect(errors).toStrictEqual([
       'Failed to localize Snap manifest: Failed to translate "{{ name }}": No translation found for "name" in "en" file.',
-    );
+    ]);
   });
 
   it('throws an error if writing the manifest fails', async () => {
+    const manifest = getSnapManifest({ version: '0.0.1' });
+    await fs.writeFile(MANIFEST_PATH, JSON.stringify(manifest));
+
     jest.spyOn(fs, 'writeFile').mockImplementation(() => {
       throw new Error('foo');
     });
@@ -268,87 +254,6 @@ describe('checkManifest', () => {
     await expect(checkManifest(BASE_PATH)).rejects.toThrow(
       'Failed to update snap.manifest.json: foo',
     );
-  });
-});
-
-describe('fixManifest', () => {
-  it('fixes a name mismatch in the manifest', async () => {
-    const files: SnapFiles = getMockSnapFiles({
-      manifest: getSnapManifest({ packageName: 'foo' }),
-      packageJson: getPackageJson({ name: 'bar' }),
-      sourceCode: DEFAULT_SNAP_BUNDLE,
-    });
-
-    const manifest = await fixManifest(
-      files,
-      new ProgrammaticallyFixableSnapError(
-        'foo',
-        SnapValidationFailureReason.NameMismatch,
-      ),
-    );
-
-    expect(manifest.result).toStrictEqual(
-      getSnapManifest({ packageName: 'bar' }),
-    );
-  });
-
-  it('fixes a version mismatch in the manifest', async () => {
-    const files: SnapFiles = getMockSnapFiles({
-      manifest: getSnapManifest({ version: '1' }),
-      packageJson: getPackageJson({ version: '2' }),
-      sourceCode: DEFAULT_SNAP_BUNDLE,
-    });
-
-    const manifest = await fixManifest(
-      files,
-      new ProgrammaticallyFixableSnapError(
-        'foo',
-        SnapValidationFailureReason.VersionMismatch,
-      ),
-    );
-
-    expect(manifest.result).toStrictEqual(getSnapManifest({ version: '2' }));
-  });
-
-  it('fixes a repository mismatch in the manifest', async () => {
-    const files: SnapFiles = getMockSnapFiles({
-      manifest: getSnapManifest({ repository: { type: 'git', url: 'foo' } }),
-      packageJson: getPackageJson({ repository: { type: 'git', url: 'bar' } }),
-      sourceCode: DEFAULT_SNAP_BUNDLE,
-    });
-
-    const manifest = await fixManifest(
-      files,
-      new ProgrammaticallyFixableSnapError(
-        'foo',
-        SnapValidationFailureReason.RepositoryMismatch,
-      ),
-    );
-
-    expect(manifest.result).toStrictEqual(
-      getSnapManifest({ repository: { type: 'git', url: 'bar' } }),
-    );
-  });
-
-  it('fixes a shasum mismatch in the manifest', async () => {
-    const files: SnapFiles = getMockSnapFiles({
-      manifest: getSnapManifest({
-        shasum: '29MYwcRiruhy9BEJpN/TBIhxoD3t0P4OdXztV9rW8tc=',
-      }),
-      packageJson: getPackageJson(),
-      sourceCode: DEFAULT_SNAP_BUNDLE,
-      svgIcon: DEFAULT_SNAP_ICON,
-    });
-
-    const manifest = await fixManifest(
-      files,
-      new ProgrammaticallyFixableSnapError(
-        'foo',
-        SnapValidationFailureReason.ShasumMismatch,
-      ),
-    );
-
-    expect(manifest.result).toStrictEqual(getSnapManifest());
   });
 });
 
