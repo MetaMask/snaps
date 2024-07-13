@@ -39,6 +39,10 @@ import type {
   CronjobControllerEvents,
 } from '../cronjob';
 import type {
+  SnapInsightsControllerAllowedActions,
+  SnapInsightsControllerAllowedEvents,
+} from '../insights';
+import type {
   SnapInterfaceControllerActions,
   SnapInterfaceControllerAllowedActions,
   StoredInterface,
@@ -239,6 +243,63 @@ export const MOCK_ORIGIN_PERMISSIONS: Record<string, PermissionConstraint> = {
 export const MOCK_SNAP_PERMISSIONS: Record<string, PermissionConstraint> = {
   [SnapEndowments.Rpc]: MOCK_RPC_ORIGINS_PERMISSION,
   [snapDialogPermissionKey]: MOCK_SNAP_DIALOG_PERMISSION,
+};
+
+export const MOCK_INSIGHTS_PERMISSIONS: Record<string, PermissionConstraint> = {
+  [SnapEndowments.TransactionInsight]: {
+    caveats: [
+      {
+        type: SnapCaveatType.TransactionOrigin,
+        value: true,
+      },
+    ],
+    date: 1664187844588,
+    id: 'izn0WGUO8cvq_jqvLQuQP',
+    invoker: MOCK_SNAP_ID,
+    parentCapability: SnapEndowments.TransactionInsight,
+  },
+  [SnapEndowments.SignatureInsight]: {
+    caveats: [
+      {
+        type: SnapCaveatType.SignatureOrigin,
+        value: true,
+      },
+    ],
+    date: 1664187844588,
+    id: 'izn0WGUO8cvq_jqvLQuQP',
+    invoker: MOCK_SNAP_ID,
+    parentCapability: SnapEndowments.SignatureInsight,
+  },
+};
+
+export const MOCK_INSIGHTS_PERMISSIONS_NO_ORIGINS: Record<
+  string,
+  PermissionConstraint
+> = {
+  [SnapEndowments.TransactionInsight]: {
+    caveats: [
+      {
+        type: SnapCaveatType.TransactionOrigin,
+        value: false,
+      },
+    ],
+    date: 1664187844588,
+    id: 'izn0WGUO8cvq_jqvLQuQP',
+    invoker: MOCK_SNAP_ID,
+    parentCapability: SnapEndowments.TransactionInsight,
+  },
+  [SnapEndowments.SignatureInsight]: {
+    caveats: [
+      {
+        type: SnapCaveatType.SignatureOrigin,
+        value: false,
+      },
+    ],
+    date: 1664187844588,
+    id: 'izn0WGUO8cvq_jqvLQuQP',
+    invoker: MOCK_SNAP_ID,
+    parentCapability: SnapEndowments.SignatureInsight,
+  },
 };
 
 export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
@@ -717,4 +778,43 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
   }
 
   return snapInterfaceControllerMessenger;
+};
+
+// Mock controller messenger for Insight Controller
+export const getRootSnapInsightsControllerMessenger = () => {
+  const messenger = new MockControllerMessenger<
+    SnapInsightsControllerAllowedActions,
+    SnapInsightsControllerAllowedEvents
+  >();
+
+  jest.spyOn(messenger, 'call');
+
+  return messenger;
+};
+
+export const getRestrictedSnapInsightsControllerMessenger = (
+  messenger: ReturnType<
+    typeof getRootSnapInsightsControllerMessenger
+  > = getRootSnapInsightsControllerMessenger(),
+) => {
+  const controllerMessenger = messenger.getRestricted<
+    'SnapInsightsController',
+    SnapInsightsControllerAllowedActions['type'],
+    SnapInsightsControllerAllowedEvents['type']
+  >({
+    name: 'SnapInsightsController',
+    allowedEvents: [
+      'TransactionController:unapprovedTransactionAdded',
+      'TransactionController:transactionStatusUpdated',
+      'SignatureController:stateChange',
+    ],
+    allowedActions: [
+      'PermissionController:getPermissions',
+      'SnapController:getAll',
+      'SnapController:handleRequest',
+      'SnapInterfaceController:deleteInterface',
+    ],
+  });
+
+  return controllerMessenger;
 };

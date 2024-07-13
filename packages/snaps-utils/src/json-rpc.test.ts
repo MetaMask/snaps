@@ -208,6 +208,13 @@ describe('isOriginAllowed', () => {
     expect(
       isOriginAllowed(origins, SubjectType.Website, 'https://foo.metamask.io'),
     ).toBe(true);
+    expect(
+      isOriginAllowed(
+        origins,
+        SubjectType.Website,
+        'https://foo.metamask.io.bad.com',
+      ),
+    ).toBe(false);
   });
 
   it('supports multiple wildcards', () => {
