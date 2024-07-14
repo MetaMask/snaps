@@ -9,7 +9,7 @@ import { Dropdown } from './Dropdown';
  * state in the form data.
  * @property children - The text to display.
  */
-type OptionProps = {
+export type OptionProps = {
   value: string;
   children: string;
 };

@@ -9,6 +9,7 @@ const { join, dirname } = jest.requireActual('path');
 // to provide the files it's looking for.
 const BROWSERIFY_FILES = [
   /* eslint-disable n/no-extraneous-require */
+  join(dirname(require.resolve('core-js-compat')), 'data.json'),
   join(dirname(require.resolve('is-core-module/package.json')), 'core.json'),
   join(dirname(require.resolve('browser-pack/package.json')), '_prelude.js'),
   /* eslint-enable n/no-extraneous-require */
