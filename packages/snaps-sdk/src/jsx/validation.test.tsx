@@ -61,11 +61,11 @@ import {
 } from './validation';
 
 describe('KeyStruct', () => {
-  it.each(['foo', 42])('validates a key', (value) => {
+  it.each(['foo', 'bar'])('validates a key', (value) => {
     expect(is(value, KeyStruct)).toBe(true);
   });
 
-  it.each([null, undefined, {}, []])('does not validate "%p"', (value) => {
+  it.each([42, null, undefined, {}, []])('does not validate "%p"', (value) => {
     expect(is(value, KeyStruct)).toBe(false);
   });
 });

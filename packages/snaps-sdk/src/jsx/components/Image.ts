@@ -9,7 +9,7 @@ import { createSnapComponent } from '../component';
  * @property alt - The alternative text of the image, which describes the image
  * for users who cannot see it.
  */
-type ImageProps = {
+export type ImageProps = {
   src: string;
   alt?: string | undefined;
 };

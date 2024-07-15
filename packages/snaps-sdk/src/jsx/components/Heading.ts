@@ -6,7 +6,7 @@ import { createSnapComponent } from '../component';
  *
  * @property children - The text to display in the heading.
  */
-type HeadingProps = {
+export type HeadingProps = {
   children: StringElement;
 };
 
