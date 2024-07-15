@@ -1,5 +1,5 @@
 import type { MetaMaskInpageProvider } from '@metamask/providers';
-import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
+import type { RequestArguments } from '@metamask/providers/dist/BaseProvider.d.cts';
 import { logError } from '@metamask/snaps-utils';
 import type { JsonRpcError, JsonRpcParams } from '@metamask/utils';
 import type { BaseQueryFn } from '@reduxjs/toolkit/query/react';
