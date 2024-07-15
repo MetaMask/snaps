@@ -1,4 +1,4 @@
-import type { ConsoleLike } from '@metamask/providers/dist/utils.d.cts';
+import type { ConsoleLike } from '@metamask/providers/dist/utils';
 
 export const SILENT_LOGGER: ConsoleLike = {
   log: () => undefined,
