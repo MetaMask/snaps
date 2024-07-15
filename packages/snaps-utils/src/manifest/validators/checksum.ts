@@ -9,12 +9,7 @@ import type { ValidatorMeta } from '../validator-types';
 export const checksum: ValidatorMeta = {
   severity: 'error',
   async semanticCheck(files, context) {
-    const fetchedFiles: FetchedSnapFiles = {
-      manifest: files.manifest,
-      sourceCode: files.sourceCode,
-      auxiliaryFiles: files.auxiliaryFiles,
-      localizationFiles: files.localizationFiles,
-    };
+    const fetchedFiles: FetchedSnapFiles = files;
     const gotChecksum = files.manifest.result.source.shasum;
     const expectedChecksum = await getSnapChecksum(fetchedFiles);
     if (gotChecksum !== expectedChecksum) {

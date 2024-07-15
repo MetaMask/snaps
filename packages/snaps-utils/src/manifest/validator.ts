@@ -74,14 +74,8 @@ export async function runValidators(
   rules: ValidatorMeta[] = Object.values(defaultValidators),
 ): Promise<ValidatorResults> {
   const context = new Context();
-  const validationRules = rules.filter(({ structureCheck: validationCheck }) =>
-    Boolean(validationCheck),
-  );
-  const validatedRules = rules.filter(({ semanticCheck: validatedCheck }) =>
-    Boolean(validatedCheck),
-  );
 
-  for (const rule of validationRules) {
+  for (const rule of rules) {
     context.nextSeverity = rule.severity;
     await rule.structureCheck?.(files, context);
   }
@@ -92,7 +86,8 @@ export async function runValidators(
       fixes: context.fixes(),
     };
   }
-  for (const rule of validatedRules) {
+
+  for (const rule of rules) {
     context.nextSeverity = rule.severity;
     await rule.semanticCheck?.(files as SnapFiles, context);
   }

@@ -169,7 +169,7 @@ describe('checkManifest', () => {
     expect(errors).toEqual(
       expect.arrayContaining([
         '"snap.manifest.json" npm package version ("0.0.1") does not match the "package.json" "version" field ("1.0.0").',
-        '"snap.manifest.json" "shasum" field does not match computed shasum. Got "1234567890123456789012345678901234567890123=", expected "K4oN/+x2OnRDN79YDO5/UjqIBFjjNrWPvgZdDMw8WXs="',
+        '"snap.manifest.json" "shasum" field does not match computed shasum. Got "1234567890123456789012345678901234567890123=", expected "TVOA4znZze3/eDErYSzrFF6z67fu9cL70+ZfgUM6nCQ="',
       ]),
     );
   });
