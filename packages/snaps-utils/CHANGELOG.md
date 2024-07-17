@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [7.8.0]
 ### Added
-- Add function `serialiseJsx`, which serializes a JSX node to a string. ([#2409](https://github.com/metamask/snaps/pull/2409))
+- Move `serialiseJsx` function from `snaps-jest` to `snaps-utils` ([#2409](https://github.com/metamask/snaps/pull/2409))
 
 ### Changed
 - Bump `@metamask/base-controller` from `^6.0.0` to `^6.0.1` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Replace `superstruct` with ESM-compatible `@metamask/superstruct` `^3.1.0` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
   - This fixes the issue of this package being unusable by any TypeScript project that uses `Node16` or `NodeNext` as its `moduleResolution` option.
-- Prevent `allowedOrigins` from being bypassed by enforcing that regex are terminated with $. ([#2576](https://github.com/metamask/snaps/pull/2576))
+- Fix `allowedOrigins` bypass caused by unterminated regex ([#2576](https://github.com/metamask/snaps/pull/2576))
 
 ## [7.7.0]
 ### Added

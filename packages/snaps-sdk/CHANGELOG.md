@@ -8,20 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [7.0.0]
 ### Added
-- **BREAKING:** Add non-restricted RPC method `snap_resolveInterface`, which allows a snap to resolve a given user interface bound to a `snap_dialog` with a custom value. ([#2509](https://github.com/metamask/snaps/pull/2509))
+- Add non-restricted RPC method `snap_resolveInterface` ([#2509](https://github.com/metamask/snaps/pull/2509))
+   - This method allows a Snap to resolve a given user interface bound to a `snap_dialog` with a custom value.
   - Add new types `ResolveInterfaceParams`, `ResolveInterfaceResult`.
-- feat: Card component ([#2480](https://github.com/metamask/snaps/pull/2480))
+- Add `Card` component ([#2480](https://github.com/metamask/snaps/pull/2480))
 - Add `BoxChildStruct`, `FormChildStruct`, `FieldChildUnionStruct`. ([#2409](https://github.com/metamask/snaps/pull/2409))
 - Add `Container` and `Footer` components ([#2517](https://github.com/metamask/snaps/pull/2517))
 
 ### Changed
-- `RootJSXElementStruct` is updated so that the allowed JSX elements at the root are the null union of the Container component and the allowed children of the Box component. ([#2526](https://github.com/metamask/snaps/pull/2526))
+- Update `RootJSXElement` to allow `Container` or `Box` at the root ([#2526](https://github.com/metamask/snaps/pull/2526))
 - Bump `@metamask/key-tree` from `^9.1.1` to `^9.1.2` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
 - Bump `@metamask/rpc-errors` from `^6.2.1` to `^6.3.1` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
 - Bump `@metamask/utils` from `^8.3.0` to `^9.1.0` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
 
 ### Fixed
-- Add `typedUnion` utility which strictly validates members of the union based on a type field. ([#2534](https://github.com/metamask/snaps/pull/2534))
 - Replace `superstruct` with ESM-compatible `@metamask/superstruct` `^3.1.0` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
   - This fixes the issue of this package being unusable by any TypeScript project that uses `Node16` or `NodeNext` as its `moduleResolution` option.
 - Set `@metamask/providers` from `^17.0.0` to `17.0.0` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
