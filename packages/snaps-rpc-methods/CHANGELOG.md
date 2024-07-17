@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.0.0]
+### Added
+- **BREAKING:** `snap_dialog` now takes the `requestUserApproval` hook ([#2509](https://github.com/metamask/snaps/pull/2509))
+  - It should bind to the `addAndShowRequest` method of the `ApprovalController`.
+  - Add type `DialogApprovalTypes` and object `DIALOG_APPROVAL_TYPES`.
+
+### Changed
+- Bump `@metamask/key-tree` from `^9.1.1` to `^9.1.2` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
+- Bump `@metamask/permission-controller` from `^10.0.0` to `^10.0.1` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
+- Bump `@metamask/rpc-errors` from `^6.2.1` to `^6.3.1` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
+- Bump `@metamask/utils` from `^8.3.0` to `^9.1.0` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
+
+### Fixed
+- Replace `superstruct` with ESM-compatible `@metamask/superstruct` `^3.1.0` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
+  - This fixes the issue of this package being unusable by any TypeScript project that uses `Node16` or `NodeNext` as its `moduleResolution` option.
+
 ## [9.1.4]
 ### Changed
 - Bump MetaMask dependencies ([#2516](https://github.com/MetaMask/snaps/pull/2516))
@@ -162,7 +178,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@9.1.4...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@10.0.0...HEAD
+[10.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@9.1.4...@metamask/snaps-rpc-methods@10.0.0
 [9.1.4]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@9.1.3...@metamask/snaps-rpc-methods@9.1.4
 [9.1.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@9.1.2...@metamask/snaps-rpc-methods@9.1.3
 [9.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@9.1.1...@metamask/snaps-rpc-methods@9.1.2
