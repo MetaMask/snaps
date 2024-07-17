@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
    - This method allows a Snap to resolve a given user interface bound to a `snap_dialog` with a custom value.
   - Add new types `ResolveInterfaceParams`, `ResolveInterfaceResult`.
 - Add `Card` component ([#2480](https://github.com/metamask/snaps/pull/2480))
-- Add `BoxChildStruct`, `FormChildStruct`, `FieldChildUnionStruct`. ([#2409](https://github.com/metamask/snaps/pull/2409))
+- Add `BoxChildStruct`, `FormChildStruct`, `FieldChildUnionStruct` ([#2409](https://github.com/metamask/snaps/pull/2409))
 - Add `Container` and `Footer` components ([#2517](https://github.com/metamask/snaps/pull/2517))
 
 ### Changed

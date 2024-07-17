@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [10.0.0]
 ### Added
 - **BREAKING:** `snap_dialog` now takes the `requestUserApproval` hook ([#2509](https://github.com/metamask/snaps/pull/2509))
-   - It should bind to the `addAndShowRequest` method of the `ApprovalController`.
+  - It should bind to the `addAndShowRequest` method of the `ApprovalController`.
   - Add type `DialogApprovalTypes` and object `DIALOG_APPROVAL_TYPES`.
 
 ### Changed
