@@ -1,23 +1,23 @@
 import { union } from '@metamask/snaps-sdk';
-import type { NonEmptyArray } from '@metamask/utils';
-import { assert, isObject } from '@metamask/utils';
-import { bold, green, red } from 'chalk';
-import type { Failure } from 'superstruct';
+import type {
+  AnyStruct,
+  Assign,
+  Failure,
+  ObjectSchema,
+  ObjectType,
+} from '@metamask/superstruct';
 import {
+  assign,
   is,
   validate,
   type as superstructType,
   Struct,
   StructError,
   create,
-  assign,
-} from 'superstruct';
-import type {
-  AnyStruct,
-  Assign,
-  ObjectSchema,
-  ObjectType,
-} from 'superstruct/dist/utils';
+} from '@metamask/superstruct';
+import type { NonEmptyArray } from '@metamask/utils';
+import { assert, isObject } from '@metamask/utils';
+import { bold, green, red } from 'chalk';
 
 import { indent } from './strings';
 

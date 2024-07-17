@@ -1,5 +1,12 @@
-import type { Infer } from 'superstruct';
-import { assign, literal, object, optional, string, union } from 'superstruct';
+import type { Infer } from '@metamask/superstruct';
+import {
+  assign,
+  literal,
+  object,
+  optional,
+  string,
+  union,
+} from '@metamask/superstruct';
 
 import { enumValue } from '../../internals';
 import { createBuilder } from '../builder';

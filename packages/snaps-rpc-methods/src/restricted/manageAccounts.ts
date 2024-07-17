@@ -9,9 +9,16 @@ import type {
   ManageAccountsResult,
 } from '@metamask/snaps-sdk';
 import type { InferMatching } from '@metamask/snaps-utils';
+import {
+  assert,
+  string,
+  object,
+  union,
+  array,
+  record,
+} from '@metamask/superstruct';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import { JsonStruct } from '@metamask/utils';
-import { assert, string, object, union, array, record } from 'superstruct';
 
 const SnapMessageStruct = union([
   object({

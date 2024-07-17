@@ -1,4 +1,4 @@
-import { is, validate } from 'superstruct';
+import { is, validate } from '@metamask/superstruct';
 
 import { Text } from '../jsx';
 import { BoxStruct, FieldStruct, TextStruct } from '../jsx/validation';

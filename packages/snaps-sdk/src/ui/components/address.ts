@@ -1,6 +1,6 @@
+import type { Infer } from '@metamask/superstruct';
+import { assign, literal, object } from '@metamask/superstruct';
 import { HexChecksumAddressStruct } from '@metamask/utils';
-import type { Infer } from 'superstruct';
-import { assign, literal, object } from 'superstruct';
 
 import { createBuilder } from '../builder';
 import { LiteralStruct, NodeType } from '../nodes';
