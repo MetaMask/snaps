@@ -1,14 +1,15 @@
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
-import { DialogType, type SnapId } from '@metamask/snaps-sdk';
+import type { SnapId } from '@metamask/snaps-sdk';
+import { DialogType } from '@metamask/snaps-sdk';
 import type { FooterElement } from '@metamask/snaps-sdk/jsx';
 import { HandlerType, getJsxChildren, logInfo } from '@metamask/snaps-utils';
+import { create } from '@metamask/superstruct';
 import {
+  assert,
   assertStruct,
   createModuleLogger,
   hasProperty,
-  assert,
 } from '@metamask/utils';
-import { create } from 'superstruct';
 
 import {
   rootLogger,

@@ -1,13 +1,12 @@
-import { hasProperty, isPlainObject } from '@metamask/utils';
-import type { Infer } from 'superstruct';
+import type { AnyStruct, Infer, InferStructTuple } from '@metamask/superstruct';
 import {
   Struct,
   define,
   is,
   literal as superstructLiteral,
   union as superstructUnion,
-} from 'superstruct';
-import type { AnyStruct, InferStructTuple } from 'superstruct/dist/utils';
+} from '@metamask/superstruct';
+import { hasProperty, isPlainObject } from '@metamask/utils';
 
 import type { EnumToUnion } from './helpers';
 

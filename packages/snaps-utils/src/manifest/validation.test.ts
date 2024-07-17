@@ -1,4 +1,4 @@
-import { assert, is, StructError } from 'superstruct';
+import { assert, is, StructError } from '@metamask/superstruct';
 
 import { getSnapManifest, MOCK_SNAP_ID } from '../test-utils';
 import {

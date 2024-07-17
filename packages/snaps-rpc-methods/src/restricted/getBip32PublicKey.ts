@@ -16,9 +16,9 @@ import {
   CurveStruct,
   SnapCaveatType,
 } from '@metamask/snaps-utils';
+import { boolean, object, optional } from '@metamask/superstruct';
 import type { NonEmptyArray } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
-import { boolean, object, optional } from 'superstruct';
 
 import type { MethodHooksObject } from '../utils';
 import { getNode } from '../utils';

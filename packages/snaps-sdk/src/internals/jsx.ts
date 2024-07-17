@@ -1,14 +1,15 @@
-import type { Infer, Struct } from 'superstruct';
 import type {
   AnyStruct,
   EnumSchema,
+  Infer,
   InferStructTuple,
   IsExactMatch,
   IsMatch,
   IsRecord,
   IsTuple,
+  Struct,
   UnionToIntersection,
-} from 'superstruct/dist/utils';
+} from '@metamask/superstruct';
 
 import type { EmptyObject } from '../types';
 import { union } from './structs';
