@@ -55,13 +55,8 @@ describe('checkManifest', () => {
   });
 
   it('returns the status and warnings after processing', async () => {
-    const {
-      updated,
-      finalWarnings: warnings,
-      finalErrors: errors,
-    } = await checkManifest(BASE_PATH);
-    expect(warnings).toHaveLength(0);
-    expect(errors).toHaveLength(0);
+    const { updated, reports } = await checkManifest(BASE_PATH);
+    expect(reports).toHaveLength(0);
     expect(updated).toBe(false);
   });
 
@@ -75,14 +70,14 @@ describe('checkManifest', () => {
       ),
     );
 
-    const {
-      manifest,
-      updated,
-      finalWarnings: warnings,
-    } = await checkManifest(BASE_PATH);
-    expect(manifest).toStrictEqual(getSnapManifest());
+    const { files, updated, reports } = await checkManifest(BASE_PATH);
+    const unfixed = reports.filter((report) => !report.wasFixed);
+    const fixed = reports.filter((report) => report.wasFixed);
+
+    expect(files?.manifest.result).toStrictEqual(getSnapManifest());
     expect(updated).toBe(true);
-    expect(warnings).toHaveLength(0);
+    expect(unfixed).toHaveLength(0);
+    expect(fixed).toHaveLength(1);
 
     const file = await readJsonFile<SnapManifest>(MANIFEST_PATH);
     const { source } = file.result;
@@ -100,14 +95,14 @@ describe('checkManifest', () => {
       ),
     );
 
-    const {
-      manifest,
-      updated,
-      finalWarnings: warnings,
-    } = await checkManifest(BASE_PATH);
-    expect(manifest).toStrictEqual(getSnapManifest());
+    const { files, updated, reports } = await checkManifest(BASE_PATH);
+    const unfixed = reports.filter((report) => !report.wasFixed);
+    const fixed = reports.filter((report) => report.wasFixed);
+
+    expect(files?.manifest.result).toStrictEqual(getSnapManifest());
     expect(updated).toBe(true);
-    expect(warnings).toHaveLength(0);
+    expect(unfixed).toHaveLength(0);
+    expect(fixed).toHaveLength(2);
 
     const file = await readJsonFile<SnapManifest>(MANIFEST_PATH);
     const { source, version } = file.result;
@@ -121,10 +116,13 @@ describe('checkManifest', () => {
 
     await fs.writeFile(PACKAGE_JSON_PATH, JSON.stringify(packageJson));
 
-    const { updated, finalWarnings: warnings } = await checkManifest(BASE_PATH);
+    const { updated, reports } = await checkManifest(BASE_PATH);
+
+    const warnings = reports.filter(({ severity }) => severity === 'warning');
+
     expect(updated).toBe(true);
     expect(warnings).toHaveLength(1);
-    expect(warnings[0]).toMatch(
+    expect(warnings[0].message).toMatch(
       'Missing recommended package.json property: "repository"',
     );
   });
@@ -137,9 +135,10 @@ describe('checkManifest', () => {
 
     await fs.writeFile(MANIFEST_PATH, JSON.stringify(manifest));
 
-    const { finalWarnings: warnings } = await checkManifest(BASE_PATH);
+    const { reports } = await checkManifest(BASE_PATH);
+    const warnings = reports.filter(({ severity }) => severity === 'warning');
     expect(warnings).toHaveLength(1);
-    expect(warnings[0]).toMatch(
+    expect(warnings[0].message).toMatch(
       'No icon found in the Snap manifest. It is recommended to include an icon for the Snap. See https://docs.metamask.io/snaps/how-to/design-a-snap/#guidelines-at-a-glance for more information.',
     );
   });
@@ -153,9 +152,10 @@ describe('checkManifest', () => {
     );
     await fs.writeFile(MANIFEST_PATH, JSON.stringify(manifest));
 
-    const { finalWarnings: warnings } = await checkManifest(BASE_PATH);
+    const { reports } = await checkManifest(BASE_PATH);
+    const warnings = reports.filter(({ severity }) => severity === 'warning');
     expect(warnings).toHaveLength(1);
-    expect(warnings[0]).toMatch(
+    expect(warnings[0].message).toMatch(
       'The icon in the Snap manifest is not square. It is recommended to use a square icon for the Snap.',
     );
   });
@@ -171,15 +171,14 @@ describe('checkManifest', () => {
       ),
     );
 
-    const { finalErrors: errors, finalWarnings: warnings } =
-      await checkManifest(BASE_PATH, false);
+    const { reports } = await checkManifest(BASE_PATH, {
+      updateAndWriteManifest: false,
+    });
 
-    expect(warnings).toHaveLength(0);
-
-    expect(errors).toHaveLength(2);
+    expect(reports).toHaveLength(2);
     // Make this test order independent
     // eslint-disable-next-line jest/prefer-strict-equal
-    expect(errors).toEqual(
+    expect(reports.map(({ message }) => message)).toEqual(
       expect.arrayContaining([
         '"snap.manifest.json" npm package version ("0.0.1") does not match the "package.json" "version" field ("1.0.0").',
         '"snap.manifest.json" "shasum" field does not match computed shasum. Got "1234567890123456789012345678901234567890123=", expected "TVOA4znZze3/eDErYSzrFF6z67fu9cL70+ZfgUM6nCQ="',
@@ -223,8 +222,8 @@ describe('checkManifest', () => {
       JSON.stringify(localizationFile),
     );
 
-    const { finalErrors: errors } = await checkManifest(BASE_PATH);
-    expect(errors).toStrictEqual([
+    const { reports } = await checkManifest(BASE_PATH);
+    expect(reports.map(({ message }) => message)).toStrictEqual([
       'Failed to validate localization file "/snap/locales/en.json": At path: messages -- Expected an object, but received: "foo".',
     ]);
   });
@@ -250,8 +249,8 @@ describe('checkManifest', () => {
       JSON.stringify(localizationFile),
     );
 
-    const { finalErrors: errors } = await checkManifest(BASE_PATH);
-    expect(errors).toStrictEqual([
+    const { reports } = await checkManifest(BASE_PATH);
+    expect(reports.map(({ message }) => message)).toStrictEqual([
       'Failed to localize Snap manifest: Failed to translate "{{ name }}": No translation found for "name" in "en" file.',
     ]);
   });

@@ -67,7 +67,7 @@ export async function checkManifest(
     updateAndWriteManifest?: boolean;
     sourceCode?: string;
     writeFileFn?: WriteFileFunction;
-  },
+  } = {},
 ): Promise<CheckManifestResult> {
   const manifestPath = pathUtils.join(basePath, NpmSnapFileNames.Manifest);
   const manifestFile = await readJsonFile(manifestPath);
@@ -110,7 +110,7 @@ export async function checkManifest(
     reports: validatorResults.reports,
   };
 
-  if (updateAndWriteManifest && manifestResults.files) {
+  if (updateAndWriteManifest && hasFixes(manifestResults)) {
     const fixedResults = await runFixes(validatorResults);
 
     if (fixedResults.updated) {
