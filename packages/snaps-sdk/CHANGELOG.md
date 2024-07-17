@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [7.0.0]
+## [6.1.0]
 ### Added
 - Add non-restricted RPC method `snap_resolveInterface` ([#2509](https://github.com/metamask/snaps/pull/2509))
    - This method allows a Snap to resolve a given user interface bound to a `snap_dialog` with a custom value.
@@ -202,8 +202,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@7.0.0...HEAD
-[7.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.0.0...@metamask/snaps-sdk@7.0.0
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.1.0...HEAD
+[6.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.0.0...@metamask/snaps-sdk@6.1.0
 [6.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@5.0.0...@metamask/snaps-sdk@6.0.0
 [5.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.4.2...@metamask/snaps-sdk@5.0.0
 [4.4.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.4.1...@metamask/snaps-sdk@4.4.2
