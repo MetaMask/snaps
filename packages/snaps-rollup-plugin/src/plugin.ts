@@ -113,7 +113,7 @@ export default function snaps(options?: Partial<Options>): Plugin {
           this.warn(
             `Manifest Warning: Validation of snap.manifest.json fixed following problems.\n${fixed.join(
               '\n',
-            )}}\n`,
+            )}`,
           );
         }
       }

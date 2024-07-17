@@ -3,10 +3,7 @@ import {
   evalBundle,
   PostProcessWarning,
 } from '@metamask/snaps-utils/node';
-import {
-  DEFAULT_SNAP_BUNDLE,
-  getSnapManifest,
-} from '@metamask/snaps-utils/test-utils';
+import { DEFAULT_SNAP_BUNDLE } from '@metamask/snaps-utils/test-utils';
 import type { RollupVirtualOptions } from '@rollup/plugin-virtual';
 import virtual from '@rollup/plugin-virtual';
 import assert from 'assert';
@@ -227,9 +224,9 @@ describe('snaps', () => {
   it('checks the manifest if configured', async () => {
     const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
     mock.mockResolvedValue({
-      manifest: getSnapManifest(),
-      finalErrors: [],
-      finalWarnings: [],
+      files: undefined,
+      updated: false,
+      reports: [],
     });
 
     await bundle({
@@ -240,15 +237,18 @@ describe('snaps', () => {
     });
 
     expect(mock).toHaveBeenCalledTimes(1);
-    expect(mock).toHaveBeenCalledWith('/', true, expect.any(String));
+    expect(mock).toHaveBeenCalledWith('/', {
+      updateAndWriteManifest: true,
+      sourceCode: expect.any(String),
+    });
   });
 
   it('does not fix the manifest if configured', async () => {
     const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
     mock.mockResolvedValue({
-      manifest: getSnapManifest(),
-      finalErrors: [],
-      finalWarnings: [],
+      files: undefined,
+      updated: false,
+      reports: [],
     });
 
     await bundle({
@@ -260,7 +260,10 @@ describe('snaps', () => {
     });
 
     expect(mock).toHaveBeenCalledTimes(1);
-    expect(mock).toHaveBeenCalledWith('/', false, expect.any(String));
+    expect(mock).toHaveBeenCalledWith('/', {
+      updateAndWriteManifest: false,
+      sourceCode: expect.any(String),
+    });
   });
 
   it('logs manifest errors if writeManifest is disabled', async () => {
@@ -268,9 +271,12 @@ describe('snaps', () => {
 
     const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
     mock.mockResolvedValue({
-      manifest: getSnapManifest(),
-      finalErrors: ['foo', 'bar'],
-      finalWarnings: [],
+      files: undefined,
+      updated: false,
+      reports: [
+        { message: 'foo', severity: 'error' },
+        { message: 'bar', severity: 'error' },
+      ],
     });
 
     await expect(
@@ -289,9 +295,12 @@ describe('snaps', () => {
 
     const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
     mock.mockResolvedValue({
-      manifest: getSnapManifest(),
-      finalErrors: [],
-      finalWarnings: ['foo', 'bar'],
+      files: undefined,
+      updated: false,
+      reports: [
+        { message: 'foo', severity: 'warning' },
+        { message: 'bar', severity: 'warning' },
+      ],
     });
 
     await bundle({
@@ -305,6 +314,33 @@ describe('snaps', () => {
     expect(console.log).toHaveBeenCalledTimes(1);
     expect(console.log).toHaveBeenCalledWith(
       'Manifest Warning: Validation of snap.manifest.json completed with warnings.\nfoo\nbar',
+    );
+  });
+
+  it('logs fixed problems', async () => {
+    jest.spyOn(console, 'log').mockImplementation(() => undefined);
+
+    const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
+    mock.mockResolvedValue({
+      files: undefined,
+      updated: true,
+      reports: [
+        { message: 'foo', severity: 'error', wasFixed: true },
+        { message: 'bar', severity: 'warning', wasFixed: true },
+      ],
+    });
+
+    await bundle({
+      options: {
+        eval: false,
+        manifestPath: '/snap.manifest.json',
+        writeManifest: false,
+      },
+    });
+
+    expect(console.log).toHaveBeenCalledTimes(1);
+    expect(console.log).toHaveBeenCalledWith(
+      'Manifest Warning: Validation of snap.manifest.json fixed following problems.\nfoo\nbar',
     );
   });
 

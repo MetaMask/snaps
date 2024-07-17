@@ -241,7 +241,7 @@ describe('plugin', () => {
     const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
     mock.mockResolvedValue({
       files: undefined,
-      updated: false,
+      updated: true,
       reports: [
         { message: 'foo', severity: 'error', wasFixed: true },
         { message: 'bar', severity: 'warning', wasFixed: true },
