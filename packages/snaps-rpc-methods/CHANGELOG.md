@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.1.5]
+
 ### Uncategorized
 
 - Replace `superstruct` with ESM-compatible fork `@metamask/superstruct` ([#2445](https://github.com/metamask/snaps/pull/2445))
@@ -234,7 +236,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/metamask/snaps/compare/@metamask/snaps-rpc-methods@9.1.4...HEAD
+[Unreleased]: https://github.com/metamask/snaps/compare/@metamask/snaps-rpc-methods@9.1.5...HEAD
+[9.1.5]: https://github.com/metamask/snaps/compare/@metamask/snaps-rpc-methods@9.1.4...@metamask/snaps-rpc-methods@9.1.5
 [9.1.4]: https://github.com/metamask/snaps/compare/@metamask/snaps-rpc-methods@9.1.3...@metamask/snaps-rpc-methods@9.1.4
 [9.1.3]: https://github.com/metamask/snaps/compare/@metamask/snaps-rpc-methods@9.1.2...@metamask/snaps-rpc-methods@9.1.3
 [9.1.2]: https://github.com/metamask/snaps/compare/@metamask/snaps-rpc-methods@9.1.1...@metamask/snaps-rpc-methods@9.1.2
