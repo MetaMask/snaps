@@ -1,0 +1,9 @@
+// src/entropy.ts
+var SIP_6_MAGIC_VALUE = `1399742832'`;
+var STATE_ENCRYPTION_MAGIC_VALUE = `572232532'`;
+
+export {
+  SIP_6_MAGIC_VALUE,
+  STATE_ENCRYPTION_MAGIC_VALUE
+};
+//# sourceMappingURL=chunk-AS5P6JRP.mjs.map

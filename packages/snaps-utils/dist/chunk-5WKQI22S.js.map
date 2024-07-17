@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/constants.ts"],"names":[],"mappings":";AAGO,IAAM,gBAAgB","sourcesContent":["// The max file size for Snap source code and auxiliary files.\n// 64 MB - we chose this number because it is the size limit for postMessage\n// between the extension and the offscreen document enforced by Chrome.\nexport const MAX_FILE_SIZE = 64_000_000;\n"]}
