@@ -13,6 +13,12 @@ export type ValidatorContext = {
   report: (message: string, fix?: ValidatorFix) => void;
 };
 
+export type ValidatorReport = {
+  severity: ValidatorSeverity;
+  message: string;
+  fix?: ValidatorFix;
+};
+
 export type ValidatorMeta = {
   severity: ValidatorSeverity;
   /**

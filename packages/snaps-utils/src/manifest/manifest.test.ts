@@ -55,7 +55,11 @@ describe('checkManifest', () => {
   });
 
   it('returns the status and warnings after processing', async () => {
-    const { updated, warnings, errors } = await checkManifest(BASE_PATH);
+    const {
+      updated,
+      finalWarnings: warnings,
+      finalErrors: errors,
+    } = await checkManifest(BASE_PATH);
     expect(warnings).toHaveLength(0);
     expect(errors).toHaveLength(0);
     expect(updated).toBe(false);
@@ -71,7 +75,11 @@ describe('checkManifest', () => {
       ),
     );
 
-    const { manifest, updated, warnings } = await checkManifest(BASE_PATH);
+    const {
+      manifest,
+      updated,
+      finalWarnings: warnings,
+    } = await checkManifest(BASE_PATH);
     expect(manifest).toStrictEqual(getSnapManifest());
     expect(updated).toBe(true);
     expect(warnings).toHaveLength(0);
@@ -92,7 +100,11 @@ describe('checkManifest', () => {
       ),
     );
 
-    const { manifest, updated, warnings } = await checkManifest(BASE_PATH);
+    const {
+      manifest,
+      updated,
+      finalWarnings: warnings,
+    } = await checkManifest(BASE_PATH);
     expect(manifest).toStrictEqual(getSnapManifest());
     expect(updated).toBe(true);
     expect(warnings).toHaveLength(0);
@@ -109,7 +121,7 @@ describe('checkManifest', () => {
 
     await fs.writeFile(PACKAGE_JSON_PATH, JSON.stringify(packageJson));
 
-    const { updated, warnings } = await checkManifest(BASE_PATH);
+    const { updated, finalWarnings: warnings } = await checkManifest(BASE_PATH);
     expect(updated).toBe(true);
     expect(warnings).toHaveLength(1);
     expect(warnings[0]).toMatch(
@@ -125,7 +137,7 @@ describe('checkManifest', () => {
 
     await fs.writeFile(MANIFEST_PATH, JSON.stringify(manifest));
 
-    const { warnings } = await checkManifest(BASE_PATH);
+    const { finalWarnings: warnings } = await checkManifest(BASE_PATH);
     expect(warnings).toHaveLength(1);
     expect(warnings[0]).toMatch(
       'No icon found in the Snap manifest. It is recommended to include an icon for the Snap. See https://docs.metamask.io/snaps/how-to/design-a-snap/#guidelines-at-a-glance for more information.',
@@ -141,7 +153,7 @@ describe('checkManifest', () => {
     );
     await fs.writeFile(MANIFEST_PATH, JSON.stringify(manifest));
 
-    const { warnings } = await checkManifest(BASE_PATH);
+    const { finalWarnings: warnings } = await checkManifest(BASE_PATH);
     expect(warnings).toHaveLength(1);
     expect(warnings[0]).toMatch(
       'The icon in the Snap manifest is not square. It is recommended to use a square icon for the Snap.',
@@ -159,7 +171,8 @@ describe('checkManifest', () => {
       ),
     );
 
-    const { errors, warnings } = await checkManifest(BASE_PATH, false);
+    const { finalErrors: errors, finalWarnings: warnings } =
+      await checkManifest(BASE_PATH, false);
 
     expect(warnings).toHaveLength(0);
 
@@ -210,7 +223,7 @@ describe('checkManifest', () => {
       JSON.stringify(localizationFile),
     );
 
-    const { errors } = await checkManifest(BASE_PATH);
+    const { finalErrors: errors } = await checkManifest(BASE_PATH);
     expect(errors).toStrictEqual([
       'Failed to validate localization file "/snap/locales/en.json": At path: messages -- Expected an object, but received: "foo".',
     ]);
@@ -237,7 +250,7 @@ describe('checkManifest', () => {
       JSON.stringify(localizationFile),
     );
 
-    const { errors } = await checkManifest(BASE_PATH);
+    const { finalErrors: errors } = await checkManifest(BASE_PATH);
     expect(errors).toStrictEqual([
       'Failed to localize Snap manifest: Failed to translate "{{ name }}": No translation found for "name" in "en" file.',
     ]);

@@ -5,57 +5,37 @@ import type {
   ValidatorContext,
   ValidatorFix,
   ValidatorMeta,
+  ValidatorReport,
   ValidatorSeverity,
 } from './validator-types';
 import * as defaultValidators from './validators';
 
-type ValidatorResults = {
+export type ValidatorResults = {
   files?: SnapFiles;
-  warnings: string[];
-  errors: string[];
-  fixes: ValidatorFix[];
+  reports: ValidatorReport[];
 };
 
 class Context implements ValidatorContext {
   report(message: string, fix?: ValidatorFix): void {
-    assert(this.nextSeverity !== undefined);
-    if (this.nextSeverity === 'error') {
-      this.#hasErrors = true;
-    }
-    this.#reports.push({ severity: this.nextSeverity, message, fix });
+    assert(this.#nextSeverity !== undefined);
+    this.reports.push({
+      severity: this.#nextSeverity,
+      message,
+      fix,
+    });
   }
 
-  warnings(): string[] {
-    return this.#reports
-      .filter(({ severity }) => severity === 'warning')
-      .map(({ message }) => message);
-  }
-
-  errors(): string[] {
-    return this.#reports
-      .filter(({ severity }) => severity === 'error')
-      .map(({ message }) => message);
-  }
-
-  fixes(): ValidatorFix[] {
-    return this.#reports
-      .filter(({ fix }) => Boolean(fix))
-      .map(({ fix }) => fix as ValidatorFix);
+  prepareForValidator(settings: { severity: ValidatorSeverity }) {
+    this.#nextSeverity = settings.severity;
   }
 
   get hasErrors() {
-    return this.#hasErrors;
+    return this.reports.some((report) => report.severity === 'error');
   }
 
-  nextSeverity: ValidatorSeverity | undefined = undefined;
+  #nextSeverity?: ValidatorSeverity = undefined;
 
-  #hasErrors = false;
-
-  #reports: {
-    severity: ValidatorSeverity;
-    message: string;
-    fix?: ValidatorFix;
-  }[] = [];
+  reports: ValidatorReport[] = [];
 }
 
 /**
@@ -76,25 +56,35 @@ export async function runValidators(
   const context = new Context();
 
   for (const rule of rules) {
-    context.nextSeverity = rule.severity;
+    context.prepareForValidator({
+      severity: rule.severity,
+    });
     await rule.structureCheck?.(files, context);
   }
   if (context.hasErrors) {
     return {
-      warnings: context.warnings(),
-      errors: context.errors(),
-      fixes: context.fixes(),
+      reports: context.reports,
     };
   }
 
   for (const rule of rules) {
-    context.nextSeverity = rule.severity;
+    context.prepareForValidator({
+      severity: rule.severity,
+    });
     await rule.semanticCheck?.(files as SnapFiles, context);
   }
   return {
     files: files as SnapFiles,
-    warnings: context.warnings(),
-    errors: context.errors(),
-    fixes: context.fixes(),
+    reports: context.reports,
   };
+}
+
+/**
+ * Returns whether any reports has pending fixes.
+ *
+ * @param results - Results of the validation run.
+ * @returns Whether there are fixes pending.
+ */
+export function hasFixes(results: ValidatorResults): boolean {
+  return results.reports.some((report) => report.fix);
 }

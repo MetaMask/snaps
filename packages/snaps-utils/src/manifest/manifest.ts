@@ -6,11 +6,13 @@ import pathUtils from 'path';
 
 import { deepClone } from '../deep-clone';
 import { readJsonFile } from '../fs';
-import type { UnvalidatedSnapFiles } from '../types';
+import type { SnapFiles, UnvalidatedSnapFiles } from '../types';
 import { NpmSnapFileNames } from '../types';
 import { readVirtualFile, VirtualFile } from '../virtual-file/node';
 import type { SnapManifest } from './validation';
-import { runValidators } from './validator';
+import type { ValidatorResults } from './validator';
+import { hasFixes, runValidators } from './validator';
+import type { ValidatorReport } from './validator-types';
 
 const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {
   $schema: 1,
@@ -24,25 +26,20 @@ const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {
   manifestVersion: 9,
 };
 
+export type CheckManifestReport = Omit<ValidatorReport, 'fix'> & {
+  wasFixed?: boolean;
+};
+
 /**
  * The result from the `checkManifest` function.
  *
  * @property manifest - The fixed manifest object.
- * @property updated - Whether the manifest was updated.
- * @property warnings - An array of warnings that were encountered during
- * processing of the manifest files. These warnings are not logged to the
- * console automatically, so depending on the environment the function is called
- * in, a different method for logging can be used.
- * @property errors - An array of errors that were encountered during
- * processing of the manifest files. These errors are not logged to the
- * console automatically, so depending on the environment the function is called
- * in, a different method for logging can be used.
+ * @property updated - Whether the manifest was written and updated.
  */
 export type CheckManifestResult = {
-  manifest?: SnapManifest;
-  updated?: boolean;
-  warnings: string[];
-  errors: string[];
+  files?: SnapFiles;
+  updated: boolean;
+  reports: CheckManifestReport[];
 };
 
 export type WriteFileFunction = (path: string, data: string) => Promise<void>;
@@ -53,20 +50,25 @@ export type WriteFileFunction = (path: string, data: string) => Promise<void>;
  * fails.
  *
  * @param basePath - The path to the folder with the manifest files.
- * @param writeManifest - Whether to write the fixed manifest to disk.
- * @param sourceCode - The source code of the Snap.
- * @param writeFileFn - The function to use to write the manifest to disk.
+ * @param options - Additional options for the function.
+ * @param options.sourceCode - The source code of the Snap.
+ * @param options.writeFileFn - The function to use to write the manifest to disk.
+ * @param options.updateAndWriteManifest - Whether to auto-magically try to fix errors and then write the manifest to disk.
  * @returns Whether the manifest was updated, and an array of warnings that
  * were encountered during processing of the manifest files.
  */
 export async function checkManifest(
   basePath: string,
-  writeManifest = true,
-  sourceCode?: string,
-  writeFileFn: WriteFileFunction = fs.writeFile,
+  {
+    updateAndWriteManifest = true,
+    sourceCode,
+    writeFileFn = fs.writeFile,
+  }: {
+    updateAndWriteManifest?: boolean;
+    sourceCode?: string;
+    writeFileFn?: WriteFileFunction;
+  },
 ): Promise<CheckManifestResult> {
-  let updated = false;
-
   const manifestPath = pathUtils.join(basePath, NpmSnapFileNames.Manifest);
   const manifestFile = await readJsonFile(manifestPath);
   const unvalidatedManifest = manifestFile.result;
@@ -101,44 +103,26 @@ export async function checkManifest(
       (await getSnapFiles(basePath, localizationFilePaths)) ?? [],
   };
 
-  let results = await runValidators(snapFiles);
+  const validatorResults = await runValidators(snapFiles);
+  let manifestResults: CheckManifestResult = {
+    updated: false,
+    files: validatorResults.files,
+    reports: validatorResults.reports,
+  };
 
-  if (writeManifest && results.fixes.length) {
-    let shouldRunFixes = true;
-    const MAX_ATTEMPTS = 10;
+  if (updateAndWriteManifest && manifestResults.files) {
+    const fixedResults = await runFixes(validatorResults);
 
-    for (
-      let attempts = 1;
-      shouldRunFixes && attempts <= MAX_ATTEMPTS;
-      attempts++
-    ) {
-      assert(results.files);
-      let manifest = deepClone(results.files.manifest.result);
+    if (fixedResults.updated) {
+      manifestResults = fixedResults;
 
-      for (const fix of results.fixes) {
-        ({ manifest } = await fix({ manifest }));
-      }
+      assert(manifestResults.files);
 
-      results.files.manifest.value = `${JSON.stringify(
-        getWritableManifest(manifest),
-        null,
-        2,
-      )}\n`;
-      results.files.manifest.result = manifest;
-
-      results = await runValidators(results.files);
-      shouldRunFixes = Boolean(results.fixes.length);
-    }
-
-    if (!shouldRunFixes) {
-      assert(results.files);
       try {
         await writeFileFn(
           pathUtils.join(basePath, NpmSnapFileNames.Manifest),
-          results.files.manifest.toString(),
+          manifestResults.files.manifest.toString(),
         );
-
-        updated = true;
       } catch (error) {
         // Note: This error isn't pushed to the errors array, because it's not an
         // error in the manifest itself.
@@ -149,11 +133,73 @@ export async function checkManifest(
     }
   }
 
+  return manifestResults;
+}
+
+/**
+ * Runs the algorithm for automatically fixing errors in manifest.
+ *
+ * @param results - Results of the initial run of validation.
+ */
+async function runFixes(
+  results: ValidatorResults,
+): Promise<CheckManifestResult> {
+  let shouldRunFixes = true;
+  const MAX_ATTEMPTS = 10;
+
+  assert(results.files);
+
+  let fixResults: ValidatorResults = results;
+  assert(fixResults.files);
+  fixResults.files.manifest = fixResults.files.manifest.clone();
+
+  for (
+    let attempts = 1;
+    shouldRunFixes && attempts <= MAX_ATTEMPTS;
+    attempts++
+  ) {
+    assert(fixResults.files);
+
+    let manifest = fixResults.files.manifest.result;
+
+    const fixable = fixResults.reports.filter((report) => report.fix);
+    for (const report of fixable) {
+      assert(report.fix);
+      ({ manifest } = await report.fix({ manifest }));
+    }
+
+    fixResults.files.manifest.value = `${JSON.stringify(
+      getWritableManifest(manifest),
+      null,
+      2,
+    )}\n`;
+    fixResults.files.manifest.result = manifest;
+
+    fixResults = await runValidators(fixResults.files);
+    shouldRunFixes = hasFixes(fixResults);
+  }
+
+  // Was fixed
+  if (!shouldRunFixes) {
+    const initialReports = deepClone(results.reports);
+
+    for (const report of initialReports) {
+      if (report.fix) {
+        (report as CheckManifestReport).wasFixed = true;
+      }
+    }
+
+    return {
+      files: fixResults.files,
+      updated: true,
+      reports: initialReports,
+    };
+  }
+
   return {
-    manifest: results.files?.manifest.result,
-    updated,
-    warnings: results.warnings,
-    errors: results.errors,
+    files: results.files,
+    updated: false,
+    reports: results.reports,
   };
 }
 

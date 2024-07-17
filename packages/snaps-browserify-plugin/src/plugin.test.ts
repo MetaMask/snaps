@@ -170,8 +170,8 @@ describe('plugin', () => {
     const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
     mock.mockResolvedValue({
       manifest: getSnapManifest(),
-      warnings: [],
-      errors: [],
+      finalWarnings: [],
+      finalErrors: [],
     });
 
     await bundle({ options: { eval: false, manifestPath: '/foo' } });
@@ -184,8 +184,8 @@ describe('plugin', () => {
     const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
     mock.mockResolvedValue({
       manifest: getSnapManifest(),
-      warnings: [],
-      errors: [],
+      finalWarnings: [],
+      finalErrors: [],
     });
 
     await bundle({
@@ -200,8 +200,8 @@ describe('plugin', () => {
     const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
     mock.mockResolvedValue({
       manifest: getSnapManifest(),
-      warnings: [],
-      errors: ['foo', 'bar'],
+      finalWarnings: [],
+      finalErrors: ['foo', 'bar'],
     });
 
     await expect(
@@ -215,8 +215,8 @@ describe('plugin', () => {
     const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
     mock.mockResolvedValue({
       manifest: getSnapManifest(),
-      warnings: ['foo', 'bar'],
-      errors: [],
+      finalWarnings: ['foo', 'bar'],
+      finalErrors: [],
     });
 
     await bundle({
