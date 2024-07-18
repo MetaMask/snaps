@@ -179,13 +179,16 @@ async function runFixes(
     shouldRunFixes = hasFixes(fixResults);
   }
 
+  const initialReports: (CheckManifestReport & ValidatorReport)[] = deepClone(
+    results.reports,
+  );
+
   // Was fixed
   if (!shouldRunFixes) {
-    const initialReports = deepClone(results.reports);
-
     for (const report of initialReports) {
       if (report.fix) {
-        (report as CheckManifestReport).wasFixed = true;
+        report.wasFixed = true;
+        delete report.fix;
       }
     }
 
@@ -196,10 +199,14 @@ async function runFixes(
     };
   }
 
+  for (const report of initialReports) {
+    delete report.fix;
+  }
+
   return {
     files: results.files,
     updated: false,
-    reports: results.reports,
+    reports: initialReports,
   };
 }
 

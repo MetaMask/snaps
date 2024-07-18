@@ -78,7 +78,11 @@ describe('manifest', () => {
     const result = await manifest('/snap/snap.manifest.json', false, spinner);
     expect(result).toBe(false);
 
-    expect(warn).not.toHaveBeenCalled();
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringMatching(
+        '• Missing recommended package.json property: "repository"',
+      ),
+    );
     expect(spinner.stop).toHaveBeenCalled();
     expect(error).toHaveBeenCalledWith(
       expect.stringMatching('The snap manifest file is invalid.'),
@@ -86,11 +90,6 @@ describe('manifest', () => {
     expect(error).toHaveBeenCalledWith(
       expect.stringMatching(
         '• "snap.manifest.json" "repository" field does not match the "package.json" "repository" field.',
-      ),
-    );
-    expect(error).toHaveBeenCalledWith(
-      expect.stringMatching(
-        '• "snap.manifest.json" "shasum" field does not match computed shasum.',
       ),
     );
   });
@@ -112,7 +111,7 @@ describe('manifest', () => {
     expect(error).not.toHaveBeenCalled();
     expect(warn).toHaveBeenCalledWith(
       expect.stringMatching(
-        /Missing recommended package\.json properties:.*\n.*repository/u,
+        '• Missing recommended package.json property: "repository"',
       ),
     );
     expect(log).toHaveBeenCalledWith(

@@ -93,7 +93,7 @@ describe('build', () => {
 
   it('builds the snap bundle using Webpack', async () => {
     jest.spyOn(process, 'cwd').mockReturnValue('/snap');
-    const log = jest.spyOn(console, 'log').mockImplementation();
+    const warn = jest.spyOn(console, 'warn').mockImplementation();
 
     const config = getMockConfig('webpack', {
       input: '/snap/input.js',
@@ -113,8 +113,9 @@ describe('build', () => {
 
     await build(config);
 
-    expect(log).toHaveBeenCalledWith(
-      expect.stringMatching(/Compiled 1 file in \d+ms\./u),
+    // Manifest checksum mismatch is the warning
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringMatching(/Compiled 1 file in \d+ms with 1 warning\./u),
     );
 
     const output = await fs.readFile('/snap/output.js', 'utf8');
@@ -125,7 +126,7 @@ describe('build', () => {
 
   it('builds an unminimized snap bundle using Webpack', async () => {
     jest.spyOn(process, 'cwd').mockReturnValue('/snap');
-    const log = jest.spyOn(console, 'log').mockImplementation();
+    const warn = jest.spyOn(console, 'warn').mockImplementation();
 
     const config = getMockConfig('webpack', {
       input: '/snap/input.js',
@@ -146,8 +147,9 @@ describe('build', () => {
 
     await build(config);
 
-    expect(log).toHaveBeenCalledWith(
-      expect.stringMatching(/Compiled 1 file in \d+ms\./u),
+    // Manifest checksum mismatch is the warning
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringMatching(/Compiled 1 file in \d+ms with 1 warning\./u),
     );
 
     const output = await fs.readFile('/snap/output.js', 'utf8');
@@ -191,7 +193,7 @@ describe('build', () => {
 
   it('builds the snap bundle using a legacy config', async () => {
     jest.spyOn(process, 'cwd').mockReturnValue('/snap');
-    const log = jest.spyOn(console, 'log').mockImplementation();
+    const warn = jest.spyOn(console, 'warn').mockImplementation();
 
     const config = getMockConfig('browserify', {
       cliOptions: {
@@ -204,8 +206,9 @@ describe('build', () => {
 
     await build(config);
 
-    expect(log).toHaveBeenCalledWith(
-      expect.stringMatching(/Compiled 1 file in \d+ms\./u),
+    // Manifest checksum mismatch is the warning
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringMatching(/Compiled 1 file in \d+ms with 1 warning\./u),
     );
 
     const output = await fs.readFile('/snap/output.js', 'utf8');
@@ -224,7 +227,7 @@ describe('build', () => {
 
   it('builds an unminimized snap bundle using a legacy config', async () => {
     jest.spyOn(process, 'cwd').mockReturnValue('/snap');
-    const log = jest.spyOn(console, 'log').mockImplementation();
+    const warn = jest.spyOn(console, 'warn').mockImplementation();
 
     const config = getMockConfig('browserify', {
       cliOptions: {
@@ -238,8 +241,9 @@ describe('build', () => {
 
     await build(config);
 
-    expect(log).toHaveBeenCalledWith(
-      expect.stringMatching(/Compiled 1 file in \d+ms\./u),
+    // Manifest checksum mismatch is the warning
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringMatching(/Compiled 1 file in \d+ms with 1 warning\./u),
     );
 
     const output = await fs.readFile('/snap/output.js', 'utf8');

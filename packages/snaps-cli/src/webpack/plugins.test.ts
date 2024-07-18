@@ -126,10 +126,6 @@ describe('SnapsStatsPlugin', () => {
       ),
     );
 
-    expect(log).toHaveBeenCalledWith(
-      expect.stringMatching(/at .*Compilation\.js/u),
-    );
-
     expect(process.exitCode).toBe(1);
   });
 
