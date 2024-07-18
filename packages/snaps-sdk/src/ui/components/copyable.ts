@@ -1,4 +1,4 @@
-import type { Infer } from 'superstruct';
+import type { Infer } from '@metamask/superstruct';
 import {
   assign,
   boolean,
@@ -6,7 +6,7 @@ import {
   object,
   optional,
   string,
-} from 'superstruct';
+} from '@metamask/superstruct';
 
 import { createBuilder } from '../builder';
 import { LiteralStruct, NodeType } from '../nodes';

@@ -13,11 +13,11 @@ import {
   hasChildren,
   serialiseJsx,
 } from '@metamask/snaps-utils';
+import { is } from '@metamask/superstruct';
 import { assert, hasProperty } from '@metamask/utils';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 import typescript from 'prettier/parser-typescript';
 import prettier from 'prettier/standalone';
-import { is } from 'superstruct';
 
 /**
  * Get the text of a node model.

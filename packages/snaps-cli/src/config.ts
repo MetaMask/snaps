@@ -6,13 +6,6 @@ import {
   SnapsStructError,
   named,
 } from '@metamask/snaps-utils/node';
-import { hasProperty } from '@metamask/utils';
-import { transform } from '@swc/core';
-import type { BrowserifyObject } from 'browserify';
-import { dim } from 'chalk';
-import { readFile } from 'fs/promises';
-import Module from 'module';
-import { basename, dirname, resolve } from 'path';
 import {
   array,
   boolean,
@@ -28,8 +21,15 @@ import {
   type,
   unknown,
   empty,
-} from 'superstruct';
-import type { Infer } from 'superstruct';
+} from '@metamask/superstruct';
+import type { Infer } from '@metamask/superstruct';
+import { hasProperty } from '@metamask/utils';
+import { transform } from '@swc/core';
+import type { BrowserifyObject } from 'browserify';
+import { dim } from 'chalk';
+import { readFile } from 'fs/promises';
+import Module from 'module';
+import { basename, dirname, resolve } from 'path';
 import type { Configuration as WebpackConfiguration } from 'webpack';
 
 import { TranspilationModes } from './builders';

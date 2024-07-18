@@ -21,9 +21,7 @@ import type {
 } from '@metamask/snaps-sdk';
 import type { InferMatching } from '@metamask/snaps-utils';
 import { createUnion } from '@metamask/snaps-utils';
-import type { Json } from '@metamask/utils';
-import { hasProperty, isObject, type NonEmptyArray } from '@metamask/utils';
-import type { Infer, Struct } from 'superstruct';
+import type { Infer, Struct } from '@metamask/superstruct';
 import {
   create,
   enums,
@@ -32,7 +30,9 @@ import {
   size,
   string,
   type,
-} from 'superstruct';
+} from '@metamask/superstruct';
+import type { Json, NonEmptyArray } from '@metamask/utils';
+import { hasProperty, isObject } from '@metamask/utils';
 
 import { type MethodHooksObject } from '../utils';
 
