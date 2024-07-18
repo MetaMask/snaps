@@ -1,6 +1,6 @@
 import type { ValidatorMeta } from '../validator-types';
 
-export const iconExists: ValidatorMeta = {
+export const iconDeclared: ValidatorMeta = {
   severity: 'warning',
   semanticCheck(files, context) {
     if (!files.manifest.result.source.location.npm.iconPath) {

@@ -21,10 +21,4 @@ export const expectedFiles: ValidatorMeta = {
       }
     }
   },
-  semanticCheck(files, ctx) {
-    const { iconPath } = files.manifest.result.source.location.npm;
-    if (iconPath && !files.svgIcon) {
-      ctx.report(`Missing file "${iconPath}".`);
-    }
-  },
 };
