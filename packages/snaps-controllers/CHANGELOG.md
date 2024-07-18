@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.2.1]
+
 ### Uncategorized
 
 - Replace `superstruct` with ESM-compatible fork `@metamask/superstruct` ([#2445](https://github.com/metamask/snaps/pull/2445))
@@ -421,7 +423,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/metamask/snaps/compare/@metamask/snaps-controllers@9.2.0...HEAD
+[Unreleased]: https://github.com/metamask/snaps/compare/@metamask/snaps-controllers@9.2.1...HEAD
+[9.2.1]: https://github.com/metamask/snaps/compare/@metamask/snaps-controllers@9.2.0...@metamask/snaps-controllers@9.2.1
 [9.2.0]: https://github.com/metamask/snaps/compare/@metamask/snaps-controllers@9.1.0...@metamask/snaps-controllers@9.2.0
 [9.1.0]: https://github.com/metamask/snaps/compare/@metamask/snaps-controllers@9.0.0...@metamask/snaps-controllers@9.1.0
 [9.0.0]: https://github.com/metamask/snaps/compare/@metamask/snaps-controllers@8.4.0...@metamask/snaps-controllers@9.0.0

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.6.1]
+
 ### Uncategorized
 
 - Replace `superstruct` with ESM-compatible fork `@metamask/superstruct` ([#2445](https://github.com/metamask/snaps/pull/2445))
@@ -313,7 +315,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/metamask/snaps/compare/@metamask/snaps-execution-environments@6.6.0...HEAD
+[Unreleased]: https://github.com/metamask/snaps/compare/@metamask/snaps-execution-environments@6.6.1...HEAD
+[6.6.1]: https://github.com/metamask/snaps/compare/@metamask/snaps-execution-environments@6.6.0...@metamask/snaps-execution-environments@6.6.1
 [6.6.0]: https://github.com/metamask/snaps/compare/@metamask/snaps-execution-environments@6.5.0...@metamask/snaps-execution-environments@6.6.0
 [6.5.0]: https://github.com/metamask/snaps/compare/@metamask/snaps-execution-environments@6.4.0...@metamask/snaps-execution-environments@6.5.0
 [6.4.0]: https://github.com/metamask/snaps/compare/@metamask/snaps-execution-environments@6.3.0...@metamask/snaps-execution-environments@6.4.0
