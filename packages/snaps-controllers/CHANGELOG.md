@@ -16,11 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump `@metamask/permission-controller` from `^10.0.0` to `^10.0.1` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
 - Bump `@metamask/rpc-errors` from `^6.2.1` to `^6.3.1` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
 - Bump `@metamask/snaps-registry` from `^3.1.0` to `^3.2.1` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
-- Bump `@metamask/snaps-rpc-methods` from `^9.1.4` to `^10.0.0` ([#2589](https://github.com/MetaMask/snaps/pull/2589))
-- Bump `@metamask/snaps-sdk` from `^6.0.0` to `^6.1.0` ([#2589](https://github.com/MetaMask/snaps/pull/2589))
-- Bump `@metamask/snaps-utils` from `^7.7.0` to `^7.8.0` ([#2589](https://github.com/MetaMask/snaps/pull/2589))
+- Bump `@metamask/snaps-rpc-methods` to `^10.0.0` ([#2589](https://github.com/MetaMask/snaps/pull/2589))
+- Bump `@metamask/snaps-sdk` to `^6.1.0` ([#2589](https://github.com/MetaMask/snaps/pull/2589))
+- Bump `@metamask/snaps-utils` to `^7.8.0` ([#2589](https://github.com/MetaMask/snaps/pull/2589))
 - Bump `@metamask/utils` from `^8.3.0` to `^9.1.0` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
-- Bump peer dependency `@metamask/snaps-execution-environments` from `^6.5.0` to `^6.6.1` ([#2589](https://github.com/MetaMask/snaps/pull/2589))
+- Bump peer dependency `@metamask/snaps-execution-environments` to `^6.6.1` ([#2589](https://github.com/MetaMask/snaps/pull/2589))
 
 ### Fixed
 - Account for revoked origins when calculating the difference in `initialConnections` ([#2535](https://github.com/metamask/snaps/pull/2535))
