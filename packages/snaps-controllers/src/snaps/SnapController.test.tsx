@@ -4695,6 +4695,81 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
+    it('supports preinstalled snaps with initial connections', async () => {
+      const rootMessenger = getControllerMessenger();
+      jest.spyOn(rootMessenger, 'call');
+
+      // The snap should not have permission initially
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({}),
+      );
+
+      const initialConnections = {
+        'npm:filsnap': {},
+        'https://snaps.metamask.io': {},
+      };
+
+      const preinstalledSnaps = [
+        {
+          snapId: MOCK_SNAP_ID,
+          manifest: getSnapManifest({
+            initialConnections,
+          }),
+          files: [
+            {
+              path: DEFAULT_SOURCE_PATH,
+              value: stringToBytes(DEFAULT_SNAP_BUNDLE),
+            },
+            {
+              path: DEFAULT_ICON_PATH,
+              value: stringToBytes(DEFAULT_SNAP_ICON),
+            },
+          ],
+        },
+      ];
+
+      const snapControllerOptions = getSnapControllerWithEESOptions({
+        preinstalledSnaps,
+        rootMessenger,
+      });
+      const [snapController] = getSnapControllerWithEES(snapControllerOptions);
+
+      const approvedPermissions = {
+        [WALLET_SNAP_PERMISSION_KEY]: {
+          caveats: [
+            {
+              type: SnapCaveatType.SnapIds,
+              value: {
+                [MOCK_SNAP_ID]: {},
+              },
+            },
+          ],
+        },
+      };
+
+      // After install the snap should have permissions
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => MOCK_SNAP_PERMISSIONS,
+      );
+
+      expect(rootMessenger.call).toHaveBeenCalledWith(
+        'PermissionController:grantPermissions',
+        { approvedPermissions, subject: { origin: 'npm:filsnap' } },
+      );
+
+      expect(rootMessenger.call).toHaveBeenCalledWith(
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions,
+          subject: { origin: 'https://snaps.metamask.io' },
+        },
+      );
+
+      snapController.destroy();
+    });
+
     it('supports preinstalled snaps when Snap installation is disabled', async () => {
       const rootMessenger = getControllerMessenger();
       jest.spyOn(rootMessenger, 'call');
