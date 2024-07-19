@@ -1180,6 +1180,14 @@ export class SnapController extends BaseController<
 
       this.#updatePermissions({ snapId, newPermissions, unusedPermissions });
 
+      if (manifest.initialConnections) {
+        this.#handleInitialConnections(
+          snapId,
+          existingSnap?.initialConnections ?? null,
+          manifest.initialConnections,
+        );
+      }
+
       // Set status
       this.update((state) => {
         state.snaps[snapId].status = SnapStatus.Stopped;
