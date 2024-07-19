@@ -6,6 +6,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.3.0]
+### Added
+- Add `snap_resolveInterface` RPC method to the `SnapInterfaceController` ([#2509](https://github.com/metamask/snaps/pull/2509))
+- Add `SnapInsightsController` ([#2555](https://github.com/metamask/snaps/pull/2555))
+
+### Changed
+- Bump `@metamask/base-controller` from `^6.0.0` to `^6.0.1` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
+- Bump `@metamask/permission-controller` from `^10.0.0` to `^10.0.1` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
+- Bump `@metamask/rpc-errors` from `^6.2.1` to `^6.3.1` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
+- Bump `@metamask/snaps-registry` from `^3.1.0` to `^3.2.1` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
+- Bump `@metamask/snaps-rpc-methods` to `^10.0.0` ([#2589](https://github.com/MetaMask/snaps/pull/2589))
+- Bump `@metamask/snaps-sdk` to `^6.1.0` ([#2589](https://github.com/MetaMask/snaps/pull/2589))
+- Bump `@metamask/snaps-utils` to `^7.8.0` ([#2589](https://github.com/MetaMask/snaps/pull/2589))
+- Bump `@metamask/utils` from `^8.3.0` to `^9.1.0` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
+- Bump peer dependency `@metamask/snaps-execution-environments` to `^6.6.1` ([#2589](https://github.com/MetaMask/snaps/pull/2589))
+
+### Fixed
+- Handle initial connections for preinstalled Snaps ([#2591](https://github.com/MetaMask/snaps/pull/2591))
+- Account for revoked origins when calculating the difference in `initialConnections` ([#2535](https://github.com/metamask/snaps/pull/2535))
+  - Fixes issue of revoking permissions that are already revoked.
+  - Enables revoked connections to be highlighted as being re-added in the UI.
+- Enforce stricter size limits for source code, static auxiliary files, and `snap_getFile` return values ([#2527](https://github.com/metamask/snaps/pull/2527))
+  - Prevent communication failures by enabling compliance with JSON-RPC extension message requirements.
+
 ## [9.2.0]
 ### Added
 - Add feature flag to disable Snap installation ([#2521](https://github.com/MetaMask/snaps/pull/2521))
@@ -307,7 +331,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.3.0...HEAD
+[9.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.2.0...@metamask/snaps-controllers@9.3.0
 [9.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.1.0...@metamask/snaps-controllers@9.2.0
 [9.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.0.0...@metamask/snaps-controllers@9.1.0
 [9.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@8.4.0...@metamask/snaps-controllers@9.0.0
