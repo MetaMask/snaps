@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Enables revoked connections to be highlighted as being re-added in the UI.
 - Enforce stricter size limits for source code, static auxiliary files, and `snap_getFile` return values ([#2527](https://github.com/metamask/snaps/pull/2527))
   - Prevent communication failures by enabling compliance with JSON-RPC extension message requirements.
+- Add support for preinstalled Snaps with initial connections ([#2591](https://github.com/MetaMask/snaps/pull/2591))
 
 ## [9.2.0]
 ### Added
