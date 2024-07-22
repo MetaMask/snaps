@@ -1,4 +1,4 @@
-import { validate } from 'superstruct';
+import { validate } from '@metamask/superstruct';
 
 import { LocalizationFileStruct } from '../../localization';
 import type { ValidatorMeta } from '../validator-types';

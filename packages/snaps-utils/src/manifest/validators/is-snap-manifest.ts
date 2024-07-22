@@ -1,4 +1,4 @@
-import { validate } from 'superstruct';
+import { validate } from '@metamask/superstruct';
 
 import { NpmSnapFileNames } from '../../types';
 import { SnapManifestStruct } from '../validation';
