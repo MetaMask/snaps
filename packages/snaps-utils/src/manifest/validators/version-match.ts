@@ -4,7 +4,7 @@ import type { ValidatorMeta } from '../validator-types';
 /**
  * Checks if the version in manifest is the same as in package.json
  */
-export const VersionMatch: ValidatorMeta = {
+export const versionMatch: ValidatorMeta = {
   severity: 'error',
   semanticCheck(files, context) {
     const packageJsonVersion = files.packageJson.result.version;

@@ -22,7 +22,7 @@ export type ValidatorReport = {
 export type ValidatorMeta = {
   severity: ValidatorSeverity;
   /**
-   * Runs the validator on unverified files to ensure that the files are structurally sound.
+   * 1. Runs the validator on unverified files to ensure that the files are structurally sound.
    *
    * @param files - Files to be verified
    * @param context - Validator context to report errors
@@ -32,7 +32,7 @@ export type ValidatorMeta = {
     context: ValidatorContext,
   ) => void | Promise<void>;
   /**
-   * Runs the validator after the files were checked to be structurally sound.
+   * 2. Runs the validator after the files were checked to be structurally sound.
    *
    * @param files - Files to be verified
    * @param context - Validator context to report errors
