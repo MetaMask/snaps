@@ -99,7 +99,7 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
 
   const handleCanDrag = (node?: NodeModel<JSXElement>) => {
     if (node) {
-      return node.id >= 2;
+      return Number(node.id) >= 2;
     }
 
     return false;
@@ -113,7 +113,7 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
       return (
         canDropElement(dropTarget?.data, dragSource?.data) &&
         dropTarget?.droppable &&
-        dropTargetId > 0
+        Number(dropTargetId) > 0
       );
     }
 
