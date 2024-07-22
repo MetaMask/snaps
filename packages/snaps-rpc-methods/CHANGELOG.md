@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.0.1]
+
 ### Uncategorized
 
 - chore(snaps-controllers): Bump all core deps ([#2593](https://github.com/metamask/snaps/pull/2593))
@@ -252,7 +254,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/metamask/snaps/compare/@metamask/snaps-rpc-methods@10.0.0...HEAD
+[Unreleased]: https://github.com/metamask/snaps/compare/@metamask/snaps-rpc-methods@10.0.1...HEAD
+[10.0.1]: https://github.com/metamask/snaps/compare/@metamask/snaps-rpc-methods@10.0.0...@metamask/snaps-rpc-methods@10.0.1
 [10.0.0]: https://github.com/metamask/snaps/compare/@metamask/snaps-rpc-methods@9.1.4...@metamask/snaps-rpc-methods@10.0.0
 [9.1.4]: https://github.com/metamask/snaps/compare/@metamask/snaps-rpc-methods@9.1.3...@metamask/snaps-rpc-methods@9.1.4
 [9.1.3]: https://github.com/metamask/snaps/compare/@metamask/snaps-rpc-methods@9.1.2...@metamask/snaps-rpc-methods@9.1.3
