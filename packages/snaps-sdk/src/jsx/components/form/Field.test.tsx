@@ -132,4 +132,51 @@ describe('Field', () => {
       },
     });
   });
+
+  it('renders a field element with a radio input', () => {
+    const result = (
+      <Field label="Label">
+        <Input name="choice" type="radio" value="A" />
+        <Input name="choice" type="radio" value="B" />
+        <Input name="choice" type="radio" value="C" />
+      </Field>
+    );
+
+    expect(result).toStrictEqual({
+      type: 'Field',
+      key: null,
+      props: {
+        label: 'Label',
+        children: [
+          {
+            type: 'Input',
+            key: null,
+            props: {
+              name: 'choice',
+              type: 'radio',
+              value: 'A',
+            },
+          },
+          {
+            type: 'Input',
+            key: null,
+            props: {
+              name: 'choice',
+              type: 'radio',
+              value: 'B',
+            },
+          },
+          {
+            type: 'Input',
+            key: null,
+            props: {
+              name: 'choice',
+              type: 'radio',
+              value: 'C',
+            },
+          },
+        ],
+      },
+    });
+  });
 });

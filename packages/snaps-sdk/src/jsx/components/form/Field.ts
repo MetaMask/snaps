@@ -20,6 +20,7 @@ export type FieldProps = {
     | DropdownElement
     | FileInputElement
     | InputElement
+    | InputElement[]
     | CheckboxElement;
 };
 

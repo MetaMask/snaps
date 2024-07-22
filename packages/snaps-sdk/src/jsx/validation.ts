@@ -47,6 +47,7 @@ import type {
   CopyableElement,
   DividerElement,
   DropdownElement,
+  RadioButtonElement,
   OptionElement,
   FieldElement,
   FormElement,
@@ -166,7 +167,12 @@ export const CheckboxStruct: Describe<CheckboxElement> = element('Checkbox', {
 export const InputStruct: Describe<InputElement> = element('Input', {
   name: string(),
   type: optional(
-    nullUnion([literal('text'), literal('password'), literal('number')]),
+    nullUnion([
+      literal('text'),
+      literal('password'),
+      literal('number'),
+      literal('radio'),
+    ]),
   ),
   value: optional(string()),
   placeholder: optional(string()),
@@ -188,6 +194,17 @@ export const DropdownStruct: Describe<DropdownElement> = element('Dropdown', {
   value: optional(string()),
   children: children([OptionStruct]),
 });
+
+/**
+ * A struct for the {@link RadioButtonElement} type.
+ */
+export const RadioButtonStruct: Describe<RadioButtonElement> = element(
+  'RadioButton',
+  {
+    name: string(),
+    children: children([InputStruct]),
+  },
+);
 
 /**
  * A struct for the {@link FileInputElement} type.
@@ -239,6 +256,7 @@ export const FieldChildUnionStruct = nullUnion([
 const FieldChildStruct = nullUnion([
   tuple(BUTTON_INPUT),
   ...FIELD_CHILDREN_ARRAY,
+  array(InputStruct),
 ]);
 
 /**
@@ -497,6 +515,7 @@ export const BoxChildStruct = typedUnion([
   ItalicStruct,
   LinkStruct,
   RowStruct,
+  RadioButtonStruct,
   SpinnerStruct,
   TextStruct,
   TooltipStruct,
@@ -535,6 +554,7 @@ export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   SpinnerStruct,
   TextStruct,
   DropdownStruct,
+  RadioButtonStruct,
   OptionStruct,
   ValueStruct,
   TooltipStruct,

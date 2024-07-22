@@ -39,4 +39,18 @@ describe('Input', () => {
       key: null,
     });
   });
+
+  it('renders a radio input', () => {
+    const result = <Input name="foo" type="radio" value="A" />;
+
+    expect(result).toStrictEqual({
+      type: 'Input',
+      props: {
+        name: 'foo',
+        type: 'radio',
+        value: 'A',
+      },
+      key: null,
+    });
+  });
 });
