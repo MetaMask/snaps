@@ -6,6 +6,7 @@ import pathUtils from 'path';
 
 import { deepClone } from '../deep-clone';
 import { readJsonFile } from '../fs';
+import { parseJson } from '../json';
 import type { SnapFiles, UnvalidatedSnapFiles } from '../types';
 import { NpmSnapFileNames } from '../types';
 import { readVirtualFile, VirtualFile } from '../virtual-file/node';
@@ -86,6 +87,18 @@ export async function checkManifest(
     unvalidatedManifest,
     (manifest) => manifest?.source?.locales,
   );
+  const localizationFiles =
+    (await getSnapFiles(basePath, localizationFilePaths)) ?? [];
+  for (const localization of localizationFiles) {
+    try {
+      localization.result = parseJson(localization.toString());
+    } catch (error) {
+      assert(error instanceof SyntaxError);
+      throw new Error(
+        `Failed to parse localization file "${localization.path}" as JSON.`,
+      );
+    }
+  }
 
   const snapFiles: UnvalidatedSnapFiles = {
     manifest: manifestFile,
@@ -99,8 +112,7 @@ export async function checkManifest(
     // Intentionally pass null as the encoding here since the files may be binary
     auxiliaryFiles:
       (await getSnapFiles(basePath, auxiliaryFilePaths, null)) ?? [],
-    localizationFiles:
-      (await getSnapFiles(basePath, localizationFilePaths)) ?? [],
+    localizationFiles,
   };
 
   const validatorResults = await runValidators(snapFiles);
