@@ -2,7 +2,7 @@ import { NpmSnapFileNames } from '../../types';
 import type { ValidatorMeta } from '../validator-types';
 
 /**
- * Checks if the version in manifest is the same as in package.json
+ * Check if the version in manifest is the same as in package.json.
  */
 export const versionMatch: ValidatorMeta = {
   severity: 'error',

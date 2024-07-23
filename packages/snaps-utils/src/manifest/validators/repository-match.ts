@@ -5,7 +5,7 @@ import { NpmSnapFileNames } from '../../types';
 import type { ValidatorMeta } from '../validator-types';
 
 /**
- * Checks if the repository object in manifest is the same as in package.json
+ * Check if the repository object in manifest is the same as in package.json.
  */
 export const repositoryMatch: ValidatorMeta = {
   severity: 'error',

@@ -181,7 +181,7 @@ describe('checkManifest', () => {
     expect(reports.map(({ message }) => message)).toEqual(
       expect.arrayContaining([
         '"snap.manifest.json" npm package version ("0.0.1") does not match the "package.json" "version" field ("1.0.0").',
-        '"snap.manifest.json" "shasum" field does not match computed shasum. Got "1234567890123456789012345678901234567890123=", expected "TVOA4znZze3/eDErYSzrFF6z67fu9cL70+ZfgUM6nCQ="',
+        '"snap.manifest.json" "shasum" field does not match computed shasum. Got "1234567890123456789012345678901234567890123=", expected "TVOA4znZze3/eDErYSzrFF6z67fu9cL70+ZfgUM6nCQ=".',
       ]),
     );
   });
@@ -255,6 +255,23 @@ describe('checkManifest', () => {
     ]);
   });
 
+  it('throws an error if the localization file is not valid JSON', async () => {
+    await fs.writeFile(
+      MANIFEST_PATH,
+      JSON.stringify(
+        getSnapManifest({
+          locales: ['locales/en.json'],
+        }),
+      ),
+    );
+    await fs.mkdir(join(BASE_PATH, 'locales'));
+    await fs.writeFile(join(BASE_PATH, '/locales/en.json'), ',');
+
+    await expect(checkManifest(BASE_PATH)).rejects.toThrow(
+      'Failed to parse localization file "/snap/locales/en.json" as JSON.',
+    );
+  });
+
   it('throws an error if writing the manifest fails', async () => {
     const manifest = getSnapManifest({ version: '0.0.1' });
     await fs.writeFile(MANIFEST_PATH, JSON.stringify(manifest));
@@ -264,7 +281,7 @@ describe('checkManifest', () => {
     });
 
     await expect(checkManifest(BASE_PATH)).rejects.toThrow(
-      'Failed to update snap.manifest.json: foo',
+      'Failed to update "snap.manifest.json": foo',
     );
   });
 });

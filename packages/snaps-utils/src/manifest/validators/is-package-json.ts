@@ -4,7 +4,7 @@ import { NpmSnapFileNames, NpmSnapPackageJsonStruct } from '../../types';
 import type { ValidatorMeta } from '../validator-types';
 
 /**
- * Verifies the structure of package.json
+ * Verify the structure of package.json.
  */
 export const isPackageJson: ValidatorMeta = {
   severity: 'error',

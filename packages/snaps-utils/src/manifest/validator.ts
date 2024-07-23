@@ -16,6 +16,8 @@ export type ValidatorResults = {
 };
 
 class Context implements ValidatorContext {
+  reports: ValidatorReport[] = [];
+
   report(message: string, fix?: ValidatorFix): void {
     assert(this.#nextSeverity !== undefined);
     this.reports.push({
@@ -34,12 +36,10 @@ class Context implements ValidatorContext {
   }
 
   #nextSeverity?: ValidatorSeverity = undefined;
-
-  reports: ValidatorReport[] = [];
 }
 
 /**
- * Verifies that snap files are completely valid.
+ * Verify that snap files are completely valid.
  * First it runs validators on unparsed files to check structure.
  * Secondly it runs validators on parsed files to check semantics.
  *
@@ -80,7 +80,7 @@ export async function runValidators(
 }
 
 /**
- * Returns whether any reports has pending fixes.
+ * Get whether any reports has pending fixes.
  *
  * @param results - Results of the validation run.
  * @returns Whether there are fixes pending.

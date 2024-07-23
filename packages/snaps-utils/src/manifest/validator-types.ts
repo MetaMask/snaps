@@ -1,8 +1,8 @@
 import type { SnapFiles, UnvalidatedSnapFiles } from '../types';
 import type { SnapManifest } from './validation';
 
-// TODO(ritave): Research using patch based fixing similar to eslint
-//               https://eslint.org/docs/latest/extend/custom-rules#applying-fixes
+// Eslint uses patch based fixing, but it's too complex for our needs.
+// https://eslint.org/docs/latest/extend/custom-rules#applying-fixes
 export type ValidatorFix = (files: {
   manifest: SnapManifest;
 }) => { manifest: SnapManifest } | Promise<{ manifest: SnapManifest }>;
@@ -21,8 +21,9 @@ export type ValidatorReport = {
 
 export type ValidatorMeta = {
   severity: ValidatorSeverity;
+
   /**
-   * 1. Runs the validator on unverified files to ensure that the files are structurally sound.
+   * 1. Run the validator on unverified files to ensure that the files are structurally sound.
    *
    * @param files - Files to be verified
    * @param context - Validator context to report errors
@@ -31,8 +32,9 @@ export type ValidatorMeta = {
     files: UnvalidatedSnapFiles,
     context: ValidatorContext,
   ) => void | Promise<void>;
+
   /**
-   * 2. Runs the validator after the files were checked to be structurally sound.
+   * 2. Run the validator after the files were checked to be structurally sound.
    *
    * @param files - Files to be verified
    * @param context - Validator context to report errors

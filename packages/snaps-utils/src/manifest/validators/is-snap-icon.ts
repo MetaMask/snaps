@@ -4,7 +4,7 @@ import { assertIsSnapIcon } from '../../icon';
 import type { ValidatorMeta } from '../validator-types';
 
 /**
- * Verifies the structure of snap icon
+ * Verify the structure of the snap icon.
  */
 export const isSnapIcon: ValidatorMeta = {
   severity: 'error',

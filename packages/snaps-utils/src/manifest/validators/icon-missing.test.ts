@@ -23,7 +23,7 @@ describe('iconMissing', () => {
     await iconMissing.semanticCheck(files, { report });
 
     expect(report).toHaveBeenCalledWith(
-      'Icon declared in snap.manifest.json, but is missing in filesystem.',
+      'Could not find icon "images/icon.svg".',
     );
   });
 });

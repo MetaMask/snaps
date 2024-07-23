@@ -3,7 +3,7 @@ import type { ValidatorMeta } from '../validator-types';
 const RECOMMENDED_FIELDS = ['repository'] as const;
 
 /**
- * Checks if package.json contains recommended fields.
+ * Check if package.json contains recommended fields.
  */
 export const packageJsonRecommendedFields: ValidatorMeta = {
   severity: 'warning',
@@ -11,7 +11,7 @@ export const packageJsonRecommendedFields: ValidatorMeta = {
     for (const recommendedField of RECOMMENDED_FIELDS) {
       if (!files.packageJson.result[recommendedField]) {
         context.report(
-          `Missing recommended package.json property: "${recommendedField}"`,
+          `Missing recommended package.json property: "${recommendedField}".`,
         );
       }
     }

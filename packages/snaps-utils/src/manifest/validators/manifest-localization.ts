@@ -5,7 +5,7 @@ import { getLocalizedSnapManifest } from '../../localization';
 import type { ValidatorMeta } from '../validator-types';
 
 /**
- * Verifies the localization files localize the manifest correctly.
+ * Verify whether the localization files localize the manifest correctly.
  */
 export const manifestLocalization: ValidatorMeta = {
   severity: 'error',

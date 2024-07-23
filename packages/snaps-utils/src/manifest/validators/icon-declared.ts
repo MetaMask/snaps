@@ -1,5 +1,8 @@
 import type { ValidatorMeta } from '../validator-types';
 
+/**
+ * Suggest including an icon if not found in manifest.
+ */
 export const iconDeclared: ValidatorMeta = {
   severity: 'warning',
   semanticCheck(files, context) {

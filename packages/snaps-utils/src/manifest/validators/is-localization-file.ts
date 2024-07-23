@@ -4,7 +4,7 @@ import { LocalizationFileStruct } from '../../localization';
 import type { ValidatorMeta } from '../validator-types';
 
 /**
- * Verifies the structure of localization files.
+ * Verify the structure of localization files.
  */
 export const isLocalizationFile: ValidatorMeta = {
   severity: 'error',

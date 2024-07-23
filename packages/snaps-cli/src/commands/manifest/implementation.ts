@@ -40,10 +40,21 @@ export async function manifest(
     }
   }
 
+  if (errors.length > 0) {
+    const formattedErrors = errors.join('\n');
+    let message = `The snap manifest file is invalid.\n\n${formattedErrors}`;
+    if (!write) {
+      message +=
+        '\n\nRun the command with the `--fix` flag to attempt to fix the manifest.';
+    }
+
+    error(message, spinner);
+  }
+
   if (write && updated) {
-    const formatedFixed = fixed.join('\n');
+    const formattedFixed = fixed.join('\n');
     info(
-      `The snap manifest file has been updated.\n\n${formatedFixed}`,
+      `The snap manifest file has been updated.\n\n${formattedFixed}`,
       spinner,
     );
   }
@@ -58,15 +69,6 @@ export async function manifest(
   }
 
   if (errors.length > 0) {
-    const formattedErrors = errors.join('\n');
-    let message = `The snap manifest file is invalid.\n\n${formattedErrors}`;
-    if (!write) {
-      message +=
-        '\n\nRun the command with the `--fix` flag to attempt to fix the manifest.';
-    }
-
-    error(message, spinner);
-
     spinner?.stop();
     process.exitCode = 1;
     return false;

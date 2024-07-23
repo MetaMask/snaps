@@ -10,7 +10,7 @@ const SnapFileNameFromKey = {
 } as const;
 
 /**
- * Checks if all the required files are included.
+ * Check if all the required files are included.
  */
 export const expectedFiles: ValidatorMeta = {
   severity: 'error',

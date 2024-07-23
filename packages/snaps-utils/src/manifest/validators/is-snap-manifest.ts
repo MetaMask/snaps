@@ -5,7 +5,7 @@ import { SnapManifestStruct } from '../validation';
 import type { ValidatorMeta } from '../validator-types';
 
 /**
- * Verifies the structure of snap.manifest.json
+ * Verify the structure of snap.manifest.json.
  */
 export const isSnapManifest: ValidatorMeta = {
   severity: 'error',

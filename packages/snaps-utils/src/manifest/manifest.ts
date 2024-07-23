@@ -13,7 +13,7 @@ import { readVirtualFile, VirtualFile } from '../virtual-file/node';
 import type { SnapManifest } from './validation';
 import type { ValidatorResults } from './validator';
 import { hasFixes, runValidators } from './validator';
-import type { ValidatorReport } from './validator-types';
+import type { ValidatorMeta, ValidatorReport } from './validator-types';
 
 const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {
   $schema: 1,
@@ -93,7 +93,7 @@ export async function checkManifest(
     try {
       localization.result = parseJson(localization.toString());
     } catch (error) {
-      assert(error instanceof SyntaxError);
+      assert(error instanceof SyntaxError, error);
       throw new Error(
         `Failed to parse localization file "${localization.path}" as JSON.`,
       );
@@ -139,7 +139,7 @@ export async function checkManifest(
         // Note: This error isn't pushed to the errors array, because it's not an
         // error in the manifest itself.
         throw new Error(
-          `Failed to update snap.manifest.json: ${error.message}`,
+          `Failed to update "snap.manifest.json": ${getErrorMessage(error)}`,
         );
       }
     }
@@ -149,12 +149,20 @@ export async function checkManifest(
 }
 
 /**
- * Runs the algorithm for automatically fixing errors in manifest.
+ * Run the algorithm for automatically fixing errors in manifest.
+ *
+ * The algorithm updates the manifest by fixing all fixable problems,
+ * and then run validation again to check if the new manifest is now correct.
+ * If not correct, the algorithm will use the manifest from previous iteration
+ * and try again `MAX_ATTEMPTS` times to update it before bailing and
+ * resulting in failure.
  *
  * @param results - Results of the initial run of validation.
+ * @param rules - Optional list of rules to run the fixes with.
  */
-async function runFixes(
+export async function runFixes(
   results: ValidatorResults,
+  rules?: ValidatorMeta[],
 ): Promise<CheckManifestResult> {
   let shouldRunFixes = true;
   const MAX_ATTEMPTS = 10;
@@ -187,7 +195,7 @@ async function runFixes(
     )}\n`;
     fixResults.files.manifest.result = manifest;
 
-    fixResults = await runValidators(fixResults.files);
+    fixResults = await runValidators(fixResults.files, rules);
     shouldRunFixes = hasFixes(fixResults);
   }
 

@@ -2,7 +2,7 @@ import { getSvgDimensions } from '../../icon';
 import type { ValidatorMeta } from '../validator-types';
 
 /**
- * Verifies the icon is square.
+ * Verify the icon is square.
  */
 export const iconDimensions: ValidatorMeta = {
   severity: 'warning',
