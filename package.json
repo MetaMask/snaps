@@ -107,7 +107,8 @@
     "simple-git-hooks": "^2.7.0",
     "ts-node": "^10.9.1",
     "tsup": "^8.0.1",
-    "typescript": "~4.8.4"
+    "typescript": "~4.8.4",
+    "vite": "^4.3.9"
   },
   "engines": {
     "node": "^18.16 || >=20"
@@ -123,7 +124,8 @@
       "ts-node>@swc/core": true,
       "@swc/core": true,
       "favicons>sharp": true,
-      "tsup>esbuild": true
+      "tsup>esbuild": true,
+      "vite>esbuild": true
     }
   },
   "packageManager": "yarn@3.6.0"

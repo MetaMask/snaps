@@ -22,6 +22,7 @@ const config = {
       viteConfig: {
         plugins: [tsconfigPaths()],
         optimizeDeps: {
+          include: ['@metamask/providers/StreamProvider'],
           esbuildOptions: {
             plugins: [
               NodeModulesPolyfillPlugin(),
