@@ -10,7 +10,6 @@ import type { StandardFormattingElement } from './formatting';
 import type { HeadingElement } from './Heading';
 import type { ImageElement } from './Image';
 import type { LinkElement } from './Link';
-import type { RadioButtonElement } from './RadioButton';
 import type { RowElement } from './Row';
 import type { SpinnerElement } from './Spinner';
 import type { TextElement } from './Text';
@@ -29,7 +28,6 @@ export * from './Heading';
 export * from './Image';
 export * from './Link';
 export * from './Row';
-export * from './RadioButton';
 export * from './Spinner';
 export * from './Text';
 export * from './Tooltip';
@@ -54,7 +52,6 @@ export type JSXElement =
   | ImageElement
   | LinkElement
   | RowElement
-  | RadioButtonElement
   | SpinnerElement
   | TextElement
   | TooltipElement;

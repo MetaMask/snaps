@@ -47,8 +47,9 @@ import type {
   CopyableElement,
   DividerElement,
   DropdownElement,
-  RadioButtonElement,
   OptionElement,
+  RadioElement,
+  RadioGroupElement,
   FieldElement,
   FormElement,
   HeadingElement,
@@ -167,12 +168,7 @@ export const CheckboxStruct: Describe<CheckboxElement> = element('Checkbox', {
 export const InputStruct: Describe<InputElement> = element('Input', {
   name: string(),
   type: optional(
-    nullUnion([
-      literal('text'),
-      literal('password'),
-      literal('number'),
-      literal('radio'),
-    ]),
+    nullUnion([literal('text'), literal('password'), literal('number')]),
   ),
   value: optional(string()),
   placeholder: optional(string()),
@@ -196,13 +192,22 @@ export const DropdownStruct: Describe<DropdownElement> = element('Dropdown', {
 });
 
 /**
- * A struct for the {@link RadioButtonElement} type.
+ * A struct for the {@link RadioElement} type.
  */
-export const RadioButtonStruct: Describe<RadioButtonElement> = element(
-  'RadioButton',
+export const RadioStruct: Describe<RadioElement> = element('Radio', {
+  value: string(),
+  children: string(),
+});
+
+/**
+ * A struct for the {@link RadioGroupElement} type.
+ */
+export const RadioGroupStruct: Describe<RadioGroupElement> = element(
+  'RadioGroup',
   {
     name: string(),
-    children: children([InputStruct]),
+    value: optional(string()),
+    children: children([RadioStruct]),
   },
 );
 
@@ -232,11 +237,13 @@ const BUTTON_INPUT = [InputStruct, ButtonStruct] as [
 const FIELD_CHILDREN_ARRAY = [
   InputStruct,
   DropdownStruct,
+  RadioGroupStruct,
   FileInputStruct,
   CheckboxStruct,
 ] as [
   typeof InputStruct,
   typeof DropdownStruct,
+  typeof RadioGroupStruct,
   typeof FileInputStruct,
   typeof CheckboxStruct,
 ];
@@ -256,7 +263,6 @@ export const FieldChildUnionStruct = nullUnion([
 const FieldChildStruct = nullUnion([
   tuple(BUTTON_INPUT),
   ...FIELD_CHILDREN_ARRAY,
-  array(InputStruct),
 ]);
 
 /**
@@ -507,6 +513,7 @@ export const BoxChildStruct = typedUnion([
   CopyableStruct,
   DividerStruct,
   DropdownStruct,
+  RadioGroupStruct,
   FileInputStruct,
   FormStruct,
   HeadingStruct,
@@ -515,7 +522,6 @@ export const BoxChildStruct = typedUnion([
   ItalicStruct,
   LinkStruct,
   RowStruct,
-  RadioButtonStruct,
   SpinnerStruct,
   TextStruct,
   TooltipStruct,
@@ -554,8 +560,9 @@ export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   SpinnerStruct,
   TextStruct,
   DropdownStruct,
-  RadioButtonStruct,
   OptionStruct,
+  RadioGroupStruct,
+  RadioStruct,
   ValueStruct,
   TooltipStruct,
   CheckboxStruct,

@@ -6,11 +6,15 @@ import type { FileInputElement } from './FileInput';
 import type { FormElement } from './Form';
 import type { InputElement } from './Input';
 import type { OptionElement } from './Option';
+import type { RadioElement } from './Radio';
+import type { RadioGroupElement } from './RadioGroup';
 
 export * from './Button';
 export * from './Checkbox';
 export * from './Dropdown';
 export * from './Option';
+export * from './Radio';
+export * from './RadioGroup';
 export * from './Field';
 export * from './FileInput';
 export * from './Form';
@@ -24,4 +28,6 @@ export type StandardFormElement =
   | FileInputElement
   | InputElement
   | DropdownElement
-  | OptionElement;
+  | OptionElement
+  | RadioElement
+  | RadioGroupElement;

@@ -3,6 +3,8 @@ import { Dropdown } from './Dropdown';
 import { Field } from './Field';
 import { Input } from './Input';
 import { Option } from './Option';
+import { Radio } from './Radio';
+import { RadioGroup } from './RadioGroup';
 
 describe('Field', () => {
   it('renders a field element', () => {
@@ -133,12 +135,13 @@ describe('Field', () => {
     });
   });
 
-  it('renders a field element with a radio input', () => {
+  it('renders a radio group element', () => {
     const result = (
       <Field label="Label">
-        <Input name="choice" type="radio" value="A" />
-        <Input name="choice" type="radio" value="B" />
-        <Input name="choice" type="radio" value="C" />
+        <RadioGroup name="foo">
+          <Radio value="option1">Option 1</Radio>
+          <Radio value="option2">Option 2</Radio>
+        </RadioGroup>
       </Field>
     );
 
@@ -147,35 +150,31 @@ describe('Field', () => {
       key: null,
       props: {
         label: 'Label',
-        children: [
-          {
-            type: 'Input',
-            key: null,
-            props: {
-              name: 'choice',
-              type: 'radio',
-              value: 'A',
-            },
+        children: {
+          type: 'RadioGroup',
+          key: null,
+          props: {
+            name: 'foo',
+            children: [
+              {
+                type: 'Radio',
+                key: null,
+                props: {
+                  children: 'Option 1',
+                  value: 'option1',
+                },
+              },
+              {
+                type: 'Radio',
+                key: null,
+                props: {
+                  children: 'Option 2',
+                  value: 'option2',
+                },
+              },
+            ],
           },
-          {
-            type: 'Input',
-            key: null,
-            props: {
-              name: 'choice',
-              type: 'radio',
-              value: 'B',
-            },
-          },
-          {
-            type: 'Input',
-            key: null,
-            props: {
-              name: 'choice',
-              type: 'radio',
-              value: 'C',
-            },
-          },
-        ],
+        },
       },
     });
   });

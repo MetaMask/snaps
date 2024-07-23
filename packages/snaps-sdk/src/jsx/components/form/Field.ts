@@ -1,3 +1,5 @@
+import type { RadioGroupElement } from '@metamask/snaps-sdk/jsx';
+
 import { createSnapComponent } from '../../component';
 import type { ButtonElement } from './Button';
 import type { CheckboxElement } from './Checkbox';
@@ -18,9 +20,9 @@ export type FieldProps = {
   children:
     | [InputElement, ButtonElement]
     | DropdownElement
+    | RadioGroupElement
     | FileInputElement
     | InputElement
-    | InputElement[]
     | CheckboxElement;
 };
 

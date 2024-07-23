@@ -13,7 +13,7 @@ import { createSnapComponent } from '../../component';
  */
 export type InputProps = {
   name: string;
-  type?: 'text' | 'password' | 'number' | 'radio' | undefined;
+  type?: 'text' | 'password' | 'number' | undefined;
   value?: string | undefined;
   placeholder?: string | undefined;
 };
