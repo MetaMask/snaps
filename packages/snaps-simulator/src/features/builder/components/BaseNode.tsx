@@ -39,7 +39,7 @@ export const BaseNode: FunctionComponent<BaseNodeProps> = ({
       borderColor="border.default"
       display={isDragging ? 'none' : 'flex'}
       marginX="4"
-      cursor={node.id > 1 ? 'move' : 'default'}
+      cursor={Number(node.id) > 1 ? 'move' : 'default'}
     >
       <Icon icon={node.data.type.toLowerCase() as IconName} width="16px" />
       <Text
@@ -53,7 +53,7 @@ export const BaseNode: FunctionComponent<BaseNodeProps> = ({
         {node.data.type}
       </Text>
       {children}
-      {node.id >= 2 && (
+      {Number(node.id) >= 2 && (
         <Icon
           icon="cross"
           width="11px"
