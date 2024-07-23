@@ -11,6 +11,7 @@ import {
   getSnapManifest,
   getMockLocalizationFile,
   getMockSnapFilesWithUpdatedChecksum,
+  getMockSnapFiles,
 } from '../test-utils';
 import { NpmSnapFileNames } from '../types';
 import {
@@ -20,8 +21,11 @@ import {
   getSnapIcon,
   getSnapSourceCode,
   getWritableManifest,
+  runFixes,
 } from './manifest';
 import type { SnapManifest } from './validation';
+import { runValidators } from './validator';
+import type { ValidatorMeta } from './validator-types';
 
 jest.mock('fs');
 
@@ -283,6 +287,30 @@ describe('checkManifest', () => {
     await expect(checkManifest(BASE_PATH)).rejects.toThrow(
       'Failed to update "snap.manifest.json": foo',
     );
+  });
+});
+
+describe('runFixes', () => {
+  it('returns correctly if fixing fails', async () => {
+    // A rule that is fixable but always fails
+    // This will force the runFixes to run more than MAX_ATTEMPTS
+    const rule: ValidatorMeta = {
+      severity: 'error',
+      semanticCheck(_, context) {
+        context.report('Always fail', (files) => files);
+      },
+    };
+
+    const files = getMockSnapFiles();
+
+    const validatorResults = await runValidators(files, [rule]);
+    const fixesResults = await runFixes(validatorResults, [rule]);
+
+    expect(fixesResults).toStrictEqual({
+      files,
+      updated: false,
+      reports: [{ severity: 'error', message: 'Always fail' }],
+    });
   });
 });
 
