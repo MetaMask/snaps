@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [6.1.1]
 ### Fixed
 - Bump `@metamask/providers` from `17.0.0` to `^17.1.2` ([#2598](https://github.com/metamask/snaps/pull/2598))
-  - Resolves compatibility issue with tools that don't support package subpath exports (e.g. Browserify).
 
 ## [6.1.0]
 ### Added
