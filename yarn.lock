@@ -5279,9 +5279,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/providers@npm:17.1.1":
-  version: 17.1.1
-  resolution: "@metamask/providers@npm:17.1.1"
+"@metamask/providers@npm:^17.1.2":
+  version: 17.1.2
+  resolution: "@metamask/providers@npm:17.1.2"
   dependencies:
     "@metamask/json-rpc-engine": ^9.0.1
     "@metamask/json-rpc-middleware-stream": ^8.0.1
@@ -5296,28 +5296,7 @@ __metadata:
     readable-stream: ^3.6.2
   peerDependencies:
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: d5e3f8acff2bb172c836ecbaaac1f3f41ebc74dfd3ef5b71c59891ac724c5c68d48f8fd576aaf96d5a663d4019ea069fee7d07e79f75cb359abbc06001a4bb06
-  languageName: node
-  linkType: hard
-
-"@metamask/providers@patch:@metamask/providers@npm%3A17.1.1#./.yarn/patches/@metamask-providers-npm-17.1.1-d31d9bc479.patch::locator=root%40workspace%3A.":
-  version: 17.1.1
-  resolution: "@metamask/providers@patch:@metamask/providers@npm%3A17.1.1#./.yarn/patches/@metamask-providers-npm-17.1.1-d31d9bc479.patch::version=17.1.1&hash=544512&locator=root%40workspace%3A."
-  dependencies:
-    "@metamask/json-rpc-engine": ^9.0.1
-    "@metamask/json-rpc-middleware-stream": ^8.0.1
-    "@metamask/object-multiplex": ^2.0.0
-    "@metamask/rpc-errors": ^6.3.1
-    "@metamask/safe-event-emitter": ^3.1.1
-    "@metamask/utils": ^9.0.0
-    detect-browser: ^5.2.0
-    extension-port-stream: ^4.1.0
-    fast-deep-equal: ^3.1.3
-    is-stream: ^2.0.0
-    readable-stream: ^3.6.2
-  peerDependencies:
-    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: aeaf4b80fb286b0b0ca82489d12bd3056b889b99b6bc40f24cf3635597c51b08be615fe6475f6b49efb03f661cd51e84d70c14c085ede92d92d742d36a381c59
+  checksum: 4cfe612649120049abd5d496e02facd86d0851c10e810a3e1289629857da027d77524e6cb8706d38b993bc5fd696bce6f1d33c93bb7d15169b6422e063f205ea
   languageName: node
   linkType: hard
 
@@ -5686,7 +5665,7 @@ __metadata:
     "@metamask/json-rpc-engine": ^9.0.2
     "@metamask/object-multiplex": ^2.0.0
     "@metamask/post-message-stream": ^8.1.0
-    "@metamask/providers": ^17.1.1
+    "@metamask/providers": ^17.1.2
     "@metamask/rpc-errors": ^6.3.1
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
@@ -5916,7 +5895,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^12.1.0
     "@metamask/eslint-config-typescript": ^12.1.0
     "@metamask/key-tree": ^9.1.2
-    "@metamask/providers": ^17.1.1
+    "@metamask/providers": ^17.1.2
     "@metamask/rpc-errors": ^6.3.1
     "@metamask/superstruct": ^3.1.0
     "@metamask/utils": ^9.1.0
@@ -6229,7 +6208,7 @@ __metadata:
     "@metamask/name-lookup-example-snap": "workspace:^"
     "@metamask/network-example-snap": "workspace:^"
     "@metamask/notification-example-snap": "workspace:^"
-    "@metamask/providers": ^17.1.1
+    "@metamask/providers": ^17.1.2
     "@metamask/signature-insights-example-snap": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/utils": ^9.1.0
