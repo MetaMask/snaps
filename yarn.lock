@@ -4172,13 +4172,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/create-release-branch@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/create-release-branch@npm:3.0.0"
+"@metamask/create-release-branch@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@metamask/create-release-branch@npm:3.0.1"
   dependencies:
     "@metamask/action-utils": ^1.0.0
     "@metamask/auto-changelog": ~3.3.0
-    "@metamask/utils": ^8.2.1
+    "@metamask/utils": ^9.0.0
     debug: ^4.3.4
     execa: ^8.0.1
     pony-cause: ^2.1.9
@@ -4190,7 +4190,7 @@ __metadata:
     prettier: ^2
   bin:
     create-release-branch: bin/create-release-branch.js
-  checksum: 373d85babf73a9ffe31374a7e88181d4216f6a117e64539f058af26ca7427f49be1da9f83f982bb08358ebb917371fd96a58e21bd515dd3aabc82cf8374ceff2
+  checksum: 7525bd30119cf76e58f18a4fc9953503b4c37f975f8771a9f89ad997e6cdc1461e7bc5340a828f2d261e8dafb84452fe09051a4420496fa9916343549f6e152f
   languageName: node
   linkType: hard
 
@@ -20295,7 +20295,7 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": ^3.0.4
     "@metamask/auto-changelog": ^3.4.4
-    "@metamask/create-release-branch": ^3.0.0
+    "@metamask/create-release-branch": ^3.0.1
     "@metamask/eslint-config": ^12.1.0
     "@metamask/eslint-config-jest": ^12.1.0
     "@metamask/eslint-config-nodejs": ^12.1.0
