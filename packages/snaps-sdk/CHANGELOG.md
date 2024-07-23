@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.1.1]
+### Changed
+- Bump `@metamask/providers` from `17.0.0` to `^17.1.2` ([#2598](https://github.com/metamask/snaps/pull/2598))
+
 ## [6.1.0]
 ### Added
 - Add non-restricted RPC method `snap_resolveInterface` ([#2509](https://github.com/metamask/snaps/pull/2509))
@@ -202,7 +206,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.1.1...HEAD
+[6.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.1.0...@metamask/snaps-sdk@6.1.1
 [6.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.0.0...@metamask/snaps-sdk@6.1.0
 [6.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@5.0.0...@metamask/snaps-sdk@6.0.0
 [5.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.4.2...@metamask/snaps-sdk@5.0.0
