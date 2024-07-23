@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.8.1]
+### Changed
+- Bump `@metamask/base-controller` from `^6.0.1` to `^6.0.2` ([#2593](https://github.com/metamask/snaps/pull/2593))
+- Bump `@metamask/permission-controller` from `^10.0.1` to `^11.0.0` ([#2593](https://github.com/metamask/snaps/pull/2593))
+
 ## [7.8.0]
 ### Added
 - Move `serialiseJsx` function from `snaps-jest` to `snaps-utils` ([#2409](https://github.com/metamask/snaps/pull/2409))
@@ -282,7 +287,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.8.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.8.1...HEAD
+[7.8.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.8.0...@metamask/snaps-utils@7.8.1
 [7.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.7.0...@metamask/snaps-utils@7.8.0
 [7.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.6.0...@metamask/snaps-utils@7.7.0
 [7.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.5.0...@metamask/snaps-utils@7.6.0
