@@ -2,8 +2,8 @@
 import { walk } from '@lavamoat/lavatube';
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { StreamProvider } from '@metamask/providers';
-import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
+import type { RequestArguments } from '@metamask/providers';
+import { StreamProvider } from '@metamask/providers/stream-provider';
 import { SNAP_STREAM_NAMES } from '@metamask/snaps-utils';
 
 import {
@@ -59,5 +59,5 @@ export function getMockedStreamProvider() {
     return await withTeardown(originalRequest(args), { lastTeardown: 0 });
   };
 
-  return proxyStreamProvider(provider, request);
+  return proxyStreamProvider(request);
 }
