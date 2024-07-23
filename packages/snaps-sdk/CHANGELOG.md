@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [6.1.1]
-### Fixed
+### Changed
 - Bump `@metamask/providers` from `17.0.0` to `^17.1.2` ([#2598](https://github.com/metamask/snaps/pull/2598))
 
 ## [6.1.0]
