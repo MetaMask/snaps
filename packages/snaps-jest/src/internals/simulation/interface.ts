@@ -591,6 +591,80 @@ export async function selectInDropdown(
 }
 
 /**
+ * Choose an option with value from radio group interface element.
+ *
+ * @param controllerMessenger - The controller messenger used to call actions.
+ * @param id - The interface ID.
+ * @param content - The interface Components.
+ * @param snapId - The Snap ID.
+ * @param name - The element name.
+ * @param value - The value to type in the element.
+ */
+export async function chooseFromRadioGroup(
+  controllerMessenger: RootControllerMessenger,
+  id: string,
+  content: JSXElement,
+  snapId: SnapId,
+  name: string,
+  value: string,
+) {
+  const result = getElement(content, name);
+
+  assert(
+    result !== undefined,
+    `Could not find an element in the interface with the name "${name}".`,
+  );
+
+  assert(
+    result.element.type === 'RadioGroup',
+    `Expected an element of type "RadioGroup", but found "${result.element.type}".`,
+  );
+
+  const options = getJsxChildren(result.element) as JSXElement[];
+  const selectedOption = options.find(
+    (option) =>
+      hasProperty(option.props, 'value') && option.props.value === value,
+  );
+
+  assert(
+    selectedOption !== undefined,
+    `The RadioGroup with the name "${name}" does not contain "${value}".`,
+  );
+
+  const { state, context } = controllerMessenger.call(
+    'SnapInterfaceController:getInterface',
+    snapId,
+    id,
+  );
+
+  const newState = mergeValue(state, name, value, result.form);
+
+  controllerMessenger.call(
+    'SnapInterfaceController:updateInterfaceState',
+    id,
+    newState,
+  );
+
+  await controllerMessenger.call('ExecutionService:handleRpcRequest', snapId, {
+    origin: '',
+    handler: HandlerType.OnUserInput,
+    request: {
+      jsonrpc: '2.0',
+      method: ' ',
+      params: {
+        event: {
+          type: UserInputEventType.InputChangeEvent,
+          name: result.element.props.name,
+          value,
+        },
+        id,
+        context,
+      },
+    },
+  });
+}
+
+/**
  * Get a formatted file size.
  *
  * @param size - The file size in bytes.
@@ -715,6 +789,17 @@ export function getInterfaceActions(
 
     selectInDropdown: async (name: string, value: string) => {
       await selectInDropdown(
+        controllerMessenger,
+        id,
+        content,
+        snapId,
+        name,
+        value,
+      );
+    },
+
+    chooseFromRadioGroup: async (name: string, value: string) => {
+      await chooseFromRadioGroup(
         controllerMessenger,
         id,
         content,

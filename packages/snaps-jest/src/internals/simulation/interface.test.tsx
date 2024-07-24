@@ -15,6 +15,8 @@ import {
   Text,
   Dropdown,
   Option,
+  RadioGroup,
+  Radio,
   Box,
   Input,
   FileInput,
@@ -54,6 +56,7 @@ import {
   mergeValue,
   resolveWithSaga,
   selectInDropdown,
+  chooseFromRadioGroup,
   typeInField,
   uploadFile,
 } from './interface';
@@ -79,6 +82,7 @@ describe('getInterfaceResponse', () => {
     clickElement: jest.fn(),
     typeInField: jest.fn(),
     selectInDropdown: jest.fn(),
+    chooseFromRadioGroup: jest.fn(),
     uploadFile: jest.fn(),
   };
 
@@ -98,6 +102,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
+      chooseFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
     });
@@ -123,6 +128,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
+      chooseFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
@@ -149,6 +155,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
+      chooseFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
@@ -175,6 +182,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
+      chooseFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
@@ -201,6 +209,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
+      chooseFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
@@ -227,6 +236,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
+      chooseFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
@@ -272,6 +282,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
+      chooseFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
     });
   });
@@ -309,6 +320,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
+      chooseFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -341,6 +353,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
+      chooseFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
       cancel: expect.any(Function),
       ok: expect.any(Function),
@@ -1129,6 +1142,7 @@ describe('getInterface', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
+      chooseFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
     });
@@ -1157,6 +1171,7 @@ describe('getInterface', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
+      chooseFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
     });
@@ -1344,6 +1359,148 @@ describe('getInterface', () => {
           },
         },
       },
+    );
+  });
+});
+
+describe('chooseFromRadioGroup', () => {
+  const rootControllerMessenger = getRootControllerMessenger();
+  const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+    rootControllerMessenger,
+  );
+
+  const interfaceController = new SnapInterfaceController({
+    messenger: controllerMessenger,
+  });
+
+  const handleRpcRequestMock = jest.fn();
+
+  rootControllerMessenger.registerActionHandler(
+    'ExecutionService:handleRpcRequest',
+    handleRpcRequestMock,
+  );
+
+  it('updates the interface state and sends an InputChangeEvent', async () => {
+    jest.spyOn(rootControllerMessenger, 'call');
+
+    const content = (
+      <RadioGroup name="foo">
+        <Radio value="option1">Option 1</Radio>
+        <Radio value="option2">Option 2</Radio>
+      </RadioGroup>
+    );
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await chooseFromRadioGroup(
+      rootControllerMessenger,
+      interfaceId,
+      content,
+      MOCK_SNAP_ID,
+      'foo',
+      'option2',
+    );
+
+    expect(rootControllerMessenger.call).toHaveBeenCalledWith(
+      'SnapInterfaceController:updateInterfaceState',
+      interfaceId,
+      { foo: 'option2' },
+    );
+
+    expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
+      origin: '',
+      handler: HandlerType.OnUserInput,
+      request: {
+        jsonrpc: '2.0',
+        method: ' ',
+        params: {
+          event: {
+            type: UserInputEventType.InputChangeEvent,
+            name: 'foo',
+            value: 'option2',
+          },
+          id: interfaceId,
+          context: null,
+        },
+      },
+    });
+  });
+
+  it('throws if chosen option does not exist', async () => {
+    const content = (
+      <RadioGroup name="foo">
+        <Radio value="option1">Option 1</Radio>
+        <Radio value="option2">Option 2</Radio>
+      </RadioGroup>
+    );
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await expect(
+      chooseFromRadioGroup(
+        rootControllerMessenger,
+        interfaceId,
+        content,
+        MOCK_SNAP_ID,
+        'foo',
+        'option3',
+      ),
+    ).rejects.toThrow(
+      'The RadioGroup with the name "foo" does not contain "option3"',
+    );
+  });
+
+  it('throws if there is no RadioGroup in the interface', async () => {
+    const content = (
+      <Box>
+        <Text>Foo</Text>
+      </Box>
+    );
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await expect(
+      chooseFromRadioGroup(
+        rootControllerMessenger,
+        interfaceId,
+        content,
+        MOCK_SNAP_ID,
+        'bar',
+        'baz',
+      ),
+    ).rejects.toThrow(
+      'Could not find an element in the interface with the name "bar".',
+    );
+  });
+
+  it('throws if the element is not a RadioGroup', async () => {
+    const content = <Input name="foo" />;
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await expect(
+      chooseFromRadioGroup(
+        rootControllerMessenger,
+        interfaceId,
+        content,
+        MOCK_SNAP_ID,
+        'foo',
+        'baz',
+      ),
+    ).rejects.toThrow(
+      'Expected an element of type "RadioGroup", but found "Input".',
     );
   });
 });

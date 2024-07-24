@@ -13,6 +13,7 @@ const TYPE = 'RadioGroup';
  */
 type RadioGroupProps = {
   name: string;
+  value?: string | undefined;
   children: SnapsChildren<RadioElement>;
 };
 
