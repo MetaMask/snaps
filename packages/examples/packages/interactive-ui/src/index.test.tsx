@@ -114,6 +114,8 @@ describe('onHomePage', () => {
 
     await formScreen.selectInDropdown('example-dropdown', 'option3');
 
+    await formScreen.chooseFromRadioGroup('example-radiogroup', 'option3');
+
     await formScreen.clickElement('submit');
 
     const resultScreen = response.getInterface();
