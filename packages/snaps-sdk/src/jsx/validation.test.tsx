@@ -9,6 +9,8 @@ import {
   Divider,
   Dropdown,
   Option,
+  RadioGroup,
+  Radio,
   Field,
   Form,
   Heading,
@@ -39,6 +41,7 @@ import {
   CopyableStruct,
   DividerStruct,
   DropdownStruct,
+  RadioGroupStruct,
   ElementStruct,
   FieldStruct,
   FileInputStruct,
@@ -227,6 +230,12 @@ describe('FieldStruct', () => {
         <Option value="option1">Option 1</Option>
         <Option value="option2">Option 2</Option>
       </Dropdown>
+    </Field>,
+    <Field label="foo">
+      <RadioGroup name="foo">
+        <Radio value="option1">Option 1</Radio>
+        <Radio value="option2">Option 2</Radio>
+      </RadioGroup>
     </Field>,
     <Field label="foo">
       <Checkbox name="foo" />
@@ -707,6 +716,37 @@ describe('DropdownStruct', () => {
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, DropdownStruct)).toBe(false);
+  });
+});
+
+describe('RadioGroupStruct', () => {
+  it.each([
+    <RadioGroup name="foo">
+      <Radio value="option1">Option 1</Radio>
+      <Radio value="option2">Option 2</Radio>
+    </RadioGroup>,
+  ])('validates a radio group element', (value) => {
+    expect(is(value, RadioGroupStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <Spinner>foo</Spinner>,
+    <Text>foo</Text>,
+    <Box>
+      <Text>foo</Text>
+    </Box>,
+    <Row label="label">
+      <Image src="<svg />" alt="alt" />
+    </Row>,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, RadioGroupStruct)).toBe(false);
   });
 });
 

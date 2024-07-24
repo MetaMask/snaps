@@ -13,6 +13,8 @@ import type {
   OptionElement,
   FileInputElement,
   CheckboxElement,
+  RadioGroupElement,
+  RadioElement,
 } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import {
@@ -61,11 +63,16 @@ export function assertNameIsUnique(state: InterfaceState, name: string) {
  * @returns The default state for the specific component, if any.
  */
 function constructComponentSpecificDefaultState(
-  element: InputElement | DropdownElement | CheckboxElement,
+  element: InputElement | DropdownElement | RadioGroupElement | CheckboxElement,
 ) {
   switch (element.type) {
     case 'Dropdown': {
       const children = getJsxChildren(element) as OptionElement[];
+      return children[0]?.props.value;
+    }
+
+    case 'RadioGroup': {
+      const children = getJsxChildren(element) as RadioElement[];
       return children[0]?.props.value;
     }
 
@@ -87,7 +94,7 @@ function constructComponentSpecificDefaultState(
  * @returns The state value for a given component.
  */
 function getComponentStateValue(
-  element: InputElement | DropdownElement | CheckboxElement,
+  element: InputElement | DropdownElement | RadioGroupElement | CheckboxElement,
 ) {
   switch (element.type) {
     case 'Checkbox':
@@ -108,7 +115,12 @@ function getComponentStateValue(
  */
 function constructInputState(
   oldState: InterfaceState,
-  element: InputElement | DropdownElement | FileInputElement | CheckboxElement,
+  element:
+    | InputElement
+    | DropdownElement
+    | RadioGroupElement
+    | FileInputElement
+    | CheckboxElement,
   form?: string,
 ) {
   const oldStateUnwrapped = form ? (oldState[form] as FormState) : oldState;
@@ -163,6 +175,7 @@ export function constructState(
       currentForm &&
       (component.type === 'Input' ||
         component.type === 'Dropdown' ||
+        component.type === 'RadioGroup' ||
         component.type === 'FileInput' ||
         component.type === 'Checkbox')
     ) {
@@ -180,6 +193,7 @@ export function constructState(
     if (
       component.type === 'Input' ||
       component.type === 'Dropdown' ||
+      component.type === 'RadioGroup' ||
       component.type === 'FileInput' ||
       component.type === 'Checkbox'
     ) {

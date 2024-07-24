@@ -4,6 +4,7 @@ import type { CheckboxElement } from './Checkbox';
 import type { DropdownElement } from './Dropdown';
 import type { FileInputElement } from './FileInput';
 import type { InputElement } from './Input';
+import type { RadioGroupElement } from './RadioGroup';
 
 /**
  * The props of the {@link Field} component.
@@ -18,6 +19,7 @@ export type FieldProps = {
   children:
     | [InputElement, ButtonElement]
     | DropdownElement
+    | RadioGroupElement
     | FileInputElement
     | InputElement
     | CheckboxElement;

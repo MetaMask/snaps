@@ -3,6 +3,8 @@ import { Dropdown } from './Dropdown';
 import { Field } from './Field';
 import { Input } from './Input';
 import { Option } from './Option';
+import { Radio } from './Radio';
+import { RadioGroup } from './RadioGroup';
 
 describe('Field', () => {
   it('renders a field element', () => {
@@ -120,6 +122,50 @@ describe('Field', () => {
               },
               {
                 type: 'Option',
+                key: null,
+                props: {
+                  children: 'Option 2',
+                  value: 'option2',
+                },
+              },
+            ],
+          },
+        },
+      },
+    });
+  });
+
+  it('renders a radio group element', () => {
+    const result = (
+      <Field label="Label">
+        <RadioGroup name="foo">
+          <Radio value="option1">Option 1</Radio>
+          <Radio value="option2">Option 2</Radio>
+        </RadioGroup>
+      </Field>
+    );
+
+    expect(result).toStrictEqual({
+      type: 'Field',
+      key: null,
+      props: {
+        label: 'Label',
+        children: {
+          type: 'RadioGroup',
+          key: null,
+          props: {
+            name: 'foo',
+            children: [
+              {
+                type: 'Radio',
+                key: null,
+                props: {
+                  children: 'Option 1',
+                  value: 'option1',
+                },
+              },
+              {
+                type: 'Radio',
                 key: null,
                 props: {
                   children: 'Option 2',

@@ -10,6 +10,8 @@ import {
   Text,
   FileInput,
   Checkbox,
+  RadioGroup,
+  Radio,
 } from '@metamask/snaps-sdk/jsx';
 
 import { assertNameIsUnique, constructState, getJsxInterface } from './utils';
@@ -324,6 +326,78 @@ describe('constructState', () => {
               <Option value="option1">Option 1</Option>
               <Option value="option2">Option 2</Option>
             </Dropdown>
+          </Field>
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element);
+    expect(result).toStrictEqual({
+      form: { foo: 'option2' },
+    });
+  });
+
+  it('sets default value for root level RadioGroup', () => {
+    const element = (
+      <Box>
+        <RadioGroup name="foo">
+          <Radio value="option1">Option 1</Radio>
+          <Radio value="option2">Option 2</Radio>
+        </RadioGroup>
+      </Box>
+    );
+
+    const result = constructState({}, element);
+    expect(result).toStrictEqual({
+      foo: 'option1',
+    });
+  });
+
+  it('supports root level Radio Group', () => {
+    const element = (
+      <Box>
+        <RadioGroup name="foo" value="option2">
+          <Radio value="option1">Option 1</Radio>
+          <Radio value="option2">Option 2</Radio>
+        </RadioGroup>
+      </Box>
+    );
+
+    const result = constructState({}, element);
+    expect(result).toStrictEqual({
+      foo: 'option2',
+    });
+  });
+
+  it('sets default value for Radio Group in form', () => {
+    const element = (
+      <Box>
+        <Form name="form">
+          <Field label="foo">
+            <RadioGroup name="foo">
+              <Radio value="option1">Option 1</Radio>
+              <Radio value="option2">Option 2</Radio>
+            </RadioGroup>
+          </Field>
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element);
+    expect(result).toStrictEqual({
+      form: { foo: 'option1' },
+    });
+  });
+
+  it('supports Radio Group in form', () => {
+    const element = (
+      <Box>
+        <Form name="form">
+          <Field label="foo">
+            <RadioGroup name="foo" value="option2">
+              <Radio value="option1">Option 1</Radio>
+              <Radio value="option2">Option 2</Radio>
+            </RadioGroup>
           </Field>
         </Form>
       </Box>
