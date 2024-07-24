@@ -1,5 +1,7 @@
 import type { SnapComponent } from '@metamask/snaps-sdk/jsx';
 import {
+  Radio,
+  RadioGroup,
   Button,
   Box,
   Field,
@@ -26,6 +28,11 @@ export type InteractiveFormState = {
   'example-dropdown': string;
 
   /**
+   * The value of the example RadioGroup.
+   */
+  'example-radiogroup': string;
+
+  /**
    * The value of the example checkbox.
    */
   'example-checkbox': boolean;
@@ -45,6 +52,13 @@ export const InteractiveForm: SnapComponent = () => {
             <Option value="option2">Option 2</Option>
             <Option value="option3">Option 3</Option>
           </Dropdown>
+        </Field>
+        <Field label="Example RadioGroup">
+          <RadioGroup name="example-radiogroup">
+            <Radio value="option1">Option 1</Radio>
+            <Radio value="option2">Option 2</Radio>
+            <Radio value="option3">Option 3</Radio>
+          </RadioGroup>
         </Field>
         <Field label="Example Checkbox">
           <Checkbox name="example-checkbox" label="Checkbox" />
