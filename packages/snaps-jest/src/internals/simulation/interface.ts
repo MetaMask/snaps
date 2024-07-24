@@ -600,7 +600,7 @@ export async function selectInDropdown(
  * @param name - The element name.
  * @param value - The value to type in the element.
  */
-export async function chooseFromRadioGroup(
+export async function selectFromRadioGroup(
   controllerMessenger: RootControllerMessenger,
   id: string,
   content: JSXElement,
@@ -798,8 +798,8 @@ export function getInterfaceActions(
       );
     },
 
-    chooseFromRadioGroup: async (name: string, value: string) => {
-      await chooseFromRadioGroup(
+    selectFromRadioGroup: async (name: string, value: string) => {
+      await selectFromRadioGroup(
         controllerMessenger,
         id,
         content,

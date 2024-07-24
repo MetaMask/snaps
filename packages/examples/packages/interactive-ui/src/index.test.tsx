@@ -43,7 +43,7 @@ describe('onRpcRequest', () => {
 
       await formScreen.selectInDropdown('example-dropdown', 'option3');
 
-      await formScreen.chooseFromRadioGroup('example-radiogroup', 'option3');
+      await formScreen.selectFromRadioGroup('example-radiogroup', 'option3');
 
       await formScreen.clickElement('example-checkbox');
 
@@ -114,7 +114,7 @@ describe('onHomePage', () => {
 
     await formScreen.selectInDropdown('example-dropdown', 'option3');
 
-    await formScreen.chooseFromRadioGroup('example-radiogroup', 'option3');
+    await formScreen.selectFromRadioGroup('example-radiogroup', 'option3');
 
     await formScreen.clickElement('submit');
 

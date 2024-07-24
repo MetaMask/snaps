@@ -272,7 +272,7 @@ describe('getInterfaceApi', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
-      chooseFromRadioGroup: expect.any(Function),
+      selectFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
     });
   });
@@ -304,7 +304,7 @@ describe('getInterfaceApi', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
-      chooseFromRadioGroup: expect.any(Function),
+      selectFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
     });
   });
@@ -465,7 +465,7 @@ describe('getInterfaceApi', () => {
     );
   });
 
-  it('sends the request to the snap when using `chooseFromRadioGroup`', async () => {
+  it('sends the request to the snap when using `selectFromRadioGroup`', async () => {
     const controllerMessenger = getRootControllerMessenger();
 
     jest.spyOn(controllerMessenger, 'call');
@@ -492,7 +492,7 @@ describe('getInterfaceApi', () => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const snapInterface = getInterface!();
 
-    await snapInterface.chooseFromRadioGroup('foo', 'option2');
+    await snapInterface.selectFromRadioGroup('foo', 'option2');
 
     expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       6,

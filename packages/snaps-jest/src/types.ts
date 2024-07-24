@@ -127,7 +127,7 @@ export type SnapInterfaceActions = {
    * @param name - The element name to type in.
    * @param value - The value to type.
    */
-  chooseFromRadioGroup(name: string, value: string): Promise<void>;
+  selectFromRadioGroup(name: string, value: string): Promise<void>;
 
   /**
    * Upload a file.

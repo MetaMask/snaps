@@ -56,7 +56,7 @@ import {
   mergeValue,
   resolveWithSaga,
   selectInDropdown,
-  chooseFromRadioGroup,
+  selectFromRadioGroup,
   typeInField,
   uploadFile,
 } from './interface';
@@ -82,7 +82,7 @@ describe('getInterfaceResponse', () => {
     clickElement: jest.fn(),
     typeInField: jest.fn(),
     selectInDropdown: jest.fn(),
-    chooseFromRadioGroup: jest.fn(),
+    selectFromRadioGroup: jest.fn(),
     uploadFile: jest.fn(),
   };
 
@@ -102,7 +102,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
-      chooseFromRadioGroup: expect.any(Function),
+      selectFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
     });
@@ -128,7 +128,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
-      chooseFromRadioGroup: expect.any(Function),
+      selectFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
@@ -155,7 +155,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
-      chooseFromRadioGroup: expect.any(Function),
+      selectFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
@@ -182,7 +182,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
-      chooseFromRadioGroup: expect.any(Function),
+      selectFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
@@ -209,7 +209,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
-      chooseFromRadioGroup: expect.any(Function),
+      selectFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
@@ -236,7 +236,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
-      chooseFromRadioGroup: expect.any(Function),
+      selectFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
@@ -282,7 +282,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
-      chooseFromRadioGroup: expect.any(Function),
+      selectFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
     });
   });
@@ -320,7 +320,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
-      chooseFromRadioGroup: expect.any(Function),
+      selectFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -353,7 +353,7 @@ describe('getInterfaceResponse', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
-      chooseFromRadioGroup: expect.any(Function),
+      selectFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
       cancel: expect.any(Function),
       ok: expect.any(Function),
@@ -1142,7 +1142,7 @@ describe('getInterface', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
-      chooseFromRadioGroup: expect.any(Function),
+      selectFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
     });
@@ -1171,7 +1171,7 @@ describe('getInterface', () => {
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
-      chooseFromRadioGroup: expect.any(Function),
+      selectFromRadioGroup: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
     });
@@ -1363,7 +1363,7 @@ describe('getInterface', () => {
   });
 });
 
-describe('chooseFromRadioGroup', () => {
+describe('selectFromRadioGroup', () => {
   const rootControllerMessenger = getRootControllerMessenger();
   const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
     rootControllerMessenger,
@@ -1395,7 +1395,7 @@ describe('chooseFromRadioGroup', () => {
       content,
     );
 
-    await chooseFromRadioGroup(
+    await selectFromRadioGroup(
       rootControllerMessenger,
       interfaceId,
       content,
@@ -1443,7 +1443,7 @@ describe('chooseFromRadioGroup', () => {
     );
 
     await expect(
-      chooseFromRadioGroup(
+      selectFromRadioGroup(
         rootControllerMessenger,
         interfaceId,
         content,
@@ -1469,7 +1469,7 @@ describe('chooseFromRadioGroup', () => {
     );
 
     await expect(
-      chooseFromRadioGroup(
+      selectFromRadioGroup(
         rootControllerMessenger,
         interfaceId,
         content,
@@ -1491,7 +1491,7 @@ describe('chooseFromRadioGroup', () => {
     );
 
     await expect(
-      chooseFromRadioGroup(
+      selectFromRadioGroup(
         rootControllerMessenger,
         interfaceId,
         content,
