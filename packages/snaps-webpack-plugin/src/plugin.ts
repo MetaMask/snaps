@@ -164,8 +164,8 @@ export default class SnapsWebpackPlugin {
           .map((report) => report.message);
 
         if (errors.length > 0) {
-          throw new Error(
-            `Manifest Error: The manifest is invalid.\n${errors.join('\n')}`,
+          compilation.errors.push(
+            ...errors.map((error) => new WebpackError(error)),
           );
         }
 
