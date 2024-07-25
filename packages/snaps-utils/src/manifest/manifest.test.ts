@@ -228,7 +228,7 @@ describe('checkManifest', () => {
 
     const { reports } = await checkManifest(BASE_PATH);
     expect(reports.map(({ message }) => message)).toStrictEqual([
-      'Failed to validate localization file "/snap/locales/en.json": At path: messages -- Expected an object, but received: "foo".',
+      'Failed to validate localization file "/snap/locales/en.json": At path: messages — Expected a value of type record, but received: "foo".',
     ]);
   });
 

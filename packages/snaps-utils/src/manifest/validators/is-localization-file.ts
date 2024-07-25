@@ -1,6 +1,7 @@
 import { validate } from '@metamask/superstruct';
 
 import { LocalizationFileStruct } from '../../localization';
+import { getStructFailureMessage } from '../../structs';
 import type { ValidatorMeta } from '../validator-types';
 
 /**
@@ -13,9 +14,17 @@ export const isLocalizationFile: ValidatorMeta = {
       const [error] = validate(file.result, LocalizationFileStruct);
 
       if (error) {
-        context.report(
-          `Failed to validate localization file "${file.path}": ${error.message}.`,
-        );
+        for (const failure of error.failures()) {
+          context.report(
+            `Failed to validate localization file "${
+              file.path
+            }": ${getStructFailureMessage(
+              LocalizationFileStruct,
+              failure,
+              false,
+            )}`,
+          );
+        }
       }
     }
   },

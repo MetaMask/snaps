@@ -1,5 +1,6 @@
 import { validate } from '@metamask/superstruct';
 
+import { getStructFailureMessage } from '../../structs';
 import { NpmSnapFileNames, NpmSnapPackageJsonStruct } from '../../types';
 import type { ValidatorMeta } from '../validator-types';
 
@@ -19,7 +20,13 @@ export const isPackageJson: ValidatorMeta = {
     if (error) {
       for (const failure of error.failures()) {
         context.report(
-          `"${NpmSnapFileNames.PackageJson}" is invalid: ${failure.message}`,
+          `"${
+            NpmSnapFileNames.PackageJson
+          }" is invalid: ${getStructFailureMessage(
+            NpmSnapPackageJsonStruct,
+            failure,
+            false,
+          )}`,
         );
       }
     }
