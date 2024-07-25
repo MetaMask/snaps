@@ -7,10 +7,7 @@ import {
   logWarning,
   PostProcessWarning,
 } from '@metamask/snaps-utils/node';
-import {
-  DEFAULT_SNAP_BUNDLE,
-  getSnapManifest,
-} from '@metamask/snaps-utils/test-utils';
+import { DEFAULT_SNAP_BUNDLE } from '@metamask/snaps-utils/test-utils';
 import type { Options as BrowserifyOptions } from 'browserify';
 import browserify from 'browserify';
 import concat from 'concat-stream';
@@ -169,23 +166,26 @@ describe('plugin', () => {
   it('checks the manifest if configured', async () => {
     const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
     mock.mockResolvedValue({
-      manifest: getSnapManifest(),
-      warnings: [],
-      errors: [],
+      files: undefined,
+      updated: false,
+      reports: [],
     });
 
     await bundle({ options: { eval: false, manifestPath: '/foo' } });
 
     expect(mock).toHaveBeenCalledTimes(1);
-    expect(mock).toHaveBeenCalledWith('/', true, expect.any(String));
+    expect(mock).toHaveBeenCalledWith('/', {
+      updateAndWriteManifest: true,
+      sourceCode: expect.any(String),
+    });
   });
 
   it('does not fix the manifest if configured', async () => {
     const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
     mock.mockResolvedValue({
-      manifest: getSnapManifest(),
-      warnings: [],
-      errors: [],
+      files: undefined,
+      updated: false,
+      reports: [],
     });
 
     await bundle({
@@ -193,15 +193,21 @@ describe('plugin', () => {
     });
 
     expect(mock).toHaveBeenCalledTimes(1);
-    expect(mock).toHaveBeenCalledWith('/', false, expect.any(String));
+    expect(mock).toHaveBeenCalledWith('/', {
+      updateAndWriteManifest: false,
+      sourceCode: expect.any(String),
+    });
   });
 
   it('logs manifest errors if writeManifest is disabled and exits with error code 1', async () => {
     const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
     mock.mockResolvedValue({
-      manifest: getSnapManifest(),
-      warnings: [],
-      errors: ['foo', 'bar'],
+      files: undefined,
+      updated: false,
+      reports: [
+        { message: 'foo', severity: 'error' },
+        { message: 'bar', severity: 'error' },
+      ],
     });
 
     await expect(
@@ -214,9 +220,12 @@ describe('plugin', () => {
   it('logs manifest warnings', async () => {
     const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
     mock.mockResolvedValue({
-      manifest: getSnapManifest(),
-      warnings: ['foo', 'bar'],
-      errors: [],
+      files: undefined,
+      updated: false,
+      reports: [
+        { message: 'foo', severity: 'warning' },
+        { message: 'bar', severity: 'warning' },
+      ],
     });
 
     await bundle({
@@ -226,6 +235,26 @@ describe('plugin', () => {
     expect(logWarning).toHaveBeenCalledTimes(3);
     expect(logWarning).toHaveBeenCalledWith('Manifest Warning: foo');
     expect(logWarning).toHaveBeenCalledWith('Manifest Warning: bar');
+  });
+
+  it('logs fixed problems', async () => {
+    const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
+    mock.mockResolvedValue({
+      files: undefined,
+      updated: true,
+      reports: [
+        { message: 'foo', severity: 'error', wasFixed: true },
+        { message: 'bar', severity: 'warning', wasFixed: true },
+      ],
+    });
+
+    await bundle({
+      options: { eval: false, manifestPath: 'foo' },
+    });
+
+    expect(logWarning).toHaveBeenCalledTimes(3);
+    expect(logWarning).toHaveBeenCalledWith('Manifest Problem Fixed: foo');
+    expect(logWarning).toHaveBeenCalledWith('Manifest Problem Fixed: bar');
   });
 
   it('forwards errors', async () => {

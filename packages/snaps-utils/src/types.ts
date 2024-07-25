@@ -1,4 +1,3 @@
-import type { Infer, Struct } from '@metamask/superstruct';
 import {
   instance,
   is,
@@ -12,8 +11,9 @@ import {
   union,
   assert as assertSuperstruct,
 } from '@metamask/superstruct';
+import type { Infer, Struct } from '@metamask/superstruct';
 import type { Json } from '@metamask/utils';
-import { assertStruct, VersionStruct } from '@metamask/utils';
+import { VersionStruct } from '@metamask/utils';
 
 import type { SnapCaveatType } from './caveats';
 import type { SnapFunctionExports, SnapRpcHookArgs } from './handlers';
@@ -51,34 +51,6 @@ export const NpmSnapPackageJsonStruct = type({
 
 export type NpmSnapPackageJson = Infer<typeof NpmSnapPackageJsonStruct> &
   Record<string, any>;
-
-/**
- * Check if the given value is a valid {@link NpmSnapPackageJson} object.
- *
- * @param value - The value to check.
- * @returns Whether the value is a valid {@link NpmSnapPackageJson} object.
- */
-export function isNpmSnapPackageJson(
-  value: unknown,
-): value is NpmSnapPackageJson {
-  return is(value, NpmSnapPackageJsonStruct);
-}
-
-/**
- * Asserts that the given value is a valid {@link NpmSnapPackageJson} object.
- *
- * @param value - The value to check.
- * @throws If the value is not a valid {@link NpmSnapPackageJson} object.
- */
-export function assertIsNpmSnapPackageJson(
-  value: unknown,
-): asserts value is NpmSnapPackageJson {
-  assertStruct(
-    value,
-    NpmSnapPackageJsonStruct,
-    `"${NpmSnapFileNames.PackageJson}" is invalid`,
-  );
-}
 
 /**
  * An object for storing parsed but unvalidated Snap file contents.
@@ -122,17 +94,6 @@ export enum SnapIdPrefixes {
   local = 'local:',
 }
 /* eslint-enable @typescript-eslint/naming-convention */
-
-/**
- * Snap validation failure reason codes that are programmatically fixable
- * if validation occurs during development.
- */
-export enum SnapValidationFailureReason {
-  NameMismatch = '"name" field mismatch',
-  VersionMismatch = '"version" field mismatch',
-  RepositoryMismatch = '"repository" field mismatch',
-  ShasumMismatch = '"shasum" field mismatch',
-}
 
 /* eslint-disable @typescript-eslint/naming-convention */
 export enum SNAP_STREAM_NAMES {

@@ -33,15 +33,27 @@ async function postBundle(options: Partial<Options>, code: string) {
   }
 
   if (options.manifestPath) {
-    const { errors, warnings } = await checkManifest(
+    const { reports } = await checkManifest(
       pathUtils.dirname(options.manifestPath),
-      options.writeManifest,
-      code,
+      {
+        sourceCode: code,
+        updateAndWriteManifest: options.writeManifest,
+      },
     );
 
-    if (!options.writeManifest && errors.length > 0) {
+    const errorsUnfixed = reports
+      .filter((report) => report.severity === 'error' && !report.wasFixed)
+      .map((report) => report.message);
+    const warnings = reports
+      .filter((report) => report.severity === 'warning' && !report.wasFixed)
+      .map((report) => report.message);
+    const fixed = reports
+      .filter((report) => report.wasFixed)
+      .map((report) => report.message);
+
+    if (errorsUnfixed.length > 0) {
       throw new Error(
-        `Manifest Error: The manifest is invalid.\n${errors.join('\n')}`,
+        `Manifest Error: The manifest is invalid.\n${errorsUnfixed.join('\n')}`,
       );
     }
 
@@ -51,6 +63,14 @@ async function postBundle(options: Partial<Options>, code: string) {
       );
 
       warnings.forEach((warning) => logWarning(`Manifest Warning: ${warning}`));
+    }
+
+    if (fixed.length > 0) {
+      logWarning(
+        `Manifest Warning: Validation of snap.manifest.json fixed following problems.`,
+      );
+
+      fixed.forEach((error) => logWarning(`Manifest Problem Fixed: ${error}`));
     }
   }
 }

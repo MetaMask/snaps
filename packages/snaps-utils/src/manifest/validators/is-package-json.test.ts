@@ -1,0 +1,70 @@
+import assert from 'assert';
+
+import { getPackageJson } from '../../test-utils';
+import { VirtualFile } from '../../virtual-file';
+import { isPackageJson } from './is-package-json';
+
+describe('isPackageJson', () => {
+  it("does nothing if file doesn't exist", async () => {
+    const report = jest.fn();
+
+    assert(isPackageJson.structureCheck);
+    await isPackageJson.structureCheck(
+      {
+        localizationFiles: [],
+        auxiliaryFiles: [],
+      },
+      { report },
+    );
+
+    expect(report).toHaveBeenCalledTimes(0);
+  });
+
+  it('does nothing on valid package.json', async () => {
+    const packageJson = getPackageJson();
+    const packageJsonFile = new VirtualFile({
+      value: JSON.stringify(packageJson),
+      result: packageJson,
+      path: '/package.json',
+    });
+
+    const report = jest.fn();
+
+    assert(isPackageJson.structureCheck);
+    await isPackageJson.structureCheck(
+      {
+        packageJson: packageJsonFile,
+        localizationFiles: [],
+        auxiliaryFiles: [],
+      },
+      { report },
+    );
+
+    expect(report).toHaveBeenCalledTimes(0);
+  });
+
+  it('reports on invalid package.json', async () => {
+    const packageJson = getPackageJson({ version: 'foo' });
+    const packageJsonFile = new VirtualFile({
+      value: JSON.stringify(packageJson),
+      result: packageJson,
+      path: '/package.json',
+    });
+
+    const report = jest.fn();
+
+    assert(isPackageJson.structureCheck);
+    await isPackageJson.structureCheck(
+      {
+        packageJson: packageJsonFile,
+        localizationFiles: [],
+        auxiliaryFiles: [],
+      },
+      { report },
+    );
+
+    expect(report).toHaveBeenCalledWith(
+      '"package.json" is invalid: Expected SemVer version, got "foo"',
+    );
+  });
+});

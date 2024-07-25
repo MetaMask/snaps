@@ -7,7 +7,7 @@ const config: Configuration = {
   entry: './src/index.ts',
   mode: 'production',
   devtool: 'source-map',
-  stats: 'errors-only',
+  stats: 'errors-warnings',
 
   output: {
     filename: 'bundle.js',

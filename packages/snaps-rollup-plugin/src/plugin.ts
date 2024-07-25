@@ -75,21 +75,43 @@ export default function snaps(options?: Partial<Options>): Plugin {
       }
 
       if (defaultOptions.manifestPath) {
-        const { errors, warnings } = await checkManifest(
+        const { reports } = await checkManifest(
           pathUtils.dirname(defaultOptions.manifestPath),
-          defaultOptions.writeManifest,
-          await fs.readFile(output.file, 'utf8'),
+          {
+            updateAndWriteManifest: defaultOptions.writeManifest,
+            sourceCode: await fs.readFile(output.file, 'utf8'),
+          },
         );
 
-        if (!defaultOptions.writeManifest && errors.length > 0) {
+        const errorsUnfixed = reports
+          .filter((report) => report.severity === 'error' && !report.wasFixed)
+          .map((report) => report.message);
+        const warnings = reports
+          .filter((report) => report.severity === 'warning' && !report.wasFixed)
+          .map((report) => report.message);
+        const fixed = reports
+          .filter((report) => report.wasFixed)
+          .map((report) => report.message);
+
+        if (errorsUnfixed.length > 0) {
           this.error(
-            `Manifest Error: The manifest is invalid.\n${errors.join('\n')}`,
+            `Manifest Error: The manifest is invalid.\n${errorsUnfixed.join(
+              '\n',
+            )}`,
           );
         }
 
         if (warnings.length > 0) {
           this.warn(
             `Manifest Warning: Validation of snap.manifest.json completed with warnings.\n${warnings.join(
+              '\n',
+            )}`,
+          );
+        }
+
+        if (fixed.length > 0) {
+          this.warn(
+            `Manifest Warning: Validation of snap.manifest.json fixed following problems.\n${fixed.join(
               '\n',
             )}`,
           );

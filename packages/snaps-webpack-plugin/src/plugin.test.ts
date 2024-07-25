@@ -6,10 +6,7 @@ import {
   evalBundle,
   PostProcessWarning,
 } from '@metamask/snaps-utils/node';
-import {
-  DEFAULT_SNAP_BUNDLE,
-  getSnapManifest,
-} from '@metamask/snaps-utils/test-utils';
+import { DEFAULT_SNAP_BUNDLE } from '@metamask/snaps-utils/test-utils';
 import type { IFs } from 'memfs';
 import { createFsFromVolume, Volume } from 'memfs';
 import type { IPromisesAPI } from 'memfs/lib/promises';
@@ -200,9 +197,9 @@ describe('SnapsWebpackPlugin', () => {
   it('checks the manifest if configured', async () => {
     const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
     mock.mockResolvedValue({
-      manifest: getSnapManifest(),
-      errors: [],
-      warnings: [],
+      files: undefined,
+      updated: false,
+      reports: [],
     });
 
     await bundle({
@@ -213,20 +210,19 @@ describe('SnapsWebpackPlugin', () => {
     });
 
     expect(mock).toHaveBeenCalledTimes(1);
-    expect(mock).toHaveBeenCalledWith(
-      '/',
-      true,
-      expect.any(String),
-      expect.any(Function),
-    );
+    expect(mock).toHaveBeenCalledWith('/', {
+      updateAndWriteManifest: true,
+      sourceCode: expect.any(String),
+      writeFileFn: expect.any(Function),
+    });
   });
 
   it('does not fix the manifest if configured', async () => {
     const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
     mock.mockResolvedValue({
-      manifest: getSnapManifest(),
-      errors: [],
-      warnings: [],
+      files: undefined,
+      updated: false,
+      reports: [],
     });
 
     await bundle({
@@ -238,20 +234,22 @@ describe('SnapsWebpackPlugin', () => {
     });
 
     expect(mock).toHaveBeenCalledTimes(1);
-    expect(mock).toHaveBeenCalledWith(
-      '/',
-      false,
-      expect.any(String),
-      expect.any(Function),
-    );
+    expect(mock).toHaveBeenCalledWith('/', {
+      updateAndWriteManifest: false,
+      sourceCode: expect.any(String),
+      writeFileFn: expect.any(Function),
+    });
   });
 
   it('logs manifest errors if writeManifest is disabled', async () => {
     const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
     mock.mockResolvedValue({
-      manifest: getSnapManifest(),
-      errors: ['foo', 'bar'],
-      warnings: [],
+      files: undefined,
+      updated: false,
+      reports: [
+        { message: 'foo', severity: 'error' },
+        { message: 'bar', severity: 'error' },
+      ],
     });
 
     await expect(
@@ -268,9 +266,12 @@ describe('SnapsWebpackPlugin', () => {
   it('logs manifest warnings', async () => {
     const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
     mock.mockResolvedValue({
-      manifest: getSnapManifest(),
-      errors: [],
-      warnings: ['foo', 'bar'],
+      files: undefined,
+      updated: false,
+      reports: [
+        { message: 'foo', severity: 'warning' },
+        { message: 'bar', severity: 'warning' },
+      ],
     });
 
     const { stats } = await bundle({
@@ -278,6 +279,29 @@ describe('SnapsWebpackPlugin', () => {
         eval: false,
         manifestPath: '/snap.manifest.json',
         writeManifest: false,
+      },
+    });
+
+    expect(stats.toJson().warnings?.[0].message).toMatch('foo');
+    expect(stats.toJson().warnings?.[1].message).toMatch('bar');
+  });
+
+  it('logs fixed problems', async () => {
+    const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
+    mock.mockResolvedValue({
+      files: undefined,
+      updated: false,
+      reports: [
+        { message: 'foo', severity: 'error', wasFixed: true },
+        { message: 'bar', severity: 'warning', wasFixed: true },
+      ],
+    });
+
+    const { stats } = await bundle({
+      options: {
+        eval: false,
+        manifestPath: '/snap.manifest.json',
+        writeManifest: true,
       },
     });
 

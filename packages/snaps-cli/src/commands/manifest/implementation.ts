@@ -1,5 +1,6 @@
 import { checkManifest, indent } from '@metamask/snaps-utils/node';
-import { red, yellow } from 'chalk';
+import { assert } from '@metamask/utils';
+import { red, yellow, green } from 'chalk';
 import type { Ora } from 'ora';
 import { dirname } from 'path';
 
@@ -20,39 +21,57 @@ export async function manifest(
   write: boolean,
   spinner?: Ora,
 ): Promise<boolean> {
-  const { warnings, errors, updated } = await checkManifest(
-    dirname(path),
-    write,
-  );
+  const { reports, updated } = await checkManifest(dirname(path), {
+    updateAndWriteManifest: write,
+  });
 
-  if (write && updated) {
-    info('The snap manifest file has been updated.', spinner);
+  const errors = [];
+  const fixed = [];
+  const warnings = [];
+
+  for (const report of reports) {
+    if (report.severity === 'error' && !report.wasFixed) {
+      errors.push(indent(red(`• ${report.message}`)));
+    } else if (report.wasFixed) {
+      fixed.push(indent(yellow(`• ${report.message}`) + green(' (fixed)')));
+    } else {
+      assert(report.severity === 'warning');
+      warnings.push(indent(yellow(`• ${report.message}`)));
+    }
   }
 
-  if (!write && errors.length > 0) {
-    const formattedErrors = errors
-      .map((manifestError) => indent(red(`• ${manifestError}`)))
-      .join('\n');
+  if (errors.length > 0) {
+    const formattedErrors = errors.join('\n');
+    let message = `The snap manifest file is invalid.\n\n${formattedErrors}`;
+    if (!write) {
+      message +=
+        '\n\nRun the command with the `--fix` flag to attempt to fix the manifest.';
+    }
 
-    error(
-      `The snap manifest file is invalid.\n\n${formattedErrors}\n\nRun the command with the \`--fix\` flag to attempt to fix the manifest.`,
+    error(message, spinner);
+  }
+
+  if (write && updated) {
+    const formattedFixed = fixed.join('\n');
+    info(
+      `The snap manifest file has been updated.\n\n${formattedFixed}`,
       spinner,
     );
-
-    spinner?.stop();
-    process.exitCode = 1;
-    return false;
   }
 
   if (warnings.length > 0) {
-    const formattedWarnings = warnings.map((manifestWarning) =>
-      indent(yellow(`• ${manifestWarning}`)),
-    );
+    const formattedWarnings = warnings.join('\n');
 
     warn(
-      `The snap manifest file has warnings.\n\n${formattedWarnings.join('\n')}`,
+      `The snap manifest file has warnings.\n\n${formattedWarnings}`,
       spinner,
     );
+  }
+
+  if (errors.length > 0) {
+    spinner?.stop();
+    process.exitCode = 1;
+    return false;
   }
 
   return true;

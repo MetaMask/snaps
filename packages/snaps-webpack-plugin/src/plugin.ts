@@ -140,16 +140,30 @@ export default class SnapsWebpackPlugin {
       }
 
       if (this.options.manifestPath) {
-        const { errors, warnings } = await checkManifest(
+        const { reports } = await checkManifest(
           pathUtils.dirname(this.options.manifestPath),
-          this.options.writeManifest,
-          bundleContent,
-          promisify(
-            compiler.outputFileSystem.writeFile.bind(compiler.outputFileSystem),
-          ),
+          {
+            updateAndWriteManifest: this.options.writeManifest,
+            sourceCode: bundleContent,
+            writeFileFn: promisify(
+              compiler.outputFileSystem.writeFile.bind(
+                compiler.outputFileSystem,
+              ),
+            ),
+          },
         );
 
-        if (!this.options.writeManifest && errors.length > 0) {
+        const errors = reports
+          .filter((report) => report.severity === 'error' && !report.wasFixed)
+          .map((report) => report.message);
+        const warnings = reports
+          .filter((report) => report.severity === 'warning' && !report.wasFixed)
+          .map((report) => report.message);
+        const fixed = reports
+          .filter((report) => report.wasFixed)
+          .map((report) => report.message);
+
+        if (errors.length > 0) {
           throw new Error(
             `Manifest Error: The manifest is invalid.\n${errors.join('\n')}`,
           );
@@ -158,6 +172,12 @@ export default class SnapsWebpackPlugin {
         if (warnings.length > 0) {
           compilation.warnings.push(
             ...warnings.map((warning) => new WebpackError(warning)),
+          );
+        }
+
+        if (fixed.length > 0) {
+          compilation.warnings.push(
+            ...fixed.map((problem) => new WebpackError(`${problem} (fixed)`)),
           );
         }
       }
