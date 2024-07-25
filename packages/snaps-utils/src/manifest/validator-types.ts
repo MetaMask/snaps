@@ -1,3 +1,4 @@
+import type { Promisable } from '../promise';
 import type { SnapFiles, UnvalidatedSnapFiles } from '../types';
 import type { SnapManifest } from './validation';
 
@@ -5,7 +6,7 @@ import type { SnapManifest } from './validation';
 // https://eslint.org/docs/latest/extend/custom-rules#applying-fixes
 export type ValidatorFix = (files: {
   manifest: SnapManifest;
-}) => { manifest: SnapManifest } | Promise<{ manifest: SnapManifest }>;
+}) => Promisable<{ manifest: SnapManifest }>;
 
 export type ValidatorSeverity = 'error' | 'warning';
 

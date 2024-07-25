@@ -18,6 +18,8 @@ export type ValidatorResults = {
 class Context implements ValidatorContext {
   reports: ValidatorReport[] = [];
 
+  #nextSeverity?: ValidatorSeverity = undefined;
+
   report(message: string, fix?: ValidatorFix): void {
     assert(this.#nextSeverity !== undefined);
     this.reports.push({
@@ -34,8 +36,6 @@ class Context implements ValidatorContext {
   get hasErrors() {
     return this.reports.some((report) => report.severity === 'error');
   }
-
-  #nextSeverity?: ValidatorSeverity = undefined;
 }
 
 /**
