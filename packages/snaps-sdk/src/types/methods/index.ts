@@ -8,6 +8,7 @@ export * from './get-entropy';
 export * from './get-file';
 export * from './get-interface-state';
 export * from './get-locale';
+export * from './get-preferences';
 export * from './get-snaps';
 export * from './invoke-keyring';
 export * from './invoke-snap';

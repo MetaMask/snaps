@@ -5,23 +5,20 @@ import type {
   RestrictedMethodParameters,
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
-import type {
-  GetLocaleResult,
-  GetPreferencesResult,
-} from '@metamask/snaps-sdk';
+import type { GetPreferencesResult } from '@metamask/snaps-sdk';
 import type { NonEmptyArray } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
 
-const methodName = 'snap_getLocale';
+const methodName = 'snap_getPreferences';
 
-export type GetLocaleMethodHooks = {
+export type GetPreferencesMethodHooks = {
   getPreferences: () => GetPreferencesResult;
 };
 
 type SpecificationBuilderOptions = {
   allowedCaveats?: Readonly<NonEmptyArray<string>> | null;
-  methodHooks: GetLocaleMethodHooks;
+  methodHooks: GetPreferencesMethodHooks;
 };
 
 type Specification = ValidPermissionSpecification<{
@@ -32,14 +29,13 @@ type Specification = ValidPermissionSpecification<{
 }>;
 
 /**
- * The specification builder for the `snap_getLocale` permission.
- * `snap_getLocale` allows snaps to get the user selected locale.
+ * The specification builder for the `snap_getPreferences` permission.
+ * `snap_getPreferences` allows snaps to access user preferences.
  *
  * @param options - The specification builder options.
  * @param options.allowedCaveats - The optional allowed caveats for the permission.
  * @param options.methodHooks - The RPC method hooks needed by the method implementation.
- * @returns The specification for the `snap_getLocale` permission.
- * @deprecated - To be removed in favor of `snap_getPreferences`.
+ * @returns The specification for the `snap_getPreferences` permission.
  */
 export const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
@@ -55,27 +51,29 @@ export const specificationBuilder: PermissionSpecificationBuilder<
   };
 };
 
-const methodHooks: MethodHooksObject<GetLocaleMethodHooks> = {
+const methodHooks: MethodHooksObject<GetPreferencesMethodHooks> = {
   getPreferences: true,
 };
 
-export const getLocaleBuilder = Object.freeze({
+export const getPreferencesBuilder = Object.freeze({
   targetName: methodName,
   specificationBuilder,
   methodHooks,
 } as const);
 
 /**
- * Builds the method implementation for `snap_getLocale`.
+ * Builds the method implementation for `snap_getPreferences`.
  *
  * @param hooks - The RPC method hooks.
  * @param hooks.getPreferences - A function that returns the user selected preferences.
- * @returns The user selected locale.
+ * @returns The user preferences.
  */
-export function getImplementation({ getPreferences }: GetLocaleMethodHooks) {
+export function getImplementation({
+  getPreferences,
+}: GetPreferencesMethodHooks) {
   return async function implementation(
     _args: RestrictedMethodOptions<RestrictedMethodParameters>,
-  ): Promise<GetLocaleResult> {
-    return getPreferences().locale;
+  ): Promise<GetPreferencesResult> {
+    return getPreferences();
   };
 }

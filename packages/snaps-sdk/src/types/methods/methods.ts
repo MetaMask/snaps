@@ -27,6 +27,10 @@ import type {
   GetInterfaceStateResult,
 } from './get-interface-state';
 import type { GetLocaleParams, GetLocaleResult } from './get-locale';
+import type {
+  GetPreferencesParams,
+  GetPreferencesResult,
+} from './get-preferences';
 import type { GetSnapsParams, GetSnapsResult } from './get-snaps';
 import type {
   InvokeKeyringParams,
@@ -63,6 +67,7 @@ export type SnapMethods = {
   snap_getEntropy: [GetEntropyParams, GetEntropyResult];
   snap_getFile: [GetFileParams, GetFileResult];
   snap_getLocale: [GetLocaleParams, GetLocaleResult];
+  snap_getPreferences: [GetPreferencesParams, GetPreferencesResult];
   snap_manageAccounts: [ManageAccountsParams, ManageAccountsResult];
   snap_manageState: [ManageStateParams, ManageStateResult];
   snap_notify: [NotifyParams, NotifyResult];
