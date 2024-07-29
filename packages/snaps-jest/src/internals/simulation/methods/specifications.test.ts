@@ -231,6 +231,15 @@ describe('getPermissionSpecifications', () => {
           ],
           "targetName": "snap_getLocale",
         },
+        "snap_getPreferences": {
+          "allowedCaveats": null,
+          "methodImplementation": [Function],
+          "permissionType": "RestrictedMethod",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "snap_getPreferences",
+        },
         "snap_manageAccounts": {
           "allowedCaveats": null,
           "methodImplementation": [Function],
