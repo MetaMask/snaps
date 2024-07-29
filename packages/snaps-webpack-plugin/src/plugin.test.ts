@@ -252,15 +252,18 @@ describe('SnapsWebpackPlugin', () => {
       ],
     });
 
-    await expect(
-      bundle({
-        options: {
-          eval: false,
-          manifestPath: '/snap.manifest.json',
-          writeManifest: false,
-        },
-      }),
-    ).rejects.toThrow('Manifest Error: The manifest is invalid.\nfoo\nbar');
+    const { stats } = await bundle({
+      options: {
+        eval: false,
+        manifestPath: '/snap.manifest.json',
+        writeManifest: false,
+      },
+    });
+
+    // eslint-disable-next-line jest/prefer-strict-equal
+    expect(stats.compilation.errors.map((error) => error.message)).toEqual(
+      expect.arrayContaining(['foo', 'bar']),
+    );
   });
 
   it('logs manifest warnings', async () => {

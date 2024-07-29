@@ -318,6 +318,11 @@ export function getStructFailureMessage<Type, Schema>(
     return `${prefix}${message}.`;
   }
 
+  // Refinements we built ourselves have nice error messages
+  if (failure.refinement !== undefined) {
+    return `${prefix}${failure.message}.`;
+  }
+
   return `${prefix}Expected a value of type ${color(
     failure.type,
     green,
