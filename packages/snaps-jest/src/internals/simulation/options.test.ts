@@ -6,6 +6,7 @@ describe('getOptions', () => {
 
     expect(options).toMatchInlineSnapshot(`
       {
+        "currency": "usd",
         "locale": "en",
         "secretRecoveryPhrase": "test test test test test test test test test test test ball",
         "state": null,
@@ -16,11 +17,13 @@ describe('getOptions', () => {
 
   it('returns the provided options', () => {
     const options = getOptions({
+      currency: 'eur',
       locale: 'nl',
     });
 
     expect(options).toMatchInlineSnapshot(`
       {
+        "currency": "eur",
         "locale": "nl",
         "secretRecoveryPhrase": "test test test test test test test test test test test ball",
         "state": null,

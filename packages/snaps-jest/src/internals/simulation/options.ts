@@ -10,9 +10,10 @@ import {
 } from '@metamask/superstruct';
 import { JsonStruct } from '@metamask/utils';
 
-import { DEFAULT_LOCALE, DEFAULT_SRP } from './constants';
+import { DEFAULT_CURRENCY, DEFAULT_LOCALE, DEFAULT_SRP } from './constants';
 
 const SimulationOptionsStruct = object({
+  currency: defaulted(optional(string()), DEFAULT_CURRENCY),
   secretRecoveryPhrase: defaulted(optional(string()), DEFAULT_SRP),
   locale: defaulted(optional(string()), DEFAULT_LOCALE),
   state: defaulted(optional(nullable(record(string(), JsonStruct))), null),

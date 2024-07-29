@@ -11,6 +11,11 @@ export const DEFAULT_SRP =
 export const DEFAULT_LOCALE = 'en';
 
 /**
+ * The default currency.
+ */
+export const DEFAULT_CURRENCY = 'usd';
+
+/**
  * The default JSON-RPC endpoint for Ethereum requests.
  */
 export const DEFAULT_JSON_RPC_ENDPOINT = 'https://cloudflare-eth.com/';
