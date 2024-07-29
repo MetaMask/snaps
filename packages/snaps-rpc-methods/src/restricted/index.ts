@@ -10,6 +10,8 @@ import type { GetEntropyHooks } from './getEntropy';
 import { getEntropyBuilder } from './getEntropy';
 import type { GetLocaleMethodHooks } from './getLocale';
 import { getLocaleBuilder } from './getLocale';
+import type { GetPreferencesMethodHooks } from './getPreferences';
+import { getPreferencesBuilder } from './getPreferences';
 import type { InvokeSnapMethodHooks } from './invokeSnap';
 import { invokeSnapBuilder } from './invokeSnap';
 import type { ManageAccountsMethodHooks } from './manageAccounts';
@@ -31,7 +33,8 @@ export type RestrictedMethodHooks = DialogMethodHooks &
   ManageStateMethodHooks &
   NotifyMethodHooks &
   ManageAccountsMethodHooks &
-  GetLocaleMethodHooks;
+  GetLocaleMethodHooks &
+  GetPreferencesMethodHooks;
 
 export const restrictedMethodPermissionBuilders = {
   [dialogBuilder.targetName]: dialogBuilder,
@@ -44,6 +47,7 @@ export const restrictedMethodPermissionBuilders = {
   [notifyBuilder.targetName]: notifyBuilder,
   [manageAccountsBuilder.targetName]: manageAccountsBuilder,
   [getLocaleBuilder.targetName]: getLocaleBuilder,
+  [getPreferencesBuilder.targetName]: getPreferencesBuilder,
 } as const;
 
 export * from './caveats';

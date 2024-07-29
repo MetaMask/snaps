@@ -130,7 +130,7 @@ export function* initSaga({ payload }: PayloadAction<string>) {
       ...sharedHooks,
       // TODO: Add all the hooks required
       // TODO: Allow changing this?
-      getLocale: async () => Promise.resolve('en'),
+      getPreferences: () => ({ locale: 'en', currency: 'usd' }),
       getUnlockPromise: async () => Promise.resolve(true),
       showDialog: async (...args: Parameters<typeof showDialog>) =>
         await runSaga(showDialog, ...args).toPromise(),

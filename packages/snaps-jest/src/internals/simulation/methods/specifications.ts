@@ -15,7 +15,7 @@ import {
   EXCLUDED_SNAP_PERMISSIONS,
 } from './constants';
 import {
-  getGetLocaleMethodImplementation,
+  getGetPreferencesMethodImplementation,
   getClearSnapStateMethodImplementation,
   getGetSnapStateMethodImplementation,
   getUpdateSnapStateMethodImplementation,
@@ -88,7 +88,7 @@ export function getPermissionSpecifications({
 
       // Snaps-specific hooks.
       clearSnapState: getClearSnapStateMethodImplementation(runSaga),
-      getLocale: getGetLocaleMethodImplementation(options),
+      getPreferences: getGetPreferencesMethodImplementation(options),
       getSnapState: getGetSnapStateMethodImplementation(runSaga),
       getUnlockPromise: asyncResolve(true),
 
