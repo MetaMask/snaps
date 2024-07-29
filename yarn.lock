@@ -4442,15 +4442,15 @@ __metadata:
   linkType: hard
 
 "@metamask/eth-json-rpc-provider@npm:^4.0.0":
-  version: 4.1.1
-  resolution: "@metamask/eth-json-rpc-provider@npm:4.1.1"
+  version: 4.1.2
+  resolution: "@metamask/eth-json-rpc-provider@npm:4.1.2"
   dependencies:
-    "@metamask/json-rpc-engine": ^9.0.1
+    "@metamask/json-rpc-engine": ^9.0.2
     "@metamask/rpc-errors": ^6.3.1
     "@metamask/safe-event-emitter": ^3.0.0
-    "@metamask/utils": ^9.0.0
+    "@metamask/utils": ^9.1.0
     uuid: ^8.3.2
-  checksum: a429d9511f33a62eb5f2f2f82f26d30a2a8f27d48aa3c8819d6ba03c2c0eef0e7eee7894a0899dd9af4b7d7f3e2092c25304bb34ab6e8d0daffee717f4109b5c
+  checksum: d7092ce64fc185796a0be3f339da1718e280159f06e8fdf29a002b4573abd0903219a527a4c5890952d5e66dbe56b5c3e53d42aa8a4bbc25acbdf6efadcff6ea
   languageName: node
   linkType: hard
 
