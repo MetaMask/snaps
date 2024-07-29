@@ -1,5 +1,6 @@
 import { validate } from '@metamask/superstruct';
 
+import { getStructFailureMessage } from '../../structs';
 import { NpmSnapFileNames } from '../../types';
 import { SnapManifestStruct } from '../validation';
 import type { ValidatorMeta } from '../validator-types';
@@ -17,7 +18,11 @@ export const isSnapManifest: ValidatorMeta = {
     if (error) {
       for (const failure of error.failures()) {
         context.report(
-          `"${NpmSnapFileNames.Manifest}" is invalid: ${failure.message}`,
+          `"${NpmSnapFileNames.Manifest}" is invalid: ${getStructFailureMessage(
+            SnapManifestStruct,
+            failure,
+            false,
+          )}`,
         );
       }
     }
