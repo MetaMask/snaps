@@ -54,6 +54,7 @@ export type SnapInsight = {
   interfaceId?: string | null;
   error?: string;
   loading: boolean;
+  severity?: string;
 };
 
 export type SnapInsightsControllerState = {
@@ -375,6 +376,7 @@ export class SnapInsightsController extends BaseController<
     this.update((state) => {
       state.insights[id][snapId].loading = false;
       state.insights[id][snapId].interfaceId = response?.id as string;
+      state.insights[id][snapId].severity = response?.severity as string;
       state.insights[id][snapId].error = error?.message;
     });
   }
