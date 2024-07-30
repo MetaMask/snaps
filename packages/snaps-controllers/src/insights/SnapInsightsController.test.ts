@@ -73,12 +73,14 @@ describe('SnapInsightsController', () => {
         interfaceId: expect.any(String),
         loading: false,
         error: undefined,
+        severity: undefined,
       },
       [MOCK_LOCAL_SNAP_ID]: {
         snapId: MOCK_LOCAL_SNAP_ID,
         interfaceId: undefined,
         loading: false,
         error: 'Internal JSON-RPC error.',
+        severity: undefined,
       },
     });
 
@@ -196,12 +198,14 @@ describe('SnapInsightsController', () => {
         interfaceId: expect.any(String),
         loading: false,
         error: undefined,
+        severity: undefined,
       },
       [MOCK_LOCAL_SNAP_ID]: {
         snapId: MOCK_LOCAL_SNAP_ID,
         interfaceId: undefined,
         loading: false,
         error: 'Internal JSON-RPC error.',
+        severity: undefined,
       },
     });
 
@@ -319,12 +323,14 @@ describe('SnapInsightsController', () => {
         interfaceId: expect.any(String),
         loading: false,
         error: undefined,
+        severity: undefined,
       },
       [MOCK_LOCAL_SNAP_ID]: {
         snapId: MOCK_LOCAL_SNAP_ID,
         interfaceId: expect.any(String),
         loading: false,
         error: undefined,
+        severity: undefined,
       },
     });
 
@@ -431,12 +437,14 @@ describe('SnapInsightsController', () => {
         interfaceId: expect.any(String),
         loading: false,
         error: undefined,
+        severity: undefined,
       },
       [MOCK_LOCAL_SNAP_ID]: {
         snapId: MOCK_LOCAL_SNAP_ID,
         interfaceId: expect.any(String),
         loading: false,
         error: undefined,
+        severity: undefined,
       },
     });
 
