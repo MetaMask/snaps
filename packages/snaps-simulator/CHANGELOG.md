@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.0]
+### Added
+- Support JSX and Interactive UI in simulator ([#2409](https://github.com/MetaMask/snaps/pull/2409), [#2363](https://github.com/MetaMask/snaps/pull/2363))
+- Add `snap_getPreferences` ([#2607](https://github.com/MetaMask/snaps/pull/2607))
+- Add support for BIP-32-Ed25519 / CIP-3 key derivation ([#2408](https://github.com/MetaMask/snaps/pull/2408))
+
+### Changed
+- Refactor encryption to enable caching ([#2316](https://github.com/MetaMask/snaps/pull/2316))
+- Replace `superstruct` with ESM-compatible fork `@metamask/superstruct` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
+
 ## [2.4.3]
 ### Changed
 - Bump several MetaMask dependencies ([#1999](https://github.com/MetaMask/snaps/pull/1999), [#2065](https://github.com/MetaMask/snaps/pull/2065), [#2064](https://github.com/MetaMask/snaps/pull/2064), [#2069](https://github.com/MetaMask/snaps/pull/2069), [#2054](https://github.com/MetaMask/snaps/pull/2054), [#2086](https://github.com/MetaMask/snaps/pull/2086), [#2100](https://github.com/MetaMask/snaps/pull/2100))
@@ -66,7 +76,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump `metamask/utils` and `metamask/snaps-registry` ([#1738](https://github.com/MetaMask/snaps/pull/1738), [#1694](https://github.com/MetaMask/snaps/pull/1694))
 - Bump @metamask/eth-json-rpc-middleware from 11.0.1 to 11.0.2 ([#1735](https://github.com/MetaMask/snaps/pull/1735))
 
-
 ### Fixed
 - Fix error when using single quotes in UI builder ([#1709](https://github.com/MetaMask/snaps/pull/1709))
 - Fix fallback icon in snaps simulator ([#1726](https://github.com/MetaMask/snaps/pull/1726))
@@ -84,7 +93,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.4.3...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.5.0...HEAD
+[2.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.4.3...@metamask/snaps-simulator@2.5.0
 [2.4.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.4.2...@metamask/snaps-simulator@2.4.3
 [2.4.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.4.1...@metamask/snaps-simulator@2.4.2
 [2.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulator@2.4.0...@metamask/snaps-simulator@2.4.1

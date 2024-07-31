@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.3.0]
+### Changed
+- Improve manifest validation output ([#2572](https://github.com/MetaMask/snaps/pull/2572))
+- Replace `superstruct` with ESM-compatible fork `@metamask/superstruct` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
+
 ## [6.2.1]
 ### Fixed
 - Improve validation of `endowment:rpc` ([#2512](https://github.com/MetaMask/snaps/pull/2512))
@@ -161,7 +166,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.2.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.3.0...HEAD
+[6.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.2.1...@metamask/snaps-cli@6.3.0
 [6.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.2.0...@metamask/snaps-cli@6.2.1
 [6.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.1.1...@metamask/snaps-cli@6.2.0
 [6.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.1.0...@metamask/snaps-cli@6.1.1

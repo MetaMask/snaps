@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.3.0]
+### Added
+- Add support for `snap_getPreferences` ([#2607](https://github.com/MetaMask/snaps/pull/2607))
+- Add `RadioButton` component ([#2592](https://github.com/MetaMask/snaps/pull/2592))
+- Add support for custom dialogs in `snaps-jest` ([#2526](https://github.com/MetaMask/snaps/pull/2526), [#2509](https://github.com/MetaMask/snaps/pull/2509))
+
+### Changed
+- Replace `superstruct` with ESM-compatible fork `@metamask/superstruct` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
+
 ## [8.2.0]
 ### Added
 - Add support for `Checkbox` to `snaps-jest` ([#2515](https://github.com/MetaMask/snaps/pull/2515))
@@ -172,7 +181,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.3.0...HEAD
+[8.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.2.0...@metamask/snaps-jest@8.3.0
 [8.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.1.3...@metamask/snaps-jest@8.2.0
 [8.1.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.1.2...@metamask/snaps-jest@8.1.3
 [8.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.1.1...@metamask/snaps-jest@8.1.2

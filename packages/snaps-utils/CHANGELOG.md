@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.0.0]
+### Changed
+- **BREAKING:** Improve manifest validation output ([#2605](https://github.com/MetaMask/snaps/pull/2605), [#2572](https://github.com/MetaMask/snaps/pull/2572))
+  - This is breaking as it removes exports such as `validateNpmSnap`.
+- Bump `fast-xml-parser` ([#2610](https://github.com/MetaMask/snaps/pull/2610))
+
 ## [7.8.1]
 ### Changed
 - Bump `@metamask/base-controller` from `^6.0.1` to `^6.0.2` ([#2593](https://github.com/metamask/snaps/pull/2593))
@@ -287,7 +293,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.8.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.0.0...HEAD
+[8.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.8.1...@metamask/snaps-utils@8.0.0
 [7.8.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.8.0...@metamask/snaps-utils@7.8.1
 [7.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.7.0...@metamask/snaps-utils@7.8.0
 [7.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.6.0...@metamask/snaps-utils@7.7.0

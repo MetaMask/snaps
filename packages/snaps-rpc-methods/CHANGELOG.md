@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.0.0]
+### Added
+- **BREAKING:** Add `snap_getPreferences` ([#2607](https://github.com/MetaMask/snaps/pull/2607))
+  - This is breaking because a `getPreferences` method hook is now required.
+
 ## [10.0.1]
 ### Changed
 - Bump `@metamask/json-rpc-engine` from `^9.0.0` to `^9.0.2` ([#2593](https://github.com/metamask/snaps/pull/2593))
@@ -184,7 +189,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@10.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.0.0...HEAD
+[11.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@10.0.1...@metamask/snaps-rpc-methods@11.0.0
 [10.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@10.0.0...@metamask/snaps-rpc-methods@10.0.1
 [10.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@9.1.4...@metamask/snaps-rpc-methods@10.0.0
 [9.1.4]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@9.1.3...@metamask/snaps-rpc-methods@9.1.4
