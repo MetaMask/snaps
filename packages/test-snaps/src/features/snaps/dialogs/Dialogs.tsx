@@ -36,6 +36,13 @@ export const Dialogs: FunctionComponent = () => {
     }).catch(logError);
   };
 
+  const handleSubmitCustom = () => {
+    invokeSnap({
+      snapId,
+      method: 'showCustom',
+    }).catch(logError);
+  };
+
   return (
     <Snap
       name="Dialogs Snap"
@@ -65,6 +72,13 @@ export const Dialogs: FunctionComponent = () => {
           disabled={isLoading}
         >
           Prompt
+        </Button>
+        <Button
+          id="sendCustomButton"
+          onClick={handleSubmitCustom}
+          disabled={isLoading}
+        >
+          Custom
         </Button>
       </ButtonGroup>
 
