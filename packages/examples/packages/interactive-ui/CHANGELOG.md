@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.0]
+### Added
+- Add `RadioButton` to interactive UI example ([#2592](https://github.com/MetaMask/snaps-skunkworks.git/pull/2592))
+
 ## [2.1.0]
 ### Added
 - Add `Checkbox` to interactive UI example ([#2515](https://github.com/MetaMask/snaps/pull/2515))
@@ -27,7 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add interactive UI example Snap ([#2171](https://github.com/MetaMask/snaps/pull/2171))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/interactive-ui-example-snap@2.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/interactive-ui-example-snap@2.2.0...HEAD
+[2.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/interactive-ui-example-snap@2.1.0...@metamask/interactive-ui-example-snap@2.2.0
 [2.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/interactive-ui-example-snap@2.0.0...@metamask/interactive-ui-example-snap@2.1.0
 [2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/interactive-ui-example-snap@1.0.2...@metamask/interactive-ui-example-snap@2.0.0
 [1.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/interactive-ui-example-snap@1.0.1...@metamask/interactive-ui-example-snap@1.0.2
