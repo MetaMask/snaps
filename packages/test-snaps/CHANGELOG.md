@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.12.0]
 ### Added
-- Add `Custom` button to the dialog example snap in `test-snaps` ([#2618](https://github.com/MetaMask/snaps-skunkworks.git/pull/2618))
+- Add `Custom` button to the dialog example snap in `test-snaps` ([#2618](https://github.com/MetaMask/snaps/pull/2618))
 
 ## [2.11.0]
 ### Changed
