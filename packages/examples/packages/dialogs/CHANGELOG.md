@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.3.0]
 ### Added
-- Add support for fully custom dialogs ([#2526](https://github.com/MetaMask/snaps-skunkworks.git/pull/2526))
+- Add support for fully custom dialogs ([#2526](https://github.com/MetaMask/snaps/pull/2526))
 
 ## [2.2.1]
 ### Changed

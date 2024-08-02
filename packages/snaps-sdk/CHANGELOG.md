@@ -6,10 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.2.1]
+### Fixed
+- Add structs to `typedUnion` schema ([#2623](https://github.com/MetaMask/snaps/pull/2623))
+
 ## [6.2.0]
 ### Added
 - Add `snap_getPreferences` ([#2607](https://github.com/MetaMask/snaps/pull/2607))
-- Add `RadioButton` component ([#2592](https://github.com/MetaMask/snaps/pull/2592))
+- Add `RadioGroup` component ([#2592](https://github.com/MetaMask/snaps/pull/2592))
 
 ## [6.1.1]
 ### Changed
@@ -211,7 +215,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.2.1...HEAD
+[6.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.2.0...@metamask/snaps-sdk@6.2.1
 [6.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.1.1...@metamask/snaps-sdk@6.2.0
 [6.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.1.0...@metamask/snaps-sdk@6.1.1
 [6.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.0.0...@metamask/snaps-sdk@6.1.0

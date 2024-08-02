@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [8.3.0]
 ### Added
 - Add support for `snap_getPreferences` ([#2607](https://github.com/MetaMask/snaps/pull/2607))
-- Add `RadioButton` component ([#2592](https://github.com/MetaMask/snaps/pull/2592))
+- Add `RadioGroup` component ([#2592](https://github.com/MetaMask/snaps/pull/2592))
 - Add support for custom dialogs in `snaps-jest` ([#2526](https://github.com/MetaMask/snaps/pull/2526), [#2509](https://github.com/MetaMask/snaps/pull/2509))
 
 ### Changed

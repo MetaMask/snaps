@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [9.4.0]
 ### Added
-- Add `RadioButton` component ([#2592](https://github.com/MetaMask/snaps/pull/2592))
+- Add `RadioGroup` component ([#2592](https://github.com/MetaMask/snaps/pull/2592))
 
 ### Changed
 - Persist `severity` property in `SnapInsightsController` ([#2612](https://github.com/MetaMask/snaps/pull/2612))
