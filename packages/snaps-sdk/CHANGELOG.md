@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [6.2.0]
 ### Added
 - Add `snap_getPreferences` ([#2607](https://github.com/MetaMask/snaps/pull/2607))
-- Add `RadioButton` component ([#2592](https://github.com/MetaMask/snaps/pull/2592))
+- Add `RadioGroup` component ([#2592](https://github.com/MetaMask/snaps/pull/2592))
 
 ## [6.1.1]
 ### Changed
