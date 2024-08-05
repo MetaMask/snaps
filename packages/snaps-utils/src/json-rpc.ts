@@ -123,7 +123,7 @@ function createOriginRegExp(matcher: string) {
  *
  * The matcher string may be a specific origin to match or include wildcards.
  * The "*" symbol is treated as a wildcard and will match 0 or more characters.
- * Note: this means that https://*metamask.io matches both https://metamask.io
+ * Note: this means that https://*.metamask.io matches both https://metamask.io
  * and https://snaps.metamask.io.
  *
  * @param matcher - The matcher string.
