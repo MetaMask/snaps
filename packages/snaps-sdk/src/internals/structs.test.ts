@@ -67,4 +67,12 @@ describe('typedUnion', () => {
       'Expected type to be one of: "Box", "Text", "Field", but received: "foo"',
     );
   });
+
+  it('contains structs as part of the schema', () => {
+    expect(unionStruct.schema).toStrictEqual([
+      BoxStruct,
+      TextStruct,
+      FieldStruct,
+    ]);
+  });
 });

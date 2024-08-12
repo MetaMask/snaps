@@ -92,7 +92,7 @@ export function typedUnion<Head extends AnyStruct, Tail extends AnyStruct[]>(
 ): Struct<Infer<Head> | InferStructTuple<Tail>[number], null> {
   return new Struct({
     type: 'union',
-    schema: null,
+    schema: structs,
     *entries(value, context) {
       if (!isPlainObject(value) || !hasProperty(value, 'type')) {
         return;

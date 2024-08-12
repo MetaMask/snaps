@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.0.1]
+### Changed
+- Bump `@metamask/slip44` to 4.0.0 ([#2624](https://github.com/MetaMask/snaps/pull/2624))
+
 ## [8.0.0]
 ### Changed
 - **BREAKING:** Improve manifest validation output ([#2605](https://github.com/MetaMask/snaps/pull/2605), [#2572](https://github.com/MetaMask/snaps/pull/2572))
@@ -293,7 +297,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.0.1...HEAD
+[8.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.0.0...@metamask/snaps-utils@8.0.1
 [8.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.8.1...@metamask/snaps-utils@8.0.0
 [7.8.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.8.0...@metamask/snaps-utils@7.8.1
 [7.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.7.0...@metamask/snaps-utils@7.8.0
