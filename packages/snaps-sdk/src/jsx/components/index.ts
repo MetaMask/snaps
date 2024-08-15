@@ -8,6 +8,7 @@ import type { FooterElement } from './Footer';
 import type { StandardFormElement } from './form';
 import type { StandardFormattingElement } from './formatting';
 import type { HeadingElement } from './Heading';
+import type { IconElement } from './Icon';
 import type { ImageElement } from './Image';
 import type { LinkElement } from './Link';
 import type { RowElement } from './Row';
@@ -25,6 +26,7 @@ export * from './Copyable';
 export * from './Divider';
 export * from './Value';
 export * from './Heading';
+export * from './Icon';
 export * from './Image';
 export * from './Link';
 export * from './Row';
@@ -49,6 +51,7 @@ export type JSXElement =
   | FooterElement
   | ValueElement
   | HeadingElement
+  | IconElement
   | ImageElement
   | LinkElement
   | RowElement

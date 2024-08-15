@@ -1,5 +1,6 @@
 import { createSnapComponent } from '../component';
 import type { StandardFormattingElement } from './formatting';
+import type { IconElement } from './Icon';
 import type { ImageElement } from './Image';
 import type { LinkElement } from './Link';
 import type { TextElement } from './Text';
@@ -9,6 +10,7 @@ export type TooltipChildren =
   | StandardFormattingElement
   | LinkElement
   | ImageElement
+  | IconElement
   | boolean
   | null;
 
@@ -20,7 +22,12 @@ export type TooltipChildren =
  */
 export type TooltipProps = {
   children: TooltipChildren;
-  content: TextElement | StandardFormattingElement | LinkElement | string;
+  content:
+    | TextElement
+    | StandardFormattingElement
+    | LinkElement
+    | IconElement
+    | string;
 };
 
 const TYPE = 'Tooltip';

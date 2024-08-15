@@ -67,6 +67,7 @@ import type {
   FileInputElement,
   ContainerElement,
   FooterElement,
+  IconElement,
 } from './components';
 
 /**
@@ -441,10 +442,43 @@ export const LinkStruct: Describe<LinkElement> = element('Link', {
 });
 
 /**
+ * A struct for the {@link IconElement} type.
+ */
+export const IconStruct: Describe<IconElement> = element('Icon', {
+  name: string(),
+  color: optional(
+    nullUnion([
+      literal('default'),
+      literal('primary'),
+      literal('error'),
+      literal('success'),
+      literal('warning'),
+      literal('info'),
+    ]),
+  ),
+  size: optional(
+    nullUnion([
+      literal('xs'),
+      literal('sm'),
+      literal('md'),
+      literal('lg'),
+      literal('xl'),
+      literal('inherit'),
+    ]),
+  ),
+});
+
+/**
  * A struct for the {@link TextElement} type.
  */
 export const TextStruct: Describe<TextElement> = element('Text', {
-  children: children([string(), BoldStruct, ItalicStruct, LinkStruct]),
+  children: children([
+    string(),
+    BoldStruct,
+    ItalicStruct,
+    LinkStruct,
+    IconStruct,
+  ]),
   alignment: optional(
     nullUnion([literal('start'), literal('center'), literal('end')]),
   ),
@@ -460,6 +494,7 @@ export const TooltipChildStruct = nullUnion([
   ItalicStruct,
   LinkStruct,
   ImageStruct,
+  IconStruct,
   boolean(),
 ]);
 
@@ -472,6 +507,7 @@ export const TooltipContentStruct = nullUnion([
   BoldStruct,
   ItalicStruct,
   LinkStruct,
+  IconStruct,
   string(),
 ]);
 
@@ -527,6 +563,7 @@ export const BoxChildStruct = typedUnion([
   TooltipStruct,
   CheckboxStruct,
   CardStruct,
+  IconStruct,
 ]);
 
 /**
@@ -569,6 +606,7 @@ export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   FooterStruct,
   ContainerStruct,
   CardStruct,
+  IconStruct,
 ]);
 
 /**

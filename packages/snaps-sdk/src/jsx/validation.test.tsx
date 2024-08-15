@@ -28,6 +28,7 @@ import {
   Footer,
   Container,
   Card,
+  Icon,
 } from './components';
 import {
   AddressStruct,
@@ -61,6 +62,7 @@ import {
   TextStruct,
   TooltipStruct,
   ValueStruct,
+  IconStruct,
 } from './validation';
 
 describe('KeyStruct', () => {
@@ -877,6 +879,42 @@ describe('LinkStruct', () => {
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, LinkStruct)).toBe(false);
+  });
+});
+
+describe('IconStruct', () => {
+  it.each([
+    <Icon name="warning" />,
+    <Icon name="wifi" color="info" />,
+    <Icon name="wifi" size="lg" />,
+    <Icon name="warning" color="default" size="inherit" />,
+  ])('validates an icon element', (value) => {
+    expect(is(value, IconStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <Icon />,
+    // @ts-expect-error - Invalid props.
+    <Icon name="bar">foo</Icon>,
+    // @ts-expect-error - Invalid props.
+    <Icon name="bar" color="foo" />,
+    // @ts-expect-error - Invalid props.
+    <Icon name="bar" size="foo" />,
+    <Box>
+      <Icon name="wifi" />
+    </Box>,
+    <Row label="label">
+      <Image src="<svg />" alt="alt" />
+    </Row>,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, IconStruct)).toBe(false);
   });
 });
 

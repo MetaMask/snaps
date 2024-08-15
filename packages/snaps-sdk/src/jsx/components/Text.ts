@@ -1,13 +1,14 @@
 import type { SnapsChildren } from '../component';
 import { createSnapComponent } from '../component';
 import type { StandardFormattingElement } from './formatting';
+import type { IconElement } from './Icon';
 import type { LinkElement } from './Link';
 
 /**
  * The children of the {@link Text} component.
  */
 export type TextChildren = SnapsChildren<
-  string | StandardFormattingElement | LinkElement
+  string | StandardFormattingElement | LinkElement | IconElement
 >;
 
 /**
