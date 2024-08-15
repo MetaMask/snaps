@@ -9,15 +9,8 @@ import { createSnapComponent } from '../component';
  */
 export type IconProps = {
   name: string;
-  color?:
-    | 'default'
-    | 'primary'
-    | 'error'
-    | 'success'
-    | 'warning'
-    | 'info'
-    | undefined;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'inherit' | undefined;
+  color?: 'default' | 'primary' | 'muted' | undefined;
+  size?: 'md' | 'inherit' | undefined;
 };
 
 const TYPE = 'Icon';

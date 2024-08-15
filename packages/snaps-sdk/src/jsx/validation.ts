@@ -447,25 +447,9 @@ export const LinkStruct: Describe<LinkElement> = element('Link', {
 export const IconStruct: Describe<IconElement> = element('Icon', {
   name: string(),
   color: optional(
-    nullUnion([
-      literal('default'),
-      literal('primary'),
-      literal('error'),
-      literal('success'),
-      literal('warning'),
-      literal('info'),
-    ]),
+    nullUnion([literal('default'), literal('primary'), literal('muted')]),
   ),
-  size: optional(
-    nullUnion([
-      literal('xs'),
-      literal('sm'),
-      literal('md'),
-      literal('lg'),
-      literal('xl'),
-      literal('inherit'),
-    ]),
-  ),
+  size: optional(nullUnion([literal('md'), literal('inherit')])),
 });
 
 /**

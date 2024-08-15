@@ -885,8 +885,8 @@ describe('LinkStruct', () => {
 describe('IconStruct', () => {
   it.each([
     <Icon name="warning" />,
-    <Icon name="wifi" color="info" />,
-    <Icon name="wifi" size="lg" />,
+    <Icon name="wifi" color="muted" />,
+    <Icon name="wifi" size="md" />,
     <Icon name="warning" color="default" size="inherit" />,
   ])('validates an icon element', (value) => {
     expect(is(value, IconStruct)).toBe(true);

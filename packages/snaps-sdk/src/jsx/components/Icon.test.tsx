@@ -14,7 +14,7 @@ describe('Icon', () => {
   });
 
   it('renders an icon with color', () => {
-    const result = <Icon name="warning" color="warning" />;
+    const result = <Icon name="warning" color="primary" />;
 
     expect(result).toStrictEqual({
       type: 'Icon',
@@ -24,7 +24,7 @@ describe('Icon', () => {
   });
 
   it('renders an icon with size', () => {
-    const result = <Icon name="warning" size="lg" />;
+    const result = <Icon name="warning" size="md" />;
 
     expect(result).toStrictEqual({
       type: 'Icon',
