@@ -19,7 +19,7 @@ describe('Icon', () => {
     expect(result).toStrictEqual({
       type: 'Icon',
       key: null,
-      props: { name: 'warning', color: 'warning' },
+      props: { name: 'warning', color: 'primary' },
     });
   });
 
@@ -29,7 +29,7 @@ describe('Icon', () => {
     expect(result).toStrictEqual({
       type: 'Icon',
       key: null,
-      props: { name: 'warning', size: 'lg' },
+      props: { name: 'warning', size: 'md' },
     });
   });
 });
