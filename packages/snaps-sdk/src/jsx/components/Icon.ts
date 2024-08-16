@@ -186,7 +186,7 @@ const TYPE = 'Icon';
  * @param props.size - The size of the displayed icon. Use `inherit` to size it the same as the text.
  * @returns An icon element.
  * @example
- * <Icon name="warning" color="warning" size="lg" />
+ * <Icon name="warning" color="warning" size="md" />
  */
 export const Icon = createSnapComponent<IconProps, typeof TYPE>(TYPE);
 
