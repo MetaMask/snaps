@@ -37,36 +37,38 @@ import type {
   SnapsChildren,
   StringElement,
 } from './component';
-import type {
-  AddressElement,
-  BoldElement,
-  BoxElement,
-  ButtonElement,
-  CheckboxElement,
-  CardElement,
-  CopyableElement,
-  DividerElement,
-  DropdownElement,
-  OptionElement,
-  RadioElement,
-  RadioGroupElement,
-  FieldElement,
-  FormElement,
-  HeadingElement,
-  ImageElement,
-  InputElement,
-  ItalicElement,
-  JSXElement,
-  LinkElement,
-  RowElement,
-  SpinnerElement,
-  StandardFormattingElement,
-  TextElement,
-  TooltipElement,
-  ValueElement,
-  FileInputElement,
-  ContainerElement,
-  FooterElement,
+import {
+  type AddressElement,
+  type BoldElement,
+  type BoxElement,
+  type ButtonElement,
+  type CheckboxElement,
+  type CardElement,
+  type CopyableElement,
+  type DividerElement,
+  type DropdownElement,
+  type OptionElement,
+  type RadioElement,
+  type RadioGroupElement,
+  type FieldElement,
+  type FormElement,
+  type HeadingElement,
+  type ImageElement,
+  type InputElement,
+  type ItalicElement,
+  type JSXElement,
+  type LinkElement,
+  type RowElement,
+  type SpinnerElement,
+  type StandardFormattingElement,
+  type TextElement,
+  type TooltipElement,
+  type ValueElement,
+  type FileInputElement,
+  type ContainerElement,
+  type FooterElement,
+  type IconElement,
+  IconName,
 } from './components';
 
 /**
@@ -440,11 +442,32 @@ export const LinkStruct: Describe<LinkElement> = element('Link', {
   children: children([FormattingStruct, string()]),
 });
 
+const IconNameStruct: Struct<`${IconName}`, null> = nullUnion(
+  Object.values(IconName).map((name) => literal(name)) as any,
+);
+
+/**
+ * A struct for the {@link IconElement} type.
+ */
+export const IconStruct: Describe<IconElement> = element('Icon', {
+  name: IconNameStruct,
+  color: optional(
+    nullUnion([literal('default'), literal('primary'), literal('muted')]),
+  ),
+  size: optional(nullUnion([literal('md'), literal('inherit')])),
+});
+
 /**
  * A struct for the {@link TextElement} type.
  */
 export const TextStruct: Describe<TextElement> = element('Text', {
-  children: children([string(), BoldStruct, ItalicStruct, LinkStruct]),
+  children: children([
+    string(),
+    BoldStruct,
+    ItalicStruct,
+    LinkStruct,
+    IconStruct,
+  ]),
   alignment: optional(
     nullUnion([literal('start'), literal('center'), literal('end')]),
   ),
@@ -460,6 +483,7 @@ export const TooltipChildStruct = nullUnion([
   ItalicStruct,
   LinkStruct,
   ImageStruct,
+  IconStruct,
   boolean(),
 ]);
 
@@ -472,6 +496,7 @@ export const TooltipContentStruct = nullUnion([
   BoldStruct,
   ItalicStruct,
   LinkStruct,
+  IconStruct,
   string(),
 ]);
 
@@ -527,6 +552,7 @@ export const BoxChildStruct = typedUnion([
   TooltipStruct,
   CheckboxStruct,
   CardStruct,
+  IconStruct,
 ]);
 
 /**
@@ -569,6 +595,7 @@ export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   FooterStruct,
   ContainerStruct,
   CardStruct,
+  IconStruct,
 ]);
 
 /**
