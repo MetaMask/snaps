@@ -60,7 +60,7 @@ export abstract class BaseNpmLocation implements SnapLocation {
 
   constructor(url: URL, opts: DetectSnapLocationOptions = {}) {
     const allowCustomRegistries = opts.allowCustomRegistries ?? false;
-    const fetchFunction = opts.fetch ?? globalThis.fetch.bind(globalThis);
+    const fetchFunction = opts.fetch ?? globalThis.fetch.bind(undefined);
     const requestedRange = opts.versionRange ?? DEFAULT_REQUESTED_SNAP_VERSION;
     const defaultResolve = async (range: SemVerRange) => range;
     const resolveVersion = opts.resolveVersion ?? defaultResolve;
