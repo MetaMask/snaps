@@ -170,7 +170,7 @@ export const IconStruct: Describe<IconElement> = element('Icon', {
  * A struct for the {@link ButtonElement} type.
  */
 export const ButtonStruct: Describe<ButtonElement> = element('Button', {
-  children: nullUnion([StringElementStruct, ImageStruct, IconStruct]),
+  children: children([StringElementStruct, ImageStruct, IconStruct]),
   name: optional(string()),
   type: optional(nullUnion([literal('button'), literal('submit')])),
   variant: optional(nullUnion([literal('primary'), literal('destructive')])),
