@@ -158,6 +158,12 @@ describe('ButtonStruct', () => {
     <Button variant="destructive">foo</Button>,
     <Button disabled={true}>foo</Button>,
     <Button key="button">foo</Button>,
+    <Button>
+      <Icon name="wifi" />
+    </Button>,
+    <Button>
+      <Image src="<svg></svg>" />
+    </Button>,
   ])('validates a button element', (value) => {
     expect(is(value, ButtonStruct)).toBe(true);
   });

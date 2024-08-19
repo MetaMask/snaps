@@ -144,10 +144,33 @@ function element<Name extends string, Props extends ObjectSchema = EmptyObject>(
 }
 
 /**
+ * A struct for the {@link ImageElement} type.
+ */
+export const ImageStruct: Describe<ImageElement> = element('Image', {
+  src: svg(),
+  alt: optional(string()),
+});
+
+const IconNameStruct: Struct<`${IconName}`, null> = nullUnion(
+  Object.values(IconName).map((name) => literal(name)) as any,
+);
+
+/**
+ * A struct for the {@link IconElement} type.
+ */
+export const IconStruct: Describe<IconElement> = element('Icon', {
+  name: IconNameStruct,
+  color: optional(
+    nullUnion([literal('default'), literal('primary'), literal('muted')]),
+  ),
+  size: optional(nullUnion([literal('md'), literal('inherit')])),
+});
+
+/**
  * A struct for the {@link ButtonElement} type.
  */
 export const ButtonStruct: Describe<ButtonElement> = element('Button', {
-  children: StringElementStruct,
+  children: children([StringElementStruct, ImageStruct, IconStruct]),
   name: optional(string()),
   type: optional(nullUnion([literal('button'), literal('submit')])),
   variant: optional(nullUnion([literal('primary'), literal('destructive')])),
@@ -427,34 +450,11 @@ export const HeadingStruct: Describe<HeadingElement> = element('Heading', {
 });
 
 /**
- * A struct for the {@link ImageElement} type.
- */
-export const ImageStruct: Describe<ImageElement> = element('Image', {
-  src: svg(),
-  alt: optional(string()),
-});
-
-/**
  * A struct for the {@link LinkElement} type.
  */
 export const LinkStruct: Describe<LinkElement> = element('Link', {
   href: string(),
   children: children([FormattingStruct, string()]),
-});
-
-const IconNameStruct: Struct<`${IconName}`, null> = nullUnion(
-  Object.values(IconName).map((name) => literal(name)) as any,
-);
-
-/**
- * A struct for the {@link IconElement} type.
- */
-export const IconStruct: Describe<IconElement> = element('Icon', {
-  name: IconNameStruct,
-  color: optional(
-    nullUnion([literal('default'), literal('primary'), literal('muted')]),
-  ),
-  size: optional(nullUnion([literal('md'), literal('inherit')])),
 });
 
 /**

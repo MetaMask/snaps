@@ -1,5 +1,7 @@
-import type { StringElement } from '../../component';
+import type { SnapsChildren, StringElement } from '../../component';
 import { createSnapComponent } from '../../component';
+import type { IconElement } from '../Icon';
+import type { ImageElement } from '../Image';
 
 // TODO: Add the `onClick` prop to the `ButtonProps` type.
 
@@ -16,7 +18,7 @@ import { createSnapComponent } from '../../component';
  * @property disabled - Whether the button is disabled. Defaults to `false`.
  */
 export type ButtonProps = {
-  children: StringElement;
+  children: SnapsChildren<StringElement | IconElement | ImageElement>;
   name?: string | undefined;
   type?: 'button' | 'submit' | undefined;
   variant?: 'primary' | 'destructive' | undefined;
