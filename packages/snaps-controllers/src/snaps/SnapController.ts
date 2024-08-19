@@ -790,7 +790,7 @@ export class SnapController extends BaseController<
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
     maxIdleTime = inMilliseconds(30, Duration.Second),
     maxRequestTime = inMilliseconds(60, Duration.Second),
-    fetchFunction = globalThis.fetch.bind(globalThis),
+    fetchFunction = globalThis.fetch.bind(undefined),
     featureFlags = {},
     detectSnapLocation: detectSnapLocationFunction = detectSnapLocation,
     preinstalledSnaps = null,

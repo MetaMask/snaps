@@ -120,7 +120,7 @@ export class JsonSnapsRegistry extends BaseController<
       signature: SNAP_REGISTRY_SIGNATURE_URL,
     },
     publicKey = DEFAULT_PUBLIC_KEY,
-    fetchFunction = globalThis.fetch.bind(globalThis),
+    fetchFunction = globalThis.fetch.bind(undefined),
     recentFetchThreshold = inMilliseconds(5, Duration.Minute),
     refetchOnAllowlistMiss = true,
   }: JsonSnapsRegistryArgs) {
