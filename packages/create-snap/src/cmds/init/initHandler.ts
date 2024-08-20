@@ -12,7 +12,6 @@ import pathUtils from 'path';
 import type { SemVer } from 'semver';
 import semver from 'semver';
 
-import type { YargsArgs } from '../../types/yargs';
 import {
   buildSnap,
   cloneTemplate,
@@ -23,6 +22,7 @@ import {
   SNAP_LOCATION,
   yarnInstall,
 } from './initUtils';
+import type { YargsArgs } from '../../types/yargs';
 
 /**
  * Creates a new snap package, based on one of the provided templates. This
