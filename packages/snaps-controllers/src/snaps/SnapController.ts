@@ -4214,6 +4214,8 @@ export class SnapController extends BaseController<
    */
   #getPermissionsToGrant(snapId: SnapId, newPermissions: RequestedPermissions) {
     if (Object.keys(newPermissions).includes(SnapEndowments.EthereumProvider)) {
+      // This will return the globally selected network if the Snap doesn't have
+      // one set.
       const networkClientId = this.messagingSystem.call(
         'SelectedNetworkController:getNetworkClientIdForDomain',
         snapId,
