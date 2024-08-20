@@ -8,6 +8,7 @@ import type { InputElement } from './Input';
 import type { OptionElement } from './Option';
 import type { RadioElement } from './Radio';
 import type { RadioGroupElement } from './RadioGroup';
+import type { SelectorElement } from './Selector';
 
 export * from './Button';
 export * from './Checkbox';
@@ -19,6 +20,7 @@ export * from './Field';
 export * from './FileInput';
 export * from './Form';
 export * from './Input';
+export * from './Selector';
 
 export type StandardFormElement =
   | ButtonElement
@@ -30,4 +32,5 @@ export type StandardFormElement =
   | DropdownElement
   | OptionElement
   | RadioElement
-  | RadioGroupElement;
+  | RadioGroupElement
+  | SelectorElement;

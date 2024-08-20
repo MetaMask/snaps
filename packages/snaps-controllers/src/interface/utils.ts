@@ -15,6 +15,7 @@ import type {
   CheckboxElement,
   RadioGroupElement,
   RadioElement,
+  SelectorElement,
 } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import {
@@ -63,7 +64,12 @@ export function assertNameIsUnique(state: InterfaceState, name: string) {
  * @returns The default state for the specific component, if any.
  */
 function constructComponentSpecificDefaultState(
-  element: InputElement | DropdownElement | RadioGroupElement | CheckboxElement,
+  element:
+    | InputElement
+    | DropdownElement
+    | RadioGroupElement
+    | CheckboxElement
+    | SelectorElement,
 ) {
   switch (element.type) {
     case 'Dropdown': {
@@ -73,6 +79,11 @@ function constructComponentSpecificDefaultState(
 
     case 'RadioGroup': {
       const children = getJsxChildren(element) as RadioElement[];
+      return children[0]?.props.value;
+    }
+
+    case 'Selector': {
+      const children = getJsxChildren(element) as OptionElement[];
       return children[0]?.props.value;
     }
 
@@ -94,7 +105,12 @@ function constructComponentSpecificDefaultState(
  * @returns The state value for a given component.
  */
 function getComponentStateValue(
-  element: InputElement | DropdownElement | RadioGroupElement | CheckboxElement,
+  element:
+    | InputElement
+    | DropdownElement
+    | RadioGroupElement
+    | CheckboxElement
+    | SelectorElement,
 ) {
   switch (element.type) {
     case 'Checkbox':
@@ -120,7 +136,8 @@ function constructInputState(
     | DropdownElement
     | RadioGroupElement
     | FileInputElement
-    | CheckboxElement,
+    | CheckboxElement
+    | SelectorElement,
   form?: string,
 ) {
   const oldStateUnwrapped = form ? (oldState[form] as FormState) : oldState;
@@ -177,7 +194,8 @@ export function constructState(
         component.type === 'Dropdown' ||
         component.type === 'RadioGroup' ||
         component.type === 'FileInput' ||
-        component.type === 'Checkbox')
+        component.type === 'Checkbox' ||
+        component.type === 'Selector')
     ) {
       const formState = newState[currentForm.name] as FormState;
       assertNameIsUnique(formState, component.props.name);
@@ -195,7 +213,8 @@ export function constructState(
       component.type === 'Dropdown' ||
       component.type === 'RadioGroup' ||
       component.type === 'FileInput' ||
-      component.type === 'Checkbox'
+      component.type === 'Checkbox' ||
+      component.type === 'Selector'
     ) {
       assertNameIsUnique(newState, component.props.name);
       newState[component.props.name] = constructInputState(oldState, component);

@@ -17,6 +17,7 @@ import {
   record,
   string,
   tuple,
+  any,
 } from '@metamask/superstruct';
 import {
   hasProperty,
@@ -68,6 +69,7 @@ import {
   type ContainerElement,
   type FooterElement,
   type IconElement,
+  type SelectorElement,
   IconName,
 } from './components';
 
@@ -202,15 +204,25 @@ export const InputStruct: Describe<InputElement> = element('Input', {
 /**
  * A struct for the {@link OptionElement} type.
  */
+// @ts-expect-error ignore any for now
 export const OptionStruct: Describe<OptionElement> = element('Option', {
   value: string(),
-  children: string(),
+  children: nullUnion([string(), any()]),
 });
 
 /**
  * A struct for the {@link DropdownElement} type.
  */
 export const DropdownStruct: Describe<DropdownElement> = element('Dropdown', {
+  name: string(),
+  value: optional(string()),
+  children: children([OptionStruct]),
+});
+
+/**
+ * A struct for the {@link SelectorElement} type.
+ */
+export const SelectorStruct: Describe<SelectorElement> = element('Selector', {
   name: string(),
   value: optional(string()),
   children: children([OptionStruct]),
@@ -265,12 +277,14 @@ const FIELD_CHILDREN_ARRAY = [
   RadioGroupStruct,
   FileInputStruct,
   CheckboxStruct,
+  SelectorStruct,
 ] as [
   typeof InputStruct,
   typeof DropdownStruct,
   typeof RadioGroupStruct,
   typeof FileInputStruct,
   typeof CheckboxStruct,
+  typeof SelectorStruct,
 ];
 
 /**
@@ -563,6 +577,7 @@ export const BoxChildStruct = typedUnion([
   CheckboxStruct,
   CardStruct,
   IconStruct,
+  SelectorStruct,
 ]);
 
 /**
@@ -606,6 +621,7 @@ export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   ContainerStruct,
   CardStruct,
   IconStruct,
+  SelectorStruct,
 ]);
 
 /**
