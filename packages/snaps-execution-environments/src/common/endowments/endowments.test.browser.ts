@@ -1,4 +1,4 @@
-/* eslint-disable import/no-unassigned-import, @typescript-eslint/restrict-template-expressions */
+/* eslint-disable import-x/no-unassigned-import, @typescript-eslint/restrict-template-expressions */
 
 import 'ses';
 

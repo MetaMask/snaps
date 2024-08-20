@@ -15,7 +15,7 @@ module.exports = {
     // This prevents importing Node.js builtins. We currently use them in
     // our codebase, so this rule is disabled. This rule should be disabled
     // in `@metamask/eslint-config-nodejs` in the future.
-    'import/no-nodejs-modules': 'off',
+    'import-x/no-nodejs-modules': 'off',
 
     // This prevents using the `console.log` and similar functions. All logging
     // should be done through the module logger, or `logError` function in
