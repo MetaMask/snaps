@@ -7,6 +7,7 @@ import type { BlockReason } from '@metamask/snaps-registry';
 import type { SnapId, Snap as TruncatedSnap } from '@metamask/snaps-sdk';
 import type { Struct } from '@metamask/superstruct';
 import {
+  is,
   empty,
   enums,
   intersection,
@@ -304,6 +305,17 @@ export function getSnapPrefix(snapId: string): SnapIdPrefixes {
  */
 export function stripSnapPrefix(snapId: string): string {
   return snapId.replace(getSnapPrefix(snapId), '');
+}
+
+/**
+ * Check if the given value is a valid snap ID. This function is a type guard,
+ * and will narrow the type of the value to `SnapId` if it returns `true`.
+ *
+ * @param value - The value to check.
+ * @returns `true` if the value is a valid snap ID, and `false` otherwise.
+ */
+export function isSnapId(value: unknown): value is SnapId {
+  return is(value, SnapIdStruct);
 }
 
 /**

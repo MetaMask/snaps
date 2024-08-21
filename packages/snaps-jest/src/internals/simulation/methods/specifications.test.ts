@@ -20,6 +20,8 @@ const MOCK_HOOKS: MiddlewareHooks = {
   createInterface: jest.fn(),
   updateInterface: jest.fn(),
   getInterfaceState: jest.fn(),
+  getIsLocked: jest.fn(),
+  resolveInterface: jest.fn(),
 };
 
 describe('resolve', () => {

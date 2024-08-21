@@ -4,6 +4,7 @@ import type { Json, JsonRpcParams } from '@metamask/utils';
 
 import { getAccountsHandler } from './accounts';
 import { getProviderStateHandler } from './provider-state';
+import { getSwitchEthereumChainHandler } from './switch-ethereum-chain';
 
 export type InternalMethodsMiddlewareHooks = {
   /**
@@ -19,6 +20,7 @@ const methodHandlers = {
   metamask_getProviderState: getProviderStateHandler,
   eth_requestAccounts: getAccountsHandler,
   eth_accounts: getAccountsHandler,
+  wallet_switchEthereumChain: getSwitchEthereumChainHandler,
   /* eslint-enable @typescript-eslint/naming-convention */
 };
 
