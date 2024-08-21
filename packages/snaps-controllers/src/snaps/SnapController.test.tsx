@@ -5696,7 +5696,7 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
-    it('grants the `endowment:permitted-chains` permission to a Snap with `endowment:ethereum-provider`', async () => {
+    it('grants the `endowment:caip25` permission to a Snap with `endowment:ethereum-provider`', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
@@ -5741,21 +5741,42 @@ describe('SnapController', () => {
       });
 
       const approvedPermissions = {
-        'endowment:ethereum-provider': {
-          caveats: [],
+        'endowment:page-home': {
+          caveats: null,
         },
-        permittedChains: {},
+        'endowment:ethereum-provider': {},
+        'endowment:caip25': {
+          caveats: [
+            {
+              type: 'authorizedScopes',
+              value: {
+                requiredScopes: {},
+                optionalScopes: {
+                  'eip155:1': {
+                    accounts: [],
+                  },
+                },
+                sessionProperties: {},
+                isMultichainOrigin: false,
+              },
+            },
+          ],
+        },
       };
 
       expect(messenger.call).toHaveBeenCalledWith(
         'PermissionController:grantPermissions',
-        { approvedPermissions, subject: { origin: MOCK_SNAP_ID } },
+        {
+          approvedPermissions,
+          subject: { origin: MOCK_SNAP_ID },
+          requestData: expect.any(Object),
+        },
       );
 
       snapController.destroy();
     });
 
-    it('overrides the `endowment:permitted-chains` permission if the Snap specifies it in its manifest', async () => {
+    it('overrides the `endowment:caip25` permission if the Snap specifies it in its manifest', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
@@ -5784,11 +5805,20 @@ describe('SnapController', () => {
           initialPermissions: {
             'endowment:page-home': {},
             'endowment:ethereum-provider': {},
-            [PERMITTED_CHAINS_ENDOWMENT]: {
+            'endowment:caip25': {
               caveats: [
                 {
-                  type: 'restrictNetworkSwitching',
-                  value: ['0x5'],
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:2': {
+                        accounts: [],
+                      },
+                    },
+                    sessionProperties: {},
+                    isMultichainOrigin: false,
+                  },
                 },
               ],
             },
@@ -5812,11 +5842,20 @@ describe('SnapController', () => {
           caveats: null,
         },
         'endowment:ethereum-provider': {},
-        [PERMITTED_CHAINS_ENDOWMENT]: {
+        'endowment:caip25': {
           caveats: [
             {
-              type: 'restrictNetworkSwitching',
-              value: ['0x1'],
+              type: 'authorizedScopes',
+              value: {
+                requiredScopes: {},
+                optionalScopes: {
+                  'eip155:1': {
+                    accounts: [],
+                  },
+                },
+                sessionProperties: {},
+                isMultichainOrigin: false,
+              },
             },
           ],
         },
@@ -5834,7 +5873,7 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
-    it('does not grant the `endowment:permitted-chains` permission if the Snap does not have the `endowment:ethereum-provider` permission', async () => {
+    it('does not grant the `endowment:caip25` permission if the Snap does not have the `endowment:ethereum-provider` permission', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
