@@ -223,7 +223,7 @@ async function signTypedData(message: string, from: string) {
  * @see https://docs.metamask.io/snaps/reference/rpc-api/#wallet_invokesnap
  */
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
-  const { chainId = '0x1' } = request.params as BaseParams;
+  const { chainId = '0x1' } = (request.params as BaseParams) ?? {};
   await switchChain(chainId);
 
   switch (request.method) {
