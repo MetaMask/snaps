@@ -5248,9 +5248,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^10.1.1":
-  version: 10.1.1
-  resolution: "@metamask/phishing-controller@npm:10.1.1"
+"@metamask/phishing-controller@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "@metamask/phishing-controller@npm:11.0.0"
   dependencies:
     "@metamask/base-controller": ^6.0.2
     "@metamask/controller-utils": ^11.0.2
@@ -5258,7 +5258,7 @@ __metadata:
     eth-phishing-detect: ^1.2.0
     fastest-levenshtein: ^1.0.16
     punycode: ^2.1.1
-  checksum: 9bd1ea299a721b4106d25475bdda7ab696ebd72ace6eaf2328c7c357f586a38ea200b7e92ba8cb34c42be7061eebadb463b14af52517c994a4d993483b0d9545
+  checksum: ec071c0568751b76d75d76c2263e3fd9ebc8010dfe4aa219b5084ac07e5a002e5cc11b85d402462d74ea78183befa95ef808db5ea9af5dda3c2e7744f806811b
   languageName: node
   linkType: hard
 
@@ -5564,7 +5564,7 @@ __metadata:
     "@metamask/json-rpc-middleware-stream": ^8.0.2
     "@metamask/object-multiplex": ^2.0.0
     "@metamask/permission-controller": ^11.0.0
-    "@metamask/phishing-controller": ^10.1.1
+    "@metamask/phishing-controller": ^11.0.0
     "@metamask/post-message-stream": ^8.1.0
     "@metamask/rpc-errors": ^6.3.1
     "@metamask/snaps-registry": ^3.2.1
