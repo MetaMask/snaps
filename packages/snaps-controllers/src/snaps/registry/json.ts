@@ -1,4 +1,8 @@
-import type { RestrictedControllerMessenger } from '@metamask/base-controller';
+import type {
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+  RestrictedControllerMessenger,
+} from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type { SnapsRegistryDatabase } from '@metamask/snaps-registry';
 import { verify } from '@metamask/snaps-registry';
@@ -65,13 +69,24 @@ export type Update = {
   handler: SnapsRegistry['update'];
 };
 
+export type SnapsRegistryGetStateAction = ControllerGetStateAction<
+  typeof controllerName,
+  SnapsRegistryState
+>;
+
 export type SnapsRegistryActions =
+  | SnapsRegistryGetStateAction
   | GetResult
   | GetMetadata
   | Update
   | ResolveVersion;
 
-export type SnapsRegistryEvents = never;
+export type SnapsRegistryStateChangeEvent = ControllerStateChangeEvent<
+  typeof controllerName,
+  SnapsRegistryState
+>;
+
+export type SnapsRegistryEvents = SnapsRegistryStateChangeEvent;
 
 export type SnapsRegistryMessenger = RestrictedControllerMessenger<
   'SnapsRegistry',
