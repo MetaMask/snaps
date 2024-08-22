@@ -17,7 +17,6 @@ import {
   record,
   string,
   tuple,
-  any,
 } from '@metamask/superstruct';
 import {
   hasProperty,
@@ -70,6 +69,7 @@ import {
   type FooterElement,
   type IconElement,
   type SelectorElement,
+  type SelectorOptionElement,
   IconName,
 } from './components';
 
@@ -204,10 +204,9 @@ export const InputStruct: Describe<InputElement> = element('Input', {
 /**
  * A struct for the {@link OptionElement} type.
  */
-// @ts-expect-error ignore any for now
 export const OptionStruct: Describe<OptionElement> = element('Option', {
   value: string(),
-  children: nullUnion([string(), any()]),
+  children: nullUnion([string()]),
 });
 
 /**
@@ -220,12 +219,35 @@ export const DropdownStruct: Describe<DropdownElement> = element('Dropdown', {
 });
 
 /**
+ * A struct for the {@link CardElement} type.
+ */
+export const CardStruct: Describe<CardElement> = element('Card', {
+  image: optional(string()),
+  title: string(),
+  description: optional(string()),
+  value: string(),
+  extra: optional(string()),
+});
+
+/**
+ * A struct for the {@link SelectorOptionElement} type.
+ */
+export const SelectorOptionStruct: Describe<SelectorOptionElement> = element(
+  'Option',
+  {
+    value: string(),
+    children: CardStruct,
+  },
+);
+
+/**
  * A struct for the {@link SelectorElement} type.
  */
 export const SelectorStruct: Describe<SelectorElement> = element('Selector', {
   name: string(),
+  title: string(),
   value: optional(string()),
-  children: children([OptionStruct]),
+  children: children([SelectorOptionStruct]),
 });
 
 /**
@@ -443,17 +465,6 @@ export const DividerStruct: Describe<DividerElement> = element('Divider');
 export const ValueStruct: Describe<ValueElement> = element('Value', {
   value: string(),
   extra: string(),
-});
-
-/**
- * A struct for the {@link CardElement} type.
- */
-export const CardStruct: Describe<CardElement> = element('Card', {
-  image: optional(string()),
-  title: string(),
-  description: optional(string()),
-  value: string(),
-  extra: optional(string()),
 });
 
 /**

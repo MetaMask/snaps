@@ -29,6 +29,7 @@ import {
   Container,
   Card,
   Icon,
+  Selector,
 } from './components';
 import {
   AddressStruct,
@@ -63,6 +64,7 @@ import {
   TooltipStruct,
   ValueStruct,
   IconStruct,
+  SelectorStruct,
 } from './validation';
 
 describe('KeyStruct', () => {
@@ -791,6 +793,41 @@ describe('FileInputStruct', () => {
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, FileInputStruct)).toBe(false);
+  });
+});
+
+describe('SelectorStruct', () => {
+  it.each([
+    <Selector name="foo" title="Title">
+      <Selector.Option value="option1">
+        <Card title="Foo" value="$1" />
+      </Selector.Option>
+      <Selector.Option value="option2">
+        <Card title="bar" value="$1" />
+      </Selector.Option>
+    </Selector>,
+  ])('validates a selector element', (value) => {
+    expect(is(value, SelectorStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <Spinner>foo</Spinner>,
+    <Text>foo</Text>,
+    <Box>
+      <Text>foo</Text>
+    </Box>,
+    <Row label="label">
+      <Image src="<svg />" alt="alt" />
+    </Row>,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, SelectorStruct)).toBe(false);
   });
 });
 
