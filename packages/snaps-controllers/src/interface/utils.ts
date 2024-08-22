@@ -16,6 +16,7 @@ import type {
   RadioGroupElement,
   RadioElement,
   SelectorElement,
+  SelectorOptionElement,
 } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import {
@@ -83,7 +84,7 @@ function constructComponentSpecificDefaultState(
     }
 
     case 'Selector': {
-      const children = getJsxChildren(element) as OptionElement[];
+      const children = getJsxChildren(element) as SelectorOptionElement[];
       return children[0]?.props.value;
     }
 
