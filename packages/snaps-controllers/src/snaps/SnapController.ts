@@ -2,7 +2,11 @@ import type {
   AddApprovalRequest,
   UpdateRequestState,
 } from '@metamask/approval-controller';
-import type { RestrictedControllerMessenger } from '@metamask/base-controller';
+import type {
+  RestrictedControllerMessenger,
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+} from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type {
   Caveat,
@@ -399,6 +403,11 @@ export type GetSnapFile = {
   handler: SnapController['getSnapFile'];
 };
 
+export type SnapControllerGetStateAction = ControllerGetStateAction<
+  typeof controllerName,
+  SnapControllerState
+>;
+
 export type SnapControllerActions =
   | ClearSnapState
   | GetSnap
@@ -418,7 +427,8 @@ export type SnapControllerActions =
   | GetRegistryMetadata
   | DisconnectOrigin
   | RevokeDynamicPermissions
-  | GetSnapFile;
+  | GetSnapFile
+  | SnapControllerGetStateAction;
 
 // Controller Messenger Events
 
@@ -518,6 +528,14 @@ export type SnapDisabled = {
   payload: [snap: TruncatedSnap];
 };
 
+/**
+ * Emitted when there is a state change.
+ */
+export type SnapControllerStateChangeEvent = ControllerStateChangeEvent<
+  typeof controllerName,
+  SnapControllerState
+>;
+
 export type SnapControllerEvents =
   | SnapBlocked
   | SnapInstalled
@@ -530,7 +548,8 @@ export type SnapControllerEvents =
   | SnapRolledback
   | SnapTerminated
   | SnapEnabled
-  | SnapDisabled;
+  | SnapDisabled
+  | SnapControllerStateChangeEvent;
 
 export type AllowedActions =
   | GetEndowments
