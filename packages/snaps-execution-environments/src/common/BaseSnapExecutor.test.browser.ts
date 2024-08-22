@@ -343,52 +343,6 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it("doesn't allow wallet_requestSnaps in the Ethereum provider", async () => {
-    const CODE = `
-      module.exports.onRpcRequest = () => ethereum.request({ method: 'wallet_requestSnaps', params: [] });
-    `;
-
-    const executor = new TestSnapExecutor();
-    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['ethereum']);
-
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      id: 1,
-      result: 'OK',
-    });
-
-    await executor.writeCommand({
-      jsonrpc: '2.0',
-      id: 2,
-      method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
-    });
-
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      id: 2,
-      error: {
-        code: -31001,
-        message: 'Wrapped Snap Error',
-        data: {
-          cause: expect.objectContaining({
-            code: -32601,
-            message: 'The method does not exist / is not available.',
-            data: {
-              cause: null,
-              method: 'wallet_requestSnaps',
-            },
-          }),
-        },
-      },
-    });
-  });
-
   it('allows direct access to ethereum public properties', async () => {
     const CODE = `
       module.exports.onRpcRequest = () => {
@@ -663,52 +617,6 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it("doesn't allow wallet_requestSnaps in the snap.request", async () => {
-    const CODE = `
-      module.exports.onRpcRequest = () => snap.request({ method: 'wallet_requestSnaps', params: [] });
-    `;
-
-    const executor = new TestSnapExecutor();
-    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
-
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      id: 1,
-      result: 'OK',
-    });
-
-    await executor.writeCommand({
-      jsonrpc: '2.0',
-      id: 2,
-      method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
-    });
-
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      id: 2,
-      error: {
-        code: -31001,
-        message: 'Wrapped Snap Error',
-        data: {
-          cause: expect.objectContaining({
-            code: -32601,
-            message: 'The method does not exist / is not available.',
-            data: {
-              cause: null,
-              method: 'wallet_requestSnaps',
-            },
-          }),
-        },
-      },
-    });
-  });
-
   it('only allows certain methods in ethereum API', async () => {
     const CODE = `
       module.exports.onRpcRequest = () => ethereum.request({ method: 'snap_dialog', params: [] });
@@ -764,7 +672,7 @@ describe('BaseSnapExecutor', () => {
 
       x.toJSON = () => {
         return {
-          method: 'wallet_requestSnaps',
+          method: 'wallet_watchAsset',
           params: [],
         };
       };
@@ -808,7 +716,7 @@ describe('BaseSnapExecutor', () => {
             message: 'The method does not exist / is not available.',
             data: {
               cause: null,
-              method: 'wallet_requestSnaps',
+              method: 'wallet_watchAsset',
             },
           }),
         },
@@ -825,7 +733,7 @@ describe('BaseSnapExecutor', () => {
 
       x.toJSON = () => {
         return {
-          method: 'wallet_requestSnaps',
+          method: 'wallet_watchAsset',
           params: [],
         };
       };
@@ -868,7 +776,7 @@ describe('BaseSnapExecutor', () => {
             message: 'The method does not exist / is not available.',
             data: {
               cause: null,
-              method: 'wallet_requestSnaps',
+              method: 'wallet_watchAsset',
             },
           }),
         },
