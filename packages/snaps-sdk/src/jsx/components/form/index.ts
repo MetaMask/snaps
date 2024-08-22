@@ -8,7 +8,7 @@ import type { InputElement } from './Input';
 import type { OptionElement } from './Option';
 import type { RadioElement } from './Radio';
 import type { RadioGroupElement } from './RadioGroup';
-import type { SelectorElement } from './Selector';
+import type { SelectorElement, SelectorOptionElement } from './Selector';
 
 export * from './Button';
 export * from './Checkbox';
@@ -33,4 +33,5 @@ export type StandardFormElement =
   | OptionElement
   | RadioElement
   | RadioGroupElement
-  | SelectorElement;
+  | SelectorElement
+  | SelectorOptionElement;

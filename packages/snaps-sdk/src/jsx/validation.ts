@@ -233,7 +233,7 @@ export const CardStruct: Describe<CardElement> = element('Card', {
  * A struct for the {@link SelectorOptionElement} type.
  */
 export const SelectorOptionStruct: Describe<SelectorOptionElement> = element(
-  'Option',
+  'SelectorOption',
   {
     value: string(),
     children: CardStruct,
@@ -633,6 +633,7 @@ export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   CardStruct,
   IconStruct,
   SelectorStruct,
+  SelectorOptionStruct,
 ]);
 
 /**

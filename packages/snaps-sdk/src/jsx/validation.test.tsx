@@ -250,6 +250,16 @@ describe('FieldStruct', () => {
     <Field label="foo">
       <Checkbox name="foo" />
     </Field>,
+    <Field label="foo">
+      <Selector name="foo" title="Choose an option">
+        <Selector.Option value="option1">
+          <Card title="Foo" value="$1" />
+        </Selector.Option>
+        <Selector.Option value="option2">
+          <Card title="bar" value="$1" />
+        </Selector.Option>
+      </Selector>
+    </Field>,
   ])('validates a field element', (value) => {
     expect(is(value, FieldStruct)).toBe(true);
   });
@@ -818,7 +828,25 @@ describe('SelectorStruct', () => {
     {},
     [],
     // @ts-expect-error - Invalid props.
-    <Spinner>foo</Spinner>,
+    <Selector>foo</Selector>,
+    // @ts-expect-error - Invalid props.
+    <Selector>
+      <Selector.Option value="foo">
+        <Card title="Foo" value="$1" />
+      </Selector.Option>
+    </Selector>,
+    // @ts-expect-error - Invalid props.
+    <Selector title="Choose an option">
+      <Selector.Option value="foo">
+        <Card title="Foo" value="$1" />
+      </Selector.Option>
+    </Selector>,
+    // @ts-expect-error - Invalid props.
+    <Selector name="foo">
+      <Selector.Option value="foo">
+        <Card title="Foo" value="$1" />
+      </Selector.Option>
+    </Selector>,
     <Text>foo</Text>,
     <Box>
       <Text>foo</Text>

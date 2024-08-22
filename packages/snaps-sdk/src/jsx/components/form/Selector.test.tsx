@@ -22,7 +22,7 @@ describe('Selector', () => {
         title: 'Choose an option',
         children: [
           {
-            type: 'Option',
+            type: 'SelectorOption',
             props: {
               value: 'foo',
               children: {
@@ -37,7 +37,7 @@ describe('Selector', () => {
             key: null,
           },
           {
-            type: 'Option',
+            type: 'SelectorOption',
             props: {
               value: 'bar',
               children: {
@@ -79,7 +79,7 @@ describe('Selector', () => {
         title: 'Choose an option',
         children: [
           {
-            type: 'Option',
+            type: 'SelectorOption',
             props: {
               value: 'foo',
               children: {

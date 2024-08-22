@@ -14,7 +14,7 @@ export type SelectorOptionProps = {
   children: CardElement;
 };
 
-const OPTION_TYPE = 'Option';
+const OPTION_TYPE = 'SelectorOption';
 
 const SelectorOption = createSnapComponent<
   SelectorOptionProps,
