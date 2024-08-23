@@ -2,7 +2,11 @@ import type {
   AcceptRequest,
   HasApprovalRequest,
 } from '@metamask/approval-controller';
-import type { RestrictedControllerMessenger } from '@metamask/base-controller';
+import type {
+  RestrictedControllerMessenger,
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+} from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type {
   MaybeUpdateState,
@@ -60,6 +64,11 @@ export type ResolveInterface = {
   handler: SnapInterfaceController['resolveInterface'];
 };
 
+export type SnapInterfaceControllerGetStateAction = ControllerGetStateAction<
+  typeof controllerName,
+  SnapInterfaceControllerState
+>;
+
 export type SnapInterfaceControllerAllowedActions =
   | TestOrigin
   | MaybeUpdateState
@@ -72,14 +81,24 @@ export type SnapInterfaceControllerActions =
   | UpdateInterface
   | DeleteInterface
   | UpdateInterfaceState
-  | ResolveInterface;
+  | ResolveInterface
+  | SnapInterfaceControllerGetStateAction;
+
+export type SnapInterfaceControllerStateChangeEvent =
+  ControllerStateChangeEvent<
+    typeof controllerName,
+    SnapInterfaceControllerState
+  >;
+
+export type SnapInterfaceControllerEvents =
+  SnapInterfaceControllerStateChangeEvent;
 
 export type SnapInterfaceControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
   SnapInterfaceControllerActions | SnapInterfaceControllerAllowedActions,
-  never,
+  SnapInterfaceControllerEvents,
   SnapInterfaceControllerAllowedActions['type'],
-  never
+  SnapInterfaceControllerEvents['type']
 >;
 
 export type StoredInterface = {
