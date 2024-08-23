@@ -1,5 +1,12 @@
 import type { SnapComponent } from '@metamask/snaps-sdk/jsx';
-import { Bold, Button, Box, Text, Tooltip } from '@metamask/snaps-sdk/jsx';
+import {
+  Bold,
+  Button,
+  Box,
+  Text,
+  Tooltip,
+  Card,
+} from '@metamask/snaps-sdk/jsx';
 
 /**
  * The props for the {@link Counter} component.
@@ -34,10 +41,9 @@ export const Counter: SnapComponent<CounterProps> = ({ count }) => {
   return (
     <Box>
       <Tooltip content={<TooltipContent />}>
-        <Text>
-          Count: <Bold>{String(count)}</Bold>
-        </Text>
+        <Text>Hover for explanation</Text>
       </Tooltip>
+      <Card title="Count" value={String(count)} />
       <Button name="increment">Increment</Button>
     </Box>
   );
