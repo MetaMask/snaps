@@ -22,6 +22,9 @@
       }
     },
     "@metamask/post-message-stream": {
+      "builtin": {
+        "worker_threads.parentPort": true
+      },
       "globals": {
         "MessageEvent.prototype": true,
         "WorkerGlobalScope": true,
@@ -30,11 +33,29 @@
         "chrome": true,
         "location.origin": true,
         "postMessage": true,
+        "process.on": true,
+        "process.removeListener": true,
+        "process.send": true,
         "removeEventListener": true
       },
       "packages": {
-        "@metamask/utils": true,
+        "@metamask/post-message-stream>@metamask/utils": true,
         "readable-stream": true
+      }
+    },
+    "@metamask/post-message-stream>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@metamask/utils>@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "depcheck>semver": true,
+        "tsup>debug": true
       }
     },
     "@metamask/providers": {
@@ -44,39 +65,31 @@
       "packages": {
         "@metamask/json-rpc-engine": true,
         "@metamask/object-multiplex": true,
+        "@metamask/providers>@metamask/json-rpc-middleware-stream": true,
         "@metamask/providers>@metamask/safe-event-emitter": true,
         "@metamask/providers>is-stream": true,
-        "@metamask/providers>json-rpc-middleware-stream": true,
         "@metamask/rpc-errors": true,
         "eslint>fast-deep-equal": true,
         "readable-stream": true
       }
     },
-    "@metamask/providers>@metamask/safe-event-emitter": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "webpack>events": true
-      }
-    },
-    "@metamask/providers>extension-port-stream>readable-stream>buffer": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "browserify>buffer>base64-js": true,
-        "browserify>buffer>ieee754": true
-      }
-    },
-    "@metamask/providers>json-rpc-middleware-stream": {
+    "@metamask/providers>@metamask/json-rpc-middleware-stream": {
       "globals": {
         "console.warn": true,
         "setTimeout": true
       },
       "packages": {
         "@metamask/providers>@metamask/safe-event-emitter": true,
+        "@metamask/utils": true,
         "readable-stream": true
+      }
+    },
+    "@metamask/providers>@metamask/safe-event-emitter": {
+      "builtin": {
+        "events": true
+      },
+      "globals": {
+        "setTimeout": true
       }
     },
     "@metamask/rpc-errors": {
@@ -87,18 +100,8 @@
     },
     "@metamask/snaps-sdk": {
       "packages": {
-        "@metamask/snaps-sdk>fast-xml-parser": true,
-        "@metamask/utils": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/snaps-sdk>fast-xml-parser": {
-      "globals": {
-        "entityName": true,
-        "val": true
-      },
-      "packages": {
-        "@metamask/snaps-sdk>fast-xml-parser>strnum": true
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/snaps-utils": {
@@ -111,29 +114,28 @@
       "packages": {
         "@metamask/rpc-errors": true,
         "@metamask/snaps-sdk": true,
-        "@metamask/utils": true,
-        "superstruct": true
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/utils": {
       "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
         "TextEncoder": true
       },
       "packages": {
+        "@metamask/superstruct": true,
         "@metamask/utils>@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "depcheck>semver": true,
-        "superstruct": true,
         "tsup>debug": true
       }
     },
     "@metamask/utils>@noble/hashes": {
+      "builtin": {
+        "node:crypto": true
+      },
       "globals": {
-        "TextEncoder": true,
-        "crypto": true
+        "TextEncoder": true
       }
     },
     "@metamask/utils>@scure/base": {
@@ -142,9 +144,27 @@
         "TextEncoder": true
       }
     },
-    "browserify>browser-pack>safe-buffer": {
+    "@wdio/mocha-framework>mocha>supports-color": {
+      "builtin": {
+        "os.release": true,
+        "tty.isatty": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.platform": true
+      },
       "packages": {
-        "@metamask/providers>extension-port-stream>readable-stream>buffer": true
+        "istanbul-lib-report>supports-color>has-flag": true
+      }
+    },
+    "browserify>browser-pack>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "browserify>inherits": {
+      "builtin": {
+        "util.inherits": true
       }
     },
     "browserify>string_decoder": {
@@ -158,8 +178,7 @@
         "process": true
       },
       "packages": {
-        "depcheck>semver>lru-cache": true,
-        "process": true
+        "depcheck>semver>lru-cache": true
       }
     },
     "depcheck>semver>lru-cache": {
@@ -167,40 +186,42 @@
         "depcheck>semver>lru-cache>yallist": true
       }
     },
-    "process": {
+    "istanbul-lib-report>supports-color>has-flag": {
       "globals": {
-        "clearTimeout": true,
-        "setTimeout": true
+        "process.argv": true
       }
     },
     "readable-stream": {
+      "builtin": {
+        "buffer.Buffer": true,
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
       "globals": {
+        "process.env.READABLE_STREAM": true,
         "process.nextTick": true,
         "process.stderr": true,
         "process.stdout": true
       },
       "packages": {
-        "@metamask/providers>extension-port-stream>readable-stream>buffer": true,
         "browserify>inherits": true,
         "browserify>string_decoder": true,
-        "process": true,
-        "readable-stream>util-deprecate": true,
-        "webpack>events": true
+        "readable-stream>util-deprecate": true
       }
     },
     "readable-stream>util-deprecate": {
-      "globals": {
-        "console.trace": true,
-        "console.warn": true,
-        "localStorage": true
-      }
-    },
-    "superstruct": {
-      "globals": {
-        "console.warn": true
+      "builtin": {
+        "util.deprecate": true
       }
     },
     "tsup>debug": {
+      "builtin": {
+        "tty.isatty": true,
+        "util.deprecate": true,
+        "util.format": true,
+        "util.inspect": true
+      },
       "globals": {
         "console": true,
         "document": true,
@@ -209,13 +230,8 @@
         "process": true
       },
       "packages": {
-        "process": true,
+        "@wdio/mocha-framework>mocha>supports-color": true,
         "tsup>debug>ms": true
-      }
-    },
-    "webpack>events": {
-      "globals": {
-        "console": true
       }
     }
   }

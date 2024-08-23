@@ -2,6 +2,7 @@
 import LavaMoatPlugin from '@lavamoat/webpack';
 import { readFileSync } from 'fs';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { isBuiltin } from 'node:module';
 import { resolve } from 'path';
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
 import type { Configuration } from 'webpack';
@@ -22,7 +23,7 @@ const baseConfig: Configuration = {
   module: {
     rules: [
       {
-        test: /\.ts$/u,
+        test: /\.tsx?$/u,
         use: {
           loader: 'swc-loader',
           options: {
@@ -44,8 +45,13 @@ const baseConfig: Configuration = {
     ],
   },
   resolve: {
-    extensions: ['.ts', '.js'],
-    plugins: [new TsconfigPathsPlugin()],
+    extensions: ['.ts', '.js', '.tsx'],
+    plugins: [
+      new TsconfigPathsPlugin({
+        configFile: resolve(__dirname, 'tsconfig.json'),
+        baseUrl: __dirname,
+      }),
+    ],
     fallback: {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       child_process: false,
@@ -55,14 +61,14 @@ const baseConfig: Configuration = {
       path: false,
       stream: require.resolve('stream-browserify'),
       tty: false,
+      zlib: false,
+      http: false,
+      https: false,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       worker_threads: false,
     },
   },
   plugins: [
-    new ProvidePlugin({
-      process: 'process/browser',
-    }),
     new BundleAnalyzerPlugin({
       analyzerMode: 'static',
       openAnalyzer: false,
@@ -76,10 +82,14 @@ const iframeConfig: Configuration = merge(baseConfig, {
     path: resolve(__dirname, 'dist/webpack/iframe'),
   },
   plugins: [
+    new ProvidePlugin({
+      process: 'process/browser',
+    }),
     // You may randomly need @ts-expect-error here, depending how dependencies resolve. If semver is a smart idea, typescript for webpack config is not
     new LavaMoatPlugin({
       // lockdown: {}, // override lockdown options here if you want
       generatePolicy: true,
+      policyLocation: resolve(__dirname, 'lavamoat/webpack/iframe'),
       diagnosticsVerbosity: 1,
       readableResourceIds: true,
       emitPolicySnapshot: true, // puts the result of merging policy with override that was used for the bundle alongside the bundle for human review
@@ -93,5 +103,50 @@ const iframeConfig: Configuration = merge(baseConfig, {
   ],
 });
 
-const configs = [iframeConfig];
+const nodeThreadConfig: Configuration = merge(baseConfig, {
+  target: 'node',
+  entry: './src/node-thread/index.ts',
+  output: {
+    path: resolve(__dirname, 'dist/webpack/node-thread'),
+  },
+  plugins: [
+    // You may randomly need @ts-expect-error here, depending how dependencies resolve. If semver is a smart idea, typescript for webpack config is not
+    new LavaMoatPlugin({
+      // lockdown: {}, // override lockdown options here if you want
+      generatePolicy: true,
+      policyLocation: resolve(__dirname, 'lavamoat/webpack/node-thread'),
+      isBuiltin,
+      inlineLockdown: ['bundle.js'],
+      diagnosticsVerbosity: 1,
+      readableResourceIds: true,
+      emitPolicySnapshot: true, // puts the result of merging policy with override that was used for the bundle alongside the bundle for human review
+    }),
+  ],
+  optimization: {
+    minimize: false,
+  },
+});
+
+const nodeProcessConfig: Configuration = merge(baseConfig, {
+  target: 'node',
+  entry: './src/node-process/index.ts',
+  output: {
+    path: resolve(__dirname, 'dist/webpack/node-process'),
+  },
+  plugins: [
+    // You may randomly need @ts-expect-error here, depending how dependencies resolve. If semver is a smart idea, typescript for webpack config is not
+    new LavaMoatPlugin({
+      // lockdown: {}, // override lockdown options here if you want
+      generatePolicy: true,
+      policyLocation: resolve(__dirname, 'lavamoat/webpack/node-process'),
+      isBuiltin,
+      inlineLockdown: ['bundle.js'],
+      diagnosticsVerbosity: 1,
+      readableResourceIds: true,
+      emitPolicySnapshot: true, // puts the result of merging policy with override that was used for the bundle alongside the bundle for human review
+    }),
+  ],
+});
+
+const configs = [iframeConfig, nodeThreadConfig, nodeProcessConfig];
 export default configs;
