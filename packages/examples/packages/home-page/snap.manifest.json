@@ -17,7 +17,8 @@
     }
   },
   "initialPermissions": {
-    "endowment:page-home": {}
+    "endowment:page-home": {},
+    "snap_dialog": {}
   },
   "manifestVersion": "0.1"
 }
