@@ -12,6 +12,17 @@ export type TextChildren = SnapsChildren<
 >;
 
 /**
+ * The colors available to the Text {@link Text} component.
+ */
+export type TextColors =
+  | 'default'
+  | 'alternative'
+  | 'muted'
+  | 'error'
+  | 'success'
+  | 'warning';
+
+/**
  * The props of the {@link Text} component.
  *
  * @property children - The text to display.
@@ -19,6 +30,7 @@ export type TextChildren = SnapsChildren<
 export type TextProps = {
   children: TextChildren;
   alignment?: 'start' | 'center' | 'end' | undefined;
+  color?: TextColors | undefined;
 };
 
 const TYPE = 'Text';

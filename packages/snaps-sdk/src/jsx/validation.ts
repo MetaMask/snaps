@@ -471,6 +471,16 @@ export const TextStruct: Describe<TextElement> = element('Text', {
   alignment: optional(
     nullUnion([literal('start'), literal('center'), literal('end')]),
   ),
+  color: optional(
+    nullUnion([
+      literal('default'),
+      literal('alternative'),
+      literal('muted'),
+      literal('error'),
+      literal('success'),
+      literal('warning'),
+    ]),
+  ),
 });
 
 /**
