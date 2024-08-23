@@ -1,6 +1,6 @@
 import { describe, it } from '@jest/globals';
 import { installSnap } from '@metamask/snaps-jest';
-import { panel, text, heading } from '@metamask/snaps-sdk';
+import { Box, Text } from '@metamask/snaps-sdk/jsx';
 
 describe('onHomePage', () => {
   it('returns custom UI', async () => {
@@ -10,8 +10,14 @@ describe('onHomePage', () => {
 
     const screen = response.getInterface();
 
-    expect(screen).toRender(
-      panel([heading('Hello world!'), text('Welcome to my Snap home page!')]),
+    await screen.clickElement('open_dialog');
+
+    const alertUi = await response.getInterface();
+
+    expect(alertUi).toRender(
+      <Box>
+        <Text>Hello from a dialog!</Text>
+      </Box>,
     );
   });
 });
