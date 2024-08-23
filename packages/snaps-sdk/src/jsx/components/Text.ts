@@ -30,7 +30,7 @@ export type TextColors =
 export type TextProps = {
   children: TextChildren;
   alignment?: 'start' | 'center' | 'end' | undefined;
-  color?: TextColors;
+  color?: TextColors | undefined;
 };
 
 const TYPE = 'Text';
