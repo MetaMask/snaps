@@ -14,6 +14,7 @@ import {
   Radio,
   Selector,
   Card,
+  SelectorOption,
 } from '@metamask/snaps-sdk/jsx';
 
 import { assertNameIsUnique, constructState, getJsxInterface } from './utils';
@@ -462,12 +463,12 @@ describe('constructState', () => {
     const element = (
       <Box>
         <Selector name="foo" title="Choose an option">
-          <Selector.Option value="option1">
+          <SelectorOption value="option1">
             <Card title="Option 1" value="$1" />
-          </Selector.Option>
-          <Selector.Option value="option2">
+          </SelectorOption>
+          <SelectorOption value="option2">
             <Card title="Option 1" value="$1" />
-          </Selector.Option>
+          </SelectorOption>
         </Selector>
       </Box>
     );
@@ -482,12 +483,12 @@ describe('constructState', () => {
     const element = (
       <Box>
         <Selector name="foo" title="Choose an option" value="option2">
-          <Selector.Option value="option1">
+          <SelectorOption value="option1">
             <Card title="Option 1" value="$1" />
-          </Selector.Option>
-          <Selector.Option value="option2">
+          </SelectorOption>
+          <SelectorOption value="option2">
             <Card title="Option 1" value="$1" />
-          </Selector.Option>
+          </SelectorOption>
         </Selector>
       </Box>
     );
@@ -504,12 +505,12 @@ describe('constructState', () => {
         <Form name="form">
           <Field label="foo">
             <Selector name="foo" title="Choose an option">
-              <Selector.Option value="option1">
+              <SelectorOption value="option1">
                 <Card title="Option 1" value="$1" />
-              </Selector.Option>
-              <Selector.Option value="option2">
+              </SelectorOption>
+              <SelectorOption value="option2">
                 <Card title="Option 1" value="$1" />
-              </Selector.Option>
+              </SelectorOption>
             </Selector>
           </Field>
         </Form>
@@ -528,12 +529,12 @@ describe('constructState', () => {
         <Form name="form">
           <Field label="foo">
             <Selector name="foo" title="Choose an option" value="option2">
-              <Selector.Option value="option1">
+              <SelectorOption value="option1">
                 <Card title="Option 1" value="$1" />
-              </Selector.Option>
-              <Selector.Option value="option2">
+              </SelectorOption>
+              <SelectorOption value="option2">
                 <Card title="Option 1" value="$1" />
-              </Selector.Option>
+              </SelectorOption>
             </Selector>
           </Field>
         </Form>

@@ -30,6 +30,7 @@ import {
   Card,
   Icon,
   Selector,
+  SelectorOption,
 } from './components';
 import {
   AddressStruct,
@@ -252,12 +253,12 @@ describe('FieldStruct', () => {
     </Field>,
     <Field label="foo">
       <Selector name="foo" title="Choose an option">
-        <Selector.Option value="option1">
+        <SelectorOption value="option1">
           <Card title="Foo" value="$1" />
-        </Selector.Option>
-        <Selector.Option value="option2">
+        </SelectorOption>
+        <SelectorOption value="option2">
           <Card title="bar" value="$1" />
-        </Selector.Option>
+        </SelectorOption>
       </Selector>
     </Field>,
   ])('validates a field element', (value) => {
@@ -809,12 +810,12 @@ describe('FileInputStruct', () => {
 describe('SelectorStruct', () => {
   it.each([
     <Selector name="foo" title="Title">
-      <Selector.Option value="option1">
+      <SelectorOption value="option1">
         <Card title="Foo" value="$1" />
-      </Selector.Option>
-      <Selector.Option value="option2">
+      </SelectorOption>
+      <SelectorOption value="option2">
         <Card title="bar" value="$1" />
-      </Selector.Option>
+      </SelectorOption>
     </Selector>,
   ])('validates a selector element', (value) => {
     expect(is(value, SelectorStruct)).toBe(true);
@@ -831,21 +832,21 @@ describe('SelectorStruct', () => {
     <Selector>foo</Selector>,
     // @ts-expect-error - Invalid props.
     <Selector>
-      <Selector.Option value="foo">
+      <SelectorOption value="foo">
         <Card title="Foo" value="$1" />
-      </Selector.Option>
+      </SelectorOption>
     </Selector>,
     // @ts-expect-error - Invalid props.
     <Selector title="Choose an option">
-      <Selector.Option value="foo">
+      <SelectorOption value="foo">
         <Card title="Foo" value="$1" />
-      </Selector.Option>
+      </SelectorOption>
     </Selector>,
     // @ts-expect-error - Invalid props.
     <Selector name="foo">
-      <Selector.Option value="foo">
+      <SelectorOption value="foo">
         <Card title="Foo" value="$1" />
-      </Selector.Option>
+      </SelectorOption>
     </Selector>,
     <Text>foo</Text>,
     <Box>

@@ -1,14 +1,26 @@
-import { Option } from './Option';
+import { Card } from '../Card';
+import { SelectorOption } from './SelectorOption';
 
 describe('Option', () => {
-  it('renders a dropdown option', () => {
-    const result = <Option value="foo">Foo</Option>;
+  it('renders a selector option', () => {
+    const result = (
+      <SelectorOption value="foo">
+        <Card title="Foo" value="Bar" />
+      </SelectorOption>
+    );
 
     expect(result).toStrictEqual({
-      type: 'Option',
+      type: 'SelectorOption',
       props: {
         value: 'foo',
-        children: 'Foo',
+        children: {
+          type: 'Card',
+          props: {
+            title: 'Foo',
+            value: 'Bar',
+          },
+          key: null,
+        },
       },
       key: null,
     });

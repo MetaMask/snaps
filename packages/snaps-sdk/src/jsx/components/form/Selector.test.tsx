@@ -1,16 +1,17 @@
 import { Card } from '../Card';
 import { Selector } from './Selector';
+import { SelectorOption } from './SelectorOption';
 
 describe('Selector', () => {
   it('renders a selector with options', () => {
     const result = (
       <Selector name="selector" value="foo" title="Choose an option">
-        <Selector.Option value="foo">
+        <SelectorOption value="foo">
           <Card title="Foo" value="$1" />
-        </Selector.Option>
-        <Selector.Option value="bar">
+        </SelectorOption>
+        <SelectorOption value="bar">
           <Card title="Bar" value="$1" />
-        </Selector.Option>
+        </SelectorOption>
       </Selector>
     );
 
@@ -60,13 +61,13 @@ describe('Selector', () => {
   it('renders a selector with a conditional option', () => {
     const result = (
       <Selector name="selector" value="foo" title="Choose an option">
-        <Selector.Option value="foo">
+        <SelectorOption value="foo">
           <Card title="Foo" value="$1" />
-        </Selector.Option>
+        </SelectorOption>
         {false && (
-          <Selector.Option value="bar">
+          <SelectorOption value="bar">
             <Card title="Bar" value="$1" />
-          </Selector.Option>
+          </SelectorOption>
         )}
       </Selector>
     );

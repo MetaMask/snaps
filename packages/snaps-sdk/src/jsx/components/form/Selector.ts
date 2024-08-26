@@ -32,9 +32,9 @@ const TYPE = 'Selector';
  * @returns A selector element.
  * @example
  * <Selector name="selector">
- *  <Selector.Option value="option1"><Card title="Option 1" value="Foo" /></Selector.Option>
- *  <Selector.Option value="option2"><Card title="Option 2" value="Bar" /></Selector.Option>
- *  <Selector.Option value="option3"><Card title="Option 3" value="Baz" /></Selector.Option>
+ *  <SelectorOption value="option1"><Card title="Option 1" value="Foo" /></SelectorOption>
+ *  <SelectorOption value="option2"><Card title="Option 2" value="Bar" /></SelectorOption>
+ *  <SelectorOption value="option3"><Card title="Option 3" value="Baz" /></SelectorOption>
  * </Selector>
  */
 export const Selector = createSnapComponent<SelectorProps, typeof TYPE>(TYPE);
