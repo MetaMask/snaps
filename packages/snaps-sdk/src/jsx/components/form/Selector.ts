@@ -1,25 +1,6 @@
 import type { SnapsChildren } from '../../component';
 import { createSnapComponent } from '../../component';
-import type { CardElement } from '../Card';
-
-/**
- * The props of the {@link Selector.Option} component.
- *
- * @property value - The value of the selector option. This is used to populate the
- * state in the form data.
- * @property children - The component to display.
- */
-export type SelectorOptionProps = {
-  value: string;
-  children: CardElement;
-};
-
-const OPTION_TYPE = 'SelectorOption';
-
-const SelectorOption = createSnapComponent<
-  SelectorOptionProps,
-  typeof OPTION_TYPE
->(OPTION_TYPE);
+import type { SelectorOptionElement } from './SelectorOption';
 
 /**
  * The props of the {@link Selector} component.
@@ -39,8 +20,6 @@ export type SelectorProps = {
 
 const TYPE = 'Selector';
 
-const SelectorComponent = createSnapComponent<SelectorProps, typeof TYPE>(TYPE);
-
 /**
  * A selector component, which is used to create a selector.
  *
@@ -58,26 +37,11 @@ const SelectorComponent = createSnapComponent<SelectorProps, typeof TYPE>(TYPE);
  *  <Selector.Option value="option3"><Card title="Option 3" value="Baz" /></Selector.Option>
  * </Selector>
  */
-export const Selector: typeof SelectorComponent & {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  Option: typeof SelectorOption;
-} = SelectorComponent as unknown as typeof SelectorComponent & {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  Option: typeof SelectorOption;
-};
-
-Selector.Option = SelectorOption;
+export const Selector = createSnapComponent<SelectorProps, typeof TYPE>(TYPE);
 
 /**
  * A selector element.
  *
  * @see Selector
  */
-export type SelectorElement = ReturnType<typeof SelectorComponent>;
-
-/**
- * A selector option element.
- *
- * @see Selector.Option
- */
-export type SelectorOptionElement = ReturnType<typeof SelectorOption>;
+export type SelectorElement = ReturnType<typeof Selector>;
