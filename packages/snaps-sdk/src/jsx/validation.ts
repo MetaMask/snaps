@@ -68,6 +68,8 @@ import {
   type ContainerElement,
   type FooterElement,
   type IconElement,
+  type SelectorElement,
+  type SelectorOptionElement,
   IconName,
 } from './components';
 
@@ -204,7 +206,7 @@ export const InputStruct: Describe<InputElement> = element('Input', {
  */
 export const OptionStruct: Describe<OptionElement> = element('Option', {
   value: string(),
-  children: string(),
+  children: nullUnion([string()]),
 });
 
 /**
@@ -214,6 +216,38 @@ export const DropdownStruct: Describe<DropdownElement> = element('Dropdown', {
   name: string(),
   value: optional(string()),
   children: children([OptionStruct]),
+});
+
+/**
+ * A struct for the {@link CardElement} type.
+ */
+export const CardStruct: Describe<CardElement> = element('Card', {
+  image: optional(string()),
+  title: string(),
+  description: optional(string()),
+  value: string(),
+  extra: optional(string()),
+});
+
+/**
+ * A struct for the {@link SelectorOptionElement} type.
+ */
+export const SelectorOptionStruct: Describe<SelectorOptionElement> = element(
+  'SelectorOption',
+  {
+    value: string(),
+    children: CardStruct,
+  },
+);
+
+/**
+ * A struct for the {@link SelectorElement} type.
+ */
+export const SelectorStruct: Describe<SelectorElement> = element('Selector', {
+  name: string(),
+  title: string(),
+  value: optional(string()),
+  children: children([SelectorOptionStruct]),
 });
 
 /**
@@ -265,12 +299,14 @@ const FIELD_CHILDREN_ARRAY = [
   RadioGroupStruct,
   FileInputStruct,
   CheckboxStruct,
+  SelectorStruct,
 ] as [
   typeof InputStruct,
   typeof DropdownStruct,
   typeof RadioGroupStruct,
   typeof FileInputStruct,
   typeof CheckboxStruct,
+  typeof SelectorStruct,
 ];
 
 /**
@@ -432,17 +468,6 @@ export const ValueStruct: Describe<ValueElement> = element('Value', {
 });
 
 /**
- * A struct for the {@link CardElement} type.
- */
-export const CardStruct: Describe<CardElement> = element('Card', {
-  image: optional(string()),
-  title: string(),
-  description: optional(string()),
-  value: string(),
-  extra: optional(string()),
-});
-
-/**
  * A struct for the {@link HeadingElement} type.
  */
 export const HeadingStruct: Describe<HeadingElement> = element('Heading', {
@@ -563,6 +588,7 @@ export const BoxChildStruct = typedUnion([
   CheckboxStruct,
   CardStruct,
   IconStruct,
+  SelectorStruct,
 ]);
 
 /**
@@ -606,6 +632,8 @@ export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   ContainerStruct,
   CardStruct,
   IconStruct,
+  SelectorStruct,
+  SelectorOptionStruct,
 ]);
 
 /**

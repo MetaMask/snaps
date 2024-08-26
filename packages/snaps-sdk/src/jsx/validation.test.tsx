@@ -29,6 +29,8 @@ import {
   Container,
   Card,
   Icon,
+  Selector,
+  SelectorOption,
 } from './components';
 import {
   AddressStruct,
@@ -63,6 +65,7 @@ import {
   TooltipStruct,
   ValueStruct,
   IconStruct,
+  SelectorStruct,
 } from './validation';
 
 describe('KeyStruct', () => {
@@ -247,6 +250,16 @@ describe('FieldStruct', () => {
     </Field>,
     <Field label="foo">
       <Checkbox name="foo" />
+    </Field>,
+    <Field label="foo">
+      <Selector name="foo" title="Choose an option">
+        <SelectorOption value="option1">
+          <Card title="Foo" value="$1" />
+        </SelectorOption>
+        <SelectorOption value="option2">
+          <Card title="bar" value="$1" />
+        </SelectorOption>
+      </Selector>
     </Field>,
   ])('validates a field element', (value) => {
     expect(is(value, FieldStruct)).toBe(true);
@@ -791,6 +804,59 @@ describe('FileInputStruct', () => {
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, FileInputStruct)).toBe(false);
+  });
+});
+
+describe('SelectorStruct', () => {
+  it.each([
+    <Selector name="foo" title="Title">
+      <SelectorOption value="option1">
+        <Card title="Foo" value="$1" />
+      </SelectorOption>
+      <SelectorOption value="option2">
+        <Card title="bar" value="$1" />
+      </SelectorOption>
+    </Selector>,
+  ])('validates a selector element', (value) => {
+    expect(is(value, SelectorStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <Selector>foo</Selector>,
+    // @ts-expect-error - Invalid props.
+    <Selector>
+      <SelectorOption value="foo">
+        <Card title="Foo" value="$1" />
+      </SelectorOption>
+    </Selector>,
+    // @ts-expect-error - Invalid props.
+    <Selector title="Choose an option">
+      <SelectorOption value="foo">
+        <Card title="Foo" value="$1" />
+      </SelectorOption>
+    </Selector>,
+    // @ts-expect-error - Invalid props.
+    <Selector name="foo">
+      <SelectorOption value="foo">
+        <Card title="Foo" value="$1" />
+      </SelectorOption>
+    </Selector>,
+    <Text>foo</Text>,
+    <Box>
+      <Text>foo</Text>
+    </Box>,
+    <Row label="label">
+      <Image src="<svg />" alt="alt" />
+    </Row>,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, SelectorStruct)).toBe(false);
   });
 });
 
