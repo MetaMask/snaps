@@ -15,7 +15,7 @@ const TYPE = 'Section';
 
 /**
  * A section component, which is used to vertically align (flex-direction: column) multiple components together.
- * The component itself is 16px padded with a default background.
+ * The component itself is 16px padded with a default background and a border radius of 8px.
  *
  * @param props - The props of the component.
  * @param props.children - The children of the section.
