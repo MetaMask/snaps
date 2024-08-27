@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.5.0]
+
 ### Uncategorized
 
 - feat: Add selector component ([#2645](https://github.com/MetaMask/snaps-skunkworks.git/pull/2645))
@@ -470,7 +472,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@9.4.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@9.5.0...HEAD
+[9.5.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@9.4.0...@metamask/snaps-controllers@9.5.0
 [9.4.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@9.3.1...@metamask/snaps-controllers@9.4.0
 [9.3.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@9.3.0...@metamask/snaps-controllers@9.3.1
 [9.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@9.2.0...@metamask/snaps-controllers@9.3.0
