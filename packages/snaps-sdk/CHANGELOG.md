@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `Selector` component ([#2645](https://github.com/MetaMask/snaps/pull/2645))
 - Add `Icon` component ([#2638](https://github.com/MetaMask/snaps/pull/2638))
 - Add `color` prop to `Text` component ([#2660](https://github.com/MetaMask/snaps/pull/2660))
+
+### Changed
 - `Button` children are now allowed to be `Image` and `Icon` ([#2641](https://github.com/MetaMask/snaps/pull/2641))
 
 ## [6.2.1]
