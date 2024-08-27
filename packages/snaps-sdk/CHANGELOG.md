@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.3.0]
+### Added
+- Add `Selector` component ([#2645](https://github.com/MetaMask/snaps/pull/2645))
+- Add `Icon` component ([#2638](https://github.com/MetaMask/snaps/pull/2638))
+- Add `color` prop to `Text` component ([#2660](https://github.com/MetaMask/snaps/pull/2660))
+
+### Changed
+- `Button` children are now allowed to be `Image` and `Icon` ([#2641](https://github.com/MetaMask/snaps/pull/2641))
+
 ## [6.2.1]
 ### Fixed
 - Add structs to `typedUnion` schema ([#2623](https://github.com/MetaMask/snaps/pull/2623))
@@ -215,7 +224,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.2.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.3.0...HEAD
+[6.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.2.1...@metamask/snaps-sdk@6.3.0
 [6.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.2.0...@metamask/snaps-sdk@6.2.1
 [6.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.1.1...@metamask/snaps-sdk@6.2.0
 [6.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.1.0...@metamask/snaps-sdk@6.1.1

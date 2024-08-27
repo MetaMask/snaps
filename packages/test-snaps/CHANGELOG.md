@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.13.0]
+### Changed
+- Use latest versions of example Snaps ([#2670](https://github.com/MetaMask/snaps/pull/2670))
+
 ## [2.12.0]
 ### Added
 - Add `Custom` button to the dialog example snap in `test-snaps` ([#2618](https://github.com/MetaMask/snaps/pull/2618))
@@ -134,7 +138,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.12.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.13.0...HEAD
+[2.13.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.12.0...@metamask/test-snaps@2.13.0
 [2.12.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.11.0...@metamask/test-snaps@2.12.0
 [2.11.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.10.0...@metamask/test-snaps@2.11.0
 [2.10.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.9.0...@metamask/test-snaps@2.10.0
