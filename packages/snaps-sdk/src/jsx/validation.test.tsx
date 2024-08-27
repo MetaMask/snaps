@@ -31,6 +31,7 @@ import {
   Icon,
   Selector,
   SelectorOption,
+  Section,
 } from './components';
 import {
   AddressStruct,
@@ -66,6 +67,7 @@ import {
   ValueStruct,
   IconStruct,
   SelectorStruct,
+  SectionStruct,
 } from './validation';
 
 describe('KeyStruct', () => {
@@ -1162,6 +1164,52 @@ describe('ValueStruct', () => {
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, ValueStruct)).toBe(false);
+  });
+});
+
+describe('SectionStruct', () => {
+  it.each([
+    <Section>
+      <Box>
+        <Text>Hello world!</Text>
+      </Box>
+    </Section>,
+    <Section>
+      <Row label="From">
+        <Address address="0x1234567890123456789012345678901234567890" />
+      </Row>
+      <Row
+        label="To"
+        variant="warning"
+        tooltip="This address has been deemed dangerous."
+      >
+        <Address address="0x0000000000000000000000000000000000000000" />
+      </Row>
+    </Section>,
+  ])('validates a section element', (value) => {
+    expect(is(value, SectionStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <Section />,
+    // @ts-expect-error - Invalid props.
+    <Section></Section>,
+    <Text>foo</Text>,
+    <Box>
+      <Text>foo</Text>
+    </Box>,
+    <Row label="label">
+      <Image src="<svg />" alt="alt" />
+    </Row>,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, ContainerStruct)).toBe(false);
   });
 });
 

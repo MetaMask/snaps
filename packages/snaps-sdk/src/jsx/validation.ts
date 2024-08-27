@@ -68,6 +68,7 @@ import {
   type ContainerElement,
   type FooterElement,
   type IconElement,
+  type SectionElement,
   type SelectorElement,
   type SelectorOptionElement,
   IconName,
@@ -412,6 +413,13 @@ export const BoxStruct: Describe<BoxElement> = element('Box', {
 });
 
 /**
+ * A struct for the {@link BoxElement} type.
+ */
+export const SectionStruct: Describe<SectionElement> = element('Section', {
+  children: BoxChildrenStruct,
+});
+
+/**
  * A subset of JSX elements that are allowed as children of the Footer component.
  * This set should include a single button or a tuple of two buttons.
  */
@@ -589,6 +597,7 @@ export const BoxChildStruct = typedUnion([
   CardStruct,
   IconStruct,
   SelectorStruct,
+  SectionStruct,
 ]);
 
 /**
@@ -634,6 +643,7 @@ export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   IconStruct,
   SelectorStruct,
   SelectorOptionStruct,
+  SectionStruct,
 ]);
 
 /**
