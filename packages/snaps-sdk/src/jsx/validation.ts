@@ -413,10 +413,20 @@ export const BoxStruct: Describe<BoxElement> = element('Box', {
 });
 
 /**
- * A struct for the {@link BoxElement} type.
+ * A struct for the {@link SectionElement} type.
  */
 export const SectionStruct: Describe<SectionElement> = element('Section', {
   children: BoxChildrenStruct,
+  direction: optional(nullUnion([literal('horizontal'), literal('vertical')])),
+  alignment: optional(
+    nullUnion([
+      literal('start'),
+      literal('center'),
+      literal('end'),
+      literal('space-between'),
+      literal('space-around'),
+    ]),
+  ),
 });
 
 /**

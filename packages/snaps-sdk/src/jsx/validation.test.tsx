@@ -1186,6 +1186,18 @@ describe('SectionStruct', () => {
         <Address address="0x0000000000000000000000000000000000000000" />
       </Row>
     </Section>,
+    <Section direction="horizontal" alignment="space-between">
+      <Text>foo</Text>
+      <Row label="label">
+        <Image src="<svg />" alt="alt" />
+      </Row>
+    </Section>,
+    <Section direction="horizontal">
+      <Text>foo</Text>
+      <Row label="label">
+        <Image src="<svg />" alt="alt" />
+      </Row>
+    </Section>,
   ])('validates a section element', (value) => {
     expect(is(value, SectionStruct)).toBe(true);
   });
@@ -1208,8 +1220,14 @@ describe('SectionStruct', () => {
     <Row label="label">
       <Image src="<svg />" alt="alt" />
     </Row>,
+    // @ts-expect-error - Invalid props.
+    <Section direction="diagonal">
+      <Box>
+        <Text>Hello world!</Text>
+      </Box>
+    </Section>,
   ])('does not validate "%p"', (value) => {
-    expect(is(value, ContainerStruct)).toBe(false);
+    expect(is(value, SectionStruct)).toBe(false);
   });
 });
 

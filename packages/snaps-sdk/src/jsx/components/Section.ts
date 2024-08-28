@@ -9,16 +9,26 @@ import { createSnapComponent } from '../component';
 export type SectionProps = {
   // We can't use `JSXElement` because it causes a circular reference.
   children: SnapsChildren<GenericSnapElement>;
+  direction?: 'vertical' | 'horizontal' | undefined;
+  alignment?:
+    | 'start'
+    | 'center'
+    | 'end'
+    | 'space-between'
+    | 'space-around'
+    | undefined;
 };
 
 const TYPE = 'Section';
 
 /**
- * A section component, which is used to vertically align (flex-direction: column) multiple components together.
+ * A section component, which is used to group multiple components together.
  * The component itself is 16px padded with a default background and a border radius of 8px.
  *
  * @param props - The props of the component.
  * @param props.children - The children of the section.
+ * @param props.direction - The direction that the children are aligned.
+ * @param props.alignment - The alignment of the children (a justify-content value).
  * @returns A section element.
  * @example
  * <Section>

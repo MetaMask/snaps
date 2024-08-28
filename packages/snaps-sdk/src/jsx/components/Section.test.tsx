@@ -81,4 +81,38 @@ describe('Section', () => {
       },
     });
   });
+
+  it('renders a section with props', () => {
+    const result = (
+      <Section direction="horizontal" alignment="space-between">
+        <Text>Hello</Text>
+        <Text>World</Text>
+      </Section>
+    );
+
+    expect(result).toStrictEqual({
+      type: 'Section',
+      key: null,
+      props: {
+        direction: 'horizontal',
+        alignment: 'space-between',
+        children: [
+          {
+            type: 'Text',
+            key: null,
+            props: {
+              children: 'Hello',
+            },
+          },
+          {
+            type: 'Text',
+            key: null,
+            props: {
+              children: 'World',
+            },
+          },
+        ],
+      },
+    });
+  });
 });
