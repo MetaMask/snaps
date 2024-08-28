@@ -10,13 +10,13 @@ describe('onHomePage', () => {
 
     const screen = response.getInterface();
 
-    await screen.clickElement('open_dialog');
+    await screen.clickElement('footer_button');
 
-    const alertUi = await response.getInterface();
+    const newUi = await response.getInterface();
 
-    expect(alertUi).toRender(
+    expect(newUi).toRender(
       <Box>
-        <Text>Hello from a dialog!</Text>
+        <Text>Footer button was pressed</Text>
       </Box>,
     );
   });

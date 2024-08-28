@@ -1,6 +1,5 @@
 import {
   assert,
-  DialogType,
   UserInputEventType,
   type OnHomePageHandler,
   type OnUserInputHandler,
@@ -29,7 +28,7 @@ export const onHomePage: OnHomePageHandler = async () => {
           <Text>Welcome to my Snap home page!</Text>
         </Box>
         <Footer>
-          <Button name="open_dialog">Open a dialog</Button>
+          <Button name="footer_button">Footer button</Button>
         </Footer>
       </Container>
     ),
@@ -43,23 +42,24 @@ export const onHomePage: OnHomePageHandler = async () => {
  * - `open_dialog`: Opens a dialog window. It is triggered when the user clicks the home footer button.
  *
  * @param params - The event parameters.
+ * @param params.id - The Snap interface ID where the event was fired.
  * @param params.event - The event object containing the event type, name and
  * value.
  * @see https://docs.metamask.io/snaps/reference/exports/#onuserinput
  */
-export const onUserInput: OnUserInputHandler = async ({ event }) => {
+export const onUserInput: OnUserInputHandler = async ({ event, id }) => {
   // Since this Snap only has one event, we can assert the event type and name
   // directly.
   assert(event.type === UserInputEventType.ButtonClickEvent);
-  assert(event.name === 'open_dialog');
+  assert(event.name === 'footer_button');
 
   await snap.request({
-    method: 'snap_dialog',
+    method: 'snap_updateInterface',
     params: {
-      type: DialogType.Alert,
-      content: (
+      id,
+      ui: (
         <Box>
-          <Text>Hello from a dialog!</Text>
+          <Text>Footer button was pressed</Text>
         </Box>
       ),
     },
