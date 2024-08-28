@@ -368,9 +368,9 @@ export type GetAllSnaps = {
   handler: SnapController['getAllSnaps'];
 };
 
-export type StopAllRunningSnaps = {
-  type: `${typeof controllerName}:stopAllRunningSnaps`;
-  handler: SnapController['stopAllRunningSnaps'];
+export type StopAllSnaps = {
+  type: `${typeof controllerName}:stopAllSnaps`;
+  handler: SnapController['stopAllSnaps'];
 };
 
 export type IncrementActiveReferences = {
@@ -434,7 +434,7 @@ export type SnapControllerActions =
   | RevokeDynamicPermissions
   | GetSnapFile
   | SnapControllerGetStateAction
-  | StopAllRunningSnaps;
+  | StopAllSnaps;
 
 // Controller Messenger Events
 
@@ -1113,8 +1113,8 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:stopAllRunningSnaps`,
-      async (...args) => this.stopAllRunningSnaps(...args),
+      `${controllerName}:stopAllSnaps`,
+      async (...args) => this.stopAllSnaps(...args),
     );
   }
 
@@ -1569,7 +1569,7 @@ export class SnapController extends BaseController<
    * @param statusEvent - The Snap status event that caused the snap to be
    * stopped.
    */
-  public async stopAllRunningSnaps(
+  public async stopAllSnaps(
     statusEvent:
       | SnapStatusEvents.Stop
       | SnapStatusEvents.Crash = SnapStatusEvents.Stop,
@@ -2180,7 +2180,7 @@ export class SnapController extends BaseController<
   /**
    * Gets all snaps in their truncated format.
    *
-   * @returns All installed snaps in their truncated format.
+   * @returns Snap ids of all the running snaps.
    */
   getAllRunningSnapIds(): SnapId[] {
     return Object.values(this.state.snaps)
