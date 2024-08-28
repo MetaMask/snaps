@@ -368,6 +368,11 @@ export type GetAllSnaps = {
   handler: SnapController['getAllSnaps'];
 };
 
+export type StopAllRunningSnaps = {
+  type: `${typeof controllerName}:stopAllRunningSnaps`;
+  handler: SnapController['stopAllRunningSnaps'];
+};
+
 export type IncrementActiveReferences = {
   type: `${typeof controllerName}:incrementActiveReferences`;
   handler: SnapController['incrementActiveReferences'];
@@ -428,7 +433,8 @@ export type SnapControllerActions =
   | DisconnectOrigin
   | RevokeDynamicPermissions
   | GetSnapFile
-  | SnapControllerGetStateAction;
+  | SnapControllerGetStateAction
+  | StopAllRunningSnaps;
 
 // Controller Messenger Events
 
@@ -1105,6 +1111,11 @@ export class SnapController extends BaseController<
       `${controllerName}:getFile`,
       async (...args) => this.getSnapFile(...args),
     );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:stopAllRunningSnaps`,
+      async (...args) => this.stopAllRunningSnaps(...args),
+    );
   }
 
   #handlePreinstalledSnaps(preinstalledSnaps: PreinstalledSnap[]) {
@@ -1549,6 +1560,25 @@ export class SnapController extends BaseController<
         this.#transition(snapId, statusEvent);
       }
     }
+  }
+
+  /**
+   * Stops all running snaps, removes all hooks, closes all connections, and
+   * terminates their workers.
+   *
+   * @param statusEvent - The Snap status event that caused the snap to be
+   * stopped.
+   */
+  public async stopAllRunningSnaps(
+    statusEvent:
+      | SnapStatusEvents.Stop
+      | SnapStatusEvents.Crash = SnapStatusEvents.Stop,
+  ): Promise<void> {
+    const runningSnapIds = this.getAllRunningSnapIds();
+    const promises = runningSnapIds.map(async (id) =>
+      this.stopSnap(id, statusEvent),
+    );
+    await Promise.allSettled(promises);
   }
 
   /**
@@ -2145,6 +2175,17 @@ export class SnapController extends BaseController<
    */
   getAllSnaps(): TruncatedSnap[] {
     return Object.values(this.state.snaps).map(truncateSnap);
+  }
+
+  /**
+   * Gets all snaps in their truncated format.
+   *
+   * @returns All installed snaps in their truncated format.
+   */
+  getAllRunningSnapIds(): SnapId[] {
+    return Object.values(this.state.snaps)
+      .filter((snap) => snap.status === SnapStatus.Running)
+      .map((snap) => snap.id);
   }
 
   /**
