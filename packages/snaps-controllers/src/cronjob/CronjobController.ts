@@ -1,4 +1,8 @@
-import type { RestrictedControllerMessenger } from '@metamask/base-controller';
+import type {
+  RestrictedControllerMessenger,
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+} from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type { GetPermissions } from '@metamask/permission-controller';
 import {
@@ -29,20 +33,30 @@ import type {
 import { getRunnableSnaps } from '..';
 import { Timer } from '../snaps/Timer';
 
+export type CronjobControllerGetStateAction = ControllerGetStateAction<
+  typeof controllerName,
+  CronjobControllerState
+>;
+export type CronjobControllerStateChangeEvent = ControllerStateChangeEvent<
+  typeof controllerName,
+  CronjobControllerState
+>;
 export type CronjobControllerActions =
   | GetAllSnaps
   | HandleSnapRequest
-  | GetPermissions;
+  | GetPermissions
+  | CronjobControllerGetStateAction;
 
 export type CronjobControllerEvents =
   | SnapInstalled
   | SnapUninstalled
   | SnapUpdated
   | SnapEnabled
-  | SnapDisabled;
+  | SnapDisabled
+  | CronjobControllerStateChangeEvent;
 
 export type CronjobControllerMessenger = RestrictedControllerMessenger<
-  'CronjobController',
+  typeof controllerName,
   CronjobControllerActions,
   CronjobControllerEvents,
   CronjobControllerActions['type'],

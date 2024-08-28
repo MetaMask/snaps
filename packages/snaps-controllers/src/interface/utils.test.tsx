@@ -12,6 +12,9 @@ import {
   Checkbox,
   RadioGroup,
   Radio,
+  Selector,
+  Card,
+  SelectorOption,
 } from '@metamask/snaps-sdk/jsx';
 
 import { assertNameIsUnique, constructState, getJsxInterface } from './utils';
@@ -453,6 +456,94 @@ describe('constructState', () => {
     const result = constructState({}, element);
     expect(result).toStrictEqual({
       form: { foo: true },
+    });
+  });
+
+  it('sets default value for root level Selector', () => {
+    const element = (
+      <Box>
+        <Selector name="foo" title="Choose an option">
+          <SelectorOption value="option1">
+            <Card title="Option 1" value="$1" />
+          </SelectorOption>
+          <SelectorOption value="option2">
+            <Card title="Option 1" value="$1" />
+          </SelectorOption>
+        </Selector>
+      </Box>
+    );
+
+    const result = constructState({}, element);
+    expect(result).toStrictEqual({
+      foo: 'option1',
+    });
+  });
+
+  it('supports root level Selector', () => {
+    const element = (
+      <Box>
+        <Selector name="foo" title="Choose an option" value="option2">
+          <SelectorOption value="option1">
+            <Card title="Option 1" value="$1" />
+          </SelectorOption>
+          <SelectorOption value="option2">
+            <Card title="Option 1" value="$1" />
+          </SelectorOption>
+        </Selector>
+      </Box>
+    );
+
+    const result = constructState({}, element);
+    expect(result).toStrictEqual({
+      foo: 'option2',
+    });
+  });
+
+  it('sets default value for Selector in form', () => {
+    const element = (
+      <Box>
+        <Form name="form">
+          <Field label="foo">
+            <Selector name="foo" title="Choose an option">
+              <SelectorOption value="option1">
+                <Card title="Option 1" value="$1" />
+              </SelectorOption>
+              <SelectorOption value="option2">
+                <Card title="Option 1" value="$1" />
+              </SelectorOption>
+            </Selector>
+          </Field>
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element);
+    expect(result).toStrictEqual({
+      form: { foo: 'option1' },
+    });
+  });
+
+  it('supports Selector in form', () => {
+    const element = (
+      <Box>
+        <Form name="form">
+          <Field label="foo">
+            <Selector name="foo" title="Choose an option" value="option2">
+              <SelectorOption value="option1">
+                <Card title="Option 1" value="$1" />
+              </SelectorOption>
+              <SelectorOption value="option2">
+                <Card title="Option 1" value="$1" />
+              </SelectorOption>
+            </Selector>
+          </Field>
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element);
+    expect(result).toStrictEqual({
+      form: { foo: 'option2' },
     });
   });
 

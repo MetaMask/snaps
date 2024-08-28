@@ -1,4 +1,8 @@
-import type { RestrictedControllerMessenger } from '@metamask/base-controller';
+import type {
+  RestrictedControllerMessenger,
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+} from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type {
   Caveat,
@@ -34,7 +38,20 @@ export type SnapInsightsControllerAllowedActions =
   | GetPermissions
   | DeleteInterface;
 
-export type SnapInsightsControllerActions = never;
+export type SnapInsightsControllerGetStateAction = ControllerGetStateAction<
+  typeof controllerName,
+  SnapInsightsControllerState
+>;
+
+export type SnapInsightsControllerActions =
+  SnapInsightsControllerGetStateAction;
+
+export type SnapInsightControllerStateChangeEvent = ControllerStateChangeEvent<
+  typeof controllerName,
+  SnapInsightsControllerState
+>;
+
+export type SnapInsightControllerEvents = SnapInsightControllerStateChangeEvent;
 
 export type SnapInsightsControllerAllowedEvents =
   | TransactionControllerUnapprovedTransactionAddedEvent
@@ -44,7 +61,7 @@ export type SnapInsightsControllerAllowedEvents =
 export type SnapInsightsControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
   SnapInsightsControllerActions | SnapInsightsControllerAllowedActions,
-  SnapInsightsControllerAllowedEvents,
+  SnapInsightControllerEvents | SnapInsightsControllerAllowedEvents,
   SnapInsightsControllerAllowedActions['type'],
   SnapInsightsControllerAllowedEvents['type']
 >;
