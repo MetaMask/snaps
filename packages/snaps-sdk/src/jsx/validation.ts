@@ -68,6 +68,7 @@ import {
   type ContainerElement,
   type FooterElement,
   type IconElement,
+  type SectionElement,
   type SelectorElement,
   type SelectorOptionElement,
   IconName,
@@ -412,6 +413,23 @@ export const BoxStruct: Describe<BoxElement> = element('Box', {
 });
 
 /**
+ * A struct for the {@link SectionElement} type.
+ */
+export const SectionStruct: Describe<SectionElement> = element('Section', {
+  children: BoxChildrenStruct,
+  direction: optional(nullUnion([literal('horizontal'), literal('vertical')])),
+  alignment: optional(
+    nullUnion([
+      literal('start'),
+      literal('center'),
+      literal('end'),
+      literal('space-between'),
+      literal('space-around'),
+    ]),
+  ),
+});
+
+/**
  * A subset of JSX elements that are allowed as children of the Footer component.
  * This set should include a single button or a tuple of two buttons.
  */
@@ -589,6 +607,7 @@ export const BoxChildStruct = typedUnion([
   CardStruct,
   IconStruct,
   SelectorStruct,
+  SectionStruct,
 ]);
 
 /**
@@ -634,6 +653,7 @@ export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   IconStruct,
   SelectorStruct,
   SelectorOptionStruct,
+  SectionStruct,
 ]);
 
 /**
