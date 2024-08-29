@@ -2178,7 +2178,7 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Gets all snaps in their truncated format.
+   * Gets the ids of all running snaps.
    *
    * @returns Snap ids of all the running snaps.
    */
