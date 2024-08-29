@@ -17,6 +17,7 @@ import {
   record,
   string,
   tuple,
+  refine,
 } from '@metamask/superstruct';
 import {
   hasProperty,
@@ -412,6 +413,31 @@ export const BoxStruct: Describe<BoxElement> = element('Box', {
   ),
 });
 
+const FooterButtonStruct = refine(ButtonStruct, 'FooterButton', (value) => {
+  if (
+    typeof value.props.children === 'string' ||
+    typeof value.props.children === 'boolean' ||
+    value.props.children === null
+  ) {
+    return true;
+  }
+
+  if (Array.isArray(value.props.children)) {
+    const hasNonTextElements = value.props.children.some(
+      (child) =>
+        typeof child !== 'string' &&
+        typeof child !== 'boolean' &&
+        child !== null,
+    );
+
+    if (!hasNonTextElements) {
+      return true;
+    }
+  }
+
+  return 'Footer buttons must contain text';
+});
+
 /**
  * A struct for the {@link SectionElement} type.
  */
@@ -434,8 +460,8 @@ export const SectionStruct: Describe<SectionElement> = element('Section', {
  * This set should include a single button or a tuple of two buttons.
  */
 export const FooterChildStruct = nullUnion([
-  tuple([ButtonStruct, ButtonStruct]),
-  ButtonStruct,
+  tuple([FooterButtonStruct, FooterButtonStruct]),
+  FooterButtonStruct,
 ]);
 
 /**
