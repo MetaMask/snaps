@@ -435,7 +435,7 @@ const FooterButtonStruct = refine(ButtonStruct, 'FooterButton', (value) => {
     }
   }
 
-  return 'Footer buttons must contain text';
+  return 'Footer buttons may only contain text.';
 });
 
 /**
