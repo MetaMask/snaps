@@ -518,6 +518,9 @@ describe('FooterStruct', () => {
       <Button name="cancel">Cancel</Button>
       <Button name="confirm">Confirm</Button>
     </Footer>,
+    <Footer>
+      <Button name="cancel">Cancel {true && 'foo'}</Button>
+    </Footer>,
   ])('validates a footer element', (value) => {
     expect(is(value, FooterStruct)).toBe(true);
   });
@@ -541,6 +544,25 @@ describe('FooterStruct', () => {
     <Row label="label">
       <Image src="<svg />" alt="alt" />
     </Row>,
+    <Footer>
+      <Button name="confirm">
+        <Icon name="warning" />
+      </Button>
+    </Footer>,
+    <Footer>
+      <Button name="cancel">
+        <Image src="<svg />" />
+      </Button>
+      <Button name="confirm">
+        <Image src="<svg />" />
+      </Button>
+    </Footer>,
+    <Footer>
+      <Button name="confirm">
+        <Icon name="warning" />
+        <Icon name="warning" />
+      </Button>
+    </Footer>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, FooterStruct)).toBe(false);
   });
