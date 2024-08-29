@@ -36,10 +36,7 @@ export const onHomePage: OnHomePageHandler = async () => {
 };
 
 /**
- * Handle incoming user events coming from the Snap interface. This handler
- * handles one event:
- *
- * - `open_dialog`: Opens a dialog window. It is triggered when the user clicks the home footer button.
+ * Handle incoming user events coming from the Snap interface.
  *
  * @param params - The event parameters.
  * @param params.id - The Snap interface ID where the event was fired.
