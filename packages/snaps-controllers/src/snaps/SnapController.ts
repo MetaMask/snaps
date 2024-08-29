@@ -1574,9 +1574,11 @@ export class SnapController extends BaseController<
       | SnapStatusEvents.Stop
       | SnapStatusEvents.Crash = SnapStatusEvents.Stop,
   ): Promise<void> {
-    const runningSnapIds = this.getAllRunningSnapIds();
-    const promises = runningSnapIds.map(async (id) =>
-      this.stopSnap(id, statusEvent),
+    const snaps = Object.values(this.state.snaps).filter((snap) =>
+      this.isRunning(snap.id),
+    );
+    const promises = snaps.map(async (snap) =>
+      this.stopSnap(snap.id, statusEvent),
     );
     await Promise.allSettled(promises);
   }
@@ -2175,17 +2177,6 @@ export class SnapController extends BaseController<
    */
   getAllSnaps(): TruncatedSnap[] {
     return Object.values(this.state.snaps).map(truncateSnap);
-  }
-
-  /**
-   * Gets the ids of all running snaps.
-   *
-   * @returns Snap ids of all the running snaps.
-   */
-  getAllRunningSnapIds(): SnapId[] {
-    return Object.values(this.state.snaps)
-      .filter((snap) => snap.status === SnapStatus.Running)
-      .map((snap) => snap.id);
   }
 
   /**
