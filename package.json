@@ -126,5 +126,5 @@
       "vite>esbuild": true
     }
   },
-  "packageManager": "yarn@3.6.0"
+  "packageManager": "yarn@4.4.1"
 }
