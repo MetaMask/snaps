@@ -19,7 +19,6 @@
     "test": "jest && jest-it-up --margin 0.5",
     "test:ci": "yarn test",
     "test:watch": "jest --watch",
-    "clean": "rimraf '*.tsbuildinfo' 'dist'",
     "lint:ci": "yarn lint",
     "publish:preview": "yarn npm publish --tag preview",
     "lint:dependencies": "depcheck"
@@ -125,7 +124,6 @@
     "terser-webpack-plugin": "^5.3.9",
     "ts-node": "^10.9.1",
     "tsconfig-paths-webpack-plugin": "^4.0.1",
-    "tsup": "^8.0.1",
     "typescript": "~5.3.3",
     "webpack": "^5.88.0",
     "webpack-cli": "^5.1.4",

@@ -10,26 +10,29 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/types/index.d.ts"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
-  "types": "./dist/types/index.d.ts",
-  "bin": "./dist/main.js",
+  "types": "./dist/index.d.cts",
+  "bin": "./dist/main.cjs",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsup --clean && yarn build:types",
-    "build:types": "tsc --project tsconfig.build.json",
+    "build": "ts-bridge --project tsconfig.build.json --verbose --no-references",
     "build:chmod": "chmod +x ./dist/main.mjs && chmod +x ./dist/main.js",
     "build:clean": "yarn clean && yarn build",
     "build:watch": "tsc-watch --onSuccess 'yarn build:chmod'",
-    "clean": "rimraf '*.tsbuildinfo' 'dist'",
     "test": "jest && yarn posttest",
     "posttest": "jest-it-up",
     "test:watch": "yarn test --watch",
@@ -43,7 +46,7 @@
     "lint:ci": "yarn lint",
     "publish:preview": "yarn npm publish --tag preview",
     "lint:dependencies": "depcheck",
-    "build:ci": "tsup --clean"
+    "build:ci": "ts-bridge --project tsconfig.build.json --verbose --no-references --clean"
   },
   "dependencies": {
     "@metamask/snaps-utils": "workspace:^",
@@ -83,7 +86,6 @@
     "rimraf": "^4.1.2",
     "ts-node": "^10.9.1",
     "tsc-watch": "^4.5.0",
-    "tsup": "^8.0.1",
     "typescript": "~5.3.3"
   },
   "engines": {

@@ -1,1 +1,1 @@
-export * from './dist/types/jsx';
+export * from './dist/jsx/index.cjs';

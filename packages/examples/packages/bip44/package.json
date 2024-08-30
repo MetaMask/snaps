@@ -15,8 +15,6 @@
   ],
   "scripts": {
     "build": "mm-snap build",
-    "build:clean": "yarn clean && yarn build",
-    "clean": "rimraf \"dist\"",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog && yarn lint:dependencies",
     "lint:changelog": "../../../../scripts/validate-changelog.sh @metamask/bip44-example-snap",
     "lint:ci": "yarn lint",

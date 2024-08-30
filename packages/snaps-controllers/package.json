@@ -9,25 +9,40 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/types/index.d.ts"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./node": {
-      "import": "./dist/node.mjs",
-      "require": "./dist/node.js",
-      "types": "./dist/types/node.d.ts"
+      "import": {
+        "types": "./dist/types/node.d.mts",
+        "default": "./dist/node.mjs"
+      },
+      "require": {
+        "types": "./dist/types/node.d.cts",
+        "default": "./dist/node.cjs"
+      }
     },
     "./react-native": {
-      "import": "./dist/react-native.mjs",
-      "require": "./dist/react-native.js",
-      "types": "./dist/types/react-native.d.ts"
+      "import": {
+        "types": "./dist/types/react-native.d.mts",
+        "default": "./dist/react-native.mjs"
+      },
+      "require": {
+        "types": "./dist/types/react-native.d.cts",
+        "default": "./dist/react-native.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
-  "types": "./dist/types/index.d.ts",
+  "types": "./dist/index.d.cts",
   "files": [
     "dist",
     "react-native.d.ts",
@@ -39,9 +54,7 @@
     "posttest": "ts-node scripts/coverage.ts && rimraf coverage/jest coverage/wdio",
     "test:browser": "wdio run wdio.config.js",
     "test:ci": "yarn test",
-    "build": "tsup --clean && yarn build:types",
-    "build:types": "tsc --project tsconfig.build.json",
-    "clean": "rimraf '*.tsbuildinfo' 'dist'",
+    "build": "ts-bridge --project tsconfig.build.json --verbose --no-references",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog && yarn lint:dependencies",
@@ -50,7 +63,7 @@
     "publish:preview": "yarn npm publish --tag preview",
     "lint:ci": "yarn lint",
     "lint:dependencies": "depcheck",
-    "build:ci": "tsup --clean"
+    "build:ci": "ts-bridge --project tsconfig.build.json --verbose --no-references --clean"
   },
   "dependencies": {
     "@metamask/approval-controller": "^7.0.2",
@@ -129,7 +142,6 @@
     "prettier-plugin-packagejson": "^2.2.11",
     "rimraf": "^4.1.2",
     "ts-node": "^10.9.1",
-    "tsup": "^8.0.1",
     "typescript": "~5.3.3",
     "vite": "^4.3.9",
     "vite-tsconfig-paths": "^4.0.5",

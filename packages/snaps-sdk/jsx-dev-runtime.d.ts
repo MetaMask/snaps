@@ -1,1 +1,1 @@
-export * from './dist/types/jsx/jsx-dev-runtime';
+export * from './dist/jsx/jsx-dev-runtime.cjs';

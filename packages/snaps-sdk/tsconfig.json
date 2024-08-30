@@ -8,7 +8,6 @@
   "include": [
     "./src",
     "package.json",
-    "tsup.config.ts",
     "jsx.d.ts",
     "jsx-runtime.d.ts",
     "jsx-dev-runtime.d.ts"

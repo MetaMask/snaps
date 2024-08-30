@@ -12,7 +12,7 @@ const config = {
   // timeout to 30 seconds by default.
   testTimeout: 30000,
 
-  setupFilesAfterEnv: [resolve(__dirname, 'dist', 'setup.js')],
+  setupFilesAfterEnv: [resolve(__dirname, 'dist', 'setup.cjs')],
 };
 
 module.exports = config;

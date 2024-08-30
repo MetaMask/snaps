@@ -60,8 +60,6 @@ jobs:
       - run: yarn --immutable --immutable-cache
       - name: Build
         run: yarn build:ci
-      - name: Build types
-        run: yarn build:types
       - name: Cache build files
         uses: actions/cache@v4
         with:

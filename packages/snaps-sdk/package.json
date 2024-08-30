@@ -8,30 +8,50 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "default": "./dist/index.cjs",
+        "types": "./dist/index.d.cts"
+      }
     },
     "./jsx": {
-      "types": "./dist/types/jsx/index.d.ts",
-      "import": "./dist/jsx/index.mjs",
-      "require": "./dist/jsx/index.js"
+      "import": {
+        "types": "./dist/types/jsx/index.d.mts",
+        "default": "./dist/jsx/index.mjs"
+      },
+      "require": {
+        "default": "./dist/jsx/index.cjs",
+        "types": "./dist/types/jsx/index.d.cts"
+      }
     },
     "./jsx-runtime": {
-      "types": "./dist/types/jsx/jsx-runtime.d.ts",
-      "import": "./dist/jsx/jsx-runtime.mjs",
-      "require": "./dist/jsx/jsx-runtime.js"
+      "import": {
+        "types": "./dist/types/jsx/jsx-runtime.d.mts",
+        "default": "./dist/jsx/jsx-runtime.mjs"
+      },
+      "require": {
+        "default": "./dist/jsx/jsx-runtime.cjs",
+        "types": "./dist/types/jsx/jsx-runtime.d.cts"
+      }
     },
     "./jsx-dev-runtime": {
-      "types": "./dist/types/jsx/jsx-dev-runtime.d.ts",
-      "import": "./dist/jsx/jsx-dev-runtime.mjs",
-      "require": "./dist/jsx/jsx-dev-runtime.js"
+      "import": {
+        "types": "./dist/types/jsx/jsx-dev-runtime.d.mts",
+        "default": "./dist/jsx/jsx-dev-runtime.mjs"
+      },
+      "require": {
+        "default": "./dist/jsx/jsx-dev-runtime.cjs",
+        "types": "./dist/types/jsx/jsx-dev-runtime.d.cts"
+      }
     },
     "./package.json": "./package.json"
   },
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
-  "types": "./dist/types/index.d.ts",
+  "types": "./dist/index.d.cts",
   "files": [
     "dist",
     "jsx.js",
@@ -50,13 +70,11 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog && yarn lint:dependencies",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "../../scripts/validate-changelog.sh @metamask/snaps-sdk",
-    "build": "tsup --clean && yarn build:types",
-    "build:types": "tsc --project tsconfig.build.json",
-    "clean": "rimraf '*.tsbuildinfo' 'dist'",
+    "build": "ts-bridge --project tsconfig.build.json --verbose --no-references",
     "publish:preview": "yarn npm publish --tag preview",
     "lint:ci": "yarn lint",
     "lint:dependencies": "depcheck",
-    "build:ci": "tsup --clean"
+    "build:ci": "ts-bridge --project tsconfig.build.json --verbose --no-references --clean"
   },
   "dependencies": {
     "@metamask/key-tree": "^9.1.2",
@@ -94,7 +112,6 @@
     "prettier-plugin-packagejson": "^2.2.11",
     "rimraf": "^4.1.2",
     "ts-jest": "^29.1.1",
-    "tsup": "^8.0.1",
     "typescript": "~5.3.3"
   },
   "engines": {

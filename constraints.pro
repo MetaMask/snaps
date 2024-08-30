@@ -152,32 +152,40 @@ gen_enforced_field(WorkspaceCwd, 'sideEffects', 'false') :-
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
 
-% The type definitions entrypoint for the dependency must be `./dist/types/index.d.ts`.
-gen_enforced_field(WorkspaceCwd, 'types', './dist/types/index.d.ts') :-
+% The type definitions entrypoint for the dependency must be `./dist/index.d.cts`.
+gen_enforced_field(WorkspaceCwd, 'types', './dist/index.d.cts') :-
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
-gen_enforced_field(WorkspaceCwd, 'exports["."].types', './dist/types/index.d.ts') :-
-  \+ is_example(WorkspaceCwd),
-  \+ workspace_field(WorkspaceCwd, 'private', true),
-  WorkspaceCwd \= '.'.
-
-% The entrypoint for the dependency must be `./dist/cjs/index.js`.
-gen_enforced_field(WorkspaceCwd, 'main', './dist/index.js') :-
-  \+ is_example(WorkspaceCwd),
-  \+ workspace_field(WorkspaceCwd, 'private', true),
-  WorkspaceCwd \= '.'.
-gen_enforced_field(WorkspaceCwd, 'exports["."].require', './dist/index.js') :-
+gen_enforced_field(WorkspaceCwd, 'exports["."].types', null) :-
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
 
-% The module entrypoint for the dependency must be `./dist/esm/index.js`.
+% The entrypoint for the dependency must be `./dist/index.cjs`.
+gen_enforced_field(WorkspaceCwd, 'main', './dist/index.cjs') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'exports["."].require.types', './dist/index.d.cts') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'exports["."].require.default', './dist/index.cjs') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+
+% The module entrypoint for the dependency must be `./dist/index.mjs`.
 gen_enforced_field(WorkspaceCwd, 'module', './dist/index.mjs') :-
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
-gen_enforced_field(WorkspaceCwd, 'exports["."].import', './dist/index.mjs') :-
+gen_enforced_field(WorkspaceCwd, 'exports["."].import.types', './dist/index.d.mts') :-
+  \+ is_example(WorkspaceCwd),
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  WorkspaceCwd \= '.'.
+gen_enforced_field(WorkspaceCwd, 'exports["."].import.default', './dist/index.mjs') :-
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
@@ -202,18 +210,18 @@ gen_enforced_field(WorkspaceCwd, 'files', ['dist', 'jest-preset.js']) :-
   WorkspaceCwd = 'packages/snaps-jest'.
 
 % Dependencies must have a build script.
-gen_enforced_field(WorkspaceCwd, 'scripts.build', 'tsup --clean && yarn build:types') :-
+gen_enforced_field(WorkspaceCwd, 'scripts.build', 'ts-bridge --project tsconfig.build.json --verbose --no-references') :-
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.',
   WorkspaceCwd \= 'packages/snaps-simulator',
   WorkspaceCwd \= 'packages/snaps-cli',
   WorkspaceCwd \= 'packages/snaps-execution-environments'.
-gen_enforced_field(WorkspaceCwd, 'scripts.build:types', 'tsc --project tsconfig.build.json') :-
+gen_enforced_field(WorkspaceCwd, 'scripts.build:types', null) :-
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.'.
-gen_enforced_field(WorkspaceCwd, 'scripts.build:ci', 'tsup --clean') :-
+gen_enforced_field(WorkspaceCwd, 'scripts.build:ci', 'ts-bridge --project tsconfig.build.json --verbose --no-references --clean') :-
   \+ is_example(WorkspaceCwd),
   \+ workspace_field(WorkspaceCwd, 'private', true),
   WorkspaceCwd \= '.',

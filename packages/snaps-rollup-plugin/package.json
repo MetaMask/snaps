@@ -12,15 +12,20 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/types/index.d.ts"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
-  "types": "./dist/types/index.d.ts",
+  "types": "./dist/index.d.cts",
   "files": [
     "dist"
   ],
@@ -33,13 +38,11 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog && yarn lint:dependencies",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "../../scripts/validate-changelog.sh @metamask/snaps-rollup-plugin",
-    "build": "tsup --clean && yarn build:types",
-    "build:types": "tsc --project tsconfig.build.json",
-    "clean": "rimraf '*.tsbuildinfo' 'dist'",
+    "build": "ts-bridge --project tsconfig.build.json --verbose --no-references",
     "publish:preview": "yarn npm publish --tag preview",
     "lint:ci": "yarn lint",
     "lint:dependencies": "depcheck",
-    "build:ci": "tsup --clean"
+    "build:ci": "ts-bridge --project tsconfig.build.json --verbose --no-references --clean"
   },
   "dependencies": {
     "@metamask/snaps-utils": "workspace:^"
@@ -74,7 +77,6 @@
     "prettier-plugin-packagejson": "^2.2.11",
     "rimraf": "^4.1.2",
     "rollup": "^2.73.0",
-    "tsup": "^8.0.1",
     "typescript": "~5.3.3"
   },
   "engines": {
