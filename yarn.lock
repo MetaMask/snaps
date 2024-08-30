@@ -4492,7 +4492,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": "npm:^9.1.0"
+    "@metamask/utils": "npm:^9.2.1"
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
@@ -4607,7 +4607,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": "npm:^9.1.0"
+    "@metamask/utils": "npm:^9.2.1"
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
@@ -4792,7 +4792,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": "npm:^9.1.0"
+    "@metamask/utils": "npm:^9.2.1"
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
@@ -4829,7 +4829,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": "npm:^9.1.0"
+    "@metamask/utils": "npm:^9.2.1"
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
@@ -5150,7 +5150,7 @@ __metadata:
     "@metamask/snaps-controllers": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": "npm:^9.1.0"
+    "@metamask/utils": "npm:^9.2.1"
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
@@ -5891,7 +5891,7 @@ __metadata:
     "@metamask/providers": "npm:^17.1.2"
     "@metamask/rpc-errors": "npm:^6.3.1"
     "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^9.1.0"
+    "@metamask/utils": "npm:^9.2.1"
     "@swc/core": "npm:1.3.78"
     "@types/jest": "npm:^27.5.1"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
@@ -6272,24 +6272,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^9.0.0, @metamask/utils@npm:^9.1.0":
-  version: 9.1.0
-  resolution: "@metamask/utils@npm:9.1.0"
-  dependencies:
-    "@ethereumjs/tx": "npm:^4.2.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@noble/hashes": "npm:^1.3.1"
-    "@scure/base": "npm:^1.1.3"
-    "@types/debug": "npm:^4.1.7"
-    debug: "npm:^4.3.4"
-    pony-cause: "npm:^2.1.10"
-    semver: "npm:^7.5.4"
-    uuid: "npm:^9.0.1"
-  checksum: 10/7335e151a51be92e86868dc48b3ee78c376d4edd5d758d334176027247637ab22839d8f663bd02542c0a19b05ecec456bedab5f36436689cf3d953ca36d91781
-  languageName: node
-  linkType: hard
-
-"@metamask/utils@npm:^9.2.1":
+"@metamask/utils@npm:^9.0.0, @metamask/utils@npm:^9.1.0, @metamask/utils@npm:^9.2.1":
   version: 9.2.1
   resolution: "@metamask/utils@npm:9.2.1"
   dependencies:
