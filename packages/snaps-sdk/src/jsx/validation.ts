@@ -20,6 +20,7 @@ import {
   refine,
 } from '@metamask/superstruct';
 import {
+  CaipAccountIdStruct,
   hasProperty,
   HexChecksumAddressStruct,
   isPlainObject,
@@ -388,7 +389,7 @@ export const FormattingStruct: Describe<StandardFormattingElement> = nullUnion([
  * A struct for the {@link AddressElement} type.
  */
 export const AddressStruct: Describe<AddressElement> = element('Address', {
-  address: HexChecksumAddressStruct,
+  address: nullUnion([HexChecksumAddressStruct, CaipAccountIdStruct]),
 });
 
 export const BoxChildrenStruct = children(
