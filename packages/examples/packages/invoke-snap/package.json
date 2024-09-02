@@ -12,12 +12,12 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "yarn workspaces foreach --parallel --verbose run build",
+    "build": "yarn workspaces foreach --worktree --parallel --verbose run build",
     "build:clean": "yarn clean && yarn build",
-    "clean": "yarn workspaces foreach --parallel --verbose run clean",
-    "start": "yarn workspaces foreach --parallel --verbose --interlaced --jobs unlimited run start",
-    "test": "yarn workspaces foreach --parallel --verbose --interlaced run test",
-    "lint": "yarn workspaces foreach --parallel --verbose --interlaced run lint && yarn lint:dependencies",
+    "clean": "yarn workspaces foreach --worktree --parallel --verbose run clean",
+    "start": "yarn workspaces foreach --worktree --parallel --verbose --interlaced --jobs unlimited run start",
+    "test": "yarn workspaces foreach --worktree --parallel --verbose --interlaced run test",
+    "lint": "yarn workspaces foreach --worktree --parallel --verbose --interlaced run lint && yarn lint:dependencies",
     "lint:ci": "yarn lint:eslint && yarn lint:misc --check",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",

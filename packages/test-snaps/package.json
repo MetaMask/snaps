@@ -14,7 +14,7 @@
     "test": "jest --passWithNoTests && yarn posttest",
     "posttest": "jest-it-up",
     "test:ci": "yarn test",
-    "start": "yarn workspaces foreach --parallel --verbose --interlaced --all --include \"@metamask/test-snaps\" --include \"@metamask/example-snaps\" run start:test",
+    "start": "yarn workspaces foreach --worktree --parallel --verbose --interlaced --all --include \"@metamask/test-snaps\" --include \"@metamask/example-snaps\" run start:test",
     "start:test": "cross-env NODE_ENV=development webpack serve",
     "build": "cross-env NODE_ENV=production webpack",
     "build:clean": "yarn clean && yarn build",

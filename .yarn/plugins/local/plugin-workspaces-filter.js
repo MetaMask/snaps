@@ -181,7 +181,7 @@ module.exports = {
         const includes = workspaces.map((workspace) => workspace.manifest.name)
           .flatMap(({ scope, name }) => ['--include', `@${scope}/${name}`]);
 
-        await this.cli.run(['workspaces', 'foreach', '--verbose', ...includes, ...extraArgs, commandName, ...args], this.context);
+        await this.cli.run(['workspaces', 'foreach', '--all', '--verbose', ...includes, ...extraArgs, commandName, ...args], this.context);
       }
 
       async execute() {
