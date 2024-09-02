@@ -64,7 +64,6 @@
     "@swc/jest": "^0.2.26",
     "@types/jest": "^27.5.1",
     "@types/node": "18.14.2",
-    "@types/rimraf": "^3.0.0",
     "@types/yargs": "^17.0.24",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^6.21.0",
@@ -83,7 +82,6 @@
     "memfs": "^3.4.13",
     "prettier": "^2.7.1",
     "prettier-plugin-packagejson": "^2.2.11",
-    "rimraf": "^4.1.2",
     "ts-node": "^10.9.1",
     "tsc-watch": "^4.5.0",
     "typescript": "~5.3.3"

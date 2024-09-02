@@ -5,6 +5,7 @@
     "@lavamoat/preinstall-always-fail",
     "@metamask/auto-changelog",
     "@metamask/eslint-*",
+    "@swc/core",
     "@types/*",
     "@typescript-eslint/*",
     "assert",
