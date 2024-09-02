@@ -119,6 +119,7 @@
     "lavamoat-browserify": "^17.0.5",
     "prettier": "^2.7.1",
     "prettier-plugin-packagejson": "^2.2.11",
+    "rimraf": "^4.1.2",
     "serve-handler": "^6.1.5",
     "ses": "^1.1.0",
     "terser": "^5.17.7",
