@@ -403,7 +403,9 @@ describe('ItalicStruct', () => {
 describe('AddressStruct', () => {
   it.each([
     <Address address="0x1234567890abcdef1234567890abcdef12345678" />,
-    <Address address="0x1234567890abcdef1234567890abcdef12345678" />,
+    <Address address="eip155:1:0x1234567890abcdef1234567890abcdef12345678" />,
+    <Address address="bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6" />,
+    <Address address="cosmos:cosmoshub-3:cosmos1t2uflqwqe0fsj0shcfkrvpukewcw40yjj6hdc0" />,
   ])('validates an address element', (value) => {
     expect(is(value, AddressStruct)).toBe(true);
   });
@@ -422,6 +424,7 @@ describe('AddressStruct', () => {
       <Text>foo</Text>
     </Address>,
     <Address address="0x1234" />,
+    <Address address="a:b:0x1234" />,
     <Text>foo</Text>,
     <Box>
       <Text>foo</Text>
@@ -518,6 +521,9 @@ describe('FooterStruct', () => {
       <Button name="cancel">Cancel</Button>
       <Button name="confirm">Confirm</Button>
     </Footer>,
+    <Footer>
+      <Button name="cancel">Cancel {true && 'foo'}</Button>
+    </Footer>,
   ])('validates a footer element', (value) => {
     expect(is(value, FooterStruct)).toBe(true);
   });
@@ -541,6 +547,25 @@ describe('FooterStruct', () => {
     <Row label="label">
       <Image src="<svg />" alt="alt" />
     </Row>,
+    <Footer>
+      <Button name="confirm">
+        <Icon name="warning" />
+      </Button>
+    </Footer>,
+    <Footer>
+      <Button name="cancel">
+        <Image src="<svg />" />
+      </Button>
+      <Button name="confirm">
+        <Image src="<svg />" />
+      </Button>
+    </Footer>,
+    <Footer>
+      <Button name="confirm">
+        <Icon name="warning" />
+        <Icon name="warning" />
+      </Button>
+    </Footer>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, FooterStruct)).toBe(false);
   });
