@@ -31,7 +31,7 @@ export async function evalBundle(bundlePath: string): Promise<EvalOutput> {
   await validateFilePath(bundlePath);
 
   return new Promise((resolve, reject) => {
-    const worker = fork(join(__dirname, 'eval-worker.js'), [bundlePath], {
+    const worker = fork(join(__dirname, 'eval-worker.cjs'), [bundlePath], {
       // To avoid printing the output of the worker to the console, we set
       // `stdio` to `pipe` and handle the output ourselves.
       stdio: 'pipe',
