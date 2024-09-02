@@ -2799,14 +2799,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@es-joy/jsdoccomment@npm:~0.36.0":
-  version: 0.36.0
-  resolution: "@es-joy/jsdoccomment@npm:0.36.0"
+"@es-joy/jsdoccomment@npm:~0.37.0":
+  version: 0.37.1
+  resolution: "@es-joy/jsdoccomment@npm:0.37.1"
   dependencies:
     comment-parser: "npm:1.3.1"
-    esquery: "npm:^1.4.0"
-    jsdoc-type-pratt-parser: "npm:~3.1.0"
-  checksum: 10/da494df70ae45580716538b35eda0a87a5539fd586937f6f2c986cadee4894681747baf8d9e503fff00a9d8ffc3a029cfdbd4c08d9ae73d7995cb5f3b14ede1d
+    esquery: "npm:^1.5.0"
+    jsdoc-type-pratt-parser: "npm:~4.0.0"
+  checksum: 10/cdb1175371512978bfc15c7f02a1618de6b270e86cf6acbf7e945f548e502f27cceb97442550bed42e3d3c064c243407b52c1b206e9b1b71adaa449bb944691a
   languageName: node
   linkType: hard
 
@@ -3902,7 +3902,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -3941,7 +3941,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -3987,7 +3987,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -4026,7 +4026,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -4062,7 +4062,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -4102,7 +4102,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -4160,7 +4160,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -4219,7 +4219,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -4264,7 +4264,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -4301,7 +4301,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -4337,7 +4337,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -4503,7 +4503,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -4539,7 +4539,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -4582,7 +4582,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -4618,7 +4618,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -4657,7 +4657,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -4693,7 +4693,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -4729,7 +4729,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -4765,7 +4765,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -4803,7 +4803,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -4840,7 +4840,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -4870,7 +4870,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -4916,7 +4916,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -4966,7 +4966,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -5015,7 +5015,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -5051,7 +5051,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -5087,7 +5087,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -5123,7 +5123,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -5161,7 +5161,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -5197,7 +5197,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -5324,7 +5324,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -5388,7 +5388,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -5434,7 +5434,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -5500,7 +5500,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -5601,7 +5601,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -5687,7 +5687,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -5761,7 +5761,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -5817,7 +5817,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -5863,7 +5863,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -5902,7 +5902,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -5977,7 +5977,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -6081,7 +6081,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -6138,7 +6138,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -6226,7 +6226,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -6314,7 +6314,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -6351,7 +6351,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -8985,11 +8985,11 @@ __metadata:
   linkType: hard
 
 "acorn@npm:^8.1.0, acorn@npm:^8.10.0, acorn@npm:^8.4.1, acorn@npm:^8.7.1, acorn@npm:^8.8.1, acorn@npm:^8.8.2, acorn@npm:^8.9.0":
-  version: 8.10.0
-  resolution: "acorn@npm:8.10.0"
+  version: 8.12.1
+  resolution: "acorn@npm:8.12.1"
   bin:
     acorn: bin/acorn
-  checksum: 10/522310c20fdc3c271caed3caf0f06c51d61cb42267279566edd1d58e83dbc12eebdafaab666a0f0be1b7ad04af9c6bc2a6f478690a9e6391c3c8b165ada917dd
+  checksum: 10/d08c2d122bba32d0861e0aa840b2ee25946c286d5dc5990abca991baf8cdbfbe199b05aacb221b979411a2fea36f83e26b5ac4f6b4e0ce49038c62316c1848f0
   languageName: node
   linkType: hard
 
@@ -9246,6 +9246,13 @@ __metadata:
     tar-stream: "npm:^3.0.0"
     zip-stream: "npm:^5.0.1"
   checksum: 10/22997a5bbfe1c4e977d9caa91bca2e01e9d84a91d542ab3c2e22a6a56dbe33c0cd53e92b5e6cfef293da4bc6869497b2940399350f5247f173022d07e12ff749
+  languageName: node
+  linkType: hard
+
+"are-docs-informative@npm:^0.0.2":
+  version: 0.0.2
+  resolution: "are-docs-informative@npm:0.0.2"
+  checksum: 10/12cdae51a4bb369832ef1a35840604247d4ed0cbc8392f2519988d170f92c3f8c60e465844f41acba1ec3062d0edb2e9133fca38cb9c1214309153d50a25fa29
   languageName: node
   linkType: hard
 
@@ -11365,15 +11372,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4, debug@npm:4.3.4, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.3, debug@npm:^4.3.4":
-  version: 4.3.4
-  resolution: "debug@npm:4.3.4"
+"debug@npm:4, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.3, debug@npm:^4.3.4":
+  version: 4.3.6
+  resolution: "debug@npm:4.3.6"
   dependencies:
     ms: "npm:2.1.2"
   peerDependenciesMeta:
     supports-color:
       optional: true
-  checksum: 10/0073c3bcbd9cb7d71dd5f6b55be8701af42df3e56e911186dfa46fac3a5b9eb7ce7f377dd1d3be6db8977221f8eb333d945216f645cf56f6b688cd484837d255
+  checksum: 10/d3adb9af7d57a9e809a68f404490cf776122acca16e6359a2702c0f462e510e91f9765c07f707b8ab0d91e03bad57328f3256f5082631cefb5393d0394d50fb7
   languageName: node
   linkType: hard
 
@@ -11386,6 +11393,18 @@ __metadata:
     supports-color:
       optional: true
   checksum: 10/37b9f90428b65e59eb47f74435a9fc73dcb46b3550e838c0037ac05910f689bd59fd1d4a51154c1df3471a2f3e5926af8880cbe9f9f3b68beb7b2f8197a26f4a
+  languageName: node
+  linkType: hard
+
+"debug@npm:4.3.4":
+  version: 4.3.4
+  resolution: "debug@npm:4.3.4"
+  dependencies:
+    ms: "npm:2.1.2"
+  peerDependenciesMeta:
+    supports-color:
+      optional: true
+  checksum: 10/0073c3bcbd9cb7d71dd5f6b55be8701af42df3e56e911186dfa46fac3a5b9eb7ce7f377dd1d3be6db8977221f8eb333d945216f645cf56f6b688cd484837d255
   languageName: node
   linkType: hard
 
@@ -12242,9 +12261,9 @@ __metadata:
   linkType: hard
 
 "es-module-lexer@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "es-module-lexer@npm:1.2.1"
-  checksum: 10/4bb92673b94b46e8d2e23ff275696842c83cdabd19eaa84bab60ce37ee036051dedb158746f6d88a58b9d430f881a717c23434e2c8f05d1ba2c69d68e4f05ab4
+  version: 1.5.4
+  resolution: "es-module-lexer@npm:1.5.4"
+  checksum: 10/f29c7c97a58eb17640dcbd71bd6ef754ad4f58f95c3073894573d29dae2cad43ecd2060d97ed5b866dfb7804d5590fb7de1d2c5339a5fceae8bd60b580387fc5
   languageName: node
   linkType: hard
 
@@ -12791,20 +12810,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jsdoc@npm:^39.6.2":
-  version: 39.6.2
-  resolution: "eslint-plugin-jsdoc@npm:39.6.2"
+"eslint-plugin-jsdoc@npm:^41.1.2":
+  version: 41.1.2
+  resolution: "eslint-plugin-jsdoc@npm:41.1.2"
   dependencies:
-    "@es-joy/jsdoccomment": "npm:~0.36.0"
+    "@es-joy/jsdoccomment": "npm:~0.37.0"
+    are-docs-informative: "npm:^0.0.2"
     comment-parser: "npm:1.3.1"
     debug: "npm:^4.3.4"
     escape-string-regexp: "npm:^4.0.0"
-    esquery: "npm:^1.4.0"
+    esquery: "npm:^1.5.0"
     semver: "npm:^7.3.8"
     spdx-expression-parse: "npm:^3.0.1"
   peerDependencies:
     eslint: ^7.0.0 || ^8.0.0
-  checksum: 10/a2ae577ccdd2b8465572bd4d56527733e142ad90004887ad72173212eefc73a111f6e9e39f4378c0a1642ea3106dcb79acbe912672600e8b47535f7a44e90c81
+  checksum: 10/1ebddfd844bea140e811fe27e2d605e974faf20a8642964cae5c3c0188dc7b48db2c727a70a2656a3e0c2568007778abadfceb785b9eea50d5acd262026ac2fa
   languageName: node
   linkType: hard
 
@@ -13015,12 +13035,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esquery@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "esquery@npm:1.4.0"
+"esquery@npm:^1.4.0, esquery@npm:^1.5.0":
+  version: 1.6.0
+  resolution: "esquery@npm:1.6.0"
   dependencies:
     estraverse: "npm:^5.1.0"
-  checksum: 10/25b571ec54f186521819be48cd12643f9f5bdef6be9679161a48dec9cfd478764970a77ef563a516cf1f0f05e7e490e3ff2d514715b86cb8d03329cbb56ae4a8
+  checksum: 10/c587fb8ec9ed83f2b1bc97cf2f6854cc30bf784a79d62ba08c6e358bf22280d69aee12827521cf38e69ae9761d23fb7fde593ce315610f85655c139d99b05e5a
   languageName: node
   linkType: hard
 
@@ -16238,10 +16258,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsdoc-type-pratt-parser@npm:~3.1.0":
-  version: 3.1.0
-  resolution: "jsdoc-type-pratt-parser@npm:3.1.0"
-  checksum: 10/973e86fdbc4af15fa5057c62b1ba314db08e2daf8205fd1b7ae2860598b3acbd937bbba01737c0d473f4354f4c1ea85e231f468569ff25bed5d82125642eb38e
+"jsdoc-type-pratt-parser@npm:~4.0.0":
+  version: 4.0.0
+  resolution: "jsdoc-type-pratt-parser@npm:4.0.0"
+  checksum: 10/a225ab874e56612730dd6c0466ce9f09e8a0e7d85896e9e5f0fa53cfb2e897128a7ec702fd99ed3854b3fbf5a89ad6dce72ca4f4f6149da69f130c2874f06b75
   languageName: node
   linkType: hard
 
@@ -17015,15 +17035,6 @@ __metadata:
   dependencies:
     yallist: "npm:^3.0.2"
   checksum: 10/951d2673dcc64a7fb888bf3d13bc2fdf923faca97d89cdb405ba3dfff77e2b26e5798d405e78fcd7094c9e7b8b4dab2ddc5a4f8a11928af24a207b7c738ca3f8
-  languageName: node
-  linkType: hard
-
-"lru-cache@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "lru-cache@npm:6.0.0"
-  dependencies:
-    yallist: "npm:^4.0.0"
-  checksum: 10/fc1fe2ee205f7c8855fa0f34c1ab0bcf14b6229e35579ec1fd1079f31d6fc8ef8eb6fd17f2f4d99788d7e339f50e047555551ebd5e434dda503696e7c6591825
   languageName: node
   linkType: hard
 
@@ -20359,7 +20370,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-import: "npm:^2.26.0"
     eslint-plugin-jest: "npm:^27.1.5"
-    eslint-plugin-jsdoc: "npm:^39.6.2"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
@@ -20546,13 +20557,11 @@ __metadata:
   linkType: hard
 
 "semver@npm:^7.0.0, semver@npm:^7.1.1, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.3.8, semver@npm:^7.5.3, semver@npm:^7.5.4":
-  version: 7.6.0
-  resolution: "semver@npm:7.6.0"
-  dependencies:
-    lru-cache: "npm:^6.0.0"
+  version: 7.6.3
+  resolution: "semver@npm:7.6.3"
   bin:
     semver: bin/semver.js
-  checksum: 10/1b41018df2d8aca5a1db4729985e8e20428c650daea60fcd16e926e9383217d00f574fab92d79612771884a98d2ee2a1973f49d630829a8d54d6570defe62535
+  checksum: 10/36b1fbe1a2b6f873559cd57b238f1094a053dbfd997ceeb8757d79d1d2089c56d1321b9f1069ce263dc64cfa922fa1d2ad566b39426fe1ac6c723c1487589e10
   languageName: node
   linkType: hard
 
@@ -22080,9 +22089,9 @@ __metadata:
   linkType: hard
 
 "tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.3.1, tslib@npm:^2.4.0":
-  version: 2.5.2
-  resolution: "tslib@npm:2.5.2"
-  checksum: 10/263607d3f0e1913eb7f1f0f02489f47d11717b8662176b60690adceb2ed64529f369998b967a0bed920a5b809300f882a9340d278701d62439e4ce35af0d5a1f
+  version: 2.7.0
+  resolution: "tslib@npm:2.7.0"
+  checksum: 10/9a5b47ddac65874fa011c20ff76db69f97cf90c78cff5934799ab8894a5342db2d17b4e7613a087046bc1d133d21547ddff87ac558abeec31ffa929c88b7fce6
   languageName: node
   linkType: hard
 
