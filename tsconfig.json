@@ -9,7 +9,6 @@
     { "path": "./packages/snaps-rollup-plugin" },
     { "path": "./packages/snaps-rpc-methods" },
     { "path": "./packages/snaps-sdk" },
-    { "path": "./packages/snaps-simulator" },
     { "path": "./packages/snaps-utils" },
     { "path": "./packages/snaps-webpack-plugin" }
   ],
