@@ -64,7 +64,7 @@
     "@types/rimraf": "^3.0.0",
     "@types/yargs": "^17.0.24",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
-    "@typescript-eslint/parser": "^5.42.1",
+    "@typescript-eslint/parser": "^6.21.0",
     "deepmerge": "^4.2.2",
     "depcheck": "^1.4.7",
     "eslint": "^8.27.0",
@@ -84,7 +84,7 @@
     "ts-node": "^10.9.1",
     "tsc-watch": "^4.5.0",
     "tsup": "^8.0.1",
-    "typescript": "~5.0.4"
+    "typescript": "~5.3.3"
   },
   "engines": {
     "node": "^18.16 || >=20"

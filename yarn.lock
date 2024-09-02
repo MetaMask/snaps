@@ -3895,7 +3895,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -3910,7 +3910,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -3934,7 +3934,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -3950,7 +3950,7 @@ __metadata:
     prettier-plugin-packagejson: "npm:^2.2.11"
     rimraf: "npm:^4.1.2"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -3980,7 +3980,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -3996,7 +3996,7 @@ __metadata:
     prettier-plugin-packagejson: "npm:^2.2.11"
     rimraf: "npm:^4.1.2"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -4017,7 +4017,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     babelify: "npm:^10.0.0"
     browserify: "npm:^17.0.0"
     deepmerge: "npm:^4.2.2"
@@ -4034,7 +4034,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -4055,7 +4055,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -4071,7 +4071,7 @@ __metadata:
     prettier-plugin-packagejson: "npm:^2.2.11"
     rimraf: "npm:^4.1.2"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -4095,7 +4095,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -4110,7 +4110,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -4152,7 +4152,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     async-mutex: "npm:^0.4.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
@@ -4168,7 +4168,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -4212,7 +4212,7 @@ __metadata:
     "@types/rimraf": "npm:^3.0.0"
     "@types/yargs": "npm:^17.0.24"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -4233,7 +4233,7 @@ __metadata:
     ts-node: "npm:^10.9.1"
     tsc-watch: "npm:^4.5.0"
     tsup: "npm:^8.0.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
     yargs: "npm:^17.7.1"
   bin:
     create-snap: ./dist/main.js
@@ -4257,7 +4257,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -4273,7 +4273,7 @@ __metadata:
     prettier-plugin-packagejson: "npm:^2.2.11"
     rimraf: "npm:^4.1.2"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -4294,7 +4294,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -4309,7 +4309,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -4330,7 +4330,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -4345,7 +4345,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -4496,7 +4496,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -4511,7 +4511,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -4532,7 +4532,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -4548,7 +4548,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
     webpack: "npm:^5.88.0"
   languageName: unknown
   linkType: soft
@@ -4576,7 +4576,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": "npm:^12.1.0"
     "@metamask/eslint-config-typescript": "npm:^12.1.0"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
     eslint-config-prettier: "npm:^8.5.0"
@@ -4589,7 +4589,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -4611,7 +4611,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -4627,7 +4627,7 @@ __metadata:
     prettier-plugin-packagejson: "npm:^2.2.11"
     rimraf: "npm:^4.1.2"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -4650,7 +4650,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -4665,7 +4665,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -4686,7 +4686,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -4701,7 +4701,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -4722,7 +4722,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -4737,7 +4737,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -4758,7 +4758,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -4773,7 +4773,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
     uqr: "npm:^0.1.2"
   languageName: unknown
   linkType: soft
@@ -4796,7 +4796,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -4811,7 +4811,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -4833,7 +4833,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -4849,7 +4849,7 @@ __metadata:
     prettier-plugin-packagejson: "npm:^2.2.11"
     rimraf: "npm:^4.1.2"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -4864,7 +4864,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": "npm:^12.1.0"
     "@metamask/eslint-config-typescript": "npm:^12.1.0"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
     eslint-config-prettier: "npm:^8.5.0"
@@ -4877,7 +4877,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -4909,7 +4909,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -4924,7 +4924,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -4959,7 +4959,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -4974,7 +4974,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -5008,7 +5008,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -5023,7 +5023,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -5044,7 +5044,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -5059,7 +5059,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -5080,7 +5080,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -5095,7 +5095,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -5116,7 +5116,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -5131,7 +5131,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -5154,7 +5154,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -5169,7 +5169,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -5190,7 +5190,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -5205,7 +5205,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -5317,7 +5317,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -5333,7 +5333,7 @@ __metadata:
     prettier-plugin-packagejson: "npm:^2.2.11"
     rollup: "npm:^2.73.0"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -5381,7 +5381,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -5396,7 +5396,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -5424,7 +5424,7 @@ __metadata:
     "@types/convert-source-map": "npm:^1.5.2"
     "@types/jest": "npm:^27.5.1"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     browserify: "npm:^17.0.0"
     concat-stream: "npm:^2.0.0"
     convert-source-map: "npm:^1.8.0"
@@ -5446,7 +5446,7 @@ __metadata:
     readable-stream: "npm:^3.6.2"
     rimraf: "npm:^4.1.2"
     tsup: "npm:^8.0.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -5482,7 +5482,7 @@ __metadata:
     "@types/serve-handler": "npm:^6.1.0"
     "@types/yargs": "npm:^17.0.24"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     assert: "npm:^2.0.0"
     babelify: "npm:^10.0.0"
     browserify: "npm:^17.0.0"
@@ -5533,7 +5533,7 @@ __metadata:
     tsc-watch: "npm:^4.5.0"
     tsup: "npm:^8.0.1"
     tty-browserify: "npm:^0.0.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
     url: "npm:^0.11.1"
     util: "npm:^0.12.5"
     vm-browserify: "npm:^1.1.2"
@@ -5581,10 +5581,10 @@ __metadata:
     "@types/jest": "npm:^27.5.1"
     "@types/mocha": "npm:^10.0.1"
     "@types/node": "npm:18.14.2"
-    "@types/readable-stream": "npm:^2.3.15"
+    "@types/readable-stream": "npm:^4.0.15"
     "@types/tar-stream": "npm:^3.1.1"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     "@wdio/browser-runner": "npm:^8.19.0"
     "@wdio/cli": "npm:^8.19.0"
     "@wdio/globals": "npm:^8.19.0"
@@ -5624,7 +5624,7 @@ __metadata:
     tar-stream: "npm:^3.1.7"
     ts-node: "npm:^10.9.1"
     tsup: "npm:^8.0.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
     vite: "npm:^4.3.9"
     vite-tsconfig-paths: "npm:^4.0.5"
     wdio-chromedriver-service: "npm:^8.1.1"
@@ -5670,7 +5670,7 @@ __metadata:
     "@types/jest": "npm:^27.5.1"
     "@types/node": "npm:18.14.2"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     "@wdio/browser-runner": "npm:^8.19.0"
     "@wdio/cli": "npm:^8.19.0"
     "@wdio/globals": "npm:^8.19.0"
@@ -5710,7 +5710,7 @@ __metadata:
     terser: "npm:^5.17.7"
     ts-node: "npm:^10.9.1"
     tsup: "npm:^8.0.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
     vite: "npm:^4.3.9"
     vite-tsconfig-paths: "npm:^4.0.5"
     wdio-chromedriver-service: "npm:^8.1.1"
@@ -5754,7 +5754,7 @@ __metadata:
     "@types/mime": "npm:^3.0.0"
     "@types/semver": "npm:^7.5.0"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -5778,7 +5778,7 @@ __metadata:
     redux-saga: "npm:^1.2.3"
     rimraf: "npm:^4.1.2"
     tsup: "npm:^8.0.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -5810,7 +5810,7 @@ __metadata:
     "@swc/jest": "npm:^0.2.26"
     "@types/jest": "npm:^27.5.1"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -5829,7 +5829,7 @@ __metadata:
     rimraf: "npm:^4.1.2"
     rollup: "npm:^2.73.0"
     tsup: "npm:^8.0.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -5856,7 +5856,7 @@ __metadata:
     "@swc/jest": "npm:^0.2.26"
     "@types/node": "npm:18.14.2"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -5873,7 +5873,7 @@ __metadata:
     prettier-plugin-packagejson: "npm:^2.2.11"
     rimraf: "npm:^4.1.2"
     tsup: "npm:^8.0.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -5895,7 +5895,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@types/jest": "npm:^27.5.1"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -5915,7 +5915,7 @@ __metadata:
     rimraf: "npm:^4.1.2"
     ts-jest: "npm:^29.1.1"
     tsup: "npm:^8.0.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -5966,7 +5966,7 @@ __metadata:
     "@types/react-dom": "npm:^18.2.3"
     "@types/webpack-env": "npm:^1.18.1"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     assert: "npm:^2.0.0"
     copy-webpack-plugin: "npm:^11.0.0"
     css-loader: "npm:^6.7.3"
@@ -6022,7 +6022,7 @@ __metadata:
     ts-node: "npm:^10.9.1"
     tsconfig-paths-webpack-plugin: "npm:^4.0.1"
     tsup: "npm:^8.0.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
     webpack: "npm:^5.88.0"
     webpack-cli: "npm:^5.1.4"
     webpack-dev-server: "npm:^4.15.1"
@@ -6064,7 +6064,7 @@ __metadata:
     "@types/semver": "npm:^7.5.0"
     "@types/validate-npm-package-name": "npm:^4.0.0"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     "@wdio/browser-runner": "npm:^8.19.0"
     "@wdio/cli": "npm:^8.19.0"
     "@wdio/globals": "npm:^8.19.0"
@@ -6103,7 +6103,7 @@ __metadata:
     ses: "npm:^1.1.0"
     ts-node: "npm:^10.9.1"
     tsup: "npm:^8.0.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
     validate-npm-package-name: "npm:^5.0.0"
     vite: "npm:^4.3.9"
     vite-tsconfig-paths: "npm:^4.0.5"
@@ -6131,7 +6131,7 @@ __metadata:
     "@types/jest": "npm:^27.5.1"
     "@types/webpack-sources": "npm:^3.2.0"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -6149,7 +6149,7 @@ __metadata:
     prettier-plugin-packagejson: "npm:^2.2.11"
     rimraf: "npm:^4.1.2"
     tsup: "npm:^8.0.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
     webpack: "npm:^5.88.0"
     webpack-sources: "npm:^3.2.3"
   languageName: unknown
@@ -6215,7 +6215,7 @@ __metadata:
     "@types/node": "npm:18.14.2"
     "@types/webpack-env": "npm:^1.18.1"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     bootstrap: "npm:^5.2.2"
     copy-webpack-plugin: "npm:^11.0.0"
     cross-env: "npm:^7.0.3"
@@ -6248,7 +6248,7 @@ __metadata:
     terser-webpack-plugin: "npm:^5.3.9"
     ts-node: "npm:^10.9.1"
     tsconfig-paths-webpack-plugin: "npm:^4.0.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
     webpack: "npm:^5.88.0"
     webpack-cli: "npm:^5.1.4"
     webpack-dev-server: "npm:^4.15.1"
@@ -6306,7 +6306,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     assemblyscript: "npm:^0.27.5"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
@@ -6322,7 +6322,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
 
@@ -6344,7 +6344,7 @@ __metadata:
     "@swc/jest": "npm:^0.2.26"
     "@types/webpack-env": "npm:^1.18.1"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -6361,7 +6361,7 @@ __metadata:
     swc-loader: "npm:^0.2.3"
     terser-webpack-plugin: "npm:^5.3.9"
     ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
     webpack: "npm:^5.88.0"
     webpack-cli: "npm:^5.1.4"
   languageName: unknown
@@ -7939,13 +7939,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/readable-stream@npm:^2.3.15":
-  version: 2.3.15
-  resolution: "@types/readable-stream@npm:2.3.15"
+"@types/readable-stream@npm:^4.0.15":
+  version: 4.0.15
+  resolution: "@types/readable-stream@npm:4.0.15"
   dependencies:
     "@types/node": "npm:*"
     safe-buffer: "npm:~5.1.1"
-  checksum: 10/49b51e56f9cc401cb31c72973a7565ef4208d7e2465a789843104ec0fcbe609727b0b5bf4682fbec773c7f7bd14858e5dba739fd85e14d8a85e41185d65984d3
+  checksum: 10/33a273dcd74bec84f0d7d507c0d719487f9d0b4f48cd9e3fd2b0c6e848f23ce0c6cac1250be03c94df29e78cfd29940aae80ed2a4407fe4188eb959d15b32646
   languageName: node
   linkType: hard
 
@@ -8176,20 +8176,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^5.42.1":
-  version: 5.43.0
-  resolution: "@typescript-eslint/parser@npm:5.43.0"
+"@typescript-eslint/parser@npm:^6.21.0":
+  version: 6.21.0
+  resolution: "@typescript-eslint/parser@npm:6.21.0"
   dependencies:
-    "@typescript-eslint/scope-manager": "npm:5.43.0"
-    "@typescript-eslint/types": "npm:5.43.0"
-    "@typescript-eslint/typescript-estree": "npm:5.43.0"
+    "@typescript-eslint/scope-manager": "npm:6.21.0"
+    "@typescript-eslint/types": "npm:6.21.0"
+    "@typescript-eslint/typescript-estree": "npm:6.21.0"
+    "@typescript-eslint/visitor-keys": "npm:6.21.0"
     debug: "npm:^4.3.4"
   peerDependencies:
-    eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
+    eslint: ^7.0.0 || ^8.0.0
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/7b2ad41163910691e54cb6330fcb7436b0c0a74ddbfc6fdeb160a96577fe00f0922c0eec4aabb1b7408c640c6c9de8a3d08fe102232c6326beca0992bd142e0b
+  checksum: 10/4d51cdbc170e72275efc5ef5fce48a81ec431e4edde8374f4d0213d8d370a06823e1a61ae31d502a5f1b0d1f48fc4d29a1b1b5c2dcf809d66d3872ccf6e46ac7
   languageName: node
   linkType: hard
 
@@ -8200,6 +8201,16 @@ __metadata:
     "@typescript-eslint/types": "npm:5.43.0"
     "@typescript-eslint/visitor-keys": "npm:5.43.0"
   checksum: 10/2072d49f62269dd2c337d803e0aa6a15138598b9fac18757b056f18334ad7a52686b6dec9b18f27c824826ec616632938546fb4667ad707234f7525722dd494c
+  languageName: node
+  linkType: hard
+
+"@typescript-eslint/scope-manager@npm:6.21.0":
+  version: 6.21.0
+  resolution: "@typescript-eslint/scope-manager@npm:6.21.0"
+  dependencies:
+    "@typescript-eslint/types": "npm:6.21.0"
+    "@typescript-eslint/visitor-keys": "npm:6.21.0"
+  checksum: 10/fe91ac52ca8e09356a71dc1a2f2c326480f3cccfec6b2b6d9154c1a90651ab8ea270b07c67df5678956c3bbf0bbe7113ab68f68f21b20912ea528b1214197395
   languageName: node
   linkType: hard
 
@@ -8227,6 +8238,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@typescript-eslint/types@npm:6.21.0":
+  version: 6.21.0
+  resolution: "@typescript-eslint/types@npm:6.21.0"
+  checksum: 10/e26da86d6f36ca5b6ef6322619f8ec55aabcd7d43c840c977ae13ae2c964c3091fc92eb33730d8be08927c9de38466c5323e78bfb270a9ff1d3611fe821046c5
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/typescript-estree@npm:5.43.0":
   version: 5.43.0
   resolution: "@typescript-eslint/typescript-estree@npm:5.43.0"
@@ -8242,6 +8260,25 @@ __metadata:
     typescript:
       optional: true
   checksum: 10/f8458fee4fbad0a0ed6c972d1652ae22174860113e1085112b2250a7e8248cd0f40df9e7357ee3a3e22831334e135431c9755b449e212cd4cdc47c20b1378a3e
+  languageName: node
+  linkType: hard
+
+"@typescript-eslint/typescript-estree@npm:6.21.0":
+  version: 6.21.0
+  resolution: "@typescript-eslint/typescript-estree@npm:6.21.0"
+  dependencies:
+    "@typescript-eslint/types": "npm:6.21.0"
+    "@typescript-eslint/visitor-keys": "npm:6.21.0"
+    debug: "npm:^4.3.4"
+    globby: "npm:^11.1.0"
+    is-glob: "npm:^4.0.3"
+    minimatch: "npm:9.0.3"
+    semver: "npm:^7.5.4"
+    ts-api-utils: "npm:^1.0.1"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10/b32fa35fca2a229e0f5f06793e5359ff9269f63e9705e858df95d55ca2cd7fdb5b3e75b284095a992c48c5fc46a1431a1a4b6747ede2dd08929dc1cbacc589b8
   languageName: node
   linkType: hard
 
@@ -8270,6 +8307,16 @@ __metadata:
     "@typescript-eslint/types": "npm:5.43.0"
     eslint-visitor-keys: "npm:^3.3.0"
   checksum: 10/4ba65471c77b1cd554db98219f38526d680cc0f2d23ca96d9845bc3fa7e5bbf15c0c61c4da55c9efa8a60597a16e2f73867793349684d5ad82a81035bcb3d65f
+  languageName: node
+  linkType: hard
+
+"@typescript-eslint/visitor-keys@npm:6.21.0":
+  version: 6.21.0
+  resolution: "@typescript-eslint/visitor-keys@npm:6.21.0"
+  dependencies:
+    "@typescript-eslint/types": "npm:6.21.0"
+    eslint-visitor-keys: "npm:^3.4.1"
+  checksum: 10/30422cdc1e2ffad203df40351a031254b272f9c6f2b7e02e9bfa39e3fc2c7b1c6130333b0057412968deda17a3a68a578a78929a8139c6acef44d9d841dc72e1
   languageName: node
   linkType: hard
 
@@ -10486,9 +10533,9 @@ __metadata:
   linkType: hard
 
 "cjs-module-lexer@npm:^1.0.0":
-  version: 1.2.2
-  resolution: "cjs-module-lexer@npm:1.2.2"
-  checksum: 10/f80f84bfdcc53379cc18e25ea3c0cdb4595c142b8e28df304f5c88f38202e1bccf13e845401593656781f79fb43273e1d402d6187d0eeee8dca5ddecee1dcad4
+  version: 1.4.0
+  resolution: "cjs-module-lexer@npm:1.4.0"
+  checksum: 10/b041096749792526120d8b8756929f8ef5dd4596502a0e1013f857e3027acd6091915fea77037921d70ee1a99988a100d994d3d3c2e323b04dd4c5ffd516cf13
   languageName: node
   linkType: hard
 
@@ -17333,6 +17380,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"minimatch@npm:9.0.3, minimatch@npm:^9.0.0, minimatch@npm:^9.0.1":
+  version: 9.0.3
+  resolution: "minimatch@npm:9.0.3"
+  dependencies:
+    brace-expansion: "npm:^2.0.1"
+  checksum: 10/c81b47d28153e77521877649f4bab48348d10938df9e8147a58111fe00ef89559a2938de9f6632910c4f7bf7bb5cd81191a546167e58d357f0cfb1e18cecc1c5
+  languageName: node
+  linkType: hard
+
 "minimatch@npm:^5.0.1, minimatch@npm:^5.1.0":
   version: 5.1.6
   resolution: "minimatch@npm:5.1.6"
@@ -17348,15 +17404,6 @@ __metadata:
   dependencies:
     brace-expansion: "npm:^2.0.1"
   checksum: 10/0046ba1161ac6414bde1b07c440792ebcdb2ed93e6714c85c73974332b709b7e692801550bc9da22028a8613407b3f13861e17dd0dd44f4babdeacd44950430b
-  languageName: node
-  linkType: hard
-
-"minimatch@npm:^9.0.0, minimatch@npm:^9.0.1":
-  version: 9.0.1
-  resolution: "minimatch@npm:9.0.1"
-  dependencies:
-    brace-expansion: "npm:^2.0.1"
-  checksum: 10/b4e98f4dc740dcf33999a99af23ae6e5e1c47632f296dc95cb649a282150f92378d41434bf64af4ea2e5975255a757d031c3bf014bad9214544ac57d97f3ba63
   languageName: node
   linkType: hard
 
@@ -20305,7 +20352,7 @@ __metadata:
     "@types/jest": "npm:^27.5.1"
     "@types/node": "npm:18.14.2"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
-    "@typescript-eslint/parser": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
     chromedriver: "npm:^127.0.0"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -20328,8 +20375,7 @@ __metadata:
     semver: "npm:^7.5.4"
     simple-git-hooks: "npm:^2.7.0"
     ts-node: "npm:^10.9.1"
-    tsup: "npm:^8.0.1"
-    typescript: "npm:~5.0.4"
+    typescript: "npm:~5.3.3"
     vite: "npm:^4.3.9"
   languageName: unknown
   linkType: soft
@@ -21866,6 +21912,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ts-api-utils@npm:^1.0.1":
+  version: 1.3.0
+  resolution: "ts-api-utils@npm:1.3.0"
+  peerDependencies:
+    typescript: ">=4.2.0"
+  checksum: 10/3ee44faa24410cd649b5c864e068d438aa437ef64e9e4a66a41646a6d3024d3097a695eeb3fb26ee364705d3cb9653a65756d009e6a53badb6066a5f447bf7ed
+  languageName: node
+  linkType: hard
+
 "ts-interface-checker@npm:^0.1.9":
   version: 0.1.13
   resolution: "ts-interface-checker@npm:0.1.13"
@@ -22243,23 +22298,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:~5.0.4":
-  version: 5.0.4
-  resolution: "typescript@npm:5.0.4"
+"typescript@npm:~5.3.3":
+  version: 5.3.3
+  resolution: "typescript@npm:5.3.3"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10/e5c3adff09a138c0e27d13b5bb2b106ca17a162ffa945d66161669c265c65436309c5817358a2af1abb69d07440d358f8c1ed7cbb63a2c8680e19b9c268fe4ef
+  checksum: 10/6e4e6a14a50c222b3d14d4ea2f729e79f972fa536ac1522b91202a9a65af3605c2928c4a790a4a50aa13694d461c479ba92cedaeb1e7b190aadaa4e4b96b8e18
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A~5.0.4#optional!builtin<compat/typescript>":
-  version: 5.0.4
-  resolution: "typescript@patch:typescript@npm%3A5.0.4#optional!builtin<compat/typescript>::version=5.0.4&hash=b5f058"
+"typescript@patch:typescript@npm%3A~5.3.3#optional!builtin<compat/typescript>":
+  version: 5.3.3
+  resolution: "typescript@patch:typescript@npm%3A5.3.3#optional!builtin<compat/typescript>::version=5.3.3&hash=e012d7"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10/b1b62606c7ec75efe9edc61e195d9e69f0440cac1bcd111dfa864f839255f0d9a7b79869f2823559c608826fc0c9894d2917ae4063e0aa06f5d0784a35170497
+  checksum: 10/c93786fcc9a70718ba1e3819bab56064ead5817004d1b8186f8ca66165f3a2d0100fee91fa64c840dcd45f994ca5d615d8e1f566d39a7470fc1e014dbb4cf15d
   languageName: node
   linkType: hard
 

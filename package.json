@@ -81,7 +81,7 @@
     "@types/jest": "^27.5.1",
     "@types/node": "18.14.2",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
-    "@typescript-eslint/parser": "^5.42.1",
+    "@typescript-eslint/parser": "^6.21.0",
     "chromedriver": "^127.0.0",
     "depcheck": "^1.4.7",
     "eslint": "^8.27.0",
@@ -104,8 +104,7 @@
     "semver": "^7.5.4",
     "simple-git-hooks": "^2.7.0",
     "ts-node": "^10.9.1",
-    "tsup": "^8.0.1",
-    "typescript": "~5.0.4",
+    "typescript": "~5.3.3",
     "vite": "^4.3.9"
   },
   "engines": {

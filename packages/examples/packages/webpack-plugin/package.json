@@ -46,7 +46,7 @@
     "@swc/jest": "^0.2.26",
     "@types/webpack-env": "^1.18.1",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
-    "@typescript-eslint/parser": "^5.42.1",
+    "@typescript-eslint/parser": "^6.21.0",
     "deepmerge": "^4.2.2",
     "depcheck": "^1.4.7",
     "eslint": "^8.27.0",
@@ -63,7 +63,7 @@
     "swc-loader": "^0.2.3",
     "terser-webpack-plugin": "^5.3.9",
     "ts-node": "^10.9.1",
-    "typescript": "~5.0.4",
+    "typescript": "~5.3.3",
     "webpack": "^5.88.0",
     "webpack-cli": "^5.1.4"
   },
