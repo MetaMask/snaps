@@ -176,8 +176,8 @@ export function getValidatedParams(params: unknown): NotifyParams {
   const isNotString = !message || typeof message !== 'string';
   // Set to the max message length on a Mac notification for now.
   if (
-    isNotString ||
-    (type === NotificationType.Native && message.length >= 50)
+    type === NotificationType.Native &&
+    (isNotString || message.length >= 50)
   ) {
     throw rpcErrors.invalidParams({
       message:
@@ -186,8 +186,8 @@ export function getValidatedParams(params: unknown): NotifyParams {
   }
 
   if (
-    isNotString ||
-    (type === NotificationType.InApp && message.length >= 500)
+    type === NotificationType.InApp &&
+    (isNotString || message.length >= 500)
   ) {
     throw rpcErrors.invalidParams({
       message:
