@@ -45,6 +45,7 @@ class Context implements ValidatorContext {
  *
  * @param files - All files required to run a snap.
  * @param rules - Validators to run.
+ * @returns The validation results.
  */
 // TODO(ritave): snap.manifest.json and package.json should check
 //               json parsing as well instead of assuming it's

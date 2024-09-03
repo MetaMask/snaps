@@ -58,7 +58,7 @@
     "@types/convert-source-map": "^1.5.2",
     "@types/jest": "^27.5.1",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
-    "@typescript-eslint/parser": "^5.42.1",
+    "@typescript-eslint/parser": "^6.21.0",
     "browserify": "^17.0.0",
     "concat-stream": "^2.0.0",
     "deepmerge": "^4.2.2",
@@ -67,7 +67,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jest": "^27.1.5",
-    "eslint-plugin-jsdoc": "^39.6.2",
+    "eslint-plugin-jsdoc": "^41.1.2",
     "eslint-plugin-n": "^15.7.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-promise": "^6.1.1",
@@ -78,7 +78,7 @@
     "prettier-plugin-packagejson": "^2.2.11",
     "rimraf": "^4.1.2",
     "tsup": "^8.0.1",
-    "typescript": "~5.0.4"
+    "typescript": "~5.3.3"
   },
   "engines": {
     "node": "^18.16 || >=20"

@@ -22,6 +22,7 @@ import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsonSizeUnsafe, validateJsxLinks } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
 import { assert } from '@metamask/utils';
+import { castDraft } from 'immer';
 import { nanoid } from 'nanoid';
 
 import {
@@ -199,7 +200,7 @@ export class SnapInterfaceController extends BaseController<
       // possibly infinite.
       draftState.interfaces[id] = {
         snapId,
-        content: element,
+        content: castDraft(element),
         state: componentState,
         context: context ?? null,
       };
@@ -242,7 +243,7 @@ export class SnapInterfaceController extends BaseController<
 
     this.update((draftState) => {
       draftState.interfaces[id].state = newState;
-      draftState.interfaces[id].content = element;
+      draftState.interfaces[id].content = castDraft(element);
     });
   }
 

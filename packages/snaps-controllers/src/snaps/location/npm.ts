@@ -501,5 +501,5 @@ function createTarballStream(
     entryStream.on('end', () => next());
     return entryStream.resume();
   });
-  return extractStream;
+  return extractStream as Writable;
 }

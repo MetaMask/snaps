@@ -200,6 +200,7 @@ type GetNodeArgs = {
  * derivation.
  * @param options.path - The derivation path to use as array, starting with an
  * "m" as the first item.
+ * @returns The `key-tree` SLIP-10 node.
  */
 export async function getNode({
   curve,
