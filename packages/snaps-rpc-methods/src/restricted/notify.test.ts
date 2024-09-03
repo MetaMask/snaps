@@ -229,7 +229,7 @@ describe('snap_notify', () => {
       expect(() =>
         getValidatedParams({ type: NotificationType.InApp, message: '' }),
       ).toThrow(
-        'Must specify a non-empty string "message" less than 50 characters long.',
+        'Must specify a non-empty string "message" less than 500 characters long.',
       );
     });
 
@@ -237,19 +237,31 @@ describe('snap_notify', () => {
       expect(() =>
         getValidatedParams({ type: NotificationType.InApp, message: 123 }),
       ).toThrow(
-        'Must specify a non-empty string "message" less than 50 characters long.',
+        'Must specify a non-empty string "message" less than 500 characters long.',
       );
     });
 
-    it('throws an error if the message is larger than 50 characters', () => {
+    it('throws an error if the message is larger than or equal to 50 characters for native notifications', () => {
       expect(() =>
         getValidatedParams({
-          type: NotificationType.InApp,
+          type: NotificationType.Native,
           message:
             'test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg',
         }),
       ).toThrow(
         'Must specify a non-empty string "message" less than 50 characters long.',
+      );
+    });
+
+    it('throws an error if the message is larger than or equal to 500 characters for in app notifications', () => {
+      expect(() =>
+        getValidatedParams({
+          type: NotificationType.InApp,
+          message:
+            'test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg',
+        }),
+      ).toThrow(
+        'Must specify a non-empty string "message" less than 500 characters long.',
       );
     });
 

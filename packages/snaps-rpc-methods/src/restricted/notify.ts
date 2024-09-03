@@ -173,11 +173,25 @@ export function getValidatedParams(params: unknown): NotifyParams {
     });
   }
 
+  const isNotString = !message || typeof message !== 'string';
   // Set to the max message length on a Mac notification for now.
-  if (!message || typeof message !== 'string' || message.length >= 50) {
+  if (
+    type === NotificationType.Native &&
+    (isNotString || message.length >= 50)
+  ) {
     throw rpcErrors.invalidParams({
       message:
         'Must specify a non-empty string "message" less than 50 characters long.',
+    });
+  }
+
+  if (
+    type === NotificationType.InApp &&
+    (isNotString || message.length >= 500)
+  ) {
+    throw rpcErrors.invalidParams({
+      message:
+        'Must specify a non-empty string "message" less than 500 characters long.',
     });
   }
 
