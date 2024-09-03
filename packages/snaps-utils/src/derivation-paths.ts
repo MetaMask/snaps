@@ -46,6 +46,16 @@ export const SNAPS_DERIVATION_PATHS: SnapsDerivationPath[] = [
     name: 'Bitcoin Testnet Native SegWit',
   },
   {
+    path: ['m', `86'`, `0'`],
+    curve: 'secp256k1',
+    name: 'Bitcoin Taproot',
+  },
+  {
+    path: ['m', `86'`, `1'`],
+    curve: 'secp256k1',
+    name: 'Bitcoin Testnet Taproot',
+  },
+  {
     path: ['m', `44'`, `501'`],
     curve: 'ed25519',
     name: 'Solana',
