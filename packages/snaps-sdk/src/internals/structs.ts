@@ -90,16 +90,23 @@ export function enumValue<Type extends string>(
 export function typedUnion<Head extends AnyStruct, Tail extends AnyStruct[]>(
   structs: [head: Head, ...tail: Tail],
 ): Struct<Infer<Head> | InferStructTuple<Tail>[number], null> {
+  const flatStructs = structs
+    .map((struct) =>
+      struct.type === 'union' && Array.isArray(struct.schema)
+        ? struct.schema
+        : struct,
+    )
+    .flat(Infinity);
   return new Struct({
     type: 'union',
-    schema: structs,
+    schema: flatStructs,
     *entries(value, context) {
       if (!isPlainObject(value) || !hasProperty(value, 'type')) {
         return;
       }
 
       const { type } = value;
-      const struct = structs.find(({ schema }) => is(type, schema.type));
+      const struct = flatStructs.find(({ schema }) => is(type, schema.type));
 
       if (!struct) {
         return;
@@ -110,7 +117,7 @@ export function typedUnion<Head extends AnyStruct, Tail extends AnyStruct[]>(
       }
     },
     validator(value, context) {
-      const types = structs.map(({ schema }) => schema.type.type);
+      const types = flatStructs.map(({ schema }) => schema.type.type);
 
       if (
         !isPlainObject(value) ||
@@ -124,7 +131,7 @@ export function typedUnion<Head extends AnyStruct, Tail extends AnyStruct[]>(
 
       const { type } = value;
 
-      const struct = structs.find(({ schema }) => is(type, schema.type));
+      const struct = flatStructs.find(({ schema }) => is(type, schema.type));
 
       if (struct) {
         // This only validates the root of the struct, entries does the rest of the work.
