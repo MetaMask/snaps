@@ -159,6 +159,7 @@ export async function checkManifest(
  *
  * @param results - Results of the initial run of validation.
  * @param rules - Optional list of rules to run the fixes with.
+ * @returns The updated manifest and whether it was updated.
  */
 export async function runFixes(
   results: ValidatorResults,

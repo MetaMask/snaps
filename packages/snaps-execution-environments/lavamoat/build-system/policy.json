@@ -1899,14 +1899,6 @@
       "globals": {
         "console.error": true,
         "process": true
-      },
-      "packages": {
-        "depcheck>semver>lru-cache": true
-      }
-    },
-    "depcheck>semver>lru-cache": {
-      "packages": {
-        "depcheck>semver>lru-cache>yallist": true
       }
     },
     "eslint-plugin-import>array-includes>get-intrinsic": {
@@ -2399,7 +2391,7 @@
       "builtin": {
         "tty.isatty": true,
         "util.deprecate": true,
-        "util.format": true,
+        "util.formatWithOptions": true,
         "util.inspect": true
       },
       "globals": {

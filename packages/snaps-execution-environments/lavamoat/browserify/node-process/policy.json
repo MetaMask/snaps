@@ -201,14 +201,6 @@
       "globals": {
         "console.error": true,
         "process": true
-      },
-      "packages": {
-        "depcheck>semver>lru-cache": true
-      }
-    },
-    "depcheck>semver>lru-cache": {
-      "packages": {
-        "depcheck>semver>lru-cache>yallist": true
       }
     },
     "istanbul-lib-report>supports-color>has-flag": {
@@ -251,7 +243,7 @@
       "builtin": {
         "tty.isatty": true,
         "util.deprecate": true,
-        "util.format": true,
+        "util.formatWithOptions": true,
         "util.inspect": true
       },
       "globals": {

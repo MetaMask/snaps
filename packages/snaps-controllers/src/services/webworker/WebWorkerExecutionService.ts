@@ -70,6 +70,7 @@ export class WebWorkerExecutionService extends AbstractExecutionService<string> 
    * in a stream specific to the job.
    *
    * @param jobId - The job ID.
+   * @returns An object with the worker ID and stream.
    */
   protected async initEnvStream(jobId: string) {
     // Lazily create the worker pool document.

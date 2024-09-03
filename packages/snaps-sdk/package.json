@@ -63,7 +63,7 @@
     "@metamask/providers": "^17.1.2",
     "@metamask/rpc-errors": "^6.3.1",
     "@metamask/superstruct": "^3.1.0",
-    "@metamask/utils": "^9.1.0"
+    "@metamask/utils": "^9.2.1"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^3.0.4",
@@ -75,14 +75,14 @@
     "@swc/core": "1.3.78",
     "@types/jest": "^27.5.1",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
-    "@typescript-eslint/parser": "^5.42.1",
+    "@typescript-eslint/parser": "^6.21.0",
     "deepmerge": "^4.2.2",
     "depcheck": "^1.4.7",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jest": "^27.1.5",
-    "eslint-plugin-jsdoc": "^39.6.2",
+    "eslint-plugin-jsdoc": "^41.1.2",
     "eslint-plugin-n": "^15.7.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-promise": "^6.1.1",
@@ -95,7 +95,7 @@
     "rimraf": "^4.1.2",
     "ts-jest": "^29.1.1",
     "tsup": "^8.0.1",
-    "typescript": "~5.0.4"
+    "typescript": "~5.3.3"
   },
   "engines": {
     "node": "^18.16 || >=20"

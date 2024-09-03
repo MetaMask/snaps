@@ -20,6 +20,7 @@ import {
   refine,
 } from '@metamask/superstruct';
 import {
+  CaipAccountIdStruct,
   hasProperty,
   HexChecksumAddressStruct,
   isPlainObject,
@@ -315,7 +316,7 @@ const FIELD_CHILDREN_ARRAY = [
  * A union of the allowed children of the Field component.
  * This is mainly used in the simulator for validation purposes.
  */
-export const FieldChildUnionStruct = nullUnion([
+export const FieldChildUnionStruct = typedUnion([
   ...FIELD_CHILDREN_ARRAY,
   ...BUTTON_INPUT,
 ]);
@@ -379,16 +380,15 @@ export const ItalicStruct: Describe<ItalicElement> = element('Italic', {
   ]),
 });
 
-export const FormattingStruct: Describe<StandardFormattingElement> = nullUnion([
-  BoldStruct,
-  ItalicStruct,
-]);
+export const FormattingStruct: Describe<StandardFormattingElement> = typedUnion(
+  [BoldStruct, ItalicStruct],
+);
 
 /**
  * A struct for the {@link AddressElement} type.
  */
 export const AddressStruct: Describe<AddressElement> = element('Address', {
-  address: HexChecksumAddressStruct,
+  address: nullUnion([HexChecksumAddressStruct, CaipAccountIdStruct]),
 });
 
 export const BoxChildrenStruct = children(
@@ -640,7 +640,7 @@ export const BoxChildStruct = typedUnion([
  * For now, the allowed JSX elements at the root are the same as the allowed
  * children of the Box component.
  */
-export const RootJSXElementStruct = nullUnion([
+export const RootJSXElementStruct = typedUnion([
   BoxChildStruct,
   ContainerStruct,
 ]);

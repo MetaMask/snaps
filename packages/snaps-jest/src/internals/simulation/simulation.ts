@@ -130,6 +130,7 @@ export type MiddlewareHooks = {
  * execution service, if any. This should only include options specific to the
  * provided execution service.
  * @param options.options - The simulation options.
+ * @returns The installed Snap object.
  * @template Service - The type of the execution service.
  */
 export async function handleInstallSnap<

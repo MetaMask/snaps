@@ -93,6 +93,7 @@ export class ProxySnapExecutor {
    * Create a new iframe and set up a stream to communicate with it.
    *
    * @param jobId - The job ID.
+   * @returns The executor job object.
    */
   async #initializeJob(jobId: string): Promise<ExecutorJob> {
     const window = await createWindow(this.#frameUrl, jobId);

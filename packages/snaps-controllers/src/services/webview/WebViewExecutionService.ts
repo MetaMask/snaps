@@ -32,6 +32,7 @@ export class WebViewExecutionService extends ProxyExecutionService {
    * in a stream specific to the job.
    *
    * @param jobId - The job ID.
+   * @returns An object with the worker ID and stream.
    */
   protected async initEnvStream(jobId: string) {
     // Ensure that the WebView has been loaded before we proceed.
