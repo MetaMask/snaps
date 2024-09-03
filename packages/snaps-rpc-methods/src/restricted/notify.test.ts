@@ -229,7 +229,7 @@ describe('snap_notify', () => {
       expect(() =>
         getValidatedParams({ type: NotificationType.InApp, message: '' }),
       ).toThrow(
-        'Must specify a non-empty string "message" less than 50 characters long.',
+        'Must specify a non-empty string "message" less than 500 characters long.',
       );
     });
 
@@ -237,7 +237,7 @@ describe('snap_notify', () => {
       expect(() =>
         getValidatedParams({ type: NotificationType.InApp, message: 123 }),
       ).toThrow(
-        'Must specify a non-empty string "message" less than 50 characters long.',
+        'Must specify a non-empty string "message" less than 500 characters long.',
       );
     });
 
