@@ -49,7 +49,7 @@
         "@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "depcheck>semver": true,
-        "tsup>debug": true
+        "eslint>debug": true
       }
     },
     "@metamask/providers": {
@@ -130,7 +130,7 @@
         "@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "depcheck>semver": true,
-        "tsup>debug": true
+        "eslint>debug": true
       }
     },
     "@metamask/utils>@noble/hashes": {
@@ -183,6 +183,19 @@
         "browserify>process": true
       }
     },
+    "eslint>debug": {
+      "globals": {
+        "console": true,
+        "document": true,
+        "localStorage": true,
+        "navigator": true,
+        "process": true
+      },
+      "packages": {
+        "browserify>process": true,
+        "eslint>debug>ms": true
+      }
+    },
     "readable-stream": {
       "packages": {
         "browserify>browser-resolve": true,
@@ -199,19 +212,6 @@
         "console.trace": true,
         "console.warn": true,
         "localStorage": true
-      }
-    },
-    "tsup>debug": {
-      "globals": {
-        "console": true,
-        "document": true,
-        "localStorage": true,
-        "navigator": true,
-        "process": true
-      },
-      "packages": {
-        "browserify>process": true,
-        "tsup>debug>ms": true
       }
     }
   }
