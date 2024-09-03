@@ -15,6 +15,7 @@ import { getMessage } from './locales';
  * @param params.request - The JSON-RPC request object.
  * @see https://docs.metamask.io/snaps/reference/exports/#onrpcrequest
  * @see https://docs.metamask.io/snaps/reference/rpc-api/#wallet_invokesnap
+ * @returns The response to send back to the dapp.
  */
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {

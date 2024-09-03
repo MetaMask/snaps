@@ -32,6 +32,7 @@ export type MiscMiddlewareHooks = {
  * @param _next - The json-rpc-engine middleware next handler.
  * @param end - The json-rpc-engine middleware end handler.
  * @param hooks - Any hooks required by this handler.
+ * @returns The JSON-RPC response.
  */
 async function getAccountsHandler(
   _request: JsonRpcRequest,
@@ -64,6 +65,7 @@ async function getAccountsHandler(
  * @param response - The outgoing JSON-RPC response, modified to return the result.
  * @param _next - The json-rpc-engine middleware next handler.
  * @param end - The json-rpc-engine middleware end handler.
+ * @returns The JSON-RPC response.
  */
 async function getProviderStateHandler(
   _request: JsonRpcRequest,

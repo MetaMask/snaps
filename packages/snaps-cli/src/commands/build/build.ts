@@ -57,6 +57,7 @@ const steps: Steps<BuildContext> = [
  * This creates the destination directory if it doesn't exist.
  *
  * @param config - The config object.
+ * @returns Nothing.
  */
 export async function buildHandler(config: ProcessedConfig): Promise<void> {
   return await executeSteps(steps, {

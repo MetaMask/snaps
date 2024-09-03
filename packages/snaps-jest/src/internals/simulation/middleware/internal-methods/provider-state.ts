@@ -18,6 +18,7 @@ import type {
  * result.
  * @param _next - The `json-rpc-engine` middleware next handler.
  * @param end - The `json-rpc-engine` middleware end handler.
+ * @returns The JSON-RPC response.
  */
 export async function getProviderStateHandler(
   _request: JsonRpcRequest,
