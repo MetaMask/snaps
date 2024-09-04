@@ -1,7 +1,20 @@
-import { is, validate } from '@metamask/superstruct';
+import {
+  create,
+  defaulted,
+  is,
+  object,
+  string,
+  validate,
+} from '@metamask/superstruct';
 
-import { Text } from '../jsx';
-import { BoxStruct, FieldStruct, TextStruct } from '../jsx/validation';
+import type { GenericSnapElement, BoxElement } from '../jsx';
+import { Footer, Icon, Text, Button, Box } from '../jsx';
+import {
+  BoxStruct,
+  FieldStruct,
+  FooterStruct,
+  TextStruct,
+} from '../jsx/validation';
 import { enumValue, literal, typedUnion, union } from './structs';
 
 describe('enumValue', () => {
@@ -53,7 +66,7 @@ describe('typedUnion', () => {
     const result = validate(Text({}), unionStruct);
 
     expect(result[0]?.message).toBe(
-      'At path: props.children -- Expected the value to satisfy a union of `union | array`, but received: undefined',
+      'At path: props.children -- Expected type to be one of: "Bold", "Italic", "Link", "Icon", but received: undefined',
     );
   });
 
@@ -62,7 +75,52 @@ describe('typedUnion', () => {
     const result = validate(Text({}), nestedUnionStruct);
 
     expect(result[0]?.message).toBe(
-      'At path: props.children -- Expected the value to satisfy a union of `union | array`, but received: undefined',
+      'At path: props.children -- Expected type to be one of: "Bold", "Italic", "Link", "Icon", but received: undefined',
+    );
+  });
+
+  it('validates refined elements', () => {
+    const refinedUnionStruct = typedUnion([BoxStruct, FooterStruct]);
+    const result = validate(
+      Footer({ children: Button({ children: Icon({ name: 'wallet' }) }) }),
+      refinedUnionStruct,
+    );
+
+    expect(result[0]?.message).toBe(
+      'At path: props.children -- Footer buttons may only contain text.',
+    );
+  });
+
+  it('supports coercion', () => {
+    const coercedStruct = typedUnion([
+      BoxStruct,
+      defaulted(object({ type: literal('Custom'), key: string() }), {
+        type: 'Custom',
+        key: 'foo',
+      }),
+    ]);
+
+    const result = create(
+      { type: 'Custom' },
+      coercedStruct,
+    ) as GenericSnapElement;
+    expect(result.key).toBe('foo');
+
+    const result2 = create(
+      Box({ children: Text({ children: 'foo' }) }),
+      coercedStruct,
+    ) as BoxElement;
+    expect(result2.props.children).toStrictEqual({
+      type: 'Text',
+      key: null,
+      props: { children: 'foo' },
+    });
+
+    expect(() => create(Button({ children: 'foo' }), coercedStruct)).toThrow(
+      'Expected type to be one of: "Box", "Custom", but received: "Button"',
+    );
+    expect(() => create('foo', coercedStruct)).toThrow(
+      'Expected type to be one of: "Box", "Custom", but received: undefined',
     );
   });
 

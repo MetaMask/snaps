@@ -28,7 +28,13 @@ import {
 } from '@metamask/utils';
 
 import type { Describe } from '../internals';
-import { literal, nullUnion, svg, typedUnion } from '../internals';
+import {
+  literal,
+  nullUnion,
+  selectiveUnion,
+  svg,
+  typedUnion,
+} from '../internals';
 import type { EmptyObject } from '../types';
 import type {
   GenericSnapElement,
@@ -106,10 +112,15 @@ export const ElementStruct: Describe<GenericSnapElement> = object({
 function nestable<Type, Schema>(
   struct: Struct<Type, Schema>,
 ): Struct<Nestable<Type>, any> {
-  const nestableStruct: Struct<Nestable<Type>> = nullUnion([
-    struct,
-    array(lazy(() => nestableStruct)),
-  ]);
+  const nestableStruct: Struct<Nestable<Type>> = selectiveUnion(
+    [struct, array(lazy(() => nestableStruct))],
+    (value) => {
+      if (Array.isArray(value)) {
+        return array(lazy(() => nestableStruct));
+      }
+      return struct;
+    },
+  );
 
   return nestableStruct;
 }
@@ -127,7 +138,19 @@ function children<Head extends AnyStruct, Tail extends AnyStruct[]>(
   Nestable<Infer<Head> | InferStructTuple<Tail>[number] | boolean | null>,
   null
 > {
-  return nestable(nullable(nullUnion([...structs, boolean()])));
+  return nestable(
+    nullable(
+      selectiveUnion([...structs, boolean()], (value) => {
+        if (typeof value === 'boolean') {
+          return boolean();
+        }
+        if (structs.length === 1) {
+          return structs[0];
+        }
+        return nullUnion(structs);
+      }),
+    ),
+  );
 }
 
 /**
@@ -209,7 +232,7 @@ export const InputStruct: Describe<InputElement> = element('Input', {
  */
 export const OptionStruct: Describe<OptionElement> = element('Option', {
   value: string(),
-  children: nullUnion([string()]),
+  children: string(),
 });
 
 /**
@@ -495,10 +518,16 @@ export const SectionStruct: Describe<SectionElement> = element('Section', {
  * A subset of JSX elements that are allowed as children of the Footer component.
  * This set should include a single button or a tuple of two buttons.
  */
-export const FooterChildStruct = nullUnion([
-  tuple([FooterButtonStruct, FooterButtonStruct]),
-  FooterButtonStruct,
-]);
+
+export const FooterChildStruct = selectiveUnion(
+  [tuple([FooterButtonStruct, FooterButtonStruct]), FooterButtonStruct],
+  (value) => {
+    if (Array.isArray(value)) {
+      return tuple([FooterButtonStruct, FooterButtonStruct]);
+    }
+    return FooterButtonStruct;
+  },
+);
 
 /**
  * A struct for the {@link FooterElement} type.
@@ -548,11 +577,15 @@ export const LinkStruct: Describe<LinkElement> = element('Link', {
  */
 export const TextStruct: Describe<TextElement> = element('Text', {
   children: children([
-    string(),
-    BoldStruct,
-    ItalicStruct,
-    LinkStruct,
-    IconStruct,
+    selectiveUnion(
+      [string(), BoldStruct, ItalicStruct, LinkStruct, IconStruct],
+      (value) => {
+        if (typeof value === 'string') {
+          return string();
+        }
+        return typedUnion([BoldStruct, ItalicStruct, LinkStruct, IconStruct]);
+      },
+    ),
   ]),
   alignment: optional(
     nullUnion([literal('start'), literal('center'), literal('end')]),
@@ -573,28 +606,50 @@ export const TextStruct: Describe<TextElement> = element('Text', {
  * A subset of JSX elements that are allowed as children of the Tooltip component.
  * This set should include all text components and the Image.
  */
-export const TooltipChildStruct = nullUnion([
-  TextStruct,
-  BoldStruct,
-  ItalicStruct,
-  LinkStruct,
-  ImageStruct,
-  IconStruct,
-  boolean(),
-]);
+export const TooltipChildStruct = selectiveUnion(
+  [
+    TextStruct,
+    BoldStruct,
+    ItalicStruct,
+    LinkStruct,
+    ImageStruct,
+    IconStruct,
+    boolean(),
+  ],
+  (value) => {
+    if (typeof value === 'boolean') {
+      return boolean();
+    }
+    return typedUnion([
+      TextStruct,
+      BoldStruct,
+      ItalicStruct,
+      LinkStruct,
+      ImageStruct,
+      IconStruct,
+    ]);
+  },
+);
 
 /**
  * A subset of JSX elements that are allowed as content of the Tooltip component.
  * This set should include all text components.
  */
-export const TooltipContentStruct = nullUnion([
-  TextStruct,
-  BoldStruct,
-  ItalicStruct,
-  LinkStruct,
-  IconStruct,
-  string(),
-]);
+export const TooltipContentStruct = selectiveUnion(
+  [TextStruct, BoldStruct, ItalicStruct, LinkStruct, IconStruct, string()],
+  (value) => {
+    if (typeof value === 'string') {
+      return string();
+    }
+    return typedUnion([
+      TextStruct,
+      BoldStruct,
+      ItalicStruct,
+      LinkStruct,
+      IconStruct,
+    ]);
+  },
+);
 
 /**
  * A struct for the {@link TooltipElement} type.
@@ -609,7 +664,7 @@ export const TooltipStruct: Describe<TooltipElement> = element('Tooltip', {
  */
 export const RowStruct: Describe<RowElement> = element('Row', {
   label: string(),
-  children: nullUnion([AddressStruct, ImageStruct, TextStruct, ValueStruct]),
+  children: typedUnion([AddressStruct, ImageStruct, TextStruct, ValueStruct]),
   variant: optional(
     nullUnion([literal('default'), literal('warning'), literal('critical')]),
   ),
@@ -659,10 +714,15 @@ export const BoxChildStruct = typedUnion([
 export const ContainerStruct: Describe<ContainerElement> = element(
   'Container',
   {
-    children: nullUnion([
-      tuple([BoxChildStruct, FooterStruct]),
-      BoxChildStruct,
-    ]) as unknown as Struct<
+    children: selectiveUnion(
+      [tuple([BoxStruct, FooterStruct]), BoxStruct],
+      (value) => {
+        if (Array.isArray(value)) {
+          return tuple([BoxStruct, FooterStruct]);
+        }
+        return BoxStruct;
+      },
+    ) as unknown as Struct<
       [GenericSnapElement, FooterElement] | GenericSnapElement,
       null
     >,
