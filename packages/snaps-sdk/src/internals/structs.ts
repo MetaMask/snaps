@@ -170,21 +170,16 @@ export function typedUnion<Head extends AnyStruct, Tail extends AnyStruct[]>(
  * Create a custom union struct that uses a `selector` function for choosing
  * the validation path.
  *
- * @param structs - The structs to union.
  * @param selector - The selector function choosing the struct to validate with.
  * @returns The `superstruct` struct, which validates that the value satisfies
  * one of the structs.
  */
-export function selectiveUnion<
-  Head extends AnyStruct,
-  Tail extends AnyStruct[],
->(
-  structs: [head: Head, ...tail: Tail],
-  selector: (value: unknown) => AnyStruct,
-): Struct<Infer<Head> | InferStructTuple<Tail>[number], null> {
+export function selectiveUnion<Selector extends (value: any) => AnyStruct>(
+  selector: Selector,
+): Struct<Infer<ReturnType<Selector>>, null> {
   return new Struct({
     type: 'union',
-    schema: structs,
+    schema: null,
     *entries(value, context) {
       const struct = selector(value);
 
@@ -208,5 +203,5 @@ export function selectiveUnion<
       // This only validates the root of the struct, entries does the rest of the work.
       return struct.validator(value, context);
     },
-  }) as unknown as Struct<Infer<Head> | InferStructTuple<Tail>[number], null>;
+  });
 }

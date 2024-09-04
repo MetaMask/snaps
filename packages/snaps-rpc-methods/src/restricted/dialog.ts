@@ -157,15 +157,12 @@ const AlertParametersWithIdStruct = object({
   id: string(),
 });
 
-const AlertParametersStruct = selectiveUnion(
-  [AlertParametersWithContentStruct, AlertParametersWithIdStruct],
-  (value) => {
-    if (isPlainObject(value) && hasProperty(value, 'id')) {
-      return AlertParametersWithIdStruct;
-    }
-    return AlertParametersWithContentStruct;
-  },
-);
+const AlertParametersStruct = selectiveUnion((value) => {
+  if (isPlainObject(value) && hasProperty(value, 'id')) {
+    return AlertParametersWithIdStruct;
+  }
+  return AlertParametersWithContentStruct;
+});
 
 const ConfirmationParametersWithContentStruct = object({
   type: enumValue(DialogType.Confirmation),
@@ -177,15 +174,12 @@ const ConfirmationParametersWithIdStruct = object({
   id: string(),
 });
 
-const ConfirmationParametersStruct = selectiveUnion(
-  [ConfirmationParametersWithContentStruct, ConfirmationParametersWithIdStruct],
-  (value) => {
-    if (isPlainObject(value) && hasProperty(value, 'id')) {
-      return ConfirmationParametersWithIdStruct;
-    }
-    return ConfirmationParametersWithContentStruct;
-  },
-);
+const ConfirmationParametersStruct = selectiveUnion((value) => {
+  if (isPlainObject(value) && hasProperty(value, 'id')) {
+    return ConfirmationParametersWithIdStruct;
+  }
+  return ConfirmationParametersWithContentStruct;
+});
 
 const PromptParametersWithContentStruct = object({
   type: enumValue(DialogType.Prompt),
@@ -199,15 +193,12 @@ const PromptParametersWithIdStruct = object({
   placeholder: PlaceholderStruct,
 });
 
-const PromptParametersStruct = selectiveUnion(
-  [PromptParametersWithContentStruct, PromptParametersWithIdStruct],
-  (value) => {
-    if (isPlainObject(value) && hasProperty(value, 'id')) {
-      return PromptParametersWithIdStruct;
-    }
-    return PromptParametersWithContentStruct;
-  },
-);
+const PromptParametersStruct = selectiveUnion((value) => {
+  if (isPlainObject(value) && hasProperty(value, 'id')) {
+    return PromptParametersWithIdStruct;
+  }
+  return PromptParametersWithContentStruct;
+});
 
 const DefaultParametersWithContentStruct = object({
   content: ComponentOrElementStruct,
@@ -217,44 +208,33 @@ const DefaultParametersWithIdStruct = object({
   id: string(),
 });
 
-const DefaultParametersStruct = selectiveUnion(
-  [DefaultParametersWithContentStruct, DefaultParametersWithIdStruct],
-  (value) => {
-    if (isPlainObject(value) && hasProperty(value, 'id')) {
-      return DefaultParametersWithIdStruct;
-    }
-    return DefaultParametersWithContentStruct;
-  },
-);
+const DefaultParametersStruct = selectiveUnion((value) => {
+  if (isPlainObject(value) && hasProperty(value, 'id')) {
+    return DefaultParametersWithIdStruct;
+  }
+  return DefaultParametersWithContentStruct;
+});
 
-const DialogParametersStruct = selectiveUnion(
-  [
-    AlertParametersStruct,
-    ConfirmationParametersStruct,
-    PromptParametersStruct,
-    DefaultParametersStruct,
-  ],
-  (value) => {
-    if (isPlainObject(value) && hasProperty(value, 'type')) {
-      switch (value.type) {
-        // We cannot use typedUnion here unfortunately.
-        case DialogType.Alert:
-          return AlertParametersStruct;
-        case DialogType.Confirmation:
-          return ConfirmationParametersStruct;
-        case DialogType.Prompt:
-          return PromptParametersStruct;
-        default:
-          throw new Error(
-            `The "type" property must be one of: ${Object.values(
-              DialogType,
-            ).join(', ')}.`,
-          );
-      }
+const DialogParametersStruct = selectiveUnion((value) => {
+  if (isPlainObject(value) && hasProperty(value, 'type')) {
+    switch (value.type) {
+      // We cannot use typedUnion here unfortunately.
+      case DialogType.Alert:
+        return AlertParametersStruct;
+      case DialogType.Confirmation:
+        return ConfirmationParametersStruct;
+      case DialogType.Prompt:
+        return PromptParametersStruct;
+      default:
+        throw new Error(
+          `The "type" property must be one of: ${Object.values(DialogType).join(
+            ', ',
+          )}.`,
+        );
     }
-    return DefaultParametersStruct;
-  },
-);
+  }
+  return DefaultParametersStruct;
+});
 
 export type DialogParameters = InferMatching<
   typeof DialogParametersStruct,

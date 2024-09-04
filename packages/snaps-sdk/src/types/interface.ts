@@ -36,15 +36,12 @@ export type FormState = Infer<typeof FormStateStruct>;
 export type InterfaceState = Infer<typeof InterfaceStateStruct>;
 
 export type ComponentOrElement = Component | JSXElement;
-export const ComponentOrElementStruct = selectiveUnion(
-  [ComponentStruct, RootJSXElementStruct],
-  (value) => {
-    if (isObject(value) && !hasProperty(value, 'props')) {
-      return ComponentStruct;
-    }
-    return RootJSXElementStruct;
-  },
-);
+export const ComponentOrElementStruct = selectiveUnion((value) => {
+  if (isObject(value) && !hasProperty(value, 'props')) {
+    return ComponentStruct;
+  }
+  return RootJSXElementStruct;
+});
 
 export const InterfaceContextStruct = record(string(), JsonStruct);
 export type InterfaceContext = Infer<typeof InterfaceContextStruct>;
