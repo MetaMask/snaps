@@ -235,6 +235,31 @@ describe('FieldStruct', () => {
     <Field label="foo">
       <Input name="foo" type="text" />
     </Field>,
+    <Field label="foo">
+      <Box>
+        <Text>Hello</Text>
+      </Box>
+      <Input name="foo" type="text" />
+    </Field>,
+    <Field label="foo">
+      <Input name="foo" type="text" />
+      <Box>
+        <Text>Hello</Text>
+      </Box>
+    </Field>,
+    <Field label="foo">
+      <Box>
+        <Text>Hello</Text>
+      </Box>
+      <Input name="foo" type="text" />
+      <Box>
+        <Text>Hello</Text>
+      </Box>
+    </Field>,
+    <Field label="foo">
+      <Input name="foo" type="text" />
+      <Button>foo</Button>
+    </Field>,
     <Field error="bar">
       <Input name="foo" type="text" />
     </Field>,

@@ -294,6 +294,31 @@ const BUTTON_INPUT = [InputStruct, ButtonStruct] as [
 ];
 
 /**
+ * A subset of JSX elements that represent the tuple Box + Input of the Field children.
+ */
+const BOX_INPUT_LEFT = [BoxStruct, InputStruct] as [
+  typeof BoxStruct,
+  typeof InputStruct,
+];
+
+/**
+ * A subset of JSX elements that represent the tuple Input + Box of the Field children.
+ */
+const BOX_INPUT_RIGHT = [InputStruct, BoxStruct] as [
+  typeof InputStruct,
+  typeof BoxStruct,
+];
+
+/**
+ * A subset of JSX elements that represent the tuple Box + Input + Box of the Field children.
+ */
+const BOX_INPUT_BOTH = [BoxStruct, InputStruct, BoxStruct] as [
+  typeof BoxStruct,
+  typeof InputStruct,
+  typeof BoxStruct,
+];
+
+/**
  * A subset of JSX elements that are allowed as single children of the Field component.
  */
 const FIELD_CHILDREN_ARRAY = [
@@ -326,6 +351,9 @@ export const FieldChildUnionStruct = typedUnion([
  */
 const FieldChildStruct = nullUnion([
   tuple(BUTTON_INPUT),
+  tuple(BOX_INPUT_LEFT),
+  tuple(BOX_INPUT_RIGHT),
+  tuple(BOX_INPUT_BOTH),
   ...FIELD_CHILDREN_ARRAY,
 ]);
 

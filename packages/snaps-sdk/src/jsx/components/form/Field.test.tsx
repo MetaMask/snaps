@@ -1,3 +1,5 @@
+import { Box } from '../Box';
+import { Text } from '../Text';
 import { Button } from './Button';
 import { Dropdown } from './Dropdown';
 import { Field } from './Field';
@@ -84,6 +86,148 @@ describe('Field', () => {
             props: {
               type: 'submit',
               children: 'Submit',
+            },
+          },
+        ],
+      },
+    });
+  });
+
+  it('renders a field element with an input and box on the left', () => {
+    const result = (
+      <Field label="Label">
+        <Box>
+          <Text>Hello</Text>
+        </Box>
+        <Input name="foo" type="text" />
+      </Field>
+    );
+
+    expect(result).toStrictEqual({
+      type: 'Field',
+      key: null,
+      props: {
+        label: 'Label',
+        children: [
+          {
+            type: 'Box',
+            key: null,
+            props: {
+              children: {
+                type: 'Text',
+                key: null,
+                props: {
+                  children: 'Hello',
+                },
+              },
+            },
+          },
+          {
+            type: 'Input',
+            key: null,
+            props: {
+              name: 'foo',
+              type: 'text',
+            },
+          },
+        ],
+      },
+    });
+  });
+
+  it('renders a field element with an input and box on the right', () => {
+    const result = (
+      <Field label="Label">
+        <Input name="foo" type="text" />
+        <Box>
+          <Text>Hello</Text>
+        </Box>
+      </Field>
+    );
+
+    expect(result).toStrictEqual({
+      type: 'Field',
+      key: null,
+      props: {
+        label: 'Label',
+        children: [
+          {
+            type: 'Input',
+            key: null,
+            props: {
+              name: 'foo',
+              type: 'text',
+            },
+          },
+          {
+            type: 'Box',
+            key: null,
+            props: {
+              children: {
+                type: 'Text',
+                key: null,
+                props: {
+                  children: 'Hello',
+                },
+              },
+            },
+          },
+        ],
+      },
+    });
+  });
+
+  it('renders a field element with an input and box on both sides', () => {
+    const result = (
+      <Field label="Label">
+        <Box>
+          <Text>Hello</Text>
+        </Box>
+        <Input name="foo" type="text" />
+        <Box>
+          <Text>Hello</Text>
+        </Box>
+      </Field>
+    );
+
+    expect(result).toStrictEqual({
+      type: 'Field',
+      key: null,
+      props: {
+        label: 'Label',
+        children: [
+          {
+            type: 'Box',
+            key: null,
+            props: {
+              children: {
+                type: 'Text',
+                key: null,
+                props: {
+                  children: 'Hello',
+                },
+              },
+            },
+          },
+          {
+            type: 'Input',
+            key: null,
+            props: {
+              name: 'foo',
+              type: 'text',
+            },
+          },
+          {
+            type: 'Box',
+            key: null,
+            props: {
+              children: {
+                type: 'Text',
+                key: null,
+                props: {
+                  children: 'Hello',
+                },
+              },
             },
           },
         ],
