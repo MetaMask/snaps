@@ -358,6 +358,30 @@ describe('implementation', () => {
         },
       });
     });
+
+    it('handles confirmations using an ID', async () => {
+      const hooks = getMockDialogHooks();
+      const implementation = getDialogImplementation(hooks);
+      await implementation({
+        context: { origin: 'foo' },
+        method: 'snap_dialog',
+        params: {
+          type: DialogType.Confirmation,
+          id: 'baz',
+        },
+      });
+
+      expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+      expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+        id: undefined,
+        origin: 'foo',
+        type: DIALOG_APPROVAL_TYPES[DialogType.Confirmation],
+        requestData: {
+          id: 'baz',
+          placeholder: undefined,
+        },
+      });
+    });
   });
 
   describe('prompts', () => {
@@ -410,6 +434,31 @@ describe('implementation', () => {
         type: DIALOG_APPROVAL_TYPES[DialogType.Prompt],
         requestData: {
           id: 'bar',
+          placeholder: 'foobar',
+        },
+      });
+    });
+
+    it('handles prompts using an ID', async () => {
+      const hooks = getMockDialogHooks();
+      const implementation = getDialogImplementation(hooks);
+      await implementation({
+        context: { origin: 'foo' },
+        method: 'snap_dialog',
+        params: {
+          type: DialogType.Prompt,
+          id: 'baz',
+          placeholder: 'foobar',
+        },
+      });
+
+      expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
+      expect(hooks.requestUserApproval).toHaveBeenCalledWith({
+        id: undefined,
+        origin: 'foo',
+        type: DIALOG_APPROVAL_TYPES[DialogType.Prompt],
+        requestData: {
+          id: 'baz',
           placeholder: 'foobar',
         },
       });
