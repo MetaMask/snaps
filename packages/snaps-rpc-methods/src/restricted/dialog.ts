@@ -8,8 +8,8 @@ import { rpcErrors } from '@metamask/rpc-errors';
 import {
   DialogType,
   enumValue,
-  union,
   ComponentOrElementStruct,
+  selectiveUnion,
 } from '@metamask/snaps-sdk';
 import type {
   DialogParams,
@@ -20,19 +20,10 @@ import type {
   ComponentOrElement,
 } from '@metamask/snaps-sdk';
 import type { InferMatching } from '@metamask/snaps-utils';
-import { createUnion } from '@metamask/snaps-utils';
-import type { Infer, Struct } from '@metamask/superstruct';
-import {
-  create,
-  enums,
-  object,
-  optional,
-  size,
-  string,
-  type,
-} from '@metamask/superstruct';
+import type { Infer } from '@metamask/superstruct';
+import { create, object, optional, size, string } from '@metamask/superstruct';
 import type { Json, NonEmptyArray } from '@metamask/utils';
-import { hasProperty, isObject } from '@metamask/utils';
+import { hasProperty, isObject, isPlainObject } from '@metamask/utils';
 
 import { type MethodHooksObject } from '../utils';
 
@@ -156,27 +147,25 @@ export const dialogBuilder = Object.freeze({
   methodHooks,
 } as const);
 
-// Note: We use `type` here instead of `object` because `type` does not validate
-// the keys of the object, which is what we want.
-const BaseParamsStruct = type({
-  type: optional(
-    enums([DialogType.Alert, DialogType.Confirmation, DialogType.Prompt]),
-  ),
-});
-
 const AlertParametersWithContentStruct = object({
   type: enumValue(DialogType.Alert),
   content: ComponentOrElementStruct,
 });
+
 const AlertParametersWithIdStruct = object({
   type: enumValue(DialogType.Alert),
   id: string(),
 });
 
-const AlertParametersStruct = union([
-  AlertParametersWithContentStruct,
-  AlertParametersWithIdStruct,
-]);
+const AlertParametersStruct = selectiveUnion(
+  [AlertParametersWithContentStruct, AlertParametersWithIdStruct],
+  (value) => {
+    if (isPlainObject(value) && hasProperty(value, 'id')) {
+      return AlertParametersWithIdStruct;
+    }
+    return AlertParametersWithContentStruct;
+  },
+);
 
 const ConfirmationParametersWithContentStruct = object({
   type: enumValue(DialogType.Confirmation),
@@ -188,10 +177,15 @@ const ConfirmationParametersWithIdStruct = object({
   id: string(),
 });
 
-const ConfirmationParametersStruct = union([
-  ConfirmationParametersWithContentStruct,
-  ConfirmationParametersWithIdStruct,
-]);
+const ConfirmationParametersStruct = selectiveUnion(
+  [ConfirmationParametersWithContentStruct, ConfirmationParametersWithIdStruct],
+  (value) => {
+    if (isPlainObject(value) && hasProperty(value, 'id')) {
+      return ConfirmationParametersWithIdStruct;
+    }
+    return ConfirmationParametersWithContentStruct;
+  },
+);
 
 const PromptParametersWithContentStruct = object({
   type: enumValue(DialogType.Prompt),
@@ -205,10 +199,15 @@ const PromptParametersWithIdStruct = object({
   placeholder: PlaceholderStruct,
 });
 
-const PromptParametersStruct = union([
-  PromptParametersWithContentStruct,
-  PromptParametersWithIdStruct,
-]);
+const PromptParametersStruct = selectiveUnion(
+  [PromptParametersWithContentStruct, PromptParametersWithIdStruct],
+  (value) => {
+    if (isPlainObject(value) && hasProperty(value, 'id')) {
+      return PromptParametersWithIdStruct;
+    }
+    return PromptParametersWithContentStruct;
+  },
+);
 
 const DefaultParametersWithContentStruct = object({
   content: ComponentOrElementStruct,
@@ -218,28 +217,49 @@ const DefaultParametersWithIdStruct = object({
   id: string(),
 });
 
-const DefaultParametersStruct = union([
-  DefaultParametersWithContentStruct,
-  DefaultParametersWithIdStruct,
-]);
+const DefaultParametersStruct = selectiveUnion(
+  [DefaultParametersWithContentStruct, DefaultParametersWithIdStruct],
+  (value) => {
+    if (isPlainObject(value) && hasProperty(value, 'id')) {
+      return DefaultParametersWithIdStruct;
+    }
+    return DefaultParametersWithContentStruct;
+  },
+);
 
-const DialogParametersStruct = union([
-  AlertParametersStruct,
-  ConfirmationParametersStruct,
-  PromptParametersStruct,
-  DefaultParametersStruct,
-]);
+const DialogParametersStruct = selectiveUnion(
+  [
+    AlertParametersStruct,
+    ConfirmationParametersStruct,
+    PromptParametersStruct,
+    DefaultParametersStruct,
+  ],
+  (value) => {
+    if (isPlainObject(value) && hasProperty(value, 'type')) {
+      switch (value.type) {
+        // We cannot use typedUnion here unfortunately.
+        case DialogType.Alert:
+          return AlertParametersStruct;
+        case DialogType.Confirmation:
+          return ConfirmationParametersStruct;
+        case DialogType.Prompt:
+          return PromptParametersStruct;
+        default:
+          throw new Error(
+            `The "type" property must be one of: ${Object.values(
+              DialogType,
+            ).join(', ')}.`,
+          );
+      }
+    }
+    return DefaultParametersStruct;
+  },
+);
 
 export type DialogParameters = InferMatching<
   typeof DialogParametersStruct,
   DialogParams
 >;
-
-const structs: Record<DialogType, Struct<any, any>> = {
-  [DialogType.Alert]: AlertParametersStruct,
-  [DialogType.Confirmation]: ConfirmationParametersStruct,
-  [DialogType.Prompt]: PromptParametersStruct,
-};
 
 /**
  * Builds the method implementation for `snap_dialog`.
@@ -271,16 +291,19 @@ export function getDialogImplementation({
       });
     }
 
-    const validatedType = getValidatedType(params);
-
-    const approvalType = validatedType
-      ? DIALOG_APPROVAL_TYPES[validatedType]
-      : DIALOG_APPROVAL_TYPES.default;
-
-    const validatedParams = getValidatedParams(params, validatedType);
+    const validatedParams = getValidatedParams(params);
     const placeholder = isPromptDialog(validatedParams)
       ? validatedParams.placeholder
       : undefined;
+
+    const validatedType = hasProperty(validatedParams, 'type')
+      ? validatedParams.type
+      : 'default';
+
+    const approvalType =
+      DIALOG_APPROVAL_TYPES[
+        validatedType as keyof typeof DIALOG_APPROVAL_TYPES
+      ];
 
     if (hasProperty(validatedParams, 'content')) {
       const id = await createInterface(
@@ -289,7 +312,7 @@ export function getDialogImplementation({
       );
 
       return requestUserApproval({
-        id: validatedType ? undefined : id,
+        id: approvalType === DIALOG_APPROVAL_TYPES.default ? id : undefined,
         origin,
         type: approvalType,
         requestData: { id, placeholder },
@@ -299,7 +322,10 @@ export function getDialogImplementation({
     validateInterface(origin, validatedParams.id, getInterface);
 
     return requestUserApproval({
-      id: validatedType ? undefined : validatedParams.id,
+      id:
+        approvalType === DIALOG_APPROVAL_TYPES.default
+          ? validatedParams.id
+          : undefined,
       origin,
       type: approvalType,
       requestData: { id: validatedParams.id, placeholder },
@@ -338,25 +364,6 @@ function getDialogType(params: DialogParameters): DialogType | undefined {
 }
 
 /**
- * Get the validated type of the dialog parameters. Throws an error if the type
- * is invalid.
- *
- * @param params - The parameters to validate.
- * @returns The validated type of the dialog parameters.
- */
-function getValidatedType(params: unknown): DialogType | undefined {
-  try {
-    return create(params, BaseParamsStruct).type;
-  } catch (error) {
-    throw rpcErrors.invalidParams({
-      message: `The "type" property must be one of: ${Object.values(
-        DialogType,
-      ).join(', ')}.`,
-    });
-  }
-}
-
-/**
  * Checks if the dialog parameters are for a prompt dialog.
  *
  * @param params - The dialog parameters.
@@ -371,17 +378,11 @@ function isPromptDialog(params: DialogParameters): params is PromptDialog {
  * type. Throws if validation fails.
  *
  * @param params - The unvalidated params object from the method request.
- * @param validatedType - The validated dialog type.
  * @returns The validated confirm method parameter object.
  */
-function getValidatedParams(
-  params: unknown,
-  validatedType: DialogType | undefined,
-): DialogParameters {
+function getValidatedParams(params: unknown): DialogParameters {
   try {
-    return validatedType
-      ? createUnion(params, structs[validatedType], 'type')
-      : create(params, DefaultParametersStruct);
+    return create(params, DialogParametersStruct);
   } catch (error) {
     throw rpcErrors.invalidParams({
       message: `Invalid params: ${error.message}`,
