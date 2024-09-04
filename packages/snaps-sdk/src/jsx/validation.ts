@@ -696,9 +696,9 @@ export const ContainerStruct: Describe<ContainerElement> = element(
   {
     children: selectiveUnion((value) => {
       if (Array.isArray(value)) {
-        return tuple([BoxStruct, FooterStruct]);
+        return tuple([BoxChildStruct, FooterStruct]);
       }
-      return BoxStruct;
+      return BoxChildStruct;
     }) as unknown as Struct<
       [GenericSnapElement, FooterElement] | GenericSnapElement,
       null
