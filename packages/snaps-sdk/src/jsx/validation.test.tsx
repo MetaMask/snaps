@@ -616,6 +616,15 @@ describe('ContainerStruct', () => {
         <Button name="confirm">Confirm</Button>
       </Footer>
     </Container>,
+    <Container>
+      <Text>Hello world!</Text>
+    </Container>,
+    <Container>
+      <Text>Hello world!</Text>
+      <Footer>
+        <Button name="confirm">Confirm</Button>
+      </Footer>
+    </Container>,
   ])('validates a container element', (value) => {
     expect(is(value, ContainerStruct)).toBe(true);
   });

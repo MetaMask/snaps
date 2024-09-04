@@ -472,25 +472,6 @@ export const FooterStruct: Describe<FooterElement> = element('Footer', {
 });
 
 /**
- * A subset of JSX elements that are allowed as children of the Container component.
- * This set should include a single Box or a tuple of a Box and a Footer component.
- */
-export const ContainerChildStruct = nullUnion([
-  tuple([BoxStruct, FooterStruct]),
-  BoxStruct,
-]);
-
-/**
- * A struct for the {@link ContainerElement} type.
- */
-export const ContainerStruct: Describe<ContainerElement> = element(
-  'Container',
-  {
-    children: ContainerChildStruct,
-  },
-);
-
-/**
  * A struct for the {@link CopyableElement} type.
  */
 export const CopyableStruct: Describe<CopyableElement> = element('Copyable', {
@@ -635,6 +616,22 @@ export const BoxChildStruct = typedUnion([
   SelectorStruct,
   SectionStruct,
 ]);
+
+/**
+ * A struct for the {@link ContainerElement} type.
+ */
+export const ContainerStruct: Describe<ContainerElement> = element(
+  'Container',
+  {
+    children: nullUnion([
+      tuple([BoxChildStruct, FooterStruct]),
+      BoxChildStruct,
+    ]) as unknown as Struct<
+      [GenericSnapElement, FooterElement] | GenericSnapElement,
+      null
+    >,
+  },
+);
 
 /**
  * For now, the allowed JSX elements at the root are the same as the allowed
