@@ -1,5 +1,5 @@
+import type { GenericSnapElement } from '../component';
 import { createSnapComponent } from '../component';
-import type { BoxElement } from './Box';
 import type { FooterElement } from './Footer';
 
 /**
@@ -8,7 +8,7 @@ import type { FooterElement } from './Footer';
  * @property children - The Box and the Footer or the Box element.
  */
 export type ContainerProps = {
-  children: [BoxElement, FooterElement] | BoxElement;
+  children: [GenericSnapElement, FooterElement] | GenericSnapElement;
 };
 
 const TYPE = 'Container';
