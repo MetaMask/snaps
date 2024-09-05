@@ -7,7 +7,7 @@ import {
   validate,
 } from '@metamask/superstruct';
 
-import type { GenericSnapElement, BoxElement } from '../jsx';
+import type { BoxElement } from '../jsx';
 import { Footer, Icon, Text, Button, Box } from '../jsx';
 import {
   BoxStruct,
@@ -100,10 +100,7 @@ describe('typedUnion', () => {
       }),
     ]);
 
-    const result = create(
-      { type: 'Custom' },
-      coercedStruct,
-    ) as GenericSnapElement;
+    const result = create({ type: 'Custom' }, coercedStruct);
     expect(result.key).toBe('foo');
 
     const result2 = create(
