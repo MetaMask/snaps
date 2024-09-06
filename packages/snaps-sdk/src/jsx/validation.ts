@@ -285,6 +285,28 @@ export const FileInputStruct: Describe<FileInputElement> = element(
   },
 );
 
+export const BoxChildrenStruct = children(
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  [lazy(() => BoxChildStruct)],
+) as unknown as Struct<SnapsChildren<GenericSnapElement>, null>;
+
+/**
+ * A struct for the {@link BoxElement} type.
+ */
+export const BoxStruct: Describe<BoxElement> = element('Box', {
+  children: BoxChildrenStruct,
+  direction: optional(nullUnion([literal('horizontal'), literal('vertical')])),
+  alignment: optional(
+    nullUnion([
+      literal('start'),
+      literal('center'),
+      literal('end'),
+      literal('space-between'),
+      literal('space-around'),
+    ]),
+  ),
+});
+
 /**
  * A subset of JSX elements that represent the tuple Button + Input of the Field children.
  */
@@ -417,28 +439,6 @@ export const FormattingStruct: Describe<StandardFormattingElement> = typedUnion(
  */
 export const AddressStruct: Describe<AddressElement> = element('Address', {
   address: nullUnion([HexChecksumAddressStruct, CaipAccountIdStruct]),
-});
-
-export const BoxChildrenStruct = children(
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  [lazy(() => BoxChildStruct)],
-) as unknown as Struct<SnapsChildren<GenericSnapElement>, null>;
-
-/**
- * A struct for the {@link BoxElement} type.
- */
-export const BoxStruct: Describe<BoxElement> = element('Box', {
-  children: BoxChildrenStruct,
-  direction: optional(nullUnion([literal('horizontal'), literal('vertical')])),
-  alignment: optional(
-    nullUnion([
-      literal('start'),
-      literal('center'),
-      literal('end'),
-      literal('space-between'),
-      literal('space-around'),
-    ]),
-  ),
 });
 
 const FooterButtonStruct = refine(ButtonStruct, 'FooterButton', (value) => {
