@@ -54,8 +54,11 @@ describe('isValidFieldChild', () => {
   });
 
   it('returns false for invalid field children', () => {
-    const child = Text({ children: 'foo' });
-    expect(isValidFieldChild(child)).toBe(true);
+    const child = Text({
+      // @ts-expect-error invalid field for children is intentional for testing
+      children: Option({ children: 'foo', value: 'foo' }),
+    });
+    expect(isValidFieldChild(child)).toBe(false);
   });
 });
 
