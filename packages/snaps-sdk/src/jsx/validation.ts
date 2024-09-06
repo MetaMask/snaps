@@ -308,37 +308,33 @@ export const BoxStruct: Describe<BoxElement> = element('Box', {
 });
 
 /**
- * A subset of JSX elements that represent the tuple Button + Input of the Field children.
- */
-const BUTTON_INPUT = [InputStruct, ButtonStruct] as [
-  typeof InputStruct,
-  typeof ButtonStruct,
-];
-
-/**
  * A subset of JSX elements that represent the tuple Box + Input of the Field children.
  */
-const BOX_INPUT_LEFT = [BoxStruct, InputStruct] as [
-  typeof BoxStruct,
+// eslint-disable-next-line @typescript-eslint/no-use-before-define
+const BOX_INPUT_LEFT = [lazy(() => BoxChildStruct), InputStruct] as [
+  typeof BoxChildStruct,
   typeof InputStruct,
 ];
 
 /**
  * A subset of JSX elements that represent the tuple Input + Box of the Field children.
  */
-const BOX_INPUT_RIGHT = [InputStruct, BoxStruct] as [
+// eslint-disable-next-line @typescript-eslint/no-use-before-define
+const BOX_INPUT_RIGHT = [InputStruct, lazy(() => BoxChildStruct)] as [
   typeof InputStruct,
-  typeof BoxStruct,
+  typeof BoxChildStruct,
 ];
 
 /**
  * A subset of JSX elements that represent the tuple Box + Input + Box of the Field children.
  */
-const BOX_INPUT_BOTH = [BoxStruct, InputStruct, BoxStruct] as [
-  typeof BoxStruct,
-  typeof InputStruct,
-  typeof BoxStruct,
-];
+const BOX_INPUT_BOTH = [
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  lazy(() => BoxChildStruct),
+  InputStruct,
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  lazy(() => BoxChildStruct),
+] as [typeof BoxChildStruct, typeof InputStruct, typeof BoxChildStruct];
 
 /**
  * A subset of JSX elements that are allowed as single children of the Field component.
@@ -363,21 +359,33 @@ const FIELD_CHILDREN_ARRAY = [
  * A union of the allowed children of the Field component.
  * This is mainly used in the simulator for validation purposes.
  */
-export const FieldChildUnionStruct = typedUnion([
+export const FieldChildUnionStruct = nullUnion([
   ...FIELD_CHILDREN_ARRAY,
-  ...BUTTON_INPUT,
+  ...BOX_INPUT_LEFT,
+  ...BOX_INPUT_RIGHT,
+  ...BOX_INPUT_BOTH,
 ]);
 
 /**
  * A subset of JSX elements that are allowed as children of the Field component.
  */
 const FieldChildStruct = nullUnion([
-  tuple(BUTTON_INPUT),
   tuple(BOX_INPUT_LEFT),
   tuple(BOX_INPUT_RIGHT),
   tuple(BOX_INPUT_BOTH),
   ...FIELD_CHILDREN_ARRAY,
-]);
+]) as unknown as Struct<
+  | [InputElement, GenericSnapElement]
+  | [GenericSnapElement, InputElement]
+  | [GenericSnapElement, InputElement, GenericSnapElement]
+  | DropdownElement
+  | RadioGroupElement
+  | FileInputElement
+  | InputElement
+  | CheckboxElement
+  | SelectorElement,
+  null
+>;
 
 /**
  * A struct for the {@link FieldElement} type.
