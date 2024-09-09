@@ -5,13 +5,16 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { NotificationType } from '@metamask/snaps-sdk';
+import { enumValue, NotificationType, union } from '@metamask/snaps-sdk';
 import type {
   NotifyParams,
   NotifyResult,
   EnumToUnion,
 } from '@metamask/snaps-sdk';
+import { NotificationComponentsStruct } from '@metamask/snaps-sdk/jsx';
 import { validateTextLinks } from '@metamask/snaps-utils';
+import type { InferMatching } from '@metamask/snaps-utils';
+import { create, object, string } from '@metamask/superstruct';
 import type { NonEmptyArray } from '@metamask/utils';
 import { isObject } from '@metamask/utils';
 
@@ -31,6 +34,43 @@ export type NotificationArgs = {
   message: string;
 };
 
+const NativeNotificationStruct = object({
+  type: enumValue(NotificationType.Native),
+  message: string(),
+});
+
+const InAppNotificationStruct = object({
+  type: enumValue(NotificationType.InApp),
+  message: string(),
+});
+
+const InAppNotificationWithDetailsStruct = object({
+  type: enumValue(NotificationType.InApp),
+  message: string(),
+  detailedView: NotificationComponentsStruct,
+  title: string(),
+});
+
+const InAppNotificationWithDetailsAndFooterStruct = object({
+  type: enumValue(NotificationType.InApp),
+  message: string(),
+  detailedView: NotificationComponentsStruct,
+  title: string(),
+  footerLink: string(),
+});
+
+const NotificationParametersStruct = union([
+  InAppNotificationStruct,
+  InAppNotificationWithDetailsStruct,
+  InAppNotificationWithDetailsAndFooterStruct,
+  NativeNotificationStruct,
+]);
+
+export type NotificationParameters = InferMatching<
+  typeof NotificationParametersStruct,
+  NotifyParams
+>;
+
 export type NotifyMethodHooks = {
   /**
    * @param snapId - The ID of the Snap that created the notification.
@@ -38,7 +78,7 @@ export type NotifyMethodHooks = {
    */
   showNativeNotification: (
     snapId: string,
-    args: NotificationArgs,
+    args: NotificationParameters,
   ) => Promise<null>;
 
   /**
@@ -47,7 +87,7 @@ export type NotifyMethodHooks = {
    */
   showInAppNotification: (
     snapId: string,
-    args: NotificationArgs,
+    args: NotificationParameters,
   ) => Promise<null>;
 
   isOnPhishingList: (url: string) => boolean;
@@ -128,11 +168,9 @@ export function getImplementation({
       context: { origin },
     } = args;
 
-    const validatedParams = getValidatedParams(params);
-
     await maybeUpdatePhishingList();
 
-    validateTextLinks(validatedParams.message, isOnPhishingList);
+    const validatedParams = getValidatedParams(params, isOnPhishingList);
 
     switch (validatedParams.type) {
       case NotificationType.Native:
@@ -152,9 +190,13 @@ export function getImplementation({
  * type. Throws if validation fails.
  *
  * @param params - The unvalidated params object from the method request.
+ * @param isOnPhishingList - The function that checks for links against the phishing list.
  * @returns The validated method parameter object.
  */
-export function getValidatedParams(params: unknown): NotifyParams {
+export function getValidatedParams(
+  params: unknown,
+  isOnPhishingList: NotifyMethodHooks['isOnPhishingList'],
+): NotifyParams {
   if (!isObject(params)) {
     throw rpcErrors.invalidParams({
       message: 'Expected params to be a single object.',
@@ -195,5 +237,17 @@ export function getValidatedParams(params: unknown): NotifyParams {
     });
   }
 
-  return params as NotificationArgs;
+  validateTextLinks(message as string, isOnPhishingList);
+
+  if (params.footerLink) {
+    validateTextLinks(params.footerLink as string, isOnPhishingList);
+  }
+
+  try {
+    return create(params, NotificationParametersStruct);
+  } catch (error) {
+    throw rpcErrors.invalidParams({
+      message: `Invalid params: ${error.message}`,
+    });
+  }
 }

@@ -29,7 +29,7 @@ import {
 
 import type { Describe } from '../internals';
 import { literal, nullUnion, svg, typedUnion } from '../internals';
-import type { EmptyObject } from '../types';
+import { type EmptyObject } from '../types';
 import type {
   GenericSnapElement,
   JsonObject,
@@ -455,6 +455,28 @@ export const SectionStruct: Describe<SectionElement> = element('Section', {
   ),
 });
 
+export const NotificationChildrenStruct = children(
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  [lazy(() => NotificationComponentsStruct)],
+) as unknown as Struct<SnapsChildren<GenericSnapElement>, null>;
+
+/**
+ * A struct for the {@link BoxElement} type but with a limited subset of children.
+ */
+export const NotificationStruct: Describe<BoxElement> = element('Box', {
+  children: NotificationChildrenStruct,
+  direction: optional(nullUnion([literal('horizontal'), literal('vertical')])),
+  alignment: optional(
+    nullUnion([
+      literal('start'),
+      literal('center'),
+      literal('end'),
+      literal('space-between'),
+      literal('space-around'),
+    ]),
+  ),
+});
+
 /**
  * A subset of JSX elements that are allowed as children of the Footer component.
  * This set should include a single button or a tuple of two buttons.
@@ -615,6 +637,22 @@ export const BoxChildStruct = typedUnion([
   IconStruct,
   SelectorStruct,
   SectionStruct,
+]);
+
+export const NotificationComponentsStruct = typedUnion([
+  CopyableStruct,
+  NotificationStruct,
+  BoldStruct,
+  ItalicStruct,
+  AddressStruct,
+  DividerStruct,
+  ValueStruct,
+  RowStruct,
+  TextStruct,
+  TooltipStruct,
+  IconStruct,
+  ImageStruct,
+  LinkStruct,
 ]);
 
 /**
