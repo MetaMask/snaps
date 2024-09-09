@@ -38,7 +38,6 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:changelog": "../../scripts/validate-changelog.sh @metamask/snaps-browserify-plugin",
     "build": "ts-bridge --project tsconfig.build.json --verbose --no-references",
-    "build:ci": "ts-bridge --project tsconfig.build.json --verbose --no-references --clean",
     "publish:preview": "yarn npm publish --tag preview",
     "lint:ci": "yarn lint",
     "lint:dependencies": "depcheck"

@@ -20,7 +20,7 @@
     "lint:fix": "yarn workspaces foreach --all --parallel run lint:eslint --fix && yarn lint:misc --write && yarn lint:tsconfig && yarn constraints --fix && yarn dedupe",
     "lint:ci": "yarn lint:eslint && yarn lint:misc --check && yarn lint:tsconfig && yarn constraints && yarn lint:dependencies",
     "build": "ts-bridge --project tsconfig.build.json --verbose && yarn build:examples",
-    "build:ci": "ts-bridge --project tsconfig.build.json --verbose",
+    "build:ci": "ts-bridge --project tsconfig.build.json --verbose --clean",
     "build:examples": "yarn workspace @metamask/example-snaps build",
     "clean": "yarn workspaces foreach --all --parallel --verbose run clean",
     "test": "yarn workspaces foreach --all --parallel --verbose run test",

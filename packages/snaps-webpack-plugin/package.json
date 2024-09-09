@@ -41,8 +41,7 @@
     "build": "ts-bridge --project tsconfig.build.json --verbose --no-references",
     "publish:preview": "yarn npm publish --tag preview",
     "lint:ci": "yarn lint",
-    "lint:dependencies": "depcheck",
-    "build:ci": "ts-bridge --project tsconfig.build.json --verbose --no-references --clean"
+    "lint:dependencies": "depcheck"
   },
   "dependencies": {
     "@metamask/snaps-sdk": "workspace:^",

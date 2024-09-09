@@ -51,8 +51,7 @@
     "publish:preview": "yarn npm publish --tag preview",
     "lint:ci": "yarn lint",
     "start": "node scripts/start.js",
-    "lint:dependencies": "depcheck",
-    "build:ci": "ts-bridge --project tsconfig.build.json --verbose --no-references --clean"
+    "lint:dependencies": "depcheck"
   },
   "dependencies": {
     "@metamask/json-rpc-engine": "^9.0.2",

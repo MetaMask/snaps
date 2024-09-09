@@ -59,8 +59,7 @@
     "build:clean": "yarn clean && yarn build",
     "publish:preview": "yarn npm publish --tag preview",
     "lint:ci": "yarn lint",
-    "lint:dependencies": "depcheck",
-    "build:ci": "ts-bridge --project tsconfig.build.json --verbose --no-references --clean"
+    "lint:dependencies": "depcheck"
   },
   "dependencies": {
     "@babel/core": "^7.23.2",
