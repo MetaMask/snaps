@@ -1,7 +1,8 @@
 {
   "extends": "../../tsconfig.packages.json",
   "compilerOptions": {
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "skipLibCheck": true
   },
   "include": ["./src", "./src/**/*.json", "jest.setup.ts", "package.json"],
   "references": [
