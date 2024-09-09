@@ -54,7 +54,7 @@ describe('isValidFieldChild', () => {
   });
 
   it('returns false for invalid field children', () => {
-    const child = Text({ children: 'foo' });
+    const child = Option({ children: 'foo', value: 'foo' });
     expect(isValidFieldChild(child)).toBe(false);
   });
 });

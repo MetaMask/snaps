@@ -33,7 +33,6 @@ import {
 import {
   assert,
   assertExhaustive,
-  AssertionError,
   hasProperty,
   isPlainObject,
 } from '@metamask/utils';
@@ -332,7 +331,7 @@ function getMarkdownLinks(text: string) {
  * @param isOnPhishingList - The function that checks the link against the
  * phishing list.
  */
-function validateLink(
+export function validateLink(
   link: string,
   isOnPhishingList: (url: string) => boolean,
 ) {
@@ -350,7 +349,7 @@ function validateLink(
   } catch (error) {
     throw new Error(
       `Invalid URL: ${
-        error instanceof AssertionError ? error.message : 'Unable to parse URL.'
+        error?.code === 'ERR_ASSERTION' ? error.message : 'Unable to parse URL.'
       }`,
     );
   }

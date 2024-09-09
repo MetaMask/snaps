@@ -42,6 +42,7 @@ import {
   walkJsx,
   getJsxChildren,
   serialiseJsx,
+  validateLink,
 } from './ui';
 
 describe('getTextChildren', () => {
@@ -538,6 +539,61 @@ describe('getJsxElementFromComponent', () => {
         </Box>
       </Box>,
     );
+  });
+});
+
+describe('validateLink', () => {
+  it('passes for a valid link', () => {
+    const fn = jest.fn().mockReturnValue(false);
+
+    expect(() => validateLink('https://foo.bar', fn)).not.toThrow();
+    expect(() => validateLink('mailto:foo@bar.com', fn)).not.toThrow();
+
+    expect(fn).toHaveBeenCalledTimes(2);
+    expect(fn).toHaveBeenCalledWith('foo.bar');
+    expect(fn).toHaveBeenCalledWith('bar.com');
+  });
+
+  it('throws an error for an invalid protocol', () => {
+    const fn = jest.fn().mockReturnValue(false);
+
+    expect(() => validateLink('http://foo.bar', fn)).toThrow(
+      'Invalid URL: Protocol must be one of: https:, mailto:.',
+    );
+
+    expect(fn).not.toHaveBeenCalled();
+  });
+
+  it('throws an error for an invalid URL', () => {
+    const fn = jest.fn().mockReturnValue(false);
+
+    expect(() => validateLink('foo.bar', fn)).toThrow(
+      'Invalid URL: Unable to parse URL.',
+    );
+
+    expect(fn).not.toHaveBeenCalled();
+  });
+
+  it('throws an error for a phishing link', () => {
+    const fn = jest.fn().mockReturnValue(true);
+
+    expect(() => validateLink('https://test.metamask-phishing.io', fn)).toThrow(
+      'Invalid URL: The specified URL is not allowed.',
+    );
+
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).toHaveBeenCalledWith('test.metamask-phishing.io');
+  });
+
+  it('throws an error for a phishing email', () => {
+    const fn = jest.fn().mockReturnValue(true);
+
+    expect(() =>
+      validateLink('mailto:foo@test.metamask-phishing.io', fn),
+    ).toThrow('Invalid URL: The specified URL is not allowed.');
+
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).toHaveBeenCalledWith('test.metamask-phishing.io');
   });
 });
 
