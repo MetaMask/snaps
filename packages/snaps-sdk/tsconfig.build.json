@@ -3,7 +3,9 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "module": "ES2020",
+    "moduleResolution": "Node10"
   },
   "include": ["./src"],
   "exclude": [
