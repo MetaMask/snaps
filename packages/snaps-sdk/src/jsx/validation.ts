@@ -682,7 +682,6 @@ export const NotificationComponentsStruct = typedUnion([
   ItalicStruct,
   AddressStruct,
   DividerStruct,
-  ValueStruct,
   RowStruct,
   TextStruct,
   TooltipStruct,

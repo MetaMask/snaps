@@ -192,6 +192,7 @@ export function getImplementation({
  * @param params - The unvalidated params object from the method request.
  * @param isOnPhishingList - The function that checks for links against the phishing list.
  * @returns The validated method parameter object.
+ * @throws If the params are invalid.
  */
 export function getValidatedParams(
   params: unknown,
@@ -241,6 +242,10 @@ export function getValidatedParams(
 
   if (params.footerLink) {
     validateTextLinks(params.footerLink as string, isOnPhishingList);
+  }
+
+  if (params.title) {
+    validateTextLinks(params.title as string, isOnPhishingList);
   }
 
   try {
