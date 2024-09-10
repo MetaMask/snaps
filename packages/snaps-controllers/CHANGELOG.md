@@ -7,12 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [9.6.0]
-### Uncategorized
-- Bump MetaMask dependencies ([#2703](https://github.com/MetaMask/snaps/pull/2703))
-- Replace `tsup` with `ts-bridge` ([#2682](https://github.com/MetaMask/snaps/pull/2682))
-- Bump TypeScript and related dependencies ([#2690](https://github.com/MetaMask/snaps/pull/2690))
-- feat: Allow CAIP-10 addresses in `Address` ([#2680](https://github.com/MetaMask/snaps/pull/2680))
+### Added
 - Add `stopAllSnaps` function to `SnapController` ([#2674](https://github.com/MetaMask/snaps/pull/2674))
+
+### Fixed
+- Fix ESM version of the package ([#2682](https://github.com/MetaMask/snaps/pull/2682))
+  - This fixes the ESM version of the package to be fully compliant with the ESM
+    standard.
+- Bump `@metamask/utils` from `^9.1.0` to `^9.2.1` ([#2680](https://github.com/MetaMask/snaps/pull/2680))
+- Bump other MetaMask dependencies ([#2703](https://github.com/MetaMask/snaps/pull/2703))
 
 ## [9.5.0]
 ### Added

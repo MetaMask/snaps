@@ -7,13 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [8.1.0]
-### Uncategorized
-- Bump MetaMask dependencies ([#2703](https://github.com/MetaMask/snaps/pull/2703))
-- Replace `tsup` with `ts-bridge` ([#2682](https://github.com/MetaMask/snaps/pull/2682))
+### Added
+- Add Bitcoin Taproot derivation paths ([#2695](https://github.com/MetaMask/snaps/pull/2695))
+
+### Changed
 - Improve `validateLink` error handling ([#2702](https://github.com/MetaMask/snaps/pull/2702))
-- chore: Add BTC taproot derivation paths ([#2695](https://github.com/MetaMask/snaps/pull/2695))
-- Bump TypeScript and related dependencies ([#2690](https://github.com/MetaMask/snaps/pull/2690))
-- feat: Allow CAIP-10 addresses in `Address` ([#2680](https://github.com/MetaMask/snaps/pull/2680))
+
+### Fixed
+- Fix ESM version of the package ([#2682](https://github.com/MetaMask/snaps/pull/2682))
+  - This fixes the ESM version of the package to be fully compliant with the ESM
+    standard.
+- Bump `@metamask/utils` from `^9.1.0` to `^9.2.1` ([#2680](https://github.com/MetaMask/snaps/pull/2680))
+- Bump other MetaMask dependencies ([#2703](https://github.com/MetaMask/snaps/pull/2703))
 
 ## [8.0.1]
 ### Changed
