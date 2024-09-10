@@ -1,7 +1,15 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { text, type CreateInterfaceResult } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
-import { Text, Box } from '@metamask/snaps-sdk/jsx';
+import {
+  Text,
+  Box,
+  Field,
+  Input,
+  Form,
+  Container,
+  Footer,
+} from '@metamask/snaps-sdk/jsx';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { CreateInterfaceParameters } from './createInterface';
@@ -132,7 +140,114 @@ describe('snap_createInterface', () => {
       error: {
         code: -32602,
         message:
-          'Invalid params: At path: ui -- Expected the value to satisfy a union of `union | union`, but received: "foo".',
+          'Invalid params: At path: ui -- Expected type to be one of: "Address", "Bold", "Box", "Button", "Copyable", "Divider", "Dropdown", "RadioGroup", "FileInput", "Form", "Heading", "Input", "Image", "Italic", "Link", "Row", "Spinner", "Text", "Tooltip", "Checkbox", "Card", "Icon", "Selector", "Section", "Container", but received: undefined.',
+        stack: expect.any(String),
+      },
+      id: 1,
+      jsonrpc: '2.0',
+    });
+  });
+
+  it('throws on invalid UI', async () => {
+    const { implementation } = createInterfaceHandler;
+
+    const createInterface = jest.fn().mockReturnValue('foo');
+
+    const hooks = {
+      createInterface,
+    };
+
+    const engine = new JsonRpcEngine();
+
+    engine.push((request, response, next, end) => {
+      const result = implementation(
+        request as JsonRpcRequest<CreateInterfaceParameters>,
+        response as PendingJsonRpcResponse<CreateInterfaceResult>,
+        next,
+        end,
+        hooks,
+      );
+
+      result?.catch(end);
+    });
+
+    const response = await engine.handle({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'snap_createInterface',
+      params: {
+        ui: (
+          <Box>
+            <Field label="Input">
+              <Input name="input" />
+            </Field>
+          </Box>
+        ) as JSXElement,
+      },
+    });
+
+    expect(response).toStrictEqual({
+      error: {
+        code: -32602,
+        message:
+          'Invalid params: At path: ui.props.children -- Expected type to be one of: "Address", "Bold", "Box", "Button", "Copyable", "Divider", "Dropdown", "RadioGroup", "FileInput", "Form", "Heading", "Input", "Image", "Italic", "Link", "Row", "Spinner", "Text", "Tooltip", "Checkbox", "Card", "Icon", "Selector", "Section", but received: "Field".',
+        stack: expect.any(String),
+      },
+      id: 1,
+      jsonrpc: '2.0',
+    });
+  });
+
+  it('throws on invalid nested UI', async () => {
+    const { implementation } = createInterfaceHandler;
+
+    const createInterface = jest.fn().mockReturnValue('foo');
+
+    const hooks = {
+      createInterface,
+    };
+
+    const engine = new JsonRpcEngine();
+
+    engine.push((request, response, next, end) => {
+      const result = implementation(
+        request as JsonRpcRequest<CreateInterfaceParameters>,
+        response as PendingJsonRpcResponse<CreateInterfaceResult>,
+        next,
+        end,
+        hooks,
+      );
+
+      result?.catch(end);
+    });
+
+    const response = await engine.handle({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'snap_createInterface',
+      params: {
+        ui: (
+          <Container>
+            <Box>
+              <Form name="form">
+                <Field label="Input">
+                  <Input name="input" />
+                </Field>
+              </Form>
+            </Box>
+            <Footer>
+              <Text>Foo</Text>
+            </Footer>
+          </Container>
+        ) as JSXElement,
+      },
+    });
+
+    expect(response).toStrictEqual({
+      error: {
+        code: -32602,
+        message:
+          'Invalid params: At path: ui.props.children.1.props.children.type -- Expected the literal `"Button"`, but received: "Text".',
         stack: expect.any(String),
       },
       id: 1,
