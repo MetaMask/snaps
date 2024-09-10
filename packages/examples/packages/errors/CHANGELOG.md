@@ -7,11 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [2.1.3]
-### Uncategorized
-- Bump TypeScript and related dependencies ([#2690](https://github.com/MetaMask/snaps/pull/2690))
-- chore(devDep): Bump `typescript` from `~4.8.4` to `~5.0.4` ([#2594](https://github.com/MetaMask/snaps/pull/2594))
-- chore(devdeps): @lavamoat/allow-scripts@^3.0.3>^3.0.4 ([#2418](https://github.com/MetaMask/snaps/pull/2418))
-- Add JSX support for custom UI ([#2258](https://github.com/MetaMask/snaps/pull/2258))
+### Fixed
+- Bump MetaMask dependencies
 
 ## [2.1.2]
 ### Changed

@@ -7,22 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [2.3.1]
-### Uncategorized
-- feat: Add `selectiveUnion` for improved Superstruct error messaging ([#2696](https://github.com/MetaMask/snaps/pull/2696))
-- Replace `tsup` with `ts-bridge` ([#2682](https://github.com/MetaMask/snaps/pull/2682))
-- Add support for more customizable input ([#2699](https://github.com/MetaMask/snaps/pull/2699))
-- fix: Allow any element as the child of Container ([#2698](https://github.com/MetaMask/snaps/pull/2698))
-- feat: Support nested unions in `typedUnion` ([#2693](https://github.com/MetaMask/snaps/pull/2693))
-- Bump TypeScript and related dependencies ([#2690](https://github.com/MetaMask/snaps/pull/2690))
-- feat: Allow CAIP-10 addresses in `Address` ([#2680](https://github.com/MetaMask/snaps/pull/2680))
-- fix: Disallow images and icons in footers ([#2676](https://github.com/MetaMask/snaps/pull/2676))
-- Add `Section` component ([#2672](https://github.com/MetaMask/snaps/pull/2672))
-- feat: Add selector component ([#2645](https://github.com/MetaMask/snaps/pull/2645))
-- Add `color` prop to `Text` component ([#2660](https://github.com/MetaMask/snaps/pull/2660))
-- Button component now also allows Images and Icons ([#2641](https://github.com/MetaMask/snaps/pull/2641))
-- Added icon component ([#2638](https://github.com/MetaMask/snaps/pull/2638))
-- Release 62.0.0 ([#2629](https://github.com/MetaMask/snaps/pull/2629))
-- fix: Add structs to `typedUnion` schema ([#2623](https://github.com/MetaMask/snaps/pull/2623))
+### Fixed
+- Bump MetaMask dependencies
 
 ## [2.3.0]
 ### Added

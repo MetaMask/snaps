@@ -7,12 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [2.13.1]
-### Uncategorized
-- Replace `tsup` with `ts-bridge` ([#2682](https://github.com/MetaMask/snaps/pull/2682))
-- Bump TypeScript and related dependencies ([#2690](https://github.com/MetaMask/snaps/pull/2690))
-- Fix test-snaps after yarn upgrade ([#2688](https://github.com/MetaMask/snaps/pull/2688))
-- feat: Allow CAIP-10 addresses in `Address` ([#2680](https://github.com/MetaMask/snaps/pull/2680))
-- Bump Yarn from `3.4.1` to `4.4.1` ([#2683](https://github.com/MetaMask/snaps/pull/2683))
+### Changed
+- Use latest versions of example Snaps ([#2705](https://github.com/MetaMask/snaps/pull/2705))
 
 ## [2.13.0]
 ### Changed

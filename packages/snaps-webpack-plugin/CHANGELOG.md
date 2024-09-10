@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [4.1.1]
-### Uncategorized
-- Replace `tsup` with `ts-bridge` ([#2682](https://github.com/MetaMask/snaps/pull/2682))
-- Bump TypeScript and related dependencies ([#2690](https://github.com/MetaMask/snaps/pull/2690))
-- feat: Allow CAIP-10 addresses in `Address` ([#2680](https://github.com/MetaMask/snaps/pull/2680))
+### Fixed
+- Fix ESM version of the package ([#2682](https://github.com/MetaMask/snaps/pull/2682))
+  - This fixes the ESM version of the package to be fully compliant with the ESM
+    standard.
+- Bump `@metamask/utils` from `^9.1.0` to `^9.2.1` ([#2680](https://github.com/MetaMask/snaps/pull/2680))
 
 ## [4.1.0]
 ### Changed

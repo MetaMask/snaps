@@ -7,13 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [6.7.0]
-### Uncategorized
-- Bump MetaMask dependencies ([#2703](https://github.com/MetaMask/snaps/pull/2703))
-- Replace `tsup` with `ts-bridge` ([#2682](https://github.com/MetaMask/snaps/pull/2682))
-- Bump TypeScript and related dependencies ([#2690](https://github.com/MetaMask/snaps/pull/2690))
+### Changed
 - Unblock `wallet_requestSnaps` ([#2661](https://github.com/MetaMask/snaps/pull/2661))
-- feat: Allow CAIP-10 addresses in `Address` ([#2680](https://github.com/MetaMask/snaps/pull/2680))
-- chore(devDep): Bump `typescript` from `~4.8.4` to `~5.0.4` ([#2594](https://github.com/MetaMask/snaps/pull/2594))
+
+### Fixed
+- Fix ESM version of the package ([#2682](https://github.com/MetaMask/snaps/pull/2682))
+  - This fixes the ESM version of the package to be fully compliant with the ESM
+    standard.
+- Bump `@metamask/utils` from `^9.1.0` to `^9.2.1` ([#2680](https://github.com/MetaMask/snaps/pull/2680))
+- Bump other MetaMask dependencies ([#2703](https://github.com/MetaMask/snaps/pull/2703))
 
 ## [6.6.2]
 ### Changed

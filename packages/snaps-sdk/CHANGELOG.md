@@ -7,16 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [6.4.0]
-### Uncategorized
-- feat: Add `selectiveUnion` for improved Superstruct error messaging ([#2696](https://github.com/MetaMask/snaps/pull/2696))
-- Replace `tsup` with `ts-bridge` ([#2682](https://github.com/MetaMask/snaps/pull/2682))
-- Add support for more customizable input ([#2699](https://github.com/MetaMask/snaps/pull/2699))
-- fix: Allow any element as the child of Container ([#2698](https://github.com/MetaMask/snaps/pull/2698))
-- feat: Support nested unions in `typedUnion` ([#2693](https://github.com/MetaMask/snaps/pull/2693))
-- Bump TypeScript and related dependencies ([#2690](https://github.com/MetaMask/snaps/pull/2690))
-- feat: Allow CAIP-10 addresses in `Address` ([#2680](https://github.com/MetaMask/snaps/pull/2680))
-- fix: Disallow images and icons in footers ([#2676](https://github.com/MetaMask/snaps/pull/2676))
+### Added
 - Add `Section` component ([#2672](https://github.com/MetaMask/snaps/pull/2672))
+- Add support for element before input in the `Field` component ([#2699](https://github.com/MetaMask/snaps/pull/2699))
+
+### Changed
+- Allow CAIP-10 addresses in the `Address` component ([#2680](https://github.com/MetaMask/snaps/pull/2680))
+- Improve error messaging ([#2696](https://github.com/MetaMask/snaps/pull/2696), [#2693](https://github.com/MetaMask/snaps/pull/2693))
+
+### Fixed
+- Allow any element as the child of the `Container` component ([#2698](https://github.com/MetaMask/snaps/pull/2698))
+- Disallow images and icons in footers ([#2676](https://github.com/MetaMask/snaps/pull/2676))
+- Fix ESM version of the package ([#2682](https://github.com/MetaMask/snaps/pull/2682))
+  - This fixes the ESM version of the package to be fully compliant with the ESM
+    standard.
+- Bump `@metamask/utils` from `^9.1.0` to `^9.2.1` ([#2680](https://github.com/MetaMask/snaps/pull/2680))
+- Bump other MetaMask dependencies ([#2703](https://github.com/MetaMask/snaps/pull/2703))
 
 ## [6.3.0]
 ### Added
