@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.3]
+
 ### Uncategorized
 
 - Replace `tsup` with `ts-bridge` ([#2682](https://github.com/MetaMask/snaps/pull/2682))
@@ -81,7 +83,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release ([#1918](https://github.com/MetaMask/snaps/pull/1918))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/home-page-example-snap@1.1.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/home-page-example-snap@1.1.3...HEAD
+[1.1.3]: https://github.com/MetaMask/snaps/compare/@metamask/home-page-example-snap@1.1.2...@metamask/home-page-example-snap@1.1.3
 [1.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/home-page-example-snap@1.1.1...@metamask/home-page-example-snap@1.1.2
 [1.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/home-page-example-snap@1.1.0...@metamask/home-page-example-snap@1.1.1
 [1.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/home-page-example-snap@1.0.0...@metamask/home-page-example-snap@1.1.0

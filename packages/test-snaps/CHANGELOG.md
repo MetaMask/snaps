@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.13.1]
+
 ### Uncategorized
 
 - Replace `tsup` with `ts-bridge` ([#2682](https://github.com/MetaMask/snaps/pull/2682))
@@ -207,7 +209,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.13.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.13.1...HEAD
+[2.13.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.13.0...@metamask/test-snaps@2.13.1
 [2.13.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.12.0...@metamask/test-snaps@2.13.0
 [2.12.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.11.0...@metamask/test-snaps@2.12.0
 [2.11.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.10.0...@metamask/test-snaps@2.11.0

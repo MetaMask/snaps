@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1]
+
 ### Uncategorized
 
 - feat: Add `selectiveUnion` for improved Superstruct error messaging ([#2696](https://github.com/MetaMask/snaps/pull/2696))
@@ -67,6 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add images example Snap ([#2002](https://github.com/MetaMask/snaps/pull/2002))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/images-example-snap@1.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/images-example-snap@1.1.1...HEAD
+[1.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/images-example-snap@1.1.0...@metamask/images-example-snap@1.1.1
 [1.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/images-example-snap@1.0.0...@metamask/images-example-snap@1.1.0
 [1.0.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/images-example-snap@1.0.0

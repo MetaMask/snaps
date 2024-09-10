@@ -1,6 +1,6 @@
 {
   "name": "@metamask/signature-insights-example-snap",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "MetaMask example snap demonstrating the use of the Signature Insights API.",
   "repository": {
     "type": "git",
