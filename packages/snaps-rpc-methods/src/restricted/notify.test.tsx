@@ -21,6 +21,7 @@ describe('snap_notify', () => {
         showInAppNotification: jest.fn(),
         isOnPhishingList: jest.fn(),
         maybeUpdatePhishingList: jest.fn(),
+        createInterface: jest.fn(),
       };
 
       expect(
@@ -43,12 +44,14 @@ describe('snap_notify', () => {
       const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValueOnce(false);
       const maybeUpdatePhishingList = jest.fn();
+      const createInterface = jest.fn();
 
       const notificationImplementation = getImplementation({
         showNativeNotification,
         showInAppNotification,
         isOnPhishingList,
         maybeUpdatePhishingList,
+        createInterface,
       });
 
       await notificationImplementation({
@@ -68,17 +71,60 @@ describe('snap_notify', () => {
       });
     });
 
-    it('shows native notification', async () => {
+    it('shows inApp notifications with a detailed view', async () => {
       const showNativeNotification = jest.fn().mockResolvedValueOnce(true);
       const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValueOnce(false);
       const maybeUpdatePhishingList = jest.fn();
+      const createInterface = jest.fn().mockResolvedValueOnce(1);
 
       const notificationImplementation = getImplementation({
         showNativeNotification,
         showInAppNotification,
         isOnPhishingList,
         maybeUpdatePhishingList,
+        createInterface,
+      });
+
+      await notificationImplementation({
+        context: {
+          origin: 'extension',
+        },
+        method: 'snap_notify',
+        params: {
+          type: NotificationType.InApp,
+          message: 'Some message',
+          title: 'Detailed view title',
+          detailedView: <Text>Hello</Text>,
+        },
+      });
+
+      expect(showInAppNotification).toHaveBeenCalledWith('extension', {
+        type: NotificationType.InApp,
+        message: 'Some message',
+        title: 'Detailed view title',
+        detailedView: 1,
+      });
+
+      expect(createInterface).toHaveBeenCalledWith(
+        'extension',
+        <Text>Hello</Text>,
+      );
+    });
+
+    it('shows native notification', async () => {
+      const showNativeNotification = jest.fn().mockResolvedValueOnce(true);
+      const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
+      const isOnPhishingList = jest.fn().mockResolvedValueOnce(false);
+      const maybeUpdatePhishingList = jest.fn();
+      const createInterface = jest.fn();
+
+      const notificationImplementation = getImplementation({
+        showNativeNotification,
+        showInAppNotification,
+        isOnPhishingList,
+        maybeUpdatePhishingList,
+        createInterface,
       });
 
       await notificationImplementation({
@@ -103,12 +149,14 @@ describe('snap_notify', () => {
       const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValueOnce(false);
       const maybeUpdatePhishingList = jest.fn();
+      const createInterface = jest.fn();
 
       const notificationImplementation = getImplementation({
         showNativeNotification,
         showInAppNotification,
         isOnPhishingList,
         maybeUpdatePhishingList,
+        createInterface,
       });
 
       await notificationImplementation({
@@ -133,12 +181,14 @@ describe('snap_notify', () => {
       const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValueOnce(false);
       const maybeUpdatePhishingList = jest.fn();
+      const createInterface = jest.fn();
 
       const notificationImplementation = getImplementation({
         showNativeNotification,
         showInAppNotification,
         isOnPhishingList,
         maybeUpdatePhishingList,
+        createInterface,
       });
 
       await expect(
@@ -236,12 +286,14 @@ describe('snap_notify', () => {
       const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValue(true);
       const maybeUpdatePhishingList = jest.fn();
+      const createInterface = jest.fn();
 
       const notificationImplementation = getImplementation({
         showNativeNotification,
         showInAppNotification,
         isOnPhishingList,
         maybeUpdatePhishingList,
+        createInterface,
       });
 
       await expect(
@@ -263,12 +315,14 @@ describe('snap_notify', () => {
       const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValue(true);
       const maybeUpdatePhishingList = jest.fn();
+      const createInterface = jest.fn();
 
       const notificationImplementation = getImplementation({
         showNativeNotification,
         showInAppNotification,
         isOnPhishingList,
         maybeUpdatePhishingList,
+        createInterface,
       });
 
       await expect(
@@ -292,12 +346,14 @@ describe('snap_notify', () => {
       const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValue(true);
       const maybeUpdatePhishingList = jest.fn();
+      const createInterface = jest.fn();
 
       const notificationImplementation = getImplementation({
         showNativeNotification,
         showInAppNotification,
         isOnPhishingList,
         maybeUpdatePhishingList,
+        createInterface,
       });
 
       const content = (
@@ -328,12 +384,14 @@ describe('snap_notify', () => {
       const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValue(true);
       const maybeUpdatePhishingList = jest.fn();
+      const createInterface = jest.fn();
 
       const notificationImplementation = getImplementation({
         showNativeNotification,
         showInAppNotification,
         isOnPhishingList,
         maybeUpdatePhishingList,
+        createInterface,
       });
 
       const content = (
@@ -366,12 +424,14 @@ describe('snap_notify', () => {
       const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValue(true);
       const maybeUpdatePhishingList = jest.fn();
+      const createInterface = jest.fn();
 
       const notificationImplementation = getImplementation({
         showNativeNotification,
         showInAppNotification,
         isOnPhishingList,
         maybeUpdatePhishingList,
+        createInterface,
       });
 
       const content = (
@@ -402,12 +462,14 @@ describe('snap_notify', () => {
       const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValue(true);
       const maybeUpdatePhishingList = jest.fn();
+      const createInterface = jest.fn();
 
       const notificationImplementation = getImplementation({
         showNativeNotification,
         showInAppNotification,
         isOnPhishingList,
         maybeUpdatePhishingList,
+        createInterface,
       });
 
       const content = (

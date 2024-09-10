@@ -10,13 +10,14 @@ import type {
   NotifyParams,
   NotifyResult,
   EnumToUnion,
+  NotificationComponent,
 } from '@metamask/snaps-sdk';
 import { NotificationComponentsStruct } from '@metamask/snaps-sdk/jsx';
 import { validateTextLinks } from '@metamask/snaps-utils';
 import type { InferMatching } from '@metamask/snaps-utils';
 import { create, object, string } from '@metamask/superstruct';
 import type { NonEmptyArray } from '@metamask/utils';
-import { isObject } from '@metamask/utils';
+import { hasProperty, isObject } from '@metamask/utils';
 
 import { type MethodHooksObject } from '../utils';
 
@@ -93,6 +94,11 @@ export type NotifyMethodHooks = {
   isOnPhishingList: (url: string) => boolean;
 
   maybeUpdatePhishingList: () => Promise<void>;
+
+  createInterface: (
+    origin: string,
+    content: NotificationComponent,
+  ) => Promise<string>;
 };
 
 type SpecificationBuilderOptions = {
@@ -135,6 +141,7 @@ const methodHooks: MethodHooksObject<NotifyMethodHooks> = {
   showInAppNotification: true,
   isOnPhishingList: true,
   maybeUpdatePhishingList: true,
+  createInterface: true,
 };
 
 export const notifyBuilder = Object.freeze({
@@ -151,6 +158,7 @@ export const notifyBuilder = Object.freeze({
  * @param hooks.showInAppNotification - A function that shows a notification in the MetaMask UI.
  * @param hooks.isOnPhishingList - A function that checks for links against the phishing list.
  * @param hooks.maybeUpdatePhishingList - A function that updates the phishing list if needed.
+ * @param hooks.createInterface - A function that creates the interface in SnapInterfaceController.
  * @returns The method implementation which returns `null` on success.
  * @throws If the params are invalid.
  */
@@ -159,6 +167,7 @@ export function getImplementation({
   showInAppNotification,
   isOnPhishingList,
   maybeUpdatePhishingList,
+  createInterface,
 }: NotifyMethodHooks) {
   return async function implementation(
     args: RestrictedMethodOptions<NotifyParams>,
@@ -171,6 +180,15 @@ export function getImplementation({
     await maybeUpdatePhishingList();
 
     const validatedParams = getValidatedParams(params, isOnPhishingList);
+
+    let id;
+    if (hasProperty(validatedParams, 'detailedView')) {
+      id = await createInterface(
+        origin,
+        validatedParams.detailedView as NotificationComponent,
+      );
+      validatedParams.detailedView = id;
+    }
 
     switch (validatedParams.type) {
       case NotificationType.Native:
