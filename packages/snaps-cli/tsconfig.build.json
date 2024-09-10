@@ -2,8 +2,9 @@
   "extends": "../../tsconfig.packages.build.json",
   "compilerOptions": {
     "baseUrl": "./",
-    "outDir": "./dist/types",
-    "rootDir": "./src"
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "skipLibCheck": true
   },
   "include": ["./src"],
   "exclude": [

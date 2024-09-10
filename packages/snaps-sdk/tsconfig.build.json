@@ -2,8 +2,10 @@
   "extends": "../../tsconfig.packages.build.json",
   "compilerOptions": {
     "baseUrl": "./",
-    "outDir": "./dist/types",
-    "rootDir": "./src"
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "module": "ES2020",
+    "moduleResolution": "Node10"
   },
   "include": ["./src"],
   "exclude": [

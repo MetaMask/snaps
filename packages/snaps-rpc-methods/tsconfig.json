@@ -3,6 +3,6 @@
   "compilerOptions": {
     "baseUrl": "./"
   },
-  "include": ["./src", "package.json", "tsup.config.ts"],
+  "include": ["./src", "package.json"],
   "references": [{ "path": "../snaps-sdk" }, { "path": "../snaps-utils" }]
 }

@@ -6,6 +6,7 @@ import {
   literal as superstructLiteral,
   union as superstructUnion,
 } from '@metamask/superstruct';
+import type { PlainObject } from '@metamask/utils';
 import { hasProperty, isPlainObject } from '@metamask/utils';
 
 import type { EnumToUnion } from './helpers';
@@ -97,6 +98,7 @@ export function typedUnion<Head extends AnyStruct, Tail extends AnyStruct[]>(
         : struct,
     )
     .flat(Infinity);
+  const types = flatStructs.map(({ schema }) => schema.type.type);
   return new Struct({
     type: 'union',
     schema: flatStructs,
@@ -116,9 +118,28 @@ export function typedUnion<Head extends AnyStruct, Tail extends AnyStruct[]>(
         yield entry;
       }
     },
-    validator(value, context) {
-      const types = flatStructs.map(({ schema }) => schema.type.type);
+    coercer(value, context) {
+      if (!isPlainObject(value) || !hasProperty(value, 'type')) {
+        return value;
+      }
 
+      const { type } = value;
+      const struct = flatStructs.find(({ schema }) => is(type, schema.type));
+      if (struct) {
+        return struct.coercer(value, context);
+      }
+
+      return value;
+    },
+    // At this point we know the value to be an object.
+    *refiner(value: PlainObject, context) {
+      const struct = flatStructs.find(({ schema }) =>
+        is(value.type, schema.type),
+      );
+
+      yield* struct.refiner(value, context);
+    },
+    validator(value, context) {
       if (
         !isPlainObject(value) ||
         !hasProperty(value, 'type') ||
@@ -143,4 +164,44 @@ export function typedUnion<Head extends AnyStruct, Tail extends AnyStruct[]>(
       )}, but received: "${type}"`;
     },
   }) as unknown as Struct<Infer<Head> | InferStructTuple<Tail>[number], null>;
+}
+
+/**
+ * Create a custom union struct that uses a `selector` function for choosing
+ * the validation path.
+ *
+ * @param selector - The selector function choosing the struct to validate with.
+ * @returns The `superstruct` struct, which validates that the value satisfies
+ * one of the structs.
+ */
+export function selectiveUnion<Selector extends (value: any) => AnyStruct>(
+  selector: Selector,
+): Struct<Infer<ReturnType<Selector>>, null> {
+  return new Struct({
+    type: 'union',
+    schema: null,
+    *entries(value, context) {
+      const struct = selector(value);
+
+      for (const entry of struct.entries(value, context)) {
+        yield entry;
+      }
+    },
+    *refiner(value, context) {
+      const struct = selector(value);
+
+      yield* struct.refiner(value, context);
+    },
+    coercer(value, context) {
+      const struct = selector(value);
+
+      return struct.coercer(value, context);
+    },
+    validator(value, context) {
+      const struct = selector(value);
+
+      // This only validates the root of the struct, entries does the rest of the work.
+      return struct.validator(value, context);
+    },
+  });
 }

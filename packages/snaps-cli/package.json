@@ -10,30 +10,33 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/types/index.d.ts"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./package.json": "./package.json",
     "./browserslistrc": "./.browserslistrc"
   },
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
-  "types": "./dist/types/index.d.ts",
+  "types": "./dist/index.d.cts",
   "bin": {
-    "mm-snap": "./dist/main.js"
+    "mm-snap": "./dist/main.cjs"
   },
   "files": [
     "dist",
     ".browserslistrc"
   ],
   "scripts": {
-    "build": "tsup --clean && yarn build:types && yarn build:chmod && yarn build:readme",
-    "build:types": "tsc --project tsconfig.build.json",
+    "build": "ts-bridge --project tsconfig.build.json --verbose --no-references && yarn build:chmod && yarn build:readme",
     "build:chmod": "chmod +x ./dist/main.mjs && chmod +x ./dist/main.js",
     "build:readme": "node ./scripts/updateReadme.js",
     "build:watch": "tsc-watch --onSuccess 'yarn build:chmod'",
-    "clean": "rimraf '*.tsbuildinfo' 'dist'",
     "test": "jest --runInBand && yarn posttest",
     "posttest": "jest-it-up",
     "test:watch": "yarn test --watch",
@@ -45,8 +48,7 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "publish:preview": "yarn npm publish --tag preview",
     "lint:ci": "yarn lint",
-    "lint:dependencies": "depcheck",
-    "build:ci": "tsup --clean"
+    "lint:dependencies": "depcheck"
   },
   "dependencies": {
     "@babel/core": "^7.23.2",
@@ -107,10 +109,10 @@
     "@metamask/eslint-config-nodejs": "^12.1.0",
     "@metamask/eslint-config-typescript": "^12.1.0",
     "@swc/jest": "^0.2.26",
+    "@ts-bridge/cli": "^0.4.4",
     "@types/browserify": "^12.0.37",
     "@types/jest": "^27.5.1",
     "@types/node": "18.14.2",
-    "@types/rimraf": "^3.0.0",
     "@types/serve-handler": "^6.1.0",
     "@types/yargs": "^17.0.24",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
@@ -132,10 +134,8 @@
     "memfs": "^3.4.13",
     "prettier": "^2.7.1",
     "prettier-plugin-packagejson": "^2.2.11",
-    "rimraf": "^4.1.2",
     "ts-node": "^10.9.1",
     "tsc-watch": "^4.5.0",
-    "tsup": "^8.0.1",
     "typescript": "~5.3.3"
   },
   "engines": {

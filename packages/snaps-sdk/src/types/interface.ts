@@ -6,8 +6,9 @@ import {
   string,
   union,
 } from '@metamask/superstruct';
-import { JsonStruct } from '@metamask/utils';
+import { JsonStruct, hasProperty, isObject } from '@metamask/utils';
 
+import { selectiveUnion } from '../internals';
 import type { JSXElement } from '../jsx';
 import { RootJSXElementStruct } from '../jsx';
 import type { Component } from '../ui';
@@ -35,10 +36,12 @@ export type FormState = Infer<typeof FormStateStruct>;
 export type InterfaceState = Infer<typeof InterfaceStateStruct>;
 
 export type ComponentOrElement = Component | JSXElement;
-export const ComponentOrElementStruct = union([
-  ComponentStruct,
-  RootJSXElementStruct,
-]);
+export const ComponentOrElementStruct = selectiveUnion((value) => {
+  if (isObject(value) && !hasProperty(value, 'props')) {
+    return ComponentStruct;
+  }
+  return RootJSXElementStruct;
+});
 
 export const InterfaceContextStruct = record(string(), JsonStruct);
 export type InterfaceContext = Infer<typeof InterfaceContextStruct>;

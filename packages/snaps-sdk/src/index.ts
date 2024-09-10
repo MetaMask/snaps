@@ -9,6 +9,8 @@ export {
   literal,
   union,
   enumValue,
+  typedUnion,
+  selectiveUnion,
 } from './internals';
 
 // Re-exported from `@metamask/utils` for convenience.
