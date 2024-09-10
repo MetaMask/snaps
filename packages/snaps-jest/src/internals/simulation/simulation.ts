@@ -5,6 +5,7 @@ import type {
 import { ControllerMessenger } from '@metamask/base-controller';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { mnemonicPhraseToBytes } from '@metamask/key-tree';
+import { PhishingDetectorResultType } from '@metamask/phishing-controller';
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
 import {
   detectSnapLocation,
@@ -291,9 +292,7 @@ export function registerActions(
 
   controllerMessenger.registerActionHandler(
     'PhishingController:testOrigin',
-    // @ts-expect-error - `type` expects a `PhishingDetectorResultType` enum,
-    // but it's not exported.
-    () => ({ result: false, type: 'all' }),
+    () => ({ result: false, type: PhishingDetectorResultType.All }),
   );
 
   controllerMessenger.registerActionHandler(
