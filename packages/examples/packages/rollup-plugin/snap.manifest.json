@@ -1,5 +1,5 @@
 {
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "MetaMask example snap demonstrating how to use the Rollup plugin to bundle a snap.",
   "proposedName": "Rollup Plugin Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "Oe6qk8RKXcAG9EU/rPVLq8p14YgP9yOv+dWFEleGHaI=",
+    "shasum": "FvkhD/R3iN0i/0P4OTlD0rPX+697OZ0a5kns8T669Jk=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
