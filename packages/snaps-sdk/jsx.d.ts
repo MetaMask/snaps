@@ -1,1 +1,3 @@
-export * from './dist/types/jsx';
+/* eslint-disable import/extensions */
+
+export * from './dist/jsx/index.cjs';

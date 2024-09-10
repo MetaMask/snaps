@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.packages.build.json",
   "compilerOptions": {
     "baseUrl": "./",
-    "outDir": "./dist/types",
+    "outDir": "./dist",
     "rootDir": "./src"
   },
   "include": ["./src"],
@@ -12,7 +12,7 @@
     "./src/**/test-utils",
     "./src/**/__mocks__",
     "./src/**/__snapshots__",
-    "./src/eval-worker.js",
+    "./src/eval-worker.cjs",
     "scripts"
   ],
   "references": [

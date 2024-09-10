@@ -1,1 +1,3 @@
-export * from './dist/types/jsx/jsx-dev-runtime';
+/* eslint-disable import/extensions */
+
+export * from './dist/jsx/jsx-dev-runtime.cjs';

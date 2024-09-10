@@ -5,7 +5,7 @@
     "jsx": "react-jsx",
     "resolveJsonModule": true
   },
-  "include": ["./src", "webpack.config.ts", "package.json", "tsup.config.ts"],
+  "include": ["./src", "webpack.config.ts", "package.json"],
   "references": [
     { "path": "../snaps-rpc-methods" },
     { "path": "../snaps-controllers" },

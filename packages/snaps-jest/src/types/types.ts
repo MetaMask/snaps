@@ -9,7 +9,7 @@ import type {
   SnapOptionsStruct,
   SnapResponseStruct,
   TransactionOptionsStruct,
-} from './internals';
+} from '../internals';
 
 export type RequestOptions = {
   /**
