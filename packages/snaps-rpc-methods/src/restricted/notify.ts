@@ -9,31 +9,22 @@ import { enumValue, NotificationType, union } from '@metamask/snaps-sdk';
 import type {
   NotifyParams,
   NotifyResult,
-  EnumToUnion,
   NotificationComponent,
 } from '@metamask/snaps-sdk';
 import { NotificationComponentsStruct } from '@metamask/snaps-sdk/jsx';
-import { validateTextLinks } from '@metamask/snaps-utils';
+import {
+  createUnion,
+  validateLink,
+  validateTextLinks,
+} from '@metamask/snaps-utils';
 import type { InferMatching } from '@metamask/snaps-utils';
-import { create, object, string } from '@metamask/superstruct';
+import { object, string } from '@metamask/superstruct';
 import type { NonEmptyArray } from '@metamask/utils';
 import { hasProperty, isObject } from '@metamask/utils';
 
 import { type MethodHooksObject } from '../utils';
 
 const methodName = 'snap_notify';
-
-export type NotificationArgs = {
-  /**
-   * Enum type to determine notification type.
-   */
-  type: EnumToUnion<NotificationType>;
-
-  /**
-   * A message to show on the notification.
-   */
-  message: string;
-};
 
 const NativeNotificationStruct = object({
   type: enumValue(NotificationType.Native),
@@ -57,7 +48,10 @@ const InAppNotificationWithDetailsAndFooterStruct = object({
   message: string(),
   detailedView: NotificationComponentsStruct,
   title: string(),
-  footerLink: string(),
+  footerLink: object({
+    href: string(),
+    text: string(),
+  }),
 });
 
 const NotificationParametersStruct = union([
@@ -256,18 +250,21 @@ export function getValidatedParams(
     });
   }
 
-  validateTextLinks(message as string, isOnPhishingList);
-
-  if (params.footerLink) {
-    validateTextLinks(params.footerLink as string, isOnPhishingList);
-  }
-
-  if (params.title) {
-    validateTextLinks(params.title as string, isOnPhishingList);
-  }
-
   try {
-    return create(params, NotificationParametersStruct);
+    const validatedParams = createUnion(
+      params,
+      NotificationParametersStruct,
+      'type',
+    );
+
+    validateTextLinks(validatedParams.message, isOnPhishingList);
+
+    if (hasProperty(validatedParams, 'footerLink')) {
+      validateTextLinks(validatedParams.footerLink.text, isOnPhishingList);
+      validateLink(validatedParams.footerLink.href, isOnPhishingList);
+    }
+
+    return validatedParams;
   } catch (error) {
     throw rpcErrors.invalidParams({
       message: `Invalid params: ${error.message}`,

@@ -53,7 +53,7 @@ export type NotifyParams =
       message: string;
       detailedView: NotificationComponent;
       title: string;
-      footerLink: string;
+      footerLink: { href: string; text: string };
     };
 
 /**

@@ -371,7 +371,7 @@ describe('snap_notify', () => {
           params: {
             type: 'inApp',
             message: 'message',
-            footerLink: '[test](https://foo.bar)',
+            footerLink: { href: 'https://www.metamask.io', text: 'test' },
             title: 'A title',
             detailedView: content,
           },
@@ -409,86 +409,8 @@ describe('snap_notify', () => {
           params: {
             type: 'inApp',
             message: 'message',
-            footerLink: '[test](http://foo.bar)',
+            footerLink: { href: 'http://foo.bar', text: 'test' },
             title: 'A title',
-            detailedView: content,
-          },
-        }),
-      ).rejects.toThrow(
-        'Invalid URL: Protocol must be one of: https:, mailto:.',
-      );
-    });
-
-    it('throws an error if a link in the `title` property is on the phishing list', async () => {
-      const showNativeNotification = jest.fn().mockResolvedValueOnce(true);
-      const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
-      const isOnPhishingList = jest.fn().mockResolvedValue(true);
-      const maybeUpdatePhishingList = jest.fn();
-      const createInterface = jest.fn();
-
-      const notificationImplementation = getImplementation({
-        showNativeNotification,
-        showInAppNotification,
-        isOnPhishingList,
-        maybeUpdatePhishingList,
-        createInterface,
-      });
-
-      const content = (
-        <Box>
-          <Text>Hello, world!</Text>
-        </Box>
-      );
-
-      await expect(
-        notificationImplementation({
-          context: {
-            origin: 'extension',
-          },
-          method: 'snap_notify',
-          params: {
-            type: 'inApp',
-            message: 'message',
-            footerLink: 'a link',
-            title: '[test](https://foo.bar)',
-            detailedView: content,
-          },
-        }),
-      ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
-    });
-
-    it('throws an error if a link in the `title` property is invalid', async () => {
-      const showNativeNotification = jest.fn().mockResolvedValueOnce(true);
-      const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
-      const isOnPhishingList = jest.fn().mockResolvedValue(true);
-      const maybeUpdatePhishingList = jest.fn();
-      const createInterface = jest.fn();
-
-      const notificationImplementation = getImplementation({
-        showNativeNotification,
-        showInAppNotification,
-        isOnPhishingList,
-        maybeUpdatePhishingList,
-        createInterface,
-      });
-
-      const content = (
-        <Box>
-          <Text>Hello, world!</Text>
-        </Box>
-      );
-
-      await expect(
-        notificationImplementation({
-          context: {
-            origin: 'extension',
-          },
-          method: 'snap_notify',
-          params: {
-            type: 'inApp',
-            message: 'message',
-            footerLink: 'a link',
-            title: '[test](http://foo.bar)',
             detailedView: content,
           },
         }),
