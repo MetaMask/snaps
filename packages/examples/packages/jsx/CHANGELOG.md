@@ -1,4 +1,5 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -6,20 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- Replace `tsup` with `ts-bridge` ([#2682](https://github.com/MetaMask/snaps/pull/2682))
+- Add support for more customizable input ([#2699](https://github.com/MetaMask/snaps/pull/2699))
+- fix: Allow any element as the child of Container ([#2698](https://github.com/MetaMask/snaps/pull/2698))
+- feat: Support nested unions in `typedUnion` ([#2693](https://github.com/MetaMask/snaps/pull/2693))
+- Bump TypeScript and related dependencies ([#2690](https://github.com/MetaMask/snaps/pull/2690))
+- feat: Allow CAIP-10 addresses in `Address` ([#2680](https://github.com/MetaMask/snaps/pull/2680))
+- fix: Disallow images and icons in footers ([#2676](https://github.com/MetaMask/snaps/pull/2676))
+- Add `Section` component ([#2672](https://github.com/MetaMask/snaps/pull/2672))
+
 ## [1.2.0]
+
 ### Added
+
 - Made JSX example use Card component ([#2665](https://github.com/MetaMask/snaps/pull/2665))
 
 ## [1.1.1]
+
 ### Fixed
+
 - Move bold tags in JSX Example Snap ([#2520](https://github.com/MetaMask/snaps/pull/2520))
 
 ## [1.1.0]
+
 ### Added
+
 - Add `Tooltip` to JSX example ([#2498](https://github.com/MetaMask/snaps/pull/2498))
 
 ## [1.0.0]
+
 ### Added
+
 - Add JSX example Snap ([#2258](https://github.com/MetaMask/snaps/pull/2258))
 
 [Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/jsx-example-snap@1.2.0...HEAD
