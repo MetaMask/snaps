@@ -1,5 +1,4 @@
 # Changelog
-
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -8,9 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [1.0.3]
-
 ### Uncategorized
-
 - feat: Add `selectiveUnion` for improved Superstruct error messaging ([#2696](https://github.com/MetaMask/snaps/pull/2696))
 - Replace `tsup` with `ts-bridge` ([#2682](https://github.com/MetaMask/snaps/pull/2682))
 - Add support for more customizable input ([#2699](https://github.com/MetaMask/snaps/pull/2699))
@@ -58,21 +55,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [BREAKING] Support Interactive UI in `snaps-jest` ([#2286](https://github.com/MetaMask/snaps/pull/2286))
 
 ## [1.0.2]
-
 ### Changed
-
 - Re-release after multiple changes in the monorepo ([#2295](https://github.com/MetaMask/snaps/pull/2295))
 
 ## [1.0.1]
-
 ### Changed
-
 - Remove snap icon ([#2189](https://github.com/MetaMask/snaps/pull/2189))
 
 ## [1.0.0]
-
 ### Added
-
 - Add signature insights example ([#2114](https://github.com/MetaMask/snaps/pull/2079))
 
 [Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/signature-insights-example-snap@1.0.3...HEAD
