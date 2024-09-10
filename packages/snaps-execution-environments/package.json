@@ -56,7 +56,7 @@
   "dependencies": {
     "@metamask/json-rpc-engine": "^9.0.2",
     "@metamask/object-multiplex": "^2.0.0",
-    "@metamask/post-message-stream": "^8.1.0",
+    "@metamask/post-message-stream": "^8.1.1",
     "@metamask/providers": "^17.1.2",
     "@metamask/rpc-errors": "^6.3.1",
     "@metamask/snaps-sdk": "workspace:^",
