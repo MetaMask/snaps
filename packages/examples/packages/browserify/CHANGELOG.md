@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.3]
+
 ### Uncategorized
 
 - feat: Add `selectiveUnion` for improved Superstruct error messaging ([#2696](https://github.com/MetaMask/snaps/pull/2696))
@@ -107,7 +109,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add Browserify example snap ([#1632](https://github.com/MetaMask/snaps/pull/1632))
   - This snap demonstrates how to use the deprecated Browserify configuration format.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/browserify-example-snap@2.1.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/browserify-example-snap@2.1.3...HEAD
+[2.1.3]: https://github.com/MetaMask/snaps/compare/@metamask/browserify-example-snap@2.1.2...@metamask/browserify-example-snap@2.1.3
 [2.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/browserify-example-snap@2.1.1...@metamask/browserify-example-snap@2.1.2
 [2.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/browserify-example-snap@2.1.0...@metamask/browserify-example-snap@2.1.1
 [2.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/browserify-example-snap@2.0.1...@metamask/browserify-example-snap@2.1.0
