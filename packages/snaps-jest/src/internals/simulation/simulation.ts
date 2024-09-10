@@ -5,19 +5,20 @@ import type {
 import { ControllerMessenger } from '@metamask/base-controller';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { mnemonicPhraseToBytes } from '@metamask/key-tree';
+import { PhishingDetectorResultType } from '@metamask/phishing-controller';
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
 import {
-  fetchSnap,
   detectSnapLocation,
+  fetchSnap,
   NodeThreadExecutionService,
   setupMultiplex,
 } from '@metamask/snaps-controllers/node';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import type {
-  SnapId,
   AuxiliaryFileEncoding,
   Component,
   InterfaceState,
+  SnapId,
 } from '@metamask/snaps-sdk';
 import type { FetchedSnapFiles } from '@metamask/snaps-utils';
 import { logError } from '@metamask/snaps-utils';
@@ -291,7 +292,7 @@ export function registerActions(
 
   controllerMessenger.registerActionHandler(
     'PhishingController:testOrigin',
-    () => ({ result: false, type: 'all' }),
+    () => ({ result: false, type: PhishingDetectorResultType.All }),
   );
 
   controllerMessenger.registerActionHandler(
