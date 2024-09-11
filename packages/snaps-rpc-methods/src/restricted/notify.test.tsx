@@ -95,7 +95,7 @@ describe('snap_notify', () => {
           type: NotificationType.InApp,
           message: 'Some message',
           title: 'Detailed view title',
-          detailedView: <Text>Hello</Text>,
+          content: <Text>Hello</Text>,
         },
       });
 
@@ -103,7 +103,7 @@ describe('snap_notify', () => {
         type: NotificationType.InApp,
         message: 'Some message',
         title: 'Detailed view title',
-        detailedView: 1,
+        content: 1,
       });
 
       expect(createInterface).toHaveBeenCalledWith(
@@ -373,7 +373,7 @@ describe('snap_notify', () => {
             message: 'message',
             footerLink: { href: 'https://www.metamask.io', text: 'test' },
             title: 'A title',
-            detailedView: content,
+            content,
           },
         }),
       ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
@@ -411,7 +411,7 @@ describe('snap_notify', () => {
             message: 'message',
             footerLink: { href: 'http://foo.bar', text: 'test' },
             title: 'A title',
-            detailedView: content,
+            content,
           },
         }),
       ).rejects.toThrow(

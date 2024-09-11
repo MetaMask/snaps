@@ -45,13 +45,13 @@ export type NotifyParams =
   | {
       type: EnumToUnion<NotificationType.InApp>;
       message: string;
-      detailedView: NotificationComponent;
+      content: NotificationComponent;
       title: string;
     }
   | {
       type: EnumToUnion<NotificationType.InApp>;
       message: string;
-      detailedView: NotificationComponent;
+      content: NotificationComponent;
       title: string;
       footerLink: { href: string; text: string };
     };

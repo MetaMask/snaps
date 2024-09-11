@@ -39,14 +39,14 @@ const InAppNotificationStruct = object({
 const InAppNotificationWithDetailsStruct = object({
   type: enumValue(NotificationType.InApp),
   message: string(),
-  detailedView: NotificationComponentsStruct,
+  content: NotificationComponentsStruct,
   title: string(),
 });
 
 const InAppNotificationWithDetailsAndFooterStruct = object({
   type: enumValue(NotificationType.InApp),
   message: string(),
-  detailedView: NotificationComponentsStruct,
+  content: NotificationComponentsStruct,
   title: string(),
   footerLink: object({
     href: string(),
@@ -176,12 +176,12 @@ export function getImplementation({
     const validatedParams = getValidatedParams(params, isOnPhishingList);
 
     let id;
-    if (hasProperty(validatedParams, 'detailedView')) {
+    if (hasProperty(validatedParams, 'content')) {
       id = await createInterface(
         origin,
-        validatedParams.detailedView as NotificationComponent,
+        validatedParams.content as NotificationComponent,
       );
-      validatedParams.detailedView = id;
+      validatedParams.content = id;
     }
 
     switch (validatedParams.type) {
