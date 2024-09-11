@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.3]
+### Fixed
+- Bump MetaMask dependencies
+
 ## [2.2.2]
 ### Fixed
 - Fix address validation in row component ([#2257](https://github.com/MetaMask/snaps/pull/2257))
@@ -60,7 +64,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/insights-example-snap@2.2.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/insights-example-snap@2.2.3...HEAD
+[2.2.3]: https://github.com/MetaMask/snaps/compare/@metamask/insights-example-snap@2.2.2...@metamask/insights-example-snap@2.2.3
 [2.2.2]: https://github.com/MetaMask/snaps/compare/@metamask/insights-example-snap@2.2.1...@metamask/insights-example-snap@2.2.2
 [2.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/insights-example-snap@2.2.0...@metamask/insights-example-snap@2.2.1
 [2.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/insights-example-snap@2.1.0...@metamask/insights-example-snap@2.2.0

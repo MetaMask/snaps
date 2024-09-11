@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.1]
+### Fixed
+- Bump MetaMask dependencies
+
 ## [2.3.0]
 ### Added
 - Add support for fully custom dialogs ([#2526](https://github.com/MetaMask/snaps/pull/2526))
@@ -59,7 +63,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/dialog-example-snap@2.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/dialog-example-snap@2.3.1...HEAD
+[2.3.1]: https://github.com/MetaMask/snaps/compare/@metamask/dialog-example-snap@2.3.0...@metamask/dialog-example-snap@2.3.1
 [2.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/dialog-example-snap@2.2.1...@metamask/dialog-example-snap@2.3.0
 [2.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/dialog-example-snap@2.2.0...@metamask/dialog-example-snap@2.2.1
 [2.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/dialog-example-snap@2.1.0...@metamask/dialog-example-snap@2.2.0
