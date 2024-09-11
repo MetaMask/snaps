@@ -1,5 +1,5 @@
 {
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "MetaMask example snap demonstrating the use of cronjobs in snaps.",
   "proposedName": "Cronjob Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "jcA6NL+j9BPrnOiv5FOl+KnTyxAJ5UdThThk4zCoiu8=",
+    "shasum": "52lYQY0bh6ZtKx4ZNtQNO17ustuhQBewko/WzQkS68A=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-utils",
-  "version": "8.0.1",
+  "version": "8.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"

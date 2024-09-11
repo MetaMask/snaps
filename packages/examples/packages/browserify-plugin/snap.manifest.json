@@ -1,5 +1,5 @@
 {
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "MetaMask example snap demonstrating how to use the Browserify plugin to bundle a snap.",
   "proposedName": "Browserify Plugin Example Snap",
   "repository": {
