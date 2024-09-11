@@ -1,5 +1,6 @@
 import type { GenericSnapElement, SnapsChildren } from '../component';
 import { createSnapComponent } from '../component';
+import { type StyleUtilityProps } from './styling';
 
 /**
  * The props of the {@link Box} component.
@@ -8,7 +9,13 @@ import { createSnapComponent } from '../component';
  * @property direction - The direction to stack the components within the box. Defaults to `vertical`.
  * @property alignment - The alignment mode to use within the box. Defaults to `start`.
  */
-export type BoxProps = {
+
+type BoxStyleUtilityProps = Omit<
+  StyleUtilityProps,
+  'flexDirection' | 'justifyContent'
+>;
+
+export type BoxProps = BoxStyleUtilityProps & {
   // We can't use `JSXElement` because it causes a circular reference.
   children: SnapsChildren<GenericSnapElement>;
   direction?: 'vertical' | 'horizontal' | undefined;

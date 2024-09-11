@@ -18,6 +18,7 @@ import {
   string,
   tuple,
   refine,
+  assign,
 } from '@metamask/superstruct';
 import {
   CaipAccountIdStruct,
