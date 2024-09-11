@@ -6,10 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.1.4]
-### Fixed
-- Bump MetaMask dependencies
-
 ## [1.1.3]
 ### Changed
 - Use error wrappers ([#2178](https://github.com/MetaMask/snaps/pull/2178))
@@ -35,8 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release ([#1889](https://github.com/MetaMask/snaps/pull/1889))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/localization-example-snap@1.1.4...HEAD
-[1.1.4]: https://github.com/MetaMask/snaps/compare/@metamask/localization-example-snap@1.1.3...@metamask/localization-example-snap@1.1.4
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/localization-example-snap@1.1.3...HEAD
 [1.1.3]: https://github.com/MetaMask/snaps/compare/@metamask/localization-example-snap@1.1.2...@metamask/localization-example-snap@1.1.3
 [1.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/localization-example-snap@1.1.1...@metamask/localization-example-snap@1.1.2
 [1.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/localization-example-snap@1.1.0...@metamask/localization-example-snap@1.1.1

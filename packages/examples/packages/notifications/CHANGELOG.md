@@ -6,10 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.1.4]
-### Fixed
-- Bump MetaMask dependencies
-
 ## [2.1.3]
 ### Fixed
 - Fix native notifications not working reliably ([#2310](https://github.com/MetaMask/snaps/pull/2310))
@@ -60,8 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/notification-example-snap@2.1.4...HEAD
-[2.1.4]: https://github.com/MetaMask/snaps/compare/@metamask/notification-example-snap@2.1.3...@metamask/notification-example-snap@2.1.4
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/notification-example-snap@2.1.3...HEAD
 [2.1.3]: https://github.com/MetaMask/snaps/compare/@metamask/notification-example-snap@2.1.2...@metamask/notification-example-snap@2.1.3
 [2.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/notification-example-snap@2.1.1...@metamask/notification-example-snap@2.1.2
 [2.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/notification-example-snap@2.1.0...@metamask/notification-example-snap@2.1.1
