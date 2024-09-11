@@ -203,6 +203,7 @@ export const ButtonStruct: Describe<ButtonElement> = element('Button', {
   type: optional(nullUnion([literal('button'), literal('submit')])),
   variant: optional(nullUnion([literal('primary'), literal('destructive')])),
   disabled: optional(boolean()),
+  form: optional(string()),
 });
 
 /**

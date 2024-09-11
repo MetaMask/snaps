@@ -50,4 +50,17 @@ describe('Button', () => {
       key: null,
     });
   });
+
+  it('returns a button element with a form', () => {
+    const result = <Button form="foo">bar</Button>;
+
+    expect(result).toStrictEqual({
+      type: 'Button',
+      props: {
+        children: 'bar',
+        form: 'foo',
+      },
+      key: null,
+    });
+  });
 });
