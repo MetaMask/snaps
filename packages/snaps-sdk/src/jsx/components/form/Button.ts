@@ -16,7 +16,7 @@ import type { ImageElement } from '../Image';
  * @property variant - The variant of the button, i.e., `'primary'` or
  * `'destructive'`. Defaults to `'primary'`.
  * @property disabled - Whether the button is disabled. Defaults to `false`.
- * @property form - The <form> element to associate the button with.
+ * @property form - The name of the form component to associate the button with.
  */
 export type ButtonProps = {
   children: SnapsChildren<StringElement | IconElement | ImageElement>;
