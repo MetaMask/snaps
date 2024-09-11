@@ -1,6 +1,6 @@
 {
   "name": "@metamask/consumer-signer-example-snap",
-  "version": "2.1.3",
+  "version": "2.1.2",
   "description": "MetaMask example snap demonstrating how a snap can communicate with another snap to sign messages.",
   "repository": {
     "type": "git",

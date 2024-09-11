@@ -1,5 +1,5 @@
 {
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "MetaMask example snap demonstrating file inputs and handling file uploads",
   "proposedName": "File Upload Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "z4vMdrs40TdVE+vk7sPruIvWi0q669V+p3jc6WQIib4=",
+    "shasum": "314nMSBFTIeG+Z7RGc9D/FZPRk/vQjaZfzo8rMFMSmY=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

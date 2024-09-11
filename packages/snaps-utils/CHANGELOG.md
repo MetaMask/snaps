@@ -6,20 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [8.1.0]
-### Added
-- Add Bitcoin Taproot derivation paths ([#2695](https://github.com/MetaMask/snaps/pull/2695))
-
-### Changed
-- Improve `validateLink` error handling ([#2702](https://github.com/MetaMask/snaps/pull/2702))
-
-### Fixed
-- Fix ESM version of the package ([#2682](https://github.com/MetaMask/snaps/pull/2682))
-  - This fixes the ESM version of the package to be fully compliant with the ESM
-    standard.
-- Bump `@metamask/utils` from `^9.1.0` to `^9.2.1` ([#2680](https://github.com/MetaMask/snaps/pull/2680))
-- Bump other MetaMask dependencies ([#2703](https://github.com/MetaMask/snaps/pull/2703))
-
 ## [8.0.1]
 ### Changed
 - Bump `@metamask/slip44` to 4.0.0 ([#2624](https://github.com/MetaMask/snaps/pull/2624))
@@ -311,8 +297,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.1.0...HEAD
-[8.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.0.1...@metamask/snaps-utils@8.1.0
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.0.1...HEAD
 [8.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.0.0...@metamask/snaps-utils@8.0.1
 [8.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.8.1...@metamask/snaps-utils@8.0.0
 [7.8.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@7.8.0...@metamask/snaps-utils@7.8.1

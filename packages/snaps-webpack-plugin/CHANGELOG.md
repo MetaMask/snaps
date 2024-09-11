@@ -6,13 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [4.1.1]
-### Fixed
-- Fix ESM version of the package ([#2682](https://github.com/MetaMask/snaps/pull/2682))
-  - This fixes the ESM version of the package to be fully compliant with the ESM
-    standard.
-- Bump `@metamask/utils` from `^9.1.0` to `^9.2.1` ([#2680](https://github.com/MetaMask/snaps/pull/2680))
-
 ## [4.1.0]
 ### Changed
 - Improve manifest validation output ([#2572](https://github.com/MetaMask/snaps/pull/2572), [#2605](https://github.com/MetaMask/snaps/pull/2605))
@@ -73,8 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@4.1.1...HEAD
-[4.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@4.1.0...@metamask/snaps-webpack-plugin@4.1.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@4.1.0...HEAD
 [4.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@4.0.1...@metamask/snaps-webpack-plugin@4.1.0
 [4.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@4.0.0...@metamask/snaps-webpack-plugin@4.0.1
 [4.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@3.2.0...@metamask/snaps-webpack-plugin@4.0.0

@@ -6,10 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.3]
-### Fixed
-- Bump MetaMask dependencies
-
 ## [1.0.2]
 ### Changed
 - Re-release after multiple changes in the monorepo ([#2295](https://github.com/MetaMask/snaps/pull/2295))
@@ -22,8 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add signature insights example ([#2114](https://github.com/MetaMask/snaps/pull/2079))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/signature-insights-example-snap@1.0.3...HEAD
-[1.0.3]: https://github.com/MetaMask/snaps/compare/@metamask/signature-insights-example-snap@1.0.2...@metamask/signature-insights-example-snap@1.0.3
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/signature-insights-example-snap@1.0.2...HEAD
 [1.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/signature-insights-example-snap@1.0.1...@metamask/signature-insights-example-snap@1.0.2
 [1.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/signature-insights-example-snap@1.0.0...@metamask/signature-insights-example-snap@1.0.1
 [1.0.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/signature-insights-example-snap@1.0.0
