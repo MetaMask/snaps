@@ -1,6 +1,6 @@
 {
   "name": "@metamask/client-status-example-snap",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "MetaMask example snap demonstrating the use of `snap_getClientStatus`.",
   "repository": {
     "type": "git",

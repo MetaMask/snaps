@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.3]
+### Fixed
+- Bump MetaMask dependencies
+
 ## [1.1.2]
 ### Changed
 - Use error wrappers ([#2178](https://github.com/MetaMask/snaps/pull/2178))
@@ -24,7 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release ([#1918](https://github.com/MetaMask/snaps/pull/1918))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/home-page-example-snap@1.1.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/home-page-example-snap@1.1.3...HEAD
+[1.1.3]: https://github.com/MetaMask/snaps/compare/@metamask/home-page-example-snap@1.1.2...@metamask/home-page-example-snap@1.1.3
 [1.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/home-page-example-snap@1.1.1...@metamask/home-page-example-snap@1.1.2
 [1.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/home-page-example-snap@1.1.0...@metamask/home-page-example-snap@1.1.1
 [1.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/home-page-example-snap@1.0.0...@metamask/home-page-example-snap@1.1.0
