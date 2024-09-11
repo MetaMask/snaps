@@ -827,7 +827,7 @@ export const IconColorStruct = nullUnion([
   literal('transparent'),
 ]);
 
-export const StyleUtilityPropsStruct: Describe<StyleUtilityProps> = object({
+export const STYLE_UTILITY_PROPS = {
   flexDirection: optional(FlexDirectionStruct),
   flexWrap: optional(FlexWrapStruct),
   gap: optional(nullUnion([SizeNumberStruct, literal(undefined)])),
@@ -861,4 +861,7 @@ export const StyleUtilityPropsStruct: Describe<StyleUtilityProps> = object({
   backgroundColor: optional(BackgroundColorStruct),
   color: optional(nullUnion([TextColorStruct, IconColorStruct])),
   'data-testid': optional(string()),
-});
+};
+
+export const StyleUtilityPropsStruct: Describe<StyleUtilityProps> =
+  object(STYLE_UTILITY_PROPS);

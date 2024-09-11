@@ -18,7 +18,6 @@ import {
   string,
   tuple,
   refine,
-  assign,
 } from '@metamask/superstruct';
 import {
   CaipAccountIdStruct,
@@ -82,6 +81,7 @@ import {
   type SelectorOptionElement,
   IconName,
 } from './components';
+import { STYLE_UTILITY_PROPS } from './components/styling';
 
 /**
  * A struct for the {@link Key} type.
@@ -461,6 +461,7 @@ export const BoxChildrenStruct = children(
  */
 export const BoxStruct: Describe<BoxElement> = element('Box', {
   children: BoxChildrenStruct,
+  ...STYLE_UTILITY_PROPS,
   direction: optional(nullUnion([literal('horizontal'), literal('vertical')])),
   alignment: optional(
     nullUnion([
