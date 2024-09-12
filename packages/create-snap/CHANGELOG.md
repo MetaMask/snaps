@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.4]
+
 ### Uncategorized
 
 - Bump `ts-bridge` to `0.5.1` ([#2714](https://github.com/MetaMask/snaps/pull/2714))
@@ -103,7 +105,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@4.0.3...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@4.0.4...HEAD
+[4.0.4]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@4.0.3...@metamask/create-snap@4.0.4
 [4.0.3]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@4.0.2...@metamask/create-snap@4.0.3
 [4.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@4.0.1...@metamask/create-snap@4.0.2
 [4.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@4.0.0...@metamask/create-snap@4.0.1

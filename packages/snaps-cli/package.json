@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-cli",
-  "version": "6.3.2",
+  "version": "6.3.3",
   "description": "A CLI for developing MetaMask Snaps.",
   "repository": {
     "type": "git",

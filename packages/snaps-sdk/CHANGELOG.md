@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.5.0]
+
 ### Uncategorized
 
 - Add `center` prop to `Box` component ([#2716](https://github.com/MetaMask/snaps/pull/2716))
@@ -327,7 +329,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.4.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.5.0...HEAD
+[6.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.4.0...@metamask/snaps-sdk@6.5.0
 [6.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.3.0...@metamask/snaps-sdk@6.4.0
 [6.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.2.1...@metamask/snaps-sdk@6.3.0
 [6.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.2.0...@metamask/snaps-sdk@6.2.1
