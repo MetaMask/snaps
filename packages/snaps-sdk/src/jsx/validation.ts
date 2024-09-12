@@ -154,6 +154,27 @@ function children<Head extends AnyStruct, Tail extends AnyStruct[]>(
 }
 
 /**
+ * A helper function for creating a struct which allows a single child of a specific
+ * type, as well as `null` and `boolean`.
+ *
+ * @param struct - The struct to allow as a single child.
+ * @returns The struct for the children.
+ */
+function singleChild<Type extends AnyStruct>(
+  struct: Type,
+): Struct<Infer<Type> | boolean | null, null> {
+  return nullable(
+    selectiveUnion((value) => {
+      if (typeof value === 'boolean') {
+        return boolean();
+      }
+
+      return struct;
+    }),
+  ) as unknown as Struct<Infer<Type> | boolean | null, null>;
+}
+
+/**
  * A helper function for creating a struct for a JSX element.
  *
  * @param name - The name of the element.
@@ -312,30 +333,30 @@ export const FileInputStruct: Describe<FileInputElement> = element(
 /**
  * A subset of JSX elements that represent the tuple Box + Input of the Field children.
  */
-// eslint-disable-next-line @typescript-eslint/no-use-before-define
-const BOX_INPUT_LEFT = [lazy(() => BoxChildStruct), InputStruct] as [
-  typeof BoxChildStruct,
-  typeof InputStruct,
-];
+const BOX_INPUT_LEFT = [
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  singleChild(lazy(() => BoxChildStruct)),
+  InputStruct,
+] as [typeof BoxChildStruct, typeof InputStruct];
 
 /**
  * A subset of JSX elements that represent the tuple Input + Box of the Field children.
  */
-// eslint-disable-next-line @typescript-eslint/no-use-before-define
-const BOX_INPUT_RIGHT = [InputStruct, lazy(() => BoxChildStruct)] as [
-  typeof InputStruct,
-  typeof BoxChildStruct,
-];
+const BOX_INPUT_RIGHT = [
+  InputStruct,
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  singleChild(lazy(() => BoxChildStruct)),
+] as [typeof InputStruct, typeof BoxChildStruct];
 
 /**
  * A subset of JSX elements that represent the tuple Box + Input + Box of the Field children.
  */
 const BOX_INPUT_BOTH = [
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  lazy(() => BoxChildStruct),
+  singleChild(lazy(() => BoxChildStruct)),
   InputStruct,
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  lazy(() => BoxChildStruct),
+  singleChild(lazy(() => BoxChildStruct)),
 ] as [typeof BoxChildStruct, typeof InputStruct, typeof BoxChildStruct];
 
 /**
