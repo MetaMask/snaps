@@ -37,6 +37,7 @@ import {
 } from '../internals';
 import type { EmptyObject } from '../types';
 import type {
+  GenericSnapChildren,
   GenericSnapElement,
   JsonObject,
   Key,
@@ -398,9 +399,9 @@ const FieldChildStruct = nullUnion([
   tuple(BOX_INPUT_BOTH),
   ...FIELD_CHILDREN_ARRAY,
 ]) as unknown as Struct<
-  | [InputElement, GenericSnapElement]
-  | [GenericSnapElement, InputElement]
-  | [GenericSnapElement, InputElement, GenericSnapElement]
+  | [InputElement, GenericSnapChildren]
+  | [GenericSnapChildren, InputElement]
+  | [GenericSnapChildren, InputElement, GenericSnapChildren]
   | DropdownElement
   | RadioGroupElement
   | FileInputElement
