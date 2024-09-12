@@ -493,6 +493,7 @@ export const BoxStruct: Describe<BoxElement> = element('Box', {
       literal('space-around'),
     ]),
   ),
+  center: optional(boolean()),
 });
 
 const FooterButtonStruct = refine(ButtonStruct, 'FooterButton', (value) => {
