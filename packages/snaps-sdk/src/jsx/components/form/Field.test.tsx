@@ -335,10 +335,16 @@ describe('Field', () => {
       type: 'Field',
       key: null,
       props: {
-        children: {
-          type: 'Input',
-          name: 'foo',
-        },
+        children: [
+          {
+            type: 'Input',
+            key: null,
+            props: {
+              name: 'foo',
+            },
+          },
+          false,
+        ],
       },
     });
   });
