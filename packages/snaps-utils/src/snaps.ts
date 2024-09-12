@@ -155,9 +155,9 @@ export type Snap = TruncatedSnap & {
   hidden?: boolean;
 
   /**
-   * Flag to signal whether this snap should hide the header in the UI or not.
+   * Flag to signal whether this snap should hide the Snap branding like header or avatar in the UI or not.
    */
-  hideHeader?: boolean;
+  hideSnapBranding?: boolean;
 };
 
 export type TruncatedSnapFields =

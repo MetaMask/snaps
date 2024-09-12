@@ -5097,7 +5097,7 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
-    it('supports preinstalled Snaps specifying the hideHeader flag', async () => {
+    it('supports preinstalled Snaps specifying the hideSnapBranding flag', async () => {
       const rootMessenger = getControllerMessenger();
       jest.spyOn(rootMessenger, 'call');
 
@@ -5111,7 +5111,7 @@ describe('SnapController', () => {
         {
           snapId: MOCK_SNAP_ID,
           manifest: getSnapManifest(),
-          hideHeader: true,
+          hideSnapBranding: true,
           files: [
             {
               path: DEFAULT_SOURCE_PATH,
@@ -5131,7 +5131,7 @@ describe('SnapController', () => {
       });
       const [snapController] = getSnapControllerWithEES(snapControllerOptions);
 
-      expect(snapController.get(MOCK_SNAP_ID)?.hideHeader).toBe(true);
+      expect(snapController.get(MOCK_SNAP_ID)?.hideSnapBranding).toBe(true);
 
       snapController.destroy();
     });
