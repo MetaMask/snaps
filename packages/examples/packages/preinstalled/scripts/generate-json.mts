@@ -1,6 +1,6 @@
 import type { PreinstalledSnap } from '@metamask/snaps-controllers';
 import type { SnapId } from '@metamask/snaps-sdk';
-import { getErrorMessage } from '@metamask/snaps-sdk';
+import { getErrorMessage } from '@metamask/utils';
 import { readFile, stat, writeFile } from 'fs/promises';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
