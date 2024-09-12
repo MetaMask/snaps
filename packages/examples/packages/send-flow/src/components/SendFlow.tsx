@@ -1,16 +1,13 @@
 import type { SnapComponent } from '@metamask/snaps-sdk/jsx';
 import {
-  Bold,
   Button,
   Box,
   Text,
-  Tooltip,
   Card,
   Container,
   Footer,
   Selector,
   SelectorOption,
-  Divider,
   Form,
   Field,
   Input,
@@ -19,16 +16,18 @@ import {
   Section,
   Row,
   Value,
+  Heading,
 } from '@metamask/snaps-sdk/jsx';
 
 import btcIcon from '../images/btc.svg';
-import jazzIcon from '../images/jazzicon.svg';
+import jazzicon3 from '../images/jazzicon3.svg';
 
 export type Account = {
   name: string;
   address: string;
   balance: number;
   fiatBalance: number;
+  icon: string;
 };
 
 export type Total = {
@@ -46,6 +45,12 @@ export type SendFlowProps = {
   selectedAccount: string;
   selectedCurrency: 'BTC' | '$';
   total: Total;
+  fees: Total;
+  toAddress: string | null;
+  errors?: {
+    amount?: string;
+    to?: string;
+  };
 };
 
 /**
@@ -70,6 +75,9 @@ function truncate(str: string, length: number): string {
  * @param props.selectedAccount - The currently selected account.
  * @param props.selectedCurrency - The selected currency to display.
  * @param props.total - The total cost of the transaction.
+ * @param props.toAddress - The receiving address.
+ * @param props.errors - The form errors.
+ * @param props.fees
  * @returns The counter component.
  */
 export const SendFlow: SnapComponent<SendFlowProps> = ({
@@ -77,10 +85,22 @@ export const SendFlow: SnapComponent<SendFlowProps> = ({
   selectedAccount,
   selectedCurrency,
   total,
+  fees,
+  toAddress,
+  errors,
 }) => {
   return (
     <Container>
       <Box>
+        <Box direction="horizontal" alignment="space-between" center>
+          <Button name="back">
+            <Icon name="arrow-left" color="primary" size="md" />
+          </Button>
+          <Heading>Send</Heading>
+          <Button name="menu">
+            <Icon name="more-vertical" color="primary" size="md" />
+          </Button>
+        </Box>
         <Form name="sendForm">
           <Field label={'From account'}>
             <Selector
@@ -88,10 +108,10 @@ export const SendFlow: SnapComponent<SendFlowProps> = ({
               title="From account"
               value={selectedAccount}
             >
-              {accounts.map(({ name, address, balance, fiatBalance }) => (
+              {accounts.map(({ name, address, balance, fiatBalance, icon }) => (
                 <SelectorOption value={address}>
                   <Card
-                    image={jazzIcon}
+                    image={icon}
                     title={name}
                     description={truncate(address, 13)}
                     value={`${balance.toString()} BTC`}
@@ -101,26 +121,34 @@ export const SendFlow: SnapComponent<SendFlowProps> = ({
               ))}
             </Selector>
           </Field>
-          <Divider />
-          <Field label="Send amount">
+          <Field label="Send amount" error={errors?.amount}>
             <Box>
               <Image src={btcIcon} />
             </Box>
-            <Input name="amount" type="number" />
-            <Box direction="horizontal" alignment="center">
-              <Text>{selectedCurrency}</Text>
+            <Input
+              name="amount"
+              type="number"
+              placeholder="Enter amount to send"
+            />
+            <Box direction="horizontal" center>
+              <Text color="alternative">{selectedCurrency}</Text>
               <Button name="swap">
-                <Icon name="swap-vertical" color="primary" />
+                <Icon name="swap-vertical" color="primary" size="md" />
               </Button>
             </Box>
           </Field>
-          <Field label="To account">
-            <Input name="to" />
+          <Field label="To account" error={errors?.to}>
             <Box>
-              <Button name="clear">
-                <Icon name="close" />
-              </Button>
+              <Image src={jazzicon3} />
             </Box>
+            <Input name="to" placeholder="Enter receiving address" />
+            {toAddress !== null && toAddress !== '' && (
+              <Box>
+                <Button name="clear">
+                  <Icon name="close" size="md" color="primary" />
+                </Button>
+              </Box>
+            )}
           </Field>
         </Form>
         <Section>
