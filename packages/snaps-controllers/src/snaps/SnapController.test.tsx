@@ -5097,6 +5097,45 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
+    it('supports preinstalled Snaps specifying the hideHeader flag', async () => {
+      const rootMessenger = getControllerMessenger();
+      jest.spyOn(rootMessenger, 'call');
+
+      // The snap should not have permission initially
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({}),
+      );
+
+      const preinstalledSnaps = [
+        {
+          snapId: MOCK_SNAP_ID,
+          manifest: getSnapManifest(),
+          hideHeader: true,
+          files: [
+            {
+              path: DEFAULT_SOURCE_PATH,
+              value: stringToBytes(DEFAULT_SNAP_BUNDLE),
+            },
+            {
+              path: DEFAULT_ICON_PATH,
+              value: stringToBytes(DEFAULT_SNAP_ICON),
+            },
+          ],
+        },
+      ];
+
+      const snapControllerOptions = getSnapControllerWithEESOptions({
+        preinstalledSnaps,
+        rootMessenger,
+      });
+      const [snapController] = getSnapControllerWithEES(snapControllerOptions);
+
+      expect(snapController.get(MOCK_SNAP_ID)?.hideHeader).toBe(true);
+
+      snapController.destroy();
+    });
+
     it('authorizes permissions needed for snaps', async () => {
       const manifest = getSnapManifest();
       const rootMessenger = getControllerMessenger();
