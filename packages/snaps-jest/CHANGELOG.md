@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.3.2]
+### Fixed
+- Fix invalid types in type declaration in some cases ([#2714](https://github.com/MetaMask/snaps/pull/2714))
+
 ## [8.3.1]
 ### Fixed
 - Fix ESM version of the package ([#2682](https://github.com/MetaMask/snaps/pull/2682))
@@ -189,7 +193,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.3.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.3.2...HEAD
+[8.3.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.3.1...@metamask/snaps-jest@8.3.2
 [8.3.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.3.0...@metamask/snaps-jest@8.3.1
 [8.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.2.0...@metamask/snaps-jest@8.3.0
 [8.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.1.3...@metamask/snaps-jest@8.2.0
