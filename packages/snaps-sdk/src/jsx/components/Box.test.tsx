@@ -92,7 +92,7 @@ describe('Box', () => {
 
   it('renders a box with a conditional', () => {
     const result = (
-      <Box direction="horizontal" alignment="space-between">
+      <Box direction="horizontal" alignment="space-between" center={true}>
         {false && <Text>Hello</Text>}
       </Box>
     );
@@ -103,6 +103,7 @@ describe('Box', () => {
       props: {
         direction: 'horizontal',
         alignment: 'space-between',
+        center: true,
         children: false,
       },
     });
