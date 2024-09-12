@@ -85,7 +85,7 @@ The following is a list of the snaps in this directory.
 
 - [**`packages/errors`**](./packages/errors): This snap demonstrates
   how the Snaps platform handles errors thrown by snaps.
-- [\*\*`packages/preinstalled`](./packages/preinstalled): This snap demonstrates
+- [**`packages/preinstalled`**](./packages/preinstalled): This snap demonstrates
   preinstalled snaps, i.e., snaps that are installed in the MetaMask extension
   by default.
 - [**`packages/wasm`**](./packages/wasm): This snap demonstrates how
