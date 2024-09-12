@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.5.0]
+### Added
+- Add `center` prop to `Box` component ([#2716](https://github.com/MetaMask/snaps/pull/2716))
+- Add `form` prop to `Button` component ([#2712](https://github.com/MetaMask/snaps/pull/2712))
+  - This allows the `Button` component to be used outside of forms, but still
+    submit a form when clicked.
+
+### Fixed
+- Fix invalid types in type declaration in some cases ([#2714](https://github.com/MetaMask/snaps/pull/2714))
+- Fix type issue with `Field` children ([#2715](https://github.com/MetaMask/snaps/pull/2715))
+  - `Field` now accepts booleans and `null` as children, in addition to the
+    existing types.
+
 ## [6.4.0]
 ### Added
 - Add `Section` component ([#2672](https://github.com/MetaMask/snaps/pull/2672))
@@ -242,7 +255,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.4.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.5.0...HEAD
+[6.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.4.0...@metamask/snaps-sdk@6.5.0
 [6.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.3.0...@metamask/snaps-sdk@6.4.0
 [6.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.2.1...@metamask/snaps-sdk@6.3.0
 [6.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.2.0...@metamask/snaps-sdk@6.2.1

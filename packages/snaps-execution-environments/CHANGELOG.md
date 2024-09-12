@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.7.1]
+### Fixed
+- Fix invalid types in type declaration in some cases ([#2714](https://github.com/MetaMask/snaps/pull/2714))
+
 ## [6.7.0]
 ### Changed
 - Unblock `wallet_requestSnaps` ([#2661](https://github.com/MetaMask/snaps/pull/2661))
@@ -251,7 +255,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.7.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.7.1...HEAD
+[6.7.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.7.0...@metamask/snaps-execution-environments@6.7.1
 [6.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.6.2...@metamask/snaps-execution-environments@6.7.0
 [6.6.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.6.1...@metamask/snaps-execution-environments@6.6.2
 [6.6.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.6.0...@metamask/snaps-execution-environments@6.6.1
