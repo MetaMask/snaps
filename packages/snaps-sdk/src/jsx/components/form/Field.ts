@@ -1,4 +1,4 @@
-import type { GenericSnapElement } from '../../component';
+import type { GenericSnapChildren } from '../../component';
 import { createSnapComponent } from '../../component';
 import type { CheckboxElement } from './Checkbox';
 import type { DropdownElement } from './Dropdown';
@@ -18,9 +18,9 @@ export type FieldProps = {
   label?: string | undefined;
   error?: string | undefined;
   children:
-    | [InputElement, GenericSnapElement]
-    | [GenericSnapElement, InputElement]
-    | [GenericSnapElement, InputElement, GenericSnapElement]
+    | [InputElement, GenericSnapChildren]
+    | [GenericSnapChildren, InputElement]
+    | [GenericSnapChildren, InputElement, GenericSnapChildren]
     | DropdownElement
     | RadioGroupElement
     | FileInputElement
