@@ -4056,7 +4056,7 @@ __metadata:
     "@metamask/snaps-utils": "workspace:^"
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
-    "@ts-bridge/cli": "npm:^0.4.4"
+    "@ts-bridge/cli": "npm:^0.5.1"
     "@types/jest": "npm:^27.5.1"
     "@types/node": "npm:18.14.2"
     "@types/yargs": "npm:^17.0.24"
@@ -5269,7 +5269,7 @@ __metadata:
     "@metamask/snaps-utils": "workspace:^"
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
-    "@ts-bridge/cli": "npm:^0.4.4"
+    "@ts-bridge/cli": "npm:^0.5.1"
     "@types/browserify": "npm:^12.0.37"
     "@types/convert-source-map": "npm:^1.5.2"
     "@types/jest": "npm:^27.5.1"
@@ -5323,7 +5323,7 @@ __metadata:
     "@metamask/utils": "npm:^9.2.1"
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
-    "@ts-bridge/cli": "npm:^0.4.4"
+    "@ts-bridge/cli": "npm:^0.5.1"
     "@types/browserify": "npm:^12.0.37"
     "@types/jest": "npm:^27.5.1"
     "@types/node": "npm:18.14.2"
@@ -5421,7 +5421,7 @@ __metadata:
     "@metamask/utils": "npm:^9.2.1"
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
-    "@ts-bridge/cli": "npm:^0.4.4"
+    "@ts-bridge/cli": "npm:^0.5.1"
     "@types/chrome": "npm:^0.0.237"
     "@types/concat-stream": "npm:^2.0.0"
     "@types/gunzip-maybe": "npm:^1.4.0"
@@ -5512,7 +5512,7 @@ __metadata:
     "@metamask/utils": "npm:^9.2.1"
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
-    "@ts-bridge/cli": "npm:^0.4.4"
+    "@ts-bridge/cli": "npm:^0.5.1"
     "@types/express": "npm:^4.17.17"
     "@types/jest": "npm:^27.5.1"
     "@types/node": "npm:18.14.2"
@@ -5597,7 +5597,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:^1.9.5"
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
-    "@ts-bridge/cli": "npm:^0.4.4"
+    "@ts-bridge/cli": "npm:^0.5.1"
     "@types/jest": "npm:^27.5.1"
     "@types/mime": "npm:^3.0.0"
     "@types/semver": "npm:^7.5.0"
@@ -5654,7 +5654,7 @@ __metadata:
     "@rollup/plugin-virtual": "npm:^2.1.0"
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
-    "@ts-bridge/cli": "npm:^0.4.4"
+    "@ts-bridge/cli": "npm:^0.5.1"
     "@types/jest": "npm:^27.5.1"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
     "@typescript-eslint/parser": "npm:^6.21.0"
@@ -5699,7 +5699,7 @@ __metadata:
     "@noble/hashes": "npm:^1.3.1"
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
-    "@ts-bridge/cli": "npm:^0.4.4"
+    "@ts-bridge/cli": "npm:^0.5.1"
     "@types/node": "npm:18.14.2"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
     "@typescript-eslint/parser": "npm:^6.21.0"
@@ -5736,7 +5736,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^6.3.1"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^9.2.1"
-    "@ts-bridge/cli": "npm:^0.4.4"
+    "@ts-bridge/cli": "npm:^0.5.1"
     "@types/jest": "npm:^27.5.1"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
     "@typescript-eslint/parser": "npm:^6.21.0"
@@ -5898,7 +5898,7 @@ __metadata:
     "@scure/base": "npm:^1.1.1"
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
-    "@ts-bridge/cli": "npm:^0.4.4"
+    "@ts-bridge/cli": "npm:^0.5.1"
     "@types/jest": "npm:^27.5.1"
     "@types/mocha": "npm:^10.0.1"
     "@types/node": "npm:18.14.2"
@@ -5968,7 +5968,7 @@ __metadata:
     "@metamask/utils": "npm:^9.2.1"
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
-    "@ts-bridge/cli": "npm:^0.4.4"
+    "@ts-bridge/cli": "npm:^0.5.1"
     "@types/jest": "npm:^27.5.1"
     "@types/webpack-sources": "npm:^3.2.0"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
@@ -7086,9 +7086,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ts-bridge/cli@npm:^0.4.4":
-  version: 0.4.4
-  resolution: "@ts-bridge/cli@npm:0.4.4"
+"@ts-bridge/cli@npm:^0.5.1":
+  version: 0.5.1
+  resolution: "@ts-bridge/cli@npm:0.5.1"
   dependencies:
     "@ts-bridge/resolver": "npm:^0.1.2"
     chalk: "npm:^5.3.0"
@@ -7099,7 +7099,7 @@ __metadata:
   bin:
     ts-bridge: ./dist/index.js
     tsbridge: ./dist/index.js
-  checksum: 10/a904945e6d65cc75fadacdabbb7e92ecbb8f8c916f88e7887f0e9f340f36dadd1033d89867b0b4500983de43a15b09f118225a6542bbde2c4c77da43f07e9ba4
+  checksum: 10/691abe737617597c6ec0a296a67eedf47fc93cc2682658970326ad8f5c63376f987ee92502191ed3e81e917515d101bab7ca83f06b3b489449c3b674356cc306
   languageName: node
   linkType: hard
 
@@ -19881,7 +19881,7 @@ __metadata:
     "@metamask/eslint-config-typescript": "npm:^12.1.0"
     "@metamask/utils": "npm:^9.2.1"
     "@swc/core": "npm:1.3.78"
-    "@ts-bridge/cli": "npm:^0.4.4"
+    "@ts-bridge/cli": "npm:^0.5.1"
     "@types/jest": "npm:^27.5.1"
     "@types/node": "npm:18.14.2"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
