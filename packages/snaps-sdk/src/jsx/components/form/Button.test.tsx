@@ -63,17 +63,4 @@ describe('Button', () => {
       key: null,
     });
   });
-
-  it('returns a button element with navigation props', () => {
-    const result = <Button navigateTo="home">bar</Button>;
-
-    expect(result).toStrictEqual({
-      type: 'Button',
-      props: {
-        children: 'bar',
-        navigateTo: 'home',
-      },
-      key: null,
-    });
-  });
 });

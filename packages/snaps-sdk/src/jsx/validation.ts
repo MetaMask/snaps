@@ -226,7 +226,6 @@ export const ButtonStruct: Describe<ButtonElement> = element('Button', {
   variant: optional(nullUnion([literal('primary'), literal('destructive')])),
   disabled: optional(boolean()),
   form: optional(string()),
-  navigateTo: optional(nullUnion([literal('home')])),
 });
 
 /**
@@ -591,7 +590,7 @@ export const HeadingStruct: Describe<HeadingElement> = element('Heading', {
  */
 export const LinkStruct: Describe<LinkElement> = element('Link', {
   href: string(),
-  children: children([FormattingStruct, string()]),
+  children: children([FormattingStruct, string(), IconStruct]),
 });
 
 /**

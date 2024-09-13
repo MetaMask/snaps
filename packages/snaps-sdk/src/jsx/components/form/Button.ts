@@ -1,13 +1,7 @@
-import type { EnumToUnion } from 'src/internals';
-
 import type { SnapsChildren, StringElement } from '../../component';
 import { createSnapComponent } from '../../component';
 import type { IconElement } from '../Icon';
 import type { ImageElement } from '../Image';
-
-export enum SnapRoutes {
-  Home = 'home',
-}
 
 // TODO: Add the `onClick` prop to the `ButtonProps` type.
 
@@ -31,7 +25,6 @@ export type ButtonProps = {
   variant?: 'primary' | 'destructive' | undefined;
   disabled?: boolean | undefined;
   form?: string | undefined;
-  navigateTo?: EnumToUnion<SnapRoutes> | undefined;
 };
 
 const TYPE = 'Button';

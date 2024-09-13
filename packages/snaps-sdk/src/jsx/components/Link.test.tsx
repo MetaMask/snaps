@@ -1,3 +1,4 @@
+import { Icon } from './Icon';
 import { Link } from './Link';
 
 describe('Link', () => {
@@ -23,6 +24,27 @@ describe('Link', () => {
       props: {
         href: 'https://example.com',
         children: ['Hello ', 'world', '!'],
+      },
+    });
+  });
+
+  it('renders a link with an icon', () => {
+    const result = (
+      <Link href="metamask://client/">
+        <Icon name="arrow-left" size="md" />
+      </Link>
+    );
+
+    expect(result).toStrictEqual({
+      type: 'Link',
+      key: null,
+      props: {
+        href: 'metamask://client/',
+        children: {
+          type: 'Icon',
+          key: null,
+          props: { name: 'arrow-left', size: 'md' },
+        },
       },
     });
   });

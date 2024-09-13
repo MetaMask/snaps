@@ -170,7 +170,6 @@ describe('ButtonStruct', () => {
       <Image src="<svg></svg>" />
     </Button>,
     <Button form="foo">bar</Button>,
-    <Button navigateTo="home">Go home</Button>,
   ])('validates a button element', (value) => {
     expect(is(value, ButtonStruct)).toBe(true);
   });
@@ -193,8 +192,6 @@ describe('ButtonStruct', () => {
     <Row label="label">
       <Image src="<svg />" alt="alt" />
     </Row>,
-    // @ts-expect-error - Invalid props.
-    <Button navigateTo="foo">Go foo</Button>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, ButtonStruct)).toBe(false);
   });
@@ -994,12 +991,14 @@ describe('ImageStruct', () => {
 });
 
 describe('LinkStruct', () => {
-  it.each([<Link href="https://example.com">foo</Link>])(
-    'validates a link element',
-    (value) => {
-      expect(is(value, LinkStruct)).toBe(true);
-    },
-  );
+  it.each([
+    <Link href="https://example.com">foo</Link>,
+    <Link href="metamask://client/">
+      <Icon name="arrow-left" size="md" />
+    </Link>,
+  ])('validates a link element', (value) => {
+    expect(is(value, LinkStruct)).toBe(true);
+  });
 
   it.each([
     'foo',
