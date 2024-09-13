@@ -1,0 +1,26 @@
+{
+  "version": "0.1.0",
+  "description": "MetaMask example snap demonstrating preinstalled Snaps.",
+  "proposedName": "Preinstalled Example Snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps.git"
+  },
+  "source": {
+    "shasum": "NzLP9BfbhyGMuOG5TgjxLkvOUQUKJI58t+dTOoY+ylE=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "@metamask/preinstalled-example-snap",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    "endowment:rpc": {
+      "dapps": true
+    },
+    "snap_dialog": {}
+  },
+  "manifestVersion": "0.1"
+}

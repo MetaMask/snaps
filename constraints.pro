@@ -255,6 +255,7 @@ gen_enforced_field(WorkspaceCwd, 'scripts.build', 'mm-snap build') :-
   is_example(WorkspaceCwd),
   WorkspaceCwd \= 'packages/examples/packages/wasm',
   WorkspaceCwd \= 'packages/examples/packages/browserify-plugin',
+  WorkspaceCwd \= 'packages/examples/packages/preinstalled',
   WorkspaceCwd \= 'packages/examples/packages/rollup-plugin',
   WorkspaceCwd \= 'packages/examples/packages/webpack-plugin'.
 gen_enforced_field(WorkspaceCwd, 'scripts.build:clean', 'yarn clean && yarn build') :-

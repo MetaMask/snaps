@@ -1,6 +1,6 @@
 {
   "name": "@metamask/test-snaps",
-  "version": "2.13.1",
+  "version": "2.14.0",
   "private": true,
   "description": "The test snaps website for MetaMask Snaps, used for end-to-end testing.",
   "repository": {
@@ -51,6 +51,7 @@
     "@metamask/name-lookup-example-snap": "workspace:^",
     "@metamask/network-example-snap": "workspace:^",
     "@metamask/notification-example-snap": "workspace:^",
+    "@metamask/preinstalled-example-snap": "workspace:^",
     "@metamask/signature-insights-example-snap": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/utils": "^9.2.1",
