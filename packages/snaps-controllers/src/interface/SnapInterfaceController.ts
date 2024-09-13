@@ -24,8 +24,8 @@ import type { Json } from '@metamask/utils';
 import { assert } from '@metamask/utils';
 import { castDraft } from 'immer';
 import { nanoid } from 'nanoid';
-import type { GetSnap } from 'src/snaps';
 
+import type { GetSnap } from '../snaps';
 import {
   constructState,
   getJsxInterface,
