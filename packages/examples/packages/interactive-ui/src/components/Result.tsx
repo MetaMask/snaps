@@ -17,7 +17,9 @@ export const Result: SnapComponent<ResultProps> = ({ values }) => {
           <Copyable value={value?.toString() ?? ''} />
         ))}
       </Box>
-      <Button name="back">Back</Button>
+      <Box center>
+        <Button name="back">Back</Button>
+      </Box>
     </Box>
   );
 };
