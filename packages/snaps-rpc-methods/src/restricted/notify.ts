@@ -11,7 +11,7 @@ import type {
   NotifyResult,
   EnumToUnion,
 } from '@metamask/snaps-sdk';
-import { validateTextLinks } from '@metamask/snaps-utils';
+import { type Snap, validateTextLinks } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 import { isObject } from '@metamask/utils';
 
@@ -53,6 +53,8 @@ export type NotifyMethodHooks = {
   isOnPhishingList: (url: string) => boolean;
 
   maybeUpdatePhishingList: () => Promise<void>;
+
+  getSnap: (snapId: string) => Snap | undefined;
 };
 
 type SpecificationBuilderOptions = {
@@ -95,6 +97,7 @@ const methodHooks: MethodHooksObject<NotifyMethodHooks> = {
   showInAppNotification: true,
   isOnPhishingList: true,
   maybeUpdatePhishingList: true,
+  getSnap: true,
 };
 
 export const notifyBuilder = Object.freeze({
@@ -111,6 +114,7 @@ export const notifyBuilder = Object.freeze({
  * @param hooks.showInAppNotification - A function that shows a notification in the MetaMask UI.
  * @param hooks.isOnPhishingList - A function that checks for links against the phishing list.
  * @param hooks.maybeUpdatePhishingList - A function that updates the phishing list if needed.
+ * @param hooks.getSnap - A function that checks if a snap is installed.
  * @returns The method implementation which returns `null` on success.
  * @throws If the params are invalid.
  */
@@ -119,6 +123,7 @@ export function getImplementation({
   showInAppNotification,
   isOnPhishingList,
   maybeUpdatePhishingList,
+  getSnap,
 }: NotifyMethodHooks) {
   return async function implementation(
     args: RestrictedMethodOptions<NotifyParams>,
@@ -132,7 +137,7 @@ export function getImplementation({
 
     await maybeUpdatePhishingList();
 
-    validateTextLinks(validatedParams.message, isOnPhishingList);
+    validateTextLinks(validatedParams.message, isOnPhishingList, getSnap);
 
     switch (validatedParams.type) {
       case NotificationType.Native:
