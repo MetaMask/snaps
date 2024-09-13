@@ -564,6 +564,20 @@ describe('validateLink', () => {
     expect(fn).not.toHaveBeenCalled();
   });
 
+  it('throws an error if the snap being navigated to is not installed', () => {
+    const fn = jest.fn().mockReturnValue(false);
+
+    expect(() =>
+      validateLink(
+        'metamask://snap/npm:@metamask/examplesnap/home',
+        fn,
+        jest.fn().mockReturnValue(false),
+      ),
+    ).toThrow('The snap being navigated to is not installed.');
+
+    expect(fn).not.toHaveBeenCalled();
+  });
+
   it('throws an error for an invalid URL', () => {
     const fn = jest.fn().mockReturnValue(false);
 
@@ -658,29 +672,39 @@ describe('validateTextLinks', () => {
 
   it('throws an error if an invalid link is found in text', () => {
     expect(() =>
-      validateTextLinks('[test](http://foo.bar)', () => false),
+      validateTextLinks('[test](http://foo.bar)', () => false, jest.fn()),
     ).toThrow(
       'Invalid URL: Protocol must be one of: https:, mailto:, metamask:.',
     );
 
     expect(() =>
-      validateTextLinks('[[test]](http://foo.bar)', () => false),
-    ).toThrow(
-      'Invalid URL: Protocol must be one of: https:, mailto:, metamask:.',
-    );
-
-    expect(() => validateTextLinks('<http://foo.bar>', () => false)).toThrow(
-      'Invalid URL: Protocol must be one of: https:, mailto:, metamask:.',
-    );
-
-    expect(() =>
-      validateTextLinks('[test](http://foo.bar "foo bar baz")', () => false),
+      validateTextLinks('[[test]](http://foo.bar)', () => false, jest.fn()),
     ).toThrow(
       'Invalid URL: Protocol must be one of: https:, mailto:, metamask:.',
     );
 
     expect(() =>
-      validateTextLinks('[foo][1]\n\n[1]: http://foo.bar', () => false),
+      validateTextLinks('<http://foo.bar>', () => false, jest.fn()),
+    ).toThrow(
+      'Invalid URL: Protocol must be one of: https:, mailto:, metamask:.',
+    );
+
+    expect(() =>
+      validateTextLinks(
+        '[test](http://foo.bar "foo bar baz")',
+        () => false,
+        jest.fn(),
+      ),
+    ).toThrow(
+      'Invalid URL: Protocol must be one of: https:, mailto:, metamask:.',
+    );
+
+    expect(() =>
+      validateTextLinks(
+        '[foo][1]\n\n[1]: http://foo.bar',
+        () => false,
+        jest.fn(),
+      ),
     ).toThrow(
       'Invalid URL: Protocol must be one of: https:, mailto:, metamask:.',
     );
@@ -689,6 +713,7 @@ describe('validateTextLinks', () => {
       validateTextLinks(
         `[foo][1]\n\n[1]: http://foo.bar "foo bar baz"`,
         () => false,
+        jest.fn(),
       ),
     ).toThrow(
       'Invalid URL: Protocol must be one of: https:, mailto:, metamask:.',
