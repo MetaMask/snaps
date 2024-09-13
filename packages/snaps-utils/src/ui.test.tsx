@@ -546,8 +546,8 @@ describe('validateLink', () => {
   it('passes for a valid link', () => {
     const fn = jest.fn().mockReturnValue(false);
 
-    expect(() => validateLink('https://foo.bar', fn)).not.toThrow();
-    expect(() => validateLink('mailto:foo@bar.com', fn)).not.toThrow();
+    expect(() => validateLink('https://foo.bar', fn, fn)).not.toThrow();
+    expect(() => validateLink('mailto:foo@bar.com', fn, fn)).not.toThrow();
 
     expect(fn).toHaveBeenCalledTimes(2);
     expect(fn).toHaveBeenCalledWith('foo.bar');
@@ -557,8 +557,8 @@ describe('validateLink', () => {
   it('throws an error for an invalid protocol', () => {
     const fn = jest.fn().mockReturnValue(false);
 
-    expect(() => validateLink('http://foo.bar', fn)).toThrow(
-      'Invalid URL: Protocol must be one of: https:, mailto:.',
+    expect(() => validateLink('http://foo.bar', fn, fn)).toThrow(
+      'Invalid URL: Protocol must be one of: https:, mailto:, metamask:.',
     );
 
     expect(fn).not.toHaveBeenCalled();
@@ -567,7 +567,7 @@ describe('validateLink', () => {
   it('throws an error for an invalid URL', () => {
     const fn = jest.fn().mockReturnValue(false);
 
-    expect(() => validateLink('foo.bar', fn)).toThrow(
+    expect(() => validateLink('foo.bar', fn, fn)).toThrow(
       'Invalid URL: Unable to parse URL.',
     );
 
@@ -577,9 +577,9 @@ describe('validateLink', () => {
   it('throws an error for a phishing link', () => {
     const fn = jest.fn().mockReturnValue(true);
 
-    expect(() => validateLink('https://test.metamask-phishing.io', fn)).toThrow(
-      'Invalid URL: The specified URL is not allowed.',
-    );
+    expect(() =>
+      validateLink('https://test.metamask-phishing.io', fn, fn),
+    ).toThrow('Invalid URL: The specified URL is not allowed.');
 
     expect(fn).toHaveBeenCalledTimes(1);
     expect(fn).toHaveBeenCalledWith('test.metamask-phishing.io');
@@ -589,7 +589,7 @@ describe('validateLink', () => {
     const fn = jest.fn().mockReturnValue(true);
 
     expect(() =>
-      validateLink('mailto:foo@test.metamask-phishing.io', fn),
+      validateLink('mailto:foo@test.metamask-phishing.io', fn, fn),
     ).toThrow('Invalid URL: The specified URL is not allowed.');
 
     expect(fn).toHaveBeenCalledTimes(1);
@@ -600,27 +600,31 @@ describe('validateLink', () => {
 describe('validateTextLinks', () => {
   it('passes for valid links', () => {
     expect(() =>
-      validateTextLinks('[test](https://foo.bar)', () => false),
+      validateTextLinks('[test](https://foo.bar)', () => false, jest.fn()),
     ).not.toThrow();
 
     expect(() =>
-      validateTextLinks('[test](mailto:foo@bar.baz)', () => false),
+      validateTextLinks('[test](mailto:foo@bar.baz)', () => false, jest.fn()),
     ).not.toThrow();
 
     expect(() =>
-      validateTextLinks('[](https://foo.bar)', () => false),
+      validateTextLinks('[](https://foo.bar)', () => false, jest.fn()),
     ).not.toThrow();
 
     expect(() =>
-      validateTextLinks('[[test]](https://foo.bar)', () => false),
+      validateTextLinks('[[test]](https://foo.bar)', () => false, jest.fn()),
     ).not.toThrow();
 
     expect(() =>
-      validateTextLinks('[test](https://foo.bar "foo bar baz")', () => false),
+      validateTextLinks(
+        '[test](https://foo.bar "foo bar baz")',
+        () => false,
+        jest.fn(),
+      ),
     ).not.toThrow();
 
     expect(() =>
-      validateTextLinks('<https://foo.bar>', () => false),
+      validateTextLinks('<https://foo.bar>', () => false, jest.fn()),
     ).not.toThrow();
 
     expect(() =>
@@ -628,6 +632,7 @@ describe('validateTextLinks', () => {
         `[foo][1]
          [1]: https://foo.bar`,
         () => false,
+        jest.fn(),
       ),
     ).not.toThrow();
 
@@ -636,51 +641,66 @@ describe('validateTextLinks', () => {
         `[foo][1]
          [1]: https://foo.bar "foo bar baz"`,
         () => false,
+        jest.fn(),
       ),
     ).not.toThrow();
   });
 
   it('passes for non-links', () => {
     expect(() =>
-      validateTextLinks('Hello **http://localhost:3000**', () => false),
+      validateTextLinks(
+        'Hello **http://localhost:3000**',
+        () => false,
+        jest.fn(),
+      ),
     ).not.toThrow();
   });
 
   it('throws an error if an invalid link is found in text', () => {
     expect(() =>
       validateTextLinks('[test](http://foo.bar)', () => false),
-    ).toThrow('Invalid URL: Protocol must be one of: https:, mailto:.');
+    ).toThrow(
+      'Invalid URL: Protocol must be one of: https:, mailto:, metamask:.',
+    );
 
     expect(() =>
       validateTextLinks('[[test]](http://foo.bar)', () => false),
-    ).toThrow('Invalid URL: Protocol must be one of: https:, mailto:.');
+    ).toThrow(
+      'Invalid URL: Protocol must be one of: https:, mailto:, metamask:.',
+    );
 
     expect(() => validateTextLinks('<http://foo.bar>', () => false)).toThrow(
-      'Invalid URL: Protocol must be one of: https:, mailto:.',
+      'Invalid URL: Protocol must be one of: https:, mailto:, metamask:.',
     );
 
     expect(() =>
       validateTextLinks('[test](http://foo.bar "foo bar baz")', () => false),
-    ).toThrow('Invalid URL: Protocol must be one of: https:, mailto:.');
+    ).toThrow(
+      'Invalid URL: Protocol must be one of: https:, mailto:, metamask:.',
+    );
 
     expect(() =>
       validateTextLinks('[foo][1]\n\n[1]: http://foo.bar', () => false),
-    ).toThrow('Invalid URL: Protocol must be one of: https:, mailto:.');
+    ).toThrow(
+      'Invalid URL: Protocol must be one of: https:, mailto:, metamask:.',
+    );
 
     expect(() =>
       validateTextLinks(
         `[foo][1]\n\n[1]: http://foo.bar "foo bar baz"`,
         () => false,
       ),
-    ).toThrow('Invalid URL: Protocol must be one of: https:, mailto:.');
-
-    expect(() => validateTextLinks('[test](#code)', () => false)).toThrow(
-      'Invalid URL: Unable to parse URL.',
+    ).toThrow(
+      'Invalid URL: Protocol must be one of: https:, mailto:, metamask:.',
     );
 
-    expect(() => validateTextLinks('[test](foo.bar)', () => false)).toThrow(
-      'Invalid URL: Unable to parse URL.',
-    );
+    expect(() =>
+      validateTextLinks('[test](#code)', () => false, jest.fn()),
+    ).toThrow('Invalid URL: Unable to parse URL.');
+
+    expect(() =>
+      validateTextLinks('[test](foo.bar)', () => false, jest.fn()),
+    ).toThrow('Invalid URL: Unable to parse URL.');
   });
 });
 
@@ -699,7 +719,9 @@ describe('validateJsxLinks', () => {
   ])('does not throw for a safe JSX text component', async (element) => {
     const isOnPhishingList = () => false;
 
-    expect(() => validateJsxLinks(element, isOnPhishingList)).not.toThrow();
+    expect(() =>
+      validateJsxLinks(element, isOnPhishingList, jest.fn()),
+    ).not.toThrow();
   });
 
   it('does not throw for a JSX component with a link outside of a Link component', async () => {
@@ -712,6 +734,7 @@ describe('validateJsxLinks', () => {
           <Text>https://foo.bar</Text>
         </Box>,
         isOnPhishingList,
+        jest.fn(),
       ),
     ).not.toThrow();
   });
@@ -730,24 +753,34 @@ describe('validateJsxLinks', () => {
   ])('throws for an unsafe JSX text component', async (element) => {
     const isOnPhishingList = () => true;
 
-    expect(() => validateJsxLinks(element, isOnPhishingList)).toThrow(
-      'Invalid URL: The specified URL is not allowed.',
-    );
+    expect(() =>
+      validateJsxLinks(element, isOnPhishingList, jest.fn()),
+    ).toThrow('Invalid URL: The specified URL is not allowed.');
   });
 
   it('throws if the protocol is not allowed', () => {
     const isOnPhishingList = () => false;
 
     expect(() =>
-      validateJsxLinks(<Link href="ftp://foo.bar">Foo</Link>, isOnPhishingList),
-    ).toThrow('Invalid URL: Protocol must be one of: https:, mailto:.');
+      validateJsxLinks(
+        <Link href="ftp://foo.bar">Foo</Link>,
+        isOnPhishingList,
+        jest.fn(),
+      ),
+    ).toThrow(
+      'Invalid URL: Protocol must be one of: https:, mailto:, metamask:.',
+    );
   });
 
   it('throws if the URL cannot be parsed', () => {
     const isOnPhishingList = () => false;
 
     expect(() =>
-      validateJsxLinks(<Link href="#foo">Foo</Link>, isOnPhishingList),
+      validateJsxLinks(
+        <Link href="#foo">Foo</Link>,
+        isOnPhishingList,
+        jest.fn(),
+      ),
     ).toThrow('Invalid URL: Unable to parse URL.');
   });
 });

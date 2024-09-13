@@ -20,6 +20,7 @@ describe('snap_notify', () => {
         showInAppNotification: jest.fn(),
         isOnPhishingList: jest.fn(),
         maybeUpdatePhishingList: jest.fn(),
+        getSnap: jest.fn(),
       };
 
       expect(
@@ -41,6 +42,7 @@ describe('snap_notify', () => {
       const showNativeNotification = jest.fn().mockResolvedValueOnce(true);
       const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValueOnce(false);
+      const getSnap = jest.fn();
       const maybeUpdatePhishingList = jest.fn();
 
       const notificationImplementation = getImplementation({
@@ -48,6 +50,7 @@ describe('snap_notify', () => {
         showInAppNotification,
         isOnPhishingList,
         maybeUpdatePhishingList,
+        getSnap,
       });
 
       await notificationImplementation({
@@ -72,12 +75,14 @@ describe('snap_notify', () => {
       const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValueOnce(false);
       const maybeUpdatePhishingList = jest.fn();
+      const getSnap = jest.fn();
 
       const notificationImplementation = getImplementation({
         showNativeNotification,
         showInAppNotification,
         isOnPhishingList,
         maybeUpdatePhishingList,
+        getSnap,
       });
 
       await notificationImplementation({
@@ -102,12 +107,14 @@ describe('snap_notify', () => {
       const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValueOnce(false);
       const maybeUpdatePhishingList = jest.fn();
+      const getSnap = jest.fn();
 
       const notificationImplementation = getImplementation({
         showNativeNotification,
         showInAppNotification,
         isOnPhishingList,
         maybeUpdatePhishingList,
+        getSnap,
       });
 
       await notificationImplementation({
@@ -132,12 +139,14 @@ describe('snap_notify', () => {
       const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValueOnce(false);
       const maybeUpdatePhishingList = jest.fn();
+      const getSnap = jest.fn();
 
       const notificationImplementation = getImplementation({
         showNativeNotification,
         showInAppNotification,
         isOnPhishingList,
         maybeUpdatePhishingList,
+        getSnap,
       });
 
       await expect(
@@ -160,12 +169,14 @@ describe('snap_notify', () => {
       const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValueOnce(true);
       const maybeUpdatePhishingList = jest.fn();
+      const getSnap = jest.fn();
 
       const notificationImplementation = getImplementation({
         showNativeNotification,
         showInAppNotification,
         isOnPhishingList,
         maybeUpdatePhishingList,
+        getSnap,
       });
 
       await expect(
@@ -187,12 +198,14 @@ describe('snap_notify', () => {
       const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValueOnce(true);
       const maybeUpdatePhishingList = jest.fn();
+      const getSnap = jest.fn();
 
       const notificationImplementation = getImplementation({
         showNativeNotification,
         showInAppNotification,
         isOnPhishingList,
         maybeUpdatePhishingList,
+        getSnap,
       });
 
       await expect(
@@ -207,7 +220,7 @@ describe('snap_notify', () => {
           },
         }),
       ).rejects.toThrow(
-        'Invalid URL: Protocol must be one of: https:, mailto:.',
+        'Invalid URL: Protocol must be one of: https:, mailto:, metamask:.',
       );
     });
   });
