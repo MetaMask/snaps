@@ -39,8 +39,11 @@ import {
 import { lexer, walkTokens } from 'marked';
 import type { Token, Tokens } from 'marked';
 
+import type { Snap } from './snaps';
+import { parseMetaMaskUrl } from './url';
+
 const MAX_TEXT_LENGTH = 50_000; // 50 kb
-const ALLOWED_PROTOCOLS = ['https:', 'mailto:'];
+const ALLOWED_PROTOCOLS = ['https:', 'mailto:', 'metamask:'];
 
 /**
  * Get the button variant from a legacy button component variant.
@@ -330,10 +333,13 @@ function getMarkdownLinks(text: string) {
  * @param link - The link to validate.
  * @param isOnPhishingList - The function that checks the link against the
  * phishing list.
+ * @param getSnap - The function that returns a snap if installed, undefined otherwise.
+ * @throws If the link is invalid.
  */
 export function validateLink(
   link: string,
   isOnPhishingList: (url: string) => boolean,
+  getSnap: (id: string) => Snap | undefined,
 ) {
   try {
     const url = new URL(link);
@@ -342,10 +348,20 @@ export function validateLink(
       `Protocol must be one of: ${ALLOWED_PROTOCOLS.join(', ')}.`,
     );
 
-    const hostname =
-      url.protocol === 'mailto:' ? url.pathname.split('@')[1] : url.hostname;
+    if (url.protocol === 'metamask:') {
+      const linkData = parseMetaMaskUrl(link);
+      if (linkData.snapId) {
+        assert(
+          getSnap(linkData.snapId),
+          'The snap being navigated to is not installed.',
+        );
+      }
+    } else {
+      const hostname =
+        url.protocol === 'mailto:' ? url.pathname.split('@')[1] : url.hostname;
 
-    assert(!isOnPhishingList(hostname), 'The specified URL is not allowed.');
+      assert(!isOnPhishingList(hostname), 'The specified URL is not allowed.');
+    }
   } catch (error) {
     throw new Error(
       `Invalid URL: ${
@@ -362,16 +378,18 @@ export function validateLink(
  * @param text - The text to verify.
  * @param isOnPhishingList - The function that checks the link against the
  * phishing list.
+ * @param getSnap - The function that returns a snap if installed, undefined otherwise.
  * @throws If the text contains a link that is not allowed.
  */
 export function validateTextLinks(
   text: string,
   isOnPhishingList: (url: string) => boolean,
+  getSnap: (id: string) => Snap | undefined,
 ) {
   const links = getMarkdownLinks(text);
 
   for (const link of links) {
-    validateLink(link.href, isOnPhishingList);
+    validateLink(link.href, isOnPhishingList, getSnap);
   }
 }
 
@@ -382,17 +400,19 @@ export function validateTextLinks(
  * @param node - The JSX node to walk.
  * @param isOnPhishingList - The function that checks the link against the
  * phishing list.
+ * @param getSnap - The function that returns a snap if installed, undefined otherwise.
  */
 export function validateJsxLinks(
   node: JSXElement,
   isOnPhishingList: (url: string) => boolean,
+  getSnap: (id: string) => Snap | undefined,
 ) {
   walkJsx(node, (childNode) => {
     if (childNode.type !== 'Link') {
       return;
     }
 
-    validateLink(childNode.props.href, isOnPhishingList);
+    validateLink(childNode.props.href, isOnPhishingList, getSnap);
   });
 }
 
