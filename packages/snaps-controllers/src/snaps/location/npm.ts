@@ -199,7 +199,7 @@ export abstract class BaseNpmLocation implements SnapLocation {
    * Fetches and unpacks the tarball (`.tgz` file) from the specified URL.
    *
    * @param tarballUrl - The tarball URL to fetch and unpack.
-   * @returns A the files for the package tarball.
+   * @returns A files for the package tarball.
    * @throws If fetching the tarball fails.
    */
   abstract fetchNpmTarball(tarballUrl: URL): Promise<Map<string, VirtualFile>>;
@@ -214,7 +214,7 @@ export class NpmLocation extends BaseNpmLocation {
    * Fetches and unpacks the tarball (`.tgz` file) from the specified URL.
    *
    * @param tarballUrl - The tarball URL to fetch and unpack.
-   * @returns A the files for the package tarball.
+   * @returns A files for the package tarball.
    * @throws If fetching the tarball fails.
    */
   async fetchNpmTarball(
