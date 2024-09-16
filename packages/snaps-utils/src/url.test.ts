@@ -46,13 +46,13 @@ describe('parseMetaMaskUrl', () => {
 
   it('will throw on an invalid scheme', () => {
     expect(() => parseMetaMaskUrl('metmask://client/')).toThrow(
-      'Invalid MetaMask url.',
+      'Invalid MetaMask url: invalid scheme.',
     );
   });
 
   it('will throw on an invalid authority', () => {
     expect(() => parseMetaMaskUrl('metamask://bar/')).toThrow(
-      'Invalid MetaMask url.',
+      'Invalid MetaMask url: invalid authority.',
     );
   });
 
@@ -60,12 +60,14 @@ describe('parseMetaMaskUrl', () => {
     'metamask://snap/npm:examplesnap/foo',
     'metamask://snap/npm:@metamask/examplesnap/foo',
   ])('will throw on an invalid snap page', (url) => {
-    expect(() => parseMetaMaskUrl(url)).toThrow('Invalid snap path.');
+    expect(() => parseMetaMaskUrl(url)).toThrow(
+      'Invalid MetaMask url: invalid snap path.',
+    );
   });
 
   it('will throw on an invalid client page', () => {
     expect(() => parseMetaMaskUrl('metamask://client/foo')).toThrow(
-      'Invalid client path.',
+      'Invalid MetaMask url: invalid client path.',
     );
   });
 });
