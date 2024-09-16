@@ -409,6 +409,7 @@ describe('installSnap', () => {
         typeInField: expect.any(Function),
         selectInDropdown: expect.any(Function),
         selectFromRadioGroup: expect.any(Function),
+        selectFromSelector: expect.any(Function),
         uploadFile: expect.any(Function),
         ok: expect.any(Function),
         cancel: expect.any(Function),
@@ -470,6 +471,7 @@ describe('installSnap', () => {
         typeInField: expect.any(Function),
         selectInDropdown: expect.any(Function),
         selectFromRadioGroup: expect.any(Function),
+        selectFromSelector: expect.any(Function),
         uploadFile: expect.any(Function),
         ok: expect.any(Function),
         cancel: expect.any(Function),
@@ -531,6 +533,7 @@ describe('installSnap', () => {
         typeInField: expect.any(Function),
         selectInDropdown: expect.any(Function),
         selectFromRadioGroup: expect.any(Function),
+        selectFromSelector: expect.any(Function),
         uploadFile: expect.any(Function),
         ok: expect.any(Function),
       });
