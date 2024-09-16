@@ -39,6 +39,11 @@ export type InteractiveFormState = {
    * The value of the example checkbox.
    */
   'example-checkbox': boolean;
+
+  /**
+   * The value of the example Selector.
+   */
+  'example-selector': string;
 };
 
 export const InteractiveForm: SnapComponent = () => {
