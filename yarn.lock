@@ -5784,30 +5784,20 @@ __metadata:
     "@jest/types": "npm:^29.6.3"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^3.4.4"
-    "@metamask/base-controller": "npm:^6.0.2"
     "@metamask/eslint-config": "npm:^12.1.0"
     "@metamask/eslint-config-jest": "npm:^12.1.0"
     "@metamask/eslint-config-nodejs": "npm:^12.1.0"
     "@metamask/eslint-config-typescript": "npm:^12.1.0"
-    "@metamask/eth-json-rpc-middleware": "npm:^14.0.0"
-    "@metamask/json-rpc-engine": "npm:^9.0.2"
-    "@metamask/json-rpc-middleware-stream": "npm:^8.0.2"
-    "@metamask/key-tree": "npm:^9.1.2"
-    "@metamask/permission-controller": "npm:^11.0.0"
-    "@metamask/phishing-controller": "npm:^12.0.2"
     "@metamask/snaps-controllers": "workspace:^"
-    "@metamask/snaps-execution-environments": "workspace:^"
-    "@metamask/snaps-rpc-methods": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
+    "@metamask/snaps-simulation": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^9.2.1"
-    "@reduxjs/toolkit": "npm:^1.9.5"
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@ts-bridge/cli": "npm:^0.5.1"
     "@types/jest": "npm:^27.5.1"
-    "@types/mime": "npm:^3.0.0"
     "@types/semver": "npm:^7.5.0"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
     "@typescript-eslint/parser": "npm:^6.21.0"
@@ -5826,12 +5816,9 @@ __metadata:
     jest-environment-node: "npm:^29.5.0"
     jest-it-up: "npm:^2.0.0"
     jest-matcher-utils: "npm:^29.5.0"
-    mime: "npm:^3.0.0"
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
-    readable-stream: "npm:^3.6.2"
     redux: "npm:^4.2.1"
-    redux-saga: "npm:^1.2.3"
     typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
@@ -5964,6 +5951,59 @@ __metadata:
     jest-it-up: "npm:^2.0.0"
     prettier: "npm:^2.7.1"
     prettier-plugin-packagejson: "npm:^2.2.11"
+    ts-jest: "npm:^29.1.1"
+    typescript: "npm:~5.3.3"
+  languageName: unknown
+  linkType: soft
+
+"@metamask/snaps-simulation@workspace:^, @metamask/snaps-simulation@workspace:packages/snaps-simulation":
+  version: 0.0.0-use.local
+  resolution: "@metamask/snaps-simulation@workspace:packages/snaps-simulation"
+  dependencies:
+    "@lavamoat/allow-scripts": "npm:^3.0.4"
+    "@metamask/auto-changelog": "npm:^3.4.4"
+    "@metamask/base-controller": "npm:^6.0.2"
+    "@metamask/eslint-config": "npm:^12.1.0"
+    "@metamask/eslint-config-jest": "npm:^12.1.0"
+    "@metamask/eslint-config-nodejs": "npm:^12.1.0"
+    "@metamask/eslint-config-typescript": "npm:^12.1.0"
+    "@metamask/eth-json-rpc-middleware": "npm:^14.0.0"
+    "@metamask/json-rpc-engine": "npm:^9.0.2"
+    "@metamask/json-rpc-middleware-stream": "npm:^8.0.2"
+    "@metamask/key-tree": "npm:^9.1.2"
+    "@metamask/permission-controller": "npm:^11.0.0"
+    "@metamask/phishing-controller": "npm:^12.0.2"
+    "@metamask/snaps-controllers": "workspace:^"
+    "@metamask/snaps-rpc-methods": "workspace:^"
+    "@metamask/snaps-sdk": "workspace:^"
+    "@metamask/snaps-utils": "workspace:^"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^9.2.1"
+    "@reduxjs/toolkit": "npm:^1.9.5"
+    "@ts-bridge/cli": "npm:^0.5.1"
+    "@types/express": "npm:^4.17.17"
+    "@types/jest": "npm:^27.5.1"
+    "@types/readable-stream": "npm:^4.0.15"
+    "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
+    deepmerge: "npm:^4.2.2"
+    depcheck: "npm:^1.4.7"
+    eslint: "npm:^8.27.0"
+    eslint-config-prettier: "npm:^8.5.0"
+    eslint-plugin-import: "npm:^2.26.0"
+    eslint-plugin-jest: "npm:^27.1.5"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
+    eslint-plugin-n: "npm:^15.7.0"
+    eslint-plugin-prettier: "npm:^4.2.1"
+    eslint-plugin-promise: "npm:^6.1.1"
+    express: "npm:^4.18.2"
+    jest: "npm:^29.0.2"
+    jest-it-up: "npm:^2.0.0"
+    mime: "npm:^3.0.0"
+    prettier: "npm:^2.7.1"
+    prettier-plugin-packagejson: "npm:^2.2.11"
+    readable-stream: "npm:^3.6.2"
+    redux-saga: "npm:^1.2.3"
     ts-jest: "npm:^29.1.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -7534,14 +7574,14 @@ __metadata:
   linkType: hard
 
 "@types/express@npm:*, @types/express@npm:^4.17.13, @types/express@npm:^4.17.17":
-  version: 4.17.17
-  resolution: "@types/express@npm:4.17.17"
+  version: 4.17.21
+  resolution: "@types/express@npm:4.17.21"
   dependencies:
     "@types/body-parser": "npm:*"
     "@types/express-serve-static-core": "npm:^4.17.33"
     "@types/qs": "npm:*"
     "@types/serve-static": "npm:*"
-  checksum: 10/e2959a5fecdc53f8a524891a16e66dfc330ee0519e89c2579893179db686e10cfa6079a68e0fb8fd00eedbcaf3eabfd10916461939f3bc02ef671d848532c37e
+  checksum: 10/7a6d26cf6f43d3151caf4fec66ea11c9d23166e4f3102edfe45a94170654a54ea08cf3103d26b3928d7ebcc24162c90488e33986b7e3a5f8941225edd5eb18c7
   languageName: node
   linkType: hard
 
@@ -7768,7 +7808,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mime@npm:*, @types/mime@npm:^3.0.0":
+"@types/mime@npm:*":
   version: 3.0.4
   resolution: "@types/mime@npm:3.0.4"
   checksum: 10/a6139c8e1f705ef2b064d072f6edc01f3c099023ad7c4fce2afc6c2bf0231888202adadbdb48643e8e20da0ce409481a49922e737eca52871b3dc08017455843

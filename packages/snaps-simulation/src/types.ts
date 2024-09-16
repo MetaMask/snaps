@@ -1,14 +1,15 @@
 import type { NotificationType, EnumToUnion } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
+import type { InferMatching } from '@metamask/snaps-utils';
+import type { Infer } from '@metamask/superstruct';
+import type { Json, JsonRpcId, JsonRpcParams } from '@metamask/utils';
+
 import type {
   SignatureOptionsStruct,
   SnapOptionsStruct,
   SnapResponseStruct,
   TransactionOptionsStruct,
-} from '@metamask/snaps-simulation';
-import type { InferMatching } from '@metamask/snaps-utils';
-import type { Infer } from '@metamask/superstruct';
-import type { Json, JsonRpcId, JsonRpcParams } from '@metamask/utils';
+} from './structs';
 
 export type RequestOptions = {
   /**
@@ -127,14 +128,6 @@ export type SnapInterfaceActions = {
    * @param value - The value to type.
    */
   selectFromRadioGroup(name: string, value: string): Promise<void>;
-
-  /**
-   * Choose an option with a value from Selector component.
-   *
-   * @param name - The element name to type in.
-   * @param value - The value to type.
-   */
-  selectFromSelector(name: string, value: string): Promise<void>;
 
   /**
    * Upload a file.

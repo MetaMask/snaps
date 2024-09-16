@@ -1,6 +1,8 @@
 import { NodeProcessExecutionService } from '@metamask/snaps-controllers/node';
 import { DialogType } from '@metamask/snaps-sdk';
 import { Text } from '@metamask/snaps-sdk/jsx';
+import type { InstallSnapOptions } from '@metamask/snaps-simulation';
+import { installSnap as simulateSnap } from '@metamask/snaps-simulation';
 import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
 
 import {
@@ -9,8 +11,6 @@ import {
   assertIsPromptDialog,
   installSnap,
 } from './helpers';
-import type { InstallSnapOptions } from './internals';
-import { handleInstallSnap } from './internals';
 import { getMockServer } from './test-utils';
 
 describe('installSnap', () => {
@@ -18,7 +18,7 @@ describe('installSnap', () => {
     Object.defineProperty(global, 'snapsEnvironment', {
       writable: true,
       value: {
-        installSnap: handleInstallSnap,
+        installSnap: simulateSnap,
       },
     });
   });
@@ -215,7 +215,7 @@ describe('installSnap', () => {
       writable: true,
       value: {
         installSnap: async (_: string, options: InstallSnapOptions<any>) => {
-          return handleInstallSnap(snapId, options);
+          return simulateSnap(snapId, options);
         },
       },
     });
@@ -260,7 +260,7 @@ describe('installSnap', () => {
       writable: true,
       value: {
         installSnap: async (_: string, options: InstallSnapOptions<any>) => {
-          return handleInstallSnap(snapId, options);
+          return simulateSnap(snapId, options);
         },
       },
     });

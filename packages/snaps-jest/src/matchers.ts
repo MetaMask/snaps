@@ -14,6 +14,10 @@ import type {
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import {
+  InterfaceStruct,
+  SnapResponseStruct,
+} from '@metamask/snaps-simulation';
+import {
   getJsxElementFromComponent,
   serialiseJsx,
 } from '@metamask/snaps-utils';
@@ -31,7 +35,6 @@ import {
   RECEIVED_COLOR,
 } from 'jest-matcher-utils';
 
-import { InterfaceStruct, SnapResponseStruct } from './internals';
 import type { SnapResponse } from './types';
 
 /**
