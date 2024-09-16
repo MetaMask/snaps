@@ -24,6 +24,9 @@ import {
   Form,
   Container,
   Footer,
+  SelectorOption,
+  Card,
+  Selector,
 } from '@metamask/snaps-sdk/jsx';
 import {
   getJsxElementFromComponent,
@@ -59,6 +62,7 @@ import {
   selectFromRadioGroup,
   typeInField,
   uploadFile,
+  selectFromSelector,
 } from './interface';
 import type { RunSagaFunction } from './store';
 import { createStore, resolveInterface, setInterface } from './store';
@@ -83,6 +87,7 @@ describe('getInterfaceResponse', () => {
     typeInField: jest.fn(),
     selectInDropdown: jest.fn(),
     selectFromRadioGroup: jest.fn(),
+    selectFromSelector: jest.fn(),
     uploadFile: jest.fn(),
   };
 
@@ -103,6 +108,7 @@ describe('getInterfaceResponse', () => {
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
+      selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
     });
@@ -129,6 +135,7 @@ describe('getInterfaceResponse', () => {
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
+      selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
@@ -156,6 +163,7 @@ describe('getInterfaceResponse', () => {
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
+      selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
@@ -183,6 +191,7 @@ describe('getInterfaceResponse', () => {
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
+      selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
@@ -210,6 +219,7 @@ describe('getInterfaceResponse', () => {
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
+      selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
@@ -237,6 +247,7 @@ describe('getInterfaceResponse', () => {
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
+      selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
@@ -283,6 +294,7 @@ describe('getInterfaceResponse', () => {
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
+      selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
     });
   });
@@ -321,6 +333,7 @@ describe('getInterfaceResponse', () => {
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
+      selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -354,6 +367,7 @@ describe('getInterfaceResponse', () => {
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
+      selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
       cancel: expect.any(Function),
       ok: expect.any(Function),
@@ -1143,6 +1157,7 @@ describe('getInterface', () => {
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
+      selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
     });
@@ -1172,6 +1187,7 @@ describe('getInterface', () => {
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
+      selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
       ok: expect.any(Function),
     });
@@ -1501,6 +1517,156 @@ describe('selectFromRadioGroup', () => {
       ),
     ).rejects.toThrow(
       'Expected an element of type "RadioGroup", but found "Input".',
+    );
+  });
+});
+
+describe('selectFromSelector', () => {
+  const rootControllerMessenger = getRootControllerMessenger();
+  const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+    rootControllerMessenger,
+  );
+
+  const interfaceController = new SnapInterfaceController({
+    messenger: controllerMessenger,
+  });
+
+  const handleRpcRequestMock = jest.fn();
+
+  rootControllerMessenger.registerActionHandler(
+    'ExecutionService:handleRpcRequest',
+    handleRpcRequestMock,
+  );
+
+  it('updates the interface state and sends an InputChangeEvent', async () => {
+    jest.spyOn(rootControllerMessenger, 'call');
+
+    const content = (
+      <Selector name="foo" title="Choose an option" value="option1">
+        <SelectorOption value="option1">
+          <Card title="Option 1" value="option1" />
+        </SelectorOption>
+        <SelectorOption value="option2">
+          <Card title="Option 2" value="option2" />
+        </SelectorOption>
+      </Selector>
+    );
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await selectFromSelector(
+      rootControllerMessenger,
+      interfaceId,
+      content,
+      MOCK_SNAP_ID,
+      'foo',
+      'option2',
+    );
+
+    expect(rootControllerMessenger.call).toHaveBeenCalledWith(
+      'SnapInterfaceController:updateInterfaceState',
+      interfaceId,
+      { foo: 'option2' },
+    );
+
+    expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
+      origin: '',
+      handler: HandlerType.OnUserInput,
+      request: {
+        jsonrpc: '2.0',
+        method: ' ',
+        params: {
+          event: {
+            type: UserInputEventType.InputChangeEvent,
+            name: 'foo',
+            value: 'option2',
+          },
+          id: interfaceId,
+          context: null,
+        },
+      },
+    });
+  });
+
+  it('throws if chosen option does not exist', async () => {
+    const content = (
+      <Selector name="foo" title="Choose an option" value="option1">
+        <SelectorOption value="option1">
+          <Card title="Option 1" value="option1" />
+        </SelectorOption>
+        <SelectorOption value="option2">
+          <Card title="Option 2" value="option2" />
+        </SelectorOption>
+      </Selector>
+    );
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await expect(
+      selectFromSelector(
+        rootControllerMessenger,
+        interfaceId,
+        content,
+        MOCK_SNAP_ID,
+        'foo',
+        'option3',
+      ),
+    ).rejects.toThrow(
+      'The Selector with the name "foo" does not contain "option3"',
+    );
+  });
+
+  it('throws if there is no Selector in the interface', async () => {
+    const content = (
+      <Box>
+        <Text>Foo</Text>
+      </Box>
+    );
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await expect(
+      selectFromSelector(
+        rootControllerMessenger,
+        interfaceId,
+        content,
+        MOCK_SNAP_ID,
+        'bar',
+        'baz',
+      ),
+    ).rejects.toThrow(
+      'Could not find an element in the interface with the name "bar".',
+    );
+  });
+
+  it('throws if the element is not a Selector', async () => {
+    const content = <Input name="foo" />;
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await expect(
+      selectFromSelector(
+        rootControllerMessenger,
+        interfaceId,
+        content,
+        MOCK_SNAP_ID,
+        'foo',
+        'baz',
+      ),
+    ).rejects.toThrow(
+      'Expected an element of type "Selector", but found "Input".',
     );
   });
 });
