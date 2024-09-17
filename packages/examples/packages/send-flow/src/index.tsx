@@ -5,45 +5,40 @@ import {
   type OnRpcRequestHandler,
 } from '@metamask/snaps-sdk';
 
-import type { Account } from './components';
 import { SendFlow } from './components';
 import jazzicon1 from './images/jazzicon1.svg';
 import jazzicon2 from './images/jazzicon2.svg';
-import type { SendFormState } from './utils';
+import type { Account, SendFormState, SendFlowContext } from './types';
 import { formValidation } from './utils';
 
+/**
+ * Example accounts data.
+ */
 const accounts: Record<string, Account> = {
   bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh: {
     name: 'My Bitcoin Account',
     address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
-    balance: 1.8,
-    fiatBalance: 92000,
+    balance: { amount: 1.8, fiat: 92000 },
     icon: jazzicon1,
   },
   bc1pmpg8yzpty4xgp497qdydkcqt90zz68n48wzwm757vk8nrlkat99q272xm3: {
     name: 'Savings Account',
     address: 'bc1pmpg8yzpty4xgp497qdydkcqt90zz68n48wzwm757vk8nrlkat99q272xm3',
-    balance: 2.5,
-    fiatBalance: 150000,
+    balance: { amount: 2.5, fiat: 150000 },
     icon: jazzicon2,
   },
 };
 
+/**
+ * Example accounts data as an array.
+ */
 const accountsArray = Object.values(accounts);
-
-export type Context = {
-  accounts: Record<string, Account>;
-  selectedCurrency: 'BTC' | '$';
-  fees: { amount: number; fiat: number };
-};
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
  * `wallet_invokeSnap` method. This handler handles one method:
  *
- * - `display`: Display a dialog with a counter, and a button to increment the
- * counter. This demonstrates how to display a dialog with JSX content, and how
- * to handle user input events.
+ * - `display`: Display a dialog with the SendFlow interface.
  *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.
@@ -94,11 +89,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
 };
 
 /**
- * Handle incoming user events coming from the Snap interface. This handler
- * handles one event:
- *
- * - `increment`: Increment the counter and update the Snap interface with the
- * new count. It is triggered when the user clicks the increment button.
+ * Handle incoming user events coming from the Snap interface.
  *
  * @param params - The event parameters.
  * @param params.id - The Snap interface ID where the event was fired.
@@ -112,7 +103,8 @@ export const onUserInput: OnUserInputHandler = async ({
   id,
   context,
 }) => {
-  const { selectedCurrency, fees } = context as Context;
+  const { selectedCurrency, fees } = context as SendFlowContext;
+
   if (event.type === UserInputEventType.InputChangeEvent) {
     switch (event.name) {
       case 'amount':
@@ -125,7 +117,12 @@ export const onUserInput: OnUserInputHandler = async ({
 
         const sendForm = state.sendForm as SendFormState;
 
-        const formErrors = formValidation(sendForm, context as Context);
+        const formErrors = formValidation(sendForm, context as SendFlowContext);
+
+        const total = {
+          amount: Number(sendForm.amount) + fees.amount,
+          fiat: 250 + fees.fiat,
+        };
 
         await snap.request({
           method: 'snap_updateInterface',
@@ -136,10 +133,7 @@ export const onUserInput: OnUserInputHandler = async ({
                 accounts={accountsArray}
                 selectedAccount={sendForm.accountSelector}
                 selectedCurrency={selectedCurrency}
-                total={{
-                  amount: Number(sendForm.amount) + fees.amount,
-                  fiat: 250 + fees.fiat,
-                }}
+                total={total}
                 fees={fees}
                 toAddress={sendForm.to}
                 errors={formErrors}
