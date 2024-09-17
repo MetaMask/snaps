@@ -6,19 +6,10 @@
   "include": ["./src", "package.json"],
   "references": [
     {
-      "path": "../snaps-controllers"
-    },
-    {
-      "path": "../snaps-execution-environments"
-    },
-    {
-      "path": "../snaps-rpc-methods"
-    },
-    {
       "path": "../snaps-sdk"
     },
     {
-      "path": "../snaps-utils"
+      "path": "../snaps-simulation"
     }
   ]
 }

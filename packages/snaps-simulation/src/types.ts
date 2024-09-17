@@ -1,14 +1,15 @@
 import type { NotificationType, EnumToUnion } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
+import type { InferMatching } from '@metamask/snaps-utils';
+import type { Infer } from '@metamask/superstruct';
+import type { Json, JsonRpcId, JsonRpcParams } from '@metamask/utils';
+
 import type {
   SignatureOptionsStruct,
   SnapOptionsStruct,
   SnapResponseStruct,
   TransactionOptionsStruct,
-} from '@metamask/snaps-simulation';
-import type { InferMatching } from '@metamask/snaps-utils';
-import type { Infer } from '@metamask/superstruct';
-import type { Json, JsonRpcId, JsonRpcParams } from '@metamask/utils';
+} from './structs';
 
 export type RequestOptions = {
   /**

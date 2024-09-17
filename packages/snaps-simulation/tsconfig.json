@@ -1,0 +1,26 @@
+{
+  "extends": "../../tsconfig.packages.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "jsx": "react-jsx",
+    "jsxImportSource": "@metamask/snaps-sdk"
+  },
+  "include": ["./src"],
+  "references": [
+    {
+      "path": "../snaps-controllers"
+    },
+    {
+      "path": "../snaps-execution-environments"
+    },
+    {
+      "path": "../snaps-rpc-methods"
+    },
+    {
+      "path": "../snaps-sdk"
+    },
+    {
+      "path": "../snaps-utils"
+    }
+  ]
+}
