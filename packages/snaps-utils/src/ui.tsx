@@ -353,7 +353,7 @@ export function validateLink(
       if (linkData.snapId) {
         assert(
           getSnap(linkData.snapId),
-          'The snap being navigated to is not installed.',
+          'The Snap being navigated to is not installed.',
         );
       }
     } else {

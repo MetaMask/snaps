@@ -1,10 +1,4 @@
-import { isMetaMaskUrl, METAMASK_URL_REGEX, parseMetaMaskUrl } from './url';
-
-describe('METAMASK_URL_REGEX', () => {
-  it('will throw for non-metamask urls', () => {
-    expect('random:foobar'.match(METAMASK_URL_REGEX)).toBeNull();
-  });
-});
+import { parseMetaMaskUrl } from './url';
 
 describe('parseMetaMaskUrl', () => {
   it('can parse a valid url with the client authority', () => {
@@ -46,7 +40,7 @@ describe('parseMetaMaskUrl', () => {
 
   it('will throw on an invalid scheme', () => {
     expect(() => parseMetaMaskUrl('metmask://client/')).toThrow(
-      'Invalid MetaMask url: invalid scheme.',
+      'Unable to parse URL. Expected the protocol to be "metamask:", but received "metmask:".',
     );
   });
 
@@ -67,23 +61,7 @@ describe('parseMetaMaskUrl', () => {
 
   it('will throw on an invalid client page', () => {
     expect(() => parseMetaMaskUrl('metamask://client/foo')).toThrow(
-      'Invalid MetaMask url: invalid client path.',
+      'Unable to navigate to "/foo". The provided path is not allowed.',
     );
   });
-});
-
-describe('isMetaMaskUrl', () => {
-  it.each(['https://www.google.com', 'metamask://foo/'])(
-    'will return false for non-metamask urls',
-    (url) => {
-      expect(isMetaMaskUrl(url)).toBe(false);
-    },
-  );
-
-  it.each(['metamask://snap/home', 'metamask://client/'])(
-    'will not throw for valid metamask urls',
-    (url) => {
-      expect(isMetaMaskUrl(url)).toBe(true);
-    },
-  );
 });

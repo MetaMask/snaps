@@ -573,7 +573,7 @@ describe('validateLink', () => {
         fn,
         jest.fn().mockReturnValue(false),
       ),
-    ).toThrow('The snap being navigated to is not installed.');
+    ).toThrow('Invalid URL: The Snap being navigated to is not installed.');
 
     expect(fn).not.toHaveBeenCalled();
   });
