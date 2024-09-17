@@ -2,15 +2,15 @@ import { NodeProcessExecutionService } from '@metamask/snaps-controllers/node';
 import { DialogType } from '@metamask/snaps-sdk';
 import { Text } from '@metamask/snaps-sdk/jsx';
 import type { InstallSnapOptions } from '@metamask/snaps-simulation';
-import { installSnap as simulateSnap } from '@metamask/snaps-simulation';
-import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
-
 import {
   assertIsAlertDialog,
   assertIsConfirmationDialog,
   assertIsPromptDialog,
-  installSnap,
-} from './helpers';
+  installSnap as simulateSnap,
+} from '@metamask/snaps-simulation';
+import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
+
+import { installSnap } from './helpers';
 import { getMockServer } from './test-utils';
 
 describe('installSnap', () => {

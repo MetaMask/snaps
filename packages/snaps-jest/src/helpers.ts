@@ -1,6 +1,5 @@
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
 import type { SnapId } from '@metamask/snaps-sdk';
-import { DialogType } from '@metamask/snaps-sdk';
 import type { InstallSnapOptions } from '@metamask/snaps-simulation';
 import {
   JsonRpcMockOptionsStruct,
@@ -13,12 +12,7 @@ import {
 } from '@metamask/snaps-simulation';
 import { HandlerType, logInfo } from '@metamask/snaps-utils';
 import { create } from '@metamask/superstruct';
-import {
-  assert,
-  assertStruct,
-  createModuleLogger,
-  hasProperty,
-} from '@metamask/utils';
+import { assertStruct, createModuleLogger } from '@metamask/utils';
 
 import { rootLogger, getEnvironment } from './internals';
 import type {
@@ -28,11 +22,6 @@ import type {
   Snap,
   SnapResponse,
   TransactionOptions,
-  SnapInterface,
-  SnapAlertInterface,
-  SnapInterfaceActions,
-  SnapConfirmationInterface,
-  SnapPromptInterface,
 } from './types';
 
 const log = createModuleLogger(rootLogger, 'helpers');
@@ -68,39 +57,6 @@ function assertIsResponseWithInterface(
   response: SnapResponse,
 ): asserts response is SnapResponseWithInterface {
   assertStruct(response, SnapResponseWithInterfaceStruct);
-}
-
-/**
- * Ensure that the actual interface is an alert dialog.
- *
- * @param ui - The interface to verify.
- */
-export function assertIsAlertDialog(
-  ui: SnapInterface,
-): asserts ui is SnapAlertInterface & SnapInterfaceActions {
-  assert(hasProperty(ui, 'type') && ui.type === DialogType.Alert);
-}
-
-/**
- * Ensure that the actual interface is a confirmation dialog.
- *
- * @param ui - The interface to verify.
- */
-export function assertIsConfirmationDialog(
-  ui: SnapInterface,
-): asserts ui is SnapConfirmationInterface & SnapInterfaceActions {
-  assert(hasProperty(ui, 'type') && ui.type === DialogType.Confirmation);
-}
-
-/**
- * Ensure that the actual interface is a Prompt dialog.
- *
- * @param ui - The interface to verify.
- */
-export function assertIsPromptDialog(
-  ui: SnapInterface,
-): asserts ui is SnapPromptInterface & SnapInterfaceActions {
-  assert(hasProperty(ui, 'type') && ui.type === DialogType.Prompt);
 }
 
 /**
