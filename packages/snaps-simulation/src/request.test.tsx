@@ -111,6 +111,7 @@ describe('handleRequest', () => {
       },
       ok: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
+      selectFromSelector: expect.any(Function),
       selectInDropdown: expect.any(Function),
       typeInField: expect.any(Function),
       uploadFile: expect.any(Function),

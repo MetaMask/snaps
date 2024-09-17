@@ -5983,6 +5983,7 @@ __metadata:
     "@ts-bridge/cli": "npm:^0.5.1"
     "@types/express": "npm:^4.17.17"
     "@types/jest": "npm:^27.5.1"
+    "@types/mime": "npm:^3.0.0"
     "@types/readable-stream": "npm:^4.0.15"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
     "@typescript-eslint/parser": "npm:^6.21.0"
@@ -7808,7 +7809,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mime@npm:*":
+"@types/mime@npm:*, @types/mime@npm:^3.0.0":
   version: 3.0.4
   resolution: "@types/mime@npm:3.0.4"
   checksum: 10/a6139c8e1f705ef2b064d072f6edc01f3c099023ad7c4fce2afc6c2bf0231888202adadbdb48643e8e20da0ce409481a49922e737eca52871b3dc08017455843

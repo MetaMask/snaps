@@ -130,6 +130,14 @@ export type SnapInterfaceActions = {
   selectFromRadioGroup(name: string, value: string): Promise<void>;
 
   /**
+   * Choose an option with a value from Selector component.
+   *
+   * @param name - The element name to type in.
+   * @param value - The value to type.
+   */
+  selectFromSelector(name: string, value: string): Promise<void>;
+
+  /**
    * Upload a file.
    *
    * @param name - The element name to upload the file to.
