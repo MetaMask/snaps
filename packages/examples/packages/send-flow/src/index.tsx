@@ -105,25 +105,25 @@ export const onUserInput: OnUserInputHandler = async ({
 }) => {
   const { selectedCurrency, fees } = context as SendFlowContext;
 
+  const state = await snap.request({
+    method: 'snap_getInterfaceState',
+    params: { id },
+  });
+
+  const sendForm = state.sendForm as SendFormState;
+
+  const formErrors = formValidation(sendForm, context as SendFlowContext);
+
+  const total = {
+    amount: Number(sendForm.amount) + fees.amount,
+    fiat: 250 + fees.fiat,
+  };
+
   if (event.type === UserInputEventType.InputChangeEvent) {
     switch (event.name) {
       case 'amount':
       case 'to':
       case 'accountSelector': {
-        const state = await snap.request({
-          method: 'snap_getInterfaceState',
-          params: { id },
-        });
-
-        const sendForm = state.sendForm as SendFormState;
-
-        const formErrors = formValidation(sendForm, context as SendFlowContext);
-
-        const total = {
-          amount: Number(sendForm.amount) + fees.amount,
-          fiat: 250 + fees.fiat,
-        };
-
         await snap.request({
           method: 'snap_updateInterface',
           params: {
@@ -144,6 +144,30 @@ export const onUserInput: OnUserInputHandler = async ({
 
         break;
       }
+      default:
+        break;
+    }
+  } else if (event.type === UserInputEventType.ButtonClickEvent) {
+    switch (event.name) {
+      case 'clear':
+        await snap.request({
+          method: 'snap_updateInterface',
+          params: {
+            id,
+            ui: (
+              <SendFlow
+                accounts={accountsArray}
+                selectedAccount={sendForm.accountSelector}
+                selectedCurrency={selectedCurrency}
+                total={total}
+                fees={fees}
+                toAddress={null}
+                errors={formErrors}
+              />
+            ),
+          },
+        });
+        break;
       default:
         break;
     }

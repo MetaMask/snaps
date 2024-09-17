@@ -138,7 +138,11 @@ export const SendForm: SnapComponent<SendFormProps> = ({
       <Box>
         <Image src={jazzicon3} />
       </Box>
-      <Input name="to" placeholder="Enter receiving address" />
+      <Input
+        name="to"
+        placeholder="Enter receiving address"
+        value={toAddress ?? undefined}
+      />
       {toAddress !== null && toAddress !== '' && (
         <Box>
           <Button name="clear">
