@@ -1,6 +1,7 @@
 {
   "name": "@metamask/snaps-simulation",
   "version": "0.0.0",
+  "description": "A simulation framework for MetaMask Snaps, enabling headless testing of Snaps in a controlled environment",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
