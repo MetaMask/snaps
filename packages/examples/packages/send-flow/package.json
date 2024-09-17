@@ -1,6 +1,6 @@
 {
   "name": "@metamask/send-flow-example-snap",
-  "version": "1.2.1",
+  "version": "0.1.0",
   "description": "MetaMask example snap demonstrating a send flow with UI components.",
   "repository": {
     "type": "git",
