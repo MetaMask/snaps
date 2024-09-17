@@ -1,6 +1,19 @@
-# `@metamask/jsx-example-snap`
+# `@metamask/send-flow-example-snap`
 
-This Snap demonstrates how to use JSX for creating a UI. JSX is a syntax
-extension for JavaScript that allows you to write HTML-like code in your
-JavaScript files. This Snap uses JSX to create a simple UI with a button that
-increments a counter.
+This snap demonstrates a simple send flow built with Snaps custom UI.
+
+## Snap usage
+
+### onRpcRequest
+
+This snap exposes an `onRpcRequest` handler, which supports the following
+JSON-RPC methods:
+
+- `dialog`: Create a `snap_dialog` with the send flow.
+
+### onHomePage
+
+The snap exposes an `onHomePage` handler, which shows the send flow.
+
+For more information, you can refer to
+[the end-to-end tests](./src/index.test.tsx).

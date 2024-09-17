@@ -1,5 +1,8 @@
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { OnUserInputHandler } from '@metamask/snaps-sdk';
+import type {
+  OnHomePageHandler,
+  OnUserInputHandler,
+} from '@metamask/snaps-sdk';
 import {
   UserInputEventType,
   type OnRpcRequestHandler,
@@ -9,7 +12,7 @@ import { SendFlow } from './components';
 import jazzicon1 from './images/jazzicon1.svg';
 import jazzicon2 from './images/jazzicon2.svg';
 import type { Account, SendFormState, SendFlowContext } from './types';
-import { formValidation } from './utils';
+import { formValidation, generateSendFlow } from './utils';
 
 /**
  * Example accounts data.
@@ -46,29 +49,11 @@ const accountsArray = Object.values(accounts);
  * @see https://docs.metamask.io/snaps/reference/exports/#onrpcrequest
  */
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
-  const fees = { amount: 1.0001, fiat: 1.23 };
-
   switch (request.method) {
     case 'display': {
-      const interfaceId = await snap.request({
-        method: 'snap_createInterface',
-        params: {
-          ui: (
-            <SendFlow
-              accounts={accountsArray}
-              selectedAccount={accountsArray[0].address}
-              selectedCurrency="BTC"
-              total={{ amount: 0, fiat: 0 }}
-              fees={fees}
-              toAddress={null}
-            />
-          ),
-          context: {
-            accounts,
-            selectedCurrency: 'BTC',
-            fees,
-          },
-        },
+      const interfaceId = await generateSendFlow({
+        accounts: accountsArray,
+        fees: { amount: 1.0001, fiat: 1.23 },
       });
 
       return await snap.request({
@@ -86,6 +71,21 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         },
       });
   }
+};
+
+/**
+ * Handle incoming home page requests from the MetaMask clients.
+ *
+ * @returns The interface ID for the send flow.
+ * @see https://docs.metamask.io/snaps/reference/exports/#onhomepage
+ */
+export const onHomePage: OnHomePageHandler = async () => {
+  const interfaceId = await generateSendFlow({
+    accounts: accountsArray,
+    fees: { amount: 1.0001, fiat: 1.23 },
+  });
+
+  return { id: interfaceId };
 };
 
 /**

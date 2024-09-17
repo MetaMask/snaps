@@ -1,5 +1,5 @@
 {
-  "version": "1.2.1",
+  "version": "0.1.0",
   "description": "MetaMask example snap demonstrating a send flow with UI components.",
   "proposedName": "Send flow Example Snap",
   "repository": {
@@ -20,7 +20,8 @@
     "endowment:rpc": {
       "dapps": true
     },
-    "snap_dialog": {}
+    "snap_dialog": {},
+    "endowment:page-home": {}
   },
   "manifestVersion": "0.1"
 }

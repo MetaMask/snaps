@@ -1,4 +1,50 @@
-import type { SendFlowContext, SendFormErrors, SendFormState } from './types';
+import { SendFlow } from './components';
+import type {
+  Account,
+  Currency,
+  SendFlowContext,
+  SendFormErrors,
+  SendFormState,
+} from './types';
+
+export type GenerateSendFlowParams = {
+  accounts: Account[];
+  fees: Currency;
+};
+
+/**
+ * Generate the send flow.
+ *
+ * @param params - The parameters for the send form.
+ * @param params.accounts - The available accounts.
+ * @param params.fees - The fees for the transaction.
+ * @returns The interface ID.
+ */
+export async function generateSendFlow({
+  accounts,
+  fees,
+}: GenerateSendFlowParams) {
+  return await snap.request({
+    method: 'snap_createInterface',
+    params: {
+      ui: (
+        <SendFlow
+          accounts={accounts}
+          selectedAccount={accounts[0].address}
+          selectedCurrency="BTC"
+          total={{ amount: 0, fiat: 0 }}
+          fees={fees}
+          toAddress={null}
+        />
+      ),
+      context: {
+        accounts,
+        selectedCurrency: 'BTC',
+        fees,
+      },
+    },
+  });
+}
 
 /**
  * Validate the send form.
