@@ -10,7 +10,10 @@ import {
   Link,
   Text,
 } from '@metamask/snaps-sdk/jsx';
-import { getJsxElementFromComponent } from '@metamask/snaps-utils';
+import {
+  getJsonSizeUnsafe,
+  getJsxElementFromComponent,
+} from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
 import {
@@ -19,6 +22,11 @@ import {
   getRootSnapInterfaceControllerMessenger,
 } from '../test-utils';
 import { SnapInterfaceController } from './SnapInterfaceController';
+
+jest.mock('@metamask/snaps-utils', () => ({
+  ...jest.requireActual('@metamask/snaps-utils'),
+  getJsonSizeUnsafe: jest.fn().mockReturnValue(1),
+}));
 
 describe('SnapInterfaceController', () => {
   describe('createInterface', () => {
@@ -157,6 +165,11 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
+      jest
+        .mocked(getJsonSizeUnsafe)
+        .mockReturnValueOnce(1)
+        .mockReturnValueOnce(10_000_000);
+
       /* eslint-disable-next-line no-new */
       new SnapInterfaceController({
         messenger: controllerMessenger,
@@ -287,13 +300,14 @@ describe('SnapInterfaceController', () => {
         false,
       );
 
+      jest.mocked(getJsonSizeUnsafe).mockReturnValueOnce(11_000_000);
+
       /* eslint-disable-next-line no-new */
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
-      const images = new Array(800_000).fill(image(`<svg />`));
-      const components = panel(images);
+      const components = panel([image(`<svg />`)]);
 
       await expect(
         rootMessenger.call(
@@ -311,13 +325,17 @@ describe('SnapInterfaceController', () => {
         false,
       );
 
+      jest.mocked(getJsonSizeUnsafe).mockReturnValueOnce(11_000_000);
+
       /* eslint-disable-next-line no-new */
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
       const element = (
-        <Box>{new Array(800_000).fill(<Image src="<svg />" />)}</Box>
+        <Box>
+          <Image src="<svg />" />
+        </Box>
       );
 
       await expect(
@@ -660,6 +678,11 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
+      jest
+        .mocked(getJsonSizeUnsafe)
+        .mockReturnValueOnce(1)
+        .mockReturnValueOnce(11_000_000);
+
       /* eslint-disable-next-line no-new */
       new SnapInterfaceController({
         messenger: controllerMessenger,
@@ -670,8 +693,7 @@ describe('SnapInterfaceController', () => {
         children: [input({ name: 'bar' })],
       });
 
-      const images = new Array(800_000).fill(image(`<svg />`));
-      const newContent = panel(images);
+      const newContent = panel([image('<svg />')]);
 
       const id = await rootMessenger.call(
         'SnapInterfaceController:createInterface',
@@ -694,6 +716,11 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
+      jest
+        .mocked(getJsonSizeUnsafe)
+        .mockReturnValueOnce(1)
+        .mockReturnValueOnce(11_000_000);
+
       /* eslint-disable-next-line no-new */
       new SnapInterfaceController({
         messenger: controllerMessenger,
@@ -708,7 +735,9 @@ describe('SnapInterfaceController', () => {
       );
 
       const newElement = (
-        <Box>{new Array(800_000).fill(<Image src={'<svg />'} />)}</Box>
+        <Box>
+          <Image src={'<svg />'} />
+        </Box>
       );
 
       const id = await rootMessenger.call(
