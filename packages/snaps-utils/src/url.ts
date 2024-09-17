@@ -13,6 +13,8 @@ export const SNAP_PATHS = ['/home'];
  * Parse a url string to an object containing the authority, path and Snap id (if snap authority).
  * This also validates the url before parsing it.
  *
+ * Note: The Snap id returned from this function should always be validated to be an installed snap.
+ *
  * @param str - The url string to validate and parse.
  * @returns A parsed url object.
  * @throws If the authority or path is invalid.
