@@ -52,7 +52,8 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'display': {
       const interfaceId = await generateSendFlow({
-        accounts: accountsArray,
+        accountsArray,
+        accounts,
         fees: { amount: 1.0001, fiat: 1.23 },
       });
 
@@ -81,7 +82,8 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
  */
 export const onHomePage: OnHomePageHandler = async () => {
   const interfaceId = await generateSendFlow({
-    accounts: accountsArray,
+    accountsArray,
+    accounts,
     fees: { amount: 1.0001, fiat: 1.23 },
   });
 
@@ -115,7 +117,7 @@ export const onUserInput: OnUserInputHandler = async ({
   const formErrors = formValidation(sendForm, context as SendFlowContext);
 
   const total = {
-    amount: Number(sendForm.amount) + fees.amount,
+    amount: Number(sendForm.amount ?? 0) + fees.amount,
     fiat: 250 + fees.fiat,
   };
 

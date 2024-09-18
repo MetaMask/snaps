@@ -8,7 +8,8 @@ import type {
 } from './types';
 
 export type GenerateSendFlowParams = {
-  accounts: Account[];
+  accountsArray: Account[];
+  accounts: Record<string, Account>;
   fees: Currency;
 };
 
@@ -16,11 +17,13 @@ export type GenerateSendFlowParams = {
  * Generate the send flow.
  *
  * @param params - The parameters for the send form.
+ * @param params.accountsArray - The available accounts as an array.
  * @param params.accounts - The available accounts.
  * @param params.fees - The fees for the transaction.
  * @returns The interface ID.
  */
 export async function generateSendFlow({
+  accountsArray,
   accounts,
   fees,
 }: GenerateSendFlowParams) {
@@ -29,8 +32,8 @@ export async function generateSendFlow({
     params: {
       ui: (
         <SendFlow
-          accounts={accounts}
-          selectedAccount={accounts[0].address}
+          accounts={accountsArray}
+          selectedAccount={accountsArray[0].address}
           selectedCurrency="BTC"
           total={{ amount: 0, fiat: 0 }}
           fees={fees}
@@ -63,11 +66,10 @@ export function formValidation(
     errors.to = 'Invalid address';
   }
 
-  if (!formState.amount) {
-    errors.amount = 'Required';
-  } else if (
+  if (
+    formState.amount &&
     Number(formState.amount) >
-    context.accounts[formState.accountSelector].balance.amount
+      context.accounts[formState.accountSelector].balance.amount
   ) {
     errors.amount = 'Insufficient funds';
   }
