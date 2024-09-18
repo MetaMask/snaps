@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "MetaMask example snap demonstrating a send flow with UI components.",
   "proposedName": "Send flow Example Snap",
   "repository": {
