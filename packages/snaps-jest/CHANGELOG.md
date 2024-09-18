@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.4.0]
+### Added
+- Add support for selector component ([#2724](https://github.com/MetaMask/snaps/pull/2724))
+  - Interfaces now have a `selectFromSelector` function that can be used to
+    select an option from a selector.
+
+### Changed
+- Extract simulation part of `snaps-jest` to separate package ([#2727](https://github.com/MetaMask/snaps/pull/2727))
+
 ## [8.3.2]
 ### Fixed
 - Fix invalid types in type declaration in some cases ([#2714](https://github.com/MetaMask/snaps/pull/2714))
@@ -193,7 +202,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.3.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.4.0...HEAD
+[8.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.3.2...@metamask/snaps-jest@8.4.0
 [8.3.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.3.1...@metamask/snaps-jest@8.3.2
 [8.3.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.3.0...@metamask/snaps-jest@8.3.1
 [8.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.2.0...@metamask/snaps-jest@8.3.0
