@@ -11,6 +11,8 @@
   "sideEffects": false,
   "files": [],
   "scripts": {
+    "changelog:update": "../../scripts/update-changelog.sh @metamask/test-snaps",
+    "changelog:validate": "../../scripts/validate-changelog.sh @metamask/test-snaps",
     "test": "jest --passWithNoTests && yarn posttest",
     "posttest": "jest-it-up",
     "test:ci": "yarn test",
@@ -21,10 +23,9 @@
     "clean": "rimraf 'dist'",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
-    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog && yarn lint:dependencies",
+    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn changelog:validate && yarn lint:dependencies",
     "lint:ci": "yarn lint",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
-    "lint:changelog": "../../scripts/validate-changelog.sh @metamask/test-snaps",
     "lint:dependencies": "depcheck"
   },
   "dependencies": {
