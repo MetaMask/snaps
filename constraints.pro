@@ -258,7 +258,16 @@ gen_enforced_field(WorkspaceCwd, 'scripts.lint:dependencies', 'depcheck') :-
 % The test scripts must be the same for all packages.
 gen_enforced_field(WorkspaceCwd, 'scripts.test', 'jest --reporters=jest-silent-reporter && yarn test:post') :-
   WorkspaceCwd \= '.',
+  WorkspaceCwd \= 'packages/snaps-controllers',
+  WorkspaceCwd \= 'packages/snaps-execution-environments',
+  WorkspaceCwd \= 'packages/snaps-utils',
   \+ is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.test', 'jest --reporters=jest-silent-reporter && yarn test:browser && yarn test:post') :-
+  WorkspaceCwd == 'packages/snaps-controllers'.
+gen_enforced_field(WorkspaceCwd, 'scripts.test', 'jest --reporters=jest-silent-reporter && yarn test:browser && yarn test:post') :-
+  WorkspaceCwd == 'packages/snaps-execution-environments'.
+gen_enforced_field(WorkspaceCwd, 'scripts.test', 'jest --reporters=jest-silent-reporter && yarn test:browser && yarn test:post') :-
+  WorkspaceCwd == 'packages/snaps-utils'.
 gen_enforced_field(WorkspaceCwd, 'scripts.test:clean', 'jest --clearCache') :-
   WorkspaceCwd \= '.',
   \+ is_example(WorkspaceCwd).
@@ -270,7 +279,16 @@ gen_enforced_field(WorkspaceCwd, 'scripts.test:watch', 'jest --watch') :-
   \+ is_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'scripts.test:post', 'jest-it-up') :-
   WorkspaceCwd \= '.',
+  WorkspaceCwd \= 'packages/snaps-controllers',
+  WorkspaceCwd \= 'packages/snaps-execution-environments',
+  WorkspaceCwd \= 'packages/snaps-utils',
   \+ is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.test:post', 'ts-node scripts/coverage.ts && rimraf coverage/jest coverage/wdio') :-
+  WorkspaceCwd == 'packages/snaps-controllers'.
+gen_enforced_field(WorkspaceCwd, 'scripts.test:post', 'ts-node scripts/coverage.ts && rimraf coverage/jest coverage/wdio') :-
+  WorkspaceCwd == 'packages/snaps-execution-environments'.
+gen_enforced_field(WorkspaceCwd, 'scripts.test:post', 'ts-node scripts/coverage.ts && rimraf coverage/jest coverage/wdio') :-
+  WorkspaceCwd == 'packages/snaps-utils'.
 
 % The "engines.node" field must be the same for all packages.
 gen_enforced_field(WorkspaceCwd, 'engines.node', '^18.16 || >=20').

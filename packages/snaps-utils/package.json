@@ -57,10 +57,10 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
     "publish:preview": "yarn npm publish --tag preview",
-    "test": "jest --reporters=jest-silent-reporter && yarn test:post",
+    "test": "jest --reporters=jest-silent-reporter && yarn test:browser && yarn test:post",
     "test:browser": "wdio run wdio.config.js",
     "test:clean": "jest --clearCache",
-    "test:post": "jest-it-up",
+    "test:post": "ts-node scripts/coverage.ts && rimraf coverage/jest coverage/wdio",
     "test:verbose": "jest --verbose",
     "test:watch": "jest --watch"
   },
