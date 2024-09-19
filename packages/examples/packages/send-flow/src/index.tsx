@@ -137,7 +137,7 @@ export const onUserInput: OnUserInputHandler = async ({
                 selectedCurrency={selectedCurrency}
                 total={total}
                 fees={fees}
-                toAddress={sendForm.to}
+                displayClearIcon={Boolean(sendForm.to) && sendForm.to !== ''}
                 errors={formErrors}
               />
             ),
@@ -163,7 +163,8 @@ export const onUserInput: OnUserInputHandler = async ({
                 selectedCurrency={selectedCurrency}
                 total={total}
                 fees={fees}
-                toAddress={null}
+                flushToAddress={true}
+                displayClearIcon={false}
                 errors={formErrors}
               />
             ),

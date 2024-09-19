@@ -4,14 +4,14 @@ This snap demonstrates a simple send flow built with Snaps custom UI.
 
 ## Snap usage
 
-### onRpcRequest
+### `onRpcRequest`
 
 This snap exposes an `onRpcRequest` handler, which supports the following
 JSON-RPC methods:
 
 - `dialog`: Create a `snap_dialog` with the send flow.
 
-### onHomePage
+### `onHomePage`
 
 The snap exposes an `onHomePage` handler, which shows the send flow.
 
