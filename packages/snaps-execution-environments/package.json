@@ -41,8 +41,7 @@
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ./.prettierignore",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
-    "lint:changelog": "../../scripts/validate-changelog.sh @metamask/snaps-execution-environments",
-    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog && yarn lint:dependencies",
+    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn changelog:validate && yarn lint:dependencies",
     "clean": "rimraf '*.tsbuildinfo' 'dist' 'src/__GENERATED__/' 'coverage/*' '__test__/*'",
     "build": "ts-bridge --project tsconfig.build.json --verbose --no-references && yarn build:lavamoat",
     "build:lavamoat": "lavamoat scripts/build.js --policy lavamoat/build-system/policy.json  --policyOverride lavamoat/build-system/policy-override.json",
@@ -51,7 +50,9 @@
     "publish:preview": "yarn npm publish --tag preview",
     "lint:ci": "yarn lint",
     "start": "node scripts/start.js",
-    "lint:dependencies": "depcheck"
+    "lint:dependencies": "depcheck",
+    "changelog:update": "../../scripts/update-changelog.sh @metamask/snaps-execution-environments",
+    "changelog:validate": "../../scripts/validate-changelog.sh @metamask/snaps-execution-environments"
   },
   "dependencies": {
     "@metamask/json-rpc-engine": "^9.0.2",

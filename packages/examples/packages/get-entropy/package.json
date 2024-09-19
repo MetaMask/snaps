@@ -17,8 +17,7 @@
     "build": "mm-snap build",
     "build:clean": "yarn clean && yarn build",
     "clean": "rimraf \"dist\"",
-    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog && yarn lint:dependencies",
-    "lint:changelog": "../../../../scripts/validate-changelog.sh @metamask/get-entropy-example-snap",
+    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn changelog:validate && yarn lint:dependencies",
     "lint:ci": "yarn lint",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
@@ -27,7 +26,9 @@
     "test": "yarn test:e2e",
     "test:e2e": "jest",
     "publish:preview": "yarn npm publish --tag preview",
-    "lint:dependencies": "depcheck"
+    "lint:dependencies": "depcheck",
+    "changelog:update": "../../../../scripts/update-changelog.sh @metamask/get-entropy-example-snap",
+    "changelog:validate": "../../../../scripts/validate-changelog.sh @metamask/get-entropy-example-snap"
   },
   "dependencies": {
     "@metamask/snaps-sdk": "workspace:^",

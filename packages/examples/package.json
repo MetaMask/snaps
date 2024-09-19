@@ -23,7 +23,7 @@
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" \"!packages/**\" --ignore-path ../../.gitignore",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:ci": "yarn lint:eslint && yarn lint:misc --check",
-    "lint:changelogs": "yarn workspaces foreach --worktree --parallel --verbose run lint:changelog",
+    "changelog:validates": "yarn workspaces foreach --worktree --parallel --verbose run changelog:validate",
     "lint:dependencies": "depcheck"
   },
   "devDependencies": {
