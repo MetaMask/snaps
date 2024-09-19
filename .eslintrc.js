@@ -34,7 +34,7 @@ module.exports = {
 
   overrides: [
     {
-      files: ['**/*.js'],
+      files: ['**/*.js', '**/*.cjs'],
       extends: ['@metamask/eslint-config-nodejs'],
 
       parserOptions: {

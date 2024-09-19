@@ -38,7 +38,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "ts-bridge --project tsconfig.build.json --verbose --no-references",
+    "build": "ts-bridge --project tsconfig.build.json --verbose --clean --no-references",
     "build:chmod": "chmod +x ./dist/main.mjs && chmod +x ./dist/main.js",
     "build:clean": "yarn clean && yarn build",
     "build:watch": "tsc-watch --onSuccess 'yarn build:chmod'",

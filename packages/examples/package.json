@@ -40,7 +40,8 @@
     "test:clean": "jest --clearCache",
     "test:post": "jest-it-up",
     "test:verbose": "jest --verbose",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "changelog:validate": "../../scripts/validate-changelog.sh @metamask/example-snaps"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^3.0.4",
