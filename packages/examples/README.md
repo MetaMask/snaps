@@ -88,6 +88,8 @@ The following is a list of the snaps in this directory.
 - [**`packages/preinstalled`**](./packages/preinstalled): This snap demonstrates
   preinstalled snaps, i.e., snaps that are installed in the MetaMask extension
   by default.
+- [**`packages/send-flow`**](./packages/send-flow): This snap demonstrates
+  a simple send flow using custom UI.
 - [**`packages/wasm`**](./packages/wasm): This snap demonstrates how
   to use WebAssembly in a snap.
 
