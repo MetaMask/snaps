@@ -39,7 +39,8 @@
     "test:clean": "jest --clearCache",
     "test:post": "jest-it-up",
     "test:verbose": "jest --verbose",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "since-latest-release": "../../scripts/since-latest-release.sh"
   },
   "dependencies": {
     "@jest/environment": "^29.5.0",

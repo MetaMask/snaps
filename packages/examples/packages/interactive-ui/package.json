@@ -30,7 +30,8 @@
     "test": "jest --reporters=jest-silent-reporter",
     "test:clean": "jest --clearCache",
     "test:verbose": "jest --verbose",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "since-latest-release": "../../../../scripts/since-latest-release.sh"
   },
   "dependencies": {
     "@metamask/snaps-sdk": "workspace:^",

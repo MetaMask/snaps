@@ -53,7 +53,8 @@
     "test:clean": "jest --clearCache",
     "test:post": "ts-node scripts/coverage.ts && rimraf coverage/jest coverage/wdio",
     "test:verbose": "jest --verbose",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "since-latest-release": "../../scripts/since-latest-release.sh"
   },
   "dependencies": {
     "@metamask/json-rpc-engine": "^9.0.2",

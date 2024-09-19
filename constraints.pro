@@ -251,6 +251,13 @@ gen_enforced_field(WorkspaceCwd, 'scripts.changelog:update', ChangelogUpdateScri
   relative_path(WorkspaceCwd, 'scripts/update-changelog.sh', BaseChangelogUpdateScript),
   atomic_list_concat([BaseChangelogUpdateScript, ' ', WorkspacePackageName], ChangelogUpdateScript).
 
+% The "since-latest-release" script for each published package must run a common
+% script.
+gen_enforced_field(WorkspaceCwd, 'scripts.since-latest-release', SinceLatestReleaseScript) :-
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  workspace_field(WorkspaceCwd, 'name', WorkspacePackageName),
+  relative_path(WorkspaceCwd, 'scripts/since-latest-release.sh', SinceLatestReleaseScript).
+
 % The "lint:dependencies" script must be the same for all packages.
 gen_enforced_field(WorkspaceCwd, 'scripts.lint:dependencies', 'depcheck') :-
   WorkspaceCwd \= '.'.
