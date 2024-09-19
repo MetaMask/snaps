@@ -3924,8 +3924,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -3963,8 +3963,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     rimraf: "npm:^4.1.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
@@ -4009,8 +4009,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     rimraf: "npm:^4.1.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
@@ -4048,8 +4048,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -4084,8 +4084,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     rimraf: "npm:^4.1.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
@@ -4124,8 +4124,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -4182,8 +4182,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -4243,8 +4243,8 @@ __metadata:
     jest: "npm:^29.0.2"
     jest-it-up: "npm:^2.0.0"
     memfs: "npm:^3.4.13"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     semver: "npm:^7.5.4"
     ts-node: "npm:^10.9.1"
     tsc-watch: "npm:^4.5.0"
@@ -4284,8 +4284,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     rimraf: "npm:^4.1.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
@@ -4321,8 +4321,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -4357,8 +4357,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -4523,8 +4523,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -4560,8 +4560,8 @@ __metadata:
     eslint-plugin-promise: "npm:^6.1.1"
     ethers: "npm:^6.3.0"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
     webpack: "npm:^5.88.0"
@@ -4601,8 +4601,8 @@ __metadata:
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -4638,8 +4638,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     rimraf: "npm:^4.1.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
@@ -4677,8 +4677,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -4713,8 +4713,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -4749,8 +4749,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -4785,8 +4785,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
     uqr: "npm:^0.1.2"
@@ -4823,8 +4823,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -4860,8 +4860,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     rimraf: "npm:^4.1.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
@@ -4889,8 +4889,8 @@ __metadata:
     eslint-plugin-n: "npm:^15.7.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -4936,8 +4936,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -4986,8 +4986,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -5035,8 +5035,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -5071,8 +5071,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -5107,8 +5107,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -5143,8 +5143,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -5181,8 +5181,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -5217,8 +5217,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -5320,8 +5320,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     tsx: "npm:^4.19.1"
     typescript: "npm:~5.3.3"
@@ -5386,8 +5386,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     rollup: "npm:^2.73.0"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
@@ -5450,8 +5450,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -5499,8 +5499,8 @@ __metadata:
     jest: "npm:^29.0.2"
     jest-it-up: "npm:^2.0.0"
     memfs: "npm:^3.4.13"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     readable-stream: "npm:^3.6.2"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -5569,8 +5569,8 @@ __metadata:
     ora: "npm:^5.4.1"
     os-browserify: "npm:^0.3.0"
     path-browserify: "npm:^1.0.1"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     process: "npm:^0.11.10"
     punycode: "npm:^2.3.0"
     querystring-es3: "npm:^0.2.1"
@@ -5671,8 +5671,8 @@ __metadata:
     jest-fetch-mock: "npm:^3.0.3"
     mkdirp: "npm:^1.0.4"
     nanoid: "npm:^3.1.31"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     readable-stream: "npm:^3.6.2"
     readable-web-to-node-stream: "npm:^3.0.2"
     rimraf: "npm:^4.1.2"
@@ -5756,8 +5756,8 @@ __metadata:
     lavamoat: "npm:^8.0.4"
     lavamoat-browserify: "npm:^17.0.5"
     nanoid: "npm:^3.1.31"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     readable-stream: "npm:^3.6.2"
     rimraf: "npm:^4.1.2"
     serve-handler: "npm:^6.1.5"
@@ -5816,8 +5816,8 @@ __metadata:
     jest-environment-node: "npm:^29.5.0"
     jest-it-up: "npm:^2.0.0"
     jest-matcher-utils: "npm:^29.5.0"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     redux: "npm:^4.2.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -5866,8 +5866,8 @@ __metadata:
     jest: "npm:^29.0.2"
     jest-it-up: "npm:^2.0.0"
     memfs: "npm:^3.4.13"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     rollup: "npm:^2.73.0"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -5910,8 +5910,8 @@ __metadata:
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
     jest-it-up: "npm:^2.0.0"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
@@ -5949,8 +5949,8 @@ __metadata:
     jest: "npm:^29.0.2"
     jest-fetch-mock: "npm:^3.0.3"
     jest-it-up: "npm:^2.0.0"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-jest: "npm:^29.1.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -6001,8 +6001,8 @@ __metadata:
     jest: "npm:^29.0.2"
     jest-it-up: "npm:^2.0.0"
     mime: "npm:^3.0.0"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     readable-stream: "npm:^3.6.2"
     redux-saga: "npm:^1.2.3"
     ts-jest: "npm:^29.1.1"
@@ -6090,8 +6090,8 @@ __metadata:
     lodash.throttle: "npm:^4.1.1"
     monaco-editor: "npm:^0.38.0"
     monaco-editor-webpack-plugin: "npm:^7.0.1"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     process: "npm:^0.11.10"
     react: "npm:^18.2.0"
     react-dnd: "npm:^16.0.1"
@@ -6185,8 +6185,8 @@ __metadata:
     jest: "npm:^29.0.2"
     marked: "npm:^12.0.1"
     memfs: "npm:^3.4.13"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     rfdc: "npm:^1.3.0"
     rimraf: "npm:^4.1.2"
     semver: "npm:^7.5.4"
@@ -6235,8 +6235,8 @@ __metadata:
     jest: "npm:^29.0.2"
     jest-it-up: "npm:^2.0.0"
     memfs: "npm:^3.4.13"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     typescript: "npm:~5.3.3"
     webpack: "npm:^5.88.0"
     webpack-sources: "npm:^3.2.3"
@@ -6325,7 +6325,7 @@ __metadata:
     html-webpack-plugin: "npm:^5.5.0"
     jest: "npm:^29.0.2"
     jest-it-up: "npm:^2.0.0"
-    prettier: "npm:^2.7.1"
+    prettier: "npm:^2.8.8"
     react: "npm:^18.2.0"
     react-bootstrap: "npm:^2.5.0"
     react-dom: "npm:^18.2.0"
@@ -6390,8 +6390,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
   languageName: unknown
@@ -6427,8 +6427,8 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.2.1"
     eslint-plugin-promise: "npm:^6.1.1"
     jest: "npm:^29.0.2"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     swc-loader: "npm:^0.2.3"
     terser-webpack-plugin: "npm:^5.3.9"
     ts-node: "npm:^10.9.1"
@@ -6730,6 +6730,13 @@ __metadata:
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
   checksum: 10/115e8ceeec6bc69dff2048b35c0ab4f8bbee12d8bb6c1f4af758604586d802b6e669dcb02dda61d078de42c2b4ddce41b3d9e726d7daa6b4b850f4adbf7333ff
+  languageName: node
+  linkType: hard
+
+"@pkgr/core@npm:^0.1.0":
+  version: 0.1.1
+  resolution: "@pkgr/core@npm:0.1.1"
+  checksum: 10/6f25fd2e3008f259c77207ac9915b02f1628420403b2630c92a07ff963129238c9262afc9e84344c7a23b5cc1f3965e2cd17e3798219f5fd78a63d144d3cceba
   languageName: node
   linkType: hard
 
@@ -7602,26 +7609,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/glob@npm:7.1.4":
-  version: 7.1.4
-  resolution: "@types/glob@npm:7.1.4"
-  dependencies:
-    "@types/minimatch": "npm:*"
-    "@types/node": "npm:*"
-  checksum: 10/6911a956448f5eddea1e4371f814bf92072e8ceedba83de6ce2a6745938a6f0327376e1c0072fa0d7b3b73d84e255aafda53c1dff148225cfe542a8cc5d54b02
-  languageName: node
-  linkType: hard
-
-"@types/glob@patch:@types/glob@npm%3A7.1.4#./.yarn/patches/@types-glob-npm-7.1.4-d45247eaa2.patch::locator=root%40workspace%3A.":
-  version: 7.1.4
-  resolution: "@types/glob@patch:@types/glob@npm%3A7.1.4#./.yarn/patches/@types-glob-npm-7.1.4-d45247eaa2.patch::version=7.1.4&hash=5dccb7&locator=root%40workspace%3A."
-  dependencies:
-    "@types/minimatch": "npm:*"
-    "@types/node": "npm:*"
-  checksum: 10/a7c3ddf075353c407ba3d9142b914756088f2b7ef213f2f5f10553151f8cfb7769cf9b9c513b75f2dcf67f1c66a05b39a6676f3fee40978b524c19795daf250e
-  languageName: node
-  linkType: hard
-
 "@types/graceful-fs@npm:^4.1.3":
   version: 4.1.5
   resolution: "@types/graceful-fs@npm:4.1.5"
@@ -7823,7 +7810,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/minimatch@npm:*, @types/minimatch@npm:^3.0.3":
+"@types/minimatch@npm:^3.0.3":
   version: 3.0.5
   resolution: "@types/minimatch@npm:3.0.5"
   checksum: 10/c41d136f67231c3131cf1d4ca0b06687f4a322918a3a5adddc87ce90ed9dbd175a3610adee36b106ae68c0b92c637c35e02b58c8a56c424f71d30993ea220b92
@@ -11668,10 +11655,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"detect-indent@npm:^6.0.0":
-  version: 6.1.0
-  resolution: "detect-indent@npm:6.1.0"
-  checksum: 10/ab953a73c72dbd4e8fc68e4ed4bfd92c97eb6c43734af3900add963fd3a9316f3bc0578b018b24198d4c31a358571eff5f0656e81a1f3b9ad5c547d58b2d093d
+"detect-indent@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "detect-indent@npm:7.0.1"
+  checksum: 10/cbf3f0b1c3c881934ca94428e1179b26ab2a587e0d719031d37a67fb506d49d067de54ff057cb1e772e75975fed5155c01cd4518306fee60988b1486e3fc7768
   languageName: node
   linkType: hard
 
@@ -11682,10 +11669,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"detect-newline@npm:3.1.0, detect-newline@npm:^3.0.0":
+"detect-newline@npm:^3.0.0":
   version: 3.1.0
   resolution: "detect-newline@npm:3.1.0"
   checksum: 10/ae6cd429c41ad01b164c59ea36f264a2c479598e61cba7c99da24175a7ab80ddf066420f2bec9a1c57a6bead411b4655ff15ad7d281c000a89791f48cbe939e7
+  languageName: node
+  linkType: hard
+
+"detect-newline@npm:^4.0.0":
+  version: 4.0.1
+  resolution: "detect-newline@npm:4.0.1"
+  checksum: 10/0409ecdfb93419591ccff24fccfe2ddddad29b66637d1ed898872125b25af05014fdeedc9306339577060f69f59fe6e9830cdd80948597f136dfbffefa60599c
   languageName: node
   linkType: hard
 
@@ -13360,16 +13354,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.0.3, fast-glob@npm:^3.2.11, fast-glob@npm:^3.2.9":
-  version: 3.2.12
-  resolution: "fast-glob@npm:3.2.12"
+"fast-glob@npm:^3.2.11, fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.0":
+  version: 3.3.2
+  resolution: "fast-glob@npm:3.3.2"
   dependencies:
     "@nodelib/fs.stat": "npm:^2.0.2"
     "@nodelib/fs.walk": "npm:^1.2.3"
     glob-parent: "npm:^5.1.2"
     merge2: "npm:^1.3.0"
     micromatch: "npm:^4.0.4"
-  checksum: 10/641e748664ae0fdc4dadd23c812fd7d6c80cd92d451571cb1f81fa87edb750e917f25abf74fc9503c97438b0b67ecf75b738bb8e50a83b16bd2a88b4d64e81fa
+  checksum: 10/222512e9315a0efca1276af9adb2127f02105d7288fa746145bf45e2716383fb79eb983c89601a72a399a56b7c18d38ce70457c5466218c5f13fad957cee16df
   languageName: node
   linkType: hard
 
@@ -14058,6 +14052,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"get-stdin@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "get-stdin@npm:9.0.0"
+  checksum: 10/5972bc34d05932b45512c8e2d67b040f1c1ca8afb95c56cbc480985f2d761b7e37fe90dc8abd22527f062cc5639a6930ff346e9952ae4c11a2d4275869459594
+  languageName: node
+  linkType: hard
+
 "get-stream@npm:^5.1.0":
   version: 5.2.0
   resolution: "get-stream@npm:5.2.0"
@@ -14112,10 +14113,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"git-hooks-list@npm:1.0.3":
-  version: 1.0.3
-  resolution: "git-hooks-list@npm:1.0.3"
-  checksum: 10/a1dd03d39c1d727ba08a35dbdbdcc6e96de8c4170c942dc95bf787ca6e34998d39fb5295a00242b58a3d265de0b69a0686d0cf583baa6b7830f268542c4576b9
+"git-hooks-list@npm:^3.0.0":
+  version: 3.1.0
+  resolution: "git-hooks-list@npm:3.1.0"
+  checksum: 10/05cbdb29e1e14f3b6fde78c876a34383e4476b1be32e8486ad03293f01add884c1a8df8c2dce2ca5d99119c94951b2ff9fa9cbd51d834ae6477b6813cefb998f
   languageName: node
   linkType: hard
 
@@ -14268,22 +14269,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globby@npm:10.0.0":
-  version: 10.0.0
-  resolution: "globby@npm:10.0.0"
-  dependencies:
-    "@types/glob": "npm:^7.1.1"
-    array-union: "npm:^2.1.0"
-    dir-glob: "npm:^3.0.1"
-    fast-glob: "npm:^3.0.3"
-    glob: "npm:^7.1.3"
-    ignore: "npm:^5.1.1"
-    merge2: "npm:^1.2.3"
-    slash: "npm:^3.0.0"
-  checksum: 10/d0c94128706b5e12a251ddbd1b87cf0e67e57e373c816f242bb7a4a2fbe931602db1a330780d511a5bce675c25fac297622ac01d540c8479cca9c8177528947a
-  languageName: node
-  linkType: hard
-
 "globby@npm:^11.1.0":
   version: 11.1.0
   resolution: "globby@npm:11.1.0"
@@ -14298,16 +14283,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globby@npm:^13.1.1":
-  version: 13.1.4
-  resolution: "globby@npm:13.1.4"
+"globby@npm:^13.1.1, globby@npm:^13.1.2":
+  version: 13.2.2
+  resolution: "globby@npm:13.2.2"
   dependencies:
     dir-glob: "npm:^3.0.1"
-    fast-glob: "npm:^3.2.11"
-    ignore: "npm:^5.2.0"
+    fast-glob: "npm:^3.3.0"
+    ignore: "npm:^5.2.4"
     merge2: "npm:^1.4.1"
     slash: "npm:^4.0.0"
-  checksum: 10/4d039258f3af41f868e81d6d992542c445fe847ce09593a5ba20987695b145dcbca7263736b3ebbe4a7d985beb8d71bad1104ada00997e768cf21c311d1bbdf1
+  checksum: 10/4494a9d2162a7e4d327988b26be66d8eab87d7f59a83219e74b065e2c3ced23698f68fb10482bf9337133819281803fb886d6ae06afbb2affa743623eb0b1949
   languageName: node
   linkType: hard
 
@@ -15296,7 +15281,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-plain-obj@npm:2.1.0, is-plain-obj@npm:^2.1.0":
+"is-plain-obj@npm:^2.1.0":
   version: 2.1.0
   resolution: "is-plain-obj@npm:2.1.0"
   checksum: 10/cec9100678b0a9fe0248a81743041ed990c2d4c99f893d935545cfbc42876cbe86d207f3b895700c690ad2fa520e568c44afc1605044b535a7820c1d40e38daa
@@ -17184,7 +17169,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"merge2@npm:^1.2.3, merge2@npm:^1.3.0, merge2@npm:^1.4.1":
+"merge2@npm:^1.3.0, merge2@npm:^1.4.1":
   version: 1.4.1
   resolution: "merge2@npm:1.4.1"
   checksum: 10/7268db63ed5169466540b6fb947aec313200bcf6d40c5ab722c22e242f651994619bcd85601602972d3c85bd2cc45a358a4c61937e9f11a061919a1da569b0c2
@@ -18896,18 +18881,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier-plugin-packagejson@npm:^2.2.11":
-  version: 2.2.11
-  resolution: "prettier-plugin-packagejson@npm:2.2.11"
+"prettier-plugin-packagejson@npm:^2.5.2":
+  version: 2.5.2
+  resolution: "prettier-plugin-packagejson@npm:2.5.2"
   dependencies:
-    sort-package-json: "npm:1.50.0"
+    sort-package-json: "npm:2.10.1"
+    synckit: "npm:0.9.1"
   peerDependencies:
     prettier: ">= 1.16.0"
-  checksum: 10/e30cdd34c56b75301924a83ea8dddfd99ee968338858aa4ccccb7ede9226bfa9b5e6121d5e3e289765406053fbd5e3aaf966d06a4b8dd46f98ca2eabffcdb08a
+  peerDependenciesMeta:
+    prettier:
+      optional: true
+  checksum: 10/f280d69327a468cd104c72a81134258d3573e56d697a88a5c4498c8d02cecda9a27d9eb3f1d29cc726491782eb3f279c9d41ecf8364a197e20b239c5ccfd0269
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.7.1, prettier@npm:^2.8.8":
+"prettier@npm:^2.8.8":
   version: 2.8.8
   resolution: "prettier@npm:2.8.8"
   bin:
@@ -20251,8 +20240,8 @@ __metadata:
     jest: "npm:^29.0.2"
     lint-staged: "npm:^12.4.1"
     minimatch: "npm:^7.4.1"
-    prettier: "npm:^2.7.1"
-    prettier-plugin-packagejson: "npm:^2.2.11"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
     rimraf: "npm:^4.1.2"
     semver: "npm:^7.5.4"
     simple-git-hooks: "npm:^2.7.0"
@@ -20427,7 +20416,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.0.0, semver@npm:^7.1.1, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.3.8, semver@npm:^7.5.3, semver@npm:^7.5.4":
+"semver@npm:^7.0.0, semver@npm:^7.1.1, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.3.8, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0":
   version: 7.6.3
   resolution: "semver@npm:7.6.3"
   bin:
@@ -20845,19 +20834,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sort-package-json@npm:1.50.0":
-  version: 1.50.0
-  resolution: "sort-package-json@npm:1.50.0"
+"sort-package-json@npm:2.10.1":
+  version: 2.10.1
+  resolution: "sort-package-json@npm:2.10.1"
   dependencies:
-    detect-indent: "npm:^6.0.0"
-    detect-newline: "npm:3.1.0"
-    git-hooks-list: "npm:1.0.3"
-    globby: "npm:10.0.0"
-    is-plain-obj: "npm:2.1.0"
+    detect-indent: "npm:^7.0.1"
+    detect-newline: "npm:^4.0.0"
+    get-stdin: "npm:^9.0.0"
+    git-hooks-list: "npm:^3.0.0"
+    globby: "npm:^13.1.2"
+    is-plain-obj: "npm:^4.1.0"
+    semver: "npm:^7.6.0"
     sort-object-keys: "npm:^1.1.3"
   bin:
     sort-package-json: cli.js
-  checksum: 10/12c2f29e0f7d1d16bfaee874307dd2e9c01de47bbf97c5d495220c6b90bdca64fa2d57976dc471e1b5c9f23bf525df2acb8c6e6dabbd544603d42bdae3f1c16b
+  checksum: 10/3a08cb9227c244d51bfb0eaaa5a9ea82fd3c96ea299c040365700b3f445d46a98411df4237f4e3c96ba67be4dcd53931747eab3b799f0335d278b36d64f1061d
   languageName: node
   linkType: hard
 
@@ -21442,6 +21433,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"synckit@npm:0.9.1":
+  version: 0.9.1
+  resolution: "synckit@npm:0.9.1"
+  dependencies:
+    "@pkgr/core": "npm:^0.1.0"
+    tslib: "npm:^2.6.2"
+  checksum: 10/bff3903976baf8b699b5483228116d70223781a93b17c70e685c277ee960cdfd1a09cb5a741e6a9ec35e2428f14f4664baec41ccc99a598f267608b2a54f529b
+  languageName: node
+  linkType: hard
+
 "syntax-error@npm:^1.1.1":
   version: 1.4.0
   resolution: "syntax-error@npm:1.4.0"
@@ -21889,7 +21890,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.3.1, tslib@npm:^2.4.0":
+"tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.3.1, tslib@npm:^2.4.0, tslib@npm:^2.6.2":
   version: 2.7.0
   resolution: "tslib@npm:2.7.0"
   checksum: 10/9a5b47ddac65874fa011c20ff76db69f97cf90c78cff5934799ab8894a5342db2d17b4e7613a087046bc1d133d21547ddff87ac558abeec31ffa929c88b7fce6

@@ -25,19 +25,19 @@
     "jest-preset.js"
   ],
   "scripts": {
-    "test": "jest --passWithNoTests && yarn posttest",
-    "posttest": "jest-it-up",
-    "test:ci": "yarn test",
-    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
-    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
+    "build": "ts-bridge --project tsconfig.build.json --verbose --no-references",
+    "changelog:update": "../../scripts/update-changelog.sh @metamask/snaps-jest",
+    "changelog:validate": "../../scripts/validate-changelog.sh @metamask/snaps-jest",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn changelog:validate && yarn lint:dependencies",
     "lint:ci": "yarn lint",
-    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
-    "build": "ts-bridge --project tsconfig.build.json --verbose --no-references",
-    "publish:preview": "yarn npm publish --tag preview",
     "lint:dependencies": "depcheck",
-    "changelog:update": "../../scripts/update-changelog.sh @metamask/snaps-jest",
-    "changelog:validate": "../../scripts/validate-changelog.sh @metamask/snaps-jest"
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
+    "publish:preview": "yarn npm publish --tag preview",
+    "test": "jest --passWithNoTests && yarn posttest",
+    "posttest": "jest-it-up",
+    "test:ci": "yarn test"
   },
   "dependencies": {
     "@jest/environment": "^29.5.0",
@@ -81,16 +81,16 @@
     "eslint-plugin-promise": "^6.1.1",
     "jest": "^29.0.2",
     "jest-it-up": "^2.0.0",
-    "prettier": "^2.7.1",
-    "prettier-plugin-packagejson": "^2.2.11",
+    "prettier": "^2.8.8",
+    "prettier-plugin-packagejson": "^2.5.2",
     "typescript": "~5.3.3"
   },
+  "packageManager": "yarn@3.4.1",
   "engines": {
     "node": "^18.16 || >=20"
   },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  },
-  "packageManager": "yarn@3.4.1"
+  }
 }
