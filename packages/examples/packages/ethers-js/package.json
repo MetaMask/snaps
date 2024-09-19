@@ -16,19 +16,19 @@
   "scripts": {
     "build": "mm-snap build",
     "build:clean": "yarn clean && yarn build",
+    "changelog:update": "../../../../scripts/update-changelog.sh @metamask/ethers-js-example-snap",
+    "changelog:validate": "../../../../scripts/validate-changelog.sh @metamask/ethers-js-example-snap",
     "clean": "rimraf \"dist\"",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn changelog:validate && yarn lint:dependencies",
     "lint:ci": "yarn lint",
+    "lint:dependencies": "depcheck",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" \"!snap.manifest.json\" --ignore-path ../../../../.gitignore",
+    "publish:preview": "yarn npm publish --tag preview",
     "start": "mm-snap watch",
     "test": "yarn test:e2e",
-    "test:e2e": "jest",
-    "publish:preview": "yarn npm publish --tag preview",
-    "lint:dependencies": "depcheck",
-    "changelog:update": "../../../../scripts/update-changelog.sh @metamask/ethers-js-example-snap",
-    "changelog:validate": "../../../../scripts/validate-changelog.sh @metamask/ethers-js-example-snap"
+    "test:e2e": "jest"
   },
   "dependencies": {
     "@metamask/snaps-sdk": "workspace:^",

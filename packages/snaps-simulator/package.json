@@ -7,22 +7,22 @@
   "sideEffects": false,
   "scripts": {
     "build": "yarn build:vendor && yarn build:webpack",
-    "build:webpack": "yarn webpack --config-name main --config-name test --mode production --progress",
     "build:vendor": "webpack --config-name vendor --mode production --progress",
+    "build:webpack": "yarn webpack --config-name main --config-name test --mode production --progress",
     "changelog:update": "../../scripts/update-changelog.sh @metamask/snaps-simulator",
     "changelog:validate": "../../scripts/validate-changelog.sh @metamask/snaps-simulator",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn changelog:validate && yarn lint:dependencies",
+    "lint:ci": "yarn lint",
+    "lint:dependencies": "depcheck",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:constraints --fix && yarn lint:misc --write && yarn changelog:validate",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
+    "publish:preview": "yarn npm publish --tag preview",
     "start": "webpack serve --config-name main --mode development",
     "start:e2e": "webpack serve --config-name test --mode development",
     "test": "jest && jest-it-up --margin 0.5",
     "test:ci": "yarn test",
-    "test:watch": "jest --watch",
-    "lint:ci": "yarn lint",
-    "publish:preview": "yarn npm publish --tag preview",
-    "lint:dependencies": "depcheck"
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@chakra-ui/anatomy": "^2.1.1",
@@ -130,8 +130,8 @@
     "webpack-dev-server": "^4.15.1",
     "webpack-merge": "^5.9.0"
   },
+  "packageManager": "yarn@3.2.1",
   "engines": {
     "node": "^18.16 || >=20"
-  },
-  "packageManager": "yarn@3.2.1"
+  }
 }
