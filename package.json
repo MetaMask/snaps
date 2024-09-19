@@ -31,6 +31,9 @@
     "publish-previews": "yarn workspaces foreach --all --parallel --verbose run publish:preview",
     "test": "yarn workspaces foreach --all --parallel --verbose run test",
     "test:browser": "yarn workspaces foreach --all --verbose run test:browser",
+    "test:clean": "yarn workspaces foreach --all --parallel --verbose run test:clean",
+    "test:verbose": "yarn workspaces foreach --all --parallel --verbose run test:verbose",
+    "test:watch": "yarn workspaces foreach --all --parallel --verbose run test:watch",
     "update-readme-content": "tsx ./scripts/update-readme-content.mts"
   },
   "simple-git-hooks": {
