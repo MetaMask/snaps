@@ -55,6 +55,7 @@ export function parseMetaMaskUrl(str: string): {
  * @param path - The snap path to be parsed.
  * @param baseErrorMessage - The base error message to throw.
  * @returns A parsed url object.
+ * @throws If the path or Snap id is invalid.
  */
 function parseSnapPath(
   path: string,
