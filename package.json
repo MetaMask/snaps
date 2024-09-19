@@ -122,7 +122,8 @@
       "ts-node>@swc/core": true,
       "@swc/core": true,
       "favicons>sharp": true,
-      "vite>esbuild": true
+      "vite>esbuild": true,
+      "tsx>esbuild": true
     }
   }
 }
