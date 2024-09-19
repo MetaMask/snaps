@@ -27,7 +27,10 @@
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" \"!snap.manifest.json\" --ignore-path ../../../../../../.gitignore",
     "publish:preview": "yarn npm publish --tag preview",
     "start": "mm-snap watch",
-    "test": "yarn test:e2e"
+    "test": "jest --reporters=jest-silent-reporter",
+    "test:clean": "jest --clearCache",
+    "test:verbose": "jest --verbose",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@metamask/key-tree": "^9.1.2",

@@ -293,7 +293,13 @@ gen_enforced_field(WorkspaceCwd, 'scripts.start', 'mm-snap watch') :-
   WorkspaceCwd \= 'packages/examples/packages/webpack-plugin'.
 gen_enforced_field(WorkspaceCwd, 'scripts.clean', 'rimraf "dist"') :-
   is_example(WorkspaceCwd).
-gen_enforced_field(WorkspaceCwd, 'scripts.test', 'yarn test:e2e') :-
+gen_enforced_field(WorkspaceCwd, 'scripts.test', 'jest --reporters=jest-silent-reporter') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.test:clean', 'jest --clearCache') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.test:verbose', 'jest --verbose') :-
+  is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.test:watch', 'jest --watch') :-
   is_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'scripts.lint', 'yarn lint:eslint && yarn lint:misc --check && yarn changelog:validate && yarn lint:dependencies') :-
   is_example(WorkspaceCwd).
