@@ -15,14 +15,14 @@
     "build": "yarn workspaces foreach --worktree --parallel --verbose run build",
     "build:clean": "yarn clean && yarn build",
     "clean": "yarn workspaces foreach --worktree --parallel --verbose run clean",
-    "start": "yarn workspaces foreach --worktree --parallel --verbose --interlaced --jobs unlimited run start",
-    "test": "yarn workspaces foreach --worktree --parallel --verbose --interlaced run test",
     "lint": "yarn workspaces foreach --worktree --parallel --verbose --interlaced run lint && yarn lint:dependencies",
     "lint:ci": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:dependencies": "depcheck",
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" \"!snap.manifest.json\" \"!packages/**\" --ignore-path ../../../../.gitignore",
-    "lint:dependencies": "depcheck"
+    "start": "yarn workspaces foreach --worktree --parallel --verbose --interlaced --jobs unlimited run start",
+    "test": "yarn workspaces foreach --worktree --parallel --verbose --interlaced run test"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^3.0.4",
@@ -42,8 +42,8 @@
     "eslint-plugin-n": "^15.7.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-promise": "^6.1.1",
-    "prettier": "^2.7.1",
-    "prettier-plugin-packagejson": "^2.2.11",
+    "prettier": "^2.8.8",
+    "prettier-plugin-packagejson": "^2.5.2",
     "ts-node": "^10.9.1",
     "typescript": "~5.3.3"
   },

@@ -237,11 +237,19 @@ gen_enforced_field(WorkspaceCwd, 'publishConfig.registry', 'https://registry.npm
 
 % The "changelog:validate" script for each published package must run a common
 % script with the name of the package as an argument.
-gen_enforced_field(WorkspaceCwd, 'scripts.lint:changelog', ChangelogValidationScript) :-
+gen_enforced_field(WorkspaceCwd, 'scripts.changelog:validate', ChangelogValidationScript) :-
   \+ workspace_field(WorkspaceCwd, 'private', true),
   workspace_field(WorkspaceCwd, 'name', WorkspacePackageName),
   relative_path(WorkspaceCwd, 'scripts/validate-changelog.sh', BaseChangelogValidationScript),
   atomic_list_concat([BaseChangelogValidationScript, ' ', WorkspacePackageName], ChangelogValidationScript).
+
+% The "changelog:update" script for each published package must run a common
+% script with the name of the package as an argument.
+gen_enforced_field(WorkspaceCwd, 'scripts.changelog:update', ChangelogUpdateScript) :-
+  \+ workspace_field(WorkspaceCwd, 'private', true),
+  workspace_field(WorkspaceCwd, 'name', WorkspacePackageName),
+  relative_path(WorkspaceCwd, 'scripts/update-changelog.sh', BaseChangelogUpdateScript),
+  atomic_list_concat([BaseChangelogUpdateScript, ' ', WorkspacePackageName], ChangelogUpdateScript).
 
 % The "lint:dependencies" script must be the same for all packages.
 gen_enforced_field(WorkspaceCwd, 'scripts.lint:dependencies', 'depcheck') :-
@@ -272,7 +280,7 @@ gen_enforced_field(WorkspaceCwd, 'scripts.test', 'yarn test:e2e') :-
   is_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'scripts.test:e2e', 'jest') :-
   is_example(WorkspaceCwd).
-gen_enforced_field(WorkspaceCwd, 'scripts.lint', 'yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog && yarn lint:dependencies') :-
+gen_enforced_field(WorkspaceCwd, 'scripts.lint', 'yarn lint:eslint && yarn lint:misc --check && yarn changelog:validate && yarn lint:dependencies') :-
   is_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'scripts.lint:ci', 'yarn lint') :-
   is_example(WorkspaceCwd).
