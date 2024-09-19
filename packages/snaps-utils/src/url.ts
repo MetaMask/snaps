@@ -32,51 +32,70 @@ export function parseMetaMaskUrl(str: string): {
       `Unable to parse URL. Expected the protocol to be "metamask:", but received "${protocol}".`,
     );
   }
-  if (authority === 'client') {
-    assert(
-      CLIENT_PATHS.includes(path),
-      `Unable to navigate to "${path}". The provided path is not allowed.`,
-    );
-    return {
-      authority,
-      path,
-    };
-  } else if (authority === 'snap') {
-    const strippedPath = stripSnapPrefix(path.slice(1));
-    const location = path.slice(1).startsWith('npm:') ? 'npm:' : 'local:';
-    const isNameSpaced = strippedPath.startsWith('@');
-    const pathTokens = strippedPath.split('/');
-    const lastPathToken = `/${pathTokens[pathTokens.length - 1]}`;
-    let partialSnapId;
-    if (location === 'local:') {
-      const [localProtocol, , ...rest] = pathTokens.slice(0, -1);
-      partialSnapId = `${localProtocol}//${rest.join('/')}`;
-      // we can't make assumptions of the structure of the local snap url since it can have a nested path
-      // so we only check that the last path token is one of the allowed paths
+  switch (authority) {
+    case 'client':
       assert(
-        SNAP_PATHS.includes(lastPathToken),
-        `${baseErrorMessage} invalid snap path.`,
+        CLIENT_PATHS.includes(path),
+        `Unable to navigate to "${path}". The provided path is not allowed.`,
       );
-    } else {
-      partialSnapId = isNameSpaced
-        ? `${pathTokens[0]}/${pathTokens[1]}`
-        : pathTokens[0];
-      assert(
-        isNameSpaced
-          ? pathTokens.length === 3 && SNAP_PATHS.includes(lastPathToken)
-          : pathTokens.length === 2 && SNAP_PATHS.includes(lastPathToken),
-        `${baseErrorMessage} invalid snap path.`,
-      );
-    }
-    const snapId = `${location}${partialSnapId}`;
-    assertIsValidSnapId(snapId);
-
-    return {
-      authority,
-      snapId,
-      path: lastPathToken,
-    };
+      return {
+        authority,
+        path,
+      };
+    case 'snap':
+      return parseSnapPath(path, baseErrorMessage);
+    default:
+      throw new Error(`${baseErrorMessage} invalid authority.`);
   }
+}
 
-  throw new Error(`${baseErrorMessage} invalid authority.`);
+/**
+ * Parses a snap path and throws if it is invalid, returns an object with link data otherwise.
+ *
+ * @param path - The snap path to be parsed.
+ * @param baseErrorMessage - The base error message to throw.
+ * @returns A parsed url object.
+ */
+function parseSnapPath(
+  path: string,
+  baseErrorMessage: string,
+): {
+  authority: Authority;
+  snapId: SnapId;
+  path: string;
+} {
+  const strippedPath = stripSnapPrefix(path.slice(1));
+  const location = path.slice(1).startsWith('npm:') ? 'npm:' : 'local:';
+  const isNameSpaced = strippedPath.startsWith('@');
+  const pathTokens = strippedPath.split('/');
+  const lastPathToken = `/${pathTokens[pathTokens.length - 1]}`;
+  let partialSnapId;
+  if (location === 'local:') {
+    const [localProtocol, , ...rest] = pathTokens.slice(0, -1);
+    partialSnapId = `${localProtocol}//${rest.join('/')}`;
+    // we can't make assumptions of the structure of the local snap url since it can have a nested path
+    // so we only check that the last path token is one of the allowed paths
+    assert(
+      SNAP_PATHS.includes(lastPathToken),
+      `${baseErrorMessage} invalid snap path.`,
+    );
+  } else {
+    partialSnapId = isNameSpaced
+      ? `${pathTokens[0]}/${pathTokens[1]}`
+      : pathTokens[0];
+    assert(
+      isNameSpaced
+        ? pathTokens.length === 3 && SNAP_PATHS.includes(lastPathToken)
+        : pathTokens.length === 2 && SNAP_PATHS.includes(lastPathToken),
+      `${baseErrorMessage} invalid snap path.`,
+    );
+  }
+  const snapId = `${location}${partialSnapId}`;
+  assertIsValidSnapId(snapId);
+
+  return {
+    authority: 'snap' as Authority,
+    snapId,
+    path: lastPathToken,
+  };
 }
