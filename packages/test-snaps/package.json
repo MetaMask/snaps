@@ -11,6 +11,8 @@
   "sideEffects": false,
   "files": [],
   "scripts": {
+    "changelog:update": "../../scripts/update-changelog.sh @metamask/test-snaps",
+    "changelog:validate": "../../scripts/validate-changelog.sh @metamask/test-snaps",
     "test": "jest --passWithNoTests && yarn posttest",
     "posttest": "jest-it-up",
     "test:ci": "yarn test",
