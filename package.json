@@ -31,10 +31,11 @@
     "publish-previews": "yarn workspaces foreach --all --parallel --verbose run publish:preview",
     "test": "yarn workspaces foreach --all --parallel --verbose run test",
     "test:browser": "yarn workspaces foreach --all --verbose run test:browser",
-    "test:e2e": "yarn workspaces foreach --all --verbose --exclude root run test:e2e"
+    "test:e2e": "yarn workspaces foreach --all --verbose --exclude root run test:e2e",
+    "update-readme-content": "tsx ./scripts/update-readme-content.mts"
   },
   "simple-git-hooks": {
-    "pre-commit": "yarn lint-staged && yarn dedupe --check"
+    "pre-commit": "yarn lint-staged && yarn dedupe --check && yarn update-readme-content"
   },
   "lint-staged": {
     "*.{js,ts,tsx,jsx}": [
@@ -102,6 +103,7 @@
     "semver": "^7.5.4",
     "simple-git-hooks": "^2.7.0",
     "ts-node": "^10.9.1",
+    "tsx": "^4.19.1",
     "typescript": "~5.3.3",
     "vite": "^4.3.9"
   },
@@ -120,7 +122,8 @@
       "ts-node>@swc/core": true,
       "@swc/core": true,
       "favicons>sharp": true,
-      "vite>esbuild": true
+      "vite>esbuild": true,
+      "tsx>esbuild": true
     }
   }
 }
