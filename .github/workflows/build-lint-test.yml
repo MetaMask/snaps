@@ -217,7 +217,7 @@ jobs:
         run: yarn install-chrome
       - run: yarn workspace @metamask/snaps-sdk run build
         if: ${{ matrix.package-name == '@metamask/snaps-cli' }}
-      - run: yarn workspace ${{ matrix.package-name }} run test:ci
+      - run: yarn workspace ${{ matrix.package-name }} run test
       - name: Get coverage folder
         id: get-coverage-folder
         run: |

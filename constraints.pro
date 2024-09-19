@@ -255,6 +255,23 @@ gen_enforced_field(WorkspaceCwd, 'scripts.changelog:update', ChangelogUpdateScri
 gen_enforced_field(WorkspaceCwd, 'scripts.lint:dependencies', 'depcheck') :-
   WorkspaceCwd \= '.'.
 
+% The test scripts must be the same for all packages.
+gen_enforced_field(WorkspaceCwd, 'scripts.test', 'jest --reporters=jest-silent-reporter && yarn test:post') :-
+  WorkspaceCwd \= '.',
+  \+ is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.test:clean', 'jest --clearCache') :-
+  WorkspaceCwd \= '.',
+  \+ is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.test:verbose', 'jest --verbose') :-
+  WorkspaceCwd \= '.',
+  \+ is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.test:watch', 'jest --watch') :-
+  WorkspaceCwd \= '.',
+  \+ is_example(WorkspaceCwd).
+gen_enforced_field(WorkspaceCwd, 'scripts.test:post', 'jest-it-up') :-
+  WorkspaceCwd \= '.',
+  \+ is_example(WorkspaceCwd).
+
 % The "engines.node" field must be the same for all packages.
 gen_enforced_field(WorkspaceCwd, 'engines.node', '^18.16 || >=20').
 
@@ -277,8 +294,6 @@ gen_enforced_field(WorkspaceCwd, 'scripts.start', 'mm-snap watch') :-
 gen_enforced_field(WorkspaceCwd, 'scripts.clean', 'rimraf "dist"') :-
   is_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'scripts.test', 'yarn test:e2e') :-
-  is_example(WorkspaceCwd).
-gen_enforced_field(WorkspaceCwd, 'scripts.test:e2e', 'jest') :-
   is_example(WorkspaceCwd).
 gen_enforced_field(WorkspaceCwd, 'scripts.lint', 'yarn lint:eslint && yarn lint:misc --check && yarn changelog:validate && yarn lint:dependencies') :-
   is_example(WorkspaceCwd).
