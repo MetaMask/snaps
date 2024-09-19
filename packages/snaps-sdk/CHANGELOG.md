@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.5.1]
 
-### Uncategorized
+### Fixed
 
-- Fix package exports in `snaps-sdk` ([#2737](https://github.com/MetaMask/snaps/pull/2737))
+- Fix package exports ([#2737](https://github.com/MetaMask/snaps/pull/2737))
 
 ## [6.5.0]
 
