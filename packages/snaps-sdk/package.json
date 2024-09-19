@@ -13,38 +13,38 @@
         "default": "./dist/index.mjs"
       },
       "require": {
-        "default": "./dist/index.cjs",
-        "types": "./dist/index.d.cts"
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
       }
     },
     "./jsx": {
       "import": {
-        "types": "./dist/types/jsx/index.d.mts",
+        "types": "./dist/jsx/index.d.mts",
         "default": "./dist/jsx/index.mjs"
       },
       "require": {
-        "default": "./dist/jsx/index.cjs",
-        "types": "./dist/types/jsx/index.d.cts"
+        "types": "./dist/jsx/index.d.cts",
+        "default": "./dist/jsx/index.cjs"
       }
     },
     "./jsx-runtime": {
       "import": {
-        "types": "./dist/types/jsx/jsx-runtime.d.mts",
+        "types": "./dist/jsx/jsx-runtime.d.mts",
         "default": "./dist/jsx/jsx-runtime.mjs"
       },
       "require": {
-        "default": "./dist/jsx/jsx-runtime.cjs",
-        "types": "./dist/types/jsx/jsx-runtime.d.cts"
+        "types": "./dist/jsx/jsx-runtime.d.cts",
+        "default": "./dist/jsx/jsx-runtime.cjs"
       }
     },
     "./jsx-dev-runtime": {
       "import": {
-        "types": "./dist/types/jsx/jsx-dev-runtime.d.mts",
+        "types": "./dist/jsx/jsx-dev-runtime.d.mts",
         "default": "./dist/jsx/jsx-dev-runtime.mjs"
       },
       "require": {
-        "default": "./dist/jsx/jsx-dev-runtime.cjs",
-        "types": "./dist/types/jsx/jsx-dev-runtime.d.cts"
+        "types": "./dist/jsx/jsx-dev-runtime.d.cts",
+        "default": "./dist/jsx/jsx-dev-runtime.cjs"
       }
     },
     "./package.json": "./package.json"
