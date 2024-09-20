@@ -22,7 +22,7 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" \"!snap.manifest.json\" \"!packages/**\" --ignore-path ../../../../.gitignore",
     "start": "yarn workspaces foreach --worktree --parallel --verbose --interlaced --jobs unlimited run start",
-    "test": "jest --reporters=jest-silent-reporter && yarn test:post",
+    "test": "jest --reporters=jest-silent-reporter",
     "test:clean": "jest --clearCache",
     "test:post": "jest-it-up",
     "test:verbose": "jest --verbose",

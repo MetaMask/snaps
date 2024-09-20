@@ -256,17 +256,17 @@ gen_enforced_field(WorkspaceCwd, 'scripts.lint:dependencies', 'depcheck') :-
   WorkspaceCwd \= '.'.
 
 % The test scripts must be the same for all packages.
-gen_enforced_field(WorkspaceCwd, 'scripts.test', 'jest --reporters=jest-silent-reporter && yarn test:post') :-
+gen_enforced_field(WorkspaceCwd, 'scripts.test', 'jest --reporters=jest-silent-reporter') :-
   WorkspaceCwd \= '.',
   WorkspaceCwd \= 'packages/snaps-controllers',
   WorkspaceCwd \= 'packages/snaps-execution-environments',
   WorkspaceCwd \= 'packages/snaps-utils',
   \+ is_example(WorkspaceCwd).
-gen_enforced_field(WorkspaceCwd, 'scripts.test', 'jest --reporters=jest-silent-reporter && yarn test:browser && yarn test:post') :-
+gen_enforced_field(WorkspaceCwd, 'scripts.test', 'jest --reporters=jest-silent-reporter && yarn test:browser') :-
   WorkspaceCwd == 'packages/snaps-controllers'.
-gen_enforced_field(WorkspaceCwd, 'scripts.test', 'jest --reporters=jest-silent-reporter && yarn test:browser && yarn test:post') :-
+gen_enforced_field(WorkspaceCwd, 'scripts.test', 'jest --reporters=jest-silent-reporter && yarn test:browser') :-
   WorkspaceCwd == 'packages/snaps-execution-environments'.
-gen_enforced_field(WorkspaceCwd, 'scripts.test', 'jest --reporters=jest-silent-reporter && yarn test:browser && yarn test:post') :-
+gen_enforced_field(WorkspaceCwd, 'scripts.test', 'jest --reporters=jest-silent-reporter && yarn test:browser') :-
   WorkspaceCwd == 'packages/snaps-utils'.
 gen_enforced_field(WorkspaceCwd, 'scripts.test:clean', 'jest --clearCache') :-
   WorkspaceCwd \= '.',
