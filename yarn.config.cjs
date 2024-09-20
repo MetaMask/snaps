@@ -506,11 +506,74 @@ async function expectWorkspaceLicense(workspace) {
 }
 
 /**
+ * Expect that the workspace has a `types` and `default` field in the `exports`
+ * object, and that they are in the correct order.
+ *
+ * @param {Workspace} workspace - The workspace to check.
+ * @param {string} exportKey - The key to check.
+ */
+function expectCorrectWorkspaceExportsOrder(workspace, exportKey) {
+  const exportValue = get(workspace.manifest, `exports["${exportKey}"]`);
+  if (typeof exportValue === 'string') {
+    return;
+  }
+
+  const importKeys = Object.keys(exportValue.import || {});
+  if (importKeys[0] !== 'types') {
+    workspace.error(
+      `Expected exports["${exportKey}"].import to specify "types" as first key`,
+    );
+  }
+
+  if (importKeys[1] !== 'default') {
+    workspace.error(
+      `Expected exports["${exportKey}"].import to specify "default" as second key`,
+    );
+  }
+
+  const requireKeys = Object.keys(exportValue.require || {});
+  if (requireKeys[0] !== 'types') {
+    workspace.error(
+      `Expected exports["${exportKey}"].require to specify "types" as first key`,
+    );
+  }
+
+  if (requireKeys[1] !== 'default') {
+    workspace.error(
+      `Expected exports["${exportKey}"].require to specify "default" as second key`,
+    );
+  }
+}
+
+/**
+ * Expect that the workspace has the correct extension for the given export
+ * field.
+ *
+ * @param {Workspace} workspace - The workspace to check.
+ * @param {string} key - The key to check.
+ * @param {string} extension - The expected extension.
+ */
+function expectExportExtension(workspace, key, extension) {
+  const exportValue = get(workspace.manifest, key);
+  if (!exportValue.endsWith(extension)) {
+    workspace.error(
+      `Expected ${key} to end with ${extension}, but got ${exportValue}`,
+    );
+  }
+}
+
+/**
  * Expect that the workspace has exports set up correctly.
  *
  * @param {Workspace} workspace - The workspace to check.
  */
 function expectCorrectWorkspaceExports(workspace) {
+  const exportKeys = Object.keys(workspace.manifest.exports);
+
+  if (!exportKeys.includes('.')) {
+    workspace.error('Expected exports to include "."');
+  }
+
   // All non-root packages must provide the location of the ESM-compatible
   // JavaScript entrypoint and its matching type declaration file.
   expectWorkspaceField(
@@ -536,12 +599,45 @@ function expectCorrectWorkspaceExports(workspace) {
     'exports["."].require.default',
     './dist/index.cjs',
   );
+
+  for (const exportKey of exportKeys) {
+    const exportValue = get(workspace.manifest, `exports["${exportKey}"]`);
+    if (typeof exportValue === 'string') {
+      continue;
+    }
+
+    expectCorrectWorkspaceExportsOrder(workspace, exportKey);
+    expectExportExtension(
+      workspace,
+      `exports["${exportKey}"].import.types`,
+      '.mts',
+    );
+
+    expectExportExtension(
+      workspace,
+      `exports["${exportKey}"].import.default`,
+      '.mjs',
+    );
+
+    expectExportExtension(
+      workspace,
+      `exports["${exportKey}"].require.types`,
+      '.cts',
+    );
+
+    expectExportExtension(
+      workspace,
+      `exports["${exportKey}"].require.default`,
+      '.cjs',
+    );
+
+    // Types should not be set in the export object directly, but rather in the
+    // `import` and `require` subfields.
+    expectWorkspaceField(workspace, `exports["${exportKey}"].types`, null);
+  }
+
   expectWorkspaceField(workspace, 'main', './dist/index.cjs');
   expectWorkspaceField(workspace, 'types', './dist/index.d.cts');
-
-  // Types should not be set in the export object directly, but rather in the
-  // `import` and `require` subfields.
-  expectWorkspaceField(workspace, 'exports["."].types', null);
 
   // All non-root packages must export a `package.json` file.
   expectWorkspaceField(

@@ -28,12 +28,8 @@
         "default": "./dist/index.cjs"
       }
     },
-    "./dist/browserify/node-process/bundle.js": {
-      "default": "./dist/browserify/node-process/bundle.js"
-    },
-    "./dist/browserify/node-thread/bundle.js": {
-      "default": "./dist/browserify/node-thread/bundle.js"
-    },
+    "./dist/browserify/node-process/bundle.js": "./dist/browserify/node-process/bundle.js",
+    "./dist/browserify/node-thread/bundle.js": "./dist/browserify/node-thread/bundle.js",
     "./package.json": "./package.json"
   },
   "main": "./dist/index.cjs",
