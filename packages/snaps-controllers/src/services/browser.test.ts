@@ -9,6 +9,7 @@ describe('browser entrypoint', () => {
     'WebWorkerExecutionService',
     'ProxyPostMessageStream',
     'WebViewExecutionService',
+    'WebViewMessageStream',
   ];
 
   it('entrypoint has expected exports', () => {
