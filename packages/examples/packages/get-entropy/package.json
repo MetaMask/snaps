@@ -1,7 +1,16 @@
 {
   "name": "@metamask/get-entropy-example-snap",
   "version": "2.1.3",
-  "description": "MetaMask example snap demonstrating the use of `snap_getEntropy`.",
+  "description": "MetaMask example snap demonstrating the use of `snap_getEntropy`",
+  "keywords": [
+    "MetaMask",
+    "Snaps",
+    "Ethereum"
+  ],
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/examples/packages/get-entropy#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/snaps/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"

@@ -2,7 +2,16 @@
   "name": "@metamask/test-snaps",
   "version": "2.14.0",
   "private": true,
-  "description": "The test snaps website for MetaMask Snaps, used for end-to-end testing.",
+  "description": "The test snaps website for MetaMask Snaps, used for end-to-end testing",
+  "keywords": [
+    "MetaMask",
+    "Snaps",
+    "Ethereum"
+  ],
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/test-snaps#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/snaps/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
@@ -22,6 +31,7 @@
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
+    "since-latest-release": "../../scripts/since-latest-release.sh",
     "start": "yarn workspaces foreach --parallel --verbose --interlaced --all --include \"@metamask/test-snaps\" --include \"@metamask/example-snaps\" run start:test",
     "start:test": "cross-env NODE_ENV=development webpack serve",
     "test": "jest --reporters=jest-silent-reporter",

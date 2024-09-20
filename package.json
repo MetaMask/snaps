@@ -6,6 +6,7 @@
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
   },
+  "files": [],
   "workspaces": [
     "packages/*"
   ],

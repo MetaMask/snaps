@@ -1,7 +1,16 @@
 {
   "name": "@metamask/dialog-example-snap",
   "version": "2.3.1",
-  "description": "MetaMask example snap demonstrating the use of `snap_dialog`.",
+  "description": "MetaMask example snap demonstrating the use of `snap_dialog`",
+  "keywords": [
+    "MetaMask",
+    "Snaps",
+    "Ethereum"
+  ],
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/examples/packages/dialogs#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/snaps/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"

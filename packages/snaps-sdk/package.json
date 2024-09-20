@@ -1,6 +1,16 @@
 {
   "name": "@metamask/snaps-sdk",
   "version": "6.5.1",
+  "description": "A library containing the core functionality for building MetaMask Snaps",
+  "keywords": [
+    "MetaMask",
+    "Snaps",
+    "Ethereum"
+  ],
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/snaps-sdk#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/snaps/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"

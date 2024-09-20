@@ -2,12 +2,23 @@
   "name": "@metamask/invoke-snap-example-snap",
   "version": "2.1.3",
   "private": true,
-  "description": "MetaMask example snaps demonstrating the use of `wallet_invokeSnap` to call a snap from another snap.",
+  "description": "MetaMask example snaps demonstrating the use of `wallet_invokeSnap` to call a snap from another snap",
+  "keywords": [
+    "MetaMask",
+    "Snaps",
+    "Ethereum"
+  ],
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/examples/packages/invoke-snap#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/snaps/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "license": "(MIT-0 OR Apache-2.0)",
+  "sideEffects": false,
+  "files": [],
   "workspaces": [
     "packages/*"
   ],
@@ -21,6 +32,7 @@
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" \"!snap.manifest.json\" \"!packages/**\" --ignore-path ../../../../.gitignore",
+    "since-latest-release": "../../../../scripts/since-latest-release.sh",
     "start": "yarn workspaces foreach --worktree --parallel --verbose --interlaced --jobs unlimited run start",
     "test": "jest --reporters=jest-silent-reporter",
     "test:clean": "jest --clearCache",
@@ -54,9 +66,5 @@
   },
   "engines": {
     "node": "^18.16 || >=20"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
   }
 }

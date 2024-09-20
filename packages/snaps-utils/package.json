@@ -1,6 +1,16 @@
 {
   "name": "@metamask/snaps-utils",
   "version": "8.1.1",
+  "description": "A collection of utilities for MetaMask Snaps",
+  "keywords": [
+    "MetaMask",
+    "Snaps",
+    "Ethereum"
+  ],
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/snaps-utils#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/snaps/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
