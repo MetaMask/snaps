@@ -554,6 +554,19 @@ describe('validateLink', () => {
     expect(fn).toHaveBeenCalledWith('bar.com');
   });
 
+  it('passes for a valid list of emails', () => {
+    const fn = jest.fn().mockReturnValue(false);
+
+    expect(() =>
+      validateLink('mailto:foo@bar.com,bar@baz.com,baz@qux.com', fn),
+    ).not.toThrow();
+
+    expect(fn).toHaveBeenCalledTimes(3);
+    expect(fn).toHaveBeenCalledWith('bar.com');
+    expect(fn).toHaveBeenCalledWith('baz.com');
+    expect(fn).toHaveBeenCalledWith('qux.com');
+  });
+
   it('throws an error for an invalid protocol', () => {
     const fn = jest.fn().mockReturnValue(false);
 
@@ -590,6 +603,23 @@ describe('validateLink', () => {
 
     expect(() =>
       validateLink('mailto:foo@test.metamask-phishing.io', fn),
+    ).toThrow('Invalid URL: The specified URL is not allowed.');
+
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).toHaveBeenCalledWith('test.metamask-phishing.io');
+  });
+
+  it('throws an error for a phishing email when using multiple emails', () => {
+    const fn = jest.fn().mockImplementation((email) => {
+      if (email === 'test.metamask-phishing.io') {
+        return true;
+      }
+
+      return false;
+    });
+
+    expect(() =>
+      validateLink('mailto:foo@test.metamask-phishing.io,foo@bar.com', fn),
     ).toThrow('Invalid URL: The specified URL is not allowed.');
 
     expect(fn).toHaveBeenCalledTimes(1);
