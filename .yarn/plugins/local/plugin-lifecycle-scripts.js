@@ -3,8 +3,8 @@
 /**
  * Run an array of tasks in sequence.
  *
- * @param tasks {Array<Function>} - An array of functions that return a promise
- * that resolves to an exit code.
+ * @param tasks {Array<() => Promise<number>>} - An array of functions that
+ * return a promise that resolves to an exit code.
  * @returns {Promise<number>} - The exit code of the first task that returns a
  * non-zero exit code, or 0 if all tasks return 0.
  */
