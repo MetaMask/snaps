@@ -13,6 +13,7 @@
     "buffer",
     "eslint-config-*",
     "eslint-plugin-*",
+    "jest-silent-reporter",
     "events",
     "is-core-module",
     "prettier-plugin-packagejson",
