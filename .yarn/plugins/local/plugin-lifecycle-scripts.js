@@ -26,15 +26,20 @@ async function sequence(tasks) {
  * @param {import('@yarnpkg/core').Workspace} workspace - The workspace to run
  * the script in.
  * @param {string} scriptName - The name of the script to run.
+ * @param {Record<string, string>} extra - Extra options to pass to the execute
+ * function.
  * @param {Function} require - The require function to use.
  */
-function getLifecycleTask(workspace, scriptName, require) {
+function getLifecycleTask(workspace, scriptName, { stderr, stdin, stdout }, require) {
   const { scriptUtils } = require('@yarnpkg/core');
 
   return async () => {
     if (scriptUtils.hasWorkspaceScript(workspace, scriptName)) {
       return scriptUtils.executeWorkspaceScript(workspace, scriptName, [], {
         cwd: workspace.cwd,
+        stderr,
+        stdin,
+        stdout,
       });
     }
 
@@ -55,13 +60,13 @@ module.exports = {
     return {
       default: {
         hooks: {
-          wrapScriptExecution: async (script, project, locator, scriptName) => {
+          wrapScriptExecution: async (script, project, locator, scriptName, extra) => {
             return async () => {
               const workspace = project.getWorkspaceByLocator(locator);
               return await sequence([
-                getLifecycleTask(workspace, `${scriptName}:pre`, require),
+                getLifecycleTask(workspace, `${scriptName}:pre`, extra, require),
                 script,
-                getLifecycleTask(workspace, `${scriptName}:post`, require),
+                getLifecycleTask(workspace, `${scriptName}:post`, extra, require),
               ])
             };
           }
