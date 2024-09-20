@@ -20,21 +20,21 @@
     },
     "./node": {
       "import": {
-        "types": "./dist/types/node.d.mts",
+        "types": "./dist/node.d.mts",
         "default": "./dist/node.mjs"
       },
       "require": {
-        "types": "./dist/types/node.d.cts",
+        "types": "./dist/node.d.cts",
         "default": "./dist/node.cjs"
       }
     },
     "./react-native": {
       "import": {
-        "types": "./dist/types/react-native.d.mts",
+        "types": "./dist/react-native.d.mts",
         "default": "./dist/react-native.mjs"
       },
       "require": {
-        "types": "./dist/types/react-native.d.cts",
+        "types": "./dist/react-native.d.cts",
         "default": "./dist/react-native.cjs"
       }
     },
