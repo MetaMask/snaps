@@ -7,20 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [9.7.1]
+## [9.8.0]
 
-### Uncategorized
+### Added
 
-- Update Yarn constraints to use JavaScript-based constraints ([#2740](https://github.com/MetaMask/snaps/pull/2740))
-- Update metadata for all packages ([#2748](https://github.com/MetaMask/snaps/pull/2748))
-- Add missing license fields ([#2747](https://github.com/MetaMask/snaps/pull/2747))
-- Add `since-latest-release` script to match `MetaMask/core` ([#2744](https://github.com/MetaMask/snaps/pull/2744))
-- Update test scripts to match `MetaMask/core` ([#2745](https://github.com/MetaMask/snaps/pull/2745))
 - Export `WebViewMessageStream` and related types ([#2746](https://github.com/MetaMask/snaps/pull/2746))
-- Fix package exports in `snaps-controllers` ([#2739](https://github.com/MetaMask/snaps/pull/2739))
-- Fix linting of `package.json` files ([#2742](https://github.com/MetaMask/snaps/pull/2742))
-- Update changelog validation scripts to match `MetaMask/core` ([#2741](https://github.com/MetaMask/snaps/pull/2741))
-- Mock `getJsonSizeUnsafe` to speed up tests ([#2731](https://github.com/MetaMask/snaps/pull/2731))
+
+### Fixed
+
+- Fix invalid `exports` field ([#2740](https://github.com/MetaMask/snaps/pull/2740))
 
 ## [9.7.0]
 
@@ -512,8 +507,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.7.1...HEAD
-[9.7.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.7.0...@metamask/snaps-controllers@9.7.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.8.0...HEAD
+[9.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.7.0...@metamask/snaps-controllers@9.8.0
 [9.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.6.0...@metamask/snaps-controllers@9.7.0
 [9.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.5.0...@metamask/snaps-controllers@9.6.0
 [9.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.4.0...@metamask/snaps-controllers@9.5.0
