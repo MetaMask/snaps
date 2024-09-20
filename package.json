@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "build": "ts-bridge --project tsconfig.build.json --verbose && yarn build:examples",
-    "build:ci": "ts-bridge --project tsconfig.build.json --verbose --clean",
+    "build:ci": "ts-bridge --project tsconfig.build.json --verbose",
     "build:examples": "yarn workspace @metamask/example-snaps build",
     "changelog:update": "yarn workspaces foreach --all --parallel --interlaced --verbose run changelog:update",
     "changelog:validate": "yarn workspaces foreach --all --parallel --interlaced --verbose run changelog:validate",
