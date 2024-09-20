@@ -1,7 +1,16 @@
 {
   "name": "@metamask/interactive-ui-example-snap",
   "version": "2.2.1",
-  "description": "MetaMask example snap demonstrating the use of interactive UI.",
+  "description": "MetaMask example snap demonstrating the use of interactive UI",
+  "keywords": [
+    "MetaMask",
+    "Snaps",
+    "Ethereum"
+  ],
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/examples/packages/interactive-ui#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/snaps/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"

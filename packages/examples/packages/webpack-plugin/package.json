@@ -1,7 +1,16 @@
 {
   "name": "@metamask/webpack-plugin-example-snap",
   "version": "2.1.3",
-  "description": "MetaMask example snap demonstrating how to use the Webpack plugin to bundle a snap.",
+  "description": "MetaMask example snap demonstrating how to use the Webpack plugin to bundle a snap",
+  "keywords": [
+    "MetaMask",
+    "Snaps",
+    "Ethereum"
+  ],
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/examples/packages/webpack-plugin#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/snaps/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"

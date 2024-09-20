@@ -1,7 +1,16 @@
 {
   "name": "@metamask/localization-example-snap",
   "version": "1.1.4",
-  "description": "MetaMask example snap demonstrating how to localize a snap.",
+  "description": "MetaMask example snap demonstrating how to localize a snap",
+  "keywords": [
+    "MetaMask",
+    "Snaps",
+    "Ethereum"
+  ],
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/examples/packages/localization#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/snaps/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"

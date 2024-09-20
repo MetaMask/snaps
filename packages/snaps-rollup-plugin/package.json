@@ -2,9 +2,16 @@
   "name": "@metamask/snaps-rollup-plugin",
   "version": "4.1.2",
   "keywords": [
-    "rollup",
-    "rollup-plugin"
+    "MetaMask",
+    "Snaps",
+    "Ethereum",
+    "Rollup",
+    "Plugin"
   ],
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/snaps-rollup-plugin#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/snaps/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"

@@ -1,7 +1,16 @@
 {
   "name": "@metamask/notification-example-snap",
   "version": "2.1.4",
-  "description": "MetaMask example snap demonstrating the use of `snap_notify`.",
+  "description": "MetaMask example snap demonstrating the use of `snap_notify`",
+  "keywords": [
+    "MetaMask",
+    "Snaps",
+    "Ethereum"
+  ],
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/examples/packages/notifications#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/snaps/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"

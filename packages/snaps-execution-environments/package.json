@@ -2,6 +2,15 @@
   "name": "@metamask/snaps-execution-environments",
   "version": "6.7.2",
   "description": "Snap sandbox environments for executing SES javascript",
+  "keywords": [
+    "MetaMask",
+    "Snaps",
+    "Ethereum"
+  ],
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/snaps-execution-environments#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/snaps/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"

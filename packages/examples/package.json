@@ -2,11 +2,21 @@
   "name": "@metamask/example-snaps",
   "version": "3.9.0",
   "private": true,
+  "keywords": [
+    "MetaMask",
+    "Snaps",
+    "Ethereum"
+  ],
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/examples#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/snaps/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "license": "(MIT-0 OR Apache-2.0)",
+  "sideEffects": false,
   "files": [],
   "workspaces": [
     "packages/*"
@@ -22,6 +32,7 @@
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" \"!packages/**\" --ignore-path ../../.gitignore",
+    "since-latest-release": "../../scripts/since-latest-release.sh",
     "start": "yarn workspaces foreach --worktree --parallel --verbose --interlaced --no-private --jobs unlimited run start",
     "start:test": "yarn start",
     "test": "jest --reporters=jest-silent-reporter",

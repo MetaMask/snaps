@@ -3,9 +3,22 @@
   "version": "2.5.0",
   "private": true,
   "description": "A simulator for MetaMask Snaps, to be used for testing and development",
-  "homepage": "https://github.com/MetaMask/snaps#readme",
+  "keywords": [
+    "MetaMask",
+    "Snaps",
+    "Ethereum"
+  ],
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/snaps-simulator#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/snaps/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps.git"
+  },
   "license": "MIT",
   "sideEffects": false,
+  "files": [],
   "scripts": {
     "build": "yarn build:vendor && yarn build:webpack",
     "build:vendor": "webpack --config-name vendor --mode production --progress",
@@ -18,7 +31,7 @@
     "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:constraints --fix && yarn lint:misc --write && yarn changelog:validate",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
-    "publish:preview": "yarn npm publish --tag preview",
+    "since-latest-release": "../../scripts/since-latest-release.sh",
     "start": "webpack serve --config-name main --mode development",
     "start:e2e": "webpack serve --config-name test --mode development",
     "test": "jest --reporters=jest-silent-reporter",
@@ -134,7 +147,6 @@
     "webpack-dev-server": "^4.15.1",
     "webpack-merge": "^5.9.0"
   },
-  "packageManager": "yarn@3.2.1",
   "engines": {
     "node": "^18.16 || >=20"
   }

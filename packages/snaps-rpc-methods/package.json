@@ -1,7 +1,16 @@
 {
   "name": "@metamask/snaps-rpc-methods",
   "version": "11.1.1",
-  "description": "MetaMask Snaps JSON-RPC method implementations.",
+  "description": "MetaMask Snaps JSON-RPC method implementations",
+  "keywords": [
+    "MetaMask",
+    "Snaps",
+    "Ethereum"
+  ],
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/snaps-rpc-methods#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/snaps/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"

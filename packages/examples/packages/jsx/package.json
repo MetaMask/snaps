@@ -1,7 +1,16 @@
 {
   "name": "@metamask/jsx-example-snap",
   "version": "1.2.1",
-  "description": "MetaMask example snap demonstrating the use of JSX for UI components.",
+  "description": "MetaMask example snap demonstrating the use of JSX for UI components",
+  "keywords": [
+    "MetaMask",
+    "Snaps",
+    "Ethereum"
+  ],
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/examples/packages/jsx#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/snaps/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
