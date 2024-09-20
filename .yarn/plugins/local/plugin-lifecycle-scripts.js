@@ -26,7 +26,7 @@ async function sequence(tasks) {
  * @param {import('@yarnpkg/core').Workspace} workspace - The workspace to run
  * the script in.
  * @param {string} scriptName - The name of the script to run.
- * @param {Record<string, string>} extra - Extra options to pass to the execute
+ * @param {Record<string, *>} extra - Extra options to pass to the execute
  * function.
  * @param {Function} require - The require function to use.
  */
