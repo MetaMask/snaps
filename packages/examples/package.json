@@ -25,6 +25,7 @@
   "scripts": {
     "build": "yarn workspaces foreach --worktree --parallel --verbose --no-private run build",
     "build:clean": "yarn clean && yarn build",
+    "changelog:validate": "../../scripts/validate-changelog.sh @metamask/example-snaps",
     "changelog:validates": "yarn workspaces foreach --worktree --parallel --verbose run changelog:validate",
     "clean": "yarn workspaces foreach --worktree --parallel --verbose --no-private run clean",
     "lint": "yarn workspaces foreach --worktree --parallel --verbose --interlaced --no-private run lint && yarn lint:dependencies",
@@ -40,8 +41,7 @@
     "test:clean": "jest --clearCache",
     "test:post": "jest-it-up",
     "test:verbose": "jest --verbose",
-    "test:watch": "jest --watch",
-    "changelog:validate": "../../scripts/validate-changelog.sh @metamask/example-snaps"
+    "test:watch": "jest --watch"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^3.0.4",
