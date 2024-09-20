@@ -25,6 +25,7 @@
   "scripts": {
     "build": "yarn workspaces foreach --worktree --parallel --verbose --no-private run build",
     "build:clean": "yarn clean && yarn build",
+    "changelog:validate": "../../scripts/validate-changelog.sh @metamask/example-snaps",
     "changelog:validates": "yarn workspaces foreach --worktree --parallel --verbose run changelog:validate",
     "clean": "yarn workspaces foreach --worktree --parallel --verbose --no-private run clean",
     "lint": "yarn workspaces foreach --worktree --parallel --verbose --interlaced --no-private run lint && yarn lint:dependencies",

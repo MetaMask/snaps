@@ -19,7 +19,7 @@
   "sideEffects": false,
   "main": "./dist/bundle.js",
   "files": [
-    "dist/",
+    "dist",
     "snap.manifest.json"
   ],
   "scripts": {

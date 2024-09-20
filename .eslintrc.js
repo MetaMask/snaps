@@ -34,7 +34,7 @@ module.exports = {
 
   overrides: [
     {
-      files: ['**/*.js'],
+      files: ['**/*.js', '**/*.cjs'],
       extends: ['@metamask/eslint-config-nodejs'],
 
       parserOptions: {
@@ -45,6 +45,14 @@ module.exports = {
         // This prevents using Node.js and/or browser specific globals. We
         // currently use both in our codebase, so this rule is disabled.
         'no-restricted-globals': 'off',
+      },
+    },
+
+    {
+      files: ['**/*.mjs'],
+      parserOptions: {
+        ecmaVersion: 2022,
+        sourceType: 'module',
       },
     },
 

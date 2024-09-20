@@ -28,12 +28,8 @@
         "default": "./dist/index.cjs"
       }
     },
-    "./dist/browserify/node-process/bundle.js": {
-      "default": "./dist/browserify/node-process/bundle.js"
-    },
-    "./dist/browserify/node-thread/bundle.js": {
-      "default": "./dist/browserify/node-thread/bundle.js"
-    },
+    "./dist/browserify/node-process/bundle.js": "./dist/browserify/node-process/bundle.js",
+    "./dist/browserify/node-thread/bundle.js": "./dist/browserify/node-thread/bundle.js",
     "./package.json": "./package.json"
   },
   "main": "./dist/index.cjs",
@@ -44,9 +40,10 @@
   ],
   "scripts": {
     "auto-changelog-init": "auto-changelog init",
-    "build": "ts-bridge --project tsconfig.build.json --verbose --no-references && yarn build:lavamoat",
+    "build": "ts-bridge --project tsconfig.build.json --verbose --clean --no-references",
     "build:lavamoat": "lavamoat scripts/build.js --policy lavamoat/build-system/policy.json  --policyOverride lavamoat/build-system/policy-override.json",
     "build:lavamoat:policy": "yarn build:lavamoat --writeAutoPolicy && node scripts/build.js --writeAutoPolicy",
+    "build:post": "yarn build:lavamoat",
     "changelog:update": "../../scripts/update-changelog.sh @metamask/snaps-execution-environments",
     "changelog:validate": "../../scripts/validate-changelog.sh @metamask/snaps-execution-environments",
     "clean": "rimraf '*.tsbuildinfo' 'dist' 'src/__GENERATED__/' 'coverage/*' '__test__/*'",
