@@ -7,14 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- Update metadata for all packages ([#2748](https://github.com/MetaMask/snaps/pull/2748))
-- Update test scripts to match `MetaMask/core` ([#2745](https://github.com/MetaMask/snaps/pull/2745))
-- Send Flow example snap ([#2732](https://github.com/MetaMask/snaps/pull/2732))
-- Fix linting of `package.json` files ([#2742](https://github.com/MetaMask/snaps/pull/2742))
-- Update changelog validation scripts to match `MetaMask/core` ([#2741](https://github.com/MetaMask/snaps/pull/2741))
-
 ## [2.14.0]
 
 ### Added
