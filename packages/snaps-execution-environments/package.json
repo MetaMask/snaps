@@ -47,6 +47,7 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ./.prettierignore",
     "publish:preview": "yarn npm publish --tag preview",
+    "since-latest-release": "../../scripts/since-latest-release.sh",
     "start": "node scripts/start.js",
     "test": "jest --reporters=jest-silent-reporter && yarn test:browser",
     "test:browser": "wdio run wdio.config.js",
