@@ -38,5 +38,8 @@ export function getMockInterfaceResponse(
     content,
     clickElement: jest.fn(),
     typeInField: jest.fn(),
+    selectInDropdown: jest.fn(),
+    selectFromRadioGroup: jest.fn(),
+    uploadFile: jest.fn(),
   };
 }

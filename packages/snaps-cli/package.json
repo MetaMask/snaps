@@ -1,7 +1,16 @@
 {
   "name": "@metamask/snaps-cli",
-  "version": "6.3.2",
-  "description": "A CLI for developing MetaMask Snaps.",
+  "version": "6.3.3",
+  "description": "A CLI for developing MetaMask Snaps",
+  "keywords": [
+    "MetaMask",
+    "Snaps",
+    "Ethereum"
+  ],
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/snaps-cli#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/snaps/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
@@ -33,22 +42,26 @@
     ".browserslistrc"
   ],
   "scripts": {
-    "build": "ts-bridge --project tsconfig.build.json --verbose --no-references && yarn build:chmod && yarn build:readme",
+    "build": "ts-bridge --project tsconfig.build.json --verbose --clean --no-references",
     "build:chmod": "chmod +x ./dist/main.mjs && chmod +x ./dist/main.js",
+    "build:post": "yarn build:chmod && yarn build:readme",
     "build:readme": "node ./scripts/updateReadme.js",
     "build:watch": "tsc-watch --onSuccess 'yarn build:chmod'",
-    "test": "jest --runInBand && yarn posttest",
-    "posttest": "jest-it-up",
-    "test:watch": "yarn test --watch",
-    "test:ci": "yarn test",
-    "lint:changelog": "../../scripts/validate-changelog.sh @metamask/snaps-cli",
-    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
-    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
-    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:changelog && yarn lint:dependencies",
-    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
-    "publish:preview": "yarn npm publish --tag preview",
+    "changelog:update": "../../scripts/update-changelog.sh @metamask/snaps-cli",
+    "changelog:validate": "../../scripts/validate-changelog.sh @metamask/snaps-cli",
+    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn changelog:validate && yarn lint:dependencies",
     "lint:ci": "yarn lint",
-    "lint:dependencies": "depcheck"
+    "lint:dependencies": "depcheck",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
+    "publish:preview": "yarn npm publish --tag preview",
+    "since-latest-release": "../../scripts/since-latest-release.sh",
+    "test": "jest --reporters=jest-silent-reporter",
+    "test:clean": "jest --clearCache",
+    "test:post": "jest-it-up",
+    "test:verbose": "jest --verbose",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@babel/core": "^7.23.2",
@@ -109,7 +122,7 @@
     "@metamask/eslint-config-nodejs": "^12.1.0",
     "@metamask/eslint-config-typescript": "^12.1.0",
     "@swc/jest": "^0.2.26",
-    "@ts-bridge/cli": "^0.4.4",
+    "@ts-bridge/cli": "^0.5.1",
     "@types/browserify": "^12.0.37",
     "@types/jest": "^27.5.1",
     "@types/node": "18.14.2",
@@ -131,9 +144,10 @@
     "execa": "^5.1.1",
     "jest": "^29.0.2",
     "jest-it-up": "^2.0.0",
+    "jest-silent-reporter": "^0.6.0",
     "memfs": "^3.4.13",
-    "prettier": "^2.7.1",
-    "prettier-plugin-packagejson": "^2.2.11",
+    "prettier": "^2.8.8",
+    "prettier-plugin-packagejson": "^2.5.2",
     "ts-node": "^10.9.1",
     "tsc-watch": "^4.5.0",
     "typescript": "~5.3.3"

@@ -1,0 +1,19 @@
+{
+  "ignore-patterns": ["dist", "coverage"],
+  "ignores": [
+    "@lavamoat/allow-scripts",
+    "@lavamoat/preinstall-always-fail",
+    "@metamask/auto-changelog",
+    "@metamask/eslint-*",
+    "@types/*",
+    "@typescript-eslint/*",
+    "eslint-config-*",
+    "eslint-plugin-*",
+    "jest-silent-reporter",
+    "prettier-plugin-packagejson",
+    "ts-jest",
+    "ts-node",
+    "typedoc",
+    "typescript"
+  ]
+}

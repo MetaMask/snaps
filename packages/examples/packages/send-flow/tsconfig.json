@@ -1,0 +1,26 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "jsx": "react-jsxdev",
+    "paths": {
+      "@metamask/*/jsx": ["../../../*/src/jsx"],
+      "@metamask/*/jsx-dev-runtime": ["../../../*/src/jsx"],
+      "@metamask/*": ["../../../*/src"]
+    },
+    "module": "ES2020",
+    "moduleResolution": "Node10"
+  },
+  "include": ["src", "snap.config.ts"],
+  "references": [
+    {
+      "path": "../../../snaps-sdk"
+    },
+    {
+      "path": "../../../snaps-jest"
+    },
+    {
+      "path": "../../../snaps-cli"
+    }
+  ]
+}

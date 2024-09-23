@@ -5,3 +5,12 @@ export { default, default as TestEnvironment } from './environment';
 export * from './helpers';
 export * from './options';
 export * from './types';
+
+export {
+  assertCustomDialogHasNoFooter,
+  assertCustomDialogHasPartialFooter,
+  assertIsAlertDialog,
+  assertIsConfirmationDialog,
+  assertIsCustomDialog,
+  assertIsPromptDialog,
+} from '@metamask/snaps-simulation';

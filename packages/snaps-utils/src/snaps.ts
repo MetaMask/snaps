@@ -153,6 +153,11 @@ export type Snap = TruncatedSnap & {
    * Flag to signal whether this snap should be hidden from the user or not.
    */
   hidden?: boolean;
+
+  /**
+   * Flag to signal whether this snap should hide the Snap branding like header or avatar in the UI or not.
+   */
+  hideSnapBranding?: boolean;
 };
 
 export type TruncatedSnapFields =

@@ -45,6 +45,8 @@ describe('onRpcRequest', () => {
 
       await formScreen.selectFromRadioGroup('example-radiogroup', 'option3');
 
+      await formScreen.selectFromSelector('example-selector', 'option2');
+
       await formScreen.clickElement('example-checkbox');
 
       await formScreen.clickElement('submit');
@@ -59,6 +61,7 @@ describe('onRpcRequest', () => {
             'example-dropdown': 'option3',
             'example-radiogroup': 'option3',
             'example-checkbox': true,
+            'example-selector': 'option2',
           }}
         />,
       );
@@ -90,6 +93,7 @@ describe('onRpcRequest', () => {
             'example-dropdown': 'option1',
             'example-radiogroup': 'option1',
             'example-checkbox': false,
+            'example-selector': 'option1',
           }}
         />,
       );
@@ -116,6 +120,8 @@ describe('onHomePage', () => {
 
     await formScreen.selectFromRadioGroup('example-radiogroup', 'option3');
 
+    await formScreen.selectFromSelector('example-selector', 'option2');
+
     await formScreen.clickElement('submit');
 
     const resultScreen = response.getInterface();
@@ -127,6 +133,7 @@ describe('onHomePage', () => {
           'example-dropdown': 'option3',
           'example-radiogroup': 'option3',
           'example-checkbox': false,
+          'example-selector': 'option2',
         }}
       />,
     );

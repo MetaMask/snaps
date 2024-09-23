@@ -1,39 +1,46 @@
 {
   "name": "root",
-  "version": "64.0.0",
+  "version": "69.0.0",
   "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
   },
+  "files": [],
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
-    "postinstall": "simple-git-hooks",
-    "lint:eslint": "eslint . --cache --ext js,jsx,ts,tsx",
-    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn '**/*.json' '**/*.md' '!**/CHANGELOG.md' '**/*.yml' '**/*.html'",
-    "lint:changelogs": "yarn workspaces foreach --all --parallel --verbose run lint:changelog",
-    "lint:dependencies": "yarn workspaces foreach --all --parallel --verbose run lint:dependencies && yarn dedupe --check",
-    "lint:tsconfig": "node scripts/verify-tsconfig.mjs",
-    "lint": "yarn workspaces foreach --all --parallel run lint:eslint && yarn lint:misc --check && yarn lint:tsconfig && yarn constraints && yarn lint:dependencies",
-    "lint:fix": "yarn workspaces foreach --all --parallel run lint:eslint --fix && yarn lint:misc --write && yarn lint:tsconfig && yarn constraints --fix && yarn dedupe",
-    "lint:ci": "yarn lint:eslint && yarn lint:misc --check && yarn lint:tsconfig && yarn constraints && yarn lint:dependencies",
-    "build": "ts-bridge --project tsconfig.build.json --verbose && yarn build:examples",
-    "build:ci": "ts-bridge --project tsconfig.build.json --verbose --clean",
+    "build": "ts-bridge --project tsconfig.build.json --verbose",
+    "build:ci": "ts-bridge --project tsconfig.build.json --verbose",
     "build:examples": "yarn workspace @metamask/example-snaps build",
-    "clean": "yarn workspaces foreach --all --parallel --verbose run clean",
-    "test": "yarn workspaces foreach --all --parallel --verbose run test",
-    "test:browser": "yarn workspaces foreach --all --verbose run test:browser",
+    "build:execution-environments": "yarn workspace @metamask/snaps-execution-environments build:lavamoat",
+    "build:post": "yarn build:examples && yarn build:execution-environments",
+    "changelog:update": "yarn workspaces foreach --all --parallel --interlaced --verbose run changelog:update",
+    "changelog:validate": "yarn workspaces foreach --all --parallel --interlaced --verbose run changelog:validate",
     "child-workspace-package-names-as-json": "ts-node scripts/child-workspace-package-names-as-json.ts",
+    "clean": "yarn workspaces foreach --all --parallel --verbose run clean",
+    "get-release-tag": "ts-node --swc scripts/get-release-tag.ts",
+    "postinstall": "simple-git-hooks",
+    "install-chrome": "./scripts/install-chrome.sh",
+    "lint": "yarn workspaces foreach --all --parallel run lint:eslint && yarn lint:misc --check && yarn lint:tsconfig && yarn constraints && yarn lint:dependencies",
+    "lint:ci": "yarn lint:eslint && yarn lint:misc --check && yarn lint:tsconfig && yarn constraints && yarn lint:dependencies",
+    "lint:dependencies": "yarn workspaces foreach --all --parallel --verbose run lint:dependencies && yarn dedupe --check",
+    "lint:eslint": "eslint . --cache --ext js,cjs,mjs,jsx,ts,mts,cts,tsx",
+    "lint:fix": "yarn workspaces foreach --all --parallel run lint:eslint --fix && yarn lint:misc --write && yarn lint:tsconfig && yarn constraints --fix && yarn dedupe",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn '**/*.json' '**/*.md' '!**/CHANGELOG.md' '**/*.yml' '**/*.html'",
+    "lint:tsconfig": "node scripts/verify-tsconfig.mjs",
     "prepare-preview-builds": "./scripts/prepare-preview-builds.sh",
     "publish-previews": "yarn workspaces foreach --all --parallel --verbose run publish:preview",
-    "install-chrome": "./scripts/install-chrome.sh",
-    "get-release-tag": "ts-node --swc scripts/get-release-tag.ts",
-    "test:e2e": "yarn workspaces foreach --all --verbose --exclude root run test:e2e"
+    "test": "yarn workspaces foreach --all --parallel --verbose run test",
+    "test:browser": "yarn workspaces foreach --all --verbose run test:browser",
+    "test:clean": "yarn workspaces foreach --all --parallel --verbose run test:clean",
+    "test:verbose": "yarn workspaces foreach --all --parallel --verbose run test:verbose",
+    "test:watch": "yarn workspaces foreach --all --parallel --verbose run test:watch",
+    "update-readme-content": "tsx ./scripts/update-readme-content.mts"
   },
   "simple-git-hooks": {
-    "pre-commit": "yarn lint-staged && yarn dedupe --check"
+    "pre-commit": "yarn lint-staged && yarn dedupe --check && yarn update-readme-content"
   },
   "lint-staged": {
     "*.{js,ts,tsx,jsx}": [
@@ -74,11 +81,13 @@
     "@metamask/eslint-config-typescript": "^12.1.0",
     "@metamask/utils": "^9.2.1",
     "@swc/core": "1.3.78",
-    "@ts-bridge/cli": "^0.4.4",
+    "@ts-bridge/cli": "^0.5.1",
     "@types/jest": "^27.5.1",
+    "@types/lodash": "^4",
     "@types/node": "18.14.2",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^6.21.0",
+    "@yarnpkg/types": "^4.0.0",
     "chromedriver": "^127.0.0",
     "depcheck": "^1.4.7",
     "eslint": "^8.27.0",
@@ -93,17 +102,21 @@
     "favicons": "^7.1.2",
     "geckodriver": "^4.2.0",
     "jest": "^29.0.2",
+    "jest-silent-reporter": "^0.6.0",
     "lint-staged": "^12.4.1",
+    "lodash": "^4.17.21",
     "minimatch": "^7.4.1",
-    "prettier": "^2.7.1",
-    "prettier-plugin-packagejson": "^2.2.11",
+    "prettier": "^2.8.8",
+    "prettier-plugin-packagejson": "^2.5.2",
     "rimraf": "^4.1.2",
     "semver": "^7.5.4",
     "simple-git-hooks": "^2.7.0",
     "ts-node": "^10.9.1",
+    "tsx": "^4.19.1",
     "typescript": "~5.3.3",
     "vite": "^4.3.9"
   },
+  "packageManager": "yarn@4.4.1",
   "engines": {
     "node": "^18.16 || >=20"
   },
@@ -118,8 +131,8 @@
       "ts-node>@swc/core": true,
       "@swc/core": true,
       "favicons>sharp": true,
-      "vite>esbuild": true
+      "vite>esbuild": true,
+      "tsx>esbuild": true
     }
-  },
-  "packageManager": "yarn@4.4.1"
+  }
 }

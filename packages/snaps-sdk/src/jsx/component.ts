@@ -58,6 +58,11 @@ export type Nestable<Type> = Type | Nestable<Type>[];
 export type SnapsChildren<Type> = Nestable<Type | boolean | null>;
 
 /**
+ * A type type that can be a generic JSX element, a boolean, or null.
+ */
+export type GenericSnapChildren = GenericSnapElement | boolean | null;
+
+/**
  * A JSX node, which can be an element, a string, null, or an array of nodes.
  */
 export type SnapNode = SnapsChildren<GenericSnapElement | string>;

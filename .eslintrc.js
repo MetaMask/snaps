@@ -34,7 +34,7 @@ module.exports = {
 
   overrides: [
     {
-      files: ['**/*.js'],
+      files: ['**/*.js', '**/*.cjs'],
       extends: ['@metamask/eslint-config-nodejs'],
 
       parserOptions: {
@@ -49,7 +49,15 @@ module.exports = {
     },
 
     {
-      files: ['**/*.ts', '**/*.tsx'],
+      files: ['**/*.mjs'],
+      parserOptions: {
+        ecmaVersion: 2022,
+        sourceType: 'module',
+      },
+    },
+
+    {
+      files: ['**/*.ts', '**/*.tsx', '**/*.mts'],
       extends: ['@metamask/eslint-config-typescript'],
       rules: {
         // This rule disallows the `private` modifier on class fields, but we

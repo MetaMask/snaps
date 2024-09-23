@@ -188,7 +188,7 @@ GitHub action are used to automate the release process.
 - Consolidate related changes into one change entry if it makes it easier to
   comprehend.
 
-  Run `yarn lint:changelogs` to check that all changelogs are correctly
+  Run `yarn changelog:validates` to check that all changelogs are correctly
   formatted.
 
   Commit and push the branch.

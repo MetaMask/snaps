@@ -322,4 +322,30 @@ describe('Field', () => {
       },
     });
   });
+
+  it('renders a field with a conditional', () => {
+    const result = (
+      <Field>
+        <Input name="foo" />
+        {false && <Button type="submit">Submit</Button>}
+      </Field>
+    );
+
+    expect(result).toStrictEqual({
+      type: 'Field',
+      key: null,
+      props: {
+        children: [
+          {
+            type: 'Input',
+            key: null,
+            props: {
+              name: 'foo',
+            },
+          },
+          false,
+        ],
+      },
+    });
+  });
 });

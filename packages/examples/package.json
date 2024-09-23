@@ -1,12 +1,23 @@
 {
   "name": "@metamask/example-snaps",
-  "version": "3.8.1",
+  "version": "3.9.0",
   "private": true,
+  "description": "A collection of examples demonstrating how to build MetaMask Snaps",
+  "keywords": [
+    "MetaMask",
+    "Snaps",
+    "Ethereum"
+  ],
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/examples#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/snaps/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "license": "(MIT-0 OR Apache-2.0)",
+  "sideEffects": false,
   "files": [],
   "workspaces": [
     "packages/*"
@@ -14,17 +25,23 @@
   "scripts": {
     "build": "yarn workspaces foreach --worktree --parallel --verbose --no-private run build",
     "build:clean": "yarn clean && yarn build",
+    "changelog:validate": "../../scripts/validate-changelog.sh @metamask/example-snaps",
+    "changelog:validates": "yarn workspaces foreach --worktree --parallel --verbose run changelog:validate",
     "clean": "yarn workspaces foreach --worktree --parallel --verbose --no-private run clean",
+    "lint": "yarn workspaces foreach --worktree --parallel --verbose --interlaced --no-private run lint && yarn lint:dependencies",
+    "lint:ci": "yarn lint:eslint && yarn lint:misc --check",
+    "lint:dependencies": "depcheck",
+    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" \"!packages/**\" --ignore-path ../../.gitignore",
+    "since-latest-release": "../../scripts/since-latest-release.sh",
     "start": "yarn workspaces foreach --worktree --parallel --verbose --interlaced --no-private --jobs unlimited run start",
     "start:test": "yarn start",
-    "test": "yarn workspaces foreach --worktree --parallel --verbose --interlaced --no-private run test",
-    "lint": "yarn workspaces foreach --worktree --parallel --verbose --interlaced --no-private run lint && yarn lint:dependencies",
-    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
-    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" \"!packages/**\" --ignore-path ../../.gitignore",
-    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
-    "lint:ci": "yarn lint:eslint && yarn lint:misc --check",
-    "lint:changelogs": "yarn workspaces foreach --worktree --parallel --verbose run lint:changelog",
-    "lint:dependencies": "depcheck"
+    "test": "jest --reporters=jest-silent-reporter",
+    "test:clean": "jest --clearCache",
+    "test:post": "jest-it-up",
+    "test:verbose": "jest --verbose",
+    "test:watch": "jest --watch"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^3.0.4",
@@ -44,8 +61,9 @@
     "eslint-plugin-n": "^15.7.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-promise": "^6.1.1",
-    "prettier": "^2.7.1",
-    "prettier-plugin-packagejson": "^2.2.11",
+    "jest-silent-reporter": "^0.6.0",
+    "prettier": "^2.8.8",
+    "prettier-plugin-packagejson": "^2.5.2",
     "ts-node": "^10.9.1",
     "typescript": "~5.3.3"
   },

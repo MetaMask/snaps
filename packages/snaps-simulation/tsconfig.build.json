@@ -1,0 +1,33 @@
+{
+  "extends": "../../tsconfig.packages.build.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": ["./src"],
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "./src/**/test-utils",
+    "./src/**/__mocks__",
+    "./src/**/__snapshots__"
+  ],
+  "references": [
+    {
+      "path": "../snaps-controllers/tsconfig.build.json"
+    },
+    {
+      "path": "../snaps-execution-environments/tsconfig.build.json"
+    },
+    {
+      "path": "../snaps-rpc-methods/tsconfig.build.json"
+    },
+    {
+      "path": "../snaps-sdk/tsconfig.build.json"
+    },
+    {
+      "path": "../snaps-utils/tsconfig.build.json"
+    }
+  ]
+}

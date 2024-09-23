@@ -6,7 +6,7 @@ on:
       slack-channel:
         required: false
         type: string
-        default: 'metamask-snaps'
+        default: 'metamask-snaps-deployments'
       slack-icon-url:
         required: false
         type: string
@@ -100,7 +100,7 @@ jobs:
         with:
           slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
           subteam: ${{ inputs.slack-subteam }}
-          channel: metamask-snaps
+          channel: metamask-snaps-deployments
 
   npm-publish:
     name: Publish to NPM

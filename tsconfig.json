@@ -9,13 +9,16 @@
     { "path": "./packages/snaps-rollup-plugin" },
     { "path": "./packages/snaps-rpc-methods" },
     { "path": "./packages/snaps-sdk" },
+    { "path": "./packages/snaps-simulation" },
     { "path": "./packages/snaps-utils" },
     { "path": "./packages/snaps-webpack-plugin" }
   ],
   "compilerOptions": {
     "esModuleInterop": true,
     "noEmit": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "module": "Node16",
+    "moduleResolution": "Node16"
   },
   "files": [],
   "include": ["scripts"]

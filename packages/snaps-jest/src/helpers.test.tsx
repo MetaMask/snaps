@@ -1,16 +1,16 @@
 import { NodeProcessExecutionService } from '@metamask/snaps-controllers/node';
 import { DialogType } from '@metamask/snaps-sdk';
 import { Text } from '@metamask/snaps-sdk/jsx';
-import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
-
+import type { InstallSnapOptions } from '@metamask/snaps-simulation';
 import {
   assertIsAlertDialog,
   assertIsConfirmationDialog,
   assertIsPromptDialog,
-  installSnap,
-} from './helpers';
-import type { InstallSnapOptions } from './internals';
-import { handleInstallSnap } from './internals';
+  installSnap as simulateSnap,
+} from '@metamask/snaps-simulation';
+import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
+
+import { installSnap } from './helpers';
 import { getMockServer } from './test-utils';
 
 describe('installSnap', () => {
@@ -18,7 +18,7 @@ describe('installSnap', () => {
     Object.defineProperty(global, 'snapsEnvironment', {
       writable: true,
       value: {
-        installSnap: handleInstallSnap,
+        installSnap: simulateSnap,
       },
     });
   });
@@ -215,7 +215,7 @@ describe('installSnap', () => {
       writable: true,
       value: {
         installSnap: async (_: string, options: InstallSnapOptions<any>) => {
-          return handleInstallSnap(snapId, options);
+          return simulateSnap(snapId, options);
         },
       },
     });
@@ -260,7 +260,7 @@ describe('installSnap', () => {
       writable: true,
       value: {
         installSnap: async (_: string, options: InstallSnapOptions<any>) => {
-          return handleInstallSnap(snapId, options);
+          return simulateSnap(snapId, options);
         },
       },
     });
@@ -409,6 +409,7 @@ describe('installSnap', () => {
         typeInField: expect.any(Function),
         selectInDropdown: expect.any(Function),
         selectFromRadioGroup: expect.any(Function),
+        selectFromSelector: expect.any(Function),
         uploadFile: expect.any(Function),
         ok: expect.any(Function),
         cancel: expect.any(Function),
@@ -470,6 +471,7 @@ describe('installSnap', () => {
         typeInField: expect.any(Function),
         selectInDropdown: expect.any(Function),
         selectFromRadioGroup: expect.any(Function),
+        selectFromSelector: expect.any(Function),
         uploadFile: expect.any(Function),
         ok: expect.any(Function),
         cancel: expect.any(Function),
@@ -531,6 +533,7 @@ describe('installSnap', () => {
         typeInField: expect.any(Function),
         selectInDropdown: expect.any(Function),
         selectFromRadioGroup: expect.any(Function),
+        selectFromSelector: expect.any(Function),
         uploadFile: expect.any(Function),
         ok: expect.any(Function),
       });
