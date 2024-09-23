@@ -10,7 +10,7 @@ export type WebViewInterface = {
   unregisterMessageListener(listener: (event: PostMessageEvent) => void): void;
 };
 
-type WebViewStreamArgs = {
+export type WebViewStreamArgs = {
   name: string;
   target: string;
   getWebView: () => Promise<WebViewInterface>;
@@ -19,7 +19,6 @@ type WebViewStreamArgs = {
 /**
  * A special postMessage stream used to interface with a WebView.
  */
-
 export class WebViewMessageStream extends BasePostMessageStream {
   #name;
 

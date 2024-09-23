@@ -554,6 +554,30 @@ describe('validateLink', () => {
     expect(fn).toHaveBeenCalledWith('bar.com');
   });
 
+  it('passes for a valid list of emails', () => {
+    const fn = jest.fn().mockReturnValue(false);
+
+    expect(() =>
+      validateLink('mailto:foo@bar.com,bar@baz.com,baz@qux.com', fn),
+    ).not.toThrow();
+
+    expect(fn).toHaveBeenCalledTimes(3);
+    expect(fn).toHaveBeenCalledWith('bar.com');
+    expect(fn).toHaveBeenCalledWith('baz.com');
+    expect(fn).toHaveBeenCalledWith('qux.com');
+  });
+
+  it('passes for a valid email with a parameter', () => {
+    const fn = jest.fn().mockReturnValue(false);
+
+    expect(() =>
+      validateLink('mailto:foo@bar.com?subject=Subject', fn),
+    ).not.toThrow();
+
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).toHaveBeenCalledWith('bar.com');
+  });
+
   it('throws an error for an invalid protocol', () => {
     const fn = jest.fn().mockReturnValue(false);
 
@@ -607,6 +631,44 @@ describe('validateLink', () => {
     ).toThrow('Invalid URL: The specified URL is not allowed.');
 
     expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).toHaveBeenCalledWith('test.metamask-phishing.io');
+  });
+
+  it('throws an error for a phishing email when using multiple emails', () => {
+    const fn = jest.fn().mockImplementation((email) => {
+      if (email === 'test.metamask-phishing.io') {
+        return true;
+      }
+
+      return false;
+    });
+
+    expect(() =>
+      validateLink('mailto:foo@test.metamask-phishing.io,foo@bar.com', fn),
+    ).toThrow('Invalid URL: The specified URL is not allowed.');
+
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).toHaveBeenCalledWith('test.metamask-phishing.io');
+  });
+
+  it('throws an error for a phishing email when using parameters', () => {
+    const fn = jest.fn().mockImplementation((email) => {
+      if (email === 'test.metamask-phishing.io') {
+        return true;
+      }
+
+      return false;
+    });
+
+    expect(() =>
+      validateLink(
+        'mailto:foo@bar.com,foo@test.metamask-phishing.io?subject=Subject',
+        fn,
+      ),
+    ).toThrow('Invalid URL: The specified URL is not allowed.');
+
+    expect(fn).toHaveBeenCalledTimes(2);
+    expect(fn).toHaveBeenCalledWith('bar.com');
     expect(fn).toHaveBeenCalledWith('test.metamask-phishing.io');
   });
 });

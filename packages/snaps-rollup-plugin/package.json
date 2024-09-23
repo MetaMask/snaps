@@ -1,14 +1,23 @@
 {
   "name": "@metamask/snaps-rollup-plugin",
   "version": "4.1.2",
+  "description": "A Rollup plugin to build MetaMask Snaps with Rollup",
   "keywords": [
-    "rollup",
-    "rollup-plugin"
+    "MetaMask",
+    "Snaps",
+    "Ethereum",
+    "Rollup",
+    "Plugin"
   ],
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/snaps-rollup-plugin#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/snaps/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
   },
+  "license": "ISC",
   "sideEffects": false,
   "exports": {
     ".": {
@@ -30,7 +39,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "ts-bridge --project tsconfig.build.json --verbose --no-references",
+    "build": "ts-bridge --project tsconfig.build.json --verbose --clean --no-references",
     "changelog:update": "../../scripts/update-changelog.sh @metamask/snaps-rollup-plugin",
     "changelog:validate": "../../scripts/validate-changelog.sh @metamask/snaps-rollup-plugin",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn changelog:validate && yarn lint:dependencies",
@@ -40,9 +49,12 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
     "publish:preview": "yarn npm publish --tag preview",
-    "test": "jest && yarn posttest",
-    "posttest": "jest-it-up",
-    "test:ci": "yarn test"
+    "since-latest-release": "../../scripts/since-latest-release.sh",
+    "test": "jest --reporters=jest-silent-reporter",
+    "test:clean": "jest --clearCache",
+    "test:post": "jest-it-up",
+    "test:verbose": "jest --verbose",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@metamask/snaps-utils": "workspace:^"
@@ -73,6 +85,7 @@
     "eslint-plugin-promise": "^6.1.1",
     "jest": "^29.0.2",
     "jest-it-up": "^2.0.0",
+    "jest-silent-reporter": "^0.6.0",
     "memfs": "^3.4.13",
     "prettier": "^2.8.8",
     "prettier-plugin-packagejson": "^2.5.2",
