@@ -342,10 +342,23 @@ export function validateLink(
       `Protocol must be one of: ${ALLOWED_PROTOCOLS.join(', ')}.`,
     );
 
-    const hostname =
-      url.protocol === 'mailto:' ? url.pathname.split('@')[1] : url.hostname;
+    if (url.protocol === 'mailto:') {
+      const emails = url.pathname.split(',');
+      for (const email of emails) {
+        const hostname = email.split('@')[1];
+        assert(
+          !isOnPhishingList(hostname),
+          'The specified URL is not allowed.',
+        );
+      }
 
-    assert(!isOnPhishingList(hostname), 'The specified URL is not allowed.');
+      return;
+    }
+
+    assert(
+      !isOnPhishingList(url.hostname),
+      'The specified URL is not allowed.',
+    );
   } catch (error) {
     throw new Error(
       `Invalid URL: ${
