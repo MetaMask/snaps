@@ -23,13 +23,17 @@ export const onNameLookup: OnNameLookupHandler = async (request) => {
   if (domain) {
     const resolutions = {
       fooBar: '0xc0ffee254729296a45a3885639AC7E10F9d54979',
-      bar: '0x0000000000000000000000000000000000000000',
+      bartholemew: '0x0000000000000000000000000000000000000000',
       barstool: '0x1234567890123456789012345678901234567890',
     };
 
     const getResolution = (domainName: string) => {
       if (resolutions[domainName]) {
-        return { resolvedAddress: resolutions[domainName], domainName };
+        return {
+          resolvedAddress: resolutions[domainName],
+          domainName,
+          protocol: 'test protocol',
+        };
       }
       const entries = Object.entries(resolutions);
       for (const [key, value] of entries) {
