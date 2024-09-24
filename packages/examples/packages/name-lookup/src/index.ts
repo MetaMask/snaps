@@ -23,7 +23,7 @@ export const onNameLookup: OnNameLookupHandler = async (request) => {
   if (domain) {
     const resolutions = {
       fooBar: '0xc0ffee254729296a45a3885639AC7E10F9d54979',
-      bartholemew: '0x0000000000000000000000000000000000000000',
+      bar: '0x0000000000000000000000000000000000000000',
       barstool: '0x1234567890123456789012345678901234567890',
     };
 
