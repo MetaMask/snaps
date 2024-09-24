@@ -255,8 +255,7 @@ describe('snap_notify', () => {
         getValidatedParams(
           {
             type: NotificationType.Native,
-            message:
-              'test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg',
+            message: 'test'.repeat(20),
           },
           isOnPhishingList,
         ),
@@ -271,8 +270,7 @@ describe('snap_notify', () => {
         getValidatedParams(
           {
             type: NotificationType.InApp,
-            message:
-              'test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg_test_msg',
+            message: 'test'.repeat(150),
           },
           isOnPhishingList,
         ),
