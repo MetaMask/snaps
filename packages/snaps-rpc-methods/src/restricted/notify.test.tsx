@@ -437,7 +437,7 @@ describe('snap_notify', () => {
           },
         }),
       ).rejects.toThrow(
-        'Invalid URL: Protocol must be one of: https:, mailto:.',
+        'Invalid params: Invalid URL: Protocol must be one of: https:, mailto:, metamask:.',
       );
     });
 
