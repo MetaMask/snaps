@@ -1,7 +1,7 @@
 {
   "name": "@metamask/test-snaps",
   "short_name": "@metamask/test-snaps",
-  "description": "The test snaps website for MetaMask Snaps, used for end-to-end testing.",
+  "description": "The test snaps website for MetaMask Snaps, used for end-to-end testing",
   "dir": "auto",
   "lang": "en-US",
   "display": "standalone",
