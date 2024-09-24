@@ -42,7 +42,7 @@ export const NpmSnapPackageJsonStruct = type({
   name: NameStruct,
   main: optional(size(string(), 1, Infinity)),
   repository: optional(
-    object({
+    type({
       type: size(string(), 1, Infinity),
       url: size(string(), 1, Infinity),
     }),
