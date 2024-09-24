@@ -133,6 +133,5 @@
       "vite>esbuild": true,
       "tsx>esbuild": true
     }
-  },
-  "packageManager": "yarn@4.4.1"
+  }
 }

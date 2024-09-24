@@ -24,7 +24,6 @@ export function parseMetaMaskUrl(str: string): {
   snapId?: SnapId;
   path: string;
 } {
-  const baseErrorMessage = 'Invalid MetaMask url:';
   const url = new URL(str);
   const { hostname: authority, pathname: path, protocol } = url;
   if (protocol !== 'metamask:') {
@@ -43,28 +42,27 @@ export function parseMetaMaskUrl(str: string): {
         path,
       };
     case 'snap':
-      return parseSnapPath(path, baseErrorMessage);
+      return parseSnapPath(path);
     default:
-      throw new Error(`${baseErrorMessage} invalid authority.`);
+      throw new Error(
+        `Expected "metamask:" URL to start with "client" or "snap", but received "${authority}".`,
+      );
   }
 }
 
 /**
- * Parses a snap path and throws if it is invalid, returns an object with link data otherwise.
+ * Parse a snap path and throws if it is invalid, returns an object with link data otherwise.
  *
  * @param path - The snap path to be parsed.
- * @param baseErrorMessage - The base error message to throw.
  * @returns A parsed url object.
  * @throws If the path or Snap id is invalid.
  */
-function parseSnapPath(
-  path: string,
-  baseErrorMessage: string,
-): {
+function parseSnapPath(path: string): {
   authority: Authority;
   snapId: SnapId;
   path: string;
 } {
+  const baseErrorMessage = 'Invalid MetaMask url:';
   const strippedPath = stripSnapPrefix(path.slice(1));
   const location = path.slice(1).startsWith('npm:') ? 'npm:' : 'local:';
   const isNameSpaced = strippedPath.startsWith('@');
