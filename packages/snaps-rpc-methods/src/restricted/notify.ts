@@ -16,6 +16,7 @@ import {
   createUnion,
   validateLink,
   validateTextLinks,
+  type Snap,
 } from '@metamask/snaps-utils';
 import type { InferMatching } from '@metamask/snaps-utils';
 import { object, string } from '@metamask/superstruct';
@@ -93,6 +94,7 @@ export type NotifyMethodHooks = {
     origin: string,
     content: NotificationComponent,
   ) => Promise<string>;
+  getSnap: (snapId: string) => Snap | undefined;
 };
 
 type SpecificationBuilderOptions = {
@@ -136,6 +138,7 @@ const methodHooks: MethodHooksObject<NotifyMethodHooks> = {
   isOnPhishingList: true,
   maybeUpdatePhishingList: true,
   createInterface: true,
+  getSnap: true,
 };
 
 export const notifyBuilder = Object.freeze({
@@ -153,6 +156,7 @@ export const notifyBuilder = Object.freeze({
  * @param hooks.isOnPhishingList - A function that checks for links against the phishing list.
  * @param hooks.maybeUpdatePhishingList - A function that updates the phishing list if needed.
  * @param hooks.createInterface - A function that creates the interface in SnapInterfaceController.
+ * @param hooks.getSnap - A function that checks if a snap is installed.
  * @returns The method implementation which returns `null` on success.
  * @throws If the params are invalid.
  */
@@ -162,6 +166,7 @@ export function getImplementation({
   isOnPhishingList,
   maybeUpdatePhishingList,
   createInterface,
+  getSnap,
 }: NotifyMethodHooks) {
   return async function implementation(
     args: RestrictedMethodOptions<NotifyParams>,
@@ -173,7 +178,11 @@ export function getImplementation({
 
     await maybeUpdatePhishingList();
 
-    const validatedParams = getValidatedParams(params, isOnPhishingList);
+    const validatedParams = getValidatedParams(
+      params,
+      isOnPhishingList,
+      getSnap,
+    );
 
     let id;
     if (hasProperty(validatedParams, 'content')) {
@@ -203,12 +212,14 @@ export function getImplementation({
  *
  * @param params - The unvalidated params object from the method request.
  * @param isOnPhishingList - The function that checks for links against the phishing list.
+ * @param getSnap - A function that checks if a snap is installed.
  * @returns The validated method parameter object.
  * @throws If the params are invalid.
  */
 export function getValidatedParams(
   params: unknown,
   isOnPhishingList: NotifyMethodHooks['isOnPhishingList'],
+  getSnap: NotifyMethodHooks['getSnap'],
 ): NotifyParams {
   if (!isObject(params)) {
     throw rpcErrors.invalidParams({
@@ -257,11 +268,15 @@ export function getValidatedParams(
       'type',
     );
 
-    validateTextLinks(validatedParams.message, isOnPhishingList);
+    validateTextLinks(validatedParams.message, isOnPhishingList, getSnap);
 
     if (hasProperty(validatedParams, 'footerLink')) {
-      validateTextLinks(validatedParams.footerLink.text, isOnPhishingList);
-      validateLink(validatedParams.footerLink.href, isOnPhishingList);
+      validateTextLinks(
+        validatedParams.footerLink.text,
+        isOnPhishingList,
+        getSnap,
+      );
+      validateLink(validatedParams.footerLink.href, isOnPhishingList, getSnap);
     }
 
     return validatedParams;

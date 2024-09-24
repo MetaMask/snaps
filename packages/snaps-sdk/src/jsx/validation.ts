@@ -612,7 +612,7 @@ export const HeadingStruct: Describe<HeadingElement> = element('Heading', {
  */
 export const LinkStruct: Describe<LinkElement> = element('Link', {
   href: string(),
-  children: children([FormattingStruct, string()]),
+  children: children([FormattingStruct, string(), IconStruct, ImageStruct]),
 });
 
 /**
