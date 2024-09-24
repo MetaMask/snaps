@@ -991,12 +991,14 @@ describe('ImageStruct', () => {
 });
 
 describe('LinkStruct', () => {
-  it.each([<Link href="https://example.com">foo</Link>])(
-    'validates a link element',
-    (value) => {
-      expect(is(value, LinkStruct)).toBe(true);
-    },
-  );
+  it.each([
+    <Link href="https://example.com">foo</Link>,
+    <Link href="metamask://client/">
+      <Icon name="arrow-left" size="md" />
+    </Link>,
+  ])('validates a link element', (value) => {
+    expect(is(value, LinkStruct)).toBe(true);
+  });
 
   it.each([
     'foo',
