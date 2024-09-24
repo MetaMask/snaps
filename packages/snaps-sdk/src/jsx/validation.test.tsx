@@ -68,6 +68,7 @@ import {
   IconStruct,
   SelectorStruct,
   SectionStruct,
+  NotificationComponentsStruct,
 } from './validation';
 
 describe('KeyStruct', () => {
@@ -543,6 +544,87 @@ describe('BoxStruct', () => {
   });
 });
 
+describe('NotificationComponentsStruct', () => {
+  it.each([
+    <Box>
+      <Text>foo</Text>
+    </Box>,
+    <Box>
+      <Text>foo</Text>
+      <Text>bar</Text>
+    </Box>,
+    <Box>
+      <Text>foo</Text>
+      <Row label="label">
+        <Image src="<svg />" alt="alt" />
+      </Row>
+    </Box>,
+    <Box direction="horizontal" alignment="space-between">
+      <Text>foo</Text>
+      <Row label="label">
+        <Image src="<svg />" alt="alt" />
+      </Row>
+    </Box>,
+    <Box direction="horizontal">
+      <Text>foo</Text>
+      <Row label="label">
+        <Image src="<svg />" alt="alt" />
+      </Row>
+    </Box>,
+    <Box>
+      <Text>Foo</Text>
+      {[1, 2, 3, 4, 5].map((value) => (
+        <Text>{value.toString()}</Text>
+      ))}
+    </Box>,
+    <Text>foo</Text>,
+    <Row label="label">
+      <Image src="<svg />" alt="alt" />
+    </Row>,
+  ])(
+    "validates content returned for a notification's detailed view",
+    (value) => {
+      expect(is(value, NotificationComponentsStruct)).toBe(true);
+    },
+  );
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <Box direction="foo">
+      <Text>foo</Text>
+      <Row label="label">
+        <Image src="<svg />" alt="alt" />
+      </Row>
+    </Box>,
+    // @ts-expect-error - Invalid props.
+    <Box direction="vertical" alignment="foo">
+      <Text>foo</Text>
+      <Row label="label">
+        <Image src="<svg />" alt="alt" />
+      </Row>
+    </Box>,
+    <Box>
+      <Form name="my-form">
+        <Field label="Username">
+          <Input name="username" type="text" />
+        </Field>
+        <Button type="submit">Submit</Button>
+      </Form>
+    </Box>,
+    <Box>
+      <Value extra="foo" value="bar" />
+    </Box>,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, NotificationComponentsStruct)).toBe(false);
+  });
+});
+
 describe('FooterStruct', () => {
   it.each([
     <Footer>
@@ -991,12 +1073,14 @@ describe('ImageStruct', () => {
 });
 
 describe('LinkStruct', () => {
-  it.each([<Link href="https://example.com">foo</Link>])(
-    'validates a link element',
-    (value) => {
-      expect(is(value, LinkStruct)).toBe(true);
-    },
-  );
+  it.each([
+    <Link href="https://example.com">foo</Link>,
+    <Link href="metamask://client/">
+      <Icon name="arrow-left" size="md" />
+    </Link>,
+  ])('validates a link element', (value) => {
+    expect(is(value, LinkStruct)).toBe(true);
+  });
 
   it.each([
     'foo',
