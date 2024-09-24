@@ -1,3 +1,4 @@
+import { type EnumToUnion } from '../../internals';
 import type {
   AddressElement,
   BoldElement,
@@ -12,9 +13,7 @@ import type {
   TextElement,
   TooltipElement,
   ValueElement,
-} from 'src/jsx';
-
-import { type EnumToUnion } from '../../internals';
+} from '../../jsx';
 
 /**
  * The types of notifications that can be displayed.
