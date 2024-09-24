@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- Allow for `metamask:` schemed URLs ([#2719](https://github.com/MetaMask/snaps/pull/2719))
+
 ## [9.8.0]
 
 ### Added
