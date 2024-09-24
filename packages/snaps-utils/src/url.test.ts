@@ -46,7 +46,7 @@ describe('parseMetaMaskUrl', () => {
 
   it('will throw on an invalid authority', () => {
     expect(() => parseMetaMaskUrl('metamask://bar/')).toThrow(
-      'Invalid MetaMask url: invalid authority.',
+      'Expected "metamask:" URL to start with "client" or "snap", but received "bar".',
     );
   });
 
