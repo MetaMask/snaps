@@ -9,17 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.3.0]
 
-### Uncategorized
+### Added
 
-- Set target to ES2022 and lib to ES2023 ([#2751](https://github.com/MetaMask/snaps/pull/2751))
-- Update Yarn constraints to use JavaScript-based constraints ([#2740](https://github.com/MetaMask/snaps/pull/2740))
-- Update metadata for all packages ([#2748](https://github.com/MetaMask/snaps/pull/2748))
-- Add `since-latest-release` script to match `MetaMask/core` ([#2744](https://github.com/MetaMask/snaps/pull/2744))
-- Update test scripts to match `MetaMask/core` ([#2745](https://github.com/MetaMask/snaps/pull/2745))
-- Fix linting of `package.json` files ([#2742](https://github.com/MetaMask/snaps/pull/2742))
-- Update changelog validation scripts to match `MetaMask/core` ([#2741](https://github.com/MetaMask/snaps/pull/2741))
-- Fix from > to in interactive-ui example ([#2733](https://github.com/MetaMask/snaps/pull/2733))
-- Add example for Selector UI component ([#2724](https://github.com/MetaMask/snaps/pull/2724))
+- Add example for `Selector` component ([#2724](https://github.com/MetaMask/snaps/pull/2724))
+
+### Fixed
+
+- Fix wrong address being shown on transaction insights ([#2733](https://github.com/MetaMask/snaps/pull/2733))
 
 ## [2.2.1]
 
