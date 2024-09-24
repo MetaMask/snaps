@@ -25,6 +25,7 @@ import { assert } from '@metamask/utils';
 import { castDraft } from 'immer';
 import { nanoid } from 'nanoid';
 
+import type { GetSnap } from '../snaps';
 import {
   constructState,
   getJsxInterface,
@@ -74,7 +75,8 @@ export type SnapInterfaceControllerAllowedActions =
   | TestOrigin
   | MaybeUpdateState
   | HasApprovalRequest
-  | AcceptRequest;
+  | AcceptRequest
+  | GetSnap;
 
 export type SnapInterfaceControllerActions =
   | CreateInterface
@@ -379,6 +381,10 @@ export class SnapInterfaceController extends BaseController<
     );
 
     await this.#triggerPhishingListUpdate();
-    validateJsxLinks(element, this.#checkPhishingList.bind(this));
+    validateJsxLinks(
+      element,
+      this.#checkPhishingList.bind(this),
+      (id: string) => this.messagingSystem.call('SnapController:get', id),
+    );
   }
 }
