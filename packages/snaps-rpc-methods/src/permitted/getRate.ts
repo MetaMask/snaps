@@ -62,7 +62,7 @@ export type GetRateParameters = InferMatching<
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
  * @param hooks.getRate - The function to get the rate.
- * @returns Noting.
+ * @returns Nothing.
  */
 function getGetRateImplementation(
   req: JsonRpcRequest<GetRateParameters>,
