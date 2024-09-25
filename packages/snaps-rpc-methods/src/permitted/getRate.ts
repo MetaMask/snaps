@@ -26,9 +26,9 @@ const hookNames: MethodHooksObject<GetRateMethodHooks> = {
 
 export type GetRateMethodHooks = {
   /**
-   * @param cryptocurrency - The cryptocurrency ticker of the rate to get.
+   * @param cryptocurrency - The cryptocurrency symbol.
    * Currently only 'btc' is supported.
-   * @returns The rate object.
+   * @returns The {@link Rate} object.
    */
   getRate: (cryptocurrency: Cryptocurrency) => Rate | undefined;
 };
