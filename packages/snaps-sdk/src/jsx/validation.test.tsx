@@ -1010,7 +1010,7 @@ describe('SelectorStruct', () => {
 });
 
 describe('HeadingStruct', () => {
-  it.each([<Heading>Hello</Heading>])(
+  it.each([<Heading>Hello</Heading>, <Heading size="lg">Hello</Heading>])(
     'validates a heading element',
     (value) => {
       expect(is(value, HeadingStruct)).toBe(true);

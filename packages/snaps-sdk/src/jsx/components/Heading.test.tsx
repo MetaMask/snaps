@@ -41,4 +41,17 @@ describe('Heading', () => {
       },
     });
   });
+
+  it('renders a heading with a `lg` size', () => {
+    const result = <Heading size="lg">Foo</Heading>;
+
+    expect(result).toStrictEqual({
+      type: 'Heading',
+      key: null,
+      props: {
+        children: 'Foo',
+        size: 'lg',
+      },
+    });
+  });
 });

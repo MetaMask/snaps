@@ -605,6 +605,7 @@ export const ValueStruct: Describe<ValueElement> = element('Value', {
  */
 export const HeadingStruct: Describe<HeadingElement> = element('Heading', {
   children: StringElementStruct,
+  size: optional(nullUnion([literal('md'), literal('lg')])),
 });
 
 /**
