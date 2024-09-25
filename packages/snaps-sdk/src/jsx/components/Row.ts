@@ -1,6 +1,7 @@
 import { createSnapComponent } from '../component';
 import type { AddressElement } from './Address';
 import type { ImageElement } from './Image';
+import type { LinkElement } from './Link';
 import type { TextElement } from './Text';
 import type { ValueElement } from './Value';
 
@@ -11,7 +12,8 @@ export type RowChildren =
   | AddressElement
   | ImageElement
   | TextElement
-  | ValueElement;
+  | ValueElement
+  | LinkElement;
 
 /**
  * The props of the {@link Row} component.

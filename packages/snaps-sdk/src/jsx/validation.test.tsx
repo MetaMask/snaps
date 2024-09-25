@@ -1078,6 +1078,9 @@ describe('LinkStruct', () => {
     <Link href="metamask://client/">
       <Icon name="arrow-left" size="md" />
     </Link>,
+    <Link href="https://example.com">
+      <Address address="0x1234567890123456789012345678901234567890" />
+    </Link>,
   ])('validates a link element', (value) => {
     expect(is(value, LinkStruct)).toBe(true);
   });
@@ -1099,6 +1102,11 @@ describe('LinkStruct', () => {
     </Box>,
     <Row label="label">
       <Image src="<svg />" alt="alt" />
+    </Row>,
+    <Row label="label">
+      <Link href="https://example.com">
+        <Address address="0x1234567890123456789012345678901234567890" />
+      </Link>
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, LinkStruct)).toBe(false);
