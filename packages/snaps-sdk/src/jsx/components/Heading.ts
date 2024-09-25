@@ -5,6 +5,7 @@ import { createSnapComponent } from '../component';
  * The props of the {@link Heading} component.
  *
  * @property children - The text to display in the heading.
+ * @property size - The size of the heading.
  */
 type HeadingProps = {
   children: StringElement;
