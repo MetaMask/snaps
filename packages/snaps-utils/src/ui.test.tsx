@@ -811,6 +811,21 @@ describe('validateJsxLinks', () => {
     ).not.toThrow();
   });
 
+  it('does not throw for an Address component with a link', async () => {
+    const isOnPhishingList = () => false;
+
+    expect(() =>
+      validateJsxLinks(
+        <Address
+          address="0x4bbeeb066ed09b7aed07bf39eee0460dfa261520"
+          href="https://foo.bar"
+        />,
+        isOnPhishingList,
+        jest.fn(),
+      ),
+    ).not.toThrow();
+  });
+
   it('does not throw for a JSX component with a link outside of a Link component', async () => {
     const isOnPhishingList = () => true;
 

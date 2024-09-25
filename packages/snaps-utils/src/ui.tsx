@@ -405,7 +405,7 @@ export function validateTextLinks(
 }
 
 /**
- * Walk a JSX tree and validate each {@link LinkElement} node against the
+ * Walk a JSX tree and validate each {@link LinkElement} node or {@link AddressElement} with the href prop set against the
  * phishing list.
  *
  * @param node - The JSX node to walk.
@@ -419,11 +419,12 @@ export function validateJsxLinks(
   getSnap: (id: string) => Snap | undefined,
 ) {
   walkJsx(node, (childNode) => {
-    if (childNode.type !== 'Link') {
-      return;
+    if (
+      childNode.type === 'Link' ||
+      (childNode.type === 'Address' && childNode.props.href)
+    ) {
+      validateLink(childNode.props.href as string, isOnPhishingList, getSnap);
     }
-
-    validateLink(childNode.props.href, isOnPhishingList, getSnap);
   });
 }
 
