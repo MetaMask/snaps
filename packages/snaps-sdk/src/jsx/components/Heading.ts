@@ -8,6 +8,7 @@ import { createSnapComponent } from '../component';
  */
 type HeadingProps = {
   children: StringElement;
+  size?: 'md' | 'lg' | undefined;
 };
 
 const TYPE = 'Heading';
@@ -17,9 +18,12 @@ const TYPE = 'Heading';
  *
  * @param props - The props of the component.
  * @param props.children - The text to display in the heading.
+ * @param props.size - The size of the heading.
  * @returns A heading element.
  * @example
  * <Heading>Hello world!</Heading>
+ * @example
+ * <Heading size="lg">Hello world!</Heading>
  */
 export const Heading = createSnapComponent<HeadingProps, typeof TYPE>(TYPE);
 

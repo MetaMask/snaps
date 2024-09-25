@@ -39,6 +39,8 @@ const TYPE = 'Text';
  * A text component, which is used to display text.
  *
  * @param props - The props of the component.
+ * @param props.alignment - The alignment of the text.
+ * @param props.color - The color of the text.
  * @param props.children - The text to display.
  * @returns A text element.
  * @example
