@@ -2,9 +2,9 @@ import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
-  Cryptocurrency,
-  GetRateParams,
-  GetRateResult,
+  Currency,
+  GetCurrencyRateParams,
+  GetCurrencyRateResult,
   JsonRpcRequest,
   Rate,
 } from '@metamask/snaps-sdk';
@@ -20,40 +20,40 @@ import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
 
-const hookNames: MethodHooksObject<GetRateMethodHooks> = {
-  getRate: true,
+const hookNames: MethodHooksObject<GetCurrencyRateMethodHooks> = {
+  getCurrencyRate: true,
 };
 
-export type GetRateMethodHooks = {
+export type GetCurrencyRateMethodHooks = {
   /**
-   * @param cryptocurrency - The cryptocurrency symbol.
+   * @param currency - The currency symbol.
    * Currently only 'btc' is supported.
    * @returns The {@link Rate} object.
    */
-  getRate: (cryptocurrency: Cryptocurrency) => Rate | undefined;
+  getCurrencyRate: (currency: Currency) => Rate | undefined;
 };
 
-export const getRateHandler: PermittedHandlerExport<
-  GetRateMethodHooks,
-  GetRateParameters,
-  GetRateResult
+export const getCurrencyRateHandler: PermittedHandlerExport<
+  GetCurrencyRateMethodHooks,
+  GetCurrencyRateParameters,
+  GetCurrencyRateResult
 > = {
-  methodNames: ['snap_getRate'],
-  implementation: getGetRateImplementation,
+  methodNames: ['snap_getCurrencyRate'],
+  implementation: getGetCurrencyRateImplementation,
   hookNames,
 };
 
-const GetRateParametersStruct = object({
-  cryptocurrency: union([literal('btc')]),
+const GetCurrencyRateParametersStruct = object({
+  currency: union([literal('btc')]),
 });
 
-export type GetRateParameters = InferMatching<
-  typeof GetRateParametersStruct,
-  GetRateParams
+export type GetCurrencyRateParameters = InferMatching<
+  typeof GetCurrencyRateParametersStruct,
+  GetCurrencyRateParams
 >;
 
 /**
- * The `snap_getRate` method implementation.
+ * The `snap_getCurrencyRate` method implementation.
  *
  * @param req - The JSON-RPC request object.
  * @param res - The JSON-RPC response object.
@@ -61,24 +61,24 @@ export type GetRateParameters = InferMatching<
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
- * @param hooks.getRate - The function to get the rate.
+ * @param hooks.getCurrencyRate - The function to get the rate.
  * @returns Nothing.
  */
-function getGetRateImplementation(
-  req: JsonRpcRequest<GetRateParameters>,
-  res: PendingJsonRpcResponse<GetRateResult>,
+function getGetCurrencyRateImplementation(
+  req: JsonRpcRequest<GetCurrencyRateParameters>,
+  res: PendingJsonRpcResponse<GetCurrencyRateResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { getRate }: GetRateMethodHooks,
+  { getCurrencyRate }: GetCurrencyRateMethodHooks,
 ): void {
   const { params } = req;
 
   try {
     const validatedParams = getValidatedParams(params);
 
-    const { cryptocurrency } = validatedParams;
+    const { currency } = validatedParams;
 
-    res.result = getRate(cryptocurrency) ?? null;
+    res.result = getCurrencyRate(currency) ?? null;
   } catch (error) {
     return end(error);
   }
@@ -87,15 +87,15 @@ function getGetRateImplementation(
 }
 
 /**
- * Validate the getRate method `params` and returns them cast to the correct
+ * Validate the getCurrencyRate method `params` and returns them cast to the correct
  * type. Throws if validation fails.
  *
  * @param params - The unvalidated params object from the method request.
- * @returns The validated getRate method parameter object.
+ * @returns The validated getCurrencyRate method parameter object.
  */
-function getValidatedParams(params: unknown): GetRateParameters {
+function getValidatedParams(params: unknown): GetCurrencyRateParameters {
   try {
-    return create(params, GetRateParametersStruct);
+    return create(params, GetCurrencyRateParametersStruct);
   } catch (error) {
     if (error instanceof StructError) {
       throw rpcErrors.invalidParams({

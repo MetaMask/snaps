@@ -1,43 +1,43 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
-import { type GetRateResult } from '@metamask/snaps-sdk';
+import { type GetCurrencyRateResult } from '@metamask/snaps-sdk';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
-import type { GetRateParameters } from './getRate';
-import { getRateHandler } from './getRate';
+import type { GetCurrencyRateParameters } from './getCurrencyRate';
+import { getCurrencyRateHandler } from './getCurrencyRate';
 
-describe('snap_getRate', () => {
-  describe('getRateHandler', () => {
+describe('snap_getCurrencyRate', () => {
+  describe('getCurrencyRateHandler', () => {
     it('has the expected shape', () => {
-      expect(getRateHandler).toMatchObject({
-        methodNames: ['snap_getRate'],
+      expect(getCurrencyRateHandler).toMatchObject({
+        methodNames: ['snap_getCurrencyRate'],
         implementation: expect.any(Function),
         hookNames: {
-          getRate: true,
+          getCurrencyRate: true,
         },
       });
     });
   });
 
   describe('implementation', () => {
-    it('returns the result from the `getRate` hook', async () => {
-      const { implementation } = getRateHandler;
+    it('returns the result from the `getCurrencyRate` hook', async () => {
+      const { implementation } = getCurrencyRateHandler;
 
-      const getRate = jest.fn().mockReturnValue({
+      const getCurrencyRate = jest.fn().mockReturnValue({
         conversionRate: '1',
         conversionDate: 1,
         usdConversionRate: '1',
       });
 
       const hooks = {
-        getRate,
+        getCurrencyRate,
       };
 
       const engine = new JsonRpcEngine();
 
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<GetRateParameters>,
-          response as PendingJsonRpcResponse<GetRateResult>,
+          request as JsonRpcRequest<GetCurrencyRateParameters>,
+          response as PendingJsonRpcResponse<GetCurrencyRateResult>,
           next,
           end,
           hooks,
@@ -49,9 +49,9 @@ describe('snap_getRate', () => {
       const response = await engine.handle({
         jsonrpc: '2.0',
         id: 1,
-        method: 'snap_getRate',
+        method: 'snap_getCurrencyRate',
         params: {
-          cryptocurrency: 'btc',
+          currency: 'btc',
         },
       });
 
@@ -67,20 +67,20 @@ describe('snap_getRate', () => {
     });
 
     it('returns null if there is no rate available', async () => {
-      const { implementation } = getRateHandler;
+      const { implementation } = getCurrencyRateHandler;
 
-      const getRate = jest.fn().mockReturnValue(undefined);
+      const getCurrencyRate = jest.fn().mockReturnValue(undefined);
 
       const hooks = {
-        getRate,
+        getCurrencyRate,
       };
 
       const engine = new JsonRpcEngine();
 
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<GetRateParameters>,
-          response as PendingJsonRpcResponse<GetRateResult>,
+          request as JsonRpcRequest<GetCurrencyRateParameters>,
+          response as PendingJsonRpcResponse<GetCurrencyRateResult>,
           next,
           end,
           hooks,
@@ -92,9 +92,9 @@ describe('snap_getRate', () => {
       const response = await engine.handle({
         jsonrpc: '2.0',
         id: 1,
-        method: 'snap_getRate',
+        method: 'snap_getCurrencyRate',
         params: {
-          cryptocurrency: 'btc',
+          currency: 'btc',
         },
       });
 
@@ -106,24 +106,24 @@ describe('snap_getRate', () => {
     });
 
     it('throws on invalid params', async () => {
-      const { implementation } = getRateHandler;
+      const { implementation } = getCurrencyRateHandler;
 
-      const getRate = jest.fn().mockReturnValue({
+      const getCurrencyRate = jest.fn().mockReturnValue({
         conversionRate: '1',
         conversionDate: 1,
         usdConversionRate: '1',
       });
 
       const hooks = {
-        getRate,
+        getCurrencyRate,
       };
 
       const engine = new JsonRpcEngine();
 
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<GetRateParameters>,
-          response as PendingJsonRpcResponse<GetRateResult>,
+          request as JsonRpcRequest<GetCurrencyRateParameters>,
+          response as PendingJsonRpcResponse<GetCurrencyRateResult>,
           next,
           end,
           hooks,
@@ -135,9 +135,9 @@ describe('snap_getRate', () => {
       const response = await engine.handle({
         jsonrpc: '2.0',
         id: 1,
-        method: 'snap_getRate',
+        method: 'snap_getCurrencyRate',
         params: {
-          cryptocurrency: 'eth',
+          currency: 'eth',
         },
       });
 
@@ -145,7 +145,7 @@ describe('snap_getRate', () => {
         error: {
           code: -32602,
           message:
-            'Invalid params: At path: cryptocurrency -- Expected the value to satisfy a union of `literal`, but received: "eth".',
+            'Invalid params: At path: currency -- Expected the value to satisfy a union of `literal`, but received: "eth".',
           stack: expect.any(String),
         },
         id: 1,
