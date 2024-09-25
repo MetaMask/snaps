@@ -613,7 +613,13 @@ export const HeadingStruct: Describe<HeadingElement> = element('Heading', {
  */
 export const LinkStruct: Describe<LinkElement> = element('Link', {
   href: string(),
-  children: children([FormattingStruct, string(), IconStruct, ImageStruct]),
+  children: children([
+    FormattingStruct,
+    string(),
+    IconStruct,
+    ImageStruct,
+    AddressStruct,
+  ]),
 });
 
 /**
@@ -691,7 +697,13 @@ export const TooltipStruct: Describe<TooltipElement> = element('Tooltip', {
  */
 export const RowStruct: Describe<RowElement> = element('Row', {
   label: string(),
-  children: typedUnion([AddressStruct, ImageStruct, TextStruct, ValueStruct]),
+  children: typedUnion([
+    AddressStruct,
+    ImageStruct,
+    TextStruct,
+    ValueStruct,
+    LinkStruct,
+  ]),
   variant: optional(
     nullUnion([literal('default'), literal('warning'), literal('critical')]),
   ),
