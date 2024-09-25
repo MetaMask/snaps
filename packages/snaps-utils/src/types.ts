@@ -1,7 +1,6 @@
 import {
   instance,
   is,
-  object,
   optional,
   pattern,
   refine,
