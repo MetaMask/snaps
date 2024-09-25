@@ -7,9 +7,11 @@ import { createSnapComponent } from '../component';
  *
  * @property address - The (Ethereum) address to display. This should be a
  * valid Ethereum address, starting with `0x`, or a valid CAIP-10 address.
+ * @property href - The optional URL to link to.
  */
 export type AddressProps = {
   address: `0x${string}` | CaipAccountId;
+  href?: string | undefined;
 };
 
 const TYPE = 'Address';
@@ -22,6 +24,7 @@ const TYPE = 'Address';
  * @param props - The props of the component.
  * @param props.address - The address to display. This should be a
  * valid Ethereum address, starting with `0x`, or a valid CAIP-10 address.
+ * @param props.href - The optional URL to link to.
  * @returns An address element.
  * @example
  * <Address address="0x1234567890123456789012345678901234567890" />
@@ -29,6 +32,8 @@ const TYPE = 'Address';
  * <Address address="eip155:1:0x1234567890123456789012345678901234567890" />
  * @example
  * <Address address="bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6" />
+ * @example
+ * <Address address="0x1234567890123456789012345678901234567890" href="https://foo.bar" />
  */
 export const Address = createSnapComponent<AddressProps, typeof TYPE>(TYPE);
 
