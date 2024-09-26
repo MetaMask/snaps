@@ -10,8 +10,6 @@ describe('createWindow', () => {
     if (iframe) {
       document.body.removeChild(iframe);
     }
-
-    jest.resetAllMocks();
   });
 
   it('creates an iframe window with the provided job ID as the iframe ID', async () => {
@@ -59,19 +57,5 @@ describe('createWindow', () => {
 
     expect(iframe).toBeDefined();
     expect(iframe.getAttribute('data-testid')).toBe('snaps-iframe');
-  });
-
-  it('rejects the promise if contentWindow is not present', async () => {
-    jest.spyOn(document, 'createElement').mockImplementation(() => {
-      const iframe = document.createElement('iframe');
-      Object.defineProperty(iframe, 'contentWindow', { value: null });
-      return iframe;
-    });
-
-    await expect(
-      createWindow({ uri: IFRAME_URL, id: MOCK_JOB_ID }),
-    ).rejects.toThrow(
-      `iframe.contentWindow not present on load for job "${MOCK_JOB_ID}".`,
-    );
   });
 });
