@@ -37,7 +37,7 @@ export const onNameLookup: OnNameLookupHandler = async (request) => {
       }
       const entries = Object.entries(resolutions);
       for (const [key, value] of entries) {
-        if (key.startsWith(domainName)) {
+        if (key.toLowerCase().startsWith(domainName.toLowerCase())) {
           return {
             domainName: key,
             resolvedAddress: value,
