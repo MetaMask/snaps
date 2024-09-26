@@ -3,22 +3,31 @@
  * forever if the iframe never loads, but the promise should be wrapped in
  * an initialization timeout in the SnapController.
  *
- * @param uri - The iframe URI.
- * @param id - The ID to assign to the iframe.
- * @param sandbox - Whether to enable the sandbox attribute.
+ *
+ * @param options - The options for createWindow.
+ * @param options.uri - The iframe URI.
+ * @param options.id - The ID to assign to the iframe.
+ * @param options.sandbox - Whether to enable the sandbox attribute.
+ * @param options.testId - The data-testid attribute to assign to the iframe.
  * @returns A promise that resolves to the contentWindow of the iframe.
  */
-export async function createWindow(
-  uri: string,
-  id: string,
+export async function createWindow({
+  uri,
+  id,
   sandbox = true,
-): Promise<Window> {
+  testId = 'snaps-iframe',
+}: {
+  uri: string;
+  id: string;
+  sandbox?: boolean;
+  testId?: string;
+}): Promise<Window> {
   return await new Promise((resolve, reject) => {
     const iframe = document.createElement('iframe');
     // The order of operations appears to matter for everything except this
     // attribute. We may as well set it here.
     iframe.setAttribute('id', id);
-    iframe.setAttribute('data-testid', 'snaps-iframe');
+    iframe.setAttribute('data-testid', testId);
 
     if (sandbox) {
       // For the sandbox property to have any effect it needs to be set before the iframe is appended.

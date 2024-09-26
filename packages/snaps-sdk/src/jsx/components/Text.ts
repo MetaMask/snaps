@@ -26,6 +26,8 @@ export type TextColors =
  * The props of the {@link Text} component.
  *
  * @property children - The text to display.
+ * @property alignment - The alignment of the text.
+ * @property color - The color of the text.
  */
 export type TextProps = {
   children: TextChildren;
@@ -39,6 +41,8 @@ const TYPE = 'Text';
  * A text component, which is used to display text.
  *
  * @param props - The props of the component.
+ * @param props.alignment - The alignment of the text.
+ * @param props.color - The color of the text.
  * @param props.children - The text to display.
  * @returns A text element.
  * @example
