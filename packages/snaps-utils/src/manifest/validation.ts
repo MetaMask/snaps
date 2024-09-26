@@ -268,7 +268,7 @@ export const SnapManifestStruct = object({
   description: size(string(), 1, 280),
   proposedName: size(string(), 1, 214),
   repository: optional(
-    object({
+    type({
       type: size(string(), 1, Infinity),
       url: size(string(), 1, Infinity),
     }),
