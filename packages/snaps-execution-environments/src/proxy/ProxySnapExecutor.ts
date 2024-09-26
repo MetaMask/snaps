@@ -96,7 +96,7 @@ export class ProxySnapExecutor {
    * @returns The executor job object.
    */
   async #initializeJob(jobId: string): Promise<ExecutorJob> {
-    const window = await createWindow(this.#frameUrl, jobId);
+    const window = await createWindow({ uri: this.#frameUrl, id: jobId });
     const jobStream = new WindowPostMessageStream({
       name: 'parent',
       target: 'child',

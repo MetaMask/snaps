@@ -35,7 +35,10 @@ export class IframeExecutionService extends AbstractExecutionService<Window> {
     worker: Window;
     stream: BasePostMessageStream;
   }> {
-    const iframeWindow = await createWindow(this.iframeUrl.toString(), jobId);
+    const iframeWindow = await createWindow({
+      uri: this.iframeUrl.toString(),
+      id: jobId,
+    });
 
     const stream = new WindowPostMessageStream({
       name: 'parent',
