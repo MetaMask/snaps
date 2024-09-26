@@ -32,6 +32,7 @@ import {
   Selector,
   SelectorOption,
   Section,
+  AccountPicker,
 } from './components';
 import {
   AddressStruct,
@@ -69,6 +70,7 @@ import {
   SelectorStruct,
   SectionStruct,
   NotificationComponentsStruct,
+  AccountPickerStruct,
 } from './validation';
 
 describe('KeyStruct', () => {
@@ -953,6 +955,69 @@ describe('FileInputStruct', () => {
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, FileInputStruct)).toBe(false);
+  });
+});
+
+describe('AccountPickerStruct', () => {
+  it.each([
+    <AccountPicker
+      name="account"
+      title="From Account"
+      chainId="bip122:000000000019d6689c085ae165831e93"
+      selectedAddress="128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6"
+    />,
+    <AccountPicker
+      name="account"
+      title="From Account"
+      chainId="eip155:1"
+      selectedAddress="0x1234567890123456789012345678901234567890"
+    />,
+  ])('validates an account picker element', (value) => {
+    expect(is(value, AccountPickerStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <AccountPicker />,
+    // @ts-expect-error - Invalid props.
+    <AccountPicker>
+      <Text>foo</Text>
+    </AccountPicker>,
+    // @ts-expect-error - Invalid props.
+    <AccountPicker name="account" />,
+    // @ts-expect-error - Invalid props.
+    <AccountPicker title="From Account" />,
+    // @ts-expect-error - Invalid props.
+    <AccountPicker chainId="bip122:000000000019d6689c085ae165831e93" />,
+    // @ts-expect-error - Invalid props.
+    <AccountPicker selectedAddress="128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6" />,
+    <AccountPicker
+      name="account"
+      title="From Account"
+      chainId="foo:bar"
+      selectedAddress="0x1234567890123456789012345678901234567890"
+    />,
+    <AccountPicker
+      name="account"
+      title="From Account"
+      chainId="eip155:1"
+      selectedAddress="0x123"
+    />,
+    <Text>foo</Text>,
+    <Box>
+      <Text>foo</Text>
+    </Box>,
+    <Row label="label">
+      <Image src="<svg />" alt="alt" />
+    </Row>,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, AddressStruct)).toBe(false);
   });
 });
 
