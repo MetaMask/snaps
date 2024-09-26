@@ -20,7 +20,9 @@ import {
   refine,
 } from '@metamask/superstruct';
 import {
+  CaipAccountAddressStruct,
   CaipAccountIdStruct,
+  CaipChainIdStruct,
   hasProperty,
   HexChecksumAddressStruct,
   isPlainObject,
@@ -47,6 +49,7 @@ import type {
   StringElement,
 } from './component';
 import {
+  type AccountSelectorElement,
   type AddressElement,
   type BoldElement,
   type BoxElement,
@@ -332,6 +335,22 @@ export const FileInputStruct: Describe<FileInputElement> = element(
 );
 
 /**
+ * A struct for the {@link AccountSelectorElement} type.
+ */
+export const AccountSelectorStruct: Describe<AccountSelectorElement> = element(
+  'AccountSelector',
+  {
+    name: string(),
+    title: string(),
+    chainId: CaipChainIdStruct as unknown as Struct<
+      Infer<typeof CaipChainIdStruct>,
+      Infer<typeof CaipChainIdStruct>
+    >,
+    selectedAddress: CaipAccountAddressStruct,
+  },
+);
+
+/**
  * A subset of JSX elements that represent the tuple Box + Input of the Field children.
  */
 const BOX_INPUT_LEFT = [
@@ -613,7 +632,13 @@ export const HeadingStruct: Describe<HeadingElement> = element('Heading', {
  */
 export const LinkStruct: Describe<LinkElement> = element('Link', {
   href: string(),
-  children: children([FormattingStruct, string(), IconStruct, ImageStruct]),
+  children: children([
+    FormattingStruct,
+    string(),
+    IconStruct,
+    ImageStruct,
+    AddressStruct,
+  ]),
 });
 
 /**
@@ -691,7 +716,13 @@ export const TooltipStruct: Describe<TooltipElement> = element('Tooltip', {
  */
 export const RowStruct: Describe<RowElement> = element('Row', {
   label: string(),
-  children: typedUnion([AddressStruct, ImageStruct, TextStruct, ValueStruct]),
+  children: typedUnion([
+    AddressStruct,
+    ImageStruct,
+    TextStruct,
+    ValueStruct,
+    LinkStruct,
+  ]),
   variant: optional(
     nullUnion([literal('default'), literal('warning'), literal('critical')]),
   ),
@@ -812,6 +843,7 @@ export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   SelectorStruct,
   SelectorOptionStruct,
   SectionStruct,
+  AccountSelectorStruct,
 ]);
 
 /**
