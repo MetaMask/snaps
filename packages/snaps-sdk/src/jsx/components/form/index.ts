@@ -1,4 +1,4 @@
-import type { AccountPickerElement } from './AccountPicker';
+import type { AccountSelectorElement } from './AccountSelector';
 import type { ButtonElement } from './Button';
 import type { CheckboxElement } from './Checkbox';
 import type { DropdownElement } from './Dropdown';
@@ -12,7 +12,7 @@ import type { RadioGroupElement } from './RadioGroup';
 import type { SelectorElement } from './Selector';
 import type { SelectorOptionElement } from './SelectorOption';
 
-export * from './AccountPicker';
+export * from './AccountSelector';
 export * from './Button';
 export * from './Checkbox';
 export * from './Dropdown';
@@ -27,7 +27,7 @@ export * from './Selector';
 export * from './SelectorOption';
 
 export type StandardFormElement =
-  | AccountPickerElement
+  | AccountSelectorElement
   | ButtonElement
   | CheckboxElement
   | FormElement

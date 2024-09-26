@@ -49,7 +49,7 @@ import type {
   StringElement,
 } from './component';
 import {
-  type AccountPickerElement,
+  type AccountSelectorElement,
   type AddressElement,
   type BoldElement,
   type BoxElement,
@@ -335,14 +335,17 @@ export const FileInputStruct: Describe<FileInputElement> = element(
 );
 
 /**
- * A struct for the {@link AccountPickerElement} type.
+ * A struct for the {@link AccountSelectorElement} type.
  */
-export const AccountPickerStruct: Describe<AccountPickerElement> = element(
-  'AccountPicker',
+export const AccountSelectorStruct: Describe<AccountSelectorElement> = element(
+  'AccountSelector',
   {
     name: string(),
     title: string(),
-    chainId: CaipChainIdStruct,
+    chainId: CaipChainIdStruct as unknown as Struct<
+      Infer<typeof CaipChainIdStruct>,
+      Infer<typeof CaipChainIdStruct>
+    >,
     selectedAddress: CaipAccountAddressStruct,
   },
 );
@@ -840,6 +843,7 @@ export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   SelectorStruct,
   SelectorOptionStruct,
   SectionStruct,
+  AccountSelectorStruct,
 ]);
 
 /**

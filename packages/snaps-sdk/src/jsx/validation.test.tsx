@@ -32,7 +32,7 @@ import {
   Selector,
   SelectorOption,
   Section,
-  AccountPicker,
+  AccountSelector,
 } from './components';
 import {
   AddressStruct,
@@ -70,7 +70,7 @@ import {
   SelectorStruct,
   SectionStruct,
   NotificationComponentsStruct,
-  AccountPickerStruct,
+  AccountSelectorStruct,
 } from './validation';
 
 describe('KeyStruct', () => {
@@ -958,22 +958,22 @@ describe('FileInputStruct', () => {
   });
 });
 
-describe('AccountPickerStruct', () => {
+describe('AccountSelectorStruct', () => {
   it.each([
-    <AccountPicker
+    <AccountSelector
       name="account"
       title="From Account"
       chainId="bip122:000000000019d6689c085ae165831e93"
       selectedAddress="128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6"
     />,
-    <AccountPicker
+    <AccountSelector
       name="account"
       title="From Account"
       chainId="eip155:1"
       selectedAddress="0x1234567890123456789012345678901234567890"
     />,
   ])('validates an account picker element', (value) => {
-    expect(is(value, AccountPickerStruct)).toBe(true);
+    expect(is(value, AccountSelectorStruct)).toBe(true);
   });
 
   it.each([
@@ -984,26 +984,26 @@ describe('AccountPickerStruct', () => {
     {},
     [],
     // @ts-expect-error - Invalid props.
-    <AccountPicker />,
+    <AccountSelector />,
     // @ts-expect-error - Invalid props.
-    <AccountPicker>
+    <AccountSelector>
       <Text>foo</Text>
-    </AccountPicker>,
+    </AccountSelector>,
     // @ts-expect-error - Invalid props.
-    <AccountPicker name="account" />,
+    <AccountSelector name="account" />,
     // @ts-expect-error - Invalid props.
-    <AccountPicker title="From Account" />,
+    <AccountSelector title="From Account" />,
     // @ts-expect-error - Invalid props.
-    <AccountPicker chainId="bip122:000000000019d6689c085ae165831e93" />,
+    <AccountSelector chainId="bip122:000000000019d6689c085ae165831e93" />,
     // @ts-expect-error - Invalid props.
-    <AccountPicker selectedAddress="128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6" />,
-    <AccountPicker
+    <AccountSelector selectedAddress="128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6" />,
+    <AccountSelector
       name="account"
       title="From Account"
       chainId="foo:bar"
       selectedAddress="0x1234567890123456789012345678901234567890"
     />,
-    <AccountPicker
+    <AccountSelector
       name="account"
       title="From Account"
       chainId="eip155:1"

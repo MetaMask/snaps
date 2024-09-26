@@ -1,9 +1,9 @@
-import { AccountPicker } from './AccountPicker';
+import { AccountSelector } from './AccountSelector';
 
-describe('AccountPicker', () => {
-  it('returns an account picker element', () => {
+describe('AccountSelector', () => {
+  it('returns an account selector element', () => {
     const result = (
-      <AccountPicker
+      <AccountSelector
         name="account"
         title="From account"
         chainId="bip122:p2wpkh"
@@ -12,7 +12,7 @@ describe('AccountPicker', () => {
     );
 
     expect(result).toStrictEqual({
-      type: 'AccountPicker',
+      type: 'AccountSelector',
       props: {
         name: 'account',
         title: 'From account',
