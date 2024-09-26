@@ -98,11 +98,11 @@ export class WebWorkerExecutionService extends AbstractExecutionService<string> 
       return;
     }
 
-    const window = await createWindow(
-      this.#documentUrl.href,
-      WORKER_POOL_ID,
-      false,
-    );
+    const window = await createWindow({
+      uri: this.#documentUrl.href,
+      id: WORKER_POOL_ID,
+      sandbox: false,
+    });
 
     this.#runtimeStream = new WindowPostMessageStream({
       name: 'parent',
