@@ -13,6 +13,7 @@ import type {
 } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
+import type { SnapResponse } from '@metamask/snaps-simulation';
 import {
   InterfaceStruct,
   SnapResponseStruct,
@@ -34,8 +35,6 @@ import {
   printWithType,
   RECEIVED_COLOR,
 } from 'jest-matcher-utils';
-
-import type { SnapResponse } from './types';
 
 /**
  * Ensure that the actual value is a response from the `request` function.

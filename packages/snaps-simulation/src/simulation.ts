@@ -31,6 +31,8 @@ import { select } from 'redux-saga/effects';
 import type { RootControllerMessenger } from './controllers';
 import { getControllers, registerSnap } from './controllers';
 import { getSnapFile } from './files';
+import type { SnapHelpers } from './helpers';
+import { getHelpers } from './helpers';
 import { resolveWithSaga } from './interface';
 import { getEndowments } from './methods';
 import { createJsonRpcEngine } from './middleware';
@@ -145,7 +147,7 @@ export async function installSnap<
     executionServiceOptions,
     options: rawOptions = {},
   }: Partial<InstallSnapOptions<Service>> = {},
-): Promise<InstalledSnap> {
+): Promise<InstalledSnap & SnapHelpers> {
   const options = getOptions(rawOptions);
 
   // Fetch Snap files.
@@ -218,12 +220,22 @@ export async function installSnap<
     endowments: await getEndowments(permissionController, snapId),
   });
 
+  const helpers = getHelpers({
+    snapId,
+    store,
+    controllerMessenger,
+    runSaga,
+    executionService: service,
+    options,
+  });
+
   return {
     snapId,
     store,
     executionService: service,
     controllerMessenger,
     runSaga,
+    ...helpers,
   };
 }
 

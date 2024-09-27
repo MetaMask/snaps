@@ -1,5 +1,6 @@
 export * from './constants';
 export * from './controllers';
+export * from './helpers';
 export * from './interface';
 export * from './options';
 export * from './request';

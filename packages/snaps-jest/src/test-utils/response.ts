@@ -1,6 +1,8 @@
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
-
-import type { SnapHandlerInterface, SnapResponse } from '../types';
+import type {
+  SnapHandlerInterface,
+  SnapResponse,
+} from '@metamask/snaps-simulation';
 
 /**
  * Get a mock response.
@@ -40,6 +42,7 @@ export function getMockInterfaceResponse(
     typeInField: jest.fn(),
     selectInDropdown: jest.fn(),
     selectFromRadioGroup: jest.fn(),
+    selectFromSelector: jest.fn(),
     uploadFile: jest.fn(),
   };
 }

@@ -4,11 +4,12 @@ import type {
 } from '@jest/environment';
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
 import type { SnapId } from '@metamask/snaps-sdk';
+import { installSnap } from '@metamask/snaps-simulation';
 import type {
   InstalledSnap,
   InstallSnapOptions,
+  SnapHelpers,
 } from '@metamask/snaps-simulation';
-import { installSnap } from '@metamask/snaps-simulation';
 import { assert, createModuleLogger } from '@metamask/utils';
 import type { Server } from 'http';
 import NodeEnvironment from 'jest-environment-node';
@@ -31,7 +32,7 @@ export class SnapsEnvironment extends NodeEnvironment {
 
   #server: Server | undefined;
 
-  #instance: InstalledSnap | undefined;
+  #instance: (InstalledSnap & SnapHelpers) | undefined;
 
   /**
    * Constructor.
