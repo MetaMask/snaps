@@ -23,6 +23,7 @@ describe('snap_getCurrencyRate', () => {
       const { implementation } = getCurrencyRateHandler;
 
       const getCurrencyRate = jest.fn().mockReturnValue({
+        currency: 'usd',
         conversionRate: '1',
         conversionDate: 1,
         usdConversionRate: '1',
@@ -59,6 +60,7 @@ describe('snap_getCurrencyRate', () => {
         jsonrpc: '2.0',
         id: 1,
         result: {
+          currency: 'usd',
           conversionRate: '1',
           conversionDate: 1,
           usdConversionRate: '1',
@@ -109,6 +111,7 @@ describe('snap_getCurrencyRate', () => {
       const { implementation } = getCurrencyRateHandler;
 
       const getCurrencyRate = jest.fn().mockReturnValue({
+        currency: 'usd',
         conversionRate: '1',
         conversionDate: 1,
         usdConversionRate: '1',

@@ -3,13 +3,14 @@ export type Currency = 'btc';
 /**
  * The currency rate object.
  *
- * @property conversionRate - The conversion rate. It maps a currency code (e.g. "btc") to its
- * conversion rate
+ * @property currency - The native currency symbol used for the conversion (e.g 'usd').
+ * @property conversionRate - The conversion rate from the cryptocurrency to the native currency.
  * @property conversionDate - The date of the conversion rate as a UNIX timestamp.
  * @property usdConversionRate - The conversion rate to USD.
  */
 export type CurrencyRate = {
-  conversionRate: string;
+  currency: string;
+  conversionRate: number;
   conversionDate: number;
   usdConversionRate?: string;
 };
