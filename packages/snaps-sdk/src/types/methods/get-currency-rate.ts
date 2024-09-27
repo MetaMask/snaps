@@ -12,7 +12,7 @@ export type CurrencyRate = {
   currency: string;
   conversionRate: number;
   conversionDate: number;
-  usdConversionRate?: string;
+  usdConversionRate?: number;
 };
 
 /**
