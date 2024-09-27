@@ -1,4 +1,8 @@
-export type Currency = 'btc';
+export type Currency<Value extends string> =
+  | Lowercase<Value>
+  | Uppercase<Value>;
+
+export type AvailableCurrency = Currency<'btc'>;
 
 /**
  * The currency rate object.
@@ -21,7 +25,7 @@ export type CurrencyRate = {
  * @property currency - The currency symbol.
  */
 export type GetCurrencyRateParams = {
-  currency: Currency;
+  currency: AvailableCurrency;
 };
 
 /**

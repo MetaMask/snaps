@@ -2,20 +2,17 @@ import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
-  Currency,
+  AvailableCurrency,
   CurrencyRate,
   GetCurrencyRateParams,
   GetCurrencyRateResult,
   JsonRpcRequest,
 } from '@metamask/snaps-sdk';
-import { type InferMatching } from '@metamask/snaps-utils';
 import {
-  StructError,
-  create,
-  literal,
-  object,
-  union,
-} from '@metamask/superstruct';
+  currency as superstrucCurrency,
+  type InferMatching,
+} from '@metamask/snaps-utils';
+import { StructError, create, object, union } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
@@ -30,7 +27,7 @@ export type GetCurrencyRateMethodHooks = {
    * Currently only 'btc' is supported.
    * @returns The {@link CurrencyRate} object.
    */
-  getCurrencyRate: (currency: Currency) => CurrencyRate | undefined;
+  getCurrencyRate: (currency: AvailableCurrency) => CurrencyRate | undefined;
 };
 
 export const getCurrencyRateHandler: PermittedHandlerExport<
@@ -44,7 +41,7 @@ export const getCurrencyRateHandler: PermittedHandlerExport<
 };
 
 const GetCurrencyRateParametersStruct = object({
-  currency: union([literal('btc')]),
+  currency: union([superstrucCurrency('btc')]),
 });
 
 export type GetCurrencyRateParameters = InferMatching<
