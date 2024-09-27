@@ -342,7 +342,7 @@ export const AccountSelectorStruct: Describe<AccountSelectorElement> = element(
   {
     name: string(),
     title: string(),
-    chainId: array(
+    chainIds: array(
       CaipChainIdStruct as unknown as Struct<
         Infer<typeof CaipChainIdStruct>,
         Infer<typeof CaipChainIdStruct>
