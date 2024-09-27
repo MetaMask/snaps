@@ -19,12 +19,15 @@ import {
   type,
 } from '@metamask/superstruct';
 import {
+  assertStruct,
   bytesToHex,
   JsonStruct,
   StrictHexStruct,
   valueToBytes,
 } from '@metamask/utils';
 import { randomBytes } from 'crypto';
+
+import type { SnapResponse, SnapResponseWithInterface } from './types';
 
 // TODO: Export this from `@metamask/utils` instead.
 const BytesLikeStruct = union([
@@ -240,3 +243,14 @@ export const SnapResponseStruct = union([
   SnapResponseWithoutInterfaceStruct,
   SnapResponseWithInterfaceStruct,
 ]);
+
+/**
+ * Ensure that the actual response contains `getInterface`.
+ *
+ * @param response - The response of the handler.
+ */
+export function assertIsResponseWithInterface(
+  response: SnapResponse,
+): asserts response is SnapResponseWithInterface {
+  assertStruct(response, SnapResponseWithInterfaceStruct);
+}

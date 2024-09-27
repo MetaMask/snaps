@@ -2,6 +2,7 @@ import { mnemonicPhraseToBytes } from '@metamask/key-tree';
 import {
   detectSnapLocation,
   fetchSnap,
+  NodeProcessExecutionService,
   NodeThreadExecutionService,
   SnapInterfaceController,
 } from '@metamask/snaps-controllers/node';
@@ -20,7 +21,7 @@ import {
   getRootControllerMessenger,
 } from './test-utils';
 
-describe('handleInstallSnap', () => {
+describe('installSnap', () => {
   it('installs a Snap and returns the execution service', async () => {
     const { snapId, close } = await getMockServer();
     const installedSnap = await installSnap(snapId);
@@ -30,6 +31,176 @@ describe('handleInstallSnap', () => {
     );
 
     await close();
+  });
+
+  it('installs a Snap into a custom execution environment', async () => {
+    jest.spyOn(console, 'log').mockImplementation();
+
+    const { snapId, close: closeServer } = await getMockServer({
+      sourceCode: `
+        module.exports.onRpcRequest = async (request) => {
+          return 'Hello, world!';
+        };
+      `,
+    });
+
+    const { request, close } = await installSnap(snapId, {
+      executionService: NodeProcessExecutionService,
+      options: {
+        locale: 'nl',
+      },
+    });
+
+    const response = await request({
+      method: 'hello',
+      params: {
+        foo: 'bar',
+      },
+    });
+
+    expect(response).toStrictEqual(
+      expect.objectContaining({
+        response: {
+          result: 'Hello, world!',
+        },
+      }),
+    );
+
+    // `close` is deprecated because the Jest environment will automatically
+    // close the Snap when the test finishes. However, we still need to close
+    // the Snap in this test because it's run outside the Jest environment.
+    await close();
+    await closeServer();
+  });
+
+  it('allows specifying the locale', async () => {
+    jest.spyOn(console, 'log').mockImplementation();
+
+    const { snapId, close: closeServer } = await getMockServer({
+      sourceCode: `
+        module.exports.onRpcRequest = async (request) => {
+          return await snap.request({
+            method: 'snap_getLocale',
+          });
+        };
+      `,
+      manifest: getSnapManifest({
+        initialPermissions: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_getLocale: {},
+        },
+      }),
+    });
+
+    const { request, close } = await installSnap(snapId, {
+      options: {
+        locale: 'nl',
+      },
+    });
+
+    const response = await request({
+      method: 'hello',
+      params: {
+        foo: 'bar',
+      },
+    });
+
+    expect(response).toStrictEqual(
+      expect.objectContaining({
+        response: {
+          result: 'nl',
+        },
+      }),
+    );
+
+    // `close` is deprecated because the Jest environment will automatically
+    // close the Snap when the test finishes. However, we still need to close
+    // the Snap in this test because it's run outside the Jest environment.
+    await close();
+    await closeServer();
+  });
+
+  it('allows specifying initial state', async () => {
+    jest.spyOn(console, 'log').mockImplementation();
+
+    const { snapId, close: closeServer } = await getMockServer({
+      sourceCode: `
+        module.exports.onRpcRequest = async (request) => {
+          return await snap.request({
+            method: 'snap_manageState',
+            params: {
+              operation: 'get',
+            },
+          });
+        };
+      `,
+      manifest: getSnapManifest({
+        initialPermissions: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_manageState: {},
+        },
+      }),
+    });
+
+    const { request, close } = await installSnap(snapId, {
+      options: {
+        state: {
+          foo: 'bar',
+        },
+      },
+    });
+
+    const response = await request({
+      method: 'hello',
+    });
+
+    expect(response).toStrictEqual(
+      expect.objectContaining({
+        response: {
+          result: {
+            foo: 'bar',
+          },
+        },
+      }),
+    );
+
+    // `close` is deprecated because the Jest environment will automatically
+    // close the Snap when the test finishes. However, we still need to close
+    // the Snap in this test because it's run outside the Jest environment.
+    await close();
+    await closeServer();
+  });
+
+  it('works without options', async () => {
+    jest.spyOn(console, 'log').mockImplementation();
+
+    const { snapId, close: closeServer } = await getMockServer({
+      sourceCode: `
+        module.exports.onRpcRequest = async (request) => {
+          return 'Hello, world!';
+        };
+      `,
+    });
+
+    const { request, close } = await installSnap(snapId);
+
+    const response = await request({
+      method: 'hello',
+    });
+
+    expect(response).toStrictEqual(
+      expect.objectContaining({
+        response: {
+          result: 'Hello, world!',
+        },
+      }),
+    );
+
+    // `close` is deprecated because the Jest environment will automatically
+    // close the Snap when the test finishes. However, we still need to close
+    // the Snap in this test because it's run outside the Jest environment.
+    await close();
+    await closeServer();
   });
 });
 

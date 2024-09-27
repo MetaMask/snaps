@@ -1,28 +1,10 @@
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
 import type { SnapId } from '@metamask/snaps-sdk';
-import type { InstallSnapOptions } from '@metamask/snaps-simulation';
-import {
-  JsonRpcMockOptionsStruct,
-  SignatureOptionsStruct,
-  handleRequest,
-  TransactionOptionsStruct,
-  addJsonRpcMock,
-  removeJsonRpcMock,
-  SnapResponseWithInterfaceStruct,
-} from '@metamask/snaps-simulation';
-import { HandlerType, logInfo } from '@metamask/snaps-utils';
-import { create } from '@metamask/superstruct';
-import { assertStruct, createModuleLogger } from '@metamask/utils';
+import type { InstallSnapOptions, Snap } from '@metamask/snaps-simulation';
+import { logInfo } from '@metamask/snaps-utils';
+import { createModuleLogger } from '@metamask/utils';
 
 import { rootLogger, getEnvironment } from './internals';
-import type {
-  SnapResponseWithInterface,
-  CronjobOptions,
-  JsonRpcMockOptions,
-  Snap,
-  SnapResponse,
-  TransactionOptions,
-} from './types';
 
 const log = createModuleLogger(rootLogger, 'helpers');
 
@@ -46,17 +28,6 @@ function getOptions<
   }
 
   return [snapId, options];
-}
-
-/**
- * Ensure that the actual response contains `getInterface`.
- *
- * @param response - The response of the handler.
- */
-function assertIsResponseWithInterface(
-  response: SnapResponse,
-): asserts response is SnapResponseWithInterface {
-  assertStruct(response, SnapResponseWithInterfaceStruct);
 }
 
 /**
@@ -200,154 +171,33 @@ export async function installSnap<
 ): Promise<Snap> {
   const resolvedOptions = getOptions(snapId, options);
   const {
-    snapId: installedSnapId,
-    store,
-    executionService,
-    runSaga,
-    controllerMessenger,
+    request,
+    onTransaction,
+    sendTransaction,
+    onSignature,
+    onCronjob,
+    runCronjob,
+    onHomePage,
+    mockJsonRpc,
+    close,
   } = await getEnvironment().installSnap(...resolvedOptions);
 
-  const onTransaction = async (
-    request: TransactionOptions,
-  ): Promise<SnapResponseWithInterface> => {
-    log('Sending transaction %o.', request);
-
-    const {
-      origin: transactionOrigin,
-      chainId,
-      ...transaction
-    } = create(request, TransactionOptionsStruct);
-
-    const response = await handleRequest({
-      snapId: installedSnapId,
-      store,
-      executionService,
-      runSaga,
-      controllerMessenger,
-      handler: HandlerType.OnTransaction,
-      request: {
-        method: '',
-        params: {
-          chainId,
-          transaction,
-          transactionOrigin,
-        },
-      },
-    });
-
-    assertIsResponseWithInterface(response);
-
-    return response;
-  };
-
-  const onCronjob = (request: CronjobOptions) => {
-    log('Running cronjob %o.', options);
-
-    return handleRequest({
-      snapId: installedSnapId,
-      store,
-      executionService,
-      controllerMessenger,
-      runSaga,
-      handler: HandlerType.OnCronjob,
-      request,
-    });
-  };
-
   return {
-    request: (request) => {
-      log('Sending request %o.', request);
-
-      return handleRequest({
-        snapId: installedSnapId,
-        store,
-        executionService,
-        controllerMessenger,
-        runSaga,
-        handler: HandlerType.OnRpcRequest,
-        request,
-      });
-    },
-
+    request,
     onTransaction,
-    sendTransaction: onTransaction,
-
-    onSignature: async (
-      request: unknown,
-    ): Promise<SnapResponseWithInterface> => {
-      log('Requesting signature %o.', request);
-
-      const { origin: signatureOrigin, ...signature } = create(
-        request,
-        SignatureOptionsStruct,
-      );
-
-      const response = await handleRequest({
-        snapId: installedSnapId,
-        store,
-        executionService,
-        controllerMessenger,
-        runSaga,
-        handler: HandlerType.OnSignature,
-        request: {
-          method: '',
-          params: {
-            signature,
-            signatureOrigin,
-          },
-        },
-      });
-
-      assertIsResponseWithInterface(response);
-
-      return response;
-    },
-
+    sendTransaction,
+    onSignature,
     onCronjob,
-    runCronjob: onCronjob,
-
-    onHomePage: async (): Promise<SnapResponseWithInterface> => {
-      log('Rendering home page.');
-
-      const response = await handleRequest({
-        snapId: installedSnapId,
-        store,
-        executionService,
-        controllerMessenger,
-        runSaga,
-        handler: HandlerType.OnHomePage,
-        request: {
-          method: '',
-        },
-      });
-
-      assertIsResponseWithInterface(response);
-
-      return response;
-    },
-
-    mockJsonRpc(mock: JsonRpcMockOptions) {
-      log('Mocking JSON-RPC request %o.', mock);
-
-      const { method, result } = create(mock, JsonRpcMockOptionsStruct);
-      store.dispatch(addJsonRpcMock({ method, result }));
-
-      return {
-        unmock() {
-          log('Unmocking JSON-RPC request %o.', mock);
-
-          store.dispatch(removeJsonRpcMock(method));
-        },
-      };
-    },
-
+    runCronjob,
+    onHomePage,
+    mockJsonRpc,
     close: async () => {
       log('Closing execution service.');
       logInfo(
         'Calling `snap.close()` is deprecated, and will be removed in a future release. Snaps are now automatically closed when the test ends.',
       );
 
-      await executionService.terminateAllSnaps();
+      await close();
     },
   };
 }
