@@ -3,10 +3,10 @@ import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   Currency,
+  CurrencyRate,
   GetCurrencyRateParams,
   GetCurrencyRateResult,
   JsonRpcRequest,
-  Rate,
 } from '@metamask/snaps-sdk';
 import { type InferMatching } from '@metamask/snaps-utils';
 import {
@@ -28,9 +28,9 @@ export type GetCurrencyRateMethodHooks = {
   /**
    * @param currency - The currency symbol.
    * Currently only 'btc' is supported.
-   * @returns The {@link Rate} object.
+   * @returns The {@link CurrencyRate} object.
    */
-  getCurrencyRate: (currency: Currency) => Rate | undefined;
+  getCurrencyRate: (currency: Currency) => CurrencyRate | undefined;
 };
 
 export const getCurrencyRateHandler: PermittedHandlerExport<

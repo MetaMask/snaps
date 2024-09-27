@@ -1,14 +1,14 @@
 export type Currency = 'btc';
 
 /**
- * The rate object.
+ * The currency rate object.
  *
  * @property conversionRate - The conversion rate. It maps a currency code (e.g. "btc") to its
  * conversion rate
  * @property conversionDate - The date of the conversion rate as a UNIX timestamp.
  * @property usdConversionRate - The conversion rate to USD.
  */
-export type Rate = {
+export type CurrencyRate = {
   conversionRate: string;
   conversionDate: number;
   usdConversionRate?: string;
@@ -24,6 +24,6 @@ export type GetCurrencyRateParams = {
 };
 
 /**
- * The result returned by the `snap_getCurrencyRate` method, which is the {@link Rate} object.
+ * The result returned by the `snap_getCurrencyRate` method, which is the {@link CurrencyRate} object.
  */
-export type GetCurrencyRateResult = Rate | null;
+export type GetCurrencyRateResult = CurrencyRate | null;
