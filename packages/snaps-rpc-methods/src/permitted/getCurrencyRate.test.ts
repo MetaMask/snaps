@@ -24,9 +24,9 @@ describe('snap_getCurrencyRate', () => {
 
       const getCurrencyRate = jest.fn().mockReturnValue({
         currency: 'usd',
-        conversionRate: '1',
+        conversionRate: 1,
         conversionDate: 1,
-        usdConversionRate: '1',
+        usdConversionRate: 1,
       });
 
       const hooks = {
@@ -61,9 +61,9 @@ describe('snap_getCurrencyRate', () => {
         id: 1,
         result: {
           currency: 'usd',
-          conversionRate: '1',
+          conversionRate: 1,
           conversionDate: 1,
-          usdConversionRate: '1',
+          usdConversionRate: 1,
         },
       });
     });
@@ -112,9 +112,9 @@ describe('snap_getCurrencyRate', () => {
 
       const getCurrencyRate = jest.fn().mockReturnValue({
         currency: 'usd',
-        conversionRate: '1',
+        conversionRate: 1,
         conversionDate: 1,
-        usdConversionRate: '1',
+        usdConversionRate: 1,
       });
 
       const hooks = {
