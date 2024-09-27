@@ -8,10 +8,7 @@ import type {
   GetCurrencyRateResult,
   JsonRpcRequest,
 } from '@metamask/snaps-sdk';
-import {
-  currency as superstrucCurrency,
-  type InferMatching,
-} from '@metamask/snaps-utils';
+import { currency, type InferMatching } from '@metamask/snaps-utils';
 import { StructError, create, object, union } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
@@ -41,7 +38,7 @@ export const getCurrencyRateHandler: PermittedHandlerExport<
 };
 
 const GetCurrencyRateParametersStruct = object({
-  currency: union([superstrucCurrency('btc')]),
+  currency: union([currency('btc')]),
 });
 
 export type GetCurrencyRateParameters = InferMatching<
@@ -73,9 +70,9 @@ function getGetCurrencyRateImplementation(
   try {
     const validatedParams = getValidatedParams(params);
 
-    const { currency } = validatedParams;
+    const { currency: selectedCurrency } = validatedParams;
 
-    res.result = getCurrencyRate(currency) ?? null;
+    res.result = getCurrencyRate(selectedCurrency) ?? null;
   } catch (error) {
     return end(error);
   }
