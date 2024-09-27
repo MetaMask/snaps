@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- Add interface state handling for `AccountSelector` ([#2766](https://github.com/MetaMask/snaps/pull/2766))
+- Convert createWindow parameters to options bag and add testid option ([#2765](https://github.com/MetaMask/snaps/pull/2765))
+
 ## [9.9.0]
 
 ### Added

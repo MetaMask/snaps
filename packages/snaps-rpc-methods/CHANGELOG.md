@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- Add new `snap_getCurrencyRate` RPC method ([#2763](https://github.com/MetaMask/snaps/pull/2763))
+
 ## [11.2.0]
 
 ### Added

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- Move helper functions to simulation package ([#2769](https://github.com/MetaMask/snaps/pull/2769))
+
 ## [1.0.1]
 
 ### Fixed
