@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.9.0]
 
-### Uncategorized
+### Changed
 
-- Convert createWindow parameters to options bag and add testid option ([#2765](https://github.com/MetaMask/snaps/pull/2765))
+- Convert `createWindow` parameters to options bag ([#2765](https://github.com/MetaMask/snaps/pull/2765))
 
 ## [6.8.0]
 

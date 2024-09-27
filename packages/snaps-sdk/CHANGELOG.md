@@ -9,13 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.7.0]
 
-### Uncategorized
+### Added
 
-- Allow multiple chain ID in `AccountSelector` ([#2768](https://github.com/MetaMask/snaps/pull/2768))
-- Add new `snap_getCurrencyRate` RPC method ([#2763](https://github.com/MetaMask/snaps/pull/2763))
-- Add `AccountSelector` component ([#2764](https://github.com/MetaMask/snaps/pull/2764))
+- Add `snap_getCurrencyRate` JSON-RPC method ([#2763](https://github.com/MetaMask/snaps/pull/2763))
+- Add `AccountSelector` component ([#2764](https://github.com/MetaMask/snaps/pull/2764), [#2768](https://github.com/MetaMask/snaps/pull/2768))
+- Add `size` prop to the `Heading` component ([#2759](https://github.com/MetaMask/snaps/pull/2759))
+
+### Changed
+
 - Allow `Link` in `Row` and `Address` in `Link` ([#2761](https://github.com/MetaMask/snaps/pull/2761))
-- feat: Add the `size` prop to `Heading` ([#2759](https://github.com/MetaMask/snaps/pull/2759))
 
 ## [6.6.0]
 

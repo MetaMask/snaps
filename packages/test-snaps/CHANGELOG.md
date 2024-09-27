@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.15.1]
 
+### Changed
+
+- Use latest versions of example Snaps ([#2770](https://github.com/MetaMask/snaps/pull/2770))
+
 ## [2.14.1]
 
 ### Changed

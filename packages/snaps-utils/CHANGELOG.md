@@ -9,11 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [8.3.0]
 
-### Uncategorized
+### Added
 
-- Add new `snap_getCurrencyRate` RPC method ([#2763](https://github.com/MetaMask/snaps/pull/2763))
-- Convert createWindow parameters to options bag and add testid option ([#2765](https://github.com/MetaMask/snaps/pull/2765))
-- fix: packageJsonStruct to allow `repository.directory` ([#2754](https://github.com/MetaMask/snaps/pull/2754))
+- Add `currency` struct ([#2763](https://github.com/MetaMask/snaps/pull/2763))
+
+### Changed
+
+- Convert `createWindow` parameters to options bag ([#2765](https://github.com/MetaMask/snaps/pull/2765))
+
+### Fixed
+
+- Update `package.json` struct to allow `repository.directory` ([#2754](https://github.com/MetaMask/snaps/pull/2754))
 
 ## [8.2.0]
 
