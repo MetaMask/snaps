@@ -342,10 +342,12 @@ export const AccountSelectorStruct: Describe<AccountSelectorElement> = element(
   {
     name: string(),
     title: string(),
-    chainId: CaipChainIdStruct as unknown as Struct<
-      Infer<typeof CaipChainIdStruct>,
-      Infer<typeof CaipChainIdStruct>
-    >,
+    chainId: array(
+      CaipChainIdStruct as unknown as Struct<
+        Infer<typeof CaipChainIdStruct>,
+        Infer<typeof CaipChainIdStruct>
+      >,
+    ),
     selectedAddress: CaipAccountAddressStruct,
   },
 );
