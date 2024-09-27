@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.7.0]
+
+### Added
+
+- Add `snap_getCurrencyRate` JSON-RPC method ([#2763](https://github.com/MetaMask/snaps/pull/2763))
+- Add `AccountSelector` component ([#2764](https://github.com/MetaMask/snaps/pull/2764), [#2768](https://github.com/MetaMask/snaps/pull/2768))
+- Add `size` prop to the `Heading` component ([#2759](https://github.com/MetaMask/snaps/pull/2759))
+
+### Changed
+
+- Allow `Link` in `Row` and `Address` in `Link` ([#2761](https://github.com/MetaMask/snaps/pull/2761))
+
 ## [6.6.0]
 
 ### Added
@@ -349,7 +361,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.6.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.7.0...HEAD
+[6.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.6.0...@metamask/snaps-sdk@6.7.0
 [6.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.5.1...@metamask/snaps-sdk@6.6.0
 [6.5.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.5.0...@metamask/snaps-sdk@6.5.1
 [6.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.4.0...@metamask/snaps-sdk@6.5.0

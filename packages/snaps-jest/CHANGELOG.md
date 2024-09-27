@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.5.0]
+
+### Changed
+
+- Move helper functions to simulation package ([#2769](https://github.com/MetaMask/snaps/pull/2769))
+
 ## [8.4.0]
 
 ### Added
@@ -264,7 +270,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.4.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.5.0...HEAD
+[8.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.4.0...@metamask/snaps-jest@8.5.0
 [8.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.3.2...@metamask/snaps-jest@8.4.0
 [8.3.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.3.1...@metamask/snaps-jest@8.3.2
 [8.3.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.3.0...@metamask/snaps-jest@8.3.1
