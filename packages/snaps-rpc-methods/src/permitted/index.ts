@@ -1,6 +1,7 @@
 import type { CreateInterfaceMethodHooks } from './createInterface';
 import type { GetAllSnapsHooks } from './getAllSnaps';
 import type { GetClientStatusHooks } from './getClientStatus';
+import type { GetCurrencyRateMethodHooks } from './getCurrencyRate';
 import type { GetInterfaceStateMethodHooks } from './getInterfaceState';
 import type { GetSnapsHooks } from './getSnaps';
 import type { RequestSnapsHooks } from './requestSnaps';
@@ -14,7 +15,8 @@ export type PermittedRpcMethodHooks = GetAllSnapsHooks &
   CreateInterfaceMethodHooks &
   UpdateInterfaceMethodHooks &
   GetInterfaceStateMethodHooks &
-  ResolveInterfaceMethodHooks;
+  ResolveInterfaceMethodHooks &
+  GetCurrencyRateMethodHooks;
 
 export * from './handlers';
 export * from './middleware';

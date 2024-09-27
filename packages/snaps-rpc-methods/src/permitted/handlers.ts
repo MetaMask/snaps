@@ -1,6 +1,7 @@
 import { createInterfaceHandler } from './createInterface';
 import { getAllSnapsHandler } from './getAllSnaps';
 import { getClientStatusHandler } from './getClientStatus';
+import { getCurrencyRateHandler } from './getCurrencyRate';
 import { getFileHandler } from './getFile';
 import { getInterfaceStateHandler } from './getInterfaceState';
 import { getSnapsHandler } from './getSnaps';
@@ -23,6 +24,7 @@ export const methodHandlers = {
   snap_updateInterface: updateInterfaceHandler,
   snap_getInterfaceState: getInterfaceStateHandler,
   snap_resolveInterface: resolveInterfaceHandler,
+  snap_getCurrencyRate: getCurrencyRateHandler,
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 

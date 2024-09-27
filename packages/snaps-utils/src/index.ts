@@ -6,6 +6,7 @@ export * from './caveats';
 export * from './checksum';
 export * from './constants';
 export * from './cronjob';
+export * from './currency';
 export * from './deep-clone';
 export * from './default-endowments';
 export * from './derivation-paths';

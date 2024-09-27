@@ -19,3 +19,4 @@ export * from './notify';
 export * from './request-snaps';
 export * from './update-interface';
 export * from './resolve-interface';
+export * from './get-currency-rate';
