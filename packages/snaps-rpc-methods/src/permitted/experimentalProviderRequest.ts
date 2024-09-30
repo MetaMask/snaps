@@ -13,6 +13,7 @@ import {
   object,
   optional,
   string,
+  type,
 } from '@metamask/superstruct';
 import {
   numberToHex,
@@ -61,7 +62,7 @@ export const providerRequestHandler: PermittedHandlerExport<
 
 const ProviderRequestParametersStruct = object({
   chainId: CaipChainIdStruct,
-  request: object({
+  request: type({
     method: string(),
     params: optional(JsonRpcParamsStruct),
   }),
@@ -74,6 +75,12 @@ export type ProviderRequestParameters = InferMatching<
 
 /**
  * The `snap_experimentalProviderRequest` method implementation.
+ *
+ * This RPC method lets Snaps make requests to MetaMask networks that are not currently selected in the UI.
+ *
+ * The RPC method requires the caller to have the endowment:ethereum-provider permission.
+ *
+ * NOTE: This implementation is experimental and may be removed or changed without warning.
  *
  * @param req - The JSON-RPC request object.
  * @param res - The JSON-RPC response object.
