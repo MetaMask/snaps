@@ -181,7 +181,6 @@ export const SignatureOptionsStruct = object({
    */
   signatureMethod: defaulted(
     union([
-      literal('eth_sign'),
       literal('personal_sign'),
       literal('eth_signTypedData'),
       literal('eth_signTypedData_v3'),

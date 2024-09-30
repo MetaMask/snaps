@@ -3,19 +3,6 @@ import type { Component } from '../../ui';
 import type { SeverityLevel } from './transaction';
 
 /**
- * An eth_sign signature object.
- *
- * @property from - The address the signature is being sent from.
- * @property data - The data (hex string) that is being signed.
- * @property signatureMethod - The signature method, which in this case is eth_sign
- */
-export type EthSignature = {
-  from: string;
-  data: string;
-  signatureMethod: 'eth_sign';
-};
-
-/**
  * A personal_sign signature object.
  *
  * @property from - The address the signature is being sent from.
@@ -70,14 +57,12 @@ export type SignTypedDataV4Signature = {
 /**
  * A signature object. This can be one of the below signature methods.
  *
- * @see EthSignature
  * @see PersonalSignature
  * @see SignTypedDataSignature
  * @see SignTypedDataV3Signature
  * @see SignTypedDataV4Signature
  */
 export type Signature =
-  | EthSignature
   | PersonalSignature
   | SignTypedDataSignature
   | SignTypedDataV3Signature

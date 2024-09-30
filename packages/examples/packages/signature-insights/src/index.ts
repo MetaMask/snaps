@@ -10,7 +10,7 @@ const MALICIOUS_CONTRACT = '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC';
 
 /**
  * Handle incoming signature requests, sent through one of the following methods:
- * `eth_sign`, `personal_sign`, `eth_signTypedData`, `eth_signTypedData_v3`, `eth_signTypedData_v4`.
+ * `personal_sign`, `eth_signTypedData`, `eth_signTypedData_v3`, `eth_signTypedData_v4`.
  *
  * The `onSignature` handler is different from the `onRpcRequest` handler in
  * that it is called by MetaMask when a signature request is initiated, rather than
@@ -54,17 +54,6 @@ export const onSignature: OnSignatureHandler = async ({ signature }) => {
   };
 
   switch (signatureMethod) {
-    case 'eth_sign':
-      return {
-        content: panel([
-          heading("'About 'eth_sign'"),
-          text(
-            "eth_sign is one of the oldest signing methods that MetaMask still supports. Back in the early days of MetaMask when it was originally designed, web3 was quite different from the present day. There were fewer standards for signatures, so eth_sign was developed with a fairly simple, open-ended structure.\nThe main thing to note about eth_sign is that it allows the website you're on to request that you sign an arbitrary hash. In this mathematical context, 'arbitrary' means unspecified; your signature could be applied by the requesting dapp to pretty much anything. eth_sign is therefore unsuitable to use with sources that you don't trust.\nAdditionally, the way eth_sign is designed means that the contents of the message you're signing are not human-readable. It's impossible to check up on what you're actually signing, making it particularly dangerous.",
-          ),
-        ]),
-        severity: SeverityLevel.Critical,
-      };
-
     case 'personal_sign':
       return {
         content: panel([row('From:', text(from)), row('Data:', text(data))]),
