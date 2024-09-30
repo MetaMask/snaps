@@ -341,7 +341,6 @@ export const AccountSelectorStruct: Describe<AccountSelectorElement> = element(
   'AccountSelector',
   {
     name: string(),
-    title: string(),
     chainIds: array(
       CaipChainIdStruct as unknown as Struct<
         Infer<typeof CaipChainIdStruct>,
@@ -391,6 +390,7 @@ const FIELD_CHILDREN_ARRAY = [
   FileInputStruct,
   CheckboxStruct,
   SelectorStruct,
+  AccountSelectorStruct,
 ] as [
   typeof InputStruct,
   typeof DropdownStruct,
@@ -398,6 +398,7 @@ const FIELD_CHILDREN_ARRAY = [
   typeof FileInputStruct,
   typeof CheckboxStruct,
   typeof SelectorStruct,
+  typeof AccountSelectorStruct,
 ];
 
 /**
@@ -428,7 +429,8 @@ const FieldChildStruct = nullUnion([
   | FileInputElement
   | InputElement
   | CheckboxElement
-  | SelectorElement,
+  | SelectorElement
+  | AccountSelectorElement,
   null
 >;
 
