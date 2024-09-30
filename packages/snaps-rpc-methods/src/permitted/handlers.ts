@@ -1,4 +1,5 @@
 import { createInterfaceHandler } from './createInterface';
+import { providerRequestHandler } from './experimentalProviderRequest';
 import { getAllSnapsHandler } from './getAllSnaps';
 import { getClientStatusHandler } from './getClientStatus';
 import { getCurrencyRateHandler } from './getCurrencyRate';
@@ -25,6 +26,7 @@ export const methodHandlers = {
   snap_getInterfaceState: getInterfaceStateHandler,
   snap_resolveInterface: resolveInterfaceHandler,
   snap_getCurrencyRate: getCurrencyRateHandler,
+  snap_experimentalProviderRequest: providerRequestHandler,
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 
