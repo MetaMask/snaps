@@ -297,6 +297,13 @@ describe('FieldStruct', () => {
         </SelectorOption>
       </Selector>
     </Field>,
+    <Field label="foo">
+      <AccountSelector
+        name="foo"
+        chainIds={['eip155:1']}
+        selectedAddress="0x1234567890abcdef1234567890abcdef12345678"
+      />
+    </Field>,
   ])('validates a field element', (value) => {
     expect(is(value, FieldStruct)).toBe(true);
   });
