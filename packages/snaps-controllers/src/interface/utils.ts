@@ -121,7 +121,7 @@ function getComponentStateValue(
       return element.props.checked;
 
     case 'AccountSelector':
-      return element.props.selectedAddress;
+      return element.props.selectedAccount;
 
     default:
       return element.props.value;

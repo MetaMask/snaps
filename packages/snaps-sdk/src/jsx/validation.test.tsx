@@ -301,7 +301,7 @@ describe('FieldStruct', () => {
       <AccountSelector
         name="foo"
         chainIds={['eip155:1']}
-        selectedAddress="0x1234567890abcdef1234567890abcdef12345678"
+        selectedAccount="1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed"
       />
     </Field>,
   ])('validates a field element', (value) => {
@@ -970,12 +970,12 @@ describe('AccountSelectorStruct', () => {
     <AccountSelector
       name="account"
       chainIds={['bip122:000000000019d6689c085ae165831e93']}
-      selectedAddress="128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6"
+      selectedAccount="1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed"
     />,
     <AccountSelector
       name="account"
       chainIds={['eip155:1']}
-      selectedAddress="0x1234567890123456789012345678901234567890"
+      selectedAccount="1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed"
     />,
   ])('validates an account picker element', (value) => {
     expect(is(value, AccountSelectorStruct)).toBe(true);
@@ -999,16 +999,11 @@ describe('AccountSelectorStruct', () => {
     // @ts-expect-error - Invalid props.
     <AccountSelector chainIds={['bip122:000000000019d6689c085ae165831e93']} />,
     // @ts-expect-error - Invalid props.
-    <AccountSelector selectedAddress="128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6" />,
+    <AccountSelector selectedAddress={42} />,
     <AccountSelector
       name="account"
       chainIds={['foo:bar']}
-      selectedAddress="0x1234567890123456789012345678901234567890"
-    />,
-    <AccountSelector
-      name="account"
-      chainIds={['eip155:1']}
-      selectedAddress="0x123"
+      selectedAccount="1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed"
     />,
     <Text>foo</Text>,
     <Box>

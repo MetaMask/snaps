@@ -20,7 +20,6 @@ import {
   refine,
 } from '@metamask/superstruct';
 import {
-  CaipAccountAddressStruct,
   CaipAccountIdStruct,
   CaipChainIdStruct,
   hasProperty,
@@ -347,7 +346,7 @@ export const AccountSelectorStruct: Describe<AccountSelectorElement> = element(
         Infer<typeof CaipChainIdStruct>
       >,
     ),
-    selectedAddress: CaipAccountAddressStruct,
+    selectedAccount: string(),
   },
 );
 

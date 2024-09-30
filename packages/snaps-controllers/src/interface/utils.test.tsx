@@ -553,16 +553,15 @@ describe('constructState', () => {
       <Box>
         <AccountSelector
           name="foo"
-          title="Choose an account"
-          chainId="eip155:1"
-          selectedAddress="0x1234567890123456789012345678901234567890"
+          chainIds={['eip155:1']}
+          selectedAccount="1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed"
         />
       </Box>
     );
 
     const result = constructState({}, element);
     expect(result).toStrictEqual({
-      foo: '0x1234567890123456789012345678901234567890',
+      foo: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
     });
   });
 
@@ -571,16 +570,15 @@ describe('constructState', () => {
       <Box>
         <AccountSelector
           name="foo"
-          title="Choose an account"
-          chainId="eip155:1"
-          selectedAddress="0x1234567890123456789012345678901234567890"
+          chainIds={['eip155:1']}
+          selectedAccount="1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed"
         />
       </Box>
     );
 
     const result = constructState({}, element);
     expect(result).toStrictEqual({
-      foo: '0x1234567890123456789012345678901234567890',
+      foo: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
     });
   });
 
@@ -590,9 +588,8 @@ describe('constructState', () => {
         <Form name="form">
           <AccountSelector
             name="foo"
-            title="Choose an account"
-            chainId="eip155:1"
-            selectedAddress="0x1234567890123456789012345678901234567890"
+            chainIds={['eip155:1']}
+            selectedAccount="1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed"
           />
         </Form>
       </Box>
@@ -600,7 +597,7 @@ describe('constructState', () => {
 
     const result = constructState({}, element);
     expect(result).toStrictEqual({
-      form: { foo: '0x1234567890123456789012345678901234567890' },
+      form: { foo: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed' },
     });
   });
 
@@ -610,9 +607,8 @@ describe('constructState', () => {
         <Form name="form">
           <AccountSelector
             name="foo"
-            title="Choose an account"
-            chainId="eip155:1"
-            selectedAddress="0x1234567890123456789012345678901234567890"
+            chainIds={['eip155:1']}
+            selectedAccount="1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed"
           />
         </Form>
       </Box>
@@ -620,7 +616,7 @@ describe('constructState', () => {
 
     const result = constructState({}, element);
     expect(result).toStrictEqual({
-      form: { foo: '0x1234567890123456789012345678901234567890' },
+      form: { foo: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed' },
     });
   });
 

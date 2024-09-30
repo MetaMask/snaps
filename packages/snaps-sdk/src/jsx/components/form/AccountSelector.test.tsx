@@ -6,7 +6,7 @@ describe('AccountSelector', () => {
       <AccountSelector
         name="account"
         chainIds={['bip122:p2wpkh']}
-        selectedAddress="bc1qc8dwyqua9elc3mzcxk93c70kjz8tcc92x0a8a6"
+        selectedAccount="1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed"
       />
     );
 
@@ -15,7 +15,7 @@ describe('AccountSelector', () => {
       props: {
         name: 'account',
         chainIds: ['bip122:p2wpkh'],
-        selectedAddress: 'bc1qc8dwyqua9elc3mzcxk93c70kjz8tcc92x0a8a6',
+        selectedAccount: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
       },
       key: null,
     });
