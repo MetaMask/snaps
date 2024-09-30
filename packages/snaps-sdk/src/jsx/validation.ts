@@ -742,6 +742,7 @@ export const SpinnerStruct: Describe<SpinnerElement> = element('Spinner');
  * another component (e.g., Field must be contained in a Form).
  */
 export const BoxChildStruct = typedUnion([
+  AccountSelectorStruct,
   AddressStruct,
   BoldStruct,
   BoxStruct,
