@@ -27,6 +27,54 @@ import {
 import { SnapEndowments } from '../endowments';
 import type { MethodHooksObject } from '../utils';
 
+// Read-only methods that are currently allowed for this RPC method.
+const METHOD_ALLOWLIST = Object.freeze([
+  'eth_blockNumber',
+  'eth_call',
+  'eth_chainId',
+  'eth_coinbase',
+  'eth_estimateGas',
+  'eth_feeHistory',
+  'eth_gasPrice',
+  'eth_getBalance',
+  'eth_getBlockByHash',
+  'eth_getBlockByNumber',
+  'eth_getBlockTransactionCountByHash',
+  'eth_getBlockTransactionCountByNumber',
+  'eth_getCode',
+  'eth_getFilterChanges',
+  'eth_getFilterLogs',
+  'eth_getLogs',
+  'eth_getProof',
+  'eth_getStorageAt',
+  'eth_getTransactionByBlockHashAndIndex',
+  'eth_getTransactionByBlockNumberAndIndex',
+  'eth_getTransactionByHash',
+  'eth_getTransactionCount',
+  'eth_getTransactionReceipt',
+  'eth_getUncleByBlockHashAndIndex',
+  'eth_getUncleByBlockNumberAndIndex',
+  'eth_getUncleCountByBlockHash',
+  'eth_getUncleCountByBlockNumber',
+  'eth_getWork',
+  'eth_hashrate',
+  'eth_mining',
+  'eth_newBlockFilter',
+  'eth_newFilter',
+  'eth_newPendingTransactionFilter',
+  'eth_protocolVersion',
+  'eth_sendRawTransaction',
+  'eth_submitHashrate',
+  'eth_submitWork',
+  'eth_syncing',
+  'eth_uninstallFilter',
+  'net_listening',
+  'net_peerCount',
+  'net_version',
+  'web3_clientVersion',
+  'web3_sha3',
+]);
+
 const hookNames: MethodHooksObject<ProviderRequestMethodHooks> = {
   hasPermission: true,
   getNetworkConfigurationByChainId: true,
@@ -112,6 +160,10 @@ async function providerRequestImplementation(
 
   try {
     const { chainId, request } = getValidatedParams(params);
+
+    if (!METHOD_ALLOWLIST.includes(request.method)) {
+      return end(rpcErrors.methodNotFound());
+    }
 
     const parsedChainId = parseCaipChainId(chainId);
 

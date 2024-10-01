@@ -278,5 +278,42 @@ describe('snap_experimentalProviderRequest', () => {
         stack: expect.any(String),
       });
     });
+
+    it('returns an error if the requested method is not allowlisted', async () => {
+      const { implementation } = providerRequestHandler;
+
+      const hooks = getMockHooks();
+
+      const engine = new JsonRpcEngine();
+
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<ProviderRequestParams>,
+          response as PendingJsonRpcResponse<ProviderRequestResult>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = (await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_experimentalProviderRequest',
+        params: {
+          chainId: 'eip155:1',
+          request: {
+            method: 'personal_sign',
+          },
+        },
+      })) as JsonRpcFailure;
+
+      expect(response.error).toStrictEqual({
+        ...rpcErrors.methodNotFound().serialize(),
+        stack: expect.any(String),
+      });
+    });
   });
 });
