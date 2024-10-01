@@ -21,6 +21,7 @@ import {
 import {
   assertStruct,
   bytesToHex,
+  JsonRpcParamsStruct,
   JsonStruct,
   StrictHexStruct,
   valueToBytes,
@@ -141,6 +142,19 @@ export const TransactionOptionsStruct = object({
     ),
     '0x',
   ),
+});
+
+export const KeyringOptionsStruct = object({
+  /**
+   * The origin making the Keyring request.
+   */
+  origin: defaulted(string(), 'metamask.io'),
+  /**
+   * Keyring request object with params.
+   */
+  request: object({
+    params: JsonRpcParamsStruct,
+  }),
 });
 
 export const SignatureOptionsStruct = object({

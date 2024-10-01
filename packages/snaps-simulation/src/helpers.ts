@@ -10,12 +10,14 @@ import { addJsonRpcMock, removeJsonRpcMock } from './store';
 import {
   assertIsResponseWithInterface,
   JsonRpcMockOptionsStruct,
+  KeyringOptionsStruct,
   SignatureOptionsStruct,
   TransactionOptionsStruct,
 } from './structs';
 import type {
   CronjobOptions,
   JsonRpcMockOptions,
+  KeyringOptions,
   RequestOptions,
   SignatureOptions,
   SnapRequest,
@@ -113,6 +115,16 @@ export type SnapHelpers = {
    * @returns The response.
    */
   onHomePage(): Promise<SnapResponseWithInterface>;
+
+  /**
+   * Send a keyring request to the Snap.
+   *
+   * @param keyringRequest - Keyring request.
+   * @returns The response.
+   */
+  onKeyringRequest(
+    keyringRequest?: Partial<KeyringOptions>,
+  ): Promise<SnapResponseWithInterface>;
 
   /**
    * Mock a JSON-RPC request. This will cause the snap to respond with the
@@ -216,6 +228,34 @@ export function getHelpers({
     });
   };
 
+  const onKeyringRequest = async (
+    request: KeyringOptions,
+  ): Promise<SnapResponseWithInterface> => {
+    log('Sending keyring request %o.', request);
+
+    const { origin: keyringRequestOrigin, ...keyringRequest } = create(
+      request,
+      KeyringOptionsStruct,
+    );
+
+    const response = await handleRequest({
+      snapId,
+      store,
+      executionService,
+      runSaga,
+      controllerMessenger,
+      handler: HandlerType.OnKeyringRequest,
+      request: {
+        method: '',
+        params: keyringRequest.request.params,
+      },
+    });
+
+    assertIsResponseWithInterface(response);
+
+    return response;
+  };
+
   return {
     request: (request) => {
       log('Sending request %o.', request);
@@ -233,6 +273,8 @@ export function getHelpers({
 
     onTransaction,
     sendTransaction: onTransaction,
+
+    onKeyringRequest,
 
     onSignature: async (
       request: unknown,
