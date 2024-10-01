@@ -8,12 +8,14 @@ import { createSnapComponent } from '../../component';
  * @property name - The name of the account selector. This is used to identify the
  * state in the form data.
  * @property chainIds - The chain IDs of the account selector. This should be a valid CAIP-2 chain ID array.
+ * @property hideExternalAccounts - Whether to hide accounts not owned by the snap. Defaults to `false`.
  * @property selectedAccount - The default selected account of the account selector. This should be a
  * valid account ID.
  */
 export type AccountSelectorProps = {
   name: string;
-  chainIds: CaipChainId[];
+  chainIds?: CaipChainId[] | undefined;
+  hideExternalAccounts?: boolean | undefined;
   selectedAccount: string;
 };
 
@@ -28,13 +30,14 @@ const TYPE = 'AccountSelector';
  * @param props.name - The name of the account selector field. This is used to identify the
  * state in the form data.
  * @param props.chainIds - The chain IDs of the account selector. This should be a valid CAIP-2 chain ID array.
+ * @param props.hideExternalAccounts - Whether to hide accounts not owned by the snap. Defaults to `false`.
  * @param props.selectedAccount - The default selected account of the account selector. This should be a
  * valid account ID.
  * @returns An account selector element.
  * @example
  * <AccountSelector name="account" chainIds={["eip155:1"]} selectedAccount="1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed" />
  * @example
- * <AccountSelector name="account" chainIds={["bip122:000000000019d6689c085ae165831e93"]} selectedAccount="1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed" />
+ * <AccountSelector name="account" chainIds={["bip122:000000000019d6689c085ae165831e93"]} selectedAccount="1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed" hideExternalAccounts />
  */
 export const AccountSelector = createSnapComponent<
   AccountSelectorProps,

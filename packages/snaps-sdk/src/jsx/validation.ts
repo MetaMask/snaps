@@ -340,12 +340,11 @@ export const AccountSelectorStruct: Describe<AccountSelectorElement> = element(
   'AccountSelector',
   {
     name: string(),
-    chainIds: array(
-      CaipChainIdStruct as unknown as Struct<
-        Infer<typeof CaipChainIdStruct>,
-        Infer<typeof CaipChainIdStruct>
-      >,
-    ),
+    chainIds: optional(array(CaipChainIdStruct)) as unknown as Struct<
+      Infer<typeof CaipChainIdStruct>[] | undefined,
+      null
+    >,
+    hideExternalAccounts: optional(boolean()),
     selectedAccount: string(),
   },
 );

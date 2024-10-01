@@ -974,7 +974,7 @@ describe('AccountSelectorStruct', () => {
     />,
     <AccountSelector
       name="account"
-      chainIds={['eip155:1']}
+      hideExternalAccounts={true}
       selectedAccount="1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed"
     />,
   ])('validates an account picker element', (value) => {
@@ -1004,6 +1004,13 @@ describe('AccountSelectorStruct', () => {
       name="account"
       chainIds={['foo:bar']}
       selectedAccount="1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed"
+    />,
+    <AccountSelector
+      name="account"
+      chainIds={['foo:bar']}
+      selectedAccount="1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed"
+      // @ts-expect-error - Invalid props.
+      hideExternalAccounts={42}
     />,
     <Text>foo</Text>,
     <Box>
