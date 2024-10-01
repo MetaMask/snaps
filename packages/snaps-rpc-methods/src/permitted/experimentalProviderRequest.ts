@@ -16,7 +16,7 @@ import {
   type,
 } from '@metamask/superstruct';
 import {
-  numberToHex,
+  bigIntToHex,
   parseCaipChainId,
   type PendingJsonRpcResponse,
   type Json,
@@ -175,10 +175,10 @@ async function providerRequestImplementation(
       );
     }
 
-    const numericalChainId = parseInt(parsedChainId.reference, 10);
+    const numericalChainId = BigInt(parsedChainId.reference);
 
     const networkConfiguration = getNetworkConfigurationByChainId(
-      numberToHex(numericalChainId),
+      bigIntToHex(numericalChainId),
     );
 
     if (!networkConfiguration) {
