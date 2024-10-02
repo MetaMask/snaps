@@ -3,22 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "jsx": "react-jsxdev",
-    "paths": {
-      "@metamask/*/jsx": ["../../../*/src/jsx"],
-      "@metamask/*/jsx-dev-runtime": ["../../../*/src/jsx"],
-      "@metamask/*": ["../../../*/src"]
-    }
+    "composite": false
   },
-  "include": ["src", "snap.config.ts"],
-  "references": [
-    {
-      "path": "../../../snaps-sdk"
-    },
-    {
-      "path": "../../../snaps-jest"
-    },
-    {
-      "path": "../../../snaps-cli"
-    }
-  ]
+  "include": ["src", "snap.config.ts"]
 }

@@ -3,7 +3,7 @@ import {
   MethodNotFoundError,
   type OnRpcRequestHandler,
 } from '@metamask/snaps-sdk';
-import { assert, stringToBytes } from '@metamask/utils';
+import { assert, bytesToHex, stringToBytes } from '@metamask/utils';
 import { keccak_256 as keccak256 } from '@noble/hashes/sha3';
 
 import type { BIP44Path, SignMessageParams } from './types';
@@ -52,7 +52,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
           request: {
             method: 'getAccount',
             params: {
-              path,
+              path: path as unknown as string[],
             },
           },
         },
@@ -68,7 +68,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
               // To keep this example simple, we only support signing messages
               // with the Keccak-256 hash function. In a real snap, you could
               // also sign actual transactions.
-              message: keccak256(stringToBytes(message)),
+              message: bytesToHex(keccak256(stringToBytes(message))),
               account,
             },
           },
@@ -77,6 +77,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     }
 
     default:
+      // eslint-disable-next-line @typescript-eslint/no-throw-literal
       throw new MethodNotFoundError({ method: request.method });
   }
 };
