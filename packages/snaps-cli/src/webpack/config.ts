@@ -1,4 +1,5 @@
 import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import type { Ora } from 'ora';
 import { resolve } from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
@@ -277,6 +278,16 @@ export async function getDefaultConfiguration(
      * @see https://webpack.js.org/configuration/plugins/
      */
     plugins: [
+      /**
+       * The `ForkTsCheckerWebpackPlugin` is a Webpack plugin that checks
+       * Typescript type definitions, it does this in a separate process for speed.
+       */
+      new ForkTsCheckerWebpackPlugin({
+        typescript: {
+          build: true,
+        },
+      }),
+
       /**
        * The `SnapsWebpackPlugin` is a Webpack plugin that checks and updates
        * the manifest file, and evaluates the bundle in SES. While not strictly
