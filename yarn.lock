@@ -5193,7 +5193,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^17.0.0":
+"@metamask/keyring-controller@npm:^17.2.2":
   version: 17.2.2
   resolution: "@metamask/keyring-controller@npm:17.2.2"
   dependencies:
@@ -5906,7 +5906,7 @@ __metadata:
     "@metamask/eslint-config-typescript": "npm:^12.1.0"
     "@metamask/json-rpc-engine": "npm:^9.0.2"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.2"
-    "@metamask/keyring-controller": "npm:^17.0.0"
+    "@metamask/keyring-controller": "npm:^17.2.2"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/permission-controller": "npm:^11.0.0"
     "@metamask/phishing-controller": "npm:^12.0.2"
