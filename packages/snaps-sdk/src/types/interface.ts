@@ -2,6 +2,7 @@ import type { Infer } from '@metamask/superstruct';
 import {
   boolean,
   nullable,
+  object,
   record,
   string,
   union,
@@ -16,13 +17,29 @@ import { ComponentStruct } from '../ui';
 import { FileStruct } from './handlers';
 
 /**
+ * The state of an `AccountSelector` component.
+ *
+ * @property id - The account ID of the account.
+ * @property address - The address of the account.
+ */
+export const AccountSelectorStateStruct = object({
+  id: string(),
+  address: string(),
+});
+
+/**
  * To avoid typing problems with the interface state when manipulating it we
  * have to differentiate the state of a form (that will be contained inside the
  * root state) and the root state since a key in the root stat can contain
  * either the value of an input or a sub-state of a form.
  */
 
-export const StateStruct = union([FileStruct, string(), boolean()]);
+export const StateStruct = union([
+  FileStruct,
+  AccountSelectorStateStruct,
+  string(),
+  boolean(),
+]);
 
 export const FormStateStruct = record(string(), nullable(StateStruct));
 

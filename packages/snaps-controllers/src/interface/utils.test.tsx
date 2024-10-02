@@ -65,6 +65,8 @@ describe('assertNameIsUnique', () => {
 });
 
 describe('constructState', () => {
+  const getSelectedAccount = jest.fn();
+
   it('can construct a new component state', () => {
     const element = (
       <Box>
@@ -77,7 +79,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
 
     expect(result).toStrictEqual({ foo: { bar: null } });
   });
@@ -95,7 +97,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
 
     expect(result).toStrictEqual({ foo: { bar: null } });
   });
@@ -117,7 +119,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState(state, element);
+    const result = constructState(state, element, getSelectedAccount);
     expect(result).toStrictEqual({ foo: { bar: 'test', baz: null } });
   });
 
@@ -138,7 +140,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState(state, element);
+    const result = constructState(state, element, getSelectedAccount);
     expect(result).toStrictEqual({ form: { bar: 'test', baz: null } });
   });
 
@@ -170,7 +172,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState(state, element);
+    const result = constructState(state, element, getSelectedAccount);
 
     expect(result).toStrictEqual({
       form1: { bar: 'test', baz: null },
@@ -198,7 +200,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState(state, element);
+    const result = constructState(state, element, getSelectedAccount);
     expect(result).toStrictEqual({
       form1: { bar: 'test', baz: null },
     });
@@ -236,7 +238,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState(state, element);
+    const result = constructState(state, element, getSelectedAccount);
     expect(result).toStrictEqual({
       form1: { bar: 'test', baz: null },
       form2: { bar: 'def', baz: null },
@@ -250,7 +252,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       foo: 'bar',
     });
@@ -263,7 +265,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       foo: null,
     });
@@ -279,7 +281,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       foo: 'option1',
     });
@@ -295,7 +297,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       foo: 'option2',
     });
@@ -315,7 +317,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       form: { foo: 'option1' },
     });
@@ -335,7 +337,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       form: { foo: 'option2' },
     });
@@ -351,7 +353,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       foo: 'option1',
     });
@@ -367,7 +369,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       foo: 'option2',
     });
@@ -387,7 +389,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       form: { foo: 'option1' },
     });
@@ -407,7 +409,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       form: { foo: 'option2' },
     });
@@ -420,7 +422,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       foo: true,
     });
@@ -437,7 +439,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       form: { foo: false },
     });
@@ -454,7 +456,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       form: { foo: true },
     });
@@ -474,7 +476,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       foo: 'option1',
     });
@@ -494,7 +496,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       foo: 'option2',
     });
@@ -518,7 +520,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       form: { foo: 'option1' },
     });
@@ -542,7 +544,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       form: { foo: 'option2' },
     });
@@ -559,7 +561,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       foo: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
     });
@@ -576,7 +578,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       foo: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
     });
@@ -595,7 +597,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       form: { foo: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed' },
     });
@@ -614,9 +616,42 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       form: { foo: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed' },
+    });
+  });
+
+  it('supports getting the selected account from extension', () => {
+    getSelectedAccount.mockReturnValue('1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed');
+
+    const element = (
+      <Box>
+        <Form name="form">
+          <AccountSelector name="foo" />
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element, getSelectedAccount);
+    expect(result).toStrictEqual({
+      form: { foo: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed' },
+    });
+  });
+
+  it('supports setting the selected account to `null` if there is no currently selected account', () => {
+    getSelectedAccount.mockReturnValue(undefined);
+    const element = (
+      <Box>
+        <Form name="form">
+          <AccountSelector name="foo" />
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element, getSelectedAccount);
+    expect(result).toStrictEqual({
+      form: { foo: null },
     });
   });
 
@@ -637,7 +672,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       form: { bar: 'option2' },
     });
@@ -668,7 +703,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       form: { baz: 'option4' },
       form2: { bar: 'option2' },
@@ -682,7 +717,11 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({ foo: null, bar: null }, element);
+    const result = constructState(
+      { foo: null, bar: null },
+      element,
+      getSelectedAccount,
+    );
     expect(result).toStrictEqual({
       foo: null,
     });
@@ -699,7 +738,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState(state, element);
+    const result = constructState(state, element, getSelectedAccount);
     expect(result).toStrictEqual({
       foo: 'bar',
     });
@@ -712,7 +751,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, getSelectedAccount);
     expect(result).toStrictEqual({
       foo: null,
     });
@@ -730,7 +769,7 @@ describe('constructState', () => {
       </Form>
     );
 
-    expect(() => constructState({}, element)).toThrow(
+    expect(() => constructState({}, element, getSelectedAccount)).toThrow(
       `Duplicate component names are not allowed, found multiple instances of: "foo".`,
     );
   });
@@ -743,7 +782,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    expect(() => constructState({}, element)).toThrow(
+    expect(() => constructState({}, element, getSelectedAccount)).toThrow(
       `Duplicate component names are not allowed, found multiple instances of: "test".`,
     );
   });
@@ -760,7 +799,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    expect(() => constructState({}, element)).toThrow(
+    expect(() => constructState({}, element, getSelectedAccount)).toThrow(
       `Duplicate component names are not allowed, found multiple instances of: "test".`,
     );
   });

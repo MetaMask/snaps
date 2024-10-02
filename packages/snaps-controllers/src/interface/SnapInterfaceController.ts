@@ -197,7 +197,11 @@ export class SnapInterfaceController extends BaseController<
     validateInterfaceContext(context);
 
     const id = nanoid();
-    const componentState = constructState({}, element);
+    const componentState = constructState(
+      {},
+      element,
+      this.#getSelectedAccount.bind(this),
+    );
 
     this.update((draftState) => {
       // @ts-expect-error - TS2589: Type instantiation is excessively deep and
@@ -243,7 +247,11 @@ export class SnapInterfaceController extends BaseController<
     await this.#validateContent(element);
 
     const oldState = this.state.interfaces[id].state;
-    const newState = constructState(oldState, element);
+    const newState = constructState(
+      oldState,
+      element,
+      this.#getSelectedAccount.bind(this),
+    );
 
     this.update((draftState) => {
       draftState.interfaces[id].state = newState;
@@ -364,6 +372,17 @@ export class SnapInterfaceController extends BaseController<
       'ApprovalController:acceptRequest',
       id,
       value,
+    );
+  }
+
+  /**
+   * Get the currently selected account in Extension.
+   *
+   * @returns The currently selected account.
+   */
+  #getSelectedAccount() {
+    return this.messagingSystem.call(
+      'AccountsController:getSelectedMultichainAccount',
     );
   }
 

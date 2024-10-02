@@ -27,6 +27,8 @@ import {
   walkJsx,
 } from '@metamask/snaps-utils';
 
+type GetSelectedAccount = () => { id: string; address: string } | undefined;
+
 /**
  * Get a JSX element from a component or JSX element. If the component is a
  * JSX element, it is returned as is. Otherwise, the component is converted to
@@ -63,6 +65,7 @@ export function assertNameIsUnique(state: InterfaceState, name: string) {
  * for component specific defaults and will not override the component value or existing form state.
  *
  * @param element - The input element.
+ * @param getSelectedAccount - A function to get the selected account in Extension.
  * @returns The default state for the specific component, if any.
  */
 function constructComponentSpecificDefaultState(
@@ -73,6 +76,7 @@ function constructComponentSpecificDefaultState(
     | CheckboxElement
     | SelectorElement
     | AccountSelectorElement,
+  getSelectedAccount: GetSelectedAccount,
 ) {
   switch (element.type) {
     case 'Dropdown': {
@@ -88,6 +92,15 @@ function constructComponentSpecificDefaultState(
     case 'Selector': {
       const children = getJsxChildren(element) as SelectorOptionElement[];
       return children[0]?.props.value;
+    }
+
+    case 'AccountSelector': {
+      const account = getSelectedAccount();
+      if (!account) {
+        return null;
+      }
+      const { id, address } = account;
+      return { id, address };
     }
 
     case 'Checkbox':
@@ -133,6 +146,7 @@ function getComponentStateValue(
  *
  * @param oldState - The previous state.
  * @param element - The input element.
+ * @param getSelectedAccount - A function to get the selected account in Extension.
  * @param form - An optional form that the input is enclosed in.
  * @returns The input state.
  */
@@ -146,6 +160,7 @@ function constructInputState(
     | CheckboxElement
     | SelectorElement
     | AccountSelectorElement,
+  getSelectedAccount: GetSelectedAccount,
   form?: string,
 ) {
   const oldStateUnwrapped = form ? (oldState[form] as FormState) : oldState;
@@ -158,7 +173,7 @@ function constructInputState(
   return (
     getComponentStateValue(element) ??
     oldInputState ??
-    constructComponentSpecificDefaultState(element) ??
+    constructComponentSpecificDefaultState(element, getSelectedAccount) ??
     null
   );
 }
@@ -168,11 +183,13 @@ function constructInputState(
  *
  * @param oldState - The previous state.
  * @param rootComponent - The UI component to construct state from.
+ * @param getSelectedAccount - A function to get the selected account in Extension.
  * @returns The interface state of the passed component.
  */
 export function constructState(
   oldState: InterfaceState,
   rootComponent: JSXElement,
+  getSelectedAccount: GetSelectedAccount,
 ): InterfaceState {
   const newState: InterfaceState = {};
 
@@ -211,6 +228,7 @@ export function constructState(
       formState[component.props.name] = constructInputState(
         oldState,
         component,
+        getSelectedAccount,
         currentForm.name,
       );
       return;
@@ -227,7 +245,11 @@ export function constructState(
       component.type === 'AccountSelector'
     ) {
       assertNameIsUnique(newState, component.props.name);
-      newState[component.props.name] = constructInputState(oldState, component);
+      newState[component.props.name] = constructInputState(
+        oldState,
+        component,
+        getSelectedAccount,
+      );
     }
   });
 

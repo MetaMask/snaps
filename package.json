@@ -59,7 +59,6 @@
     "@types/glob@*": "patch:@types/glob@npm%3A7.1.4#./.yarn/patches/@types-glob-npm-7.1.4-d45247eaa2.patch",
     "@types/glob@^7.1.1": "patch:@types/glob@npm%3A7.1.4#./.yarn/patches/@types-glob-npm-7.1.4-d45247eaa2.patch",
     "@types/mocha@^10.0.1": "patch:@types/mocha@npm:10.0.1#.yarn/patches/@types-mocha-npm-10.0.1-7c94e9e170.patch",
-    "@types/readable-stream": "^4.0.15",
     "find-babel-config": "^2.0.0",
     "got": "^13.0.0",
     "inline-source-map@~0.6.0": "patch:inline-source-map@npm%3A0.6.2#./.yarn/patches/inline-source-map-npm-0.6.2-96902459a0.patch",
