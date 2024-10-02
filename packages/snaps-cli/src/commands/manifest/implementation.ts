@@ -1,10 +1,29 @@
 import { checkManifest, indent } from '@metamask/snaps-utils/node';
 import { assert } from '@metamask/utils';
 import { red, yellow, green } from 'chalk';
+import { promises as fs } from 'fs';
 import type { Ora } from 'ora';
 import { dirname } from 'path';
+import babel from 'prettier/parser-babel';
+import { format } from 'prettier/standalone';
 
 import { error, info, warn } from '../../utils';
+
+/**
+ * Write the manifest to disk.
+ *
+ * @param path - The path to write the manifest to.
+ * @param data - The manifest data.
+ * @returns A promise that resolves when the manifest has been written.
+ */
+async function writeManifest(path: string, data: string) {
+  const formattedManifest = format(data, {
+    parser: 'json',
+    plugins: [babel],
+  });
+
+  await fs.writeFile(path, formattedManifest);
+}
 
 /**
  * Check the snap manifest file at the given path. If `write` is `true`, the
@@ -24,6 +43,7 @@ export async function manifest(
 ): Promise<boolean> {
   const { reports, updated } = await checkManifest(dirname(path), {
     updateAndWriteManifest: write,
+    writeFileFn: writeManifest,
   });
 
   const errors = [];
