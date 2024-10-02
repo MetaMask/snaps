@@ -434,8 +434,6 @@ export type SnapWebpackConfig = {
      * @default true
      */
     images?: boolean;
-
-    typechecking: boolean | { configFile: string };
   };
 
   /**

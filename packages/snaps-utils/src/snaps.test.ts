@@ -2,6 +2,7 @@ import type {
   SubjectPermissions,
   PermissionConstraint,
 } from '@metamask/permission-controller';
+import type { SnapId } from '@metamask/snaps-sdk';
 import { is } from '@metamask/superstruct';
 
 import { SnapCaveatType } from './caveats';
