@@ -345,7 +345,8 @@ export const AccountSelectorStruct: Describe<AccountSelectorElement> = element(
       null
     >,
     hideExternalAccounts: optional(boolean()),
-    selectedAccount: string(),
+    switchGlobalAccount: optional(boolean()),
+    selectedAccount: optional(string()),
   },
 );
 

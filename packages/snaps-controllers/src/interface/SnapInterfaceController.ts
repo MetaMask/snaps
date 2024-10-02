@@ -1,3 +1,4 @@
+import type { AccountsControllerGetSelectedMultichainAccountAction } from '@metamask/accounts-controller';
 import type {
   AcceptRequest,
   HasApprovalRequest,
@@ -76,7 +77,8 @@ export type SnapInterfaceControllerAllowedActions =
   | MaybeUpdateState
   | HasApprovalRequest
   | AcceptRequest
-  | GetSnap;
+  | GetSnap
+  | AccountsControllerGetSelectedMultichainAccountAction;
 
 export type SnapInterfaceControllerActions =
   | CreateInterface

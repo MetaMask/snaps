@@ -967,14 +967,22 @@ describe('FileInputStruct', () => {
 
 describe('AccountSelectorStruct', () => {
   it.each([
+    <AccountSelector name="account" />,
     <AccountSelector
       name="account"
       chainIds={['bip122:000000000019d6689c085ae165831e93']}
+    />,
+    <AccountSelector name="account" hideExternalAccounts />,
+    <AccountSelector name="account" switchGlobalAccount />,
+    <AccountSelector
+      name="account"
       selectedAccount="1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed"
     />,
     <AccountSelector
       name="account"
-      hideExternalAccounts={true}
+      chainIds={['foo:bar']}
+      hideExternalAccounts
+      switchGlobalAccount
       selectedAccount="1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed"
     />,
   ])('validates an account picker element', (value) => {
@@ -995,7 +1003,7 @@ describe('AccountSelectorStruct', () => {
       <Text>foo</Text>
     </AccountSelector>,
     // @ts-expect-error - Invalid props.
-    <AccountSelector name="account" />,
+    <AccountSelector switchGlobalAccount="foo" />,
     // @ts-expect-error - Invalid props.
     <AccountSelector chainIds={['bip122:000000000019d6689c085ae165831e93']} />,
     // @ts-expect-error - Invalid props.
