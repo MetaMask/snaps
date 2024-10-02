@@ -17,15 +17,17 @@ import { ComponentStruct } from '../ui';
 import { FileStruct } from './handlers';
 
 /**
- * The state of an `AccountSelector` component.
+ * The value of an `AccountSelector` component in state.
  *
  * @property id - The account ID of the account.
  * @property address - The address of the account.
  */
-export const AccountSelectorStateStruct = object({
+export const AccountSelectorValueStruct = object({
   id: string(),
   address: string(),
 });
+
+export type AccountSelectorValue = Infer<typeof AccountSelectorValueStruct>;
 
 /**
  * To avoid typing problems with the interface state when manipulating it we
@@ -36,7 +38,7 @@ export const AccountSelectorStateStruct = object({
 
 export const StateStruct = union([
   FileStruct,
-  AccountSelectorStateStruct,
+  AccountSelectorValueStruct,
   string(),
   boolean(),
 ]);

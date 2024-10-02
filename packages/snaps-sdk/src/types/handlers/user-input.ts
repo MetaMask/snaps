@@ -12,7 +12,10 @@ import {
   boolean,
 } from '@metamask/superstruct';
 
-import type { InterfaceContext } from '../interface';
+import {
+  AccountSelectorValueStruct,
+  type InterfaceContext,
+} from '../interface';
 
 /**
  * The type of user input event fired.
@@ -75,7 +78,12 @@ export const FormSubmitEventStruct = assign(
   GenericEventStruct,
   object({
     type: literal(UserInputEventType.FormSubmitEvent),
-    value: record(string(), nullable(union([string(), FileStruct, boolean()]))),
+    value: record(
+      string(),
+      nullable(
+        union([string(), FileStruct, AccountSelectorValueStruct, boolean()]),
+      ),
+    ),
     name: string(),
   }),
 );
@@ -100,7 +108,7 @@ export const InputChangeEventStruct = assign(
   object({
     type: literal(UserInputEventType.InputChangeEvent),
     name: string(),
-    value: union([string(), boolean()]),
+    value: union([string(), boolean(), AccountSelectorValueStruct]),
   }),
 );
 
