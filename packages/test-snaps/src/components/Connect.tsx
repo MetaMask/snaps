@@ -62,9 +62,7 @@ export const Connect: FunctionComponent<ConnectProps> = ({
         {isLoading ? (
           <ButtonSpinner>Connecting</ButtonSpinner>
         ) : (
-          <span>
-            {isInstalled ? 'Reconnect' : 'Connect'} to {name}
-          </span>
+          `${isInstalled ? 'Reconnect' : 'Connect'} to ${name}`
         )}
       </Button>
     </Form>
