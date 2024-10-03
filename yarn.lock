@@ -6066,6 +6066,7 @@ __metadata:
     "@metamask/permission-controller": "npm:^11.0.0"
     "@metamask/phishing-controller": "npm:^12.0.2"
     "@metamask/snaps-controllers": "workspace:^"
+    "@metamask/snaps-execution-environments": "workspace:^"
     "@metamask/snaps-rpc-methods": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
