@@ -1,6 +1,7 @@
 import type { SnapId } from '@metamask/snaps-sdk';
 import { form, image, input, panel, text } from '@metamask/snaps-sdk';
 import {
+  AccountSelector,
   Box,
   Field,
   FileInput,
@@ -91,6 +92,13 @@ describe('SnapInterfaceController', () => {
             <Link href="https://foo.bar">foo</Link>
           </Text>
           <Form name="foo">
+            <Field label="Baz">
+              <AccountSelector name="foobar" />
+            </Field>
+            <AccountSelector
+              name="barbaz"
+              selectedAccount="1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed"
+            />
             <Field label="Bar">
               <Input name="bar" type="text" />
             </Field>
@@ -121,8 +129,31 @@ describe('SnapInterfaceController', () => {
         'foo.bar',
       );
 
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        4,
+        'AccountsController:getSelectedMultichainAccount',
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        5,
+        'AccountsController:getAccount',
+        '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
+      );
+
       expect(content).toStrictEqual(element);
-      expect(state).toStrictEqual({ foo: { bar: null } });
+      expect(state).toStrictEqual({
+        foo: {
+          bar: null,
+          foobar: {
+            address: '0x1234567891234567891234567891234567891234',
+            id: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
+          },
+          barbaz: {
+            address: '0x1234567891234567891234567891234567891234',
+            id: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
+          },
+        },
+      });
     });
 
     it('supports providing interface context', async () => {

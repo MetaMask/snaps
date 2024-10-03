@@ -2,7 +2,6 @@ import type { Infer } from '@metamask/superstruct';
 import {
   boolean,
   nullable,
-  object,
   record,
   string,
   union,
@@ -14,20 +13,7 @@ import type { JSXElement } from '../jsx';
 import { RootJSXElementStruct } from '../jsx';
 import type { Component } from '../ui';
 import { ComponentStruct } from '../ui';
-import { FileStruct } from './handlers';
-
-/**
- * The value of an `AccountSelector` component in state.
- *
- * @property id - The account ID of the account.
- * @property address - The address of the account.
- */
-export const AccountSelectorValueStruct = object({
-  id: string(),
-  address: string(),
-});
-
-export type AccountSelectorValue = Infer<typeof AccountSelectorValueStruct>;
+import { AccountSelectorValueStruct, FileStruct } from './handlers';
 
 /**
  * To avoid typing problems with the interface state when manipulating it we

@@ -761,6 +761,8 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'PhishingController:maybeUpdateState',
       'ApprovalController:hasRequest',
       'ApprovalController:acceptRequest',
+      'AccountsController:getSelectedMultichainAccount',
+      'AccountsController:getAccount',
     ],
     allowedEvents: [],
   });
@@ -775,6 +777,38 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       result: false,
       type: 'all',
     }));
+
+    messenger.registerActionHandler(
+      'AccountsController:getSelectedMultichainAccount',
+      () => ({
+        id: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
+        address: '0x1234567891234567891234567891234567891234',
+        type: 'eip155:eoa',
+        options: { foo: 'bar' },
+        methods: [],
+        metadata: {
+          name: 'foo',
+          importTime: 1,
+          keyring: { type: 'foo' },
+        },
+      }),
+    );
+
+    messenger.registerActionHandler(
+      'AccountsController:getAccount',
+      (id: string) => ({
+        id,
+        address: '0x1234567891234567891234567891234567891234',
+        type: 'eip155:eoa',
+        options: { foo: 'bar' },
+        methods: [],
+        metadata: {
+          name: 'foo',
+          importTime: 1,
+          keyring: { type: 'foo' },
+        },
+      }),
+    );
   }
 
   return snapInterfaceControllerMessenger;

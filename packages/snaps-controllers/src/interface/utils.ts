@@ -28,6 +28,7 @@ import {
 } from '@metamask/snaps-utils';
 
 type GetSelectedAccount = () => { id: string; address: string } | undefined;
+type GetAccount = (id: string) => { id: string; address: string } | undefined;
 
 /**
  * Get a JSX element from a component or JSX element. If the component is a
@@ -96,6 +97,7 @@ function constructComponentSpecificDefaultState(
 
     case 'AccountSelector': {
       const account = getSelectedAccount();
+
       if (!account) {
         return null;
       }
@@ -118,6 +120,7 @@ function constructComponentSpecificDefaultState(
  * This function exists to account for components where that isn't the case.
  *
  * @param element - The input element.
+ * @param getAccount - A function to get an account by ID.
  * @returns The state value for a given component.
  */
 function getComponentStateValue(
@@ -128,13 +131,26 @@ function getComponentStateValue(
     | CheckboxElement
     | SelectorElement
     | AccountSelectorElement,
+  getAccount: GetAccount,
 ) {
   switch (element.type) {
     case 'Checkbox':
       return element.props.checked;
 
-    case 'AccountSelector':
-      return element.props.selectedAccount;
+    case 'AccountSelector': {
+      if (!element.props.selectedAccount) {
+        return undefined;
+      }
+
+      const account = getAccount(element.props.selectedAccount);
+
+      assert(
+        account,
+        `Account with ID ${element.props.selectedAccount} not found.`,
+      );
+
+      return { id: account.id, address: account.address };
+    }
 
     default:
       return element.props.value;
@@ -147,6 +163,7 @@ function getComponentStateValue(
  * @param oldState - The previous state.
  * @param element - The input element.
  * @param getSelectedAccount - A function to get the selected account in Extension.
+ * @param getAccount - A function to get an account by ID.
  * @param form - An optional form that the input is enclosed in.
  * @returns The input state.
  */
@@ -161,6 +178,7 @@ function constructInputState(
     | SelectorElement
     | AccountSelectorElement,
   getSelectedAccount: GetSelectedAccount,
+  getAccount: GetAccount,
   form?: string,
 ) {
   const oldStateUnwrapped = form ? (oldState[form] as FormState) : oldState;
@@ -171,7 +189,7 @@ function constructInputState(
   }
 
   return (
-    getComponentStateValue(element) ??
+    getComponentStateValue(element, getAccount) ??
     oldInputState ??
     constructComponentSpecificDefaultState(element, getSelectedAccount) ??
     null
@@ -184,12 +202,14 @@ function constructInputState(
  * @param oldState - The previous state.
  * @param rootComponent - The UI component to construct state from.
  * @param getSelectedAccount - A function to get the selected account in Extension.
+ * @param getAccount - A function to get an account by ID.
  * @returns The interface state of the passed component.
  */
 export function constructState(
   oldState: InterfaceState,
   rootComponent: JSXElement,
   getSelectedAccount: GetSelectedAccount,
+  getAccount: GetAccount,
 ): InterfaceState {
   const newState: InterfaceState = {};
 
@@ -229,6 +249,7 @@ export function constructState(
         oldState,
         component,
         getSelectedAccount,
+        getAccount,
         currentForm.name,
       );
       return;
@@ -249,6 +270,7 @@ export function constructState(
         oldState,
         component,
         getSelectedAccount,
+        getAccount,
       );
     }
   });

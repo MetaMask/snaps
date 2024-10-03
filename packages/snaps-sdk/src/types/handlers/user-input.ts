@@ -12,10 +12,7 @@ import {
   boolean,
 } from '@metamask/superstruct';
 
-import {
-  AccountSelectorValueStruct,
-  type InterfaceContext,
-} from '../interface';
+import { type InterfaceContext } from '../interface';
 
 /**
  * The type of user input event fired.
@@ -55,6 +52,19 @@ export const ButtonClickEventStruct = assign(
  * @property name - The optional component name that fired the event.
  */
 export type ButtonClickEvent = Infer<typeof ButtonClickEventStruct>;
+
+/**
+ * The value of an `AccountSelector` component in state.
+ *
+ * @property id - The account ID of the account.
+ * @property address - The address of the account.
+ */
+export const AccountSelectorValueStruct = object({
+  id: string(),
+  address: string(),
+});
+
+export type AccountSelectorValue = Infer<typeof AccountSelectorValueStruct>;
 
 export const FileStruct = object({
   name: string(),

@@ -1,4 +1,7 @@
-import type { AccountsControllerGetSelectedMultichainAccountAction } from '@metamask/accounts-controller';
+import type {
+  AccountsControllerGetAccountAction,
+  AccountsControllerGetSelectedMultichainAccountAction,
+} from '@metamask/accounts-controller';
 import type {
   AcceptRequest,
   HasApprovalRequest,
@@ -78,7 +81,8 @@ export type SnapInterfaceControllerAllowedActions =
   | HasApprovalRequest
   | AcceptRequest
   | GetSnap
-  | AccountsControllerGetSelectedMultichainAccountAction;
+  | AccountsControllerGetSelectedMultichainAccountAction
+  | AccountsControllerGetAccountAction;
 
 export type SnapInterfaceControllerActions =
   | CreateInterface
@@ -201,6 +205,7 @@ export class SnapInterfaceController extends BaseController<
       {},
       element,
       this.#getSelectedAccount.bind(this),
+      this.#getAccount.bind(this),
     );
 
     this.update((draftState) => {
@@ -251,6 +256,7 @@ export class SnapInterfaceController extends BaseController<
       oldState,
       element,
       this.#getSelectedAccount.bind(this),
+      this.#getAccount.bind(this),
     );
 
     this.update((draftState) => {
@@ -384,6 +390,16 @@ export class SnapInterfaceController extends BaseController<
     return this.messagingSystem.call(
       'AccountsController:getSelectedMultichainAccount',
     );
+  }
+
+  /**
+   * Get an account by ID.
+   *
+   * @param id - The account ID.
+   * @returns The account.
+   */
+  #getAccount(id: string) {
+    return this.messagingSystem.call('AccountsController:getAccount', id);
   }
 
   /**
