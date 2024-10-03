@@ -62,6 +62,7 @@ linkStyle default opacity:0.5
   snaps_rpc_methods --> snaps_sdk;
   snaps_rpc_methods --> snaps_utils;
   snaps_simulation --> snaps_controllers;
+  snaps_simulation --> snaps_execution_environments;
   snaps_simulation --> snaps_rpc_methods;
   snaps_simulation --> snaps_sdk;
   snaps_simulation --> snaps_utils;
