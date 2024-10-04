@@ -20,9 +20,7 @@ import {
   refine,
 } from '@metamask/superstruct';
 import {
-  CaipAccountAddressStruct,
   CaipAccountIdStruct,
-  CaipChainIdStruct,
   hasProperty,
   HexChecksumAddressStruct,
   isPlainObject,
@@ -49,7 +47,6 @@ import type {
   StringElement,
 } from './component';
 import {
-  type AccountSelectorElement,
   type AddressElement,
   type BoldElement,
   type BoxElement,
@@ -331,22 +328,6 @@ export const FileInputStruct: Describe<FileInputElement> = element(
     name: string(),
     accept: nullUnion([optional(array(string()))]),
     compact: optional(boolean()),
-  },
-);
-
-/**
- * A struct for the {@link AccountSelectorElement} type.
- */
-export const AccountSelectorStruct: Describe<AccountSelectorElement> = element(
-  'AccountSelector',
-  {
-    name: string(),
-    title: string(),
-    chainId: CaipChainIdStruct as unknown as Struct<
-      Infer<typeof CaipChainIdStruct>,
-      Infer<typeof CaipChainIdStruct>
-    >,
-    selectedAddress: CaipAccountAddressStruct,
   },
 );
 
@@ -843,7 +824,6 @@ export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   SelectorStruct,
   SelectorOptionStruct,
   SectionStruct,
-  AccountSelectorStruct,
 ]);
 
 /**
