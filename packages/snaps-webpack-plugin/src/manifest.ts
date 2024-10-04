@@ -3,7 +3,10 @@ import { promises as fs } from 'fs';
 import { format, resolveConfig } from 'prettier';
 
 /**
- * Write the manifest to disk.
+ * Format the manifest data with Prettier and write it to disk.
+ *
+ * It uses the Prettier configuration found in the project directory (if any),
+ * or the default Prettier configuration if none is found.
  *
  * @param path - The path to write the manifest to.
  * @param data - The manifest data.
