@@ -13,6 +13,8 @@ import type { Compiler } from 'webpack';
 import { Compilation, WebpackError } from 'webpack';
 import { RawSource, SourceMapSource } from 'webpack-sources';
 
+import { writeManifest } from './manifest';
+
 const PLUGIN_NAME = 'SnapsWebpackPlugin';
 
 type PluginOptions = {
@@ -145,11 +147,13 @@ export default class SnapsWebpackPlugin {
           {
             updateAndWriteManifest: this.options.writeManifest,
             sourceCode: bundleContent,
-            writeFileFn: promisify(
-              compiler.outputFileSystem.writeFile.bind(
-                compiler.outputFileSystem,
-              ),
-            ),
+            writeFileFn: async (path, data) => {
+              return writeManifest(
+                path,
+                data,
+                promisify(compiler.outputFileSystem.writeFile),
+              );
+            },
           },
         );
 

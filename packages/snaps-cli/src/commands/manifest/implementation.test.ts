@@ -118,4 +118,63 @@ describe('manifest', () => {
       expect.stringMatching('The snap manifest file has been updated.'),
     );
   });
+
+  it('formats a snap manifest with Prettier', async () => {
+    const error = jest.spyOn(console, 'error').mockImplementation();
+    const log = jest.spyOn(console, 'log').mockImplementation();
+
+    await fs.writeFile(
+      '/snap/snap.manifest.json',
+      JSON.stringify(
+        getSnapManifest({
+          shasum: 'G/W5b2JZVv+epgNX9pkN63X6Lye9EJVJ4NLSgAw/afd=',
+          initialPermissions: {
+            'endowment:name-lookup': {
+              chains: ['eip155:1', 'eip155:2', 'eip155:3'],
+            },
+          },
+        }),
+      ),
+    );
+
+    const spinner = ora();
+    const result = await manifest('/snap/snap.manifest.json', true, spinner);
+    expect(result).toBe(true);
+
+    expect(error).not.toHaveBeenCalled();
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching('The snap manifest file has been updated.'),
+    );
+
+    expect(await fs.readFile('/snap/snap.manifest.json', 'utf8'))
+      .toMatchInlineSnapshot(`
+      "{
+        "version": "1.0.0",
+        "description": "The test example snap!",
+        "proposedName": "@metamask/example-snap",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/MetaMask/example-snap.git"
+        },
+        "source": {
+          "shasum": "d4W7f1lzpVGMj8jjCn1lYhhHmKc/9TSk5QLH5ldKQoI=",
+          "location": {
+            "npm": {
+              "filePath": "dist/bundle.js",
+              "packageName": "@metamask/example-snap",
+              "registry": "https://registry.npmjs.org",
+              "iconPath": "images/icon.svg"
+            }
+          }
+        },
+        "initialPermissions": {
+          "endowment:name-lookup": {
+            "chains": ["eip155:1", "eip155:2", "eip155:3"]
+          }
+        },
+        "manifestVersion": "0.1"
+      }
+      "
+    `);
+  });
 });

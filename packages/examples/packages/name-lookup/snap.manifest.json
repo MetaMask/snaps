@@ -18,9 +18,7 @@
   },
   "initialPermissions": {
     "endowment:name-lookup": {
-      "chains": [
-        "eip155:1"
-      ]
+      "chains": ["eip155:1"]
     }
   },
   "manifestVersion": "0.1"

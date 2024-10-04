@@ -15,11 +15,7 @@
         "registry": "https://registry.npmjs.org/"
       }
     },
-    "locales": [
-      "locales/da.json",
-      "locales/en.json",
-      "locales/nl.json"
-    ]
+    "locales": ["locales/da.json", "locales/en.json", "locales/nl.json"]
   },
   "initialPermissions": {
     "endowment:rpc": {

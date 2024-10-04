@@ -15,6 +15,7 @@ import * as pathUtils from 'path';
 import type { Stats, Configuration } from 'webpack';
 import webpack from 'webpack';
 
+import { writeManifest } from './manifest';
 import type { Options } from './plugin';
 import SnapsWebpackPlugin from './plugin';
 
@@ -22,6 +23,10 @@ jest.mock('@metamask/snaps-utils/node', () => ({
   ...jest.requireActual('@metamask/snaps-utils/node'),
   evalBundle: jest.fn(),
   checkManifest: jest.fn(),
+}));
+
+jest.mock('./manifest', () => ({
+  writeManifest: jest.fn(),
 }));
 
 type BundleOptions = {
@@ -215,6 +220,17 @@ describe('SnapsWebpackPlugin', () => {
       sourceCode: expect.any(String),
       writeFileFn: expect.any(Function),
     });
+
+    const writeFileFn = mock.mock.calls[0][1]?.writeFileFn;
+    expect(writeFileFn).toBeDefined();
+    await writeFileFn?.('/snap.manifest.json', 'foo');
+
+    expect(writeManifest).toHaveBeenCalledTimes(1);
+    expect(writeManifest).toHaveBeenCalledWith(
+      '/snap.manifest.json',
+      'foo',
+      expect.any(Function),
+    );
   });
 
   it('does not fix the manifest if configured', async () => {

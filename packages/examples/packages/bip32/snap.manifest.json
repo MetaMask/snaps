@@ -24,37 +24,21 @@
     "snap_dialog": {},
     "snap_getBip32Entropy": [
       {
-        "path": [
-          "m",
-          "44'",
-          "0'"
-        ],
+        "path": ["m", "44'", "0'"],
         "curve": "secp256k1"
       },
       {
-        "path": [
-          "m",
-          "44'",
-          "0'"
-        ],
+        "path": ["m", "44'", "0'"],
         "curve": "ed25519"
       },
       {
-        "path": [
-          "m",
-          "44'",
-          "0'"
-        ],
+        "path": ["m", "44'", "0'"],
         "curve": "ed25519Bip32"
       }
     ],
     "snap_getBip32PublicKey": [
       {
-        "path": [
-          "m",
-          "44'",
-          "0'"
-        ],
+        "path": ["m", "44'", "0'"],
         "curve": "secp256k1"
       }
     ]
