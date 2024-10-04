@@ -9617,14 +9617,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.6.7":
-  version: 1.7.4
-  resolution: "axios@npm:1.7.4"
+"axios@npm:^1.7.4":
+  version: 1.7.7
+  resolution: "axios@npm:1.7.7"
   dependencies:
     follow-redirects: "npm:^1.15.6"
     form-data: "npm:^4.0.0"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10/7a1429be1e3d0c2e1b96d4bba4d113efbfabc7c724bed107beb535c782c7bea447ff634886b0c7c43395a264d085450d009eb1154b5f38a8bae49d469fdcbc61
+  checksum: 10/7f875ea13b9298cd7b40fd09985209f7a38d38321f1118c701520939de2f113c4ba137832fe8e3f811f99a38e12c8225481011023209a77b0c0641270e20cde1
   languageName: node
   linkType: hard
 
@@ -10569,12 +10569,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromedriver@npm:^127.0.0":
-  version: 127.0.0
-  resolution: "chromedriver@npm:127.0.0"
+"chromedriver@npm:^129.0.2":
+  version: 129.0.2
+  resolution: "chromedriver@npm:129.0.2"
   dependencies:
     "@testim/chrome-version": "npm:^1.1.4"
-    axios: "npm:^1.6.7"
+    axios: "npm:^1.7.4"
     compare-versions: "npm:^6.1.0"
     extract-zip: "npm:^2.0.1"
     proxy-agent: "npm:^6.4.0"
@@ -10582,7 +10582,7 @@ __metadata:
     tcp-port-used: "npm:^1.0.2"
   bin:
     chromedriver: bin/chromedriver
-  checksum: 10/8b56f51b79a12c28b7d417b24ca59123026345e4debf417b67c15b64c194a1b3abe81e970255bcb3820877544a48ed20865f96caf796941eaaac616bb7b52fd2
+  checksum: 10/223854665dce25a5d4b1073cb6732df70172a3cbcba23e91f2e81f07437b0b4be0d1712e90aa2b069e45aacf0eea4f99ba4d76cbda96def9ea8194ce73ee813f
   languageName: node
   linkType: hard
 
@@ -20387,7 +20387,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
     "@typescript-eslint/parser": "npm:^6.21.0"
     "@yarnpkg/types": "npm:^4.0.0"
-    chromedriver: "npm:^127.0.0"
+    chromedriver: "npm:^129.0.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
     eslint-config-prettier: "npm:^8.5.0"
