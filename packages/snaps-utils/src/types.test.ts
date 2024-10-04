@@ -1,6 +1,19 @@
 import { enums, is, literal } from '@metamask/superstruct';
 
-import { isValidUrl, uri } from './types';
+import { ProposedNameStruct, isValidUrl, uri } from './types';
+
+describe('ProposedNameStruct', () => {
+  it.each(['foo', 'bar baz', 'foo-bar', '@foo/bar', '@^_-()[]'])(
+    'accepts %p',
+    (value) => {
+      expect(is(value, ProposedNameStruct)).toBe(true);
+    },
+  );
+
+  it.each([1, '', '😄', String.fromCharCode(8206)])('rejects %p', (value) => {
+    expect(is(value, ProposedNameStruct)).toBe(false);
+  });
+});
 
 describe.each([
   isValidUrl,

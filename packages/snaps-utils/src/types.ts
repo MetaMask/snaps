@@ -34,6 +34,12 @@ export const NameStruct = size(
   214,
 );
 
+/**
+ * A struct that matches anything from ASCII index 32 (space) to 126 (~), i.e.,
+ * all printable ASCII characters, between 1 and 214 characters long.
+ */
+export const ProposedNameStruct = size(pattern(string(), /^[ -~]+$/u), 1, 214);
+
 // Note we use `type` instead of `object` here, because the latter does not
 // allow unknown keys.
 export const NpmSnapPackageJsonStruct = type({
