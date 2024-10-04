@@ -15,7 +15,6 @@ import {
   Selector,
   Card,
   SelectorOption,
-  AccountSelector,
 } from '@metamask/snaps-sdk/jsx';
 
 import { assertNameIsUnique, constructState, getJsxInterface } from './utils';
@@ -545,82 +544,6 @@ describe('constructState', () => {
     const result = constructState({}, element);
     expect(result).toStrictEqual({
       form: { foo: 'option2' },
-    });
-  });
-
-  it('sets default value for root level Account selector', () => {
-    const element = (
-      <Box>
-        <AccountSelector
-          name="foo"
-          title="Choose an account"
-          chainId="eip155:1"
-          selectedAddress="0x1234567890123456789012345678901234567890"
-        />
-      </Box>
-    );
-
-    const result = constructState({}, element);
-    expect(result).toStrictEqual({
-      foo: '0x1234567890123456789012345678901234567890',
-    });
-  });
-
-  it('supports root level Account selector', () => {
-    const element = (
-      <Box>
-        <AccountSelector
-          name="foo"
-          title="Choose an account"
-          chainId="eip155:1"
-          selectedAddress="0x1234567890123456789012345678901234567890"
-        />
-      </Box>
-    );
-
-    const result = constructState({}, element);
-    expect(result).toStrictEqual({
-      foo: '0x1234567890123456789012345678901234567890',
-    });
-  });
-
-  it('sets default value for Account selector in form', () => {
-    const element = (
-      <Box>
-        <Form name="form">
-          <AccountSelector
-            name="foo"
-            title="Choose an account"
-            chainId="eip155:1"
-            selectedAddress="0x1234567890123456789012345678901234567890"
-          />
-        </Form>
-      </Box>
-    );
-
-    const result = constructState({}, element);
-    expect(result).toStrictEqual({
-      form: { foo: '0x1234567890123456789012345678901234567890' },
-    });
-  });
-
-  it('supports Account selector in form', () => {
-    const element = (
-      <Box>
-        <Form name="form">
-          <AccountSelector
-            name="foo"
-            title="Choose an account"
-            chainId="eip155:1"
-            selectedAddress="0x1234567890123456789012345678901234567890"
-          />
-        </Form>
-      </Box>
-    );
-
-    const result = constructState({}, element);
-    expect(result).toStrictEqual({
-      form: { foo: '0x1234567890123456789012345678901234567890' },
     });
   });
 
