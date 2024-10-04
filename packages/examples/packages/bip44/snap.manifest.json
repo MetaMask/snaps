@@ -19,9 +19,7 @@
   "initialPermissions": {
     "endowment:rpc": {
       "dapps": true,
-      "allowedOrigins": [
-        "npm:@metamask/json-rpc-example-snap"
-      ]
+      "allowedOrigins": ["npm:@metamask/json-rpc-example-snap"]
     },
     "snap_dialog": {},
     "snap_getBip44Entropy": [

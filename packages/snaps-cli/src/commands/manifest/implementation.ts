@@ -1,4 +1,5 @@
 import { checkManifest, indent } from '@metamask/snaps-utils/node';
+import { writeManifest } from '@metamask/snaps-webpack-plugin';
 import { assert } from '@metamask/utils';
 import { red, yellow, green } from 'chalk';
 import type { Ora } from 'ora';
@@ -24,6 +25,7 @@ export async function manifest(
 ): Promise<boolean> {
   const { reports, updated } = await checkManifest(dirname(path), {
     updateAndWriteManifest: write,
+    writeFileFn: writeManifest,
   });
 
   const errors = [];

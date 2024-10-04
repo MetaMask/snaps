@@ -15,9 +15,7 @@
         "registry": "https://registry.npmjs.org"
       }
     },
-    "files": [
-      "./files/foo.json"
-    ]
+    "files": ["./files/foo.json"]
   },
   "initialPermissions": {
     "endowment:rpc": {
