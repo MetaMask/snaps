@@ -130,6 +130,11 @@ export async function checkManifest(
 
       assert(manifestResults.files);
 
+      await writeFileFn(
+        pathUtils.join(basePath, NpmSnapFileNames.Manifest),
+        manifestResults.files.manifest.toString(),
+      );
+
       try {
         await writeFileFn(
           pathUtils.join(basePath, NpmSnapFileNames.Manifest),
