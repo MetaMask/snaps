@@ -341,6 +341,7 @@ export const AccountSelectorStruct: Describe<AccountSelectorElement> = element(
   'AccountSelector',
   {
     name: string(),
+    title: string(),
     chainIds: array(
       CaipChainIdStruct as unknown as Struct<
         Infer<typeof CaipChainIdStruct>,
@@ -390,7 +391,6 @@ const FIELD_CHILDREN_ARRAY = [
   FileInputStruct,
   CheckboxStruct,
   SelectorStruct,
-  AccountSelectorStruct,
 ] as [
   typeof InputStruct,
   typeof DropdownStruct,
@@ -398,7 +398,6 @@ const FIELD_CHILDREN_ARRAY = [
   typeof FileInputStruct,
   typeof CheckboxStruct,
   typeof SelectorStruct,
-  typeof AccountSelectorStruct,
 ];
 
 /**
@@ -429,8 +428,7 @@ const FieldChildStruct = nullUnion([
   | FileInputElement
   | InputElement
   | CheckboxElement
-  | SelectorElement
-  | AccountSelectorElement,
+  | SelectorElement,
   null
 >;
 
@@ -744,7 +742,6 @@ export const SpinnerStruct: Describe<SpinnerElement> = element('Spinner');
  * another component (e.g., Field must be contained in a Form).
  */
 export const BoxChildStruct = typedUnion([
-  AccountSelectorStruct,
   AddressStruct,
   BoldStruct,
   BoxStruct,
