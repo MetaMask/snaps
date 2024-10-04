@@ -92,3 +92,15 @@ jobs:
           if [[ $passed != "true" ]]; then
             exit 1
           fi
+
+  re-run:
+    name: Re-run failed jobs
+    needs: lint-build-test
+    if: failure() && fromJSON(github.run_attempt) < 3
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+          GH_DEBUG: api
+        run: gh workflow run re-run.yml -F run-id=${{ github.run_id }}
