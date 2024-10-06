@@ -282,11 +282,13 @@ export async function getDefaultConfiguration(
        * The `ForkTsCheckerWebpackPlugin` is a Webpack plugin that checks
        * Typescript type definitions, it does this in a separate process for speed.
        */
-      new ForkTsCheckerWebpackPlugin({
-        typescript: {
-          build: true,
-        },
-      }),
+      config.typescript.enabled &&
+        new ForkTsCheckerWebpackPlugin({
+          typescript: {
+            build: true,
+            configFile: config.typescript.configFile,
+          },
+        }),
 
       /**
        * The `SnapsWebpackPlugin` is a Webpack plugin that checks and updates

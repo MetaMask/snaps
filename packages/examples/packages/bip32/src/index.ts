@@ -40,14 +40,13 @@ import { getPrivateNode, getPublicKey } from './utils';
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'getPublicKey':
-      return await getPublicKey(
-        request.params as unknown as GetBip32PublicKeyParams,
-      );
+      return await getPublicKey(request.params as GetBip32PublicKeyParams);
 
     case 'signMessage': {
       const { message, curve, ...params } = request.params as SignMessageParams;
 
       if (!message || typeof message !== 'string') {
+        // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw new InvalidParamsError(`Invalid signature data: "${message}".`);
       }
 
@@ -75,6 +74,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       });
 
       if (!approved) {
+        // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw new UserRejectedRequestError();
       }
 
@@ -100,6 +100,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     }
 
     default:
+      // eslint-disable-next-line @typescript-eslint/no-throw-literal
       throw new MethodNotFoundError({ method: request.method });
   }
 };

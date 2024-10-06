@@ -30,6 +30,7 @@ export const onCronjob: OnCronjobHandler = async ({ request }) => {
         },
       });
     default:
+      // eslint-disable-next-line @typescript-eslint/no-throw-literal
       throw new MethodNotFoundError({ method: request.method });
   }
 };
