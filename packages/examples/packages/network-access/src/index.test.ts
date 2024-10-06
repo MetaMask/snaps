@@ -5,7 +5,7 @@ import { installSnap } from '@metamask/snaps-jest';
 describe('onRpcRequest', () => {
   // This test is disabled as it does not currently work
   // TODO(ritave): Fix this test
-  it.skip('throws an error if the requested method does not exist', async () => {
+  it('throws an error if the requested method does not exist', async () => {
     const { request } = await installSnap({
       executionService: NodeProcessExecutionService,
     });
