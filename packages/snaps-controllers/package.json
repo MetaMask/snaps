@@ -102,6 +102,7 @@
     "nanoid": "^3.1.31",
     "readable-stream": "^3.6.2",
     "readable-web-to-node-stream": "^3.0.2",
+    "semver": "^7.5.4",
     "tar-stream": "^3.1.7"
   },
   "devDependencies": {
@@ -125,6 +126,7 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "18.14.2",
     "@types/readable-stream": "^4.0.15",
+    "@types/semver": "^7.5.0",
     "@types/tar-stream": "^3.1.1",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^6.21.0",
