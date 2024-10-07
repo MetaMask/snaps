@@ -24,7 +24,8 @@ const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {
   source: 6,
   initialConnections: 7,
   initialPermissions: 8,
-  manifestVersion: 9,
+  platformVersion: 9,
+  manifestVersion: 10,
 };
 
 export type CheckManifestReport = Omit<ValidatorReport, 'fix'> & {

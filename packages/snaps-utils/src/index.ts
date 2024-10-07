@@ -22,6 +22,7 @@ export * from './logging';
 export * from './manifest';
 export * from './namespace';
 export * from './path';
+export * from './platform-version';
 export * from './snaps';
 export * from './strings';
 export * from './structs';
