@@ -1,5 +1,8 @@
+import { getPlatformVersion } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
+  DEFAULT_SNAP_ICON,
+  getMockSnapFilesWithUpdatedChecksum,
   getPackageJson,
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
@@ -61,15 +64,21 @@ jest.mock('../../webpack/utils', () => ({
 
 describe('build', () => {
   beforeEach(async () => {
+    const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
+      manifest: getSnapManifest({
+        platformVersion: getPlatformVersion(),
+      }),
+    });
+
     await fs.mkdir('/snap');
     await fs.writeFile('/snap/input.js', DEFAULT_SNAP_BUNDLE);
     await fs.writeFile(
       '/snap/snap.manifest.json',
-      JSON.stringify(getSnapManifest()),
+      JSON.stringify(manifest.result),
     );
     await fs.writeFile('/snap/package.json', JSON.stringify(getPackageJson()));
     await fs.mkdir('/snap/images');
-    await fs.writeFile('/snap/images/icon.svg', '<svg></svg>');
+    await fs.writeFile('/snap/images/icon.svg', DEFAULT_SNAP_ICON);
     await fs.mkdir(dirname(BROWSERSLIST_FILE), { recursive: true });
     await fs.writeFile(
       BROWSERSLIST_FILE,
