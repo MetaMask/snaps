@@ -206,6 +206,7 @@ describe('isSnapManifest', () => {
     { name: 'foo' },
     { version: '1.0.0' },
     getSnapManifest({ version: 'foo bar' }),
+    getSnapManifest({ proposedName: '😄' }),
   ])('returns false for an invalid snap manifest', (value) => {
     expect(isSnapManifest(value)).toBe(false);
   });

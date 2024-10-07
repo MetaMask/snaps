@@ -36,7 +36,12 @@ import { KeyringOriginsStruct, RpcOriginsStruct } from '../json-rpc';
 import { ChainIdStruct } from '../namespace';
 import { SnapIdStruct } from '../snaps';
 import { mergeStructs, type InferMatching } from '../structs';
-import { NameStruct, NpmSnapFileNames, uri } from '../types';
+import {
+  NameStruct,
+  NpmSnapFileNames,
+  ProposedNameStruct,
+  uri,
+} from '../types';
 
 // BIP-43 purposes that cannot be used for entropy derivation. These are in the
 // string form, ending with `'`.
@@ -266,7 +271,7 @@ export type InitialConnections = Infer<typeof InitialConnectionsStruct>;
 export const SnapManifestStruct = object({
   version: VersionStruct,
   description: size(string(), 1, 280),
-  proposedName: size(string(), 1, 214),
+  proposedName: ProposedNameStruct,
   repository: optional(
     type({
       type: size(string(), 1, Infinity),
