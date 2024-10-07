@@ -26,7 +26,7 @@ describe('writeManifest', () => {
           "url": "https://github.com/MetaMask/example-snap.git"
         },
         "source": {
-          "shasum": "rNyfINgNh161cBmUop+F7xlE+GSEDZH53Y/HDpGLGGg=",
+          "shasum": "/17SwI03+Cn9sk45Z6Czp+Sktru1oLzOmkJW+YbP9WE=",
           "location": {
             "npm": {
               "filePath": "dist/bundle.js",
@@ -40,6 +40,7 @@ describe('writeManifest', () => {
           "snap_dialog": {},
           "endowment:rpc": { "snaps": true, "dapps": false }
         },
+        "platformVersion": "1.0.0",
         "manifestVersion": "0.1"
       }
       "
@@ -63,7 +64,7 @@ describe('writeManifest', () => {
               "url": "https://github.com/MetaMask/example-snap.git"
           },
           "source": {
-              "shasum": "rNyfINgNh161cBmUop+F7xlE+GSEDZH53Y/HDpGLGGg=",
+              "shasum": "/17SwI03+Cn9sk45Z6Czp+Sktru1oLzOmkJW+YbP9WE=",
               "location": {
                   "npm": {
                       "filePath": "dist/bundle.js",
@@ -77,6 +78,7 @@ describe('writeManifest', () => {
               "snap_dialog": {},
               "endowment:rpc": { "snaps": true, "dapps": false }
           },
+          "platformVersion": "1.0.0",
           "manifestVersion": "0.1"
       }
       "
@@ -99,7 +101,7 @@ describe('writeManifest', () => {
           "url": "https://github.com/MetaMask/example-snap.git"
         },
         "source": {
-          "shasum": "rNyfINgNh161cBmUop+F7xlE+GSEDZH53Y/HDpGLGGg=",
+          "shasum": "/17SwI03+Cn9sk45Z6Czp+Sktru1oLzOmkJW+YbP9WE=",
           "location": {
             "npm": {
               "filePath": "dist/bundle.js",
@@ -113,6 +115,7 @@ describe('writeManifest', () => {
           "snap_dialog": {},
           "endowment:rpc": { "snaps": true, "dapps": false }
         },
+        "platformVersion": "1.0.0",
         "manifestVersion": "0.1"
       }
       "
