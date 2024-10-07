@@ -1,3 +1,5 @@
+name: Re-run failed jobs
+
 on:
   workflow_dispatch:
     inputs:
