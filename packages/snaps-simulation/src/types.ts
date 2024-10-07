@@ -421,7 +421,9 @@ export type Snap = {
    * @param keyringRequest - Keyring request options.
    * @returns The response.
    */
-  onKeyringRequest(keyringRequest?: Partial<KeyringOptions>): SnapRequest;
+  onKeyringRequest(
+    keyringRequest?: Partial<KeyringOptions>,
+  ): Promise<SnapResponseWithoutInterface>;
 
   /**
    * Mock a JSON-RPC request. This will cause the snap to respond with the

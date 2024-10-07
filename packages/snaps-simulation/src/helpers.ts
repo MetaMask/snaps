@@ -22,6 +22,7 @@ import type {
   SignatureOptions,
   SnapRequest,
   SnapResponseWithInterface,
+  SnapResponseWithoutInterface,
   TransactionOptions,
 } from './types';
 
@@ -124,7 +125,7 @@ export type SnapHelpers = {
    */
   onKeyringRequest(
     keyringRequest?: Partial<KeyringOptions>,
-  ): Promise<SnapResponseWithInterface>;
+  ): Promise<SnapResponseWithoutInterface>;
 
   /**
    * Mock a JSON-RPC request. This will cause the snap to respond with the
@@ -230,7 +231,7 @@ export function getHelpers({
 
   const onKeyringRequest = async (
     request: KeyringOptions,
-  ): Promise<SnapResponseWithInterface> => {
+  ): Promise<SnapResponseWithoutInterface> => {
     log('Sending keyring request %o.', request);
 
     const { origin: keyringRequestOrigin, request: keyringRequest } = create(
@@ -247,8 +248,6 @@ export function getHelpers({
       handler: HandlerType.OnKeyringRequest,
       request: { origin: keyringRequestOrigin, ...keyringRequest },
     });
-
-    assertIsResponseWithInterface(response);
 
     return response;
   };
