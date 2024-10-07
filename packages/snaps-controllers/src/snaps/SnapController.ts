@@ -63,6 +63,8 @@ import type {
   TruncatedSnapFields,
 } from '@metamask/snaps-utils';
 import {
+  logWarning,
+  getPlatformVersion,
   assertIsSnapManifest,
   assertIsValidSnapId,
   DEFAULT_ENDOWMENTS,
@@ -108,6 +110,7 @@ import type { StateMachine } from '@xstate/fsm';
 import { createMachine, interpret } from '@xstate/fsm';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
+import semver from 'semver';
 
 import { forceStrict, validateMachine } from '../fsm';
 import type { CreateInterface, GetInterface } from '../interface';
@@ -601,6 +604,7 @@ type FeatureFlags = {
   requireAllowlist?: boolean;
   allowLocalSnaps?: boolean;
   disableSnapInstallation?: boolean;
+  rejectInvalidPlatformVersion?: boolean;
 };
 
 type DynamicFeatureFlags = {
@@ -1337,6 +1341,7 @@ export class SnapController extends BaseController<
     const results = await this.messagingSystem.call('SnapsRegistry:get', {
       [snapId]: snapInfo,
     });
+
     const result = results[snapId];
     if (result.status === SnapsRegistryStatus.Blocked) {
       throw new Error(
@@ -2550,6 +2555,7 @@ export class SnapController extends BaseController<
         );
       }
 
+      this.#validatePlatformVersion(manifest);
       await this.#assertIsInstallAllowed(snapId, {
         version: newVersion,
         checksum: manifest.source.shasum,
@@ -2735,6 +2741,7 @@ export class SnapController extends BaseController<
           );
         }
 
+        this.#validatePlatformVersion(manifest);
         await this.#assertIsInstallAllowed(snapId, {
           version: manifest.version,
           checksum: manifest.source.shasum,
@@ -3008,6 +3015,32 @@ export class SnapController extends BaseController<
         '\n',
       )}`,
     );
+  }
+
+  /**
+   * Validate that the platform version specified in the manifest (if any) is
+   * compatible with the current platform version.
+   *
+   * @param manifest - The Snap manifest.
+   * @throws If the platform version is greater than the current platform
+   * version.
+   */
+  #validatePlatformVersion(manifest: SnapManifest) {
+    if (manifest.platformVersion === undefined) {
+      return;
+    }
+
+    if (semver.gt(manifest.platformVersion, getPlatformVersion())) {
+      const message = `The Snap requires platform version "${
+        manifest.platformVersion
+      }" which is greater than the current platform version "${getPlatformVersion()}".`;
+
+      if (this.#featureFlags.rejectInvalidPlatformVersion) {
+        throw new Error(message);
+      }
+
+      logWarning(message);
+    }
   }
 
   /**

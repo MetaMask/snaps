@@ -292,6 +292,7 @@ export const SnapManifestStruct = object({
   initialConnections: optional(InitialConnectionsStruct),
   initialPermissions: PermissionsStruct,
   manifestVersion: literal('0.1'),
+  platformVersion: optional(VersionStruct),
   $schema: optional(string()), // enables JSON-Schema linting in VSC and other IDEs
 });
 

@@ -2,10 +2,11 @@ import { promises as fs } from 'fs';
 import { join } from 'path';
 
 import { readJsonFile } from '../fs';
+import { getPlatformVersion } from '../platform-version';
+import { getSnapChecksum } from '../snaps';
 import {
   DEFAULT_SNAP_BUNDLE,
   DEFAULT_SNAP_ICON,
-  DEFAULT_SNAP_SHASUM,
   MOCK_AUXILIARY_FILE,
   getPackageJson,
   getSnapManifest,
@@ -34,6 +35,23 @@ const MANIFEST_PATH = join(BASE_PATH, NpmSnapFileNames.Manifest);
 const PACKAGE_JSON_PATH = join(BASE_PATH, NpmSnapFileNames.PackageJson);
 
 /**
+ * Get the default manifest for the current platform version.
+ *
+ * @returns The default manifest.
+ */
+// TODO: When we support top-level await, we can make this a constant variable,
+//       and remove this function.
+async function getDefaultManifest() {
+  const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
+    manifest: getSnapManifest({
+      platformVersion: getPlatformVersion(),
+    }),
+  });
+
+  return manifest.result;
+}
+
+/**
  * Clears out all the files in the in-memory file system, and writes the default
  * files to the `BASE_PATH` folder, including sub-folders.
  */
@@ -46,7 +64,7 @@ async function resetFileSystem() {
   await fs.mkdir(join(BASE_PATH, 'src'), { recursive: true });
 
   // Write default files.
-  await fs.writeFile(MANIFEST_PATH, JSON.stringify(getSnapManifest()));
+  await fs.writeFile(MANIFEST_PATH, JSON.stringify(await getDefaultManifest()));
   await fs.writeFile(PACKAGE_JSON_PATH, JSON.stringify(getPackageJson()));
   await fs.writeFile(join(BASE_PATH, 'dist/bundle.js'), DEFAULT_SNAP_BUNDLE);
   await fs.writeFile(join(BASE_PATH, 'images/icon.svg'), DEFAULT_SNAP_ICON);
@@ -70,6 +88,7 @@ describe('checkManifest', () => {
       JSON.stringify(
         getSnapManifest({
           shasum: '29MYwcRiruhy9BEJpN/TBIhxoD3t0P4OdXztV9rW8tc=',
+          platformVersion: getPlatformVersion(),
         }),
       ),
     );
@@ -78,14 +97,16 @@ describe('checkManifest', () => {
     const unfixed = reports.filter((report) => !report.wasFixed);
     const fixed = reports.filter((report) => report.wasFixed);
 
-    expect(files?.manifest.result).toStrictEqual(getSnapManifest());
+    const defaultManifest = await getDefaultManifest();
+
+    expect(files?.manifest.result).toStrictEqual(defaultManifest);
     expect(updated).toBe(true);
     expect(unfixed).toHaveLength(0);
     expect(fixed).toHaveLength(1);
 
     const file = await readJsonFile<SnapManifest>(MANIFEST_PATH);
     const { source } = file.result;
-    expect(source.shasum).toBe(DEFAULT_SNAP_SHASUM);
+    expect(source.shasum).toBe(defaultManifest.source.shasum);
   });
 
   it('fixes multiple problems in the manifest', async () => {
@@ -95,6 +116,7 @@ describe('checkManifest', () => {
         getSnapManifest({
           version: '0.0.1',
           shasum: '29MYwcRiruhy9BEJpN/TBIhxoD3t0P4OdXztV9rW8tc=',
+          platformVersion: getPlatformVersion(),
         }),
       ),
     );
@@ -103,14 +125,16 @@ describe('checkManifest', () => {
     const unfixed = reports.filter((report) => !report.wasFixed);
     const fixed = reports.filter((report) => report.wasFixed);
 
-    expect(files?.manifest.result).toStrictEqual(getSnapManifest());
+    const defaultManifest = await getDefaultManifest();
+
+    expect(files?.manifest.result).toStrictEqual(defaultManifest);
     expect(updated).toBe(true);
     expect(unfixed).toHaveLength(0);
     expect(fixed).toHaveLength(2);
 
     const file = await readJsonFile<SnapManifest>(MANIFEST_PATH);
     const { source, version } = file.result;
-    expect(source.shasum).toBe(DEFAULT_SNAP_SHASUM);
+    expect(source.shasum).toBe(defaultManifest.source.shasum);
     expect(version).toBe('1.0.0');
   });
 
@@ -148,7 +172,9 @@ describe('checkManifest', () => {
   });
 
   it('returns a warning if manifest has with a non 1:1 ratio', async () => {
-    const manifest = getSnapManifest();
+    const manifest = getSnapManifest({
+      platformVersion: getPlatformVersion(),
+    });
 
     await fs.writeFile(
       join(BASE_PATH, 'images/icon.svg'),
@@ -165,19 +191,23 @@ describe('checkManifest', () => {
   });
 
   it('return errors if the manifest is invalid', async () => {
-    await fs.writeFile(
-      MANIFEST_PATH,
-      JSON.stringify(
-        getSnapManifest({
-          version: '0.0.1',
-          shasum: '1234567890123456789012345678901234567890123=',
-        }),
-      ),
-    );
+    const manifest = getSnapManifest({
+      version: '0.0.1',
+      shasum: '1234567890123456789012345678901234567890123=',
+      platformVersion: getPlatformVersion(),
+    });
+
+    await fs.writeFile(MANIFEST_PATH, JSON.stringify(manifest));
 
     const { reports } = await checkManifest(BASE_PATH, {
       updateAndWriteManifest: false,
     });
+
+    const expectedChecksum = await getSnapChecksum(
+      getMockSnapFiles({
+        manifest,
+      }),
+    );
 
     expect(reports).toHaveLength(2);
     // Make this test order independent
@@ -185,7 +215,7 @@ describe('checkManifest', () => {
     expect(reports.map(({ message }) => message)).toEqual(
       expect.arrayContaining([
         '"snap.manifest.json" npm package version ("0.0.1") does not match the "package.json" "version" field ("1.0.0").',
-        '"snap.manifest.json" "shasum" field does not match computed shasum. Got "1234567890123456789012345678901234567890123=", expected "TVOA4znZze3/eDErYSzrFF6z67fu9cL70+ZfgUM6nCQ=".',
+        `"snap.manifest.json" "shasum" field does not match computed shasum. Got "1234567890123456789012345678901234567890123=", expected "${expectedChecksum}".`,
       ]),
     );
   });
@@ -196,6 +226,7 @@ describe('checkManifest', () => {
       JSON.stringify(
         getSnapManifest({
           locales: ['foo.json'],
+          platformVersion: getPlatformVersion(),
         }),
       ),
     );
@@ -215,6 +246,7 @@ describe('checkManifest', () => {
     const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
       manifest: getSnapManifest({
         locales: ['locales/en.json'],
+        platformVersion: getPlatformVersion(),
       }),
       localizationFiles: [localizationFile],
     });
@@ -242,6 +274,7 @@ describe('checkManifest', () => {
       manifest: getSnapManifest({
         proposedName: '{{ name }}',
         locales: ['locales/en.json'],
+        platformVersion: getPlatformVersion(),
       }),
       localizationFiles: [localizationFile],
     });

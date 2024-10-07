@@ -16,6 +16,7 @@ type GetSnapManifestOptions = Partial<MakeSemVer<SnapManifest>> & {
   iconPath?: string;
   files?: string[];
   locales?: string[];
+  platformVersion?: string;
 };
 
 type GetPackageJsonOptions = Partial<MakeSemVer<NpmSnapPackageJson>>;
@@ -69,7 +70,8 @@ export const ALTERNATIVE_SNAP_ICON =
 
 // This will need to be recalculated if the checksum inputs change.
 export const DEFAULT_SNAP_SHASUM =
-  'rNyfINgNh161cBmUop+F7xlE+GSEDZH53Y/HDpGLGGg=';
+  '/17SwI03+Cn9sk45Z6Czp+Sktru1oLzOmkJW+YbP9WE=';
+
 /**
  * Get a mock snap manifest, based on the provided options. This is useful for
  * quickly generating a manifest file, while being able to override any of the
@@ -88,6 +90,7 @@ export const DEFAULT_SNAP_SHASUM =
  * @param manifest.files - Auxiliary files loaded at runtime by the snap.
  * @param manifest.locales - Localization files of the snap.
  * @param manifest.initialConnections - Initial connections for the snap.
+ * @param manifest.platformVersion - The platform version of the snap.
  * @returns The snap manifest.
  */
 export const getSnapManifest = ({
@@ -103,6 +106,7 @@ export const getSnapManifest = ({
   files = undefined,
   locales = undefined,
   initialConnections = undefined,
+  platformVersion = '1.0.0' as SemVerVersion,
 }: GetSnapManifestOptions = {}): SnapManifest => {
   return {
     version: version as SemVerVersion,
@@ -124,6 +128,7 @@ export const getSnapManifest = ({
     },
     ...(initialConnections ? { initialConnections } : {}),
     initialPermissions,
+    platformVersion,
     manifestVersion: '0.1' as const,
   };
 };
@@ -159,6 +164,7 @@ export const getPackageJson = ({
 
 export const getMockSnapFiles = ({
   manifest = getSnapManifest(),
+  manifestPath = DEFAULT_MANIFEST_PATH,
   packageJson = getPackageJson(),
   sourceCode = DEFAULT_SNAP_BUNDLE,
   svgIcon = DEFAULT_SNAP_ICON,
@@ -166,6 +172,7 @@ export const getMockSnapFiles = ({
   localizationFiles = [],
 }: {
   manifest?: SnapManifest | VirtualFile<SnapManifest>;
+  manifestPath?: string;
   sourceCode?: string | VirtualFile;
   packageJson?: NpmSnapPackageJson;
   svgIcon?: string | VirtualFile;
@@ -179,7 +186,7 @@ export const getMockSnapFiles = ({
         : new VirtualFile({
             value: JSON.stringify(manifest),
             result: manifest,
-            path: DEFAULT_MANIFEST_PATH,
+            path: manifestPath,
           }),
     packageJson: new VirtualFile({
       value: JSON.stringify(packageJson),
