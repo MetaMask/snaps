@@ -154,6 +154,9 @@ export const KeyringOptionsStruct = object({
    */
   request: object({
     params: JsonRpcParamsStruct,
+    id: union([string(), number(), literal(null)]),
+    method: string(),
+    jsonrpc: literal('2.0'),
   }),
 });
 
