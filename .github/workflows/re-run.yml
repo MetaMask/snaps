@@ -5,16 +5,16 @@ on:
         required: true
 
 jobs:
-  rerun:
+  re-run:
+    name: Re-run failed jobs (${{ inputs.run-id }})
     runs-on: ubuntu-latest
     permissions:
       actions: write
     steps:
-      - name: rerun ${{ inputs.run-id }}
+      - name: Re-run ${{ inputs.run-id }}
         env:
           GH_REPO: ${{ github.repository }}
           GH_TOKEN: ${{ github.token }}
-          GH_DEBUG: api
         run: |
           gh run watch ${{ inputs.run-id }} > /dev/null 2>&1
           gh run rerun ${{ inputs.run-id }} --failed
