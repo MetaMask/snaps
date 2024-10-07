@@ -1,11 +1,8 @@
-import {
-  getMockSnapFiles,
-  getSnapManifest,
-} from '@metamask/snaps-utils/test-utils';
 import type { SemVerVersion } from '@metamask/utils';
 import assert from 'assert';
 import { createRequire } from 'module';
 
+import { getMockSnapFiles, getSnapManifest } from '../../test-utils';
 import { platformVersion } from './platform-version';
 
 describe('platformVersion', () => {
