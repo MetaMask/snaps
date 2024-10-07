@@ -734,12 +734,6 @@ describe('installSnap', () => {
   describe('onKeyringRequest', () => {
     it('sends a keyring request and returns the result', async () => {
       jest.spyOn(console, 'log').mockImplementation();
-      const mockRequestObject = {
-        params: {},
-        id: 1,
-        method: 'keyring_listAccounts',
-        jsonrpc: '2.0',
-      } as const;
 
       const { snapId, close: closeServer } = await getMockServer({
         sourceCode: `
@@ -752,13 +746,23 @@ describe('installSnap', () => {
       const { onKeyringRequest, close } = await installSnap(snapId);
       const response = await onKeyringRequest({
         origin: 'metamask.io',
-        request: mockRequestObject,
+        request: {
+          params: {},
+          id: 1,
+          method: 'keyring_listAccounts',
+          jsonrpc: '2.0',
+        },
       });
 
       expect(response).toStrictEqual(
         expect.objectContaining({
           response: {
-            result: mockRequestObject,
+            result: {
+              params: {},
+              id: 1,
+              method: 'keyring_listAccounts',
+              jsonrpc: '2.0',
+            },
           },
         }),
       );
