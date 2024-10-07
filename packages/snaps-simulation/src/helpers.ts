@@ -233,7 +233,7 @@ export function getHelpers({
   ): Promise<SnapResponseWithInterface> => {
     log('Sending keyring request %o.', request);
 
-    const { origin: keyringRequestOrigin, ...keyringRequest } = create(
+    const { origin: keyringRequestOrigin, request: keyringRequest } = create(
       request,
       KeyringOptionsStruct,
     );
@@ -245,10 +245,7 @@ export function getHelpers({
       runSaga,
       controllerMessenger,
       handler: HandlerType.OnKeyringRequest,
-      request: {
-        method: '',
-        params: keyringRequest.request.params,
-      },
+      request: { origin: keyringRequestOrigin, ...keyringRequest },
     });
 
     assertIsResponseWithInterface(response);
