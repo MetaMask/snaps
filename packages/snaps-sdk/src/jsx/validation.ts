@@ -20,9 +20,7 @@ import {
   refine,
 } from '@metamask/superstruct';
 import {
-  CaipAccountAddressStruct,
   CaipAccountIdStruct,
-  CaipChainIdStruct,
   hasProperty,
   HexChecksumAddressStruct,
   isPlainObject,
@@ -49,7 +47,6 @@ import type {
   StringElement,
 } from './component';
 import {
-  type AccountSelectorElement,
   type AddressElement,
   type BoldElement,
   type BoxElement,
@@ -335,23 +332,6 @@ export const FileInputStruct: Describe<FileInputElement> = element(
 );
 
 /**
- * A struct for the {@link AccountSelectorElement} type.
- */
-export const AccountSelectorStruct: Describe<AccountSelectorElement> = element(
-  'AccountSelector',
-  {
-    name: string(),
-    chainIds: array(
-      CaipChainIdStruct as unknown as Struct<
-        Infer<typeof CaipChainIdStruct>,
-        Infer<typeof CaipChainIdStruct>
-      >,
-    ),
-    selectedAddress: CaipAccountAddressStruct,
-  },
-);
-
-/**
  * A subset of JSX elements that represent the tuple Box + Input of the Field children.
  */
 const BOX_INPUT_LEFT = [
@@ -390,7 +370,6 @@ const FIELD_CHILDREN_ARRAY = [
   FileInputStruct,
   CheckboxStruct,
   SelectorStruct,
-  AccountSelectorStruct,
 ] as [
   typeof InputStruct,
   typeof DropdownStruct,
@@ -398,7 +377,6 @@ const FIELD_CHILDREN_ARRAY = [
   typeof FileInputStruct,
   typeof CheckboxStruct,
   typeof SelectorStruct,
-  typeof AccountSelectorStruct,
 ];
 
 /**
@@ -429,8 +407,7 @@ const FieldChildStruct = nullUnion([
   | FileInputElement
   | InputElement
   | CheckboxElement
-  | SelectorElement
-  | AccountSelectorElement,
+  | SelectorElement,
   null
 >;
 
@@ -744,7 +721,6 @@ export const SpinnerStruct: Describe<SpinnerElement> = element('Spinner');
  * another component (e.g., Field must be contained in a Form).
  */
 export const BoxChildStruct = typedUnion([
-  AccountSelectorStruct,
   AddressStruct,
   BoldStruct,
   BoxStruct,
@@ -848,7 +824,6 @@ export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   SelectorStruct,
   SelectorOptionStruct,
   SectionStruct,
-  AccountSelectorStruct,
 ]);
 
 /**

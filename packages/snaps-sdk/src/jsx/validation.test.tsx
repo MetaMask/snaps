@@ -32,7 +32,6 @@ import {
   Selector,
   SelectorOption,
   Section,
-  AccountSelector,
 } from './components';
 import {
   AddressStruct,
@@ -70,7 +69,6 @@ import {
   SelectorStruct,
   SectionStruct,
   NotificationComponentsStruct,
-  AccountSelectorStruct,
 } from './validation';
 
 describe('KeyStruct', () => {
@@ -296,13 +294,6 @@ describe('FieldStruct', () => {
           <Card title="bar" value="$1" />
         </SelectorOption>
       </Selector>
-    </Field>,
-    <Field label="foo">
-      <AccountSelector
-        name="foo"
-        chainIds={['eip155:1']}
-        selectedAddress="0x1234567890abcdef1234567890abcdef12345678"
-      />
     </Field>,
   ])('validates a field element', (value) => {
     expect(is(value, FieldStruct)).toBe(true);
@@ -962,63 +953,6 @@ describe('FileInputStruct', () => {
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, FileInputStruct)).toBe(false);
-  });
-});
-
-describe('AccountSelectorStruct', () => {
-  it.each([
-    <AccountSelector
-      name="account"
-      chainIds={['bip122:000000000019d6689c085ae165831e93']}
-      selectedAddress="128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6"
-    />,
-    <AccountSelector
-      name="account"
-      chainIds={['eip155:1']}
-      selectedAddress="0x1234567890123456789012345678901234567890"
-    />,
-  ])('validates an account picker element', (value) => {
-    expect(is(value, AccountSelectorStruct)).toBe(true);
-  });
-
-  it.each([
-    'foo',
-    42,
-    null,
-    undefined,
-    {},
-    [],
-    // @ts-expect-error - Invalid props.
-    <AccountSelector />,
-    // @ts-expect-error - Invalid props.
-    <AccountSelector>
-      <Text>foo</Text>
-    </AccountSelector>,
-    // @ts-expect-error - Invalid props.
-    <AccountSelector name="account" />,
-    // @ts-expect-error - Invalid props.
-    <AccountSelector chainIds={['bip122:000000000019d6689c085ae165831e93']} />,
-    // @ts-expect-error - Invalid props.
-    <AccountSelector selectedAddress="128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6" />,
-    <AccountSelector
-      name="account"
-      chainIds={['foo:bar']}
-      selectedAddress="0x1234567890123456789012345678901234567890"
-    />,
-    <AccountSelector
-      name="account"
-      chainIds={['eip155:1']}
-      selectedAddress="0x123"
-    />,
-    <Text>foo</Text>,
-    <Box>
-      <Text>foo</Text>
-    </Box>,
-    <Row label="label">
-      <Image src="<svg />" alt="alt" />
-    </Row>,
-  ])('does not validate "%p"', (value) => {
-    expect(is(value, AddressStruct)).toBe(false);
   });
 });
 
