@@ -98,6 +98,8 @@ jobs:
     needs: lint-build-test
     if: failure() && fromJSON(github.run_attempt) < 3
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
     steps:
       - env:
           GH_REPO: ${{ github.repository }}
