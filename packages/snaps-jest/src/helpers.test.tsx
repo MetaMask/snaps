@@ -735,11 +735,7 @@ describe('installSnap', () => {
     it('sends a keyring request and returns the result', async () => {
       jest.spyOn(console, 'log').mockImplementation();
       const mockRequestObject = {
-        params: {
-          options: {
-            privateKey: 'foo bar',
-          },
-        },
+        params: {},
         id: 1,
         method: 'keyring_listAccounts',
         jsonrpc: '2.0',
