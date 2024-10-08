@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- fix: `span` element inside `button` causes test flakiness in extension repo e2e, interfering with the click and scroll actions ([#2782](https://github.com/MetaMask/snaps/pull/2782))
-
 ## [2.15.1]
 
 ### Changed

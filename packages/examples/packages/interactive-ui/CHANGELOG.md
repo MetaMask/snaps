@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- Set target back to ES2020 ([#2767](https://github.com/MetaMask/snaps/pull/2767))
-
 ## [2.3.0]
 
 ### Added
