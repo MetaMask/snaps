@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.4.0]
 
-### Uncategorized
+### Changed
 
 - Format Snap manifests with Prettier ([#2787](https://github.com/MetaMask/snaps/pull/2787))
 

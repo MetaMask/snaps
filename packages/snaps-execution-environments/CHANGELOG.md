@@ -9,9 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.9.1]
 
-### Uncategorized
+### Removed
 
 - Remove `eth_sign` ([#2772](https://github.com/MetaMask/snaps/pull/2772))
+  - This method was removed from the MetaMask extension, so any references to it
+    in Snaps can be removed.
 
 ## [6.9.0]
 

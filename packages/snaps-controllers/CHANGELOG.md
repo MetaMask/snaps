@@ -9,10 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [9.11.0]
 
-### Uncategorized
+### Changed
 
-- feat: Allow updating interface context ([#2809](https://github.com/MetaMask/snaps/pull/2809))
-- Revert `AccountSelector` ([#2794](https://github.com/MetaMask/snaps/pull/2794))
+- Allow updating interface context ([#2809](https://github.com/MetaMask/snaps/pull/2809))
+  - `snap_updateInterface` now accepts a `context` parameter to update the
+    context of an interface.
+
+### Removed
+
+- Remove `AccountSelector` component ([#2794](https://github.com/MetaMask/snaps/pull/2794))
+  - This is technically a breaking change, but the `AccountSelector` component was never actually implemented, so it
+    should not affect any existing code.
 
 ## [9.10.0]
 

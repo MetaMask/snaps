@@ -9,13 +9,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.8.0]
 
-### Uncategorized
+### Added
 
-- feat: Allow updating interface context ([#2809](https://github.com/MetaMask/snaps/pull/2809))
-- Revert `AccountSelector` ([#2794](https://github.com/MetaMask/snaps/pull/2794))
-- feat: Add experimental provider request RPC method ([#2773](https://github.com/MetaMask/snaps/pull/2773))
+- Add `snap_experimentalProviderRequest` JSON-RPC method ([#2773](https://github.com/MetaMask/snaps/pull/2773))
+  - This method is experimental and will likely be removed in a future release.
+
+### Changed
+
+- Allow updating interface context ([#2809](https://github.com/MetaMask/snaps/pull/2809))
+  - `snap_updateInterface` now accepts a `context` parameter to update the
+    context of an interface.
 - Remove `eth_sign` ([#2772](https://github.com/MetaMask/snaps/pull/2772))
-- Add `AccountSelector` to `Box` and `Field` children ([#2774](https://github.com/MetaMask/snaps/pull/2774))
+  - This method was removed from the MetaMask extension, so any references to it
+    in Snaps can be removed.
+
+### Removed
+
+- Remove `AccountSelector` component ([#2794](https://github.com/MetaMask/snaps/pull/2794))
+  - This is technically a breaking change, but the `AccountSelector` component was never actually implemented, so it
+    should not affect any existing code.
 
 ## [6.7.0]
 

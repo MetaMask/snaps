@@ -9,13 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [11.4.0]
 
-### Uncategorized
+### Added
 
-- feat: Allow updating interface context ([#2809](https://github.com/MetaMask/snaps/pull/2809))
-- Revert `AccountSelector` ([#2794](https://github.com/MetaMask/snaps/pull/2794))
-- feat(snaps-rpc-methods): Use BigInt to parse chain ids ([#2781](https://github.com/MetaMask/snaps/pull/2781))
-- feat: Add experimental provider request RPC method ([#2773](https://github.com/MetaMask/snaps/pull/2773))
-- Add `AccountSelector` to `Box` and `Field` children ([#2774](https://github.com/MetaMask/snaps/pull/2774))
+- Add `snap_experimentalProviderRequest` JSON-RPC method ([#2773](https://github.com/MetaMask/snaps/pull/2773))
+  - This method is experimental and will likely be removed in a future release.
+
+### Changed
+
+- Allow updating interface context ([#2809](https://github.com/MetaMask/snaps/pull/2809))
+  - `snap_updateInterface` now accepts a `context` parameter to update the
+    context of an interface.
+
+### Fixed
+
+- Use `BigInt` to parse chain IDs ([#2781](https://github.com/MetaMask/snaps/pull/2781))
 
 ## [11.3.0]
 
