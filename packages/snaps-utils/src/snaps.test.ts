@@ -2,7 +2,6 @@ import type {
   SubjectPermissions,
   PermissionConstraint,
 } from '@metamask/permission-controller';
-import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 import { is } from '@metamask/superstruct';
 
 import { SnapCaveatType } from './caveats';
@@ -17,6 +16,7 @@ import {
   stripSnapPrefix,
   isSnapId,
 } from './snaps';
+import { MOCK_SNAP_ID } from './test-utils';
 import { uri, WALLET_SNAP_PERMISSION_KEY } from './types';
 
 describe('isSnapId', () => {
