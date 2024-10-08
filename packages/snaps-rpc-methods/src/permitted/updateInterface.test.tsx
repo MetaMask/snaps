@@ -98,8 +98,56 @@ describe('snap_updateInterface', () => {
         <Box>
           <Text>Hello, world!</Text>
         </Box>,
+        undefined,
       );
     });
+  });
+
+  it('updates the interface context', async () => {
+    const { implementation } = updateInterfaceHandler;
+
+    const updateInterface = jest.fn();
+
+    const hooks = {
+      updateInterface,
+    };
+
+    const engine = new JsonRpcEngine();
+
+    engine.push((request, response, next, end) => {
+      const result = implementation(
+        request as JsonRpcRequest<UpdateInterfaceParams>,
+        response as PendingJsonRpcResponse<UpdateInterfaceResult>,
+        next,
+        end,
+        hooks,
+      );
+
+      result?.catch(end);
+    });
+
+    await engine.handle({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'snap_updateInterface',
+      params: {
+        id: 'foo',
+        ui: (
+          <Box>
+            <Text>Hello, world!</Text>
+          </Box>
+        ) as JSXElement,
+        context: { foo: 'bar' },
+      },
+    });
+
+    expect(updateInterface).toHaveBeenCalledWith(
+      'foo',
+      <Box>
+        <Text>Hello, world!</Text>
+      </Box>,
+      { foo: 'bar' },
+    );
   });
 
   it('throws on invalid params', async () => {
