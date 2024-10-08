@@ -599,6 +599,57 @@ describe('SnapInterfaceController', () => {
       expect(interfaceContext).toStrictEqual(newContext);
     });
 
+    it('does not replace context if none is provided', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      /* eslint-disable-next-line no-new */
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const components = form({
+        name: 'foo',
+        children: [input({ name: 'bar' })],
+      });
+
+      const newContent = form({
+        name: 'foo',
+        children: [input({ name: 'baz' })],
+      });
+
+      const context = { foo: 'bar' };
+
+      const id = await rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        components,
+        context,
+      );
+
+      await rootMessenger.call(
+        'SnapInterfaceController:updateInterface',
+        MOCK_SNAP_ID,
+        id,
+        newContent,
+      );
+
+      const {
+        content,
+        state,
+        context: interfaceContext,
+      } = rootMessenger.call(
+        'SnapInterfaceController:getInterface',
+        MOCK_SNAP_ID,
+        id,
+      );
+
+      expect(content).toStrictEqual(getJsxElementFromComponent(newContent));
+      expect(state).toStrictEqual({ foo: { baz: null } });
+      expect(interfaceContext).toStrictEqual(context);
+    });
+
     it('throws if a link is on the phishing list', async () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
