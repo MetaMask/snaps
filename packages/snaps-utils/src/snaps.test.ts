@@ -22,8 +22,8 @@ import { uri, WALLET_SNAP_PERMISSION_KEY } from './types';
 describe('isSnapId', () => {
   it.each(['npm:@metamask/test-snap-bip44', 'local:http://localhost:8000'])(
     'returns `true` for "%s"',
-    () => {
-      expect(isSnapId('npm:@metamask/test-snap-bip44')).toBe(true);
+    (value) => {
+      expect(isSnapId(value)).toBe(true);
     },
   );
 
