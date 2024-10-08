@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix: Add missing dependency on execution environments to `snaps-simulation` ([#2791](https://github.com/MetaMask/snaps/pull/2791))
+- Remove `eth_sign` ([#2772](https://github.com/MetaMask/snaps/pull/2772))
+
 ## [1.1.0]
 
 ### Changed

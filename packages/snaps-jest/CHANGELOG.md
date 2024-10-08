@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- Delete unnecessary `readable-stream` types ([#2784](https://github.com/MetaMask/snaps/pull/2784))
+
 ## [8.5.0]
 
 ### Changed

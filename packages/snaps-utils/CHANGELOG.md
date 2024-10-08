@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- Add `isSnapId` utility function ([#2808](https://github.com/MetaMask/snaps/pull/2808))
+
 ## [8.3.0]
 
 ### Added

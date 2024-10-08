@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat: Allow updating interface context ([#2809](https://github.com/MetaMask/snaps/pull/2809))
+- Revert `AccountSelector` ([#2794](https://github.com/MetaMask/snaps/pull/2794))
+
 ## [9.10.0]
 
 ### Changed

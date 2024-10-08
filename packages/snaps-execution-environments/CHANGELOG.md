@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- Remove `eth_sign` ([#2772](https://github.com/MetaMask/snaps/pull/2772))
+
 ## [6.9.0]
 
 ### Changed

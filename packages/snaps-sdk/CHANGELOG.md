@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat: Allow updating interface context ([#2809](https://github.com/MetaMask/snaps/pull/2809))
+- Revert `AccountSelector` ([#2794](https://github.com/MetaMask/snaps/pull/2794))
+- feat: Add experimental provider request RPC method ([#2773](https://github.com/MetaMask/snaps/pull/2773))
+- Remove `eth_sign` ([#2772](https://github.com/MetaMask/snaps/pull/2772))
+- Add `AccountSelector` to `Box` and `Field` children ([#2774](https://github.com/MetaMask/snaps/pull/2774))
+
 ## [6.7.0]
 
 ### Added
