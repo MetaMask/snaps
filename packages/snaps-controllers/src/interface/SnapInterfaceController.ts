@@ -249,7 +249,9 @@ export class SnapInterfaceController extends BaseController<
     this.update((draftState) => {
       draftState.interfaces[id].state = newState;
       draftState.interfaces[id].content = castDraft(element);
-      draftState.interfaces[id].context = context ?? null;
+      if (context) {
+        draftState.interfaces[id].context = context;
+      }
     });
   }
 
