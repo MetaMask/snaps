@@ -6,10 +6,20 @@ import type {
   UpdateInterfaceResult,
   JsonRpcRequest,
   ComponentOrElement,
+  InterfaceContext,
 } from '@metamask/snaps-sdk';
-import { ComponentOrElementStruct } from '@metamask/snaps-sdk';
+import {
+  ComponentOrElementStruct,
+  InterfaceContextStruct,
+} from '@metamask/snaps-sdk';
 import { type InferMatching } from '@metamask/snaps-utils';
-import { StructError, create, object, string } from '@metamask/superstruct';
+import {
+  StructError,
+  create,
+  object,
+  optional,
+  string,
+} from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
@@ -22,8 +32,13 @@ export type UpdateInterfaceMethodHooks = {
   /**
    * @param id - The interface ID.
    * @param ui - The UI components.
+   * @param context - The optional interface context object.
    */
-  updateInterface: (id: string, ui: ComponentOrElement) => Promise<void>;
+  updateInterface: (
+    id: string,
+    ui: ComponentOrElement,
+    context?: InterfaceContext,
+  ) => Promise<void>;
 };
 
 export const updateInterfaceHandler: PermittedHandlerExport<
@@ -39,6 +54,7 @@ export const updateInterfaceHandler: PermittedHandlerExport<
 const UpdateInterfaceParametersStruct = object({
   id: string(),
   ui: ComponentOrElementStruct,
+  context: optional(InterfaceContextStruct),
 });
 
 export type UpdateInterfaceParameters = InferMatching<
@@ -70,9 +86,9 @@ async function getUpdateInterfaceImplementation(
   try {
     const validatedParams = getValidatedParams(params);
 
-    const { id, ui } = validatedParams;
+    const { id, ui, context } = validatedParams;
 
-    await updateInterface(id, ui);
+    await updateInterface(id, ui, context);
     res.result = null;
   } catch (error) {
     return end(error);

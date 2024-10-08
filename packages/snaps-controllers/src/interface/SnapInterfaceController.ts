@@ -230,15 +230,18 @@ export class SnapInterfaceController extends BaseController<
    * @param snapId - The snap id requesting the update.
    * @param id - The interface id.
    * @param content - The new content.
+   * @param context - An optional interface context object.
    */
   async updateInterface(
     snapId: SnapId,
     id: string,
     content: ComponentOrElement,
+    context?: InterfaceContext,
   ) {
     this.#validateArgs(snapId, id);
     const element = getJsxInterface(content);
     await this.#validateContent(element);
+    validateInterfaceContext(context);
 
     const oldState = this.state.interfaces[id].state;
     const newState = constructState(oldState, element);
@@ -246,6 +249,7 @@ export class SnapInterfaceController extends BaseController<
     this.update((draftState) => {
       draftState.interfaces[id].state = newState;
       draftState.interfaces[id].content = castDraft(element);
+      draftState.interfaces[id].context = context ?? null;
     });
   }
 
