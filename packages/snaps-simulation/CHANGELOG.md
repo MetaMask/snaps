@@ -9,15 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.1]
 
-### Fixed
-
-- Add missing dependency on `@metamask/snaps-execution-environments` ([#2791](https://github.com/MetaMask/snaps/pull/2791))
-
 ### Removed
 
 - Remove `eth_sign` ([#2772](https://github.com/MetaMask/snaps/pull/2772))
   - This method was removed from the MetaMask extension, so any references to it
     in Snaps can be removed.
+
+### Fixed
+
+- Add missing dependency on `@metamask/snaps-execution-environments` ([#2791](https://github.com/MetaMask/snaps/pull/2791))
 
 ## [1.1.0]
 
