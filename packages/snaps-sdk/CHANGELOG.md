@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.8.0]
+
+### Added
+
+- Add `snap_experimentalProviderRequest` JSON-RPC method ([#2773](https://github.com/MetaMask/snaps/pull/2773))
+  - This method is experimental and will likely be removed in a future release.
+
+### Changed
+
+- Allow updating interface context ([#2809](https://github.com/MetaMask/snaps/pull/2809))
+  - `snap_updateInterface` now accepts a `context` parameter to update the
+    context of an interface.
+- Remove `eth_sign` ([#2772](https://github.com/MetaMask/snaps/pull/2772))
+  - This method was removed from the MetaMask extension, so any references to it
+    in Snaps can be removed.
+
+### Removed
+
+- Remove `AccountSelector` component ([#2794](https://github.com/MetaMask/snaps/pull/2794))
+  - This is technically a breaking change, but the `AccountSelector` component was never actually implemented, so it
+    should not affect any existing code.
+
 ## [6.7.0]
 
 ### Added
@@ -361,7 +383,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.7.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.8.0...HEAD
+[6.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.7.0...@metamask/snaps-sdk@6.8.0
 [6.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.6.0...@metamask/snaps-sdk@6.7.0
 [6.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.5.1...@metamask/snaps-sdk@6.6.0
 [6.5.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.5.0...@metamask/snaps-sdk@6.5.1

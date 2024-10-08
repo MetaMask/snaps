@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.11.0]
+
+### Changed
+
+- Allow updating interface context ([#2809](https://github.com/MetaMask/snaps/pull/2809))
+  - `snap_updateInterface` now accepts a `context` parameter to update the
+    context of an interface.
+
+### Removed
+
+- Remove `AccountSelector` component ([#2794](https://github.com/MetaMask/snaps/pull/2794))
+  - This is technically a breaking change, but the `AccountSelector` component was never actually implemented, so it
+    should not affect any existing code.
+
 ## [9.10.0]
 
 ### Changed
@@ -520,7 +534,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.10.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.11.0...HEAD
+[9.11.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.10.0...@metamask/snaps-controllers@9.11.0
 [9.10.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.9.0...@metamask/snaps-controllers@9.10.0
 [9.9.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.8.0...@metamask/snaps-controllers@9.9.0
 [9.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.7.0...@metamask/snaps-controllers@9.8.0
