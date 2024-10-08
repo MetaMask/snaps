@@ -27,6 +27,7 @@ export * from './strings';
 export * from './structs';
 export * from './types';
 export * from './ui';
+export * from './url';
 export * from './validation';
 export * from './versions';
 export * from './virtual-file';
