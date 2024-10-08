@@ -2,6 +2,7 @@ import type {
   SubjectPermissions,
   PermissionConstraint,
 } from '@metamask/permission-controller';
+import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 import { is } from '@metamask/superstruct';
 
 import { SnapCaveatType } from './caveats';
@@ -14,8 +15,35 @@ import {
   assertIsValidSnapId,
   verifyRequestedSnapPermissions,
   stripSnapPrefix,
+  isSnapId,
 } from './snaps';
 import { uri, WALLET_SNAP_PERMISSION_KEY } from './types';
+
+describe('isSnapId', () => {
+  it.each(['npm:@metamask/test-snap-bip44', 'local:http://localhost:8000'])(
+    'returns `true` for "%s"',
+    () => {
+      expect(isSnapId('npm:@metamask/test-snap-bip44')).toBe(true);
+    },
+  );
+
+  it.each([
+    undefined,
+    {},
+    null,
+    true,
+    2,
+    'foo:bar',
+    ' local:http://localhost:8000',
+    'local:http://localhost:8000 ',
+    'local:http://localhost:8000\n',
+    'local:http://localhost:8000\r',
+    'local:😎',
+    'local:␡',
+  ])('returns `false` for "%s"', (value) => {
+    expect(isSnapId(value)).toBe(false);
+  });
+});
 
 describe('assertIsValidSnapId', () => {
   it.each([undefined, {}, null, true, 2])(
@@ -239,7 +267,7 @@ describe('isSnapPermitted', () => {
           {
             type: 'snapIds',
             value: {
-              foo: {},
+              [MOCK_SNAP_ID]: {},
             },
           },
         ],
@@ -273,9 +301,9 @@ describe('isSnapPermitted', () => {
       },
     };
 
-    expect(isSnapPermitted(validPermissions, 'foo')).toBe(true);
-    expect(isSnapPermitted(invalidPermissions1, 'foo')).toBe(false);
-    expect(isSnapPermitted(invalidPermissions2, 'foo')).toBe(false);
+    expect(isSnapPermitted(validPermissions, MOCK_SNAP_ID)).toBe(true);
+    expect(isSnapPermitted(invalidPermissions1, MOCK_SNAP_ID)).toBe(false);
+    expect(isSnapPermitted(invalidPermissions2, MOCK_SNAP_ID)).toBe(false);
   });
 
   describe('verifyRequestedSnapPermissions', () => {
