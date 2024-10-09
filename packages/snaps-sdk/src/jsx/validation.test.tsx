@@ -464,9 +464,9 @@ describe('AvatarStruct', () => {
     <Avatar address="0x1234567890abcdef1234567890abcdef12345678" />,
     // @ts-expect-error - Invalid props.
     <Avatar address="0x1234" />,
-    // @ts-expect-error - Invalid props.
     <Avatar
       address="eip155:1:0x1234567890abcdef1234567890abcdef12345678"
+      // @ts-expect-error - Invalid props.
       size="foo"
     />,
     <Avatar address="a:b:0x1234" />,

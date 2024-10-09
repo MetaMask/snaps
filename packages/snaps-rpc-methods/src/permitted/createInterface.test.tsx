@@ -140,7 +140,7 @@ describe('snap_createInterface', () => {
       error: {
         code: -32602,
         message:
-          'Invalid params: At path: ui -- Expected type to be one of: "Address", "Bold", "Box", "Button", "Copyable", "Divider", "Dropdown", "RadioGroup", "FileInput", "Form", "Heading", "Input", "Image", "Italic", "Link", "Row", "Spinner", "Text", "Tooltip", "Checkbox", "Card", "Icon", "Selector", "Section", "Container", but received: undefined.',
+          'Invalid params: At path: ui -- Expected type to be one of: "Address", "Bold", "Box", "Button", "Copyable", "Divider", "Dropdown", "RadioGroup", "FileInput", "Form", "Heading", "Input", "Image", "Italic", "Link", "Row", "Spinner", "Text", "Tooltip", "Checkbox", "Card", "Icon", "Selector", "Section", "Avatar", "Container", but received: undefined.',
         stack: expect.any(String),
       },
       id: 1,
@@ -190,7 +190,7 @@ describe('snap_createInterface', () => {
       error: {
         code: -32602,
         message:
-          'Invalid params: At path: ui.props.children -- Expected type to be one of: "Address", "Bold", "Box", "Button", "Copyable", "Divider", "Dropdown", "RadioGroup", "FileInput", "Form", "Heading", "Input", "Image", "Italic", "Link", "Row", "Spinner", "Text", "Tooltip", "Checkbox", "Card", "Icon", "Selector", "Section", but received: "Field".',
+          'Invalid params: At path: ui.props.children -- Expected type to be one of: "Address", "Bold", "Box", "Button", "Copyable", "Divider", "Dropdown", "RadioGroup", "FileInput", "Form", "Heading", "Input", "Image", "Italic", "Link", "Row", "Spinner", "Text", "Tooltip", "Checkbox", "Card", "Icon", "Selector", "Section", "Avatar", but received: "Field".',
         stack: expect.any(String),
       },
       id: 1,
