@@ -2,8 +2,14 @@
   "resources": {
     "@metamask/json-rpc-engine": {
       "packages": {
+        "@metamask/json-rpc-engine>@metamask/rpc-errors": true,
         "@metamask/providers>@metamask/safe-event-emitter": true,
-        "@metamask/rpc-errors": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/json-rpc-engine>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
         "@metamask/utils": true
       }
     },
@@ -45,9 +51,9 @@
         "@metamask/json-rpc-engine": true,
         "@metamask/object-multiplex": true,
         "@metamask/providers>@metamask/json-rpc-middleware-stream": true,
+        "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/providers>@metamask/safe-event-emitter": true,
         "@metamask/providers>is-stream": true,
-        "@metamask/rpc-errors": true,
         "eslint>fast-deep-equal": true,
         "readable-stream": true
       }
@@ -61,6 +67,12 @@
         "@metamask/providers>@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
         "readable-stream": true
+      }
+    },
+    "@metamask/providers>@metamask/rpc-errors": {
+      "packages": {
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/providers>@metamask/safe-event-emitter": {
