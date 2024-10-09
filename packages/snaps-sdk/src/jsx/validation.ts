@@ -256,14 +256,13 @@ export const InputStruct: Describe<InputElement> = refine(
   }),
   'Input',
   (value) => {
-    if (value.props.type !== 'number') {
-      if (
-        hasProperty(value.props, 'min') ||
+    if (
+      value.props.type !== 'number' &&
+      (hasProperty(value.props, 'min') ||
         hasProperty(value.props, 'max') ||
-        hasProperty(value.props, 'step')
-      ) {
-        return 'The `min`, `max`, and `step` props are only applicable to number inputs.';
-      }
+        hasProperty(value.props, 'step'))
+    ) {
+      return 'The `min`, `max`, and `step` props are only applicable to number inputs.';
     }
 
     return true;
