@@ -9,6 +9,7 @@ import { createSnapComponent } from '../component';
  */
 export type AvatarProps = {
   address: CaipAccountId;
+  size?: 'sm' | 'md' | 'lg' | undefined;
 };
 
 const TYPE = 'Avatar';

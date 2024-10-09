@@ -479,6 +479,7 @@ export const AddressStruct: Describe<AddressElement> = element('Address', {
  */
 export const AvatarStruct: Describe<AvatarElement> = element('Avatar', {
   address: CaipAccountIdStruct,
+  size: optional(nullUnion([literal('sm'), literal('md'), literal('lg')])),
 });
 
 export const BoxChildrenStruct = children(
