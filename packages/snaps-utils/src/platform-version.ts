@@ -8,7 +8,6 @@
  * @returns The platform version.
  */
 export function getPlatformVersion() {
-  const packageJson = require.resolve('@metamask/snaps-sdk/package.json');
   // eslint-disable-next-line import/no-dynamic-require, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-  return require(packageJson).version;
+  return require('@metamask/snaps-sdk/package.json').version;
 }
