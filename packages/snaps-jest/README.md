@@ -329,6 +329,39 @@ describe('MySnap', () => {
 });
 ```
 
+### `snap.onKeyringRequest`
+
+The `onKeyringRequest` function can be used to process keyring request. It takes
+few arguments, which are similar to a JSON-RPC request object. It returns
+a promise that resolves to the response from the keyring request handler.
+
+```js
+import { installSnap } from '@metamask/snaps-jest';
+
+describe('onKeyringRequest', () => {
+  it('sends keyring request', async () => {
+    const { onKeyringRequest } = await installSnap();
+
+    const response = await onKeyringRequest({
+      origin: 'https://metamask.github.io',
+      params: {
+        options: {
+          privateKey: 'foo-bar',
+        },
+      },
+      method: 'keyring_createAccount',
+    });
+
+    expect(response).toBe({
+      /* Add expected result here */
+    });
+  });
+});
+```
+
+It returns an object with a response, and some additional metadata, which can be
+checked using the [Jest matchers](#jest-matchers):
+
 ### Jest matchers
 
 `@metamask/snaps-jest` includes a set of Jest matchers that can be used to
