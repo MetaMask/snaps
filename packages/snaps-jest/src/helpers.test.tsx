@@ -731,6 +731,46 @@ describe('installSnap', () => {
     });
   });
 
+  describe('onKeyringRequest', () => {
+    it('sends a keyring request and returns the result', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+
+      const { snapId, close: closeServer } = await getMockServer({
+        sourceCode: `
+          module.exports.onKeyringRequest = async ({ origin, request }) => {
+            return request;
+          }
+         `,
+      });
+
+      const { onKeyringRequest, close } = await installSnap(snapId);
+      const response = await onKeyringRequest({
+        origin: 'metamask.io',
+        params: {},
+        method: 'keyring_listAccounts',
+      });
+
+      expect(response).toStrictEqual(
+        expect.objectContaining({
+          response: {
+            result: {
+              params: {},
+              id: 1,
+              method: 'keyring_listAccounts',
+              jsonrpc: '2.0',
+            },
+          },
+        }),
+      );
+
+      // `close` is deprecated because the Jest environment will automatically
+      // close the Snap when the test finishes. However, we still need to close
+      // the Snap in this test because it's run outside the Jest environment.
+      await close();
+      await closeServer();
+    });
+  });
+
   describe('mockJsonRpc', () => {
     it('mocks a JSON-RPC method', async () => {
       jest.spyOn(console, 'log').mockImplementation();

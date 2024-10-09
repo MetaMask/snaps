@@ -63,6 +63,11 @@ export type CronjobOptions = Omit<RequestOptions, 'origin'>;
 export type TransactionOptions = Infer<typeof TransactionOptionsStruct>;
 
 /**
+ * The options to use for keyring requests.
+ */
+export type KeyringOptions = RequestOptions;
+
+/**
  * The options to use for signature requests.
  *
  * @property origin - The origin to send the signature request from. Defaults to
@@ -404,6 +409,16 @@ export type Snap = {
    * @returns The response.
    */
   onHomePage(): Promise<SnapResponseWithInterface>;
+
+  /**
+   * Send a keyring to the Snap.
+   *
+   * @param keyringRequest - Keyring request options.
+   * @returns The response.
+   */
+  onKeyringRequest(
+    keyringRequest: KeyringOptions,
+  ): Promise<SnapResponseWithoutInterface>;
 
   /**
    * Mock a JSON-RPC request. This will cause the snap to respond with the

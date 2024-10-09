@@ -178,6 +178,7 @@ export async function installSnap<
     onCronjob,
     runCronjob,
     onHomePage,
+    onKeyringRequest,
     mockJsonRpc,
     close,
   } = await getEnvironment().installSnap(...resolvedOptions);
@@ -190,6 +191,7 @@ export async function installSnap<
     onCronjob,
     runCronjob,
     onHomePage,
+    onKeyringRequest,
     mockJsonRpc,
     close: async () => {
       log('Closing execution service.');
