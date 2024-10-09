@@ -242,14 +242,33 @@ export const CheckboxStruct: Describe<CheckboxElement> = element('Checkbox', {
 /**
  * A struct for the {@link InputElement} type.
  */
-export const InputStruct: Describe<InputElement> = element('Input', {
-  name: string(),
-  type: optional(
-    nullUnion([literal('text'), literal('password'), literal('number')]),
-  ),
-  value: optional(string()),
-  placeholder: optional(string()),
-});
+export const InputStruct: Describe<InputElement> = refine(
+  element('Input', {
+    name: string(),
+    type: optional(
+      nullUnion([literal('text'), literal('password'), literal('number')]),
+    ),
+    value: optional(string()),
+    placeholder: optional(string()),
+    min: optional(string()),
+    max: optional(string()),
+    step: optional(string()),
+  }),
+  'Input',
+  (value) => {
+    if (value.props.type !== 'number') {
+      if (
+        hasProperty(value.props, 'min') ||
+        hasProperty(value.props, 'max') ||
+        hasProperty(value.props, 'step')
+      ) {
+        return 'The `min`, `max`, and `step` props are only applicable to number inputs.';
+      }
+    }
+
+    return true;
+  },
+);
 
 /**
  * A struct for the {@link OptionElement} type.

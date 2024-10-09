@@ -10,12 +10,21 @@ import { createSnapComponent } from '../../component';
  * @property type - The type of the input field. Defaults to `text`.
  * @property value - The value of the input field.
  * @property placeholder - The placeholder text of the input field.
+ * @property min - The minimum value of the input field.
+ * Only applicable to the type `number` input.
+ * @property max - The maximum value of the input field.
+ * Only applicable to the type `number` input.
+ * @property step - The step value of the input field.
+ * Only applicable to the type `number` input.
  */
 export type InputProps = {
   name: string;
   type?: 'text' | 'password' | 'number' | undefined;
   value?: string | undefined;
   placeholder?: string | undefined;
+  min?: string | undefined;
+  max?: string | undefined;
+  step?: string | undefined;
 };
 
 const TYPE = 'Input';
