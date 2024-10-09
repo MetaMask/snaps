@@ -21,10 +21,11 @@ import {
 import {
   assertStruct,
   bytesToHex,
-  JsonRpcParamsStruct,
   JsonStruct,
   StrictHexStruct,
   valueToBytes,
+  JsonRpcIdStruct,
+  JsonRpcParamsStruct,
 } from '@metamask/utils';
 import { randomBytes } from 'crypto';
 
@@ -37,6 +38,28 @@ const BytesLikeStruct = union([
   string(),
   instance(Uint8Array),
 ]);
+
+export const RequestOptionsStruct = object({
+  /**
+   * The JSON-RPC request ID.
+   */
+  id: optional(JsonRpcIdStruct),
+
+  /**
+   * The JSON-RPC method.
+   */
+  method: string(),
+
+  /**
+   * The JSON-RPC params.
+   */
+  params: optional(JsonRpcParamsStruct),
+
+  /**
+   * The origin to send the request from.
+   */
+  origin: optional(string()),
+});
 
 export const TransactionOptionsStruct = object({
   /**
@@ -152,12 +175,7 @@ export const KeyringOptionsStruct = object({
   /**
    * Keyring request object with params.
    */
-  request: object({
-    params: JsonRpcParamsStruct,
-    id: union([string(), number(), literal(null)]),
-    method: string(),
-    jsonrpc: literal('2.0'),
-  }),
+  request: RequestOptionsStruct,
 });
 
 export const SignatureOptionsStruct = object({

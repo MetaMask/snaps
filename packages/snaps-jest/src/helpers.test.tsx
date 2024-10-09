@@ -748,9 +748,7 @@ describe('installSnap', () => {
         origin: 'metamask.io',
         request: {
           params: {},
-          id: 1,
           method: 'keyring_listAccounts',
-          jsonrpc: '2.0',
         },
       });
 

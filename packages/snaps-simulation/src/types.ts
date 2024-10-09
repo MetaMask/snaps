@@ -2,37 +2,21 @@ import type { NotificationType, EnumToUnion } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import type { InferMatching } from '@metamask/snaps-utils';
 import type { Infer } from '@metamask/superstruct';
-import type { Json, JsonRpcId, JsonRpcParams } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
 
 import type {
   KeyringOptionsStruct,
+  RequestOptionsStruct,
   SignatureOptionsStruct,
   SnapOptionsStruct,
   SnapResponseStruct,
   TransactionOptionsStruct,
 } from './structs';
 
-export type RequestOptions = {
-  /**
-   * The JSON-RPC request ID.
-   */
-  id?: JsonRpcId;
-
-  /**
-   * The JSON-RPC method.
-   */
-  method: string;
-
-  /**
-   * The JSON-RPC params.
-   */
-  params?: JsonRpcParams;
-
-  /**
-   * The origin to send the request from.
-   */
-  origin?: string;
-};
+/**
+ * JSON RPC Request object.
+ */
+export type RequestOptions = Infer<typeof RequestOptionsStruct>;
 
 /**
  * The `runCronjob` options. This is the same as {@link RequestOptions}, except
@@ -422,7 +406,7 @@ export type Snap = {
    * @returns The response.
    */
   onKeyringRequest(
-    keyringRequest?: Partial<KeyringOptions>,
+    keyringRequest: Partial<KeyringOptions>,
   ): Promise<SnapResponseWithoutInterface>;
 
   /**
