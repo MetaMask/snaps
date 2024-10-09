@@ -46,6 +46,7 @@ import type {
   SnapsChildren,
   StringElement,
 } from './component';
+import type { AvatarElement } from './components';
 import {
   type AddressElement,
   type BoldElement,
@@ -473,6 +474,13 @@ export const AddressStruct: Describe<AddressElement> = element('Address', {
   address: nullUnion([HexChecksumAddressStruct, CaipAccountIdStruct]),
 });
 
+/**
+ * A struct for the {@link AvatarElement} type.
+ */
+export const AvatarStruct: Describe<AvatarElement> = element('Avatar', {
+  address: CaipAccountIdStruct,
+});
+
 export const BoxChildrenStruct = children(
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   [lazy(() => BoxChildStruct)],
@@ -745,6 +753,7 @@ export const BoxChildStruct = typedUnion([
   IconStruct,
   SelectorStruct,
   SectionStruct,
+  AvatarStruct,
 ]);
 
 export const NotificationComponentsStruct = typedUnion([
@@ -824,6 +833,7 @@ export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   SelectorStruct,
   SelectorOptionStruct,
   SectionStruct,
+  AvatarStruct,
 ]);
 
 /**

@@ -1,4 +1,5 @@
 import type { AddressElement } from './Address';
+import type { AvatarElement } from './Avatar';
 import type { BoxElement } from './Box';
 import type { CardElement } from './Card';
 import type { ContainerElement } from './Container';
@@ -21,6 +22,7 @@ import type { ValueElement } from './Value';
 export * from './form';
 export * from './formatting';
 export * from './Address';
+export * from './Avatar';
 export * from './Box';
 export * from './Card';
 export * from './Copyable';
@@ -44,6 +46,7 @@ export * from './Section';
 export type JSXElement =
   | StandardFormElement
   | StandardFormattingElement
+  | AvatarElement
   | AddressElement
   | BoxElement
   | CardElement
