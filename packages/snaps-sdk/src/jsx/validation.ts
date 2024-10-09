@@ -250,9 +250,9 @@ export const InputStruct: Describe<InputElement> = refine(
     ),
     value: optional(string()),
     placeholder: optional(string()),
-    min: optional(string()),
-    max: optional(string()),
-    step: optional(string()),
+    min: optional(number()),
+    max: optional(number()),
+    step: optional(number()),
   }),
   'Input',
   (value) => {

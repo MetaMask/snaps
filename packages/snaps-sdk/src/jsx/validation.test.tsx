@@ -207,7 +207,7 @@ describe('InputStruct', () => {
     <Input name="foo" type="number" />,
     <Input name="foo" type="text" value="bar" />,
     <Input name="foo" type="text" placeholder="bar" />,
-    <Input name="foo" type="number" min="0" max="10" step="1" />,
+    <Input name="foo" type="number" min={0} max={10} step={1} />,
   ])('validates an input element', (value) => {
     expect(is(value, InputStruct)).toBe(true);
   });
@@ -223,6 +223,9 @@ describe('InputStruct', () => {
     <Input />,
     // @ts-expect-error - Invalid props.
     <Input name="foo" type="foo" />,
+    // @ts-expect-error - Invalid props.
+    <Input name="foo" min="foo" />,
+    <Input name="foo" type="text" min={42} />,
     <Text>foo</Text>,
     <Box>
       <Text>foo</Text>
@@ -230,7 +233,6 @@ describe('InputStruct', () => {
     <Row label="label">
       <Image src="<svg />" alt="alt" />
     </Row>,
-    <Input name="foo" min="foo" />,
   ])('does not validate "%p"', (value) => {
     expect(is(value, InputStruct)).toBe(false);
   });

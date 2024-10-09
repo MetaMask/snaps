@@ -22,9 +22,9 @@ export type InputProps = {
   type?: 'text' | 'password' | 'number' | undefined;
   value?: string | undefined;
   placeholder?: string | undefined;
-  min?: string | undefined;
-  max?: string | undefined;
-  step?: string | undefined;
+  min?: number | undefined;
+  max?: number | undefined;
+  step?: number | undefined;
 };
 
 const TYPE = 'Input';
