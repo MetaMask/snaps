@@ -417,7 +417,7 @@ export type Snap = {
    * @returns The response.
    */
   onKeyringRequest(
-    keyringRequest: Partial<KeyringOptions>,
+    keyringRequest: KeyringOptions,
   ): Promise<SnapResponseWithoutInterface>;
 
   /**

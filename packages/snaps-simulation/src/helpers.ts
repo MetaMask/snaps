@@ -123,7 +123,7 @@ export type SnapHelpers = {
    * @returns The response.
    */
   onKeyringRequest(
-    keyringRequest?: Partial<KeyringOptions>,
+    keyringRequest: KeyringOptions,
   ): Promise<SnapResponseWithoutInterface>;
 
   /**
