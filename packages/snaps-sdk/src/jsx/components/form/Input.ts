@@ -9,7 +9,9 @@ export type GenericInputProps = {
 };
 
 export type TextInputProps = { type: 'text' } & GenericInputProps;
+
 export type PasswordInputProps = { type: 'password' } & GenericInputProps;
+
 export type NumberInputProps = {
   type: 'number';
   min?: number;
