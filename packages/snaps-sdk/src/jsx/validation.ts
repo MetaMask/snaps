@@ -18,6 +18,7 @@ import {
   string,
   tuple,
   refine,
+  assign,
 } from '@metamask/superstruct';
 import {
   CaipAccountIdStruct,
@@ -195,6 +196,24 @@ function element<Name extends string, Props extends ObjectSchema = EmptyObject>(
 }
 
 /**
+ * A helper function for creating a struct for a JSX element with selective props.
+ *
+ * @param name - The name of the element.
+ * @param selector - The selector function choosing the struct to validate with.
+ * @returns The struct for the element.
+ */
+function elementWithSelectiveProps<
+  Name extends string,
+  Selector extends (value: any) => AnyStruct,
+>(name: Name, selector: Selector) {
+  return object({
+    type: literal(name) as unknown as Struct<Name, Name>,
+    props: selectiveUnion(selector),
+    key: nullable(KeyStruct),
+  });
+}
+
+/**
  * A struct for the {@link ImageElement} type.
  */
 export const ImageStruct: Describe<ImageElement> = element('Image', {
@@ -240,32 +259,63 @@ export const CheckboxStruct: Describe<CheckboxElement> = element('Checkbox', {
 });
 
 /**
- * A struct for the {@link InputElement} type.
+ * A struct for the generic input element props.
  */
-export const InputStruct: Describe<InputElement> = refine(
-  element('Input', {
-    name: string(),
-    type: optional(
-      nullUnion([literal('text'), literal('password'), literal('number')]),
-    ),
-    value: optional(string()),
-    placeholder: optional(string()),
+export const GenericInputPropsStruct = object({
+  name: string(),
+  value: optional(string()),
+  placeholder: optional(string()),
+});
+
+/**
+ * A struct for the text type input props.
+ */
+export const TextInputPropsStruct = assign(
+  GenericInputPropsStruct,
+  object({
+    type: literal('text'),
+  }),
+);
+
+/**
+ * A struct for the password type input props.
+ */
+export const PasswordInputPropsStruct = assign(
+  GenericInputPropsStruct,
+  object({
+    type: literal('password'),
+  }),
+);
+
+/**
+ * A struct for the number type input props.
+ */
+export const NumberInputPropsStruct = assign(
+  GenericInputPropsStruct,
+  object({
+    type: literal('number'),
     min: optional(number()),
     max: optional(number()),
     step: optional(number()),
   }),
+);
+
+export const InputStruct: Describe<InputElement> = elementWithSelectiveProps(
   'Input',
   (value) => {
-    if (
-      value.props.type !== 'number' &&
-      (hasProperty(value.props, 'min') ||
-        hasProperty(value.props, 'max') ||
-        hasProperty(value.props, 'step'))
-    ) {
-      return 'The `min`, `max`, and `step` props are only applicable to number inputs.';
+    if (isPlainObject(value) && hasProperty(value, 'type')) {
+      switch (value.type) {
+        case 'text':
+          return TextInputPropsStruct;
+        case 'password':
+          return PasswordInputPropsStruct;
+        case 'number':
+          return NumberInputPropsStruct;
+        default:
+          return GenericInputPropsStruct;
+      }
     }
-
-    return true;
+    return GenericInputPropsStruct;
   },
 );
 

@@ -2,6 +2,21 @@ import { createSnapComponent } from '../../component';
 
 // TODO: Add the `onChange` prop to the `InputProps` type.
 
+export type GenericInputProps = {
+  name: string;
+  value?: string | undefined;
+  placeholder?: string | undefined;
+};
+
+export type TextInputProps = { type: 'text' } & GenericInputProps;
+export type PasswordInputProps = { type: 'password' } & GenericInputProps;
+export type NumberInputProps = {
+  type: 'number';
+  min?: number;
+  max?: number;
+  step?: number;
+} & GenericInputProps;
+
 /**
  * The props of the {@link Input} component.
  *
@@ -17,15 +32,11 @@ import { createSnapComponent } from '../../component';
  * @property step - The step value of the input field.
  * Only applicable to the type `number` input.
  */
-export type InputProps = {
-  name: string;
-  type?: 'text' | 'password' | 'number' | undefined;
-  value?: string | undefined;
-  placeholder?: string | undefined;
-  min?: number | undefined;
-  max?: number | undefined;
-  step?: number | undefined;
-};
+export type InputProps =
+  | GenericInputProps
+  | TextInputProps
+  | PasswordInputProps
+  | NumberInputProps;
 
 const TYPE = 'Input';
 
@@ -38,9 +49,17 @@ const TYPE = 'Input';
  * @param props.type - The type of the input field.
  * @param props.value - The value of the input field.
  * @param props.placeholder - The placeholder text of the input field.
+ * @param props.min - The minimum value of the input field.
+ * Only applicable to the type `number` input.
+ * @param props.max - The maximum value of the input field.
+ * Only applicable to the type `number` input.
+ * @param props.step - The step value of the input field.
+ * Only applicable to the type `number` input.
  * @returns An input element.
  * @example
  * <Input name="username" type="text" />
+ * @example
+ * <Input name="numeric" type="number" min={1} max={100} step={1} />
  */
 export const Input = createSnapComponent<InputProps, typeof TYPE>(TYPE);
 

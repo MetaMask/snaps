@@ -225,6 +225,7 @@ describe('InputStruct', () => {
     <Input name="foo" type="foo" />,
     // @ts-expect-error - Invalid props.
     <Input name="foo" min="foo" />,
+    // @ts-expect-error - Invalid props.
     <Input name="foo" type="text" min={42} />,
     <Text>foo</Text>,
     <Box>
