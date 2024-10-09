@@ -10,7 +10,6 @@ import { addJsonRpcMock, removeJsonRpcMock } from './store';
 import {
   assertIsResponseWithInterface,
   JsonRpcMockOptionsStruct,
-  KeyringOptionsStruct,
   SignatureOptionsStruct,
   TransactionOptionsStruct,
 } from './structs';
@@ -234,11 +233,6 @@ export function getHelpers({
   ): Promise<SnapResponseWithoutInterface> => {
     log('Sending keyring request %o.', request);
 
-    const { origin: keyringRequestOrigin, request: keyringRequest } = create(
-      request,
-      KeyringOptionsStruct,
-    );
-
     const response = await handleRequest({
       snapId,
       store,
@@ -246,7 +240,7 @@ export function getHelpers({
       runSaga,
       controllerMessenger,
       handler: HandlerType.OnKeyringRequest,
-      request: { origin: keyringRequestOrigin, ...keyringRequest },
+      request,
     });
 
     return response;

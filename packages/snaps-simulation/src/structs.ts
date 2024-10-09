@@ -24,8 +24,6 @@ import {
   JsonStruct,
   StrictHexStruct,
   valueToBytes,
-  JsonRpcIdStruct,
-  JsonRpcParamsStruct,
 } from '@metamask/utils';
 import { randomBytes } from 'crypto';
 
@@ -38,28 +36,6 @@ const BytesLikeStruct = union([
   string(),
   instance(Uint8Array),
 ]);
-
-export const RequestOptionsStruct = object({
-  /**
-   * The JSON-RPC request ID.
-   */
-  id: optional(JsonRpcIdStruct),
-
-  /**
-   * The JSON-RPC method.
-   */
-  method: string(),
-
-  /**
-   * The JSON-RPC params.
-   */
-  params: optional(JsonRpcParamsStruct),
-
-  /**
-   * The origin to send the request from.
-   */
-  origin: optional(string()),
-});
 
 export const TransactionOptionsStruct = object({
   /**
@@ -165,17 +141,6 @@ export const TransactionOptionsStruct = object({
     ),
     '0x',
   ),
-});
-
-export const KeyringOptionsStruct = object({
-  /**
-   * The origin making the Keyring request.
-   */
-  origin: defaulted(string(), 'metamask.io'),
-  /**
-   * Keyring request object with params.
-   */
-  request: RequestOptionsStruct,
 });
 
 export const SignatureOptionsStruct = object({

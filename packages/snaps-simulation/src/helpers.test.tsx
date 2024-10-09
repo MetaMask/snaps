@@ -472,8 +472,7 @@ describe('helpers', () => {
       const { snapId, close: closeServer } = await getMockServer({
         sourceCode: `
           module.exports.onKeyringRequest = async ({ origin, request }) => {
-            // return handleKeyringRequest(keyring, request);
-            return request;
+            return { success: true };
           }
          `,
       });
@@ -481,23 +480,17 @@ describe('helpers', () => {
       const { onKeyringRequest, close } = await installSnap(snapId);
       const response = await onKeyringRequest({
         origin: 'metamask.io',
-        request: {
-          params: {
-            foo: 'bar',
-          },
+        params: {
+          foo: 'bar',
         },
+        method: 'keyring_createAccount',
       });
 
       expect(response).toStrictEqual(
         expect.objectContaining({
           response: {
             result: {
-              id: 1,
-              jsonrpc: '2.0',
-              method: '',
-              params: {
-                foo: 'bar',
-              },
+              success: true,
             },
           },
         }),

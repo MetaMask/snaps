@@ -2,21 +2,36 @@ import type { NotificationType, EnumToUnion } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import type { InferMatching } from '@metamask/snaps-utils';
 import type { Infer } from '@metamask/superstruct';
-import type { Json } from '@metamask/utils';
+import type { Json, JsonRpcId, JsonRpcParams } from '@metamask/utils';
 
 import type {
-  KeyringOptionsStruct,
-  RequestOptionsStruct,
   SignatureOptionsStruct,
   SnapOptionsStruct,
   SnapResponseStruct,
   TransactionOptionsStruct,
 } from './structs';
 
-/**
- * JSON RPC Request object.
- */
-export type RequestOptions = Infer<typeof RequestOptionsStruct>;
+export type RequestOptions = {
+  /**
+   * The JSON-RPC request ID.
+   */
+  id?: JsonRpcId;
+
+  /**
+   * The JSON-RPC method.
+   */
+  method: string;
+
+  /**
+   * The JSON-RPC params.
+   */
+  params?: JsonRpcParams;
+
+  /**
+   * The origin to send the request from.
+   */
+  origin?: string;
+};
 
 /**
  * The `runCronjob` options. This is the same as {@link RequestOptions}, except
@@ -49,12 +64,8 @@ export type TransactionOptions = Infer<typeof TransactionOptionsStruct>;
 
 /**
  * The options to use for keyring requests.
- *
- * @property origin - The origin to send the signature request from. Defaults to
- * `metamask.io`.
- * @property request - Keyring request with params.
  */
-export type KeyringOptions = Infer<typeof KeyringOptionsStruct>;
+export type KeyringOptions = RequestOptions;
 
 /**
  * The options to use for signature requests.

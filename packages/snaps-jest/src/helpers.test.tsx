@@ -746,10 +746,8 @@ describe('installSnap', () => {
       const { onKeyringRequest, close } = await installSnap(snapId);
       const response = await onKeyringRequest({
         origin: 'metamask.io',
-        request: {
-          params: {},
-          method: 'keyring_listAccounts',
-        },
+        params: {},
+        method: 'keyring_listAccounts',
       });
 
       expect(response).toStrictEqual(
