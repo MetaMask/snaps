@@ -477,10 +477,10 @@ export const AddressStruct: Describe<AddressElement> = element('Address', {
 /**
  * A struct for the {@link AvatarElement} type.
  */
-export const AvatarStruct: Describe<AvatarElement> = element('Avatar', {
+export const AvatarStruct = element('Avatar', {
   address: CaipAccountIdStruct,
   size: optional(nullUnion([literal('sm'), literal('md'), literal('lg')])),
-});
+}) as unknown as Struct<AvatarElement, null>;
 
 export const BoxChildrenStruct = children(
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
