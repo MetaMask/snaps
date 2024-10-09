@@ -51,6 +51,7 @@ describe('createSnapsMethodMiddleware', () => {
       error: expect.objectContaining(
         serializeError(rpcErrors.methodNotFound(), {
           shouldIncludeStack: false,
+          shouldPreserveMessage: false,
         }),
       ),
     });

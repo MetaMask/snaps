@@ -232,7 +232,10 @@ describe('snap_experimentalProviderRequest', () => {
       expect(response.error).toStrictEqual({
         ...serializeError(
           rpcErrors.internal({ data: { cause: 'Invalid params' } }),
-          { shouldIncludeStack: false },
+          {
+            shouldIncludeStack: false,
+            shouldPreserveMessage: false,
+          },
         ),
       });
     });

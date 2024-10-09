@@ -192,6 +192,7 @@ export class BaseSnapExecutor {
     const serializedError = serializeError(error, {
       fallbackError: unhandledError,
       shouldIncludeStack: false,
+      shouldPreserveMessage: false,
     });
 
     const errorData = getErrorData(serializedError);
@@ -225,6 +226,9 @@ export class BaseSnapExecutor {
             rpcErrors.internal(
               'JSON-RPC requests must be JSON serializable objects.',
             ),
+            {
+              shouldPreserveMessage: false,
+            },
           ),
           id: (message as Pick<JsonRpcRequest, 'id'>).id,
           jsonrpc: '2.0',
@@ -280,6 +284,7 @@ export class BaseSnapExecutor {
       await this.#respond(id, {
         error: serializeError(rpcError, {
           fallbackError,
+          shouldPreserveMessage: false,
         }),
       });
     }
@@ -322,6 +327,9 @@ export class BaseSnapExecutor {
           rpcErrors.internal(
             'JSON-RPC responses must be JSON serializable objects smaller than 64 MB.',
           ),
+          {
+            shouldPreserveMessage: false,
+          },
         ),
         id,
         jsonrpc: '2.0',
