@@ -300,6 +300,9 @@ export const NumberInputPropsStruct = assign(
   }),
 );
 
+/**
+ * A struct for the {@link InputElement} type.
+ */
 export const InputStruct: Describe<InputElement> = elementWithSelectiveProps(
   'Input',
   (value) => {
