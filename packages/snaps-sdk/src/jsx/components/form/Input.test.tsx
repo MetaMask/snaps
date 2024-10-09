@@ -28,13 +28,16 @@ describe('Input', () => {
   });
 
   it('renders a number input', () => {
-    const result = <Input name="foo" type="number" />;
+    const result = <Input name="foo" type="number" min={0} max={10} step={1} />;
 
     expect(result).toStrictEqual({
       type: 'Input',
       props: {
         name: 'foo',
         type: 'number',
+        min: 0,
+        max: 10,
+        step: 1,
       },
       key: null,
     });
