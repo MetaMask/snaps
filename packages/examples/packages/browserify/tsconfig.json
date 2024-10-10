@@ -3,21 +3,7 @@
   "compilerOptions": {
     "resolveJsonModule": true,
     "baseUrl": "./",
-    "paths": {
-      "@metamask/*/node": ["../../../*/src/node"],
-      "@metamask/*": ["../../../*/src"]
-    }
+    "composite": false
   },
-  "include": ["src", "snap.config.ts"],
-  "references": [
-    {
-      "path": "../../../snaps-sdk"
-    },
-    {
-      "path": "../../../snaps-jest"
-    },
-    {
-      "path": "../../../snaps-cli"
-    }
-  ]
+  "include": ["src", "snap.config.ts"]
 }

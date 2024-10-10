@@ -50,5 +50,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     return program[method](...params);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-throw-literal
   throw new MethodNotFoundError({ method: request.method });
 };

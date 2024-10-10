@@ -98,7 +98,8 @@ describe('onRpcRequest', () => {
       });
 
       const ui = await signResponse.getInterface();
-      await ui.ok();
+      // TODO(ritave): Fix type in SnapInterface
+      await (ui as any).ok();
 
       // Because the generated entropy is different for every test run, we
       // cannot assert the signature value. Instead, we assert that the

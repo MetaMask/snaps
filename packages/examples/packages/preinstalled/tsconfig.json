@@ -2,22 +2,9 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": "./",
-    "paths": {
-      "@metamask/*": ["../../../*/src"]
-    },
+    "composite": false,
     "module": "NodeNext",
     "moduleResolution": "NodeNext"
   },
-  "include": ["src", "scripts", "snap.config.ts"],
-  "references": [
-    {
-      "path": "../../../snaps-sdk"
-    },
-    {
-      "path": "../../../snaps-jest"
-    },
-    {
-      "path": "../../../snaps-cli"
-    }
-  ]
+  "include": ["src", "scripts", "snap.config.ts"]
 }

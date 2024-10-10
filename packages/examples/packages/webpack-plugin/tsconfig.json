@@ -2,20 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": "./",
-    "paths": {
-      "@metamask/*": ["../../../*/src"]
-    }
+    "composite": false
   },
-  "include": ["src", "webpack.config.ts"],
-  "references": [
-    {
-      "path": "../../../snaps-sdk"
-    },
-    {
-      "path": "../../../snaps-webpack-plugin"
-    },
-    {
-      "path": "../../../snaps-jest"
-    }
-  ]
+  "include": ["src", "webpack.config.ts"]
 }

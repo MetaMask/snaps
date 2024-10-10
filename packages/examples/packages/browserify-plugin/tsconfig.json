@@ -3,20 +3,7 @@
   "compilerOptions": {
     "resolveJsonModule": true,
     "baseUrl": "./",
-    "paths": {
-      "@metamask/*": ["../../../*/src"]
-    }
+    "composite": false
   },
-  "include": ["src", "scripts", "babel.config.json"],
-  "references": [
-    {
-      "path": "../../../snaps-sdk"
-    },
-    {
-      "path": "../../../snaps-browserify-plugin"
-    },
-    {
-      "path": "../../../snaps-jest"
-    }
-  ]
+  "include": ["src", "scripts", "babel.config.json"]
 }

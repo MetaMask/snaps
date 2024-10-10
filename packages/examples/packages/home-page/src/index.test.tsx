@@ -12,7 +12,7 @@ describe('onHomePage', () => {
 
     await screen.clickElement('footer_button');
 
-    const newUi = await response.getInterface();
+    const newUi = response.getInterface();
 
     expect(newUi).toRender(
       <Box>

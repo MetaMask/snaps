@@ -31,8 +31,13 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
     const type = decodeData(transaction.data);
     return {
       content: panel([
-        row('From', address(transaction.from)),
-        row('To', transaction.to ? address(transaction.to) : text('None')),
+        row('From', address(transaction.from as `0x${string}`)),
+        row(
+          'To',
+          transaction.to
+            ? address(transaction.to as `0x${string}`)
+            : text('None'),
+        ),
         row('Transaction type', text(type)),
       ]),
       severity: SeverityLevel.Critical,

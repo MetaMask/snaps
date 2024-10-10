@@ -43,7 +43,8 @@ describe('onRpcRequest', () => {
         ]),
       );
 
-      await ui.ok();
+      // TODO(ritave): Fix types in SnapInterface
+      await (ui as any).ok();
 
       expect(await response).toRespondWith(null);
     });
@@ -79,7 +80,8 @@ describe('onRpcRequest', () => {
         }),
       );
 
-      await ui.ok();
+      // TODO(ritave): Fix types in SnapInterface
+      await (ui as any).ok();
 
       expect(await response).toRespondWith(null);
     });
@@ -118,7 +120,8 @@ describe('onRpcRequest', () => {
         key: null,
       });
 
-      await ui.ok();
+      // TODO(ritave): Fix types in SnapInterface
+      await (ui as any).ok();
 
       expect(await response).toRespondWith(null);
     });
@@ -157,7 +160,8 @@ describe('onRpcRequest', () => {
         key: null,
       });
 
-      await ui.ok();
+      // TODO(ritave): Fix types in SnapInterface
+      await (ui as any).ok();
 
       expect(await response).toRespondWith(null);
     });

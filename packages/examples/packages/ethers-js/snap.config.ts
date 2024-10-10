@@ -8,6 +8,9 @@ const config: SnapConfig = {
   server: {
     port: 8008,
   },
+  typescript: {
+    enabled: true,
+  },
   stats: {
     buffer: false,
     builtIns: {
