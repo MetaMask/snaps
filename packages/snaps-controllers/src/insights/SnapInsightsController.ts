@@ -390,6 +390,12 @@ export class SnapInsightsController extends BaseController<
     response?: Record<string, Json>;
     error?: Error;
   }) {
+    // If the insight has been cleaned up already, we can skip setting the state.
+    // This may happen if a user accepts/rejects a transaction/signature faster than the Snap responds.
+    if (!this.#hasInsight(id)) {
+      return;
+    }
+
     this.update((state) => {
       state.insights[id][snapId].loading = false;
       state.insights[id][snapId].interfaceId = response?.id as string;

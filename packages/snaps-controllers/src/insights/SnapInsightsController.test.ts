@@ -5,6 +5,7 @@ import {
   MOCK_LOCAL_SNAP_ID,
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
+import { createDeferredPromise } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
 import {
@@ -449,5 +450,203 @@ describe('SnapInsightsController', () => {
     });
 
     expect(rootMessenger.call).toHaveBeenCalledTimes(8);
+  });
+
+  it('ignores insight if transaction has already been signed', async () => {
+    const rootMessenger = getRootSnapInsightsControllerMessenger();
+
+    rootMessenger.registerActionHandler('SnapController:getAll', () => {
+      return [getTruncatedSnap(), getTruncatedSnap({ id: MOCK_LOCAL_SNAP_ID })];
+    });
+
+    const { resolve, promise } = createDeferredPromise();
+
+    rootMessenger.registerActionHandler(
+      'SnapController:handleRequest',
+      async ({ snapId }) => {
+        await promise;
+        if (snapId === MOCK_SNAP_ID) {
+          return { id: nanoid() };
+        }
+        throw new InternalError();
+      },
+    );
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      (origin) => {
+        return origin === MOCK_SNAP_ID
+          ? MOCK_INSIGHTS_PERMISSIONS
+          : MOCK_INSIGHTS_PERMISSIONS_NO_ORIGINS;
+      },
+    );
+
+    const controllerMessenger =
+      getRestrictedSnapInsightsControllerMessenger(rootMessenger);
+
+    const controller = new SnapInsightsController({
+      messenger: controllerMessenger,
+    });
+
+    // Simulate transaction added, signed & confirmed
+    rootMessenger.publish(
+      'TransactionController:unapprovedTransactionAdded',
+      TRANSACTION_META_MOCK,
+    );
+
+    rootMessenger.publish('TransactionController:transactionStatusUpdated', {
+      transactionMeta: { ...TRANSACTION_META_MOCK, status: 'approved' },
+    });
+
+    rootMessenger.publish('TransactionController:transactionStatusUpdated', {
+      transactionMeta: { ...TRANSACTION_META_MOCK, status: 'confirmed' },
+    });
+
+    resolve();
+
+    // Wait for promises to resolve
+    await new Promise(process.nextTick);
+
+    expect(Object.values(controller.state.insights)).toHaveLength(0);
+
+    expect(rootMessenger.call).toHaveBeenCalledTimes(5);
+    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+      4,
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_SNAP_ID,
+        origin: '',
+        handler: HandlerType.OnTransaction,
+        request: {
+          method: '',
+          params: {
+            chainId: `eip155:${parseInt(TRANSACTION_META_MOCK.chainId, 16)}`,
+            transaction: TRANSACTION_META_MOCK.txParams,
+            transactionOrigin: TRANSACTION_META_MOCK.origin,
+          },
+        },
+      },
+    );
+    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+      5,
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_LOCAL_SNAP_ID,
+        origin: '',
+        handler: HandlerType.OnTransaction,
+        request: {
+          method: '',
+          params: {
+            chainId: `eip155:${parseInt(TRANSACTION_META_MOCK.chainId, 16)}`,
+            transaction: TRANSACTION_META_MOCK.txParams,
+            transactionOrigin: null,
+          },
+        },
+      },
+    );
+  });
+
+  it('ignores insight if signature has already been signed', async () => {
+    const rootMessenger = getRootSnapInsightsControllerMessenger();
+    const controllerMessenger =
+      getRestrictedSnapInsightsControllerMessenger(rootMessenger);
+
+    const controller = new SnapInsightsController({
+      messenger: controllerMessenger,
+    });
+
+    rootMessenger.registerActionHandler('SnapController:getAll', () => {
+      return [getTruncatedSnap(), getTruncatedSnap({ id: MOCK_LOCAL_SNAP_ID })];
+    });
+
+    const { resolve, promise } = createDeferredPromise();
+
+    rootMessenger.registerActionHandler(
+      'SnapController:handleRequest',
+      async () => {
+        await promise;
+        return { id: nanoid() };
+      },
+    );
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      (origin) => {
+        return origin === MOCK_SNAP_ID
+          ? MOCK_INSIGHTS_PERMISSIONS
+          : MOCK_INSIGHTS_PERMISSIONS_NO_ORIGINS;
+      },
+    );
+
+    rootMessenger.publish(
+      'SignatureController:stateChange',
+      {
+        unapprovedPersonalMsgCount: 0,
+        unapprovedTypedMessagesCount: 1,
+        unapprovedTypedMessages: { '1': TYPED_SIGNATURE_MOCK },
+        unapprovedPersonalMsgs: {},
+      },
+      [],
+    );
+
+    rootMessenger.publish(
+      'SignatureController:stateChange',
+      {
+        unapprovedPersonalMsgCount: 0,
+        unapprovedTypedMessagesCount: 0,
+        unapprovedTypedMessages: {},
+        unapprovedPersonalMsgs: {},
+      },
+      [],
+    );
+
+    resolve();
+
+    // Wait for promises to resolve
+    await new Promise(process.nextTick);
+
+    expect(Object.values(controller.state.insights)).toHaveLength(0);
+
+    expect(rootMessenger.call).toHaveBeenCalledTimes(5);
+    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+      4,
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_SNAP_ID,
+        origin: '',
+        handler: HandlerType.OnSignature,
+        request: {
+          method: '',
+          params: {
+            signature: {
+              from: TYPED_SIGNATURE_MOCK.msgParams.from,
+              data: JSON.parse(TYPED_SIGNATURE_MOCK.msgParams.data),
+              signatureMethod: TYPED_SIGNATURE_MOCK.msgParams.signatureMethod,
+            },
+            signatureOrigin: TYPED_SIGNATURE_MOCK.msgParams.origin,
+          },
+        },
+      },
+    );
+    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+      5,
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_LOCAL_SNAP_ID,
+        origin: '',
+        handler: HandlerType.OnSignature,
+        request: {
+          method: '',
+          params: {
+            signature: {
+              from: TYPED_SIGNATURE_MOCK.msgParams.from,
+              data: JSON.parse(TYPED_SIGNATURE_MOCK.msgParams.data),
+              signatureMethod: TYPED_SIGNATURE_MOCK.msgParams.signatureMethod,
+            },
+            signatureOrigin: null,
+          },
+        },
+      },
+    );
   });
 });
