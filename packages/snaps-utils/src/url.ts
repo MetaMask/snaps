@@ -25,14 +25,17 @@ export function parseMetaMaskUrl(str: string): {
   path: string;
 } {
   const url = new URL(str);
-  const { pathname: path, protocol } = url;
+  const { protocol } = url;
   if (protocol !== 'metamask:') {
     throw new Error(
       `Unable to parse URL. Expected the protocol to be "metamask:", but received "${protocol}".`,
     );
   }
 
-  const [authority] = url.href.replace('metamask://', '').split('/');
+  const [authority, ...pathElements] = url.href
+    .replace('metamask://', '')
+    .split('/');
+  const path = pathElements.join('/');
 
   switch (authority) {
     case 'client':
