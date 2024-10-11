@@ -32,7 +32,7 @@ export const Dialog: SnapComponent = () => (
     </Box>
     <Footer>
       <Button name="cancel">Cancel</Button>
-      <Button name="confirm" form="form">
+      <Button name="confirm" type="submit" form="form">
         Confirm
       </Button>
     </Footer>
