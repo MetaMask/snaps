@@ -4,12 +4,6 @@ import type {
   ControllerStateChangeEvent,
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
-
-import type {
-  TransactionControllerUnapprovedTransactionAddedEvent,
-  SignatureStateChange,
-  TransactionControllerTransactionStatusUpdatedEvent,
-} from '../types';
 import { createDeferredPromise } from '@metamask/utils';
 
 const controllerName = 'DeviceController';
@@ -21,7 +15,20 @@ export type DeviceControllerGetStateAction = ControllerGetStateAction<
   DeviceControllerState
 >;
 
-export type DeviceControllerActions = DeviceControllerGetStateAction;
+export type DeviceControllerResolvePairingAction = {
+  type: `${typeof controllerName}:resolvePairing`;
+  handler: DeviceController['resolvePairing'];
+};
+
+export type DeviceControllerRejectPairingAction = {
+  type: `${typeof controllerName}:rejectPairing`;
+  handler: DeviceController['rejectPairing'];
+};
+
+export type DeviceControllerActions =
+  | DeviceControllerGetStateAction
+  | DeviceControllerResolvePairingAction
+  | DeviceControllerRejectPairingAction;
 
 export type DeviceControllerStateChangeEvent = ControllerStateChangeEvent<
   typeof controllerName,
@@ -30,10 +37,7 @@ export type DeviceControllerStateChangeEvent = ControllerStateChangeEvent<
 
 export type DeviceControllerEvents = DeviceControllerStateChangeEvent;
 
-export type DeviceControllerAllowedEvents =
-  | TransactionControllerUnapprovedTransactionAddedEvent
-  | TransactionControllerTransactionStatusUpdatedEvent
-  | SignatureStateChange;
+export type DeviceControllerAllowedEvents = never;
 
 export type DeviceControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
@@ -85,6 +89,16 @@ export class DeviceController extends BaseController<
       name: controllerName,
       state: { ...state, devices: {} },
     });
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:resolvePairing`,
+      async (...args) => this.resolvePairing(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:rejectPairing`,
+      async (...args) => this.rejectPairing(...args),
+    );
   }
 
   async requestDevices(snapId: string) {
