@@ -128,7 +128,7 @@
     "@types/tar-stream": "^3.1.1",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^6.21.0",
-    "@wdio/browser-runner": "^9.1.6",
+    "@wdio/browser-runner": "patch:@wdio/browser-runner@npm%3A9.1.6#~/.yarn/patches/@wdio-browser-runner-npm-9.1.6-41633725a3.patch",
     "@wdio/cli": "^9.1.5",
     "@wdio/globals": "^9.1.5",
     "@wdio/mocha-framework": "^9.1.3",
