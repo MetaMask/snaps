@@ -35,7 +35,7 @@ export function parseMetaMaskUrl(str: string): {
   const [authority, ...pathElements] = url.href
     .replace('metamask://', '')
     .split('/');
-  const path = pathElements.join('/');
+  const path = `/${pathElements.join('/')}`;
 
   switch (authority) {
     case 'client':
