@@ -235,12 +235,10 @@ function getFormElement(form: FormElement, name: string) {
  * @param element - The JSX element.
  * @returns An object containing the element and optional form.
  */
-function getElementWithOptionalForm(element: NamedJSXElement):
-  | {
-      element: NamedJSXElement;
-      form?: string;
-    }
-  | undefined {
+function getElementWithOptionalForm(element: NamedJSXElement): {
+  element: NamedJSXElement;
+  form?: string;
+} {
   if (element.type !== 'Button' || !element.props.form) {
     return { element };
   }
