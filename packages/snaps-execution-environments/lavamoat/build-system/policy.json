@@ -226,7 +226,7 @@
     "@babel/core>@babel/types": {
       "globals": {
         "console.warn": true,
-        "process.env.BABEL_TYPES_8_BREAKING": true
+        "process.env": true
       },
       "packages": {
         "@babel/core>@babel/types>@babel/helper-string-parser": true,
@@ -1096,7 +1096,7 @@
         "TextEncoder": true
       }
     },
-    "@wdio/mocha-framework>mocha>supports-color": {
+    "@wdio/browser-runner>mocha>supports-color": {
       "builtin": {
         "os.release": true,
         "tty.isatty": true
@@ -1357,11 +1357,11 @@
         "setImmediate": true
       },
       "packages": {
-        "browserify>duplexer2>readable-stream>isarray": true,
         "browserify>duplexer2>readable-stream>safe-buffer": true,
         "browserify>duplexer2>readable-stream>string_decoder": true,
         "browserify>inherits": true,
         "browserify>readable-stream>core-util-is": true,
+        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>process-nextick-args": true,
         "readable-stream>util-deprecate": true
       }
@@ -1536,10 +1536,10 @@
       },
       "packages": {
         "browserify>inherits": true,
-        "browserify>labeled-stream-splicer>stream-splicer>readable-stream>isarray": true,
         "browserify>labeled-stream-splicer>stream-splicer>readable-stream>safe-buffer": true,
         "browserify>labeled-stream-splicer>stream-splicer>readable-stream>string_decoder": true,
         "browserify>readable-stream>core-util-is": true,
+        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>process-nextick-args": true,
         "readable-stream>util-deprecate": true
       }
@@ -1621,10 +1621,10 @@
       },
       "packages": {
         "browserify>inherits": true,
-        "browserify>module-deps>readable-stream>isarray": true,
         "browserify>module-deps>readable-stream>safe-buffer": true,
         "browserify>module-deps>readable-stream>string_decoder": true,
         "browserify>readable-stream>core-util-is": true,
+        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>process-nextick-args": true,
         "readable-stream>util-deprecate": true
       }
@@ -1661,10 +1661,10 @@
       },
       "packages": {
         "browserify>inherits": true,
-        "browserify>module-deps>stream-combiner2>readable-stream>isarray": true,
         "browserify>module-deps>stream-combiner2>readable-stream>safe-buffer": true,
         "browserify>module-deps>stream-combiner2>readable-stream>string_decoder": true,
         "browserify>readable-stream>core-util-is": true,
+        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>process-nextick-args": true,
         "readable-stream>util-deprecate": true
       }
@@ -1721,10 +1721,10 @@
       },
       "packages": {
         "browserify>inherits": true,
-        "browserify>read-only-stream>readable-stream>isarray": true,
         "browserify>read-only-stream>readable-stream>safe-buffer": true,
         "browserify>read-only-stream>readable-stream>string_decoder": true,
         "browserify>readable-stream>core-util-is": true,
+        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>process-nextick-args": true,
         "readable-stream>util-deprecate": true
       }
@@ -1850,8 +1850,8 @@
       "packages": {
         "browserify>inherits": true,
         "browserify>readable-stream>core-util-is": true,
+        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>process-nextick-args": true,
-        "browserify>through2>readable-stream>isarray": true,
         "browserify>through2>readable-stream>safe-buffer": true,
         "browserify>through2>readable-stream>string_decoder": true,
         "readable-stream>util-deprecate": true
@@ -2044,7 +2044,7 @@
         "process": true
       },
       "packages": {
-        "@wdio/mocha-framework>mocha>supports-color": true,
+        "@wdio/browser-runner>mocha>supports-color": true,
         "eslint>debug>ms": true
       }
     },
@@ -2369,19 +2369,12 @@
         "define": true
       },
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
       }
     },
     "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
       "globals": {
-        "define": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
         "define": true
       }
     },

@@ -161,7 +161,7 @@
         "TextEncoder": true
       }
     },
-    "@wdio/mocha-framework>mocha>supports-color": {
+    "@wdio/browser-runner>mocha>supports-color": {
       "builtin": {
         "os.release": true,
         "tty.isatty": true
@@ -218,7 +218,7 @@
         "process": true
       },
       "packages": {
-        "@wdio/mocha-framework>mocha>supports-color": true,
+        "@wdio/browser-runner>mocha>supports-color": true,
         "eslint>debug>ms": true,
         "tty": true,
         "util": true
