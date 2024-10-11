@@ -10,6 +10,9 @@ import { createSnapComponent } from '../component';
  */
 export type AddressProps = {
   address: `0x${string}` | CaipAccountId;
+  truncate?: boolean;
+  displayName?: boolean;
+  avatar?: boolean;
 };
 
 const TYPE = 'Address';
