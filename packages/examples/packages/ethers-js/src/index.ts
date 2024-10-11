@@ -7,6 +7,7 @@ import {
   UserRejectedRequestError,
   MethodNotFoundError,
 } from '@metamask/snaps-sdk';
+// @ts-expect-error Typescript thinks this is ESM Module, not a CommonJS module, while ethers supports both. Webpack will correctly identify proper import type.
 import { Wallet } from 'ethers';
 
 import type { SignMessageParams } from './types';
@@ -56,6 +57,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       });
 
       if (!result) {
+        // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw new UserRejectedRequestError();
       }
 
@@ -63,6 +65,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     }
 
     default:
+      // eslint-disable-next-line @typescript-eslint/no-throw-literal
       throw new MethodNotFoundError({ method: request.method });
   }
 };

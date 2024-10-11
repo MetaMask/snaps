@@ -416,6 +416,30 @@ export type SnapWebpackConfig = {
       };
 
   /**
+   * Support for TypeScript type-checking feature.
+   *
+   * @example
+   * {
+   *   enabled: true;
+   *   configFile: './path/to/tsconfig.json'
+   * }
+   */
+  typescript?: {
+    /**
+     * Whether to enable TypeScript type-checking feature.
+     *
+     * @default false
+     */
+    enabled?: boolean;
+    /**
+     * Path to tsconfig.json file for the Snap.
+     *
+     * @default 'tsconfig.json'
+     */
+    configFile?: string;
+  };
+
+  /**
    * Optional features to enable in the CLI.
    *
    * @example
@@ -637,6 +661,14 @@ export const SnapsWebpackConfigStruct = object({
       }),
     ]),
     false,
+  ),
+
+  typescript: defaulted(
+    object({
+      enabled: defaulted(boolean(), false),
+      configFile: defaulted(file(), 'tsconfig.json'),
+    }),
+    {},
   ),
 
   features: defaulted(

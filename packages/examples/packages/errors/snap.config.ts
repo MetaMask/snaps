@@ -6,6 +6,9 @@ const config: SnapConfig = {
   server: {
     port: 8006,
   },
+  typescript: {
+    enabled: true,
+  },
 };
 
 export default config;

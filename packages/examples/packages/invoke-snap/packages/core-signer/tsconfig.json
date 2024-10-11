@@ -2,23 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": "./",
-    "paths": {
-      "@metamask/*": ["../../../../../*/src"]
-    }
+    "composite": false
   },
-  "include": ["src", "snap.config.ts"],
-  "references": [
-    {
-      "path": "../../../../../snaps-sdk"
-    },
-    {
-      "path": "../../../../../snaps-sdk"
-    },
-    {
-      "path": "../../../../../snaps-jest"
-    },
-    {
-      "path": "../../../../../snaps-cli"
-    }
-  ]
+  "include": ["src", "snap.config.ts"]
 }

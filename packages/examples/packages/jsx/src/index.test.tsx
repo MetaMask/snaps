@@ -32,7 +32,8 @@ describe('onRpcRequest', () => {
       });
 
       const ui = await response.getInterface();
-      assert(ui.type === 'alert');
+      // TODO(ritave): Fix types in SnapInterface
+      assert((ui as any).type === 'alert');
 
       expect(ui).toRender(<Counter count={0} />);
 
@@ -41,7 +42,8 @@ describe('onRpcRequest', () => {
       const updatedUi = await response.getInterface();
       expect(updatedUi).toRender(<Counter count={1} />);
 
-      await updatedUi.ok();
+      // TODO(ritave): Fix types in SnapInterface
+      await (updatedUi as any).ok();
 
       expect(await response).toRespondWith(null);
     });

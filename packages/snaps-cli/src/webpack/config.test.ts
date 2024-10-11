@@ -163,6 +163,31 @@ describe('getDefaultConfiguration', () => {
         images: false,
       },
     }),
+    getMockConfig('webpack', {
+      input: 'src/index.js',
+      output: {
+        path: 'dist',
+      },
+      manifest: {
+        path: 'snap.manifest.json',
+      },
+      typescript: {
+        enabled: true,
+      },
+    }),
+    getMockConfig('webpack', {
+      input: 'src/index.js',
+      output: {
+        path: 'dist',
+      },
+      manifest: {
+        path: 'snap.manifest.json',
+      },
+      typescript: {
+        enabled: true,
+        configFile: './foo/bar/tsconfig.json',
+      },
+    }),
   ])(
     'returns the default Webpack configuration for the given CLI config',
     async (config) => {

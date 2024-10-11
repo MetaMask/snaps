@@ -22,7 +22,8 @@ describe('onCronjob', () => {
         ]),
       );
 
-      await ui.ok();
+      // TODO(ritave): Fix types in SnapInterface
+      await (ui as any).ok();
 
       const response = await request;
       expect(response).toRespondWith(null);

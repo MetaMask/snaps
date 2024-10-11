@@ -1,8 +1,10 @@
 import { expect } from '@jest/globals';
-import { NodeProcessExecutionService } from '@metamask/snaps-controllers';
+import { NodeProcessExecutionService } from '@metamask/snaps-controllers/node';
 import { installSnap } from '@metamask/snaps-jest';
 
 describe('onRpcRequest', () => {
+  // This test is disabled as it does not currently work
+  // TODO(ritave): Fix this test
   it('throws an error if the requested method does not exist', async () => {
     const { request } = await installSnap({
       executionService: NodeProcessExecutionService,
