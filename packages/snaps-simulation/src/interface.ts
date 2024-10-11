@@ -229,6 +229,24 @@ function getFormElement(form: FormElement, name: string) {
 }
 
 /**
+ * Get an object containing the element, and optional form that's associated
+ * with the element if any.
+ *
+ * @param element - The JSX element.
+ * @returns An object containing the element and optional form.
+ */
+function getElementWithOptionalForm(element: NamedJSXElement): {
+  element: NamedJSXElement;
+  form?: string;
+} {
+  if (element.type !== 'Button' || !element.props.form) {
+    return { element };
+  }
+
+  return { element, form: element.props.form };
+}
+
+/**
  * Get an element from a JSX tree with the given name.
  *
  * @param content - The interface content.
@@ -246,7 +264,7 @@ export function getElement(
     }
   | undefined {
   if (isJSXElementWithName(content, name)) {
-    return { element: content };
+    return getElementWithOptionalForm(content);
   }
 
   return walkJsx(content, (element) => {
@@ -255,7 +273,7 @@ export function getElement(
     }
 
     if (isJSXElementWithName(element, name)) {
-      return { element };
+      return getElementWithOptionalForm(element);
     }
 
     return undefined;
