@@ -666,7 +666,7 @@ export const SnapsWebpackConfigStruct = object({
   typescript: defaulted(
     object({
       enabled: defaulted(boolean(), false),
-      configFile: defaulted(string(), 'tsconfig.json'),
+      configFile: defaulted(file(), 'tsconfig.json'),
     }),
     {},
   ),
