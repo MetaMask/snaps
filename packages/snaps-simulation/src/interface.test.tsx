@@ -27,6 +27,7 @@ import {
   SelectorOption,
   Card,
   Selector,
+  Field,
 } from '@metamask/snaps-sdk/jsx';
 import {
   getJsxElementFromComponent,
@@ -446,6 +447,31 @@ describe('getElement', () => {
       form: 'form-2',
     });
   });
+
+  it('gets a button with a form property', () => {
+    const content = (
+      <Box>
+        <Form name="referenced-form">
+          <Field>
+            <Input name="input" />
+          </Field>
+        </Form>
+        <Button name="button" type="submit" form="referenced-form">
+          foo
+        </Button>
+      </Box>
+    );
+    const result = getElement(content, 'button');
+
+    expect(result).toStrictEqual({
+      element: (
+        <Button name="button" type="submit" form="referenced-form">
+          foo
+        </Button>
+      ),
+      form: 'referenced-form',
+    });
+  });
 });
 
 describe('clickElement', () => {
@@ -546,6 +572,71 @@ describe('clickElement', () => {
             name: 'bar',
             value: {
               foo: 'foo',
+            },
+          },
+          id: interfaceId,
+          context: null,
+        },
+      },
+    });
+  });
+
+  it('sends a `FormSubmitEvent` to the Snap for a button with a form property', async () => {
+    const content = (
+      <Box>
+        <Form name="referenced-form">
+          <Field>
+            <Input name="input" />
+          </Field>
+        </Form>
+        <Button name="button" type="submit" form="referenced-form">
+          foo
+        </Button>
+      </Box>
+    );
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await clickElement(
+      rootControllerMessenger,
+      interfaceId,
+      content,
+      MOCK_SNAP_ID,
+      'button',
+    );
+
+    expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
+      origin: '',
+      handler: HandlerType.OnUserInput,
+      request: {
+        jsonrpc: '2.0',
+        method: ' ',
+        params: {
+          event: {
+            type: UserInputEventType.ButtonClickEvent,
+            name: 'button',
+          },
+          id: interfaceId,
+          context: null,
+        },
+      },
+    });
+
+    expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
+      origin: '',
+      handler: HandlerType.OnUserInput,
+      request: {
+        jsonrpc: '2.0',
+        method: ' ',
+        params: {
+          event: {
+            type: UserInputEventType.FormSubmitEvent,
+            name: 'referenced-form',
+            value: {
+              input: null,
             },
           },
           id: interfaceId,
