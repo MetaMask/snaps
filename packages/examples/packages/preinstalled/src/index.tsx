@@ -1,7 +1,10 @@
 import { MethodNotFoundError } from '@metamask/snaps-sdk';
-import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
+import type {
+  OnRpcRequestHandler,
+  OnUserInputHandler,
+} from '@metamask/snaps-sdk';
 
-import { Dialog } from './components';
+import { Dialog, Result } from './components';
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
@@ -29,5 +32,47 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     default:
       // eslint-disable-next-line @typescript-eslint/no-throw-literal
       throw new MethodNotFoundError({ method: request.method });
+  }
+};
+
+export const onUserInput: OnUserInputHandler = async ({
+  event,
+  id,
+  context,
+}) => {
+  if (event.type === 'ButtonClickEvent') {
+    if (event.name === 'cancel') {
+      await snap.request({
+        method: 'snap_resolveInterface',
+        params: {
+          id,
+          value: null,
+        },
+      });
+    }
+
+    if (event.name === 'ok') {
+      await snap.request({
+        method: 'snap_resolveInterface',
+        params: {
+          id,
+          value: String(context?.value),
+        },
+      });
+    }
+  }
+
+  if (event.type === 'FormSubmitEvent') {
+    if (event.name === 'form') {
+      const value = String(event.value['custom-input']);
+      await snap.request({
+        method: 'snap_updateInterface',
+        params: {
+          id,
+          ui: <Result value={value} />,
+          context: { value },
+        },
+      });
+    }
   }
 };
