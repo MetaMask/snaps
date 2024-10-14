@@ -9,10 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [8.4.1]
 
-### Uncategorized
+### Fixed
 
-- fix: Pass URLs to `PhishingController` ([#2835](https://github.com/MetaMask/snaps/pull/2835))
-- fix: Make `parseMetaMaskUrl` platform agnostic ([#2834](https://github.com/MetaMask/snaps/pull/2834))
+- Pass full URLs to `PhishingController` ([#2835](https://github.com/MetaMask/snaps/pull/2835))
+- Make `parseMetaMaskUrl` platform-agnostic ([#2834](https://github.com/MetaMask/snaps/pull/2834))
 
 ## [8.4.0]
 

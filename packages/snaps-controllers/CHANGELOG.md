@@ -9,10 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [9.11.1]
 
-### Uncategorized
+### Fixed
 
-- fix: Pass URLs to `PhishingController` ([#2835](https://github.com/MetaMask/snaps/pull/2835))
-- fix: Ignore Snap insight response if transaction/signature has already been signed ([#2825](https://github.com/MetaMask/snaps/pull/2825))
+- Pass full URLs to `PhishingController` ([#2835](https://github.com/MetaMask/snaps/pull/2835))
+- Ignore Snap insight response if transaction or signature has already been signed ([#2825](https://github.com/MetaMask/snaps/pull/2825))
 
 ## [9.11.0]
 

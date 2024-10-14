@@ -9,9 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.5.0]
 
-### Uncategorized
+### Added
 
-- Add TypeScript typechecking to snaps-cli ([#2783](https://github.com/MetaMask/snaps/pull/2783))
+- Add support for TypeScript type-checking ([#2783](https://github.com/MetaMask/snaps/pull/2783))
+  - This introduces a new configuration option, `typescript.enabled`, which can
+    be set to `true` to enable TypeScript type-checking.
+  - You can optionally specify a custom `tsconfig.json` file by setting
+    `typescript.configFile` to the path of the file.
 
 ## [6.4.0]
 

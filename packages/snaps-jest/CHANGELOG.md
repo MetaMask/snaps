@@ -9,10 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [8.6.0]
 
-### Uncategorized
+### Added
 
-- Add onKeyringRequest to snaps-jest ([#2777](https://github.com/MetaMask/snaps/pull/2777))
-- Delete unnecessary `readable-stream` types ([#2784](https://github.com/MetaMask/snaps/pull/2784))
+- Add function to test `onKeyringRequest` ([#2777](https://github.com/MetaMask/snaps/pull/2777))
+  - The `onKeyringRequest` function can be used to test keyring requests.
 
 ## [8.5.0]
 
