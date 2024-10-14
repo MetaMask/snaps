@@ -360,19 +360,15 @@ export function validateLink(
       const emails = url.pathname.split(',');
       for (const email of emails) {
         const hostname = email.split('@')[1];
-        assert(
-          !isOnPhishingList(hostname),
-          'The specified URL is not allowed.',
-        );
+        assert(!hostname.includes(':'));
+        const href = `https://${hostname}`;
+        assert(!isOnPhishingList(href), 'The specified URL is not allowed.');
       }
 
       return;
     }
 
-    assert(
-      !isOnPhishingList(url.hostname),
-      'The specified URL is not allowed.',
-    );
+    assert(!isOnPhishingList(url.href), 'The specified URL is not allowed.');
   } catch (error) {
     throw new Error(
       `Invalid URL: ${
