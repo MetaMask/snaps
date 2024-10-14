@@ -538,6 +538,21 @@ describe('AddressStruct', () => {
     <Row label="label">
       <Image src="<svg />" alt="alt" />
     </Row>,
+    <Address
+      address="0x1234567890abcdef1234567890abcdef12345678"
+      // @ts-expect-error - Invalid props.
+      truncate="wrong-prop"
+    />,
+    <Address
+      address="0x1234567890abcdef1234567890abcdef12345678"
+      // @ts-expect-error - Invalid props.
+      displayName="false"
+    />,
+    <Address
+      address="0x1234567890abcdef1234567890abcdef12345678"
+      // @ts-expect-error - Invalid props.
+      avatar="wrong-prop"
+    />,
   ])('does not validate "%p"', (value) => {
     expect(is(value, AddressStruct)).toBe(false);
   });
