@@ -69,6 +69,7 @@ import {
   IconStruct,
   SelectorStruct,
   SectionStruct,
+  AvatarStruct,
 } from './validation';
 
 describe('KeyStruct', () => {
