@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- Add support for button `form` property in `snaps-simulation` ([#2830](https://github.com/MetaMask/snaps/pull/2830))
+- Add onKeyringRequest to snaps-jest ([#2777](https://github.com/MetaMask/snaps/pull/2777))
+
 ## [1.1.1]
 
 ### Removed

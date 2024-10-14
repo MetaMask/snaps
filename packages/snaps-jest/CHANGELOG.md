@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- Add onKeyringRequest to snaps-jest ([#2777](https://github.com/MetaMask/snaps/pull/2777))
+- Delete unnecessary `readable-stream` types ([#2784](https://github.com/MetaMask/snaps/pull/2784))
+
 ## [8.5.0]
 
 ### Changed

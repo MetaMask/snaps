@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- Add `sm` size variant to `Heading` ([#2831](https://github.com/MetaMask/snaps/pull/2831))
+- Add TypeScript typechecking to snaps-cli ([#2783](https://github.com/MetaMask/snaps/pull/2783))
+- Add `min`, `max` and `step` props to `Input` ([#2821](https://github.com/MetaMask/snaps/pull/2821))
+- feat: Add `Avatar` component ([#2820](https://github.com/MetaMask/snaps/pull/2820))
+
 ## [6.8.0]
 
 ### Added
