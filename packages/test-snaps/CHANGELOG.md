@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Use latest versions of example Snaps ([#2770](https://github.com/MetaMask/snaps/pull/2770))
+- Use latest versions of example Snaps ([#2836](https://github.com/MetaMask/snaps/pull/2836))
 
 ## [2.15.1]
 
