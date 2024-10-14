@@ -32,6 +32,8 @@ export function parseMetaMaskUrl(str: string): {
     );
   }
 
+  // The browser version of URL differs from the Node version so we rely on the href
+  // property to grab the relevant parts of the url instead of hostname and pathname
   const [authority, ...pathElements] = url.href
     .replace('metamask://', '')
     .split('/');
