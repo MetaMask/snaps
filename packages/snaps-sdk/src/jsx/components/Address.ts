@@ -7,9 +7,9 @@ import { createSnapComponent } from '../component';
  *
  * @property address - The (Ethereum) address to display. This should be a
  * valid Ethereum address, starting with `0x`, or a valid CAIP-10 address.
- * @property truncate - Optional boolean flag used to control truncation of the address.
- * @property displayName - Optional boolean flag used to control displaying a name of an account or contact.
- * @property avatar - Optional boolean flag used to control displaying of the address avatar.
+ * @property truncate - Whether to truncate the address. Defaults to `true`.
+ * @property displayName - Whether to show the account name. Defaults to `false`.
+ * @property avatar - Whether to show the address avatar. Defaults to `true`.
  */
 export type AddressProps = {
   address: `0x${string}` | CaipAccountId;
@@ -28,9 +28,9 @@ const TYPE = 'Address';
  * @param props - The props of the component.
  * @param props.address - The address to display. This should be a
  * valid Ethereum address, starting with `0x`, or a valid CAIP-10 address.
- * @param props.truncate - Optional boolean flag used to control truncation of the address.
- * @param props.displayName - Optional boolean flag used to control displaying a name of an account or contact.
- * @param props.avatar - Optional boolean flag used to control displaying of the address avatar.
+ * @param props.truncate - Whether to truncate the address. Defaults to `true`.
+ * @param props.displayName - Whether to show the account name. Defaults to `false`.
+ * @param props.avatar - Whether to show the address avatar. Defaults to `true`.
  * @returns An address element.
  * @example
  * <Address address="0x1234567890123456789012345678901234567890" />
