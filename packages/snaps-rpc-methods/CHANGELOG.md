@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.5.0]
+
+### Removed
+
+- Remove support for JSX in `snap_notify` notifications ([#2837](https://github.com/MetaMask/snaps/pull/2837))
+  - This is technically a breaking change, but this feature was never actually
+    implemented, so it should not affect any existing code.
+  - This will be re-implemented in a future release.
+
 ## [11.4.0]
 
 ### Added
@@ -314,7 +323,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.4.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.5.0...HEAD
+[11.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.4.0...@metamask/snaps-rpc-methods@11.5.0
 [11.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.3.0...@metamask/snaps-rpc-methods@11.4.0
 [11.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.2.0...@metamask/snaps-rpc-methods@11.3.0
 [11.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.1.1...@metamask/snaps-rpc-methods@11.2.0

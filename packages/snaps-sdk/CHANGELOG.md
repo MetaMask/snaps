@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.9.0]
+
+### Added
+
+- Add `sm` size variant to `Heading` component ([#2831](https://github.com/MetaMask/snaps/pull/2831))
+- Add `min`, `max` and `step` props to number `Input` component ([#2821](https://github.com/MetaMask/snaps/pull/2821))
+- Add `Avatar` component ([#2820](https://github.com/MetaMask/snaps/pull/2820))
+
+### Removed
+
+- Remove support for JSX in `snap_notify` notifications ([#2837](https://github.com/MetaMask/snaps/pull/2837))
+  - This is technically a breaking change, but this feature was never actually
+    implemented, so it should not affect any existing code.
+  - This will be re-implemented in a future release.
+
 ## [6.8.0]
 
 ### Added
@@ -383,7 +398,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.8.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.9.0...HEAD
+[6.9.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.8.0...@metamask/snaps-sdk@6.9.0
 [6.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.7.0...@metamask/snaps-sdk@6.8.0
 [6.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.6.0...@metamask/snaps-sdk@6.7.0
 [6.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.5.1...@metamask/snaps-sdk@6.6.0
