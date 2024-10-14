@@ -68,7 +68,7 @@ describe('SnapInterfaceController', () => {
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
         3,
         'PhishingController:testOrigin',
-        'foo.bar',
+        'https://foo.bar/',
       );
 
       expect(content).toStrictEqual(getJsxElementFromComponent(components));
@@ -118,7 +118,7 @@ describe('SnapInterfaceController', () => {
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
         3,
         'PhishingController:testOrigin',
-        'foo.bar',
+        'https://foo.bar/',
       );
 
       expect(content).toStrictEqual(element);
@@ -239,7 +239,7 @@ describe('SnapInterfaceController', () => {
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
         3,
         'PhishingController:testOrigin',
-        'foo.bar',
+        'https://foo.bar/',
       );
     });
 
@@ -289,7 +289,7 @@ describe('SnapInterfaceController', () => {
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
         3,
         'PhishingController:testOrigin',
-        'foo.bar',
+        'https://foo.bar/',
       );
     });
 
@@ -708,7 +708,7 @@ describe('SnapInterfaceController', () => {
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
         5,
         'PhishingController:testOrigin',
-        'foo.bar',
+        'https://foo.bar/',
       );
     });
 
@@ -774,7 +774,7 @@ describe('SnapInterfaceController', () => {
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
         5,
         'PhishingController:testOrigin',
-        'foo.bar',
+        'https://foo.bar/',
       );
     });
 
