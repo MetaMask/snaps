@@ -550,38 +550,41 @@ describe('validateLink', () => {
     expect(() => validateLink('mailto:foo@bar.com', fn, fn)).not.toThrow();
 
     expect(fn).toHaveBeenCalledTimes(2);
-    expect(fn).toHaveBeenCalledWith('foo.bar');
-    expect(fn).toHaveBeenCalledWith('bar.com');
+    expect(fn).toHaveBeenCalledWith('https://foo.bar/');
+    expect(fn).toHaveBeenCalledWith('https://bar.com');
   });
 
   it('passes for a valid list of emails', () => {
     const fn = jest.fn().mockReturnValue(false);
+    const getSnap = jest.fn();
 
     expect(() =>
-      validateLink('mailto:foo@bar.com,bar@baz.com,baz@qux.com', fn),
+      validateLink('mailto:foo@bar.com,bar@baz.com,baz@qux.com', fn, getSnap),
     ).not.toThrow();
 
     expect(fn).toHaveBeenCalledTimes(3);
-    expect(fn).toHaveBeenCalledWith('bar.com');
-    expect(fn).toHaveBeenCalledWith('baz.com');
-    expect(fn).toHaveBeenCalledWith('qux.com');
+    expect(fn).toHaveBeenCalledWith('https://bar.com');
+    expect(fn).toHaveBeenCalledWith('https://baz.com');
+    expect(fn).toHaveBeenCalledWith('https://qux.com');
   });
 
   it('passes for a valid email with a parameter', () => {
     const fn = jest.fn().mockReturnValue(false);
+    const getSnap = jest.fn();
 
     expect(() =>
-      validateLink('mailto:foo@bar.com?subject=Subject', fn),
+      validateLink('mailto:foo@bar.com?subject=Subject', fn, getSnap),
     ).not.toThrow();
 
     expect(fn).toHaveBeenCalledTimes(1);
-    expect(fn).toHaveBeenCalledWith('bar.com');
+    expect(fn).toHaveBeenCalledWith('https://bar.com');
   });
 
   it('throws an error for an invalid protocol', () => {
     const fn = jest.fn().mockReturnValue(false);
+    const getSnap = jest.fn();
 
-    expect(() => validateLink('http://foo.bar', fn, fn)).toThrow(
+    expect(() => validateLink('http://foo.bar', fn, getSnap)).toThrow(
       'Invalid URL: Protocol must be one of: https:, mailto:, metamask:.',
     );
 
@@ -620,7 +623,7 @@ describe('validateLink', () => {
     ).toThrow('Invalid URL: The specified URL is not allowed.');
 
     expect(fn).toHaveBeenCalledTimes(1);
-    expect(fn).toHaveBeenCalledWith('test.metamask-phishing.io');
+    expect(fn).toHaveBeenCalledWith('https://test.metamask-phishing.io/');
   });
 
   it('throws an error for a phishing email', () => {
@@ -631,45 +634,52 @@ describe('validateLink', () => {
     ).toThrow('Invalid URL: The specified URL is not allowed.');
 
     expect(fn).toHaveBeenCalledTimes(1);
-    expect(fn).toHaveBeenCalledWith('test.metamask-phishing.io');
+    expect(fn).toHaveBeenCalledWith('https://test.metamask-phishing.io');
   });
 
   it('throws an error for a phishing email when using multiple emails', () => {
     const fn = jest.fn().mockImplementation((email) => {
-      if (email === 'test.metamask-phishing.io') {
+      if (email === 'https://test.metamask-phishing.io') {
         return true;
       }
 
       return false;
     });
+    const getSnap = jest.fn();
 
     expect(() =>
-      validateLink('mailto:foo@test.metamask-phishing.io,foo@bar.com', fn),
+      validateLink(
+        'mailto:foo@test.metamask-phishing.io,foo@bar.com',
+        fn,
+        getSnap,
+      ),
     ).toThrow('Invalid URL: The specified URL is not allowed.');
 
     expect(fn).toHaveBeenCalledTimes(1);
-    expect(fn).toHaveBeenCalledWith('test.metamask-phishing.io');
+    expect(fn).toHaveBeenCalledWith('https://test.metamask-phishing.io');
   });
 
   it('throws an error for a phishing email when using parameters', () => {
     const fn = jest.fn().mockImplementation((email) => {
-      if (email === 'test.metamask-phishing.io') {
+      if (email === 'https://test.metamask-phishing.io') {
         return true;
       }
 
       return false;
     });
+    const getSnap = jest.fn();
 
     expect(() =>
       validateLink(
         'mailto:foo@bar.com,foo@test.metamask-phishing.io?subject=Subject',
         fn,
+        getSnap,
       ),
     ).toThrow('Invalid URL: The specified URL is not allowed.');
 
     expect(fn).toHaveBeenCalledTimes(2);
-    expect(fn).toHaveBeenCalledWith('bar.com');
-    expect(fn).toHaveBeenCalledWith('test.metamask-phishing.io');
+    expect(fn).toHaveBeenCalledWith('https://bar.com');
+    expect(fn).toHaveBeenCalledWith('https://test.metamask-phishing.io');
   });
 });
 
