@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- feat: Add `Avatar` component ([#2820](https://github.com/MetaMask/snaps/pull/2820))
-
 ## [11.4.0]
 
 ### Added
