@@ -68,8 +68,8 @@ export type SnapMethods = {
   snap_getBip32PublicKey: [GetBip32PublicKeyParams, GetBip32PublicKeyResult];
   snap_getBip44Entropy: [GetBip44EntropyParams, GetBip44EntropyResult];
   snap_getClientStatus: [GetClientStatusParams, GetClientStatusResult];
-  snap_getEntropy: [GetEntropyParams, GetEntropyResult];
   snap_getCurrencyRate: [GetCurrencyRateParams, GetCurrencyRateResult];
+  snap_getEntropy: [GetEntropyParams, GetEntropyResult];
   snap_getFile: [GetFileParams, GetFileResult];
   snap_getLocale: [GetLocaleParams, GetLocaleResult];
   snap_getPreferences: [GetPreferencesParams, GetPreferencesResult];
