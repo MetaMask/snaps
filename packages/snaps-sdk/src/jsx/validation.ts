@@ -543,6 +543,9 @@ export const FormattingStruct: Describe<StandardFormattingElement> = typedUnion(
  */
 export const AddressStruct: Describe<AddressElement> = element('Address', {
   address: nullUnion([HexChecksumAddressStruct, CaipAccountIdStruct]),
+  truncate: optional(boolean()),
+  displayName: optional(boolean()),
+  avatar: optional(boolean()),
 });
 
 /**
