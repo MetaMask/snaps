@@ -3,7 +3,7 @@ import type { ChainId } from '@metamask/snaps-sdk';
 
 import { onNameLookup } from '.';
 
-const DOMAIN_MOCK = 'test.domain';
+const DOMAIN_MOCK = 'fooBar';
 const ADDRESS_MOCK = '0xc0ffee254729296a45a3885639AC7E10F9d54979';
 const CHAIN_ID_MOCK = 'eip155:1' as ChainId;
 
