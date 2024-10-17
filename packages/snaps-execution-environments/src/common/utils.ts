@@ -1,13 +1,6 @@
 import type { StreamProvider, RequestArguments } from '@metamask/providers';
 import { rpcErrors } from '@metamask/rpc-errors';
-import {
-  assert,
-  assertStruct,
-  getJsonSize,
-  getSafeJson,
-  isObject,
-  JsonStruct,
-} from '@metamask/utils';
+import { assert, getJsonSize, getSafeJson, isObject } from '@metamask/utils';
 
 import { log } from '../logging';
 
@@ -122,12 +115,6 @@ export function assertSnapOutboundRequest(args: RequestArguments) {
       },
     }),
   );
-  assertStruct(
-    args,
-    JsonStruct,
-    'Provided value is not JSON-RPC compatible',
-    rpcErrors.invalidParams,
-  );
 }
 
 /**
@@ -152,12 +139,6 @@ export function assertEthereumOutboundRequest(args: RequestArguments) {
         method: args.method,
       },
     }),
-  );
-  assertStruct(
-    args,
-    JsonStruct,
-    'Provided value is not JSON-RPC compatible',
-    rpcErrors.invalidParams,
   );
 }
 

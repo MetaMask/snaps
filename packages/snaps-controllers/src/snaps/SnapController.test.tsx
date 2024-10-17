@@ -3764,6 +3764,38 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
+    it('handlers throw if the request is not valid JSON', async () => {
+      const fakeSnap = getPersistedSnapObject({ status: SnapStatus.Running });
+      const snapId = fakeSnap.id;
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          state: {
+            snaps: {
+              [snapId]: fakeSnap,
+            },
+          },
+        }),
+      );
+      await expect(
+        snapController.handleRequest({
+          snapId,
+          origin: 'foo.com',
+          handler: HandlerType.OnRpcRequest,
+          request: {
+            method: 'bar',
+            params: BigInt(0),
+          },
+        }),
+      ).rejects.toThrow(
+        rpcErrors.invalidRequest({
+          message:
+            'Invalid JSON-RPC request: At path: params -- Expected the value to satisfy a union of `record | array`, but received: 0.',
+        }),
+      );
+
+      snapController.destroy();
+    });
+
     it('handlers will throw if there are too many pending requests before a snap has started', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);

@@ -6,6 +6,7 @@ import {
 import { ChainIdStruct, HandlerType } from '@metamask/snaps-utils';
 import type { Infer } from '@metamask/superstruct';
 import {
+  any,
   array,
   assign,
   enums,
@@ -87,7 +88,10 @@ export const SnapRpcRequestArgumentsStruct = tuple([
   assign(
     JsonRpcRequestWithoutIdStruct,
     object({
-      params: optional(record(string(), JsonStruct)),
+      // Previously this would validate that the parameters were valid JSON.
+      // This is already validated for all messages received by the executor.
+      // If that assumption changes, this should once again validate JSON.
+      params: optional(record(string(), any())),
     }),
   ),
 ]);

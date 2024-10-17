@@ -476,6 +476,7 @@ export class BaseSnapExecutor {
     const originalRequest = provider.request.bind(provider);
 
     const request = async (args: RequestArguments) => {
+      // As part of the sanitization, we validate that the args are valid JSON.
       const sanitizedArgs = sanitizeRequestArguments(args);
       assertSnapOutboundRequest(sanitizedArgs);
       return await withTeardown(
@@ -512,6 +513,7 @@ export class BaseSnapExecutor {
     const originalRequest = provider.request.bind(provider);
 
     const request = async (args: RequestArguments) => {
+      // As part of the sanitization, we validate that the args are valid JSON.
       const sanitizedArgs = sanitizeRequestArguments(args);
       assertEthereumOutboundRequest(sanitizedArgs);
       return await withTeardown(
