@@ -1759,7 +1759,9 @@ export class SnapController extends BaseController<
    */
   async #decryptSnapState(snapId: SnapId, state: string) {
     try {
-      const parsed = parseJson<EncryptionResult>(state);
+      // We assume that the state string here is valid JSON since we control serialization.
+      // This lets us skip JSON validation.
+      const parsed = JSON.parse(state) as EncryptionResult;
       const { salt, keyMetadata } = parsed;
       const useCache = this.#encryptor.isVaultUpdated(state);
       const { key } = await this.#getSnapEncryptionKey({
