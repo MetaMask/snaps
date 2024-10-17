@@ -410,13 +410,17 @@ export abstract class AbstractExecutionService<WorkerType>
 
     const remainingTime = timer.remaining;
 
+    const request = {
+      jsonrpc: '2.0',
+      method: 'executeSnap',
+      params: { snapId, sourceCode, endowments },
+      id: nanoid(),
+    };
+
+    assertIsJsonRpcRequest(request);
+
     const result = await withTimeout(
-      this.command(job.id, {
-        jsonrpc: '2.0',
-        method: 'executeSnap',
-        params: { snapId, sourceCode, endowments },
-        id: nanoid(),
-      }),
+      this.command(job.id, request),
       remainingTime,
     );
 
@@ -433,8 +437,6 @@ export abstract class AbstractExecutionService<WorkerType>
     jobId: string,
     message: JsonRpcRequest,
   ): Promise<Json | undefined> {
-    assertIsJsonRpcRequest(message);
-
     const job = this.jobs.get(jobId);
     if (!job) {
       throw new Error(`Job with id "${jobId}" not found.`);

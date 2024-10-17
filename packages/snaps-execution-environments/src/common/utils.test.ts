@@ -32,17 +32,6 @@ describe('assertSnapOutboundRequest', () => {
       'The method does not exist / is not available.',
     );
   });
-
-  it('throws for invalid JSON values', () => {
-    expect(() =>
-      assertSnapOutboundRequest({
-        method: 'snap_notify',
-        params: [undefined],
-      }),
-    ).toThrow(
-      'Provided value is not JSON-RPC compatible: Expected the value to satisfy a union of `literal | boolean | finite number | string | array | record`, but received: [object Object].',
-    );
-  });
 });
 
 describe('assertEthereumOutboundRequest', () => {
@@ -64,17 +53,6 @@ describe('assertEthereumOutboundRequest', () => {
   it.each(BLOCKED_RPC_METHODS)('disallows %s', (method) => {
     expect(() => assertEthereumOutboundRequest({ method })).toThrow(
       'The method does not exist / is not available.',
-    );
-  });
-
-  it('throws for invalid JSON values', () => {
-    expect(() =>
-      assertEthereumOutboundRequest({
-        method: 'eth_blockNumber',
-        params: [undefined],
-      }),
-    ).toThrow(
-      'Provided value is not JSON-RPC compatible: Expected the value to satisfy a union of `literal | boolean | finite number | string | array | record`, but received: [object Object].',
     );
   });
 });
