@@ -1,5 +1,5 @@
 import type { OnInstallHandler, OnUpdateHandler } from '@metamask/snaps-sdk';
-import { heading, panel, text } from '@metamask/snaps-sdk';
+import { Box, Text } from '@metamask/snaps-sdk/jsx';
 
 /**
  * Handle installation of the snap. This handler is called when the snap is
@@ -15,12 +15,14 @@ export const onInstall: OnInstallHandler = async () => {
     method: 'snap_dialog',
     params: {
       type: 'alert',
-      content: panel([
-        heading('Installation successful'),
-        text(
-          'The snap was installed successfully, and the "onInstall" handler was called.',
-        ),
-      ]),
+      content: (
+        <Box>
+          <Text>
+            The Snap was installed successfully, and the "onInstall" handler was
+            called.
+          </Text>
+        </Box>
+      ),
     },
   });
 };
@@ -39,12 +41,14 @@ export const onUpdate: OnUpdateHandler = async () => {
     method: 'snap_dialog',
     params: {
       type: 'alert',
-      content: panel([
-        heading('Update successful'),
-        text(
-          'The snap was updated successfully, and the "onUpdate" handler was called.',
-        ),
-      ]),
+      content: (
+        <Box>
+          <Text>
+            The Snap was updated successfully, and the "onUpdate" handler was
+            called.
+          </Text>
+        </Box>
+      ),
     },
   });
 };
