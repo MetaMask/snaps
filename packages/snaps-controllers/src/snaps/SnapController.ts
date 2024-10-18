@@ -1748,6 +1748,17 @@ export class SnapController extends BaseController<
   }
 
   /**
+   * Check if a given Snap has a cached encryption key stored in the runtime.
+   *
+   * @param snapId - The Snap ID.
+   * @returns True if the Snap has a cached encryption key, otherwise false.
+   */
+  #hasCachedEncryptionKey(snapId: SnapId) {
+    const runtime = this.#getRuntimeExpect(snapId);
+    return runtime.encryptionKey !== null && runtime.encryptionSalt !== null;
+  }
+
+  /**
    * Decrypt the encrypted state for a given Snap.
    *
    * @param snapId - The Snap ID.
@@ -1761,7 +1772,11 @@ export class SnapController extends BaseController<
       // This lets us skip JSON validation.
       const parsed = JSON.parse(state) as EncryptionResult;
       const { salt, keyMetadata } = parsed;
-      const useCache = this.#encryptor.isVaultUpdated(state);
+
+      // We only cache encryption keys if they are already cached or if the encryption key is using the latest key derivation params.
+      const useCache =
+        this.#hasCachedEncryptionKey(snapId) ||
+        this.#encryptor.isVaultUpdated(state);
       const { key } = await this.#getSnapEncryptionKey({
         snapId,
         salt,
