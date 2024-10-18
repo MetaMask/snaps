@@ -4,13 +4,10 @@ import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import type { RequestArguments } from '@metamask/providers';
 import { StreamProvider } from '@metamask/providers/stream-provider';
+import type { SnapsEthereumProvider } from '@metamask/snaps-sdk';
 import { SNAP_STREAM_NAMES } from '@metamask/snaps-utils';
 
-import {
-  assertEthereumOutboundRequest,
-  proxyStreamProvider,
-  withTeardown,
-} from '../utils';
+import { assertEthereumOutboundRequest, withTeardown } from '../utils';
 import { SILENT_LOGGER } from './logger';
 
 /**
@@ -42,7 +39,7 @@ export function walkAndSearch(subject: unknown, target: unknown) {
  *
  * @returns Proxy to StreamProvider instance.
  */
-export function getMockedStreamProvider() {
+export function getMockedStreamProvider(): SnapsEthereumProvider {
   const mux = new ObjectMultiplex();
   const rpcStream = mux.createStream(SNAP_STREAM_NAMES.JSON_RPC);
 
@@ -59,5 +56,5 @@ export function getMockedStreamProvider() {
     return await withTeardown(originalRequest(args), { lastTeardown: 0 });
   };
 
-  return proxyStreamProvider(request);
+  return { request };
 }
