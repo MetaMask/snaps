@@ -771,6 +771,58 @@ describe('installSnap', () => {
     });
   });
 
+  describe('onInstall', () => {
+    it('sends onInstall request and returns the result', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+
+      const { snapId, close: closeServer } = await getMockServer({
+        sourceCode: `
+          module.exports.onInstall = async () => {
+            return { content: { type: 'text', value: 'Hello, world!' } };
+          };
+         `,
+      });
+
+      const { onInstall, close } = await installSnap(snapId);
+      const response = await onInstall();
+
+      expect(response).toStrictEqual(
+        expect.objectContaining({
+          getInterface: expect.any(Function),
+        }),
+      );
+
+      await close();
+      await closeServer();
+    });
+  });
+
+  describe('onUpdate', () => {
+    it('sends onUpdate request and returns the result', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+
+      const { snapId, close: closeServer } = await getMockServer({
+        sourceCode: `
+          module.exports.onUpdate = async () => {
+            return { content: { type: 'text', value: 'Hello, world!' } };
+          };
+         `,
+      });
+
+      const { onUpdate, close } = await installSnap(snapId);
+      const response = await onUpdate();
+
+      expect(response).toStrictEqual(
+        expect.objectContaining({
+          getInterface: expect.any(Function),
+        }),
+      );
+
+      await close();
+      await closeServer();
+    });
+  });
+
   describe('mockJsonRpc', () => {
     it('mocks a JSON-RPC method', async () => {
       jest.spyOn(console, 'log').mockImplementation();

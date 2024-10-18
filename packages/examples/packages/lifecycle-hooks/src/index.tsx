@@ -1,5 +1,5 @@
 import type { OnInstallHandler, OnUpdateHandler } from '@metamask/snaps-sdk';
-import { heading, panel, text } from '@metamask/snaps-sdk';
+import { Box, Text } from '@metamask/snaps-sdk/jsx';
 
 /**
  * Handle installation of the snap. This handler is called when the snap is
@@ -9,18 +9,21 @@ import { heading, panel, text } from '@metamask/snaps-sdk';
  * as usual.
  *
  * @see https://docs.metamask.io/snaps/reference/exports/#oninstall
+ * @returns The JSON-RPC response.
  */
 export const onInstall: OnInstallHandler = async () => {
-  await snap.request({
+  return await snap.request({
     method: 'snap_dialog',
     params: {
       type: 'alert',
-      content: panel([
-        heading('Installation successful'),
-        text(
-          'The snap was installed successfully, and the "onInstall" handler was called.',
-        ),
-      ]),
+      content: (
+        <Box>
+          <Text>
+            The Snap was installed successfully, and the "onInstall" handler was
+            called.
+          </Text>
+        </Box>
+      ),
     },
   });
 };
@@ -33,18 +36,21 @@ export const onInstall: OnInstallHandler = async () => {
  * as usual.
  *
  * @see https://docs.metamask.io/snaps/reference/exports/#onupdate
+ * @returns The JSON-RPC response.
  */
 export const onUpdate: OnUpdateHandler = async () => {
-  await snap.request({
+  return await snap.request({
     method: 'snap_dialog',
     params: {
       type: 'alert',
-      content: panel([
-        heading('Update successful'),
-        text(
-          'The snap was updated successfully, and the "onUpdate" handler was called.',
-        ),
-      ]),
+      content: (
+        <Box>
+          <Text>
+            The Snap was updated successfully, and the "onUpdate" handler was
+            called.
+          </Text>
+        </Box>
+      ),
     },
   });
 };

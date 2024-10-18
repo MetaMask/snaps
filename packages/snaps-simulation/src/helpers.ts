@@ -127,6 +127,20 @@ export type SnapHelpers = {
   ): Promise<SnapResponseWithoutInterface>;
 
   /**
+   * Get the response from the Snap's `onInstall` handler.
+   *
+   * @returns The response.
+   */
+  onInstall(request?: Pick<RequestOptions, 'origin'>): SnapRequest;
+
+  /**
+   * Get the response from the Snap's `onUpdate` handler.
+   *
+   * @returns The response.
+   */
+  onUpdate(request?: Pick<RequestOptions, 'origin'>): SnapRequest;
+
+  /**
    * Mock a JSON-RPC request. This will cause the snap to respond with the
    * specified response when a request with the specified method is sent.
    *
@@ -265,6 +279,40 @@ export function getHelpers({
     sendTransaction: onTransaction,
 
     onKeyringRequest,
+
+    onInstall: (request?: Pick<RequestOptions, 'origin'>) => {
+      log('Running onInstall handler.');
+
+      return handleRequest({
+        snapId,
+        store,
+        executionService,
+        controllerMessenger,
+        runSaga,
+        handler: HandlerType.OnInstall,
+        request: {
+          method: '',
+          ...request,
+        },
+      });
+    },
+
+    onUpdate: (request?: Pick<RequestOptions, 'origin'>) => {
+      log('Running onUpdate handler.');
+
+      return handleRequest({
+        snapId,
+        store,
+        executionService,
+        controllerMessenger,
+        runSaga,
+        handler: HandlerType.OnUpdate,
+        request: {
+          method: '',
+          ...request,
+        },
+      });
+    },
 
     onSignature: async (
       request: unknown,
