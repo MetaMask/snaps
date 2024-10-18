@@ -425,14 +425,14 @@ export type Snap = {
    *
    * @returns The response.
    */
-  onInstall(): SnapRequest;
+  onInstall(request?: RequestOptions): SnapRequest;
 
   /**
    * Get the response from the Snap's `onUpdate` handler.
    *
    * @returns The response.
    */
-  onUpdate(): SnapRequest;
+  onUpdate(request?: RequestOptions): SnapRequest;
 
   /**
    * Mock a JSON-RPC request. This will cause the snap to respond with the

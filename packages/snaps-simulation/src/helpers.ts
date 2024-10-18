@@ -131,14 +131,14 @@ export type SnapHelpers = {
    *
    * @returns The response.
    */
-  onInstall(): SnapRequest;
+  onInstall(request?: RequestOptions): SnapRequest;
 
   /**
    * Get the response from the Snap's `onUpdate` handler.
    *
    * @returns The response.
    */
-  onUpdate(): SnapRequest;
+  onUpdate(request?: RequestOptions): SnapRequest;
 
   /**
    * Mock a JSON-RPC request. This will cause the snap to respond with the
@@ -280,7 +280,7 @@ export function getHelpers({
 
     onKeyringRequest,
 
-    onInstall: () => {
+    onInstall: (request?: RequestOptions) => {
       log('Running onInstall handler.');
 
       return handleRequest({
@@ -292,11 +292,12 @@ export function getHelpers({
         handler: HandlerType.OnInstall,
         request: {
           method: '',
+          ...request,
         },
       });
     },
 
-    onUpdate: () => {
+    onUpdate: (request?: RequestOptions) => {
       log('Running onUpdate handler.');
 
       return handleRequest({
@@ -308,6 +309,7 @@ export function getHelpers({
         handler: HandlerType.OnUpdate,
         request: {
           method: '',
+          ...request,
         },
       });
     },
