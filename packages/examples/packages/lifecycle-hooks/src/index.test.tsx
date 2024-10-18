@@ -1,4 +1,4 @@
-import { describe, it } from '@jest/globals';
+import { describe, expect, it } from '@jest/globals';
 import { assertIsAlertDialog, installSnap } from '@metamask/snaps-jest';
 import { Box, Text } from '@metamask/snaps-sdk/jsx';
 
@@ -19,6 +19,10 @@ describe('onInstall', () => {
         </Text>
       </Box>,
     );
+
+    await screen.ok();
+
+    expect(await response).toRespondWith(null);
   });
 });
 
@@ -39,5 +43,9 @@ describe('onUpdate', () => {
         </Text>
       </Box>,
     );
+
+    await screen.ok();
+
+    expect(await response).toRespondWith(null);
   });
 });
