@@ -87,7 +87,6 @@ import {
   NpmSnapFileNames,
   OnNameLookupResponseStruct,
   getLocalizedSnapManifest,
-  parseJson,
   MAX_FILE_SIZE,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
@@ -101,7 +100,6 @@ import {
   hasProperty,
   inMilliseconds,
   isNonEmptyArray,
-  isValidJson,
   isValidSemVerRange,
   satisfiesVersionRange,
   timeSince,
@@ -1774,8 +1772,7 @@ export class SnapController extends BaseController<
       });
       const decryptedState = await this.#encryptor.decryptWithKey(key, parsed);
 
-      assert(isValidJson(decryptedState));
-
+      // We assume this to be valid JSON, since all RPC requests from a Snap are validated and sanitized.
       return decryptedState as Record<string, Json>;
     } catch {
       throw rpcErrors.internal({
@@ -1866,7 +1863,8 @@ export class SnapController extends BaseController<
     }
 
     if (!encrypted) {
-      return parseJson(state);
+      // For performance reasons, we do not validate that the state is JSON, since we control serialization.
+      return JSON.parse(state);
     }
 
     const decrypted = await this.#decryptSnapState(snapId, state);
