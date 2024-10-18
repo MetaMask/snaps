@@ -9,9 +9,10 @@ import { Box, Text } from '@metamask/snaps-sdk/jsx';
  * as usual.
  *
  * @see https://docs.metamask.io/snaps/reference/exports/#oninstall
+ * @returns The JSON-RPC response.
  */
 export const onInstall: OnInstallHandler = async () => {
-  await snap.request({
+  return await snap.request({
     method: 'snap_dialog',
     params: {
       type: 'alert',
@@ -35,9 +36,10 @@ export const onInstall: OnInstallHandler = async () => {
  * as usual.
  *
  * @see https://docs.metamask.io/snaps/reference/exports/#onupdate
+ * @returns The JSON-RPC response.
  */
 export const onUpdate: OnUpdateHandler = async () => {
-  await snap.request({
+  return await snap.request({
     method: 'snap_dialog',
     params: {
       type: 'alert',
