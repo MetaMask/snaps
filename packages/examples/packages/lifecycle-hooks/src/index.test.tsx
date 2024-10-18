@@ -1,14 +1,15 @@
 import { describe, it } from '@jest/globals';
-import { installSnap } from '@metamask/snaps-jest';
+import { assertIsAlertDialog, installSnap } from '@metamask/snaps-jest';
 import { Box, Text } from '@metamask/snaps-sdk/jsx';
 
 describe('onInstall', () => {
   it('shows dialog when the snap is installed', async () => {
     const { onInstall } = await installSnap();
 
-    const response = await onInstall();
+    const response = onInstall();
 
-    const screen = response.getInterface();
+    const screen = await response.getInterface();
+    assertIsAlertDialog(screen);
 
     expect(screen).toRender(
       <Box>
@@ -25,9 +26,10 @@ describe('onUpdate', () => {
   it('shows dialog when the snap is updated', async () => {
     const { onUpdate } = await installSnap();
 
-    const response = await onUpdate();
+    const response = onUpdate();
 
-    const screen = response.getInterface();
+    const screen = await response.getInterface();
+    assertIsAlertDialog(screen);
 
     expect(screen).toRender(
       <Box>

@@ -131,14 +131,14 @@ export type SnapHelpers = {
    *
    * @returns The response.
    */
-  onInstall(): Promise<SnapResponseWithInterface>;
+  onInstall(): SnapRequest;
 
   /**
    * Get the response from the Snap's `onUpdate` handler.
    *
    * @returns The response.
    */
-  onUpdate(): Promise<SnapResponseWithInterface>;
+  onUpdate(): SnapRequest;
 
   /**
    * Mock a JSON-RPC request. This will cause the snap to respond with the
@@ -280,10 +280,10 @@ export function getHelpers({
 
     onKeyringRequest,
 
-    onInstall: async (): Promise<SnapResponseWithInterface> => {
+    onInstall: () => {
       log('Running onInstall handler.');
 
-      const response = await handleRequest({
+      return handleRequest({
         snapId,
         store,
         executionService,
@@ -294,16 +294,12 @@ export function getHelpers({
           method: '',
         },
       });
-
-      assertIsResponseWithInterface(response);
-
-      return response;
     },
 
-    onUpdate: async (): Promise<SnapResponseWithInterface> => {
+    onUpdate: () => {
       log('Running onUpdate handler.');
 
-      const response = await handleRequest({
+      return handleRequest({
         snapId,
         store,
         executionService,
@@ -314,10 +310,6 @@ export function getHelpers({
           method: '',
         },
       });
-
-      assertIsResponseWithInterface(response);
-
-      return response;
     },
 
     onSignature: async (
