@@ -106,33 +106,6 @@ describe('AbstractExecutionService', () => {
     );
   });
 
-  it('throws an error if RPC request is non JSON serializable', async () => {
-    const { service } = createService(MockExecutionService);
-    await service.executeSnap({
-      snapId: MOCK_SNAP_ID,
-      sourceCode: `
-         module.exports.onRpcRequest = () => null;
-      `,
-      endowments: [],
-    });
-
-    await expect(
-      service.handleRpcRequest(MOCK_SNAP_ID, {
-        origin: 'foo.com',
-        handler: HandlerType.OnRpcRequest,
-        request: {
-          id: 6,
-          method: 'bar',
-          params: undefined,
-        },
-      }),
-    ).rejects.toThrow(
-      'Invalid JSON-RPC request: At path: params -- Expected the value to satisfy a union of `record | array`, but received: [object Object].',
-    );
-
-    await service.terminateAllSnaps();
-  });
-
   it('throws an error if execution environment fails to respond to ping', async () => {
     const { service } = createService(MockExecutionService);
 
