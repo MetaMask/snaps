@@ -175,6 +175,11 @@ export const SNAPS_DERIVATION_PATHS: SnapsDerivationPath[] = [
     curve: 'secp256k1',
     name: 'Avail',
   },
+  {
+    path: ['m', `44'`, `626'`],
+    curve: 'ed25519',
+    name: 'Kadena',
+  },
 ];
 
 /**
