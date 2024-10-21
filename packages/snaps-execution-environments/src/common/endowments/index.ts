@@ -1,6 +1,5 @@
-import type { StreamProvider } from '@metamask/providers';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { SnapsProvider } from '@metamask/snaps-sdk';
+import type { SnapsEthereumProvider, SnapsProvider } from '@metamask/snaps-sdk';
 import { logWarning } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
 
@@ -62,7 +61,7 @@ export function createEndowments({
   notify,
 }: {
   snap: SnapsProvider;
-  ethereum: StreamProvider;
+  ethereum: SnapsEthereumProvider;
   snapId: string;
   endowments: string[];
   notify: NotifyFunction;
