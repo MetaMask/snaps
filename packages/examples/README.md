@@ -118,6 +118,6 @@ This will make it easier for developers to understand the examples, and to use
 them as a starting point for their own snaps.
 
 Each snap (if applicable) should have end-to-end tests that test the snap's
-functionality. The tests should be located in the `src/index.test.ts` file, and
+functionality. The tests should be located in the `src/index.test.ts(x)` file, and
 make use of `@metamask/snaps-jest` to test the snap. You can have a look at the
 existing E2E tests for inspiration.
