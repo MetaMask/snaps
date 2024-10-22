@@ -1336,7 +1336,10 @@ export class SnapController extends BaseController<
 
   async #assertIsInstallAllowed(
     snapId: SnapId,
-    snapInfo: SnapsRegistryInfo & {
+    {
+      platformVersion,
+      ...snapInfo
+    }: SnapsRegistryInfo & {
       permissions: SnapPermissions;
       platformVersion: string | undefined;
     },
@@ -1374,7 +1377,7 @@ export class SnapController extends BaseController<
       );
     }
 
-    this.#validatePlatformVersion(snapId, snapInfo.platformVersion);
+    this.#validatePlatformVersion(snapId, platformVersion);
   }
 
   /**
