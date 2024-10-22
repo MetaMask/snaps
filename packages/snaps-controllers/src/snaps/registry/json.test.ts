@@ -66,7 +66,7 @@ const MOCK_DATABASE: SnapsRegistryDatabase = {
 // 3. Run the `sign-registry` script.
 // 4. Copy the signature from the `signature.json` file.
 const MOCK_SIGNATURE =
-  '0x304402201bfe1a98837631b669643135766de58deb426dc3eeb0a908c8000f85a047db3102207ac621072ea59737287099ac830323b34e59bfc41fb62119b16ce24d0c433f9e';
+  '0x3045022100fd130773d66931560f199e783c48cf7d8c28d73ea8366add5b64ebcf61f98eca02206f6c56070d5d5899a50fea68add84570d5171c6fae812d4c3a89d5ccdcf396b2';
 const MOCK_SIGNATURE_FILE = {
   signature: MOCK_SIGNATURE,
   curve: 'secp256k1',

@@ -23,6 +23,7 @@ import { AuxiliaryFileEncoding, text } from '@metamask/snaps-sdk';
 import { Text } from '@metamask/snaps-sdk/jsx';
 import type { SnapPermissions, RpcOrigins } from '@metamask/snaps-utils';
 import {
+  getPlatformVersion,
   DEFAULT_ENDOWMENTS,
   DEFAULT_REQUESTED_SNAP_VERSION,
   getLocalizedSnapManifest,
@@ -64,6 +65,7 @@ import { webcrypto } from 'crypto';
 import fetchMock from 'jest-fetch-mock';
 import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';
+import semver from 'semver';
 
 import { setupMultiplex } from '../services';
 import type { NodeThreadExecutionService } from '../services/node';
@@ -5355,6 +5357,108 @@ describe('SnapController', () => {
         }),
       ).rejects.toThrow(
         'A snap must request at least one of the following permissions: endowment:rpc, endowment:transaction-insight, endowment:cronjob, endowment:name-lookup, endowment:lifecycle-hooks, endowment:keyring, endowment:page-home, endowment:signature-insight.',
+      );
+
+      controller.destroy();
+    });
+
+    it('does not throw an error if the manifest does not specify a platform version', async () => {
+      const rawManifest = getSnapManifest();
+      delete rawManifest.platformVersion;
+
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
+        manifest: rawManifest,
+      });
+
+      const messenger = getSnapControllerMessenger();
+      const controller = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          detectSnapLocation: loopbackDetect({
+            manifest: manifest.result,
+          }),
+        }),
+      );
+
+      await expect(
+        controller.installSnaps(MOCK_ORIGIN, {
+          [MOCK_SNAP_ID]: {},
+        }),
+        // eslint-disable-next-line jest/no-restricted-matchers
+      ).resolves.not.toThrow();
+
+      controller.destroy();
+    });
+
+    it('throws an error if the specified platform version is newer than the supported platform version', async () => {
+      const newerVersion = semver.inc(
+        getPlatformVersion(),
+        'minor',
+      ) as SemVerVersion;
+
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
+        manifest: getSnapManifest({
+          platformVersion: newerVersion,
+        }),
+      });
+
+      const messenger = getSnapControllerMessenger();
+      const controller = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          detectSnapLocation: loopbackDetect({
+            manifest: manifest.result,
+          }),
+        }),
+      );
+
+      await expect(
+        controller.installSnaps(MOCK_ORIGIN, {
+          [MOCK_SNAP_ID]: {},
+        }),
+      ).rejects.toThrow(
+        `The Snap "${MOCK_SNAP_ID}" requires platform version "${newerVersion}" which is greater than the current platform version "${getPlatformVersion()}".`,
+      );
+
+      controller.destroy();
+    });
+
+    it('logs a warning if the specified platform version is newer than the supported platform version and `rejectInvalidPlatformVersion` is disabled', async () => {
+      const log = jest.spyOn(console, 'warn').mockImplementation();
+
+      const newerVersion = semver.inc(
+        getPlatformVersion(),
+        'minor',
+      ) as SemVerVersion;
+
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
+        manifest: getSnapManifest({
+          platformVersion: newerVersion,
+        }),
+      });
+
+      const messenger = getSnapControllerMessenger();
+      const controller = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          featureFlags: {
+            rejectInvalidPlatformVersion: false,
+          },
+          detectSnapLocation: loopbackDetect({
+            manifest: manifest.result,
+          }),
+        }),
+      );
+
+      await expect(
+        controller.installSnaps(MOCK_ORIGIN, {
+          [MOCK_SNAP_ID]: {},
+        }),
+        // eslint-disable-next-line jest/no-restricted-matchers
+      ).resolves.not.toThrow();
+
+      expect(log).toHaveBeenCalledWith(
+        `The Snap "${MOCK_SNAP_ID}" requires platform version "${newerVersion}" which is greater than the current platform version "${getPlatformVersion()}".`,
       );
 
       controller.destroy();
