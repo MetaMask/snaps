@@ -1336,7 +1336,10 @@ export class SnapController extends BaseController<
 
   async #assertIsInstallAllowed(
     snapId: SnapId,
-    snapInfo: SnapsRegistryInfo & { permissions: SnapPermissions },
+    snapInfo: SnapsRegistryInfo & {
+      permissions: SnapPermissions;
+      platformVersion: string | undefined;
+    },
   ) {
     const results = await this.messagingSystem.call('SnapsRegistry:get', {
       [snapId]: snapInfo,
@@ -1370,6 +1373,8 @@ export class SnapController extends BaseController<
         }`,
       );
     }
+
+    this.#validatePlatformVersion(snapId, snapInfo.platformVersion);
   }
 
   /**
@@ -2555,11 +2560,11 @@ export class SnapController extends BaseController<
         );
       }
 
-      this.#validatePlatformVersion(manifest);
       await this.#assertIsInstallAllowed(snapId, {
         version: newVersion,
         checksum: manifest.source.shasum,
         permissions: manifest.initialPermissions,
+        platformVersion: manifest.platformVersion,
       });
 
       const processedPermissions = processSnapPermissions(
@@ -2741,11 +2746,11 @@ export class SnapController extends BaseController<
           );
         }
 
-        this.#validatePlatformVersion(manifest);
         await this.#assertIsInstallAllowed(snapId, {
           version: manifest.version,
           checksum: manifest.source.shasum,
           permissions: manifest.initialPermissions,
+          platformVersion: manifest.platformVersion,
         });
 
         return this.#set({
@@ -3021,19 +3026,21 @@ export class SnapController extends BaseController<
    * Validate that the platform version specified in the manifest (if any) is
    * compatible with the current platform version.
    *
-   * @param manifest - The Snap manifest.
+   * @param snapId - The ID of the Snap.
+   * @param platformVersion - The platform version to validate against.
    * @throws If the platform version is greater than the current platform
    * version.
    */
-  #validatePlatformVersion(manifest: SnapManifest) {
-    if (manifest.platformVersion === undefined) {
+  #validatePlatformVersion(
+    snapId: SnapId,
+    platformVersion: string | undefined,
+  ) {
+    if (platformVersion === undefined) {
       return;
     }
 
-    if (semver.gt(manifest.platformVersion, getPlatformVersion())) {
-      const message = `The Snap requires platform version "${
-        manifest.platformVersion
-      }" which is greater than the current platform version "${getPlatformVersion()}".`;
+    if (semver.gt(platformVersion, getPlatformVersion())) {
+      const message = `The Snap "${snapId}" requires platform version "${platformVersion}" which is greater than the current platform version "${getPlatformVersion()}".`;
 
       if (this.#featureFlags.rejectInvalidPlatformVersion) {
         throw new Error(message);
