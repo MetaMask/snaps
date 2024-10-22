@@ -19,6 +19,5 @@
   "initialPermissions": {
     "endowment:signature-insight": {}
   },
-  "platformVersion": "6.9.0",
   "manifestVersion": "0.1"
 }

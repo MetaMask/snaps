@@ -164,7 +164,7 @@ describe('manifest', () => {
           "url": "https://github.com/MetaMask/example-snap.git"
         },
         "source": {
-          "shasum": "c3Dn62ZSKu7fATN+40MhI9UqEInE9qE7u5tDjb7ylyk=",
+          "shasum": "itjh0enng42nO6BxNCEhDH8wm3yl4xlVclfd5LsZ2wA=",
           "location": {
             "npm": {
               "filePath": "dist/bundle.js",
@@ -179,7 +179,7 @@ describe('manifest', () => {
             "chains": ["eip155:1", "eip155:2", "eip155:3"]
           }
         },
-        "platformVersion": "6.7.0",
+        "platformVersion": "1.0.0",
         "manifestVersion": "0.1"
       }
       "
