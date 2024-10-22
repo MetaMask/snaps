@@ -1984,7 +1984,7 @@
     },
     "eslint-plugin-import>object.values>es-abstract>has-property-descriptors": {
       "packages": {
-        "eslint-plugin-import>array-includes>get-intrinsic": true
+        "lavamoat>json-stable-stringify>call-bind>es-define-property": true
       }
     },
     "eslint-plugin-import>tsconfig-paths": {
@@ -2168,8 +2168,14 @@
       "packages": {
         "browserify>has>function-bind": true,
         "eslint-plugin-import>array-includes>get-intrinsic": true,
+        "lavamoat>json-stable-stringify>call-bind>es-define-property": true,
         "lavamoat>json-stable-stringify>call-bind>es-errors": true,
         "lavamoat>json-stable-stringify>call-bind>set-function-length": true
+      }
+    },
+    "lavamoat>json-stable-stringify>call-bind>es-define-property": {
+      "packages": {
+        "eslint-plugin-import>array-includes>get-intrinsic": true
       }
     },
     "lavamoat>json-stable-stringify>call-bind>set-function-length": {
@@ -2184,8 +2190,7 @@
     "lavamoat>json-stable-stringify>call-bind>set-function-length>define-data-property": {
       "packages": {
         "browserify>util>is-typed-array>gopd": true,
-        "eslint-plugin-import>array-includes>get-intrinsic": true,
-        "eslint-plugin-import>object.values>es-abstract>has-property-descriptors": true,
+        "lavamoat>json-stable-stringify>call-bind>es-define-property": true,
         "lavamoat>json-stable-stringify>call-bind>es-errors": true
       }
     },
