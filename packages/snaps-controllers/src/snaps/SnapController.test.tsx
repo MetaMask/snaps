@@ -5417,7 +5417,7 @@ describe('SnapController', () => {
           [MOCK_SNAP_ID]: {},
         }),
       ).rejects.toThrow(
-        `The Snap requires platform version "${newerVersion}" which is greater than the current platform version "${getPlatformVersion()}".`,
+        `The Snap "${MOCK_SNAP_ID}" requires platform version "${newerVersion}" which is greater than the current platform version "${getPlatformVersion()}".`,
       );
 
       controller.destroy();
@@ -5458,7 +5458,7 @@ describe('SnapController', () => {
       ).resolves.not.toThrow();
 
       expect(log).toHaveBeenCalledWith(
-        `The Snap requires platform version "${newerVersion}" which is greater than the current platform version "${getPlatformVersion()}".`,
+        `The Snap "${MOCK_SNAP_ID}" requires platform version "${newerVersion}" which is greater than the current platform version "${getPlatformVersion()}".`,
       );
 
       controller.destroy();
