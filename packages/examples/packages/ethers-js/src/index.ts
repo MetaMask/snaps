@@ -7,7 +7,6 @@ import {
   UserRejectedRequestError,
   MethodNotFoundError,
 } from '@metamask/snaps-sdk';
-// @ts-expect-error Typescript thinks this is ESM Module, not a CommonJS module, while ethers supports both. Webpack will correctly identify proper import type.
 import { Wallet } from 'ethers';
 
 import type { SignMessageParams } from './types';
