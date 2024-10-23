@@ -336,6 +336,7 @@ describe('updateInterface', () => {
           snapId: snapId as SnapId,
           content: Box({ children: Text({ children: 'foo' }) }),
           context: null,
+          contentType: null,
         }),
       )
       .silentRun();
