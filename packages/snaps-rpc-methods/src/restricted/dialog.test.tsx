@@ -128,6 +128,7 @@ describe('implementation', () => {
     expect(hooks.createInterface).toHaveBeenCalledWith(
       'foo',
       content,
+      undefined,
       ContentType.Dialog,
     );
     expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);

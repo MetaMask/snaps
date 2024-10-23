@@ -1,5 +1,5 @@
 import { SnapInterfaceController } from '@metamask/snaps-controllers';
-import { text } from '@metamask/snaps-sdk';
+import { ContentType, text } from '@metamask/snaps-sdk';
 import { getJsxElementFromComponent } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
@@ -36,6 +36,7 @@ describe('getCreateInterfaceImplementation', () => {
       MOCK_SNAP_ID,
       content,
       undefined,
+      ContentType.Dialog,
     );
 
     expect(result.content).toStrictEqual(getJsxElementFromComponent(content));
