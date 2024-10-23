@@ -1,5 +1,13 @@
+import { getPersistentState } from '@metamask/base-controller';
 import type { SnapId } from '@metamask/snaps-sdk';
-import { form, image, input, panel, text } from '@metamask/snaps-sdk';
+import {
+  form,
+  image,
+  input,
+  panel,
+  text,
+  ContentType,
+} from '@metamask/snaps-sdk';
 import {
   Box,
   Field,
@@ -29,6 +37,40 @@ jest.mock('@metamask/snaps-utils', () => ({
 }));
 
 describe('SnapInterfaceController', () => {
+  describe('constructor', () => {
+    it('persists notification interfaces', () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      const controller = new SnapInterfaceController({
+        messenger: controllerMessenger,
+        state: {
+          interfaces: {
+            // @ts-expect-error missing properties
+            '1': {
+              contentType: ContentType.Notification,
+            },
+            // @ts-expect-error missing properties
+            '2': {
+              contentType: ContentType.Dialog,
+            },
+          },
+        },
+      });
+
+      expect(
+        getPersistentState(controller.state, controller.metadata),
+      ).toStrictEqual({
+        interfaces: {
+          '1': {
+            contentType: ContentType.Notification,
+          },
+        },
+      });
+    });
+  });
+
   describe('createInterface', () => {
     it('can create a new interface', async () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();
@@ -158,6 +200,41 @@ describe('SnapInterfaceController', () => {
 
       expect(content).toStrictEqual(element);
       expect(context).toStrictEqual({ foo: 'bar' });
+    });
+
+    it('supports providing an interface content type', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      /* eslint-disable-next-line no-new */
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const element = (
+        <Box>
+          <Text>
+            <Link href="https://foo.bar">foo</Link>
+          </Text>
+        </Box>
+      );
+
+      const id = await rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        element,
+        { foo: 'bar' },
+        ContentType.Notification,
+      );
+
+      const { contentType } = rootMessenger.call(
+        'SnapInterfaceController:getInterface',
+        MOCK_SNAP_ID,
+        id,
+      );
+
+      expect(contentType).toStrictEqual(ContentType.Notification);
     });
 
     it('throws if interface context is too large', async () => {
@@ -1065,6 +1142,51 @@ describe('SnapInterfaceController', () => {
           id,
         ),
       ).toThrow(`Interface with id '${id}' not found.`);
+    });
+  });
+
+  describe('updateInterfaceContentType', () => {
+    it("can update an interface's content type", async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      /* eslint-disable-next-line no-new */
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const content = form({ name: 'foo', children: [input({ name: 'bar' })] });
+
+      let contentType;
+
+      const id = await rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        content,
+      );
+
+      contentType = rootMessenger.call(
+        'SnapInterfaceController:getInterface',
+        MOCK_SNAP_ID,
+        id,
+      ).contentType;
+
+      expect(contentType).toBeNull();
+
+      rootMessenger.call(
+        'SnapInterfaceController:updateInterfaceContentType',
+        id,
+        ContentType.Dialog,
+      );
+
+      contentType = rootMessenger.call(
+        'SnapInterfaceController:getInterface',
+        MOCK_SNAP_ID,
+        id,
+      ).contentType;
+
+      expect(contentType).toStrictEqual(ContentType.Dialog);
     });
   });
 

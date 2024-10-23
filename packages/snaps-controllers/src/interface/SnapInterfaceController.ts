@@ -18,6 +18,7 @@ import type {
   ComponentOrElement,
   InterfaceContext,
 } from '@metamask/snaps-sdk';
+import { ContentType } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsonSizeUnsafe, validateJsxLinks } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
@@ -61,6 +62,11 @@ export type UpdateInterfaceState = {
   handler: SnapInterfaceController['updateInterfaceState'];
 };
 
+export type UpdateInterfaceContentType = {
+  type: `${typeof controllerName}:updateInterfaceContentType`;
+  handler: SnapInterfaceController['updateInterfaceContentType'];
+};
+
 export type ResolveInterface = {
   type: `${typeof controllerName}:resolveInterface`;
   handler: SnapInterfaceController['resolveInterface'];
@@ -84,6 +90,7 @@ export type SnapInterfaceControllerActions =
   | UpdateInterface
   | DeleteInterface
   | UpdateInterfaceState
+  | UpdateInterfaceContentType
   | ResolveInterface
   | SnapInterfaceControllerGetStateAction;
 
@@ -109,6 +116,7 @@ export type StoredInterface = {
   content: JSXElement;
   state: InterfaceState;
   context: InterfaceContext | null;
+  contentType: ContentType | null;
 };
 
 export type SnapInterfaceControllerState = {
@@ -132,7 +140,22 @@ export class SnapInterfaceController extends BaseController<
     super({
       messenger,
       metadata: {
-        interfaces: { persist: false, anonymous: false },
+        interfaces: {
+          persist: (interfaces: Record<string, StoredInterface>) => {
+            return Object.entries(interfaces).reduce<
+              Record<string, StoredInterface>
+            >((persistedInterfaces, [id, snapInterface]) => {
+              switch (snapInterface.contentType) {
+                case ContentType.Notification:
+                  persistedInterfaces[id] = snapInterface;
+                  return persistedInterfaces;
+                default:
+                  return persistedInterfaces;
+              }
+            }, {});
+          },
+          anonymous: false,
+        },
       },
       name: controllerName,
       state: { interfaces: {}, ...state },
@@ -162,6 +185,11 @@ export class SnapInterfaceController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
+      `${controllerName}:updateInterfaceContentType`,
+      this.updateInterfaceContentType.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
       `${controllerName}:deleteInterface`,
       this.deleteInterface.bind(this),
     );
@@ -183,12 +211,14 @@ export class SnapInterfaceController extends BaseController<
    * @param snapId - The snap id that created the interface.
    * @param content - The interface content.
    * @param context - An optional interface context object.
+   * @param contentType - The type of content.
    * @returns The newly interface id.
    */
   async createInterface(
     snapId: SnapId,
     content: ComponentOrElement,
     context?: InterfaceContext,
+    contentType?: ContentType,
   ) {
     const element = getJsxInterface(content);
     await this.#validateContent(element);
@@ -205,6 +235,7 @@ export class SnapInterfaceController extends BaseController<
         content: castDraft(element),
         state: componentState,
         context: context ?? null,
+        contentType: contentType ?? null,
       };
     });
 
@@ -252,6 +283,20 @@ export class SnapInterfaceController extends BaseController<
       if (context) {
         draftState.interfaces[id].context = context;
       }
+    });
+  }
+
+  /**
+   * Update the type of content in an interface.
+   *
+   * @param id - The interface id.
+   * @param contentType - The type of content.
+   */
+  updateInterfaceContentType(id: string, contentType: ContentType) {
+    this.#validateContentType(contentType);
+    assert(this.state.interfaces[id], 'Interface does not exist.');
+    this.update((draftState) => {
+      draftState.interfaces[id].contentType = contentType;
     });
   }
 
@@ -392,5 +437,18 @@ export class SnapInterfaceController extends BaseController<
       this.#checkPhishingList.bind(this),
       (id: string) => this.messagingSystem.call('SnapController:get', id),
     );
+  }
+
+  /**
+   * Utility function to validate the type of interface content.
+   * Must be a value of the enum ContentType.
+   * Throws if the passed string is invalid.
+   *
+   * @param contentType - The content type.
+   */
+  #validateContentType(contentType: string) {
+    if (!(contentType in ContentType)) {
+      throw new Error('Invalid content type.');
+    }
   }
 }

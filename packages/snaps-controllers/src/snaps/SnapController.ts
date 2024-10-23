@@ -47,7 +47,11 @@ import type {
   SnapId,
   ComponentOrElement,
 } from '@metamask/snaps-sdk';
-import { AuxiliaryFileEncoding, getErrorMessage } from '@metamask/snaps-sdk';
+import {
+  AuxiliaryFileEncoding,
+  getErrorMessage,
+  ContentType,
+} from '@metamask/snaps-sdk';
 import type {
   FetchedSnapFiles,
   InitialConnections,
@@ -110,7 +114,7 @@ import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
 
 import { forceStrict, validateMachine } from '../fsm';
-import type { CreateInterface, GetInterface } from '../interface';
+import { type CreateInterface, type GetInterface } from '../interface';
 import { log } from '../logging';
 import type {
   ExecuteSnapAction,
@@ -3311,16 +3315,20 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The snap ID.
    * @param content - The initial interface content.
+   * @param contentType - The type of content.
    * @returns An identifier that can be used to identify the interface.
    */
   async #createInterface(
     snapId: SnapId,
     content: ComponentOrElement,
+    contentType: ContentType,
   ): Promise<string> {
     return this.messagingSystem.call(
       'SnapInterfaceController:createInterface',
       snapId,
       content,
+      undefined,
+      contentType,
     );
   }
 
@@ -3358,10 +3366,20 @@ export class SnapController extends BaseController<
         // If a handler returns static content, we turn it into a dynamic UI
         if (castResult && hasProperty(castResult, 'content')) {
           const { content, ...rest } = castResult;
+          const getContentType = (handler: HandlerType) => {
+            if (
+              handler === HandlerType.OnSignature ||
+              handler === HandlerType.OnTransaction
+            ) {
+              return ContentType.Insight;
+            }
+            return ContentType.HomePage;
+          };
 
           const id = await this.#createInterface(
             snapId,
             content as ComponentOrElement,
+            getContentType(handlerType),
           );
 
           return { ...rest, id };

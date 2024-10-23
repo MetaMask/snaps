@@ -1,6 +1,12 @@
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { DialogType, heading, panel, text } from '@metamask/snaps-sdk';
+import {
+  ContentType,
+  DialogType,
+  heading,
+  panel,
+  text,
+} from '@metamask/snaps-sdk';
 import { Box, Text } from '@metamask/snaps-sdk/jsx';
 
 import type { DialogMethodHooks } from './dialog';
@@ -30,6 +36,7 @@ describe('builder', () => {
           requestUserApproval: jest.fn(),
           createInterface: jest.fn(),
           getInterface: jest.fn(),
+          updateInterfaceContentType: jest.fn(),
         },
       }),
     ).toStrictEqual({
@@ -50,6 +57,7 @@ describe('implementation', () => {
       getInterface: jest
         .fn()
         .mockReturnValue({ content: text('foo'), state: {}, snapId: 'foo' }),
+      updateInterfaceContentType: jest.fn(),
     } as DialogMethodHooks);
 
   it('accepts string dialog types', async () => {
@@ -117,7 +125,11 @@ describe('implementation', () => {
       },
     });
 
-    expect(hooks.createInterface).toHaveBeenCalledWith('foo', content);
+    expect(hooks.createInterface).toHaveBeenCalledWith(
+      'foo',
+      content,
+      ContentType.Dialog,
+    );
     expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
     expect(hooks.requestUserApproval).toHaveBeenCalledWith({
       id: 'bar',
@@ -137,6 +149,7 @@ describe('implementation', () => {
       getInterface: jest
         .fn()
         .mockReturnValue({ content: text('foo'), state: {}, snapId: 'foo' }),
+      updateInterfaceContentType: jest.fn(),
     };
 
     const implementation = getDialogImplementation(hooks);
@@ -177,7 +190,11 @@ describe('implementation', () => {
       },
     });
 
-    expect(hooks.createInterface).toHaveBeenCalledWith('foo', content);
+    expect(hooks.createInterface).toHaveBeenCalledWith(
+      'foo',
+      content,
+      ContentType.Dialog,
+    );
     expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
     expect(hooks.requestUserApproval).toHaveBeenCalledWith({
       id: undefined,
@@ -209,7 +226,11 @@ describe('implementation', () => {
       },
     });
 
-    expect(hooks.createInterface).toHaveBeenCalledWith('foo', content);
+    expect(hooks.createInterface).toHaveBeenCalledWith(
+      'foo',
+      content,
+      ContentType.Dialog,
+    );
     expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
     expect(hooks.requestUserApproval).toHaveBeenCalledWith({
       id: undefined,
@@ -229,6 +250,7 @@ describe('implementation', () => {
       getInterface: jest.fn().mockImplementation((_snapId, id) => {
         throw new Error(`Interface with id '${id}' not found.`);
       }),
+      updateInterfaceContentType: jest.fn(),
     };
 
     const implementation = getDialogImplementation(hooks);
