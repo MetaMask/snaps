@@ -4,7 +4,7 @@ import type {
   ControllerStateChangeEvent,
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
-import { createDeferredPromise } from '@metamask/utils';
+import { createDeferredPromise, hasProperty } from '@metamask/utils';
 
 const controllerName = 'DeviceController';
 
@@ -48,17 +48,22 @@ export type DeviceControllerMessenger = RestrictedControllerMessenger<
 >;
 
 export enum DeviceType {
-  HID,
-  Bluetooth,
+  HID = 'HID',
 }
 
-export type Device = {
+export type DeviceMetadata = {
   type: DeviceType;
+  id: string;
+  name: string;
+};
+
+export type Device = DeviceMetadata & {
+  connected: boolean;
 };
 
 export type DeviceControllerState = {
   devices: Record<string, Device>;
-  pairing?: { snapId: string };
+  pairing: { snapId: string } | null;
 };
 
 export type DeviceControllerArgs = {
@@ -75,7 +80,7 @@ export class DeviceController extends BaseController<
 > {
   #pairing?: {
     promise: Promise<unknown>;
-    resolve: (result: unknown) => void;
+    resolve: (result: string) => void;
     reject: (error: unknown) => void;
   };
 
@@ -87,7 +92,7 @@ export class DeviceController extends BaseController<
         pairing: { persist: false, anonymous: false },
       },
       name: controllerName,
-      state: { ...state, devices: {} },
+      state: { ...state, devices: {}, pairing: null },
     });
 
     this.messagingSystem.registerActionHandler(
@@ -102,11 +107,15 @@ export class DeviceController extends BaseController<
   }
 
   async requestDevices(snapId: string) {
-    const device = await this.#requestPairing({ snapId });
+    const deviceId = await this.#requestPairing({ snapId });
 
-    console.log('Paired device', device);
-    // TODO: Persist device
+    await this.#syncDevices();
+
+    console.log('Granting access to', deviceId);
+
     // TODO: Grant permission to use device
+
+    return null;
   }
 
   async #hasPermission(snapId: string, device: Device) {
@@ -114,10 +123,42 @@ export class DeviceController extends BaseController<
     return true;
   }
 
+  async #syncDevices() {
+    const connectedDevices = await this.#getDevices();
+
+    this.update((draftState) => {
+      for (const device of Object.values(draftState.devices)) {
+        draftState.devices[device.id].connected = hasProperty(
+          connectedDevices,
+          device.id,
+        );
+      }
+      for (const device of Object.values(connectedDevices)) {
+        if (!hasProperty(draftState.devices, device.id)) {
+          // @ts-expect-error Not sure why this is failing, continuing.
+          draftState.devices[device.id] = { ...device, connected: true };
+        }
+      }
+    });
+  }
+
   // Get actually connected devices
-  async #getDevices() {
+  async #getDevices(): Promise<Record<string, DeviceMetadata>> {
+    const type = DeviceType.HID;
     // TODO: Merge multiple device implementations
-    return (navigator as any).hid.getDevices();
+    const devices: any[] = await (navigator as any).hid.getDevices();
+    return devices.reduce<Record<string, DeviceMetadata>>(
+      (accumulator, device) => {
+        const { vendorId, productId, productName } = device;
+
+        const id = `${type}-${vendorId}-${productId}`;
+
+        accumulator[id] = { type, id, name: productName };
+
+        return accumulator;
+      },
+      {},
+    );
   }
 
   #isPairing() {
@@ -130,9 +171,13 @@ export class DeviceController extends BaseController<
       throw new Error('A pairing is already underway.');
     }
 
-    const { promise, resolve, reject } = createDeferredPromise<unknown>();
+    const { promise, resolve, reject } = createDeferredPromise<string>();
 
     this.#pairing = { promise, resolve, reject };
+
+    // TODO: Consider polling this call while pairing is ongoing?
+    await this.#syncDevices();
+
     this.update((draftState) => {
       draftState.pairing = { snapId };
     });
@@ -140,14 +185,15 @@ export class DeviceController extends BaseController<
     return promise;
   }
 
-  resolvePairing(device: unknown) {
+  resolvePairing(deviceId: string) {
     if (!this.#isPairing()) {
       return;
     }
 
-    this.#pairing?.resolve(device);
+    this.#pairing?.resolve(deviceId);
+    this.#pairing = undefined;
     this.update((draftState) => {
-      delete draftState.pairing;
+      draftState.pairing = null;
     });
   }
 
@@ -157,8 +203,9 @@ export class DeviceController extends BaseController<
     }
 
     this.#pairing?.reject(new Error('Pairing rejected'));
+    this.#pairing = undefined;
     this.update((draftState) => {
-      delete draftState.pairing;
+      draftState.pairing = null;
     });
   }
 }
