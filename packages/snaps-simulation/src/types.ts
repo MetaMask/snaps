@@ -5,6 +5,7 @@ import type { Infer } from '@metamask/superstruct';
 import type { Json, JsonRpcId, JsonRpcParams } from '@metamask/utils';
 
 import type {
+  NameLookupOptionsStruct,
   SignatureOptionsStruct,
   SnapOptionsStruct,
   SnapResponseStruct,
@@ -66,6 +67,16 @@ export type TransactionOptions = Infer<typeof TransactionOptionsStruct>;
  * The options to use for keyring requests.
  */
 export type KeyringOptions = RequestOptions;
+
+/**
+ * The options to use for name lookup requests.
+ *
+ * @property origin - The origin of the name lookup request (optional).`.
+ * @property chainId - Chain ID.
+ * @property domain - Domain name to lookup and resolve.
+ * @property address - Address to lookup and resolve.
+ */
+export type NameLookupOptions = Infer<typeof NameLookupOptionsStruct>;
 
 /**
  * The options to use for signature requests.
@@ -433,6 +444,15 @@ export type Snap = {
    * @returns The response.
    */
   onUpdate(request?: Pick<RequestOptions, 'origin'>): SnapRequest;
+
+  /**
+   * Get the response from the Snap's `onNameLookup` handler.
+   *
+   * @returns The response.
+   */
+  onNameLookup(
+    nameLookupRequest: NameLookupOptions,
+  ): Promise<SnapResponseWithoutInterface>;
 
   /**
    * Mock a JSON-RPC request. This will cause the snap to respond with the

@@ -409,6 +409,49 @@ describe('helpers', () => {
     });
   });
 
+  describe('onNameLookup', () => {
+    it('sends a name lookup request and returns the result', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+      const MOCK_DOMAIN = 'test.domain';
+
+      const { snapId, close: closeServer } = await getMockServer({
+        sourceCode: `
+          module.exports.onNameLookup = async (request) => {
+            return {
+              resolvedAddress: '0xc0ffee254729296a45a3885639AC7E10F9d54979',
+              protocol: 'test protocol',
+              domainName: request.domain,
+            };
+          };
+         `,
+      });
+
+      const { onNameLookup, close } = await installSnap(snapId);
+      const response = await onNameLookup({
+        chainId: 'eip155:1',
+        domain: MOCK_DOMAIN,
+      });
+
+      expect(response).toStrictEqual(
+        expect.objectContaining({
+          response: {
+            result: {
+              resolvedAddress: '0xc0ffee254729296a45a3885639AC7E10F9d54979',
+              protocol: 'test protocol',
+              domainName: MOCK_DOMAIN,
+            },
+          },
+        }),
+      );
+
+      // `close` is deprecated because the Jest environment will automatically
+      // close the Snap when the test finishes. However, we still need to close
+      // the Snap in this test because it's run outside the Jest environment.
+      await close();
+      await closeServer();
+    });
+  });
+
   describe('runCronjob', () => {
     it('runs a cronjob and returns the result', async () => {
       jest.spyOn(console, 'log').mockImplementation();

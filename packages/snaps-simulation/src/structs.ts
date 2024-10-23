@@ -190,6 +190,23 @@ export const SignatureOptionsStruct = object({
   ),
 });
 
+export const NameLookupOptionsStruct = object({
+  /**
+   * The CAIP-2 chain ID. Defaults to `eip155:1`.
+   */
+  chainId: defaulted(string(), 'eip155:1'),
+
+  /**
+   * Domain name to lookup.
+   */
+  domain: optional(string()),
+
+  /**
+   * Address to lookup.
+   */
+  address: optional(string()),
+});
+
 export const SnapOptionsStruct = object({
   /**
    * The timeout in milliseconds to use for requests to the snap. Defaults to
