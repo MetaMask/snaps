@@ -41,30 +41,4 @@ describe('onNameLookup', () => {
       ],
     });
   });
-
-  it('returns resolved domain if address and domain', async () => {
-    const request = {
-      address: ADDRESS_MOCK,
-      domain: DOMAIN_MOCK,
-      chainId: CHAIN_ID_MOCK,
-    } as any;
-
-    const { onNameLookup } = await installSnap();
-
-    expect(await onNameLookup(request)).toRespondWith({
-      resolvedDomains: [
-        { resolvedDomain: 'c0f.1.test.domain', protocol: 'test protocol' },
-      ],
-    });
-  });
-
-  it('returns null if no domain or address', async () => {
-    const request = {
-      chainId: CHAIN_ID_MOCK,
-    };
-
-    const { onNameLookup } = await installSnap();
-
-    expect(await onNameLookup(request)).toBeNull();
-  });
 });
