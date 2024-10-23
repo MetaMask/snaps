@@ -1,5 +1,8 @@
+import { getPlatformVersion } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
+  DEFAULT_SNAP_ICON,
+  getMockSnapFilesWithUpdatedChecksum,
   getPackageJson,
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
@@ -32,19 +35,23 @@ jest.mock('../../webpack', () => ({
 
 describe('manifest', () => {
   beforeEach(async () => {
+    const { manifest: newManifest } = await getMockSnapFilesWithUpdatedChecksum(
+      {
+        manifest: getSnapManifest({
+          platformVersion: getPlatformVersion(),
+        }),
+      },
+    );
+
     await fs.mkdir('/snap/dist', { recursive: true });
     await fs.writeFile('/snap/dist/bundle.js', DEFAULT_SNAP_BUNDLE);
     await fs.writeFile(
       '/snap/snap.manifest.json',
-      JSON.stringify(
-        getSnapManifest({
-          shasum: 'G/W5b2JZVv+epgNX9pkN63X6Lye9EJVJ4NLSgAw/afc=',
-        }),
-      ),
+      JSON.stringify(newManifest.result),
     );
     await fs.writeFile('/snap/package.json', JSON.stringify(getPackageJson()));
     await fs.mkdir('/snap/images');
-    await fs.writeFile('/snap/images/icon.svg', '<svg></svg>');
+    await fs.writeFile('/snap/images/icon.svg', DEFAULT_SNAP_ICON);
   });
 
   afterEach(async () => {
@@ -52,9 +59,9 @@ describe('manifest', () => {
   });
 
   it('validates a snap manifest', async () => {
-    const error = jest.spyOn(console, 'error').mockImplementation();
+    const error = jest.spyOn(console, 'error');
     const warn = jest.spyOn(console, 'warn').mockImplementation();
-    const log = jest.spyOn(console, 'log').mockImplementation();
+    const log = jest.spyOn(console, 'log');
 
     const spinner = ora();
     const result = await manifest('/snap/snap.manifest.json', false, spinner);
@@ -157,7 +164,7 @@ describe('manifest', () => {
           "url": "https://github.com/MetaMask/example-snap.git"
         },
         "source": {
-          "shasum": "d4W7f1lzpVGMj8jjCn1lYhhHmKc/9TSk5QLH5ldKQoI=",
+          "shasum": "itjh0enng42nO6BxNCEhDH8wm3yl4xlVclfd5LsZ2wA=",
           "location": {
             "npm": {
               "filePath": "dist/bundle.js",
@@ -172,6 +179,7 @@ describe('manifest', () => {
             "chains": ["eip155:1", "eip155:2", "eip155:3"]
           }
         },
+        "platformVersion": "1.0.0",
         "manifestVersion": "0.1"
       }
       "

@@ -67,6 +67,8 @@ import type {
   TruncatedSnapFields,
 } from '@metamask/snaps-utils';
 import {
+  logWarning,
+  getPlatformVersion,
   assertIsSnapManifest,
   assertIsValidSnapId,
   DEFAULT_ENDOWMENTS,
@@ -89,7 +91,6 @@ import {
   NpmSnapFileNames,
   OnNameLookupResponseStruct,
   getLocalizedSnapManifest,
-  parseJson,
   MAX_FILE_SIZE,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
@@ -103,7 +104,6 @@ import {
   hasProperty,
   inMilliseconds,
   isNonEmptyArray,
-  isValidJson,
   isValidSemVerRange,
   satisfiesVersionRange,
   timeSince,
@@ -112,6 +112,7 @@ import type { StateMachine } from '@xstate/fsm';
 import { createMachine, interpret } from '@xstate/fsm';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
+import semver from 'semver';
 
 import { forceStrict, validateMachine } from '../fsm';
 import { type CreateInterface, type GetInterface } from '../interface';
@@ -605,6 +606,7 @@ type FeatureFlags = {
   requireAllowlist?: boolean;
   allowLocalSnaps?: boolean;
   disableSnapInstallation?: boolean;
+  rejectInvalidPlatformVersion?: boolean;
 };
 
 type DynamicFeatureFlags = {
@@ -1336,11 +1338,18 @@ export class SnapController extends BaseController<
 
   async #assertIsInstallAllowed(
     snapId: SnapId,
-    snapInfo: SnapsRegistryInfo & { permissions: SnapPermissions },
+    {
+      platformVersion,
+      ...snapInfo
+    }: SnapsRegistryInfo & {
+      permissions: SnapPermissions;
+      platformVersion: string | undefined;
+    },
   ) {
     const results = await this.messagingSystem.call('SnapsRegistry:get', {
       [snapId]: snapInfo,
     });
+
     const result = results[snapId];
     if (result.status === SnapsRegistryStatus.Blocked) {
       throw new Error(
@@ -1369,6 +1378,8 @@ export class SnapController extends BaseController<
         }`,
       );
     }
+
+    this.#validatePlatformVersion(snapId, platformVersion);
   }
 
   /**
@@ -1741,6 +1752,17 @@ export class SnapController extends BaseController<
   }
 
   /**
+   * Check if a given Snap has a cached encryption key stored in the runtime.
+   *
+   * @param snapId - The Snap ID.
+   * @returns True if the Snap has a cached encryption key, otherwise false.
+   */
+  #hasCachedEncryptionKey(snapId: SnapId) {
+    const runtime = this.#getRuntimeExpect(snapId);
+    return runtime.encryptionKey !== null && runtime.encryptionSalt !== null;
+  }
+
+  /**
    * Decrypt the encrypted state for a given Snap.
    *
    * @param snapId - The Snap ID.
@@ -1750,9 +1772,15 @@ export class SnapController extends BaseController<
    */
   async #decryptSnapState(snapId: SnapId, state: string) {
     try {
-      const parsed = parseJson<EncryptionResult>(state);
+      // We assume that the state string here is valid JSON since we control serialization.
+      // This lets us skip JSON validation.
+      const parsed = JSON.parse(state) as EncryptionResult;
       const { salt, keyMetadata } = parsed;
-      const useCache = this.#encryptor.isVaultUpdated(state);
+
+      // We only cache encryption keys if they are already cached or if the encryption key is using the latest key derivation params.
+      const useCache =
+        this.#hasCachedEncryptionKey(snapId) ||
+        this.#encryptor.isVaultUpdated(state);
       const { key } = await this.#getSnapEncryptionKey({
         snapId,
         salt,
@@ -1763,8 +1791,7 @@ export class SnapController extends BaseController<
       });
       const decryptedState = await this.#encryptor.decryptWithKey(key, parsed);
 
-      assert(isValidJson(decryptedState));
-
+      // We assume this to be valid JSON, since all RPC requests from a Snap are validated and sanitized.
       return decryptedState as Record<string, Json>;
     } catch {
       throw rpcErrors.internal({
@@ -1855,7 +1882,8 @@ export class SnapController extends BaseController<
     }
 
     if (!encrypted) {
-      return parseJson(state);
+      // For performance reasons, we do not validate that the state is JSON, since we control serialization.
+      return JSON.parse(state);
     }
 
     const decrypted = await this.#decryptSnapState(snapId, state);
@@ -2558,6 +2586,7 @@ export class SnapController extends BaseController<
         version: newVersion,
         checksum: manifest.source.shasum,
         permissions: manifest.initialPermissions,
+        platformVersion: manifest.platformVersion,
       });
 
       const processedPermissions = processSnapPermissions(
@@ -2743,6 +2772,7 @@ export class SnapController extends BaseController<
           version: manifest.version,
           checksum: manifest.source.shasum,
           permissions: manifest.initialPermissions,
+          platformVersion: manifest.platformVersion,
         });
 
         return this.#set({
@@ -3012,6 +3042,34 @@ export class SnapController extends BaseController<
         '\n',
       )}`,
     );
+  }
+
+  /**
+   * Validate that the platform version specified in the manifest (if any) is
+   * compatible with the current platform version.
+   *
+   * @param snapId - The ID of the Snap.
+   * @param platformVersion - The platform version to validate against.
+   * @throws If the platform version is greater than the current platform
+   * version.
+   */
+  #validatePlatformVersion(
+    snapId: SnapId,
+    platformVersion: string | undefined,
+  ) {
+    if (platformVersion === undefined) {
+      return;
+    }
+
+    if (semver.gt(platformVersion, getPlatformVersion())) {
+      const message = `The Snap "${snapId}" requires platform version "${platformVersion}" which is greater than the current platform version "${getPlatformVersion()}".`;
+
+      if (this.#featureFlags.rejectInvalidPlatformVersion) {
+        throw new Error(message);
+      }
+
+      logWarning(message);
+    }
   }
 
   /**
