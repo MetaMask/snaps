@@ -19,6 +19,7 @@ import type {
   SnapId,
   PromptDialog,
   ComponentOrElement,
+  InterfaceContext,
 } from '@metamask/snaps-sdk';
 import type { InferMatching } from '@metamask/snaps-utils';
 import type { Infer } from '@metamask/superstruct';
@@ -62,6 +63,7 @@ type RequestUserApproval = (
 type CreateInterface = (
   snapId: string,
   content: ComponentOrElement,
+  context?: InterfaceContext,
   contentType?: ContentType,
 ) => Promise<string>;
 
@@ -304,6 +306,7 @@ export function getDialogImplementation({
       const id = await createInterface(
         origin,
         validatedParams.content as Component,
+        undefined,
         ContentType.Dialog,
       );
 
