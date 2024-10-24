@@ -71,7 +71,6 @@ export type KeyringOptions = RequestOptions;
 /**
  * The options to use for name lookup requests.
  *
- * @property origin - The origin of the name lookup request (optional).`.
  * @property chainId - Chain ID.
  * @property domain - Domain name to lookup and resolve.
  * @property address - Address to lookup and resolve.
