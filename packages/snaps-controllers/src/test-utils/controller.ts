@@ -764,7 +764,6 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'PhishingController:maybeUpdateState',
       'ApprovalController:hasRequest',
       'ApprovalController:acceptRequest',
-      'SnapController:get',
     ],
     allowedEvents: [],
   });

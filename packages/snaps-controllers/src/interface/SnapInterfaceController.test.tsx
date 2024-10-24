@@ -1145,51 +1145,6 @@ describe('SnapInterfaceController', () => {
     });
   });
 
-  describe('updateInterfaceContentType', () => {
-    it("can update an interface's content type", async () => {
-      const rootMessenger = getRootSnapInterfaceControllerMessenger();
-      const controllerMessenger =
-        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
-
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
-        messenger: controllerMessenger,
-      });
-
-      const content = form({ name: 'foo', children: [input({ name: 'bar' })] });
-
-      let contentType;
-
-      const id = await rootMessenger.call(
-        'SnapInterfaceController:createInterface',
-        MOCK_SNAP_ID,
-        content,
-      );
-
-      contentType = rootMessenger.call(
-        'SnapInterfaceController:getInterface',
-        MOCK_SNAP_ID,
-        id,
-      ).contentType;
-
-      expect(contentType).toBeNull();
-
-      rootMessenger.call(
-        'SnapInterfaceController:updateInterfaceContentType',
-        id,
-        ContentType.Dialog,
-      );
-
-      contentType = rootMessenger.call(
-        'SnapInterfaceController:getInterface',
-        MOCK_SNAP_ID,
-        id,
-      ).contentType;
-
-      expect(contentType).toStrictEqual(ContentType.Dialog);
-    });
-  });
-
   describe('resolveInterface', () => {
     it('resolves the interface with the given value', async () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();

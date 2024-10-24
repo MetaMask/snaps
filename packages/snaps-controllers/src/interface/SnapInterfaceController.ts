@@ -62,11 +62,6 @@ export type UpdateInterfaceState = {
   handler: SnapInterfaceController['updateInterfaceState'];
 };
 
-export type UpdateInterfaceContentType = {
-  type: `${typeof controllerName}:updateInterfaceContentType`;
-  handler: SnapInterfaceController['updateInterfaceContentType'];
-};
-
 export type ResolveInterface = {
   type: `${typeof controllerName}:resolveInterface`;
   handler: SnapInterfaceController['resolveInterface'];
@@ -90,7 +85,6 @@ export type SnapInterfaceControllerActions =
   | UpdateInterface
   | DeleteInterface
   | UpdateInterfaceState
-  | UpdateInterfaceContentType
   | ResolveInterface
   | SnapInterfaceControllerGetStateAction;
 
@@ -182,11 +176,6 @@ export class SnapInterfaceController extends BaseController<
     this.messagingSystem.registerActionHandler(
       `${controllerName}:updateInterface`,
       this.updateInterface.bind(this),
-    );
-
-    this.messagingSystem.registerActionHandler(
-      `${controllerName}:updateInterfaceContentType`,
-      this.updateInterfaceContentType.bind(this),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -283,20 +272,6 @@ export class SnapInterfaceController extends BaseController<
       if (context) {
         draftState.interfaces[id].context = context;
       }
-    });
-  }
-
-  /**
-   * Update the type of content in an interface.
-   *
-   * @param id - The interface id.
-   * @param contentType - The type of content.
-   */
-  updateInterfaceContentType(id: string, contentType: ContentType) {
-    this.#validateContentType(contentType);
-    assert(this.state.interfaces[id], 'Interface does not exist.');
-    this.update((draftState) => {
-      draftState.interfaces[id].contentType = contentType;
     });
   }
 
@@ -437,18 +412,5 @@ export class SnapInterfaceController extends BaseController<
       this.#checkPhishingList.bind(this),
       (id: string) => this.messagingSystem.call('SnapController:get', id),
     );
-  }
-
-  /**
-   * Utility function to validate the type of interface content.
-   * Must be a value of the enum ContentType.
-   * Throws if the passed string is invalid.
-   *
-   * @param contentType - The content type.
-   */
-  #validateContentType(contentType: string) {
-    if (!(contentType in ContentType)) {
-      throw new Error('Invalid content type.');
-    }
   }
 }

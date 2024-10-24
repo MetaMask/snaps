@@ -9,7 +9,6 @@ import {
   DialogType,
   enumValue,
   ComponentOrElementStruct,
-  ContentType,
   selectiveUnion,
 } from '@metamask/snaps-sdk';
 import type {
@@ -20,6 +19,7 @@ import type {
   PromptDialog,
   ComponentOrElement,
   InterfaceContext,
+  ContentType,
 } from '@metamask/snaps-sdk';
 import type { InferMatching } from '@metamask/snaps-utils';
 import type { Infer } from '@metamask/superstruct';
@@ -72,11 +72,6 @@ type GetInterface = (
   id: string,
 ) => { content: ComponentOrElement; snapId: SnapId; state: InterfaceState };
 
-type UpdateInterfaceContentType = (
-  id: string,
-  contentType: ContentType,
-) => void;
-
 export type DialogMethodHooks = {
   /**
    * @param opts - The `requestUserApproval` options.
@@ -99,11 +94,6 @@ export type DialogMethodHooks = {
    * @param id - The interface ID.
    */
   getInterface: GetInterface;
-  /**
-   * @param id - The interface ID.
-   * @param contentType - The type of the interface content.
-   */
-  updateInterfaceContentType: UpdateInterfaceContentType;
 };
 
 type DialogSpecificationBuilderOptions = {
@@ -153,7 +143,6 @@ const methodHooks: MethodHooksObject<DialogMethodHooks> = {
   requestUserApproval: true,
   createInterface: true,
   getInterface: true,
-  updateInterfaceContentType: true,
 };
 
 export const dialogBuilder = Object.freeze({
@@ -264,7 +253,6 @@ export type DialogParameters = InferMatching<
  * This function should return a Promise that resolves with the appropriate value when the user has approved or rejected the request.
  * @param hooks.createInterface - A function that creates the interface in SnapInterfaceController.
  * @param hooks.getInterface - A function that gets an interface from SnapInterfaceController.
- * @param hooks.updateInterfaceContentType - A function that updates an interface's content type.
  * @returns The method implementation which return value depends on the dialog
  * type, valid return types are: string, boolean, null.
  */
@@ -272,7 +260,6 @@ export function getDialogImplementation({
   requestUserApproval,
   createInterface,
   getInterface,
-  updateInterfaceContentType,
 }: DialogMethodHooks) {
   return async function dialogImplementation(
     args: RestrictedMethodOptions<DialogParameters>,
@@ -306,8 +293,6 @@ export function getDialogImplementation({
       const id = await createInterface(
         origin,
         validatedParams.content as Component,
-        undefined,
-        ContentType.Dialog,
       );
 
       return requestUserApproval({
@@ -319,9 +304,6 @@ export function getDialogImplementation({
     }
 
     validateInterface(origin, validatedParams.id, getInterface);
-    // we update the content type here since if we are receiving this interface
-    // as an id that means it was already created with a snap_createInterface call
-    updateInterfaceContentType(validatedParams.id, ContentType.Dialog);
 
     return requestUserApproval({
       id:
