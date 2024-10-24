@@ -412,6 +412,17 @@ describe('NameLookupOptionsStruct', () => {
     });
   });
 
+  it('throws when trying to use both, address and domain', () => {
+    const options = {
+      chainId: 'eip155:1',
+      address: '0xc0ffee254729296a45a3885639AC7E10F9d54979',
+      domain: 'test.domain',
+    };
+    expect(() => create(options, NameLookupOptionsStruct)).toThrow(
+      'Expected the value to satisfy a union of `object | object`, but received: [object Object]',
+    );
+  });
+
   it.each(INVALID_VALUES)('throws for invalid value: %p', (value) => {
     // eslint-disable-next-line jest/require-to-throw-message
     expect(() => create(value, NameLookupOptionsStruct)).toThrow();
