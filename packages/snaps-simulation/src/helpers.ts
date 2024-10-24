@@ -330,10 +330,7 @@ export function getHelpers({
     ): Promise<SnapResponseWithoutInterface> => {
       log('Requesting name lookup %o.', nameLookupOptions);
 
-      const { ...requestParams } = create(
-        nameLookupOptions,
-        NameLookupOptionsStruct,
-      );
+      const params = create(nameLookupOptions, NameLookupOptionsStruct);
 
       const response = await handleRequest({
         snapId,
@@ -344,9 +341,7 @@ export function getHelpers({
         handler: HandlerType.OnNameLookup,
         request: {
           method: '',
-          params: {
-            ...requestParams,
-          },
+          params,
         },
       });
 
