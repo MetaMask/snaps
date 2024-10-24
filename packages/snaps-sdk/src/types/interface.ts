@@ -45,3 +45,10 @@ export const ComponentOrElementStruct = selectiveUnion((value) => {
 
 export const InterfaceContextStruct = record(string(), JsonStruct);
 export type InterfaceContext = Infer<typeof InterfaceContextStruct>;
+
+export enum ContentType {
+  Insight = 'Insight',
+  Dialog = 'Dialog',
+  Notification = 'Notification',
+  HomePage = 'HomePage',
+}

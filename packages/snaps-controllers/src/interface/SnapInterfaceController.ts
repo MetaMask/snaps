@@ -18,6 +18,7 @@ import type {
   ComponentOrElement,
   InterfaceContext,
 } from '@metamask/snaps-sdk';
+import { ContentType } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsonSizeUnsafe, validateJsxLinks } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
@@ -109,6 +110,7 @@ export type StoredInterface = {
   content: JSXElement;
   state: InterfaceState;
   context: InterfaceContext | null;
+  contentType: ContentType | null;
 };
 
 export type SnapInterfaceControllerState = {
@@ -132,7 +134,22 @@ export class SnapInterfaceController extends BaseController<
     super({
       messenger,
       metadata: {
-        interfaces: { persist: false, anonymous: false },
+        interfaces: {
+          persist: (interfaces: Record<string, StoredInterface>) => {
+            return Object.entries(interfaces).reduce<
+              Record<string, StoredInterface>
+            >((persistedInterfaces, [id, snapInterface]) => {
+              switch (snapInterface.contentType) {
+                case ContentType.Notification:
+                  persistedInterfaces[id] = snapInterface;
+                  return persistedInterfaces;
+                default:
+                  return persistedInterfaces;
+              }
+            }, {});
+          },
+          anonymous: false,
+        },
       },
       name: controllerName,
       state: { interfaces: {}, ...state },
@@ -183,12 +200,14 @@ export class SnapInterfaceController extends BaseController<
    * @param snapId - The snap id that created the interface.
    * @param content - The interface content.
    * @param context - An optional interface context object.
+   * @param contentType - The type of content.
    * @returns The newly interface id.
    */
   async createInterface(
     snapId: SnapId,
     content: ComponentOrElement,
     context?: InterfaceContext,
+    contentType?: ContentType,
   ) {
     const element = getJsxInterface(content);
     await this.#validateContent(element);
@@ -205,6 +224,7 @@ export class SnapInterfaceController extends BaseController<
         content: castDraft(element),
         state: componentState,
         context: context ?? null,
+        contentType: contentType ?? null,
       };
     });
 

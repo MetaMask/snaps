@@ -46,6 +46,7 @@ import type {
   RequestSnapsResult,
   SnapId,
   ComponentOrElement,
+  ContentType,
 } from '@metamask/snaps-sdk';
 import { AuxiliaryFileEncoding, getErrorMessage } from '@metamask/snaps-sdk';
 import type {
@@ -3369,16 +3370,20 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The snap ID.
    * @param content - The initial interface content.
+   * @param contentType - The type of content.
    * @returns An identifier that can be used to identify the interface.
    */
   async #createInterface(
     snapId: SnapId,
     content: ComponentOrElement,
+    contentType?: ContentType,
   ): Promise<string> {
     return this.messagingSystem.call(
       'SnapInterfaceController:createInterface',
       snapId,
       content,
+      undefined,
+      contentType,
     );
   }
 
@@ -3416,7 +3421,6 @@ export class SnapController extends BaseController<
         // If a handler returns static content, we turn it into a dynamic UI
         if (castResult && hasProperty(castResult, 'content')) {
           const { content, ...rest } = castResult;
-
           const id = await this.#createInterface(
             snapId,
             content as ComponentOrElement,

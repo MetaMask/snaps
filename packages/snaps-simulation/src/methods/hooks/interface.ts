@@ -1,4 +1,9 @@
-import type { Component, InterfaceContext, SnapId } from '@metamask/snaps-sdk';
+import type {
+  Component,
+  ContentType,
+  InterfaceContext,
+  SnapId,
+} from '@metamask/snaps-sdk';
 
 import type { RootControllerMessenger } from '../../controllers';
 
@@ -15,12 +20,14 @@ export function getCreateInterfaceImplementation(
     snapId: SnapId,
     content: Component,
     context?: InterfaceContext,
+    contentType?: ContentType,
   ) =>
     controllerMessenger.call(
       'SnapInterfaceController:createInterface',
       snapId,
       content,
       context,
+      contentType,
     );
 }
 
