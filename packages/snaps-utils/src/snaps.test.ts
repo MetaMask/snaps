@@ -23,7 +23,7 @@ describe('isSnapId', () => {
   it.each(['npm:@metamask/test-snap-bip44', 'local:http://localhost:8000'])(
     'returns `true` for "%s"',
     (value) => {
-      expect(isSnapId(value)).toBe(true);
+      expect(isSnapId(value)).toBe(true as number);
     },
   );
 
