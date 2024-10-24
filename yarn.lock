@@ -6444,7 +6444,6 @@ __metadata:
     eslint-plugin-promise: "npm:^6.1.1"
     favicons: "npm:^7.1.2"
     favicons-webpack-plugin: "npm:^6.0.0"
-    gl-matrix: "npm:^3.4.3"
     html-webpack-plugin: "npm:^5.5.0"
     jest: "npm:^29.0.2"
     jest-it-up: "npm:^2.0.0"
@@ -6454,7 +6453,6 @@ __metadata:
     react-bootstrap: "npm:^2.5.0"
     react-dom: "npm:^18.2.0"
     react-redux: "npm:^8.0.5"
-    simplex-noise: "npm:^4.0.0"
     style-loader: "npm:^3.3.2"
     swc-loader: "npm:^0.2.3"
     terser-webpack-plugin: "npm:^5.3.9"
@@ -14339,13 +14337,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gl-matrix@npm:^3.4.3":
-  version: 3.4.3
-  resolution: "gl-matrix@npm:3.4.3"
-  checksum: 10/25ca2f7c762b7547cf462614ac7e0b98cffb131899f014e60a7e50395f4e9304efbb31dc73921e5af2a355cff663bee984d2710765f6730853e90d1c54d5d8e3
-  languageName: node
-  linkType: hard
-
 "glob-parent@npm:^5.1.2, glob-parent@npm:~5.1.2":
   version: 5.1.2
   resolution: "glob-parent@npm:5.1.2"
@@ -20957,13 +20948,6 @@ __metadata:
   dependencies:
     is-arrayish: "npm:^0.3.1"
   checksum: 10/c6dffff17aaa383dae7e5c056fbf10cf9855a9f79949f20ee225c04f06ddde56323600e0f3d6797e82d08d006e93761122527438ee9531620031c08c9e0d73cc
-  languageName: node
-  linkType: hard
-
-"simplex-noise@npm:^4.0.0":
-  version: 4.0.1
-  resolution: "simplex-noise@npm:4.0.1"
-  checksum: 10/1ef5675bfbdd99e6c32610d29a892bf5094cb93b542ba71423c8ef898c2367b633eb041a70e3c838f37649f5ce56d0d2ec40afe72c0dd360b0107baf87985271
   languageName: node
   linkType: hard
 
