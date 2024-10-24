@@ -181,6 +181,7 @@ export async function installSnap<
     onKeyringRequest,
     onInstall,
     onUpdate,
+    onNameLookup,
     mockJsonRpc,
     close,
   } = await getEnvironment().installSnap(...resolvedOptions);
@@ -196,6 +197,7 @@ export async function installSnap<
     onKeyringRequest,
     onInstall,
     onUpdate,
+    onNameLookup,
     mockJsonRpc,
     close: async () => {
       log('Closing execution service.');

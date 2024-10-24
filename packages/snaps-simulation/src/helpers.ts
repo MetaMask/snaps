@@ -10,6 +10,7 @@ import { addJsonRpcMock, removeJsonRpcMock } from './store';
 import {
   assertIsResponseWithInterface,
   JsonRpcMockOptionsStruct,
+  NameLookupOptionsStruct,
   SignatureOptionsStruct,
   TransactionOptionsStruct,
 } from './structs';
@@ -17,6 +18,7 @@ import type {
   CronjobOptions,
   JsonRpcMockOptions,
   KeyringOptions,
+  NameLookupOptions,
   RequestOptions,
   SignatureOptions,
   SnapRequest,
@@ -139,6 +141,15 @@ export type SnapHelpers = {
    * @returns The response.
    */
   onUpdate(request?: Pick<RequestOptions, 'origin'>): SnapRequest;
+
+  /**
+   * Get the response from the Snap's `onNameLookup` handler.
+   *
+   * @returns The response.
+   */
+  onNameLookup(
+    request: NameLookupOptions,
+  ): Promise<SnapResponseWithoutInterface>;
 
   /**
    * Mock a JSON-RPC request. This will cause the snap to respond with the
@@ -312,6 +323,29 @@ export function getHelpers({
           ...request,
         },
       });
+    },
+
+    onNameLookup: async (
+      nameLookupOptions: NameLookupOptions,
+    ): Promise<SnapResponseWithoutInterface> => {
+      log('Requesting name lookup %o.', nameLookupOptions);
+
+      const params = create(nameLookupOptions, NameLookupOptionsStruct);
+
+      const response = await handleRequest({
+        snapId,
+        store,
+        executionService,
+        controllerMessenger,
+        runSaga,
+        handler: HandlerType.OnNameLookup,
+        request: {
+          method: '',
+          params,
+        },
+      });
+
+      return response;
     },
 
     onSignature: async (

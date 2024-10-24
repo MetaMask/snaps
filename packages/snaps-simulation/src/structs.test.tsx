@@ -2,8 +2,10 @@ import { Box, Text } from '@metamask/snaps-sdk/jsx';
 import { create } from '@metamask/superstruct';
 
 import {
+  BaseNameLookupOptionsStruct,
   InterfaceStruct,
   JsonRpcMockOptionsStruct,
+  NameLookupOptionsStruct,
   SignatureOptionsStruct,
   SnapOptionsStruct,
   SnapResponseStruct,
@@ -356,5 +358,73 @@ describe('SnapResponseStruct', () => {
   it.each(INVALID_VALUES)('throws for invalid value: %p', (value) => {
     // eslint-disable-next-line jest/require-to-throw-message
     expect(() => create(value, SnapResponseStruct)).toThrow();
+  });
+});
+
+describe('BaseNameLookupOptionsStruct', () => {
+  it('accepts a valid object', () => {
+    const options = create(
+      {
+        chainId: 'eip155:1',
+      },
+      BaseNameLookupOptionsStruct,
+    );
+
+    expect(options).toStrictEqual({
+      chainId: 'eip155:1',
+    });
+  });
+
+  it.each(INVALID_VALUES)('throws for invalid value: %p', (value) => {
+    // eslint-disable-next-line jest/require-to-throw-message
+    expect(() => create(value, BaseNameLookupOptionsStruct)).toThrow();
+  });
+});
+
+describe('NameLookupOptionsStruct', () => {
+  it('accepts a valid object for domain lookup', () => {
+    const options = create(
+      {
+        chainId: 'eip155:1',
+        domain: 'test.domain',
+      },
+      NameLookupOptionsStruct,
+    );
+
+    expect(options).toStrictEqual({
+      chainId: 'eip155:1',
+      domain: 'test.domain',
+    });
+  });
+
+  it('accepts a valid object for address lookup', () => {
+    const options = create(
+      {
+        chainId: 'eip155:1',
+        address: '0xc0ffee254729296a45a3885639AC7E10F9d54979',
+      },
+      NameLookupOptionsStruct,
+    );
+
+    expect(options).toStrictEqual({
+      chainId: 'eip155:1',
+      address: '0xc0ffee254729296a45a3885639AC7E10F9d54979',
+    });
+  });
+
+  it('throws when trying to use both, address and domain', () => {
+    const options = {
+      chainId: 'eip155:1',
+      address: '0xc0ffee254729296a45a3885639AC7E10F9d54979',
+      domain: 'test.domain',
+    };
+    expect(() => create(options, NameLookupOptionsStruct)).toThrow(
+      'Expected the value to satisfy a union of `object | object`, but received: [object Object]',
+    );
+  });
+
+  it.each(INVALID_VALUES)('throws for invalid value: %p', (value) => {
+    // eslint-disable-next-line jest/require-to-throw-message
+    expect(() => create(value, NameLookupOptionsStruct)).toThrow();
   });
 });
