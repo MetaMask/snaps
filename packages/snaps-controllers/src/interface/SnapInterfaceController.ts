@@ -9,6 +9,11 @@ import type {
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type {
+  INotification,
+  NotificationListUpdatedEvent,
+} from '@metamask/notification-services-controller/notification-services';
+import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
+import type {
   MaybeUpdateState,
   TestOrigin,
 } from '@metamask/phishing-controller';
@@ -95,7 +100,8 @@ export type SnapInterfaceControllerStateChangeEvent =
   >;
 
 export type SnapInterfaceControllerEvents =
-  SnapInterfaceControllerStateChangeEvent;
+  | SnapInterfaceControllerStateChangeEvent
+  | NotificationListUpdatedEvent;
 
 export type SnapInterfaceControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
@@ -155,6 +161,11 @@ export class SnapInterfaceController extends BaseController<
       state: { interfaces: {}, ...state },
     });
 
+    this.messagingSystem.subscribe(
+      'NotificationServicesController:notificationsListUpdated',
+      /* eslint-disable @typescript-eslint/unbound-method */
+      this._onNotificationsListUpdated,
+    );
     this.#registerMessageHandlers();
   }
 
@@ -217,8 +228,6 @@ export class SnapInterfaceController extends BaseController<
     const componentState = constructState({}, element);
 
     this.update((draftState) => {
-      // @ts-expect-error - TS2589: Type instantiation is excessively deep and
-      // possibly infinite.
       draftState.interfaces[id] = {
         snapId,
         content: castDraft(element),
@@ -411,6 +420,57 @@ export class SnapInterfaceController extends BaseController<
       element,
       this.#checkPhishingList.bind(this),
       (id: string) => this.messagingSystem.call('SnapController:get', id),
+    );
+  }
+
+  _onNotificationsListUpdated(notificationsList: INotification[]) {
+    const snapNotificationsWithInterface = notificationsList.filter(
+      (notification) => {
+        return (
+          notification.type === TRIGGER_TYPES.SNAP &&
+          // @ts-expect-error detailedView can be undefined here, type needs to be updated in the core repo
+          notification.data?.detailedView
+        );
+      },
+    );
+
+    const interfaceIdSet = new Set(
+      snapNotificationsWithInterface.map(
+        // @ts-expect-error detailedView can be undefined here, type needs to be updated in the core repo
+        (notification) => notification.data.detailedView.interfaceId,
+      ),
+    );
+
+    const updatedState = Object.entries(this.state.interfaces).reduce<
+      Record<string, StoredInterface>
+    >((newState, [id, snapInterface]) => {
+      if (snapInterface.contentType === ContentType.Notification) {
+        if (interfaceIdSet.has(id)) {
+          newState[id] = snapInterface;
+        }
+      } else {
+        newState[id] = snapInterface;
+      }
+      return newState;
+    }, {});
+
+    this.update((state) => {
+      // @ts-expect-error - TS2589: Type instantiation is excessively deep and
+      // possibly infinite.
+      state.interfaces = updatedState;
+    });
+  }
+
+  /**
+   * Run controller teardown process and unsubscribe from notification service controller events.
+   */
+  destroy() {
+    super.destroy();
+
+    /* eslint-disable @typescript-eslint/unbound-method */
+    this.messagingSystem.unsubscribe(
+      'NotificationServicesController:notificationsListUpdated',
+      this._onNotificationsListUpdated,
     );
   }
 }
