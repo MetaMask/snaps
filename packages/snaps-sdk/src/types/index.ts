@@ -5,6 +5,7 @@ import './images';
 /* eslint-enable import/no-unassigned-import */
 
 export * from './caip';
+export * from './device';
 export * from './handlers';
 export * from './methods';
 export * from './permissions';
