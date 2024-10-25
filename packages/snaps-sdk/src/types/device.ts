@@ -43,15 +43,22 @@ export type Device = {
   /**
    * The vendor ID of the device.
    */
-  vendorId: string;
+  vendorId: number;
 
   /**
    * The product ID of the device.
    */
-  productId: string;
+  productId: number;
 
   /**
    * Whether the device is available.
    */
   available: boolean;
 };
+
+type ScopedDevice<Type extends DeviceType> = Device & {
+  type: Type;
+  id: ScopedDeviceId<Type>;
+};
+
+export type HidDevice = ScopedDevice<'hid'>;

@@ -2,14 +2,14 @@ import type { Device, DeviceType } from '../device';
 
 type DeviceFilter = {
   /**
-   * The type of the device.
+   * The vendor ID of the device.
    */
-  vendorId?: string;
+  vendorId?: number;
 
   /**
    * The product ID of the device.
    */
-  productId?: string;
+  productId?: number;
 };
 
 /**
@@ -22,9 +22,9 @@ export type RequestDeviceParams = {
   type: DeviceType;
 
   /**
-   * The filter to apply to the devices.
+   * The filters to apply to the devices.
    */
-  filter?: DeviceFilter[];
+  filters?: DeviceFilter[];
 };
 
 /**

@@ -3807,6 +3807,44 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ledgerhq/devices@npm:^8.4.4":
+  version: 8.4.4
+  resolution: "@ledgerhq/devices@npm:8.4.4"
+  dependencies:
+    "@ledgerhq/errors": "npm:^6.19.1"
+    "@ledgerhq/logs": "npm:^6.12.0"
+    rxjs: "npm:^7.8.1"
+    semver: "npm:^7.3.5"
+  checksum: 10/57136fc45ae2fa42b3cf93eb7cc3542fd84010390b3d0a536d342c7e92f90e475d608b1774f17a547419edddd7df0d0b1b1dbd6d2c778009ebab0fc3ec313f67
+  languageName: node
+  linkType: hard
+
+"@ledgerhq/errors@npm:^6.19.1":
+  version: 6.19.1
+  resolution: "@ledgerhq/errors@npm:6.19.1"
+  checksum: 10/8265c6d73c314a4aabbe060ec29e2feebb4e904fe811bf7a9c53cde08e713dcbceded9d927ebb2f0ffc47a7b16524379d4a7e9aa3d61945b8a832be7cd5cf69b
+  languageName: node
+  linkType: hard
+
+"@ledgerhq/hw-transport@npm:^6.31.4":
+  version: 6.31.4
+  resolution: "@ledgerhq/hw-transport@npm:6.31.4"
+  dependencies:
+    "@ledgerhq/devices": "npm:^8.4.4"
+    "@ledgerhq/errors": "npm:^6.19.1"
+    "@ledgerhq/logs": "npm:^6.12.0"
+    events: "npm:^3.3.0"
+  checksum: 10/cf101e5b818e95e59031241d556dbec24658f54104910e414be493bc4b90b0aea50f5d4b3339a237dd0b12845bb2683c845f3a82f2ea9da4e077b68d1e1f7e48
+  languageName: node
+  linkType: hard
+
+"@ledgerhq/logs@npm:^6.12.0":
+  version: 6.12.0
+  resolution: "@ledgerhq/logs@npm:6.12.0"
+  checksum: 10/a0a01f5d6edb0c14e7a42d24ab67ce362219517f6a50d0572c917f4f7988a1e2e9363e3d0fb170fe267f054e1e30a111564de44276e01c538b258d902c546421
+  languageName: node
+  linkType: hard
+
 "@leichtgewicht/ip-codec@npm:^2.0.1":
   version: 2.0.4
   resolution: "@leichtgewicht/ip-codec@npm:2.0.4"
@@ -5042,6 +5080,47 @@ __metadata:
   checksum: 10/9b178a4156b2f36bf630564dd0530c41c6356492971d2bcc8f979c79c81144945823a5b770e4097e12b89b42133b81f00c95a7b8fe9931ea1dd928989ee3c406
   languageName: node
   linkType: hard
+
+"@metamask/ledger-example-snap@workspace:packages/examples/packages/ledger":
+  version: 0.0.0-use.local
+  resolution: "@metamask/ledger-example-snap@workspace:packages/examples/packages/ledger"
+  dependencies:
+    "@jest/globals": "npm:^29.5.0"
+    "@lavamoat/allow-scripts": "npm:^3.0.4"
+    "@ledgerhq/devices": "npm:^8.4.4"
+    "@ledgerhq/errors": "npm:^6.19.1"
+    "@ledgerhq/hw-transport": "npm:^6.31.4"
+    "@metamask/auto-changelog": "npm:^3.4.4"
+    "@metamask/eslint-config": "npm:^12.1.0"
+    "@metamask/eslint-config-jest": "npm:^12.1.0"
+    "@metamask/eslint-config-nodejs": "npm:^12.1.0"
+    "@metamask/eslint-config-typescript": "npm:^12.1.0"
+    "@metamask/snaps-cli": "workspace:^"
+    "@metamask/snaps-jest": "workspace:^"
+    "@metamask/snaps-sdk": "workspace:^"
+    "@metamask/utils": "npm:^10.0.0"
+    "@swc/core": "npm:1.3.78"
+    "@swc/jest": "npm:^0.2.26"
+    "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
+    "@typescript-eslint/parser": "npm:^6.21.0"
+    deepmerge: "npm:^4.2.2"
+    depcheck: "npm:^1.4.7"
+    eslint: "npm:^8.27.0"
+    eslint-config-prettier: "npm:^8.5.0"
+    eslint-plugin-import: "npm:^2.26.0"
+    eslint-plugin-jest: "npm:^27.1.5"
+    eslint-plugin-jsdoc: "npm:^41.1.2"
+    eslint-plugin-n: "npm:^15.7.0"
+    eslint-plugin-prettier: "npm:^4.2.1"
+    eslint-plugin-promise: "npm:^6.1.1"
+    jest: "npm:^29.0.2"
+    jest-silent-reporter: "npm:^0.6.0"
+    prettier: "npm:^2.8.8"
+    prettier-plugin-packagejson: "npm:^2.5.2"
+    ts-node: "npm:^10.9.1"
+    typescript: "npm:~5.3.3"
+  languageName: unknown
+  linkType: soft
 
 "@metamask/lifecycle-hooks-example-snap@workspace:^, @metamask/lifecycle-hooks-example-snap@workspace:packages/examples/packages/lifecycle-hooks":
   version: 0.0.0-use.local
@@ -6441,6 +6520,23 @@ __metadata:
     webpack-dev-server: "npm:^4.15.1"
   languageName: unknown
   linkType: soft
+
+"@metamask/utils@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@metamask/utils@npm:10.0.0"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@noble/hashes": "npm:^1.3.1"
+    "@scure/base": "npm:^1.1.3"
+    "@types/debug": "npm:^4.1.7"
+    debug: "npm:^4.3.4"
+    pony-cause: "npm:^2.1.10"
+    semver: "npm:^7.5.4"
+    uuid: "npm:^9.0.1"
+  checksum: 10/9c2e6421f685d8a45145b6026a6f9fd0701eb5a2e8490fc6d18e64c103d5a62097f301cbc797790da52ceb5853bd9f65845c934b00299e69e5e6736c52b32f0f
+  languageName: node
+  linkType: hard
 
 "@metamask/utils@npm:^9.0.0, @metamask/utils@npm:^9.1.0, @metamask/utils@npm:^9.2.1":
   version: 9.2.1

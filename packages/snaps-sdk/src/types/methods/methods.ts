@@ -33,6 +33,10 @@ import type {
 } from './get-preferences';
 import type { GetSnapsParams, GetSnapsResult } from './get-snaps';
 import type {
+  GetSupportedDevicesParams,
+  GetSupportedDevicesResult,
+} from './get-supported-devices';
+import type {
   InvokeKeyringParams,
   InvokeKeyringResult,
 } from './invoke-keyring';
@@ -74,6 +78,10 @@ export type SnapMethods = {
   snap_getEntropy: [GetEntropyParams, GetEntropyResult];
   snap_getFile: [GetFileParams, GetFileResult];
   snap_getLocale: [GetLocaleParams, GetLocaleResult];
+  snap_getSupportedDevices: [
+    GetSupportedDevicesParams,
+    GetSupportedDevicesResult,
+  ];
   snap_getPreferences: [GetPreferencesParams, GetPreferencesResult];
   snap_listDevices: [ListDevicesParams, ListDevicesResult];
   snap_manageAccounts: [ManageAccountsParams, ManageAccountsResult];
