@@ -82,7 +82,7 @@
     "@metamask/base-controller": "^6.0.2",
     "@metamask/key-tree": "^9.1.2",
     "@metamask/permission-controller": "^11.0.0",
-    "@metamask/rpc-errors": "^6.3.1",
+    "@metamask/rpc-errors": "^7.0.1",
     "@metamask/slip44": "^4.0.0",
     "@metamask/snaps-registry": "^3.2.1",
     "@metamask/snaps-sdk": "workspace:^",
