@@ -24,7 +24,7 @@ export type RequestDeviceParams = {
   /**
    * The filter to apply to the devices.
    */
-  filter?: DeviceFilter;
+  filter?: DeviceFilter[];
 };
 
 /**
