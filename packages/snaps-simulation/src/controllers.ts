@@ -85,7 +85,9 @@ export function getControllers(options: GetControllersOptions): Controllers {
         'ApprovalController:hasRequest',
         'ApprovalController:acceptRequest',
       ],
-      allowedEvents: [],
+      allowedEvents: [
+        'NotificationServicesController:notificationsListUpdated',
+      ],
     }),
   });
 
