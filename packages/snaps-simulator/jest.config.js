@@ -7,10 +7,10 @@ delete baseConfig.transform;
 module.exports = deepmerge(baseConfig, {
   coverageThreshold: {
     global: {
-      branches: 48.33,
-      functions: 54.49,
-      lines: 75.63,
-      statements: 76.18,
+      branches: 54.33,
+      functions: 60.76,
+      lines: 80.54,
+      statements: 80.87,
     },
   },
   setupFiles: ['./jest.setup.js'],
