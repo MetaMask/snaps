@@ -40,6 +40,10 @@
     "test:verbose": "jest --verbose",
     "test:watch": "jest --watch"
   },
+  "resolutions": {
+    "@metamask/utils@npm:^9.0.0": "@metamask/utils@npm:^10.0.0",
+    "@metamask/utils@npm:^9.1.0": "@metamask/utils@npm:^10.0.0"
+  },
   "dependencies": {
     "@chakra-ui/anatomy": "^2.1.1",
     "@chakra-ui/react": "^2.6.1",

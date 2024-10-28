@@ -63,6 +63,10 @@
     "test:verbose": "jest --verbose",
     "test:watch": "jest --watch"
   },
+  "resolutions": {
+    "@metamask/utils@npm:^9.0.0": "@metamask/utils@npm:^10.0.0",
+    "@metamask/utils@npm:^9.1.0": "@metamask/utils@npm:^10.0.0"
+  },
   "dependencies": {
     "@babel/core": "^7.23.2",
     "@babel/plugin-transform-class-properties": "^7.22.5",

@@ -54,6 +54,7 @@
     "@babel/core": "patch:@babel/core@npm%3A7.23.2#./.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch",
     "@esbuild-plugins/node-modules-polyfill@^0.2.2": "patch:@esbuild-plugins/node-modules-polyfill@npm%3A0.2.2#./.yarn/patches/@esbuild-plugins-node-modules-polyfill-npm-0.2.2-f612681798.patch",
     "@lavamoat/lavapack@^6.1.1": "patch:@lavamoat/lavapack@npm%3A6.1.1#./.yarn/patches/@lavamoat-lavapack-npm-6.1.1-b81af21193.patch",
+    "@metamask/utils": "^10.0.0",
     "@puppeteer/browsers@1.4.6": "patch:@puppeteer/browsers@npm%3A1.7.0#./.yarn/patches/@puppeteer-browsers-npm-1.7.0-203cb4f44b.patch",
     "@puppeteer/browsers@^1.6.0": "patch:@puppeteer/browsers@npm%3A1.7.0#./.yarn/patches/@puppeteer-browsers-npm-1.7.0-203cb4f44b.patch",
     "@types/glob@*": "patch:@types/glob@npm%3A7.1.4#./.yarn/patches/@types-glob-npm-7.1.4-d45247eaa2.patch",

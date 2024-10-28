@@ -54,6 +54,10 @@
     "test:verbose": "jest --verbose",
     "test:watch": "jest --watch"
   },
+  "resolutions": {
+    "@metamask/utils@npm:^9.0.0": "@metamask/utils@npm:^10.0.0",
+    "@metamask/utils@npm:^9.1.0": "@metamask/utils@npm:^10.0.0"
+  },
   "dependencies": {
     "@metamask/base-controller": "^6.0.2",
     "@metamask/eth-json-rpc-middleware": "^15.0.0",

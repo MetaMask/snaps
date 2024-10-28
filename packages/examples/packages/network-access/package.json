@@ -42,6 +42,10 @@
     "test:verbose": "jest --verbose",
     "test:watch": "jest --watch"
   },
+  "resolutions": {
+    "@metamask/utils@npm:^9.0.0": "@metamask/utils@npm:^10.0.0",
+    "@metamask/utils@npm:^9.1.0": "@metamask/utils@npm:^10.0.0"
+  },
   "dependencies": {
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/utils": "^10.0.0"
