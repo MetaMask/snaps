@@ -9,11 +9,6 @@ import type {
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type {
-  INotification,
-  NotificationListUpdatedEvent,
-} from '@metamask/notification-services-controller/notification-services';
-import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
-import type {
   MaybeUpdateState,
   TestOrigin,
 } from '@metamask/phishing-controller';
@@ -99,6 +94,11 @@ export type SnapInterfaceControllerStateChangeEvent =
     SnapInterfaceControllerState
   >;
 
+type NotificationListUpdatedEvent = {
+  type: `${'NotificationServicesController'}:notificationsListUpdated`;
+  payload: [Record<string, any>[]];
+};
+
 export type SnapInterfaceControllerEvents =
   | SnapInterfaceControllerStateChangeEvent
   | NotificationListUpdatedEvent;
@@ -160,6 +160,9 @@ export class SnapInterfaceController extends BaseController<
       name: controllerName,
       state: { interfaces: {}, ...state },
     });
+
+    this._onNotificationsListUpdated =
+      this._onNotificationsListUpdated.bind(this);
 
     this.messagingSystem.subscribe(
       'NotificationServicesController:notificationsListUpdated',
@@ -423,20 +426,15 @@ export class SnapInterfaceController extends BaseController<
     );
   }
 
-  _onNotificationsListUpdated(notificationsList: INotification[]) {
+  _onNotificationsListUpdated(notificationsList: Record<string, any>[]) {
     const snapNotificationsWithInterface = notificationsList.filter(
       (notification) => {
-        return (
-          notification.type === TRIGGER_TYPES.SNAP &&
-          // @ts-expect-error detailedView can be undefined here, type needs to be updated in the core repo
-          notification.data?.detailedView
-        );
+        return notification.type === 'snap' && notification.data?.detailedView;
       },
     );
 
     const interfaceIdSet = new Set(
       snapNotificationsWithInterface.map(
-        // @ts-expect-error detailedView can be undefined here, type needs to be updated in the core repo
         (notification) => notification.data.detailedView.interfaceId,
       ),
     );

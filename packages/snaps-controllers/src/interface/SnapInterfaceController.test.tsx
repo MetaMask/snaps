@@ -37,6 +37,46 @@ jest.mock('@metamask/snaps-utils', () => ({
 }));
 
 describe('SnapInterfaceController', () => {
+  it('handles a notificationsListUpdated event on the controller messenger', async () => {
+    const rootMessenger = getRootSnapInterfaceControllerMessenger();
+    const controllerMessenger =
+      getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+    const controller = new SnapInterfaceController({
+      messenger: controllerMessenger,
+      state: {
+        interfaces: {
+          // @ts-expect-error missing properties
+          '1': {
+            contentType: ContentType.Notification,
+          },
+          // @ts-expect-error missing properties
+          '2': {
+            contentType: ContentType.Dialog,
+          },
+        },
+      },
+    });
+
+    rootMessenger.publish(
+      'NotificationServicesController:notificationsListUpdated',
+      [],
+    );
+
+    // defer
+    setTimeout(() => {
+      expect(controller.state).toStrictEqual({
+        interfaces: {
+          '2': {
+            contentType: ContentType.Dialog,
+          },
+        },
+      });
+    }, 1);
+
+    controller.destroy();
+  });
+
   describe('constructor', () => {
     it('persists notification interfaces', () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();
@@ -68,6 +108,8 @@ describe('SnapInterfaceController', () => {
           },
         },
       });
+
+      controller.destroy();
     });
   });
 
@@ -77,8 +119,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -115,6 +156,7 @@ describe('SnapInterfaceController', () => {
 
       expect(content).toStrictEqual(getJsxElementFromComponent(components));
       expect(state).toStrictEqual({ foo: { bar: null } });
+      controller.destroy();
     });
 
     it('can create a new interface from JSX', async () => {
@@ -122,8 +164,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -165,6 +206,7 @@ describe('SnapInterfaceController', () => {
 
       expect(content).toStrictEqual(element);
       expect(state).toStrictEqual({ foo: { bar: null } });
+      controller.destroy();
     });
 
     it('supports providing interface context', async () => {
@@ -172,8 +214,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -200,6 +241,7 @@ describe('SnapInterfaceController', () => {
 
       expect(content).toStrictEqual(element);
       expect(context).toStrictEqual({ foo: 'bar' });
+      controller.destroy();
     });
 
     it('supports providing an interface content type', async () => {
@@ -207,8 +249,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -235,6 +276,7 @@ describe('SnapInterfaceController', () => {
       );
 
       expect(contentType).toStrictEqual(ContentType.Notification);
+      controller.destroy();
     });
 
     it('throws if interface context is too large', async () => {
@@ -247,8 +289,7 @@ describe('SnapInterfaceController', () => {
         .mockReturnValueOnce(1)
         .mockReturnValueOnce(10_000_000);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -268,6 +309,7 @@ describe('SnapInterfaceController', () => {
           { foo: 'a'.repeat(1_000_000) },
         ),
       ).rejects.toThrow('A Snap interface context may not be larger than 1 MB');
+      controller.destroy();
     });
 
     it('throws if a link is on the phishing list', async () => {
@@ -287,8 +329,7 @@ describe('SnapInterfaceController', () => {
         () => ({ result: true, type: 'all' }),
       );
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -318,6 +359,8 @@ describe('SnapInterfaceController', () => {
         'PhishingController:testOrigin',
         'https://foo.bar/',
       );
+
+      controller.destroy();
     });
 
     it('throws if a JSX link is on the phishing list', async () => {
@@ -337,8 +380,7 @@ describe('SnapInterfaceController', () => {
         () => ({ result: true, type: 'all' }),
       );
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -368,6 +410,7 @@ describe('SnapInterfaceController', () => {
         'PhishingController:testOrigin',
         'https://foo.bar/',
       );
+      controller.destroy();
     });
 
     it('throws if UI content is too large', async () => {
@@ -379,8 +422,7 @@ describe('SnapInterfaceController', () => {
 
       jest.mocked(getJsonSizeUnsafe).mockReturnValueOnce(11_000_000);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -393,6 +435,7 @@ describe('SnapInterfaceController', () => {
           components,
         ),
       ).rejects.toThrow('A Snap UI may not be larger than 10 MB.');
+      controller.destroy();
     });
 
     it('throws if JSX UI content is too large', async () => {
@@ -404,8 +447,7 @@ describe('SnapInterfaceController', () => {
 
       jest.mocked(getJsonSizeUnsafe).mockReturnValueOnce(11_000_000);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -422,6 +464,7 @@ describe('SnapInterfaceController', () => {
           element,
         ),
       ).rejects.toThrow('A Snap UI may not be larger than 10 MB.');
+      controller.destroy();
     });
 
     it('throws if text content is too large', async () => {
@@ -431,8 +474,7 @@ describe('SnapInterfaceController', () => {
         false,
       );
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -445,6 +487,7 @@ describe('SnapInterfaceController', () => {
           components,
         ),
       ).rejects.toThrow('The text in a Snap UI may not be larger than 50 kB.');
+      controller.destroy();
     });
   });
 
@@ -454,8 +497,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -477,6 +519,7 @@ describe('SnapInterfaceController', () => {
       );
 
       expect(content).toStrictEqual(getJsxElementFromComponent(components));
+      controller.destroy();
     });
 
     it('throws if the snap requesting the interface is not the one that created it', async () => {
@@ -484,8 +527,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -507,6 +549,7 @@ describe('SnapInterfaceController', () => {
           id,
         ),
       ).toThrow(`Interface not created by foo.`);
+      controller.destroy();
     });
 
     it('throws if the interface does not exist', () => {
@@ -514,8 +557,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -526,6 +568,7 @@ describe('SnapInterfaceController', () => {
           'test',
         ),
       ).toThrow(`Interface with id 'test' not found.`);
+      controller.destroy();
     });
   });
 
@@ -535,8 +578,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -571,6 +613,7 @@ describe('SnapInterfaceController', () => {
 
       expect(content).toStrictEqual(getJsxElementFromComponent(newContent));
       expect(state).toStrictEqual({ foo: { baz: null } });
+      controller.destroy();
     });
 
     it('can update an interface using JSX', async () => {
@@ -578,8 +621,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -620,6 +662,7 @@ describe('SnapInterfaceController', () => {
 
       expect(content).toStrictEqual(newElement);
       expect(state).toStrictEqual({ foo: { baz: null } });
+      controller.destroy();
     });
 
     it('can update an interface and context', async () => {
@@ -627,8 +670,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -674,6 +716,7 @@ describe('SnapInterfaceController', () => {
       expect(content).toStrictEqual(getJsxElementFromComponent(newContent));
       expect(state).toStrictEqual({ foo: { baz: null } });
       expect(interfaceContext).toStrictEqual(newContext);
+      controller.destroy();
     });
 
     it('does not replace context if none is provided', async () => {
@@ -681,8 +724,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -725,6 +767,7 @@ describe('SnapInterfaceController', () => {
       expect(content).toStrictEqual(getJsxElementFromComponent(newContent));
       expect(state).toStrictEqual({ foo: { baz: null } });
       expect(interfaceContext).toStrictEqual(context);
+      controller.destroy();
     });
 
     it('throws if a link is on the phishing list', async () => {
@@ -744,8 +787,7 @@ describe('SnapInterfaceController', () => {
         () => ({ result: true, type: 'all' }),
       );
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -787,6 +829,7 @@ describe('SnapInterfaceController', () => {
         'PhishingController:testOrigin',
         'https://foo.bar/',
       );
+      controller.destroy();
     });
 
     it('throws if a JSX link is on the phishing list', async () => {
@@ -806,8 +849,7 @@ describe('SnapInterfaceController', () => {
         () => ({ result: true, type: 'all' }),
       );
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -853,6 +895,7 @@ describe('SnapInterfaceController', () => {
         'PhishingController:testOrigin',
         'https://foo.bar/',
       );
+      controller.destroy();
     });
 
     it('throws if UI content is too large', async () => {
@@ -865,8 +908,7 @@ describe('SnapInterfaceController', () => {
         .mockReturnValueOnce(1)
         .mockReturnValueOnce(11_000_000);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -891,6 +933,7 @@ describe('SnapInterfaceController', () => {
           newContent,
         ),
       ).rejects.toThrow('A Snap UI may not be larger than 10 MB.');
+      controller.destroy();
     });
 
     it('throws if JSX UI content is too large', async () => {
@@ -903,8 +946,7 @@ describe('SnapInterfaceController', () => {
         .mockReturnValueOnce(1)
         .mockReturnValueOnce(11_000_000);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -936,6 +978,7 @@ describe('SnapInterfaceController', () => {
           newElement,
         ),
       ).rejects.toThrow('A Snap UI may not be larger than 10 MB.');
+      controller.destroy();
     });
 
     it('throws if text content is too large', async () => {
@@ -943,8 +986,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -969,6 +1011,7 @@ describe('SnapInterfaceController', () => {
           newContent,
         ),
       ).rejects.toThrow('The text in a Snap UI may not be larger than 50 kB.');
+      controller.destroy();
     });
 
     it('throws if the interface does not exist', async () => {
@@ -976,8 +1019,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -991,6 +1033,7 @@ describe('SnapInterfaceController', () => {
           content,
         ),
       ).rejects.toThrow("Interface with id 'foo' not found.");
+      controller.destroy();
     });
 
     it('throws if the interface is updated by another snap', async () => {
@@ -998,8 +1041,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -1024,6 +1066,7 @@ describe('SnapInterfaceController', () => {
           newContent,
         ),
       ).rejects.toThrow('Interface not created by foo.');
+      controller.destroy();
     });
   });
 
@@ -1033,8 +1076,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -1061,6 +1103,7 @@ describe('SnapInterfaceController', () => {
       );
 
       expect(state).toStrictEqual(newState);
+      controller.destroy();
     });
 
     it('updates the interface state with a file', async () => {
@@ -1068,8 +1111,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -1111,6 +1153,7 @@ describe('SnapInterfaceController', () => {
       );
 
       expect(state).toStrictEqual(newState);
+      controller.destroy();
     });
   });
 
@@ -1120,8 +1163,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -1142,6 +1184,7 @@ describe('SnapInterfaceController', () => {
           id,
         ),
       ).toThrow(`Interface with id '${id}' not found.`);
+      controller.destroy();
     });
   });
 
@@ -1151,8 +1194,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -1188,6 +1230,7 @@ describe('SnapInterfaceController', () => {
       );
 
       expect(await approvalPromise).toBe('bar');
+      controller.destroy();
     });
 
     it('throws if the interface does not exist', async () => {
@@ -1195,8 +1238,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -1220,6 +1262,7 @@ describe('SnapInterfaceController', () => {
           'bar',
         ),
       ).rejects.toThrow(`Interface with id 'foo' not found.`);
+      controller.destroy();
     });
 
     it('throws if the interface is resolved by another snap', async () => {
@@ -1227,8 +1270,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -1265,6 +1307,7 @@ describe('SnapInterfaceController', () => {
           'bar',
         ),
       ).rejects.toThrow('Interface not created by baz.');
+      controller.destroy();
     });
 
     it('throws if the interface has no approval request', async () => {
@@ -1272,8 +1315,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
-      new SnapInterfaceController({
+      const controller = new SnapInterfaceController({
         messenger: controllerMessenger,
       });
 
@@ -1305,6 +1347,7 @@ describe('SnapInterfaceController', () => {
           'bar',
         ),
       ).rejects.toThrow(`Approval request with id '${id}' not found.`);
+      controller.destroy();
     });
   });
 });
