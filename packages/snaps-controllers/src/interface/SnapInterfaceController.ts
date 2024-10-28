@@ -231,6 +231,8 @@ export class SnapInterfaceController extends BaseController<
     const componentState = constructState({}, element);
 
     this.update((draftState) => {
+      // @ts-expect-error - TS2589: Type instantiation is excessively deep and
+      // possibly infinite.
       draftState.interfaces[id] = {
         snapId,
         content: castDraft(element),
