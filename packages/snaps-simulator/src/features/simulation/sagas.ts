@@ -194,7 +194,9 @@ export function* initSaga({ payload }: PayloadAction<string>) {
         `PhishingController:testOrigin`,
         `PhishingController:maybeUpdateState`,
       ],
-      allowedEvents: [],
+      allowedEvents: [
+        'NotificationServicesController:notificationsListUpdated',
+      ],
     }),
   });
 
