@@ -79,12 +79,12 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@metamask/approval-controller": "^7.0.2",
-    "@metamask/base-controller": "^6.0.2",
-    "@metamask/json-rpc-engine": "^10.0.0",
-    "@metamask/json-rpc-middleware-stream": "^8.0.2",
+    "@metamask/approval-controller": "^7.1.1",
+    "@metamask/base-controller": "^7.0.2",
+    "@metamask/json-rpc-engine": "^10.0.1",
+    "@metamask/json-rpc-middleware-stream": "^8.0.5",
     "@metamask/object-multiplex": "^2.0.0",
-    "@metamask/permission-controller": "^11.0.0",
+    "@metamask/permission-controller": "^11.0.3",
     "@metamask/phishing-controller": "^12.0.2",
     "@metamask/post-message-stream": "^8.1.1",
     "@metamask/rpc-errors": "^7.0.1",
