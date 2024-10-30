@@ -6102,7 +6102,7 @@ __metadata:
     "@types/tar-stream": "npm:^3.1.1"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
     "@typescript-eslint/parser": "npm:^6.21.0"
-    "@wdio/browser-runner": "npm:^9.2.7"
+    "@wdio/browser-runner": "patch:@wdio/browser-runner@npm%3A9.2.7#~/.yarn/patches/@wdio-browser-runner-npm-9.2.7-a8869b5c85.patch"
     "@wdio/cli": "npm:^9.2.6"
     "@wdio/globals": "npm:^9.2.6"
     "@wdio/mocha-framework": "npm:^9.2.5"
@@ -6190,7 +6190,7 @@ __metadata:
     "@types/node": "npm:18.14.2"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
     "@typescript-eslint/parser": "npm:^6.21.0"
-    "@wdio/browser-runner": "npm:^9.2.7"
+    "@wdio/browser-runner": "patch:@wdio/browser-runner@npm%3A9.2.7#~/.yarn/patches/@wdio-browser-runner-npm-9.2.7-a8869b5c85.patch"
     "@wdio/cli": "npm:^9.2.6"
     "@wdio/globals": "npm:^9.2.6"
     "@wdio/mocha-framework": "npm:^9.2.5"
@@ -6627,7 +6627,7 @@ __metadata:
     "@types/validate-npm-package-name": "npm:^4.0.0"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
     "@typescript-eslint/parser": "npm:^6.21.0"
-    "@wdio/browser-runner": "npm:^9.2.7"
+    "@wdio/browser-runner": "patch:@wdio/browser-runner@npm%3A9.2.7#~/.yarn/patches/@wdio-browser-runner-npm-9.2.7-a8869b5c85.patch"
     "@wdio/cli": "npm:^9.2.6"
     "@wdio/globals": "npm:^9.2.6"
     "@wdio/mocha-framework": "npm:^9.2.5"
@@ -9248,7 +9248,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wdio/browser-runner@npm:^9.2.7":
+"@wdio/browser-runner@npm:9.2.7":
   version: 9.2.7
   resolution: "@wdio/browser-runner@npm:9.2.7"
   dependencies:
@@ -9292,6 +9292,53 @@ __metadata:
     unimport:
       optional: true
   checksum: 10/98dd0b391328b57683aafa4f3a21754be40b76e4a6d2b8ed5f18889c3ef026b4b28d54cd654402fcd8a0dbb6a613d9d9d6a310aa0b648b7c58cc80138f510ef5
+  languageName: node
+  linkType: hard
+
+"@wdio/browser-runner@patch:@wdio/browser-runner@npm%3A9.2.7#~/.yarn/patches/@wdio-browser-runner-npm-9.2.7-a8869b5c85.patch":
+  version: 9.2.7
+  resolution: "@wdio/browser-runner@patch:@wdio/browser-runner@npm%3A9.2.7#~/.yarn/patches/@wdio-browser-runner-npm-9.2.7-a8869b5c85.patch::version=9.2.7&hash=bd935c"
+  dependencies:
+    "@nuxt/kit": "npm:^3.12.4"
+    "@originjs/vite-plugin-commonjs": "npm:^1.0.3"
+    "@stencil/core": "npm:^4.20.0"
+    "@vitest/spy": "npm:^2.0.4"
+    "@wdio/globals": "npm:9.2.6"
+    "@wdio/local-runner": "npm:9.2.6"
+    "@wdio/logger": "npm:9.1.3"
+    "@wdio/mocha-framework": "npm:9.2.5"
+    "@wdio/protocols": "npm:9.2.2"
+    "@wdio/runner": "npm:9.2.6"
+    "@wdio/types": "npm:9.2.2"
+    "@wdio/utils": "npm:9.2.5"
+    deepmerge-ts: "npm:^7.0.3"
+    expect: "npm:30.0.0-alpha.6"
+    expect-webdriverio: "npm:^5.0.1"
+    get-port: "npm:^7.1.0"
+    import-meta-resolve: "npm:^4.0.0"
+    istanbul-lib-coverage: "npm:^3.2.2"
+    istanbul-lib-report: "npm:^3.0.1"
+    istanbul-lib-source-maps: "npm:^5.0.4"
+    istanbul-reports: "npm:^3.1.7"
+    mlly: "npm:^1.6.1"
+    modern-node-polyfills: "npm:^1.0.0"
+    recast: "npm:^0.23.6"
+    safe-stringify: "npm:^1.1.0"
+    source-map-support: "npm:^0.5.21"
+    unimport: "npm:^3.10.0"
+    vite: "npm:^5.4.10"
+    vite-plugin-istanbul: "npm:^6.0.0"
+    vite-plugin-top-level-await: "npm:^1.4.1"
+    webdriver: "npm:9.2.5"
+    webdriverio: "npm:9.2.6"
+  dependenciesMeta:
+    "@nuxt/kit":
+      optional: true
+    "@stencil/core":
+      optional: true
+    unimport:
+      optional: true
+  checksum: 10/d8147a4797eb30b9fefbcc220bd4e89ae6e33d4ac880f50daa680dffe723576b00e718788364c202e9f9e96026ce78b3860899f5f55372f502015b994e5e47bf
   languageName: node
   linkType: hard
 
