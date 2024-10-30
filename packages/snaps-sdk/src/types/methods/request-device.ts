@@ -1,6 +1,9 @@
+import { number, object, optional } from '@metamask/superstruct';
+
+import type { Describe } from '../../internals';
 import type { Device, DeviceType } from '../device';
 
-type DeviceFilter = {
+export type DeviceFilter = {
   /**
    * The vendor ID of the device.
    */
@@ -11,6 +14,14 @@ type DeviceFilter = {
    */
   productId?: number;
 };
+
+/**
+ * A struct that represents the `DeviceFilter` type.
+ */
+export const DeviceFilterStruct: Describe<DeviceFilter> = object({
+  vendorId: optional(number()),
+  productId: optional(number()),
+});
 
 /**
  * The request parameters for the `snap_requestDevice` method.

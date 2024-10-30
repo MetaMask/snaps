@@ -5,9 +5,12 @@ import type { GetClientStatusHooks } from './getClientStatus';
 import type { GetCurrencyRateMethodHooks } from './getCurrencyRate';
 import type { GetInterfaceStateMethodHooks } from './getInterfaceState';
 import type { GetSnapsHooks } from './getSnaps';
+import type { ReadDeviceHooks } from './readDevice';
+import type { RequestDeviceHooks } from './requestDevice';
 import type { RequestSnapsHooks } from './requestSnaps';
 import type { ResolveInterfaceMethodHooks } from './resolveInterface';
 import type { UpdateInterfaceMethodHooks } from './updateInterface';
+import type { WriteDeviceHooks } from './writeDevice';
 
 export type PermittedRpcMethodHooks = GetAllSnapsHooks &
   GetClientStatusHooks &
@@ -18,7 +21,10 @@ export type PermittedRpcMethodHooks = GetAllSnapsHooks &
   GetInterfaceStateMethodHooks &
   ResolveInterfaceMethodHooks &
   GetCurrencyRateMethodHooks &
-  ProviderRequestMethodHooks;
+  ProviderRequestMethodHooks &
+  ReadDeviceHooks &
+  RequestDeviceHooks &
+  WriteDeviceHooks;
 
 export * from './handlers';
 export * from './middleware';

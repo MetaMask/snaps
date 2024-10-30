@@ -1,6 +1,5 @@
 import { createInterfaceHandler } from './createInterface';
 import { providerRequestHandler } from './experimentalProviderRequest';
-import { providerRequestHandler as requestDeviceHandler } from './requestDevice';
 import { getAllSnapsHandler } from './getAllSnaps';
 import { getClientStatusHandler } from './getClientStatus';
 import { getCurrencyRateHandler } from './getCurrencyRate';
@@ -9,10 +8,12 @@ import { getInterfaceStateHandler } from './getInterfaceState';
 import { getSnapsHandler } from './getSnaps';
 import { invokeKeyringHandler } from './invokeKeyring';
 import { invokeSnapSugarHandler } from './invokeSnapSugar';
+import { readDeviceHandler } from './readDevice';
+import { requestDeviceHandler } from './requestDevice';
 import { requestSnapsHandler } from './requestSnaps';
 import { resolveInterfaceHandler } from './resolveInterface';
 import { updateInterfaceHandler } from './updateInterface';
-
+import { writeDeviceHandler } from './writeDevice';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 export const methodHandlers = {
@@ -29,7 +30,9 @@ export const methodHandlers = {
   snap_resolveInterface: resolveInterfaceHandler,
   snap_getCurrencyRate: getCurrencyRateHandler,
   snap_experimentalProviderRequest: providerRequestHandler,
+  snap_readDevice: readDeviceHandler,
   snap_requestDevice: requestDeviceHandler,
+  snap_writeDevice: writeDeviceHandler,
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 

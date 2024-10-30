@@ -37,4 +37,4 @@ export type WriteDeviceParams = HidWriteParams;
 /**
  * The result returned by the `snap_writeDevice` method.
  */
-export type WriteDeviceResult = void;
+export type WriteDeviceResult = never;

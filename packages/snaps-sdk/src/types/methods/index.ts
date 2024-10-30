@@ -18,6 +18,7 @@ export * from './manage-state';
 export * from './methods';
 export * from './notify';
 export * from './read-device';
+export * from './request-device';
 export * from './request-snaps';
 export * from './update-interface';
 export * from './resolve-interface';

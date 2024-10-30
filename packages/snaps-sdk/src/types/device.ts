@@ -1,7 +1,20 @@
+import type { Struct } from '@metamask/superstruct';
+import { literal, refine, string, union } from '@metamask/superstruct';
+
+import type { Describe } from '../internals';
+
 /**
  * The type of the device.
  */
 export type DeviceType = 'hid' | 'bluetooth';
+
+/**
+ * A struct that represents the `DeviceType` type.
+ */
+export const DeviceTypeStruct: Describe<DeviceType> = union([
+  literal('hid'),
+  literal('bluetooth'),
+]);
 
 /**
  * The ID of the device. It consists of the type of the device, the vendor ID,
@@ -20,6 +33,26 @@ export type ScopedDeviceId<Type extends DeviceType> =
   `${Type}:${string}:${string}` extends DeviceId
     ? `${Type}:${string}:${string}`
     : never;
+
+/**
+ * A struct that represents the `DeviceId` type.
+ *
+ * @param type - The type of the device.
+ * @returns A struct that represents the `DeviceId` type.
+ */
+export function deviceId<Type extends DeviceType>(
+  type?: Type,
+): Type extends DeviceType ? Struct<ScopedDeviceId<Type>> : Struct<DeviceId> {
+  return refine(string(), 'device ID', (value) => {
+    if (type) {
+      return value.startsWith(`${type}:`) && value.split(':').length === 3;
+    }
+
+    return value.split(':').length === 3;
+  }) as Type extends DeviceType
+    ? Struct<ScopedDeviceId<Type>>
+    : Struct<DeviceId>;
+}
 
 /**
  * A device that is available to the Snap.
