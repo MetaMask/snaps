@@ -55,7 +55,7 @@ const config = {
   capabilities: [
     {
       maxInstances: MAX_WORKERS,
-      browserName: 'chrome',
+      browserName: 'firefox',
     },
     ...(IS_CI
       ? [
@@ -70,8 +70,6 @@ const config = {
   logLevel: 'error',
 
   services: [
-    'chromedriver',
-    'geckodriver',
     [
       'static-server',
       {

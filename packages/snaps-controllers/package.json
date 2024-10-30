@@ -162,9 +162,7 @@
     "typescript": "~5.3.3",
     "vite": "^5.4.8",
     "vite-tsconfig-paths": "^4.0.5",
-    "wdio-chromedriver-service": "^8.1.1",
-    "wdio-geckodriver-service": "^5.0.2",
-    "webdriverio": "^9.1.5"
+    "webdriverio": "^9.2.6"
   },
   "peerDependencies": {
     "@metamask/snaps-execution-environments": "workspace:^"
