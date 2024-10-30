@@ -55,7 +55,7 @@ const config = {
   capabilities: [
     {
       maxInstances: MAX_WORKERS,
-      browserName: 'firefox',
+      browserName: 'chrome',
     },
     ...(IS_CI
       ? [
