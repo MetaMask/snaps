@@ -230,7 +230,6 @@
       },
       "packages": {
         "@babel/core>@babel/types>@babel/helper-string-parser": true,
-        "@babel/core>@babel/types>to-fast-properties": true,
         "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
       }
     },
@@ -1096,7 +1095,7 @@
         "TextEncoder": true
       }
     },
-    "@wdio/browser-runner>mocha>supports-color": {
+    "@wdio/mocha-framework>mocha>supports-color": {
       "builtin": {
         "os.release": true,
         "tty.isatty": true
@@ -2044,7 +2043,7 @@
         "process": true
       },
       "packages": {
-        "@wdio/browser-runner>mocha>supports-color": true,
+        "@wdio/mocha-framework>mocha>supports-color": true,
         "eslint>debug>ms": true
       }
     },
@@ -2390,13 +2389,8 @@
       }
     },
     "vite>postcss>picocolors": {
-      "builtin": {
-        "tty.isatty": true
-      },
       "globals": {
-        "process.argv": true,
-        "process.env": true,
-        "process.platform": true
+        "process": true
       }
     },
     "yargs": {
