@@ -64,15 +64,15 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@metamask/json-rpc-engine": "^9.0.2",
+    "@metamask/json-rpc-engine": "^10.0.1",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/post-message-stream": "^8.1.1",
-    "@metamask/providers": "^17.1.2",
-    "@metamask/rpc-errors": "^6.3.1",
+    "@metamask/providers": "^18.1.1",
+    "@metamask/rpc-errors": "^7.0.1",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/superstruct": "^3.1.0",
-    "@metamask/utils": "^9.2.1",
+    "@metamask/utils": "^10.0.0",
     "nanoid": "^3.1.31",
     "readable-stream": "^3.6.2"
   },

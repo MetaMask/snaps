@@ -192,6 +192,7 @@ export class BaseSnapExecutor {
     const serializedError = serializeError(error, {
       fallbackError: unhandledError,
       shouldIncludeStack: false,
+      shouldPreserveMessage: false,
     });
 
     const errorData = getErrorData(serializedError);
@@ -280,6 +281,7 @@ export class BaseSnapExecutor {
       await this.#respond(id, {
         error: serializeError(rpcError, {
           fallbackError,
+          shouldPreserveMessage: false,
         }),
       });
     }

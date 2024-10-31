@@ -152,7 +152,7 @@ describe('snap_getFile', () => {
 
       expect(response.error).toStrictEqual({
         code: -32603,
-        message: 'Internal JSON-RPC error.',
+        message: 'foo bar',
         data: {
           cause: {
             message: 'foo bar',

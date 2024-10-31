@@ -82,7 +82,7 @@ describe('createSnapsMethodMiddleware', () => {
         data: {
           cause: expect.objectContaining({ message: 'foo' }),
         },
-        message: 'Internal JSON-RPC error.',
+        message: 'foo',
       },
     });
   });

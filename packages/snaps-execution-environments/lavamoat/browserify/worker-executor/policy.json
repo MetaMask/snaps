@@ -33,8 +33,23 @@
         "removeEventListener": true
       },
       "packages": {
-        "@metamask/utils": true,
+        "@metamask/post-message-stream>@metamask/utils": true,
         "readable-stream": true
+      }
+    },
+    "@metamask/post-message-stream>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@metamask/utils>@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "browserify>buffer": true,
+        "depcheck>semver": true,
+        "eslint>debug": true
       }
     },
     "@metamask/providers": {
