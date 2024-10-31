@@ -1,3 +1,5 @@
+import packageJson from '@metamask/snaps-sdk/package.json';
+
 /**
  * Get the current supported platform version.
  *
@@ -8,6 +10,5 @@
  * @returns The platform version.
  */
 export function getPlatformVersion() {
-  // eslint-disable-next-line import/no-dynamic-require, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-  return require('@metamask/snaps-sdk/package.json').version;
+  return packageJson.version;
 }
