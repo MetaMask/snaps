@@ -14,8 +14,6 @@ import type { GetPreferencesMethodHooks } from './getPreferences';
 import { getPreferencesBuilder } from './getPreferences';
 import type { InvokeSnapMethodHooks } from './invokeSnap';
 import { invokeSnapBuilder } from './invokeSnap';
-import type { ManageAccountsMethodHooks } from './manageAccounts';
-import { manageAccountsBuilder } from './manageAccounts';
 import type { ManageStateMethodHooks } from './manageState';
 import { manageStateBuilder } from './manageState';
 import type { NotifyMethodHooks } from './notify';
@@ -32,7 +30,6 @@ export type RestrictedMethodHooks = DialogMethodHooks &
   InvokeSnapMethodHooks &
   ManageStateMethodHooks &
   NotifyMethodHooks &
-  ManageAccountsMethodHooks &
   GetLocaleMethodHooks &
   GetPreferencesMethodHooks;
 
@@ -45,7 +42,6 @@ export const restrictedMethodPermissionBuilders = {
   [invokeSnapBuilder.targetName]: invokeSnapBuilder,
   [manageStateBuilder.targetName]: manageStateBuilder,
   [notifyBuilder.targetName]: notifyBuilder,
-  [manageAccountsBuilder.targetName]: manageAccountsBuilder,
   [getLocaleBuilder.targetName]: getLocaleBuilder,
   [getPreferencesBuilder.targetName]: getPreferencesBuilder,
 } as const;
