@@ -55,7 +55,7 @@
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "depcheck>semver": true,
-        "tsup>debug": true
+        "eslint>debug": true
       }
     },
     "@metamask/providers": {
@@ -127,7 +127,7 @@
         "@metamask/utils>@noble/hashes": true,
         "@metamask/utils>pony-cause": true,
         "depcheck>semver": true,
-        "tsup>debug": true
+        "eslint>debug": true
       }
     },
     "@metamask/utils>@noble/hashes": {
@@ -176,14 +176,25 @@
       "globals": {
         "console.error": true,
         "process": true
-      },
-      "packages": {
-        "depcheck>semver>lru-cache": true
       }
     },
-    "depcheck>semver>lru-cache": {
+    "eslint>debug": {
+      "builtin": {
+        "tty.isatty": true,
+        "util.deprecate": true,
+        "util.formatWithOptions": true,
+        "util.inspect": true
+      },
+      "globals": {
+        "console": true,
+        "document": true,
+        "localStorage": true,
+        "navigator": true,
+        "process": true
+      },
       "packages": {
-        "depcheck>semver>lru-cache>yallist": true
+        "@wdio/mocha-framework>mocha>supports-color": true,
+        "eslint>debug>ms": true
       }
     },
     "istanbul-lib-report>supports-color>has-flag": {
@@ -213,25 +224,6 @@
     "readable-stream>util-deprecate": {
       "builtin": {
         "util.deprecate": true
-      }
-    },
-    "tsup>debug": {
-      "builtin": {
-        "tty.isatty": true,
-        "util.deprecate": true,
-        "util.format": true,
-        "util.inspect": true
-      },
-      "globals": {
-        "console": true,
-        "document": true,
-        "localStorage": true,
-        "navigator": true,
-        "process": true
-      },
-      "packages": {
-        "@wdio/mocha-framework>mocha>supports-color": true,
-        "tsup>debug>ms": true
       }
     }
   }

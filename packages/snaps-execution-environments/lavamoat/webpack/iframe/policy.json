@@ -49,7 +49,7 @@
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "depcheck>semver": true,
-        "tsup>debug": true
+        "eslint>debug": true
       }
     },
     "@metamask/providers": {
@@ -130,7 +130,7 @@
         "@metamask/utils>@noble/hashes": true,
         "@metamask/utils>pony-cause": true,
         "depcheck>semver": true,
-        "tsup>debug": true
+        "eslint>debug": true
       }
     },
     "@metamask/utils>@noble/hashes": {
@@ -161,13 +161,20 @@
         "process": true
       },
       "packages": {
-        "depcheck>semver>lru-cache": true,
         "process": true
       }
     },
-    "depcheck>semver>lru-cache": {
+    "eslint>debug": {
+      "globals": {
+        "console": true,
+        "document": true,
+        "localStorage": true,
+        "navigator": true,
+        "process": true
+      },
       "packages": {
-        "depcheck>semver>lru-cache>yallist": true
+        "eslint>debug>ms": true,
+        "process": true
       }
     },
     "process": {
@@ -196,19 +203,6 @@
         "console.trace": true,
         "console.warn": true,
         "localStorage": true
-      }
-    },
-    "tsup>debug": {
-      "globals": {
-        "console": true,
-        "document": true,
-        "localStorage": true,
-        "navigator": true,
-        "process": true
-      },
-      "packages": {
-        "process": true,
-        "tsup>debug>ms": true
       }
     },
     "webpack>events": {

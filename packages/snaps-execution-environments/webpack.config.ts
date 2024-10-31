@@ -116,7 +116,7 @@ const nodeThreadConfig: Configuration = merge(baseConfig, {
       generatePolicy: true,
       policyLocation: resolve(__dirname, 'lavamoat/webpack/node-thread'),
       isBuiltin,
-      inlineLockdown: ['bundle.js'],
+      inlineLockdown: /bundle.js/u,
       diagnosticsVerbosity: 1,
       readableResourceIds: true,
       emitPolicySnapshot: true, // puts the result of merging policy with override that was used for the bundle alongside the bundle for human review
@@ -140,7 +140,7 @@ const nodeProcessConfig: Configuration = merge(baseConfig, {
       generatePolicy: true,
       policyLocation: resolve(__dirname, 'lavamoat/webpack/node-process'),
       isBuiltin,
-      inlineLockdown: ['bundle.js'],
+      inlineLockdown: /bundle.js/u,
       diagnosticsVerbosity: 1,
       readableResourceIds: true,
       emitPolicySnapshot: true, // puts the result of merging policy with override that was used for the bundle alongside the bundle for human review
