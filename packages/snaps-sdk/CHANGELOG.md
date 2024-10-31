@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.10.0]
+
+### Added
+
+- Add `snap_getCurrencyRate` to `SnapMethods` ([#2843](https://github.com/MetaMask/snaps/pull/2843))
+- Add `truncate`, `displayName` and `avatar` props to `Address` component ([#2833](https://github.com/MetaMask/snaps/pull/2833))
+
+### Changed
+
+- Bump MetaMask dependencies ([#2853](https://github.com/MetaMask/snaps/pull/2853))
+
 ## [6.9.0]
 
 ### Added
@@ -398,7 +409,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.9.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.10.0...HEAD
+[6.10.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.9.0...@metamask/snaps-sdk@6.10.0
 [6.9.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.8.0...@metamask/snaps-sdk@6.9.0
 [6.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.7.0...@metamask/snaps-sdk@6.8.0
 [6.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.6.0...@metamask/snaps-sdk@6.7.0

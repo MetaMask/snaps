@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.5.2]
+
+### Changed
+
+- Bump MetaMask dependencies ([#2853](https://github.com/MetaMask/snaps/pull/2853))
+
 ## [6.5.1]
 
 ### Fixed
@@ -276,7 +282,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.5.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.5.2...HEAD
+[6.5.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.5.1...@metamask/snaps-cli@6.5.2
 [6.5.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.5.0...@metamask/snaps-cli@6.5.1
 [6.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.4.0...@metamask/snaps-cli@6.5.0
 [6.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.3.4...@metamask/snaps-cli@6.4.0
