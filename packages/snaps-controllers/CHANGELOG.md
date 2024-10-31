@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.12.0]
+
 ### Uncategorized
 
 - chore: Bump MetaMask dependencies ([#2853](https://github.com/MetaMask/snaps-skunkworks.git/pull/2853))
@@ -548,7 +550,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@9.11.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@9.12.0...HEAD
+[9.12.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@9.11.1...@metamask/snaps-controllers@9.12.0
 [9.11.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@9.11.0...@metamask/snaps-controllers@9.11.1
 [9.11.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@9.10.0...@metamask/snaps-controllers@9.11.0
 [9.10.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-controllers@9.9.0...@metamask/snaps-controllers@9.10.0

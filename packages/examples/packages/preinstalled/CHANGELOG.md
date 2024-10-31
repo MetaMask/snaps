@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore: Bump MetaMask dependencies ([#2853](https://github.com/MetaMask/snaps-skunkworks.git/pull/2853))
-
 ## [0.2.0]
 
 ### Added
@@ -23,6 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add preinstalled example Snap ([#2721](https://github.com/MetaMask/snaps/pull/2721))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/preinstalled-example-snap@0.2.0...HEAD
-[0.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/preinstalled-example-snap@0.1.0...@metamask/preinstalled-example-snap@0.2.0
-[0.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/preinstalled-example-snap@0.1.0
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.2.0...HEAD
+[0.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.1.0...@metamask/preinstalled-example-snap@0.2.0
+[0.1.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/preinstalled-example-snap@0.1.0
