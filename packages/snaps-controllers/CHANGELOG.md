@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.12.0]
+
+### Added
+
+- Add platform version field to manifest ([#2803](https://github.com/MetaMask/snaps/pull/2803))
+
+### Changed
+
+- Bump MetaMask dependencies ([#2853](https://github.com/MetaMask/snaps/pull/2853))
+
+### Fixed
+
+- Stop unnecesarily validating JSON for stored state ([#2845](https://github.com/MetaMask/snaps/pull/2845))
+- Reduce unnecessary JSON validation ([#2844](https://github.com/MetaMask/snaps/pull/2844))
+
 ## [9.11.1]
 
 ### Fixed
@@ -541,7 +556,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.11.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.12.0...HEAD
+[9.12.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.11.1...@metamask/snaps-controllers@9.12.0
 [9.11.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.11.0...@metamask/snaps-controllers@9.11.1
 [9.11.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.10.0...@metamask/snaps-controllers@9.11.0
 [9.10.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.9.0...@metamask/snaps-controllers@9.10.0

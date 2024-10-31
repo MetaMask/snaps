@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.5.0]
+
+### Added
+
+- Add platform version field to manifest ([#2803](https://github.com/MetaMask/snaps/pull/2803))
+- Add Kadena derivation path ([#2851](https://github.com/MetaMask/snaps/pull/2851))
+
+### Changed
+
+- Bump MetaMask dependencies ([#2853](https://github.com/MetaMask/snaps/pull/2853))
+
 ## [8.4.1]
 
 ### Fixed
@@ -462,7 +473,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.4.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.5.0...HEAD
+[8.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.4.1...@metamask/snaps-utils@8.5.0
 [8.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.4.0...@metamask/snaps-utils@8.4.1
 [8.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.3.0...@metamask/snaps-utils@8.4.0
 [8.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.2.0...@metamask/snaps-utils@8.3.0

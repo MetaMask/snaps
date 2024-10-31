@@ -441,7 +441,7 @@ describe('implementation', () => {
       error: {
         code: -32603,
         data: { cause: expect.objectContaining({ message: 'error' }) },
-        message: 'Internal JSON-RPC error.',
+        message: 'error',
       },
       id: 1,
       jsonrpc: '2.0',
