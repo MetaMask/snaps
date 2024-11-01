@@ -53,4 +53,9 @@ export enum SnapCaveatType {
    * Caveat specifying the max request time for a handler endowment.
    */
   MaxRequestTime = 'maxRequestTime',
+
+  /**
+   * Caveat specifying the device IDs that can be interacted with.
+   */
+  DeviceIds = 'deviceIds',
 }
