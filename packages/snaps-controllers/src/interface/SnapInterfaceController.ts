@@ -128,6 +128,8 @@ export type SnapInterfaceControllerArgs = {
   state?: SnapInterfaceControllerState;
 };
 
+const subscriptions = new WeakMap();
+
 /**
  * Use this controller to manage snaps UI interfaces using RPC method hooks.
  */
@@ -161,14 +163,14 @@ export class SnapInterfaceController extends BaseController<
       state: { interfaces: {}, ...state },
     });
 
-    this._onNotificationsListUpdated =
-      this._onNotificationsListUpdated.bind(this);
+    /* eslint-disable @typescript-eslint/unbound-method */
+    subscriptions.set(this, this.#_onNotificationsListUpdated.bind(this));
 
     this.messagingSystem.subscribe(
       'NotificationServicesController:notificationsListUpdated',
-      /* eslint-disable @typescript-eslint/unbound-method */
-      this._onNotificationsListUpdated,
+      subscriptions.get(this),
     );
+
     this.#registerMessageHandlers();
   }
 
@@ -428,7 +430,7 @@ export class SnapInterfaceController extends BaseController<
     );
   }
 
-  _onNotificationsListUpdated(notificationsList: Record<string, any>[]) {
+  #_onNotificationsListUpdated(notificationsList: Record<string, any>[]) {
     const snapNotificationsWithInterface = notificationsList.filter(
       (notification) => {
         return notification.type === 'snap' && notification.data?.detailedView;
@@ -470,7 +472,7 @@ export class SnapInterfaceController extends BaseController<
     /* eslint-disable @typescript-eslint/unbound-method */
     this.messagingSystem.unsubscribe(
       'NotificationServicesController:notificationsListUpdated',
-      this._onNotificationsListUpdated,
+      subscriptions.get(this),
     );
   }
 }

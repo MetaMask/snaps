@@ -63,16 +63,13 @@ describe('SnapInterfaceController', () => {
       [],
     );
 
-    // defer
-    setTimeout(() => {
-      expect(controller.state).toStrictEqual({
-        interfaces: {
-          '2': {
-            contentType: ContentType.Dialog,
-          },
+    expect(controller.state).toStrictEqual({
+      interfaces: {
+        '2': {
+          contentType: ContentType.Dialog,
         },
-      });
-    }, 1);
+      },
+    });
 
     controller.destroy();
   });
