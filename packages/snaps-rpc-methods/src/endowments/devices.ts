@@ -27,8 +27,8 @@ type DevicesEndowmentSpecification = ValidPermissionSpecification<{
 }>;
 
 /**
- * The `endowment:devices` permission is intended to be used as a flag to
- * determine whether the Snap wants to access the devices API.
+ * The `endowment:devices` permission is granted to a Snap when it requested
+ * access to a specific device. The device IDs are specified in the caveat.
  *
  * @param _builderOptions - Optional specification builder options.
  * @returns The specification for the network endowment.
