@@ -15,6 +15,21 @@ import {
 } from './restricted';
 import { selectHooks } from './utils';
 
+const REMOVED_PERMISSIONS = Object.freeze(['snap_manageAccounts']);
+
+/**
+ * Filters out permissions that have been removed from the Snap API.
+ *
+ * @param initialPermission - The initial permission to filter.
+ * @returns Whether the permission has been removed.
+ */
+export const filterRemovedPermissions = (
+  initialPermission: [string, unknown],
+) => {
+  const [value] = initialPermission;
+  return REMOVED_PERMISSIONS.some((permission) => permission === value);
+};
+
 /**
  * Map initial permissions as defined in a Snap manifest to something that can
  * be processed by the PermissionsController. Each caveat mapping function
@@ -30,22 +45,32 @@ export function processSnapPermissions(
   initialPermissions: SnapPermissions,
 ): Record<string, Pick<PermissionConstraint, 'caveats'>> {
   return Object.fromEntries(
-    Object.entries(initialPermissions).map(([initialPermission, value]) => {
-      if (hasProperty(caveatMappers, initialPermission)) {
-        return [initialPermission, caveatMappers[initialPermission](value)];
-      } else if (hasProperty(endowmentCaveatMappers, initialPermission)) {
+    Object.entries(initialPermissions)
+      .filter(filterRemovedPermissions)
+      .map(([initialPermission, value]) => {
+        if (
+          REMOVED_PERMISSIONS.some(
+            (permission) => permission === initialPermission,
+          )
+        ) {
+          return [];
+        }
+
+        if (hasProperty(caveatMappers, initialPermission)) {
+          return [initialPermission, caveatMappers[initialPermission](value)];
+        } else if (hasProperty(endowmentCaveatMappers, initialPermission)) {
+          return [
+            initialPermission,
+            endowmentCaveatMappers[initialPermission](value),
+          ];
+        }
+
+        // If we have no mapping, this may be a non-snap permission, return as-is
         return [
           initialPermission,
-          endowmentCaveatMappers[initialPermission](value),
+          value as Pick<PermissionConstraint, 'caveats'>,
         ];
-      }
-
-      // If we have no mapping, this may be a non-snap permission, return as-is
-      return [
-        initialPermission,
-        value as Pick<PermissionConstraint, 'caveats'>,
-      ];
-    }),
+      }),
   );
 }
 
