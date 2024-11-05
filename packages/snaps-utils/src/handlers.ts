@@ -4,6 +4,7 @@ import type {
   OnInstallHandler,
   OnKeyringRequestHandler,
   OnNameLookupHandler,
+  OnProtocolRequestHandler,
   OnRpcRequestHandler,
   OnSignatureHandler,
   OnTransactionHandler,
@@ -100,6 +101,15 @@ export const SNAP_EXPORTS = {
     type: HandlerType.OnUserInput,
     required: false,
     validator: (snapExport: unknown): snapExport is OnUserInputHandler => {
+      return typeof snapExport === 'function';
+    },
+  },
+  [HandlerType.OnProtocolRequest]: {
+    type: HandlerType.OnProtocolRequest,
+    required: false,
+    validator: (
+      snapExport: unknown,
+    ): snapExport is OnProtocolRequestHandler => {
       return typeof snapExport === 'function';
     },
   },

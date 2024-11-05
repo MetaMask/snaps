@@ -9,6 +9,7 @@ export enum HandlerType {
   OnKeyringRequest = 'onKeyringRequest',
   OnHomePage = 'onHomePage',
   OnUserInput = 'onUserInput',
+  OnProtocolRequest = 'onProtocolRequest',
 }
 
 export type SnapHandler = {
