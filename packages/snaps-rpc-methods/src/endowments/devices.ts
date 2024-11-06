@@ -105,7 +105,7 @@ export function validateDeviceIdsCaveat(caveat: Caveat<string, any>) {
     });
   }
 
-  if (!isDeviceSpecificationArray(value.jobs)) {
+  if (!isDeviceSpecificationArray(value.devices)) {
     throw rpcErrors.invalidParams({
       message: 'Expected a valid device specification array.',
     });
@@ -122,5 +122,23 @@ export const deviceIdsCaveatSpecifications: Record<
   [SnapCaveatType.DeviceIds]: Object.freeze({
     type: SnapCaveatType.DeviceIds,
     validator: (caveat) => validateDeviceIdsCaveat(caveat),
+    merger: (leftValue, rightValue) => {
+      const leftDevices = leftValue.devices.map(
+        (device: DeviceSpecification) => device.deviceId,
+      );
+      const rightDevices = rightValue.devices.map(
+        (device: DeviceSpecification) => device.deviceId,
+      );
+      const newDevices = Array.from(
+        new Set([...leftDevices, ...rightDevices]),
+      ).map((deviceId) => ({ deviceId }));
+      const newValue = { devices: newDevices };
+      const diff = {
+        devices: newDevices.filter(
+          (value) => !leftDevices.includes(value.deviceId),
+        ),
+      };
+      return [newValue, diff];
+    },
   }),
 };

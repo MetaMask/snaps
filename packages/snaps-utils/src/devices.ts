@@ -26,9 +26,7 @@ export function isDeviceSpecification(
   return is(value, DeviceSpecificationStruct);
 }
 
-export const DeviceSpecificationArrayStruct = object({
-  devices: array(DeviceSpecificationStruct),
-});
+export const DeviceSpecificationArrayStruct = array(DeviceSpecificationStruct);
 
 /**
  * A device specification array, which is used as caveat value.

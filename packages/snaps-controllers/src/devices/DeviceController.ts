@@ -4,11 +4,23 @@ import type {
   ControllerStateChangeEvent,
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
+import type {
+  GetPermissions,
+  GrantPermissionsIncremental,
+} from '@metamask/permission-controller';
+import {
+  SnapCaveatType,
+  SnapEndowments,
+  getPermittedDeviceIds,
+} from '@metamask/snaps-rpc-methods';
+import type { DeviceId, SnapId } from '@metamask/snaps-sdk';
 import { createDeferredPromise, hasProperty } from '@metamask/utils';
 
 const controllerName = 'DeviceController';
 
-export type DeviceControllerAllowedActions = never;
+export type DeviceControllerAllowedActions =
+  | GetPermissions
+  | GrantPermissionsIncremental;
 
 export type DeviceControllerGetStateAction = ControllerGetStateAction<
   typeof controllerName,
@@ -48,12 +60,12 @@ export type DeviceControllerMessenger = RestrictedControllerMessenger<
 >;
 
 export enum DeviceType {
-  HID = 'HID',
+  HID = 'hid',
 }
 
 export type DeviceMetadata = {
   type: DeviceType;
-  id: string;
+  id: DeviceId;
   name: string;
 };
 
@@ -106,21 +118,53 @@ export class DeviceController extends BaseController<
     );
   }
 
-  async requestDevices(snapId: string) {
+  async requestDevice(snapId: string) {
     const deviceId = await this.#requestPairing({ snapId });
 
     await this.#syncDevices();
 
-    console.log('Granting access to', deviceId);
+    // TODO: Figure out how to revoke these permissions again?
+    this.messagingSystem.call(
+      'PermissionController:grantPermissionsIncremental',
+      {
+        subject: { origin: snapId },
+        approvedPermissions: {
+          // TODO: Consider this format
+          [SnapEndowments.Devices]: {
+            caveats: [
+              {
+                type: SnapCaveatType.DeviceIds,
+                value: { devices: [{ deviceId }] },
+              },
+            ],
+          },
+        },
+      },
+    );
 
-    // TODO: Grant permission to use device
-
+    // TODO: Return value
     return null;
   }
 
-  async #hasPermission(snapId: string, device: Device) {
-    // TODO: Verify Snap has permission to use device.
-    return true;
+  #getPermittedDevices(snapId: SnapId) {
+    const permissions = this.messagingSystem.call(
+      'PermissionController:getPermissions',
+      snapId,
+    );
+    if (!permissions || !hasProperty(permissions, SnapEndowments.Devices)) {
+      return [];
+    }
+
+    const permission = permissions[SnapEndowments.Devices];
+    const devices = getPermittedDeviceIds(permission);
+    return devices;
+  }
+
+  async #hasPermission(snapId: SnapId, device: Device) {
+    const devices = this.#getPermittedDevices(snapId);
+    return devices.some(
+      (permittedDevice) => permittedDevice.deviceId === device.id,
+    );
   }
 
   async #syncDevices() {
@@ -151,7 +195,7 @@ export class DeviceController extends BaseController<
       (accumulator, device) => {
         const { vendorId, productId, productName } = device;
 
-        const id = `${type}-${vendorId}-${productId}`;
+        const id = `${type}:${vendorId}:${productId}` as DeviceId;
 
         accumulator[id] = { type, id, name: productName };
 
