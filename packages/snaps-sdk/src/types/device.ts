@@ -1,20 +1,17 @@
 import type { Struct } from '@metamask/superstruct';
-import { literal, refine, string, union } from '@metamask/superstruct';
+import { literal, refine, string } from '@metamask/superstruct';
 
 import type { Describe } from '../internals';
 
 /**
- * The type of the device.
+ * The type of the device. Currently, only `hid` is supported.
  */
-export type DeviceType = 'hid' | 'bluetooth';
+export type DeviceType = 'hid';
 
 /**
  * A struct that represents the `DeviceType` type.
  */
-export const DeviceTypeStruct: Describe<DeviceType> = union([
-  literal('hid'),
-  literal('bluetooth'),
-]);
+export const DeviceTypeStruct: Describe<DeviceType> = literal('hid');
 
 /**
  * The ID of the device. It consists of the type of the device, the vendor ID,
