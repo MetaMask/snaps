@@ -95,7 +95,7 @@ export type SnapInterfaceControllerStateChangeEvent =
   >;
 
 type NotificationListUpdatedEvent = {
-  type: `${'NotificationServicesController'}:notificationsListUpdated`;
+  type: 'NotificationServicesController:notificationsListUpdated';
   payload: [Record<string, any>[]];
 };
 
@@ -127,8 +127,6 @@ export type SnapInterfaceControllerArgs = {
   messenger: SnapInterfaceControllerMessenger;
   state?: SnapInterfaceControllerState;
 };
-
-const subscriptions = new WeakMap();
 
 /**
  * Use this controller to manage snaps UI interfaces using RPC method hooks.
@@ -163,12 +161,9 @@ export class SnapInterfaceController extends BaseController<
       state: { interfaces: {}, ...state },
     });
 
-    /* eslint-disable @typescript-eslint/unbound-method */
-    subscriptions.set(this, this.#_onNotificationsListUpdated.bind(this));
-
     this.messagingSystem.subscribe(
       'NotificationServicesController:notificationsListUpdated',
-      subscriptions.get(this),
+      this.#onNotificationsListUpdated.bind(this),
     );
 
     this.#registerMessageHandlers();
@@ -430,7 +425,7 @@ export class SnapInterfaceController extends BaseController<
     );
   }
 
-  #_onNotificationsListUpdated(notificationsList: Record<string, any>[]) {
+  #onNotificationsListUpdated(notificationsList: Record<string, any>[]) {
     const snapNotificationsWithInterface = notificationsList.filter(
       (notification) => {
         return notification.type === 'snap' && notification.data?.detailedView;
@@ -443,36 +438,15 @@ export class SnapInterfaceController extends BaseController<
       ),
     );
 
-    const updatedState = Object.entries(this.state.interfaces).reduce<
-      Record<string, StoredInterface>
-    >((newState, [id, snapInterface]) => {
-      if (snapInterface.contentType === ContentType.Notification) {
-        if (interfaceIdSet.has(id)) {
-          newState[id] = snapInterface;
-        }
-      } else {
-        newState[id] = snapInterface;
-      }
-      return newState;
-    }, {});
-
     this.update((state) => {
-      // @ts-expect-error - TS2589: Type instantiation is excessively deep and
-      // possibly infinite.
-      state.interfaces = updatedState;
+      Object.entries(state.interfaces).forEach(([id, snapInterface]) => {
+        if (
+          snapInterface.contentType === ContentType.Notification &&
+          !interfaceIdSet.has(id)
+        ) {
+          delete state.interfaces[id];
+        }
+      });
     });
-  }
-
-  /**
-   * Run controller teardown process and unsubscribe from notification service controller events.
-   */
-  destroy() {
-    super.destroy();
-
-    /* eslint-disable @typescript-eslint/unbound-method */
-    this.messagingSystem.unsubscribe(
-      'NotificationServicesController:notificationsListUpdated',
-      subscriptions.get(this),
-    );
   }
 }
