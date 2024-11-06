@@ -18,7 +18,7 @@ import {
   handlerEndowments,
   SnapEndowments,
 } from '@metamask/snaps-rpc-methods';
-import type { SnapId } from '@metamask/snaps-sdk';
+import type { Snap, SnapId } from '@metamask/snaps-sdk';
 import { AuxiliaryFileEncoding, text } from '@metamask/snaps-sdk';
 import { Text } from '@metamask/snaps-sdk/jsx';
 import type { SnapPermissions, RpcOrigins } from '@metamask/snaps-utils';
@@ -1006,6 +1006,42 @@ describe('SnapController', () => {
       }),
     ).toStrictEqual({
       [MOCK_SNAP_ID]: expectedSnapObject,
+    });
+
+    snapController.destroy();
+  });
+
+  it('filters out removed permissions', async () => {
+    const messenger = getSnapControllerMessenger();
+    const initialPermissions: SnapPermissions = {
+      [handlerEndowments.onRpcRequest as string]: { snaps: false, dapps: true },
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      snap_manageAccounts: {},
+    };
+
+    const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
+      manifest: getSnapManifest({
+        initialPermissions,
+      }),
+    });
+
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        detectSnapLocation: loopbackDetect({
+          manifest: manifest.result,
+        }),
+      }),
+    );
+
+    const snap = await snapController.installSnaps(MOCK_ORIGIN, {
+      [MOCK_SNAP_ID]: {},
+    });
+
+    const permissions = (snap[MOCK_SNAP_ID] as Snap).initialPermissions;
+
+    expect(permissions).toStrictEqual({
+      [handlerEndowments.onRpcRequest as string]: { snaps: false, dapps: true },
     });
 
     snapController.destroy();
