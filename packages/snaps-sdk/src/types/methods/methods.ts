@@ -33,16 +33,26 @@ import type {
 } from './get-preferences';
 import type { GetSnapsParams, GetSnapsResult } from './get-snaps';
 import type {
+  GetSupportedDevicesParams,
+  GetSupportedDevicesResult,
+} from './get-supported-devices';
+import type {
   InvokeKeyringParams,
   InvokeKeyringResult,
 } from './invoke-keyring';
 import type { InvokeSnapParams, InvokeSnapResult } from './invoke-snap';
+import type { ListDevicesParams, ListDevicesResult } from './list-devices';
 import type {
   ManageAccountsParams,
   ManageAccountsResult,
 } from './manage-accounts';
 import type { ManageStateParams, ManageStateResult } from './manage-state';
 import type { NotifyParams, NotifyResult } from './notify';
+import type { ReadDeviceParams, ReadDeviceResult } from './read-device';
+import type {
+  RequestDeviceParams,
+  RequestDeviceResult,
+} from './request-device';
 import type { RequestSnapsParams, RequestSnapsResult } from './request-snaps';
 import type {
   ResolveInterfaceParams,
@@ -52,6 +62,7 @@ import type {
   UpdateInterfaceParams,
   UpdateInterfaceResult,
 } from './update-interface';
+import type { WriteDeviceParams, WriteDeviceResult } from './write-device';
 
 /**
  * The methods that are available to the Snap. Each method is a tuple of the
@@ -67,10 +78,18 @@ export type SnapMethods = {
   snap_getEntropy: [GetEntropyParams, GetEntropyResult];
   snap_getFile: [GetFileParams, GetFileResult];
   snap_getLocale: [GetLocaleParams, GetLocaleResult];
+  snap_getSupportedDevices: [
+    GetSupportedDevicesParams,
+    GetSupportedDevicesResult,
+  ];
   snap_getPreferences: [GetPreferencesParams, GetPreferencesResult];
+  snap_listDevices: [ListDevicesParams, ListDevicesResult];
   snap_manageAccounts: [ManageAccountsParams, ManageAccountsResult];
   snap_manageState: [ManageStateParams, ManageStateResult];
   snap_notify: [NotifyParams, NotifyResult];
+  snap_readDevice: [ReadDeviceParams, ReadDeviceResult];
+  snap_requestDevice: [RequestDeviceParams, RequestDeviceResult];
+  snap_writeDevice: [WriteDeviceParams, WriteDeviceResult];
   snap_createInterface: [CreateInterfaceParams, CreateInterfaceResult];
   snap_updateInterface: [UpdateInterfaceParams, UpdateInterfaceResult];
   snap_getInterfaceState: [GetInterfaceStateParams, GetInterfaceStateResult];

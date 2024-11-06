@@ -10,6 +10,7 @@ export * from './currency';
 export * from './deep-clone';
 export * from './default-endowments';
 export * from './derivation-paths';
+export * from './devices';
 export * from './entropy';
 export * from './errors';
 export * from './handlers';

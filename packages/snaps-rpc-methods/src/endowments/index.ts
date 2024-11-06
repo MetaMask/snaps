@@ -12,6 +12,10 @@ import {
   cronjobEndowmentBuilder,
   getCronjobCaveatMapper,
 } from './cronjob';
+import {
+  deviceIdsCaveatSpecifications,
+  devicesEndowmentBuilder,
+} from './devices';
 import { ethereumProviderEndowmentBuilder } from './ethereum-provider';
 import { homePageEndowmentBuilder } from './home-page';
 import {
@@ -48,6 +52,7 @@ export const endowmentPermissionBuilders = {
   [transactionInsightEndowmentBuilder.targetName]:
     transactionInsightEndowmentBuilder,
   [cronjobEndowmentBuilder.targetName]: cronjobEndowmentBuilder,
+  [devicesEndowmentBuilder.targetName]: devicesEndowmentBuilder,
   [ethereumProviderEndowmentBuilder.targetName]:
     ethereumProviderEndowmentBuilder,
   [rpcEndowmentBuilder.targetName]: rpcEndowmentBuilder,
@@ -62,6 +67,7 @@ export const endowmentPermissionBuilders = {
 
 export const endowmentCaveatSpecifications = {
   ...cronjobCaveatSpecifications,
+  ...deviceIdsCaveatSpecifications,
   ...transactionInsightCaveatSpecifications,
   ...rpcCaveatSpecifications,
   ...nameLookupCaveatSpecifications,
