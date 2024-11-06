@@ -27,7 +27,7 @@ export const filterRemovedPermissions = (
   initialPermission: [string, unknown],
 ) => {
   const [value] = initialPermission;
-  return REMOVED_PERMISSIONS.some((permission) => permission === value);
+  return !REMOVED_PERMISSIONS.some((permission) => permission === value);
 };
 
 /**
