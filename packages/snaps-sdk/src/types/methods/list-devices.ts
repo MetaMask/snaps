@@ -5,9 +5,9 @@ import type { Device, DeviceType } from '../device';
  */
 export type ListDevicesParams = {
   /**
-   * The type of the device to list. If not provided, all devices are listed.
+   * The type(s) of the device to list. If not provided, all devices are listed.
    */
-  type?: DeviceType;
+  type?: DeviceType | DeviceType[];
 };
 
 /**

@@ -22,9 +22,11 @@ const hookNames: MethodHooksObject<WriteDeviceHooks> = {
 
 export type WriteDeviceHooks = {
   /**
-   * A hook to request a device.
+   * A hook to write data to a device.
    *
-   * @returns The requested device, or `null` if no device was provided.
+   * @param params - The parameters for writing data to the device.
+   * @returns A promise that resolves when the data has been written to the
+   * device.
    */
   writeDevice: (params: WriteDeviceParams) => Promise<WriteDeviceResult>;
 };
@@ -60,7 +62,7 @@ export type WriteDeviceParameters = InferMatching<
  * method.
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
- * @param hooks.writeDevice - The function to request a device.
+ * @param hooks.writeDevice - The function to write data to a device.
  * @returns Nothing.
  */
 async function writeDeviceImplementation(

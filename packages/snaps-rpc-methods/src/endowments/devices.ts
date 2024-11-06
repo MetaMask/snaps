@@ -60,7 +60,7 @@ export const devicesEndowmentBuilder = Object.freeze({
  * value of the namespaces object itself, as this is handled by the
  * `PermissionsController` when the permission is requested.
  *
- * @param permission - The permission to get the keyring namespaces from.
+ * @param permission - The permission to get the device IDs from.
  * @returns The device IDs, or `null` if the permission does not have a
  * device IDs caveat.
  */
@@ -83,7 +83,7 @@ export function getPermittedDeviceIds(
 }
 
 /**
- * Validate the cronjob specification values associated with a caveat.
+ * Validate the device IDs specification values associated with a caveat.
  * This validates that the value is a non-empty array with valid device
  * specification objects.
  *

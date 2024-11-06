@@ -24,9 +24,10 @@ const hookNames: MethodHooksObject<ReadDeviceHooks> = {
 
 export type ReadDeviceHooks = {
   /**
-   * A hook to request a device.
+   * A hook to read data from a device.
    *
-   * @returns The requested device, or `null` if no device was provided.
+   * @param params - The parameters for reading data from the device.
+   * @returns The data read from the device.
    */
   readDevice: (params: ReadDeviceParams) => Promise<ReadDeviceResult>;
 };
@@ -62,7 +63,7 @@ export type ReadDeviceParameters = InferMatching<
  * method.
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
- * @param hooks.readDevice - The function to request a device.
+ * @param hooks.readDevice - The function to read data from a device.
  * @returns Nothing.
  */
 async function readDeviceImplementation(

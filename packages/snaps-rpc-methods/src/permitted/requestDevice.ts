@@ -20,6 +20,7 @@ export type RequestDeviceHooks = {
   /**
    * A hook to request a device.
    *
+   * @param params - The parameters for requesting a device.
    * @returns The requested device, or `null` if no device was provided.
    */
   requestDevice: (params: RequestDeviceParams) => Promise<RequestDeviceResult>;
