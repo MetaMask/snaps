@@ -8,13 +8,24 @@ import type {
   GetPermissions,
   GrantPermissionsIncremental,
 } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import {
   SnapCaveatType,
   SnapEndowments,
   getPermittedDeviceIds,
 } from '@metamask/snaps-rpc-methods';
-import type { DeviceId, SnapId } from '@metamask/snaps-sdk';
-import { createDeferredPromise, hasProperty } from '@metamask/utils';
+import type {
+  DeviceId,
+  ListDevicesParams,
+  ReadDeviceParams,
+  SnapId,
+  WriteDeviceParams,
+} from '@metamask/snaps-sdk';
+import {
+  createDeferredPromise,
+  hasProperty,
+  hexToBytes,
+} from '@metamask/utils';
 
 const controllerName = 'DeviceController';
 
@@ -73,6 +84,11 @@ export type Device = DeviceMetadata & {
   connected: boolean;
 };
 
+export type ConnectedDevice = {
+  reference: any; // TODO: Type this
+  metadata: DeviceMetadata;
+};
+
 export type DeviceControllerState = {
   devices: Record<string, Device>;
   pairing: { snapId: string } | null;
@@ -91,8 +107,8 @@ export class DeviceController extends BaseController<
   DeviceControllerMessenger
 > {
   #pairing?: {
-    promise: Promise<unknown>;
-    resolve: (result: string) => void;
+    promise: Promise<DeviceId>;
+    resolve: (result: DeviceId) => void;
     reject: (error: unknown) => void;
   };
 
@@ -121,7 +137,7 @@ export class DeviceController extends BaseController<
   async requestDevice(snapId: string) {
     const deviceId = await this.#requestPairing({ snapId });
 
-    await this.#syncDevices();
+    // await this.#syncDevices();
 
     // TODO: Figure out how to revoke these permissions again?
     this.messagingSystem.call(
@@ -142,8 +158,71 @@ export class DeviceController extends BaseController<
       },
     );
 
-    // TODO: Return value
-    return null;
+    // TODO: Can a paired device by not connected?
+    const device = await this.#getConnectedDeviceById(deviceId);
+    return device.metadata;
+  }
+
+  async writeDevice(
+    snapId: SnapId,
+    { id, reportId = 0, reportType, data }: WriteDeviceParams,
+  ) {
+    if (!this.#hasPermission(snapId, id)) {
+      // TODO: Decide on error message
+      throw rpcErrors.invalidParams();
+    }
+
+    const device = await this.#getConnectedDeviceById(id);
+    if (!device) {
+      // Handle
+    }
+
+    const actualDevice = device.reference;
+
+    if (!actualDevice.opened) {
+      await actualDevice.open();
+    }
+
+    if (reportType === 'feature') {
+      await actualDevice.sendFeatureReport(reportId, hexToBytes(data));
+    } else {
+      await actualDevice.sendReport(reportId, hexToBytes(data));
+    }
+  }
+
+  async readDevice(snapId: SnapId, { id }: ReadDeviceParams) {
+    if (!this.#hasPermission(snapId, id)) {
+      // TODO: Decide on error message
+      throw rpcErrors.invalidParams();
+    }
+
+    const device = await this.#getConnectedDeviceById(id);
+    if (!device) {
+      // Handle
+    }
+
+    const actualDevice = device.reference;
+
+    if (!actualDevice.opened) {
+      await actualDevice.open();
+    }
+
+    // TODO: Actual read
+  }
+
+  async listDevices(snapId: SnapId, { type }: ListDevicesParams) {
+    await this.#syncDevices();
+
+    const permittedDevices = this.#getPermittedDevices(snapId);
+    const deviceData = permittedDevices.map(
+      (device) => this.state.devices[device.deviceId],
+    );
+
+    if (type) {
+      const types = Array.isArray(type) ? type : [type];
+      return deviceData.filter((device) => types.includes(device.type));
+    }
+    return deviceData;
   }
 
   #getPermittedDevices(snapId: SnapId) {
@@ -157,18 +236,18 @@ export class DeviceController extends BaseController<
 
     const permission = permissions[SnapEndowments.Devices];
     const devices = getPermittedDeviceIds(permission);
-    return devices;
+    return devices ?? [];
   }
 
-  async #hasPermission(snapId: SnapId, device: Device) {
+  #hasPermission(snapId: SnapId, deviceId: DeviceId) {
     const devices = this.#getPermittedDevices(snapId);
     return devices.some(
-      (permittedDevice) => permittedDevice.deviceId === device.id,
+      (permittedDevice) => permittedDevice.deviceId === deviceId,
     );
   }
 
   async #syncDevices() {
-    const connectedDevices = await this.#getDevices();
+    const connectedDevices = await this.#getConnectedDevices();
 
     this.update((draftState) => {
       for (const device of Object.values(draftState.devices)) {
@@ -178,31 +257,43 @@ export class DeviceController extends BaseController<
         );
       }
       for (const device of Object.values(connectedDevices)) {
-        if (!hasProperty(draftState.devices, device.id)) {
+        if (!hasProperty(draftState.devices, device.metadata.id)) {
           // @ts-expect-error Not sure why this is failing, continuing.
-          draftState.devices[device.id] = { ...device, connected: true };
+          draftState.devices[device.metadata.id] = {
+            ...device.metadata,
+            connected: true,
+          };
         }
       }
     });
   }
 
   // Get actually connected devices
-  async #getDevices(): Promise<Record<string, DeviceMetadata>> {
+  async #getConnectedDevices(): Promise<Record<string, ConnectedDevice>> {
     const type = DeviceType.HID;
     // TODO: Merge multiple device implementations
     const devices: any[] = await (navigator as any).hid.getDevices();
-    return devices.reduce<Record<string, DeviceMetadata>>(
+    return devices.reduce<Record<string, ConnectedDevice>>(
       (accumulator, device) => {
         const { vendorId, productId, productName } = device;
 
         const id = `${type}:${vendorId}:${productId}` as DeviceId;
 
-        accumulator[id] = { type, id, name: productName };
+        // TODO: Figure out what to do about duplicates.
+        accumulator[id] = {
+          reference: device,
+          metadata: { type, id, name: productName },
+        };
 
         return accumulator;
       },
       {},
     );
+  }
+
+  async #getConnectedDeviceById(id: DeviceId) {
+    const devices = await this.#getConnectedDevices();
+    return devices[id];
   }
 
   #isPairing() {
@@ -215,7 +306,7 @@ export class DeviceController extends BaseController<
       throw new Error('A pairing is already underway.');
     }
 
-    const { promise, resolve, reject } = createDeferredPromise<string>();
+    const { promise, resolve, reject } = createDeferredPromise<DeviceId>();
 
     this.#pairing = { promise, resolve, reject };
 
@@ -229,7 +320,7 @@ export class DeviceController extends BaseController<
     return promise;
   }
 
-  resolvePairing(deviceId: string) {
+  resolvePairing(deviceId: DeviceId) {
     if (!this.#isPairing()) {
       return;
     }

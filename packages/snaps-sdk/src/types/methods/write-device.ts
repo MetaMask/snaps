@@ -18,6 +18,12 @@ type HidWriteParams = {
   id: ScopedDeviceId<'hid'>;
 
   /**
+   * The type of the data to read. This is either an output report or a feature
+   * report. It defaults to `output` if not provided.
+   */
+  reportType?: 'output' | 'feature';
+
+  /**
    * The data to write to the device.
    */
   data: Hex;
