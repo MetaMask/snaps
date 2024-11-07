@@ -22,7 +22,7 @@ import { ContentType } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsonSizeUnsafe, validateJsxLinks } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
-import { assert } from '@metamask/utils';
+import { assert, hasProperty } from '@metamask/utils';
 import { castDraft } from 'immer';
 import { nanoid } from 'nanoid';
 
@@ -94,9 +94,32 @@ export type SnapInterfaceControllerStateChangeEvent =
     SnapInterfaceControllerState
   >;
 
+type OtherNotification = { type: string; [key: string]: unknown };
+
+export type ExpandedView = {
+  title: string;
+  interfaceId: string;
+  footerLink?: { href: string; text: string };
+};
+
+type RawSnapNotificationData =
+  | {
+      message: string;
+      origin: string;
+    }
+  | { message: string; origin: string; detailedView: ExpandedView };
+
+type SnapNotification = {
+  type: 'snap';
+  data: RawSnapNotificationData;
+  readDate: string | null;
+};
+
+type Notification = OtherNotification | SnapNotification;
+
 type NotificationListUpdatedEvent = {
   type: 'NotificationServicesController:notificationsListUpdated';
-  payload: [Record<string, any>[]];
+  payload: [Notification[]];
 };
 
 export type SnapInterfaceControllerEvents =
@@ -425,15 +448,19 @@ export class SnapInterfaceController extends BaseController<
     );
   }
 
-  #onNotificationsListUpdated(notificationsList: Record<string, any>[]) {
+  #onNotificationsListUpdated(notificationsList: Notification[]) {
     const snapNotificationsWithInterface = notificationsList.filter(
       (notification) => {
-        return notification.type === 'snap' && notification.data?.detailedView;
+        return (
+          notification.type === 'snap' &&
+          hasProperty((notification as SnapNotification).data, 'detailedView')
+        );
       },
     );
 
     const interfaceIdSet = new Set(
       snapNotificationsWithInterface.map(
+        // @ts-expect-error - Notification is SnapNotification here.
         (notification) => notification.data.detailedView.interfaceId,
       ),
     );
