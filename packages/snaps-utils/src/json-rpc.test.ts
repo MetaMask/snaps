@@ -161,6 +161,15 @@ describe('isOriginAllowed', () => {
     expect(isOriginAllowed(origins, SubjectType.Website, 'bar')).toBe(false);
   });
 
+  it('matches full string', () => {
+    const origins: RpcOrigins = {
+      allowedOrigins: ['https://metamask.io'],
+    };
+    expect(
+      isOriginAllowed(origins, SubjectType.Website, 'https://notmetamask.io'),
+    ).toBe(false);
+  });
+
   it('supports wildcards', () => {
     const origins: RpcOrigins = {
       allowedOrigins: ['*'],
@@ -195,7 +204,7 @@ describe('isOriginAllowed', () => {
 
   it('supports partial strings with wildcards', () => {
     const origins: RpcOrigins = {
-      allowedOrigins: ['*.metamask.io'],
+      allowedOrigins: ['https://*.metamask.io'],
     };
 
     expect(
@@ -219,7 +228,7 @@ describe('isOriginAllowed', () => {
 
   it('supports multiple wildcards', () => {
     const origins: RpcOrigins = {
-      allowedOrigins: ['*.metamask.*'],
+      allowedOrigins: ['https://*.metamask.*'],
     };
 
     expect(

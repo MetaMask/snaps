@@ -115,7 +115,7 @@ function createOriginRegExp(matcher: string) {
   const escaped = matcher.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
   // Support wildcards
   const regex = escaped.replace(/\\\*/gu, '.*');
-  return RegExp(`${regex}$`, 'u');
+  return RegExp(`^${regex}$`, 'u');
 }
 
 /**
