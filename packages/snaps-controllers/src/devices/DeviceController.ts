@@ -24,6 +24,7 @@ import type {
 import {
   createDeferredPromise,
   hasProperty,
+  Hex,
   hexToBytes,
 } from '@metamask/utils';
 
@@ -112,6 +113,15 @@ export class DeviceController extends BaseController<
     reject: (error: unknown) => void;
   };
 
+  #openDevices: Record<
+    DeviceId,
+    {
+      buffer: { reportId: number; data: Hex }[];
+      promise?: Promise<{ reportId: number; data: Hex }>;
+      resolvePromise?: any;
+    }
+  > = {};
+
   constructor({ messenger, state }: DeviceControllerArgs) {
     super({
       messenger,
@@ -163,6 +173,51 @@ export class DeviceController extends BaseController<
     return device.metadata;
   }
 
+  // TODO: Clean up
+  async #openDevice(id: DeviceId, device: any) {
+    await device.open();
+
+    if (!this.#openDevices[id]) {
+      this.#openDevices[id] = {
+        buffer: [],
+      };
+    }
+
+    device.addEventListener('inputreport', (event: any) => {
+      const promiseResolve = this.#openDevices[id].resolvePromise;
+
+      const data = Buffer.from(event.data.buffer).toString('hex') as Hex;
+
+      const result = {
+        reportId: event.reportId,
+        data,
+      };
+
+      if (promiseResolve) {
+        promiseResolve(result);
+        delete this.#openDevices[id].resolvePromise;
+        delete this.#openDevices[id].promise;
+      } else {
+        this.#openDevices[id].buffer.push(result);
+      }
+    });
+  }
+
+  #waitForNextRead(id: DeviceId) {
+    if (this.#openDevices[id].promise) {
+      return this.#openDevices[id].promise;
+    }
+
+    const { promise, resolve } = createDeferredPromise<{
+      reportId: number;
+      data: Hex;
+    }>();
+
+    this.#openDevices[id].resolvePromise = resolve;
+    this.#openDevices[id].promise = promise;
+    return promise;
+  }
+
   async writeDevice(
     snapId: SnapId,
     { id, reportId = 0, reportType, data }: WriteDeviceParams,
@@ -180,7 +235,7 @@ export class DeviceController extends BaseController<
     const actualDevice = device.reference;
 
     if (!actualDevice.opened) {
-      await actualDevice.open();
+      await this.#openDevice(id, actualDevice);
     }
 
     if (reportType === 'feature') {
@@ -188,9 +243,14 @@ export class DeviceController extends BaseController<
     } else {
       await actualDevice.sendReport(reportId, hexToBytes(data));
     }
+
+    return null;
   }
 
-  async readDevice(snapId: SnapId, { id }: ReadDeviceParams) {
+  async readDevice(
+    snapId: SnapId,
+    { id, reportId = 0, reportType }: ReadDeviceParams,
+  ) {
     if (!this.#hasPermission(snapId, id)) {
       // TODO: Decide on error message
       throw rpcErrors.invalidParams();
@@ -204,10 +264,22 @@ export class DeviceController extends BaseController<
     const actualDevice = device.reference;
 
     if (!actualDevice.opened) {
-      await actualDevice.open();
+      await this.#openDevice(id, actualDevice);
     }
 
-    // TODO: Actual read
+    if (reportType === 'feature') {
+      return actualDevice.receiveFeatureReport(reportId);
+    } else {
+      // TODO: Deal with report IDs?
+      // TODO: Clean up
+      if (this.#openDevices[id].buffer.length > 0) {
+        const result = this.#openDevices[id].buffer.shift();
+        return result!.data;
+      } else {
+        const result = await this.#waitForNextRead(id);
+        return result!.data;
+      }
+    }
   }
 
   async listDevices(snapId: SnapId, { type }: ListDevicesParams) {

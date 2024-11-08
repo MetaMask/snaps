@@ -45,7 +45,7 @@ export const readDeviceHandler: PermittedHandlerExport<
 const ReadDeviceParametersStruct = object({
   type: literal('hid'),
   id: deviceId('hid'),
-  reportType: union([literal('output'), literal('feature')]),
+  reportType: optional(union([literal('output'), literal('feature')])),
   reportId: optional(number()),
 });
 
