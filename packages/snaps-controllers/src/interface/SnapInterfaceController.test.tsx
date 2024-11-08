@@ -37,7 +37,7 @@ jest.mock('@metamask/snaps-utils', () => ({
 }));
 
 describe('SnapInterfaceController', () => {
-  it('handles a notificationsListUpdated event on the controller messenger', async () => {
+  it('handles a notificationsListUpdated event where only stale notifications are deleted', async () => {
     const rootMessenger = getRootSnapInterfaceControllerMessenger();
     const controllerMessenger =
       getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
@@ -54,19 +54,26 @@ describe('SnapInterfaceController', () => {
           '2': {
             contentType: ContentType.Dialog,
           },
+          // @ts-expect-error missing properties
+          '3': {
+            contentType: ContentType.Notification,
+          },
         },
       },
     });
 
     rootMessenger.publish(
       'NotificationServicesController:notificationsListUpdated',
-      [],
+      [{ type: 'snap', data: { detailedView: { interfaceId: '3' } } }],
     );
 
     expect(controller.state).toStrictEqual({
       interfaces: {
         '2': {
           contentType: ContentType.Dialog,
+        },
+        '3': {
+          contentType: ContentType.Notification,
         },
       },
     });

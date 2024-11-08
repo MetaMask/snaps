@@ -102,16 +102,17 @@ export type ExpandedView = {
   footerLink?: { href: string; text: string };
 };
 
-type RawSnapNotificationData =
-  | {
-      message: string;
-      origin: string;
-    }
-  | { message: string; origin: string; detailedView: ExpandedView };
+type NormalSnapNotificationData = { message: string; origin: string };
+
+type ExpandedSnapNotificationData = {
+  message: string;
+  origin: string;
+  detailedView: ExpandedView;
+};
 
 type SnapNotification = {
   type: 'snap';
-  data: RawSnapNotificationData;
+  data: NormalSnapNotificationData | ExpandedSnapNotificationData;
   readDate: string | null;
 };
 
@@ -460,8 +461,11 @@ export class SnapInterfaceController extends BaseController<
 
     const interfaceIdSet = new Set(
       snapNotificationsWithInterface.map(
-        // @ts-expect-error - Notification is SnapNotification here.
-        (notification) => notification.data.detailedView.interfaceId,
+        (notification) =>
+          (
+            (notification as SnapNotification)
+              .data as ExpandedSnapNotificationData
+          ).detailedView.interfaceId,
       ),
     );
 
