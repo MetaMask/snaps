@@ -61,6 +61,13 @@ import type { KeyDerivationOptions } from '../types';
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
 import { MockSnapsRegistry } from './registry';
+import {
+  DeviceControllerActions,
+  DeviceControllerAllowedActions,
+  DeviceControllerAllowedEvents,
+  DeviceControllerEvents,
+} from '../devices';
+import { MOCK_DEVICE_PERMISSION } from './devices';
 
 const asyncNoOp = async () => Promise.resolve();
 
@@ -815,6 +822,58 @@ export const getRestrictedSnapInsightsControllerMessenger = (
       'SnapInterfaceController:deleteInterface',
     ],
   });
+
+  return controllerMessenger;
+};
+
+// Mock controller messenger for Device Controller
+export const getRootDeviceControllerMessenger = () => {
+  const messenger = new MockControllerMessenger<
+    DeviceControllerActions | DeviceControllerAllowedActions,
+    DeviceControllerEvents | DeviceControllerAllowedEvents
+  >();
+
+  jest.spyOn(messenger, 'call');
+
+  return messenger;
+};
+
+export const getRestrictedDeviceControllerMessenger = (
+  messenger: ReturnType<
+    typeof getRootDeviceControllerMessenger
+  > = getRootDeviceControllerMessenger(),
+  mocked = true,
+) => {
+  const controllerMessenger = messenger.getRestricted<
+    'DeviceController',
+    DeviceControllerActions['type'] | DeviceControllerAllowedActions['type'],
+    DeviceControllerEvents['type'] | DeviceControllerAllowedEvents['type']
+  >({
+    name: 'DeviceController',
+    allowedEvents: [],
+    allowedActions: [
+      'PermissionController:getPermissions',
+      'PermissionController:grantPermissionsIncremental',
+    ],
+  });
+
+  if (mocked) {
+    messenger.registerActionHandler(
+      'PermissionController:grantPermissionsIncremental',
+      () => {
+        return {};
+      },
+    );
+
+    messenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => {
+        return {
+          [SnapEndowments.Devices]: MOCK_DEVICE_PERMISSION,
+        };
+      },
+    );
+  }
 
   return controllerMessenger;
 };

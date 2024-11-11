@@ -1,5 +1,6 @@
 export * from './confirmations';
 export * from './controller';
+export * from './devices';
 export * from './execution-environment';
 export * from './service';
 export * from './sleep';

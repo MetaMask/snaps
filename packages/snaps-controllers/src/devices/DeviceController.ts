@@ -22,6 +22,7 @@ import type {
   WriteDeviceParams,
 } from '@metamask/snaps-sdk';
 import {
+  add0x,
   createDeferredPromise,
   hasProperty,
   Hex,
@@ -39,6 +40,26 @@ export type DeviceControllerGetStateAction = ControllerGetStateAction<
   DeviceControllerState
 >;
 
+export type DeviceControllerRequestDeviceAction = {
+  type: `${typeof controllerName}:requestDevice`;
+  handler: DeviceController['requestDevice'];
+};
+
+export type DeviceControllerListDevicesAction = {
+  type: `${typeof controllerName}:listDevices`;
+  handler: DeviceController['listDevices'];
+};
+
+export type DeviceControllerReadDeviceAction = {
+  type: `${typeof controllerName}:readDevice`;
+  handler: DeviceController['readDevice'];
+};
+
+export type DeviceControllerWriteDeviceAction = {
+  type: `${typeof controllerName}:writeDevice`;
+  handler: DeviceController['writeDevice'];
+};
+
 export type DeviceControllerResolvePairingAction = {
   type: `${typeof controllerName}:resolvePairing`;
   handler: DeviceController['resolvePairing'];
@@ -52,7 +73,11 @@ export type DeviceControllerRejectPairingAction = {
 export type DeviceControllerActions =
   | DeviceControllerGetStateAction
   | DeviceControllerResolvePairingAction
-  | DeviceControllerRejectPairingAction;
+  | DeviceControllerRejectPairingAction
+  | DeviceControllerRequestDeviceAction
+  | DeviceControllerListDevicesAction
+  | DeviceControllerWriteDeviceAction
+  | DeviceControllerReadDeviceAction;
 
 export type DeviceControllerStateChangeEvent = ControllerStateChangeEvent<
   typeof controllerName,
@@ -134,6 +159,26 @@ export class DeviceController extends BaseController<
     });
 
     this.messagingSystem.registerActionHandler(
+      `${controllerName}:requestDevice`,
+      async (...args) => this.requestDevice(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:listDevices`,
+      async (...args) => this.listDevices(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:writeDevice`,
+      async (...args) => this.writeDevice(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:readDevice`,
+      async (...args) => this.readDevice(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
       `${controllerName}:resolvePairing`,
       async (...args) => this.resolvePairing(...args),
     );
@@ -186,7 +231,7 @@ export class DeviceController extends BaseController<
     device.addEventListener('inputreport', (event: any) => {
       const promiseResolve = this.#openDevices[id].resolvePromise;
 
-      const data = Buffer.from(event.data.buffer).toString('hex') as Hex;
+      const data = add0x(Buffer.from(event.data.buffer).toString('hex')) as Hex;
 
       const result = {
         reportId: event.reportId,
