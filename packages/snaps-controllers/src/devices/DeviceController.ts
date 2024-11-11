@@ -15,6 +15,7 @@ import {
   getPermittedDeviceIds,
 } from '@metamask/snaps-rpc-methods';
 import type {
+  Device,
   DeviceFilter,
   DeviceId,
   ListDevicesParams,
@@ -99,19 +100,9 @@ export type DeviceControllerMessenger = RestrictedControllerMessenger<
   DeviceControllerAllowedEvents['type']
 >;
 
-export type DeviceMetadata = {
-  type: DeviceType;
-  id: DeviceId;
-  name: string;
-};
-
-export type Device = DeviceMetadata & {
-  connected: boolean;
-};
-
 export type ConnectedDevice = {
   reference: any; // TODO: Type this
-  metadata: DeviceMetadata;
+  metadata: Device;
 };
 
 export type DeviceControllerState = {
@@ -375,7 +366,7 @@ export class DeviceController extends BaseController<
 
     this.update((draftState) => {
       for (const device of Object.values(draftState.devices)) {
-        draftState.devices[device.id].connected = hasProperty(
+        draftState.devices[device.id].available = hasProperty(
           connectedDevices,
           device.id,
         );
@@ -383,10 +374,7 @@ export class DeviceController extends BaseController<
       for (const device of Object.values(connectedDevices)) {
         if (!hasProperty(draftState.devices, device.metadata.id)) {
           // @ts-expect-error Not sure why this is failing, continuing.
-          draftState.devices[device.metadata.id] = {
-            ...device.metadata,
-            connected: true,
-          };
+          draftState.devices[device.metadata.id] = device.metadata;
         }
       }
     });
@@ -406,7 +394,14 @@ export class DeviceController extends BaseController<
         // TODO: Figure out what to do about duplicates.
         accumulator[id] = {
           reference: device,
-          metadata: { type, id, name: productName },
+          metadata: {
+            type,
+            id,
+            name: productName,
+            vendorId,
+            productId,
+            available: true,
+          },
         };
 
         return accumulator;
