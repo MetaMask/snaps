@@ -20,7 +20,9 @@ export function getSnapInterfaceController() {
         'PhishingController:maybeUpdateState',
         'PhishingController:testOrigin',
       ],
-      allowedEvents: [],
+      allowedEvents: [
+        'NotificationServicesController:notificationsListUpdated',
+      ],
     }),
   });
 }

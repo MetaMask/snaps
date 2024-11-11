@@ -1,5 +1,8 @@
 import { PhishingDetectorResultType } from '@metamask/phishing-controller';
-import type { SnapInterfaceControllerAllowedActions } from '@metamask/snaps-controllers';
+import type {
+  SnapInterfaceControllerAllowedActions,
+  SnapInterfaceControllerEvents,
+} from '@metamask/snaps-controllers';
 import { MockControllerMessenger } from '@metamask/snaps-utils/test-utils';
 
 import type { RootControllerAllowedActions } from '../controllers';
@@ -47,7 +50,8 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
 ) => {
   const snapInterfaceControllerMessenger = messenger.getRestricted<
     'SnapInterfaceController',
-    SnapInterfaceControllerAllowedActions['type']
+    SnapInterfaceControllerAllowedActions['type'],
+    SnapInterfaceControllerEvents['type']
   >({
     name: 'SnapInterfaceController',
     allowedActions: [
@@ -56,7 +60,7 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'ApprovalController:hasRequest',
       'ApprovalController:acceptRequest',
     ],
-    allowedEvents: [],
+    allowedEvents: ['NotificationServicesController:notificationsListUpdated'],
   });
 
   return snapInterfaceControllerMessenger;

@@ -45,6 +45,7 @@ import type {
 import type {
   SnapInterfaceControllerActions,
   SnapInterfaceControllerAllowedActions,
+  SnapInterfaceControllerEvents,
   StoredInterface,
 } from '../interface/SnapInterfaceController';
 import type {
@@ -739,7 +740,7 @@ export const getRestrictedSnapsRegistryControllerMessenger = (
 export const getRootSnapInterfaceControllerMessenger = () => {
   const messenger = new MockControllerMessenger<
     SnapInterfaceControllerActions | SnapInterfaceControllerAllowedActions,
-    never
+    SnapInterfaceControllerEvents
   >();
 
   jest.spyOn(messenger, 'call');
@@ -756,7 +757,7 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
   const snapInterfaceControllerMessenger = messenger.getRestricted<
     'SnapInterfaceController',
     SnapInterfaceControllerAllowedActions['type'],
-    never
+    SnapInterfaceControllerEvents['type']
   >({
     name: 'SnapInterfaceController',
     allowedActions: [
@@ -765,7 +766,10 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'ApprovalController:hasRequest',
       'ApprovalController:acceptRequest',
     ],
-    allowedEvents: [],
+    allowedEvents: [
+      'NotificationServicesController:notificationsListUpdated',
+      'SnapInterfaceController:stateChange',
+    ],
   });
 
   if (mocked) {

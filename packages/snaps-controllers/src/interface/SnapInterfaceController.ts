@@ -18,10 +18,11 @@ import type {
   ComponentOrElement,
   InterfaceContext,
 } from '@metamask/snaps-sdk';
+import { ContentType } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsonSizeUnsafe, validateJsxLinks } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
-import { assert } from '@metamask/utils';
+import { assert, hasProperty } from '@metamask/utils';
 import { castDraft } from 'immer';
 import { nanoid } from 'nanoid';
 
@@ -93,8 +94,38 @@ export type SnapInterfaceControllerStateChangeEvent =
     SnapInterfaceControllerState
   >;
 
+type OtherNotification = { type: string; [key: string]: unknown };
+
+export type ExpandedView = {
+  title: string;
+  interfaceId: string;
+  footerLink?: { href: string; text: string };
+};
+
+type NormalSnapNotificationData = { message: string; origin: string };
+
+type ExpandedSnapNotificationData = {
+  message: string;
+  origin: string;
+  detailedView: ExpandedView;
+};
+
+type SnapNotification = {
+  type: 'snap';
+  data: NormalSnapNotificationData | ExpandedSnapNotificationData;
+  readDate: string | null;
+};
+
+type Notification = OtherNotification | SnapNotification;
+
+type NotificationListUpdatedEvent = {
+  type: 'NotificationServicesController:notificationsListUpdated';
+  payload: [Notification[]];
+};
+
 export type SnapInterfaceControllerEvents =
-  SnapInterfaceControllerStateChangeEvent;
+  | SnapInterfaceControllerStateChangeEvent
+  | NotificationListUpdatedEvent;
 
 export type SnapInterfaceControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
@@ -109,6 +140,7 @@ export type StoredInterface = {
   content: JSXElement;
   state: InterfaceState;
   context: InterfaceContext | null;
+  contentType: ContentType | null;
 };
 
 export type SnapInterfaceControllerState = {
@@ -132,11 +164,31 @@ export class SnapInterfaceController extends BaseController<
     super({
       messenger,
       metadata: {
-        interfaces: { persist: false, anonymous: false },
+        interfaces: {
+          persist: (interfaces: Record<string, StoredInterface>) => {
+            return Object.entries(interfaces).reduce<
+              Record<string, StoredInterface>
+            >((persistedInterfaces, [id, snapInterface]) => {
+              switch (snapInterface.contentType) {
+                case ContentType.Notification:
+                  persistedInterfaces[id] = snapInterface;
+                  return persistedInterfaces;
+                default:
+                  return persistedInterfaces;
+              }
+            }, {});
+          },
+          anonymous: false,
+        },
       },
       name: controllerName,
       state: { interfaces: {}, ...state },
     });
+
+    this.messagingSystem.subscribe(
+      'NotificationServicesController:notificationsListUpdated',
+      this.#onNotificationsListUpdated.bind(this),
+    );
 
     this.#registerMessageHandlers();
   }
@@ -183,12 +235,14 @@ export class SnapInterfaceController extends BaseController<
    * @param snapId - The snap id that created the interface.
    * @param content - The interface content.
    * @param context - An optional interface context object.
+   * @param contentType - The type of content.
    * @returns The newly interface id.
    */
   async createInterface(
     snapId: SnapId,
     content: ComponentOrElement,
     context?: InterfaceContext,
+    contentType?: ContentType,
   ) {
     const element = getJsxInterface(content);
     await this.#validateContent(element);
@@ -205,6 +259,7 @@ export class SnapInterfaceController extends BaseController<
         content: castDraft(element),
         state: componentState,
         context: context ?? null,
+        contentType: contentType ?? null,
       };
     });
 
@@ -392,5 +447,37 @@ export class SnapInterfaceController extends BaseController<
       this.#checkPhishingList.bind(this),
       (id: string) => this.messagingSystem.call('SnapController:get', id),
     );
+  }
+
+  #onNotificationsListUpdated(notificationsList: Notification[]) {
+    const snapNotificationsWithInterface = notificationsList.filter(
+      (notification) => {
+        return (
+          notification.type === 'snap' &&
+          hasProperty((notification as SnapNotification).data, 'detailedView')
+        );
+      },
+    );
+
+    const interfaceIdSet = new Set(
+      snapNotificationsWithInterface.map(
+        (notification) =>
+          (
+            (notification as SnapNotification)
+              .data as ExpandedSnapNotificationData
+          ).detailedView.interfaceId,
+      ),
+    );
+
+    this.update((state) => {
+      Object.entries(state.interfaces).forEach(([id, snapInterface]) => {
+        if (
+          snapInterface.contentType === ContentType.Notification &&
+          !interfaceIdSet.has(id)
+        ) {
+          delete state.interfaces[id];
+        }
+      });
+    });
   }
 }

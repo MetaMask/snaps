@@ -1,5 +1,13 @@
+import { getPersistentState } from '@metamask/base-controller';
 import type { SnapId } from '@metamask/snaps-sdk';
-import { form, image, input, panel, text } from '@metamask/snaps-sdk';
+import {
+  form,
+  image,
+  input,
+  panel,
+  text,
+  ContentType,
+} from '@metamask/snaps-sdk';
 import {
   Box,
   Field,
@@ -29,13 +37,89 @@ jest.mock('@metamask/snaps-utils', () => ({
 }));
 
 describe('SnapInterfaceController', () => {
+  it('handles a notificationsListUpdated event where only stale notifications are deleted', async () => {
+    const rootMessenger = getRootSnapInterfaceControllerMessenger();
+    const controllerMessenger =
+      getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+    const controller = new SnapInterfaceController({
+      messenger: controllerMessenger,
+      state: {
+        interfaces: {
+          // @ts-expect-error missing properties
+          '1': {
+            contentType: ContentType.Notification,
+          },
+          // @ts-expect-error missing properties
+          '2': {
+            contentType: ContentType.Dialog,
+          },
+          // @ts-expect-error missing properties
+          '3': {
+            contentType: ContentType.Notification,
+          },
+        },
+      },
+    });
+
+    rootMessenger.publish(
+      'NotificationServicesController:notificationsListUpdated',
+      [{ type: 'snap', data: { detailedView: { interfaceId: '3' } } }],
+    );
+
+    expect(controller.state).toStrictEqual({
+      interfaces: {
+        '2': {
+          contentType: ContentType.Dialog,
+        },
+        '3': {
+          contentType: ContentType.Notification,
+        },
+      },
+    });
+  });
+
+  describe('constructor', () => {
+    it('persists notification interfaces', () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      const controller = new SnapInterfaceController({
+        messenger: controllerMessenger,
+        state: {
+          interfaces: {
+            // @ts-expect-error missing properties
+            '1': {
+              contentType: ContentType.Notification,
+            },
+            // @ts-expect-error missing properties
+            '2': {
+              contentType: ContentType.Dialog,
+            },
+          },
+        },
+      });
+
+      expect(
+        getPersistentState(controller.state, controller.metadata),
+      ).toStrictEqual({
+        interfaces: {
+          '1': {
+            contentType: ContentType.Notification,
+          },
+        },
+      });
+    });
+  });
+
   describe('createInterface', () => {
     it('can create a new interface', async () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -80,7 +164,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -130,7 +214,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -160,6 +244,41 @@ describe('SnapInterfaceController', () => {
       expect(context).toStrictEqual({ foo: 'bar' });
     });
 
+    it('supports providing an interface content type', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      // eslint-disable-next-line no-new
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const element = (
+        <Box>
+          <Text>
+            <Link href="https://foo.bar">foo</Link>
+          </Text>
+        </Box>
+      );
+
+      const id = await rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        element,
+        { foo: 'bar' },
+        ContentType.Notification,
+      );
+
+      const { contentType } = rootMessenger.call(
+        'SnapInterfaceController:getInterface',
+        MOCK_SNAP_ID,
+        id,
+      );
+
+      expect(contentType).toStrictEqual(ContentType.Notification);
+    });
+
     it('throws if interface context is too large', async () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger =
@@ -170,7 +289,7 @@ describe('SnapInterfaceController', () => {
         .mockReturnValueOnce(1)
         .mockReturnValueOnce(10_000_000);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -210,7 +329,7 @@ describe('SnapInterfaceController', () => {
         () => ({ result: true, type: 'all' }),
       );
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -260,7 +379,7 @@ describe('SnapInterfaceController', () => {
         () => ({ result: true, type: 'all' }),
       );
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -302,7 +421,7 @@ describe('SnapInterfaceController', () => {
 
       jest.mocked(getJsonSizeUnsafe).mockReturnValueOnce(11_000_000);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -327,7 +446,7 @@ describe('SnapInterfaceController', () => {
 
       jest.mocked(getJsonSizeUnsafe).mockReturnValueOnce(11_000_000);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -354,7 +473,7 @@ describe('SnapInterfaceController', () => {
         false,
       );
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -377,7 +496,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -407,7 +526,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -437,7 +556,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -458,7 +577,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -501,7 +620,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -550,7 +669,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -604,7 +723,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -667,7 +786,7 @@ describe('SnapInterfaceController', () => {
         () => ({ result: true, type: 'all' }),
       );
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -729,7 +848,7 @@ describe('SnapInterfaceController', () => {
         () => ({ result: true, type: 'all' }),
       );
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -788,7 +907,7 @@ describe('SnapInterfaceController', () => {
         .mockReturnValueOnce(1)
         .mockReturnValueOnce(11_000_000);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -826,7 +945,7 @@ describe('SnapInterfaceController', () => {
         .mockReturnValueOnce(1)
         .mockReturnValueOnce(11_000_000);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -866,7 +985,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -899,7 +1018,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -921,7 +1040,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -956,7 +1075,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -991,7 +1110,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -1043,7 +1162,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -1074,7 +1193,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -1118,7 +1237,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -1150,7 +1269,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });
@@ -1195,7 +1314,7 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
 
-      /* eslint-disable-next-line no-new */
+      // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
       });

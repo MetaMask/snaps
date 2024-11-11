@@ -7,6 +7,7 @@ import type {
   JsonRpcRequest,
   ComponentOrElement,
   InterfaceContext,
+  ContentType,
 } from '@metamask/snaps-sdk';
 import {
   ComponentOrElementStruct,
@@ -30,6 +31,7 @@ export type CreateInterfaceMethodHooks = {
   createInterface: (
     ui: ComponentOrElement,
     context?: InterfaceContext,
+    contentType?: ContentType,
   ) => Promise<string>;
 };
 
