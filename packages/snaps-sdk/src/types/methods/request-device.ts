@@ -1,6 +1,6 @@
 import { number, object, optional } from '@metamask/superstruct';
 
-import type { Describe } from '../../internals';
+import type { Describe, EnumToUnion } from '../../internals';
 import type { Device, DeviceType } from '../device';
 
 export type DeviceFilter = {
@@ -30,7 +30,7 @@ export type RequestDeviceParams = {
   /**
    * The type of the device to request.
    */
-  type: DeviceType;
+  type: EnumToUnion<DeviceType>;
 
   /**
    * The filters to apply to the devices.

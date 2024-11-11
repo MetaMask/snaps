@@ -6,7 +6,7 @@ import type {
   WriteDeviceParams,
   WriteDeviceResult,
 } from '@metamask/snaps-sdk';
-import { deviceId } from '@metamask/snaps-sdk';
+import { deviceId, DeviceType } from '@metamask/snaps-sdk';
 import type { InferMatching } from '@metamask/snaps-utils';
 import {
   create,
@@ -47,7 +47,7 @@ export const writeDeviceHandler: PermittedHandlerExport<
 
 const WriteDeviceParametersStruct = object({
   type: literal('hid'),
-  id: deviceId('hid'),
+  id: deviceId(DeviceType.HID),
   data: StrictHexStruct,
   reportId: optional(number()),
 });

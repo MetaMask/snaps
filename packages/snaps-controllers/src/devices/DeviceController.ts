@@ -23,11 +23,12 @@ import type {
   SnapId,
   WriteDeviceParams,
 } from '@metamask/snaps-sdk';
+import { DeviceType } from '@metamask/snaps-sdk';
+import type { Hex } from '@metamask/utils';
 import {
   add0x,
   createDeferredPromise,
   hasProperty,
-  Hex,
   hexToBytes,
 } from '@metamask/utils';
 
@@ -97,10 +98,6 @@ export type DeviceControllerMessenger = RestrictedControllerMessenger<
   DeviceControllerAllowedActions['type'],
   DeviceControllerAllowedEvents['type']
 >;
-
-export enum DeviceType {
-  HID = 'hid',
-}
 
 export type DeviceMetadata = {
   type: DeviceType;
@@ -196,7 +193,11 @@ export class DeviceController extends BaseController<
   }
 
   async requestDevice(snapId: string, { type, filters }: RequestDeviceParams) {
-    const deviceId = await this.#requestPairing({ snapId, type, filters });
+    const deviceId = await this.#requestPairing({
+      snapId,
+      type: type as DeviceType,
+      filters,
+    });
 
     // await this.#syncDevices();
 
@@ -237,7 +238,7 @@ export class DeviceController extends BaseController<
     device.addEventListener('inputreport', (event: any) => {
       const promiseResolve = this.#openDevices[id].resolvePromise;
 
-      const data = add0x(Buffer.from(event.data.buffer).toString('hex')) as Hex;
+      const data = add0x(Buffer.from(event.data.buffer).toString('hex'));
 
       const result = {
         reportId: event.reportId,
@@ -320,17 +321,17 @@ export class DeviceController extends BaseController<
 
     if (reportType === 'feature') {
       return actualDevice.receiveFeatureReport(reportId);
-    } else {
-      // TODO: Deal with report IDs?
-      // TODO: Clean up
-      if (this.#openDevices[id].buffer.length > 0) {
-        const result = this.#openDevices[id].buffer.shift();
-        return result!.data;
-      } else {
-        const result = await this.#waitForNextRead(id);
-        return result!.data;
-      }
     }
+    // TODO: Deal with report IDs?
+    // TODO: Clean up
+    if (this.#openDevices[id].buffer.length > 0) {
+      const result = this.#openDevices[id].buffer.shift();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      return result!.data;
+    }
+    const result = await this.#waitForNextRead(id);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return result!.data;
   }
 
   async listDevices(snapId: SnapId, { type }: ListDevicesParams) {

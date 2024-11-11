@@ -1,6 +1,7 @@
 import type { Hex } from '@metamask/utils';
 
-import type { ScopedDeviceId } from '../device';
+import type { EnumToUnion } from '../../internals';
+import type { DeviceType, ScopedDeviceId } from '../device';
 
 /**
  * The request parameters for the `snap_writeDevice` method when writing to a
@@ -10,12 +11,12 @@ type HidWriteParams = {
   /**
    * The type of the device.
    */
-  type: 'hid';
+  type: EnumToUnion<DeviceType.HID>;
 
   /**
    * The ID of the device to write to.
    */
-  id: ScopedDeviceId<'hid'>;
+  id: ScopedDeviceId<DeviceType>;
 
   /**
    * The type of the data to read. This is either an output report or a feature

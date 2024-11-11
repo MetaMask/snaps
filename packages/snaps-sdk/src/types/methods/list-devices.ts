@@ -1,3 +1,4 @@
+import type { EnumToUnion } from '../../internals';
 import type { Device, DeviceType } from '../device';
 
 /**
@@ -7,7 +8,7 @@ export type ListDevicesParams = {
   /**
    * The type(s) of the device to list. If not provided, all devices are listed.
    */
-  type?: DeviceType | DeviceType[];
+  type?: EnumToUnion<DeviceType> | EnumToUnion<DeviceType>[];
 };
 
 /**

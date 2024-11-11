@@ -1,17 +1,19 @@
 import type { Struct } from '@metamask/superstruct';
-import { literal, refine, string } from '@metamask/superstruct';
+import { refine, string } from '@metamask/superstruct';
 
-import type { Describe } from '../internals';
+import { enumValue } from '../internals';
 
 /**
  * The type of the device. Currently, only `hid` is supported.
  */
-export type DeviceType = 'hid';
+export enum DeviceType {
+  HID = 'hid',
+}
 
 /**
  * A struct that represents the `DeviceType` type.
  */
-export const DeviceTypeStruct: Describe<DeviceType> = literal('hid');
+export const DeviceTypeStruct = enumValue(DeviceType.HID);
 
 /**
  * The ID of the device. It consists of the type of the device, the vendor ID,
@@ -91,4 +93,4 @@ type ScopedDevice<Type extends DeviceType> = Device & {
   id: ScopedDeviceId<Type>;
 };
 
-export type HidDevice = ScopedDevice<'hid'>;
+export type HidDevice = ScopedDevice<DeviceType.HID>;

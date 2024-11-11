@@ -6,7 +6,7 @@ import type {
   ReadDeviceParams,
   ReadDeviceResult,
 } from '@metamask/snaps-sdk';
-import { deviceId } from '@metamask/snaps-sdk';
+import { deviceId, DeviceType } from '@metamask/snaps-sdk';
 import type { InferMatching } from '@metamask/snaps-utils';
 import {
   create,
@@ -47,7 +47,7 @@ export const readDeviceHandler: PermittedHandlerExport<
 
 const ReadDeviceParametersStruct = object({
   type: literal('hid'),
-  id: deviceId('hid'),
+  id: deviceId(DeviceType.HID),
   reportType: optional(union([literal('output'), literal('feature')])),
   reportId: optional(number()),
 });
