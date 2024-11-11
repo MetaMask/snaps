@@ -1,5 +1,6 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   JsonRpcRequest,
   ReadDeviceParams,
@@ -8,13 +9,15 @@ import type {
 import { deviceId } from '@metamask/snaps-sdk';
 import type { InferMatching } from '@metamask/snaps-utils';
 import {
+  create,
   literal,
   number,
   object,
   optional,
+  StructError,
   union,
 } from '@metamask/superstruct';
-import { assertStruct, type PendingJsonRpcResponse } from '@metamask/utils';
+import { type PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
 
@@ -74,13 +77,35 @@ async function readDeviceImplementation(
   { readDevice }: ReadDeviceHooks,
 ): Promise<void> {
   const { params } = request;
-  assertStruct(params, ReadDeviceParametersStruct);
+  const validatedParams = getValidatedParams(params);
 
   try {
-    response.result = await readDevice(params);
+    response.result = await readDevice(validatedParams);
   } catch (error) {
     return end(error);
   }
 
   return end();
+}
+
+/**
+ * Validate the method `params` and returns them cast to the correct type.
+ * Throws if validation fails.
+ *
+ * @param params - The unvalidated params object from the method request.
+ * @returns The validated method parameter object.
+ */
+function getValidatedParams(params: unknown): ReadDeviceParams {
+  try {
+    return create(params, ReadDeviceParametersStruct);
+  } catch (error) {
+    if (error instanceof StructError) {
+      throw rpcErrors.invalidParams({
+        message: `Invalid params: ${error.message}.`,
+      });
+    }
+
+    /* istanbul ignore next */
+    throw rpcErrors.internal();
+  }
 }
