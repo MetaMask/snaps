@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.5.2]
+
 ### Uncategorized
 
 - fix: Add line beginning to origin regex ([#2876](https://github.com/MetaMask/snaps-skunkworks.git/pull/2876))
@@ -483,7 +485,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@8.5.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@8.5.2...HEAD
+[8.5.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@8.5.1...@metamask/snaps-utils@8.5.2
 [8.5.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@8.5.0...@metamask/snaps-utils@8.5.1
 [8.5.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@8.4.1...@metamask/snaps-utils@8.5.0
 [8.4.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-utils@8.4.0...@metamask/snaps-utils@8.4.1
