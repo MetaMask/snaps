@@ -226,7 +226,7 @@ export default class TransportSnapsHID extends Transport {
           },
         });
 
-        const buffer = Buffer.from(bytes, 'hex');
+        const buffer = Buffer.from(bytes.slice(2), 'hex');
         accumulator = framing.reduceResponse(accumulator, buffer);
       }
 
