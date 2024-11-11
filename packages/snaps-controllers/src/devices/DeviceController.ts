@@ -15,9 +15,11 @@ import {
   getPermittedDeviceIds,
 } from '@metamask/snaps-rpc-methods';
 import type {
+  DeviceFilter,
   DeviceId,
   ListDevicesParams,
   ReadDeviceParams,
+  RequestDeviceParams,
   SnapId,
   WriteDeviceParams,
 } from '@metamask/snaps-sdk';
@@ -117,7 +119,11 @@ export type ConnectedDevice = {
 
 export type DeviceControllerState = {
   devices: Record<string, Device>;
-  pairing: { snapId: string } | null;
+  pairing: {
+    snapId: string;
+    type: DeviceType;
+    filters?: DeviceFilter[];
+  } | null;
 };
 
 export type DeviceControllerArgs = {
@@ -189,8 +195,8 @@ export class DeviceController extends BaseController<
     );
   }
 
-  async requestDevice(snapId: string) {
-    const deviceId = await this.#requestPairing({ snapId });
+  async requestDevice(snapId: string, { type, filters }: RequestDeviceParams) {
+    const deviceId = await this.#requestPairing({ snapId, type, filters });
 
     // await this.#syncDevices();
 
@@ -417,7 +423,15 @@ export class DeviceController extends BaseController<
     return this.#pairing !== undefined;
   }
 
-  async #requestPairing({ snapId }: { snapId: string }) {
+  async #requestPairing({
+    snapId,
+    type,
+    filters,
+  }: {
+    snapId: string;
+    type: DeviceType;
+    filters?: DeviceFilter[];
+  }) {
     if (this.#isPairing()) {
       // TODO: Potentially await existing pairing flow?
       throw new Error('A pairing is already underway.');
@@ -431,7 +445,7 @@ export class DeviceController extends BaseController<
     await this.#syncDevices();
 
     this.update((draftState) => {
-      draftState.pairing = { snapId };
+      draftState.pairing = { snapId, type, filters };
     });
 
     return promise;

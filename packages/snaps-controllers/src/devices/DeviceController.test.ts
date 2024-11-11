@@ -39,6 +39,7 @@ describe('DeviceController', () => {
     const pairingPromise = messenger.call(
       'DeviceController:requestDevice',
       MOCK_SNAP_ID,
+      { type: 'hid' },
     );
 
     messenger.call('DeviceController:resolvePairing', MOCK_DEVICE_ID);
