@@ -1,5 +1,6 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   JsonRpcRequest,
   WriteDeviceParams,
@@ -7,12 +8,15 @@ import type {
 } from '@metamask/snaps-sdk';
 import { deviceId } from '@metamask/snaps-sdk';
 import type { InferMatching } from '@metamask/snaps-utils';
-import { literal, number, object, optional } from '@metamask/superstruct';
 import {
-  assertStruct,
-  type PendingJsonRpcResponse,
-  StrictHexStruct,
-} from '@metamask/utils';
+  create,
+  literal,
+  number,
+  object,
+  optional,
+  StructError,
+} from '@metamask/superstruct';
+import { type PendingJsonRpcResponse, StrictHexStruct } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
 
@@ -73,13 +77,35 @@ async function writeDeviceImplementation(
   { writeDevice }: WriteDeviceHooks,
 ): Promise<void> {
   const { params } = request;
-  assertStruct(params, WriteDeviceParametersStruct);
+  const validatedParams = getValidatedParams(params);
 
   try {
-    response.result = await writeDevice(params);
+    response.result = (await writeDevice(validatedParams)) ?? null;
   } catch (error) {
     return end(error);
   }
 
   return end();
+}
+
+/**
+ * Validate the method `params` and returns them cast to the correct type.
+ * Throws if validation fails.
+ *
+ * @param params - The unvalidated params object from the method request.
+ * @returns The validated method parameter object.
+ */
+function getValidatedParams(params: unknown): WriteDeviceParams {
+  try {
+    return create(params, WriteDeviceParametersStruct);
+  } catch (error) {
+    if (error instanceof StructError) {
+      throw rpcErrors.invalidParams({
+        message: `Invalid params: ${error.message}.`,
+      });
+    }
+
+    /* istanbul ignore next */
+    throw rpcErrors.internal();
+  }
 }

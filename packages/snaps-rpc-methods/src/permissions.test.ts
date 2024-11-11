@@ -19,6 +19,18 @@ describe('buildSnapEndowmentSpecifications', () => {
           ],
           "targetName": "endowment:cronjob",
         },
+        "endowment:devices": {
+          "allowedCaveats": [
+            "deviceIds",
+          ],
+          "endowmentGetter": [Function],
+          "permissionType": "Endowment",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "endowment:devices",
+          "validator": [Function],
+        },
         "endowment:ethereum-provider": {
           "allowedCaveats": null,
           "endowmentGetter": [Function],

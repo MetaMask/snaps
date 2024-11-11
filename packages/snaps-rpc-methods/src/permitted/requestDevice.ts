@@ -1,5 +1,6 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   JsonRpcRequest,
   RequestDeviceParams,
@@ -7,8 +8,14 @@ import type {
 } from '@metamask/snaps-sdk';
 import { DeviceFilterStruct, DeviceTypeStruct } from '@metamask/snaps-sdk';
 import type { InferMatching } from '@metamask/snaps-utils';
-import { object, optional, array } from '@metamask/superstruct';
-import { assertStruct, type PendingJsonRpcResponse } from '@metamask/utils';
+import {
+  object,
+  optional,
+  array,
+  create,
+  StructError,
+} from '@metamask/superstruct';
+import { type PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
 
@@ -66,13 +73,35 @@ async function requestDeviceImplementation(
   { requestDevice }: RequestDeviceHooks,
 ): Promise<void> {
   const { params } = request;
-  assertStruct(params, RequestDeviceParametersStruct);
+  const validatedParams = getValidatedParams(params);
 
   try {
-    response.result = await requestDevice(params);
+    response.result = await requestDevice(validatedParams);
   } catch (error) {
     return end(error);
   }
 
   return end();
+}
+
+/**
+ * Validate the method `params` and returns them cast to the correct type.
+ * Throws if validation fails.
+ *
+ * @param params - The unvalidated params object from the method request.
+ * @returns The validated method parameter object.
+ */
+function getValidatedParams(params: unknown): RequestDeviceParams {
+  try {
+    return create(params, RequestDeviceParametersStruct);
+  } catch (error) {
+    if (error instanceof StructError) {
+      throw rpcErrors.invalidParams({
+        message: `Invalid params: ${error.message}.`,
+      });
+    }
+
+    /* istanbul ignore next */
+    throw rpcErrors.internal();
+  }
 }

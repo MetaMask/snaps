@@ -1,13 +1,22 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   JsonRpcRequest,
   ListDevicesParams,
   ListDevicesResult,
 } from '@metamask/snaps-sdk';
+import { selectiveUnion } from '@metamask/snaps-sdk';
 import type { InferMatching } from '@metamask/snaps-utils';
-import { array, literal, object, optional, union } from '@metamask/superstruct';
-import { assertStruct, type PendingJsonRpcResponse } from '@metamask/utils';
+import {
+  array,
+  create,
+  literal,
+  object,
+  optional,
+  StructError,
+} from '@metamask/superstruct';
+import { type PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
 
@@ -36,7 +45,15 @@ export const listDevicesHandler: PermittedHandlerExport<
 };
 
 const ListDevicesParametersStruct = object({
-  type: optional(union([literal('hid'), array(literal('hid'))])),
+  type: optional(
+    selectiveUnion((value) => {
+      if (Array.isArray(value)) {
+        return array(literal('hid'));
+      }
+
+      return literal('hid');
+    }),
+  ),
 });
 
 export type ListDevicesParameters = InferMatching<
@@ -64,13 +81,35 @@ async function listDevicesImplementation(
   { listDevices }: ListDevicesHooks,
 ): Promise<void> {
   const { params } = request;
-  assertStruct(params, ListDevicesParametersStruct);
+  const validatedParams = getValidatedParams(params);
 
   try {
-    response.result = await listDevices(params);
+    response.result = await listDevices(validatedParams);
   } catch (error) {
     return end(error);
   }
 
   return end();
+}
+
+/**
+ * Validate the method `params` and returns them cast to the correct type.
+ * Throws if validation fails.
+ *
+ * @param params - The unvalidated params object from the method request.
+ * @returns The validated method parameter object.
+ */
+function getValidatedParams(params: unknown): ListDevicesParams {
+  try {
+    return create(params, ListDevicesParametersStruct);
+  } catch (error) {
+    if (error instanceof StructError) {
+      throw rpcErrors.invalidParams({
+        message: `Invalid params: ${error.message}.`,
+      });
+    }
+
+    /* istanbul ignore next */
+    throw rpcErrors.internal();
+  }
 }

@@ -4,6 +4,7 @@ import type {
   EndowmentGetterParams,
   PermissionConstraint,
   PermissionSpecificationBuilder,
+  PermissionValidatorConstraint,
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
@@ -15,6 +16,7 @@ import {
 } from '@metamask/snaps-utils';
 import { hasProperty, isPlainObject, assert } from '@metamask/utils';
 
+import { createGenericPermissionValidator } from './caveats';
 import { SnapEndowments } from './enum';
 
 const permissionName = SnapEndowments.Devices;
@@ -24,6 +26,7 @@ type DevicesEndowmentSpecification = ValidPermissionSpecification<{
   targetName: typeof permissionName;
   endowmentGetter: (_options?: any) => null;
   allowedCaveats: [SnapCaveatType.DeviceIds];
+  validator: PermissionValidatorConstraint;
 }>;
 
 /**
@@ -44,6 +47,9 @@ const specificationBuilder: PermissionSpecificationBuilder<
     allowedCaveats: [SnapCaveatType.DeviceIds],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => null,
     subjectTypes: [SubjectType.Snap],
+    validator: createGenericPermissionValidator([
+      { type: SnapCaveatType.DeviceIds, optional: true },
+    ]),
   };
 };
 
@@ -99,13 +105,10 @@ export function validateDeviceIdsCaveat(caveat: Caveat<string, any>) {
 
   const { value } = caveat;
 
-  if (!hasProperty(value, 'devices') || !isPlainObject(value)) {
-    throw rpcErrors.invalidParams({
-      message: 'Expected a plain object.',
-    });
-  }
-
-  if (!isDeviceSpecificationArray(value.devices)) {
+  if (
+    !hasProperty(value, 'devices') ||
+    !isDeviceSpecificationArray(value.devices)
+  ) {
     throw rpcErrors.invalidParams({
       message: 'Expected a valid device specification array.',
     });
