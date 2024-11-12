@@ -5803,6 +5803,7 @@ __metadata:
     "@types/node": "npm:18.14.2"
     "@types/readable-stream": "npm:^4.0.15"
     "@types/tar-stream": "npm:^3.1.1"
+    "@types/w3c-web-hid": "npm:^1.0.6"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
     "@typescript-eslint/parser": "npm:^6.21.0"
     "@wdio/browser-runner": "npm:^8.19.0"
@@ -8253,6 +8254,13 @@ __metadata:
   version: 4.0.0
   resolution: "@types/validate-npm-package-name@npm:4.0.0"
   checksum: 10/09efd659f4cce362931a57c7ee6d645855c7ecb346c6496ef31bab638e578472f779c77233adad8502e90a7d7a146a40a5029ff9c4739a38a4187ef1fe7187c3
+  languageName: node
+  linkType: hard
+
+"@types/w3c-web-hid@npm:^1.0.6":
+  version: 1.0.6
+  resolution: "@types/w3c-web-hid@npm:1.0.6"
+  checksum: 10/14773befa9c458b3459cdb530a8269937e623e6b72c6bd2d7f88b42f8d47c02d8a64ddc98f79c81c930b6eadf1dc1c94917b553ead72acc13c8406f65310c85d
   languageName: node
   linkType: hard
 

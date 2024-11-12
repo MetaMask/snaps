@@ -93,6 +93,7 @@
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/utils": "^9.2.1",
+    "@types/w3c-web-hid": "^1.0.6",
     "@xstate/fsm": "^2.0.0",
     "browserify-zlib": "^0.2.0",
     "concat-stream": "^2.0.0",
