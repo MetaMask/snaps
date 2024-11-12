@@ -118,7 +118,7 @@
     "@metamask/template-snap": "^0.7.0",
     "@swc/core": "1.3.78",
     "@swc/jest": "^0.2.26",
-    "@ts-bridge/cli": "^0.5.1",
+    "@ts-bridge/cli": "^0.6.0",
     "@types/chrome": "^0.0.237",
     "@types/concat-stream": "^2.0.0",
     "@types/gunzip-maybe": "^1.4.0",
