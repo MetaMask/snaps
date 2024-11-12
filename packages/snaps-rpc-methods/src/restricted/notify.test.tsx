@@ -1,5 +1,5 @@
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
-import { NotificationType } from '@metamask/snaps-sdk';
+import { ContentType, NotificationType } from '@metamask/snaps-sdk';
 import { Box, Text } from '@metamask/snaps-sdk/jsx';
 
 import {
@@ -114,6 +114,8 @@ describe('snap_notify', () => {
       expect(createInterface).toHaveBeenCalledWith(
         'extension',
         <Text>Hello</Text>,
+        undefined,
+        ContentType.Notification,
       );
     });
 
