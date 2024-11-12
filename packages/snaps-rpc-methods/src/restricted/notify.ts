@@ -5,11 +5,17 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { enumValue, NotificationType, union } from '@metamask/snaps-sdk';
 import type {
   NotifyParams,
   NotifyResult,
   NotificationComponent,
+  InterfaceContext,
+} from '@metamask/snaps-sdk';
+import {
+  enumValue,
+  NotificationType,
+  union,
+  ContentType,
 } from '@metamask/snaps-sdk';
 import { NotificationComponentsStruct } from '@metamask/snaps-sdk/jsx';
 import {
@@ -93,6 +99,8 @@ export type NotifyMethodHooks = {
   createInterface: (
     origin: string,
     content: NotificationComponent,
+    context?: InterfaceContext,
+    contentType?: ContentType,
   ) => Promise<string>;
   getSnap: (snapId: string) => Snap | undefined;
 };
@@ -189,6 +197,8 @@ export function getImplementation({
       id = await createInterface(
         origin,
         validatedParams.content as NotificationComponent,
+        undefined,
+        ContentType.Notification,
       );
       validatedParams.content = id;
     }
