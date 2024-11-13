@@ -227,6 +227,34 @@ describe('getServer', () => {
     await close();
   });
 
+  it('ignores query strings', async () => {
+    const config = getMockConfig('webpack', {
+      input: 'src/index.js',
+      server: {
+        root: '/foo',
+        port: 0,
+      },
+    });
+
+    const server = getServer(config);
+    const { port, close } = await server.listen();
+
+    const response = await fetch(
+      `http://localhost:${port}/snap.manifest.json?_=1731493314736`,
+    );
+
+    expect(response.status).toBe(200);
+    expect(await response.text()).toBe('');
+
+    expect(serveMiddleware).toHaveBeenCalledWith(
+      expect.any(IncomingMessage),
+      expect.any(ServerResponse),
+      expect.objectContaining({ public: expect.stringContaining('foo') }),
+    );
+
+    await close();
+  });
+
   it('responds with 404 for non-allowed files', async () => {
     const config = getMockConfig('webpack', {
       input: 'src/index.js',
