@@ -27,7 +27,9 @@ import type {
 import { DeviceType } from '@metamask/snaps-sdk';
 import { assert, createDeferredPromise, hasProperty } from '@metamask/utils';
 
+import { HIDManager } from './implementations';
 import type { SnapDevice } from './implementations/device';
+import type { DeviceManager } from './implementations/device-manager';
 
 const controllerName = 'DeviceController';
 
@@ -128,6 +130,10 @@ export class DeviceController extends BaseController<
     reject: (error: unknown) => void;
   };
 
+  #managers: Record<DeviceType, DeviceManager> = {
+    [DeviceType.HID]: new HIDManager(),
+  };
+
   #devices: Record<DeviceId, SnapDevice> = {};
 
   constructor({ messenger, state }: DeviceControllerArgs) {
@@ -170,6 +176,28 @@ export class DeviceController extends BaseController<
       `${controllerName}:rejectPairing`,
       async (...args) => this.rejectPairing(...args),
     );
+
+    for (const manager of Object.values(this.#managers)) {
+      manager.on('connect', (device) => {
+        this.#devices[device.id] = device;
+
+        if (this.state.devices[device.id]) {
+          this.update((draftState) => {
+            draftState.devices[device.id].available = true;
+          });
+        }
+      });
+
+      manager.on('disconnect', (id) => {
+        delete this.#devices[id];
+
+        if (this.state.devices[id]) {
+          this.update((draftState) => {
+            draftState.devices[id].available = false;
+          });
+        }
+      });
+    }
   }
 
   async requestDevice(snapId: string, { type, filters }: RequestDeviceParams) {
@@ -178,8 +206,6 @@ export class DeviceController extends BaseController<
       type: type as DeviceType,
       filters,
     });
-
-    // await this.#syncDevices();
 
     // TODO: Figure out how to revoke these permissions again?
     this.messagingSystem.call(
@@ -200,9 +226,8 @@ export class DeviceController extends BaseController<
       },
     );
 
-    // TODO: Can a paired device by not connected?
-    const device = await this.#getConnectedDeviceById(deviceId);
-    return device.metadata;
+    // TODO: Can a paired device be not connected?
+    return this.state.devices[deviceId];
   }
 
   async writeDevice(snapId: SnapId, params: WriteDeviceParams) {
@@ -234,8 +259,6 @@ export class DeviceController extends BaseController<
   }
 
   async listDevices(snapId: SnapId, { type }: ListDevicesParams) {
-    await this.#syncDevices();
-
     const permittedDevices = this.#getPermittedDevices(snapId);
     const deviceData = permittedDevices.map(
       (device) => this.state.devices[device.deviceId],
@@ -271,60 +294,6 @@ export class DeviceController extends BaseController<
     );
   }
 
-  async #syncDevices() {
-    const connectedDevices = await this.#getConnectedDevices();
-
-    this.update((draftState) => {
-      for (const device of Object.values(draftState.devices)) {
-        draftState.devices[device.id].available = hasProperty(
-          connectedDevices,
-          device.id,
-        );
-      }
-      for (const device of Object.values(connectedDevices)) {
-        if (!hasProperty(draftState.devices, device.metadata.id)) {
-          // @ts-expect-error Not sure why this is failing, continuing.
-          draftState.devices[device.metadata.id] = device.metadata;
-        }
-      }
-    });
-  }
-
-  // Get actually connected devices
-  async #getConnectedDevices(): Promise<Record<string, ConnectedDevice>> {
-    const type = DeviceType.HID;
-    // TODO: Merge multiple device implementations
-    const devices: any[] = await (navigator as any).hid.getDevices();
-    return devices.reduce<Record<string, ConnectedDevice>>(
-      (accumulator, device) => {
-        const { vendorId, productId, productName } = device;
-
-        const id = `${type}:${vendorId}:${productId}` as DeviceId;
-
-        // TODO: Figure out what to do about duplicates.
-        accumulator[id] = {
-          reference: device,
-          metadata: {
-            type,
-            id,
-            name: productName,
-            vendorId,
-            productId,
-            available: true,
-          },
-        };
-
-        return accumulator;
-      },
-      {},
-    );
-  }
-
-  async #getConnectedDeviceById(id: DeviceId) {
-    const devices = await this.#getConnectedDevices();
-    return devices[id];
-  }
-
   #isPairing() {
     return this.#pairing !== undefined;
   }
@@ -346,9 +315,6 @@ export class DeviceController extends BaseController<
     const { promise, resolve, reject } = createDeferredPromise<DeviceId>();
 
     this.#pairing = { promise, resolve, reject };
-
-    // TODO: Consider polling this call while pairing is ongoing?
-    await this.#syncDevices();
 
     this.update((draftState) => {
       draftState.pairing = { snapId, type, filters };

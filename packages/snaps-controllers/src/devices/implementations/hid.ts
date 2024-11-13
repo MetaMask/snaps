@@ -6,21 +6,36 @@ import type {
 } from '@metamask/snaps-sdk';
 import type { Hex } from '@metamask/utils';
 import { hexToBytes, add0x, assert } from '@metamask/utils';
-import { EventEmitter } from 'events';
 
-import type { SnapDevice } from './device';
+import { SnapDevice } from './device';
 
-export class HIDSnapDevice extends EventEmitter implements SnapDevice {
+/**
+ * A device that is connected to the Snap via HID.
+ */
+export class HIDSnapDevice extends SnapDevice {
+  /**
+   * The device type. Always `hid`.
+   */
   readonly type = DeviceType.HID;
 
+  /**
+   * The device ID.
+   */
   readonly id: ScopedDeviceId<DeviceType.HID>;
 
+  /**
+   * The underlying `HIDDevice` instance.
+   */
   readonly #device: HIDDevice;
 
+  /**
+   * A buffer to store incoming data.
+   */
   readonly #buffer: { reportId: number; data: Hex }[] = [];
 
   constructor(id: ScopedDeviceId<DeviceType.HID>, device: HIDDevice) {
     super();
+
     this.id = id;
     this.#device = device;
 
@@ -33,17 +48,25 @@ export class HIDSnapDevice extends EventEmitter implements SnapDevice {
       };
 
       this.#buffer.push(result);
-      this.emit('data', result);
-    });
 
-    navigator.hid.addEventListener('disconnect', (event) => {
-      if (event.device === this.#device) {
-        this.emit('disconnect');
-      }
+      // TODO: Emit `reportId` as well?
+      this.emit('data', result.data);
     });
   }
 
-  async read({ reportType, reportId = 0 }: ReadDeviceParams) {
+  /**
+   * Read data from the device.
+   *
+   * @param params - The arguments.
+   * @param params.type - The type of the device.
+   * @param params.reportType - The type of report to read. Defaults to
+   * `output`.
+   * @param params.reportId - The ID of the report to read. Defaults to `0`.
+   * @returns The data read from the device.
+   */
+  async read({ type, reportType = 'output', reportId = 0 }: ReadDeviceParams) {
+    assert(type === this.type);
+
     if (reportType === 'feature') {
       const view = await this.#device.receiveFeatureReport(reportId);
       return add0x(Buffer.from(view.buffer).toString('hex'));
@@ -61,7 +84,23 @@ export class HIDSnapDevice extends EventEmitter implements SnapDevice {
     });
   }
 
-  async write({ type, reportType, reportId = 0, data }: WriteDeviceParams) {
+  /**
+   * Write data to the device.
+   *
+   * @param params - The arguments.
+   * @param params.type - The type of the device.
+   * @param params.reportType - The type of report to write. Defaults to
+   * `output`.
+   * @param params.reportId - The ID of the report to write. Defaults to `0`.
+   * @param params.data - The data to write to the device.
+   * @returns The result of the write operation.
+   */
+  async write({
+    type,
+    reportType = 'output',
+    reportId = 0,
+    data,
+  }: WriteDeviceParams) {
     assert(type === this.type);
 
     const buffer = hexToBytes(data);
@@ -72,6 +111,9 @@ export class HIDSnapDevice extends EventEmitter implements SnapDevice {
     return await this.#device.sendReport(reportId, buffer);
   }
 
+  /**
+   * Close the connection to the device.
+   */
   async close() {
     await this.#device.close();
   }

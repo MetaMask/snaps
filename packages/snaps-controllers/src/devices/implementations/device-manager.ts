@@ -1,21 +1,26 @@
 import type { DeviceId } from '@metamask/snaps-sdk';
 
+import { TypedEventEmitter } from '../../types';
 import type { SnapDevice } from './device';
 
-export interface DeviceManager {
+/**
+ * The events that a `DeviceManager` can emit.
+ */
+export type DeviceManagerEvents = {
   /**
-   * Request a new HID device.
+   * Emitted when a device is connected.
    *
-   * @returns The connected device.
+   * @param device - The device that is connected.
    */
-  request(): Promise<SnapDevice>;
+  connect: (device: SnapDevice) => void;
 
   /**
-   * Connect to an existing HID device.
+   * Emitted when a device is disconnected.
    *
-   * @param id - The device ID to connect to.
-   * @returns The connected device.
-   * @throws An error if the device is not found.
+   * @param deviceId - The ID of the device that is disconnected.
    */
-  connect(id: DeviceId): Promise<SnapDevice>;
-}
+  disconnect: (deviceId: DeviceId) => void;
+};
+
+// This is an abstract class to allow for extending `TypedEventEmitter`.
+export abstract class DeviceManager extends TypedEventEmitter<DeviceManagerEvents> {}

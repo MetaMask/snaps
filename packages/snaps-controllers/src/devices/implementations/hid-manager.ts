@@ -1,52 +1,56 @@
 import type { DeviceId } from '@metamask/snaps-sdk';
 import { DeviceType } from '@metamask/snaps-sdk';
+import { logError } from '@metamask/snaps-utils';
 
-import type { DeviceManager } from './device-manager';
+import { DeviceManager } from './device-manager';
 import { HIDSnapDevice } from './hid';
 
-export class HIDManager implements DeviceManager {
+/**
+ * Get the device ID for an HID device, based on its vendor and product IDs.
+ *
+ * @param device - The HID device.
+ * @returns The device ID.
+ */
+function getDeviceId(device: HIDDevice): DeviceId {
+  return `${DeviceType.HID}:${device.vendorId.toString(
+    16,
+  )}:${device.productId.toString(16)}`;
+}
+
+/**
+ * A manager for HID devices.
+ */
+export class HIDManager extends DeviceManager {
   constructor() {
+    super();
+
+    this.#synchronize();
+
     navigator.hid.addEventListener('connect', (event) => {
-      // eslint-disable-next-line no-console
-      console.log('HID device connected:', event.device);
+      const device = new HIDSnapDevice(getDeviceId(event.device), event.device);
+      this.emit('connect', device);
     });
 
     navigator.hid.addEventListener('disconnect', (event) => {
-      // eslint-disable-next-line no-console
-      console.log('HID device disconnected:', event.device);
+      this.emit('disconnect', getDeviceId(event.device));
     });
   }
 
-  async request() {
-    const [device] = await navigator.hid.requestDevice();
-
-    if (!device) {
-      throw new Error('No device selected.');
-    }
-
-    return new HIDSnapDevice(
-      `${DeviceType.HID}:${device.vendorId.toString(
-        16,
-      )}:${device.productId.toString(16)}`,
-      device,
-    );
-  }
-
-  async connect(id: DeviceId) {
-    const [, vendorId, productId] = id
-      .split(':')
-      .map((part) => parseInt(part, 16));
-
-    const devices = await navigator.hid.getDevices();
-    const device = devices.find(
-      (hidDevice) =>
-        hidDevice.vendorId === vendorId && hidDevice.productId === productId,
-    );
-
-    if (!device) {
-      throw new Error('Device not found.');
-    }
-
-    return new HIDSnapDevice(id, device);
+  /**
+   * Synchronize the state with the current HID devices. This emits a `connect`
+   * event for each connected device.
+   */
+  #synchronize() {
+    navigator.hid
+      .getDevices()
+      .then((devices) => {
+        for (const device of devices) {
+          const snapDevice = new HIDSnapDevice(getDeviceId(device), device);
+          this.emit('connect', snapDevice);
+        }
+      })
+      .catch((error) => {
+        logError('Unable to synchronize HID devices:', error);
+      });
   }
 }
