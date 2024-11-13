@@ -51,6 +51,11 @@ export abstract class SnapDevice extends TypedEventEmitter<SnapDeviceEvents> {
   abstract write(params: WriteDeviceParams): Promise<void>;
 
   /**
+   * Open the connection to the device.
+   */
+  abstract open(): Promise<void>;
+
+  /**
    * Close the connection to the device.
    */
   abstract close(): Promise<void>;

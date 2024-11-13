@@ -25,8 +25,10 @@ import type {
   WriteDeviceParams,
 } from '@metamask/snaps-sdk';
 import { DeviceType } from '@metamask/snaps-sdk';
+import { logError } from '@metamask/snaps-utils';
 import { assert, createDeferredPromise, hasProperty } from '@metamask/utils';
 
+import { CLOSE_DEVICE_TIMEOUT } from './constants';
 import { HIDManager } from './implementations';
 import type { SnapDevice } from './implementations/device';
 import type { DeviceManager } from './implementations/device-manager';
@@ -98,11 +100,6 @@ export type DeviceControllerMessenger = RestrictedControllerMessenger<
   DeviceControllerAllowedEvents['type']
 >;
 
-export type ConnectedDevice = {
-  reference: any; // TODO: Type this
-  metadata: Device;
-};
-
 export type DeviceControllerState = {
   devices: Record<string, Device>;
   pairing: {
@@ -135,6 +132,8 @@ export class DeviceController extends BaseController<
   };
 
   #devices: Record<DeviceId, SnapDevice> = {};
+
+  #timeouts: Record<DeviceId, NodeJS.Timeout> = {};
 
   constructor({ messenger, state }: DeviceControllerArgs) {
     super({
@@ -240,6 +239,7 @@ export class DeviceController extends BaseController<
     const device = this.#devices[id];
     assert(device, 'Device not found.');
 
+    await this.#openDevice(id);
     await device.write(params);
 
     return null;
@@ -255,6 +255,7 @@ export class DeviceController extends BaseController<
     const device = this.#devices[id];
     assert(device, 'Device not found.');
 
+    await this.#openDevice(id);
     return await device.read(params);
   }
 
@@ -345,5 +346,46 @@ export class DeviceController extends BaseController<
     this.update((draftState) => {
       draftState.pairing = null;
     });
+  }
+
+  /**
+   * Open a device, and set a timeout to close it if it is not used.
+   *
+   * @param id - The ID of the device to open.
+   * @returns A promise that resolves when the device is opened.
+   */
+  async #openDevice(id: DeviceId) {
+    const device = this.#devices[id];
+    assert(device, 'Device not found.');
+
+    await device.open();
+
+    if (this.#timeouts[id]) {
+      clearTimeout(this.#timeouts[id]);
+    }
+
+    this.#timeouts[id] = setTimeout(() => {
+      this.#closeDevice(id).catch((error) => {
+        logError('Failed to close device.', error);
+      });
+    }, CLOSE_DEVICE_TIMEOUT);
+  }
+
+  /**
+   * Close a device.
+   *
+   * @param id - The ID of the device to close.
+   * @returns A promise that resolves when the device is closed.
+   */
+  async #closeDevice(id: DeviceId) {
+    const device = this.#devices[id];
+    assert(device, 'Device not found.');
+
+    if (this.#timeouts[id]) {
+      clearTimeout(this.#timeouts[id]);
+      delete this.#timeouts[id];
+    }
+
+    await device.close();
   }
 }

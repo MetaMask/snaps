@@ -66,6 +66,7 @@ export class HIDSnapDevice extends SnapDevice {
    */
   async read({ type, reportType = 'output', reportId = 0 }: ReadDeviceParams) {
     assert(type === this.type);
+    assert(this.#device.opened, 'Device is not open.');
 
     if (reportType === 'feature') {
       const view = await this.#device.receiveFeatureReport(reportId);
@@ -102,6 +103,7 @@ export class HIDSnapDevice extends SnapDevice {
     data,
   }: WriteDeviceParams) {
     assert(type === this.type);
+    assert(this.#device.opened, 'Device is not open.');
 
     const buffer = hexToBytes(data);
     if (reportType === 'feature') {
@@ -112,9 +114,20 @@ export class HIDSnapDevice extends SnapDevice {
   }
 
   /**
+   * Open the connection to the device.
+   */
+  async open() {
+    if (!this.#device.opened) {
+      await this.#device.open();
+    }
+  }
+
+  /**
    * Close the connection to the device.
    */
   async close() {
-    await this.#device.close();
+    if (this.#device.opened) {
+      await this.#device.close();
+    }
   }
 }
