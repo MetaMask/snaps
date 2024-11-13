@@ -16,6 +16,7 @@ import {
   NotificationType,
   union,
   ContentType,
+  getErrorMessage,
 } from '@metamask/snaps-sdk';
 import { NotificationComponentsStruct } from '@metamask/snaps-sdk/jsx';
 import {
@@ -192,9 +193,8 @@ export function getImplementation({
       getSnap,
     );
 
-    let id;
     if (hasProperty(validatedParams, 'content')) {
-      id = await createInterface(
+      const id = await createInterface(
         origin,
         validatedParams.content as NotificationComponent,
         undefined,
@@ -292,7 +292,7 @@ export function getValidatedParams(
     return validatedParams;
   } catch (error) {
     throw rpcErrors.invalidParams({
-      message: `Invalid params: ${error.message}`,
+      message: `Invalid params: ${getErrorMessage(error)}`,
     });
   }
 }
