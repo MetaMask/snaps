@@ -6,6 +6,7 @@ import { getCurrencyRateHandler } from './getCurrencyRate';
 import { getFileHandler } from './getFile';
 import { getInterfaceStateHandler } from './getInterfaceState';
 import { getSnapsHandler } from './getSnaps';
+import { getSupportedDevicesHandler } from './getSupportedDevices';
 import { invokeKeyringHandler } from './invokeKeyring';
 import { invokeSnapSugarHandler } from './invokeSnapSugar';
 import { readDeviceHandler } from './readDevice';
@@ -33,6 +34,7 @@ export const methodHandlers = {
   snap_readDevice: readDeviceHandler,
   snap_requestDevice: requestDeviceHandler,
   snap_writeDevice: writeDeviceHandler,
+  snap_getSupportedDevices: getSupportedDevicesHandler,
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 
