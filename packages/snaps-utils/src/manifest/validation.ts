@@ -175,7 +175,7 @@ export const MaxRequestTimeStruct = size(
   MAXIMUM_REQUEST_TIMEOUT,
 );
 
-export const ProtocolChainsStruct = record(
+export const ProtocolScopesStruct = record(
   CaipChainIdStruct,
   object({ methods: array(string()) }),
 );
@@ -207,7 +207,7 @@ export const PermissionsStruct: Describe<InitialPermissions> = type({
   'endowment:protocol': optional(
     mergeStructs(
       HandlerCaveatsStruct,
-      object({ chains: ProtocolChainsStruct }),
+      object({ chains: ProtocolScopesStruct }),
     ),
   ),
   'endowment:lifecycle-hooks': optional(HandlerCaveatsStruct),
