@@ -6,6 +6,7 @@ import type {
   WriteDeviceParams,
 } from '@metamask/snaps-sdk';
 import type { Hex } from '@metamask/utils';
+import { Mutex } from 'async-mutex';
 
 import { TypedEventEmitter } from '../../types';
 
@@ -35,6 +36,13 @@ export abstract class SnapDevice extends TypedEventEmitter<SnapDeviceEvents> {
    */
   abstract readonly id: DeviceId;
 
+  constructor() {
+    super();
+
+    this.read = this.#withMutex(this.read.bind(this));
+    this.write = this.#withMutex(this.write.bind(this));
+  }
+
   /**
    * Read data from the device.
    *
@@ -59,4 +67,24 @@ export abstract class SnapDevice extends TypedEventEmitter<SnapDeviceEvents> {
    * Close the connection to the device.
    */
   abstract close(): Promise<void>;
+
+  /**
+   * Run a function with an async mutex, ensuring that only one instance of the
+   * function can run at a time.
+   *
+   * @param fn - The function to run with a mutex.
+   * @returns The wrapped function.
+   * @template OriginalFunction - The original function type. This is inferred
+   * from the `fn` argument, and used to determine the return type of the
+   * wrapped function.
+   */
+  #withMutex<OriginalFunction extends (...args: any[]) => Promise<Type>, Type>(
+    fn: OriginalFunction,
+  ): (...args: Parameters<OriginalFunction>) => Promise<Type> {
+    const mutex = new Mutex();
+
+    return async (...args: Parameters<OriginalFunction>) => {
+      return await mutex.runExclusive(async () => await fn(...args));
+    };
+  }
 }
