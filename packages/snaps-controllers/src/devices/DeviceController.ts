@@ -184,6 +184,10 @@ export class DeviceController extends BaseController<
       manager.on('disconnect', (id) => {
         this.#removeDevice(id);
       });
+
+      this.#synchronize(manager).catch((error) => {
+        logError('Failed to synchronize device manager.', error);
+      });
     }
   }
 

@@ -79,8 +79,11 @@ export class HIDSnapDevice extends SnapDevice {
         return resolve(buffer.data);
       }
 
-      return this.once('data', (data) => {
-        resolve(data);
+      return this.once('data', () => {
+        const data = this.#buffer.shift();
+        assert(data, 'Expected data to be present in the read buffer.');
+
+        resolve(data.data);
       });
     });
   }
