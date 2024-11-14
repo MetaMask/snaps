@@ -8,7 +8,7 @@ import type {
   Subscription,
 } from '@ledgerhq/hw-transport';
 import Transport from '@ledgerhq/hw-transport';
-import type { HidDevice } from '@metamask/snaps-sdk';
+import type { HidDeviceMetadata } from '@metamask/snaps-sdk';
 import { bytesToHex } from '@metamask/utils';
 
 /**
@@ -21,11 +21,11 @@ async function requestDevice() {
   return (await snap.request({
     method: 'snap_requestDevice',
     params: { type: 'hid', filters: [{ vendorId: ledgerUSBVendorId }] },
-  })) as HidDevice;
+  })) as HidDeviceMetadata;
 }
 
 export default class TransportSnapsHID extends Transport {
-  readonly device: HidDevice;
+  readonly device: HidDeviceMetadata;
 
   readonly deviceModel: DeviceModel | null | undefined;
 
@@ -33,7 +33,7 @@ export default class TransportSnapsHID extends Transport {
 
   #packetSize = 64;
 
-  constructor(device: HidDevice) {
+  constructor(device: HidDeviceMetadata) {
     super();
 
     this.device = device;
@@ -63,7 +63,7 @@ export default class TransportSnapsHID extends Transport {
     const devices = (await snap.request({
       method: 'snap_listDevices',
       params: { type: 'hid' },
-    })) as HidDevice[];
+    })) as HidDeviceMetadata[];
 
     return devices.filter(
       (device) => device.vendorId === ledgerUSBVendorId && device.available,
@@ -77,7 +77,9 @@ export default class TransportSnapsHID extends Transport {
    * @param observer - The observer to notify when a device is found.
    * @returns A subscription that can be used to unsubscribe from the observer.
    */
-  static listen(observer: Observer<DescriptorEvent<HidDevice>>): Subscription {
+  static listen(
+    observer: Observer<DescriptorEvent<HidDeviceMetadata>>,
+  ): Subscription {
     let unsubscribed = false;
 
     /**
@@ -92,7 +94,7 @@ export default class TransportSnapsHID extends Transport {
      *
      * @param device - The device to emit.
      */
-    function emit(device: HidDevice) {
+    function emit(device: HidDeviceMetadata) {
       observer.next({
         type: 'add',
         descriptor: device,
@@ -181,7 +183,7 @@ export default class TransportSnapsHID extends Transport {
    * @param device - The device to connect to.
    * @returns A transport.
    */
-  static async open(device: HidDevice) {
+  static async open(device: HidDeviceMetadata) {
     return new TransportSnapsHID(device);
   }
 

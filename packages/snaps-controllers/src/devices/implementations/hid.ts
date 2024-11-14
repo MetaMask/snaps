@@ -31,7 +31,7 @@ export class HIDSnapDevice extends SnapDevice {
   /**
    * A buffer to store incoming data.
    */
-  readonly #buffer: { reportId: number; data: Hex }[] = [];
+  #buffer: { reportId: number; data: Hex }[] = [];
 
   constructor(id: ScopedDeviceId<DeviceType.HID>, device: HIDDevice) {
     super();
@@ -118,6 +118,7 @@ export class HIDSnapDevice extends SnapDevice {
    */
   async open() {
     if (!this.#device.opened) {
+      this.#buffer = [];
       await this.#device.open();
     }
   }
@@ -127,6 +128,7 @@ export class HIDSnapDevice extends SnapDevice {
    */
   async close() {
     if (this.#device.opened) {
+      this.#buffer = [];
       await this.#device.close();
     }
   }

@@ -15,7 +15,7 @@ import {
   SnapEndowments,
 } from '@metamask/snaps-rpc-methods';
 import type {
-  Device,
+  DeviceMetadata,
   DeviceFilter,
   DeviceId,
   ListDevicesParams,
@@ -101,7 +101,7 @@ export type DeviceControllerMessenger = RestrictedControllerMessenger<
 >;
 
 export type DeviceControllerState = {
-  devices: Record<string, Device>;
+  devices: Record<string, DeviceMetadata>;
   pairing: {
     snapId: string;
     type: DeviceType;
@@ -178,23 +178,11 @@ export class DeviceController extends BaseController<
 
     for (const manager of Object.values(this.#managers)) {
       manager.on('connect', (device) => {
-        this.#devices[device.id] = device;
-
-        if (this.state.devices[device.id]) {
-          this.update((draftState) => {
-            draftState.devices[device.id].available = true;
-          });
-        }
+        this.#addDevice(device);
       });
 
       manager.on('disconnect', (id) => {
-        delete this.#devices[id];
-
-        if (this.state.devices[id]) {
-          this.update((draftState) => {
-            draftState.devices[id].available = false;
-          });
-        }
+        this.#removeDevice(id);
       });
     }
   }
@@ -224,6 +212,8 @@ export class DeviceController extends BaseController<
         },
       },
     );
+
+    await this.#synchronize(this.#managers[type]);
 
     // TODO: Can a paired device be not connected?
     return this.state.devices[deviceId];
@@ -387,5 +377,59 @@ export class DeviceController extends BaseController<
     }
 
     await device.close();
+  }
+
+  /**
+   * Synchronize the state of the controller with the state of the device
+   * manager.
+   *
+   * @param manager - The device manager to synchronize with.
+   */
+  async #synchronize(manager: DeviceManager) {
+    const metadata = await manager.getDeviceMetadata();
+    for (const device of metadata) {
+      if (!this.state.devices[device.id]) {
+        this.update((draftState) => {
+          draftState.devices[device.id] = device;
+        });
+      }
+
+      if (!this.#devices[device.id]) {
+        const deviceImplementation = await manager.getDevice(device.id);
+        if (deviceImplementation) {
+          this.#addDevice(deviceImplementation);
+        }
+      }
+    }
+  }
+
+  /**
+   * Add a device to the controller.
+   *
+   * @param device - The device to add.
+   */
+  #addDevice(device: SnapDevice) {
+    this.#devices[device.id] = device;
+
+    if (this.state.devices[device.id]) {
+      this.update((draftState) => {
+        draftState.devices[device.id].available = true;
+      });
+    }
+  }
+
+  /**
+   * Remove a device from the controller.
+   *
+   * @param id - The ID of the device to remove.
+   */
+  #removeDevice(id: DeviceId) {
+    delete this.#devices[id];
+
+    if (this.state.devices[id]) {
+      this.update((draftState) => {
+        draftState.devices[id].available = false;
+      });
+    }
   }
 }

@@ -1,6 +1,5 @@
 import type { DeviceId } from '@metamask/snaps-sdk';
 import { DeviceType } from '@metamask/snaps-sdk';
-import { logError } from '@metamask/snaps-utils';
 
 import { DeviceManager } from './device-manager';
 import { HIDSnapDevice } from './hid';
@@ -24,8 +23,6 @@ export class HIDManager extends DeviceManager {
   constructor() {
     super();
 
-    this.#synchronize();
-
     navigator.hid.addEventListener('connect', (event) => {
       const device = new HIDSnapDevice(getDeviceId(event.device), event.device);
       this.emit('connect', device);
@@ -37,20 +34,36 @@ export class HIDManager extends DeviceManager {
   }
 
   /**
-   * Synchronize the state with the current HID devices. This emits a `connect`
-   * event for each connected device.
+   * Get the device IDs for the currently connected HID devices.
+   *
+   * @returns The device IDs.
    */
-  #synchronize() {
-    navigator.hid
-      .getDevices()
-      .then((devices) => {
-        for (const device of devices) {
-          const snapDevice = new HIDSnapDevice(getDeviceId(device), device);
-          this.emit('connect', snapDevice);
-        }
-      })
-      .catch((error) => {
-        logError('Unable to synchronize HID devices:', error);
-      });
+  async getDeviceMetadata() {
+    const devices = await navigator.hid.getDevices();
+    return devices.map((device) => ({
+      type: DeviceType.HID,
+      id: getDeviceId(device),
+      name: device.productName,
+      vendorId: device.vendorId,
+      productId: device.productId,
+      available: true,
+    }));
+  }
+
+  /**
+   * Get a device by its ID.
+   *
+   * @param deviceId - The ID of the device to get.
+   * @returns The device, or `undefined` if the device is not found.
+   */
+  async getDevice(deviceId: DeviceId) {
+    const devices = await navigator.hid.getDevices();
+    const device = devices.find((item) => getDeviceId(item) === deviceId);
+
+    if (device) {
+      return new HIDSnapDevice(deviceId, device);
+    }
+
+    return undefined;
   }
 }

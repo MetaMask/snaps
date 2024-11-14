@@ -1,4 +1,4 @@
-import type { DeviceId } from '@metamask/snaps-sdk';
+import type { DeviceMetadata, DeviceId } from '@metamask/snaps-sdk';
 
 import { TypedEventEmitter } from '../../types';
 import type { SnapDevice } from './device';
@@ -23,4 +23,18 @@ export type DeviceManagerEvents = {
 };
 
 // This is an abstract class to allow for extending `TypedEventEmitter`.
-export abstract class DeviceManager extends TypedEventEmitter<DeviceManagerEvents> {}
+export abstract class DeviceManager extends TypedEventEmitter<DeviceManagerEvents> {
+  /**
+   * Synchronize the state with the current devices. This returns the current
+   * list of devices.
+   */
+  abstract getDeviceMetadata(): Promise<DeviceMetadata[]>;
+
+  /**
+   * Get a device by its ID.
+   *
+   * @param deviceId - The ID of the device to get.
+   * @returns The device, or `undefined` if the device is not found.
+   */
+  abstract getDevice(deviceId: DeviceId): Promise<SnapDevice | undefined>;
+}
