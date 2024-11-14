@@ -143,7 +143,7 @@ export class DeviceController extends BaseController<
         pairing: { persist: false, anonymous: false },
       },
       name: controllerName,
-      state: { ...state, devices: {}, pairing: null },
+      state: { devices: {}, pairing: null, ...state },
     });
 
     this.messagingSystem.registerActionHandler(
