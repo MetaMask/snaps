@@ -207,7 +207,7 @@ export const PermissionsStruct: Describe<InitialPermissions> = type({
   'endowment:protocol': optional(
     mergeStructs(
       HandlerCaveatsStruct,
-      object({ chains: ProtocolScopesStruct }),
+      object({ scopes: ProtocolScopesStruct }),
     ),
   ),
   'endowment:lifecycle-hooks': optional(HandlerCaveatsStruct),
