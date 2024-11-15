@@ -80,7 +80,7 @@ export function getHandlerArguments(
       assertIsOnProtocolRequestArguments(request.params);
 
       const { request: nestedRequest, scope } = request.params;
-      return { request: nestedRequest, scope };
+      return { origin, request: nestedRequest, scope };
     }
 
     case HandlerType.OnRpcRequest:
