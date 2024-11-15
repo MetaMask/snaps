@@ -1,4 +1,4 @@
-import type { DeviceType } from '@metamask/snaps-sdk';
+import type { DeviceType } from '../device';
 
 /**
  * The request parameters for the `snap_getSupportedDevices` method.

@@ -39,6 +39,12 @@ import type {
   CronjobControllerEvents,
 } from '../cronjob';
 import type {
+  DeviceControllerActions,
+  DeviceControllerAllowedActions,
+  DeviceControllerAllowedEvents,
+  DeviceControllerEvents,
+} from '../devices';
+import type {
   SnapInsightsControllerAllowedActions,
   SnapInsightsControllerAllowedEvents,
 } from '../insights';
@@ -59,15 +65,9 @@ import type {
 import { SnapController } from '../snaps';
 import type { KeyDerivationOptions } from '../types';
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
+import { MOCK_DEVICE_PERMISSION } from './devices';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
 import { MockSnapsRegistry } from './registry';
-import {
-  DeviceControllerActions,
-  DeviceControllerAllowedActions,
-  DeviceControllerAllowedEvents,
-  DeviceControllerEvents,
-} from '../devices';
-import { MOCK_DEVICE_PERMISSION } from './devices';
 
 const asyncNoOp = async () => Promise.resolve();
 
