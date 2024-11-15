@@ -5,10 +5,12 @@ import type {
   ReadDeviceResult,
   WriteDeviceParams,
 } from '@metamask/snaps-sdk';
+import { logError } from '@metamask/snaps-utils';
 import type { Hex } from '@metamask/utils';
 import { Mutex } from 'async-mutex';
 
 import { TypedEventEmitter } from '../../types';
+import { CLOSE_DEVICE_TIMEOUT } from '../constants';
 
 /**
  * The events that a `SnapDevice` can emit.
@@ -36,9 +38,15 @@ export abstract class SnapDevice extends TypedEventEmitter<SnapDeviceEvents> {
    */
   abstract readonly id: DeviceId;
 
-  constructor() {
+  /**
+   * A timeout to close the device after a certain amount of time.
+   */
+  #timeout: NodeJS.Timeout | null = null;
+
+  protected constructor() {
     super();
 
+    this.open = this.#withTimeout(this.open.bind(this), CLOSE_DEVICE_TIMEOUT);
     this.read = this.#withMutex(this.read.bind(this));
     this.write = this.#withMutex(this.write.bind(this));
   }
@@ -59,12 +67,14 @@ export abstract class SnapDevice extends TypedEventEmitter<SnapDeviceEvents> {
   abstract write(params: WriteDeviceParams): Promise<void>;
 
   /**
-   * Open the connection to the device.
+   * Open the connection to the device. This must be called before any read or
+   * write operations.
    */
   abstract open(): Promise<void>;
 
   /**
-   * Close the connection to the device.
+   * Close the connection to the device. This should be called when the device
+   * is no longer needed, and may be called after a timeout.
    */
   abstract close(): Promise<void>;
 
@@ -85,6 +95,36 @@ export abstract class SnapDevice extends TypedEventEmitter<SnapDeviceEvents> {
 
     return async (...args: Parameters<OriginalFunction>) => {
       return await mutex.runExclusive(async () => await fn(...args));
+    };
+  }
+
+  /**
+   * Run a function with a timeout, ensuring that the device is closed after a
+   * certain amount of time.
+   *
+   * @param fn - The function to run with a timeout.
+   * @param timeout - The timeout in milliseconds.
+   * @returns The wrapped function.
+   */
+  #withTimeout<
+    OriginalFunction extends (...args: any[]) => Promise<Type>,
+    Type,
+  >(
+    fn: OriginalFunction,
+    timeout: number,
+  ): (...args: Parameters<OriginalFunction>) => Promise<Type> {
+    return async (...args: Parameters<OriginalFunction>) => {
+      if (this.#timeout) {
+        clearTimeout(this.#timeout);
+      }
+
+      this.#timeout = setTimeout(() => {
+        this.close().catch((error) => {
+          logError('Failed to close device.', error);
+        });
+      }, timeout);
+
+      return await fn(...args);
     };
   }
 }

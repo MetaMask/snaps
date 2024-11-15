@@ -28,7 +28,6 @@ import { DeviceType } from '@metamask/snaps-sdk';
 import { logError } from '@metamask/snaps-utils';
 import { assert, createDeferredPromise, hasProperty } from '@metamask/utils';
 
-import { CLOSE_DEVICE_TIMEOUT } from './constants';
 import { HIDManager } from './implementations';
 import type { SnapDevice } from './implementations/device';
 import type { DeviceManager } from './implementations/device-manager';
@@ -132,8 +131,6 @@ export class DeviceController extends BaseController<
   };
 
   #devices: Record<DeviceId, SnapDevice> = {};
-
-  #timeouts: Record<DeviceId, NodeJS.Timeout> = {};
 
   constructor({ messenger, state }: DeviceControllerArgs) {
     super({
@@ -353,16 +350,6 @@ export class DeviceController extends BaseController<
     assert(device, 'Device not found.');
 
     await device.open();
-
-    if (this.#timeouts[id]) {
-      clearTimeout(this.#timeouts[id]);
-    }
-
-    this.#timeouts[id] = setTimeout(() => {
-      this.#closeDevice(id).catch((error) => {
-        logError('Failed to close device.', error);
-      });
-    }, CLOSE_DEVICE_TIMEOUT);
   }
 
   /**
@@ -374,11 +361,6 @@ export class DeviceController extends BaseController<
   async #closeDevice(id: DeviceId) {
     const device = this.#devices[id];
     assert(device, 'Device not found.');
-
-    if (this.#timeouts[id]) {
-      clearTimeout(this.#timeouts[id]);
-      delete this.#timeouts[id];
-    }
 
     await device.close();
   }
