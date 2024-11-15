@@ -1,6 +1,6 @@
 import fetchMock from 'jest-fetch-mock';
 
-import network from './network';
+import network, { ResponseWrapper } from './network';
 
 describe('Network endowments', () => {
   beforeAll(() => {
@@ -187,7 +187,7 @@ describe('Network endowments', () => {
       const clonedResult = result.clone();
       expect(clonedResult).toBeDefined();
       expect(await clonedResult.text()).toBe(RESULT);
-      expect(clonedResult).not.toBeInstanceOf(Response);
+      expect(clonedResult).toBeInstanceOf(ResponseWrapper);
     });
 
     it('should return when json is called', async () => {

@@ -7,7 +7,7 @@ import type { EndowmentFactoryOptions } from './commonEndowmentFactory';
  * This class wraps a Response object.
  * That way, a teardown process can stop any processes left.
  */
-class ResponseWrapper implements Response {
+export class ResponseWrapper extends Response {
   readonly #teardownRef: { lastTeardown: number };
 
   #ogResponse: Response;
@@ -22,6 +22,7 @@ class ResponseWrapper implements Response {
     onStart: () => Promise<void>,
     onFinish: () => Promise<void>,
   ) {
+    super();
     this.#ogResponse = ogResponse;
     this.#teardownRef = teardownRef;
     this.#onStart = onStart;
