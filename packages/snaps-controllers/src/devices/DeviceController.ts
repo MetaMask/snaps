@@ -1,7 +1,7 @@
 import type {
-  RestrictedControllerMessenger,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
+  RestrictedControllerMessenger,
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type {
@@ -10,12 +10,12 @@ import type {
 } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import {
+  getPermittedDeviceIds,
   SnapCaveatType,
   SnapEndowments,
-  getPermittedDeviceIds,
 } from '@metamask/snaps-rpc-methods';
 import type {
-  Device,
+  DeviceMetadata,
   DeviceFilter,
   DeviceId,
   ListDevicesParams,
@@ -25,13 +25,11 @@ import type {
   WriteDeviceParams,
 } from '@metamask/snaps-sdk';
 import { DeviceType } from '@metamask/snaps-sdk';
-import type { Hex } from '@metamask/utils';
-import {
-  add0x,
-  createDeferredPromise,
-  hasProperty,
-  hexToBytes,
-} from '@metamask/utils';
+import { logError } from '@metamask/snaps-utils';
+import { assert, createDeferredPromise, hasProperty } from '@metamask/utils';
+
+import { HIDManager } from './implementations';
+import type { Device, DeviceManager } from './implementations';
 
 const controllerName = 'DeviceController';
 
@@ -100,13 +98,8 @@ export type DeviceControllerMessenger = RestrictedControllerMessenger<
   DeviceControllerAllowedEvents['type']
 >;
 
-export type ConnectedDevice = {
-  reference: any; // TODO: Type this
-  metadata: Device;
-};
-
 export type DeviceControllerState = {
-  devices: Record<string, Device>;
+  devices: Record<string, DeviceMetadata>;
   pairing: {
     snapId: string;
     type: DeviceType;
@@ -132,14 +125,11 @@ export class DeviceController extends BaseController<
     reject: (error: unknown) => void;
   };
 
-  #openDevices: Record<
-    DeviceId,
-    {
-      buffer: { reportId: number; data: Hex }[];
-      promise?: Promise<{ reportId: number; data: Hex }>;
-      resolvePromise?: any;
-    }
-  > = {};
+  #managers: Record<DeviceType, DeviceManager> = {
+    [DeviceType.HID]: new HIDManager(),
+  };
+
+  #devices: Record<DeviceId, Device> = {};
 
   constructor({ messenger, state }: DeviceControllerArgs) {
     super({
@@ -149,7 +139,7 @@ export class DeviceController extends BaseController<
         pairing: { persist: false, anonymous: false },
       },
       name: controllerName,
-      state: { ...state, devices: {}, pairing: null },
+      state: { devices: {}, pairing: null, ...state },
     });
 
     this.messagingSystem.registerActionHandler(
@@ -181,6 +171,20 @@ export class DeviceController extends BaseController<
       `${controllerName}:rejectPairing`,
       async (...args) => this.rejectPairing(...args),
     );
+
+    for (const manager of Object.values(this.#managers)) {
+      manager.on('connect', (device) => {
+        this.#addDevice(device);
+      });
+
+      manager.on('disconnect', (id) => {
+        this.#removeDevice(id);
+      });
+
+      this.#synchronize(manager).catch((error) => {
+        logError('Failed to synchronize device manager.', error);
+      });
+    }
   }
 
   async requestDevice(snapId: string, { type, filters }: RequestDeviceParams) {
@@ -189,8 +193,6 @@ export class DeviceController extends BaseController<
       type: type as DeviceType,
       filters,
     });
-
-    // await this.#syncDevices();
 
     // TODO: Figure out how to revoke these permissions again?
     this.messagingSystem.call(
@@ -211,123 +213,43 @@ export class DeviceController extends BaseController<
       },
     );
 
-    // TODO: Can a paired device by not connected?
-    const device = await this.#getConnectedDeviceById(deviceId);
-    return device.metadata;
+    await this.#synchronize(this.#managers[type]);
+
+    // TODO: Can a paired device be not connected?
+    return this.state.devices[deviceId];
   }
 
-  // TODO: Clean up
-  async #openDevice(id: DeviceId, device: any) {
-    await device.open();
-
-    if (!this.#openDevices[id]) {
-      this.#openDevices[id] = {
-        buffer: [],
-      };
-    }
-
-    device.addEventListener('inputreport', (event: any) => {
-      const promiseResolve = this.#openDevices[id].resolvePromise;
-
-      const data = add0x(Buffer.from(event.data.buffer).toString('hex'));
-
-      const result = {
-        reportId: event.reportId,
-        data,
-      };
-
-      if (promiseResolve) {
-        promiseResolve(result);
-        delete this.#openDevices[id].resolvePromise;
-        delete this.#openDevices[id].promise;
-      } else {
-        this.#openDevices[id].buffer.push(result);
-      }
-    });
-  }
-
-  #waitForNextRead(id: DeviceId) {
-    if (this.#openDevices[id].promise) {
-      return this.#openDevices[id].promise;
-    }
-
-    const { promise, resolve } = createDeferredPromise<{
-      reportId: number;
-      data: Hex;
-    }>();
-
-    this.#openDevices[id].resolvePromise = resolve;
-    this.#openDevices[id].promise = promise;
-    return promise;
-  }
-
-  async writeDevice(
-    snapId: SnapId,
-    { id, reportId = 0, reportType, data }: WriteDeviceParams,
-  ) {
+  async writeDevice(snapId: SnapId, params: WriteDeviceParams) {
+    const { id } = params;
     if (!this.#hasPermission(snapId, id)) {
       // TODO: Decide on error message
       throw rpcErrors.invalidParams();
     }
 
-    const device = await this.#getConnectedDeviceById(id);
-    if (!device) {
-      // Handle
-    }
+    const device = this.#devices[id];
+    assert(device, 'Device not found.');
 
-    const actualDevice = device.reference;
-
-    if (!actualDevice.opened) {
-      await this.#openDevice(id, actualDevice);
-    }
-
-    if (reportType === 'feature') {
-      await actualDevice.sendFeatureReport(reportId, hexToBytes(data));
-    } else {
-      await actualDevice.sendReport(reportId, hexToBytes(data));
-    }
+    await this.#openDevice(id);
+    await device.write(params);
 
     return null;
   }
 
-  async readDevice(
-    snapId: SnapId,
-    { id, reportId = 0, reportType }: ReadDeviceParams,
-  ) {
+  async readDevice(snapId: SnapId, params: ReadDeviceParams) {
+    const { id } = params;
     if (!this.#hasPermission(snapId, id)) {
       // TODO: Decide on error message
       throw rpcErrors.invalidParams();
     }
 
-    const device = await this.#getConnectedDeviceById(id);
-    if (!device) {
-      // Handle
-    }
+    const device = this.#devices[id];
+    assert(device, 'Device not found.');
 
-    const actualDevice = device.reference;
-
-    if (!actualDevice.opened) {
-      await this.#openDevice(id, actualDevice);
-    }
-
-    if (reportType === 'feature') {
-      return actualDevice.receiveFeatureReport(reportId);
-    }
-    // TODO: Deal with report IDs?
-    // TODO: Clean up
-    if (this.#openDevices[id].buffer.length > 0) {
-      const result = this.#openDevices[id].buffer.shift();
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return result!.data;
-    }
-    const result = await this.#waitForNextRead(id);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return result!.data;
+    await this.#openDevice(id);
+    return await device.read(params);
   }
 
   async listDevices(snapId: SnapId, { type }: ListDevicesParams) {
-    await this.#syncDevices();
-
     const permittedDevices = this.#getPermittedDevices(snapId);
     const deviceData = permittedDevices.map(
       (device) => this.state.devices[device.deviceId],
@@ -337,6 +259,7 @@ export class DeviceController extends BaseController<
       const types = Array.isArray(type) ? type : [type];
       return deviceData.filter((device) => types.includes(device.type));
     }
+
     return deviceData;
   }
 
@@ -345,6 +268,7 @@ export class DeviceController extends BaseController<
       'PermissionController:getPermissions',
       snapId,
     );
+
     if (!permissions || !hasProperty(permissions, SnapEndowments.Devices)) {
       return [];
     }
@@ -359,60 +283,6 @@ export class DeviceController extends BaseController<
     return devices.some(
       (permittedDevice) => permittedDevice.deviceId === deviceId,
     );
-  }
-
-  async #syncDevices() {
-    const connectedDevices = await this.#getConnectedDevices();
-
-    this.update((draftState) => {
-      for (const device of Object.values(draftState.devices)) {
-        draftState.devices[device.id].available = hasProperty(
-          connectedDevices,
-          device.id,
-        );
-      }
-      for (const device of Object.values(connectedDevices)) {
-        if (!hasProperty(draftState.devices, device.metadata.id)) {
-          // @ts-expect-error Not sure why this is failing, continuing.
-          draftState.devices[device.metadata.id] = device.metadata;
-        }
-      }
-    });
-  }
-
-  // Get actually connected devices
-  async #getConnectedDevices(): Promise<Record<string, ConnectedDevice>> {
-    const type = DeviceType.HID;
-    // TODO: Merge multiple device implementations
-    const devices: any[] = await (navigator as any).hid.getDevices();
-    return devices.reduce<Record<string, ConnectedDevice>>(
-      (accumulator, device) => {
-        const { vendorId, productId, productName } = device;
-
-        const id = `${type}:${vendorId}:${productId}` as DeviceId;
-
-        // TODO: Figure out what to do about duplicates.
-        accumulator[id] = {
-          reference: device,
-          metadata: {
-            type,
-            id,
-            name: productName,
-            vendorId,
-            productId,
-            available: true,
-          },
-        };
-
-        return accumulator;
-      },
-      {},
-    );
-  }
-
-  async #getConnectedDeviceById(id: DeviceId) {
-    const devices = await this.#getConnectedDevices();
-    return devices[id];
   }
 
   #isPairing() {
@@ -436,9 +306,6 @@ export class DeviceController extends BaseController<
     const { promise, resolve, reject } = createDeferredPromise<DeviceId>();
 
     this.#pairing = { promise, resolve, reject };
-
-    // TODO: Consider polling this call while pairing is ongoing?
-    await this.#syncDevices();
 
     this.update((draftState) => {
       draftState.pairing = { snapId, type, filters };
@@ -469,5 +336,85 @@ export class DeviceController extends BaseController<
     this.update((draftState) => {
       draftState.pairing = null;
     });
+  }
+
+  /**
+   * Open a device, and set a timeout to close it if it is not used.
+   *
+   * @param id - The ID of the device to open.
+   * @returns A promise that resolves when the device is opened.
+   */
+  async #openDevice(id: DeviceId) {
+    const device = this.#devices[id];
+    assert(device, 'Device not found.');
+
+    await device.open();
+  }
+
+  /**
+   * Close a device.
+   *
+   * @param id - The ID of the device to close.
+   * @returns A promise that resolves when the device is closed.
+   */
+  async #closeDevice(id: DeviceId) {
+    const device = this.#devices[id];
+    assert(device, 'Device not found.');
+
+    await device.close();
+  }
+
+  /**
+   * Synchronize the state of the controller with the state of the device
+   * manager.
+   *
+   * @param manager - The device manager to synchronize with.
+   */
+  async #synchronize(manager: DeviceManager) {
+    const metadata = await manager.getDeviceMetadata();
+    for (const device of metadata) {
+      if (!this.state.devices[device.id]) {
+        this.update((draftState) => {
+          draftState.devices[device.id] = device;
+        });
+      }
+
+      if (!this.#devices[device.id]) {
+        const deviceImplementation = await manager.getDevice(device.id);
+        if (deviceImplementation) {
+          this.#addDevice(deviceImplementation);
+        }
+      }
+    }
+  }
+
+  /**
+   * Add a device to the controller.
+   *
+   * @param device - The device to add.
+   */
+  #addDevice(device: Device) {
+    this.#devices[device.id] = device;
+
+    if (this.state.devices[device.id]) {
+      this.update((draftState) => {
+        draftState.devices[device.id].available = true;
+      });
+    }
+  }
+
+  /**
+   * Remove a device from the controller.
+   *
+   * @param id - The ID of the device to remove.
+   */
+  #removeDevice(id: DeviceId) {
+    delete this.#devices[id];
+
+    if (this.state.devices[id]) {
+      this.update((draftState) => {
+        draftState.devices[id].available = false;
+      });
+    }
   }
 }

@@ -1,7 +1,7 @@
 import { number, object, optional } from '@metamask/superstruct';
 
 import type { Describe, EnumToUnion } from '../../internals';
-import type { Device, DeviceType } from '../device';
+import type { DeviceMetadata, DeviceType } from '../device';
 
 export type DeviceFilter = {
   /**
@@ -42,4 +42,4 @@ export type RequestDeviceParams = {
  * The result returned by the `snap_requestDevice` method. This can be a single
  * device, or `null` if no device was provided.
  */
-export type RequestDeviceResult = Device | null;
+export type RequestDeviceResult = DeviceMetadata | null;

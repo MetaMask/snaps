@@ -1,11 +1,17 @@
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
+import { bytesToHex } from '@metamask/utils';
+
 import {
   getRestrictedDeviceControllerMessenger,
   MOCK_DEVICE_ID,
 } from '../test-utils';
 import { DeviceController } from './DeviceController';
-import { bytesToHex } from '@metamask/utils';
 
+/**
+ * Mock the navigator object to return a mock HID device.
+ *
+ * @returns The mock navigator object and the mock HID device.
+ */
 function mockNavigator() {
   const mockDevice = {
     vendorId: 11415,
@@ -19,12 +25,14 @@ function mockNavigator() {
       callback({ reportId: 0, data });
     }),
   };
+
   const navigatorMock = {
     hid: {
       requestDevice: jest.fn().mockResolvedValue([mockDevice]),
       getDevices: jest.fn().mockResolvedValue([mockDevice]),
     },
   };
+
   Object.defineProperty(globalThis, 'navigator', { value: navigatorMock });
 
   return { hid: navigatorMock, device: mockDevice };
@@ -34,7 +42,9 @@ describe('DeviceController', () => {
   it('can request a device and use read/write', async () => {
     const { device } = mockNavigator();
     const messenger = getRestrictedDeviceControllerMessenger();
-    const _controller = new DeviceController({ messenger });
+
+    // eslint-disable-next-line no-new
+    new DeviceController({ messenger });
 
     const pairingPromise = messenger.call(
       'DeviceController:requestDevice',

@@ -45,6 +45,7 @@
   "dependencies": {
     "@ledgerhq/devices": "^8.4.4",
     "@ledgerhq/errors": "^6.19.1",
+    "@ledgerhq/hw-app-eth": "^6.41.0",
     "@ledgerhq/hw-transport": "^6.31.4",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/utils": "^10.0.0"

@@ -15,6 +15,7 @@ export * from './home-page';
 export * from './images';
 export * from './json-rpc';
 export * from './jsx';
+export * from './ledger';
 export * from './lifecycle-hooks';
 export * from './manage-state';
 export * from './multi-install';

@@ -56,7 +56,7 @@ export function deviceId<Type extends DeviceType>(
 /**
  * A device that is available to the Snap.
  */
-export type Device = {
+export type DeviceMetadata = {
   /**
    * The ID of the device.
    */
@@ -88,9 +88,9 @@ export type Device = {
   available: boolean;
 };
 
-type ScopedDevice<Type extends DeviceType> = Device & {
+type ScopedDeviceMetadata<Type extends DeviceType> = DeviceMetadata & {
   type: Type;
   id: ScopedDeviceId<Type>;
 };
 
-export type HidDevice = ScopedDevice<DeviceType.HID>;
+export type HidDeviceMetadata = ScopedDeviceMetadata<DeviceType.HID>;

@@ -1,4 +1,4 @@
-import { PermissionConstraint } from '@metamask/permission-controller';
+import type { PermissionConstraint } from '@metamask/permission-controller';
 import { SnapEndowments } from '@metamask/snaps-rpc-methods';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
