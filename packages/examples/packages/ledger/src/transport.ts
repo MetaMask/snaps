@@ -9,6 +9,7 @@ import type {
 } from '@ledgerhq/hw-transport';
 import Transport from '@ledgerhq/hw-transport';
 import type { HidDeviceMetadata } from '@metamask/snaps-sdk';
+import { DeviceType } from '@metamask/snaps-sdk';
 import { bytesToHex } from '@metamask/utils';
 
 /**
@@ -25,12 +26,24 @@ async function requestDevice() {
 }
 
 export default class TransportSnapsHID extends Transport {
+  /**
+   * The device metadata.
+   */
   readonly device: HidDeviceMetadata;
 
+  /**
+   * The device model, if known.
+   */
   readonly deviceModel: DeviceModel | null | undefined;
 
+  /**
+   * A random channel to use for communication with the device.
+   */
   #channel = Math.floor(Math.random() * 0xffff);
 
+  /**
+   * The packet size to use for communication with the device.
+   */
   #packetSize = 64;
 
   constructor(device: HidDeviceMetadata) {
@@ -51,7 +64,7 @@ export default class TransportSnapsHID extends Transport {
       method: 'snap_getSupportedDevices',
     });
 
-    return types.includes('hid');
+    return types.includes(DeviceType.HID);
   }
 
   /**
@@ -236,6 +249,11 @@ export default class TransportSnapsHID extends Transport {
     });
   };
 
+  /**
+   * Set the scramble key for the transport.
+   *
+   * This is not supported by the Snaps transport.
+   */
   setScrambleKey() {
     // This transport does not support setting a scramble key.
   }
