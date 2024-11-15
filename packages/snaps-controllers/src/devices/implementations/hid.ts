@@ -7,12 +7,12 @@ import type {
 import type { Hex } from '@metamask/utils';
 import { hexToBytes, add0x, assert } from '@metamask/utils';
 
-import { SnapDevice } from './device';
+import { Device } from './device';
 
 /**
  * A device that is connected to the Snap via HID.
  */
-export class HIDSnapDevice extends SnapDevice {
+export class HIDSnapDevice extends Device {
   /**
    * The device type. Always `hid`.
    */

@@ -29,7 +29,7 @@ import { logError } from '@metamask/snaps-utils';
 import { assert, createDeferredPromise, hasProperty } from '@metamask/utils';
 
 import { HIDManager } from './implementations';
-import type { SnapDevice } from './implementations/device';
+import type { Device } from './implementations/device';
 import type { DeviceManager } from './implementations/device-manager';
 
 const controllerName = 'DeviceController';
@@ -130,7 +130,7 @@ export class DeviceController extends BaseController<
     [DeviceType.HID]: new HIDManager(),
   };
 
-  #devices: Record<DeviceId, SnapDevice> = {};
+  #devices: Record<DeviceId, Device> = {};
 
   constructor({ messenger, state }: DeviceControllerArgs) {
     super({
@@ -394,7 +394,7 @@ export class DeviceController extends BaseController<
    *
    * @param device - The device to add.
    */
-  #addDevice(device: SnapDevice) {
+  #addDevice(device: Device) {
     this.#devices[device.id] = device;
 
     if (this.state.devices[device.id]) {

@@ -13,9 +13,9 @@ import { TypedEventEmitter } from '../../types';
 import { CLOSE_DEVICE_TIMEOUT } from '../constants';
 
 /**
- * The events that a `SnapDevice` can emit.
+ * The events that a `Device` can emit.
  */
-export type SnapDeviceEvents = {
+export type DeviceEvents = {
   /**
    * Emitted when data is read from the device.
    *
@@ -27,7 +27,7 @@ export type SnapDeviceEvents = {
 /**
  * An abstract class that represents a device that is available to the Snap.
  */
-export abstract class SnapDevice extends TypedEventEmitter<SnapDeviceEvents> {
+export abstract class Device extends TypedEventEmitter<DeviceEvents> {
   /**
    * The device type.
    */

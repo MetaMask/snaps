@@ -1,7 +1,7 @@
 import type { DeviceMetadata, DeviceId } from '@metamask/snaps-sdk';
 
 import { TypedEventEmitter } from '../../types';
-import type { SnapDevice } from './device';
+import type { Device } from './device';
 
 /**
  * The events that a `DeviceManager` can emit.
@@ -12,7 +12,7 @@ export type DeviceManagerEvents = {
    *
    * @param device - The device that is connected.
    */
-  connect: (device: SnapDevice) => void;
+  connect: (device: Device) => void;
 
   /**
    * Emitted when a device is disconnected.
@@ -36,5 +36,5 @@ export abstract class DeviceManager extends TypedEventEmitter<DeviceManagerEvent
    * @param deviceId - The ID of the device to get.
    * @returns The device, or `undefined` if the device is not found.
    */
-  abstract getDevice(deviceId: DeviceId): Promise<SnapDevice | undefined>;
+  abstract getDevice(deviceId: DeviceId): Promise<Device | undefined>;
 }
