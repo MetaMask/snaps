@@ -29,8 +29,7 @@ import { logError } from '@metamask/snaps-utils';
 import { assert, createDeferredPromise, hasProperty } from '@metamask/utils';
 
 import { HIDManager } from './implementations';
-import type { Device } from './implementations/device';
-import type { DeviceManager } from './implementations/device-manager';
+import type { Device, DeviceManager } from './implementations';
 
 const controllerName = 'DeviceController';
 
