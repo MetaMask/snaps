@@ -1034,15 +1034,32 @@ describe('SnapController', () => {
       }),
     );
 
-    const snap = await snapController.installSnaps(MOCK_ORIGIN, {
+    await snapController.installSnaps(MOCK_ORIGIN, {
       [MOCK_SNAP_ID]: {},
     });
 
-    const permissions = (snap[MOCK_SNAP_ID] as Snap).initialPermissions;
-
-    expect(permissions).toStrictEqual({
-      [handlerEndowments.onRpcRequest as string]: { snaps: false, dapps: true },
-    });
+    expect(messenger.call).toHaveBeenNthCalledWith(
+      5,
+      'PermissionController:grantPermissions',
+      {
+        approvedPermissions: {
+          [SnapEndowments.Rpc]: {
+            caveats: [
+              { type: 'rpcOrigin', value: { dapps: true, snaps: false } },
+            ],
+          },
+        },
+        subject: { origin: MOCK_SNAP_ID },
+        requestData: {
+          metadata: {
+            dappOrigin: MOCK_ORIGIN,
+            id: expect.any(String),
+            origin: MOCK_SNAP_ID,
+          },
+          snapId: MOCK_SNAP_ID,
+        },
+      },
+    );
 
     snapController.destroy();
   });
