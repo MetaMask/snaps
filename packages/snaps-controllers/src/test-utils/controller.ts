@@ -863,6 +863,7 @@ export const getRestrictedMultichainRoutingControllerMessenger = (
       'SnapController:getAll',
       'SnapController:handleRequest',
       'AccountsController:listMultichainAccounts',
+      'KeyringController:submitNonEvmRequest',
     ],
   });
 
