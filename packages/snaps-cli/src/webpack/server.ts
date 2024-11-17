@@ -113,7 +113,11 @@ export function getServer(config: ProcessedConfig) {
     const { result } = await readJsonFile<SnapManifest>(manifestPath);
     const allowedPaths = getAllowedPaths(config, result);
 
-    const path = request.url?.slice(1);
+    const pathname =
+      request.url &&
+      request.headers.host &&
+      new URL(request.url, `http://${request.headers.host}`).pathname;
+    const path = pathname?.slice(1);
     const allowed = allowedPaths.some((allowedPath) => path === allowedPath);
 
     if (!allowed) {

@@ -20,16 +20,7 @@ export interface HttpOptions {
 }
 
 export class HttpLocation implements SnapLocation {
-  // We keep contents separate because then we can use only one Blob in cache,
-  // which we convert to Uint8Array when actually returning the file.
-  //
-  // That avoids deepCloning file contents.
-  // I imagine ArrayBuffers are copy-on-write optimized, meaning
-  // in most often case we'll only have one file contents in common case.
-  private readonly cache = new Map<
-    string,
-    { file: VirtualFile; contents: Blob }
-  >();
+  private readonly cache = new Map<string, VirtualFile>();
 
   private validatedManifest?: VirtualFile<SnapManifest>;
 
@@ -80,11 +71,7 @@ export class HttpLocation implements SnapLocation {
     const relativePath = normalizeRelative(path);
     const cached = this.cache.get(relativePath);
     if (cached !== undefined) {
-      const { file, contents } = cached;
-      const value = new Uint8Array(await contents.arrayBuffer());
-      const vfile = file.clone();
-      vfile.value = value;
-      return vfile;
+      return cached.clone();
     }
 
     const canonicalPath = this.toCanonical(relativePath).toString();
@@ -94,17 +81,17 @@ export class HttpLocation implements SnapLocation {
         `Failed to fetch "${canonicalPath}". Status code: ${response.status}.`,
       );
     }
+    const buffer = await response.arrayBuffer();
     const vfile = new VirtualFile({
-      value: '',
+      value: new Uint8Array(buffer),
       path: relativePath,
       data: { canonicalPath },
     });
-    const blob = await response.blob();
     assert(
       !this.cache.has(relativePath),
       'Corrupted cache, multiple files with same path.',
     );
-    this.cache.set(relativePath, { file: vfile, contents: blob });
+    this.cache.set(relativePath, vfile);
 
     return this.fetch(relativePath);
   }
