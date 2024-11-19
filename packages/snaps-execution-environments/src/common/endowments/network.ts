@@ -145,8 +145,11 @@ export class ResponseWrapper implements Response {
   }
 }
 
+// We redefine the global Response class to overwrite [Symbol.hasInstance].
+// This fixes problems where the response from `fetch` would not pass
+// instance of checks, leading to failures in WASM bindgen.
 class AlteredResponse extends Response {
-  static [Symbol.hasInstance](instance: any) {
+  static [Symbol.hasInstance](instance: unknown) {
     return instance instanceof Response || instance instanceof ResponseWrapper;
   }
 }

@@ -227,10 +227,8 @@ describe('endowments', () => {
           new ResponseWrapper(
             new Response(),
             { lastTeardown: 0 },
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            async () => {},
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            async () => {},
+            async () => undefined,
+            async () => undefined,
           ),
       },
     };
