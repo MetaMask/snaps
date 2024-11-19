@@ -177,6 +177,12 @@ describe('endowments', () => {
         factory: () => WebAssembly,
       },
 
+      // Properties
+      isSecureContext: {
+        endowments: { isSecureContext: globalThis.isSecureContext },
+        factory: () => globalThis.isSecureContext,
+      },
+
       // Functions.
       atob: {
         endowments: { atob },
@@ -357,6 +363,10 @@ describe('endowments', () => {
         {
           factory: expect.any(Function),
           names: ['Int32Array'],
+        },
+        {
+          factory: expect.any(Function),
+          names: ['isSecureContext'],
         },
         {
           factory: expect.any(Function),
