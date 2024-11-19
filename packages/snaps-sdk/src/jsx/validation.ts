@@ -354,7 +354,12 @@ export const AddressStruct: Describe<AddressElement> = element('Address', {
  */
 export const CardStruct: Describe<CardElement> = element('Card', {
   image: optional(string()),
-  title: nullUnion([string(), AddressStruct]),
+  title: selectiveUnion((value) => {
+    if (typeof value === 'object') {
+      return AddressStruct;
+    }
+    return string();
+  }),
   description: optional(string()),
   value: string(),
   extra: optional(string()),
