@@ -23,6 +23,7 @@ export const DEFAULT_ENDOWMENTS: readonly string[] = Object.freeze([
   'Int16Array',
   'Uint16Array',
   'Int32Array',
+  'isSecureContext',
   'Uint32Array',
   'Float32Array',
   'Float64Array',

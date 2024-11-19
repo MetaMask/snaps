@@ -333,6 +333,7 @@ describe('getEndowments', () => {
         "Int16Array",
         "Uint16Array",
         "Int32Array",
+        "isSecureContext",
         "Uint32Array",
         "Float32Array",
         "Float64Array",
