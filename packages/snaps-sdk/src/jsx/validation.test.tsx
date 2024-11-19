@@ -701,6 +701,19 @@ describe('CardStruct', () => {
       value="$1200"
       extra="0.12 ETH"
     />,
+    <Card
+      image="<svg />"
+      title={
+        <Address
+          address="0x1234567890123456789012345678901234567890"
+          displayName
+          avatar={false}
+        />
+      }
+      description="Description"
+      value="$1200"
+      extra="0.12 ETH"
+    />,
   ])('validates a card element', (value) => {
     expect(is(value, CardStruct)).toBe(true);
   });

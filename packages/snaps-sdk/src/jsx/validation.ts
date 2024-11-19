@@ -340,11 +340,21 @@ export const DropdownStruct: Describe<DropdownElement> = element('Dropdown', {
 });
 
 /**
+ * A struct for the {@link AddressElement} type.
+ */
+export const AddressStruct: Describe<AddressElement> = element('Address', {
+  address: nullUnion([HexChecksumAddressStruct, CaipAccountIdStruct]),
+  truncate: optional(boolean()),
+  displayName: optional(boolean()),
+  avatar: optional(boolean()),
+});
+
+/**
  * A struct for the {@link CardElement} type.
  */
 export const CardStruct: Describe<CardElement> = element('Card', {
   image: optional(string()),
-  title: string(),
+  title: nullUnion([string(), AddressStruct]),
   description: optional(string()),
   value: string(),
   extra: optional(string()),
@@ -537,16 +547,6 @@ export const ItalicStruct: Describe<ItalicElement> = element('Italic', {
 export const FormattingStruct: Describe<StandardFormattingElement> = typedUnion(
   [BoldStruct, ItalicStruct],
 );
-
-/**
- * A struct for the {@link AddressElement} type.
- */
-export const AddressStruct: Describe<AddressElement> = element('Address', {
-  address: nullUnion([HexChecksumAddressStruct, CaipAccountIdStruct]),
-  truncate: optional(boolean()),
-  displayName: optional(boolean()),
-  avatar: optional(boolean()),
-});
 
 /**
  * A struct for the {@link AvatarElement} type.

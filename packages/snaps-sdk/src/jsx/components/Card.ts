@@ -1,4 +1,5 @@
 import { createSnapComponent } from '../component';
+import type { AddressElement } from './Address';
 
 /**
  * The props of the {@link Card} component.
@@ -11,7 +12,7 @@ import { createSnapComponent } from '../component';
  */
 export type CardProps = {
   image?: string | undefined;
-  title: string;
+  title: string | AddressElement;
   description?: string | undefined;
   value: string;
   extra?: string | undefined;
