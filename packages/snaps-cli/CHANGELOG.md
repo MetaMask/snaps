@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.5.3]
+
 ### Uncategorized
 
 - fix: Ignore query strings when parsing URLs ([#2883](https://github.com/MetaMask/snaps-skunkworks.git/pull/2883))
@@ -287,7 +289,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@6.5.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@6.5.3...HEAD
+[6.5.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@6.5.2...@metamask/snaps-cli@6.5.3
 [6.5.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@6.5.1...@metamask/snaps-cli@6.5.2
 [6.5.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@6.5.0...@metamask/snaps-cli@6.5.1
 [6.5.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-cli@6.4.0...@metamask/snaps-cli@6.5.0

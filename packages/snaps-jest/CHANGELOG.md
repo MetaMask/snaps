@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.7.1]
+
 ### Uncategorized
 
 - Bump `ts-bridge` to `0.6.0` ([#2882](https://github.com/MetaMask/snaps-skunkworks.git/pull/2882))
@@ -292,7 +294,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.7.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.7.1...HEAD
+[8.7.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.7.0...@metamask/snaps-jest@8.7.1
 [8.7.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.6.0...@metamask/snaps-jest@8.7.0
 [8.6.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.5.0...@metamask/snaps-jest@8.6.0
 [8.5.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.4.0...@metamask/snaps-jest@8.5.0
