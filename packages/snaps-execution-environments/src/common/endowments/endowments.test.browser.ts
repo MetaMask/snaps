@@ -12,7 +12,7 @@ import CryptoEndowment from './crypto';
 import date from './date';
 import interval from './interval';
 import math from './math';
-import network from './network';
+import network, { ResponseWrapper } from './network';
 import timeout from './timeout';
 
 // @ts-expect-error - `globalThis.process` is not optional.
@@ -217,6 +217,19 @@ describe('endowments', () => {
       fetchAttenuated: {
         endowments: { fetchAttenuated },
         factory: () => undefined,
+      },
+      ResponseWrapper: {
+        endowments: {
+          Response: ResponseHardened,
+          ResponseWrapper: harden(ResponseWrapper),
+        },
+        factory: () =>
+          new ResponseWrapper(
+            new Response(),
+            { lastTeardown: 0 },
+            async () => undefined,
+            async () => undefined,
+          ),
       },
     };
 
