@@ -7,7 +7,7 @@ import type { EndowmentFactoryOptions } from './commonEndowmentFactory';
  * This class wraps a Response object.
  * That way, a teardown process can stop any processes left.
  */
-export class ResponseWrapper extends Response {
+export class ResponseWrapper {
   readonly #teardownRef: { lastTeardown: number };
 
   #ogResponse: Response;
@@ -22,7 +22,6 @@ export class ResponseWrapper extends Response {
     onStart: () => Promise<void>,
     onFinish: () => Promise<void>,
   ) {
-    super();
     this.#ogResponse = ogResponse;
     this.#teardownRef = teardownRef;
     this.#onStart = onStart;
@@ -143,6 +142,12 @@ export class ResponseWrapper extends Response {
       })(),
       this.#teardownRef,
     );
+  }
+}
+
+class AlteredResponse extends Response {
+  static [Symbol.hasInstance](instance: any) {
+    return instance instanceof Response || instance instanceof ResponseWrapper;
   }
 }
 
@@ -298,7 +303,7 @@ const createNetwork = ({ notify }: EndowmentFactoryOptions = {}) => {
     // These endowments are not (and should never be) available by default.
     Request: harden(Request),
     Headers: harden(Headers),
-    Response: harden(Response),
+    Response: harden(AlteredResponse),
     teardownFunction,
   };
 };
