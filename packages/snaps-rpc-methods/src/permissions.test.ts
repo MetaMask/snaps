@@ -84,8 +84,7 @@ describe('buildSnapEndowmentSpecifications', () => {
         },
         "endowment:protocol": {
           "allowedCaveats": [
-            "chainIds",
-            "snapRpcMethods",
+            "protocolSnapScopes",
             "maxRequestTime",
           ],
           "endowmentGetter": [Function],
