@@ -103,5 +103,52 @@ describe('requestDevice', () => {
         jsonrpc: '2.0',
       });
     });
+
+    it('forwards the error if the `requestDevice` hook throws an error', async () => {
+      const { implementation } = requestDeviceHandler;
+
+      const requestDevice = jest.fn().mockRejectedValue(new Error('foo'));
+
+      const hooks = {
+        requestDevice,
+      };
+
+      const engine = new JsonRpcEngine();
+
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<RequestDeviceParams>,
+          response as PendingJsonRpcResponse<RequestDeviceResult>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_requestDevice',
+        params: {
+          type: 'hid',
+        },
+      });
+
+      expect(response).toStrictEqual({
+        error: {
+          code: -32603,
+          message: 'Internal JSON-RPC error.',
+          data: {
+            cause: expect.objectContaining({
+              message: 'foo',
+            }),
+          },
+        },
+        id: 1,
+        jsonrpc: '2.0',
+      });
+    });
   });
 });

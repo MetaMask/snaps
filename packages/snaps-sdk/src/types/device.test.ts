@@ -2,11 +2,11 @@ import { is } from '@metamask/superstruct';
 import { expectTypeOf } from 'expect-type';
 
 import type { DeviceId, ScopedDeviceId } from './device';
-import { deviceId, DeviceTypeStruct } from './device';
+import { DeviceType, deviceId, DeviceTypeStruct } from './device';
 
 describe('DeviceTypeStruct', () => {
   it('only accepts `hid`', () => {
-    expect(is('hid', DeviceTypeStruct)).toBe(true);
+    expect(is(DeviceType.HID, DeviceTypeStruct)).toBe(true);
   });
 
   it('does not accept unknown device types', () => {
@@ -26,17 +26,19 @@ describe('DeviceId', () => {
 
 describe('ScopedDeviceId', () => {
   it('has a colon separated device type and identifier', () => {
-    expectTypeOf<'hid:1:2'>().toMatchTypeOf<ScopedDeviceId<'hid'>>();
+    expectTypeOf<'hid:1:2'>().toMatchTypeOf<ScopedDeviceId<DeviceType.HID>>();
   });
 
   it('does not accept unknown device types', () => {
-    expectTypeOf<'bluetooth:1:2'>().not.toMatchTypeOf<ScopedDeviceId<'hid'>>();
+    expectTypeOf<'bluetooth:1:2'>().not.toMatchTypeOf<
+      ScopedDeviceId<DeviceType.HID>
+    >();
   });
 });
 
 describe('deviceId', () => {
   it('creates a scoped device ID struct', () => {
-    const struct = deviceId('hid');
+    const struct = deviceId(DeviceType.HID);
 
     expect(is('hid:1:2', struct)).toBe(true);
     expect(is('bluetooth:1:2', struct)).toBe(false);

@@ -14,6 +14,7 @@ import {
   SnapCaveatType,
   SnapEndowments,
 } from '@metamask/snaps-rpc-methods';
+import { DeviceType } from '@metamask/snaps-sdk';
 import type {
   DeviceMetadata,
   DeviceFilter,
@@ -24,7 +25,6 @@ import type {
   SnapId,
   WriteDeviceParams,
 } from '@metamask/snaps-sdk';
-import { DeviceType } from '@metamask/snaps-sdk';
 import { logError } from '@metamask/snaps-utils';
 import { assert, createDeferredPromise, hasProperty } from '@metamask/utils';
 
@@ -125,8 +125,8 @@ export class DeviceController extends BaseController<
     reject: (error: unknown) => void;
   };
 
-  #managers: Record<DeviceType, DeviceManager> = {
-    [DeviceType.HID]: new HIDManager(),
+  #managers: Record<DeviceType, DeviceManager | null> = {
+    [DeviceType.HID]: null,
   };
 
   #devices: Record<DeviceId, Device> = {};
@@ -172,22 +172,15 @@ export class DeviceController extends BaseController<
       async (...args) => this.rejectPairing(...args),
     );
 
-    for (const manager of Object.values(this.#managers)) {
-      manager.on('connect', (device) => {
-        this.#addDevice(device);
-      });
-
-      manager.on('disconnect', (id) => {
-        this.#removeDevice(id);
-      });
-
-      this.#synchronize(manager).catch((error) => {
-        logError('Failed to synchronize device manager.', error);
-      });
+    if (navigator.hid) {
+      this.#addManager(DeviceType.HID, new HIDManager());
     }
   }
 
   async requestDevice(snapId: string, { type, filters }: RequestDeviceParams) {
+    const manager = this.#managers[type];
+    assert(manager, 'Device type not supported.');
+
     const deviceId = await this.#requestPairing({
       snapId,
       type: type as DeviceType,
@@ -213,7 +206,7 @@ export class DeviceController extends BaseController<
       },
     );
 
-    await this.#synchronize(this.#managers[type]);
+    await this.#synchronize(manager);
 
     // TODO: Can a paired device be not connected?
     return this.state.devices[deviceId];
@@ -352,19 +345,6 @@ export class DeviceController extends BaseController<
   }
 
   /**
-   * Close a device.
-   *
-   * @param id - The ID of the device to close.
-   * @returns A promise that resolves when the device is closed.
-   */
-  async #closeDevice(id: DeviceId) {
-    const device = this.#devices[id];
-    assert(device, 'Device not found.');
-
-    await device.close();
-  }
-
-  /**
    * Synchronize the state of the controller with the state of the device
    * manager.
    *
@@ -416,5 +396,28 @@ export class DeviceController extends BaseController<
         draftState.devices[id].available = false;
       });
     }
+  }
+
+  /**
+   * Add a device manager to the controller, and set up event listeners.
+   *
+   * @param type - The type of the device manager.
+   * @param manager - The device manager to add.
+   */
+  #addManager(type: DeviceType, manager: DeviceManager) {
+    assert(!this.#managers[type], 'Manager already exists.');
+    this.#managers[type] = manager;
+
+    manager.on('connect', (device) => {
+      this.#addDevice(device);
+    });
+
+    manager.on('disconnect', (id) => {
+      this.#removeDevice(id);
+    });
+
+    this.#synchronize(manager).catch((error) => {
+      logError('Failed to synchronize device manager.', error);
+    });
   }
 }
