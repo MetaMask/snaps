@@ -476,7 +476,7 @@ export type SnapInstallFailed = {
  */
 export type SnapInstalled = {
   type: `${typeof controllerName}:snapInstalled`;
-  payload: [snap: TruncatedSnap, origin: string];
+  payload: [snap: TruncatedSnap, origin: string, preinstalled: boolean];
 };
 
 /**
@@ -500,7 +500,12 @@ export type SnapUnblocked = {
  */
 export type SnapUpdated = {
   type: `${typeof controllerName}:snapUpdated`;
-  payload: [snap: TruncatedSnap, oldVersion: string, origin: string];
+  payload: [
+    snap: TruncatedSnap,
+    oldVersion: string,
+    origin: string,
+    preinstalled: boolean,
+  ];
 };
 
 /**
@@ -1229,6 +1234,24 @@ export class SnapController extends BaseController<
       this.update((state) => {
         state.snaps[snapId].status = SnapStatus.Stopped;
       });
+
+      // Emit events
+      if (isUpdate) {
+        this.messagingSystem.publish(
+          'SnapController:snapUpdated',
+          this.getTruncatedExpect(snapId),
+          existingSnap.version,
+          'metamask',
+          true,
+        );
+      } else {
+        this.messagingSystem.publish(
+          'SnapController:snapInstalled',
+          this.getTruncatedExpect(snapId),
+          'metamask',
+          true,
+        );
+      }
     }
   }
 
@@ -2323,6 +2346,7 @@ export class SnapController extends BaseController<
           `SnapController:snapInstalled`,
           this.getTruncatedExpect(snapId),
           origin,
+          false,
         ),
       );
 
@@ -2332,6 +2356,7 @@ export class SnapController extends BaseController<
           this.getTruncatedExpect(snapId),
           oldVersion,
           origin,
+          false,
         ),
       );
 
@@ -2537,6 +2562,13 @@ export class SnapController extends BaseController<
   ): Promise<TruncatedSnap> {
     this.#assertCanInstallSnaps();
     this.#assertCanUsePlatform();
+
+    const snap = this.getExpect(snapId);
+
+    if (snap.preinstalled) {
+      throw new Error('Preinstalled Snaps cannot be manually updated.');
+    }
+
     if (!isValidSemVerRange(newVersionRange)) {
       throw new Error(
         `Received invalid snap version range: "${newVersionRange}".`,
@@ -2556,8 +2588,6 @@ export class SnapController extends BaseController<
         origin,
         true,
       );
-
-      const snap = this.getExpect(snapId);
 
       const oldManifest = snap.manifest;
 
@@ -2679,6 +2709,7 @@ export class SnapController extends BaseController<
           truncatedSnap,
           snap.version,
           origin,
+          false,
         );
       }
 
