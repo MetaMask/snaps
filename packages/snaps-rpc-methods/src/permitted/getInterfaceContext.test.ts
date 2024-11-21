@@ -19,7 +19,7 @@ describe('snap_getInterfaceContext', () => {
   });
 
   describe('implementation', () => {
-    it('returns the result from the `getInterfaceState` hook', async () => {
+    it('returns the result from the `getInterfaceContext` hook', async () => {
       const { implementation } = getInterfaceContextHandler;
 
       const getInterfaceContext = jest.fn().mockReturnValue({ foo: 'bar' });
