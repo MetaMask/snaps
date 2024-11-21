@@ -4,7 +4,7 @@ import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   GetInterfaceContextParams,
   GetInterfaceContextResult,
-  InterfaceState,
+  InterfaceContext,
   JsonRpcRequest,
 } from '@metamask/snaps-sdk';
 import { type InferMatching } from '@metamask/snaps-utils';
@@ -20,9 +20,9 @@ const hookNames: MethodHooksObject<GetInterfaceContextMethodHooks> = {
 export type GetInterfaceContextMethodHooks = {
   /**
    * @param id - The interface ID.
-   * @returns The interface state.
+   * @returns The interface context.
    */
-  getInterfaceContext: (id: string) => InterfaceState;
+  getInterfaceContext: (id: string) => InterfaceContext | null;
 };
 
 export const getInterfaceContextHandler: PermittedHandlerExport<
@@ -53,7 +53,7 @@ export type GetInterfaceContextParameters = InferMatching<
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
- * @param hooks.getInterfaceContext - The function to get the interface state.
+ * @param hooks.getInterfaceContext - The function to get the interface context.
  * @returns Noting.
  */
 function getInterfaceContextImplementation(
