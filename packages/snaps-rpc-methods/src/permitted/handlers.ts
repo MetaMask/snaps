@@ -4,6 +4,7 @@ import { getAllSnapsHandler } from './getAllSnaps';
 import { getClientStatusHandler } from './getClientStatus';
 import { getCurrencyRateHandler } from './getCurrencyRate';
 import { getFileHandler } from './getFile';
+import { getInterfaceContextHandler } from './getInterfaceContext';
 import { getInterfaceStateHandler } from './getInterfaceState';
 import { getSnapsHandler } from './getSnaps';
 import { invokeKeyringHandler } from './invokeKeyring';
@@ -24,6 +25,7 @@ export const methodHandlers = {
   snap_createInterface: createInterfaceHandler,
   snap_updateInterface: updateInterfaceHandler,
   snap_getInterfaceState: getInterfaceStateHandler,
+  snap_getInterfaceContext: getInterfaceContextHandler,
   snap_resolveInterface: resolveInterfaceHandler,
   snap_getCurrencyRate: getCurrencyRateHandler,
   snap_experimentalProviderRequest: providerRequestHandler,

@@ -27,6 +27,10 @@ import type {
 import type { GetEntropyParams, GetEntropyResult } from './get-entropy';
 import type { GetFileParams, GetFileResult } from './get-file';
 import type {
+  GetInterfaceContextParams,
+  GetInterfaceContextResult,
+} from './get-interface-context';
+import type {
   GetInterfaceStateParams,
   GetInterfaceStateResult,
 } from './get-interface-state';
@@ -79,6 +83,10 @@ export type SnapMethods = {
   snap_createInterface: [CreateInterfaceParams, CreateInterfaceResult];
   snap_updateInterface: [UpdateInterfaceParams, UpdateInterfaceResult];
   snap_getInterfaceState: [GetInterfaceStateParams, GetInterfaceStateResult];
+  snap_getInterfaceContext: [
+    GetInterfaceContextParams,
+    GetInterfaceContextResult,
+  ];
   snap_resolveInterface: [ResolveInterfaceParams, ResolveInterfaceResult];
   wallet_getSnaps: [GetSnapsParams, GetSnapsResult];
   wallet_invokeKeyring: [InvokeKeyringParams, InvokeKeyringResult];
