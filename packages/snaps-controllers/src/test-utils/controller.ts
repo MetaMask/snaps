@@ -49,9 +49,9 @@ import type {
   StoredInterface,
 } from '../interface/SnapInterfaceController';
 import type {
-  MultichainRoutingControllerActions,
-  MultichainRoutingControllerAllowedActions,
-  MultichainRoutingControllerEvents,
+  MultichainRouterActions,
+  MultichainRouterAllowedActions,
+  MultichainRouterEvents,
 } from '../multichain';
 import type {
   AllowedActions,
@@ -833,12 +833,11 @@ export const getRestrictedSnapInsightsControllerMessenger = (
   return controllerMessenger;
 };
 
-// Mock controller messenger for Multichain Routing Controller
-export const getRootMultichainRoutingControllerMessenger = () => {
+// Mock controller messenger for Multichain Router
+export const getRootMultichainRouterMessenger = () => {
   const messenger = new MockControllerMessenger<
-    | MultichainRoutingControllerActions
-    | MultichainRoutingControllerAllowedActions,
-    MultichainRoutingControllerEvents
+    MultichainRouterActions | MultichainRouterAllowedActions,
+    MultichainRouterEvents
   >();
 
   jest.spyOn(messenger, 'call');
@@ -846,17 +845,17 @@ export const getRootMultichainRoutingControllerMessenger = () => {
   return messenger;
 };
 
-export const getRestrictedMultichainRoutingControllerMessenger = (
+export const getRestrictedMultichainRouterMessenger = (
   messenger: ReturnType<
-    typeof getRootMultichainRoutingControllerMessenger
-  > = getRootMultichainRoutingControllerMessenger(),
+    typeof getRootMultichainRouterMessenger
+  > = getRootMultichainRouterMessenger(),
 ) => {
   const controllerMessenger = messenger.getRestricted<
-    'MultichainRoutingController',
-    MultichainRoutingControllerAllowedActions['type'],
+    'MultichainRouter',
+    MultichainRouterAllowedActions['type'],
     never
   >({
-    name: 'MultichainRoutingController',
+    name: 'MultichainRouter',
     allowedEvents: [],
     allowedActions: [
       'PermissionController:getPermissions',
