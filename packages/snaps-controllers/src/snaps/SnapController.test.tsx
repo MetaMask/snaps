@@ -18,7 +18,7 @@ import {
   handlerEndowments,
   SnapEndowments,
 } from '@metamask/snaps-rpc-methods';
-import type { Snap, SnapId } from '@metamask/snaps-sdk';
+import type { SnapId } from '@metamask/snaps-sdk';
 import { AuxiliaryFileEncoding, text } from '@metamask/snaps-sdk';
 import { Text } from '@metamask/snaps-sdk/jsx';
 import type { SnapPermissions, RpcOrigins } from '@metamask/snaps-utils';
