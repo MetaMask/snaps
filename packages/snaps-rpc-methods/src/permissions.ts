@@ -48,14 +48,6 @@ export function processSnapPermissions(
     Object.entries(initialPermissions)
       .filter(filterRemovedPermissions)
       .map(([initialPermission, value]) => {
-        if (
-          REMOVED_PERMISSIONS.some(
-            (permission) => permission === initialPermission,
-          )
-        ) {
-          return [];
-        }
-
         if (hasProperty(caveatMappers, initialPermission)) {
           return [initialPermission, caveatMappers[initialPermission](value)];
         } else if (hasProperty(endowmentCaveatMappers, initialPermission)) {
