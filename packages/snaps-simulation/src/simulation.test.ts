@@ -376,6 +376,46 @@ describe('getHooks', () => {
     await close();
   });
 
+  it('returns the `getInterfaceContext` hook', async () => {
+    // eslint-disable-next-line no-new
+    new SnapInterfaceController({
+      messenger:
+        getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
+    });
+
+    jest.spyOn(controllerMessenger, 'call');
+
+    const { snapId, close } = await getMockServer({
+      manifest: getSnapManifest(),
+    });
+
+    const location = detectSnapLocation(snapId, {
+      allowLocal: true,
+    });
+    const snapFiles = await fetchSnap(snapId, location);
+
+    const { createInterface, getInterfaceContext } = getHooks(
+      getMockOptions(),
+      snapFiles,
+      snapId,
+      controllerMessenger,
+    );
+
+    const id = await createInterface(text('foo'), { bar: 'baz' });
+
+    const result = getInterfaceContext(id);
+
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
+      3,
+      'SnapInterfaceController:getInterface',
+      snapId,
+      id,
+    );
+
+    expect(result).toStrictEqual({ bar: 'baz' });
+    await close();
+  });
+
   it('returns the `resolveInterface` hook', async () => {
     // eslint-disable-next-line no-new
     const snapInterfaceController = new SnapInterfaceController({

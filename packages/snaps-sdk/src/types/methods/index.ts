@@ -6,6 +6,7 @@ export * from './get-bip44-entropy';
 export * from './get-client-status';
 export * from './get-entropy';
 export * from './get-file';
+export * from './get-interface-context';
 export * from './get-interface-state';
 export * from './get-locale';
 export * from './get-preferences';

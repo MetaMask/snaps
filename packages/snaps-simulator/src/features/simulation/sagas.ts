@@ -213,6 +213,8 @@ export function* initSaga({ payload }: PayloadAction<string>) {
         await runSaga(createInterface, payload, content).toPromise(),
       getInterfaceState: (id: string) =>
         runSaga(getInterfaceState, payload, id).result(),
+      getInterfaceContext: (id: string) =>
+        runSaga(getInterface, payload, id).result().context,
       updateInterface: async (id: string, content: Component) =>
         await runSaga(updateInterface, payload, id, content).toPromise(),
     }),
