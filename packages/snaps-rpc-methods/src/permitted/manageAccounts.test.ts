@@ -25,7 +25,7 @@ describe('snap_manageAccounts', () => {
   });
 
   describe('implementation', () => {
-    it('returns the result from the `handleKeyringSnapMessage` hook', async () => {
+    it('returns the result from the `handleKeyringSnapMessage` hook with params', async () => {
       const { implementation } = manageAccountsHandler;
 
       const hasPermission = jest.fn().mockReturnValue(true);
@@ -63,6 +63,47 @@ describe('snap_manageAccounts', () => {
       expect(handleKeyringSnapMessage).toHaveBeenCalledWith({
         method: 'foo',
         params: { bar: 'baz' },
+      });
+
+      expect(response).toStrictEqual({ jsonrpc: '2.0', id: 1, result: 'foo' });
+    });
+
+    it('returns the result from the `handleKeyringSnapMessage` hook without params', async () => {
+      const { implementation } = manageAccountsHandler;
+
+      const hasPermission = jest.fn().mockReturnValue(true);
+      const handleKeyringSnapMessage = jest.fn().mockReturnValue('foo');
+
+      const hooks = {
+        hasPermission,
+        handleKeyringSnapMessage,
+      };
+
+      const engine = new JsonRpcEngine();
+
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<ManageAccountsParameters>,
+          response as PendingJsonRpcResponse<ManageAccountsResult>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_manageAccounts',
+        params: {
+          method: 'foo',
+        },
+      });
+
+      expect(handleKeyringSnapMessage).toHaveBeenCalledWith({
+        method: 'foo',
       });
 
       expect(response).toStrictEqual({ jsonrpc: '2.0', id: 1, result: 'foo' });

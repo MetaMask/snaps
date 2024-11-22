@@ -1,16 +1,16 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type {
-  ManageAccountsParams,
-  ManageAccountsResult,
+import {
+  selectiveUnion,
+  type ManageAccountsParams,
+  type ManageAccountsResult,
 } from '@metamask/snaps-sdk';
 import { type InferMatching } from '@metamask/snaps-utils';
 import {
   array,
   create,
   object,
-  optional,
   record,
   string,
   StructError,
@@ -21,7 +21,7 @@ import type {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
-import { JsonStruct } from '@metamask/utils';
+import { hasProperty, JsonStruct } from '@metamask/utils';
 
 import { SnapEndowments } from '../endowments';
 import type { MethodHooksObject } from '../utils';
@@ -59,9 +59,21 @@ export const manageAccountsHandler: PermittedHandlerExport<
   hookNames,
 };
 
-const ManageAccountsParametersStruct = object({
+const ManageAccountsParametersWithParamsStruct = object({
   method: string(),
-  params: optional(union([array(JsonStruct), record(string(), JsonStruct)])),
+  params: union([array(JsonStruct), record(string(), JsonStruct)]),
+});
+
+const ManageAccountsParametersWithoutParamsStruct = object({
+  method: string(),
+});
+
+const ManageAccountsParametersStruct = selectiveUnion((value) => {
+  if (hasProperty(value, 'params')) {
+    return ManageAccountsParametersWithParamsStruct;
+  }
+
+  return ManageAccountsParametersWithoutParamsStruct;
 });
 
 export type ManageAccountsParameters = InferMatching<
