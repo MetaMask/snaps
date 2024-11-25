@@ -21,7 +21,7 @@ const hookNames: MethodHooksObject<GetCurrencyRateMethodHooks> = {
 export type GetCurrencyRateMethodHooks = {
   /**
    * @param currency - The currency symbol.
-   * Currently only 'btc' is supported.
+   * Currently only 'btc' and 'sol' are supported.
    * @returns The {@link CurrencyRate} object.
    */
   getCurrencyRate: (currency: AvailableCurrency) => CurrencyRate | undefined;
@@ -38,7 +38,7 @@ export const getCurrencyRateHandler: PermittedHandlerExport<
 };
 
 const GetCurrencyRateParametersStruct = object({
-  currency: union([currency('btc')]),
+  currency: union([currency('btc'), currency('sol')]),
 });
 
 export type GetCurrencyRateParameters = InferMatching<

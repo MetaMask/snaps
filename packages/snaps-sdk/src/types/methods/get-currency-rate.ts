@@ -2,7 +2,7 @@ export type Currency<Value extends string> =
   | Lowercase<Value>
   | Uppercase<Value>;
 
-export type AvailableCurrency = Currency<'btc'>;
+export type AvailableCurrency = Currency<'btc'> | Currency<'sol'>;
 
 /**
  * The currency rate object.

@@ -148,7 +148,7 @@ describe('snap_getCurrencyRate', () => {
         error: {
           code: -32602,
           message:
-            'Invalid params: At path: currency -- Expected the value to satisfy a union of `literal`, but received: "eth".',
+            'Invalid params: At path: currency -- Expected the value to satisfy a union of `literal | literal`, but received: "eth".',
           stack: expect.any(String),
         },
         id: 1,
