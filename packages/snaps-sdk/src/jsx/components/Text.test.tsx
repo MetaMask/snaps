@@ -51,6 +51,7 @@ describe('Text', () => {
       },
     });
   });
+
   it('renders text with props', () => {
     const result = <Text size="sm">Hello world!</Text>;
 
