@@ -51,4 +51,16 @@ describe('Text', () => {
       },
     });
   });
+  it('renders text with props', () => {
+    const result = <Text size="sm">Hello world!</Text>;
+
+    expect(result).toStrictEqual({
+      type: 'Text',
+      key: null,
+      props: {
+        children: 'Hello world!',
+        size: 'sm',
+      },
+    });
+  });
 });

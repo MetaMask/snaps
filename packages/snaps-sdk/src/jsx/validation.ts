@@ -713,6 +713,7 @@ export const TextStruct: Describe<TextElement> = element('Text', {
       literal('warning'),
     ]),
   ),
+  size: optional(nullUnion([literal('sm'), literal('md')])),
 });
 
 /**
