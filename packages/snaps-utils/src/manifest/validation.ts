@@ -232,7 +232,6 @@ export const PermissionsStruct: Describe<InitialPermissions> = type({
   'endowment:webassembly': optional(EmptyObjectStruct),
   snap_dialog: optional(EmptyObjectStruct),
   snap_manageState: optional(EmptyObjectStruct),
-  snap_manageAccounts: optional(EmptyObjectStruct),
   snap_notify: optional(EmptyObjectStruct),
   snap_getBip32Entropy: optional(SnapGetBip32EntropyPermissionsStruct),
   snap_getBip32PublicKey: optional(SnapGetBip32EntropyPermissionsStruct),

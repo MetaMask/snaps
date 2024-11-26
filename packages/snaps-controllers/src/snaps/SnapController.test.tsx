@@ -1011,6 +1011,59 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
+  it('filters out removed permissions', async () => {
+    const messenger = getSnapControllerMessenger();
+    const initialPermissions: SnapPermissions = {
+      [handlerEndowments.onRpcRequest as string]: { snaps: false, dapps: true },
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      snap_manageAccounts: {},
+    };
+
+    const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
+      manifest: getSnapManifest({
+        initialPermissions,
+      }),
+    });
+
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        detectSnapLocation: loopbackDetect({
+          manifest: manifest.result,
+        }),
+      }),
+    );
+
+    await snapController.installSnaps(MOCK_ORIGIN, {
+      [MOCK_SNAP_ID]: {},
+    });
+
+    expect(messenger.call).toHaveBeenNthCalledWith(
+      5,
+      'PermissionController:grantPermissions',
+      {
+        approvedPermissions: {
+          [SnapEndowments.Rpc]: {
+            caveats: [
+              { type: 'rpcOrigin', value: { dapps: true, snaps: false } },
+            ],
+          },
+        },
+        subject: { origin: MOCK_SNAP_ID },
+        requestData: {
+          metadata: {
+            dappOrigin: MOCK_ORIGIN,
+            id: expect.any(String),
+            origin: MOCK_SNAP_ID,
+          },
+          snapId: MOCK_SNAP_ID,
+        },
+      },
+    );
+
+    snapController.destroy();
+  });
+
   it('throws an error if the installation is disabled during installSnaps', async () => {
     const controller = getSnapController(
       getSnapControllerOptions({

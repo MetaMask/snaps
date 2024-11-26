@@ -242,15 +242,6 @@ describe('getPermissionSpecifications', () => {
           ],
           "targetName": "snap_getPreferences",
         },
-        "snap_manageAccounts": {
-          "allowedCaveats": null,
-          "methodImplementation": [Function],
-          "permissionType": "RestrictedMethod",
-          "subjectTypes": [
-            "snap",
-          ],
-          "targetName": "snap_manageAccounts",
-        },
         "snap_manageState": {
           "allowedCaveats": null,
           "methodImplementation": [Function],

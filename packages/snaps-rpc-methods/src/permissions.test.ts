@@ -1,7 +1,108 @@
+import type { Bip32Entropy } from '@metamask/snaps-sdk';
+
 import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
+  filterRemovedPermissions,
+  processSnapPermissions,
 } from './permissions';
+
+describe('filterRemovedPermissions', () => {
+  it('returns true for a permission that is not removed', () => {
+    const result = filterRemovedPermissions(['snap_dialog', {}]);
+    expect(result).toBe(true);
+  });
+
+  it('returns false for a permission that is removed', () => {
+    const result = filterRemovedPermissions(['snap_manageAccounts', {}]);
+    expect(result).toBe(false);
+  });
+});
+
+/* eslint-disable @typescript-eslint/naming-convention */
+describe('processSnapPermissions', () => {
+  it('returns the expected object', () => {
+    const permissions = {
+      snap_dialog: {},
+
+      snap_manageAccounts: {},
+    };
+    const result = processSnapPermissions(permissions);
+    expect(result).toStrictEqual({
+      snap_dialog: {},
+    });
+  });
+
+  it('returns the expected object when the permission is not a snap permission', () => {
+    const permissions = {
+      snap_dialog: {},
+      snap_manageAccounts: {},
+      wallet_foobar: {},
+    };
+    const result = processSnapPermissions(permissions);
+    expect(result).toStrictEqual({
+      snap_dialog: {},
+      wallet_foobar: {},
+    });
+  });
+
+  it('returns the expected object when the permission is a snap endowment with a mapper', () => {
+    const permissions = {
+      snap_dialog: {},
+      snap_manageAccounts: {},
+      'endowment:rpc': {
+        dapps: true,
+        snaps: true,
+      },
+    };
+    const result = processSnapPermissions(permissions);
+    expect(result).toStrictEqual({
+      snap_dialog: {},
+      'endowment:rpc': {
+        caveats: [
+          {
+            type: 'rpcOrigin',
+            value: {
+              dapps: true,
+              snaps: true,
+            },
+          },
+        ],
+      },
+    });
+  });
+
+  it('returns the expected object when the permission is a snap permission with a mapper', () => {
+    const permissions = {
+      snap_dialog: {},
+      snap_manageAccounts: {},
+      snap_getBip32Entropy: [
+        {
+          path: ['m', "44'", "3'"],
+          curve: 'secp256k1',
+        } as Bip32Entropy,
+      ],
+    };
+    const result = processSnapPermissions(permissions);
+    expect(result).toStrictEqual({
+      snap_dialog: {},
+      snap_getBip32Entropy: {
+        caveats: [
+          {
+            type: 'permittedDerivationPaths',
+            value: [
+              {
+                path: ['m', "44'", "3'"],
+                curve: 'secp256k1',
+              },
+            ],
+          },
+        ],
+      },
+    });
+  });
+});
+/* eslint-enable @typescript-eslint/naming-convention */
 
 describe('buildSnapEndowmentSpecifications', () => {
   it('returns the expected object', () => {
@@ -210,15 +311,6 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
             "snap",
           ],
           "targetName": "snap_getPreferences",
-        },
-        "snap_manageAccounts": {
-          "allowedCaveats": null,
-          "methodImplementation": [Function],
-          "permissionType": "RestrictedMethod",
-          "subjectTypes": [
-            "snap",
-          ],
-          "targetName": "snap_manageAccounts",
         },
         "snap_manageState": {
           "allowedCaveats": null,
