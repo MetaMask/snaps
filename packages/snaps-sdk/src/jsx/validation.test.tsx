@@ -1177,6 +1177,7 @@ describe('TextStruct', () => {
     <Text>
       Hello, <Bold>world</Bold>
     </Text>,
+    <Text size="sm">foo</Text>,
   ])('validates a text element', (value) => {
     expect(is(value, TextStruct)).toBe(true);
   });
