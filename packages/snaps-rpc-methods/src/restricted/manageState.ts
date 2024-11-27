@@ -1,3 +1,4 @@
+import type { CryptographicFunctions } from '@metamask/key-tree';
 import type {
   PermissionSpecificationBuilder,
   RestrictedMethodOptions,
@@ -111,6 +112,7 @@ export const STORAGE_SIZE_LIMIT = 104857600; // In bytes (100MB)
 type GetEncryptionKeyArgs = {
   snapId: string;
   mnemonicPhrase: Uint8Array;
+  cryptographicFunctions: CryptographicFunctions;
 };
 
 /**
@@ -124,17 +126,21 @@ type GetEncryptionKeyArgs = {
  * @param args.snapId - The ID of the snap to get the encryption key for.
  * @param args.mnemonicPhrase - The mnemonic phrase to derive the encryption key
  * from.
+ * @param args.cryptographicFunctions - The cryptographic functions to use for
+ * the client.
  * @returns The state encryption key.
  */
 export async function getEncryptionEntropy({
   mnemonicPhrase,
   snapId,
+  cryptographicFunctions,
 }: GetEncryptionKeyArgs) {
   return await deriveEntropy({
     mnemonicPhrase,
     input: snapId,
     salt: STATE_ENCRYPTION_SALT,
     magic: STATE_ENCRYPTION_MAGIC_VALUE,
+    cryptographicFunctions,
   });
 }
 

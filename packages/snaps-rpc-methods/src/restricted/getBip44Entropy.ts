@@ -1,3 +1,4 @@
+import type { CryptographicFunctions } from '@metamask/key-tree';
 import { BIP44CoinTypeNode } from '@metamask/key-tree';
 import type {
   PermissionSpecificationBuilder,
@@ -30,6 +31,14 @@ export type GetBip44EntropyMethodHooks = {
    * @returns A promise that resolves once the extension is unlocked.
    */
   getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
+
+  /**
+   * Get the cryptographic functions to use for the client. This may return an
+   * empty object to fall back to the default cryptographic functions.
+   *
+   * @returns The cryptographic functions to use for the client.
+   */
+  getClientCryptography: () => CryptographicFunctions;
 };
 
 type GetBip44EntropySpecificationBuilderOptions = {
@@ -81,6 +90,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 const methodHooks: MethodHooksObject<GetBip44EntropyMethodHooks> = {
   getMnemonic: true,
   getUnlockPromise: true,
+  getClientCryptography: true,
 };
 
 export const getBip44EntropyBuilder = Object.freeze({
@@ -98,12 +108,15 @@ export const getBip44EntropyBuilder = Object.freeze({
  * @param hooks.getUnlockPromise - A function that resolves once the MetaMask
  * extension is unlocked and prompts the user to unlock their MetaMask if it is
  * locked.
+ * @param hooks.getClientCryptography - A function to retrieve the cryptographic
+ * functions to use for the client.
  * @returns The method implementation which returns a `BIP44CoinTypeNode`.
  * @throws If the params are invalid.
  */
 export function getBip44EntropyImplementation({
   getMnemonic,
   getUnlockPromise,
+  getClientCryptography,
 }: GetBip44EntropyMethodHooks) {
   return async function getBip44Entropy(
     args: RestrictedMethodOptions<GetBip44EntropyParams>,
@@ -113,11 +126,11 @@ export function getBip44EntropyImplementation({
     // `args.params` is validated by the decorator, so it's safe to assert here.
     const params = args.params as GetBip44EntropyParams;
 
-    const node = await BIP44CoinTypeNode.fromDerivationPath([
-      await getMnemonic(),
-      `bip32:44'`,
-      `bip32:${params.coinType}'`,
-    ]);
+    const node = await BIP44CoinTypeNode.fromDerivationPath(
+      [await getMnemonic(), `bip32:44'`, `bip32:${params.coinType}'`],
+      'mainnet',
+      getClientCryptography(),
+    );
 
     return node.toJSON();
   };

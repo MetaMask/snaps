@@ -3,6 +3,7 @@ import type {
   BIP32Node,
   SLIP10PathNode,
   SupportedCurve,
+  CryptographicFunctions,
 } from '@metamask/key-tree';
 import { SLIP10Node } from '@metamask/key-tree';
 import type { MagicValue } from '@metamask/snaps-utils';
@@ -106,6 +107,11 @@ type DeriveEntropyOptions = {
    * mnemonic phrase.
    */
   magic: MagicValue;
+
+  /**
+   * The cryptographic functions to use for the derivation.
+   */
+  cryptographicFunctions: CryptographicFunctions;
 };
 
 /**
@@ -186,6 +192,7 @@ type GetNodeArgs = {
   curve: SupportedCurve;
   secretRecoveryPhrase: Uint8Array;
   path: string[];
+  cryptographicFunctions: CryptographicFunctions;
 };
 
 /**
@@ -200,22 +207,28 @@ type GetNodeArgs = {
  * derivation.
  * @param options.path - The derivation path to use as array, starting with an
  * "m" as the first item.
+ * @param options.cryptographicFunctions - The cryptographic functions to use
+ * for the node.
  * @returns The `key-tree` SLIP-10 node.
  */
 export async function getNode({
   curve,
   secretRecoveryPhrase,
   path,
+  cryptographicFunctions,
 }: GetNodeArgs) {
   const prefix = getPathPrefix(curve);
 
-  return await SLIP10Node.fromDerivationPath({
-    curve,
-    derivationPath: [
-      secretRecoveryPhrase,
-      ...(path.slice(1).map((index) => `${prefix}:${index}`) as
-        | BIP32Node[]
-        | SLIP10PathNode[]),
-    ],
-  });
+  return await SLIP10Node.fromDerivationPath(
+    {
+      curve,
+      derivationPath: [
+        secretRecoveryPhrase,
+        ...(path.slice(1).map((index) => `${prefix}:${index}`) as
+          | BIP32Node[]
+          | SLIP10PathNode[]),
+      ],
+    },
+    cryptographicFunctions,
+  );
 }

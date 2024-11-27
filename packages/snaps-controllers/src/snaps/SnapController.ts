@@ -8,6 +8,7 @@ import type {
   ControllerStateChangeEvent,
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
+import type { CryptographicFunctions } from '@metamask/key-tree';
 import type {
   Caveat,
   GetEndowments,
@@ -711,7 +712,16 @@ type SnapControllerArgs = {
    * @returns The feature flags.
    */
   getFeatureFlags: () => DynamicFeatureFlags;
+
+  /**
+   * Get the cryptographic functions to use for the client. This may return an
+   * empty object to fall back to the default cryptographic functions.
+   *
+   * @returns The cryptographic functions to use for the client.
+   */
+  getClientCryptography: () => CryptographicFunctions;
 };
+
 type AddSnapArgs = {
   id: SnapId;
   origin: string;
@@ -799,6 +809,8 @@ export class SnapController extends BaseController<
 
   #getFeatureFlags: () => DynamicFeatureFlags;
 
+  #getClientCryptography: () => CryptographicFunctions;
+
   #detectSnapLocation: typeof detectSnapLocation;
 
   #snapsRuntimeData: Map<SnapId, SnapRuntimeData>;
@@ -832,6 +844,7 @@ export class SnapController extends BaseController<
     encryptor,
     getMnemonic,
     getFeatureFlags = () => ({}),
+    getClientCryptography,
   }: SnapControllerArgs) {
     super({
       messenger,
@@ -887,6 +900,7 @@ export class SnapController extends BaseController<
     this.#encryptor = encryptor;
     this.#getMnemonic = getMnemonic;
     this.#getFeatureFlags = getFeatureFlags;
+    this.#getClientCryptography = getClientCryptography;
     this.#preinstalledSnaps = preinstalledSnaps;
     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
     this._onOutboundRequest = this._onOutboundRequest.bind(this);
@@ -1754,7 +1768,14 @@ export class SnapController extends BaseController<
 
     const salt = passedSalt ?? this.#encryptor.generateSalt();
     const mnemonicPhrase = await this.#getMnemonic();
-    const entropy = await getEncryptionEntropy({ snapId, mnemonicPhrase });
+    const cryptographicFunctions = this.#getClientCryptography();
+
+    const entropy = await getEncryptionEntropy({
+      snapId,
+      mnemonicPhrase,
+      cryptographicFunctions,
+    });
+
     const encryptionKey = await this.#encryptor.keyFromPassword(
       entropy,
       salt,

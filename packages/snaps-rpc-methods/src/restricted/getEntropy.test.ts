@@ -14,6 +14,7 @@ describe('getEntropyBuilder', () => {
       methodHooks: {
         getMnemonic: true,
         getUnlockPromise: true,
+        getClientCryptography: jest.fn(),
       },
     });
   });
@@ -22,6 +23,7 @@ describe('getEntropyBuilder', () => {
     const methodHooks = {
       getMnemonic: jest.fn(),
       getUnlockPromise: jest.fn(),
+      getClientCryptography: jest.fn(),
     };
 
     expect(
@@ -43,10 +45,12 @@ describe('getEntropyImplementation', () => {
       .mockImplementation(() => TEST_SECRET_RECOVERY_PHRASE_BYTES);
 
     const getUnlockPromise = jest.fn();
+    const getClientCryptography = jest.fn().mockReturnValue({});
 
     const methodHooks = {
       getMnemonic,
       getUnlockPromise,
+      getClientCryptography,
     };
 
     const implementation = getEntropyBuilder.specificationBuilder({

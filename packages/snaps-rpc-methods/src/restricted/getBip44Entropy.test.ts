@@ -11,6 +11,7 @@ describe('specificationBuilder', () => {
   const methodHooks = {
     getMnemonic: jest.fn(),
     getUnlockPromise: jest.fn(),
+    getClientCryptography: jest.fn(),
   };
 
   const specification = getBip44EntropyBuilder.specificationBuilder({

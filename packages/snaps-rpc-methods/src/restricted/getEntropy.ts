@@ -1,3 +1,4 @@
+import type { CryptographicFunctions } from '@metamask/key-tree';
 import type {
   PermissionSpecificationBuilder,
   RestrictedMethodOptions,
@@ -62,6 +63,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 const methodHooks: MethodHooksObject<GetEntropyHooks> = {
   getMnemonic: true,
   getUnlockPromise: true,
+  getClientCryptography: true,
 };
 
 export const getEntropyBuilder = Object.freeze({
@@ -82,6 +84,14 @@ export type GetEntropyHooks = {
    * @returns A promise that resolves once the extension is unlocked.
    */
   getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
+
+  /**
+   * Get the cryptographic functions to use for the client. This may return an
+   * empty object to fall back to the default cryptographic functions.
+   *
+   * @returns The cryptographic functions to use for the client.
+   */
+  getClientCryptography: () => CryptographicFunctions;
 };
 
 /**
@@ -94,11 +104,14 @@ export type GetEntropyHooks = {
  * primary keyring.
  * @param hooks.getUnlockPromise - The method to get a promise that resolves
  * once the extension is unlocked.
+ * @param hooks.getClientCryptography - A function to retrieve the cryptographic
+ * functions to use for the client.
  * @returns The method implementation.
  */
 function getEntropyImplementation({
   getMnemonic,
   getUnlockPromise,
+  getClientCryptography,
 }: GetEntropyHooks) {
   return async function getEntropy(
     options: RestrictedMethodOptions<GetEntropyParams>,
@@ -123,6 +136,7 @@ function getEntropyImplementation({
       salt: params.salt,
       mnemonicPhrase,
       magic: SIP_6_MAGIC_VALUE,
+      cryptographicFunctions: getClientCryptography(),
     });
   };
 }

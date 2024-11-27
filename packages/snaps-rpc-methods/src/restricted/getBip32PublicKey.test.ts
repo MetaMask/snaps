@@ -11,6 +11,7 @@ describe('specificationBuilder', () => {
   const methodHooks = {
     getMnemonic: jest.fn(),
     getUnlockPromise: jest.fn(),
+    getClientCryptography: jest.fn(),
   };
 
   const specification = getBip32PublicKeyBuilder.specificationBuilder({
@@ -62,11 +63,13 @@ describe('getBip32PublicKeyImplementation', () => {
       const getMnemonic = jest
         .fn()
         .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+      const getClientCryptography = jest.fn().mockReturnValue({});
 
       expect(
         await getBip32PublicKeyImplementation({
           getUnlockPromise,
           getMnemonic,
+          getClientCryptography,
           // @ts-expect-error Missing other required properties.
         })({
           params: {
@@ -84,11 +87,13 @@ describe('getBip32PublicKeyImplementation', () => {
       const getMnemonic = jest
         .fn()
         .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+      const getClientCryptography = jest.fn().mockReturnValue({});
 
       expect(
         await getBip32PublicKeyImplementation({
           getUnlockPromise,
           getMnemonic,
+          getClientCryptography,
           // @ts-expect-error Missing other required properties.
         })({
           params: {
@@ -106,11 +111,13 @@ describe('getBip32PublicKeyImplementation', () => {
       const getMnemonic = jest
         .fn()
         .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+      const getClientCryptography = jest.fn().mockReturnValue({});
 
       expect(
         await getBip32PublicKeyImplementation({
           getUnlockPromise,
           getMnemonic,
+          getClientCryptography,
           // @ts-expect-error Missing other required properties.
         })({
           params: {
@@ -128,11 +135,13 @@ describe('getBip32PublicKeyImplementation', () => {
       const getMnemonic = jest
         .fn()
         .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+      const getClientCryptography = jest.fn().mockReturnValue({});
 
       expect(
         await getBip32PublicKeyImplementation({
           getUnlockPromise,
           getMnemonic,
+          getClientCryptography,
           // @ts-expect-error Missing other required properties.
         })({
           params: {
