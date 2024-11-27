@@ -3529,7 +3529,7 @@ describe('SnapController', () => {
     rootMessenger.registerActionHandler(
       'PermissionController:getPermissions',
       () => ({
-        [SnapEndowments.HomePage]: {
+        [SnapEndowments.SettingsPage]: {
           caveats: null,
           date: 1664187844588,
           id: 'izn0WGUO8cvq_jqvLQuQP',
@@ -3593,7 +3593,7 @@ describe('SnapController', () => {
     rootMessenger.registerActionHandler(
       'PermissionController:getPermissions',
       () => ({
-        [SnapEndowments.HomePage]: {
+        [SnapEndowments.SettingsPage]: {
           caveats: null,
           date: 1664187844588,
           id: 'izn0WGUO8cvq_jqvLQuQP',
@@ -3647,7 +3647,7 @@ describe('SnapController', () => {
     rootMessenger.registerActionHandler(
       'PermissionController:getPermissions',
       () => ({
-        [SnapEndowments.HomePage]: {
+        [SnapEndowments.SettingsPage]: {
           caveats: null,
           date: 1664187844588,
           id: 'izn0WGUO8cvq_jqvLQuQP',
