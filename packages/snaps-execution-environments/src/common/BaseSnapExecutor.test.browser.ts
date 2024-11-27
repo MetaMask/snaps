@@ -1441,6 +1441,39 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('supports onSettingsPage export', async () => {
+    const CODE = `
+      module.exports.onSettingsPage = () => ({ content: { type: 'panel', children: [] }});
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnSettingsPage,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: '' },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: { content: { type: 'panel', children: [] } },
+    });
+  });
+
   it('supports onSignature export', async () => {
     const CODE = `
       module.exports.onSignature = ({ signature, signatureOrigin }) =>

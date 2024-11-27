@@ -7,3 +7,4 @@ export * from './rpc-request';
 export * from './transaction';
 export * from './signature';
 export * from './user-input';
+export * from './settings-page';
