@@ -5,6 +5,7 @@ import type {
   OnKeyringRequestHandler,
   OnNameLookupHandler,
   OnRpcRequestHandler,
+  OnSettingsPageHandler,
   OnSignatureHandler,
   OnTransactionHandler,
   OnUpdateHandler,
@@ -89,6 +90,13 @@ export const SNAP_EXPORTS = {
       return typeof snapExport === 'function';
     },
   },
+  [HandlerType.OnSettingsPage]: {
+    type: HandlerType.OnSettingsPage,
+    required: true,
+    validator: (snapExport: unknown): snapExport is OnSettingsPageHandler => {
+      return typeof snapExport === 'function';
+    },
+  },
   [HandlerType.OnSignature]: {
     type: HandlerType.OnSignature,
     required: true,
@@ -143,6 +151,19 @@ export const OnHomePageResponseWithIdStruct = object({
 export const OnHomePageResponseStruct = union([
   OnHomePageResponseWithContentStruct,
   OnHomePageResponseWithIdStruct,
+]);
+
+export const OnSettingsPageResponseWithContentStruct = object({
+  content: ComponentOrElementStruct,
+});
+
+export const OnSettingsPageResponseWithIdStruct = object({
+  id: string(),
+});
+
+export const OnSettingsPageResponseStruct = union([
+  OnSettingsPageResponseWithContentStruct,
+  OnSettingsPageResponseWithIdStruct,
 ]);
 
 export const AddressResolutionStruct = object({
