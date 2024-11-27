@@ -22,6 +22,15 @@ describe('getEncryptionEntropy', () => {
     const result = await getEncryptionEntropy({
       mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE_BYTES,
       snapId: MOCK_SNAP_ID,
+    });
+
+    expect(result).toBe(ENCRYPTION_KEY);
+  });
+
+  it('accepts custom cryptographic functions', async () => {
+    const result = await getEncryptionEntropy({
+      mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE_BYTES,
+      snapId: MOCK_SNAP_ID,
       cryptographicFunctions: {},
     });
 

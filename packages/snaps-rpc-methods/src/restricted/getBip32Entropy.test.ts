@@ -63,10 +63,15 @@ describe('getBip32EntropyImplementation', () => {
       const getMnemonic = jest
         .fn()
         .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+      const getClientCryptography = jest.fn().mockReturnValue({});
 
       expect(
-        // @ts-expect-error Missing other required properties.
-        await getBip32EntropyImplementation({ getUnlockPromise, getMnemonic })({
+        await getBip32EntropyImplementation({
+          getUnlockPromise,
+          getMnemonic,
+          getClientCryptography,
+          // @ts-expect-error Missing other required properties.
+        })({
           params: { path: ['m', "44'", "1'"], curve: 'secp256k1' },
         }),
       ).toMatchInlineSnapshot(`
@@ -76,6 +81,7 @@ describe('getBip32EntropyImplementation', () => {
           "depth": 2,
           "index": 2147483649,
           "masterFingerprint": 1404659567,
+          "network": "mainnet",
           "parentFingerprint": 1829122711,
           "privateKey": "0xc73cedb996e7294f032766853a8b7ba11ab4ce9755fc052f2f7b9000044c99af",
           "publicKey": "0x048e129862c1de5ca86468add43b001d32fd34b8113de716ecd63fa355b7f1165f0e76f5dc6095100f9fdaa76ddf28aa3f21406ac5fda7c71ffbedb45634fe2ceb",
@@ -88,10 +94,15 @@ describe('getBip32EntropyImplementation', () => {
       const getMnemonic = jest
         .fn()
         .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+      const getClientCryptography = jest.fn().mockReturnValue({});
 
       expect(
-        // @ts-expect-error Missing other required properties.
-        await getBip32EntropyImplementation({ getUnlockPromise, getMnemonic })({
+        await getBip32EntropyImplementation({
+          getUnlockPromise,
+          getMnemonic,
+          getClientCryptography,
+          // @ts-expect-error Missing other required properties.
+        })({
           params: {
             path: ['m', "44'", "1'", "0'", '0', '1'],
             curve: 'secp256k1',
@@ -104,6 +115,7 @@ describe('getBip32EntropyImplementation', () => {
           "depth": 5,
           "index": 1,
           "masterFingerprint": 1404659567,
+          "network": "mainnet",
           "parentFingerprint": 3495658567,
           "privateKey": "0x43a9353dfebf7209c3feb1843510299e2b0f4fa09151dccc3824df88451be37c",
           "publicKey": "0x0467f3cac111f47782b6c2d8d0984d51e22c128d24ec3eaca044509a386771d17206c740c7337c399d8ade8f52a60029340f288e11de82fffd3b69c5b863f6a515",
@@ -117,9 +129,15 @@ describe('getBip32EntropyImplementation', () => {
         .fn()
         .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
 
+      const getClientCryptography = jest.fn().mockReturnValue({});
+
       expect(
-        // @ts-expect-error Missing other required properties.
-        await getBip32EntropyImplementation({ getUnlockPromise, getMnemonic })({
+        await getBip32EntropyImplementation({
+          getUnlockPromise,
+          getMnemonic,
+          getClientCryptography,
+          // @ts-expect-error Missing other required properties.
+        })({
           params: {
             path: ['m', "44'", "1'", "0'", "0'", "1'"],
             curve: 'ed25519',
@@ -132,6 +150,7 @@ describe('getBip32EntropyImplementation', () => {
           "depth": 5,
           "index": 2147483649,
           "masterFingerprint": 650419359,
+          "network": "mainnet",
           "parentFingerprint": 660188756,
           "privateKey": "0x5e6ebe8f5c33833e6c86f8769da173daa206b9dfd1956efcd2b115d82376bb5e",
           "publicKey": "0x0012affaf55babdfb59b76adcf00f69442f019974124639108470409d47e25e19f",
@@ -145,9 +164,15 @@ describe('getBip32EntropyImplementation', () => {
         .fn()
         .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
 
+      const getClientCryptography = jest.fn().mockReturnValue({});
+
       expect(
-        // @ts-expect-error Missing other required properties.
-        await getBip32EntropyImplementation({ getUnlockPromise, getMnemonic })({
+        await getBip32EntropyImplementation({
+          getUnlockPromise,
+          getMnemonic,
+          getClientCryptography,
+          // @ts-expect-error Missing other required properties.
+        })({
           params: {
             path: ['m', "44'", "1'", "0'", "0'", "1'"],
             curve: 'ed25519Bip32',
@@ -160,6 +185,7 @@ describe('getBip32EntropyImplementation', () => {
           "depth": 5,
           "index": 2147483649,
           "masterFingerprint": 1587894111,
+          "network": "mainnet",
           "parentFingerprint": 3236688876,
           "privateKey": "0x88a59d7aa9fe82d8f98843ef474195178eb71956dee597252e7a5fbeebbc734e9b5bfdd17f82144a2bea78c8ab19bef26dc93f36e96eaa41453b65cb3daa1817",
           "publicKey": "0xd91d18b4540a2f30341e8463d5f9b25b14fae9a236dcbea338b668a318bb0867",

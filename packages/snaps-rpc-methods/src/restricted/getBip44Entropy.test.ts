@@ -63,10 +63,15 @@ describe('getBip44EntropyImplementation', () => {
       const getMnemonic = jest
         .fn()
         .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+      const getClientCryptography = jest.fn().mockReturnValue({});
 
       expect(
-        // @ts-expect-error Missing other required properties.
-        await getBip44EntropyImplementation({ getUnlockPromise, getMnemonic })({
+        await getBip44EntropyImplementation({
+          getUnlockPromise,
+          getMnemonic,
+          getClientCryptography,
+          // @ts-expect-error Missing other required properties.
+        })({
           params: { coinType: 1 },
         }),
       ).toMatchInlineSnapshot(`
@@ -76,6 +81,7 @@ describe('getBip44EntropyImplementation', () => {
           "depth": 2,
           "index": 2147483649,
           "masterFingerprint": 1404659567,
+          "network": "mainnet",
           "parentFingerprint": 1829122711,
           "path": "m / bip32:44' / bip32:1'",
           "privateKey": "0xc73cedb996e7294f032766853a8b7ba11ab4ce9755fc052f2f7b9000044c99af",

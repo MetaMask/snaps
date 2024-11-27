@@ -14,7 +14,7 @@ describe('getEntropyBuilder', () => {
       methodHooks: {
         getMnemonic: true,
         getUnlockPromise: true,
-        getClientCryptography: jest.fn(),
+        getClientCryptography: true,
       },
     });
   });
