@@ -3,6 +3,7 @@ import type {
   BIP32Node,
   SLIP10PathNode,
   SupportedCurve,
+  CryptographicFunctions,
 } from '@metamask/key-tree';
 import { SLIP10Node } from '@metamask/key-tree';
 import type { MagicValue } from '@metamask/snaps-utils';
@@ -106,6 +107,11 @@ type DeriveEntropyOptions = {
    * mnemonic phrase.
    */
   magic: MagicValue;
+
+  /**
+   * The cryptographic functions to use for the derivation.
+   */
+  cryptographicFunctions: CryptographicFunctions | undefined;
 };
 
 /**
@@ -121,6 +127,8 @@ type DeriveEntropyOptions = {
  * derivation.
  * @param options.magic - A hardened BIP-32 index, which is used to derive the
  * root key from the mnemonic phrase.
+ * @param options.cryptographicFunctions - The cryptographic functions to use
+ * for the derivation.
  * @returns The derived entropy.
  */
 export async function deriveEntropy({
@@ -128,6 +136,7 @@ export async function deriveEntropy({
   salt = '',
   mnemonicPhrase,
   magic,
+  cryptographicFunctions,
 }: DeriveEntropyOptions): Promise<Hex> {
   const inputBytes = stringToBytes(input);
   const saltBytes = stringToBytes(salt);
@@ -137,14 +146,17 @@ export async function deriveEntropy({
   const computedDerivationPath = getDerivationPathArray(hash);
 
   // Derive the private key using BIP-32.
-  const { privateKey } = await SLIP10Node.fromDerivationPath({
-    derivationPath: [
-      mnemonicPhrase,
-      `bip32:${magic}`,
-      ...computedDerivationPath,
-    ],
-    curve: 'secp256k1',
-  });
+  const { privateKey } = await SLIP10Node.fromDerivationPath(
+    {
+      derivationPath: [
+        mnemonicPhrase,
+        `bip32:${magic}`,
+        ...computedDerivationPath,
+      ],
+      curve: 'secp256k1',
+    },
+    cryptographicFunctions,
+  );
 
   // This should never happen, but this keeps TypeScript happy.
   assert(privateKey, 'Failed to derive the entropy.');
@@ -186,6 +198,7 @@ type GetNodeArgs = {
   curve: SupportedCurve;
   secretRecoveryPhrase: Uint8Array;
   path: string[];
+  cryptographicFunctions: CryptographicFunctions | undefined;
 };
 
 /**
@@ -200,22 +213,28 @@ type GetNodeArgs = {
  * derivation.
  * @param options.path - The derivation path to use as array, starting with an
  * "m" as the first item.
+ * @param options.cryptographicFunctions - The cryptographic functions to use
+ * for the node.
  * @returns The `key-tree` SLIP-10 node.
  */
 export async function getNode({
   curve,
   secretRecoveryPhrase,
   path,
+  cryptographicFunctions,
 }: GetNodeArgs) {
   const prefix = getPathPrefix(curve);
 
-  return await SLIP10Node.fromDerivationPath({
-    curve,
-    derivationPath: [
-      secretRecoveryPhrase,
-      ...(path.slice(1).map((index) => `${prefix}:${index}`) as
-        | BIP32Node[]
-        | SLIP10PathNode[]),
-    ],
-  });
+  return await SLIP10Node.fromDerivationPath(
+    {
+      curve,
+      derivationPath: [
+        secretRecoveryPhrase,
+        ...(path.slice(1).map((index) => `${prefix}:${index}`) as
+          | BIP32Node[]
+          | SLIP10PathNode[]),
+      ],
+    },
+    cryptographicFunctions,
+  );
 }

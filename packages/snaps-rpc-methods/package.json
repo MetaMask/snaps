@@ -55,7 +55,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@metamask/key-tree": "^9.1.2",
+    "@metamask/key-tree": "^10.0.1",
     "@metamask/permission-controller": "^11.0.3",
     "@metamask/rpc-errors": "^7.0.1",
     "@metamask/snaps-sdk": "workspace:^",

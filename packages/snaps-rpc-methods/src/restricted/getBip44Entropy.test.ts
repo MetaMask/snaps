@@ -11,6 +11,7 @@ describe('specificationBuilder', () => {
   const methodHooks = {
     getMnemonic: jest.fn(),
     getUnlockPromise: jest.fn(),
+    getClientCryptography: jest.fn(),
   };
 
   const specification = getBip44EntropyBuilder.specificationBuilder({
@@ -62,10 +63,15 @@ describe('getBip44EntropyImplementation', () => {
       const getMnemonic = jest
         .fn()
         .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+      const getClientCryptography = jest.fn().mockReturnValue({});
 
       expect(
-        // @ts-expect-error Missing other required properties.
-        await getBip44EntropyImplementation({ getUnlockPromise, getMnemonic })({
+        await getBip44EntropyImplementation({
+          getUnlockPromise,
+          getMnemonic,
+          getClientCryptography,
+          // @ts-expect-error Missing other required properties.
+        })({
           params: { coinType: 1 },
         }),
       ).toMatchInlineSnapshot(`
@@ -75,12 +81,51 @@ describe('getBip44EntropyImplementation', () => {
           "depth": 2,
           "index": 2147483649,
           "masterFingerprint": 1404659567,
+          "network": "mainnet",
           "parentFingerprint": 1829122711,
           "path": "m / bip32:44' / bip32:1'",
           "privateKey": "0xc73cedb996e7294f032766853a8b7ba11ab4ce9755fc052f2f7b9000044c99af",
           "publicKey": "0x048e129862c1de5ca86468add43b001d32fd34b8113de716ecd63fa355b7f1165f0e76f5dc6095100f9fdaa76ddf28aa3f21406ac5fda7c71ffbedb45634fe2ceb",
         }
       `);
+    });
+
+    it('uses custom client cryptography functions', async () => {
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const getMnemonic = jest
+        .fn()
+        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+
+      const pbkdf2Sha512 = jest.fn().mockResolvedValue(new Uint8Array(64));
+      const getClientCryptography = jest.fn().mockReturnValue({
+        pbkdf2Sha512,
+      });
+
+      expect(
+        await getBip44EntropyImplementation({
+          getUnlockPromise,
+          getMnemonic,
+          getClientCryptography,
+          // @ts-expect-error Missing other required properties.
+        })({
+          params: { coinType: 1 },
+        }),
+      ).toMatchInlineSnapshot(`
+        {
+          "chainCode": "0x8472428420c7fd8ef7280545bb6d2bde1d7c6b490556ccd59895f242716388d1",
+          "coin_type": 1,
+          "depth": 2,
+          "index": 2147483649,
+          "masterFingerprint": 3276136937,
+          "network": "mainnet",
+          "parentFingerprint": 1981505209,
+          "path": "m / bip32:44' / bip32:1'",
+          "privateKey": "0x71d945aba22cd337ff26a107073ae2606dee5dbf7ecfe5c25870b8eaf62b9f1b",
+          "publicKey": "0x0491c4b234ca9b394f40d90f09092e04fd3bca2aa68c57e1311b25acfd972c5a6fc7ffd19e7812127473aa2bd827917b6ec7b57bec73cf022fc1f1fa0593f48770",
+        }
+      `);
+
+      expect(pbkdf2Sha512).toHaveBeenCalledTimes(1);
     });
   });
 });

@@ -55,6 +55,7 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 import type { SemVerRange, SemVerVersion, Json } from '@metamask/utils';
 import {
+  hexToBytes,
   assert,
   AssertionError,
   base64ToBytes,
@@ -8956,6 +8957,38 @@ describe('SnapController', () => {
       expect(
         snapController.state.unencryptedSnapStates[MOCK_SNAP_ID],
       ).toStrictEqual(JSON.stringify(state));
+
+      snapController.destroy();
+    });
+
+    it('uses custom client cryptography functions', async () => {
+      const messenger = getSnapControllerMessenger();
+
+      const pbkdf2Sha512 = jest
+        .fn()
+        .mockResolvedValue(hexToBytes(ENCRYPTION_KEY));
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+          clientCryptography: {
+            pbkdf2Sha512,
+          },
+        }),
+      );
+
+      const state = { foo: 'bar' };
+      await messenger.call(
+        'SnapController:updateSnapState',
+        MOCK_SNAP_ID,
+        state,
+        true,
+      );
+
+      expect(pbkdf2Sha512).toHaveBeenCalledTimes(1);
 
       snapController.destroy();
     });

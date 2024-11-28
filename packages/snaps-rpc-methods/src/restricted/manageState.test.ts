@@ -26,6 +26,16 @@ describe('getEncryptionEntropy', () => {
 
     expect(result).toBe(ENCRYPTION_KEY);
   });
+
+  it('accepts custom cryptographic functions', async () => {
+    const result = await getEncryptionEntropy({
+      mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE_BYTES,
+      snapId: MOCK_SNAP_ID,
+      cryptographicFunctions: {},
+    });
+
+    expect(result).toBe(ENCRYPTION_KEY);
+  });
 });
 
 describe('snap_manageState', () => {
