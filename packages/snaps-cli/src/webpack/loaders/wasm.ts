@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-globals */
 
-import { assert } from '@metamask/utils';
+import { assert, bytesToBase64 } from '@metamask/utils';
 import { dirname, resolve } from 'path';
 import type { LoaderDefinitionFunction } from 'webpack';
 
@@ -80,8 +80,7 @@ const loader: LoaderDefinitionFunction = async function loader(
 ) {
   assert(source instanceof Uint8Array, 'Expected source to be a Uint8Array.');
 
-  const bytes = new Uint8Array(source);
-  const wasmModule = await WebAssembly.compile(bytes);
+  const wasmModule = await WebAssembly.compile(source);
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const exports = WebAssembly.Module.exports(wasmModule);
@@ -104,7 +103,18 @@ const loader: LoaderDefinitionFunction = async function loader(
   return `
     ${getImports(imports)}
 
-    const bytes = new Uint8Array(${JSON.stringify(Array.from(source))});
+    const b64 = ${JSON.stringify(bytesToBase64(source))};
+
+    function decode(encoded) {
+      const str = atob(encoded);
+      const bytes = new Uint8Array(str.length);
+      for (let i = 0; i < str.length; i++) {
+        bytes[i] = str.charCodeAt(i);
+      }
+      return bytes;
+    }
+
+    const bytes = decode(b64);
     const module = new WebAssembly.Module(bytes);
     const instance = new WebAssembly.Instance(module, {
       ${getModuleImports(imports)}
