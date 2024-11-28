@@ -807,7 +807,7 @@ export class SnapController extends BaseController<
 
   #getFeatureFlags: () => DynamicFeatureFlags;
 
-  #clientCryptography: CryptographicFunctions;
+  #clientCryptography: CryptographicFunctions | undefined;
 
   #detectSnapLocation: typeof detectSnapLocation;
 
@@ -842,7 +842,7 @@ export class SnapController extends BaseController<
     encryptor,
     getMnemonic,
     getFeatureFlags = () => ({}),
-    clientCryptography = {},
+    clientCryptography,
   }: SnapControllerArgs) {
     super({
       messenger,
