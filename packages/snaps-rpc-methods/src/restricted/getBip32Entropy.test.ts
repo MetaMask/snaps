@@ -192,5 +192,42 @@ describe('getBip32EntropyImplementation', () => {
         }
       `);
     });
+
+    it('uses custom client cryptography functions', async () => {
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const getMnemonic = jest
+        .fn()
+        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+
+      const pbkdf2Sha512 = jest.fn().mockResolvedValue(new Uint8Array(64));
+      const getClientCryptography = jest.fn().mockReturnValue({
+        pbkdf2Sha512,
+      });
+
+      expect(
+        await getBip32EntropyImplementation({
+          getUnlockPromise,
+          getMnemonic,
+          getClientCryptography,
+          // @ts-expect-error Missing other required properties.
+        })({
+          params: { path: ['m', "44'", "1'"], curve: 'secp256k1' },
+        }),
+      ).toMatchInlineSnapshot(`
+        {
+          "chainCode": "0x8472428420c7fd8ef7280545bb6d2bde1d7c6b490556ccd59895f242716388d1",
+          "curve": "secp256k1",
+          "depth": 2,
+          "index": 2147483649,
+          "masterFingerprint": 3276136937,
+          "network": "mainnet",
+          "parentFingerprint": 1981505209,
+          "privateKey": "0x71d945aba22cd337ff26a107073ae2606dee5dbf7ecfe5c25870b8eaf62b9f1b",
+          "publicKey": "0x0491c4b234ca9b394f40d90f09092e04fd3bca2aa68c57e1311b25acfd972c5a6fc7ffd19e7812127473aa2bd827917b6ec7b57bec73cf022fc1f1fa0593f48770",
+        }
+      `);
+
+      expect(pbkdf2Sha512).toHaveBeenCalledTimes(1);
+    });
   });
 });

@@ -72,4 +72,43 @@ describe('getEntropyImplementation', () => {
       '0x6d8e92de419401c7da3cedd5f60ce5635b26059c2a4a8003877fec83653a4921',
     );
   });
+
+  it('uses custom client cryptography functions', async () => {
+    const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+    const getMnemonic = jest
+      .fn()
+      .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+
+    const pbkdf2Sha512 = jest.fn().mockResolvedValue(new Uint8Array(64));
+    const getClientCryptography = jest.fn().mockReturnValue({
+      pbkdf2Sha512,
+    });
+
+    const methodHooks = {
+      getMnemonic,
+      getUnlockPromise,
+      getClientCryptography,
+    };
+
+    const implementation = getEntropyBuilder.specificationBuilder({
+      methodHooks,
+    }).methodImplementation;
+
+    const result = await implementation({
+      method: 'snap_getEntropy',
+      params: {
+        version: 1,
+        salt: 'foo',
+      },
+      context: {
+        origin: MOCK_SNAP_ID,
+      },
+    });
+
+    expect(result).toBe(
+      '0x9bea47f2180fd874147f2f455a5ccc779826cfeff005605190cf0c568b3de7b5',
+    );
+
+    expect(pbkdf2Sha512).toHaveBeenCalledTimes(1);
+  });
 });
