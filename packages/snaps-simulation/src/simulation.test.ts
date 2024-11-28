@@ -485,6 +485,26 @@ describe('getHooks', () => {
 
     await close();
   });
+
+  it('returns the `getClientCryptography` hook', async () => {
+    const { snapId, close } = await getMockServer();
+
+    const location = detectSnapLocation(snapId, {
+      allowLocal: true,
+    });
+    const snapFiles = await fetchSnap(snapId, location);
+
+    const { getClientCryptography } = getHooks(
+      getMockOptions(),
+      snapFiles,
+      snapId,
+      controllerMessenger,
+    );
+
+    expect(getClientCryptography()).toStrictEqual({});
+
+    await close();
+  });
 });
 
 describe('registerActions', () => {
