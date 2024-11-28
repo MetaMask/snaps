@@ -35,11 +35,12 @@ export type GetBip32EntropyMethodHooks = {
 
   /**
    * Get the cryptographic functions to use for the client. This may return an
-   * empty object to fall back to the default cryptographic functions.
+   * empty object or `undefined` to fall back to the default cryptographic
+   * functions.
    *
    * @returns The cryptographic functions to use for the client.
    */
-  getClientCryptography: () => CryptographicFunctions;
+  getClientCryptography: () => CryptographicFunctions | undefined;
 };
 
 type GetBip32EntropySpecificationBuilderOptions = {

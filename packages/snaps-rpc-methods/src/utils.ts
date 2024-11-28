@@ -111,7 +111,7 @@ type DeriveEntropyOptions = {
   /**
    * The cryptographic functions to use for the derivation.
    */
-  cryptographicFunctions: CryptographicFunctions;
+  cryptographicFunctions: CryptographicFunctions | undefined;
 };
 
 /**
@@ -127,6 +127,8 @@ type DeriveEntropyOptions = {
  * derivation.
  * @param options.magic - A hardened BIP-32 index, which is used to derive the
  * root key from the mnemonic phrase.
+ * @param options.cryptographicFunctions - The cryptographic functions to use
+ * for the derivation.
  * @returns The derived entropy.
  */
 export async function deriveEntropy({
@@ -134,6 +136,7 @@ export async function deriveEntropy({
   salt = '',
   mnemonicPhrase,
   magic,
+  cryptographicFunctions,
 }: DeriveEntropyOptions): Promise<Hex> {
   const inputBytes = stringToBytes(input);
   const saltBytes = stringToBytes(salt);
@@ -143,14 +146,17 @@ export async function deriveEntropy({
   const computedDerivationPath = getDerivationPathArray(hash);
 
   // Derive the private key using BIP-32.
-  const { privateKey } = await SLIP10Node.fromDerivationPath({
-    derivationPath: [
-      mnemonicPhrase,
-      `bip32:${magic}`,
-      ...computedDerivationPath,
-    ],
-    curve: 'secp256k1',
-  });
+  const { privateKey } = await SLIP10Node.fromDerivationPath(
+    {
+      derivationPath: [
+        mnemonicPhrase,
+        `bip32:${magic}`,
+        ...computedDerivationPath,
+      ],
+      curve: 'secp256k1',
+    },
+    cryptographicFunctions,
+  );
 
   // This should never happen, but this keeps TypeScript happy.
   assert(privateKey, 'Failed to derive the entropy.');
@@ -192,7 +198,7 @@ type GetNodeArgs = {
   curve: SupportedCurve;
   secretRecoveryPhrase: Uint8Array;
   path: string[];
-  cryptographicFunctions: CryptographicFunctions;
+  cryptographicFunctions: CryptographicFunctions | undefined;
 };
 
 /**

@@ -112,7 +112,7 @@ export const STORAGE_SIZE_LIMIT = 104857600; // In bytes (100MB)
 type GetEncryptionKeyArgs = {
   snapId: string;
   mnemonicPhrase: Uint8Array;
-  cryptographicFunctions?: CryptographicFunctions;
+  cryptographicFunctions?: CryptographicFunctions | undefined;
 };
 
 /**
