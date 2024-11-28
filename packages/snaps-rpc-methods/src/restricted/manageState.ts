@@ -133,7 +133,7 @@ type GetEncryptionKeyArgs = {
 export async function getEncryptionEntropy({
   mnemonicPhrase,
   snapId,
-  cryptographicFunctions = {},
+  cryptographicFunctions,
 }: GetEncryptionKeyArgs) {
   return await deriveEntropy({
     mnemonicPhrase,
