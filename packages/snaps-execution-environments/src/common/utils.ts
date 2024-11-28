@@ -1,4 +1,4 @@
-import type { StreamProvider, RequestArguments } from '@metamask/providers';
+import type { RequestArguments } from '@metamask/providers';
 import { rpcErrors } from '@metamask/rpc-errors';
 import { assert, getJsonSize, getSafeJson, isObject } from '@metamask/utils';
 
@@ -44,35 +44,6 @@ export async function withTeardown<Type>(
         }
       });
   });
-}
-
-/**
- * Returns a Proxy that only allows access to a `request` function.
- * This is useful for replacing StreamProvider with an attenuated version.
- *
- * @param request - Custom attenuated request function.
- * @returns Proxy that mimics a StreamProvider instance.
- */
-export function proxyStreamProvider(request: unknown): StreamProvider {
-  // Proxy target is intentionally set to be an empty object, to ensure
-  // that access to the prototype chain is not possible.
-  const proxy = new Proxy(
-    {},
-    {
-      has(_target: object, prop: string | symbol) {
-        return typeof prop === 'string' && ['request'].includes(prop);
-      },
-      get(_target, prop: keyof StreamProvider) {
-        if (prop === 'request') {
-          return request;
-        }
-
-        return undefined;
-      },
-    },
-  );
-
-  return proxy as StreamProvider;
 }
 
 // We're blocking these RPC methods for v1, will revisit later.

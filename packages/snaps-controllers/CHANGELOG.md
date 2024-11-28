@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.14.0]
+
+### Added
+
+- Emit `snapInstalled` and `snapUpdated` events for preinstalled Snaps ([#2900](https://github.com/MetaMask/snaps/pull/2900))
+  - This indirectly makes preinstalled Snaps trigger cronjobs and lifecycle hooks more reliably.
+
+## [9.13.0]
+
+### Added
+
+- Add interface persistence ([#2856](https://github.com/MetaMask/snaps/pull/2856))
+
+### Changed
+
+- Use `arrayBuffer` for fetching local Snaps ([#2884](https://github.com/MetaMask/snaps/pull/2884))
+  - This fixes some incompatiblities with React Native.
+
 ## [9.12.0]
 
 ### Added
@@ -556,7 +574,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.12.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.14.0...HEAD
+[9.14.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.13.0...@metamask/snaps-controllers@9.14.0
+[9.13.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.12.0...@metamask/snaps-controllers@9.13.0
 [9.12.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.11.1...@metamask/snaps-controllers@9.12.0
 [9.11.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.11.0...@metamask/snaps-controllers@9.11.1
 [9.11.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.10.0...@metamask/snaps-controllers@9.11.0

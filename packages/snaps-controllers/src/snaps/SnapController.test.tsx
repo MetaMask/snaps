@@ -55,6 +55,7 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 import type { SemVerRange, SemVerVersion, Json } from '@metamask/utils';
 import {
+  hexToBytes,
   assert,
   AssertionError,
   base64ToBytes,
@@ -966,6 +967,7 @@ describe('SnapController', () => {
       'SnapController:snapInstalled',
       getTruncatedSnap(),
       MOCK_ORIGIN,
+      false,
     );
 
     snapController.destroy();
@@ -4665,6 +4667,7 @@ describe('SnapController', () => {
     it('supports preinstalled snaps', async () => {
       const rootMessenger = getControllerMessenger();
       jest.spyOn(rootMessenger, 'call');
+      jest.spyOn(rootMessenger, 'publish');
 
       // The snap should not have permission initially
       rootMessenger.registerActionHandler(
@@ -4709,6 +4712,13 @@ describe('SnapController', () => {
           },
           subject: { origin: MOCK_SNAP_ID },
         },
+      );
+
+      expect(rootMessenger.publish).toHaveBeenCalledWith(
+        'SnapController:snapInstalled',
+        getTruncatedSnap(),
+        'metamask',
+        true,
       );
 
       // After install the snap should have permissions
@@ -4880,6 +4890,7 @@ describe('SnapController', () => {
     it('supports updating preinstalled snaps', async () => {
       const rootMessenger = getControllerMessenger();
       jest.spyOn(rootMessenger, 'call');
+      jest.spyOn(rootMessenger, 'publish');
 
       const preinstalledSnaps = [
         {
@@ -4932,6 +4943,21 @@ describe('SnapController', () => {
           },
           subject: { origin: MOCK_SNAP_ID },
         },
+      );
+
+      expect(rootMessenger.publish).toHaveBeenCalledWith(
+        'SnapController:snapUpdated',
+        getTruncatedSnap({
+          version: '1.2.3',
+          initialPermissions: {
+            'endowment:rpc': { dapps: false, snaps: true },
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_getEntropy: {},
+          },
+        }),
+        '1.0.0',
+        'metamask',
+        true,
       );
 
       // After install the snap should have permissions
@@ -5088,6 +5114,66 @@ describe('SnapController', () => {
           shasum: manifest.result.source.shasum,
         }),
       );
+
+      snapController.destroy();
+    });
+
+    it('disallows manual updates of preinstalled snaps', async () => {
+      const rootMessenger = getControllerMessenger();
+      jest.spyOn(rootMessenger, 'call');
+
+      // The snap should not have permissions initially
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({}),
+      );
+
+      const preinstalledSnaps = [
+        {
+          snapId: MOCK_SNAP_ID,
+          manifest: getSnapManifest(),
+          files: [
+            {
+              path: DEFAULT_SOURCE_PATH,
+              value: stringToBytes(DEFAULT_SNAP_BUNDLE),
+            },
+            {
+              path: DEFAULT_ICON_PATH,
+              value: stringToBytes(DEFAULT_SNAP_ICON),
+            },
+          ],
+        },
+      ];
+
+      const snapControllerOptions = getSnapControllerWithEESOptions({
+        preinstalledSnaps,
+        rootMessenger,
+      });
+      const [snapController] = getSnapControllerWithEES(snapControllerOptions);
+
+      // After install the snap should have permissions
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => MOCK_SNAP_PERMISSIONS,
+      );
+
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
+        manifest: getSnapManifest({
+          version: '1.1.0' as SemVerVersion,
+        }),
+      });
+
+      const detectSnapLocation = loopbackDetect({
+        manifest: manifest.result,
+      });
+
+      await expect(
+        snapController.updateSnap(
+          MOCK_ORIGIN,
+          MOCK_SNAP_ID,
+          detectSnapLocation(),
+        ),
+      ).rejects.toThrow('Preinstalled Snaps cannot be manually updated.');
 
       snapController.destroy();
     });
@@ -6772,6 +6858,7 @@ describe('SnapController', () => {
         newSnapTruncated,
         '1.0.0',
         MOCK_ORIGIN,
+        false,
       );
 
       controller.destroy();
@@ -8870,6 +8957,38 @@ describe('SnapController', () => {
       expect(
         snapController.state.unencryptedSnapStates[MOCK_SNAP_ID],
       ).toStrictEqual(JSON.stringify(state));
+
+      snapController.destroy();
+    });
+
+    it('uses custom client cryptography functions', async () => {
+      const messenger = getSnapControllerMessenger();
+
+      const pbkdf2Sha512 = jest
+        .fn()
+        .mockResolvedValue(hexToBytes(ENCRYPTION_KEY));
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+          clientCryptography: {
+            pbkdf2Sha512,
+          },
+        }),
+      );
+
+      const state = { foo: 'bar' };
+      await messenger.call(
+        'SnapController:updateSnapState',
+        MOCK_SNAP_ID,
+        state,
+        true,
+      );
+
+      expect(pbkdf2Sha512).toHaveBeenCalledTimes(1);
 
       snapController.destroy();
     });

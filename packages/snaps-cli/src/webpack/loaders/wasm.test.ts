@@ -73,7 +73,18 @@ describe('loader', () => {
       "
           import { add } from "../src/bindings.ts";
 
-          const bytes = new Uint8Array([0,97,115,109,1,0,0,0,1,12,2,96,2,127,127,1,127,96,1,127,1,127,2,26,1,18,46,46,47,115,114,99,47,98,105,110,100,105,110,103,115,46,116,115,3,97,100,100,0,0,3,2,1,1,5,3,1,0,0,7,22,2,9,102,105,98,111,110,97,99,99,105,0,1,6,109,101,109,111,114,121,2,0,10,54,1,52,1,3,127,65,1,33,1,32,0,65,0,74,4,64,3,64,32,0,65,1,107,34,0,4,64,32,2,32,1,16,0,33,3,32,1,33,2,32,3,33,1,12,1,11,11,32,1,15,11,65,0,11]);
+          const b64 = "AGFzbQEAAAABDAJgAn9/AX9gAX8BfwIaARIuLi9zcmMvYmluZGluZ3MudHMDYWRkAAADAgEBBQMBAAAHFgIJZmlib25hY2NpAAEGbWVtb3J5AgAKNgE0AQN/QQEhASAAQQBKBEADQCAAQQFrIgAEQCACIAEQACEDIAEhAiADIQEMAQsLIAEPC0EACw==";
+
+          function decode(encoded) {
+            const str = atob(encoded);
+            const bytes = new Uint8Array(str.length);
+            for (let i = 0; i < str.length; i++) {
+              bytes[i] = str.charCodeAt(i);
+            }
+            return bytes;
+          }
+
+          const bytes = decode(b64);
           const module = new WebAssembly.Module(bytes);
           const instance = new WebAssembly.Instance(module, {
             "../src/bindings.ts": { add },

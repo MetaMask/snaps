@@ -42,6 +42,7 @@ const commonEndowments: CommonEndowmentSpecification[] = [
   { endowment: Int8Array, name: 'Int8Array' },
   { endowment: Int16Array, name: 'Int16Array' },
   { endowment: Int32Array, name: 'Int32Array' },
+  { endowment: globalThis.isSecureContext, name: 'isSecureContext' },
   { endowment: Uint8Array, name: 'Uint8Array' },
   { endowment: Uint8ClampedArray, name: 'Uint8ClampedArray' },
   { endowment: Uint16Array, name: 'Uint16Array' },

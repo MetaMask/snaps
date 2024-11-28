@@ -4,7 +4,10 @@ import type {
 } from '@metamask/base-controller';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
-import { mnemonicPhraseToBytes } from '@metamask/key-tree';
+import {
+  type CryptographicFunctions,
+  mnemonicPhraseToBytes,
+} from '@metamask/key-tree';
 import { PhishingDetectorResultType } from '@metamask/phishing-controller';
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
 import {
@@ -18,6 +21,7 @@ import type {
   AuxiliaryFileEncoding,
   Component,
   InterfaceState,
+  InterfaceContext,
   SnapId,
 } from '@metamask/snaps-sdk';
 import type { FetchedSnapFiles } from '@metamask/snaps-utils';
@@ -115,9 +119,22 @@ export type MiddlewareHooks = {
    * @returns A boolean flag signaling whether the client is locked.
    */
   getIsLocked: () => boolean;
-  createInterface: (content: Component) => Promise<string>;
+
+  /**
+   * Get the cryptographic functions to use for the client. This may return an
+   * empty object to fall back to the default cryptographic functions.
+   *
+   * @returns The cryptographic functions to use for the client.
+   */
+  getClientCryptography: () => CryptographicFunctions;
+
+  createInterface: (
+    content: Component,
+    context?: InterfaceContext,
+  ) => Promise<string>;
   updateInterface: (id: string, content: Component) => Promise<void>;
   getInterfaceState: (id: string) => InterfaceState;
+  getInterfaceContext: (id: string) => InterfaceContext | null;
   resolveInterface: (id: string, value: Json) => Promise<void>;
 };
 
@@ -260,6 +277,7 @@ export function getHooks(
     getSnapFile: async (path: string, encoding: AuxiliaryFileEncoding) =>
       await getSnapFile(snapFiles.auxiliaryFiles, path, encoding),
     getIsLocked: () => false,
+    getClientCryptography: () => ({}),
     createInterface: async (...args) =>
       controllerMessenger.call(
         'SnapInterfaceController:createInterface',
@@ -278,6 +296,12 @@ export function getHooks(
         snapId,
         ...args,
       ).state,
+    getInterfaceContext: (...args) =>
+      controllerMessenger.call(
+        'SnapInterfaceController:getInterface',
+        snapId,
+        ...args,
+      ).context,
     resolveInterface: async (...args) =>
       controllerMessenger.call(
         'SnapInterfaceController:resolveInterface',

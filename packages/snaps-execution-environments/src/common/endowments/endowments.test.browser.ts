@@ -12,7 +12,7 @@ import CryptoEndowment from './crypto';
 import date from './date';
 import interval from './interval';
 import math from './math';
-import network from './network';
+import network, { ResponseWrapper } from './network';
 import timeout from './timeout';
 
 // @ts-expect-error - `globalThis.process` is not optional.
@@ -177,6 +177,12 @@ describe('endowments', () => {
         factory: () => WebAssembly,
       },
 
+      // Properties
+      isSecureContext: {
+        endowments: { isSecureContext: globalThis.isSecureContext },
+        factory: () => globalThis.isSecureContext,
+      },
+
       // Functions.
       atob: {
         endowments: { atob },
@@ -217,6 +223,19 @@ describe('endowments', () => {
       fetchAttenuated: {
         endowments: { fetchAttenuated },
         factory: () => undefined,
+      },
+      ResponseWrapper: {
+        endowments: {
+          Response: ResponseHardened,
+          ResponseWrapper: harden(ResponseWrapper),
+        },
+        factory: () =>
+          new ResponseWrapper(
+            new Response(),
+            { lastTeardown: 0 },
+            async () => undefined,
+            async () => undefined,
+          ),
       },
     };
 
@@ -344,6 +363,10 @@ describe('endowments', () => {
         {
           factory: expect.any(Function),
           names: ['Int32Array'],
+        },
+        {
+          factory: expect.any(Function),
+          names: ['isSecureContext'],
         },
         {
           factory: expect.any(Function),

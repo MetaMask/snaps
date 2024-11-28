@@ -340,11 +340,26 @@ export const DropdownStruct: Describe<DropdownElement> = element('Dropdown', {
 });
 
 /**
+ * A struct for the {@link AddressElement} type.
+ */
+export const AddressStruct: Describe<AddressElement> = element('Address', {
+  address: nullUnion([HexChecksumAddressStruct, CaipAccountIdStruct]),
+  truncate: optional(boolean()),
+  displayName: optional(boolean()),
+  avatar: optional(boolean()),
+});
+
+/**
  * A struct for the {@link CardElement} type.
  */
 export const CardStruct: Describe<CardElement> = element('Card', {
   image: optional(string()),
-  title: string(),
+  title: selectiveUnion((value) => {
+    if (typeof value === 'object') {
+      return AddressStruct;
+    }
+    return string();
+  }),
   description: optional(string()),
   value: string(),
   extra: optional(string()),
@@ -539,16 +554,6 @@ export const FormattingStruct: Describe<StandardFormattingElement> = typedUnion(
 );
 
 /**
- * A struct for the {@link AddressElement} type.
- */
-export const AddressStruct: Describe<AddressElement> = element('Address', {
-  address: nullUnion([HexChecksumAddressStruct, CaipAccountIdStruct]),
-  truncate: optional(boolean()),
-  displayName: optional(boolean()),
-  avatar: optional(boolean()),
-});
-
-/**
  * A struct for the {@link AvatarElement} type.
  */
 export const AvatarStruct = element('Avatar', {
@@ -730,6 +735,7 @@ export const TextStruct: Describe<TextElement> = element('Text', {
       literal('warning'),
     ]),
   ),
+  size: optional(nullUnion([literal('sm'), literal('md')])),
 });
 
 /**

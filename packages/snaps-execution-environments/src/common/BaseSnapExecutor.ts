@@ -4,7 +4,7 @@ import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import type { RequestArguments } from '@metamask/providers';
 import { StreamProvider } from '@metamask/providers/stream-provider';
 import { errorCodes, rpcErrors, serializeError } from '@metamask/rpc-errors';
-import type { SnapsProvider } from '@metamask/snaps-sdk';
+import type { SnapsEthereumProvider, SnapsProvider } from '@metamask/snaps-sdk';
 import { getErrorData } from '@metamask/snaps-sdk';
 import type {
   SnapExports,
@@ -45,7 +45,6 @@ import {
   assertEthereumOutboundRequest,
   assertSnapOutboundRequest,
   sanitizeRequestArguments,
-  proxyStreamProvider,
   withTeardown,
   isValidResponse,
 } from './utils';
@@ -500,9 +499,9 @@ export class BaseSnapExecutor {
       );
     };
 
-    const snapGlobalProxy = proxyStreamProvider(request) as SnapsProvider;
+    const snapsProvider = { request } as SnapsProvider;
 
-    return harden(snapGlobalProxy);
+    return harden(snapsProvider);
   }
 
   /**
@@ -511,7 +510,9 @@ export class BaseSnapExecutor {
    * @param provider - A StreamProvider connected to MetaMask.
    * @returns The EIP-1193 Ethereum provider object.
    */
-  private createEIP1193Provider(provider: StreamProvider): StreamProvider {
+  private createEIP1193Provider(
+    provider: StreamProvider,
+  ): SnapsEthereumProvider {
     const originalRequest = provider.request.bind(provider);
 
     const request = async (args: RequestArguments) => {
@@ -537,9 +538,9 @@ export class BaseSnapExecutor {
       );
     };
 
-    const streamProviderProxy = proxyStreamProvider(request);
+    const ethereumProvider = { request };
 
-    return harden(streamProviderProxy);
+    return harden(ethereumProvider);
   }
 
   /**

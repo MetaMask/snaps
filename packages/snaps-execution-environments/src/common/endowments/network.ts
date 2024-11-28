@@ -7,7 +7,7 @@ import type { EndowmentFactoryOptions } from './commonEndowmentFactory';
  * This class wraps a Response object.
  * That way, a teardown process can stop any processes left.
  */
-class ResponseWrapper implements Response {
+export class ResponseWrapper implements Response {
   readonly #teardownRef: { lastTeardown: number };
 
   #ogResponse: Response;
@@ -142,6 +142,15 @@ class ResponseWrapper implements Response {
       })(),
       this.#teardownRef,
     );
+  }
+}
+
+// We redefine the global Response class to overwrite [Symbol.hasInstance].
+// This fixes problems where the response from `fetch` would not pass
+// instance of checks, leading to failures in WASM bindgen.
+class AlteredResponse extends Response {
+  static [Symbol.hasInstance](instance: unknown) {
+    return instance instanceof Response || instance instanceof ResponseWrapper;
   }
 }
 
@@ -297,7 +306,7 @@ const createNetwork = ({ notify }: EndowmentFactoryOptions = {}) => {
     // These endowments are not (and should never be) available by default.
     Request: harden(Request),
     Headers: harden(Headers),
-    Response: harden(Response),
+    Response: harden(AlteredResponse),
     teardownFunction,
   };
 };

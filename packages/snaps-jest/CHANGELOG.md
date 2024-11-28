@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.8.0]
+
+### Added
+
+- Add `snap_getInterfaceContext` JSON-RPC method ([#2902](https://github.com/MetaMask/snaps/pull/2902))
+
+## [8.7.1]
+
+### Added
+
+- Add interface persistence ([#2856](https://github.com/MetaMask/snaps/pull/2856))
+
 ## [8.7.0]
 
 ### Added
@@ -288,7 +300,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.7.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.8.0...HEAD
+[8.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.7.1...@metamask/snaps-jest@8.8.0
+[8.7.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.7.0...@metamask/snaps-jest@8.7.1
 [8.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.6.0...@metamask/snaps-jest@8.7.0
 [8.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.5.0...@metamask/snaps-jest@8.6.0
 [8.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.4.0...@metamask/snaps-jest@8.5.0

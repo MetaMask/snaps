@@ -28,11 +28,13 @@ export type TextColors =
  * @property children - The text to display.
  * @property alignment - The alignment of the text.
  * @property color - The color of the text.
+ * @property size - The size of the text. Defaults to `md`.
  */
 export type TextProps = {
   children: TextChildren;
   alignment?: 'start' | 'center' | 'end' | undefined;
   color?: TextColors | undefined;
+  size?: 'sm' | 'md' | undefined;
 };
 
 const TYPE = 'Text';
@@ -44,6 +46,7 @@ const TYPE = 'Text';
  * @param props.alignment - The alignment of the text.
  * @param props.color - The color of the text.
  * @param props.children - The text to display.
+ * @param props.size - The size of the text. Defaults to `md`.
  * @returns A text element.
  * @example
  * <Text>
@@ -51,6 +54,10 @@ const TYPE = 'Text';
  * </Text>
  * @example
  * <Text alignment="end">
+ *   Hello <Bold>world</Bold>!
+ * </Text>
+ * @example
+ * <Text size="sm">
  *   Hello <Bold>world</Bold>!
  * </Text>
  */

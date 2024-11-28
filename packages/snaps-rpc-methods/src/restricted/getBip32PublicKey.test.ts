@@ -11,6 +11,7 @@ describe('specificationBuilder', () => {
   const methodHooks = {
     getMnemonic: jest.fn(),
     getUnlockPromise: jest.fn(),
+    getClientCryptography: jest.fn(),
   };
 
   const specification = getBip32PublicKeyBuilder.specificationBuilder({
@@ -62,11 +63,13 @@ describe('getBip32PublicKeyImplementation', () => {
       const getMnemonic = jest
         .fn()
         .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+      const getClientCryptography = jest.fn().mockReturnValue({});
 
       expect(
         await getBip32PublicKeyImplementation({
           getUnlockPromise,
           getMnemonic,
+          getClientCryptography,
           // @ts-expect-error Missing other required properties.
         })({
           params: {
@@ -84,11 +87,13 @@ describe('getBip32PublicKeyImplementation', () => {
       const getMnemonic = jest
         .fn()
         .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+      const getClientCryptography = jest.fn().mockReturnValue({});
 
       expect(
         await getBip32PublicKeyImplementation({
           getUnlockPromise,
           getMnemonic,
+          getClientCryptography,
           // @ts-expect-error Missing other required properties.
         })({
           params: {
@@ -106,11 +111,13 @@ describe('getBip32PublicKeyImplementation', () => {
       const getMnemonic = jest
         .fn()
         .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+      const getClientCryptography = jest.fn().mockReturnValue({});
 
       expect(
         await getBip32PublicKeyImplementation({
           getUnlockPromise,
           getMnemonic,
+          getClientCryptography,
           // @ts-expect-error Missing other required properties.
         })({
           params: {
@@ -128,11 +135,13 @@ describe('getBip32PublicKeyImplementation', () => {
       const getMnemonic = jest
         .fn()
         .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+      const getClientCryptography = jest.fn().mockReturnValue({});
 
       expect(
         await getBip32PublicKeyImplementation({
           getUnlockPromise,
           getMnemonic,
+          getClientCryptography,
           // @ts-expect-error Missing other required properties.
         })({
           params: {
@@ -144,6 +153,37 @@ describe('getBip32PublicKeyImplementation', () => {
       ).toMatchInlineSnapshot(
         `"0x022de17487a660993177ce2a85bb73b6cd9ad436184d57bdf5a93f5db430bea914"`,
       );
+    });
+
+    it('uses custom client cryptography functions', async () => {
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const getMnemonic = jest
+        .fn()
+        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+
+      const pbkdf2Sha512 = jest.fn().mockResolvedValue(new Uint8Array(64));
+      const getClientCryptography = jest.fn().mockReturnValue({
+        pbkdf2Sha512,
+      });
+
+      expect(
+        await getBip32PublicKeyImplementation({
+          getUnlockPromise,
+          getMnemonic,
+          getClientCryptography,
+          // @ts-expect-error Missing other required properties.
+        })({
+          params: {
+            path: ['m', "44'", "1'", '1', '2', '3'],
+            curve: 'secp256k1',
+            compressed: true,
+          },
+        }),
+      ).toMatchInlineSnapshot(
+        `"0x03102d63c39b6dda3f9aa06b247c50653cd9d01a91efce00ccc8735e9714058a01"`,
+      );
+
+      expect(pbkdf2Sha512).toHaveBeenCalledTimes(1);
     });
   });
 });
