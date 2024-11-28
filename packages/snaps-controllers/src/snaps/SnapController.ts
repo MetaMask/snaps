@@ -714,12 +714,10 @@ type SnapControllerArgs = {
   getFeatureFlags: () => DynamicFeatureFlags;
 
   /**
-   * Get the cryptographic functions to use for the client. This may return an
-   * empty object to fall back to the default cryptographic functions.
-   *
-   * @returns The cryptographic functions to use for the client.
+   * The cryptographic functions to use for the client. This may be an empty
+   * object to fall back to the default cryptographic functions.
    */
-  getClientCryptography: () => CryptographicFunctions;
+  clientCryptography?: CryptographicFunctions;
 };
 
 type AddSnapArgs = {
@@ -809,7 +807,7 @@ export class SnapController extends BaseController<
 
   #getFeatureFlags: () => DynamicFeatureFlags;
 
-  #getClientCryptography: () => CryptographicFunctions;
+  #clientCryptography: CryptographicFunctions;
 
   #detectSnapLocation: typeof detectSnapLocation;
 
@@ -844,7 +842,7 @@ export class SnapController extends BaseController<
     encryptor,
     getMnemonic,
     getFeatureFlags = () => ({}),
-    getClientCryptography,
+    clientCryptography = {},
   }: SnapControllerArgs) {
     super({
       messenger,
@@ -900,7 +898,7 @@ export class SnapController extends BaseController<
     this.#encryptor = encryptor;
     this.#getMnemonic = getMnemonic;
     this.#getFeatureFlags = getFeatureFlags;
-    this.#getClientCryptography = getClientCryptography;
+    this.#clientCryptography = clientCryptography;
     this.#preinstalledSnaps = preinstalledSnaps;
     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
     this._onOutboundRequest = this._onOutboundRequest.bind(this);
@@ -1768,12 +1766,11 @@ export class SnapController extends BaseController<
 
     const salt = passedSalt ?? this.#encryptor.generateSalt();
     const mnemonicPhrase = await this.#getMnemonic();
-    const cryptographicFunctions = this.#getClientCryptography();
 
     const entropy = await getEncryptionEntropy({
       snapId,
       mnemonicPhrase,
-      cryptographicFunctions,
+      cryptographicFunctions: this.#clientCryptography,
     });
 
     const encryptionKey = await this.#encryptor.keyFromPassword(

@@ -573,7 +573,7 @@ export const getSnapControllerOptions = (
     state: undefined,
     fetchFunction: jest.fn(),
     getMnemonic: async () => Promise.resolve(TEST_SECRET_RECOVERY_PHRASE_BYTES),
-    getClientCryptography: () => ({}),
+    clientCryptography: {},
     encryptor: getSnapControllerEncryptor(),
     ...opts,
   } as SnapControllerConstructorParams;
