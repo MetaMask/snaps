@@ -32,7 +32,7 @@ describe('onRpcRequest', () => {
 
       expect(response).toRespondWith(null);
       expect(response).toSendNotification(
-        'Hello from within MetaMask!',
+        'Hello from within MetaMask! [This](https://snaps.metamask.io/) is a what a link looks like.',
         NotificationType.InApp,
       );
     });
