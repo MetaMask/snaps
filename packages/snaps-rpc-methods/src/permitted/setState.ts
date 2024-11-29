@@ -1,0 +1,222 @@
+import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type { PermittedHandlerExport } from '@metamask/permission-controller';
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
+import type { SetStateParams, SetStateResult } from '@metamask/snaps-sdk';
+import { type InferMatching } from '@metamask/snaps-utils';
+import {
+  boolean,
+  create,
+  object as objectStruct,
+  optional,
+  string,
+  StructError,
+} from '@metamask/superstruct';
+import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
+import { JsonStruct, isPlainObject, type Json } from '@metamask/utils';
+
+import type { MethodHooksObject } from '../utils';
+
+const hookNames: MethodHooksObject<SetStateHooks> = {
+  hasPermission: true,
+  getSnapState: true,
+  getUnlockPromise: true,
+  updateSnapState: true,
+};
+
+/**
+ * `snap_setState` sets the state of the Snap.
+ */
+export const setStateHandler: PermittedHandlerExport<
+  SetStateHooks,
+  SetStateParameters,
+  SetStateResult
+> = {
+  methodNames: ['snap_setState'],
+  implementation: setStateImplementation,
+  hookNames,
+};
+
+export type SetStateHooks = {
+  /**
+   * Check if the requesting origin has a given permission.
+   *
+   * @param permissionName - The name of the permission to check.
+   * @returns Whether the origin has the permission.
+   */
+  hasPermission: (permissionName: string) => boolean;
+
+  /**
+   * Get the state of the requesting Snap.
+   *
+   * @param snapId - The ID of the Snap.
+   * @param encrypted - Whether the state is encrypted.
+   * @returns The current state of the Snap.
+   */
+  getSnapState: (
+    snapId: string,
+    encrypted: boolean,
+  ) => Promise<Record<string, Json>>;
+
+  /**
+   * Wait for the extension to be unlocked.
+   *
+   * @returns A promise that resolves once the extension is unlocked.
+   */
+  getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
+
+  /**
+   * Update the state of the requesting Snap.
+   *
+   * @param snapId - The ID of the Snap.
+   * @param newState - The new state of the Snap.
+   * @param encrypted - Whether the state should be encrypted.
+   */
+  updateSnapState: (
+    snapId: string,
+    newState: Record<string, Json>,
+    encrypted: boolean,
+  ) => Promise<void>;
+};
+
+const SetStateParametersStruct = objectStruct({
+  key: optional(string()),
+  value: JsonStruct,
+  encrypted: optional(boolean()),
+});
+
+export type SetStateParameters = InferMatching<
+  typeof SetStateParametersStruct,
+  SetStateParams
+>;
+
+/**
+ * The `snap_setState` method implementation.
+ *
+ * @param request - The JSON-RPC request object.
+ * @param response - The JSON-RPC response object.
+ * @param _next - The `json-rpc-engine` "next" callback. Not used by this
+ * function.
+ * @param end - The `json-rpc-engine` "end" callback.
+ * @param hooks - The RPC method hooks.
+ * @param hooks.hasPermission - Check whether a given origin has a given
+ * permission.
+ * @param hooks.getSnapState - Get the state of the requesting Snap.
+ * @param hooks.getUnlockPromise - Wait for the extension to be unlocked.
+ * @param hooks.updateSnapState - Update the state of the requesting Snap.
+ * @returns Nothing.
+ */
+async function setStateImplementation(
+  request: JsonRpcRequest<SetStateParameters>,
+  response: PendingJsonRpcResponse<SetStateResult>,
+  _next: unknown,
+  end: JsonRpcEngineEndCallback,
+  {
+    hasPermission,
+    getSnapState,
+    getUnlockPromise,
+    updateSnapState,
+  }: SetStateHooks,
+): Promise<void> {
+  const { params } = request;
+
+  if (!hasPermission('snap_manageState')) {
+    return end(providerErrors.unauthorized());
+  }
+
+  try {
+    const validatedParams = getValidatedParams(params);
+    const { key, value, encrypted = true } = validatedParams;
+
+    if (encrypted) {
+      await getUnlockPromise(true);
+    }
+
+    // We expect the MM middleware stack to always add the origin to requests
+    const { origin } = request as JsonRpcRequest & { origin: string };
+    const state = await getSnapState(origin, encrypted);
+
+    const newState = set(state, key, value);
+    if (!isPlainObject(newState)) {
+      return end(
+        rpcErrors.invalidParams('Invalid state: Root must be an object.'),
+      );
+    }
+
+    await updateSnapState(origin, newState, encrypted);
+    response.result = null;
+  } catch (error) {
+    return end(error);
+  }
+
+  return end();
+}
+
+/**
+ * Validate the parameters of the `snap_setState` method.
+ *
+ * @param params - The parameters to validate.
+ * @returns The validated parameters.
+ */
+function getValidatedParams(params?: unknown) {
+  try {
+    return create(params, SetStateParametersStruct);
+  } catch (error) {
+    if (error instanceof StructError) {
+      throw rpcErrors.invalidParams({
+        message: `Invalid params: ${error.message}.`,
+      });
+    }
+
+    throw error;
+  }
+}
+
+/**
+ * Set the value of a key in an object. The key may contain Lodash-style path
+ * syntax, e.g., `a.b.c` (with the exception of array syntax). If the key does
+ * not exist, it is created (and any missing intermediate keys are created as
+ * well).
+ *
+ * This is a simplified version of Lodash's `set` function, but Lodash doesn't
+ * seem to be maintained anymore, so we're using our own implementation.
+ *
+ * @param object - The object to get the key from.
+ * @param key - The key to set.
+ * @param value - The value to set the key to.
+ * @returns The new object with the key set to the value.
+ */
+export function set(
+  // eslint-disable-next-line @typescript-eslint/default-param-last
+  object: Record<string, Json> | null,
+  key: string | undefined,
+  value: Json,
+): Json {
+  if (key === undefined || key === '') {
+    return value;
+  }
+
+  const keys = key.split('.');
+  const requiredObject = object ?? {};
+  let currentObject: Record<string, Json> = requiredObject;
+
+  for (let i = 0; i < keys.length; i++) {
+    const currentKey = keys[i];
+    if (['__proto__', 'constructor'].includes(currentKey)) {
+      return {};
+    }
+
+    if (i === keys.length - 1) {
+      currentObject[currentKey] = value;
+      return requiredObject;
+    }
+
+    currentObject[currentKey] = isPlainObject(currentObject[currentKey])
+      ? currentObject[currentKey]
+      : {};
+
+    currentObject = currentObject[currentKey] as Record<string, Json>;
+  }
+
+  // This should never be reached.
+  return null;
+}

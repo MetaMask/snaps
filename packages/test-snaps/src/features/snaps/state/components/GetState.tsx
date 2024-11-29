@@ -7,28 +7,24 @@ import { Tag, useInvokeMutation } from '../../../../api';
 import { Result } from '../../../../components';
 import { getSnapId } from '../../../../utils';
 import { MANAGE_STATE_PORT, MANAGE_STATE_SNAP_ID } from '../constants';
-import { useSnapState } from '../hooks';
 
-export const SendData: FunctionComponent<{ encrypted: boolean }> = ({
+export const GetState: FunctionComponent<{ encrypted: boolean }> = ({
   encrypted,
 }) => {
-  const [value, setValue] = useState('');
+  const [key, setKey] = useState('');
   const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
-  const snapState = useSnapState(encrypted);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value);
+    setKey(event.target.value);
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const items = snapState?.items ?? [];
-
     invokeSnap({
       snapId: getSnapId(MANAGE_STATE_SNAP_ID, MANAGE_STATE_PORT),
-      method: 'legacy_setState',
+      method: 'getState',
       params: {
-        items: [...items, value],
+        key,
         encrypted,
       },
       tags: [encrypted ? Tag.TestState : Tag.UnencryptedTestState],
@@ -39,34 +35,28 @@ export const SendData: FunctionComponent<{ encrypted: boolean }> = ({
     <>
       <Form onSubmit={handleSubmit} className="mb-3">
         <Form.Group>
-          <Form.Label>Value</Form.Label>
+          <Form.Label>Key</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Value"
-            value={value}
+            placeholder="Key"
+            value={key}
             onChange={handleChange}
-            id={encrypted ? 'dataManageState' : 'dataUnencryptedManageState'}
+            id={encrypted ? 'getState' : 'getUnencryptedState'}
             className="mb-3"
           />
         </Form.Group>
 
         <Button
           type="submit"
-          id={encrypted ? 'sendManageState' : 'sendUnencryptedManageState'}
+          id={encrypted ? 'sendGetState' : 'sendGetUnencryptedState'}
           disabled={isLoading}
         >
-          Send Data
+          Get State
         </Button>
       </Form>
 
       <Result className="mb-3">
-        <span
-          id={
-            encrypted
-              ? 'sendManageStateResult'
-              : 'sendUnencryptedManageStateResult'
-          }
-        >
+        <span id={encrypted ? 'getStateResult' : 'getStateUnencryptedResult'}>
           {JSON.stringify(data, null, 2)}
           {JSON.stringify(error, null, 2)}
         </span>

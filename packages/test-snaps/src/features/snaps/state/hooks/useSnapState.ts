@@ -19,7 +19,7 @@ export function useSnapState(encrypted: boolean) {
   const { data: state } = useInvokeQuery<{ data: State }>(
     {
       snapId,
-      method: 'legacy_getState',
+      method: 'getState',
       params: { encrypted },
       tags: [encrypted ? Tag.TestState : Tag.UnencryptedTestState],
     },
