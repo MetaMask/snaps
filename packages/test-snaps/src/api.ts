@@ -1,5 +1,7 @@
-import type { MetaMaskInpageProvider } from '@metamask/providers';
-import type { RequestArguments } from '@metamask/providers/dist/BaseProvider';
+import type {
+  MetaMaskInpageProvider,
+  RequestArguments,
+} from '@metamask/providers';
 import { logError } from '@metamask/snaps-utils';
 import type { JsonRpcError, JsonRpcParams } from '@metamask/utils';
 import type { BaseQueryFn } from '@reduxjs/toolkit/query/react';
@@ -118,6 +120,7 @@ export const baseApi = createApi({
         }),
         invalidatesTags: [Tag.InstalledSnaps],
       }),
+
       installSnaps: build.mutation<InstallSnapResult, InstallSnapsArgs>({
         query: (params) => ({
           method: 'wallet_requestSnaps',

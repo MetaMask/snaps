@@ -3,7 +3,7 @@ import {
   type OnRpcRequestHandler,
 } from '@metamask/snaps-sdk';
 
-import type { BaseParams, SetStateParams } from './types';
+import type { BaseParams, LegacySetStateParams, SetStateParams } from './types';
 import { clearState, getState, setState } from './utils';
 
 /**
@@ -34,21 +34,55 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'setState': {
       const params = request.params as SetStateParams;
-
-      if (params.items) {
-        await setState({ items: params.items }, params.encrypted);
-      }
-      return true;
+      return await snap.request({
+        method: 'snap_setState',
+        params: {
+          key: params?.key,
+          value: params?.value,
+          encrypted: params?.encrypted,
+        },
+      });
     }
 
     case 'getState': {
       const params = request.params as BaseParams;
-      return await getState(params?.encrypted);
+      return await snap.request({
+        method: 'snap_getState',
+        params: {
+          key: params?.key,
+          encrypted: params?.encrypted,
+        },
+      });
     }
 
     case 'clearState': {
       const params = request.params as BaseParams;
+      return await snap.request({
+        method: 'snap_clearState',
+        params: {
+          encrypted: params?.encrypted,
+        },
+      });
+    }
+
+    case 'legacy_setState': {
+      const params = request.params as LegacySetStateParams;
+      if (params.items) {
+        await setState({ items: params.items }, params.encrypted);
+      }
+
+      return true;
+    }
+
+    case 'legacy_getState': {
+      const params = request.params as BaseParams;
+      return await getState(params.encrypted);
+    }
+
+    case 'legacy_clearState': {
+      const params = request.params as BaseParams;
       await clearState(params?.encrypted);
+
       return true;
     }
 
