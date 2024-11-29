@@ -20,13 +20,13 @@ describe('onRpcRequest', () => {
     });
   });
 
-  describe('legacy_legacy_setState', () => {
+  describe('legacy_setState', () => {
     it('sets the state to the params', async () => {
       const { request } = await installSnap();
 
       expect(
         await request({
-          method: 'legacy_legacy_setState',
+          method: 'legacy_setState',
           params: {
             items: ['foo'],
           },
@@ -47,7 +47,7 @@ describe('onRpcRequest', () => {
 
       expect(
         await request({
-          method: 'legacy_legacy_setState',
+          method: 'legacy_setState',
           params: {
             items: ['foo'],
             encrypted: false,
