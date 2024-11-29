@@ -76,7 +76,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
 
     case 'legacy_getState': {
       const params = request.params as BaseParams;
-      return await getState(params.encrypted);
+      return await getState(params?.encrypted);
     }
 
     case 'legacy_clearState': {
