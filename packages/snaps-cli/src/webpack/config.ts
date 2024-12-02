@@ -166,8 +166,8 @@ export async function getDefaultConfiguration(
          *
          * @see https://webpack.js.org/configuration/output/#outputlibrarytarget
          */
-        type: 'global',
-        name: 'exports',
+        type: 'assign',
+        name: 'module.exports',
       },
 
       /**
@@ -178,7 +178,7 @@ export async function getDefaultConfiguration(
        *
        * @see https://webpack.js.org/configuration/output/#outputchunkformat
        */
-      chunkFormat: 'module',
+      chunkFormat: 'commonjs',
     },
 
     /**
@@ -378,16 +378,6 @@ export async function getDefaultConfiguration(
           parallel: true,
         }),
       ],
-    },
-
-    /**
-     * The experiments configuration. This configures which Webpack
-     * experiments to enable/disable.
-     *
-     * @see https://webpack.js.org/configuration/experiments
-     */
-    experiments: {
-      outputModule: true,
     },
 
     /**
