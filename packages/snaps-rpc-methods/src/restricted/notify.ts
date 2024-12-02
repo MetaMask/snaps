@@ -281,11 +281,6 @@ export function getValidatedParams(
     validateTextLinks(validatedParams.message, isOnPhishingList, getSnap);
 
     if (hasProperty(validatedParams, 'footerLink')) {
-      validateTextLinks(
-        validatedParams.footerLink.text,
-        isOnPhishingList,
-        getSnap,
-      );
       validateLink(validatedParams.footerLink.href, isOnPhishingList, getSnap);
     }
 
