@@ -14,7 +14,7 @@ import { LiteralStruct, NodeType } from '../nodes';
 
 /**
  * This replicates the available input types from the metamask extension.
- * https://github.com/MetaMask/metamask-extension/develop/ui/components/component-library/input/input.constants.js
+ * https://github.com/MetaMask/metamask-extension/main/ui/components/component-library/input/input.constants.js
  */
 export enum InputType {
   /* eslint-disable @typescript-eslint/no-shadow */

@@ -1,6 +1,6 @@
 import { createSnapComponent } from '../component';
 
-// Copied from https://github.com/MetaMask/metamask-extension/blob/develop/ui/components/component-library/icon/icon.types.ts
+// Copied from https://github.com/MetaMask/metamask-extension/blob/main/ui/components/component-library/icon/icon.types.ts
 // Currently requires manual syncing when new icon is added.
 export enum IconName {
   AddSquare = 'add-square',
