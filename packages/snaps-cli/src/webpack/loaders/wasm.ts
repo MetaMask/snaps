@@ -115,7 +115,7 @@ const loader: LoaderDefinitionFunction = async function loader(
     }
 
     const bytes = decode(b64);
-    const module = new WebAssembly.Module(bytes);
+    const module = await WebAssembly.compile(bytes);
     const instance = new WebAssembly.Instance(module, {
       ${getModuleImports(imports)}
     });

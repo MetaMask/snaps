@@ -418,8 +418,7 @@ export class BaseSnapExecutor {
 
       await this.executeInSnapContext(snapId, async () => {
         compartment.evaluate(sourceCode);
-        await snapModule.exports;
-        this.registerSnapExports(snapId, snapModule);
+        await this.registerSnapExports(snapId, snapModule);
       });
     } catch (error) {
       this.removeSnap(snapId);
@@ -448,15 +447,17 @@ export class BaseSnapExecutor {
     this.snapData.clear();
   }
 
-  private registerSnapExports(snapId: string, snapModule: any) {
+  private async registerSnapExports(snapId: string, snapModule: any) {
     const data = this.snapData.get(snapId);
     // Somebody deleted the snap before we could register.
     if (!data) {
       return;
     }
 
+    // If the module is async, we must await the exports.
+    const snapExports = await snapModule.exports;
     data.exports = SNAP_EXPORT_NAMES.reduce((acc, exportName) => {
-      const snapExport = snapModule.exports[exportName];
+      const snapExport = snapExports[exportName];
       const { validator } = SNAP_EXPORTS[exportName];
       if (validator(snapExport)) {
         return { ...acc, [exportName]: snapExport };
