@@ -24,7 +24,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
           // We're using the `NotificationType` enum here, but you can also use
           // the string values directly, e.g. `type: 'inApp'`.
           type: NotificationType.InApp,
-          message: `Hello from within MetaMask!`,
+          message: `Hello from within MetaMask! [This](https://snaps.metamask.io/) is a what a link looks like.`,
         },
       });
 
