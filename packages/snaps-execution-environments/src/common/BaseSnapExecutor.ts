@@ -416,8 +416,9 @@ export class BaseSnapExecutor {
       compartment.globalThis.global = compartment.globalThis;
       compartment.globalThis.window = compartment.globalThis;
 
-      await this.executeInSnapContext(snapId, () => {
+      await this.executeInSnapContext(snapId, async () => {
         compartment.evaluate(sourceCode);
+        await snapModule.exports;
         this.registerSnapExports(snapId, snapModule);
       });
     } catch (error) {
