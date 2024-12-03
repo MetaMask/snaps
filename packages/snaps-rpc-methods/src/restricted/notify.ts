@@ -26,7 +26,7 @@ import {
   type Snap,
 } from '@metamask/snaps-utils';
 import type { InferMatching } from '@metamask/snaps-utils';
-import { object, string } from '@metamask/superstruct';
+import { object, string, optional } from '@metamask/superstruct';
 import type { NonEmptyArray } from '@metamask/utils';
 import { hasProperty, isObject } from '@metamask/utils';
 
@@ -49,23 +49,17 @@ const InAppNotificationWithDetailsStruct = object({
   message: string(),
   content: NotificationComponentsStruct,
   title: string(),
-});
-
-const InAppNotificationWithDetailsAndFooterStruct = object({
-  type: enumValue(NotificationType.InApp),
-  message: string(),
-  content: NotificationComponentsStruct,
-  title: string(),
-  footerLink: object({
-    href: string(),
-    text: string(),
-  }),
+  footerLink: optional(
+    object({
+      href: string(),
+      text: string(),
+    }),
+  ),
 });
 
 const NotificationParametersStruct = union([
   InAppNotificationStruct,
   InAppNotificationWithDetailsStruct,
-  InAppNotificationWithDetailsAndFooterStruct,
   NativeNotificationStruct,
 ]);
 

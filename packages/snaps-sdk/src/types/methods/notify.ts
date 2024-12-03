@@ -46,13 +46,7 @@ export type NotifyParams =
       message: string;
       content: NotificationComponent;
       title: string;
-    }
-  | {
-      type: EnumToUnion<NotificationType.InApp>;
-      message: string;
-      content: NotificationComponent;
-      title: string;
-      footerLink: { href: string; text: string };
+      footerLink?: { href: string; text: string };
     };
 
 /**
