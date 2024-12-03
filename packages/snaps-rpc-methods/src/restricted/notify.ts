@@ -8,8 +8,8 @@ import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   NotifyParams,
   NotifyResult,
-  NotificationComponent,
   InterfaceContext,
+  ComponentOrElement,
 } from '@metamask/snaps-sdk';
 import {
   enumValue,
@@ -17,8 +17,8 @@ import {
   union,
   ContentType,
   getErrorMessage,
+  ComponentOrElementStruct,
 } from '@metamask/snaps-sdk';
-import { NotificationComponentsStruct } from '@metamask/snaps-sdk/jsx';
 import {
   createUnion,
   validateLink,
@@ -47,7 +47,7 @@ const InAppNotificationStruct = object({
 const InAppNotificationWithDetailsStruct = object({
   type: enumValue(NotificationType.InApp),
   message: string(),
-  content: NotificationComponentsStruct,
+  content: ComponentOrElementStruct,
   title: string(),
   footerLink: optional(
     object({
@@ -93,7 +93,7 @@ export type NotifyMethodHooks = {
 
   createInterface: (
     origin: string,
-    content: NotificationComponent,
+    content: ComponentOrElement,
     context?: InterfaceContext,
     contentType?: ContentType,
   ) => Promise<string>;
@@ -190,7 +190,7 @@ export function getImplementation({
     if (hasProperty(validatedParams, 'content')) {
       const id = await createInterface(
         origin,
-        validatedParams.content as NotificationComponent,
+        validatedParams.content as ComponentOrElement,
         undefined,
         ContentType.Notification,
       );

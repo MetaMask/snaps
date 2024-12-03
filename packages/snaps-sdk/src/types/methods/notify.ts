@@ -1,19 +1,5 @@
 import { type EnumToUnion } from '../../internals';
-import type {
-  AddressElement,
-  BoldElement,
-  BoxElement,
-  CopyableElement,
-  DividerElement,
-  IconElement,
-  ImageElement,
-  ItalicElement,
-  LinkElement,
-  RowElement,
-  TextElement,
-  TooltipElement,
-  ValueElement,
-} from '../../jsx';
+import type { ComponentOrElement } from '../interface';
 
 /**
  * The types of notifications that can be displayed.
@@ -44,7 +30,7 @@ export type NotifyParams =
   | {
       type: EnumToUnion<NotificationType.InApp>;
       message: string;
-      content: NotificationComponent;
+      content: ComponentOrElement;
       title: string;
       footerLink?: { href: string; text: string };
     };
@@ -55,18 +41,3 @@ export type NotifyParams =
  * This method does not return anything.
  */
 export type NotifyResult = null;
-
-export type NotificationComponent =
-  | BoxElement
-  | CopyableElement
-  | BoldElement
-  | ItalicElement
-  | AddressElement
-  | DividerElement
-  | ValueElement
-  | RowElement
-  | TextElement
-  | TooltipElement
-  | IconElement
-  | ImageElement
-  | LinkElement;

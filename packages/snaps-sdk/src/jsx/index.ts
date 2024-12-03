@@ -11,5 +11,4 @@ export {
   BoxChildStruct,
   FormChildStruct,
   FieldChildUnionStruct,
-  NotificationComponentsStruct,
 } from './validation';

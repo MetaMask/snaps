@@ -69,7 +69,6 @@ import {
   IconStruct,
   SelectorStruct,
   SectionStruct,
-  NotificationComponentsStruct,
   AvatarStruct,
 } from './validation';
 
@@ -631,87 +630,6 @@ describe('BoxStruct', () => {
     </Box>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, BoxStruct)).toBe(false);
-  });
-});
-
-describe('NotificationComponentsStruct', () => {
-  it.each([
-    <Box>
-      <Text>foo</Text>
-    </Box>,
-    <Box>
-      <Text>foo</Text>
-      <Text>bar</Text>
-    </Box>,
-    <Box>
-      <Text>foo</Text>
-      <Row label="label">
-        <Image src="<svg />" alt="alt" />
-      </Row>
-    </Box>,
-    <Box direction="horizontal" alignment="space-between">
-      <Text>foo</Text>
-      <Row label="label">
-        <Image src="<svg />" alt="alt" />
-      </Row>
-    </Box>,
-    <Box direction="horizontal">
-      <Text>foo</Text>
-      <Row label="label">
-        <Image src="<svg />" alt="alt" />
-      </Row>
-    </Box>,
-    <Box>
-      <Text>Foo</Text>
-      {[1, 2, 3, 4, 5].map((value) => (
-        <Text>{value.toString()}</Text>
-      ))}
-    </Box>,
-    <Text>foo</Text>,
-    <Row label="label">
-      <Image src="<svg />" alt="alt" />
-    </Row>,
-  ])(
-    "validates content returned for a notification's detailed view",
-    (value) => {
-      expect(is(value, NotificationComponentsStruct)).toBe(true);
-    },
-  );
-
-  it.each([
-    'foo',
-    42,
-    null,
-    undefined,
-    {},
-    [],
-    // @ts-expect-error - Invalid props.
-    <Box direction="foo">
-      <Text>foo</Text>
-      <Row label="label">
-        <Image src="<svg />" alt="alt" />
-      </Row>
-    </Box>,
-    // @ts-expect-error - Invalid props.
-    <Box direction="vertical" alignment="foo">
-      <Text>foo</Text>
-      <Row label="label">
-        <Image src="<svg />" alt="alt" />
-      </Row>
-    </Box>,
-    <Box>
-      <Form name="my-form">
-        <Field label="Username">
-          <Input name="username" type="text" />
-        </Field>
-        <Button type="submit">Submit</Button>
-      </Form>
-    </Box>,
-    <Box>
-      <Value extra="foo" value="bar" />
-    </Box>,
-  ])('does not validate "%p"', (value) => {
-    expect(is(value, NotificationComponentsStruct)).toBe(false);
   });
 });
 
