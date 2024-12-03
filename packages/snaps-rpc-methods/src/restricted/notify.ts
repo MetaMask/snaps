@@ -63,7 +63,7 @@ const NotificationParametersStruct = union([
   NativeNotificationStruct,
 ]);
 
-export type NotificationParameters = InferMatching<
+export type NotificationArgs = InferMatching<
   typeof NotificationParametersStruct,
   NotifyParams
 >;
@@ -75,7 +75,7 @@ export type NotifyMethodHooks = {
    */
   showNativeNotification: (
     snapId: string,
-    args: NotificationParameters,
+    args: NotificationArgs,
   ) => Promise<null>;
 
   /**
@@ -84,7 +84,7 @@ export type NotifyMethodHooks = {
    */
   showInAppNotification: (
     snapId: string,
-    args: NotificationParameters,
+    args: NotificationArgs,
   ) => Promise<null>;
 
   isOnPhishingList: (url: string) => boolean;
