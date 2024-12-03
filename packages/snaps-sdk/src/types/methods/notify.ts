@@ -1,4 +1,5 @@
-import type { EnumToUnion } from '../../internals';
+import { type EnumToUnion } from '../../internals';
+import type { ComponentOrElement } from '../interface';
 
 /**
  * The types of notifications that can be displayed.
@@ -17,10 +18,22 @@ export enum NotificationType {
  * @property type - The type of notification to display.
  * @property message - The message to display in the notification.
  */
-export type NotifyParams = {
-  type: EnumToUnion<NotificationType>;
-  message: string;
-};
+export type NotifyParams =
+  | {
+      type: EnumToUnion<NotificationType.Native>;
+      message: string;
+    }
+  | {
+      type: EnumToUnion<NotificationType.InApp>;
+      message: string;
+    }
+  | {
+      type: EnumToUnion<NotificationType.InApp>;
+      message: string;
+      content: ComponentOrElement;
+      title: string;
+      footerLink?: { href: string; text: string };
+    };
 
 /**
  * The result returned by the `snap_notify` method.
