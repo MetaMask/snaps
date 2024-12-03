@@ -5,31 +5,68 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { NotificationType } from '@metamask/snaps-sdk';
 import type {
   NotifyParams,
   NotifyResult,
-  EnumToUnion,
+  InterfaceContext,
+  ComponentOrElement,
 } from '@metamask/snaps-sdk';
-import { type Snap, validateTextLinks } from '@metamask/snaps-utils';
+import {
+  enumValue,
+  NotificationType,
+  union,
+  ContentType,
+  getErrorMessage,
+  ComponentOrElementStruct,
+} from '@metamask/snaps-sdk';
+import {
+  createUnion,
+  validateLink,
+  validateTextLinks,
+  type Snap,
+} from '@metamask/snaps-utils';
+import type { InferMatching } from '@metamask/snaps-utils';
+import { object, string, optional } from '@metamask/superstruct';
 import type { NonEmptyArray } from '@metamask/utils';
-import { isObject } from '@metamask/utils';
+import { hasProperty, isObject } from '@metamask/utils';
 
 import { type MethodHooksObject } from '../utils';
 
 const methodName = 'snap_notify';
 
-export type NotificationArgs = {
-  /**
-   * Enum type to determine notification type.
-   */
-  type: EnumToUnion<NotificationType>;
+const NativeNotificationStruct = object({
+  type: enumValue(NotificationType.Native),
+  message: string(),
+});
 
-  /**
-   * A message to show on the notification.
-   */
-  message: string;
-};
+const InAppNotificationStruct = object({
+  type: enumValue(NotificationType.InApp),
+  message: string(),
+});
+
+const InAppNotificationWithDetailsStruct = object({
+  type: enumValue(NotificationType.InApp),
+  message: string(),
+  content: ComponentOrElementStruct,
+  title: string(),
+  footerLink: optional(
+    object({
+      href: string(),
+      text: string(),
+    }),
+  ),
+});
+
+const NotificationParametersStruct = union([
+  InAppNotificationStruct,
+  InAppNotificationWithDetailsStruct,
+  NativeNotificationStruct,
+]);
+
+export type NotificationArgs = InferMatching<
+  typeof NotificationParametersStruct,
+  NotifyParams
+>;
 
 export type NotifyMethodHooks = {
   /**
@@ -54,6 +91,12 @@ export type NotifyMethodHooks = {
 
   maybeUpdatePhishingList: () => Promise<void>;
 
+  createInterface: (
+    origin: string,
+    content: ComponentOrElement,
+    context?: InterfaceContext,
+    contentType?: ContentType,
+  ) => Promise<string>;
   getSnap: (snapId: string) => Snap | undefined;
 };
 
@@ -97,6 +140,7 @@ const methodHooks: MethodHooksObject<NotifyMethodHooks> = {
   showInAppNotification: true,
   isOnPhishingList: true,
   maybeUpdatePhishingList: true,
+  createInterface: true,
   getSnap: true,
 };
 
@@ -114,6 +158,7 @@ export const notifyBuilder = Object.freeze({
  * @param hooks.showInAppNotification - A function that shows a notification in the MetaMask UI.
  * @param hooks.isOnPhishingList - A function that checks for links against the phishing list.
  * @param hooks.maybeUpdatePhishingList - A function that updates the phishing list if needed.
+ * @param hooks.createInterface - A function that creates the interface in SnapInterfaceController.
  * @param hooks.getSnap - A function that checks if a snap is installed.
  * @returns The method implementation which returns `null` on success.
  * @throws If the params are invalid.
@@ -123,6 +168,7 @@ export function getImplementation({
   showInAppNotification,
   isOnPhishingList,
   maybeUpdatePhishingList,
+  createInterface,
   getSnap,
 }: NotifyMethodHooks) {
   return async function implementation(
@@ -133,11 +179,23 @@ export function getImplementation({
       context: { origin },
     } = args;
 
-    const validatedParams = getValidatedParams(params);
-
     await maybeUpdatePhishingList();
 
-    validateTextLinks(validatedParams.message, isOnPhishingList, getSnap);
+    const validatedParams = getValidatedParams(
+      params,
+      isOnPhishingList,
+      getSnap,
+    );
+
+    if (hasProperty(validatedParams, 'content')) {
+      const id = await createInterface(
+        origin,
+        validatedParams.content as ComponentOrElement,
+        undefined,
+        ContentType.Notification,
+      );
+      validatedParams.content = id;
+    }
 
     switch (validatedParams.type) {
       case NotificationType.Native:
@@ -157,9 +215,16 @@ export function getImplementation({
  * type. Throws if validation fails.
  *
  * @param params - The unvalidated params object from the method request.
+ * @param isOnPhishingList - The function that checks for links against the phishing list.
+ * @param getSnap - A function that checks if a snap is installed.
  * @returns The validated method parameter object.
+ * @throws If the params are invalid.
  */
-export function getValidatedParams(params: unknown): NotifyParams {
+export function getValidatedParams(
+  params: unknown,
+  isOnPhishingList: NotifyMethodHooks['isOnPhishingList'],
+  getSnap: NotifyMethodHooks['getSnap'],
+): NotifyParams {
   if (!isObject(params)) {
     throw rpcErrors.invalidParams({
       message: 'Expected params to be a single object.',
@@ -200,5 +265,23 @@ export function getValidatedParams(params: unknown): NotifyParams {
     });
   }
 
-  return params as NotificationArgs;
+  try {
+    const validatedParams = createUnion(
+      params,
+      NotificationParametersStruct,
+      'type',
+    );
+
+    validateTextLinks(validatedParams.message, isOnPhishingList, getSnap);
+
+    if (hasProperty(validatedParams, 'footerLink')) {
+      validateLink(validatedParams.footerLink.href, isOnPhishingList, getSnap);
+    }
+
+    return validatedParams;
+  } catch (error) {
+    throw rpcErrors.invalidParams({
+      message: `Invalid params: ${getErrorMessage(error)}`,
+    });
+  }
 }
