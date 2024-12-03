@@ -166,7 +166,8 @@ export async function getDefaultConfiguration(
          *
          * @see https://webpack.js.org/configuration/output/#outputlibrarytarget
          */
-        type: 'commonjs',
+        type: 'assign',
+        name: 'module.exports',
       },
 
       /**
@@ -377,23 +378,6 @@ export async function getDefaultConfiguration(
           parallel: true,
         }),
       ],
-    },
-
-    /**
-     * The experiments configuration. This configures which Webpack
-     * experiments to enable/disable.
-     *
-     * @see https://webpack.js.org/configuration/experiments
-     */
-    experiments: {
-      /**
-       * Experimental support for top level await.
-       *
-       * This is unsupported in Snaps and therefore disabled.
-       *
-       * @see https://webpack.js.org/configuration/experiments/#experimentstoplevelawait
-       */
-      topLevelAwait: false,
     },
 
     /**
