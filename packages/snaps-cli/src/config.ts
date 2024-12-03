@@ -114,7 +114,7 @@ export type SnapBrowserifyConfig = {
      *
      * @default localhost
      */
-    host?: number;
+    host?: string;
 
     /**
      * The root directory to serve the snap from.
