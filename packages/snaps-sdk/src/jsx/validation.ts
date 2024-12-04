@@ -512,7 +512,7 @@ export const FieldStruct: Describe<FieldElement> = element('Field', {
  */
 export const FormChildStruct = children(
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  [FieldStruct, lazy(() => BoxChildStruct)],
+  [lazy(() => BoxChildStruct)],
 ) as unknown as Struct<SnapsChildren<GenericSnapElement>, null>;
 
 /**
@@ -796,6 +796,7 @@ export const BoxChildStruct = typedUnion([
   DividerStruct,
   DropdownStruct,
   RadioGroupStruct,
+  FieldStruct,
   FileInputStruct,
   FormStruct,
   HeadingStruct,
