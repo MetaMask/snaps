@@ -56,6 +56,7 @@ export const endowmentPermissionBuilders = {
   [nameLookupEndowmentBuilder.targetName]: nameLookupEndowmentBuilder,
   [lifecycleHooksEndowmentBuilder.targetName]: lifecycleHooksEndowmentBuilder,
   [keyringEndowmentBuilder.targetName]: keyringEndowmentBuilder,
+  [settingsPageEndowmentBuilder.targetName]: settingsPageEndowmentBuilder,
   [homePageEndowmentBuilder.targetName]: homePageEndowmentBuilder,
   [signatureInsightEndowmentBuilder.targetName]:
     signatureInsightEndowmentBuilder,
