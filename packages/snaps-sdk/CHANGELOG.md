@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.13.0]
+
+### Added
+
+- Add `size` prop to `Text` ([#2908](https://github.com/MetaMask/snaps/pull/2908))
+- Add JSX `content` property to `snap_notify` ([#2881](https://github.com/MetaMask/snaps/pull/2881))
+  - This content will be displayed in an upcoming expanded view for notifications.
+
+### Changed
+
+- Allow `Field` in `Box` ([#2926](https://github.com/MetaMask/snaps/pull/2926))
+- Bump `@metamask/key-tree` from `^9.1.2` to `^10.0.1` ([#2909](https://github.com/MetaMask/snaps/pull/2909))
+
 ## [6.12.0]
 
 ### Added
@@ -421,7 +434,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.12.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.13.0...HEAD
+[6.13.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.12.0...@metamask/snaps-sdk@6.13.0
 [6.12.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.11.0...@metamask/snaps-sdk@6.12.0
 [6.11.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.10.0...@metamask/snaps-sdk@6.11.0
 [6.10.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.9.0...@metamask/snaps-sdk@6.10.0
