@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.13.0]
+
 ### Uncategorized
 
 - Allow `Field` in `Box` ([#2926](https://github.com/MetaMask/snaps-skunkworks.git/pull/2926))
@@ -430,7 +432,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.12.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.13.0...HEAD
+[6.13.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.12.0...@metamask/snaps-sdk@6.13.0
 [6.12.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.11.0...@metamask/snaps-sdk@6.12.0
 [6.11.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.10.0...@metamask/snaps-sdk@6.11.0
 [6.10.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.9.0...@metamask/snaps-sdk@6.10.0
