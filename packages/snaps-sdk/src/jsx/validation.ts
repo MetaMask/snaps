@@ -508,22 +508,6 @@ export const FieldStruct: Describe<FieldElement> = element('Field', {
 });
 
 /**
- * A subset of JSX elements that are allowed as children of the Form component.
- */
-export const FormChildStruct = children(
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  [FieldStruct, lazy(() => BoxChildStruct)],
-) as unknown as Struct<SnapsChildren<GenericSnapElement>, null>;
-
-/**
- * A struct for the {@link FormElement} type.
- */
-export const FormStruct: Describe<FormElement> = element('Form', {
-  children: FormChildStruct,
-  name: string(),
-});
-
-/**
  * A struct for the {@link BoldElement} type.
  */
 export const BoldStruct: Describe<BoldElement> = element('Bold', {
@@ -582,6 +566,19 @@ export const BoxStruct: Describe<BoxElement> = element('Box', {
     ]),
   ),
   center: optional(boolean()),
+});
+
+/**
+ * A subset of JSX elements that are allowed as children of the Form component.
+ */
+export const FormChildStruct = BoxChildrenStruct;
+
+/**
+ * A struct for the {@link FormElement} type.
+ */
+export const FormStruct: Describe<FormElement> = element('Form', {
+  children: FormChildStruct,
+  name: string(),
 });
 
 const FooterButtonStruct = refine(ButtonStruct, 'FooterButton', (value) => {
@@ -796,6 +793,7 @@ export const BoxChildStruct = typedUnion([
   DividerStruct,
   DropdownStruct,
   RadioGroupStruct,
+  FieldStruct,
   FileInputStruct,
   FormStruct,
   HeadingStruct,

@@ -9,6 +9,7 @@ import {
   Copyable,
   Heading,
   Option,
+  Container,
 } from '@metamask/snaps-sdk/jsx';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 
@@ -30,7 +31,7 @@ describe('isValidBoxChild', () => {
   });
 
   it('returns false for invalid box children', () => {
-    const child = Field({ children: Input({ name: 'input' }) });
+    const child = Container({ children: Input({ name: 'input' }) });
     expect(isValidBoxChild(child)).toBe(false);
   });
 });
@@ -80,7 +81,7 @@ describe('setElementChildren', () => {
     const element = Box({
       children: [Text({ children: 'foo' }), Heading({ children: 'baz' })],
     });
-    const children = Field({ children: Input({ name: 'input' }) });
+    const children = Container({ children: Input({ name: 'input' }) });
 
     const result = setElementChildren(element, children, isValidBoxChild);
     expect(result).toStrictEqual(element.props.children);

@@ -568,6 +568,11 @@ describe('BoxStruct', () => {
       <Text>bar</Text>
     </Box>,
     <Box>
+      <Field label="foo">
+        <Input name="foo" />
+      </Field>
+    </Box>,
+    <Box>
       <Text>foo</Text>
       <Row label="label">
         <Image src="<svg />" alt="alt" />
@@ -619,11 +624,6 @@ describe('BoxStruct', () => {
       <Row label="label">
         <Image src="<svg />" alt="alt" />
       </Row>
-    </Box>,
-    <Box>
-      <Field label="foo">
-        <Input name="foo" />
-      </Field>
     </Box>,
     <Box>
       <Value extra="foo" value="bar" />
