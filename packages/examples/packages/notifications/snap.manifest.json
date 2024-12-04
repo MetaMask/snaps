@@ -1,5 +1,5 @@
 {
-  "version": "2.1.4",
+  "version": "2.2.0",
   "description": "MetaMask example snap demonstrating the use of `snap_notify`.",
   "proposedName": "Notifications Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "SELpk82JtBQolxOnwrXlAG8OCIfDSP8tc1j7FZzA5ps=",
+    "shasum": "ZXgMRkK/FtEZlwVSdOC+dmP99tuBTqHx/2Mj/FNhzAg=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
