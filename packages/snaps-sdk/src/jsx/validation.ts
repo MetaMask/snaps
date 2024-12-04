@@ -507,20 +507,6 @@ export const FieldStruct: Describe<FieldElement> = element('Field', {
   children: FieldChildStruct,
 });
 
-export const BoxChildrenStruct = children(
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  [lazy(() => BoxChildStruct)],
-) as unknown as Struct<SnapsChildren<GenericSnapElement>, null>;
-
-/**
- * A struct for the {@link FormElement} type.
- */
-export const FormStruct: Describe<FormElement> = element('Form', {
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  children: BoxChildrenStruct,
-  name: string(),
-});
-
 /**
  * A struct for the {@link BoldElement} type.
  */
@@ -559,6 +545,11 @@ export const AvatarStruct = element('Avatar', {
   size: optional(nullUnion([literal('sm'), literal('md'), literal('lg')])),
 }) as unknown as Struct<AvatarElement, null>;
 
+export const BoxChildrenStruct = children(
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  [lazy(() => BoxChildStruct)],
+) as unknown as Struct<SnapsChildren<GenericSnapElement>, null>;
+
 /**
  * A struct for the {@link BoxElement} type.
  */
@@ -575,6 +566,19 @@ export const BoxStruct: Describe<BoxElement> = element('Box', {
     ]),
   ),
   center: optional(boolean()),
+});
+
+/**
+ * A subset of JSX elements that are allowed as children of the Form component.
+ */
+export const FormChildStruct = BoxChildrenStruct;
+
+/**
+ * A struct for the {@link FormElement} type.
+ */
+export const FormStruct: Describe<FormElement> = element('Form', {
+  children: FormChildStruct,
+  name: string(),
 });
 
 const FooterButtonStruct = refine(ButtonStruct, 'FooterButton', (value) => {
