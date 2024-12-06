@@ -86,7 +86,6 @@ export function getHandlerArguments(
       return { origin };
 
     case HandlerType.OnHomePage:
-      return {};
     case HandlerType.OnSettingsPage:
       return {};
     case HandlerType.OnUserInput: {
