@@ -31,6 +31,7 @@ import {
   rpcCaveatSpecifications,
   rpcEndowmentBuilder,
 } from './rpc';
+import { settingsPageEndowmentBuilder } from './settings-page';
 import {
   getSignatureInsightCaveatMapper,
   signatureInsightCaveatSpecifications,
@@ -55,6 +56,7 @@ export const endowmentPermissionBuilders = {
   [nameLookupEndowmentBuilder.targetName]: nameLookupEndowmentBuilder,
   [lifecycleHooksEndowmentBuilder.targetName]: lifecycleHooksEndowmentBuilder,
   [keyringEndowmentBuilder.targetName]: keyringEndowmentBuilder,
+  [settingsPageEndowmentBuilder.targetName]: settingsPageEndowmentBuilder,
   [homePageEndowmentBuilder.targetName]: homePageEndowmentBuilder,
   [signatureInsightEndowmentBuilder.targetName]:
     signatureInsightEndowmentBuilder,
@@ -93,6 +95,7 @@ export const endowmentCaveatMappers: Record<
   ),
   [lifecycleHooksEndowmentBuilder.targetName]: getMaxRequestTimeCaveatMapper,
   [homePageEndowmentBuilder.targetName]: getMaxRequestTimeCaveatMapper,
+  [settingsPageEndowmentBuilder.targetName]: getMaxRequestTimeCaveatMapper,
 };
 
 // We allow null because a permitted handler does not have an endowment
@@ -105,6 +108,7 @@ export const handlerEndowments: Record<HandlerType, string | null> = {
   [HandlerType.OnUpdate]: lifecycleHooksEndowmentBuilder.targetName,
   [HandlerType.OnKeyringRequest]: keyringEndowmentBuilder.targetName,
   [HandlerType.OnHomePage]: homePageEndowmentBuilder.targetName,
+  [HandlerType.OnSettingsPage]: settingsPageEndowmentBuilder.targetName,
   [HandlerType.OnSignature]: signatureInsightEndowmentBuilder.targetName,
   [HandlerType.OnUserInput]: null,
 };
