@@ -140,31 +140,22 @@ export const OnTransactionResponseStruct = nullable(
 
 export const OnSignatureResponseStruct = OnTransactionResponseStruct;
 
-export const OnHomePageResponseWithContentStruct = object({
+export const OnPageResponseWithContentStruct = object({
   content: ComponentOrElementStruct,
 });
 
-export const OnHomePageResponseWithIdStruct = object({
+export const OnPageResponseWithIdStruct = object({
   id: string(),
 });
 
-export const OnHomePageResponseStruct = union([
-  OnHomePageResponseWithContentStruct,
-  OnHomePageResponseWithIdStruct,
+export const OnPageResponseStruct = union([
+  OnPageResponseWithContentStruct,
+  OnPageResponseWithIdStruct,
 ]);
 
-export const OnSettingsPageResponseWithContentStruct = object({
-  content: ComponentOrElementStruct,
-});
+export const OnHomePageResponseStruct = OnPageResponseStruct;
 
-export const OnSettingsPageResponseWithIdStruct = object({
-  id: string(),
-});
-
-export const OnSettingsPageResponseStruct = union([
-  OnSettingsPageResponseWithContentStruct,
-  OnSettingsPageResponseWithIdStruct,
-]);
+export const OnSettingsPageResponseStruct = OnPageResponseStruct;
 
 export const AddressResolutionStruct = object({
   protocol: string(),
