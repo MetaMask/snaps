@@ -10,7 +10,7 @@ import { SnapEndowments } from './enum';
 
 const permissionName = SnapEndowments.SettingsPage;
 
-type HomePageEndowmentSpecification = ValidPermissionSpecification<{
+type SettingsPageEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetName: typeof permissionName;
   endowmentGetter: (_options?: EndowmentGetterParams) => null;
@@ -28,7 +28,7 @@ type HomePageEndowmentSpecification = ValidPermissionSpecification<{
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.Endowment,
   any,
-  HomePageEndowmentSpecification
+  SettingsPageEndowmentSpecification
 > = (_builderOptions?: unknown) => {
   return {
     permissionType: PermissionType.Endowment,
