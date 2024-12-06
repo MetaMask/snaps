@@ -15,6 +15,7 @@ import { LiteralStruct, NodeType } from '../nodes';
 export enum ButtonVariant {
   Primary = 'primary',
   Secondary = 'secondary',
+  Loading = 'loading',
 }
 
 export enum ButtonType {
@@ -31,6 +32,7 @@ export const ButtonStruct = assign(
       union([
         enumValue(ButtonVariant.Primary),
         enumValue(ButtonVariant.Secondary),
+        enumValue(ButtonVariant.Loading),
       ]),
     ),
     buttonType: optional(
