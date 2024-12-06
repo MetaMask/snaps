@@ -22,7 +22,7 @@ export type ButtonProps = {
   children: SnapsChildren<StringElement | IconElement | ImageElement>;
   name?: string | undefined;
   type?: 'button' | 'submit' | undefined;
-  variant?: 'primary' | 'destructive' | undefined;
+  variant?: 'primary' | 'destructive' | 'loading' | undefined;
   disabled?: boolean | undefined;
   form?: string | undefined;
 };

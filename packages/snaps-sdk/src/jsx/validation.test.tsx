@@ -163,6 +163,7 @@ describe('ButtonStruct', () => {
     <Button name="foo">bar</Button>,
     <Button type="submit">foo</Button>,
     <Button variant="destructive">foo</Button>,
+    <Button variant="loading">foo</Button>,
     <Button disabled={true}>foo</Button>,
     <Button key="button">foo</Button>,
     <Button>
