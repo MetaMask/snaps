@@ -129,7 +129,7 @@ describe('build', () => {
 
     const output = await fs.readFile('/snap/output.js', 'utf8');
     expect(output).toMatchInlineSnapshot(
-      `"(()=>{var e={67:e=>{e.exports.onRpcRequest=({request:e})=>{console.log("Hello, world!");const{method:r,id:o}=e;return r+o}}},r={};var o=function o(t){var s=r[t];if(void 0!==s)return s.exports;var n=r[t]={exports:{}};return e[t](n,n.exports,o),n.exports}(67),t=exports;for(var s in o)t[s]=o[s];o.__esModule&&Object.defineProperty(t,"__esModule",{value:!0})})();"`,
+      `"(()=>{var r={67:r=>{r.exports.onRpcRequest=({request:r})=>{console.log("Hello, world!");const{method:e,id:o}=r;return e+o}}},e={};var o=function o(t){var s=e[t];if(void 0!==s)return s.exports;var n=e[t]={exports:{}};return r[t](n,n.exports,o),n.exports}(67);module.exports=o})();"`,
     );
   });
 
@@ -191,11 +191,7 @@ describe('build', () => {
           return module.exports;
         }
         var __webpack_exports__ = __webpack_require__(67);
-        var __webpack_export_target__ = exports;
-        for (var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];
-        if (__webpack_exports__.__esModule) Object.defineProperty(__webpack_export_target__, "__esModule", {
-          value: true
-        });
+        module.exports = __webpack_exports__;
       })();"
     `);
   });
@@ -230,7 +226,7 @@ describe('build', () => {
       .replace(/u.exports\}\(\d+\),t/u, 'u.exports}(1),t');
 
     expect(deterministicOutput).toMatchInlineSnapshot(
-      `"(()=>{var r={1:r=>{r.exports=function(){function r(e,o,t){function n(s,i){if(!o[s]){if(!e[s]){if(u)return u(s,!0);var f=new Error("Cannot find module '"+s+"'");throw f.code="MODULE_NOT_FOUND",f}var c=o[s]={exports:{}};e[s][0].call(c.exports,(function(r){return n(e[s][1][r]||r)}),c,c.exports,r,e,o,t)}return o[s].exports}for(var u=void 0,s=0;s<t.length;s++)n(t[s]);return n}return r}()({1:[function(r,e,o){"use strict";e.exports.onRpcRequest=({request:r})=>{console.log("Hello, world!");const{method:e,id:o}=r;return e+o}},{}]},{},[1])(1)}},e={};var o=function o(t){var n=e[t];if(void 0!==n)return n.exports;var u=e[t]={exports:{}};return r[t](u,u.exports,o),u.exports}(1),t=exports;for(var n in o)t[n]=o[n];o.__esModule&&Object.defineProperty(t,"__esModule",{value:!0})})();"`,
+      `"(()=>{var r={1:r=>{r.exports=function(){function r(o,t,e){function n(s,i){if(!t[s]){if(!o[s]){if(u)return u(s,!0);var c=new Error("Cannot find module '"+s+"'");throw c.code="MODULE_NOT_FOUND",c}var f=t[s]={exports:{}};o[s][0].call(f.exports,(function(r){return n(o[s][1][r]||r)}),f,f.exports,r,o,t,e)}return t[s].exports}for(var u=void 0,s=0;s<e.length;s++)n(e[s]);return n}return r}()({1:[function(r,o,t){"use strict";o.exports.onRpcRequest=({request:r})=>{console.log("Hello, world!");const{method:o,id:t}=r;return o+t}},{}]},{},[1])(1)}},o={};var t=function t(e){var n=o[e];if(void 0!==n)return n.exports;var u=o[e]={exports:{}};return r[e](u,u.exports,t),u.exports}(360);module.exports=t})();"`,
     );
   });
 
@@ -336,11 +332,7 @@ describe('build', () => {
           return module.exports;
         }
         var __webpack_exports__ = __webpack_require__(1);
-        var __webpack_export_target__ = exports;
-        for (var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];
-        if (__webpack_exports__.__esModule) Object.defineProperty(__webpack_export_target__, "__esModule", {
-          value: true
-        });
+        module.exports = __webpack_exports__;
       })();"
     `);
   });

@@ -4,9 +4,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
-  "experiments": {
-    "topLevelAwait": false,
-  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -93,7 +90,8 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "clean": false,
     "filename": "bundle.js",
     "library": {
-      "type": "commonjs",
+      "name": "module.exports",
+      "type": "assign",
     },
     "path": "/foo/bar/dist",
     "publicPath": "/",
@@ -177,9 +175,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
-  "experiments": {
-    "topLevelAwait": false,
-  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -266,7 +261,8 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "clean": false,
     "filename": "bundle.js",
     "library": {
-      "type": "commonjs",
+      "name": "module.exports",
+      "type": "assign",
     },
     "path": "/foo/bar/dist",
     "publicPath": "/",
@@ -350,9 +346,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": "inline-source-map",
   "entry": "/foo/bar/src/index.ts",
-  "experiments": {
-    "topLevelAwait": false,
-  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -439,7 +432,8 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "clean": false,
     "filename": "bundle.js",
     "library": {
-      "type": "commonjs",
+      "name": "module.exports",
+      "type": "assign",
     },
     "path": "/foo/bar/dist",
     "publicPath": "/",
@@ -523,9 +517,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": "source-map",
   "entry": "/foo/bar/src/index.ts",
-  "experiments": {
-    "topLevelAwait": false,
-  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -612,7 +603,8 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "clean": false,
     "filename": "bundle.js",
     "library": {
-      "type": "commonjs",
+      "name": "module.exports",
+      "type": "assign",
     },
     "path": "/foo/bar/dist",
     "publicPath": "/",
@@ -687,9 +679,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
-  "experiments": {
-    "topLevelAwait": false,
-  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -784,7 +773,8 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "clean": false,
     "filename": "bundle.js",
     "library": {
-      "type": "commonjs",
+      "name": "module.exports",
+      "type": "assign",
     },
     "path": "/foo/bar/dist",
     "publicPath": "/",
@@ -868,9 +858,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
-  "experiments": {
-    "topLevelAwait": false,
-  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -957,7 +944,8 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "clean": false,
     "filename": "bundle.js",
     "library": {
-      "type": "commonjs",
+      "name": "module.exports",
+      "type": "assign",
     },
     "path": "/foo/bar/dist",
     "publicPath": "/",
@@ -1041,9 +1029,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
-  "experiments": {
-    "topLevelAwait": false,
-  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -1130,7 +1115,8 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "clean": false,
     "filename": "bundle.js",
     "library": {
-      "type": "commonjs",
+      "name": "module.exports",
+      "type": "assign",
     },
     "path": "/foo/bar/dist",
     "publicPath": "/",
@@ -1214,9 +1200,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
-  "experiments": {
-    "topLevelAwait": false,
-  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -1303,7 +1286,8 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "clean": false,
     "filename": "bundle.js",
     "library": {
-      "type": "commonjs",
+      "name": "module.exports",
+      "type": "assign",
     },
     "path": "/foo/bar/dist",
     "publicPath": "/",
@@ -1395,9 +1379,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
-  "experiments": {
-    "topLevelAwait": false,
-  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -1484,7 +1465,8 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "clean": false,
     "filename": "bundle.js",
     "library": {
-      "type": "commonjs",
+      "name": "module.exports",
+      "type": "assign",
     },
     "path": "/foo/bar/dist",
     "publicPath": "/",
@@ -1576,9 +1558,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
-  "experiments": {
-    "topLevelAwait": false,
-  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -1650,7 +1629,8 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "clean": false,
     "filename": "bundle.js",
     "library": {
-      "type": "commonjs",
+      "name": "module.exports",
+      "type": "assign",
     },
     "path": "/foo/bar/dist",
     "publicPath": "/",
@@ -1734,9 +1714,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
-  "experiments": {
-    "topLevelAwait": false,
-  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -1823,7 +1800,8 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "clean": false,
     "filename": "bundle.js",
     "library": {
-      "type": "commonjs",
+      "name": "module.exports",
+      "type": "assign",
     },
     "path": "/foo/bar/dist",
     "publicPath": "/",
@@ -1915,9 +1893,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
-  "experiments": {
-    "topLevelAwait": false,
-  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -2004,7 +1979,8 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "clean": false,
     "filename": "bundle.js",
     "library": {
-      "type": "commonjs",
+      "name": "module.exports",
+      "type": "assign",
     },
     "path": "/foo/bar/dist",
     "publicPath": "/",
@@ -2096,9 +2072,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
-  "experiments": {
-    "topLevelAwait": false,
-  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -2185,7 +2158,8 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "clean": false,
     "filename": "bundle.js",
     "library": {
-      "type": "commonjs",
+      "name": "module.exports",
+      "type": "assign",
     },
     "path": "/bar/baz",
     "publicPath": "/",
@@ -2278,9 +2252,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
-  "experiments": {
-    "topLevelAwait": false,
-  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -2367,7 +2338,8 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "clean": false,
     "filename": "bundle.js",
     "library": {
-      "type": "commonjs",
+      "name": "module.exports",
+      "type": "assign",
     },
     "path": "/bar/baz",
     "publicPath": "/",
@@ -2451,9 +2423,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
-  "experiments": {
-    "topLevelAwait": false,
-  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -2540,7 +2509,8 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "clean": false,
     "filename": "bundle.js",
     "library": {
-      "type": "commonjs",
+      "name": "module.exports",
+      "type": "assign",
     },
     "path": "/bar/baz",
     "publicPath": "/",
@@ -2624,9 +2594,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
-  "experiments": {
-    "topLevelAwait": false,
-  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -2713,7 +2680,8 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "clean": false,
     "filename": "bundle.js",
     "library": {
-      "type": "commonjs",
+      "name": "module.exports",
+      "type": "assign",
     },
     "path": "/bar/baz",
     "publicPath": "/",
@@ -2806,9 +2774,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
-  "experiments": {
-    "topLevelAwait": false,
-  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -2895,7 +2860,8 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "clean": false,
     "filename": "bundle.js",
     "library": {
-      "type": "commonjs",
+      "name": "module.exports",
+      "type": "assign",
     },
     "path": "/bar/baz",
     "publicPath": "/",
@@ -2988,9 +2954,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.js",
-  "experiments": {
-    "topLevelAwait": false,
-  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -3073,7 +3036,8 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "clean": false,
     "filename": "bundle.js",
     "library": {
-      "type": "commonjs",
+      "name": "module.exports",
+      "type": "assign",
     },
     "path": "/foo/bar/dist",
     "publicPath": "/",
@@ -3147,9 +3111,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
-  "experiments": {
-    "topLevelAwait": false,
-  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -3232,7 +3193,8 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "clean": false,
     "filename": "bundle.js",
     "library": {
-      "type": "commonjs",
+      "name": "module.exports",
+      "type": "assign",
     },
     "path": "/foo/bar/dist",
     "publicPath": "/",
@@ -3306,9 +3268,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
 {
   "devtool": false,
   "entry": "/foo/bar/src/index.ts",
-  "experiments": {
-    "topLevelAwait": false,
-  },
   "infrastructureLogging": {
     "level": "none",
   },
@@ -3391,7 +3350,8 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     "clean": false,
     "filename": "bundle.js",
     "library": {
-      "type": "commonjs",
+      "name": "module.exports",
+      "type": "assign",
     },
     "path": "/foo/bar/dist",
     "publicPath": "/",
