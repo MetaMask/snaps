@@ -51,16 +51,12 @@ const ALLOWED_PROTOCOLS = ['https:', 'mailto:', 'metamask:'];
  * @param variant - The legacy button component variant.
  * @returns The button variant.
  */
-function getButtonVariant(
-  variant?: 'primary' | 'secondary' | 'loading' | undefined,
-) {
+function getButtonVariant(variant?: 'primary' | 'secondary' | undefined) {
   switch (variant) {
     case 'primary':
       return 'primary';
     case 'secondary':
       return 'destructive';
-    case 'loading':
-      return 'loading';
     default:
       return undefined;
   }

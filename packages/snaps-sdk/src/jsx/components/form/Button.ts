@@ -16,14 +16,16 @@ import type { ImageElement } from '../Image';
  * @property variant - The variant of the button, i.e., `'primary'` or
  * `'destructive'`. Defaults to `'primary'`.
  * @property disabled - Whether the button is disabled. Defaults to `false`.
+ * @property loading - Whether the button is in loading state. Defaults to `false`.
  * @property form - The name of the form component to associate the button with.
  */
 export type ButtonProps = {
   children: SnapsChildren<StringElement | IconElement | ImageElement>;
   name?: string | undefined;
   type?: 'button' | 'submit' | undefined;
-  variant?: 'primary' | 'destructive' | 'loading' | undefined;
+  variant?: 'primary' | 'destructive' | undefined;
   disabled?: boolean | undefined;
+  loading?: boolean | undefined;
   form?: string | undefined;
 };
 

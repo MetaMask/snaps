@@ -243,10 +243,9 @@ export const ButtonStruct: Describe<ButtonElement> = element('Button', {
   children: children([StringElementStruct, ImageStruct, IconStruct]),
   name: optional(string()),
   type: optional(nullUnion([literal('button'), literal('submit')])),
-  variant: optional(
-    nullUnion([literal('primary'), literal('destructive'), literal('loading')]),
-  ),
+  variant: optional(nullUnion([literal('primary'), literal('destructive')])),
   disabled: optional(boolean()),
+  loading: optional(boolean()),
   form: optional(string()),
 });
 
