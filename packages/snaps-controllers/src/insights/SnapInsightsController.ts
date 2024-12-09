@@ -16,7 +16,7 @@ import {
 } from '@metamask/snaps-rpc-methods';
 import type { Json, SnapId } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
-import { hasProperty } from '@metamask/utils';
+import { hasProperty, hexToBigInt } from '@metamask/utils';
 
 import type { DeleteInterface } from '../interface';
 import type { GetAllSnaps, HandleSnapRequest } from '../snaps';
@@ -170,7 +170,7 @@ export class SnapInsightsController extends BaseController<
     const { id, txParams, chainId, origin } = transaction;
 
     // This assumes that the transactions are EVM-compatible for now.
-    const caipChainId = `eip155:${parseInt(chainId, 16)}`;
+    const caipChainId = `eip155:${hexToBigInt(chainId).toString(10)}`;
 
     const snaps = this.#getSnapsWithPermission(
       SnapEndowments.TransactionInsight,
