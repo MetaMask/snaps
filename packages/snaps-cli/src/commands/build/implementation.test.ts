@@ -223,10 +223,13 @@ describe('build', () => {
     // deterministic.
     const deterministicOutput = output
       .replace(/var r=\{(\d+):/u, 'var r={1:')
-      .replace(/u.exports\}\(\d+\),t/u, 'u.exports}(1),t');
+      .replace(
+        /u.exports\}\(\d+\);module.exports/u,
+        'u.exports}(1);module.exports',
+      );
 
     expect(deterministicOutput).toMatchInlineSnapshot(
-      `"(()=>{var r={1:r=>{r.exports=function(){function r(o,t,e){function n(s,i){if(!t[s]){if(!o[s]){if(u)return u(s,!0);var c=new Error("Cannot find module '"+s+"'");throw c.code="MODULE_NOT_FOUND",c}var f=t[s]={exports:{}};o[s][0].call(f.exports,(function(r){return n(o[s][1][r]||r)}),f,f.exports,r,o,t,e)}return t[s].exports}for(var u=void 0,s=0;s<e.length;s++)n(e[s]);return n}return r}()({1:[function(r,o,t){"use strict";o.exports.onRpcRequest=({request:r})=>{console.log("Hello, world!");const{method:o,id:t}=r;return o+t}},{}]},{},[1])(1)}},o={};var t=function t(e){var n=o[e];if(void 0!==n)return n.exports;var u=o[e]={exports:{}};return r[e](u,u.exports,t),u.exports}(360);module.exports=t})();"`,
+      `"(()=>{var r={1:r=>{r.exports=function(){function r(o,t,e){function n(s,i){if(!t[s]){if(!o[s]){if(u)return u(s,!0);var c=new Error("Cannot find module '"+s+"'");throw c.code="MODULE_NOT_FOUND",c}var f=t[s]={exports:{}};o[s][0].call(f.exports,(function(r){return n(o[s][1][r]||r)}),f,f.exports,r,o,t,e)}return t[s].exports}for(var u=void 0,s=0;s<e.length;s++)n(e[s]);return n}return r}()({1:[function(r,o,t){"use strict";o.exports.onRpcRequest=({request:r})=>{console.log("Hello, world!");const{method:o,id:t}=r;return o+t}},{}]},{},[1])(1)}},o={};var t=function t(e){var n=o[e];if(void 0!==n)return n.exports;var u=o[e]={exports:{}};return r[e](u,u.exports,t),u.exports}(1);module.exports=t})();"`,
     );
   });
 

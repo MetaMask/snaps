@@ -161,8 +161,11 @@ export async function getDefaultConfiguration(
        */
       library: {
         /**
-         * This tells Webpack to export the bundle as a CommonJS module. This
-         * is necessary for MetaMask Snaps.
+         * This tells Webpack to export the bundle via assignment to module.exports.
+         * We do this to mimic CommonJS, but still allow for usage of async initialization logic
+         * via top level await.
+         *
+         * CommonJS is currently the only supported format for MetaMask Snaps.
          *
          * @see https://webpack.js.org/configuration/output/#outputlibrarytarget
          */
