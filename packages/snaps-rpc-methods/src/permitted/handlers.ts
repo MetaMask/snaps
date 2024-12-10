@@ -1,6 +1,8 @@
+import { cancelBackgroundEventHandler } from './cancelBackgroundEvent';
 import { createInterfaceHandler } from './createInterface';
 import { providerRequestHandler } from './experimentalProviderRequest';
 import { getAllSnapsHandler } from './getAllSnaps';
+import { getBackgroundEventsHandler } from './getBackgroundEvents';
 import { getClientStatusHandler } from './getClientStatus';
 import { getCurrencyRateHandler } from './getCurrencyRate';
 import { getFileHandler } from './getFile';
@@ -11,6 +13,7 @@ import { invokeKeyringHandler } from './invokeKeyring';
 import { invokeSnapSugarHandler } from './invokeSnapSugar';
 import { requestSnapsHandler } from './requestSnaps';
 import { resolveInterfaceHandler } from './resolveInterface';
+import { scheduleBackgroundEventHandler } from './scheduleBackgroundEvent';
 import { updateInterfaceHandler } from './updateInterface';
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -29,6 +32,9 @@ export const methodHandlers = {
   snap_resolveInterface: resolveInterfaceHandler,
   snap_getCurrencyRate: getCurrencyRateHandler,
   snap_experimentalProviderRequest: providerRequestHandler,
+  snap_scheduleBackgroundEvent: scheduleBackgroundEventHandler,
+  snap_cancelBackgroundEvent: cancelBackgroundEventHandler,
+  snap_getBackgroundEvents: getBackgroundEventsHandler,
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 

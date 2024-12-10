@@ -104,7 +104,8 @@
     "readable-stream": "^3.6.2",
     "readable-web-to-node-stream": "^3.0.2",
     "semver": "^7.5.4",
-    "tar-stream": "^3.1.7"
+    "tar-stream": "^3.1.7",
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",

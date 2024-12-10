@@ -84,6 +84,7 @@
     "@ts-bridge/cli": "^0.6.1",
     "@types/jest": "^27.5.1",
     "@types/lodash": "^4",
+    "@types/luxon": "^3",
     "@types/node": "18.14.2",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^6.21.0",
@@ -105,6 +106,7 @@
     "jest-silent-reporter": "^0.6.0",
     "lint-staged": "^12.4.1",
     "lodash": "^4.17.21",
+    "luxon": "^3.5.0",
     "minimatch": "^7.4.1",
     "prettier": "^2.8.8",
     "prettier-plugin-packagejson": "^2.5.2",
@@ -114,6 +116,7 @@
     "ts-node": "^10.9.1",
     "tsx": "^4.19.1",
     "typescript": "~5.3.3",
+    "uuid": "^11.0.3",
     "vite": "^4.3.9"
   },
   "packageManager": "yarn@4.4.1",

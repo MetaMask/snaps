@@ -114,6 +114,7 @@ describe('CronjobController', () => {
         jobs: {
           [`${MOCK_SNAP_ID}-0`]: { lastRun: 0 },
         },
+        events: {},
       };
     });
 
@@ -166,6 +167,7 @@ describe('CronjobController', () => {
         jobs: {
           [`${MOCK_SNAP_ID}-0`]: { lastRun: 0 },
         },
+        events: {},
       },
     });
 
@@ -242,6 +244,177 @@ describe('CronjobController', () => {
     cronjobController.destroy();
   });
 
+  it('schedules a background event', () => {
+    const rootMessenger = getRootCronjobControllerMessenger();
+    const controllerMessenger =
+      getRestrictedCronjobControllerMessenger(rootMessenger);
+
+    const cronjobController = new CronjobController({
+      messenger: controllerMessenger,
+    });
+
+    const backgroundEvent = {
+      snapId: MOCK_SNAP_ID,
+      date: '2022-01-01T01:00',
+      request: {
+        method: 'handleEvent',
+        params: ['p1'],
+      },
+    };
+
+    const id = cronjobController.scheduleBackgroundEvent(backgroundEvent);
+
+    expect(cronjobController.state.events).toStrictEqual({
+      [id]: { id, scheduledAt: expect.any(String), ...backgroundEvent },
+    });
+
+    jest.advanceTimersByTime(inMilliseconds(1, Duration.Day));
+
+    expect(rootMessenger.call).toHaveBeenCalledWith(
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_SNAP_ID,
+        origin: '',
+        handler: HandlerType.OnCronjob,
+        request: {
+          method: 'handleEvent',
+          params: ['p1'],
+        },
+      },
+    );
+
+    expect(cronjobController.state.events).toStrictEqual({});
+
+    cronjobController.destroy();
+  });
+
+  it('cancels a background event', () => {
+    const rootMessenger = getRootCronjobControllerMessenger();
+    const controllerMessenger =
+      getRestrictedCronjobControllerMessenger(rootMessenger);
+
+    const cronjobController = new CronjobController({
+      messenger: controllerMessenger,
+    });
+
+    const backgroundEvent = {
+      snapId: MOCK_SNAP_ID,
+      date: '2022-01-01T01:00',
+      request: {
+        method: 'handleEvent',
+        params: ['p1'],
+      },
+    };
+
+    const id = cronjobController.scheduleBackgroundEvent(backgroundEvent);
+
+    expect(cronjobController.state.events).toStrictEqual({
+      [id]: { id, scheduledAt: expect.any(String), ...backgroundEvent },
+    });
+
+    cronjobController.cancelBackgroundEvent(id);
+
+    jest.advanceTimersByTime(inMilliseconds(1, Duration.Day));
+
+    expect(rootMessenger.call).not.toHaveBeenCalledWith(
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_SNAP_ID,
+        origin: '',
+        handler: HandlerType.OnCronjob,
+        request: {
+          method: 'handleEvent',
+          params: ['p1'],
+        },
+      },
+    );
+
+    expect(cronjobController.state.events).toStrictEqual({});
+
+    cronjobController.destroy();
+  });
+
+  it("returns a list of a Snap's background events", () => {
+    const rootMessenger = getRootCronjobControllerMessenger();
+    const controllerMessenger =
+      getRestrictedCronjobControllerMessenger(rootMessenger);
+
+    const cronjobController = new CronjobController({
+      messenger: controllerMessenger,
+    });
+
+    const backgroundEvent = {
+      snapId: MOCK_SNAP_ID,
+      date: '2022-01-01T01:00',
+      request: {
+        method: 'handleEvent',
+        params: ['p1'],
+      },
+    };
+
+    const id = cronjobController.scheduleBackgroundEvent(backgroundEvent);
+
+    const events = cronjobController.getBackgroundEvents(MOCK_SNAP_ID);
+    expect(events).toStrictEqual([
+      {
+        id,
+        snapId: MOCK_SNAP_ID,
+        date: '2022-01-01T01:00',
+        request: {
+          method: 'handleEvent',
+          params: ['p1'],
+        },
+        scheduledAt: expect.any(String),
+      },
+    ]);
+
+    cronjobController.destroy();
+  });
+
+  it('reschedules any un-expired events that are in state upon initialization', () => {
+    const rootMessenger = getRootCronjobControllerMessenger();
+    const controllerMessenger =
+      getRestrictedCronjobControllerMessenger(rootMessenger);
+
+    const cronjobController = new CronjobController({
+      messenger: controllerMessenger,
+      state: {
+        jobs: {},
+        events: {
+          foo: {
+            id: 'foo',
+            scheduledAt: new Date().toISOString(),
+            snapId: MOCK_SNAP_ID,
+            date: '2022-01-01T01:00',
+            request: {
+              method: 'handleEvent',
+              params: ['p1'],
+            },
+          },
+        },
+      },
+    });
+
+    jest.advanceTimersByTime(inMilliseconds(1, Duration.Day));
+
+    expect(rootMessenger.call).toHaveBeenCalledWith(
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_SNAP_ID,
+        origin: '',
+        handler: HandlerType.OnCronjob,
+        request: {
+          method: 'handleEvent',
+          params: ['p1'],
+        },
+      },
+    );
+
+    expect(cronjobController.state.events).toStrictEqual({});
+
+    cronjobController.destroy();
+  });
+
   it('handles SnapInstalled event', () => {
     const rootMessenger = getRootCronjobControllerMessenger();
     const controllerMessenger =
@@ -291,6 +464,31 @@ describe('CronjobController', () => {
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
+      state: {
+        jobs: {},
+        events: {
+          foo: {
+            id: 'foo',
+            scheduledAt: new Date().toISOString(),
+            snapId: MOCK_SNAP_ID,
+            date: '2022-01-01T01:00',
+            request: {
+              method: 'handleEvent',
+              params: ['p1'],
+            },
+          },
+          bar: {
+            id: 'bar',
+            scheduledAt: new Date().toISOString(),
+            snapId: MOCK_SNAP_ID,
+            date: '2021-01-01T01:00',
+            request: {
+              method: 'handleEvent',
+              params: ['p1'],
+            },
+          },
+        },
+      },
     });
 
     const snapInfo: TruncatedSnap = {
@@ -303,7 +501,20 @@ describe('CronjobController', () => {
 
     rootMessenger.publish('SnapController:snapEnabled', snapInfo);
 
-    jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
+    expect(cronjobController.state.events).toStrictEqual({
+      foo: {
+        id: 'foo',
+        scheduledAt: new Date().toISOString(),
+        snapId: MOCK_SNAP_ID,
+        date: '2022-01-01T01:00',
+        request: {
+          method: 'handleEvent',
+          params: ['p1'],
+        },
+      },
+    });
+
+    jest.advanceTimersByTime(inMilliseconds(1, Duration.Day));
 
     expect(rootMessenger.call).toHaveBeenNthCalledWith(
       4,
@@ -314,6 +525,19 @@ describe('CronjobController', () => {
         handler: HandlerType.OnCronjob,
         request: {
           method: 'exampleMethodOne',
+          params: ['p1'],
+        },
+      },
+    );
+
+    expect(rootMessenger.call).toHaveBeenCalledWith(
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_SNAP_ID,
+        origin: '',
+        handler: HandlerType.OnCronjob,
+        request: {
+          method: 'handleEvent',
           params: ['p1'],
         },
       },
@@ -339,6 +563,15 @@ describe('CronjobController', () => {
       version: MOCK_VERSION,
     };
 
+    cronjobController.scheduleBackgroundEvent({
+      snapId: MOCK_SNAP_ID,
+      date: '2022-01-01T01:00',
+      request: {
+        method: 'handleEvent',
+        params: ['p1'],
+      },
+    });
+
     rootMessenger.publish(
       'SnapController:snapInstalled',
       snapInfo,
@@ -362,6 +595,23 @@ describe('CronjobController', () => {
       },
     );
 
+    jest.advanceTimersByTime(inMilliseconds(1, Duration.Day));
+
+    expect(rootMessenger.call).not.toHaveBeenCalledWith(
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_SNAP_ID,
+        origin: '',
+        handler: HandlerType.OnCronjob,
+        request: {
+          method: 'handleEvent',
+          params: ['p1'],
+        },
+      },
+    );
+
+    expect(cronjobController.state.events).toStrictEqual({});
+
     cronjobController.destroy();
   });
 
@@ -381,6 +631,15 @@ describe('CronjobController', () => {
       initialPermissions: {},
       version: MOCK_VERSION,
     };
+
+    const id = cronjobController.scheduleBackgroundEvent({
+      snapId: MOCK_SNAP_ID,
+      date: '2022-01-01T01:00',
+      request: {
+        method: 'handleEvent',
+        params: ['p1'],
+      },
+    });
 
     rootMessenger.publish(
       'SnapController:snapInstalled',
@@ -405,6 +664,34 @@ describe('CronjobController', () => {
       },
     );
 
+    jest.advanceTimersByTime(inMilliseconds(1, Duration.Day));
+
+    expect(rootMessenger.call).not.toHaveBeenCalledWith(
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_SNAP_ID,
+        origin: '',
+        handler: HandlerType.OnCronjob,
+        request: {
+          method: 'handleEvent',
+          params: ['p1'],
+        },
+      },
+    );
+
+    expect(cronjobController.state.events).toStrictEqual({
+      [id]: {
+        id,
+        scheduledAt: expect.any(String),
+        snapId: MOCK_SNAP_ID,
+        date: '2022-01-01T01:00',
+        request: {
+          method: 'handleEvent',
+          params: ['p1'],
+        },
+      },
+    });
+
     cronjobController.destroy();
   });
 
@@ -415,6 +702,21 @@ describe('CronjobController', () => {
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
+      state: {
+        jobs: {},
+        events: {
+          foo: {
+            id: 'foo',
+            scheduledAt: new Date().toISOString(),
+            snapId: MOCK_SNAP_ID,
+            date: '2022-01-01T01:00',
+            request: {
+              method: 'handleEvent',
+              params: ['p1'],
+            },
+          },
+        },
+      },
     });
 
     const snapInfo: TruncatedSnap = {
@@ -438,6 +740,8 @@ describe('CronjobController', () => {
       MOCK_ORIGIN,
     );
 
+    expect(cronjobController.state.events).toStrictEqual({});
+
     jest.advanceTimersByTime(inMilliseconds(15, Duration.Minute));
 
     expect(rootMessenger.call).toHaveBeenNthCalledWith(
@@ -449,6 +753,20 @@ describe('CronjobController', () => {
         handler: HandlerType.OnCronjob,
         request: {
           method: 'exampleMethodOne',
+          params: ['p1'],
+        },
+      },
+    );
+
+    expect(rootMessenger.call).not.toHaveBeenCalledWith(
+      5,
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_SNAP_ID,
+        origin: '',
+        handler: HandlerType.OnCronjob,
+        request: {
+          method: 'handleEvent',
           params: ['p1'],
         },
       },
