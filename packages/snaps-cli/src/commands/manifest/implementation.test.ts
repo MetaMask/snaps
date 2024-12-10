@@ -1,4 +1,3 @@
-import { getPlatformVersion } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
   DEFAULT_SNAP_ICON,
@@ -6,6 +5,7 @@ import {
   getPackageJson,
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
+import type { SemVerVersion } from '@metamask/utils';
 import normalFs from 'fs';
 import ora from 'ora';
 
@@ -33,12 +33,20 @@ jest.mock('../../webpack', () => ({
   }),
 }));
 
+jest.mock('module', () => ({
+  createRequire: jest.fn().mockImplementation(() => {
+    const fn = jest.fn().mockReturnValue({ version: '1.0.0' }) as any;
+    jest.spyOn(fn, 'resolve').mockImplementation();
+    return fn;
+  }),
+}));
+
 describe('manifest', () => {
   beforeEach(async () => {
     const { manifest: newManifest } = await getMockSnapFilesWithUpdatedChecksum(
       {
         manifest: getSnapManifest({
-          platformVersion: getPlatformVersion(),
+          platformVersion: '1.0.0' as SemVerVersion,
         }),
       },
     );
@@ -164,7 +172,7 @@ describe('manifest', () => {
           "url": "https://github.com/MetaMask/example-snap.git"
         },
         "source": {
-          "shasum": "xYFUdpKz+yNGb1LwDGRHmqsH1PXknt2tE9ZJr1P0kb4=",
+          "shasum": "itjh0enng42nO6BxNCEhDH8wm3yl4xlVclfd5LsZ2wA=",
           "location": {
             "npm": {
               "filePath": "dist/bundle.js",
@@ -179,7 +187,7 @@ describe('manifest', () => {
             "chains": ["eip155:1", "eip155:2", "eip155:3"]
           }
         },
-        "platformVersion": "6.13.0",
+        "platformVersion": "1.0.0",
         "manifestVersion": "0.1"
       }
       "
