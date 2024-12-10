@@ -137,7 +137,8 @@ function getValidatedParams(params?: unknown) {
       });
     }
 
-    throw error;
+    /* istanbul ignore next */
+    throw rpcErrors.internal();
   }
 }
 
