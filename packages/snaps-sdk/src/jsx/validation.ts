@@ -493,7 +493,7 @@ const FieldChildStruct = selectiveUnion((value) => {
       : tuple(BOX_INPUT_RIGHT);
   }
 
-  return typedUnion([...FIELD_CHILDREN_ARRAY]);
+  return typedUnion(FIELD_CHILDREN_ARRAY);
 }) as unknown as Struct<
   | [InputElement, GenericSnapChildren]
   | [GenericSnapChildren, InputElement]
