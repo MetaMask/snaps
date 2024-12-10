@@ -171,7 +171,8 @@ function getValidatedParams(params?: unknown) {
       });
     }
 
-    throw error;
+    /* istanbul ignore next */
+    throw rpcErrors.internal();
   }
 }
 
@@ -225,5 +226,6 @@ export function set(
   }
 
   // This should never be reached.
+  /* istanbul ignore next */
   return {};
 }

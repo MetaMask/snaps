@@ -1,4 +1,283 @@
-import { get } from './getState';
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import { errorCodes } from '@metamask/rpc-errors';
+import type { GetStateResult } from '@metamask/snaps-sdk';
+import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
+import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+
+import type { GetStateParameters } from './getState';
+import { get, getStateHandler } from './getState';
+
+describe('snap_getState', () => {
+  describe('getStateHandler', () => {
+    it('has the expected shape', () => {
+      expect(getStateHandler).toMatchObject({
+        methodNames: ['snap_getState'],
+        implementation: expect.any(Function),
+        hookNames: {
+          getSnapState: true,
+          hasPermission: true,
+        },
+      });
+    });
+  });
+
+  describe('implementation', () => {
+    const createOriginMiddleware =
+      (origin: string) =>
+      (request: any, _response: unknown, next: () => void, _end: unknown) => {
+        request.origin = origin;
+        next();
+      };
+
+    it('returns the encrypted state', async () => {
+      const { implementation } = getStateHandler;
+
+      const getSnapState = jest.fn().mockReturnValue({
+        foo: 'bar',
+      });
+
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const hasPermission = jest.fn().mockReturnValue(true);
+
+      const hooks = {
+        getSnapState,
+        getUnlockPromise,
+        hasPermission,
+      };
+
+      const engine = new JsonRpcEngine();
+
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<GetStateParameters>,
+          response as PendingJsonRpcResponse<GetStateResult>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_getState',
+        params: {
+          key: 'foo',
+        },
+      });
+
+      expect(getSnapState).toHaveBeenCalledWith(MOCK_SNAP_ID, true);
+      expect(response).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 1,
+        result: 'bar',
+      });
+    });
+
+    it('returns the entire state if no key is specified', async () => {
+      const { implementation } = getStateHandler;
+
+      const getSnapState = jest.fn().mockReturnValue({
+        foo: 'bar',
+      });
+
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const hasPermission = jest.fn().mockReturnValue(true);
+
+      const hooks = {
+        getSnapState,
+        getUnlockPromise,
+        hasPermission,
+      };
+
+      const engine = new JsonRpcEngine();
+
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<GetStateParameters>,
+          response as PendingJsonRpcResponse<GetStateResult>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_getState',
+        params: {},
+      });
+
+      expect(getSnapState).toHaveBeenCalledWith(MOCK_SNAP_ID, true);
+      expect(response).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 1,
+        result: {
+          foo: 'bar',
+        },
+      });
+    });
+
+    it('returns the unencrypted state', async () => {
+      const { implementation } = getStateHandler;
+
+      const getSnapState = jest.fn().mockReturnValue({
+        foo: 'bar',
+      });
+
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const hasPermission = jest.fn().mockReturnValue(true);
+
+      const hooks = {
+        getSnapState,
+        getUnlockPromise,
+        hasPermission,
+      };
+
+      const engine = new JsonRpcEngine();
+
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<GetStateParameters>,
+          response as PendingJsonRpcResponse<GetStateResult>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_getState',
+        params: {
+          key: 'foo',
+          encrypted: false,
+        },
+      });
+
+      expect(getSnapState).toHaveBeenCalledWith(MOCK_SNAP_ID, false);
+      expect(response).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 1,
+        result: 'bar',
+      });
+    });
+
+    it('throws if the requesting origin does not have the required permission', async () => {
+      const { implementation } = getStateHandler;
+
+      const getSnapState = jest.fn().mockReturnValue({
+        foo: 'bar',
+      });
+
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const hasPermission = jest.fn().mockReturnValue(false);
+
+      const hooks = {
+        getSnapState,
+        getUnlockPromise,
+        hasPermission,
+      };
+
+      const engine = new JsonRpcEngine();
+
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<GetStateParameters>,
+          response as PendingJsonRpcResponse<GetStateResult>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_getState',
+        params: {},
+      });
+
+      expect(getSnapState).not.toHaveBeenCalled();
+      expect(response).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 1,
+        error: {
+          code: errorCodes.provider.unauthorized,
+          message:
+            'The requested account and/or method has not been authorized by the user.',
+          stack: expect.any(String),
+        },
+      });
+    });
+
+    it('throws if the parameters are invalid', async () => {
+      const { implementation } = getStateHandler;
+
+      const getSnapState = jest.fn().mockReturnValue({
+        foo: 'bar',
+      });
+
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const hasPermission = jest.fn().mockReturnValue(true);
+
+      const hooks = {
+        getSnapState,
+        getUnlockPromise,
+        hasPermission,
+      };
+
+      const engine = new JsonRpcEngine();
+
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<GetStateParameters>,
+          response as PendingJsonRpcResponse<GetStateResult>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_getState',
+        params: {
+          encrypted: 'foo',
+        },
+      });
+
+      expect(response).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 1,
+        error: {
+          code: errorCodes.rpc.invalidParams,
+          message:
+            'Invalid params: At path: encrypted -- Expected a value of type `boolean`, but received: `"foo"`.',
+          stack: expect.any(String),
+        },
+      });
+    });
+  });
+});
 
 describe('get', () => {
   const object = {
