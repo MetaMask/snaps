@@ -5517,7 +5517,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/settings-page-example-snap@workspace:packages/examples/packages/settings-page":
+"@metamask/settings-page-example-snap@workspace:^, @metamask/settings-page-example-snap@workspace:packages/examples/packages/settings-page":
   version: 0.0.0-use.local
   resolution: "@metamask/settings-page-example-snap@workspace:packages/examples/packages/settings-page"
   dependencies:
@@ -6443,6 +6443,7 @@ __metadata:
     "@metamask/preinstalled-example-snap": "workspace:^"
     "@metamask/providers": "npm:^18.1.1"
     "@metamask/send-flow-example-snap": "workspace:^"
+    "@metamask/settings-page-example-snap": "workspace:^"
     "@metamask/signature-insights-example-snap": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/utils": "npm:^10.0.0"

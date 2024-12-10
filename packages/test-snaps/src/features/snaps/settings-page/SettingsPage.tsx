@@ -14,7 +14,7 @@ export const SettingsPage: FunctionComponent = () => {
       snapId={SETTINGS_PAGE_SNAP_ID}
       port={SETTINGS_PAGE_SNAP_PORT}
       version={SETTINGS_PAGE_VERSION}
-      testId="homepage"
+      testId="settingspage"
     />
   );
 };

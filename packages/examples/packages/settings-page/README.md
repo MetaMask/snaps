@@ -3,6 +3,8 @@
 This snap demonstrates how to use `endowment:page-settings` permission to show
 a settings page that leverages custom UI components.
 
+This endowment is initially restricted to preinstalled snaps only.
+
 ## Snap manifest
 
 The manifest of this snap includes the `endowment:page-settings` permission:
