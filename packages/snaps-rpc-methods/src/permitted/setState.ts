@@ -202,7 +202,9 @@ export function set(
   for (let i = 0; i < keys.length; i++) {
     const currentKey = keys[i];
     if (['__proto__', 'constructor'].includes(currentKey)) {
-      return {};
+      throw rpcErrors.invalidParams(
+        'Invalid params: Key contains forbidden characters.',
+      );
     }
 
     if (i === keys.length - 1) {

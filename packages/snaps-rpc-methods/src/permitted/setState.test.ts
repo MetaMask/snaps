@@ -88,4 +88,16 @@ describe('set', () => {
       },
     });
   });
+
+  it('throws an error if the key is a prototype pollution attempt', () => {
+    expect(() => set({}, '__proto__.polluted', 'value')).toThrow(
+      'Invalid params: Key contains forbidden characters.',
+    );
+  });
+
+  it('throws an error if the key is a constructor pollution attempt', () => {
+    expect(() => set({}, 'constructor.polluted', 'value')).toThrow(
+      'Invalid params: Key contains forbidden characters.',
+    );
+  });
 });
