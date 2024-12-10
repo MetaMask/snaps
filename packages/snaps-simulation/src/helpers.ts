@@ -119,6 +119,13 @@ export type SnapHelpers = {
   onHomePage(): Promise<SnapResponseWithInterface>;
 
   /**
+   * Get the response from the snap's `onSettingsPage` method.
+   *
+   * @returns The response.
+   */
+  onSettingsPage(): Promise<SnapResponseWithInterface>;
+
+  /**
    * Send a keyring request to the Snap.
    *
    * @param keyringRequest - Keyring request.
@@ -392,6 +399,26 @@ export function getHelpers({
         controllerMessenger,
         runSaga,
         handler: HandlerType.OnHomePage,
+        request: {
+          method: '',
+        },
+      });
+
+      assertIsResponseWithInterface(response);
+
+      return response;
+    },
+
+    onSettingsPage: async (): Promise<SnapResponseWithInterface> => {
+      log('Rendering settings page.');
+
+      const response = await handleRequest({
+        snapId,
+        store,
+        executionService,
+        controllerMessenger,
+        runSaga,
+        handler: HandlerType.OnSettingsPage,
         request: {
           method: '',
         },

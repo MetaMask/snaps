@@ -421,6 +421,13 @@ export type Snap = {
   onHomePage(): Promise<SnapResponseWithInterface>;
 
   /**
+   * Get the response from the snap's `onSettingsPage` method.
+   *
+   * @returns The response.
+   */
+  onSettingsPage(): Promise<SnapResponseWithInterface>;
+
+  /**
    * Send a keyring to the Snap.
    *
    * @param keyringRequest - Keyring request options.
