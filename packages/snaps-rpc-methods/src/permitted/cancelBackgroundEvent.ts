@@ -77,8 +77,7 @@ async function getCancelBackgroundEventImplementation(
 }
 
 /**
- * Validate the cancelBackgroundEvent method `params` and returns them cast to the correct
- * type. Throws if validation fails.
+ * Validate the cancelBackgroundEvent method `params` and returns them cast to the correct type. Throws if validation fails.
  *
  * @param params - The unvalidated params object from the method request.
  * @returns The validated resolveInterface method parameter object.
