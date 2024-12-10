@@ -548,6 +548,32 @@ describe('helpers', () => {
     });
   });
 
+  describe('getSettingsPage', () => {
+    it('sends a OnSettingsPage request and returns the result', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+
+      const { snapId, close: closeServer } = await getMockServer({
+        sourceCode: `
+          module.exports.onSettingsPage = async () => {
+            return { content: { type: 'text', value: 'Hello, world!' } };
+          };
+         `,
+      });
+
+      const { onSettingsPage, close } = await installSnap(snapId);
+      const response = await onSettingsPage();
+
+      expect(response).toStrictEqual(
+        expect.objectContaining({
+          getInterface: expect.any(Function),
+        }),
+      );
+
+      await close();
+      await closeServer();
+    });
+  });
+
   describe('onKeyringRequest', () => {
     it('sends a keyring request and returns the result', async () => {
       jest.spyOn(console, 'log').mockImplementation();
