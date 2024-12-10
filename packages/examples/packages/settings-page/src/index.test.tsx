@@ -1,22 +1,19 @@
 import { describe, it } from '@jest/globals';
 import { installSnap } from '@metamask/snaps-jest';
-import { Box, Text } from '@metamask/snaps-sdk/jsx';
+import { Box, Heading, Text } from '@metamask/snaps-sdk/jsx';
 
-describe('onHomePage', () => {
+describe('onSettingsPage', () => {
   it('returns custom UI', async () => {
-    const { onHomePage } = await installSnap();
+    const { onSettingsPage } = await installSnap();
 
-    const response = await onHomePage();
+    const response = await onSettingsPage();
 
     const screen = response.getInterface();
 
-    await screen.clickElement('footer_button');
-
-    const newUi = response.getInterface();
-
-    expect(newUi).toRender(
+    expect(screen).toRender(
       <Box>
-        <Text>Footer button was pressed</Text>
+        <Heading>Hello world!</Heading>
+        <Text>Welcome to my Snap settings page!</Text>
       </Box>,
     );
   });
