@@ -105,7 +105,7 @@ async function getScheduleBackgroundEventImplementation(
 }
 
 /**
- * Validate the scheduleBackground method `params` and returns them cast to the correct
+ * Validate the scheduleBackgroundEvent method `params` and returns them cast to the correct
  * type. Throws if validation fails.
  *
  * @param params - The unvalidated params object from the method request.
