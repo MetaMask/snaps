@@ -1,5 +1,5 @@
 {
-  "version": "1.1.3",
+  "version": "0.0.0",
   "description": "MetaMask example snap demonstrating the use of settings pages.",
   "proposedName": "Settings Page Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "1EtjSOu6ZrLaiCRMQo03YWHnXKsjDV0bIyS0mhiImpw=",
+    "shasum": "yWcDv7XuV/FGRxKdOMkelR4qB0Ivel7oP9fEuNz0EE8=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

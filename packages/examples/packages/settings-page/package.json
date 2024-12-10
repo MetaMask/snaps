@@ -1,6 +1,6 @@
 {
   "name": "@metamask/settings-page-example-snap",
-  "version": "1.1.3",
+  "version": "0.0.0",
   "description": "MetaMask example snap demonstrating the use of settings pages",
   "keywords": [
     "MetaMask",
@@ -25,8 +25,8 @@
   "scripts": {
     "build": "mm-snap build",
     "build:clean": "yarn clean && yarn build",
-    "changelog:update": "../../../../scripts/update-changelog.sh @metamask/home-page-example-snap",
-    "changelog:validate": "../../../../scripts/validate-changelog.sh @metamask/home-page-example-snap",
+    "changelog:update": "../../../../scripts/update-changelog.sh @metamask/settings-page-example-snap",
+    "changelog:validate": "../../../../scripts/validate-changelog.sh @metamask/settings-page-example-snap",
     "clean": "rimraf \"dist\"",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn changelog:validate && yarn lint:dependencies",
     "lint:ci": "yarn lint",
