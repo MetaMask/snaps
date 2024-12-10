@@ -12,6 +12,7 @@ import {
 } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
 
+import { manageStateBuilder } from '../restricted/manageState';
 import type { MethodHooksObject } from '../utils';
 
 const hookNames: MethodHooksObject<ClearStateHooks> = {
@@ -80,7 +81,7 @@ async function clearStateImplementation(
 ): Promise<void> {
   const { params } = request;
 
-  if (!hasPermission('snap_manageState')) {
+  if (!hasPermission(manageStateBuilder.targetName)) {
     return end(providerErrors.unauthorized());
   }
 

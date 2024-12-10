@@ -14,6 +14,7 @@ import {
 import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
 import { JsonStruct, isPlainObject, type Json } from '@metamask/utils';
 
+import { manageStateBuilder } from '../restricted/manageState';
 import type { MethodHooksObject } from '../utils';
 
 const hookNames: MethodHooksObject<SetStateHooks> = {
@@ -119,7 +120,7 @@ async function setStateImplementation(
 ): Promise<void> {
   const { params } = request;
 
-  if (!hasPermission('snap_manageState')) {
+  if (!hasPermission(manageStateBuilder.targetName)) {
     return end(providerErrors.unauthorized());
   }
 
