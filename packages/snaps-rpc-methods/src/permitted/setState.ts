@@ -136,13 +136,15 @@ async function setStateImplementation(
     const { origin } = request as JsonRpcRequest & { origin: string };
     const state = await getSnapState(origin, encrypted);
 
-    const newState = set(state, key, value);
-    if (!isPlainObject(newState)) {
+    if (key === undefined && !isPlainObject(value)) {
       return end(
-        rpcErrors.invalidParams('Invalid state: Root must be an object.'),
+        rpcErrors.invalidParams(
+          'Invalid params: Value must be an object if key is not provided.',
+        ),
       );
     }
 
+    const newState = set(state, key, value);
     await updateSnapState(origin, newState, encrypted);
     response.result = null;
   } catch (error) {
