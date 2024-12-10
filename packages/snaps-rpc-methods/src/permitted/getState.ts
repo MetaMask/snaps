@@ -166,7 +166,9 @@ export function get(
 
   for (const currentKey of keys) {
     if (['__proto__', 'constructor'].includes(currentKey)) {
-      return null;
+      throw rpcErrors.invalidParams(
+        'Invalid params: Key contains forbidden characters.',
+      );
     }
 
     if (isPlainObject(result)) {

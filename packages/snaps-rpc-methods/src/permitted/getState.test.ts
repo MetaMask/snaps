@@ -29,11 +29,15 @@ describe('get', () => {
     expect(get(object, 'a.b.c.d')).toBeNull();
   });
 
-  it('returns `null` if the key is a prototype pollution attempt', () => {
-    expect(get(object, '__proto__.polluted')).toBeNull();
+  it('throws an error if the key is a prototype pollution attempt', () => {
+    expect(() => get(object, '__proto__.polluted')).toThrow(
+      'Invalid params: Key contains forbidden characters.',
+    );
   });
 
   it('returns `null` if the key is a constructor pollution attempt', () => {
-    expect(get(object, 'constructor.polluted')).toBeNull();
+    expect(() => get(object, 'constructor.polluted')).toThrow(
+      'Invalid params: Key contains forbidden characters.',
+    );
   });
 });
