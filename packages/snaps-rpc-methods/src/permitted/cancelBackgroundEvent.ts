@@ -19,7 +19,7 @@ const hookNames: MethodHooksObject<CancelBackgroundEventMethodHooks> = {
 };
 
 export type CancelBackgroundEventMethodHooks = {
-  cancelBackgroundEvent: (id: string) => string;
+  cancelBackgroundEvent: (id: string) => void;
 };
 
 export const cancelBackgroundEventHandler: PermittedHandlerExport<
