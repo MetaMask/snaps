@@ -7,6 +7,7 @@ import type {
 } from '@metamask/key-tree';
 import { SLIP10Node } from '@metamask/key-tree';
 import type { MagicValue } from '@metamask/snaps-utils';
+import { refine, string } from '@metamask/superstruct';
 import type { Hex } from '@metamask/utils';
 import {
   assertExhaustive,
@@ -238,3 +239,25 @@ export async function getNode({
     cryptographicFunctions,
   );
 }
+
+/**
+ * Validate the key of a state object.
+ *
+ * @param key - The key to validate.
+ * @returns `true` if the key is valid, `false` otherwise.
+ */
+export function isValidStateKey(key: string | undefined) {
+  if (key === undefined) {
+    return true;
+  }
+
+  return key.split('.').every((part) => part.length > 0);
+}
+
+export const StateKeyStruct = refine(string(), 'state key', (value) => {
+  if (!isValidStateKey(value)) {
+    return 'Invalid state key. Each part of the key must be non-empty.';
+  }
+
+  return true;
+});

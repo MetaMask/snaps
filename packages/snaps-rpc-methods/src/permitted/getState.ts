@@ -8,7 +8,6 @@ import {
   create,
   object,
   optional,
-  string,
   StructError,
 } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
@@ -16,6 +15,7 @@ import { hasProperty, isPlainObject, type Json } from '@metamask/utils';
 
 import { manageStateBuilder } from '../restricted/manageState';
 import type { MethodHooksObject } from '../utils';
+import { StateKeyStruct } from '../utils';
 
 const hookNames: MethodHooksObject<GetStateHooks> = {
   hasPermission: true,
@@ -64,7 +64,7 @@ export type GetStateHooks = {
 };
 
 const GetStateParametersStruct = object({
-  key: optional(string()),
+  key: optional(StateKeyStruct),
   encrypted: optional(boolean()),
 });
 

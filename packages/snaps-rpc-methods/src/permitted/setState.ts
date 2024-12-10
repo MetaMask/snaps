@@ -2,20 +2,21 @@ import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type { SetStateParams, SetStateResult } from '@metamask/snaps-sdk';
+import type { JsonObject } from '@metamask/snaps-sdk/jsx';
 import { type InferMatching } from '@metamask/snaps-utils';
 import {
   boolean,
   create,
   object as objectStruct,
   optional,
-  string,
   StructError,
 } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
-import { JsonStruct, isPlainObject, type Json } from '@metamask/utils';
+import { assert, JsonStruct, isPlainObject, type Json } from '@metamask/utils';
 
 import { manageStateBuilder } from '../restricted/manageState';
 import type { MethodHooksObject } from '../utils';
+import { StateKeyStruct } from '../utils';
 
 const hookNames: MethodHooksObject<SetStateHooks> = {
   hasPermission: true,
@@ -80,7 +81,7 @@ export type SetStateHooks = {
 };
 
 const SetStateParametersStruct = objectStruct({
-  key: optional(string()),
+  key: optional(StateKeyStruct),
   value: JsonStruct,
   encrypted: optional(boolean()),
 });
@@ -193,8 +194,9 @@ export function set(
   object: Record<string, Json> | null,
   key: string | undefined,
   value: Json,
-): Json {
-  if (key === undefined || key === '') {
+): JsonObject {
+  if (key === undefined) {
+    assert(isPlainObject(value));
     return value;
   }
 
@@ -223,5 +225,5 @@ export function set(
   }
 
   // This should never be reached.
-  return null;
+  return {};
 }
