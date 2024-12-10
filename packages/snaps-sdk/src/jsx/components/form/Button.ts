@@ -16,6 +16,7 @@ import type { ImageElement } from '../Image';
  * @property variant - The variant of the button, i.e., `'primary'` or
  * `'destructive'`. Defaults to `'primary'`.
  * @property disabled - Whether the button is disabled. Defaults to `false`.
+ * @property loading - Whether the button is loading. Defaults to `false`.
  * @property form - The name of the form component to associate the button with.
  */
 export type ButtonProps = {
@@ -24,6 +25,7 @@ export type ButtonProps = {
   type?: 'button' | 'submit' | undefined;
   variant?: 'primary' | 'destructive' | undefined;
   disabled?: boolean | undefined;
+  loading?: boolean | undefined;
   form?: string | undefined;
 };
 

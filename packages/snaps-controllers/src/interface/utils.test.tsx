@@ -242,6 +242,21 @@ describe('constructState', () => {
     });
   });
 
+  it('handles root level Field', () => {
+    const element = (
+      <Box>
+        <Field label="foo">
+          <Input name="foo" type="text" value="bar" />
+        </Field>
+      </Box>
+    );
+
+    const result = constructState({}, element);
+    expect(result).toStrictEqual({
+      foo: 'bar',
+    });
+  });
+
   it('handles root level inputs with value', () => {
     const element = (
       <Box>

@@ -63,4 +63,23 @@ describe('Button', () => {
       key: null,
     });
   });
+
+  it('returns a button element with a variant and loading state', () => {
+    const result = (
+      <Button type="button" variant="primary" loading={true}>
+        foo
+      </Button>
+    );
+
+    expect(result).toStrictEqual({
+      type: 'Button',
+      props: {
+        children: 'foo',
+        type: 'button',
+        variant: 'primary',
+        loading: true,
+      },
+      key: null,
+    });
+  });
 });

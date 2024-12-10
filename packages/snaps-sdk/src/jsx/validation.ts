@@ -245,6 +245,7 @@ export const ButtonStruct: Describe<ButtonElement> = element('Button', {
   type: optional(nullUnion([literal('button'), literal('submit')])),
   variant: optional(nullUnion([literal('primary'), literal('destructive')])),
   disabled: optional(boolean()),
+  loading: optional(boolean()),
   form: optional(string()),
 });
 
@@ -480,12 +481,20 @@ export const FieldChildUnionStruct = nullUnion([
 /**
  * A subset of JSX elements that are allowed as children of the Field component.
  */
-const FieldChildStruct = nullUnion([
-  tuple(BOX_INPUT_LEFT),
-  tuple(BOX_INPUT_RIGHT),
-  tuple(BOX_INPUT_BOTH),
-  ...FIELD_CHILDREN_ARRAY,
-]) as unknown as Struct<
+const FieldChildStruct = selectiveUnion((value) => {
+  const isArray = Array.isArray(value);
+  if (isArray && value.length === 3) {
+    return tuple(BOX_INPUT_BOTH);
+  }
+
+  if (isArray && value.length === 2) {
+    return value[0]?.type === 'Box'
+      ? tuple(BOX_INPUT_LEFT)
+      : tuple(BOX_INPUT_RIGHT);
+  }
+
+  return typedUnion(FIELD_CHILDREN_ARRAY);
+}) as unknown as Struct<
   | [InputElement, GenericSnapChildren]
   | [GenericSnapChildren, InputElement]
   | [GenericSnapChildren, InputElement, GenericSnapChildren]
@@ -505,22 +514,6 @@ export const FieldStruct: Describe<FieldElement> = element('Field', {
   label: optional(string()),
   error: optional(string()),
   children: FieldChildStruct,
-});
-
-/**
- * A subset of JSX elements that are allowed as children of the Form component.
- */
-export const FormChildStruct = children(
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  [FieldStruct, lazy(() => BoxChildStruct)],
-) as unknown as Struct<SnapsChildren<GenericSnapElement>, null>;
-
-/**
- * A struct for the {@link FormElement} type.
- */
-export const FormStruct: Describe<FormElement> = element('Form', {
-  children: FormChildStruct,
-  name: string(),
 });
 
 /**
@@ -582,6 +575,19 @@ export const BoxStruct: Describe<BoxElement> = element('Box', {
     ]),
   ),
   center: optional(boolean()),
+});
+
+/**
+ * A subset of JSX elements that are allowed as children of the Form component.
+ */
+export const FormChildStruct = BoxChildrenStruct;
+
+/**
+ * A struct for the {@link FormElement} type.
+ */
+export const FormStruct: Describe<FormElement> = element('Form', {
+  children: FormChildStruct,
+  name: string(),
 });
 
 const FooterButtonStruct = refine(ButtonStruct, 'FooterButton', (value) => {
@@ -796,6 +802,7 @@ export const BoxChildStruct = typedUnion([
   DividerStruct,
   DropdownStruct,
   RadioGroupStruct,
+  FieldStruct,
   FileInputStruct,
   FormStruct,
   HeadingStruct,

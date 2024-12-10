@@ -1,4 +1,3 @@
-import { getPlatformVersion } from '@metamask/snaps-utils';
 import {
   DEFAULT_SNAP_BUNDLE,
   DEFAULT_SNAP_ICON,
@@ -6,6 +5,7 @@ import {
   getPackageJson,
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
+import type { SemVerVersion } from '@metamask/utils';
 import normalFs from 'fs';
 import ora from 'ora';
 
@@ -33,12 +33,21 @@ jest.mock('../../webpack', () => ({
   }),
 }));
 
+jest.mock('module', () => ({
+  createRequire: jest.fn().mockImplementation(() => {
+    const fn = jest.fn().mockReturnValue({ version: '1.0.0' }) as any;
+    // eslint-disable-next-line jest/prefer-spy-on
+    fn.resolve = jest.fn();
+    return fn;
+  }),
+}));
+
 describe('manifest', () => {
   beforeEach(async () => {
     const { manifest: newManifest } = await getMockSnapFilesWithUpdatedChecksum(
       {
         manifest: getSnapManifest({
-          platformVersion: getPlatformVersion(),
+          platformVersion: '1.0.0' as SemVerVersion,
         }),
       },
     );

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.7.0]
+
+### Added
+
+- Add JSX `content` property to `snap_notify` ([#2881](https://github.com/MetaMask/snaps/pull/2881))
+  - This content will be displayed in an upcoming expanded view for notifications.
+- Add `getClientCryptography` hook for specifying custom cryptography functions ([#2909](https://github.com/MetaMask/snaps/pull/2909))
+
 ## [11.6.0]
 
 ### Added
@@ -335,7 +343,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.6.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.7.0...HEAD
+[11.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.6.0...@metamask/snaps-rpc-methods@11.7.0
 [11.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.5.1...@metamask/snaps-rpc-methods@11.6.0
 [11.5.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.5.0...@metamask/snaps-rpc-methods@11.5.1
 [11.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.4.0...@metamask/snaps-rpc-methods@11.5.0
