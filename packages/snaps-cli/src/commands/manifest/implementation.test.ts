@@ -36,7 +36,8 @@ jest.mock('../../webpack', () => ({
 jest.mock('module', () => ({
   createRequire: jest.fn().mockImplementation(() => {
     const fn = jest.fn().mockReturnValue({ version: '1.0.0' }) as any;
-    jest.spyOn(fn, 'resolve').mockImplementation();
+    // eslint-disable-next-line jest/prefer-spy-on
+    fn.resolve = jest.fn();
     return fn;
   }),
 }));
