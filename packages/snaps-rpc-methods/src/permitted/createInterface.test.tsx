@@ -191,7 +191,7 @@ describe('snap_createInterface', () => {
       error: {
         code: -32602,
         message:
-          'Invalid params: At path: ui.props.children.props.children -- Expected the value to satisfy a union of `tuple | tuple | tuple | object | object | object | object | object | object`, but received: [object Object].',
+          'Invalid params: At path: ui.props.children.props.children -- Expected type to be one of: "Input", "Dropdown", "RadioGroup", "FileInput", "Checkbox", "Selector", but received: "Copyable".',
         stack: expect.any(String),
       },
       id: 1,

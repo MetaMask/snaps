@@ -481,12 +481,20 @@ export const FieldChildUnionStruct = nullUnion([
 /**
  * A subset of JSX elements that are allowed as children of the Field component.
  */
-const FieldChildStruct = nullUnion([
-  tuple(BOX_INPUT_LEFT),
-  tuple(BOX_INPUT_RIGHT),
-  tuple(BOX_INPUT_BOTH),
-  ...FIELD_CHILDREN_ARRAY,
-]) as unknown as Struct<
+const FieldChildStruct = selectiveUnion((value) => {
+  const isArray = Array.isArray(value);
+  if (isArray && value.length === 3) {
+    return tuple(BOX_INPUT_BOTH);
+  }
+
+  if (isArray && value.length === 2) {
+    return value[0]?.type === 'Box'
+      ? tuple(BOX_INPUT_LEFT)
+      : tuple(BOX_INPUT_RIGHT);
+  }
+
+  return typedUnion(FIELD_CHILDREN_ARRAY);
+}) as unknown as Struct<
   | [InputElement, GenericSnapChildren]
   | [GenericSnapChildren, InputElement]
   | [GenericSnapChildren, InputElement, GenericSnapChildren]
