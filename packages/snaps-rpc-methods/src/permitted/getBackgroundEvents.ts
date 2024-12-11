@@ -2,8 +2,8 @@ import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import type {
   BackgroundEvent,
+  GetBackgroundEventsParams,
   GetBackgroundEventsResult,
-  JsonRpcParams,
   JsonRpcRequest,
 } from '@metamask/snaps-sdk';
 import { type PendingJsonRpcResponse } from '@metamask/utils';
@@ -22,7 +22,7 @@ export type GetBackgroundEventsMethodHooks = {
 
 export const getBackgroundEventsHandler: PermittedHandlerExport<
   GetBackgroundEventsMethodHooks,
-  JsonRpcParams,
+  GetBackgroundEventsParams,
   GetBackgroundEventsResult
 > = {
   methodNames: [methodName],
@@ -44,7 +44,7 @@ export const getBackgroundEventsHandler: PermittedHandlerExport<
  * @returns An array of background events.
  */
 async function getGetBackgroundEventsImplementation(
-  _req: JsonRpcRequest<JsonRpcParams>,
+  _req: JsonRpcRequest<GetBackgroundEventsParams>,
   res: PendingJsonRpcResponse<GetBackgroundEventsResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

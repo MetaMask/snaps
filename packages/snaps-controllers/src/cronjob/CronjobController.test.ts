@@ -312,7 +312,7 @@ describe('CronjobController', () => {
       [id]: { id, scheduledAt: expect.any(String), ...backgroundEvent },
     });
 
-    cronjobController.cancelBackgroundEvent(id);
+    cronjobController.cancelBackgroundEvent(id, MOCK_SNAP_ID);
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Day));
 
@@ -330,6 +330,37 @@ describe('CronjobController', () => {
     );
 
     expect(cronjobController.state.events).toStrictEqual({});
+
+    cronjobController.destroy();
+  });
+
+  it('fails to cancel a background event if the caller is not the scheduler', () => {
+    const rootMessenger = getRootCronjobControllerMessenger();
+    const controllerMessenger =
+      getRestrictedCronjobControllerMessenger(rootMessenger);
+
+    const cronjobController = new CronjobController({
+      messenger: controllerMessenger,
+    });
+
+    const backgroundEvent = {
+      snapId: MOCK_SNAP_ID,
+      date: '2022-01-01T01:00',
+      request: {
+        method: 'handleEvent',
+        params: ['p1'],
+      },
+    };
+
+    const id = cronjobController.scheduleBackgroundEvent(backgroundEvent);
+
+    expect(cronjobController.state.events).toStrictEqual({
+      [id]: { id, scheduledAt: expect.any(String), ...backgroundEvent },
+    });
+
+    expect(() => cronjobController.cancelBackgroundEvent(id, 'foo')).toThrow(
+      'Only the origin that scheduled this event can cancel it',
+    );
 
     cronjobController.destroy();
   });
@@ -807,5 +838,173 @@ describe('CronjobController', () => {
         },
       },
     );
+  });
+
+  describe('CronjobController actions', () => {
+    describe('CronjobController:scheduleBackgroundEvent', () => {
+      it('schedules a background event', () => {
+        const rootMessenger = getRootCronjobControllerMessenger();
+        const controllerMessenger =
+          getRestrictedCronjobControllerMessenger(rootMessenger);
+
+        const cronjobController = new CronjobController({
+          messenger: controllerMessenger,
+        });
+
+        cronjobController.register(MOCK_SNAP_ID);
+
+        const id = rootMessenger.call(
+          'CronjobController:scheduleBackgroundEvent',
+          {
+            snapId: MOCK_SNAP_ID,
+            date: '2022-01-01T01:00',
+            request: {
+              method: 'handleExport',
+              params: ['p1'],
+            },
+          },
+        );
+
+        expect(cronjobController.state.events).toStrictEqual({
+          [id]: {
+            id,
+            snapId: MOCK_SNAP_ID,
+            scheduledAt: expect.any(String),
+            date: '2022-01-01T01:00',
+            request: {
+              method: 'handleExport',
+              params: ['p1'],
+            },
+          },
+        });
+
+        jest.advanceTimersByTime(inMilliseconds(1, Duration.Day));
+
+        expect(rootMessenger.call).toHaveBeenCalledWith(
+          'SnapController:handleRequest',
+          {
+            snapId: MOCK_SNAP_ID,
+            origin: '',
+            handler: HandlerType.OnCronjob,
+            request: {
+              method: 'handleExport',
+              params: ['p1'],
+            },
+          },
+        );
+
+        expect(cronjobController.state.events).toStrictEqual({});
+
+        cronjobController.destroy();
+      });
+    });
+
+    describe('CronjobController:cancelBackgroundEvent', () => {
+      it('cancels a background event', () => {
+        const rootMessenger = getRootCronjobControllerMessenger();
+        const controllerMessenger =
+          getRestrictedCronjobControllerMessenger(rootMessenger);
+
+        const cronjobController = new CronjobController({
+          messenger: controllerMessenger,
+        });
+
+        cronjobController.register(MOCK_SNAP_ID);
+
+        const id = rootMessenger.call(
+          'CronjobController:scheduleBackgroundEvent',
+          {
+            snapId: MOCK_SNAP_ID,
+            date: '2022-01-01T01:00',
+            request: {
+              method: 'handleExport',
+              params: ['p1'],
+            },
+          },
+        );
+
+        expect(cronjobController.state.events).toStrictEqual({
+          [id]: {
+            id,
+            snapId: MOCK_SNAP_ID,
+            scheduledAt: expect.any(String),
+            date: '2022-01-01T01:00',
+            request: {
+              method: 'handleExport',
+              params: ['p1'],
+            },
+          },
+        });
+
+        rootMessenger.call(
+          'CronjobController:cancelBackgroundEvent',
+          id,
+          MOCK_SNAP_ID,
+        );
+
+        expect(cronjobController.state.events).toStrictEqual({});
+
+        cronjobController.destroy();
+      });
+    });
+
+    describe('CronjobController:getBackgroundEvents', () => {
+      it("gets a list of a Snap's background events", () => {
+        const rootMessenger = getRootCronjobControllerMessenger();
+        const controllerMessenger =
+          getRestrictedCronjobControllerMessenger(rootMessenger);
+
+        const cronjobController = new CronjobController({
+          messenger: controllerMessenger,
+        });
+
+        cronjobController.register(MOCK_SNAP_ID);
+
+        const id = rootMessenger.call(
+          'CronjobController:scheduleBackgroundEvent',
+          {
+            snapId: MOCK_SNAP_ID,
+            date: '2022-01-01T01:00',
+            request: {
+              method: 'handleExport',
+              params: ['p1'],
+            },
+          },
+        );
+
+        expect(cronjobController.state.events).toStrictEqual({
+          [id]: {
+            id,
+            snapId: MOCK_SNAP_ID,
+            scheduledAt: expect.any(String),
+            date: '2022-01-01T01:00',
+            request: {
+              method: 'handleExport',
+              params: ['p1'],
+            },
+          },
+        });
+
+        const events = rootMessenger.call(
+          'CronjobController:getBackgroundEvents',
+          MOCK_SNAP_ID,
+        );
+
+        expect(events).toStrictEqual([
+          {
+            id,
+            snapId: MOCK_SNAP_ID,
+            scheduledAt: expect.any(String),
+            date: '2022-01-01T01:00',
+            request: {
+              method: 'handleExport',
+              params: ['p1'],
+            },
+          },
+        ]);
+
+        cronjobController.destroy();
+      });
+    });
   });
 });

@@ -2,6 +2,9 @@ import type { Json } from '@metamask/utils';
 
 import type { SnapId } from '../snap';
 
+/**
+ * Backgound event type
+ */
 export type BackgroundEvent = {
   id: string;
   scheduledAt: string;
@@ -15,4 +18,12 @@ export type BackgroundEvent = {
   };
 };
 
+/**
+ * `snap_getBackgroundEvents` result type.
+ */
 export type GetBackgroundEventsResult = BackgroundEvent[];
+
+/**
+ * `snao_getBackgroundEvents` params.
+ */
+export type GetBackgroundEventsParams = never;

@@ -19,7 +19,7 @@ import {
   parseCronExpression,
   logError,
 } from '@metamask/snaps-utils';
-import { assert, Duration, hasProperty, inMilliseconds } from '@metamask/utils';
+import { assert, Duration, inMilliseconds } from '@metamask/utils';
 import { castDraft } from 'immer';
 import { nanoid } from 'nanoid';
 
@@ -149,11 +149,6 @@ export class CronjobController extends BaseController<
     this.#snapIds = new Map();
     this.#messenger = messenger;
 
-    this._handleSnapRegisterEvent = this._handleSnapRegisterEvent.bind(this);
-    this._handleSnapUnregisterEvent =
-      this._handleSnapUnregisterEvent.bind(this);
-    this._handleEventSnapUpdated = this._handleEventSnapUpdated.bind(this);
-
     // Subscribe to Snap events
     /* eslint-disable @typescript-eslint/unbound-method */
 
@@ -227,7 +222,7 @@ export class CronjobController extends BaseController<
       logError(error);
     });
 
-    this.rescheduleBackgroundEvents(Object.values(this.state.events)).catch(
+    this.#rescheduleBackgroundEvents(Object.values(this.state.events)).catch(
       (error) => {
         logError(error);
       },
@@ -239,11 +234,11 @@ export class CronjobController extends BaseController<
    *
    * @returns Array of Cronjob specifications.
    */
-  private getAllJobs(): Cronjob[] {
+  #getAllJobs(): Cronjob[] {
     const snaps = this.messagingSystem.call('SnapController:getAll');
     const filteredSnaps = getRunnableSnaps(snaps);
 
-    const jobs = filteredSnaps.map((snap) => this.getSnapJobs(snap.id));
+    const jobs = filteredSnaps.map((snap) => this.#getSnapJobs(snap.id));
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     return jobs.flat().filter((job) => job !== undefined) as Cronjob[];
   }
@@ -254,7 +249,7 @@ export class CronjobController extends BaseController<
    * @param snapId - ID of a Snap.
    * @returns Array of Cronjob specifications.
    */
-  private getSnapJobs(snapId: SnapId): Cronjob[] | undefined {
+  #getSnapJobs(snapId: SnapId): Cronjob[] | undefined {
     const permissions = this.#messenger.call(
       'PermissionController:getPermissions',
       snapId,
@@ -275,8 +270,8 @@ export class CronjobController extends BaseController<
    * @param snapId - ID of a snap.
    */
   register(snapId: SnapId) {
-    const jobs = this.getSnapJobs(snapId);
-    jobs?.forEach((job) => this.schedule(job));
+    const jobs = this.#getSnapJobs(snapId);
+    jobs?.forEach((job) => this.#schedule(job));
   }
 
   /**
@@ -290,7 +285,7 @@ export class CronjobController extends BaseController<
    *
    * @param job - Cronjob specification.
    */
-  private schedule(job: Cronjob) {
+  #schedule(job: Cronjob) {
     if (this.#timers.has(job.id)) {
       return;
     }
@@ -307,17 +302,17 @@ export class CronjobController extends BaseController<
 
     const timer = new Timer(ms);
     timer.start(() => {
-      this.executeCronjob(job).catch((error) => {
+      this.#executeCronjob(job).catch((error) => {
         // TODO: Decide how to handle errors.
         logError(error);
       });
 
       this.#timers.delete(job.id);
-      this.schedule(job);
+      this.#schedule(job);
     });
 
     if (!this.state.jobs[job.id]?.lastRun) {
-      this.updateJobLastRunState(job.id, 0); // 0 for init, never ran actually
+      this.#updateJobLastRunState(job.id, 0); // 0 for init, never ran actually
     }
 
     this.#timers.set(job.id, timer);
@@ -329,8 +324,8 @@ export class CronjobController extends BaseController<
    *
    * @param job - Cronjob specification.
    */
-  private async executeCronjob(job: Cronjob) {
-    this.updateJobLastRunState(job.id, Date.now());
+  async #executeCronjob(job: Cronjob) {
+    this.#updateJobLastRunState(job.id, Date.now());
     await this.#messenger.call('SnapController:handleRequest', {
       snapId: job.snapId,
       origin: '',
@@ -348,9 +343,12 @@ export class CronjobController extends BaseController<
   scheduleBackgroundEvent(
     backgroundEventWithoutId: Omit<BackgroundEvent, 'id' | 'scheduledAt'>,
   ) {
-    const event = this.getBackgroundEventWithId(backgroundEventWithoutId);
-    event.scheduledAt = new Date().toISOString();
-    this.setUpBackgroundEvent(event);
+    const event = {
+      ...backgroundEventWithoutId,
+      id: nanoid(),
+      scheduledAt: new Date().toISOString(),
+    };
+    this.#setUpBackgroundEvent(event);
     this.update((state) => {
       state.events[event.id] = castDraft(event);
     });
@@ -362,12 +360,18 @@ export class CronjobController extends BaseController<
    * Cancel a background event.
    *
    * @param id - The id of the background event to cancel.
+   * @param origin - The origin making the cancel call.
    * @throws If the event does not exist.
    */
-  cancelBackgroundEvent(id: string) {
+  cancelBackgroundEvent(id: string, origin: string) {
     assert(
       this.state.events[id],
       `A background event with the id of "${id}" does not exist.`,
+    );
+
+    assert(
+      this.state.events[id].snapId === origin,
+      'Only the origin that scheduled this event can cancel it',
     );
 
     const timer = this.#timers.get(id);
@@ -380,41 +384,27 @@ export class CronjobController extends BaseController<
   }
 
   /**
-   * Assign an id to a background event.
-   *
-   * @param backgroundEventWithoutId - A background event with an unassigned id.
-   * @returns A background event with an id.
-   */
-  private getBackgroundEventWithId(
-    backgroundEventWithoutId: Omit<BackgroundEvent, 'id' | 'scheduledAt'>,
-  ): BackgroundEvent {
-    assert(
-      !hasProperty(backgroundEventWithoutId, 'id'),
-      `Background event already has an id: ${
-        (backgroundEventWithoutId as BackgroundEvent).id
-      }`,
-    );
-    const event = backgroundEventWithoutId as BackgroundEvent;
-    const id = this.generateBackgroundEventId();
-    event.id = id;
-    return event;
-  }
-
-  /**
    * A helper function to handle setup of the background event.
    *
    * @param event - A background event.
    */
-  private setUpBackgroundEvent(event: BackgroundEvent) {
+  #setUpBackgroundEvent(event: BackgroundEvent) {
     const date = new Date(event.date);
     const now = new Date();
     const ms = date.getTime() - now.getTime();
 
     const timer = new Timer(ms);
     timer.start(() => {
-      this.executeBackgroundEvent(event).catch((error) => {
-        logError(error);
-      });
+      this.#messenger
+        .call('SnapController:handleRequest', {
+          snapId: event.snapId,
+          origin: '',
+          handler: HandlerType.OnCronjob,
+          request: event.request,
+        })
+        .catch((error) => {
+          logError(error);
+        });
 
       this.#timers.delete(event.id);
       this.#snapIds.delete(event.id);
@@ -425,20 +415,6 @@ export class CronjobController extends BaseController<
 
     this.#timers.set(event.id, timer);
     this.#snapIds.set(event.id, event.snapId);
-  }
-
-  /**
-   * Fire the background event.
-   *
-   * @param event - A background event.
-   */
-  private async executeBackgroundEvent(event: BackgroundEvent) {
-    await this.#messenger.call('SnapController:handleRequest', {
-      snapId: event.snapId,
-      origin: '',
-      handler: HandlerType.OnCronjob,
-      request: event.request,
-    });
   }
 
   /**
@@ -465,6 +441,7 @@ export class CronjobController extends BaseController<
     );
 
     if (jobs.length) {
+      const eventIds: string[] = [];
       jobs.forEach(([id]) => {
         const timer = this.#timers.get(id);
         if (timer) {
@@ -472,12 +449,17 @@ export class CronjobController extends BaseController<
           this.#timers.delete(id);
           this.#snapIds.delete(id);
           if (!skipEvents && this.state.events[id]) {
-            this.update((state) => {
-              delete state.events[id];
-            });
+            eventIds.push(id);
           }
         }
       });
+      if (eventIds.length > 0) {
+        this.update((state) => {
+          eventIds.forEach((id) => {
+            delete state.events[id];
+          });
+        });
+      }
     }
   }
 
@@ -487,7 +469,7 @@ export class CronjobController extends BaseController<
    * @param jobId - ID of a cron job.
    * @param lastRun - Unix timestamp when the job was last ran.
    */
-  private updateJobLastRunState(jobId: string, lastRun: number) {
+  #updateJobLastRunState(jobId: string, lastRun: number) {
     this.update((state) => {
       state.jobs[jobId] = {
         lastRun,
@@ -496,25 +478,12 @@ export class CronjobController extends BaseController<
   }
 
   /**
-   * Generate a unique id for a background event.
-   *
-   * @returns An id.
-   */
-  private generateBackgroundEventId(): string {
-    const id = nanoid();
-    if (this.state.events[id]) {
-      this.generateBackgroundEventId();
-    }
-    return id;
-  }
-
-  /**
    * Runs every 24 hours to check if new jobs need to be scheduled.
    *
    * This is necessary for longer running jobs that execute with more than 24 hours between them.
    */
   async dailyCheckIn() {
-    const jobs = this.getAllJobs();
+    const jobs = this.#getAllJobs();
 
     for (const job of jobs) {
       const parsed = parseCronExpression(job.expression);
@@ -525,11 +494,11 @@ export class CronjobController extends BaseController<
         parsed.hasPrev() &&
         parsed.prev().getTime() > lastRun
       ) {
-        await this.executeCronjob(job);
+        await this.#executeCronjob(job);
       }
 
       // Try scheduling, will fail if an existing scheduled job is found
-      this.schedule(job);
+      this.#schedule(job);
     }
 
     this.#dailyTimer = new Timer(DAILY_TIMEOUT);
@@ -546,9 +515,7 @@ export class CronjobController extends BaseController<
    *
    * @param backgroundEvents - A list of background events to reschdule.
    */
-  private async rescheduleBackgroundEvents(
-    backgroundEvents: BackgroundEvent[],
-  ) {
+  async #rescheduleBackgroundEvents(backgroundEvents: BackgroundEvent[]) {
     for (const snapEvent of backgroundEvents) {
       const { date } = snapEvent;
       const now = new Date();
@@ -564,7 +531,7 @@ export class CronjobController extends BaseController<
         );
         logError(error);
       } else {
-        this.setUpBackgroundEvent(snapEvent);
+        this.#setUpBackgroundEvent(snapEvent);
       }
     }
   }
@@ -624,7 +591,7 @@ export class CronjobController extends BaseController<
    */
   private _handleSnapEnabledEvent(snap: TruncatedSnap) {
     const events = this.getBackgroundEvents(snap.id);
-    this.rescheduleBackgroundEvents(events).catch((error) => logError(error));
+    this.#rescheduleBackgroundEvents(events).catch((error) => logError(error));
     this.register(snap.id);
   }
 

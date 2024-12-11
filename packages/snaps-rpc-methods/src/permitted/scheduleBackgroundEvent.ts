@@ -21,17 +21,18 @@ import {
 import { type PendingJsonRpcResponse } from '@metamask/utils';
 import { DateTime } from 'luxon';
 
+import { SnapEndowments } from '../endowments';
 import type { MethodHooksObject } from '../utils';
 
 const methodName = 'snap_scheduleBackgroundEvent';
 
 const hookNames: MethodHooksObject<ScheduleBackgroundEventMethodHooks> = {
   scheduleBackgroundEvent: true,
+  hasPermission: true,
 };
 
 type ScheduleBackgroundEventHookParams = {
   date: string;
-  scheduledAt: string;
   request: CronjobRpcRequest;
 };
 
@@ -39,6 +40,8 @@ export type ScheduleBackgroundEventMethodHooks = {
   scheduleBackgroundEvent: (
     snapEvent: ScheduleBackgroundEventHookParams,
   ) => string;
+
+  hasPermission: (permissionName: string) => boolean;
 };
 
 export const scheduleBackgroundEventHandler: PermittedHandlerExport<
@@ -77,6 +80,7 @@ export type ScheduleBackgroundEventParameters = InferMatching<
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
  * @param hooks.scheduleBackgroundEvent - The function to schedule a background event.
+ * @param hooks.hasPermission - The function to check if a snap has the `endowment:cronjob` permission.
  * @returns An id representing the background event.
  */
 async function getScheduleBackgroundEventImplementation(
@@ -84,18 +88,27 @@ async function getScheduleBackgroundEventImplementation(
   res: PendingJsonRpcResponse<ScheduleBackgroundEventResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { scheduleBackgroundEvent }: ScheduleBackgroundEventMethodHooks,
+  {
+    scheduleBackgroundEvent,
+    hasPermission,
+  }: ScheduleBackgroundEventMethodHooks,
 ): Promise<void> {
-  const { params } = req;
+  const { params, origin } = req as JsonRpcRequest & { origin: string };
+
+  if (!hasPermission(SnapEndowments.Cronjob)) {
+    return end(
+      rpcErrors.invalidRequest({
+        message: `The snap "${origin}" does not have the "${SnapEndowments.Cronjob}" permission.`,
+      }),
+    );
+  }
 
   try {
     const validatedParams = getValidatedParams(params);
 
     const { date, request } = validatedParams;
 
-    const scheduledAt = new Date().toISOString();
-
-    const id = scheduleBackgroundEvent({ date, request, scheduledAt });
+    const id = scheduleBackgroundEvent({ date, request });
     res.result = id;
   } catch (error) {
     return end(error);
