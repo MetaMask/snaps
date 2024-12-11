@@ -95,7 +95,7 @@
     "@metamask/providers": "^18.1.1",
     "@metamask/rpc-errors": "^7.0.1",
     "@metamask/superstruct": "^3.1.0",
-    "@metamask/utils": "^10.0.0"
+    "@metamask/utils": "^11.0.1"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^3.0.4",
