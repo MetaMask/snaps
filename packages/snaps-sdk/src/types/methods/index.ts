@@ -22,3 +22,6 @@ export * from './update-interface';
 export * from './resolve-interface';
 export * from './get-currency-rate';
 export * from './provider-request';
+export * from './schedule-background-event';
+export * from './cancel-background-event';
+export * from './get-background-events';
