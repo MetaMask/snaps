@@ -457,8 +457,7 @@ export class CronjobController extends BaseController<
    * Unregister all jobs and background events related to the given snapId.
    *
    * @param snapId - ID of a snap.
-   * @param skipEvents - Whether the unregistration process should
-   * skip scheduled background events.
+   * @param skipEvents - Whether the unregistration process should skip scheduled background events.
    */
   unregister(snapId: string, skipEvents = false) {
     const jobs = [...this.#snapIds.entries()].filter(
@@ -618,7 +617,7 @@ export class CronjobController extends BaseController<
   }
 
   /**
-   * Handle events that could cause crobjobs to be registered
+   * Handle events that could cause cronjobs to be registered
    * and for background events to be rescheduled.
    *
    * @param snap - Basic Snap information.
