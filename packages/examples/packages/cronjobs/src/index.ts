@@ -64,7 +64,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       return snap.request({
         method: 'snap_scheduleBackgroundEvent',
         params: {
-          date: new Date().toISOString(),
+          date: (request.params as Record<string, string>).date,
           request: {
             method: 'fireNotification',
           },
@@ -76,6 +76,10 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         params: {
           id: (request.params as Record<string, string>).id,
         },
+      });
+    case 'getBackgroundEvents':
+      return snap.request({
+        method: 'snap_getBackgroundEvents',
       });
     default:
       // eslint-disable-next-line @typescript-eslint/no-throw-literal
