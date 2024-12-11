@@ -74,7 +74,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       return snap.request({
         method: 'snap_cancelBackgroundEvent',
         params: {
-          id: request.params?.id,
+          id: (request.params as Record<string, string>).id,
         },
       });
     default:
