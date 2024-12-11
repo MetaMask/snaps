@@ -21,7 +21,7 @@ import {
 } from '@metamask/snaps-utils';
 import { assert, Duration, hasProperty, inMilliseconds } from '@metamask/utils';
 import { castDraft } from 'immer';
-import { v4 as uuid } from 'uuid';
+import { nanoid } from 'nanoid';
 
 import type {
   GetAllSnaps,
@@ -502,7 +502,7 @@ export class CronjobController extends BaseController<
    * @returns An id.
    */
   private generateBackgroundEventId(): string {
-    const id = uuid();
+    const id = nanoid();
     if (this.state.events[id]) {
       this.generateBackgroundEventId();
     }

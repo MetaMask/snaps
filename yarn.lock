@@ -5783,7 +5783,6 @@ __metadata:
     tar-stream: "npm:^3.1.7"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    uuid: "npm:^11.0.3"
     vite: "npm:^4.3.9"
     vite-tsconfig-paths: "npm:^4.0.5"
     wdio-chromedriver-service: "npm:^8.1.1"
@@ -20523,7 +20522,6 @@ __metadata:
     ts-node: "npm:^10.9.1"
     tsx: "npm:^4.19.1"
     typescript: "npm:~5.3.3"
-    uuid: "npm:^11.0.3"
     vite: "npm:^4.3.9"
   languageName: unknown
   linkType: soft
@@ -22670,15 +22668,6 @@ __metadata:
   version: 1.0.1
   resolution: "utils-merge@npm:1.0.1"
   checksum: 10/5d6949693d58cb2e636a84f3ee1c6e7b2f9c16cb1d42d0ecb386d8c025c69e327205aa1c69e2868cc06a01e5e20681fbba55a4e0ed0cce913d60334024eae798
-  languageName: node
-  linkType: hard
-
-"uuid@npm:^11.0.3":
-  version: 11.0.3
-  resolution: "uuid@npm:11.0.3"
-  bin:
-    uuid: dist/esm/bin/uuid
-  checksum: 10/251385563195709eb0697c74a834764eef28e1656d61174e35edbd129288acb4d95a43f4ce8a77b8c2fc128e2b55924296a0945f964b05b9173469d045625ff2
   languageName: node
   linkType: hard
 

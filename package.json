@@ -116,7 +116,6 @@
     "ts-node": "^10.9.1",
     "tsx": "^4.19.1",
     "typescript": "~5.3.3",
-    "uuid": "^11.0.3",
     "vite": "^4.3.9"
   },
   "packageManager": "yarn@4.4.1",
