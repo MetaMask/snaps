@@ -14,6 +14,7 @@ import type { ImageElement } from './Image';
 import type { LinkElement } from './Link';
 import type { RowElement } from './Row';
 import type { SectionElement } from './Section';
+import type { SettingCellElement } from './SettingCell';
 import type { SpinnerElement } from './Spinner';
 import type { TextElement } from './Text';
 import type { TooltipElement } from './Tooltip';
@@ -39,6 +40,7 @@ export * from './Tooltip';
 export * from './Footer';
 export * from './Container';
 export * from './Section';
+export * from './SettingCell';
 
 /**
  * A built-in JSX element, which can be used in a Snap user interface.
@@ -63,4 +65,5 @@ export type JSXElement =
   | SectionElement
   | SpinnerElement
   | TextElement
-  | TooltipElement;
+  | TooltipElement
+  | SettingCellElement;
