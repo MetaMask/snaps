@@ -8,6 +8,7 @@ import { createSnapComponent } from '../component';
  * @property direction - The direction to stack the components within the box. Defaults to `vertical`.
  * @property alignment - The alignment mode to use within the box. Defaults to `start`.
  * @property center - Whether to center the children within the box. Defaults to `false`.
+ * @property backgroundColor - Whether the Box needs color adjustments. Defaults to undefined.
  */
 export type BoxProps = {
   // We can't use `JSXElement` because it causes a circular reference.
@@ -21,6 +22,7 @@ export type BoxProps = {
     | 'space-around'
     | undefined;
   center?: boolean | undefined;
+  backgroundColor?: string | undefined;
 };
 
 const TYPE = 'Box';

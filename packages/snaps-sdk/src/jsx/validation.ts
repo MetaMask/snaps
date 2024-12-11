@@ -837,6 +837,9 @@ export const ContainerStruct: Describe<ContainerElement> = element(
       [GenericSnapElement, FooterElement] | GenericSnapElement,
       null
     >,
+    backgroundColor: optional(
+      nullUnion([literal('default'), literal('alternative')]),
+    ),
   },
 );
 

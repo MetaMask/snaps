@@ -7,7 +7,7 @@ import { Text } from './Text';
 describe('Container', () => {
   it('renders a container element with a box', () => {
     const result = (
-      <Container>
+      <Container backgroundColor="alternative">
         <Box>
           <Text>Hello world!</Text>
         </Box>
@@ -18,6 +18,7 @@ describe('Container', () => {
       type: 'Container',
       key: null,
       props: {
+        backgroundColor: 'alternative',
         children: {
           type: 'Box',
           key: null,
