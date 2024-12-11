@@ -759,6 +759,12 @@ describe('ContainerStruct', () => {
     <Container>
       <Text>Hello world!</Text>
     </Container>,
+    <Container backgroundColor="default">
+      <Text>Hello world!</Text>
+    </Container>,
+    <Container backgroundColor="alternative">
+      <Text>Hello world!</Text>
+    </Container>,
     <Container>
       <Text>Hello world!</Text>
       <Footer>
