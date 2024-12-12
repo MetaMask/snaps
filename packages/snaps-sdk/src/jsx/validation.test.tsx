@@ -175,6 +175,7 @@ describe('ButtonStruct', () => {
       <Image src="<svg></svg>" />
     </Button>,
     <Button form="foo">bar</Button>,
+    <Button size="sm">bar</Button>,
   ])('validates a button element', (value) => {
     expect(is(value, ButtonStruct)).toBe(true);
   });
