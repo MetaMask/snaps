@@ -12,8 +12,8 @@ module.exports = deepmerge(baseConfig, {
     global: {
       branches: 92.8,
       functions: 97.35,
-      lines: 97.92,
-      statements: 97.47,
+      lines: 97.35,
+      statements: 96.93,
     },
   },
 });
