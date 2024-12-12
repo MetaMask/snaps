@@ -24,6 +24,7 @@ export type ButtonProps = {
   name?: string | undefined;
   type?: 'button' | 'submit' | undefined;
   variant?: 'primary' | 'destructive' | undefined;
+  size?: 'sm' | 'md' | undefined;
   disabled?: boolean | undefined;
   loading?: boolean | undefined;
   form?: string | undefined;
