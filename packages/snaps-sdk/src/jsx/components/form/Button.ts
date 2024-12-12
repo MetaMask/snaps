@@ -15,6 +15,7 @@ import type { ImageElement } from '../Image';
  * Defaults to `'button'`.
  * @property variant - The variant of the button, i.e., `'primary'` or
  * `'destructive'`. Defaults to `'primary'`.
+ * @property size - The size of the button. Defaults to `md`.
  * @property disabled - Whether the button is disabled. Defaults to `false`.
  * @property loading - Whether the button is loading. Defaults to `false`.
  * @property form - The name of the form component to associate the button with.
@@ -24,6 +25,7 @@ export type ButtonProps = {
   name?: string | undefined;
   type?: 'button' | 'submit' | undefined;
   variant?: 'primary' | 'destructive' | undefined;
+  size?: 'sm' | 'md' | undefined;
   disabled?: boolean | undefined;
   loading?: boolean | undefined;
   form?: string | undefined;

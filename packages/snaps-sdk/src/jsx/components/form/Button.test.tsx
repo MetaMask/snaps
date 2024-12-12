@@ -82,4 +82,17 @@ describe('Button', () => {
       key: null,
     });
   });
+
+  it('returns a button element with a size', () => {
+    const result = <Button size="sm">bar</Button>;
+
+    expect(result).toStrictEqual({
+      type: 'Button',
+      props: {
+        children: 'bar',
+        size: 'sm',
+      },
+      key: null,
+    });
+  });
 });
