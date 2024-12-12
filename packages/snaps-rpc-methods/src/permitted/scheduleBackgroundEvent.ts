@@ -58,6 +58,9 @@ const ScheduleBackgroundEventsParametersStruct = object({
   date: refine(string(), 'date', (val) => {
     const date = DateTime.fromISO(val);
     if (date.isValid) {
+      if (!val.endsWith('Z') || date.offset === 0) {
+        return 'ISO8601 string must have timezone information';
+      }
       return true;
     }
     return 'Not a valid ISO8601 string';
@@ -108,7 +111,12 @@ async function getScheduleBackgroundEventImplementation(
 
     const { date, request } = validatedParams;
 
-    const id = scheduleBackgroundEvent({ date, request });
+    // make sure any second/millisecond precision is removed.
+    const truncatedDate = DateTime.fromISO(date)
+      .startOf('minute')
+      .toISO() as string;
+
+    const id = scheduleBackgroundEvent({ date: truncatedDate, request });
     res.result = id;
   } catch (error) {
     return end(error);

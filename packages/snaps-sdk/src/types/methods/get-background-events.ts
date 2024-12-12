@@ -19,11 +19,15 @@ export type BackgroundEvent = {
 };
 
 /**
- * `snap_getBackgroundEvents` result type.
+ * The result returned by the `snap_getBackgroundEvents` method.
+ *
+ * It consists of an array background events (if any) for a snap.
  */
 export type GetBackgroundEventsResult = BackgroundEvent[];
 
 /**
- * `snao_getBackgroundEvents` params.
+ * The request parameters for the `snap_getBackgroundEvents` method.
+ *
+ * This method does not accept any parameters.
  */
 export type GetBackgroundEventsParams = never;

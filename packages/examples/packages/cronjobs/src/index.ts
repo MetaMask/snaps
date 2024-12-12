@@ -51,6 +51,8 @@ export const onCronjob: OnCronjobHandler = async ({ request }) => {
  * `wallet_invokeSnap` method. This handler handles two methods:
  *
  * - `scheduleNotification`: Schedule a notification in the future.
+ * - `cancelNotification`: Cancel a notification.
+ * - `getBackgroundEvents`: Get the Snap's background events.
  *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.

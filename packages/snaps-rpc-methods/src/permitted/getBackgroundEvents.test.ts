@@ -6,6 +6,7 @@ import type {
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
+import { SnapEndowments } from '../endowments';
 import { getBackgroundEventsHandler } from './getBackgroundEvents';
 
 describe('snap_getBackgroundEvents', () => {
@@ -22,6 +23,12 @@ describe('snap_getBackgroundEvents', () => {
   });
 
   describe('implementation', () => {
+    const createOriginMiddleware =
+      (origin: string) =>
+      (request: any, _response: unknown, next: () => void, _end: unknown) => {
+        request.origin = origin;
+        next();
+      };
     it('returns an array of background events after calling the `getBackgroundEvents` hook', async () => {
       const { implementation } = getBackgroundEventsHandler;
 
@@ -29,7 +36,7 @@ describe('snap_getBackgroundEvents', () => {
         {
           id: 'foo',
           snapId: MOCK_SNAP_ID,
-          date: '2022-01-01T01:00',
+          date: '2022-01-01T01:00Z',
           scheduledAt: '2021-01-01',
           request: {
             method: 'handleExport',
@@ -42,12 +49,16 @@ describe('snap_getBackgroundEvents', () => {
         .fn()
         .mockImplementation(() => backgroundEvents);
 
+      const hasPermission = jest.fn().mockImplementation(() => true);
+
       const hooks = {
         getBackgroundEvents,
+        hasPermission,
       };
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<GetBackgroundEventsParams>,
@@ -78,12 +89,16 @@ describe('snap_getBackgroundEvents', () => {
 
       const getBackgroundEvents = jest.fn();
 
+      const hasPermission = jest.fn().mockImplementation(() => true);
+
       const hooks = {
         getBackgroundEvents,
+        hasPermission,
       };
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<GetBackgroundEventsParams>,
@@ -112,12 +127,16 @@ describe('snap_getBackgroundEvents', () => {
         throw new Error('foobar');
       });
 
+      const hasPermission = jest.fn().mockImplementation(() => true);
+
       const hooks = {
         getBackgroundEvents,
+        hasPermission,
       };
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<GetBackgroundEventsParams>,
@@ -145,6 +164,52 @@ describe('snap_getBackgroundEvents', () => {
             }),
           },
           message: 'foobar',
+        },
+        id: 1,
+        jsonrpc: '2.0',
+      });
+    });
+
+    it('throws if a snap does not have the "endowment:cronjob" permission', async () => {
+      const { implementation } = getBackgroundEventsHandler;
+
+      const getBackgroundEvents = jest.fn();
+      const hasPermission = jest.fn().mockImplementation(() => false);
+
+      const hooks = {
+        getBackgroundEvents,
+        hasPermission,
+      };
+
+      const engine = new JsonRpcEngine();
+
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<GetBackgroundEventsParams>,
+          response as PendingJsonRpcResponse<GetBackgroundEventsResult>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_cancelBackgroundEvent',
+        params: {
+          id: 2,
+        },
+      });
+
+      expect(response).toStrictEqual({
+        error: {
+          code: -32600,
+          message: `The snap "${MOCK_SNAP_ID}" does not have the "${SnapEndowments.Cronjob}" permission.`,
+          stack: expect.any(String),
         },
         id: 1,
         jsonrpc: '2.0',

@@ -21,6 +21,7 @@ import {
 } from '@metamask/snaps-utils';
 import { assert, Duration, inMilliseconds } from '@metamask/utils';
 import { castDraft } from 'immer';
+import { DateTime } from 'luxon';
 import { nanoid } from 'nanoid';
 
 import type {
@@ -222,11 +223,7 @@ export class CronjobController extends BaseController<
       logError(error);
     });
 
-    this.#rescheduleBackgroundEvents(Object.values(this.state.events)).catch(
-      (error) => {
-        logError(error);
-      },
-    );
+    this.#rescheduleBackgroundEvents(Object.values(this.state.events));
   }
 
   /**
@@ -343,10 +340,14 @@ export class CronjobController extends BaseController<
   scheduleBackgroundEvent(
     backgroundEventWithoutId: Omit<BackgroundEvent, 'id' | 'scheduledAt'>,
   ) {
+    // removing minute precision and converting to UTC.
+    const scheduledAt = DateTime.fromJSDate(new Date())
+      .toUTC()
+      .toFormat("yyyy-MM-dd'T'HH:mm'Z'");
     const event = {
       ...backgroundEventWithoutId,
       id: nanoid(),
-      scheduledAt: new Date().toISOString(),
+      scheduledAt,
     };
     this.#setUpBackgroundEvent(event);
     this.update((state) => {
@@ -359,11 +360,11 @@ export class CronjobController extends BaseController<
   /**
    * Cancel a background event.
    *
-   * @param id - The id of the background event to cancel.
    * @param origin - The origin making the cancel call.
+   * @param id - The id of the background event to cancel.
    * @throws If the event does not exist.
    */
-  cancelBackgroundEvent(id: string, origin: string) {
+  cancelBackgroundEvent(origin: string, id: string) {
     assert(
       this.state.events[id],
       `A background event with the id of "${id}" does not exist.`,
@@ -515,7 +516,7 @@ export class CronjobController extends BaseController<
    *
    * @param backgroundEvents - A list of background events to reschdule.
    */
-  async #rescheduleBackgroundEvents(backgroundEvents: BackgroundEvent[]) {
+  #rescheduleBackgroundEvents(backgroundEvents: BackgroundEvent[]) {
     for (const snapEvent of backgroundEvents) {
       const { date } = snapEvent;
       const now = new Date();
@@ -591,7 +592,7 @@ export class CronjobController extends BaseController<
    */
   private _handleSnapEnabledEvent(snap: TruncatedSnap) {
     const events = this.getBackgroundEvents(snap.id);
-    this.#rescheduleBackgroundEvents(events).catch((error) => logError(error));
+    this.#rescheduleBackgroundEvents(events);
     this.register(snap.id);
   }
 

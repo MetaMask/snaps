@@ -3,8 +3,10 @@ import type {
   CancelBackgroundEventParams,
   CancelBackgroundEventResult,
 } from '@metamask/snaps-sdk';
+import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
+import { SnapEndowments } from '../endowments';
 import { cancelBackgroundEventHandler } from './cancelBackgroundEvent';
 
 describe('snap_cancelBackgroundEvent', () => {
@@ -21,17 +23,26 @@ describe('snap_cancelBackgroundEvent', () => {
   });
 
   describe('implementation', () => {
+    const createOriginMiddleware =
+      (origin: string) =>
+      (request: any, _response: unknown, next: () => void, _end: unknown) => {
+        request.origin = origin;
+        next();
+      };
     it('returns null after calling the `scheduleBackgroundEvent` hook', async () => {
       const { implementation } = cancelBackgroundEventHandler;
 
       const cancelBackgroundEvent = jest.fn();
+      const hasPermission = jest.fn().mockImplementation(() => true);
 
       const hooks = {
         cancelBackgroundEvent,
+        hasPermission,
       };
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<CancelBackgroundEventParams>,
@@ -60,13 +71,16 @@ describe('snap_cancelBackgroundEvent', () => {
       const { implementation } = cancelBackgroundEventHandler;
 
       const cancelBackgroundEvent = jest.fn();
+      const hasPermission = jest.fn().mockImplementation(() => true);
 
       const hooks = {
         cancelBackgroundEvent,
+        hasPermission,
       };
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<CancelBackgroundEventParams>,
@@ -91,17 +105,66 @@ describe('snap_cancelBackgroundEvent', () => {
       expect(cancelBackgroundEvent).toHaveBeenCalledWith('foo');
     });
 
-    it('throws on invalid params', async () => {
+    it('throws if a snap does not have the "endowment:cronjob" permission', async () => {
       const { implementation } = cancelBackgroundEventHandler;
 
       const cancelBackgroundEvent = jest.fn();
+      const hasPermission = jest.fn().mockImplementation(() => false);
 
       const hooks = {
         cancelBackgroundEvent,
+        hasPermission,
       };
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<CancelBackgroundEventParams>,
+          response as PendingJsonRpcResponse<CancelBackgroundEventResult>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_cancelBackgroundEvent',
+        params: {
+          id: 2,
+        },
+      });
+
+      expect(response).toStrictEqual({
+        error: {
+          code: -32600,
+          message: `The snap "${MOCK_SNAP_ID}" does not have the "${SnapEndowments.Cronjob}" permission.`,
+          stack: expect.any(String),
+        },
+        id: 1,
+        jsonrpc: '2.0',
+      });
+    });
+
+    it('throws on invalid params', async () => {
+      const { implementation } = cancelBackgroundEventHandler;
+
+      const cancelBackgroundEvent = jest.fn();
+      const hasPermission = jest.fn().mockImplementation(() => true);
+
+      const hooks = {
+        cancelBackgroundEvent,
+        hasPermission,
+      };
+
+      const engine = new JsonRpcEngine();
+
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<CancelBackgroundEventParams>,

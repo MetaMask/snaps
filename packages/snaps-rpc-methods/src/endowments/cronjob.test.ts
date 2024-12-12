@@ -82,17 +82,6 @@ describe('validateCronjobCaveat', () => {
     expect(() => validateCronjobCaveat(caveat)).not.toThrow();
   });
 
-  it('should throw if caveat has no proper value', () => {
-    const caveat: Caveat<string, any> = {
-      type: SnapCaveatType.SnapCronjob,
-      value: {},
-    };
-
-    expect(() => validateCronjobCaveat(caveat)).toThrow(
-      `Expected a plain object.`,
-    );
-  });
-
   it('should throw an error when cron specification is missing', () => {
     const caveat: Caveat<string, any> = {
       type: SnapCaveatType.SnapCronjob,

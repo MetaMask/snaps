@@ -10,16 +10,19 @@ import { type InferMatching } from '@metamask/snaps-utils';
 import { StructError, create, object, string } from '@metamask/superstruct';
 import { type PendingJsonRpcResponse } from '@metamask/utils';
 
+import { SnapEndowments } from '../endowments';
 import type { MethodHooksObject } from '../utils';
 
 const methodName = 'snap_cancelBackgroundEvent';
 
 const hookNames: MethodHooksObject<CancelBackgroundEventMethodHooks> = {
   cancelBackgroundEvent: true,
+  hasPermission: true,
 };
 
 export type CancelBackgroundEventMethodHooks = {
   cancelBackgroundEvent: (id: string) => void;
+  hasPermission: (permissionName: string) => boolean;
 };
 
 export const cancelBackgroundEventHandler: PermittedHandlerExport<
@@ -51,6 +54,7 @@ export type CancelBackgroundEventParameters = InferMatching<
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
  * @param hooks.cancelBackgroundEvent - The function to cancel a background event.
+ * @param hooks.hasPermission - The function to check if a snap has the `endowment:cronjob` permission.
  * @returns Nothing.
  */
 async function getCancelBackgroundEventImplementation(
@@ -58,9 +62,17 @@ async function getCancelBackgroundEventImplementation(
   res: PendingJsonRpcResponse<CancelBackgroundEventResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { cancelBackgroundEvent }: CancelBackgroundEventMethodHooks,
+  { cancelBackgroundEvent, hasPermission }: CancelBackgroundEventMethodHooks,
 ): Promise<void> {
-  const { params } = req;
+  const { params, origin } = req as JsonRpcRequest & { origin: string };
+
+  if (!hasPermission(SnapEndowments.Cronjob)) {
+    return end(
+      rpcErrors.invalidRequest({
+        message: `The snap "${origin}" does not have the "${SnapEndowments.Cronjob}" permission.`,
+      }),
+    );
+  }
 
   try {
     const validatedParams = getValidatedParams(params);

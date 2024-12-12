@@ -18,7 +18,7 @@ describe('CronjobController', () => {
   const originalProcessNextTick = process.nextTick;
 
   beforeEach(() => {
-    jest.useFakeTimers().setSystemTime(new Date('2022-01-01'));
+    jest.useFakeTimers().setSystemTime(new Date('2022-01-01T00:00Z'));
   });
 
   afterAll(() => {
@@ -255,7 +255,7 @@ describe('CronjobController', () => {
 
     const backgroundEvent = {
       snapId: MOCK_SNAP_ID,
-      date: '2022-01-01T01:00',
+      date: '2022-01-01T01:00Z',
       request: {
         method: 'handleEvent',
         params: ['p1'],
@@ -299,7 +299,7 @@ describe('CronjobController', () => {
 
     const backgroundEvent = {
       snapId: MOCK_SNAP_ID,
-      date: '2022-01-01T01:00',
+      date: '2022-01-01T01:00Z',
       request: {
         method: 'handleEvent',
         params: ['p1'],
@@ -312,7 +312,7 @@ describe('CronjobController', () => {
       [id]: { id, scheduledAt: expect.any(String), ...backgroundEvent },
     });
 
-    cronjobController.cancelBackgroundEvent(id, MOCK_SNAP_ID);
+    cronjobController.cancelBackgroundEvent(MOCK_SNAP_ID, id);
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Day));
 
@@ -345,7 +345,7 @@ describe('CronjobController', () => {
 
     const backgroundEvent = {
       snapId: MOCK_SNAP_ID,
-      date: '2022-01-01T01:00',
+      date: '2022-01-01T01:00Z',
       request: {
         method: 'handleEvent',
         params: ['p1'],
@@ -358,7 +358,7 @@ describe('CronjobController', () => {
       [id]: { id, scheduledAt: expect.any(String), ...backgroundEvent },
     });
 
-    expect(() => cronjobController.cancelBackgroundEvent(id, 'foo')).toThrow(
+    expect(() => cronjobController.cancelBackgroundEvent('foo', id)).toThrow(
       'Only the origin that scheduled this event can cancel it',
     );
 
@@ -376,7 +376,7 @@ describe('CronjobController', () => {
 
     const backgroundEvent = {
       snapId: MOCK_SNAP_ID,
-      date: '2022-01-01T01:00',
+      date: '2022-01-01T01:00Z',
       request: {
         method: 'handleEvent',
         params: ['p1'],
@@ -390,7 +390,7 @@ describe('CronjobController', () => {
       {
         id,
         snapId: MOCK_SNAP_ID,
-        date: '2022-01-01T01:00',
+        date: '2022-01-01T01:00Z',
         request: {
           method: 'handleEvent',
           params: ['p1'],
@@ -416,7 +416,7 @@ describe('CronjobController', () => {
             id: 'foo',
             scheduledAt: new Date().toISOString(),
             snapId: MOCK_SNAP_ID,
-            date: '2022-01-01T01:00',
+            date: '2022-01-01T01:00Z',
             request: {
               method: 'handleEvent',
               params: ['p1'],
@@ -502,7 +502,7 @@ describe('CronjobController', () => {
             id: 'foo',
             scheduledAt: new Date().toISOString(),
             snapId: MOCK_SNAP_ID,
-            date: '2022-01-01T01:00',
+            date: '2022-01-01T01:00Z',
             request: {
               method: 'handleEvent',
               params: ['p1'],
@@ -512,7 +512,7 @@ describe('CronjobController', () => {
             id: 'bar',
             scheduledAt: new Date().toISOString(),
             snapId: MOCK_SNAP_ID,
-            date: '2021-01-01T01:00',
+            date: '2021-01-01T01:00Z',
             request: {
               method: 'handleEvent',
               params: ['p1'],
@@ -537,7 +537,7 @@ describe('CronjobController', () => {
         id: 'foo',
         scheduledAt: new Date().toISOString(),
         snapId: MOCK_SNAP_ID,
-        date: '2022-01-01T01:00',
+        date: '2022-01-01T01:00Z',
         request: {
           method: 'handleEvent',
           params: ['p1'],
@@ -596,7 +596,7 @@ describe('CronjobController', () => {
 
     cronjobController.scheduleBackgroundEvent({
       snapId: MOCK_SNAP_ID,
-      date: '2022-01-01T01:00',
+      date: '2022-01-01T01:00Z',
       request: {
         method: 'handleEvent',
         params: ['p1'],
@@ -665,7 +665,7 @@ describe('CronjobController', () => {
 
     const id = cronjobController.scheduleBackgroundEvent({
       snapId: MOCK_SNAP_ID,
-      date: '2022-01-01T01:00',
+      date: '2022-01-01T01:00Z',
       request: {
         method: 'handleEvent',
         params: ['p1'],
@@ -715,7 +715,7 @@ describe('CronjobController', () => {
         id,
         scheduledAt: expect.any(String),
         snapId: MOCK_SNAP_ID,
-        date: '2022-01-01T01:00',
+        date: '2022-01-01T01:00Z',
         request: {
           method: 'handleEvent',
           params: ['p1'],
@@ -740,7 +740,7 @@ describe('CronjobController', () => {
             id: 'foo',
             scheduledAt: new Date().toISOString(),
             snapId: MOCK_SNAP_ID,
-            date: '2022-01-01T01:00',
+            date: '2022-01-01T01:00Z',
             request: {
               method: 'handleEvent',
               params: ['p1'],
@@ -857,7 +857,7 @@ describe('CronjobController', () => {
           'CronjobController:scheduleBackgroundEvent',
           {
             snapId: MOCK_SNAP_ID,
-            date: '2022-01-01T01:00',
+            date: '2022-01-01T01:00Z',
             request: {
               method: 'handleExport',
               params: ['p1'],
@@ -870,7 +870,7 @@ describe('CronjobController', () => {
             id,
             snapId: MOCK_SNAP_ID,
             scheduledAt: expect.any(String),
-            date: '2022-01-01T01:00',
+            date: '2022-01-01T01:00Z',
             request: {
               method: 'handleExport',
               params: ['p1'],
@@ -915,7 +915,7 @@ describe('CronjobController', () => {
           'CronjobController:scheduleBackgroundEvent',
           {
             snapId: MOCK_SNAP_ID,
-            date: '2022-01-01T01:00',
+            date: '2022-01-01T01:00Z',
             request: {
               method: 'handleExport',
               params: ['p1'],
@@ -928,7 +928,7 @@ describe('CronjobController', () => {
             id,
             snapId: MOCK_SNAP_ID,
             scheduledAt: expect.any(String),
-            date: '2022-01-01T01:00',
+            date: '2022-01-01T01:00Z',
             request: {
               method: 'handleExport',
               params: ['p1'],
@@ -938,8 +938,8 @@ describe('CronjobController', () => {
 
         rootMessenger.call(
           'CronjobController:cancelBackgroundEvent',
-          id,
           MOCK_SNAP_ID,
+          id,
         );
 
         expect(cronjobController.state.events).toStrictEqual({});
@@ -964,7 +964,7 @@ describe('CronjobController', () => {
           'CronjobController:scheduleBackgroundEvent',
           {
             snapId: MOCK_SNAP_ID,
-            date: '2022-01-01T01:00',
+            date: '2022-01-01T01:00Z',
             request: {
               method: 'handleExport',
               params: ['p1'],
@@ -977,7 +977,7 @@ describe('CronjobController', () => {
             id,
             snapId: MOCK_SNAP_ID,
             scheduledAt: expect.any(String),
-            date: '2022-01-01T01:00',
+            date: '2022-01-01T01:00Z',
             request: {
               method: 'handleExport',
               params: ['p1'],
@@ -995,7 +995,7 @@ describe('CronjobController', () => {
             id,
             snapId: MOCK_SNAP_ID,
             scheduledAt: expect.any(String),
-            date: '2022-01-01T01:00',
+            date: '2022-01-01T01:00Z',
             request: {
               method: 'handleExport',
               params: ['p1'],

@@ -1,9 +1,11 @@
 import type { FunctionComponent } from 'react';
 
 import { Snap } from '../../../components';
-import { CancelBackgroundEvent } from './components/CancelBackgroundEvent';
-import { GetBackgroundEvents } from './components/GetBackgroundEvents';
-import { ScheduleBackgroundEvent } from './components/ScheduleBackgroundEvent';
+import {
+  CancelBackgroundEvent,
+  ScheduleBackgroundEvent,
+  GetBackgroundEvents,
+} from './components';
 import {
   CRONJOBS_SNAP_ID,
   CRONJOBS_SNAP_PORT,
