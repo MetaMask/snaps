@@ -30,7 +30,12 @@ export const SendFlow: FunctionComponent = () => {
       version={SEND_FLOW_VERSION}
       testId="dialogs"
     >
-      <Button id="display" onClick={handleSubmitDisplay} disabled={isLoading}>
+      <Button
+        id="display"
+        onClick={handleSubmitDisplay}
+        disabled={isLoading}
+        className="mb-3"
+      >
         Custom
       </Button>
 

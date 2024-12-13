@@ -1,6 +1,7 @@
 import { describe, it } from '@jest/globals';
 import { installSnap } from '@metamask/snaps-jest';
-import { Box, Heading, Text } from '@metamask/snaps-sdk/jsx';
+
+import { SettingsPage } from './components/SettingsPage';
 
 describe('onSettingsPage', () => {
   it('returns custom UI', async () => {
@@ -10,11 +11,6 @@ describe('onSettingsPage', () => {
 
     const screen = response.getInterface();
 
-    expect(screen).toRender(
-      <Box>
-        <Heading>Hello world!</Heading>
-        <Text>Welcome to my Snap settings page!</Text>
-      </Box>,
-    );
+    expect(screen).toRender(<SettingsPage />);
   });
 });
