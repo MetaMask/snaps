@@ -58,7 +58,9 @@ const ScheduleBackgroundEventsParametersStruct = object({
   date: refine(string(), 'date', (val) => {
     const date = DateTime.fromISO(val);
     if (date.isValid) {
-      if (!val.endsWith('Z') || date.offset === 0) {
+      // luxon doesn't have a reliable way to check if timezone info was not provided
+      const count = val.split('').filter((char) => char === '-').length;
+      if (count !== 3 && !val.includes('+') && !val.endsWith('Z')) {
         return 'ISO8601 string must have timezone information';
       }
       return true;
