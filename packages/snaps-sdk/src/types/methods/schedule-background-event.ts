@@ -12,6 +12,6 @@ export type ScheduleBackgroundEventParams = {
 };
 
 /**
- * The result returned by the `snap_scheduleBackgroundEvent` method.
+ * The result returned by the `snap_scheduleBackgroundEvent` method, which is the ID of the scheduled event.
  */
 export type ScheduleBackgroundEventResult = string;

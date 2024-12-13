@@ -6,7 +6,6 @@ import type {
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
-import { SnapEndowments } from '../endowments';
 import { getBackgroundEventsHandler } from './getBackgroundEvents';
 
 describe('snap_getBackgroundEvents', () => {
@@ -207,8 +206,9 @@ describe('snap_getBackgroundEvents', () => {
 
       expect(response).toStrictEqual({
         error: {
-          code: -32600,
-          message: `The snap "${MOCK_SNAP_ID}" does not have the "${SnapEndowments.Cronjob}" permission.`,
+          code: 4100,
+          message:
+            'The requested account and/or method has not been authorized by the user.',
           stack: expect.any(String),
         },
         id: 1,

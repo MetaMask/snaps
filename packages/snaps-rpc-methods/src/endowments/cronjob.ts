@@ -62,7 +62,10 @@ export const cronjobEndowmentBuilder = Object.freeze({
  */
 export function getCronjobCaveatMapper(
   value: Json,
-): Pick<PermissionConstraint, 'caveats'> {
+): Pick<PermissionConstraint, 'caveats'> | Record<string, never> {
+  if (Object.keys(value as Record<string, Json>).length === 0) {
+    return {};
+  }
   return {
     caveats: [
       {
@@ -96,7 +99,7 @@ export function getCronjobCaveatJobs(
 
   const caveat = permission.caveats[0] as Caveat<string, { jobs: Json[] }>;
 
-  return (caveat.value?.jobs as CronjobSpecification[]) ?? [];
+  return (caveat.value?.jobs as CronjobSpecification[]) ?? null;
 }
 
 /**
@@ -116,17 +119,13 @@ export function validateCronjobCaveat(caveat: Caveat<string, any>) {
 
   const { value } = caveat;
 
-  if (!isPlainObject(value)) {
+  if (!hasProperty(value, 'jobs') || !isPlainObject(value)) {
     throw rpcErrors.invalidParams({
       message: 'Expected a plain object.',
     });
   }
 
-  const valueKeys = Object.keys(value);
-
-  // If it's an empty object, ok to skip validation as this indicates
-  // intention to use the background event rpc methods
-  if (valueKeys.length !== 0 && !isCronjobSpecificationArray(value.jobs)) {
+  if (!isCronjobSpecificationArray(value.jobs)) {
     throw rpcErrors.invalidParams({
       message: 'Expected a valid cronjob specification array.',
     });

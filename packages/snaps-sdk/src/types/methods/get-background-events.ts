@@ -3,7 +3,7 @@ import type { Json } from '@metamask/utils';
 import type { SnapId } from '../snap';
 
 /**
- * Backgound event type
+ * Background event type
  */
 export type BackgroundEvent = {
   id: string;

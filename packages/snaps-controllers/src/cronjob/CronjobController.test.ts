@@ -288,6 +288,33 @@ describe('CronjobController', () => {
     cronjobController.destroy();
   });
 
+  it('fails to schedule a background event if the date is in the past', () => {
+    const rootMessenger = getRootCronjobControllerMessenger();
+    const controllerMessenger =
+      getRestrictedCronjobControllerMessenger(rootMessenger);
+
+    const cronjobController = new CronjobController({
+      messenger: controllerMessenger,
+    });
+
+    const backgroundEvent = {
+      snapId: MOCK_SNAP_ID,
+      date: '2021-01-01T01:00Z',
+      request: {
+        method: 'handleEvent',
+        params: ['p1'],
+      },
+    };
+
+    expect(() =>
+      cronjobController.scheduleBackgroundEvent(backgroundEvent),
+    ).toThrow('Cannot schedule an event in the past.');
+
+    expect(cronjobController.state.events).toStrictEqual({});
+
+    cronjobController.destroy();
+  });
+
   it('cancels a background event', () => {
     const rootMessenger = getRootCronjobControllerMessenger();
     const controllerMessenger =

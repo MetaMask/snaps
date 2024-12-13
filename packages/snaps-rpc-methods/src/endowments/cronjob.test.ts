@@ -1,4 +1,7 @@
-import type { Caveat } from '@metamask/permission-controller';
+import type {
+  Caveat,
+  PermissionConstraint,
+} from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 
@@ -7,6 +10,7 @@ import {
   cronjobEndowmentBuilder,
   validateCronjobCaveat,
   cronjobCaveatSpecifications,
+  getCronjobCaveatJobs,
 } from './cronjob';
 import { SnapEndowments } from './enum';
 
@@ -59,6 +63,123 @@ describe('endowment:cronjob', () => {
         ],
       });
     });
+  });
+});
+
+describe('getCronjobCaveatJobs', () => {
+  it('returns the jobs from a cronjob caveat', () => {
+    const permission: PermissionConstraint = {
+      date: 0,
+      parentCapability: 'foo',
+      invoker: 'bar',
+      id: 'baz',
+      caveats: [
+        {
+          type: SnapCaveatType.SnapCronjob,
+          value: {
+            jobs: [
+              {
+                expression: '* * * * *',
+                request: {
+                  method: 'exampleMethodOne',
+                  params: ['p1'],
+                },
+              },
+            ],
+          },
+        },
+      ],
+    };
+
+    expect(getCronjobCaveatJobs(permission)).toStrictEqual([
+      {
+        expression: '* * * * *',
+        request: {
+          method: 'exampleMethodOne',
+          params: ['p1'],
+        },
+      },
+    ]);
+  });
+
+  it('returns null if there are no caveats', () => {
+    const permission: PermissionConstraint = {
+      date: 0,
+      parentCapability: 'foo',
+      invoker: 'bar',
+      id: 'baz',
+      caveats: null,
+    };
+
+    expect(getCronjobCaveatJobs(permission)).toBeNull();
+  });
+
+  it('will throw if there is more than one caveat', () => {
+    const permission: PermissionConstraint = {
+      date: 0,
+      parentCapability: 'foo',
+      invoker: 'bar',
+      id: 'baz',
+      caveats: [
+        {
+          type: SnapCaveatType.SnapCronjob,
+          value: {
+            jobs: [
+              {
+                expression: '* * * * *',
+                request: {
+                  method: 'exampleMethodOne',
+                  params: ['p1'],
+                },
+              },
+            ],
+          },
+        },
+        {
+          type: SnapCaveatType.SnapCronjob,
+          value: {
+            jobs: [
+              {
+                expression: '* * * * *',
+                request: {
+                  method: 'exampleMethodOne',
+                  params: ['p1'],
+                },
+              },
+            ],
+          },
+        },
+      ],
+    };
+
+    expect(() => getCronjobCaveatJobs(permission)).toThrow('Assertion failed.');
+  });
+
+  it('will throw if the caveat type is wrong', () => {
+    const permission: PermissionConstraint = {
+      date: 0,
+      parentCapability: 'foo',
+      invoker: 'bar',
+      id: 'baz',
+      caveats: [
+        {
+          type: SnapCaveatType.ChainIds,
+          value: {
+            jobs: [
+              {
+                expression: '* * * * *',
+                request: {
+                  method: 'exampleMethodOne',
+                  params: ['p1'],
+                },
+              },
+            ],
+          },
+        },
+      ],
+    };
+
+    expect(() => getCronjobCaveatJobs(permission)).toThrow('Assertion failed.');
   });
 });
 

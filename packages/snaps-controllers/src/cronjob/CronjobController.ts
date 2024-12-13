@@ -340,10 +340,10 @@ export class CronjobController extends BaseController<
   scheduleBackgroundEvent(
     backgroundEventWithoutId: Omit<BackgroundEvent, 'id' | 'scheduledAt'>,
   ) {
-    // removing minute precision and converting to UTC.
+    // removing milliseond precision and converting to UTC.
     const scheduledAt = DateTime.fromJSDate(new Date())
       .toUTC()
-      .toFormat("yyyy-MM-dd'T'HH:mm'Z'");
+      .toFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     const event = {
       ...backgroundEventWithoutId,
       id: nanoid(),
@@ -393,6 +393,10 @@ export class CronjobController extends BaseController<
     const date = new Date(event.date);
     const now = new Date();
     const ms = date.getTime() - now.getTime();
+
+    if (ms < 0) {
+      throw new Error('Cannot schedule an event in the past.');
+    }
 
     const timer = new Timer(ms);
     timer.start(() => {

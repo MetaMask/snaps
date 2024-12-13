@@ -1,6 +1,6 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
-import { rpcErrors } from '@metamask/rpc-errors';
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
   JsonRpcRequest,
   CancelBackgroundEventParams,
@@ -64,14 +64,10 @@ async function getCancelBackgroundEventImplementation(
   end: JsonRpcEngineEndCallback,
   { cancelBackgroundEvent, hasPermission }: CancelBackgroundEventMethodHooks,
 ): Promise<void> {
-  const { params, origin } = req as JsonRpcRequest & { origin: string };
+  const { params } = req;
 
   if (!hasPermission(SnapEndowments.Cronjob)) {
-    return end(
-      rpcErrors.invalidRequest({
-        message: `The snap "${origin}" does not have the "${SnapEndowments.Cronjob}" permission.`,
-      }),
-    );
+    return end(providerErrors.unauthorized());
   }
 
   try {

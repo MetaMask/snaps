@@ -1,6 +1,6 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
-import { rpcErrors } from '@metamask/rpc-errors';
+import { providerErrors } from '@metamask/rpc-errors';
 import type {
   BackgroundEvent,
   GetBackgroundEventsParams,
@@ -37,7 +37,7 @@ export const getBackgroundEventsHandler: PermittedHandlerExport<
 /**
  * The `snap_getBackgroundEvents` method implementation.
  *
- * @param req - The JSON-RPC request object.
+ * @param _req - The JSON-RPC request object. Not used by this function.
  * @param res - The JSON-RPC response object.
  * @param _next - The `json-rpc-engine` "next" callback.
  * Not used by this function.
@@ -48,20 +48,14 @@ export const getBackgroundEventsHandler: PermittedHandlerExport<
  * @returns An array of background events.
  */
 async function getGetBackgroundEventsImplementation(
-  req: JsonRpcRequest<GetBackgroundEventsParams>,
+  _req: JsonRpcRequest<GetBackgroundEventsParams>,
   res: PendingJsonRpcResponse<GetBackgroundEventsResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
   { getBackgroundEvents, hasPermission }: GetBackgroundEventsMethodHooks,
 ): Promise<void> {
-  const { origin } = req as JsonRpcRequest & { origin: string };
-
   if (!hasPermission(SnapEndowments.Cronjob)) {
-    return end(
-      rpcErrors.invalidRequest({
-        message: `The snap "${origin}" does not have the "${SnapEndowments.Cronjob}" permission.`,
-      }),
-    );
+    return end(providerErrors.unauthorized());
   }
   try {
     const events = getBackgroundEvents();

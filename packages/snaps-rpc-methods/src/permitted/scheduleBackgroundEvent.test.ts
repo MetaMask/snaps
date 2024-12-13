@@ -6,7 +6,6 @@ import type {
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
-import { SnapEndowments } from '../endowments';
 import { scheduleBackgroundEventHandler } from './scheduleBackgroundEvent';
 
 describe('snap_scheduleBackgroundEvent', () => {
@@ -73,7 +72,7 @@ describe('snap_scheduleBackgroundEvent', () => {
       expect(response).toStrictEqual({ jsonrpc: '2.0', id: 1, result: 'foo' });
     });
 
-    it('schedules a background event with minute precision', async () => {
+    it('schedules a background event with second precision', async () => {
       const { implementation } = scheduleBackgroundEventHandler;
 
       const scheduleBackgroundEvent = jest.fn();
@@ -104,7 +103,7 @@ describe('snap_scheduleBackgroundEvent', () => {
         id: 1,
         method: 'snap_scheduleBackgroundEvent',
         params: {
-          date: '2022-01-01T01:00:35+02:00',
+          date: '2022-01-01T01:00:35.786+02:00',
           request: {
             method: 'handleExport',
             params: ['p1'],
@@ -113,7 +112,7 @@ describe('snap_scheduleBackgroundEvent', () => {
       });
 
       expect(scheduleBackgroundEvent).toHaveBeenCalledWith({
-        date: '2022-01-01T01:00+02:00',
+        date: '2022-01-01T01:00:35+02:00',
         request: {
           method: 'handleExport',
           params: ['p1'],
@@ -162,8 +161,9 @@ describe('snap_scheduleBackgroundEvent', () => {
 
       expect(response).toStrictEqual({
         error: {
-          code: -32600,
-          message: `The snap "${MOCK_SNAP_ID}" does not have the "${SnapEndowments.Cronjob}" permission.`,
+          code: 4100,
+          message:
+            'The requested account and/or method has not been authorized by the user.',
           stack: expect.any(String),
         },
         id: 1,

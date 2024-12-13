@@ -48,7 +48,7 @@ export const onCronjob: OnCronjobHandler = async ({ request }) => {
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
- * `wallet_invokeSnap` method. This handler handles two methods:
+ * `wallet_invokeSnap` method. This handler handles three methods:
  *
  * - `scheduleNotification`: Schedule a notification in the future.
  * - `cancelNotification`: Cancel a notification.

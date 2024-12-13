@@ -1,6 +1,6 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
-import { rpcErrors } from '@metamask/rpc-errors';
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
   JsonRpcRequest,
   ScheduleBackgroundEventParams,
@@ -98,14 +98,10 @@ async function getScheduleBackgroundEventImplementation(
     hasPermission,
   }: ScheduleBackgroundEventMethodHooks,
 ): Promise<void> {
-  const { params, origin } = req as JsonRpcRequest & { origin: string };
+  const { params } = req;
 
   if (!hasPermission(SnapEndowments.Cronjob)) {
-    return end(
-      rpcErrors.invalidRequest({
-        message: `The snap "${origin}" does not have the "${SnapEndowments.Cronjob}" permission.`,
-      }),
-    );
+    return end(providerErrors.unauthorized());
   }
 
   try {
@@ -115,10 +111,10 @@ async function getScheduleBackgroundEventImplementation(
 
     // make sure any second/millisecond precision is removed.
     const truncatedDate = DateTime.fromISO(date, { setZone: true })
-      .startOf('minute')
+      .startOf('second')
       .toISO({
         suppressMilliseconds: true,
-        suppressSeconds: true,
+        suppressSeconds: false,
       }) as string;
 
     const id = scheduleBackgroundEvent({ date: truncatedDate, request });
