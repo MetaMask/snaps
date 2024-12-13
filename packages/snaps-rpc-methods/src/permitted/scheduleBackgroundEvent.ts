@@ -56,7 +56,7 @@ export const scheduleBackgroundEventHandler: PermittedHandlerExport<
 
 const ScheduleBackgroundEventsParametersStruct = object({
   date: refine(string(), 'date', (val) => {
-    const date = DateTime.fromISO(val);
+    const date = DateTime.fromISO(val, { setZone: true });
     if (date.isValid) {
       // luxon doesn't have a reliable way to check if timezone info was not provided
       const count = val.split('').filter((char) => char === '-').length;
@@ -114,10 +114,12 @@ async function getScheduleBackgroundEventImplementation(
     const { date, request } = validatedParams;
 
     // make sure any second/millisecond precision is removed.
-    const truncatedDate = DateTime.fromISO(date).startOf('minute').toISO({
-      suppressMilliseconds: true,
-      suppressSeconds: true,
-    }) as string;
+    const truncatedDate = DateTime.fromISO(date, { setZone: true })
+      .startOf('minute')
+      .toISO({
+        suppressMilliseconds: true,
+        suppressSeconds: true,
+      }) as string;
 
     const id = scheduleBackgroundEvent({ date: truncatedDate, request });
     res.result = id;
