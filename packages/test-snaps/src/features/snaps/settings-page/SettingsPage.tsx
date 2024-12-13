@@ -1,10 +1,10 @@
 import { logError } from '@metamask/snaps-utils';
 import type { FunctionComponent } from 'react';
 import { Button } from 'react-bootstrap';
-import { useInvokeMutation } from 'src/api';
-import { getSnapId } from 'src/utils';
 
+import { useInvokeMutation } from '../../../api';
 import { Result, Snap } from '../../../components';
+import { getSnapId } from '../../../utils';
 import {
   SETTINGS_PAGE_SNAP_ID,
   SETTINGS_PAGE_SNAP_PORT,
