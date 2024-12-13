@@ -56,7 +56,7 @@ export const scheduleBackgroundEventHandler: PermittedHandlerExport<
 
 const ScheduleBackgroundEventsParametersStruct = object({
   date: refine(string(), 'date', (val) => {
-    const date = DateTime.fromISO(val, { setZone: true });
+    const date = DateTime.fromISO(val);
     if (date.isValid) {
       // luxon doesn't have a reliable way to check if timezone info was not provided
       const count = val.split('').filter((char) => char === '-').length;
