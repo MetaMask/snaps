@@ -104,7 +104,7 @@ describe('snap_scheduleBackgroundEvent', () => {
         id: 1,
         method: 'snap_scheduleBackgroundEvent',
         params: {
-          date: '2022-01-01T01:00:35Z',
+          date: '2022-01-01T01:00:35+02:00',
           request: {
             method: 'handleExport',
             params: ['p1'],
@@ -113,7 +113,7 @@ describe('snap_scheduleBackgroundEvent', () => {
       });
 
       expect(scheduleBackgroundEvent).toHaveBeenCalledWith({
-        date: '2021-12-31T20:00:00.000-05:00',
+        date: '2021-12-31T18:00-05:00',
         request: {
           method: 'handleExport',
           params: ['p1'],
