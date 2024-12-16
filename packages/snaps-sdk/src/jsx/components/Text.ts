@@ -35,6 +35,7 @@ export type TextProps = {
   alignment?: 'start' | 'center' | 'end' | undefined;
   color?: TextColors | undefined;
   size?: 'sm' | 'md' | undefined;
+  fontWeight?: 'regular' | 'medium' | 'bold' | undefined;
 };
 
 const TYPE = 'Text';

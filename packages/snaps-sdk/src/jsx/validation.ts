@@ -721,6 +721,9 @@ export const TextStruct: Describe<TextElement> = element('Text', {
     ]),
   ),
   size: optional(nullUnion([literal('sm'), literal('md')])),
+  fontWeight: optional(
+    nullUnion([literal('regular'), literal('medium'), literal('bold')]),
+  ),
 });
 
 /**

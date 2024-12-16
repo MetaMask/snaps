@@ -1182,6 +1182,7 @@ describe('TextStruct', () => {
       Hello, <Bold>world</Bold>
     </Text>,
     <Text size="sm">foo</Text>,
+    <Text fontWeight="medium">foo</Text>,
   ])('validates a text element', (value) => {
     expect(is(value, TextStruct)).toBe(true);
   });
@@ -1197,6 +1198,8 @@ describe('TextStruct', () => {
     <Text />,
     // @ts-expect-error - Invalid props.
     <Text foo="bar">foo</Text>,
+    // @ts-expect-error - Invalid props.
+    <Text fontWeight="bar">foo</Text>,
     <Box>
       <Text>foo</Text>
     </Box>,
