@@ -1,4 +1,8 @@
-import { NotificationType, enumValue } from '@metamask/snaps-sdk';
+import {
+  ComponentOrElementStruct,
+  NotificationType,
+  enumValue,
+} from '@metamask/snaps-sdk';
 import { JSXElementStruct } from '@metamask/snaps-sdk/jsx';
 import {
   array,
@@ -255,6 +259,14 @@ export const SnapResponseWithoutInterfaceStruct = object({
         enumValue(NotificationType.InApp),
         enumValue(NotificationType.Native),
       ]),
+      title: optional(string()),
+      content: optional(ComponentOrElementStruct),
+      footerLink: optional(
+        object({
+          href: string(),
+          text: string(),
+        }),
+      ),
     }),
   ),
 });
