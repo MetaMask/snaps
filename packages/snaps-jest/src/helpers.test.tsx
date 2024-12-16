@@ -411,6 +411,7 @@ describe('installSnap', () => {
         selectFromRadioGroup: expect.any(Function),
         selectFromSelector: expect.any(Function),
         uploadFile: expect.any(Function),
+        waitForUpdate: expect.any(Function),
         ok: expect.any(Function),
         cancel: expect.any(Function),
       });
@@ -473,6 +474,7 @@ describe('installSnap', () => {
         selectFromRadioGroup: expect.any(Function),
         selectFromSelector: expect.any(Function),
         uploadFile: expect.any(Function),
+        waitForUpdate: expect.any(Function),
         ok: expect.any(Function),
         cancel: expect.any(Function),
       });
@@ -535,6 +537,7 @@ describe('installSnap', () => {
         selectFromRadioGroup: expect.any(Function),
         selectFromSelector: expect.any(Function),
         uploadFile: expect.any(Function),
+        waitForUpdate: expect.any(Function),
         ok: expect.any(Function),
       });
 
