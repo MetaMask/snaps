@@ -2,7 +2,6 @@ import type { PermissionConstraint } from '@metamask/permission-controller';
 import { HandlerType } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
 
-import type { CaveatMapperFunction } from './caveats';
 import {
   createMaxRequestTimeMapper,
   getMaxRequestTimeCaveatMapper,
@@ -76,7 +75,7 @@ export const endowmentCaveatMappers: Record<
   (value: Json) => Pick<PermissionConstraint, 'caveats'>
 > = {
   [cronjobEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
-    getCronjobCaveatMapper as CaveatMapperFunction,
+    getCronjobCaveatMapper,
   ),
   [transactionInsightEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
     getTransactionInsightCaveatMapper,

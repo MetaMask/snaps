@@ -31,7 +31,8 @@
         }
       ]
     },
-    "snap_dialog": {}
+    "snap_dialog": {},
+    "snap_notify": {}
   },
   "platformVersion": "6.13.0",
   "manifestVersion": "0.1"

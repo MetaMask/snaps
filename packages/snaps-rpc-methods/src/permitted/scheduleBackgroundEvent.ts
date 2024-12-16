@@ -109,12 +109,11 @@ async function getScheduleBackgroundEventImplementation(
 
     const { date, request } = validatedParams;
 
-    // make sure any second/millisecond precision is removed.
+    // Make sure any millisecond precision is removed.
     const truncatedDate = DateTime.fromISO(date, { setZone: true })
       .startOf('second')
       .toISO({
         suppressMilliseconds: true,
-        suppressSeconds: false,
       }) as string;
 
     const id = scheduleBackgroundEvent({ date: truncatedDate, request });
