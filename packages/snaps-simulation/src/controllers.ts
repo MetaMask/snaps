@@ -15,6 +15,7 @@ import type {
   ExecutionServiceActions,
   SnapInterfaceControllerActions,
   SnapInterfaceControllerAllowedActions,
+  SnapInterfaceControllerStateChangeEvent,
 } from '@metamask/snaps-controllers';
 import {
   caveatSpecifications as snapsCaveatsSpecifications,
@@ -38,9 +39,12 @@ export type RootControllerAllowedActions =
   | ExecutionServiceActions
   | SubjectMetadataControllerActions;
 
+export type RootControllerAllowedEvents =
+  SnapInterfaceControllerStateChangeEvent;
+
 export type RootControllerMessenger = ControllerMessenger<
   RootControllerAllowedActions,
-  any
+  RootControllerAllowedEvents
 >;
 
 export type GetControllersOptions = {
