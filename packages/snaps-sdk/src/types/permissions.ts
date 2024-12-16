@@ -57,6 +57,9 @@ export type InitialPermissions = Partial<{
   'endowment:page-home'?: {
     maxRequestTime?: number;
   };
+  'endowment:page-settings'?: {
+    maxRequestTime?: number;
+  };
   'endowment:rpc': {
     dapps?: boolean;
     snaps?: boolean;
