@@ -54,13 +54,13 @@ export const scheduleBackgroundEventHandler: PermittedHandlerExport<
   hookNames,
 };
 
+const offsetRegex = /Z|([+-]\d{2}:?\d{2})$/u;
 const ScheduleBackgroundEventsParametersStruct = object({
   date: refine(string(), 'date', (val) => {
     const date = DateTime.fromISO(val);
     if (date.isValid) {
       // luxon doesn't have a reliable way to check if timezone info was not provided
-      const count = val.split('').filter((char) => char === '-').length;
-      if (count !== 3 && !val.includes('+') && !val.endsWith('Z')) {
+      if (!offsetRegex.test(val)) {
         return 'ISO8601 string must have timezone information';
       }
       return true;
