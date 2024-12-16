@@ -33,7 +33,6 @@ import {
   SelectorOption,
   Section,
   Avatar,
-  SettingCell,
 } from './components';
 import {
   AddressStruct,
@@ -71,7 +70,6 @@ import {
   SelectorStruct,
   SectionStruct,
   AvatarStruct,
-  SettingCellStruct,
 } from './validation';
 
 describe('KeyStruct', () => {
@@ -1413,51 +1411,6 @@ describe('SectionStruct', () => {
     </Section>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, SectionStruct)).toBe(false);
-  });
-});
-
-describe('SettingCellStruct', () => {
-  it.each([
-    <SettingCell title="foo" description="bar">
-      <Input name="foo" />
-    </SettingCell>,
-    <SettingCell title="foo" description="bar">
-      <Box>
-        <Input name="foo" />
-      </Box>
-    </SettingCell>,
-    <SettingCell title="foo" description="bar">
-      <Form name="foobar">
-        <Input name="foo" />
-      </Form>
-    </SettingCell>,
-  ])('validates a setting cell element', (value) => {
-    expect(is(value, SettingCellStruct)).toBe(true);
-  });
-
-  it.each([
-    'foo',
-    42,
-    null,
-    undefined,
-    {},
-    [],
-    // @ts-expect-error - Invalid props.
-    <SettingCell />,
-    // @ts-expect-error - Invalid props.
-    <SettingCell foo="bar">
-      <Input name="foo" />
-    </SettingCell>,
-    <Box>
-      <Input name="foo" />
-    </Box>,
-    <Row label="label">
-      <Image src="<svg />" alt="alt" />
-    </Row>,
-    // @ts-expect-error - Invalid props.
-    <SettingCell title="foo" description="bar"></SettingCell>,
-  ])('does not validate "%p"', (value) => {
-    expect(is(value, SettingCellStruct)).toBe(false);
   });
 });
 

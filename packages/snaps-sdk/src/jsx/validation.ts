@@ -82,7 +82,6 @@ import {
   type SectionElement,
   type SelectorElement,
   type SelectorOptionElement,
-  type SettingCellElement,
   IconName,
 } from './components';
 
@@ -635,18 +634,6 @@ export const SectionStruct: Describe<SectionElement> = element('Section', {
 });
 
 /**
- * A struct for the {@link SettingCellElement} type.
- */
-export const SettingCellStruct: Describe<SettingCellElement> = element(
-  'SettingCell',
-  {
-    children: BoxChildrenStruct,
-    title: string(),
-    description: string(),
-  },
-);
-
-/**
  * A subset of JSX elements that are allowed as children of the Footer component.
  * This set should include a single button or a tuple of two buttons.
  */
@@ -834,7 +821,6 @@ export const BoxChildStruct = typedUnion([
   SelectorStruct,
   SectionStruct,
   AvatarStruct,
-  SettingCellStruct,
 ]);
 
 /**
@@ -900,7 +886,6 @@ export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   SelectorOptionStruct,
   SectionStruct,
   AvatarStruct,
-  SettingCellStruct,
 ]);
 
 /**

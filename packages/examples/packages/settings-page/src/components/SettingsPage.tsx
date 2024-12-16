@@ -2,12 +2,10 @@ import {
   Box,
   Checkbox,
   Dropdown,
-  Heading,
   Option,
   Radio,
   RadioGroup,
   Section,
-  SettingCell,
   Text,
   type SnapComponent,
 } from '@metamask/snaps-sdk/jsx';
@@ -33,25 +31,23 @@ export const SettingsPage: SnapComponent<SettingsPageProps> = ({
   setting3,
 }) => (
   <Box>
-    <SettingCell title="Setting 1" description="This is the first setting">
+    <Section>
+      <Text>Setting 1</Text>
+      <Text color="alternative">This is the first setting</Text>
       <Checkbox name="setting1" variant="toggle" checked={setting1} />
-    </SettingCell>
-    <SettingCell title="Setting 2" description="This is the second setting">
+    </Section>
+    <Section>
+      <Text>Setting 2</Text>
+      <Text color="alternative">This is the second setting</Text>
       <RadioGroup name="setting2" value={setting2}>
         <Radio value="option1">Option 1</Radio>
         <Radio value="option2">Option 2</Radio>
       </RadioGroup>
-    </SettingCell>
-    <SettingCell title="Setting 3" description="This is the third setting">
-      <Dropdown name="setting3" value={setting3}>
-        <Option value="option1">Option 1</Option>
-        <Option value="option2">Option 2</Option>
-      </Dropdown>
-    </SettingCell>
+    </Section>
     <Section>
-      <Heading size="sm">Setting 1</Heading>
-      <Text color="muted">This is the first setting</Text>
-      <Dropdown name="setting4" value={setting3}>
+      <Text>Setting 3</Text>
+      <Text color="alternative">This is the third setting</Text>
+      <Dropdown name="setting3" value={setting3}>
         <Option value="option1">Option 1</Option>
         <Option value="option2">Option 2</Option>
       </Dropdown>
