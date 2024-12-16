@@ -164,15 +164,38 @@ export const toRespondWithError: MatcherFunction<[expected: Json]> = function (
  */
 export const toSendNotification: MatcherFunction<
   [expected: string, type?: EnumToUnion<NotificationType> | undefined]
-> = function (actual, expected, type) {
+> = function (
+  actual,
+  expectedMessage,
+  expectedType,
+  expectedTitle,
+  expectedContent,
+  expectedFooterLink,
+) {
   assertActualIsSnapResponse(actual, 'toSendNotification');
 
   const { notifications } = actual;
-  const pass = notifications.some(
-    (notification) =>
-      this.equals(notification.message, expected) &&
-      (type === undefined || notification.type === type),
-  );
+  const pass = notifications.some((notification) => {
+    const { type, message, title, content, footerLink } = notification;
+    const hasExpectedTitle = expectedTitle !== undefined;
+    const hasExpectedContent = expectedContent !== undefined;
+    const hasExpectedFooterLink = expectedFooterLink !== undefined;
+    if (type !== undefined && type !== expectedType) {
+      return false;
+    }
+    if (!this.equals(message, expectedMessage)) {
+      return false;
+    }
+    if (hasExpectedTitle && !this.equals(title, expectedTitle)) {
+      return false;
+    }
+    if (hasExpectedContent && !this.equals(content, expectedContent)) {
+      return false;
+    }
+    if (hasExpectedFooterLink && !this.equals(footerLink, expectedFooterLink)) {
+      return false;
+    }
+  });
 
   const message = pass
     ? () =>
