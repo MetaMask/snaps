@@ -53,7 +53,11 @@ describe('Text', () => {
   });
 
   it('renders text with props', () => {
-    const result = <Text size="sm">Hello world!</Text>;
+    const result = (
+      <Text size="sm" fontWeight="medium">
+        Hello world!
+      </Text>
+    );
 
     expect(result).toStrictEqual({
       type: 'Text',
@@ -61,6 +65,7 @@ describe('Text', () => {
       props: {
         children: 'Hello world!',
         size: 'sm',
+        fontWeight: 'medium',
       },
     });
   });
