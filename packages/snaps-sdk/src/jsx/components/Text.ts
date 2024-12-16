@@ -29,6 +29,7 @@ export type TextColors =
  * @property alignment - The alignment of the text.
  * @property color - The color of the text.
  * @property size - The size of the text. Defaults to `md`.
+ * @property fontWeight - The font weight of the text. Defaults to `regular`.
  */
 export type TextProps = {
   children: TextChildren;
@@ -48,6 +49,7 @@ const TYPE = 'Text';
  * @param props.color - The color of the text.
  * @param props.children - The text to display.
  * @param props.size - The size of the text. Defaults to `md`.
+ * @param props.fontWeight - The font weight of the text. Defaults to `regular`.
  * @returns A text element.
  * @example
  * <Text>
@@ -59,6 +61,10 @@ const TYPE = 'Text';
  * </Text>
  * @example
  * <Text size="sm">
+ *   Hello <Bold>world</Bold>!
+ * </Text>
+ * @example
+ * <Text fontWeight="medium">
  *   Hello <Bold>world</Bold>!
  * </Text>
  */
