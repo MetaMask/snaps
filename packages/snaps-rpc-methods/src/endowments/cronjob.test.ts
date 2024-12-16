@@ -4,6 +4,7 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
+import type { Json } from '@metamask/utils';
 
 import {
   getCronjobCaveatMapper,
@@ -64,6 +65,15 @@ describe('endowment:cronjob', () => {
         ],
       });
     });
+
+    it.each([undefined, 2, {}])(
+      'returns a null caveats value for invalid values',
+      (val) => {
+        expect(getCronjobCaveatMapper(val as Json)).toStrictEqual({
+          caveats: null,
+        });
+      },
+    );
   });
 });
 
