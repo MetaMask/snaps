@@ -2,10 +2,13 @@ import {
   Box,
   Checkbox,
   Dropdown,
+  Heading,
   Option,
   Radio,
   RadioGroup,
+  Section,
   SettingCell,
+  Text,
   type SnapComponent,
 } from '@metamask/snaps-sdk/jsx';
 
@@ -45,5 +48,13 @@ export const SettingsPage: SnapComponent<SettingsPageProps> = ({
         <Option value="option2">Option 2</Option>
       </Dropdown>
     </SettingCell>
+    <Section>
+      <Heading size="sm">Setting 1</Heading>
+      <Text color="muted">This is the first setting</Text>
+      <Dropdown name="setting4" value={setting3}>
+        <Option value="option1">Option 1</Option>
+        <Option value="option2">Option 2</Option>
+      </Dropdown>
+    </Section>
   </Box>
 );

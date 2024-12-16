@@ -82,9 +82,9 @@ import {
   type SectionElement,
   type SelectorElement,
   type SelectorOptionElement,
+  type SettingCellElement,
   IconName,
 } from './components';
-import type { SettingCellElement } from './components/SettingCell';
 
 /**
  * A struct for the {@link Key} type.
