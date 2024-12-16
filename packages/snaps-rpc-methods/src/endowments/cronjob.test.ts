@@ -24,6 +24,7 @@ describe('endowment:cronjob', () => {
         endowmentGetter: expect.any(Function),
         allowedCaveats: [SnapCaveatType.SnapCronjob],
         subjectTypes: [SubjectType.Snap],
+        validator: expect.any(Function),
       });
 
       expect(specification.endowmentGetter()).toBeNull();

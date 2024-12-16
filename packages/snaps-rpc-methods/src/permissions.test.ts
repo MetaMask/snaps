@@ -18,6 +18,7 @@ describe('buildSnapEndowmentSpecifications', () => {
             "snap",
           ],
           "targetName": "endowment:cronjob",
+          "validator": [Function],
         },
         "endowment:ethereum-provider": {
           "allowedCaveats": null,
@@ -81,6 +82,15 @@ describe('buildSnapEndowmentSpecifications', () => {
             "snap",
           ],
           "targetName": "endowment:page-home",
+        },
+        "endowment:page-settings": {
+          "allowedCaveats": null,
+          "endowmentGetter": [Function],
+          "permissionType": "Endowment",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "endowment:page-settings",
         },
         "endowment:rpc": {
           "allowedCaveats": [

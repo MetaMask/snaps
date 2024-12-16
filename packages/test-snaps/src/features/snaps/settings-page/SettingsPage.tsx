@@ -6,41 +6,40 @@ import { useInvokeMutation } from '../../../api';
 import { Result, Snap } from '../../../components';
 import { getSnapId } from '../../../utils';
 import {
-  SEND_FLOW_SNAP_ID,
-  SEND_FLOW_SNAP_PORT,
-  SEND_FLOW_VERSION,
+  SETTINGS_PAGE_SNAP_ID,
+  SETTINGS_PAGE_SNAP_PORT,
+  SETTINGS_PAGE_VERSION,
 } from './constants';
 
-export const SendFlow: FunctionComponent = () => {
+export const SettingsPage: FunctionComponent = () => {
   const [invokeSnap, { isLoading, data }] = useInvokeMutation();
-  const snapId = getSnapId(SEND_FLOW_SNAP_ID, SEND_FLOW_SNAP_PORT);
+  const snapId = getSnapId(SETTINGS_PAGE_SNAP_ID, SETTINGS_PAGE_SNAP_PORT);
 
-  const handleSubmitDisplay = () => {
+  const handleSubmit = () => {
     invokeSnap({
       snapId,
-      method: 'display',
+      method: 'getSettings',
     }).catch(logError);
   };
-
   return (
     <Snap
-      name="Send Flow Snap"
-      snapId={SEND_FLOW_SNAP_ID}
-      port={SEND_FLOW_SNAP_PORT}
-      version={SEND_FLOW_VERSION}
-      testId="dialogs"
+      name="Settings Page Snap"
+      snapId={SETTINGS_PAGE_SNAP_ID}
+      port={SETTINGS_PAGE_SNAP_PORT}
+      version={SETTINGS_PAGE_VERSION}
+      testId="settingspage"
     >
       <Button
-        id="display"
-        onClick={handleSubmitDisplay}
+        id="settings-state"
+        onClick={handleSubmit}
         disabled={isLoading}
         className="mb-3"
       >
-        Custom
+        Get settings state
       </Button>
 
       <Result>
-        <span id="dialogResult">{JSON.stringify(data, null, 2)}</span>
+        <span id="settingsResult">{JSON.stringify(data, null, 2)}</span>
       </Result>
     </Snap>
   );

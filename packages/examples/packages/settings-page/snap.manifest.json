@@ -1,0 +1,28 @@
+{
+  "version": "0.0.0",
+  "description": "MetaMask example snap demonstrating the use of settings pages.",
+  "proposedName": "Settings Page Example Snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps.git"
+  },
+  "source": {
+    "shasum": "zDRgwSzsvtVtFr3F0SzUJCSCBNfix0C4CgTY98F+uDk=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "@metamask/settings-page-example-snap",
+        "registry": "https://registry.npmjs.org"
+      }
+    }
+  },
+  "initialPermissions": {
+    "endowment:rpc": {
+      "dapps": true
+    },
+    "endowment:page-settings": {},
+    "snap_manageState": {}
+  },
+  "platformVersion": "6.13.0",
+  "manifestVersion": "0.1"
+}
