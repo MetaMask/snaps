@@ -248,5 +248,5 @@ export function set(
 
   // This should never be reached.
   /* istanbul ignore next */
-  return {};
+  throw new Error('Unexpected error while setting the state.');
 }
