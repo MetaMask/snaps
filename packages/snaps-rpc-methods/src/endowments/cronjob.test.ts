@@ -125,7 +125,7 @@ describe('getCronjobCaveatJobs', () => {
     expect(getCronjobCaveatJobs(permission)).toBeNull();
   });
 
-  it('will throw if there is more than one caveat', () => {
+  it('throws if there is more than one caveat', () => {
     const permission: PermissionConstraint = {
       date: 0,
       parentCapability: 'foo',
@@ -166,7 +166,7 @@ describe('getCronjobCaveatJobs', () => {
     expect(() => getCronjobCaveatJobs(permission)).toThrow('Assertion failed.');
   });
 
-  it('will throw if the caveat type is wrong', () => {
+  it('throws if the caveat type is wrong', () => {
     const permission: PermissionConstraint = {
       date: 0,
       parentCapability: 'foo',

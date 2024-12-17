@@ -28,7 +28,8 @@ describe('snap_cancelBackgroundEvent', () => {
         request.origin = origin;
         next();
       };
-    it('returns null after calling the `scheduleBackgroundEvent` hook', async () => {
+
+    it('returns null after calling the `cancelBackgroundEvent` hook', async () => {
       const { implementation } = cancelBackgroundEventHandler;
 
       const cancelBackgroundEvent = jest.fn();

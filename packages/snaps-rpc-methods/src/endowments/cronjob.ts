@@ -71,6 +71,7 @@ export function getCronjobCaveatMapper(
   if (!value || !isObject(value) || Object.keys(value).length === 0) {
     return { caveats: null };
   }
+
   return {
     caveats: [
       {

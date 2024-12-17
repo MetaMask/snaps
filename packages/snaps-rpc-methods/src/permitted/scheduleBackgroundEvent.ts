@@ -59,13 +59,13 @@ const ScheduleBackgroundEventsParametersStruct = object({
   date: refine(string(), 'date', (val) => {
     const date = DateTime.fromISO(val);
     if (date.isValid) {
-      // luxon doesn't have a reliable way to check if timezone info was not provided
+      // Luxon doesn't have a reliable way to check if timezone info was not provided
       if (!offsetRegex.test(val)) {
-        return 'ISO8601 string must have timezone information';
+        return 'ISO 8601 string must have timezone information';
       }
       return true;
     }
-    return 'Not a valid ISO8601 string';
+    return 'Not a valid ISO 8601 string';
   }),
   request: CronjobRpcRequestStruct,
 });

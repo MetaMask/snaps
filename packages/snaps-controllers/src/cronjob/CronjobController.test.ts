@@ -386,7 +386,7 @@ describe('CronjobController', () => {
     });
 
     expect(() => cronjobController.cancelBackgroundEvent('foo', id)).toThrow(
-      'Only the origin that scheduled this event can cancel it',
+      'Only the origin that scheduled this event can cancel it.',
     );
 
     cronjobController.destroy();

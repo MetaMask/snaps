@@ -4,14 +4,22 @@ import type {
 } from '@metamask/snaps-sdk';
 import { panel, text, heading, MethodNotFoundError } from '@metamask/snaps-sdk';
 
+import type {
+  CancelNotificationParams,
+  ScheduleNotificationParams,
+} from './types';
+
 /**
- * Handle cronjob execution requests from MetaMask. This handler handles one
- * method:
+ * Handle cronjob execution requests from MetaMask. This handler handles two
+ * methods:
  *
  * - `execute`: The JSON-RPC method that is called by MetaMask when the cronjob
  * is triggered. This method is specified in the snap manifest under the
  * `endowment:cronjob` permission. If you want to support more methods (e.g.,
  * with different times), you can add them to the manifest there.
+ * - `fireNotification`: The JSON-RPC method that is called by MetaMask when the
+ * background event is triggered. This method call is scheduled by the `scheduleNotification`
+ * method in the `onRpcRequest` handler.
  *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.
@@ -66,7 +74,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       return snap.request({
         method: 'snap_scheduleBackgroundEvent',
         params: {
-          date: (request.params as Record<string, string>).date,
+          date: (request.params as ScheduleNotificationParams).date,
           request: {
             method: 'fireNotification',
           },
@@ -76,7 +84,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       return snap.request({
         method: 'snap_cancelBackgroundEvent',
         params: {
-          id: (request.params as Record<string, string>).id,
+          id: (request.params as CancelNotificationParams).id,
         },
       });
     case 'getBackgroundEvents':

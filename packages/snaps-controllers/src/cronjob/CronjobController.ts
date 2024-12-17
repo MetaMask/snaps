@@ -18,6 +18,7 @@ import {
   HandlerType,
   parseCronExpression,
   logError,
+  logWarning,
 } from '@metamask/snaps-utils';
 import { assert, Duration, inMilliseconds } from '@metamask/utils';
 import { castDraft } from 'immer';
@@ -110,8 +111,6 @@ export type CronjobControllerState = {
   events: Record<string, BackgroundEvent>;
 };
 
-const subscriptionMap = new WeakMap();
-
 const controllerName = 'CronjobController';
 
 /**
@@ -150,57 +149,38 @@ export class CronjobController extends BaseController<
     this.#snapIds = new Map();
     this.#messenger = messenger;
 
+    this._handleSnapRegisterEvent = this._handleSnapRegisterEvent.bind(this);
+    this._handleSnapUnregisterEvent =
+      this._handleSnapUnregisterEvent.bind(this);
+    this._handleEventSnapUpdated = this._handleEventSnapUpdated.bind(this);
+    this._handleSnapDisabledEvent = this._handleSnapDisabledEvent.bind(this);
+    this._handleSnapEnabledEvent = this._handleSnapEnabledEvent.bind(this);
     // Subscribe to Snap events
     /* eslint-disable @typescript-eslint/unbound-method */
 
-    subscriptionMap.set(this, new Map());
-
-    const map = subscriptionMap.get(this);
-
-    map.set(
-      'SnapController:snapInstalled',
-      this._handleSnapRegisterEvent.bind(this),
-    );
-    map.set(
-      'SnapController:snapEnabled',
-      this._handleSnapEnabledEvent.bind(this),
-    );
-    map.set(
-      'SnapController:snapUninstalled',
-      this._handleSnapUnregisterEvent.bind(this),
-    );
-    map.set(
-      'SnapController:snapDisabled',
-      this._handleSnapDisabledEvent.bind(this),
-    );
-    map.set(
-      'SnapController:snapUpdated',
-      this._handleEventSnapUpdated.bind(this),
-    );
-
     this.messagingSystem.subscribe(
       'SnapController:snapInstalled',
-      map.get('SnapController:snapInstalled'),
+      this._handleSnapRegisterEvent,
     );
 
     this.messagingSystem.subscribe(
       'SnapController:snapUninstalled',
-      map.get('SnapController:snapUninstalled'),
+      this._handleSnapUnregisterEvent,
     );
 
     this.messagingSystem.subscribe(
       'SnapController:snapEnabled',
-      map.get('SnapController:snapEnabled'),
+      this._handleSnapEnabledEvent,
     );
 
     this.messagingSystem.subscribe(
       'SnapController:snapDisabled',
-      map.get('SnapController:snapDisabled'),
+      this._handleSnapDisabledEvent,
     );
 
     this.messagingSystem.subscribe(
       'SnapController:snapUpdated',
-      map.get('SnapController:snapUpdated'),
+      this._handleEventSnapUpdated,
     );
     /* eslint-enable @typescript-eslint/unbound-method */
 
@@ -343,7 +323,10 @@ export class CronjobController extends BaseController<
     // removing milliseond precision and converting to UTC.
     const scheduledAt = DateTime.fromJSDate(new Date())
       .toUTC()
-      .toFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+      .startOf('second')
+      .toISO({
+        suppressMilliseconds: true,
+      }) as string;
     const event = {
       ...backgroundEventWithoutId,
       id: nanoid(),
@@ -372,7 +355,7 @@ export class CronjobController extends BaseController<
 
     assert(
       this.state.events[id].snapId === origin,
-      'Only the origin that scheduled this event can cancel it',
+      'Only the origin that scheduled this event can cancel it.',
     );
 
     const timer = this.#timers.get(id);
@@ -394,7 +377,7 @@ export class CronjobController extends BaseController<
     const now = new Date();
     const ms = date.getTime() - now.getTime();
 
-    if (ms < 0) {
+    if (ms <= 0) {
       throw new Error('Cannot schedule an event in the past.');
     }
 
@@ -428,7 +411,7 @@ export class CronjobController extends BaseController<
    * @param snapId - The id of the Snap to fetch background events for.
    * @returns An array of background events.
    */
-  getBackgroundEvents(snapId: string): BackgroundEvent[] {
+  getBackgroundEvents(snapId: SnapId): BackgroundEvent[] {
     return Object.values(this.state.events).filter(
       (snapEvent) => snapEvent.snapId === snapId,
     );
@@ -440,7 +423,7 @@ export class CronjobController extends BaseController<
    * @param snapId - ID of a snap.
    * @param skipEvents - Whether the unregistration process should skip scheduled background events.
    */
-  unregister(snapId: string, skipEvents = false) {
+  unregister(snapId: SnapId, skipEvents = false) {
     const jobs = [...this.#snapIds.entries()].filter(
       ([_, jobSnapId]) => jobSnapId === snapId,
     );
@@ -458,6 +441,7 @@ export class CronjobController extends BaseController<
           }
         }
       });
+
       if (eventIds.length > 0) {
         this.update((state) => {
           eventIds.forEach((id) => {
@@ -526,15 +510,14 @@ export class CronjobController extends BaseController<
       const now = new Date();
       const then = new Date(date);
       if (then.getTime() < now.getTime()) {
-        // removing expired events from state
+        // Remove expired events from state
         this.update((state) => {
           delete state.events[snapEvent.id];
         });
 
-        const error = new Error(
+        logWarning(
           `Background event with id "${snapEvent.id}" not scheduled as its date has expired.`,
         );
-        logError(error);
       } else {
         this.#setUpBackgroundEvent(snapEvent);
       }
@@ -547,32 +530,30 @@ export class CronjobController extends BaseController<
   destroy() {
     super.destroy();
 
-    const subscriptions = subscriptionMap.get(this);
-
     /* eslint-disable @typescript-eslint/unbound-method */
     this.messagingSystem.unsubscribe(
       'SnapController:snapInstalled',
-      subscriptions.get('SnapController:snapInstalled'),
+      this._handleSnapRegisterEvent,
     );
 
     this.messagingSystem.unsubscribe(
       'SnapController:snapUninstalled',
-      subscriptions.get('SnapController:snapUninstalled'),
+      this._handleSnapUnregisterEvent,
     );
 
     this.messagingSystem.unsubscribe(
       'SnapController:snapEnabled',
-      subscriptions.get('SnapController:snapEnabled'),
+      this._handleSnapEnabledEvent,
     );
 
     this.messagingSystem.unsubscribe(
       'SnapController:snapDisabled',
-      subscriptions.get('SnapController:snapDisabled'),
+      this._handleSnapDisabledEvent,
     );
 
     this.messagingSystem.unsubscribe(
       'SnapController:snapUpdated',
-      subscriptions.get('SnapController:snapUpdated'),
+      this._handleEventSnapUpdated,
     );
     /* eslint-enable @typescript-eslint/unbound-method */
 

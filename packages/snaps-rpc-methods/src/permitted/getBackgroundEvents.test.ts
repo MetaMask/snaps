@@ -28,6 +28,7 @@ describe('snap_getBackgroundEvents', () => {
         request.origin = origin;
         next();
       };
+
     it('returns an array of background events after calling the `getBackgroundEvents` hook', async () => {
       const { implementation } = getBackgroundEventsHandler;
 

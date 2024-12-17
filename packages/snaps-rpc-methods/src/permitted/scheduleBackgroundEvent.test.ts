@@ -214,7 +214,7 @@ describe('snap_scheduleBackgroundEvent', () => {
         error: {
           code: -32602,
           message:
-            'Invalid params: At path: date -- ISO8601 string must have timezone information.',
+            'Invalid params: At path: date -- ISO 8601 string must have timezone information.',
           stack: expect.any(String),
         },
         id: 1,
@@ -265,7 +265,7 @@ describe('snap_scheduleBackgroundEvent', () => {
         error: {
           code: -32602,
           message:
-            'Invalid params: At path: date -- Not a valid ISO8601 string.',
+            'Invalid params: At path: date -- Not a valid ISO 8601 string.',
           stack: expect.any(String),
         },
         id: 1,
