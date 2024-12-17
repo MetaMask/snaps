@@ -10,7 +10,7 @@ import {
   type SnapComponent,
 } from '@metamask/snaps-sdk/jsx';
 
-export type SettingsPageProps = {
+export type SettingsProps = {
   setting1?: boolean;
   setting2?: 'option1' | 'option2';
   setting3?: 'option1' | 'option2';
@@ -25,7 +25,7 @@ export type SettingsPageProps = {
  * @param param.setting3 - The third setting.
  * @returns The settings page component.
  */
-export const SettingsPage: SnapComponent<SettingsPageProps> = ({
+export const Settings: SnapComponent<SettingsProps> = ({
   setting1,
   setting2,
   setting3,

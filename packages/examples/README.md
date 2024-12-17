@@ -66,9 +66,6 @@ The following is a list of the snaps in this directory.
 - [**`packages/notifications`**](./packages/notifications): This snap
   demonstrates how to use the `snap_notify` method to display notifications to
   the user, either as a MetaMask notification or as a desktop notification.
-- [**`packages/settings-page`**](./packages/settings-page):
-  This snap demonstrates how to use `endowment:page-settings` permission,
-  showing a settings page to the user.
 - [**`packages/transaction-insights`**](./packages/transaction-insights):
   This snap demonstrates how to use `endowment:transaction-insights` permission,
   and provide transaction insights to the user.
@@ -90,7 +87,8 @@ The following is a list of the snaps in this directory.
   how the Snaps platform handles errors thrown by snaps.
 - [**`packages/preinstalled`**](./packages/preinstalled): This snap demonstrates
   preinstalled snaps, i.e., snaps that are installed in the MetaMask extension
-  by default.
+  by default. It also demonstrates the use of the `endowment:page-settings` permission,
+  showing a settings page to the user.
 - [**`packages/send-flow`**](./packages/send-flow): This snap demonstrates
   a simple send flow using custom UI.
 - [**`packages/wasm`**](./packages/wasm): This snap demonstrates how
