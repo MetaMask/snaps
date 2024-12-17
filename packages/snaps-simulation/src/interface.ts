@@ -780,18 +780,20 @@ export async function waitForUpdate(
       const newContent = currentInterface?.content;
 
       if (!deepEqual(originalContent, newContent)) {
-        // Unsubscribe
         controllerMessenger.unsubscribe(
           'SnapInterfaceController:stateChange',
           listener,
         );
+
         const actions = getInterfaceActions(snapId, controllerMessenger, {
           content: newContent,
           id,
         });
+
         resolve({ ...actions, content: newContent });
       }
     };
+
     controllerMessenger.subscribe(
       'SnapInterfaceController:stateChange',
       listener,
