@@ -25,6 +25,7 @@ type SnapState = {
  * @returns The JSON-RPC response.
  * @see https://docs.metamask.io/snaps/reference/exports/#onrpcrequest
  * @see https://docs.metamask.io/snaps/reference/rpc-api/#wallet_invokesnap
+ * @see https://docs.metamask.io/snaps/reference/snaps-api/#snap_dialog
  * @see https://docs.metamask.io/snaps/reference/snaps-api/#snap_managestate
  */
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
