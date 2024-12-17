@@ -18,6 +18,10 @@ export type BannerChildren = SnapsChildren<
 
 /**
  * The props of the {@link Banner} component.
+ *
+ * @param children - The content to display in the banner.
+ * @param title - Title of the banner.
+ * @param severity - Severity level of the banner.
  */
 export type BannerProps = {
   children: BannerChildren;
@@ -31,6 +35,9 @@ const TYPE = 'Banner';
  * A Banner component, which is used to display custom banner alerts.
  *
  * @param props - The props of the component.
+ * @param props.children - The content to display in the banner.
+ * @param props.title - Title of the banner.
+ * @param props.severity - Severity level of the banner.
  * @example
  * <Banner title="Success banner" severity="success">
  *   <Text>Here is the banner content!</Text>
