@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add loading state for `Button` ([#2930](https://github.com/MetaMask/snaps/pull/2930))
 
 ### Fixed
+
 - Improve `Field` validation errors ([#2937](https://github.com/MetaMask/snaps/pull/2937))
 
 ## [6.13.0]
