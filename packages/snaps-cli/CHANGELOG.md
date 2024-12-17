@@ -12,8 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Allow async initialization logic ([#2918](https://github.com/MetaMask/snaps/pull/2918))
-  - This means that top-level-await is now available in Snaps.
-  - This also means that WASM modules are instantiated asynchrounously.
+  - Top-level-await is now available in Snaps.
+  - WASM modules are instantiated asynchronously.
 - Automatically add `platformVersion` to manifest ([#2938](https://github.com/MetaMask/snaps/pull/2938))
 
 ## [6.5.4]

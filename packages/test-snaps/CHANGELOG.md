@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add `onSettingsPage` logic to Preinstalled example snap ([#2911](https://github.com/MetaMask/snaps/pull/2911), [#2962](https://github.com/MetaMask/snaps/pull/2962))
+- Add `onSettingsPage` example to preinstalled example Snap ([#2911](https://github.com/MetaMask/snaps/pull/2911), [#2962](https://github.com/MetaMask/snaps/pull/2962))
 
 ## [2.15.4]
 

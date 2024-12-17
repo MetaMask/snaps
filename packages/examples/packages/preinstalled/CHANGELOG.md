@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add `onSettingsPage` example logic ([#2911](https://github.com/MetaMask/snaps/pull/2911), [#2962](https://github.com/MetaMask/snaps/pull/2962))
+- Add `onSettingsPage` example ([#2911](https://github.com/MetaMask/snaps/pull/2911), [#2962](https://github.com/MetaMask/snaps/pull/2962))
 
 ## [0.2.0]
 

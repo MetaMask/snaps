@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add support for `onSettingsPage` export ([#2911](https://github.com/MetaMask/snaps/pull/2911))
 
 ### Fixed
+
 - Use `BigInt` for processing insight chain IDs ([#2935](https://github.com/MetaMask/snaps/pull/2935))
 
 ## [9.15.0]
