@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.2.0]
+
 ### Uncategorized
 
 - chore: Bump ts-bridge ([#2917](https://github.com/MetaMask/snaps-skunkworks.git/pull/2917))
@@ -95,7 +97,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@4.1.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@4.2.0...HEAD
+[4.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@4.1.2...@metamask/snaps-browserify-plugin@4.2.0
 [4.1.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@4.1.1...@metamask/snaps-browserify-plugin@4.1.2
 [4.1.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@4.1.0...@metamask/snaps-browserify-plugin@4.1.1
 [4.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@4.0.1...@metamask/snaps-browserify-plugin@4.1.0

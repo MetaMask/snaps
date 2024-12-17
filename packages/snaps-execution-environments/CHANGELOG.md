@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.11.0]
+
 ### Uncategorized
 
 - Add `onSettingsPage` export ([#2911](https://github.com/MetaMask/snaps-skunkworks.git/pull/2911))
@@ -403,7 +405,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.10.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.11.0...HEAD
+[6.11.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.10.0...@metamask/snaps-execution-environments@6.11.0
 [6.10.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.9.2...@metamask/snaps-execution-environments@6.10.0
 [6.9.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.9.1...@metamask/snaps-execution-environments@6.9.2
 [6.9.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.9.0...@metamask/snaps-execution-environments@6.9.1
