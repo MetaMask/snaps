@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.14.0]
+
+### Added
+
+- Add `onSettingsPage` export ([#2911](https://github.com/MetaMask/snaps/pull/2911))
+- Add `Banner` component ([#2961](https://github.com/MetaMask/snaps/pull/2961))
+- Support `fontWeight` prop on `Text` ([#2959](https://github.com/MetaMask/snaps/pull/2959))
+- Support `size` prop on `Button` ([#2953](https://github.com/MetaMask/snaps/pull/2953))
+- Add loading state for `Button` ([#2930](https://github.com/MetaMask/snaps/pull/2930))
+
+### Fixed
+
+- Improve `Field` validation errors ([#2937](https://github.com/MetaMask/snaps/pull/2937))
+
 ## [6.13.0]
 
 ### Added
@@ -434,7 +448,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.13.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.14.0...HEAD
+[6.14.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.13.0...@metamask/snaps-sdk@6.14.0
 [6.13.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.12.0...@metamask/snaps-sdk@6.13.0
 [6.12.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.11.0...@metamask/snaps-sdk@6.12.0
 [6.11.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.10.0...@metamask/snaps-sdk@6.11.0

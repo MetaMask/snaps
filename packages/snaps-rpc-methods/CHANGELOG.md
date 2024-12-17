@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.8.0]
+
+### Added
+
+- Add `onSettingsPage` endowment ([#2911](https://github.com/MetaMask/snaps/pull/2911))
+
 ## [11.7.0]
 
 ### Added
@@ -343,7 +349,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.7.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.8.0...HEAD
+[11.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.7.0...@metamask/snaps-rpc-methods@11.8.0
 [11.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.6.0...@metamask/snaps-rpc-methods@11.7.0
 [11.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.5.1...@metamask/snaps-rpc-methods@11.6.0
 [11.5.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.5.0...@metamask/snaps-rpc-methods@11.5.1
