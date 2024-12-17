@@ -52,15 +52,34 @@ export function getShowNativeNotificationImplementation(
  * @param _snapId - The ID of the Snap that created the notification.
  * @param options - The notification options.
  * @param options.message - The message to show in the notification.
+ * @param options.title - The title to show in the notification.
+ * @param options.content - The JSX content to show in the notification.
+ * @param options.footerLink - The footer to show in the notification.
  * @yields Adds the notification to the store.
  * @returns `null`.
  */
 function* showInAppNotificationImplementation(
   _snapId: string,
-  { message }: NotifyParams,
+  {
+    message,
+    title,
+    content,
+    footerLink,
+  }: NotifyParams & {
+    title?: string;
+    content?: string;
+    footerLink?: { text: string; href: string };
+  },
 ): SagaIterator<null> {
   yield put(
-    addNotification({ id: nanoid(), type: NotificationType.InApp, message }),
+    addNotification({
+      id: nanoid(),
+      type: NotificationType.InApp,
+      message,
+      title,
+      content,
+      footerLink,
+    }),
   );
 
   return null;

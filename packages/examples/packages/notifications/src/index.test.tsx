@@ -38,6 +38,25 @@ describe('onRpcRequest', () => {
     });
   });
 
+  describe('inApp-expanded', () => {
+    it('sends an expanded view notification', async () => {
+      const { request } = await installSnap();
+
+      const response = await request({
+        method: 'inApp-expanded',
+        origin: 'Jest',
+      });
+
+      expect(response).toRespondWith(null);
+      expect(response).toSendNotification(
+        'Hello from MetaMask, click here for an expanded view!',
+        NotificationType.InApp,
+        'Hello World!',
+        { text: 'Go home', href: 'metamask://client/' },
+      );
+    });
+  });
+
   describe('native', () => {
     it('sends a native notification', async () => {
       const { request } = await installSnap();

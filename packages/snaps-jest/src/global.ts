@@ -52,6 +52,8 @@ interface SnapsMatchers {
   toSendNotification(
     message: string,
     type?: EnumToUnion<NotificationType>,
+    title?: string,
+    footerLink?: { text: string; href: string },
   ): void;
 
   /**
