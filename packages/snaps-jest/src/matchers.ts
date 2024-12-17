@@ -201,7 +201,7 @@ export const toSendNotification: MatcherFunction<
         return false;
       }
 
-      if (content !== undefined && typeof content !== 'string') {
+      if (title && !content) {
         return false;
       }
 

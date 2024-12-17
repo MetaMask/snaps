@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { panel, text } from '@metamask/snaps-sdk';
+import { NotificationType, panel, text } from '@metamask/snaps-sdk';
 import { Box, Text } from '@metamask/snaps-sdk/jsx';
 
 import {
@@ -160,18 +160,54 @@ describe('toRespondWithError', () => {
 });
 
 describe('toSendNotification', () => {
-  it('passes when the notification is correct', () => {
+  it('passes when a notification is correct', () => {
     expect(
       getMockResponse({
         notifications: [
           {
             id: '1',
-            type: 'native',
+            type: NotificationType.Native,
             message: 'foo',
           },
         ],
       }),
     ).toSendNotification('foo');
+  });
+
+  it('passes when an expanded view notification is correct', () => {
+    expect(
+      getMockResponse({
+        notifications: [
+          {
+            id: '1',
+            type: NotificationType.InApp,
+            message: 'foo',
+            title: 'bar',
+            content: 'abcd',
+            footerLink: { text: 'foo', href: 'https://metamask.io' },
+          },
+        ],
+      }),
+    ).toSendNotification('foo', 'inApp', 'bar', {
+      text: 'foo',
+      href: 'https://metamask.io',
+    });
+  });
+
+  it('passes when an expanded view notification without footer is correct', () => {
+    expect(
+      getMockResponse({
+        notifications: [
+          {
+            id: '1',
+            type: NotificationType.InApp,
+            message: 'foo',
+            title: 'bar',
+            content: 'abcd',
+          },
+        ],
+      }),
+    ).toSendNotification('foo', 'inApp', 'bar');
   });
 
   it('passes when the notification is correct with a type', () => {
@@ -180,7 +216,7 @@ describe('toSendNotification', () => {
         notifications: [
           {
             id: '1',
-            type: 'native',
+            type: NotificationType.Native,
             message: 'foo',
           },
         ],
@@ -188,7 +224,7 @@ describe('toSendNotification', () => {
     ).toSendNotification('foo', 'native');
   });
 
-  it('fails when the notification is incorrect', () => {
+  it('fails when a notification is incorrect', () => {
     expect(() =>
       expect(
         getMockResponse({
@@ -201,6 +237,67 @@ describe('toSendNotification', () => {
           ],
         }),
       ).toSendNotification('bar'),
+    ).toThrow('Received:');
+  });
+
+  it("fails when an expanded view notification's title is incorrect", () => {
+    expect(() =>
+      expect(
+        getMockResponse({
+          notifications: [
+            {
+              id: '1',
+              type: 'inApp',
+              message: 'foo',
+              title: 'bar',
+              content: 'abcd',
+            },
+          ],
+        }),
+      ).toSendNotification('foo', 'inApp', 'baz'),
+    ).toThrow('Received:');
+  });
+
+  it("fails when an expanded view notification's footerLink is incorrect", () => {
+    expect(() =>
+      expect(
+        getMockResponse({
+          notifications: [
+            {
+              id: '1',
+              type: 'inApp',
+              message: 'foo',
+              title: 'bar',
+              content: 'abcd',
+              footerLink: { text: 'Leave site', href: 'https://metamask.io' },
+            },
+          ],
+        }),
+      ).toSendNotification('foo', 'inApp', 'bar', {
+        text: 'Go back',
+        href: 'metamask://client/',
+      }),
+    ).toThrow('Received:');
+  });
+
+  it("fails when an expanded view notification's content is missing", () => {
+    expect(() =>
+      expect(
+        getMockResponse({
+          notifications: [
+            {
+              id: '1',
+              type: 'inApp',
+              message: 'foo',
+              title: 'bar',
+              footerLink: { text: 'Leave site', href: 'https://metamask.io' },
+            },
+          ],
+        }),
+      ).toSendNotification('foo', 'inApp', 'bar', {
+        text: 'Leave site',
+        href: 'https://metamask.io',
+      }),
     ).toThrow('Received:');
   });
 
