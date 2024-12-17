@@ -677,6 +677,7 @@ export const getRestrictedCronjobControllerMessenger = (
       'SnapController:handleRequest',
       'CronjobController:scheduleBackgroundEvent',
       'CronjobController:cancelBackgroundEvent',
+      'CronjobController:getBackgroundEvents',
     ],
   });
 
