@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- Add `onSettingsPage` export ([#2911](https://github.com/MetaMask/snaps-skunkworks.git/pull/2911))
+- feat: Allow async initialization logic ([#2918](https://github.com/MetaMask/snaps-skunkworks.git/pull/2918))
+- chore: Bump ts-bridge ([#2917](https://github.com/MetaMask/snaps-skunkworks.git/pull/2917))
+
 ## [6.10.0]
 
 ### Added
@@ -397,48 +403,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.10.0...HEAD
-[6.10.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.9.2...@metamask/snaps-execution-environments@6.10.0
-[6.9.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.9.1...@metamask/snaps-execution-environments@6.9.2
-[6.9.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.9.0...@metamask/snaps-execution-environments@6.9.1
-[6.9.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.8.0...@metamask/snaps-execution-environments@6.9.0
-[6.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.7.2...@metamask/snaps-execution-environments@6.8.0
-[6.7.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.7.1...@metamask/snaps-execution-environments@6.7.2
-[6.7.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.7.0...@metamask/snaps-execution-environments@6.7.1
-[6.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.6.2...@metamask/snaps-execution-environments@6.7.0
-[6.6.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.6.1...@metamask/snaps-execution-environments@6.6.2
-[6.6.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.6.0...@metamask/snaps-execution-environments@6.6.1
-[6.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.5.0...@metamask/snaps-execution-environments@6.6.0
-[6.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.4.0...@metamask/snaps-execution-environments@6.5.0
-[6.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.3.0...@metamask/snaps-execution-environments@6.4.0
-[6.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.2.0...@metamask/snaps-execution-environments@6.3.0
-[6.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.1.0...@metamask/snaps-execution-environments@6.2.0
-[6.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.0.2...@metamask/snaps-execution-environments@6.1.0
-[6.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.0.1...@metamask/snaps-execution-environments@6.0.2
-[6.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.0.0...@metamask/snaps-execution-environments@6.0.1
-[6.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@5.0.4...@metamask/snaps-execution-environments@6.0.0
-[5.0.4]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@5.0.3...@metamask/snaps-execution-environments@5.0.4
-[5.0.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@5.0.2...@metamask/snaps-execution-environments@5.0.3
-[5.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@5.0.1...@metamask/snaps-execution-environments@5.0.2
-[5.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@5.0.0...@metamask/snaps-execution-environments@5.0.1
-[5.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@4.0.1...@metamask/snaps-execution-environments@5.0.0
-[4.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@4.0.0...@metamask/snaps-execution-environments@4.0.1
-[4.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@3.5.0...@metamask/snaps-execution-environments@4.0.0
-[3.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@3.4.3...@metamask/snaps-execution-environments@3.5.0
-[3.4.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@3.4.2...@metamask/snaps-execution-environments@3.4.3
-[3.4.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@3.4.1...@metamask/snaps-execution-environments@3.4.2
-[3.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@3.4.0...@metamask/snaps-execution-environments@3.4.1
-[3.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@3.3.0...@metamask/snaps-execution-environments@3.4.0
-[3.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@3.2.0...@metamask/snaps-execution-environments@3.3.0
-[3.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@3.1.0...@metamask/snaps-execution-environments@3.2.0
-[3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@3.0.0...@metamask/snaps-execution-environments@3.1.0
-[3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@2.0.1...@metamask/snaps-execution-environments@3.0.0
-[2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@2.0.0...@metamask/snaps-execution-environments@2.0.1
-[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@0.39.0-flask.1...@metamask/snaps-execution-environments@2.0.0
-[0.39.0-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@0.38.3-flask.1...@metamask/snaps-execution-environments@0.39.0-flask.1
-[0.38.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@0.38.2-flask.1...@metamask/snaps-execution-environments@0.38.3-flask.1
-[0.38.2-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@0.38.1-flask.1...@metamask/snaps-execution-environments@0.38.2-flask.1
-[0.38.1-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@0.38.0-flask.1...@metamask/snaps-execution-environments@0.38.1-flask.1
-[0.38.0-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@0.37.3-flask.1...@metamask/snaps-execution-environments@0.38.0-flask.1
-[0.37.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@0.37.2-flask.1...@metamask/snaps-execution-environments@0.37.3-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/snaps-execution-environments@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.10.0...HEAD
+[6.10.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.9.2...@metamask/snaps-execution-environments@6.10.0
+[6.9.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.9.1...@metamask/snaps-execution-environments@6.9.2
+[6.9.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.9.0...@metamask/snaps-execution-environments@6.9.1
+[6.9.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.8.0...@metamask/snaps-execution-environments@6.9.0
+[6.8.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.7.2...@metamask/snaps-execution-environments@6.8.0
+[6.7.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.7.1...@metamask/snaps-execution-environments@6.7.2
+[6.7.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.7.0...@metamask/snaps-execution-environments@6.7.1
+[6.7.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.6.2...@metamask/snaps-execution-environments@6.7.0
+[6.6.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.6.1...@metamask/snaps-execution-environments@6.6.2
+[6.6.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.6.0...@metamask/snaps-execution-environments@6.6.1
+[6.6.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.5.0...@metamask/snaps-execution-environments@6.6.0
+[6.5.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.4.0...@metamask/snaps-execution-environments@6.5.0
+[6.4.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.3.0...@metamask/snaps-execution-environments@6.4.0
+[6.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.2.0...@metamask/snaps-execution-environments@6.3.0
+[6.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.1.0...@metamask/snaps-execution-environments@6.2.0
+[6.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.0.2...@metamask/snaps-execution-environments@6.1.0
+[6.0.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.0.1...@metamask/snaps-execution-environments@6.0.2
+[6.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@6.0.0...@metamask/snaps-execution-environments@6.0.1
+[6.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@5.0.4...@metamask/snaps-execution-environments@6.0.0
+[5.0.4]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@5.0.3...@metamask/snaps-execution-environments@5.0.4
+[5.0.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@5.0.2...@metamask/snaps-execution-environments@5.0.3
+[5.0.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@5.0.1...@metamask/snaps-execution-environments@5.0.2
+[5.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@5.0.0...@metamask/snaps-execution-environments@5.0.1
+[5.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@4.0.1...@metamask/snaps-execution-environments@5.0.0
+[4.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@4.0.0...@metamask/snaps-execution-environments@4.0.1
+[4.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@3.5.0...@metamask/snaps-execution-environments@4.0.0
+[3.5.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@3.4.3...@metamask/snaps-execution-environments@3.5.0
+[3.4.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@3.4.2...@metamask/snaps-execution-environments@3.4.3
+[3.4.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@3.4.1...@metamask/snaps-execution-environments@3.4.2
+[3.4.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@3.4.0...@metamask/snaps-execution-environments@3.4.1
+[3.4.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@3.3.0...@metamask/snaps-execution-environments@3.4.0
+[3.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@3.2.0...@metamask/snaps-execution-environments@3.3.0
+[3.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@3.1.0...@metamask/snaps-execution-environments@3.2.0
+[3.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@3.0.0...@metamask/snaps-execution-environments@3.1.0
+[3.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@2.0.1...@metamask/snaps-execution-environments@3.0.0
+[2.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@2.0.0...@metamask/snaps-execution-environments@2.0.1
+[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@0.39.0-flask.1...@metamask/snaps-execution-environments@2.0.0
+[0.39.0-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@0.38.3-flask.1...@metamask/snaps-execution-environments@0.39.0-flask.1
+[0.38.3-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@0.38.2-flask.1...@metamask/snaps-execution-environments@0.38.3-flask.1
+[0.38.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@0.38.1-flask.1...@metamask/snaps-execution-environments@0.38.2-flask.1
+[0.38.1-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@0.38.0-flask.1...@metamask/snaps-execution-environments@0.38.1-flask.1
+[0.38.0-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@0.37.3-flask.1...@metamask/snaps-execution-environments@0.38.0-flask.1
+[0.37.3-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-execution-environments@0.37.2-flask.1...@metamask/snaps-execution-environments@0.37.3-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/snaps-execution-environments@0.37.2-flask.1
