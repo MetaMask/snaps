@@ -15,6 +15,7 @@ import {
   assertIsOnSignatureRequestArguments,
   assertIsOnNameLookupRequestArguments,
   assertIsOnUserInputRequestArguments,
+  assertIsOnProtocolRequestArguments,
 } from './validation';
 
 export type CommandMethodsMapping = {
@@ -74,6 +75,14 @@ export function getHandlerArguments(
             address,
           };
     }
+
+    case HandlerType.OnProtocolRequest: {
+      assertIsOnProtocolRequestArguments(request.params);
+
+      const { request: nestedRequest, scope } = request.params;
+      return { origin, request: nestedRequest, scope };
+    }
+
     case HandlerType.OnRpcRequest:
     case HandlerType.OnKeyringRequest:
       return { origin, request };

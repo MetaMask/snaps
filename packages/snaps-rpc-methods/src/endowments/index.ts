@@ -27,6 +27,11 @@ import {
 } from './name-lookup';
 import { networkAccessEndowmentBuilder } from './network-access';
 import {
+  getProtocolCaveatMapper,
+  protocolCaveatSpecifications,
+  protocolEndowmentBuilder,
+} from './protocol';
+import {
   getRpcCaveatMapper,
   rpcCaveatSpecifications,
   rpcEndowmentBuilder,
@@ -57,6 +62,7 @@ export const endowmentPermissionBuilders = {
   [lifecycleHooksEndowmentBuilder.targetName]: lifecycleHooksEndowmentBuilder,
   [keyringEndowmentBuilder.targetName]: keyringEndowmentBuilder,
   [settingsPageEndowmentBuilder.targetName]: settingsPageEndowmentBuilder,
+  [protocolEndowmentBuilder.targetName]: protocolEndowmentBuilder,
   [homePageEndowmentBuilder.targetName]: homePageEndowmentBuilder,
   [signatureInsightEndowmentBuilder.targetName]:
     signatureInsightEndowmentBuilder,
@@ -70,6 +76,7 @@ export const endowmentCaveatSpecifications = {
   ...keyringCaveatSpecifications,
   ...signatureInsightCaveatSpecifications,
   ...maxRequestTimeCaveatSpecifications,
+  ...protocolCaveatSpecifications,
 };
 
 export const endowmentCaveatMappers: Record<
@@ -89,6 +96,9 @@ export const endowmentCaveatMappers: Record<
   ),
   [keyringEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
     getKeyringCaveatMapper,
+  ),
+  [protocolEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
+    getProtocolCaveatMapper,
   ),
   [signatureInsightEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
     getSignatureInsightCaveatMapper,
@@ -110,6 +120,7 @@ export const handlerEndowments: Record<HandlerType, string | null> = {
   [HandlerType.OnHomePage]: homePageEndowmentBuilder.targetName,
   [HandlerType.OnSettingsPage]: settingsPageEndowmentBuilder.targetName,
   [HandlerType.OnSignature]: signatureInsightEndowmentBuilder.targetName,
+  [HandlerType.OnProtocolRequest]: protocolEndowmentBuilder.targetName,
   [HandlerType.OnUserInput]: null,
 };
 
@@ -121,3 +132,4 @@ export { getChainIdsCaveat, getLookupMatchersCaveat } from './name-lookup';
 export { getKeyringCaveatOrigins } from './keyring';
 export { getMaxRequestTimeCaveat } from './caveats';
 export { getCronjobCaveatJobs } from './cronjob';
+export { getProtocolCaveatScopes } from './protocol';
