@@ -86,6 +86,7 @@ export function getHandlerArguments(
       return { origin };
 
     case HandlerType.OnHomePage:
+    case HandlerType.OnSettingsPage:
       return {};
     case HandlerType.OnUserInput: {
       assertIsOnUserInputRequestArguments(request.params);

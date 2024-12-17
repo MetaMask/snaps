@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.16.0]
+
+### Added
+
+- Add support for `onSettingsPage` export ([#2911](https://github.com/MetaMask/snaps/pull/2911))
+
+### Fixed
+
+- Use `BigInt` for processing insight chain IDs ([#2935](https://github.com/MetaMask/snaps/pull/2935))
+
 ## [9.15.0]
 
 ### Added
@@ -580,7 +590,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.15.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.16.0...HEAD
+[9.16.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.15.0...@metamask/snaps-controllers@9.16.0
 [9.15.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.14.0...@metamask/snaps-controllers@9.15.0
 [9.14.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.13.0...@metamask/snaps-controllers@9.14.0
 [9.13.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.12.0...@metamask/snaps-controllers@9.13.0

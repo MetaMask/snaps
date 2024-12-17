@@ -173,6 +173,11 @@ export type SnapInterfaceActions = {
     file: string | Uint8Array,
     options?: FileOptions,
   ): Promise<void>;
+
+  /**
+   * Wait for the interface to be updated.
+   */
+  waitForUpdate: () => Promise<SnapHandlerInterface>;
 };
 
 /**
@@ -419,6 +424,13 @@ export type Snap = {
    * @returns The response.
    */
   onHomePage(): Promise<SnapResponseWithInterface>;
+
+  /**
+   * Get the response from the snap's `onSettingsPage` method.
+   *
+   * @returns The response.
+   */
+  onSettingsPage(): Promise<SnapResponseWithInterface>;
 
   /**
    * Send a keyring to the Snap.

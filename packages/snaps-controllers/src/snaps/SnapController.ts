@@ -90,6 +90,7 @@ import {
   OnNameLookupResponseStruct,
   getLocalizedSnapManifest,
   MAX_FILE_SIZE,
+  OnSettingsPageResponseStruct,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
 import {
@@ -3463,7 +3464,8 @@ export class SnapController extends BaseController<
     switch (handlerType) {
       case HandlerType.OnTransaction:
       case HandlerType.OnSignature:
-      case HandlerType.OnHomePage: {
+      case HandlerType.OnHomePage:
+      case HandlerType.OnSettingsPage: {
         // Since this type has been asserted earlier we can cast
         const castResult = result as Record<string, Json> | null;
 
@@ -3517,6 +3519,15 @@ export class SnapController extends BaseController<
       }
       case HandlerType.OnHomePage: {
         assertStruct(result, OnHomePageResponseStruct);
+
+        if (result && hasProperty(result, 'id')) {
+          this.#assertInterfaceExists(snapId, result.id as string);
+        }
+
+        break;
+      }
+      case HandlerType.OnSettingsPage: {
+        assertStruct(result, OnSettingsPageResponseStruct);
 
         if (result && hasProperty(result, 'id')) {
           this.#assertInterfaceExists(snapId, result.id as string);

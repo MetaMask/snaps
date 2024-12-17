@@ -115,6 +115,7 @@ describe('handleRequest', () => {
       selectInDropdown: expect.any(Function),
       typeInField: expect.any(Function),
       uploadFile: expect.any(Function),
+      waitForUpdate: expect.any(Function),
     });
 
     await closeServer();
@@ -346,6 +347,7 @@ describe('getInterfaceApi', () => {
       selectFromRadioGroup: expect.any(Function),
       selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
+      waitForUpdate: expect.any(Function),
     });
   });
 
@@ -379,6 +381,7 @@ describe('getInterfaceApi', () => {
       selectFromRadioGroup: expect.any(Function),
       selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
+      waitForUpdate: expect.any(Function),
     });
   });
 

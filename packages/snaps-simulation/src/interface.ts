@@ -1,3 +1,4 @@
+import type { SnapInterfaceControllerState } from '@metamask/snaps-controllers';
 import type { DialogApprovalTypes } from '@metamask/snaps-rpc-methods';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import type {
@@ -19,6 +20,7 @@ import {
 } from '@metamask/snaps-utils';
 import { assertExhaustive, hasProperty } from '@metamask/utils';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import deepEqual from 'fast-deep-equal';
 import { type SagaIterator } from 'redux-saga';
 import { call, put, select, take } from 'redux-saga/effects';
 
@@ -26,7 +28,12 @@ import type { RootControllerMessenger } from './controllers';
 import { getFileSize, getFileToUpload } from './files';
 import type { Interface, RunSagaFunction } from './store';
 import { getCurrentInterface, resolveInterface, setInterface } from './store';
-import type { FileOptions, SnapInterface, SnapInterfaceActions } from './types';
+import type {
+  FileOptions,
+  SnapHandlerInterface,
+  SnapInterface,
+  SnapInterfaceActions,
+} from './types';
 
 /**
  * The maximum file size that can be uploaded.
@@ -753,6 +760,48 @@ export async function selectFromSelector(
 }
 
 /**
+ * Wait for an interface to be updated.
+ *
+ * @param controllerMessenger - The controller messenger used to call actions.
+ * @param snapId - The Snap ID.
+ * @param id - The interface ID.
+ * @param originalContent - The original interface content.
+ * @returns A promise that resolves to the updated interface.
+ */
+export async function waitForUpdate(
+  controllerMessenger: RootControllerMessenger,
+  snapId: SnapId,
+  id: string,
+  originalContent: JSXElement,
+) {
+  return new Promise<SnapHandlerInterface>((resolve) => {
+    const listener = (state: SnapInterfaceControllerState) => {
+      const currentInterface = state.interfaces[id];
+      const newContent = currentInterface?.content;
+
+      if (!deepEqual(originalContent, newContent)) {
+        controllerMessenger.unsubscribe(
+          'SnapInterfaceController:stateChange',
+          listener,
+        );
+
+        const actions = getInterfaceActions(snapId, controllerMessenger, {
+          content: newContent,
+          id,
+        });
+
+        resolve({ ...actions, content: newContent });
+      }
+    };
+
+    controllerMessenger.subscribe(
+      'SnapInterfaceController:stateChange',
+      listener,
+    );
+  });
+}
+
+/**
  * Get a formatted file size.
  *
  * @param size - The file size in bytes.
@@ -923,6 +972,9 @@ export function getInterfaceActions(
         options,
       );
     },
+
+    waitForUpdate: async () =>
+      waitForUpdate(controllerMessenger, snapId, id, content),
   };
 }
 

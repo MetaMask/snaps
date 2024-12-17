@@ -411,6 +411,7 @@ describe('installSnap', () => {
         selectFromRadioGroup: expect.any(Function),
         selectFromSelector: expect.any(Function),
         uploadFile: expect.any(Function),
+        waitForUpdate: expect.any(Function),
         ok: expect.any(Function),
         cancel: expect.any(Function),
       });
@@ -473,6 +474,7 @@ describe('installSnap', () => {
         selectFromRadioGroup: expect.any(Function),
         selectFromSelector: expect.any(Function),
         uploadFile: expect.any(Function),
+        waitForUpdate: expect.any(Function),
         ok: expect.any(Function),
         cancel: expect.any(Function),
       });
@@ -535,6 +537,7 @@ describe('installSnap', () => {
         selectFromRadioGroup: expect.any(Function),
         selectFromSelector: expect.any(Function),
         uploadFile: expect.any(Function),
+        waitForUpdate: expect.any(Function),
         ok: expect.any(Function),
       });
 
@@ -762,6 +765,32 @@ describe('installSnap', () => {
 
       const { onHomePage, close } = await installSnap(snapId);
       const response = await onHomePage();
+
+      expect(response).toStrictEqual(
+        expect.objectContaining({
+          getInterface: expect.any(Function),
+        }),
+      );
+
+      await close();
+      await closeServer();
+    });
+  });
+
+  describe('getSettingsPage', () => {
+    it('sends a OnSettingsPage request and returns the result', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+
+      const { snapId, close: closeServer } = await getMockServer({
+        sourceCode: `
+          module.exports.onSettingsPage = async () => {
+            return { content: { type: 'text', value: 'Hello, world!' } };
+          };
+         `,
+      });
+
+      const { onSettingsPage, close } = await installSnap(snapId);
+      const response = await onSettingsPage();
 
       expect(response).toStrictEqual(
         expect.objectContaining({

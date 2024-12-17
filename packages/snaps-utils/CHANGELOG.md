@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.7.0]
+
+### Added
+
+- Add `onSettingsPage` export ([#2911](https://github.com/MetaMask/snaps/pull/2911))
+- Automatically add `platformVersion` to manifest ([#2938](https://github.com/MetaMask/snaps/pull/2938))
+
 ## [8.6.1]
 
 ### Changed
@@ -497,7 +504,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.6.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.7.0...HEAD
+[8.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.6.1...@metamask/snaps-utils@8.7.0
 [8.6.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.6.0...@metamask/snaps-utils@8.6.1
 [8.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.5.2...@metamask/snaps-utils@8.6.0
 [8.5.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.5.1...@metamask/snaps-utils@8.5.2

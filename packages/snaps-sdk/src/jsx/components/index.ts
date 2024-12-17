@@ -1,5 +1,6 @@
 import type { AddressElement } from './Address';
 import type { AvatarElement } from './Avatar';
+import type { BannerElement } from './Banner';
 import type { BoxElement } from './Box';
 import type { CardElement } from './Card';
 import type { ContainerElement } from './Container';
@@ -39,6 +40,7 @@ export * from './Tooltip';
 export * from './Footer';
 export * from './Container';
 export * from './Section';
+export * from './Banner';
 
 /**
  * A built-in JSX element, which can be used in a Snap user interface.
@@ -63,4 +65,5 @@ export type JSXElement =
   | SectionElement
   | SpinnerElement
   | TextElement
-  | TooltipElement;
+  | TooltipElement
+  | BannerElement;

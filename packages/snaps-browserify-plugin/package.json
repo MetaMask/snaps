@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-browserify-plugin",
-  "version": "4.1.2",
+  "version": "4.2.0",
   "description": "A Browserify plugin to build MetaMask Snaps with Browserify",
   "keywords": [
     "MetaMask",

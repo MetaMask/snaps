@@ -19,6 +19,7 @@ import {
   tuple,
   refine,
   assign,
+  union,
 } from '@metamask/superstruct';
 import {
   CaipAccountIdStruct,
@@ -82,6 +83,7 @@ import {
   type SectionElement,
   type SelectorElement,
   type SelectorOptionElement,
+  type BannerElement,
   IconName,
 } from './components';
 
@@ -721,6 +723,9 @@ export const TextStruct: Describe<TextElement> = element('Text', {
     ]),
   ),
   size: optional(nullUnion([literal('sm'), literal('md')])),
+  fontWeight: optional(
+    nullUnion([literal('regular'), literal('medium'), literal('bold')]),
+  ),
 });
 
 /**
@@ -764,6 +769,27 @@ export const TooltipContentStruct = selectiveUnion((value) => {
 export const TooltipStruct: Describe<TooltipElement> = element('Tooltip', {
   children: nullable(TooltipChildStruct),
   content: TooltipContentStruct,
+});
+
+/**
+ * A struct for the {@link BannerElement} type.
+ */
+export const BannerStruct: Describe<BannerElement> = element('Banner', {
+  children: children([
+    TextStruct,
+    LinkStruct,
+    IconStruct,
+    ButtonStruct,
+    BoldStruct,
+    ItalicStruct,
+  ]),
+  title: string(),
+  severity: union([
+    literal('danger'),
+    literal('info'),
+    literal('success'),
+    literal('warning'),
+  ]),
 });
 
 /**
@@ -821,6 +847,7 @@ export const BoxChildStruct = typedUnion([
   SelectorStruct,
   SectionStruct,
   AvatarStruct,
+  BannerStruct,
 ]);
 
 /**
@@ -886,6 +913,7 @@ export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   SelectorOptionStruct,
   SectionStruct,
   AvatarStruct,
+  BannerStruct,
 ]);
 
 /**
