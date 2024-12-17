@@ -33,6 +33,7 @@ import {
   SelectorOption,
   Section,
   Avatar,
+  Banner,
 } from './components';
 import {
   AddressStruct,
@@ -70,6 +71,7 @@ import {
   SelectorStruct,
   SectionStruct,
   AvatarStruct,
+  BannerStruct,
 } from './validation';
 
 describe('KeyStruct', () => {
@@ -1569,5 +1571,34 @@ describe('assertJSXElement', () => {
     expect(() => {
       assertJSXElement(value);
     }).not.toThrow();
+  });
+});
+
+describe('BannerStruct', () => {
+  it.each([
+    <Banner title="foo" severity="info">
+      <Text>bar</Text>
+    </Banner>,
+  ])(`validates a banner element`, (value) => {
+    expect(is(value, BannerStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <Banner />,
+    // @ts-expect-error - Invalid props.
+    <Banner foo="bar">foo</Banner>,
+    // @ts-expect-error - Invalid props.
+    <Banner title={<Copyable value="bar" />} severity="info">
+      <Text>foo</Text>
+    </Banner>,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, BannerStruct)).toBe(false);
   });
 });
