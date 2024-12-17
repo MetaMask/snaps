@@ -1,7 +1,6 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { errorCodes } from '@metamask/rpc-errors';
 import type { SetStateResult } from '@metamask/snaps-sdk';
-import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
 import { setStateHandler, type SetStateParameters, set } from './setState';
@@ -21,13 +20,6 @@ describe('snap_setState', () => {
   });
 
   describe('implementation', () => {
-    const createOriginMiddleware =
-      (origin: string) =>
-      (request: any, _response: unknown, next: () => void, _end: unknown) => {
-        request.origin = origin;
-        next();
-      };
-
     it('sets the encrypted state', async () => {
       const { implementation } = setStateHandler;
 
@@ -48,7 +40,6 @@ describe('snap_setState', () => {
 
       const engine = new JsonRpcEngine();
 
-      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<SetStateParameters>,
@@ -72,11 +63,7 @@ describe('snap_setState', () => {
       });
 
       expect(getUnlockPromise).toHaveBeenCalled();
-      expect(updateSnapState).toHaveBeenCalledWith(
-        MOCK_SNAP_ID,
-        { foo: 'baz' },
-        true,
-      );
+      expect(updateSnapState).toHaveBeenCalledWith({ foo: 'baz' }, true);
 
       expect(response).toStrictEqual({
         jsonrpc: '2.0',
@@ -105,7 +92,6 @@ describe('snap_setState', () => {
 
       const engine = new JsonRpcEngine();
 
-      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<SetStateParameters>,
@@ -130,11 +116,7 @@ describe('snap_setState', () => {
       });
 
       expect(getUnlockPromise).toHaveBeenCalled();
-      expect(updateSnapState).toHaveBeenCalledWith(
-        MOCK_SNAP_ID,
-        { foo: 'baz' },
-        true,
-      );
+      expect(updateSnapState).toHaveBeenCalledWith({ foo: 'baz' }, true);
 
       expect(response).toStrictEqual({
         jsonrpc: '2.0',
@@ -163,7 +145,6 @@ describe('snap_setState', () => {
 
       const engine = new JsonRpcEngine();
 
-      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<SetStateParameters>,
@@ -189,7 +170,6 @@ describe('snap_setState', () => {
 
       expect(getUnlockPromise).not.toHaveBeenCalled();
       expect(updateSnapState).toHaveBeenCalledWith(
-        MOCK_SNAP_ID,
         {
           foo: 'baz',
         },
@@ -223,7 +203,6 @@ describe('snap_setState', () => {
 
       const engine = new JsonRpcEngine();
 
-      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<SetStateParameters>,
@@ -276,7 +255,6 @@ describe('snap_setState', () => {
 
       const engine = new JsonRpcEngine();
 
-      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<SetStateParameters>,
@@ -327,7 +305,6 @@ describe('snap_setState', () => {
 
       const engine = new JsonRpcEngine();
 
-      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<SetStateParameters>,

@@ -37,7 +37,7 @@ export type ClearStateHooks = {
   /**
    * A function that clears the state of the requesting Snap.
    */
-  clearSnapState: (snapId: string, encrypted: boolean) => void;
+  clearSnapState: (encrypted: boolean) => void;
 
   /**
    * Check if the requesting origin has a given permission.
@@ -89,10 +89,7 @@ async function clearStateImplementation(
     const validatedParams = getValidatedParams(params);
     const { encrypted = true } = validatedParams;
 
-    // We expect the MM middleware stack to always add the origin to requests
-    const { origin } = request as JsonRpcRequest & { origin: string };
-    clearSnapState(origin, encrypted);
-
+    clearSnapState(encrypted);
     response.result = null;
   } catch (error) {
     return end(error);

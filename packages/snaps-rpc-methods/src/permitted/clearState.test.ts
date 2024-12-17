@@ -1,7 +1,6 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { errorCodes } from '@metamask/rpc-errors';
 import type { ClearStateResult } from '@metamask/snaps-sdk';
-import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { ClearStateParameters } from './clearState';
@@ -22,13 +21,6 @@ describe('snap_clearState', () => {
   });
 
   describe('implementation', () => {
-    const createOriginMiddleware =
-      (origin: string) =>
-      (request: any, _response: unknown, next: () => void, _end: unknown) => {
-        request.origin = origin;
-        next();
-      };
-
     it('returns the result from the `clearSnapState` hook', async () => {
       const { implementation } = clearStateHandler;
 
@@ -42,7 +34,6 @@ describe('snap_clearState', () => {
 
       const engine = new JsonRpcEngine();
 
-      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<ClearStateParameters>,
@@ -62,7 +53,7 @@ describe('snap_clearState', () => {
         params: {},
       });
 
-      expect(clearSnapState).toHaveBeenCalledWith(MOCK_SNAP_ID, true);
+      expect(clearSnapState).toHaveBeenCalledWith(true);
       expect(response).toStrictEqual({
         jsonrpc: '2.0',
         id: 1,
@@ -83,7 +74,6 @@ describe('snap_clearState', () => {
 
       const engine = new JsonRpcEngine();
 
-      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<ClearStateParameters>,
@@ -105,7 +95,7 @@ describe('snap_clearState', () => {
         },
       });
 
-      expect(clearSnapState).toHaveBeenCalledWith(MOCK_SNAP_ID, false);
+      expect(clearSnapState).toHaveBeenCalledWith(false);
       expect(response).toStrictEqual({
         jsonrpc: '2.0',
         id: 1,

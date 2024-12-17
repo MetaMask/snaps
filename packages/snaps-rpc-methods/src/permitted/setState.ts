@@ -54,10 +54,7 @@ export type SetStateHooks = {
    * @param encrypted - Whether the state is encrypted.
    * @returns The current state of the Snap.
    */
-  getSnapState: (
-    snapId: string,
-    encrypted: boolean,
-  ) => Promise<Record<string, Json>>;
+  getSnapState: (encrypted: boolean) => Promise<Record<string, Json>>;
 
   /**
    * Wait for the extension to be unlocked.
@@ -74,7 +71,6 @@ export type SetStateHooks = {
    * @param encrypted - Whether the state should be encrypted.
    */
   updateSnapState: (
-    snapId: string,
     newState: Record<string, Json>,
     encrypted: boolean,
   ) => Promise<void>;
@@ -133,10 +129,6 @@ async function setStateImplementation(
       await getUnlockPromise(true);
     }
 
-    // We expect the MM middleware stack to always add the origin to requests
-    const { origin } = request as JsonRpcRequest & { origin: string };
-    const state = await getSnapState(origin, encrypted);
-
     if (key === undefined && !isPlainObject(value)) {
       return end(
         rpcErrors.invalidParams(
@@ -145,8 +137,8 @@ async function setStateImplementation(
       );
     }
 
-    const newState = set(state, key, value);
-    await updateSnapState(origin, newState, encrypted);
+    const newState = await getNewState(key, value, getSnapState);
+    await updateSnapState(newState, encrypted);
     response.result = null;
   } catch (error) {
     return end(error);
@@ -174,6 +166,35 @@ function getValidatedParams(params?: unknown) {
     /* istanbul ignore next */
     throw rpcErrors.internal();
   }
+}
+
+/**
+ * Get the new state of the Snap.
+ *
+ * If the key is `undefined`, the value is expected to be an object. In this
+ * case, the value is returned as the new state.
+ *
+ * If the key is not `undefined`, the value is set in the state at the key. If
+ * the key does not exist, it is created (and any missing intermediate keys are
+ * created as well).
+ *
+ * @param key - The key to set.
+ * @param value - The value to set the key to.
+ * @param getSnapState - The `getSnapState` hook.
+ * @returns The new state of the Snap.
+ */
+async function getNewState(
+  key: string | undefined,
+  value: Json,
+  getSnapState: SetStateHooks['getSnapState'],
+) {
+  if (key === undefined) {
+    assert(isPlainObject(value));
+    return value;
+  }
+
+  const state = await getSnapState(false);
+  return set(state, key, value);
 }
 
 /**

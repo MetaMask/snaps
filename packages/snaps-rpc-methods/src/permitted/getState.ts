@@ -50,10 +50,7 @@ export type GetStateHooks = {
    *
    * @returns The current state of the Snap.
    */
-  getSnapState: (
-    snapId: string,
-    encrypted: boolean,
-  ) => Promise<Record<string, Json>>;
+  getSnapState: (encrypted: boolean) => Promise<Record<string, Json>>;
 
   /**
    * Wait for the extension to be unlocked.
@@ -109,10 +106,7 @@ async function getStateImplementation(
       await getUnlockPromise(true);
     }
 
-    // We expect the MM middleware stack to always add the origin to requests
-    const { origin } = request as JsonRpcRequest & { origin: string };
-    const state = await getSnapState(origin, encrypted);
-
+    const state = await getSnapState(encrypted);
     response.result = get(state, key);
   } catch (error) {
     return end(error);
