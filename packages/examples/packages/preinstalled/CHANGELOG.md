@@ -9,12 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.3.0]
 
-### Uncategorized
+### Added
 
-- Move `onSettingsPage` example to Preinstalled example snap ([#2962](https://github.com/MetaMask/snaps-skunkworks.git/pull/2962))
-- feat: Automatically add `platformVersion` to manifest ([#2938](https://github.com/MetaMask/snaps-skunkworks.git/pull/2938))
-- feat: Allow async initialization logic ([#2918](https://github.com/MetaMask/snaps-skunkworks.git/pull/2918))
-- chore: Bump MetaMask dependencies ([#2853](https://github.com/MetaMask/snaps-skunkworks.git/pull/2853))
+- Add `onSettingsPage` example logic ([#2911](https://github.com/MetaMask/snaps/pull/2911), [#2962](https://github.com/MetaMask/snaps/pull/2962))
 
 ## [0.2.0]
 
@@ -28,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add preinstalled example Snap ([#2721](https://github.com/MetaMask/snaps/pull/2721))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/preinstalled-example-snap@0.3.0...HEAD
-[0.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/preinstalled-example-snap@0.2.0...@metamask/preinstalled-example-snap@0.3.0
-[0.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/preinstalled-example-snap@0.1.0...@metamask/preinstalled-example-snap@0.2.0
-[0.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/preinstalled-example-snap@0.1.0
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.3.0...HEAD
+[0.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.2.0...@metamask/preinstalled-example-snap@0.3.0
+[0.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.1.0...@metamask/preinstalled-example-snap@0.2.0
+[0.1.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/preinstalled-example-snap@0.1.0
