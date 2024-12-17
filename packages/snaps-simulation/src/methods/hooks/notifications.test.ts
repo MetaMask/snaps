@@ -46,6 +46,9 @@ describe('getShowInAppNotificationImplementation', () => {
         id: expect.any(String),
         type: NotificationType.InApp,
         message: 'message',
+        content: undefined,
+        title: undefined,
+        footerLink: undefined,
       },
     ]);
   });
