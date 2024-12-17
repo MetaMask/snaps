@@ -18,7 +18,7 @@ import {
   refine,
   string,
 } from '@metamask/superstruct';
-import { type PendingJsonRpcResponse } from '@metamask/utils';
+import { assert, type PendingJsonRpcResponse } from '@metamask/utils';
 import { DateTime } from 'luxon';
 
 import { SnapEndowments } from '../endowments';
@@ -114,7 +114,9 @@ async function getScheduleBackgroundEventImplementation(
       .startOf('second')
       .toISO({
         suppressMilliseconds: true,
-      }) as string;
+      });
+
+    assert(truncatedDate);
 
     const id = scheduleBackgroundEvent({ date: truncatedDate, request });
     res.result = id;
