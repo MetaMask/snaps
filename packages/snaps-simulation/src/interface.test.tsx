@@ -50,6 +50,7 @@ import {
   typeInField,
   uploadFile,
   selectFromSelector,
+  waitForUpdate,
 } from './interface';
 import type { RunSagaFunction } from './store';
 import { createStore, resolveInterface, setInterface } from './store';
@@ -90,6 +91,7 @@ describe('getInterfaceResponse', () => {
     selectFromRadioGroup: jest.fn(),
     selectFromSelector: jest.fn(),
     uploadFile: jest.fn(),
+    waitForUpdate: jest.fn(),
   };
 
   it('returns an `ok` function that resolves the user interface with `null` for alert dialogs', async () => {
@@ -111,6 +113,7 @@ describe('getInterfaceResponse', () => {
       selectFromRadioGroup: expect.any(Function),
       selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
+      waitForUpdate: expect.any(Function),
       ok: expect.any(Function),
     });
 
@@ -138,6 +141,7 @@ describe('getInterfaceResponse', () => {
       selectFromRadioGroup: expect.any(Function),
       selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
+      waitForUpdate: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -166,6 +170,7 @@ describe('getInterfaceResponse', () => {
       selectFromRadioGroup: expect.any(Function),
       selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
+      waitForUpdate: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -194,6 +199,7 @@ describe('getInterfaceResponse', () => {
       selectFromRadioGroup: expect.any(Function),
       selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
+      waitForUpdate: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -222,6 +228,7 @@ describe('getInterfaceResponse', () => {
       selectFromRadioGroup: expect.any(Function),
       selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
+      waitForUpdate: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -250,6 +257,7 @@ describe('getInterfaceResponse', () => {
       selectFromRadioGroup: expect.any(Function),
       selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
+      waitForUpdate: expect.any(Function),
       ok: expect.any(Function),
       cancel: expect.any(Function),
     });
@@ -296,6 +304,7 @@ describe('getInterfaceResponse', () => {
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
       selectFromSelector: expect.any(Function),
+      waitForUpdate: expect.any(Function),
       uploadFile: expect.any(Function),
     });
   });
@@ -336,6 +345,7 @@ describe('getInterfaceResponse', () => {
       selectFromRadioGroup: expect.any(Function),
       selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
+      waitForUpdate: expect.any(Function),
       cancel: expect.any(Function),
     });
   });
@@ -370,6 +380,7 @@ describe('getInterfaceResponse', () => {
       selectFromRadioGroup: expect.any(Function),
       selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
+      waitForUpdate: expect.any(Function),
       cancel: expect.any(Function),
       ok: expect.any(Function),
     });
@@ -1250,6 +1261,7 @@ describe('getInterface', () => {
       selectFromRadioGroup: expect.any(Function),
       selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
+      waitForUpdate: expect.any(Function),
       ok: expect.any(Function),
     });
   });
@@ -1280,6 +1292,7 @@ describe('getInterface', () => {
       selectFromRadioGroup: expect.any(Function),
       selectFromSelector: expect.any(Function),
       uploadFile: expect.any(Function),
+      waitForUpdate: expect.any(Function),
       ok: expect.any(Function),
     });
   });
@@ -1467,6 +1480,41 @@ describe('getInterface', () => {
         },
       },
     );
+  });
+
+  it('waits for the interface content to update when `waitForUpdate` is called', async () => {
+    jest.spyOn(rootControllerMessenger, 'call');
+    const { store, runSaga } = createStore(getMockOptions());
+
+    const content = (
+      <Box>
+        <Input name="foo" />
+      </Box>
+    );
+    const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
+    const type = DialogType.Alert;
+    const ui = { type: DIALOG_APPROVAL_TYPES[type], id };
+
+    store.dispatch(setInterface(ui));
+
+    const result = await runSaga(
+      getInterface,
+      runSaga,
+      MOCK_SNAP_ID,
+      rootControllerMessenger,
+    ).toPromise();
+
+    const promise = result.waitForUpdate();
+
+    await interfaceController.updateInterface(
+      MOCK_SNAP_ID,
+      id,
+      <Text>Hello world!</Text>,
+    );
+
+    const newInterface = await promise;
+
+    expect(newInterface.content.type).toBe('Text');
   });
 });
 
@@ -1759,5 +1807,42 @@ describe('selectFromSelector', () => {
     ).rejects.toThrow(
       'Expected an element of type "Selector", but found "Input".',
     );
+  });
+});
+
+describe('waitForUpdate', () => {
+  const rootControllerMessenger = getRootControllerMessenger();
+  const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+    rootControllerMessenger,
+  );
+
+  const interfaceController = new SnapInterfaceController({
+    messenger: controllerMessenger,
+  });
+
+  it('waits for the interface content to update', async () => {
+    const content = <Input name="foo" />;
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    const promise = waitForUpdate(
+      rootControllerMessenger,
+      MOCK_SNAP_ID,
+      interfaceId,
+      content,
+    );
+
+    await interfaceController.updateInterface(
+      MOCK_SNAP_ID,
+      interfaceId,
+      <Text>Hello world!</Text>,
+    );
+
+    const newInterface = await promise;
+
+    expect(newInterface.content.type).toBe('Text');
   });
 });

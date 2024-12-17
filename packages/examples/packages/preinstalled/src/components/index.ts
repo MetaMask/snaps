@@ -1,2 +1,3 @@
-export * from './dialog';
-export * from './result';
+export * from './Dialog';
+export * from './Result';
+export * from './Settings';

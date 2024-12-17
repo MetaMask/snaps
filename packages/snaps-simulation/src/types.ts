@@ -173,6 +173,11 @@ export type SnapInterfaceActions = {
     file: string | Uint8Array,
     options?: FileOptions,
   ): Promise<void>;
+
+  /**
+   * Wait for the interface to be updated.
+   */
+  waitForUpdate: () => Promise<SnapHandlerInterface>;
 };
 
 /**
