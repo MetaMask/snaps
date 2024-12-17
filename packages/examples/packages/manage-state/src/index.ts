@@ -3,7 +3,12 @@ import {
   type OnRpcRequestHandler,
 } from '@metamask/snaps-sdk';
 
-import type { BaseParams, LegacySetStateParams, SetStateParams } from './types';
+import type {
+  BaseParams,
+  LegacyParams,
+  LegacySetStateParams,
+  SetStateParams,
+} from './types';
 import { clearState, getState, setState } from './utils';
 
 /**
@@ -75,12 +80,12 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     }
 
     case 'legacy_getState': {
-      const params = request.params as BaseParams;
+      const params = request.params as LegacyParams;
       return await getState(params?.encrypted);
     }
 
     case 'legacy_clearState': {
-      const params = request.params as BaseParams;
+      const params = request.params as LegacyParams;
       await clearState(params?.encrypted);
 
       return true;

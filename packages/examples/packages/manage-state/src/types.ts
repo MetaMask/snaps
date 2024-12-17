@@ -2,6 +2,8 @@ import type { Json } from '@metamask/utils';
 
 import type { State } from './utils';
 
+export type LegacyParams = { encrypted?: boolean };
+
 export type BaseParams = { key?: string; encrypted?: boolean };
 
 /**
@@ -14,4 +16,4 @@ export type SetStateParams = BaseParams & {
 /**
  * The parameters for the `legacy_setState` JSON-RPC method.
  */
-export type LegacySetStateParams = BaseParams & Partial<State>;
+export type LegacySetStateParams = LegacyParams & Partial<State>;
