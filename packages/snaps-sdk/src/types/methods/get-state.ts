@@ -8,8 +8,8 @@ import type { Json } from '@metamask/utils';
  * `a.b.c`, with the exception of array syntax.
  * @property encrypted - Whether to use the separate encrypted state, or the
  * unencrypted state. Defaults to the encrypted state. Encrypted state can only
- * be used if the extension is unlocked, while unencrypted state can be used
- * whether the extension is locked or unlocked.
+ * be used if the client is unlocked, while unencrypted state can be used
+ * whether the client is locked or unlocked.
  */
 export type GetStateParams = {
   key?: string;
