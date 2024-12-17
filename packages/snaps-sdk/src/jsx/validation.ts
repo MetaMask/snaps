@@ -19,6 +19,7 @@ import {
   tuple,
   refine,
   assign,
+  union,
 } from '@metamask/superstruct';
 import {
   CaipAccountIdStruct,
@@ -82,6 +83,7 @@ import {
   type SectionElement,
   type SelectorElement,
   type SelectorOptionElement,
+  type BannerElement,
   IconName,
 } from './components';
 
@@ -770,6 +772,27 @@ export const TooltipStruct: Describe<TooltipElement> = element('Tooltip', {
 });
 
 /**
+ * A struct for the {@link BannerElement} type.
+ */
+export const BannerStruct: Describe<BannerElement> = element('Banner', {
+  children: children([
+    TextStruct,
+    LinkStruct,
+    IconStruct,
+    ButtonStruct,
+    BoldStruct,
+    ItalicStruct,
+  ]),
+  title: string(),
+  severity: union([
+    literal('danger'),
+    literal('info'),
+    literal('success'),
+    literal('warning'),
+  ]),
+});
+
+/**
  * A struct for the {@link RowElement} type.
  */
 export const RowStruct: Describe<RowElement> = element('Row', {
@@ -824,6 +847,7 @@ export const BoxChildStruct = typedUnion([
   SelectorStruct,
   SectionStruct,
   AvatarStruct,
+  BannerStruct,
 ]);
 
 /**
@@ -889,6 +913,7 @@ export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   SelectorOptionStruct,
   SectionStruct,
   AvatarStruct,
+  BannerStruct,
 ]);
 
 /**
