@@ -38,7 +38,7 @@ import { getSnapFile } from './files';
 import type { SnapHelpers } from './helpers';
 import { getHelpers } from './helpers';
 import { resolveWithSaga } from './interface';
-import { getEndowments } from './methods';
+import { asyncResolve, getEndowments } from './methods';
 import {
   getPermittedClearSnapStateMethodImplementation,
   getPermittedGetSnapStateMethodImplementation,
@@ -123,6 +123,22 @@ export type RestrictedMiddlewareHooks = {
 };
 
 export type PermittedMiddlewareHooks = {
+  /**
+   * A hook that gets whether the requesting origin has a given permission.
+   *
+   * @param permissionName - The name of the permission to check.
+   * @returns Whether the origin has the permission.
+   */
+  hasPermission: (permissionName: string) => boolean;
+
+  /**
+   * A hook that returns a promise that resolves once the extension is unlocked.
+   *
+   * @param shouldShowUnlockRequest - Whether to show the unlock request.
+   * @returns A promise that resolves once the extension is unlocked.
+   */
+  getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
+
   /**
    * A hook that returns the Snap's auxiliary file for the given path. This hook
    * is bound to the Snap ID.
@@ -372,6 +388,9 @@ export function getPermittedHooks(
   runSaga: RunSagaFunction,
 ): PermittedMiddlewareHooks {
   return {
+    hasPermission: () => true,
+    getUnlockPromise: asyncResolve(),
+
     getSnapFile: async (path: string, encoding: AuxiliaryFileEncoding) =>
       await getSnapFile(snapFiles.auxiliaryFiles, path, encoding),
 
