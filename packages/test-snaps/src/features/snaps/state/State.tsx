@@ -21,6 +21,7 @@ export const State: FunctionComponent = () => {
       version={MANAGE_STATE_VERSION}
       testId="state"
     >
+      <h3 className="h5">Encrypted state</h3>
       <Result className="mb-3">
         <pre
           id="encryptedStateResult"
@@ -36,6 +37,7 @@ export const State: FunctionComponent = () => {
       <SetState encrypted={true} />
       <ClearState encrypted={true} />
 
+      <h3 className="h5">Unencrypted state</h3>
       <Result className="mb-3">
         <pre
           id="unencryptedStateResult"

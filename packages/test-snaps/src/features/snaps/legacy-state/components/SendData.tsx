@@ -6,11 +6,8 @@ import { Button, Form } from 'react-bootstrap';
 import { Tag, useInvokeMutation } from '../../../../api';
 import { Result } from '../../../../components';
 import { getSnapId } from '../../../../utils';
-import {
-  MANAGE_STATE_PORT,
-  MANAGE_STATE_SNAP_ID,
-  useSnapState,
-} from '../../state';
+import { MANAGE_STATE_PORT, MANAGE_STATE_SNAP_ID } from '../../state/constants';
+import { useSnapState } from '../../state/hooks';
 
 export const SendData: FunctionComponent<{ encrypted: boolean }> = ({
   encrypted,

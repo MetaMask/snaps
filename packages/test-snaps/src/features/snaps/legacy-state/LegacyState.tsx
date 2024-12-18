@@ -5,8 +5,8 @@ import {
   MANAGE_STATE_SNAP_ID,
   MANAGE_STATE_PORT,
   MANAGE_STATE_VERSION,
-  useSnapState,
-} from '../state';
+} from '../state/constants';
+import { useSnapState } from '../state/hooks';
 import { ClearData, SendData } from './components';
 
 export const LegacyState: FunctionComponent = () => {
@@ -21,6 +21,7 @@ export const LegacyState: FunctionComponent = () => {
       version={MANAGE_STATE_VERSION}
       testId="manage-state"
     >
+      <h3 className="h5">Encrypted state</h3>
       <Result className="mb-3">
         <span id="retrieveManageStateResult">
           {JSON.stringify(encryptedState, null, 2)}
@@ -30,6 +31,7 @@ export const LegacyState: FunctionComponent = () => {
       <SendData encrypted={true} />
       <ClearData encrypted={true} />
 
+      <h3 className="h5">Unencrypted state</h3>
       <Result className="mb-3">
         <span id="retrieveManageStateUnencryptedResult">
           {JSON.stringify(unencryptedState, null, 2)}
