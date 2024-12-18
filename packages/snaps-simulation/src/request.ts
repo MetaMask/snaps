@@ -172,6 +172,9 @@ export async function getInterfaceFromResult(
   }
 
   if (isPlainObject(result) && hasProperty(result, 'content')) {
+    if (typeof result.content === 'string') {
+      return result.content;
+    }
     assert(
       is(result.content, ComponentOrElementStruct),
       'The Snap returned an invalid interface.',

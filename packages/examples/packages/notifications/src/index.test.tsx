@@ -1,6 +1,7 @@
 import { expect } from '@jest/globals';
 import { installSnap } from '@metamask/snaps-jest';
 import { NotificationType } from '@metamask/snaps-sdk';
+import { Address, Box, Row } from '@metamask/snaps-sdk/jsx';
 
 describe('onRpcRequest', () => {
   it('throws an error if the requested method does not exist', async () => {
@@ -52,6 +53,15 @@ describe('onRpcRequest', () => {
         'Hello from MetaMask, click here for an expanded view!',
         NotificationType.InApp,
         'Hello World!',
+        <Box>
+          <Row
+            label="From"
+            variant="warning"
+            tooltip="This address has been deemed dangerous."
+          >
+            <Address address="0x1234567890123456789012345678901234567890" />
+          </Row>
+        </Box>,
         { text: 'Go home', href: 'metamask://client/' },
       );
     });

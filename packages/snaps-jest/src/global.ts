@@ -5,6 +5,7 @@ import type {
   NotificationType,
   ComponentOrElement,
 } from '@metamask/snaps-sdk';
+import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 
 interface SnapsMatchers {
   /**
@@ -53,6 +54,7 @@ interface SnapsMatchers {
     message: string,
     type?: EnumToUnion<NotificationType>,
     title?: string,
+    content?: JSXElement,
     footerLink?: { text: string; href: string },
   ): void;
 

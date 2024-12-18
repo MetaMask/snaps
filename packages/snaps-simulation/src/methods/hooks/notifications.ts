@@ -5,7 +5,7 @@ import type { SagaIterator } from 'redux-saga';
 import { put } from 'redux-saga/effects';
 
 import type { RunSagaFunction } from '../../store';
-import { addNotification } from '../../store';
+import { addNotification, setInterface } from '../../store';
 
 /**
  * Show a native notification to the user.
@@ -71,6 +71,10 @@ function* showInAppNotificationImplementation(
     footerLink?: { text: string; href: string };
   },
 ): SagaIterator<null> {
+  if (content) {
+    yield put(setInterface({ type: 'Notification', id: content }));
+  }
+
   yield put(
     addNotification({
       id: nanoid(),
