@@ -1,21 +1,21 @@
 import type { FunctionComponent } from 'react';
 
 import { Result, Snap } from '../../../components';
-import { ClearData, SendData } from './components';
 import {
   MANAGE_STATE_SNAP_ID,
   MANAGE_STATE_PORT,
   MANAGE_STATE_VERSION,
-} from './constants';
-import { useSnapState } from './hooks';
+  useSnapState,
+} from '../state';
+import { ClearData, SendData } from './components';
 
-export const ManageState: FunctionComponent = () => {
-  const encryptedState = useSnapState(true);
-  const unencryptedState = useSnapState(false);
+export const LegacyState: FunctionComponent = () => {
+  const encryptedState = useSnapState('legacy_getState', true);
+  const unencryptedState = useSnapState('legacy_getState', false);
 
   return (
     <Snap
-      name="Manage State Snap"
+      name="Legacy State Snap"
       snapId={MANAGE_STATE_SNAP_ID}
       port={MANAGE_STATE_PORT}
       version={MANAGE_STATE_VERSION}

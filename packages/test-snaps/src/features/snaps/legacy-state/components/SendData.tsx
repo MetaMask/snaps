@@ -6,15 +6,21 @@ import { Button, Form } from 'react-bootstrap';
 import { Tag, useInvokeMutation } from '../../../../api';
 import { Result } from '../../../../components';
 import { getSnapId } from '../../../../utils';
-import { MANAGE_STATE_PORT, MANAGE_STATE_SNAP_ID } from '../constants';
-import { useSnapState } from '../hooks';
+import {
+  MANAGE_STATE_PORT,
+  MANAGE_STATE_SNAP_ID,
+  useSnapState,
+} from '../../state';
 
 export const SendData: FunctionComponent<{ encrypted: boolean }> = ({
   encrypted,
 }) => {
   const [value, setValue] = useState('');
   const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
-  const snapState = useSnapState(encrypted);
+  const snapState = useSnapState<{ items: string[] }>(
+    'legacy_getState',
+    encrypted,
+  );
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);

@@ -10,8 +10,8 @@ import {
 import { useSnapState } from './hooks';
 
 export const State: FunctionComponent = () => {
-  const encryptedState = useSnapState(true);
-  const unencryptedState = useSnapState(false);
+  const encryptedState = useSnapState('getState', true);
+  const unencryptedState = useSnapState('getState', false);
 
   return (
     <Snap

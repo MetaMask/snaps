@@ -5,7 +5,7 @@ import { Button } from 'react-bootstrap';
 import { Tag, useInvokeMutation } from '../../../../api';
 import { Result } from '../../../../components';
 import { getSnapId } from '../../../../utils';
-import { MANAGE_STATE_PORT, MANAGE_STATE_SNAP_ID } from '../constants';
+import { MANAGE_STATE_PORT, MANAGE_STATE_SNAP_ID } from '../../state';
 
 export const ClearData: FunctionComponent<{ encrypted: boolean }> = ({
   encrypted,

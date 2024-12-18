@@ -16,7 +16,7 @@ export * from './images';
 export * from './json-rpc';
 export * from './jsx';
 export * from './lifecycle-hooks';
-export * from './manage-state';
+export * from './legacy-state';
 export * from './multi-install';
 export * from './name-lookup';
 export * from './network-access';
