@@ -279,10 +279,6 @@ describe('get', () => {
     expect(get(object, 'a.b.c')).toBe('value');
   });
 
-  it('returns the object if the key is empty', () => {
-    expect(get(object, '')).toBe(object);
-  });
-
   it('returns `null` if the object is `null`', () => {
     expect(get(null, '')).toBeNull();
   });

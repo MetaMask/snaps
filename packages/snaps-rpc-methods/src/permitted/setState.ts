@@ -137,7 +137,7 @@ async function setStateImplementation(
       await getUnlockPromise(true);
     }
 
-    const newState = await getNewState(key, value, getSnapState);
+    const newState = await getNewState(key, value, encrypted, getSnapState);
     await updateSnapState(newState, encrypted);
     response.result = null;
   } catch (error) {
@@ -180,12 +180,14 @@ function getValidatedParams(params?: unknown) {
  *
  * @param key - The key to set.
  * @param value - The value to set the key to.
+ * @param encrypted - Whether the state is encrypted.
  * @param getSnapState - The `getSnapState` hook.
  * @returns The new state of the Snap.
  */
 async function getNewState(
   key: string | undefined,
   value: Json,
+  encrypted: boolean,
   getSnapState: SetStateHooks['getSnapState'],
 ) {
   if (key === undefined) {
@@ -193,7 +195,7 @@ async function getNewState(
     return value;
   }
 
-  const state = await getSnapState(false);
+  const state = await getSnapState(encrypted);
   return set(state, key, value);
 }
 

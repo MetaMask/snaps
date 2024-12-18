@@ -285,6 +285,61 @@ describe('snap_setState', () => {
       });
     });
 
+    it('throws if the encrypted parameter is invalid', async () => {
+      const { implementation } = setStateHandler;
+
+      const getSnapState = jest.fn().mockReturnValue({
+        foo: 'bar',
+      });
+
+      const updateSnapState = jest.fn().mockReturnValue(null);
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const hasPermission = jest.fn().mockReturnValue(true);
+
+      const hooks = {
+        getSnapState,
+        updateSnapState,
+        getUnlockPromise,
+        hasPermission,
+      };
+
+      const engine = new JsonRpcEngine();
+
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<SetStateParameters>,
+          response as PendingJsonRpcResponse<SetStateResult>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_setState',
+        params: {
+          key: 'foo',
+          value: 'bar',
+          encrypted: 'baz',
+        },
+      });
+
+      expect(response).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 1,
+        error: {
+          code: errorCodes.rpc.invalidParams,
+          message:
+            'Invalid params: At path: encrypted -- Expected a value of type `boolean`, but received: `"baz"`.',
+          stack: expect.any(String),
+        },
+      });
+    });
+
     it('throws if `key` is not provided and `value` is not an object', async () => {
       const { implementation } = setStateHandler;
 

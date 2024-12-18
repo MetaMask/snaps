@@ -153,7 +153,7 @@ export function get(
   value: Record<string, Json> | null,
   key?: string | undefined,
 ): Json {
-  if (key === undefined || key === '') {
+  if (key === undefined) {
     return value;
   }
 
